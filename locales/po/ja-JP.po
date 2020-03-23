@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-03-22 12:15-0400\n"
-"PO-Revision-Date: 2019-03-10 13:39-0400\n"
+"PO-Revision-Date: 2020-03-22 21:26-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "Language: ja\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.3\n"
 
 #: about.php:29 include/global_arrays.php:2424 lib/html.php:2390
 msgid "About Cacti"
@@ -284,15 +284,13 @@ msgstr "[続行]をクリックして、選択したグラフを下のレポー�
 
 #: aggregate_graphs.php:472 graph_view.php:784 graphs.php:1242
 #: lib/html_reports.php:920 lib/html_reports.php:1585
-#, fuzzy
 msgid "Report Name"
 msgstr "レポート名"
 
 #: aggregate_graphs.php:476 graph_view.php:791 graphs.php:1246
 #: lib/html_reports.php:1328
-#, fuzzy
 msgid "Timespan"
-msgstr "期間"
+msgstr "スパン"
 
 #: aggregate_graphs.php:480 graph_view.php:798 graphs.php:1250
 msgid "Align"
@@ -410,9 +408,8 @@ msgid "RRDtool Command:"
 msgstr "RRDtoolコマンド："
 
 #: aggregate_graphs.php:755 graph.php:543 graphs.php:1611
-#, fuzzy
 msgid "Not Checked"
-msgstr "チェックなし"
+msgstr "Akismet はこのコメントを再検証し、スパムではないと判断しました。"
 
 #: aggregate_graphs.php:755 graph.php:539 graphs.php:1609
 #, fuzzy
@@ -824,7 +821,6 @@ msgstr "使用中の集約テンプレートは削除できません。使用中
 #: data_source_profiles.php:972 data_sources.php:1620 data_templates.php:1072
 #: gprint_presets.php:397 graph_templates.php:802 host_templates.php:844
 #: vdef.php:886
-#, fuzzy
 msgid "Deletable"
 msgstr "削除可能"
 
@@ -922,9 +918,8 @@ msgid "Username"
 msgstr "ユーザー名"
 
 #: auth_changepassword.php:349
-#, fuzzy
 msgid "Current password"
-msgstr "現在のパスワード"
+msgstr "いま の パスワード"
 
 #: auth_changepassword.php:354
 msgid "New password"
@@ -1005,9 +1000,8 @@ msgid "Access Denied, please contact you Cacti Administrator."
 msgstr "アクセス拒否されました。Cacti 管理者に連絡してください。"
 
 #: auth_login.php:492
-#, fuzzy
 msgid "Cacti"
-msgstr "ブラウザーへ出力 (Cacti で)"
+msgstr "サボテン"
 
 #: auth_login.php:720 lib/html_tree.php:218
 #, fuzzy
@@ -1041,9 +1035,8 @@ msgid "Realm"
 msgstr "領域"
 
 #: auth_login.php:804
-#, fuzzy
 msgid "Keep me signed in"
-msgstr "ログイン状態を保持する"
+msgstr "サインイン状態を保存する"
 
 #: auth_login.php:810
 msgid "Login"
@@ -1173,7 +1166,6 @@ msgid "Reset"
 msgstr "リセット"
 
 #: automation_devices.php:45
-#, fuzzy
 msgid "Add Device"
 msgstr "機器の追加"
 
@@ -1348,9 +1340,8 @@ msgstr "ファイルにエクスポート"
 
 #: automation_devices.php:488 data_debug.php:982 lib/clog_webapi.php:212
 #: lib/clog_webapi.php:524 managers.php:747
-#, fuzzy
 msgid "Purge"
-msgstr "パージ"
+msgstr "粛清"
 
 #: automation_devices.php:488
 #, fuzzy
@@ -1546,9 +1537,8 @@ msgstr "このルールの内部データベースID。デバッグや自動化�
 #: automation_graph_rules.php:898 include/global_form.php:1755
 #: include/global_form.php:1841 include/global_form.php:1946
 #: include/global_form.php:2141
-#, fuzzy
 msgid "Graph Type"
-msgstr "グラフの種類"
+msgstr "グラフタイプ"
 
 #: automation_graph_rules.php:921
 #, fuzzy
@@ -1700,9 +1690,8 @@ msgid "New Network Discovery Range"
 msgstr "新しいネットワーク探索範囲"
 
 #: automation_networks.php:449 automation_networks.php:1075 host.php:1511
-#, fuzzy
 msgid "Data Collector"
-msgstr "データコレクタ"
+msgstr "データコレクター"
 
 #: automation_networks.php:450 include/global_form.php:1156
 #, fuzzy
@@ -1755,7 +1744,6 @@ msgid "Enter IPs or FQDNs of DNS Servers"
 msgstr "DNSサーバーのIPまたはFQDNを入力してください"
 
 #: automation_networks.php:490
-#, fuzzy
 msgid "Schedule Type"
 msgstr "スケジュールの種類"
 
@@ -1903,7 +1891,6 @@ msgid "If a device previously added to Cacti is found, rerun its data queries."
 msgstr "以前にCactiに追加された装置が見つかった場合は、そのデータ照会を再実行してください。"
 
 #: automation_networks.php:568
-#, fuzzy
 msgid "Notification Settings"
 msgstr "通知設定"
 
@@ -2073,9 +2060,8 @@ msgid "December"
 msgstr "12月"
 
 #: automation_networks.php:672
-#, fuzzy
 msgid "Days of Month"
-msgstr "月の日数"
+msgstr "日"
 
 #: automation_networks.php:673
 #, fuzzy
@@ -2232,7 +2218,6 @@ msgid "Networks"
 msgstr "ネットワーク"
 
 #: automation_networks.php:1074
-#, fuzzy
 msgid "Network Name"
 msgstr "ネットワーク名"
 
@@ -2394,9 +2379,8 @@ msgstr "SNMPオプション[new]"
 #: include/global_form.php:2264 lib/api_automation.php:1288
 #: lib/api_automation.php:1350 lib/api_automation.php:1416
 #: lib/html_reports.php:696 lib/html_reports.php:1325
-#, fuzzy
 msgid "Sequence"
-msgstr "シーケンス"
+msgstr "配列"
 
 #: automation_snmp.php:420 lib/html_reports.php:697
 #, fuzzy
@@ -2582,7 +2566,6 @@ msgstr "自動化テンプレートを削除"
 #: automation_templates.php:274 include/global_arrays.php:1226
 #: include/global_form.php:1172 include/global_form.php:1577
 #: lib/html_reports.php:623
-#, fuzzy
 msgid "Device Template"
 msgstr "デバイステンプレート"
 
@@ -2723,9 +2706,8 @@ msgstr "葉の種類を変更"
 
 #: automation_tree_rules.php:706 lib/installer.php:3595 utilities.php:2162
 #: utilities.php:2163 utilities.php:2166 utilities.php:2167
-#, fuzzy
 msgid "WARNING:"
-msgstr "警告"
+msgstr "警告:"
 
 #: automation_tree_rules.php:707
 #, fuzzy
@@ -2738,9 +2720,8 @@ msgid "By changing the leaf type, all invalid rules will be automatically remove
 msgstr "リーフタイプを変更すると、無効なルールはすべて自動的に削除され、回復できなくなります。"
 
 #: automation_tree_rules.php:709
-#, fuzzy
 msgid "Are you sure you wish to continue?"
-msgstr "続けますか？"
+msgstr "本当に続行してもよろしいですか ?"
 
 #: automation_tree_rules.php:801 automation_tree_rules.php:826
 #: automation_tree_rules.php:926 include/global_arrays.php:909
@@ -2770,9 +2751,8 @@ msgid "Using Grouping"
 msgstr "グループ化を使用する"
 
 #: automation_tree_rules.php:949
-#, fuzzy
 msgid "ROOT"
-msgstr "ルート"
+msgstr "根(植物)"
 
 #: automation_tree_rules.php:965
 #, fuzzy
@@ -3022,9 +3002,8 @@ msgid "Colors"
 msgstr "色"
 
 #: color.php:552
-#, fuzzy
 msgid "Named Colors"
-msgstr "名前付きの色"
+msgstr "Named Colors (名前のある色)"
 
 #: color.php:569 lib/html_form.php:1299
 msgid "Import"
@@ -3178,14 +3157,14 @@ msgid "Color Template [new]"
 msgstr "カラーテンプレート[new]"
 
 #: color_templates.php:453
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr ""
+msgstr "カラーテンプレート '％s'には％d個の集約テンプレートがプッシュされ、％d個の非テンプレート集約がプッシュされました"
 
 #: color_templates.php:455
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
-msgstr ""
+msgstr "カラーテンプレート '％s'には、このカラーテンプレートを使用した集計テンプレートまたはグラフがありませんでした。"
 
 #: color_templates.php:511 color_templates.php:524 color_templates.php:619
 #: include/global_arrays.php:2508
@@ -3314,9 +3293,8 @@ msgid "The Status of the Data Source Debug Check."
 msgstr "データソースデバッグチェックのステータス。"
 
 #: data_debug.php:357 lib/installer.php:2201 lib/installer.php:2233
-#, fuzzy
 msgid "Writable"
-msgstr "書き込み可能"
+msgstr "書き込み可能(R)"
 
 #: data_debug.php:360
 #, fuzzy
@@ -3324,9 +3302,8 @@ msgid "Determines if the Data Collector or the Web Site have Write access."
 msgstr "データコレクタまたはWebサイトに書き込みアクセス権があるかどうかを確認します。"
 
 #: data_debug.php:363
-#, fuzzy
 msgid "Exists"
-msgstr "存在する"
+msgstr "存在"
 
 #: data_debug.php:366
 #, fuzzy
@@ -3534,7 +3511,6 @@ msgid "Data Source Repair Recommendations"
 msgstr "データソースフィールド"
 
 #: data_debug.php:807
-#, fuzzy
 msgid "Issue"
 msgstr "問題"
 
@@ -3559,7 +3535,6 @@ msgid "Repair Steps [ Run Fix from Command Line ]"
 msgstr "修復手順[コマンドラインから修正を実行]"
 
 #: data_debug.php:839
-#, fuzzy
 msgid "Command"
 msgstr "コマンド"
 
@@ -3569,7 +3544,6 @@ msgid "Waiting on Data Source Check to Complete"
 msgstr "データソースチェックが完了するのを待機しています"
 
 #: data_debug.php:943
-#, fuzzy
 msgid "All Devices"
 msgstr "すべてのデバイス"
 
@@ -3579,9 +3553,8 @@ msgid "Data Source Troubleshooter [ %s ]"
 msgstr "データソーストラブルシューター[％s]"
 
 #: data_debug.php:943
-#, fuzzy
 msgid "No Device"
-msgstr "デバイス"
+msgstr "デバイスがありません"
 
 #: data_debug.php:982
 #, fuzzy
@@ -3672,7 +3645,6 @@ msgid "Input Fields [edit: %s]"
 msgstr "入力フィールド[編集：％s]"
 
 #: data_input.php:478
-#, fuzzy
 msgid "Input Field"
 msgstr "入力フィールド"
 
@@ -3721,9 +3693,8 @@ msgid "Input Fields"
 msgstr "入力項目"
 
 #: data_input.php:618 data_input.php:679 include/global_form.php:421
-#, fuzzy
 msgid "Friendly Name"
-msgstr "分かりやすい名前"
+msgstr "フレンドリーな名前"
 
 #: data_input.php:619
 msgid "Field Order"
@@ -3876,9 +3847,8 @@ msgid "Suggested Values - Graphs"
 msgstr "推奨値 - グラフ"
 
 #: data_queries.php:780 data_queries.php:878
-#, fuzzy
 msgid "Equation"
-msgstr "方程式"
+msgstr "等号"
 
 #: data_queries.php:833 data_queries.php:934
 #, fuzzy
@@ -4086,7 +4056,6 @@ msgid "Data Source Profile RRAs (Read Only)"
 msgstr "データソースプロファイルRRA（読み取り専用）"
 
 #: data_source_profiles.php:570 include/global_form.php:270
-#, fuzzy
 msgid "Data Retention"
 msgstr "データ保持"
 
@@ -4132,9 +4101,9 @@ msgstr "データソースあたり％sキロバイト"
 #: include/global_arrays.php:715 include/global_arrays.php:716
 #: include/global_arrays.php:717 include/global_arrays.php:718
 #: include/global_arrays.php:1328 include/global_settings.php:1345
-#, fuzzy, php-format
+#, php-format
 msgid "%d Years"
-msgstr "％d年"
+msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/> 年"
 
 #: data_source_profiles.php:741
 msgid "1 Year"
@@ -4185,15 +4154,14 @@ msgstr "％d日"
 #: include/global_settings.php:1343 include/global_settings.php:1354
 #: include/global_settings.php:1355 include/global_settings.php:1356
 #: include/global_settings.php:1357
-#, fuzzy, php-format
+#, php-format
 msgid "%d Days"
-msgstr "％d日"
+msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/> 日"
 
 #: data_source_profiles.php:776 include/global_arrays.php:644
 #: include/global_arrays.php:1358 include/global_arrays.php:1379
 #: include/global_arrays.php:1412 include/global_arrays.php:1421
 #: include/global_arrays.php:1449 include/global_settings.php:1411
-#, fuzzy
 msgid "1 Hour"
 msgstr "1時間"
 
@@ -4227,7 +4195,6 @@ msgid "Profiles that are in use cannot be Deleted. In use is defined as being re
 msgstr "使用中のプロファイルは削除できません。使用中は、データソースまたはデータテンプレートによって参照されていると定義されています。"
 
 #: data_source_profiles.php:977 include/global_form.php:330
-#, fuzzy
 msgid "Read Only"
 msgstr "読み取り専用"
 
@@ -4461,9 +4428,8 @@ msgid "Data Source Item Fields"
 msgstr "データソース項目のフィールド"
 
 #: data_sources.php:971
-#, fuzzy
 msgid "Custom Data"
-msgstr "カスタムデータ"
+msgstr "カスタム色"
 
 #: data_sources.php:1069
 #, fuzzy, php-format
@@ -4516,12 +4482,10 @@ msgid "Bad Indexes"
 msgstr "インデックス"
 
 #: data_sources.php:1409 data_sources.php:1414 graphs.php:1947
-#, fuzzy
 msgid "Orphaned"
-msgstr "孤立した"
+msgstr "孤児"
 
 #: data_sources.php:1596 utilities.php:1813
-#, fuzzy
 msgid "Data Source Name"
 msgstr "データソース名"
 
@@ -4568,22 +4532,20 @@ msgstr "データソースが見つかりません"
 #: data_sources.php:1738
 #, fuzzy
 msgid "No Graphs"
-msgstr "新規グラフ"
+msgstr "グラフ"
 
 #: data_sources.php:1742 include/global_arrays.php:890
-#, fuzzy
 msgid "Aggregates"
-msgstr "集合体"
+msgstr "総計"
 
 #: data_sources.php:1744
 #, fuzzy
 msgid "No Aggregates"
-msgstr "集合体"
+msgstr "総計"
 
 #: data_templates.php:36
-#, fuzzy
 msgid "Change Profile"
-msgstr "プロファイル変更"
+msgstr "プロファイルを変更(G)"
 
 #: data_templates.php:378
 #, fuzzy
@@ -4702,9 +4664,8 @@ msgid "The number of Data Sources using this Data Template."
 msgstr "このデータテンプレートを使用しているデータソースの数。"
 
 #: data_templates.php:1083
-#, fuzzy
 msgid "Input Method"
-msgstr "データの入力方法"
+msgstr "インプットメソッド"
 
 #: data_templates.php:1086
 #, fuzzy
@@ -4712,9 +4673,8 @@ msgid "The method that is used to place Data into the Data Source RRDfile."
 msgstr "データをデータソースRRDファイルに入れるために使用される方法。"
 
 #: data_templates.php:1089
-#, fuzzy
 msgid "Profile Name"
-msgstr "プロファイル名"
+msgstr "プロフィール名"
 
 #: data_templates.php:1092
 #, fuzzy
@@ -4884,9 +4844,8 @@ msgid " seconds left."
 msgstr "残り秒。"
 
 #: graph_templates.php:36
-#, fuzzy
 msgid "Change Settings"
-msgstr "デバイス設定を変更する"
+msgstr "設定を変更する"
 
 #: graph_templates.php:37
 #, fuzzy
@@ -5160,7 +5119,6 @@ msgid "The underlying source that this Graph was based upon."
 msgstr "このグラフが基づいていた根本的な情報源。"
 
 #: graph_view.php:731 graphs.php:2115
-#, fuzzy
 msgid "Source Name"
 msgstr "ソース名"
 
@@ -5230,9 +5188,8 @@ msgid "Nth Percentile"
 msgstr "Nパーセンタイル"
 
 #: graph_xport.php:138 graph_xport.php:180
-#, fuzzy
 msgid "Summation"
-msgstr "まとめ"
+msgstr "シグマ"
 
 #: graph_xport.php:144 utilities.php:259 utilities.php:806
 msgid "Date"
@@ -5274,7 +5231,7 @@ msgstr "グラフテンプレートに変換"
 #: graphs.php:151 graphs.php:166
 #, fuzzy
 msgid "No Device - "
-msgstr "デバイス"
+msgstr "デバイスがありません"
 
 #: graphs.php:252
 #, fuzzy, php-format
@@ -5660,9 +5617,9 @@ msgid "Sync to Device Template"
 msgstr "デバイステンプレートに同期"
 
 #: host.php:184
-#, php-format
+#, fuzzy, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr ""
+msgstr "デバイスのインデックス再作成は％0.2f秒で完了しました。 ％d個のアイテムが更新されました。"
 
 #: host.php:355
 #, fuzzy
@@ -5948,7 +5905,7 @@ msgstr "SNMP GetNext"
 
 #: host.php:1335 host.php:1558
 msgid "Undefined"
-msgstr ""
+msgstr "未定義"
 
 #: host.php:1493 include/global_settings.php:523 lib/html.php:2044
 msgid "Site"
@@ -5966,9 +5923,8 @@ msgstr "アップしていない"
 
 #: host.php:1599 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html_utility.php:909 pollers.php:48
-#, fuzzy
 msgid "Recovering"
-msgstr "回復"
+msgstr "復元中"
 
 #: host.php:1600 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:918 lib/plugins.php:998 lib/plugins.php:999
@@ -5977,7 +5933,6 @@ msgid "Unknown"
 msgstr "不明"
 
 #: host.php:1629 lib/api_automation.php:570 tree.php:864 utilities.php:1814
-#, fuzzy
 msgid "Device Description"
 msgstr "デバイスの説明"
 
@@ -6459,8 +6414,9 @@ msgid "Save Failed.  Minimum Values must be less than Maximum Value."
 msgstr "保存に失敗しました。最小値は最大値より小さくなければなりません。"
 
 #: include/global_arrays.php:260
+#, fuzzy
 msgid "Unable to change password.  User account not found."
-msgstr ""
+msgstr "パスワードを変更できません。ユーザーアカウントが見つかりません。"
 
 #: include/global_arrays.php:263
 #, fuzzy
@@ -6588,8 +6544,9 @@ msgid "Your Remote Database Hostname must be something other than 'localhost' fo
 msgstr "リモートデータベースのホスト名は、各リモートデータコレクタの「localhost」以外にする必要があります。"
 
 #: include/global_arrays.php:338
+#, fuzzy
 msgid "Path variables on this page were only saved locally."
-msgstr ""
+msgstr "このページのパス変数はローカルでのみ保存されました。"
 
 #: include/global_arrays.php:341
 #, fuzzy
@@ -6642,12 +6599,14 @@ msgid "Poller Resource Cache cleared.  Main Data Collector will rebuild at the n
 msgstr "ポーラーリソースキャッシュがクリアされました。 Main Data Collectorは次回のポーラー起動時に再構築され、Remote Data Collectorはその後同期します。"
 
 #: include/global_arrays.php:371
+#, fuzzy
 msgid "Permission Denied.  You do not have permission to the requested action."
-msgstr ""
+msgstr "アクセス拒否。要求されたアクションに対する許可がありません。"
 
 #: include/global_arrays.php:374
+#, fuzzy
 msgid "Page is not defined.  Therefore, it can not be displayed."
-msgstr ""
+msgstr "ページが定義されていません。そのため、表示できません。"
 
 #: include/global_arrays.php:377
 #, fuzzy
@@ -6733,29 +6692,24 @@ msgid "Light"
 msgstr "ライト"
 
 #: include/global_arrays.php:504 include/global_arrays.php:509
-#, fuzzy
 msgid "Mono"
-msgstr "モノ"
+msgstr "モノクロ"
 
 #: include/global_arrays.php:513
-#, fuzzy
 msgid "North"
 msgstr "北"
 
 #: include/global_arrays.php:514
-#, fuzzy
 msgid "South"
 msgstr "南"
 
 #: include/global_arrays.php:515
-#, fuzzy
 msgid "West"
 msgstr "西"
 
 #: include/global_arrays.php:516
-#, fuzzy
 msgid "East"
-msgstr "東"
+msgstr "东"
 
 #: include/global_arrays.php:521
 msgid "Left"
@@ -6820,9 +6774,8 @@ msgid "SHA"
 msgstr "SHA"
 
 #: include/global_arrays.php:587
-#, fuzzy
 msgid "DES"
-msgstr "DES"
+msgstr "不均衡症候群"
 
 #: include/global_arrays.php:588
 #, fuzzy
@@ -6906,7 +6859,6 @@ msgstr "％d秒ごと"
 
 #: include/global_arrays.php:659 include/global_arrays.php:726
 #: include/global_arrays.php:751
-#, fuzzy
 msgid "Every Minute"
 msgstr "毎分"
 
@@ -6979,9 +6931,8 @@ msgid "Multiple LDAP/AD Domains"
 msgstr "複数のLDAP / ADドメイン"
 
 #: include/global_arrays.php:777
-#, fuzzy
 msgid "Active Directory"
-msgstr "Active Directory"
+msgstr "アクティブディレクトリー"
 
 #: include/global_arrays.php:789 include/global_settings.php:1674
 msgid "SSL"
@@ -7152,15 +7103,13 @@ msgstr "サイト"
 #: include/global_arrays.php:887 include/global_arrays.php:1096 tree.php:1910
 #: tree.php:1925 tree.php:1987 user_admin.php:1572 user_admin.php:2970
 #: user_admin.php:3055 user_group_admin.php:1249 user_group_admin.php:2457
-#, fuzzy
 msgid "Trees"
 msgstr "木"
 
 #: include/global_arrays.php:892 include/global_arrays.php:942
 #: include/global_arrays.php:958
-#, fuzzy
 msgid "Data Collection"
-msgstr "データ収集"
+msgstr "サーベイ"
 
 #: include/global_arrays.php:893 include/global_arrays.php:943 pollers.php:810
 #, fuzzy
@@ -7168,9 +7117,8 @@ msgid "Data Collectors"
 msgstr "データコレクタ"
 
 #: include/global_arrays.php:901 include/global_arrays.php:2697
-#, fuzzy
 msgid "Aggregate"
-msgstr "集計"
+msgstr "総計"
 
 #: include/global_arrays.php:904 include/global_arrays.php:960
 #: include/global_arrays.php:1088 include/global_settings.php:469
@@ -7321,7 +7269,6 @@ msgid "Spike Management"
 msgstr "スパイク管理"
 
 #: include/global_arrays.php:1109 include/global_settings.php:843
-#, fuzzy
 msgid "Log Management"
 msgstr "ログ管理"
 
@@ -7356,9 +7303,8 @@ msgid "General Administration"
 msgstr "一般管理"
 
 #: include/global_arrays.php:1120
-#, fuzzy
 msgid "System Administration"
-msgstr "システム管理"
+msgstr "2. システム管理"
 
 #: include/global_arrays.php:1214
 msgid "CDEF"
@@ -7426,9 +7372,8 @@ msgid "Last %d Hours"
 msgstr "最後の％d時間"
 
 #: include/global_arrays.php:1285
-#, fuzzy
 msgid "Last Day"
-msgstr "最後の日"
+msgstr "過去 1日"
 
 #: include/global_arrays.php:1286 include/global_arrays.php:1287
 #: include/global_arrays.php:1288
@@ -7472,7 +7417,7 @@ msgstr "日勤"
 #: include/global_arrays.php:1299
 #, fuzzy
 msgid "This Day"
-msgstr "毎日"
+msgstr "過去 1日"
 
 #: include/global_arrays.php:1300
 msgid "This Week"
@@ -7487,9 +7432,8 @@ msgid "This Year"
 msgstr "今年"
 
 #: include/global_arrays.php:1303
-#, fuzzy
 msgid "Previous Day"
-msgstr "前日"
+msgstr "前の日"
 
 #: include/global_arrays.php:1304
 msgid "Previous Week"
@@ -7616,14 +7560,12 @@ msgid "400,000 Data Source Items"
 msgstr "400,000件のデータソース項目"
 
 #: include/global_arrays.php:1413
-#, fuzzy
 msgid "2 Hours"
 msgstr "2時間"
 
 #: include/global_arrays.php:1414
-#, fuzzy
 msgid "4 Hours"
-msgstr "4時間"
+msgstr "4 時間"
 
 #: include/global_arrays.php:1415
 #, fuzzy
@@ -7643,7 +7585,7 @@ msgstr "％d GB"
 
 #: include/global_arrays.php:1436
 msgid "Infinity"
-msgstr ""
+msgstr "インフィニティ"
 
 #: include/global_arrays.php:1443 include/global_settings.php:1133
 #: include/global_settings.php:1134 include/global_settings.php:1135
@@ -7731,9 +7673,8 @@ msgid "Text"
 msgstr "テキスト"
 
 #: include/global_arrays.php:1513 include/global_form.php:2175
-#, fuzzy
 msgid "Tree"
-msgstr "このグラフツリーの名前です。"
+msgstr "ツリー"
 
 #: include/global_arrays.php:1515
 msgid "Horizontal Rule"
@@ -7884,9 +7825,8 @@ msgid "begins with"
 msgstr "始まる"
 
 #: include/global_arrays.php:1571
-#, fuzzy
 msgid "does not begin with"
-msgstr "で始まらない"
+msgstr "が右の値と前方不一致"
 
 #: include/global_arrays.php:1572
 msgid "ends with"
@@ -7909,18 +7849,16 @@ msgid "is less than"
 msgstr "より小さい"
 
 #: include/global_arrays.php:1577
-#, fuzzy
 msgid "is less than or equal"
-msgstr "より小さいか等しい"
+msgstr "が右の値より小さいか等しい"
 
 #: include/global_arrays.php:1578
 msgid "is greater than"
 msgstr "より大きい"
 
 #: include/global_arrays.php:1579
-#, fuzzy
 msgid "is greater than or equal"
-msgstr "以上"
+msgstr "が右の値より大きいか等しい"
 
 #: include/global_arrays.php:1580
 #, fuzzy
@@ -7937,14 +7875,12 @@ msgid "is empty"
 msgstr "空"
 
 #: include/global_arrays.php:1583
-#, fuzzy
 msgid "is not empty"
-msgstr "空"
+msgstr "空ではない"
 
 #: include/global_arrays.php:1584
-#, fuzzy
 msgid "matches regular expression"
-msgstr "正規表現にマッチ"
+msgstr "が正規表現で一致"
 
 #: include/global_arrays.php:1585
 #, fuzzy
@@ -7962,12 +7898,10 @@ msgid "Every 1 Hour"
 msgstr "1時間ごと"
 
 #: include/global_arrays.php:1698
-#, fuzzy
 msgid "Every Day"
 msgstr "毎日"
 
 #: include/global_arrays.php:1699
-#, fuzzy
 msgid "Every Week"
 msgstr "毎週"
 
@@ -8178,9 +8112,8 @@ msgid "Paper-plane"
 msgstr "紙飛行機"
 
 #: include/global_arrays.php:1796
-#, fuzzy
 msgid "Paw"
-msgstr "足"
+msgstr "動物の足"
 
 #: include/global_arrays.php:1797
 msgid "Sunrise"
@@ -8194,7 +8127,7 @@ msgstr "失敗"
 #: include/global_arrays.php:1802
 #, fuzzy
 msgid "[Warning]"
-msgstr "警告"
+msgstr "警告:"
 
 #: include/global_arrays.php:1803
 #, fuzzy
@@ -8424,17 +8357,14 @@ msgid "days"
 msgstr "日"
 
 #: include/global_arrays.php:2660
-#, fuzzy
 msgid "hrs"
 msgstr "時間"
 
 #: include/global_arrays.php:2661
-#, fuzzy
 msgid "mins"
 msgstr "分"
 
 #: include/global_arrays.php:2662
-#, fuzzy
 msgid "secs"
 msgstr "秒"
 
@@ -8447,9 +8377,8 @@ msgid "minutes"
 msgstr "分"
 
 #: include/global_arrays.php:2678
-#, fuzzy
 msgid "seconds"
-msgstr "%d 秒"
+msgstr "秒"
 
 #: include/global_form.php:35
 #, fuzzy
@@ -8892,9 +8821,8 @@ msgid "The maximum amount of time that can pass before data is entered as 'unkno
 msgstr "データが「不明」として入力されるまでに経過できる最大時間。 （通常2×300 = 600）"
 
 #: include/global_form.php:619 lib/html_utility.php:270
-#, fuzzy
 msgid "Not Selected"
-msgstr "選択中"
+msgstr "選択されていません"
 
 #: include/global_form.php:620
 #, fuzzy
@@ -8915,9 +8843,8 @@ msgid "Enter the custom GPRINT string here."
 msgstr "カスタム GRPINT 文字列をここに入力します。"
 
 #: include/global_form.php:655
-#, fuzzy
 msgid "Common Options"
-msgstr "共通のオプション"
+msgstr "一般的なオプション"
 
 #: include/global_form.php:660
 #, fuzzy
@@ -8990,14 +8917,12 @@ msgid "Using Slope Mode evens out the shape of the graphs at the expense of some
 msgstr "スロープモードを使用すると、画面の解像度が多少犠牲になりますが、グラフの形状が均等になります。"
 
 #: include/global_form.php:713
-#, fuzzy
 msgid "Scaling Options"
-msgstr "スケーリングオプション"
+msgstr "ã¬ã¦ã·ã¢ã³:"
 
 #: include/global_form.php:718
-#, fuzzy
 msgid "Auto Scale"
-msgstr "オートスケール"
+msgstr "自動スケール"
 
 #: include/global_form.php:721
 #, fuzzy
@@ -9354,9 +9279,8 @@ msgid "All subsequent legend line(s) will be aligned as given here.  You may use
 msgstr "それ以降のすべての凡例行は、ここに示すとおりに配置されます。単一のグラフ内でこのコマンドを複数回使用することができます。このコマンドは表レイアウトを生成しません。 <br/> <strong>注：</strong>前のグラフ項目に&lt;HR&gt;を挿入することをお勧めします。 <br/> <strong>注：</strong>この凡例行の&lt;HR&gt;はこの設定を廃止します。"
 
 #: include/global_form.php:1007
-#, fuzzy
 msgid "Text Format"
-msgstr "テキストフォーマット"
+msgstr "テキストの属性"
 
 #: include/global_form.php:1012
 #, fuzzy
@@ -9409,7 +9333,6 @@ msgid "The name given to this graph template."
 msgstr "このグラフテンプレートに付けられた名前。"
 
 #: include/global_form.php:1062
-#, fuzzy
 msgid "Multiple Instances"
 msgstr "複数のインスタンス"
 
@@ -9532,7 +9455,6 @@ msgid "Enter notes to this host."
 msgstr "このホストにメモを入力してください。"
 
 #: include/global_form.php:1265
-#, fuzzy
 msgid "External ID"
 msgstr "外部ID"
 
@@ -9804,8 +9726,9 @@ msgstr "インデックスを含める"
 
 #: include/global_form.php:1749 include/global_form.php:1835
 #: include/global_form.php:1940
+#, fuzzy
 msgid "Include the source Graphs GPRINT Title Text with the Aggregate Graph(s)."
-msgstr ""
+msgstr "集約グラフにソースグラフGPRINTタイトルテキストを含めます。"
 
 #: include/global_form.php:1756 include/global_form.php:1842
 #: include/global_form.php:1947
@@ -9942,9 +9865,8 @@ msgid "The Field Name that shall be used for this Rule Item."
 msgstr "この規則項目に使用されるフィールド名。"
 
 #: include/global_form.php:2056 include/global_form.php:2098
-#, fuzzy
 msgid "Operator."
-msgstr "操作"
+msgstr "- オペレーター - タンク"
 
 #: include/global_form.php:2063 include/global_form.php:2105
 #: include/global_form.php:2248
@@ -9961,7 +9883,7 @@ msgstr "照合するパターン。"
 #: include/global_form.php:2265
 #, fuzzy
 msgid "Sequence."
-msgstr "シーケンス"
+msgstr "配列"
 
 #: include/global_form.php:2123 include/global_form.php:2168
 #, fuzzy
@@ -9979,9 +9901,8 @@ msgid "Choose any of the available Graph Types to apply to this rule."
 msgstr "このルールに適用するために利用可能なグラフタイプのいずれかを選択してください。"
 
 #: include/global_form.php:2155 include/global_form.php:2212
-#, fuzzy
 msgid "Enable Rule"
-msgstr "ルールを有効にする"
+msgstr "ルールを有効にします"
 
 #: include/global_form.php:2156 include/global_form.php:2213
 #, fuzzy
@@ -10057,22 +9978,18 @@ msgid "The Replacement String Pattern for use as a Tree Header.<br>Refer to a Ma
 msgstr "ツリーヘッダーとして使用するための置換文字列パターン。 <br>最初の一致については、例えば<strong>\\ $ {1}</strong>による一致を参照してください。"
 
 #: include/global_languages.php:711
-#, fuzzy
 msgid " T"
-msgstr "T"
+msgstr "・"
 
 #: include/global_languages.php:713
-#, fuzzy
 msgid " G"
 msgstr "G"
 
 #: include/global_languages.php:715
-#, fuzzy
 msgid " M"
 msgstr "M"
 
 #: include/global_languages.php:717
-#, fuzzy
 msgid " K"
 msgstr "K"
 
@@ -10107,7 +10024,6 @@ msgid "Performance"
 msgstr "パフォーマンス"
 
 #: include/global_settings.php:46
-#, fuzzy
 msgid "Spikes"
 msgstr "スパイク"
 
@@ -10332,9 +10248,8 @@ msgid "This is the directory where RRDfiles are <strong>moved</strong> for archi
 msgstr "これはRRDファイルがアーカイブのために<strong>移動さ</strong>れるディレクトリです。"
 
 #: include/global_settings.php:253
-#, fuzzy
 msgid "Log Settings"
-msgstr "ログ設定"
+msgstr "ログの設定"
 
 #: include/global_settings.php:258
 #, fuzzy
@@ -10469,7 +10384,6 @@ msgid "Graph Template Width"
 msgstr "グラフテンプレートの幅"
 
 #: include/global_settings.php:360
-#, fuzzy
 msgid "Language Support"
 msgstr "言語サポート"
 
@@ -10592,8 +10506,9 @@ msgid "Data Source Preservation Preset"
 msgstr "グラフ/データソース作成方法"
 
 #: include/global_settings.php:440
+#, fuzzy
 msgid "When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs."
-msgstr ""
+msgstr "有効にすると、Cactiはラジオボタンを設定して、グラフを削除するときにグラフの関連データソースを削除します。注：Cactiは、他のグラフで使用されているデータソースの削除を許可しません。"
 
 #: include/global_settings.php:445
 #, fuzzy
@@ -10601,8 +10516,9 @@ msgid "Graphs Auto Unlock"
 msgstr "グラフ一致ルール"
 
 #: include/global_settings.php:446
+#, fuzzy
 msgid "When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph."
-msgstr ""
+msgstr "有効にすると、Cactiはグラフをロックしません。これにより、グラフに関連するデータソースをより迅速に手動で変更できます。"
 
 #: include/global_settings.php:451
 #, fuzzy
@@ -10785,7 +10701,6 @@ msgid "Default SNMP read community for all new Devices."
 msgstr "すべての新しいデバイスに対するデフォルトのSNMP読み取りコミュニティ。"
 
 #: include/global_settings.php:586
-#, fuzzy
 msgid "Security Level"
 msgstr "セキュリティレベル"
 
@@ -10855,7 +10770,6 @@ msgid "Default SNMP v3 Engine Id for all new Devices. Leave this field empty to 
 msgstr "すべての新しいデバイスに対するデフォルトのSNMP v3エンジンID。 SNMPv3通知レシーバごとに定義されているSNMPエンジンIDを使用するには、このフィールドを空白のままにします。"
 
 #: include/global_settings.php:646
-#, fuzzy
 msgid "Port Number"
 msgstr "ポート番号"
 
@@ -10947,9 +10861,8 @@ msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr "あなたのサボテンの皮をむくために利用可能なテーマの一つを選択してください。"
 
 #: include/global_settings.php:748
-#, fuzzy
 msgid "Table Settings"
-msgstr "テーブル設定"
+msgstr "テーブルセット"
 
 #: include/global_settings.php:753
 msgid "Rows Per Page"
@@ -10986,8 +10899,9 @@ msgid "Minimum Tree Width"
 msgstr "最小長"
 
 #: include/global_settings.php:782 include/global_settings.php:2338
+#, fuzzy
 msgid "The Minimum width of the Tree to contract to."
-msgstr ""
+msgstr "縮小するツリーの最小幅。"
 
 #: include/global_settings.php:789 include/global_settings.php:2345
 #, fuzzy
@@ -10995,21 +10909,23 @@ msgid "Maximum Tree Width"
 msgstr "題名の最大長"
 
 #: include/global_settings.php:790 include/global_settings.php:2346
+#, fuzzy
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
-msgstr ""
+msgstr "展開するツリーの最大幅。その後、ツリーブランチはページ上でスクロールします。"
 
 #: include/global_settings.php:797
-#, fuzzy
 msgid "Filter Settings"
-msgstr "保存したフィルタ設定"
+msgstr "フィルタ設定"
 
 #: include/global_settings.php:802
+#, fuzzy
 msgid "Strip Domains from Device Dropdowns"
-msgstr ""
+msgstr "デバイスのドロップダウンからドメインを削除"
 
 #: include/global_settings.php:803
+#, fuzzy
 msgid "When viewing Device name filter dropdowns, checking this option will strip to domain from the hostname."
-msgstr ""
+msgstr "デバイス名フィルターのドロップダウンを表示するときに、このオプションをチェックすると、ホスト名からドメインにストリップされます。"
 
 #: include/global_settings.php:808
 #, fuzzy
@@ -11139,9 +11055,8 @@ msgid "This timespan you wish to see on the default graph."
 msgstr "この時間枠は、デフォルトのグラフで見たいものです。"
 
 #: include/global_settings.php:914 utilities.php:2043
-#, fuzzy
 msgid "Refresh Interval"
-msgstr "更新間隔"
+msgstr "ãªãã¬ãã·ã¥éé"
 
 #: include/global_settings.php:915
 #, fuzzy
@@ -11389,8 +11304,9 @@ msgid "Disable Resource Cache Replication"
 msgstr "リソースキャッシュを再構築する"
 
 #: include/global_settings.php:1117
+#, fuzzy
 msgid "By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themeselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting."
-msgstr ""
+msgstr "デフォルトでは、メインのCacti Data CollectorはWebサイト全体とプラグインをリソースキャッシュにキャッシュします。その後、リモートデータコレクターは、メインのCacti Data Collectorからの更新でテーマを定期的に更新します。このリソースキャッシュにより、基本的にリモートデータコレクターが自己アップグレードできます。このオプションを使用したくない場合は、この設定を使用して無効にすることができます。"
 
 #: include/global_settings.php:1122
 #, fuzzy
@@ -11403,8 +11319,9 @@ msgid "Report Generation Timeout"
 msgstr "リモートエージェントのタイムアウト"
 
 #: include/global_settings.php:1128
+#, fuzzy
 msgid "The maximum amount of time Cacti's Reports Generation script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "Cactiのレポート生成スクリプトがタイムアウトエラーを生成して強制終了せずに実行できる最大時間。"
 
 #: include/global_settings.php:1132 include/global_settings.php:1144
 #: include/global_settings.php:1156 include/global_settings.php:1168
@@ -11419,24 +11336,29 @@ msgid "Data Source Statistics Timeout"
 msgstr "データソースのパス"
 
 #: include/global_settings.php:1140
+#, fuzzy
 msgid "The maximum amount of time Cacti's Data Source Statistics script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "Cactiのデータソース統計スクリプトがタイムアウトエラーを発生させずに実行できる最大時間。"
 
 #: include/global_settings.php:1151
+#, fuzzy
 msgid "Background Commands Timeout"
-msgstr ""
+msgstr "バックグラウンドコマンドのタイムアウト"
 
 #: include/global_settings.php:1152
+#, fuzzy
 msgid "The maximum amount of time Cacti's Background Commands script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "Cactiのバックグラウンドコマンドスクリプトがタイムアウトエラーを発生させずに実行できる最大時間。"
 
 #: include/global_settings.php:1163
+#, fuzzy
 msgid "Maintenance Background Generation Timeout"
-msgstr ""
+msgstr "メンテナンスバックグラウンド生成タイムアウト"
 
 #: include/global_settings.php:1164
+#, fuzzy
 msgid "The maximum amount of time a Cacti's Maintenance script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "Cactiのメンテナンススクリプトがタイムアウトエラーを生成して強制終了せずに実行できる最大時間。"
 
 #: include/global_settings.php:1173 include/global_settings.php:1186
 #, fuzzy, php-format
@@ -11444,12 +11366,14 @@ msgid "%s Hour"
 msgstr "％s時間"
 
 #: include/global_settings.php:1176
+#, fuzzy
 msgid "Spikekill Background Generation Timeout"
-msgstr ""
+msgstr "スパイクキルバックグラウンド生成タイムアウト"
 
 #: include/global_settings.php:1177
+#, fuzzy
 msgid "The maximum amount of time a Cacti's Spikekill script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "CactiのSpikekillスクリプトがタイムアウトエラーを生成せずに強制終了せずに実行できる最大時間。"
 
 #: include/global_settings.php:1192
 #, fuzzy
@@ -11573,12 +11497,14 @@ msgid "The name of the user that Cacti will use as a template for new Web Basic 
 msgstr "Cactiが新しいWeb BasicおよびLDAPユーザーのテンプレートとして使用するユーザーの名前。デフォルトでは &#39;guest&#39;です。このユーザーアカウントは選択されるとログインできなくなります。"
 
 #: include/global_settings.php:1288
+#, fuzzy
 msgid "Basic Auth Mapfile"
-msgstr ""
+msgstr "基本認証マップファイル"
 
 #: include/global_settings.php:1289
+#, fuzzy
 msgid "When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account."
-msgstr ""
+msgstr "基本認証を使用する場合、基本アカウントを別のログインアカウントに変換する必要がある場合は、ここでCSVファイルを指定して、基本アカウントを目的のログインアカウントにマッピングできます。"
 
 #: include/global_settings.php:1297
 #, fuzzy
@@ -11586,9 +11512,8 @@ msgid "Local Account Complexity Requirements"
 msgstr "ローカルアカウントの複雑さの要件"
 
 #: include/global_settings.php:1302
-#, fuzzy
 msgid "Minimum Length"
-msgstr "最小長"
+msgstr "最小長度"
 
 #: include/global_settings.php:1303
 #, fuzzy
@@ -12381,7 +12306,6 @@ msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRD
 msgstr "各ホストRRDファイルに別々のサブフォルダーを使用します。 RRDファイルの命名は&lt;path_cacti&gt; /rra/host_id/local_data_id.rrdになります。"
 
 #: include/global_settings.php:1924 include/global_settings.php:1956
-#, fuzzy
 msgid "Proxy Server"
 msgstr "プロキシサーバー"
 
@@ -12417,9 +12341,8 @@ msgid "RRDtool Proxy Server - Backup"
 msgstr "RRDtoolプロキシサーバー - バックアップ"
 
 #: include/global_settings.php:1951
-#, fuzzy
 msgid "Load Balancing"
-msgstr "負荷分散"
+msgstr "ロードバランシング"
 
 #: include/global_settings.php:1952
 #, fuzzy
@@ -12457,7 +12380,6 @@ msgid "There are two removal methods.  The first, Standard Deviation, will remov
 msgstr "除去方法は2つあります。最初の標準偏差は、サンプルの平均から標準偏差のX倍離れたサンプルをすべて削除します。 2番目の方法、Varianceは、Varianceの平均よりX％大きいサンプルをすべて削除します。分散法は、一定数の「異常値」を考慮します。これらは、スパイクのように、分散平均の計算から除外する必要がある例外的なサンプルです。"
 
 #: include/global_settings.php:1990
-#, fuzzy
 msgid "Standard Deviation"
 msgstr "標準偏差"
 
@@ -12581,14 +12503,12 @@ msgid "Do you wish to periodically remove spikes from your graphs?  If so, selec
 msgstr "グラフからスパイクを定期的に削除しますか？その場合は、以下の周波数を選択してください。"
 
 #: include/global_settings.php:2095
-#, fuzzy
 msgid "Once a Day"
-msgstr "一日一回"
+msgstr "1日1回"
 
 #: include/global_settings.php:2096
-#, fuzzy
 msgid "Every Other Day"
-msgstr "一日置き"
+msgstr "隔日"
 
 #: include/global_settings.php:2099
 #, fuzzy
@@ -12611,13 +12531,13 @@ msgid "When performing batch spike removal, only the templates selected below wi
 msgstr "一括スパイク削除を実行すると、以下で選択されたテンプレートのみが作用します。"
 
 #: include/global_settings.php:2113
-#, fuzzy
 msgid "Backup Retention"
-msgstr "データ保持"
+msgstr "バックアップの保持"
 
 #: include/global_settings.php:2114
+#, fuzzy
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
-msgstr ""
+msgstr "SpikeKillがグラフのスパイクを削除すると、RRDfileのバックアップが作成されます。これらのバックアップファイルはどのくらいの期間保持する必要がありますか？"
 
 #: include/global_settings.php:2133
 msgid "Default View Mode"
@@ -12664,8 +12584,9 @@ msgid "Show Device Aggregates"
 msgstr "集合体"
 
 #: include/global_settings.php:2160
+#, fuzzy
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
-msgstr ""
+msgstr "デバイスデータソースが集約グラフに含まれている場合、他のデバイスグラフとともにそのグラフを表示します"
 
 #: include/global_settings.php:2166
 #, fuzzy
@@ -12857,8 +12778,9 @@ msgid "Tree History"
 msgstr "パスワード履歴"
 
 #: include/global_settings.php:2332
+#, fuzzy
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
-msgstr ""
+msgstr "有効にすると、Cactiはログイン間と[グラフ]ページに戻ったときにツリー履歴を記憶します。"
 
 #: include/global_settings.php:2355
 #, fuzzy
@@ -12953,7 +12875,6 @@ msgid "Online"
 msgstr "オンライン"
 
 #: index.php:82
-#, fuzzy
 msgid "Recovery"
 msgstr "回復"
 
@@ -12998,7 +12919,6 @@ msgid "Cacti Server v%s - Installation Wizard"
 msgstr "Cacti Server v％s  - インストールウィザード"
 
 #: install/install.php:79
-#, fuzzy
 msgid "Initializing"
 msgstr "初期化中"
 
@@ -13127,9 +13047,8 @@ msgid "Matching Objects [ %s ]"
 msgstr "一致するオブジェクト[％s]"
 
 #: lib/api_automation.php:885
-#, fuzzy
 msgid "Device Status"
-msgstr "デバイスステータス"
+msgstr "デバイスの状態"
 
 #: lib/api_automation.php:907
 #, fuzzy
@@ -13274,7 +13193,6 @@ msgid "SNMP error"
 msgstr "SNMPエラー"
 
 #: lib/api_device.php:1036
-#, fuzzy
 msgid "Session"
 msgstr "セッション"
 
@@ -13283,9 +13201,8 @@ msgid "Host"
 msgstr "ホスト"
 
 #: lib/api_device.php:1070
-#, fuzzy
 msgid "System:"
-msgstr "システム"
+msgstr "システム："
 
 #: lib/api_device.php:1076
 #, fuzzy
@@ -13326,23 +13243,21 @@ msgid "Web Basic"
 msgstr "ウェブベーシック"
 
 #: lib/auth.php:1784 lib/auth.php:1816
-#, fuzzy
 msgid "Branch:"
-msgstr "ブランチ："
+msgstr "支店:"
 
 #: lib/auth.php:1793 lib/auth.php:1824 lib/html_tree.php:1005
-#, fuzzy
 msgid "Device:"
-msgstr "デバイス"
+msgstr "機器:"
 
 #: lib/auth.php:2490 lib/auth.php:2499
-#, fuzzy
 msgid "This account has been locked."
 msgstr "このアカウントはロックされています。"
 
 #: lib/auth.php:2520
+#, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
-msgstr ""
+msgstr "Cacti管理者がログインに複雑なパスワードを強制しているため、現在のCactiパスワードが新しい要件に一致しません。したがって、今すぐパスワードを変更する必要があります。"
 
 #: lib/auth.php:2542
 #, fuzzy, php-format
@@ -13451,7 +13366,6 @@ msgid "SQL Calls"
 msgstr "SQL呼び出し"
 
 #: lib/clog_webapi.php:545 utilities.php:1110
-#, fuzzy
 msgid "Display Order"
 msgstr "表示順"
 
@@ -13899,7 +13813,6 @@ msgid "Data Source was not polled"
 msgstr "データソースはポーリングされませんでした"
 
 #: lib/dsdebug.php:305
-#, fuzzy
 msgid "No issues found"
 msgstr "問題は見つかりませんでした"
 
@@ -13927,7 +13840,6 @@ msgid "guest"
 msgstr "人"
 
 #: lib/functions.php:2393 lib/functions.php:2406 lib/html.php:2387
-#, fuzzy
 msgid "User Community"
 msgstr "ユーザーコミュニティ"
 
@@ -14028,7 +13940,6 @@ msgid "Ping Results:"
 msgstr "pingの結果："
 
 #: lib/functions.php:3946
-#, fuzzy
 msgid "Bypassed"
 msgstr "バイパス"
 
@@ -14038,9 +13949,8 @@ msgid "Creating Message Text..."
 msgstr "メッセージテキストを作成しています..."
 
 #: lib/functions.php:3957
-#, fuzzy
 msgid "Sending Message..."
-msgstr "メッセージを送信しています..."
+msgstr "メッセージを送信しています…"
 
 #: lib/functions.php:3961
 #, fuzzy
@@ -14102,7 +14012,6 @@ msgid "Templates Selected"
 msgstr "選択したテンプレート"
 
 #: lib/html.php:221 settings.php:479 settings.php:498 settings.php:547
-#, fuzzy
 msgid "Enter keyword"
 msgstr "キーワードを入力してください"
 
@@ -14170,9 +14079,8 @@ msgid "No Task"
 msgstr "聞かない"
 
 #: lib/html.php:1452
-#, fuzzy
 msgid "Choose an action"
-msgstr "アクションを選択してください"
+msgstr "アクションをご選択ください"
 
 #: lib/html.php:1462
 #, fuzzy
@@ -14265,9 +14173,8 @@ msgid "Enter a regular expression"
 msgstr "正規表現を入力してください"
 
 #: lib/html.php:2375
-#, fuzzy
 msgid "No file selected"
-msgstr "ファイルが選択されていません"
+msgstr "ファイルが選択されてません"
 
 #: lib/html.php:2378 lib/html.php:2391
 #, fuzzy
@@ -14391,9 +14298,8 @@ msgid "Connection Successful"
 msgstr "操作成功"
 
 #: lib/html.php:2414 pollers.php:756
-#, fuzzy
 msgid "Connection Failed"
-msgstr "接続タイムアウト"
+msgstr "æ¥ç¶å¤±æ"
 
 #: lib/html.php:2415
 #, fuzzy
@@ -14436,22 +14342,18 @@ msgid "Zoom Out Factor"
 msgstr "縮小率"
 
 #: lib/html.php:2427
-#, fuzzy
 msgid "Timestamps"
 msgstr "タイムスタンプ"
 
 #: lib/html.php:2428
-#, fuzzy
 msgid "2x"
 msgstr "2倍"
 
 #: lib/html.php:2429
-#, fuzzy
 msgid "4x"
 msgstr "4倍"
 
 #: lib/html.php:2430
-#, fuzzy
 msgid "8x"
 msgstr "8倍"
 
@@ -14498,7 +14400,6 @@ msgid "Copy graph link"
 msgstr "グラフリンクのコピー"
 
 #: lib/html.php:2442
-#, fuzzy
 msgid "Always On"
 msgstr "常にオン"
 
@@ -14507,7 +14408,6 @@ msgid "Auto"
 msgstr "自動"
 
 #: lib/html.php:2444
-#, fuzzy
 msgid "Always Off"
 msgstr "常にオフ"
 
@@ -14992,7 +14892,6 @@ msgid "Should the Graphs be rendered as Thumbnails?"
 msgstr "グラフはサムネイルとしてレンダリングする必要がありますか？"
 
 #: lib/html_reports.php:1016
-#, fuzzy
 msgid "Email Frequency"
 msgstr "電子メールの頻度"
 
@@ -15007,7 +14906,6 @@ msgid "Start time for [first|next] mail to take place. All future mailing times 
 msgstr "[最初|次]メールが発生するまでの開始時間。今後のすべての郵送時間はこの開始時間に基づきます。良い例は午前2時でしょう。時は未来でなければなりません。午前2:00など、小数時間が使用されている場合、それは将来であると見なされます。"
 
 #: lib/html_reports.php:1030
-#, fuzzy
 msgid "Report Interval"
 msgstr "レポート間隔"
 
@@ -15104,9 +15002,8 @@ msgid "[new]"
 msgstr "[新規]"
 
 #: lib/html_reports.php:1190
-#, fuzzy
 msgid "Send Report"
-msgstr "レポート送信"
+msgstr "レポートを送信"
 
 #: lib/html_reports.php:1200
 #, fuzzy, php-format
@@ -15129,9 +15026,8 @@ msgid "Report Preview %s"
 msgstr "レポートプレビュー"
 
 #: lib/html_reports.php:1327
-#, fuzzy
 msgid "Item Details"
-msgstr "商品の詳細"
+msgstr "アイテムの詳細"
 
 #: lib/html_reports.php:1367
 #, fuzzy
@@ -15175,9 +15071,8 @@ msgid "Frequency"
 msgstr "回数"
 
 #: lib/html_reports.php:1588 lib/html_reports.php:1599
-#, fuzzy
 msgid "Last Run"
-msgstr "ラストラン"
+msgstr "前回の実行"
 
 #: lib/html_reports.php:1589 lib/html_reports.php:1600
 msgid "Next Run"
@@ -15221,9 +15116,8 @@ msgid "Template Based"
 msgstr "テンプレートベース"
 
 #: lib/html_tree.php:983 lib/reports.php:991
-#, fuzzy
 msgid "Tree:"
-msgstr "このグラフツリーの名前です。"
+msgstr "木："
 
 #: lib/html_tree.php:988
 msgid "Site:"
@@ -15237,7 +15131,7 @@ msgstr "葉っぱ"
 #: lib/html_tree.php:1000
 #, fuzzy
 msgid "Device Template:"
-msgstr "デバイステンプレート："
+msgstr "デバイステンプレート"
 
 #: lib/html_tree.php:1014
 msgid "Applied"
@@ -15328,14 +15222,13 @@ msgstr "存在しません"
 #: lib/import.php:370 lib/import.php:376
 #, fuzzy
 msgid "not writable"
-msgstr "書き込み可能"
+msgstr "書き込み可能(R)"
 
 #: lib/import.php:378
 msgid "writable"
 msgstr "書き込み可能"
 
 #: lib/import.php:1823
-#, fuzzy
 msgid "Unknown Field"
 msgstr "未知のフィールド"
 
@@ -15359,7 +15252,6 @@ msgid "Cacti has imported the following items for the Package:"
 msgstr "Cactiはパッケージのために以下のアイテムを輸入しました："
 
 #: lib/import.php:2078
-#, fuzzy
 msgid "Package Files"
 msgstr "パッケージファイル"
 
@@ -15575,7 +15467,6 @@ msgid "Cacti Version"
 msgstr "サボテンバージョン"
 
 #: lib/installer.php:1630
-#, fuzzy
 msgid "License Agreement"
 msgstr "ライセンス契約"
 
@@ -15678,12 +15569,14 @@ msgid "PHP Binary"
 msgstr "PHP バイナリパス"
 
 #: lib/installer.php:1773
+#, fuzzy
 msgid "The PHP binary location is not valid and must be updated."
-msgstr ""
+msgstr "PHPバイナリの場所は無効であり、更新する必要があります。"
 
 #: lib/installer.php:1780
+#, fuzzy
 msgid "Update the path_php_binary value in the settings table."
-msgstr ""
+msgstr "設定テーブルのpath_php_binary値を更新します。"
 
 #: lib/installer.php:1788
 msgid "Passed"
@@ -15776,9 +15669,8 @@ msgid "Recommended MySQL System Variable Settings"
 msgstr "MySQLの推奨システム変数設定"
 
 #: lib/installer.php:1931
-#, fuzzy
 msgid "Installation Type"
-msgstr "設置タイプ"
+msgstr "インストールの種類"
 
 #: lib/installer.php:1937
 #, fuzzy, php-format
@@ -15983,7 +15875,7 @@ msgstr "インストール時にのみ書き込み可能"
 #: lib/installer.php:2205 lib/installer.php:2237
 #, fuzzy
 msgid "Not Writable"
-msgstr "書き込み可能"
+msgstr "書き込み可能(R)"
 
 #: lib/installer.php:2217
 #, fuzzy
@@ -16021,8 +15913,9 @@ msgid "EXAMPLE:"
 msgstr "例："
 
 #: lib/installer.php:2280
+#, fuzzy
 msgid "Once installation has completed the CSRF path, should be set to read-only."
-msgstr ""
+msgstr "インストールがCSRFパスを完了したら、読み取り専用に設定する必要があります。"
 
 #: lib/installer.php:2282
 #, fuzzy
@@ -16030,48 +15923,59 @@ msgid "All folders are writable"
 msgstr "すべてのフォルダは書き込み可能"
 
 #: lib/installer.php:2294
+#, fuzzy
 msgid "Input Validation Whitelist Protection"
-msgstr ""
+msgstr "入力検証ホワイトリスト保護"
 
 #: lib/installer.php:2295
+#, fuzzy
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
-msgstr ""
+msgstr "スクリプトを呼び出すCactiデータ入力メソッドは、非管理者がポーラーアカウントが所有するファイルに損害を与える方法で悪用される可能性があります。また、誰かがCactiポーラーをルートとして実行すると、攻撃者がインフラストラクチャを活用します。"
 
 #: lib/installer.php:2296
+#, fuzzy
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thouroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
-msgstr ""
+msgstr "そのため、いくつかのバージョンの前に、Cactiはこれらのタイプのデータ入力メソッドでホワイトリスト機能を提供するように拡張されました。これにより、Cactiがより安全になりますが、Cacti管理者がテンプレートとパッケージをインポートおよび管理するために必要な作業量が増加します。"
 
 #: lib/installer.php:2297
+#, fuzzy
 msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or aguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid."
-msgstr ""
+msgstr "ホワイトリストが機能する方法は、最初にデータ入力メソッドをインポートするか、データ入力メソッドを再インポートすると、スクリプトや引数が何らかの方法で変更されると、データ入力メソッド、および対応するすべてのデータソースが管理者がデータ入力方法が有効であることを検証するまで、直ちに無効にしてください。"
 
 #: lib/installer.php:2298
+#, fuzzy
 msgid "To make identifying Data Input Methods in this state, we have provided a validation script in Cacti's CLI directory that can be run with the following options:"
-msgstr ""
+msgstr "この状態でデータ入力メソッドを識別するために、次のオプションで実行できる検証スクリプトをCactiのCLIディレクトリに用意しました。"
 
 #: lib/installer.php:2302
+#, fuzzy
 msgid "This script option will search for any Data Input Methods that are currently banned and provide details as to why."
-msgstr ""
+msgstr "このスクリプトオプションは、現在禁止されているデータ入力方法を検索し、その理由に関する詳細を提供します。"
 
 #: lib/installer.php:2303
+#, fuzzy
 msgid "This script option un-ban the Data Input Methods that are currently banned."
-msgstr ""
+msgstr "このスクリプトオプションは、現在禁止されているデータ入力方法の禁止を解除します。"
 
 #: lib/installer.php:2304
+#, fuzzy
 msgid "This script option will re-enable any disabled Data Sources."
-msgstr ""
+msgstr "このスクリプトオプションは、無効なデータソースを再度有効にします。"
 
 #: lib/installer.php:2308
+#, fuzzy
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
-msgstr ""
+msgstr "<b>$ input_whitelist</b>変数のコメントを<b>外し</b> 、Webベースのインストールの完了後に上記の3つのCLIスクリプトオプションを実行することにより、config.phpを更新してこの機能を有効にすることを強くお勧めします。"
 
 #: lib/installer.php:2310
+#, fuzzy
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
-msgstr ""
+msgstr "以下のチェックボックスをオンにして、このセキュリティ上の懸念事項を読んで理解したことを確認してください"
 
 #: lib/installer.php:2312
+#, fuzzy
 msgid "I have read this statement"
-msgstr ""
+msgstr "私はこの声明を読みました"
 
 #: lib/installer.php:2328 lib/installer.php:2334
 #, fuzzy
@@ -16108,7 +16012,6 @@ msgid "Default Options"
 msgstr "既定のオプション"
 
 #: lib/installer.php:2372
-#, fuzzy
 msgid "Scan Mode"
 msgstr "スキャンモード"
 
@@ -16211,9 +16114,9 @@ msgid "Table Setup"
 msgstr "テーブル設定"
 
 #: lib/installer.php:2505
-#, php-format
+#, fuzzy, php-format
 msgid "You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s"
-msgstr ""
+msgstr "PHPの構成で表示/変換できる数より多くのテーブルがあります。 php.iniのmax_input_vars設定を％sより上の値に変更してください"
 
 #: lib/installer.php:2508
 #, fuzzy
@@ -16233,9 +16136,8 @@ msgid "Engine"
 msgstr "エンジン"
 
 #: lib/installer.php:2513 utilities.php:525
-#, fuzzy
 msgid "Row Format"
-msgstr "フォーマット"
+msgstr "row 形式"
 
 #: lib/installer.php:2545
 #, fuzzy
@@ -16253,17 +16155,14 @@ msgid "All your tables appear to be UTF8 and Dynamic row format compliant"
 msgstr "あなたのすべてのテーブルはUTF8に準拠しているようです"
 
 #: lib/installer.php:2565
-#, fuzzy
 msgid "Confirm Upgrade"
-msgstr "アップグレードを確認"
+msgstr "アップグレードの確認"
 
 #: lib/installer.php:2569
-#, fuzzy
 msgid "Confirm Downgrade"
-msgstr "ダウングレードを確認"
+msgstr "ダウングレードの確認"
 
 #: lib/installer.php:2573
-#, fuzzy
 msgid "Confirm Installation"
 msgstr "インストールを確認"
 
@@ -16307,9 +16206,9 @@ msgid "Your Cacti Server is now installing"
 msgstr "あなたのCactiサーバーは現在インストール中です"
 
 #: lib/installer.php:2685
-#, php-format
+#, fuzzy, php-format
 msgid "Spawning background process: %s %s"
-msgstr ""
+msgstr "バックグラウンドプロセスの生成：％s％s"
 
 #: lib/installer.php:2711
 msgid "Complete"
@@ -16339,34 +16238,34 @@ msgid "Get Started"
 msgstr "始める"
 
 #: lib/installer.php:2864
-#, php-format
+#, fuzzy, php-format
 msgid "Starting %s Process for v%s"
-msgstr ""
+msgstr "v％sの％sプロセスを開始しています"
 
 #: lib/installer.php:2891
-#, php-format
+#, fuzzy, php-format
 msgid "Finished %s Process for v%s"
-msgstr ""
+msgstr "v％sの％sプロセスを終了しました"
 
 #: lib/installer.php:2926
-#, php-format
+#, fuzzy, php-format
 msgid "Found %s templates to install"
-msgstr ""
+msgstr "インストールする％sテンプレートが見つかりました"
 
 #: lib/installer.php:2937
-#, php-format
+#, fuzzy, php-format
 msgid "About to import Package #%s '%s'."
-msgstr ""
+msgstr "パッケージ＃％s '％s'をインポートしようとしています。"
 
 #: lib/installer.php:2944
-#, php-format
+#, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr ""
+msgstr "プロファイル '％s'のパッケージ＃％s '％s'のインポートに成功しました"
 
 #: lib/installer.php:2950
-#, php-format
+#, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr ""
+msgstr "プロファイル '％s'のパッケージ＃％s '％s'のインポートに失敗しました"
 
 #: lib/installer.php:2966
 #, fuzzy, php-format
@@ -16374,8 +16273,9 @@ msgid "Mapping Automation Template for Device Template '%s'"
 msgstr "[削除済みテンプレート]の自動化テンプレート"
 
 #: lib/installer.php:2977
+#, fuzzy
 msgid "No templates were selected for import"
-msgstr ""
+msgstr "インポートするテンプレートが選択されていません"
 
 #: lib/installer.php:2984
 #, fuzzy
@@ -16393,17 +16293,19 @@ msgid "Failed to find selected profile (%s), no changes were made"
 msgstr "指定されたプロファイル％sを適用できませんでした！=％s"
 
 #: lib/installer.php:3047
-#, php-format
+#, fuzzy, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
-msgstr ""
+msgstr "自動化ネットワーク（％s）、モード \"％s\" => \"％s\"、サブネット \"％s\" =>％s \"を更新しています"
 
 #: lib/installer.php:3057
+#, fuzzy
 msgid "Failed to find automation network, no changes were made"
-msgstr ""
+msgstr "自動化ネットワークが見つかりませんでした。変更は行われませんでした"
 
 #: lib/installer.php:3061
+#, fuzzy
 msgid "Adding extra snmp settings for automation"
-msgstr ""
+msgstr "自動化のための追加のSNMP設定の追加"
 
 #: lib/installer.php:3067
 #, fuzzy, php-format
@@ -16416,9 +16318,9 @@ msgid "Updating Automation Option Set %s"
 msgstr "自動化SNMPオプション"
 
 #: lib/installer.php:3083
-#, php-format
+#, fuzzy, php-format
 msgid "Successfully updated Automation Option Set %s"
-msgstr ""
+msgstr "オートメーションオプションセット％sを更新しました"
 
 #: lib/installer.php:3085
 #, fuzzy, php-format
@@ -16451,16 +16353,19 @@ msgid "Adding Device to Default Tree"
 msgstr "デバイスデフォルト"
 
 #: lib/installer.php:3165
+#, fuzzy
 msgid "No templated graphs for Default Device were found"
-msgstr ""
+msgstr "デフォルトデバイスのテンプレートグラフが見つかりませんでした"
 
 #: lib/installer.php:3169
+#, fuzzy
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
-msgstr ""
+msgstr "警告：オペレーティングシステムのデバイステンプレートが見つかりません。 Cactiサーバーを監視するには、デバイステンプレートまたはCactiパッケージをインポートする必要があります。"
 
 #: lib/installer.php:3176
+#, fuzzy
 msgid "Running first-time data query for local host"
-msgstr ""
+msgstr "ローカルホストの初回データクエリの実行"
 
 #: lib/installer.php:3184
 #, fuzzy
@@ -16473,51 +16378,54 @@ msgid "Repopulating SNMP Agent cache"
 msgstr "SNMPエージェントのキャッシュを再構築する"
 
 #: lib/installer.php:3194
+#, fuzzy
 msgid "Generating RSA Key Pair"
-msgstr ""
+msgstr "RSAキーペアの生成"
 
 #: lib/installer.php:3206
-#, php-format
+#, fuzzy, php-format
 msgid "Found %s tables to convert"
-msgstr ""
+msgstr "変換する％sテーブルが見つかりました"
 
 #: lib/installer.php:3213
-#, php-format
+#, fuzzy, php-format
 msgid "Converting Table #%s '%s'"
-msgstr ""
+msgstr "テーブル＃％s '％s'の変換"
 
 #: lib/installer.php:3228
+#, fuzzy
 msgid "No tables where found or selected for conversion"
-msgstr ""
+msgstr "変換用に検出または選択されたテーブルはありません"
 
 #: lib/installer.php:3239
-#, php-format
+#, fuzzy, php-format
 msgid "Switched from %s to %s"
-msgstr ""
+msgstr "％sから％sに切り替えました"
 
 #: lib/installer.php:3243
-#, php-format
+#, fuzzy, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
-msgstr ""
+msgstr "注：データベースキャッシュに一時ファイルを使用：％s"
 
 #: lib/installer.php:3265
-#, php-format
+#, fuzzy, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr ""
+msgstr "v％s（DB％s）からv％sへのアップグレード"
 
 #: lib/installer.php:3273
-#, php-format
+#, fuzzy, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
-msgstr ""
+msgstr "警告：v％sのアップグレード機能が見つかりませんでした"
 
 #: lib/installer.php:3332
+#, fuzzy
 msgid "Install aborted due to no EULA acceptance"
-msgstr ""
+msgstr "EULAが受け入れられないため、インストールが中止されました"
 
 #: lib/installer.php:3352
-#, php-format
+#, fuzzy, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr ""
+msgstr "バックグラウンドはすでに％sで開始されました。％sでのこの試行はスキップされました"
 
 #: lib/installer.php:3372
 #, fuzzy, php-format
@@ -16530,7 +16438,6 @@ msgid "Installation was started at %s, completed at %s"
 msgstr "インストールは％sで開始され、％sで完了しました"
 
 #: lib/installer.php:3408
-#, fuzzy
 msgid "Both"
 msgstr "両方"
 
@@ -16545,24 +16452,22 @@ msgid "%s - No"
 msgstr "アイテム #%s"
 
 #: lib/installer.php:3410
-#, fuzzy
 msgid "Web"
 msgstr "Web"
 
 #: lib/installer.php:3412
-#, fuzzy
 msgid "Cli"
-msgstr "クラシック"
+msgstr "CLI"
 
 #: lib/installer.php:3417
-#, php-format
+#, fuzzy, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr ""
+msgstr "PHPオプション％s =％sの設定"
 
 #: lib/installer.php:3423
-#, php-format
+#, fuzzy, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr ""
+msgstr "PHPオプション％sの設定に失敗しました。％sです（％sでなければなりません）"
 
 #: lib/installer.php:3442
 #, fuzzy
@@ -16575,7 +16480,6 @@ msgid "Authentication Success"
 msgstr "認証成功"
 
 #: lib/ldap.php:253
-#, fuzzy
 msgid "Authentication Failure"
 msgstr "認証失敗"
 
@@ -16763,23 +16667,22 @@ msgid "Not Stated"
 msgstr "言及なし"
 
 #: lib/reports.php:485
-#, php-format
+#, fuzzy, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
-msgstr ""
+msgstr "電子メールサブシステムエラーのレポート '％s'の問題は '％s'です"
 
 #: lib/reports.php:492
-#, php-format
+#, fuzzy, php-format
 msgid "Report '%s' Sent Successfully"
-msgstr ""
+msgstr "レポート「％s」が正常に送信されました"
 
 #: lib/reports.php:1001
 msgid "Host:"
 msgstr "サーバー"
 
 #: lib/reports.php:1006
-#, fuzzy
 msgid "Graph:"
-msgstr "グラフ"
+msgstr "グラフ："
 
 #: lib/reports.php:1110
 #, fuzzy
@@ -17008,7 +16911,6 @@ msgid "RRA Folder"
 msgstr "RRAフォルダ"
 
 #: lib/rrd.php:3515
-#, fuzzy
 msgid "Root"
 msgstr "ルート"
 
@@ -17023,8 +16925,9 @@ msgid "Attempting to Create Graph from Non-Template"
 msgstr "テンプレートから集計を作成"
 
 #: lib/template.php:1029
+#, fuzzy
 msgid "Attempting to Create Graph from Removed Graph Template"
-msgstr ""
+msgstr "削除されたグラフテンプレートからグラフを作成しようとしています"
 
 #: lib/template.php:1622 lib/template.php:1642
 #, fuzzy, php-format
@@ -17112,8 +17015,9 @@ msgid "When using innodb_file_per_table, it is important to set the innodb_file_
 msgstr "innodb_file_per_tableを使用するときは、innodb_file_formatをBarracudaに設定することが重要です。この設定は、特定のCactiテーブルにとって重要な、より長いインデックスを許可します。"
 
 #: lib/utility.php:962
+#, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
-msgstr ""
+msgstr "テーブルに非常に大きなインデックスがある場合、Barracuda innodb_file_formatおよびinnodb_large_prefixを1に設定して操作する必要があります。これを行わないと、プラグインがテーブルを正しく作成できなくなる可能性があります。"
 
 #: lib/utility.php:968
 #, fuzzy, php-format
@@ -17121,8 +17025,9 @@ msgid "InnoDB will hold as much tables and indexes in system memory as is possib
 msgstr "InnoDBはできるだけ多くのテーブルとインデックスをシステムメモリに保持します。そのため、innodb_buffer_poolを、メモリ内にできるだけ多くのテーブルとインデックスを保持できる大きさにする必要があります。 / var / lib / mysql / cactiディレクトリのサイズを確認すると、この値を決定するのに役立ちます。システム全体のメモリの25％を推奨していますが、要件はシステムのサイズによって異なります。"
 
 #: lib/utility.php:974
+#, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
-msgstr ""
+msgstr "Cactiインスタンスが、システムの突然のクラッシュに対応する内部ジャーナリングを備えたZFSまたはFusionI / Oで実行されていない限り、この設定はONのままにしてください。ただし、電力が非常に良好で、システムがほとんどダウンせず、バックアップがある場合、この設定をオフにすると、データベースのパフォーマンスがほぼ50％向上します。"
 
 #: lib/utility.php:979
 #, fuzzy
@@ -17729,9 +17634,8 @@ msgid "Unable to Uninstall.  This Plugin is required by: %s"
 msgstr "アンインストールできません。このプラグインは以下によって必要とされます：％s"
 
 #: plugins.php:651 plugins.php:656 plugins.php:663
-#, fuzzy
 msgid "Uninstall Plugin"
-msgstr "プラグインのアンインストール"
+msgstr "プラグインをアンインストールする"
 
 #: plugins.php:653
 #, fuzzy
@@ -17814,8 +17718,9 @@ msgid "Cacti System Notification"
 msgstr "サボテンシステムユーティリティ"
 
 #: poller.php:971
+#, fuzzy
 msgid "NOTE: A second Cacti data collector has been added.  Therfore, enabling boost automatically!"
-msgstr ""
+msgstr "注：2番目のCactiデータコレクターが追加されました。そのため、自動的にブーストを有効にします！"
 
 #: poller_automation.php:928 poller_automation.php:979
 #, fuzzy
@@ -17863,7 +17768,6 @@ msgid "The hostname for Data Collector.  It may have to be a Fully Qualified Dom
 msgstr "Data Collectorのホスト名。リモートのPollersが再インデックス作成、リアルタイムグラフ作成などのアクティビティのためにそれに連絡するには、完全修飾ドメイン名である必要があります。"
 
 #: pollers.php:78 sites.php:109
-#, fuzzy
 msgid "TimeZone"
 msgstr "タイムゾーン"
 
@@ -17997,14 +17901,14 @@ msgid "The file holding the SSL Certificate Authority to use to connect to the r
 msgstr "リモートデータベースへの接続に使用するSSL認証局を保持しているファイル。"
 
 #: pollers.php:297
-#, php-format
+#, fuzzy, php-format
 msgid "You have already used this hostname '%s'.  Please enter a non-duplicate hostname."
-msgstr ""
+msgstr "このホスト名「％s」はすでに使用しています。重複しないホスト名を入力してください。"
 
 #: pollers.php:303
-#, php-format
+#, fuzzy, php-format
 msgid "You have already used this database hostname '%s'.  Please enter a non-duplicate database hostname."
-msgstr ""
+msgstr "このデータベースホスト名 '％s'は既に使用されています。重複しないデータベースホスト名を入力してください。"
 
 #: pollers.php:518
 #, fuzzy
@@ -18252,9 +18156,8 @@ msgid "Total Size [MB]:"
 msgstr "合計サイズ[MB]："
 
 #: rrdcleaner.php:398
-#, fuzzy
 msgid "Last Scan:"
-msgstr "最後のスキャン："
+msgstr "前回のスキャン："
 
 #: rrdcleaner.php:482
 #, fuzzy
@@ -18310,8 +18213,9 @@ msgid "Settings save to Data Collector %d Failed."
 msgstr "設定をデータコレクタに保存します％d失敗しました。"
 
 #: settings.php:346
+#, fuzzy
 msgid "NOTE: Path Settings on this Tab are only saved locally!"
-msgstr ""
+msgstr "注：このタブのパス設定はローカルでのみ保存されます！"
 
 #: settings.php:351
 #, fuzzy, php-format
@@ -18339,7 +18243,6 @@ msgid "Select File(s)"
 msgstr "ファイルを選択"
 
 #: settings.php:486
-#, fuzzy
 msgid "Files Selected"
 msgstr "選択したファイル"
 
@@ -18363,7 +18266,6 @@ msgid "Test Email Results"
 msgstr "メール結果のテスト"
 
 #: sites.php:36
-#, fuzzy
 msgid "Site Information"
 msgstr "サイト情報"
 
@@ -18377,7 +18279,6 @@ msgid "New Site"
 msgstr "新規サイトタイトル"
 
 #: sites.php:50
-#, fuzzy
 msgid "Address Information"
 msgstr "住所情報"
 
@@ -18547,8 +18448,9 @@ msgid "If the Site is known by another name enter it here."
 msgstr "サイトが別の名前で知られている場合は、ここに入力してください。"
 
 #: sites.php:294
+#, fuzzy
 msgid "Template Site was not found! Unable to duplicate."
-msgstr ""
+msgstr "テンプレートサイトが見つかりませんでした！複製できません。"
 
 #: sites.php:354
 #, fuzzy
@@ -18569,15 +18471,13 @@ msgid_plural "Click 'Continue' to Duplicate all following Sites."
 msgstr[0] "次のツリーを削除するには、[続行]をクリックしてください。"
 
 #: sites.php:365
-#, fuzzy
 msgid "Site Name:"
-msgstr "サイト名"
+msgstr "サイト名："
 
 #: sites.php:369
-#, fuzzy
 msgid "Duplicate Site"
 msgid_plural "Duplicate Sites"
-msgstr[0] "複製"
+msgstr[0] "サイトを複製します"
 
 #: sites.php:571 tree.php:829
 msgid "Site Name"
@@ -18690,8 +18590,9 @@ msgid "Available Templates [%s]"
 msgstr "利用可能なテンプレート[％s]"
 
 #: templates_import.php:102
+#, fuzzy
 msgid "The Template Import Failed.  See the cacti.log for more details."
-msgstr ""
+msgstr "テンプレートのインポートに失敗しました。詳細については、cacti.logを参照してください。"
 
 #: templates_import.php:110 templates_import.php:132
 msgid "Import Template"
@@ -18712,10 +18613,9 @@ msgid "Publish"
 msgstr "公開"
 
 #: tree.php:33
-#, fuzzy
 msgctxt "dropdown action"
 msgid "Un-Publish"
-msgstr "公開解除"
+msgstr "非公開"
 
 #: tree.php:34
 #, fuzzy
@@ -18851,7 +18751,6 @@ msgid "Available Sites"
 msgstr "利用可能なサイト"
 
 #: tree.php:842
-#, fuzzy
 msgid "Available Devices"
 msgstr "利用可能なデバイス"
 
@@ -19030,9 +18929,8 @@ msgid "Full Name:"
 msgstr "氏名:"
 
 #: user_admin.php:374
-#, fuzzy
 msgid "Realm:"
-msgstr "領域"
+msgstr "Realm:"
 
 #: user_admin.php:380
 #, fuzzy
@@ -19112,7 +19010,7 @@ msgstr "デバイステンプレート："
 #: user_admin.php:792 user_admin.php:799 user_admin.php:808
 #, fuzzy
 msgid "Restricted By: "
-msgstr "限定的"
+msgstr "メンバーに限定"
 
 #: user_admin.php:796
 #, fuzzy
@@ -19125,7 +19023,6 @@ msgid "Granted"
 msgstr "アクセス許可"
 
 #: user_admin.php:805 user_admin.php:810
-#, fuzzy
 msgid "Restricted"
 msgstr "メンバーに限定"
 
@@ -19222,9 +19119,8 @@ msgstr "許可"
 #: user_admin.php:1155 user_admin.php:2355 user_admin.php:2356
 #: user_admin.php:2357 user_group_admin.php:1932 user_group_admin.php:1933
 #: user_group_admin.php:1934
-#, fuzzy
 msgid "DENY"
-msgstr "却下"
+msgstr "拒否"
 
 #: user_admin.php:1161
 #, fuzzy
@@ -19265,9 +19161,8 @@ msgstr "アクセス許可"
 #: user_group_admin.php:846 user_group_admin.php:850 user_group_admin.php:993
 #: user_group_admin.php:997 user_group_admin.php:1136 user_group_admin.php:1140
 #: user_group_admin.php:1270 user_group_admin.php:1274
-#, fuzzy
 msgid "Access Restricted"
-msgstr "アクセス制限"
+msgstr "アクセスの制限"
 
 #: user_admin.php:1321 user_group_admin.php:1010
 #, fuzzy
@@ -19391,9 +19286,8 @@ msgid "Unavailable"
 msgstr "予約不可"
 
 #: user_admin.php:2363
-#, fuzzy
 msgid "No Users Found"
-msgstr "ユーザが見つかりませんでした"
+msgstr "ユーザーが見つかりません"
 
 #: user_admin.php:2574 user_group_admin.php:2146
 #, fuzzy, php-format
@@ -19755,12 +19649,10 @@ msgid "No Matching Group Members Found"
 msgstr "一致するグループメンバーが見つかりません"
 
 #: user_group_admin.php:717
-#, fuzzy
 msgid "Add to Group"
 msgstr "グループに追加"
 
 #: user_group_admin.php:718
-#, fuzzy
 msgid "Remove from Group"
 msgstr "グループから削除"
 
@@ -19934,9 +19826,8 @@ msgid "Last Run Statistics"
 msgstr "最終実行統計"
 
 #: utilities.php:404
-#, fuzzy
 msgid "System Memory"
-msgstr "システムメモリ"
+msgstr "システムメモリ："
 
 #: utilities.php:434
 msgid "PHP Information"
@@ -19952,7 +19843,6 @@ msgid "PHP Version 5.5.0+ is recommended due to strong password hashing support.
 msgstr "強力なパスワードハッシュサポートのため、PHPバージョン5.5.0以降を推奨"
 
 #: utilities.php:446
-#, fuzzy
 msgid "PHP OS"
 msgstr "PHP OS"
 
@@ -19967,8 +19857,9 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php:465
+#, fuzzy
 msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
-msgstr ""
+msgstr "インストール済み。 <span class=\"deviceDown\">注：SNMPv3の使用を計画している場合は、php-snmpを削除し、Net-SNMPツールセットを使用する必要があります。</span>"
 
 #: utilities.php:499
 #, fuzzy
@@ -20065,10 +19956,9 @@ msgid "Clear"
 msgstr "クリア"
 
 #: utilities.php:732 utilities.php:1089 utilities.php:2714
-#, fuzzy
 msgctxt "Button: delete all table entries"
 msgid "Purge"
-msgstr "パージ"
+msgstr "粛清"
 
 #: utilities.php:732
 #, fuzzy
@@ -20140,7 +20030,6 @@ msgid "Include Index"
 msgstr "インデックスを含める"
 
 #: utilities.php:1525
-#, fuzzy
 msgid "Field Value"
 msgstr "フィールド値"
 
@@ -20163,9 +20052,8 @@ msgid "SNMP Version:"
 msgstr "SNMPバージョン"
 
 #: utilities.php:1843
-#, fuzzy
 msgid "Community:"
-msgstr "コミュニティ"
+msgstr "コミュニティ："
 
 #: utilities.php:1844 utilities.php:1848
 #, fuzzy
@@ -20177,9 +20065,8 @@ msgid "User:"
 msgstr "ユーザー"
 
 #: utilities.php:1851
-#, fuzzy
 msgid "Script:"
-msgstr "スクリプト"
+msgstr "スクリプト(T):"
 
 #: utilities.php:1853
 #, fuzzy
@@ -20271,8 +20158,9 @@ msgid "Purge Data Source Statistics"
 msgstr "データソースのパス"
 
 #: utilities.php:1929
+#, fuzzy
 msgid "This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass."
-msgstr ""
+msgstr "このメニューを選択すると、既存のすべてのデータソース統計がデータベースから削除されます。データソース統計が有効になっている場合、データソース統計は次のデータコレクターパスで再び収集を開始します。"
 
 #: utilities.php:1933
 #, fuzzy
@@ -20557,7 +20445,6 @@ msgid "Column Data"
 msgstr "列データ"
 
 #: utilities.php:2514
-#, fuzzy
 msgid "Scalar"
 msgstr "スカラー"
 

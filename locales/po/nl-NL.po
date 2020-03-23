@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-03-22 12:15-0400\n"
-"PO-Revision-Date: 2019-03-10 13:42-0400\n"
+"PO-Revision-Date: 2020-03-22 21:38-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.3\n"
 
 #: about.php:29 include/global_arrays.php:2424 lib/html.php:2390
 msgid "About Cacti"
@@ -379,9 +379,8 @@ msgid "RRDtool Command:"
 msgstr "RRDtool opdracht:"
 
 #: aggregate_graphs.php:755 graph.php:543 graphs.php:1611
-#, fuzzy
 msgid "Not Checked"
-msgstr "Pre installatie controle"
+msgstr "Niet Gecontroleerd"
 
 #: aggregate_graphs.php:755 graph.php:539 graphs.php:1609
 msgid "RRDtool Says:"
@@ -2482,9 +2481,8 @@ msgid "By changing the leaf type, all invalid rules will be automatically remove
 msgstr "Door het wijzigen van het bladtype worden alle ongeldige regels automatisch verwijderd en zijn ze niet meer te herstellen."
 
 #: automation_tree_rules.php:709
-#, fuzzy
 msgid "Are you sure you wish to continue?"
-msgstr "Weet u zeker dat u wilt doorgaan?"
+msgstr "Weet u zeker dat u wilt verdergaan?"
 
 #: automation_tree_rules.php:801 automation_tree_rules.php:826
 #: automation_tree_rules.php:926 include/global_arrays.php:909
@@ -2869,14 +2867,14 @@ msgid "Color Template [new]"
 msgstr "Kleurtemplate [nieuw]"
 
 #: color_templates.php:453
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr ""
+msgstr "Kleurensjabloon '%s' had% d Aggregaatsjablonen naar buiten gedrukt en% d Niet-sjabloonaggregaten naar buiten gedrukt"
 
 #: color_templates.php:455
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
-msgstr ""
+msgstr "Kleurensjabloon '%s' had geen verzamelsjablonen of grafieken met deze kleursjabloon."
 
 #: color_templates.php:511 color_templates.php:524 color_templates.php:619
 #: include/global_arrays.php:2508
@@ -3249,9 +3247,8 @@ msgid "Waiting on Data Source Check to Complete"
 msgstr "Wachten op gegevensbroncontrole om te voltooien"
 
 #: data_debug.php:943
-#, fuzzy
 msgid "All Devices"
-msgstr "Toon alle apparaten"
+msgstr "All Devices"
 
 #: data_debug.php:943
 #, fuzzy, php-format
@@ -4145,7 +4142,7 @@ msgstr "Geen data bron gevonden"
 #: data_sources.php:1738
 #, fuzzy
 msgid "No Graphs"
-msgstr "Nieuwe grafieken"
+msgstr "Grafieken"
 
 #: data_sources.php:1742 include/global_arrays.php:890
 msgid "Aggregates"
@@ -4410,12 +4407,11 @@ msgstr "%d seconden over."
 #: graph_realtime.php:387
 #, fuzzy
 msgid " seconds left."
-msgstr "seconden over."
+msgstr "%d seconden over."
 
 #: graph_templates.php:36
-#, fuzzy
 msgid "Change Settings"
-msgstr "Wijzig apparaat instellingen"
+msgstr "Wijzig instellingen"
 
 #: graph_templates.php:37
 msgid "Sync Graphs"
@@ -4646,9 +4642,8 @@ msgid "The device for this Graph."
 msgstr "De naam van deze groep."
 
 #: graph_view.php:726 graphs.php:2109
-#, fuzzy
 msgid "Source Type"
-msgstr "Data bron type"
+msgstr "Brontype"
 
 #: graph_view.php:728 graphs.php:2112
 #, fuzzy
@@ -5089,9 +5084,9 @@ msgid "Sync to Device Template"
 msgstr "Synchroniseer naar apparaat template"
 
 #: host.php:184
-#, php-format
+#, fuzzy, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr ""
+msgstr "Apparaat opnieuw indexeren voltooid in% 0.2f seconden. Er zijn% d items geüpdatet."
 
 #: host.php:355
 msgid "Click 'Continue' to enable the following Device(s)."
@@ -5334,7 +5329,7 @@ msgstr "SNMP GetNext"
 
 #: host.php:1335 host.php:1558
 msgid "Undefined"
-msgstr ""
+msgstr "Niet gedefinieerd"
 
 #: host.php:1493 include/global_settings.php:523 lib/html.php:2044
 msgid "Site"
@@ -5777,8 +5772,9 @@ msgid "Save Failed.  Minimum Values must be less than Maximum Value."
 msgstr "Opslaan mislukt.  De minimumwaarden moeten lager zijn dan de maximumwaarde."
 
 #: include/global_arrays.php:260
+#, fuzzy
 msgid "Unable to change password.  User account not found."
-msgstr ""
+msgstr "Kan wachtwoord niet wijzigen. Gebruikersaccount niet gevonden."
 
 #: include/global_arrays.php:263
 #, fuzzy
@@ -5894,8 +5890,9 @@ msgid "Your Remote Database Hostname must be something other than 'localhost' fo
 msgstr "Uw Remote Database Hostname moet iets anders zijn dan 'localhost' voor elke Remote Data Collector."
 
 #: include/global_arrays.php:338
+#, fuzzy
 msgid "Path variables on this page were only saved locally."
-msgstr ""
+msgstr "Padvariabelen op deze pagina zijn alleen lokaal opgeslagen."
 
 #: include/global_arrays.php:341
 msgid "Report Saved"
@@ -5943,12 +5940,14 @@ msgid "Poller Resource Cache cleared.  Main Data Collector will rebuild at the n
 msgstr "Poller bron cache verwijderd. Hoofd data collector wordt herbouwd tijdens de volgende run en de andere data collectoren worden daarna gesynchroniseerd."
 
 #: include/global_arrays.php:371
+#, fuzzy
 msgid "Permission Denied.  You do not have permission to the requested action."
-msgstr ""
+msgstr "Toestemming geweigerd. Je hebt geen toestemming voor de gevraagde actie."
 
 #: include/global_arrays.php:374
+#, fuzzy
 msgid "Page is not defined.  Therefore, it can not be displayed."
-msgstr ""
+msgstr "Pagina is niet gedefinieerd. Daarom kan het niet worden weergegeven."
 
 #: include/global_arrays.php:377
 msgid "Unexpected error occurred"
@@ -6220,9 +6219,8 @@ msgid "Disabled/Manual"
 msgstr "Gehandicapten/Handboek"
 
 #: include/global_arrays.php:738
-#, fuzzy
 msgid "Every day"
-msgstr "Iedere dag"
+msgstr "Elke dag"
 
 #: include/global_arrays.php:742
 msgid "1 Thread (default)"
@@ -6574,9 +6572,8 @@ msgid "Reports Creation"
 msgstr "Rapportage creëren"
 
 #: include/global_arrays.php:1117
-#, fuzzy
 msgid "Normal User"
-msgstr "Normale gebruiker"
+msgstr "Particulier"
 
 #: include/global_arrays.php:1118
 msgid "Template Editor"
@@ -6839,7 +6836,7 @@ msgstr "%d GBytes"
 
 #: include/global_arrays.php:1436
 msgid "Infinity"
-msgstr ""
+msgstr "Infinity"
 
 #: include/global_arrays.php:1443 include/global_settings.php:1133
 #: include/global_settings.php:1134 include/global_settings.php:1135
@@ -7240,12 +7237,10 @@ msgid "Bulgarian"
 msgstr "Bulgaars"
 
 #: include/global_arrays.php:1769
-#, fuzzy
 msgid "Chinese (China)"
-msgstr "Chinees (China)"
+msgstr "Chinees"
 
 #: include/global_arrays.php:1770
-#, fuzzy
 msgid "Chinese (Taiwan)"
 msgstr "Chinees (Taiwan)"
 
@@ -7298,7 +7293,6 @@ msgid "Portuguese"
 msgstr "Portugees"
 
 #: include/global_arrays.php:1783
-#, fuzzy
 msgid "Portuguese (Brazil)"
 msgstr "Portugees (Brazilië)"
 
@@ -7468,9 +7462,8 @@ msgid "View Data Query Cache"
 msgstr "Toon data query cache"
 
 #: include/global_arrays.php:2280
-#, fuzzy
 msgid "Clear Log"
-msgstr "Logbestand legen mislukt. Het bestand bestaat niet"
+msgstr "Log wissen"
 
 #: include/global_arrays.php:2286 utilities.php:1894
 msgid "View User Log"
@@ -7566,17 +7559,14 @@ msgid "days"
 msgstr "dagen"
 
 #: include/global_arrays.php:2660
-#, fuzzy
 msgid "hrs"
 msgstr "uren"
 
 #: include/global_arrays.php:2661
-#, fuzzy
 msgid "mins"
 msgstr "minuten"
 
 #: include/global_arrays.php:2662
-#, fuzzy
 msgid "secs"
 msgstr "seconden"
 
@@ -7589,9 +7579,8 @@ msgid "minutes"
 msgstr "minuten"
 
 #: include/global_arrays.php:2678
-#, fuzzy
 msgid "seconds"
-msgstr "%d seconden over."
+msgstr "seconden"
 
 #: include/global_form.php:35
 msgid "SNMP Version"
@@ -8818,8 +8807,9 @@ msgstr "Inclusief index"
 
 #: include/global_form.php:1749 include/global_form.php:1835
 #: include/global_form.php:1940
+#, fuzzy
 msgid "Include the source Graphs GPRINT Title Text with the Aggregate Graph(s)."
-msgstr ""
+msgstr "Voeg de GPRINT-titeltekst van de brongrafieken toe aan de samengevoegde grafiek (en)."
 
 #: include/global_form.php:1756 include/global_form.php:1842
 #: include/global_form.php:1947
@@ -9540,8 +9530,9 @@ msgid "Data Source Preservation Preset"
 msgstr "Grafiek-/gegevensbroncreatiemethode"
 
 #: include/global_settings.php:440
+#, fuzzy
 msgid "When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs."
-msgstr ""
+msgstr "Indien ingeschakeld, stelt Cacti het keuzerondje in om gerelateerde gegevensbronnen van een grafiek te verwijderen bij het verwijderen van grafieken. Opmerking: Cacti staat het verwijderen van gegevensbronnen niet toe als ze in andere grafieken worden gebruikt."
 
 #: include/global_settings.php:445
 #, fuzzy
@@ -9549,8 +9540,9 @@ msgid "Graphs Auto Unlock"
 msgstr "Grafiek koppelregels"
 
 #: include/global_settings.php:446
+#, fuzzy
 msgid "When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph."
-msgstr ""
+msgstr "Indien ingeschakeld, zal Cacti grafieken niet vergrendelen. Dit maakt een snellere handmatige wijziging van gegevensbronnen met betrekking tot een grafiek mogelijk."
 
 #: include/global_settings.php:451
 #, fuzzy
@@ -9904,8 +9896,9 @@ msgid "Minimum Tree Width"
 msgstr "Minimale lengte"
 
 #: include/global_settings.php:782 include/global_settings.php:2338
+#, fuzzy
 msgid "The Minimum width of the Tree to contract to."
-msgstr ""
+msgstr "De minimale breedte van de boom om mee samen te trekken."
 
 #: include/global_settings.php:789 include/global_settings.php:2345
 #, fuzzy
@@ -9913,21 +9906,23 @@ msgid "Maximum Tree Width"
 msgstr "Maximale titel lengte"
 
 #: include/global_settings.php:790 include/global_settings.php:2346
+#, fuzzy
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
-msgstr ""
+msgstr "De maximale breedte van de boom waarnaar moet worden uitgevouwen, waarna boomtakken op de pagina zullen scrollen."
 
 #: include/global_settings.php:797
-#, fuzzy
 msgid "Filter Settings"
-msgstr "Filter instellingen opgeslagen"
+msgstr "Filter instellingen"
 
 #: include/global_settings.php:802
+#, fuzzy
 msgid "Strip Domains from Device Dropdowns"
-msgstr ""
+msgstr "Verwijder domeinen van vervolgkeuzemenu's van apparaten"
 
 #: include/global_settings.php:803
+#, fuzzy
 msgid "When viewing Device name filter dropdowns, checking this option will strip to domain from the hostname."
-msgstr ""
+msgstr "Wanneer u de vervolgkeuzelijsten Filter apparaatnaam bekijkt, wordt het aanvinken van deze optie verwijderd van de hostnaam naar het domein."
 
 #: include/global_settings.php:808
 #, fuzzy
@@ -10283,8 +10278,9 @@ msgid "Disable Resource Cache Replication"
 msgstr "Resource cache opnieuw opbouwen"
 
 #: include/global_settings.php:1117
+#, fuzzy
 msgid "By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themeselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting."
-msgstr ""
+msgstr "Standaard zal de belangrijkste Cacti Data Collector de hele website en plug-ins in een broncache opslaan. Vervolgens zullen de Remote Data Collectors periodiek thema's bijwerken met eventuele updates van de belangrijkste Cacti Data Collector. Met deze broncache kunnen externe gegevensverzamelaars in feite zelf upgraden. Als u deze optie niet wilt gebruiken, kunt u deze met deze instelling uitschakelen."
 
 #: include/global_settings.php:1122
 #, fuzzy
@@ -10297,8 +10293,9 @@ msgid "Report Generation Timeout"
 msgstr "Time-out agent op afstand"
 
 #: include/global_settings.php:1128
+#, fuzzy
 msgid "The maximum amount of time Cacti's Reports Generation script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "De maximale hoeveelheid tijd die het script voor het genereren van rapporten van Cacti kan uitvoeren zonder een time-outfout te genereren en te worden gedood."
 
 #: include/global_settings.php:1132 include/global_settings.php:1144
 #: include/global_settings.php:1156 include/global_settings.php:1168
@@ -10313,24 +10310,29 @@ msgid "Data Source Statistics Timeout"
 msgstr "Gegevensbronnen Statistieken"
 
 #: include/global_settings.php:1140
+#, fuzzy
 msgid "The maximum amount of time Cacti's Data Source Statistics script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "De maximale hoeveelheid tijd die het Cacti's Data Source Statistics-script kan uitvoeren zonder een time-outfout te genereren en te worden gedood."
 
 #: include/global_settings.php:1151
+#, fuzzy
 msgid "Background Commands Timeout"
-msgstr ""
+msgstr "Achtergrondopdrachten Time-out"
 
 #: include/global_settings.php:1152
+#, fuzzy
 msgid "The maximum amount of time Cacti's Background Commands script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "De maximale tijd dat het script voor achtergrondopdrachten van Cacti kan worden uitgevoerd zonder een time-outfout te genereren en te worden gedood."
 
 #: include/global_settings.php:1163
+#, fuzzy
 msgid "Maintenance Background Generation Timeout"
-msgstr ""
+msgstr "Onderhoud Achtergrond Generatie Timeout"
 
 #: include/global_settings.php:1164
+#, fuzzy
 msgid "The maximum amount of time a Cacti's Maintenance script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "De maximale tijd dat een onderhoudsscript van Cacti kan worden uitgevoerd zonder een time-outfout te genereren en te worden gedood."
 
 #: include/global_settings.php:1173 include/global_settings.php:1186
 #, fuzzy, php-format
@@ -10338,12 +10340,14 @@ msgid "%s Hour"
 msgstr "%s Uren"
 
 #: include/global_settings.php:1176
+#, fuzzy
 msgid "Spikekill Background Generation Timeout"
-msgstr ""
+msgstr "Spikekill Time-out voor achtergrondgeneratie"
 
 #: include/global_settings.php:1177
+#, fuzzy
 msgid "The maximum amount of time a Cacti's Spikekill script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "De maximale tijd dat een Cacti's Spikekill-script kan worden uitgevoerd zonder een time-outfout te genereren en te worden gedood."
 
 #: include/global_settings.php:1192
 #, fuzzy
@@ -10463,12 +10467,14 @@ msgid "The name of the user that Cacti will use as a template for new Web Basic 
 msgstr "De naam van de gebruiker die Cacti zal gebruiken als template voor nieuwe Web Basic en LDAP gebruikers; is standaard 'gast'.  Deze gebruikersaccount zal worden uitgeschakeld vanaf het moment dat het wordt geselecteerd."
 
 #: include/global_settings.php:1288
+#, fuzzy
 msgid "Basic Auth Mapfile"
-msgstr ""
+msgstr "Basic Auth Mapfile"
 
 #: include/global_settings.php:1289
+#, fuzzy
 msgid "When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account."
-msgstr ""
+msgstr "Als u basisverificatie gebruikt en als het basisaccount moet worden vertaald naar een ander inlogaccount, kunt u hier een CSV-bestand specificeren om het basisaccount toe te wijzen aan het gewenste inlogaccount."
 
 #: include/global_settings.php:1297
 #, fuzzy
@@ -10710,9 +10716,8 @@ msgid "Defines if users use full Distinguished Name or just Username in the defi
 msgstr "Definieert of gebruikers de volledige onderscheidende naam gebruiken of alleen de gebruikersnaam in het gedefinieerde groepsattribuut."
 
 #: include/global_settings.php:1508
-#, fuzzy
 msgid "Distinguished Name"
-msgstr "Onderscheidende naam"
+msgstr "Unieke naam"
 
 #: include/global_settings.php:1512 user_domains.php:459
 msgid "LDAP Specific Search Settings"
@@ -11441,8 +11446,9 @@ msgid "Backup Retention"
 msgstr "Data retentie"
 
 #: include/global_settings.php:2114
+#, fuzzy
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
-msgstr ""
+msgstr "Wanneer SpikeKill pieken in grafieken doodt, maakt het een back-up van het RRD-bestand. Hoelang moeten deze back-upbestanden worden bewaard?"
 
 #: include/global_settings.php:2133
 #, fuzzy
@@ -11486,8 +11492,9 @@ msgid "Show Device Aggregates"
 msgstr "Toon apparaateigenschappen"
 
 #: include/global_settings.php:2160
+#, fuzzy
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
-msgstr ""
+msgstr "Als een apparaatgegevensbron is opgenomen in een samengevoegde grafiek, laat die grafiek dan samen met andere apparaatgrafieken zien"
 
 #: include/global_settings.php:2166
 #, fuzzy
@@ -11668,8 +11675,9 @@ msgid "Tree History"
 msgstr "Wachtwoord history"
 
 #: include/global_settings.php:2332
+#, fuzzy
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
-msgstr ""
+msgstr "Indien ingeschakeld, onthoudt Cacti uw boomgeschiedenis tussen aanmeldingen en wanneer u terugkeert naar de pagina Grafieken."
 
 #: include/global_settings.php:2355
 msgid "Use Custom Fonts"
@@ -11808,7 +11816,6 @@ msgid "Cacti Server v%s - Installation Wizard"
 msgstr "Cactus Server v%s - Installatie Wizard"
 
 #: install/install.php:79
-#, fuzzy
 msgid "Initializing"
 msgstr "Initialiseren"
 
@@ -12107,9 +12114,8 @@ msgid "Web Basic"
 msgstr "Web Basis"
 
 #: lib/auth.php:1784 lib/auth.php:1816
-#, fuzzy
 msgid "Branch:"
-msgstr "Nieuwe vestiging"
+msgstr "Tak:"
 
 #: lib/auth.php:1793 lib/auth.php:1824 lib/html_tree.php:1005
 msgid "Device:"
@@ -12120,8 +12126,9 @@ msgid "This account has been locked."
 msgstr "Dit account is geblokkeerd."
 
 #: lib/auth.php:2520
+#, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
-msgstr ""
+msgstr "Uw Cacti-beheerder heeft complexe wachtwoorden voor aanmeldingen geforceerd en uw huidige Cacti-wachtwoord komt niet overeen met de nieuwe vereisten. Daarom moet u nu uw wachtwoord wijzigen."
 
 #: lib/auth.php:2542
 #, php-format
@@ -12713,9 +12720,8 @@ msgid "Logout"
 msgstr "Uitloggen"
 
 #: lib/functions.php:2557
-#, fuzzy
 msgid "Leaf"
-msgstr "Bladeren"
+msgstr "Blad"
 
 #: lib/functions.php:2577 lib/html_tree.php:713 lib/html_tree.php:749
 #: lib/html_tree.php:969 lib/html_tree.php:977 lib/html_tree.php:1538
@@ -13123,9 +13129,8 @@ msgid "Connection Successful"
 msgstr "Actie succesvol uitvoerd"
 
 #: lib/html.php:2414 pollers.php:756
-#, fuzzy
 msgid "Connection Failed"
-msgstr "Connectie timeout"
+msgstr "Verbinding mislukt"
 
 #: lib/html.php:2415
 msgid "The response to the last action was unexpected."
@@ -13170,17 +13175,14 @@ msgid "Timestamps"
 msgstr "Tijdstempels"
 
 #: lib/html.php:2428
-#, fuzzy
 msgid "2x"
 msgstr "2x"
 
 #: lib/html.php:2429
-#, fuzzy
 msgid "4x"
 msgstr "4x"
 
 #: lib/html.php:2430
-#, fuzzy
 msgid "8x"
 msgstr "8x"
 
@@ -13228,7 +13230,6 @@ msgid "Copy graph link"
 msgstr "Kopieer grafiek link"
 
 #: lib/html.php:2442
-#, fuzzy
 msgid "Always On"
 msgstr "Altijd aan"
 
@@ -13237,7 +13238,6 @@ msgid "Auto"
 msgstr "Automatisch"
 
 #: lib/html.php:2444
-#, fuzzy
 msgid "Always Off"
 msgstr "Altijd uit"
 
@@ -13564,7 +13564,6 @@ msgid "Alignment of the Item"
 msgstr "Uitlijning van het item"
 
 #: lib/html_reports.php:679
-#, fuzzy
 msgid "Fixed Text"
 msgstr "Vaste tekst"
 
@@ -13783,7 +13782,7 @@ msgstr "Details"
 #: lib/html_reports.php:1247
 #, fuzzy, php-format
 msgid "Items %s"
-msgstr "Punt #%s"
+msgstr "Kleurtemplate items [wijzig: %s]"
 
 #: lib/html_reports.php:1287
 #, fuzzy, php-format
@@ -13888,7 +13887,7 @@ msgstr "Website:"
 #: lib/html_tree.php:994 lib/reports.php:996
 #, fuzzy
 msgid "Leaf:"
-msgstr "Bladeren:"
+msgstr "Blad"
 
 #: lib/html_tree.php:1000
 #, fuzzy
@@ -14004,7 +14003,6 @@ msgid "Cacti has imported the following items for the Package:"
 msgstr "Cacti heeft de volgende items voor het pakket geïmporteerd:"
 
 #: lib/import.php:2078
-#, fuzzy
 msgid "Package Files"
 msgstr "Pakketbestanden"
 
@@ -14303,12 +14301,14 @@ msgid "PHP Binary"
 msgstr "PHP binary locatie"
 
 #: lib/installer.php:1773
+#, fuzzy
 msgid "The PHP binary location is not valid and must be updated."
-msgstr ""
+msgstr "De binaire PHP-locatie is niet geldig en moet worden bijgewerkt."
 
 #: lib/installer.php:1780
+#, fuzzy
 msgid "Update the path_php_binary value in the settings table."
-msgstr ""
+msgstr "Werk de waarde path_php_binary bij in de tabel met instellingen."
 
 #: lib/installer.php:1788
 msgid "Passed"
@@ -14614,66 +14614,76 @@ msgid "An example of how to set folder permissions is shown here, though you may
 msgstr "Een voorbeeld van hoe u mapmachtigingen kunt instellen wordt hier getoond, maar het kan zijn dat u dit moet aanpassen afhankelijk van uw besturingssysteem, gebruikersaccounts en gewenste machtigingen"
 
 #: lib/installer.php:2279
-#, fuzzy
 msgid "EXAMPLE:"
 msgstr "VOORBEELD:"
 
 #: lib/installer.php:2280
+#, fuzzy
 msgid "Once installation has completed the CSRF path, should be set to read-only."
-msgstr ""
+msgstr "Zodra de installatie het CSRF-pad heeft voltooid, moet het worden ingesteld op alleen-lezen."
 
 #: lib/installer.php:2282
 msgid "All folders are writable"
 msgstr "Alle directories zijn schrijfbaar"
 
 #: lib/installer.php:2294
+#, fuzzy
 msgid "Input Validation Whitelist Protection"
-msgstr ""
+msgstr "Inputvalidatie Whitelist Protection"
 
 #: lib/installer.php:2295
+#, fuzzy
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
-msgstr ""
+msgstr "Cacti-gegevensinvoermethoden die een script aanroepen, kunnen worden misbruikt op een manier dat een niet-beheerder schade kan toebrengen aan bestanden die eigendom zijn van het poller-account en in gevallen waarin iemand de Cacti-poller als root uitvoert, het besturingssysteem kan aantasten waardoor aanvallers gebruik uw infrastructuur."
 
 #: lib/installer.php:2296
+#, fuzzy
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thouroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
-msgstr ""
+msgstr "Daarom is Cacti verschillende versies geleden verbeterd om Whitelist-mogelijkheden te bieden voor dit soort gegevensinvoermethoden. Hoewel dit Cacti meer grondig beveiligt, verhoogt het de hoeveelheid werk die de Cacti-beheerder nodig heeft om sjablonen en pakketten te importeren en te beheren."
 
 #: lib/installer.php:2297
+#, fuzzy
 msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or aguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid."
-msgstr ""
+msgstr "De manier waarop de witte lijst werkt, is dat wanneer u voor het eerst een gegevensinvoermethode importeert, of u een gegevensinvoermethode opnieuw importeert, en het script en / of de agistrieën op welke manier dan ook veranderen, de gegevensinvoermethode en alle bijbehorende gegevensbronnen onmiddellijk worden uitgeschakeld totdat de beheerder bevestigt dat de gegevensinvoermethode geldig is."
 
 #: lib/installer.php:2298
+#, fuzzy
 msgid "To make identifying Data Input Methods in this state, we have provided a validation script in Cacti's CLI directory that can be run with the following options:"
-msgstr ""
+msgstr "Om identificerende gegevensinvoermethoden in deze staat te identificeren, hebben we een validatiescript in de CLI-directory van Cacti geleverd dat kan worden uitgevoerd met de volgende opties:"
 
 #: lib/installer.php:2302
+#, fuzzy
 msgid "This script option will search for any Data Input Methods that are currently banned and provide details as to why."
-msgstr ""
+msgstr "Deze scriptoptie zoekt naar gegevensinvoermethoden die momenteel zijn verboden en geeft details over waarom."
 
 #: lib/installer.php:2303
+#, fuzzy
 msgid "This script option un-ban the Data Input Methods that are currently banned."
-msgstr ""
+msgstr "Deze scriptoptie heft de gegevensinvoermethoden op die momenteel zijn verbannen."
 
 #: lib/installer.php:2304
+#, fuzzy
 msgid "This script option will re-enable any disabled Data Sources."
-msgstr ""
+msgstr "Met deze scriptoptie worden alle uitgeschakelde gegevensbronnen weer ingeschakeld."
 
 #: lib/installer.php:2308
+#, fuzzy
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
-msgstr ""
+msgstr "We raden u ten zeerste aan om uw config.php bij te werken om deze functie in te schakelen door de <b>$ input_whitelist-</b> variabele te verwijderen en vervolgens de drie bovenstaande CLI-scriptopties uit te voeren nadat de webgebaseerde installatie is voltooid."
 
 #: lib/installer.php:2310
+#, fuzzy
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
-msgstr ""
+msgstr "Vink het selectievakje hieronder aan om te bevestigen dat u deze beveiligingskwestie hebt gelezen en begrepen"
 
 #: lib/installer.php:2312
+#, fuzzy
 msgid "I have read this statement"
-msgstr ""
+msgstr "Ik heb deze verklaring gelezen"
 
 #: lib/installer.php:2328 lib/installer.php:2334
-#, fuzzy
 msgid "Default Profile"
-msgstr "Standaard profiel"
+msgstr "Standaardprofiel"
 
 #: lib/installer.php:2329
 #, fuzzy
@@ -14705,14 +14715,12 @@ msgid "Default Options"
 msgstr "Standaard opties"
 
 #: lib/installer.php:2372
-#, fuzzy
 msgid "Scan Mode"
-msgstr "Aftastenwijze"
+msgstr "Scanmodus"
 
 #: lib/installer.php:2377
-#, fuzzy
 msgid "Network Range"
-msgstr "Netwerk bereik"
+msgstr "Netwerk reeks"
 
 #: lib/installer.php:2383
 #, fuzzy
@@ -14805,9 +14813,9 @@ msgid "Table Setup"
 msgstr "Tafelinstelling"
 
 #: lib/installer.php:2505
-#, php-format
+#, fuzzy, php-format
 msgid "You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s"
-msgstr ""
+msgstr "U heeft meer tabellen dan uw PHP-configuratie ons in staat zal stellen om weer te geven / te converteren. Wijzig de max_input_vars-instelling in php.ini naar een waarde boven%s"
 
 #: lib/installer.php:2508
 #, fuzzy
@@ -14827,9 +14835,8 @@ msgid "Engine"
 msgstr "Motor"
 
 #: lib/installer.php:2513 utilities.php:525
-#, fuzzy
 msgid "Row Format"
-msgstr "Formaat"
+msgstr "Regelindeling"
 
 #: lib/installer.php:2545
 #, fuzzy
@@ -14901,9 +14908,9 @@ msgid "Your Cacti Server is now installing"
 msgstr "Uw Cacti Server is nu aan het installeren"
 
 #: lib/installer.php:2685
-#, php-format
+#, fuzzy, php-format
 msgid "Spawning background process: %s %s"
-msgstr ""
+msgstr "Achtergrondproces paaien:%s%s"
 
 #: lib/installer.php:2711
 msgid "Complete"
@@ -14932,34 +14939,34 @@ msgid "Get Started"
 msgstr "Begin"
 
 #: lib/installer.php:2864
-#, php-format
+#, fuzzy, php-format
 msgid "Starting %s Process for v%s"
-msgstr ""
+msgstr "%s proces starten voor v%s"
 
 #: lib/installer.php:2891
-#, php-format
+#, fuzzy, php-format
 msgid "Finished %s Process for v%s"
-msgstr ""
+msgstr "Voltooid%s-proces voor v%s"
 
 #: lib/installer.php:2926
-#, php-format
+#, fuzzy, php-format
 msgid "Found %s templates to install"
-msgstr ""
+msgstr "%s sjablonen gevonden om te installeren"
 
 #: lib/installer.php:2937
-#, php-format
+#, fuzzy, php-format
 msgid "About to import Package #%s '%s'."
-msgstr ""
+msgstr "Staat op het punt Pakket #%s '%s' te importeren."
 
 #: lib/installer.php:2944
-#, php-format
+#, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr ""
+msgstr "Importeren van pakket #%s '%s' onder Profiel '%s' is gelukt"
 
 #: lib/installer.php:2950
-#, php-format
+#, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr ""
+msgstr "Importeren van pakket #%s '%s' onder Profiel '%s' is mislukt"
 
 #: lib/installer.php:2966
 #, fuzzy, php-format
@@ -14967,8 +14974,9 @@ msgid "Mapping Automation Template for Device Template '%s'"
 msgstr "Scantemplate voor [Verwijderd template]"
 
 #: lib/installer.php:2977
+#, fuzzy
 msgid "No templates were selected for import"
-msgstr ""
+msgstr "Er zijn geen sjablonen geselecteerd om te importeren"
 
 #: lib/installer.php:2984
 #, fuzzy
@@ -14986,17 +14994,19 @@ msgid "Failed to find selected profile (%s), no changes were made"
 msgstr "Geen toepassing van gespecificeerd profiel %s != %s !"
 
 #: lib/installer.php:3047
-#, php-format
+#, fuzzy, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
-msgstr ""
+msgstr "Automatiseringsnetwerk updaten (%s), modus \"%s\" => \"%s\", subnet \"%s\" =>%s \""
 
 #: lib/installer.php:3057
+#, fuzzy
 msgid "Failed to find automation network, no changes were made"
-msgstr ""
+msgstr "Kan het automatiseringsnetwerk niet vinden, er zijn geen wijzigingen aangebracht"
 
 #: lib/installer.php:3061
+#, fuzzy
 msgid "Adding extra snmp settings for automation"
-msgstr ""
+msgstr "Extra snmp-instellingen toevoegen voor automatisering"
 
 #: lib/installer.php:3067
 #, fuzzy, php-format
@@ -15009,9 +15019,9 @@ msgid "Updating Automation Option Set %s"
 msgstr "Automatisering SNMP opties"
 
 #: lib/installer.php:3083
-#, php-format
+#, fuzzy, php-format
 msgid "Successfully updated Automation Option Set %s"
-msgstr ""
+msgstr "Automation Option Set%s is bijgewerkt"
 
 #: lib/installer.php:3085
 #, fuzzy, php-format
@@ -15044,16 +15054,19 @@ msgid "Adding Device to Default Tree"
 msgstr "Apparaat standaardinstellingen"
 
 #: lib/installer.php:3165
+#, fuzzy
 msgid "No templated graphs for Default Device were found"
-msgstr ""
+msgstr "Er zijn geen sjabloongrafieken voor het standaardapparaat gevonden"
 
 #: lib/installer.php:3169
+#, fuzzy
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
-msgstr ""
+msgstr "WAARSCHUWING: apparaatsjabloon voor uw besturingssysteem niet gevonden. U moet apparaatsjablonen of cactussenpakketten importeren om uw cactusserver te bewaken."
 
 #: lib/installer.php:3176
+#, fuzzy
 msgid "Running first-time data query for local host"
-msgstr ""
+msgstr "Eerste query voor gegevens uitvoeren voor lokale host"
 
 #: lib/installer.php:3184
 #, fuzzy
@@ -15066,51 +15079,54 @@ msgid "Repopulating SNMP Agent cache"
 msgstr "SNMPAgent cache opnieuw opbouwen"
 
 #: lib/installer.php:3194
+#, fuzzy
 msgid "Generating RSA Key Pair"
-msgstr ""
+msgstr "RSA-sleutelpaar genereren"
 
 #: lib/installer.php:3206
-#, php-format
+#, fuzzy, php-format
 msgid "Found %s tables to convert"
-msgstr ""
+msgstr "%s tabellen gevonden om te converteren"
 
 #: lib/installer.php:3213
-#, php-format
+#, fuzzy, php-format
 msgid "Converting Table #%s '%s'"
-msgstr ""
+msgstr "Tabel #%s '%s' converteren"
 
 #: lib/installer.php:3228
+#, fuzzy
 msgid "No tables where found or selected for conversion"
-msgstr ""
+msgstr "Geen tabellen gevonden of geselecteerd voor conversie"
 
 #: lib/installer.php:3239
-#, php-format
+#, fuzzy, php-format
 msgid "Switched from %s to %s"
-msgstr ""
+msgstr "Omgeschakeld van%s naar%s"
 
 #: lib/installer.php:3243
-#, php-format
+#, fuzzy, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
-msgstr ""
+msgstr "OPMERKING: een tijdelijk bestand gebruiken voor db cache:%s"
 
 #: lib/installer.php:3265
-#, php-format
+#, fuzzy, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr ""
+msgstr "Upgraden van v%s (DB%s) naar v%s"
 
 #: lib/installer.php:3273
-#, php-format
+#, fuzzy, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
-msgstr ""
+msgstr "WAARSCHUWING: Kan upgrade-functie niet vinden voor v%s"
 
 #: lib/installer.php:3332
+#, fuzzy
 msgid "Install aborted due to no EULA acceptance"
-msgstr ""
+msgstr "Installatie afgebroken vanwege geen acceptatie door EULA"
 
 #: lib/installer.php:3352
-#, php-format
+#, fuzzy, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr ""
+msgstr "Achtergrond was al begonnen bij%s, deze poging bij%s werd overgeslagen"
 
 #: lib/installer.php:3372
 #, fuzzy, php-format
@@ -15123,9 +15139,8 @@ msgid "Installation was started at %s, completed at %s"
 msgstr "De installatie werd gestart in %s, voltooid in %s"
 
 #: lib/installer.php:3408
-#, fuzzy
 msgid "Both"
-msgstr "FOUT: U moet zowel een maand als de dag(en) van de maand specificeren. Het netwerk %s wordt uitgeschakeld!"
+msgstr "Beide"
 
 #: lib/installer.php:3408
 #, fuzzy, php-format
@@ -15138,9 +15153,8 @@ msgid "%s - No"
 msgstr "RRA [wijzig: %s %s]"
 
 #: lib/installer.php:3410
-#, fuzzy
 msgid "Web"
-msgstr "Web Basic Authentication is geconfigureerd, maar geen gebruikersnaam was doorgegeven aan de webserver. Controleer of u authenticatie heeft ingeschakeld op de webserver."
+msgstr "Website"
 
 #: lib/installer.php:3412
 #, fuzzy
@@ -15148,14 +15162,14 @@ msgid "Cli"
 msgstr "Klassiek"
 
 #: lib/installer.php:3417
-#, php-format
+#, fuzzy, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr ""
+msgstr "PHP-optie%s =%s instellen"
 
 #: lib/installer.php:3423
-#, php-format
+#, fuzzy, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr ""
+msgstr "Kan PHP-optie%s niet instellen, is%s (moet%s zijn)"
 
 #: lib/installer.php:3442
 #, fuzzy
@@ -15337,14 +15351,14 @@ msgid "Not Stated"
 msgstr "Niet vermeld"
 
 #: lib/reports.php:485
-#, php-format
+#, fuzzy, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
-msgstr ""
+msgstr "Problemen bij het verzenden van rapport '%s' Probleem met e-mail Subsysteemfout is '%s'"
 
 #: lib/reports.php:492
-#, php-format
+#, fuzzy, php-format
 msgid "Report '%s' Sent Successfully"
-msgstr ""
+msgstr "Rapport met succes verzonden"
 
 #: lib/reports.php:1001
 msgid "Host:"
@@ -15574,9 +15588,8 @@ msgid "RRA Folder"
 msgstr "RRA-map"
 
 #: lib/rrd.php:3515
-#, fuzzy
 msgid "Root"
-msgstr "ROOT"
+msgstr "Root"
 
 #: lib/rrd.php:3618
 msgid "Unknown RRDtool Error"
@@ -15588,8 +15601,9 @@ msgid "Attempting to Create Graph from Non-Template"
 msgstr "Maak geaggregeerde grafiek vanaf template"
 
 #: lib/template.php:1029
+#, fuzzy
 msgid "Attempting to Create Graph from Removed Graph Template"
-msgstr ""
+msgstr "Poging om een grafiek te maken van een verwijderd grafieksjabloon"
 
 #: lib/template.php:1622 lib/template.php:1642
 #, php-format
@@ -15670,8 +15684,9 @@ msgid "When using innodb_file_per_table, it is important to set the innodb_file_
 msgstr "Bij het gebruik van innodb_file_per_table is het belangrijk om het innodb_file_format in te stellen op Barracuda.  Deze instelling maakt langere indexen mogelijk die belangrijk zijn voor bepaalde Cactustabellen."
 
 #: lib/utility.php:962
+#, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
-msgstr ""
+msgstr "Als uw tabellen zeer grote indexen hebben, moet u werken met de Barracuda innodb_file_format en de innodb_large_prefix gelijk aan 1. Als u dit niet doet, kan dit leiden tot plug-ins die niet goed tabellen kunnen maken."
 
 #: lib/utility.php:968
 #, fuzzy, php-format
@@ -15679,8 +15694,9 @@ msgid "InnoDB will hold as much tables and indexes in system memory as is possib
 msgstr "InnoDB zal zoveel mogelijk tabellen en indexen in het systeemgeheugen opslaan.  Daarom moet je de innodb_buffer_pool groot genoeg maken om zoveel mogelijk van de tabellen en index in het geheugen te houden.  Het controleren van de grootte van de map /var/lib/mysql/cacti helpt bij het bepalen van deze waarde.  Wij raden 25% van het totale geheugen van uw systemen aan, maar uw behoeften zullen variëren afhankelijk van de grootte van uw systemen."
 
 #: lib/utility.php:974
+#, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
-msgstr ""
+msgstr "Deze instellingen moeten AAN blijven tenzij uw Cacti-instanties op ZFS of FusionI / O draaien, die beide een interne logboek hebben om abrupte systeemcrashes op te vangen. Als u echter een zeer goede voeding heeft en uw systemen zelden uitvallen en u back-ups heeft, kunt u door deze instelling op UIT te zetten de databaseprestaties met bijna 50% verhogen."
 
 #: lib/utility.php:979
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
@@ -16322,8 +16338,9 @@ msgid "Cacti System Notification"
 msgstr "Hulpprogramma's voor cactussen"
 
 #: poller.php:971
+#, fuzzy
 msgid "NOTE: A second Cacti data collector has been added.  Therfore, enabling boost automatically!"
-msgstr ""
+msgstr "OPMERKING: Er is een tweede Cacti-gegevensverzamelaar toegevoegd. Daarom automatisch boost mogelijk maken!"
 
 #: poller_automation.php:928 poller_automation.php:979
 #, fuzzy
@@ -16500,14 +16517,14 @@ msgid "The file holding the SSL Certificate Authority to use to connect to the r
 msgstr "Het bestand met het SSL Certificaat Autoriteit om te gebruiken om verbinding te maken met de database op afstand."
 
 #: pollers.php:297
-#, php-format
+#, fuzzy, php-format
 msgid "You have already used this hostname '%s'.  Please enter a non-duplicate hostname."
-msgstr ""
+msgstr "U heeft deze hostnaam '%s' al gebruikt. Voer een niet-dubbele hostnaam in."
 
 #: pollers.php:303
-#, php-format
+#, fuzzy, php-format
 msgid "You have already used this database hostname '%s'.  Please enter a non-duplicate database hostname."
-msgstr ""
+msgstr "U hebt deze databasehostnaam '%s' al gebruikt. Geef een niet-dubbele databasehostnaam op."
 
 #: pollers.php:518
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
@@ -16801,8 +16818,9 @@ msgid "Settings save to Data Collector %d Failed."
 msgstr "Instellingen opslaan op Dataverzamelaar %d Mislukt."
 
 #: settings.php:346
+#, fuzzy
 msgid "NOTE: Path Settings on this Tab are only saved locally!"
-msgstr ""
+msgstr "OPMERKING: Padinstellingen op dit tabblad worden alleen lokaal opgeslagen!"
 
 #: settings.php:351
 #, fuzzy, php-format
@@ -17012,11 +17030,11 @@ msgid "If the Site is known by another name enter it here."
 msgstr "Als de Site bekend is onder een andere naam, vul deze dan hier in."
 
 #: sites.php:294
+#, fuzzy
 msgid "Template Site was not found! Unable to duplicate."
-msgstr ""
+msgstr "Template Site is niet gevonden! Kan niet dupliceren."
 
 #: sites.php:354
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Site.  Note, all Devices will be disassociated from this site."
 msgid_plural "Click 'Continue' to delete all following Sites.  Note, all devices will be disassociated from this site."
 msgstr[0] "Klik op 'Volgende' om de volgende locatie te verwijderen. Let op, alle apparaten worden losgekoppeld van deze locatie."
@@ -17036,9 +17054,8 @@ msgstr[0] "Klik op 'Doorgaan' om de volgende boom te verwijderen."
 msgstr[1] "Klik op 'Doorgaan' om de volgende bomen te verwijderen."
 
 #: sites.php:365
-#, fuzzy
 msgid "Site Name:"
-msgstr "Locatienaam"
+msgstr "Sitenaam:"
 
 #: sites.php:369
 #, fuzzy
@@ -17155,8 +17172,9 @@ msgid "Available Templates [%s]"
 msgstr "Beschikbare templates [%s]"
 
 #: templates_import.php:102
+#, fuzzy
 msgid "The Template Import Failed.  See the cacti.log for more details."
-msgstr ""
+msgstr "De sjabloonimport is mislukt. Zie de cacti.log voor meer details."
 
 #: templates_import.php:110 templates_import.php:132
 msgid "Import Template"
@@ -17177,10 +17195,9 @@ msgid "Publish"
 msgstr "Publiceren"
 
 #: tree.php:33
-#, fuzzy
 msgctxt "dropdown action"
 msgid "Un-Publish"
-msgstr "Depubliceren"
+msgstr "Niet meer publiceren"
 
 #: tree.php:34
 #, fuzzy
@@ -17492,9 +17509,8 @@ msgid "Full Name:"
 msgstr "Volledige naam:"
 
 #: user_admin.php:374
-#, fuzzy
 msgid "Realm:"
-msgstr "Omgeving"
+msgstr "Lees mij"
 
 #: user_admin.php:380
 msgid "Copy User"
@@ -17568,7 +17584,7 @@ msgstr "Apparaattemplate"
 #: user_admin.php:792 user_admin.php:799 user_admin.php:808
 #, fuzzy
 msgid "Restricted By: "
-msgstr "Toegang beperkt"
+msgstr "Beperkt"
 
 #: user_admin.php:796
 #, fuzzy
@@ -17576,12 +17592,10 @@ msgid "Granted By: "
 msgstr "Toegang verleend"
 
 #: user_admin.php:803
-#, fuzzy
 msgid "Granted"
 msgstr "Toegekend"
 
 #: user_admin.php:805 user_admin.php:810
-#, fuzzy
 msgid "Restricted"
 msgstr "Beperkt"
 
@@ -17963,9 +17977,8 @@ msgid "Search filter to use to locate the user in the LDAP directory, such as fo
 msgstr "Zoekfilter om de gebruiker in de LDAP-directory te lokaliseren, bijvoorbeeld voor vensters: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> of voor OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;gebruikersnaam&gt))\"</i>.  \"&lt;username&gt\" wordt vervangen door de gebruikersnaam die bij de login prompt werd opgegeven."
 
 #: user_domains.php:502
-#, fuzzy
 msgid "eMail"
-msgstr "E-mail"
+msgstr "e-mail"
 
 #: user_domains.php:503
 #, fuzzy
@@ -18279,7 +18292,6 @@ msgid "NET-SNMP Version"
 msgstr "NET-SNMP versie"
 
 #: utilities.php:286
-#, fuzzy
 msgid "Configured"
 msgstr "Geconfigureerd"
 
@@ -18364,8 +18376,9 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php:465
+#, fuzzy
 msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
-msgstr ""
+msgstr "Geïnstalleerd. <span class=\"deviceDown\">Opmerking: als u van plan bent SNMPv3 te gebruiken, moet u php-snmp verwijderen en de Net-SNMP-toolset gebruiken.</span>"
 
 #: utilities.php:499
 msgid "You've set memory limit to 'unlimited'."
@@ -18508,9 +18521,8 @@ msgid "Data Query Cache Items"
 msgstr "Data Query Cache-items"
 
 #: utilities.php:1385
-#, fuzzy
 msgid "Query Name"
-msgstr "Data query naam"
+msgstr "Querynaam"
 
 #: utilities.php:1449
 #, fuzzy
@@ -18643,8 +18655,9 @@ msgid "Purge Data Source Statistics"
 msgstr "Gegevensbronnen Statistieken"
 
 #: utilities.php:1929
+#, fuzzy
 msgid "This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass."
-msgstr ""
+msgstr "Deze menukeuze verwijdert alle bestaande gegevensbronstatistieken uit de database. Als Gegevensbronstatistieken is ingeschakeld, zullen de Gegevensbronnenstatistieken opnieuw worden verzameld bij de volgende Data Collector-pas."
 
 #: utilities.php:1933
 #, fuzzy
@@ -18709,9 +18722,8 @@ msgid "Overrun Warning"
 msgstr "Overschrijding Waarschuwing"
 
 #: utilities.php:2106
-#, fuzzy
 msgid "Timed Out"
-msgstr "Getimed uit"
+msgstr "Time-out"
 
 #: utilities.php:2107
 msgid "Other"

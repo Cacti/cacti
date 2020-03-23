@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-03-22 12:15-0400\n"
-"PO-Revision-Date: 2020-03-22 21:13-0400\n"
+"PO-Revision-Date: 2020-03-22 22:41-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi_IN\n"
@@ -6892,7 +6892,7 @@ msgstr "संस्करण% d"
 #: include/global_arrays.php:580 include/global_arrays.php:586
 #, fuzzy
 msgid "[None]"
-msgstr "कोई नहीं"
+msgstr "कुछ भी नहीं"
 
 #: include/global_arrays.php:581
 msgid "MD5"
