@@ -401,6 +401,11 @@ if ($config['is_web']) {
 		'use_strict_mode' => true
 	);
 
+	if (isset($cacti_cookie_domain) && $cacti_cookie_domain != '') {
+		ini_set('session.cookie_domain', $cacti_cookie_domain);
+		$options['cookie_domain'] = $cacti_cookie_domain;
+	}
+
 	// SameSite php7.3+ behavior
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		ini_set('session.cookie_samesite', 'Strict');
@@ -429,8 +434,8 @@ if ($config['is_web']) {
 
 	/* increased web hardening */
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy != '') {
-		$script_policy .= ';';
+	if ($script_policy != '0' && $script_policy != '') {
+		$script_policy = "'$script_policy'";
 	}
 	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' $script_policy 'unsafe-inline'; frame-ancestors 'self';");
 

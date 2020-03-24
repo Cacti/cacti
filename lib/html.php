@@ -2356,8 +2356,8 @@ function html_common_header($title, $selectedTheme = '') {
 	}
 
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy != '') {
-		$script_policy .= ';';
+	if ($script_policy != '0' && $script_policy != '') {
+		$script_policy = "'$script_policy'";
 	}
 
 	?>

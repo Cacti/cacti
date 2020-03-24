@@ -465,6 +465,15 @@ $settings = array(
 			'default' => '',
 			'method' => 'checkbox',
 			),
+		'content_security_policy_script' => array(
+			'method' => 'drop_array',
+			'friendly_name' => __('Allow Unsafe JavaScript eval() calls'),
+			'description' => __('Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti.'),
+			'default' => '',
+			'array' => array(
+				'0'           => __('No'),
+				'unsafe-eval' => __('Yes'))
+			),
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),
 			'method' => 'spacer',

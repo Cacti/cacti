@@ -83,7 +83,7 @@ if ($user['password_change'] != 'on') {
 	/* destroy session information */
 	kill_session_var('sess_user_id');
 	unset($_COOKIE[$cacti_session_name]);
-	setcookie($cacti_session_name, null, -1, $config['url_path']);
+	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));

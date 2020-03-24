@@ -41,7 +41,7 @@ function clear_auth_cookie() {
 			if (!empty($user_id)) {
 				if (isset($parts[1])) {
 					$secret = hash('sha512', $parts[1], false);
-					setcookie('cacti_remembers', '', time() - 3600, $config['url_path']);
+					cacti_cookie_session_logout();
 					db_execute_prepared('DELETE FROM user_auth_cache
 						WHERE user_id = ?
 						AND token = ?',
@@ -71,11 +71,7 @@ function set_auth_cookie($user) {
 			(?, ?, NOW(), ?);',
 			array($user['id'], get_client_addr(''), $secret));
 
-		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-			setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path'], NULL, true, true);
-		} else {
-			setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
-		}
+		cacti_cookie_session_set($user['username'], $nssecret);
 	}
 }
 

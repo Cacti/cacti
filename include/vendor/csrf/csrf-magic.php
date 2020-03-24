@@ -140,7 +140,7 @@ function csrf_get_tokens() {
 		$token = 'sid:' . csrf_hash(session_id()) . $ip;
 	} elseif ($GLOBALS['csrf']['cookie']) {
 		$val = csrf_generate_secret();
-		setcookie($GLOBALS['csrf']['cookie'], $val, time() + 3600, $GLOBALS['csrf']['url_path']);
+		cacti_cookie_set($GLOBALS['csrf']['cookie'], $val);
 		$token = 'cookie:' . csrf_hash($val) . $ip;
 	} elseif ($GLOBALS['csrf']['key']) {
 		$token = 'key:' . csrf_hash($GLOBALS['csrf']['key']) . $ip;

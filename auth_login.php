@@ -483,17 +483,17 @@ function auth_display_custom_error_message($message) {
 	global $config;
 
 	/* kill the session */
-	setcookie(session_name(), '', time() - 3600, $config['url_path']);
+	cacti_cookie_logout();
 
 	/* print error */
 	print '<!DOCTYPE html>';
-	print "<html>\n";
-	print "<head>\n";
+	print '<html>';
+	print '<head>';
 	html_common_header(__('Cacti'));
-	print "</head>\n";
-	print "<body>\n<br><br>\n";
-	print $message . "\n";
-	print "</body>\n</html>\n";
+	print '</head>';
+	print '<body><br><br>';
+	print $message;
+	print '</body></html>';
 }
 
 function domains_login_process() {

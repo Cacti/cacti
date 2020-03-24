@@ -5506,3 +5506,58 @@ function raise_ajax_permission_denied() {
 	}
 }
 
+function cacti_cookie_set($session, $val) {
+	global $config;
+
+	if (isset($config['cookie_options']['cookie_domain'])) {
+		$domain = $config['cookie_options']['cookie_domain'];
+	} else {
+		$domain = '';
+	}
+
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+		setcookie($session, $val, time() + 3600, $config['url_path'], $domain, true, true);
+	} else {
+		setcookie($session, $val, time() + 3600, $config['url_path'], $domain, false, true);
+	}
+}
+
+function cacti_cookie_logout() {
+	global $config;
+
+	if (isset($config['cookie_options']['cookie_domain'])) {
+		$domain = $config['cookie_options']['cookie_domain'];
+	} else {
+		$domain = '';
+	}
+
+	setcookie(session_name(), '', time() - 3600, $config['url_path'], $domain);
+}
+
+function cacti_cookie_session_set($user, $nssecret) {
+	global $config;
+
+	if (isset($config['cookie_options']['cookie_domain'])) {
+		$domain = $config['cookie_options']['cookie_domain'];
+	} else {
+		$domain = '';
+	}
+
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+		setcookie('cacti_remembers', $user . ',' . $nssecret, time()+(86400*30), $config['url_path'], $domain, true, true);
+	} else {
+		setcookie('cacti_remembers', $user . ',' . $nssecret, time()+(86400*30), $config['url_path'], $domain, false, true);
+	}
+}
+
+function cacti_cookie_session_logout() {
+	global $config;
+
+	if (isset($config['cookie_options']['cookie_domain'])) {
+		$domain = $config['cookie_options']['cookie_domain'];
+	} else {
+		$domain = '';
+	}
+
+	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
+}
