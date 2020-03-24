@@ -84,7 +84,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			}
 		}
 
-		$rrd_next_step = api_poller_get_rrd_next_step($rrd_step, $num_rrd_items);
+		$rrd_next_step = api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id);
 
 		return "($local_data_id, " . $host['poller_id'] . ', ' .
 			$host['id'] . ", $poller_action_id," .
@@ -101,55 +101,40 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 	}
 }
 
-function api_poller_get_rrd_next_step($rrd_step = 300, $num_rrd_items = 1) {
+function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
 	global $config;
+
+	static $rrd_step_counter = 0;
+	static $last_host = -1;
+	static $last_data_id = -1;
+	static $warning_issued = false;
 
 	$poller_interval = read_config_option('poller_interval');
 	$rrd_next_step   = 0;
 
-	if ($rrd_step != $poller_interval && isset($poller_interval)) {
-		if (!isset($config['rrd_step_counter'])) {
-			$rrd_step_counter = read_config_option('rrd_step_counter');
-		} else {
-			$rrd_step_counter = $config['rrd_step_counter'];
-		}
+	if ($rrd_step < $poller_interval && !$warning_issued) {
+		$message = sprintf('WARNING: The Poller Interval is %s and you have a Data Source with a sampling interval of %s.  Change your Poller Interval to %s seconds, and repopulate your poller cache.', $poller_interval, $rrd_step, $rrd_step);
 
-		if ($num_rrd_items == 1) {
-			$config['rrd_num_counter'] = 0;
-		} else {
-			if (!isset($config['rrd_num_counter'])) {
-				$config['rrd_num_counter'] = 1;
-			} else {
-				$config['rrd_num_counter']++;
-			}
-		}
-
-		$modulus = $rrd_step / $poller_interval;
-
-		if ($modulus < 1 || empty($rrd_step_counter)) {
-			$rrd_next_step = 0;
-		} else {
-			$rrd_next_step = $poller_interval * ($rrd_step_counter % $modulus);
-		}
-
-		if ($num_rrd_items == 1) {
-			$rrd_step_counter++;
-		} else {
-			if ($num_rrd_items == $config['rrd_num_counter']) {
-				$rrd_step_counter++;
-				$config['rrd_num_counter'] = 0;
-			}
-		}
-
-		if ($rrd_step_counter >= $modulus) {
-			$rrd_step_counter = 0;
-		}
-
-		/* save rrd_step_counter */
-		$config['rrd_step_counter'] = $rrd_step_counter;
-
-		set_config_option('rrd_step_counter', $rrd_step_counter);
+		admin_email('Cacti Poller Interval Warning', $message);
+		cacti_log($message, false, 'POLLER');
+		$warning_issued = true;
 	}
+
+	$process_leveling = read_config_option('process_leveling');
+
+	if ($last_host != $host_id || $process_leveling != 'on') {
+		$rrd_step_counter = 0;
+	} elseif ($rrd_step != $poller_interval) {
+		if ($last_data_id != $local_data_id) {
+			$rrd_step_counter++;
+		}
+
+		$modulus = intval($rrd_step / $poller_interval);
+		$rrd_next_step = $poller_interval * ($rrd_step_counter % $modulus);
+	}
+
+	$last_host    = $host_id;
+	$last_data_id = $local_data_id;
 
 	return $rrd_next_step;
 }

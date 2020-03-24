@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -issue#3363: The current user and user group permissions pages are not responsive
 -issue#3367: When Data Queries timeout, data is removed from the Host SNMP Cache table causing issues
 -issue#3368: Saving a Graph Template Item fails due to missing includes
+-issue#3375: When poller interval is 1 Min and collection rate is 5 Min distribution of poller items not happening
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
 -feature#1551: Allow uptime to be a variable for use with graphs
