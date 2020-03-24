@@ -5532,6 +5532,7 @@ function cacti_cookie_logout() {
 	}
 
 	setcookie(session_name(), '', time() - 3600, $config['url_path'], $domain);
+	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
 }
 
 function cacti_cookie_session_set($user, $nssecret) {
