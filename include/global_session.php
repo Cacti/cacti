@@ -77,13 +77,14 @@ if (isset($_SESSION['refresh'])) {
     if (isset($_SESSION['refresh']['logout'])) {
         $refreshIsLogout = $_SESSION['refresh']['logout'];
     } else {
-		$refreshIsLogout = 'true';
+		$refreshIsLogout = 'false';
 	}
 
     if (isset($_SESSION['refresh']['page'])) {
         $myrefresh['page'] = sanitize_uri($_SESSION['refresh']['page']);
     } else {
 		$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout';
+		$refreshIsLogout   = 'true';
 	}
 
 	unset($_SESSION['refresh']);
@@ -115,7 +116,9 @@ if (isset($_SESSION['refresh'])) {
 
 /* guest account does not auto log off */
 if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == read_config_option('guest_user')) {
-	$refreshIsLogout = 'false';
+	$myrefresh['seconds'] = 99999999;
+	$refreshIsLogout      = 'false';
+	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
 }
 
 ?>
