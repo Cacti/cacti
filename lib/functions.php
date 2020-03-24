@@ -5506,6 +5506,10 @@ function raise_ajax_permission_denied() {
 	}
 }
 
+/** cacti_cookie_set - Allows for settings an arbitry cookie name and value
+ *  used for CSRF protection.
+ *
+ *  @returns - null */
 function cacti_cookie_set($session, $val) {
 	global $config;
 
@@ -5522,6 +5526,9 @@ function cacti_cookie_set($session, $val) {
 	}
 }
 
+/** cacti_cookie_logout - Clears the Cacti and the 'keep me logged in' cookies
+ *
+ *  @returns - null */
 function cacti_cookie_logout() {
 	global $config;
 
@@ -5535,6 +5542,9 @@ function cacti_cookie_logout() {
 	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
 }
 
+/** cacti_cookie_session_set - Sets the cacti 'keep me logged in' cookie
+ *
+ *  @returns - null */
 function cacti_cookie_session_set($user, $nssecret) {
 	global $config;
 
@@ -5551,6 +5561,9 @@ function cacti_cookie_session_set($user, $nssecret) {
 	}
 }
 
+/** cacti_cookie_session_logout - Logs out of Cacti and the remember me session
+ *
+ *  @returns - null */
 function cacti_cookie_session_logout() {
 	global $config;
 
