@@ -629,7 +629,8 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 
 	if (!empty($username)) $ldap->username = $username;
 	if (!empty($password)) $ldap->password = $password;
-	if (!empty($dn))       $ldap->dn       = $dn;
+
+	$ldap->dn = $dn;
 
 	$ld = db_fetch_row_prepared('SELECT *
 		FROM user_domains_ldap
@@ -637,7 +638,10 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 		array($realm-1000));
 
 	if (cacti_sizeof($ld)) {
-		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+		if (empty($dn) && !empty($ld['dn'])) {
+			$ldap->dn = $ld['dn'];
+		}
+
 		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
 		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
 		if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];
