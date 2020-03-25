@@ -28,7 +28,7 @@ include_once('./lib/utility.php');
 
 $profile_actions = array(
 	1 => __('Delete'),
-//	2 => __('Duplicate')
+	2 => __('Duplicate')
 );
 
 /* set default action */
@@ -241,9 +241,7 @@ function form_actions() {
 				db_execute('DELETE FROM data_source_profiles_rra WHERE ' . array_to_sql_or($selected_items, 'data_source_profile_id'));
 				db_execute('DELETE FROM data_source_profiles_cf WHERE ' . array_to_sql_or($selected_items, 'data_source_profile_id'));
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					duplicate_data_source_profile($selected_items[$i], get_nfilter_request_var('title_format'));
-				}
+				duplicate_data_source_profile($selected_items, get_nfilter_request_var('title_format'));
 			}
 		}
 
@@ -320,6 +318,62 @@ function form_actions() {
 /* --------------------------
     CDEF Item Functions
    -------------------------- */
+
+function duplicate_data_source_profile($source_profile, $title_format) {
+	if (!is_array($source_profile)) {
+		$source_profile = array($source_profile);
+	}
+
+	foreach($source_profile as $id) {
+		$profile = db_fetch_row_prepared('SELECT *
+			FROM data_source_profiles
+			WHERE id = ?',
+			array($id));
+
+		if (cacti_sizeof($profile)) {
+			$save = array();
+
+			$save['id']   = 0;
+
+			foreach($profile as $column => $value) {
+				if ($column == 'id') {
+					continue;
+				} elseif ($column == 'hash') {
+					$save['hash'] = get_hash_data_source_profile(0);
+				} elseif ($column == 'name') {
+					$save['name'] = str_replace('<profile_title>', $value, $title_format);
+				} elseif ($column == 'default') {
+					$save['default'] = '';
+				} else {
+					$save[$column] = $value;
+				}
+			}
+
+			$newid = sql_save($save, 'data_source_profiles');
+
+			if ($newid > 0) {
+				db_execute_prepared("INSERT INTO data_source_profiles_cf
+					SELECT '$newid' AS data_source_profile_id, consolidation_function_id
+					FROM data_source_profiles_cf
+					WHERE data_source_profile_id = ?",
+					array($id));
+
+				db_execute_prepared("INSERT INTO data_source_profiles_rra
+					(`data_source_profile_id`, `name`, `steps`, `rows`, `timespan`)
+					SELECT '$newid', `name`, `steps`, `rows`, `timespan`
+					FROM data_source_profiles_rra
+					WHERE data_source_profile_id = ?",
+					array($id));
+
+				raise_message(1);
+			} else {
+				raise_message(2);
+			}
+		} else {
+			raise_message('profile_error', __('Unable to duplicate Data Source Profile.  Check Cacti Log for errors.'), MESSAGE_LEVEL_ERROR);
+		}
+	}
+}
 
 function profile_item_remove_confirm() {
 	/* ================= input validation ================= */
