@@ -52,7 +52,7 @@ $script = basename($_SERVER['SCRIPT_NAME']);
 if ($script == 'graph_view.php' || $script == 'graph.php') {
 	if (isset($_SESSION['custom']) && $_SESSION['custom'] == true) {
 		$refreshIsLogout = 'true';
-	} else if (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
+	} elseif (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
 		$refreshIsLogout = 'true';
 	} else {
 		$refresh = api_plugin_hook_function('top_graph_refresh', read_user_setting('page_refresh'));
@@ -96,9 +96,9 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = $refresh;
 	$myrefresh['page']    = sanitize_uri(appendHeaderSuppression($_SERVER['REQUEST_URI']));
 	$refreshIsLogout      = 'false';
-} elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_COOKIE['cacti_remembers'])) {
+} elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_SESSION['cacti_remembers']) && $_SESSION['cacti_remembers'] == true) {
 	$myrefresh['seconds'] = 99999999;
-	$myrefresh['page']    = 'index.php';
+	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
 	$refreshIsLogout      = 'false';
 } elseif (read_config_option('auth_method') == 2) {
 	$myrefresh['seconds'] = 99999999;
@@ -117,8 +117,8 @@ if (isset($_SESSION['refresh'])) {
 /* guest account does not auto log off */
 if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == read_config_option('guest_user')) {
 	$myrefresh['seconds'] = 99999999;
-	$refreshIsLogout      = 'false';
 	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
+	$refreshIsLogout      = 'false';
 }
 
 ?>

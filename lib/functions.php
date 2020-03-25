@@ -5554,6 +5554,8 @@ function cacti_cookie_session_set($user, $nssecret) {
 		$domain = '';
 	}
 
+	$_SESSION['cacti_remembers'] = true;
+
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 		setcookie('cacti_remembers', $user . ',' . $nssecret, time()+(86400*30), $config['url_path'], $domain, true, true);
 	} else {
