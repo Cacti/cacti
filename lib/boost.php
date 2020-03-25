@@ -622,11 +622,8 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	/* install the boost error handler */
 	set_error_handler('boost_error_handler');
 
-	/* we can simplify the delete process if only one local_data_id */
-	$orig_local_data_id   = $local_data_id;
-
 	/* aquire lock in order to prevent race conditions */
-	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$orig_local_data_id', 1)")) {
+	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
 		usleep(50000);
 	}
 
@@ -640,16 +637,18 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 	if (cacti_count($arch_tables)) {
 		foreach($arch_tables as $table) {
-			$rows = db_fetch_cell('SELECT COUNT(local_data_id
+			$rows = db_fetch_cell_prepared('SELECT COUNT(local_data_id)
 				FROM ' . $table['name'] . '
-				WHERE local_data_id = ' . $local_data_id, '', false);
+				WHERE local_data_id = ?',
+				array($local_data_id));
 
 			if (db_table_exists($table['name']) && is_numeric($rows) && intval($rows) > 0) {
 				if ($query_string != '') {
 					$query_string .= ' UNION ';
 				}
 
-				$query_string .= ' (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+				$query_string .= ' (SELECT local_data_id,
+					UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
 					FROM ' . $table['name'] . "
 					WHERE local_data_id = $local_data_id) ";
 			}
@@ -662,15 +661,16 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 	$timestamp = time();
 
-	$query_string .= " (SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+	$query_string .= " (SELECT local_data_id,
+		UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
 		FROM poller_output_boost
-		WHERE local_data_id = $orig_local_data_id
+		WHERE local_data_id = $local_data_id
 		AND time < FROM_UNIXTIME($timestamp))";
 
 	$query_string .= ' ORDER BY timestamp ASC, rrd_name ASC ';
 
 	boost_timer('get_records', BOOST_TIMER_START);
-	$results = db_fetch_assoc($query_string, false);
+	$results = db_fetch_assoc($query_string);
 	boost_timer('get_records', BOOST_TIMER_END);
 
 	/* log memory */
@@ -912,7 +912,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		}
 	}
 
-	db_execute("SELECT RELEASE_LOCK('boost.single_ds.$orig_local_data_id')");
+	db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
 
 	/* restore original error handler */
 	restore_error_handler();
