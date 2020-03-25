@@ -78,7 +78,6 @@ i.fa, i.fas, i.fab {
 	padding: 0px 3px;
 	font-size: 1.1em;
 	vertical-align: middle;
-	color: snow;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
@@ -2414,7 +2413,8 @@ tr#realtime td:first-child {
 }
 
 .menuitem span {
-	vertical-align: 20%;
+	vertical-align: middle;
+	line-height: 20px;
 }
 
 .ui-autocomplete {

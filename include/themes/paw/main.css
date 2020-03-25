@@ -55,7 +55,6 @@ i.fa, i.fas, i.fab {
 	padding: 0px 3px;
 	font-size: 1.1em;
 	vertical-align: middle;
-	color: white;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
@@ -786,12 +785,15 @@ label {
 
 .cactiLoginLogo, .cactiLogoutLogo {
 	position: relative;
-	height: 0px;
 	z-index: 2;
-	margin-left: 305px;
 	margin-bottom: 0px;
 	color: #223a80;
 	font-size: 48px;
+	float: right;
+}
+
+.cactiLoginLogo i, .cactiLogoutLogo i {
+	margin-right: 10px;
 }
 
 .loginArea, .logoutArea {
