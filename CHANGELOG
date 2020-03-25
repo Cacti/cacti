@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.11
+-issue: Zoom looses focus in advanced mode while crossing chart border
 -SECURITY#1566: Add SameSite support for cookies
 -SECURITY#1985: Cookie should be properly verified against password
 -SECURITY#3342: CSRF at Admin Email
