@@ -670,7 +670,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	$query_string .= ' ORDER BY timestamp ASC, rrd_name ASC ';
 
 	boost_timer('get_records', BOOST_TIMER_START);
-	$results = db_fetch_assoc($query_string);
+	$results = db_fetch_assoc($query_string, false);
 	boost_timer('get_records', BOOST_TIMER_END);
 
 	/* log memory */
@@ -900,10 +900,12 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			}
 		}
 
-		db_execute_prepared('DELETE FROM poller_output_boost
-			WHERE local_data_id = ?
-			AND time < FROM_UNIXTIME(?)',
-			array($local_data_id, $timestamp));
+		if (cacti_sizeof($results)) {
+			db_execute_prepared('DELETE FROM poller_output_boost
+				WHERE local_data_id = ?
+				AND time < FROM_UNIXTIME(?)',
+				array($local_data_id, $timestamp));
+		}
 
 		boost_timer('delete', BOOST_TIMER_END);
 
@@ -1028,7 +1030,7 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 	if ($show_source != true) {
 		if (read_config_option('storage_location')) {
 			$file_exists = rrdtool_execute("file_exists $data_source_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
-		}else {
+		} else {
 			$file_exists = file_exists($data_source_path);
 		}
 
