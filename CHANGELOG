@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -issue#3375: When poller interval is 1 Min and collection rate is 5 Min distribution of poller items not happening
 -issue#3376: Poller Recovery is slow poller_recovery.php
 -issue#3378: Typo error in global_languages.php
+-issue#3380: php error when trigger threshold sendmail 
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
 -feature#1551: Allow uptime to be a variable for use with graphs

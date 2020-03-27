@@ -3415,6 +3415,8 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
 	require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 
+	$start_time = microtime(true);
+
 	// Create the PHPMailer instance
 	$mail = new PHPMailer\PHPMailer\PHPMailer;
 
@@ -3509,6 +3511,11 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		if (empty($from['name'])) {
 			$from['name'] = 'Cacti';
 		}
+	}
+
+	// Sanity test the from email
+	if (!filter_var($from['email'], FILTER_VALIDATE_EMAIL)) {
+		return 'Bad email address format. Invalid from email address ' . $from['email'];
 	}
 
 	$fromText  = add_email_details(array($from), $result, array($mail, 'setFrom'));
@@ -3688,25 +3695,20 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$mail->AltBody = $body_text;
 	}
 
-	$result  = $mail->send();
-	$error   = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
-	$method  = $mail_methods[intval(read_config_option('settings_how'))];
-	$rtype   = $result ? 'INFO' : 'WARNING';
-	$rmsg    = $result ? 'successfully sent' : 'failed';
+	$result   = $mail->send();
+	$error    = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
+	$method   = $mail_methods[intval(read_config_option('settings_how'))];
+	$rtype    = $result ? 'INFO' : 'WARNING';
+	$rmsg     = $result ? 'successfully sent' : 'failed';
+	$end_time = microtime(true);
 
 	if ($error != '') {
-		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'%s",
-			$rtype,
-			$rmsg,
-			$method,
-			$fromText, $toText, $ccText, $subject,
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', and took %2.2f seconds, Subject '%s'%s",
+			$rtype, $rmsg, $method, $fromText, $toText, $ccText, ($end_time - $start_time), $subject,
 			", Error: $error");
 	} else {
-		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'",
-			$rtype,
-			$rmsg,
-			$method,
-			$fromText, $toText, $ccText, $subject);
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', and took %2.2f seconds, Subject '%s'",
+			$rtype, $rmsg, $method, $fromText, $toText, $ccText, ($end_time - $start_time), $subject);
 	}
 
 	cacti_log($message, false, 'MAILER');
@@ -3726,6 +3728,7 @@ function record_mailer_error($retError, $mailError) {
 
 function add_email_details($emails, &$result, callable $addFunc) {
 	$arrText = array();
+
 	foreach ($emails as $e) {
 		if (!empty($e['email'])) {
 			//if (is_callable($addFunc)) {
@@ -3735,12 +3738,14 @@ function add_email_details($emails, &$result, callable $addFunc) {
 					return '';
 				}
 			}
+
 			$arrText[] = create_emailtext($e);
 		} else if (!empty($e['name'])) {
 			$result = false;
 			return 'Bad email format, name but no address: ' . $e['name'];
 		}
 	}
+
 	$text = implode(',', $arrText);
 	//print "add_email_sw_details(): $text\n";
 	return $text;
