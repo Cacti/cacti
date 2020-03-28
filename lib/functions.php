@@ -3638,13 +3638,15 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				/* get content id and create attachment */
 				$cid = getmypid() . '_' . $i . '@' . 'localhost';
 
-				if (empty($attachment['filename'])) {
-					$attachment['filename'] = basename($attachment['attachment']);
+				if (empty($attachment['filename']) && file_exists($attachment['attachment'])) {
+					$attachment['filename'] = $attachment['attachment'];
 				}
 
 				/* attempt to attach */
 				if (!($graph_mode || $graph_ids)) {
-					$result = $mail->addAttachment($attachment['attachment'], $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+					if (!empty($attachment['filename']) && file_exists($attachment['filename'])) {
+						$result = $mail->addAttachment($attachment['attachment'], $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+					}
 				} else {
 					$result = $mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
 				}
