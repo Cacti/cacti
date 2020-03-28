@@ -118,8 +118,6 @@ $url_path = '/cacti/';
 /* disable log rotation setting */
 $disable_log_rotation = false;
 
-$config = array();
-
 /* Include configuration, or use the defaults */
 if (file_exists(dirname(__FILE__) . '/config.php')) {
 	if (!is_readable(dirname(__FILE__) . '/config.php')) {
