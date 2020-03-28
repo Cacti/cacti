@@ -814,7 +814,7 @@ function api_tree_get_node($tree_id, $node_id, $editing = false) {
 			$hh .= $h;
 		}
 
-		return $hh
+		return $hh;
 	}
 }
 
