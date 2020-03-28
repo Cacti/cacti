@@ -35,7 +35,7 @@ require_once($config['base_path'] . '/lib/dsdebug.php');
 require_once($config['base_path'] . '/lib/boost.php');
 require_once($config['base_path'] . '/lib/reports.php');
 
-global $poller_db_cnn_id, $remote_db_cnn_id;
+global $poller_db_cnn_id, $remote_db_cnn_id, $logged;
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
@@ -77,6 +77,7 @@ function sig_handler($signo) {
 $force     = false;
 $debug     = false;
 $mibs      = false;
+$logged    = false;
 
 // set the poller_id
 $poller_id = $config['poller_id'];
@@ -436,6 +437,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$started_processes = 0;
 	$first_host        = 0;
 	$last_host         = 0;
+	$rrds_processed    = 0;
 	$webroot           = addslashes(($config['cacti_server_os'] == 'win32') ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", '/') : dirname(__FILE__));
 
 	// update web paths for the poller
@@ -736,7 +738,7 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 		}
 	} else {
-		cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER', $level);
+		cacti_log('WARNING: The Cacti Data Collector is currently disabled!', true, 'POLLER');
 	}
 
 	$poller_runs_completed++;
@@ -788,6 +790,11 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 	} else {
 		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . ($loop_end-$loop_start-$poller_interval) . ' seconds', true, 'POLLER', $level);
+	}
+
+	if (!$logged) {
+		log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
+			($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
 	}
 
 	// flush the boost table if in recovery mode
@@ -891,7 +898,7 @@ function poller_enabled_check($poller_id) {
 
 function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads, $num_hosts,
 	$hosts_per_process, $num_polling_items, $rrds_processed) {
-	global $poller_id, $poller_db_cnn_id;
+	global $poller_id, $poller_db_cnn_id, $logged;
 
 	// get the poller data
 	$poller = db_fetch_row_prepared('SELECT *
@@ -961,6 +968,8 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	snmpagent_cacti_stats_update($perf_data);
 
 	api_plugin_hook_function('cacti_stats_update', $perf_data);
+
+	$logged = true;
 }
 
 function multiple_poller_boost_check() {
