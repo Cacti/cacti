@@ -124,7 +124,7 @@ function form_save() {
 
 		$save3['t_rrd_maximum']         = form_input_validate((isset_request_var('t_rrd_maximum') ? get_nfilter_request_var('t_rrd_maximum') : ''), 't_rrd_maximum', '', true, 3);
 
-		$save3['rrd_maximum']           = form_input_validate(get_nfilter_request_var('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
+		$save3['rrd_maximum']           = form_input_validate(get_nfilter_request_var('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U|\|query_ifSpeed\|$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
 
 		$save3['t_rrd_minimum']         = form_input_validate((isset_request_var('t_rrd_minimum') ? get_nfilter_request_var('t_rrd_minimum') : ''), 't_rrd_minimum', '', true, 3);
 
@@ -521,13 +521,16 @@ function template_edit() {
 	$isSNMPget = false;
 
 	if (!isempty_request_var('id')) {
-		$template_data = db_fetch_row_prepared('SELECT dtd.*,
-			SUM(CASE WHEN dl.data_template_id = ? THEN 1 ELSE 0 END) AS data_sources
-			FROM data_template_data AS dtd
-			LEFT JOIN data_local AS dl
-			ON dl.id=dtd.local_data_id
-			WHERE dtd.data_template_id = ?
-			HAVING dtd.local_data_id=0',
+		$template_data = db_fetch_row_prepared('SELECT dtd.*, data_sources
+			FROM (
+				SELECT COUNT(*) AS data_sources FROM data_local AS dl
+				LEFT JOIN data_template_data AS idtd ON dl.id=idtd.local_data_id
+				WHERE idtd.data_template_id = ?
+			) AS ds
+			INNER JOIN (
+				SELECT * FROM data_template_data
+				WHERE data_template_id = ? AND local_data_id = 0
+			) AS dtd',
 			array(get_request_var('id'), get_request_var('id')));
 
 		$template = db_fetch_row_prepared('SELECT *

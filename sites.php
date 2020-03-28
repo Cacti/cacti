@@ -25,7 +25,8 @@
 include('./include/auth.php');
 
 $site_actions = array(
-	1 => __('Delete')
+	1 => __('Delete'),
+	2 => __('Duplicate')
 );
 
 /* file: sites.php, action: edit */
@@ -256,6 +257,45 @@ function form_save() {
 	}
 }
 
+function duplicate_site($template_id, $name) {
+	if (!is_array($template_id)) {
+		$template_id = array($template_id);
+	}
+
+	foreach($template_id as $id) {
+		$site = db_fetch_row_prepared('SELECT *
+			FROM sites
+			WHERE id = ?',
+			array($id));
+
+		if (cacti_sizeof($site)) {
+			$save = array();
+
+			$save['id'] = 0;
+
+			foreach($site as $column => $value) {
+				if ($column == 'id') {
+					continue;
+				} elseif ($column == 'name') {
+					$save['name'] = str_replace('<site>', $value, $name);
+				} else {
+					$save[$column] = $value;
+				}
+			}
+
+			$site_id = sql_save($save, 'sites');
+
+			if ($site_id > 0) {
+				raise_message(1);
+			} else {
+				raise_message(2);
+			}
+		} else {
+			raise_message('site_error', __('Template Site was not found! Unable to duplicate.'), MESSAGE_LEVEL_ERROR);
+		}
+	}
+}
+
 /* ------------------------
     The 'actions' function
    ------------------------ */
@@ -275,6 +315,8 @@ function form_actions() {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM sites WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('UPDATE host SET site_id=0 WHERE deleted="" AND ' . array_to_sql_or($selected_items, 'site_id'));
+			} elseif (get_nfilter_request_var('drp_action') == '2') { /* Duplicate */
+				duplicate_site($selected_items, get_nfilter_request_var('site_name'));
 			}
 		}
 
@@ -309,12 +351,22 @@ function form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Site.  Note, all devices will be disassociated from this site.', 'Click \'Continue\' to delete all following Sites.  Note, all devices will be disassociated from this site.', cacti_sizeof($site_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to Delete the following Site.  Note, all Devices will be disassociated from this site.', 'Click \'Continue\' to delete all following Sites.  Note, all devices will be disassociated from this site.', cacti_sizeof($site_array)) . "</p>
 					<div class='itemlist'><ul>$site_list</ul></div>
 				</td>
 			</tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Site', 'Delete Sites', cacti_sizeof($site_array)) . "'>";
+		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>" . __n('Click \'Continue\' to Duplicate the following Site.', 'Click \'Continue\' to Duplicate all following Sites.', cacti_sizeof($site_array)) . "</p>
+					<div class='itemlist'><ul>$site_list</ul></div>
+					<p><strong>" . __('Site Name:'). "</strong><br>"; form_text_box('site_name', '<site> (1)', '', '255', '30', 'text'); print "</p>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Site', 'Duplicate Sites', cacti_sizeof($site_array)) . "'>";
 		}
 	} else {
 		raise_message(40);

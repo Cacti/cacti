@@ -294,11 +294,11 @@ function display_discovery_page() {
 
 			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
 			form_selectable_cell(filter_value($host['ip'], get_request_var('filter')), $host['id']);
-			form_selectable_cell(snmp_data($host['sysName']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysLocation']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysContact']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($host['sysDescr']), $host['id'], '', 'text-align:left;white-space:normal;');
-			form_selectable_cell(snmp_data($host['os']), $host['id'], '', 'text-align:left');
+			form_selectable_cell(filter_value(snmp_data($host['sysName']), get_request_var('filter')), $host['id'], '', 'text-align:left');
+			form_selectable_cell(filter_value(snmp_data($host['sysLocation']), get_request_var('filter')), $host['id'], '', 'text-align:left');
+			form_selectable_cell(filter_value(snmp_data($host['sysContact']), get_request_var('filter')), $host['id'], '', 'text-align:left');
+			form_selectable_cell(filter_value(snmp_data($host['sysDescr']), get_request_var('filter')), $host['id'], '', 'text-align:left;white-space:normal;');
+			form_selectable_cell(filter_value(snmp_data($host['os']), get_request_var('filter')), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data(get_uptime($host)), $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['snmp']], $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['up']], $host['id'], '', 'text-align:right');
@@ -413,7 +413,13 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	}
 
 	if ($filter != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(hostname LIKE ' . db_qstr('%' . $filter . '%') . ' OR ip LIKE ' . db_qstr('%' . $filter . '%') . ')';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(hostname LIKE ' . db_qstr('%' . $filter . '%') . '
+			OR ip LIKE ' . db_qstr('%' . $filter . '%') . '
+			OR sysName LIKE ' . db_qstr('%' . $filter . '%') . '
+			OR sysDescr LIKE ' . db_qstr('%' . $filter . '%') . '
+			OR sysLocation LIKE ' . db_qstr('%' . $filter . '%') . '
+			OR sysContact LIKE ' . db_qstr('%' . $filter . '%') . '
+			)';
 	}
 
 	if ($export) {

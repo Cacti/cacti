@@ -983,8 +983,8 @@ $struct_graph_item = array(
 	'value' => array(
 		'friendly_name' => __('Value'),
 		'method' => 'textbox',
-		'max_length' => '50',
-		'size' => '40',
+		'max_length' => '255',
+		'size' => '80',
 		'default' => '',
 		'description' => __('[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds.')
 		),

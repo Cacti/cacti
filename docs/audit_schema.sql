@@ -744,7 +744,7 @@ INSERT INTO `table_columns` VALUES ('poller_output_realtime',1,'local_data_id','
 INSERT INTO `table_columns` VALUES ('poller_output_realtime',2,'rrd_name','varchar(19)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('poller_output_realtime',3,'time','timestamp','NO','PRI','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('poller_output_realtime',4,'output','text','NO','',NULL,'');
-INSERT INTO `table_columns` VALUES ('poller_output_realtime',5,'poller_id','varchar(256)','NO','MUL','1','');
+INSERT INTO `table_columns` VALUES ('poller_output_realtime',5,'poller_id','varchar(256)','NO','PRI','1','');
 INSERT INTO `table_columns` VALUES ('poller_reindex',1,'host_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('poller_reindex',2,'data_query_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('poller_reindex',3,'action','tinyint(3) unsigned','NO','','0','');
@@ -764,6 +764,14 @@ INSERT INTO `table_columns` VALUES ('poller_time',2,'pid','int(11) unsigned','NO
 INSERT INTO `table_columns` VALUES ('poller_time',3,'poller_id','int(10) unsigned','NO','MUL','1','');
 INSERT INTO `table_columns` VALUES ('poller_time',4,'start_time','timestamp','NO','','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('poller_time',5,'end_time','timestamp','NO','','0000-00-00 00:00:00','');
+INSERT INTO `table_columns` VALUES ('processes',1,'id','bigint(20) unsigned','NO','MUL',NULL,'auto_increment');
+INSERT INTO `table_columns` VALUES ('processes',2,'pid','int(10) unsigned','NO','PRI','0','');
+INSERT INTO `table_columns` VALUES ('processes',3,'tasktype','varchar(20)','NO','PRI','','');
+INSERT INTO `table_columns` VALUES ('processes',4,'taskname','varchar(40)','NO','PRI','','');
+INSERT INTO `table_columns` VALUES ('processes',5,'taskid','int(10) unsigned','NO','PRI','0','');
+INSERT INTO `table_columns` VALUES ('processes',6,'timeout','int(11)','YES','','300','');
+INSERT INTO `table_columns` VALUES ('processes',7,'started','timestamp','NO','','CURRENT_TIMESTAMP','');
+INSERT INTO `table_columns` VALUES ('processes',8,'last_update','timestamp','NO','','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('reports',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('reports',2,'user_id','mediumint(8) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('reports',3,'name','varchar(100)','NO','','','');
@@ -1289,6 +1297,7 @@ INSERT INTO `table_indexes` VALUES ('poller_output_realtime',1,'poller_id',1,'po
 INSERT INTO `table_indexes` VALUES ('poller_output_realtime',0,'PRIMARY',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_realtime',0,'PRIMARY',2,'rrd_name','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_realtime',0,'PRIMARY',3,'time','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_output_realtime',0,'PRIMARY',4,'poller_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_realtime',1,'time',1,'time','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_reindex',1,'present',1,'present','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_reindex',0,'PRIMARY',1,'host_id','A',0,NULL,NULL,'','BTREE','');
@@ -1299,6 +1308,13 @@ INSERT INTO `table_indexes` VALUES ('poller_resource_cache',0,'PRIMARY',1,'id','
 INSERT INTO `table_indexes` VALUES ('poller_time',1,'poller_id_end_time',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_time',1,'poller_id_end_time',2,'end_time','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_time',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('processes',1,'id',1,'id',NULL,0,NULL,NULL,'','HASH','');
+INSERT INTO `table_indexes` VALUES ('processes',1,'pid',1,'pid',NULL,0,NULL,NULL,'','HASH','');
+INSERT INTO `table_indexes` VALUES ('processes',0,'PRIMARY',1,'pid',NULL,NULL,NULL,NULL,'','HASH','');
+INSERT INTO `table_indexes` VALUES ('processes',0,'PRIMARY',2,'tasktype',NULL,NULL,NULL,NULL,'','HASH','');
+INSERT INTO `table_indexes` VALUES ('processes',0,'PRIMARY',3,'taskname',NULL,NULL,NULL,NULL,'','HASH','');
+INSERT INTO `table_indexes` VALUES ('processes',0,'PRIMARY',4,'taskid',NULL,0,NULL,NULL,'','HASH','');
+INSERT INTO `table_indexes` VALUES ('processes',1,'tasktype',1,'tasktype',NULL,0,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('reports',1,'mailtime',1,'mailtime','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('reports',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('reports_items',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');

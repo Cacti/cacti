@@ -425,7 +425,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				$value = '';
 			} elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
 				if (is_base64_encoded($_REQUEST[$name])) {
-					$_REQUEST[$name] = utf8_decode(base64_decode($_REQUEST[$name]));
+					$_REQUEST[$name] = base64_decode($_REQUEST[$name]);
 				}
 
 				$valid = validate_is_regex($_REQUEST[$name]);
@@ -477,9 +477,8 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
-				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($name)), html_escape($custom_error));
+				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($name)), html_escape($custom_error)), MESSAGE_LEVEL_ERROR);
 				set_request_var($name, '');
-				raise_message('custom_error');
 			} else {
 				die_html_input_error($name, get_nfilter_request_var($name));
 			}
@@ -646,7 +645,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					$value = '';
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
 					if (is_base64_encoded($_REQUEST[$variable])) {
-						$_REQUEST[$variable] = utf8_decode(base64_decode($_REQUEST[$variable]));
+						$_REQUEST[$variable] = base64_decode($_REQUEST[$variable]);
 					}
 
 					$valid = validate_is_regex($_REQUEST[$variable]);
@@ -697,9 +696,8 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-						$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($variable)), html_escape($custom_error));
+						raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($variable)), html_escape($custom_error)), MESSAGE_LEVEL_ERROR);
 						set_request_var($variable, '');
-						raise_message('custom_error');
 					} else {
 						die_html_input_error($variable, get_nfilter_request_var($variable), html_escape($custom_error));
 					}

@@ -371,7 +371,7 @@ function form_actions() {
 			print '</td></tr><tr><td>' . __('Graph Width') . '</td><td>';
 			form_text_box('graph_width', read_config_option('default_graph_width'), '', '5', '5', 'text');
 			print '</td></tr><tr><td>' . __('Image Format') . '</td><td>';
-			form_dropdown('image_format_id', $image_types, '', '', 2, '', '');
+			form_dropdown('image_format_id', $image_types, '', '', read_config_option('default_image_format'), '', '');
 
 			print "</td></tr></table><div class='break'></div><table style='width:100%'>\n";
 
@@ -422,13 +422,15 @@ function item() {
 	} else {
 		$template_item_list = db_fetch_assoc_prepared("SELECT gti.id, gti.text_format, gti.alpha,
 			gti.value, gti.hard_return, gti.graph_type_id, gti.consolidation_function_id, gti.textalign,
-			CONCAT(IFNULL(dtd.name, ''), ' (', dtr.data_source_name, ')') AS data_source_name,
+			CONCAT(IFNULL(dt.name, ''), ' (', dtr.data_source_name, ')') AS data_source_name,
 			cdef.name AS cdef_name, colors.hex
 			FROM graph_templates_item AS gti
 			LEFT JOIN data_template_rrd AS dtr
 			ON gti.task_item_id=dtr.id
 			LEFT JOIN data_local AS dl
 			ON dtr.local_data_id=dl.id
+			LEFT JOIN data_template AS dt
+			ON dt.id=dtr.data_template_id
 			LEFT JOIN data_template_data AS dtd
 			ON dl.id=dtd.local_data_id
 			LEFT JOIN cdef
@@ -509,7 +511,7 @@ function template_edit() {
 	}
 
 	if (!isempty_request_var('id')) {
-		$template       = db_fetch_row_prepared('SELECT *
+		$template = db_fetch_row_prepared('SELECT *
 			FROM graph_templates
 			WHERE id = ?',
 			array(get_request_var('id')));

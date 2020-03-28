@@ -204,8 +204,11 @@ if ($realm_id == 26) {
 			WHERE uar.realm_id = ?';
 	$install_sql_params = array($realm_id);
 
-	/* See if the group realms exist and if so, check if permission exists there too */
-	if (db_table_exists('user_auth_group_realm')) {
+	/* Because we now expect installation to be done by authorized users, check the group_realm *
+	 * exists before using it as this may not be present if upgrading from pre-1.x              */
+	if (db_table_exists('user_auth_group_realm') &&
+		db_table_exists('user_auth_group') &&
+		db_table_exists('user_auth_group_members')) {
 		$install_sql_query .= '
 			UNION
 			SELECT realm_id
@@ -216,6 +219,7 @@ if ($realm_id == 26) {
 			ON uag.id=uagr.group_id
 			WHERE uag.enabled="on"
 			AND uagr.realm_id = ?';
+
 		$install_sql_params = array_merge($install_sql_params, array($realm_id));
 	}
 
@@ -251,7 +255,9 @@ if ($realm_id > 0) {
 
 	/* Because we now expect installation to be done by authorized users, check the group_realm *
 	 * exists before using it as this may not be present if upgrading from pre-1.x              */
-	if (db_table_exists('user_auth_group_realm')) {
+	if (db_table_exists('user_auth_group_realm') &&
+		db_table_exists('user_auth_group') &&
+		db_table_exists('user_auth_group_members')) {
 		$auth_sql_query .= '
 			UNION
 			SELECT realm_id
@@ -263,8 +269,10 @@ if ($realm_id > 0) {
 			WHERE uag.enabled="on"
 			AND uagm.user_id = ?
 			AND uagr.realm_id = ?';
+
 		$auth_sql_params = array_merge($auth_sql_params, array($_SESSION['sess_user_id'], $realm_id));
 	}
+
 	$auth_sql_query .= '
 		) AS authorized';
 

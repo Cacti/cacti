@@ -177,15 +177,18 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			//exit;
 		}
 
-		$result = db_fetch_row_prepared('select ENGINE, TABLE_COMMENT, ROW_FORMAT
-			FROM information_schema.TABLES
+		$result = db_fetch_row_prepared('SELECT ENGINE, TABLE_COMMENT, ROW_FORMAT, CHARACTER_SET_NAME 
+			FROM information_schema.TABLES tbl JOIN information_schema.COLLATIONS coll ON tbl.TABLE_COLLATION=coll.COLLATION_NAME
 			WHERE TABLE_SCHEMA = SCHEMA()
 			AND TABLE_NAME = ?',
 			array($table));
 
 		if (cacti_sizeof($result)) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
-			$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
+			$text .= "\$data['charset'] = '" . $result['CHARACTER_SET_NAME'] . "';\n";
+			if (!empty($result['TABLE_COMMENT'])) {
+				$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
+			}
 			$text .= "\$data['row_format'] = '" . $result['ROW_FORMAT'] . "';\n";
 			if ($create) {
 				if ($plugin != '') {

@@ -110,8 +110,7 @@ $url_path = '/cacti/';
 /* disable log rotation setting */
 $disable_log_rotation = false;
 
-/* allow upto 5000 items to be selected */
-ini_set('max_input_vars', '5000');
+$config = array();
 
 /* Include configuration, or use the defaults */
 if (file_exists(dirname(__FILE__) . '/config.php')) {
@@ -221,6 +220,13 @@ $no_http_header_files = array(
 
 $colors = array();
 
+/* this should be auto-detected, set it manually if needed */
+$config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
+
+if (!empty($path_csrf_secret)) {
+	$config['path_csrf_secret'] = $path_csrf_secret;
+}
+
 /* built-in snmp support */
 if (isset($php_snmp_support) && !$php_snmp_support) {
 	$config['php_snmp_support'] = false;
@@ -245,7 +251,7 @@ if (empty($database_port)) {
 }
 
 /* set URL path */
-if (! isset($url_path)) {
+if (!isset($url_path)) {
 	$url_path = '';
 }
 $config['url_path'] = $url_path;
@@ -260,7 +266,7 @@ include_once($config['library_path'] . '/database.php');
 
 $filename = get_current_page();
 
-$config['is_web'] = true;
+$config['is_web'] = !defined('CACTI_CLI_ONLY');
 if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename, $no_http_header_files, true)) {
 	$config['is_web'] = false;
 }
@@ -388,11 +394,35 @@ if ($config['is_web']) {
 
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
-	ini_set('max_input_vars', '5000');
-	ini_set('session.cookie_httponly', '1');
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		ini_set('session.cookie_secure', '1');
+
+	/* add additional cookie directives */
+	ini_set('session.cookie_httponly', true);
+	ini_set('session.cookie_path', $config['url_path']);
+	ini_set('session.use_strict_mode', true);
+
+	$options = array(
+		'cookie_httponly' => true,
+		'cookie_path'     => $config['url_path'],
+		'use_strict_mode' => true
+	);
+
+	if (isset($cacti_cookie_domain) && $cacti_cookie_domain != '') {
+		ini_set('session.cookie_domain', $cacti_cookie_domain);
+		$options['cookie_domain'] = $cacti_cookie_domain;
 	}
+
+	// SameSite php7.3+ behavior
+	if (version_compare(PHP_VERSION, '7.3', '>=')) {
+		ini_set('session.cookie_samesite', 'Strict');
+		$options['cookie_samesite'] = 'Strict';
+	}
+
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+		ini_set('session.cookie_secure', true);
+		$options['cookie_secure'] = true;
+	}
+
+	$config['cookie_options'] = $options;
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -402,8 +432,17 @@ if ($config['is_web']) {
 	header('Pragma: no-cache');
 	header('X-Frame-Options: SAMEORIGIN');
 
+	// SameSite legacy behavior
+	if (version_compare(PHP_VERSION, '7.3', '<')) {
+		header('Set-Cookie: cross-site-cookie=bar; SameSite=Strict;' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? ' Secure':''));
+	}
+
 	/* increased web hardening */
-	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-ancestors 'self';");
+	$script_policy = read_config_option('content_security_policy_script');
+	if ($script_policy != '0' && $script_policy != '') {
+		$script_policy = "'$script_policy'";
+	}
+	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' $script_policy 'unsafe-inline'; frame-ancestors 'self';");
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
@@ -413,7 +452,7 @@ if ($config['is_web']) {
 		die('PHP Session Management is missing, please install PHP Session module');
 	}
 	session_name($cacti_session_name);
-	if (!session_id()) session_start();
+	if (!session_id()) session_start($config['cookie_options']);
 
 	/* we never run with magic quotes on */
 	if (version_compare(PHP_VERSION, '5.4', '<=')) {
@@ -494,27 +533,13 @@ include_once($config['library_path'] . '/html_form.php');
 include_once($config['library_path'] . '/html_filter.php');
 include_once($config['library_path'] . '/variables.php');
 include_once($config['library_path'] . '/mib_cache.php');
+include_once($config['library_path'] . '/poller.php');
 include_once($config['library_path'] . '/snmpagent.php');
 include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
+include_once($config['include_path'] . '/csrf.php');
 
-/* cross site request forgery library */
 if ($config['is_web']) {
-	function csrf_startup() {
-		global $config;
-		csrf_conf('rewrite-js', $config['url_path'] . 'include/vendor/csrf/csrf-magic.js');
-		csrf_conf('callback', 'csrf_error_callback');
-		csrf_conf('expires', 7200);
-	}
-
-	function csrf_error_callback() {
-		raise_message('csrf_timeout');
-		header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
-		exit;
-	}
-
-	include_once($config['include_path'] . '/vendor/csrf/csrf-magic.php');
-
 	if (isset_request_var('newtheme')) {
 		$newtheme=get_nfilter_request_var('newtheme');
 		$newtheme_css=__DIR__ . "/themes/$newtheme/main.css";
@@ -529,6 +554,20 @@ if ($config['is_web']) {
 
 	if (isset_request_var('csrf_timeout')) {
 		raise_message('csrf_ptimeout');
+	}
+
+	/* check for save actions using GET */
+	if (isset_request_var('action')) {
+		$action = get_nfilter_request_var('action');
+
+		$bad_actions = array('save', 'update_data', 'changepassword');
+
+		foreach($bad_actions as $bad) {
+			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
+				cacti_log('WARNING: Attempt to use GET method for POST operations from IP ' . get_client_addr(), false, 'WEBUI');
+				exit;
+			}
+		}
 	}
 }
 

@@ -78,6 +78,12 @@ $url_path = '/cacti/';
 $cacti_session_name = 'Cacti';
 
 /*
+ * Default Cookie domain - The cookie domain to be used for Cacti
+ */
+
+$cacti_cookie_domain = 'cacti.net';
+
+/*
  * Save sessions to a database for load balancing
  */
 
@@ -124,7 +130,7 @@ $disable_log_rotation = false;
  * the CRSF secret file.
  */
 
-//$path_csrf_secret = '/etc/cacti/csrf-secret.php';
+//$path_csrf_secret = '/usr/share/cacti/resource/csrf-secret.php';
 
 /*
  * The following are optional variables for debugging low level system

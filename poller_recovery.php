@@ -151,7 +151,7 @@ $start = microtime(true);
 
 $record_limit = 10000;
 $inserted     = 0;
-$sleep_time   = 3;
+$sleep_time   = 1;
 
 debug('About to start recovery processing');
 
@@ -178,73 +178,26 @@ if ($run) {
 		SET status="5"
 		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
-	poller_push_reindex_data_to_main(0, 0, true);
+	poller_push_reindex_data_to_poller(0, 0, true);
 
 	while (true) {
-		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries
-			FROM poller_output_boost
-			GROUP BY time', true, $local_db_cnn_id);
+		$max_time = db_fetch_cell("SELECT MAX(time)
+			FROM (
+				SELECT time
+				FROM poller_output_boost
+				ORDER BY time ASC
+				LIMIT $record_limit
+			) AS rs", '', true, $local_db_cnn_id);
 
-		debug('There are ' . cacti_sizeof($time_records) . ' in the recovery database');
 
-		$total_records = db_affected_rows();
-		$found         = 0;
-
-		if (!cacti_sizeof($time_records)) {
-			// This should happen, but only after purging at least some records
+		if (empty($max_time)) {
 			break;
 		} else {
-			$i          = 0;
-			$purge_time = 0;
-
-			/* traverse through the records getting the totals
-			 * continue doing this till you get to the end
-			 * or hit the record limit */
-			foreach ($time_records as $record) {
-				$time   = $record['time'];
-				$found += $record['entries'];
-				$i++;
-
-				if ($found > $record_limit) {
-					if ($i == $total_records) {
-						if ($end_count > 1) {
-							$operator = '<=';
-						} else {
-							$operator = '<';
-						}
-
-						$end_count++;
-						$sleep_time = 3;
-					} else {
-						$operator = '<=';
-						$sleep_time = 0;
-					}
-
-					$purge_time = $time;
-
-					break;
-				} elseif ($i == $total_records) {
-					if ($end_count > 1) {
-						$operator = '<=';
-					} else {
-						$operator = '<';
-					}
-
-					$end_count++;
-					$purge_time = $time;
-				}
-			}
-
-			if ($purge_time == 0) {
-				$rows = db_fetch_assoc("SELECT *
-					FROM poller_output_boost
-					ORDER BY time ASC", true, $local_db_cnn_id);
-			} else {
-				$rows = db_fetch_assoc("SELECT *
-					FROM poller_output_boost
-					WHERE time $operator '$purge_time'
-					ORDER BY time ASC", true, $local_db_cnn_id);
-			}
+			$rows = db_fetch_assoc_prepared('SELECT *
+				FROM poller_output_boost
+				WHERE time <= ?
+				ORDER BY time ASC, local_data_id ASC',
+				array($max_time));
 
 			if (cacti_sizeof($rows)) {
 				$count     = 0;
@@ -271,17 +224,14 @@ if ($run) {
 					db_execute("INSERT IGNORE INTO poller_output_boost
 						(local_data_id, rrd_name, time, output)
 						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
-					$inserted += $count;
+					$inserted += cacti_sizeof($rows);
 				}
 
 				/* remove the recovery records */
 				if (is_object($local_db_cnn_id)) {
-					// Only go through this if the local database is reachable
-					if ($purge_time == 0) {
-						db_execute("DELETE FROM poller_output_boost", true, $local_db_cnn_id);
-					} else {
-						db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
-					}
+					db_execute_prepared('DELETE FROM poller_output_boost
+						WHERE time <= ?',
+						array($max_time), true, $local_db_cnn_id);
 				}
 			}
 

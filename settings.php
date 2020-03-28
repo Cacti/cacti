@@ -847,21 +847,21 @@ default:
 	function initSearch() {
 		if ($('#auth_method').val() == 3) {
 			switch($('#ldap_mode').val()) {
-			case "0":
+			case '0':
 				$('#row_ldap_search_base_header').hide();
 				$('#row_ldap_search_base').hide();
 				$('#row_ldap_search_filter').hide();
 				$('#row_ldap_specific_dn').hide();
 				$('#row_ldap_specific_password').hide();
 				break;
-			case "1":
+			case '1':
 				$('#row_ldap_search_base_header').show();
 				$('#row_ldap_search_base').show();
 				$('#row_ldap_search_filter').show();
 				$('#row_ldap_specific_dn').hide();
 				$('#row_ldap_specific_password').hide();
 				break;
-			case "2":
+			case '2':
 				$('#row_ldap_search_base_header').show();
 				$('#row_ldap_search_base').show();
 				$('#row_ldap_search_filter').show();
@@ -901,7 +901,8 @@ default:
 
 	function initAuth() {
 		switch($('#auth_method').val()) {
-		case "0": // None
+		case '0': // None
+			$('#row_path_basic_mapfile').hide();
 			$('#row_special_users_header').hide();
 			$('#row_auth_cache_enabled').hide();
 			$('#row_guest_user').hide();
@@ -943,7 +944,8 @@ default:
 			$('#row_secpass_lockfailed').hide();
 			$('#row_secpass_unlocktime').hide();
 			break;
-		case "1": // Builtin
+		case '1': // Builtin
+			$('#row_path_basic_mapfile').hide();
 			$('#row_special_users_header').show();
 			$('#row_auth_cache_enabled').show();
 			$('#row_guest_user').show();
@@ -985,7 +987,8 @@ default:
 			$('#row_secpass_lockfailed').show();
 			$('#row_secpass_unlocktime').show();
 			break;
-		case "2": // Web Basic
+		case '2': // Web Basic
+			$('#row_path_basic_mapfile').show();
 			$('#row_special_users_header').show();
 			$('#row_auth_cache_enabled').hide();
 			$('#row_guest_user').show();
@@ -1027,7 +1030,8 @@ default:
 			$('#row_secpass_lockfailed').hide();
 			$('#row_secpass_unlocktime').hide();
 			break;
-		case "4": // Multiple Domains
+		case '4': // Multiple Domains
+			$('#row_path_basic_mapfile').hide();
 			$('#row_special_users_header').show();
 			$('#row_auth_cache_enabled').show();
 			$('#row_guest_user').show();
@@ -1069,7 +1073,7 @@ default:
 			$('#row_secpass_lockfailed').show();
 			$('#row_secpass_unlocktime').show();
 			break;
-		case "3": // Single Domain
+		case '3': // Single Domain
 			$('#row_special_users_header').show();
 			$('#row_auth_cache_enabled').show();
 			$('#row_guest_user').show();
@@ -1160,28 +1164,28 @@ default:
 
 	function initAvail() {
 		switch($('#availability_method').val()) {
-		case "0":
+		case '0':
 			$('#row_ping_method').hide();
 			$('#row_ping_port').hide();
 			$('#row_ping_timeout').hide();
 			$('#row_ping_retries').hide();
 			break;
-		case "1":
-		case "4":
+		case '1':
+		case '4':
 			$('#row_ping_method').show();
 			$('#row_ping_port').show();
 			$('#row_ping_timeout').show();
 			$('#row_ping_retries').show();
 			break;
-		case "3":
+		case '3':
 			$('#row_ping_method').show();
 			$('#row_ping_port').show();
 			$('#row_ping_timeout').show();
 			$('#row_ping_retries').show();
 			break;
-		case "2":
-		case "5":
-		case "6":
+		case '2':
+		case '5':
+		case '6':
 			$('#row_ping_method').hide();
 			$('#row_ping_port').hide();
 			$('#row_ping_timeout').show();

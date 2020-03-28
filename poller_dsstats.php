@@ -63,7 +63,7 @@ function sig_handler($signo) {
 			/* tell the main poller that we are done */
 			set_config_option('dsstats_poller_status', 'terminated - end time:' . date('Y-m-d G:i:s'));
 
-			exit;
+			exit(1);
 			break;
 		default:
 			/* ignore all other signals */
@@ -106,16 +106,16 @@ if (cacti_sizeof($parms)) {
 		case '-v':
 		case '-V':
 			display_version();
-			exit;
+			exit(0);
 		case '--help':
 		case '-h':
 		case '-H':
 			display_help();
-			exit;
+			exit(0);
 		default:
 			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 			display_help();
-			exit;
+			exit(1);
 		}
 	}
 }
@@ -135,6 +135,11 @@ dsstats_memory_limit();
 
 /* send a gentle message to the log and stdout */
 dsstats_debug('Polling Starting');
+
+/* silently end if the registered process is still running */
+if (!register_process_start('dsstats', 'master', $config['poller_id'], read_config_option('dsstats_timeout'))) {
+	exit(0);
+}
 
 /* only run if enabled, or forced */
 if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
@@ -217,3 +222,7 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 }
 
 dsstats_debug('Polling Ending');
+
+unregister_process('dsstats', 'master', $config['poller_id']);
+
+exit(0);

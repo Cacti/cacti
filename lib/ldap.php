@@ -376,13 +376,15 @@ class Ldap {
 	}
 
 	function RestoreCactiHandler() {
+		global $config;
+
 		/* drop out of ldaps error handler */
 		restore_error_handler();
 
 		/* set an error handler for Cacti */
 		set_error_handler('CactiErrorHandler');
 
-		session_start();
+		session_start($config['cookie_options']);
 	}
 
 	function RecordError($output, $section = 'LDAP') {
@@ -466,6 +468,9 @@ class Ldap {
 					/* Process group membership if required */
 					if ($this->group_member_type == 1) {
 						$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
+						if (!$ldap_group_response) {
+							$ldap_group_response = Ldap::isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
+						}
 					} else if ($this->group_member_type == 2) {
 						/* Do a lookup to find this user's true DN. */
 						/* ldap_exop_whoami is not yet included in PHP. For reference, the
@@ -873,6 +878,15 @@ class Ldap {
 
 		$this->RestoreCactiHandler();
 		return $output;
+	}
+
+	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
+		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
+		$ldapSearch  = @ldap_search($ldapConn,$ldapbasedn,$query,array("dn"));
+		$ldapResults = @ldap_get_entries($ldapConn, $ldapSearch);
+
+		// user should only be returned once IF they're a member of the group
+		return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true:false;
 	}
 }
 

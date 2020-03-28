@@ -839,11 +839,23 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_table_exists($table, $log = true, $db_conn = false) {
+	static $results;
+
+	if (isset($results[$table]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
+		return $results[$table];
+	}
+
+	// Separate the database from the table and remove backticks
 	preg_match("/([`]{0,1}(?<database>[\w_]+)[`]{0,1}\.){0,1}[`]{0,1}(?<table>[\w_]+)[`]{0,1}/", $table, $matches);
+
 	if ($matches !== false && array_key_exists('table', $matches)) {
 		$sql = 'SHOW TABLES LIKE \'' . $matches['table'] . '\'';
-		return (db_fetch_cell($sql, '', $log, $db_conn) ? true : false);
+
+		$results[$table] = (db_fetch_cell($sql, '', $log, $db_conn) ? true : false);
+
+		return $results[$table];
 	}
+
 	return false;
 }
 
@@ -889,7 +901,15 @@ function db_cacti_initialized($is_web = true) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_column_exists($table, $column, $log = true, $db_conn = false) {
-	return (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
+	static $results = array();
+
+	if (isset($results[$table][$column]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
+		return $results[$table][$column];
+	}
+
+	$results[$table][$column] = (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
+
+	return $results[$table][$column];
 }
 
 /* db_get_table_column_types - returns all the types for each column of a table

@@ -55,6 +55,31 @@ if (read_config_option('auth_method') == '2') {
 		$upart = explode('@', $username);
 		$username = $upart[0];
 	}
+
+	/* Handle mapping basic accounts to shortform accounts.
+	 * Fromat of map file is CSV: basic,shortform */
+	$mapfile = read_config_option('path_basic_mapfile');
+	if ($mapfile != '' && file_exists($mapfile) && is_readable($mapfile)) {
+		$records = file($mapfile);
+		$found   = false;
+
+		if (sizeof($records)) {
+			foreach($records as $r) {
+				list($basic, $shortform) = str_getcsv($r);
+
+				if (trim($basic) == $username) {
+					$username = trim($shortform);
+					$found    = true;
+
+					break;
+				}
+			}
+		}
+
+		if (!$found) {
+			cacti_log("WARNING: Username $username not found in basic mapfile.", false, 'AUTH');
+		}
+	}
 } else {
 	if (get_nfilter_request_var('action') == 'login') {
 		/* LDAP and Builtin get username from Form */
@@ -288,7 +313,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	$guest_user = false;
 	if (!cacti_sizeof($user) && $user_auth && get_guest_account() != '0') {
 		/* Locate guest user record */
-		$user = db_fetch_row_prepared('SELECT id, username, enabled
+		$user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
 			array(get_guest_account()));
@@ -311,7 +336,6 @@ if (get_nfilter_request_var('action') == 'login') {
 		auth_login($user);
 		if ($user['tfa_enabled'] != '') {
 			header('Location: auth_2fa.php');
-			exit;
 		} else {
 			auth_post_login_redirect($user);
 		}
@@ -334,10 +358,11 @@ if (get_nfilter_request_var('action') == 'login') {
 				FROM user_auth_group AS uag
 				INNER JOIN user_auth_group_members AS uagm
 				ON uag.id=uagm.group_id
-				WHERE user_id=?',
+				WHERE user_id = ?
+				AND login_opts != 4',
 				array($_SESSION['sess_user_id']));
 
-			if ($group_options > 0) {
+			if (!empty($group_options)) {
 				$user['login_opts'] = $group_options;
 			}
 		}
@@ -441,17 +466,17 @@ function auth_display_custom_error_message($message) {
 	global $config;
 
 	/* kill the session */
-	setcookie(session_name(), '', time() - 3600, $config['url_path']);
+	cacti_cookie_logout();
 
 	/* print error */
 	print '<!DOCTYPE html>';
-	print "<html>\n";
-	print "<head>\n";
+	print '<html>';
+	print '<head>';
 	html_common_header(__('Cacti'));
-	print "</head>\n";
-	print "<body>\n<br><br>\n";
-	print $message . "\n";
-	print "</body>\n</html>\n";
+	print '</head>';
+	print '<body><br><br>';
+	print $message;
+	print '</body></html>';
 }
 
 function domains_login_process() {
@@ -587,7 +612,8 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 
 	if (!empty($username)) $ldap->username = $username;
 	if (!empty($password)) $ldap->password = $password;
-	if (!empty($dn))       $ldap->dn       = $dn;
+
+	$ldap->dn = $dn;
 
 	$ld = db_fetch_row_prepared('SELECT *
 		FROM user_domains_ldap
@@ -595,7 +621,10 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 		array($realm-1000));
 
 	if (cacti_sizeof($ld)) {
-		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+		if (empty($dn) && !empty($ld['dn'])) {
+			$ldap->dn = $ld['dn'];
+		}
+
 		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
 		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
 		if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];
@@ -671,103 +700,163 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 
 $selectedTheme = get_selected_theme();
 
-html_auth_header('login', __('Login to Cacti'), __('User Login'), __('Enter your Username and Password below'),
-	array(
-		'ldap_error' => $ldap_error,
-		'ldap_error_message' => $ldap_error_message,
-		'username' => $username,
-		'user_enabled' => $user_enabled,
-		'action' => get_nfilter_request_var('action')));
 ?>
-		<tr>
-			<td>
-				<label for='login_username'><?php print __('Username');?></label>
-			</td>
-			<td>
-				<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for='login_password'><?php print __('Password');?></label>
-			</td>
-			<td>
-				<input type='password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
-			</td>
-		</tr>
-<?php
-if (read_config_option('auth_method') == '3' || read_config_option('auth_method') == '4') {
-	if (read_config_option('auth_method') == '3') {
-		$realms = api_plugin_hook_function('login_realms',
-			array(
-				'1' => array('name' => __('Local'), 'selected' => false),
-				'2' => array('name' => __('LDAP'),  'selected' => true)
-			)
-		);
-	} else {
-		$realms = get_auth_realms(true);
-	}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<?php html_common_header(api_plugin_hook_function('login_title', __('Login to Cacti')));?>
+</head>
+<body class='loginBody'>
+	<div class='loginLeft'></div>
+	<div class='loginCenter'>
+	<div class='loginArea'>
+		<div class='cactiLoginLogo'></div>
+			<legend><?php print __('User Login');?></legend>
+			<form id='login' name='login' method='post' action='<?php print get_current_page();?>'>
+				<input type='hidden' name='action' value='login'>
+				<?php api_plugin_hook_function('login_before',
+					array(
+						'ldap_error' => $ldap_error,
+						'ldap_error_message' => $ldap_error_message,
+						'username' => $username,
+						'user_enabled' => $user_enabled,
+						'action' => get_nfilter_request_var('action')));
+				?>
+				<div class='loginTitle'>
+					<p><?php print __('Enter your Username and Password below');?></p>
+				</div>
+				<div class='cactiLogin'>
+					<table class='cactiLoginTable'>
+						<tr>
+							<td>
+								<label for='login_username'><?php print __('Username');?></label>
+							</td>
+							<td>
+								<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for='login_password'><?php print __('Password');?></label>
+							</td>
+							<td>
+								<input type='password' autocomplete='new-password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
+							</td>
+						</tr>
+						<?php
+						if (read_config_option('auth_method') == '3' || read_config_option('auth_method') == '4') {
+							if (read_config_option('auth_method') == '3') {
+								$realms = api_plugin_hook_function('login_realms',
+									array(
+										'1' => array(
+											'name' => __('Local'),
+											'selected' => false
+										),
+										'2' => array(
+											'name' => __('LDAP'),
+											'selected' => true
+										)
+									)
+								);
+							} else {
+								$realms = get_auth_realms(true);
+							}
 
-	// try and remember previously selected realm
-	if ($frv_realm && array_key_exists($frv_realm, $realms)) {
-		foreach ($realms as $key => $realm) {
-			$realms[$key]['selected'] = ($frv_realm == $key);
+							// try and remember previously selected realm
+							if ($frv_realm && array_key_exists($frv_realm, $realms)) {
+								foreach ($realms as $key => $realm) {
+									$realms[$key]['selected'] = ($frv_realm == $key);
+								}
+							}
+						?>
+						<tr>
+							<td>
+								<label for='realm'><?php print __('Realm');?></label>
+							</td>
+							<td>
+								<select id='realm' name='realm' class='ui-state-default ui-corner-all'><?php
+									if (cacti_sizeof($realms)) {
+										foreach($realms as $index => $realm) {
+											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . "</option>\n";
+										}
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+					<?php } if (read_config_option('auth_cache_enabled') == 'on') { ?>
+						<tr>
+							<td colspan='2'>
+								<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) || !isempty_request_var('remember_me') ? 'checked':'');?>>
+								<label for='remember_me'><?php print __('Keep me signed in');?></label>
+							</td>
+						</tr>
+					<?php } ?>
+						<tr>
+							<td cospan='2'>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Login');?>'>
+							</td>
+						</tr>
+					</table>
+				</div>
+			<?php api_plugin_hook('login_after'); ?>
+			</form>
+			<div class='loginErrors'>
+				<?php
+				if ($ldap_error) {
+					print $ldap_error_message;
+				} else {
+					if (get_nfilter_request_var('action') == 'login') {
+						print __('Invalid User Name/Password Please Retype');
+					}
+					if ($user_enabled == '0') {
+						print __('User Account Disabled');
+					}
+				}
+				?>
+			</div>
+		</div>
+		<div class='versionInfo'><?php print __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT);?></div>
+	</div>
+	<div class='loginRight'></div>
+	<script type='text/javascript'>
+	var storage = Storages.localStorage;
+
+	$(function() {
+		preferredRealm = storage.get('user_realm');
+		if (preferredRealm == undefined) {
+			preferredRealm = $('#realm option:selected').val();
 		}
-	}
-?>
-		<tr>
-			<td>
-				<label for='realm'><?php print __('Realm');?></label>
-			</td>
-			<td>
-				<select id='realm' name='realm'><?php
-		if (cacti_sizeof($realms)) {
-			foreach($realms as $index => $realm) {
-				print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . "</option>\n";
+
+		// Restore the preferred realm
+		if ($('#realm').length) {
+			if (preferredRealm !== undefined) {
+				$('#realm').val(preferredRealm);
+				if ($('#realm').selectmenu('instance') !== undefined) {
+					$('#realm').selectmenu('refresh');
+				}
 			}
 		}
-?>
-				</select>
-			</td>
-		</tr>
-<?php
-} if (read_config_option('auth_cache_enabled') == 'on') { ?>
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) || !isempty_request_var('remember_me') ? 'checked':'');?>>
-				<label for='remember_me'><?php print __('Keep me signed in');?></label>
-			</td>
-		</tr>
-<?php
-} ?>
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Login');?>'>
-			</td>
-		</tr>
-<?php
-$error_message = "";
-if ($ldap_error) {
-	$error_message = $ldap_error;
-} else {
-	if (get_nfilter_request_var('action') == 'login') {
-		$error_message = __('Invalid User Name/Password Please Retype');
-	}
-	if ($user_enabled == '0') {
-		$error_message =  __('User Account Disabled');
-	}
-}
 
-$focus_control = (empty($username)) ? 'username' : 'password';
-html_auth_footer('login', $error_message, "
-	<script>
-		$(function() {
-			$('body').css('height', $(window).height());
-			$('.cactiAuthLeft').css('width',parseInt($(window).width()*0.33)+'px');
-			$('.cactiAuthRight').css('width',parseInt($(window).width()*0.33)+'px');
-			$('#login_${focus_control}').focus();
+		// Control submit in order to store preferred realm
+		$('#login').submit(function(event) {
+			event.preventDefault();
+			if ($('#realm').length) {
+				storage.set('user_realm', $('#realm').val());
+			}
+			$('#login').off('submit').trigger('submit');
 		});
+
+		$('body').css('height', $(window).height());
+		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
+		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+<?php if (empty($username)) { ?>
+		$('#login_username').focus();
+<?php } else { ?>
+		$('#login_password').focus();
+<?php } ?>
+	});
 	</script>
-");
+	<?php include_once(__DIR__ . '/include/global_session.php');?>
+</body>
+</html>

@@ -373,7 +373,7 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	if (sizeof($ip_hostnames)) {
 		foreach($ip_hostnames as $host) {
 			$parts = explode('.', $host);
-			$sql_where2 .= ($sql_where2 != '' ? ' OR ':' OR (') . "($column = '$parts[0]' OR $column LIKE '$parts[0].%' OR $column = '$host')";
+			$sql_where2 .= ($sql_where2 != '' ? ' OR ' : ($sql_where1 != '' ? ' OR ' : '') . ' (') . "($column = '$parts[0]' OR $column LIKE '$parts[0].%' OR $column = '$host')";
 		}
 		$sql_where2 .= ')';
 	}
@@ -404,7 +404,7 @@ function poller_host_duplicate($poller_id, $host) {
 }
 
 function form_actions() {
-	global $poller_actions;
+	global $config, $poller_actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -474,7 +474,7 @@ function form_actions() {
 					}
 				}
 
-				session_start(); // Start the session again
+				session_start($config['cookie_options']); // Start the session again
 
 				if (sizeof($failed)) {
 					cacti_log('WARNING: Some selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION['sess_user_id']) . ', Successful/Failed[' . sizeof($success) . '/' . sizeof($failed) . '].  See log for details.', false, 'WEBUI');
@@ -771,6 +771,10 @@ function pollers() {
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
+		'refresh' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '20'
+			),
 		'filter' => array(
 			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
@@ -790,6 +794,12 @@ function pollers() {
 
 	validate_store_request_vars($filters, 'sess_pollers');
 	/* ================= input validation ================= */
+
+	$refresh['page']    = 'pollers.php?header=false';
+	$refresh['seconds'] = get_request_var('refresh');
+	$refresh['logout']  = 'false';
+
+	set_page_refresh($refresh);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -827,6 +837,29 @@ function pollers() {
 						</select>
 					</td>
 					<td>
+						<?php print __('Refresh');?>
+					</td>
+					<td>
+						<select id='refresh' onChange='applyFilter()'>
+							<?php
+							$frequency = array(
+								5   => __('%d Seconds', 5),
+								10  => __('%d Seconds', 10),
+								20  => __('%d Seconds', 20),
+								30  => __('%d Seconds', 30),
+								45  => __('%d Seconds', 45),
+								60  => __('%d Minute', 1),
+								120 => __('%d Minutes', 2),
+								300 => __('%d Minutes', 5)
+							);
+
+							foreach ($frequency as $r => $row) {
+								echo "<option value='" . $r . "'" . (isset_request_var('refresh') && $r == get_request_var('refresh') ? ' selected' : '') . '>' . $row . '</option>';
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<span>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
@@ -840,6 +873,7 @@ function pollers() {
 			function applyFilter() {
 				strURL  = 'pollers.php?header=false';
 				strURL += '&filter='+$('#filter').val();
+				strURL += '&refresh='+$('#refresh').val();
 				strURL += '&rows='+$('#rows').val();
 				loadPageNoHeader(strURL);
 			}

@@ -160,19 +160,19 @@ label {
 }
 
 .cactiInstallSqlSuccess {
-	color: green;
+	color: green !important;
 }
 
 .cactiInstallSqlFailure {
-	color: red;
+	color: red !important;
 }
 
 .cactiInstallSqlWarning {
-	color: orange;
+	color: orange !important;
 }
 
 .cactiInstallSqlSkipped {
-	color: gray;
+	color: gray !important;
 }
 
 .cactiInstallSqlLeft, .cactInstallSqlRight {

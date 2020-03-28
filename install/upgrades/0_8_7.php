@@ -70,17 +70,23 @@ function upgrade_to_0_8_7() {
 
 	/* Convert to new authentication system */
 	$global_auth = "on";
-	$global_auth_db = db_fetch_row("SELECT value FROM settings WHERE name = 'global_auth'");
+	$global_auth_db_results = db_install_fetch_row("SELECT value FROM settings WHERE name = 'global_auth'");
+	$global_auth_db         = $global_auth_db_results['data'];
+
 	if (cacti_sizeof($global_auth_db)) {
 		$global_auth = $global_auth_db["value"];
 	}
+
 	$ldap_enabled = "";
-	$ldap_enabled_db = db_fetch_row("SELECT value FROM settings WHERE name = 'ldap_enabled'");
+	$ldap_enabled_db_results = db_install_fetch_row("SELECT value FROM settings WHERE name = 'ldap_enabled'");
+	$ldap_enabled_db         = $ldap_enabled_db_results['data'];
+
 	if (cacti_sizeof($ldap_enabled_db)) {
 		$ldap_enabled = $ldap_enabled_db["value"];
 	}
 
-	if (db_fetch_cell('SELECT value FROM settings WHERE name = \'auth_method\'') !== false) {
+	$auth_method_results = db_install_fetch_cell('SELECT value FROM settings WHERE name = \'auth_method\'');
+	if ($auth_method_results['data'] !== false) {
 		if ($global_auth == "on") {
 			if ($ldap_enabled == "on") {
 				db_install_execute("REPLACE INTO settings VALUES ('auth_method','3')");
@@ -93,70 +99,60 @@ function upgrade_to_0_8_7() {
 	}
 
 	db_install_execute("UPDATE `settings` SET value = '0' WHERE name = 'guest_user' and value = ''");
-	db_install_execute("UPDATE `settings` SET name = 'user_template' WHERE name = 'ldap_template'");
+
+	db_install_swap_setting('ldap_template', 'user_template');
+
 	db_install_execute("UPDATE `settings` SET value = '0' WHERE name = 'user_template' and value = ''");
 	db_install_execute("DELETE FROM `settings` WHERE name = 'global_auth'");
 	db_install_execute("DELETE FROM `settings` WHERE name = 'ldap_enabled'");
 
 	/* host settings for availability */
+	$ping_port           = 0;
 	$ping_method         = read_config_option("ping_method");
 	$ping_retries        = read_config_option("ping_retries");
 	$ping_timeout        = read_config_option("ping_timeout");
 	$availability_method = read_config_option("availability_method");
-	$hosts               = db_fetch_assoc("SELECT id, snmp_community, snmp_version FROM host");
+	$hosts_results       = db_install_fetch_assoc("SELECT id, snmp_community, snmp_version FROM host");
+	$hosts               = $hosts_results['data'];
 
 	if (cacti_sizeof($hosts)) {
 		foreach($hosts as $host) {
-			if (strlen($host["snmp_community"] != 0)) {
-				if ($host["snmp_version"] == "3") {
-					if ($availability_method == AVAIL_SNMP) {
-						db_install_execute("UPDATE host SET snmp_priv_protocol='[None]', snmp_auth_protocol='MD5', availability_method=" . AVAIL_SNMP . ", ping_method=" . PING_UDP . ",ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-					}else if ($availability_method == AVAIL_SNMP_AND_PING) {
-						if ($ping_method == PING_ICMP) {
-							db_install_execute("UPDATE host SET snmp_priv_protocol='[None]', availability_method=" . AVAIL_SNMP_AND_PING . ", ping_method=" . $ping_method . ", ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-						} else {
-							db_install_execute("UPDATE host SET snmp_priv_protocol='[None]', availability_method=" . AVAIL_SNMP_AND_PING . ", ping_method=" . $ping_method . ", ping_port=33439, ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-						}
-					} else {
-						if ($ping_method == PING_ICMP) {
-							db_install_execute("UPDATE host SET snmp_priv_protocol='[None]', availability_method=" . AVAIL_PING . ", ping_method=" . $ping_method . ", ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-						} else {
-							db_install_execute("UPDATE host SET snmp_priv_protocol='[None]', availability_method=" . AVAIL_PING . ", ping_method=" . $ping_method . ", ping_port=33439, ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-						}
-					}
+			if (strlen($host["snmp_community"]) != 0) {
+				if ($ping_method != PING_ICMP) {
+					$ping_port = 33439;
 				} else {
-					if ($availability_method == AVAIL_SNMP) {
-						db_install_execute("UPDATE host SET availability_method=" . AVAIL_SNMP . ", ping_method=" . PING_UDP . ",ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-					}else if ($availability_method == AVAIL_SNMP_AND_PING) {
-						if ($ping_method == PING_ICMP) {
-							db_install_execute("UPDATE host SET availability_method=" . AVAIL_SNMP_AND_PING . ", ping_method=" . $ping_method . ", ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-						} else {
-							db_install_execute("UPDATE host SET availability_method=" . AVAIL_SNMP_AND_PING . ", ping_method=" . $ping_method . ", ping_port=33439, ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-						}
-					} else {
-						if ($ping_method == PING_ICMP) {
-							db_install_execute("UPDATE host SET availability_method=" . AVAIL_PING . ", ping_method=" . $ping_method . ", ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-						} else {
-							db_install_execute("UPDATE host SET availability_method=" . AVAIL_PING . ", ping_method=" . $ping_method . ", ping_port=33439, ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-						}
-					}
+					$ping_port = 0;
 				}
-			} else {
-				if ($availability_method == AVAIL_SNMP) {
-					db_install_execute("UPDATE host SET availability_method=" . AVAIL_SNMP . ", ping_method=" . PING_UDP . ", ping_timeout = " . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-				}else if ($availability_method == AVAIL_SNMP_AND_PING) {
-					if ($ping_method == PING_ICMP) {
-						db_install_execute("UPDATE host SET availability_method=" . AVAIL_SNMP_AND_PING . ", ping_method=" . $ping_method . ", ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-					} else {
-						db_install_execute("UPDATE host SET availability_method=" . AVAIL_SNMP_AND_PING . ", ping_method=" . $ping_method . ", ping_port=33439, ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-					}
-				} else {
-					if ($ping_method == PING_ICMP) {
-						db_install_execute("UPDATE host SET availability_method=" . AVAIL_PING . ", ping_method=" . $ping_method . ", ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-					} else {
-						db_install_execute("UPDATE host SET availability_method=" . AVAIL_PING . ", ping_method=" . $ping_method . ", ping_port=33439, ping_timeout=" . $ping_timeout . ", ping_retries=" . $ping_retries . " WHERE id=" . $host["id"]);
-					}
+
+				$fields = array(
+					'snmp_priv_protocol',
+					'availability_method',
+					'ping_method',
+					'ping_timeout',
+					'ping_retries',
+				);
+
+				$params = array(
+					'[None]',
+					$availability_method,
+					$ping_method,
+					$ping_timeout,
+					$ping_retries
+				);
+
+				if (!empty($ping_port)) {
+					$fields['ping_port'] = '?';
+					array_push($params, $ping_port);
 				}
+
+				array_push($params, $host['id']);
+
+				$sqlFields = '';
+				foreach ($fields as $field) {
+					$sqlFields .= (empty($sqlFields) ? '' : ', ') . $field . ' => ?';
+				}
+
+				db_install_execute("UPDATE host SET " . $sqlFields . " WHERE id=?", $params);
 			}
 		}
 	}
@@ -172,10 +168,11 @@ function upgrade_to_0_8_7() {
 	/* Add 1 min rra */
 	if (db_table_exists('rra')) {
 		db_install_execute("INSERT INTO rra VALUES (DEFAULT,'283ea2bf1634d92ce081ec82a634f513','Hourly (1 Minute Average)',0.5,1,500,14400)");
-		$rrd_id = db_fetch_insert_id();
-		db_install_execute("INSERT INTO `rra_cf` VALUES ($rrd_id,1), ($rrd_id,3)");
+		$rrd_id = db_fetch_cell("SELECT id FROM rra WHERE hash='283ea2bf1634d92ce081ec82a634f513'");
+		db_install_execute("INSERT INTO `rra_cf` VALUES (?,1), (?,3)", array($rrd_id, $rrd_id));
 	}
 
 	/* rename cactid path to spine path */
-	db_install_execute("UPDATE settings SET name='path_spine' WHERE name='path_cactid'");
+	db_install_swap_setting('path_cactid', 'path_spine');
 }
+

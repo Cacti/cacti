@@ -131,6 +131,12 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
+// catch upgrade case
+if (!db_column_exists('poller', 'dbhost')) {
+	cacti_log('Poller is upgrading from pre Cacti 1.0, exiting till upgraded.', false, 'POLLER');
+	exit(0);
+}
+
 $phostname = db_fetch_cell_prepared('SELECT hostname
 	FROM poller
 	WHERE id = ?',
@@ -583,118 +589,120 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		/* Populate each execution file with appropriate information */
-		foreach ($polling_hosts as $item) {
-			if ($host_count == 1) {
-				$first_host = $item['id'];
+		if (cacti_sizeof($polling_hosts)) {
+			foreach ($polling_hosts as $item) {
+				if ($host_count == 1) {
+					$first_host = $item['id'];
+				}
+
+				if ($process_leveling != 'on') {
+					if ($host_count == $hosts_per_process) {
+						$last_host    = $item['id'];
+						$change_proc  = true;
+					}
+				} else {
+					if (isset($items_perhost[$item['id']])) {
+						$items_launched += $items_perhost[$item['id']];
+					}
+
+					if (($items_launched >= $items_per_process) ||
+						(cacti_sizeof($items_perhost) == $concurrent_processes)) {
+						$last_host      = $item['id'];
+						/* if this is the dummy entry for externally updated data sources
+						 * that are not related to any host (host id = 0), do NOT change_proc */
+						$change_proc    = ($item['id'] == 0 ? false : true);
+						$items_launched = 0;
+					}
+				}
+
+				$host_count ++;
+
+				if ($change_proc) {
+					exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''), $extra_parms);
+					usleep(100000);
+
+					$host_count   = 1;
+					$change_proc  = false;
+					$first_host   = 0;
+					$last_host    = 0;
+
+					$started_processes++;
+				}
 			}
 
-			if ($process_leveling != 'on') {
-				if ($host_count == $hosts_per_process) {
-					$last_host    = $item['id'];
-					$change_proc  = true;
-				}
-			} else {
-				if (isset($items_perhost[$item['id']])) {
-					$items_launched += $items_perhost[$item['id']];
-				}
+			// launch the last process
+			if ($host_count > 1) {
+				$last_host = $item['id'];
 
-				if (($items_launched >= $items_per_process) ||
-					(cacti_sizeof($items_perhost) == $concurrent_processes)) {
-					$last_host      = $item['id'];
-					/* if this is the dummy entry for externally updated data sources
-					 * that are not related to any host (host id = 0), do NOT change_proc */
-					$change_proc    = ($item['id'] == 0 ? false : true);
-					$items_launched = 0;
-				}
-			}
-
-			$host_count ++;
-
-			if ($change_proc) {
 				exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''), $extra_parms);
 				usleep(100000);
 
-				$host_count   = 1;
-				$change_proc  = false;
-				$first_host   = 0;
-				$last_host    = 0;
-
 				$started_processes++;
 			}
-		}
 
-		// launch the last process
-		if ($host_count > 1) {
-			$last_host = $item['id'];
+			if ($poller_id == 1) {
+				// insert the current date/time for graphs
+				set_config_option('date', date('Y-m-d H:i:s'));
 
-			exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''), $extra_parms);
-			usleep(100000);
+				// open a pipe to rrdtool for writing
+				$rrdtool_pipe = rrd_init();
+			}
 
-			$started_processes++;
-		}
+			if ($poller_type == '1') {
+				$max_threads = '0';
+			}
 
-		if ($poller_id == 1) {
-			// insert the current date/time for graphs
-			set_config_option('date', date('Y-m-d H:i:s'));
+			$rrds_processed = 0;
+			$poller_finishing_dispatched = false;
+			while (1) {
+				$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " count(*)
+					FROM poller_time
+					WHERE poller_id = ?
+					AND end_time >'0000-00-00 00:00:00'",
+					array($poller_id), '', true, $poller_db_cnn_id);
 
-			// open a pipe to rrdtool for writing
-			$rrdtool_pipe = rrd_init();
-		}
+				if ($finished_processes >= $started_processes) {
+					// all scheduled pollers are finished
+					if ($poller_finishing_dispatched === false) {
+						api_plugin_hook('poller_finishing');
+						$poller_finishing_dispatched = true;
+					}
 
-		if ($poller_type == '1') {
-			$max_threads = '0';
-		}
+					if ($poller_id == 1) {
+						$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, true);
+					}
 
-		$rrds_processed = 0;
-		$poller_finishing_dispatched = false;
-		while (1) {
-			$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " count(*)
-				FROM poller_time
-				WHERE poller_id = ?
-				AND end_time >'0000-00-00 00:00:00'",
-				array($poller_id), '', true, $poller_db_cnn_id);
-
-			if ($finished_processes >= $started_processes) {
-				// all scheduled pollers are finished
-				if ($poller_finishing_dispatched === false) {
-					api_plugin_hook('poller_finishing');
-					$poller_finishing_dispatched = true;
-				}
-
-				if ($poller_id == 1) {
-					$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, true);
-				}
-
-				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-					($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
-
-				break;
-			} else {
-				if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
-					print 'Waiting on ' . ($started_processes - $finished_processes) . ' of ' . $started_processes . " pollers.\n";
-				}
-
-				$mtb = microtime(true);
-
-				if ($poller_id == 1) {
-					$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
-				}
-
-				// end the process if the runtime exceeds MAX_POLLER_RUNTIME
-				if (($poller_start + MAX_POLLER_RUNTIME) < time()) {
-					cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded. Exiting.', true, 'POLLER');
-					admin_email(__('Cacti System Warning'), __('Maximum runtime of %d seconds exceeded for poller id %d. Exiting.', MAX_POLLER_RUNTIME, $poller_id));
-
-					// generate a snmp notification
-					snmpagent_poller_exiting();
-
-					api_plugin_hook_function('poller_exiting');
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
 						($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 					break;
-				} elseif (microtime(true) - $mtb < 1) {
-					sleep(1);
+				} else {
+					if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_MEDIUM || $debug) {
+						print 'Waiting on ' . ($started_processes - $finished_processes) . ' of ' . $started_processes . " pollers.\n";
+					}
+
+					$mtb = microtime(true);
+
+					if ($poller_id == 1) {
+						$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
+					}
+
+					// end the process if the runtime exceeds MAX_POLLER_RUNTIME
+					if (($poller_start + MAX_POLLER_RUNTIME) < time()) {
+						cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded. Exiting.', true, 'POLLER');
+						admin_email(__('Cacti System Warning'), __('Maximum runtime of %d seconds exceeded for poller id %d. Exiting.', MAX_POLLER_RUNTIME, $poller_id));
+
+						// generate a snmp notification
+						snmpagent_poller_exiting();
+
+						api_plugin_hook_function('poller_exiting');
+						log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
+							($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
+
+						break;
+					} elseif (microtime(true) - $mtb < 1) {
+						sleep(1);
+					}
 				}
 			}
 		}
@@ -852,10 +860,12 @@ function poller_replicate_check() {
 		AND (last_sync = '0000-00-00 00:00:00' OR requires_sync = 'on'
 		OR (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(last_sync) >= IFNULL(sync_interval, $sync_interval)))");
 
-	foreach($pollers as $poller) {
-		$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-		$extra_args = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_replicate.php') . ' --poller=' . $poller['id'];
-		exec_background($command_string, $extra_args);
+	if (cacti_sizeof($pollers)) {
+		foreach($pollers as $poller) {
+			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+			$extra_args = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_replicate.php') . ' --poller=' . $poller['id'];
+			exec_background($command_string, $extra_args);
+		}
 	}
 }
 

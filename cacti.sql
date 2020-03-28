@@ -80,7 +80,7 @@ CREATE TABLE `aggregate_graph_templates` (
   PRIMARY KEY (`id`),
   KEY `graph_template_id` (`graph_template_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB COMMENT='Template Definitions for Aggregate Graphs';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Template Definitions for Aggregate Graphs';
 
 --
 -- Table structure for table `aggregate_graph_templates_graph`
@@ -148,7 +148,7 @@ CREATE TABLE `aggregate_graph_templates_graph` (
   t_legend_direction char(2) DEFAULT '',
   legend_direction varchar(10) DEFAULT NULL,
   PRIMARY KEY (`aggregate_template_id`)
-) ENGINE=InnoDB COMMENT='Aggregate Template Graph Data';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Aggregate Template Graph Data';
 
 --
 -- Table structure for table `aggregate_graph_templates_item`
@@ -166,7 +166,7 @@ CREATE TABLE `aggregate_graph_templates_item` (
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_template_id`,`graph_templates_item_id`)
-) ENGINE=InnoDB COMMENT='Aggregate Template Graph Items';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Aggregate Template Graph Items';
 
 --
 -- Table structure for table `aggregate_graphs`
@@ -193,7 +193,7 @@ CREATE TABLE `aggregate_graphs` (
   KEY `local_graph_id` (`local_graph_id`),
   KEY `title_format` (`title_format`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB COMMENT='Aggregate Graph Definitions';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Aggregate Graph Definitions';
 
 --
 -- Table structure for table `aggregate_graphs_graph_item`
@@ -211,7 +211,7 @@ CREATE TABLE `aggregate_graphs_graph_item` (
   `item_skip` char(2) NOT NULL,
   `item_total` char(2) NOT NULL,
   PRIMARY KEY (`aggregate_graph_id`,`graph_templates_item_id`)
-) ENGINE=InnoDB COMMENT='Aggregate Graph Graph Items';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Aggregate Graph Graph Items';
 
 --
 -- Table structure for table `aggregate_graphs_items`
@@ -222,7 +222,7 @@ CREATE TABLE `aggregate_graphs_items` (
   `local_graph_id` int(10) unsigned NOT NULL,
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`aggregate_graph_id`,`local_graph_id`)
-) ENGINE=InnoDB COMMENT='Aggregate Graph Items';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Aggregate Graph Items';
 
 --
 -- Table structure for table `automation_devices`
@@ -256,7 +256,7 @@ CREATE TABLE `automation_devices` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ip` (`ip`),
   KEY `hostname` (`hostname`)
-) ENGINE=InnoDB COMMENT='Table of Discovered Devices';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table of Discovered Devices';
 
 --
 -- Table structure for table `automation_graph_rule_items`
@@ -271,7 +271,7 @@ CREATE TABLE `automation_graph_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB COMMENT='Automation Graph Rule Items';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Automation Graph Rule Items';
 
 --
 -- Dumping data for table `automation_graph_rule_items`
@@ -291,7 +291,7 @@ CREATE TABLE `automation_graph_rules` (
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB COMMENT='Automation Graph Rules';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Automation Graph Rules';
 
 --
 -- Dumping data for table `automation_graph_rules`
@@ -328,7 +328,7 @@ CREATE TABLE `automation_match_rule_items` (
   `operator` smallint(3) unsigned NOT NULL DEFAULT '0',
   `pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB COMMENT='Automation Match Rule Items';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Automation Match Rule Items';
 
 --
 -- Dumping data for table `automation_match_rule_items`
@@ -380,7 +380,7 @@ CREATE TABLE `automation_networks` (
   `rerun_data_queries` char(2) DEFAULT NULL COMMENT 'Rerun data queries or not for existing hosts',
   PRIMARY KEY (`id`),
   KEY `poller_id` (`poller_id`)
-) ENGINE=InnoDB COMMENT='Stores scanning subnet definitions';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores scanning subnet definitions';
 
 --
 -- Dumping data for table `automation_networks`
@@ -413,7 +413,7 @@ CREATE TABLE `automation_snmp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB COMMENT='Group of SNMP Option Sets';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Group of SNMP Option Sets';
 
 --
 -- Dumping data for table `automation_snmp`
@@ -443,7 +443,7 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_context` varchar(64) DEFAULT '',
   `snmp_engine_id` varchar(64) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
-) ENGINE=InnoDB COMMENT='Set of SNMP Options';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Set of SNMP Options';
 
 --
 -- Dumping data for table `automation_snmp_items`
@@ -464,7 +464,7 @@ CREATE TABLE `automation_templates` (
   `sysOid` varchar(60) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB COMMENT='Templates of SNMP Sys variables used for automation';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Templates of SNMP Sys variables used for automation';
 
 --
 -- Dumping data for table `automation_templates`
@@ -486,7 +486,7 @@ CREATE TABLE `automation_tree_rule_items` (
   `search_pattern` varchar(255) NOT NULL DEFAULT '',
   `replace_pattern` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB COMMENT='Automation Tree Rule Items';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Automation Tree Rule Items';
 
 --
 -- Dumping data for table `automation_tree_rule_items`
@@ -508,7 +508,7 @@ CREATE TABLE `automation_tree_rules` (
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB COMMENT='Automation Tree Rules';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Automation Tree Rules';
 
 --
 -- Dumping data for table `automation_tree_rules`
@@ -528,7 +528,7 @@ CREATE TABLE cdef (
   PRIMARY KEY (id),
   KEY `hash` (`hash`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `cdef`
@@ -554,7 +554,7 @@ CREATE TABLE cdef_items (
   value varchar(150) NOT NULL default '',
   PRIMARY KEY (id),
   KEY cdef_id_sequence (`cdef_id`,`sequence`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `cdef_items`
@@ -582,7 +582,7 @@ CREATE TABLE `color_templates` (
   `color_template_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`color_template_id`)
-) ENGINE=InnoDB COMMENT='Color Templates';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Color Templates';
 
 --
 -- Dumping data for table `color_templates`
@@ -603,7 +603,7 @@ CREATE TABLE `color_template_items` (
   `color_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `sequence` mediumint(8) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`color_template_item_id`)
-) ENGINE=InnoDB COMMENT='Color Items for Color Templates';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Color Items for Color Templates';
 
 --
 -- Dumping data for table `color_template_items`
@@ -665,7 +665,7 @@ CREATE TABLE colors (
   read_only char(2) default '',
   PRIMARY KEY (id),
   UNIQUE KEY hex (hex)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `colors`
@@ -1120,7 +1120,7 @@ CREATE TABLE data_input (
   type_id tinyint(2) NOT NULL default '0',
   PRIMARY KEY (id),
   KEY `name_type_id` (`name`(171), `type_id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `data_input`
@@ -1151,7 +1151,7 @@ CREATE TABLE data_input_data (
   PRIMARY KEY (data_input_field_id,data_template_data_id),
   KEY data_template_data_id (data_template_data_id),
   KEY t_value (t_value)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `data_input_data`
@@ -1228,7 +1228,7 @@ CREATE TABLE data_input_fields (
   KEY data_input_id (data_input_id),
   KEY input_output (input_output),
   KEY type_code_data_input_id (type_code, data_input_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `data_input_fields`
@@ -1319,7 +1319,7 @@ CREATE TABLE `data_debug` (
   KEY `done` (`done`),
   KEY `datasource` (`datasource`),
   KEY `started` (`started`)
-) ENGINE=InnoDB COMMENT='Datasource Debugger Information';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Datasource Debugger Information';
 
 --
 -- Dumping data for table `data_debug`
@@ -1339,7 +1339,7 @@ CREATE TABLE `data_source_profiles` (
   `default` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB COMMENT='Stores Data Source Profiles';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores Data Source Profiles';
 
 --
 -- Dumping data for table `data_source_profiles`
@@ -1358,7 +1358,7 @@ CREATE TABLE `data_source_profiles_cf` (
   `consolidation_function_id` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`data_source_profile_id`,`consolidation_function_id`),
   KEY `data_source_profile_id` (`data_source_profile_id`)
-) ENGINE=InnoDB COMMENT='Maps the Data Source Profile Consolidation Functions';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Maps the Data Source Profile Consolidation Functions';
 
 --
 -- Dumping data for table `data_source_profiles_cf`
@@ -1390,7 +1390,7 @@ CREATE TABLE `data_source_profiles_rra` (
   `timespan` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `data_source_profile_id` (`data_source_profile_id`)
-) ENGINE=InnoDB COMMENT='Stores RRA Definitions for Data Source Profiles';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores RRA Definitions for Data Source Profiles';
 
 --
 -- Dumping data for table `data_source_profiles_rra`
@@ -1455,7 +1455,7 @@ CREATE TABLE `data_source_stats_daily` (
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB;
+  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `data_source_stats_hourly`
@@ -1467,7 +1467,7 @@ CREATE TABLE `data_source_stats_hourly` (
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB;
+  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `data_source_stats_hourly_cache`
@@ -1504,7 +1504,7 @@ CREATE TABLE `data_source_stats_monthly` (
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB;
+  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `data_source_stats_weekly`
@@ -1516,7 +1516,7 @@ CREATE TABLE `data_source_stats_weekly` (
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB;
+  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `data_source_stats_yearly`
@@ -1528,7 +1528,7 @@ CREATE TABLE `data_source_stats_yearly` (
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB;
+  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `data_template`
@@ -1540,7 +1540,7 @@ CREATE TABLE data_template (
   name varchar(150) NOT NULL default '',
   PRIMARY KEY (id),
   KEY `name` (`name`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `data_template`
@@ -1571,7 +1571,7 @@ CREATE TABLE data_template_data (
   KEY data_template_id (data_template_id),
   KEY data_input_id (data_input_id),
   KEY name_cache (name_cache(191))
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `data_template_data`
@@ -1604,7 +1604,7 @@ CREATE TABLE data_template_rrd (
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
   KEY local_data_template_rrd_id (local_data_template_rrd_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `data_template_rrd`
@@ -1620,7 +1620,7 @@ CREATE TABLE external_links (
   extendedstyle varchar(50) NOT NULL DEFAULT '',
   refresh int unsigned default NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB COMMENT='Contains external links that are embedded into Cacti';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Contains external links that are embedded into Cacti';
 
 --
 -- Table structure for table `graph_local`
@@ -1657,7 +1657,7 @@ CREATE TABLE graph_template_input (
   description text,
   column_name varchar(50) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=InnoDB COMMENT='Stores the names for graph item input groups.';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores the names for graph item input groups.';
 
 --
 -- Dumping data for table `graph_template_input`
@@ -1672,7 +1672,7 @@ CREATE TABLE graph_template_input_defs (
   graph_template_item_id int(12) unsigned NOT NULL default '0',
   PRIMARY KEY (graph_template_input_id,graph_template_item_id),
   KEY graph_template_input_id (graph_template_input_id)
-) ENGINE=InnoDB COMMENT='Stores the relationship for what graph items are associated';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores the relationship for what graph items are associated';
 
 --
 -- Dumping data for table `graph_template_input_defs`
@@ -1690,7 +1690,7 @@ CREATE TABLE graph_templates (
   PRIMARY KEY (`id`),
   KEY `multiple_name` (`multiple`, `name`(171)),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB COMMENT='Contains each graph template name.';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Contains each graph template name.';
 
 --
 -- Dumping data for table `graph_templates`
@@ -1707,7 +1707,7 @@ CREATE TABLE graph_templates_gprint (
   gprint_text varchar(255) default NULL,
   PRIMARY KEY (id),
   KEY `name` (`name`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `graph_templates_gprint`
@@ -1793,7 +1793,7 @@ CREATE TABLE graph_templates_graph (
   KEY local_graph_id (local_graph_id),
   KEY graph_template_id (graph_template_id),
   KEY title_cache (title_cache(191))
-) ENGINE=InnoDB COMMENT='Stores the actual graph data.';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores the actual graph data.';
 
 --
 -- Dumping data for table `graph_templates_graph`
@@ -1831,7 +1831,7 @@ CREATE TABLE graph_templates_item (
   KEY local_graph_id_sequence (local_graph_id, sequence),
   KEY task_item_id (task_item_id),
   KEY `lgi_gti` (`local_graph_id`,`graph_template_id`)
-) ENGINE=InnoDB COMMENT='Stores the actual graph item data.';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores the actual graph item data.';
 
 --
 -- Dumping data for table `graph_templates_item`
@@ -1855,7 +1855,7 @@ CREATE TABLE graph_tree (
   PRIMARY KEY (`id`),
   KEY `sequence` (`sequence`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `graph_tree`
@@ -1886,7 +1886,7 @@ CREATE TABLE graph_tree_items (
   KEY `site_id` (`site_id`),
   KEY `local_graph_id` (`local_graph_id`),
   KEY `parent_position`(`parent`, `position`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `graph_tree_items`
@@ -1955,7 +1955,7 @@ CREATE TABLE host (
   KEY site_id_location (site_id, location),
   KEY hostname (hostname),
   KEY poller_id_last_updated (poller_id, last_updated)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `host`
@@ -1969,7 +1969,7 @@ CREATE TABLE host_graph (
   host_id mediumint(8) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (host_id,graph_template_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `host_graph`
@@ -2014,7 +2014,7 @@ CREATE TABLE host_snmp_query (
   reindex_method tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY (host_id,snmp_query_id),
   KEY host_id (host_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `host_snmp_query`
@@ -2030,7 +2030,7 @@ CREATE TABLE host_template (
   name varchar(100) NOT NULL default '',
   PRIMARY KEY (id),
   KEY `name` (`name`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `host_template`
@@ -2045,7 +2045,7 @@ CREATE TABLE host_template_graph (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (host_template_id,graph_template_id),
   KEY host_template_id (host_template_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `host_template_graph`
@@ -2060,7 +2060,7 @@ CREATE TABLE host_template_snmp_query (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (host_template_id, snmp_query_id),
   KEY host_template_id (host_template_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `host_template_snmp_query`
@@ -2081,7 +2081,7 @@ CREATE TABLE `plugin_config` (
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `plugin_hooks`
@@ -2097,7 +2097,7 @@ CREATE TABLE `plugin_hooks` (
   PRIMARY KEY (`id`),
   KEY `hook` (`hook`),
   KEY `status` (`status`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `plugin_realms`
@@ -2110,7 +2110,7 @@ CREATE TABLE `plugin_realms` (
   `display` varchar(64) NOT NULL default '',
   PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `plugin_db_changes`
@@ -2125,7 +2125,7 @@ CREATE TABLE `plugin_db_changes` (
   PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`),
   KEY `method` (`method`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 REPLACE INTO `plugin_realms` VALUES (1, 'internal', 'plugins.php', 'Plugin Management');
 INSERT INTO `plugin_hooks` VALUES (1, 'internal', 'config_arrays', '', 'plugin_config_arrays', 1);
@@ -2170,7 +2170,7 @@ CREATE TABLE `poller` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `disabled` (`disabled`)
-) ENGINE=InnoDB COMMENT='Pollers for Cacti';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Pollers for Cacti';
 
 INSERT INTO poller (id,name,hostname) VALUES (1,'Main Poller', 'localhost');
 
@@ -2186,7 +2186,7 @@ CREATE TABLE poller_command (
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (poller_id, action, command),
   KEY poller_id_last_updated (poller_id, last_updated)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `poller_data_template_field_mappings`
@@ -2198,7 +2198,7 @@ CREATE TABLE `poller_data_template_field_mappings` (
   `data_source_names` varchar(125) NOT NULL DEFAULT '',
   `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`data_template_id`, `data_name`, `data_source_names`)
-) ENGINE=InnoDB COMMENT='Tracks mapping of Data Templates to their Data Source Names';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Tracks mapping of Data Templates to their Data Source Names';
 
 --
 -- Table structure for table `poller_item`
@@ -2239,7 +2239,7 @@ CREATE TABLE poller_item (
   KEY `poller_id_rrd_next_step` (`poller_id`,`rrd_next_step`),
   KEY `poller_id_action` (`poller_id`,`action`),
   KEY `poller_id_last_updated` (`poller_id`, `last_updated`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `poller_output`
@@ -2263,7 +2263,7 @@ CREATE TABLE  `poller_output_boost` (
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `output` varchar(512) NOT NULL,
   PRIMARY KEY USING BTREE (`local_data_id`, `time`, `rrd_name`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `poller_output_boost_processes`
@@ -2285,10 +2285,10 @@ CREATE TABLE poller_output_realtime (
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
   poller_id varchar(256) NOT NULL default '1',
-  PRIMARY KEY (local_data_id,rrd_name,`time`),
+  PRIMARY KEY (local_data_id, rrd_name, time, poller_id),
   KEY poller_id (poller_id(191)),
   KEY `time` (`time`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `poller_reindex`
@@ -2304,7 +2304,7 @@ CREATE TABLE poller_reindex (
   arg1 varchar(255) NOT NULL default '',
   PRIMARY KEY (host_id, data_query_id, arg1(187)),
   KEY present (present)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `poller_resource_cache`
@@ -2320,7 +2320,7 @@ CREATE TABLE poller_resource_cache (
   `attributes` INT unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `path` (`path`)
-) ENGINE=InnoDB COMMENT='Caches all scripts, resources files, and plugins';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Caches all scripts, resources files, and plugins';
 
 --
 -- Table structure for table `poller_time`
@@ -2334,7 +2334,26 @@ CREATE TABLE poller_time (
   end_time timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY (id),
   KEY `poller_id_end_time` (`poller_id`, `end_time`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+
+--
+-- Table structure for table `processes`
+--
+
+CREATE TABLE `processes` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `pid` int(10) unsigned NOT NULL DEFAULT 0,
+  `tasktype` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `taskname` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `taskid` int(10) unsigned NOT NULL DEFAULT 0,
+  `timeout` int(11) DEFAULT 300,
+  `started` timestamp NOT NULL DEFAULT current_timestamp(),
+  `last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`pid`,`tasktype`,`taskname`,`taskid`),
+  KEY `tasktype` (`tasktype`),
+  KEY `pid` (`pid`),
+  KEY `id` (`id`)
+) ENGINE=MEMORY COMMENT='Stores Process Status for Cacti Background Processes';
 
 --
 -- Table structure for table `reports`
@@ -2404,7 +2423,7 @@ CREATE TABLE settings (
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
   PRIMARY KEY (name)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `settings`
@@ -2422,7 +2441,7 @@ CREATE TABLE settings_user (
   name varchar(50) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
   PRIMARY KEY (user_id, name)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `settings_user`
@@ -2438,7 +2457,7 @@ CREATE TABLE settings_user_group (
   name varchar(50) NOT NULL DEFAULT '',
   value varchar(2048) NOT NULL DEFAULT '',
   PRIMARY KEY (group_id, name)
-) ENGINE=InnoDB COMMENT='Stores the Default User Group Graph Settings';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores the Default User Group Graph Settings';
 
 --
 -- Table structure for table `settings_tree`
@@ -2449,7 +2468,7 @@ CREATE TABLE settings_tree (
   graph_tree_item_id mediumint(8) unsigned NOT NULL default '0',
   status tinyint(1) NOT NULL default '0',
   PRIMARY KEY (user_id, graph_tree_item_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `settings_tree`
@@ -2470,7 +2489,7 @@ CREATE TABLE snmp_query (
   data_input_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY name (name)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `snmp_query`
@@ -2489,7 +2508,7 @@ CREATE TABLE snmp_query_graph (
   PRIMARY KEY (id),
   KEY `graph_template_id_name` (`graph_template_id`, `name`),
   KEY `snmp_query_id_name` (`snmp_query_id`, `name`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `snmp_query_graph`
@@ -2507,7 +2526,7 @@ CREATE TABLE snmp_query_graph_rrd (
   PRIMARY KEY (snmp_query_graph_id,data_template_id,data_template_rrd_id),
   KEY data_template_rrd_id (data_template_rrd_id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `snmp_query_graph_rrd`
@@ -2528,7 +2547,7 @@ CREATE TABLE snmp_query_graph_rrd_sv (
   PRIMARY KEY (id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
   KEY data_template_id (data_template_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `snmp_query_graph_rrd_sv`
@@ -2547,7 +2566,7 @@ CREATE TABLE snmp_query_graph_sv (
   text varchar(255) NOT NULL default '',
   PRIMARY KEY (id),
   KEY snmp_query_graph_id (snmp_query_graph_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `snmp_query_graph_sv`
@@ -2589,7 +2608,7 @@ CREATE TABLE user_auth (
   KEY `username` (`username`),
   KEY `realm` (`realm`),
   KEY `enabled` (`enabled`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `user_auth`
@@ -2613,7 +2632,7 @@ CREATE TABLE `user_auth_cache` (
   KEY `hostname` (`hostname`),
   KEY `user_id` (`user_id`),
   KEY `last_update` (`last_update`)
-) ENGINE=InnoDB COMMENT='Caches Remember Me Details';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Caches Remember Me Details';
 
 --
 -- Dumping data for table `user_auth`
@@ -2638,7 +2657,7 @@ CREATE TABLE `user_auth_group` (
   `policy_graph_templates` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `enabled` char(2) NOT NULL DEFAULT 'on',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB COMMENT='Table that Contains User Groups';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table that Contains User Groups';
 
 --
 -- Dumping data for table `user_auth_group`
@@ -2653,7 +2672,7 @@ CREATE TABLE `user_auth_group_members` (
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`group_id`,`user_id`),
   KEY `realm_id` (`user_id`)
-) ENGINE=InnoDB COMMENT='Table that Contains User Group Members';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table that Contains User Group Members';
 
 --
 -- Dumping data for table `user_auth_group_members`
@@ -2669,7 +2688,7 @@ CREATE TABLE `user_auth_group_perms` (
   `type` tinyint(2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`group_id`,`item_id`,`type`),
   KEY `group_id` (`group_id`,`type`)
-) ENGINE=InnoDB COMMENT='Table that Contains User Group Permissions';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table that Contains User Group Permissions';
 
 --
 -- Dumping data for table `user_auth_group_perms`
@@ -2684,7 +2703,7 @@ CREATE TABLE `user_auth_group_realm` (
   `realm_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`group_id`,`realm_id`),
   KEY `realm_id` (`realm_id`)
-) ENGINE=InnoDB COMMENT='Table that Contains User Group Realm Permissions';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table that Contains User Group Realm Permissions';
 
 --
 -- Dumping data for table `user_auth_group_realm`
@@ -2700,7 +2719,7 @@ CREATE TABLE user_auth_perms (
   type tinyint(2) unsigned NOT NULL default '0',
   PRIMARY KEY (user_id,item_id,type),
   KEY user_id (user_id,type)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `user_auth_perms`
@@ -2716,7 +2735,7 @@ CREATE TABLE user_auth_realm (
   user_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (realm_id,user_id),
   KEY user_id (user_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `user_auth_realm`
@@ -2763,7 +2782,7 @@ CREATE TABLE user_log (
   `ip` varchar(40) NOT NULL default '',
   PRIMARY KEY (`username`,`user_id`,`time`),
   KEY user_id (`user_id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `user_log`
@@ -2781,7 +2800,7 @@ CREATE TABLE `user_domains` (
   `defdomain` tinyint(3) NOT NULL DEFAULT '0',
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`domain_id`)
-) ENGINE=InnoDB COMMENT='Table to Hold Login Domains';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table to Hold Login Domains';
 
 --
 -- Dumping data for table `user_domains`
@@ -2812,7 +2831,7 @@ CREATE TABLE `user_domains_ldap` (
   `cn_full_name` varchar(50) NULL DEFAULT '',
   `cn_email` varchar (50) NULL DEFAULT '',
   PRIMARY KEY (`domain_id`)
-) ENGINE=InnoDB COMMENT='Table to Hold Login Domains for LDAP';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table to Hold Login Domains for LDAP';
 
 --
 -- Dumping data for table `user_domains_ldap`
@@ -2828,7 +2847,7 @@ CREATE TABLE `sessions` (
   `access` int(10) unsigned DEFAULT NULL,
   `data` mediumblob,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB COMMENT='Used for Database based Session Storage';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Used for Database based Session Storage';
 
 --
 -- Dumping data for table `sessions`
@@ -2860,7 +2879,7 @@ CREATE TABLE `sites` (
   KEY `postal_code` (`postal_code`),
   KEY `country` (`country`),
   KEY `alternate_id` (`alternate_id`)
-) ENGINE=InnoDB COMMENT='Contains information about customer sites';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Contains information about customer sites';
 
 --
 -- Dumping data for table `sites`
@@ -2886,7 +2905,7 @@ CREATE TABLE `snmpagent_cache` (
   PRIMARY KEY (`oid`),
   KEY `name` (`name`),
   KEY `mib_name` (`mib`,`name`)
-) ENGINE=InnoDB COMMENT='SNMP MIB CACHE';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='SNMP MIB CACHE';
 
 --
 -- Dumping data for table `snmpagent_cache`
@@ -2900,7 +2919,7 @@ CREATE TABLE `snmpagent_mibs` (
   `name` varchar(50) NOT NULL DEFAULT '',
   `file` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB COMMENT='Registered MIB files';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Registered MIB files';
 
 --
 -- Dumping data for table `snmpagent_mibs`
@@ -2917,7 +2936,7 @@ CREATE TABLE `snmpagent_cache_notifications` (
   `sequence_id` smallint(6) NOT NULL,
   PRIMARY KEY (`name`,`mib`,`attribute`,`sequence_id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB COMMENT='Notifcations and related attributes';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Notifcations and related attributes';
 
 --
 -- Dumping data for table `snmpagent_cache_notifications`
@@ -2935,7 +2954,7 @@ CREATE TABLE `snmpagent_cache_textual_conventions` (
   PRIMARY KEY (`name`,`mib`,`type`),
   KEY `name` (`name`),
   KEY `mib` (`mib`)
-) ENGINE=InnoDB COMMENT='Textual conventions';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Textual conventions';
 
 --
 -- Dumping data for table `snmpagent_cache_textual_conventions`
@@ -2964,7 +2983,7 @@ CREATE TABLE `snmpagent_managers` (
   `notes` text,
   PRIMARY KEY (`id`),
   KEY `hostname` (`hostname`)
-) ENGINE=InnoDB COMMENT='snmp notification receivers';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='snmp notification receivers';
 
 --
 -- Dumping data for table `snmpagent_managers`
@@ -2981,7 +3000,7 @@ CREATE TABLE `snmpagent_managers_notifications` (
   PRIMARY KEY(`manager_id`,`notification`,`mib`),
   KEY `mib` (`mib`),
   KEY `manager_id_notification` (`manager_id`,`notification`)
-) ENGINE=InnoDB COMMENT='snmp notifications to receivers';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='snmp notifications to receivers';
 
 --
 -- Dumping data for table `snmpagent_managers_notifications`
@@ -3003,7 +3022,7 @@ CREATE TABLE `snmpagent_notifications_log` (
   KEY `time` (`time`),
   KEY `severity` (`severity`),
   KEY `manager_id_notification` (`manager_id`,`notification`)
-) ENGINE=InnoDB COMMENT='logs snmp notifications to receivers';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='logs snmp notifications to receivers';
 
 --
 -- Dumping data for table `snmpagent_notifications_log`
@@ -3020,7 +3039,7 @@ CREATE TABLE vdef (
   PRIMARY KEY (id),
   KEY `hash` (`hash`),
   KEY `name` (`name`(171))
-) ENGINE=InnoDB COMMENT='vdef';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='vdef';
 
 --
 -- Dumping data for table `vdef`
@@ -3047,7 +3066,7 @@ CREATE TABLE vdef_items (
   `value` varchar(150) NOT NULL default '',
   PRIMARY KEY (id),
   KEY `vdef_id_sequence` (`vdef_id`,`sequence`)
-) ENGINE=InnoDB COMMENT='vdef items';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='vdef items';
 
 --
 -- Dumping data for table `vdef_items`
@@ -3076,7 +3095,7 @@ INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '
 CREATE TABLE version (
   cacti char(30) default '',
   PRIMARY KEY (cacti)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `version`

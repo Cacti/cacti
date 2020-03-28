@@ -629,10 +629,10 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
    @arg $local_graph_id - the id of the graph to change the graph template for
    @arg $graph_template_id - id the of the graph template to change to. specify '0' for no
 	graph template
-   @arg $intrusive - (true) if the target graph template has more or less graph items than
+   @arg $force - (true) if the target graph template has more or less graph items than
 	the current graph, remove or add the items from the current graph to make them equal.
 	(false) leave the graph item count alone */
-function change_graph_template($local_graph_id, $graph_template_id, $intrusive = true) {
+function change_graph_template($local_graph_id, $graph_template_id, $force = true) {
 	global $struct_graph, $struct_graph_item;
 
 	$template_data     = parse_graph_template_id($graph_template_id);
@@ -661,12 +661,14 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 		WHERE id = ?',
 		array($graph_template_id, $local_graph_id));
 
-	if ($output_type_id > 0) {
+	if ($force) {
 		$changed = true;
-	}else if (cacti_sizeof($graph_list) && $graph_template_id != $graph_list['graph_template_id']) {
+	} elseif ($output_type_id > 0) {
 		$changed = true;
-	} else {
+	} else if (cacti_sizeof($graph_list) && $graph_template_id != $graph_list['graph_template_id']) {
 		$changed = false;
+	} else {
+		$changed = true;
 	}
 
 	if ($graph_template_id == 0) {
@@ -1118,7 +1120,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				cacti_log('Data Source values "' . implode(', ', array_values($previous_data_source)) . '"', false, 'DSTRACE');
 			}
 
-			if (sizeof($previous_data_source)) {
+			if (cacti_sizeof($previous_data_source)) {
 				$use_previous_data = create_graph_custom_data_compatible($suggested_vals, $previous_data_source);
 			} else {
 				$use_previous_data = false;

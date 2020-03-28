@@ -180,7 +180,7 @@ if (empty($l10n_handler)) {
 		$l10n_handler = CACTI_LANGUAGE_HANDLER_OSCAROTERO;
 	} elseif (file_exists($config['include_path'] . '/vendor/phpgettext/streams.php')) {
 		$l10n_handler = CACTI_LANGUAGE_HANDLER_PHPGETTEXT;
-	} elseif (file_exists($config['include_path'] . '/vendor/motanslator/src/Translator.php')) {
+	} elseif (file_exists($config['include_path'] . '/vendor/motranslator/src/Translator.php')) {
 		$l10n_handler = CACTI_LANGUAGE_HANDLER_MOTRANSLATOR;
 	}
 }

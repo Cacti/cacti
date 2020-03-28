@@ -335,7 +335,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to delete the selected User(s).') . "</p>
 					<div class='itemlist'><ul>$user_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete User(s)') . "'>";
 		}
@@ -375,7 +375,7 @@ function form_actions() {
 			print form_dropdown('new_realm', $auth_realms, '', '', $user_realm, '', 0);
 
 			print "</p></td>
-				</tr>\n";
+				</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Copy User') . "'>";
 		}
@@ -386,7 +386,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to enable the selected User(s).'). "</p>
 					<div class='itemlist'><ul>$user_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Enable User(s)') . "'>";
 		}
@@ -397,7 +397,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to disable the selected User(s).') . "</p>
 					<div class='itemlist'><ul>$user_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable User(s)') . "'>";
 		}
@@ -420,7 +420,7 @@ function form_actions() {
 						<p>" . __('User(s) to update:') . "</p>
 						<ul>$user_list</ul>
 					</td>
-				</tr>\n";
+				</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Reset User(s) Settings') . "'>";
 		}
@@ -435,15 +435,15 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>";
 
 	if (get_nfilter_request_var('drp_action') == '2') { // copy
-		print "<input type='hidden' name='selected_items' value='" . $user_id . "'>\n";
+		print "<input type='hidden' name='selected_items' value='" . $user_id . "'>";
 	} else {
-		print "<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
+		print "<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>";
 	}
 
 	print "<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 		$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -1651,25 +1651,18 @@ function user_realms_edit($header_label) {
 			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " " . html_escape($header_label) . "</span></div>
 			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'></a><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></span></div>
 		</div>
-	</div>\n";
+	</div>";
 
 	form_start('user_admin.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* do cacti realms first */
-	$i = 1;
 	foreach($user_auth_roles as $role_name => $perms) {
-		$j = 1;
+		print "<tr class='tableHeader'><th colspan='2'>" . html_escape($role_name) . "</th></tr>";
+		print "<tr class='odd'><td colspan='2'><div class='flexContainer'>";
 
-		print "<tr class='tableHeader'><th colspan='2'>" . $role_name . "</th></tr>\n";
-		print "<tr class='odd'><td colspan='4' style='width:100%;'><table style='width:100%;'>\n";
 		foreach($perms as $realm) {
-			if ($j == 1) {
-				print "<tr>\n";
-			}
-
-			print "<td class='realms'>\n";
 			if (isset($user_auth_realms[$realm])) {
 				$set = db_fetch_cell_prepared('SELECT realm_id
 					FROM user_auth_realm
@@ -1677,32 +1670,23 @@ function user_realms_edit($header_label) {
 					AND realm_id = ?',
 					array(get_request_var('id', 0), $realm));
 
-				if (!empty($set)) {
+				if ($set) {
 					$old_value = 'on';
 				} else {
 					$old_value = '';
 				}
 
+				$display = str_replace(array('Plugin ->', 'Plugin ', 'Configure '), '', $user_auth_realms[$realm]);
+
 				unset($all_realms[$realm]);
 
-				form_checkbox('section' . $realm, $old_value, $user_auth_realms[$realm], '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
-			}
-			print "</td>\n";
-
-			if ($j == 5) {
-				print "</tr>\n";
-				$j = 1;
-			} else {
-				$j++;
+				print '<div class="flexChild">';
+				form_checkbox('section' . $realm, $old_value, $display, '', '', '', (!isempty_request_var('id') ? 1 : 0), $display, true);
+				print '</div>';
 			}
 		}
 
-		if ($j > 1) {
-			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
-			print "</tr>\n";
-		}
-
-		print "</table></td></tr>\n";
+		print '</div></td></tr>';
 	}
 
 	/* external links */
@@ -1715,19 +1699,20 @@ function user_realms_edit($header_label) {
 		'FRONTTOP'   => __('Top Console')
 	);
 
-	print "<tr class='tableHeader'><th colspan='2'>" . __('External Link Permissions') . "</th></tr>\n";
-	print "<tr class='odd'><td colspan='4'><table style='width:100%;'><tr><td class='realms'>\n";
 	if (cacti_sizeof($links)) {
-		$j = 1;
+		print "<tr class='tableHeader'><th class='left' colspan='2'>" . __('External Link Permissions') . "</th></tr>";
+		print "<tr class='odd'><td class='left' colspan='2'><div class='flexContainer'>";
 
 		foreach($links as $r) {
-			if ($j == 1) {
-				print "<tr>\n";
-			}
-
 			$realm = $r['id'] + 10000;
 
-			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+			$set = db_fetch_cell_prepared('SELECT realm_id
+				FROM user_auth_realm
+				WHERE user_id = ?
+				AND realm_id = ?',
+				array(get_request_var('id', 0), $realm));
+
+			if ($set) {
 				$old_value = 'on';
 			} else {
 				$old_value = '';
@@ -1735,35 +1720,22 @@ function user_realms_edit($header_label) {
 
 			unset($all_realms[$realm]);
 
-			print "<td class='realms'>\n";
-
 			switch($r['style']) {
 			case 'CONSOLE':
-				$description = $style_translate[$r['style']] . ': ' . ($r['extendedstyle'] == '' ? 'External Links' : $r['extendedstyle']) . '/' . $r['title'];
+				$description = $style_translate[$r['style']] . ': ' . ($r['extendedstyle'] == '' ? __('External Links') : $r['extendedstyle']) . '/' . $r['title'];
 				break;
 			default:
 				$description = $style_translate[$r['style']] . ': ' . ucfirst($r['title']);
 				break;
 			}
 
-			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
-
-			print "</td>\n";
-
-			if ($j == 5) {
-				print "</tr>\n";
-				$j = 1;
-			} else {
-				$j++;
-			}
+			print '<div class="flexChild">';
+			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0), $description, true);
+			print '</div>';
 		}
 
-		if ($j > 1) {
-			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
-			print "</tr>\n";
-		}
+		print '</div></td></tr>';
 	}
-	print "</tr></table></td></tr>\n";
 
 	/* do plugin realms */
 	$realms = db_fetch_assoc('SELECT pc.directory, pc.name, pr.id AS realm_id, pr.display
@@ -1772,40 +1744,29 @@ function user_realms_edit($header_label) {
 		ON pc.directory = pr.plugin
 		ORDER BY pc.name, pr.display');
 
-	print "<tr class='tableHeader'><th colspan='2'>" . __('Plugin Permissions') . "</th></tr>\n";
-	print "<tr class='odd'><td colspan='4'><table style='width:100%;'><tr><td class='realms'>\n";
+	$i = 0;
+
 	if (cacti_sizeof($realms)) {
-		$last_plugin = 'none';
-		$i = 1;
-		$j = 1;
-
-		$break = false;
 		foreach($realms as $r) {
-			if ($last_plugin != $r['name'] && $last_plugin != 'none') {
-				$break = true;
-
-				if ($j == 5) {
-					print "</td></tr><tr>\n";
-					$j = 1;
-				} else {
-					$j++;
-				}
-			}
-
-			if ($break) {
-				if($j != 1) {
-					print "</td>\n";
-				}
-				print "<td class='realms'>\n";
-			}
-
-			if ($break || $i == 1) {
-				print "<i>" . html_escape(__($r['name'], $r['directory'])) . "</i><br>\n";
-			}
-
 			$realm = $r['realm_id'] + 100;
 
-			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+			// Skip already set realms
+			foreach($user_auth_roles as $role => $rrealms) {
+				foreach($rrealms as $realm_id) {
+					if ($realm == $realm_id) {
+						unset($all_realms[$realm]);
+						continue 3;
+					}
+				}
+			}
+
+			$set = db_fetch_cell_prepared('SELECT realm_id
+				FROM user_auth_realm
+				WHERE user_id = ?
+				AND realm_id = ?',
+				array(get_request_var('id', 0), $realm));
+
+			if ($set) {
 				$old_value = 'on';
 			} else {
 				$old_value = '';
@@ -1817,26 +1778,34 @@ function user_realms_edit($header_label) {
 
 			$pos = (strpos($local_user_auth_realms, '->') !== false ? strpos($local_user_auth_realms, '->')+2:0);
 
-			form_checkbox('section' . $realm, $old_value, trim(substr($local_user_auth_realms, $pos)), '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
+			if ($i == 0) {
+				print "<tr class='tableHeader'><th class='left' colspan='2'>" . __('Plugin Permissions') . "</th></tr>";
+				print "<tr class='odd'><td colspan='2'><div class='flexContainer'>";
+				$i++;
+			}
 
-			$last_plugin = $r['name'];
+			print '<div class="flexChild">';
+			form_checkbox('section' . $realm, $old_value, trim(substr($local_user_auth_realms, $pos)), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			print '</div>';
+		}
 
-			$break = false;
-			$i++;
+		if ($i > 0) {
+			print '</div></td></tr>';
 		}
 	}
 
 	/* get the old PIA 1.x realms */
 	if (cacti_sizeof($all_realms)) {
-		print "</td>\n";
-		if ($j == 5) {
-			print "</tr><tr>\n";
-		}
-		print "<td class='realms'>\n";
+		print "<tr class='tableHeader'><th class='left' colspan='2'>" . __('Legacy Permissions') . "</th></tr>";
 
-		print '<i>' . __('Legacy 1.x Plugins') . '</i><br>';
 		foreach($all_realms as $realm => $name) {
-			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+			$set = db_fetch_cell_prepared('SELECT realm_id
+				FROM user_auth_realm
+				WHERE user_id = ?
+				AND realm_id = ?',
+				array(get_request_var('id', 0), $realm));
+
+			if ($set) {
 				$old_value = 'on';
 			} else {
 				$old_value = '';
@@ -1844,11 +1813,15 @@ function user_realms_edit($header_label) {
 
 			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->')+2:0);
 
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
+			print '<div class="flexChild">';
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			print '</div>';
 		}
+
+		print '</div></td></tr>';
 	}
 
-	print "</td></tr></table></td></tr>\n";
+	print '</table></td></tr>';
 	?>
 	<script type='text/javascript'>
 	function selectAllRealms(checked) {
@@ -1890,7 +1863,7 @@ function settings_edit($header_label) {
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
 
-        print "<div class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</div></div>\n";
+        print "<div class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</div></div>";
 
 		$form_array = array();
 
@@ -2024,21 +1997,21 @@ function user_edit() {
 		$i = 0;
 
 		/* draw the tabs */
-		print "<div class='tabs'><nav><ul role='tablist'>\n";
+		print "<div class='tabs'><nav><ul role='tablist'>";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 				" href='" . html_escape($config['url_path'] .
 				'user_admin.php?action=user_edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
-				"'>" . $tabs[$tab_short_name] . "</a></li>\n";
+				"'>" . $tabs[$tab_short_name] . "</a></li>";
 
 			$i++;
 		}
 
 		api_plugin_hook('user_admin_tab');
 
-		print "</ul></nav></div>\n";
+		print "</ul></nav></div>";
 	}
 
 	switch($current_tab) {
@@ -2077,7 +2050,7 @@ function user_edit() {
 			if ($('#password').val().length == 0) {
 				$('#pass').remove();
 				$('#passconfirm').remove();
-			}else if ($('#password').val().length < minChars) {
+			} else if ($('#password').val().length < minChars) {
 				$('#pass').remove();
 				$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;"><?php print __('Password Too Short')?></span></span>');
 			} else {
@@ -2286,7 +2259,7 @@ function user() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2628,7 +2601,7 @@ function graph_filter($header_label) {
 
 							if (cacti_sizeof($graph_templates)) {
 								foreach ($graph_templates as $gt) {
-									print "<option value='" . $gt['id'] . "'"; if (get_request_var('graph_template_id') == $gt['id']) { print ' selected'; } print '>' . html_escape($gt['name']) . "</option>\n";
+									print "<option value='" . $gt['id'] . "'"; if (get_request_var('graph_template_id') == $gt['id']) { print ' selected'; } print '>' . html_escape($gt['name']) . "</option>";
 								}
 							}
 							?>
@@ -2643,7 +2616,7 @@ function graph_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2728,7 +2701,7 @@ function group_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2817,7 +2790,7 @@ function device_filter($header_label) {
 
 							if (cacti_sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>\n";
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>";
 								}
 							}
 							?>
@@ -2832,7 +2805,7 @@ function device_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2917,7 +2890,7 @@ function template_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -3002,7 +2975,7 @@ function tree_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -3087,7 +3060,7 @@ function member_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>

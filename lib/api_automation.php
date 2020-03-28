@@ -2153,20 +2153,19 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' Device[' . $host_id . "] - start - data query: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	if ($config['is_web'] == false && $config['poller_id'] > 1) {
-		return false;
-	}
-
 	# get all related rules for that data query that are enabled
-	$sql = "SELECT agr.id, agr.name,
+	$sql = 'SELECT agr.id, agr.name,
 		agr.snmp_query_id, agr.graph_type_id
 		FROM automation_graph_rules AS agr
-		WHERE snmp_query_id=$snmp_query_id
-		AND enabled='on'";
+		INNER JOIN host_snmp_query AS hsq
+		ON agr.snmp_query_id = hsq.snmp_query_id
+		WHERE agr.snmp_query_id = ?
+		AND hsq.host_id = ?
+		AND enabled="on"';
 
-	$rules = db_fetch_assoc($sql);
+	$rules = db_fetch_assoc_prepared($sql, array($snmp_query_id, $host_id));
 
-	cacti_log($function . ' Device[' . $host_id . '] - sql: ' . str_replace("\n",' ', $sql) . ' - found: ' . cacti_sizeof($rules), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+	cacti_log($function . ' Device[' . $host_id . '] - sql: ' . str_replace("\t", '', str_replace("\n", ' ', $sql)) . ' - found: ' . cacti_sizeof($rules), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
 	if (!cacti_sizeof($rules)) {
 		return;
@@ -2182,7 +2181,7 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 				h.description, ht.name AS host_template_name
 				FROM host AS h
 				LEFT JOIN host_template AS ht
-				ON h.host_template_id=ht.id';
+				ON h.host_template_id = ht.id';
 
 			/* get the WHERE clause for matching hosts */
 			$sql_filter = build_matching_objects_filter($rule['id'], AUTOMATION_RULE_TYPE_GRAPH_MATCH);
@@ -2994,7 +2993,8 @@ function automation_get_valid_mask($range) {
 			$cidr = $range;
 			$mask = array(
 				'cidr' => $cidr,
-				'subnet' => long2ip(bindec(str_repeat('1',$range) . str_repeat('0',32-$range))));
+				'subnet' => long2ip((pow(2, $range)-1) << (32-$range)),
+			);
 		} else {
 			$mask = false;
 		}
@@ -3846,7 +3846,7 @@ function automation_update_device($host_id) {
 	cacti_log($function . ' Device[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 	/* select all graph templates associated with this host, but exclude those where
-	*  a graph already exists (table graph_local has a known entry for this host/template) */
+ 	 * a graph already exists (table graph_local has a known entry for this host/template) */
 	$sql = 'SELECT gt.*
 		FROM graph_templates AS gt
 		INNER JOIN host_graph AS hg

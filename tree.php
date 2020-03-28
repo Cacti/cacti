@@ -30,7 +30,8 @@ include_once('./lib/data_query.php');
 $tree_actions = array(
 	1 => __x('dropdown action', 'Delete'),
 	2 => __x('dropdown action', 'Publish'),
-	3 => __x('dropdown action', 'Un Publish')
+	3 => __x('dropdown action', 'Un-Publish'),
+	4 => __x('dropdown action', 'Un-Lock')
 );
 
 /* set default action */
@@ -602,6 +603,12 @@ function form_actions() {
 					last_modified=NOW(),
 					modified_by=" . $_SESSION['sess_user_id'] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
+			} elseif (get_nfilter_request_var('drp_action') == '4') { // un-lock
+				db_execute("UPDATE graph_tree
+					SET locked=0,
+					last_modified=NOW(),
+					modified_by=" . $_SESSION['sess_user_id'] . '
+					WHERE ' . array_to_sql_or($selected_items, 'id'));
 			}
 		}
 
@@ -660,6 +667,15 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', cacti_sizeof($tree_array)) . "'>";
+		} elseif (get_nfilter_request_var('drp_action') == '4') { // un-lock
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>" . __n('Click \'Continue\' to un-lock the following Tree.', 'Click \'Continue\' to un-lock following Trees.', cacti_sizeof($tree_array)) . "</p>
+					<div class='itemlist'><ul>$tree_list</ul></div>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-lock Tree', 'Un-lock Trees', cacti_sizeof($tree_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -1251,37 +1267,18 @@ function tree_edit() {
 				oid = data.original.id;
 
 				if (oid.search('thost') >= 0) {
-					set = hostsDropSet;
-				}else if (oid.search('tsite') >= 0) {
-					set = sitesDropSet;
+					$('#hosts').jstree().deselect_all();
+				} else if (oid.search('tsite') >= 0) {
+					$('#sites').jstree().deselect_all();
 				} else {
-					set = graphsDropSet;
+					$('#graphs').jstree().deselect_all();
 				}
 
-				if (set != '' && set.selected.length > 0) {
-					entries = set.selected;
-					$.each(entries, function(i, id) {
-						$.get('?action=copy_node', { 'id' : id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
-							.always(function () {
-								var st = data.instance.get_state();
-								data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
-							})
-					});
-
-					if (oid.search('thost') >= 0) {
-						$('#hosts').jstree().deselect_all();
-					} else if (oid.search('tsite') >= 0) {
-						$('#sites').jstree().deselect_all();
-					} else {
-						$('#graphs').jstree().deselect_all();
-					}
-				} else {
-					$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
-						.always(function () {
-							var st = data.instance.get_state();
-							data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
-						});
-				}
+				$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
+				.always(function () {
+					var st = data.instance.get_state();
+					data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
+				});
 			})<?php } else {?>.children().bind('contextmenu', function(event) {
 				return false;
 			})<?php }?>;
@@ -1331,16 +1328,6 @@ function tree_edit() {
 						$('#ctree').jstree('clear_state');
 					}
 				})<?php if ($editable) {?>
-				.on('hover_node.jstree', function(e, data) {
-					var myset = {};
-					myset.selected = [ data.node.id ];
-
-					if (data.node.id.includes('thost')) {
-						hostsDropSet = myset;
-					} else if (data.node.id.includes('tgraph')) {
-						graphsDropSet = myset;
-					}
-				})
 				.on('select_node.jstree', function(e, data) {
 					if (type == 'graphs') {
 						graphsDropSet = data;
@@ -1359,7 +1346,7 @@ function tree_edit() {
 						getGraphData();
 					}
 				})
-				.on('deselect_node.jstree', function(e,data) {
+				.on('deselect_node.jstree', function(e, data) {
 					if (type == 'graphs') {
 						graphsDropSet = data;
 					} else {

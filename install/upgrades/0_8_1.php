@@ -33,7 +33,8 @@ function upgrade_to_0_8_1() {
 
 	db_install_execute("UPDATE user_auth set realm = 1 where full_name='ldap user';");
 
-	$_src = db_fetch_assoc("select id, username from user_auth");
+	$_src_results = db_install_fetch_assoc("select id, username from user_auth");
+	$_src         = $_src_results['data'];
 
 	if (cacti_sizeof($_src) > 0) {
 		foreach ($_src as $item) {

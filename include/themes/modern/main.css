@@ -74,6 +74,16 @@ img {
 	vertical-align: middle;
 }
 
+i.fa, i.fas, i.fab {
+	padding: 0px 3px;
+	font-size: 1.1em;
+	vertical-align: middle;
+}
+
+.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
+	color: snow;
+}
+
 div {
 	display: block;
 }
@@ -174,6 +184,21 @@ label {
 	text-align: center !important;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+.flexContainer {
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: auto;
+	margin-right: auto;
+	justify-content: flex-start;
+}
+
+.flexChild {
+	display: inline-block;
+	margin-top: 5px;
+	flex-basis: 20%;
+	min-width: 200px;
 }
 
 .usermenudown {
@@ -2391,7 +2416,8 @@ tr#realtime td:first-child {
 }
 
 .menuitem span {
-	vertical-align: 20%;
+	vertical-align: middle;
+	line-height: 20px;
 }
 
 .ui-autocomplete {

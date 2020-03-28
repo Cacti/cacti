@@ -45,7 +45,9 @@ class Installer implements JsonSerializable {
 	/* Progress through the STEP_INSTALL section */
 	const PROGRESS_NONE = 0;
 	const PROGRESS_START = 1;
-	const PROGRESS_UPGRADES_BEGIN = 2;
+	const PROGRESS_CSRF_BEGIN = 2;
+	const PROGRESS_CSRF_END = 3;
+	const PROGRESS_UPGRADES_BEGIN = 5;
 	const PROGRESS_UPGRADES_END = 30;
 	const PROGRESS_TABLES_BEGIN = 35;
 	const PROGRESS_TEMPLATES_BEGIN = 41;
@@ -87,6 +89,7 @@ class Installer implements JsonSerializable {
 	private $tables;
 	private $runtime;
 	private $errors;
+	private $profile;
 
 	private $automationMode = null;
 	private $automationOverride = null;
@@ -348,7 +351,6 @@ class Installer implements JsonSerializable {
 		$this->setRRDVersion($this->getRRDVersion(), 'default ');
 		$this->snmpOptions = $this->getSnmpOptions();
 		$this->setMode($this->getMode());
-		$this->setCSRFSecret();
 
 		log_install_high('','Installer::processParameters(' . clean_up_lines(json_encode($install_params)) . ')');
 		if (!empty($install_params)) {
@@ -460,7 +462,7 @@ class Installer implements JsonSerializable {
 	 *                    to be available for writing during install or
 	 *                    always (after install) */
 	private function getPermissions() {
-		global $config, $path_csrf_secret;
+		global $config;
 
 		$permissions = array('install' => array(), 'always' => array());
 
@@ -471,12 +473,6 @@ class Installer implements JsonSerializable {
 			$config['base_path'] . '/scripts',
 		);
 
-		if (!isset($path_csrf_secret)) {
-			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
-		}
-
-		$install_paths[] = $path_csrf_secret;
-
 		$always_paths = array(
 			sys_get_temp_dir(),
 			$config['base_path'] . '/log',
@@ -486,9 +482,15 @@ class Installer implements JsonSerializable {
 			$config['base_path'] . '/cache/spikekill'
 		);
 
+		$csrf_paths = array();
+
 		$install_key = 'always';
 		if ($this->mode != Installer::MODE_POLLER) {
 			$install_key = 'install';
+
+			if (!empty($config['path_csrf_secret'])) {
+				$csrf_paths[] = $config['path_csrf_secret'];
+			}
 		}
 
 		foreach ($install_paths as $path) {
@@ -508,9 +510,31 @@ class Installer implements JsonSerializable {
 		foreach ($always_paths as $path) {
 			$valid = (is_resource_writable($path . '/'));
 			$permissions['always'][$path . '/'] = $valid;
-			log_install_debug('permission',"$path = $valid");
+			log_install_debug('permission',"$path = $valid (always)");
 			if (!$valid) {
 				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $path, __('Path is not writable'));
+			}
+		}
+
+		foreach ($csrf_paths as $path) {
+			if (is_dir($path)) {
+				$path .= '/csrf-secret.php';
+			}
+
+			$valid = file_exists($path);
+			if ($valid) {
+				$csrf_secret = file_get_contents($path);
+				$valid = !empty($csrf_secret);
+			}
+
+			if (!$valid) {
+				$valid = (is_resource_writable($path));
+			}
+			$permissions['install'][$path] = $valid;
+
+			log_install_debug('permission',"$path = $valid (csrf)");
+			if (!$valid) {
+				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $path, __('Path was not writable'));
 			}
 		}
 
@@ -607,19 +631,30 @@ class Installer implements JsonSerializable {
 
 	/* setCSRFSecret() - Initializes the csrf secret file for csrf protection */
 	private function setCSRFSecret() {
-		global $config, $path_csrf_secret;
+		global $config;
 
-		if (!isset($path_csrf_secret)) {
-			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
-		}
+		$this->setProgress(Installer::PROGRESS_CSRF_BEGIN);
 
-		if (!file_exists($path_csrf_secret)) {
-			if (is_resource_writable(dirname($path_csrf_secret))) {
-				install_create_csrf_secret();
+		if (!empty($config['path_csrf_secret'])) {
+			$path_csrf_secret = $config['path_csrf_secret'];
+			log_install_debug('csrf', 'setCSRFSecret(): secret ' . $path_csrf_secret);
+
+			$secret = @file_exists($path_csrf_secret) ? file_get_contents($path_csrf_secret) : '';
+			log_install_debug('csrf', 'setCSRFSecret(): secret ' . (empty($secret)?'not ': '') . 'empty');
+
+			if (empty($secret)) {
+				if (is_resource_writable($path_csrf_secret)) {
+					log_install_medium('csrf', 'setCSRFSecret(): Updated CSRF secret - "' . $path_csrf_secret . '"');
+					install_create_csrf_secret();
+				} else {
+					log_install_high('csrf', 'setCSRFSecret(): Unable to create file - "' . $path_csrf_secret . '"');
+				}
 			} else {
-				$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $path_csrf_secret, __('Unable to write the CSRF Secret file.  directory is not writable!'));
+				log_install_debug('csrf', 'setCSRFSecret(): Secret already exists - "' . $path_csrf_secret . '"');
 			}
 		}
+
+		$this->setProgress(Installer::PROGRESS_CSRF_END);
 	}
 
 	/* setRRDVersion() - sets the RRDVersion installer option, overrides
@@ -806,6 +841,8 @@ class Installer implements JsonSerializable {
 				}
 			}
 			log_install_medium('automation',"setProfile($param_profile) returns with $this->profile");
+		} else {
+			$this->profile = 1;
 		}
 	}
 
@@ -1146,25 +1183,31 @@ class Installer implements JsonSerializable {
 	 *               mb4_unicode_utf8 */
 	private function getTables() {
 		$known_tables = install_setup_get_tables();
+
 		$db_tables = array_rekey(
 			db_fetch_assoc('SELECT name, value FROM settings where name like \'install_table_%\''),
 			'name', 'value');
-		$hasTables = read_config_option('install_has_tables', true);
-		$selected = array();
+
+		$hasTables    = read_config_option('install_has_tables', true);
+		$selected     = array();
 		$select_count = 0;
+
 		foreach ($known_tables as $known) {
-			$table = $known['Name'];
-			$key = $known['Name'];
+			$table  = $known['Name'];
+			$key    = $known['Name'];
 			$option = '';
+
 			if (array_key_exists('install_table_' . $key, $db_tables)) {
 				$option = $db_tables['install_table_' . $key];
 			}
+
 			$isSelected = !empty($hasTables) && (!empty($option));
 			$selected['chk_table_' . $key] = $isSelected;
 			if ($isSelected) {
 				$select_count++;
 			}
 		}
+
 		$selected['all'] = ($select_count == cacti_count($selected) || empty($hasTables));
 
 		return $selected;
@@ -1179,11 +1222,14 @@ class Installer implements JsonSerializable {
 	private function setTables($param_tables = array()) {
 		if (is_array($param_tables)) {
 			db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
+
 			$known_tables = install_setup_get_tables();
+
 			log_install_medium('tables',"setTables(): Updating Tables");
 			log_install_debug('tables',"setTables(): Parameter data:" . clean_up_lines(var_export($param_tables, true)));
 
 			$param_all = false;
+
 			if (array_key_exists('all', $param_tables)) {
 				$this->setTrueFalse($param_tables['all'], $param_all, 'allTables', false);
 				unset($param_tables['all']);
@@ -1191,18 +1237,25 @@ class Installer implements JsonSerializable {
 
 			foreach ($known_tables as $known) {
 				$name = $known['Name'];
-				$key = 'chk_table_' . $name;
+				$key  = 'chk_table_' . $name;
+				$set  = false;
+
 				log_install_high('tables',"setTables(): Checking table '$name' against key $key ...");
 				log_install_debug('tables',"setTables(): Table: ". clean_up_lines(var_export($known, true)));
-				$set = false;
+
 				if (!array_key_exists($key, $param_tables)) {
 					$param_tables[$key] = null;
 				}
-				$this->setTrueFalse($param_tables[$key], $set, 'table_'.$name, false);
-				$use = ($set || $param_all);
+
+				$this->setTrueFalse($param_tables[$key], $set, 'table_' . $name, false);
+
+				$use   = ($set || $param_all);
 				$value = $use ? $name : '';
+
 				log_install_high('tables',"setTables(): Use: $use, Set: $set, All: $param_all, key: install_table_$name = " . $value);
+
 				set_config_option("install_table_$name", $value);
+
 				$this->tables[$key] = $use;
 			}
 
@@ -1489,7 +1542,7 @@ class Installer implements JsonSerializable {
 				switch ($this->mode) {
 					case Installer::MODE_UPGRADE:
 					case Installer::MODE_DOWNGRADE:
-						$this->stepNext = Installer::STEP_CHECK_TABLES;
+						$this->stepNext = Installer::STEP_TEMPLATE_INSTALL;
 						break;
 				}
 
@@ -2170,6 +2223,7 @@ class Installer implements JsonSerializable {
 		$permissions .= Installer::sectionSubTitleEnd();
 
 		$permissions .= Installer::sectionSubTitle(__('Required Writable after Install Complete'),'writable_always');
+
 		$sections['writable_always'] = DB_STATUS_SUCCESS;
 
 		$class = 'even';
@@ -2195,6 +2249,8 @@ class Installer implements JsonSerializable {
 
 			$permissions .= '</div></div></div>';
 		}
+
+		$permissions .= Installer::sectionSubTitleEnd();
 
 		$output .= Installer::sectionSubTitleEnd();
 		$output .= Installer::sectionSubTitle(__('Potential permission issues'),'host_access');
@@ -2228,8 +2284,8 @@ class Installer implements JsonSerializable {
 			}
 			$output .= Installer::sectionNormal($text);
 			$output .= Installer::sectionNormal(__('An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions.'));
-			$output .= Installer::sectionNormal(__('In the case of a CSRF path problem, once you correct this problem, you will have to close all open browser sessions and login again to continue.'));
 			$output .= Installer::sectionNote('<span class="cactiInstallSectionCode" style="width: 95%; display: inline-flex;">' . $code . '</span>', '', '', __('EXAMPLE:'));
+			$output .= Installer::sectionNote(__('Once installation has completed the CSRF path, should be set to read-only.'));
 		}else {
 			$output .= Installer::sectionNormal('<font color="#008000">' . __('All folders are writable') . '</font>');
 		}
@@ -2817,6 +2873,8 @@ class Installer implements JsonSerializable {
 
 		$this->setProgress(Installer::PROGRESS_START);
 
+		$this->setCSRFSecret();
+
 		$this->convertDatabase();
 
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
@@ -2831,6 +2889,9 @@ class Installer implements JsonSerializable {
 				}
 			} elseif ($this->mode == Installer::MODE_UPGRADE) {
 				$failure = $this->upgradeDatabase();
+				if (empty($failure)) {
+					$failure = $this->installTemplate();
+				}
 			}
 			Installer::disableInvalidPlugins();
 		}
@@ -2891,7 +2952,7 @@ class Installer implements JsonSerializable {
 
 				if (!empty($package)) {
 					set_config_option('install_updated', microtime(true));
-					$result = import_package($path . $package, $this->profile, false, false, false);
+					$result = import_package($path . $package, $this->profile, true, false, false);
 
 					if ($result !== false) {
 						log_install_always('', __('Import of Package #%s \'%s\' under Profile \'%s\' succeeded', $i, $package, $this->profile));
@@ -2929,6 +2990,8 @@ class Installer implements JsonSerializable {
 		} else {
 			log_install_always('', __('No templates were selected for import'));
 		}
+
+		return '';
 	}
 
 	private function installPoller() {

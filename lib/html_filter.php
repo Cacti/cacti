@@ -273,6 +273,7 @@ class CactiTableFilter {
 				clearFilter();
 			})
 		});
+		</script>
 
 		<?php
 	}

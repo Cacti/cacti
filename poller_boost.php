@@ -624,7 +624,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 
 function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe) {
 	$outbuf = '';
-	$initial_time = '';
+	$initial_time = 0;
 	if (sizeof($outarray)) {
 		foreach($outarray as $tsdata) {
 			$outbuf .= ($outbuf != '' ? ' ':'') . implode(':', $tsdata);

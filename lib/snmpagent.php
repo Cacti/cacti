@@ -314,6 +314,10 @@ function snmpagent_poller_exiting($poller_index = 1){
 function snmpagent_poller_bottom() {
 	global $config;
 
+	if (!db_table_exists('snmpagent_cache')) {
+		return true;
+	}
+
 	if (!snmpagent_enabled()) {
 		snmpagent_cache_uninstall();
 
