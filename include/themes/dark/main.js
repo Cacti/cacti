@@ -213,19 +213,19 @@ function setMenuVisibility() {
 		var active = storage.get(id);
 		if (active != null && active == 'active') {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
-			$(this).children('a:first').addClass('active');
+			$(this).next('a').show();
 		} else {
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
-			$(this).children('a:first').removeClass('active');
+			$(this).next('a').hide();
 		}
 
 		if ($(this).find('a.selected').length == 0) {
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
-			$(this).children('a:first').removeClass('active');
+			$(this).next('a').hide();
 			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 		} else {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
-			$(this).children('a:first').addClass('active');
+			$(this).next('a').show();
 			storage.set($(this).closest('.menuitem').attr('id'), 'active');
 		}
 	});
@@ -239,16 +239,13 @@ function setMenuVisibility() {
 		if ($(this).next().is(':visible')) {
 			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-			$(this).removeClass('active');
 			storage.set(id, 'collapsed');
 		} else {
 			$(this).next('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true');
 			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 			if ($(this).next().is(':visible')) {
 				storage.set($(this).closest('.menuitem').attr('id'), 'active');
-				$(this).addClass('active');
 			} else {
-				$(this).removeClass('active');
 				storage.set(id, 'collapsed');
 			}
 		}
@@ -259,7 +256,6 @@ function setMenuVisibility() {
 
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );
-			$(this).children('a:first').removeClass('active');
 			storage.set($(this).attr('id'), 'collapsed');
 		});
 	});
