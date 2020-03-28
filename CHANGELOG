@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.2.11
--issue: Zoom looses focus in advanced mode while crossing chart border
 -SECURITY#1566: Add SameSite support for cookies
 -SECURITY#1985: Cookie should be properly verified against password
 -SECURITY#3342: CSRF at Admin Email
@@ -46,6 +45,7 @@ Cacti CHANGELOG
 -issue#3380: php error when trigger threshold sendmail 
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
+-issue: Zoom looses focus in advanced mode while crossing chart border
 -feature#1551: Allow uptime to be a variable for use with graphs
 -feature#1990: Plugin Realm should have a 'role' to help maintain changes between plugins
 -feature#2110: Add Refresh Interval to Data Collectors display
