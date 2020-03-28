@@ -66,11 +66,52 @@ if (db_table_exists('plugin_config')) {
 
 /* get the files for selective logging */
 $realm_files  = array_keys($user_auth_realm_filenames);
-$nohead_files = array_values($no_http_header_files);
 foreach($realm_files as $file) {
 	$logfiles[$file] = $file;
 }
 
+/* we need this list of files for selective debug */
+$no_http_header_files = array(
+	'add_device.php',
+	'add_graphs.php',
+	'add_perms.php',
+	'add_tree.php',
+	'boost_rrdupdate.php',
+	'cmd.php',
+	'cmd_realtime.php',
+	'copy_user.php',
+	'host_update_template.php',
+	'poller_automation.php',
+	'poller_boost.php',
+	'poller_commands.php',
+	'poller_dsstats.php',
+	'poller_export.php',
+	'poller_graphs_reapply_names.php',
+	'poller_maintenance.php',
+	'poller_output_empty.php',
+	'poller.php',
+	'poller_realtime.php',
+	'poller_recovery.php',
+	'poller_reindex_hosts.php',
+	'poller_reports.php',
+	'poller_spikekill.php',
+	'query_host_cpu.php',
+	'query_host_partitions.php',
+	'rebuild_poller_cache.php',
+	'remote_agent.php',
+	'repair_database.php',
+	'script_server.php',
+	'snmpagent_mibcachechild.php',
+	'snmpagent_mibcache.php',
+	'snmpagent_persist.php',
+	'sql.php',
+	'ss_host_cpu.php',
+	'ss_host_disk.php',
+	'ss_sql.php',
+	'structure_rra_paths.php',
+);
+
+$nohead_files = array_values($no_http_header_files);
 foreach($nohead_files as $file) {
 	$logfiles[$file] = $file;
 }
