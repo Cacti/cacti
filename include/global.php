@@ -44,8 +44,15 @@ if ($config['cacti_server_os'] == 'win32') {
 	$config['base_path']    = preg_replace("/(.*)[\/]include/", "\\1", dirname(__FILE__));
 	$config['library_path'] = preg_replace("/(.*[\/])include/", "\\1lib", dirname(__FILE__));
 }
+
 $config['include_path'] = dirname(__FILE__);
-$config['rra_path'] = $config['base_path'] . '/rra';
+
+/* if the rra path needs to be different, set it */
+if (isset($rra_path)) {
+	$config['rra_path'] = $rra_path;
+} else {
+	$config['rra_path'] = $config['base_path'] . '/rra';
+}
 
 /* for multiple pollers, we need to know this location */
 if (!isset($scripts_path)) {
@@ -63,7 +70,7 @@ if (!isset($resource_path)) {
 /* load cacti version from file */
 $cacti_version_file = dirname(__FILE__) . '/cacti_version';
 
-if (! file_exists($cacti_version_file)) {
+if (!file_exists($cacti_version_file)) {
 	die ('ERROR: failed to find cacti version file');
 }
 
@@ -171,46 +178,6 @@ if (empty($url_path)) {
 /* set the local for international users */
 setlocale(LC_CTYPE, 'en_US.UTF-8');
 
-/* Files that do not need http header information - Command line scripts */
-$no_http_header_files = array(
-	'add_device.php',
-	'add_graphs.php',
-	'add_perms.php',
-	'add_tree.php',
-	'boost_rrdupdate.php',
-	'cmd.php',
-	'cmd_realtime.php',
-	'copy_user.php',
-	'host_update_template.php',
-	'poller_automation.php',
-	'poller_boost.php',
-	'poller_commands.php',
-	'poller_dsstats.php',
-	'poller_export.php',
-	'poller_graphs_reapply_names.php',
-	'poller_maintenance.php',
-	'poller_output_empty.php',
-	'poller.php',
-	'poller_realtime.php',
-	'poller_recovery.php',
-	'poller_reindex_hosts.php',
-	'poller_reports.php',
-	'poller_spikekill.php',
-	'query_host_cpu.php',
-	'query_host_partitions.php',
-	'rebuild_poller_cache.php',
-	'repair_database.php',
-	'script_server.php',
-	'snmpagent_mibcachechild.php',
-	'snmpagent_mibcache.php',
-	'snmpagent_persist.php',
-	'sql.php',
-	'ss_host_cpu.php',
-	'ss_host_disk.php',
-	'ss_sql.php',
-	'structure_rra_paths.php',
-);
-
 $colors = array();
 
 /* this should be auto-detected, set it manually if needed */
@@ -268,7 +235,7 @@ include_once($config['library_path'] . '/html_validate.php');
 $filename = get_current_page();
 
 $config['is_web'] = !defined('CACTI_CLI_ONLY');
-if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename, $no_http_header_files, true)) {
+if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
 }
 

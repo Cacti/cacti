@@ -97,13 +97,14 @@ $cacti_db_session = false;
 $disable_log_rotation = false;
 
 /*
- * Optional parameters to define scripts and resource paths. These
+ * Optional parameters to define scripts, resource, and rra paths. These
  * variables become important when using remote poller installs when the
  * scripts and resource files are not in the main Cacti web server path.
  */
 
 //$scripts_path = '/var/www/html/cacti/scripts';
 //$resource_path = '/var/www/html/cacti/resource/';
+//$rra_path = '/var/www/html/cacti/rra/';
 
 /*
  * Optional parameter to define a data input whitelist command string. This

@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -feature#2550: Enable use of authenticator codes for Two-Factor Authentication
 -feature#2607: Allow adding sites from command line
 -feature#3139: Added option in CLI tool remove_graphs for deletion of single graph
+-feature#3187: Feature: rra path should be configurable
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
