@@ -33,7 +33,7 @@ api_plugin_hook('logout_pre_session_destroy');
 
 /* Clear session */
 cacti_cookie_logout();
-session_destroy();
+cacti_session_destroy();
 
 $version = get_cacti_version();
 

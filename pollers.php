@@ -435,7 +435,7 @@ function form_actions() {
 
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
 			} elseif (get_request_var('drp_action') == '4') { // full sync
-				session_write_close(); // Save&Close the session so the Interface is still responsive
+				cacti_session_close();
 
 				$success = array();
 				$failed  = array();
