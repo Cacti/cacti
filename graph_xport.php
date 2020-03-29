@@ -43,7 +43,7 @@ get_filter_request_var('stdout');
 /* flush the headers now */
 ob_end_clean();
 
-session_write_close();
+cacti_session_close();
 
 $graph_data_array = array();
 

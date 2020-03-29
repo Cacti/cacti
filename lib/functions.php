@@ -717,7 +717,7 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 	}
 
 	if ($need_session) {
-		session_start($config['cookie_options']);
+		cacti_session_start();
 	}
 
 	if (!isset($_SESSION['sess_messages'])) {
@@ -727,7 +727,7 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 	$_SESSION['sess_messages'][$message_id] = array('message' => $message, 'level' => $message_level);
 
 	if ($need_session) {
-		session_write_close();
+		cacti_session_close();
 	}
 }
 
@@ -789,7 +789,7 @@ function clear_messages() {
 	kill_session_var('sess_messages');
 
 	if ($need_session) {
-		session_write_close();
+		cacti_session_close();
 	}
 }
 
@@ -821,7 +821,7 @@ function force_session_data() {
 
 		$_SESSION = $data;
 
-		session_write_close();
+		cacti_session_close();
 	}
 }
 
@@ -3268,7 +3268,7 @@ function bottom_footer() {
 
 	/* close the session */
 	if (array_search(get_current_page(), $no_session_write) === false) {
-		session_write_close();
+		cacti_session_close();
 	}
 
 	/* close the database connection */
@@ -5519,6 +5519,39 @@ function raise_ajax_permission_denied() {
 	}
 }
 
+/** cacti_session_start - Create a Cacti session from the settings set by the administrator
+ *
+ *  @returns - null */
+function cacti_session_start() {
+	global $config;
+
+	/* initialize php session */
+	if (!function_exists('session_name')) {
+		die('PHP Session Management is missing, please install PHP Session module');
+	}
+
+	session_name($config['cacti_session_name']);
+	if (!session_id()) {
+		session_start($config['cookie_options']);
+	}
+}
+
+/** cacti_session_close - Closes the open Cacti session if it is open
+ *  it can be re-opened afterwards in the case after a long running query
+ *
+ *  @returns - null */
+function cacti_session_close() {
+	session_write_close();
+}
+
+/** cacti_session_destroy - Destroys the login current session
+ *
+ *  @returns - null */
+function cacti_session_destroy() {
+	session_unset();
+	session_destroy();
+}
+
 /** cacti_cookie_set - Allows for settings an arbitry cookie name and value
  *  used for CSRF protection.
  *
@@ -5553,6 +5586,8 @@ function cacti_cookie_logout() {
 
 	setcookie(session_name(), '', time() - 3600, $config['url_path'], $domain);
 	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
+
+	unset($_COOKIE[$config['cacti_session_name']]);
 }
 
 /** cacti_cookie_session_set - Sets the cacti 'keep me logged in' cookie
@@ -5590,3 +5625,4 @@ function cacti_cookie_session_logout() {
 
 	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
 }
+

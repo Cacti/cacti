@@ -372,7 +372,7 @@ class Ldap {
 		/* set an error handler for ldap */
 		set_error_handler(array($this, 'ErrorHandler'));
 
-		session_write_close();
+		cacti_session_close();
 	}
 
 	function RestoreCactiHandler() {

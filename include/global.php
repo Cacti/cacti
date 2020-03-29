@@ -417,7 +417,8 @@ if ($config['is_web']) {
 		$options['cookie_secure'] = true;
 	}
 
-	$config['cookie_options'] = $options;
+	$config['cookie_options']     = $options;
+	$config['cacti_session_name'] = $cacti_session_name;
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -442,12 +443,7 @@ if ($config['is_web']) {
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
 
-	/* initialize php session */
-	if (!function_exists('session_name')) {
-		die('PHP Session Management is missing, please install PHP Session module');
-	}
-	session_name($cacti_session_name);
-	if (!session_id()) session_start($config['cookie_options']);
+	cacti_session_start();
 
 	/* we never run with magic quotes on */
 	if (version_compare(PHP_VERSION, '5.4', '<=')) {
@@ -473,8 +469,7 @@ if ($config['is_web']) {
 		$_SESSION['cacti_cwd'] = $config['base_path'];
 	} else {
 		if ($_SESSION['cacti_cwd'] != $config['base_path']) {
-			session_unset();
-			session_destroy();
+			cacti_session_destroy();
 		}
 	}
 }

@@ -77,7 +77,7 @@ if (!isset_request_var('image_format')) {
 
 $graph_data_array['image_format'] = $gtype;
 
-session_write_close();
+cacti_session_close();
 
 /* override: graph start time (unix time) */
 if (!isempty_request_var('graph_start') && get_request_var('graph_start') < FILTER_VALIDATE_MAX_DATE_AS_INT) {

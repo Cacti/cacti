@@ -303,7 +303,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			rrdtool_set_language();
 		}
 
-		session_write_close();
+		cacti_session_close();
 		if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
 			$descriptorspec = array(
 				0 => array('pipe', 'r'),
