@@ -3644,11 +3644,17 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 				/* attempt to attach */
 				if (!($graph_mode || $graph_ids)) {
-					if (!empty($attachment['filename']) && file_exists($attachment['filename'])) {
+					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
 						$result = $mail->addAttachment($attachment['attachment'], $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+					} else {
+						$result = $mail->addStringAttachment($attachment['attachment'], $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
 					}
 				} else {
-					$result = $mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
+						$result = $mail->addEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+					} else {
+						$result = $mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+					}
 				}
 
 				if ($result == false) {
@@ -3659,7 +3665,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$i++;
 				if ($graph_mode) {
 					$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
-				} else if ($graph_ids) {
+				} elseif ($graph_ids) {
 					/* handle the body text */
 					switch ($attachment['inline']) {
 						case 'inline':
@@ -3742,7 +3748,7 @@ function add_email_details($emails, &$result, callable $addFunc) {
 			}
 
 			$arrText[] = create_emailtext($e);
-		} else if (!empty($e['name'])) {
+		} elseif (!empty($e['name'])) {
 			$result = false;
 			return 'Bad email format, name but no address: ' . $e['name'];
 		}
