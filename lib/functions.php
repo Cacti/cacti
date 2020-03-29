@@ -3662,7 +3662,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 					}
 				} else {
 					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
-						$result = $mail->addEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+						$result = $mail->addEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
 					} else {
 						$result = $mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
 					}
