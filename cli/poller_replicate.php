@@ -127,7 +127,7 @@ function display_help () {
 	display_version();
 
 	print "\nA utility to fully Synchronize Remote Data Collectors.\n\n";
-	print "usage: poller_output_empty.php [--poller=N] [--class=all|data|auth|settings]\n\n";
+	print "usage: poller_replicate.php [--poller=N] [--class=all|data|auth|settings]\n\n";
 	print "Optional:\n";
 	print "    --poller=N  The numeric id of the poller to replicate out.  Otherwise all\n";
 	print "                pollers.  The default is all.\n";
