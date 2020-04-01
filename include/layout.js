@@ -1690,33 +1690,33 @@ function loadTopTab(href, id, force) {
 
 		$.ajaxQ.abortAll();
 		$.get(url)
-			.done(function(data) {
-				var htmlObject  = $(data);
-				var matches     = data.match(/<title>(.*?)<\/title>/);
+			.done(function(html) {
+				var htmlObject  = $(html);
+				var matches     = html.match(/<title>(.*?)<\/title>/);
 
 				$('#main').hide();
 
 				if (matches != null) {
 					var htmlTitle   = matches[1];
 					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-					var parts       = data.split('</title>');
-					var data        = parts[1];
+					var parts       = html.split('</title>');
+					var html        = parts[1];
 
-					checkForLogout(data);
+					checkForLogout(html);
 
 					$('title').text(htmlTitle);
-					$('#breadcrumbs').data(breadCrumbs);
+					$('#breadcrumbs').html(breadCrumbs);
 					$('div[class^="ui-"]').remove();
-					$('#cactiContent').replaceWith(data);
+					$('#cactiContent').replaceWith(html);
 
 					myTitle = htmlTitle;
 					myHref  = cleanHeader(href);
 
 					pushState(myTitle, href);
 				} else {
-					checkForLogout(data);
+					checkForLogout(html);
 
-					$('#cactiContent').replaceWith(data);
+					$('#cactiContent').replaceWith(html);
 
 					thref = stripHeaderSuppression(href);
 
@@ -1752,8 +1752,8 @@ function loadTopTab(href, id, force) {
 
 				return false;
 			})
-			.fail(function(data) {
-				getPresentHTTPError(data);
+			.fail(function(html) {
+				getPresentHTTPError(html);
 			}
 		);
 
@@ -1801,15 +1801,15 @@ function loadPage(href, force) {
 				if (matches != null) {
 					var htmlTitle   = matches[1];
 					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-					var data        = htmlObject.find('#main').html();
+					var html        = htmlObject.find('#main').html();
 
-					checkForLogout(data);
+					checkForLogout(html);
 
 					$('#main').empty().hide();
 					$('title').text(htmlTitle);
 					$('#breadcrumbs').html(breadCrumbs);
 					$('div[class^="ui-"]').remove();
-					$('#main').html(data);
+					$('#main').html(html);
 
 					myTitle = htmlTitle;
 					myHref  = cleanHeader(href);
@@ -1866,8 +1866,8 @@ function loadPage(href, force) {
 
 				return false;
 			})
-			.fail(function(data) {
-				getPresentHTTPError(data);
+			.fail(function(html) {
+				getPresentHTTPError(html);
 			}
 		);
 	}
@@ -1939,33 +1939,33 @@ function loadPageNoHeader(href, scroll, force) {
 	if (cont) {
 		$.ajaxQ.abortAll();
 		$.get(href)
-			.done(function(data) {
-				var htmlObject  = $(data);
-				var matches     = data.match(/<title>(.*?)<\/title>/);
+			.done(function(html) {
+				var htmlObject  = $(html);
+				var matches     = html.match(/<title>(.*?)<\/title>/);
 
 				if (matches != null) {
-					checkForLogout(data);
+					checkForLogout(html);
 
 					var htmlTitle   = matches[1];
 					var breadCrumbs = htmlObject.filter('#breadcrumbs').html();
-					var data        = htmlObject.filter('#main').html();
+					var html        = htmlObject.filter('#main').html();
 
 					$('#main').empty().hide();
 					$('title').text(htmlTitle);
 					$('#breadcrumbs').html(breadCrumbs);
 					$('div[class^="ui-"]').remove();
-					$('#main').html(data);
+					$('#main').html(html);
 
 					myTitle = htmlTitle;
 					myHref  = cleanHeader(href);
 
 					pushState(myTitle, href);
 				} else {
-					checkForLogout(data);
+					checkForLogout(html);
 
 					$('#main').empty().hide();
 					$('div[class^="ui-"]').remove();
-					$('#main').html(data);
+					$('#main').html(html);
 
 					var hrefParts = href.split('?');
 					pageName = basename(hrefParts[0]);
@@ -2010,8 +2010,8 @@ function loadPageNoHeader(href, scroll, force) {
 
 				return false;
 			})
-			.fail(function(data) {
-				getPresentHTTPError(data);
+			.fail(function(html) {
+				getPresentHTTPError(html);
 			}
 		);
 	}

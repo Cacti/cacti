@@ -264,7 +264,7 @@ function form_save() {
 			$user      = $_SESSION['sess_user_id'];
 
 			$tree_id = api_tree_create($tree_id, $name, $sort_type, $enabled, $user);
-				
+
 			if ($tree_id) {
 				raise_message(1);
 			} else {
@@ -618,7 +618,7 @@ function tree_edit() {
 
 		function createNode() {
 			var ref = $('#ctree').jstree(true);
-			sel = ref.create_node('#', '<?php print __('New Node');?>', '0');
+			sel = ref.create_node('#', '<?php print __esc('New Node');?>', '0');
 			if (sel) {
 				ref.edit(sel);
 			}
@@ -923,7 +923,7 @@ function tree_edit() {
 						data.instance.set_text(data.node, d.text);
 						data.instance.edit(data.node);
 
-						if (d.text != '<?php print __('New Node');?>') {
+						if (d.text != '<?php print __esc('New Node');?>') {
 							$('.jstree').jstree(true).refresh();
 						}
 					})
@@ -1057,7 +1057,7 @@ function tree_edit() {
 					'separator_after'	: true,
 					'icon'				: 'fa fa-folder',
 					'_disabled'			: false,
-					'label'				: '<?php print __('Create');?>',
+					'label'				: '<?php print __esc('Create');?>',
 					'action'			: function (data) {
 						var inst = $.jstree.reference(data.reference);
 						var obj = inst.get_node(data.reference);
@@ -1071,7 +1071,7 @@ function tree_edit() {
 					'separator_after'	: false,
 					'icon'				: 'fa fa-pencil-alt',
 					'_disabled'			: false,
-					'label'				: '<?php print __('Rename');?>',
+					'label'				: '<?php print __esc('Rename');?>',
 					'action'			: function (data) {
 						var inst = $.jstree.reference(data.reference);
 						var obj = inst.get_node(data.reference);
@@ -1083,7 +1083,7 @@ function tree_edit() {
 					'icon'				: 'fa fa-times',
 					'separator_after'	: false,
 					'_disabled'			: false,
-					'label'				: '<?php print __('Delete');?>',
+					'label'				: '<?php print __esc('Delete');?>',
 					'action'			: function (data) {
 						var inst = $.jstree.reference(data.reference);
 						var obj = inst.get_node(data.reference);
@@ -1098,14 +1098,14 @@ function tree_edit() {
 					'separator_before'	: true,
 					'icon'				: 'fa fa-sort',
 					'separator_after'	: false,
-					'label'				: '<?php print __('Branch Sorting');?>',
+					'label'				: '<?php print __esc('Branch Sorting');?>',
 					'action'			: false,
 					'submenu' : {
 						'inherit' : {
 							'separator_before'	: false,
 							'separator_after'	: false,
 							'icon'				: getBranchSortIcon('inherit', nodeid),
-							'label'				: '<?php print __('Inherit');?>',
+							'label'				: '<?php print __esc('Inherit');?>',
 							'action'			: function (data) {
 								setBranchSortOrder('inherit', nodeid);
 								var inst = $.jstree.reference(data.reference);
@@ -1119,7 +1119,7 @@ function tree_edit() {
 							'separator_before'	: false,
 							'separator_after'	: false,
 							'icon'				: getBranchSortIcon('manual', nodeid),
-							'label'				: '<?php print __('Manual');?>',
+							'label'				: '<?php print __esc('Manual');?>',
 							'action'			: function (data) {
 								setBranchSortOrder('manual', nodeid);
 								var inst = $.jstree.reference(data.reference);
@@ -1133,7 +1133,7 @@ function tree_edit() {
 							'separator_before'	: false,
 							'icon'				: getBranchSortIcon('alpha', nodeid),
 							'separator_after'	: false,
-							'label'				: '<?php print __('Alphabetic');?>',
+							'label'				: '<?php print __esc('Alphabetic');?>',
 							'action'			: function (data) {
 								setBranchSortOrder('alpha', nodeid);
 								var inst = $.jstree.reference(data.reference);
@@ -1147,7 +1147,7 @@ function tree_edit() {
 							'separator_before'	: false,
 							'icon'				: getBranchSortIcon('natural', nodeid),
 							'separator_after'	: false,
-							'label'				: '<?php print __('Natural');?>',
+							'label'				: '<?php print __esc('Natural');?>',
 							'action'			: function (data) {
 								setBranchSortOrder('natural', nodeid);
 								var inst = $.jstree.reference(data.reference);
@@ -1161,7 +1161,7 @@ function tree_edit() {
 							'separator_before'	: false,
 							'icon'				: getBranchSortIcon('numeric', nodeid),
 							'separator_after'	: false,
-							'label'				: '<?php print __('Numeric');?>',
+							'label'				: '<?php print __esc('Numeric');?>',
 							'action'			: function (data) {
 								setBranchSortOrder('numeric', nodeid);
 								var inst = $.jstree.reference(data.reference);
@@ -1177,14 +1177,14 @@ function tree_edit() {
 					'separator_before'	: true,
 					'icon'				: 'fa fa-edit',
 					'separator_after'	: false,
-					'label'				: '<?php print __('Edit');?>',
+					'label'				: '<?php print __esc('Edit');?>',
 					'action'			: false,
 					'submenu' : {
 						'cut' : {
 							'separator_before'	: false,
 							'separator_after'	: false,
 							'icon'				: 'fa fa-cut',
-							'label'				: '<?php print __('Cut');?>',
+							'label'				: '<?php print __esc('Cut');?>',
 							'action'			: function (data) {
 								var inst = $.jstree.reference(data.reference);
 								var obj = inst.get_node(data.reference);
@@ -1199,7 +1199,7 @@ function tree_edit() {
 							'separator_before'	: false,
 							'icon'				: 'fa fa-copy',
 							'separator_after'	: false,
-							'label'				: '<?php print __('Copy');?>',
+							'label'				: '<?php print __esc('Copy');?>',
 							'action'			: function (data) {
 								var inst = $.jstree.reference(data.reference);
 								var obj = inst.get_node(data.reference);
@@ -1217,7 +1217,7 @@ function tree_edit() {
 								return !$.jstree.reference(data.reference).can_paste();
 							},
 							'separator_after'	: false,
-							'label'				: '<?php print __('Paste');?>',
+							'label'				: '<?php print __esc('Paste');?>',
 							'action'			: function (data) {
 								var inst = $.jstree.reference(data.reference);
 								var obj = inst.get_node(data.reference);
@@ -1236,7 +1236,7 @@ function tree_edit() {
 					'icon'				: 'fa fa-times',
 					'separator_after'	: false,
 					'_disabled'			: false, //(this.check('delete_node', data.reference, this.get_parent(data.reference), '')),
-					'label'				: '<?php print __('Delete');?>',
+					'label'				: '<?php print __esc('Delete');?>',
 					'action'			: function (data) {
 						var inst = $.jstree.reference(data.reference);
 						var obj = inst.get_node(data.reference);
@@ -1251,14 +1251,14 @@ function tree_edit() {
 					'separator_before'	: true,
 					'icon'				: 'fa fa-edit',
 					'separator_after'	: false,
-					'label'				: '<?php print __('Edit');?>',
+					'label'				: '<?php print __esc('Edit');?>',
 					'action'			: false,
 					'submenu' : {
 						'cut' : {
 							'separator_before'	: false,
 							'separator_after'	: false,
 							'icon'				: 'fa fa-cut',
-							'label'				: '<?php print __('Cut');?>',
+							'label'				: '<?php print __esc('Cut');?>',
 							'action'			: function (data) {
 								var inst = $.jstree.reference(data.reference);
 								var obj = inst.get_node(data.reference);
@@ -1273,7 +1273,7 @@ function tree_edit() {
 							'separator_before'	: false,
 							'icon'				: 'fa fa-copy',
 							'separator_after'	: false,
-							'label'				: '<?php print __('Copy');?>',
+							'label'				: '<?php print __esc('Copy');?>',
 							'action'			: function (data) {
 								var inst = $.jstree.reference(data.reference);
 								var obj = inst.get_node(data.reference);
@@ -1296,7 +1296,7 @@ function tree_edit() {
 					'icon'				: 'fa fa-times',
 					'separator_after'	: false,
 					'_disabled'			: false,
-					'label'				: '<?php print __('Delete');?>',
+					'label'				: '<?php print __esc('Delete');?>',
 					'action'			: function (data) {
 						var inst = $.jstree.reference(data.reference);
 						var obj = inst.get_node(data.reference);
@@ -1317,7 +1317,7 @@ function tree_edit() {
 					'icon'				: 'fa fa-times',
 					'separator_after'	: false,
 					'_disabled'			: false,
-					'label'				: '<?php print __('Delete');?>',
+					'label'				: '<?php print __esc('Delete');?>',
 					'action'			: function (data) {
 						var inst = $.jstree.reference(data.reference);
 						var obj = inst.get_node(data.reference);
@@ -1332,14 +1332,14 @@ function tree_edit() {
 					'separator_before'	: true,
 					'separator_after'	: false,
 					'icon'				: 'fa fa-sort',
-					'label'				: '<?php print __('Sorting Type');?>',
+					'label'				: '<?php print __esc('Sorting Type');?>',
 					'action'			: false,
 					'submenu' : {
 						'hsgt' : {
 							'separator_before'	: false,
 							'icon'				: getHostSortIcon('hsgt', nodeid),
 							'separator_after'	: false,
-							'label'				: '<?php print __('Graph Template');?>',
+							'label'				: '<?php print __esc('Graph Template');?>',
 							'action'			: function (data) {
 								setHostSortOrder('hsgt', nodeid);
 							}
@@ -1348,7 +1348,7 @@ function tree_edit() {
 							'separator_before'	: false,
 							'icon'				: getHostSortIcon('hsdq', nodeid),
 							'separator_after'	: false,
-							'label'				: '<?php print __('Data Query Index');?>',
+							'label'				: '<?php print __esc('Data Query Index');?>',
 							'action'			: function (data) {
 								setHostSortOrder('hsdq', nodeid);
 							}
@@ -1359,14 +1359,14 @@ function tree_edit() {
 					'separator_before'	: true,
 					'icon'				: 'fa fa-edit',
 					'separator_after'	: false,
-					'label'				: '<?php print __('Edit');?>',
+					'label'				: '<?php print __esc('Edit');?>',
 					'action'			: false,
 					'submenu' : {
 						'cut' : {
 							'separator_before'	: false,
 							'separator_after'	: false,
 							'icon'				: 'fa fa-cut',
-							'label'				: '<?php print __('Cut');?>',
+							'label'				: '<?php print __esc('Cut');?>',
 							'action'			: function (data) {
 								var inst = $.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
@@ -1381,7 +1381,7 @@ function tree_edit() {
 							'separator_before'	: false,
 							'icon'				: 'fa fa-copy',
 							'separator_after'	: false,
-							'label'				: '<?php print __('Copy');?>',
+							'label'				: '<?php print __esc('Copy');?>',
 							'action'			: function (data) {
 								var inst = $.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
@@ -1685,75 +1685,75 @@ function tree() {
 
 	$display_text = array(
 		'name' => array(
-			'display' => __('Tree Name'), 
-			'align' => 'left', 
-			'sort' => 'ASC', 
+			'display' => __('Tree Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
 			'tip' => __('The name by which this Tree will be referred to as.')
 		),
 		'id' => array(
-			'display' => __('ID'), 
-			'align' => 'right', 
-			'sort' => 'ASC', 
+			'display' => __('ID'),
+			'align' => 'right',
+			'sort' => 'ASC',
 			'tip' => __('The internal database ID for this Tree.  Useful when performing automation or debugging.')
 		),
 		'enabled' => array(
-			'display' => __('Published'), 
-			'align' => 'left', 
-			'sort' => 'ASC', 
+			'display' => __('Published'),
+			'align' => 'left',
+			'sort' => 'ASC',
 			'tip' => __('Unpublished Trees cannot be viewed from the Graph tab')
 		),
 		'locked' => array(
-			'display' => __('Locked'), 
-			'align' => 'left', 
-			'sort' => 'ASC', 
+			'display' => __('Locked'),
+			'align' => 'left',
+			'sort' => 'ASC',
 			'tip' => __('A Tree must be locked in order to be edited.')
 		),
 		'user_id' => array(
-			'display' => __('Owner'), 
-			'align' => 'left', 
-			'sort' => 'ASC', 
+			'display' => __('Owner'),
+			'align' => 'left',
+			'sort' => 'ASC',
 			'tip' => __('The original author of this Tree.')
 		),
 		'sequence' => array(
-			'display' => __('Order'), 
-			'align' => 'center', 
-			'sort' => 'ASC', 
+			'display' => __('Order'),
+			'align' => 'center',
+			'sort' => 'ASC',
 			'tip' => __('To change the order of the trees, first sort by this column, press the up or down arrows once they appear.')
 		),
 		'last_modified' => array(
-			'display' => __('Last Edited'), 
-			'align' => 'right', 
-			'sort' => 'ASC', 
+			'display' => __('Last Edited'),
+			'align' => 'right',
+			'sort' => 'ASC',
 			'tip' => __('The date that this Tree was last edited.')
 		),
 		'modified_by' => array(
-			'display' => __('Edited By'), 
-			'align' => 'right', 
-			'sort' => 'ASC', 
+			'display' => __('Edited By'),
+			'align' => 'right',
+			'sort' => 'ASC',
 			'tip' => __('The last user to have modified this Tree.')
 		),
 		'sites' => array(
-			'display' => __('Sites'), 
-			'align' => 'right', 
-			'sort' => 'DESC', 
+			'display' => __('Sites'),
+			'align' => 'right',
+			'sort' => 'DESC',
 			'tip' => __('The total number of Site Branches in this Tree.')
 		),
 		'branches' => array(
-			'display' => __('Branches'), 
-			'align' => 'right', 
-			'sort' => 'DESC', 
+			'display' => __('Branches'),
+			'align' => 'right',
+			'sort' => 'DESC',
 			'tip' => __('The total number of Branches in this Tree.')
 		),
 		'hosts' => array(
-			'display' => __('Devices'), 
-			'align' => 'right', 
-			'sort' => 'DESC', 
+			'display' => __('Devices'),
+			'align' => 'right',
+			'sort' => 'DESC',
 			'tip' => __('The total number of individual Devices in this Tree.')
 		),
 		'graphs' => array(
-			'display' => __('Graphs'), 
-			'align' => 'right', 
-			'sort' => 'DESC', 
+			'display' => __('Graphs'),
+			'align' => 'right',
+			'sort' => 'DESC',
 			'tip' => __('The total number of individual Graphs in this Tree.')
 		)
 	);
@@ -1833,4 +1833,3 @@ function tree() {
 		<?php
 	}
 }
-
