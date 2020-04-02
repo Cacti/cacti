@@ -664,6 +664,8 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		} else {
 			print " class='ui-state-default ui-corner-all'";
 		}
+	} else {
+		print " class='ui-state-default ui-corner-all'";
 	}
 
 	if (isset($_SESSION['sess_field_values']) && isset($_SESSION['sess_error_fields'])) {
