@@ -1489,6 +1489,7 @@ function host() {
 		<form id='form_devices' action='host.php'>
 			<table class='filterTable'>
 				<tr>
+					<?php api_plugin_hook('device_filter_start'); ?>
 					<td>
 						<?php print __('Site');?>
 					</td>
@@ -1698,6 +1699,8 @@ function host() {
 			'tip' => __('The availability percentage based upon ping results since the counters were cleared for this Device.')
 		)
 	);
+	$display_text_size = sizeof($display_text);
+	$display_text = api_plugin_hook_function('device_display_text', $display_text);
 
 	$hosts = get_device_records($total_rows, $rows);
 
@@ -1711,7 +1714,9 @@ function host() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (cacti_sizeof($hosts)) {
+	if (sizeof($display_text) != $display_text_size && cacti_sizeof($hosts)) {//display_text changed
+		api_plugin_hook_function('device_table_start', $hosts);
+	} else if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			if ($host['disabled'] == '' &&
 				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&
