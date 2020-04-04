@@ -62,6 +62,7 @@ Cacti CHANGELOG
 -feature#3304: Allow Basic Auth Accounts to be Mapped by CSV File
 -feature#3366: Allow checkbox_groups flow like the permission page on forms
 -feature#3374: Allow Setting of Cookie 'Cacti' domain edition
+-feature#3403: Enchance the "Graph Debug Mode" to display RRDtool Command lengths and excess warnings
 
 1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)
