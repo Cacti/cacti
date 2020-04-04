@@ -2256,7 +2256,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* either print out the source or pass the source onto rrdtool to get us a nice PNG */
 		if (isset($graph_data_array['print_source'])) {
-			print '<PRE>' . html_escape(read_config_option('path_rrdtool') . ' graph ' . $graph_opts . $graph_defs . $txt_graph_items) . '</PRE>';
+                        $source_command_line = read_config_option('path_rrdtool') . ' graph ' . $graph_opts . $graph_defs . $txt_graph_items;
+                        $source_command_line_lengths = strlen(str_replace("\\\n", ' ', $source_command_line));
+                        print '<PRE>' . html_escape($source_command_line) . '</PRE>';
+                        print '<span class="textInfo">' . 'RRDtool Command lengths = ' . $source_command_line_lengths . ' charaters.</span><br>';
+                        if ( $config['cacti_server_os'] == 'win32' && $source_command_line_lengths > 8191 ) {
+                            print '<PRE>' . 'Warning: The Cacti OS is Windows, RRDtool Command lengths should not exceed 8191 charaters.' . '</PRE>';
 		} else {
 			if (isset($graph_data_array['graphv'])) {
 				$graph = 'graphv';
