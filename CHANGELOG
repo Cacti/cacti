@@ -48,6 +48,7 @@ Cacti CHANGELOG
 -issue#3387: A typo in csrf-magic.js does not allow you to run EXTJS scripts
 -issue#3388: Minor: PHP CLI help inconsistent with filename
 -issue#3390: Incorrect breadcrumb bar if current tab is not "Graphs"
+-issue#3402: Cacti scores low on performance audit on lighthouse audit
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
 -issue: Zoom looses focus in advanced mode while crossing chart border
@@ -62,6 +63,7 @@ Cacti CHANGELOG
 -feature#3304: Allow Basic Auth Accounts to be Mapped by CSV File
 -feature#3366: Allow checkbox_groups flow like the permission page on forms
 -feature#3374: Allow Setting of Cookie 'Cacti' domain edition
+-feature: Update jQuery to v3.4.1 for security reasons
 
 1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)

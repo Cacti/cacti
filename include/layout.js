@@ -727,7 +727,9 @@ function applySkin() {
 			}
 			return text;
 		}
-	}).tooltip('close').on('keyup keydown', function(event) {
+	});
+
+	$(document).on('keyup keydown', function(event) {
 		shiftPressed = event.shiftKey;
 	});
 
@@ -1875,13 +1877,13 @@ function loadPage(href, force) {
 function setNavigationScroll() {
 	var object = '';
 
-	$(document).unbind('mousemove').on('mousemove', function(pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mousemove').on('mousemove', function(pos) {
+		object = '';
+
 		if ($('.cactiConsoleNavigationArea').length) {
 			object = '.cactiConsoleNavigationArea';
 		} else if ($('.cactiTreeNavigationArea').length) {
 			object = '.cactiTreeNavigationArea';
-		} else {
-			object = '';
 		}
 
 		if (object != '') {
@@ -1912,6 +1914,21 @@ function setNavigationScroll() {
 				isHover = true;
 			}
 		}
+	});
+
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mouseleave').on('mouseleave', function(pos) {
+		if ($('.cactiConsoleNavigationArea').length) {
+			object = '.cactiConsoleNavigationArea';
+		} else if ($('.cactiTreeNavigationArea').length) {
+			object = '.cactiTreeNavigationArea';
+		}
+
+		isHover = false;
+
+		clearTimeout(hoverTimer);
+		hoverTimer = setTimeout(function() {
+			$(object).css('overflow-y', 'hidden');
+		}, 500);
 	});
 }
 
