@@ -82,8 +82,7 @@ if ($user['password_change'] != 'on') {
 
 	/* destroy session information */
 	kill_session_var('sess_user_id');
-	unset($_COOKIE[$cacti_session_name]);
-	setcookie($cacti_session_name, null, -1, $config['url_path']);
+	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
@@ -202,6 +201,32 @@ case 'changepassword':
 			SET must_change_password = '', password = ?
 			WHERE id = ?",
 			array(compat_password_hash($password,PASSWORD_DEFAULT), $user_id));
+
+		// Clear the auth cache for the user
+		$token = '';
+		if (isset($_SERVER['HTTP_COOKIE']) && strpos($_SERVER['HTTP_COOKIE'], 'cacti_remembers') !== false) {
+			$parts = explode(';', $_SERVER['HTTP_COOKIE']);
+			foreach($parts as $p) {
+				if (strpos($p, 'cacti_remembers') !== false) {
+					$pparts = explode('%2C', $p);
+					if (isset($pparts[1])) {
+						$token = $pparts[1];
+						break;
+					}
+				}
+			}
+		}
+
+		if ($token != '') {
+			$sql_where = 'AND token != ' . db_qstr(hash('sha512', $token, false));
+		} else {
+			$sql_where = '';
+		}
+
+		db_execute_prepared("DELETE FROM user_auth_cache
+			WHERE user_id = ?
+			$sql_where",
+			array($_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
 

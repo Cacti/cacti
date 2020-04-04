@@ -1,9 +1,15 @@
 Cacti CHANGELOG
 
 1.2.11
+-SECURITY#1566: Add SameSite support for cookies
+-SECURITY#1985: Cookie should be properly verified against password
 -SECURITY#3342: CSRF at Admin Email
 -SECURITY#3343: Improper Access Control on disabling a user.
+-issue#2265: Graph Field Limits Save Failed: Field Input Error - |query_ifSpeed|
+-issue#2400: Enhancement: Ability to duplicate site settings and/or provide default template settings for sites
+-issue#2428: Plugins --> name column does not match "name field value" in INFO file
 -issue#2580: DSStats adding more and more processes until server stops
+-issue#2853: Discovered Devices filtering do not include snmp description or name
 -issue#3231: Ability to unlock a tree that has been locked for editing by another account.
 -issue#3237: Report gets resent every poller cycle
 -issue#3261: Automation rules aren't run for new devices on remote data collectors
@@ -11,6 +17,7 @@ Cacti CHANGELOG
 -issue#3299: Cacti should warn users who use php-snmp and SNMPv3 to uninstall php-snmp
 -issue#3310: Fix automation_get_valid_mask() calculation on 32bit architectures
 -issue#3212: Minor:Console menu does not auto-expand for graph item editor page
+-issue#3313: Installing cacti 1.2.10 in debian and ubuntu stopped at 41%
 -issue#3314: Script Server has invalid debug code left in
 -issue#3317: CSRF report PHP Notice: Array to string conversion
 -issue#3319: Errors upgrading 0.8.x to latest Cacti due to incorrectly detected data source profile id
@@ -23,15 +30,38 @@ Cacti CHANGELOG
 -issue#3341: PHP Error when loading Cacti login page
 -issue#3345: Calendar can not work in cacti 1.2.10
 -issue#3346: Broken rewrite of octet strings
+-issue#3247: mo files does not update "PO-Revision-Date" attribute
 -issue#3348: Remove Orphans and Sync Graphs not working as expected
 -issue#3349: Variable max_input_vars is read only.  Attempting to change it adds no value
 -issue#3350: Some SQL queries can break if a database is exported then imported
+-issue#3355: Minor bug about base_value in graph_xport.php and fixed
+-issue#3360: Timeout and logout issue for guest
+-issue#3363: The current user and user group permissions pages are not responsive
+-issue#3367: When Data Queries timeout, data is removed from the Host SNMP Cache table causing issues
+-issue#3368: Saving a Graph Template Item fails due to missing includes
+-issue#3373: Multiple LDAP/AD Domain logon issue
+-issue#3375: When poller interval is 1 Min and collection rate is 5 Min distribution of poller items not happening
+-issue#3376: Poller Recovery is slow poller_recovery.php
+-issue#3378: Typo error in global_languages.php
+-issue#3380: php error when trigger threshold sendmail 
+-issue#3386: Second data collector shows as running when its not when no items to gather
+-issue#3387: A typo in csrf-magic.js does not allow you to run EXTJS scripts
+-issue#3388: Minor: PHP CLI help inconsistent with filename
+-issue#3390: Incorrect breadcrumb bar if current tab is not "Graphs"
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
+-issue: Zoom looses focus in advanced mode while crossing chart border
+-feature#1551: Allow uptime to be a variable for use with graphs
+-feature#1990: Plugin Realm should have a 'role' to help maintain changes between plugins
+-feature#2110: Add Refresh Interval to Data Collectors display
+-feature#2156: Add Location List Editing Capabilities
+-feature#2236: Allow for Purging of Data Source Statistics from the GUI
 -feature#2268: Feature Request: Data Profiles
 -feature#2534: Enhance the html_nav_bar() in the lib/html.php to support larger system
 -feature#2688: Increase length of Graph Item 'value' field to support pango-markup better
 -feature#3304: Allow Basic Auth Accounts to be Mapped by CSV File
+-feature#3366: Allow checkbox_groups flow like the permission page on forms
+-feature#3374: Allow Setting of Cookie 'Cacti' domain edition
 
 1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)

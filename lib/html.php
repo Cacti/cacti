@@ -1222,43 +1222,40 @@ function is_menu_pick_active($menu_url) {
 		} else {
 			return false;
 		}
-	}
-
-	/* special case for Graph Template items edit */
-	if (strpos($_SERVER['REQUEST_URI'], 'graph_templates_items.php') !== false) {
+	} elseif (strpos($_SERVER['REQUEST_URI'], 'graph_templates_items.php') !== false) {
+		/* special case for Graph Template items edit */
 		if (strpos($menu_url, 'graph_templates.php') !== false) {
 			return true;
 		} else {
 			return false;
 		}
-	}
-
-	/* special case for Graph items edit */
-	if (strpos($_SERVER['REQUEST_URI'], 'graph_items.php') !== false) {
+	} elseif (strpos($_SERVER['REQUEST_URI'], 'graph_items.php') !== false) {
+		/* special case for Graph items edit */
 		if (strpos($menu_url, 'graphs.php') !== false) {
 			return true;
 		} else {
 			return false;
 		}
-	}
-
-	/* special case for Color Templates items edit */
-	if (strpos($_SERVER['REQUEST_URI'], 'color_templates_items.php') !== false) {
+	} elseif (strpos($_SERVER['REQUEST_URI'], 'color_templates_items.php') !== false) {
+		/* special case for Color Templates items edit */
 		if (strpos($menu_url, 'color_templates.php') !== false) {
 			return true;
 		} else {
 			return false;
 		}
-	}
-
-	/* break out the URL and variables */
-	if (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
+	} elseif (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
+		/* break out the URL and variables */
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
 		if (isset($url_array['query'])) {
 			parse_str($url_array['query'], $url_parts);
 		} else {
 			$url_parts = array();
 		}
+	}
+
+	// Host requires another check
+	if (strpos($menu_url, 'host.php?action=edit&create=true') !== false) {
+		return false;
 	}
 
 	$menu_array = parse_url($menu_url);
@@ -1305,7 +1302,7 @@ function draw_menu($user_menu = '') {
 		$user_menu = $menu;
 	}
 
-	print "<tr><td><table><tr><td><div id='menu'><ul id='nav' role='menu'>";
+	print "<tr><td><table width='100%'><tr><td><div id='menu'><ul id='nav' role='menu'>";
 
 	/* loop through each header */
 	$i = 0;
@@ -2356,8 +2353,8 @@ function html_common_header($title, $selectedTheme = '') {
 	}
 
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy != '') {
-		$script_policy .= ';';
+	if ($script_policy != '0' && $script_policy != '') {
+		$script_policy = "'$script_policy'";
 	}
 
 	?>

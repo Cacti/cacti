@@ -43,7 +43,7 @@ get_filter_request_var('stdout');
 /* flush the headers now */
 ob_end_clean();
 
-session_write_close();
+cacti_session_close();
 
 $graph_data_array = array();
 
@@ -211,7 +211,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 			print "<tr><td class='left'>" . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j*$xport_array['meta']['step'])) . "</td>";
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
-					print "<td class='right'>" . trim(number_format_i18n(round($row['col' . $i],3))) . '</td>';
+					print "<td class='right'>" . trim(number_format_i18n(round($row['col' . $i],3),2,$graph_info['base_value'])) . '</td>';
 				} elseif($row['col' . $i] == 0) {
 					print "<td class='right'>-</td>";
 				} else {

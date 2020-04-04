@@ -111,7 +111,7 @@ class MibParser extends MibCache {
 				switch($text[$i])
 				{
 					case ':':
-						if($text{$i+1} == ':' && $text{$i+2} == '=')
+						if($text[$i+1] == ':' && $text[$i+2] == '=')
 						{
 							if($token != '')
 							{
@@ -125,7 +125,7 @@ class MibParser extends MibCache {
 						$token .= $text[$i];
 						break;
 					case '.':
-						if($text{$i+1} == '.')
+						if($text[$i+1] == '.')
 						{
 							if($token != '')
 							{
@@ -163,7 +163,7 @@ class MibParser extends MibCache {
 						}
 						break;
 					case '-':
-						if($text{$i+1} == '-')
+						if($text[$i+1] == '-')
 						  $in_comment = true;
 						else
 						$token .= $text[$i];
@@ -483,3 +483,4 @@ class MibParser extends MibCache {
 	}
 
 }
+

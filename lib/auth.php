@@ -41,7 +41,7 @@ function clear_auth_cookie() {
 			if (!empty($user_id)) {
 				if (isset($parts[1])) {
 					$secret = hash('sha512', $parts[1], false);
-					setcookie('cacti_remembers', '', time() - 3600, $config['url_path']);
+					cacti_cookie_session_logout();
 					db_execute_prepared('DELETE FROM user_auth_cache
 						WHERE user_id = ?
 						AND token = ?',
@@ -71,11 +71,7 @@ function set_auth_cookie($user) {
 			(?, ?, NOW(), ?);',
 			array($user['id'], get_client_addr(''), $secret));
 
-		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-			setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path'], NULL, true, true);
-		} else {
-			setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
-		}
+		cacti_cookie_session_set($user['username'], $nssecret);
 	}
 }
 
@@ -472,6 +468,31 @@ function auth_check_perms($objects, $policy) {
 	}
 }
 
+function auth_augment_roles($role_name, $files) {
+	global $user_auth_roles, $user_auth_realm_filenames;
+
+	foreach($files as $file) {
+		if (array_search($file, $user_auth_realm_filenames) !== false) {
+			if (array_search($user_auth_realm_filenames[$file], $user_auth_roles[$role_name]) === false) {
+				$user_auth_roles[$role_name][] = $user_auth_realm_filenames[$file];
+			}
+		} else {
+			$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
+				FROM plugin_realms
+				WHERE file LIKE ?',
+				array('%' . $file . '%'));
+
+			if (!empty($realm_id)) {
+				if (!isset($user_auth_roles[$role_name])) {
+					$user_auth_roles[$role_name][] = $realm_id;
+				} elseif (array_search($realm_id, $user_auth_roles[$role_name]) === false) {
+					$user_auth_roles[$role_name][] = $realm_id;
+				}
+			}
+		}
+	}
+}
+
 /* is_tree_allowed - determines whether the current user is allowed to view a certain graph tree
    @arg $tree_id - (int) the ID of the graph tree to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
@@ -688,26 +709,29 @@ function is_realm_allowed($realm) {
 		}
 
 		if (!is_user_perms_valid($_SESSION['sess_user_id'])) {
-			kill_session_var('sess_user_realms');
-			kill_session_var('sess_user_config_array');
-			kill_session_var('sess_config_array');
-
 			if (db_table_exists('user_auth_cache')) {
 				$enabled = db_fetch_cell_prepared('SELECT enabled
 					FROM user_auth
 					WHERE id = ?',
 					array($_SESSION['sess_user_id']));
 
-				if ($enabled == '') {
+				if ($enabled == '' && get_guest_account() != $_SESSION['sess_user_id']) {
 					db_execute_prepared('DELETE FROM user_auth_cache
 						WHERE user_id = ?',
 						array($_SESSION['sess_user_id']));
 
 					kill_session_var('sess_user_id');
+					kill_session_var('sess_user_realms');
+					kill_session_var('sess_user_config_array');
+					kill_session_var('sess_config_array');
 
 					print '<span style="display:none;">cactiLoginSuspend</span>';
 					exit;
 				}
+			} else {
+				kill_session_var('sess_user_realms');
+				kill_session_var('sess_user_config_array');
+				kill_session_var('sess_config_array');
 			}
 		}
 

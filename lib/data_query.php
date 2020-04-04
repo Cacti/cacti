@@ -623,6 +623,8 @@ function query_script_host($host_id, $snmp_query_id) {
 
 	debug_log_insert_section_end('data_query');
 
+	$empty_types = array();
+
 	/* set an array to host all updates */
 	$output_array = array();
 
@@ -636,6 +638,7 @@ function query_script_host($host_id, $snmp_query_id) {
 			$script_data_array = exec_into_array($script_path);
 
 			if (!cacti_sizeof($script_data_array) && $field_name == $sort_field) {
+				$empty_types[] = $field_name;
 				query_debug_timer_offset('data_query', __('Sort field returned no data for field name %s, skipping', $field_name));
 			} else {
 				debug_log_insert('data_query', __('Executing script query \'%s\'', $script_path));
@@ -659,7 +662,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	}
 
 	if (cacti_sizeof($output_array)) {
-		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
+		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array, $empty_types);
 	}
 
 	return true;
@@ -811,6 +814,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$data_query_rewrite_indexes_cache = array();
 
 	$fields_processed = array();
+
+	$empty_types = array();
 
 	rewrite_snmp_enum_value(null);
 
@@ -1035,6 +1040,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$snmp_data[$d['oid']] = $d['value'];
 					}
 				} elseif ($field_name == $sort_field) {
+					$empty_types[] = $field_name;
 					query_debug_timer_offset('data_query', __('Sort field returned no data for OID[%s], skipping.', $field_array['oid']));
 					continue;
 				}
@@ -1042,6 +1048,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				$snmp_data = cacti_snmp_session_walk($session, $field_array['oid']);
 
 				if (!cacti_sizeof($snmp_data) && $field_name == $sort_field) {
+					$empty_types[] = $field_name;
 					query_debug_timer_offset('data_query', __('Sort field returned no data for OID[%s], skipping.', $field_array['oid']));
 					continue;
 				}
@@ -1174,7 +1181,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$session->close();
 
 	if (cacti_sizeof($output_array)) {
-		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
+		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array, $empty_types);
 	}
 
 	return true;
@@ -1205,7 +1212,7 @@ function data_query_ctype_print_unicode($value) {
 	return preg_match($pattern, $value);
 }
 
-function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array) {
+function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array, &$empty_types) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	db_execute_prepared('UPDATE host_snmp_cache
 		SET present = 0
@@ -1252,8 +1259,23 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 		db_execute($sql_prefix . $buffer . $sql_suffix);
 	}
 
+	if (cacti_sizeof($empty_types)) {
+		foreach($empty_types as $field) {
+			db_execute_prepared('UPDATE host_snmp_cache
+				SET present = 1
+				WHERE host_id = ?
+				AND snmp_query_id = ?
+				AND field_name = ?',
+				array($host_id, $snmp_query_id, $field_name));
+		}
+	}
+
 	/* remove stale records from the host cache */
-	db_execute_prepared("DELETE FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND present='0'", array($host_id, $snmp_query_id));
+	db_execute_prepared("DELETE FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?
+		AND present='0'",
+		array($host_id, $snmp_query_id));
 }
 
 /* data_query_rewrite_indexes - returns array of rewritten indexes

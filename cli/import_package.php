@@ -138,7 +138,7 @@ if (cacti_sizeof($parms)) {
 
 				import_display_results($debug_data, $filestatus, false, $preview_only);
 			} else {
-				print "ERROR: file $filename import process failed due to missing XML version\n\n";
+				print "ERROR: file $filename import process failed due to errors with the XML file\n\n";
 				exit(1);
 			}
 		} else {

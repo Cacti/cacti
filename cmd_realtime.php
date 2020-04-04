@@ -35,7 +35,7 @@ $start = date('Y-m-d H:i:s'); // for runtime measurement
 /* correct for a windows PHP bug. fixed in 5.2.0 */
 if (cacti_count($_SERVER['argv']) < 4) {
 	echo "No graph_id, interval, pollerid specified.\n\n";
-	echo "Usage: cmd_rt.php POLLER_ID GRAPH_ID INTERVAL\n\n";
+	echo "Usage: cmd_realtime.php POLLER_ID GRAPH_ID INTERVAL\n\n";
 	exit(-1);
 }
 

@@ -124,7 +124,7 @@ function form_save() {
 
 		$save3['t_rrd_maximum']         = form_input_validate((isset_request_var('t_rrd_maximum') ? get_nfilter_request_var('t_rrd_maximum') : ''), 't_rrd_maximum', '', true, 3);
 
-		$save3['rrd_maximum']           = form_input_validate(get_nfilter_request_var('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
+		$save3['rrd_maximum']           = form_input_validate(get_nfilter_request_var('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U|\|query_ifSpeed\|$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
 
 		$save3['t_rrd_minimum']         = form_input_validate((isset_request_var('t_rrd_minimum') ? get_nfilter_request_var('t_rrd_minimum') : ''), 't_rrd_minimum', '', true, 3);
 

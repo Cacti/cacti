@@ -483,17 +483,17 @@ function auth_display_custom_error_message($message) {
 	global $config;
 
 	/* kill the session */
-	setcookie(session_name(), '', time() - 3600, $config['url_path']);
+	cacti_cookie_logout();
 
 	/* print error */
 	print '<!DOCTYPE html>';
-	print "<html>\n";
-	print "<head>\n";
+	print '<html>';
+	print '<head>';
 	html_common_header(__('Cacti'));
-	print "</head>\n";
-	print "<body>\n<br><br>\n";
-	print $message . "\n";
-	print "</body>\n</html>\n";
+	print '</head>';
+	print '<body><br><br>';
+	print $message;
+	print '</body></html>';
 }
 
 function domains_login_process() {
@@ -629,7 +629,8 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 
 	if (!empty($username)) $ldap->username = $username;
 	if (!empty($password)) $ldap->password = $password;
-	if (!empty($dn))       $ldap->dn       = $dn;
+
+	$ldap->dn = $dn;
 
 	$ld = db_fetch_row_prepared('SELECT *
 		FROM user_domains_ldap
@@ -637,7 +638,10 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 		array($realm-1000));
 
 	if (cacti_sizeof($ld)) {
-		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+		if (empty($dn) && !empty($ld['dn'])) {
+			$ldap->dn = $ld['dn'];
+		}
+
 		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
 		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
 		if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];

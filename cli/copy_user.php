@@ -77,7 +77,7 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print 'usage: copy_cacti_user.php <template user> <new user>' . PHP_EOL . PHP_EOL;
+	print 'usage: copy_user.php <template user> <new user>' . PHP_EOL . PHP_EOL;
 	print 'A utility to copy on local Cacti user and their settings to a new one.' . PHP_EOL . PHP_EOL;
 	print 'NOTE: It is highly recommended that you use the web interface to copy users as' . PHP_EOL;
 	print 'this script will only copy Local Cacti users.' . PHP_EOL . PHP_EOL;

@@ -52,7 +52,7 @@ $script = basename($_SERVER['SCRIPT_NAME']);
 if ($script == 'graph_view.php' || $script == 'graph.php') {
 	if (isset($_SESSION['custom']) && $_SESSION['custom'] == true) {
 		$refreshIsLogout = 'true';
-	}else if (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
+	} elseif (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
 		$refreshIsLogout = 'true';
 	} else {
 		$refresh = api_plugin_hook_function('top_graph_refresh', read_user_setting('page_refresh'));
@@ -77,13 +77,14 @@ if (isset($_SESSION['refresh'])) {
     if (isset($_SESSION['refresh']['logout'])) {
         $refreshIsLogout = $_SESSION['refresh']['logout'];
     } else {
-		$refreshIsLogout = 'true';
+		$refreshIsLogout = 'false';
 	}
 
     if (isset($_SESSION['refresh']['page'])) {
         $myrefresh['page'] = sanitize_uri($_SESSION['refresh']['page']);
     } else {
 		$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout';
+		$refreshIsLogout   = 'true';
 	}
 
 	unset($_SESSION['refresh']);
@@ -95,9 +96,9 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = $refresh;
 	$myrefresh['page']    = sanitize_uri(appendHeaderSuppression($_SERVER['REQUEST_URI']));
 	$refreshIsLogout      = 'false';
-} elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_COOKIE['cacti_remembers'])) {
+} elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_SESSION['cacti_remembers']) && $_SESSION['cacti_remembers'] == true) {
 	$myrefresh['seconds'] = 99999999;
-	$myrefresh['page']    = 'index.php';
+	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
 	$refreshIsLogout      = 'false';
 } elseif (read_config_option('auth_method') == 2) {
 	$myrefresh['seconds'] = 99999999;
@@ -111,7 +112,16 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
 	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
 	$refreshIsLogout      = 'true';
-} ?>
+}
+
+/* guest account does not auto log off */
+if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == read_config_option('guest_user')) {
+	$myrefresh['seconds'] = 99999999;
+	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
+	$refreshIsLogout      = 'false';
+}
+
+?>
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
 	var cactiServerOS='<?php print $config['cacti_server_os'];?>';

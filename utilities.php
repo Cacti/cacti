@@ -97,6 +97,11 @@ switch (get_request_var('action')) {
 		snmpagent_utilities_run_cache();
 		bottom_footer();
 		break;
+	case 'purge_data_source_statistics';
+		purge_data_source_statistics();
+		raise_message('purge_dss', __('Data Source Statistics Purged.'), MESSAGE_LEVEL_INFO);
+		header('Location: utilities.php');
+		break;
 	case 'rebuild_snmpagent_cache';
 		snmpagent_cache_rebuilt();
 		header('Location: utilities.php?action=view_snmpagent_cache');exit;
@@ -1918,6 +1923,13 @@ function utilities() {
 		),
 	);
 
+	$utilities[__('Data Source Statistics Utilities')] = array(
+		__('Purge Data Source Statistics') => array(
+			'link'  => 'utilities.php?action=purge_data_source_statistics',
+			'description' => __('This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass.')
+		),
+	);
+
 	$utilities[__('RRD Utilities')] = array(
 		__('RRDfile Cleaner') => array(
 			'link'  => 'rrdcleaner.php',
@@ -1967,6 +1979,22 @@ function utilities() {
 	api_plugin_hook('utilities_list');
 
 	html_end_box();
+}
+
+function purge_data_source_statistics() {
+	$tables = array(
+		'data_source_stats_daily',
+		'data_source_stats_hourly',
+		'data_source_stats_hourly_cache',
+		'data_source_stats_hourly_last',
+		'data_source_stats_monthly',
+		'data_source_stats_weekly',
+		'data_source_stats_yearly'
+	);
+
+	foreach($tables as $table) {
+		db_execute('TRUNCATE TABLE ' . $table);
+	}
 }
 
 function boost_display_run_status() {

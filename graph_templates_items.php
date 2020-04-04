@@ -23,7 +23,9 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/api_data_source.php');
 include_once('./lib/template.php');
+include_once('./lib/utility.php');
 
 /* set default action */
 set_default_action();

@@ -32,8 +32,8 @@ set_default_action();
 api_plugin_hook('logout_pre_session_destroy');
 
 /* Clear session */
-setcookie(session_name(), '', time() - 3600, $config['url_path']);
-session_destroy();
+cacti_cookie_logout();
+cacti_session_destroy();
 
 $version = get_cacti_version();
 

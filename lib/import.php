@@ -277,7 +277,11 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	if (is_resource($f)) {
 		while (!feof($f)) {
 			$x = fgets($f);
-			if (strpos($x, '<signature>') !== FALSE) {
+
+			if (strlen($x) == 0) {
+				cacti_log('FATAL: Unable to read Cacti Package ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+				return false;
+			} elseif (strpos($x, '<signature>') !== FALSE) {
 				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
 				$x = "   <signature></signature>\n";
 

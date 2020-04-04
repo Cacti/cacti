@@ -389,10 +389,36 @@ if ($config['is_web']) {
 
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
-	ini_set('session.cookie_httponly', '1');
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		ini_set('session.cookie_secure', '1');
+
+	/* add additional cookie directives */
+	ini_set('session.cookie_httponly', true);
+	ini_set('session.cookie_path', $config['url_path']);
+	ini_set('session.use_strict_mode', true);
+
+	$options = array(
+		'cookie_httponly' => true,
+		'cookie_path'     => $config['url_path'],
+		'use_strict_mode' => true
+	);
+
+	if (isset($cacti_cookie_domain) && $cacti_cookie_domain != '') {
+		ini_set('session.cookie_domain', $cacti_cookie_domain);
+		$options['cookie_domain'] = $cacti_cookie_domain;
 	}
+
+	// SameSite php7.3+ behavior
+	if (version_compare(PHP_VERSION, '7.3', '>=')) {
+		ini_set('session.cookie_samesite', 'Strict');
+		$options['cookie_samesite'] = 'Strict';
+	}
+
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+		ini_set('session.cookie_secure', true);
+		$options['cookie_secure'] = true;
+	}
+
+	$config['cookie_options']     = $options;
+	$config['cacti_session_name'] = $cacti_session_name;
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -402,22 +428,22 @@ if ($config['is_web']) {
 	header('Pragma: no-cache');
 	header('X-Frame-Options: SAMEORIGIN');
 
+	// SameSite legacy behavior
+	if (version_compare(PHP_VERSION, '7.3', '<')) {
+		header('Set-Cookie: cross-site-cookie=bar; SameSite=Strict;' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? ' Secure':''));
+	}
+
 	/* increased web hardening */
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy != '') {
-		$script_policy .= ';';
+	if ($script_policy != '0' && $script_policy != '') {
+		$script_policy = "'$script_policy'";
 	}
 	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' $script_policy 'unsafe-inline'; frame-ancestors 'self';");
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
 
-	/* initialize php session */
-	if (!function_exists('session_name')) {
-		die('PHP Session Management is missing, please install PHP Session module');
-	}
-	session_name($cacti_session_name);
-	if (!session_id()) session_start();
+	cacti_session_start();
 
 	/* we never run with magic quotes on */
 	if (version_compare(PHP_VERSION, '5.4', '<=')) {
@@ -443,8 +469,7 @@ if ($config['is_web']) {
 		$_SESSION['cacti_cwd'] = $config['base_path'];
 	} else {
 		if ($_SESSION['cacti_cwd'] != $config['base_path']) {
-			session_unset();
-			session_destroy();
+			cacti_session_destroy();
 		}
 	}
 }

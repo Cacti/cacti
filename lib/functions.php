@@ -686,7 +686,7 @@ function get_message_max_type() {
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
-	global $messages, $no_http_headers;
+	global $config, $messages, $no_http_headers;
 
 	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
@@ -717,7 +717,7 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 	}
 
 	if ($need_session) {
-		session_start();
+		cacti_session_start();
 	}
 
 	if (!isset($_SESSION['sess_messages'])) {
@@ -727,7 +727,7 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 	$_SESSION['sess_messages'][$message_id] = array('message' => $message, 'level' => $message_level);
 
 	if ($need_session) {
-		session_write_close();
+		cacti_session_close();
 	}
 }
 
@@ -773,6 +773,8 @@ function display_custom_error_message($message) {
 
 /* clear_messages - clears the message cache */
 function clear_messages() {
+	global $config;
+
 	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
 		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
@@ -781,13 +783,13 @@ function clear_messages() {
 	}
 
 	if ($need_session) {
-		session_start();
+		session_start($config['cookie_options']);
 	}
 
 	kill_session_var('sess_messages');
 
 	if ($need_session) {
-		session_write_close();
+		cacti_session_close();
 	}
 }
 
@@ -807,17 +809,19 @@ function kill_session_var($var_name) {
 
 /* force_session_data - forces session data into the session if the session was closed for some reason */
 function force_session_data() {
+	global $config;
+
 	// This function should always exist, if not its an invalid install
 	if (!function_exists('session_status')) {
 		return false;
 	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
 
-		session_start();
+		session_start($config['cookie_options']);
 
 		$_SESSION = $data;
 
-		session_write_close();
+		cacti_session_close();
 	}
 }
 
@@ -3264,7 +3268,7 @@ function bottom_footer() {
 
 	/* close the session */
 	if (array_search(get_current_page(), $no_session_write) === false) {
-		session_write_close();
+		cacti_session_close();
 	}
 
 	/* close the database connection */
@@ -3411,6 +3415,8 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
 	require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 
+	$start_time = microtime(true);
+
 	// Create the PHPMailer instance
 	$mail = new PHPMailer\PHPMailer\PHPMailer;
 
@@ -3505,6 +3511,11 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		if (empty($from['name'])) {
 			$from['name'] = 'Cacti';
 		}
+	}
+
+	// Sanity test the from email
+	if (!filter_var($from['email'], FILTER_VALIDATE_EMAIL)) {
+		return 'Bad email address format. Invalid from email address ' . $from['email'];
 	}
 
 	$fromText  = add_email_details(array($from), $result, array($mail, 'setFrom'));
@@ -3627,15 +3638,23 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				/* get content id and create attachment */
 				$cid = getmypid() . '_' . $i . '@' . 'localhost';
 
-				if (empty($attachment['filename'])) {
-					$attachment['filename'] = basename($attachment['attachment']);
+				if (empty($attachment['filename']) && file_exists($attachment['attachment'])) {
+					$attachment['filename'] = $attachment['attachment'];
 				}
 
 				/* attempt to attach */
 				if (!($graph_mode || $graph_ids)) {
-					$result = $mail->addAttachment($attachment['attachment'], $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
+						$result = $mail->addAttachment($attachment['attachment'], $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+					} else {
+						$result = $mail->addStringAttachment($attachment['attachment'], $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+					}
 				} else {
-					$result = $mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+					if (!empty($attachment['attachment']) && @file_exists($attachment['attachment'])) {
+						$result = $mail->addEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+					} else {
+						$result = $mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+					}
 				}
 
 				if ($result == false) {
@@ -3646,7 +3665,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$i++;
 				if ($graph_mode) {
 					$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
-				} else if ($graph_ids) {
+				} elseif ($graph_ids) {
 					/* handle the body text */
 					switch ($attachment['inline']) {
 						case 'inline':
@@ -3684,25 +3703,20 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$mail->AltBody = $body_text;
 	}
 
-	$result  = $mail->send();
-	$error   = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
-	$method  = $mail_methods[intval(read_config_option('settings_how'))];
-	$rtype   = $result ? 'INFO' : 'WARNING';
-	$rmsg    = $result ? 'successfully sent' : 'failed';
+	$result   = $mail->send();
+	$error    = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
+	$method   = $mail_methods[intval(read_config_option('settings_how'))];
+	$rtype    = $result ? 'INFO' : 'WARNING';
+	$rmsg     = $result ? 'successfully sent' : 'failed';
+	$end_time = microtime(true);
 
 	if ($error != '') {
-		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'%s",
-			$rtype,
-			$rmsg,
-			$method,
-			$fromText, $toText, $ccText, $subject,
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', and took %2.2f seconds, Subject '%s'%s",
+			$rtype, $rmsg, $method, $fromText, $toText, $ccText, ($end_time - $start_time), $subject,
 			", Error: $error");
 	} else {
-		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'",
-			$rtype,
-			$rmsg,
-			$method,
-			$fromText, $toText, $ccText, $subject);
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', and took %2.2f seconds, Subject '%s'",
+			$rtype, $rmsg, $method, $fromText, $toText, $ccText, ($end_time - $start_time), $subject);
 	}
 
 	cacti_log($message, false, 'MAILER');
@@ -3722,6 +3736,7 @@ function record_mailer_error($retError, $mailError) {
 
 function add_email_details($emails, &$result, callable $addFunc) {
 	$arrText = array();
+
 	foreach ($emails as $e) {
 		if (!empty($e['email'])) {
 			//if (is_callable($addFunc)) {
@@ -3731,12 +3746,14 @@ function add_email_details($emails, &$result, callable $addFunc) {
 					return '';
 				}
 			}
+
 			$arrText[] = create_emailtext($e);
-		} else if (!empty($e['name'])) {
+		} elseif (!empty($e['name'])) {
 			$result = false;
 			return 'Bad email format, name but no address: ' . $e['name'];
 		}
 	}
+
 	$text = implode(',', $arrText);
 	//print "add_email_sw_details(): $text\n";
 	return $text;
@@ -5500,5 +5517,112 @@ function raise_ajax_permission_denied() {
 		print __('You are not permitted to access this section of Cacti.') . '  ' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
 		exit;
 	}
+}
+
+/** cacti_session_start - Create a Cacti session from the settings set by the administrator
+ *
+ *  @returns - null */
+function cacti_session_start() {
+	global $config;
+
+	/* initialize php session */
+	if (!function_exists('session_name')) {
+		die('PHP Session Management is missing, please install PHP Session module');
+	}
+
+	session_name($config['cacti_session_name']);
+	if (!session_id()) {
+		session_start($config['cookie_options']);
+	}
+}
+
+/** cacti_session_close - Closes the open Cacti session if it is open
+ *  it can be re-opened afterwards in the case after a long running query
+ *
+ *  @returns - null */
+function cacti_session_close() {
+	session_write_close();
+}
+
+/** cacti_session_destroy - Destroys the login current session
+ *
+ *  @returns - null */
+function cacti_session_destroy() {
+	session_unset();
+	session_destroy();
+}
+
+/** cacti_cookie_set - Allows for settings an arbitry cookie name and value
+ *  used for CSRF protection.
+ *
+ *  @returns - null */
+function cacti_cookie_set($session, $val) {
+	global $config;
+
+	if (isset($config['cookie_options']['cookie_domain'])) {
+		$domain = $config['cookie_options']['cookie_domain'];
+	} else {
+		$domain = '';
+	}
+
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+		setcookie($session, $val, time() + 3600, $config['url_path'], $domain, true, true);
+	} else {
+		setcookie($session, $val, time() + 3600, $config['url_path'], $domain, false, true);
+	}
+}
+
+/** cacti_cookie_logout - Clears the Cacti and the 'keep me logged in' cookies
+ *
+ *  @returns - null */
+function cacti_cookie_logout() {
+	global $config;
+
+	if (isset($config['cookie_options']['cookie_domain'])) {
+		$domain = $config['cookie_options']['cookie_domain'];
+	} else {
+		$domain = '';
+	}
+
+	setcookie(session_name(), '', time() - 3600, $config['url_path'], $domain);
+	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
+
+	unset($_COOKIE[$config['cacti_session_name']]);
+}
+
+/** cacti_cookie_session_set - Sets the cacti 'keep me logged in' cookie
+ *
+ *  @returns - null */
+function cacti_cookie_session_set($user, $nssecret) {
+	global $config;
+
+	if (isset($config['cookie_options']['cookie_domain'])) {
+		$domain = $config['cookie_options']['cookie_domain'];
+	} else {
+		$domain = '';
+	}
+
+	$_SESSION['cacti_remembers'] = true;
+
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+		setcookie('cacti_remembers', $user . ',' . $nssecret, time()+(86400*30), $config['url_path'], $domain, true, true);
+	} else {
+		setcookie('cacti_remembers', $user . ',' . $nssecret, time()+(86400*30), $config['url_path'], $domain, false, true);
+	}
+}
+
+/** cacti_cookie_session_logout - Logs out of Cacti and the remember me session
+ *
+ *  @returns - null */
+function cacti_cookie_session_logout() {
+	global $config;
+
+	if (isset($config['cookie_options']['cookie_domain'])) {
+		$domain = $config['cookie_options']['cookie_domain'];
+	} else {
+		$domain = '';
+	}
+
+	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
 }
 

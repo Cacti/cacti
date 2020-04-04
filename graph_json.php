@@ -64,7 +64,7 @@ if ($debug == false) {
 	set_request_var('rra_id', 0);
 }
 
-session_write_close();
+cacti_session_close();
 
 $graph_data_array = array();
 

@@ -53,6 +53,15 @@ img {
 	vertical-align: middle;
 }
 
+i.fa, i.fas, i.fab {
+	padding: 0px 3px;
+	font-size: 1.1em;
+}
+
+.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
+	color: lightgrey;
+}
+
 fieldset {
 	border: none;
 	padding: 0px;
@@ -130,6 +139,7 @@ label {
 
 .glyph_tab-console:before {
 	content: "\f1d8";
+	padding: 0px 5px 0px 5px;
 }
 
 .text_tab-console {
@@ -154,6 +164,21 @@ label {
 
 .center {
 	text-align: center !important;
+}
+
+.flexContainer {
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: auto;
+	margin-right: auto;
+	justify-content: flex-start;
+}
+
+.flexChild {
+	display: inline-block;
+	margin-top: 5px;
+	flex-basis: 20%;
+	min-width: 200px;
 }
 
 .usermenudown {
@@ -1840,7 +1865,7 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
-	width: 74px !important;
+	width: 78px !important;
 	white-space: nowrap;
 	overflow: hidden;
 	right: 0;
@@ -2017,7 +2042,7 @@ div.submenu span {
 
 #nav li a {
 	display: block;
-	padding: 2px 4px 2px 15px;
+	padding: 2px 4px 2px 7px;
 	color: #93CEFF;
 	text-decoration: none;
 }

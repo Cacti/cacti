@@ -372,17 +372,19 @@ class Ldap {
 		/* set an error handler for ldap */
 		set_error_handler(array($this, 'ErrorHandler'));
 
-		session_write_close();
+		cacti_session_close();
 	}
 
 	function RestoreCactiHandler() {
+		global $config;
+
 		/* drop out of ldaps error handler */
 		restore_error_handler();
 
 		/* set an error handler for Cacti */
 		set_error_handler('CactiErrorHandler');
 
-		session_start();
+		session_start($config['cookie_options']);
 	}
 
 	function RecordError($output, $section = 'LDAP') {

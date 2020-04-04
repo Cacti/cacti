@@ -51,6 +51,16 @@ img {
 	vertical-align: middle;
 }
 
+i.fa, i.fas, i.fab {
+	padding: 0px 3px;
+	font-size: 1.1em;
+	vertical-align: middle;
+}
+
+.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
+	color: #3F75A2;
+}
+
 fieldset {
 	border: none;
 	padding: 0px;
@@ -137,6 +147,21 @@ label {
 
 .center {
 	text-align: center !important;
+}
+
+.flexContainer {
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: auto;
+	margin-right: auto;
+	justify-content: flex-start;
+}
+
+.flexChild {
+	display: inline-block;
+	margin-top: 5px;
+	flex-basis: 20%;
+	min-width: 200px;
 }
 
 .usermenudown {
@@ -760,12 +785,15 @@ label {
 
 .cactiLoginLogo, .cactiLogoutLogo {
 	position: relative;
-	height: 0px;
 	z-index: 2;
-	margin-left: 305px;
 	margin-bottom: 0px;
 	color: #223a80;
 	font-size: 48px;
+	float: right;
+}
+
+.cactiLoginLogo i, .cactiLogoutLogo i {
+	margin-right: 10px;
 }
 
 .loginArea, .logoutArea {
@@ -1678,7 +1706,7 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
-	width: 74px;
+	width: 80px;
 	white-space: nowrap;
 }
 
@@ -1831,7 +1859,7 @@ div.submenu span {
 
 #nav li a {
 	display: block;
-	padding: 2px 4px 2px 15px;
+	padding: 2px 4px 2px 5px;
 	background: #ccc;
 	color: rgba(0,0,0,0.9);
 	text-decoration: none;
@@ -1896,7 +1924,7 @@ tr.selected a {
 }
 
 #nav li ul li a {
-	padding: 2px 4px 2px 35px;
+	padding: 2px 4px 2px 32px;
 	background: #f0f0f0;
 }
 
@@ -2097,11 +2125,11 @@ tr#realtime td:first-child {
 .menu_glyph {
 	font-size: 12px;
 	width: 20px;
-	vertical-align: 30%;
+	vertical-align: middle;
 }
 
 .menuitem span {
-	vertical-align: 20%;
+	vertical-align: middle;
 }
 
 .ui-autocomplete {

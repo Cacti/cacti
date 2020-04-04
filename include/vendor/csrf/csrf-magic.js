@@ -42,11 +42,11 @@ CsrfMagic.prototype = {
 		prepend = csrfMagicName + '=' + csrfMagicToken + '&';
 		delete this.csrf_isPost;
 
-		if (typeof data == object) {
+		if (typeof data == 'object') {
 			prepend = data;
 			prepend[csrfMagicName] = csrfMagicToken;
 		} else {
-			prepend = csrfMagicName + '=' + csrfMagictoken;
+			prepend = csrfMagicName + '=' + csrfMagicToken;
 			if (data) prepend = prepend + '&' + data;
 		}
 		return this.csrf_send(prepend);

@@ -445,7 +445,7 @@ function form_actions() {
 					<p>" . __n('Click \'Continue\' to delete the following User Group', 'Click \'Continue\' to delete following User Groups', cacti_sizeof($group_array)) . "</p>
 					<div class='itemlist'><ul>$group_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Group', 'Delete User Groups', cacti_sizeof($group_array)) . "'>";
 		}
@@ -464,7 +464,7 @@ function form_actions() {
 					<p>" . __('Group Prefix:') . " ";
 			print form_text_box('group_prefix', __('New Group'), '', 25);
 			print "</p></td>
-				</tr>\n";
+				</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Copy User Group', 'Copy User Groups', cacti_sizeof($group_array)) . "'>";
 		}
@@ -475,7 +475,7 @@ function form_actions() {
 					<p>" . __n('Click \'Continue\' to enable the following User Group.', 'Click \'Continue\' to enable following User Groups.', cacti_sizeof($group_array)) . "</p>
 					<div class='itemlist'><ul>$group_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable User Group', 'Enable User Groups', cacti_sizeof($group_array)) . "'>";
 		}
@@ -486,7 +486,7 @@ function form_actions() {
 					<p>" . __n('Click \'Continue\' to disable the following User Group.', 'Click \'Continue\' to disable following User Groups.', cacti_sizeof($group_array)) . "</p>
 					<div class='itemlist'><ul>$group_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Group', 'Disable User Groups', cacti_sizeof($group_array)) . "'>";
 		}
@@ -500,11 +500,11 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>";
 
-	print "<input type='hidden' name='selected_items' value='" . (isset($group_array) ? serialize($group_array) : '') . "'>\n";
+	print "<input type='hidden' name='selected_items' value='" . (isset($group_array) ? serialize($group_array) : '') . "'>";
 	print "<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 		$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -1314,7 +1314,11 @@ function user_group_graph_perms_edit($tab, $header_label) {
 }
 
 function user_group_is_member($user_id, $group_id) {
-	return db_fetch_cell_prepared('SELECT COUNT(*) FROM user_auth_group_members WHERE user_id = ? AND group_id = ?', array($user_id, $group_id));
+	return db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM user_auth_group_members
+		WHERE user_id = ?
+		AND group_id = ?',
+		array($user_id, $group_id));
 }
 
 function user_group_realms_edit($header_label) {
@@ -1326,10 +1330,10 @@ function user_group_realms_edit($header_label) {
 
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div>
-			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " " . html_escape($header_label) . "</span></div>
-			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></a><?php }?></span></div>
+			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . ' ' . html_escape($header_label) . "</span></div>
+			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></a></span></div>
 		</div>
-	</div>\n";
+	</div>";
 
 	form_start('user_group_admin.php', 'chk');
 
@@ -1338,47 +1342,170 @@ function user_group_realms_edit($header_label) {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	/* do cacti realms first */
-	$i = 1;
 	foreach($user_auth_roles as $role_name => $perms) {
-		$j = 1;
+        print "<tr class='tableHeader'><th colspan='2'>" . html_escape($role_name) . "</th></tr>";
+        print "<tr class='odd'><td colspan='2'><div class='flexContainer'>";
 
-		print "<tr class='tableHeader'><th colspan='2'>" . $role_name . "</th></tr>\n";
-		print "<tr class='odd'><td colspan='4' style='width:100%;'><table style='width:100%;'>\n";
 		foreach($perms as $realm) {
-			if ($j == 1) {
-				print "<tr>\n";
-			}
-
-			print "<td class='realms'>\n";
 			if (isset($user_auth_realms[$realm])) {
-				if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+				$set = db_fetch_cell_prepared('SELECT realm_id
+					FROM user_auth_group_realm
+					WHERE group_id = ?
+					AND realm_id = ?',
+					array(get_request_var('id', 0), $realm));
+
+				if ($set) {
 					$old_value = 'on';
 				} else {
 					$old_value = '';
 				}
 
+				$display = str_replace(array('Plugin ->', 'Plugin ', 'Configure '), '', $user_auth_realms[$realm]);
+
 				unset($all_realms[$realm]);
 
-				form_checkbox('section' . $realm, $old_value, $user_auth_realms[$realm], '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
-			}
-			print "</td>\n";
-
-			if ($j == 5) {
-				print "</tr>\n";
-				$j = 1;
-			} else {
-				$j++;
+				print '<div class="flexChild">';
+				form_checkbox('section' . $realm, $old_value, $display, '', '', '', (!isempty_request_var('id') ? 1 : 0), $display, true);
+				print '</div>';
 			}
 		}
 
-		if ($j > 1) {
-			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
-			print "</tr>\n";
-		}
-
-		print "</table></td></tr>\n";
+		print '</div></td></tr>';
 	}
 
+	/* external links */
+	$links  = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
+
+	$style_translate = array(
+		'CONSOLE'    => __('Console'),
+		'TAB'        => __('Top Tab'),
+		'FRONT'      => __('Bottom Console'),
+		'FRONTTOP'   => __('Top Console')
+	);
+
+	if (cacti_sizeof($links)) {
+		print "<tr class='tableHeader'><th colspan='2'>" . __('External Link Permissions') . "</th></tr>";
+		print "<tr class='odd'><td class='left' colspan='2'><div class='flexContainer'>";
+
+		foreach($links as $r) {
+			$realm = $r['id'] + 10000;
+
+			$set = db_fetch_cell_prepared('SELECT realm_id
+				FROM user_auth_group_realm
+				WHERE group_id = ?
+				AND realm_id = ?',
+				array(get_request_var('id', 0), $realm));
+
+			if ($set) {
+				$old_value = 'on';
+			} else {
+				$old_value = '';
+			}
+
+			unset($all_realms[$realm]);
+
+			switch($r['style']) {
+			case 'CONSOLE':
+				$description = $style_translate[$r['style']] . ': ' . ($r['extendedstyle'] == '' ? __('External Links') : $r['extendedstyle']) . '/' . $r['title'];
+				break;
+			default:
+				$description = $style_translate[$r['style']] . ': ' . ucfirst($r['title']);
+				break;
+			}
+
+			print '<div class="flexChild">';
+			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0), $description, true);
+			print '</div>';
+		}
+
+		print '</div></td></tr>';
+	}
+
+	/* do plugin realms */
+	$realms = db_fetch_assoc('SELECT pc.name, pr.id AS realm_id, pr.display
+		FROM plugin_config AS pc
+		INNER JOIN plugin_realms AS pr
+		ON pc.directory = pr.plugin
+		ORDER BY pc.name, pr.display');
+
+	$i = 0;
+
+	if (cacti_sizeof($realms)) {
+		foreach($realms as $r) {
+			$realm = $r['realm_id'] + 100;
+
+			// Skip already set realms
+			foreach($user_auth_roles as $role => $rrealms) {
+				foreach($rrealms as $realm_id) {
+					if ($realm == $realm_id) {
+						unset($all_realms[$realm]);
+						continue 3;
+					}
+				}
+			}
+
+			$set = db_fetch_cell_prepared('SELECT realm_id
+				FROM user_auth_group_realm
+				WHERE group_id = ?
+				AND realm_id = ?',
+				array(get_request_var('id', 0), $realm));
+
+			if ($set) {
+				$old_value = 'on';
+			} else {
+				$old_value = '';
+			}
+
+			unset($all_realms[$realm]);
+
+			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->')+2:0);
+
+			if ($i == 0) {
+				print "<tr class='tableHeader'><th colspan='2'>" . __('Plugin Permissions') . "</th></tr>";
+				print "<tr class='odd'><td colspan='2'><div class='flexContainer'>";
+				$i++;
+			}
+
+			print '<div class="flexChild">';
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			print '</div>';
+		}
+
+		if ($i > 0) {
+			print '</div></td></tr>';
+		}
+	}
+
+	/* get the old PIA 1.x realms */
+	if (cacti_sizeof($all_realms)) {
+		print "<tr class='tableHeader'><th class='left' colspan='2'>" . __('Legacy Permissions') . "</th></tr>";
+		print "<tr class='odd'><td colspan='2'><div class='flexContainer'>";
+
+		foreach($all_realms as $realm => $name) {
+			$set = db_fetch_cell_prepared('SELECT realm_id
+				FROM user_auth_group_realm
+				WHERE group_id = ? AND
+				realm_id = ?',
+				array(get_request_var('id', 0), $realm));
+
+			if ($set) {
+				$old_value = 'on';
+			} else {
+				$old_value = '';
+			}
+
+			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->')+2:0);
+
+			print '<div class="flexChild">';
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			print '</div>';
+
+		}
+
+		print '</div></td></tr>';
+	}
+
+	print '</table></td></tr>';
 	?>
 	<script type='text/javascript'>
 	function selectAllRealms(checked) {
@@ -1396,146 +1523,6 @@ function user_group_realms_edit($header_label) {
 	});
 	</script>
 	<?php
-
-	/* external links */
-	$links  = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
-
-	$style_translate = array(
-		'CONSOLE'    => __('Console'),
-		'TAB'        => __('Top Tab'),
-		'FRONT'      => __('Bottom Console'),
-		'FRONTTOP'   => __('Top Console')
-	);
-
-	print "<tr class='tableHeader'><th colspan='2'>" . __('External Link Permissions') . "</th></tr>\n";
-	print "<tr class='odd'><td colspan='4'><table style='width:100%;'><tr><td class='realms'>\n";
-	if (cacti_sizeof($links)) {
-		$j = 1;
-
-		foreach($links as $r) {
-			if ($j == 1) {
-				print "<tr>\n";
-			}
-
-			$realm = $r['id'] + 10000;
-
-			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
-				$old_value = 'on';
-			} else {
-				$old_value = '';
-			}
-
-			unset($all_realms[$realm]);
-
-			print "<td class='realms'>\n";
-
-			switch($r['style']) {
-			case 'CONSOLE':
-				$description = $style_translate[$r['style']] . ': ' . ($r['extendedstyle'] == '' ? 'External Links' : $r['extendedstyle']) . '/' . $r['title'];
-				break;
-			default:
-				$description = $style_translate[$r['style']] . ': ' . ucfirst($r['title']);
-				break;
-			}
-
-			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
-
-			print "</td>\n";
-
-			if ($j == 5) {
-				print "</tr>\n";
-				$j = 1;
-			} else {
-				$j++;
-			}
-		}
-
-		if ($j > 1) {
-			print "<td class='realms' colspan='" . (5-$j) . "'></td>\n";
-			print "</tr>\n";
-		}
-	}
-	print "</table></td></tr>\n";
-
-	/* do plugin realms */
-	$realms = db_fetch_assoc('SELECT pc.name, pr.id AS realm_id, pr.display
-		FROM plugin_config AS pc
-		INNER JOIN plugin_realms AS pr
-		ON pc.directory = pr.plugin
-		ORDER BY pc.name, pr.display');
-
-	print "<tr class='tableHeader'><th colspan='2'>" . __('Plugin Permissions') . "</th></tr>\n";
-	print "<tr class='odd'><td colspan='4'><table style='width:100%;'><tr><td class='realms'>\n";
-	if (cacti_sizeof($realms)) {
-		$last_plugin = 'none';
-		$i = 1;
-		$j = 1;
-
-		foreach($realms as $r) {
-			$break = false;
-
-			if ($last_plugin != $r['name'] && $last_plugin != 'none') {
-				$break = true;
-
-				if ($j == 5) {
-					print "</tr><tr>\n";
-					$break = true;;
-					$j = 1;
-				} else {
-					$j++;
-				}
-			}
-
-			if ($break) {
-				print "</td><td class='realms'>\n";
-			}
-
-			if ($break || $i == 1) {
-				print '<i>' . $r['name'] . "</i><br>\n";
-			}
-
-			$realm = $r['realm_id'] + 100;
-
-			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
-				$old_value = 'on';
-			} else {
-				$old_value = '';
-			}
-
-			unset($all_realms[$realm]);
-
-			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->')+2:0);
-
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
-
-			$last_plugin = $r['name'];
-
-			$i++;
-		}
-	}
-
-	/* get the old PIA 1.x realms */
-	if (cacti_sizeof($all_realms)) {
-		if ($break) {
-			print "</td><td class='realms'>\n";
-		}
-
-		print '<i>' . __('Legacy 1.x Plugins') . '</i><br>';
-		foreach($all_realms as $realm => $name) {
-			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
-				$old_value = 'on';
-			} else {
-				$old_value = '';
-			}
-
-			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->')+2:0);
-
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
-
-		}
-	}
-
-	print "</td></tr></table></td></tr>\n";
 
 	html_end_box();
 
@@ -1560,7 +1547,7 @@ function user_group_settings_edit($header_label) {
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
 
-		print "<div class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</div></div>\n";
+		print "<div class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</div></div>";
 
 		$form_array = array();
 
@@ -1692,22 +1679,18 @@ function group_edit() {
     $current_tab = get_nfilter_request_var('tab');
 
 	if (cacti_sizeof($tabs) && !isempty_request_var('id')) {
-		$i = 0;
-
 		/* draw the tabs */
-		print "<div class='tabs'><nav><ul role='tablist'>\n";
+		print "<div class='tabs'><nav><ul role='tablist'>";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 				" href='" . html_escape($config['url_path'] .
 				'user_group_admin.php?action=edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
-				"'>" . $tabs[$tab_short_name] . "</a></li>\n";
-
-			$i++;
+				"'>" . $tabs[$tab_short_name] . "</a></li>";
 		}
 
-		print "</ul></nav></div>\n";
+		print "</ul></nav></div>";
 	}
 
 	switch(get_request_var('tab')) {
@@ -1861,7 +1844,7 @@ function user_group() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2190,7 +2173,7 @@ function graph_filter($header_label) {
 
 							if (cacti_sizeof($graph_templates)) {
 								foreach ($graph_templates as $gt) {
-									print "<option value='" . $gt['id'] . "'"; if (get_request_var('graph_template_id') == $gt['id']) { print ' selected'; } print '>' . html_escape($gt['name']) . "</option>\n";
+									print "<option value='" . $gt['id'] . "'"; if (get_request_var('graph_template_id') == $gt['id']) { print ' selected'; } print '>' . html_escape($gt['name']) . "</option>";
 								}
 							}
 							?>
@@ -2205,7 +2188,7 @@ function graph_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2294,7 +2277,7 @@ function device_filter($header_label) {
 
 							if (cacti_sizeof($host_templates) > 0) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>\n";
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>";
 								}
 							}
 							?>
@@ -2309,7 +2292,7 @@ function device_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2394,7 +2377,7 @@ function template_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2479,7 +2462,7 @@ function tree_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -2564,7 +2547,7 @@ function member_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
