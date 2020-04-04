@@ -652,10 +652,10 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 	}
 
 	if ($type == 'password') {
-		print "<input type='text' style='display:none' value=''><input type='password' style='display:none' autocomplete='new-password' value=''>";
+		print "<input type='text' style='display:none' value=''><input type='password' style='display:none' autocomplete='current-password' value=''>";
 	}
 
-	print "<input type='$type' " . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="new-password"':'off') . ($title != '' ? ' title="' . $title . '"':'');
+	print "<input type='$type' " . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="current-password"':'off') . ($title != '' ? ' title="' . $title . '"':'');
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
