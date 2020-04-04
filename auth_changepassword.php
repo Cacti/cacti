@@ -322,7 +322,6 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 		<td>
 			<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
 			<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : '';?>'>
-			<input type='text'><input type='password'></td>
 		</td>
 	</tr>
 	<tr>
@@ -331,16 +330,16 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 		<td class='nowrap'><input type='hidden' id='current' name='current_password' value=''><?php print $user['username'];?></td>
 <?php } else { ?>
 		<td><?php print __('Current password');?></td>
-		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='current-password' size='20' placeholder='********'></td>
 <?php } ?>
 	</tr>
 	<tr>
 		<td><?php print __('New password');?></td>
-		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='new-password' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
 	</tr>
 	<tr>
 		<td><?php print __('Confirm new password');?></td>
-		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='new-password' size='20' placeholder='********'></td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
