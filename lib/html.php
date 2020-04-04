@@ -2477,7 +2477,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.multiselect.filter.js', true);
 	print get_md5_include_js('include/js/jquery.timepicker.js', true);
 	print get_md5_include_js('include/js/jquery.colorpicker.js', true);
-	print get_md5_include_js('include/js/jquery.tablesorter.js', true);
+	print get_md5_include_js('include/js/jquery.tablesorter.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js', true);
 	print get_md5_include_js('include/js/jquery.tablesorter.pager.js', true);
 	print get_md5_include_js('include/js/jquery.sparkline.js', true);
@@ -2485,7 +2485,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/dygraph-combined.js', true);
 	print get_md5_include_js('include/js/d3.js', true);
 	print get_md5_include_js('include/js/c3.js', true);
-	print get_md5_include_js('include/layout.js', true);
+	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js', true);
 	print get_md5_include_js('include/realtime.js', true);
 	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
