@@ -2468,7 +2468,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery-ui.js');
 	print get_md5_include_js('include/js/jquery.ui.touch.punch.js', true);
 	print get_md5_include_js('include/js/jquery.cookie.js', true);
-	print get_md5_include_js('include/js/js.storage.js', true);
+	print get_md5_include_js('include/js/js.storage.js');
 	print get_md5_include_js('include/js/jstree.js', true);
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
 	print get_md5_include_js('include/js/jquery.tablednd.js', true);
@@ -2486,7 +2486,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/d3.js', true);
 	print get_md5_include_js('include/js/c3.js', true);
 	print get_md5_include_js('include/layout.js');
-	print get_md5_include_js('include/js/pace.js', true);
+	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/realtime.js', true);
 	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
 

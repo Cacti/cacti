@@ -438,6 +438,7 @@ if ($config['is_web']) {
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
+	header('Cache-Control: no-store, no-cache, must-revalidate');
 	header('Cache-Control: max-age=31536000');
 
 	cacti_session_start();
