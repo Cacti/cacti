@@ -421,11 +421,7 @@ if ($config['is_web']) {
 	$config['cacti_session_name'] = $cacti_session_name;
 
 	/* we don't want these pages cached */
-	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-	header('Cache-Control: no-store, no-cache, must-revalidate');
-	header('Cache-Control: post-check=0, pre-check=0', false);
-	header('Pragma: no-cache');
 	header('X-Frame-Options: SAMEORIGIN');
 
 	// SameSite legacy behavior
@@ -442,6 +438,7 @@ if ($config['is_web']) {
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
+	header('Cache-Control: max-age=31536000');
 
 	cacti_session_start();
 

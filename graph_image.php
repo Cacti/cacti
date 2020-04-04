@@ -137,6 +137,8 @@ if ($output !== false && $output != '') {
 	ob_end_clean();
 
 	header('Content-type: image/'. $gtype);
+	header('Cache-Control: max-age=15');
+
 	print $output;
 } else {
 	ob_start();
@@ -161,6 +163,7 @@ if ($output !== false && $output != '') {
 	ob_end_clean();
 
 	header('Content-type: image/png');
+	header('Cache-Control: max-age=15');
 
 	if ($image !== false) {
 		print $image;

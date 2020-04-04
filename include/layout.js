@@ -727,7 +727,9 @@ function applySkin() {
 			}
 			return text;
 		}
-	}).tooltip('close').on('keyup keydown', function(event) {
+	});
+
+	$(document).on('keyup keydown', function(event) {
 		shiftPressed = event.shiftKey;
 	});
 
