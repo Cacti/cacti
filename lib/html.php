@@ -1380,14 +1380,14 @@ function draw_menu($user_menu = '') {
 									print "<li><a role='menuitem' class='pic selected' href='";
 									print html_escape($item_sub_url) . "'";
 									if ($item_sub_external) {
-										print " target='_blank'";
+										print " target='_blank' rel='noopener'";
 									}
 									print ">$item_sub_title</a></li>";
 								} else {
 									print "<li><a role='menuitem' class='pic' href='";
 									print html_escape($item_sub_url) . "'";
 									if ($item_sub_external) {
-										print " target='_blank'";
+										print " target='_blank' rel='noopener'";
 									}
 									print ">$item_sub_title</a></li>";
 								}
@@ -1410,14 +1410,14 @@ function draw_menu($user_menu = '') {
 							print "<li><a role='menuitem' class='pic selected' href='";
 							print html_escape($item_url) . "'";
 							if ($item_external) {
-								print " target='_blank'";
+								print " target='_blank' rel='noopener'";
 							}
 							print ">$item_title</a></li>";
 						} else {
 							print "<li><a role='menuitem' class='pic' href='";
 							print html_escape($item_url) . "'";
 							if ($item_external) {
-								print " target='_blank'";
+								print " target='_blank' rel='noopener'";
 							}
 							print ">$item_title</a></li>";
 						}
@@ -2360,6 +2360,7 @@ function html_common_header($title, $selectedTheme = '') {
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
+	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' <?php print $script_policy;?> 'unsafe-inline';">
 	<meta name='robots' content='noindex,nofollow'>
@@ -2462,31 +2463,31 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/fa/css/fontawesome.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
-	print get_md5_include_js('include/js/screenfull.js');
+	print get_md5_include_js('include/js/screenfull.js', true);
 	print get_md5_include_js('include/js/jquery.js');
 	print get_md5_include_js('include/js/jquery-ui.js');
-	print get_md5_include_js('include/js/jquery.ui.touch.punch.js');
-	print get_md5_include_js('include/js/jquery.cookie.js');
-	print get_md5_include_js('include/js/js.storage.js');
-	print get_md5_include_js('include/js/jstree.js');
-	print get_md5_include_js('include/js/jquery.hotkeys.js');
-	print get_md5_include_js('include/js/jquery.tablednd.js');
-	print get_md5_include_js('include/js/jquery.zoom.js');
-	print get_md5_include_js('include/js/jquery.multiselect.js');
-	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
-	print get_md5_include_js('include/js/jquery.timepicker.js');
-	print get_md5_include_js('include/js/jquery.colorpicker.js');
-	print get_md5_include_js('include/js/jquery.tablesorter.js');
-	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js');
-	print get_md5_include_js('include/js/jquery.tablesorter.pager.js');
-	print get_md5_include_js('include/js/jquery.sparkline.js');
-	print get_md5_include_js('include/js/Chart.js');
-	print get_md5_include_js('include/js/dygraph-combined.js');
-	print get_md5_include_js('include/js/d3.js');
-	print get_md5_include_js('include/js/c3.js');
-	print get_md5_include_js('include/layout.js');
-	print get_md5_include_js('include/js/pace.js');
-	print get_md5_include_js('include/realtime.js');
+	print get_md5_include_js('include/js/jquery.ui.touch.punch.js', true);
+	print get_md5_include_js('include/js/jquery.cookie.js', true);
+	print get_md5_include_js('include/js/js.storage.js', true);
+	print get_md5_include_js('include/js/jstree.js', true);
+	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
+	print get_md5_include_js('include/js/jquery.tablednd.js', true);
+	print get_md5_include_js('include/js/jquery.zoom.js', true);
+	print get_md5_include_js('include/js/jquery.multiselect.js', true);
+	print get_md5_include_js('include/js/jquery.multiselect.filter.js', true);
+	print get_md5_include_js('include/js/jquery.timepicker.js', true);
+	print get_md5_include_js('include/js/jquery.colorpicker.js', true);
+	print get_md5_include_js('include/js/jquery.tablesorter.js', true);
+	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js', true);
+	print get_md5_include_js('include/js/jquery.tablesorter.pager.js', true);
+	print get_md5_include_js('include/js/jquery.sparkline.js', true);
+	print get_md5_include_js('include/js/Chart.js', true);
+	print get_md5_include_js('include/js/dygraph-combined.js', true);
+	print get_md5_include_js('include/js/d3.js', true);
+	print get_md5_include_js('include/js/c3.js', true);
+	print get_md5_include_js('include/layout.js', true);
+	print get_md5_include_js('include/js/pace.js', true);
+	print get_md5_include_js('include/realtime.js', true);
 	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
 
 	if (isset($path2calendar) && file_exists($path2calendar)) {
