@@ -2469,7 +2469,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.ui.touch.punch.js', true);
 	print get_md5_include_js('include/js/jquery.cookie.js', true);
 	print get_md5_include_js('include/js/js.storage.js');
-	print get_md5_include_js('include/js/jstree.js', true);
+	print get_md5_include_js('include/js/jstree.js');
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
 	print get_md5_include_js('include/js/jquery.tablednd.js', true);
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
