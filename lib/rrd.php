@@ -2262,6 +2262,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			print '<span class="textInfo">' . 'RRDtool Command lengths = ' . $source_command_line_lengths . ' charaters.</span><br>';
 			if ( $config['cacti_server_os'] == 'win32' && $source_command_line_lengths > 8191 ) {
 				print '<PRE>' . 'Warning: The Cacti OS is Windows system, RRDtool Command lengths should not exceed 8191 charaters.' . '</PRE>';
+			}
 		} else {
 			if (isset($graph_data_array['graphv'])) {
 				$graph = 'graphv';
