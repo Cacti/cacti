@@ -55,6 +55,8 @@ Cacti CHANGELOG
 -issue#3409: Issues with navigation link activations to other base Cacti pages
 -issue#3410: Zoom looses focus in advanced mode while crossing chart border
 -issue#3411: When upgrading a primary server, full synchronization is not happening as expected
+-issue#3412: When upgrading a primary server, automation templates are removed
+-issue#3413: When upgrading and choosing to upgrade your packages, installer finishes without package data in log
 -feature#1551: Allow uptime to be a variable for use with graphs
 -feature#1990: Plugin Realm should have a 'role' to help maintain changes between plugins
 -feature#2110: Add Refresh Interval to Data Collectors display
