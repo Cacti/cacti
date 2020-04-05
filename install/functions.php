@@ -1022,7 +1022,7 @@ function install_full_sync() {
 
 	if (cacti_sizeof($pollers)) {
 		foreach($pollers as $poller) {
-			if (($poller['stataus'] == POLLER_STATUS_NEW) ||
+			if (($poller['status'] == POLLER_STATUS_NEW) ||
 				($poller['status'] == POLLER_STATUS_DOWN) ||
 				($poller['status'] == POLLER_STATUS_DISABLED)) {
 				$skipped[] = $poller['id'];
