@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#3261: Automation rules aren't run for new devices on remote data collectors
 -issue#3296: Upgrade from 1.2.5 to 1.2.9 not completing / memory exhaustion
 -issue#3299: Cacti should warn users who use php-snmp and SNMPv3 to uninstall php-snmp
+-issue#3303: When installing under Windows OS, path expansion is not converted to PHP required format
 -issue#3310: Fix automation_get_valid_mask() calculation on 32bit architectures
 -issue#3212: Minor:Console menu does not auto-expand for graph item editor page
 -issue#3313: Installing cacti 1.2.10 in debian and ubuntu stopped at 41%
@@ -35,6 +36,7 @@ Cacti CHANGELOG
 -issue#3349: Variable max_input_vars is read only.  Attempting to change it adds no value
 -issue#3350: Some SQL queries can break if a database is exported then imported
 -issue#3355: Minor bug about base_value in graph_xport.php and fixed
+-issue#3357: Tree Search textbox resizes to 0 in some cases
 -issue#3360: Timeout and logout issue for guest
 -issue#3363: The current user and user group permissions pages are not responsive
 -issue#3367: When Data Queries timeout, data is removed from the Host SNMP Cache table causing issues
@@ -49,9 +51,9 @@ Cacti CHANGELOG
 -issue#3388: Minor: PHP CLI help inconsistent with filename
 -issue#3390: Incorrect breadcrumb bar if current tab is not "Graphs"
 -issue#3402: Cacti scores low on performance audit on lighthouse audit
--issue: Tree searcher sizes to 0 bytes width until page resized
--issue: Clicking on an anchor that drills to another page inline removes selected menu item
--issue: Zoom looses focus in advanced mode while crossing chart border
+-issue#3408: CSRF Secret path is not passed properly when attempting to initialize secret
+-issue#3409: Issues with navigation link activations to other base Cacti pages
+-issue#3410: Zoom looses focus in advanced mode while crossing chart border
 -feature#1551: Allow uptime to be a variable for use with graphs
 -feature#1990: Plugin Realm should have a 'role' to help maintain changes between plugins
 -feature#2110: Add Refresh Interval to Data Collectors display
@@ -64,8 +66,6 @@ Cacti CHANGELOG
 -feature#3366: Allow checkbox_groups flow like the permission page on forms
 -feature#3374: Allow Setting of Cookie 'Cacti' domain edition
 -feature: Update jQuery to v3.4.1 for security reasons
--issue#3408: CSRF Secret path is not passed properly when attempting to initialize secret
--issue#3303: When installing under Windows OS, path expansion is not converted to PHP required format
 
 1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)
