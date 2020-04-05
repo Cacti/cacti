@@ -134,6 +134,9 @@ class Installer implements JsonSerializable {
 			} elseif (cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 				$step = Installer::STEP_COMPLETE;
+
+				// Add delay to allow the log to catch up
+				sleep(2);
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version',true);
@@ -3438,7 +3441,7 @@ class Installer implements JsonSerializable {
 		// Perform full sync to complete upgrade
 		$status = install_full_sync();
 
-		if (cacti_sizeof($status['total']) == 0) {
+		if ($status['total'] == 0) {
 			log_install_always('sync', __('No Remote Data Collectors found for full syncronization'));
 		} else {
 			Installer::fullSyncDataCollectorLog($status['timeout'], 'Remote Data Collector with name \'%s\' and id %d previous timed out.  Please manually Sync when once online to complete upgrade.');

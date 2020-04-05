@@ -1027,7 +1027,7 @@ function install_full_sync() {
 				($poller['status'] == POLLER_STATUS_DISABLED)) {
 				$skipped[] = $poller['id'];
 			} elseif ($gap < $gap_time) {
-				if (replicate_out($id)) {
+				if (replicate_out($poller['id'])) {
 					$success[] = $poller['id'];
 
 					db_execute_prepared('UPDATE poller
@@ -1048,7 +1048,7 @@ function install_full_sync() {
 		'failed'  => $failed,
 		'skipped' => $skipped,
 		'timeout' => $timeout,
-		'total'   => cacti_sizeof($success) + cacti_sizeof($failed) + cacti_sizeof($skipped) + cacti_sizeof($timeout)
+		'total'   => cacti_sizeof($pollers)
 	);
 }
 
