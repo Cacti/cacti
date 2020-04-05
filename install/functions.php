@@ -347,7 +347,8 @@ function find_search_paths($os = 'unix') {
 
 	if ($os == 'win32') {
 		$search_suffix = ';';
-		$search_paths = array(
+		$search_slash  = '\\';
+		$search_paths  = array(
 			'c:/usr/bin',
 			'c:/cacti',
 			'c:/rrdtool',
@@ -371,7 +372,8 @@ function find_search_paths($os = 'unix') {
 		);
 	} else {
 		$search_suffix = ':';
-		$search_paths = array(
+		$search_slash  = '';
+		$search_paths  = array(
 			'/bin',
 			'/sbin',
 			'/usr/bin',
@@ -385,7 +387,13 @@ function find_search_paths($os = 'unix') {
 
 	$env_path = getenv('PATH');
 	if ($env_path) {
-		$search_paths = array_merge(explode($search_suffix,$env_path), $search_paths);
+		$env_paths = explode($search_suffix,$env_path);
+		if (!empty($search_slash)) {
+			foreach ($env_paths as $env_key => $env_folder) {
+				$env_paths[$env_key] = str_replace($search_slash, '/', $env_folder);
+			}
+		}
+		$search_paths = array_merge($env_paths, $search_paths);
 	}
 
 	$env_php = getenv('PHP_BINDIR');
@@ -397,7 +405,8 @@ function find_search_paths($os = 'unix') {
 		$search_paths = array_merge(explode($search_suffix,$config['php_path']), $search_paths);
 	}
 
-	$search_paths = array_unique($search_paths);
+	// Filter out any blank lines and then make sure those remaining are unique
+	$search_paths = array_unique(array_filter($search_paths, function($value) { return !is_null($value) && $value !== ''; }));
 	return $search_paths;
 }
 
