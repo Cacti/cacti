@@ -2400,8 +2400,8 @@ function draw_login_status($using_guest_account = false) {
 		api_plugin_hook('nav_login_before');
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "index.php'>" . __('Login as Regular User') . "</a></li>\n";
 		print "<li class='menuHr'><hr class='menu'></li>";
-		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
-		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
+		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . "</a></li>";
+		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank' rel='noopener'>" . __('Documentation') . "</a></li>";
 		print "</ul>";
 
 		api_plugin_hook('nav_login_after');
@@ -2414,8 +2414,8 @@ function draw_login_status($using_guest_account = false) {
 		print (is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit&tab=2fa'>" . __('Edit 2FA Settings') . "</a></li>":"");
 		print ($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'');
 		print "<li class='menuHr'><hr class='menu'></li>";
-		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
-		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
+		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . "</a></li>";
+		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank' rel='noopener'>" . __('Documentation') . "</a></li>";
 		print "<li class='menuHr'><hr class='menu'></li>";
 		print ($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>" . __('Logout') . "</a></li>":"");
 		print "</ul>\n";
@@ -5406,7 +5406,7 @@ function get_md5_hash($path) {
 	return $md5;
 }
 
-function get_md5_include_js($path) {
+function get_md5_include_js($path, $async = false) {
 	global $config;
 
 	if (file_exists($path)) {
@@ -5415,7 +5415,11 @@ function get_md5_include_js($path) {
 		$npath = $path;
 	}
 
-	return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $npath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
+	if ($async) {
+		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $npath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
+	} else {
+		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $npath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
+	}
 }
 
 function get_md5_include_css($path) {

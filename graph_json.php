@@ -263,6 +263,7 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 }
 
 header('Content-Type: application/json');
+header('Cache-Control: max-age=15');
 $json = json_encode($oarray);
 header('Content-Length: ' . strlen($json));
 print $json;
