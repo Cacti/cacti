@@ -2473,7 +2473,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
 	print get_md5_include_js('include/js/jquery.tablednd.js', true);
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
-	print get_md5_include_js('include/js/jquery.multiselect.js', true);
+	print get_md5_include_js('include/js/jquery.multiselect.js');
 	print get_md5_include_js('include/js/jquery.multiselect.filter.js', true);
 	print get_md5_include_js('include/js/jquery.timepicker.js', true);
 	print get_md5_include_js('include/js/jquery.colorpicker.js', true);
