@@ -637,7 +637,7 @@ class Installer implements JsonSerializable {
 			if (empty($secret)) {
 				if (is_resource_writable($path_csrf_secret)) {
 					log_install_medium('csrf', 'setCSRFSecret(): Updated CSRF secret - "' . $path_csrf_secret . '"');
-					install_create_csrf_secret();
+					install_create_csrf_secret($path_csrf_secret);
 				} else {
 					log_install_high('csrf', 'setCSRFSecret(): Unable to create file - "' . $path_csrf_secret . '"');
 				}
