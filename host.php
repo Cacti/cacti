@@ -1616,6 +1616,7 @@ function host() {
 							?>
 						</select>
 					</td>
+					<?php api_plugin_hook('device_filter_end'); ?>
 				</tr>
 			</table>
 		</form>
@@ -1715,7 +1716,7 @@ function host() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (sizeof($display_text) != $display_text_size && cacti_sizeof($hosts)) {//display_text changed
-		api_plugin_hook_function('device_table_start', $hosts);
+		api_plugin_hook_function('device_table_replace', $hosts);
 	} else if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			if ($host['disabled'] == '' &&
