@@ -2890,16 +2890,16 @@ class Installer implements JsonSerializable {
 		set_config_option('install_error', $failure);
 
 		if (empty($failure)) {
-			// Sync the remote data collectors
-			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_START);
-			Installer::fullSyncDataCollectors();
-			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_END);
-
 			$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
 			db_execute('TRUNCATE TABLE version');
 			db_execute('INSERT INTO version (cacti) VALUES (\'' . CACTI_VERSION . '\');');
 			set_config_option('install_version', CACTI_VERSION);
 			$this->setProgress(Installer::PROGRESS_VERSION_END);
+
+			// Sync the remote data collectors
+			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_START);
+			Installer::fullSyncDataCollectors();
+			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_END);
 
 			// No failures so lets update the version
 			$this->setProgress(Installer::PROGRESS_COMPLETE);

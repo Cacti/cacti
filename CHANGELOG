@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -SECURITY#1985: Cookie should be properly verified against password
 -SECURITY#3342: CSRF at Admin Email
 -SECURITY#3343: Improper Access Control on disabling a user.
+-SECURITY#3414: Update to jQuery 3.4.1 to resolve XSS issues with jQuery 3.3.1
 -issue#2265: Graph Field Limits Save Failed: Field Input Error - |query_ifSpeed|
 -issue#2400: Enhancement: Ability to duplicate site settings and/or provide default template settings for sites
 -issue#2428: Plugins --> name column does not match "name field value" in INFO file
