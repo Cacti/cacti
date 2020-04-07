@@ -2362,7 +2362,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' <?php print $script_policy;?> 'unsafe-inline';">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' <?php print $script_policy;?> 'unsafe-inline'; worker-src 'self'">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -2473,8 +2473,8 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
 	print get_md5_include_js('include/js/jquery.tablednd.js', true);
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
-	print get_md5_include_js('include/js/jquery.multiselect.js', true);
-	print get_md5_include_js('include/js/jquery.multiselect.filter.js', true);
+	print get_md5_include_js('include/js/jquery.multiselect.js');
+	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
 	print get_md5_include_js('include/js/jquery.timepicker.js', true);
 	print get_md5_include_js('include/js/jquery.colorpicker.js', true);
 	print get_md5_include_js('include/js/jquery.tablesorter.js');

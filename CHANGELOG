@@ -4,69 +4,75 @@ Cacti CHANGELOG
 -issue#3422: COMMENT text_format does not replace Data Query if graph item does not associate to any datasource.
 
 1.2.11
--SECURITY#1566: Add SameSite support for cookies
--SECURITY#1985: Cookie should be properly verified against password
--SECURITY#3342: CSRF at Admin Email
--SECURITY#3343: Improper Access Control on disabling a user.
--issue#2265: Graph Field Limits Save Failed: Field Input Error - |query_ifSpeed|
--issue#2400: Enhancement: Ability to duplicate site settings and/or provide default template settings for sites
--issue#2428: Plugins --> name column does not match "name field value" in INFO file
--issue#2580: DSStats adding more and more processes until server stops
+-security#1566: Add SameSite support for cookies
+-security#1985: Cookie should be properly verified against password
+-security#3342: CSRF at Admin Email
+-security#3343: Improper Access Control on disabling a user.
+-security#3414: Update to jQuery 3.4.1 to resolve XSS issues with jQuery 3.3.1
+-issue#2265: When attempting to save Graph field, query_ifSpeed is not properly validated
+-issue#2400: Allow ability to duplicate site settings
+-issue#2428: Make plugins non-case sensitive for folder names, whilst allowing nicer display names
+-issue#2580: When running DSSTATS, system isn't properly detecting that another is already running
 -issue#2853: Discovered Devices filtering do not include snmp description or name
--issue#3231: Ability to unlock a tree that has been locked for editing by another account.
+-issue#3231: Allow user to unlock a tree that has been locked for editing by another
 -issue#3237: Report gets resent every poller cycle
+-issue#3247: Language source files do not update "PO-Revision-Date" attribute
 -issue#3261: Automation rules aren't run for new devices on remote data collectors
--issue#3296: Upgrade from 1.2.5 to 1.2.9 not completing / memory exhaustion
--issue#3299: Cacti should warn users who use php-snmp and SNMPv3 to uninstall php-snmp
--issue#3310: Fix automation_get_valid_mask() calculation on 32bit architectures
--issue#3212: Minor:Console menu does not auto-expand for graph item editor page
--issue#3313: Installing cacti 1.2.10 in debian and ubuntu stopped at 41%
+-issue#3296: Bad PHP memory limit values can result in failed upgrades
+-issue#3299: When using php-snmp and setting SNMPv3, warning is now shown as library does not support it properly
+-issue#3303: When installing under Windows OS, path expansion is not converted to PHP required format
+-issue#3310: When using 32-bit OS, automation errors can be seen due to subnet mask calculations
+-issue#3312: Console menu does not auto-expand for graph item editor page
+-issue#3313: When installing, multiple issues can be seen due to bad packages
 -issue#3314: Script Server has invalid debug code left in
--issue#3317: CSRF report PHP Notice: Array to string conversion
--issue#3319: Errors upgrading 0.8.x to latest Cacti due to incorrectly detected data source profile id
--issue#3322: Resolve issue encountered if the Preferred Realm has not been preset and add additional group search check
--issue#3330: Cacti installer is broken on fresh install of 1.2.10
+-issue#3317: Warnings can appear from CSRF Magic library due to multiple token values being found
+-issue#3319: Errors can occur upgrading from 0.8.x due to incorrectly detected data source profile id
+-issue#3322: When searching for LDAP accounts, allow recursive searching
+-issue#3330: Packages that are not properly formatted can cause installation issues
 -issue#3334: When upgrading from 0.8.x Automation SNMP Options should be populated
 -issue#3335: Unable to hide Device based Aggregate Graphs on Tree
--issue#3336: Plugins such as mapping plugins need to relax content security policies
--issue#3340: PHP Error when loading broken/empty 95th percentile graphs
--issue#3341: PHP Error when loading Cacti login page
--issue#3345: Calendar can not work in cacti 1.2.10
--issue#3346: Broken rewrite of octet strings
--issue#3247: mo files does not update "PO-Revision-Date" attribute
--issue#3348: Remove Orphans and Sync Graphs not working as expected
--issue#3349: Variable max_input_vars is read only.  Attempting to change it adds no value
--issue#3350: Some SQL queries can break if a database is exported then imported
--issue#3355: Minor bug about base_value in graph_xport.php and fixed
--issue#3360: Timeout and logout issue for guest
+-issue#3336: Plugins need the ability to relax some content security policies in order to work properly
+-issue#3340: Undefined variable warning can appear when using 95th percentile graphs
+-issue#3341: MoTranslator does not appear to be handing null values properly
+-issue#3345: When attempting to refresh datetime picker, unexpected results can appear
+-issue#3346: When attempting to rewrite octet strings, extra space breaks pattern matching
+-issue#3348: When attempting to handle Orphans and/or Sync Graphs, results are not as expected
+-issue#3349: Prevent setting the PHP variable max_input_vars since it is read only
+-issue#3350: When editing a data source template, inconsistent results can be seen due to database query
+-issue#3355: When viewing raw graph data via the GUI, values are not always calculated correctly
+-issue#3357: Tree Search textbox resizes to 0 in some cases
+-issue#3360: When using guest accounts, after several timeouts result in refreshes, guest becomes logged out
 -issue#3363: The current user and user group permissions pages are not responsive
 -issue#3367: When Data Queries timeout, data is removed from the Host SNMP Cache table causing issues
 -issue#3368: Saving a Graph Template Item fails due to missing includes
--issue#3373: Multiple LDAP/AD Domain logon issue
--issue#3375: When poller interval is 1 Min and collection rate is 5 Min distribution of poller items not happening
--issue#3376: Poller Recovery is slow poller_recovery.php
--issue#3378: Typo error in global_languages.php
--issue#3380: php error when trigger threshold sendmail 
--issue#3386: Second data collector shows as running when its not when no items to gather
--issue#3387: A typo in csrf-magic.js does not allow you to run EXTJS scripts
--issue#3388: Minor: PHP CLI help inconsistent with filename
+-issue#3373: When logging in via LDAP, ActiveDirectory would sometimes report insufficient access
+-issue#3375: When polling more often than default period of collecting data, distribution of collected data was not occurring
+-issue#3376: Improve speed when recovering from a poller from offline state
+-issue#3378: When attempting to check whether to include MoTranslator, typo makes it appear unavailable
+-issue#3380: php error when trigger threshold sendmail
+-issue#3386: Second data collector shows as running when its has no items to gather
+-issue#3387: Minor corrections to CSRF Magic
+-issue#3388: Naming of CLI programs does not always match name used within syntax usage advice
 -issue#3390: Incorrect breadcrumb bar if current tab is not "Graphs"
 -issue#3402: Cacti scores low on performance audit on lighthouse audit
--issue: Tree searcher sizes to 0 bytes width until page resized
--issue: Clicking on an anchor that drills to another page inline removes selected menu item
--issue: Zoom looses focus in advanced mode while crossing chart border
--feature#1551: Allow uptime to be a variable for use with graphs
+-issue#3408: CSRF Secret path is not passed properly when attempting to initialize secret
+-issue#3409: Issues with navigation link activations to other base Cacti pages
+-issue#3410: Zoom looses focus in advanced mode while crossing chart border
+-issue#3411: When upgrading a primary server, full synchronization is not happening as expected
+-issue#3412: When upgrading a primary server, automation templates are removed
+-issue#3413: When upgrading and choosing to upgrade your packages, installer finishes without package data in log
+-feature#1551: Allow system uptime to be a variable for use with graphs
 -feature#1990: Plugin Realm should have a 'role' to help maintain changes between plugins
 -feature#2110: Add Refresh Interval to Data Collectors display
--feature#2156: Add Location List Editing Capabilities
+-feature#2156: Add Location based filtering
 -feature#2236: Allow for Purging of Data Source Statistics from the GUI
--feature#2268: Feature Request: Data Profiles
--feature#2534: Enhance the html_nav_bar() in the lib/html.php to support larger system
+-feature#2268: Restore ability to duplicate a data profile
+-feature#2534: Enhance table navigation bars to support systems with larger number of items
 -feature#2688: Increase length of Graph Item 'value' field to support pango-markup better
--feature#3304: Allow Basic Auth Accounts to be Mapped by CSV File
--feature#3366: Allow checkbox_groups flow like the permission page on forms
--feature#3374: Allow Setting of Cookie 'Cacti' domain edition
--feature: Update jQuery to v3.4.1 for security reasons
+-feature#3304: Allow Basic Auth Accounts to be mapped by CSV file
+-feature#3366: Make form elements under checkbox_groups flow using flex grid style
+-feature#3374: Set the domain attribute to secure cookies for the 'remember me' option
+-feature#3403: Enhance the "Graph Debug Mode" to display RRDtool Command lengths and excess warnings
 
 1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)
@@ -88,7 +94,7 @@ Cacti CHANGELOG
 -issue#3288: When on Device page, pressing 'Go' on the filter caused Device New menu pick to appear
 -issue#3289: When using CMD.PHP, poller id is not always shown properly
 -issue#3290: When using CMD.PHP, inconsistent device logging levels may occur
--issue#3298: When initialising fields in JavaScript, text/textarea elements have width set to zero if it is hidden by parent by ddb4github
+-issue#3298: When initialising fields in JavaScript, text/textarea elements have width set to zero if it is hidden by parent
 -issue#3302: Editing a Graph Template does not show the Data Template name
 
 1.2.9

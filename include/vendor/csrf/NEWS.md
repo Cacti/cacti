@@ -37,6 +37,11 @@ Features
 
   Configuration var `hash`
 
+- Allow use of session_id() to be configured via configuration variable so that
+  other mechanisms can be utilsed instead.
+
+  Configuration var `session`
+
 ## 1.0.5 released 2014-07-24
 
 Bug Fixes

@@ -434,7 +434,7 @@ if ($config['is_web']) {
 	if ($script_policy != '0' && $script_policy != '') {
 		$script_policy = "'$script_policy'";
 	}
-	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' $script_policy 'unsafe-inline'; frame-ancestors 'self';");
+	header("Content-Security-Policy: default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' $script_policy 'unsafe-inline'; frame-ancestors 'self'; worker-src 'self'");
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
