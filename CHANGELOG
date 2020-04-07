@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.12
+-issue#3422: COMMENT text_format does not replace Data Query if graph item does not associate to any datasource.
+
 1.2.11
 -security#1566: Add SameSite support for cookies
 -security#1985: Cookie should be properly verified against password
