@@ -139,17 +139,22 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 		if ($rrd_updates > 0) {
 			log_boost_statistics($rrd_updates);
 			$next_run_time = $current_time + $seconds_offset;
+		} elseif ($rrd_updates == -1) {
+			log_boost_statistics(0);
+			$next_run_time = $current_time + $seconds_offset;
 		} else { /* rollback last run time */
 			set_config_option('boost_last_run_time', date('Y-m-d G:i:s', $last_run_time));
 		}
 
-		dsstats_boost_bottom();
+		if ($rrd_updates > 0) {
+			dsstats_boost_bottom();
 
-		api_plugin_hook('boost_poller_bottom');
+			api_plugin_hook('boost_poller_bottom');
+		}
 	}
 
 	/* store the next run time so that people understand */
-	if ($rrd_updates > 0) {
+	if ($rrd_updates > 0 || $rrd_updates == -1) {
 		set_config_option('boost_next_run_time', date('Y-m-d G:i:s', $next_run_time));
 	}
 } else {
@@ -169,6 +174,8 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 
 		if ($rrd_updates > 0) {
 			log_boost_statistics($rrd_updates);
+		} elseif ($rrd_updates == -1) {
+			log_boost_statistics(0);
 		}
 	}
 }
@@ -274,7 +281,18 @@ function output_rrd_data($start_time, $force = false) {
 	}
 
 	if ($archive_table == '') {
+		db_execute("SELECT RELEASE_LOCK('poller_boost');");
 		cacti_log('ERROR: Failed to retrieve archive table name');
+
+		return -1;
+	}
+
+	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id)
+		FROM $archive_table");
+
+	if ($total_rows == 0 && !cacti_sizeof($more_arch_table)) {
+		db_execute("SELECT RELEASE_LOCK('poller_boost');");
+
 		return -1;
 	}
 
@@ -289,7 +307,6 @@ function output_rrd_data($start_time, $force = false) {
 		SELECT DISTINCT local_data_id
 		FROM $archive_table");
 
-	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id) FROM $archive_table");
 	$data_ids   = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM $archive_table");
 
 	if (!empty($total_rows)) {

@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.12
 -issue#3422: COMMENT text_format does not replace Data Query if graph item does not associate to any datasource.
 -issue#3424: Hosts are being incorrectly filtered when no location filter is set
+-issue#3432: Rare race condition when both boost and dsstats enabled
 
 1.2.11
 -security#1566: Add SameSite support for cookies
