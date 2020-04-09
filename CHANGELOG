@@ -4,6 +4,8 @@ Cacti CHANGELOG
 -issue#3422: COMMENT text_format does not replace Data Query if graph item does not associate to any datasource.
 -issue#3424: Hosts are being incorrectly filtered when no location filter is set
 -issue#3432: Rare race condition when both boost and dsstats enabled
+-issue#3436: Cannot login anymore with 1.2.11 due to Cookie domains being
+defaulted to on in default config.php.dist
 
 1.2.11
 -security#1566: Add SameSite support for cookies

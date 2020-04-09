@@ -81,7 +81,7 @@ $cacti_session_name = 'Cacti';
  * Default Cookie domain - The cookie domain to be used for Cacti
  */
 
-$cacti_cookie_domain = 'cacti.net';
+//$cacti_cookie_domain = 'cacti.net';
 
 /*
  * Save sessions to a database for load balancing
