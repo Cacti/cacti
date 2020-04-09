@@ -75,6 +75,7 @@ Cacti CHANGELOG
 -feature#3304: Allow Basic Auth Accounts to be Mapped by CSV File
 -feature#3366: Allow checkbox_groups flow like the permission page on forms
 -feature#3374: Allow Setting of Cookie 'Cacti' domain edition
+-feature#3392: Add hooks for Devices page to customize the filter and columns more flexible on the page
 -feature: Update jQuery to v3.4.1 for security reasons
 
 1.2.10
