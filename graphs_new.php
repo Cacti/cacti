@@ -781,7 +781,7 @@ function graphs() {
 							foreach($snmp_query_indexes as $row) {
 								$query_row = $snmp_query['id'] . '_' . encode_data_query_index($row['snmp_index']);
 
-								print "<tr id='dqline$query_row' class='selectable " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>"; $i++;
+								print "<tr id='dqline$query_row' class='selectable " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>";
 
 								$column_counter = 0;
 								foreach ($xml_array['fields'] as $field_name => $field_array) {
