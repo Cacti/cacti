@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#3429: AUTOM8 Backtrace Errors due to SNMP class not muting snmpv3 auth errors
 -issue#3432: Rare race condition when both boost and dsstats enabled
 -issue#3436: Cannot login anymore with 1.2.11 due to Cookie domains being defaulted to on in default config.php.dist
+-issue#3442: Keeping received CMDPHP WARNING on cacti.log
 -issue#3447: SNMP Issues on recent versions of PHP
 -issue#3450: Cacti can not be supported on XAMPP and PHP7.4
 
