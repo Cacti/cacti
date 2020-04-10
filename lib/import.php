@@ -280,6 +280,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 			if (strlen($x) == 0) {
 				cacti_log('FATAL: Unable to read Cacti Package ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+				fclose($f);
 				return false;
 			} elseif (strpos($x, '<signature>') !== FALSE) {
 				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
@@ -317,7 +318,6 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 	if ($info_only) {
 		return $data['info'];
-		exit;
 	}
 
 	cacti_log('Verifying each files signature', false, 'IMPORT', POLLER_VERBOSITY_LOW);

@@ -613,6 +613,17 @@ function install_file_paths() {
 			'win32' => 'c:/php/php.exe'
 		));
 
+	// Workaround to support xampp
+	if ($config['cacti_server_os'] == 'win32') {
+		$paths = array('c:/php/php.exe', 'd:/php/php.exe', 'c:/xampp/php/php.exe', 'd:/xampp/php/php.exe');
+		foreach($paths as $path) {
+			if (file_exists($path)) {
+				$input['path_php_binary']['default'] = $path;
+				break;
+			}
+		}
+	}
+
 	/* RRDtool Binary Path */
 	$input['path_rrdtool'] = install_tool_path('rrdtool',
 		array(
