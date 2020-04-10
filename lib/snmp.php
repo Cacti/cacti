@@ -69,8 +69,10 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 			break;
 	}
 
+	$timeout = (int) $timeout * 1000;
+
 	try {
-		$session = new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout * 1000, $retries);
+		$session = new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout, $retries);
 	} catch (Exception $e) {
 		return false;
 	}
@@ -135,10 +137,12 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 			snmp_set_enum_print(true);
 		}
 
+		$timeout = (int) $timeout * 1000;
+
 		if ($version == '1') {
-			$snmp_value = snmpget($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, $timeout, $retries);
 		} elseif ($version == '2') {
-			$snmp_value = snmp2_get($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmp2_get($hostname . ':' . $port, $community, $oid, $timeout, $retries);
 		} else {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				if ($auth_pass == '' || $auth_proto == '[None]') {
@@ -152,7 +156,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 				$sec_level = 'authPriv';
 			}
 
-			$snmp_value = snmp3_get($hostname . ':' . $port, $auth_user, $sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmp3_get($hostname . ':' . $port, $auth_user, $sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $oid, $timeout, $retries);
 		}
 
 		if ($snmp_value === false) {
@@ -165,7 +169,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 		$snmp_value = '';
 
 		/* net snmp want the timeout in seconds */
-		$timeout = ceil($timeout / 1000);
+		$timeout = (int) ceil($timeout / 1000);
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
@@ -224,14 +228,16 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		we are getting back */
 		snmp_set_quick_print(0);
 
+		$timeout = (int) $timeout * 1000;
+
 		if (function_exists('snmp_set_enum_print')) {
 			snmp_set_enum_print(true);
 		}
 
 		if ($version == '1') {
-			$snmp_value = snmpget($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, $timeout, $retries);
 		} elseif ($version == '2') {
-			$snmp_value = snmp2_get($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmp2_get($hostname . ':' . $port, $community, $oid, $timeout, $retries);
 		} else {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				if ($auth_pass == '' || $auth_proto == '[None]') {
@@ -245,7 +251,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 				$sec_level = 'authPriv';
 			}
 
-			$snmp_value = snmp3_get($hostname . ':' . $port, $auth_user, $sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmp3_get($hostname . ':' . $port, $auth_user, $sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $oid, $timeout, $retries);
 		}
 
 		if ($snmp_value === false) {
@@ -256,7 +262,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		$snmp_value = '';
 
 		/* net snmp want the timeout in seconds */
-		$timeout = ceil($timeout / 1000);
+		$timeout = (int) ceil($timeout / 1000);
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
@@ -313,10 +319,12 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 		we are getting back */
 		snmp_set_quick_print(0);
 
+		$timeout = (int) $timeout * 1000;
+
 		if ($version == '1') {
-			$snmp_value = snmpgetnext($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmpgetnext($hostname . ':' . $port, $community, $oid, $timeout, $retries);
 		} elseif ($version == '2') {
-			$snmp_value = snmp2_getnext($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmp2_getnext($hostname . ':' . $port, $community, $oid, $timeout, $retries);
 		} else {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				if ($auth_pass == '' || $auth_proto == '[None]') {
@@ -329,7 +337,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 				$sec_level = 'authPriv';
 			}
 
-			$snmp_value = snmp3_getnext($hostname . ':' . $port, $auth_user, $sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
+			$snmp_value = @snmp3_getnext($hostname . ':' . $port, $auth_user, $sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $oid, $timeout, $retries);
 		}
 
 		if ($snmp_value === false) {
@@ -342,7 +350,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 		$snmp_value = '';
 
 		/* net snmp want the timeout in seconds */
-		$timeout = ceil($timeout / 1000);
+		$timeout = (int) ceil($timeout / 1000);
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
@@ -487,7 +495,7 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 
 	if ($out === false) {
 		if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
-			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
+			cacti_log('WARNING: SNMP Error:\'Timeout (' . round($info['timeout']/1000,0) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 		}
 		return false;
 	}
@@ -520,7 +528,7 @@ function cacti_snmp_session_getnext($session, $oid) {
 		$oid = implode(',', $oid);
 	} elseif ($out === false) {
 		if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
-			cacti_log('WARNING: SNMP Error:\'Timeout (' . ($info['timeout']/1000) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
+			cacti_log('WARNING: SNMP Error:\'Timeout (' . round($info['timeout']/1000, 0) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 		}
 
 		return false;
@@ -560,6 +568,8 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 
+		$timeout = (int) $timeout * 1000;
+
 		/* force php to return numeric oid's */
 		cacti_oid_numeric_format();
 
@@ -570,9 +580,9 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		snmp_set_quick_print(0);
 
 		if ($version == '1') {
-			$temp_array = snmprealwalk($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$temp_array = snmprealwalk($hostname . ':' . $port, $community, $oid, $timeout, $retries);
 		} elseif ($version == 2) {
-			$temp_array = snmp2_real_walk($hostname . ':' . $port, $community, $oid, ($timeout * 1000), $retries);
+			$temp_array = snmp2_real_walk($hostname . ':' . $port, $community, $oid, $timeout, $retries);
 		} else {
 			if ($priv_proto == '[None]' || $priv_pass == '') {
 				if ($auth_pass == '') {
@@ -585,7 +595,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				$sec_level = 'authPriv';
 			}
 
-			$temp_array = snmp3_real_walk($hostname . ':' . $port, $auth_user, $sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $oid, ($timeout * 1000), $retries);
+			$temp_array = @snmp3_real_walk($hostname . ':' . $port, $auth_user, $sec_level, $auth_proto, $auth_pass, $priv_proto, $priv_pass, $oid, $timeout, $retries);
 		}
 
 		/* check for bad entries */
@@ -610,7 +620,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		}
 	} else {
 		/* ucd/net snmp want the timeout in seconds */
-		$timeout = ceil($timeout / 1000);
+		$timeout = (int) ceil($timeout / 1000);
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
