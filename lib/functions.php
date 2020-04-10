@@ -5133,8 +5133,13 @@ function get_cacti_cli_version($include_db = true, $version = CACTI_VERSION_FULL
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
-	$version1 = version_to_decimal($version1);
-	$version2 = version_to_decimal($version2);
+	if ($version1 == 'new_install') {
+		$version1 = CACTI_VERSION;
+	}
+
+	$length   = max(cacti_sizeof(explode('.', $version1)), cacti_sizeof(explode('.', $version2)));
+	$version1 = version_to_decimal($version1, $length);
+	$version2 = version_to_decimal($version2, $length);
 
 	switch ($operator) {
 		case '<':
@@ -5304,7 +5309,7 @@ function version_to_decimal($version, $length = 8, $hex = true) {
 		$int = 0;
 	}
 
-	return $hex ? hexdec($newver) : $newver;
+	return @hexdec($newver) * 1000 + $int;
 }
 
 /**
@@ -5833,4 +5838,3 @@ function cacti_cookie_session_logout() {
 
 	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
 }
-

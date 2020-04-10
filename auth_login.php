@@ -830,7 +830,7 @@ $selectedTheme = get_selected_theme();
 
 		// Restore the preferred realm
 		if ($('#realm').length) {
-			if (preferredRealm !== undefined) {
+			if (preferredRealm !== undefined && preferredRealm !== null) {
 				$('#realm').val(preferredRealm);
 				if ($('#realm').selectmenu('instance') !== undefined) {
 					$('#realm').selectmenu('refresh');

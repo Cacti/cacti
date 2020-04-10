@@ -140,7 +140,7 @@ function csrf_get_tokens() {
 		$token = 'sid:' . csrf_hash(session_id()) . $ip;
 	} elseif ($GLOBALS['csrf']['cookie']) {
 		$val = csrf_generate_secret();
-		cacti_cookie_set($GLOBALS['csrf']['cookie'], $val);
+		setcookie($GLOBALS['csrf']['cookie'], $val, time() + 3600, $GLOBALS['csrf']['url_path']);
 		$token = 'cookie:' . csrf_hash($val) . $ip;
 	} elseif ($GLOBALS['csrf']['key']) {
 		$token = 'key:' . csrf_hash($GLOBALS['csrf']['key']) . $ip;
@@ -329,7 +329,7 @@ function csrf_start() {
 	global $config;
 
 	if ($GLOBALS['csrf']['auto-session'] && !session_id()) {
-		session_start($config['cookie_options']);
+		session_start();
 	}
 }
 
@@ -605,4 +605,3 @@ if (!$GLOBALS['csrf']['disable']) {
 		csrf_check();
 	}
 }
-
