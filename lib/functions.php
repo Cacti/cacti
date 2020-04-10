@@ -5030,6 +5030,10 @@ function get_cacti_cli_version() {
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
+	if ($version1 == 'new_install') {
+		$version1 = CACTI_VERSION;
+	}
+
 	$length   = max(cacti_sizeof(explode('.', $version1)), cacti_sizeof(explode('.', $version2)));
 	$version1 = version_to_decimal($version1, $length);
 	$version2 = version_to_decimal($version2, $length);
@@ -5100,7 +5104,7 @@ function version_to_decimal($version, $length = 1) {
 		$int = 0;
 	}
 
-	return hexdec($newver) * 1000 + $int;
+	return @hexdec($newver) * 1000 + $int;
 }
 
 /**
