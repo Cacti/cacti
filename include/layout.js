@@ -393,6 +393,22 @@ $.fn.serializeObject = function() {
 	return objectData;
 };
 
+// Borrowed from mustache.js
+function escapeString(string) {
+	var entityMap = {
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#39;',
+		'/': '&#x2F;',
+		'`': '&#x60;'
+	};
+
+	return String(string).replace(/[<>"'`\/]/g, function fromEntityMap (s) {
+		return entityMap[s];
+	});
+}
+
 // Plugin to apply numeric format for tablesorter
 $.tablesorter.addParser({
 	id: 'numberFormat',
@@ -1729,9 +1745,9 @@ function loadTopTab(href, id, force) {
 				pageName = basename(hrefParts[0]);
 
 				if (pageName != '') {
-					if ($('#menu').find("a[href^='"+href+"']").length > 0) {
+					if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href^='"+href+"']").addClass('selected');
+						$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
 					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
@@ -1836,14 +1852,14 @@ function loadPage(href, force) {
 					if (pageName == 'host.php') {
 						if (href.indexOf('create') >= 0) {
 							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href='"+href+"']").addClass('selected');
+							$('#menu').find("a[href='"+escapeString(href)+"']").addClass('selected');
 						} else {
 							$('#menu').find('.pic').removeClass('selected');
 							$('#menu').find("a[href$='host.php']").addClass('selected');
 						}
-					} else if ($('#menu').find("a[href^='"+href+"']").length > 0) {
+					} else if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href^='"+href+"']").addClass('selected');
+						$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
 					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
@@ -1992,14 +2008,14 @@ function loadPageNoHeader(href, scroll, force) {
 						if (pageName == 'host.php') {
 							if (href.indexOf('create') >= 0) {
 								$('#menu').find('.pic').removeClass('selected');
-								$('#menu').find("a[href='"+href+"']").addClass('selected');
+								$('#menu').find("a[href='"+escapeString(href)+"']").addClass('selected');
 							} else {
 								$('#menu').find('.pic').removeClass('selected');
 								$('#menu').find("a[href$='host.php']").addClass('selected');
 							}
-						} else if ($('#menu').find("a[href^='"+href+"']").length > 0) {
+						} else if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
 							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href^='"+href+"']").addClass('selected');
+							$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
 						} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 							$('#menu').find('.pic').removeClass('selected');
 							$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
