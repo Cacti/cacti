@@ -101,7 +101,7 @@ function reports_form_save() {
 				$timestamp = strtotime('12:00am') + 86400 + date('H', $timestamp) * 3600 + date('i', $timestamp) * 60 + date('s', $timestamp);
 			}
 
-			raise_message(__('Date/Time moved to the same time Tomorrow'), MESSAGE_LEVEL_INFO);
+			raise_message('report_message', __('Date/Time moved to the same time Tomorrow'), MESSAGE_LEVEL_INFO);
 		}
 
 		$save['mailtime']     = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
@@ -377,13 +377,13 @@ function reports_send($id) {
 		}
 
 		if ($report['email'] == '') {
-			raise_message(__('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['subject'] == '') {
-			raise_message(__('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['from_name'] == '') {
-			raise_message(__('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['from_email'] == '') {
-			raise_message(__('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} else {
 			generate_report($report, true);
 		}
