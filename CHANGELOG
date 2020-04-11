@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#3447: SNMP Issues on recent versions of PHP
 -issue#3450: Cacti can not be supported on XAMPP and PHP7.4
 -issue#3452: New Content-Security-Policy prevents External Links from Operating
+-issue#3454: Cacti Reports do not generate correct messages
 
 1.2.11
 -security#1566: Add SameSite support for cookies
