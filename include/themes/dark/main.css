@@ -73,13 +73,13 @@ img {
 	vertical-align: middle;
 }
 
-i.fa, i.fas, i.fab {
+i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
 	color: snow;
 	vertical-align: middle;
 }
 
-.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
+.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab, .menu_parent i.far, .menu_parent i.fal {
 	color: snow;
 }
 
