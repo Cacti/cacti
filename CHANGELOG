@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#3454: Cacti Reports do not generate correct messages
 -issue#3457: Allow negative right axis scales in graph and graph templates.
 -issue#3460: More fixing after #2428, display flexible format name from INFO-->name field
+-issue#3462: Incorrect default cli php memory_limit
 -issue#3463: vdef DB error - Unknown column 'graphs' in 'having clause'
 -issue#3467: Security: required more fixing like #3191((CVE-2020-7106))
 
