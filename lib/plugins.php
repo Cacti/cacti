@@ -991,7 +991,7 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	}
 
 	$info_fields = array(
-		'name'         => $dir,
+		'name'         => ucfirst($dir),
 		'requires'     => '',
 		'longname'     => ucfirst($dir),
 		'status'       => file_exists($file) ? 0 : -4,
@@ -1011,7 +1011,7 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 
 	if (strstr($dir, ' ') !== false) {
 		$result['status'] = -3;
-	} elseif ($dir != $result['name']) {
+	} elseif (strtolower($dir) != strtolower($result['name'])) {
 		$result['status'] = -2;
 	} elseif (!isset($result['compat']) || cacti_version_compare(CACTI_VERSION, $result['compat'], '<')) {
 		$result['status'] = -1;
