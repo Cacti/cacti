@@ -294,13 +294,13 @@ function form_save() {
 		// Check for duplicate hostname
 		$error = false;
 		if (poller_check_duplicate_poller_id($save['id'], $save['hostname'], 'hostname')) {
-			raise_message('dupe_hostname', __('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+			raise_message('dupe_hostname', __esc('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
 			$error = true;
 		}
 
 		if (isset($save['dbhost'])) {
 			if (poller_check_duplicate_poller_id($save['id'], $save['dbhost'], 'dbhost')) {
-				raise_message('dupe_dbhost', __('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+				raise_message('dupe_dbhost', __esc('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
 				$error = true;
 			}
 		}
