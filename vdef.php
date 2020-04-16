@@ -796,9 +796,9 @@ function get_vdef_records(&$total_rows, &$rows) {
             LEFT JOIN graph_templates_item AS gti
             ON gti.vdef_id=vd.id
             GROUP BY vd.id
+			$sql_having
         ) AS rs
-        $sql_where
-		$sql_having");
+        $sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
