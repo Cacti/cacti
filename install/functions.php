@@ -94,9 +94,9 @@ function install_test_local_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print json_encode(array('status' => 'true'));
+		return json_encode(array('status' => 'true'));
 	} else {
-		print json_encode(array('status' => 'false'));
+		return json_encode(array('status' => 'false'));
 	}
 }
 
@@ -112,9 +112,9 @@ function install_test_remote_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print json_encode(array('status' => 'true'));
+		return json_encode(array('status' => 'true'));
 	} else {
-		print json_encode(array('status' => 'false'));
+		return json_encode(array('status' => 'false'));
 	}
 }
 
