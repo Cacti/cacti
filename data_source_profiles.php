@@ -270,7 +270,7 @@ function form_actions() {
 
 	form_start('data_source_profiles.php');
 
-	html_start_box($profile_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($profile_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($profile_array) && cacti_sizeof($profile_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
