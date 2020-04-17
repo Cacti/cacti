@@ -139,7 +139,7 @@ function form_actions() {
 
 	form_start('gprint_presets.php');
 
-	html_start_box($gprint_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($gprint_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($gprint_array) && cacti_sizeof($gprint_array)) {
 		if (get_request_var('drp_action') == '1') { /* delete */
