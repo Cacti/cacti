@@ -520,13 +520,19 @@ function form_save() {
 		get_filter_request_var('policy_graph_templates');
 		/* ==================================================== */
 
+		$old_password = db_fetch_cell_prepared('SELECT password
+			FROM user_auth
+			WHERE id = ?',
+			array(get_nfilter_request_var('id')));
 		if ((get_nfilter_request_var('password') == '') && (get_nfilter_request_var('password_confirm') == '')) {
-			$password = db_fetch_cell_prepared('SELECT password
-				FROM user_auth
-				WHERE id = ?',
-				array(get_nfilter_request_var('id')));
+			$password = $old_password;
 		} else {
 			$password = compat_password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
+			if($password != $old_password){
+				db_execute_prepared('DELETE FROM user_auth_cache
+					WHERE user_id = ?',
+					array(get_nfilter_request_var('id')));
+			}
 		}
 
 		/* check duplicate username */
