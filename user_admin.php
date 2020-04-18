@@ -524,11 +524,13 @@ function form_save() {
 			FROM user_auth
 			WHERE id = ?',
 			array(get_nfilter_request_var('id')));
+
 		if ((get_nfilter_request_var('password') == '') && (get_nfilter_request_var('password_confirm') == '')) {
 			$password = $old_password;
 		} else {
 			$password = compat_password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
-			if($password != $old_password){
+
+			if ($password != $old_password) {
 				db_execute_prepared('DELETE FROM user_auth_cache
 					WHERE user_id = ?',
 					array(get_nfilter_request_var('id')));
