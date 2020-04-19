@@ -1247,7 +1247,7 @@ legend {
 .formRow {
 	width: 100%;
 	line-height: 30px;
-	overflow: hidden;
+	overflow-y: auto;
 }
 
 .formColumn {
