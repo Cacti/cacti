@@ -301,7 +301,7 @@ function form_save() {
 		$save2['unit_value']           = form_input_validate(get_nfilter_request_var('unit_value'), 'unit_value', '', true, 3);
 		$save2['unit_exponent_value']  = form_input_validate(get_nfilter_request_var('unit_exponent_value'), 'unit_exponent_value', '^-?[0-9]+$', true, 3);
 		$save2['alt_y_grid']           = form_input_validate((isset_request_var('alt_y_grid') ? get_nfilter_request_var('alt_y_grid') : ''), 'alt_y_grid', '', true, 3);
-		$save2['right_axis']           = form_input_validate((isset_request_var('right_axis') ? get_nfilter_request_var('right_axis') : ''), 'right_axis', '^[.0-9]+:-?[.0-9]+$', true, 3);
+		$save2['right_axis']           = form_input_validate((isset_request_var('right_axis') ? get_nfilter_request_var('right_axis') : ''), 'right_axis', '^-?([0-9]+(\.[0-9]*)?|\.[0-9]+):-?([0-9]+(\.[0-9]*)?|\.[0-9]+)$', true, 3);
 		$save2['right_axis_label']     = form_input_validate((isset_request_var('right_axis_label') ? get_nfilter_request_var('right_axis_label') : ''), 'right_axis_label', '', true, 3);
 		$save2['right_axis_format']    = form_input_validate((isset_request_var('right_axis_format') ? get_nfilter_request_var('right_axis_format') : ''), 'right_axis_format', '^[0-9]+$', true, 3);
 		$save2['no_gridfit']           = form_input_validate((isset_request_var('no_gridfit') ? get_nfilter_request_var('no_gridfit') : ''), 'no_gridfit', '', true, 3);
@@ -819,7 +819,7 @@ function form_actions() {
 
 	form_start('graphs.php');
 
-	html_start_box($graph_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($graph_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && cacti_sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete

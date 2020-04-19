@@ -193,26 +193,27 @@ function plugins_load_temp_table() {
 					WHERE directory = ?",
 					array($file));
 
+				$infoname = ($cinfo[$file]['name'] == strtolower($cinfo[$file]['name']) ? ucfirst($cinfo[$file]['name']) : $cinfo[$file]['name']);
 				if (!$exists) {
 					db_execute_prepared("INSERT INTO $table
 						(directory, name, status, author, webpage, version, requires, infoname)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 						array(
-							(strtolower($file) == strtolower($cinfo[$file]['name']) ? $cinfo[$file]['name'] : $file),
+							$file,
 							$cinfo[$file]['longname'],
 							$cinfo[$file]['status'],
 							$cinfo[$file]['author'],
 							$cinfo[$file]['homepage'],
 							$cinfo[$file]['version'],
 							$cinfo[$file]['requires'],
-							$cinfo[$file]['name']
+							$infoname
 						)
 					);
 				} else {
 					db_execute_prepared("UPDATE $table
 						SET infoname = ?, requires = ?
 						WHERE directory = ?",
-						array($cinfo[$file]['name'], $cinfo[$file]['requires'], $file));
+						array($infoname, $cinfo[$file]['requires'], $file));
 				}
 			}
 		}
@@ -245,7 +246,7 @@ function plugins_load_temp_table() {
 							$plugin['homepage'],
 							$plugin['version'],
 							$plugin['requires'],
-							$plugin['name']
+							($plugin['name'] == strtolower($plugin['name']) ? ucfirst($plugin['name']) : $plugin['name'])
 						)
 					);
 				} else {
@@ -551,7 +552,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 
 	$row = plugin_actions($plugin, $table);
 
-	$row .= "<td><a href='" . html_escape($plugin['webpage']) . "' target='_blank' rel='noopener'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</a></td>';
+	$row .= "<td><a href='" . html_escape($plugin['webpage']) . "' target='_blank' rel='noopener'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $plugin['infoname']) : $plugin['infoname']) . '</a></td>';
 
 	$row .= "<td class='nowrap'>" . filter_value($plugin['name'], get_request_var('filter')) . "</td>\n";
 

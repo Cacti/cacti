@@ -341,7 +341,7 @@ function form_actions() {
 
 	form_start('aggregate_graphs.php');
 
-	html_start_box($graph_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($graph_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	$save_html = '';
 

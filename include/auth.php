@@ -244,6 +244,10 @@ if ($realm_id == 26) {
 }
 
 if ($realm_id > 0) {
+	if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+		exit;
+	}
+
 	$auth_sql_query = '
 		SELECT COUNT(*)
 		FROM (

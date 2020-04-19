@@ -575,11 +575,11 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 				$multi_ok   = false;
 				for ($i=0; $i<count($values); $i++) {
 					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9Uu\+\.-]+)$/', $values[$i], $matches)) {
-						if (isset($rrd_field_names{$matches[1]})) {
+						if (isset($rrd_field_names[$matches[1]])) {
 							$multi_ok = true;
 
 							if (trim(read_config_option('path_boost_log')) != '') {
-								print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names{$matches[1]} . ']' . PHP_EOL;
+								print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names[$matches[1]] . ']' . PHP_EOL;
 							}
 
 							if (!$multi_vals_set) {
@@ -587,7 +587,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 									$rrd_tmpl .= ':';
 								}
 
-								$rrd_tmpl  .= $rrd_field_names{$matches[1]};
+								$rrd_tmpl  .= $rrd_field_names[$matches[1]];
 								$first_tmpl = false;
 							}
 
