@@ -60,13 +60,30 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
 /* update_data_source_title_cache_from_host - updates the title cache for all data sources
 	that match a given host
    @arg $host_id - (int) the ID of the host to match */
-function update_data_source_title_cache_from_host($host_id) {
+function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids = array()) {
+	if ($query_id > 0 && !cacti_sizeof($ids)) {
 	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM data_local
-		WHERE host_id = ?',
-		array($host_id));
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			array($host_id, $query_id));
+	} elseif ($query_id > 0) {
+		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+			FROM data_local
+			WHERE host_id = ?
+			AND snmp_query_id = ?
+			AND id IN (?)',
+			array($host_id, $query_id, implode(',', $ids)));
+	} else {
+		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+			FROM data_local
+			WHERE host_id = ?',
+			array($host_id));
+	}
 
-	if (cacti_sizeof($data) > 0) {
+	if (cacti_sizeof($data)) {
+		cacti_log('Updating ' . cacti_sizeof($data) . ' Data Source');
+
 		foreach ($data as $item) {
 			update_data_source_title_cache($item['id']);
 		}
@@ -126,13 +143,32 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
 /* update_graph_title_cache_from_host - updates the title cache for all graphs
 	that match a given host
    @arg $host_id - (int) the ID of the host to match */
-function update_graph_title_cache_from_host($host_id) {
+function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = array()) {
+	if ($query_id > 0 && !cacti_sizeof($ids)) {
 	$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM graph_local
-		WHERE host_id = ?',
-		array($host_id));
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			array($host_id, $query_id));
+	} elseif ($query_id > 0) {
+		$graphs = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . ' gl.id
+			FROM graph_local AS gl
+			INNER JOIN graph_templates_item AS gti
+			ON gti.local_graph_id = gl.id
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id = dtr.id
+			WHERE host_id = ?
+			AND snmp_query_id = ?
+			AND dtr.local_data_id IN(?)',
+			array($host_id, $query_id, implode(',', $ids)));
+	} else {
+		$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+			FROM graph_local
+			WHERE host_id = ?',
+			array($host_id));
+	}
 
-	if (cacti_sizeof($graphs) > 0) {
+	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $item) {
 			update_graph_title_cache($item['id']);
 		}

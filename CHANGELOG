@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#3463: vdef DB error - Unknown column 'graphs' in 'having clause'
 -issue#3467: Security: required more fixing like #3191((CVE-2020-7106))
 -issue#3474: The SSL option to set the SSL_CA should be optional for Client Connections
+-issue#3478: Data Query Re-Index is not optimal causing very long Re-Index times
 
 1.2.11
 -security#1566: Add SameSite support for cookies
