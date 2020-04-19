@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#3477: Boost leaking memory when a large number of Data Sources disabled
 -issue#3478: Data Query Re-Index is not optimal causing very long Re-Index times
 -issue#3479: When viewing the Data Query table interface, the Data Input Method should be right aligned
+-feature#3480: Apply 'custom_denied' hook to general permission denied interface
 
 1.2.11
 -security#1566: Add SameSite support for cookies

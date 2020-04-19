@@ -267,6 +267,9 @@ if (read_config_option('auth_method') != 0) {
 		}
 
 		if ($realm_id != -1 && !$authorized) {
+			if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+				exit;
+			}
 			if (isset($_SERVER['HTTP_REFERER'])) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			} else {
