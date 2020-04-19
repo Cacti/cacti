@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#3436: Cannot login anymore with 1.2.11 due to Cookie domains being defaulted to on in default config.php.dist
 -issue#3442: Keeping received CMDPHP WARNING on cacti.log
 -issue#3447: SNMP Issues on recent versions of PHP
+-issue#3449: Items are overlapping in directory permission checks in installation wizard
 -issue#3450: Cacti can not be supported on XAMPP and PHP7.4
 -issue#3452: New Content-Security-Policy prevents External Links from Operating
 -issue#3454: Cacti Reports do not generate correct messages
@@ -19,6 +20,10 @@ Cacti CHANGELOG
 -issue#3462: Incorrect default cli php memory_limit
 -issue#3463: vdef DB error - Unknown column 'graphs' in 'having clause'
 -issue#3467: Security: required more fixing like #3191((CVE-2020-7106))
+-issue#3474: The SSL option to set the SSL_CA should be optional for Client Connections
+-issue#3477: Boost leaking memory when a large number of Data Sources disabled
+-issue#3478: Data Query Re-Index is not optimal causing very long Re-Index times
+-issue#3479: When viewing the Data Query table interface, the Data Input Method should be right aligned
 
 1.2.11
 -security#1566: Add SameSite support for cookies

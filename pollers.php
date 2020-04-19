@@ -197,7 +197,7 @@ $fields_poller_edit = array(
 	'dbsslca' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Remote Database SSL Authority'),
-		'description' => __('The file holding the SSL Certificate Authority to use to connect to the remote database.'),
+		'description' => __('The file holding the SSL Certificate Authority to use to connect to the remote database.  This is an optional parameter that can be required by the database provider if they have started SSL using the --ssl-mode=VERIFY_CA option.'),
 		'value' => '|arg1:dbsslca|',
 		'size' => '50',
 		'default' => $database_ssl_ca,

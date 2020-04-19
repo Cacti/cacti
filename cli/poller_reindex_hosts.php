@@ -47,6 +47,7 @@ $debug		= false;
 $host_id	= '';
 $query_id	= 'all';		/* just to mimic the old behaviour */
 $host_descr	= '';
+$force      = false;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -65,6 +66,9 @@ if (cacti_sizeof($parms)) {
 			case '-qid':
 			case '--qid':
 				$query_id = $value;
+				break;
+			case '--force':
+				$force = true;
 				break;
 			case '-host-descr':
 			case '--host-descr':
@@ -138,7 +142,7 @@ if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
 		if (!$debug) print '.';
 		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' starting");
-		run_data_query($data_query['host_id'], $data_query['snmp_query_id']);
+		run_data_query($data_query['host_id'], $data_query['snmp_query_id'], false, $force);
 		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' ending");
 		$i++;
 	}
@@ -157,6 +161,7 @@ function display_help () {
 	print "--id=host_id             - The host_id to have data queries reindexed or 'all' to reindex all hosts\n";
 	print "--qid=query_id           - Only index on a specific data query id; defaults to 'all'\n";
 	print "--host-descr=description - The host description to filter by (SQL filters acknowledged)\n";
+	print "--force                  - Force Graph and Data Source Suggested Name Re-mapping for all items\n";
 	print "--debug                  - Display verbose output during execution\n";
 }
 

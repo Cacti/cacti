@@ -1405,7 +1405,7 @@ function data_query() {
 		),
 		'data_input_method' => array(
 			'display' => __('Data Input Method'),
-			'align' => 'left',
+			'align' => 'right',
 			'sort' => 'ASC',
 			'tip' => __('The Data Input Method used to collect data for Data Sources associated with this Data Query.')
 		)
@@ -1436,7 +1436,7 @@ function data_query() {
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $snmp_query['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($snmp_query['graphs'], '-1'), $snmp_query['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($snmp_query['templates'], '-1'), $snmp_query['id'], '', 'right');
-			form_selectable_cell(filter_value($snmp_query['data_input_method'], get_request_var('filter')), $snmp_query['id']);
+			form_selectable_cell(filter_value($snmp_query['data_input_method'], get_request_var('filter')), $snmp_query['id'], '', 'right');
 			form_checkbox_cell($snmp_query['name'], $snmp_query['id'], $disabled);
 			form_end_row();
 		}
