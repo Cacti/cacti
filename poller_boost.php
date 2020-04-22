@@ -659,7 +659,7 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 	boost_timer('rrdupdate', BOOST_TIMER_END);
 
 	/* check return status for delete operation */
-	if (trim($return_value) != 'OK') {
+	if (trim($return_value) != 'OK' && $return_value != '') {
 		cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 	}
 }
