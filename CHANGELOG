@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#3432: Rare race condition when both boost and dsstats enabled
 -issue#3434: JavaScript errors experienced when attempting to exploit Cacti
 -issue#3436: Cannot login anymore with 1.2.11 due to Cookie domains being defaulted to on in default config.php.dist
+-issue#3438: Upgrade from 1.2.10 to 1.2.11 - Cacti Upgrade hangs at 42%
 -issue#3442: Keeping received CMDPHP WARNING on cacti.log
 -issue#3447: SNMP Issues on recent versions of PHP
 -issue#3449: Items are overlapping in directory permission checks in installation wizard
