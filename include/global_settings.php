@@ -627,8 +627,8 @@ $settings = array(
 			'array' => $snmp_priv_protocols,
 			),
 		'snmp_priv_passphrase' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('Privacy Passphrase (v3).'),
+			'method' => 'textbox_password',
+			'friendly_name' => __('Privacy Passphrase (v3)'),
 			'description' => __('Default SNMPv3 Privacy Passphrase for all new Devices.'),
 			'default' => '',
 			'max_length' => '200'

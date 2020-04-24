@@ -26,6 +26,8 @@ Cacti CHANGELOG
 -issue#3477: Boost leaking memory when a large number of Data Sources disabled
 -issue#3478: Data Query Re-Index is not optimal causing very long Re-Index times
 -issue#3479: When viewing the Data Query table interface, the Data Input Method should be right aligned
+-issue#3484: 1.2.11 shows snmpv3 password is not obfuscated in device defaults screen
+-issue#3488: In automation, when viewing an 'SNMP option set', the private passphrase is in clear
 -feature#3480: Apply 'custom_denied' hook to general permission denied interface
 
 1.2.11
