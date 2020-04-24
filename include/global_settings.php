@@ -391,7 +391,7 @@ $settings = array(
 			'description' => __('The System default date separator to be used in Cacti.'),
 			'method' => 'drop_array',
 			'array' => $datechar,
-			'default' => GDC_SLASH
+			'default' => GDC_HYPHEN
 			),
 		'other1_header' => array(
 			'friendly_name' => __('Other Settings'),
