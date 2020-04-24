@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -issue#3488: In automation, when viewing an 'SNMP option set', the private passphrase is in clear
 -issue#3496: Percent sign(%) is doubled in graph item of AREA type with text 
 -feature#3480: Apply 'custom_denied' hook to general permission denied interface
+-feature: Update js.storage.js to 1.1.0
 
 1.2.11
 -security#1566: Add SameSite support for cookies
