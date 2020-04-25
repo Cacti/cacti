@@ -1,7 +1,7 @@
 /*
  * JS Storage Plugin
  *
- * Copyright (c) 2016 Julien Maurel
+ * Copyright (c) 2019 Julien Maurel
  *
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
@@ -9,7 +9,7 @@
  * Project home:
  * https://github.com/julien-maurel/js-storage
  *
- * Version: 1.0.4
+ * Version: 1.1.0
  */
 (function (factory) {
     var registeredInModuleLoader = false;
@@ -74,6 +74,9 @@
             // Get first level
             try {
                 ret = JSON.parse(s.getItem(a0));
+                if (!ret) {
+                    throw new ReferenceError(a0 + ' is not defined in this storage');
+                }
             } catch (e) {
                 throw new ReferenceError(a0 + ' is not defined in this storage');
             }
@@ -81,7 +84,7 @@
             for (i = 1; i < l - 1; i++) {
                 ret = ret[a[i]];
                 if (ret === undefined) {
-                    throw new ReferenceError([].slice.call(a, 1, i + 1).join('.') + ' is not defined in this storage');
+                    throw new ReferenceError([].slice.call(a, 0, i + 1).join('.') + ' is not defined in this storage');
                 }
             }
             // If last argument is an array, return an object with value for each item in this array
@@ -532,8 +535,9 @@
             _expires: null,
             _path: null,
             _domain: null,
+            _secure: false,
             setItem: function (n, v) {
-                Cookies.set(this._prefix + n, v, {expires: this._expires, path: this._path, domain: this._domain});
+                Cookies.set(this._prefix + n, v, {expires: this._expires, path: this._path, domain: this._domain, secure: this._secure});
             },
             getItem: function (n) {
                 return Cookies.get(this._prefix + n);
@@ -563,12 +567,19 @@
                 this._domain = d;
                 return this;
             },
+            setSecure: function (s) {
+                this._secure = s;
+                return this;
+            },
             setConf: function (c) {
                 if (c.path) {
                     this._path = c.path;
                 }
                 if (c.domain) {
                     this._domain = c.domain;
+                }
+                if (c.secure) {
+                    this._secure = c.secure;
                 }
                 if (c.expires) {
                     this._expires = c.expires;
@@ -577,14 +588,19 @@
             },
             setDefaultConf: function () {
                 this._path = this._domain = this._expires = null;
+                this._secure = false;
             }
         };
         if (!storage_available) {
             window.localCookieStorage = _extend({}, cookie_storage, {
                 _prefix: cookie_local_prefix,
-                _expires: 365 * 10
+                _expires: 365 * 10,
+                _secure: true
             });
-            window.sessionCookieStorage = _extend({}, cookie_storage, {_prefix: cookie_session_prefix + window.name + '_'});
+            window.sessionCookieStorage = _extend({}, cookie_storage, {
+                _prefix: cookie_session_prefix + window.name + '_',
+                _secure: true
+            });
         }
         window.cookieStorage = _extend({}, cookie_storage);
         // cookieStorage API
@@ -600,6 +616,10 @@
             },
             setDomain: function (d) {
                 window.cookieStorage.setDomain(d);
+                return this;
+            },
+            setSecure: function (s) {
+                window.cookieStorage.setSecure(s);
                 return this;
             },
             setConf: function (c) {
