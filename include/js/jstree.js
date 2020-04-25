@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.8
+ * jsTree 3.3.9
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -45,6 +45,15 @@
 		src = $('script:last').attr('src'),
 		document = window.document; // local variable is always faster to access then a global
 
+	var setImmediate = window.setImmediate;
+	var Promise = window.Promise;
+	if (!setImmediate && Promise) {
+		// Good enough approximation of setImmediate
+		setImmediate = function (cb, arg) {
+			Promise.resolve(arg).then(cb);
+		};
+	}
+
 	/**
 	 * holds all jstree related functions and variables, including the actual class and methods to create, access and manipulate instances.
 	 * @name $.jstree
@@ -54,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.8',
+		version : '3.3.9',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -593,7 +602,7 @@
 					return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue));
 				})
 				.remove();
-			this.element.html("<"+"ul class='jstree-container-ul jstree-children' role='group'><"+"li id='j"+this._id+"_loading' class='jstree-initial-node jstree-loading jstree-leaf jstree-last' role='tree-item'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
+			this.element.html("<"+"ul class='jstree-container-ul jstree-children' role='group'><"+"li id='j"+this._id+"_loading' class='jstree-initial-node jstree-loading jstree-leaf jstree-last' role='treeitem'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
 			this.element.attr('aria-activedescendant','j' + this._id + '_loading');
 			this._data.core.li_height = this.get_container_ul().children("li").first().outerHeight() || 24;
 			this._data.core.node = this._create_prototype_node();
@@ -675,9 +684,12 @@
 			var parts = [];
 			if (e.ctrlKey) { parts.push('ctrl'); }
 			if (e.altKey) { parts.push('alt'); }
-			if (e.shiftKey) { parts.push('shift'); }
+            if (e.shiftKey) { parts.push('shift'); }
 			parts.push(keys[e.which] || e.which);
-			parts = parts.sort().join('-').toLowerCase();
+            parts = parts.sort().join('-').toLowerCase();
+            if (parts === 'shift-shift' || parts === 'ctrl-ctrl' || parts === 'alt-alt') {
+                return null;
+            }
 
 			var kb = this.settings.core.keyboard, i, tmp;
 			for (i in kb) {
@@ -1935,7 +1947,16 @@
 					if(rslt.add.length) {
 						this.trigger('changed', { 'action' : 'model', 'selected' : this._data.core.selected });
 					}
-					cb.call(this, true);
+
+					// If no worker, try to mimic worker behavioour, by invoking cb asynchronously
+					if (!worker && setImmediate) {
+						setImmediate(function(){
+							cb.call(inst, true);
+						});
+					}
+					else {
+						cb.call(inst, true);
+					}
 				};
 			if(this.settings.core.worker && window.Blob && window.URL && window.Worker) {
 				try {
@@ -6816,7 +6837,7 @@
 					ref = false,
 					off = false,
 					rel = false,
-					tmp, l, t, h, p, i, o, ok, t1, t2, op, ps, pr, ip, tm, is_copy, pn;
+					tmp, l, t, h, p, i, o, ok, t1, t2, op, ps, pr, ip, tm, is_copy, pn, c;
 				// if we are over an instance
 				if(ins && ins._data && ins._data.dnd) {
 					marker.attr('class', 'jstree-' + ins.get_theme() + ( ins.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ));
@@ -6866,6 +6887,7 @@
 										t = off.top;
 										p = ins.get_parent(ref);
 										i = ref.parent().index();
+										c = 'jstree-below';
 										break;
 									case 'i':
 										ip = ins.settings.dnd.inside_pos;
@@ -6874,12 +6896,14 @@
 										t = off.top + h / 2 + 1;
 										p = tm.id;
 										i = ip === 'first' ? 0 : (ip === 'last' ? tm.children.length : Math.min(ip, tm.children.length));
+										c = 'jstree-inside';
 										break;
 									case 'a':
 										l = off.left - 6;
 										t = off.top + h;
 										p = ins.get_parent(ref);
 										i = ref.parent().index() + 1;
+										c = 'jstree-above';
 										break;
 								}
 								ok = true;
@@ -6912,6 +6936,7 @@
 									}
 									lastmv = { 'ins' : ins, 'par' : p, 'pos' : v === 'i' && ip === 'last' && i === 0 && !ins.is_loaded(tm) ? 'last' : i };
 									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
+									marker.removeClass('jstree-above jstree-inside jstree-below').addClass(c);
 									data.helper.find('.jstree-icon').first().removeClass('jstree-er').addClass('jstree-ok');
 									if (data.event.originalEvent && data.event.originalEvent.dataTransfer) {
 										data.event.originalEvent.dataTransfer.dropEffect = is_copy ? 'copy' : 'move';
@@ -7057,6 +7082,7 @@
 					scroll_i: false,
 					is_touch: false
 				};
+				elm = null;
 				$(document).off("mousemove.vakata.jstree touchmove.vakata.jstree", $.vakata.dnd.drag);
 				$(document).off("mouseup.vakata.jstree touchend.vakata.jstree", $.vakata.dnd.stop);
 			},
@@ -7297,8 +7323,7 @@
 			parent.init.call(this, el, options);
 		};
 		this._load_nodes = function (nodes, callback, is_callback, force_reload) {
-			var s = this.settings.massload,
-				nodesString = JSON.stringify(nodes),
+			var s = this.settings.massload,				
 				toLoad = [],
 				m = this._model.data,
 				i, j, dom;
@@ -7386,6 +7411,7 @@
 			return parent._load_node.call(this, obj, callback);
 		};
 	};
+
 
 /**
  * ### Search plugin

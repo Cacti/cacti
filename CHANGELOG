@@ -32,6 +32,8 @@ Cacti CHANGELOG
 -issue#3496: Percent sign(%) is doubled in graph item of AREA type with text 
 -feature#3480: Apply 'custom_denied' hook to general permission denied interface
 -feature: Update js.storage.js to 1.1.0
+-feature: Update jstree.js to 3.3.9
+-feature: Update phpseclib to 2.0.27
 
 1.2.11
 -security#1566: Add SameSite support for cookies
