@@ -140,6 +140,11 @@ function basename(path, suffix) {
 		b = b.slice(0, -1);
 	}
 
+	if (b.indexOf('?')) {
+		var questionPosition = b.indexOf('?');
+		b = b.slice(0, questionPosition);
+	}
+
 	b = b.replace(/^.*[\\/\\\\]/g, '');
 
 	if (typeof suffix === 'string' && b.substr(b.length - suffix.length) == suffix) {
@@ -1127,6 +1132,9 @@ function setupResponsiveMenuAndTabs() {
 		page = basename($(this).attr('href'));
 
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
+			return;
+		} else if (page == 'index.php' && $(this).attr('href').indexOf('login')) {
+			document.location = urlPath + 'index.php';
 			return;
 		} else {
 			event.preventDefault();
