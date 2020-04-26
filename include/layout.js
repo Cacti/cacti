@@ -140,14 +140,14 @@ function basename(path, suffix) {
 		b = b.slice(0, -1);
 	}
 
-	if (b.indexOf('?')) {
+	if (b.indexOf('?') > 0) {
 		var questionPosition = b.indexOf('?');
 		b = b.slice(0, questionPosition);
 	}
 
 	b = b.replace(/^.*[\\/\\\\]/g, '');
 
-	if (typeof suffix === 'string' && b.substr(b.length - suffix.length) == suffix) {
+	if (suffix !== undefined && b.substr(b.length - suffix.length) == suffix) {
 		b = b.substr(0, b.length - suffix.length);
 	}
 
@@ -1092,22 +1092,21 @@ function toggleFilterAndIcon(id, child, initial) {
 }
 
 function setGraphTabs() {
-	url = window.location.href;
-	page = basename(url);
+	page = window.location.href;
 
 	if (page.indexOf('graph_view.php') >= 0) {
 		$('.lefttab').removeClass('selected');
 		$('#tab-graphs').addClass('selected');
 
 		if (page.indexOf('action=tree') > 0) {
-			$('.righttab').removeClass('selected');
-			$('#treeview').addClass('selected');
+			$('#preview, #listview, #treeview').removeClass('selected').prop('aria-selected', false);
+			$('#treeview').addClass('selected').prop('aria-selected', true);
 		} else if (page.indexOf('action=list') > 0) {
-			$('.righttab').removeClass('selected');
-			$('#listview').addClass('selected');
+			$('#preview, #listview, #treeview').removeClass('selected').prop('aria-selected', false);
+			$('#listview').addClass('selected').prop('aria-selected', true);
 		} else if (page.indexOf('action=preview') > 0) {
-			$('.righttab').removeClass('selected');
-			$('#preview').addClass('selected');
+			$('#preview, #listview, #treeview').removeClass('selected').prop('aria-selected', false);
+			$('#preview').addClass('selected').prop('aria-selected', true);
 		}
 
 		/* update menu selection */
@@ -1155,7 +1154,7 @@ function setupResponsiveMenuAndTabs() {
 					menuShow();
 				}
 			}
-		} else if (pageName == page) {
+		} else if (pageName == page && pageName != 'graph_view.php') {
 			if ($('#navigation').length) {
 				if (menuOpen(page)) {
 					menuHide(true);
