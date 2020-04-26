@@ -2931,6 +2931,9 @@ function saveGraphFilter(section) {
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
+	date1Open = false;
+	date2Open = false;
+
 	$.get(href+'&header=false&section='+section)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2953,6 +2956,9 @@ function applyGraphFilter() {
 		'&graphs='+$('#graphs').val()+
 		'&graph_template_id='+$('#graph_template_id').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked'));
+
+	date1Open = false;
+	date2Open = false;
 
 	$.ajaxQ.abortAll();
 	$.get(href)
@@ -3020,6 +3026,9 @@ function applyGraphTimespan() {
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
+	date1Open = false;
+	date2Open = false;
+
 	$.ajaxQ.abortAll();
 	$.get(href)
 		.done(function(data) {
@@ -3051,6 +3060,7 @@ function refreshGraphTimespanFilter() {
 
 	date1Open = false;
 	date2Open = false;
+
 	$('#date1').datetimepicker('hide');
 	$('#date2').datetimepicker('hide');
 
@@ -3078,6 +3088,9 @@ function timeshiftGraphFilterLeft() {
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
 
+	date1Open = false;
+	date2Open = false;
+
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
 		checkForLogout(data);
@@ -3102,6 +3115,9 @@ function timeshiftGraphFilterRight() {
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
 
+	date1Open = false;
+	date2Open = false;
+
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
 		checkForLogout(data);
@@ -3124,6 +3140,9 @@ function clearGraphTimespanFilter() {
 	};
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+
+	date1Open = false;
+	date2Open = false;
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
