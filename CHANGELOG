@@ -32,6 +32,7 @@ Cacti CHANGELOG
 -issue#3496: Percent sign(%) is doubled in graph item of AREA type with text 
 -issue#3504: In rare cases where Cacti has no poller_interval set, errors are thrown
 -issue#3506: "Login as Regular User" always forward to "Automatic Logout....timeout"
+-issue#3507: New Storage API Not Compatible with Cacti
 -feature#3480: Apply 'custom_denied' hook to general permission denied interface
 -feature: Update js.storage.js to 1.1.0
 -feature: Update jstree.js to 3.3.9

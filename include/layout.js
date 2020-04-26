@@ -1026,7 +1026,11 @@ function makeFiltersResponsive() {
 					toggleFilterAndIcon(id, child, false);
 				});
 
-				state = storage.get('filterVisibility');
+				if (storage.isSet('filterVisibility')) {
+					state = storage.get('filterVisibility');
+				} else {
+					state = 'visible';
+				}
 
 				if (state == 'hidden') {
 					if (filterHeader.find('.cactiFilterState').length == 0) {
@@ -1061,7 +1065,11 @@ function makeFiltersResponsive() {
 function toggleFilterAndIcon(id, child, initial) {
 	storage = Storages.localStorage;
 
-	state = storage.get('filterVisibility');
+	if (storage.isSet('filterVisibility')) {
+		state = storage.get('filterVisibility');
+	} else {
+		state = 'visible';
+	}
 
 	if (initial) {
 		if (state == 'hidden') {
@@ -1134,7 +1142,6 @@ function setupResponsiveMenuAndTabs() {
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
 			return;
 		} else if (page == 'index.php' && $(this).attr('href').indexOf('login')) {
-			document.location = urlPath + 'index.php';
 			return;
 		} else {
 			event.preventDefault();
@@ -1173,9 +1180,13 @@ function loadMenuStateOpen(page) {
 	storage = Storages.localStorage;
 	page    = page.replace('.php', '');
 
-	state = storage.get('menuState_' + page);
-	if (state == 'hidden') {
-		return false;
+	if (storage.isSet('menuState_' + page)) {
+		state = storage.get('menuState_' + page);
+		if (state == 'hidden') {
+			return false;
+		} else {
+			return true;
+		}
 	} else {
 		return true;
 	}
@@ -2213,7 +2224,11 @@ function setupCollapsible() {
 
 	$('.collapsible').each(function(data) {
 		var id = $(this).attr('id')+'_cs';
-		var state = storage.get(id);
+		if (storage.isSet(id)) {
+			var state = storage.get(id);
+		} else {
+			var state = 'show';
+		}
 
 		if (state == 'hide') {
 			$(this).addClass('collapsed');
@@ -2374,7 +2389,13 @@ function saveTableWidths(initial) {
 	// Initialize table width on the page
 	$('.cactiTable').each(function(data) {
 		var key    = $(this).attr('id');
-		var sizes  = storage.get(key);
+
+		if (storage.isSet(key)) {
+			var sizes = storage.get(key);
+		} else {
+			var sizes = new Array();
+		}
+
 		var items  = sizes ? sizes: new Array();
 		var width  = $(document).width();
 
