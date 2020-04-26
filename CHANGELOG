@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -issue#3483: date time format in Clog is not compatiable with old cacti, and default format is not the same
 -issue#3484: 1.2.11 shows snmpv3 password is not obfuscated in device defaults screen
 -issue#3488: In automation, when viewing an 'SNMP option set', the private passphrase is in clear
+-issue#3495: Template selection in the 1.2.11 installer
 -issue#3496: Percent sign(%) is doubled in graph item of AREA type with text 
 -issue#3502: Can not change List, Tree, Preview on Graph View Page
 -issue#3504: In rare cases where Cacti has no poller_interval set, errors are thrown
