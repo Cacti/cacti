@@ -207,7 +207,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 		}
 
 		// Full UTF-8 Output
-		print chr(255).chr(254);
+		print "\xEF\xBB\xBF";
 		print mb_convert_encoding($output, 'UTF-16LE', 'UTF-8');
 	} else {
 		$j = 1;

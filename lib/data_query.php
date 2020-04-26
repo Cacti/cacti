@@ -423,8 +423,7 @@ function data_query_remove_disabled_items($removed_ids) {
 			WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')');
 
 		db_execute_prepared('DELETE FROM poller_output_boost
-			WHERE local_data_id IN(?)',
-			array($removed_ids));
+			WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')');
 
 		$archive_tables = array_rekey(
 			db_fetch_assoc('SELECT TABLE_NAME
@@ -436,8 +435,7 @@ function data_query_remove_disabled_items($removed_ids) {
 		if (cacti_sizeof($archive_tables)) {
 			foreach($archive_tables as $table) {
 				db_execute_prepared("DELETE FROM $table
-					WHERE local_data_id IN(?)",
-					array($removed_ids), false);
+					WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')", false);
 			}
 		}
 	}

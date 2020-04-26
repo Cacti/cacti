@@ -210,7 +210,13 @@ function setMenuVisibility() {
 	// This will setup the initial visibility of the menu
 	$('li.menuitem').each(function() {
 		var id = $(this).attr('id');
-		var active = storage.get(id);
+
+		if (storage.isSet(id)) {
+			var active = storage.get(id);
+		} else {
+			var active = null;
+		}
+
 		if (active != null && active == 'active') {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
 			$(this).next('a').show();

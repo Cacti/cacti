@@ -214,7 +214,13 @@ function aggregate_color_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$color_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array($matches[1]))) . '</li>';
+
+			$name = db_fetch_cell_prepared('SELECT name
+				FROM color_templates
+				WHERE color_template_id = ?',
+				array($matches[1]));
+
+			$color_list .= '<li>' . html_escape($name) . '</li>';
 			$color_array[] = $matches[1];
 		}
 	}

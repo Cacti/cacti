@@ -69,7 +69,7 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 			break;
 	}
 
-	$timeout = (int) $timeout * 1000;
+	$timeout = (int) ($timeout * 1000);
 
 	try {
 		$session = new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout, $retries);
@@ -137,7 +137,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 			snmp_set_enum_print(true);
 		}
 
-		$timeout = (int) $timeout * 1000;
+		$timeout = (int) ($timeout * 1000);
 
 		if ($version == '1') {
 			$snmp_value = @snmpget($hostname . ':' . $port, $community, $oid, $timeout, $retries);
@@ -228,7 +228,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		we are getting back */
 		snmp_set_quick_print(0);
 
-		$timeout = (int) $timeout * 1000;
+		$timeout = (int) ($timeout * 1000);
 
 		if (function_exists('snmp_set_enum_print')) {
 			snmp_set_enum_print(true);
@@ -319,7 +319,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 		we are getting back */
 		snmp_set_quick_print(0);
 
-		$timeout = (int) $timeout * 1000;
+		$timeout = (int) ($timeout * 1000);
 
 		if ($version == '1') {
 			$snmp_value = @snmpgetnext($hostname . ':' . $port, $community, $oid, $timeout, $retries);
@@ -568,7 +568,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		/* make sure snmp* is verbose so we can see what types of data
 		we are getting back */
 
-		$timeout = (int) $timeout * 1000;
+		$timeout = (int) ($timeout * 1000);
 
 		/* force php to return numeric oid's */
 		cacti_oid_numeric_format();

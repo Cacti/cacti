@@ -29,11 +29,12 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 
 if (!isset_request_var('headercontent')) {?>
 <!DOCTYPE html>
-<html>
+<html lang='<?php print CACTI_LOCALE;?>'>
 <head>
 	<?php html_common_header($page_title);?>
 </head>
 <body>
+	<a class='skip-link' href='#main' style='display:none'>Skip to main</a>
 	<div id='cactiPageHead' class='cactiPageHead' role='banner'>
 		<div id='tabs'><?php html_show_tabs_left();?></div>
 		<div class='cactiGraphHeaderBackground'><div id='gtabs'><?php print html_graph_tabs_right();?></div></div>
@@ -54,4 +55,4 @@ if (!isset_request_var('headercontent')) {?>
 		<div style='display:none;' id='navigation' class='cactiTreeNavigationArea'><?php grow_dhtml_trees();?></div>
 		<?php } ?>
 		<div id='navigation_right' class='cactiGraphContentArea'>
-			<div style='position:relative;display:none;' id='main'>
+			<main style='position:relative;display:none;' id='main'>
