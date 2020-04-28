@@ -112,6 +112,10 @@ function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
 	$poller_interval = read_config_option('poller_interval');
 	$rrd_next_step   = 0;
 
+	if (empty($poller_interval)) {
+		$poller_interval = 300;
+	}
+
 	if ($rrd_step < $poller_interval && !$warning_issued) {
 		$message = sprintf('WARNING: The Poller Interval is %s and you have a Data Source with a sampling interval of %s.  Change your Poller Interval to %s seconds, and repopulate your poller cache.', $poller_interval, $rrd_step, $rrd_step);
 
@@ -129,7 +133,7 @@ function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
 			$rrd_step_counter++;
 		}
 
-		$modulus = intval($rrd_step / $poller_interval);
+		$modulus = ceil($rrd_step / $poller_interval);
 		$rrd_next_step = $poller_interval * ($rrd_step_counter % $modulus);
 	}
 

@@ -194,7 +194,10 @@
 			var $this = image;
 
 			/* load global settings cached in a cookie if available */
-			zoom.custom = unserialize(storage.get(zoom.options.cookieName));
+			if (storage.isSet(zoom.options.cookieName)) {
+				zoom.custom = unserialize(storage.get(zoom.options.cookieName));
+			}
+
 			if (zoom.custom.zoomMode == undefined) zoom.custom.zoomMode = 'quick';
 			if (zoom.custom.zoomOutPositioning == undefined) zoom.custom.zoomOutPositioning = 'center';
 			if (zoom.custom.zoomOutFactor == undefined) zoom.custom.zoomOutFactor = '2';

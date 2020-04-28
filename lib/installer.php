@@ -1149,6 +1149,13 @@ class Installer implements JsonSerializable {
 					$use = ($set) || ($param_all);
 					$value = ($use) ? $template['filename'] : '';
 					log_install_high('templates',"setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_template_$key = " . $value);
+
+					// Don't default install templates if upgrade
+					if ($this->getMode() == Installer::MODE_UPGRADE) {
+						$value = '';
+						$use   = false;
+					}
+
 					set_config_option("install_template_$key", $value);
 					$this->templates[$name] = $use;
 				}
@@ -2425,7 +2432,12 @@ class Installer implements JsonSerializable {
 	public function processStepTemplateInstall() {
 		$output = Installer::sectionTitle(__('Template Setup'));
 
-		$output .= Installer::sectionNormal(__('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.'));
+		if ($this->getMode() == Installer::MODE_UPGRADE) {
+			$output .= Installer::sectionNormal(__('Please select the Device Templates that you wish to update during the Upgrade.'));
+			$output .= Installer::sectionWarning(__('Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to \'Sync Graphs\' to from the Tamplates after update.'));
+		} else {
+			$output .= Installer::sectionNormal(__('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.'));
+		}
 
 		$templates = install_setup_get_templates();
 		ob_start();

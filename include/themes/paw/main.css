@@ -959,6 +959,10 @@ legend {
 	margin-top: 20px;
 }
 
+.cactiConsoleContentArea>main:last-child {
+	margin-top: 20px;
+}
+
 .hyperLink {
 	color: #2d4ca8;
 	font-size: 12px;
