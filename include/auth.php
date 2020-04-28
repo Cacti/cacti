@@ -135,15 +135,14 @@ if (read_config_option('auth_method') != 0) {
 
 	/* don't even bother with the guest code if we're already logged in */
 	if (isset($guest_account)) {
-		if (empty($_SESSION['sess_user_id'])) {
-			$guest_user_id = get_guest_account();
-
-			/* cannot find guest user */
-			if (!empty($guest_user_id)) {
+		$guest_user_id = get_guest_account();
+		/* find guest user */
+		if (!empty($guest_user_id)) {
+			if (empty($_SESSION['sess_user_id'])) {
 				$_SESSION['sess_user_id'] = $guest_user_id;
 			}
+			return true;
 		}
-		return true;
 	}
 
 	/* if we are a guest user in a non-guest area, wipe credentials */
