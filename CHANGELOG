@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#3505: Calendar can not work after click go in graph page 
 -issue#3506: "Login as Regular User" always forward to "Automatic Logout....timeout"
 -issue#3507: New Storage API Not Compatible with Cacti
+-issue#3510: Normal user can not access '$guest_account=true' pages
 -issue#3512: Plugin realm files can not be updated by re-register due to delimiter typo
 -feature#3480: Apply 'custom_denied' hook to general permission denied interface
 -feature: Update js.storage.js to 1.1.0
