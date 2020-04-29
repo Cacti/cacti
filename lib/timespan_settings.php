@@ -226,7 +226,7 @@ function finalize_timespan(&$timespan) {
 
 /* establish graph timeshift from either a user select or the default */
 function set_timeshift() {
-	global $config, $graph_timeshifts;
+	global $config, $graph_timeshifts_vals;
 
 	# no current timeshift: get default timeshift
 	if ((!isset($_SESSION['sess_current_timeshift'])) ||
@@ -237,6 +237,6 @@ function set_timeshift() {
 		$_SESSION['custom'] = 0;
 	}
 
-	return $timeshift = $graph_timeshifts[$_SESSION['sess_current_timeshift']];
+	return $timeshift = $graph_timeshifts_vals[$_SESSION['sess_current_timeshift']];
 }
 
