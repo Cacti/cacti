@@ -9,18 +9,20 @@ var realtimeTimer;
 var realtimePopout  = false;
 var rtWidth         = 0;
 var rtHeight        = 0;
+var graphsRendered  = null;
+var prevTotalGraphs = null;
 var url;
 
 function realtimeDetectBrowser() {
 	if (navigator.userAgent.indexOf('MSIE') >= 0) {
 		var browser = 'IE';
-	}else if (navigator.userAgent.indexOf('Chrome') >= 0) {
+	} else if (navigator.userAgent.indexOf('Chrome') >= 0) {
 		var browser = 'Chrome';
-	}else if (navigator.userAgent.indexOf('Mozilla') >= 0) {
+	} else if (navigator.userAgent.indexOf('Mozilla') >= 0) {
 		var browser = 'FF';
-	}else if (navigator.userAgent.indexOf('Opera') >= 0) {
+	} else if (navigator.userAgent.indexOf('Opera') >= 0) {
 		var browser = 'Opera';
-	}else{
+	} else {
 		var browser = 'Other';
 	}
 
@@ -117,6 +119,18 @@ function setRealtimeWindowSize() {
 	}
 }
 
+function countRealtimeGraphs() {
+	var graphs = 0;
+
+	for (key in realtimeArray) {
+		if (realtimeArray[key] == true) {
+			graphs++;
+		}
+	}
+
+	return graphs;
+}
+
 function stopRealtime() {
 	var graph;
 
@@ -164,7 +178,7 @@ function setFilters() {
 		$('#search').show();
 		$('#device').show();
 		restorePageRefresh();
-	}else{
+	} else {
 		$('#timespan').hide();
 		$('#realtime').show();
 		$('#search').hide();
@@ -190,56 +204,72 @@ function realtimeGrapher() {
 	var graph_end   = 0;
 	var ds_step     = $('#ds_step').val();
 	var size        = $('#size').val();
-	var inRealtime  = false;
     var isThumb     = $('#thumbnails').is(':checked');
+	var totalGraphs = countRealtimeGraphs();
 	var key;
 
-	for (key in realtimeArray) {
-		if (realtimeArray[key] == true) {
-			inRealtime = true;
-			local_graph_id = key
+	if (graphsRendered == null || graphsRendered >= totalGraphs || prevTotalGraphs != totalGraphs) {
+		//console.log('Rendering: Total Graphs:' + totalGraphs + ', Rendered Graphs:' + graphsRendered);
 
-			if (isThumb) {
-				if (rtWidth == 0) {
-					rtWidth    = $('#wrapper_'+local_graph_id).find('img').width();
-					rtHeight   = $('#wrapper_'+local_graph_id).find('img').height();
+		graphsRendered = 0;
+		prevTotalGraphs = totalGraphs;
+
+		for (key in realtimeArray) {
+			if (realtimeArray[key] == true) {
+				local_graph_id = key
+
+				if (isThumb) {
+					if (rtWidth == 0) {
+						rtWidth    = $('#wrapper_'+local_graph_id).find('img').width();
+						rtHeight   = $('#wrapper_'+local_graph_id).find('img').height();
+					}
 				}
+
+				var position = $('#wrapper_'+local_graph_id).find('img').position();
+
+				Pace.ignore(function() {
+					position = $('#wrapper_'+local_graph_id).find('img').position();
+
+					$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
+						.done(function(data) {
+							results = $.parseJSON(data);
+
+							if (realtimeArray[results.local_graph_id] == true) {
+								$('#graph_'+results.local_graph_id).attr('src', 'data:image/png;base64,'+results.data).change();
+
+								if (isThumb) {
+									$('#graph_'+results.local_graph_id).width(rtWidth).height(rtHeight);
+								} else {
+									$('#graph_'+results.local_graph_id);
+								}
+							}
+
+							destroy(data);
+							destroy(results);
+							destroy(position);
+
+							graphsRendered++;
+						})
+						.fail(function(data) {
+							getPresentHTTPError(data);
+						});
+				});
 			}
-
-			var position = $('#wrapper_'+local_graph_id).find('img').position();
-
-			Pace.ignore(function() {
-				position = $('#wrapper_'+local_graph_id).find('img').position();
-
-				$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
-					.done(function(data) {
-						results = $.parseJSON(data);
-
-						$('#graph_'+results.local_graph_id).attr('src', 'data:image/png;base64,'+results.data).change();
-
-						if (isThumb) {
-							$('#graph_'+results.local_graph_id).width(rtWidth).height(rtHeight);
-						}else{
-							$('#graph_'+results.local_graph_id);
-						}
-
-						destroy(data);
-						destroy(results);
-						destroy(position);
-					})
-					.fail(function(data) {
-						getPresentHTTPError(data);
-					});
-
-			});
 		}
 	}
 
-	if (inRealtime == false) {
+	if (totalGraphs == 0) {
 		stopRealtime();
+	} else if (graphsRendered < totalGraphs) {
+		destroy(realtimeTimer);
+
+		realtimeTimer = setTimeout(function() {
+			realtimeGrapher();
+		}, 1000);
 	} else {
 		count--;
 		destroy(realtimeTimer);
+
 		realtimeTimer = setTimeout(function() {
 			realtimeGrapher();
 		}, $('#ds_step').val()*1000);

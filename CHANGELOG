@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#3432: Rare race condition when both boost and dsstats enabled
 -issue#3434: JavaScript errors experienced when attempting to exploit Cacti
 -issue#3436: Cannot login anymore with 1.2.11 due to Cookie domains being defaulted to on in default config.php.dist
+-issue#3438: Upgrade from 1.2.10 to 1.2.11 - Cacti Upgrade hangs at 42%
 -issue#3442: Keeping received CMDPHP WARNING on cacti.log
 -issue#3447: SNMP Issues on recent versions of PHP
 -issue#3449: Items are overlapping in directory permission checks in installation wizard
@@ -32,11 +33,25 @@ Cacti CHANGELOG
 -issue#3462: Incorrect default cli php memory_limit
 -issue#3463: vdef DB error - Unknown column 'graphs' in 'having clause'
 -issue#3467: Security: required more fixing like #3191((CVE-2020-7106))
+-issue#3468: Cannot Create New Automation Graph Rules in 1.2.11
 -issue#3474: The SSL option to set the SSL_CA should be optional for Client Connections
 -issue#3477: Boost leaking memory when a large number of Data Sources disabled
 -issue#3478: Data Query Re-Index is not optimal causing very long Re-Index times
 -issue#3479: When viewing the Data Query table interface, the Data Input Method should be right aligned
+-issue#3483: date time format in Clog is not compatiable with old cacti, and default format is not the same
+-issue#3484: 1.2.11 shows snmpv3 password is not obfuscated in device defaults screen
+-issue#3488: In automation, when viewing an 'SNMP option set', the private passphrase is in clear
+-issue#3495: Template selection in the 1.2.11 installer
+-issue#3496: Percent sign(%) is doubled in graph item of AREA type with text 
+-issue#3502: Can not change List, Tree, Preview on Graph View Page
+-issue#3504: In rare cases where Cacti has no poller_interval set, errors are thrown
+-issue#3505: Calendar can not work after click go in graph page 
+-issue#3506: "Login as Regular User" always forward to "Automatic Logout....timeout"
+-issue#3507: New Storage API Not Compatible with Cacti
 -feature#3480: Apply 'custom_denied' hook to general permission denied interface
+-feature: Update js.storage.js to 1.1.0
+-feature: Update jstree.js to 3.3.9
+-feature: Update phpseclib to 2.0.27
 
 1.2.11
 -security#1566: Add SameSite support for cookies
