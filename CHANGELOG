@@ -49,7 +49,7 @@ Cacti CHANGELOG
 -issue#3506: "Login as Regular User" always forward to "Automatic Logout....timeout"
 -issue#3507: New Storage API Not Compatible with Cacti
 -feature#3480: Apply 'custom_denied' hook to general permission denied interface
--feature#3513, Add hooks for plugins to show customize graph source and customize template url
+-feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature: Update js.storage.js to 1.1.0
 -feature: Update jstree.js to 3.3.9
 -feature: Update phpseclib to 2.0.27
