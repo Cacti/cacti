@@ -2133,6 +2133,11 @@ function graph_management() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_details = get_graph_template_details($graph['local_graph_id']);
 
+			if($graph['graph_source'] == '0') { //Not Templated, customize graph source and template details.
+				$template_details = api_plugin_hook_function('customize_template_details', $template_details);
+				$graph = api_plugin_hook_function('customize_graph', $graph);
+			}
+
 			if (isset($template_details['graph_name'])) {
 				$graph['name'] = $template_details['graph_name'];
 			}
