@@ -1002,6 +1002,12 @@ $settings = array(
 			'default' => 60,
 			'array' => $page_refresh_interval,
 		),
+		'graph_watermark_rrd' => array(
+			'friendly_name' => __('Hide Tobi'),
+			'description' => __('Hide the default RRDtool text placed by Tobi'),
+			'method' => 'checkbox',
+			'default' => 'on'
+		),
 		'clog_header' => array(
 			'friendly_name' => __('Log Viewer Settings'),
 			'collapsible' => 'true',

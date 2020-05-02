@@ -1266,6 +1266,11 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		$graph_opts .= '--watermark ' . cacti_escapeshellarg(read_config_option('graph_watermark')) . RRD_NL;
 	}
 
+	/* if the user desires to hide RRDtools warker, set it */
+	if (read_config_option('graph_watermark_rrd') != '') {
+		$graph_opts .= '--disable-rrdtool-tag' . RRD_NL;
+	}
+
 	return $graph_opts;
 }
 

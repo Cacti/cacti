@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-issue#2205: Allow admins to disable RRDtool watermark
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
 -issue#3141: Fix FreeBSD IPv6 ping
