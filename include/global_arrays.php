@@ -1306,6 +1306,7 @@ $graph_timespans = array(
 	GT_PREV_YEAR      => __('Previous Year')
 );
 
+// ***** MUST BE KEPT IN SYNC WITH graph_timeshifts_vals *********
 $graph_timeshifts = array(
 	GTS_HALF_HOUR => __('%d Min', 30),
 	GTS_1_HOUR    => __('%d Hour', 1),
@@ -1326,6 +1327,29 @@ $graph_timeshifts = array(
 	GTS_6_MONTHS  => __('%d Months', 6),
 	GTS_1_YEAR    => __('%d Year', 1),
 	GTS_2_YEARS   => __('%d Years', 2)
+);
+
+// ***** MUST BE KEPT IN SYNC WITH graph_timeshifts *********
+$graph_timeshifts_vals = array(
+	GTS_HALF_HOUR => sprintf('%d Min', 30),
+	GTS_1_HOUR    => sprintf('%d Hour', 1),
+	GTS_2_HOURS   => sprintf('%d Hours', 2),
+	GTS_4_HOURS   => sprintf('%d Hours', 4),
+	GTS_6_HOURS   => sprintf('%d Hours', 6),
+	GTS_12_HOURS  => sprintf('%d Hours', 12),
+	GTS_1_DAY     => sprintf('%d Day', 1),
+	GTS_2_DAYS    => sprintf('%d Days', 2),
+	GTS_3_DAYS    => sprintf('%d Days', 3),
+	GTS_4_DAYS    => sprintf('%d Days', 4),
+	GTS_1_WEEK    => sprintf('%d Week', 1),
+	GTS_2_WEEKS   => sprintf('%d Weeks', 2),
+	GTS_1_MONTH   => sprintf('%d Month', 1),
+	GTS_2_MONTHS  => sprintf('%d Months', 2),
+	GTS_3_MONTHS  => sprintf('%d Months', 3),
+	GTS_4_MONTHS  => sprintf('%d Months', 4),
+	GTS_6_MONTHS  => sprintf('%d Months', 6),
+	GTS_1_YEAR    => sprintf('%d Year', 1),
+	GTS_2_YEARS   => sprintf('%d Years', 2)
 );
 
 $graph_weekdays = array(
