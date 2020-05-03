@@ -1,48 +1,47 @@
 Cacti CHANGELOG
 
 1.2.12
--issue#3422: COMMENT text_format does not replace Data Query if graph item does not associate to any datasource.
+-security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
+-issue#3422: When Graph Item is not linked to a data source, Comments do not always get variables substituted correctly
 -issue#3424: Hosts are being incorrectly filtered when no location filter is set
--issue#3427: When export a csv with Chinese word garbled
--issue#3429: AUTOM8 Backtrace Errors due to SNMP class not muting snmpv3 auth errors
--issue#3432: Rare race condition when both boost and dsstats enabled
--issue#3434: JavaScript errors experienced when attempting to exploit Cacti
--issue#3436: Cannot login anymore with 1.2.11 due to Cookie domains being defaulted to on in default config.php.dist
--issue#3438: Upgrade from 1.2.10 to 1.2.11 - Cacti Upgrade hangs at 42%
--issue#3442: Keeping received CMDPHP WARNING on cacti.log
--issue#3447: SNMP Issues on recent versions of PHP
--issue#3449: Items are overlapping in directory permission checks in installation wizard
--issue#3450: Cacti can not be supported on XAMPP and PHP7.4
--issue#3452: New Content-Security-Policy prevents External Links from Operating
--issue#3454: Cacti Reports do not generate correct messages
--issue#3457: Allow negative right axis scales in graph and graph templates.
--issue#3459: New remote poller installation fails during connection test
--issue#3460: More fixing after #2428, display flexible format name from INFO-->name field
--issue#3462: Incorrect default cli php memory_limit
--issue#3463: vdef DB error - Unknown column 'graphs' in 'having clause'
--issue#3467: Security: required more fixing like #3191((CVE-2020-7106))
--issue#3468: Cannot Create New Automation Graph Rules in 1.2.11
+-issue#3427: When exporting to a CSV with unicode characters, contents can become garbled
+-issue#3429: When using SNMP v3, Automation can report extraneous warnings
+-issue#3432: Rare race condition exists when both boost and dsstats enabled
+-issue#3434: When attempting to exploit Cacti using alert, unexpected errors can be seen
+-issue#3436: Unable to login due to incorrect default of Cookie Domains in config.php.dist
+-issue#3438: When upgrading to 1.2.11, installer can appear to stop at 42%
+-issue#3447: SNMP Issues on recent version of PHP
+-issue#3449: When viewing the installation wizard's directory permission step, items are overlapping unexpectedly
+-issue#3450: When installing Cacti under XAMPP and PHP 7.4, exceptions are being recorded and installation fails
+-issue#3452: New Content-Security-Policy prevents External Links from being opened
+-issue#3454: Cacti's Reports are not displaying messages correctly
+-issue#3457: Graphs can not properly handle negative axis values
+-issue#3459: When installing a new remote poller, connection tests can incorrectly fail
+-issue#3460: Addtional changes to allow plugin folder/display names to be handled better by ddb4github
+-issue#3462: Increase default memory limit for cli scripts to prevent runtime memory issues
+-issue#3463: When listing VDEF's, selecting 'has graph' can cause unexpected exceptions in logs
+-issue#3468: Graph rules cannot be created for automation
 -issue#3474: The SSL option to set the SSL_CA should be optional for Client Connections
 -issue#3477: Boost leaking memory when a large number of Data Sources disabled
--issue#3478: Data Query Re-Index is not optimal causing very long Re-Index times
+-issue#3478: Reindexing can sometimes run longer than expected
 -issue#3479: When viewing the Data Query table interface, the Data Input Method should be right aligned
--issue#3483: date time format in Clog is not compatiable with old cacti, and default format is not the same
--issue#3484: 1.2.11 shows snmpv3 password is not obfuscated in device defaults screen
+-issue#3483: When recording log entries, cacti should default to hyphenated date format
+-issue#3484: When editing SNMP v3 passwords, previous setting is not obfuscated
 -issue#3488: In automation, when viewing an 'SNMP option set', the private passphrase is in clear
--issue#3495: Template selection in the 1.2.11 installer
--issue#3496: Percent sign(%) is doubled in graph item of AREA type with text 
--issue#3502: Can not change List, Tree, Preview on Graph View Page
--issue#3504: In rare cases where Cacti has no poller_interval set, errors are thrown
--issue#3505: Calendar can not work after click go in graph page 
--issue#3506: "Login as Regular User" always forward to "Automatic Logout....timeout"
--issue#3507: New Storage API Not Compatible with Cacti
--issue#3510: Normal user can not access '$guest_account=true' pages
--issue#3512: Plugin realm files can not be updated by re-register due to delimiter typo
+-issue#3495: When installing templates, default 'all' selection will reset all existing graphs, removing customisations
+-issue#3496: Graph Items can show a double percent sign incorrectly
+-issue#3502: When viewing Graphs, can not switch between list, preview and tree submodes
+-issue#3504: Viewing graphs before the poller has run for the first time can produce unexpected errors
+-issue#3505: When viewing graph previews, clicking Go or Refresh prevents calendars from working
+-issue#3506: After successfully logging in, a user can become automatically logged out again
+-issue#3507: Changes to JavaScript's Storage API cause exceptions to be thrown
+-issue#3510: Only guests can actually guest only pages, logged in users are denied access incorrectly
+-issue#3512: When plugins update, registered files list cannot always be updated by ddb4github
 -issue#3520: When viewing graphs, shifting time does not work when using non-english languages
--feature#3480: Apply 'custom_denied' hook to general permission denied interface
--feature: Update js.storage.js to 1.1.0
--feature: Update jstree.js to 3.3.9
--feature: Update phpseclib to 2.0.27
+-feature#3480: Created 'custom_denied' hook to allow customisation of permission denied notifications
+-feature#3498: Update js.storage.js to 1.1.0
+-feature#3499: Update jstree.js to 3.3.9
+-feature#3500: Update phpseclib to 2.0.27
 
 1.2.11
 -security#1566: Add SameSite support for cookies
