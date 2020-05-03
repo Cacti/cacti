@@ -620,7 +620,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		}
 	} else {
 		/* ucd/net snmp want the timeout in seconds */
-		$timeout_us = (int) ceil($timeout_ms / 1000);
+		$timeout_s = (int) ceil($timeout_ms / 1000);
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */
