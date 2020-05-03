@@ -792,7 +792,7 @@ function api_plugin_disable_hooks_all($plugin) {
 }
 
 function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
-	$files = explode(':', $file);
+	$files = explode(',', $file);
 
 	$i = 0;
 	$sql_where = '(';

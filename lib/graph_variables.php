@@ -32,10 +32,13 @@
 function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
 
-	if ($peak) {
-		return $stats['peak'];
-	} else {
-		return $stats['avg'];
+	$return_val = false;
+	if (!empty($stats)) {
+		if ($peak) {
+			$return_val = $stats['peak'];
+		} else {
+			$return_val = $stats['avg'];
+		}
 	}
 }
 
