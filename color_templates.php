@@ -165,7 +165,7 @@ function aggregate_color_form_save() {
 		}
 	}
 
-	header('Location: color_templates.php?header=false&action=template_edit&color_template_id=' . (empty($color_template_id) ? get_nfilter_request_var('color_template_id') : $color_template_id));
+	header('Location: color_templates.php?action=template_edit&color_template_id=' . (empty($color_template_id) ? get_nfilter_request_var('color_template_id') : $color_template_id));
 }
 
 /* ------------------------
@@ -201,7 +201,7 @@ function aggregate_color_form_actions() {
 			}
 		}
 
-		header('Location: color_templates.php?header=false');
+		header('Location: color_templates.php');
 		exit;
 	}
 
@@ -265,7 +265,7 @@ function aggregate_color_form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: color_templates.php?header=false');
+		header('Location: color_templates.php');
 		exit;
 	}
 
@@ -323,7 +323,7 @@ function aggregate_color_item() {
 
 	html_end_box();
 
-    ?>
+	?>
 	<script type='text/javascript'>
 
 	$(function() {
@@ -334,7 +334,7 @@ function aggregate_color_item() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#color_item').tableDnD({
 			onDrop: function(table, row) {
-				loadPageNoHeader('color_templates_items.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize());
+				loadUrl({url:'color_templates_items.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize()})
 			}
 		});
 		<?php } ?>
@@ -362,7 +362,6 @@ function aggregate_color_item() {
 				});
 		}).css('cursor', 'pointer');
 	});
-
 	</script>
 	<?php
 }
@@ -699,13 +698,12 @@ function aggregate_color_template() {
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'color_templates.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'color_templates.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

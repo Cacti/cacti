@@ -59,7 +59,7 @@ switch (get_request_var('action')) {
 	case 'template_remove':
 		template_remove();
 
-		header('Location: data_templates.php?header=false');
+		header('Location: data_templates.php');
 		break;
 	case 'template_edit':
 		top_header();
@@ -158,7 +158,7 @@ function form_save() {
 
 				$_SESSION['sess_error_fields']['rrd_maximum'] = 'rrd_maximum';
 
-				header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : get_request_var('data_template_rrd_id'))));
+				header('Location: data_templates.php?action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : get_request_var('data_template_rrd_id'))));
 				exit;
 			}
 		}
@@ -343,7 +343,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : $data_template_rrd_id)));
+		header('Location: data_templates.php?action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : $data_template_rrd_id)));
 	}
 }
 
@@ -426,7 +426,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_templates.php?header=false');
+		header('Location: data_templates.php');
 		exit;
 	}
 
@@ -492,7 +492,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: data_templates.php?header=false');
+		header('Location: data_templates.php');
 		exit;
 	}
 
@@ -1090,17 +1090,17 @@ function template() {
 		</td>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL  = 'data_templates.php?header=false';
-			strURL += '&filter='+$('#filter').val();
+			strURL  = 'data_templates.php';
+			strURL += '?filter='+$('#filter').val();
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&profile='+$('#profile').val();
 			strURL += '&has_data='+$('#has_data').is(':checked');
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			strURL = 'data_templates.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'data_templates.php?clear=1';
+			loadUrl({url:strURL})
 		}
 
 		$(function() {

@@ -74,7 +74,7 @@ switch (get_request_var('action')) {
 
 		automation_snmp_item_remove();
 
-		header('Location: automation_snmp.php?header=false&action=edit&header=false&id=' . get_request_var('id'));
+		header('Location: automation_snmp.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -117,7 +117,7 @@ function form_automation_snmp_save() {
 			}
 		}
 
-		header('Location: automation_snmp.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+		header('Location: automation_snmp.php?action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 	} elseif (isset_request_var('save_component_automation_snmp_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('item_id');
@@ -153,13 +153,13 @@ function form_automation_snmp_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?header=false&action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_filter_request_var('id') : $item_id));
+			header('Location: automation_snmp.php?action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_filter_request_var('id') : $item_id));
 		} else {
-			header('Location: automation_snmp.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+			header('Location: automation_snmp.php?action=edit&id=' . get_nfilter_request_var('id'));
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_snmp.php?header=false');
+		header('Location: automation_snmp.php');
 	}
 }
 
@@ -189,7 +189,7 @@ function form_automation_snmp_actions() {
 			}
 		}
 
-		header('Location: automation_snmp.php?header=false');
+		header('Location: automation_snmp.php');
 		exit;
 	}
 
@@ -223,7 +223,7 @@ function form_automation_snmp_actions() {
 
 	if (!isset($automation_array)) {
 		raise_message(40);
-		header('Location: automation_snmp.php?header=false');
+		header('Location: automation_snmp.php');
 		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
@@ -298,17 +298,17 @@ function automation_duplicate_snmp_option($id, $new_name) {
 }
 
 function automation_snmp_item_dnd() {
-   /* ================= Input validation ================= */
-    get_filter_request_var('id');
-    /* ================= Input validation ================= */
+	/* ================= Input validation ================= */
+	get_filter_request_var('id');
+	/* ================= Input validation ================= */
 
-    if (isset_request_var('snmp_item') && is_array(get_nfilter_request_var('snmp_item'))) {
+	if (isset_request_var('snmp_item') && is_array(get_nfilter_request_var('snmp_item'))) {
 		$items    = get_request_var('snmp_item');
 		$sequence = 1;
 
 		foreach($items as $item) {
 			$item = str_replace('line', '', $item);
-        	input_validate_input_number($item);
+			input_validate_input_number($item);
 
 			db_execute_prepared('UPDATE automation_snmp_items
 				SET sequence = ?
@@ -317,9 +317,9 @@ function automation_snmp_item_dnd() {
 
 			$sequence++;
 		}
-    }
+	}
 
-    header('Location: automation_snmp.php?action=edit&header=false&id=' . get_request_var('id'));
+	header('Location: automation_snmp.php?action=edit&id=' . get_request_var('id'));
 	exit;
 }
 
@@ -342,17 +342,17 @@ function automation_snmp_item_moveup() {
 }
 
 function automation_snmp_item_remove_confirm() {
-    /* ================= input validation ================= */
-    get_filter_request_var('id');
-    get_filter_request_var('item_id');
-    /* ==================================================== */
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('item_id');
+	/* ==================================================== */
 
-    form_start('automation_snmp.php');
+	form_start('automation_snmp.php');
 
-    html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
-    $snmp = db_fetch_row_prepared('SELECT * FROM automation_snmp WHERE id = ?', array(get_request_var('id')));
-    $item = db_fetch_row_prepared('SELECT * FROM automation_snmp_items WHERE id = ?', array(get_request_var('item_id')));
+	$snmp = db_fetch_row_prepared('SELECT * FROM automation_snmp WHERE id = ?', array(get_request_var('id')));
+	$item = db_fetch_row_prepared('SELECT * FROM automation_snmp_items WHERE id = ?', array(get_request_var('item_id')));
 
     ?>
     <tr>
@@ -385,13 +385,13 @@ function automation_snmp_item_remove_confirm() {
 				id: <?php print get_request_var('id');?>
 			}, function(data) {
 				$('#cdialog').dialog('close');
-				loadPageNoHeader('automation_snmp.php?action=edit&header=false&id=<?php print get_request_var('id');?>');
+				loadUrl({url:'automation_snmp.php?action=edit&id=<?php print get_request_var('id');?>'})
 			});
 		});
-    });
+	});
 
-    </script>
-    <?php
+	</script>
+<?php
 
 }
 
@@ -497,7 +497,7 @@ function automation_snmp_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-    /* file: automation_snmp.php, action: edit */
+	/* file: automation_snmp.php, action: edit */
 	$fields_automation_snmp_edit = array(
 		'name' => array(
 			'method' => 'textbox',
@@ -508,8 +508,7 @@ function automation_snmp_edit() {
 			'max_length' => '100',
 			'size' => '40'
 		)
-    );
-
+	);
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
@@ -598,23 +597,23 @@ function automation_snmp_edit() {
 
 	form_save_button('automation_snmp.php', 'return');
 
-    ?>
-    <script type='text/javascript'>
-    $(function() {
+?>
+	<script type='text/javascript'>
+	$(function() {
 		$('.cdialog').remove();
 		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 		$('#automation_snmp_edit2_child').attr('id', 'snmp_item');
-        $('img.action').click(function() {
-            strURL = $(this).attr('href');
-			loadPageNoHeader(strURL);
-        });
+		$('img.action').click(function() {
+			strURL = $(this).attr('href');
+			loadUrl({url:strURL})
+		});
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
-        $('#snmp_item').tableDnD({
-            onDrop: function(table, row) {
-                loadPageNoHeader('automation_snmp.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
-            }
-        });
+		$('#snmp_item').tableDnD({
+			onDrop: function(table, row) {
+				loadUrl({url:'automation_snmp.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize()})
+			}
+		});
 		<?php } ?>
 
 		$('.delete').click(function (event) {
@@ -636,12 +635,12 @@ function automation_snmp_edit() {
 					});
 				})
 				.fail(function(data) {
-                		        getPresentHTTPError(data);
-		                });
-		}).css('cursor', 'pointer');
-    });
-    </script>
-    <?php
+					getPresentHTTPError(data);
+				});
+			}).css('cursor', 'pointer');
+		});
+	</script>
+<?php
 }
 
 function automation_snmp() {
@@ -725,15 +724,15 @@ function automation_snmp() {
 	</tr>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL  = 'automation_snmp.php?header=false';
-		strURL += '&filter='+$('#filter').val();
+		strURL  = 'automation_snmp.php';
+		strURL += '?filter='+$('#filter').val();
 		strURL += '&rows='+$('#rows').val();
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'automation_snmp.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'automation_snmp.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -841,9 +840,9 @@ function automation_snmp() {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL  = 'automation_snmp.php?header=false&rows=' + $('#rows').val();
+		strURL  = 'automation_snmp.php?rows=' + $('#rows').val();
 		strURL += strURL + '&filter=' + $('#filter').val();
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 	</script>
 	<?php

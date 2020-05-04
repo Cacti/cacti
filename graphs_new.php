@@ -45,7 +45,7 @@ switch (get_request_var('action')) {
 	case 'query_reload':
 		host_reload_query();
 
-		header('Location: graphs_new.php?host_id=' . get_request_var('host_id') . '&header=false');
+		header('Location: graphs_new.php?host_id=' . get_request_var('host_id'));
 		break;
 	case 'ajax_hosts':
 		get_allowed_ajax_hosts(false, false);
@@ -165,13 +165,13 @@ function form_save() {
 			exit;
 		}
 
-		header('Location: graphs_new.php?host_id=' . $host_id . '&header=false');
+		header('Location: graphs_new.php?host_id=' . $host_id);
 	}
 
 	if (isset_request_var('save_component_new_graphs')) {
 		host_new_graphs_save(get_filter_request_var('host_id'));
 
-		header('Location: graphs_new.php?host_id=' . get_filter_request_var('host_id') . '&header=false');
+		header('Location: graphs_new.php?host_id=' . get_filter_request_var('host_id'));
 	}
 }
 
@@ -367,12 +367,11 @@ function graphs() {
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		loadPageNoHeader('graphs_new.php?clear=true&header=false');
+		loadUrl({url:'graphs_new.php?clear=true'})
 	}
 
 	function saveFilter() {
@@ -392,7 +391,7 @@ function graphs() {
 	$(function() {
 		$('[id^="reload"]').click(function(data) {
 			$(this).addClass('fa-spin');
-			loadPageNoHeader('graphs_new.php?action=query_reload&header=false&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
+			loadUrl({url:'graphs_new.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val()})
 		});
 
 		$('#clear').click(function() {
@@ -857,7 +856,7 @@ function graphs() {
 						}
 
 						if (!cacti_sizeof($snmp_query_indexes)) {
-							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . html_escape('host.php?action=query_verbose&header=true&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . '</td></tr>';
+							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . html_escape('host.php?action=query_verbose&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . '</td></tr>';
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header

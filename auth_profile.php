@@ -87,11 +87,11 @@ switch (get_request_var('action')) {
 		$tabs = array(
 			'general'  => array(
 				'display' => __('General'),
-				'url'     => $config['url_path'] . 'auth_profile.php?tab=general&header=false'
+				'url'     => $config['url_path'] . 'auth_profile.php?tab=general'
 			),
 			'2fa' => array(
 				'display' => __('2FA'),
-				'url'     => $config['url_path'] . 'auth_profile.php?tab=2fa&header=false'
+				'url'     => $config['url_path'] . 'auth_profile.php?tab=2fa'
 			),
 		);
 
@@ -751,8 +751,8 @@ function settings_javascript() {
 
 		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
 			event.preventDefault();
-			$.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
-				loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
+			$.post('auth_profile.php', $('input, select, textarea').serialize()).done(function(data) {
+				loadUrl({url:'auth_profile.php?action=noreturn'})
 			});
 		});
 

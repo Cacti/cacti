@@ -82,10 +82,10 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: gprint_presets.php?header=false&action=edit&id=' . (empty($gprint_preset_id) ? get_nfilter_request_var('id') : $gprint_preset_id));
+			header('Location: gprint_presets.php?action=edit&id=' . (empty($gprint_preset_id) ? get_nfilter_request_var('id') : $gprint_preset_id));
 			exit;
 		} else {
-			header('Location: gprint_presets.php?header=false');
+			header('Location: gprint_presets.php');
 
 			exit;
 		}
@@ -113,7 +113,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: gprint_presets.php?header=false');
+		header('Location: gprint_presets.php');
 
 		exit;
 	}
@@ -154,7 +154,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: gprint_presets.php?header=false');
+		header('Location: gprint_presets.php');
         exit;
 	}
 
@@ -297,16 +297,16 @@ function gprint_presets() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL  = 'gprint_presets.php?header=false';
-				strURL += '&filter='+$('#filter').val();
+				strURL  = 'gprint_presets.php';
+				strURL += '?filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
 				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'gprint_presets.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'gprint_presets.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {

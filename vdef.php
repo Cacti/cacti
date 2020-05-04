@@ -54,14 +54,14 @@ switch (get_request_var('action')) {
 
 		item_movedown();
 
-		header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
+		header('Location: vdef.php?action=edit&id=' . get_request_var('vdef_id'));
 		break;
 	case 'item_moveup':
 		get_filter_request_var('vdef_id');
 
 		item_moveup();
 
-		header('Location: vdef.php?header=false&action=edit&id=' . get_request_var('vdef_id'));
+		header('Location: vdef.php?action=edit&id=' . get_request_var('vdef_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -125,7 +125,7 @@ function vdef_form_save() {
 			}
 		}
 
-		header('Location: vdef.php?action=edit&header=false&id=' . (empty($vdef_id) ? get_request_var('id') : $vdef_id));
+		header('Location: vdef.php?action=edit&id=' . (empty($vdef_id) ? get_request_var('id') : $vdef_id));
 	} elseif (isset_request_var('save_component_item')) {
 		$sequence = get_sequence(get_filter_request_var('id'), 'sequence', 'vdef_items', 'vdef_id=' . get_filter_request_var('vdef_id'));
 
@@ -147,9 +147,9 @@ function vdef_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: vdef.php?action=item_edit&header=false&vdef_id=' . get_request_var('vdef_id') . '&id=' . (empty($vdef_item_id) ? get_request_var('id') : $vdef_item_id));
+			header('Location: vdef.php?action=item_edit&vdef_id=' . get_request_var('vdef_id') . '&id=' . (empty($vdef_item_id) ? get_request_var('id') : $vdef_item_id));
 		} else {
-			header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('vdef_id'));
+			header('Location: vdef.php?action=edit&id=' . get_request_var('vdef_id'));
 		}
 	}
 }
@@ -232,7 +232,7 @@ function vdef_form_actions() {
 			}
 		}
 
-		header('Location: vdef.php?header=false');
+		header('Location: vdef.php');
 
 		exit;
 	}
@@ -281,7 +281,7 @@ function vdef_form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: vdef.php?header=false');
+		header('Location: vdef.php');
 		exit;
 	}
 
@@ -473,8 +473,7 @@ function vdef_item_edit() {
 			strURL += '&id=' + $('#id').val();
 			strURL += '&vdef_id=' + $('#vdef_id').val();
 			strURL += '&type_select=' + $('#type_select').val();
-			strURL += '&header=false';
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		});
 	});
 	</script>
@@ -533,7 +532,7 @@ function vdef_item_dnd() {
 		}
 	}
 
-	header('Location: vdef.php?action=edit&header=false&id=' . get_request_var('id'));
+	header('Location: vdef.php?action=edit&id=' . get_request_var('id'));
 }
 
 function vdef_edit() {
@@ -646,7 +645,7 @@ function vdef_edit() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#vdef_item').unbind().tableDnD({
 			onDrop: function(table, row) {
-				loadPageNoHeader('vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
+				loadUrl({url:'vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize()})
 			}
 		});
 		<?php } ?>
@@ -739,16 +738,16 @@ function vdef_filter() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL  = 'vdef.php?header=false';
-				strURL += '&filter='+$('#filter').val();
+				strURL  = 'vdef.php';
+				strURL += '?filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
 				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'vdef.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'vdef.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {

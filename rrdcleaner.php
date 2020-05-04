@@ -559,11 +559,11 @@ function filter() {
 			</form>
 			<script type="text/javascript">
 			function refreshForm() {
-				strURL = 'rrdcleaner.php?header=false'+
-					'&filter='+$('#filter').val()+
+				strURL = 'rrdcleaner.php';
+					'?filter='+$('#filter').val()+
 					'&age='+$('#age').val()+
 					'&rows='+$('#rows').val();
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			$(function() {
@@ -577,14 +577,14 @@ function filter() {
 				});
 
 				$('#clear').click(function() {
-					strURL = 'rrdcleaner.php?header=false&clear=1';
-					loadPageNoHeader(strURL);
+					strURL = 'rrdcleaner.php?clear=1';
+					loadUrl({url:strURL})
 				});
 
 				$('#rescan').click(function() {
 					$('#text').text('Rebuilding RRDfile Listing');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&rescan=1&clear=1')
+					$.get('rrdcleaner.php?rescan=1&clear=1')
 						.done(function(data) {
 							checkForLogout(data);
 
@@ -600,7 +600,7 @@ function filter() {
 				$('#arcall').click(function() {
 					$('#text').text('Scheduling Archiving of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1')
+					$.get('rrdcleaner.php?action=arcall&raction=3&clear=1')
 						.done(function(data) {
 							checkForLogout(data);
 
@@ -616,7 +616,7 @@ function filter() {
 				$('#remall').click(function() {
 					$('#text').text('Scheduling Purging of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear=1')
+					$.get('rrdcleaner.php?action=remall&raction=1&clear=1')
 						.done(function(data) {
 							checkForLogout(data);
 

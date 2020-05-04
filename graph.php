@@ -256,7 +256,6 @@ case 'view':
 
 			$.get(urlPath+'graph.php?' +
 				'action=zoom' +
-				'&header=false' +
 				'&local_graph_id='+graph_id+
 				'&rra_id='+rra_id+
 				'&graph_start='+graph_start+
@@ -444,7 +443,7 @@ case 'zoom':
 	var refreshMSeconds=9999999;
 
 	function graphProperties() {
-		$.get(urlPath+'graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
+		$.get(urlPath+'graph.php?action=properties&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
 			.done(function(data) {
 				$('#data').html(data);
 			})

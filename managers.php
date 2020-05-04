@@ -111,13 +111,12 @@ function manager(){
 		strURL  = 'managers.php';
 		strURL += '?filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'managers.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'managers.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -314,8 +313,8 @@ function manager_edit() {
 				event.preventDefault();
 
 				strURL  = $(this).attr('href');
-				strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
-				loadPageNoHeader(strURL);
+				strURL += (strURL.indexOf('?') > 0 ? '&':'?');
+				loadUrl({url:strURL})
 			});
 		});
 		</script>
@@ -443,14 +442,13 @@ function manager_notifications($id, $header_label) {
 		strURL += '&mib=' + $('#mib').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
 
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -686,10 +684,10 @@ function manager_logs($id, $header_label) {
 	<script type='text/javascript'>
 
 	function applyFilter(objForm) {
-		strURL  = '?header=false&severity=' + $('#severity').val();
+		strURL  = '?severity=' + $('#severity').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&action=edit&tab=logs&id=<?php print get_request_var('id'); ?>';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function showTooltip(e, div, title, desc) {
@@ -905,7 +903,7 @@ function form_save() {
 			break;
 	}
 
-	header('Location: managers.php?action=edit&header=false&id=' . (empty($manager_id) ? get_nfilter_request_var('id') : $manager_id) );
+	header('Location: managers.php?action=edit&id=' . (empty($manager_id) ? get_nfilter_request_var('id') : $manager_id) );
 }
 
 function form_actions(){
@@ -926,7 +924,7 @@ function form_actions(){
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
 				}
 
-				header('Location: managers.php?header=false');
+				header('Location: managers.php');
 				exit;
 			}
 		} elseif (isset_request_var('action_receiver_notifications')) {
@@ -960,7 +958,7 @@ function form_actions(){
 				}
 			}
 
-			header('Location: managers.php?action=edit&id=' . get_nfilter_request_var('id') . '&tab=notifications&header=false');
+			header('Location: managers.php?action=edit&id=' . get_nfilter_request_var('id') . '&tab=notifications');
 			exit;
 		}
 	}else {
@@ -1004,7 +1002,7 @@ function form_actions(){
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('%s Notification Receivers', $manager_actions[get_nfilter_request_var('drp_action')]) . "'>";
 			} else {
 				raise_message(40);
-				header('Location: managers.php?header=false');
+				header('Location: managers.php');
 				exit;
 			}
 

@@ -262,7 +262,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: sites.php?header=false&action=edit&id=' . (empty($site_id) ? get_nfilter_request_var('id') : $site_id));
+		header('Location: sites.php?action=edit&id=' . (empty($site_id) ? get_nfilter_request_var('id') : $site_id));
 	}
 }
 
@@ -343,7 +343,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: sites.php?header=false');
+		header('Location: sites.php');
 		exit;
 	}
 
@@ -393,7 +393,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: sites.php?header=false');
+		header('Location: sites.php');
 		exit;
 	}
 
@@ -528,15 +528,15 @@ function sites() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL  = 'sites.php?header=false';
-				strURL += '&filter='+$('#filter').val();
+				strURL  = 'sites.php';
+				strURL += '?filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'sites.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'sites.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {

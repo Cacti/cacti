@@ -47,7 +47,7 @@ switch (get_request_var('action')) {
 	case 'change_leaf':
 		automation_tree_rules_change_leaf();
 
-		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+		header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'item_movedown':
 		automation_tree_rules_item_movedown();
@@ -115,7 +115,7 @@ function automation_tree_rules_form_save() {
 			}
 		}
 
-		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? get_request_var('id') : $rule_id));
+		header('Location: automation_tree_rules.php?action=edit&id=' . (empty($rule_id) ? get_request_var('id') : $rule_id));
 
 	} elseif (isset_request_var('save_component_automation_match_item')) {
 		/* ================= input validation ================= */
@@ -144,9 +144,9 @@ function automation_tree_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		} else {
-			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 	} elseif (isset_request_var('save_component_automation_tree_rule_item')) {
 
@@ -176,13 +176,13 @@ function automation_tree_rules_form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($automation_graph_rule_item_id) ? get_request_var('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($automation_graph_rule_item_id) ? get_request_var('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		} else {
-			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_tree_rules.php?header=false');
+		header('Location: automation_tree_rules.php');
 	}
 }
 
@@ -226,7 +226,7 @@ function automation_tree_rules_form_actions() {
 			}
 		}
 
-		header('Location: automation_tree_rules.php?header=false');
+		header('Location: automation_tree_rules.php');
 
 		exit;
 	}
@@ -286,7 +286,7 @@ function automation_tree_rules_form_actions() {
 
 	if (!isset($automation_tree_rules_array)) {
 		raise_message(40);
-		header('Location: automation_tree_rules.php?header=false');
+		header('Location: automation_tree_rules.php');
 		exit;
 	}else {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
@@ -662,7 +662,7 @@ function automation_tree_rules_edit() {
 			action = 'edit';
 		}
 
-		strURL  = 'automation_tree_rules.php?header=false&action=' + action;
+		strURL  = 'automation_tree_rules.php?action=' + action;
 		strURL += '&id=' + $('#id').val();
 		strURL += '&name=' + $('#name').val();
 		strURL += '&tree_id=' + $('#tree_id').val();
@@ -670,7 +670,7 @@ function automation_tree_rules_edit() {
 		strURL += '&leaf_type=' + $('#leaf_type').val();
 		strURL += '&enabled=' + $('#enabled').val();
 
-		loadPageNoHeader(strURL,undefined,force);
+		loadUrl({url:strURL,undefined,force})
 	}
 
 	function applyItemTypeChange() {
@@ -851,15 +851,14 @@ function automation_tree_rules() {
 				strURL = 'automation_tree_rules.php' +
 					'?status='+$('#status').val() +
 					'&filter='+$('#filter').val() +
-					'&rows='+$('#rows').val() +
-					'&header=false';
+					'&rows='+$('#rows').val();
 
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'automation_tree_rules.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'automation_tree_rules.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {

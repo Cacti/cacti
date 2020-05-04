@@ -204,14 +204,13 @@ class CactiTableFilter {
 		$applyFilter = '"' . $this->form_action;
 		$clearFilter = $applyFilter;
 
-		if (strpos('?', $applyFilter) === false) {
+		if (strpos('?', $clearFilter) === false) {
 			$separator = '?';
 		} else {
 			$separator = '&';
 		}
 
-		$applyFilter .= $separator . 'header=false';
-		$clearFilter .= $separator . 'header=false&clear=true"';
+		$clearFilter .= $separator . 'clear=true"';
 		$changeChain  = '';
 
 		$separator = "\"+\"&";
@@ -252,11 +251,11 @@ class CactiTableFilter {
 
 		function applyFilter() {
 			strURL = <?php print $applyFilter;?>
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			loadPageNoHeader(<?php print $clearFilter;?>);
+			loadUrl({url:<?php print $clearFilter;?>})
 		}
 
 		$(function() {

@@ -93,11 +93,11 @@ switch (get_request_var('action')) {
         break;
 	case 'sortasc':
 		tree_sort_name_asc();
-		header('Location: tree.php?header=false');
+		header('Location: tree.php');
 		break;
 	case 'sortdesc':
 		tree_sort_name_desc();
-		header('Location: tree.php?header=false');
+		header('Location: tree.php');
 		break;
 	case 'edit':
 		top_header();
@@ -125,12 +125,12 @@ switch (get_request_var('action')) {
 	case 'lock':
 		api_tree_lock(get_request_var('id'), $_SESSION['sess_user_id']);
 
-		header('Location: tree.php?action=edit&header=false&id=' . get_request_var('id'));
+		header('Location: tree.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'unlock':
 		api_tree_unlock(get_request_var('id'), $_SESSION['sess_user_id']);
 
-		header('Location: tree.php?action=edit&header=false&id=' . get_request_var('id'));
+		header('Location: tree.php?action=edit&id=' . get_request_var('id'));
 		break;
 	case 'copy_node':
 		api_tree_copy_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
@@ -546,7 +546,7 @@ function form_save() {
 			}
 		}
 
-		header("Location: tree.php?header=false&action=edit&id=$tree_id");
+		header("Location: tree.php?action=edit&id=$tree_id");
 		exit;
 	}
 }
@@ -650,7 +650,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: tree.php?header=false');
+		header('Location: tree.php');
 		exit;
 	}
 
@@ -717,7 +717,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: tree.php?header=false');
+		header('Location: tree.php');
 		exit;
 	}
 
@@ -1111,12 +1111,12 @@ function tree_edit() {
 
 			$('#lock').click(function() {
 				strURL = 'tree.php?action=lock&id=<?php print $tree['id'];?>';
-				loadPage(strURL);
+				loadUrl({url:strURL})
 			});
 
 			$('#unlock').click(function() {
 				strURL = 'tree.php?action=unlock&id=<?php print $tree['id'];?>';
-				loadPage(strURL);
+				loadUrl({url:strURL})
 			});
 
 			var height  = parseInt($(window).height()-$('#ctree').offset().top-10)+'px';
@@ -1892,13 +1892,12 @@ function tree() {
 	function applyFilter() {
 		strURL  = 'tree.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'tree.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'tree.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -1911,11 +1910,11 @@ function tree() {
 		});
 
 		$('#sorta').click(function() {
-			loadPageNoHeader('tree.php?action=sortasc');
+			loadUrl({url:'tree.php?action=sortasc'})
 		});
 
 		$('#sortd').click(function() {
-			loadPageNoHeader('tree.php?action=sortdesc');
+			loadUrl({url:'tree.php?action=sortdesc'})
 		});
 
 		$('#form_tree').submit(function(event) {
@@ -2176,7 +2175,7 @@ function tree() {
 
 			$('#tree_ids').tableDnD({
 				onDrop: function(table, row) {
-					loadPageNoHeader('tree.php?action=ajax_dnd&'+$.tableDnD.serialize());
+					loadUrl({url:'tree.php?action=ajax_dnd&'+$.tableDnD.serialize()})
 				}
 			});
 			<?php } ?>

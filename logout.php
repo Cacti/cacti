@@ -46,15 +46,15 @@ if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) === OPER
 
 /* Check to see if we are using Web Basic Auth */
 if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disabled') {
-	html_auth_header('logout',__('Logout of Cacti'), __('Automatic Logout'), __('You have been logged out of Cacti due to a session timeout.'), array());
-	?>
-			<tr>
-				<td>
-					<?php print __('Please close your browser or %sLogin Again%s', '<a href="index.php">', '</a>') ?>
-				</td>
-			</tr>
-	<?php
-	html_auth_footer('logout', __('Cookies have been cleared'), '');
+	$hook = 'logout';
+	$reason = _('session timeout');
+	if (get_request_var('action') == 'disabled') {
+		$hook = 'disabled';
+		$reason = _('an account suspension');
+	}
+	html_auth_header($hook, __('Logout of Cacti'),  __('Automatic Logout'), __('You have been logged out of Cacti due to %s.', $reason));
+	print '<div>' . __('Please close your browser or %sLogin Again%s', '[<a href="index.php">', '</a>]') . '</div>';
+	html_auth_footer($hook, __('Cookies have been cleared'), '');
 } else {
 	/* Default action */
 	clear_auth_cookie();

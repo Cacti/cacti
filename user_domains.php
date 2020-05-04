@@ -163,7 +163,7 @@ function form_save() {
 		}
 	}
 
-	header('Location: user_domains.php?header=false&action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
+	header('Location: user_domains.php?action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
 }
 
 function form_actions() {
@@ -197,7 +197,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_domains.php?header=false');
+		header('Location: user_domains.php');
 		exit;
 	}
 
@@ -263,7 +263,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: user_domains.php?header=false');
+		header('Location: user_domains.php');
 		exit;
 	}
 
@@ -688,13 +688,12 @@ function domains() {
 		function applyFilter() {
 			strURL  = 'user_domains.php?rows=' + $('#rows').val();
 			strURL += '&filter=' + $('#filter').val();
-			strURL += '&header=false';
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			strURL = 'user_domains.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'user_domains.php?clear=1';
+			loadUrl({url:strURL})
 		}
 
 		$(function() {

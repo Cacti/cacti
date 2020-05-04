@@ -88,7 +88,7 @@ function add_tree_names_to_actions_array() {
 
 function form_save() {
 	if (!isset_request_var('save_component_graph')) {
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+		header('Location: aggregate_graphs.php?action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -99,7 +99,7 @@ function form_save() {
 	$graph_title           = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', false, 3);
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
+		header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 		return null;
 	}
 
@@ -118,7 +118,7 @@ function form_save() {
 
 	if (is_error_message()) {
 		raise_message(2);
-		header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
+		header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 		return null;
 	}
 
@@ -245,7 +245,7 @@ function form_save() {
 
 	raise_message(1);
 
-	header('Location: aggregate_graphs.php?header=false&action=edit&id=' . $local_graph_id);
+	header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 }
 
 /* ------------------------
@@ -290,19 +290,19 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '5') { // Convert to a normal graph
 				api_aggregate_convert_to_graph($selected_items);
 
-				header('Location: aggregate_graphs.php?header=false');
+				header('Location: aggregate_graphs.php');
 				exit;
 			} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
 				$local_graph_id = get_filter_request_var('local_graph_id');
 				api_aggregate_associate($local_graph_id, $selected_items);
 
-				header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
+				header('Location: aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
 				exit;
 			} elseif (get_request_var('drp_action') == '11') { // dis-associate with aggregate
 				$local_graph_id = get_filter_request_var('local_graph_id');
 				api_aggregate_disassociate($local_graph_id, $selected_items);
 
-				header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
+				header('Location: aggregate_graphs.php?action=edit&tab=items&id=' . $local_graph_id);
 				exit;
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
@@ -313,7 +313,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: aggregate_graphs.php?header=false');
+		header('Location: aggregate_graphs.php');
 		exit;
 	}
 
@@ -527,7 +527,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: aggregate_graphs.php?header=false');
+		header('Location: aggregate_graphs.php');
 		exit;
 	}
 
@@ -1265,14 +1265,13 @@ function aggregate_items() {
 			'?action=edit&tab=items&id='+$('#id').val() +
 			'&rows=' + $('#rows').val() +
 			'&rfilter=' + base64_encode($('#rfilter').val()) +
-			'&matching=' + $('#matching').is(':checked') +
-			'&header=false';
-		loadPageNoHeader(strURL);
+			'&matching=' + $('#matching').is(':checked');
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val()+'&clear=true&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val()+'&clear=true';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -1543,13 +1542,12 @@ function aggregate_graph() {
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&template_id=' + $('#template_id').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'aggregate_graphs.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'aggregate_graphs.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

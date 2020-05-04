@@ -684,8 +684,7 @@ function api_plugin_install($plugin) {
 
 		raise_message('dependency_check', $message, MESSAGE_LEVEL_ERROR);
 
-		header('Location: plugins.php?header=false');
-
+		header('Location: plugins.php');
 		exit;
 	}
 

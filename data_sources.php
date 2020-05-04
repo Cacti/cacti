@@ -304,7 +304,7 @@ function form_save() {
 
 								$_SESSION['sess_error_fields']['rrd_maximum'] = 'rrd_maximum';
 
-								header('Location: data_sources.php?header=false&action=ds_edit&id=' . (empty($local_data_id) ? get_filter_request_var('local_data_id') : $local_data_id) . '&host_id=' . get_request_var('host_id') . '&view_rrd=' . (isset_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : '0'));
+								header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? get_filter_request_var('local_data_id') : $local_data_id) . '&host_id=' . get_request_var('host_id') . '&view_rrd=' . (isset_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : '0'));
 
 								exit;
 							}
@@ -354,11 +354,11 @@ function form_save() {
 	}
 
 	if (isset_request_var('save_component_data_source_new') && isempty_request_var('data_template_id')) {
-		header('Location: data_sources.php?header=false&action=ds_edit&host_id=' . get_request_var('host_id') . '&new=1');
+		header('Location: data_sources.php?action=ds_edit&host_id=' . get_request_var('host_id') . '&new=1');
 	} elseif ((is_error_message()) || (get_filter_request_var('data_template_id') != get_filter_request_var('_data_template_id')) || (get_filter_request_var('data_input_id') != get_filter_request_var('_data_input_id')) || (get_filter_request_var('host_id') != get_filter_request_var('_host_id'))) {
-		header('Location: data_sources.php?header=false&action=ds_edit&id=' . (empty($local_data_id) ? get_filter_request_var('local_data_id') : $local_data_id) . '&host_id=' . get_request_var('host_id') . '&view_rrd=' . (isset_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : '0'));
+		header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? get_filter_request_var('local_data_id') : $local_data_id) . '&host_id=' . get_request_var('host_id') . '&view_rrd=' . (isset_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : '0'));
 	} else {
-		header('Location: data_sources.php?header=false');
+		header('Location: data_sources.php');
 	}
 }
 
@@ -463,7 +463,7 @@ function form_actions() {
 
 		api_plugin_hook_function('data_source_action_bottom', array(get_nfilter_request_var('drp_action'), $selected_items));
 
-		header('Location: data_sources.php?header=false');
+		header('Location: data_sources.php');
 		exit;
 	}
 
@@ -579,7 +579,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: data_sources.php?header=false');
+		header('Location: data_sources.php');
 		exit;
 	}
 
@@ -731,7 +731,7 @@ function ds_rrd_remove() {
 		WHERE task_item_id = ?',
 		array(get_request_var('id')));
 
-	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('local_data_id'));
+	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('local_data_id'));
 }
 
 function ds_rrd_add() {
@@ -746,7 +746,7 @@ function ds_rrd_add() {
 
 	$data_template_rrd_id = db_fetch_insert_id();
 
-	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
+	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
 function ds_disable() {
@@ -755,7 +755,7 @@ function ds_disable() {
 	/* ==================================================== */
 
 	api_data_source_disable(get_request_var('id'));
-	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id'));
+	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('id'));
 }
 
 function ds_enable() {
@@ -764,7 +764,7 @@ function ds_enable() {
 	/* ==================================================== */
 
 	api_data_source_enable(get_request_var('id'));
-	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id'));
+	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('id'));
 }
 
 function ds_edit() {
@@ -1314,14 +1314,13 @@ function ds() {
 			'&status=' + $('#status').val() +
 			'&profile=' + $('#profile').val() +
 			'&orphans=' + $('#orphans').is(':checked') +
-			'&template_id=' + $('#template_id').val() +
-			'&header=false';
-		loadPageNoHeader(strURL);
+			'&template_id=' + $('#template_id').val();
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'data_sources.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'data_sources.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

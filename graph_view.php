@@ -184,7 +184,7 @@ case 'ajax_reports':
 		raise_message('reports_no_graph');
 	}
 
-	header('Location: graph_view.php?action=list&header=false');
+	header('Location: graph_view.php?action=list');
 
 	break;
 case 'update_timespan':
@@ -500,7 +500,7 @@ case 'preview':
 		print $nav;
 	}
 
-	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'false') {
+	if (!$is_request_ajax) {
 		bottom_footer();
 	}
 
@@ -860,18 +860,18 @@ case 'list':
 	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
 
 	function clearFilter() {
-		strURL = 'graph_view.php?action=list&header=false&clear=1';
-		loadPageNoHeader(strURL);
+		strURL = 'graph_view.php?action=list&clear=1';
+		loadUrl({url:strURL})
 	}
 
 	function applyFilter() {
-		strURL = 'graph_view.php?action=list&header=false&page=1';
+		strURL = 'graph_view.php?action=list&page=1';
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&rfilter=' + base64_encode($('#rfilter').val());
 		strURL += url_graph('');
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function initializeChecks() {
@@ -912,9 +912,9 @@ case 'list':
 			}
 		});
 
-		strURL += '&reset=true&header=false';
+		strURL += '&reset=true';
 
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 
 		$('#breadcrumbs').empty().html('<li><a href="graph_view.php?action=preview"><?php print __('Preview Mode');?></a></li>');
 		$('#listview').removeClass('selected');
@@ -983,13 +983,12 @@ case 'list':
 						$(this).dialog('close');
 
 						strURL = 'graph_view.php?action=ajax_reports';
-							'&header=false' +
 							'&report_id='   + $('#report_id').val()  +
 							'&timespan='    + $('#timespan').val()   +
 							'&align='       + $('#align').val()      +
 							'&graph_list='  + $('#graph_list').val();
 
-						loadPageNoHeader(strURL);
+						loadUrl({url:strURL})
 					}
 				}
 			],

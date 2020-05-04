@@ -154,8 +154,6 @@ function grow_dhtml_trees() {
 	}
 	?>
 
-<<<<<<< HEAD
-=======
 	function resizeTreePanel() {
 		if (theme != 'classic') {
 			var docHeight      = $(window).outerHeight();
@@ -209,7 +207,6 @@ function grow_dhtml_trees() {
 		}
 	}
 
->>>>>>> 8efc3b783 (Issue #3142 Don't set width to 0 on TreeNav (#3145))
 	function checkTreeForLogout() {
 		html = $('#jstree').html();
 		found = html.indexOf('<?php print __('Login to Cacti');?>');
@@ -249,6 +246,7 @@ function grow_dhtml_trees() {
 	$(function () {
 		$('#jstree').each(function(data) {
 			var id=$(this).attr('id');
+			var pageGraphFirstLoad = true;
 
 			$(this)
 			.on('init.jstree', function() {
@@ -263,6 +261,7 @@ function grow_dhtml_trees() {
 			})
 			.on('ready.jstree', function() {
 				resizeTreePanel();
+				pageGraphFirstLoad = false;
 			})
 			.on('changed.jstree', function() {
 				resizeTreePanel();
@@ -292,7 +291,7 @@ function grow_dhtml_trees() {
 						href = href.replace('action=tree', 'action=tree_content');
 						href = href + '&hyper=true';
 						$('.cactiGraphContentArea').hide();
-						loadPage(href);
+						loadUrl({url:href,noState:pageGraphFirstLoad});
 					}
 
 					node = data.node.id;
@@ -360,7 +359,7 @@ function grow_dhtml_trees() {
 			});
 		});
 
-		$('#searcher').keyup(function() {	
+		$('#searcher').keyup(function() {
 			if(search_to) { clearTimeout(search_to); }
 			search_to = setTimeout(function() {
 				var v = $('#searcher').val();

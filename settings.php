@@ -297,11 +297,7 @@ case 'save':
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_config_array');
 
-	if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-		header('Location: settings.php?header=false&tab=' . get_request_var('tab'));
-	} else {
-		header('Location: settings.php?tab=' . get_request_var('tab'));
-	}
+	header('Location: settings.php?tab=' . get_request_var('tab'));
 
 	break;
 case 'send_test':
@@ -487,8 +483,8 @@ default:
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
 			strURL = $(this).attr('href');
-			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			loadPageNoHeader(strURL, true, false);
+			strURL += (strURL.indexOf('?') > 0 ? '&':'?');
+			loadUrl({url:strURL, scroll:true});
 		});
 
 		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
@@ -502,12 +498,12 @@ default:
 			}
 
 			if (themeChanged != true) {
-				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
+				$.post('settings.php?tab='+$('#tab').val(), $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
 					$('#main').hide().html(data);
 					applySkin();
 				});
 			} else {
-				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
+				$.post('settings.php?tab='+$('#tab').val(), $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
 					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
 				});
 			}

@@ -54,7 +54,7 @@ switch (get_request_var('action')) {
 	case 'item_add_gt':
 		template_item_add_gt();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
     case 'item_remove_gt_confirm':
         template_item_remove_gt_confirm();
@@ -63,12 +63,12 @@ switch (get_request_var('action')) {
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'item_add_dq':
 		template_item_add_dq();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
     case 'item_remove_dq_confirm':
         template_item_remove_dq_confirm();
@@ -77,7 +77,7 @@ switch (get_request_var('action')) {
 	case 'item_remove_dq':
 		template_item_remove_dq();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'edit':
 		top_header();
@@ -123,7 +123,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . (empty($host_template_id) ? get_nfilter_request_var('id') : $host_template_id));
+		header('Location: host_templates.php?action=edit&id=' . (empty($host_template_id) ? get_nfilter_request_var('id') : $host_template_id));
 	}
 }
 
@@ -232,7 +232,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: host_templates.php?header=false');
+		header('Location: host_templates.php');
 		exit;
 	}
 
@@ -297,7 +297,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: host_templates.php?header=false');
+		header('Location: host_templates.php');
 		exit;
 	}
 
@@ -777,17 +777,17 @@ function template() {
 		</td>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL  = 'host_templates.php?header=false';
-			strURL += '&filter='+$('#filter').val();
+			strURL  = 'host_templates.php';
+			strURL += '?filter='+$('#filter').val();
 			strURL += '&class='+$('#class').val();
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&has_hosts='+$('#has_hosts').is(':checked');
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			strURL = 'host_templates.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'host_templates.php?clear=1';
+			loadUrl({url:strURL})
 		}
 
 		$(function() {

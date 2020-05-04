@@ -89,6 +89,24 @@ if (defined('CACTI_CLI_ONLY') && !CACTI_CLI) {
 // define documentation table of contents
 define('CACTI_DOCUMENTATION_TOC', 'docs/Table-of-Contents.html');
 
+//By default, we assume that it is not
+//an AJAX request.
+global $is_request_ajax;
+$is_request_ajax = false;
+
+//If HTTP_X_REQUESTED_WITH is equal to xmlhttprequest
+//We assume this is an ajax call
+if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+    strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0) {
+	$is_request_ajax = true;
+}
+
+// NOTE: Cannot use isset_request_var() as that is in lib/html_utility.php
+//       which is not included yet!
+//if (isset($_REQUEST['headercontent'])) {
+//	$is_request_ajax = false;
+//}
+
 /* Default database settings*/
 $database_type     = 'mysql';
 $database_default  = 'cacti';

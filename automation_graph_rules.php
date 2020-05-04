@@ -67,7 +67,7 @@ switch (get_request_var('action')) {
 	case 'qedit':
 		automation_change_query_type();
 
-		header('Location: automation_graph_rules.php?header=false&action=edit&name=' . get_request_var('name') . '&id=' . get_filter_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: automation_graph_rules.php?action=edit&name=' . get_request_var('name') . '&id=' . get_filter_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 		break;
 	case 'remove':
 		automation_graph_rules_remove();
@@ -111,7 +111,7 @@ function save() {
 			}
 		}
 
-		header('Location: automation_graph_rules.php?header=false&action=edit&id=' . (empty($rule_id) ? get_nfilter_request_var('id') : $rule_id));
+		header('Location: automation_graph_rules.php?action=edit&id=' . (empty($rule_id) ? get_nfilter_request_var('id') : $rule_id));
 	} elseif (isset_request_var('save_component_automation_graph_rule_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -138,9 +138,9 @@ function save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		} else {
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
 	} elseif (isset_request_var('save_component_automation_match_item')) {
 		/* ================= input validation ================= */
@@ -169,13 +169,13 @@ function save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		} else {
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}
 	} else {
 		raise_message(2);
-		header('Location: automation_graph_rules.php?header=false');
+		header('Location: automation_graph_rules.php');
 	}
 }
 
@@ -225,7 +225,7 @@ function automation_graph_rules_form_actions() {
 			}
 		}
 
-		header('Location: automation_graph_rules.php?header=false');
+		header('Location: automation_graph_rules.php');
 
 		exit;
 	}
@@ -284,7 +284,7 @@ function automation_graph_rules_form_actions() {
 
 	if (!isset($automation_graph_rules_array)) {
 		raise_message(40);
-		header('Location: automation_graph_rules.php?header=false');
+		header('Location: automation_graph_rules.php');
 		exit;
 	} else {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
@@ -659,8 +659,7 @@ function automation_graph_rules_edit() {
 		strURL += '&id=' + $('#id').val();
 		strURL += '&name=' + $('#name').val();
 		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function applySNMPQueryTypeChange() {
@@ -668,8 +667,7 @@ function automation_graph_rules_edit() {
 		strURL += '&id=' + $('#id').val();
 		strURL += '&name=' + $('#name').val();
 		strURL += '&graph_type_id=' + $('#graph_type_id').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 	</script>
 	<?php
@@ -806,14 +804,13 @@ function automation_graph_rules() {
 				'?status='        + $('#status').val()+
 				'&filter='        + $('#filter').val()+
 				'&rows='          + $('#rows').val()+
-				'&snmp_query_id=' + $('#snmp_query_id').val()+
-				'&header=false';
-			loadPageNoHeader(strURL);
+				'&snmp_query_id=' + $('#snmp_query_id').val();
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			strURL = 'automation_graph_rules.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'automation_graph_rules.php?clear=1';
+			loadUrl({url:strURL})
 		}
 
 		$(function() {

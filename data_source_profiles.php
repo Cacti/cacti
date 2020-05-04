@@ -194,7 +194,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_source_profiles.php?header=false&action=edit&id=' . (empty($profile_id) ? get_request_var('id') : $profile_id));
+		header('Location: data_source_profiles.php?action=edit&id=' . (empty($profile_id) ? get_request_var('id') : $profile_id));
 	} elseif (isset_request_var('save_component_rra')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -234,9 +234,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_source_profiles.php?header=false&action=item_edit&profile_id=' . get_request_var('profile_id') . '&id=' . (empty($profile_rra_id) ? get_request_var('id') : $profile_rra_id));
+			header('Location: data_source_profiles.php?action=item_edit&profile_id=' . get_request_var('profile_id') . '&id=' . (empty($profile_rra_id) ? get_request_var('id') : $profile_rra_id));
 		} else {
-			header('Location: data_source_profiles.php?header=false&action=edit&id=' . get_request_var('profile_id'));
+			header('Location: data_source_profiles.php?action=edit&id=' . get_request_var('profile_id'));
 		}
 	}
 }
@@ -266,7 +266,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_source_profiles.php?header=false');
+		header('Location: data_source_profiles.php');
 		exit;
 	}
 
@@ -316,7 +316,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: data_source_profiles.php?header=false');
+		header('Location: data_source_profiles.php');
 		exit;
 	}
 
@@ -431,6 +431,22 @@ function profile_item_remove_confirm() {
 	html_end_box();
 
 	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#continue').click(function(data) {
+			$.post('data_source_profiles.php?action=item_remove', {
+				__csrf_magic: csrfMagicToken,
+				id: <?php print get_request_var('id');?>
+			}, function(data) {
+				$('#cdialog').dialog('close');
+				loadUrl({url:'data_source_profiles.php?action=edit&id=<?php print $profile['data_source_profile_id'];?>'})
+			});
+		});
+	});
+	</script>
+	<?php
 }
 
 function profile_item_remove() {
@@ -947,16 +963,16 @@ function profile() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL  = 'data_source_profiles.php?header=false';
-				strURL += '&filter='+$('#filter').val();
+				strURL  = 'data_source_profiles.php';
+				strURL += '?filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
 				strURL += '&has_data='+$('#has_data').is(':checked');
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'data_source_profiles.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'data_source_profiles.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {

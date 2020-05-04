@@ -22,8 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
+global $is_ajax_request;
+
 print "\t\t\t</main>\n\t\t</div>\n\t</div>\n";
-if (!isset_request_var('pagecontent')) {
+if (!$is_ajax_request) {
 	api_plugin_hook('page_bottom');
 	print "\t</body>\n</html>\n";
 }

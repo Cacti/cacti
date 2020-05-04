@@ -330,7 +330,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: pollers.php?header=false&action=edit&id=' . (empty($poller_id) ? get_nfilter_request_var('id') : $poller_id));
+		header('Location: pollers.php?action=edit&id=' . (empty($poller_id) ? get_nfilter_request_var('id') : $poller_id));
 	}
 }
 
@@ -520,7 +520,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: pollers.php?header=false');
+		header('Location: pollers.php');
 		exit;
 	}
 
@@ -596,7 +596,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: pollers.php?header=false');
+		header('Location: pollers.php');
 		exit;
 	}
 
@@ -855,7 +855,7 @@ function pollers() {
 	validate_store_request_vars($filters, 'sess_pollers');
 	/* ================= input validation ================= */
 
-	$refresh['page']    = 'pollers.php?header=false';
+	$refresh['page']    = 'pollers.php';
 	$refresh['seconds'] = get_request_var('refresh');
 	$refresh['logout']  = 'false';
 
@@ -931,16 +931,16 @@ function pollers() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL  = 'pollers.php?header=false';
-				strURL += '&filter='+$('#filter').val();
+				strURL  = 'pollers.php';
+				strURL += '?filter='+$('#filter').val();
 				strURL += '&refresh='+$('#refresh').val();
 				strURL += '&rows='+$('#rows').val();
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'pollers.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'pollers.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {

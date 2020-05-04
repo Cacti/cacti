@@ -46,32 +46,32 @@ switch (get_request_var('action')) {
 	case 'item_moveup_dssv':
 		data_query_item_moveup_dssv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_movedown_dssv':
 		data_query_item_movedown_dssv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_remove_dssv':
 		data_query_item_remove_dssv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_moveup_gsv':
 		data_query_item_moveup_gsv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_movedown_gsv':
 		data_query_item_movedown_gsv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_remove_gsv':
 		data_query_item_remove_gsv();
 
-		header('Location: data_queries.php?header=false&action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' . get_filter_request_var('snmp_query_graph_id') . '&snmp_query_id=' . get_filter_request_var('snmp_query_id'));
 		break;
     case 'item_remove_confirm':
         data_query_item_remove_confirm();
@@ -80,7 +80,7 @@ switch (get_request_var('action')) {
 	case 'item_remove':
 		data_query_item_remove();
 
-		header('Location: data_queries.php?header=false&action=edit&id=' . get_filter_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=edit&id=' . get_filter_request_var('snmp_query_id'));
 		break;
 	case 'item_edit':
 		top_header();
@@ -150,8 +150,8 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_queries.php?header=false&action=edit&id=' . (empty($snmp_query_id) ? get_request_var('id') : $snmp_query_id));
-	} elseif (isset_request_var('save_component_snmp_query_item')) {
+		header('Location: data_queries.php?action=edit&id=' . (empty($snmp_query_id) ? get_request_var('id') : $snmp_query_id));
+	} elseif (isset_request_var('save_component_snmp_query_item') && !isset_request_var('svg_x') && !isset_request_var('svds_x')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('snmp_query_id');
@@ -164,7 +164,6 @@ function form_save() {
 		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['graph_template_id'] = get_request_var('graph_template_id');
 
-		$header = '';
 		$errors = false;
 		if (!is_error_message()) {
 			if ($save['id'] > 0) {
@@ -219,22 +218,13 @@ function form_save() {
 							);
 						}
 					}
-
-					if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-						$header = '&header=false';
-					} else {
-						$header = '&header=false';
-					}
 				} else {
 					raise_message(2);
-					$header = '&header=false';
 				}
-			} else {
-				$header = '&header=false';
 			}
 		}
 
-		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . (empty($snmp_query_graph_id) ? get_request_var('id') : $snmp_query_graph_id) . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' . (empty($snmp_query_graph_id) ? get_request_var('id') : $snmp_query_graph_id) . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 	} elseif (isset_request_var('save_component_svg')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -242,27 +232,20 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 
-		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-			$header = '&header=false';
-		} else {
-			$header = '';
-		}
-
 		if  (isempty_request_var('svg_text')) {
 			raise_message(39);
-			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			header('Location: data_queries.php?action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 			return;
 		} elseif (isempty_request_var('svg_field')) {
 			raise_message(38);
-			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			header('Location: data_queries.php?action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 			return;
 		}
 
 		/* suggested values -- graph templates */
 		$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id = ' . get_filter_request_var('id') . ' AND field_name = ' . db_qstr(get_nfilter_request_var('svg_field')));
 
-		$hash   = get_hash_data_query(0, 'data_query_sv_graph');
-		$header = '';
+		$hash = get_hash_data_query(0, 'data_query_sv_graph');
 
 		db_execute_prepared('INSERT INTO snmp_query_graph_sv
 			(hash, snmp_query_graph_id, sequence, field_name, text)
@@ -278,13 +261,7 @@ function form_save() {
 
 		clear_messages();
 
-		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-			$header = '&header=false';
-		} else {
-			$header = '';
-		}
-
-		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 	} elseif (isset_request_var('save_component_svds')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -293,22 +270,16 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 
-		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-			$header = '&header=false';
-		} else {
-			$header = '';
-		}
-
 		if (isset_request_var('svds_id')) {
 			$svds_id = get_request_var('svds_id');
 
 			if  (isempty_request_var('svds_text')) {
 				raise_message(39);
-				header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+				header('Location: data_queries.php?action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 				return;
 			} elseif (isempty_request_var('svds_field')) {
 				raise_message(38);
-				header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+				header('Location: data_queries.php?action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 				return;
 			}
 
@@ -337,7 +308,7 @@ function form_save() {
 				$header = '';
 			}
 
-			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			header('Location: data_queries.php?action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 		}
 	}
 }
@@ -361,7 +332,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_queries.php?header=false');
+		header('Location: data_queries.php');
 		exit;
 	}
 
@@ -408,7 +379,7 @@ function form_actions() {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Query', cacti_sizeof($dq_array)) . "'>";
 	} else {
 		raise_message(40);
-		header('Location: data_queries.php?header=false');
+		header('Location: data_queries.php');
 		exit;
 	}
 
@@ -1307,15 +1278,15 @@ function data_query() {
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL  = 'data_queries.php?header=false';
-			strURL += '&filter='+$('#filter').val();
+			strURL  = 'data_queries.php';
+			strURL += '?filter='+$('#filter').val();
 			strURL += '&rows='+$('#rows').val();
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			strURL = 'data_queries.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'data_queries.php?clear=1';
+			loadUrl({url:strURL})
 		}
 
 		$(function() {

@@ -44,7 +44,8 @@ switch (get_request_var('action')) {
 		break;
 	case 'rebuild_resource_cache':
 		rebuild_resource_cache();
-		header('Location: utilities.php?header=false');exit;
+		header('Location: utilities.php');
+		exit;
 		break;
 	case 'view_snmp_cache':
 		top_header();
@@ -979,13 +980,13 @@ function utilities_view_user_log() {
 	?>
 	<script type='text/javascript'>
 	function clearFilter() {
-		strURL = urlPath+'utilities.php?action=view_user_log&clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = urlPath+'utilities.php?action=view_user_log&clear=1';
+		loadUrl({url:strURL})
 	}
 
 	function purgeLog() {
-		strURL = urlPath+'utilities.php?action=clear_user_log&header=false';
-		loadPageNoHeader(strURL);
+		strURL = urlPath+'utilities.php?action=clear_user_log';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -1013,8 +1014,7 @@ function utilities_view_user_log() {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&action=view_user_log';
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 	</script>
 	<?php
@@ -1317,7 +1317,7 @@ function utilities_view_logfile() {
 
 	$page_nr = get_request_var('page');
 
-	$page = 'utilities.php?action=view_logfile&header=false';
+	$page = 'utilities.php?action=view_logfile';
 	$page .= '&filename=' . basename($logfile) . '&page=' . $page_nr;
 
 	$refresh = array(
@@ -1334,8 +1334,8 @@ function utilities_view_logfile() {
 	<script type='text/javascript'>
 
 	function purgeLog() {
-		strURL = urlPath+'utilities.php?action=purge_logfile&header=false&filename='+$('#filename').val();
-		loadPageNoHeader(strURL);
+		strURL = urlPath+'utilities.php?action=purge_logfile&filename='+$('#filename').val();
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -1365,17 +1365,15 @@ function utilities_view_logfile() {
 			'&reverse=' + $('#reverse').val() +
 			'&rfilter=' + base64_encode($('#rfilter').val()) +
 			'&filename=' + $('#filename').val() +
-			'&action=view_logfile' +
-			'&header=false';
+			'&action=view_logfile';
 		refreshMSeconds=$('#refresh').val()*1000;
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL  = urlPath+'utilities.php?clear=1';
 		strURL += '&action=view_logfile';
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 	</script>
 	<?php
@@ -1586,7 +1584,7 @@ function utilities_clear_logfile() {
 	load_current_session_value('refresh', 'sess_logfile_refresh', read_config_option('log_refresh_interval'));
 
 	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page']    = 'utilities.php?action=view_logfile&header=false';
+	$refresh['page']    = 'utilities.php?action=view_logfile';
 	$refresh['logout']  = 'false';
 
 	set_page_refresh($refresh);
@@ -1672,7 +1670,7 @@ function utilities_view_snmp_cache() {
 	}
 
 	$refresh['seconds'] = '300';
-	$refresh['page']    = 'utilities.php?action=view_snmp_cache&header=false';
+	$refresh['page']    = 'utilities.php?action=view_snmp_cache';
 	$refresh['logout']  = 'false';
 
 	set_page_refresh($refresh);
@@ -1691,13 +1689,12 @@ function utilities_view_snmp_cache() {
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&action=view_snmp_cache';
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = urlPath+'utilities.php?action=view_snmp_cache&clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = urlPath+'utilities.php?action=view_snmp_cache&clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -1982,13 +1979,12 @@ function utilities_view_poller_cache() {
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&status=' + $('#status').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = urlPath+'utilities.php?action=view_poller_cache&clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = urlPath+'utilities.php?action=view_poller_cache&clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2422,7 +2418,7 @@ function boost_display_run_status() {
 	$detail_stats    = read_config_option('stats_detail_boost', true);
 
 	$refresh['seconds'] = get_request_var('refresh');
-	$refresh['page']    = 'utilities.php?action=view_boost_status&header=false';
+	$refresh['page']    = 'utilities.php?action=view_boost_status';
 	$refresh['logout']  = 'false';
 
 	set_page_refresh($refresh);
@@ -2433,8 +2429,8 @@ function boost_display_run_status() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL = urlPath+'utilities.php?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
-		loadPageNoHeader(strURL);
+		strURL = urlPath+'utilities.php?action=view_boost_status&refresh=' + $('#refresh').val();
+		loadUrl({url:strURL})
 	}
 	</script>
 	<tr class='even'>
@@ -2904,13 +2900,12 @@ function snmpagent_utilities_run_cache() {
 		strURL += '&mib=' + $('#mib').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'utilities.php?action=view_snmpagent_cache&clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'utilities.php?action=view_snmpagent_cache&clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -3147,18 +3142,17 @@ function snmpagent_utilities_run_eventlog(){
 		strURL += '&receiver=' + $('#receiver').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'utilities.php?action=view_snmpagent_events&clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'utilities.php?action=view_snmpagent_events&clear=1';
+		loadUrl({url:strURL})
 	}
 
 	function purgeFilter() {
-		strURL = 'utilities.php?action=view_snmpagent_events&purge=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'utilities.php?action=view_snmpagent_events&purge=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

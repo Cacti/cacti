@@ -22,12 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $menu;
+global $config, $menu, $is_request_ajax;
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 $using_guest_account = false;
 
-if (!isset_request_var('headercontent')) {?>
+if (!$is_request_ajax) {?>
 <!DOCTYPE html>
 <html lang='<?php print CACTI_LOCALE;?>'>
 <head>
@@ -46,10 +46,10 @@ if (!isset_request_var('headercontent')) {?>
 		<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
 	</div>
 	<div class='cactiShadow'></div>
-	<?php } else {?>
+<?php } else {?>
 	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
 	<title><?php print $page_title;?></title>
-	<?php } ?>
+<?php } ?>
 	<div id='cactiContent' class='cactiContent'>
 		<div class='cactiConsoleNavigationArea' style='display:none;' id='navigation'>
 			<table style='width:100%;'>

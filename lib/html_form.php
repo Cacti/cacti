@@ -1402,11 +1402,11 @@ function form_end($ajax = true) {
 						$('#messageContainer').remove();
 
 						if (type == 'noheader') {
-							loadPageNoHeader(href, scroll_or_id, true);
+							loadUrl({url:href, scroll:scroll_or_id, force:true})
 						} else if (type == 'toptab') {
-							loadTopTab(href, scroll_or_id, true);
+							loadUrl({url:href, scroll:scroll_or_id, force:true, loadType:'toptab'});
 						} else {
-							loadPage(href, true);
+							loadUrl({url:href, force:true});
 						}
 					}
 				}
@@ -1442,35 +1442,11 @@ function form_end($ajax = true) {
 				$(this).find('input, textarea, select').prop('disabled', false);
 
 				strURL  = '<?php print $form_action;?>';
-				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
+				strURL += (strURL.indexOf('?') >= 0 ? '&':'?');
 
 				json =  $(this).serializeObject();
 				$.post(strURL, json).done(function(data) {
-					checkForLogout(data);
-					var htmlObject  = $(data);
-					var matches     = data.match(/<title>(.*?)<\/title>/);
-
-					if (matches != null) {
-						var htmlTitle   = matches[1];
-						var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-						var data        = htmlObject.find('#main').html();
-
-						$('#main').empty().hide();
-						$('title').text(htmlTitle);
-						$('#breadcrumbs').html(breadCrumbs);
-						$('div[class^="ui-"]').remove();
-						$('#main').html(data);
-						applySkin();
-					} else {
-						$('#main').empty().hide().html(data);
-						applySkin();
-					}
-
-					if (isMobile.any() != null) {
-						window.scrollTo(0,1);
-					} else {
-						window.scrollTo(0,0);
-					}
+					handleAjaxResponse(data);
 				});
 			});
 		});
