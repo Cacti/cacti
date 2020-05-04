@@ -2176,7 +2176,17 @@ tr.selected a {
 	color: black;
 }
 
-#nav li a.pic:hover, #nav li ul li a.selected {
+#nav li a.menu_parent:hover {
+	background: -moz-linear-gradient(top, rgba(138,179,105,1) 100%, rgba(63,117,15,1) 0%);
+	background: -webkit-gradient(left top, left bottom, color-stop(100%, rgba(138,179,105,1)), color-stop(0%, rgba(63,117,15,1)));
+	background: -webkit-linear-gradient(top, rgba(138,179,105,1) 100%, rgba(63,117,15,1) 0%);
+	background: -o-linear-gradient(top, rgba(138,179,105,1) 100%, rgba(63,117,15,1) 0%);
+	background: -ms-linear-gradient(top, rgba(138,179,105,1) 100%, rgba(63,117,15,1) 0%);
+	background: linear-gradient(to bottom, rgba(138,179,105,1) 100%, rgba(63,117,15,1) 0%);
+}
+
+#nav li a.pic:hover,
+#nav li ul li a.selected {
 	background: -moz-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242,246,248,1)), color-stop(50%, rgba(216,225,231,1)), color-stop(51%, rgba(181,198,208,1)), color-stop(100%, rgba(224,239,249,1)));
 	background: -webkit-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);

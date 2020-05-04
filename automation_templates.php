@@ -36,36 +36,38 @@ set_default_action();
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
-
 		break;
+
 	case 'ajax_dnd':
 		automation_template_dnd();
-
 		break;
+
 	case 'actions':
 		form_actions();
-
 		break;
-    case 'movedown':
-        automation_movedown();
 
-        header('Location: automation_templates.php?header=false');
+	case 'movedown':
+		automation_movedown();
+		header('Location: automation_templates.php');
 		break;
-    case 'moveup':
-        automation_moveup();
 
-        header('Location: automation_templates.php?header=false');
-		break;
-    case 'remove':
-        automation_remove();
+	case 'moveup':
+		automation_moveup();
 
-        header('Location: automation_templates.php?header=false');
+		header('Location: automation_templates.php');
 		break;
+
+	case 'remove':
+		automation_remove();
+		header('Location: automation_templates.php');
+		break;
+
 	case 'edit':
 		top_header();
 		template_edit();
 		bottom_footer();
 		break;
+
 	default:
 		top_header();
 		template();
@@ -95,7 +97,7 @@ function automation_template_dnd() {
 		}
 	}
 
-	header('Location: automation_templates.php?header=false');
+	header('Location: automation_templates.php');
 	exit;
 }
 
@@ -129,7 +131,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: automation_templates.php?header=false');
+		header('Location: automation_templates.php');
 		exit;
 	}
 
@@ -168,7 +170,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: automation_templates.php?header=false');
+		header('Location: automation_templates.php');
 		exit;
 	}
 
@@ -215,9 +217,9 @@ function form_save() {
 		}
 
 		if (is_error_message() || isempty_request_var('id')) {
-			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? get_nfilter_request_var('id') : $template_id));
+			header('Location: automation_templates.php?id=' . (empty($template_id) ? get_nfilter_request_var('id') : $template_id));
 		} else {
-			header('Location: automation_templates.php?header=false');
+			header('Location: automation_templates.php');
 		}
 	}
 }
@@ -424,14 +426,13 @@ function template() {
 				strURL = 'automation_templates.php' +
 					'?filter='     + $('#filter').val() +
 					'&rows='       + $('#rows').val() +
-					'&has_graphs=' + $('#has_graphs').is(':checked') +
-					'&header=false';
-				loadPageNoHeader(strURL);
+					'&has_graphs=' + $('#has_graphs').is(':checked');
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'automation_templates.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'automation_templates.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {
@@ -558,23 +559,22 @@ function template() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-        $('#automation_templates2_child').attr('id', 'template_ids');
+		$('#automation_templates2_child').attr('id', 'template_ids');
 
 		$('img.action').click(function() {
 			strURL = $(this).attr('href');
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		});
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#template_ids').find('tr:first').addClass('nodrag').addClass('nodrop');
 
-        $('#template_ids').tableDnD({
-            onDrop: function(table, row) {
-                loadPageNoHeader('automation_templates.php?action=ajax_dnd&'+$.tableDnD.serialize());
-            }
-        });
+		$('#template_ids').tableDnD({
+			onDrop: function(table, row) {
+				loadUrl({url:'automation_templates.php?action=ajax_dnd&'+$.tableDnD.serialize()})
+			}
+		});
 		<?php } ?>
-
 	});
 	</script>
 	<?php

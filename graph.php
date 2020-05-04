@@ -46,7 +46,7 @@ api_plugin_hook_function('graph');
 include_once('./lib/html_tree.php');
 
 $refresh['seconds'] = read_config_option('page_refresh');
-$refresh['page']    = 'graph.php?local_graph_id=' . get_request_var('local_graph_id') . '&header=false';
+$refresh['page']    = 'graph.php?local_graph_id=' . get_request_var('local_graph_id');
 $refresh['logout']  = 'false';
 set_page_refresh($refresh);
 
@@ -224,7 +224,7 @@ case 'view':
 			rra_id=$(this).attr('rra_id');
 			graph_start=$(this).attr('graph_start');
 			graph_end=$(this).attr('graph_end');
-			$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id='+rra_id+'&graph_start='+graph_start+'&graph_end='+graph_end)
+			$.get(urlPath+'graph.php?action=zoom&local_graph_id='+graph_id+'&rra_id='+rra_id+'&graph_start='+graph_start+'&graph_end='+graph_end)
 				.done(function(data) {
 					$('#main').html(data);
 					$('#breadcrumbs').append('<li><a id="nav_util" href="#"><?php print __('Utility View');?></a></li>');
@@ -389,7 +389,7 @@ case 'zoom':
 	}
 
 	function graphProperties() {
-		$.get(urlPath+'graph.php?action=properties&header=false&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
+		$.get(urlPath+'graph.php?action=properties&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
 			.done(function(data) {
 				$('#data').html(data);
 			})

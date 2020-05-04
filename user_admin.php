@@ -93,7 +93,7 @@ function update_policies() {
 		db_execute_prepared("UPDATE user_auth SET $set WHERE id = ?", array(get_nfilter_request_var('id')));
 	}
 
-	header('Location: user_admin.php?action=user_edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
+	header('Location: user_admin.php?action=user_edit&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
 	exit;
 }
 
@@ -123,7 +123,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
+		header('Location: user_admin.php?action=user_edit&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_graph')) {
 		foreach ($_POST as $var => $val) {
@@ -147,7 +147,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
+		header('Location: user_admin.php?action=user_edit&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_template')) {
 		foreach ($_POST as $var => $val) {
@@ -171,7 +171,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
+		header('Location: user_admin.php?action=user_edit&tab=permste&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_groups')) {
 		foreach ($_POST as $var => $val) {
@@ -194,7 +194,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permsgr&id=' . get_nfilter_request_var('id'));
+		header('Location: user_admin.php?action=user_edit&tab=permsgr&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_tree')) {
 		foreach ($_POST as $var => $val) {
@@ -218,7 +218,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?action=user_edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
+		header('Location: user_admin.php?action=user_edit&tab=permstr&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('selected_items')) {
 		if (get_nfilter_request_var('drp_action') == '2') { /* copy */
@@ -299,7 +299,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_admin.php?header=false');
+		header('Location: user_admin.php');
 		exit;
 	}
 
@@ -426,7 +426,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: user_admin.php?header=false');
+		header('Location: user_admin.php');
 		exit;
 	}
 
@@ -506,7 +506,7 @@ function form_save() {
 		}
 
 		if ($add_button_clicked == true) {
-			header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
+			header('Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . get_nfilter_request_var('id'));
 			exit;
 		}
 	} elseif (isset_request_var('save_component_user')) {
@@ -663,7 +663,7 @@ function form_save() {
 	}
 
 	/* redirect to the appropriate page */
-	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
+	header('Location: user_admin.php?action=user_edit&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
 }
 
 /* --------------------------
@@ -702,7 +702,7 @@ function perm_remove() {
 			array(get_request_var('user_id'), get_request_var('id')));
 	}
 
-	header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
+	header('Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . get_request_var('user_id'));
 }
 
 function get_permission_string(&$graph, &$policies) {
@@ -854,7 +854,7 @@ function graph_perms_edit($tab, $header_label) {
 	switch($tab) {
 	case 'permsg':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			header('Location: user_admin.php');
 		}
 
 		process_graph_request_vars();
@@ -1095,7 +1095,7 @@ function graph_perms_edit($tab, $header_label) {
 		break;
 	case 'permsgr':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			header('Location: user_admin.php');
 		}
 
 		process_group_request_vars();
@@ -1192,7 +1192,7 @@ function graph_perms_edit($tab, $header_label) {
 		break;
 	case 'permsd':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			header('Location: user_admin.php');
 		}
 
 		process_device_request_vars();
@@ -1359,7 +1359,7 @@ function graph_perms_edit($tab, $header_label) {
 		break;
 	case 'permste':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			header('Location: user_admin.php');
 		}
 
 		process_template_request_vars();
@@ -1504,7 +1504,7 @@ function graph_perms_edit($tab, $header_label) {
 		break;
 	case 'permstr':
 		if (isempty_request_var('id')) {
-			header('Location: user_admin.php&header=false');
+			header('Location: user_admin.php');
 		}
 
 		process_tree_request_vars();
@@ -2211,13 +2211,12 @@ function user() {
 	function applyFilter() {
 		strURL  = 'user_admin.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'user_admin.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'user_admin.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2559,14 +2558,12 @@ function graph_filter($header_label) {
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter(objForm) {
 		strURL = 'user_admin.php?action=user_edit&tab=permsg&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2666,14 +2663,12 @@ function group_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permsgr&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2752,14 +2747,12 @@ function device_filter($header_label) {
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter(objForm) {
 		strURL = 'user_admin.php?action=user_edit&tab=permsd&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2855,14 +2848,12 @@ function template_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permste&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2940,14 +2931,12 @@ function tree_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL = 'user_admin.php?action=user_edit&tab=permstr&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -3025,14 +3014,12 @@ function member_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter(objForm) {
 		strURL = 'user_admin.php?action=user_edit&tab=members&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

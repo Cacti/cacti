@@ -54,7 +54,7 @@ switch (get_request_var('action')) {
 
 		input_remove();
 
-		header('Location: graph_templates.php?header=false&action=template_edit&id=' . get_request_var('graph_template_id'));
+		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 		break;
 	case 'input_edit':
 		top_header();
@@ -198,7 +198,7 @@ function form_save() {
 		}
 	}
 
-	header('Location: graph_templates.php?header=false&action=template_edit&id=' . (empty($graph_template_id) ? get_nfilter_request_var('graph_template_id') : $graph_template_id));
+	header('Location: graph_templates.php?action=template_edit&id=' . (empty($graph_template_id) ? get_nfilter_request_var('graph_template_id') : $graph_template_id));
 }
 
 /* ------------------------
@@ -307,7 +307,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: graph_templates.php?header=false');
+		header('Location: graph_templates.php');
 		exit;
 	}
 
@@ -388,7 +388,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: graph_templates.php?header=false');
+		header('Location: graph_templates.php');
 		exit;
 	}
 
@@ -485,7 +485,7 @@ function item() {
 	$(function() {
 		$('.deleteMarker, .moveArrow').click(function(event) {
 			event.preventDefault();
-			loadPageNoHeader($(this).attr('href'));
+			loadUrl({url:$(this).attr('href')})
 		});
 	});
 	</script>
@@ -698,16 +698,16 @@ function template() {
 		var disabled = true;
 
 		function applyFilter() {
-			strURL  = 'graph_templates.php?header=false';
+			strURL  = 'graph_templates.php';
 			strURL += '&filter='+$('#filter').val();
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&has_graphs='+$('#has_graphs').is(':checked');
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			strURL = 'graph_templates.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'graph_templates.php?clear=1';
+			loadUrl({url:strURL})
 		}
 
 		$(function() {

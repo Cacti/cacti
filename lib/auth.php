@@ -2492,7 +2492,7 @@ function secpass_login_process($username) {
 
 					if ($user['locked'] != '') {
 						display_custom_error_message(__('This account has been locked.'));
-						header('Location: index.php?header=false');
+						header('Location: index.php');
 						exit;
 					}
 
@@ -2501,7 +2501,7 @@ function secpass_login_process($username) {
 
 				if ($user['locked'] != '') {
 					display_custom_error_message(__('This account has been locked.'));
-					header('Location: index.php?header=false');
+					header('Location: index.php');
 					exit;
 				}
 			}
@@ -2853,7 +2853,7 @@ function auth_login($user) {
 	if ($user_enabled != 'on') {
 		/* Display error */
 		display_custom_error_message(__('Access Denied, user account disabled.'));
-		header('Location: index.php?header=false');
+		header('Location: index.php');
 		exit;
 	}
 

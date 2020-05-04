@@ -263,9 +263,9 @@ function form_save() {
 
 		if (isset($return_array['local_graph_id'])) {
 			$local_graph_id = $return_array['local_graph_id'];
-			header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
+			header('Location: graphs.php?action=graph_edit&id=' . $local_graph_id);
 		} else {
-			header('Location: graphs.php?header=false');
+			header('Location: graphs.php');
 		}
 
 		exit;
@@ -411,13 +411,13 @@ function form_save() {
 	}
 
 	if ((isset_request_var('save_component_graph_new')) && (isempty_request_var('graph_template_id'))) {
-		header('Location: graphs.php?action=graph_edit&header=false&host_id=' . get_nfilter_request_var('host_id') . '&new=1');
+		header('Location: graphs.php?action=graph_edit&host_id=' . get_nfilter_request_var('host_id') . '&new=1');
 	} elseif ((is_error_message()) || (isempty_request_var('local_graph_id')) || (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('graph_template_id_prev')) || (get_nfilter_request_var('host_id') != get_nfilter_request_var('host_id_prev'))) {
-		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_nfilter_request_var('local_graph_id') : $local_graph_id) . (isset_request_var('host_id') ? '&host_id=' . get_nfilter_request_var('host_id') : ''));
+		header('Location: graphs.php?action=graph_edit&id=' . (empty($local_graph_id) ? get_nfilter_request_var('local_graph_id') : $local_graph_id) . (isset_request_var('host_id') ? '&host_id=' . get_nfilter_request_var('host_id') : ''));
 	} elseif (!empty($local_graph_id)) {
-		header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
+		header('Location: graphs.php?action=graph_edit&id=' . $local_graph_id);
 	} else {
-		header('Location: graphs.php?header=false');
+		header('Location: graphs.php');
 	}
 
 	exit;
@@ -744,7 +744,7 @@ function form_actions() {
 				/* create actual graph items */
 				aggregate_create_update($local_graph_id, $member_graphs, $attribs);
 
-				header("Location: aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");
+				header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
 				exit;
 			} elseif (get_request_var('drp_action') == '8') { // automation
 				cacti_log('automation_graph_action_execute called: ' . get_request_var('drp_action'), true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -777,9 +777,9 @@ function form_actions() {
 		}
 
 		if (get_request_var('drp_action') == '2') { // change graph template
-			header('Location: graphs.php?header=false&template_id=-1');
+			header('Location: graphs.php?template_id=-1');
 		} else {
-			header('Location: graphs.php?header=false');
+			header('Location: graphs.php');
 		}
 
 		exit;
@@ -1267,7 +1267,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: graphs.php?header=false');
+		header('Location: graphs.php');
 		exit;
 	}
 
@@ -1350,7 +1350,7 @@ function item() {
 	$(function() {
 		$('.deleteMarker, .moveArrow').unbind().click(function(event) {
 			event.preventDefault();
-			loadPageNoHeader($(this).attr('href'));
+			loadUrl({url:$(this).attr('href')})
 		});
 	});
 	</script>
@@ -1693,7 +1693,7 @@ function graph_edit() {
 
 			$('body').append("<div id='modal' class='ui-widget-overlay ui-front' style='z-index: 100;'><i style='position:absolute;top:50%;left:50%;' class='fa fa-spin fa-circle-notch'/></div>");
 
-			$.get('graphs.php?action=unlock&header=false&id='+$('#local_graph_id').val())
+			$.get('graphs.php?action=unlock&id='+$('#local_graph_id').val())
 				.done(function(data) {
 					$('#modal').remove();
 					$('#main').html(data);
@@ -1717,7 +1717,7 @@ function graph_edit() {
 		$('#lockid').click(function(event) {
 			event.preventDefault;
 
-			loadPageNoHeader('graphs.php?action=lock&header=false&id='+$('#local_graph_id').val());
+			loadUrl({url:'graphs.php?action=lock&id='+$('#local_graph_id').val()})
 		});
 
 		$(window).resize(function() {
@@ -1852,14 +1852,13 @@ function graph_management() {
 			'&rows=' + $('#rows').val() +
 			'&orphans=' + $('#orphans').is(':checked') +
 			'&rfilter=' + base64_encode($('#rfilter').val()) +
-			'&template_id=' + $('#template_id').val() +
-			'&header=false';
-		loadPageNoHeader(strURL);
+			'&template_id=' + $('#template_id').val();
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'graphs.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'graphs.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

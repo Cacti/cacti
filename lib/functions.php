@@ -3263,10 +3263,7 @@ function bottom_footer() {
 	global $config, $no_session_write;
 
 	include_once($config['base_path'] . '/include/global_session.php');
-
-	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include_once($config['base_path'] . '/include/bottom_footer.php');
-	}
+	include_once($config['base_path'] . '/include/bottom_footer.php');
 
 	/* we use this session var to store field values for when a save fails,
  	   this way we can restore the field's previous values. we reset it here, because
@@ -3289,31 +3286,19 @@ function bottom_footer() {
 function top_header() {
 	global $config;
 
-	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include_once($config['base_path'] . '/include/top_header.php');
-	}
+	include_once($config['base_path'] . '/include/top_header.php');
 }
 
 function top_graph_header() {
 	global $config;
-	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include_once($config['base_path'] . '/include/top_graph_header.php');
-	}
+
+	include_once($config['base_path'] . '/include/top_graph_header.php');
 }
 
 function general_header() {
 	global $config;
-	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include_once($config['base_path'] . '/include/top_general_header.php');
-	}
-}
 
-function appendHeaderSuppression($url) {
-	if (strpos($url, 'header=false') < 0) {
-		return $url . (strpos($url, '?') ? '&':'?') . 'header=false';
-	}
-
-	return $url;
+	include_once($config['base_path'] . '/include/top_general_header.php');
 }
 
 function admin_email($subject, $message) {

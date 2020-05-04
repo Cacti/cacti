@@ -184,8 +184,8 @@ function export() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#export_type').change(function() {
-			strURL = 'templates_export.php?header=false&export_type='+$('#export_type').val();
-			loadPageNoHeader(strURL);
+			strURL = 'templates_export.php?export_type='+$('#export_type').val();
+			loadUrl({url:strURL})
 		});
 	});
 	</script>

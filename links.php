@@ -42,7 +42,7 @@ case 'delete_page':
 		page_delete(get_request_var('id'));
 	}
 
-	header('Location: links.php?header=false');
+	header('Location: links.php');
 
 	break;
 case 'move_page_up':
@@ -50,7 +50,7 @@ case 'move_page_up':
 		page_move(get_request_var('id'), get_request_var('order'), '-1');
 	}
 
-	header('Location: links.php?header=false');
+	header('Location: links.php');
 
 	break;
 case 'move_page_down':
@@ -58,7 +58,7 @@ case 'move_page_down':
 		page_move(get_request_var('id'), get_request_var('order'), '1');
 	}
 
-	header('Location: links.php?header=false');
+	header('Location: links.php');
 
 	break;
 case 'save':
@@ -101,12 +101,12 @@ case 'save':
 
 		raise_message(1);
 
-		header('Location: links.php?header=false');
+		header('Location: links.php');
 		exit;
 	} else {
 		raise_message(2);
 
-		header('Location: links.php?action=edit&header=false&id=' . (isset_request_var('id') ? get_filter_request_var('id'):''));
+		header('Location: links.php?action=edit&id=' . (isset_request_var('id') ? get_filter_request_var('id'):''));
 		exit;
 	}
 
@@ -158,7 +158,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: links.php?header=false');
+		header('Location: links.php');
 		exit;
 	}
 
@@ -216,7 +216,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: links.php?header=false');
+		header('Location: links.php');
 		exit;
 	}
 
@@ -281,13 +281,12 @@ function pages() {
 	function applyFilter() {
 		strURL  = 'links.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL  = 'links.php?clear=true&header=false';
-		loadPageNoHeader(strURL);
+		strURL  = 'links.php?clear=true';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

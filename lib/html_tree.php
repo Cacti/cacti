@@ -252,6 +252,7 @@ function grow_dhtml_trees() {
 	$(function () {
 		$('#jstree').each(function(data) {
 			var id=$(this).attr('id');
+			var pageGraphFirstLoad = true;
 
 			$(this)
 			.on('init.jstree', function() {
@@ -266,6 +267,7 @@ function grow_dhtml_trees() {
 			})
 			.on('ready.jstree', function() {
 				resizeTreePanel();
+				pageGraphFirstLoad = false;
 			})
 			.on('changed.jstree', function() {
 				resizeTreePanel();
@@ -295,7 +297,7 @@ function grow_dhtml_trees() {
 						href = href.replace('action=tree', 'action=tree_content');
 						href = href + '&hyper=true';
 						$('.cactiGraphContentArea').hide();
-						loadPage(href);
+						loadUrl({url:href,noState:pageGraphFirstLoad});
 					}
 
 					node = data.node.id;

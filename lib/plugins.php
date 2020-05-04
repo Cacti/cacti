@@ -582,7 +582,7 @@ function api_plugin_install($plugin) {
 		$message .= '<br><br>' . __('Plugin cannot be installed.');
 		raise_message($message, MESSAGE_LEVEL_ERROR);
 
-		header('Location: plugins.php?header=false');
+		header('Location: plugins.php');
 		exit;
 	}
 
