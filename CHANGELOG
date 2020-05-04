@@ -7,12 +7,17 @@ Cacti CHANGELOG
 -issue#3141: Fix FreeBSD IPv6 ping
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1523: Value above RRD maximum value
+-feature#2437: Create system-wide Proxy settings for plugins
 -feature#2474: Enable better version reporting for GitHub/Source/Package editions
 -feature#2550: Enable use of authenticator codes for Two-Factor Authentication
 -feature#2607: Allow adding sites from command line
+-feature#2767: Plugins should be temporarily disabled if a required plugin is also disabled
 -feature#3139: Added option in CLI tool remove_graphs for deletion of single graph
 -feature#3187: Feature: rra path should be configurable
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
+
+1.2.13
+-issue#3525: When viewing Graphs, zoom functionality prevents drag and drop of image
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
