@@ -2442,7 +2442,7 @@ class Installer implements JsonSerializable {
 
 		if ($this->getMode() == Installer::MODE_UPGRADE) {
 			$output .= Installer::sectionNormal(__('Please select the Device Templates that you wish to update during the Upgrade.'));
-			$output .= Installer::sectionWarning(__('Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to \'Sync Graphs\' to from the Tamplates after update.'));
+			$output .= Installer::sectionWarning(__('Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to \'Sync Graphs\' to from the Templates after update.'));
 		} else {
 			$output .= Installer::sectionNormal(__('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.'));
 		}
