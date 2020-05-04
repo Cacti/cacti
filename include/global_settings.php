@@ -44,7 +44,7 @@ $tabs = array(
 	'authentication' => __('Authentication'),
 	'boost'          => __('Performance'),
 	'spikes'         => __('Spikes'),
-	'mail'           => __('Mail/Reporting/DNS'));
+	'mail'           => __('Services'));
 
 $tabs_graphs = array(
 	'general'   => __('General Settings'),
@@ -1797,6 +1797,43 @@ $settings = array(
 			'default' => '500',
 			'max_length' => '10',
 			'size' => '5'
+			),
+		'settings_proxy_header' => array(
+			'friendly_name' => __('Proxy Options'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'settings_proxy_header' => array(
+			'friendly_name' => __('Proxy Options'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'settings_proxy_host' => array(
+			'friendly_name' => __('Proxy Hostname'),
+			'description' => __('This is the hostname/IP of the Proxy Server you will send the Email to. For failover, separate your hosts using a semi-colon.'),
+			'method' => 'textbox',
+			'default' => 'localhost',
+			'max_length' => 255,
+			),
+		'settings_proxy_port' => array(
+			'friendly_name' => __('Proxy Port'),
+			'description' => __('The port on the Proxy Server to use.'),
+			'method' => 'textbox',
+			'max_length' => 255,
+			'default' => 25,
+			'size' => 5
+			),
+		'settings_proxy_username' => array(
+			'friendly_name' => __('Proxy Username'),
+			'description' => __('The username to authenticate with when sending via Proxy. (Leave blank if you do not require authentication.)'),
+			'method' => 'textbox',
+			'max_length' => 255,
+			),
+		'settings_proxy_password' => array(
+			'friendly_name' => __('Proxy Password'),
+			'description' => __('The password to authenticate with when sending via Proxy. (Leave blank if you do not require authentication.)'),
+			'method' => 'textbox_password',
+			'max_length' => 255,
 			),
 		),
 	'boost' => array(

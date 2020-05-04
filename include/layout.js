@@ -1893,7 +1893,6 @@ function loadUrl(options) {
 			window[options.funcStart](options);
 		}
 
-		debugger;
 		$.ajaxQ.abortAll();
 		$.get(options.url)
 			.done(function(html) {
