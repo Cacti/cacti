@@ -840,14 +840,19 @@ $selectedTheme = get_selected_theme();
 	var storage = Storages.localStorage;
 
 	$(function() {
-		preferredRealm = storage.get('user_realm');
-		if (preferredRealm == undefined) {
+		if (storage.isSet('user_realm')) {
+			var preferredRealm = storage.get('user_realm');
+		} else {
+			var preferredRealm = null;
+		}
+
+		if (preferredRealm == null) {
 			preferredRealm = $('#realm option:selected').val();
 		}
 
 		// Restore the preferred realm
 		if ($('#realm').length) {
-			if (preferredRealm !== undefined) {
+			if (preferredRealm !== null) {
 				$('#realm').val(preferredRealm);
 				if ($('#realm').selectmenu('instance') !== undefined) {
 					$('#realm').selectmenu('refresh');

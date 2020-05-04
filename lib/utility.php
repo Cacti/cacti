@@ -1258,7 +1258,7 @@ function utilities_get_system_memory() {
 		exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
 		if (cacti_sizeof($memInfo)) {
 			foreach ($memInfo as $key => $values) {
-				$memInfo[$key] = $values[1];
+				$memInfo[$key] = $values[1] * 1000;
 			}
 		}
 	} else {

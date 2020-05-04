@@ -140,9 +140,14 @@ function basename(path, suffix) {
 		b = b.slice(0, -1);
 	}
 
+	if (b.indexOf('?') > 0) {
+		var questionPosition = b.indexOf('?');
+		b = b.slice(0, questionPosition);
+	}
+
 	b = b.replace(/^.*[\\/\\\\]/g, '');
 
-	if (typeof suffix === 'string' && b.substr(b.length - suffix.length) == suffix) {
+	if (suffix !== undefined && b.substr(b.length - suffix.length) == suffix) {
 		b = b.substr(0, b.length - suffix.length);
 	}
 
@@ -392,6 +397,22 @@ $.fn.serializeObject = function() {
 
 	return objectData;
 };
+
+// Borrowed from mustache.js
+function escapeString(string) {
+	var entityMap = {
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#39;',
+		'/': '&#x2F;',
+		'`': '&#x60;'
+	};
+
+	return String(string).replace(/[<>"'`\/]/g, function fromEntityMap (s) {
+		return entityMap[s];
+	});
+}
 
 // Plugin to apply numeric format for tablesorter
 $.tablesorter.addParser({
@@ -1005,7 +1026,11 @@ function makeFiltersResponsive() {
 					toggleFilterAndIcon(id, child, false);
 				});
 
-				state = storage.get('filterVisibility');
+				if (storage.isSet('filterVisibility')) {
+					state = storage.get('filterVisibility');
+				} else {
+					state = 'visible';
+				}
 
 				if (state == 'hidden') {
 					if (filterHeader.find('.cactiFilterState').length == 0) {
@@ -1040,7 +1065,11 @@ function makeFiltersResponsive() {
 function toggleFilterAndIcon(id, child, initial) {
 	storage = Storages.localStorage;
 
-	state = storage.get('filterVisibility');
+	if (storage.isSet('filterVisibility')) {
+		state = storage.get('filterVisibility');
+	} else {
+		state = 'visible';
+	}
 
 	if (initial) {
 		if (state == 'hidden') {
@@ -1063,22 +1092,21 @@ function toggleFilterAndIcon(id, child, initial) {
 }
 
 function setGraphTabs() {
-	url = window.location.href;
-	page = basename(url);
+	page = window.location.href;
 
 	if (page.indexOf('graph_view.php') >= 0) {
 		$('.lefttab').removeClass('selected');
 		$('#tab-graphs').addClass('selected');
 
 		if (page.indexOf('action=tree') > 0) {
-			$('.righttab').removeClass('selected');
-			$('#treeview').addClass('selected');
+			$('#preview, #listview, #treeview').removeClass('selected').prop('aria-selected', false);
+			$('#treeview').addClass('selected').prop('aria-selected', true);
 		} else if (page.indexOf('action=list') > 0) {
-			$('.righttab').removeClass('selected');
-			$('#listview').addClass('selected');
+			$('#preview, #listview, #treeview').removeClass('selected').prop('aria-selected', false);
+			$('#listview').addClass('selected').prop('aria-selected', true);
 		} else if (page.indexOf('action=preview') > 0) {
-			$('.righttab').removeClass('selected');
-			$('#preview').addClass('selected');
+			$('#preview, #listview, #treeview').removeClass('selected').prop('aria-selected', false);
+			$('#preview').addClass('selected').prop('aria-selected', true);
 		}
 
 		/* update menu selection */
@@ -1112,6 +1140,8 @@ function setupResponsiveMenuAndTabs() {
 
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
 			return;
+		} else if (page == 'index.php' && $(this).attr('href').indexOf('login')) {
+			return;
 		} else {
 			event.preventDefault();
 		}
@@ -1124,7 +1154,7 @@ function setupResponsiveMenuAndTabs() {
 					menuShow();
 				}
 			}
-		} else if (pageName == page) {
+		} else if (pageName == page && pageName != 'graph_view.php') {
 			if ($('#navigation').length) {
 				if (menuOpen(page)) {
 					menuHide(true);
@@ -1149,9 +1179,13 @@ function loadMenuStateOpen(page) {
 	storage = Storages.localStorage;
 	page    = page.replace('.php', '');
 
-	state = storage.get('menuState_' + page);
-	if (state == 'hidden') {
-		return false;
+	if (storage.isSet('menuState_' + page)) {
+		state = storage.get('menuState_' + page);
+		if (state == 'hidden') {
+			return false;
+		} else {
+			return true;
+		}
 	} else {
 		return true;
 	}
@@ -1726,9 +1760,9 @@ function loadTopTab(href, id, force) {
 				pageName = basename(hrefParts[0]);
 
 				if (pageName != '') {
-					if ($('#menu').find("a[href^='"+href+"']").length > 0) {
+					if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href^='"+href+"']").addClass('selected');
+						$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
 					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
@@ -1833,14 +1867,14 @@ function loadPage(href, force) {
 					if (pageName == 'host.php') {
 						if (href.indexOf('create') >= 0) {
 							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href='"+href+"']").addClass('selected');
+							$('#menu').find("a[href='"+escapeString(href)+"']").addClass('selected');
 						} else {
 							$('#menu').find('.pic').removeClass('selected');
 							$('#menu').find("a[href$='host.php']").addClass('selected');
 						}
-					} else if ($('#menu').find("a[href^='"+href+"']").length > 0) {
+					} else if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href^='"+href+"']").addClass('selected');
+						$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
 					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
@@ -1989,14 +2023,14 @@ function loadPageNoHeader(href, scroll, force) {
 						if (pageName == 'host.php') {
 							if (href.indexOf('create') >= 0) {
 								$('#menu').find('.pic').removeClass('selected');
-								$('#menu').find("a[href='"+href+"']").addClass('selected');
+								$('#menu').find("a[href='"+escapeString(href)+"']").addClass('selected');
 							} else {
 								$('#menu').find('.pic').removeClass('selected');
 								$('#menu').find("a[href$='host.php']").addClass('selected');
 							}
-						} else if ($('#menu').find("a[href^='"+href+"']").length > 0) {
+						} else if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
 							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href^='"+href+"']").addClass('selected');
+							$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
 						} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 							$('#menu').find('.pic').removeClass('selected');
 							$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
@@ -2189,7 +2223,11 @@ function setupCollapsible() {
 
 	$('.collapsible').each(function(data) {
 		var id = $(this).attr('id')+'_cs';
-		var state = storage.get(id);
+		if (storage.isSet(id)) {
+			var state = storage.get(id);
+		} else {
+			var state = 'show';
+		}
 
 		if (state == 'hide') {
 			$(this).addClass('collapsed');
@@ -2350,7 +2388,13 @@ function saveTableWidths(initial) {
 	// Initialize table width on the page
 	$('.cactiTable').each(function(data) {
 		var key    = $(this).attr('id');
-		var sizes  = storage.get(key);
+
+		if (storage.isSet(key)) {
+			var sizes = storage.get(key);
+		} else {
+			var sizes = new Array();
+		}
+
 		var items  = sizes ? sizes: new Array();
 		var width  = $(document).width();
 
@@ -2887,6 +2931,9 @@ function saveGraphFilter(section) {
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
+	date1Open = false;
+	date2Open = false;
+
 	$.get(href+'&header=false&section='+section)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2909,6 +2956,9 @@ function applyGraphFilter() {
 		'&graphs='+$('#graphs').val()+
 		'&graph_template_id='+$('#graph_template_id').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked'));
+
+	date1Open = false;
+	date2Open = false;
 
 	$.ajaxQ.abortAll();
 	$.get(href)
@@ -2976,6 +3026,9 @@ function applyGraphTimespan() {
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
+	date1Open = false;
+	date2Open = false;
+
 	$.ajaxQ.abortAll();
 	$.get(href)
 		.done(function(data) {
@@ -3007,6 +3060,7 @@ function refreshGraphTimespanFilter() {
 
 	date1Open = false;
 	date2Open = false;
+
 	$('#date1').datetimepicker('hide');
 	$('#date2').datetimepicker('hide');
 
@@ -3034,6 +3088,9 @@ function timeshiftGraphFilterLeft() {
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
 
+	date1Open = false;
+	date2Open = false;
+
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
 		checkForLogout(data);
@@ -3058,6 +3115,9 @@ function timeshiftGraphFilterRight() {
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
 
+	date1Open = false;
+	date2Open = false;
+
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
 		checkForLogout(data);
@@ -3080,6 +3140,9 @@ function clearGraphTimespanFilter() {
 	};
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+
+	date1Open = false;
+	date2Open = false;
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {

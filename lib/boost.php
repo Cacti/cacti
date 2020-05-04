@@ -640,7 +640,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			$rows = db_fetch_cell_prepared('SELECT COUNT(local_data_id)
 				FROM ' . $table['name'] . '
 				WHERE local_data_id = ?',
-				array($local_data_id));
+				array($local_data_id), '', false);
 
 			if (db_table_exists($table['name']) && is_numeric($rows) && intval($rows) > 0) {
 				if ($query_string != '') {
@@ -925,6 +925,16 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
 	$return_value = 0;
 
+	/* check if the rrd_path is empty
+	 * It can become empty if someone has removed
+	 * a Data Source while boost is running, or a Re-Index
+	 * found the Data Source invalid, so it was removed
+	 * from the poller_item table
+	 */
+	if ($rrd_path == '') {
+		return time();
+	}
+
 	if (read_config_option('storage_location')) {
 		$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
 	} else {
@@ -1180,6 +1190,14 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 	/* let's check for deleted Data Sources */
 	$valid_entry = true;
+
+	/* check for an empty rrd_path
+	 * this can happen when you've removed a data source
+	 * while boost is running
+	 */
+	if ($rrd_path == '') {
+		return 'OK';
+	}
 
 	/* create the rrd if one does not already exist */
 	if (read_config_option('storage_location')) {

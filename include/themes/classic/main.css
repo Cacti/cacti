@@ -52,14 +52,14 @@ img {
 	vertical-align: middle;
 }
 
-i.fa, i.fas, i.fab {
+i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
 	vertical-align: middle;
 	font-size: 1.1em;
 	color: white;
 }
 
-.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
+.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab, .menu_parent i.far, .menu_parent i.fal {
 	color: white;
 }
 
@@ -1245,20 +1245,18 @@ legend {
 }
 
 .formRow {
-	display: table-row;
 	width: 100%;
 	line-height: 30px;
+	overflow-y: auto;
 }
 
 .formColumn {
 	float: left;
-	display: table-column;
 	text-align: left;
 }
 
 .formColumnLeft {
 	float: left;
-	display: table-column;
 	padding-left: 4px;
 	width: 45%;
 	text-align: left;
@@ -1266,7 +1264,6 @@ legend {
 
 .formColumnRight {
 	float: left;
-	display: table-column;
 	width: 45%;
 	text-align: left;
 }

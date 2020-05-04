@@ -74,7 +74,7 @@ function form_save() {
 			form_save_aggregate();
 		}
 
-		if ($graph_item_types{get_request_var('graph_type_id')} == 'LEGEND') {
+		if ($graph_item_types[get_request_var('graph_type_id')] == 'LEGEND') {
 			/* this can be a major time saver when creating lots of graphs with the typical
 			GPRINT LAST/AVERAGE/MAX legends */
 			$items = array(
@@ -240,9 +240,9 @@ function item_movedown() {
 	$arr = get_graph_group(get_request_var('id'));
 	$next_id = get_graph_parent(get_request_var('id'), 'next');
 
-	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
+	if ((!empty($next_id)) && (isset($arr[get_request_var('id')]))) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
-	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))])) {
 		move_item_down('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }
@@ -258,9 +258,9 @@ function item_moveup() {
 	$arr = get_graph_group(get_request_var('id'));
 	$previous_id = get_graph_parent(get_request_var('id'), 'previous');
 
-	if ((!empty($previous_id)) && (isset($arr{get_request_var('id')}))) {
+	if ((!empty($previous_id)) && (isset($arr[get_request_var('id')]))) {
 		move_graph_group(get_request_var('id'), $arr, $previous_id, 'previous');
-	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))])) {
 		move_item_up('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }

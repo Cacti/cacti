@@ -94,9 +94,9 @@ function install_test_local_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print json_encode(array('status' => 'true'));
+		return json_encode(array('status' => 'true'));
 	} else {
-		print json_encode(array('status' => 'false'));
+		return json_encode(array('status' => 'false'));
 	}
 }
 
@@ -112,9 +112,9 @@ function install_test_remote_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print json_encode(array('status' => 'true'));
+		return json_encode(array('status' => 'true'));
 	} else {
-		print json_encode(array('status' => 'false'));
+		return json_encode(array('status' => 'false'));
 	}
 }
 
@@ -347,7 +347,8 @@ function find_search_paths($os = 'unix') {
 
 	if ($os == 'win32') {
 		$search_suffix = ';';
-		$search_paths = array(
+		$search_slash  = '\\';
+		$search_paths  = array(
 			'c:/usr/bin',
 			'c:/cacti',
 			'c:/rrdtool',
@@ -371,7 +372,8 @@ function find_search_paths($os = 'unix') {
 		);
 	} else {
 		$search_suffix = ':';
-		$search_paths = array(
+		$search_slash  = '';
+		$search_paths  = array(
 			'/bin',
 			'/sbin',
 			'/usr/bin',
@@ -385,7 +387,13 @@ function find_search_paths($os = 'unix') {
 
 	$env_path = getenv('PATH');
 	if ($env_path) {
-		$search_paths = array_merge(explode($search_suffix,$env_path), $search_paths);
+		$env_paths = explode($search_suffix,$env_path);
+		if (!empty($search_slash)) {
+			foreach ($env_paths as $env_key => $env_folder) {
+				$env_paths[$env_key] = str_replace($search_slash, '/', $env_folder);
+			}
+		}
+		$search_paths = array_merge($env_paths, $search_paths);
 	}
 
 	$env_php = getenv('PHP_BINDIR');
@@ -397,7 +405,8 @@ function find_search_paths($os = 'unix') {
 		$search_paths = array_merge(explode($search_suffix,$config['php_path']), $search_paths);
 	}
 
-	$search_paths = array_unique($search_paths);
+	// Filter out any blank lines and then make sure those remaining are unique
+	$search_paths = array_unique(array_filter($search_paths, function($value) { return !is_null($value) && $value !== ''; }));
 	return $search_paths;
 }
 
@@ -603,6 +612,17 @@ function install_file_paths() {
 			'unix'  => '/usr/bin/php',
 			'win32' => 'c:/php/php.exe'
 		));
+
+	// Workaround to support xampp
+	if ($config['cacti_server_os'] == 'win32') {
+		$paths = array('c:/php/php.exe', 'd:/php/php.exe', 'c:/xampp/php/php.exe', 'd:/xampp/php/php.exe');
+		foreach($paths as $path) {
+			if (file_exists($path)) {
+				$input['path_php_binary']['default'] = $path;
+				break;
+			}
+		}
+	}
 
 	/* RRDtool Binary Path */
 	$input['path_rrdtool'] = install_tool_path('rrdtool',
@@ -1013,12 +1033,12 @@ function install_full_sync() {
 
 	if (cacti_sizeof($pollers)) {
 		foreach($pollers as $poller) {
-			if (($poller['stataus'] == POLLER_STATUS_NEW) ||
+			if (($poller['status'] == POLLER_STATUS_NEW) ||
 				($poller['status'] == POLLER_STATUS_DOWN) ||
 				($poller['status'] == POLLER_STATUS_DISABLED)) {
 				$skipped[] = $poller['id'];
 			} elseif ($gap < $gap_time) {
-				if (replicate_out($id)) {
+				if (replicate_out($poller['id'])) {
 					$success[] = $poller['id'];
 
 					db_execute_prepared('UPDATE poller
@@ -1039,7 +1059,7 @@ function install_full_sync() {
 		'failed'  => $failed,
 		'skipped' => $skipped,
 		'timeout' => $timeout,
-		'total'   => cacti_sizeof($success) + cacti_sizeof($failed) + cacti_sizeof($skipped) + cacti_sizeof($timeout)
+		'total'   => cacti_sizeof($pollers)
 	);
 }
 

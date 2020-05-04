@@ -1844,10 +1844,10 @@ function html_show_tabs_left() {
 				$i++;
 			}
 
-			print "<li><a id='$id' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-angle-down'></i></a></li>";
+			print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-angle-down'></i></a></li>";
 		}
 
-		print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' class='submenu-ellipsis' href='#'><i class='fa fa-angle-down'></i></a></li>";
+		print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' role='tab' aria-selected='false' class='submenu-ellipsis' href='#'><i class='fa fa-angle-down'></i></a></li>";
 
 		print '</ul></nav></div>';
 	}
@@ -1936,24 +1936,24 @@ function html_graph_tabs_right() {
 			switch($tab['id']) {
 			case 'tree':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li role='tab'><a id='treeview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+					print "<li><a id='treeview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li role='tab'><a title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 				break;
 			case 'list':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li role='tab'><a id='listview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+					print "<li><a id='listview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li role='tab'><a title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
 			case 'preview':
 				if (isset($tab['image']) && $tab['image'] != '') {
-					print "<li role='tab'><a id='preview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+					print "<li><a role='tab' id='preview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $config['url_path'] . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 				} else {
-					print "<li role='tab'><a title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? 'selected':'') . "' href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
 
 				break;
@@ -2347,9 +2347,9 @@ function html_common_header($title, $selectedTheme = '') {
 	}
 
 	if ($selectedTheme == 'classic') {
-		print "<meta content='width=device-width, initial-scale=0.5, minimum-scale=0.2, maximum-scale=2.0' name='viewport'>" . PHP_EOL;
+		print "<meta content='width=device-width, initial-scale=0.5, minimum-scale=0.2, maximum-scale=5' name='viewport'>" . PHP_EOL;
 	} else {
-		print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>" . PHP_EOL;
+		print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5' name='viewport'>" . PHP_EOL;
 	}
 
 	$script_policy = read_config_option('content_security_policy_script');
@@ -2362,7 +2362,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' <?php print $script_policy;?> 'unsafe-inline';">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' <?php print $script_policy;?> 'unsafe-inline'; worker-src 'self'">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -2473,8 +2473,8 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
 	print get_md5_include_js('include/js/jquery.tablednd.js', true);
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
-	print get_md5_include_js('include/js/jquery.multiselect.js', true);
-	print get_md5_include_js('include/js/jquery.multiselect.filter.js', true);
+	print get_md5_include_js('include/js/jquery.multiselect.js');
+	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
 	print get_md5_include_js('include/js/jquery.timepicker.js', true);
 	print get_md5_include_js('include/js/jquery.colorpicker.js', true);
 	print get_md5_include_js('include/js/jquery.tablesorter.js');

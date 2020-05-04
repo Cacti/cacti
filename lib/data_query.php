@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function run_data_query($host_id, $snmp_query_id, $automation = false) {
+function run_data_query($host_id, $snmp_query_id, $automation = false, $force = false) {
 	global $config, $input_types;
 
 	if (read_config_option('data_source_trace') == 'on') {
@@ -191,6 +191,8 @@ function run_data_query($host_id, $snmp_query_id, $automation = false) {
 	$changed_ids = array();
 	$removed_ids = array();
 	if (cacti_sizeof($local_data)) {
+		query_debug_timer_offset('data_query', __('Found %s Local Data ID\'s to Verify', cacti_sizeof($local_data)));
+
 		foreach($local_data as $data_source) {
 			// Just in case there is a forced type from the data source page
 			$forced_type = false;
@@ -306,11 +308,6 @@ function run_data_query($host_id, $snmp_query_id, $automation = false) {
 						WHERE id = ?',
 						array($data_source['local_data_id']));
 
-					// Remove this item from the poller cache as it will cause wranings
-					db_execute_prepared('DELETE FROM poller_item
-						WHERE local_data_id = ?',
-						array($data_source['local_data_id']));
-
 					$removed_ids[] = $data_source['local_data_id'];
 				}
 			}
@@ -330,15 +327,30 @@ function run_data_query($host_id, $snmp_query_id, $automation = false) {
 			}
 		}
 
-		if (cacti_sizeof($changed_ids) || sizeof($removed_ids)) {
-			query_debug_timer_offset('data_query', __('Remapping Graphs to their new Indexes'));
+		query_debug_timer_offset('data_query', __('Verification of %s Local Data ID\'s Complete', cacti_sizeof($local_data)));
+
+		if (cacti_sizeof($changed_ids) || cacti_sizeof($removed_ids)) {
+			query_debug_timer_offset('data_query', __('Found Changed %s and %s Removed Local Data ID\'s to Re-map.', cacti_sizeof($changed_ids), cacti_sizeof($removed_ids)));
 			data_query_remap_indexes($changed_ids);
 			data_query_remap_indexes($removed_ids);
+			query_debug_timer_offset('data_query', __('Done remapping Graphs to their new Indexes'));
 		}
 
-		/* update title cache for graph and data source */
-		update_data_source_title_cache_from_host($host_id);
-		update_graph_title_cache_from_host($host_id);
+		if ((cacti_sizeof($changed_ids) || cacti_sizeof($removed_ids)) && !$force) {
+			/* update title cache for graph and data source */
+			update_data_source_title_cache_from_host($host_id, $snmp_query_id, array_merge($changed_ids, $removed_ids));
+			query_debug_timer_offset('data_query', __('Done updating Data Source Title Cache'));
+
+			update_graph_title_cache_from_host($host_id, $snmp_query_id, array_merge($changed_ids, $removed_ids));
+			query_debug_timer_offset('data_query', __('Done updating Graph Title Cache'));
+		} elseif ($force) {
+			/* update title cache for graph and data source */
+			update_data_source_title_cache_from_host($host_id, $snmp_query_id);
+			query_debug_timer_offset('data_query', __('Done updating Data Source Title Cache'));
+
+			update_graph_title_cache_from_host($host_id, $snmp_query_id);
+			query_debug_timer_offset('data_query', __('Done updating Graph Title Cache'));
+		}
 	}
 
 	query_debug_timer_offset('data_query', __('Index Association with Local Data complete'));
@@ -369,9 +381,6 @@ function run_data_query($host_id, $snmp_query_id, $automation = false) {
 				api_data_source_cache_crc_update($poller_id);
 			}
 		}
-
-		db_execute_prepared('DELETE FROM poller_item
-			WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')');
 	}
 
 	if ($config['poller_id'] == 1) {
@@ -381,6 +390,8 @@ function run_data_query($host_id, $snmp_query_id, $automation = false) {
 
 		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
 		query_debug_timer_offset('data_query', __('Plugin hooks complete'));
+
+		data_query_remove_disabled_items($removed_ids);
 	} elseif ($config['connection'] == 'online') {
 		poller_push_reindex_data_to_poller($host_id, $snmp_query_id);
 
@@ -389,6 +400,8 @@ function run_data_query($host_id, $snmp_query_id, $automation = false) {
 
 		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
 		query_debug_timer_offset('data_query', __('Plugin Hooks complete'));
+
+		data_query_remove_disabled_items($removed_ids);
 
 		if (!isset($_SESSION)) {
 			$config['debug_log']['result'] = $result;
@@ -402,6 +415,30 @@ function run_data_query($host_id, $snmp_query_id, $automation = false) {
 	}
 
 	return (isset($result) ? $result : true);
+}
+
+function data_query_remove_disabled_items($removed_ids) {
+	if (cacti_sizeof($removed_ids)) {
+		db_execute_prepared('DELETE FROM poller_item
+			WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')');
+
+		db_execute_prepared('DELETE FROM poller_output_boost
+			WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')');
+
+		$archive_tables = array_rekey(
+			db_fetch_assoc('SELECT TABLE_NAME
+				FROM information_schema.TABLES
+				WHERE TABLE_NAME LIKE "poller_output_boost_arch%"'),
+			'TABLE_NAME', 'TABLE_NAME'
+		);
+
+		if (cacti_sizeof($archive_tables)) {
+			foreach($archive_tables as $table) {
+				db_execute_prepared("DELETE FROM $table
+					WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')", false);
+			}
+		}
+	}
 }
 
 function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_query_id) {

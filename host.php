@@ -1332,8 +1332,8 @@ function get_device_records(&$total_rows, $rows) {
 	}
 
 	if (get_request_var('location') != '-1') {
-		if (get_request_var('location') == __('Undefined')) {
-			$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ""';
+		if (get_request_var('location') == __('Undefined') || get_request_var('location') == '') {
+			$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' IFNULL(host.location,"") = ""';
 		} else {
 			$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
 		}

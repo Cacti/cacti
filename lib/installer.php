@@ -133,7 +133,6 @@ class Installer implements JsonSerializable {
 				$step = Installer::STEP_ERROR;
 			} elseif (cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
-				$step = Installer::STEP_COMPLETE;
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version',true);
@@ -637,7 +636,7 @@ class Installer implements JsonSerializable {
 			if (empty($secret)) {
 				if (is_resource_writable($path_csrf_secret)) {
 					log_install_medium('csrf', 'setCSRFSecret(): Updated CSRF secret - "' . $path_csrf_secret . '"');
-					install_create_csrf_secret();
+					install_create_csrf_secret($path_csrf_secret);
 				} else {
 					log_install_high('csrf', 'setCSRFSecret(): Unable to create file - "' . $path_csrf_secret . '"');
 				}
@@ -1150,6 +1149,13 @@ class Installer implements JsonSerializable {
 					$use = ($set) || ($param_all);
 					$value = ($use) ? $template['filename'] : '';
 					log_install_high('templates',"setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_template_$key = " . $value);
+
+					// Don't default install templates if upgrade
+					if ($this->getMode() == Installer::MODE_UPGRADE) {
+						$value = '';
+						$use   = false;
+					}
+
 					set_config_option("install_template_$key", $value);
 					$this->templates[$name] = $use;
 				}
@@ -2426,7 +2432,12 @@ class Installer implements JsonSerializable {
 	public function processStepTemplateInstall() {
 		$output = Installer::sectionTitle(__('Template Setup'));
 
-		$output .= Installer::sectionNormal(__('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.'));
+		if ($this->getMode() == Installer::MODE_UPGRADE) {
+			$output .= Installer::sectionNormal(__('Please select the Device Templates that you wish to update during the Upgrade.'));
+			$output .= Installer::sectionWarning(__('Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to \'Sync Graphs\' to from the Tamplates after update.'));
+		} else {
+			$output .= Installer::sectionNormal(__('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.'));
+		}
 
 		$templates = install_setup_get_templates();
 		ob_start();
@@ -2869,8 +2880,6 @@ class Installer implements JsonSerializable {
 
 		$this->convertDatabase();
 
-		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
-
 		if ($this->mode == Installer::MODE_POLLER) {
 			$failure = $this->installPoller();
 		} else {
@@ -2891,13 +2900,13 @@ class Installer implements JsonSerializable {
 		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
 
 		set_config_option('install_error', $failure);
-		$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
-		set_config_option('install_version', CACTI_VERSION);
-		$this->setProgress(Installer::PROGRESS_VERSION_END);
 
 		if (empty($failure)) {
+			$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
 			db_execute('TRUNCATE TABLE version');
 			db_execute('INSERT INTO version (cacti) VALUES (\'' . CACTI_VERSION . '\');');
+			set_config_option('install_version', CACTI_VERSION);
+			$this->setProgress(Installer::PROGRESS_VERSION_END);
 
 			// Sync the remote data collectors
 			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_START);
@@ -2922,11 +2931,12 @@ class Installer implements JsonSerializable {
 			WHERE name LIKE 'install_template_%'
 			AND value <> ''");
 
+		$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN);
+
 		if (cacti_sizeof($templates)) {
 			log_install_always('', __('Found %s templates to install', cacti_sizeof($templates)));
 			$path = $config['base_path'] . '/install/templates/';
 
-			$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN);
 			$i = 0;
 
 			foreach ($templates as $template) {
@@ -2938,7 +2948,7 @@ class Installer implements JsonSerializable {
 
 				if (!empty($package)) {
 					set_config_option('install_updated', microtime(true));
-					$result = import_package($path . $package, $this->profile, true, false, false);
+					$result = import_package($path . $package, $this->profile, false, false, false);
 
 					if ($result !== false) {
 						log_install_always('', __('Import of Package #%s \'%s\' under Profile \'%s\' succeeded', $i, $package, $this->profile));
@@ -2952,9 +2962,8 @@ class Installer implements JsonSerializable {
 				}
 			}
 
+			// Repair automation rules if broken
 			repair_automation();
-
-			db_execute('TRUNCATE TABLE automation_templates');
 
 			foreach($this->defaultAutomation as $item) {
 				$host_template_id = db_fetch_cell_prepared('SELECT id
@@ -2965,17 +2974,25 @@ class Installer implements JsonSerializable {
 				if (!empty($host_template_id)) {
 					log_install_always('', __('Mapping Automation Template for Device Template \'%s\'', $item['name']));
 
+					$exists = db_fetch_cell_prepared('SELECT host_template
+						FROM automation_templates
+						WHERE host_template = ?',
+						array($host_template_id));
 
-					db_execute_prepared('INSERT INTO automation_templates
-						(host_template, availability_method, sysDescr, sysName, sysOid, sequence)
-						VALUES (?, ?, ?, ?, ?, ?)',
-						array($host_template_id, $item['availMethod'], $item['sysDescrMatch'],
-						$item['sysNameMatch'], $item['sysOidMatch'], $item['sequence']));
+					if (empty($exists)) {
+						db_execute_prepared('INSERT INTO automation_templates
+							(host_template, availability_method, sysDescr, sysName, sysOid, sequence)
+							VALUES (?, ?, ?, ?, ?, ?)',
+							array($host_template_id, $item['availMethod'], $item['sysDescrMatch'],
+							$item['sysNameMatch'], $item['sysOidMatch'], $item['sequence']));
+					}
 				}
 			}
 		} else {
 			log_install_always('', __('No templates were selected for import'));
 		}
+
+		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
 
 		return '';
 	}
@@ -3438,7 +3455,7 @@ class Installer implements JsonSerializable {
 		// Perform full sync to complete upgrade
 		$status = install_full_sync();
 
-		if (cacti_sizeof($status['total']) == 0) {
+		if ($status['total'] == 0) {
 			log_install_always('sync', __('No Remote Data Collectors found for full syncronization'));
 		} else {
 			Installer::fullSyncDataCollectorLog($status['timeout'], 'Remote Data Collector with name \'%s\' and id %d previous timed out.  Please manually Sync when once online to complete upgrade.');

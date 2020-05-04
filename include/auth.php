@@ -134,12 +134,13 @@ if (read_config_option('auth_method') != 0) {
 	}
 
 	/* don't even bother with the guest code if we're already logged in */
-	if (isset($guest_account) && empty($_SESSION['sess_user_id'])) {
+	if (isset($guest_account)) {
 		$guest_user_id = get_guest_account();
-
-		/* cannot find guest user */
+		/* find guest user */
 		if (!empty($guest_user_id)) {
-			$_SESSION['sess_user_id'] = $guest_user_id;
+			if (empty($_SESSION['sess_user_id'])) {
+				$_SESSION['sess_user_id'] = $guest_user_id;
+			}
 			return true;
 		}
 	}
@@ -267,6 +268,9 @@ if (read_config_option('auth_method') != 0) {
 		}
 
 		if ($realm_id != -1 && !$authorized) {
+			if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
+				exit;
+			}
 			if (isset($_SERVER['HTTP_REFERER'])) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			} else {

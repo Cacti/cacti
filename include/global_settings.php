@@ -391,7 +391,7 @@ $settings = array(
 			'description' => __('The System default date separator to be used in Cacti.'),
 			'method' => 'drop_array',
 			'array' => $datechar,
-			'default' => GDC_SLASH
+			'default' => GDC_HYPHEN
 			),
 		'other1_header' => array(
 			'friendly_name' => __('Other Settings'),
@@ -627,8 +627,8 @@ $settings = array(
 			'array' => $snmp_priv_protocols,
 			),
 		'snmp_priv_passphrase' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('Privacy Passphrase (v3).'),
+			'method' => 'textbox_password',
+			'friendly_name' => __('Privacy Passphrase (v3)'),
 			'description' => __('Default SNMPv3 Privacy Passphrase for all new Devices.'),
 			'default' => '',
 			'max_length' => '200'
