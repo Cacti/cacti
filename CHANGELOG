@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.13
+-issue#3525: When viewing Graphs, zoom functionality prevents drag and drop of image
+
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
 -issue#3422: When Graph Item is not linked to a data source, Comments do not always get variables substituted correctly
