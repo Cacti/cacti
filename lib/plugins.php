@@ -66,12 +66,14 @@ function api_plugin_hook($name) {
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
-				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
-					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
-				}
-				$function = $hdata['function'];
-				if (function_exists($function)) {
-					api_plugin_run_plugin_hook($name, $hdata['name'], $function, $args);
+				if (api_plugin_check_dependancies($hdata['name'], $true) == PLUGIN_DEPENDENCY_OK) {
+					if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
+						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
+					}
+					$function = $hdata['function'];
+					if (function_exists($function)) {
+						api_plugin_run_plugin_hook($name, $hdata['name'], $function, $args);
+					}
 				}
 			}
 		}
@@ -105,13 +107,15 @@ function api_plugin_hook_function($name, $parm = NULL) {
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
-				$p[] = $hdata['name'];
-				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
-					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
-				}
-				$function = $hdata['function'];
-				if (function_exists($function)) {
-					$ret = api_plugin_run_plugin_hook_function($name, $hdata['name'], $function, $ret);
+				if (api_plugin_check_dependancies($hdata['name'], $true) == PLUGIN_DEPENDENCY_OK) {
+					$p[] = $hdata['name'];
+					if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
+						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
+					}
+					$function = $hdata['function'];
+					if (function_exists($function)) {
+						$ret = api_plugin_run_plugin_hook_function($name, $hdata['name'], $function, $ret);
+					}
 				}
 			}
 		}
@@ -552,34 +556,72 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 	}
 }
 
-function api_plugin_can_install($plugin, &$message) {
-	$dependencies = api_plugin_get_dependencies($plugin);
+function api_plugin_check_dependancies($plugin, $quick = false, $dependencies = false) {
+	$results = array();
+	if (!is_array($dependencies)) {
+		$dependencies = api_plugin_get_dependencies($plugin);
+	}
+
+	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
+		foreach($dependencies as $dependency => $version) {
+			$result = PLUGIN_DEPENDENCY_OK;
+			if (!api_plugin_minimum_version($dependency, $version)) {
+				$result = PLUGIN_DEPENDENCY_VERSION;
+			} else if (!api_plugin_installed($dependency)) {
+				$result = PLUGIN_DEPENDENCY_MISSING;
+			}
+
+			if ($quick && $result != PLUGIN_DEPENDENCY_OK) {
+				return $result;
+			}
+
+			$results[$dependency] = array('version' => $version, 'valid' => $result, 'name' => $dependency);
+		}
+	}
+
+	return $quick ? PLUGIN_DEPENDENCY_OK : $results;
+}
+
+function api_plugin_can_install($plugin) {
+	$dependencies = api_plugin_check_dependencies($plugin);
 	$message = '';
 	$proceed = true;
 	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
-		foreach($dependencies as $dependency => $version) {
-			if (!api_plugin_minimum_version($dependency, $version)) {
-				$message .= __('%s Version %s or above is required for %s. ', ucwords($dependency), $version, ucwords($plugin));
+		foreach($dependencies as $dependency => $result) {
+			switch ($result['valid']) {
+				case PLUGIN_DEPENDENCY_OK:
+					break;
 
-				$proceed = false;
-			} else if (!api_plugin_installed($dependency)) {
-				$message .= __('%s is required for %s, and it is not installed. ', ucwords($dependency), ucwords($plugin));
+				case PLUGIN_DEPENDENCY_VERSION:
+					$message .= __('%s Version %s or above is required for %s. ', ucwords($dependency), $result['version'], ucwords($plugin));
+					$proceed = false;
+					break;
 
-				$proceed = false;
+				case PLUGIN_DEPENDENCY_MISSING:
+					$message .= __('%s is required for %s, and it is not installed. ', ucwords($dependency), ucwords($plugin));
+					$proceed = false;
+					break;
+
+				default:
+					$message .= __('%s is required for %s, but an unknown dependency error occurred. ', ucwords($dependency), ucwords($plugin));
+					$proceed = false;
+					break;
+
 			}
 		}
 	}
-	return $proceed;
+
+	return array('proceed' => $proceed, 'message' => $message);
 }
 
 function api_plugin_install($plugin) {
 	global $config;
 
-	$dependencies = api_plugin_get_dependencies($plugin);
+	$dependencies = api_plugin_check_dependencies($plugin);
 
-	$proceed = api_plugin_can_install($plugin, $message);
-	if (!$proceed) {
-		$message .= '<br><br>' . __('Plugin cannot be installed.');
+	$can_install = api_plugin_can_install($plugin);
+	if (!$can_install['proceed']) {
+		$message = $can_install['message'] . '<br><br>' . __('Plugin cannot be installed.');
 		raise_message($message, MESSAGE_LEVEL_ERROR);
 
 		header('Location: plugins.php');
