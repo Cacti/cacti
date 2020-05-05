@@ -107,7 +107,7 @@ function api_plugin_hook_function($name, $parm = NULL) {
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
-				if (api_plugin_check_dependancies($hdata['name'], $true) == PLUGIN_DEPENDENCY_OK) {
+				if (api_plugin_check_dependancies($hdata['name'], true) == PLUGIN_DEPENDENCY_OK) {
 					$p[] = $hdata['name'];
 					if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
