@@ -237,7 +237,7 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 
 	$now = time();
 	if ($ts < $now) {
-		$ts = reports_interval_start($interval, $count, $offset, $now);
+		$ts = $now;
 	}
 
 	return $ts;

@@ -215,7 +215,11 @@ case 'countdown':
 		}
 	}
 
-	$data = base64_encode($graph_contents);
+	if (isset($graph_contents)) {
+		$data = base64_encode($graph_contents);
+	} else {
+		$data = '';
+	}
 
 	/* save user preferences */
 	set_user_setting('realtime_interval', get_request_var('ds_step'));

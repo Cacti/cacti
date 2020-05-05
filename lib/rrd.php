@@ -573,7 +573,7 @@ function rrdtool_function_interface_speed($data_local) {
 	return $speed;
 }
 
-function rrdtool_function_create($local_data_id, $initial_time, $show_source, $rrdtool_pipe = false) {
+function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = false) {
 	global $config, $data_source_types, $consolidation_functions, $encryption;
 
 	include ($config['include_path'] . '/global_arrays.php');
@@ -621,11 +621,8 @@ function rrdtool_function_create($local_data_id, $initial_time, $show_source, $r
 		return false;
 	}
 
-	/* back off the initial time to allow updates */
-	$initial_time -= 300;
-
 	/* create the "--step" line */
-	$create_ds = RRD_NL . '--start ' . $initial_time . ' --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
+	$create_ds = RRD_NL . '--start 0 --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/* query the data sources to be used in this .rrd file */
 	$data_sources = db_fetch_assoc_prepared('SELECT id, rrd_heartbeat,
@@ -750,7 +747,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 
 			if ($file_exists === false) {
 				$times = array_keys($rrd_fields['times']);
-				rrdtool_function_create($rrd_fields['local_data_id'], $times[0], false, $rrdtool_pipe);
+				rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
 				$create_rrd_file = true;
 			}
 

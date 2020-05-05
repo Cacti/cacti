@@ -259,7 +259,7 @@
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
 				$('<div id="zoom-container"></div>').appendTo('body').delay(1000);
-				$('#zoom-container').css({ position: 'absolute' }).removeClass().addClass('zoom_active_' + zoomGetId(zoom));
+				$('#zoom-container').css({ position: 'absolute', 'pointer-events': 'none' }).removeClass().addClass('zoom_active_' + zoomGetId(zoom));
 			}
 
 			// add a hidden anchor to use for downloads
@@ -433,6 +433,7 @@
 			$('.zoom-area-excluded').bind('click', function(e) { zoomContextMenu_hide(); return false;} );
 			$('.zoom-marker-arrow-up').css({ top:(zoom.box.height-6) + 'px' });
 			$('.zoom-marker-tooltip-value').disableSelection();
+			$('#zoom-container > div[id^="zoom-"]').css({ 'pointer-events': 'all' });
 		}
 
 		/*
