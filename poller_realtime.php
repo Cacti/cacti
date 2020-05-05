@@ -203,7 +203,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			/* create rt rrd */
 			if (!file_exists($rt_graph_path)) {
 				/* get the syntax */
-				$command = @rrdtool_function_create($item['local_data_id'], '-60', true);
+				$command = @rrdtool_function_create($item['local_data_id'], true);
 
 				/* replace path */
 				$command = str_replace($data_source_path, $rt_graph_path, $command);

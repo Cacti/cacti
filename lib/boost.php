@@ -709,7 +709,6 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		/* initialize some variables */
 		$rrd_tmpl     = '';
 		$rrd_path     = '';
-		$initial_time = 0;
 		$outlen       = 0;
 
 		boost_timer('results_cycle', BOOST_TIMER_START);
@@ -730,7 +729,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				/* update the rrd for the previous local_data_id */
 				if ($vals_in_buffer) {
 					boost_timer('rrdupdate', BOOST_TIMER_START);
-					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
+					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $outbuf, $rrdtool_pipe);
 					boost_timer('rrdupdate', BOOST_TIMER_END);
 
 					$vals_in_buffer = 0;
@@ -754,7 +753,6 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 				$local_data_id  = $item['local_data_id'];
 				$time           = $item['timestamp'];
-				$initial_time   = $time;
 
 				if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
 					$output = '';
@@ -778,7 +776,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			if ($time != $item['timestamp']) {
 				if ($outlen > $upd_string_len) {
 					boost_timer('rrdupdate', BOOST_TIMER_START);
-					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
+					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $outbuf, $rrdtool_pipe);
 					boost_timer('rrdupdate', BOOST_TIMER_END);
 
 					$outbuf         = '';
@@ -878,7 +876,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		/* process the last rrdupdate if applicable */
 		if ($vals_in_buffer) {
 			boost_timer('rrdupdate', BOOST_TIMER_START);
-			$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
+			$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $outbuf, $rrdtool_pipe);
 			boost_timer('rrdupdate', BOOST_TIMER_END);
 
 			/* check return status for delete operation */
@@ -1024,7 +1022,7 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 	return array('rrd_path' => $rrd_path, 'rrd_template' => trim($rrd_template));
 }
 
-function boost_rrdtool_function_create($local_data_id, $initial_time, $show_source, &$rrdtool_pipe) {
+function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe) {
 	global $config;
 
 	/**
@@ -1078,11 +1076,8 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 		return false;
 	}
 
-	/* back off the initial time to allow updates */
-	$initial_time -= 300;
-
 	/* create the "--step" line */
-	$create_ds = RRD_NL . '--start ' . $initial_time . ' --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
+	$create_ds = RRD_NL . '--start 0 --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/* query the data sources to be used in this .rrd file */
 	$data_sources = db_fetch_assoc_prepared('SELECT
@@ -1183,7 +1178,7 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
    @arg $rrd_path      - the path to the RRD file
    @arg $rrd_update_template  - the order in which values need to be added
    @arg $rrd_update_values    - values to include in the database */
-function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, $initial_time, &$rrd_update_values, &$rrdtool_pipe) {
+function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, &$rrd_update_values, &$rrdtool_pipe) {
 
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
@@ -1211,7 +1206,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
-			$valid_entry = boost_rrdtool_function_create($local_data_id, $initial_time, false, $rrdtool_pipe);
+			$valid_entry = boost_rrdtool_function_create($local_data_id, false, $rrdtool_pipe);
 		} else {
 			return 'OK';
 		}
