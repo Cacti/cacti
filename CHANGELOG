@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.13
+-issue#3517: Sometimes, poller_reports.php fall in function reports_interval_start with CPU UT 100%, and never return.
 -issue#3525: When viewing Graphs, zoom functionality prevents drag and drop of image
 -issue#3532: Issues with Realtime in 1.2.12
 -issue#3533: Start date for RRDfile is different between RRDfile in a Cacti install
