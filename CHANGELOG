@@ -5,6 +5,8 @@ Cacti CHANGELOG
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
 -issue#3141: Fix FreeBSD IPv6 ping
+-issue#3547: Database Audit utility does not check database permissions
+-feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1523: Value above RRD maximum value
 -feature#2437: Create system-wide Proxy settings for plugins
 -feature#2474: Enable better version reporting for GitHub/Source/Package editions
@@ -55,7 +57,7 @@ Cacti CHANGELOG
 -issue#5012: Fixed three error for PHP 8 when execute cli/upgrade_database.php
 -issue#5013: Cacti Bulk Walk Size of 'Auto-detect at First Reindex' not working
 -issue#5017: Undefined array key and Rounding causes errors
--issue#5018: It is possible in some rare cases to have 'remember me' enabled and still be logged out after a browser timeout 
+-issue#5018: It is possible in some rare cases to have 'remember me' enabled and still be logged out after a browser timeout
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled

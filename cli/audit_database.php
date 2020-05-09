@@ -314,6 +314,11 @@ function repair_database($run = true) {
 
 	$alters = report_audit_results(false);
 
+	if (!db_has_permissions(array('ALTER', 'DROP','INSERT','LOCK TABLES'))) {
+		echo "ERROR: Required a required permission is missing for DB repair" . PHP_EOL;
+		exit(1);
+	}
+
 	$good = 0;
 	$bad = 0;
 
@@ -890,6 +895,11 @@ function create_tables($load = true) {
 	global $config, $database_default, $database_username, $database_password, $database_port, $database_hostname;
 	global $altersopt;
 
+	if (!db_has_permissions('CREATE')) {
+		echo "ERROR: Unable to create audit tables, permission required" . PHP_EOL;
+		exit(1);
+	}
+
 	db_execute("CREATE TABLE IF NOT EXISTS table_columns (
 		table_name varchar(50) NOT NULL,
 		table_sequence int(10) unsigned NOT NULL,
@@ -935,6 +945,11 @@ function create_tables($load = true) {
 	}
 
 	if ($load) {
+		if (!db_has_permissions(array('DROP','INSERT','LOCK TABLES'))) {
+			echo "ERROR: Required a required permission is missing for DB load" . PHP_EOL;
+			exit(1);
+		}
+
 		db_execute('TRUNCATE table_columns');
 		db_execute('TRUNCATE table_indexes');
 
@@ -942,19 +957,21 @@ function create_tables($load = true) {
 		$error  = 0;
 
 		if (file_exists($config['base_path'] . '/docs/audit_schema.sql')) {
-			exec('mysql' .
+			$cmd = 'MYSQL_PWD="' . cacti_escapeshellarg($database_password) . '" mysql' .
 				' -u' . cacti_escapeshellarg($database_username) .
-				' -p' . cacti_escapeshellarg($database_password) .
 				' -h' . cacti_escapeshellarg($database_hostname) .
 				' -P' . cacti_escapeshellarg($database_port) .
 				' ' . $database_default .
-				' < ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $error);
+				' < ' . $config['base_path'] . '/docs/audit_schema.sql';
+			exec($cmd, $output, $error);
 
 			if ($error == 0) {
 				print ($altersopt ? '-- ' : '') . 'SUCCESS: Loaded the Audit Schema' . PHP_EOL;
 			} else {
+				print '@ ' . $config['base_path'] . '/docs/audit_schema.sql' . PHP_EOL;
 				print 'FATAL: Failed Load the Audit Schema' . PHP_EOL;
 				print 'ERROR: ' . implode(",\n   ", $output) . PHP_EOL;
+				exit(1);
 			}
 		} else {
 			print 'FATAL: Failed to find Audit Schema' . PHP_EOL;
@@ -966,6 +983,11 @@ function load_audit_database() {
 	global $config, $database_default, $database_username, $database_password;
 
 	$db_name = 'Tables_in_' . $database_default;
+
+	if (!db_has_permissions(array('DROP','INSERT','LOCK TABLES'))) {
+		echo "ERROR: Required a required permission is missing for DB load" . PHP_EOL;
+		exit(1);
+	}
 
 	create_tables(false);
 

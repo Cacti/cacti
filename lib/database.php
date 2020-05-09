@@ -2201,3 +2201,93 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 	return $retval;
 }
 
+function db_create_permissions_array($default = false) {
+	return array(
+		'ALTER' => $default,
+		'ALTER ROUTINE' => $default,
+		'CREATE' => $default,
+		'CREATE ROLE' => $default,
+		'CREATE ROUTINE' => $default,
+		'CREATE TABLESPACE' => $default,
+		'CREATE TEMPORARY TABLES' => $default,
+		'CREATE USER' => $default,
+		'CREATE VIEW' => $default,
+		'DELETE' => $default,
+		'DROP' => $default,
+		'DROP ROLE' => $default,
+		'EVENT' => $default,
+		'EXECUTE' => $default,
+		'FILE' => $default,
+		'GRANT OPTION' => $default,
+		'INDEX' => $default,
+		'INSERT' => $default,
+		'LOCK TABLES' => $default,
+		'PROCESS' => $default,
+		'PROXY' => $default,
+		'REFERENCES' => $default,
+		'RELOAD' => $default,
+		'REPLICATION CLIENT' => $default,
+		'REPLICATION SLAVE' => $default,
+		'SELECT' => $default,
+		'SHOW DATABASES' => $default,
+		'SHOW VIEW' => $default,
+		'SHUTDOWN' => $default,
+		'SUPER' => $default,
+		'TRIGGER' => $default,
+		'UPDATE' => $default,
+		'USAGE' => $default,
+	);
+}
+
+function db_get_permissions($include_unknown = false, $log = false, $db_conn = false) {
+	$perms = db_create_permissions_array(false);
+
+	$perms_regex = '/(' . implode('|',array_reverse(array_keys($perms))). ')+/i';
+
+	$db_grants = db_fetch_assoc('SHOW GRANTS FOR CURRENT_USER', $log, $db_conn);
+
+	if (cacti_sizeof($db_grants)) {
+		foreach ($db_grants as $db_grants_user) {
+			foreach ($db_grants_user as $db_grant) {
+				if (preg_match('/GRANT (.*) ON ([^.]+)\.([^ ]+)/i', $db_grant, $db_grant_match)) {
+					$db_grant_perms = preg_split('/,[ ]*/', $db_grant_match[1]);
+					if (cacti_sizeof($db_grant_perms)) {
+						foreach ($db_grant_perms as $db_grant_perm) {
+							$db_grant_perm = strtoupper($db_grant_perm);
+							if ($db_grant_perm == 'ALL' ||
+							    $db_grant_perm == 'ALL PRIVILEGES') {
+								$perms = db_create_permissions_array(true);
+								break 3;
+							}
+
+							if (array_key_exists($db_grant_perm, $perms)) {
+								$perms[$db_grant_perm] = true;
+							} elseif ($include_unknown) {
+								$perms[$db_grant_perm.'*'] = true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return $perms;
+}
+
+function db_has_permissions($permissions, $log = false, $db_conn = false) {
+	$perms = db_get_permissions(false, $log, $db_conn);
+
+	if (!is_array($permissions)) {
+		$permissions = array($permissions);
+	}
+
+	$result = true;
+	foreach ($permissions as $permission) {
+		if (empty($perms[$permission])) {
+			$result = false;
+		}
+	}
+
+	return $result;
+}
