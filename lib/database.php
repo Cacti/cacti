@@ -2244,26 +2244,29 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 
 	$perms_regex = '/(' . implode('|',array_reverse(array_keys($perms))). ')+/i';
 
+	$db_name   = db_fetch_cell('SELECT DATABASE()', $log, $db_conn);
 	$db_grants = db_fetch_assoc('SHOW GRANTS FOR CURRENT_USER', $log, $db_conn);
 
 	if (cacti_sizeof($db_grants)) {
 		foreach ($db_grants as $db_grants_user) {
 			foreach ($db_grants_user as $db_grant) {
-				if (preg_match('/GRANT (.*) ON ([^.]+)\.([^ ]+)/i', $db_grant, $db_grant_match)) {
-					$db_grant_perms = preg_split('/,[ ]*/', $db_grant_match[1]);
-					if (cacti_sizeof($db_grant_perms)) {
-						foreach ($db_grant_perms as $db_grant_perm) {
-							$db_grant_perm = strtoupper($db_grant_perm);
-							if ($db_grant_perm == 'ALL' ||
-							    $db_grant_perm == 'ALL PRIVILEGES') {
-								$perms = db_create_permissions_array(true);
-								break 3;
-							}
+				if (preg_match('/GRANT (.*) ON (.+)\.(.+) TO/i', $db_grant, $db_grant_match)) {
+					if ($db_grant_match[2] == "`$db_name`" || $db_grant_match[2] == '*') {
+						$db_grant_perms = preg_split('/,[ ]*/', $db_grant_match[1]);
+						if (cacti_sizeof($db_grant_perms)) {
+							foreach ($db_grant_perms as $db_grant_perm) {
+								$db_grant_perm = strtoupper($db_grant_perm);
+								if ($db_grant_perm == 'ALL' ||
+								    $db_grant_perm == 'ALL PRIVILEGES') {
+									$perms = db_create_permissions_array(true);
+									break 3;
+								}
 
-							if (array_key_exists($db_grant_perm, $perms)) {
-								$perms[$db_grant_perm] = true;
-							} elseif ($include_unknown) {
-								$perms[$db_grant_perm.'*'] = true;
+								if (array_key_exists($db_grant_perm, $perms)) {
+									$perms[$db_grant_perm] = true;
+								} elseif ($include_unknown) {
+									$perms[$db_grant_perm.'*'] = true;
+								}
 							}
 						}
 					}
