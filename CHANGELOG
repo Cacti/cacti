@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#3527: Improve 95th percentile function to autoselect datasource CF definition:avg or max correctly
 -issue#3532: Issues with Realtime in 1.2.12
 -issue#3533: Start date for RRDfile is different between RRDfile in a Cacti install
+-issue#3536: Responsive Navigation Menu Show/Hide Broken in 1.2.12
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)

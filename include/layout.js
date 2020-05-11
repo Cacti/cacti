@@ -1140,7 +1140,7 @@ function setupResponsiveMenuAndTabs() {
 
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
 			return;
-		} else if (page == 'index.php' && $(this).attr('href').indexOf('login')) {
+		} else if (page == 'index.php' && $(this).attr('href').indexOf('login') >= 0) {
 			return;
 		} else {
 			event.preventDefault();
@@ -2678,6 +2678,7 @@ function setupEllipsis() {
 			clearTimeout(userMenuOpenTimer);
 		}
 	});
+
 	$(window).on('click', function(event) {
 		if($(event.target).parents('.submenuoptions').length == 0 && $('.submenuoptions').is(':visible')) {
 			$('.submenuoptions').slideUp(120);
