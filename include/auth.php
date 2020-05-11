@@ -263,6 +263,10 @@ if (read_config_option('auth_method') != 0) {
 				) AS authorized';
 
 			$authorized = db_fetch_cell_prepared($auth_sql_query, $auth_sql_params);
+
+			if (!$authorized) {
+				auth_login_redirect();
+			}
 		} else {
 			$authorized = false;
 		}

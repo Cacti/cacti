@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#3532: Issues with Realtime in 1.2.12
 -issue#3533: Start date for RRDfile is different between RRDfile in a Cacti install
 -issue#3536: Responsive Navigation Menu Show/Hide Broken in 1.2.12
+-issue#3551: Web Basic Authentication and Template User broken in 1.2.12
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
