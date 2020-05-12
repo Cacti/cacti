@@ -767,7 +767,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 				} else {
 					$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;' class='text'>" . PHP_EOL;
 				}
-				$outstr .= "\t\t\t\t" . $item['item_text'] . PHP_EOL;
+				$outstr .= "\t\t\t\t" . html_escape($item['item_text']) . PHP_EOL;
 				$outstr .= "\t\t\t</td>" . PHP_EOL;
 				$outstr .= "\t\t</tr>" . PHP_EOL;
 
@@ -865,7 +865,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 			set_config_option('base_url', $prefix . read_config_option('base_url'));
 		}
 
-		$out = "<a href='" . html_escape(read_config_option('base_url', true) . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
+		$out = "<a href='" . html_escape(read_config_option('base_url', true) . '/graph.php?action=view&local_graph_id=' . $item['local_graph_id'] . "&rra_id=0") . "'>" . $out . '</a>';
 	}
 
 	return $out . PHP_EOL;

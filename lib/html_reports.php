@@ -1349,19 +1349,30 @@ function display_reports_items($report_id) {
 				break;
 			case REPORTS_ITEM_TREE:
 				if ($item['branch_id'] > 0) {
-					$branch_details = db_fetch_row_prepared('SELECT * FROM graph_tree_items WHERE id = ?', array($item['branch_id']));
+					$branch_details = db_fetch_row_prepared('SELECT *
+						FROM graph_tree_items
+						WHERE id = ?',
+						array($item['branch_id']));
 				} else {
 					$branch_details = array();
 				}
 
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($item['tree_id']));
+				$tree_name = db_fetch_cell_prepared('SELECT name
+					FROM graph_tree
+					WHERE id = ?',
+					array($item['tree_id']));
 
-				$item_details = 'Tree: ' . $tree_name;
+				$item_details = __('Tree: %s', $tree_name);
 				if ($item['branch_id'] > 0) {
 					if ($branch_details['host_id'] > 0) {
-						$item_details .= ', Device: ' . db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($branch_details['host_id']));
+						$description = db_fetch_cell_prepared('SELECT description
+							FROM host
+							WHERE id = ?',
+							array($branch_details['host_id']));
+
+						$item_details .= __(', Device: %s', $description);
 					} else {
-						$item_details .= ', Branch: ' . $branch_details['title'];
+						$item_details .= __(', Branch: %s', $branch_details['title']);
 
 						if ($item['tree_cascade'] == 'on') {
 							$item_details .= ' ' . __('(All Branches)');
@@ -1371,9 +1382,9 @@ function display_reports_items($report_id) {
 					}
 				}
 
-				$align = ($item['align'] > 0 ? $alignment[$item['align']] : '');
-				$size = ($item['font_size'] > 0 ? $item['font_size'] : '');
-				$timespan = ($item['timespan'] > 0 ? $graph_timespans[$item['timespan']] : '');
+				$align    = ($item['align']     > 0 ? $alignment[$item['align']] : '');
+				$size     = ($item['font_size'] > 0 ? $item['font_size'] : '');
+				$timespan = ($item['timespan']  > 0 ? $graph_timespans[$item['timespan']] : '');
 				break;
 			default:
 				$item_details = '';
@@ -1390,7 +1401,7 @@ function display_reports_items($report_id) {
 			$form_data = '<td><a class="linkEditMain" href="' . html_escape(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">' . __('Item # %d', $i) . '</a></td>';
 			$form_data .= '<td>' . $item['sequence'] . '</td>';
 			$form_data .= '<td>' . $item_types[$item['item_type']] . '</td>';
-			$form_data .= '<td class="nowrap">' . $item_details . '</td>';
+			$form_data .= '<td class="nowrap">' . html_escape($item_details) . '</td>';
 			$form_data .= '<td class="nowrap">' . $timespan . '</td>';
 			$form_data .= '<td>' . $align . '</td>';
 			$form_data .= '<td>' . $size . '</td>';
