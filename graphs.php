@@ -194,7 +194,7 @@ function add_tree_names_to_actions_array() {
 
 	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
-			$graph_actions['tr_' . $tree['id']] = __('Place on a Tree (%s)', $tree['name']);
+			$graph_actions['tr_' . $tree['id']] = __esc('Place on a Tree (%s)', $tree['name']);
 		}
 	}
 }
