@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -feature#3139: Added option in CLI tool remove_graphs for deletion of single graph
 -feature#3187: Feature: rra path should be configurable
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
+-feature#3558: Allow copy_user cli script to set various additional fields
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder

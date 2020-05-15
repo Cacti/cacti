@@ -275,11 +275,11 @@ function form_save() {
 
 			if  (isempty_request_var('svds_text')) {
 				raise_message(39);
-				header('Location: data_queries.php?action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+				header('Location: data_queries.php?action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 				return;
 			} elseif (isempty_request_var('svds_field')) {
 				raise_message(38);
-				header('Location: data_queries.php?action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+				header('Location: data_queries.php?action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 				return;
 			}
 
