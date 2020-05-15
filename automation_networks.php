@@ -325,7 +325,7 @@ function form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));

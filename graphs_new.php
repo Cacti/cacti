@@ -136,7 +136,7 @@ function form_save() {
 			if (strpos($var, 'sgg_') !== false) {
 				$snmp_query_id = str_replace('sgg_', '', $var);
 
-				input_validate_input_number($snmp_query_id);
+				input_validate_input_number($snmp_query_id, 'sgg');
 
 				store_get_selected_dq_index($snmp_query_id);
 			}
@@ -208,7 +208,7 @@ function host_new_graphs_save($host_id) {
 			}
 		} elseif (preg_match('/^gi_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[3]);
+			input_validate_input_number($matches[3], 'gi[3]');
 			/* ==================================================== */
 
 			/* we need to find out which graph items will be affected by saving this particular item */

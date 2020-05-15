@@ -486,7 +486,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 
 function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2) {
 	/* ================= input validation ================= */
-	input_validate_input_number($form_id1);
+	input_validate_input_number($form_id1, 'form_id1');
 	/* ==================================================== */
 
 	$num_output_fields = array();
@@ -506,8 +506,8 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 	} elseif ($form_type == 'sg') {
 		foreach ($form_array2 as $form_id2 => $form_array3) {
 			/* ================= input validation ================= */
-			input_validate_input_number($snmp_query_id);
-			input_validate_input_number($form_id2);
+			input_validate_input_number($snmp_query_id, 'snmp_query_id');
+			input_validate_input_number($form_id2, 'form_id2');
 			/* ==================================================== */
 
 			$snmp_query_id       = $form_id1;
@@ -543,7 +543,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 	}
 
 	/* ================= input validation ================= */
-	input_validate_input_number($graph_template_id);
+	input_validate_input_number($graph_template_id, 'graph_template_id');
 	/* ==================================================== */
 
 	$data_templates = db_fetch_assoc_prepared('SELECT

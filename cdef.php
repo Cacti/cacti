@@ -248,7 +248,7 @@ function form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$cdef_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($matches[1]))) . '</li>';
@@ -531,7 +531,7 @@ function cdef_item_dnd() {
 			$sequence = 1;
 			foreach($cdef_ids as $cdef_id) {
 				$cdef_id = str_replace('line', '', $cdef_id);
-				input_validate_input_number($cdef_id);
+				input_validate_input_number($cdef_id, 'cdef_id');
 
 				db_execute_prepared('UPDATE cdef_items
 					SET sequence = ?

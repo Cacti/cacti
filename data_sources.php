@@ -474,7 +474,7 @@ function form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$ds_list .= '<li>' . html_escape(get_data_source_title($matches[1])) . '</li>';

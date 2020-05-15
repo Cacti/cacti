@@ -271,7 +271,7 @@ case 'get_node':
 
 			$ndata = explode('-', get_nfilter_request_var('id'));
 			$tree_id = $ndata[1];
-			input_validate_input_number($tree_id);
+			input_validate_input_number($tree_id, 'tree_id');
 		}
 	} else {
 		$tree_id = read_user_setting('default_tree_id');
@@ -288,7 +288,7 @@ case 'get_node':
 
 				if ($pnode[0] == 'tbranch') {
 					$parent = $pnode[1];
-					input_validate_input_number($parent);
+					input_validate_input_number($parent, 'parent');
 
 					$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
 						FROM graph_tree_items

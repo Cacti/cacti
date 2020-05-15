@@ -281,7 +281,7 @@ function tree_dnd() {
 
 		foreach($tids as $id) {
 			$id = str_replace('line', '', $id);
-			input_validate_input_number($id);
+			input_validate_input_number($id, 'id');
 
 			db_execute_prepared('UPDATE graph_tree
 				SET sequence = ?
@@ -311,7 +311,7 @@ function get_host_sort_type() {
 
 				if (isset($parts[0]) && $parts[0] == 'tbranch') {
 					$branch = $parts[1];
-					input_validate_input_number($branch);
+					input_validate_input_number($branch, 'branch');
 
 					$sort_type = db_fetch_cell_prepared('SELECT host_grouping_type
 						FROM graph_tree_items
@@ -348,7 +348,7 @@ function set_host_sort_type() {
 
 				if (isset($parts[0]) && $parts[0] == 'tbranch') {
 					$branch = $parts[1];
-					input_validate_input_number($branch);
+					input_validate_input_number($branch, 'branch');
 
 					if (get_request_var('type') == 'hsgt') {
 						$type = HOST_GROUPING_GRAPH_TEMPLATE;
@@ -380,7 +380,7 @@ function get_branch_sort_type() {
 			if (isset($parts[0]) && $parts[0] == 'tbranch') {
 				$branch = $parts[1];
 
-				input_validate_input_number($branch);
+				input_validate_input_number($branch, 'branch');
 
 				$sort_type = db_fetch_cell_prepared('SELECT sort_children_type
 					FROM graph_tree_items
@@ -433,7 +433,7 @@ function set_branch_sort_type() {
 
 				if (isset($parts[0]) && $parts[0] == 'tbranch') {
 					$branch = $parts[1];
-					input_validate_input_number($branch);
+					input_validate_input_number($branch, 'branch');
 
 					switch(get_request_var('type')) {
 					case 'inherit':
@@ -661,7 +661,7 @@ function form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$tree_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($matches[1]))) . '</li>';

@@ -238,7 +238,7 @@ function automation_tree_rules_form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$automation_tree_rules_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_tree_rules WHERE id = ?', array($matches[1]))) . '</li>';

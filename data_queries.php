@@ -200,8 +200,8 @@ function form_save() {
 							$data_template_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\1", $var);
 							$data_template_rrd_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\2", $var);
 							/* ================= input validation ================= */
-							input_validate_input_number($data_template_id);
-							input_validate_input_number($data_template_rrd_id);
+							input_validate_input_number($data_template_id, 'dsdt->data_template_id');
+							input_validate_input_number($data_template_rrd_id, 'dsdt->data_template_rrd_id');
 							/* ==================================================== */
 
 							db_execute_prepared('REPLACE INTO snmp_query_graph_rrd
@@ -343,7 +343,7 @@ function form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$name = db_fetch_cell_prepared('SELECT name

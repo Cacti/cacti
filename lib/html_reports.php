@@ -235,7 +235,7 @@ function reports_item_dnd() {
             $sequence = 1;
             foreach($report_items as $item) {
                 $item_id = str_replace('line', '', $item);
-                input_validate_input_number($item_id);
+                input_validate_input_number($item_id, 'item_id');
 
                 db_execute_prepared('UPDATE reports_items
                     SET sequence = ?
@@ -473,7 +473,7 @@ function reports_form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk]');
 			/* ==================================================== */
 
 			$reports_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', array($matches[1]))) . '</li>';
@@ -572,7 +572,7 @@ function reports_send($id) {
 	global $config;
 
 	/* ================= input validation ================= */
-	input_validate_input_number($id);
+	input_validate_input_number($id, 'id');
 	/* ==================================================== */
 
 	$report = db_fetch_row_prepared('SELECT *

@@ -149,7 +149,7 @@ function form_save() {
 					$cfs = get_nfilter_request_var('consolidation_function_id');
 					if (cacti_sizeof($cfs) && !empty($cfs)) {
 						foreach($cfs as $cf) {
-							input_validate_input_number($cf);
+							input_validate_input_number($cf, 'consolidation_function_id');
 						}
 
 						db_execute_prepared('DELETE FROM data_source_profiles_cf
@@ -277,7 +277,7 @@ function form_actions() {
 	foreach ($_POST AS $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$profile_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_source_profiles WHERE id = ?', array($matches[1]))) . '</li>';

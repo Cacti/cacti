@@ -210,7 +210,7 @@ function vdef_form_actions() {
 				if (cacti_sizeof($selected_items)) {
 				foreach($selected_items as $vdef_id) {
 					/* ================= input validation ================= */
-					input_validate_input_number($vdef_id);
+					input_validate_input_number($vdef_id, 'vdef_id');
 					/* ==================================================== */
 
 					$vdef_ids[] = $vdef_id;
@@ -224,7 +224,7 @@ function vdef_form_actions() {
 			} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					/* ================= input validation ================= */
-					input_validate_input_number($selected_items[$i]);
+					input_validate_input_number($selected_items[$i], "selected_items[$i]");
 					/* ==================================================== */
 
 					duplicate_vdef($selected_items[$i], get_nfilter_request_var('title_format'));
@@ -244,7 +244,7 @@ function vdef_form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$vdef_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', array($matches[1]))) . '</li>';
@@ -520,7 +520,7 @@ function vdef_item_dnd() {
 			$sequence = 1;
 			foreach($vdef_ids as $vdef_id) {
 				$vdef_id = str_replace('line', '', $vdef_id);
-				input_validate_input_number($vdef_id);
+				input_validate_input_number($vdef_id, 'vdef_id');
 
 				db_execute_prepared('UPDATE vdef_items
 					SET sequence = ?

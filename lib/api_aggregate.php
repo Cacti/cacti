@@ -621,7 +621,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 		/* work on color_templates */
 		if (preg_match('/^agg_color_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'agg_color');
 			/* ==================================================== */
 			$graph_templates_item_id = str_replace('agg_color_', '', $var);
 			if (isset($graph_items[$graph_templates_item_id])) {
@@ -634,7 +634,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 		/* work on checkboxed for skipping items */
 		if (preg_match('/^agg_skip_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'agg_skip');
 			/* ==================================================== */
 			$graph_templates_item_id = str_replace('agg_skip_', '', $var);
 			if (isset($graph_items[$graph_templates_item_id])) {
@@ -647,7 +647,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 		/* work on checkboxed for totalling items */
 		if (preg_match('/^agg_total_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'agg_total');
 			/* ==================================================== */
 			$graph_templates_item_id = str_replace('agg_total_', '', $var);
 			if (isset($graph_items[$graph_templates_item_id])) {

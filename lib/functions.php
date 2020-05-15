@@ -3765,7 +3765,7 @@ function draw_navigation_text($type = 'url') {
 
 			if (isset_request_var('hgd') && get_nfilter_request_var('hgd') != '') {
 				$parts = explode(':', get_nfilter_request_var('hgd'));
-				input_validate_input_number($parts[1]);
+				input_validate_input_number($parts[1], 'hgd[1]');
 
 				if ($parts[0] == 'gt') {
 					$leaf_sub = db_fetch_cell_prepared('SELECT name
@@ -5475,7 +5475,7 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 	}
 
 	if ($record) {
-		if ($html) {
+		if ($html && !defined('CACTI_CLI_ONLY')) {
 			print "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
 		}
 

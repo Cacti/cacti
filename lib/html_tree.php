@@ -1366,15 +1366,15 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$parts = explode(':', get_request_var('hgd'));
 			switch($parts[0]) {
 				case 'gt':
-					input_validate_input_number($parts[1]);
+					input_validate_input_number($parts[1], 'hgd-gt');
 					$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id = ' . $parts[1];
 					break;
 				case 'dq':
-					input_validate_input_number($parts[1]);
+					input_validate_input_number($parts[1], 'hgd-dq');
 					$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.snmp_query_id = ' . $parts[1];
 					break;
 				case 'dqi':
-					input_validate_input_number($parts[1]);
+					input_validate_input_number($parts[1], 'hgd-dqi');
 					$dqi = db_qstr($parts[2]);
 					$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.snmp_query_id = ' . $parts[1] . ' AND snmp_index = ' . $dqi;
 					break;

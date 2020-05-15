@@ -222,7 +222,7 @@ function form_actions() {
 		foreach ($_POST as $var=>$val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
-				input_validate_input_number($matches[1]);
+				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
 				$selected_items[] = $matches[1];

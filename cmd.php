@@ -222,8 +222,8 @@ if ($debug) {
 }
 
 // address potential exploits
-input_validate_input_number($first);
-input_validate_input_number($last);
+input_validate_input_number($first, 'first');
+input_validate_input_number($last, 'last');
 
 if ($active_profiles != 1) {
 	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *

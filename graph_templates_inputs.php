@@ -77,7 +77,7 @@ function form_save() {
 				foreach ($_POST as $var => $val) {
 					if (preg_match('/^i_(\d+)$/', $var, $matches)) {
 						/* ================= input validation ================= */
-						input_validate_input_number($matches[1]);
+						input_validate_input_number($matches[1], 'i[1]');
 						/* ==================================================== */
 
 						$selected_graph_items[$matches[1]] = $matches[1];

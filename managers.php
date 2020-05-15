@@ -381,11 +381,11 @@ function manager_notifications($id, $header_label) {
 
 	/* ================= input validation ================= */
 	if (!$id | !is_numeric($id)) {
-		die_html_input_error();
+		die_html_input_error('id');
 	}
 
 	if (!in_array(get_request_var('mib'), $registered_mibs) && get_request_var('mib') != '-1' && get_request_var('mib') != '') {
-		die_html_input_error();
+		die_html_input_error('mib');
 	}
 	/* ==================================================== */
 
@@ -638,11 +638,11 @@ function manager_logs($id, $header_label) {
 
 	/* ================= input validation ================= */
 	if (!$id | !is_numeric($id)) {
-		die_html_input_error();
+		die_html_input_error('id');
 	}
 
 	if (!in_array(get_request_var('severity'), array_keys($severity_levels)) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
-		die_html_input_error();
+		die_html_input_error('severity');
 	}
 
 	/* ==================================================== */
@@ -848,7 +848,7 @@ function form_save() {
 	get_filter_request_var('max_log_size');
 
 	if (!in_array(get_nfilter_request_var('max_log_size'), range(1,31))) {
-		//	die_html_input_error();
+		die_html_input_error('max_log_size');
 	}
 	/* ================= input validation ================= */
 
@@ -970,7 +970,7 @@ function form_actions(){
 					/* grep manager's id */
 					$id = substr($key, 4);
 					/* ================= input validation ================= */
-					input_validate_input_number($id);
+					input_validate_input_number($id, 'id');
 					/* ==================================================== */
 					$list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT description FROM snmpagent_managers WHERE id = ?', array($id))) . '</li>';
 					$selected_items[] = $id;

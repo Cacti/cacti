@@ -305,7 +305,7 @@ function poll_for_data() {
 
 	if (cacti_sizeof($local_data_ids)) {
 		foreach($local_data_ids as $local_data_id) {
-			input_validate_input_number($local_data_id);
+			input_validate_input_number($local_data_id, 'local_data_id');
 
 			$items = db_fetch_assoc_prepared('SELECT *
 				FROM poller_item

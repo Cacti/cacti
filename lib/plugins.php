@@ -72,9 +72,9 @@ function api_plugin_hook($name) {
 	}
 
 	if (!empty($result)) {
-		$message = '';
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated, true)) {
+				$message = '';
 				if (api_plugin_can_install($hdata['name'], $message)) {
 					if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
@@ -134,6 +134,7 @@ function api_plugin_hook_function($name, $parm = NULL) {
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
+				$mesage = '';
 				if (api_plugin_can_install($hdata['name'], $message) {
 					$p[] = $hdata['name'];
 

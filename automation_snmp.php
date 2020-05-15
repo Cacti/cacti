@@ -199,7 +199,7 @@ function form_automation_snmp_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 			$snmp_groups .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_snmp WHERE id = ?', array($matches[1]))) . '</li>';
 			$automation_array[$i] = $matches[1];
@@ -308,7 +308,7 @@ function automation_snmp_item_dnd() {
 
 		foreach($items as $item) {
 			$item = str_replace('line', '', $item);
-			input_validate_input_number($item);
+			input_validate_input_number($item, 'item');
 
 			db_execute_prepared('UPDATE automation_snmp_items
 				SET sequence = ?

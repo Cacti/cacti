@@ -1890,7 +1890,7 @@ function reports_graphs_action_execute($action) {
 			if ($selected_items != false) {
 				$reports_id      = get_filter_request_var('reports_id');
 
-				input_validate_input_number($reports_id);
+				input_validate_input_number($reports_id, 'reports_id');
 				get_filter_request_var('timespan');
 				get_filter_request_var('alignment');
 

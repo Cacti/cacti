@@ -102,7 +102,7 @@ function form_actions() {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
-				input_validate_input_number($matches[1]);
+				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
@@ -126,7 +126,7 @@ function form_actions() {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
-				input_validate_input_number($matches[1]);
+				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
@@ -150,7 +150,7 @@ function form_actions() {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
-				input_validate_input_number($matches[1]);
+				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
@@ -174,7 +174,7 @@ function form_actions() {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
-				input_validate_input_number($matches[1]);
+				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
@@ -197,7 +197,7 @@ function form_actions() {
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 				/* ================= input validation ================= */
-				input_validate_input_number($matches[1]);
+				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') == '1') {
@@ -313,7 +313,7 @@ function form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			if (get_nfilter_request_var('drp_action') != '2') {

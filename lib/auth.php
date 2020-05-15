@@ -274,8 +274,8 @@ function get_basic_auth_username() {
  */
 function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
 	/* ================= input validation ================= */
-	input_validate_input_number($template_realm);
-	input_validate_input_number($new_realm);
+	input_validate_input_number($template_realm, 'template_realm');
+	input_validate_input_number($new_realm, 'new_realm');
 	/* ==================================================== */
 
 	/* Check get template users array */
@@ -423,7 +423,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
  */
 function user_remove($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	/* check for guest or template user */
@@ -466,7 +466,7 @@ function user_remove($user_id) {
  */
 function user_disable($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE id = ?", array($user_id));
@@ -483,7 +483,7 @@ function user_disable($user_id) {
  */
 function user_enable($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	db_execute_prepared("UPDATE user_auth SET enabled = 'on' WHERE id = ?", array($user_id));

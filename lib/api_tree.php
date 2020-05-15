@@ -29,8 +29,8 @@
  * @returns - null unless in $web, in which case it redirects to the page */
 function api_tree_lock($tree_id, $user_id = 0, $web = true) {
 	/* ================= input validation ================= */
-	input_validate_input_number($tree_id);
-	input_validate_input_number($user_id);
+	input_validate_input_number($tree_id, 'tree_id');
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	db_execute_prepared('UPDATE graph_tree
@@ -46,8 +46,8 @@ function api_tree_lock($tree_id, $user_id = 0, $web = true) {
  * @returns - null unless in $web, in which case it redirects to the page */
 function api_tree_unlock($tree_id, $user_id = 0, $web = true) {
 	/* ================= input validation ================= */
-	input_validate_input_number($tree_id);
-	input_validate_input_number($user_id);
+	input_validate_input_number($tree_id, 'tree_id');
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	db_execute_prepared('UPDATE graph_tree
@@ -64,8 +64,8 @@ function api_tree_unlock($tree_id, $user_id = 0, $web = true) {
  * @arg $new_position - The manual position of the copied node
  * @returns - json encoded new location information */
 function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
-	input_validate_input_number($tree_id);
-	input_validate_input_number($new_position);
+	input_validate_input_number($tree_id, 'tree_id');
+	input_validate_input_number($new_position, 'new_position');
 
 	$data  = api_tree_parse_node_data($node_id);
 	$pdata = api_tree_parse_node_data($new_parent);
@@ -165,7 +165,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
  * @arg $lockname - The name of the lock to be created
  * @returns - true depending on outcome */
 function api_tree_get_lock($lockname, $timeout = 10) {
-	input_validate_input_number($timeout);
+	input_validate_input_number($timeout, 'timeout');
 	$lockname = sanitize_search_string($lockname);
 
 	while (true) {
@@ -194,8 +194,8 @@ function api_tree_release_lock($lockname) {
  * @arg $title - The new branch/leaf title
  * @returns - json encoded new leaf information */
 function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
-	input_validate_input_number($tree_id);
-	input_validate_input_number($position);
+	input_validate_input_number($tree_id, 'tree_id');
+	input_validate_input_number($position, 'position');
 
 	if ($title == '') {
 		$title = __('New Branch');
@@ -225,7 +225,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	}
 
 	/* watch out for monkey business */
-	input_validate_input_number($data['leaf_id']);
+	input_validate_input_number($data['leaf_id'], 'leaf_id');
 
 	$save = array();
 	$save['parent']             = $data['leaf_id'];
@@ -337,7 +337,7 @@ function api_tree_graph_exists($tree_id, $parent, $local_graph_id) {
  * @arg $leaf_id - The branch to remove
  * @returns - null */
 function api_tree_delete_node($tree_id, $node_id) {
-	input_validate_input_number($tree_id);
+	input_validate_input_number($tree_id, 'tree_id');
 
 	// Basic Error Checking
 	if (empty($tree_id) || $tree_id < 0) {
@@ -403,8 +403,8 @@ function api_tree_delete_node_content($tree_id, $leaf_id) {
  * @arg $variable - The request variable to parse
  * @returns - array of information about the variable */
 function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
-	input_validate_input_number($tree_id);
-	input_validate_input_number($new_position);
+	input_validate_input_number($tree_id, 'tree_id');
+	input_validate_input_number($new_position, 'new_position');
 
 	$new_position++;
 
@@ -505,7 +505,7 @@ function api_tree_parse_node_data($variable) {
 				list($type, $tid) = explode(':', $data);
 
 				/* watch out for monkey business */
-				input_validate_input_number($tid);
+				input_validate_input_number($tid, 'tid');
 
 				switch ($type) {
 					case 'tbranch':
@@ -544,7 +544,7 @@ function api_tree_parse_node_data($variable) {
  * @arg $title - The new branch/leaf title
  * @returns - string of the tree items in html format */
 function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
-	input_validate_input_number($tree_id);
+	input_validate_input_number($tree_id, 'tree_id');
 
 	// Basic Error Checking
 	if ($tree_id <= 0) {
@@ -587,7 +587,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
 			list($type, $tid) = explode(':', $data);
 
 			/* watch out for monkey business */
-			input_validate_input_number($tid);
+			input_validate_input_number($tid, 'tid');
 
 			switch ($type) {
 				case 'tbranch':
@@ -683,7 +683,7 @@ function api_tree_get_node($tree_id, $node_id, $editing = false) {
 		$data  = api_tree_parse_node_data($node_id);
 		$id    = $data['leaf_id'];
 
-		input_validate_input_number($id);
+		input_validate_input_number($id, 'id');
 		$hierarchy = draw_dhtml_tree_level($tree_id, $id, $editing);
 	}
 
@@ -711,8 +711,8 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 	$host_id, $site_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
 	global $config;
 
-	input_validate_input_number($tree_id);
-	input_validate_input_number($parent_tree_item_id);
+	input_validate_input_number($tree_id, 'tree_id');
+	input_validate_input_number($parent_tree_item_id, 'parent_tree_item_id');
 
 	//api_tree_get_lock('tree-lock', 10);
 

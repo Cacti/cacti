@@ -22,21 +22,21 @@
  +-------------------------------------------------------------------------+
 */
 
-function input_validate_input_equals($value, $c_value) {
+function input_validate_input_equals($value, $c_value, $variable = '') {
 	if ($value != $c_value) {
-		die_html_input_error();
+		die_html_input_error($variable, $value);
 	}
 }
 
-function input_validate_input_number($value) {
+function input_validate_input_number($value, $variable = '') {
 	if ((!is_numeric($value)) && ($value != '')) {
-		die_html_input_error();
+		die_html_input_error($variable, $value);
 	}
 }
 
-function input_validate_input_regex($value, $regex) {
+function input_validate_input_regex($value, $regex, $variable = '') {
 	if ($value != null && $value != '' && (!preg_match('/' . $regex . '/', $value))) {
-		die_html_input_error();
+		die_html_input_error($variable, $value);
 	}
 }
 
@@ -44,15 +44,22 @@ function html_log_input_error($variable) {
 	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
 }
 
-function die_html_input_error($variable = '', $value = '', $message = '') {
-	global $config;
-
+function die_html_input_error($variable = null, $value = null, $message = '') {
+	$func = defined('CACTI_CLI_ONLY') ? 'trim' : 'html_escape';
 	if ($message == '') {
-		$message = __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', html_escape($variable), html_escape($value));
+		$message = __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, $value);
 	}
 
-	if (isset_request_var('json')) {
-		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):''), false);
+	$variable = ($variable !== null ? ', Variable:' . $$func($variable) : '');
+	$value    = ($value    !== null ? ', Value:'    . $$func($value)    : '');
+
+	$mode = !(defined('CACTI_CLI_ONLY') || isset_request_var('json'));
+	cacti_debug_backtrace('Validation Error' . $variable . $value, $mode);
+
+	if (defined('CACTI_CLI_ONLY')) {
+		print $message . PHP_EOL;
+		exit(1);
+	} elseif (isset_request_var('json')) {
 		print json_encode(
 			array(
 				'status' => '500',
@@ -61,8 +68,6 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 			)
 		);
 	} else {
-		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):''), true);
-
 		print "<table style='width:100%;text-align:center;'><tr><td>$message</td></tr></table>";
 		bottom_footer();
 	}

@@ -84,7 +84,7 @@ function automation_template_dnd() {
 
 		foreach($aids as $id) {
 			$id = str_replace('line', '', $id);
-			input_validate_input_number($id);
+			input_validate_input_number($id, 'id');
 
 			db_execute_prepared('UPDATE automation_templates
 				SET sequence = ?
@@ -139,7 +139,7 @@ function form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$at_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', array($matches[1]))) . '</li>';

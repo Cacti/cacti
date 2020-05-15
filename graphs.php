@@ -800,7 +800,7 @@ function form_actions() {
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
-			input_validate_input_number($matches[1]);
+			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
 
 			$graph_list .= '<li>' . html_escape(get_graph_title($matches[1])) . '</li>';
@@ -2117,12 +2117,11 @@ function graph_management() {
 		$sql_where2 .= ' AND gtg.graph_template_id = 0';
 	} elseif (!isempty_request_var('template_id')) {
 		$parts = explode('_', get_request_var('template_id'));
+		input_validate_input_number($parts[1], 'template_id[1]');
 		if ($parts[0] == 'cg') {
-			input_validate_input_number($parts[1]);
 			$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id = ' . $parts[1];
 			$sql_where2 .= ' AND gl.graph_template_id = ' . $parts[1];
 		} else {
-			input_validate_input_number($parts[1]);
 			$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id = ' . $parts[1];
 			$sql_where2 .= ' AND gl.snmp_query_graph_id = ' . $parts[1];
 		}
