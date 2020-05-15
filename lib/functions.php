@@ -4206,8 +4206,8 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 	}
 
 	if ($record) {
-		if ($html) {
-			print "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
+		if ($html && !defined('CACTI_CLI_ONLY')) {
+			print "<table style='width:100%;text-align:center;'><tr><td>xxx$s</td></tr></table>\n";
 		}
 
 		cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false);

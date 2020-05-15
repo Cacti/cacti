@@ -142,8 +142,8 @@ function check_auth_cookie() {
 function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
 
 	/* ================= input validation ================= */
-	input_validate_input_number($template_realm);
-	input_validate_input_number($new_realm);
+	input_validate_input_number($template_realm, 'template_realm');
+	input_validate_input_number($new_realm, 'new_realm');
 	/* ==================================================== */
 
 	/* Check get template users array */
@@ -153,7 +153,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		AND realm = ?',
 		array($template_user, $template_realm));
 
-	if (!isset($user_auth)) {
+	if (!cacti_sizeof($user_auth)) {
 		return false;
 	}
 
@@ -286,7 +286,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
    @arg $user_id - Id os the user account to remove */
 function user_remove($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	/* check for guest or template user */
@@ -321,7 +321,7 @@ function user_remove($user_id) {
    @arg $user_id - Id of the user account to disable */
 function user_disable($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE id = ?", array($user_id));
@@ -333,7 +333,7 @@ function user_disable($user_id) {
    @arg $user_id - Id of the user account to enable */
 function user_enable($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	db_execute_prepared("UPDATE user_auth SET enabled = 'on' WHERE id = ?", array($user_id));
@@ -2703,7 +2703,7 @@ function compat_password_verify($password, $hash) {
    If that does not exist, hash older md5 function instead
    @arg $password - (string) password to hash
    @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
-   @returns - true if password hash matches, false otherwise */
+   @returns - hash of password, false otherwise */
 function compat_password_hash($password, $algo, $options = array()) {
 	if (function_exists('password_hash')) {
 		// Check if options array has anything, only pass when required

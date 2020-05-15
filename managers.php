@@ -381,11 +381,11 @@ function manager_notifications($id, $header_label) {
 
 	/* ================= input validation ================= */
 	if (!$id | !is_numeric($id)) {
-		die_html_input_error();
+		die_html_input_error('id');
 	}
 
 	if (!in_array(get_request_var('mib'), $registered_mibs) && get_request_var('mib') != '-1' && get_request_var('mib') != '') {
-		die_html_input_error();
+		die_html_input_error('mib');
 	}
 	/* ==================================================== */
 
@@ -638,11 +638,11 @@ function manager_logs($id, $header_label) {
 
 	/* ================= input validation ================= */
 	if (!$id | !is_numeric($id)) {
-		die_html_input_error();
+		die_html_input_error('id');
 	}
 
 	if (!in_array(get_request_var('severity'), array_keys($severity_levels)) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
-		die_html_input_error();
+		die_html_input_error('severity');
 	}
 
 	/* ==================================================== */

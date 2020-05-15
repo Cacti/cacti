@@ -7,6 +7,8 @@ Cacti CHANGELOG
 -issue#3141: Fix FreeBSD IPv6 ping
 -issue#3547: Database Audit utility does not check database permissions
 -issue#3555: Increase device threads up to 10
+-issue#3559: When a developer uses backtracing, HTML output can be seen from command line bug confirmed
+-issue#3560: When using `input_validate_xxx`, calls to `die_html_input_error()` do not pass variable name bug confirmed
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1523: Value above RRD maximum value
 -feature#2437: Create system-wide Proxy settings for plugins
