@@ -34,6 +34,8 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		return false;
 	}
 
+	add_orphan_support();
+
 	/* don't run/rerun the query if the host is down, or disabled */
 	$status = db_fetch_row_prepared('SELECT status, disabled, poller_id
 		FROM host
@@ -172,7 +174,7 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 	/* recalculate/change sort order */
 	$local_data = db_fetch_assoc_prepared('SELECT dl.id AS local_data_id, dl.host_id,
-		dl.snmp_query_id, dl.snmp_index,
+		dl.snmp_query_id, dl.snmp_index, dl.orphan,
 		did.data_input_field_id, did.data_template_data_id,
 		did.value AS query_index, "' . $old_sort_field . '" AS sort_field
 		FROM data_local AS dl
@@ -189,7 +191,7 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		array($snmp_query_id, $host_id));
 
 	$changed_ids = array();
-	$removed_ids = array();
+	$orphaned_ids = array();
 	if (cacti_sizeof($local_data)) {
 		query_debug_timer_offset('data_query', __('Found %s Local Data ID\'s to Verify', cacti_sizeof($local_data)));
 
@@ -288,7 +290,8 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 					query_debug_timer_offset('data_query', __('Index Change Detected! CurrentIndex: %s, PreviousIndex: %s', $current_index, $data_source['query_index']));
 
 					db_execute_prepared('UPDATE data_local
-						SET snmp_index = ?
+						SET snmp_index = ?,
+						orphan = 0
 						WHERE id = ?',
 						array($current_index, $data_source['local_data_id']));
 
@@ -304,11 +307,11 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 					// Set the index to Null, note that the Data Source still has the value
 					db_execute_prepared('UPDATE data_local
-						SET snmp_index = ""
+						SET orphan = 1
 						WHERE id = ?',
 						array($data_source['local_data_id']));
 
-					$removed_ids[] = $data_source['local_data_id'];
+					$orphaned_ids[] = $data_source['local_data_id'];
 				}
 			}
 
@@ -329,19 +332,19 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 		query_debug_timer_offset('data_query', __('Verification of %s Local Data ID\'s Complete', cacti_sizeof($local_data)));
 
-		if (cacti_sizeof($changed_ids) || cacti_sizeof($removed_ids)) {
-			query_debug_timer_offset('data_query', __('Found Changed %s and %s Removed Local Data ID\'s to Re-map.', cacti_sizeof($changed_ids), cacti_sizeof($removed_ids)));
+		if (cacti_sizeof($changed_ids) || cacti_sizeof($orphaned_ids)) {
+			query_debug_timer_offset('data_query', __('Found Changed %s and %s Orphaned Local Data ID\'s to Re-map.', cacti_sizeof($changed_ids), cacti_sizeof($orphaned_ids)));
 			data_query_remap_indexes($changed_ids);
-			data_query_remap_indexes($removed_ids);
+			data_query_remap_indexes($orphaned_ids);
 			query_debug_timer_offset('data_query', __('Done remapping Graphs to their new Indexes'));
 		}
 
-		if ((cacti_sizeof($changed_ids) || cacti_sizeof($removed_ids)) && !$force) {
+		if ((cacti_sizeof($changed_ids) || cacti_sizeof($orphaned_ids)) && !$force) {
 			/* update title cache for graph and data source */
-			update_data_source_title_cache_from_host($host_id, $snmp_query_id, array_merge($changed_ids, $removed_ids));
+			update_data_source_title_cache_from_host($host_id, $snmp_query_id, array_merge($changed_ids, $orphaned_ids));
 			query_debug_timer_offset('data_query', __('Done updating Data Source Title Cache'));
 
-			update_graph_title_cache_from_host($host_id, $snmp_query_id, array_merge($changed_ids, $removed_ids));
+			update_graph_title_cache_from_host($host_id, $snmp_query_id, array_merge($changed_ids, $orphaned_ids));
 			query_debug_timer_offset('data_query', __('Done updating Graph Title Cache'));
 		} elseif ($force) {
 			/* update title cache for graph and data source */
@@ -359,7 +362,7 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 	/* update the auto reindex cache */
 	if (cacti_sizeof($changed_ids)) {
-		query_debug_timer_offset('data_query', __('Update Re-Index Cache complete. There were ' . sizeof($changed_ids) . ' index changes, and ' . sizeof($removed_ids) . ' removed indexes.'));
+		query_debug_timer_offset('data_query', __('Update Re-Index Cache complete. There were ' . sizeof($changed_ids) . ' index changes, and ' . sizeof($orphaned_ids) . ' orphaned indexes.'));
 
 		/* update the poller cache */
 		update_poller_cache_from_query($host_id, $snmp_query_id, $changed_ids);
@@ -368,11 +371,12 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		query_debug_timer_offset('data_query', __('No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population'));
 	}
 
-	if (cacti_sizeof($removed_ids)) {
+	if (cacti_sizeof($orphaned_ids) &&
+		(isset($query_array['index_orphan_removal']) && $query_array['index_orphan_removal'] == 'true')) {
 		$poller_ids = array_rekey(
 			db_fetch_assoc_prepared('SELECT DISTINCT poller_id
 				FROM poller_item
-				WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')'),
+				WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')'),
 			'poller_id', 'poller_id'
 		);
 
@@ -390,8 +394,6 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
 		query_debug_timer_offset('data_query', __('Plugin hooks complete'));
-
-		data_query_remove_disabled_items($removed_ids);
 	} elseif ($config['connection'] == 'online') {
 		poller_push_reindex_data_to_poller($host_id, $snmp_query_id);
 
@@ -400,8 +402,6 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
 		query_debug_timer_offset('data_query', __('Plugin Hooks complete'));
-
-		data_query_remove_disabled_items($removed_ids);
 
 		if (!isset($_SESSION)) {
 			$config['debug_log']['result'] = $result;
@@ -414,16 +414,22 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		}
 	}
 
+	// Remove orphans only if the data query expressly calls for it
+	if (cacti_sizeof($orphaned_ids) &&
+		(isset($query_array['index_orphan_removal']) && $query_array['index_orphan_removal'] == 'true')) {
+		data_query_remove_disabled_items($orphaned_ids);
+	}
+
 	return (isset($result) ? $result : true);
 }
 
-function data_query_remove_disabled_items($removed_ids) {
-	if (cacti_sizeof($removed_ids)) {
+function data_query_remove_disabled_items($orphaned_ids) {
+	if (cacti_sizeof($orphaned_ids)) {
 		db_execute_prepared('DELETE FROM poller_item
-			WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')');
+			WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')');
 
 		db_execute_prepared('DELETE FROM poller_output_boost
-			WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')');
+			WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')');
 
 		$archive_tables = array_rekey(
 			db_fetch_assoc('SELECT TABLE_NAME
@@ -435,7 +441,7 @@ function data_query_remove_disabled_items($removed_ids) {
 		if (cacti_sizeof($archive_tables)) {
 			foreach($archive_tables as $table) {
 				db_execute_prepared("DELETE FROM $table
-					WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')", false);
+					WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')", false);
 			}
 		}
 	}
@@ -1686,7 +1692,8 @@ function update_data_source_data_query_cache($local_data_id, $host_id = '', $dat
 		/* set the index to the new index */
 		db_execute_prepared('UPDATE data_local
 			SET snmp_query_id = ?,
-			snmp_index = ?
+			snmp_index = ?,
+			orphan = 0
 			WHERE id = ?',
 			array($data_query_id, $current_index, $local_data_id));
 
@@ -2267,5 +2274,11 @@ function api_data_query_errors($snmp_query_graph_id, $post) {
 	}
 
 	return $errors;
+}
+
+function add_orphan_support() {
+	if (!db_column_exists('data_local', 'orphan')) {
+		db_execute('ALTER TABLE data_local ADD COLUMN orphan tinyint unsigned NOT NULL default "0" AFTER snmp_index');
+	}
 }
 
