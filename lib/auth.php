@@ -2735,10 +2735,16 @@ function auth_login_redirect($login_opts = '') {
 	global $config;
 
 	if ($login_opts == '') {
-		$login_opts = db_fetch_cell_prepared('SELECT login_opts 
-			FROM user_auth 
-			WHERE id = ?', 
+		$login_opts = db_fetch_cell_prepared('SELECT login_opts
+			FROM user_auth
+			WHERE id = ?',
 			array($_SESSION['sess_user_id']));
+	}
+
+	$newtheme = false;
+	if (user_setting_exists('selected_theme', $_SESSION['sess_user_id']) && read_config_option('selected_theme') != read_user_setting('selected_theme')) {
+		unset($_SESSION['selected_theme']);
+		$newtheme = true;
 	}
 
 	// Decide what to do with an authenticated user

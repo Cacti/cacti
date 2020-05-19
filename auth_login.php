@@ -389,12 +389,6 @@ if (get_nfilter_request_var('action') == 'login') {
 			}
 		}
 
-		$newtheme = false;
-		if (user_setting_exists('selected_theme', $_SESSION['sess_user_id']) && read_config_option('selected_theme') != read_user_setting('selected_theme')) {
-			unset($_SESSION['selected_theme']);
-			$newtheme = true;
-		}
-
 		if (user_setting_exists('user_language', $_SESSION['sess_user_id'])) {
 			$_SESSION['sess_user_language'] = read_user_setting('user_language');
 		}
