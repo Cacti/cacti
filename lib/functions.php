@@ -773,8 +773,6 @@ function display_custom_error_message($message) {
 
 /* clear_messages - clears the message cache */
 function clear_messages() {
-	global $config;
-
 	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
 		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
@@ -783,7 +781,7 @@ function clear_messages() {
 	}
 
 	if ($need_session) {
-		session_start($config['cookie_options']);
+		cacti_session_start();
 	}
 
 	kill_session_var('sess_messages');
@@ -809,15 +807,13 @@ function kill_session_var($var_name) {
 
 /* force_session_data - forces session data into the session if the session was closed for some reason */
 function force_session_data() {
-	global $config;
-
 	// This function should always exist, if not its an invalid install
 	if (!function_exists('session_status')) {
 		return false;
 	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
 
-		session_start($config['cookie_options']);
+		cacti_session_start();
 
 		$_SESSION = $data;
 
@@ -1056,6 +1052,8 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		$start = 0;
 	}
 
+	cacti_session_close();
+
 	/* load up the lines into an array */
 	$file_array = array();
 	$i = 0;
@@ -1078,6 +1076,8 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	}
 
 	fclose($fp);
+
+	cacti_session_start();
 
 	return $file_array;
 }
