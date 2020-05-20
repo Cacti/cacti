@@ -482,14 +482,14 @@ function generate_report($report, $force = false) {
 
 	if ($error != '') {
 		if (isset_request_var('id')) {
-			raise_message('report_message', __('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'', $report['name'], $error), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __esc('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'', $report['name'], $error), MESSAGE_LEVEL_ERROR);
 		} else {
 			reports_log(__FUNCTION__ . ", Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'", false, 'REPORTS', POLLER_VERBOSITY_LOW);
 		}
 
 		return false;
 	} elseif (isset($_REQUEST)) {
-		raise_message('report_message', __('Report \'%s\' Sent Successfully', $report['name']), MESSAGE_LEVEL_INFO);
+		raise_message('report_message', __esc('Report \'%s\' Sent Successfully', $report['name']), MESSAGE_LEVEL_INFO);
 
 		$int = read_config_option('poller_interval');
 
