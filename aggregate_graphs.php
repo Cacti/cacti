@@ -660,12 +660,23 @@ function graph_edit() {
 			'items'   => __('Items'),
 			'preview' => __('Preview')
 		);
-	} else {
+	} elseif (cacti_sizeof($graphs)) {
 		$template = array();
 		$aggregate_tabs = array(
 			'details' => __('Details'),
 			'preview' => __('Preview')
 		);
+	} else {
+		raise_message('missing_aggregate', __('Aggregate Graphs Accessed does not Exist'), MESSAGE_LEVEL_ERROR);
+
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+			header('Location: ' . $referer);
+		} else {
+			header('Location: aggregate_graphs.php');
+		}
+
+		exit;
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -812,6 +823,7 @@ function graph_edit() {
 			html_end_box(true, true);
 
 			if (isset($template)) {
+
 				draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
 			}
 
