@@ -1053,8 +1053,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 												print ' selected';
 											}
 										}
-										print '>';
-										print $gt['name'] . "</option>\n";
+										print '>' . html_escape($gt['name']) . '</option>';
 									}
 								}
 							}

@@ -1619,7 +1619,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 		$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
 
 		if ($return_array !== false) {
-			debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
+			debug_log_insert('new_graphs', __esc('Created: %s', get_graph_title($return_array['local_graph_id'])));
 
 			/* lastly push host-specific information to our data sources */
 			if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
@@ -1639,7 +1639,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
 
 			if ($return_array !== false) {
-				debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
+				debug_log_insert('new_graphs', __esc('Created: %s', get_graph_title($return_array['local_graph_id'])));
 
 				/* lastly push host-specific information to our data sources */
 				if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
