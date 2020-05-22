@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#3553: undefined error when directly visit a none-exist graph
 -issue#3563: Current orphan handling disrupts graphing transient indexes
 -issue#3566: Uncaught Error: Call to undefined function duplicate_mactrack
+-issue#3567: When Boost runs, locks are not always released properly and crash is detected
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
