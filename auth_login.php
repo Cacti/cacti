@@ -551,8 +551,8 @@ function domains_login_process() {
 							array($username, $realm));
 					} else {
 						/* error */
-						display_custom_error_message(__('Template user id %s does not exist.', $template_id));
-						cacti_log("LOGIN: Template user id '" . $template_id . "' does not exist.", false, 'AUTH');
+						display_custom_error_message(__('Template user id %s does not exist.', $template_user));
+						cacti_log("LOGIN: Template user id '" . $template_user . "' does not exist.", false, 'AUTH');
 						header('Location: index.php?header=false');
 						exit;
 					}
