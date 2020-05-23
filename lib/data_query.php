@@ -1309,7 +1309,7 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 				WHERE host_id = ?
 				AND snmp_query_id = ?
 				AND field_name = ?',
-				array($host_id, $snmp_query_id, $field_name));
+				array($host_id, $snmp_query_id, $field));
 		}
 	}
 

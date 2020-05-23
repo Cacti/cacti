@@ -725,7 +725,7 @@ class Ldap {
 		/* validation */
 		if (empty($this->username)) {
 			$output = LdapError::GetErrorDetails(LdapError::Disabled);
-			Ldap::ReportError($output, 'LDAP_SEARCH');
+			Ldap::RecordError($output, 'LDAP_SEARCH');
 			return $output;
 		}
 

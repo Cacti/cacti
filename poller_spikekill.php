@@ -206,7 +206,7 @@ function purge_spike_backups() {
 
 	$earlytime = time() - $retention;
 
-	if ($directory != '' && s_dir($directory) && is_writable($directory)) {
+	if ($directory != '' && is_dir($directory) && is_writable($directory)) {
 		$files = array_diff(scandir($directory), array('.', '..'));
 
 		if (cacti_sizeof($files)) {

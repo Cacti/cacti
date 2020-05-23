@@ -485,8 +485,8 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 		case GRAPH_ITEM_TYPE_GPRINT_MIN:
 		case GRAPH_ITEM_TYPE_GPRINT_MAX:
 		case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
-		case GRAPH_ITEM_TYPE_GPRINT_TEXTALIGN:
-		case GRAPH_ITEM_TYPE_GPRINT_TIC:
+		case GRAPH_ITEM_TYPE_TEXTALIGN:
+		case GRAPH_ITEM_TYPE_TIC:
 		case GRAPH_ITEM_TYPE_COMMENT:
 		case GRAPH_ITEM_TYPE_HRULE:
 		case GRAPH_ITEM_TYPE_VRULE:
@@ -656,7 +656,7 @@ function aggregate_cdef_make0() {
 	# save the cdef itself
 	$new_cdef_id  = sql_save($save, 'cdef');
 
-	cacti_log(__FUNCTION__ . ' created new cdef: ' . $new_cdef_id . ' name: ' . $magic, true, 'AGGREGATE', POLLER_VERBOSITY_DEEBUG);
+	cacti_log(__FUNCTION__ . ' created new cdef: ' . $new_cdef_id . ' name: ' . $magic, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	# create a new cdef item entry
 	$save             = array();
