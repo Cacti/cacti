@@ -333,6 +333,16 @@ function push_out_graph($graph_template_graph_id) {
 		return 0;
 	}
 
+	/* don't push out if you have no graphs */
+	$has_graphs = db_fetch_cell_prepared('SELECT COUNT(id)
+		FROM graph_local
+		WHERE graph_template_id = ?',
+		array($graph_template_graph['graph_template_id']));
+
+	if ($has_graphs == 0) {
+		return 0;
+	}
+
 	/* loop through each graph column name (from the above array) */
 	foreach ($struct_graph as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
@@ -432,6 +442,16 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 
 	/* must be a graph template */
 	if ($graph_template_item['graph_template_id'] == 0) {
+		return 0;
+	}
+
+	/* don't push out if you have no graphs */
+	$has_graphs = db_fetch_cell_prepared('SELECT COUNT(id)
+		FROM graph_local
+		WHERE graph_template_id = ?',
+		array($graph_template_item['graph_template_id']));
+
+	if ($has_graphs == 0) {
 		return 0;
 	}
 
