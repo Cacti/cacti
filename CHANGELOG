@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#3563: Current orphan handling disrupts graphing transient indexes
 -issue#3566: Uncaught Error: Call to undefined function duplicate_mactrack
 -issue#3567: When Boost runs, locks are not always released properly and crash is detected
+-issue#3569: Errors creating an Error Image when system has enviornment issues
 -issue#3570: Undefined function 'aggregate_detect_linex_graph_type'
 -issue#3571: Correct various runtime errors due to incorrect message variables
 -issue#3574: Saving Graph Template Items take a long time on large systems
