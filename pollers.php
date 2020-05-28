@@ -474,7 +474,7 @@ function form_actions() {
 					}
 				}
 
-				session_start($config['cookie_options']); // Start the session again
+				cacti_session_start();
 
 				if (sizeof($failed)) {
 					cacti_log('WARNING: Some selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION['sess_user_id']) . ', Successful/Failed[' . sizeof($success) . '/' . sizeof($failed) . '].  See log for details.', false, 'WEBUI');

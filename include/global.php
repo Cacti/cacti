@@ -424,11 +424,6 @@ if ($config['is_web']) {
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 	header('X-Frame-Options: SAMEORIGIN');
 
-	// SameSite legacy behavior
-	if (version_compare(PHP_VERSION, '7.3', '<')) {
-		header('Set-Cookie: cross-site-cookie=bar; SameSite=Strict;' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? ' Secure':''));
-	}
-
 	/* increased web hardening */
 	$script_policy = read_config_option('content_security_policy_script');
 	if ($script_policy != '0' && $script_policy != '') {

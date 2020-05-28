@@ -290,7 +290,7 @@ function output_rrd_data($start_time, $force = false) {
 	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id)
 		FROM $archive_table");
 
-	if ($total_rows == 0 && !cacti_sizeof($more_arch_table)) {
+	if ($total_rows == 0 && !cacti_sizeof($more_arch_tables)) {
 		db_execute("SELECT RELEASE_LOCK('poller_boost');");
 
 		return -1;
@@ -502,7 +502,6 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 
 				$local_data_id = $item['local_data_id'];
 				$time          = $item['timestamp'];
-				$initial_time  = $time;
 
 				if ($time > $last_update || cacti_version_compare($rrdtool_version, '1.5', '>=')) {
 					$buflen += strlen(' ' . $time);
@@ -641,7 +640,6 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 
 function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe) {
 	$outbuf = '';
-	$initial_time = 0;
 	if (sizeof($outarray)) {
 		foreach($outarray as $tsdata) {
 			$outbuf .= ($outbuf != '' ? ' ':'') . implode(':', $tsdata);
@@ -655,7 +653,7 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 	}
 
 	boost_timer('rrdupdate', BOOST_TIMER_START);
-	$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
+	$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $outbuf, $rrdtool_pipe);
 	boost_timer('rrdupdate', BOOST_TIMER_END);
 
 	/* check return status for delete operation */

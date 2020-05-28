@@ -1060,6 +1060,12 @@ function makeFiltersResponsive() {
 			}
 		});
 	}
+
+	if ($('#form_graph_view').length) {
+		$('#form_graph_view').filter('input, select').not('#date1, #date2').click(function() {
+			closeDateFilters();
+		});
+	}
 }
 
 function toggleFilterAndIcon(id, child, initial) {
@@ -1140,7 +1146,7 @@ function setupResponsiveMenuAndTabs() {
 
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
 			return;
-		} else if (page == 'index.php' && $(this).attr('href').indexOf('login')) {
+		} else if (page == 'index.php' && $(this).attr('href').indexOf('login') >= 0) {
 			return;
 		} else {
 			event.preventDefault();
@@ -1721,6 +1727,8 @@ function loadTopTab(href, id, force) {
 			$('.cactiConsolePageHeadBackdrop').show();
 		}
 
+		closeDateFilters();
+
 		$.ajaxQ.abortAll();
 		$.get(url)
 			.done(function(html) {
@@ -1825,6 +1833,8 @@ function loadPage(href, force) {
 	}
 
 	if (cont) {
+		closeDateFilters();
+
 		$.ajaxQ.abortAll();
 		$.get(href)
 			.done(function(html) {
@@ -1985,6 +1995,8 @@ function loadPageNoHeader(href, scroll, force) {
 	}
 
 	if (cont) {
+		closeDateFilters();
+
 		$.ajaxQ.abortAll();
 		$.get(href)
 			.done(function(html) {
@@ -2340,6 +2352,8 @@ function setupSortable() {
 				'&header=false' +
 				sortAdd;
 
+			closeDateFilters();
+
 			$.ajaxQ.abortAll();
 			$.get(url)
 				.done(function(data) {
@@ -2535,6 +2549,8 @@ function setupPageTimeout() {
 				/* fix coner case with tree refresh */
 				refreshPage = appendHeaderSuppression(refreshPage);
 
+				closeDateFilters();
+
 				$.ajaxQ.abortAll();
 				$.get(refreshPage)
 					.done(function(data) {
@@ -2678,6 +2694,7 @@ function setupEllipsis() {
 			clearTimeout(userMenuOpenTimer);
 		}
 	});
+
 	$(window).on('click', function(event) {
 		if($(event.target).parents('.submenuoptions').length == 0 && $('.submenuoptions').is(':visible')) {
 			$('.submenuoptions').slideUp(120);
@@ -2905,6 +2922,8 @@ function checkForLogout(data) {
 function clearGraphFilter() {
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+'&clear=1');
 
+	closeDateFilters();
+
 	$.ajaxQ.abortAll();
 	$.get(href)
 		.done(function(data) {
@@ -2922,6 +2941,14 @@ function clearGraphFilter() {
 	);
 }
 
+function closeDateFilters() {
+	date1Open = false;
+	date2Open = false;
+
+	$('#date1').datetimepicker('hide');
+	$('#date2').datetimepicker('hide');
+}
+
 function saveGraphFilter(section) {
 	var href = graphPage+'?action=save'+
 		'&columns='+$('#columns').val()+
@@ -2931,8 +2958,7 @@ function saveGraphFilter(section) {
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.get(href+'&header=false&section='+section)
 		.done(function(data) {
@@ -2957,8 +2983,7 @@ function applyGraphFilter() {
 		'&graph_template_id='+$('#graph_template_id').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked'));
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.get(href)
@@ -3026,8 +3051,7 @@ function applyGraphTimespan() {
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.get(href)
@@ -3058,11 +3082,7 @@ function refreshGraphTimespanFilter() {
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
-
-	$('#date1').datetimepicker('hide');
-	$('#date2').datetimepicker('hide');
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3088,8 +3108,7 @@ function timeshiftGraphFilterLeft() {
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3115,8 +3134,7 @@ function timeshiftGraphFilterRight() {
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3141,8 +3159,7 @@ function clearGraphTimespanFilter() {
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3157,6 +3174,8 @@ function clearGraphTimespanFilter() {
 
 function removeSpikesStdDev(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3174,6 +3193,8 @@ function removeSpikesStdDev(local_graph_id) {
 function removeSpikesVariance(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=variance&local_graph_id='+local_graph_id;
 
+	closeDateFilters();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -3189,6 +3210,8 @@ function removeSpikesVariance(local_graph_id) {
 
 function removeSpikesInRange(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3206,6 +3229,8 @@ function removeSpikesInRange(local_graph_id) {
 function removeRangeFill(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
+	closeDateFilters();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -3221,6 +3246,8 @@ function removeRangeFill(local_graph_id) {
 
 function dryRunStdDev(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3240,6 +3267,8 @@ function dryRunStdDev(local_graph_id) {
 function dryRunVariance(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=variance&dryrun=true&local_graph_id='+local_graph_id;
 
+	closeDateFilters();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -3257,6 +3286,8 @@ function dryRunVariance(local_graph_id) {
 
 function dryRunSpikesInRange(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3276,6 +3307,8 @@ function dryRunSpikesInRange(local_graph_id) {
 
 function dryRunRangeFill(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3310,6 +3343,8 @@ function redrawGraph(graph_id) {
 
 	var graph_height = $('#wrapper_'+graph_id).attr('graph_height');
 	var graph_width  = $('#wrapper_'+graph_id).attr('graph_width');
+
+	closeDateFilters();
 
 	$.getJSON(urlPath+'graph_json.php?rra_id=0'+
 		'&local_graph_id='+graph_id+
@@ -3383,6 +3418,8 @@ function initializeGraphs() {
 			event.preventDefault();
 			event.stopPropagation();
 
+			closeDateFilters();
+
 			$.ajaxQ.abortAll();
 			$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false')
 				.done(function(data) {
@@ -3455,6 +3492,8 @@ function initializeGraphs() {
 
 		var graph_height = $(this).attr('graph_height');
 		var graph_width  = $(this).attr('graph_width');
+
+		closeDateFilters();
 
 		$.getJSON(urlPath+'graph_json.php?rra_id='+rra_id+
 			'&local_graph_id='+graph_id+
@@ -3546,6 +3585,8 @@ function initializeGraphs() {
 
 			event.preventDefault();
 			event.stopPropagation();
+
+			closeDateFilters();
 
 			$.ajaxQ.abortAll();
 			$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()))

@@ -386,73 +386,6 @@ function aggregate_is_stacked_graph($_local_graph_id) {
 	return $_stacked_graph;
 }
 
-/**
- * aggregate_convert_to_stack	- Convert graph_type to STACK, if appropriate
- *
- * @param int $_graph_item_type	- current graph_item_type
- * @param int $_old_graph_id		- local graph id of graph to be inserted
- * @param int $_graph_no			- no of graph
- * @param int $_graph_item_sequence	- no of next item
- */
-function aggregate_convert_to_stack($_graph_item_type, $_old_graph_id, $_graph_no, $_graph_item_sequence) {
-	global $graph_item_types;
-
-	cacti_log(__FUNCTION__ . '  called: Item type:' . $graph_item_types[$_graph_item_type] . ' graph: ' . $_graph_no . ' item: ' . $_graph_item_sequence, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
-
-	if ($_graph_no === 0) {
-		/* this one converts the first graph only
-		 * we must make sure to have at least one AREA, else AREA/STACK would be malformed
-		 * so we have to detect, whether an AREA already exists or not
-		 * doing so for each call of this function is an overhead, once per whole graph would be ok
-		 * but this way it's easier to read
-		 */
-		$_pure_linex_graph = aggregate_detect_linex_graph_type($_old_graph_id);
-	}
-
-	if (preg_match('/(LINE[123])/', $graph_item_types[$_graph_item_type])) {
-		if ($_graph_no === 0) {
-			/* convert LINEx statements to AREA on the first graph */
-			$_graph_item_type = GRAPH_ITEM_TYPE_AREA;
-		} else {
-			/* convert LINEx statements to STACK */
-			$_graph_item_type = GRAPH_ITEM_TYPE_STACK;
-		}
-	} elseif (preg_match('/(AREA)/', $graph_item_types[$_graph_item_type]) && !($_graph_no === 0)) {
-		/* convert AREA statements, but not for the first graph
-		 * this is required, when graphing a 'negative' AREA */
-		$_graph_item_type = GRAPH_ITEM_TYPE_STACK;
-	}
-
-
-	cacti_log(__FUNCTION__ . '  return: Item type:' . $graph_item_types[$_graph_item_type] . ' graph: ' . $_graph_no, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
-
-	return $_graph_item_type;
-}
-
-/**
- * Convert AREA/STACK graph_type to the one provided
- *
- * @param int $_graph_item_type	- current graph_item_type
- * @param int $_graph_type		- new graph_item_type
- * @return int					- new graph_item_type
- */
-function aggregate_convert_graph_type($_graph_item_type, $_graph_type) {
-	global $graph_item_types;
-
-	cacti_log(__FUNCTION__ . '  called: Item Type: ' . $graph_item_types[$_graph_item_type] . ' new item type: ' . $_graph_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
-
-	if (preg_match('/(AREA|STACK)/', $graph_item_types[$_graph_item_type])) {
-		/* change AREA|STACK statements only */
-		cacti_log(__FUNCTION__ . '  return: Item type:' . $graph_item_types[$_graph_type], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
-
-		return $_graph_type;
-	} else {
-		cacti_log(__FUNCTION__ . '  return: Item type:' . $graph_item_types[$_graph_item_type], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
-
-		return $_graph_item_type;
-	}
-}
-
 function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_type) {
 	cacti_log(__FUNCTION__ . '  called: graph: ' . $_graph_id . ' old item type: ' . $_old_type . ' new item type: ' . $_new_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -485,8 +418,8 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 		case GRAPH_ITEM_TYPE_GPRINT_MIN:
 		case GRAPH_ITEM_TYPE_GPRINT_MAX:
 		case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
-		case GRAPH_ITEM_TYPE_GPRINT_TEXTALIGN:
-		case GRAPH_ITEM_TYPE_GPRINT_TIC:
+		case GRAPH_ITEM_TYPE_TEXTALIGN:
+		case GRAPH_ITEM_TYPE_TIC:
 		case GRAPH_ITEM_TYPE_COMMENT:
 		case GRAPH_ITEM_TYPE_HRULE:
 		case GRAPH_ITEM_TYPE_VRULE:
@@ -656,7 +589,7 @@ function aggregate_cdef_make0() {
 	# save the cdef itself
 	$new_cdef_id  = sql_save($save, 'cdef');
 
-	cacti_log(__FUNCTION__ . ' created new cdef: ' . $new_cdef_id . ' name: ' . $magic, true, 'AGGREGATE', POLLER_VERBOSITY_DEEBUG);
+	cacti_log(__FUNCTION__ . ' created new cdef: ' . $new_cdef_id . ' name: ' . $magic, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	# create a new cdef item entry
 	$save             = array();

@@ -761,7 +761,7 @@ function automation_graph_rules() {
 
 								if (cacti_sizeof($available_data_queries)) {
 									foreach ($available_data_queries as $data_query) {
-										print "<option value='" . $data_query['id'] . "'" . (get_request_var('snmp_query_id') == $data_query['id'] ? ' selected':'') .  '>' . $data_query['name'] . "</option>\n";
+										print "<option value='" . $data_query['id'] . "'" . (get_request_var('snmp_query_id') == $data_query['id'] ? ' selected':'') .  '>' . html_escape($data_query['name']) . "</option>\n";
 									}
 								}
 								?>

@@ -33,9 +33,21 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
 	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
 
 	if ($peak) {
-		return $stats['peak'];
+		if (array_key_exists('peak', $stats)) {
+			return $stats['peak'];
+		} else if (array_key_exists('avg', $stats)) {
+			return $stats['avg'];
+		} else {
+			return $stats;
+		}
 	} else {
-		return $stats['avg'];
+		if (array_key_exists('avg', $stats)) {
+			return $stats['avg'];
+		} else if (array_key_exists('peak', $stats)) {
+			return $stats['peak'];
+		} else {
+			return $stats;
+		}
 	}
 }
 

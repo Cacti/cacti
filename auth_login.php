@@ -22,6 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+/* include ldap support */
+include_once('./lib/ldap.php');
+
 /* set default action */
 set_default_action();
 
@@ -148,11 +151,9 @@ if (get_nfilter_request_var('action') == 'login') {
 	case '3':
 		/* LDAP Auth */
  		if ($frv_realm == '2' && get_nfilter_request_var('login_password') != '') {
-			/* include LDAP lib */
-			include_once(__DIR__ . '/lib/ldap.php');
-
 			/* get user DN */
 			$ldap_dn_search_response = cacti_ldap_search_dn($username);
+
 			if ($ldap_dn_search_response['error_num'] == '0') {
 				$ldap_dn = $ldap_dn_search_response['dn'];
 			} else {
@@ -262,33 +263,37 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		/* check that template user exists */
 		if (!empty($user_template)) {
-			/* get user CN*/
-			$cn_full_name = read_config_option('cn_full_name');
-			$cn_email     = read_config_option('cn_email');
+			if ($realm == 3) { // This is an ldap login
+				/* get user CN*/
+				$cn_full_name = read_config_option('cn_full_name');
+				$cn_email     = read_config_option('cn_email');
 
-			if ($cn_full_name != '' || $cn_email != '') {
-				$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name, $cn_email));
+				if ($cn_full_name != '' || $cn_email != '') {
+					$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name, $cn_email));
 
-   				if (isset($ldap_cn_search_response['cn'])) {
-					$data_override = array();
+   					if (isset($ldap_cn_search_response['cn'])) {
+						$data_override = array();
 
-					if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {
-						$data_override['full_name'] = $ldap_cn_search_response['cn'][$cn_full_name];
+						if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {
+							$data_override['full_name'] = $ldap_cn_search_response['cn'][$cn_full_name];
+						} else {
+							$data_override['full_name'] = '';
+						}
+
+						if (array_key_exists($cn_email, $ldap_cn_search_response['cn'])) {
+							$data_override['email_address'] = $ldap_cn_search_response['cn'][$cn_email];
+						} else {
+							$data_override['email_address'] = '';
+						}
+
+						user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
 					} else {
-						$data_override['full_name'] = '';
+						$ldap_response = (isset($ldap_cn_search_response[0]) ? $ldap_cn_search_response[0] : '(no response given)');
+						$ldap_code = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
+						cacti_log('LOGIN: Email Address and Full Name fields not found, reason: ' . $ldap_response . 'code: ' . $ldap_code, false, 'AUTH');
+						user_copy($user_template['username'], $username, 0, $realm);
 					}
-
-					if (array_key_exists($cn_email, $ldap_cn_search_response['cn'])) {
-						$data_override['email_address'] = $ldap_cn_search_response['cn'][$cn_email];
-					} else {
-						$data_override['email_address'] = '';
-					}
-
-					user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
 				} else {
-					$ldap_response = (isset($ldap_cn_search_response[0]) ? $ldap_cn_search_response[0] : '(no response given)');
-					$ldap_code = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
-					cacti_log('LOGIN: Email Address and Full Name fields not found, reason: ' . $ldap_response . 'code: ' . $ldap_code, false, 'AUTH');
 					user_copy($user_template['username'], $username, 0, $realm);
 				}
 			} else {
@@ -384,68 +389,11 @@ if (get_nfilter_request_var('action') == 'login') {
 			}
 		}
 
-		$newtheme = false;
-		if (user_setting_exists('selected_theme', $_SESSION['sess_user_id']) && read_config_option('selected_theme') != read_user_setting('selected_theme')) {
-			unset($_SESSION['selected_theme']);
-			$newtheme = true;
-		}
-
 		if (user_setting_exists('user_language', $_SESSION['sess_user_id'])) {
 			$_SESSION['sess_user_language'] = read_user_setting('user_language');
 		}
 
-		/* ok, at the point the user has been sucessfully authenticated; so we must
-		decide what to do next */
-		switch ($user['login_opts']) {
-			case '1': /* referer */
-				/* because we use plugins, we can't redirect back to graph_view.php if they don't
-				 * have console access
-				 */
-				if (isset($_SERVER['REDIRECT_URL'])) {
-					$referer = sanitize_uri($_SERVER['REDIRECT_URL']);
-					if (isset($_SERVER['REDIRECT_QUERY_STRING'])) {
-						$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'] . ($newtheme ? '&newtheme=1':'');
-					}
-				} elseif (isset($_SERVER['HTTP_REFERER'])) {
-					$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
-					if (basename($referer) == 'logout.php') {
-						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
-					}
-				} elseif (isset($_SERVER['REQUEST_URI'])) {
-					$referer = sanitize_uri($_SERVER['REQUEST_URI']);
-					if (basename($referer) == 'logout.php') {
-						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
-					}
-				} else {
-					$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
-				}
-
-				if (substr_count($referer, 'plugins')) {
-					header('Location: ' . $referer);
-				} elseif (!is_realm_allowed(8)) {
-					header('Location: graph_view.php' . ($newtheme ? '?newtheme=1':''));
-				} else {
-					$param_char = '?';
-					if (substr_count($referer, '?')) {
-						$param_char = '&';
-					}
-					header('Location: ' . $referer . ($newtheme ? $param_char . 'newtheme=1':''));
-				}
-
-				break;
-			case '2': /* default console page */
-				header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
-
-				break;
-			case '3': /* default graph page */
-				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
-
-				break;
-			default:
-				api_plugin_hook_function('login_options_navigate', $user['login_opts']);
-		}
-
-		exit;
+		auth_login_redirect($user['login_opts']);
 	} elseif (!$guest_user && $user_auth) {
 		/* No guest account defined */
 		display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
@@ -500,9 +448,6 @@ function domains_login_process() {
 	global $user, $realm, $username, $user_auth, $ldap_error, $ldap_error_message;
 
 	if (is_numeric(get_nfilter_request_var('realm')) && get_nfilter_request_var('login_password') != '') {
-		/* include LDAP lib */
-		include_once(__DIR__ . '/lib/ldap.php');
-
 		/* get user DN */
 		$ldap_dn_search_response = domains_ldap_search_dn($username, get_nfilter_request_var('realm'));
 		if ($ldap_dn_search_response['error_num'] == '0') {
@@ -606,8 +551,8 @@ function domains_login_process() {
 							array($username, $realm));
 					} else {
 						/* error */
-						display_custom_error_message(__('Template user id %s does not exist.', $template_id));
-						cacti_log("LOGIN: Template user id '" . $template_id . "' does not exist.", false, 'AUTH');
+						display_custom_error_message(__('Template user id %s does not exist.', $template_user));
+						cacti_log("LOGIN: Template user id '" . $template_user . "' does not exist.", false, 'AUTH');
 						header('Location: index.php?header=false');
 						exit;
 					}

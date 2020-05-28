@@ -1740,7 +1740,7 @@ function display_sites() {
 
 	if (cacti_sizeof($sites)) {
 		foreach($sites as $s) {
-			print "<ul><li id='tsite:" . $s['id'] . "' data-jstree='{ \"type\" : \"site\"}'>" . $s['name'] . "</li></ul>\n";
+			print "<ul><li id='tsite:" . $s['id'] . "' data-jstree='{ \"type\" : \"site\"}'>" . html_escape($s['name']) . "</li></ul>\n";
 		}
 	}
 }
@@ -1761,7 +1761,7 @@ function display_hosts() {
 
 	if (cacti_sizeof($hosts)) {
 		foreach($hosts as $h) {
-			print "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . $h['description'] . ' (' . $h['hostname'] . ')' . "</li></ul>\n";
+			print "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . html_escape($h['description']) . ' (' . html_escape($h['hostname']) . ')' . "</li></ul>\n";
 		}
 	}
 }

@@ -724,7 +724,7 @@ function debug_view() {
 		array(
 			'name' => 'convert_name',
 			'title' => __('Were we able to convert the title?'),
-			'value' => get_data_source_title($check['datasource'])
+			'value' => html_escape(get_data_source_title($check['datasource']))
 		),
 		array(
 			'name' => 'rrd_match',

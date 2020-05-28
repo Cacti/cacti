@@ -629,16 +629,20 @@ function graph_edit() {
 			WHERE local_graph_id = ?',
 			array(get_request_var('id')));
 
-		$aginfo = db_fetch_row_prepared('SELECT *
-			FROM aggregate_graphs
-			WHERE local_graph_id = ?',
-			array($graphs['local_graph_id']));
+		if (cacti_sizeof($graphs)) {
+			$aginfo = db_fetch_row_prepared('SELECT *
+				FROM aggregate_graphs
+				WHERE local_graph_id = ?',
+				array($graphs['local_graph_id']));
 
-		if ($aginfo['title_format'] == '') {
-			$aginfo['title_format'] = get_graph_title($graphs['local_graph_id']);
+			if ($aginfo['title_format'] == '') {
+				$aginfo['title_format'] = get_graph_title($graphs['local_graph_id']);
+			}
+
+			$header_label = __esc('[edit: %s]', get_graph_title(get_request_var('id')));
+		} else {
+			$header_label = __('Aggregate Graph does not Exist');
 		}
-
-		$header_label = __esc('[edit: %s]', get_graph_title(get_request_var('id')));
 	}
 
 	if (cacti_sizeof($aginfo)) {
@@ -656,12 +660,23 @@ function graph_edit() {
 			'items'   => __('Items'),
 			'preview' => __('Preview')
 		);
-	} else {
+	} elseif (cacti_sizeof($graphs)) {
 		$template = array();
 		$aggregate_tabs = array(
 			'details' => __('Details'),
 			'preview' => __('Preview')
 		);
+	} else {
+		raise_message('missing_aggregate', __('Aggregate Graphs Accessed does not Exist'), MESSAGE_LEVEL_ERROR);
+
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+			header('Location: ' . $referer);
+		} else {
+			header('Location: aggregate_graphs.php');
+		}
+
+		exit;
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -732,6 +747,19 @@ function graph_edit() {
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
+		$graph = db_fetch_row_prepared('SELECT *
+			FROM graph_local
+			WHERE id = ?',
+			array(get_request_var('id')));
+
+		if (!cacti_sizeof($graph)) {
+			html_start_box(__('Aggregate Preview Does Not Exist'), '100%', '', '3', 'center', '');
+			print "<tr><td id='imagewindow' class='center'>" . __('Aggreage Graph does not Exist') . '</tr></tr>';
+			html_end_box(false);
+			raise_message('noaggregate', __('Aggregate Graph does not Exist'), MESSAGE_LEVEL_ERROR);
+			return false;
+		}
+
 		html_start_box(__('Aggregate Preview %s', $header_label), '100%', '', '3', 'center', '');
 		?>
 		<tr><td id='imagewindow' class='center'>
@@ -795,6 +823,7 @@ function graph_edit() {
 			html_end_box(true, true);
 
 			if (isset($template)) {
+
 				draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
 			}
 
