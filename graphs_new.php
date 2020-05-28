@@ -184,7 +184,6 @@ function host_new_graphs_save($host_id) {
 
 	/* form an array that contains all of the data on the previous form */
 	foreach ($_POST as $var => $val) {
-
 		if (preg_match('/^g_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: field_name
 			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg'][$matches[2]]['graph_template'][$matches[3]] = $val;
@@ -389,7 +388,7 @@ function graphs() {
 
 								if (cacti_sizeof($snmp_queries) > 0) {
 									foreach ($snmp_queries as $query) {
-										print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
+										print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . html_escape($query['name']) . '</option>';
 									}
 								}
 								?>
@@ -447,7 +446,10 @@ function graphs() {
 
 	form_start('graphs_new.php', 'chk');
 
-	$total_rows = cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_id FROM host_graph WHERE host_id = ?', array(get_request_var('host_id'))));
+	$total_rows = cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_id
+		FROM host_graph
+		WHERE host_id = ?',
+		array(get_request_var('host_id'))));
 
 	$i = 0;
 

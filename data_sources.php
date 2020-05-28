@@ -48,6 +48,9 @@ set_default_action();
 
 validate_data_source_vars();
 
+// Add interim support for enhanced orphan handling
+add_orphan_support();
+
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
@@ -1129,7 +1132,7 @@ function ds_edit() {
 			<tr>
 				<td>
 					<span class='textInfo'><?php print __('Data Source Debug');?></span><br>
-					<pre><?php print @rrdtool_function_create(get_request_var('id'), '-600', true);?></pre>
+					<pre><?php print @rrdtool_function_create(get_request_var('id'), true);?></pre>
 				</td>
 			</tr>
 		</table>
@@ -1508,7 +1511,7 @@ function ds() {
 			GRAPH_ITEM_TYPE_AREA      . ', ' .
 			GRAPH_ITEM_TYPE_STACK     . ')';
 
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtr.local_graph_id IS NULL';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dtr.local_graph_id IS NULL || dl.orphan = 1)';
 	} else {
 		$orphan_where = '';
 	}

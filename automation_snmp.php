@@ -100,7 +100,6 @@ switch (get_request_var('action')) {
 }
 
 function form_automation_snmp_save() {
-
 	if (isset_request_var('save_component_automation_snmp')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -185,7 +184,7 @@ function form_automation_snmp_actions() {
 				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id', 'snmp_id', array_to_sql_or($selected_items, 'id')));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					duplicate_mactrack($selected_items[$i], get_nfilter_request_var('name_format'));
+					automation_duplicate_snmp_option($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			}
 		}
@@ -267,6 +266,36 @@ function form_automation_snmp_actions() {
 /* --------------------------
  SNMP Options Functions
  -------------------------- */
+
+function automation_duplicate_snmp_option($id, $new_name) {
+	$name = db_fetch_cell_prepared('SELECT name
+		FROM automation_snmp
+		WHERE id = ?', array($id));
+
+	$new_name = str_replace('<name>', $name, $new_name);
+
+	$save['id'] = 0;
+	$save['name'] = $new_name;
+
+	$newid = sql_save($save, 'automation_snmp');
+
+	if ($newid > 0 && $id > 0) {
+		db_execute_prepared("INSERT INTO automation_snmp_items
+		(snmp_id, sequence, snmp_version, snmp_community, snmp_port, snmp_timeout,
+        snmp_retries, max_oids, snmp_username, snmp_password, snmp_auth_protocol,
+		snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id)
+		SELECT $newid AS snmp_id, sequence, snmp_version, snmp_community, snmp_port, snmp_timeout,
+        snmp_retries, max_oids, snmp_username, snmp_password, snmp_auth_protocol,
+        snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id
+		FROM automation_snmp_items
+		WHERE snmp_id = ?",
+		array($id));
+
+		raise_message('option_duplicated', __('Automation SNMP Options has been Duplicated.'), MESSAGE_LEVEL_INFO);
+	} else {
+		raise_message('missing_options', __('Automation Item does not exist.  Can not Duplicate.'), MESSAGE_LEVEL_ERROR);
+	}
+}
 
 function automation_snmp_item_dnd() {
    /* ================= Input validation ================= */

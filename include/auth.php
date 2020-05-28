@@ -134,12 +134,13 @@ if (read_config_option('auth_method') != 0) {
 	}
 
 	/* don't even bother with the guest code if we're already logged in */
-	if (isset($guest_account) && empty($_SESSION['sess_user_id'])) {
+	if (isset($guest_account)) {
 		$guest_user_id = get_guest_account();
-
-		/* cannot find guest user */
+		/* find guest user */
 		if (!empty($guest_user_id)) {
-			$_SESSION['sess_user_id'] = $guest_user_id;
+			if (empty($_SESSION['sess_user_id'])) {
+				$_SESSION['sess_user_id'] = $guest_user_id;
+			}
 			return true;
 		}
 	}
@@ -262,6 +263,10 @@ if (read_config_option('auth_method') != 0) {
 				) AS authorized';
 
 			$authorized = db_fetch_cell_prepared($auth_sql_query, $auth_sql_params);
+
+			if (!$authorized) {
+				auth_login_redirect();
+			}
 		} else {
 			$authorized = false;
 		}

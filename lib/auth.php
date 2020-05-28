@@ -2727,3 +2727,90 @@ function compat_password_needs_rehash($password, $algo, $options = array()) {
 
 	return true;
 }
+
+/* auth_login_redirect - provide default page re-direction when a user first logs in.
+   @arg $login_opts - (array) array of user details
+   @returns - null */
+function auth_login_redirect($login_opts = '') {
+	global $config;
+
+	if ($login_opts == '') {
+		$login_opts = db_fetch_cell_prepared('SELECT login_opts
+			FROM user_auth
+			WHERE id = ?',
+			array($_SESSION['sess_user_id']));
+	}
+
+	$newtheme = false;
+	if (user_setting_exists('selected_theme', $_SESSION['sess_user_id']) && read_config_option('selected_theme') != read_user_setting('selected_theme')) {
+		unset($_SESSION['selected_theme']);
+		$newtheme = true;
+	}
+
+	// Decide what to do with an authenticated user
+	switch ($login_opts) {
+		case '1': /* referer */
+			/* because we use plugins, we can't redirect back to graph_view.php if they don't
+			 * have console access
+			 */
+			if (isset($_SERVER['REDIRECT_URL'])) {
+				$referer = sanitize_uri($_SERVER['REDIRECT_URL']);
+
+				if (isset($_SERVER['REDIRECT_QUERY_STRING'])) {
+					$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'];
+				}
+			} elseif (isset($_SERVER['HTTP_REFERER'])) {
+				$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+
+				if (auth_basename($referer) == 'logout.php') {
+					$referer = $config['url_path'] . 'index.php';
+				}
+			} elseif (isset($_SERVER['REQUEST_URI'])) {
+				$referer = sanitize_uri($_SERVER['REQUEST_URI']);
+
+				if (auth_basename($referer) == 'logout.php') {
+					$referer = $config['url_path'] . 'index.php';
+				}
+			} else {
+				$referer = $config['url_path'] . 'index.php';
+			}
+
+			$referer .= ($newtheme ? (strpos($referer, '?') === false ? '?':'&') . 'newtheme=1':'');
+
+			if (api_user_realm_auth(auth_basename($referer))) {
+				header('Location: ' . $referer);
+			} elseif (!is_realm_allowed(8)) {
+				header('Location: graph_view.php');
+			} else {
+				header('Location: index.php');
+			}
+
+			break;
+		case '2': /* default console page */
+			if (!is_realm_allowed(8)) {
+				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+			} else {
+				header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
+			}
+
+			break;
+		case '3': /* default graph page */
+			header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+
+			break;
+		default:
+			api_plugin_hook_function('login_options_navigate', $login_opts);
+	}
+
+	exit;
+}
+
+/* auth_basename - provides a URL knowledgable basename function
+   @arg $referer - (string) a URL that will included a basename
+   @returns - (string) the file name without the arguments */
+function auth_basename($referer) {
+	$parts = explode('?', $referer);
+
+	return basename($parts[0]);
+}
+

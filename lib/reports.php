@@ -237,7 +237,7 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 
 	$now = time();
 	if ($ts < $now) {
-		$ts = reports_interval_start($interval, $count, $offset, $now);
+		$ts = $now;
 	}
 
 	return $ts;
@@ -482,14 +482,14 @@ function generate_report($report, $force = false) {
 
 	if ($error != '') {
 		if (isset_request_var('id')) {
-			raise_message('report_message', __('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'', $report['name'], $error), MESSAGE_LEVEL_ERROR);
+			raise_message('report_message', __esc('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'', $report['name'], $error), MESSAGE_LEVEL_ERROR);
 		} else {
 			reports_log(__FUNCTION__ . ", Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'", false, 'REPORTS', POLLER_VERBOSITY_LOW);
 		}
 
 		return false;
 	} elseif (isset($_REQUEST)) {
-		raise_message('report_message', __('Report \'%s\' Sent Successfully', $report['name']), MESSAGE_LEVEL_INFO);
+		raise_message('report_message', __esc('Report \'%s\' Sent Successfully', $report['name']), MESSAGE_LEVEL_INFO);
 
 		$int = read_config_option('poller_interval');
 
@@ -767,7 +767,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 				} else {
 					$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;' class='text'>" . PHP_EOL;
 				}
-				$outstr .= "\t\t\t\t" . $item['item_text'] . PHP_EOL;
+				$outstr .= "\t\t\t\t" . html_escape($item['item_text']) . PHP_EOL;
 				$outstr .= "\t\t\t</td>" . PHP_EOL;
 				$outstr .= "\t\t</tr>" . PHP_EOL;
 
@@ -865,7 +865,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 			set_config_option('base_url', $prefix . read_config_option('base_url'));
 		}
 
-		$out = "<a href='" . html_escape(read_config_option('base_url', true) . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
+		$out = "<a href='" . html_escape(read_config_option('base_url', true) . '/graph.php?action=view&local_graph_id=' . $item['local_graph_id'] . "&rra_id=0") . "'>" . $out . '</a>';
 	}
 
 	return $out . PHP_EOL;

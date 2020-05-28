@@ -265,7 +265,7 @@ function realtimeGrapher() {
 
 		realtimeTimer = setTimeout(function() {
 			realtimeGrapher();
-		}, 1000);
+		}, $('#ds_step').val()*1000);
 	} else {
 		count--;
 		destroy(realtimeTimer);
