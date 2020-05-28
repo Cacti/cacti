@@ -180,12 +180,10 @@ function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = arra
 function update_graph_title_cache($local_graph_id) {
 	$graph_title = get_graph_title($local_graph_id);
 
-	if (strstr($graph_title, '|query_') === false && strstr($graph_title, '|host_') === false) {
 		db_execute_prepared('UPDATE graph_templates_graph
 			SET title_cache = ?
 			WHERE local_graph_id = ?',
 			array($graph_title, $local_graph_id));
-	}
 }
 
 /* null_out_substitutions - takes a string and cleans out any host variables that do not have values
