@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.13
 -SECURITY#3544: Cacti is affected by CVE-2020-11022 and CVE-2020-11023
 -SECURITY#3549: Several XSS Vulnerabilities
+-SECURITY#3582: Update PHPMailer to version 6.1.6 with fix for CVE-2020-13625
 -issue#3517: Sometimes, poller_reports.php fall in function reports_interval_start with CPU UT 100%, and never return.
 -issue#3525: When viewing Graphs, zoom functionality prevents drag and drop of image
 -issue#3527: Improve 95th percentile function to autoselect datasource CF definition:avg or max correctly
