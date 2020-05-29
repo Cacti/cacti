@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#3570: Undefined function 'aggregate_detect_linex_graph_type'
 -issue#3571: Correct various runtime errors due to incorrect message variables
 -issue#3574: Saving Graph Template Items take a long time on large systems
+-issue#3579: It is strange that many graphs show as 'Empty Graph'
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
