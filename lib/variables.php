@@ -178,12 +178,26 @@ function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = arra
 /* update_graph_title_cache - updates the title cache for a single graph
    @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
 function update_graph_title_cache($local_graph_id) {
+	$old_title = db_fetch_cell_prepared('SELECT title_cache
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
+
 	$graph_title = get_graph_title($local_graph_id);
 
+	if (strstr($graph_title, '|query_') !== false || strstr($graph_title, '|host_') !== false) {
+		if ($old_title == '') {
+			db_execute_prepared('UPDATE graph_templates_graph
+				SET title_cache = ?
+				WHERE local_graph_id = ?',
+				array($graph_title, $local_graph_id));
+		}
+	} else {
 		db_execute_prepared('UPDATE graph_templates_graph
 			SET title_cache = ?
 			WHERE local_graph_id = ?',
 			array($graph_title, $local_graph_id));
+	}
 }
 
 /* null_out_substitutions - takes a string and cleans out any host variables that do not have values
