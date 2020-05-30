@@ -348,8 +348,8 @@ function field_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Data Input Field.');?></p>
-			<p><?php print __('Field Name: %s', $field['data_name']);?><br>
-			<p><?php print __('Friendly Name: %s', $field['name']);?><br>
+			<p><?php print __esc('Field Name: %s', $field['data_name']);?><br>
+			<p><?php print __esc('Friendly Name: %s', $field['name']);?><br>
 		</td>
 	</tr>
 	<tr>

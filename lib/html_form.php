@@ -1177,11 +1177,11 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 				print ' selected';
 			}
 
-			print '>' . $display . "</option>";
+			print '>' . html_escape($display) . '</option>';
 		}
 	}
 
-	print "</select>";
+	print '</select>';
 }
 
 /* form_font_box - draws a standard html textbox and provides status of a fonts existence

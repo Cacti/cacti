@@ -684,7 +684,7 @@ function data_query_item_edit() {
 	<?php
 
 	if (!empty($snmp_query_item['id'])) {
-		html_start_box( __('Associated Data Templates'), '100%', '', '3', 'center', '');
+		html_start_box(__('Associated Data Templates'), '100%', '', '3', 'center', '');
 
 		$data_templates = db_fetch_assoc_prepared('SELECT data_template.id, data_template.name
 			FROM (data_template, data_template_rrd, graph_templates_item)
@@ -700,8 +700,8 @@ function data_query_item_edit() {
 		if (cacti_sizeof($data_templates)) {
 			foreach ($data_templates as $data_template) {
 				print "<tr class='tableHeader'>
-						<th class='tableSubHeaderColumn'>" . __('Data Template - %s', $data_template['name']) . '</th>
-					</tr>';
+					<th class='tableSubHeaderColumn'>" . __esc('Data Template - %s', $data_template['name']) . '</th>
+				</tr>';
 
 				$data_template_rrds = db_fetch_assoc_prepared('SELECT dtr.id, dtr.data_source_name,
 					sqgr.snmp_field_name, sqgr.snmp_query_graph_id

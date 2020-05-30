@@ -237,7 +237,7 @@ $.fn.replaceOptions = function(options, selected) {
  *  without any wrapping. */
 $.fn.textWidth = function(text){
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
 	if (!text) {
 		html.css('font-family', org.css('font-family'));
 		html.css('font-weight', org.css('font-weight'));
@@ -255,7 +255,7 @@ $.fn.textWidth = function(text){
  *  without any wrapping. */
 $.fn.textBoxWidth = function() {
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.val() + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.text() + '</span>');
 	html.css('font-family', org.css('font-family'));
 	html.css('font-weight', org.css('font-weight'));
 	html.css('font-size',   org.css('font-size'));
@@ -3676,9 +3676,9 @@ $.widget('custom.dropcolor', {
 
 	_createAutocomplete: function() {
 		var selected = this.element.children(':selected');
-		var value = selected.val() ? selected.text() : '';
+		var value  = selected.val() ? selected.text() : '';
 		var regExp = /\(([^)]+)\)/;
-		var hex   = regExp.exec(value);
+		var hex    = regExp.exec(value);
 
 		if (hex != null) {
 			this.wrapper.find('#bgc').css('background-color', '#'+hex[1]);
@@ -3703,12 +3703,14 @@ $.widget('custom.dropcolor', {
 				$(this).data('ui-autocomplete')._renderItem = function(ul, item) {
 					var regExp = /\(([^)]+)\)/;
 					var hex   = regExp.exec(item.label);
+					var mylabel = $($.parseHTML(item.label));
+					var label = mylabel.text();
 
 					if (hex !== null) {
 						color = hex[1];
-						return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>'+item.label+'</div>').appendTo(ul);
+						return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
 					} else {
-						return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>'+item.label+'</div>').appendTo(ul);
+						return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
 					}
 				}
 
