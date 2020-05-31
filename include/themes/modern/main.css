@@ -879,13 +879,14 @@ ul#breadcrumbs {
 	left: 0px;
 	top: 56px;
 	overflow-y: hidden;
-	width: 167px;
+	overflow-x: hidden;
+	width: 170px;
 	float: left;
 	background-color: #efefef;
 }
 
 .cactiConsoleNavigationArea table {
-	width: 162px;
+	width: 165px;
 }
 
 .cactiLogo {

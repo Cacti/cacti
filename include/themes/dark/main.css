@@ -876,6 +876,7 @@ ul#breadcrumbs {
 	left: 0px;
 	top: 56px;
 	overflow-y: hidden;
+	overflow-x: hidden;
 	width: 167px;
 	float: left;
 }

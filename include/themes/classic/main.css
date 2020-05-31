@@ -802,6 +802,7 @@ ul#breadcrumbs {
 	vertical-align: top;
 	float: left;
 	width: 162px;
+	overflow-x: hidden;
 	height: 100%;
 }
 
