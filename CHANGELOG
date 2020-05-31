@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#3570: Undefined function 'aggregate_detect_linex_graph_type'
 -issue#3571: Correct various runtime errors due to incorrect message variables
 -issue#3574: Saving Graph Template Items take a long time on large systems
+-issue#3577: Hosts are being incorrectly filtered when first displaying with filter set to all
 -issue#3579: It is strange that many graphs show as 'Empty Graph'
 
 1.2.12
