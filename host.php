@@ -1331,7 +1331,7 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where = "WHERE deleted = ''";
 	}
 
-	if (get_request_var('location') != '-1') {
+	if (get_request_var('location') > '0') {
 		if (get_request_var('location') == __('Undefined') || get_request_var('location') == '') {
 			$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' IFNULL(host.location,"") = ""';
 		} else {
