@@ -3533,6 +3533,7 @@ function api_automation_is_time_to_start($network_id) {
 						if ($key == 0) {
 							$next += $recur - $week;
 						}
+
 						break;
 					}
 				}
@@ -3580,7 +3581,7 @@ function api_automation_is_time_to_start($network_id) {
 					if ($key !== false && $key >= 0) {
 						$key = array_search($day_of_month, $chdays);
 						if ($key !== false && $key >= 0) {
-							break;
+							break 2;
 						}
 					}
 				}
@@ -3607,7 +3608,7 @@ function api_automation_is_time_to_start($network_id) {
 					if ($key !== false && $key >= 0) {
 						$key = array_search($day_of_month, $chdays);
 						if ($key !== false && $key >= 0) {
-							break;
+							break 2;
 						}
 					}
 				}
@@ -3646,16 +3647,16 @@ function api_automation_is_time_to_start($network_id) {
 						foreach($weeks as $week) {
 							switch($week) {
 							case '1':
-								$sweek = '1st';
+								$sweek = 'first';
 								break;
 							case '2':
-								$sweek = '2nd';
+								$sweek = 'second';
 								break;
 							case '3':
-								$sweek = '3rd';
+								$sweek = 'third';
 								break;
 							case '4':
-								$sweek = '4th';
+								$sweek = 'forth';
 								break;
 							}
 
@@ -3701,7 +3702,7 @@ function api_automation_is_time_to_start($network_id) {
 
 						foreach($times as $time) {
 							if ($time > $now) {
-								break;
+								break 2;
 							}
 						}
 					}
@@ -3727,16 +3728,16 @@ function api_automation_is_time_to_start($network_id) {
 						foreach($weeks as $week) {
 							switch($week) {
 							case '1':
-								$sweek = '1st';
+								$sweek = 'first';
 								break;
 							case '2':
-								$sweek = '2nd';
+								$sweek = 'second';
 								break;
 							case '3':
-								$sweek = '3rd';
+								$sweek = 'third';
 								break;
 							case '4':
-								$sweek = '4th';
+								$sweek = 'forth';
 								break;
 							}
 
@@ -3782,7 +3783,7 @@ function api_automation_is_time_to_start($network_id) {
 
 						foreach($times as $time) {
 							if ($time > $now) {
-								break;
+								break 2;
 							}
 						}
 					}
