@@ -199,7 +199,7 @@ function add_tree_names_to_actions_array() {
 
 function get_site_locations() {
 	$return  = array();
-	$term    = get_request_var('term');
+	$term    = get_nfilter_request_var('term');
 	$host_id = $_SESSION['cur_device_id'];
 
 	$site_id = db_fetch_cell_prepared('SELECT site_id
