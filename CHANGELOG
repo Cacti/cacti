@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#3533: Start date for RRDfile is different between RRDfile in a Cacti install
 -issue#3536: Responsive Navigation Menu Show/Hide Broken in 1.2.12
 -issue#3538: Race condition exists between initialization of realtime and browser loading realtime javascript functions
+-issue#3543: CSV Export output readability issues using UTF8 characters
 -issue#3551: Web Basic Authentication and Template User broken in 1.2.12
 -issue#3553: undefined error when directly visit a none-exist graph
 -issue#3563: Current orphan handling disrupts graphing transient indexes
