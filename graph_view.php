@@ -647,7 +647,7 @@ case 'list':
 												}
 											}
 											print '>';
-											print $gt['name'] . "</option>\n";
+											print htmlspecialchars($gt['name']) . "</option>\n";
 										}
 									}
 								}
