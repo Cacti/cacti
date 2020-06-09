@@ -4292,7 +4292,7 @@ function get_timeinstate($host) {
 		$time = 0;
 	} elseif (isset($host['instate'])) {
 		$time = $host['instate'];
-	} elseif ($host['status_event_count'] > 0 && ($host['status'] == 1 || $host['status'] == 2)) {
+	} elseif ($host['status_event_count'] > 0 && ($host['status'] == 1 || $host['status'] == 2 || $host['status'] == 5)) {
 		$time = $host['status_event_count'] * $interval;
 	} elseif (strtotime($host['status_rec_date']) < 943916400 && ($host['status'] == 0 || $host['status'] == 3)) {
 		$time = $host['total_polls'] * $interval;
