@@ -178,7 +178,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 											}
 										}
 										print '>';
-										print $gt['name'] . "</option>\n";
+										print html_escape($gt['name']) . "</option>\n";
 									}
 								}
 							}
