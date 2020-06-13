@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#3596: When importing template, resources aren't checked properly
 -issue#3597: Template to Device sync provides no feedback
 -issue#3598: When editing graphs and graph templates, back button results in broken page
+-issue#3601: When devices down, instate can show wrong time
 -issue#3607: Can't access log after been kicked out by timeout
 
 1.2.12
