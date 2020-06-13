@@ -940,7 +940,9 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 }
 
 function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
-	global $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
+	global $config, $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
+
+	static $counter = 0;
 
 	/* track changes */
 	$status = 0;
@@ -972,6 +974,15 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			} else {
 				$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 			}
+		}
+	}
+
+	if (isset($save['xml_path'])) {
+		$path = str_replace('<path_cacti>', $config['base_path'], $save['xml_path']);
+
+		if (!file_exists($path) || !is_readable($path)) {
+			raise_message('resource_missing_' . $counter, __('Resource File: \'%s\' is missing or not readable.  Make sure you install it before using Data Query: \'%s\'', $path, $save['name']), MESSAGE_LEVEL_ERROR);
+			$counter++;
 		}
 	}
 
