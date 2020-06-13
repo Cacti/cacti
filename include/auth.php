@@ -151,6 +151,8 @@ if (read_config_option('auth_method') != 0) {
 
 		if (!isset($guest_account) && $guest_user_id == $_SESSION['sess_user_id']) {
 			kill_session_var('sess_user_id');
+			cacti_session_destroy();
+			cacti_session_start();
 		}
 	}
 
