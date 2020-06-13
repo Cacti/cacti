@@ -847,11 +847,12 @@ function api_device_update_host_template($host_id, $host_template_id) {
 			array($host_template_id, $host_id), true, $rcnn_id);
 	}
 
-	/* add all snmp queries assigned to the device template */
+	/* add all new snmp queries assigned to the device template */
 	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
-		FROM host_template_snmp_query
-		WHERE host_template_id = ?',
-		array($host_template_id));
+		FROM host_template_snmp_query AS htsq
+		WHERE host_template_id = ?
+		AND htsq.snmp_query_id NOT IN (SELECT snmp_query_id FROM host_snmp_cache WHERE host_id = ?)',
+		array($host_template_id, $host_id));
 
 	if (cacti_sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {
@@ -874,9 +875,10 @@ function api_device_update_host_template($host_id, $host_template_id) {
 
 	/* add all graph templates assigned to the device template */
 	$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
-		FROM host_template_graph
-		WHERE host_template_id = ?',
-		array($host_template_id));
+		FROM host_template_graph AS hg
+		WHERE host_template_id = ?
+		AND hg.graph_template_id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)',
+		array($host_template_id, $host_id));
 
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $graph_template) {

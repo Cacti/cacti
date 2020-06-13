@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue#3588: Validation not performed warnings in host.php
 -issue#3594: Automation hangs for certain schedule types
 -issue#3595: Template to Device sync text is not consistent
+-issue#3597: Template to Device sync provides no feedback
 -issue#3598: When editing graphs and graph templates, back button results in broken page
 -issue#3607: Can't access log after been kicked out by timeout
 
