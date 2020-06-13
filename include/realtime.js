@@ -64,6 +64,8 @@ function imageOptionsChanged(action) {
 				$('#image').html('<img id="rimage" class="realtimeimage" src="data:image/png;base64,'+data.data+'"/>');
 			}
 
+			realtimePopout = $('#rtfilter').outerHeight() + 60 + $('#rimage').outerHeight() + 30 > window.innerHeight || $('#rimage').outerWidth() + 40 > window.innerWidth ? true : false;
+
 			if (realtimePopout) {
 				setRealtimeWindowSize();
 

@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#3574: Saving Graph Template Items take a long time on large systems
 -issue#3577: Hosts are being incorrectly filtered when first displaying with filter set to all
 -issue#3579: It is strange that many graphs show as 'Empty Graph'
+-issue#3581: Realtime graph window not resizing
 -issue#3588: Validation not performed warnings in host.php
 -issue#3594: Automation hangs for certain schedule types
 -issue#3595: Template to Device sync text is not consistent
