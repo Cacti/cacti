@@ -647,7 +647,7 @@ case 'list':
 												}
 											}
 											print '>';
-											print htmlspecialchars($gt['name']) . "</option>\n";
+											print html_escape($gt['name']) . "</option>\n";
 										}
 									}
 								}

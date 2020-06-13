@@ -479,7 +479,7 @@ function field_edit() {
 	}
 
 	if (isset($field)) {
-		$dfield .= ' ' . htmlspecialchars($field['data_name']);
+		$dfield .= ' ' . html_escape($field['data_name']);
 	}
 	form_start('data_input.php', 'data_input');
 
