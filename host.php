@@ -192,14 +192,14 @@ function add_tree_names_to_actions_array() {
 
 	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
-			$device_actions['tr_' . $tree['id']] = __('Place on a Tree (%s)', $tree['name']);
+			$device_actions['tr_' . $tree['id']] = __esc('Place on a Tree (%s)', $tree['name']);
 		}
 	}
 }
 
 function get_site_locations() {
 	$return  = array();
-	$term    = get_request_var('term');
+	$term    = get_nfilter_request_var('term');
 	$host_id = $_SESSION['cur_device_id'];
 
 	$site_id = db_fetch_cell_prepared('SELECT site_id
@@ -1329,7 +1329,7 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where = "WHERE deleted = ''";
 	}
 
-	if (get_request_var('location') != '-1') {
+	if (get_request_var('location') > '0') {
 		if (get_request_var('location') == __('Undefined') || get_request_var('location') == '') {
 			$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' IFNULL(host.location,"") = ""';
 		} else {

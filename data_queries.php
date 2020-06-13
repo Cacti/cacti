@@ -532,13 +532,13 @@ function data_query_item_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Data Query Graph Association.');?></p>
-			<p><?php print __('Graph Name: %s', $graph_template['name']);?><br>
+			<p><?php print __esc('Graph Name: %s', $graph_template['name']);?><br>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Query Graph Template');?>'>
 		</td>
 	</tr>
 	<?php
@@ -649,7 +649,7 @@ function data_query_item_edit() {
 	<?php
 
 	if (!empty($snmp_query_item['id'])) {
-		html_start_box( __('Associated Data Templates'), '100%', '', '3', 'center', '');
+		html_start_box(__('Associated Data Templates'), '100%', '', '3', 'center', '');
 
 		$data_templates = db_fetch_assoc_prepared('SELECT data_template.id, data_template.name
 			FROM (data_template, data_template_rrd, graph_templates_item)
@@ -665,8 +665,8 @@ function data_query_item_edit() {
 		if (cacti_sizeof($data_templates)) {
 			foreach ($data_templates as $data_template) {
 				print "<tr class='tableHeader'>
-						<th class='tableSubHeaderColumn'>" . __('Data Template - %s', $data_template['name']) . '</th>
-					</tr>';
+					<th class='tableSubHeaderColumn'>" . __esc('Data Template - %s', $data_template['name']) . '</th>
+				</tr>';
 
 				$data_template_rrds = db_fetch_assoc_prepared('SELECT dtr.id, dtr.data_source_name,
 					sqgr.snmp_field_name, sqgr.snmp_query_graph_id
@@ -1128,7 +1128,7 @@ function data_query_edit() {
 					<?php if ($xml_file_exists) {?>
 						<a class='linkEditMain' href="<?php print html_escape('data_queries.php?action=item_edit&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>"><?php print html_escape($snmp_query_graph['name']);?></a>
 					<?php } else { ?>
-						<span class='noLinkEditMain' title='Association Read Only until XML file located'><?php print html_escape($snmp_query_graph['name']);?></span>
+						<span class='noLinkEditMain' title='<?php print __esc('Association Read Only until XML file located');?>'><?php print html_escape($snmp_query_graph['name']);?></span>
 					<?php } ?>
 					</td>
 					<td>
@@ -1141,11 +1141,11 @@ function data_query_edit() {
 						<?php print $snmp_query_graph['id'];?>
 					</td><?php if ($snmp_query_graph['graphs'] == 0) {?>
 					<td class='right'>
-							<a class='delete deleteMarker fa fa-times' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
+						<a class='delete deleteMarker fa fa-times' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
 					</td>
 					<?php } else { ?>
 					<td class='right'>
-							<a class='deleteMarkerDisabled fa fa-times' title='<?php print __('Mapped Graph Templates with Graphs are read only');?>' href='#'></a>
+						<a class='deleteMarkerDisabled fa fa-times' title='<?php print __('Mapped Graph Templates with Graphs are read only');?>' href='#'></a>
 					</td>
 					<?php } ?>
 				</tr>

@@ -340,7 +340,7 @@ function cdef_item_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following CDEF Item.');?></p>
-			<p><?php print __('CDEF Name: %s', html_escape($cdef['name']));?><br>
+			<p><?php print __esc('CDEF Name: %s', $cdef['name']);?><br>
 			<em><?php $cdef_item_type = $cdef_item['type']; print $cdef_item_types[$cdef_item_type];?></em>: <strong><?php print html_escape(get_cdef_item_name($cdef_item['id']));?></strong></p>
 		</td>
 	</tr>
@@ -446,7 +446,7 @@ function item_edit() {
 		WHERE id = ?',
 		array(get_request_var('cdef_id')));
 
-	html_start_box(__('CDEF Items [edit: %s]', html_escape($cdef_name)), '100%', '', '3', 'center', '');
+	html_start_box(__esc('CDEF Items [edit: %s]', $cdef_name), '100%', '', '3', 'center', '');
 
 	if (isset_request_var('type_select')) {
 		$current_type = get_request_var('type_select');

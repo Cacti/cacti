@@ -893,7 +893,8 @@ label.ui-state-hover > span {
 
 .cactiConsoleNavigationArea {
 	overflow-y: auto !important;
-	width: 167px;
+	overflow-x: hidden;
+	width: 170px;
 	height: 100% !important;
 	float: left;
 }

@@ -1171,7 +1171,6 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				print "<td style='$this_row_style'></td>";
 			}
 
-
 			/* color name */
 			if (!preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
 				print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . '></td>';
@@ -1194,7 +1193,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				}
 				print '</td>';
 
-				print "<td style='text-align:right;'><a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&$url_data") . "'></a></td>";
+				print "<td style='text-align:right;'><a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a></td>";
 			}
 
 			print '</tr>';

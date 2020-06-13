@@ -23,10 +23,37 @@ Cacti CHANGELOG
 -feature#3585: CLI script to show database permissions that Cacti has
 
 1.2.13
+-SECURITY#3544: Cacti is affected by CVE-2020-11022 and CVE-2020-11023
+-SECURITY#3549: Several XSS Vulnerabilities
+-SECURITY#3582: Update PHPMailer to version 6.1.6 with fix for CVE-2020-13625
 -issue#3517: Sometimes, poller_reports.php fall in function reports_interval_start with CPU UT 100%, and never return.
 -issue#3525: When viewing Graphs, zoom functionality prevents drag and drop of image
+-issue#3527: Improve 95th percentile function to autoselect datasource CF definition:avg or max correctly
 -issue#3532: Issues with Realtime in 1.2.12
 -issue#3533: Start date for RRDfile is different between RRDfile in a Cacti install
+-issue#3536: Responsive Navigation Menu Show/Hide Broken in 1.2.12
+-issue#3538: Race condition exists between initialization of realtime and browser loading realtime javascript functions
+-issue#3543: CSV Export output readability issues using UTF8 characters
+-issue#3551: Web Basic Authentication and Template User broken in 1.2.12
+-issue#3553: undefined error when directly visit a none-exist graph
+-issue#3563: Current orphan handling disrupts graphing transient indexes
+-issue#3566: Uncaught Error: Call to undefined function duplicate_mactrack
+-issue#3567: When Boost runs, locks are not always released properly and crash is detected
+-issue#3569: Errors creating an Error Image when system has enviornment issues
+-issue#3570: Undefined function 'aggregate_detect_linex_graph_type'
+-issue#3571: Correct various runtime errors due to incorrect message variables
+-issue#3574: Saving Graph Template Items take a long time on large systems
+-issue#3577: Hosts are being incorrectly filtered when first displaying with filter set to all
+-issue#3579: It is strange that many graphs show as 'Empty Graph'
+-issue#3581: Realtime graph window not resizing
+-issue#3588: Validation not performed warnings in host.php
+-issue#3594: Automation hangs for certain schedule types
+-issue#3595: Template to Device sync text is not consistent
+-issue#3596: When importing template, resources aren't checked properly
+-issue#3597: Template to Device sync provides no feedback
+-issue#3598: When editing graphs and graph templates, back button results in broken page
+-issue#3601: When devices down, instate can show wrong time
+-issue#3607: Can't access log after been kicked out by timeout
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)

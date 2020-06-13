@@ -376,15 +376,13 @@ class Ldap {
 	}
 
 	function RestoreCactiHandler() {
-		global $config;
-
 		/* drop out of ldaps error handler */
 		restore_error_handler();
 
 		/* set an error handler for Cacti */
 		set_error_handler('CactiErrorHandler');
 
-		session_start($config['cookie_options']);
+		cacti_session_start();
 	}
 
 	function RecordError($output, $section = 'LDAP') {
@@ -727,7 +725,7 @@ class Ldap {
 		/* validation */
 		if (empty($this->username)) {
 			$output = LdapError::GetErrorDetails(LdapError::Disabled);
-			Ldap::ReportError($output, 'LDAP_SEARCH');
+			Ldap::RecordError($output, 'LDAP_SEARCH');
 			return $output;
 		}
 

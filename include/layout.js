@@ -237,7 +237,7 @@ $.fn.replaceOptions = function(options, selected) {
  *  without any wrapping. */
 $.fn.textWidth = function(text){
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
 	if (!text) {
 		html.css('font-family', org.css('font-family'));
 		html.css('font-weight', org.css('font-weight'));
@@ -255,7 +255,7 @@ $.fn.textWidth = function(text){
  *  without any wrapping. */
 $.fn.textBoxWidth = function() {
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.val() + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.text() + '</span>');
 	html.css('font-family', org.css('font-family'));
 	html.css('font-weight', org.css('font-weight'));
 	html.css('font-size',   org.css('font-size'));
@@ -1056,6 +1056,12 @@ function makeFiltersResponsive() {
 			}
 		});
 	}
+
+	if ($('#form_graph_view').length) {
+		$('#form_graph_view').filter('input, select').not('#date1, #date2').click(function() {
+			closeDateFilters();
+		});
+	}
 }
 
 function toggleFilterAndIcon(id, child, initial) {
@@ -1139,7 +1145,7 @@ function setupResponsiveMenuAndTabs() {
 
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
 			return;
-		} else if (page == 'index.php' && $(this).attr('href').indexOf('login') > -1) {
+		} else if (page == 'index.php' && $(this).attr('href').indexOf('login') >= 0) {
 			return;
 		} else {
 			event.preventDefault();
@@ -1893,6 +1899,8 @@ function loadUrl(options) {
 			window[options.funcStart](options);
 		}
 
+		closeDateFilters();
+
 		$.ajaxQ.abortAll();
 		$.get(options.url)
 			.done(function(html) {
@@ -2628,6 +2636,7 @@ function setupEllipsis() {
 			clearTimeout(userMenuOpenTimer);
 		}
 	});
+
 	$(window).on('click', function(event) {
 		if($(event.target).parents('.submenuoptions').length == 0 && $('.submenuoptions').is(':visible')) {
 			$('.submenuoptions').slideUp(120);
@@ -2857,6 +2866,14 @@ function clearGraphFilter() {
 	loadUrl({url:href});
 }
 
+function closeDateFilters() {
+	date1Open = false;
+	date2Open = false;
+
+	$('#date1').datetimepicker('hide');
+	$('#date2').datetimepicker('hide');
+}
+
 function saveGraphFilter(section) {
 	var href = graphPage+'?action=save'+
 		'&columns='+$('#columns').val()+
@@ -2866,8 +2883,7 @@ function saveGraphFilter(section) {
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	loadUrl({
 		url:href+'&section='+section,
@@ -2891,8 +2907,7 @@ function applyGraphFilter() {
 		'&graph_template_id='+$('#graph_template_id').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked'));
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	loadUrl({url:href});
 }
@@ -2935,8 +2950,7 @@ function applyGraphTimespan() {
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	loadUrl({url:href});
 }
@@ -2954,11 +2968,7 @@ function refreshGraphTimespanFilter() {
 
 	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
-
-	$('#date1').datetimepicker('hide');
-	$('#date2').datetimepicker('hide');
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -2979,8 +2989,7 @@ function timeshiftGraphFilterLeft() {
 
 	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3006,8 +3015,7 @@ function timeshiftGraphFilterRight() {
 
 	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3032,8 +3040,7 @@ function clearGraphTimespanFilter() {
 
 	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3048,6 +3055,8 @@ function clearGraphTimespanFilter() {
 
 function removeSpikesStdDev(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3065,6 +3074,8 @@ function removeSpikesStdDev(local_graph_id) {
 function removeSpikesVariance(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=variance&local_graph_id='+local_graph_id;
 
+	closeDateFilters();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -3080,6 +3091,8 @@ function removeSpikesVariance(local_graph_id) {
 
 function removeSpikesInRange(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3097,6 +3110,8 @@ function removeSpikesInRange(local_graph_id) {
 function removeRangeFill(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
+	closeDateFilters();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -3112,6 +3127,8 @@ function removeRangeFill(local_graph_id) {
 
 function dryRunStdDev(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3131,6 +3148,8 @@ function dryRunStdDev(local_graph_id) {
 function dryRunVariance(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=variance&dryrun=true&local_graph_id='+local_graph_id;
 
+	closeDateFilters();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -3148,6 +3167,8 @@ function dryRunVariance(local_graph_id) {
 
 function dryRunSpikesInRange(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3167,6 +3188,8 @@ function dryRunSpikesInRange(local_graph_id) {
 
 function dryRunRangeFill(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3201,6 +3224,8 @@ function redrawGraph(graph_id) {
 
 	var graph_height = $('#wrapper_'+graph_id).attr('graph_height');
 	var graph_width  = $('#wrapper_'+graph_id).attr('graph_width');
+
+	closeDateFilters();
 
 	$.getJSON(urlPath+'graph_json.php?rra_id=0'+
 		'&local_graph_id='+graph_id+
@@ -3337,6 +3362,8 @@ function initializeGraphs() {
 
 		var graph_height = $(this).attr('graph_height');
 		var graph_width  = $(this).attr('graph_width');
+
+		closeDateFilters();
 
 		$.getJSON(urlPath+'graph_json.php?rra_id='+rra_id+
 			'&local_graph_id='+graph_id+
@@ -3509,9 +3536,9 @@ $.widget('custom.dropcolor', {
 
 	_createAutocomplete: function() {
 		var selected = this.element.children(':selected');
-		var value = selected.val() ? selected.text() : '';
+		var value  = selected.val() ? selected.text() : '';
 		var regExp = /\(([^)]+)\)/;
-		var hex   = regExp.exec(value);
+		var hex    = regExp.exec(value);
 
 		if (hex != null) {
 			this.wrapper.find('#bgc').css('background-color', '#'+hex[1]);
@@ -3536,12 +3563,14 @@ $.widget('custom.dropcolor', {
 				$(this).data('ui-autocomplete')._renderItem = function(ul, item) {
 					var regExp = /\(([^)]+)\)/;
 					var hex   = regExp.exec(item.label);
+					var mylabel = $($.parseHTML(item.label));
+					var label = mylabel.text();
 
 					if (hex !== null) {
 						color = hex[1];
-						return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>'+item.label+'</div>').appendTo(ul);
+						return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
 					} else {
-						return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>'+item.label+'</div>').appendTo(ul);
+						return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
 					}
 				}
 
@@ -4078,5 +4107,3 @@ function checkSNMPPassphraseConfirm(type) {
 		}
 	}
 }
-
-

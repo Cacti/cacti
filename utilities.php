@@ -25,6 +25,7 @@
 include('./include/auth.php');
 include_once('./lib/api_data_source.php');
 include_once('./lib/boost.php');
+include_once('./lib/rrd.php');
 include_once('./lib/clog_webapi.php');
 include_once('./lib/poller.php');
 include_once('./lib/utility.php');
@@ -171,20 +172,30 @@ function utilities_view_tech($php_info = '') {
 		GROUP BY i.type_id');
 
 	/* Get RRDtool version */
-	$rrdtool_version = 'Unknown';
-	if ((file_exists(read_config_option('path_rrdtool'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_rrdtool'))))) {
-
-		$out_array = array();
-		exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-		if (cacti_sizeof($out_array) > 0) {
-			if (preg_match('/^RRDtool ([0-9.]+)/', $out_array[0], $m)) {
-				preg_match('/^([0-9]+\.[0-9]+\.[0.9]+)/', $m[1], $m2);
-				$rrdtool_release = $m[1];
-				$rrdtool_version = $rrdtool_release;
-			}
+	$rrdtool_version = __('Unknown');
+	$rrdtool_release = __('Unknown');
+	$storage_location = read_config_option('$storage_location');
+	
+	$out_array = array();
+	
+	if ($storage_location == 0) {
+		if ((file_exists(read_config_option('path_rrdtool'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_rrdtool'))))) {
+			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);	
+		}
+	}else {
+		$rrdtool_pipe = rrd_init();
+		$out_array = rrdtool_execute('info', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'WEBLOG');
+		rrd_close($rrdtool_pipe);
+	}
+	
+	if (cacti_sizeof($out_array) > 0) {
+		if (preg_match('/^RRDtool ([0-9.]+)/', $out_array[0], $m)) {
+			preg_match('/^([0-9]+\.[0-9]+\.[0.9]+)/', $m[1], $m2);
+			$rrdtool_release = $m[1];
+			$rrdtool_version = $rrdtool_release;
 		}
 	}
-
+	
 	/* Get SNMP cli version */
 	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
 		$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');

@@ -70,6 +70,9 @@ if (read_config_option('grds_creation_method') == 1) {
 
 $graph_actions = api_plugin_hook_function('graphs_action_array', $graph_actions);
 
+// Add interim support for enhanced orphan handling
+add_orphan_support();
+
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
@@ -194,7 +197,7 @@ function add_tree_names_to_actions_array() {
 
 	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
-			$graph_actions['tr_' . $tree['id']] = __('Place on a Tree (%s)', $tree['name']);
+			$graph_actions['tr_' . $tree['id']] = __esc('Place on a Tree (%s)', $tree['name']);
 		}
 	}
 }
@@ -2038,7 +2041,18 @@ function graph_management() {
 			GRAPH_ITEM_TYPE_AREA      . ', ' .
 			GRAPH_ITEM_TYPE_STACK     . ')';
 
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ((gl.snmp_index = "" AND gl.snmp_query_id > 0) OR (gl.id IN (SELECT gti.local_graph_id FROM graph_templates_item AS gti LEFT JOIN data_template_rrd AS dtr ON gti.task_item_id=dtr.id WHERE gti.task_item_id > 0 AND dtr.local_data_id IS NULL ' . $orphan_where . ')))';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
+			gl.snmp_index = "" AND gl.snmp_query_id > 0 OR
+			gl.id IN (
+				SELECT gti.local_graph_id
+				FROM graph_templates_item AS gti
+				LEFT JOIN data_template_rrd AS dtr
+				ON gti.task_item_id=dtr.id
+				INNER JOIN data_local AS dl
+				ON dl.id = dtr.local_data_id
+				WHERE gti.task_item_id > 0 AND
+				((dtr.local_data_id IS NULL OR dl.orphan = 1)' . $orphan_where . ')
+			))';
 	}
 
 	/* don't allow aggregates to be view here */

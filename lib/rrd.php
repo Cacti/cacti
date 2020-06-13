@@ -3643,7 +3643,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	if (file_exists($font_file) && is_readable($font_file) && function_exists('imagettftext')) {
 		foreach($strings as $string) {
 			if (trim($string) != '') {
-				if (!imagettftext($image, $font_size, 0, $xpos, $ypos, $text_color, $font_file, $string)) {
+				if (@imagettftext($image, $font_size, 0, $xpos, $ypos, $text_color, $font_file, $string) === false) {
 					cacti_log('TTF text overlay failed');
 				}
 				$ypos -= ($font_size + $padding);
@@ -3652,7 +3652,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	} else {
 		foreach($strings as $string) {
 			if (trim($string) != '') {
-				if (!imagestring($image, $font_size, $xpos, $ypos, $string, $text_color)) {
+				if (@imagestring($image, $font_size, $xpos, $ypos, $string, $text_color) === false) {
 					cacti_log('Text overlay failed');
 				}
 				$ypos -= ($font_size + $padding);

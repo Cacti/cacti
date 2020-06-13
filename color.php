@@ -343,7 +343,7 @@ function color_import_processor(&$colors) {
 }
 
 function color_import() {
-	print "<form method='post' action='color.php?action=import' enctype='multipart/form-data'>\n";
+	form_start('color.php?action=import', '', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		html_start_box('Import Results', '100%', '', '3', 'center', '');

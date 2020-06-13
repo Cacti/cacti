@@ -3437,6 +3437,8 @@ function api_automation_is_time_to_start($network_id) {
 		WHERE id = ?',
 		array($network_id));
 
+	$now   = time();
+
 	switch($net['sched_type']) {
 	case '1':
 		return false;
@@ -3446,36 +3448,26 @@ function api_automation_is_time_to_start($network_id) {
 		$recur = $net['recur_every'] * 86400; // days
 		$start = strtotime($net['start_at']);
 		$next  = strtotime($net['next_start']);
-		$now   = time();
 
 		if ($net['next_start'] == '0000-00-00 00:00:00') {
-			if ($now > $start) {
-				while($now > $start) {
-					$start += $recur;
-				}
-
-				db_execute_prepared('UPDATE automation_networks
-					SET next_start = ?
-					WHERE id = ?',
-					array(date('Y-m-d H:i', $start), $network_id));
-
-				return true;
-
-				break;
-			}
+			$target = $start;
 		} else {
-			if ($now > $next) {
-				while($now > $next) {
-					$next += $recur;
-				}
+			$target = $next;
+		}
 
-				db_execute_prepared('UPDATE automation_networks
-					SET next_start = ?
-					WHERE id = ?',
-					array(date('Y-m-d H:i', $next), $network_id));
-
-				return true;
+		if ($now > $target) {
+			while($now > $target) {
+				$target += $recur;
 			}
+
+			db_execute_prepared('UPDATE automation_networks
+				SET next_start = ?
+				WHERE id = ?',
+				array(date('Y-m-d H:i', $target), $network_id));
+
+			return true;
+
+			break;
 		}
 
 		return false;
@@ -3485,309 +3477,241 @@ function api_automation_is_time_to_start($network_id) {
 		$recur = $net['recur_every'] * 86400 * 7; // weeks
 		$start = strtotime($net['start_at']);
 		$next  = strtotime($net['next_start']);
-		$now   = time();
 		$days  = explode(',', $net['day_of_week']);
 		$day   = 86400;
 		$week  = 86400 * 7;
 
 		if ($net['next_start'] == '0000-00-00 00:00:00') {
-			if ($now > $start) {
-				while(true) {
-					$start += $day;
-					$cur_day = date('w', $start) + 1;
-
-					$key = array_search($cur_day, $days, false);
-					if ($key !== false && $key >= 0) {
-						break;
-					}
-				}
-
-				db_execute_prepared('UPDATE automation_networks
-					SET next_start = ?
-					WHERE id = ?',
-					array(date('Y-m-d H:i', $start), $network_id));
-
-				return true;
-			}
+			$target = $start;
 		} else {
-			if ($now > $next) {
-				while(true) {
-					$next += $day;
-					$cur_day = date('w', $next) + 1;
+			$target = $next;
+		}
 
-					$key = array_search($cur_day, $days, false);
-					if ($key !== false && $key >= 0) {
-						if ($key == 0) {
-							$next += $recur - $week;
-						}
-						break;
+		if ($now > $target) {
+			while(true) {
+				$target += $day;
+				$cur_day = date('w', $target) + 1;
+
+				$key = array_search($cur_day, $days, false);
+				if ($key !== false && $key >= 0) {
+					if ($key == 0) {
+						$target += $recur - $week;
 					}
+
+					break;
 				}
-
-				db_execute_prepared('UPDATE automation_networks
-					SET next_start = ?
-					WHERE id = ?',
-					array(date('Y-m-d H:i', $next), $network_id));
-
-				return true;
 			}
+
+			db_execute_prepared('UPDATE automation_networks
+				SET next_start = ?
+				WHERE id = ?',
+				array(date('Y-m-d H:i', $target), $network_id));
+
+			return true;
 		}
 
 		return false;
 
 		break;
 	case '4':
-		$start  = strtotime($net['start_at']);
-		$next   = strtotime($net['next_start']);
-		$now    = time();
-		$months = explode(',', $net['month']);
-		$days   = explode(',', $net['day_of_month']);
-		$day    = 86400;
-
-		// See if the last day of the month is selected
-		$last   = array_search('32', $days);
-		if ($last !== false && $last > 0) {
-			$last = true;
-		} else {
-			$last = false;
-		}
-
-		if ($net['next_start'] == '0000-00-00 00:00:00') {
-			if ($now > $start) {
-				while(true) {
-					$start += $day;
-					$month_of_year = date('n', $start);
-					$day_of_month = date('j', $start);
-					$chdays = $days;
-					if ($last) {
-						$chdays[] = date('j', strtotime('last day', $start));
-					}
-
-					$key = array_search($month_of_year, $months);
-					if ($key !== false && $key >= 0) {
-						$key = array_search($day_of_month, $chdays);
-						if ($key !== false && $key >= 0) {
-							break;
-						}
-					}
-				}
-
-				db_execute_prepared('UPDATE automation_networks
-					SET next_start = ?
-					WHERE id = ?',
-					array(date('Y-m-d H:i', $start), $network_id));
-
-				return true;
-			}
-		} else {
-			if ($now > $next) {
-				while(true) {
-					$next += $day;
-					$month_of_year = date('n', $next);
-					$day_of_month = date('j', $next);
-					$chdays = $days;
-					if ($last) {
-						$chdays[] = date('j', strtotime('last day', $next));
-					}
-
-					$key = array_search($month_of_year, $months);
-					if ($key !== false && $key >= 0) {
-						$key = array_search($day_of_month, $chdays);
-						if ($key !== false && $key >= 0) {
-							break;
-						}
-					}
-				}
-
-				db_execute_prepared('UPDATE automation_networks
-					SET next_start = ?
-					WHERE id = ?',
-					array(date('Y-m-d H:i', $next), $network_id));
-
-				return true;
-			}
-		}
-
-		return false;
-
-		break;
 	case '5':
-		$start  = strtotime($net['start_at']);
-		$next   = strtotime($net['next_start']);
-		$now    = time();
-		$months = explode(',', $net['month']);
-		$weeks  = explode(',', $net['monthly_week']);
-		$days   = explode(',', $net['monthly_day']);
-		$day    = 86400;
+		$next = calculateNextStart($net, $now);
+
+		db_execute_prepared('UPDATE analytics_report_templates
+			SET next_start = ?
+			WHERE id = ?',
+			array(date('Y-m-d H:i', $next), $network_id));
 
 		if ($net['next_start'] == '0000-00-00 00:00:00') {
-			if ($now > $start) {
-				while(true) {
-					$start += $day;
-					$month_of_year = date('n', $start);
-					$day_of_month  = date('j', $start);
-					$times         = array();
-
-					$key = array_search($month_of_year, $months);
-					if ($key !== false && $key >= 0) {
-						foreach($weeks as $week) {
-							switch($week) {
-							case '1':
-								$sweek = '1st';
-								break;
-							case '2':
-								$sweek = '2nd';
-								break;
-							case '3':
-								$sweek = '3rd';
-								break;
-							case '4':
-								$sweek = '4th';
-								break;
-							}
-
-							foreach($days as $day) {
-								switch($day) {
-								case '1':
-									$sday = 'Sunday';
-									break;
-								case '2':
-									$sday = 'Monday';
-									break;
-								case '3':
-									$sday = 'Tuesday';
-									break;
-								case '4':
-									$sday = 'Wednesday';
-									break;
-								case '5':
-									$sday = 'Thursday';
-									break;
-								case '6':
-									$sday = 'Friday';
-									break;
-								case '7':
-									$sday = 'Saturday';
-									break;
-								}
-
-								$time = strtotime("$sweek $sday", $start);
-
-								$cur_month = date('n', $time);
-								if ($cur_month != $month_of_year) {
-									break 2;
-								}
-
-								if ($time !== false && $time > 0) {
-									$times[$time] = $time;
-								}
-							}
-						}
-
-						asort($times);
-
-						foreach($times as $time) {
-							if ($time > $now) {
-								break;
-							}
-						}
-					}
-				}
-
-				db_execute_prepared('UPDATE automation_networks
-					SET next_start = ?
-					WHERE id = ?',
-					array(date('Y-m-d H:i', $time), $network_id));
-
+			if ($now > strtotime($net['start_at'])) {
 				return true;
+			} else {
+				return false;
 			}
-		} else {
-			if ($now > $next) {
-				while(true) {
-					$next += $day;
-					$month_of_year = date('n', $next);
-					$day_of_month  = date('j', $next);
-					$times         = array();
-
-					$key = array_search($month_of_year, $months);
-					if ($key !== false && $key >= 0) {
-						foreach($weeks as $week) {
-							switch($week) {
-							case '1':
-								$sweek = '1st';
-								break;
-							case '2':
-								$sweek = '2nd';
-								break;
-							case '3':
-								$sweek = '3rd';
-								break;
-							case '4':
-								$sweek = '4th';
-								break;
-							}
-
-							foreach($days as $day) {
-								switch($day) {
-								case '1':
-									$sday = 'Sunday';
-									break;
-								case '2':
-									$sday = 'Monday';
-									break;
-								case '3':
-									$sday = 'Tuesday';
-									break;
-								case '4':
-									$sday = 'Wednesday';
-									break;
-								case '5':
-									$sday = 'Thursday';
-									break;
-								case '6':
-									$sday = 'Friday';
-									break;
-								case '7':
-									$sday = 'Saturday';
-									break;
-								}
-
-								$time = strtotime("$sweek $sday", $next);
-
-								$cur_month = date('n', $time);
-								if ($cur_month != $month_of_year) {
-									break 2;
-								}
-
-								if ($time !== false && $time > 0) {
-									$times[$time] = $time;
-								}
-							}
-						}
-
-						asort($times);
-
-						foreach($times as $time) {
-							if ($time > $now) {
-								break;
-							}
-						}
-					}
-				}
-
-				db_execute_prepared('UPDATE automation_networks
-					SET next_start = ?
-					WHERE id = ?',
-					array(date('Y-m-d H:i', $time), $network_id));
-
-				return true;
-			}
+		} elseif ($now > strtotime($net['next_start'])) {
+			return true;
 		}
 
 		return false;
 
 		break;
 	}
+}
+
+function calculateNextStart($net) {
+	$now    = time();
+	$dates  = array();
+
+	switch($net['sched_type']) {
+	case '4':
+		$months = explode(',', $net['month']);
+		$days   = explode(',', $net['day_of_month']);
+
+		foreach($months as $month) {
+			foreach($days as $day) {
+				switch($month) {
+				case '1':
+					$smonth = 'January';
+					break;
+				case '2':
+					$smonth = 'February';
+					break;
+				case '3':
+					$smonth = 'March';
+					break;
+				case '4':
+					$smonth = 'April';
+					break;
+				case '5':
+					$smonth = 'May';
+					break;
+				case '6':
+					$smonth = 'June';
+					break;
+				case '7':
+					$smonth = 'July';
+					break;
+				case '8':
+					$smonth = 'August';
+					break;
+				case '9':
+					$smonth = 'September';
+					break;
+				case '10':
+					$smonth = 'October';
+					break;
+				case '11':
+					$smonth = 'November';
+					break;
+				case '12':
+					$smonth = 'December';
+					break;
+				}
+
+				if ($day == '32') {
+					$dates[] = strtotime('last day of ' . $smonth);;
+				} else {
+					$dates[] = strtotime("$smonth $day");
+				}
+			}
+		}
+
+		break;
+	case '5':
+		$months = explode(',', $net['month']);
+		$weeks  = explode(',', $net['monthly_week']);
+		$days   = explode(',', $net['monthly_day']);
+		$now    = time();
+		$dates  = array();
+
+		foreach($months as $month) {
+			foreach($weeks as $week) {
+				foreach($days as $day) {
+					switch($month) {
+					case '1':
+						$smonth = 'January';
+						break;
+					case '2':
+						$smonth = 'February';
+						break;
+					case '3':
+						$smonth = 'March';
+						break;
+					case '4':
+						$smonth = 'April';
+						break;
+					case '5':
+						$smonth = 'May';
+						break;
+					case '6':
+						$smonth = 'June';
+						break;
+					case '7':
+						$smonth = 'July';
+						break;
+					case '8':
+						$smonth = 'August';
+						break;
+					case '9':
+						$smonth = 'September';
+						break;
+					case '10':
+						$smonth = 'October';
+						break;
+					case '11':
+						$smonth = 'November';
+						break;
+					case '12':
+						$smonth = 'December';
+						break;
+					}
+
+					switch($week) {
+					case '1':
+						$sweek = 'first';
+						break;
+					case '2':
+						$sweek = 'second';
+						break;
+					case '3':
+						$sweek = 'third';
+						break;
+					case '4':
+						$sweek = 'forth';
+						break;
+					case '32':
+						$sweek = 'last';
+						break;
+					}
+
+					switch($day) {
+					case '1':
+						$sday = 'Sunday';
+						break;
+					case '2':
+						$sday = 'Monday';
+						break;
+					case '3':
+						$sday = 'Tuesday';
+						break;
+					case '4':
+						$sday = 'Wednesday';
+						break;
+					case '5':
+						$sday = 'Thursday';
+						break;
+					case '6':
+						$sday = 'Friday';
+						break;
+					case '7':
+						$sday = 'Saturday';
+						break;
+					}
+
+					$dates[] = strtotime("$sweek $sday of $smonth", strtotime($net['start_at']));
+				}
+			}
+		}
+
+		break;
+	}
+
+	asort($dates);
+
+	$newdates = array();
+
+	foreach($dates as $date) {
+		$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime($net['start_at']));
+		$ntime = strtotime($ndate);
+
+		debug('Start At: ' . $net['start_at'] . ', Possible Next Start: ' . $ndate . ' with Timestamp: ' . $ntime);
+
+		if ($ntime > $now) {
+			return $ntime;
+		}
+	}
+
+	return false;
 }
 
 function ping_netbios_name($ip, $timeout_ms = 1000) {
@@ -3946,7 +3870,7 @@ function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
 				cacti_log($function . ' ' . cacti_sizeof($match_items) . ' invalid Object Selection rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
 				foreach($match_items as $match_item) {
-					cacti_log($function . ' Removing invalid Object Selection rule item TreeRule[' . $rule_id . '] TreeMatchItem[' . $match_item['id'] . '] Field[' . html_escape($match_item['field']) . '] with Pattern[' . html_escpae($match_item['pattern']) . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+					cacti_log($function . ' Removing invalid Object Selection rule item TreeRule[' . $rule_id . '] TreeMatchItem[' . $match_item['id'] . '] Field[' . html_escape($match_item['field']) . '] with Pattern[' . html_escape($match_item['pattern']) . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
 					db_execute_prepared('DELETE
 						FROM automation_match_rule_items

@@ -940,7 +940,9 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 }
 
 function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
-	global $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
+	global $config, $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
+
+	static $counter = 0;
 
 	/* track changes */
 	$status = 0;
@@ -972,6 +974,15 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 			} else {
 				$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 			}
+		}
+	}
+
+	if (isset($save['xml_path'])) {
+		$path = str_replace('<path_cacti>', $config['base_path'], $save['xml_path']);
+
+		if (!file_exists($path) || !is_readable($path)) {
+			raise_message('resource_missing_' . $counter, __('Resource File: \'%s\' is missing or not readable.  Make sure you install it before using Data Query: \'%s\'', $path, $save['name']), MESSAGE_LEVEL_ERROR);
+			$counter++;
 		}
 	}
 
@@ -1804,7 +1815,7 @@ function compare_data($save, $previous_data, $table) {
 				}
 
 				$different++;
-				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: ' . $value . ', Old Value: ' . $previous_data[$column];
+				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: ' . html_escape($value) . ', Old Value: ' . html_escape($previous_data[$column]);
 			}
 		}
 
@@ -1831,60 +1842,60 @@ function hash_to_friendly_name($hash, $display_type_name) {
 
 	switch ($parsed_hash['type']) {
 		case 'graph_template':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM graph_templates
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'data_template':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM data_template
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'data_template_item':
-			return $prepend . db_fetch_cell_prepared('SELECT data_source_name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT data_source_name
 			FROM data_template_rrd
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'host_template':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM host_template
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'data_input_method':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM data_input
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'data_input_field':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM data_input_fields
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'data_query':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM snmp_query
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'gprint_preset':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM graph_templates_gprint
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'cdef':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM cdef
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'vdef':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM vdef
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'data_source_profile':
-			return $prepend . db_fetch_cell_prepared('SELECT name
+			return $prepend . html_escape(db_fetch_cell_prepared('SELECT name
 			FROM data_source_profile
 			WHERE hash = ?',
-			array($parsed_hash['hash']));
+			array($parsed_hash['hash'])));
 		case 'round_robin_archive':
 			return $prepend;
 		default:
@@ -1895,7 +1906,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
 
 			api_plugin_hook_function('get_friendly_name', $param);
 
-			return $param['prepend'];
+			return html_escape($param['prepend']);
 	}
 }
 
