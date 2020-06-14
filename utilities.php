@@ -82,11 +82,7 @@ switch (get_request_var('action')) {
 		utilities_view_user_log();
 		break;
 	case 'view_tech':
-		$php_info = utilities_php_modules();
-
-		top_header();
-		utilities_view_tech($php_info);
-		bottom_footer();
+		utilities_view_tech();
 		break;
 	case 'view_boost_status':
 		top_header();
@@ -142,86 +138,8 @@ function rebuild_resource_cache() {
 	cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 }
 
-function utilities_view_tech($php_info = '') {
+function utilities_view_tech() {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
-
-	/* Get table status */
-	if ($config['poller_id'] == 1) {
-		$tables = db_fetch_assoc('SELECT *
-			FROM information_schema.tables
-			WHERE table_schema = SCHEMA()');
-	} else {
-		$tables = db_fetch_assoc('SELECT *
-			FROM information_schema.tables
-			WHERE table_schema = SCHEMA()', false, $local_db_cnn_id);
-	}
-
-	/* Get poller stats */
-	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total
-		FROM poller_item
-		GROUP BY action');
-
-	/* Get system stats */
-	$host_count  = db_fetch_cell('SELECT COUNT(*) FROM host WHERE deleted = ""');
-	$graph_count = db_fetch_cell('SELECT COUNT(*) FROM graph_local');
-	$data_count  = db_fetch_assoc('SELECT i.type_id, COUNT(i.type_id) AS total
-		FROM data_template_data AS d, data_input AS i
-		WHERE d.data_input_id = i.id
-		AND local_data_id <> 0
-		GROUP BY i.type_id');
-
-	/* Get RRDtool version */
-	$rrdtool_version = __('Unknown');
-	$rrdtool_release = __('Unknown');
-	$storage_location = read_config_option('$storage_location');
-	
-	$out_array = array();
-	
-	if ($storage_location == 0) {
-		if ((file_exists(read_config_option('path_rrdtool'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_rrdtool'))))) {
-			exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);	
-		}
-	}else {
-		$rrdtool_pipe = rrd_init();
-		$out_array = rrdtool_execute('info', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'WEBLOG');
-		rrd_close($rrdtool_pipe);
-	}
-	
-	if (cacti_sizeof($out_array) > 0) {
-		if (preg_match('/^RRDtool ([0-9.]+)/', $out_array[0], $m)) {
-			preg_match('/^([0-9]+\.[0-9]+\.[0.9]+)/', $m[1], $m2);
-			$rrdtool_release = $m[1];
-			$rrdtool_version = $rrdtool_release;
-		}
-	}
-	
-	/* Get SNMP cli version */
-	if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
-		$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
-	} else {
-		$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . "</span>";
-	}
-
-	/* Check RRDtool issues */
-	$rrdtool_errors = array();
-	if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
-		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span>";
-	}
-
-	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
-	if ($graph_gif_count > 0) {
-		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span>';
-	}
-
-	/* Get spine version */
-	$spine_version = 'Unknown';
-	if ((file_exists(read_config_option('path_spine'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_spine'))))) {
-		$out_array = array();
-		exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
-		if (cacti_sizeof($out_array) > 0) {
-			$spine_version = $out_array[0];
-		}
-	}
 
 	/* ================= input validation ================= */
 	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
@@ -229,105 +147,187 @@ function utilities_view_tech($php_info = '') {
 
 	/* present a tabbed interface */
 	$tabs = array(
-		'summary'  => __('Summary'),
-		'database' => __('Database'),
-		'phpinfo'  => __('PHP Info'),
+		'summary'    => __('Summary'),
+		'database'   => __('Database'),
+		'dbstatus'   => __('Database Status'),
+		'dbsettings' => __('Database Settings'),
+		'phpinfo'    => __('PHP Info'),
+		'changelog'  => __('ChangLog'),
 	);
 
 	/* set the default tab */
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
 	$current_tab = get_nfilter_request_var('tab');
 
+	$page = 'utilities.php?action=view_tech&header=false&tab=' . $current_tab;
+
+	$refresh = array(
+		'seconds' => 999999,
+		'page'    => $page,
+		'logout'  => 'false'
+	);
+
+	set_page_refresh($refresh);
+
 	$header_label = __esc('Technical Support [%s]', $tabs[get_request_var('tab')]);
+
+	top_header();
 
 	if (cacti_sizeof($tabs)) {
 		$i = 0;
 
 		/* draw the tabs */
-		print "<div class='tabs'><nav><ul role='tablist'>\n";
+		print "<div class='tabs'><nav><ul role='tablist'>";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 				" href='" . html_escape($config['url_path'] .
 				'utilities.php?action=view_tech' .
 				'&tab=' . $tab_short_name) .
-				"'>" . $tabs[$tab_short_name] . "</a></li>\n";
+				"'>" . $tabs[$tab_short_name] . "</a></li>";
 
 			$i++;
 		}
 
 		api_plugin_hook('utilities_tab');
 
-		print "</ul></nav></div>\n";
+		print "</ul></nav></div>";
 	}
 
 	/* Display tech information */
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	if (get_request_var('tab') == 'summary') {
+		/* Get poller stats */
+		$poller_item = db_fetch_assoc('SELECT action, count(action) AS total
+			FROM poller_item
+			GROUP BY action');
+
+		/* Get system stats */
+		$host_count  = db_fetch_cell('SELECT COUNT(*) FROM host WHERE deleted = ""');
+		$graph_count = db_fetch_cell('SELECT COUNT(*) FROM graph_local');
+		$data_count  = db_fetch_assoc('SELECT i.type_id, COUNT(i.type_id) AS total
+			FROM data_template_data AS d, data_input AS i
+			WHERE d.data_input_id = i.id
+			AND local_data_id <> 0
+			GROUP BY i.type_id');
+
+		/* Get RRDtool version */
+		$rrdtool_version = __('Unknown');
+		$rrdtool_release = __('Unknown');
+		$storage_location = read_config_option('$storage_location');
+
+		$out_array = array();
+
+		if ($storage_location == 0) {
+			if ((file_exists(read_config_option('path_rrdtool'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_rrdtool'))))) {
+				exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
+			}
+		}else {
+			$rrdtool_pipe = rrd_init();
+			$out_array = rrdtool_execute('info', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'WEBLOG');
+			rrd_close($rrdtool_pipe);
+		}
+
+		if (cacti_sizeof($out_array) > 0) {
+			if (preg_match('/^RRDtool ([0-9.]+)/', $out_array[0], $m)) {
+				preg_match('/^([0-9]+\.[0-9]+\.[0.9]+)/', $m[1], $m2);
+				$rrdtool_release = $m[1];
+				$rrdtool_version = $rrdtool_release;
+			}
+		}
+
+		/* Get SNMP cli version */
+		if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
+			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
+		} else {
+			$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . "</span>";
+		}
+
+		/* Check RRDtool issues */
+		$rrdtool_errors = array();
+		if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
+			$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span>";
+		}
+
+		$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
+		if ($graph_gif_count > 0) {
+			$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span>';
+		}
+
+		/* Get spine version */
+		$spine_version = 'Unknown';
+		if ((file_exists(read_config_option('path_spine'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_spine'))))) {
+			$out_array = array();
+			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+			if (cacti_sizeof($out_array) > 0) {
+				$spine_version = $out_array[0];
+			}
+		}
+
 		html_section_header(__('General Information'), 2);
 		form_alternate_row();
-		print '<td>' . __('Date') . "</td>\n";
-		print '<td>' . date('r') . "</td>\n";
+		print '<td>' . __('Date') . '</td>';
+		print '<td>' . date('r') . '</td>';
 		form_end_row();
 
 		api_plugin_hook_function('custom_version_info');
 
 		form_alternate_row();
-		print '<td>' . __('Cacti Version') . "</td>\n";
-		print '<td>' . CACTI_VERSION . "</td>\n";
+		print '<td>' . __('Cacti Version') . '</td>';
+		print '<td>' . CACTI_VERSION . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Cacti OS') . "</td>\n";
-		print '<td>' . $config['cacti_server_os'] . "</td>\n";
+		print '<td>' . __('Cacti OS') . '</td>';
+		print '<td>' . $config['cacti_server_os'] . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('RSA Fingerprint') . "</td>\n";
-		print '<td>' . read_config_option('rsa_fingerprint') . "</td>\n";
+		print '<td>' . __('RSA Fingerprint') . '</td>';
+		print '<td>' . read_config_option('rsa_fingerprint') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('NET-SNMP Version') . "</td>\n";
-		print '<td>' . $snmp_version . "</td>\n";
+		print '<td>' . __('NET-SNMP Version') . '</td>';
+		print '<td>' . $snmp_version . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('RRDtool Version') . ' ' . __('Configured') . "</td>\n";
-		print '<td>' . get_rrdtool_version() . "+</td>\n";
+		print '<td>' . __('RRDtool Version') . ' ' . __('Configured') . '</td>';
+		print '<td>' . get_rrdtool_version() . "+</td>";
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('RRDtool Version') . ' ' . __('Found') . "</td>\n";
-		print '<td>' . $rrdtool_release . "</td>\n";
+		print '<td>' . __('RRDtool Version') . ' ' . __('Found') . '</td>';
+		print '<td>' . $rrdtool_release . '</td>';
 		form_end_row();
 
 		if (!empty($rrdtool_errors)) {
 			form_alternate_row();
-			print "<td>&nbsp;</td>\n";
+			print "<td>&nbsp;</td>";
 			$br = '';
-			print "<td>";
+			print '<td>';
 			foreach ($rrdtool_errors as $rrdtool_error) {
 				print $br . $rrdtool_error;
 				$br = '<br/>';
 			}
-			print "</td>\n";
+			print '</td>';
 			form_end_row();
 		}
 
 		form_alternate_row();
-		print '<td>' . __('Devices') . "</td>\n";
-		print '<td>' . number_format_i18n($host_count, -1) . "</td>\n";
+		print '<td>' . __('Devices') . '</td>';
+		print '<td>' . number_format_i18n($host_count, -1) . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Graphs') . "</td>\n";
-		print '<td>' . number_format_i18n($graph_count, -1) . "</td>\n";
+		print '<td>' . __('Graphs') . '</td>';
+		print '<td>' . number_format_i18n($graph_count, -1) . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Data Sources') . "</td>\n";
+		print '<td>' . __('Data Sources') . '</td>';
 		print '<td>';
 		$data_total = 0;
 		if (cacti_sizeof($data_count)) {
@@ -339,14 +339,14 @@ function utilities_view_tech($php_info = '') {
 		} else {
 			print "<span class='deviceDown'>0</span>";
 		}
-		print "</td>\n";
+		print '</td>';
 		form_end_row();
 
 		html_section_header(__('Poller Information'), 2);
 
 		form_alternate_row();
-		print "<td>Interval</td>\n";
-		print '<td>' . read_config_option('poller_interval') . "</td>\n";
+		print '<td>' . __('Interval') . '</td>';
+		print '<td>' . read_config_option('poller_interval') . '</td>';
 		if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
 			$type = $spine_version;
 		        if (!strpos($spine_version, CACTI_VERSION)) {
@@ -358,12 +358,12 @@ function utilities_view_tech($php_info = '') {
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Type') . "</td>\n";
-		print '<td>' . $type . "</td>\n";
+		print '<td>' . __('Type') . '</td>';
+		print '<td>' . $type . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Items') . "</td>\n";
+		print '<td>' . __('Items') . '</td>';
 		print '<td>';
 		$total = 0;
 		if (cacti_sizeof($poller_item)) {
@@ -375,37 +375,37 @@ function utilities_view_tech($php_info = '') {
 		} else {
 			print "<span class='deviceDown'>" . __('No items to poll') . "</span>";
 		}
-		print "</td>\n";
+		print '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Concurrent Processes') . "</td>\n";
-		print '<td>' . read_config_option('concurrent_processes') . "</td>\n";
+		print '<td>' . __('Concurrent Processes') . '</td>';
+		print '<td>' . read_config_option('concurrent_processes') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Max Threads') . "</td>\n";
-		print '<td>' . read_config_option('max_threads') . "</td>\n";
+		print '<td>' . __('Max Threads') . '</td>';
+		print '<td>' . read_config_option('max_threads') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('PHP Servers') . "</td>\n";
-		print '<td>' . read_config_option('php_servers') . "</td>\n";
+		print '<td>' . __('PHP Servers') . '</td>';
+		print '<td>' . read_config_option('php_servers') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Script Timeout') . "</td>\n";
-		print '<td>' . read_config_option('script_timeout') . "</td>\n";
+		print '<td>' . __('Script Timeout') . '</td>';
+		print '<td>' . read_config_option('script_timeout') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Max OID') . "</td>\n";
-		print '<td>' . read_config_option('max_get_size') . "</td>\n";
+		print '<td>' . __('Max OID') . '</td>';
+		print '<td>' . read_config_option('max_get_size') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('Last Run Statistics') . "</td>\n";
-		print '<td>' . read_config_option('stats_poller') . "</td>\n";
+		print '<td>' . __('Last Run Statistics') . '</td>';
+		print '<td>' . read_config_option('stats_poller') . '</td>';
 		form_end_row();
 
 		/* Get System Memory */
@@ -417,8 +417,8 @@ function utilities_view_tech($php_info = '') {
 			foreach($memInfo as $name => $value) {
 				if ($config['cacti_server_os'] == 'win32') {
 					form_alternate_row();
-					print "<td>$name</td>\n";
-					print '<td>' . number_format_i18n($value/1000, 2) . " MB</td>\n";
+					print "<td>$name</td>";
+					print '<td>' . number_format_i18n($value/1000, 2) . " MB</td>";
 					form_end_row();
 				} else {
 					switch($name) {
@@ -432,8 +432,8 @@ function utilities_view_tech($php_info = '') {
 					case 'Active':
 					case 'Inactive':
 						form_alternate_row();
-						print "<td>$name</td>\n";
-						print '<td>' . number_format_i18n($value, 2) . "</td>\n";
+						print "<td>$name</td>";
+						print '<td>' . number_format_i18n($value, 2) . '</td>';
 						form_end_row();
 					}
 				}
@@ -445,48 +445,48 @@ function utilities_view_tech($php_info = '') {
 		html_section_header(__('PHP Information'), 2);
 
 		form_alternate_row();
-		print "<td>" . __('PHP Version') . "</td>\n";
+		print '<td>' . __('PHP Version') . '</td>';
 		if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-			print '<td>' . PHP_VERSION . "</td>\n";
+			print '<td>' . PHP_VERSION . '</td>';
 		} else {
-			print '<td>' . PHP_VERSION . "</br><span class='deviceDown'>" . __('PHP Version 5.5.0+ is recommended due to strong password hashing support.') . "</span></td>\n";
+			print '<td>' . PHP_VERSION . "</br><span class='deviceDown'>" . __('PHP Version 5.5.0+ is recommended due to strong password hashing support.') . "</span></td>";
 		}
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>" . __('PHP OS') . "</td>\n";
-		print '<td>' . PHP_OS . "</td>\n";
+		print '<td>' . __('PHP OS') . '</td>';
+		print '<td>' . PHP_OS . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>" . __('PHP uname') . "</td>\n";
+		print '<td>' . __('PHP uname') . '</td>';
 		print '<td>';
 		if (function_exists('php_uname')) {
 			print php_uname();
 		} else {
 			print __('N/A');
 		}
-		print "</td>\n";
+		print '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>" . __('PHP SNMP') . "</td>\n";
+		print '<td>' . __('PHP SNMP') . '</td>';
 		print '<td>';
 		if (function_exists('snmpget')) {
 			print __('Installed. <span class="deviceDown">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>');
 		} else {
 			print __('Not Installed');
 		}
-		print "</td>\n";
+		print '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>max_execution_time</td>\n";
-		print '<td>' . ini_get('max_execution_time') . "</td>\n";
+		print "<td>max_execution_time</td>";
+		print '<td>' . ini_get('max_execution_time') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>memory_limit</td>\n";
+		print "<td>memory_limit</td>";
 		print '<td>' . ini_get('memory_limit');
 
 		/* Calculate memory suggestion based off of data source count */
@@ -513,52 +513,118 @@ function utilities_view_tech($php_info = '') {
 				__('This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.');
 			print '</span><br>';
 		}
-		print "</td>\n";
+		print '</td>';
 		form_end_row();
 
 		utilities_get_mysql_recommendations();
+	} elseif (get_request_var('tab') == 'dbstatus') {
+		$status = db_fetch_assoc('show global status');
+
+		print "<table id='tables' class='cactiTable' style='width:100%'>";
+		print '<thead>';
+		print "<tr class='tableHeader'>";
+		print "  <th class='tableSubHeaderColumn'>" . __('Variable Name') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Value') . '</th>';
+		print '</tr>';
+		print '</thead>';
+
+		foreach($status as $s) {
+			form_alternate_row();
+			print '<td>' . $s['Variable_name'] . '</td>';
+			print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):$s['Value']) . '</td>';
+			form_end_row();
+		}
+	} elseif (get_request_var('tab') == 'dbsettings') {
+		$status = db_fetch_assoc('show global variables');
+
+		print "<table id='tables' class='cactiTable' style='width:100%'>";
+		print '<thead>';
+		print "<tr class='tableHeader'>";
+		print "  <th class='tableSubHeaderColumn'>" . __('Variable Name') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Value') . '</th>';
+		print '</tr>';
+		print '</thead>';
+
+		foreach($status as $s) {
+			form_alternate_row();
+			print '<td>' . $s['Variable_name'] . '</td>';
+
+			if (strlen($s['Value']) > 70) {
+				$s['Value'] = str_replace(',', ', ', $s['Value']);
+			}
+			print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):$s['Value']) . '</td>';
+			form_end_row();
+		}
+	} elseif (get_request_var('tab') == 'changelog') {
+		$changelog = file($config['base_path'] . '/CHANGELOG');
+
+		foreach($changelog as $s) {
+			if (strlen(trim($s)) && stripos($s, 'CHANGELOG') === false) {
+				if (strpos($s, '-') === false) {
+					html_section_header(__('Version %s', $s), 2);
+				} else {
+					form_alternate_row();
+					print '<td>' . $s . '</td>';
+					form_end_row();
+				}
+			}
+		}
 	} elseif (get_request_var('tab') == 'database') {
+		/* Get table status */
+		if ($config['poller_id'] == 1) {
+			$tables = db_fetch_assoc('SELECT *
+				FROM information_schema.tables
+				WHERE table_schema = SCHEMA()');
+		} else {
+			$tables = db_fetch_assoc('SELECT *
+				FROM information_schema.tables
+				WHERE table_schema = SCHEMA()', false, $local_db_cnn_id);
+		}
+
 		html_section_header(__('MySQL Table Information - Sizes in KBytes'), 2);
 
 		form_alternate_row();
 		print "		<td colspan='2' style='text-align:left;padding:0px'>";
-		if (cacti_sizeof($tables) > 0) {
-			print "<table id='tables' class='cactiTable' style='width:100%'>\n";
-			print "<thead>\n";
-			print "<tr class='tableHeader'>\n";
-			print "  <th class='tableSubHeaderColumn'>" . __('Name') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn'>" . __('Engine') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn right'>" . __('Rows') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn right'>" . __('Avg Row Length') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn right'>" . __('Data Length') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn right'>" . __('Index Length') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn'>" . __('Collation') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn'>" . __('Row Format') . "</th>\n";
-			print "  <th class='tableSubHeaderColumn'>" . __('Comment') . "</th>\n";
-			print "</tr>\n";
-			print "</thead>\n";
+
+		if (cacti_sizeof($tables)) {
+			print "<table id='tables' class='cactiTable' style='width:100%'>";
+			print '<thead>';
+			print "<tr class='tableHeader'>";
+			print "  <th class='tableSubHeaderColumn'>" . __('Name') . '</th>';
+			print "  <th class='tableSubHeaderColumn'>" . __('Engine') . '</th>';
+			print "  <th class='tableSubHeaderColumn right'>" . __('Rows') . '</th>';
+			print "  <th class='tableSubHeaderColumn right'>" . __('Avg Row Length') . '</th>';
+			print "  <th class='tableSubHeaderColumn right'>" . __('Data Length') . '</th>';
+			print "  <th class='tableSubHeaderColumn right'>" . __('Index Length') . '</th>';
+			print "  <th class='tableSubHeaderColumn'>" . __('Collation') . '</th>';
+			print "  <th class='tableSubHeaderColumn'>" . __('Row Format') . '</th>';
+			print "  <th class='tableSubHeaderColumn'>" . __('Comment') . '</th>';
+			print '</tr>';
+			print '</thead>';
 			foreach ($tables as $table) {
 				form_alternate_row();
-				print '<td>' . $table['TABLE_NAME'] . "</td>\n";
-				print '<td>' . $table['ENGINE'] . "</td>\n";
-				print '<td class="right">' . number_format_i18n($table['TABLE_ROWS'], -1) . "</td>\n";
-				print '<td class="right">' . number_format_i18n($table['AVG_ROW_LENGTH'], -1) . "</td>\n";
-				print '<td class="right">' . number_format_i18n($table['DATA_LENGTH'], -1) . "</td>\n";
-				print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH'], -1) . "</td>\n";
-				print '<td>' . $table['TABLE_COLLATION'] . "</td>\n";
-				print '<td>' . $table['ROW_FORMAT'] . "</td>\n";
-				print '<td>' . $table['TABLE_COMMENT'] . "</td>\n";
+				print '<td>' . $table['TABLE_NAME'] . '</td>';
+				print '<td>' . $table['ENGINE'] . '</td>';
+				print '<td class="right">' . number_format_i18n($table['TABLE_ROWS'], -1) . '</td>';
+				print '<td class="right">' . number_format_i18n($table['AVG_ROW_LENGTH'], -1) . '</td>';
+				print '<td class="right">' . number_format_i18n($table['DATA_LENGTH'], -1) . '</td>';
+				print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH'], -1) . '</td>';
+				print '<td>' . $table['TABLE_COLLATION'] . '</td>';
+				print '<td>' . $table['ROW_FORMAT'] . '</td>';
+				print '<td>' . $table['TABLE_COMMENT'] . '</td>';
 				form_end_row();
 			}
 
-			print "</table>\n";
+			print "</table>";
 		} else {
 			print __('Unable to retrieve table status');
 		}
-		print "</td>\n";
+		print '</td>';
 
 		form_end_row();
 	} else {
+		$php_info = utilities_php_modules();
+
 		html_section_header(__('PHP Module Information'), 2);
 		form_alternate_row();
 		$php_info = str_replace(
@@ -566,7 +632,7 @@ function utilities_view_tech($php_info = '') {
 			array('', 'th class="subHeaderColumn"', ', '),
 			$php_info
 		);
-		print "<td colspan='2'>" . $php_info . "</td>\n";
+		print "<td colspan='2'>" . $php_info . '</td>';
 
 		form_end_row();
 	}
@@ -588,6 +654,8 @@ function utilities_view_tech($php_info = '') {
 	});
 	</script>
 	<?php
+
+	bottom_footer();
 }
 
 function utilities_view_user_log() {
@@ -641,7 +709,7 @@ function utilities_view_user_log() {
 	}
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 	function clearFilter() {
 		strURL = urlPath+'utilities.php?action=view_user_log&clear=1&header=false';
 		loadPageNoHeader(strURL);
@@ -703,7 +771,7 @@ function utilities_view_user_log() {
 
 							if (cacti_sizeof($users)) {
 								foreach ($users as $user) {
-									print "<option value='" . $user['username'] . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . $user['username'] . "</option>\n";
+									print "<option value='" . $user['username'] . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . $user['username'] . '</option>';
 								}
 							}
 							?>
@@ -730,7 +798,7 @@ function utilities_view_user_log() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1075,7 +1143,7 @@ function utilities_view_logfile() {
 									$logDate = count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 									$logName = $logParts[0];
 
-									print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . "</option>\n";
+									print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . '</option>';
 								}
 							}
 							?>
@@ -1088,7 +1156,7 @@ function utilities_view_logfile() {
 						<select id='tail_lines' onChange='applyFilter()'>
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
-								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . "</option>\n";
+								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . '</option>';
 							}
 							?>
 						</select>
@@ -1133,7 +1201,7 @@ function utilities_view_logfile() {
 						<select id='refresh' onChange='applyFilter()'>
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
-								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . "</option>\n";
+								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . '</option>';
 							}
 							?>
 						</select>
@@ -1236,7 +1304,7 @@ function utilities_view_logfile() {
 			$linecolor = !$linecolor;
 		}
 
-		print "<tr class='" . $class . "'><td>" . $new_item . "</td></tr>\n";
+		print "<tr class='" . $class . "'><td>" . $new_item . "</td></tr>";
 	}
 
 	html_end_box();
@@ -1419,7 +1487,7 @@ function utilities_view_snmp_cache() {
 
 							if (cacti_sizeof($snmp_queries)) {
 								foreach ($snmp_queries as $snmp_query) {
-									print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . html_escape($snmp_query['name']) . "</option>\n";
+									print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . html_escape($snmp_query['name']) . '</option>';
 								}
 							}
 							?>
@@ -1450,7 +1518,7 @@ function utilities_view_snmp_cache() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1633,7 +1701,7 @@ function utilities_view_poller_cache() {
 	set_page_refresh($refresh);
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?poller_action=' + $('#poller_action').val();
@@ -1700,7 +1768,7 @@ function utilities_view_poller_cache() {
 
 							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . '</option>';
 								}
 							}
 							?>
@@ -1742,7 +1810,7 @@ function utilities_view_poller_cache() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1835,12 +1903,11 @@ function utilities_view_poller_cache() {
 			} else {
 				$class = 'even';
 			}
-			print "<tr class='$class'>\n";
+			print "<tr class='$class'>";
 				?>
 				<td>
 					<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
 				</td>
-
 				<td>
 					<?php print html_escape($item['description']);?>
 				</td>
@@ -1859,9 +1926,9 @@ function utilities_view_poller_cache() {
 							__('User:') . ' ' . html_escape($item['snmp_username']) . ', ' . __('OID:') . ' ' . html_escape($item['arg1']);
 					}
 				} elseif ($item['action'] == 1) {
-						$details = __('Script:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+					$details = __('Script:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
 				} else {
-						$details = __('Script Server:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
+					$details = __('Script Server:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
 				}
 
 				print $details;
@@ -1870,7 +1937,7 @@ function utilities_view_poller_cache() {
 				</td>
 			</tr>
 			<?php
-			print "<tr class='$class'>\n";
+			print "<tr class='$class'>";
 			?>
 				<td colspan='2'>
 				</td>
@@ -1978,11 +2045,11 @@ function utilities() {
 		foreach($content as $title => $details) {
 			form_alternate_row();
 			print "<td class='nowrap' style='vertical-align:top;'>";
-			print "<a class='hyperLink' href='" . html_escape($details['link']) . "'>" . $title . "</a>";
-			print "</td>\n";
-			print "<td>";
+			print "<a class='hyperLink' href='" . html_escape($details['link']) . "'>" . $title . '</a>';
+			print '</td>';
+			print '<td>';
 			print $details['description'];
-			print "</td>\n";
+			print '</td>';
 			form_end_row();
 		}
 	}
@@ -2038,7 +2105,7 @@ function boost_display_run_status() {
 	html_start_box(__('Boost Status'), '100%', '', '3', 'center', '');
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	function applyFilter() {
 		strURL = urlPath+'utilities.php?action=view_boost_status&header=false&refresh=' + $('#refresh').val();
@@ -2434,7 +2501,7 @@ function snmpagent_utilities_run_cache() {
 								<?php
 								if (cacti_sizeof($mibs) > 0) {
 									foreach ($mibs as $mib) {
-										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . html_escape($mib['mib']) . "</option>\n";
+										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . html_escape($mib['mib']) . '</option>';
 									}
 								}
 								?>
@@ -2449,7 +2516,7 @@ function snmpagent_utilities_run_cache() {
 								<?php
 								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
@@ -2539,7 +2606,7 @@ function snmpagent_utilities_run_cache() {
 			track: true,
 			show: 250,
 			hide: 250,
-			position: { collision: "flipfit" },
+			position: { collision: 'flipfit' },
 			content: function() { return $(this).attr('title'); }
 		});
 	</script>
@@ -2685,7 +2752,7 @@ function snmpagent_utilities_run_eventlog(){
 								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
-									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . html_escape($name) . "</option>\n";
+									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . html_escape($name) . '</option>';
 								}
 								?>
 							</select>
@@ -2698,7 +2765,7 @@ function snmpagent_utilities_run_eventlog(){
 								<option value='-1'<?php if (get_request_var('receiver') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($receivers as $receiver) {
-									print "<option value='" . $receiver['manager_id'] . "'"; if (get_request_var('receiver') == $receiver['manager_id']) { print ' selected'; } print '>' . $receiver['hostname'] . "</option>\n";
+									print "<option value='" . $receiver['manager_id'] . "'"; if (get_request_var('receiver') == $receiver['manager_id']) { print ' selected'; } print '>' . $receiver['hostname'] . '</option>';
 								}
 								?>
 							</select>
@@ -2712,7 +2779,7 @@ function snmpagent_utilities_run_eventlog(){
 								<?php
 								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
