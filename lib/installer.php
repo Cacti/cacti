@@ -1151,7 +1151,7 @@ class Installer implements JsonSerializable {
 					log_install_high('templates',"setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_template_$key = " . $value);
 
 					// Don't default install templates if upgrade
-					if ($this->getMode() == Installer::MODE_UPGRADE) {
+					if ($this->getMode() == Installer::MODE_UPGRADE || $this->getMode() == Installer::MODE_DOWNGRADE) {
 						$value = '';
 						$use   = false;
 					}
