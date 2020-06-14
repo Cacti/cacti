@@ -52,8 +52,10 @@ Cacti CHANGELOG
 -issue#3596: When importing template, resources aren't checked properly
 -issue#3597: Template to Device sync provides no feedback
 -issue#3598: When editing graphs and graph templates, back button results in broken page
+-issue#3599: When downgrading, templates are fully selected for install
 -issue#3601: When devices down, instate can show wrong time
 -issue#3607: Can't access log after been kicked out by timeout
+-issue#3611: Unable to view Cacti ChangeLog from GUI
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
