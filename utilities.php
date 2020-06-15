@@ -149,10 +149,10 @@ function utilities_view_tech() {
 	$tabs = array(
 		'summary'    => __('Summary'),
 		'database'   => __('Database'),
-		'dbstatus'   => __('Database Status'),
 		'dbsettings' => __('Database Settings'),
+		'dbstatus'   => __('Database Status'),
 		'phpinfo'    => __('PHP Info'),
-		'changelog'  => __('ChangLog'),
+		'changelog'  => __('ChangeLog'),
 	);
 
 	/* set the default tab */
