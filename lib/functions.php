@@ -5164,8 +5164,7 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 	return false;
 }
 
-function is_install_needed($version = NULL)
-{
+function is_install_needed($version = NULL) {
 	$mode = '==';
 	$db = get_cacti_db_version();
 	if ($version === NULL) {
@@ -5184,8 +5183,7 @@ function is_install_needed($version = NULL)
 	return $result;
 }
 
-function is_cacti_develop($version = null)
-{
+function is_cacti_develop($version = null) {
 	static $isStaticRelease = null;
 
 	if ($isStaticRelease === null || $version !== null) {
@@ -5208,8 +5206,7 @@ function is_cacti_develop($version = null)
 	return $isRelease;
 }
 
-function is_cacti_release($version = null)
-{
+function is_cacti_release($version = null) {
 	static $isStaticRelease = null;
 
 	if ($isStaticRelease === null || $version !== null) {
