@@ -29,6 +29,65 @@ installations. Because the version number does not change until release in the
 important to either use the database upgrade script to force the current version
 or update the version in the database.
 
+#### Upgrading from Pre-Cacti 1.x Releases
+
+When Cacti was first developed nearly 20 years ago, MySQL was not as mature as it
+is now.  When The Cacti Group went about engineering Cacti 1.x, a decision was
+made to force users to use the InnoDB storage engine for many of the Tables.  This
+was done as the InnoDB storage engine provides a better user experience when your
+web site has several concurrent logins.  Though a little slower, it also provides
+greater resiliancy for the developers.
+
+With that said, there are several changes that you MUST perform to MySQL/MariaDB 
+before you upgrade, and a service restart is required.  Depending on your release
+of MariaDB or MySQL, the following settings will either be required, or already
+enabled as default:
+
+```
+[mysqld]
+
+# required for multiple language support
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# Memory tunables - Cacti provides recommendations at upgrade time
+max_heap_table_size = XXX
+max_allowed_packet = 500M
+tmp_table_size = XXX
+join_buffer_size = XXX
+sort_buffer_size = XXX
+
+# important for compatibility
+sql_mode=NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER
+
+# innodb settings - Cacti provides recommendations at upgrade time
+innodb_buffer_pool_instances = XXX
+innodb_flush_log_at_trx_commit = 2
+innodb_buffer_pool_size = XXX
+innodb_sort_buffer_size = XXX
+innodb_doublewrite = ON
+
+# required
+innodb_file_per_table = ON
+innodb_file_format = Barracuda
+innodb_large_prefix = 1
+
+# not all version support
+innodb_flush_log_at_timeout = 3
+
+# for SSD's/NVMe
+innodb_read_io_threads = 32
+innodb_write_io_threads = 16
+innodb_io_capacity = 10000
+innodb_io_capacity_max = 20000
+innodb_flush_method = O_DIRECT
+```
+
+The *required* settings are very important.  Otherwise, you will encounter issues
+upgrading.  The settings with XXX, Cacti will provide a recommendation at upgrade time.
+It is not out of the ordinary to have to restart MySQL/MariaDB during the upgrade
+to tune these settings.  Please make special note of this before you begin your upgrade.
+
 #### Running Database Upgrade Script
 
 ```
