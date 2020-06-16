@@ -1094,8 +1094,6 @@ function tree_edit() {
 				resizer();
 			});
 
-			resizer();
-
 			function resizer() {
 				if ($('#ctree').length) {
 					var wheight = $(window).height();
