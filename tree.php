@@ -522,7 +522,7 @@ function tree_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
 
-		print "<tr class='tableRow'><td style='padding:7px;'><div id='sites'>\n";
+		print "<tr class='tableRow'><td style='padding:7px;'><div id='sites' style='display:none;'>\n";
 		tree_display_sites(get_request_var('filter'));
 		print "</div></td></tr>\n";
 
@@ -557,7 +557,7 @@ function tree_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
 
-		print "<tr class='tableRow'><td style='padding:7px;'><div id='hosts'>\n";
+		print "<tr class='tableRow'><td style='padding:7px;'><div id='hosts' style='display:none;'>\n";
 		tree_display_hosts(get_request_var('filter'));
 		print "</div></td></tr>\n";
 
@@ -591,7 +591,7 @@ function tree_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
 
-		print "<tr class='tableRow'><td style='padding:7px;'><div id='graphs'>\n";
+		print "<tr class='tableRow'><td style='padding:7px;'><div id='graphs' style='display:none;'>\n";
 		tree_display_graphs(get_request_var('filter'));
 		print "</div></td></tr>\n";
 
@@ -787,14 +787,16 @@ function tree_edit() {
 
 			function resizer() {
 				if ($('#ctree').length) {
-					height  = parseInt($(window).height()-$('#ctree').offset().top-10)+'px';
-					sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
-					hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
-					gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
-					$('#ctree').css('height', height).css('overflow','auto');;
-					$('#hosts').css('height', hheight).css('overflow','auto');;
-					$('#sites').css('height', hheight).css('overflow','auto');;
-					$('#graphs').css('height', gheight).css('overflow','auto');;
+					var wheight = $(window).height();
+					var cTop    = $('#ctree').parent().offset().top;
+					var sTop    = $('#sites').parent().offset().top;
+					var height  = wheight - cTop - 10;
+					var sheight = wheight - sTop - 10;
+
+					$('#ctree').css('height', height).css('overflow','auto');
+					$('#hosts').css('height', sheight).css('overflow','auto');
+					$('#sites').css('height', sheight).css('overflow','auto');
+					$('#graphs').css('height', sheight).css('overflow','auto');
 
 					switchDisplay();
 				}
@@ -1048,6 +1050,7 @@ function tree_edit() {
 				$(element).children().bind('contextmenu', function(event) {
 					return false;
 				});
+				$(element).show();
 		}
 
 		function branchContext(nodeid) {
@@ -1448,7 +1451,7 @@ function tree_display_hosts($filter = '', $site_id = '') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . $site_id;
 	}
 
-	$hosts = get_allowed_devices($sql_where, 'description', '20');
+	$hosts = get_allowed_devices($sql_where, 'description', read_config_option('autocomplete_rows'));
 
 	if (cacti_sizeof($hosts)) {
 		foreach($hosts as $h) {
@@ -1490,7 +1493,7 @@ function tree_display_graphs($filter = '', $site_id = '', $host_id = '') {
 		ON gl.host_id = h.id
 		$sql_where
 		ORDER BY title_cache
-		LIMIT 20");
+		LIMIT " . read_config_option('autocomplete_rows'));
 
 	if (cacti_sizeof($graphs)) {
 		foreach($graphs as $g) {
