@@ -477,7 +477,7 @@ class spikekill {
 						$timestamp = 0;
 					}
 
-					/* discard the row */
+					/* discard the first piece of the exploded line */
 					array_shift($linearray);
 					$ds_num = 0;
 					foreach($linearray as $dsvalue) {
@@ -796,7 +796,7 @@ class spikekill {
 							$rra[$rra_num][$ds_num]['variance_killed'] = 0;
 							$rra[$rra_num][$ds_num]['outwind_killed']  = 0;
 
-							/* kill what is required to be killed */
+							/* count the number of kills required */
 							if (cacti_sizeof($samples[$rra_num][$ds_num])) {
 								foreach($samples[$rra_num][$ds_num] as $timestamp => $sample) {
 									if (!empty($this->out_start) && $timestamp >= $this->out_start && $timestamp <= $this->out_end) {
@@ -855,12 +855,7 @@ class spikekill {
 							$rra[$rra_num][$ds_num]['avgnksamples']       = 'N/A';
 							$rra[$rra_num][$ds_num]['stddev_killed']      = 'N/A';
 							$rra[$rra_num][$ds_num]['variance_killed']    = 'N/A';
-							$rra[$rra_num][$ds_num]['stddev_killed']      = 'N/A';
 							$rra[$rra_num][$ds_num]['outwind_killed']     = 'N/A';
-							$rra[$rra_num][$ds_num]['numnksamples']       = 'N/A';
-							$rra[$rra_num][$ds_num]['sumnksamples']       = 'N/A';
-							$rra[$rra_num][$ds_num]['variance_killed']    = 'N/A';
-							$rra[$rra_num][$ds_num]['avgnksamples']       = 'N/A';
 						}
 
 						$ds_num++;
@@ -981,7 +976,7 @@ class spikekill {
 						$timestamp = 0;
 					}
 
-					/* discard the row */
+					/* discard the first piece of the exploded line */
 					array_shift($linearray);
 
 					/* initialize variables */
@@ -995,12 +990,15 @@ class spikekill {
 						if (strtolower($dsvalue) == 'nan' && !isset($last_num[$ds_num])) {
 							/* do nothing, it's a NaN, and the first one */
 						} elseif (!empty($this->out_start) && $timestamp > $this->out_start && $timestamp < $this->out_end) {
+							/* a window is specified, and the timestamp is inside the window */
 							if ($this->method == 3) {
 								if ($this->avgnan == 'avg') {
+									cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
 									$kills++;
 									$this->total_kills++;
 								} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
+									cacti_log("DEBUG: replacing dsvalue {$dsvalue} with last value {$last_num[$ds_num]}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 									$dsvalue = $last_num[$ds_num];
 									$kills++;
 									$this->total_kills++;
@@ -1008,10 +1006,12 @@ class spikekill {
 							} elseif ($this->method == 4) {
 								if ($dsvalue > (1+$this->percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
 									if ($this->avgnan == 'avg') {
+										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
 										$kills++;
 										$this->total_kills++;
 									} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
+										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with last value {$last_num[$ds_num]}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = $last_num[$ds_num];
 										$kills++;
 										$this->total_kills++;
@@ -1022,32 +1022,39 @@ class spikekill {
 							if ($this->method == 2) {
 								if ($kills < $this->numspike) {
 									if ($this->avgnan == 'avg') {
+										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
 										$this->total_kills++;
 										$kills++;
 									} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
+										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with last value {$last_num[$ds_num]}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = $last_num[$ds_num];
 										$this->total_kills++;
 										$kills++;
 									} else {
+										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with NaN", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = 'NaN';
 									}
 								}
 							} elseif ($last_num[$ds_num] != 0) {
 								if ($kills < $this->numspike) {
 									if ($this->avgnan == 'avg') {
+										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with average {$rra[$rra_num][$ds_num]['average']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
 										$this->total_kills++;
 										$kills++;
 									} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
+										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with last value {$last_num[$ds_num]}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = $last_num[$ds_num];
 										$this->total_kills++;
 										$kills++;
 									} else {
+										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with NaN", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = 'NaN';
 									}
 								}
 							} else {
+								cacti_log("DEBUG: replacing dsvalue {$dsvalue} with NaN", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 								$dsvalue = 'NaN';
 							}
 						} else {
@@ -1055,14 +1062,17 @@ class spikekill {
 								if ($dsvalue > (1+$this->percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
 									if ($kills < $this->numspike) {
 										if ($this->avgnan == 'avg') {
+											cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 											$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
 											$kills++;
 											$this->total_kills++;
 										} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
+											cacti_log("DEBUG: replacing dsvalue {$dsvalue} with last value {$last_num[$ds_num]}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 											$dsvalue = $last_num[$ds_num];
 											$kills++;
 											$this->total_kills++;
 										} else {
+											cacti_log("DEBUG: replacing dsvalue {$dsvalue} with NaN", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 											$dsvalue = 'NaN';
 										}
 									}
@@ -1074,14 +1084,17 @@ class spikekill {
 									($dsvalue < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 									if ($kills < $this->numspike) {
 										if ($this->avgnan == 'avg') {
+											cacti_log("DEBUG: replacing dsvalue {$dsvalue} with average {$rra[$rra_num][$ds_num]['average']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 											$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
 											$kills++;
 											$this->total_kills++;
 										} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
+											cacti_log("DEBUG: replacing dsvalue {$dsvalue} with last value {$last_num[$ds_num]}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 											$dsvalue = $last_num[$ds_num];
 											$kills++;
 											$this->total_kills++;
 										} else {
+											cacti_log("DEBUG: replacing dsvalue {$dsvalue} with NaN", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 											$dsvalue = 'NaN';
 										}
 									}
@@ -1235,4 +1248,3 @@ class spikekill {
 		return stats_standard_deviation($items, false);
 	}
 }
-
