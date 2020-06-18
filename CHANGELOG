@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#3611: Unable to view Cacti ChangeLog from GUI
 -issue#3613: Tree management limited to 20 devices and graphs
 -issue#3614: UI Frontend little bug, menu tabs covering title bar
+-issue#3624: Cacti v1.2.12 In preview mode graphs sometimes fail to Draw
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)

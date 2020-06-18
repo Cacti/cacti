@@ -2474,7 +2474,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
 	print get_md5_include_js('include/js/jquery.multiselect.js');
 	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
-	print get_md5_include_js('include/js/jquery.timepicker.js', true);
+	print get_md5_include_js('include/js/jquery.timepicker.js');
 	print get_md5_include_js('include/js/jquery.colorpicker.js', true);
 	print get_md5_include_js('include/js/jquery.tablesorter.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js', true);
