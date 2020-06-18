@@ -3509,7 +3509,7 @@ function rrdtool_parse_error($string) {
 					$rra_name = basename($rra_file);
 					$rra_path = dirname($rra_file);
 				} else {
-					$rra_name = basename($rra_file);
+					$rra_name = basename($filename);
 					$rra_path = __('(Custom)');
 				}
 
