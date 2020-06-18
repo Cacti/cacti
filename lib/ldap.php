@@ -768,7 +768,7 @@ class Ldap {
 			cacti_log('LDAP: GetCN using ldaps://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
 		} else {
-			cacti_log('LDAP: GetCN using ldap://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
+			cacti_log('LDAP: GetCN using ldap://' . $this->host . ':' . $this->port, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect($this->host, $this->port);
 		}
 
