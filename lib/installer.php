@@ -3386,7 +3386,7 @@ class Installer implements JsonSerializable {
 			$installer->setDefaults();
 			$installer->install();
 		} catch (Exception $e) {
-			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getErrorCode(), $e->getErrorText()));
+			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getCode(), $e->getMessage()));
 		}
 
 		$backgroundDone = microtime(true);
