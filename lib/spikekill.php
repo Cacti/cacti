@@ -1087,7 +1087,8 @@ class spikekill {
 							} elseif ($this->method == SPIKE_METHOD_STDDEV) {
 								cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as NaN values are left alone when using the Standard Deviation Method!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 							} else {
-								cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
+								cacti_log("DEBUG: replacing dsvalue {$dsvalue} with NaN", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
+								$dsvalue = 'NaN';
 							}
 						} else {
 							if ($this->method == SPIKE_METHOD_VARIANCE) {
