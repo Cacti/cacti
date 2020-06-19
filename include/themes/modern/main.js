@@ -44,7 +44,7 @@ function themeReady() {
 	setImportFile(noFileSelected);
 
 	function setImportFile(fileText) {
-		$('.import_text').html(fileText);
+		$('.import_text').text(fileText);
 	}
 
 	maxWidth = 480;

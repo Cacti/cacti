@@ -132,7 +132,7 @@ function themeReady() {
 	setImportFile(noFileSelected);
 
 	function setImportFile(fileText) {
-		$('.import_text').html(fileText);
+		$('.import_text').text(fileText);
 	}
 
 	$('select.colordropdown').dropcolor();
