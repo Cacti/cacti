@@ -88,6 +88,16 @@ upgrading.  The settings with XXX, Cacti will provide a recommendation at upgrad
 It is not out of the ordinary to have to restart MySQL/MariaDB during the upgrade
 to tune these settings.  Please make special note of this before you begin your upgrade.
 
+Before you upgrade, you should make these required changes, then restart MySQL/MariaDB.  After that, you can save yourself some time and poential errors by running the following scripts (assuming you are using bash):
+
+```
+for table in `mysql -e "SELECT TABLE_NAME FROM information_schema.TABLES WHERE table_schema='cacti' AND engine!='MEMORY'" cacti | grep -v TABLE_NAME`;do echo "Converting $table";mysql -e "ALTER TABLE $table ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=utf8mb4" cacti;done
+```
+
+This will convert any tables that are either InnoDB or MyISAM to Barracuda file format, dynamic row format and utf8mb4.  Note, that if you have been using MySQL or MariaDB without innodb_file_per_table set to on, you might be better in backing up your database, resetting InnoDB by removing your ib* files in the /var/lib/mysql directory, and after which restoring your database and MySQL/MariaDB tables and permissions.  Before you take such a step, you should always practice on a test server until you feel comfortable with the change.
+
+Good luck, and enjoy Cacti!
+
 #### Running Database Upgrade Script
 
 ```
