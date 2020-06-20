@@ -320,6 +320,7 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 ?>
 	<tr style='display:none'>
 		<td>
+			<input type='hidden' name='action' value='changepassword'>
 			<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
 			<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : '';?>'>
 			<input type='text'><input type='password'></td>
