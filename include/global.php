@@ -174,7 +174,6 @@ $no_http_header_files = array(
 	'query_host_cpu.php',
 	'query_host_partitions.php',
 	'rebuild_poller_cache.php',
-	'remote_agent.php',
 	'repair_database.php',
 	'script_server.php',
 	'snmpagent_mibcachechild.php',
@@ -429,6 +428,7 @@ if ($config['is_web']) {
 	if ($script_policy != '0' && $script_policy != '') {
 		$script_policy = "'$script_policy'";
 	}
+
 	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' $script_policy 'unsafe-inline'; frame-ancestors 'self'; worker-src 'self'");
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
