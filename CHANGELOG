@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -issue#3632: Some database conditions lead to warnings in the Cacti log
 -issue#3635: Backtrace Errors attempting to run AUTOM8 to Remote Data Collector
 -issue#3639: Duplicate Entry error when updating device
+-feature#3647: add_datasource.php should print the created ID
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
