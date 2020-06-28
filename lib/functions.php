@@ -5538,8 +5538,16 @@ function cacti_session_start() {
 
 	session_name($config['cacti_session_name']);
 
+	$session_restart = '';
 	if (!session_id()) {
-		session_start($config['cookie_options']);
+		$session_result = session_start($config['cookie_options']);
+	} else {
+		$session_restart = 're';
+		$session_result  = session_start();
+	}
+
+	if (!$session_result) {
+		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
 	}
 }
 

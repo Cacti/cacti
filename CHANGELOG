@@ -82,6 +82,7 @@ Cacti CHANGELOG
 -issue#3510: Only guests can actually guest only pages, logged in users are denied access incorrectly
 -issue#3512: When plugins update, registered files list cannot always be updated by ddb4github
 -issue#3520: When viewing graphs, shifting time does not work when using non-english languages
+-issue#3576: LDAP Authentication succeeds, but login fails due to bad session handling
 -feature#3480: Created 'custom_denied' hook to allow customisation of permission denied notifications
 -feature#3498: Update js.storage.js to 1.1.0
 -feature#3499: Update jstree.js to 3.3.9
