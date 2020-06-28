@@ -1276,20 +1276,22 @@ function boost_update_snmp_statistics () {
 	$engine = '';
 	$max_data_length = 0;
 
-	foreach($boost_table_status as $table) {
-		if ($table['TABLE_NAME'] == 'poller_output_boost') {
-			$pending_records += $table['TABLE_ROWS'];
-		} else {
-			$arch_records += $table['TABLE_ROWS'];
+	if (cacti_sizeof($boost_table_status)) {
+		foreach($boost_table_status as $table) {
+			if ($table['TABLE_NAME'] == 'poller_output_boost') {
+				$pending_records += $table['TABLE_ROWS'];
+			} else {
+				$arch_records += $table['TABLE_ROWS'];
+			}
+			$data_length += $table['DATA_LENGTH'];
+			$data_length -= $table['DATA_FREE'];
+			$engine = $table['ENGINE'];
+			$max_data_length = $table['MAX_DATA_LENGTH'];
 		}
-		$data_length += $table['DATA_LENGTH'];
-		$data_length -= $table['DATA_FREE'];
-		$engine = $table['ENGINE'];
-		$max_data_length = $table['MAX_DATA_LENGTH'];
 	}
+
 	$total_records = $pending_records + $arch_records;
 	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
-
 
 	if (strcmp($engine, 'MEMORY') == 0) {
 		$max_length = db_fetch_cell('SELECT MAX(LENGTH(output)) FROM poller_output_boost');

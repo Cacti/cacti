@@ -1004,7 +1004,7 @@ function utilities_get_mysql_recommendations() {
 					'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
 					)
 			);
-		} else {
+		} elseif (version_compare($variables['innodb_version'], '10.5', '<')) {
 			$recommendations += array(
 				'innodb_flush_log_at_timeout' => array(
 					'value'   => '3',
@@ -1026,6 +1026,42 @@ function utilities_get_mysql_recommendations() {
 					'measure' => 'pinst',
 					'class' => 'warning',
 					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
+					),
+				'innodb_io_capacity' => array(
+					'value' => '5000',
+					'measure' => 'ge',
+					'class' => 'warning',
+					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
+					),
+				'innodb_io_capacity_max' => array(
+					'value' => '10000',
+					'measure' => 'ge',
+					'class' => 'warning',
+					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
+					),
+				'innodb_flush_neighbor_pages' => array(
+					'value' => 'none',
+					'measure' => 'eq',
+					'class' => 'warning',
+					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
+					)
+			);
+		} else {
+			$recommendations += array(
+				'innodb_flush_log_at_timeout' => array(
+					'value'   => '3',
+					'measure'  => 'ge',
+					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
+					),
+				'innodb_read_io_threads' => array(
+					'value'   => '32',
+					'measure' => 'ge',
+					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.')
+					),
+				'innodb_write_io_threads' => array(
+					'value'   => '16',
+					'measure' => 'ge',
+					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
 					),
 				'innodb_io_capacity' => array(
 					'value' => '5000',

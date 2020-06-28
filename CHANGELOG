@@ -23,9 +23,11 @@ Cacti CHANGELOG
 -feature#3585: CLI script to show database permissions that Cacti has
 
 1.2.13
--SECURITY#3544: Cacti is affected by CVE-2020-11022 and CVE-2020-11023
--SECURITY#3549: Several XSS Vulnerabilities
--SECURITY#3582: Update PHPMailer to version 6.1.6 with fix for CVE-2020-13625
+-security#3544: Cacti is affected by CVE-2020-11022 and CVE-2020-11023
+-security#3549: Several XSS Vulnerabilities
+-security#3582: Update PHPMailer to version 6.1.6 with fix for CVE-2020-13625
+-security#3628: XSS on templates_import.php for CVE-2020-14424
+-security#3622: SQLI as admin for CVE-2020-14295
 -issue#3517: Sometimes, poller_reports.php fall in function reports_interval_start with CPU UT 100%, and never return.
 -issue#3525: When viewing Graphs, zoom functionality prevents drag and drop of image
 -issue#3527: Improve 95th percentile function to autoselect datasource CF definition:avg or max correctly
@@ -58,6 +60,11 @@ Cacti CHANGELOG
 -issue#3611: Unable to view Cacti ChangeLog from GUI
 -issue#3613: Tree management limited to 20 devices and graphs
 -issue#3614: UI Frontend little bug, menu tabs covering title bar
+-issue#3624: Cacti v1.2.12 In preview mode graphs sometimes fail to Draw
+-issue#3631: Cacti cli scripts are not allowed to have unlimited runtime
+-issue#3632: Some database conditions lead to warnings in the Cacti log
+-issue#3635: Backtrace Errors attempting to run AUTOM8 to Remote Data Collector
+-issue#3639: Duplicate Entry error when updating device
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)

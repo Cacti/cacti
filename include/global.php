@@ -417,6 +417,7 @@ if ($config['is_web']) {
 	if ($script_policy != '0' && $script_policy != '') {
 		$script_policy = "'$script_policy'";
 	}
+
 	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' $script_policy 'unsafe-inline'; frame-ancestors 'self'; worker-src 'self'");
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
@@ -546,4 +547,3 @@ api_plugin_hook('config_insert');
 
 /* set config cacti_version for plugins */
 $config['cacti_version'] = CACTI_VERSION;;
-
