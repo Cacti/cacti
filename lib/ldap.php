@@ -382,7 +382,7 @@ class Ldap {
 		/* set an error handler for Cacti */
 		set_error_handler('CactiErrorHandler');
 
-		cacti_session_open();
+		cacti_session_start();
 	}
 
 	function RecordError($output, $section = 'LDAP') {
