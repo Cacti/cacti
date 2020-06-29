@@ -436,15 +436,25 @@ function profile_item_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#continue').click(function(data) {
-			$.post('data_source_profiles.php?action=item_remove', {
+			var options = {
+				url: 'data_source_profiles.php?action=item_remove',
+				funcEnd: 'removeDataSourceProfilesItemFinalize'
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				$('#cdialog').dialog('close');
-				loadUrl({url:'data_source_profiles.php?action=edit&id=<?php print $profile['data_source_profile_id'];?>'})
-			});
+			}
+
+			postUrl(options, data);
 		});
 	});
+
+	function removeDataSourceProfilesItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		loadUrl({url:'data_source_profiles.php?action=edit&id=<?php print $profile['data_source_profile_id'];?>'})
+	}
+
 	</script>
 	<?php
 }

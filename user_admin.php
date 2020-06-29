@@ -1903,25 +1903,41 @@ function user_edit() {
 			}
 		}
 
+		var password_change = $('#password_change').is(':checked');
+
 		function checkPassword() {
 			if ($('#password').val().length == 0) {
 				$('#pass').remove();
 				$('#passconfirm').remove();
 			} else if ($('#password').val().length < minChars) {
-				$('#pass').remove();
-				$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;"><?php print __('Password Too Short')?></span></span>');
+				checkPasswordFinalize('<?php print __('Password Too Short')?>');
 			} else {
-				$.post('user_admin.php?action=checkpass', { password: $('#password').val(), password_confirm: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
-					if (data == 'ok') {
-						$('#pass').remove();
-						$('#password').after('<span id="pass"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;"><?php print __('Password Validation Passes');?></span></span>');
-						checkPasswordConfirm();
-					} else {
-						$('#pass').remove();
-						$('#password').after('<span id="pass"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+data+'</span></span>');
-					}
-				});
+				var options = {
+					url: 'user_admin.php?action=checkpass',
+					funcEnd: 'checkPasswordFinalize'
+				}
+
+				var data = {
+					password: $('#password').val(),
+					password_confim: $('#password_confirm').val(),
+					__csrf_magic: csrfMagicToken
+				}
+
+				postUrl(options, data);
 			}
+		}
+
+		function checkPasswordFinalize(data) {
+			var className = 'badpassword';
+			if (data == 'ok') {
+				className='goodpassword';
+				data='<?php print __('Password Validation Passes');?>'
+			}
+
+			$('#pass').remove();
+			$('#password').after('<span id="pass"><i class="'+className+' fa fa-times"></i><span style="padding-left:4px;">'+data+'</span></span>');
+			$('#password')..tooltip();
+			checkPasswordConfirm();
 		}
 
 		function checkPasswordConfirm() {
@@ -1938,7 +1954,6 @@ function user_edit() {
 			}
 		}
 
-		var password_change = $('#password_change').is(':checked');
 
 		$(function() {
 			changeRealm();

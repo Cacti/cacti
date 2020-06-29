@@ -723,7 +723,12 @@ function poller_edit() {
 			function ping_database() {
 				dbssl = $('#dbssl').is(':checked') ? 'on':'';
 
-				$.post('pollers.php', {
+				var options = {
+					url:'pollers.php',
+					funcEnd:'pingDatabaseFinalize'
+				};
+
+				var data = {
 					__csrf_magic: csrfMagicToken,
 					action:       'ping',
 					dbdefault:    $('#dbdefault').val(),
@@ -736,10 +741,15 @@ function poller_edit() {
 					dbsslkey:     $('#dbsslkey').val(),
 					dbsslcert:    $('#dbsslcert').val(),
 					dbsslca:      $('#dbsslca').val()
-				}).done(function(data) {
-					$('#results').empty().show().html(data).fadeOut(2000);
-				});
+				};
+
+				postUrl(options, data);
 			}
+
+			function pingDatabaseFinalize(data) {
+				$('#results').empty().show().html(data).fadeOut(2000);
+			}
+
 			</script>
 			<?php
 		} else {

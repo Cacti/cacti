@@ -355,16 +355,17 @@ function template_item_remove_gt_confirm() {
 	?>
 	<script type='text/javascript'>
 	$('#continue').click(function(data) {
-		$.post('host_templates.php?action=item_remove_gt', {
+		var options = {
+			url: 'host_templates.php?action=item_remove_gt'
+		}
+
+		var data = {
 			__csrf_magic: csrfMagicToken,
 			host_template_id: <?php print get_request_var('host_template_id');?>,
 			id: <?php print get_request_var('id');?>
-		}, function(data) {
-			$('#cdialog').dialog('close');
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			applySkin();
-		});
+		}
+
+		postUrl(options, data);
 	});
 	</script>
 	<?php
@@ -418,16 +419,17 @@ function template_item_remove_dq_confirm() {
 	?>
 	<script type='text/javascript'>
 	$('#continue').click(function(data) {
-		$.post('host_templates.php?action=item_remove_dq', {
+		var options = {
+			url: 'host_templates.php?action=item_remove_dq'
+		}
+
+		var data = {
 			__csrf_magic: csrfMagicToken,
 			host_template_id: <?php print get_request_var('host_template_id');?>,
 			id: <?php print get_request_var('id');?>
-		}, function(data) {
-			$('#cdialog').dialog('close');
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			applySkin();
-		});
+		}
+
+		postUrl(options, data);
 	});
 	</script>
 	<?php
@@ -633,28 +635,32 @@ function template_edit() {
 		}).css('cursor', 'pointer');
 
 		$('#add_dq').click(function() {
-			$.post('host_templates.php?action=item_add_dq', {
+			var options = {
+				url: 'host_templates.php?action=item_add_dq'
+			}
+
+			var data = {
 				host_template_id: $('#id').val(),
 				snmp_query_id: $('#snmp_query_id').val(),
 				reindex_method: $('#reindex_method').val(),
 				__csrf_magic: csrfMagicToken
-			}).done(function(data) {
-				$('div[class^="ui-"]').remove();
-				$('#main').html(data);
-				applySkin();
-			});
+			}
+
+			postUrl(options, data);
 		});
 
 		$('#add_gt').click(function() {
-			$.post('host_templates.php?action=item_add_gt', {
+			var options = {
+				url: 'host_templates.php?action=item_add_gt'
+			}
+
+			var data = {
 				host_template_id: $('#id').val(),
 				graph_template_id: $('#graph_template_id').val(),
 				__csrf_magic: csrfMagicToken
-			}).done(function(data) {
-				$('div[class^="ui-"]').remove();
-				$('#main').html(data);
-				applySkin();
-			});
+			}
+
+			postUrl(options, data);
 		});
 	});
 

@@ -497,16 +497,17 @@ default:
 				return false;
 			}
 
-			if (themeChanged != true) {
-				$.post('settings.php?tab='+$('#tab').val(), $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
-					$('#main').hide().html(data);
-					applySkin();
-				});
-			} else {
-				$.post('settings.php?tab='+$('#tab').val(), $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
-					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
-				});
+			var options = {
+				url: 'settings.php?tab='+$('#tab').val(),
 			}
+
+			if (themeChanged == true) {
+				options.redirect = options.url;
+			}
+
+			var data = $('input, select, textarea').serialize();
+
+			postUrl(options, data);
 		});
 
 		if (currentTab == 'general') {

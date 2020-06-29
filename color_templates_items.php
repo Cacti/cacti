@@ -286,14 +286,18 @@ function aggregate_color_item_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#continue').click(function(data) {
-			$.post('color_templates_items.php?action=item_remove', {
+			var options = {
+				url: 'color_templates_items.php?action=item_remove',
+				redirect: 'color_templates.php?action=template_edit&color_template_id=<?php print get_request_var('id');?>'
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				color_id: <?php print get_request_var('color_id');?>,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				$('#cdialog').dialog('close');
-				loadUrl({url:'color_templates.php?action=template_edit&color_template_id=<?php print get_request_var('id');?>'})
-			});
+			}
+
+			postUrl(options, data);
 		});
 	});
 	</script>

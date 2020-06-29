@@ -2281,6 +2281,29 @@ function loadUrl(options) {
     return false;
 }
 
+function postUrl(options, data) {
+    statePushed = false;
+    cont = false;
+
+    options = sanitizeAjaxOptions(options);
+
+    if (options.funcStart != '') {
+        window[options.funcStart](options);
+    }
+
+    $.ajaxQ.abortAll();
+    $.post(options.url, data)
+        .done(function(html) {
+            handleAjaxResponse(html, options);
+            return false;
+        })
+        .fail(function(html) {
+            getPresentHTTPError(html);
+        });
+
+    return false;
+}
+
 function findElement(htmlObject, element) {
     wanted = htmlObject.find(element);
     if (typeof wanted == 'undefined' || wanted.length == 0) {
@@ -2301,6 +2324,8 @@ function sanitizeAjaxOptions(check) {
         url: '',
         pageName: '',
         noState: false,
+        handle: true,
+        redirect: '',
     };
 
     if (typeof check == 'undefined') {
@@ -2342,6 +2367,14 @@ function sanitizeAjaxOptions(check) {
         options.loadType = check.loadType;
     }
 
+    if (typeof check.redirect == 'string') {
+        options.redirect = check.redirect;
+    }
+
+    if (typeof check.handle == 'boolean') {
+        options.handle = check.handle;
+    }
+
     if (options.elementId.trim() == '') {
         options.elementId = 'main';
     }
@@ -2353,69 +2386,77 @@ function handleAjaxResponse(html, options) {
     checkForLogout(html);
 
     options = sanitizeAjaxOptions(options);
-    elementId = '#' + options.elementId;
 
-    var htmlObject = $(html);
-    var matches = html.match(/<title>(.*?)<\/title>/);
+    if (options.handle && options.redirect.trim() == '') {
+        elementId = '#' + options.elementId;
 
-    if (matches != null) {
+        var htmlObject = $(html);
+        var matches = html.match(/<title>(.*?)<\/title>/);
 
-        var htmlTitle = matches[1];
-        var breadCrumbs = findElement(htmlObject, '#breadcrumbs').html();
-        var htmlContent = findElement(htmlObject, elementId).html();
+        if (matches != null) {
 
-        $('title').text(htmlTitle);
-        $('#breadcrumbs').html(breadCrumbs);
+            var htmlTitle = matches[1];
+            var breadCrumbs = findElement(htmlObject, '#breadcrumbs').html();
+            var htmlContent = findElement(htmlObject, elementId).html();
 
-        myTitle = htmlTitle;
-    }
+            $('title').text(htmlTitle);
+            $('#breadcrumbs').html(breadCrumbs);
 
-    if (typeof htmlContent == 'undefined') {
-        htmlContent = html;
-    }
+            myTitle = htmlTitle;
+        }
 
-    pushState(myTitle, options);
+        if (typeof htmlContent == 'undefined') {
+            htmlContent = html;
+        }
 
-    $(elementId).empty().hide();
-    $('div[class^="ui-"]').remove();
-    $(elementId).html(htmlContent);
-    $(elementId).show();
+        pushState(myTitle, options);
 
-    if (options.pageName != '') {
-        // Workaround for Create Device
-        if (options.pageName == 'host.php') {
-            if (options.url.indexOf('create') >= 0) {
+        $(elementId).empty().hide();
+        $('div[class^="ui-"]').remove();
+        $(elementId).html(htmlContent);
+        $(elementId).show();
+
+        if (options.pageName != '') {
+            // Workaround for Create Device
+            if (options.pageName == 'host.php') {
+                if (options.url.indexOf('create') >= 0) {
+                    $('#menu').find('.pic').removeClass('selected');
+                    $('#menu').find("a[href='" + escapeString(options.url) + "']").addClass('selected');
+                } else {
+                    $('#menu').find('.pic').removeClass('selected');
+                    $('#menu').find("a[href$='host.php']").addClass('selected');
+                }
+            } else if ($('#menu').find("a[href^='" + escapeString(options.url) + "']").length > 0) {
                 $('#menu').find('.pic').removeClass('selected');
-                $('#menu').find("a[href='" + escapeString(options.url) + "']").addClass('selected');
-            } else {
+                $('#menu').find("a[href^='" + escapeString(options.url) + "']").addClass('selected');
+            } else if ($('#menu').find("a[href*='/" + options.pageName + "']").length > 0) {
                 $('#menu').find('.pic').removeClass('selected');
-                $('#menu').find("a[href$='host.php']").addClass('selected');
+                $('#menu').find("a[href*='/" + options.pageName + "']").addClass('selected');
             }
-        } else if ($('#menu').find("a[href^='" + escapeString(options.url) + "']").length > 0) {
-            $('#menu').find('.pic').removeClass('selected');
-            $('#menu').find("a[href^='" + escapeString(options.url) + "']").addClass('selected');
-        } else if ($('#menu').find("a[href*='/" + options.pageName + "']").length > 0) {
-            $('#menu').find('.pic').removeClass('selected');
-            $('#menu').find("a[href*='/" + options.pageName + "']").addClass('selected');
+
+            if (options.pageName == 'graph_templates_items.php' || options.pageName == 'graph_templates_inputs.php') {
+                $('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
+            }
         }
 
-        if (options.pageName == 'graph_templates_items.php' || options.pageName == 'graph_templates_inputs.php') {
-            $('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
+        applySkin()
+
+        var scrollTop = (isMobile.any() != null) ? 1 : 0;
+
+        if (options.scroll) {
+            scrollTop = options.scroll;
         }
+
+        window.scrollTo(0, scrollTop);
+        handleConsole(options.pageName);
     }
-
-    applySkin();
-
-    if (isMobile.any() != null) {
-        window.scrollTo(0, 1);
-    } else {
-        window.scrollTo(0, 0);
-    }
-
-    handleConsole(options.pageName);
 
     if (options.funcEnd != '') {
         window[options.funcEnd](options);
+    }
+
+    if (options.redirect.trim() != '') {
+        document.location = options.redirect;
     }
 }
 

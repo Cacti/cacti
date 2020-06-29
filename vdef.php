@@ -344,6 +344,30 @@ function vdef_item_remove_confirm() {
 	html_end_box();
 
 	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#continue').click(function(data) {
+			var options = {
+				url: 'vdef.php?action=item_remove',
+				funcEnd: 'removeVdefItemFinalize'
+			}
+
+			var data = {
+				__csrf_magic: csrfMagicToken,
+				vdef_id: <?php print get_request_var('vdef_id');?>,
+				id: <?php print get_request_var('id');?>
+			}
+		});
+	});
+
+	function removeVdefItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		loadUrl({url:'vdef.php?action=edit&id=<?php print get_request_var('id');?>'})
+	}
+	</script>
+	<?php
 }
 
 function vdef_item_remove() {

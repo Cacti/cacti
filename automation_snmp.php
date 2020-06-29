@@ -354,41 +354,50 @@ function automation_snmp_item_remove_confirm() {
 	$snmp = db_fetch_row_prepared('SELECT * FROM automation_snmp WHERE id = ?', array(get_request_var('id')));
 	$item = db_fetch_row_prepared('SELECT * FROM automation_snmp_items WHERE id = ?', array(get_request_var('item_id')));
 
-    ?>
-    <tr>
-        <td class='topBoxAlt'>
-            <p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
-            <p><?php print __('SNMP Option:');?> <?php print html_escape($snmp['name']);?><br>
-            <?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']);?><br>
-			<?php print __('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? html_escape($item['snmp_community']):html_escape($item['snmp_username'])));?></p>
-        </td>
-    </tr>
-    <tr>
-        <td class='right'>
-            <input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-            <input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove SNMP Item');?>'>
-        </td>
-    </tr>
-    <?php
+?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
+			<p><?php print __('SNMP Option:');?> <?php print html_escape($snmp['name']);?><br>
+			<?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']);?><br>
+			<?php print __esc('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_community']:$item['snmp_username']));?></p>
+		</td>
+	</tr>
+	<tr>
+		<td class='right'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove SNMP Item');?>'>
+		</td>
+	</tr>
+<?php
 
-    html_end_box();
+	html_end_box();
 
-    form_end();
+	form_end();
 
-    ?>
-    <script type='text/javascript'>
-    $(function() {
-    	$('#continue').click(function(data) {
-			$.post('automation_snmp.php?action=item_remove', {
+?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#continue').click(function(data) {
+			var options = {
+				url: 'automation_snmp.php?action=item_remove',
+				funcEnd: 'automationSnmpRemoveItemFinalize'
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				item_id: <?php print get_request_var('item_id');?>,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				$('#cdialog').dialog('close');
-				loadUrl({url:'automation_snmp.php?action=edit&id=<?php print get_request_var('id');?>'})
-			});
+			}
+
+			postUrl(options, data);
 		});
 	});
+
+	function automationSnmpRemoveItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		loadUrl({url:'automation_snmp.php?action=edit&id=<?php print get_request_var('id');?>'})
+	}
 
 	</script>
 <?php

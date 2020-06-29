@@ -368,15 +368,25 @@ function field_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#continue').unbind('click').click(function(data) {
-			$.post('data_input.php?action=field_remove', {
+			var options = {
+				url: 'data_input.php?action=field_remove',
+				funcEnd: 'removeDataInputFieldFinalize'
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				data_input_id: <?php print get_request_var('data_input_id');?>,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				loadUrl({url:'data_input.php?action=edit&id=<?php print get_request_var('data_input_id');?>'})
-			});
+			}
+
+			postUrl(options, data);
 		});
 	});
+
+	function removeDataInputFieldFinalize(data) {
+		loadUrl({url:'data_input.php?action=edit&id=<?php print get_request_var('data_input_id');?>'})
+	}
+
 	</script>
 	<?php
 }

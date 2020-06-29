@@ -351,6 +351,33 @@ function cdef_item_remove_confirm() {
 	html_end_box();
 
 	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#continue').click(function(data) {
+			var options = {
+				url:'cdef.php?action=item_remove',
+				funcEnd: 'remoteCdefItemFinalize'
+			}
+
+			var data = {
+				__csrf_magic: csrfMagicToken,
+				cdef_id: <?php print get_request_var('cdef_id');?>,
+				id: <?php print get_request_var('id');?>
+			}
+
+			postUrl(options, data);
+		});
+	});
+
+	function removeCdefItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		$('.deleteMarker').blur();
+		loadUrl({url:'cdef.php?action=edit&id=<?php print get_request_var('id');?>'})
+	};
+	</script>
+	<?php
 }
 
 function item_movedown() {
