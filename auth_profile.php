@@ -842,7 +842,7 @@ function settings_javascript() {
 			}
 
 			var options = {
-				urL: 'auth_profile.php?tab='+currentTab+'&action=update_data',
+				url: 'auth_profile.php?tab='+currentTab+'&action=update_data',
 				handle: false
 			}
 
