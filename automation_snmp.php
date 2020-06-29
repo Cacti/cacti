@@ -379,16 +379,25 @@ function automation_snmp_item_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#continue').click(function(data) {
-			$.post('automation_snmp.php?action=item_remove', {
+			var options = {
+				url: 'automation_snmp.php?action=item_remove',
+				funcEnd: 'automationSnmpRemoveItemFinalize'
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				item_id: <?php print get_request_var('item_id');?>,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				$('#cdialog').dialog('close');
-				loadUrl({url:'automation_snmp.php?action=edit&id=<?php print get_request_var('id');?>'})
-			});
+			}
+
+			postUrl(options, data);
 		});
 	});
+
+	function automationSnmpRemoveItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		loadUrl({url:'automation_snmp.php?action=edit&id=<?php print get_request_var('id');?>'})
+	}
 
 	</script>
 <?php

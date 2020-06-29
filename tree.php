@@ -755,10 +755,21 @@ function tree_edit() {
 				event.preventDefault();
 
 				if ($(this).attr('id') == 'tree_edit') {
-					$.post('tree.php', { action: 'save', name: $('#name').val(), sort_type: $('#sort_type').val(), enabled: $('#enabled').is(':checked'), id: $('#id').val(), save_component_tree: 1, __csrf_magic: csrfMagicToken } ).done(function(data) {
-						$('#main').html(data);
-						applySkin();
-					});
+					var options = {
+						url: 'tree.php',
+					}
+
+					var data = {
+						action: 'save',
+						name: $('#name').val(),
+						sort_type: $('#sort_type').val(),
+						enabled: $('#enabled').is(':checked'),
+						id: $('#id').val(),
+						save_component_tree: 1,
+						__csrf_magic: csrfMagicToken
+					}
+
+					postUrl(options, data);
 				}
 			});
 

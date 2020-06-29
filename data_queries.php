@@ -551,16 +551,26 @@ function data_query_item_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#continue').click(function(data) {
-			$.post('data_queries.php?action=item_remove', {
+			var options = {
+				url: 'data_queries.php?action=item_remove'
+				funcEnd: 'removeDataQueryItemFinalize';
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				snmp_query_id: <?php print get_request_var('snmp_query_id');?>,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				$('#cdialog').dialog('close');
-				loadUrl({url:'data_queries.php?action=edit&id=<?php print get_request_var('snmp_query_id');?>'})
-			});
+			}
+
+			postUrl(options, data);
+
 		});
 	});
+
+	function removeDataQueryItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		loadUrl({url:'data_queries.php?action=edit&id=<?php print get_request_var('snmp_query_id');?>'})
+	}
 	</script>
 	<?php
 }
@@ -955,7 +965,11 @@ function data_query_item_edit() {
 	});
 
 	$('input[id="svg_x"]').click(function() {
-		$.post('data_queries.php', {
+		var options = {
+			url:'data_queries.php'
+		}
+
+		var data = {
 			graph_template_id_prev:graph_template_id_prev,
 			action:'save',
 			name:$('#name').val(),
@@ -968,10 +982,9 @@ function data_query_item_edit() {
 			svg_text:$('#svg_text').val(),
 			svg_x:'Add',
 			__csrf_magic: csrfMagicToken
-		}).done(function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		}
+
+		postUrl(options, data);
 	});
 
 	$('input.svds_x').click(function() {
@@ -995,10 +1008,7 @@ function data_query_item_edit() {
 			'"'+svds_x_name+'":"Add", ' +
 			'"svds_x":"Add" }');
 
-		$.post('data_queries.php', jSON).done(function(data) {
-			$('#main').html(data);
-			applySkin();
-		});
+		postURL({url:'data_queries.php'}, jSON);
 	});
 	</script>
 	<?php

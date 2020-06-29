@@ -746,9 +746,14 @@ function settings_javascript() {
 
 		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
 			event.preventDefault();
-			$.post('auth_profile.php', $('input, select, textarea').serialize()).done(function(data) {
-				loadUrl({url:'auth_profile.php?action=noreturn'})
-			});
+			var options = {
+				url: 'auth_profile.php',
+				redirect: 'auth_profile.php?action=noreturn'
+			}
+
+			var data = $('input, select, textarea').serialize();
+
+			postUrl(options, data);
 		});
 
 		$('#auth_profile_edit2 .formData, #auth_profile_noreturn2 .formData').each(function() {
@@ -804,11 +809,17 @@ function settings_javascript() {
 				value = $(this).val();
 			}
 
-			$.post('auth_profile.php?tab='+currentTab+'&action=update_data', {
+			var options = {
+				url: 'auth_profile.php?tab='+currentTab+'&action=update_data',
+				handle: false
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				name: name,
 				value: value
-			});
+			}
+			postUrl(options, data);
 		}).change(function() {
 			name  = $(this).attr('id');
 			if ($(this).attr('type') == 'checkbox') {
@@ -821,15 +832,22 @@ function settings_javascript() {
 				value = $(this).val();
 			}
 
-			$.post('auth_profile.php?tab='+currentTab+'&action=update_data', {
+			var options = {
+				urL: 'auth_profile.php?tab='+currentTab+'&action=update_data',
+				handle: false
+			}
+
+			if (name == 'selected_theme' || name == 'user_language') {
+				options.redirect = 'auth_profile.php?action=edit';
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				name: name,
 				value: value
-				}, function() {
-				if (name == 'selected_theme' || name == 'user_language') {
-					document.location = 'auth_profile.php?action=edit';
-				}
-			});
+			}
+
+			postUrl(options, data);
 		});
 
 		$('#return').click(function() {

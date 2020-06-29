@@ -1195,19 +1195,35 @@ function device_javascript() {
 		});
 
 		$('#add_dq').click(function() {
-			scrollTop = $(window).scrollTop();
-			$.post('host.php?action=query_add', { host_id: $('#id').val(), snmp_query_id: $('#snmp_query_id').val(), reindex_method: $('#reindex_method').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
-				handleAjaxResponse(data);
-				$(window).scrollTop(scrollTop);
-			});
+
+			var options = {
+				url: 'host.php?action=query_add'
+				scrollTop: $(window).scrollTop();
+			}
+
+			var data = {
+				host_id: $('#id').val(),
+				snmp_query_id: $('#snmp_query_id').val(),
+				reindex_method: $('#reindex_method').val(),
+				__csrf_magic: csrfMagicToken
+			}
+
+			postUrl(options, data);
 		});
 
 		$('#add_gt').click(function() {
-			scrollTop = $(window).scrollTop();
-			$.post('host.php?action=gt_add', { host_id: $('#id').val(), graph_template_id: $('#graph_template_id').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
-				handleAjaxResponse(data);
-				$(window).scrollTop(scrollTop);
-			});
+			var options = {
+				url: 'host.php?action=gt_add',
+				scrollTop: $(window).scrollTop()
+			}
+
+			var data = {
+				host_id: $('#id').val(),
+				graph_template_id: $('#graph_template_id').val(),
+				__csrf_magic: csrfMagicToken
+			}
+
+			postUrl(options, data);
 		});
 
 		changeHostForm();

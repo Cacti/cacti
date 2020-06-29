@@ -1441,9 +1441,7 @@ function form_end($ajax = true) {
 				strURL += (strURL.indexOf('?') >= 0 ? '&':'?');
 
 				json =  $(this).serializeObject();
-				$.post(strURL, json).done(function(data) {
-					handleAjaxResponse(data);
-				});
+				postUrl({ url: strUrl }, json);
 			});
 		});
 		</script>
