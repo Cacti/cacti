@@ -18,7 +18,7 @@ jobs:
 
         exempt-issue-labels: 'pinned, security, enhancement, future release'
 
-        stale-issue-label: 'stale'
+        stale-issue-label: 'outdated'
         stale-issue-message: >
           This issue has been automatically marked as stale because it has
           not had recent activity. It will be closed if no further activity
@@ -26,7 +26,7 @@ jobs:
 
         exempt-pr-labels: 'pinned, security, enhancement, future release'
 
-        stale-pr-label: 'stale'
+        stale-pr-label: 'outdated'
         stale-pr-message: >
           This pull request has been automatically marked as stale because
           it has not had recent activity. It will be closed if no further
