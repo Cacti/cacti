@@ -41,7 +41,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         issue-lock-inactive-days: '1095'
         issue-exclude-created-before: ''
-        issue-exclude-labels: ['future release']
+        issue-exclude-labels: 'future release'
         issue-lock-labels: ''
         # issue-lock-comment: >
         #   This issue tracker has been automatically locked since there
@@ -51,7 +51,7 @@ jobs:
         issue-lock-reason: ''
         pr-lock-inactive-days: '1095'
         pr-exclude-created-before: ''
-        pr-exclude-labels: ''
+        pr-exclude-labels: 'future release'
         pr-lock-labels: ''
         # pr-lock-comment: >
         #   This pull request has been automatically locked since there
