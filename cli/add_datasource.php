@@ -100,6 +100,8 @@ if (!empty($host_id)) {
 	push_out_host($host_id, $local_data_id);
 }
 
+print "DS Added - DS[$local_data_id]\n";
+
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
