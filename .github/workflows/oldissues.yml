@@ -59,3 +59,4 @@ jobs:
         #   open a new issue for related bugs.
         pr-lock-reason: ''
         process-only: ''
+        debug-run: true
