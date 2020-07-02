@@ -578,11 +578,26 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				</div>
 			</div>\n";
 
-			if ($return_to != '') {//code as in get_page_list()
-				$nav .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . $base_url . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
-			} else {
-				$nav .= "<script type='text/javascript'>function goto{$page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$base_url$page_var='+pageNo+url_add }</script>";
+			if ($return_to == '') {
+				$return_to = 'main';
 			}
+
+			$url  = $base_url . $page_var;
+			$nav .= "<script type='text/javascript'>
+			function goto$page_var(pageNo) {
+				if (typeof url_graph === 'function') {
+					var url_add=url_graph('')
+				} else {
+					var url_add='';
+				};
+
+				strURL = '$url='+pageNo+url_add;
+
+				loadUrl({
+					url: strURL,
+					elementId: '$return_to',
+				});
+			}</script>";
 		}
 	} else {
 		$nav = "<div class='navBarNavigation'>

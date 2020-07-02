@@ -2394,7 +2394,6 @@ function handleAjaxResponse(html, options) {
         var matches = html.match(/<title>(.*?)<\/title>/);
 
         if (matches != null) {
-
             var htmlTitle = matches[1];
             var breadCrumbs = findElement(htmlObject, '#breadcrumbs').html();
             var htmlContent = findElement(htmlObject, elementId).html();
