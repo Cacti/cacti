@@ -22,6 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+        include_once($config['base_path'] . '/lib/api_tree.php');
+
+
 function display_matching_hosts($rule, $rule_type, $url) {
 	global $device_actions, $item_rows;
 
