@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -feature#2767: Plugins should be temporarily disabled if a required plugin is also disabled
 -feature#3139: Added option in CLI tool remove_graphs for deletion of single graph
 -feature#3187: Feature: rra path should be configurable
+-feature#3260: When a device is added, populate the created date/time
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#3558: Allow copy_user cli script to set various additional fields
 

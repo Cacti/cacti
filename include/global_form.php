@@ -1181,6 +1181,13 @@ $fields_host_edit = array(
 		'collapsible' => 'true',
 		'friendly_name' => __('General Device Options')
 		),
+     'created' => array(
+		'method' => 'label',
+		'friendly_name' => __('Created'),
+		'description' => __('Date/time the device was added'),
+		'value' => '|arg1:created|',
+		'max_length' => '30',
+		),
 	'description' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Description'),

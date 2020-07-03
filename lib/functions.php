@@ -6299,9 +6299,13 @@ function date_time_format() {
 function get_source_timestamp() {
 	global $config;
 	$timestamp = 0;
-	if (file_exists($config['base_path'] . '/.git/')) {
+	$git_path = realpath(__DIR__ . '/../.git/');
+	if (file_exists($git_path)) {
+		$old_path = getcwd();
+		chdir($git_path);
 		$shell = @shell_exec('git log -1 --pretty=format:%ct.%h');
 		$parts = explode('.', $shell);
+		chdir($old_path);
 	} else {
 		$parts =  array(0 => -1, 1 => 'UNKNOWN');
 	}

@@ -706,7 +706,7 @@ function host_edit() {
 		<table class='hostInfoHeader' style='width:100%'>
 			<tr>
 				<td class='textInfo left'>
-					<?php print html_escape($host['description']);?> (<?php print html_escape($host['hostname']);?>)
+					<?php print html_escape($host['description']);?> (<?php print html_escape($host['hostname']);?><br/>
 				</td>
 				<td rowspan='2' class='textInfo right' style='vertical-align:top'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
@@ -1786,7 +1786,13 @@ function host() {
 			'align' => 'right',
 			'sort' => 'ASC',
 			'tip' => __('The availability percentage based upon ping results since the counters were cleared for this Device.')
-		)
+		),
+		'nosort_created' => array(
+			'display' => __('Created'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The date this device wasadded to the database'),
+		),
 	);
 
 	$display_text_size = sizeof($display_text);
@@ -1832,6 +1838,7 @@ function host() {
 			form_selectable_cell(round(($host['cur_time']), 2), $host['id'], '', 'right');
 			form_selectable_cell(round(($host['avg_time']), 2), $host['id'], '', 'right');
 			form_selectable_cell(round($host['availability'], 2) . ' %', $host['id'], '', 'right');
+			form_selectable_cell($host['created'], $host['id'], '', 'right');
 			form_checkbox_cell($host['description'], $host['id']);
 			form_end_row();
 		}
