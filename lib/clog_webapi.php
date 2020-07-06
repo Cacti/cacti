@@ -55,16 +55,16 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	global $config;
 
 	$logfile = read_config_option('path_cactilog');
-	$logbase = basename($logfile);
-
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	$errfile = read_config_option('path_stderrlog');
-	$errbase = basename($errfile);
+	$errfile  = read_config_option('path_stderrlog');
+	$errbase  = basename($errfile);
 
-	$file = basename($file);
+	$file     = basename($file);
+	$logbase  = basename($logfile);
+
 	$filepath = '';
 	$filename = '';
 	$filefull = '';
