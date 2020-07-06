@@ -1444,7 +1444,7 @@ function form_end($ajax = true) {
 				strURL  = '<?php print $form_action;?>';
 
 				json =  $(this).serializeObject();
-				postUrl({ url: strUrl }, json);
+				postUrl({ url: strURL }, json);
 			});
 		});
 		</script>
