@@ -2204,7 +2204,10 @@ function ajaxAnchors() {
 			pageName = basename(href);
 		}
 
-		loadPage(href);
+		loadUrl({
+			url:href,
+			loadType:'loadPage'
+		});
 
 		return false;
 	});
