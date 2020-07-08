@@ -1498,6 +1498,8 @@ function api_device_ping_device($device_id, $from_remote = false) {
 				print "<span class='hostDown'>" . __('Session') . ' ' . __('SNMP error');
 				if ($snmp_error != '') {
 					print " - $snmp_error";
+				} else {
+					print ' - ' __('No session');
 				}
 				print '</span>';
 			} else {

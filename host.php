@@ -706,7 +706,7 @@ function host_edit() {
 		<table class='hostInfoHeader' style='width:100%'>
 			<tr>
 				<td class='textInfo left'>
-					<?php print html_escape($host['description']);?> (<?php print html_escape($host['hostname']);?><br/>
+					<?php print html_escape($host['description']);?> (<?php print html_escape($host['hostname']);?>)<br/>
 				</td>
 				<td rowspan='2' class='textInfo right' style='vertical-align:top'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
@@ -1271,8 +1271,8 @@ function device_javascript() {
 
 		$('#add_dq').click(function() {
 			var options = {
-				url: 'host.php?action=query_add'
-				scrollTop: $(window).scrollTop();
+				url: 'host.php?action=query_add',
+				scrollTop: $(window).scrollTop()
 			}
 
 			var data = {
