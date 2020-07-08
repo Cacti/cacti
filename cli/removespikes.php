@@ -55,10 +55,10 @@ $avgnan   = read_config_option('spikekill_avgnan', 'last');
 
 switch($method) {
 	case '1':
-		$method = 'stddev';
+		$method = 'variance';
 		break;
 	case '2':
-		$method = 'variance';
+		$method = 'stddev';
 		break;
 	case '3':
 		$method = 'float';
@@ -166,9 +166,6 @@ if (cacti_sizeof($parms)) {
 				exit(-3);
 		}
 	}
-} else {
-	display_help();
-	exit(0);
 }
 
 $spiker = new spikekill($rrdfile, $method, $avgnan, $stddev, $out_start, $out_end, $outliers, $percent, $numspike);
