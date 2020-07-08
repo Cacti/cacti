@@ -1499,7 +1499,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 				if ($snmp_error != '') {
 					print " - $snmp_error";
 				} else {
-					print ' - ' __('No session');
+					print ' - ' . __('No session');
 				}
 				print '</span>';
 			} else {
