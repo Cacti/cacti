@@ -1019,8 +1019,7 @@ function clog_regex_graphs($matches, $link = false) {
 		}
 
 		if (cacti_sizeof($wanted_ids)) {
-
-			$sql =	'SELECT DISTINCT
+			$querys = db_fetch_assoc('SELECT DISTINCT
 				gtg.local_graph_id AS id,
 				gtg.title_cache AS title
 				FROM graph_templates_graph AS gtg
@@ -1028,10 +1027,7 @@ function clog_regex_graphs($matches, $link = false) {
 				ON gtg.local_graph_id=gti.local_graph_id
 				INNER JOIN data_template_rrd AS dtr
 				ON gti.task_item_id=dtr.id
-				WHERE gtg.local_graph_id in (' . implode(',',$wanted_ids) . ')';
-
-			cacti_log('SQL: ' . $sql);
-			$querys = db_fetch_assoc($sql);
+				WHERE gtg.local_graph_id in (' . implode(',',$wanted_ids) . ')');
 
 			if (cacti_sizeof($querys)) {
 				foreach ($querys as $query) {
