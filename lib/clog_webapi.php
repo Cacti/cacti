@@ -27,9 +27,7 @@ include_once('functions.php');
 function clog_get_datasource_titles($local_data_ids) {
 	static $title_cache = null;
 
-	if (!is_array($local_data_ids)) {
-		$local_data_ids = array($local_data_ids);
-	}
+	$local_data_ids = cacti_unique_ids($local_data_ids);
 
 	$titles = array();
 
@@ -697,7 +695,7 @@ function clog_regex_replace($id, $link, $url, $matches, $cache) {
 	if ($link) {
 		return $matches[1] . '<a href=\'' . html_escape($config['url_path'] . sprintf($url,  $id)) . '\'>' . (isset($cache[$id]) ? html_escape($cache[$id]):$id) . '</a>' . $matches[3];
 	} else {
-		return $matches[1] . (isset($host_cache[$id]) ? $cache[$id]:$id) . $matches[3];
+		return $matches[1] . (isset($cache[$id]) ? $cache[$id]:$id) . $matches[3];
 	}
 }
 
@@ -743,8 +741,6 @@ function clog_regex_parser($matches, $link = false) {
 }
 
 function clog_regex_device($matches, $link = false) {
-	global $config;
-
 	static $host_cache = null;
 
 	if (!cacti_sizeof($host_cache)) {
@@ -753,7 +749,7 @@ function clog_regex_device($matches, $link = false) {
 
 	$result = $matches[0];
 
-	$dev_ids = explode(',', str_replace(' ', '', $matches[2]));
+	$dev_ids = cacti_unique_ids($matches[2]);
 	if (cacti_sizeof($dev_ids)) {
 		$result = '';
 
@@ -773,18 +769,15 @@ function clog_regex_device($matches, $link = false) {
 }
 
 function clog_regex_datasource($matches, $link = false) {
-	global $config;
-
 	static $gr_cache = null;
 
 	$result = $matches[0];
 
-	$ds_ids = explode(',', str_replace(' ', '', $matches[2]));
+	$ds_ids = cacti_unique_ids($matches[2]);
 
 	if (cacti_sizeof($ds_ids)) {
 		$result     = '';
 		$graph_rows = array();
-		$ds_ids     = array_unique($ds_ids);
 
 		foreach($ds_ids as $ds) {
 			if (!isset($gr_cache[$ds])) {
@@ -813,7 +806,6 @@ function clog_regex_datasource($matches, $link = false) {
 		}
 
 		$result .= $matches[1];
-		$i       = 0;
 
 		$ds_titles = clog_get_datasource_titles($ds_ids);
 		if (!isset($ds_titles)) {
@@ -821,14 +813,7 @@ function clog_regex_datasource($matches, $link = false) {
 		}
 
 		foreach($ds_ids as $ds_id) {
-			$ds_title = $ds_id;
-			if (array_key_exists($ds_id, $ds_titles)) {
-				$ds_title = $ds_titles[$ds_id];
-			}
-
-			$result .= clog_regex_replace($ds_id, $link, 'data_sources.php?action=ds_edit&id=%s', $matches, $gr_cache);
-
-			$i++;
+			$result .= clog_regex_replace($ds_id, $link, 'data_sources.php?action=ds_edit&id=%s', $matches, $ds_titles);
 		}
 
 		$result .= $matches[3] . $graph_results;
@@ -838,8 +823,6 @@ function clog_regex_datasource($matches, $link = false) {
 }
 
 function clog_regex_poller($matches, $link = false) {
-	global $config;
-
 	static $poller_cache = null;
 
 	if (!cacti_sizeof($poller_cache)) {
@@ -852,7 +835,7 @@ function clog_regex_poller($matches, $link = false) {
 
 	$result = $matches[0];
 
-	$poller_ids = explode(',', str_replace(' ', '', $matches[2]));
+	$poller_ids = cacti_unique_ids($matches[2]);
 
 	if (cacti_sizeof($poller_ids)) {
 		$result = '';
@@ -866,8 +849,6 @@ function clog_regex_poller($matches, $link = false) {
 }
 
 function clog_regex_dataquery($matches, $link = false) {
-	global $config;
-
 	static $query_cache = null;
 
 	if (!cacti_sizeof($query_cache)) {
@@ -880,7 +861,7 @@ function clog_regex_dataquery($matches, $link = false) {
 
 	$result = $matches[0];
 
-	$query_ids = explode(',', str_replace(' ', '', $matches[2]));
+	$query_ids = cacti_unique_ids($matches[2]);
 
 	if (cacti_sizeof($query_ids)) {
 		$result = '';
@@ -918,7 +899,7 @@ function clog_regex_graphs($matches, $link = false) {
 
 	$result = $matches[0];
 
-	$graph_ids = explode(',', str_replace(' ', '', $matches[2]));
+	$graph_ids = cacti_unique_ids($matches[2]);
 
 	if (cacti_sizeof($graph_ids)) {
 		$result = '';
@@ -945,7 +926,11 @@ function clog_regex_graphs($matches, $link = false) {
 			$i++;
 		}
 
-		$result .= html_escape($graph_add) . '\'>' . $title . '</a>' . $matches[3];
+		if ($link) {
+			$result .= html_escape($graph_add) . '\'>' . $title . '</a>' . $matches[3];
+		} else {
+			$result .= $title . $matches[3];
+		}
 	}
 
 	return $result;
@@ -966,7 +951,7 @@ function clog_regex_graphtemplates($matches, $link = false) {
 
 	$result = $matches[0];
 
-	$ids = explode(',', str_replace(' ', '', $matches[2]));
+	$ids = cacti_unique_ids($matches[2]);
 
 	if (cacti_sizeof($ids)) {
 		$result = '';
@@ -986,7 +971,7 @@ function clog_regex_users($matches, $link = false) {
 
 	$result = $matches[0];
 
-	$user_ids = explode(',', str_replace(' ', '', $matches[2]));
+	$user_ids = cacti_unique_ids($matches[2]);
 
 	if (cacti_sizeof($user_ids)) {
 		$result = '';
@@ -1023,7 +1008,7 @@ function clog_regex_rule($matches, $link = false) {
 
 	$result = $matches[0];
 
-	$dev_ids = explode(',', str_replace(' ', '', $matches[2]));
+	$dev_ids = cacti_unique_ids($matches[2]);
 
 	if (cacti_sizeof($dev_ids)) {
 		$result = '';

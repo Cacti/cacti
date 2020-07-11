@@ -7437,3 +7437,26 @@ function debounce_run_notification($id, $freqnency = 1200) {
 
 	return false;
 }
+
+/**
+ * Return an array of sorted and unique IDs
+ *
+ * @param  string|array $ids
+ * @param  boolean      $shouldExplode
+ *
+ * @return array
+ */
+function cacti_unique_ids(string|array $ids, bool $shouldExplode = true) {
+	if ($shouldExplode && is_string($ids)) {
+		$ids = explode(',', str_replace(' ', '', $ids));
+	}
+
+	if (!is_array($ids)) {
+		$ids = array($ids);
+	}
+
+	$ids = array_filter(array_unique($ids));
+	sort($ids);
+	return $ids;
+}
+
