@@ -395,6 +395,9 @@ while ($poller_runs_completed < $poller_runs) {
 			array($poller_id));
 	}
 
+	$hosts_per_process = 0;
+	$method = 'disabled';
+
 	$script = $server = $snmp = 0;
 
 	$totals = db_fetch_assoc_prepared('SELECT action, count(*) AS totals
