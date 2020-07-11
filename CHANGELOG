@@ -44,6 +44,7 @@ Cacti CHANGELOG
 -issue#3635: Backtrace Errors attempting to run AUTOM8 to Remote Data Collector
 -issue#3639: Duplicate Entry error when updating device
 -issue#3646: add_datasource.php fails calling api_data_source_cache_crc_update()
+-issue#3655: Periodic Boost Errors due to missing tables
 -issue#3659: Log Base is calculated before full initialization of log filename has completed
 -issue#3663: Disabling Data Collection Causes Undefined Variable PHP Errors
 -feature#3647: add_datasource.php should print the created ID
