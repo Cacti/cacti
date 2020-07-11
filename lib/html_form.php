@@ -1331,15 +1331,70 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 /* form_save_buttons - draws a set of buttons at the end of a form
      an html edit form
    @arg $buttons - an array of 'id', 'name' buttons */
-function form_save_buttons($buttons) {
+function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_field = 'id', $ajax = true) {
+	$calt = __('Cancel');
+
+	if (empty($force_type) || $force_type == 'return') {
+		if (isempty_request_var($key_field)) {
+			$alt = __esc('Create');
+		} else {
+			$alt = __esc('Save');
+
+			if ($force_type != '') {
+				$calt   = __esc('Return');
+			} else {
+				$calt   = __esc('Cancel');
+			}
+		}
+	} elseif ($force_type == 'save') {
+		$alt = __esc('Save');
+	} elseif ($force_type == 'create') {
+		$alt = __esc('Create');
+	} elseif ($force_type == 'close') {
+		$alt = __esc('Close');
+	} elseif ($force_type == 'import') {
+		$alt = __esc('Import');
+	} elseif ($force_type == 'export') {
+		$alt = __esc('Export');
+	}
+
+	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
+		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $calt . "'>";
+	} else {
+		$cancel_action = '';
+	}
+
 	?>
 	<table style='width:100%;text-align:center;'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php foreach($buttons as $b) {
-					print "<input type='button' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "' value='" . html_escape($b['value']) . "'>\n";
+					print "<input type='button' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "1' value='" . html_escape($b['value']) . "'";
+					$onclick = '';
+					if (!empty($b['method'])) {
+						$url = empty($b['url']) ? '' : html_escape($b['url'], ENT_QUOTES);
+						$data = empty($b['data']) ? '{}' : $b['data'];
+						switch ($b['method']) {
+							case 'return':
+								$onclick = "cactiReturnTo(\"" .$url . "\")";
+								break;
+							case 'post':
+								$onclick = "var pv=$data;postUrl({ url: '$url' }, pv); return false;";
+								break;
+							case 'get':
+								$onclick = "var pv=$data;loadUrl({ url: '$url' }, pv); return false;";
+								break;
+						}
+					}
+
+					if (!empty($onclick)) {
+						print " onclick='" . html_escape($onclick, ENT_QUOTES) . "'";
+					}
+					print ">\n";
 				} ?>
+				<?php print $cancel_action; ?>
+				<input type='submit' class='<?php print $force_type;?> ui-button ui-corner-all ui-widget' id='submit' value='<?php print $alt; ?>'>
 			</td>
 		</tr>
 	</table>

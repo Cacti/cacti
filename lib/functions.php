@@ -4437,7 +4437,8 @@ function sanitize_cdef($cdef) {
  * @return array      - the sanitized selected items array
  */
 function sanitize_unserialize_selected_items($items) {
-	if ($items != '') {
+	$return_items = false;
+	if (!empty($items) && is_string($items)) {
 		$unstripped = stripslashes($items);
 
 		// validate that sanitized string is correctly formatted
@@ -4445,24 +4446,21 @@ function sanitize_unserialize_selected_items($items) {
 			$items = unserialize($unstripped);
 
 			if (is_array($items)) {
+				$return_items = $items;
 				foreach ($items as $item) {
 					if (is_array($item)) {
-						return false;
+						$return_items = false;
+						break;
 					} elseif (!is_numeric($item) && ($item != '')) {
-						return false;
+						$return_items = false;
+						break;
 					}
 				}
-			} else {
-				return false;
 			}
-		} else {
-			return false;
 		}
-	} else {
-		return false;
 	}
 
-	return $items;
+	return $return_items;
 }
 
 function cacti_escapeshellcmd($string) {

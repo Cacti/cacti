@@ -105,6 +105,12 @@ define('GRAPH_ITEM_TYPE_LINESTACK',         20);
 define('GRAPH_ITEM_TYPE_TIC',               30);
 define('GRAPH_ITEM_TYPE_TEXTALIGN',         40);
 
+define('POLLER_DELETE', 1);
+define('POLLER_DISABLE', 2);
+define('POLLER_ENABLE', 3);
+define('POLLER_RESYNC', 4);
+define('POLLER_CLEAR_STATS', 5);
+
 /* used both for polling and reindexing */
 define('POLLER_ACTION_SNMP', 0);
 define('POLLER_ACTION_SCRIPT', 1);

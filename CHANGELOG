@@ -20,6 +20,8 @@ Cacti CHANGELOG
 -feature#3260: When a device is added, populate the created date/time
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#3558: Allow copy_user cli script to set various additional fields
+-feature#3585: CLI script to show database permissions that Cacti has
+-feature#3677: Relocate the delete button for collectors to the edit page
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder

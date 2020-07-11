@@ -724,8 +724,8 @@ function applyTimespanFilterChange() {
 /** cactiReturnTo - This function simply returns to the previous page
  *  @args href - the previous page */
 function cactiReturnTo(href) {
-    if (typeof href == 'string') {
-        href = document.location.href;
+    if (typeof href !== 'string' || href.trim() == '') {
+        href = document.referrer;
     }
     loadUrl({ url: href });
 }
