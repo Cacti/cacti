@@ -738,15 +738,17 @@ function clog_regex_device($matches, $link = false) {
 
 	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($dev_ids)) {
-		$result = '';
+		$result     = '';
 		$wanted_ids = array();
+		$dev_ids    = array_filter(array_unique($dev_ids));
+
 		foreach($dev_ids as $dev_id) {
 			if (!array_key_exists($dev_id, $cache)) {
 				$wanted_ids []= $dev_id;
 			}
 		}
 
-		if (!empty($wanted_ids)) {
+		if (cacti_sizeof($wanted_ids)) {
 			$hosts = db_fetch_assoc('SELECT id, description
 				FROM host
 				WHERE id in (' . implode(',',$wanted_ids) . ')');
@@ -788,7 +790,7 @@ function clog_regex_datasource($matches, $link = false) {
 	if (cacti_sizeof($ds_ids)) {
 		$result     = '';
 		$wanted_ids = array();
-		$ds_ids     = array_unique($ds_ids);
+		$ds_ids     = array_filter(array_unique($ds_ids));
 
 		foreach($ds_ids as $ds_id) {
 			if (!array_key_exists($ds_id, $cache)) {
@@ -796,7 +798,7 @@ function clog_regex_datasource($matches, $link = false) {
 			}
 		}
 
-		if (!empty($wanted_ids)) {
+		if (cacti_sizeof($wanted_ids)) {
 			$graph_rows = array_rekey(db_fetch_assoc('SELECT DISTINCT
 				dtr.local_data_id AS id,
 				group_concat(distinct gtg.local_graph_id) AS graph_ids
@@ -809,7 +811,7 @@ function clog_regex_datasource($matches, $link = false) {
 				AND dtr.local_data_id IN (' . implode(',',$wanted_ids) . ')
 				GROUP BY dtr.local_data_id'),'id','graph_ids');
 
-			$ds_ids = array_unique($ds_ids);
+			$ds_ids    = array_filter(array_unique($ds_ids));
 			$ds_titles = clog_get_datasource_titles($ds_ids);
 			if (!isset($ds_titles)) {
 				$ds_titles = array();
@@ -884,7 +886,7 @@ function clog_regex_poller($matches, $link = false) {
 	if (cacti_sizeof($poller_ids)) {
 		$result     = '';
 		$wanted_ids = array();
-		$poller_ids = array_unique($poller_ids);
+		$poller_ids = array_filter(array_unique($poller_ids));
 
 		foreach($poller_ids as $poller_id) {
 			if (!array_key_exists($poller_id, $cache)) {
@@ -892,7 +894,7 @@ function clog_regex_poller($matches, $link = false) {
 			}
 		}
 
-		if (!empty($wanted_ids)) {
+		if (cacti_sizeof($wanted_ids)) {
 			$pollers = db_fetch_assoc_prepared('SELECT id, name
 				FROM poller
 				WHERE id in (' . implode(',',$wanted_ids) . ')');
@@ -934,7 +936,7 @@ function clog_regex_dataquery($matches, $link = false) {
 	if (cacti_sizeof($query_ids)) {
 		$result     = '';
 		$wanted_ids = array();
-		$query_ids  = array_unique($query_ids);
+		$query_ids  = array_filter(array_unique($query_ids));
 
 		foreach($query_ids as $query_id) {
 			if (!array_key_exists($query_id, $cache)) {
@@ -942,7 +944,7 @@ function clog_regex_dataquery($matches, $link = false) {
 			}
 		}
 
-		if (!empty($wanted_ids)) {
+		if (cacti_sizeof($wanted_ids)) {
 			$querys = db_fetch_assoc('SELECT id, name
 				FROM snmp_query
 				WHERE id in (' . implode(',',$wanted_ids) . ')');
@@ -1004,13 +1006,11 @@ function clog_regex_graphs($matches, $link = false) {
 
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($query_ids)) {
-		$result    = $matches[1];
-		$title     = '';
-		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
-
-
-		$query_ids  = array_unique($query_ids);
+		$result     = $matches[1];
+		$title      = '';
+		$query_ids  = array_filter(array_unique($query_ids));
 		$wanted_ids = array();
+		$graph_add  = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
 		foreach ($query_ids as $query_id) {
 			if (!array_key_exists($query_id, $cache)) {
@@ -1018,9 +1018,9 @@ function clog_regex_graphs($matches, $link = false) {
 			}
 		}
 
-		if (!empty($wanted_ids)) {
+		if (cacti_sizeof($wanted_ids)) {
 
-			$querys = db_fetch_assoc('SELECT DISTINCT
+			$sql =	'SELECT DISTINCT
 				gtg.local_graph_id AS id,
 				gtg.title_cache AS title
 				FROM graph_templates_graph AS gtg
@@ -1028,7 +1028,10 @@ function clog_regex_graphs($matches, $link = false) {
 				ON gtg.local_graph_id=gti.local_graph_id
 				INNER JOIN data_template_rrd AS dtr
 				ON gti.task_item_id=dtr.id
-				WHERE gtg.local_graph_id in (' . implode(',',$wanted_ids) . ')');
+				WHERE gtg.local_graph_id in (' . implode(',',$wanted_ids) . ')';
+
+			cacti_log('SQL: ' . $sql);
+			$querys = db_fetch_assoc($sql);
 
 			if (cacti_sizeof($querys)) {
 				foreach ($querys as $query) {
@@ -1067,9 +1070,9 @@ function clog_regex_graphtemplates($matches, $link = false) {
 
 	$graphtemplate_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($graphtemplate_ids)) {
-		$result = '';
-		$wanted_ids = array();
-		$graphtemplate_ids  = array_unique($graphtemplate_ids);
+		$result             = '';
+		$wanted_ids         = array();
+		$graphtemplate_ids  = array_filter(array_unique($graphtemplate_ids));
 
 		foreach ($graphtemplate_ids as $graphtemplate_id) {
 			if (!array_key_exists($graphtemplate_id, $cache)) {
@@ -1077,7 +1080,7 @@ function clog_regex_graphtemplates($matches, $link = false) {
 			}
 		}
 
-		if (!empty($wanted_ids)) {
+		if (cacti_sizeof($wanted_ids)) {
 			$querys = db_fetch_assoc('SELECT id, name
 				FROM graph_templates
 				WHERE id in ('  . implode(',',$wanted_ids) . ')');
@@ -1119,15 +1122,15 @@ function clog_regex_users($matches, $link = false) {
 	if (cacti_sizeof($query_ids)) {
 		$result     = '';
 		$wanted_ids = array();
-		$user_ids   = array_unique($user_ids);
+		$user_ids   = array_filter(array_unique($user_ids));
 
 		foreach ($user_ids as $user_id) {
-			if (!array_key_exists($user_id)) {
+			if (!array_key_exists($user_id, $cache)) {
 				$wanted_id []= $user_id;
 			}
 		}
 
-		if (!empty($wanted_ids)) {
+		if (cacti_sizeof($wanted_ids)) {
 			$querys = db_fetch_assoc('SELECT DISTINCT
 				id, username
 				FROM user_auth
@@ -1171,9 +1174,9 @@ function clog_regex_rule($matches, $link = false) {
 
 	$rule_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($rule_ids)) {
-		$result = '';
+		$result     = '';
 		$wanted_ids = array();
-		$rule_ids   = array_unique($wanted_ids);
+		$rule_ids   = array_filter(array_unique($rule_ids));
 
 		foreach ($rule_ids as $rule_id) {
 			if (!array_key_exists($rule_id, $cache)) {
@@ -1181,7 +1184,7 @@ function clog_regex_rule($matches, $link = false) {
 			}
 		}
 
-		if (!empty($wanted_ids)) {
+		if (cacti_sizeof($wanted_ids)) {
 			$rules = db_fetch_assoc('SELECT id, name
 				FROM automation_graph_rules
 				WHERE id in (' . implode(',',$wanted_ids) . ')');
