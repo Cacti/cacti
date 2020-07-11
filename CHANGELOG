@@ -48,6 +48,7 @@ Cacti CHANGELOG
 -issue#3655: Periodic Boost Errors due to missing tables
 -issue#3659: Log Base is calculated before full initialization of log filename has completed
 -issue#3663: Disabling Data Collection Causes Undefined Variable PHP Errors
+-issue#3681: Move arrows don't align on all themes
 -feature#3647: add_datasource.php should print the created ID
 -feature#3666: Update jstree.js to 3.3.10
 
