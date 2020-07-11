@@ -318,6 +318,13 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => POLLER_VERBOSITY_LOW,
 			'array' => $logfile_verbosity,
+		),			),
+		'log_expand' => array(
+			'friendly_name' => __('Expand log details'),
+			'description' => __('What level of expansion do you want on the log file? Increase expansion can slow search results'),
+			'method' => 'drop_array',
+			'default' => LOG_EXPAND_FULL,
+			'array' => $logfile_expansion
 		),
 		'log_validation' => array(
 			'friendly_name' => __('Log Input Validation Issues'),
@@ -622,8 +629,7 @@ $settings = array(
 			'default' => '500',
 			'size' => '5',
 			'max_length' => '5'
-		)
-	),
+		),
 	'snmp' => array(
 		'general_header' => array(
 			'friendly_name' => __('General Defaults'),

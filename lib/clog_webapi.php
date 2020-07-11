@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+include_once('functions.php');
+
 function clog_get_datasource_titles($local_data_ids) {
 	static $title_cache = null;
 
@@ -257,8 +259,16 @@ function clog_view_logfile() {
 	/* read logfile into an array and display */
 	$total_rows      = 0;
 	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
+	$should_expand   = read_config_option('log_expand') != LOG_EXPAND_NONE;
 
-	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
+	if ($should_expand) {
+		$regex_array = clog_get_regex_array();
+		$regex_map   = array('data' => $regex_array['complete'], 'func' => 'clog_regex_parser');
+	} else {
+		$regex_map   = false;
+	}
+
+	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows, $regex_map);
 
 	if (get_request_var('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
@@ -307,11 +317,11 @@ function clog_view_logfile() {
 		$hostDescriptions[$host['id']] = html_escape($host['description']);
 	}
 
-	$regex_array = clog_get_regex_array();
 	foreach ($logcontents as $item) {
 		$new_item = html_escape($item);
-
-		$new_item = preg_replace_callback($regex_array['complete'],'clog_regex_parser',$new_item);
+		if ($should_expand) {
+			$new_item = preg_replace_callback($regex_map['data'],'clog_regex_parser_html',$new_item);
+		}
 
 		/* respect the exclusion filter */
 		if ($exclude_regex != '' && !$clogAdmin) {
@@ -681,7 +691,21 @@ function clog_get_regex_array() {
 	return $regex_array;
 }
 
-function clog_regex_parser($matches) {
+function clog_regex_replace($id, $link, $url, $matches, $cache) {
+	global $config;
+
+	if ($link) {
+		return $matches[1] . '<a href=\'' . html_escape($config['url_path'] . sprintf($url,  $id)) . '\'>' . (isset($cache[$id]) ? html_escape($cache[$id]):$id) . '</a>' . $matches[3];
+	} else {
+		return $matches[1] . (isset($host_cache[$id]) ? $cache[$id]:$id) . $matches[3];
+	}
+}
+
+function clog_regex_parser_html($matches) {
+	return clog_regex_parser($matches, true);
+}
+
+function clog_regex_parser($matches, $link = false) {
 	$result = $matches[0];
 	$match = $matches[0];
 
@@ -707,7 +731,7 @@ function clog_regex_parser($matches) {
 				}
 
 				if (function_exists($regex_setting['func'])) {
-					$result=call_user_func_array($regex_setting['func'],array($rekey_array));
+					$result=call_user_func_array($regex_setting['func'],array($rekey_array, $link));
 				} else {
 					$result=$match;
 				}
@@ -718,7 +742,7 @@ function clog_regex_parser($matches) {
 	return $result;
 }
 
-function clog_regex_device($matches) {
+function clog_regex_device($matches, $link = false) {
 	global $config;
 
 	static $host_cache = null;
@@ -736,23 +760,19 @@ function clog_regex_device($matches) {
 		foreach($dev_ids as $id) {
 			if (!isset($host_cache[$id])) {
 				$host_cache[$id] = db_fetch_cell_prepared('SELECT description
-        		    FROM host
+					FROM host
 		            WHERE id = ?',
 					array($id));
 			}
 
-			if ($id != 0) {
-				$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $id) . '\'>' . (isset($host_cache[$id]) ? html_escape($host_cache[$id]):$id) . '</a>' . $matches[3];
-			} else {
-				$result .= $matches[1] . (isset($host_cache[$id]) ? html_escape($host_cache[$id]):$id) . $matches[3];
-			}
+			$result .= clog_regex_replace($id, $link, 'host.php?action=edit&id=%s', $matches, $host_cache);
 		}
 	}
 
 	return $result;
 }
 
-function clog_regex_datasource($matches) {
+function clog_regex_datasource($matches, $link = false) {
 	global $config;
 
 	static $gr_cache = null;
@@ -805,7 +825,8 @@ function clog_regex_datasource($matches) {
 			if (array_key_exists($ds_id, $ds_titles)) {
 				$ds_title = $ds_titles[$ds_id];
 			}
-			$result .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . html_escape($ds_title) . '</a>';
+
+			$result .= clog_regex_replace($ds_id, $link, 'data_sources.php?action=ds_edit&id=%s', $matches, $gr_cache);
 
 			$i++;
 		}
@@ -816,7 +837,7 @@ function clog_regex_datasource($matches) {
 	return $result;
 }
 
-function clog_regex_poller($matches) {
+function clog_regex_poller($matches, $link = false) {
 	global $config;
 
 	static $poller_cache = null;
@@ -837,14 +858,14 @@ function clog_regex_poller($matches) {
 		$result = '';
 
 		foreach ($poller_ids as $poller_id) {
-			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'pollers.php?action=edit&id=' . $poller_id) . '\'>' . (isset($poller_cache[$poller_id]) ? html_escape($poller_cache[$poller_id]):$poller_id) . '</a>' . $matches[3];
+			$result .= clog_regex_replace($poller_id, $link, 'pollers.php?action=edit&id=%s', $matches, $poller_cache);
 		}
 	}
 
 	return $result;
 }
 
-function clog_regex_dataquery($matches) {
+function clog_regex_dataquery($matches, $link = false) {
 	global $config;
 
 	static $query_cache = null;
@@ -865,14 +886,14 @@ function clog_regex_dataquery($matches) {
 		$result = '';
 
 		foreach ($query_ids as $query_id) {
-			$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'data_queries.php?action=edit&id=' . $query_id) . '\'>' . (isset($query_cache[$query_id]) ? html_escape($query_cache[$query_id]):$query_id) . '</a>' . $matches[3];
+			$result .= clog_regex_replace($query_id, $link, 'data_queries.php?action=edit&id=%s', $matches, $query_cache);
 		}
 	}
 
 	return $result;
 }
 
-function clog_regex_rra($matches) {
+function clog_regex_rra($matches, $link = false) {
 	global $config;
 
 	$result = $matches[0];
@@ -890,7 +911,7 @@ function clog_regex_rra($matches) {
 	return $result;
 }
 
-function clog_regex_graphs($matches) {
+function clog_regex_graphs($matches, $link = false) {
 	global $config;
 
 	static $graph_cache = null;
@@ -930,7 +951,7 @@ function clog_regex_graphs($matches) {
 	return $result;
 }
 
-function clog_regex_graphtemplates($matches) {
+function clog_regex_graphtemplates($matches, $link = false) {
 	global $config;
 
 	static $templates_cache = null;
@@ -951,14 +972,14 @@ function clog_regex_graphtemplates($matches) {
 		$result = '';
 
 		foreach ($ids as $id) {
-			$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $id) . '\'>' . (isset($templates_cache[$id]) ? html_escape($templates_cache[$id]):$id) . '</a>' . $matches[3];
+			$result .= clog_regex_replace($id, $link, 'graph_templates.php?action=template_edit&id=%s', $matches, $templates_cache);
 		}
 	}
 
 	return $result;
 }
 
-function clog_regex_users($matches) {
+function clog_regex_users($matches, $link = false) {
 	global $config;
 
 	static $users_cache = null;
@@ -980,22 +1001,14 @@ function clog_regex_users($matches) {
 		}
 
 		foreach ($user_ids as $id) {
-			$result .= $matches[1];
-
-			if (isset($users_cache[$id])) {
-				$result .= '<a href=\'' . html_escape($config['url_path'] . 'user_admin.php?action=user_edit&tab=general&id=' . $id) . '\'>' . html_escape($users_cache[$id]) . '</a>';
-			} else {
-				$result .= $id;
-			}
-
-			$result .= $matches[3];
+			$result .= clog_regex_replace($id, $link, 'user_admin.php?action=user_edit&tab=general&id=%s', $matches, $users_cache);
 		}
 	}
 
 	return $result;
 }
 
-function clog_regex_rule($matches) {
+function clog_regex_rule($matches, $link = false) {
 	global $config;
 
 	static $rules_cache = null;
@@ -1016,7 +1029,7 @@ function clog_regex_rule($matches) {
 		$result = '';
 
 		foreach ($dev_ids as $rule_id) {
-			$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'automation_graph_rules.php?action=edit&id=' . $rule_id) . '\'>' . (isset($rules_cache[$rule_id]) ? html_escape($rules_cache[$rule_id]):$rule_id) . '</a>' . $matches[3];
+			$result .= clog_regex_replace($rule_id, $link, 'automation_graph_rules.php?action=edit&id=%s', $matches, $rules_cache);
 		}
 	}
 

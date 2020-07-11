@@ -694,6 +694,12 @@ $logfile_verbosity = array(
 	POLLER_VERBOSITY_DEVDBG => __('DEVEL - Developer DEBUG Level')
 );
 
+$logfile_expansion = array(
+	LOG_EXPAND_NONE    => ('NONE - No expansion'),
+	LOG_EXPAND_DISPLAY => ('DISPLAY - Only when displaying'),
+	LOG_EXPAND_FULL    => ('FULL - Display and search expansion'),
+);
+
 $poller_options = array(
 	1 => 'cmd.php',
 	2 => 'spine'
