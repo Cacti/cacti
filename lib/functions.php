@@ -1023,7 +1023,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		 $filter       - (char) the filtering expression to search for
 		 $page_nr      - (int) the page we want to show rows for
 		 $total_rows   - (int) the total number of rows in the logfile */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows) {
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows, $field_map = '') {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -1039,9 +1039,27 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	$fp = fopen($file_name, 'r');
 
 	/* Count all lines in the logfile */
-	$total_rows = 0;
+	$total_rows    = 0;
+	$line_no       = 0;
+	$display_line  = array();
+	$should_expand = read_config_option('log_expand') == LOG_EXPAND_FULL;
+	iF ($should_expand) {
+		$should_expand = !empty($filter) && !empty($field_map) && !empty($field_map['data']) && !empty($field_map['func']);
+	}
+
 	while (($line = fgets($fp)) !== false) {
-		if (determine_display_log_entry($message_type, $line, $filter)) {
+		$display = (determine_display_log_entry($message_type, $line, $filter));
+		if ($should_expand && !$display) {
+			$expanded = preg_replace_callback($field_map['data'],$field_map['func'],$line);
+			if ($expanded != $line) {
+				// expand line different so lets see if we want it now after all
+				$display = determine_display_log_entry($message_type, $expanded, $filter);
+			}
+		}
+
+
+		$display_line[$line_no++] = $display;
+		if ($display) {
 			++$total_rows;
 		}
 	}
@@ -1067,8 +1085,9 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	/* load up the lines into an array */
 	$file_array = array();
 	$i = 0;
+	$line_no = 0;
 	while (($line = fgets($fp)) !== false) {
-		$display = determine_display_log_entry($message_type, $line, $filter);
+		$display = $display_line[$line_no++];
 
 		if ($display === false) {
 			continue;
