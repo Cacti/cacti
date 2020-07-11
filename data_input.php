@@ -538,6 +538,23 @@ function data_remove($id) {
 	update_replication_crc(0, 'poller_replicate_data_input_crc');
 }
 
+function data_input_more_inputs($id, $input_string) {
+	$input_string = str_replace('<path_cacti>', '', $input_string);
+	$inputs = substr_count($input_string, '<');
+
+	$existing = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM data_input_fields
+		WHERE data_input_id = ?
+		AND input_output = "in"',
+		array($id));
+
+	if ($inputs > $existing) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function data_edit() {
 	global $config, $fields_data_input_edit;
 
@@ -557,11 +574,11 @@ function data_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __esc('Data Input Methods [edit: %s]', $data_input['name']);
+		$header_label = __esc('Data Input Method [edit: %s]', $data_input['name']);
 	} else {
 		$data_input = array();
 
-		$header_label = __('Data Input Methods [new]');
+		$header_label = __('Data Input Method [new]');
 	}
 
 	if (!isset($config['input_whitelist'])) {
@@ -611,7 +628,13 @@ function data_edit() {
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
-		html_start_box(__('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . get_request_var('id'));
+		if (data_input_more_inputs(get_request_var('id'), $data_input['input_string'])) {
+			$url = 'data_input.php?action=field_edit&type=in&data_input_id=' . get_request_var('id');
+		} else {
+			$url = '';
+		}
+
+		html_start_box(__('Input Fields'), '100%', '', '3', 'center', $url);
 
 		print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem(__('Name'), '', 1);
