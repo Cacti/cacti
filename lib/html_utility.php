@@ -862,7 +862,7 @@ function validate_is_regex($regex) {
 	$track_errors = ini_get('track_errors');
 	ini_set('track_errors', 1);
 
-    if (@preg_match("'" . $regex . "'", NULL) !== false) {
+    if (@preg_match("'" . $regex . "'", '') !== false) {
 		ini_set('track_errors', $track_errors);
 		return true;
 	}

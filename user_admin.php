@@ -1936,7 +1936,7 @@ function user_edit() {
 
 			$('#pass').remove();
 			$('#password').after('<span id="pass"><i class="'+className+' fa fa-times"></i><span style="padding-left:4px;">'+data+'</span></span>');
-			$('#password')..tooltip();
+			$('#password').tooltip();
 			checkPasswordConfirm();
 		}
 

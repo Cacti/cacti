@@ -1102,12 +1102,6 @@ function tree_edit() {
 				event.preventDefault();
 
 				if ($(this).attr('id') == 'tree_edit') {
-<<<<<<< HEAD
-					$.post('tree.php', { action: 'save', name: $('#name').val(), sort_type: $('#sort_type').val(), enabled: $('#enabled').is(':checked'), id: $('#id').val(), save_component_tree: 1, sequence: $('#sequence').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
-						$('#main').html(data);
-						applySkin();
-					});
-=======
 					var options = {
 						url: 'tree.php',
 					}
@@ -1123,7 +1117,6 @@ function tree_edit() {
 					}
 
 					postUrl(options, data);
->>>>>>> c03583978 (Making posting work (for the most part))
 				}
 			});
 
