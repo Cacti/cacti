@@ -172,7 +172,7 @@ function form_save() {
 		$save['id']            = get_request_var('id');
 		$save['hash']          = get_hash_data_input(get_nfilter_request_var('id'), 'data_input_field');
 		$save['data_input_id'] = get_request_var('data_input_id');
-		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['name']          = form_input_validate(get_nfilter_request_var('fname'), 'fname', '', false, 3);
 		$save['data_name']     = form_input_validate(get_nfilter_request_var('data_name'), 'data_name', '', false, 3);
 		$save['input_output']  = get_nfilter_request_var('input_output');
 		$save['update_rra']    = form_input_validate((isset_request_var('update_rra') ? get_nfilter_request_var('update_rra') : ''), 'update_rra', '', true, 3);

@@ -49,6 +49,7 @@ Cacti CHANGELOG
 -issue#3659: Log Base is calculated before full initialization of log filename has completed
 -issue#3663: Disabling Data Collection Causes Undefined Variable PHP Errors
 -issue#3668: "Input Field" is not marked red after error message
+-issue#3669: Input Method was renamed after add an Input Field
 -issue#3681: Move arrows don't align on all themes
 -feature#3647: add_datasource.php should print the created ID
 -feature#3666: Update jstree.js to 3.3.10

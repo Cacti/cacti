@@ -416,7 +416,7 @@ $fields_data_input_field_edit_2 = array(
 
 /* file: data_input.php, action: field_edit */
 $fields_data_input_field_edit = array(
-	'name' => array(
+	'fname' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Friendly Name'),
 		'description' => __('Enter a meaningful name for this data input method.'),
