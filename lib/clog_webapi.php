@@ -806,7 +806,7 @@ function clog_regex_datasource($matches, $link = false) {
 				INNER JOIN data_template_rrd AS dtr
 				ON gti.task_item_id=dtr.id
 				WHERE gtg.local_graph_id>0
-				AND dtr.local_data_id IN (' . $matches[2] . ')
+				AND dtr.local_data_id IN (' . implode(',',$wanted_ids) . ')
 				GROUP BY dtr.local_data_id'),'id','graph_ids');
 
 			$ds_ids = array_unique($ds_ids);
@@ -945,7 +945,7 @@ function clog_regex_dataquery($matches, $link = false) {
 		if (!empty($wanted_ids)) {
 			$querys = db_fetch_assoc('SELECT id, name
 				FROM snmp_query
-				WHERE id in (' . implode(',',$query_ids) . ')');
+				WHERE id in (' . implode(',',$wanted_ids) . ')');
 
 			if (cacti_sizeof($querys)) {
 				foreach ($querys as $query) {
@@ -1028,7 +1028,7 @@ function clog_regex_graphs($matches, $link = false) {
 				ON gtg.local_graph_id=gti.local_graph_id
 				INNER JOIN data_template_rrd AS dtr
 				ON gti.task_item_id=dtr.id
-				WHERE gtg.local_graph_id in (' . implode(',',$query_ids) . ')');
+				WHERE gtg.local_graph_id in (' . implode(',',$wanted_ids) . ')');
 
 			if (cacti_sizeof($querys)) {
 				foreach ($querys as $query) {
@@ -1080,7 +1080,7 @@ function clog_regex_graphtemplates($matches, $link = false) {
 		if (!empty($wanted_ids)) {
 			$querys = db_fetch_assoc('SELECT id, name
 				FROM graph_templates
-				WHERE id in ('  . implode(',',$graphtemplate_ids) . ')');
+				WHERE id in ('  . implode(',',$wanted_ids) . ')');
 
 			if (cacti_sizeof($querys)) {
 				foreach ($querys as $query) {
@@ -1184,7 +1184,7 @@ function clog_regex_rule($matches, $link = false) {
 		if (!empty($wanted_ids)) {
 			$rules = db_fetch_assoc('SELECT id, name
 				FROM automation_graph_rules
-				WHERE id in (' . implode(',',$rule_ids) . ')');
+				WHERE id in (' . implode(',',$wanted_ids) . ')');
 
 			if (cacti_sizeof($rules)) {
 				foreach ($rules as $rule) {
