@@ -142,7 +142,7 @@ class spikekill {
 		$this->dstddev   = read_config_option('spikekill_deviations', true);
 		$this->dpercent  = read_config_option('spikekill_percent', true);
 		$this->doutliers = read_config_option('spikekill_outliers', true);
-		$this->davgnan   = read_config_option('spikekill_avgnan', true)
+		$this->davgnan   = read_config_option('spikekill_avgnan', true);
 
 		return true;
 	}
