@@ -137,12 +137,12 @@ class spikekill {
 			$this->numspike = $numspike;
 		}
 
-		$this->dmethod   = read_config_option('spikekill_method', 1);
-		$this->dnumspike = read_config_option('spikekill_number', 10);
-		$this->dstddev   = read_config_option('spikekill_deviations', 10);
-		$this->dpercent  = read_config_option('spikekill_percent', 500);
-		$this->doutliers = read_config_option('spikekill_outliers', 5);
-		$this->davgnan   = read_config_option('spikekill_avgnan', 'last');
+		$this->dmethod   = read_config_option('spikekill_method', true);
+		$this->dnumspike = read_config_option('spikekill_number', true);
+		$this->dstddev   = read_config_option('spikekill_deviations', true);
+		$this->dpercent  = read_config_option('spikekill_percent', true);
+		$this->doutliers = read_config_option('spikekill_outliers', true);
+		$this->davgnan   = read_config_option('spikekill_avgnan', true)
 
 		return true;
 	}
@@ -187,12 +187,12 @@ class spikekill {
 			$this->set_error("FATAL: File '$this->rrdfile' is not writeable by '" . get_execution_user() . "'.");
 		}
 
-		$umethod   = read_user_setting('spikekill_method', $this->dmethod);
-		$unumspike = read_user_setting('spikekill_number', $this->dnumspike);
-		$ustddev   = read_user_setting('spikekill_deviations', $this->dstddev);
-		$upercent  = read_user_setting('spikekill_percent', $this->dpercent);
-		$uoutliers = read_user_setting('spikekill_outliers', $this->doutliers);
-		$uavgnan   = read_user_setting('spikekill_avgnan', $this->davgnan);
+		$umethod   = read_user_setting('spikekill_method', $this->dmethod, true);
+		$unumspike = read_user_setting('spikekill_number', $this->dnumspike, true);
+		$ustddev   = read_user_setting('spikekill_deviations', $this->dstddev, true);
+		$upercent  = read_user_setting('spikekill_percent', $this->dpercent, true);
+		$uoutliers = read_user_setting('spikekill_outliers', $this->doutliers, true);
+		$uavgnan   = read_user_setting('spikekill_avgnan', $this->davgnan, true);
 
 		/* set the correct value */
 		if ($this->avgnan == '') {
