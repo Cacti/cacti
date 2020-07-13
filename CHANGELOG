@@ -55,7 +55,7 @@ Cacti CHANGELOG
 -issue#3682: Mouse over Zoom is no longer available in 'Time Graph View' mode
 -feature#3647: add_datasource.php should print the created ID
 -feature#3666: Update jstree.js to 3.3.10
--feature: Update phpseclib to 2.0.28
+-feature#3688: Update phpseclib to 2.0.28
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
