@@ -1894,6 +1894,8 @@ legend {
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
+	display: inline-block;
+	width: 11.75px;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -1904,7 +1906,8 @@ legend {
 }
 
 .moveArrowNone {
-	padding-left: 8.75px;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {

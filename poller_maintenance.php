@@ -115,6 +115,8 @@ unregister_process('maintenance', 'master', $config['poller_id']);
 exit(0);
 
 function logrotate_check($force) {
+	global $disable_log_rotation;
+
 	// Check whether the cacti log.  Rotations takes place around midnight
 	if (isset($disable_log_rotation) && $disable_log_rotation == true) {
 		// Skip log rotation as it's handled by logrotate.d

@@ -1080,7 +1080,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		$start = 0;
 	}
 
-	cacti_session_close();
+	force_session_data();
 
 	/* load up the lines into an array */
 	$file_array = array();
@@ -1105,8 +1105,6 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	}
 
 	fclose($fp);
-
-	cacti_session_start();
 
 	return $file_array;
 }
@@ -5747,8 +5745,17 @@ function cacti_session_start() {
 	}
 
 	session_name($config['cacti_session_name']);
+
+	$session_restart = '';
 	if (!session_id()) {
-		session_start($config['cookie_options']);
+		$session_result = session_start($config['cookie_options']);
+	} else {
+		$session_restart = 're';
+		$session_result  = session_start();
+	}
+
+	if (!$session_result) {
+		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
 	}
 }
 
