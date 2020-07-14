@@ -229,9 +229,9 @@ class spikekill {
 
 		if ($this->percent == '') {
 			if (!isset($upercent)) {
-				$this->percent = $dpercent/100;
+				$this->percent = $dpercent;
 			} else {
-				$this->percent = $upercent/100;
+				$this->percent = $upercent;
 			}
 		}
 
