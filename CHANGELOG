@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.14
+-issue#3695: Spikekill `percent` is converted from percent to decimal twice, making it 1/100 of the true size
+
 1.2.13
 -security#3544: jQuery XSS vulnerabilities require vendor package update (CVE-2020-11022 / CVE-2020-11023)
 -security#3549: Lack of escaping on some pages can lead to XSS exposure
