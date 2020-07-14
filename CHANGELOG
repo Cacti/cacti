@@ -51,6 +51,7 @@ Cacti CHANGELOG
 -issue#3668: "Input Field" is not marked red after error message
 -issue#3669: Input Method was renamed after add an Input Field
 -issue#3673: Spikekill does not receive correct `avgnan` value when launching from GUI
+-issue#3676: Device not showing up in device page but showing up in Monitor tab
 -issue#3681: Move arrows don't align on all themes
 -issue#3682: Mouse over Zoom is no longer available in 'Time Graph View' mode
 -feature#3647: add_datasource.php should print the created ID
