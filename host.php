@@ -1279,7 +1279,7 @@ function host_validate_vars() {
 			),
 		'location' => array(
 			'filter' => FILTER_CALLBACK,
-			'default' => '',
+			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
@@ -1333,7 +1333,7 @@ function get_device_records(&$total_rows, $rows) {
 
 	if (get_request_var('location') == __('Undefined') || get_request_var('location') == '') {
 		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' IFNULL(host.location,"") = ""';
-	} elseif (get_request_var('location') != '') {
+	} elseif (get_request_var('location') != '-1') {
 		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
 	}
 
