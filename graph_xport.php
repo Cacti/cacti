@@ -77,6 +77,9 @@ if (!isempty_request_var('show_source')) {
 	$graph_data_array['print_source'] = get_request_var('show_source');
 }
 
+/* close the session, be faster */
+cacti_session_close();
+
 $graph_info = db_fetch_row_prepared('SELECT *
 	FROM graph_templates_graph
 	WHERE local_graph_id = ?',
