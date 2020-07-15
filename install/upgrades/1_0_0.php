@@ -29,7 +29,7 @@ function upgrade_to_1_0_0() {
 	$default_engine = $default_engine_result['data'];
 
 	if (!cacti_sizeof($default_engine)) {
-		$default_engine_result = db_intall_fetch_row("SHOW GLOBAL VARIABLES LIKE 'storage_engine'");
+		$default_engine_result = db_install_fetch_row("SHOW GLOBAL VARIABLES LIKE 'storage_engine'");
 		$default_engine = $default_engine_result['data'];
 	}
 
@@ -1564,7 +1564,7 @@ function upgrade_to_1_0_0() {
 
 	if (db_table_exists('plugin_spikekill_templates', false)) {
 		$templates_results = db_install_fetch_assoc('SELECT graph_template_id FROM plugin_spikekill_templates',array(), false);
-		$templates = implode(',', array_rekey($templates_results), 'graph_template_id', 'graph_template_id');
+		$templates = implode(',', array_rekey($templates_results, 'graph_template_id', 'graph_template_id'));
 		db_install_execute("REPLACE INTO settings (name, value) VALUES ('spikekill_templates','$templates')");
 	}
 

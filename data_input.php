@@ -172,7 +172,7 @@ function form_save() {
 		$save['id']            = get_request_var('id');
 		$save['hash']          = get_hash_data_input(get_nfilter_request_var('id'), 'data_input_field');
 		$save['data_input_id'] = get_request_var('data_input_id');
-		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['name']          = form_input_validate(get_nfilter_request_var('fname'), 'fname', '', false, 3);
 		$save['data_name']     = form_input_validate(get_nfilter_request_var('data_name'), 'data_name', '', false, 3);
 		$save['input_output']  = get_nfilter_request_var('input_output');
 		$save['update_rra']    = form_input_validate((isset_request_var('update_rra') ? get_nfilter_request_var('update_rra') : ''), 'update_rra', '', true, 3);
@@ -348,8 +348,8 @@ function field_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Data Input Field.');?></p>
-			<p><?php print __('Field Name: %s', $field['data_name']);?><br>
-			<p><?php print __('Friendly Name: %s', $field['name']);?><br>
+			<p><?php print __esc('Field Name: %s', $field['data_name']);?><br>
+			<p><?php print __esc('Friendly Name: %s', $field['name']);?><br>
 		</td>
 	</tr>
 	<tr>
@@ -368,19 +368,29 @@ function field_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#continue').unbind('click').click(function(data) {
-			$.post('data_input.php?action=field_remove', {
+			var options = {
+				url: 'data_input.php?action=field_remove',
+				funcEnd: 'removeDataInputFieldFinalize'
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				data_input_id: <?php print get_request_var('data_input_id');?>,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				loadUrl({url:'data_input.php?action=edit&id=<?php print get_request_var('data_input_id');?>'})
-			});
+			}
+
+			postUrl(options, data);
 		});
 
 		$('#cancel').unbind().click(function() {
 			$('#cdialog').dialog('close');
 		});
 	});
+
+	function removeDataInputFieldFinalize(data) {
+		loadUrl({url:'data_input.php?action=edit&id=<?php print get_request_var('data_input_id');?>'})
+	}
+
 	</script>
 	<?php
 }
@@ -479,7 +489,7 @@ function field_edit() {
 	}
 
 	if (isset($field)) {
-		$dfield .= ' ' . $field['data_name'];
+		$dfield .= ' ' . html_escape($field['data_name']);
 	}
 	form_start('data_input.php', 'data_input');
 
@@ -538,6 +548,23 @@ function data_remove($id) {
 	update_replication_crc(0, 'poller_replicate_data_input_crc');
 }
 
+function data_input_more_inputs($id, $input_string) {
+	$input_string = str_replace('<path_cacti>', '', $input_string);
+	$inputs = substr_count($input_string, '<');
+
+	$existing = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM data_input_fields
+		WHERE data_input_id = ?
+		AND input_output = "in"',
+		array($id));
+
+	if ($inputs > $existing) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function data_edit() {
 	global $config, $fields_data_input_edit;
 
@@ -557,11 +584,11 @@ function data_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __esc('Data Input Methods [edit: %s]', $data_input['name']);
+		$header_label = __esc('Data Input Method [edit: %s]', $data_input['name']);
 	} else {
 		$data_input = array();
 
-		$header_label = __('Data Input Methods [new]');
+		$header_label = __('Data Input Method [new]');
 	}
 
 	if (!isset($config['input_whitelist'])) {
@@ -611,7 +638,13 @@ function data_edit() {
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
-		html_start_box(__('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . get_request_var('id'));
+		if (data_input_more_inputs(get_request_var('id'), $data_input['input_string'])) {
+			$url = 'data_input.php?action=field_edit&type=in&data_input_id=' . get_request_var('id');
+		} else {
+			$url = '';
+		}
+
+		html_start_box(__('Input Fields'), '100%', '', '3', 'center', $url);
 
 		print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem(__('Name'), '', 1);

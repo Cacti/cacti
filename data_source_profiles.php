@@ -394,7 +394,7 @@ function profile_item_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Data Source Profile RRA.');?></p>
-			<p><?php print __('Profile Name: %s', html_escape($profile['name']));?><br>
+			<p><?php print __esc('Profile Name: %s', $profile['name']);?><br>
 		</td>
 	</tr>
 	<tr>
@@ -413,15 +413,25 @@ function profile_item_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#continue').click(function(data) {
-			$.post('data_source_profiles.php?action=item_remove', {
+			var options = {
+				url: 'data_source_profiles.php?action=item_remove',
+				funcEnd: 'removeDataSourceProfilesItemFinalize'
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				$('#cdialog').dialog('close');
-				loadUrl({url:'data_source_profiles.php?action=edit&id=<?php print $profile['data_source_profile_id'];?>'})
-			});
+			}
+
+			postUrl(options, data);
 		});
 	});
+
+	function removeDataSourceProfilesItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		loadUrl({url:'data_source_profiles.php?action=edit&id=<?php print $profile['data_source_profile_id'];?>'})
+	}
+
 	</script>
 	<?php
 }
@@ -499,7 +509,7 @@ function item_edit() {
 		WHERE id = ?',
 		array(get_request_var('id')));
 
-	html_start_box( __('RRA [edit: %s %s]', html_escape($name), ($readonly ? __('(Some Elements Read Only)'):'')), '100%', true, '3', 'center', '');
+	html_start_box(__esc('RRA [edit: %s %s]', $name, ($readonly ? __('(Some Elements Read Only)'):'')), '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),

@@ -94,6 +94,82 @@ if (!register_process_start('maintenance', 'master', $config['poller_id'], read_
 }
 
 if ($config['poller_id'] == 1) {
+	rrdfile_purge();
+
+	authcache_purge();
+
+	secpass_check_expired();
+}
+
+// Check the realtime cache and poller
+realtime_purge_cache();
+
+// Remove deleted devices
+api_device_purge_deleted_devices();
+
+// Rotate Cacti Logs
+logrotate_check($force);
+
+unregister_process('maintenance', 'master', $config['poller_id']);
+
+exit(0);
+
+function logrotate_check($force) {
+	global $disable_log_rotation;
+
+	// Check whether the cacti log.  Rotations takes place around midnight
+	if (isset($disable_log_rotation) && $disable_log_rotation == true) {
+		// Skip log rotation as it's handled by logrotate.d
+	} elseif (read_config_option('logrotate_enabled') == 'on') {
+		$frequency  = read_config_option('logrotate_frequency');
+		if (empty($frequency)) {
+			$frequency = 1;
+		}
+
+		$last = read_config_option('logrotate_lastrun');
+		$now  = time();
+
+		if (empty($last)) {
+			$last = time();
+			set_config_option('logrotate_lastrun', $last);
+		}
+
+		$date_now = new DateTime();
+		$date_now->setTimestamp($now);
+
+		// Take the last date/time, set the time to 59 seconds past midnight
+		// then remove one minute to make it the previous evening
+		$date_orig = new DateTime();
+		$date_orig->setTimestamp($last);
+		$date_last = new DateTime();
+		$date_last->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
+
+		// Make sure we clone the last date, or we end up modifying the same object!
+		$date_next = clone $date_last;
+		$date_next->modify('+'.$frequency.'day');
+
+		cacti_log('Cacti Log Rotation - TIMECHECK Ran: ' . $date_orig->format('Y-m-d H:i:s')
+			. ', Now: ' . $date_now->format('Y-m-d H:i:s')
+			. ', Next: ' . $date_next->format('Y-m-d H:i:s'), true, 'MAINT', POLLER_VERBOSITY_HIGH);
+
+		if ($date_next < $date_now || $force) {
+			logrotate_rotatenow();
+		}
+	}
+}
+
+function authcache_purge() {
+	/* removing security tokens older than 90 days */
+	if (read_config_option('auth_cache_enabled') == 'on') {
+		db_execute_prepared('DELETE FROM user_auth_cache
+			WHERE last_update < ?',
+			array(date('Y-m-d H:i:s', time()-(86400*90))));
+	} else {
+		db_execute('TRUNCATE TABLE user_auth_cache');
+	}
+}
+
+function rrdfile_purge() {
 	/* are my tables already present? */
 	$purge = db_fetch_cell('SELECT count(*)
 		FROM data_source_purge_action');
@@ -130,69 +206,7 @@ if ($config['poller_id'] == 1) {
 		$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
 		cacti_log($string, true, 'SYSTEM');
 	}
-
-	/* removing security tokens older than 90 days */
-	if (read_config_option('auth_cache_enabled') == 'on') {
-		db_execute_prepared('DELETE FROM user_auth_cache
-			WHERE last_update < ?',
-			array(date('Y-m-d H:i:s', time()-(86400*90))));
-	} else {
-		db_execute('TRUNCATE TABLE user_auth_cache');
-	}
-
-	// Check expired accounts
-	secpass_check_expired();
 }
-
-// Check the realtime cache and poller
-realtime_purge_cache();
-
-// Remove deleted devices
-api_device_purge_deleted_devices();
-
-// Check whether the cacti log.  Rotations takes place around midnight
-if (isset($disable_log_rotation) && $disable_log_rotation == true) {
-	// Skip log rotation as it's handled by logrotate.d
-} elseif (read_config_option('logrotate_enabled') == 'on') {
-	$frequency  = read_config_option('logrotate_frequency');
-	if (empty($frequency)) {
-		$frequency = 1;
-	}
-
-	$last = read_config_option('logrotate_lastrun');
-	$now  = time();
-
-	if (empty($last)) {
-		$last = time();
-		set_config_option('logrotate_lastrun', $last);
-	}
-
-	$date_now = new DateTime();
-	$date_now->setTimestamp($now);
-
-	// Take the last date/time, set the time to 59 seconds past midnight
-	// then remove one minute to make it the previous evening
-	$date_orig = new DateTime();
-	$date_orig->setTimestamp($last);
-	$date_last = new DateTime();
-	$date_last->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
-
-	// Make sure we clone the last date, or we end up modifying the same object!
-	$date_next = clone $date_last;
-	$date_next->modify('+'.$frequency.'day');
-
-	cacti_log('Cacti Log Rotation - TIMECHECK Ran: ' . $date_orig->format('Y-m-d H:i:s')
-		. ', Now: ' . $date_now->format('Y-m-d H:i:s')
-		. ', Next: ' . $date_next->format('Y-m-d H:i:s'), true, 'MAINT', POLLER_VERBOSITY_HIGH);
-
-	if ($date_next < $date_now || $force) {
-		logrotate_rotatenow();
-	}
-}
-
-unregister_process('maintenance', 'master', $config['poller_id']);
-
-exit(0);
 
 /** realtime_purge_cache() - This function will purge files in the realtime directory
  *  that are older than 2 hours without changes */

@@ -1159,7 +1159,7 @@ class Installer implements JsonSerializable {
 					log_install_high('templates',"setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_template_$key = " . $value);
 
 					// Don't default install templates if upgrade
-					if ($this->getMode() == Installer::MODE_UPGRADE) {
+					if ($this->getMode() == Installer::MODE_UPGRADE || $this->getMode() == Installer::MODE_DOWNGRADE) {
 						$value = '';
 						$use   = false;
 					}
@@ -2865,7 +2865,8 @@ class Installer implements JsonSerializable {
 	 *****************************************************************/
 
 	private function install() {
-		global $config;
+		global $config, $cacti_upgrade_version;
+
 		$failure = '';
 
 		switch ($this->mode) {
@@ -2915,9 +2916,9 @@ class Installer implements JsonSerializable {
 
 			log_install_debug('', 'Set database version to ' . $version);
 
-			set_config_option('install_version', $veraion);
+			set_config_option('install_version', $version);
 			db_execute('TRUNCATE TABLE version');
-			db_execute_prepared('INSERT INTO version (cacti) VALUES (?)', array($verions));
+			db_execute_prepared('INSERT INTO version (cacti) VALUES (?)', array($version));
 
 			$this->setProgress(Installer::PROGRESS_VERSION_END);
 
@@ -3401,7 +3402,7 @@ class Installer implements JsonSerializable {
 			$installer->setDefaults();
 			$installer->install();
 		} catch (Exception $e) {
-			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getErrorCode(), $e->getErrorText()));
+			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getCode(), $e->getMessage()));
 		}
 
 		$backgroundDone = microtime(true);

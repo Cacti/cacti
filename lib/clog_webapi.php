@@ -55,16 +55,16 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	global $config;
 
 	$logfile = read_config_option('path_cactilog');
-	$logbase = basename($logfile);
-
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	$errfile = read_config_option('path_stderrlog');
-	$errbase = basename($errfile);
+	$errfile  = read_config_option('path_stderrlog');
+	$errbase  = basename($errfile);
 
-	$file = basename($file);
+	$file     = basename($file);
+	$logbase  = basename($logfile);
+
 	$filepath = '';
 	$filename = '';
 	$filefull = '';
@@ -250,8 +250,16 @@ function clog_view_logfile() {
 	/* read logfile into an array and display */
 	$total_rows      = 0;
 	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
+	$should_expand   = read_config_option('log_expand') != LOG_EXPAND_NONE;
 
-	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
+	if ($should_expand) {
+		$regex_array = clog_get_regex_array();
+		$regex_map   = array('data' => $regex_array['complete'], 'func' => 'clog_regex_parser');
+	} else {
+		$regex_map   = false;
+	}
+
+	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows, $regex_map);
 
 	if (get_request_var('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
@@ -300,11 +308,11 @@ function clog_view_logfile() {
 		$hostDescriptions[$host['id']] = html_escape($host['description']);
 	}
 
-	$regex_array = clog_get_regex_array();
 	foreach ($logcontents as $item) {
 		$new_item = html_escape($item);
-
-		$new_item = preg_replace_callback($regex_array['complete'],'clog_regex_parser',$new_item);
+		if ($should_expand) {
+			$new_item = preg_replace_callback($regex_map['data'],'clog_regex_parser_html',$new_item);
+		}
 
 		/* respect the exclusion filter */
 		if ($exclude_regex != '' && !$clogAdmin) {
@@ -677,7 +685,11 @@ function clog_get_regex_array() {
 	return $regex_array;
 }
 
-function clog_regex_parser($matches) {
+function clog_regex_parser_html($matches) {
+	return clog_regex_parser($matches, true);
+}
+
+function clog_regex_parser($matches, $link = false) {
 	$result = $matches[0];
 	$match = $matches[0];
 
@@ -703,7 +715,7 @@ function clog_regex_parser($matches) {
 				}
 
 				if (function_exists($regex_setting['func'])) {
-					$result=call_user_func_array($regex_setting['func'],array($rekey_array));
+					$result=call_user_func_array($regex_setting['func'],array($rekey_array, $link));
 				} else {
 					$result=$match;
 				}
@@ -714,148 +726,266 @@ function clog_regex_parser($matches) {
 	return $result;
 }
 
-function clog_regex_device($matches) {
+function clog_regex_device($matches, $link = false) {
 	global $config;
+	static $cache;
+
+	if (!isset($cache)) {
+		$cache = array();
+	}
 
 	$result = $matches[0];
 
 	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($dev_ids)) {
-		$result = '';
-		$hosts = db_fetch_assoc('SELECT id, description
-			FROM host
-			WHERE id in (' . implode(',',$dev_ids) . ')');
+		$result     = '';
+		$wanted_ids = array();
+		$dev_ids    = array_filter(array_unique($dev_ids));
 
-		$hostDescriptions = array();
-		if (cacti_sizeof($hosts)) {
-			foreach ($hosts as $host) {
-				$hostDescriptions[$host['id']] = html_escape($host['description']);
+		foreach($dev_ids as $dev_id) {
+			if (!array_key_exists($dev_id, $cache)) {
+				$wanted_ids []= $dev_id;
+			}
+		}
+
+		if (cacti_sizeof($wanted_ids)) {
+			$hosts = db_fetch_assoc('SELECT id, description
+				FROM host
+				WHERE id in (' . implode(',',$wanted_ids) . ')');
+
+			if (cacti_sizeof($hosts)) {
+				foreach ($hosts as $host) {
+					$cache[$host['id']] = html_escape($host['description']);
+				}
 			}
 		}
 
 		foreach ($dev_ids as $host_id) {
-			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . '\'>' . (isset($hostDescriptions[$host_id]) ? $hostDescriptions[$host_id]:$host_id) . '</a>' . $matches[3];
+			$result .= $matches[1];
+			if ($link) {
+				$result .= '<a href=\'' . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . '\'>';
+			}
+			$result .= isset($cache[$host_id]) ? $cache[$host_id]:$host_id;
+			if ($link) {
+				$result .= '</a>';
+			}
+			$result .= $matches[3];
 		}
 	}
 
 	return $result;
 }
 
-function clog_regex_datasource($matches) {
+function clog_regex_datasource($matches, $link = false) {
 	global $config;
+	static $cache;
+
+	if (!isset($cache)) {
+		$cache = array();
+	}
 
 	$result = $matches[0];
 
 	$ds_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($ds_ids)) {
-		$result = '';
-
-		$graph_rows = array_rekey(db_fetch_assoc('SELECT DISTINCT
-			gtg.local_graph_id AS id
-			FROM graph_templates_graph AS gtg
-			INNER JOIN graph_templates_item AS gti
-			ON gtg.local_graph_id=gti.local_graph_id
-			INNER JOIN data_template_rrd AS dtr
-			ON gti.task_item_id=dtr.id
-			WHERE gtg.local_graph_id>0
-			AND dtr.local_data_id IN (' . $matches[2] . ')'),'id','id');
-
-		$graph_results = '';
-		if (cacti_sizeof($graph_rows)) {
-			$graph_ids = implode(',',$graph_rows);
-			$graph_array = array( 0 => '', 1 => ' Graphs[', 2 => $graph_ids, 3 => ']');
-
-			$graph_results = clog_regex_graphs($graph_array);
-		}
-
-		$result .= $matches[1];
-		$i       = 0;
-
-		$ds_ids = array_unique($ds_ids);
-		$ds_titles = clog_get_datasource_titles($ds_ids);
-		if (!isset($ds_titles)) {
-			$ds_titles = array();
-		}
+		$result     = '';
+		$wanted_ids = array();
+		$ds_ids     = array_filter(array_unique($ds_ids));
 
 		foreach($ds_ids as $ds_id) {
-			$ds_title = $ds_id;
-			if (array_key_exists($ds_id, $ds_titles)) {
-				$ds_title = $ds_titles[$ds_id];
+			if (!array_key_exists($ds_id, $cache)) {
+				$wanted_ids []= $ds_id;
 			}
-			$result .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . html_escape($ds_title) . '</a>';
-
-			$i++;
 		}
 
-		$result .= $matches[3] . $graph_results;
+		if (cacti_sizeof($wanted_ids)) {
+			$graph_rows = array_rekey(db_fetch_assoc('SELECT DISTINCT
+				dtr.local_data_id AS id,
+				group_concat(distinct gtg.local_graph_id) AS graph_ids
+				FROM graph_templates_graph AS gtg
+				INNER JOIN graph_templates_item AS gti
+				ON gtg.local_graph_id=gti.local_graph_id
+				INNER JOIN data_template_rrd AS dtr
+				ON gti.task_item_id=dtr.id
+				WHERE gtg.local_graph_id>0
+				AND dtr.local_data_id IN (' . implode(',',$wanted_ids) . ')
+				GROUP BY dtr.local_data_id'),'id','graph_ids');
+
+			$ds_ids    = array_filter(array_unique($ds_ids));
+			$ds_titles = clog_get_datasource_titles($ds_ids);
+			if (!isset($ds_titles)) {
+				$ds_titles = array();
+			}
+
+			if (!cacti_sizeof($graph_rows)) {
+				$graph_rows = array();
+			}
+
+			foreach($wanted_ids as $ds_id) {
+				$ds_title = $ds_id;
+				if (array_key_exists($ds_id, $ds_titles)) {
+					$ds_title = $ds_titles[$ds_id];
+				}
+
+				if (!array_key_exists($ds_id, $cache)) {
+					$cache[$ds_id] = array('graphs' => '');
+				}
+
+				$cache[$ds_id]['name'] = $ds_title;
+				if (array_key_exists($ds_id, $graph_rows)) {
+					$cache[$ds_id]['graphs'] = $graph_rows[$ds_id];
+				}
+			}
+		}
+
+		$i       = 0;
+
+
+		$graph_ids = '';
+
+		$result .= $matches[1];
+		$first   = true;
+
+		foreach ($ds_ids as $ds_id) {
+			$result .= ($first ? '':', ');
+			if ($link) {
+				$result .= "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>";
+			}
+			$result .= isset($cache[$ds_id]['name']) ? $cache[$ds_id]['name'] : $ds_id;
+			if ($link) {
+				$result .= '</a>';
+			}
+
+			if (!empty($cache[$ds_id]['graphs'])) {
+				$graph_ids = (empty($graph_ids) ? '' : ',') . $cache[$ds_id]['graphs'];
+			}
+			$first = false;
+		}
+
+		$result .= $matches[3];
+		if (!empty($graph_ids)) {
+			$graph_array = array( 0 => '', 1 => ' Graphs[', 2 => $graph_ids, 3 => ']');
+			$result .= clog_regex_graphs($graph_array, $link);
+		}
 	}
 
 	return $result;
 }
 
-function clog_regex_poller($matches) {
+function clog_regex_poller($matches, $link = false) {
 	global $config;
+	static $cache;
+
+	if (!isset($cache)) {
+		$cache = array();
+	}
 
 	$result = $matches[0];
 
 	$poller_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($poller_ids)) {
-		$result = '';
-		$pollers = db_fetch_assoc_prepared('SELECT id, name
-			FROM poller
-			WHERE id in (' . implode(',',$poller_ids) . ')');
+		$result     = '';
+		$wanted_ids = array();
+		$poller_ids = array_filter(array_unique($poller_ids));
 
-		$pollerDescriptions = array();
-		if (cacti_sizeof($pollers)) {
-			foreach ($pollers as $poller) {
-				$pollerDescriptions[$poller['id']] = html_escape($poller['name']);
+		foreach($poller_ids as $poller_id) {
+			if (!array_key_exists($poller_id, $cache)) {
+				$wanted_ids []= $poller_id;
+			}
+		}
+
+		if (cacti_sizeof($wanted_ids)) {
+			$pollers = db_fetch_assoc_prepared('SELECT id, name
+				FROM poller
+				WHERE id in (' . implode(',',$wanted_ids) . ')');
+
+			if (cacti_sizeof($pollers)) {
+				foreach ($pollers as $poller) {
+					$cache[$poller['id']] = html_escape($poller['name']);
+				}
 			}
 		}
 
 		foreach ($poller_ids as $poller_id) {
-			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'pollers.php?action=edit&id=' . $poller_id) . '\'>' . (isset($pollerDescriptions[$poller_id]) ? $pollerDescriptions[$poller_id]:$poller_id) . '</a>' . $matches[3];
+			$result .= $matches[1];
+			if ($link) {
+				$result .= '<a href=\'' . html_escape($config['url_path'] . 'pollers.php?action=edit&id=' . $poller_id) . '\'>';
+			}
+			$result .= isset($cache[$poller_id]) ? $cache[$poller_id]:$poller_id;
+			if ($link) {
+				$result .= '</a>';
+			}
+			$result .= $matches[3];
 		}
 	}
 
 	return $result;
 }
 
-function clog_regex_dataquery($matches) {
+function clog_regex_dataquery($matches, $link = false) {
 	global $config;
+	static $cache;
+
+	if (!isset($cache)) {
+		$cache = array();
+	}
 
 	$result = $matches[0];
 
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($query_ids)) {
-		$result = '';
-		$querys = db_fetch_assoc('SELECT id, name
-			FROM snmp_query
-			WHERE id in (' . implode(',',$query_ids) . ')');
+		$result     = '';
+		$wanted_ids = array();
+		$query_ids  = array_filter(array_unique($query_ids));
 
-		$queryDescriptions = array();
-		if (cacti_sizeof($querys)) {
-			foreach ($querys as $query) {
-				$queryDescriptions[$query['id']] = html_escape($query['name']);
+		foreach($query_ids as $query_id) {
+			if (!array_key_exists($query_id, $cache)) {
+				$wanted_ids []= $query_id;
+			}
+		}
+
+		if (cacti_sizeof($wanted_ids)) {
+			$querys = db_fetch_assoc('SELECT id, name
+				FROM snmp_query
+				WHERE id in (' . implode(',',$wanted_ids) . ')');
+
+			if (cacti_sizeof($querys)) {
+				foreach ($querys as $query) {
+					$cache[$query['id']] = html_escape($query['name']);
+				}
 			}
 		}
 
 		foreach ($query_ids as $query_id) {
-			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'data_queries.php?action=edit&id=' . $query_id) . '\'>' . (isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id) . '</a>' . $matches[3];
+			$result .= $matches[1];
+			if ($link) {
+				$result .= '<a href=\'' . html_escape($config['url_path'] . 'data_queries.php?action=edit&id=' . $query_id) . '\'>';
+			}
+			$result .= isset($cache[$query_id]) ? $cache[$query_id]:$query_id;
+			if ($link) {
+				$result .= '</a>';
+			}
+			$result .= $matches[3];
 		}
 	}
 
 	return $result;
 }
 
-function clog_regex_rra($matches) {
+function clog_regex_rra($matches, $link = false) {
 	global $config;
+	static $cache;
+
+	if (!isset($cache)) {
+		$cache = array();
+	}
 
 	$result = $matches[0];
 
 	$local_data_ids = $matches[2];
 	if (strlen($local_data_ids)) {
 		$datasource_array = array( 0 => '', 1 => ' DS[', 2 => $local_data_ids, 3 => ']');
-		$datasource_result = clog_regex_datasource($datasource_array);
+		$datasource_result = clog_regex_datasource($datasource_array, $link);
 		if (strlen($datasource_result)) {
 			$result .= ' '. $datasource_result;
 		}
@@ -864,102 +994,165 @@ function clog_regex_rra($matches) {
 	return $result;
 }
 
-function clog_regex_graphs($matches) {
+function clog_regex_graphs($matches, $link = false) {
 	global $config;
+	static $cache;
+
+	if (!isset($cache)) {
+		$cache = array();
+	}
 
 	$result = $matches[0];
 
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($query_ids)) {
-		$result = '';
-		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
+		$result     = $matches[1];
+		$title      = '';
+		$query_ids  = array_filter(array_unique($query_ids));
+		$wanted_ids = array();
+		$graph_add  = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
-		$title = '';
-		$i     = 0;
-
-		$querys = db_fetch_assoc('SELECT DISTINCT
-			gtg.local_graph_id AS id,
-			gtg.title_cache AS title
-			FROM graph_templates_graph AS gtg
-			INNER JOIN graph_templates_item AS gti
-			ON gtg.local_graph_id=gti.local_graph_id
-			INNER JOIN data_template_rrd AS dtr
-			ON gti.task_item_id=dtr.id
-			WHERE gtg.local_graph_id in (' . implode(',',$query_ids) . ')');
-
-		$result .= $matches[1] . "<a href='";
-
-		$queryDescriptions = array();
-		if (cacti_sizeof($querys)) {
-			foreach ($querys as $query) {
-				$queryDescriptions[$query['id']] = html_escape($query['title']);
+		foreach ($query_ids as $query_id) {
+			if (!array_key_exists($query_id, $cache)) {
+				$wanted_ids [] = $query_id;
 			}
 		}
 
-		$i=0;
-		foreach ($query_ids as $query_id) {
-			$graph_add .= ($i > 0 ? '%2C' : '') . $query_id;
-			$title     .= ($title != '' ? ', ':'') . html_escape((isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id));
-			$i++;
+		if (cacti_sizeof($wanted_ids)) {
+
+			$sql =	'SELECT DISTINCT
+				gtg.local_graph_id AS id,
+				gtg.title_cache AS title
+				FROM graph_templates_graph AS gtg
+				INNER JOIN graph_templates_item AS gti
+				ON gtg.local_graph_id=gti.local_graph_id
+				INNER JOIN data_template_rrd AS dtr
+				ON gti.task_item_id=dtr.id
+				WHERE gtg.local_graph_id in (' . implode(',',$wanted_ids) . ')';
+
+			cacti_log('SQL: ' . $sql);
+			$querys = db_fetch_assoc($sql);
+
+			if (cacti_sizeof($querys)) {
+				foreach ($querys as $query) {
+					$cache[$query['id']] = html_escape($query['title']);
+				}
+			}
 		}
 
-		$result .= html_escape($graph_add) . '\'>' . $title . '</a>' . $matches[3];
+		$titles = array();
+		foreach ($query_ids as $query_id) {
+			$titles [] = isset($cache[$query_id]) ? $cache[$query_id]:$query_id;
+		}
+
+		if ($link) {
+			$result .= "<a href='" . $graph_add . implode('%2C', $query_ids) ."'>";
+		}
+		$result .= implode(', ',$titles);
+		if ($link) {
+			$result .= '</a>';
+		}
+
+		$result .= $matches[3];
 	}
 	return $result;
 }
 
-function clog_regex_graphtemplates($matches) {
+function clog_regex_graphtemplates($matches, $link = false) {
 	global $config;
+	static $cache;
 
-	$result = $matches[0];
-
-	$query_ids = explode(',',str_replace(" ","",$matches[2]));
-	if (cacti_sizeof($query_ids)) {
-		$result = '';
-		$querys = db_fetch_assoc('SELECT id, name
-			FROM graph_templates
-			WHERE id in ('  . implode(',',$query_ids) . ')');
-
-		$queryDescriptions = array();
-		if (cacti_sizeof($querys)) {
-			foreach ($querys as $query) {
-				$queryDescriptions[$query['id']] = html_escape($query['name']);
-			}
-		}
-
-		foreach ($query_ids as $query_id) {
-			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $query_id) . '\'>' . (isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id) . '</a>' . $matches[3];
-		}
+	if (!isset($cache)) {
+		$cache = array();
 	}
 
-	return $result;
-}
-
-function clog_regex_users($matches) {
-	global $config;
-
 	$result = $matches[0];
 
-	$query_ids = explode(',',str_replace(" ","",$matches[2]));
-	if (cacti_sizeof($query_ids)) {
-		$result = '';
+	$graphtemplate_ids = explode(',',str_replace(" ","",$matches[2]));
+	if (cacti_sizeof($graphtemplate_ids)) {
+		$result             = '';
+		$wanted_ids         = array();
+		$graphtemplate_ids  = array_filter(array_unique($graphtemplate_ids));
 
-		$querys = db_fetch_assoc('SELECT DISTINCT
-			id, username
-			FROM user_auth
-			WHERE id in (' . implode(',',$query_ids) . ')');
-
-		$queryDescriptions = array();
-		if (cacti_sizeof($querys)) {
-			foreach ($querys as $query) {
-				$queryDescriptions[$query['id']] = html_escape($query['username']);
+		foreach ($graphtemplate_ids as $graphtemplate_id) {
+			if (!array_key_exists($graphtemplate_id, $cache)) {
+				$wanted_ids []= $graphtemplate_id;
 			}
 		}
 
-		foreach ($query_ids as $query_id) {
+		if (cacti_sizeof($wanted_ids)) {
+			$querys = db_fetch_assoc('SELECT id, name
+				FROM graph_templates
+				WHERE id in ('  . implode(',',$wanted_ids) . ')');
+
+			if (cacti_sizeof($querys)) {
+				foreach ($querys as $query) {
+					$cache[$query['id']] = html_escape($query['name']);
+				}
+			}
+		}
+
+		foreach ($graphtemplate_ids as $graphtemplate_id) {
 			$result .= $matches[1];
-			if (isset($queryDescriptions[$query_id])) {
-				$result .= '<a href=\'' . html_escape($config['url_path'] . 'user_admin.php?action=user_edit&tab=general&id=' . $query_id) . '\'>' . $queryDescriptions[$query_id] . '</a>';
+			if ($link) {
+				$result .= '<a href=\'' . html_escape($config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $graphtemplate_id) . '\'>';
+			}
+			$result .= isset($cache[$graphtemplate_id]) ? $cache[$graphtemplate_id]:$graphtemplate_id;
+			if ($link) {
+				$result .= '</a>';
+			}
+			$result .= $matches[3];
+		}
+	}
+
+	return $result;
+}
+
+function clog_regex_users($matches, $link = false) {
+	global $config;
+	static $cache;
+
+	if (!isset($cache)) {
+		$cache = array();
+	}
+
+	$result = $matches[0];
+
+	$user_ids = explode(',',str_replace(" ","",$matches[2]));
+	if (cacti_sizeof($query_ids)) {
+		$result     = '';
+		$wanted_ids = array();
+		$user_ids   = array_filter(array_unique($user_ids));
+
+		foreach ($user_ids as $user_id) {
+			if (!array_key_exists($user_id, $cache)) {
+				$wanted_id []= $user_id;
+			}
+		}
+
+		if (cacti_sizeof($wanted_ids)) {
+			$querys = db_fetch_assoc('SELECT DISTINCT
+				id, username
+				FROM user_auth
+				WHERE id in (' . implode(',',$wanted_ids) . ')');
+
+			if (cacti_sizeof($querys)) {
+				foreach ($querys as $query) {
+					$cache[$query['id']] = html_escape($query['username']);
+				}
+			}
+		}
+
+		foreach ($user_ids as $user_id) {
+			$result .= $matches[1];
+			if (isset($cache[$query_id])) {
+				if ($link) {
+					$result .= '<a href=\'' . html_escape($config['url_path'] . 'user_admin.php?action=user_edit&tab=general&id=' . $query_id) . '\'>';
+				}
+				$result .= $cache[$query_id];
+				if ($link) {
+					$result .= '</a>';
+				}
 			} else {
 				$result .= $query_id;
 			}
@@ -969,27 +1162,50 @@ function clog_regex_users($matches) {
 	return $result;
 }
 
-function clog_regex_rule($matches) {
+function clog_regex_rule($matches, $link = false) {
 	global $config;
+	static $cache;
+
+	if (!isset($cache)) {
+		$cache = array();
+	}
 
 	$result = $matches[0];
 
-	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
-	if (cacti_sizeof($dev_ids)) {
-		$result = '';
-		$rules = db_fetch_assoc('SELECT id, name
-			FROM automation_graph_rules
-			WHERE id in (' . implode(',',$dev_ids) . ')');
+	$rule_ids = explode(',',str_replace(" ","",$matches[2]));
+	if (cacti_sizeof($rule_ids)) {
+		$result     = '';
+		$wanted_ids = array();
+		$rule_ids   = array_filter(array_unique($rule_ids));
 
-		$ruleNames = array();
-		if (cacti_sizeof($rules)) {
-			foreach ($rules as $rule) {
-				$ruleNames[$rule['id']] = html_escape($rule['name']);
+		foreach ($rule_ids as $rule_id) {
+			if (!array_key_exists($rule_id, $cache)) {
+				$wanted_ids []= $rule_id;
 			}
 		}
 
-		foreach ($dev_ids as $rule_id) {
-			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'automation_graph_rules.php?action=edit&id=' . $rule_id) . '\'>' . (isset($ruleNames[$rule_id]) ? $ruleNames[$rule_id]:$rule_id) . '</a>' . $matches[3];
+		if (cacti_sizeof($wanted_ids)) {
+			$rules = db_fetch_assoc('SELECT id, name
+				FROM automation_graph_rules
+				WHERE id in (' . implode(',',$wanted_ids) . ')');
+
+			if (cacti_sizeof($rules)) {
+				foreach ($rules as $rule) {
+					$cache[$rule['id']] = html_escape($rule['name']);
+				}
+			}
+		}
+
+		foreach ($rule_ids as $rule_id) {
+			$result .= $matches[1];
+			if ($link) {
+				$result .= '<a href=\'' . html_escape($config['url_path'] . 'automation_graph_rules.php?action=edit&id=' . $rule_id) . '\'>';
+			}
+			$result .= isset($ruleNames[$rule_id]) ? $ruleNames[$rule_id]:$rule_id;
+			if ($link) {
+				$result .= '</a>';
+			}
+			$result .= $matches[3];
 		}
 	}
 

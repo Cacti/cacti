@@ -290,7 +290,7 @@ function output_rrd_data($start_time, $force = false) {
 	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id)
 		FROM $archive_table");
 
-	if ($total_rows == 0 && !cacti_sizeof($more_arch_table)) {
+	if ($total_rows == 0 && !cacti_sizeof($more_arch_tables)) {
 		db_execute("SELECT RELEASE_LOCK('poller_boost');");
 
 		return -1;

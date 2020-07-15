@@ -969,7 +969,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	// when $total_pages is larger than $pages_per_screen + 2(first and last)
 	// So actual $pages_per_screen should be $pages_per_screen+2
 	$pages_per_screen += 2;
-	$url_page_select = "<ul class='pagination'>";
+	$nav = "<ul class='pagination'>";
 
 	if (strpos($url, '?') !== false) {
 		$url . '&';
@@ -1015,9 +1015,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	if ($total_pages > 0) {
 		if ($current_page == 1) {
-			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var(1);return false'>1</a></li>";
+			$nav .= "<li><a href='#' class='active' onClick='goto$page_var(1);return false'>1</a></li>";
 		} else {
-			$url_page_select .= "<li><a href='#' onClick='goto$page_var(1);return false'>1</a></li>";
+			$nav .= "<li><a href='#' onClick='goto$page_var(1);return false'>1</a></li>";
 		}
 	}
 
@@ -1025,36 +1025,52 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
 			if ($page_number == 0 && $start_page > 2) {
-				$url_page_select .= $url_ellipsis;
+				$nav .= $url_ellipsis;
 			}
 
 			if ($current_page == $page) {
-				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page);return false'>$page</a></li>";
+				$nav .= "<li><a href='#' class='active' onClick='goto$page_var($page);return false'>$page</a></li>";
 			} else {
-				$url_page_select .= "<li><a href='#' onClick='goto$page_var($page);return false'>$page</a></li>";
+				$nav .= "<li><a href='#' onClick='goto$page_var($page);return false'>$page</a></li>";
 			}
 		}
 	}
 
 	if ($total_pages - 1 > $end_page) {
-		$url_page_select .= $url_ellipsis;
+		$nav .= $url_ellipsis;
 	}
 
 	if ($total_pages > 1) {
 		if ($current_page == $total_pages) {
-			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
+			$nav .= "<li><a href='#' class='active' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
 		} else {
-			$url_page_select .= "<li><a href='#' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
+			$nav .= "<li><a href='#' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
 		}
 	}
 
-	$url_page_select .= '</ul>';
+	$nav .= '</ul>';
 
-	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . sanitize_uri($url) . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
-	} else {
-		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
+	if ($return_to == '') {
+		$return_do = 'main';
 	}
 
-	return $url_page_select;
+	$url = $url . $page_var;
+	$nav .= "<script type='text/javascript'>
+	function goto$page_var(pageNo) {
+		if (typeof url_graph === 'function') {
+			var url_add=url_graph('')
+		} else {
+			var url_add='';
+		};
+
+		strURL = '$url='+pageNo+url_add;
+
+		loadUrl({
+			url: strURL,
+			elementId: '$return_to',
+		});
+	}</script>";
+
+	return $nav;
 }
+

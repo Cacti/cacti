@@ -192,14 +192,14 @@ function add_tree_names_to_actions_array() {
 
 	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
-			$device_actions['tr_' . $tree['id']] = __('Place on a Tree (%s)', $tree['name']);
+			$device_actions['tr_' . $tree['id']] = __esc('Place on a Tree (%s)', $tree['name']);
 		}
 	}
 }
 
 function get_site_locations() {
 	$return  = array();
-	$term    = get_request_var('term');
+	$term    = get_nfilter_request_var('term');
 	$host_id = $_SESSION['cur_device_id'];
 
 	$site_id = db_fetch_cell_prepared('SELECT site_id
@@ -641,7 +641,7 @@ function host_edit() {
 		<table class='hostInfoHeader' style='width:100%'>
 			<tr>
 				<td class='textInfo left'>
-					<?php print html_escape($host['description']);?> (<?php print html_escape($host['hostname']);?>)
+					<?php print html_escape($host['description']);?> (<?php print html_escape($host['hostname']);?>)<br/>
 				</td>
 				<td rowspan='2' class='textInfo right' style='vertical-align:top'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
@@ -1195,19 +1195,35 @@ function device_javascript() {
 		});
 
 		$('#add_dq').click(function() {
-			scrollTop = $(window).scrollTop();
-			$.post('host.php?action=query_add', { host_id: $('#id').val(), snmp_query_id: $('#snmp_query_id').val(), reindex_method: $('#reindex_method').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
-				handleAjaxResponse(data);
-				$(window).scrollTop(scrollTop);
-			});
+
+			var options = {
+				url: 'host.php?action=query_add',
+				scrollTop: $(window).scrollTop()
+			}
+
+			var data = {
+				host_id: $('#id').val(),
+				snmp_query_id: $('#snmp_query_id').val(),
+				reindex_method: $('#reindex_method').val(),
+				__csrf_magic: csrfMagicToken
+			}
+
+			postUrl(options, data);
 		});
 
 		$('#add_gt').click(function() {
-			scrollTop = $(window).scrollTop();
-			$.post('host.php?action=gt_add', { host_id: $('#id').val(), graph_template_id: $('#graph_template_id').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
-				handleAjaxResponse(data);
-				$(window).scrollTop(scrollTop);
-			});
+			var options = {
+				url: 'host.php?action=gt_add',
+				scrollTop: $(window).scrollTop()
+			}
+
+			var data = {
+				host_id: $('#id').val(),
+				graph_template_id: $('#graph_template_id').val(),
+				__csrf_magic: csrfMagicToken
+			}
+
+			postUrl(options, data);
 		});
 
 		changeHostForm();
@@ -1329,12 +1345,10 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where = "WHERE deleted = ''";
 	}
 
-	if (get_request_var('location') != '-1') {
-		if (get_request_var('location') == __('Undefined') || get_request_var('location') == '') {
-			$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' IFNULL(host.location,"") = ""';
-		} else {
-			$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
-		}
+	if (get_request_var('location') == __('Undefined') || get_request_var('location') == '') {
+		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' IFNULL(host.location,"") = ""';
+	} elseif (get_request_var('location') != '') {
+		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
 	}
 
 	if (get_request_var('host_status') == '-1') {
@@ -1695,8 +1709,15 @@ function host() {
 			'align' => 'right',
 			'sort' => 'ASC',
 			'tip' => __('The availability percentage based upon ping results since the counters were cleared for this Device.')
-		)
+		),
+		'nosort_created' => array(
+			'display' => __('Created'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The date this device wasadded to the database'),
+		),
 	);
+
 	$display_text_size = sizeof($display_text);
 	$display_text = api_plugin_hook_function('device_display_text', $display_text);
 
@@ -1740,6 +1761,7 @@ function host() {
 			form_selectable_cell(round(($host['cur_time']), 2), $host['id'], '', 'right');
 			form_selectable_cell(round(($host['avg_time']), 2), $host['id'], '', 'right');
 			form_selectable_cell(round($host['availability'], 2) . ' %', $host['id'], '', 'right');
+			form_selectable_cell($host['created'], $host['id'], '', 'right');
 			form_checkbox_cell($host['description'], $host['id']);
 			form_end_row();
 		}

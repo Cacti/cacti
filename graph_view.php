@@ -647,7 +647,7 @@ case 'list':
 												}
 											}
 											print '>';
-											print $gt['name'] . "</option>\n";
+											print html_escape($gt['name']) . "</option>\n";
 										}
 									}
 								}
@@ -784,7 +784,7 @@ case 'list':
 		$report_text .= '<tr><td>' . __('Report Name') . '</td>';
 		$report_text .= '<td><select id="report_id">';
 		foreach($reports as $report) {
-			$report_text .= '<option value="' . $report['id'] . '">' . $report['name'] . '</option>';
+			$report_text .= '<option value="' . $report['id'] . '">' . html_escape($report['name']) . '</option>';
 		}
 		$report_text .= '</select></td></tr>';
 

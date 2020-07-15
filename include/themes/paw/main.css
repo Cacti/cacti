@@ -740,7 +740,8 @@ label {
 .cactiConsoleNavigationArea {
 	background: #f0f0f0;
 	overflow-y: auto !important;
-	width: 167px;
+	overflow-x: hidden;
+	width: 170px;
 	height: 100%;
 	float: left;
 }
@@ -1658,6 +1659,8 @@ th.sortable {
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
+	display: inline-block;
+	width: 11.75px;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -1668,7 +1671,8 @@ th.sortable {
 }
 
 .moveArrowNone {
-	padding-left: 8.75px;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {

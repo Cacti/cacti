@@ -38,8 +38,9 @@ if ($memory_limit != $default_limit) {
 	ini_set('memory_limit', $default_limit);
 }
 
-if ($execution_time < $default_time) {
+if ($execution_time < $default_time && $execution_time >= 0) {
 	ini_set('max_execution_time', $default_time);
 }
 
 include(__DIR__ . '/global.php');
+

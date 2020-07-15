@@ -125,6 +125,7 @@ $cacti_version_codes = array(
 	'1.2.10' => '0102',
 	'1.2.11' => '0102',
 	'1.2.12' => '0102',
+	'1.2.13' => '0102',
 	'1.3.0'  => '0102',
 );
 
@@ -250,7 +251,7 @@ $messages = array(
 		'message' => __('You must select at least one object from the list.'),
 		'level' => MESSAGE_LEVEL_ERROR),
 	41 => array(
-		'message' => __('Device Template updated.  Remember to Sync Templates to push all changes to Devices that use this Device Template.'),
+		'message' => __('Device Template updated.  Remember to Sync Devices to push all changes to Devices that use this Device Template.'),
 		'level' => MESSAGE_LEVEL_INFO),
 	42 => array(
 		'message' => __('Save Successful. Settings replicated to Remote Data Collectors.'),
@@ -624,6 +625,12 @@ $logfile_verbosity = array(
 	POLLER_VERBOSITY_HIGH   => __('HIGH - Statistics, Errors, Results and Major I/O Events'),
 	POLLER_VERBOSITY_DEBUG  => __('DEBUG - Statistics, Errors, Results, I/O and Program Flow'),
 	POLLER_VERBOSITY_DEVDBG => __('DEVEL - Developer DEBUG Level')
+);
+
+$logfile_expansion = array(
+	LOG_EXPAND_NONE    => ('NONE - No expansion'),
+	LOG_EXPAND_DISPLAY => ('DISPLAY - Only when displaying'),
+	LOG_EXPAND_FULL    => ('FULL - Display and search expansion'),
 );
 
 $poller_options = array(

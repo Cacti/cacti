@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
 require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/utility.php');
 require_once($config['base_path'] . '/lib/template.php');
@@ -98,6 +99,8 @@ update_data_source_title_cache($local_data_id);
 if (!empty($host_id)) {
 	push_out_host($host_id, $local_data_id);
 }
+
+print "DS Added - DS[$local_data_id]\n";
 
 /*  display_version - displays version information */
 function display_version() {

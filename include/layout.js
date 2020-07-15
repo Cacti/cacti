@@ -237,7 +237,7 @@ $.fn.replaceOptions = function(options, selected) {
  *  without any wrapping. */
 $.fn.textWidth = function(text){
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.html()) + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
 	if (!text) {
 		html.css('font-family', org.css('font-family'));
 		html.css('font-weight', org.css('font-weight'));
@@ -255,7 +255,7 @@ $.fn.textWidth = function(text){
  *  without any wrapping. */
 $.fn.textBoxWidth = function() {
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.val() + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.text() + '</span>');
 	html.css('font-family', org.css('font-family'));
 	html.css('font-weight', org.css('font-weight'));
 	html.css('font-size',   org.css('font-size'));
@@ -639,8 +639,8 @@ function applyTimespanFilterChange() {
 /** cactiReturnTo - This function simply returns to the previous page
  *  @args href - the previous page */
 function cactiReturnTo(href) {
-	if (typeof href == 'string') {
-		href = document.location.href;
+	if (typeof href !== 'string' || href.trim() == '') {
+		href = document.referrer;
 	}
 	loadUrl({url:href});
 }
@@ -1056,6 +1056,12 @@ function makeFiltersResponsive() {
 			}
 		});
 	}
+
+	if ($('#form_graph_view').length) {
+		$('#form_graph_view').filter('input, select').not('#date1, #date2').click(function() {
+			closeDateFilters();
+		});
+	}
 }
 
 function toggleFilterAndIcon(id, child, initial) {
@@ -1139,7 +1145,7 @@ function setupResponsiveMenuAndTabs() {
 
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
 			return;
-		} else if (page == 'index.php' && $(this).attr('href').indexOf('login') > -1) {
+		} else if (page == 'index.php' && $(this).attr('href').indexOf('login') >= 0) {
 			return;
 		} else {
 			event.preventDefault();
@@ -1893,6 +1899,8 @@ function loadUrl(options) {
 			window[options.funcStart](options);
 		}
 
+		closeDateFilters();
+
 		$.ajaxQ.abortAll();
 		$.get(options.url)
 			.done(function(html) {
@@ -1908,6 +1916,30 @@ function loadUrl(options) {
 	return false;
 }
 
+function postUrl(options, data) {
+	statePushed = false;
+	cont = false;
+
+	options = sanitizeAjaxOptions(options);
+
+	if (options.funcStart != '') {
+		window[options.funcStart](options);
+	}
+
+	$.ajaxQ.abortAll();
+	$.post(options.url,data)
+		.done(function(html) {
+			handleAjaxResponse(html, options);
+			return false;
+		})
+		.fail(function(html) {
+			getPresentHTTPError(html);
+		}
+	);
+
+	return false;
+}
+
 function findElement(htmlObject, element) {
 	wanted = htmlObject.find(element);
 	if (typeof wanted == 'undefined' || wanted.length == 0) {
@@ -1918,16 +1950,18 @@ function findElement(htmlObject, element) {
 
 function sanitizeAjaxOptions(check) {
 	options = {
-		force:		false,
-		scroll:		false,
-		elementId:	'main',
-		tabId:		'',
-		loadType:	'noheader',
-		funcStart:	'',
-		funcEnd:	'',
-		url:		'',
-		pageName:	'',
-		noState:	false,
+		force:     false,
+		scroll:    false,
+		elementId: 'main',
+		tabId:     '',
+		loadType:  'noheader',
+		funcStart: '',
+		funcEnd:   '',
+		url:       '',
+		pageName:  '',
+		noState:   false,
+		handle:    true,
+		redirect:  '',
 	};
 
 	if (typeof check == 'undefined') {
@@ -1969,6 +2003,14 @@ function sanitizeAjaxOptions(check) {
 		options.loadType = check.loadType;
 	}
 
+	if (typeof check.redirect == 'string') {
+		options.redirect = check.redirect;
+	}
+
+	if (typeof check.handle == 'boolean') {
+		options.handle = check.handle;
+	}
+
 	if (options.elementId.trim() == '') {
 		options.elementId = 'main';
 	}
@@ -1980,69 +2022,76 @@ function handleAjaxResponse(html, options) {
 	checkForLogout(html);
 
 	options = sanitizeAjaxOptions(options);
-	elementId = '#' + options.elementId;
 
-	var htmlObject  = $(html);
-	var matches     = html.match(/<title>(.*?)<\/title>/);
+	if (options.handle && options.redirect.trim() == '') {
+		elementId = '#' + options.elementId;
 
-	if (matches != null) {
+		var htmlObject  = $(html);
+		var matches     = html.match(/<title>(.*?)<\/title>/);
 
-		var htmlTitle   = matches[1];
-		var breadCrumbs = findElement(htmlObject,'#breadcrumbs').html();
-		var htmlContent = findElement(htmlObject,elementId).html();
+		if (matches != null) {
+			var htmlTitle   = matches[1];
+			var breadCrumbs = findElement(htmlObject,'#breadcrumbs').html();
+			var htmlContent = findElement(htmlObject,elementId).html();
 
-		$('title').text(htmlTitle);
-		$('#breadcrumbs').html(breadCrumbs);
+			$('title').text(htmlTitle);
+			$('#breadcrumbs').html(breadCrumbs);
 
-		myTitle = htmlTitle;
-	}
+			myTitle = htmlTitle;
+		}
 
-	if (typeof htmlContent == 'undefined') {
-		htmlContent = html;
-	}
+		if (typeof htmlContent == 'undefined') {
+			htmlContent = html;
+		}
 
-	pushState(myTitle, options);
+		pushState(myTitle, options);
 
-	$(elementId).empty().hide();
-	$('div[class^="ui-"]').remove();
-	$(elementId).html(htmlContent);
-	$(elementId).show();
+		$(elementId).empty().hide();
+		$('div[class^="ui-"]').remove();
+		$(elementId).html(htmlContent);
+		$(elementId).show();
 
-	if (options.pageName != '') {
-		// Workaround for Create Device
-		if (options.pageName == 'host.php') {
-			if (options.url.indexOf('create') >= 0) {
+		if (options.pageName != '') {
+			// Workaround for Create Device
+			if (options.pageName == 'host.php') {
+				if (options.url.indexOf('create') >= 0) {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href='"+escapeString(options.url)+"']").addClass('selected');
+				} else {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href$='host.php']").addClass('selected');
+				}
+			} else if ($('#menu').find("a[href^='"+escapeString(options.url)+"']").length > 0) {
 				$('#menu').find('.pic').removeClass('selected');
-				$('#menu').find("a[href='"+escapeString(options.url)+"']").addClass('selected');
-			} else {
+				$('#menu').find("a[href^='"+escapeString(options.url)+"']").addClass('selected');
+			} else if ($('#menu').find("a[href*='/"+options.pageName+"']").length > 0) {
 				$('#menu').find('.pic').removeClass('selected');
-				$('#menu').find("a[href$='host.php']").addClass('selected');
+				$('#menu').find("a[href*='/"+options.pageName+"']").addClass('selected');
 			}
-		} else if ($('#menu').find("a[href^='"+escapeString(options.url)+"']").length > 0) {
-			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href^='"+escapeString(options.url)+"']").addClass('selected');
-		} else if ($('#menu').find("a[href*='/"+options.pageName+"']").length > 0) {
-			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href*='/"+options.pageName+"']").addClass('selected');
+
+			if (options.pageName == 'graph_templates_items.php' || options.pageName == 'graph_templates_inputs.php') {
+				$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
+			}
 		}
 
-		if (options.pageName == 'graph_templates_items.php' || options.pageName == 'graph_templates_inputs.php') {
-			$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
+		applySkin()
+
+		var scrollTop = (isMobile.any() != null) ? 1 : 0;
+
+		if (options.scroll) {
+			scrollTop = options.scroll;
 		}
+
+		window.scrollTo(0,scrollTop);
+		handleConsole(options.pageName);
 	}
-
-	applySkin();
-
-	if (isMobile.any() != null) {
-		window.scrollTo(0,1);
-	} else {
-		window.scrollTo(0,0);
-	}
-
-	handleConsole(options.pageName);
 
 	if (options.funcEnd != '') {
 		window[options.funcEnd](options);
+	}
+
+	if (options.redirect.trim() != '') {
+		document.location = options.redirect;
 	}
 }
 
@@ -2155,7 +2204,10 @@ function ajaxAnchors() {
 			pageName = basename(href);
 		}
 
-		loadPage(href);
+		loadUrl({
+			url:href,
+			loadType:'loadPage'
+		});
 
 		return false;
 	});
@@ -2628,6 +2680,7 @@ function setupEllipsis() {
 			clearTimeout(userMenuOpenTimer);
 		}
 	});
+
 	$(window).on('click', function(event) {
 		if($(event.target).parents('.submenuoptions').length == 0 && $('.submenuoptions').is(':visible')) {
 			$('.submenuoptions').slideUp(120);
@@ -2857,6 +2910,14 @@ function clearGraphFilter() {
 	loadUrl({url:href});
 }
 
+function closeDateFilters() {
+	date1Open = false;
+	date2Open = false;
+
+	$('#date1').datetimepicker('hide');
+	$('#date2').datetimepicker('hide');
+}
+
 function saveGraphFilter(section) {
 	var href = graphPage+'?action=save'+
 		'&columns='+$('#columns').val()+
@@ -2866,8 +2927,7 @@ function saveGraphFilter(section) {
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	loadUrl({
 		url:href+'&section='+section,
@@ -2891,8 +2951,7 @@ function applyGraphFilter() {
 		'&graph_template_id='+$('#graph_template_id').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked'));
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	loadUrl({url:href});
 }
@@ -2935,8 +2994,7 @@ function applyGraphTimespan() {
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	loadUrl({url:href});
 }
@@ -2954,11 +3012,7 @@ function refreshGraphTimespanFilter() {
 
 	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
-
-	$('#date1').datetimepicker('hide');
-	$('#date2').datetimepicker('hide');
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -2979,8 +3033,7 @@ function timeshiftGraphFilterLeft() {
 
 	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3006,8 +3059,7 @@ function timeshiftGraphFilterRight() {
 
 	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3032,8 +3084,7 @@ function clearGraphTimespanFilter() {
 
 	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
-	date1Open = false;
-	date2Open = false;
+	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
@@ -3048,6 +3099,8 @@ function clearGraphTimespanFilter() {
 
 function removeSpikesStdDev(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3065,6 +3118,8 @@ function removeSpikesStdDev(local_graph_id) {
 function removeSpikesVariance(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=variance&local_graph_id='+local_graph_id;
 
+	closeDateFilters();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -3079,7 +3134,9 @@ function removeSpikesVariance(local_graph_id) {
 }
 
 function removeSpikesInRange(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=fill&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3095,7 +3152,9 @@ function removeSpikesInRange(local_graph_id) {
 }
 
 function removeRangeFill(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=float&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3112,6 +3171,8 @@ function removeRangeFill(local_graph_id) {
 
 function dryRunStdDev(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3131,6 +3192,8 @@ function dryRunStdDev(local_graph_id) {
 function dryRunVariance(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=variance&dryrun=true&local_graph_id='+local_graph_id;
 
+	closeDateFilters();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -3147,7 +3210,9 @@ function dryRunVariance(local_graph_id) {
 }
 
 function dryRunSpikesInRange(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=fill&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3166,7 +3231,9 @@ function dryRunSpikesInRange(local_graph_id) {
 }
 
 function dryRunRangeFill(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=float&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	closeDateFilters();
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3201,6 +3268,8 @@ function redrawGraph(graph_id) {
 
 	var graph_height = $('#wrapper_'+graph_id).attr('graph_height');
 	var graph_width  = $('#wrapper_'+graph_id).attr('graph_width');
+
+	closeDateFilters();
 
 	$.getJSON(urlPath+'graph_json.php?rra_id=0'+
 		'&local_graph_id='+graph_id+
@@ -3338,6 +3407,8 @@ function initializeGraphs() {
 		var graph_height = $(this).attr('graph_height');
 		var graph_width  = $(this).attr('graph_width');
 
+		closeDateFilters();
+
 		$.getJSON(urlPath+'graph_json.php?rra_id='+rra_id+
 			'&local_graph_id='+graph_id+
 			'&graph_start='+graph_start+
@@ -3418,6 +3489,7 @@ function initializeGraphs() {
 
 	$('a[id$="_util"]').each(function() {
 		var graph_id = $(this).attr('id').replace('graph_','').replace('_util','');
+
 		$(this).attr('href',urlPath+
 			'graph.php?action=zoom&local_graph_id='+graph_id+
 			'&rra_id=0&graph_start='+timestampDate1+
@@ -3509,9 +3581,9 @@ $.widget('custom.dropcolor', {
 
 	_createAutocomplete: function() {
 		var selected = this.element.children(':selected');
-		var value = selected.val() ? selected.text() : '';
+		var value  = selected.val() ? selected.text() : '';
 		var regExp = /\(([^)]+)\)/;
-		var hex   = regExp.exec(value);
+		var hex    = regExp.exec(value);
 
 		if (hex != null) {
 			this.wrapper.find('#bgc').css('background-color', '#'+hex[1]);
@@ -3536,12 +3608,14 @@ $.widget('custom.dropcolor', {
 				$(this).data('ui-autocomplete')._renderItem = function(ul, item) {
 					var regExp = /\(([^)]+)\)/;
 					var hex   = regExp.exec(item.label);
+					var mylabel = $($.parseHTML(item.label));
+					var label = mylabel.text();
 
 					if (hex !== null) {
 						color = hex[1];
-						return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>'+item.label+'</div>').appendTo(ul);
+						return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
 					} else {
-						return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>'+item.label+'</div>').appendTo(ul);
+						return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
 					}
 				}
 
@@ -4078,5 +4152,3 @@ function checkSNMPPassphraseConfirm(type) {
 		}
 	}
 }
-
-

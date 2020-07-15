@@ -121,12 +121,10 @@ hr.menu {
 a, a:active {
 	color: #e3e3e3;
 	text-decoration: none;
-	padding: 0px;
 }
 
 a:hover {
 	text-decoration: none;
-	padding: 0px;
 	color: #fff;
 }
 
@@ -876,6 +874,7 @@ ul#breadcrumbs {
 	left: 0px;
 	top: 56px;
 	overflow-y: hidden;
+	overflow-x: hidden;
 	width: 167px;
 	float: left;
 }
@@ -1845,7 +1844,8 @@ legend {
 
 .moveArrow {
 	color: #00438C !important;
-	height: 14px !important;
+	display: inline-block;
+	width: 11.75px; !important;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -1856,7 +1856,8 @@ legend {
 }
 
 .moveArrowNone {
-	padding-left: 8.75px;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {

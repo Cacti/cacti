@@ -87,7 +87,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'snmpwalk':
 		debug('Start: Performing SNMP Walk Request');
-		get_snmp_walk_data();
+		get_snmp_data_walk();
 		debug('End: Performing SNMP Walk Request');
 
 		break;

@@ -189,7 +189,7 @@ function form_save() {
 
 			if (isset_request_var('line_width') || isset($item['line_width'])) {
 				$save['line_width'] = form_input_validate((isset($item['line_width']) ? $item['line_width'] : get_nfilter_request_var('line_width')), 'line_width', '(^[0-9]+[\.,0-9]+$|^[0-9]+$)', true, 3);
-			}else { # make sure to transfer old LINEx style into line_width on save
+			} else { # make sure to transfer old LINEx style into line_width on save
 				switch ($save['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_LINE1:
 					$save['line_width'] = 1;
@@ -502,7 +502,7 @@ function item_edit() {
 			if ($field_name != 'task_item_id') {
 				$form_array[$field_name]['value'] = (isset($template_item[$field_name]) ? $template_item[$field_name] : '');
 			}
-		}else{
+		} else {
 			$form_array[$field_name]['value'] = (isset($template_item[$field_name]) ? $template_item[$field_name] : '');
 		}
 

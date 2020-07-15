@@ -529,11 +529,26 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 				</div>
 			</div>\n";
 
-			if ($return_to != '') {//code as in get_page_list()
-				$nav .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . $base_url . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
-			} else {
-				$nav .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$base_url$page_var='+pageNo+url_add }</script>";
+			if ($return_to == '') {
+				$return_to = 'main';
 			}
+
+			$url  = $base_url . $page_var;
+			$nav .= "<script type='text/javascript'>
+			function goto$page_var(pageNo) {
+				if (typeof url_graph === 'function') {
+					var url_add=url_graph('')
+				} else {
+					var url_add='';
+				};
+
+				strURL = '$url='+pageNo+url_add;
+
+				loadUrl({
+					url: strURL,
+					elementId: '$return_to',
+				});
+			}</script>";
 		}
 	} else {
 		$nav = "<div class='navBarNavigation'>
@@ -1124,7 +1139,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if ($disable_controls == false) { print '</a>'; }
 			print '</td>';
 
-			if (empty($item['data_source_name'])) { $item['data_source_name'] = __('No Task'); }
+			if (empty($item['data_source_name'])) {
+				$item['data_source_name'] = __('No Source');
+			}
 
 			switch (true) {
 			case preg_match('/(TEXTALIGN)/', $_graph_type_name):
@@ -1171,7 +1188,6 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				print "<td style='$this_row_style'></td>";
 			}
 
-
 			/* color name */
 			if (!preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
 				print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . '></td>';
@@ -1181,20 +1197,27 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			}
 
 			if ($disable_controls == false) {
-				print "<td style='text-align:right;padding-right:10px;'>";
+				print "<td class='right nowrap'>";
+
 				if ($i != cacti_sizeof($item_list)-1) {
-					print "<a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a>";
+					print "<span><a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
+
 				if ($i > 0) {
-					print "<a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a>";
+					print "<span><a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
+
 				print '</td>';
 
-				print "<td style='text-align:right;'><a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&$url_data") . "'></a></td>";
+				print "<td style='width:1%' class='right'>";
+
+				print "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
+
+				print "</td>";
 			}
 
 			print '</tr>';
@@ -2476,7 +2499,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
 	print get_md5_include_js('include/js/jquery.multiselect.js');
 	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
-	print get_md5_include_js('include/js/jquery.timepicker.js', true);
+	print get_md5_include_js('include/js/jquery.timepicker.js');
 	print get_md5_include_js('include/js/jquery.colorpicker.js', true);
 	print get_md5_include_js('include/js/jquery.tablesorter.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js', true);

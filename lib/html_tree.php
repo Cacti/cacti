@@ -1018,7 +1018,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	?>
 	<tr class='even noprint' id='search'>
 		<td class='noprint'>
-		<form name='form_graph_view' method='post' onSubmit='applyGraphFilter();return false'>
+		<form id='form_graph_view' method='post' onSubmit='applyGraphFilter();return false'>
 			<table class='filterTable'>
 				<tr>
 					<td>
@@ -1055,8 +1055,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 												print ' selected';
 											}
 										}
-										print '>';
-										print $gt['name'] . "</option>\n";
+										print '>' . html_escape($gt['name']) . '</option>';
 									}
 								}
 							}

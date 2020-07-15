@@ -327,7 +327,7 @@ function vdef_item_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following VDEF\'s.'); ?></p>
-			<p><?php print __('VDEF Name: %s', html_escape($vdef['name']));?><br>
+			<p><?php print __esc('VDEF Name: %s', $vdef['name']);?><br>
 			<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print html_escape(get_vdef_item_name($vdef_item['id']));?></strong></p>
 		</td>
 	</tr>
@@ -347,16 +347,23 @@ function vdef_item_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#continue').click(function(data) {
-			$.post('vdef.php?action=item_remove', {
+			var options = {
+				url: 'vdef.php?action=item_remove',
+				funcEnd: 'removeVdefItemFinalize'
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				vdef_id: <?php print get_request_var('vdef_id');?>,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				$('#cdialog').dialog('close');
-				loadUrl({url:'vdef.php?action=edit&id=<?php print get_request_var('id');?>'})
-			});
+			}
 		});
 	});
+
+	function removeVdefItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		loadUrl({url:'vdef.php?action=edit&id=<?php print get_request_var('id');?>'})
+	}
 	</script>
 	<?php
 }

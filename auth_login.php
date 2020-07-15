@@ -22,6 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
+/* include ldap support */
+include_once('./lib/ldap.php');
+
 /* set default action */
 set_default_action();
 
@@ -117,11 +120,9 @@ if (get_nfilter_request_var('action') == 'login') {
 	case '3':
 		/* LDAP Auth */
  		if ($frv_realm == '2' && get_nfilter_request_var('login_password') != '') {
-			/* include LDAP lib */
-			include_once(__DIR__ . '/lib/ldap.php');
-
 			/* get user DN */
 			$ldap_dn_search_response = cacti_ldap_search_dn($username);
+
 			if ($ldap_dn_search_response['error_num'] == '0') {
 				$ldap_dn = $ldap_dn_search_response['dn'];
 			} else {
@@ -225,33 +226,37 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		/* check that template user exists */
 		if (!empty($user_template)) {
-			/* get user CN*/
-			$cn_full_name = read_config_option('cn_full_name');
-			$cn_email     = read_config_option('cn_email');
+			if ($realm == 3) { // This is an ldap login
+				/* get user CN*/
+				$cn_full_name = read_config_option('cn_full_name');
+				$cn_email     = read_config_option('cn_email');
 
-			if ($cn_full_name != '' || $cn_email != '') {
-				$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email));
+				if ($cn_full_name != '' || $cn_email != '') {
+					$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name, $cn_email));
 
-   				if (isset($ldap_cn_search_response['cn'])) {
-					$data_override = array();
+   					if (isset($ldap_cn_search_response['cn'])) {
+						$data_override = array();
 
-					if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {
-						$data_override['full_name'] = $ldap_cn_search_response['cn'][$cn_full_name];
+						if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {
+							$data_override['full_name'] = $ldap_cn_search_response['cn'][$cn_full_name];
+						} else {
+							$data_override['full_name'] = '';
+						}
+
+						if (array_key_exists($cn_email, $ldap_cn_search_response['cn'])) {
+							$data_override['email_address'] = $ldap_cn_search_response['cn'][$cn_email];
+						} else {
+							$data_override['email_address'] = '';
+						}
+
+						user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
 					} else {
-						$data_override['full_name'] = '';
+						$ldap_response = (isset($ldap_cn_search_response[0]) ? $ldap_cn_search_response[0] : '(no response given)');
+						$ldap_code = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
+						cacti_log('LOGIN: Email Address and Full Name fields not found, reason: ' . $ldap_response . 'code: ' . $ldap_code, false, 'AUTH');
+						user_copy($user_template['username'], $username, 0, $realm);
 					}
-
-					if (array_key_exists($cn_email, $ldap_cn_search_response['cn'])) {
-						$data_override['email_address'] = $ldap_cn_search_response['cn'][$cn_email];
-					} else {
-						$data_override['email_address'] = '';
-					}
-
-					user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
 				} else {
-					$ldap_response = (isset($ldap_cn_search_response[0]) ? $ldap_cn_search_response[0] : '(no response given)');
-					$ldap_code = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
-					cacti_log('LOGIN: Email Address and Full Name fields not found, reason: ' . $ldap_response . 'code: ' . $ldap_code, false, 'AUTH');
 					user_copy($user_template['username'], $username, 0, $realm);
 				}
 			} else {
@@ -304,6 +309,45 @@ if (get_nfilter_request_var('action') == 'login') {
 		} else {
 			auth_post_login_redirect($user);
 		}
+
+		/* remember this user */
+		if (isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
+			set_auth_cookie($user);
+		}
+
+		/* set the php session */
+		$_SESSION['sess_user_id'] = $user['id'];
+
+		/* handle 'force change password' */
+		if ($user['must_change_password'] == 'on' && read_config_option('auth_method') == 1 && $user['password_change'] == 'on') {
+			$_SESSION['sess_change_password'] = true;
+		}
+
+		if (db_table_exists('user_auth_group')) {
+			$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
+				FROM user_auth_group AS uag
+				INNER JOIN user_auth_group_members AS uagm
+				ON uag.id=uagm.group_id
+				WHERE user_id = ?
+				AND login_opts != 4',
+				array($_SESSION['sess_user_id']));
+
+			if (!empty($group_options)) {
+				$user['login_opts'] = $group_options;
+			}
+		}
+
+		if (user_setting_exists('user_language', $_SESSION['sess_user_id'])) {
+			$_SESSION['sess_user_language'] = read_user_setting('user_language');
+		}
+
+		auth_login_redirect($user['login_opts']);
+	} elseif (!$guest_user && $user_auth) {
+		/* No guest account defined */
+		display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
+		cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
+		header('Location: index.php');
+		exit;
 	} else {
 		if ((!$guest_user) && ($user_auth)) {
 			/* No guest account defined */
@@ -346,9 +390,6 @@ function domains_login_process() {
 	global $user, $realm, $username, $user_auth, $ldap_error, $ldap_error_message;
 
 	if (is_numeric(get_nfilter_request_var('realm')) && get_nfilter_request_var('login_password') != '') {
-		/* include LDAP lib */
-		include_once(__DIR__ . '/lib/ldap.php');
-
 		/* get user DN */
 		$ldap_dn_search_response = domains_ldap_search_dn($username, get_nfilter_request_var('realm'));
 		if ($ldap_dn_search_response['error_num'] == '0') {
@@ -452,9 +493,9 @@ function domains_login_process() {
 							array($username, $realm));
 					} else {
 						/* error */
-						display_custom_error_message(__('Template user id %s does not exist.', $template_id));
-						cacti_log("LOGIN: Template user id '" . $template_id . "' does not exist.", false, 'AUTH');
-						header('Location: index.php');
+						display_custom_error_message(__('Template user id %s does not exist.', $template_user));
+						cacti_log("LOGIN: Template user id '" . $template_user . "' does not exist.", false, 'AUTH');
+						header('Location: index.php?header=false');
 						exit;
 					}
 				}

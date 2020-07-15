@@ -372,15 +372,19 @@ while ($poller_runs_completed < $poller_runs) {
 	$loop_start = microtime(true);
 
 	if ($poller_id == '1') {
-		$polling_hosts = array_merge(
-			array(0 => array('id' => '0')),
-			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
-				FROM host
-				WHERE poller_id = ?
-				AND disabled=""
-				AND deleted=""
-				ORDER BY id',
-				array($poller_id)));
+		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+			FROM host
+			WHERE poller_id = ?
+			AND disabled=""
+			AND deleted=""
+			ORDER BY id',
+			array($poller_id));
+
+		if (cacti_sizeof($polling_hosts)) {
+			$polling_hosts = array_merge(array(0 => array('id' => '0')), $polling_hosts);
+		} else {
+			$polling_hosts = array(0 => array('id' => '0'));
+		}
 	} else {
 		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM host
@@ -390,6 +394,9 @@ while ($poller_runs_completed < $poller_runs) {
 			ORDER BY id',
 			array($poller_id));
 	}
+
+	$hosts_per_process = 0;
+	$method = 'disabled';
 
 	$script = $server = $snmp = 0;
 
@@ -930,7 +937,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		set_config_option('stats_poller', $cacti_stats);
 	}
 
-	if (array_key_exists('min_time', $poller)) {
+	if (is_array($poller) && array_key_exists('min_time', $poller)) {
 		// calculate min/max/average timings
 		$total_time  = $loop_end-$loop_start;
 		$total_polls = $poller['total_polls'];

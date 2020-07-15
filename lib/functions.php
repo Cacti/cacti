@@ -783,8 +783,6 @@ function display_custom_error_message($message) {
 
 /* clear_messages - clears the message cache */
 function clear_messages() {
-	global $config;
-
 	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
 		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
@@ -793,7 +791,7 @@ function clear_messages() {
 	}
 
 	if ($need_session) {
-		session_start($config['cookie_options']);
+		cacti_session_start();
 	}
 
 	kill_session_var('sess_messages');
@@ -819,15 +817,13 @@ function kill_session_var($var_name) {
 
 /* force_session_data - forces session data into the session if the session was closed for some reason */
 function force_session_data() {
-	global $config;
-
 	// This function should always exist, if not its an invalid install
 	if (!function_exists('session_status')) {
 		return false;
 	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
 
-		session_start($config['cookie_options']);
+		cacti_session_start();
 
 		$_SESSION = $data;
 
@@ -1027,7 +1023,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		 $filter       - (char) the filtering expression to search for
 		 $page_nr      - (int) the page we want to show rows for
 		 $total_rows   - (int) the total number of rows in the logfile */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows) {
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows, $field_map = '') {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -1043,9 +1039,27 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	$fp = fopen($file_name, 'r');
 
 	/* Count all lines in the logfile */
-	$total_rows = 0;
+	$total_rows    = 0;
+	$line_no       = 0;
+	$display_line  = array();
+	$should_expand = read_config_option('log_expand') == LOG_EXPAND_FULL;
+	iF ($should_expand) {
+		$should_expand = !empty($filter) && !empty($field_map) && !empty($field_map['data']) && !empty($field_map['func']);
+	}
+
 	while (($line = fgets($fp)) !== false) {
-		if (determine_display_log_entry($message_type, $line, $filter)) {
+		$display = (determine_display_log_entry($message_type, $line, $filter));
+		if ($should_expand && !$display) {
+			$expanded = preg_replace_callback($field_map['data'],$field_map['func'],$line);
+			if ($expanded != $line) {
+				// expand line different so lets see if we want it now after all
+				$display = determine_display_log_entry($message_type, $expanded, $filter);
+			}
+		}
+
+
+		$display_line[$line_no++] = $display;
+		if ($display) {
 			++$total_rows;
 		}
 	}
@@ -1066,11 +1080,14 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		$start = 0;
 	}
 
+	force_session_data();
+
 	/* load up the lines into an array */
 	$file_array = array();
 	$i = 0;
+	$line_no = 0;
 	while (($line = fgets($fp)) !== false) {
-		$display = determine_display_log_entry($message_type, $line, $filter);
+		$display = $display_line[$line_no++];
 
 		if ($display === false) {
 			continue;
@@ -3146,7 +3163,8 @@ function sanitize_cdef($cdef) {
  * @returns array      - the sanitized selected items array
  */
 function sanitize_unserialize_selected_items($items) {
-	if ($items != '') {
+	$return_items = false;
+	if (!empty($items) && is_string($items)) {
 		$unstripped = stripslashes($items);
 
 		// validate that sanitized string is correctly formatted
@@ -3154,24 +3172,21 @@ function sanitize_unserialize_selected_items($items) {
 			$items = unserialize($unstripped);
 
 			if (is_array($items)) {
+				$return_items = $items;
 				foreach ($items as $item) {
 					if (is_array($item)) {
-						return false;
+						$return_items = false;
+						break;
 					} elseif (!is_numeric($item) && ($item != '')) {
-						return false;
+						$return_items = false;
+						break;
 					}
 				}
-			} else {
-				return false;
 			}
-		} else {
-			return false;
 		}
-	} else {
-		return false;
 	}
 
-	return $items;
+	return $return_items;
 }
 
 function cacti_escapeshellcmd($string) {
@@ -4292,7 +4307,7 @@ function get_timeinstate($host) {
 		$time = 0;
 	} elseif (isset($host['instate'])) {
 		$time = $host['instate'];
-	} elseif ($host['status_event_count'] > 0 && ($host['status'] == 1 || $host['status'] == 2)) {
+	} elseif ($host['status_event_count'] > 0 && ($host['status'] == 1 || $host['status'] == 2 || $host['status'] == 5)) {
 		$time = $host['status_event_count'] * $interval;
 	} elseif (strtotime($host['status_rec_date']) < 943916400 && ($host['status'] == 0 || $host['status'] == 3)) {
 		$time = $host['total_polls'] * $interval;
@@ -4992,9 +5007,13 @@ function date_time_format() {
 function get_source_timestamp() {
 	global $config;
 	$timestamp = 0;
-	if (file_exists($config['base_path'] . '/.git/')) {
+	$git_path = realpath(__DIR__ . '/../.git/');
+	if (file_exists($git_path)) {
+		$old_path = getcwd();
+		chdir($git_path);
 		$shell = @shell_exec('git log -1 --pretty=format:%ct.%h');
 		$parts = explode('.', $shell);
+		chdir($old_path);
 	} else {
 		$parts =  array(0 => -1, 1 => 'UNKNOWN');
 	}
@@ -5164,8 +5183,7 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 	return false;
 }
 
-function is_install_needed($version = NULL)
-{
+function is_install_needed($version = NULL) {
 	$mode = '==';
 	$db = get_cacti_db_version();
 	if ($version === NULL) {
@@ -5184,8 +5202,7 @@ function is_install_needed($version = NULL)
 	return $result;
 }
 
-function is_cacti_develop($version = null)
-{
+function is_cacti_develop($version = null) {
 	static $isStaticRelease = null;
 
 	if ($isStaticRelease === null || $version !== null) {
@@ -5208,8 +5225,7 @@ function is_cacti_develop($version = null)
 	return $isRelease;
 }
 
-function is_cacti_release($version = null)
-{
+function is_cacti_release($version = null) {
 	static $isStaticRelease = null;
 
 	if ($isStaticRelease === null || $version !== null) {
@@ -5729,8 +5745,17 @@ function cacti_session_start() {
 	}
 
 	session_name($config['cacti_session_name']);
+
+	$session_restart = '';
 	if (!session_id()) {
-		session_start($config['cookie_options']);
+		$session_result = session_start($config['cookie_options']);
+	} else {
+		$session_restart = 're';
+		$session_result  = session_start();
+	}
+
+	if (!$session_result) {
+		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
 	}
 }
 

@@ -66,7 +66,7 @@ function api_plugin_hook($name) {
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
-				if (api_plugin_check_dependancies($hdata['name'], true) == PLUGIN_DEPENDENCY_OK) {
+				if (api_plugin_check_dependencies($hdata['name'], true) == PLUGIN_DEPENDENCY_OK) {
 					if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
 					}
@@ -107,7 +107,7 @@ function api_plugin_hook_function($name, $parm = NULL) {
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
-				if (api_plugin_check_dependancies($hdata['name'], true) == PLUGIN_DEPENDENCY_OK) {
+				if (api_plugin_check_dependencies($hdata['name'], true) == PLUGIN_DEPENDENCY_OK) {
 					$p[] = $hdata['name'];
 					if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
@@ -556,7 +556,7 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 	}
 }
 
-function api_plugin_check_dependancies($plugin, $quick = false, $dependencies = false) {
+function api_plugin_check_dependencies($plugin, $quick = false, $dependencies = false) {
 	$results = array();
 	if (!is_array($dependencies)) {
 		$dependencies = api_plugin_get_dependencies($plugin);

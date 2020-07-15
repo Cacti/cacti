@@ -89,6 +89,8 @@ case 'countdown':
 		break;
 	}
 
+	cacti_session_close();
+
 	$graph_data_array = array();
 
 	/* ds */
@@ -412,7 +414,7 @@ $sizes = array(
 			}, 1000);
 		}
 
-		$(function() {
+		$(window).on('load', function() {
 			imageOptionsChanged('init');
 			myCountdown = setTimeout(function() {
 				countdown_update();
