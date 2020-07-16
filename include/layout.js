@@ -2087,7 +2087,7 @@ function handleAjaxResponse(html, options) {
 	}
 
 	if (options.funcEnd != '') {
-		window[options.funcEnd](options);
+		window[options.funcEnd](options, html);
 	}
 
 	if (options.redirect.trim() != '') {
