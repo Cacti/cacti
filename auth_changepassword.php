@@ -362,14 +362,15 @@ html_auth_footer('change_password', $errorMessage, "
 			$('#pass').remove();
 			$('#passconfirm').remove();
 		} else if ($('#password').val().length < minChars) {
-			checkPassowrdFinalize(__esc('Password Too Short'));
+			checkPasswordFinalize('" . __esc('Password Too Short') . "');
 		} else {
 			var options = {
 				url: 'auth_changepassword.php?action=checkpass',
-				funcEnd: 'checkPasswordFinalize'
+				funcEnd: 'checkPasswordReturn',
+				handle: false
 			}
 
-			var data {
+			var data = {
 				password: $('#password').val(),
 				password_confim: $('#password_confirm').val(),
 				__csrf_magic: csrfMagicToken
@@ -379,15 +380,21 @@ html_auth_footer('change_password', $errorMessage, "
 		}
 	}
 
+	function checkPasswordReturn(options, data) {
+		checkPasswordFinalize(data);
+	}
+
 	function checkPasswordFinalize(data) {
 		var className = 'badpassword';
+		var classIcon = 'times';
 		if (data == 'ok') {
 			className = 'goodpassword';
-			data = __esc('Password Validation Passes');
+			classIcon = 'check';
+			data = '" . __esc('Password Validation Passes') . "';
 		}
 
 		$('#pass').remove();
-		$('#password').after('<div id=\"pass\" class=\"password badpassword fa fa-times\" title=\"'+data+'\"></div>');
+		$('#password').after('<div id=\"pass\" class=\"password ' + className + ' fa fa-' + classIcon + '\" title=\"'+data+'\"></div>');
 		$('.password').tooltip();
 		checkPasswordConfirm();
 	}

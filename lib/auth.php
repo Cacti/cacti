@@ -2496,6 +2496,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
  * @return (array)  An array of permitted Tree branches
  */
 function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
+	$sql_join = '';
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -4097,6 +4098,41 @@ function secpass_check_pass($password) {
 		return __('Your password must contain at least 1 special character!');
 	}
 
+	if (read_config_option('secpass_pwnedcheck') == 'on') {
+		$sha1 = strtoupper(sha1($password));
+		$suffix = substr($sha1,5);
+		$options = array(
+			CURLOPT_RETURNTRANSFER => true,   // return web page
+			CURLOPT_HEADER	       => false,  // don't return headers
+			CURLOPT_FOLLOWLOCATION => true,   // follow redirects
+			CURLOPT_MAXREDIRS      => 10,     // stop after 10 redirects
+			CURLOPT_ENCODING       => '',     // handle compressed
+			CURLOPT_USERAGENT      => 'test', // name of client
+			CURLOPT_AUTOREFERER    => true,   // set referrer on redirect
+			CURLOPT_CONNECTTIMEOUT => 120,    // time-out on connect
+			CURLOPT_TIMEOUT	       => 120,    // time-out on response
+		);
+
+		$ch = curl_init('https://api.pwnedpasswords.com/range/'.substr($sha1,0,5));
+		curl_setopt_array($ch, $options);
+
+		$content  = curl_exec($ch);
+
+		curl_close($ch);
+		$lines = explode("\r\n", $content);
+		$count = 0;
+		foreach ($lines as $line) {
+			$result = explode(':', $line);
+			if ($result[0] == $suffix) {
+				$count = $result[1];
+			}
+		}
+
+		if ($count >= read_config_option('secpass_pwnedcount')) {
+			return __('This password appears to be a well known password, please use a different one');
+		}
+	}
+
 	return 'ok';
 }
 
@@ -4605,7 +4641,7 @@ function auth_login_create_user_from_template($username, $realm) {
 
 		cacti_log("LOGIN FAILED: Template user id '" . read_config_option('user_template') . "' does not exist.", false, 'AUTH');
 
-		if ($auth_method == 2) {
+		if (read_config_option('auth_method') == 2) {
 			auth_display_custom_error_message($error_msg);
 			exit;
 		}

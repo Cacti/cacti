@@ -1670,7 +1670,27 @@ $settings = array(
 				'9'  => __('%d Changes', 9),
 				'10' => __('%d Changes', 10),
 				'11' => __('%d Changes', 11),
-				'12' => __('%d Changes', 12) )
+				'12' => __('%d Changes', 12),
+			),
+		),
+		'secpass_pwned_header' => array(
+			'friendly_name' => __('Pwned Checks (Online)'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+		),
+		'secpass_pwnedcheck' => array(
+			'friendly_name' => __('Pwned Check'),
+			'description' => __('Check password against haveibeenpwned.com'),
+			'method' => 'checkbox',
+			'default' => '',
+		),
+		'secpass_pwnedcount' => array(
+			'friendly_name' => __('Pwned Threshold'),
+			'description' => __('Block use of a password once it reaches this reported usage level'),
+			'method' => 'textbox',
+			'default' => '8',
+			'max_length' => 2,
+			'size' => 4
 		),
 		'secpass_lock_header' => array(
 			'friendly_name' => __('Account Locking'),
