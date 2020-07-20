@@ -1293,7 +1293,7 @@ function host_validate_vars() {
 			),
 		'location' => array(
 			'filter' => FILTER_CALLBACK,
-			'default' => '',
+			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
