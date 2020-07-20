@@ -1345,7 +1345,9 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where = "WHERE deleted = ''";
 	}
 
-	if (get_request_var('location') == __('Undefined') || get_request_var('location') == '') {
+  if (get_request_var('location') == '-1') {
+    /* Show all items */
+  } elseif (get_request_var('location') == __('Undefined') || get_request_var('location') == '') {
 		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' IFNULL(host.location,"") = ""';
 	} elseif (get_request_var('location') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
