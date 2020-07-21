@@ -114,7 +114,7 @@ function grow_dhtml_trees() {
 				LIMIT 1',
 				array($_SESSION['sess_user_id']));
 		} else {
-			$default_tree_id = db_fetch_cell('SELECT graph_tree.id
+			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
 				FROM graph_tree
 				INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
 				AND user_auth_perms.type = 2
