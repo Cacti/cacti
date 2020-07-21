@@ -70,9 +70,6 @@ if (read_config_option('grds_creation_method') == 1) {
 
 $graph_actions = api_plugin_hook_function('graphs_action_array', $graph_actions);
 
-// Add interim support for enhanced orphan handling
-add_orphan_support();
-
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
