@@ -2127,6 +2127,7 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
 }
 
 function html_spikekill_menu($local_graph_id) {
+	global $settings;
 	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check':'fa', 'skmethod', 'method_avg');
 	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'fa fa-check':'fa', 'skmethod', 'method_nan');
 	$ravgnan3 = html_spikekill_menu_item(__('Last Known Good'), html_spikekill_setting('spikekill_avgnan') == 'last' ? 'fa fa-check':'fa', 'skmethod', 'method_last');
@@ -2134,26 +2135,26 @@ function html_spikekill_menu($local_graph_id) {
 	$ravgnan = html_spikekill_menu_item(__('Replacement Method'), '', '', '', '', $ravgnan1 . $ravgnan2 . $ravgnan3);
 
 	$rstddev = '';
-	for($i = 1; $i <= 10; $i++) {
-		$rstddev .= html_spikekill_menu_item(__('%s Standard Deviations', $i), html_spikekill_setting('spikekill_deviations') == $i ? 'fa fa-check':'fa', 'skstddev', 'stddev_' . $i);
+	foreach ($settings['spikes']['spikekill_deviations']['array'] as $key => $value) {
+		$rstddev .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_deviations') == $key ? 'fa fa-check':'fa', 'skstddev', 'stddev_' . $key);
 	}
 	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
 	$rvarpct = '';
-	for($i = 1; $i <= 10; $i++) {
-		$rvarpct .= html_spikekill_menu_item(round($i * 100,0) . ' %', html_spikekill_setting('spikekill_percent') == ($i * 100) ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . ($i * 100));
+	foreach ($settings['spikes']['spikekill_percent']['array'] as $key => $value) {
+		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . $key);
 	}
 	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
 
 	$rvarout  = '';
-	for($i = 3; $i <= 10; $i++) {
-		$rvarout .= html_spikekill_menu_item(__('%d Outliers', $i), html_spikekill_setting('spikekill_outliers') == $i ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $i);
+	foreach ($settings['spikes']['spikekill_outliers']['array'] as $key => $value) {
+		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $key);
 	}
 	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
 
 	$rkills  = '';
-	for($i = 1; $i <= 10; $i++) {
-		$rkills .= html_spikekill_menu_item(__('%d Spikes', $i),html_spikekill_setting('spikekill_number') == $i ? 'fa fa-check':'fa', 'skkills', 'kills_' . $i);
+	foreach ($settings['spikes']['spikekill_number']['array'] as $key => $value) {
+		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'fa fa-check':'fa', 'skkills', 'kills_' . $key);
 	}
 	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
 
