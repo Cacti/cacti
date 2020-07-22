@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.2.14
+-feature#3619: Spikekill percent does not go high enough
+-feature#3615: Spikekill user options differ from Spikekill global options
+
 1.2.13
 -security#3544: Cacti is affected by CVE-2020-11022 and CVE-2020-11023
 -security#3549: Several XSS Vulnerabilities
