@@ -1,56 +1,69 @@
 Cacti CHANGELOG
 
 1.2.14
+-issue#3695: Spikekill `percent` is converted from percent to decimal twice, making it 1/100 of the true size
+-issue#3676: Device not showing up in device page but showing up in Monitor tab (continued)
 -feature#3619: Spikekill percent does not go high enough
 -feature#3615: Spikekill user options differ from Spikekill global options
 
 1.2.13
--security#3544: Cacti is affected by CVE-2020-11022 and CVE-2020-11023
--security#3549: Several XSS Vulnerabilities
--security#3582: Update PHPMailer to version 6.1.6 with fix for CVE-2020-13625
--security#3628: XSS on templates_import.php for CVE-2020-14424
--security#3622: SQLI as admin for CVE-2020-14295
--issue#3517: Sometimes, poller_reports.php fall in function reports_interval_start with CPU UT 100%, and never return.
+-security#3544: jQuery XSS vulnerabilities require vendor package update (CVE-2020-11022 / CVE-2020-11023)
+-security#3549: Lack of escaping on some pages can lead to XSS exposure
+-security#3582: Update PHPMailer to 6.1.6 (CVE-2020-13625)
+-security#3622: SQL Injection vulnerability due to input validation failure when editing colors (CVE-2020-14295)
+-security#3628: Lack of escaping on template import can lead to XSS exposure
+-issue#3517: When generating reports, function looping can occur resulting in 100% cpu usage
 -issue#3525: When viewing Graphs, zoom functionality prevents drag and drop of image
--issue#3527: Improve 95th percentile function to autoselect datasource CF definition:avg or max correctly
--issue#3532: Issues with Realtime in 1.2.12
--issue#3533: Start date for RRDfile is different between RRDfile in a Cacti install
--issue#3536: Responsive Navigation Menu Show/Hide Broken in 1.2.12
--issue#3538: Race condition exists between initialization of realtime and browser loading realtime javascript functions
--issue#3543: CSV Export output readability issues using UTF8 characters
--issue#3551: Web Basic Authentication and Template User broken in 1.2.12
--issue#3553: undefined error when directly visit a none-exist graph
+-issue#3527: When using 95th Percentiles, undefined index errors can be generated
+-issue#3532: When using Realtime, if no graph contents are present an error is generated
+-issue#3533: When exporting data, Start date for RRDfile does not match start date of first data row
+-issue#3536: When using Navigation Menu, Show/Hide in Response mode does not always work
+-issue#3538: When using Realtime, race conditions between browser and function loading can occur
+-issue#3543: When exporting CSV data, Unicode prefix is not properly set
+-issue#3551: Authentication can fail when using Web Basic Authentication and Template User
+-issue#3553: When attempting to view an aggregate graph that does not exist, many errors are generated
 -issue#3563: Current orphan handling disrupts graphing transient indexes
--issue#3566: Uncaught Error: Call to undefined function duplicate_mactrack
+-issue#3566: Automation incorrectly attempts to use MacTrack to duplicate options
 -issue#3567: When Boost runs, locks are not always released properly and crash is detected
--issue#3569: Errors creating an Error Image when system has enviornment issues
--issue#3570: Undefined function 'aggregate_detect_linex_graph_type'
+-issue#3569: Invalid font results in large number of log entries
 -issue#3571: Correct various runtime errors due to incorrect message variables
 -issue#3574: Saving Graph Template Items take a long time on large systems
 -issue#3577: Hosts are being incorrectly filtered when first displaying with filter set to all
--issue#3579: It is strange that many graphs show as 'Empty Graph'
--issue#3581: Realtime graph window not resizing
--issue#3588: Validation not performed warnings in host.php
+-issue#3579: Graphs can incorrectly show as 'Empty Graph'
+-issue#3581: Realtime graph window is not resizing properly
+-issue#3588: Validation warnings are generated when viewing/editing devices
 -issue#3594: Automation hangs for certain schedule types
 -issue#3595: Template to Device sync text is not consistent
 -issue#3596: When importing template, resources aren't checked properly
 -issue#3597: Template to Device sync provides no feedback
 -issue#3598: When editing graphs and graph templates, back button results in broken page
 -issue#3599: When downgrading, templates are fully selected for install
--issue#3601: When devices down, instate can show wrong time
--issue#3607: Can't access log after been kicked out by timeout
--issue#3611: Unable to view Cacti ChangeLog from GUI
--issue#3613: Tree management limited to 20 devices and graphs
--issue#3614: UI Frontend little bug, menu tabs covering title bar
--issue#3624: Cacti v1.2.12 In preview mode graphs sometimes fail to Draw
--issue#3631: Cacti cli scripts are not allowed to have unlimited runtime
--issue#3632: Some database conditions lead to warnings in the Cacti log
--issue#3635: Backtrace Errors attempting to run AUTOM8 to Remote Data Collector
--issue#3639: Duplicate Entry error when updating device
--issue#3646: add_datasource.php fails calling api_data_source_cache_crc_update()
--issue#3659: Log Base is calculated before full initialization of log filename has completed
--feature#3647: add_datasource.php should print the created ID
+-issue#3601: When a device is down, instate can show wrong time
+-issue#3607: When session timeout occurs, subsequent authorized access to areas can become blocked
+-issue#3611: Allow CHANGELOG to be viewable from the GUI
+-issue#3613: When modifying trees, devices and graphs lists ignore Autocomplete Rows setting
+-issue#3614: When section tabs wrap, the title of the first section can become obscured
+-issue#3624: When previewing graphs, sometimes the images fail to appear
+-issue#3629: Log files are not rotated properly on remote pollers
+-issue#3631: Command line scripts do not allow an unlimited runtime causing timeouts
+-issue#3632: When mysql connection fails, various unexpected errors are recorded
+-issue#3635: Automate generates undefined index errors when communicating with remote pollers
+-issue#3639: When updating a device, duplicate entry errors occur when inserting to the database
+-issue#3646: Adding datasource fails from CLI due to missing function
+-issue#3651: Editing any item on an Aggregate Graph that has been converted to a normal graph breaks entire graph
+-issue#3655: Rare race condition between Boost and Poller can result in unexpected missing table errors
+-issue#3659: When viewing logs, unexpected 'needle' errors can be seen on rare occasions
+-issue#3663: Disabling a Data Collector can cause unexpected errors
+-issue#3668: When Input Field is in error, message reports field will be highlighted which is incorrect
+-issue#3669: When adding an Input Field, the Input Method can be renamed unexpected
+-issue#3673: Spikekill does not receive correct `avgnan` value when launching from GUI
+-issue#3676: Device not showing up in device page but showing up in Monitor tab
+-issue#3681: Item movement arrows do not properly align on all themes
+-issue#3682: When in 'Time Graph View' mode, Zoom features do not work correctly
+-feature#3611: Allow CHANGELOG to be viewable from the GUI
+-feature#3647: When adding datasource fails from CLI, created Datasource ID should be printed
 -feature#3666: Update jstree.js to 3.3.10
+-feature#3688: Update phpseclib to 2.0.28
 
 1.2.12
 -security#3467: Lack of escaping of color items can lead to XSS exposure (CVE-2020-7106)
@@ -69,7 +82,7 @@ Cacti CHANGELOG
 -issue#3454: Cacti's Reports are not displaying messages correctly
 -issue#3457: Graphs can not properly handle negative axis values
 -issue#3459: When installing a new remote poller, connection tests can incorrectly fail
--issue#3460: Addtional changes to allow plugin folder/display names to be handled better by ddb4github
+-issue#3460: Addtional changes to allow plugin folder/display names to be handled better
 -issue#3462: Increase default memory limit for cli scripts to prevent runtime memory issues
 -issue#3463: When listing VDEF's, selecting 'has graph' can cause unexpected exceptions in logs
 -issue#3468: Graph rules cannot be created for automation
@@ -88,7 +101,7 @@ Cacti CHANGELOG
 -issue#3506: After successfully logging in, a user can become automatically logged out again
 -issue#3507: Changes to JavaScript's Storage API cause exceptions to be thrown
 -issue#3510: Only guests can actually guest only pages, logged in users are denied access incorrectly
--issue#3512: When plugins update, registered files list cannot always be updated by ddb4github
+-issue#3512: When plugins update, registered files list cannot always be updated
 -issue#3520: When viewing graphs, shifting time does not work when using non-english languages
 -issue#3576: LDAP Authentication succeeds, but login fails due to bad session handling
 -issue#3629: Log files are not rotated properly on remote pollers
@@ -511,7 +524,7 @@ Cacti CHANGELOG
 -issue#2282: Install Wizard does not Detect RRDtool Version on Windows
 -issue#2430: "New Device" menu item showing as selected incorrect when "Devices" clicked
 -issue#2435: Tree View becomes narrower and narrower when expanding/collapsing nodes with long names
--issue#2449: Index incorrectly changed to 1 if the index is alphanumeric when  OID/REGEXP: or OIDVALUE/REGEXP:
+-issue#2449: Index incorrectly changed to 1 if the index is alphanumeric when OID/REGEXP: or OIDVALUE/REGEXP:
 -issue#2452: Missing 'getSNMPQueries()' function when calling add_data_query.php
 -issue#2453: When running add_graphs.php, cannot retrieve list of valid snmp values
 -issue#2460: sqltable_to_php.php does not export 'default' value of columns correctly

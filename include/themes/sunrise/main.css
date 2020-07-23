@@ -1850,6 +1850,8 @@ table.cactiTable {
 	color: #00438C !important;
 	height: 14px !important;
 	font-size: 14px !important;
+	display: inline-block;
+	width: 11.75px;
 	vertical-align: middle;
 	text-decoration: none !important;
 }
@@ -1859,7 +1861,8 @@ table.cactiTable {
 }
 
 .moveArrowNone {
-	padding-left: 8.75;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {

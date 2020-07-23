@@ -416,7 +416,7 @@ $fields_data_input_field_edit_2 = array(
 
 /* file: data_input.php, action: field_edit */
 $fields_data_input_field_edit = array(
-	'name' => array(
+	'fname' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Friendly Name'),
 		'description' => __('Enter a meaningful name for this data input method.'),
@@ -961,7 +961,7 @@ $struct_graph_item = array(
 	'cdef_id' => array(
 		'friendly_name' => __('CDEF Function'),
 		'method' => 'drop_sql',
-		'sql' => 'SELECT id, name FROM cdef WHERE name NOT LIKE "\_%" ORDER BY name',
+		'sql' => 'SELECT id, name FROM cdef ORDER BY name',
 		'default' => '0',
 		'none_value' => __('None'),
 		'description' => __('A CDEF (math) function to apply to this item on the graph or legend.')
