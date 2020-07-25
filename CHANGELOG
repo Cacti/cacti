@@ -9,6 +9,8 @@ Cacti CHANGELOG
 -issue#3555: Increase device threads up to 10
 -issue#3559: When a developer uses backtracing, HTML output can be seen from command line bug confirmed
 -issue#3560: When using `input_validate_xxx`, calls to `die_html_input_error()` do not pass variable name bug confirmed
+-issue#3636: Spikekill method variable is misinterpreted when calculating overall statistics
+-issue#3675: Spikekill fills in NaN values outside specified time range
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1523: Value above RRD maximum value
 -feature#2437: Create system-wide Proxy settings for plugins
@@ -22,6 +24,7 @@ Cacti CHANGELOG
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#3558: Allow copy_user cli script to set various additional fields
 -feature#3585: CLI script to show database permissions that Cacti has
+-feature#3620: Spikekill operation changed from left-to-right to highest-downward
 
 1.2.13
 -security#3544: Cacti is affected by CVE-2020-11022 and CVE-2020-11023
