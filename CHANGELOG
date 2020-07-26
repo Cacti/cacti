@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#3695: Spikekill `percent` is converted from percent to decimal twice, making it 1/100 of the true size
 -issue#3676: Device not showing up in device page but showing up in Monitor tab (continued)
 -issue#3719: When tooltip is too long, the scroll bar exists, and cannot be scrolled, which makes the tooltip be hided
+-issue#3723: Improper escaping of error message leads to XSS during template import preview
 -feature#3619: Spikekill percent does not go high enough
 -feature#3615: Spikekill user options differ from Spikekill global options
 
