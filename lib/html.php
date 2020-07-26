@@ -1139,7 +1139,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if ($disable_controls == false) { print '</a>'; }
 			print '</td>';
 
-			if (empty($item['data_source_name'])) { $item['data_source_name'] = __('No Task'); }
+			if (empty($item['data_source_name'])) {
+				$item['data_source_name'] = __('No Source');
+			}
 
 			switch (true) {
 			case preg_match('/(TEXTALIGN)/', $_graph_type_name):
@@ -1195,20 +1197,27 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			}
 
 			if ($disable_controls == false) {
-				print "<td style='text-align:right;padding-right:10px;'>";
+				print "<td class='right nowrap'>";
+
 				if ($i != cacti_sizeof($item_list)-1) {
-					print "<a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a>";
+					print "<span><a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
+
 				if ($i > 0) {
-					print "<a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a>";
+					print "<span><a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
+
 				print '</td>';
 
-				print "<td style='text-align:right;'><a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a></td>";
+				print "<td style='width:1%' class='right'>";
+
+				print "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
+
+				print "</td>";
 			}
 
 			print '</tr>';

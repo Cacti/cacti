@@ -46,13 +46,15 @@ if (cacti_sizeof($parms)) {
 	$graph_type    = '';
 	$templateGraph = array();
 	$dsGraph       = array();
-	$dsGraph['snmpFieldSpec']  = '';
-	$dsGraph['snmpQueryId']    = '';
-	$dsGraph['snmpQueryType']  = '';
-	$dsGraph['snmpField']      = array();
-	$dsGraph['snmpValue']      = array();
-	$dsGraph['snmpValueRegex'] = array();
-	$dsGraph['reindex_method'] = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
+	$dsGraph['snmpFieldSpec']    = '';
+	$dsGraph['snmpQueryId']      = '';
+	$dsGraph['snmpQueryType']    = '';
+	$dsGraph['snmpField']        = array();
+	$dsGraph['snmpValue']        = array();
+	$dsGraph['snmpValueRegex']   = array();
+	$dsGraph['snmpFieldExclude'] = array();
+	$dsGraph['snmpValueExclude'] = array();
+	$dsGraph['reindex_method']   = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
 
 	$input_fields  = array();
 	$values['cg']  = array();
@@ -93,6 +95,8 @@ if (cacti_sizeof($parms)) {
 		'snmp-field::',
 		'snmp-value::',
 		'snmp-value-regex::',
+		'snmp-field-exclude::',
+		'snmp-value-exclude::',
 		'reindex-method::',
 
 		'list-hosts',
@@ -177,6 +181,31 @@ if (cacti_sizeof($parms)) {
 			}
 
 			$dsGraph['snmpValue'] = $value;
+			$allow_multi = true;
+
+			break;
+		case 'snmp-field-exclude':
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+
+			$dsGraph['snmpFieldExclude'] = $value;
+			$allow_multi = true;
+
+			break;
+		case 'snmp-value-exclude':
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+
+			foreach($value as $item) {
+				if (!validate_is_regex($item)) {
+					print "ERROR: Exclude Regex specified '$item', is not a valid Regex!\n";
+					exit(1);
+				}
+			}
+
+			$dsGraph['snmpValueExclude'] = $value;
 			$allow_multi = true;
 
 			break;
@@ -373,7 +402,7 @@ if (cacti_sizeof($parms)) {
 	}
 
 	/* process the snmp fields */
-	if ($graph_type == 'dq' || $listSNMPFields || $listSNMPValues) {
+	if ($graph_type == 'dq' || $graph_type == 'ds' || $listSNMPFields || $listSNMPValues) {
 		$snmpFields = getSNMPFields($host_id, $dsGraph['snmpQueryId']);
 
 		if ($listSNMPFields) {
@@ -390,13 +419,20 @@ if (cacti_sizeof($parms)) {
 			exit(1);
 		}
 
-		$nbSnmpFields      = cacti_sizeof($dsGraph['snmpField']);
-		$nbSnmpValues      = cacti_sizeof($dsGraph['snmpValue']);
-		$nbSnmpValuesRegex = cacti_sizeof($dsGraph['snmpValueRegex']);
+		$nbSnmpFields        = cacti_sizeof($dsGraph['snmpField']);
+		$nbSnmpFieldsExclude = cacti_sizeof($dsGraph['snmpFieldExclude']);
+		$nbSnmpValues        = cacti_sizeof($dsGraph['snmpValue']);
+		$nbSnmpValuesRegex   = cacti_sizeof($dsGraph['snmpValueRegex']);
+		$nbSnmpValuesExclude = cacti_sizeof($dsGraph['snmpValueExclude']);
 
 		if ($nbSnmpValues) {
 			if ($nbSnmpFields != $nbSnmpValues) {
 				print "ERROR: number of --snmp-field and --snmp-value does not match\n";
+				exit(1);
+			}
+		} elseif ($nbSnmpValuesExclude) {
+			if ($nbSnmpFieldsExclude != $nbSnmpValuesExclude) {
+				print "ERROR: number of --snmp-field-exclude and --snmp-value-exclude does not match\n";
 				exit(1);
 			}
 		} elseif ($nbSnmpValuesRegex) {
@@ -413,7 +449,7 @@ if (cacti_sizeof($parms)) {
 		foreach($dsGraph['snmpField'] as $snmpField) {
 			if ($snmpField != '') {
 				if (!isset($snmpFields[$snmpField] )) {
-					print 'ERROR: Unknown snmp-field ' . $dsGraph['snmpField'] . " for host $host_id\n";
+					print 'ERROR: Unknown snmp-field ' . $dsGraph['snmpField'][$index_filter] . " for host $host_id\n";
 					print "Try --list-snmp-fields\n";
 					exit(1);
 				}
@@ -465,6 +501,18 @@ if (cacti_sizeof($parms)) {
 			$index_filter++;
 		}
 
+		$index_filter = 0;
+		foreach($dsGraph['snmpFieldExclude'] as $snmpField) {
+			if ($snmpField != '') {
+				if (!isset($snmpFields[$snmpField] )) {
+					print 'ERROR: Unknown snmp-field-exclude ' . $dsGraph['snmpFieldExclude'][$index_filter] . " for host $host_id\n";
+					print "Try --list-snmp-fields\n";
+					exit(1);
+				}
+			}
+			$index_filter++;
+		}
+		
 		if ($listSNMPValues)  {
 			if (!$dsGraph['snmpField']) {
 				print "ERROR: You must supply an snmp-field before you can list its values\n";
@@ -644,7 +692,17 @@ if (cacti_sizeof($parms)) {
 				$index_snmp_filter++;
 			}
 		}
-
+		
+		$index_snmp_filter = 0;
+		if (cacti_sizeof($dsGraph['snmpFieldExclude'])) {
+			foreach ($dsGraph['snmpFieldExclude'] as $snmpField) {
+					$req  .= ' AND snmp_index NOT IN (
+					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
+					$req .= ' AND field_value REGEXP "' . addslashes($dsGraph['snmpValueExclude'][$index_snmp_filter]) . '")';
+					$index_snmp_filter++;
+			}
+		}
+		
 		$snmp_indexes = db_fetch_assoc($req);
 
 		if (cacti_sizeof($snmp_indexes)) {
@@ -730,6 +788,11 @@ if (cacti_sizeof($parms)) {
 			} else {
 				$err_msg .= implode(',',$dsGraph['snmpValueRegex']);
 			}
+			
+			if (cacti_sizeof($dsGraph['snmpValueExclude'])) {
+			$err_msg .= ') and snmp-field-exclude (' . implode(',',$dsGraph['snmpFieldExclude']) . ' ) with values (' . implode(',',$dsGraph['snmpValueExclude']);
+			}
+			
 			$err_msg .= ') for host-id ' . $host_id . ' (' . $hosts[$host_id]['hostname'] . ")\n";
 
 			print $err_msg;
@@ -773,12 +836,15 @@ function display_help() {
 	print "    [--graph-title=S]       Defaults to what ever is in the Graph Template/Data Template.\n";
 	print "    [--reindex-method=N]    The reindex method to be used for that data query.\n";
 	print "                            NOTE: If Data Query is already associated, the reindex method will NOT be changed.\n\n";
+	print "    --snmp-field-exclude=[SNMP Field] | --snmp-value-exclude=[REGEX]";
+	print "				   Optionally used to exclude specific word/s in adding graphs";
 	print "    Valid --reindex-methos include\n";
 	print "        0|None   = No reindexing\n";
 	print "        1|Uptime = Uptime goes Backwards (Default)\n";
 	print "        2|Index  = Index Count Changed\n";
 	print "        3|Fields = Verify all Fields\n\n";
 	print "    NOTE: You may supply multiples of the --snmp-field and --snmp-value | --snmp-value-regex arguments.\n\n";
+	print "    NOTE2: You may supply multiples of the --snmp-field-exclude and --snmp-value-exclude arguments.\n\n";
 	print "List Options:\n";
 	print "    --list-hosts\n";
 	print "    --list-graph-templates [--host-template-id=[ID]]\n";

@@ -309,6 +309,13 @@ $settings = array(
 			'default' => POLLER_VERBOSITY_LOW,
 			'array' => $logfile_verbosity,
 			),
+		'log_expand' => array(
+			'friendly_name' => __('Expand log details'),
+			'description' => __('What level of expansion do you want on the log file? Increase expansion can slow search results'),
+			'method' => 'drop_array',
+			'default' => LOG_EXPAND_FULL,
+			'array' => $logfile_expansion
+			),
 		'log_validation' => array(
 			'friendly_name' => __('Log Input Validation Issues'),
 			'description' => __('Record when request fields are accessed without going through proper input validation'),
@@ -1431,6 +1438,25 @@ $settings = array(
 				'10' => __('%d Changes', 10),
 				'11' => __('%d Changes', 11),
 				'12' => __('%d Changes', 12) )
+			),
+		'secpass_pwned_header' => array(
+			'friendly_name' => __('Pwned Checks (Online)'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'secpass_pwnedcheck' => array(
+			'friendly_name' => __('Pwned Check'),
+			'description' => __('Check password against haveibeenpwned.com'),
+			'method' => 'checkbox',
+			'default' => '',
+		),
+		'secpass_pwnedcount' => array(
+			'friendly_name' => __('Pwned Threshold'),
+			'description' => __('Block use of a password once it reaches this reported usage level'),
+			'method' => 'textbox',
+			'default' => '8',
+			'max_length' => 2,
+			'size' => 4
 			),
 		'secpass_lock_header' => array(
 			'friendly_name' => __('Account Locking'),

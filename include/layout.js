@@ -639,8 +639,8 @@ function applyTimespanFilterChange() {
 /** cactiReturnTo - This function simply returns to the previous page
  *  @args href - the previous page */
 function cactiReturnTo(href) {
-	if (typeof href == 'string') {
-		href = document.location.href;
+	if (typeof href !== 'string' || href.trim() == '') {
+		href = document.referrer;
 	}
 	loadUrl({url:href});
 }
@@ -2087,7 +2087,7 @@ function handleAjaxResponse(html, options) {
 	}
 
 	if (options.funcEnd != '') {
-		window[options.funcEnd](options);
+		window[options.funcEnd](options, html);
 	}
 
 	if (options.redirect.trim() != '') {
@@ -3134,7 +3134,7 @@ function removeSpikesVariance(local_graph_id) {
 }
 
 function removeSpikesInRange(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=fill&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
@@ -3152,7 +3152,7 @@ function removeSpikesInRange(local_graph_id) {
 }
 
 function removeRangeFill(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=float&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
@@ -3210,7 +3210,7 @@ function dryRunVariance(local_graph_id) {
 }
 
 function dryRunSpikesInRange(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=fill&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
@@ -3231,7 +3231,7 @@ function dryRunSpikesInRange(local_graph_id) {
 }
 
 function dryRunRangeFill(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=float&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
@@ -3489,6 +3489,7 @@ function initializeGraphs() {
 
 	$('a[id$="_util"]').each(function() {
 		var graph_id = $(this).attr('id').replace('graph_','').replace('_util','');
+
 		$(this).attr('href',urlPath+
 			'graph.php?action=zoom&local_graph_id='+graph_id+
 			'&rra_id=0&graph_start='+timestampDate1+

@@ -105,6 +105,11 @@ define('GRAPH_ITEM_TYPE_LINESTACK',         20);
 define('GRAPH_ITEM_TYPE_TIC',               30);
 define('GRAPH_ITEM_TYPE_TEXTALIGN',         40);
 
+define('POLLER_DELETE', 1);
+define('POLLER_DISABLE', 2);
+define('POLLER_ENABLE', 3);
+define('POLLER_RESYNC', 4);
+
 /* used both for polling and reindexing */
 define('POLLER_ACTION_SNMP', 0);
 define('POLLER_ACTION_SCRIPT', 1);
@@ -259,6 +264,10 @@ define('SNMPAGENT_EVENT_SEVERITY_LOW', 1);
 define('SNMPAGENT_EVENT_SEVERITY_MEDIUM', 2);
 define('SNMPAGENT_EVENT_SEVERITY_HIGH', 3);
 define('SNMPAGENT_EVENT_SEVERITY_CRITICAL', 4);
+
+define('LOG_EXPAND_FULL', 0);
+define('LOG_EXPAND_NONE', 1);
+define('LOG_EXPAND_DISPLAY', 2);
 
 define('CLOG_PERM_ADMIN', 0);
 define('CLOG_PERM_USER',  1);

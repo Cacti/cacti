@@ -211,8 +211,21 @@ case 'view':
 						"' value_max='"+data.value_max+"'>"
 					);
 
-					responsiveResizeGraphs();
+					$('#graph_start').val(data.graph_start);
+					$('#graph_end').val(data.graph_end);
 
+					var graph_id = '#graph_'+data.local_graph_id;
+					if (data.rra_id > 0) {
+						graph_id += '[rra_id=\'' + data.rra_id + '\']';
+					}
+
+					$(graph_id).zoom({
+						inputfieldStartTime : 'date1',
+						inputfieldEndTime : 'date2',
+						serverTimeOffset : <?php print date('Z');?>
+					});
+
+					responsiveResizeGraphs();
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -472,12 +485,12 @@ case 'zoom':
 					$(graph_id).zoom({
 						inputfieldStartTime : 'date1',
 						inputfieldEndTime : 'date2',
-						serverTimeOffset : <?php print date('Z') . "\n";?>
+						serverTimeOffset : <?php print date('Z');?>
 					});
 
 					if (graph_data_on) {
 						graphXport();
-					}else if (props_on) {
+					} else if (props_on) {
 						graphProperties();
 					}
 
@@ -486,7 +499,6 @@ case 'zoom':
 				.fail(function(data) {
 					getPresentHTTPError(data);
 				});
-
 		});
 
 		$('a[id$="_properties"]').unbind('click').click(function() {
