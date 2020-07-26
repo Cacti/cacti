@@ -151,21 +151,37 @@ class spikekill {
 		     in the database, if exists -> overridden by the user's setting, if
 		     exists -> overridden by an argument provided during class creation */
 		$dmethod = read_config_option('spikekill_method', true);
-		if (isset($dmethod)) $this->dmethod = $dmethod;
+		if (isset($dmethod)) {
+			$this->dmethod = $dmethod;
+		}
 		$dnumspike = read_config_option('spikekill_number', true);
-		if (isset($dnumspike)) $this->dnumspike = $dnumspike;
+		if (isset($dnumspike)) {
+			$this->dnumspike = $dnumspike;
+		}
 		$dstddev = read_config_option('spikekill_deviations', true);
-		if (isset($dstddev)) $this->dstddev = $dstddev;
+		if (isset($dstddev)) {
+			$this->dstddev = $dstddev;
+		}
 		$dpercent = read_config_option('spikekill_percent', true);
-		if (isset($dpercent)) $this->dpercent = $dpercent;
+		if (isset($dpercent)) {
+			$this->dpercent = $dpercent;
+		}
 		$doutliers = read_config_option('spikekill_outliers', true);
-		if (isset($doutliers)) $this->doutliers = $doutliers;
+		if (isset($doutliers)) {
+			$this->doutliers = $doutliers;
+		}
 		$davgnan = read_config_option('spikekill_avgnan', true);
-		if (isset($davgnan)) $this->davgnan = $davgnan;
+		if (isset($davgnan)) {
+			$this->davgnan = $davgnan;
+		}
 		$ddsfilter = read_config_option('spikekill_dsfilter',true);
-		if (isset($ddsfilter)) $this->ddsfilter = $ddsfilter;
+		if (isset($ddsfilter)) {
+			$this->ddsfilter = $ddsfilter;
+		}
 		$dabsmax = read_config_option('spikekill_absmax',true);
-		if (isset($dabsmax)) $this->dabsmax = $dabsmax;
+		if (isset($dabsmax)) {
+			$this->dabsmax = $dabsmax;
+		}
 
 		return true;
 	}
@@ -223,14 +239,30 @@ class spikekill {
 		/* if values were not specified when the class was created, then pull the
 		   correct values from the default (which came from the user's settings,
 		   or the global settings, or statically defined by the class */
-		if ($this->avgnan == '') $this->avgnan = $uavgnan;
-		if ($this->method == '') $this->method = $umethod;
-		if ($this->numspike == '') $this->numspike = $unumspike;
-		if ($this->stddev == '') $this->stddev = $ustddev;
-		if ($this->percent == '') $this->percent = $upercent;
-		if ($this->outliers == '') $this->outliers = $uoutliers;
-		if ($this->dsfilter == '') $this->dsfilter = $udsfilter;
-		if ($this->absmax == '') $this->absmax = $uabsmax;
+		if ($this->avgnan == '') {
+			$this->avgnan = $uavgnan;
+		}
+		if ($this->method == '') {
+			$this->method = $umethod;
+		}
+		if ($this->numspike == '') {
+			$this->numspike = $unumspike;
+		}
+		if ($this->stddev == '') {
+			$this->stddev = $ustddev;
+		}
+		if ($this->percent == '') {
+			$this->percent = $upercent;
+		}
+		if ($this->outliers == '') {
+			$this->outliers = $uoutliers;
+		}
+		if ($this->dsfilter == '') {
+			$this->dsfilter = $udsfilter;
+		}
+		if ($this->absmax == '') {
+			$this->absmax = $uabsmax;
+		}
 
 		if (!is_numeric($this->stddev) || ($this->stddev < 1)) {
 			$this->set_error("FATAL: Standard Deviation must be a positive integer.");
