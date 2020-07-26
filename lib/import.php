@@ -981,7 +981,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 		$path = str_replace('<path_cacti>', $config['base_path'], $save['xml_path']);
 
 		if (!file_exists($path) || !is_readable($path)) {
-			raise_message('resource_missing_' . $counter, __('Resource File: \'%s\' is missing or not readable.  Make sure you install it before using Data Query: \'%s\'', $path, $save['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('resource_missing_' . $counter, __esc('Resource File: \'%s\' is missing or not readable.  Make sure you install it before using Data Query: \'%s\'', $path, $save['name']), MESSAGE_LEVEL_ERROR);
 			$counter++;
 		}
 	}
@@ -2090,7 +2090,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 
 			print "<ul>";
 			foreach($filestatus as $filename => $status) {
-				print "<li>" . ($preview ? __("[preview] "):"") . $filename . " [" . $status . "]</li>\n";
+				print "<li>" . ($preview ? __("[preview] "):"") . html_escape($filename) . " [" . $status . "]</li>\n";
 			}
 			print "</ul>";
 		} else {
