@@ -2191,7 +2191,7 @@ $settings = array(
 			),
 		'spikekill_absmax' => array(
 			'friendly_name' => __('Absolute Maximum Value'),
-			'description' => __('This value represents the maximum raw value of any datapoint to remove from a Graph RRA.'),
+			'description' => __('This value represents the maximum raw value of any data point to remove from a Graph RRA.'),
 			'method' => 'drop_array',
 			'default' => '12500000000',
 			'array' => array(
