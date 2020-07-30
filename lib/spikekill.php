@@ -82,7 +82,8 @@ class spikekill {
 	private $errors = array();
 
 	public function __construct($rrdfile = '', $method = '', $avgnan = '', $stddev = '',
-		$out_start = '', $out_end = '', $outliers = '', $percent = '', $numspike = '') {
+		$out_start = '', $out_end = '', $outliers = '', $percent = '', $numspike = '',
+		$dsfilter = '', $absmax = '') {
 
 		$this->username  = 'OsUser:' . get_current_user();
 		$this->user_info = array();
@@ -135,6 +136,14 @@ class spikekill {
 
 		if ($numspike != '') {
 			$this->numspike = $numspike;
+		}
+
+		if ($dsfilter != '') {
+			$this->dsfilter = $dsfilter;
+		}
+
+		if ($absmax != '') {
+			$this->absmax = $absmax;
 		}
 
 		$this->dmethod   = read_config_option('spikekill_method', true);
@@ -868,6 +877,17 @@ class spikekill {
 
 							if ($rra[$rra_num][$ds_num]['numnksamples'] > 0) {
 								$rra[$rra_num][$ds_num]['avgnksamples'] = $rra[$rra_num][$ds_num]['sumnksamples'] / $rra[$rra_num][$ds_num]['numnksamples'];
+							} else {
+								$rra[$rra_num][$ds_num]['standard_deviation'] = 'N/A';
+								$rra[$rra_num][$ds_num]['average']            = 'N/A';
+								$rra[$rra_num][$ds_num]['min_cutoff']         = 'N/A';
+								$rra[$rra_num][$ds_num]['max_cutoff']         = 'N/A';
+								$rra[$rra_num][$ds_num]['numnksamples']       = 'N/A';
+								$rra[$rra_num][$ds_num]['sumnksamples']       = 'N/A';
+								$rra[$rra_num][$ds_num]['avgnksamples']       = 'N/A';
+								$rra[$rra_num][$ds_num]['stddev_killed']      = 'N/A';
+								$rra[$rra_num][$ds_num]['variance_killed']    = 'N/A';
+								$rra[$rra_num][$ds_num]['outwind_killed']     = 'N/A';
 							}
 						} else {
 							$rra[$rra_num][$ds_num]['standard_deviation'] = 'N/A';

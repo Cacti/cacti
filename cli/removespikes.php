@@ -51,12 +51,14 @@ $backup    = false;
 $out_set   = false;
 $user      = get_current_user();
 
-$method   = read_config_option('spikekill_method', 1);
-$numspike = read_config_option('spikekill_number', 10);
-$stddev   = read_config_option('spikekill_deviations', 10);
-$percent  = read_config_option('spikekill_percent', 500);
-$outliers = read_config_option('spikekill_outliers', 5);
-$avgnan   = read_config_option('spikekill_avgnan', 'last');
+$method   = read_config_option('spikekill_method',true);
+$numspike = read_config_option('spikekill_number',true);
+$stddev   = read_config_option('spikekill_deviations',true);
+$percent  = read_config_option('spikekill_percent',true);
+$outliers = read_config_option('spikekill_outliers',true);
+$avgnan   = read_config_option('spikekill_avgnan',true);
+$absmax   = read_config_option('spikekill_absmax',true);
+$dsfilter = read_config_option('spikekill_dsfilter',true);
 
 switch($method) {
 	case '1':
@@ -70,6 +72,9 @@ switch($method) {
 		break;
 	case '4':
 		$method = 'fill';
+		break;
+	case '5':
+		$method = 'absolute';
 		break;
 	default:
 		$method = 'variance';
@@ -165,6 +170,14 @@ if (cacti_sizeof($parms)) {
 			case '-h':
 				display_help();
 				exit(0);
+			case '--absmax':
+				$absmax = $value;
+
+				break;
+			case '--dsfilter':
+				$dsfilter = $value;
+
+				break;
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
@@ -176,7 +189,7 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 }
 
-$spiker = new spikekill($rrdfile, $method, $avgnan, $stddev, $out_start, $out_end, $outliers, $percent, $numspike);
+$spiker = new spikekill($rrdfile, $method, $avgnan, $stddev, $out_start, $out_end, $outliers, $percent, $numspike, $dsfilter, $absmax);
 
 if ($debug) {
 	$spiker->debug = true;
@@ -217,8 +230,8 @@ function display_help () {
 
 	print "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";
 	print "    [-O|--outliers=N | --outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]\n";
-	print "    [-P|--percent=N] [-N|--number=N] [-D|--dryrun] [-d|--debug]\n";
-	print "    [--html]\n\n";
+	print "    [-P|--percent=N] [-N|--number=N] [--absmax=<value>] [-D|--dryrun] [-d|--debug]\n";
+	print "    [--html] [--dsfilter=<filter>]\n\n";
 
 	print "A utility to programmatically remove spikes from Cacti graphs. If no optional input parameters\n";
 	print "are specified the defaults are taken from the Cacti database.\n\n";
@@ -227,11 +240,13 @@ function display_help () {
 	print "    --rrdfile=F   - The path to the RRDfile that will be de-spiked.\n\n";
 
 	print "Optional:\n";
-	print "    --method        - The spike removal method to use.  Options are stddev|variance|fill|float\n";
+	print "    --method        - The spike removal method to use.  Options are stddev|variance|fill|float|absolute\n";
 	print "    --avgnan        - The spike replacement method to use.  Options are last|avg|nan\n";
 	print "    --stddev        - The number of standard deviations +/- allowed\n";
 	print "    --percent       - The sample to sample percentage variation allowed\n";
 	print "    --number        - The maximum number of spikes to remove from the RRDfile\n";
+	print "    --absmax        - The absolute maximum value of a data point to remove from the RRDfile\n";
+	print "    --dsfilter      - Specifies the DSes inside an RRD upon which Spikekill will operate\n";
 	print "    --outlier-start - A start date of an incident where all data should be considered\n";
 	print "                      invalid data and should be excluded from average calculations.\n";
 	print "    --outlier-end   - An end date of an incident where all data should be considered\n";

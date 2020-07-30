@@ -2171,6 +2171,9 @@ function html_spikekill_actions() {
 				case 'rkills':
 					set_user_setting('spikekill_number', get_filter_request_var('id'));
 					break;
+				case 'rabsmax':
+					set_user_setting('spikekill_absmax', get_filter_request_var('id'));
+					break;
 			}
 
 			break;
@@ -2240,6 +2243,12 @@ function html_spikekill_menu($local_graph_id) {
 	}
 	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
 
+	$rabsmax  = '';
+	foreach ($settings['spikes']['spikekill_absmax']['array'] as $key => $value) {
+		$rabsmax .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_absmax') == $key ? 'fa fa-check':'fa', 'skabsmax', 'absmax_' . $key);
+	}
+	$rabsmax = html_spikekill_menu_item(__('Absolute Max Value'), '', '', '', '', $rabsmax);
+
 	?>
 	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
 	<ul class='spikekillMenu' style='font-size:1em;'>
@@ -2248,13 +2257,15 @@ function html_spikekill_menu($local_graph_id) {
 	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering fa fa-life-ring', 'rvariance', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown fa fa-life-ring', 'routlier', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Float Range'), 'deviceDown fa fa-life-ring', 'rrangefill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Absolute Maximum'), 'deviceError fa fa-life-ring', 'rabsolute', '',  $local_graph_id);
 
 	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp fa fa-check', 'dstddev', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering fa fa-check', 'dvariance', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown fa fa-check', 'doutlier', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown fa fa-check', 'drangefill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Absolute Maximum'), 'deviceError fa fa-check', 'dabsolute', '',  $local_graph_id);
 
-	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills);
+	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills . $rabsmax);
 }
 
 function html_spikekill_js() {
@@ -2353,6 +2364,16 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
+		$('.rabsolute').unbind().click(function() {
+			removeSpikesAbsolute($(this).attr('data-graph'));
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+		});
+
+		$('.dabsolute').unbind().click(function() {
+			dryRunAbsolute($(this).attr('data-graph'));
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+		});
+
 		$('.skmethod').unbind().click(function() {
 			$('.skmethod').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
@@ -2407,6 +2428,18 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rvarout&id='+$(this).attr('id').replace('varout_','');
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
+		});
+
+		$('.skabsmax').unbind().click(function() {
+			$('.skabsmax').find('i').removeClass('fa fa-check');
+			$(this).find('i:first').addClass('fa fa-check');
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+
+			strURL = '?action=spikesave&setting=rabsmax&id='+$(this).attr('id').replace('absmax_','');
 			$.get(strURL)
 				.fail(function(data) {
 					getPresentHTTPError(data);

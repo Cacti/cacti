@@ -2552,6 +2552,37 @@ $settings = array(
 				100 => __('%d Spikes', 100),
 			)
 		),
+		'spikekill_absmax' => array(
+			'friendly_name' => __('Absolute Maximum Value'),
+			'description' => __('This value represents the maximum raw value of any data point to remove from a Graph RRA.'),
+			'method' => 'drop_array',
+			'default' => '12500000000',
+			'array' => array(
+				1000  => __('1 Thousand'),
+				10000  => __('10 Thousand'),
+				100000  => __('100 Thousand'),
+				1000000  => __('1 Million'),
+				2500000  => __('2.5 Million (20 Megabits)'),
+				7500000  => __('7.5 Million (60 Megabits)'),
+				10000000  => __('10 Million'),
+				12500000  => __('12.5 Million (100 Megabits)'),
+				31250000  => __('31.3 Million (250 Megabits)'),
+				75000000  => __('75 Million (600 Megabits)'),
+				100000000  => __('100 Million'),
+				125000000  => __('125 Million (1 Gigabit)'),
+				1000000000  => __('1 Billion'),
+				1250000000  => __('1.25 Billion (10 Gigabits)'),
+				12500000000  => __('12.5 Billion (100 Gigabits)'),
+			)
+		),
+		'spikekill_dsfilter' => array(
+			'friendly_name' => __('DS Filter'),
+			'description' => __('Specifies the DSes inside an RRD upon which Spikekill will operate. A string of comma-separated values that contains index numbers or names of desired DSes. If left blank, all DSes will match. An example is <i>"5,traffic_*"</i>, which would match DS index 5 as well as any DS whose name begins with <i>"traffic_"</i>. '),
+			'method' => 'textbox',
+			'max_length' => '100',
+			'default' => '',
+			'size' => '30'
+		),
 		'spikekill_backupdir' => array(
 			'friendly_name' => __('RRDfile Backup Directory'),
 			'description' => __('If this directory is not empty, then your original RRDfiles will be backed up to this location.'),
@@ -2590,7 +2621,7 @@ $settings = array(
 			'friendly_name' => __('Graph Templates to Spike Kill'),
 			'method' => 'drop_multi',
 			'description' => __('When performing batch spike removal, only the templates selected below will be acted on.'),
-			'array' => array()
+			'array' => $spikekill_templates,
 		),
 		'spikekill_purge' => array(
 			'friendly_name' => __('Backup Retention'),

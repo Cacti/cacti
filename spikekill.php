@@ -30,9 +30,10 @@ $debug = false;
 if (isset_request_var('method')) {
 	switch(get_nfilter_request_var('method')) {
 		case 'stddev':
-		case 'float':
 		case 'variance':
 		case 'fill':
+		case 'float':
+		case 'absolute':
 			break;
 		default:
 			print __("FATAL: Spike Kill method '%s' is Invalid", html_escape(get_nfilter_request_var('method'))) . PHP_EOL;

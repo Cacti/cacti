@@ -25,6 +25,8 @@ Cacti CHANGELOG
 -feature#3568; Allow exclusion of snmp fields / value(s) when adding graphs via CLI
 -feature#3677: Relocate the delete button for collectors to the edit page
 -feature#3679: Allow searching logs by name, not just id
+-feature#3724: Create Spikekill method to kill values over an absolute maximum
+-feature#3725: Create the ability for Spikekill to modify only certain DSes within an RRD
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
