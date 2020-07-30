@@ -3169,6 +3169,22 @@ function removeRangeFill(local_graph_id) {
 	);
 }
 
+function removeSpikesAbsolute(local_graph_id) {
+	var strURL = urlPath+'spikekill.php?method=absolute&local_graph_id='+local_graph_id;
+
+	$.getJSON(strURL)
+		.done(function(data) {
+			checkForLogout(data);
+
+			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		}
+	);
+}
+
 function dryRunStdDev(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
 
@@ -3240,6 +3256,24 @@ function dryRunRangeFill(local_graph_id) {
 			checkForLogout(data);
 
 			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		}
+	);
+}
+
+function dryRunAbsolute(local_graph_id) {
+	var strURL = urlPath+'spikekill.php?method=absolute&dryrun=true&local_graph_id='+local_graph_id;
+
+	$.getJSON(strURL)
+		.done(function(data) {
+			checkForLogout(data);
+
 			$('#spikeresults').remove();
 			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
 			$('#spikeresults').html(data.results);
