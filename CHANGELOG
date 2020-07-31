@@ -10,6 +10,8 @@ Cacti CHANGELOG
 -issue#3559: When a developer uses backtracing, HTML output can be seen from command line bug confirmed
 -issue#3560: When using `input_validate_xxx`, calls to `die_html_input_error()` do not pass variable name bug confirmed
 -issue#3710: When fetching tree information, database is not queried properly
+-issue#3636: Spikekill method variable is misinterpreted when calculating overall statistics
+-issue#3675: Spikekill fills in NaN values outside specified time range
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1523: Value above RRD maximum value
 -feature#2437: Create system-wide Proxy settings for plugins
@@ -25,6 +27,7 @@ Cacti CHANGELOG
 -feature#3584: Verify passwords against Pwned databases using API
 -feature#3585: CLI script to show database permissions that Cacti has
 -feature#3568; Allow exclusion of snmp fields / value(s) when adding graphs via CLI
+-feature#3620: Spikekill operation changed from left-to-right to highest-downward
 -feature#3677: Relocate the delete button for collectors to the edit page
 -feature#3679: Allow searching logs by name, not just id
 -feature#3724: Create Spikekill method to kill values over an absolute maximum
