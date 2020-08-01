@@ -1126,7 +1126,7 @@ function utilities_get_mysql_recommendations() {
 			switch($r['measure']) {
 			case 'gem':
 				$compare = '>=';
-				$value_display = ($variables[$name]/1024/1024) . 'M';
+				$value_display = ($variables[$name]/1024/1024) . ' M';
 				$value = trim($r['value'], 'M') * 1024 * 1024;
 				if ($variables[$name] < $value) {
 					$passed = false;
@@ -1166,8 +1166,8 @@ function utilities_get_mysql_recommendations() {
 
 				$compare = '>=';
 				$passed = ($variables[$name] >= ($r['value']*$totalMem/100));
-				$value_display = round($variables[$name]/1024/1024,0) . 'M';
-				$value_recommend = round($r['value']*$totalMem/100/1024/1024,0) . 'M';
+				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
+				$value_recommend = round($r['value']*$totalMem/100/1024/1024, 2) . ' M';
 				break;
 			case 'pinst':
 				$compare = '>=';

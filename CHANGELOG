@@ -35,6 +35,14 @@ Cacti CHANGELOG
 
 1.2.14
 -issue#3695: Spikekill `percent` is converted from percent to decimal twice, making it 1/100 of the true size
+-issue#3676: Device not showing up in device page but showing up in Monitor tab (continued)
+-issue#3678: More or Equal incorrect highlighting max_heap_table_size and tmp_table_size
+-issue#3719: When tooltip is too long, the scroll bar exists, and cannot be scrolled, which makes the tooltip be hided
+-issue#3723: Improper escaping of error message leads to XSS during template import preview
+-issue#3713: When sorting data debug checks by user, no results are shown and errors recorded
+-issue#3728: Invalid uptime is not handled properly
+-feature#3619: Spikekill percent does not go high enough
+-feature#3615: Spikekill user options differ from Spikekill global options
 
 1.2.13
 -security#3544: jQuery XSS vulnerabilities require vendor package update (CVE-2020-11022 / CVE-2020-11023)

@@ -2117,7 +2117,8 @@ $settings = array(
 			'array' => array(
 				'avg'  => __('Average'),
 				'nan'  => __('NaN\'s'),
-				'last' => __('Last Known Good'))
+				'last' => __('Last Known Good'),
+				)
 			),
 		'spikekill_deviations' => array(
 			'friendly_name' => __('Number of Standard Deviations'),
@@ -2134,7 +2135,10 @@ $settings = array(
 				9 => __('%d Standard Deviations', 9),
 				10 => __('%d Standard Deviations', 10),
 				15 => __('%d Standard Deviations', 15),
-				20 => __('%d Standard Deviations', 20)
+				20 => __('%d Standard Deviations', 20),
+                                50 => __('%d Standard Deviations', 50),
+                                100 => __('%d Standard Deviations', 100),
+                                200 => __('%d Standard Deviations', 200),
 				)
 			),
 		'spikekill_percent' => array(
@@ -2154,7 +2158,11 @@ $settings = array(
 				900 => '900 %',
 				1000 => '1000 %',
 				2000 => '2000 %',
-				3000 => '3000 %'
+				3000 => '3000 %',
+                                10000 => '10000 %',
+                                50000 => '50000 %',
+                                100000 => '100000 %',
+                                500000 => '500000 %',
 				)
 			),
 		'spikekill_outliers' => array(
@@ -2171,6 +2179,11 @@ $settings = array(
 				8  => __('%d High/Low Samples', 8),
 				9  => __('%d High/Low Samples', 9),
 				10 => __('%d High/Low Samples', 10),
+                                20 => __('%d High/Low Samples', 20),
+                                50 => __('%d High/Low Samples', 50),
+                                100 => __('%d High/Low Samples', 100),
+                                500 => __('%d High/Low Samples', 500),
+                                1000 => __('%d High/Low Samples', 1000),
 				)
 			),
 		'spikekill_number' => array(
@@ -2179,14 +2192,18 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '5',
 			'array' => array(
-				3  => __('%d Samples', 3),
-				4  => __('%d Samples', 4),
-				5  => __('%d Samples', 5),
-				6  => __('%d Samples', 6),
-				7  => __('%d Samples', 7),
-				8  => __('%d Samples', 8),
-				9  => __('%d Samples', 9),
-				10 => __('%d Samples', 10),
+                                1  => __('%d Spikes', 1),
+                                2  => __('%d Spikes', 2),
+                                3  => __('%d Spikes', 3),
+                                4  => __('%d Spikes', 4),
+                                5  => __('%d Spikes', 5),
+                                6  => __('%d Spikes', 6),
+                                7  => __('%d Spikes', 7),
+                                8  => __('%d Spikes', 8),
+                                9  => __('%d Spikes', 9),
+                                10 => __('%d Spikes', 10),
+                                50 => __('%d Spikes', 50),
+                                100 => __('%d Spikes', 100),
 				)
 			),
 		'spikekill_absmax' => array(
