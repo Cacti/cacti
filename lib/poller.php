@@ -1798,7 +1798,8 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 	$pid = getmypid();
 
 	if (!db_table_exists('processes')) {
-		return false;
+		// We return true here because we assume there is no process blocking start
+		return true;
 	}
 
 	$r = db_fetch_row_prepared('SELECT *

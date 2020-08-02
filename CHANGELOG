@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#3723: Improper escaping of error message leads to XSS during template import preview
 -issue#3713: When sorting data debug checks by user, no results are shown and errors recorded
 -issue#3728: Invalid uptime is not handled properly
+-issue#3737: Poller functions may not run if process table is missing
 -feature#3619: Spikekill percent does not go high enough
 -feature#3615: Spikekill user options differ from Spikekill global options
 
