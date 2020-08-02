@@ -1027,9 +1027,6 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	include_once($config['library_path'] . '/data_query.php');
 
-	// Interim adding improved orphan support
-	add_orphan_support();
-
 	if (!graph_template_whitelist_check($graph_template_id)) {
 		raise_message(10);
 		return false;
