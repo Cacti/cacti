@@ -340,6 +340,7 @@ INSERT INTO `table_columns` VALUES ('data_local',2,'data_template_id','mediumint
 INSERT INTO `table_columns` VALUES ('data_local',3,'host_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('data_local',4,'snmp_query_id','mediumint(8)','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('data_local',5,'snmp_index','varchar(255)','NO','MUL','','');
+INSERT INTO `table_columns` VALUES ('data_local',5,'orphan','tinyint(1) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('data_source_profiles',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('data_source_profiles',2,'hash','varchar(32)','NO','','','');
 INSERT INTO `table_columns` VALUES ('data_source_profiles',3,'name','varchar(255)','NO','MUL','','');
