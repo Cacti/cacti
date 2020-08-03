@@ -147,6 +147,7 @@ function utilities_view_tech() {
 		'database'   => __('Database'),
 		'dbsettings' => __('Database Settings'),
 		'dbstatus'   => __('Database Status'),
+		'dbperms'    => __('Database Permissions'),
 		'phpinfo'    => __('PHP Info'),
 		'changelog'  => __('ChangeLog'),
 	);
@@ -804,6 +805,39 @@ function utilities_view_tech() {
 			form_alternate_row();
 			print '<td>' . $s['Variable_name'] . '</td>';
 			print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):$s['Value']) . '</td>';
+			form_end_row();
+		}
+	} elseif (get_request_var('tab') == 'dbperms') {
+		$status = db_get_permissions(true);
+
+		print "<table id='tables' class='cactiTable' style='width:100%'>";
+		print '<thead>';
+		print "<tr class='tableHeader'>";
+		print "  <th class='tableSubHeaderColumn'>" . __('Permission Name') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Value') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Permission Name') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Value') . '</th>';
+		print '</tr>';
+		print '</thead>';
+
+		$r = 0;
+		foreach($status as $k => $v) {
+			if (($r % 2) == 0) {
+				form_alternate_row();
+			}
+
+			print '<td>' . $k . '</td>';
+			print '<td>' . ($v ? __('Yes') : __('No')) . '</td>';
+
+			if (($r % 2) == 1) {
+				form_end_row();
+			}
+			$r++;
+		}
+
+		if (($r % 2) == 1) {
+			print '<td>&nbsp;</td>';
+			print '<td>&nbsp;</td>';
 			form_end_row();
 		}
 	} elseif (get_request_var('tab') == 'dbsettings') {
