@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-define('CACTI_PHP_VERSION_MINIMUM', '5.4.0');
+define('CACTI_PHP_VERSION_MINIMUM', '7.4.0');
 
 define('CACTI_DEV_VERSION','1.3.0.99.1593739325');
 

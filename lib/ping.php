@@ -358,17 +358,9 @@ class Net_Ping
  			/* initialize the socket */
 			if (strpos($host_ip, ':') !== false) {
 				if (defined('AF_INET6')) {
-					if (version_compare(PHP_VERSION, '5.5.4', '<')) {
-						$this->ping_response = __('Please upgrade to PHP 5.5.4+ for IPv6 support!');
-						$this->ping_status   = 'down';
-						$this->restore_cacti_error_handler();
-
-						return false;
-					} else {
-						$this->socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
-					}
+					$this->socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
 				} else {
-					$this->ping_response = __('Please upgrade to PHP 5.5.4+ for IPv6 support!');
+					$this->ping_response = __('IPv6 support seems to be missing!');
 					$this->ping_status   = 'down';
 					$this->restore_cacti_error_handler();
 
@@ -495,17 +487,9 @@ class Net_Ping
 			/* initialize the socket */
 			if (strpos($host_ip, ':') !== false) {
 				if (defined('AF_INET6')) {
-					if (version_compare(PHP_VERSION, '5.5.4', '<')) {
-						$this->ping_response = __('Please upgrade to PHP 5.5.4+ for IPv6 support!');
-						$this->ping_status   = 'down';
-						$this->restore_cacti_error_handler();
-
-						return false;
-					} else {
-						$this->socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP);
-					}
+					$this->socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP);
 				} else {
-					$this->ping_response = __('Please upgrade to PHP 5.5.4+ for IPv6 support!');
+					$this->ping_response = __('IPv6 support appears to be missing!');
 					$this->ping_status   = 'down';
 					$this->restore_cacti_error_handler();
 

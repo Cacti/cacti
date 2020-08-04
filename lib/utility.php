@@ -1747,8 +1747,8 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 function utility_php_verify_recommends(&$recommends, $source) {
 	global $original_memory_limit;
 
-	$rec_version    = '5.4.0';
-	$rec_memory_mb  = (version_compare(PHP_VERSION, '7.0.0', '<') ? 800 : 400);
+	$rec_version    = '7.4.0';
+	$rec_memory_mb  = 800;
 	$rec_execute_m  = 1;
 	$memory_ini     = (isset($original_memory_limit) ? $original_memory_limit : ini_get('memory_limit'));
 
