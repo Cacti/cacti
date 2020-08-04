@@ -6387,6 +6387,7 @@ function format_cacti_version_text($version) {
  */
 function get_cacti_version($force = false) {
 	cacti_log('WARNING: get_cacti_version() called, consider replacing with CACTI_VERSION', false, 'DEPRECIATED');
+	cacti_debug_backtrace('CACTI WARNING', false, true, 0, 1);
 	return CACTI_VERSION;
 }
 
