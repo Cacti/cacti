@@ -34,8 +34,6 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		return false;
 	}
 
-	add_orphan_support();
-
 	/* don't run/rerun the query if the host is down, or disabled */
 	$status = db_fetch_row_prepared('SELECT status, disabled, poller_id
 		FROM host
@@ -2275,10 +2273,3 @@ function api_data_query_errors($snmp_query_graph_id, $post) {
 
 	return $errors;
 }
-
-function add_orphan_support() {
-	if (!db_column_exists('data_local', 'orphan')) {
-		db_execute('ALTER TABLE data_local ADD COLUMN orphan tinyint unsigned NOT NULL default "0" AFTER snmp_index');
-	}
-}
-

@@ -48,9 +48,6 @@ set_default_action();
 
 validate_data_source_vars();
 
-// Add interim support for enhanced orphan handling
-add_orphan_support();
-
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
