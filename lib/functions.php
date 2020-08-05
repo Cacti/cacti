@@ -5908,6 +5908,26 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 
 function CactiShutdownHandler() {
 	global $phperrors;
+
+	$phperrors = $phperrors ?? array (
+		E_ERROR => 'ERROR',
+		E_WARNING => 'WARNING',
+		E_PARSE => 'PARSE',
+		E_NOTICE => 'NOTICE',
+		E_CORE_ERROR => 'CORE_ERROR',
+		E_CORE_WARNING => 'CORE_WARNING',
+		E_COMPILE_ERROR  => 'COMPILE_ERROR',
+		E_COMPILE_WARNING => 'COMPILE_WARNING',
+		E_USER_ERROR => 'USER_ERROR',
+		E_USER_WARNING => 'USER_WARNING',
+		E_USER_NOTICE  => 'USER_NOTICE',
+		E_STRICT => 'STRICT',
+		E_RECOVERABLE_ERROR  => 'RECOVERABLE_ERROR',
+		E_DEPRECATED => 'DEPRECATED',
+		E_USER_DEPRECATED  => 'USER_DEPRECATED',
+		E_ALL => 'ALL'
+	);
+
 	$error = error_get_last();
 
 	if (is_array($error)) {
@@ -6564,6 +6584,10 @@ function is_cacti_release($version = null)
  * version_to_decimal - convert version string to decimal
  */
 function version_to_decimal($version, $length = 8, $hex = true) {
+	if ($version === 'Unknown') {
+		return 0;
+	}
+
 	$newver = '';
 	$minor  = '';
 
@@ -6622,6 +6646,9 @@ function version_to_decimal($version, $length = 8, $hex = true) {
 		$int = 0;
 	}
 
+	if (!ctype_xdigit($newver)) {
+		cacti_log('Invalid hex passed - ' . $newver . ' - ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING');
+	}
 	return $hex ? hexdec($newver) : $newver;
 }
 

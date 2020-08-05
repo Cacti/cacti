@@ -1026,6 +1026,8 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			),
 		__('Troubleshooting') => array(
 			'data_debug.php' => __('Data Sources'),
+			'support.php'    => __('Technical Info'),
+			'changelog.php'  => __('Change Log'),
 		)
 	);
 } else {
@@ -1308,6 +1310,8 @@ $user_auth_realm_filenames = array(
 	'aggregate_graphs.php' => 5,
 	'aggregate_items.php' => 5,
 	'spikekill.php' => 1043,
+	'support.php' => 15,
+	'changelog.php' => 15,
 	'permission_denied.php' => -1,
 	'help.php' => -1
 );
@@ -2432,6 +2436,12 @@ $navigation = array(
 		'url' => 'rrdcheck.php',
 		'level' => '2'
 	),
+	'support.php' => array(
+		'title' => __('Technical Support'),
+		'mapping' => 'index.php:,support.php:',
+		'url' => 'support.php',
+		'level' => '2'
+	),
 	'utilities.php:' => array(
 		'title' => __('Utilities'),
 		'mapping' => 'index.php:',
@@ -2476,12 +2486,6 @@ $navigation = array(
 	),
 	'utilities.php:clear_user_log' => array(
 		'title' => __('Clear User Log'),
-		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
-	),
-	'utilities.php:view_tech' => array(
-		'title' => __('Technical Support'),
 		'mapping' => 'index.php:,utilities.php:',
 		'url' => 'utilities.php',
 		'level' => '2'
@@ -2827,7 +2831,13 @@ $navigation = array(
 		'mapping' => 'index.php:,automation_tree_rules.php:,automation_tree_rules.php:edit',
 		'url' => '',
 		'level' => '3'
-	)
+	),
+	'changelog.php' => array(
+		'title' => __('Change Log'),
+		'mapping' => 'index.php:,changelog.php:',
+		'url' => 'changelog.php',
+		'level' => '2'
+	),
 );
 
 $snmpagent_event_severity = array(
