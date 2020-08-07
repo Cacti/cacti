@@ -100,34 +100,104 @@ function changelog_view() {
 	$header_label = __esc('Change Log [%s]', $tabs[$tab]);
 
 	/* Display tech information */
-	html_start_box($header_label, '100%', '', '3', 'center', '');
-
 	$changelog = file($config['base_path'] . '/CHANGELOG');
 
 	$full = $current_tab == 'full';
-	foreach($changelog as $s) {
-		if (strlen(trim($s))) {
-			$l = strtoupper($s);
-			if (strpos($l, 'CHANGELOG') === false) {
-				if (strpos($l, '-') === false) {
-					if (!$full) {
-						break;
+
+	array_shift($changelog);
+	array_shift($changelog);
+
+	$ver     = '';
+	$vers    = array();
+	$details = array();
+	$first   = '';
+	foreach ($changelog as $line) {
+		$line = trim($line);
+		if (isset($line[0]) && ($line[0] == '*' || $line[0] == '-')) {
+			$detail = false;
+			if (preg_match('/-(issue|feature|security): (.*)/i', $line, $parts)) {
+				$detail = array('desc' => $parts[2]);
+			} elseif (preg_match('/-(issue|feature|security)#(\d+)\: (.*)/i', $line, $parts)) {
+				$detail = array('desc' => $parts[3], 'issue' => $parts[2]);
+			}
+
+			$type = 'unknown';
+			if (isset($parts[1])) {
+				$type = strtolower($parts[1]);
+				if ($type == 'security') $type = ' security';
+			}
+
+			if (!empty($detail)) {
+				if (empty($details[$type])) {
+					$details[$type] = array();
+				}
+				$details[$type][] = $detail;
+			}
+		} else if (!empty($line)) {
+			if (!empty($ver)) {
+				$vers[$ver] = $details;
+				$first=true;
+				$details = array();
+			}
+
+			if (count($vers) > 4) {
+				break;
+			}
+			$ver = $line;
+		}
+	}
+
+	krsort($vers);
+	foreach($vers as $ver => $changelog) {
+		if (!empty($ver)) {
+			html_start_box(__('Version %s', $ver), '100%', '', '3', 'center', '');
+			ksort($changelog);
+			foreach ($changelog as $type => $details) {
+				$output = false;
+				foreach ($details as $detail) {
+					$highlight = false;
+					switch ($type) {
+						case 'issue':
+							$icon = '<i class="fas fa-wrench"></i>';
+							break;
+						case 'feature':
+							$icon = '<i class="fas fa-rocket"></i>';
+							$highlight = true;
+							break;
+						case ' security':
+							$icon = '<i class="fas fa-shield-alt"></i>';
+							$highlight = true;
+							break;
+						default;
+							$icon = '<i class="far fa-question-circle"></i>';
+							break;
 					}
 
-					html_section_header(__('Version %s', $s), 2);
-				} else {
-					$is_wanted = ($current_tab == 'full' || strpos($l, '-FEATURE') === 0 || strpos($l, '-SECURITY') === 0);
-					if ($is_wanted) {
+					if ($current_tab == 'full' || $highlight) {
+						if (!$output) {
+							html_section_header(html_escape($type), 4);
+							$output = true;
+						}
+
 						form_alternate_row();
-						print '<td>' . $s . '</td>';
+
+						print '<td>' . $icon . '</td><td>' . html_escape($type) . '</td><td>';
+						if (!empty($detail['issue'])) {
+							print '<a target="_blank" href="https://github.com/cacti/cacti/issues/' . html_escape($detail['issue']) . '">' . html_escape($detail['issue']) . '</a>';
+						}
+						print '</td><td>' . html_escape($detail['desc']) . '</td>';
+
 						form_end_row();
 					}
 				}
 			}
+			html_end_box();
+			if ($current_tab !== 'full') {
+				break;
+			}
 		}
 	}
 
-	html_end_box();
 
 	?>
 	<script type='text/javascript'>
