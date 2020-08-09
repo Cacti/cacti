@@ -82,7 +82,7 @@ function support_view_tech() {
 		print "<div class='tabs'><nav><ul role='tablist'>";
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
+			print "<li class='subTab'><a class='tab pic " . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 				" href='" . html_escape($config['url_path'] .
 				'utilities.php?action=view_tech' .
 				'&tab=' . $tab_short_name) .
