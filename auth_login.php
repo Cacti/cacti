@@ -23,7 +23,7 @@
 */
 
 /* include ldap support */
-include_once('./lib/ldap.php');
+include_once(__DIR__ . '/lib/ldap.php');
 
 /* set default action */
 set_default_action();
