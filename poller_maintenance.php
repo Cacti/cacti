@@ -193,10 +193,10 @@ function phpversion_check($force = false) {
 	$date_next = clone $date_last;
 	$date_next->modify('+1day');
 
-	$phpbad_ver = version_compare(PHP_VERSION,'7.1','<');
+	$phpbad_ver = version_compare(PHP_VERSION,CACTI_PHP_VERSION_MINIMUM,'<');
 
 	if ($phpbad_ver && ($date_next < $date_now || $force)) {
-		cacti_log('WARNING: PHP Version "' . PHP_VERSION .'"will not be supported by the develop branch in the future.  If you cannot upgrade to PHP 7.1 or higher, please switch branches', false, 'CACTI');
+		cacti_log('WARNING: This version of PHP (' . PHP_VERSION .') is below the minimum requirement of v' . CACTI_PHP_VERSION_MINIMUM . ' or higher, please upgrade', false, 'CACTI');
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("phpver_last", ?)', array($now));
 	}
 }
