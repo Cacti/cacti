@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.15
+-issue#3755: Graph Templates has duplicate SQL delete statement
+
 1.2.14
 -issue#3676: Device not showing up in device page but showing up in Monitor tab
 -issue#3678: More or Equal incorrect highlighting max_heap_table_size and tmp_table_size
