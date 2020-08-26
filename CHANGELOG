@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.15
 -issue#3755: Graph Templates has duplicate SQL delete statement
 -issue#3767: Progress bar does not provide enough visual information during long page loads
+-issue#3768: When using the Paw, Paper-plan, and Sunrise themes, there is no way to remind the user who is logged on
 
 1.2.14
 -issue#3676: Device not showing up in device page but showing up in Monitor tab
