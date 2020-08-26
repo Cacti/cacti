@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.15
 -issue#3755: Graph Templates has duplicate SQL delete statement
+-issue#3767: Progress bar does not provide enough visual information during long page loads
 
 1.2.14
 -issue#3676: Device not showing up in device page but showing up in Monitor tab
