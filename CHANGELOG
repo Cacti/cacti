@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.15
+-issue#3747: ldap.php cannot be loaded while installer is running
 -issue#3755: Graph Templates has duplicate SQL delete statement
 -issue#3761: Cacti V1.2.12 backtraces when deleting devices
 -issue#3767: Progress bar does not provide enough visual information during long page loads
