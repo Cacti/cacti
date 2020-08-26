@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.15
+-issue#3730: Change wording for the 21st century, but let's not forget our past
 -issue#3743: Description field allows more characters entered than is stored
 -issue#3747: ldap.php cannot be loaded while installer is running
 -issue#3755: Graph Templates has duplicate SQL delete statement
