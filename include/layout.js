@@ -754,7 +754,7 @@ function applySkin() {
 		shiftPressed = event.shiftKey;
 	});
 
-	$('#main').show();
+	$('#main').css('display', 'inline-table');
 
 	var showPage = $('#main').map(function(i, el) {
 		var dfd = $.Deferred();
@@ -1419,6 +1419,15 @@ function tuneTable(object, width) {
 
 	if (rows > 101) return false;
 
+	// Enable horizontal scroll bar
+	if (hScroll) {
+		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+
+		return false;
+	} else {
+		$('#main, .cactiContentContentArea').css({ 'overflow-x': 'hidden' });
+	}
+
 	if (tableWidth > width) {
 		var column = totalCols;
 		var hasCheckbox = $(object).find('th.tableSubHeaderCheckbox').length;
@@ -1787,7 +1796,7 @@ function loadTopTab(href, id, force) {
 
 				handleConsole(pageName);
 
-				$('#main').show();
+				$('#main').css('display', 'inline-table');
 
 				Pace.stop();
 

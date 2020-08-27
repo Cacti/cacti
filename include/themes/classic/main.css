@@ -915,6 +915,7 @@ legend {
 	float: right;
 	margin-top: 1px;
 	margin-left: 3px;
+	margin-right: 5px;
 	display: table-column;
 }
 
@@ -982,7 +983,7 @@ legend {
 	vertical-align: top;
 	display: table-cell;
 	overflow-y: auto !important;
-	overflow-x: hidden !important;
+	overflow-x: hide;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {

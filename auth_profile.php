@@ -577,7 +577,7 @@ function settings_javascript() {
 
 							if (id != undefined) {
 								$.get('auth_profile.php?tab='+currentTab+'&action=reset_default&name='+id, function(data) {
-									if (id != 'selected_theme' && id != 'user_language') {
+									if (id != 'selected_theme' && id != 'user_language' && id != 'enable_hscroll') {
 										if ($('#'+id).is(':checkbox')) {
 											if (data == 'on') {
 												$('#'+id).prop('checked', true);
@@ -638,7 +638,7 @@ function settings_javascript() {
 				name: name,
 				value: value
 				}, function() {
-				if (name == 'selected_theme' || name == 'user_language') {
+				if (name == 'selected_theme' || name == 'user_language' || name == 'enable_hscroll') {
 					document.location = 'auth_profile.php?action=edit';
 				}
 			});
