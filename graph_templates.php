@@ -238,9 +238,6 @@ function form_actions() {
 					db_execute('DELETE FROM snmp_query_graph_rrd_sv
 						WHERE snmp_query_graph_id IN (' . implode(', ', $snmp_graph_ids) . ')');
 
-					db_execute('DELETE FROM snmp_query_graph_rrd_sv
-						WHERE snmp_query_graph_id IN (' . implode(', ', $snmp_graph_ids) . ')');
-
 					db_execute('DELETE FROM snmp_query_graph_sv
 						WHERE snmp_query_graph_id IN (' . implode(', ', $snmp_graph_ids) . ')');
 				}

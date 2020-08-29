@@ -750,7 +750,7 @@ function applySkin() {
 		shiftPressed = event.shiftKey;
 	});
 
-	$('#main').show();
+	$('#main').css('display', 'inline-table');
 
 	var showPage = $('#main').map(function(i, el) {
 		var dfd = $.Deferred();
@@ -1417,6 +1417,15 @@ function tuneTable(object, width) {
 	var id             = $(object).attr('id');
 
 	if (rows > 101) return false;
+
+	// Enable horizontal scroll bar
+	if (hScroll) {
+		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+
+		return false;
+	} else {
+		$('#main, .cactiContentContentArea').css({ 'overflow-x': 'hidden' });
+	}
 
 	if (tableWidth > width) {
 		var column = totalCols;
@@ -2430,9 +2439,6 @@ function saveTableWidths(initial) {
 
 			var sizes = new Array();
 			var items = new Array();
-
-			items[0] = width;
-			sizes[0] = width;
 		} else if (key !== undefined && initial) {
 			if (items.length > 0) {
 				if (items[0] + 18 < width) {
@@ -2440,14 +2446,15 @@ function saveTableWidths(initial) {
 
 					var sizes = new Array();
 					var items = new Array();
-
-					items[0] = width;
-					sizes[0] = width;
 				}
 			}
 		}
 
 		var i = 1;
+
+		items[0] = width;
+		sizes[0] = width;
+
 		if (key !== undefined) {
 			if (initial && items.length) {
 				$('#'+key).find('th.ui-resizable').each(function(data) {

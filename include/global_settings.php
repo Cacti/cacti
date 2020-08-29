@@ -2328,6 +2328,12 @@ $settings_user = array(
 			'method' => 'checkbox',
 			'default' => 'on'
 			),
+		'enable_hscroll' => array(
+			'friendly_name' => __('Enable Horizontal Scrolling'),
+			'description' => __('Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibility.'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'default_date_format' => array(
 			'friendly_name' => __('Date Display Format'),
 			'description' => __('The date format to use in Cacti.'),

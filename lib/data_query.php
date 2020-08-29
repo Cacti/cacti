@@ -439,7 +439,7 @@ function data_query_remove_disabled_items($orphaned_ids) {
 		if (cacti_sizeof($archive_tables)) {
 			foreach($archive_tables as $table) {
 				db_execute_prepared("DELETE FROM $table
-					WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')", false);
+					WHERE local_data_id IN (" . implode(', ', $orphaned_ids) . ')', false);
 			}
 		}
 	}

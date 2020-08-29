@@ -2425,6 +2425,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<script type='text/javascript'>
 		var theme='<?php print $selectedTheme;?>';
+		var hScroll=<?php print read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false';?>;
 		var searchFilter='<?php print __esc('Enter a search term');?>';
 		var searchRFilter='<?php print __esc('Enter a regular expression');?>';
 		var noFileSelected='<?php print __esc('No file selected');?>';

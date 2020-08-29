@@ -829,8 +829,8 @@ function display_help () {
 
 	print "\nusage: poller_automation.php -M [--poller=ID] | --network=network_id [-T=thread_id]\n";
 	print "    [--debug] [--force]\n\n";
-	print "Cacti's automation poller.  This poller has two operating modes, Master and Slave.\n";
-	print "The Master process tracks and launches all Slaves based upon Cacti's automation\n";
+	print "Cacti's automation poller.  This poller has two operating modes, master and worker.\n";
+	print "The master process tracks and launches all workers based upon Cacti's automation\n";
 	print "settings.  If you only want to force a network to be collected, you only need to\n";
 	print "specify the Network ID and the force options.\n\n";
 	print "Master Process:\n";

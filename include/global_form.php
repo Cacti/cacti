@@ -1137,14 +1137,14 @@ $fields_host_edit = array(
 		'friendly_name' => __('Description'),
 		'description' => __('Give this host a meaningful description.'),
 		'value' => '|arg1:description|',
-		'max_length' => '250',
+		'max_length' => '150',
 		),
 	'hostname' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Hostname'),
 		'description' => __('Fully qualified hostname or IP address for this device.'),
 		'value' => '|arg1:hostname|',
-		'max_length' => '250',
+		'max_length' => '100',
 		'size' => '60',
 		),
 	'location' => array(

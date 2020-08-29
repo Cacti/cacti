@@ -53,7 +53,7 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	font-size: 1.1em;
+	font-size: 0.8em;
 	vertical-align: middle;
 }
 
@@ -674,6 +674,7 @@ label {
 	position: fixed;
 	bottom: 0;
 	left: 0;
+	z-index: 3;
 }
 
 .cactiConsolePageHeadBackdrop {
@@ -862,6 +863,7 @@ legend {
 	vertical-align: top;
 	float: right;
 	margin-left: 3px;
+	margin-right: 5px;
 	display: table-cell;
 }
 
@@ -950,9 +952,9 @@ legend {
 }
 
 .cactiConsoleContentArea {
-	height: 100vh;
+	height: 92vh;
 	overflow-y: auto !important;
-	overflow-x: hidden !important;
+	overflow-x: hidden;
 	padding-left: 10px;
 	margin-right: 5px;
 }
