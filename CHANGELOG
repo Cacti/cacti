@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#3769: Some users prefer to see all columns on the screen and do not wish that they be hidden despite the page size
 -issue#3770: Column sizing is being lost between pages refreshes
 -issue#3771: All Cacti Console pages should include the ID of the object and the Data Input Method page is missing that ID
+-feature: Update FontAwesome to Version 5.14
 
 1.2.14
 -issue#3676: Device not showing up in device page but showing up in Monitor tab
