@@ -48,65 +48,90 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 				if (isset($field_array[$field_to_check]) && is_array($form_array[$field_name][$field_to_check])) {
 					/* if the field/sub-field combination is an array, resolve it recursively */
 					$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
-				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check]) && preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches)) {
-					$string   = $field_array[$field_to_check];
-					$matches0 = $matches[0];
-					$matches1 = $matches[1];
-					$matches2 = $matches[2];
-
+				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check])) {
 					$count = 0;
+
 					/* loop through the $field_to_check and replace upto three times
-					 * for arg1:arg2:arg3 variables.
+					 * for each arg1:arg2:arg3 variables.
 					 */
 					while (true) {
-						/* an empty field name in the variable means don't treat this as an array */
-						if ($matches2 == '') {
-							if (is_array($$matches1)) {
-								/* the existing value is already an array, leave it alone */
-								$form_array[$field_name][$field_to_check] = $$matches1;
-							} else {
-								/* the existing value is probably a single variable */
-								$form_array[$field_name][$field_to_check] = str_replace($matches0, $$matches1, $field_array[$field_to_check]);
-							}
-						} else {
-							/* copy the value down from the array/key specified in the variable
-							 * replace upto three times for arg1:arg2:arg3 variables
-							 */
-							if (isset($$matches1) && is_array($$matches1)) {
-								$array = $$matches1;
-								if (is_array($array) && isset($array[$matches2]) && $array[$matches2] != '') {
-									$string = str_replace($matches0, $array[$matches2], $string);
+						$matches = array();
+
+						//if (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $form_array[$field_name][$field_to_check], $matches)) {
+						if (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches)) {
+							$string   = $field_array[$field_to_check];
+
+							$matches0 = $matches[0];
+							$matches1 = $matches[1];
+							$matches2 = $matches[2];
+
+							/* an empty field name in the variable means don't treat this as an array */
+							if ($matches2 == '') {
+								if (is_array($$matches1)) {
+									/* the existing value is already an array, leave it alone */
+									$form_array[$field_name][$field_to_check] = $$matches1;
 								} else {
-									$string = str_replace($matches0, '', $string);
+									/* the existing value is probably a single variable */
+									$form_array[$field_name][$field_to_check] = str_replace($matches0, $$matches1, $field_array[$field_to_check]);
+								}
+							} else {
+								/* copy the value down from the array/key specified in the variable
+								 * replace upto three times for arg1:arg2:arg3 variables
+								 */
+								if (isset($$matches1)) {
+									if (is_array($$matches1)) {
+										$array = $$matches1;
+										if (is_array($array) && isset($array[$matches2]) && $array[$matches2] != '') {
+											$string = str_replace($matches0, $array[$matches2], $string);
+										} else {
+											$string = str_replace($matches0, '', $string);
+										}
+									}
+								}
+
+								// Double check to see if the replacement went as planned
+								$matches = array();
+								preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
+
+								if (!cacti_sizeof($matches)) {
+									$form_array[$field_name][$field_to_check] = $string;
+
+									// No more arg[123]
+									break;
+								} else {
+									if ($field_to_check == 'sql') {
+										// Update the form value with the modified string
+										// Then update the field array string value to recheck
+
+										$form_array[$field_name][$field_to_check] = $string;
+										$field_array[$field_to_check] = $string;
+									} elseif (isset($form_array[$field_name]['default'])) {
+										// We did not find a match for this field value, use the default
+
+										$form_array[$field_name][$field_to_check] = $form_array[$field_name]['default'];
+									} else {
+										// We found no value, found no default, set to empty string
+
+										$form_array[$field_name][$field_to_check] = '';
+									}
 								}
 							}
 
-							// Double check to see if the replacement went as planned
-							$matches = array();
-							preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
-
-							if (!cacti_sizeof($matches)) {
-								$form_array[$field_name][$field_to_check] = $string;
-							} elseif (isset($form_array[$field_name]['default'])) {
-								$form_array[$field_name][$field_to_check] = $form_array[$field_name]['default'];
-							} elseif ($field_to_check == 'sql') {
-								$form_array[$field_name][$field_to_check] = $string;
+							/* if there are no more arg's, break.  Since some arg's
+							 * might not ever be replaced, continue counting till 3 as
+							 * in the special case of 'sql' for example.
+							 */
+							$additional = preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string);
+							if (empty($additional)) {
+								break;
+							} elseif ($count >= 3) {
+								break;
 							} else {
-								$form_array[$field_name][$field_to_check] = '';
+								$count++;
 							}
-						}
-
-						/* if there are no more arg's, break.  Since some arg's
-						 * might not ever be replaced, continue counting till 3 as
-						 * in the special case of 'sql' for example.
-						 */
-						$additional = preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string);
-						if (empty($additional)) {
-							break;
-						} elseif ($count >= 3) {
-							break;
 						} else {
-							$count++;
+							// No arg[123] found
+							break;
 						}
 					}
 				}
@@ -255,7 +280,7 @@ function form_confim_buttons($post_variable, $item_array, $save_message, $return
    @arg $html_boolean - the value of the HTML checkbox
    @returns - true or false based on the value of the HTML checkbox */
 function html_boolean($html_boolean) {
-	return ($html_boolean == "on");
+	return ($html_boolean == 'on');
 }
 
 /* html_boolean_friendly - returns the natural language equivalent of an HTML
@@ -264,10 +289,10 @@ function html_boolean($html_boolean) {
    @returns - 'Selected' or 'Not Selected' based on the value of the HTML
      checkbox */
 function html_boolean_friendly($html_boolean) {
-	if ($html_boolean == "on") {
-		return __("Selected");
+	if ($html_boolean == 'on') {
+		return __('Selected');
 	} else {
-		return __("Not Selected");
+		return __('Not Selected');
 	}
 }
 
@@ -276,7 +301,7 @@ function html_boolean_friendly($html_boolean) {
    @returns - a CSS style string which should be used with an HTML checkbox
      control */
 function get_checkbox_style() {
-	return "";
+	return '';
 }
 
 /* set_default_action - sets the required 'action' request variable

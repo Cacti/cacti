@@ -187,10 +187,10 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>' onClick='applyGraphFilter()'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearGraphFilter()'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							<?php if (is_view_allowed('graph_settings')) {?>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='save' value='<?php print __esc('Save');?>' title='<?php print __esc('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("preview")'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='save' value='<?php print __esc('Save');?>' title='<?php print __esc('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>'>
 							<?php }?>
 						<span>
 					</td>
@@ -203,7 +203,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>' onChange='applyGraphFilter()'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
 						<?php print __('Graphs');?>
@@ -404,6 +404,19 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		}
 
 		$(function() {
+			$('#go').off('click').on('click', function(event) {
+				event.preventDefault();
+				applyGraphFilter();
+			});
+
+			$('#clear').off('click').on('click', function() {
+				clearGraphFilter();
+			});
+
+			$('#save').off('click').on('click', function() {
+				 saveGraphFilter('preview');
+			});
+
 			$.when(initPage())
 			.pipe(function() {
 				initializeGraphs();

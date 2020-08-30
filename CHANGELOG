@@ -39,12 +39,15 @@ Cacti CHANGELOG
 -issue#3743: Description field allows more characters entered than is stored
 -issue#3747: ldap.php cannot be loaded while installer is running
 -issue#3755: Graph Templates has duplicate SQL delete statement
--issue#3761: Cacti V1.2.12 backtraces when deleting devices
+-issue#3759: Errors when doing a graph Sync 1.2.12
+-issue#3761: Cacti 1.2.12 backtraces when deleting devices
+-issue#3763: Function inject_form_variables not replacing all arguments
 -issue#3767: Progress bar does not provide enough visual information during long page loads
 -issue#3768: When using the Paw, Paper-plan, and Sunrise themes, there is no way to remind the user who is logged on
 -issue#3769: Some users prefer to see all columns on the screen and do not wish that they be hidden despite the page size
 -issue#3770: Column sizing is being lost between pages refreshes
 -issue#3771: All Cacti Console pages should include the ID of the object and the Data Input Method page is missing that ID
+-issue#3775: Search field strange behavior when hitting enter in 1.2.14
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
