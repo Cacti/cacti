@@ -76,7 +76,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 				$html_selected = '';
 			}
 
-			print "<option value='" . $leaf['id'] . "'$html_selected>$indent " . html_escape($leaf['title']) . "</option>\n";
+			print "<option value='" . $leaf['id'] . "'$html_selected>$indent " . html_escape($leaf['title']) . '</option>';
 
 			grow_dropdown_tree($tree_id, $leaf['id'], $form_name, $selected_tree_item_id, $tier);
 		}
@@ -787,6 +787,13 @@ function create_dhtml_tree() {
 }
 
 function html_validate_tree_vars() {
+	static $count = false;
+
+	// prevent double calls in the same stack
+	if ($count) {
+		return false;
+	}
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
@@ -854,6 +861,8 @@ function html_validate_tree_vars() {
 
 	validate_store_request_vars($filters, 'sess_grt');
 	/* ================= input validation ================= */
+
+	$count = true;
 }
 
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
@@ -1062,10 +1071,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearGraphFilter()'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filter');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							<?php if (is_view_allowed('graph_settings')) {?>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='save' value='<?php print __esc('Save');?>' title='<?php print __esc('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("tree")'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='save' value='<?php print __esc('Save');?>' title='<?php print __esc('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>'>
 							<?php }?>
 						</span>
 					</td>
@@ -1082,7 +1091,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<?php
 							if (cacti_sizeof($graphs_per_page)) {
 								foreach ($graphs_per_page as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . '</option>';
 								}
 							}
 							?>
@@ -1129,7 +1138,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 							if (cacti_sizeof($graph_timespans)) {
 								foreach($graph_timespans as $value => $text) {
-									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . "</option>\n";
+									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . '</option>';
 								}
 							}
 							?>
@@ -1162,7 +1171,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 								$end_val = cacti_sizeof($graph_timeshifts)+1;
 								if (cacti_sizeof($graph_timeshifts)) {
 									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . '</option>';
 									}
 								}
 								?>
@@ -1284,6 +1293,19 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	$(function() {
+		$('#go').off('click').on('click', function(event) {
+			event.preventDefault();
+			applyGraphFilter();
+		});
+
+		$('#clear').off('click').on('click', function() {
+			clearGraphFilter();
+		});
+
+		$('#save').off('click').on('click', function() {
+			 saveGraphFilter('tree');
+		});
+
 		$.when(initPage())
 		.done(function() {
 			initializeGraphs();

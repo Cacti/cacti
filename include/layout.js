@@ -171,7 +171,7 @@ function getTimestampFromDate(dateStamp) {
 
 /** base64_encode - Simple function to base64 encode a utf-8 string */
 function base64_encode(string) {
-	return escape(btoa(unescape(encodeURIComponent(string))));
+	return btoa(unescape(encodeURIComponent(string)));
 }
 
 /** getQueryString - this function will return the value
@@ -3126,6 +3126,7 @@ function handlePopState() {
 function applyGraphTimespan() {
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
+		($('#rfilter').length ? '&rfilter=' + base64_encode($('#rfilter').val()):'') +
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
 	closeDateFilters();
@@ -3151,6 +3152,7 @@ function refreshGraphTimespanFilter() {
 		custom: 1,
 		button_refresh_x: 1,
 		date1: $('#date1').val(),
+		rfilter: base64_encode($('#rfilter').val()),
 		date2: $('#date2').val(),
 		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
