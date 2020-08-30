@@ -981,7 +981,7 @@ function makeFiltersResponsive() {
 
 				filterHeader.find('.cactiTableTitle, .cactiTableButton').css('cursor', 'pointer');
 
-				if (filterContents.find('input').length) {
+				if (pageHasHidableColumns()) {
 					if (filterHeader.find('.cactiSwitchConstraints').length == 0) {
 						if (hScroll) {
 							filterHeader.find('div.cactiTableButton').append('<span title="'+tableConstraintsOn+'" class="cactiSwitchConstraints"><i id="overflow" class="fa fa-compress"></i></span>');
@@ -1442,6 +1442,14 @@ function tuneTables() {
 			tuneTable(object, mainWidth);
 		});
 	});
+}
+
+function pageHasHidableColumns() {
+	if ($(document).find('th').length) {
+		return true;
+	}
+
+	return false;
 }
 
 function resetTables() {
