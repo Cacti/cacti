@@ -150,7 +150,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_queries.php?header=false&action=edit&id=' . (empty($snmp_query_id) ? get_request_var('id') : $snmp_query_id));
+		header('Location: data_queries.php?action=edit&id=' . (empty($snmp_query_id) ? get_request_var('id') : $snmp_query_id));
 	} elseif (isset_request_var('save_component_snmp_query_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -224,7 +224,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_queries.php?header=false&action=item_edit' . '&id=' . (empty($snmp_query_graph_id) ? get_request_var('id') : $snmp_query_graph_id) . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+		header('Location: data_queries.php?action=item_edit&id=' . (empty($snmp_query_graph_id) ? get_request_var('id') : $snmp_query_graph_id) . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 	} elseif (isset_request_var('save_component_svg')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -275,11 +275,11 @@ function form_save() {
 
 			if  (isempty_request_var('svds_text')) {
 				raise_message(39);
-				header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+				header('Location: data_queries.php?action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 				return;
 			} elseif (isempty_request_var('svds_field')) {
 				raise_message(38);
-				header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+				header('Location: data_queries.php?action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 				return;
 			}
 
@@ -302,7 +302,7 @@ function form_save() {
 
 			clear_messages();
 
-			header('Location: data_queries.php?header=false&action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			header('Location: data_queries.php?action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 		}
 	}
 }
