@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#3760: Devices showing blank after deleteing and Poller sync
 -issue#3761: Cacti 1.2.12 backtraces when deleting devices
 -issue#3763: Function inject_form_variables not replacing all arguments
+-issue#3764: Suggested values on Data Queries with multiple data templates gives error
 -issue#3767: Progress bar does not provide enough visual information during long page loads
 -issue#3768: When using the Paw, Paper-plan, and Sunrise themes, there is no way to remind the user who is logged on
 -issue#3769: Some users prefer to see all columns on the screen and do not wish that they be hidden despite the page size
