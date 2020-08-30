@@ -1245,7 +1245,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			FROM host_snmp_query AS hsq
 			INNER JOIN host AS h
 			ON h.id=hsq.host_id
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'host_snmp_query', $remote_poller_id);
 
@@ -1263,7 +1264,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 
 		$data = db_fetch_assoc_prepared('SELECT h.*
 			FROM host AS h
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'host', $remote_poller_id);
 
@@ -1271,7 +1273,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			FROM host_snmp_cache AS hsc
 			INNER JOIN host AS h
 			ON h.id=hsc.host_id
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'host_snmp_cache', $remote_poller_id);
 
@@ -1279,7 +1282,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			FROM poller_reindex AS pri
 			INNER JOIN host AS h
 			ON h.id=pri.host_id
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'poller_reindex', $remote_poller_id);
 
@@ -1287,7 +1291,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			FROM data_local AS dl
 			INNER JOIN host AS h
 			ON h.id=dl.host_id
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'data_local', $remote_poller_id);
 
@@ -1295,7 +1300,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			FROM graph_local AS gl
 			INNER JOIN host AS h
 			ON h.id=gl.host_id
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'graph_local', $remote_poller_id);
 
@@ -1305,7 +1311,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			ON dtd.local_data_id=dl.id
 			INNER JOIN host AS h
 			ON h.id=dl.host_id
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'data_template_data', $remote_poller_id);
 
@@ -1315,7 +1322,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			ON dtr.local_data_id=dl.id
 			INNER JOIN host AS h
 			ON h.id=dl.host_id
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'data_template_rrd', $remote_poller_id);
 
@@ -1325,7 +1333,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			ON gti.local_graph_id=gl.id
 			INNER JOIN host AS h
 			ON h.id=gl.host_id
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'graph_templates_item', $remote_poller_id);
 
@@ -1337,7 +1346,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			ON dl.id=dtd.local_data_id
 			INNER JOIN host AS h
 			ON h.id=dl.host_id
-			WHERE h.poller_id = ?',
+			WHERE h.poller_id = ?
+			AND h.deleted = ""',
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'data_input_data', $remote_poller_id);
 	}
