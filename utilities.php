@@ -1806,7 +1806,7 @@ function boost_display_run_status() {
 	html_section_header(__('Runtime Statistics'), 2);
 
 	form_alternate_row();
-	print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . $last_run_time . '</td>';
+	print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . (is_numeric($last_run_time) ? date('Y-m-d H:i:s', $last_run_time):$last_run_time) . '</td>';
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
@@ -1838,7 +1838,7 @@ function boost_display_run_status() {
 	print '<td class="utilityPick">' . __('Update Frequency:') . '</td><td>' . ($rrd_updates == '' ? __('N/A') : $boost_refresh_interval[$update_interval]) . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . $next_run_time . '</td>';
+	print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s', $next_run_time):$next_run_time) . '</td>';
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . number_format_i18n($max_records, -1) . ' ' . __('Records') . '</td>';

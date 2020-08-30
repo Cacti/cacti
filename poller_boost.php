@@ -105,33 +105,65 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 
 	$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;
 
+	// Initialize seconds offset, if not set to 2 hours
+	if (empty($seconds_offset)) {
+		$seconds_offset = 120;
+		set_config_option('boost_rrd_update_interval', 120);
+	}
+
 	/* find out if it's time to collect device information */
-	$last_run_time = strtotime(read_config_option('boost_last_run_time'));
-	$next_run_time = strtotime(read_config_option('boost_next_run_time'));
+	$boost_last_run_time = read_config_option('boost_last_run_time');
+	$boost_next_run_time = read_config_option('boost_next_run_time');
+
+	// Support old and new formats
+	if (!is_numeric($boost_last_run_time)) {
+		$last_run_time = strtotime($boost_last_run_time);
+	} else {
+		$last_run_time = $boost_last_run_time;
+	}
+
+	// Support old and new formats
+	if (!is_numeric($boost_next_run_time)) {
+		$next_run_time = strtotime($boost_next_run_time);
+	} else {
+		$next_run_time = $boost_next_run_time;
+	}
 
 	/* determine the next start time */
 	$current_time = time();
+	$run_now = false;
 	if (empty($last_run_time)) {
 		/* since the poller has never run before, let's fake it out */
 		$next_run_time = $current_time + $seconds_offset;
 
-		set_config_option('boost_last_run_time', date('Y-m-d G:i:s', $current_time));
+		set_config_option('boost_last_run_time', $current_time);
+		set_config_option('boost_next_run_time', $next_run_time);
 
-		$last_run_time = $current_time;
+		$run_now = false;
 	} else {
 		$next_run_time = $last_run_time + $seconds_offset;
+		if ($current_time >= $next_run_time) {
+			$run_now = true;
+			set_config_option('boost_next_run_time', $next_run_time);
+		}
 	}
-	$time_till_next_run = $next_run_time - $current_time;
 
 	/* determine if you must output boost table now */
-	$max_records     = read_config_option('boost_rrd_update_max_records');
 	$current_records = boost_get_total_rows();
+	$max_records     = read_config_option('boost_rrd_update_max_records');
 
-	if (($time_till_next_run <= 0) ||
-		($forcerun) ||
-		($current_records >= $max_records) ||
-		($next_run_time <= $current_time)) {
-		set_config_option('boost_last_run_time', date('Y-m-d G:i:s', $current_time));
+	if ($current_records > $max_records) {
+		$run_now = true;
+		set_config_option('boost_next_run_time', $next_run_time);
+	}
+
+	if ($forcerun) {
+		$run_now = true;
+		set_config_option('boost_next_run_time', $next_run_time);
+	}
+
+	if ($run_now) {
+		set_config_option('boost_last_run_time', $current_time);
 
 		/* output all the rrd data to the rrd files */
 		$rrd_updates = output_rrd_data($current_time, $forcerun);
@@ -143,7 +175,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 			log_boost_statistics(0);
 			$next_run_time = $current_time + $seconds_offset;
 		} else { /* rollback last run time */
-			set_config_option('boost_last_run_time', date('Y-m-d G:i:s', $last_run_time));
+			set_config_option('boost_last_run_time', $last_run_time);
 		}
 
 		if ($rrd_updates > 0) {
@@ -155,7 +187,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 
 	/* store the next run time so that people understand */
 	if ($rrd_updates > 0 || $rrd_updates == -1) {
-		set_config_option('boost_next_run_time', date('Y-m-d G:i:s', $next_run_time));
+		set_config_option('boost_next_run_time', $next_run_time);
 	}
 } else {
 	/* turn off the system level updates */
@@ -191,7 +223,7 @@ function sig_handler($signo) {
 			cacti_log('WARNING: Boost Poller terminated by user', false, 'BOOST');
 
 			/* tell the main poller that we are done */
-			set_config_option('boost_poller_status', 'terminated - end time:' . date('Y-m-d G:i:s'));
+			set_config_option('boost_poller_status', 'terminated - end time:' . date('Y-m-d H:i:s'));
 
 			exit;
 			break;
@@ -232,9 +264,8 @@ function output_rrd_data($start_time, $force = false) {
 
 	/* if the poller is not running, or has never run, start */
 	/* mark the boost server as running */
-	set_config_option('boost_poller_status', 'running - start time:' . date('Y-m-d G:i:s'));
+	set_config_option('boost_poller_status', 'running - start time:' . date('Y-m-d H:i:s'));
 
-	$current_time      = date('Y-m-d G:i:s', $start_time);
 	$rrdtool_pipe      = rrd_init();
 	$runtime_exceeded  = false;
 
@@ -341,7 +372,7 @@ function output_rrd_data($start_time, $force = false) {
 	db_execute('DROP TEMPORARY TABLE boost_local_data_ids');
 
 	/* tell the main poller that we are done */
-	set_config_option('boost_poller_status', 'complete - end time:' . date('Y-m-d G:i:s'));
+	set_config_option('boost_poller_status', 'complete - end time:' . date('Y-m-d H:i:s'));
 
 	/* log memory usage */
 	if (function_exists('memory_get_peak_usage')) {
