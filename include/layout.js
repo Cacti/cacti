@@ -754,7 +754,7 @@ function applySkin() {
 		shiftPressed = event.shiftKey;
 	});
 
-	$('#main').css('display', 'inline-table');
+	$('#main').css('display', 'table');
 
 	var showPage = $('#main').map(function(i, el) {
 		var dfd = $.Deferred();
@@ -981,11 +981,13 @@ function makeFiltersResponsive() {
 
 				filterHeader.find('.cactiTableTitle, .cactiTableButton').css('cursor', 'pointer');
 
-				if (pageHasHidableColumns()) {
+				if (pageHasHidableColumnsAndProfile()) {
 					if (filterHeader.find('.cactiSwitchConstraints').length == 0) {
 						if (hScroll) {
+							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
 							filterHeader.find('div.cactiTableButton').append('<span title="'+tableConstraintsOn+'" class="cactiSwitchConstraints"><i id="overflow" class="fa fa-compress"></i></span>');
 						} else {
+							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
 							filterHeader.find('div.cactiTableButton').append('<span title="'+tableConstraintsOff+'" class="cactiSwitchConstraints"><i id="overflow" class="fa fa-expand"></i></span>');
 						}
 
@@ -1003,10 +1005,13 @@ function makeFiltersResponsive() {
 							value: hScroll ? 'on':''
 							}, function() {
 							if (hScroll) {
+								$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
 								$('.cactiSwitchConstraints').tooltip('option', 'content', tableConstraintsOn);
 								$('#overflow').removeClass('fa-expand').addClass('fa-compress');
+
 								resetTables();
 							} else {
+								$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
 								$('.cactiSwitchConstraints').tooltip('option', 'content', tableConstraintsOff);
 								$('#overflow').removeClass('fa-compress').addClass('fa-expand');
 								tuneTables();
@@ -1330,11 +1335,11 @@ function getMainWidth() {
 		var mainWidth = $('body').innerWidth();
 	}
 
-	return mainWidth - 30;
+	return mainWidth;
 }
 
 function responsiveResizeGraphs() {
-	var mainWidth = getMainWidth();
+	var mainWidth = getMainWidth() - 30;
 	var myColumns = $('#columns').val();
 	var isThumb   = $('#thumbnails').is(':checked');
 	var graphRow  = $('.tableRowGraph:first').width();
@@ -1444,8 +1449,8 @@ function tuneTables() {
 	});
 }
 
-function pageHasHidableColumns() {
-	if ($(document).find('th').length) {
+function pageHasHidableColumnsAndProfile() {
+	if (userSettings && $(document).find('th').length) {
 		return true;
 	}
 
@@ -1861,7 +1866,7 @@ function loadTopTab(href, id, force) {
 
 				handleConsole(pageName);
 
-				$('#main').css('display', 'inline-table');
+				$('#main').css('display', 'table');
 
 				Pace.stop();
 
@@ -3399,7 +3404,7 @@ function dryRunRangeFill(local_graph_id) {
 }
 
 function redrawGraph(graph_id) {
-	var mainWidth = getMainWidth();
+	var mainWidth = getMainWidth() - 30;
 	var isThumb   = $('#thumbnails').is(':checked');
 	var myColumns = $('#columns').val();
 	var graphRow  = $('.tableRowGraph').width();
@@ -3545,7 +3550,7 @@ function initializeGraphs() {
 		applyFilter();
 	});
 
-	var mainWidth = getMainWidth();
+	var mainWidth = getMainWidth() - 30;
 	var myColumns = $('#columns').val();
 	var isThumb   = $('#thumbnails').is(':checked');
 	var myWidth   = (mainWidth-(30*myColumns))/myColumns;

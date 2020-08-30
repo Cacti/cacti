@@ -788,6 +788,7 @@ label {
 	vertical-align: top;
 	background: #1D1F21;
 	background-image: linear-gradient(#1D1F21,#000000);
+	display: table;
 }
 
 .cactiTreeNavigationArea {
@@ -1033,10 +1034,10 @@ legend {
 
 .cactiGraphContentArea {
 	height: 100vh;
+	display: none;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
-	height: 100vh;
 }
 
 .cactiGraphContentArea span[align="center"] {
