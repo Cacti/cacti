@@ -2426,6 +2426,9 @@ function html_common_header($title, $selectedTheme = '') {
 	<script type='text/javascript'>
 		var theme='<?php print $selectedTheme;?>';
 		var hScroll=<?php print read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false';?>;
+		var userSettings=<?php print is_view_allowed('graph_settings') ? 'true':'false';?>;
+		var tableConstraintsOn='<?php print __('Limit table columns to view port hiding columns that do not fit.');?>';
+		var tableConstraintsOff='<?php print __('Allow all table columns to be shown for very large scrolling tables.');?>';
 		var searchFilter='<?php print __esc('Enter a search term');?>';
 		var searchRFilter='<?php print __esc('Enter a regular expression');?>';
 		var noFileSelected='<?php print __esc('No file selected');?>';
@@ -2519,7 +2522,6 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
 	print get_md5_include_css('include/fa/css/all.css');
-	print get_md5_include_css('include/fa/css/fontawesome.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 	print get_md5_include_js('include/js/screenfull.js', true);

@@ -700,6 +700,7 @@ label {
 	clear: both;
 	width: 100%;
 	vertical-align: top;
+	display: table;
 }
 
 .cactiTreeNavigationArea {
@@ -930,6 +931,7 @@ legend {
 
 .cactiGraphContentArea {
 	height: 100vh;
+	display: none;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	margin-right: 5px;
