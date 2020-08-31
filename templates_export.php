@@ -182,10 +182,16 @@ function export() {
 
 	?>
 	<script type='text/javascript'>
+	var stopTimer;
+
 	$(function() {
 		$('#export_type').change(function() {
 			strURL = 'templates_export.php?header=false&export_type='+$('#export_type').val();
 			loadPageNoHeader(strURL);
+		});
+
+		$('form#export').submit(function(event) {
+			stopTimer = setTimeout(function() { Pace.stop() }, 1000);
 		});
 	});
 	</script>
