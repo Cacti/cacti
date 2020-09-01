@@ -42,7 +42,7 @@ if (cacti_sizeof($parms)) {
 	$description   = '';
 	$ip            = '';
 	$host_id       = '';
-
+	$debug	       = '';
 	$quietMode     = false;
 	$confirm       = false;
 	$quiet         = false;
