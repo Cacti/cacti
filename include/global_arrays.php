@@ -583,13 +583,13 @@ $snmp_versions = array(0 =>
 $snmp_auth_protocols = array(
 	'[None]' => __('[None]'),
 	'MD5'    => __('MD5'),
-	'SHA'    => __('SHA')
+	'SHA'    => __('SHA1')
 );
 
 $snmp_priv_protocols = array(
 	'[None]' => __('[None]'),
 	'DES'    => __('DES'),
-	'AES128' => __('AES')
+	'AES128' => __('AES128')
 );
 
 $banned_snmp_strings = array(
