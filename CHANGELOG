@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.15
+-issue#3643: Maximum OIDs Per Get Request - field empty
 -issue#3656: Cacti V1.2.12 Boost running too often
 -issue#3730: Change wording for the 21st century, but let's not forget our past
 -issue#3743: Description field allows more characters entered than is stored
