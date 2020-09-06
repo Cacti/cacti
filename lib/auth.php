@@ -593,6 +593,10 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
  */
 function is_view_allowed($view = 'show_tree') {
 	if (read_config_option('auth_method') != 0) {
+		if (!isset($_SESSION['sess_user_id'])) {
+			return false;
+		}
+
 		$values = array_rekey(
 			db_fetch_assoc_prepared("SELECT DISTINCT $view
 				FROM user_auth_group AS uag

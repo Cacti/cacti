@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#3771: All Cacti Console pages should include the ID of the object and the Data Input Method page is missing that ID
 -issue#3775: Search field strange behavior when hitting enter in 1.2.14
 -issue#3778: Export DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
+-issue#3781: Cacti V1.2.14 php backtraces on Auth.php errors upon login
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
