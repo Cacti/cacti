@@ -985,40 +985,38 @@ function makeFiltersResponsive() {
 					if (filterHeader.find('.cactiSwitchConstraints').length == 0) {
 						if (hScroll) {
 							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
-							filterHeader.find('div.cactiTableButton').append('<span title="'+tableConstraintsOn+'" class="cactiSwitchConstraints"><i id="overflow" class="fa fa-compress"></i></span>');
+							filterHeader.find('div.cactiTableButton').append('<a title="'+tableConstraints+'" class="cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-compress"></i></a>');
 						} else {
 							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
-							filterHeader.find('div.cactiTableButton').append('<span title="'+tableConstraintsOff+'" class="cactiSwitchConstraints"><i id="overflow" class="fa fa-expand"></i></span>');
+							filterHeader.find('div.cactiTableButton').append('<a title="'+tableConstraints+'" class="cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-expand"></i></a>');
 						}
 
-						$('.cactiSwitchConstraints').tooltip();
-					}
+						$('.cactiSwitchConstraints').off('click').on('click', function(event) {
+							event.preventDefault();
+							event.stopPropagation();
 
-					$('.cactiSwitchConstraints').off('click').on('click', function(event) {
-						event.stopPropagation();
+							hScroll = !hScroll;
 
-						hScroll = !hScroll;
+							$.post(urlPath + 'auth_profile.php?tab=general&action=update_data', {
+								__csrf_magic: csrfMagicToken,
+								name: 'enable_hscroll',
+								value: hScroll ? 'on':''
+								}, function() {
+								if (hScroll) {
+									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+									$('#overflow').removeClass('fa-expand').addClass('fa-compress');
 
-						$.post(urlPath + 'auth_profile.php?tab=general&action=update_data', {
-							__csrf_magic: csrfMagicToken,
-							name: 'enable_hscroll',
-							value: hScroll ? 'on':''
-							}, function() {
-							if (hScroll) {
-								$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
-								$('.cactiSwitchConstraints').tooltip('option', 'content', tableConstraintsOn);
-								$('#overflow').removeClass('fa-expand').addClass('fa-compress');
+									resetTables();
+								} else {
+									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
+									$('#overflow').removeClass('fa-compress').addClass('fa-expand');
 
-								resetTables();
-							} else {
-								$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
-								$('.cactiSwitchConstraints').tooltip('option', 'content', tableConstraintsOff);
-								$('#overflow').removeClass('fa-compress').addClass('fa-expand');
-								tuneTables();
-							}
+									tuneTables();
+								}
 
+							});
 						});
-					});
+					}
 				}
 
 				if (filterHeader.find('div.cactiTableButton').find('.cactiFilterAdd').length) {

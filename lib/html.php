@@ -2379,8 +2379,7 @@ function html_common_header($title, $selectedTheme = '') {
 		var theme='<?php print $selectedTheme;?>';
 		var hScroll=<?php print read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false';?>;
 		var userSettings=<?php print is_view_allowed('graph_settings') ? 'true':'false';?>;
-		var tableConstraintsOn='<?php print __('Limit table columns to view port hiding columns that do not fit.');?>';
-		var tableConstraintsOff='<?php print __('Allow all table columns to be shown for very large scrolling tables.');?>';
+		var tableConstraints='<?php print __('Allow or limit the table columns to extend beyond the current windows limits.');?>';
 		var searchFilter='<?php print __esc('Enter a search term');?>';
 		var searchRFilter='<?php print __esc('Enter a regular expression');?>';
 		var noFileSelected='<?php print __esc('No file selected');?>';
