@@ -1954,6 +1954,7 @@ CREATE TABLE host (
   failed_polls int(10) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY poller_id_disabled (poller_id, disabled),
   KEY external_id (external_id),
