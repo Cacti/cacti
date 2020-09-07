@@ -461,9 +461,19 @@ function graphs() {
 	}
 
 	if (get_request_var('graph_type') > 0) {
+		/* validate the page filter */
+		if (isset_request_var('page' . get_request_var('graph_type'))) {
+			get_filter_request_var('page' . get_request_var('graph_type'));
+		}
+
 		load_current_session_value('page' . get_request_var('graph_type'), 'sess_grn_page' . get_request_var('graph_type'), '1');
 	}else if (get_request_var('graph_type') == -2) {
 		foreach($snmp_queries as $query) {
+			/* validate the page filter */
+			if (isset_request_var('page' . $query['id'])) {
+				get_filter_request_var('page' . $query['id']);
+			}
+
 			load_current_session_value('page' . $query['id'], 'sess_grn_page' . $query['id'], '1');
 		}
 	}

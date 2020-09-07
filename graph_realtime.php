@@ -103,11 +103,15 @@ case 'countdown':
 	/* override: graph height (in pixels) */
 	if (!isempty_request_var('graph_height') && get_request_var('graph_height') < 3000) {
 		$graph_data_array['graph_height'] = get_request_var('graph_height');
+	} else {
+		$graph_data_array['graph_height'] = 125;
 	}
 
 	/* override: graph width (in pixels) */
 	if (!isempty_request_var('graph_width') && get_request_var('graph_width') < 3000) {
 		$graph_data_array['graph_width'] = get_request_var('graph_width');
+	} else {
+		$graph_data_array['graph_width'] = 425;
 	}
 
 	/* override: skip drawing the legend? */

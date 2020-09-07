@@ -36,7 +36,10 @@ Cacti CHANGELOG
 -feature#3738: Ability to see MySQL permissions associated with current database user
 
 1.2.15
+-issue#3643: Maximum OIDs Per Get Request - field empty
 -issue#3656: Cacti V1.2.12 Boost running too often
+-issue#3711: Graphs New interface not validating page variables
+-issue#3722: External Links - switch between tabs
 -issue#3730: Change wording for the 21st century, but let's not forget our past
 -issue#3743: Description field allows more characters entered than is stored
 -issue#3747: ldap.php cannot be loaded while installer is running
@@ -52,6 +55,10 @@ Cacti CHANGELOG
 -issue#3770: Column sizing is being lost between pages refreshes
 -issue#3771: All Cacti Console pages should include the ID of the object and the Data Input Method page is missing that ID
 -issue#3775: Search field strange behavior when hitting enter in 1.2.14
+-issue#3778: Export DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
+-issue#3781: Cacti V1.2.14 php backtraces on Auth.php errors upon login
+-issue#3786: Cacti 1.2.12 Realtime index errors
+-issue#3790: Error Upgrading Cacti from Pre 1.x from Recent MariaDB version
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14

@@ -332,7 +332,7 @@ function data_input_method_to_xml($data_input_id) {
 
 	$xml_text .= "\t<fields>\n";
 
-	if (cacti_sizeof($data_input_fields) > 0) {
+	if (cacti_sizeof($data_input_fields)) {
 		foreach ($data_input_fields as $item) {
 			$hash['data_input_field'] = get_hash_version('data_input_field') . get_hash_data_input($item['id'], 'data_input_field');
 
@@ -342,7 +342,16 @@ function data_input_method_to_xml($data_input_id) {
 				if (($field_name == 'input_output') && (!empty($item[$field_name]))) {
 					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
 				} else {
-					if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden')) {
+					$method = $field_array['method'];
+
+					if ($method != 'hidden_zero' && $method != 'hidden' && $method != 'spacer') {
+						// Work around renaming of field in form
+						// To get around JavaScript form issue
+						// In data_input.php
+						if ($field_name == 'fname') {
+							$field_name = 'name';
+						}
+
 						$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
 					}
 				}
