@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#3775: Search field strange behavior when hitting enter in 1.2.14
 -issue#3778: Export DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
 -issue#3781: Cacti V1.2.14 php backtraces on Auth.php errors upon login
+-issue#3786: Cacti 1.2.12 Realtime index errors
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
