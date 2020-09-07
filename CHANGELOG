@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#3643: Maximum OIDs Per Get Request - field empty
 -issue#3656: Cacti V1.2.12 Boost running too often
 -issue#3711: Graphs New interface not validating page variables
+-issue#3722: External Links - switch between tabs
 -issue#3730: Change wording for the 21st century, but let's not forget our past
 -issue#3743: Description field allows more characters entered than is stored
 -issue#3747: ldap.php cannot be loaded while installer is running

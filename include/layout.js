@@ -1200,7 +1200,7 @@ function setupResponsiveMenuAndTabs() {
 					menuShow();
 				}
 			}
-		} else if (pageName == page && pageName != 'graph_view.php') {
+		} else if (pageName == page && pageName != 'graph_view.php' && pageName != 'link.php') {
 			if ($('#navigation').length) {
 				if (menuOpen(page)) {
 					menuHide(true);
