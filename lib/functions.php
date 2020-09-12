@@ -385,19 +385,23 @@ function config_value_exists($config_name) {
 function read_default_config_option($config_name) {
 	global $config, $settings;
 
-	if (is_array($settings)) {
-		foreach ($settings as $tab_array) {
-			if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
-				return $tab_array[$config_name]['default'];
-			} else {
-				foreach ($tab_array as $field_array) {
-					if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
-						return $field_array['items'][$config_name]['default'];
+	if (isset($settings)) {
+		if (is_array($settings)) {
+			foreach ($settings as $tab_array) {
+				if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
+					return $tab_array[$config_name]['default'];
+				} else {
+					foreach ($tab_array as $field_array) {
+						if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
+							return $field_array['items'][$config_name]['default'];
+						}
 					}
 				}
 			}
 		}
 	}
+
+	return null;
 }
 
 /* read_config_option - finds the current value of a Cacti configuration setting
@@ -446,25 +450,25 @@ function read_config_option($config_name, $force = false) {
 		// so that we can read the database version later.
 		if (isset($database_hostname) && isset($database_port) && isset($database_default) &&
 		    isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
-
 			// Get the database setting
 			$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
 
 			// Does the settings exist in the database?
 			if (isset($db_setting['value'])) {
-
 				// It does? lets use it
 				$value = $db_setting['value'];
 			}
 
-			// Store whatever value we have in the array
-			$config_array[$config_name] = $value;
+			if ($value != null) {
+				// Store whatever value we have in the array
+				$config_array[$config_name] = $value;
 
-			// Store the array back for later retrieval
-			if (isset($_SESSION)) {
-				$_SESSION['sess_config_array']  = $config_array;
-			} else {
-				$config['config_options_array'] = $config_array;
+				// Store the array back for later retrieval
+				if (isset($_SESSION)) {
+					$_SESSION['sess_config_array']  = $config_array;
+				} else {
+					$config['config_options_array'] = $config_array;
+				}
 			}
 		}
 	} else {
