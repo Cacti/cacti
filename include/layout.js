@@ -985,10 +985,10 @@ function makeFiltersResponsive() {
 					if (filterHeader.find('.cactiSwitchConstraints').length == 0) {
 						if (hScroll) {
 							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
-							filterHeader.find('div.cactiTableButton').append('<a title="'+tableConstraints+'" class="cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-compress"></i></a>');
+							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="'+tableConstraints+'" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-compress"></i></a></span>');
 						} else {
 							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
-							filterHeader.find('div.cactiTableButton').append('<a title="'+tableConstraints+'" class="cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-expand"></i></a>');
+							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="'+tableConstraints+'" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-expand"></i></a></span>');
 						}
 
 						$('.cactiSwitchConstraints').off('click').on('click', function(event) {
