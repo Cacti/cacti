@@ -5,16 +5,6 @@ services:
 
 matrix:
   include:
-    - php: 5.4
-      dist: trusty
-    - php: 5.5
-      dist: trusty
-    - php: 5.6
-      dist: xenial
-    - php: 7.0
-      dist: xenial
-    - php: 7.1
-      dist: bionic
     - php: 7.2
       dist: bionic
     - php: 7.3
@@ -32,7 +22,7 @@ before_install:
   - sudo apt-get update > /dev/null
 
 install:
-- sudo apt-get install apache2 php5-mysql php5-gd php5-ldap php5-gmp rrdtool snmp
+- sudo apt-get install apache2 php-mysql php-gd php-ldap php-gmp rrdtool snmp
 - sudo a2enmod actions
 - sudo a2enmod rewrite
 - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
