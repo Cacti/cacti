@@ -2365,13 +2365,14 @@ function html_common_header($title, $selectedTheme = '') {
 	if ($script_policy != '0' && $script_policy != '') {
 		$script_policy = "'$script_policy'";
 	}
+	$alternates = read_config_option('content_security_alternate_sources');
 
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' <?php print $script_policy;?> 'unsafe-inline'; worker-src 'self'">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print $script_policy;?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self'">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
