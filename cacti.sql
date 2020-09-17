@@ -2078,7 +2078,7 @@ CREATE TABLE `plugin_config` (
   `status` tinyint(2) NOT NULL default '0',
   `author` varchar(64) NOT NULL default '',
   `webpage` varchar(255) NOT NULL default '',
-  `version` varchar(8) NOT NULL default '',
+  `version` varchar(10) NOT NULL default '',
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)
