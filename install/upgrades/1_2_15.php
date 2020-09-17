@@ -23,5 +23,5 @@
 */
 
 function upgrade_to_1_2_15() {
-	db_install_execute('ALTER TABLE plugin_config MODIFY COLUMN `version` VARCHAR(10) NOT NULL default ""'));
+	db_install_execute('ALTER TABLE plugin_config MODIFY COLUMN `version` VARCHAR(10) NOT NULL default ""');
 }
