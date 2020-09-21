@@ -1253,7 +1253,7 @@ $settings = array(
 			),
 		'poller_warning_1h_count' => array(
 			'friendly_name' => __('1h count warning threshold'),
-			'description' => __('When this count of guarded ratio (below) is reached in one hour, warning log and email is launched. 0 = disable.'),
+			'description' => __('When this count of guarded ratio (below) is reached in one hour, warning will be written to log and email will be send. 0 = disable.'),
 			'method' => 'textbox',
 			'default' => '3',
 			'max_length' => 1,
@@ -1274,7 +1274,7 @@ $settings = array(
 			),
 		'poller_warning_24h_ratio' => array(
 			'friendly_name' => __('24 hours guarded poller ratio run/max'),
-			'description' => __('Define guarded average ratio poller run/max time (in percent). When it is reached, warning log and email is launched. 0 = disable'),
+			'description' => __('Define guarded average ratio poller run/max time (in percent). When it is reached, warning will be written to log and email will be send. 0 = disable'),
 			'method' => 'drop_array',
 			'default' => '60',
 			'array' => array(
