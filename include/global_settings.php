@@ -1501,6 +1501,41 @@ $settings = array(
 			'collapsible' => 'true',
 			'method' => 'spacer',
 		),
+		'poller_warning_1h_count' => array(
+			'friendly_name' => __('1h count warning threshold'),
+			'description' => __('When this count of guarded ratio (below) is reached in one hour, warning will be written to log and email will be send. 0 = disable.'),
+			'method' => 'textbox',
+			'default' => '3',
+			'max_length' => 1,
+			'size' => 4,
+			),
+		'poller_warning_1h_ratio' => array(
+			'friendly_name' => __('1 hour guarded poller ratio run/max'),
+			'description' => __('Define guarded ratio poller run/max time (in percent).'),
+			'method' => 'drop_array',
+			'default' => '70',
+			'array' => array(
+				'0' => '0',
+				'50' => '50',
+				'60' => '60',
+				'70' => '70',
+				'80' => '80',
+				'90' => '90',)
+			),
+		'poller_warning_24h_ratio' => array(
+			'friendly_name' => __('24 hours guarded poller ratio run/max'),
+			'description' => __('Define guarded average ratio poller run/max time (in percent). When it is reached, warning will be written to log and email will be send. 0 = disable'),
+			'method' => 'drop_array',
+			'default' => '60',
+			'array' => array(
+				'0' => '0',
+				'50' => '50',
+				'60' => '60',
+				'70' => '70',
+				'80' => '80',
+				'90' => '90',)
+			),
+		),
 		'concurrent_processes' => array(
 			'friendly_name' => __('Data Collector Processes'),
 			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),

@@ -2355,6 +2355,18 @@ CREATE TABLE poller_time (
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
+-- Table structure for table `poller_time_stats`
+--
+
+CREATE TABLE poller_time_stats (
+  id bigint(20) unsigned NOT NULL auto_increment,
+  poller_id int(10) unsigned NOT NULL default '1',
+  total_time double default NULL,
+  `time` timestamp NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+
+--
 -- Table structure for table `processes`
 --
 

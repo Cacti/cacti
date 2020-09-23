@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -feature#3724: Create Spikekill method to kill values over an absolute maximum
 -feature#3725: Create the ability for Spikekill to modify only certain DSes within an RRD
 -feature#3738: Ability to see MySQL permissions associated with current database user
+-feature#3417: Add worst poller hosts to support page, log and email warning when poller time reached defined threshold
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
