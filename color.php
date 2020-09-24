@@ -618,6 +618,7 @@ function color() {
 				$('#export').click(function(event) {
 					strURL = 'color.php?action=export&header=false';
 					document.location = strURL;
+					Pace.stop();
 				});
 			});
 			</script>
