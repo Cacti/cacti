@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -issue#3793: Calling function read_config_option in plugin's setup.php leads to error
 -issue#3803: Allow Users to Specify Alternate Sources for Content-Security Policy
 -issue#3809: The version number of plugin is not correct because the version length is too small in plugin_config schema
+-issue#3825: Unable to pass tree and leaf ID to 'graph_button' hook
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14

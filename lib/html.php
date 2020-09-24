@@ -232,8 +232,11 @@ function html_graph_template_multiselect() {
    @arg $no_graphs_message - display this message if no graphs are found in $graph_array
    @arg $extra_url_args - extra arguments to append to the url
    @arg $header - html to use as a header
-   @arg $columns - the number of columns to present */
-function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0) {
+   @arg $columns - the number of columns to present
+   @arg $tree_id - the tree id if this is a tree thumbnail
+   @arg $branch_id - the branch id if this is a tree thumbnail
+*/
+function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
@@ -271,7 +274,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
 						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
-							<?php graph_drilldown_icons($graph['local_graph_id']);?>
+							<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
 						</td>
 					</tr>
 				</table>
@@ -308,8 +311,11 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
    @arg $no_graphs_message - display this message if no graphs are found in $graph_array
    @arg $extra_url_args - extra arguments to append to the url
    @arg $header - html to use as a header
-   @arg $columns - the number of columns to present */
-function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0) {
+   @arg $columns - the number of columns to present
+   @arg $tree_id - the tree id if this is a tree thumbnail
+   @arg $branch_id - the branch id if this is a tree thumbnail
+*/
+function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
@@ -386,7 +392,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
 						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
-							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
+							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
 						</td>
 					</tr>
 				</table>
@@ -419,7 +425,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	}
 }
 
-function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
+function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
 	global $config;
 	static $rand = 0;
 
@@ -460,7 +466,14 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 		print $aggregate_url;
 	}
 
-	api_plugin_hook($type, array('hook' => 'graph_buttons_thumbnails', 'local_graph_id' => $local_graph_id, 'rra' =>  0, 'view_type' => ''));
+	api_plugin_hook($type, array(
+		'hook' => $type,
+		'local_graph_id' => $local_graph_id,
+		'rra' =>  0,
+		'view_type' => $tree_id > 0 ? 'tree':'preview',
+		'tree_id' => $tree_id,
+		'branch_id' => $branch_id)
+	);
 
 	print '</div>';
 }
