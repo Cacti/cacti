@@ -141,6 +141,7 @@ if (read_config_option('auth_method') != 0) {
 			if (empty($_SESSION['sess_user_id'])) {
 				$_SESSION['sess_user_id'] = $guest_user_id;
 			}
+			$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 			return true;
 		}
 	}
