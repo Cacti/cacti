@@ -853,7 +853,6 @@ label.ui-state-hover > span {
 	clear: both;
 	width: 100%;
 	vertical-align: top;
-	display: table;
 }
 
 .cactiTreeNavigationArea {

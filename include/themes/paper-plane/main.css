@@ -788,7 +788,6 @@ label {
 	vertical-align: top;
 	background: #1D1F21;
 	background-image: linear-gradient(#1D1F21,#000000);
-	display: table;
 }
 
 .cactiTreeNavigationArea {
