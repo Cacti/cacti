@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#3809: The version number of plugin is not correct because the version length is too small in plugin_config schema
 -issue#3821: The refresh circle still exist after export color done
 -issue#3825: Unable to pass tree and leaf ID to 'graph_button' hook
+-issue#3828: Early 'return' makes $current_user empty
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
