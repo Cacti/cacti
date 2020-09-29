@@ -41,7 +41,7 @@ chdir($dir);
 /* record the start time */
 $poller_start = microtime(true);
 
-global $config, $database_default, $archived, $purged, $disable_log_rotation;
+global $config, $database_default, $archived, $purged, $disable_log_rotation, $poller_start;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -170,6 +170,8 @@ function authcache_purge() {
 }
 
 function rrdfile_purge() {
+	global $archived, $purged, $poller_start;
+
 	/* are my tables already present? */
 	$purge = db_fetch_cell('SELECT count(*)
 		FROM data_source_purge_action');
