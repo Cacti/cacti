@@ -38,10 +38,10 @@ error_reporting(E_ALL);
 $dir = dirname(__FILE__);
 chdir($dir);
 
+global $config, $database_default, $archived, $purged, $disable_log_rotation, $poller_start;
+
 /* record the start time */
 $poller_start = microtime(true);
-
-global $config, $database_default, $archived, $purged, $disable_log_rotation, $poller_start;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -94,7 +94,7 @@ if (!register_process_start('maintenance', 'master', $config['poller_id'], read_
 }
 
 if ($config['poller_id'] == 1) {
-	rrdfile_purge();
+	rrdfile_purge($force);
 
 	authcache_purge();
 
@@ -169,7 +169,7 @@ function authcache_purge() {
 	}
 }
 
-function rrdfile_purge() {
+function rrdfile_purge($force) {
 	global $archived, $purged, $poller_start;
 
 	/* are my tables already present? */
