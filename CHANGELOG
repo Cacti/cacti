@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -issue#3793: Calling function read_config_option in plugin's setup.php leads to error
 -issue#3803: Allow Users to Specify Alternate Sources for Content-Security Policy
 -issue#3809: The version number of plugin is not correct because the version length is too small in plugin_config schema
+-issue#3815: Issues with Cacti login when session_autostart is configured in php.ini
 -issue#3821: The refresh circle still exist after export color done
 -issue#3825: Unable to pass tree and leaf ID to 'graph_button' hook
 -issue#3828: Early 'return' makes $current_user empty
