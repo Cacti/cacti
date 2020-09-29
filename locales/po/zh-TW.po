@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2020-09-13 17:39-0400\n"
+"POT-Creation-Date: 2020-09-29 19:32-0400\n"
 "PO-Revision-Date: 2020-09-13 19:56-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.4.1\n"
 
-#: about.php:29 include/global_arrays.php:2451 lib/html.php:2400
+#: about.php:29 include/global_arrays.php:2451 lib/html.php:2414
 #, fuzzy
 msgid "About Cacti"
 msgstr "關於仙人掌"
@@ -89,7 +89,7 @@ msgstr "本程序的發布是希望它有用，但沒有任何擔保;甚至沒�
 #: graphs.php:46 host.php:40 host_templates.php:35 host_templates.php:505
 #: host_templates.php:562 include/global_arrays.php:1506
 #: include/global_settings.php:239 lib/api_automation.php:1327
-#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1203
+#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1216
 #: lib/html_form.php:1269 lib/html_reports.php:1417 links.php:28
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1398 tree.php:1551
 #: tree.php:1611 tree.php:1632 user_admin.php:28 user_domains.php:30
@@ -160,7 +160,7 @@ msgstr "單擊“繼續”以刪除以下聚合圖。"
 #: host.php:442 host.php:456 host.php:470 host.php:479 host.php:487
 #: host_templates.php:270 host_templates.php:284 host_templates.php:295
 #: host_templates.php:344 host_templates.php:407 lib/clog_webapi.php:221
-#: lib/html.php:2433 lib/html_form.php:1268 lib/html_form.php:1280
+#: lib/html.php:2447 lib/html_form.php:1268 lib/html_form.php:1280
 #: lib/html_form.php:1291 lib/html_utility.php:274 links.php:197 links.php:206
 #: links.php:215 managers.php:1004 managers.php:1062 plugins.php:517
 #: pollers.php:523 pollers.php:532 pollers.php:541 pollers.php:550
@@ -195,7 +195,7 @@ msgstr "取消"
 #: host.php:424 host.php:433 host.php:442 host.php:456 host.php:470
 #: host.php:479 host.php:487 host_templates.php:270 host_templates.php:284
 #: host_templates.php:295 host_templates.php:345 host_templates.php:408
-#: lib/clog_webapi.php:222 lib/html.php:2432 lib/html_reports.php:284
+#: lib/clog_webapi.php:222 lib/html.php:2446 lib/html_reports.php:284
 #: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
 #: managers.php:1004 managers.php:1062 pollers.php:523 pollers.php:532
 #: pollers.php:541 pollers.php:550 sites.php:359 sites.php:369 tree.php:651
@@ -227,7 +227,7 @@ msgstr "為了將下面的聚合圖遷移到基於模板的聚合，它們只能
 #: aggregate_graphs.php:393 aggregate_graphs.php:441 aggregate_graphs.php:487
 #: auth_changepassword.php:359 auth_profile.php:443 automation_networks.php:398
 #: automation_snmp.php:254 graphs.php:1162 graphs.php:1212 graphs.php:1215
-#: graphs.php:1257 include/auth.php:281 lib/api_aggregate.php:1589
+#: graphs.php:1257 include/auth.php:287 lib/api_aggregate.php:1589
 #: lib/api_aggregate.php:1604 lib/html_form.php:1289 lib/html_utility.php:272
 #: managers.php:1065 permission_denied.php:30 permission_denied.php:32
 msgid "Return"
@@ -389,7 +389,7 @@ msgstr "詳細資料"
 msgid "Items"
 msgstr "項目"
 
-#: aggregate_graphs.php:661 aggregate_graphs.php:667 lib/html.php:1914
+#: aggregate_graphs.php:661 aggregate_graphs.php:667 lib/html.php:1927
 #: lib/html_reports.php:1156
 msgid "Preview"
 msgstr "預覽"
@@ -510,8 +510,8 @@ msgstr "搜尋"
 #: data_sources.php:1737 graph_view.php:464 graph_view.php:659
 #: graph_view.php:708 graphs.php:1967 graphs.php:2098 host.php:1645
 #: include/global_arrays.php:891 include/global_arrays.php:1098
-#: include/global_arrays.php:1867 lib/api_automation.php:283 lib/html.php:1628
-#: lib/html.php:1630 lib/html.php:1708 lib/html_graph.php:209
+#: include/global_arrays.php:1867 lib/api_automation.php:283 lib/html.php:1641
+#: lib/html.php:1643 lib/html.php:1721 lib/html_graph.php:209
 #: lib/html_tree.php:1087 lib/html_tree.php:1415 tree.php:794 tree.php:2066
 #: user_admin.php:1030 user_admin.php:1299 user_admin.php:2619
 #: user_group_admin.php:825 user_group_admin.php:980 user_group_admin.php:2183
@@ -561,7 +561,7 @@ msgstr "聚合的一部分"
 #: graph_view.php:608 graphs.php:1952 graphs_new.php:399 host.php:1571
 #: host_templates.php:751 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
-#: lib/clog_webapi.php:522 lib/html.php:1467 lib/html_filter.php:80
+#: lib/clog_webapi.php:522 lib/html.php:1480 lib/html_filter.php:80
 #: lib/html_graph.php:190 lib/html_reports.php:1532 lib/html_tree.php:1074
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:864 sites.php:498 tree.php:1944
@@ -661,27 +661,27 @@ msgid "Size"
 msgstr "尺寸"
 
 #: aggregate_graphs.php:1343 aggregate_templates.php:683
-#: automation_tree_rules.php:689 cdef.php:911 color.php:725 color.php:727
+#: automation_tree_rules.php:689 cdef.php:911 color.php:726 color.php:728
 #: color_templates.php:653 data_input.php:976 data_queries.php:1427
 #: data_source_profiles.php:1101 data_source_profiles.php:1102
 #: data_sources.php:1684 data_sources.php:1685 data_templates.php:1127
 #: gprint_presets.php:437 graph_templates.php:851 host_templates.php:879
-#: include/global_settings.php:474 include/global_settings.php:775
-#: include/global_settings.php:1609 lib/api_automation.php:1438 links.php:404
+#: include/global_settings.php:479 include/global_settings.php:788
+#: include/global_settings.php:1622 lib/api_automation.php:1438 links.php:404
 #: tree.php:2099 tree.php:2100 user_admin.php:2349 user_domains.php:766
 #: user_group_admin.php:1925 vdef.php:904
 msgid "No"
 msgstr "否"
 
 #: aggregate_graphs.php:1343 aggregate_templates.php:683
-#: automation_tree_rules.php:682 cdef.php:911 color.php:725 color.php:727
+#: automation_tree_rules.php:682 cdef.php:911 color.php:726 color.php:728
 #: color_templates.php:653 data_debug.php:625 data_debug.php:630
 #: data_debug.php:635 data_input.php:976 data_queries.php:1427
 #: data_source_profiles.php:1100 data_source_profiles.php:1101
 #: data_source_profiles.php:1102 data_sources.php:1684 data_sources.php:1685
 #: data_templates.php:1127 gprint_presets.php:437 graph_templates.php:851
-#: host_templates.php:879 include/global_settings.php:475
-#: include/global_settings.php:774 include/global_settings.php:1608
+#: host_templates.php:879 include/global_settings.php:480
+#: include/global_settings.php:787 include/global_settings.php:1621
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
 #: lib/installer.php:3423 links.php:404 tree.php:2099 tree.php:2100
 #: user_admin.php:2347 user_domains.php:762 user_domains.php:766
@@ -707,7 +707,7 @@ msgstr "聚合圖"
 
 #: aggregate_graphs.php:1558 data_debug.php:951 data_sources.php:1347
 #: graph_view.php:621 graphs.php:1917 host.php:1526
-#: include/global_arrays.php:2723 include/global_settings.php:524
+#: include/global_arrays.php:2723 include/global_settings.php:537
 #: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:1038
 #: rrdcleaner.php:352 user_admin.php:2597 user_admin.php:2790
 #: user_group_admin.php:2161 user_group_admin.php:2269 utilities.php:1749
@@ -723,7 +723,7 @@ msgstr "模板"
 #: lib/api_automation.php:150 lib/api_automation.php:168
 #: lib/api_automation.php:429 lib/api_automation.php:446
 #: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2342
-#: lib/html.php:1992 lib/html.php:2015 lib/html.php:2053
+#: lib/html.php:2005 lib/html.php:2028 lib/html.php:2066
 #: lib/html_reports.php:1511 managers.php:482 managers.php:735
 #: user_admin.php:2601 user_admin.php:2794 user_group_admin.php:2165
 #: user_group_admin.php:2273 utilities.php:785 utilities.php:1468
@@ -748,13 +748,13 @@ msgstr "任何"
 #: include/global_form.php:966 include/global_form.php:974
 #: include/global_form.php:1147 include/global_form.php:1166
 #: include/global_form.php:1175 include/global_form.php:2051
-#: include/global_form.php:2093 include/global_settings.php:528
-#: include/global_settings.php:536 include/global_settings.php:544
-#: include/global_settings.php:1211 include/global_settings.php:1682
+#: include/global_form.php:2093 include/global_settings.php:541
+#: include/global_settings.php:549 include/global_settings.php:557
+#: include/global_settings.php:1224 include/global_settings.php:1695
 #: lib/api_automation.php:151 lib/api_automation.php:430
 #: lib/api_automation.php:447 lib/api_automation.php:589
 #: lib/api_automation.php:1077 lib/auth.php:2345 lib/html.php:180
-#: lib/html.php:1993 lib/html.php:2013 lib/html.php:2054 lib/html_form.php:331
+#: lib/html.php:2006 lib/html.php:2026 lib/html.php:2067 lib/html_form.php:331
 #: lib/html_reports.php:590 lib/html_reports.php:626 lib/html_reports.php:638
 #: lib/html_reports.php:647 lib/html_reports.php:657 settings.php:471
 #: settings.php:490 settings.php:516 user_admin.php:2602 user_admin.php:2795
@@ -846,7 +846,7 @@ msgstr "模版標題"
 msgid "Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate."
 msgstr "無法刪除正在使用的聚合模板。在使用中定義為由Aggregate引用。"
 
-#: aggregate_templates.php:666 cdef.php:894 color.php:702
+#: aggregate_templates.php:666 cdef.php:894 color.php:703
 #: color_templates.php:635 data_input.php:938 data_queries.php:1381
 #: data_source_profiles.php:1026 data_sources.php:1621 data_templates.php:1072
 #: gprint_presets.php:397 graph_templates.php:800 host_templates.php:844
@@ -855,7 +855,7 @@ msgstr "無法刪除正在使用的聚合模板。在使用中定義為由Aggreg
 msgid "Deletable"
 msgstr "可刪除"
 
-#: aggregate_templates.php:667 cdef.php:895 color.php:703 data_queries.php:1131
+#: aggregate_templates.php:667 cdef.php:895 color.php:704 data_queries.php:1131
 #: data_queries.php:1386 gprint_presets.php:402 graph_templates.php:805
 #: vdef.php:887
 #, fuzzy
@@ -930,7 +930,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "％d密碼更改無法重複使用"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1499 lib/functions.php:2406
+#: include/global_form.php:1499 lib/functions.php:2412
 msgid "Change Password"
 msgstr "更改密碼"
 
@@ -945,7 +945,7 @@ msgid "Please enter your new Cacti password."
 msgstr "請輸入您當前的密碼和新密碼<br>仙人掌密碼。"
 
 #: auth_changepassword.php:342 auth_login.php:694 auth_login.php:697
-#: include/global_settings.php:1518 lib/functions.php:3942
+#: include/global_settings.php:1531 lib/functions.php:3948
 msgid "Username"
 msgstr "用戶名"
 
@@ -1050,11 +1050,11 @@ msgstr "用戶登錄"
 msgid "Enter your Username and Password below"
 msgstr "在下面輸入您的用戶名和密碼"
 
-#: auth_login.php:702 include/global_form.php:1466 lib/functions.php:3943
+#: auth_login.php:702 include/global_form.php:1466 lib/functions.php:3949
 msgid "Password"
 msgstr "密碼"
 
-#: auth_login.php:714 include/global_settings.php:1919 lib/auth.php:350
+#: auth_login.php:714 include/global_settings.php:1932 lib/auth.php:350
 #: lib/auth.php:372 lib/auth.php:383
 msgid "Local"
 msgstr "本地"
@@ -1087,7 +1087,7 @@ msgid "User Account Disabled"
 msgstr "用戶帳戶已禁用"
 
 #: auth_profile.php:76 include/global_settings.php:38
-#: include/global_settings.php:1021 include/global_settings.php:1250
+#: include/global_settings.php:1034 include/global_settings.php:1263
 #: managers.php:39 user_admin.php:1983 user_group_admin.php:1659
 msgid "General"
 msgstr "一般"
@@ -1098,18 +1098,18 @@ msgid "User Account Details"
 msgstr "用戶帳戶明細"
 
 #: auth_profile.php:296 include/global_arrays.php:763
-#: include/global_settings.php:2293 lib/html.php:1874 lib/html.php:1896
-#: lib/html.php:2392
+#: include/global_settings.php:2306 lib/html.php:1887 lib/html.php:1909
+#: lib/html.php:2406
 msgid "Tree View"
 msgstr "樹狀圖"
 
-#: auth_profile.php:300 include/global_arrays.php:764 lib/html.php:1881
-#: lib/html.php:1905 lib/html.php:2393
+#: auth_profile.php:300 include/global_arrays.php:764 lib/html.php:1894
+#: lib/html.php:1918 lib/html.php:2407
 msgid "List View"
 msgstr "清單檢視"
 
-#: auth_profile.php:304 include/global_arrays.php:765 lib/html.php:1888
-#: lib/html.php:2394
+#: auth_profile.php:304 include/global_arrays.php:765 lib/html.php:1901
+#: lib/html.php:2408
 #, fuzzy
 msgid "Preview View"
 msgstr "預覽視圖"
@@ -1124,7 +1124,7 @@ msgid "The login name for this user."
 msgstr "此用戶的登錄名。"
 
 #: auth_profile.php:325 include/global_form.php:1450
-#: include/global_settings.php:1553 user_admin.php:2328 user_domains.php:495
+#: include/global_settings.php:1566 user_admin.php:2328 user_domains.php:495
 #: user_group_admin.php:682 utilities.php:883
 msgid "Full Name"
 msgstr "全名"
@@ -1235,8 +1235,8 @@ msgstr "添加到仙人掌"
 #: automation_devices.php:120 automation_devices.php:122 data_sources.php:916
 #: graph_view.php:721 graphs.php:1520 include/global_arrays.php:852
 #: include/global_arrays.php:901 include/global_arrays.php:1710
-#: lib/api_automation.php:425 lib/functions.php:3937 lib/html.php:1988
-#: lib/html.php:2020 lib/html_reports.php:633 utilities.php:1604
+#: lib/api_automation.php:425 lib/functions.php:3943 lib/html.php:2001
+#: lib/html.php:2033 lib/html_reports.php:633 utilities.php:1604
 msgid "Device"
 msgstr "裝置"
 
@@ -1295,7 +1295,7 @@ msgid "SNMP Name"
 msgstr "SNMP名稱"
 
 #: automation_devices.php:266 host.php:1544 include/global_form.php:1145
-#: include/global_settings.php:1914
+#: include/global_settings.php:1927
 msgid "Location"
 msgstr "地點"
 
@@ -1390,7 +1390,7 @@ msgstr "清除發現的設備"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1719
-#: lib/functions.php:4313 lib/functions.php:4317 lib/html.php:1166
+#: lib/functions.php:4319 lib/functions.php:4323 lib/html.php:1179
 #: pollers.php:994 user_admin.php:2342 utilities.php:467 utilities.php:912
 #: utilities.php:2245 utilities.php:2342 utilities.php:2350 utilities.php:2353
 #: utilities.php:2356 utilities.php:2362 utilities.php:2592
@@ -1407,7 +1407,7 @@ msgstr "複製"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:41
-#: include/global_arrays.php:1504 include/global_settings.php:1474 links.php:29
+#: include/global_arrays.php:1504 include/global_settings.php:1487 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:411
 #: user_group_admin.php:32
@@ -1548,11 +1548,11 @@ msgstr "啟用"
 #: automation_tree_rules.php:959 data_debug.php:1010 data_sources.php:1405
 #: data_templates.php:1131 host.php:1593 include/global_arrays.php:814
 #: include/global_arrays.php:1427 include/global_arrays.php:1718
-#: include/global_settings.php:379 include/global_settings.php:1348
-#: include/global_settings.php:1362 include/global_settings.php:1374
-#: include/global_settings.php:1399 include/global_settings.php:1413
-#: include/global_settings.php:1473 include/global_settings.php:2118
-#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2458
+#: include/global_settings.php:379 include/global_settings.php:1361
+#: include/global_settings.php:1375 include/global_settings.php:1387
+#: include/global_settings.php:1412 include/global_settings.php:1426
+#: include/global_settings.php:1486 include/global_settings.php:2131
+#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2472
 #: lib/html_reports.php:1513 lib/html_reports.php:1651 lib/html_utility.php:927
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:47
 #: user_admin.php:1164 user_domains.php:411 user_group_admin.php:697
@@ -1850,10 +1850,10 @@ msgstr "%d 分鐘"
 #: include/global_arrays.php:1447 include/global_arrays.php:1471
 #: include/global_arrays.php:1472 include/global_arrays.php:1473
 #: include/global_arrays.php:1474 include/global_arrays.php:1475
-#: include/global_arrays.php:1488 include/global_settings.php:1415
-#: include/global_settings.php:1416 include/global_settings.php:1417
-#: include/global_settings.php:1418 include/global_settings.php:1419
-#: include/global_settings.php:2220 pollers.php:852 pollers.php:853
+#: include/global_arrays.php:1488 include/global_settings.php:1428
+#: include/global_settings.php:1429 include/global_settings.php:1430
+#: include/global_settings.php:1431 include/global_settings.php:1432
+#: include/global_settings.php:2233 pollers.php:852 pollers.php:853
 #, php-format
 msgid "%d Minutes"
 msgstr "%d 分鐘"
@@ -1879,9 +1879,9 @@ msgstr "%d 小時"
 #: include/global_arrays.php:1389 include/global_arrays.php:1390
 #: include/global_arrays.php:1407 include/global_arrays.php:1408
 #: include/global_arrays.php:1409 include/global_arrays.php:1410
-#: include/global_arrays.php:1411 include/global_settings.php:1421
-#: include/global_settings.php:1422 include/global_settings.php:1423
-#: include/global_settings.php:1424
+#: include/global_arrays.php:1411 include/global_settings.php:1434
+#: include/global_settings.php:1435 include/global_settings.php:1436
+#: include/global_settings.php:1437
 #, php-format
 msgid "%d Hours"
 msgstr "%d 小時"
@@ -2169,7 +2169,7 @@ msgid "The type of ping packet to send."
 msgstr "要發送的ping數據包的類型。"
 
 #: automation_networks.php:730 include/global_form.php:1225
-#: include/global_settings.php:698
+#: include/global_settings.php:711
 #, fuzzy
 msgid "Ping Port"
 msgstr "平港"
@@ -2180,7 +2180,7 @@ msgid "TCP or UDP port to attempt connection."
 msgstr "TCP或UDP端口嘗試連接。"
 
 #: automation_networks.php:738 include/global_form.php:1233
-#: include/global_settings.php:706
+#: include/global_settings.php:719
 #, fuzzy
 msgid "Ping Timeout Value"
 msgstr "Ping超時值"
@@ -2191,7 +2191,7 @@ msgid "The timeout value to use for host ICMP and UDP pinging.  This host SNMP t
 msgstr "用於主機ICMP和UDP ping的超時值。此主機SNMP超時值適用於SNMP ping。"
 
 #: automation_networks.php:747 include/global_form.php:1242
-#: include/global_settings.php:714
+#: include/global_settings.php:727
 #, fuzzy
 msgid "Ping Retry Count"
 msgstr "Ping重試計數"
@@ -2321,7 +2321,7 @@ msgid "Idle"
 msgstr "閒置"
 
 #: automation_networks.php:1153 include/global_arrays.php:1079
-#: include/global_settings.php:2143 lib/html_reports.php:1646
+#: include/global_settings.php:2156 lib/html_reports.php:1646
 msgid "Never"
 msgstr "從不"
 
@@ -2349,10 +2349,10 @@ msgstr "重新整理"
 #: include/global_arrays.php:1480 include/global_arrays.php:1481
 #: include/global_arrays.php:1482 include/global_arrays.php:1483
 #: include/global_arrays.php:1484 include/global_arrays.php:1485
-#: include/global_arrays.php:1486 include/global_settings.php:1099
-#: include/global_settings.php:1100 include/global_settings.php:1101
-#: include/global_settings.php:1102 include/global_settings.php:2216
-#: include/global_settings.php:2217 include/global_settings.php:2218
+#: include/global_arrays.php:1486 include/global_settings.php:1112
+#: include/global_settings.php:1113 include/global_settings.php:1114
+#: include/global_settings.php:1115 include/global_settings.php:2229
+#: include/global_settings.php:2230 include/global_settings.php:2231
 #: pollers.php:846 pollers.php:847 pollers.php:848 pollers.php:849
 #: pollers.php:850
 #, fuzzy, php-format
@@ -2467,24 +2467,24 @@ msgstr "自動化SNMP選項"
 msgid "Item"
 msgstr "項目"
 
-#: automation_snmp.php:534 include/auth.php:313 include/global_settings.php:581
+#: automation_snmp.php:534 include/auth.php:319 include/global_settings.php:594
 #: permission_denied.php:59 plugins.php:462
 msgid "Version"
 msgstr "版本"
 
-#: automation_snmp.php:535 include/global_settings.php:588
+#: automation_snmp.php:535 include/global_settings.php:601
 msgid "Community"
 msgstr "社群"
 
-#: automation_snmp.php:536 lib/functions.php:3938
+#: automation_snmp.php:536 lib/functions.php:3944
 msgid "Port"
 msgstr "端口"
 
-#: automation_snmp.php:537 include/global_settings.php:663
+#: automation_snmp.php:537 include/global_settings.php:676
 msgid "Timeout"
 msgstr "已逾時"
 
-#: automation_snmp.php:538 include/global_settings.php:671
+#: automation_snmp.php:538 include/global_settings.php:684
 msgid "Retries"
 msgstr "重試"
 
@@ -2539,7 +2539,7 @@ msgstr "無"
 #: automation_snmp.php:573 automation_templates.php:524 cdef.php:639
 #: color_templates.php:111 data_queries.php:806 data_queries.php:906
 #: lib/api_automation.php:1314 lib/api_automation.php:1376
-#: lib/api_automation.php:1444 lib/html.php:1188 lib/html_reports.php:1410
+#: lib/api_automation.php:1444 lib/html.php:1201 lib/html_reports.php:1410
 #: lib/html_reports.php:1412 tree.php:2084 tree.php:2091 vdef.php:624
 msgid "Move Down"
 msgstr "下移"
@@ -2547,7 +2547,7 @@ msgstr "下移"
 #: automation_snmp.php:579 automation_templates.php:530 cdef.php:645
 #: color_templates.php:117 data_queries.php:811 data_queries.php:911
 #: lib/api_automation.php:1320 lib/api_automation.php:1382
-#: lib/api_automation.php:1450 lib/html.php:1194 lib/html_reports.php:1412
+#: lib/api_automation.php:1450 lib/html.php:1207 lib/html_reports.php:1412
 #: lib/html_reports.php:1414 tree.php:2088 tree.php:2092 vdef.php:630
 msgid "Move Up"
 msgstr "上移"
@@ -2946,7 +2946,7 @@ msgstr "正在使用的CDEF無法刪除。使用中定義為由圖形或圖形�
 msgid "The number of Graphs using this CDEF."
 msgstr "使用此CDEF的圖表數量。"
 
-#: cdef.php:896 color.php:704 data_input.php:949 data_queries.php:1392
+#: cdef.php:896 color.php:705 data_input.php:949 data_queries.php:1392
 #: data_source_profiles.php:1054 gprint_presets.php:408 vdef.php:888
 #, fuzzy
 msgid "Templates Using"
@@ -3053,7 +3053,7 @@ msgstr "顏色[編輯：％s]"
 msgid "Colors [new]"
 msgstr "顏色[新]"
 
-#: color.php:520 color.php:535 color.php:689 include/global_arrays.php:919
+#: color.php:520 color.php:535 color.php:690 include/global_arrays.php:919
 #: include/global_arrays.php:2055
 msgid "Colors"
 msgstr "顏色"
@@ -3072,60 +3072,60 @@ msgstr "匯入"
 msgid "Export Colors"
 msgstr "出口顏色"
 
-#: color.php:698 color_templates.php:75
+#: color.php:699 color_templates.php:75
 msgid "Hex"
 msgstr "魔女"
 
-#: color.php:698
+#: color.php:699
 #, fuzzy
 msgid "The Hex Value for this Color."
 msgstr "此顏色的十六進制值。"
 
-#: color.php:699
+#: color.php:700
 msgid "Color Name"
 msgstr "顏色名稱"
 
-#: color.php:699
+#: color.php:700
 #, fuzzy
 msgid "The name of this Color definition."
 msgstr "此顏色定義的名稱。"
 
-#: color.php:700
+#: color.php:701
 #, fuzzy
 msgid "Is this color a named color which are read only."
 msgstr "此顏色是否為只讀的命名顏色。"
 
-#: color.php:700
+#: color.php:701
 #, fuzzy
 msgid "Named Color"
 msgstr "命名顏色"
 
-#: color.php:701 color_templates.php:74 include/global_arrays.php:905
+#: color.php:702 color_templates.php:74 include/global_arrays.php:905
 #: include/global_form.php:941 include/global_form.php:2012
 msgid "Color"
 msgstr "顏色"
 
-#: color.php:701
+#: color.php:702
 #, fuzzy
 msgid "The Color as shown on the screen."
 msgstr "屏幕上顯示的顏色。"
 
-#: color.php:702
+#: color.php:703
 #, fuzzy
 msgid "Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template."
 msgstr "使用的顏色無法刪除。使用中定義為由圖形或圖形模板引用。"
 
-#: color.php:703
+#: color.php:704
 #, fuzzy
 msgid "The number of Graph using this Color."
 msgstr "使用此顏色的Graph數量。"
 
-#: color.php:704
+#: color.php:705
 #, fuzzy
 msgid "The number of Graph Templates using this Color."
 msgstr "使用此顏色的圖表模板數。"
 
-#: color.php:734
+#: color.php:735
 #, fuzzy
 msgid "No Colors Found"
 msgstr "找不到顏色"
@@ -3141,13 +3141,13 @@ msgid "Color Item"
 msgstr "顏色項目"
 
 #: color_templates.php:94 lib/api_aggregate.php:1795 lib/api_aggregate.php:1798
-#: lib/api_aggregate.php:1803 lib/html.php:1123 lib/html_reports.php:1401
+#: lib/api_aggregate.php:1803 lib/html.php:1136 lib/html_reports.php:1401
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "項目＃％d"
 
 #: color_templates.php:133 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1855 lib/html.php:1213
+#: lib/api_aggregate.php:1855 lib/html.php:1226
 msgid "No Items"
 msgstr "沒有課程"
 
@@ -3310,7 +3310,7 @@ msgstr "數據源修復收到無效的數據源ID。"
 #: data_debug.php:329 data_debug.php:803 data_queries.php:729
 #: data_sources.php:979 data_templates.php:596 graphs_items.php:463
 #: include/global_arrays.php:903 include/global_form.php:926
-#: lib/api_aggregate.php:1709 lib/html.php:1083
+#: lib/api_aggregate.php:1709 lib/html.php:1096
 msgid "Data Source"
 msgstr "資料來源"
 
@@ -4140,7 +4140,7 @@ msgstr "數據源配置文件RRA（只讀）"
 msgid "Data Retention"
 msgstr "數據保留"
 
-#: data_source_profiles.php:625 include/global_settings.php:916
+#: data_source_profiles.php:625 include/global_settings.php:929
 #: lib/html_reports.php:663
 #, fuzzy
 msgid "Graph Timespan"
@@ -4151,7 +4151,7 @@ msgid "Steps"
 msgstr "步驟"
 
 #: data_source_profiles.php:627 graphs_new.php:416 include/global_form.php:254
-#: lib/html.php:480 lib/html_filter.php:72 lib/installer.php:2524
+#: lib/html.php:493 lib/html_filter.php:72 lib/installer.php:2524
 #: lib/rrd.php:2948 utilities.php:595 utilities.php:1513
 msgid "Rows"
 msgstr "行"
@@ -4181,7 +4181,7 @@ msgstr "每個數據源的％s KBytes"
 #: include/global_arrays.php:716 include/global_arrays.php:717
 #: include/global_arrays.php:718 include/global_arrays.php:719
 #: include/global_arrays.php:720 include/global_arrays.php:721
-#: include/global_arrays.php:1332 include/global_settings.php:1354
+#: include/global_arrays.php:1332 include/global_settings.php:1367
 #, fuzzy, php-format
 msgid "%d Years"
 msgstr "％d年"
@@ -4230,11 +4230,11 @@ msgstr "%d 天"
 #: data_source_profiles.php:822 include/global_arrays.php:692
 #: include/global_arrays.php:702 include/global_arrays.php:703
 #: include/global_arrays.php:1321 include/global_arrays.php:1322
-#: include/global_arrays.php:1323 include/global_settings.php:1349
-#: include/global_settings.php:1350 include/global_settings.php:1351
-#: include/global_settings.php:1352 include/global_settings.php:1363
-#: include/global_settings.php:1364 include/global_settings.php:1365
-#: include/global_settings.php:1366
+#: include/global_arrays.php:1323 include/global_settings.php:1362
+#: include/global_settings.php:1363 include/global_settings.php:1364
+#: include/global_settings.php:1365 include/global_settings.php:1376
+#: include/global_settings.php:1377 include/global_settings.php:1378
+#: include/global_settings.php:1379
 #, php-format
 msgid "%d Days"
 msgstr "%d 天"
@@ -4242,7 +4242,7 @@ msgstr "%d 天"
 #: data_source_profiles.php:830 include/global_arrays.php:647
 #: include/global_arrays.php:1385 include/global_arrays.php:1406
 #: include/global_arrays.php:1439 include/global_arrays.php:1448
-#: include/global_arrays.php:1476 include/global_settings.php:1420
+#: include/global_arrays.php:1476 include/global_settings.php:1433
 msgid "1 Hour"
 msgstr "1小時"
 
@@ -4285,7 +4285,7 @@ msgid "Profiles that are in use by Data Sources become read only for now."
 msgstr "數據源正在使用的配置文件現在變為只讀。"
 
 #: data_source_profiles.php:1036 data_sources.php:1615
-#: include/global_settings.php:1054
+#: include/global_settings.php:1067
 #, fuzzy
 msgid "Poller Interval"
 msgstr "輪詢間隔"
@@ -4539,7 +4539,7 @@ msgstr "外部"
 #: data_sources.php:1183 include/global_arrays.php:642
 #: include/global_arrays.php:1076 include/global_arrays.php:1433
 #: include/global_arrays.php:1469 include/global_arrays.php:1487
-#: include/global_settings.php:1414 include/global_settings.php:2219
+#: include/global_settings.php:1427 include/global_settings.php:2232
 msgid "1 Minute"
 msgstr "1 分鐘"
 
@@ -4851,7 +4851,7 @@ msgstr "沒有GPRINT預設"
 msgid "Viewing Graph"
 msgstr "查看圖表"
 
-#: graph.php:138 lib/html.php:429
+#: graph.php:138 lib/html.php:435
 #, fuzzy
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "圖形詳細信息，縮放和調試實用程序"
@@ -4860,12 +4860,12 @@ msgstr "圖形詳細信息，縮放和調試實用程序"
 msgid "CSV Export"
 msgstr "CSV匯出"
 
-#: graph.php:140 lib/html.php:448 lib/html.php:450
+#: graph.php:140 lib/html.php:454 lib/html.php:456
 #, fuzzy
 msgid "Click to view just this Graph in Real-time"
 msgstr "單擊以實時查看此圖表"
 
-#: graph.php:243 lib/html.php:2389
+#: graph.php:243 lib/html.php:2403
 #, fuzzy
 msgid "Utility View"
 msgstr "實用視圖"
@@ -5228,7 +5228,7 @@ msgid "Select the Report to add the selected Graphs to."
 msgstr "選擇“報告”以將選定的圖形添加到。"
 
 #: graph_view.php:876 include/global_arrays.php:1891
-#: include/global_settings.php:2289
+#: include/global_settings.php:2302
 msgid "Preview Mode"
 msgstr "預覽模式"
 
@@ -5237,12 +5237,12 @@ msgstr "預覽模式"
 msgid "Add Selected Graphs to Report"
 msgstr "將所選圖表添加到報告中"
 
-#: graph_view.php:929 lib/html.php:2430
+#: graph_view.php:929 lib/html.php:2444
 msgid "Ok"
 msgstr "確定"
 
 #: graph_xport.php:120 graph_xport.php:153 include/global_form.php:1732
-#: include/global_form.php:2000 lib/html.php:1771 links.php:381
+#: include/global_form.php:2000 lib/html.php:1784 links.php:381
 msgid "Title"
 msgstr "標題"
 
@@ -5600,7 +5600,7 @@ msgstr "[所有設備]的新圖表"
 msgid "New Graphs for None Host Type"
 msgstr "無主機類型的新圖"
 
-#: graphs_new.php:337 lib/html.php:2387
+#: graphs_new.php:337 lib/html.php:2401
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "過濾器設置已保存"
@@ -5629,12 +5629,12 @@ msgstr "編輯此設備"
 msgid "Create New Device"
 msgstr "創建新設備"
 
-#: graphs_new.php:491 graphs_new.php:785 lib/html.php:962 user_admin.php:1660
+#: graphs_new.php:491 graphs_new.php:785 lib/html.php:975 user_admin.php:1660
 #: user_group_admin.php:1334
 msgid "Select All"
 msgstr "全選"
 
-#: graphs_new.php:491 graphs_new.php:785 lib/html.php:863 lib/html.php:962
+#: graphs_new.php:491 graphs_new.php:785 lib/html.php:876 lib/html.php:975
 #, fuzzy
 msgid "Select All Rows"
 msgstr "選擇所有行"
@@ -5859,7 +5859,7 @@ msgstr "聯繫設備"
 msgid "Data Query Debug Information"
 msgstr "數據查詢調試信息"
 
-#: host.php:695 lib/functions.php:2978 tree.php:1514 tree.php:1588
+#: host.php:695 lib/functions.php:2984 tree.php:1514 tree.php:1588
 #: tree.php:1696 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "複製"
@@ -5935,7 +5935,7 @@ msgstr "[％d項目，％d行]"
 msgid "Fail"
 msgstr "失敗"
 
-#: host.php:878 lib/functions.php:3952 lib/functions.php:3957
+#: host.php:878 lib/functions.php:3958 lib/functions.php:3963
 msgid "Success"
 msgstr "成功"
 
@@ -6002,7 +6002,7 @@ msgstr "SNMP GetNext"
 msgid "Undefined"
 msgstr "未定義"
 
-#: host.php:1491 include/global_settings.php:532 lib/html.php:2049
+#: host.php:1491 include/global_settings.php:545 lib/html.php:2062
 msgid "Site"
 msgstr "網站"
 
@@ -6255,52 +6255,52 @@ msgstr "使用此設備模板的設備數量。"
 msgid "No Device Templates Found"
 msgstr "找不到設備模板"
 
-#: include/auth.php:164
+#: include/auth.php:170
 msgid "Not Logged In"
 msgstr "未登入"
 
-#: include/auth.php:165
+#: include/auth.php:171
 #, fuzzy
 msgid "You must be logged in to access this area of Cacti."
 msgstr "您必須登錄才能訪問Cacti的這個區域。"
 
-#: include/auth.php:169
+#: include/auth.php:175
 #, fuzzy
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "致命：您必須登錄才能訪問Cacti的這個區域。"
 
-#: include/auth.php:281 include/auth.php:283 permission_denied.php:30
+#: include/auth.php:287 include/auth.php:289 permission_denied.php:30
 #: permission_denied.php:32
 #, fuzzy
 msgid "Login Again"
 msgstr "再次登錄"
 
-#: include/auth.php:288 lib/functions.php:5526 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:5532 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "存取被拒"
 
-#: include/auth.php:289 lib/functions.php:5527 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5533 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "如果你覺得這是一個錯誤。請聯繫您的Cacti管理員。"
 
-#: include/auth.php:289 lib/functions.php:5527 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5533 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "您無權訪問此Cacti部分。"
 
-#: include/auth.php:292
+#: include/auth.php:298
 #, fuzzy
 msgid "Installation In Progress"
 msgstr "正在安裝中"
 
-#: include/auth.php:293
+#: include/auth.php:299
 #, fuzzy
 msgid "Only Cacti Administrators with Install/Upgrade privilege may login at this time"
 msgstr "此時只有具有安裝/升級權限的Cacti管理員才能登錄"
 
-#: include/auth.php:293
+#: include/auth.php:299
 #, fuzzy
 msgid "There is an Installation or Upgrade in progress."
 msgstr "正在進行安裝或升級。"
@@ -6833,7 +6833,7 @@ msgstr "右"
 msgid "Justified"
 msgstr "左右對齊"
 
-#: include/global_arrays.php:527 lib/html.php:2456
+#: include/global_arrays.php:527 lib/html.php:2470
 msgid "Center"
 msgstr "置中"
 
@@ -6993,8 +6993,8 @@ msgstr "每隔一小時"
 #: include/global_arrays.php:739 include/global_arrays.php:740
 #: include/global_arrays.php:1720 include/global_arrays.php:1721
 #: include/global_arrays.php:1722 include/global_arrays.php:1723
-#: include/global_arrays.php:1724 include/global_settings.php:2119
-#: include/global_settings.php:2120
+#: include/global_arrays.php:1724 include/global_settings.php:2132
+#: include/global_settings.php:2133
 #, fuzzy, php-format
 msgid "Every %d Hours"
 msgstr "每個％d小時"
@@ -7005,7 +7005,7 @@ msgid "Every %1 Day"
 msgstr "每％1天"
 
 #: include/global_arrays.php:712 include/global_arrays.php:1331
-#: include/global_settings.php:1353 rrdcleaner.php:494
+#: include/global_settings.php:1366 rrdcleaner.php:494
 #, fuzzy, php-format
 msgid "%d Year"
 msgstr "％d年"
@@ -7050,11 +7050,11 @@ msgstr "多個LDAP / AD域"
 msgid "Active Directory"
 msgstr "活動目錄"
 
-#: include/global_arrays.php:792 include/global_settings.php:1683
+#: include/global_arrays.php:792 include/global_settings.php:1696
 msgid "SSL"
 msgstr "SSL"
 
-#: include/global_arrays.php:793 include/global_settings.php:1684
+#: include/global_arrays.php:793 include/global_settings.php:1697
 msgid "TLS"
 msgstr "TLS"
 
@@ -7120,7 +7120,7 @@ msgstr "頁首"
 
 #: include/global_arrays.php:851 include/global_arrays.php:902
 #: include/global_arrays.php:1541 include/global_arrays.php:1709
-#: lib/html.php:2445
+#: lib/html.php:2459
 msgid "Graph"
 msgstr "圖表"
 
@@ -7247,7 +7247,7 @@ msgid "Aggregate"
 msgstr "聚合"
 
 #: include/global_arrays.php:907 include/global_arrays.php:963
-#: include/global_arrays.php:1091 include/global_settings.php:478
+#: include/global_arrays.php:1091 include/global_settings.php:491
 msgid "Automation"
 msgstr "自動控制"
 
@@ -7298,7 +7298,7 @@ msgid "Configuration"
 msgstr "組態"
 
 #: include/global_arrays.php:927 include/global_arrays.php:949
-#: lib/html.php:2184 lib/html.php:2460
+#: lib/html.php:2197 lib/html.php:2474
 msgid "Settings"
 msgstr "設定"
 
@@ -7396,7 +7396,7 @@ msgstr "網站/設備/數據"
 msgid "Spike Management"
 msgstr "尖峰管理"
 
-#: include/global_arrays.php:1112 include/global_settings.php:852
+#: include/global_arrays.php:1112 include/global_settings.php:865
 #, fuzzy
 msgid "Log Management"
 msgstr "日誌管理"
@@ -7702,8 +7702,8 @@ msgstr "4個小時"
 msgid "6 Hours"
 msgstr "6個小時"
 
-#: include/global_arrays.php:1449 include/global_settings.php:1196
-#: include/global_settings.php:1197 include/global_settings.php:1198
+#: include/global_arrays.php:1449 include/global_settings.php:1209
+#: include/global_settings.php:1210 include/global_settings.php:1211
 #, fuzzy, php-format
 msgid "%s Hours"
 msgstr "％s小時"
@@ -7717,17 +7717,17 @@ msgstr "％d GBytes"
 msgid "Infinity"
 msgstr "無限循環播放"
 
-#: include/global_arrays.php:1470 include/global_settings.php:1142
-#: include/global_settings.php:1143 include/global_settings.php:1144
-#: include/global_settings.php:1145 include/global_settings.php:1154
-#: include/global_settings.php:1155 include/global_settings.php:1156
-#: include/global_settings.php:1157 include/global_settings.php:1166
-#: include/global_settings.php:1167 include/global_settings.php:1168
-#: include/global_settings.php:1169 include/global_settings.php:1178
-#: include/global_settings.php:1179 include/global_settings.php:1180
-#: include/global_settings.php:1181 include/global_settings.php:1191
+#: include/global_arrays.php:1470 include/global_settings.php:1155
+#: include/global_settings.php:1156 include/global_settings.php:1157
+#: include/global_settings.php:1158 include/global_settings.php:1167
+#: include/global_settings.php:1168 include/global_settings.php:1169
+#: include/global_settings.php:1170 include/global_settings.php:1179
+#: include/global_settings.php:1180 include/global_settings.php:1181
+#: include/global_settings.php:1182 include/global_settings.php:1191
 #: include/global_settings.php:1192 include/global_settings.php:1193
-#: include/global_settings.php:1194
+#: include/global_settings.php:1194 include/global_settings.php:1204
+#: include/global_settings.php:1205 include/global_settings.php:1206
+#: include/global_settings.php:1207
 #, php-format
 msgid "%s Minutes"
 msgstr "%s Minutes"
@@ -8289,7 +8289,7 @@ msgid "List Mode"
 msgstr "列表模式"
 
 #: include/global_arrays.php:1917 include/global_arrays.php:1923
-#: lib/functions.php:2611 lib/html.php:1619 lib/html.php:1696 links.php:344
+#: lib/functions.php:2617 lib/html.php:1632 lib/html.php:1709 links.php:344
 #: user_admin.php:1704 user_group_admin.php:1380
 msgid "Console"
 msgstr "控制台"
@@ -8450,7 +8450,7 @@ msgid "Export Results"
 msgstr "導出結果"
 
 #: include/global_arrays.php:2475 include/global_arrays.php:2505
-#: lib/html.php:1640 lib/html.php:1642 lib/html.php:1721
+#: lib/html.php:1653 lib/html.php:1655 lib/html.php:1734
 msgid "Reporting"
 msgstr "统计报告"
 
@@ -8603,7 +8603,7 @@ msgstr "SNMP隱私密碼（v3）"
 msgid "Choose the SNMPv3 Privacy Passphrase."
 msgstr "選擇SNMPv3隱私密碼。"
 
-#: include/global_form.php:108 include/global_settings.php:638
+#: include/global_form.php:108 include/global_settings.php:651
 #, fuzzy
 msgid "SNMP Context (v3)"
 msgstr "SNMP上下文（v3）"
@@ -8613,7 +8613,7 @@ msgstr "SNMP上下文（v3）"
 msgid "Enter the SNMP Context to use for this device."
 msgstr "輸入要用於此設備的SNMP上下文。"
 
-#: include/global_form.php:117 include/global_settings.php:647
+#: include/global_form.php:117 include/global_settings.php:660
 #, fuzzy
 msgid "SNMP Engine ID (v3)"
 msgstr "SNMP引擎ID（v3）"
@@ -8742,7 +8742,7 @@ msgstr "在RRA規範中填充行之前所需的樣本數。第一個RRA應始終
 msgid "How many generations data is kept in the RRA."
 msgstr "RRA中保留了多少代數據。"
 
-#: include/global_form.php:263 include/global_settings.php:2239
+#: include/global_form.php:263 include/global_settings.php:2252
 #, fuzzy
 msgid "Default Timespan"
 msgstr "默認時間跨度"
@@ -9337,7 +9337,7 @@ msgstr "圖例方向（--legend-direction = &lt;direction&gt;）"
 msgid "Place the legend items in the given vertical order."
 msgstr "將圖例項目放在給定的垂直順序中。"
 
-#: include/global_form.php:919 lib/api_aggregate.php:1710 lib/html.php:1084
+#: include/global_form.php:919 lib/api_aggregate.php:1710 lib/html.php:1097
 #, fuzzy
 msgid "Graph Item Type"
 msgstr "圖表項目類型"
@@ -9581,7 +9581,7 @@ msgstr "選中此框可禁用此主機的所有檢查。"
 msgid "Availability/Reachability Options"
 msgstr "可用性/可達性選項"
 
-#: include/global_form.php:1206 include/global_settings.php:684
+#: include/global_form.php:1206 include/global_settings.php:697
 #, fuzzy
 msgid "Downed Device Detection"
 msgstr "下降的設備檢測"
@@ -10149,20 +10149,20 @@ msgstr "替換模式"
 msgid "The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match by e.g. <strong>\\${1}</strong> for the first match!"
 msgstr "替換字符串模式用作樹標題。 <br>第一場比賽請參考比賽，例如<strong>\\ $ {1}</strong> ！"
 
-#: include/global_languages.php:711
+#: include/global_languages.php:719
 #, fuzzy
 msgid " T"
 msgstr "Ť"
 
-#: include/global_languages.php:713
+#: include/global_languages.php:721
 msgid " G"
 msgstr "G"
 
-#: include/global_languages.php:715
+#: include/global_languages.php:723
 msgid " M"
 msgstr "M"
 
-#: include/global_languages.php:717
+#: include/global_languages.php:725
 msgid " K"
 msgstr "克爾謝希爾省"
 
@@ -10175,7 +10175,7 @@ msgstr "路徑"
 msgid "Device Defaults"
 msgstr "設備默認值"
 
-#: include/global_settings.php:41 include/global_settings.php:540
+#: include/global_settings.php:41 include/global_settings.php:553
 #, fuzzy
 msgid "Poller"
 msgstr "輪詢"
@@ -10188,7 +10188,7 @@ msgstr "數據"
 msgid "Visual"
 msgstr "視覺"
 
-#: include/global_settings.php:44 lib/functions.php:3941 lib/functions.php:3946
+#: include/global_settings.php:44 lib/functions.php:3947 lib/functions.php:3952
 msgid "Authentication"
 msgstr "認證"
 
@@ -10216,7 +10216,7 @@ msgstr "時間跨越/轉移"
 msgid "Graph Thumbnail Settings"
 msgstr "圖表縮略圖設置"
 
-#: include/global_settings.php:53 include/global_settings.php:785
+#: include/global_settings.php:53 include/global_settings.php:798
 #, fuzzy
 msgid "Tree Settings"
 msgstr "樹設置"
@@ -10231,12 +10231,12 @@ msgstr "圖形字體"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail（）函數"
 
-#: include/global_settings.php:91 lib/functions.php:3924
+#: include/global_settings.php:91 lib/functions.php:3930
 #, fuzzy
 msgid "Sendmail"
 msgstr "發郵件"
 
-#: include/global_settings.php:92 lib/functions.php:3929
+#: include/global_settings.php:92 lib/functions.php:3935
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10592,7 +10592,7 @@ msgstr "自動語言檢測"
 msgid "Allow to automatically determine the 'default' language of the user and provide it at login time if that language is supported by Cacti. If disabled, the default language will be in force until the user elects another language."
 msgstr "允許自動確定用戶的“默認”語言，並在登錄時提供該語言，如果Cacti支持該語言。如果禁用，則默認語言將一直有效，直到用戶選擇另一種語言。"
 
-#: include/global_settings.php:383 include/global_settings.php:2197
+#: include/global_settings.php:383 include/global_settings.php:2210
 #, fuzzy
 msgid "Date Display Format"
 msgstr "日期顯示格式"
@@ -10602,7 +10602,7 @@ msgstr "日期顯示格式"
 msgid "The System default date format to use in Cacti."
 msgstr "要在Cacti中使用的系統默認日期格式。"
 
-#: include/global_settings.php:390 include/global_settings.php:2204
+#: include/global_settings.php:390 include/global_settings.php:2217
 #, fuzzy
 msgid "Date Separator"
 msgstr "日期分隔符"
@@ -10660,7 +10660,7 @@ msgstr "如果設置為“簡單”，則只能從“新建圖形”創建圖形
 msgid "Simple"
 msgstr "簡單"
 
-#: include/global_settings.php:424 lib/html.php:2447
+#: include/global_settings.php:424 lib/html.php:2461
 msgid "Advanced"
 msgstr "進階"
 
@@ -10726,2224 +10726,2237 @@ msgstr "Cacti的一些接口支持Drag-N-Drop。如果選中，將啟用此選�
 
 #: include/global_settings.php:463
 #, fuzzy
+msgid "Site Security"
+msgstr "SMTP 安全性"
+
+#: include/global_settings.php:468
+#, fuzzy
 msgid "Force Connections over HTTPS"
 msgstr "通過HTTPS強制連接"
 
-#: include/global_settings.php:464
+#: include/global_settings.php:469
 #, fuzzy
 msgid "When checked, any attempts to access Cacti will be redirected to HTTPS to ensure high security."
 msgstr "選中後，任何訪問Cacti的嘗試都將重定向到HTTPS，以確保高安全性。"
 
-#: include/global_settings.php:470
+#: include/global_settings.php:475
 #, fuzzy
-msgid "Allow Unsafe JavaScript eval() calls"
+msgid "Content-Security Allow Unsafe JavaScript eval() calls"
 msgstr "允許不安全的JavaScript eval（）調用"
 
-#: include/global_settings.php:471
+#: include/global_settings.php:476
 #, fuzzy
 msgid "Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti."
 msgstr "某些Cacti插件需要使用不安全的JavaScript eval（）調用。如果選擇此選項，則仙人掌中將允許它們。"
 
+#: include/global_settings.php:483
+msgid "Content-Security Alternate Sources"
+msgstr ""
+
 #: include/global_settings.php:484
+msgid "Space delmited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only."
+msgstr ""
+
+#: include/global_settings.php:497
 #, fuzzy
 msgid "Enable Automatic Graph Creation"
 msgstr "啟用自動圖表創建"
 
-#: include/global_settings.php:485
+#: include/global_settings.php:498
 #, fuzzy
 msgid "When disabled, Cacti Automation will not actively create any Graph.  This is useful when adjusting Device settings so as to avoid creating new Graphs each time you save an object.  Invoking Automation Rules manually will still be possible."
 msgstr "禁用時，Cacti Automation不會主動創建任何圖表。這在調整設備設置時非常有用，以避免每次保存對象時都創建新的圖形。仍然可以手動調用自動化規則。"
 
-#: include/global_settings.php:490
+#: include/global_settings.php:503
 #, fuzzy
 msgid "Enable Automatic Tree Item Creation"
 msgstr "啟用自動樹項目創建"
 
-#: include/global_settings.php:491
+#: include/global_settings.php:504
 #, fuzzy
 msgid "When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when adjusting Device or Graph settings so as to avoid creating new Tree Entries each time you save an object.  Invoking Rules manually will still be possible."
 msgstr "禁用時，Cacti Automation不會主動創建任何樹項。在調整“設備”或“圖形”設置時，這非常有用，以避免每次保存對象時都創建新的樹條目。仍然可以手動調用規則。"
 
-#: include/global_settings.php:495
+#: include/global_settings.php:508
 #, fuzzy
 msgid "Automation Notification To Email"
 msgstr "電子郵件的自動化通知"
 
-#: include/global_settings.php:496
+#: include/global_settings.php:509
 #, fuzzy
 msgid "The Email Address to send Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the Primary Cacti Admins Email account."
 msgstr "如果未在自動化網絡級別指定，則發送自動化通知電子郵件的電子郵件地址。如果此字段或自動化網絡值保留為空，Cacti將使用Primary Cacti Admins Email帳戶。"
 
-#: include/global_settings.php:502
+#: include/global_settings.php:515
 #, fuzzy
 msgid "Automation Notification From Name"
 msgstr "名稱的自動化通知"
 
-#: include/global_settings.php:503
+#: include/global_settings.php:516
 #, fuzzy
 msgid "The Email Name to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Name."
 msgstr "如果未在自動化網絡級別指定，則用於自動化通知的電子郵件名稱將發送電子郵件。如果此字段或自動化網絡值保留為空，Cacti將使用系統默認的“從名稱”。"
 
-#: include/global_settings.php:510
+#: include/global_settings.php:523
 #, fuzzy
 msgid "Automation Notification From Email"
 msgstr "電子郵件中的自動化通知"
 
-#: include/global_settings.php:511
+#: include/global_settings.php:524
 #, fuzzy
 msgid "The Email Address to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Email Address."
 msgstr "如果未在自動化網絡級別指定，則用於自動化通知的電子郵件地址將發送電子郵件。如果此字段或自動化網絡值保留為空，Cacti將使用系統默認的“來自電子郵件地址”。"
 
-#: include/global_settings.php:519
+#: include/global_settings.php:532
 #, fuzzy
 msgid "General Defaults"
 msgstr "一般默認值"
 
-#: include/global_settings.php:525
+#: include/global_settings.php:538
 #, fuzzy
 msgid "The default Device Template used on all new Devices."
 msgstr "所有新設備上使用的默認設備模板。"
 
-#: include/global_settings.php:533
+#: include/global_settings.php:546
 #, fuzzy
 msgid "The default Site for all new Devices."
 msgstr "所有新設備的默認站點。"
 
-#: include/global_settings.php:541
+#: include/global_settings.php:554
 #, fuzzy
 msgid "The default Poller for all new Devices."
 msgstr "所有新設備的默認輪詢器。"
 
-#: include/global_settings.php:548
+#: include/global_settings.php:561
 #, fuzzy
 msgid "Device Threads"
 msgstr "設備線程"
 
-#: include/global_settings.php:549
+#: include/global_settings.php:562
 #, fuzzy
 msgid "The default number of Device Threads.  This is only applicable when using the Spine Data Collector."
 msgstr "設備線程的默認數量。這僅適用於使用Spine Data Collector時。"
 
-#: include/global_settings.php:555
+#: include/global_settings.php:568
 #, fuzzy
 msgid "Re-index Method for Data Queries"
 msgstr "數據查詢的重新索引方法"
 
-#: include/global_settings.php:556
+#: include/global_settings.php:569
 #, fuzzy
 msgid "The default Re-index Method to use for all Data Queries."
 msgstr "用於所有數據查詢的默認重新索引方法。"
 
-#: include/global_settings.php:562
+#: include/global_settings.php:575
 #, fuzzy
 msgid "Default Interface Speed"
 msgstr "默認圖表類型"
 
-#: include/global_settings.php:563
+#: include/global_settings.php:576
 #, fuzzy
 msgid "If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles."
 msgstr "如果Cacti無法確定由於ifSpeed或ifHighSpeed未設置或為零而導致的接口速度，那麼您希望在生成的RRDfiles上獲得什麼最大值。"
 
-#: include/global_settings.php:567
+#: include/global_settings.php:580
 #, fuzzy
 msgid "100 Mbps Ethernet"
 msgstr "100 Mbps以太網"
 
-#: include/global_settings.php:568
+#: include/global_settings.php:581
 #, fuzzy
 msgid "1 Gbps Ethernet"
 msgstr "1 Gbps以太網"
 
-#: include/global_settings.php:569
+#: include/global_settings.php:582
 #, fuzzy
 msgid "10 Gbps Ethernet"
 msgstr "10 Gbps以太網"
 
-#: include/global_settings.php:570
+#: include/global_settings.php:583
 #, fuzzy
 msgid "25 Gbps Ethernet"
 msgstr "25 Gbps以太網"
 
-#: include/global_settings.php:571
+#: include/global_settings.php:584
 #, fuzzy
 msgid "40 Gbps Ethernet"
 msgstr "40 Gbps以太網"
 
-#: include/global_settings.php:572
+#: include/global_settings.php:585
 #, fuzzy
 msgid "56 Gbps Ethernet"
 msgstr "56 Gbps以太網"
 
-#: include/global_settings.php:573
+#: include/global_settings.php:586
 #, fuzzy
 msgid "100 Gbps Ethernet"
 msgstr "100 Gbps以太網"
 
-#: include/global_settings.php:576
+#: include/global_settings.php:589
 #, fuzzy
 msgid "SNMP Defaults"
 msgstr "SNMP默認值"
 
-#: include/global_settings.php:582
+#: include/global_settings.php:595
 #, fuzzy
 msgid "Default SNMP version for all new Devices."
 msgstr "所有新設備的默認SNMP版本。"
 
-#: include/global_settings.php:589
+#: include/global_settings.php:602
 #, fuzzy
 msgid "Default SNMP read community for all new Devices."
 msgstr "所有新設備的默認SNMP讀取社區。"
 
-#: include/global_settings.php:595
+#: include/global_settings.php:608
 #, fuzzy
 msgid "Security Level"
 msgstr "安全級別"
 
-#: include/global_settings.php:596
+#: include/global_settings.php:609
 #, fuzzy
 msgid "Default SNMP v3 Security Level for all new Devices."
 msgstr "所有新設備的默認SNMP v3安全級別。"
 
-#: include/global_settings.php:602
+#: include/global_settings.php:615
 #, fuzzy
 msgid "Auth User (v3)"
 msgstr "驗證用戶（v3）"
 
-#: include/global_settings.php:603
+#: include/global_settings.php:616
 #, fuzzy
 msgid "Default SNMP v3 Authorization User for all new Devices."
 msgstr "所有新設備的默認SNMP v3授權用戶。"
 
-#: include/global_settings.php:610
+#: include/global_settings.php:623
 #, fuzzy
 msgid "Auth Protocol (v3)"
 msgstr "驗證協議（v3）"
 
-#: include/global_settings.php:611
+#: include/global_settings.php:624
 #, fuzzy
 msgid "Default SNMPv3 Authorization Protocol for all new Devices."
 msgstr "所有新設備的默認SNMPv3授權協議。"
 
-#: include/global_settings.php:616
+#: include/global_settings.php:629
 #, fuzzy
 msgid "Auth Passphrase (v3)"
 msgstr "Auth Passphrase（v3）"
 
-#: include/global_settings.php:617
+#: include/global_settings.php:630
 #, fuzzy
 msgid "Default SNMP v3 Authorization Passphrase for all new Devices."
 msgstr "所有新設備的默認SNMP v3授權密碼。"
 
-#: include/global_settings.php:624
+#: include/global_settings.php:637
 #, fuzzy
 msgid "Privacy Protocol (v3)"
 msgstr "隱私協議（第3版）"
 
-#: include/global_settings.php:625
+#: include/global_settings.php:638
 #, fuzzy
 msgid "Default SNMPv3 Privacy Protocol for all new Devices."
 msgstr "所有新設備的默認SNMPv3隱私協議。"
 
-#: include/global_settings.php:631
+#: include/global_settings.php:644
 #, fuzzy
 msgid "Privacy Passphrase (v3)"
 msgstr "隱私密碼（v3）。"
 
-#: include/global_settings.php:632
+#: include/global_settings.php:645
 #, fuzzy
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
 msgstr "所有新設備的默認SNMPv3隱私密碼。"
 
-#: include/global_settings.php:639
+#: include/global_settings.php:652
 #, fuzzy
 msgid "Enter the SNMP v3 Context for all new Devices."
 msgstr "輸入所有新設備的SNMP v3上下文。"
 
-#: include/global_settings.php:648
+#: include/global_settings.php:661
 #, fuzzy
 msgid "Default SNMP v3 Engine Id for all new Devices. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver."
 msgstr "所有新設備的默認SNMP v3引擎ID。將此字段留空以使用每個SNMPv3通知接收器定義的SNMP引擎ID。"
 
-#: include/global_settings.php:655
+#: include/global_settings.php:668
 msgid "Port Number"
 msgstr "連接埠"
 
-#: include/global_settings.php:656
+#: include/global_settings.php:669
 #, fuzzy
 msgid "Default UDP Port for all new Devices.  Typically 161."
 msgstr "所有新設備的默認UDP端口。通常是161。"
 
-#: include/global_settings.php:664
+#: include/global_settings.php:677
 #, fuzzy
 msgid "Default SNMP timeout in milli-seconds for all new Devices."
 msgstr "所有新設備的默認SNMP超時（以毫秒為單位）。"
 
-#: include/global_settings.php:672
+#: include/global_settings.php:685
 #, fuzzy
 msgid "Default SNMP retries for all new Devices."
 msgstr "所有新設備的默認SNMP重試次數。"
 
-#: include/global_settings.php:679
+#: include/global_settings.php:692
 #, fuzzy
 msgid "Availability/Reachability"
 msgstr "可用性/可達性"
 
-#: include/global_settings.php:685
+#: include/global_settings.php:698
 #, fuzzy
 msgid "Default Availability/Reachability for all new Devices.  The method Cacti will use to determine if a Device is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
 msgstr "所有新設備的默認可用性/可訪問性。 Cacti將使用該方法確定設備是否可用於輪詢。 <br> <i>注意：建議始終至少選擇SNMP。</i>"
 
-#: include/global_settings.php:691
+#: include/global_settings.php:704
 #, fuzzy
 msgid "Ping Type"
 msgstr "Ping類型"
 
-#: include/global_settings.php:692
+#: include/global_settings.php:705
 #, fuzzy
 msgid "Default Ping type for all new Devices.</i>"
 msgstr "所有新設備的默認Ping類型。"
 
-#: include/global_settings.php:699
+#: include/global_settings.php:712
 #, fuzzy
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
 msgstr "所有新設備的默認Ping端口。使用TCP，Cacti將嘗試同步端口。使用UDP，Cacti要求成功連接或“端口無法訪問”錯誤，以確定設備是否已啟動。"
 
-#: include/global_settings.php:707
+#: include/global_settings.php:720
 #, fuzzy
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
 msgstr "所有新設備的默認Ping超時值（以毫秒為單位）。用於設備SNMP，ICMP，UDP和TCP ping的超時值。 ICMP Pings將四捨五入到最接近的秒數。 Windows上的TCP和UDP連接超時由操作系統控制，因此不建議在Windows上使用。"
 
-#: include/global_settings.php:715
+#: include/global_settings.php:728
 #, fuzzy
 msgid "The number of times Cacti will attempt to ping a Device before marking it as down."
 msgstr "Cacti在將設備標記為關閉之前嘗試ping設備的次數。"
 
-#: include/global_settings.php:722
+#: include/global_settings.php:735
 #, fuzzy
 msgid "Up/Down Settings"
 msgstr "上/下設置"
 
-#: include/global_settings.php:727
+#: include/global_settings.php:740
 #, fuzzy
 msgid "Failure Count"
 msgstr "失敗計數"
 
-#: include/global_settings.php:728
+#: include/global_settings.php:741
 #, fuzzy
 msgid "The number of polling intervals a Device must be down before logging an error and reporting Device as down."
 msgstr "在記錄錯誤並將設備報告為關閉之前，設備必須關閉的輪詢間隔數。"
 
-#: include/global_settings.php:735
+#: include/global_settings.php:748
 #, fuzzy
 msgid "Recovery Count"
 msgstr "恢復計數"
 
-#: include/global_settings.php:736
+#: include/global_settings.php:749
 #, fuzzy
 msgid "The number of polling intervals a Device must remain up before returning Device to an up status and issuing a notice."
 msgstr "在將設備返回到up狀態並發出通知之前，設備必須保持的輪詢間隔數。"
 
-#: include/global_settings.php:745
+#: include/global_settings.php:758
 msgid "Theme Settings"
 msgstr "主題設定"
 
-#: include/global_settings.php:750 include/global_settings.php:949
-#: include/global_settings.php:2152
+#: include/global_settings.php:763 include/global_settings.php:962
+#: include/global_settings.php:2165
 msgid "Theme"
 msgstr "佈景主題"
 
-#: include/global_settings.php:751 include/global_settings.php:2153
+#: include/global_settings.php:764 include/global_settings.php:2166
 #, fuzzy
 msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr "請選擇一個可用的主題來為您的仙人掌提供皮膚。"
 
-#: include/global_settings.php:757
+#: include/global_settings.php:770
 msgid "Table Settings"
 msgstr "表格設定"
 
-#: include/global_settings.php:762
+#: include/global_settings.php:775
 #, fuzzy
 msgid "Rows Per Page"
 msgstr "每頁行數"
 
-#: include/global_settings.php:763
+#: include/global_settings.php:776
 #, fuzzy
 msgid "The default number of rows to display on for a table."
 msgstr "表格的默認行數。"
 
-#: include/global_settings.php:769
+#: include/global_settings.php:782
 #, fuzzy
 msgid "Autocomplete Enabled"
 msgstr "已啟用自動填充功能"
 
-#: include/global_settings.php:770
+#: include/global_settings.php:783
 #, fuzzy
 msgid "In very large systems, select lists can slow the user interface significantly.  If this option is enabled, Cacti will use autocomplete callbacks to populate the select list systematically.  Note: autocomplete is forcibly disabled on the Classic theme."
 msgstr "在非常大的系統中，選擇列表會顯著降低用戶界面的速度。如果啟用此選項，Cacti將使用自動完成回調系統地填充選擇列表。注意：在Classic主題上強制禁用自動完成功能。"
 
-#: include/global_settings.php:778
+#: include/global_settings.php:791
 #, fuzzy
 msgid "Autocomplete Rows"
 msgstr "自動完成行"
 
-#: include/global_settings.php:779
+#: include/global_settings.php:792
 #, fuzzy
 msgid "The default number of rows to return from an autocomplete based select pattern match."
 msgstr "從基於自動填充的選擇模式匹配返回的默認行數。"
 
-#: include/global_settings.php:790 include/global_settings.php:2369
+#: include/global_settings.php:803 include/global_settings.php:2382
 #, fuzzy
 msgid "Minimum Tree Width"
 msgstr "最小長度"
 
-#: include/global_settings.php:791 include/global_settings.php:2370
+#: include/global_settings.php:804 include/global_settings.php:2383
 #, fuzzy
 msgid "The Minimum width of the Tree to contract to."
 msgstr "要收縮的樹的最小寬度。"
 
-#: include/global_settings.php:798 include/global_settings.php:2377
+#: include/global_settings.php:811 include/global_settings.php:2390
 #, fuzzy
 msgid "Maximum Tree Width"
 msgstr "最大標題長度"
 
-#: include/global_settings.php:799 include/global_settings.php:2378
+#: include/global_settings.php:812 include/global_settings.php:2391
 #, fuzzy
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
 msgstr "要擴展到的最大樹的寬度，此後，樹枝將在頁面上滾動。"
 
-#: include/global_settings.php:806
+#: include/global_settings.php:819
 msgid "Filter Settings"
 msgstr "篩選器設定"
 
-#: include/global_settings.php:811
+#: include/global_settings.php:824
 #, fuzzy
 msgid "Strip Domains from Device Dropdowns"
 msgstr "從設備下拉列表中剝離域"
 
-#: include/global_settings.php:812
+#: include/global_settings.php:825
 #, fuzzy
 msgid "When viewing Device name filter dropdowns, checking this option will strip to domain from the hostname."
 msgstr "在查看設備名稱過濾器下拉菜單時，選中此選項將從主機名剝離到域。"
 
-#: include/global_settings.php:817
+#: include/global_settings.php:830
 #, fuzzy
 msgid "Graph/Data Source/Data Query Settings"
 msgstr "圖形/數據源/數據查詢設置"
 
-#: include/global_settings.php:822
+#: include/global_settings.php:835
 #, fuzzy
 msgid "Maximum Title Length"
 msgstr "最大標題長度"
 
-#: include/global_settings.php:823
+#: include/global_settings.php:836
 #, fuzzy
 msgid "The maximum allowable Graph or Data Source titles."
 msgstr "允許的最大圖形或數據源標題。"
 
-#: include/global_settings.php:830
+#: include/global_settings.php:843
 #, fuzzy
 msgid "Data Source Field Length"
 msgstr "數據源字段長度"
 
-#: include/global_settings.php:831
+#: include/global_settings.php:844
 #, fuzzy
 msgid "The maximum Data Query field length."
 msgstr "最大數據查詢字段長度。"
 
-#: include/global_settings.php:838
+#: include/global_settings.php:851
 #, fuzzy
 msgid "Graph Creation"
 msgstr "圖形創建"
 
-#: include/global_settings.php:843
+#: include/global_settings.php:856
 #, fuzzy
 msgid "Default Graph Type"
 msgstr "默認圖表類型"
 
-#: include/global_settings.php:844
+#: include/global_settings.php:857
 #, fuzzy
 msgid "When creating graphs, what Graph Type would you like pre-selected?"
 msgstr "創建圖形時，您想要預先選擇哪種圖表類型？"
 
-#: include/global_settings.php:848
+#: include/global_settings.php:861
 msgid "All Types"
 msgstr "所有類型"
 
-#: include/global_settings.php:849
+#: include/global_settings.php:862
 #, fuzzy
 msgid "By Template/Data Query"
 msgstr "通過模板/數據查詢"
 
-#: include/global_settings.php:857
+#: include/global_settings.php:870
 #, fuzzy
 msgid "Default Log Tail Lines"
 msgstr "默認日誌尾線"
 
-#: include/global_settings.php:858
+#: include/global_settings.php:871
 #, fuzzy
 msgid "Default number of lines of the Cacti log file to tail."
 msgstr "Cacti日誌文件的默認行數為tail。"
 
-#: include/global_settings.php:864
+#: include/global_settings.php:877
 #, fuzzy
 msgid "Maximum number of rows per page"
 msgstr "每頁的最大行數"
 
-#: include/global_settings.php:865
+#: include/global_settings.php:878
 #, fuzzy
 msgid "User defined number of lines for the CLOG to tail when selecting 'All lines'."
 msgstr "選擇“所有行”時，用戶定義的CLOG尾部行數。"
 
-#: include/global_settings.php:872
+#: include/global_settings.php:885
 #, fuzzy
 msgid "Log Tail Refresh"
 msgstr "記錄尾部刷新"
 
-#: include/global_settings.php:873
+#: include/global_settings.php:886
 #, fuzzy
 msgid "How often do you want the Cacti log display to update."
 msgstr "您希望Cacti日誌顯示更新的頻率。"
 
-#: include/global_settings.php:879
+#: include/global_settings.php:892
 #, fuzzy
 msgid "RRDtool Graph Watermark"
 msgstr "RRDtool圖形水印"
 
-#: include/global_settings.php:884
+#: include/global_settings.php:897
 msgid "Watermark Text"
 msgstr "浮水印文字"
 
-#: include/global_settings.php:885
+#: include/global_settings.php:898
 #, fuzzy
 msgid "Text placed at the bottom center of every Graph."
 msgstr "文本位於每個圖形的底部中心。"
 
-#: include/global_settings.php:892
+#: include/global_settings.php:905
 #, fuzzy
 msgid "Log Viewer Settings"
 msgstr "日誌查看器設置"
 
-#: include/global_settings.php:897
+#: include/global_settings.php:910
 #, fuzzy
 msgid "Exclusion Regex"
 msgstr "排除正則表達式"
 
-#: include/global_settings.php:898
+#: include/global_settings.php:911
 #, fuzzy
 msgid "Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words 'Admin' or 'Login' you would type '(Admin || Login)'</strong>"
 msgstr "任何與此正則表達式匹配的字符串都將從用戶顯示中排除。 <strong>例如，如果要排除包含“管理員”或“登錄”字樣的所有日誌行，則應鍵入“（管理員||登錄名）”</strong>"
 
-#: include/global_settings.php:905
+#: include/global_settings.php:918
 #, fuzzy
 msgid "Real-time Graphs"
 msgstr "實時圖表"
 
-#: include/global_settings.php:910
+#: include/global_settings.php:923
 #, fuzzy
 msgid "Enable Real-time Graphing"
 msgstr "啟用實時圖形"
 
-#: include/global_settings.php:911
+#: include/global_settings.php:924
 #, fuzzy
 msgid "When an option is checked, users will be able to put Cacti into Real-time mode."
 msgstr "選中某個選項後，用戶可以將Cacti置於實時模式。"
 
-#: include/global_settings.php:917
+#: include/global_settings.php:930
 #, fuzzy
 msgid "This timespan you wish to see on the default graph."
 msgstr "您希望在默認圖表上看到此時間跨度。"
 
-#: include/global_settings.php:923 utilities.php:2121
+#: include/global_settings.php:936 utilities.php:2121
 msgid "Refresh Interval"
 msgstr "刷新間隔"
 
-#: include/global_settings.php:924
+#: include/global_settings.php:937
 #, fuzzy
 msgid "This is the time between graph updates."
 msgstr "這是圖表更新之間的時間。"
 
-#: include/global_settings.php:930
+#: include/global_settings.php:943
 msgid "Cache Directory"
 msgstr "緩存目錄"
 
-#: include/global_settings.php:931
+#: include/global_settings.php:944
 #, fuzzy
 msgid "This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache will be managed by the poller.  Make sure you have the correct read and write permissions on this folder"
 msgstr "這是將緩存RRD文件和PNG文件的Web服務器上的位置。此緩存將由輪詢器管理。確保您對此文件夾具有正確的讀寫權限"
 
-#: include/global_settings.php:938
+#: include/global_settings.php:951
 #, fuzzy
 msgid "RRDtool Graph Font Control"
 msgstr "RRDtool圖形字體控件"
 
-#: include/global_settings.php:943
+#: include/global_settings.php:956
 #, fuzzy
 msgid "Font Selection Method"
 msgstr "字體選擇方法"
 
-#: include/global_settings.php:944
+#: include/global_settings.php:957
 #, fuzzy
 msgid "How do you wish fonts to be handled by default?"
 msgstr "您希望默認情況下如何處理字體？"
 
-#: include/global_settings.php:948 lib/api_device.php:1056
+#: include/global_settings.php:961 lib/api_device.php:1056
 msgid "System"
 msgstr "取得系統報表"
 
-#: include/global_settings.php:952
+#: include/global_settings.php:965
 msgid "Default Font"
 msgstr "預設字型"
 
-#: include/global_settings.php:953
+#: include/global_settings.php:966
 #, fuzzy
 msgid "When not using Theme based font control, the Pangon font-config font name to use for all Graphs. Optionally, you may leave blank and control font settings on a per object basis."
 msgstr "不使用基於主題的字體控件時，Pangon font-config字體名稱用於所有圖形。 （可選）您可以基於每個對象留空和控製字體設置。"
 
-#: include/global_settings.php:955 include/global_settings.php:970
-#: include/global_settings.php:985 include/global_settings.php:1000
-#: include/global_settings.php:1015
+#: include/global_settings.php:968 include/global_settings.php:983
+#: include/global_settings.php:998 include/global_settings.php:1013
+#: include/global_settings.php:1028
 #, fuzzy
 msgid "Enter Valid Font Config Value"
 msgstr "輸入有效字體配置值"
 
-#: include/global_settings.php:959 include/global_settings.php:2394
+#: include/global_settings.php:972 include/global_settings.php:2407
 msgid "Title Font Size"
 msgstr "標題字體大小"
 
-#: include/global_settings.php:960 include/global_settings.php:2395
+#: include/global_settings.php:973 include/global_settings.php:2408
 #, fuzzy
 msgid "The size of the font used for Graph Titles"
 msgstr "Graph Titles使用的字體大小"
 
-#: include/global_settings.php:967
+#: include/global_settings.php:980
 #, fuzzy
 msgid "Title Font Setting"
 msgstr "標題字體設置"
 
-#: include/global_settings.php:968
+#: include/global_settings.php:981
 #, fuzzy
 msgid "The font to use for Graph Titles.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "用於圖表標題的字體。輸入有效的True Type字體文件或有效的Pango font-config值。"
 
-#: include/global_settings.php:974 include/global_settings.php:2407
+#: include/global_settings.php:987 include/global_settings.php:2420
 #, fuzzy
 msgid "Legend Font Size"
 msgstr "圖例字體大小"
 
-#: include/global_settings.php:975 include/global_settings.php:2408
+#: include/global_settings.php:988 include/global_settings.php:2421
 #, fuzzy
 msgid "The size of the font used for Graph Legend items"
 msgstr "Graph Legend項目使用的字體大小"
 
-#: include/global_settings.php:982
+#: include/global_settings.php:995
 #, fuzzy
 msgid "Legend Font Setting"
 msgstr "圖例字體設置"
 
-#: include/global_settings.php:983
+#: include/global_settings.php:996
 #, fuzzy
 msgid "The font to use for Graph Legends.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "Graph Legends使用的字體。輸入有效的True Type字體文件或有效的Pango font-config值。"
 
-#: include/global_settings.php:989 include/global_settings.php:2420
+#: include/global_settings.php:1002 include/global_settings.php:2433
 #, fuzzy
 msgid "Axis Font Size"
 msgstr "軸字體大小"
 
-#: include/global_settings.php:990 include/global_settings.php:2421
+#: include/global_settings.php:1003 include/global_settings.php:2434
 #, fuzzy
 msgid "The size of the font used for Graph Axis"
 msgstr "用於Graph Axis的字體大小"
 
-#: include/global_settings.php:997
+#: include/global_settings.php:1010
 #, fuzzy
 msgid "Axis Font Setting"
 msgstr "軸字體設置"
 
-#: include/global_settings.php:998
+#: include/global_settings.php:1011
 #, fuzzy
 msgid "The font to use for Graph Axis items.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "用於Graph Axis項目的字體。輸入有效的True Type字體文件或有效的Pango font-config值。"
 
-#: include/global_settings.php:1004 include/global_settings.php:2433
+#: include/global_settings.php:1017 include/global_settings.php:2446
 #, fuzzy
 msgid "Unit Font Size"
 msgstr "單位字體大小"
 
-#: include/global_settings.php:1005 include/global_settings.php:2434
+#: include/global_settings.php:1018 include/global_settings.php:2447
 #, fuzzy
 msgid "The size of the font used for Graph Units"
 msgstr "圖形單位使用的字體大小"
 
-#: include/global_settings.php:1012
+#: include/global_settings.php:1025
 #, fuzzy
 msgid "Unit Font Setting"
 msgstr "單位字體設置"
 
-#: include/global_settings.php:1013
+#: include/global_settings.php:1026
 #, fuzzy
 msgid "The font to use for Graph Unit items.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "用於圖表單元項的字體。輸入有效的True Type字體文件或有效的Pango font-config值。"
 
-#: include/global_settings.php:1026
+#: include/global_settings.php:1039
 #, fuzzy
 msgid "Data Collection Enabled"
 msgstr "數據收集已啟用"
 
-#: include/global_settings.php:1027
+#: include/global_settings.php:1040
 #, fuzzy
 msgid "If you wish to stop the polling process completely, uncheck this box."
 msgstr "如果您希望完全停止輪詢過程，請取消選中此框。"
 
-#: include/global_settings.php:1033
+#: include/global_settings.php:1046
 #, fuzzy
 msgid "SNMP Agent Support Enabled"
 msgstr "SNMP代理支持已啟用"
 
-#: include/global_settings.php:1034
+#: include/global_settings.php:1047
 #, fuzzy
 msgid "If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself."
 msgstr "如果選中此選項，Cacti將使用Cacti設備和系統信息填充SNMP代理表。它不啟用SNMP代理本身。"
 
-#: include/global_settings.php:1039
+#: include/global_settings.php:1052
 #, fuzzy
 msgid "Poller Type"
 msgstr "輪詢類型"
 
-#: include/global_settings.php:1040
+#: include/global_settings.php:1053
 #, fuzzy
 msgid "The poller type to use.  This setting will take affect at next polling interval."
 msgstr "要使用的輪詢器類型。此設置將在下一輪詢間隔生效。"
 
-#: include/global_settings.php:1047
+#: include/global_settings.php:1060
 #, fuzzy
 msgid "Poller Sync Interval"
 msgstr "輪詢器同步間隔"
 
-#: include/global_settings.php:1048
+#: include/global_settings.php:1061
 #, fuzzy
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
 msgstr "創建輪詢器時使用的默認輪詢同步間隔。此設置將影響遠程輪詢器的檢查和更新頻率。"
 
-#: include/global_settings.php:1055
+#: include/global_settings.php:1068
 #, fuzzy
 msgid "The polling interval in use.  This setting will affect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>"
 msgstr "正在使用的輪詢間隔。此設置將影響檢查和更新RRD文件的頻率。 <strong><u>注意：如果更改此值，則必須重新填充輪詢器緩存。如果不這樣做，可能會導致數據丟失。</u></strong>"
 
-#: include/global_settings.php:1061 lib/installer.php:2346
+#: include/global_settings.php:1074 lib/installer.php:2346
 msgid "Cron Interval"
 msgstr "Cron 間隔"
 
-#: include/global_settings.php:1062
+#: include/global_settings.php:1075
 #, fuzzy
 msgid "The cron interval in use.  You need to set this setting to the interval that your cron or scheduled task is currently running."
 msgstr "正在使用的cron間隔。您需要將此設置設置為您的cron或計劃任務當前正在運行的時間間隔。"
 
-#: include/global_settings.php:1068
+#: include/global_settings.php:1081
 #, fuzzy
 msgid "Default Data Collector Processes"
 msgstr "默認數據收集器進程"
 
-#: include/global_settings.php:1069
+#: include/global_settings.php:1082
 #, fuzzy
 msgid "The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores."
 msgstr "每個Data Collector要執行的默認並發進程數。注意：從Cacti 1.2開始，此設置在Data Collector中維護。繼續前進，此值僅是Data Collector的預設值。使用cmd.php時使用更高的數字將提高性能。使用threads參數可以最好地解決Spine中的性能改進。使用Spine時，我們建議使用較低的數字並利用線程。使用cmd.php時，使用的CPU核心數不應超過2倍。"
 
-#: include/global_settings.php:1076
+#: include/global_settings.php:1089
 #, fuzzy
 msgid "Balance Process Load"
 msgstr "平衡過程負荷"
 
-#: include/global_settings.php:1077
+#: include/global_settings.php:1090
 #, fuzzy
 msgid "If you choose this option, Cacti will attempt to balance the load of each poller process by equally distributing poller items per process."
 msgstr "如果選擇此選項，Cacti將嘗試通過平均分配每個進程的輪詢項來平衡每個輪詢器進程的負載。"
 
-#: include/global_settings.php:1082
+#: include/global_settings.php:1095
 #, fuzzy
 msgid "Debug Output Width"
 msgstr "調試輸出寬度"
 
-#: include/global_settings.php:1083
+#: include/global_settings.php:1096
 #, fuzzy
 msgid "If you choose this option, Cacti will check for output that exceeds Cacti's ability to store it and issue a warning when it finds it."
 msgstr "如果選擇此選項，Cacti將檢查超出Cacti存儲能力的輸出，並在找到時發出警告。"
 
-#: include/global_settings.php:1088
+#: include/global_settings.php:1101
 #, fuzzy
 msgid "Disable increasing OID Check"
 msgstr "禁用增加OID檢查"
 
-#: include/global_settings.php:1089
+#: include/global_settings.php:1102
 #, fuzzy
 msgid "Controls disabling check for increasing OID while walking OID tree."
 msgstr "控制在行走OID樹時禁用檢查增加OID。"
 
-#: include/global_settings.php:1094
+#: include/global_settings.php:1107
 #, fuzzy
 msgid "Remote Agent Timeout"
 msgstr "遠程代理超時"
 
-#: include/global_settings.php:1095
+#: include/global_settings.php:1108
 #, fuzzy
 msgid "The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information."
 msgstr "Central Cacti Web服務器在放棄請求之前等待遠程數據收集器響應以獲取各種設備信息的時間（以秒為單位）。在與Central Cacti Data Collector以外的Data Collector關聯的設備上，必須使用Remote Agent來收集設備信息。"
 
-#: include/global_settings.php:1106
+#: include/global_settings.php:1119
 #, fuzzy
 msgid "SNMP Bulkwalk Fetch Size"
 msgstr "SNMP Bulkwalk獲取大小"
 
-#: include/global_settings.php:1107
+#: include/global_settings.php:1120
 #, fuzzy
 msgid "How many OID's should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN."
 msgstr "每個snmpbulkwalk請求應該返回多少個OID？對於具有大型SNMP樹的設備，增加此大小將提高WAN上的重新索引性能。"
 
-#: include/global_settings.php:1125
+#: include/global_settings.php:1138
 #, fuzzy
 msgid "Disable Resource Cache Replication"
 msgstr "重建資源緩存"
 
-#: include/global_settings.php:1126
+#: include/global_settings.php:1139
 #, fuzzy
 msgid "By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themeselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting."
 msgstr "默認情況下，主仙人掌數據收集器會將整個網站和插件緩存到資源緩存中。然後，遠程數據收集器會定期使用主仙人掌數據收集器的任何更新來更新主題。該資源緩存實質上允許遠程數據收集器進行自我升級。如果您不想使用此選項，則可以使用此設置禁用它。"
 
-#: include/global_settings.php:1131
+#: include/global_settings.php:1144
 #, fuzzy
 msgid "Background Timeout Settings"
 msgstr "圖例字體設置"
 
-#: include/global_settings.php:1136
+#: include/global_settings.php:1149
 #, fuzzy
 msgid "Report Generation Timeout"
 msgstr "遠程代理超時"
 
-#: include/global_settings.php:1137
+#: include/global_settings.php:1150
 #, fuzzy
 msgid "The maximum amount of time Cacti's Reports Generation script can run without generating a timeout error and being killed."
 msgstr "Cacti的Reports Generation腳本可以運行的最長時間，而不會產生超時錯誤並被殺死。"
 
-#: include/global_settings.php:1141 include/global_settings.php:1153
-#: include/global_settings.php:1165 include/global_settings.php:1177
-#: include/global_settings.php:1190
+#: include/global_settings.php:1154 include/global_settings.php:1166
+#: include/global_settings.php:1178 include/global_settings.php:1190
+#: include/global_settings.php:1203
 #, fuzzy, php-format
 msgid "%s Minute"
 msgstr "%s Minutes"
 
-#: include/global_settings.php:1148
+#: include/global_settings.php:1161
 #, fuzzy
 msgid "Data Source Statistics Timeout"
 msgstr "數據來源統計"
 
-#: include/global_settings.php:1149
+#: include/global_settings.php:1162
 #, fuzzy
 msgid "The maximum amount of time Cacti's Data Source Statistics script can run without generating a timeout error and being killed."
 msgstr "Cacti的數據源統計腳本可以運行的最長時間，而不會產生超時錯誤並被殺死。"
 
-#: include/global_settings.php:1160
+#: include/global_settings.php:1173
 #, fuzzy
 msgid "Background Commands Timeout"
 msgstr "後台命令超時"
 
-#: include/global_settings.php:1161
+#: include/global_settings.php:1174
 #, fuzzy
 msgid "The maximum amount of time Cacti's Background Commands script can run without generating a timeout error and being killed."
 msgstr "Cacti的Background Commands腳本可以運行的最長時間，而不會產生超時錯誤並被殺死。"
 
-#: include/global_settings.php:1172
+#: include/global_settings.php:1185
 #, fuzzy
 msgid "Maintenance Background Generation Timeout"
 msgstr "維護後台生成超時"
 
-#: include/global_settings.php:1173
+#: include/global_settings.php:1186
 #, fuzzy
 msgid "The maximum amount of time a Cacti's Maintenance script can run without generating a timeout error and being killed."
 msgstr "仙人掌維護腳本可以運行的最長時間，而不會產生超時錯誤並被殺死。"
 
-#: include/global_settings.php:1182 include/global_settings.php:1195
+#: include/global_settings.php:1195 include/global_settings.php:1208
 #, fuzzy, php-format
 msgid "%s Hour"
 msgstr "％s小時"
 
-#: include/global_settings.php:1185
+#: include/global_settings.php:1198
 #, fuzzy
 msgid "Spikekill Background Generation Timeout"
 msgstr "Spikekill背景生成超時"
 
-#: include/global_settings.php:1186
+#: include/global_settings.php:1199
 #, fuzzy
 msgid "The maximum amount of time a Cacti's Spikekill script can run without generating a timeout error and being killed."
 msgstr "Cacti的Spikekill腳本可以運行的最長時間，而不會產生超時錯誤並被殺死。"
 
-#: include/global_settings.php:1201
+#: include/global_settings.php:1214
 #, fuzzy
 msgid "Spine Specific Execution Parameters"
 msgstr "脊柱特定執行參數"
 
-#: include/global_settings.php:1206
+#: include/global_settings.php:1219
 #, fuzzy
 msgid "Invalid Data Logging"
 msgstr "無效的數據記錄"
 
-#: include/global_settings.php:1207
+#: include/global_settings.php:1220
 #, fuzzy
 msgid "How would you like Spine output errors logged?  The options are: 'Detailed' which is similar to cmd.php logging; 'Summary' which provides the number of output errors per Device; and 'None', which does not provide error counts."
 msgstr "您如何記錄Spine輸出錯誤？選項是：&#39;詳細&#39;，類似於cmd.php日誌記錄; &#39;Summary&#39;，它提供每個Device的輸出錯誤數量;和&#39;無&#39;，它不提供錯誤計數。"
 
-#: include/global_settings.php:1212 utilities.php:150
+#: include/global_settings.php:1225 utilities.php:150
 msgid "Summary"
 msgstr "摘要"
 
-#: include/global_settings.php:1213
+#: include/global_settings.php:1226
 #, fuzzy
 msgid "Detailed"
 msgstr "詳細"
 
-#: include/global_settings.php:1216
+#: include/global_settings.php:1229
 #, fuzzy
 msgid "Default Threads per Process"
 msgstr "每個進程的默認線程數"
 
-#: include/global_settings.php:1217
+#: include/global_settings.php:1230
 #, fuzzy
 msgid "The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well."
 msgstr "每個進程允許的默認線程。注意：從Cacti 1.2+開始，此設置在Data Collector中維護，這只是預設。使用Spine時使用更高的數字將提高性能。但是，請確保您有足夠的MySQL / MariaDB連接以支持以下等式：connections = data collectorors * processes *（threads + script servers）。您還必須確保為用戶登錄連接提供足夠的備用連接。"
 
-#: include/global_settings.php:1224
+#: include/global_settings.php:1237
 #, fuzzy
 msgid "Number of PHP Script Servers"
 msgstr "PHP腳本服務器的數量"
 
-#: include/global_settings.php:1225
+#: include/global_settings.php:1238
 #, fuzzy
 msgid "The number of concurrent script server processes to run per Spine process.  Settings between 1 and 10 are accepted.  This parameter will help if you are running several threads and script server scripts."
 msgstr "每個Spine進程運行的並發腳本服務器進程數。接受1到10之間的設置。如果您運行多個線程和腳本服務器腳本，此參數將有所幫助。"
 
-#: include/global_settings.php:1232
+#: include/global_settings.php:1245
 #, fuzzy
 msgid "Script and Script Server Timeout Value"
 msgstr "腳本和腳本服務器超時值"
 
-#: include/global_settings.php:1233
+#: include/global_settings.php:1246
 #, fuzzy
 msgid "The maximum time that Cacti will wait on a script to complete.  This timeout value is in seconds"
 msgstr "Cacti等待腳本完成的最長時間。此超時值以秒為單位"
 
-#: include/global_settings.php:1240
+#: include/global_settings.php:1253
 #, fuzzy
 msgid "The Maximum SNMP OIDs Per SNMP Get Request"
 msgstr "每個SNMP獲取請求的最大SNMP OID"
 
-#: include/global_settings.php:1241
+#: include/global_settings.php:1254
 #, fuzzy
 msgid "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk"
 msgstr "每個snmpbulkwalk請求發出的最大SNMP獲取OID數。增加此值可加快輪詢器在慢速鏈接上的性能。最大值為100 OID。將此值減小為0或1將禁用snmpbulkwalk"
 
-#: include/global_settings.php:1255
+#: include/global_settings.php:1268
 msgid "Authentication Method"
 msgstr "認證方法"
 
-#: include/global_settings.php:1256
+#: include/global_settings.php:1269
 #, fuzzy
 msgid "<blockquote><i>Built-in Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows administrators to support multiple disparate groups from different LDAP/AD directories to access Cacti resources.  Just as LDAP Authentication, the PHP LDAP module is required to utilize this method.</blockquote>"
 msgstr "<blockquote> <i>內置身份驗證</i> -  Cacti處理用戶身份驗證，允許您創建用戶並授予他們對Cacti內不同區域的權限。 <br><br> <i>Web基本身份驗證</i> - 身份驗證由Web服務器處理。如果定義了模板用戶，則可以在首次登錄時自動添加或創建用戶，否則將使用定義的訪客權限。 <br><br> <i>LDAP身份驗證</i> - 允許對LDAP服務器進行身份驗證。如果定義了模板用戶，將在首次登錄時自動創建用戶，否則將使用定義的訪客權限。如果未啟用PHPs LDAP模塊，則LDAP身份驗證不會顯示為可選選項。 <br><br> <i>多個LDAP / AD域身份驗證</i> - 允許管理員支持來自不同LDAP / AD目錄的多個不同組以訪問Cacti資源。與LDAP身份驗證一樣，PHP LDAP模塊也需要使用此方法。 </blockquote>"
 
-#: include/global_settings.php:1262
+#: include/global_settings.php:1275
 #, fuzzy
 msgid "Support Authentication Cookies"
 msgstr "支持身份驗證Cookie"
 
-#: include/global_settings.php:1263
+#: include/global_settings.php:1276
 #, fuzzy
 msgid "If a user authenticates and selects 'Keep me signed in', an authentication cookie will be created on the user's computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use."
 msgstr "如果用戶進行身份驗證並選擇“保持登錄狀態”，則將在用戶的計算機上創建一個身份驗證cookie，允許該用戶保持登錄狀態。身份驗證cookie在不使用90天后過期。"
 
-#: include/global_settings.php:1268
+#: include/global_settings.php:1281
 #, fuzzy
 msgid "Special Users"
 msgstr "特殊用戶"
 
-#: include/global_settings.php:1273
+#: include/global_settings.php:1286
 #, fuzzy
 msgid "Primary Admin"
 msgstr "主要管理員"
 
-#: include/global_settings.php:1274
+#: include/global_settings.php:1287
 #, fuzzy
 msgid "The name of the primary administrative account that will automatically receive Emails when the Cacti system experiences issues.  To receive these Emails, ensure that your mail settings are correct, and the administrative account has an Email address that is set."
 msgstr "當Cacti系統遇到問題時將自動接收電子郵件的主管理帳戶的名稱。要接收這些電子郵件，請確保您的郵件設置正確，並且管理帳戶具有已設置的電子郵件地址。"
 
-#: include/global_settings.php:1276 include/global_settings.php:1284
-#: include/global_settings.php:1292 user_domains.php:344
+#: include/global_settings.php:1289 include/global_settings.php:1297
+#: include/global_settings.php:1305 user_domains.php:344
 #, fuzzy
 msgid "No User"
 msgstr "使用者："
 
-#: include/global_settings.php:1281
+#: include/global_settings.php:1294
 msgid "Guest User"
 msgstr "遊客"
 
-#: include/global_settings.php:1282
+#: include/global_settings.php:1295
 #, fuzzy
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
 msgstr "用於查看圖表的訪客用戶的名稱;默認為“無用戶”。"
 
-#: include/global_settings.php:1289 user_domains.php:340
+#: include/global_settings.php:1302 user_domains.php:340
 msgid "User Template"
 msgstr "使用者範本"
 
-#: include/global_settings.php:1290
+#: include/global_settings.php:1303
 #, fuzzy
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
 msgstr "Cacti將用作新Web Basic和LDAP用戶模板的用戶名;默認為&#39;來賓&#39;。被選中時，將禁止此用戶帳戶登錄。"
 
-#: include/global_settings.php:1297
+#: include/global_settings.php:1310
 #, fuzzy
 msgid "Basic Auth Mapfile"
 msgstr "基本身份驗證映射文件"
 
-#: include/global_settings.php:1298
+#: include/global_settings.php:1311
 #, fuzzy
 msgid "When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account."
 msgstr "使用基本身份驗證時，如果需要將基本帳戶轉換為其他登錄帳戶，則可以在此處指定CSV文件，以將基本帳戶映射到所需的登錄帳戶。"
 
-#: include/global_settings.php:1306
+#: include/global_settings.php:1319
 #, fuzzy
 msgid "Local Account Complexity Requirements"
 msgstr "本地帳戶複雜性要求"
 
-#: include/global_settings.php:1311
+#: include/global_settings.php:1324
 msgid "Minimum Length"
 msgstr "最小長度"
 
-#: include/global_settings.php:1312
+#: include/global_settings.php:1325
 #, fuzzy
 msgid "This is minimal length of allowed passwords."
 msgstr "這是允許密碼的最小長度。"
 
-#: include/global_settings.php:1319
+#: include/global_settings.php:1332
 #, fuzzy
 msgid "Require Mix Case"
 msgstr "需要混合案例"
 
-#: include/global_settings.php:1320
+#: include/global_settings.php:1333
 #, fuzzy
 msgid "This will require new passwords to contains both lower and upper-case characters."
 msgstr "這將要求新密碼包含小寫和大寫字符。"
 
-#: include/global_settings.php:1325
+#: include/global_settings.php:1338
 #, fuzzy
 msgid "Require Number"
 msgstr "需要號碼"
 
-#: include/global_settings.php:1326
+#: include/global_settings.php:1339
 #, fuzzy
 msgid "This will require new passwords to contain at least 1 numerical character."
 msgstr "這將要求新密碼包含至少1個數字字符。"
 
-#: include/global_settings.php:1331
+#: include/global_settings.php:1344
 #, fuzzy
 msgid "Require Special Character"
 msgstr "需要特殊角色"
 
-#: include/global_settings.php:1332
+#: include/global_settings.php:1345
 #, fuzzy
 msgid "This will require new passwords to contain at least 1 special character."
 msgstr "這將要求新密碼包含至少1個特殊字符。"
 
-#: include/global_settings.php:1337
+#: include/global_settings.php:1350
 #, fuzzy
 msgid "Force Complexity Upon Old Passwords"
 msgstr "舊密碼強制複雜性"
 
-#: include/global_settings.php:1338
+#: include/global_settings.php:1351
 #, fuzzy
 msgid "This will require all old passwords to also meet the new complexity requirements upon login.  If not met, it will force a password change."
 msgstr "這將要求所有舊密碼在登錄時也滿足新的複雜性要求。如果不滿足，將強制更改密碼。"
 
-#: include/global_settings.php:1343
+#: include/global_settings.php:1356
 #, fuzzy
 msgid "Expire Inactive Accounts"
 msgstr "使非活動帳戶過期"
 
-#: include/global_settings.php:1344
+#: include/global_settings.php:1357
 #, fuzzy
 msgid "This is maximum number of days before inactive accounts are disabled.  The Admin account is excluded from this policy."
 msgstr "這是禁用非活動帳戶之前的最大天數。管理員帳戶已從此政策中排除。"
 
-#: include/global_settings.php:1357
+#: include/global_settings.php:1370
 #, fuzzy
 msgid "Expire Password"
 msgstr "過期密碼"
 
-#: include/global_settings.php:1358
+#: include/global_settings.php:1371
 #, fuzzy
 msgid "This is maximum number of days before a password is set to expire."
 msgstr "這是密碼設置為過期之前的最大天數。"
 
-#: include/global_settings.php:1369
+#: include/global_settings.php:1382
 #, fuzzy
 msgid "Password History"
 msgstr "密碼歷史"
 
-#: include/global_settings.php:1370
+#: include/global_settings.php:1383
 #, fuzzy
 msgid "Remember this number of old passwords and disallow re-using them."
 msgstr "記住這些舊密碼並禁止重複使用它們。"
 
-#: include/global_settings.php:1375
+#: include/global_settings.php:1388
 #, fuzzy
 msgid "1 Change"
 msgstr "1改變"
 
-#: include/global_settings.php:1376 include/global_settings.php:1377
-#: include/global_settings.php:1378 include/global_settings.php:1379
-#: include/global_settings.php:1380 include/global_settings.php:1381
-#: include/global_settings.php:1382 include/global_settings.php:1383
-#: include/global_settings.php:1384 include/global_settings.php:1385
-#: include/global_settings.php:1386
+#: include/global_settings.php:1389 include/global_settings.php:1390
+#: include/global_settings.php:1391 include/global_settings.php:1392
+#: include/global_settings.php:1393 include/global_settings.php:1394
+#: include/global_settings.php:1395 include/global_settings.php:1396
+#: include/global_settings.php:1397 include/global_settings.php:1398
+#: include/global_settings.php:1399
 #, fuzzy, php-format
 msgid "%d Changes"
 msgstr "％d更改"
 
-#: include/global_settings.php:1389
+#: include/global_settings.php:1402
 #, fuzzy
 msgid "Account Locking"
 msgstr "帳戶鎖定"
 
-#: include/global_settings.php:1394
+#: include/global_settings.php:1407
 #, fuzzy
 msgid "Lock Accounts"
 msgstr "鎖定帳戶"
 
-#: include/global_settings.php:1395
+#: include/global_settings.php:1408
 #, fuzzy
 msgid "Lock an account after this many failed attempts in 1 hour."
 msgstr "在1小時內多次嘗試失敗後鎖定一個帳戶。"
 
-#: include/global_settings.php:1400
+#: include/global_settings.php:1413
 msgid "1 Attempt"
 msgstr "嘗試1次"
 
-#: include/global_settings.php:1401 include/global_settings.php:1402
-#: include/global_settings.php:1403 include/global_settings.php:1404
-#: include/global_settings.php:1405
+#: include/global_settings.php:1414 include/global_settings.php:1415
+#: include/global_settings.php:1416 include/global_settings.php:1417
+#: include/global_settings.php:1418
 #, php-format
 msgid "%d Attempts"
 msgstr "嘗試%d次"
 
-#: include/global_settings.php:1408
+#: include/global_settings.php:1421
 #, fuzzy
 msgid "Auto Unlock"
 msgstr "自動解鎖"
 
-#: include/global_settings.php:1409
+#: include/global_settings.php:1422
 #, fuzzy
 msgid "An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Max of 1440 minutes (1 Day)"
 msgstr "在這麼多分鐘後，帳戶將自動解鎖。即使輸入了正確的密碼，在達到此時間限制之前，帳戶也不會解鎖。最多1440分鐘（1天）"
 
-#: include/global_settings.php:1425
+#: include/global_settings.php:1438
 msgid "1 Day"
 msgstr "1天"
 
-#: include/global_settings.php:1428
+#: include/global_settings.php:1441
 #, fuzzy
 msgid "LDAP General Settings"
 msgstr "LDAP常規設置"
 
-#: include/global_settings.php:1432 user_domains.php:367
+#: include/global_settings.php:1445 user_domains.php:367
 msgid "Server"
 msgstr "伺服器"
 
-#: include/global_settings.php:1433
+#: include/global_settings.php:1446
 #, fuzzy
 msgid "The DNS hostname or IP address of the server."
 msgstr "服務器的DNS主機名或IP地址。"
 
-#: include/global_settings.php:1438 user_domains.php:375
+#: include/global_settings.php:1451 user_domains.php:375
 #, fuzzy
 msgid "Port Standard"
 msgstr "港口標準"
 
-#: include/global_settings.php:1439
+#: include/global_settings.php:1452
 #, fuzzy
 msgid "TCP/UDP port for Non-SSL communications."
 msgstr "用於非SSL通信的TCP / UDP端口。"
 
-#: include/global_settings.php:1446 user_domains.php:384
+#: include/global_settings.php:1459 user_domains.php:384
 #, fuzzy
 msgid "Port SSL"
 msgstr "端口SSL"
 
-#: include/global_settings.php:1447 user_domains.php:385
+#: include/global_settings.php:1460 user_domains.php:385
 #, fuzzy
 msgid "TCP/UDP port for SSL communications."
 msgstr "用於SSL通信的TCP / UDP端口。"
 
-#: include/global_settings.php:1454 user_domains.php:393
+#: include/global_settings.php:1467 user_domains.php:393
 #, fuzzy
 msgid "Protocol Version"
 msgstr "協議版本"
 
-#: include/global_settings.php:1455 user_domains.php:394
+#: include/global_settings.php:1468 user_domains.php:394
 #, fuzzy
 msgid "Protocol Version that the server supports."
 msgstr "服務器支持的協議版本。"
 
-#: include/global_settings.php:1461 user_domains.php:400
+#: include/global_settings.php:1474 user_domains.php:400
 msgid "Encryption"
 msgstr "加密"
 
-#: include/global_settings.php:1462 user_domains.php:401
+#: include/global_settings.php:1475 user_domains.php:401
 #, fuzzy
 msgid "Encryption that the server supports. TLS is only supported by Protocol Version 3."
 msgstr "服務器支持的加密。 TLS僅受協議版本3支持。"
 
-#: include/global_settings.php:1468 user_domains.php:407
+#: include/global_settings.php:1481 user_domains.php:407
 msgid "Referrals"
 msgstr "推廣引薦"
 
-#: include/global_settings.php:1469 user_domains.php:408
+#: include/global_settings.php:1482 user_domains.php:408
 #, fuzzy
 msgid "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches."
 msgstr "啟用或禁用LDAP引用。如果禁用，則可能會提高搜索速度。"
 
-#: include/global_settings.php:1477 user_domains.php:414
+#: include/global_settings.php:1490 user_domains.php:414
 msgid "Mode"
 msgstr "模式"
 
-#: include/global_settings.php:1478
+#: include/global_settings.php:1491
 #, fuzzy
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgstr "cacti將嘗試針對LDAP服務器進行身份驗證的模式。 <blockquote> <i>沒有搜索</i> - 沒有可分辨名稱（DN）搜索，只是嘗試使用提供的專有名稱（DN）格式進行綁定。 <br><br> <i>匿名搜索</i> - 嘗試通過匿名綁定搜索LDAP目錄的用戶名，以找到用戶的專有名稱（DN）。 <br><br> <i>特定搜索</i> - 嘗試通過特定可分辨名稱（DN）和特定密碼搜索LDAP目錄，以進行綁定以找到用戶的可分辨名稱（DN）。"
 
-#: include/global_settings.php:1484 user_domains.php:421
+#: include/global_settings.php:1497 user_domains.php:421
 #, fuzzy
 msgid "Distinguished Name (DN)"
 msgstr "專有名稱（DN）"
 
-#: include/global_settings.php:1485 user_domains.php:422
+#: include/global_settings.php:1498 user_domains.php:422
 #, fuzzy
 msgid "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt.  This is only used when in \"No Searching\" mode."
 msgstr "專有名稱語法，例如對於windows： <i>“&lt;username&gt; @ win2kdomain.local”</i>或對於OpenLDAP： <i>“uid = &lt;username&gt;，ou = people，dc = domain，dc = local”</i> 。 “&lt;username&gt;”將替換為登錄提示符下提供的用戶名。僅在“無搜索”模式下使用。"
 
-#: include/global_settings.php:1490 user_domains.php:428
+#: include/global_settings.php:1503 user_domains.php:428
 #, fuzzy
 msgid "Require Group Membership"
 msgstr "需要組成員資格"
 
-#: include/global_settings.php:1491 user_domains.php:429
+#: include/global_settings.php:1504 user_domains.php:429
 #, fuzzy
 msgid "Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure."
 msgstr "要求用戶成為組的成員進行身份驗證。必須設置組設置才能使其正常工作，如果沒有正確的組設置啟用將導致身份驗證失敗。"
 
-#: include/global_settings.php:1496 user_domains.php:434
+#: include/global_settings.php:1509 user_domains.php:434
 #, fuzzy
 msgid "LDAP Group Settings"
 msgstr "LDAP組設置"
 
-#: include/global_settings.php:1500 user_domains.php:438
+#: include/global_settings.php:1513 user_domains.php:438
 #, fuzzy
 msgid "Group Distinguished Name (DN)"
 msgstr "集團專有名稱（DN）"
 
-#: include/global_settings.php:1501 user_domains.php:439
+#: include/global_settings.php:1514 user_domains.php:439
 #, fuzzy
 msgid "Distinguished Name of the group that user must have membership."
 msgstr "用戶必須具有成員資格的組的專有名稱。"
 
-#: include/global_settings.php:1506 user_domains.php:445
+#: include/global_settings.php:1519 user_domains.php:445
 #, fuzzy
 msgid "Group Member Attribute"
 msgstr "組成員屬性"
 
-#: include/global_settings.php:1507 user_domains.php:446
+#: include/global_settings.php:1520 user_domains.php:446
 #, fuzzy
 msgid "Name of the attribute that contains the usernames of the members."
 msgstr "包含成員用戶名的屬性的名稱。"
 
-#: include/global_settings.php:1512 user_domains.php:452
+#: include/global_settings.php:1525 user_domains.php:452
 #, fuzzy
 msgid "Group Member Type"
 msgstr "集團成員類型"
 
-#: include/global_settings.php:1513 user_domains.php:453
+#: include/global_settings.php:1526 user_domains.php:453
 #, fuzzy
 msgid "Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute."
 msgstr "定義用戶是否在定義的組成員屬性中使用完整的專有名稱或僅使用用戶名。"
 
-#: include/global_settings.php:1517
+#: include/global_settings.php:1530
 msgid "Distinguished Name"
 msgstr "專有名稱"
 
-#: include/global_settings.php:1521 user_domains.php:459
+#: include/global_settings.php:1534 user_domains.php:459
 #, fuzzy
 msgid "LDAP Specific Search Settings"
 msgstr "LDAP特定搜索設置"
 
-#: include/global_settings.php:1525 user_domains.php:463
+#: include/global_settings.php:1538 user_domains.php:463
 msgid "Search Base"
 msgstr "搜尋基本點"
 
-#: include/global_settings.php:1526
+#: include/global_settings.php:1539
 #, fuzzy
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
 msgstr "用於搜索LDAP目錄的搜索庫，例如<i>“dc = win2kdomain，dc = local”</i>或<i>“ou = people，dc = domain，dc = local”</i> 。"
 
-#: include/global_settings.php:1531 user_domains.php:470
+#: include/global_settings.php:1544 user_domains.php:470
 msgid "Search Filter"
 msgstr "搜索過濾器"
 
-#: include/global_settings.php:1532
+#: include/global_settings.php:1545
 #, fuzzy
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
 msgstr "搜索過濾器用於在LDAP目錄中定位用戶，例如對於windows： <i>&#39;（＆（objectclass = user）（objectcategory = user）（userPrincipalName = &lt;username&gt; *））&#39;</i>或OpenLDAP： <i>&#39;（＆（objectClass） = account）（uid = &lt;username&gt;））&#39;</i> 。 &#39;&lt;username&gt;&#39;將替換為登錄提示符下提供的用戶名。"
 
-#: include/global_settings.php:1537 user_domains.php:477
+#: include/global_settings.php:1550 user_domains.php:477
 #, fuzzy
 msgid "Search Distinguished Name (DN)"
 msgstr "搜索專有名稱（DN）"
 
-#: include/global_settings.php:1538 user_domains.php:478
+#: include/global_settings.php:1551 user_domains.php:478
 #, fuzzy
 msgid "Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr "特定搜索綁定到LDAP目錄的專有名稱。"
 
-#: include/global_settings.php:1543 user_domains.php:484
+#: include/global_settings.php:1556 user_domains.php:484
 #, fuzzy
 msgid "Search Password"
 msgstr "搜索密碼"
 
-#: include/global_settings.php:1544 user_domains.php:485
+#: include/global_settings.php:1557 user_domains.php:485
 #, fuzzy
 msgid "Password for Specific Searching binding to the LDAP directory."
 msgstr "特定搜索綁定到LDAP目錄的密碼。"
 
-#: include/global_settings.php:1549 user_domains.php:491
+#: include/global_settings.php:1562 user_domains.php:491
 #, fuzzy
 msgid "LDAP CN Settings"
 msgstr "LDAP CN設置"
 
-#: include/global_settings.php:1554 user_domains.php:496
+#: include/global_settings.php:1567 user_domains.php:496
 #, fuzzy
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr "從LDAP獲取的創建新用戶時將替換全名的字段。 （在windows上：displayname）"
 
-#: include/global_settings.php:1559
+#: include/global_settings.php:1572
 msgid "Email"
 msgstr "電子郵件"
 
-#: include/global_settings.php:1560
+#: include/global_settings.php:1573
 #, fuzzy
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
 msgstr "將替換從LDAP獲取的電子郵件的字段。 （在Windows上：郵件）"
 
-#: include/global_settings.php:1567
+#: include/global_settings.php:1580
 #, fuzzy
 msgid "URL Linking"
 msgstr "URL鏈接"
 
-#: include/global_settings.php:1572
+#: include/global_settings.php:1585
 #, fuzzy
 msgid "Server Base URL"
 msgstr "服務器基本URL"
 
-#: include/global_settings.php:1573
+#: include/global_settings.php:1586
 #, fuzzy
 msgid "This is a the server location that will be used for links to the Cacti site. This should include the subdirectory if Cacti does not run from root folder."
 msgstr "這是將用於指向Cacti站點的鏈接的服務器位置。"
 
-#: include/global_settings.php:1580
+#: include/global_settings.php:1593
 #, fuzzy
 msgid "Emailing Options"
 msgstr "電子郵件選項"
 
-#: include/global_settings.php:1584
+#: include/global_settings.php:1597
 #, fuzzy
 msgid "Notify Primary Admin of Issues"
 msgstr "通知主要管理員問題"
 
-#: include/global_settings.php:1585
+#: include/global_settings.php:1598
 #, fuzzy
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
 msgstr "如果Cacti服務器遇到問題，是否應通過電子郵件通知主管理員？主管理員的Cacti用戶帳戶在Cacti設置頁面的Authentication選項卡下指定。它默認為“admin”帳戶。"
 
-#: include/global_settings.php:1590
+#: include/global_settings.php:1603
 msgid "Test Email"
 msgstr "測試電子郵件"
 
-#: include/global_settings.php:1591
+#: include/global_settings.php:1604
 #, fuzzy
 msgid "This is a Email account used for sending a test message to ensure everything is working properly."
 msgstr "這是一個電子郵件帳戶，用於發送測試郵件以確保一切正常。"
 
-#: include/global_settings.php:1596
+#: include/global_settings.php:1609
 #, fuzzy
 msgid "Mail Services"
 msgstr "郵件服務"
 
-#: include/global_settings.php:1597
+#: include/global_settings.php:1610
 #, fuzzy
 msgid "Which mail service to use in order to send mail"
 msgstr "使用哪種郵件服務才能發送郵件"
 
-#: include/global_settings.php:1603
+#: include/global_settings.php:1616
 #, fuzzy
 msgid "Ping Mail Server"
 msgstr "Ping郵件服務器"
 
-#: include/global_settings.php:1604
+#: include/global_settings.php:1617
 #, fuzzy
 msgid "Ping the Mail Server before sending test Email?"
 msgstr "在發送測試電子郵件之前ping郵件服務器？"
 
-#: include/global_settings.php:1612 lib/html_reports.php:1070
+#: include/global_settings.php:1625 lib/html_reports.php:1070
 msgid "From Email Address"
 msgstr "寄件者電子郵件"
 
-#: include/global_settings.php:1613
+#: include/global_settings.php:1626
 #, fuzzy
 msgid "This is the Email address that the Email will appear from."
 msgstr "這是電子郵件將顯示的電子郵件地址。"
 
-#: include/global_settings.php:1618 lib/html_reports.php:1062
+#: include/global_settings.php:1631 lib/html_reports.php:1062
 msgid "From Name"
 msgstr "寄件者名稱"
 
-#: include/global_settings.php:1619
+#: include/global_settings.php:1632
 #, fuzzy
 msgid "This is the actual name that the Email will appear from."
 msgstr "這是電子郵件將顯示的實際名稱。"
 
-#: include/global_settings.php:1624
+#: include/global_settings.php:1637
 msgid "Word Wrap"
 msgstr "自動換行"
 
-#: include/global_settings.php:1625
+#: include/global_settings.php:1638
 #, fuzzy
 msgid "This is how many characters will be allowed before a line in the Email is automatically word wrapped. (0 = Disabled)"
 msgstr "這是在電子郵件中的一行自動換行之前允許的字符數。 （0 =已禁用）"
 
-#: include/global_settings.php:1632
+#: include/global_settings.php:1645
 #, fuzzy
 msgid "Sendmail Options"
 msgstr "Sendmail選項"
 
-#: include/global_settings.php:1637 lib/functions.php:3924
+#: include/global_settings.php:1650 lib/functions.php:3930
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "Sendmail路徑"
 
-#: include/global_settings.php:1638
+#: include/global_settings.php:1651
 #, fuzzy
 msgid "This is the path to sendmail on your server. (Only used if Sendmail is selected as the Mail Service)"
 msgstr "這是您服務器上sendmail的路徑。 （僅在選擇Sendmail作為郵件服務時使用）"
 
-#: include/global_settings.php:1646
+#: include/global_settings.php:1659
 msgid "SMTP Options"
 msgstr "SMTP 設定"
 
-#: include/global_settings.php:1651
+#: include/global_settings.php:1664
 #, fuzzy
 msgid "SMTP Hostname"
 msgstr "SMTP主機名"
 
-#: include/global_settings.php:1652
+#: include/global_settings.php:1665
 #, fuzzy
 msgid "This is the hostname/IP of the SMTP Server you will send the Email to. For failover, separate your hosts using a semi-colon."
 msgstr "這是您將向其發送電子郵件的SMTP服務器的主機名/ IP。對於故障轉移，請使用分號分隔主機。"
 
-#: include/global_settings.php:1658
+#: include/global_settings.php:1671
 msgid "SMTP Port"
 msgstr "SMTP 通訊埠"
 
-#: include/global_settings.php:1659
+#: include/global_settings.php:1672
 #, fuzzy
 msgid "The port on the SMTP Server to use."
 msgstr "要使用的SMTP服務器上的端口。"
 
-#: include/global_settings.php:1666
+#: include/global_settings.php:1679
 msgid "SMTP Username"
 msgstr "SMTP 使用者名稱"
 
-#: include/global_settings.php:1667
+#: include/global_settings.php:1680
 #, fuzzy
 msgid "The username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "通過SMTP發送時要進行身份驗證的用戶名。 （如果不需要身份驗證，請留空。）"
 
-#: include/global_settings.php:1672
+#: include/global_settings.php:1685
 msgid "SMTP Password"
 msgstr "SMTP 密碼"
 
-#: include/global_settings.php:1673
+#: include/global_settings.php:1686
 #, fuzzy
 msgid "The password to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "通過SMTP發送時進行身份驗證的密碼。 （如果不需要身份驗證，請留空。）"
 
-#: include/global_settings.php:1678
+#: include/global_settings.php:1691
 msgid "SMTP Security"
 msgstr "SMTP 安全性"
 
-#: include/global_settings.php:1679
+#: include/global_settings.php:1692
 #, fuzzy
 msgid "The encryption method to use for the Email."
 msgstr "用於電子郵件的加密方法。"
 
-#: include/global_settings.php:1688
+#: include/global_settings.php:1701
 #, fuzzy
 msgid "SMTP Timeout"
 msgstr "SMTP超時"
 
-#: include/global_settings.php:1689
+#: include/global_settings.php:1702
 #, fuzzy
 msgid "Please enter the SMTP timeout in seconds."
 msgstr "請輸入SMTP超時（以秒為單位）。"
 
-#: include/global_settings.php:1696
+#: include/global_settings.php:1709
 #, fuzzy
 msgid "Reporting Presets"
 msgstr "報告預設"
 
-#: include/global_settings.php:1701
+#: include/global_settings.php:1714
 #, fuzzy
 msgid "Default Graph Image Format"
 msgstr "默認圖形圖像格式"
 
-#: include/global_settings.php:1702
+#: include/global_settings.php:1715
 #, fuzzy
 msgid "When creating a new report, what image type should be used for the inline graphs."
 msgstr "創建新報表時，應使用內嵌圖形的圖像類型。"
 
-#: include/global_settings.php:1708
+#: include/global_settings.php:1721
 #, fuzzy
 msgid "Maximum E-Mail Size"
 msgstr "最大電子郵件大小"
 
-#: include/global_settings.php:1709
+#: include/global_settings.php:1722
 #, fuzzy
 msgid "The maximum size of the E-Mail message including all attachements."
 msgstr "電子郵件消息的最大大小，包括所有附件。"
 
-#: include/global_settings.php:1715
+#: include/global_settings.php:1728
 #, fuzzy
 msgid "Poller Logging Level for Cacti Reporting"
 msgstr "仙人掌報告的輪詢記錄水平"
 
-#: include/global_settings.php:1716
+#: include/global_settings.php:1729
 #, fuzzy
 msgid "What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr "您希望將哪些詳細信息發送到日誌文件。警告：處於NONE或LOW以外的任何其他狀態可能會迅速耗盡磁盤空間。"
 
-#: include/global_settings.php:1722
+#: include/global_settings.php:1735
 #, fuzzy
 msgid "Enable Lotus Notes (R) tweak"
 msgstr "啟用Lotus Notes（R）調整"
 
-#: include/global_settings.php:1723
+#: include/global_settings.php:1736
 #, fuzzy
 msgid "Enable code tweak for specific handling of Lotus Notes Mail Clients."
 msgstr "為特定處理Lotus Notes郵件客戶端啟用代碼調整。"
 
-#: include/global_settings.php:1728
+#: include/global_settings.php:1741
 #, fuzzy
 msgid "DNS Options"
 msgstr "DNS選項"
 
-#: include/global_settings.php:1733
+#: include/global_settings.php:1746
 #, fuzzy
 msgid "Primary DNS IP Address"
 msgstr "主DNS IP地址"
 
-#: include/global_settings.php:1734
+#: include/global_settings.php:1747
 #, fuzzy
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
 msgstr "輸入主DNS IP地址以用於反向查找。"
 
-#: include/global_settings.php:1740
+#: include/global_settings.php:1753
 #, fuzzy
 msgid "Secondary DNS IP Address"
 msgstr "輔助DNS IP地址"
 
-#: include/global_settings.php:1741
+#: include/global_settings.php:1754
 #, fuzzy
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
 msgstr "輸入用於反向查找的輔助DNS IP地址。"
 
-#: include/global_settings.php:1747
+#: include/global_settings.php:1760
 #, fuzzy
 msgid "DNS Timeout"
 msgstr "DNS超時"
 
-#: include/global_settings.php:1748
+#: include/global_settings.php:1761
 #, fuzzy
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
 msgstr "請輸入DNS超時（以毫秒為單位）。 Cacti使用基於PHP的DNS解析器。"
 
-#: include/global_settings.php:1757
+#: include/global_settings.php:1770
 #, fuzzy
 msgid "On-demand RRD Update Settings"
 msgstr "按需RRD更新設置"
 
-#: include/global_settings.php:1762
+#: include/global_settings.php:1775
 #, fuzzy
 msgid "Enable On-demand RRD Updating"
 msgstr "啟用按需RRD更新"
 
-#: include/global_settings.php:1763
+#: include/global_settings.php:1776
 #, fuzzy
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
 msgstr "是否應該在Cacti中按需啟用RRD更新？如果禁用，則此更改將在下一個輪詢週期之後生效。如果您有遠程數據收集器，則需要啟用此設置。"
 
-#: include/global_settings.php:1768
+#: include/global_settings.php:1781
 #, fuzzy
 msgid "System Level RRD Updater"
 msgstr "系統級RRD更新程序"
 
-#: include/global_settings.php:1769
+#: include/global_settings.php:1782
 #, fuzzy
 msgid "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
 msgstr "在RRD按需更新可以清除之前，必須始終通過輪詢器運行"
 
-#: include/global_settings.php:1774
+#: include/global_settings.php:1787
 #, fuzzy
 msgid "How Often Should Boost Update All RRDs"
 msgstr "應該多久促進更新所有RRD"
 
-#: include/global_settings.php:1775
+#: include/global_settings.php:1788
 #, fuzzy
 msgid "When you enable boost, your RRD files are only updated when they are requested by a user, or when this time period elapses."
 msgstr "啟用boost時，RRD文件僅在用戶請求時或此時間段過後才會更新。"
 
-#: include/global_settings.php:1781
+#: include/global_settings.php:1794
 #, fuzzy
 msgid "Number of Boost Processes"
 msgstr "Boost進程數"
 
-#: include/global_settings.php:1782
+#: include/global_settings.php:1795
 #, fuzzy
 msgid "The number of concurrent boost processes to use to use to process all of the RRDs in the boost table."
 msgstr "用於處理boost表中所有RRD的並發boost進程數。"
 
-#: include/global_settings.php:1786
+#: include/global_settings.php:1799
 #, fuzzy
 msgid "1 Process"
 msgstr "1流程"
 
-#: include/global_settings.php:1787 include/global_settings.php:1788
-#: include/global_settings.php:1789 include/global_settings.php:1790
-#: include/global_settings.php:1791 include/global_settings.php:1792
-#: include/global_settings.php:1793 include/global_settings.php:1794
-#: include/global_settings.php:1795
+#: include/global_settings.php:1800 include/global_settings.php:1801
+#: include/global_settings.php:1802 include/global_settings.php:1803
+#: include/global_settings.php:1804 include/global_settings.php:1805
+#: include/global_settings.php:1806 include/global_settings.php:1807
+#: include/global_settings.php:1808
 #, fuzzy, php-format
 msgid "%d Processes"
 msgstr "％d進程"
 
-#: include/global_settings.php:1798
+#: include/global_settings.php:1811
 #, fuzzy
 msgid "Maximum Records"
 msgstr "最大記錄"
 
-#: include/global_settings.php:1799
+#: include/global_settings.php:1812
 #, fuzzy
 msgid "If the boost output table exceeds this size, in records, an update will take place."
 msgstr "如果boost輸出表超過此大小，則在記錄中將進行更新。"
 
-#: include/global_settings.php:1806
+#: include/global_settings.php:1819
 #, fuzzy
 msgid "Maximum Data Source Items Per Pass"
 msgstr "每次傳遞的最大數據源項目"
 
-#: include/global_settings.php:1807
+#: include/global_settings.php:1820
 #, fuzzy
 msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
 msgstr "為了優化性能，boost RRD更新程序需要知道應該在一次傳遞中檢索多少數據源項。請注意不要設置太高，因為主要更新期間的圖形性能可能會受到影響。如果在更新期間遇到圖形或輪詢緩慢，請降低此數字。默認值為50000。"
 
-#: include/global_settings.php:1813
+#: include/global_settings.php:1826
 #, fuzzy
 msgid "Maximum Argument Length"
 msgstr "最大參數長度"
 
-#: include/global_settings.php:1814
+#: include/global_settings.php:1827
 #, fuzzy
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
 msgstr "當boost向RRDtool發送更新命令時，它不得超過操作系統Maximum Argument Length。這取決於操作系統和內核級別。例如：Windows 2000 &lt;= 2048，FreeBSD &lt;= 65535，Linux 2.6.22-- &lt;= 131072，Linux 2.6.23 ++無限制"
 
-#: include/global_settings.php:1821
+#: include/global_settings.php:1834
 #, fuzzy
 msgid "Memory Limit for Boost and Poller"
 msgstr "Boost和Poller的內存限制"
 
-#: include/global_settings.php:1822
+#: include/global_settings.php:1835
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
 msgstr "Cacti Poller和Boosts Poller的最大內存量"
 
-#: include/global_settings.php:1828
+#: include/global_settings.php:1841
 #, fuzzy
 msgid "Maximum RRD Update Script Run Time"
 msgstr "最大RRD更新腳本運行時間"
 
-#: include/global_settings.php:1829
+#: include/global_settings.php:1842
 #, fuzzy
 msgid "If the boost poller excceds this runtime, a warning will be placed in the cacti log,"
 msgstr "如果boost poller刪除了此運行時，則會在cacti日誌中發出警告，"
 
-#: include/global_settings.php:1835
+#: include/global_settings.php:1848
 #, fuzzy
 msgid "Enable direct population of poller_output_boost table"
 msgstr "啟用poller_output_boost表的直接填充"
 
-#: include/global_settings.php:1836
+#: include/global_settings.php:1849
 #, fuzzy
 msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
 msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25％的時間。"
 
-#: include/global_settings.php:1841
+#: include/global_settings.php:1854
 #, fuzzy
 msgid "Boost Debug Log"
 msgstr "提升調試日誌"
 
-#: include/global_settings.php:1842
+#: include/global_settings.php:1855
 #, fuzzy
 msgid "If this field is non-blank, Boost will log RRDupdate output from the boost\tpoller process."
 msgstr "如果此字段為非空白，則Boost將記錄來自boost poller進程的RRDupdate輸出。"
 
-#: include/global_settings.php:1849 utilities.php:2374
+#: include/global_settings.php:1862 utilities.php:2374
 #, fuzzy
 msgid "Image Caching"
 msgstr "圖像緩存"
 
-#: include/global_settings.php:1854
+#: include/global_settings.php:1867
 #, fuzzy
 msgid "Enable Image Caching"
 msgstr "啟用圖像緩存"
 
-#: include/global_settings.php:1855
+#: include/global_settings.php:1868
 #, fuzzy
 msgid "Should image caching be enabled?"
 msgstr "應該啟用圖像緩存嗎？"
 
-#: include/global_settings.php:1860
+#: include/global_settings.php:1873
 #, fuzzy
 msgid "Location for Image Files"
 msgstr "圖像文件的位置"
 
-#: include/global_settings.php:1861
+#: include/global_settings.php:1874
 #, fuzzy
 msgid "Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire."
 msgstr "指定Boost放置圖像文件的位置。輪詢器到期時，這些文件將被輪詢器自動清除。"
 
-#: include/global_settings.php:1869
+#: include/global_settings.php:1882
 #, fuzzy
 msgid "Data Sources Statistics"
 msgstr "數據來源統計"
 
-#: include/global_settings.php:1874
+#: include/global_settings.php:1887
 #, fuzzy
 msgid "Enable Data Source Statistics Collection"
 msgstr "啟用數據源統計信息收集"
 
-#: include/global_settings.php:1875
+#: include/global_settings.php:1888
 #, fuzzy
 msgid "Should Data Source Statistics be collected for this Cacti system?"
 msgstr "是否應該為此Cacti系統收集數據源統計信息？"
 
-#: include/global_settings.php:1880
+#: include/global_settings.php:1893
 #, fuzzy
 msgid "Daily Update Frequency"
 msgstr "每日更新頻率"
 
-#: include/global_settings.php:1881
+#: include/global_settings.php:1894
 #, fuzzy
 msgid "How frequent should Daily Stats be updated?"
 msgstr "Daily Stats應該多久更新一次？"
 
-#: include/global_settings.php:1887
+#: include/global_settings.php:1900
 #, fuzzy
 msgid "Hourly Average Window"
 msgstr "每小時平均窗口"
 
-#: include/global_settings.php:1888
+#: include/global_settings.php:1901
 #, fuzzy
 msgid "The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables"
 msgstr "表示每小時平均值的連續小時數。請記住，設置太高會導致內存表非常大"
 
-#: include/global_settings.php:1894
+#: include/global_settings.php:1907
 #, fuzzy
 msgid "Maintenance Time"
 msgstr "維護時間"
 
-#: include/global_settings.php:1895
+#: include/global_settings.php:1908
 #, fuzzy
 msgid "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]"
 msgstr "什麼時候應該更新每週，每月和每年的數據？格式為HH：MM [am / pm]"
 
-#: include/global_settings.php:1902
+#: include/global_settings.php:1915
 #, fuzzy
 msgid "Memory Limit for Data Source Statistics Data Collector"
 msgstr "數據源統計數據收集器的內存限制"
 
-#: include/global_settings.php:1903
+#: include/global_settings.php:1916
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr "Cacti Poller和數據源統計輪詢器的最大內存量"
 
-#: include/global_settings.php:1909
+#: include/global_settings.php:1922
 #, fuzzy
 msgid "Data Storage Settings"
 msgstr "數據存儲設置"
 
-#: include/global_settings.php:1915
+#: include/global_settings.php:1928
 #, fuzzy
 msgid "Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server."
 msgstr "選擇RRD是存儲在本地還是由外部RRDtool代理服務器處理。"
 
-#: include/global_settings.php:1920 include/global_settings.php:1928
+#: include/global_settings.php:1933 include/global_settings.php:1941
 #, fuzzy
 msgid "RRDtool Proxy Server"
 msgstr "RRDtool代理服務器"
 
-#: include/global_settings.php:1923
+#: include/global_settings.php:1936
 #, fuzzy
 msgid "Structured RRD Paths"
 msgstr "結構化RRD路徑"
 
-#: include/global_settings.php:1924
+#: include/global_settings.php:1937
 #, fuzzy
 msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
 msgstr "為每個主機RRD文件使用單獨的子文件夾。 RRDfiles的命名將是&lt;path_cacti&gt; /rra/host_id/local_data_id.rrd。"
 
-#: include/global_settings.php:1933 include/global_settings.php:1965
+#: include/global_settings.php:1946 include/global_settings.php:1978
 #, fuzzy
 msgid "Proxy Server"
 msgstr "代理服務器"
 
-#: include/global_settings.php:1934
+#: include/global_settings.php:1947
 #, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
 msgstr "RRDtool代理服務器的DNS主機名或IP地址。"
 
-#: include/global_settings.php:1939 include/global_settings.php:1971
+#: include/global_settings.php:1952 include/global_settings.php:1984
 #, fuzzy
 msgid "Proxy Port Number"
 msgstr "代理端口號"
 
-#: include/global_settings.php:1940
+#: include/global_settings.php:1953
 #, fuzzy
 msgid "TCP port for encrypted communication."
 msgstr "用於加密通信的TCP端口。"
 
-#: include/global_settings.php:1947 include/global_settings.php:1979
+#: include/global_settings.php:1960 include/global_settings.php:1992
 #: utilities.php:287
 #, fuzzy
 msgid "RSA Fingerprint"
 msgstr "RSA指紋"
 
-#: include/global_settings.php:1948
+#: include/global_settings.php:1961
 #, fuzzy
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
 msgstr "代理正在使用的當前公共RSA密鑰的指紋。這是建立可信連接所必需的。"
 
-#: include/global_settings.php:1955
+#: include/global_settings.php:1968
 #, fuzzy
 msgid "RRDtool Proxy Server - Backup"
 msgstr "RRDtool代理服務器 - 備份"
 
-#: include/global_settings.php:1960
+#: include/global_settings.php:1973
 #, fuzzy
 msgid "Load Balancing"
 msgstr "負載均衡"
 
-#: include/global_settings.php:1961
+#: include/global_settings.php:1974
 #, fuzzy
 msgid "If both main and backup proxy are receivable this option allows to spread all requests against RRDtool."
 msgstr "如果主代理和備份代理都是可接收的，則此選項允許將所有請求分散到RRDtool。"
 
-#: include/global_settings.php:1966
+#: include/global_settings.php:1979
 #, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode."
 msgstr "如果代理在MSR模式下運行，則RRDtool備份代理服務器的DNS主機名或IP地址。"
 
-#: include/global_settings.php:1972
+#: include/global_settings.php:1985
 #, fuzzy
 msgid "TCP port for encrypted communication with the backup proxy."
 msgstr "用於與備份代理進行加密通信的TCP端口。"
 
-#: include/global_settings.php:1980
+#: include/global_settings.php:1993
 #, fuzzy
 msgid "The fingerprint of the current public RSA key the backup proxy is using. This required to establish a trusted connection."
 msgstr "備份代理正在使用的當前公共RSA密鑰的指紋。這需要建立可信連接。"
 
-#: include/global_settings.php:1989
+#: include/global_settings.php:2002
 #, fuzzy
 msgid "Spike Kill Settings"
 msgstr "秒殺設置"
 
-#: include/global_settings.php:1994
+#: include/global_settings.php:2007
 #, fuzzy
 msgid "Removal Method"
 msgstr "去除方法"
 
-#: include/global_settings.php:1995
+#: include/global_settings.php:2008
 #, fuzzy
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
 msgstr "有兩種刪除方法。第一個標準偏差將從樣本的平均值中移除任何X個標準偏差的樣本。第二種方法Variance將刪除比方差平均值高X％的任何樣本。方差方法考慮了一定數量的“異常值”。這些是需要從方差平均值計算中排除的特殊樣本，如尖峰。"
 
-#: include/global_settings.php:1999
+#: include/global_settings.php:2012
 #, fuzzy
 msgid "Standard Deviation"
 msgstr "標準偏差"
 
-#: include/global_settings.php:2000
+#: include/global_settings.php:2013
 #, fuzzy
 msgid "Variance Based w/Outliers Removed"
 msgstr "基於方差的w /異常值被刪除"
 
-#: include/global_settings.php:2003 lib/html.php:2144
+#: include/global_settings.php:2016 lib/html.php:2157
 #, fuzzy
 msgid "Replacement Method"
 msgstr "更換方法"
 
-#: include/global_settings.php:2004
+#: include/global_settings.php:2017
 #, fuzzy
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "有三種替代方法。第一種方法用所討論的數據源的平均值替換峰值。第二種方法用&#39;NaN&#39;替換尖峰。最後一個用最後已知的良好值替換尖峰。"
 
-#: include/global_settings.php:2008 lib/html.php:2140
+#: include/global_settings.php:2021 lib/html.php:2153
 msgid "Average"
 msgstr "平均"
 
-#: include/global_settings.php:2009 lib/html.php:2141
+#: include/global_settings.php:2022 lib/html.php:2154
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN的"
 
-#: include/global_settings.php:2010 lib/html.php:2142
+#: include/global_settings.php:2023 lib/html.php:2155
 #, fuzzy
 msgid "Last Known Good"
 msgstr "最後知道的好"
 
-#: include/global_settings.php:2014
+#: include/global_settings.php:2027
 #, fuzzy
 msgid "Number of Standard Deviations"
 msgstr "標準偏差數"
 
-#: include/global_settings.php:2015
+#: include/global_settings.php:2028
 #, fuzzy
 msgid "Any value that is this many standard deviations above the average will be excluded.  A good number will be dependent on the type of data to be operated on.  We recommend a number no lower than 5 Standard Deviations."
 msgstr "任何高於平均值的標準差都將被排除在外。一個好的數字將取決於要操作的數據類型。我們建議使用不低於5個標準偏差的數字。"
 
-#: include/global_settings.php:2019 include/global_settings.php:2020
-#: include/global_settings.php:2021 include/global_settings.php:2022
-#: include/global_settings.php:2023 include/global_settings.php:2024
-#: include/global_settings.php:2025 include/global_settings.php:2026
-#: include/global_settings.php:2027 include/global_settings.php:2028
-#: include/global_settings.php:2029 include/global_settings.php:2030
-#: include/global_settings.php:2031
+#: include/global_settings.php:2032 include/global_settings.php:2033
+#: include/global_settings.php:2034 include/global_settings.php:2035
+#: include/global_settings.php:2036 include/global_settings.php:2037
+#: include/global_settings.php:2038 include/global_settings.php:2039
+#: include/global_settings.php:2040 include/global_settings.php:2041
+#: include/global_settings.php:2042 include/global_settings.php:2043
+#: include/global_settings.php:2044
 #, fuzzy, php-format
 msgid "%d Standard Deviations"
 msgstr "％d標準偏差"
 
-#: include/global_settings.php:2035 lib/html.php:2156
+#: include/global_settings.php:2048 lib/html.php:2169
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "差異百分比"
 
-#: include/global_settings.php:2036
+#: include/global_settings.php:2049
 #, fuzzy, php-format
 msgid "This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph."
 msgstr "該值表示從樣本中移除異常值後高於調整後樣本平均值的百分比。例如，調整後的平均值為50的100 %%的方差百分比將從圖表中刪除高於100的任何樣本。"
 
-#: include/global_settings.php:2059
+#: include/global_settings.php:2072
 #, fuzzy
 msgid "Variance Number of Outliers"
 msgstr "異常值的方差數"
 
-#: include/global_settings.php:2060
+#: include/global_settings.php:2073
 #, fuzzy
 msgid "This value represents the number of high and low average samples will be removed from the sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top and bottom 5 averages are removed."
 msgstr "該值表示在計算方差平均值之前將從樣本集中移除的高和低平均樣本的數量。如果選擇異常值為5，則會刪除最高和最低5個平均值。"
 
-#: include/global_settings.php:2064 include/global_settings.php:2065
-#: include/global_settings.php:2066 include/global_settings.php:2067
-#: include/global_settings.php:2068 include/global_settings.php:2069
-#: include/global_settings.php:2070 include/global_settings.php:2071
-#: include/global_settings.php:2072 include/global_settings.php:2073
-#: include/global_settings.php:2074 include/global_settings.php:2075
-#: include/global_settings.php:2076
+#: include/global_settings.php:2077 include/global_settings.php:2078
+#: include/global_settings.php:2079 include/global_settings.php:2080
+#: include/global_settings.php:2081 include/global_settings.php:2082
+#: include/global_settings.php:2083 include/global_settings.php:2084
+#: include/global_settings.php:2085 include/global_settings.php:2086
+#: include/global_settings.php:2087 include/global_settings.php:2088
+#: include/global_settings.php:2089
 #, fuzzy, php-format
 msgid "%d High/Low Samples"
 msgstr "％d高/低樣品"
 
-#: include/global_settings.php:2080
+#: include/global_settings.php:2093
 #, fuzzy
 msgid "Max Kills Per RRA"
 msgstr "最大殺死每RRA"
 
-#: include/global_settings.php:2081
+#: include/global_settings.php:2094
 #, fuzzy
 msgid "This value represents the maximum number of spikes to remove from a Graph RRA."
 msgstr "此值表示要從圖形RRA中刪除的最大尖峰數。"
 
-#: include/global_settings.php:2085 include/global_settings.php:2086
-#: include/global_settings.php:2087 include/global_settings.php:2088
-#: include/global_settings.php:2089 include/global_settings.php:2090
-#: include/global_settings.php:2091 include/global_settings.php:2092
-#: include/global_settings.php:2093 include/global_settings.php:2094
-#: include/global_settings.php:2095 include/global_settings.php:2096
+#: include/global_settings.php:2098 include/global_settings.php:2099
+#: include/global_settings.php:2100 include/global_settings.php:2101
+#: include/global_settings.php:2102 include/global_settings.php:2103
+#: include/global_settings.php:2104 include/global_settings.php:2105
+#: include/global_settings.php:2106 include/global_settings.php:2107
+#: include/global_settings.php:2108 include/global_settings.php:2109
 #, fuzzy, php-format
 msgid "%d Spikes"
 msgstr "％d尖峰"
 
-#: include/global_settings.php:2100
+#: include/global_settings.php:2113
 #, fuzzy
 msgid "RRDfile Backup Directory"
 msgstr "RRDfile備份目錄"
 
-#: include/global_settings.php:2101
+#: include/global_settings.php:2114
 #, fuzzy
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
 msgstr "如果此目錄不為空，則原始RRDfiles將備份到此位置。"
 
-#: include/global_settings.php:2108
+#: include/global_settings.php:2121
 #, fuzzy
 msgid "Batch Spike Kill Settings"
 msgstr "Batch Spike Kill設置"
 
-#: include/global_settings.php:2113
+#: include/global_settings.php:2126
 #, fuzzy
 msgid "Removal Schedule"
 msgstr "搬遷時間表"
 
-#: include/global_settings.php:2114
+#: include/global_settings.php:2127
 #, fuzzy
 msgid "Do you wish to periodically remove spikes from your graphs?  If so, select the frequency below."
 msgstr "您是否希望定期從圖表中刪除尖峰？如果是，請選擇以下頻率。"
 
-#: include/global_settings.php:2121
+#: include/global_settings.php:2134
 msgid "Once a Day"
 msgstr "一天一次"
 
-#: include/global_settings.php:2122
+#: include/global_settings.php:2135
 #, fuzzy
 msgid "Every Other Day"
 msgstr "每個另一天"
 
-#: include/global_settings.php:2125
+#: include/global_settings.php:2138
 #, fuzzy
 msgid "Base Time"
 msgstr "基準時間"
 
-#: include/global_settings.php:2126
+#: include/global_settings.php:2139
 #, fuzzy
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
 msgstr "發生尖峰移除的基準時間。例如，如果您使用&#39;12：00am&#39;並且您每天選擇一次，則批量刪除將在每天大約午夜開始。"
 
-#: include/global_settings.php:2133
+#: include/global_settings.php:2146
 #, fuzzy
 msgid "Graph Templates to Spike Kill"
 msgstr "秒殺的圖表模板"
 
-#: include/global_settings.php:2135
+#: include/global_settings.php:2148
 #, fuzzy
 msgid "When performing batch spike removal, only the templates selected below will be acted on."
 msgstr "執行批量峰值刪除時，只會執行下面選擇的模板。"
 
-#: include/global_settings.php:2139
+#: include/global_settings.php:2152
 #, fuzzy
 msgid "Backup Retention"
 msgstr "數據保留"
 
-#: include/global_settings.php:2140
+#: include/global_settings.php:2153
 #, fuzzy
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
 msgstr "當SpikeKill消除圖形中的峰值時，它將備份RRDfile。這些備份文件應保留多長時間？"
 
-#: include/global_settings.php:2159
+#: include/global_settings.php:2172
 #, fuzzy
 msgid "Default View Mode"
 msgstr "默認查看模式"
 
-#: include/global_settings.php:2160
+#: include/global_settings.php:2173
 #, fuzzy
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
 msgstr "首次訪問“圖形”頁面時，默認情況下要顯示哪種圖形模式？"
 
-#: include/global_settings.php:2166
+#: include/global_settings.php:2179
 #, fuzzy
 msgid "User Language"
 msgstr "用戶語言"
 
-#: include/global_settings.php:2167
+#: include/global_settings.php:2180
 #, fuzzy
 msgid "Defines the preferred GUI language."
 msgstr "定義首選的GUI語言。"
 
-#: include/global_settings.php:2173
+#: include/global_settings.php:2186
 #, fuzzy
 msgid "Show Graph Title"
 msgstr "顯示圖表標題"
 
-#: include/global_settings.php:2174
+#: include/global_settings.php:2187
 #, fuzzy
 msgid "Display the graph title on the page so that it may be searched using the browser."
 msgstr "在頁面上顯示圖表標題，以便可以使用瀏覽器進行搜索。"
 
-#: include/global_settings.php:2179
+#: include/global_settings.php:2192
 #, fuzzy
 msgid "Hide Disabled"
 msgstr "隱藏已禁用"
 
-#: include/global_settings.php:2180
+#: include/global_settings.php:2193
 #, fuzzy
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
 msgstr "在“控制台”選項卡外查看時隱藏已禁用的設備和圖表。"
 
-#: include/global_settings.php:2185
+#: include/global_settings.php:2198
 #, fuzzy
 msgid "Show Device Aggregates"
 msgstr "骨料"
 
-#: include/global_settings.php:2186
+#: include/global_settings.php:2199
 #, fuzzy
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
 msgstr "如果設備數據源包含在聚合圖中，請將該圖與其他設備圖一起顯示"
 
-#: include/global_settings.php:2191
+#: include/global_settings.php:2204
 #, fuzzy
 msgid "Enable Horizontal Scrolling"
 msgstr "啟用水平滾動"
 
-#: include/global_settings.php:2192
+#: include/global_settings.php:2205
 #, fuzzy
 msgid "Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibility."
 msgstr "啟用表的水平滾動，禁用響應列的可見性。"
 
-#: include/global_settings.php:2198
+#: include/global_settings.php:2211
 #, fuzzy
 msgid "The date format to use in Cacti."
 msgstr "在Cacti中使用的日期格式。"
 
-#: include/global_settings.php:2205
+#: include/global_settings.php:2218
 #, fuzzy
 msgid "The date separator to be used in Cacti."
 msgstr "在Cacti中使用的日期分隔符。"
 
-#: include/global_settings.php:2211
+#: include/global_settings.php:2224
 #, fuzzy
 msgid "Page Refresh"
 msgstr "頁面刷新"
 
-#: include/global_settings.php:2212
+#: include/global_settings.php:2225
 #, fuzzy
 msgid "The number of seconds between automatic page refreshes."
 msgstr "自動頁面刷新之間的秒數。"
 
-#: include/global_settings.php:2223
+#: include/global_settings.php:2236
 #, fuzzy
 msgid "Preview Graphs Per Page"
 msgstr "每頁預覽圖表"
 
-#: include/global_settings.php:2224 include/global_settings.php:2351
+#: include/global_settings.php:2237 include/global_settings.php:2364
 #, fuzzy
 msgid "The number of graphs to display on one page in preview mode."
 msgstr "預覽模式下在一個頁面上顯示的圖形數量。"
 
-#: include/global_settings.php:2232
+#: include/global_settings.php:2245
 #, fuzzy
 msgid "Default Time Range"
 msgstr "默認時間範圍"
 
-#: include/global_settings.php:2233
+#: include/global_settings.php:2246
 #, fuzzy
 msgid "The default RRA to use in rare occasions."
 msgstr "在極少數情況下使用的默認RRA。"
 
-#: include/global_settings.php:2240
+#: include/global_settings.php:2253
 #, fuzzy
 msgid "The default Timespan displayed when viewing Graphs and other time specific data."
 msgstr "查看圖表和其他特定時間數據時顯示的默認Timespan。"
 
-#: include/global_settings.php:2246
+#: include/global_settings.php:2259
 #, fuzzy
 msgid "Default Timeshift"
 msgstr "默認時間轉換"
 
-#: include/global_settings.php:2247
+#: include/global_settings.php:2260
 #, fuzzy
 msgid "The default Timeshift displayed when viewing Graphs and other time specific data."
 msgstr "查看圖表和其他特定時間數據時顯示的默認Timeshift。"
 
-#: include/global_settings.php:2253
+#: include/global_settings.php:2266
 #, fuzzy
 msgid "Allow Graph to extend to Future"
 msgstr "允許圖表擴展到Future"
 
-#: include/global_settings.php:2254
+#: include/global_settings.php:2267
 #, fuzzy
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
 msgstr "顯示圖表時，允許圖表日期延伸到“未來”"
 
-#: include/global_settings.php:2259
+#: include/global_settings.php:2272
 #, fuzzy
 msgid "First Day of the Week"
 msgstr "本週的第一天"
 
-#: include/global_settings.php:2260
+#: include/global_settings.php:2273
 #, fuzzy
 msgid "The first Day of the Week for weekly Graph Displays"
 msgstr "每週圖表顯示的第一天"
 
-#: include/global_settings.php:2266
+#: include/global_settings.php:2279
 #, fuzzy
 msgid "Start of Daily Shift"
 msgstr "每日班次開始"
 
-#: include/global_settings.php:2267
+#: include/global_settings.php:2280
 #, fuzzy
 msgid "Start Time of the Daily Shift."
 msgstr "每日班次的開始時間。"
 
-#: include/global_settings.php:2274
+#: include/global_settings.php:2287
 #, fuzzy
 msgid "End of Daily Shift"
 msgstr "每日班次結束"
 
-#: include/global_settings.php:2275
+#: include/global_settings.php:2288
 #, fuzzy
 msgid "End Time of the Daily Shift."
 msgstr "每日班次的結束時間。"
 
-#: include/global_settings.php:2284
+#: include/global_settings.php:2297
 #, fuzzy
 msgid "Thumbnail Sections"
 msgstr "縮略圖部分"
 
-#: include/global_settings.php:2285
+#: include/global_settings.php:2298
 #, fuzzy
 msgid "Which portions of Cacti display Thumbnails by default."
 msgstr "Cacti的哪些部分默認顯示縮略圖。"
 
-#: include/global_settings.php:2299
+#: include/global_settings.php:2312
 #, fuzzy
 msgid "Preview Thumbnail Columns"
 msgstr "預覽縮略圖列"
 
-#: include/global_settings.php:2300
+#: include/global_settings.php:2313
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Preview mode."
 msgstr "在預覽模式下顯示縮略圖時使用的列數。"
 
-#: include/global_settings.php:2304 include/global_settings.php:2317
+#: include/global_settings.php:2317 include/global_settings.php:2330
 msgid "1 Column"
 msgstr "1 欄"
 
-#: include/global_settings.php:2305 include/global_settings.php:2306
-#: include/global_settings.php:2307 include/global_settings.php:2308
-#: include/global_settings.php:2309 include/global_settings.php:2318
-#: include/global_settings.php:2319 include/global_settings.php:2320
-#: include/global_settings.php:2321 include/global_settings.php:2322
+#: include/global_settings.php:2318 include/global_settings.php:2319
+#: include/global_settings.php:2320 include/global_settings.php:2321
+#: include/global_settings.php:2322 include/global_settings.php:2331
+#: include/global_settings.php:2332 include/global_settings.php:2333
+#: include/global_settings.php:2334 include/global_settings.php:2335
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
 #: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1106
 #: lib/html_tree.php:1107 lib/html_tree.php:1108 lib/html_tree.php:1109
@@ -12952,134 +12965,134 @@ msgstr "1 欄"
 msgid "%d Columns"
 msgstr "%d 行"
 
-#: include/global_settings.php:2312
+#: include/global_settings.php:2325
 #, fuzzy
 msgid "Tree View Thumbnail Columns"
 msgstr "樹視圖縮略圖列"
 
-#: include/global_settings.php:2313
+#: include/global_settings.php:2326
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Tree mode."
 msgstr "在樹模式下顯示縮略圖時使用的列數。"
 
-#: include/global_settings.php:2325
+#: include/global_settings.php:2338
 msgid "Thumbnail Height"
 msgstr "縮圖高度"
 
-#: include/global_settings.php:2326
+#: include/global_settings.php:2339
 #, fuzzy
 msgid "The height of Thumbnail graphs in pixels."
 msgstr "縮略圖的高度（以像素為單位）。"
 
-#: include/global_settings.php:2333
+#: include/global_settings.php:2346
 msgid "Thumbnail Width"
 msgstr "縮圖寬度"
 
-#: include/global_settings.php:2334
+#: include/global_settings.php:2347
 #, fuzzy
 msgid "The width of Thumbnail graphs in pixels."
 msgstr "縮略圖的寬度（以像素為單位）。"
 
-#: include/global_settings.php:2343
+#: include/global_settings.php:2356
 #, fuzzy
 msgid "Default Tree"
 msgstr "默認樹"
 
-#: include/global_settings.php:2344
+#: include/global_settings.php:2357
 #, fuzzy
 msgid "The default graph tree to use when displaying graphs in tree mode."
 msgstr "在樹模式下顯示圖形時使用的默認圖形樹。"
 
-#: include/global_settings.php:2350
+#: include/global_settings.php:2363
 #, fuzzy
 msgid "Graphs Per Page"
 msgstr "每頁圖表"
 
-#: include/global_settings.php:2357
+#: include/global_settings.php:2370
 #, fuzzy
 msgid "Expand Devices"
 msgstr "展開設備"
 
-#: include/global_settings.php:2358
+#: include/global_settings.php:2371
 #, fuzzy
 msgid "Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree."
 msgstr "選擇是否展開樹上設備使用的圖表模板和數據查詢。"
 
-#: include/global_settings.php:2363
+#: include/global_settings.php:2376
 #, fuzzy
 msgid "Tree History"
 msgstr "密碼歷史"
 
-#: include/global_settings.php:2364
+#: include/global_settings.php:2377
 #, fuzzy
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
 msgstr "如果啟用，則仙人掌將記住兩次登錄之間以及返回到“圖形”頁面時的樹歷史記錄。"
 
-#: include/global_settings.php:2387
+#: include/global_settings.php:2400
 #, fuzzy
 msgid "Use Custom Fonts"
 msgstr "使用自定義字體"
 
-#: include/global_settings.php:2388
+#: include/global_settings.php:2401
 #, fuzzy
 msgid "Choose whether to use your own custom fonts and font sizes or utilize the system defaults."
 msgstr "選擇是使用自己的自定義字體和字體大小還是使用系統默認值。"
 
-#: include/global_settings.php:2401
+#: include/global_settings.php:2414
 #, fuzzy
 msgid "Title Font File"
 msgstr "標題字體文件"
 
-#: include/global_settings.php:2402
+#: include/global_settings.php:2415
 #, fuzzy
 msgid "The font file to use for Graph Titles"
 msgstr "用於圖表標題的字體文件"
 
-#: include/global_settings.php:2414
+#: include/global_settings.php:2427
 #, fuzzy
 msgid "Legend Font File"
 msgstr "圖例字體文件"
 
-#: include/global_settings.php:2415
+#: include/global_settings.php:2428
 #, fuzzy
 msgid "The font file to be used for Graph Legend items"
 msgstr "用於圖例圖例項目的字體文件"
 
-#: include/global_settings.php:2427
+#: include/global_settings.php:2440
 #, fuzzy
 msgid "Axis Font File"
 msgstr "軸字體文件"
 
-#: include/global_settings.php:2428
+#: include/global_settings.php:2441
 #, fuzzy
 msgid "The font file to be used for Graph Axis items"
 msgstr "用於Graph Axis項的字體文件"
 
-#: include/global_settings.php:2440
+#: include/global_settings.php:2453
 #, fuzzy
 msgid "Unit Font File"
 msgstr "單位字體文件"
 
-#: include/global_settings.php:2441
+#: include/global_settings.php:2454
 #, fuzzy
 msgid "The font file to be used for Graph Unit items"
 msgstr "用於圖表單元項的字體文件"
 
-#: include/global_settings.php:2455
+#: include/global_settings.php:2468
 #, fuzzy
 msgid "Realtime View Mode"
 msgstr "實時查看模式"
 
-#: include/global_settings.php:2456
+#: include/global_settings.php:2469
 #, fuzzy
 msgid "How do you wish to view Realtime Graphs?"
 msgstr "您如何查看實時圖表？"
 
-#: include/global_settings.php:2459
+#: include/global_settings.php:2472
 msgid "Inline"
 msgstr "內嵌"
 
-#: include/global_settings.php:2460
+#: include/global_settings.php:2473
 msgid "New Window"
 msgstr "新視窗"
 
@@ -13209,17 +13222,17 @@ msgstr "按“返回”返回並選擇不同的圖表"
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
 msgstr "為聚合圖選擇的圖不使用圖模板。 Aggregate不支持從非模板化圖形創建聚合圖。"
 
-#: lib/api_aggregate.php:1708 lib/html.php:1082
+#: lib/api_aggregate.php:1708 lib/html.php:1095
 #, fuzzy
 msgid "Graph Item"
 msgstr "圖項目"
 
-#: lib/api_aggregate.php:1711 lib/html.php:1085
+#: lib/api_aggregate.php:1711 lib/html.php:1098
 #, fuzzy
 msgid "CF Type"
 msgstr "CF型"
 
-#: lib/api_aggregate.php:1712 lib/html.php:1087
+#: lib/api_aggregate.php:1712 lib/html.php:1100
 msgid "Item Color"
 msgstr "項目顏色"
 
@@ -13460,8 +13473,8 @@ msgstr "地點:"
 msgid "Contact:"
 msgstr "聯繫方式："
 
-#: lib/api_device.php:1124 lib/functions.php:3955 lib/functions.php:3957
-#: lib/functions.php:3961
+#: lib/api_device.php:1124 lib/functions.php:3961 lib/functions.php:3963
+#: lib/functions.php:3967
 msgid "Ping Results"
 msgstr "Ping結果"
 
@@ -14082,186 +14095,186 @@ msgstr "未對數據源進行調查"
 msgid "No issues found"
 msgstr "沒有發現問題"
 
-#: lib/functions.php:629 lib/functions.php:714
+#: lib/functions.php:635 lib/functions.php:720
 #, fuzzy
 msgid "Message Not Found."
 msgstr "未找到信息。"
 
-#: lib/functions.php:1023
+#: lib/functions.php:1029
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "錯誤％s無法讀取"
 
-#: lib/functions.php:2389 lib/functions.php:2400
+#: lib/functions.php:2395 lib/functions.php:2406
 msgid "Logged in as"
 msgstr "登入"
 
-#: lib/functions.php:2389
+#: lib/functions.php:2395
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "以普通用戶身份登錄"
 
-#: lib/functions.php:2389
+#: lib/functions.php:2395
 msgid "guest"
 msgstr "客人"
 
-#: lib/functions.php:2391 lib/functions.php:2408 lib/html.php:2397
+#: lib/functions.php:2397 lib/functions.php:2414 lib/html.php:2411
 #, fuzzy
 msgid "User Community"
 msgstr "用戶社區"
 
-#: lib/functions.php:2392 lib/functions.php:2409 lib/html.php:2398
+#: lib/functions.php:2398 lib/functions.php:2415 lib/html.php:2412
 #: lib/utility.php:1097
 msgid "Documentation"
 msgstr "文件"
 
-#: lib/functions.php:2403
+#: lib/functions.php:2409
 #, php-format
 msgid "Logged in as %s"
 msgstr "已使用 %s 名義登入"
 
-#: lib/functions.php:2405
+#: lib/functions.php:2411
 msgid "Edit Profile"
 msgstr "編輯個人資料"
 
-#: lib/functions.php:2411
+#: lib/functions.php:2417
 msgid "Logout"
 msgstr "登出"
 
-#: lib/functions.php:2559
+#: lib/functions.php:2565
 msgid "Leaf"
 msgstr "葉子"
 
-#: lib/functions.php:2579 lib/html_tree.php:713 lib/html_tree.php:749
+#: lib/functions.php:2585 lib/html_tree.php:713 lib/html_tree.php:749
 #: lib/html_tree.php:978 lib/html_tree.php:986 lib/html_tree.php:1559
 #, fuzzy
 msgid "Non Query Based"
 msgstr "非查詢"
 
-#: lib/functions.php:2612
+#: lib/functions.php:2618
 #, php-format
 msgid "Link %s"
 msgstr "連結 %s"
 
-#: lib/functions.php:3556
+#: lib/functions.php:3562
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "郵件程序錯誤：沒有<b>TO</b>地址集！ <br>如果使用“ <i>測試郵件”</i>鏈接，請設置“ <b>警報電子郵件”</b>設置。"
 
-#: lib/functions.php:3888
+#: lib/functions.php:3894
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "身份驗證失敗：％s"
 
-#: lib/functions.php:3892
+#: lib/functions.php:3898
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO失敗了：％s"
 
-#: lib/functions.php:3895
+#: lib/functions.php:3901
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "連接失敗：％s"
 
-#: lib/functions.php:3898
+#: lib/functions.php:3904
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP錯誤："
 
-#: lib/functions.php:3911
+#: lib/functions.php:3917
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "這是Cacti生成的測試消息。發送此消息是為了測試郵件設置的配置。"
 
-#: lib/functions.php:3912
+#: lib/functions.php:3918
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "您的電子郵件設置目前設置如下"
 
-#: lib/functions.php:3913
+#: lib/functions.php:3919
 msgid "Method"
 msgstr "方法"
 
-#: lib/functions.php:3915
+#: lib/functions.php:3921
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "檢查配置...... <br>"
 
-#: lib/functions.php:3922
+#: lib/functions.php:3928
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP的郵件程序類"
 
-#: lib/functions.php:3928
+#: lib/functions.php:3934
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "方法：SMTP"
 
-#: lib/functions.php:3943
+#: lib/functions.php:3949
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "未顯示安全原因"
 
-#: lib/functions.php:3944
+#: lib/functions.php:3950
 msgid "Security"
 msgstr "安全性"
 
-#: lib/functions.php:3952
+#: lib/functions.php:3958
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Ping結果"
 
-#: lib/functions.php:3961
+#: lib/functions.php:3967
 #, fuzzy
 msgid "Bypassed"
 msgstr "旁路"
 
-#: lib/functions.php:3969
+#: lib/functions.php:3975
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "創建消息文本..."
 
-#: lib/functions.php:3972
+#: lib/functions.php:3978
 #, fuzzy
 msgid "Sending Message..."
 msgstr "發送消息......"
 
-#: lib/functions.php:3976
+#: lib/functions.php:3982
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "仙人掌測試消息"
 
-#: lib/functions.php:3978
+#: lib/functions.php:3984
 msgid "Success!"
 msgstr "成功！"
 
-#: lib/functions.php:3981
+#: lib/functions.php:3987
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "由於ping失敗而未發送消息。"
 
-#: lib/functions.php:4575 lib/functions.php:4638 poller.php:356 poller.php:477
+#: lib/functions.php:4581 lib/functions.php:4644 poller.php:356 poller.php:477
 #: poller.php:539 poller.php:562 poller.php:702
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "仙人掌系統警告"
 
-#: lib/functions.php:4575 lib/functions.php:4638
+#: lib/functions.php:4581 lib/functions.php:4644
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "由於以下錯誤，Cacti禁用了插件％s：％s！有關更多詳細信息，請參閱Cacti日誌文件。"
 
-#: lib/functions.php:5016 lib/functions.php:5018
+#: lib/functions.php:5022 lib/functions.php:5024
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "-  Beta％s"
 
-#: lib/functions.php:5016
+#: lib/functions.php:5022
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "版本％s％s"
 
-#: lib/functions.php:5018
+#: lib/functions.php:5024
 #, php-format
 msgid "%s %s"
 msgstr "%s - %s"
@@ -14289,412 +14302,412 @@ msgstr "選擇模板"
 msgid "Enter keyword"
 msgstr "輸入關鍵字"
 
-#: lib/html.php:369 lib/reports.php:1225 lib/reports.php:1229
+#: lib/html.php:375 lib/reports.php:1225 lib/reports.php:1229
 #, fuzzy
 msgid "Data Query:"
 msgstr "數據查詢："
 
-#: lib/html.php:430
+#: lib/html.php:436
 #, fuzzy
 msgid "CSV Export of Graph Data"
 msgstr "圖形數據的CSV導出"
 
-#: lib/html.php:431 lib/html.php:2386
+#: lib/html.php:437 lib/html.php:2400
 #, fuzzy
 msgid "Time Graph View"
 msgstr "時間圖表視圖"
 
-#: lib/html.php:440
+#: lib/html.php:446
 #, fuzzy
 msgid "Edit Device"
 msgstr "編輯設備"
 
-#: lib/html.php:455
+#: lib/html.php:461
 #, fuzzy
 msgid "Kill Spikes in Graphs"
 msgstr "殺死圖表中的尖峰"
 
-#: lib/html.php:493 lib/html.php:522 lib/installer.php:1520
+#: lib/html.php:506 lib/html.php:535 lib/installer.php:1520
 msgid "Previous"
 msgstr "上一個"
 
-#: lib/html.php:496
+#: lib/html.php:509
 #, fuzzy, php-format
 msgid "%d to %d of %s [ %s ]"
 msgstr "％s的％d到％d [％s]"
 
-#: lib/html.php:499 lib/html.php:528 lib/installer.php:1519
+#: lib/html.php:512 lib/html.php:541 lib/installer.php:1519
 msgid "Next"
 msgstr "下一頁"
 
-#: lib/html.php:506
+#: lib/html.php:519
 #, fuzzy, php-format
 msgid "All %d %s"
 msgstr "全部％d％s"
 
-#: lib/html.php:525
+#: lib/html.php:538
 #, fuzzy, php-format
 msgid "Current Page: %s"
 msgstr "當前的數值"
 
-#: lib/html.php:541
+#: lib/html.php:554
 #, php-format
 msgid "No %s Found"
 msgstr "沒有 %s 找到"
 
-#: lib/html.php:1086
+#: lib/html.php:1099
 #, fuzzy
 msgid "Alpha %"
 msgstr "Α ％"
 
-#: lib/html.php:1128
+#: lib/html.php:1141
 #, fuzzy
 msgid "No Source"
 msgstr "資料來源"
 
-#: lib/html.php:1457
+#: lib/html.php:1470
 #, fuzzy
 msgid "Choose an action"
 msgstr "選擇一個動作"
 
-#: lib/html.php:1467
+#: lib/html.php:1480
 #, fuzzy
 msgid "Execute Action"
 msgstr "執行動作"
 
-#: lib/html.php:1649 lib/html.php:1651 lib/html.php:1731 managers.php:41
+#: lib/html.php:1662 lib/html.php:1664 lib/html.php:1744 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "記錄"
 
-#: lib/html.php:2150
+#: lib/html.php:2163
 #, fuzzy
 msgid "Standard Deviations"
 msgstr "標準偏差"
 
-#: lib/html.php:2162
+#: lib/html.php:2175
 #, fuzzy
 msgid "Variance Outliers"
 msgstr "方差異常值"
 
-#: lib/html.php:2168
+#: lib/html.php:2181
 #, fuzzy
 msgid "Kills Per RRA"
 msgstr "殺死每個RRA"
 
-#: lib/html.php:2174
+#: lib/html.php:2187
 #, fuzzy
 msgid "Remove StdDev"
 msgstr "刪除StdDev"
 
-#: lib/html.php:2175
+#: lib/html.php:2188
 #, fuzzy
 msgid "Remove Variance"
 msgstr "刪除差異"
 
-#: lib/html.php:2176
+#: lib/html.php:2189
 #, fuzzy
 msgid "Gap Fill Range"
 msgstr "間隙填充範圍"
 
-#: lib/html.php:2177
+#: lib/html.php:2190
 #, fuzzy
 msgid "Float Range"
 msgstr "浮動範圍"
 
-#: lib/html.php:2179
+#: lib/html.php:2192
 #, fuzzy
 msgid "Dry Run StdDev"
 msgstr "Dry Run StdDev"
 
-#: lib/html.php:2180
+#: lib/html.php:2193
 #, fuzzy
 msgid "Dry Run Variance"
 msgstr "幹運行方差"
 
-#: lib/html.php:2181
+#: lib/html.php:2194
 #, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "幹運行間隙填充範圍"
 
-#: lib/html.php:2182
+#: lib/html.php:2195
 #, fuzzy
 msgid "Dry Run Float Range"
 msgstr "幹運行浮動範圍"
 
-#: lib/html.php:2382
+#: lib/html.php:2396
 #, fuzzy
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
 msgstr "允許或限製表列以超出當前窗口限制。"
 
-#: lib/html.php:2383 lib/html_filter.php:65
+#: lib/html.php:2397 lib/html_filter.php:65
 #, fuzzy
 msgid "Enter a search term"
 msgstr "輸入搜索字詞"
 
-#: lib/html.php:2384
+#: lib/html.php:2398
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "輸入正則表達式"
 
-#: lib/html.php:2385
+#: lib/html.php:2399
 msgid "No file selected"
 msgstr "尚未選取檔案"
 
-#: lib/html.php:2388 lib/html.php:2401
+#: lib/html.php:2402 lib/html.php:2415
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "SpikeKill結果"
 
-#: lib/html.php:2390
+#: lib/html.php:2404
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "單擊以實時查看此圖表"
 
-#: lib/html.php:2391
+#: lib/html.php:2405
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "再次單擊可使此圖表脫離實時"
 
-#: lib/html.php:2395
+#: lib/html.php:2409
 #, fuzzy
 msgid "Cacti Home"
 msgstr "仙人掌之家"
 
-#: lib/html.php:2396
+#: lib/html.php:2410
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "仙人掌項目"
 
-#: lib/html.php:2399
+#: lib/html.php:2413
 msgid "Report a bug"
 msgstr "回報臭蟲"
 
-#: lib/html.php:2402
+#: lib/html.php:2416
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "單擊以顯示/隱藏篩選器"
 
-#: lib/html.php:2403
+#: lib/html.php:2417
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "清除電流濾波器"
 
-#: lib/html.php:2404
+#: lib/html.php:2418
 msgid "Clipboard"
 msgstr "剪貼板"
 
-#: lib/html.php:2405
+#: lib/html.php:2419
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "剪貼板ID"
 
-#: lib/html.php:2406
+#: lib/html.php:2420
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "此時復制操作不可用"
 
-#: lib/html.php:2407
+#: lib/html.php:2421
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "無法找到要復制的數據！"
 
-#: lib/html.php:2408
+#: lib/html.php:2422
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "剪貼板已更新"
 
-#: lib/html.php:2409
+#: lib/html.php:2423
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "抱歉，您的剪貼板目前無法更新"
 
-#: lib/html.php:2413
+#: lib/html.php:2427
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "密碼長度最少為8個字符"
 
-#: lib/html.php:2414
+#: lib/html.php:2428
 #, fuzzy
 msgid "Passphrase too short"
 msgstr "密碼太短了"
 
-#: lib/html.php:2415
+#: lib/html.php:2429
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "密碼短語但匹配太短"
 
-#: lib/html.php:2416
+#: lib/html.php:2430
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "密碼太短而且不匹配"
 
-#: lib/html.php:2417
+#: lib/html.php:2431
 #, fuzzy
 msgid "Passphrases match"
 msgstr "密碼匹配"
 
-#: lib/html.php:2418
+#: lib/html.php:2432
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "密碼短語不匹配"
 
-#: lib/html.php:2419
+#: lib/html.php:2433
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "抱歉，我們無法處理您的上一個操作。"
 
-#: lib/html.php:2420
+#: lib/html.php:2434
 msgid "Error:"
 msgstr "錯誤:"
 
-#: lib/html.php:2421
+#: lib/html.php:2435
 msgid "Reason:"
 msgstr "原因："
 
-#: lib/html.php:2422
+#: lib/html.php:2436
 #, fuzzy
 msgid "Action failed"
 msgstr "行動失敗了"
 
-#: lib/html.php:2423 pollers.php:754
+#: lib/html.php:2437 pollers.php:754
 #, fuzzy
 msgid "Connection Successful"
 msgstr "操作成功"
 
-#: lib/html.php:2424 pollers.php:756
+#: lib/html.php:2438 pollers.php:756
 msgid "Connection Failed"
 msgstr "連線失敗"
 
-#: lib/html.php:2425
+#: lib/html.php:2439
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "對最後一次行動的回應是出乎意料的。"
 
-#: lib/html.php:2426
+#: lib/html.php:2440
 #, fuzzy
 msgid "Some Actions failed"
 msgstr "一些行動失敗了"
 
-#: lib/html.php:2427
+#: lib/html.php:2441
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "請注意，我們無法處理您的所有操作。詳情如下。"
 
-#: lib/html.php:2428
+#: lib/html.php:2442
 #, fuzzy
 msgid "Operation successful"
 msgstr "操作成功"
 
-#: lib/html.php:2429
+#: lib/html.php:2443
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "該行動是成功的。詳情如下。"
 
-#: lib/html.php:2431
+#: lib/html.php:2445
 msgid "Pause"
 msgstr "暫停"
 
-#: lib/html.php:2434
+#: lib/html.php:2448
 msgid "Zoom In"
 msgstr "放大"
 
-#: lib/html.php:2435
+#: lib/html.php:2449
 msgid "Zoom Out"
 msgstr "縮小"
 
-#: lib/html.php:2436
+#: lib/html.php:2450
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "縮小因子"
 
-#: lib/html.php:2437
+#: lib/html.php:2451
 msgid "Timestamps"
 msgstr "時間戳"
 
-#: lib/html.php:2438
+#: lib/html.php:2452
 msgid "2x"
 msgstr "2 倍"
 
-#: lib/html.php:2439
+#: lib/html.php:2453
 msgid "4x"
 msgstr "4 倍"
 
-#: lib/html.php:2440
+#: lib/html.php:2454
 #, fuzzy
 msgid "8x"
 msgstr "8X"
 
-#: lib/html.php:2441
+#: lib/html.php:2455
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2442
+#: lib/html.php:2456
 #, fuzzy
 msgid "32x"
 msgstr "32X"
 
-#: lib/html.php:2443
+#: lib/html.php:2457
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "縮小定位"
 
-#: lib/html.php:2444
+#: lib/html.php:2458
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "縮放模式"
 
-#: lib/html.php:2446
+#: lib/html.php:2460
 msgid "Quick"
 msgstr "快"
 
-#: lib/html.php:2448
+#: lib/html.php:2462
 msgid "Open in new tab"
 msgstr "打開一個新標籤"
 
-#: lib/html.php:2449
+#: lib/html.php:2463
 #, fuzzy
 msgid "Save graph"
 msgstr "保存圖表"
 
-#: lib/html.php:2450
+#: lib/html.php:2464
 #, fuzzy
 msgid "Copy graph"
 msgstr "複製圖"
 
-#: lib/html.php:2451
+#: lib/html.php:2465
 #, fuzzy
 msgid "Copy graph link"
 msgstr "複製圖錶鍊接"
 
-#: lib/html.php:2452
+#: lib/html.php:2466
 #, fuzzy
 msgid "Always On"
 msgstr "永遠在線"
 
-#: lib/html.php:2453
+#: lib/html.php:2467
 msgid "Auto"
 msgstr "自動"
 
-#: lib/html.php:2454
+#: lib/html.php:2468
 #, fuzzy
 msgid "Always Off"
 msgstr "總是關閉"
 
-#: lib/html.php:2455
+#: lib/html.php:2469
 #, fuzzy
 msgid "Begin with"
 msgstr "首先"
 
-#: lib/html.php:2457
+#: lib/html.php:2471
 #, fuzzy
 msgid "End with"
 msgstr "結束日期"
 
-#: lib/html.php:2459 lib/html_form.php:1299
+#: lib/html.php:2473 lib/html_form.php:1299
 msgid "Close"
 msgstr "關閉"
 
-#: lib/html.php:2461
+#: lib/html.php:2475
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "第三個鼠標按鈕"
@@ -16354,7 +16367,7 @@ msgid "Please select the Device Templates that you wish to update during the Upg
 msgstr "選擇要從Cacti導出的模板類型。"
 
 #: lib/installer.php:2437
-msgid "Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to 'Sync Graphs' to from the Tamplates after update."
+msgid "Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to 'Sync Graphs' to from the Templates after update."
 msgstr ""
 
 #: lib/installer.php:2439
@@ -16372,7 +16385,7 @@ msgstr "首頁"
 
 #: lib/installer.php:2463
 #, fuzzy
-msgid "Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press 'Finish' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes."
+msgid "Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press 'Next' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes."
 msgstr "設備模板允許您監視和繪製Cacti中的各種數據。選擇所需的設備模板後，按“完成”，安裝將完成。請耐心等待此步驟，因為輸入設備模板可能需要幾分鐘時間。"
 
 #: lib/installer.php:2471
@@ -20938,244 +20951,244 @@ msgid "No VDEFs"
 msgstr "沒有VDEF"
 
 #, fuzzy
-#~ msgid "Legacy 1.x Plugins"
-#~ msgstr "舊版1.x插件"
-
-#~ msgid "Resize"
-#~ msgstr "調整大小"
-
-#, fuzzy
-#~ msgid "The following data sources are in use by these graphs:"
-#~ msgstr "這些圖表正在使用以下數據源："
-
-#, fuzzy
-#~ msgid "Resize Selected Graph(s)"
-#~ msgstr "調整所選圖表的大小"
-
-#, fuzzy
-#~ msgid "Create Aggregate"
-#~ msgstr "創建聚合"
-
-#, fuzzy
-#~ msgid "With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50%% overhead on all write operations."
-#~ msgstr "使用現代SSD類型存儲，此操作實際上會使磁盤更快速地降級，並在所有寫入操作上增加50 %%的開銷。"
-
-#, fuzzy
-#~ msgid "Sort field returned no data.  Can not continue Re-Index for GET data.."
-#~ msgstr "排序字段未返回任何數據。無法繼續重新索引GET數據.."
-
-#, fuzzy
-#~ msgid "Graph Size"
-#~ msgstr "圖表大小"
-
-#, fuzzy
-#~ msgid "Non-Device"
-#~ msgstr "非設備"
-
-#, fuzzy
-#~ msgid "Thresholds"
-#~ msgstr "線程"
-
-#, fuzzy
-#~ msgid "Log"
-#~ msgstr "日誌"
-
-#, fuzzy
-#~ msgid "Time:"
-#~ msgstr "時間"
-
-#, fuzzy
-#~ msgid "Swaps:"
-#~ msgstr "互換："
-
-#, fuzzy
-#~ msgid "Pages:"
-#~ msgstr "頁面:"
-
-#, fuzzy
-#~ msgid "Link to Graph in Cacti"
-#~ msgstr "登錄Cacti"
-
-#, fuzzy
-#~ msgid "<html><body>An alert has been issued that requires your attention.<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: <URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
-#~ msgstr "<html><body>已發出警報，需要您注意。 <br><br> <b>裝置</b> ： <DESCRIPTION> （ <HOSTNAME> ） <br> <b>網址</b> ： <URL><br> <b>消息</b> ： <SUBJECT><br><br><GRAPH></body></html>"
-
-#, fuzzy
-#~ msgid "<html><body>A warning has been issued that requires your attention.<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: <URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
-#~ msgstr "<html><body>已發出警告，需要您注意。 <br><br> <b>裝置</b> ： <DESCRIPTION> （ <HOSTNAME> ） <br> <b>網址</b> ： <URL><br> <b>消息</b> ： <SUBJECT><br><br><GRAPH></body></html>"
-
-#, fuzzy
-#~ msgid "The Device ID was not set while trying to create Graph and Threshold"
-#~ msgstr "嘗試創建圖形和閾值時未設置設備ID"
-
-#, fuzzy
-#~ msgid "The Threshold Template ID was not set while trying to create Graph and Threshold"
-#~ msgstr "嘗試創建圖形和閾值時未設置閾值模板ID"
-
-#, fuzzy
-#~ msgid "The Graph Creation failed for Threshold Template"
-#~ msgstr "用於此報表項的圖表。"
-
-#, fuzzy
-#~ msgid "Threshold was Autocreated due to Device Template mapping"
-#~ msgstr "將數據查詢添加到設備模板"
-
-#, fuzzy
-#~ msgid "Record Updated"
-#~ msgstr "RRD更新"
-
-#, fuzzy
-#~ msgid "You must specify either 'High Alert Threshold' or 'Low Alert Threshold' or both!<br>RECORD NOT UPDATED!"
-#~ msgstr "您必須指定“高警報閾值”或“低警報閾值”或兩者！ <br>記錄沒有更新！"
-
-#, fuzzy
-#~ msgid "Impossible thresholds: 'High Threshold' smaller than or equal to 'Low Threshold'<br>RECORD NOT UPDATED!"
-#~ msgstr "不可能的閾值：“高閾值”小於或等於“低閾值” <br>記錄沒有更新！"
-
-#, fuzzy
-#~ msgid "Impossible thresholds: 'High Warning Threshold' smaller than or equal to 'Low Warning Threshold'<br>RECORD NOT UPDATED!"
-#~ msgstr "不可能的閾值：'高警告閾值'小於或等於'低警告閾值' <br>記錄沒有更新！"
-
-#, fuzzy
-#~ msgid "With baseline thresholds enabled."
-#~ msgstr "啟用基線閾值。"
-
-#, fuzzy
-#~ msgid "You must specify either 'Baseline Deviation UP' or 'Baseline Deviation DOWN' or both!<br>RECORD NOT UPDATED!"
-#~ msgstr "您必須指定“Baseline Deviation UP”或“Baseline Deviation DOWN”或兩者！ <br>記錄沒有更新！"
-
-#, fuzzy
-#~ msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
-#~ msgstr "無法在閾值'％d'上找到鏈接的圖表模板項'％d'"
-
-#, fuzzy
-#~ msgid " What? Permission Denied"
-#~ msgstr "存取被拒"
-
-#, fuzzy
-#~ msgid "Created threshold: %s"
-#~ msgstr "創建圖：％s"
-
-#, fuzzy
-#~ msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
-#~ msgstr "'％s'必須設置為正整數值！ <br>記錄沒有更新！"
-
-#, fuzzy
-#~ msgid "No Thresholds Templates associated with the Device's Template."
-#~ msgstr "與本網站相關的國家。"
-
-#, fuzzy
-#~ msgid "No Threshold(s) Created.  They either already exist, or there were not matching combinations found."
-#~ msgstr "沒有創建閾值。它們已經存在，或者找不到匹配的組合。"
-
-#, fuzzy
-#~ msgid "Created Threshold: %s<br>"
-#~ msgstr "創建圖：％s"
-
-#, fuzzy
-#~ msgid "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert Email</b> setting."
-#~ msgstr "郵件程序錯誤：沒有<b>TO</b>地址集！ <br>如果使用“ <i>測試郵件”</i>鏈接，請設置“ <b>警報電子郵件”</b>設置。"
-
-#, fuzzy
-#~ msgid "Does the RRA Profile match the RRDfile structure?"
-#~ msgstr "RRA配置文件是否與RRDfile結構匹配？"
-
-#, fuzzy
-#~ msgid "Data Source Troubleshooter"
-#~ msgstr "數據源疑難解答"
-
-#, fuzzy
-#~ msgid " Poller RunAs: "
-#~ msgstr "Poller RunAs："
-
-#, fuzzy
-#~ msgid "PHP - Timezone Support"
-#~ msgstr "PHP  - 時區支持"
-
-#, fuzzy
-#~ msgid "Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the 'date.timezone' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti."
-#~ msgstr "您的Web服務器尚未設置PHP時區設置。請編輯php.ini並取消註釋&#39;date.timezone&#39;設置，並在安裝Cacti之前根據PHP安裝說明將其設置為Web Servers Timezone。"
-
-#, fuzzy
-#~ msgid "Your Web Servers PHP is properly setup with a Timezone."
-#~ msgstr "您的Web服務器PHP已使用時區正確設置。"
-
-#, fuzzy
-#~ msgid "Data Source Debugger"
-#~ msgstr "數據源調試器"
-
-#, fuzzy
-#~ msgid "Data Source Debugger [%s]"
-#~ msgstr "數據源調試器"
-
-#, fuzzy
-#~ msgid "Data Debug"
-#~ msgstr "數據調試"
-
-#, fuzzy
-#~ msgid "Click to show Data Query output for sfield '%s'"
-#~ msgstr "單擊以顯示sfield&#39;％s&#39;的數據查詢輸出"
-
-#, fuzzy
-#~ msgid "New Check"
-#~ msgstr "新檢查"
-
-#, fuzzy
-#~ msgid "Debugging Data Source"
-#~ msgstr "調試數據源"
-
-#, fuzzy
-#~ msgid "Provide the Maintenance Schedule a meaningful name"
-#~ msgstr "為維護計劃提供有意義的名稱"
-
-#, fuzzy
-#~ msgid "Template [edit: %s]"
-#~ msgstr "模板[編輯：％s]"
-
-#, fuzzy
-#~ msgid "Template [new]"
-#~ msgstr "模板[新]"
-
-#, fuzzy
-#~ msgid "Default Graph View Timespan"
-#~ msgstr "默認圖表視圖Timespan"
-
-#, fuzzy
-#~ msgid "The default timespan you wish to be displayed when you display graphs"
-#~ msgstr "顯示圖形時希望顯示的默認時間跨度"
-
-#, fuzzy
-#~ msgid "Default Graph View Timeshift"
-#~ msgstr "默認圖表視圖Timeshift"
-
-#, fuzzy
-#~ msgid "The default timeshift you wish to be displayed when you display graphs"
-#~ msgstr "顯示圖形時希望顯示的默認時間轉換"
-
-#, fuzzy
-#~ msgid "Non Templated"
-#~ msgstr "非模板化"
-
-#, fuzzy
-#~ msgid "Template Not Found"
-#~ msgstr "找不到模板"
-
-#, fuzzy
-#~ msgid "The file holding the SSL Certificate Authority to use to connect to the remote database."
-#~ msgstr "包含SSL證書頒發機構的文件，用於連接到遠程數據庫。"
-
-#, fuzzy
-#~ msgid "%d Outliers"
-#~ msgstr "％d異常值"
-
-#, fuzzy
-#~ msgid "%s Standard Deviations"
-#~ msgstr "％s標準偏差"
+#~ msgid "%d Samples"
+#~ msgstr "％d樣品"
 
 #, fuzzy
 #~ msgid "No Task"
 #~ msgstr "沒有任務"
 
 #, fuzzy
-#~ msgid "%d Samples"
-#~ msgstr "％d樣品"
+#~ msgid "%s Standard Deviations"
+#~ msgstr "％s標準偏差"
+
+#, fuzzy
+#~ msgid "%d Outliers"
+#~ msgstr "％d異常值"
+
+#, fuzzy
+#~ msgid "The file holding the SSL Certificate Authority to use to connect to the remote database."
+#~ msgstr "包含SSL證書頒發機構的文件，用於連接到遠程數據庫。"
+
+#, fuzzy
+#~ msgid "Template Not Found"
+#~ msgstr "找不到模板"
+
+#, fuzzy
+#~ msgid "Non Templated"
+#~ msgstr "非模板化"
+
+#, fuzzy
+#~ msgid "The default timeshift you wish to be displayed when you display graphs"
+#~ msgstr "顯示圖形時希望顯示的默認時間轉換"
+
+#, fuzzy
+#~ msgid "Default Graph View Timeshift"
+#~ msgstr "默認圖表視圖Timeshift"
+
+#, fuzzy
+#~ msgid "The default timespan you wish to be displayed when you display graphs"
+#~ msgstr "顯示圖形時希望顯示的默認時間跨度"
+
+#, fuzzy
+#~ msgid "Default Graph View Timespan"
+#~ msgstr "默認圖表視圖Timespan"
+
+#, fuzzy
+#~ msgid "Template [new]"
+#~ msgstr "模板[新]"
+
+#, fuzzy
+#~ msgid "Template [edit: %s]"
+#~ msgstr "模板[編輯：％s]"
+
+#, fuzzy
+#~ msgid "Provide the Maintenance Schedule a meaningful name"
+#~ msgstr "為維護計劃提供有意義的名稱"
+
+#, fuzzy
+#~ msgid "Debugging Data Source"
+#~ msgstr "調試數據源"
+
+#, fuzzy
+#~ msgid "New Check"
+#~ msgstr "新檢查"
+
+#, fuzzy
+#~ msgid "Click to show Data Query output for sfield '%s'"
+#~ msgstr "單擊以顯示sfield&#39;％s&#39;的數據查詢輸出"
+
+#, fuzzy
+#~ msgid "Data Debug"
+#~ msgstr "數據調試"
+
+#, fuzzy
+#~ msgid "Data Source Debugger [%s]"
+#~ msgstr "數據源調試器"
+
+#, fuzzy
+#~ msgid "Data Source Debugger"
+#~ msgstr "數據源調試器"
+
+#, fuzzy
+#~ msgid "Your Web Servers PHP is properly setup with a Timezone."
+#~ msgstr "您的Web服務器PHP已使用時區正確設置。"
+
+#, fuzzy
+#~ msgid "Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the 'date.timezone' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti."
+#~ msgstr "您的Web服務器尚未設置PHP時區設置。請編輯php.ini並取消註釋&#39;date.timezone&#39;設置，並在安裝Cacti之前根據PHP安裝說明將其設置為Web Servers Timezone。"
+
+#, fuzzy
+#~ msgid "PHP - Timezone Support"
+#~ msgstr "PHP  - 時區支持"
+
+#, fuzzy
+#~ msgid " Poller RunAs: "
+#~ msgstr "Poller RunAs："
+
+#, fuzzy
+#~ msgid "Data Source Troubleshooter"
+#~ msgstr "數據源疑難解答"
+
+#, fuzzy
+#~ msgid "Does the RRA Profile match the RRDfile structure?"
+#~ msgstr "RRA配置文件是否與RRDfile結構匹配？"
+
+#, fuzzy
+#~ msgid "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert Email</b> setting."
+#~ msgstr "郵件程序錯誤：沒有<b>TO</b>地址集！ <br>如果使用“ <i>測試郵件”</i>鏈接，請設置“ <b>警報電子郵件”</b>設置。"
+
+#, fuzzy
+#~ msgid "Created Threshold: %s<br>"
+#~ msgstr "創建圖：％s"
+
+#, fuzzy
+#~ msgid "No Threshold(s) Created.  They either already exist, or there were not matching combinations found."
+#~ msgstr "沒有創建閾值。它們已經存在，或者找不到匹配的組合。"
+
+#, fuzzy
+#~ msgid "No Thresholds Templates associated with the Device's Template."
+#~ msgstr "與本網站相關的國家。"
+
+#, fuzzy
+#~ msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
+#~ msgstr "'％s'必須設置為正整數值！ <br>記錄沒有更新！"
+
+#, fuzzy
+#~ msgid "Created threshold: %s"
+#~ msgstr "創建圖：％s"
+
+#, fuzzy
+#~ msgid " What? Permission Denied"
+#~ msgstr "存取被拒"
+
+#, fuzzy
+#~ msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
+#~ msgstr "無法在閾值'％d'上找到鏈接的圖表模板項'％d'"
+
+#, fuzzy
+#~ msgid "You must specify either 'Baseline Deviation UP' or 'Baseline Deviation DOWN' or both!<br>RECORD NOT UPDATED!"
+#~ msgstr "您必須指定“Baseline Deviation UP”或“Baseline Deviation DOWN”或兩者！ <br>記錄沒有更新！"
+
+#, fuzzy
+#~ msgid "With baseline thresholds enabled."
+#~ msgstr "啟用基線閾值。"
+
+#, fuzzy
+#~ msgid "Impossible thresholds: 'High Warning Threshold' smaller than or equal to 'Low Warning Threshold'<br>RECORD NOT UPDATED!"
+#~ msgstr "不可能的閾值：'高警告閾值'小於或等於'低警告閾值' <br>記錄沒有更新！"
+
+#, fuzzy
+#~ msgid "Impossible thresholds: 'High Threshold' smaller than or equal to 'Low Threshold'<br>RECORD NOT UPDATED!"
+#~ msgstr "不可能的閾值：“高閾值”小於或等於“低閾值” <br>記錄沒有更新！"
+
+#, fuzzy
+#~ msgid "You must specify either 'High Alert Threshold' or 'Low Alert Threshold' or both!<br>RECORD NOT UPDATED!"
+#~ msgstr "您必須指定“高警報閾值”或“低警報閾值”或兩者！ <br>記錄沒有更新！"
+
+#, fuzzy
+#~ msgid "Record Updated"
+#~ msgstr "RRD更新"
+
+#, fuzzy
+#~ msgid "Threshold was Autocreated due to Device Template mapping"
+#~ msgstr "將數據查詢添加到設備模板"
+
+#, fuzzy
+#~ msgid "The Graph Creation failed for Threshold Template"
+#~ msgstr "用於此報表項的圖表。"
+
+#, fuzzy
+#~ msgid "The Threshold Template ID was not set while trying to create Graph and Threshold"
+#~ msgstr "嘗試創建圖形和閾值時未設置閾值模板ID"
+
+#, fuzzy
+#~ msgid "The Device ID was not set while trying to create Graph and Threshold"
+#~ msgstr "嘗試創建圖形和閾值時未設置設備ID"
+
+#, fuzzy
+#~ msgid "<html><body>A warning has been issued that requires your attention.<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: <URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+#~ msgstr "<html><body>已發出警告，需要您注意。 <br><br> <b>裝置</b> ： <DESCRIPTION> （ <HOSTNAME> ） <br> <b>網址</b> ： <URL><br> <b>消息</b> ： <SUBJECT><br><br><GRAPH></body></html>"
+
+#, fuzzy
+#~ msgid "<html><body>An alert has been issued that requires your attention.<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: <URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+#~ msgstr "<html><body>已發出警報，需要您注意。 <br><br> <b>裝置</b> ： <DESCRIPTION> （ <HOSTNAME> ） <br> <b>網址</b> ： <URL><br> <b>消息</b> ： <SUBJECT><br><br><GRAPH></body></html>"
+
+#, fuzzy
+#~ msgid "Link to Graph in Cacti"
+#~ msgstr "登錄Cacti"
+
+#, fuzzy
+#~ msgid "Pages:"
+#~ msgstr "頁面:"
+
+#, fuzzy
+#~ msgid "Swaps:"
+#~ msgstr "互換："
+
+#, fuzzy
+#~ msgid "Time:"
+#~ msgstr "時間"
+
+#, fuzzy
+#~ msgid "Log"
+#~ msgstr "日誌"
+
+#, fuzzy
+#~ msgid "Thresholds"
+#~ msgstr "線程"
+
+#, fuzzy
+#~ msgid "Non-Device"
+#~ msgstr "非設備"
+
+#, fuzzy
+#~ msgid "Graph Size"
+#~ msgstr "圖表大小"
+
+#, fuzzy
+#~ msgid "Sort field returned no data.  Can not continue Re-Index for GET data.."
+#~ msgstr "排序字段未返回任何數據。無法繼續重新索引GET數據.."
+
+#, fuzzy
+#~ msgid "With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50%% overhead on all write operations."
+#~ msgstr "使用現代SSD類型存儲，此操作實際上會使磁盤更快速地降級，並在所有寫入操作上增加50 %%的開銷。"
+
+#, fuzzy
+#~ msgid "Create Aggregate"
+#~ msgstr "創建聚合"
+
+#, fuzzy
+#~ msgid "Resize Selected Graph(s)"
+#~ msgstr "調整所選圖表的大小"
+
+#, fuzzy
+#~ msgid "The following data sources are in use by these graphs:"
+#~ msgstr "這些圖表正在使用以下數據源："
+
+#~ msgid "Resize"
+#~ msgstr "調整大小"
+
+#, fuzzy
+#~ msgid "Legacy 1.x Plugins"
+#~ msgstr "舊版1.x插件"
