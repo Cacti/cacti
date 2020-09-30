@@ -1760,7 +1760,7 @@ class Installer implements JsonSerializable {
 
 		$recs = utility_php_recommends();
 
-		foreach ($recs as $rec_title=>$recommends) {
+		foreach ($recs as $rec_title => $recommends) {
 			$output .= Installer::sectionSubTitle(__('PHP - Recommendations (%s)', $rec_title), 'php_recommends_'.$rec_title);
 
 			ob_start();
@@ -1769,7 +1769,7 @@ class Installer implements JsonSerializable {
 			html_header(array(__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')));
 
 			$status = DB_STATUS_SUCCESS;
-			if ($recommends === false) {
+			if (!cacti_sizeof($recommends)) {
 				$recommends = array(
 					array(
 						'status' => DB_STATUS_ERROR,
