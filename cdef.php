@@ -355,24 +355,6 @@ function cdef_item_remove_confirm() {
 	html_end_box();
 
 	form_end();
-
-	?>
-	<script type='text/javascript'>
-	$(function() {
-		$('#continue').click(function(data) {
-			$.post('cdef.php?action=item_remove', {
-				__csrf_magic: csrfMagicToken,
-				cdef_id: <?php print get_request_var('cdef_id');?>,
-				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				$('#cdialog').dialog('close');
-				$('.deleteMarker').blur();
-				loadPageNoHeader('cdef.php?action=edit&header=false&id=<?php print get_request_var('id');?>');
-			});
-		});
-	});
-	</script>
-	<?php
 }
 
 function cdef_item_remove() {
@@ -668,7 +650,7 @@ function cdef_edit() {
 	$(function() {
 		$('#cdef_edit3').find('.cactiTable').attr('id', 'cdef_item');
 		$('.cdialog').remove();
-		$('body').append("<div class='cdialog' id='cdialog'></div>");
+		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#cdef_item').tableDnD({
@@ -686,8 +668,26 @@ function cdef_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
-					$('#cdialog').dialog({ title: '<?php print __('Delete CDEF Item');?>', minHeight: 80, minWidth: 500 });
+
+					$('#continue').off('click').on('click', function(data) {
+						$.post('cdef.php?action=item_remove', {
+							__csrf_magic: csrfMagicToken,
+							cdef_id: <?php print $cdef_item['id'];?>,
+							id: <?php print $cdef['id'];?>
+						}).done(function(data) {
+							$('#cdialog').dialog('close');
+							$('.deleteMarker').blur();
+							loadPageNoHeader('cdef.php?action=edit&header=false&id=<?php print $cdef['id'];?>');
+						});
+					});
+
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete CDEF Item');?>',
+						minHeight: 80,
+						minWidth: 500
+					});
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);

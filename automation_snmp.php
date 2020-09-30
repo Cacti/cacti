@@ -602,7 +602,7 @@ function automation_snmp_edit() {
     <script type='text/javascript'>
     $(function() {
 		$('.cdialog').remove();
-		$('body').append("<div class='cdialog' id='cdialog'></div>");
+		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 		$('#automation_snmp_edit2_child').attr('id', 'snmp_item');
         $('img.action').click(function() {
             strURL = $(this).attr('href');
@@ -625,8 +625,15 @@ function automation_snmp_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
-					$('#cdialog').dialog({ title: '<?php print __('Delete SNMP Option Item');?>', minHeight: 80, minWidth: 500 });
+
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete SNMP Option Item');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					});
 				})
 				.fail(function(data) {
                 		        getPresentHTTPError(data);

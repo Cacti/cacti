@@ -400,7 +400,9 @@ function profile_item_remove_confirm() {
 	<tr>
 		<td class='right'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Source Profile RRA');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' title='<?php print __esc('Remove Data Source Profile RRA');?>'>
+			<input type='hidden' id='rra_profile_id' value='<?php print $profile['data_source_profile_id'];?>'>
+			<input type='hidden' id='rra_id' value='<?php print get_request_var('id');?>'>
 		</td>
 	</tr>
 	<?php
@@ -408,22 +410,6 @@ function profile_item_remove_confirm() {
 	html_end_box();
 
 	form_end();
-
-	?>
-	<script type='text/javascript'>
-	$(function() {
-		$('#continue').click(function(data) {
-			$.post('data_source_profiles.php?action=item_remove', {
-				__csrf_magic: csrfMagicToken,
-				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				$('#cdialog').dialog('close');
-				loadPageNoHeader('data_source_profiles.php?action=edit&header=false&id=<?php print $profile['data_source_profile_id'];?>');
-			});
-		});
-	});
-	</script>
-	<?php
 }
 
 function profile_item_remove() {
@@ -673,7 +659,8 @@ function profile_edit() {
 	var profile_id=<?php print get_request_var('id') != '' ? get_request_var('id'):0;?>;
 
 	$(function() {
-		$('body').append("<div id='cdialog'></div>");
+		$('.cdialog').remove();
+		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 
         $('#consolidation_function_id').multiselect({
             selectedList: 4,
@@ -702,17 +689,29 @@ function profile_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
+
+					$('#continue').off('click').on('click', function(data) {
+						$.post('data_source_profiles.php?action=item_remove', {
+							__csrf_magic: csrfMagicToken,
+							id: $('#rra_id').val()
+						}).done(function(data) {
+							$('#cdialog').dialog('close');
+							loadPageNoHeader('data_source_profiles.php?action=edit&header=false&id=' + $('#rra_profile_id').val());
+						});
+					});
+
 					$('#cdialog').dialog({
 						title: '<?php print __('Delete Data Source Profile Item');?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500
-					})
-					.fail(function(data) {
-						getPresentHTTPError(data);
 					});
-			});
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		}).css('cursor', 'pointer');
 		<?php } else { ?>
 		$('#step').prop('disabled', true);

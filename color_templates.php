@@ -324,41 +324,47 @@ function aggregate_color_item() {
 	html_end_box();
 
     ?>
-    <script type='text/javascript'>
+	<script type='text/javascript'>
 
-    $(function() {
-        $('#color_templates_template_edit2_child').attr('id', 'color_item');
-        $('.cdialog').remove();
-        $('body').append("<div class='cdialog' id='cdialog'></div>");
+	$(function() {
+		$('#color_templates_template_edit2_child').attr('id', 'color_item');
+		$('.cdialog').remove();
+		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
-        $('#color_item').tableDnD({
-            onDrop: function(table, row) {
-                loadPageNoHeader('color_templates_items.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize());
-            }
-        });
+		$('#color_item').tableDnD({
+			onDrop: function(table, row) {
+				loadPageNoHeader('color_templates_items.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize());
+			}
+		});
 		<?php } ?>
 
-        $('.delete').click(function (event) {
-            event.preventDefault();
+		$('.delete').click(function (event) {
+			event.preventDefault();
 
-            id = $(this).attr('id').split('_');
-            request = 'color_templates_items.php?action=item_remove_confirm&id='+id[0]+'&color_id='+id[1];
-            $.get(request)
-		.done(function(data) {
-	                $('#cdialog').html(data);
-        	        applySkin();
-			$('#cdialog').dialog({ title: '<?php print __('Delete Color Item');?>', minHeight: 80, minWidth: 500 });
- 		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
-        }).css('cursor', 'pointer');
-    });
+			id = $(this).attr('id').split('_');
+			request = 'color_templates_items.php?action=item_remove_confirm&id='+id[0]+'&color_id='+id[1];
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
 
-    </script>
-    <?php
+					applySkin();
 
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete Color Item');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					});
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
+		}).css('cursor', 'pointer');
+	});
+
+	</script>
+	<?php
 }
 
 /* ----------------------------
