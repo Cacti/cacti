@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#3828: Early 'return' makes $current_user empty
 -issue#3831: Minor errors in sep 8 of upgrade web page
 -issue#3835: The function number_format_18n() does not properly use the decimal and thousands separators in some cases
+-issue#3836: Undefined index in lib/timespan_settings.php
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
