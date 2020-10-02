@@ -55,7 +55,7 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	font-size: 0.9em;
+	font-size: 13px;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab, .menu_parent i.far, .menu_parent i.fal {
@@ -577,6 +577,7 @@ label {
 
 .tableRow {
 	background: none repeat scroll 0 0 #EBEDEF;
+	line-height: 20px;
 }
 
 .odd {
@@ -2072,7 +2073,8 @@ th:last-child {
 }
 
 tr.selected {
-	background: #d3dce5 !important;
+	background: #AAAAAA !important;
+	color: #000000;
 }
 
 tr.selected td:first-child {
@@ -2097,7 +2099,8 @@ tr.selectable a.linkEditMain:hover {
 }
 
 tr.selectable:hover:not(.selected) {
-	background: #dbe3ea;
+	background: #AAAAAA;
+	color: #000000;
 }
 
 tr.selected a {
@@ -2245,49 +2248,49 @@ tr#realtime td:first-child {
 }
 
 .logCritical {
-	background-color: rgba(242, 23, 33, 0.2);
+	background-color: rgba(242, 23, 33, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logAlert {
-	background-color: rgba(242, 25, 36, 0.2);
+	background-color: rgba(242, 25, 36, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logWarning {
-	background-color: rgba(255, 122, 48, 0.2);
+	background-color: rgba(255, 122, 48, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logError {
-	background-color: rgba(251, 74, 20, 0.2);
+	background-color: rgba(251, 74, 20, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logNotice {
-	background-color: rgba(250, 253, 158, 0.2);
+	background-color: rgba(250, 253, 158, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logInfo {
-	background-color: rgba(204, 255, 204, 0.2);
+	background-color: rgba(204, 255, 204, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logDebug {
-	background-color: rgba(205, 207, 196, 0.2);
+	background-color: rgba(205, 207, 196, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
