@@ -177,7 +177,7 @@
 		function zoomGetImageId(image) {
 			var id = image.attr('id');
 			if (image.attr('rra_id') > 0) {
-				id += '_rra' +rra_id;
+				id += '_rra' + image.attr('rra_id');
 			}
 			return id;
 		}
@@ -185,7 +185,7 @@
 		function zoomGetId(zoom) {
 			var id = zoom.image.reference;
 			if (zoom.image.rra_id > 0) {
-				id += '_rra' + rra_id;
+				id += '_rra' + zoom.image.rra_id;
 			}
 			return id;
 		}
@@ -726,7 +726,7 @@
 
 					if (pageAction != 'graph') {
 						graph_start = newGraphStartTime;
-						graph_end = newGraphEndTime;
+						graph_end   = newGraphEndTime;
 
 						initializeGraphs();
 					}else{
