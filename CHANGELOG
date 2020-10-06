@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#3775: Search field strange behavior when hitting enter in 1.2.14
 -issue#3778: Export DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
 -issue#3781: Cacti V1.2.14 php backtraces on Auth.php errors upon login
+-issue#3782: Remove Devices shows undefined variable error
 -issue#3786: Cacti 1.2.12 Realtime index errors
 -issue#3790: Error Upgrading Cacti from Pre 1.x from Recent MariaDB version
 -issue#3793: Calling function read_config_option in plugin's setup.php leads to error
