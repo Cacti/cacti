@@ -1981,7 +1981,7 @@ function tree() {
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT(ti.graph_tree_id))
+	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT(t.id))
 		FROM graph_tree AS t
 		LEFT JOIN graph_tree_items AS ti
 		ON t.id=ti.graph_tree_id

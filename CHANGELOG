@@ -41,6 +41,7 @@ Cacti CHANGELOG
 -issue#3836: Undefined index in lib/timespan_settings.php
 -issue#3844: Minor memory leaks and refresh issues when zooming on graph.php page
 -issue#3849: Graph Tree - Redirect to host/tree/Graph Management
+-issue#3850: Trees management screen not reporting correct number of trees
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
