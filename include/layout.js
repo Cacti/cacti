@@ -1806,6 +1806,8 @@ function loadTopTab(href, id, force) {
 
 		closeDateFilters();
 
+		clearAllTimeouts();
+
 		$.ajaxQ.abortAll();
 		$.get(url)
 			.done(function(html) {
@@ -1911,6 +1913,8 @@ function loadPage(href, force) {
 
 	if (cont) {
 		closeDateFilters();
+
+		clearAllTimeouts();
 
 		$.ajaxQ.abortAll();
 		$.get(href)
@@ -2073,6 +2077,8 @@ function loadPageNoHeader(href, scroll, force) {
 
 	if (cont) {
 		closeDateFilters();
+
+		clearAllTimeouts();
 
 		$.ajaxQ.abortAll();
 		$.get(href)
@@ -2665,10 +2671,20 @@ function setTitleAndHref() {
 	myTitle = $(document).attr('title');
 }
 
+function clearAllTimeouts() {
+	var id = window.setTimeout(function() {}, 0);
+
+	while (id--) {
+		window.clearTimeout(id); // will do nothing if no timeout with id is present
+	}
+}
+
 $(function() {
 	statePushed = false;
 	popFired    = false;
 	var tapped  = false;
+
+	clearAllTimeouts();
 
 	// Use traditional popstate handler
 	window.onpopstate = function(event) {

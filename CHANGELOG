@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue#3835: The function number_format_18n() does not properly use the decimal and thousands separators in some cases
 -issue#3836: Undefined index in lib/timespan_settings.php
 -issue#3844: Minor memory leaks and refresh issues when zooming on graph.php page
+-issue#3849: Graph Tree - Redirect to host/tree/Graph Management
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
