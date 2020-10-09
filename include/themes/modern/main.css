@@ -2507,7 +2507,7 @@ tr#realtime td:first-child {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba(98,125,77,1);
+	background-color: rgba(200,200,200,1);
 	-webkit-transition: .4s;
 	transition: .4s;
 }
