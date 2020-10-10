@@ -1730,8 +1730,12 @@ function stri_replace(string $find, string $replace, string $string): string {
      new lines and the spaces around them
    @arg $string - the string to modify/clean
    @returns - the modified string */
-function clean_up_lines(string $string): string {
-	return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
+function clean_up_lines($string): string {
+	if ($string != '') {
+		return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
+	} else {
+		return $string;
+	}
 }
 
 /* clean_up_name - runs a string through a series of regular expressions designed to
