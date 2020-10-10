@@ -703,14 +703,14 @@ function support_view_tech() {
 		print '<thead>';
 		print "<tr class='tableHeader'>";
 		print "  <th class='tableSubHeaderColumn'>" . __('Variable Name') . '</th>';
-		print "  <th class='tableSubHeaderColumn'>" . __('Value') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Value')         . '</th>';
 		print '</tr>';
 		print '</thead>';
 
 		foreach($status as $s) {
 			form_alternate_row();
-			print '<td>' . $s['Variable_name'] . '</td>';
-			print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):$s['Value']) . '</td>';
+			print '<td>' . html_escape($s['Variable_name']) . '</td>';
+			print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):html_escape($s['Value'])) . '</td>';
 			form_end_row();
 		}
 	} elseif (get_request_var('tab') == 'dbperms') {
@@ -753,18 +753,18 @@ function support_view_tech() {
 		print '<thead>';
 		print "<tr class='tableHeader'>";
 		print "  <th class='tableSubHeaderColumn'>" . __('Variable Name') . '</th>';
-		print "  <th class='tableSubHeaderColumn'>" . __('Value') . '</th>';
+		print "  <th class='tableSubHeaderColumn'>" . __('Value')         . '</th>';
 		print '</tr>';
 		print '</thead>';
 
 		foreach($status as $s) {
 			form_alternate_row();
-			print '<td>' . $s['Variable_name'] . '</td>';
+			print '<td>' . html_escape($s['Variable_name']) . '</td>';
 
 			if (strlen($s['Value']) > 70) {
 				$s['Value'] = str_replace(',', ', ', $s['Value']);
 			}
-			print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):$s['Value']) . '</td>';
+			print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):html_escape($s['Value'])) . '</td>';
 			form_end_row();
 		}
 	} elseif (get_request_var('tab') == 'changelog') {
@@ -835,28 +835,33 @@ function support_view_tech() {
 
 		form_end_row();
 	} elseif (get_request_var('tab') == 'poller') {
-		$problematic = db_fetch_assoc('SELECT id,description,polling_time, avg_time
-		FROM host WHERE disabled = "" ORDER BY polling_time DESC LIMIT 20');
+		$problematic = db_fetch_assoc('SELECT id, description, polling_time, avg_time
+			FROM host
+			WHERE disabled = ""
+			ORDER BY polling_time
+			DESC LIMIT 20');
 
 		html_section_header(__('Worst 20 polling time hosts'), 2);
 
 		form_alternate_row();
-		print "		<td colspan='2' style='text-align:left;padding:0px'>";
+
+		print "<td colspan='2' style='text-align:left;padding:0px'>";
 
 		if (cacti_sizeof($problematic)) {
 			print "<table id='tables' class='cactiTable' style='width:100%'>";
 			print '<thead>';
 			print "<tr class='tableHeader'>";
-			print "  <th class='tableSubHeaderColumn'>" . __('ID') . '</th>';
-			print "  <th class='tableSubHeaderColumn'>" . __('Description') . '</th>';
-			print "  <th class='tableSubHeaderColumn'>" . __('Avg. polling time') . '</th>';
+			print "  <th class='tableSubHeaderColumn'>"       . __('Description')         . '</th>';
+			print "  <th class='tableSubHeaderColumn right'>" . __('ID')                  . '</th>';
+			print "  <th class='tableSubHeaderColumn right'>" . __('Avg Polling Time')    . '</th>';
 			print "  <th class='tableSubHeaderColumn right'>" . __('Actual polling time') . '</th>';
 			print '</tr>';
 			print '</thead>';
+
 			foreach ($problematic as $host) {
 				form_alternate_row();
-				print '<td>' . $host['id'] . '</td>';
-				print '<td>' . $host['description'] . '</td>';
+				print '<td>' . html_escape($host['description']) . '</td>';
+				print '<td class="right">' . $host['id'] . '</td>';
 				print '<td class="right">' . number_format_i18n($host['avg_time'],3) . '</td>';
 				print '<td class="right">' . number_format_i18n($host['polling_time'],3) . '</td>';
 				form_end_row();
@@ -866,30 +871,36 @@ function support_view_tech() {
 		} else {
 			print __('No host found');
 		}
+
 		print '</td>';
+
 		form_end_row();
 
-		$problematic = db_fetch_assoc('SELECT id,description,failed_polls/total_polls as ratio
-			FROM host WHERE disabled = "" ORDER BY ratio DESC LIMIT 20');
+		$problematic = db_fetch_assoc('SELECT id, description, failed_polls/total_polls AS ratio
+			FROM host
+			WHERE disabled = ""
+			ORDER BY ratio DESC
+			LIMIT 20');
 
 		html_section_header(__('Worst 20 failed/total polls ratio'), 2);
 
 		form_alternate_row();
-		print "		<td colspan='2' style='text-align:left;padding:0px'>";
+		print "<td colspan='2' style='text-align:left;padding:0px'>";
 
 		if (cacti_sizeof($problematic)) {
 			print "<table id='tables' class='cactiTable' style='width:100%'>";
 			print '<thead>';
 			print "<tr class='tableHeader'>";
-			print "  <th class='tableSubHeaderColumn'>" . __('ID') . '</th>';
-			print "  <th class='tableSubHeaderColumn'>" . __('Description') . '</th>';
+			print "  <th class='tableSubHeaderColumn'>"       . __('Description')        . '</th>';
+			print "  <th class='tableSubHeaderColumn right'>" . __('ID')                 . '</th>';
 			print "  <th class='tableSubHeaderColumn right'>" . __('Failed/Total polls') . '</th>';
 			print '</tr>';
 			print '</thead>';
+
 			foreach ($problematic as $host) {
 				form_alternate_row();
-				print '<td>' . $host['id'] . '</td>';
 				print '<td>' . $host['description'] . '</td>';
+				print '<td class="right">' . $host['id'] . '</td>';
 				print '<td class="right">' . number_format_i18n($host['ratio'],3) . '</td>';
 				form_end_row();
 			}

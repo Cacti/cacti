@@ -913,14 +913,17 @@ function get_message_level($current_message) {
  *
  * @return mixed a formatted message
  */
-function get_format_message_instance($current_message) {
-	if (is_array($current_message)) {
-		$fmessage = isset($current_message['message']) ? $current_message['message'] : __esc('Message Not Found.');
+function get_format_message_instance($current_message): string {
+	if (is_array($current_message) && isset($current_message['message'])) {
+		$fmessage = $current_message['message'];
+		$level    = get_message_level($current_message);
+	} elseif (is_array($current_message)) {
+		$fmessage =  __esc('Message Not Found.');
+		$level    = MESSAGE_LEVEL_ERROR;
 	} else {
 		$fmessage = $current_message;
+		$level    = MESSAGE_LEVEL_INFO;
 	}
-
-	$level = get_message_level($current_message);
 
 	switch ($level) {
 		case MESSAGE_LEVEL_NONE:
@@ -3891,8 +3894,12 @@ function draw_navigation_text($type = 'url') {
  *
  * @return mixed the original navigation text with all substitutions made
  */
-function resolve_navigation_variables($text) {
-	$graphTitle = get_graph_title(get_filter_request_var('local_graph_id'));
+function resolve_navigation_variables(string $text): string {
+	if (isset_request_var('local_graph_id')) {
+		$graphTitle = get_graph_title(get_filter_request_var('local_graph_id'));
+	} else {
+		$graphTitle = '';
+	}
 
 	if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
 		foreach($matches[1] as $i => $match) {
@@ -5574,7 +5581,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	return $results;
 }
 
-function get_timeinstate($host) {
+function get_timeinstate(array $host): string {
 	$interval = read_config_option('poller_interval');
 	if ($host['availability_method'] == 0) {
 		$time = 0;
@@ -5599,7 +5606,7 @@ function get_timeinstate($host) {
 	return ($time > 0) ? get_daysfromtime($time) : __('N/A');
 }
 
-function get_uptime($host) {
+function get_uptime(array $host): string {
 	return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime(intval($host['snmp_sysUpTimeInstance']/100)) : __('N/A');
 }
 
@@ -5639,7 +5646,7 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 		}
 	}
 
-	return trim($result,$text['suffix']);
+	return (int) trim($result, $text['suffix']);
 }
 
 function padleft($pad = '', $value = '', $min = 2) {
