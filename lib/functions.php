@@ -594,7 +594,7 @@ function form_input_validate($field_value, string $field_name, string $regexp_ma
 
 /* check_changed - determines if a request variable has changed between page loads
    @returns - (bool) true if the value changed between loads */
-function check_changed(array $request, array $session): bool {
+function check_changed(string $request, string $session): bool {
 	if ((isset_request_var($request)) && (isset($_SESSION[$session]))) {
 		if (get_nfilter_request_var($request) != $_SESSION[$session]) {
 			return true;
@@ -637,17 +637,20 @@ function get_message_level(array $current_message): int {
 }
 
 /* get_format_message_instance - finds the level of the current message instance
- * @arg message array the message instance
+ * @arg message mixed the message instance
  * @returns - (string) a formatted message
  */
-function get_format_message_instance(string $current_message): string {
-	if (is_array($current_message)) {
-		$fmessage = isset($current_message['message']) ? $current_message['message'] : __esc('Message Not Found.');
+function get_format_message_instance($current_message): string {
+	if (is_array($current_message) && isset($current_message['message'])) {
+		$fmessage = $current_message['message'];
+		$level    = get_message_level($current_message);
+	} elseif (is_array($current_message)) {
+		$fmessage =  __esc('Message Not Found.');
+		$level    = MESSAGE_LEVEL_ERROR;
 	} else {
 		$fmessage = $current_message;
+		$level    = MESSAGE_LEVEL_INFO;
 	}
-
-	$level = get_message_level($current_message);
 
 	switch ($level) {
 		case MESSAGE_LEVEL_NONE:
@@ -2695,7 +2698,11 @@ function draw_navigation_text(string $type = 'url'): string {
    @arg $text - the text to substitute in
    @returns - the original navigation text with all substitutions made */
 function resolve_navigation_variables(string $text): string {
-	$graphTitle = get_graph_title(get_filter_request_var('local_graph_id'));
+	if (isset_request_var('local_graph_id')) {
+		$graphTitle = get_graph_title(get_filter_request_var('local_graph_id'));
+	} else {
+		$graphTitle = '';
+	}
 
 	if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
 		for ($i=0; $i<cacti_count($matches[1]); $i++) {
@@ -4312,7 +4319,7 @@ function calculate_percentiles(array $data, int $percentile = 95, bool $whisker 
 	return $results;
 }
 
-function get_timeinstate(array $host): int {
+function get_timeinstate(array $host): string {
 	$interval = read_config_option('poller_interval');
 	if ($host['availability_method'] == 0) {
 		$time = 0;
@@ -4333,7 +4340,7 @@ function get_timeinstate(array $host): int {
 	return ($time > 0) ? get_daysfromtime($time) : __('N/A');
 }
 
-function get_uptime(array $host): int {
+function get_uptime(array $host): string {
 	return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime($host['snmp_sysUpTimeInstance']/100) : __('N/A');
 }
 
@@ -4368,7 +4375,7 @@ function get_daysfromtime(int $time, bool $secs = false, string $pad = '', int $
 		}
 	}
 
-	return trim($result,$text['suffix']);
+	return (int) trim($result, $text['suffix']);
 }
 
 function padleft(string $pad = '', $value, int $min = 2): string {
