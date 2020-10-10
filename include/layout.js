@@ -1978,6 +1978,8 @@ function loadUrl(options) {
 
 		closeDateFilters();
 
+		clearAllTimeouts();
+
 		$.ajaxQ.abortAll();
 		$.get(options.url)
 			.done(function(html) {
@@ -2653,10 +2655,20 @@ function setTitleAndHref() {
 	myTitle = $(document).attr('title');
 }
 
+function clearAllTimeouts() {
+	var id = window.setTimeout(function() {}, 0);
+
+	while (id--) {
+		window.clearTimeout(id); // will do nothing if no timeout with id is present
+	}
+}
+
 $(function() {
 	statePushed = false;
 	popFired    = false;
 	var tapped  = false;
+
+	clearAllTimeouts();
 
 	// Use traditional popstate handler
 	window.onpopstate = handlePopState;

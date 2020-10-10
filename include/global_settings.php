@@ -507,6 +507,11 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => 'on',
 			),
+		'security_header' => array(
+			'friendly_name' => __('Site Security'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
 		'force_https' => array(
 			'friendly_name' => __('Force Connections over HTTPS'),
 			'description' => __('When checked, any attempts to access Cacti will be redirected to HTTPS to ensure high security.'),
@@ -515,12 +520,20 @@ $settings = array(
 			),
 		'content_security_policy_script' => array(
 			'method' => 'drop_array',
-			'friendly_name' => __('Allow Unsafe JavaScript eval() calls'),
+			'friendly_name' => __('Content-Security Allow Unsafe JavaScript eval() calls'),
 			'description' => __('Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti.'),
 			'default' => '',
 			'array' => array(
 				'0'           => __('No'),
 				'unsafe-eval' => __('Yes'))
+			),
+		'content_security_alternate_sources' => array(
+			'friendly_name' => __('Content-Security Alternate Sources'),
+			'description' => __('Space delmited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only.'),
+			'method' => 'textbox',
+			'default' => '',
+			'size' => '100',
+			'max_length' => '255',
 			),
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),

@@ -76,7 +76,7 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	font-size: 1.1em;
+	font-size: 13px;
 	vertical-align: middle;
 }
 
@@ -843,7 +843,6 @@ ul#breadcrumbs {
 	width: 100%;
 	vertical-align: top;
 	padding-top: 56px;
-	display: table;
 }
 
 .cactiTreeNavigationArea {
@@ -2521,7 +2520,7 @@ tr#realtime td:first-child {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba(98,125,77,1);
+	background-color: rgba(200,200,200,1);
 	-webkit-transition: .4s;
 	transition: .4s;
 }
@@ -2602,7 +2601,7 @@ input:checked + .checkboxSlider:before {
 	bottom: 0;
 	height: 24px;
 	width: 24px;
-	background-color: rgba(98,125,77,1);
+	background-color: rgba(200,200,200,1);
 	-webkit-transition: .4s;
 	transition: .4s;
 }

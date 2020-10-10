@@ -542,33 +542,6 @@ function data_query_item_remove_confirm() {
 	html_end_box();
 
 	form_end();
-
-	?>
-	<script type='text/javascript'>
-	$(function() {
-		$('#continue').click(function(data) {
-			var options = {
-				url: 'data_queries.php?action=item_remove'
-				funcEnd: 'removeDataQueryItemFinalize';
-			}
-
-			var data = {
-				__csrf_magic: csrfMagicToken,
-				snmp_query_id: <?php print get_request_var('snmp_query_id');?>,
-				id: <?php print get_request_var('id');?>
-			}
-
-			postUrl(options, data);
-
-		});
-	});
-
-	function removeDataQueryItemFinalize(data) {
-		$('#cdialog').dialog('close');
-		loadUrl({url:'data_queries.php?action=edit&id=<?php print get_request_var('snmp_query_id');?>'})
-	}
-	</script>
-	<?php
 }
 
 function data_query_item_remove() {
@@ -1168,8 +1141,14 @@ function data_query_edit() {
 	?>
 	<script type='text/javascript'>
 
+	function removeDataQueryItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		loadUrl({url:'data_queries.php?action=edit&id=<?php print $snmp_query['id'];?>'})
+	}
+
 	$(function() {
-		$('body').append("<div id='cdialog'></div>");
+		$('.cdialog').remove();
+		$('#main').append("<div id='cdialog' class='cdialog'></div>");
 
 		$('.noLinkEditMain').tooltip();
 
@@ -1180,7 +1159,24 @@ function data_query_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
+
+					$('#continue').click(function(data) {
+						var options = {
+							url: 'data_queries.php?action=item_remove'
+							funcEnd: 'removeDataQueryItemFinalize';
+						}
+
+						var data = {
+							__csrf_magic: csrfMagicToken,
+							snmp_query_id: <?php print $snmp_query['id'];?>,
+							id: <?php print $snmp_query_graph['id'];?>
+						}
+
+						postUrl(options, data);
+					});
+
 					$('#cdialog').dialog({
 						title: '<?php print __('Delete Associated Graph');?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },

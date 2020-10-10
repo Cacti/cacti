@@ -75,7 +75,7 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	color: snow;
+	font-size: 13px;
 	vertical-align: middle;
 }
 
@@ -829,7 +829,6 @@ ul#breadcrumbs {
 	width: 100%;
 	vertical-align: top;
 	padding-top: 56px;
-	display: table;
 }
 
 .cactiTreeNavigationArea {

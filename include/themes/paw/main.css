@@ -53,7 +53,7 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	font-size: 0.8em;
+	font-size: 13px;
 	vertical-align: middle;
 }
 
@@ -700,7 +700,6 @@ label {
 	clear: both;
 	width: 100%;
 	vertical-align: top;
-	display: table;
 }
 
 .cactiTreeNavigationArea {
@@ -1459,7 +1458,7 @@ th.sortable {
 }
 
 .tableRow td {
-	line-height: 25px !important;
+	line-height: 20px !important;
 }
 
 .image_table {

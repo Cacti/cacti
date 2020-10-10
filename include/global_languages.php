@@ -705,8 +705,16 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	setlocale(LC_ALL, $cacti_locale);
 	$locale = localeconv();
 
+	if (!isset($locale['decimal_point']) || $locale['decimal_point'] == '') {
+		$locale['decimal_point'] = '.';
+	}
+
+	if (!isset($locale['thousands_sep']) || $locale['thousands_sep'] == '') {
+		$locale['thousands_sep'] = ',';
+	}
+
 	if ($decimals == -1) {
-		$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+		$number =  number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
 	} elseif ($number>=pow($baseu, 4)) {
 		$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
 	} elseif ($number>=pow($baseu, 3)) {

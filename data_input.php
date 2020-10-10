@@ -381,10 +381,6 @@ function field_remove_confirm() {
 
 			postUrl(options, data);
 		});
-
-		$('#cancel').unbind().click(function() {
-			$('#cdialog').dialog('close');
-		});
 	});
 
 	function removeDataInputFieldFinalize(data) {
@@ -757,7 +753,8 @@ function data_edit() {
 	<script type='text/javascript'>
 
 	$(function() {
-		$('body').append("<div id='cdialog'></div>");
+		$('.cdialog').remove();
+		$('#main').append("<div id='cdialog' class='cdialog'></div>");
 
 		$('.delete').unbind().click(function (event) {
 			event.preventDefault();
@@ -766,7 +763,9 @@ function data_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
+
 					$('#cdialog').dialog({
 						title: '<?php print __('Delete Data Input Field');?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },

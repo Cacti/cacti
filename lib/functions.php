@@ -5761,7 +5761,7 @@ function cacti_session_start(): void {
 	session_name($config['cacti_session_name']);
 
 	$session_restart = '';
-	if (!session_id()) {
+	if (session_status() === PHP_SESSION_NONE) {
 		$session_result = session_start($config['cookie_options']);
 	} else {
 		$session_restart = 're';

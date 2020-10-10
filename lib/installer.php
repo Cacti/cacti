@@ -1768,7 +1768,7 @@ class Installer implements JsonSerializable {
 
 		$recs = utility_php_recommends();
 
-		foreach ($recs as $rec_title=>$recommends) {
+		foreach ($recs as $rec_title => $recommends) {
 			$output .= Installer::sectionSubTitle(__('PHP - Recommendations (%s)', $rec_title), 'php_recommends_'.$rec_title);
 
 			ob_start();
@@ -1777,7 +1777,7 @@ class Installer implements JsonSerializable {
 			html_header(array(__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')));
 
 			$status = DB_STATUS_SUCCESS;
-			if ($recommends === false) {
+			if (!cacti_sizeof($recommends)) {
 				$recommends = array(
 					array(
 						'status' => DB_STATUS_ERROR,
@@ -2468,7 +2468,7 @@ class Installer implements JsonSerializable {
 		html_end_box(false);
 		$output .= Installer::sectionNormal(ob_get_contents());
 		ob_end_clean();
-		$output .= Installer::sectionNormal(__('Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press \'Finish\' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes.'));
+		$output .= Installer::sectionNormal(__('Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press \'Next\' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes.'));
 
 		$this->stepData = array('Templates' => $this->templates);
 		return $output;
