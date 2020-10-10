@@ -535,6 +535,32 @@ $settings = array(
 			'size' => '100',
 			'max_length' => '255',
 			),
+		'remote_agent_header' => array(
+			'friendly_name' => __('Remote Agent'),
+			'description' => __('When using multiple Data Collectors, there are the Settings for Communicating between Data Collectors'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'remote_agent_port' => array(
+			'friendly_name' => __('TCP Port'),
+			'description' => __('The TCP Port used for communicating with the Remote Data Collectors.  The protocol will match the Central Cacti web server (either HTTP or HTTPS).  Leave blank to use the default ports.'),
+			'method' => 'textbox',
+			'default' => '',
+			'size' => '5',
+			'max_length' => '5',
+			),
+		'remote_agent_timeout' => array(
+			'friendly_name' => __('Timeout'),
+			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
+			'method' => 'drop_array',
+			'default' => '5',
+			'array' => array(
+				5 => __('%d Seconds', 5),
+				10 => __('%d Seconds', 10),
+				15 => __('%d Seconds', 15),
+				20 => __('%d Seconds', 20)
+				)
+			),
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),
 			'method' => 'spacer',
@@ -1157,18 +1183,6 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
-		'remote_agent_timeout' => array(
-			'friendly_name' => __('Remote Agent Timeout'),
-			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
-			'method' => 'drop_array',
-			'default' => '5',
-			'array' => array(
-				5 => __('%d Seconds', 5),
-				10 => __('%d Seconds', 10),
-				15 => __('%d Seconds', 15),
-				20 => __('%d Seconds', 20)
-				)
-			),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
 			'description' => __('How many OID\'s should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN.'),
@@ -1298,7 +1312,6 @@ $settings = array(
 				'80' => '80',
 				'90' => '90',)
 			),
-			
 		'spine_header' => array(
 			'friendly_name' => __('Spine Specific Execution Parameters'),
 			'collapsible' => 'true',
