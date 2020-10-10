@@ -140,7 +140,12 @@ if (cacti_sizeof($idbyhost)) {
 				WHERE id = ?',
 				array($col_poller_id));
 
-			$url = get_url_type() . '://' . $hostname .
+			$port = read_config_option('remote_agent_port');
+			if ($port != '') {
+				$port = ':' . $port;
+			}
+
+			$url = get_url_type() . '://' . $hostname . $port .
 				$config['url_path'] . '/remote_agent.php' .
 				'?action=polldata' .
 				'&host_id=' . $host_id .

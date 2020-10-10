@@ -556,7 +556,33 @@ $settings = array(
 			'default' => '',
 			'size' => '100',
 			'max_length' => '255',
-		),
+			),
+		'remote_agent_header' => array(
+			'friendly_name' => __('Remote Agent'),
+			'description' => __('When using multiple Data Collectors, there are the Settings for Communicating between Data Collectors'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'remote_agent_port' => array(
+			'friendly_name' => __('TCP Port'),
+			'description' => __('The TCP Port used for communicating with the Remote Data Collectors.  The protocol will match the Central Cacti web server (either HTTP or HTTPS).  Leave blank to use the default ports.'),
+			'method' => 'textbox',
+			'default' => '',
+			'size' => '5',
+			'max_length' => '5',
+			),
+		'remote_agent_timeout' => array(
+			'friendly_name' => __('Timeout'),
+			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
+			'method' => 'drop_array',
+			'default' => '5',
+			'array' => array(
+				5 => __('%d Seconds', 5),
+				10 => __('%d Seconds', 10),
+				15 => __('%d Seconds', 15),
+				20 => __('%d Seconds', 20)
+				)
+			),
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),
 			'method' => 'spacer',
@@ -1543,6 +1569,21 @@ $settings = array(
 			'default' => '1',
 			'max_length' => '10',
 			'size' => '5'
+		),
+		'spine_header' => array(
+			'friendly_name' => __('Spine Specific Execution Parameters'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+		),
+		'spine_log_level' => array(
+			'friendly_name' => __('Invalid Data Logging'),
+			'description' => __('How would you like Spine output errors logged?  The options are: \'Detailed\' which is similar to cmd.php logging; \'Summary\' which provides the number of output errors per Device; and \'None\', which does not provide error counts.'),
+			'method' => 'drop_array',
+			'default' => '0',
+			'array' => array(
+				'0'  => __('None'),
+				'1'  => __('Summary'),
+				'2'  => __('Detailed'))
 		),
 		'max_threads' => array(
 			'friendly_name' => __('Threads per Process'),

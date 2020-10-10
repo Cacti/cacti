@@ -140,9 +140,14 @@ function api_networks_discover($network_id, $discover_debug) {
 					WHERE id = ?',
 					array($poller_id));
 
+				$port = read_config_option('remote_agent_port');
+				if ($port != '') {
+					$port = ':' . $port;
+				}
+
 				$fgc_contextoption = get_default_contextoption();
 				$fgc_context       = stream_context_create($fgc_contextoption);
-				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
+				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $port . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
 			}
 		} else {
 			$_SESSION['automation_message'] = __esc('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'', $name);

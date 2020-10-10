@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -feature#3725: Create the ability for Spikekill to modify only certain DSes within an RRD
 -feature#3738: Ability to see MySQL permissions associated with current database user
 -feature#3417: Add worst poller hosts to support page, log and email warning when poller time reached defined threshold
+-feature#3845: Allow non-standard Remote Agent port to be used
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
