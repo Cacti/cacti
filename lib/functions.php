@@ -842,9 +842,9 @@ function force_session_data(): void {
      '$arr = array(23 => 'blah')'
    @arg $array - (array) the original array to manipulate
    @arg $key - the name of the key
-   @arg $key_value - the name of the key value
+   @arg mixed $key_value - the name of the key value
    @returns - the modified array */
-function array_rekey(array $array, string $key, string $key_value): array {
+function array_rekey(array $array, string $key, $key_value): array {
 	$ret_array = array();
 
 	if (is_array($array)) {
