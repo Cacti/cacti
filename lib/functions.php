@@ -1914,7 +1914,7 @@ function generate_data_source_path(int $local_data_id): string {
     @arg $requested_cf
     @arg $ds_step
     @returns - the best cf to use */
-function generate_graph_best_cf(int $local_data_id, string $requested_cf, int $ds_step = 60): string {
+function generate_graph_best_cf($local_data_id, $requested_cf, int $ds_step = 60): string {
 	static $best_cf;
 
 	if ($local_data_id > 0) {
