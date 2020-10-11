@@ -1134,7 +1134,7 @@ function force_session_data() {
  *
  * @return mixed the modified array
  */
-function array_rekey($array, $key, $key_value) {
+function array_rekey(array $array, string $key, mixed $key_value): array {
 	$ret_array = array();
 
 	if (is_array($array)) {
