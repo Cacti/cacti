@@ -3058,7 +3058,7 @@ function generate_data_source_path($local_data_id) {
  *
  *  @return mixed the best cf to use
  */
-function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
+function generate_graph_best_cf($local_data_id, $requested_cf, int $ds_step = 60): string {
 	static $best_cf;
 
 	if ($local_data_id > 0) {
