@@ -2163,6 +2163,8 @@ function handleAjaxResponse(html, options) {
 
 		window.scrollTo(0,scrollTop);
 		handleConsole(options.pageName);
+
+		Pace.stop();
 	}
 
 	if (options.funcEnd != '') {
