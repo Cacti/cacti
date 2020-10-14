@@ -2672,6 +2672,10 @@ function setTitleAndHref() {
 }
 
 function clearAllTimeouts() {
+	if (typeof installTimer !== undefined) {
+		return true;
+	}
+
 	var id = window.setTimeout(function() {}, 0);
 
 	while (id--) {

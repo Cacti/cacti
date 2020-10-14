@@ -674,12 +674,12 @@ function cdef_edit() {
 					$('#continue').off('click').on('click', function(data) {
 						$.post('cdef.php?action=item_remove', {
 							__csrf_magic: csrfMagicToken,
-							cdef_id: <?php print $cdef_item['id'];?>,
-							id: <?php print $cdef['id'];?>
+							cdef_id: id[1],
+							id: id[0]
 						}).done(function(data) {
 							$('#cdialog').dialog('close');
 							$('.deleteMarker').blur();
-							loadPageNoHeader('cdef.php?action=edit&header=false&id=<?php print $cdef['id'];?>');
+							loadPageNoHeader('cdef.php?action=edit&header=false&id='+id[0]);
 						});
 					});
 
