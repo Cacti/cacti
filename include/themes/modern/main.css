@@ -1363,7 +1363,7 @@ legend {
 	padding: 0px 5px;
 }
 
-.cactiTableButton span a {
+.cactiTableButton span a, .cactiTableTitle span a {
 	color: snow;
 }
 
