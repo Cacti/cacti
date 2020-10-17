@@ -1304,7 +1304,9 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 
 		// Remove anything not updated recently
 		$min_date = db_fetch_cell('SELECT MAX(last_updated) FROM poller_item', false, $rcnn_id);
-		db_execute("DELETE FROM poller_item WHERE last_updated < '$min_date'", false, $rcnn_id);
+		if (!empty($min_date)) {
+			db_execute("DELETE FROM poller_item WHERE last_updated < '$min_date'", false, $rcnn_id);
+		}
 
 		$data = db_fetch_assoc_prepared('SELECT dl.*
 			FROM data_local AS dl
