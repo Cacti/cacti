@@ -40,6 +40,7 @@ Cacti CHANGELOG
 -issue#3835: The function number_format_18n() does not properly use the decimal and thousands separators in some cases
 -issue#3836: Undefined index in lib/timespan_settings.php
 -issue#3844: Minor memory leaks and refresh issues when zooming on graph.php page
+-issue#3847: Cacti 1.2.14 Real-Time Graphs not working
 -issue#3849: Graph Tree - Redirect to host/tree/Graph Management
 -issue#3850: Trees management screen not reporting correct number of trees
 -issue#3858: Tree sequence wrongly increments
