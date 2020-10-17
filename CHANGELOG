@@ -48,6 +48,7 @@ Cacti CHANGELOG
 -issue#3862: Console > Setting > Auth > Guest User drop-down list should not list current log on user
 -issue#3864: A link text in cacti table header cannot show clearly when in modern theme
 -issue#3868: Under some cases tree logic leads to undefined index errors
+-issue#3869: Cacti Data Debug can show errors if the Data Source is damaged or has been removed
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
