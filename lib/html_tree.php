@@ -382,6 +382,7 @@ function get_tree_path() {
 	if (isset_request_var('node')) {
 		$nodes  = array();
 		$nnodes = array();
+		$rnodes = array();
 
 		if (strpos(get_request_var('node'), 'tbranch') !== false) {
 			$parts = explode('-', get_request_var('node'));
@@ -436,19 +437,18 @@ function get_tree_path() {
 							break;
 					}
 				}
-			}
 
-			$rnodes   = array();
-			while (true) {
-				if ($linknode['parent'] > 0) {
-					$rnodes[] = 'tbranch-' . $linknode['parent'];
+				while (true) {
+					if ($linknode['parent'] > 0) {
+						$rnodes[] = 'tbranch-' . $linknode['parent'];
 
-					$linknode = db_fetch_row_prepared('SELECT *
-						FROM graph_tree_items
-						WHERE id = ?',
-						array($linknode['parent']));
-				} else {
-					break;
+						$linknode = db_fetch_row_prepared('SELECT *
+							FROM graph_tree_items
+							WHERE id = ?',
+							array($linknode['parent']));
+					} else {
+						break;
+					}
 				}
 			}
 

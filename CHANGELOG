@@ -44,6 +44,7 @@ Cacti CHANGELOG
 -issue#3850: Trees management screen not reporting correct number of trees
 -issue#3858: Tree sequence wrongly increments
 -issue#3864: A link text in cacti table header cannot show clearly when in modern theme
+-issue#3868: Under some cases tree logic leads to undefined index errors
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
