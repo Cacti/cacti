@@ -50,6 +50,7 @@ Cacti CHANGELOG
 -issue#3864: A link text in cacti table header cannot show clearly when in modern theme
 -issue#3868: Under some cases tree logic leads to undefined index errors
 -issue#3869: Cacti Data Debug can show errors if the Data Source is damaged or has been removed
+-issue#3871: Import DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
