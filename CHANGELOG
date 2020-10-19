@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#3730: Change wording for the 21st century, but let's not forget our past
 -issue#3743: Description field allows more characters entered than is stored
 -issue#3747: ldap.php cannot be loaded while installer is running
+-issue#3748: Unable to remove discovered device
 -issue#3753: Invalid argument supplied for foreach()
 -issue#3755: Graph Templates has duplicate SQL delete statement
 -issue#3759: Errors when doing a graph Sync 1.2.12
