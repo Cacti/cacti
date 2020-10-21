@@ -1078,7 +1078,6 @@ function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false)
 	return $rcnn_id;
 }
 
-
 function poller_connect_to_remote($poller_id) {
 	global $config, $local_db_cnn_id;
 
@@ -1596,7 +1595,7 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 		);
 	}
 
-	if (sizeof($recache_hosts)) {
+	if (cacti_sizeof($recache_hosts)) {
 		$local_data_ids = db_fetch_assoc("SELECT *
 			FROM data_local
 			WHERE host_id IN (" . implode(', ', $recache_hosts) . ")
@@ -1767,7 +1766,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 			$sql[] = $string;
 		}
 
-		if (sizeof($dupes)) {
+		if (cacti_sizeof($dupes)) {
 			$dupe = ' ON DUPLICATE KEY UPDATE ';
 			$i = 0;
 			foreach($dupes as $item) {
@@ -1784,7 +1783,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 		}
 	}
 
-	return sizeof($records);
+	return cacti_sizeof($records);
 }
 
 function should_ignore_from_replication($path) {

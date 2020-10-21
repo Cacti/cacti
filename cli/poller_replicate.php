@@ -100,7 +100,7 @@ if ($poller_id < 0) {
 		array($poller_id));
 }
 
-if (sizeof($pollers)) {
+if (cacti_sizeof($pollers)) {
 	foreach ($pollers as $poller) {
 		db_execute_prepared('UPDATE poller
 			SET last_sync = NOW(), requires_sync=""

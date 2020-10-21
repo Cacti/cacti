@@ -798,7 +798,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 
 		$parts  = explode(' ', $string);
 
-		if (sizeof($parts) == 4) {
+		if (cacti_sizeof($parts) == 4) {
 			$possible_ip = true;
 
 			$ip_address = '';
@@ -820,7 +820,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 				$string = $output;
 			}
 		/* hex string is mac-address */
-		} elseif (sizeof($parts) == 6) {
+		} elseif (cacti_sizeof($parts) == 6) {
 			$possible_ip = false;
 
 			/* convert the hex string into an ascii string */

@@ -1140,7 +1140,7 @@ function utilities_view_logfile() {
 
 									$logParts = explode('-', $logFile);
 
-									$logDate = count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
+									$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 									$logName = $logParts[0];
 
 									print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . '</option>';
