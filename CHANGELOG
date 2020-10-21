@@ -51,6 +51,7 @@ Cacti CHANGELOG
 -issue#3868: Under some cases tree logic leads to undefined index errors
 -issue#3869: Cacti Data Debug can show errors if the Data Source is damaged or has been removed
 -issue#3871: Import DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
+-issue#3876: A javascript error in layout.js
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
