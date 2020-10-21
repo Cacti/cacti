@@ -98,7 +98,7 @@ if (cacti_sizeof($parms)) {
 		if ($filename != '' && is_readable($filename)) {
 			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only, $info_only);
 
-			if ($result !== false && sizeof($result)) {
+			if ($result !== false && cacti_sizeof($result)) {
 				print json_encode($result);
 				exit(0);
 			} else {

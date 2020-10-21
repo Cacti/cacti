@@ -486,6 +486,7 @@ function form_save() {
 	if (isset_request_var('save_component_tree')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
+		get_filter_request_var('sequence');
 		/* ==================================================== */
 
 		if (get_filter_request_var('id') > 0) {
@@ -504,8 +505,10 @@ function form_save() {
 		$save['enabled']       = get_nfilter_request_var('enabled') == 'true' ? 'on':'-';
 		$save['modified_by']   = $_SESSION['sess_user_id'];
 
-		if (empty($save['sequence'])) {
+		if (isempty_request_var('sequence')) {
 			$save['sequence'] = tree_get_max_sequence() + 1;
+		} else {
+			$save['sequence'] = get_request_var('sequence');
 		}
 
 		if (empty($save['id'])) {
@@ -1064,7 +1067,7 @@ function tree_edit() {
 				event.preventDefault();
 
 				if ($(this).attr('id') == 'tree_edit') {
-					$.post('tree.php', { action: 'save', name: $('#name').val(), sort_type: $('#sort_type').val(), enabled: $('#enabled').is(':checked'), id: $('#id').val(), save_component_tree: 1, __csrf_magic: csrfMagicToken } ).done(function(data) {
+					$.post('tree.php', { action: 'save', name: $('#name').val(), sort_type: $('#sort_type').val(), enabled: $('#enabled').is(':checked'), id: $('#id').val(), save_component_tree: 1, sequence: $('#sequence').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
 						$('#main').html(data);
 						applySkin();
 					});

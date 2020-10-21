@@ -1664,6 +1664,12 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	$save['hash'] = $hash;
 
 	foreach ($fields_data_input_edit as $field_name => $field_array) {
+		// Work around for templates exported during
+		// period where there was a bug in 1.2.13-1.2.15
+		if ($field_name == 'fname') {
+			$field_name = 'name';
+		}
+
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
 			if ($field_name == 'input_string' && import_is_base64_encoded($xml_array[$field_name])) {
@@ -1733,6 +1739,12 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			$save['data_input_id'] = $data_input_id;
 
 			foreach ($fields_data_input_field_edit as $field_name => $field_array) {
+				// Work around for templates exported during
+				// period where there was a bug in 1.2.13-1.2.15
+				if ($field_name == 'fname') {
+					$field_name = 'name';
+				}
+
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					$save[$field_name] = xml_character_decode($item_array[$field_name]);

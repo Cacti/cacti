@@ -152,7 +152,7 @@ if ($audit) {
 		file_put_contents($config['input_whitelist'], json_encode($input));
 		print 'SUCCESS: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' successfully updated.' . PHP_EOL;
 
-		if (sizeof($pushes)) {
+		if (cacti_sizeof($pushes)) {
 			foreach($pushes as $data_input_method => $name) {
 				print 'NOTE: Pushing Out Data Input Method: ' . $name . ' (' . $data_input_method . ')' . PHP_EOL;
 				push_out_data_input_method($data_input_method);

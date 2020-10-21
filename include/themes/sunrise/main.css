@@ -2552,7 +2552,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 	width: 45px;
 	height: 24px;
-	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
 }

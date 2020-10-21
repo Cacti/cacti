@@ -1511,7 +1511,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 }
 
 function utility_php_set_recommends_text(&$recs) {
-	if (is_array($recs) && sizeof($recs)) {
+	if (is_array($recs) && cacti_sizeof($recs)) {
 		foreach ($recs as $name => $recommends) {
 			if (cacti_sizeof($recommends)) {
 				foreach ($recommends as $index => $recommend) {

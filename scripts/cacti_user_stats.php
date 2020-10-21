@@ -141,8 +141,8 @@ if ($cacti_db_session == true) {
 			}
 		}
 
-		$user_counter_active   = count($user_ids_active);
-		$user_counter_sleeping = count($user_ids_sleeping);
+		$user_counter_active   = cacti_count($user_ids_active);
+		$user_counter_sleeping = cacti_count($user_ids_sleeping);
 	}
 
 	/* close directory handle and destroy this session */

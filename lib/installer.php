@@ -2512,12 +2512,12 @@ class Installer implements JsonSerializable {
 				$max_vars = 1000;
 			}
 
-			if ($max_vars < count($tables) + 10) {
-				$output .= Installer::sectionError(__('You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s', count($tables) + 100));
+			if ($max_vars < cacti_count($tables) + 10) {
+				$output .= Installer::sectionError(__('You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s', cacti_count($tables) + 100));
 				$this->buttonNext->Enabled = false;
 			} else {
 				$output .= Installer::sectionWarning(__('Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
-				$output .= Installer::sectionNote('max_input_vars: ' . $max_vars . ', tables: ' . count($tables));
+				$output .= Installer::sectionNote('max_input_vars: ' . $max_vars . ', tables: ' . cacti_count($tables));
 				$show_warning=false;
 				ob_start();
 				html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
