@@ -122,7 +122,7 @@ if (cacti_sizeof($parms)) {
 		$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 	}
 
-	if ($filename != '' && is_readable($filename)) {
+	if ($filename != '') {
 		if (file_exists($filename) && is_readable($filename)) {
 			$fp = fopen($filename,'r');
 			$data = fread($fp,filesize($filename));
