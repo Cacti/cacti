@@ -2491,10 +2491,6 @@ function saveTableWidths(initial) {
 		} else {
 			var sizes = new Array();
 		}
-		
-		if (sizes == null) {
-			sizes = [];
-		}
 
 		var items  = sizes ? sizes: new Array();
 		var width  = $(document).width();
