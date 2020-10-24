@@ -52,7 +52,6 @@ Cacti CHANGELOG
 -issue#3869: Cacti Data Debug can show errors if the Data Source is damaged or has been removed
 -issue#3871: Import DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
 -issue#3874: The SHIFT functionnality in graphs does not accept negative values
--issue#3876: A javascript error in layout.js
 -issue#3881: Fixed wrong error message when file was not readable in import_package.php
 -issue#3883: No way to remove integrated/orphaned Plugin references from the Plugin Management interface
 -feature: Update FontAwesome to Version 5.14
