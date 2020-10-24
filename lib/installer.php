@@ -2726,6 +2726,9 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated with errors', CACTI_VERSION));
 		}
 
+		// Remove integrated plugin references
+		api_plugin_uninstall_integrated();
+
 		$output .= Installer::sectionSubTitleEnd();
 
 		$sections = array();
@@ -2777,10 +2780,6 @@ class Installer implements JsonSerializable {
 
 							// show results from version upgrade
 							$sql_temp = $action[3];
-
-//						if (!empty($action[4])) {
-//							$sql .= "<br>Error: " . $action[4];
-//						}
 
 							if (isset($sqlclass[$action[2]])) {
 								$cssClass = $sqlclass[$action[2]];
