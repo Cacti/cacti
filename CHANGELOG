@@ -53,6 +53,7 @@ Cacti CHANGELOG
 -issue#3871: Import DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
 -issue#3874: The SHIFT functionnality in graphs does not accept negative values
 -issue#3876: A javascript error in layout.js
+-issue#3881: Fixed wrong error message when file was not readable in import_package.php
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
