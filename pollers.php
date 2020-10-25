@@ -346,7 +346,7 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 
 		$ip_hostnames[$hostname] = $hostname;
 
-		if (sizeof($addresses)) {
+		if (cacti_sizeof($addresses)) {
 			foreach($addresses as $address) {
 				if (isset($address['target'])) {
 					$ip_hostnames[$address['host']] = $address['host'];
@@ -364,12 +364,12 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	}
 
 	$sql_where1 = '';
-	if (sizeof($ip_addresses)) {
+	if (cacti_sizeof($ip_addresses)) {
 		$sql_where1 = "$column IN ('" . implode("','", $ip_addresses) . "')";
 	}
 
 	$sql_where2 = '';
-	if (sizeof($ip_hostnames)) {
+	if (cacti_sizeof($ip_hostnames)) {
 		foreach($ip_hostnames as $host) {
 			$parts = explode('.', $host);
 			$sql_where2 .= ($sql_where2 != '' ? ' OR ' : ($sql_where1 != '' ? ' OR ' : '') . ' (') . "($column = '$parts[0]' OR $column LIKE '$parts[0].%' OR $column = '$host')";
@@ -475,8 +475,8 @@ function form_actions() {
 
 				cacti_session_start();
 
-				if (sizeof($failed)) {
-					cacti_log('WARNING: Some selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION['sess_user_id']) . ', Successful/Failed[' . sizeof($success) . '/' . sizeof($failed) . '].  See log for details.', false, 'WEBUI');
+				if (cacti_sizeof($failed)) {
+					cacti_log('WARNING: Some selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION['sess_user_id']) . ', Successful/Failed[' . cacti_sizeof($success) . '/' . cacti_sizeof($failed) . '].  See log for details.', false, 'WEBUI');
 				} else {
 					cacti_log('NOTE: All selected Remote Data Collectors in [' . implode(', ', $ids) . '] synchronized correctly by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 				}

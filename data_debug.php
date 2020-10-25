@@ -608,9 +608,13 @@ function debug_view() {
 	$dtd = db_fetch_row_prepared('SELECT *
 		FROM data_template_data
 		WHERE local_data_id = ?',
-		array($check['datasource']));
+		array($id));
 
-	$real_pth = str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']);
+	if (cacti_sizeof($dtd)) {
+		$real_path = str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']);
+	} else {
+		$real_path = __('Not Found');
+	}
 
 	$poller_data = array();
 	if (!empty($check['info']['last_result'])) {
@@ -680,12 +684,12 @@ function debug_view() {
 		array(
 			'name' => 'rrd_folder_writable',
 			'title' => __('Is RRA Folder writeable by poller?'),
-			'value' => dirname($real_pth)
+			'value' => dirname($real_path)
 		),
 		array(
 			'name' => 'rrd_writable',
 			'title' => __('Is RRDfile writeable by poller?'),
-			'value' => $real_pth
+			'value' => $real_path
 		),
 		array(
 			'name' => 'rrd_exists',

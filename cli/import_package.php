@@ -98,7 +98,7 @@ if (cacti_sizeof($parms)) {
 		if ($filename != '' && is_readable($filename)) {
 			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only, $info_only);
 
-			if ($result !== false && sizeof($result)) {
+			if ($result !== false && cacti_sizeof($result)) {
 				print json_encode($result);
 				exit(0);
 			} else {
@@ -122,7 +122,7 @@ if (cacti_sizeof($parms)) {
 		$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 	}
 
-	if ($filename != '' && is_readable($filename)) {
+	if ($filename != '') {
 		if (file_exists($filename) && is_readable($filename)) {
 			$fp = fopen($filename,'r');
 			$data = fread($fp,filesize($filename));

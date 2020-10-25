@@ -41,12 +41,14 @@ Cacti CHANGELOG
 1.2.15
 -issue#3643: Maximum OIDs Per Get Request - field empty
 -issue#3656: Cacti V1.2.12 Boost running too often
+-issue#3693: Uptime Recache Event Loop on Devices Causing Interface Graph Gaps
 -issue#3703: Graph Tree search problem
 -issue#3711: Graphs New interface not validating page variables
 -issue#3722: External Links - switch between tabs
 -issue#3730: Change wording for the 21st century, but let's not forget our past
 -issue#3743: Description field allows more characters entered than is stored
 -issue#3747: ldap.php cannot be loaded while installer is running
+-issue#3748: Unable to remove discovered device
 -issue#3753: Invalid argument supplied for foreach()
 -issue#3755: Graph Templates has duplicate SQL delete statement
 -issue#3759: Errors when doing a graph Sync 1.2.12
@@ -78,8 +80,18 @@ Cacti CHANGELOG
 -issue#3835: The function number_format_18n() does not properly use the decimal and thousands separators in some cases
 -issue#3836: Undefined index in lib/timespan_settings.php
 -issue#3844: Minor memory leaks and refresh issues when zooming on graph.php page
+-issue#3847: Cacti 1.2.14 Real-Time Graphs not working
 -issue#3849: Graph Tree - Redirect to host/tree/Graph Management
 -issue#3850: Trees management screen not reporting correct number of trees
+-issue#3858: Tree sequence wrongly increments
+-issue#3862: Console > Setting > Auth > Guest User drop-down list should not list current log on user
+-issue#3864: A link text in cacti table header cannot show clearly when in modern theme
+-issue#3868: Under some cases tree logic leads to undefined index errors
+-issue#3869: Cacti Data Debug can show errors if the Data Source is damaged or has been removed
+-issue#3871: Import DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
+-issue#3874: The SHIFT functionnality in graphs does not accept negative values
+-issue#3881: Fixed wrong error message when file was not readable in import_package.php
+-issue#3883: No way to remove integrated/orphaned Plugin references from the Plugin Management interface
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14

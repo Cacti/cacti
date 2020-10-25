@@ -201,7 +201,7 @@ function phpversion_check($force = false) {
 	}
 }
 
-function rrdfile_purge() {
+function rrdfile_purge($force) {
 	global $archived, $purged, $poller_start;
 
 	/* are my tables already present? */

@@ -137,6 +137,21 @@ if ($config['cacti_server_os'] == 'win32') {
 	unset($mail_methods[CACTI_MAIL_SENDMAIL]);
 }
 
+/* cache the admin account */
+$admin_account = '0';
+
+if (isset($_SESSION['admin_account']) && isset($_SESSION['sess_user_id'])) {
+	$admin_account = $_SESSION['admin_account'];
+} elseif (isset($_SESSION['sess_user_id'])) {
+	$admin_account = db_fetch_cell('SELECT value FROM settings WHERE name="admin_user"');
+
+	if (!empty($admin_account)) {
+		$_SESSION['admin_account'] = db_qstr($admin_account) . ', ' . $_SESSION['sess_user_id'];
+	} else {
+		$_SESSION['admin_account'] = $_SESSION['sess_user_id'];
+	}
+}
+
 /* setting information */
 $settings = array(
 	'path' => array(
@@ -483,18 +498,18 @@ $settings = array(
 			'default' => 'on',
 			'method' => 'checkbox',
 			),
-                'ds_preselected_delete' => array(
-                        'friendly_name' => __('Data Source Preservation Preset'),
-                        'description' => __('When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs.'),
-                        'method' => 'checkbox',
-                        'default' => 'on'
-                        ),
-                'graphs_auto_unlock' => array(
-                        'friendly_name' => __('Graphs Auto Unlock'),
-                        'description' => __('When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph.'),
-                        'method' => 'checkbox',
-                        'default' => ''
-                        ),
+		'ds_preselected_delete' => array(
+			'friendly_name' => __('Data Source Preservation Preset'),
+			'description' => __('When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
+		'graphs_auto_unlock' => array(
+			'friendly_name' => __('Graphs Auto Unlock'),
+			'description' => __('When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph.'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'hide_console' => array(
 			'friendly_name' => __('Hide Cacti Dashboard'),
 			'description' => __('For use with Cacti\'s External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page.'),
@@ -1397,7 +1412,7 @@ $settings = array(
 			'description' => __('The name of the guest user for viewing graphs; is \'No User\' by default.'),
 			'method' => 'drop_sql',
 			'none_value' => __('No User'),
-			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
+			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 AND id NOT IN (' . $admin_account . ') ORDER BY username',
 			'default' => '0'
 			),
 		'user_template' => array(
@@ -1405,7 +1420,7 @@ $settings = array(
 			'description' => __('The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is \'guest\' by default.  This user account will be disabled from logging in upon being selected.'),
 			'method' => 'drop_sql',
 			'none_value' => __('No User'),
-			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
+			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 AND id NOT IN (' . $admin_account . ') ORDER BY username',
 			'default' => '0'
 			),
 		'path_basic_mapfile' => array(
@@ -2666,4 +2681,3 @@ if (is_realm_allowed(25)) {
 }
 
 api_plugin_hook('config_settings');
-

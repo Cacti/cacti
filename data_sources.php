@@ -390,7 +390,7 @@ function form_actions() {
 								WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
 								AND local_graph_id > 0');
 
-							if (sizeof($poller_ids)) {
+							if (cacti_sizeof($poller_ids)) {
 								foreach($poller_ids as $poller_id) {
 									if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 										db_execute('DELETE FROM graph_templates_item

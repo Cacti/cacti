@@ -38,6 +38,7 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
+
 	/* setup defaults */
 	$description   = '';
 	$ip            = '';

@@ -42,7 +42,8 @@ include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
 $device_actions = array(
-	1 => __('Add Device')
+	1 => __('Add Device'),
+	2 => __('Delete Device')
 );
 
 $os_arr = array_rekey(db_fetch_assoc('SELECT DISTINCT os
@@ -96,6 +97,8 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* add to cacti */
+				$i = 0;
+
 				foreach($selected_items as $id) {
 					$d = db_fetch_row_prepared('SELECT * FROM automation_devices WHERE id = ?', array($id));
 					$d['poller_id']           = get_filter_request_var('poller_id');
@@ -117,16 +120,19 @@ function form_actions() {
 					$description = (trim($d['hostname']) != '' ? $d['hostname'] : $d['ip']);
 
 					if ($host_id) {
-						$message = "<span class='deviceUp'>" . __('Device') . ' ' . html_escape($description) . ' ' . __('Added to Cacti') . '</span><br>';
+						raise_message('automation_msg_' . $i, __esc('Device %s Added to Cacti', $description), MESSAGE_LEVEL_INFO);
 					} else {
-						$message = "<span class='deviceDown'>" . __('Device') . ' ' . html_escape($description) . ' ' . __('Not Added to Cacti') . '</span><br>';
+						raise_message('automation_msg_' . $i, __esc('Device %s Not Added to Cacti', $description), MESSAGE_LEVEL_ERROR);
 					}
+
+					$i++;
+				}
+			} elseif (get_nfilter_request_var('drp_action') == 2) { /* remove device */
+				foreach($selected_items as $id) {
+					db_execute_prepared('DELETE FROM automation_devices WHERE id = ?', array($id));
 				}
 
-				if ($message != '') {
-					$_SESSION['automation_message'] = $message;
-					raise_message('automation_message');
-				}
+				raise_message('automation_remove', __('Devices Removed from Cacti Automation database'), MESSAGE_LEVEL_INFO);
 			}
 		}
 
@@ -161,7 +167,6 @@ function form_actions() {
 
 	if (isset($device_array) && cacti_sizeof($device_array)) {
 		if (get_request_var('drp_action') == '1') { /* add */
-
 			$pollers = db_fetch_assoc_prepared('SELECT id, name FROM poller ORDER BY name');
 
 			$availability_method = 0;
@@ -211,6 +216,15 @@ function form_actions() {
 			print "</td></tr></table></td></tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
+		} elseif (get_request_var('drp_action') == '2') { /* remove */
+			print "<tr>
+				<td class='textArea odd'>
+					<p>" . __('Click \'Continue\' to Delete the following Discovered device(s).') . "</p>
+					<div class='itemlist'><ul>$device_list</ul></div>
+				</td>
+			</tr>";
+
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
 		}
 	} else {
 		raise_message(40);

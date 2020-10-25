@@ -378,9 +378,7 @@ $sizes = array(
 		<div class='cactiTable center'>
 			<span id='countdown'><?php print __('%d seconds left.',  get_request_var('ds_step')); ?></span>
 		</div>
-		<div id='image' class='center' style='padding:2px;'>
-			<i id='imaging' style='font-size:40px;' class='fa fa-spin fa-circle-notch'></i>
-		</div>
+		<div id='image' class='center' style='padding:2px;'></div>
 		<input type='hidden' id='url_path' name='url_path' value='<?php echo $config['url_path'];?>'/>
 		<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php echo get_request_var('local_graph_id'); ?>'/>
 		<script type='text/javascript'>

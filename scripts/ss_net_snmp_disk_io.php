@@ -13,26 +13,27 @@ if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
-function ss_net_snmp_disk_io($host_id_or_hostname) {
+function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 	global $environ, $poller_id, $config;
 
-	if (!is_numeric($host_id_or_hostname)) {
-		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE hostname = ?', array($host_id_or_hostname));
+	if (empty($host_id_or_hostname) || $host_id_or_hostname === NULL) {
+		return 'reads:0 writes:0';
+	} elseif (!is_numeric($host_id_or_hostname)) {
+		$host_id = db_fetch_cell_prepared('SELECT id
+			FROM host
+			WHERE hostname = ?',
+			array($host_id_or_hostname));
 	} else {
 		$host_id = $host_id_or_hostname;
 	}
 
-	if ($config['cacti_server_os'] == 'win32') {
-		$tmpdir = getenv('TEMP');
-	} else {
-		$tmpdir = '/tmp';
-	}
+	$tmpdir = sys_get_temp_dir();
 
 	if ($environ != 'realtime') {
 		$tmpdir = $tmpdir . '/cacti/net-snmp-devio';
 		$tmpfile = $host_id . '_io';
 	} else {
-		$tmpdir = $tmpdir . '/cacti/net-snmp-devio';
+		$tmpdir = $tmpdir . '/cacti-rt/net-snmp-devio';
 		$tmpfile = $host_id . '_' . $poller_id . '_io_rt';
 	}
 
@@ -49,7 +50,10 @@ function ss_net_snmp_disk_io($host_id_or_hostname) {
 	}
 
 	$indexes = array();
-	$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+	$host = db_fetch_row_prepared('SELECT *
+		FROM host
+		WHERE id = ?',
+		array($host_id));
 
 	$uptime  = cacti_snmp_get($host['hostname'],
 		$host['snmp_community'],

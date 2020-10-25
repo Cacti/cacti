@@ -610,7 +610,7 @@ function check_changed(string $request, string $session): bool {
 function is_error_message(): bool {
 	global $config, $messages;
 
-	if (isset($_SESSION['sess_error_fields']) && sizeof($_SESSION['sess_error_fields'])) {
+	if (isset($_SESSION['sess_error_fields']) && cacti_sizeof($_SESSION['sess_error_fields'])) {
 		return true;
 	} else {
 		return false;

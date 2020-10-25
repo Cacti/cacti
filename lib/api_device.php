@@ -70,7 +70,7 @@ function api_device_remove($device_id) {
 		'id', 'id'
 	);
 
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		api_delete_graphs($graphs, 2);
 	}
 
@@ -992,7 +992,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		WHERE id = ?',
 		array($device_id));
 
-	if (!sizeof($host)) {
+	if (!cacti_sizeof($host)) {
 		if ($from_remote) {
 			print __('ERROR: Device[' . $device_id . '] not found.  Please perform Full Sync!');
 		} else {
