@@ -1852,7 +1852,7 @@ ul#nav {
 }
 
 .ui-tooltip {
-	max-width: none !important;
+	max-width: 400px;
 }
 
 .ui-tooltip-content div.header {
