@@ -784,7 +784,11 @@ function update_order_string($inplace = false) {
 			unset($_SESSION['sort_string'][$page]);
 
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
-			$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+                               $_SESSION['sort_string'][$page] ='ORDER BY INET_ATON(' . $column . ") " . $direction;
+                        } else {
+				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
+			}
 		} elseif (isset_request_var('sort_column')) {
 			if (isset_request_var('reset')) {
 				unset($_SESSION['sort_data'][$page]);
