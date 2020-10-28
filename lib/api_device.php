@@ -84,7 +84,6 @@ function api_device_remove($device_id) {
 function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 	if ($poller_id > 1) {
 		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-cacti_log('Connection Successful');
 			if (!is_array($device_ids)) {
 				$device_ids = array($device_ids);
 			}
@@ -99,7 +98,7 @@ cacti_log('Connection Successful');
 			db_execute('DELETE FROM reports_items    WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 
 			db_execute('DELETE FROM poller_command
-				WHERE SUBSTRING_INDEX(command, ":", 1) LIKE (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				WHERE SUBSTRING_INDEX(command, ":", 1) IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 
 			db_execute('DELETE FROM data_local       WHERE host_id IN (' . implode(', ', $device_ids), true, $rcnn_id);
 			db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $device_ids), true, $rcnn_id);
@@ -212,7 +211,6 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		}
 
 		if (cacti_sizeof($poller_ids)) {
-cacti_log('Remove from remote');
 			foreach($poller_ids as $poller_id) {
 				api_device_cache_crc_update($poller_id);
 				api_device_purge_from_remote($device_ids, $poller_id);
