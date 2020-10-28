@@ -210,6 +210,7 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		if (cacti_sizeof($poller_ids)) {
 			foreach($poller_ids as $poller_id) {
 				api_device_cache_crc_update($poller_id);
+				api_device_purge_from_remote($device_ids, $poller_id);
 			}
 		}
 	}
