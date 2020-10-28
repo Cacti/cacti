@@ -100,8 +100,8 @@ function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 			db_execute('DELETE FROM poller_command
 				WHERE SUBSTRING_INDEX(command, ":", 1) IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 
-			db_execute('DELETE FROM data_local       WHERE host_id IN (' . implode(', ', $device_ids), true, $rcnn_id);
-			db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $device_ids), true, $rcnn_id);
+			db_execute('DELETE FROM data_local       WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+			db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 		}
 
 		foreach($device_ids as $id) {
