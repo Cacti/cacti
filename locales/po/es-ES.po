@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2020-10-19 20:03-0400\n"
+"POT-Creation-Date: 2020-10-28 16:57-0400\n"
 "PO-Revision-Date: 2020-09-13 18:13-0400\n"
 "Last-Translator: The Cacti Group <weblate@cacti.net>\n"
 "Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core/es-ES/>\n"
@@ -387,15 +387,15 @@ msgstr "Opciones de gráfico Agregado"
 msgid "Aggregate Preview %s"
 msgstr "Vista previa de Agregados [%s]"
 
-#: aggregate_graphs.php:781 graph.php:546 graphs.php:1607
+#: aggregate_graphs.php:781 graph.php:554 graphs.php:1607
 msgid "RRDtool Command:"
 msgstr "Comando RRDtool:"
 
-#: aggregate_graphs.php:783 graph.php:559 graphs.php:1611
+#: aggregate_graphs.php:783 graph.php:563 graphs.php:1611
 msgid "Not Checked"
 msgstr "No verificado"
 
-#: aggregate_graphs.php:783 graph.php:554 graphs.php:1609
+#: aggregate_graphs.php:783 graph.php:559 graphs.php:1609
 msgid "RRDtool Says:"
 msgstr "RRDtool dice:"
 
@@ -632,7 +632,7 @@ msgstr "No"
 #: host_templates.php:875 include/global_settings.php:495
 #: include/global_settings.php:802 include/global_settings.php:1636
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
-#: lib/installer.php:3423 links.php:404 tree.php:2102 tree.php:2103
+#: lib/installer.php:3422 links.php:404 tree.php:2102 tree.php:2103
 #: user_admin.php:2347 user_domains.php:762 user_domains.php:766
 #: user_group_admin.php:1923 vdef.php:905
 msgid "Yes"
@@ -2487,7 +2487,7 @@ msgstr "Criterio de creación de Arbol"
 msgid "Change Leaf Type"
 msgstr "Cambiar tipo de hoja"
 
-#: automation_tree_rules.php:706 lib/installer.php:3612 utilities.php:2240
+#: automation_tree_rules.php:706 lib/installer.php:3611 utilities.php:2240
 #: utilities.php:2241 utilities.php:2244 utilities.php:2245
 msgid "WARNING:"
 msgstr "ADVERTENCIA:"
@@ -4354,39 +4354,39 @@ msgstr "Cantidad de Plantillas de gráficos usando este GPRINT."
 msgid "No GPRINT Presets"
 msgstr "No hay GPRINT preestablecidos"
 
-#: graph.php:102
+#: graph.php:100
 msgid "Viewing Graph"
 msgstr "Visualizando gráfico"
 
-#: graph.php:132 lib/html.php:435
+#: graph.php:138 lib/html.php:435
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Detalles de gráficos, Zoom y utilidades de depuración"
 
-#: graph.php:133
+#: graph.php:139
 msgid "CSV Export"
 msgstr "Exportar CSV"
 
-#: graph.php:134 lib/html.php:454 lib/html.php:456
+#: graph.php:140 lib/html.php:454 lib/html.php:456
 msgid "Click to view just this Graph in Real-time"
 msgstr "Haga click para ver este gráfico en tiempo real"
 
-#: graph.php:245 lib/html.php:2403
+#: graph.php:253 lib/html.php:2403
 msgid "Utility View"
 msgstr "Vista de Utilidades"
 
-#: graph.php:350
+#: graph.php:358
 msgid "Graph Utility View"
 msgstr "Vista de Utilidades de gráficos"
 
-#: graph.php:363
+#: graph.php:371
 msgid "Graph Source/Properties"
 msgstr "Origen del gráfico/Propiedades"
 
-#: graph.php:367
+#: graph.php:375
 msgid "Graph Data"
 msgstr "Datos de gráfico"
 
-#: graph.php:544
+#: graph.php:552
 msgid "RRDtool Graph Syntax"
 msgstr "Sintaxis de gráfico RRDtool"
 
@@ -5351,7 +5351,7 @@ msgid "Recovering"
 msgstr "Recuperando"
 
 #: host.php:1598 lib/api_automation.php:175 lib/api_automation.php:1101
-#: lib/html_utility.php:943 lib/plugins.php:998 lib/plugins.php:999
+#: lib/html_utility.php:943 lib/plugins.php:1086 lib/plugins.php:1087
 #: lib/rrd.php:2919 lib/rrd.php:2931 user_admin.php:820 utilities.php:216
 #: utilities.php:217 utilities.php:2241
 msgid "Unknown"
@@ -6431,7 +6431,7 @@ msgid "Export Templates"
 msgstr "Exportar Plantillas"
 
 #: include/global_arrays.php:927 include/global_arrays.php:949
-#: include/global_arrays.php:967 lib/plugins.php:954
+#: include/global_arrays.php:967 lib/plugins.php:1041
 msgid "Configuration"
 msgstr "Configuración"
 
@@ -7514,7 +7514,7 @@ msgid "Tree Rule Items"
 msgstr "Items de regla de árbol"
 
 #: include/global_arrays.php:2687 include/global_arrays.php:2703
-#: lib/api_device.php:1090
+#: lib/api_device.php:1142
 msgid "days"
 msgstr "días"
 
@@ -7530,11 +7530,11 @@ msgstr "minutos"
 msgid "secs"
 msgstr "segundos"
 
-#: include/global_arrays.php:2704 lib/api_device.php:1090
+#: include/global_arrays.php:2704 lib/api_device.php:1142
 msgid "hours"
 msgstr "horas"
 
-#: include/global_arrays.php:2705 lib/api_device.php:1090
+#: include/global_arrays.php:2705 lib/api_device.php:1142
 msgid "minutes"
 msgstr "minutos"
 
@@ -9841,7 +9841,7 @@ msgstr "Método de selección de Fuente"
 msgid "How do you wish fonts to be handled by default?"
 msgstr "Como quieres que las fuentes sean administradas por defecto?"
 
-#: include/global_settings.php:976 lib/api_device.php:1056
+#: include/global_settings.php:976 lib/api_device.php:1108
 msgid "System"
 msgstr "Sistema"
 
@@ -11624,72 +11624,72 @@ msgstr "Item de regla [nuevo item de regla para %s: %s]"
 msgid "Added by Cacti Automation"
 msgstr "Agregado por automatización de Cacti"
 
-#: lib/api_device.php:986
+#: lib/api_device.php:1038
 msgid "ERROR: Device ID is Blank"
 msgstr "ERROR: ID del dispositivo está en blanco"
 
-#: lib/api_device.php:997 lib/api_device.php:999
+#: lib/api_device.php:1049 lib/api_device.php:1051
 msgid "ERROR: Device["
 msgstr "ERROR: Dispositivo["
 
-#: lib/api_device.php:1020
+#: lib/api_device.php:1072
 msgid "ERROR: Failed to connect to remote collector."
 msgstr "Error: no se pudo conectar al recollector remoto."
 
-#: lib/api_device.php:1027
+#: lib/api_device.php:1079
 msgid "Device is Disabled"
 msgstr "El dispositivo está deshabilitado"
 
-#: lib/api_device.php:1028
+#: lib/api_device.php:1080
 msgid "Device Availability Check Bypassed"
 msgstr "Verificación de disponibilidad de dispositivo omitido"
 
-#: lib/api_device.php:1035
+#: lib/api_device.php:1087
 msgid "SNMP Information"
 msgstr "Información SNMP"
 
-#: lib/api_device.php:1039
+#: lib/api_device.php:1091
 msgid "SNMP not in use"
 msgstr "No usa SNMP"
 
-#: lib/api_device.php:1048 lib/api_device.php:1056 lib/api_device.php:1071
+#: lib/api_device.php:1100 lib/api_device.php:1108 lib/api_device.php:1123
 msgid "SNMP error"
 msgstr "Error SNMP"
 
-#: lib/api_device.php:1048
+#: lib/api_device.php:1100
 msgid "Session"
 msgstr "Sesión"
 
-#: lib/api_device.php:1071
+#: lib/api_device.php:1123
 msgid "Host"
 msgstr "Equipo"
 
-#: lib/api_device.php:1082
+#: lib/api_device.php:1134
 msgid "System:"
 msgstr "Sistema:"
 
-#: lib/api_device.php:1089
+#: lib/api_device.php:1141
 msgid "Uptime:"
 msgstr "Tiempo de Funcionamiento:"
 
-#: lib/api_device.php:1091
+#: lib/api_device.php:1143
 msgid "Hostname:"
 msgstr "Nombre de equipo:"
 
-#: lib/api_device.php:1092
+#: lib/api_device.php:1144
 msgid "Location:"
 msgstr "Ubicación:"
 
-#: lib/api_device.php:1093
+#: lib/api_device.php:1145
 msgid "Contact:"
 msgstr "Contacto:"
 
-#: lib/api_device.php:1124 lib/functions.php:3961 lib/functions.php:3963
+#: lib/api_device.php:1176 lib/functions.php:3961 lib/functions.php:3963
 #: lib/functions.php:3967
 msgid "Ping Results"
 msgstr "Resultados de ping"
 
-#: lib/api_device.php:1129
+#: lib/api_device.php:1181
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "Ningún método de comprobación disponibilidad seleccionado"
 
@@ -12287,7 +12287,7 @@ msgid "User Community"
 msgstr "Comunidad de Usuarios"
 
 #: lib/functions.php:2398 lib/functions.php:2415 lib/html.php:2412
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 msgid "Documentation"
 msgstr "Documentación"
 
@@ -13472,7 +13472,7 @@ msgstr "Error mal UTF-8!"
 msgid "Bad UTF-8 offset error!"
 msgstr "Error mal offset UTF-8!"
 
-#: lib/html_utility.php:940 lib/installer.php:1803 lib/installer.php:3534
+#: lib/html_utility.php:940 lib/installer.php:1803 lib/installer.php:3533
 msgid "Error"
 msgstr "Error"
 
@@ -13771,7 +13771,7 @@ msgid "Location checks"
 msgstr "Comprobaciones de localización de archivos"
 
 #: lib/installer.php:1753 lib/installer.php:1891 lib/installer.php:1895
-#: lib/installer.php:2050 lib/installer.php:2055 lib/installer.php:3631
+#: lib/installer.php:2050 lib/installer.php:2055 lib/installer.php:3630
 msgid "ERROR:"
 msgstr "ERROR:"
 
@@ -14390,251 +14390,251 @@ msgstr "Su servidor Cacti v%s ha sido instalado/actualizado. Ahora puede empezar
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr "Su servidor de Cacti v%s ha sido instalado/actualizado con errores"
 
-#: lib/installer.php:2838
+#: lib/installer.php:2837
 msgid "Get Help"
 msgstr "Obtener ayuda"
 
-#: lib/installer.php:2843
+#: lib/installer.php:2842
 msgid "Report Issue"
 msgstr "Informe de problema"
 
-#: lib/installer.php:2846
+#: lib/installer.php:2845
 msgid "Get Started"
 msgstr "Comenzar"
 
-#: lib/installer.php:2875
+#: lib/installer.php:2874
 #, fuzzy, php-format
 msgid "Starting %s Process for v%s"
 msgstr "Iniciando el proceso%s para v%s"
 
-#: lib/installer.php:2900
+#: lib/installer.php:2899
 #, fuzzy, php-format
 msgid "Finished %s Process for v%s"
 msgstr "Proceso%s finalizado para v%s"
 
-#: lib/installer.php:2937
+#: lib/installer.php:2936
 #, fuzzy, php-format
 msgid "Found %s templates to install"
 msgstr "Se encontraron%s plantillas para instalar"
 
-#: lib/installer.php:2947
+#: lib/installer.php:2946
 #, fuzzy, php-format
 msgid "About to import Package #%s '%s'."
 msgstr "A punto de importar el paquete #%s '%s'."
 
-#: lib/installer.php:2954
+#: lib/installer.php:2953
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
 msgstr "La importación del paquete #%s '%s' en el perfil '%s' se realizó correctamente"
 
-#: lib/installer.php:2960
+#: lib/installer.php:2959
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr "Error al importar el paquete #%s '%s' en el perfil '%s'"
 
-#: lib/installer.php:2975
+#: lib/installer.php:2974
 #, fuzzy, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
 msgstr "Plantillas de automatización para [Plantilla eliminada]"
 
-#: lib/installer.php:2992
+#: lib/installer.php:2991
 #, fuzzy
 msgid "No templates were selected for import"
 msgstr "No se seleccionaron plantillas para importar"
 
-#: lib/installer.php:3001
+#: lib/installer.php:3000
 #, fuzzy
 msgid "Updating remote configuration file"
 msgstr "Esperando configuración"
 
-#: lib/installer.php:3033
+#: lib/installer.php:3032
 #, fuzzy, php-format
 msgid "Setting default data source profile to %s (%s)"
 msgstr "El perfil de Data Source predeterminado para esta Plantilla de datos."
 
-#: lib/installer.php:3055
+#: lib/installer.php:3054
 #, fuzzy, php-format
 msgid "Failed to find selected profile (%s), no changes were made"
 msgstr "Error al aplicar el perfil especificado %s! = %s"
 
-#: lib/installer.php:3064
+#: lib/installer.php:3063
 #, fuzzy, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr "Actualizando la red de automatización (%s), modo \"%s\" => \"%s\", subred \"%s\" =>%s \""
 
-#: lib/installer.php:3074
+#: lib/installer.php:3073
 #, fuzzy
 msgid "Failed to find automation network, no changes were made"
 msgstr "No se pudo encontrar la red de automatización, no se realizaron cambios"
 
-#: lib/installer.php:3078
+#: lib/installer.php:3077
 #, fuzzy
 msgid "Adding extra snmp settings for automation"
 msgstr "Agregar configuraciones adicionales de SNMP para la automatización"
 
-#: lib/installer.php:3084
+#: lib/installer.php:3083
 #, fuzzy, php-format
 msgid "Selecting Automation Option Set %s"
 msgstr "Borrar Plantilla(s) de Automatización"
 
-#: lib/installer.php:3097
+#: lib/installer.php:3096
 #, fuzzy, php-format
 msgid "Updating Automation Option Set %s"
 msgstr "Automatización de opciones SNMP"
 
-#: lib/installer.php:3100
+#: lib/installer.php:3099
 #, fuzzy, php-format
 msgid "Successfully updated Automation Option Set %s"
 msgstr "Conjunto de opciones de automatización actualizado con éxito%s"
 
-#: lib/installer.php:3102
+#: lib/installer.php:3101
 #, fuzzy, php-format
 msgid "Resequencing Automation Option Set %s"
 msgstr "Ejecutar automatización en dispositivo(s)"
 
-#: lib/installer.php:3108
+#: lib/installer.php:3107
 #, fuzzy, php-format
 msgid "Failed to updated Automation Option Set %s"
 msgstr "Error al aplicar el rango de automatización especificado"
 
-#: lib/installer.php:3111
+#: lib/installer.php:3110
 #, fuzzy
 msgid "Failed to find any automation option set"
 msgstr "Error al encontrar datos para copiar!"
 
-#: lib/installer.php:3141
+#: lib/installer.php:3140
 #, fuzzy, php-format
 msgid "Device Template for First Cacti Device is %s"
 msgstr "Dispositivo no asignado a dispositivo en Cacti"
 
-#: lib/installer.php:3167
+#: lib/installer.php:3166
 #, fuzzy
 msgid "Creating Graphs for Default Device"
 msgstr "Crear gráficos para este dispositivo"
 
-#: lib/installer.php:3174
+#: lib/installer.php:3173
 #, fuzzy
 msgid "Adding Device to Default Tree"
 msgstr "Valores por defecto de dispositivo"
 
-#: lib/installer.php:3182
+#: lib/installer.php:3181
 #, fuzzy
 msgid "No templated graphs for Default Device were found"
 msgstr "No se encontraron gráficos con plantilla para el dispositivo predeterminado"
 
-#: lib/installer.php:3186
+#: lib/installer.php:3185
 #, fuzzy
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
 msgstr "ADVERTENCIA: Plantilla de dispositivo para su sistema operativo no encontrada. Deberá importar plantillas de dispositivo o paquetes de Cacti para monitorear su servidor Cacti."
 
-#: lib/installer.php:3193
+#: lib/installer.php:3192
 #, fuzzy
 msgid "Running first-time data query for local host"
 msgstr "Ejecución de una consulta de datos por primera vez para el host local"
 
-#: lib/installer.php:3201
+#: lib/installer.php:3200
 #, fuzzy
 msgid "Repopulating poller cache"
 msgstr "Reconstruir el cache de Sonda"
 
-#: lib/installer.php:3206
+#: lib/installer.php:3205
 #, fuzzy
 msgid "Repopulating SNMP Agent cache"
 msgstr "Reconstruir cache de Agente SNMP"
 
-#: lib/installer.php:3211
+#: lib/installer.php:3210
 #, fuzzy
 msgid "Generating RSA Key Pair"
 msgstr "Generando par de claves RSA"
 
-#: lib/installer.php:3223
+#: lib/installer.php:3222
 #, fuzzy, php-format
 msgid "Found %s tables to convert"
 msgstr "Se encontraron%s tablas para convertir"
 
-#: lib/installer.php:3230
+#: lib/installer.php:3229
 #, fuzzy, php-format
 msgid "Converting Table #%s '%s'"
 msgstr "Conversión de tabla #%s '%s'"
 
-#: lib/installer.php:3245
+#: lib/installer.php:3244
 #, fuzzy
 msgid "No tables where found or selected for conversion"
 msgstr "No se encontraron tablas ni se seleccionaron para la conversión."
 
-#: lib/installer.php:3256
+#: lib/installer.php:3255
 #, php-format
 msgid "Switched from %s to %s"
 msgstr "Cambio de %s a %s"
 
-#: lib/installer.php:3260
+#: lib/installer.php:3259
 #, fuzzy, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
 msgstr "NOTA: Usando un archivo temporal para la caché de la base de datos:%s"
 
-#: lib/installer.php:3282
+#: lib/installer.php:3281
 #, fuzzy, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
 msgstr "Actualización de v%s (DB%s) a v%s"
 
-#: lib/installer.php:3290
+#: lib/installer.php:3289
 #, fuzzy, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
 msgstr "ADVERTENCIA: No se pudo encontrar la función de actualización para v%s"
 
-#: lib/installer.php:3349
+#: lib/installer.php:3348
 #, fuzzy
 msgid "Install aborted due to no EULA acceptance"
 msgstr "Instalación cancelada debido a que no se ha aceptado el EULA"
 
-#: lib/installer.php:3369
+#: lib/installer.php:3368
 #, fuzzy, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr "El fondo ya se inició en%s, se omitió este intento en%s"
 
-#: lib/installer.php:3389
+#: lib/installer.php:3388
 #, fuzzy, php-format
 msgid "Exception occurred during installation: #%s - %s"
 msgstr "Excepción ocurrida durante la instalación: #"
 
-#: lib/installer.php:3398
+#: lib/installer.php:3397
 #, php-format
 msgid "Installation was started at %s, completed at %s"
 msgstr "La instalación se inició a las %s, se completó el %s"
 
-#: lib/installer.php:3425
+#: lib/installer.php:3424
 msgid "Both"
 msgstr "Ambos"
 
-#: lib/installer.php:3425
+#: lib/installer.php:3424
 #, fuzzy, php-format
 msgid "No - %s"
 msgstr "RRA [editar: %s %s]"
 
-#: lib/installer.php:3427 lib/installer.php:3429
+#: lib/installer.php:3426 lib/installer.php:3428
 #, fuzzy, php-format
 msgid "%s - No"
 msgstr "RRA [editar: %s %s]"
 
-#: lib/installer.php:3427
+#: lib/installer.php:3426
 msgid "Web"
 msgstr "Web"
 
-#: lib/installer.php:3429
+#: lib/installer.php:3428
 msgid "Cli"
 msgstr "CLI"
 
-#: lib/installer.php:3434
+#: lib/installer.php:3433
 #, fuzzy, php-format
 msgid "Setting PHP Option %s = %s"
 msgstr "Configuración de la opción PHP%s =%s"
 
-#: lib/installer.php:3440
+#: lib/installer.php:3439
 #, fuzzy, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
 msgstr "Error al configurar la opción PHP%s, es%s (debería ser%s)"
 
-#: lib/installer.php:3459
+#: lib/installer.php:3458
 #, fuzzy
 msgid "No Remote Data Collectors found for full syncronization"
 msgstr "Recolector(es) de datos no encontrados al intentar sincronizarción"
@@ -14776,34 +14776,34 @@ msgstr "Ping TCP caducó tiempo de espera"
 msgid "Ping not performed due to setting."
 msgstr "Ping no realizado debido a la configuración."
 
-#: lib/plugins.php:562
+#: lib/plugins.php:581
 #, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "se requiere %s versión %s o superior para %s. "
 
-#: lib/plugins.php:566
+#: lib/plugins.php:585
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "Se requiere %s para %s, y no está instalado. "
 
-#: lib/plugins.php:582
+#: lib/plugins.php:603
 msgid "Plugin cannot be installed."
 msgstr "Plugin no puede ser instalado."
 
-#: lib/plugins.php:954 lib/plugins.php:961 plugins.php:367 plugins.php:447
+#: lib/plugins.php:1041 lib/plugins.php:1048 plugins.php:367 plugins.php:447
 msgid "Plugins"
 msgstr "Plugins"
 
-#: lib/plugins.php:972 lib/plugins.php:978
+#: lib/plugins.php:1060 lib/plugins.php:1066
 #, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "Requiere: Cacti >= %s"
 
-#: lib/plugins.php:975
+#: lib/plugins.php:1063
 msgid "Legacy Plugin"
 msgstr "Plugins legados 1.x"
 
-#: lib/plugins.php:1000
+#: lib/plugins.php:1088
 msgid "Not Stated"
 msgstr "No indicado"
 
@@ -15068,174 +15068,167 @@ msgstr "MySQL 5.6+ y MariaDB 10.0+ son muy buenas versiones para elegir. Asegúr
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "Se recomienda que habilites InnoDB en cualquier %s versión superior a 5.1."
 
-#: lib/utility.php:872
-msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-msgstr "Cuando use Cacti con otros idiomas que no sean Inglés, es importante usar el tipo de colación utf8_general_ci ya que algunos caracteres usan más de un simple Byte. Si está instalando Cacti, deténgase, haga los cambios y vuelva a empezar. Si su sistema Cacti ha estado ejecutándose y está en Producción, consulte internet por instrucciones para convertir las tablas de su base de datos si planea soportar otros idiomas."
+#: lib/utility.php:872 lib/utility.php:907
+msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
+msgstr "Cuando use Cacti con otros idiomas que no sean Inglés, es importante usar el tipo de colación utf8mb4_unicode_ci ya que algunos caracteres usan más de un simple Byte."
 
-#: lib/utility.php:878
-msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-msgstr "Usando Cacti con otros idiomas que no sean Inglés, es importante usar el set de caracteres utf8 ya que algunos caracteres toman mas que un simple byte. Si estas instalando Cacti por primera vez, detente, haz los cambios y comienza otra vez. Si tu Cacti ha estado corriendo y esta en produccion, mira en internet por instrucciones en convertir tus bases de datos y tablas si planeas soportar otros idiomas."
+#: lib/utility.php:878 lib/utility.php:884 lib/utility.php:913
+#: lib/utility.php:919
+msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
+msgstr "Cuando use Cacti con otros idiomas que no sean Inglés, es importante usar el tipo de colación utf8mb4 ya que algunos caracteres usan más de un simple Byte."
 
-#: lib/utility.php:889
+#: lib/utility.php:895
 #, php-format
 msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "Se recomienda que habilites InnoDB en cualquier %s versión superior a 5.1."
 
-#: lib/utility.php:901
-msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
-msgstr "Cuando use Cacti con otros idiomas que no sean Inglés, es importante usar el tipo de colación utf8mb4_unicode_ci ya que algunos caracteres usan más de un simple Byte."
-
-#: lib/utility.php:907
-msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
-msgstr "Cuando use Cacti con otros idiomas que no sean Inglés, es importante usar el tipo de colación utf8mb4 ya que algunos caracteres usan más de un simple Byte."
-
-#: lib/utility.php:916
+#: lib/utility.php:928
 #, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "Dependiendo en el número de logins y el uso de Spine como recolector de datos, %s necesitará muchas conexiones. El cálculo para Spine es: total_connections = total_processes * (total_threads + script_servers + 1), entonces debes dejar lugar para las conexiones de inicio de sesión de usuarios, que cambiará dependiendo del número de sesiones simultáneas."
 
-#: lib/utility.php:921
+#: lib/utility.php:933
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "Mantener tablas de cache grande significa menos operaciones de abrir/cerrar archivos cuando usas innodb_file_per_table."
 
-#: lib/utility.php:926
+#: lib/utility.php:938
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "Con funcionalidades de sondeo remoto, grandes cantidades de datos serán sincronizados desde el servidor principal a las sondas remotas. Por lo tanto configure este valor en 16M o superior."
 
-#: lib/utility.php:932
+#: lib/utility.php:944
 #, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "Si está utilizando Cacti Performance Booster y eligiendo un motor de almacenamiento en memoria, tiene que tener cuidado de vaciar el buffer de Boost antes que su sistema se quede sin espacio en la tabla de memoria. Esto es hecho de dos maneras, primero reduciendo el tamaño de la columna de salida al tamaño correcto. Esta columna está en las tablas poller_output y poller_output_boost. Lo segundo que puede hacer es proporcionar más memoria a las tablas de memoria. Hemos elegido arbitrariamente un valor recomendado del 10% de la memoria del sistema, pero si está usando discos SSD, o tiene un sistema más pequeño, puede ignorar esta recomendación o elegir un motor de almacenamiento diferente. Puede ver el consumo esperado de las tablas de Boost en Consola -> Utilidades de Sistema -> Ver estado de Boost."
 
-#: lib/utility.php:938
+#: lib/utility.php:950
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "Cuando se ejecutan sub consultas, teniendo una tabla temporal de  gran tamaño, conserva esas tablas temporales en memoria."
 
-#: lib/utility.php:944
+#: lib/utility.php:956
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file."
 msgstr "Cuando se ejecutan joins, si están por debajo de este tamaño, serán mantenidos en memoria y nunca serán escritos en un archivo temporal."
 
-#: lib/utility.php:950
+#: lib/utility.php:962
 #, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "Cuando use almacenamiento InnoDB es importante conservar el espacio de sus tablas separado. Esto hace que manejar las tablas sea más simple a largo plazo para usuarios de %s. Si se está ejecutando sin esto actualmente, puede migrar al almacenamiento por archivo habilitando la funcionalidad, y luego ejecutando una instrucción ALTER a todas las tablas InnoDB."
 
-#: lib/utility.php:956
+#: lib/utility.php:968
 #, fuzzy
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "Cuando se utiliza el archivo_de_innodb_por_tabla, es importante establecer el formato_de_archivo_de_innodb en Barracuda.  Esta configuración permitirá índices más largos, importantes para ciertas tablas de Cacti."
 
-#: lib/utility.php:962
+#: lib/utility.php:974
 #, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "Si sus tablas tienen índices muy grandes, debe operar con Barracuda innodb_file_format y innodb_large_prefix igual a 1. Si no lo hace, es posible que los complementos no puedan crear tablas correctamente."
 
-#: lib/utility.php:968
+#: lib/utility.php:980
 #, fuzzy, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "InnoDB contendrá tantas tablas e índices en la memoria del sistema como sea posible. Para eso, debería incrementar el valor de innodb_buffer_pool lo suficiente como para contener las tablas e índices en memoria. Comprobando el tamaño del directorio /var/lib/mysql/cacti ayudará a determinar este valor. Recomendamos 25% del total de memoria de su sistema, pero los requerimientos pueden variar dependiendo del tamaño del sistema."
 
-#: lib/utility.php:974
+#: lib/utility.php:986
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "Esta configuración debe permanecer ENCENDIDA a menos que sus instancias de Cacti se estén ejecutando en ZFS o FusionI / O, que tienen registros internos para adaptarse a fallas abruptas del sistema. Sin embargo, si tiene muy buena energía, y sus sistemas rara vez fallan y tiene copias de seguridad, desactivar esta configuración puede generar un aumento de casi un 50% en el rendimiento de la base de datos."
 
-#: lib/utility.php:979
+#: lib/utility.php:991
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "Esto es donde se almacenan los Metadatos. Si tuvieras un montón de tablas, sería útil incrementar este valor."
 
-#: lib/utility.php:984
+#: lib/utility.php:996
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "La base de datos podría quedar inaccesible debido a consultas no autorizadas. Elimina estas consultas no autorizadas antes de que afecten su sistema."
 
-#: lib/utility.php:989
+#: lib/utility.php:1001
 #, fuzzy
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "El máximo rendimiento de E/S se produce cuando se utiliza el método O_DIRECT para enjuagar las páginas."
 
-#: lib/utility.php:999
+#: lib/utility.php:1011
 #, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "Especificando este valor a 2 significa que vaciarás toda las transacciones cada segundo en lugar de cada consolidación. Esto permite a %s realizar escritura no tan seguido."
 
-#: lib/utility.php:1004
+#: lib/utility.php:1016
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "Con almacenamiento moderno SSD, teniendo multiples threads de entrada y salida es ventajoso para aplicaciones caracterizadas por gran uso de operaciones de entrada y salida."
 
-#: lib/utility.php:1012 lib/utility.php:1054
+#: lib/utility.php:1024 lib/utility.php:1066
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "A partir de %s %s, puede controlar cuan frecuente %s vuelca las transacciones a disco. Por defecto es 1 segundo, pero en sistemas de alto I/O, especificar un valor superior a 1 puede permitir que los I/O de disco sean más secuenciales"
 
-#: lib/utility.php:1017 lib/utility.php:1059
+#: lib/utility.php:1029 lib/utility.php:1071
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "Con tipos de almacenamiento moderno SSD, teniendo múltiples procesos I/O de lectura es ventajoso para aplicaciones caracterizadas por gran uso de operaciones de entrada y salida."
 
-#: lib/utility.php:1022 lib/utility.php:1064
+#: lib/utility.php:1034 lib/utility.php:1076
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "Con tipos de almacenamiento moderno SSD, teniendo múltiples procesos I/O de escritura es ventajoso para aplicaciones caracterizadas por gran uso de operaciones de entrada y salida."
 
-#: lib/utility.php:1028
+#: lib/utility.php:1040
 #, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64."
 msgstr "%s dividirá innodb_buffer_pool en regiones de memoria para mejorar el rendimiento. El valor máximo es 64. Cuando innodb_buffer_pool es inferior a 1GB, debería usar el tamaño del pool dividido por 128MB. Siga usando esta ecuación basándose en un máximo de 64."
 
-#: lib/utility.php:1034 lib/utility.php:1070
+#: lib/utility.php:1046 lib/utility.php:1082
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "Si tiene discos SSD, utilice esta sugerencia.  Si tiene discos duros físicos, use 200 * el número de unidades activas en el arreglo.  Si se utiliza NVMe o PCIe Flash, se pueden utilizar números mucho más grandes de hasta 100000."
 
-#: lib/utility.php:1040 lib/utility.php:1076
+#: lib/utility.php:1052 lib/utility.php:1088
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "Si tiene discos SSD, utilice esta sugerencia.  Si tiene discos duros físicos, use 2000 * el número de discos activos en el arreglo.  Si se utiliza NVMe o PCIe Flash, se pueden utilizar números mucho más grandes de hasta 200000."
 
-#: lib/utility.php:1046 lib/utility.php:1082
+#: lib/utility.php:1058 lib/utility.php:1094
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "Si tiene discos SSD, utilice esta sugerencia. De lo contrario, no configure esta opción."
 
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 #, php-format
 msgid "%s Tuning"
 msgstr "%s Optimización"
 
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 msgid "Note: Many changes below require a database restart"
 msgstr "Nota: muchos de los cambios a continuación requieren reiniciar la base de datos"
 
-#: lib/utility.php:1105
+#: lib/utility.php:1117
 msgid "Variable"
 msgstr "Variable"
 
-#: lib/utility.php:1106
+#: lib/utility.php:1118
 msgid "Current Value"
 msgstr "Valor actual"
 
-#: lib/utility.php:1108
+#: lib/utility.php:1120
 msgid "Recommended Value"
 msgstr "Valor recomendado"
 
-#: lib/utility.php:1109
+#: lib/utility.php:1121
 msgid "Comments"
 msgstr "Comentarios"
 
-#: lib/utility.php:1519
+#: lib/utility.php:1531
 #, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP %s es la versión mínima"
 
-#: lib/utility.php:1521
+#: lib/utility.php:1533
 #, fuzzy, php-format
 msgid "A minimum of %s memory limit"
 msgstr "Mínimo límite de memoria %s"
 
-#: lib/utility.php:1523
+#: lib/utility.php:1535
 #, php-format
 msgid "A minimum of %s m execution time"
 msgstr "Mínimo tiempo de ejecución %s"
 
-#: lib/utility.php:1525
+#: lib/utility.php:1537
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "Una zona horaria válida que coincida con MySQL y el sistema"
@@ -18264,6 +18257,12 @@ msgstr "Número de Plantillas de gráficos usando este VDEF."
 #: vdef.php:912
 msgid "No VDEFs"
 msgstr "No VDEFs"
+
+#~ msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
+#~ msgstr "Cuando use Cacti con otros idiomas que no sean Inglés, es importante usar el tipo de colación utf8_general_ci ya que algunos caracteres usan más de un simple Byte. Si está instalando Cacti, deténgase, haga los cambios y vuelva a empezar. Si su sistema Cacti ha estado ejecutándose y está en Producción, consulte internet por instrucciones para convertir las tablas de su base de datos si planea soportar otros idiomas."
+
+#~ msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
+#~ msgstr "Usando Cacti con otros idiomas que no sean Inglés, es importante usar el set de caracteres utf8 ya que algunos caracteres toman mas que un simple byte. Si estas instalando Cacti por primera vez, detente, haz los cambios y comienza otra vez. Si tu Cacti ha estado corriendo y esta en produccion, mira en internet por instrucciones en convertir tus bases de datos y tablas si planeas soportar otros idiomas."
 
 #~ msgid "%d Samples"
 #~ msgstr "%d muestras"

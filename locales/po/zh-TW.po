@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2020-10-19 20:03-0400\n"
+"POT-Creation-Date: 2020-10-28 16:57-0400\n"
 "PO-Revision-Date: 2020-09-13 19:56-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -431,16 +431,16 @@ msgstr "聚合圖設置"
 msgid "Aggregate Preview %s"
 msgstr "匯總預覽[％s]"
 
-#: aggregate_graphs.php:781 graph.php:546 graphs.php:1607
+#: aggregate_graphs.php:781 graph.php:554 graphs.php:1607
 #, fuzzy
 msgid "RRDtool Command:"
 msgstr "RRDtool命令："
 
-#: aggregate_graphs.php:783 graph.php:559 graphs.php:1611
+#: aggregate_graphs.php:783 graph.php:563 graphs.php:1611
 msgid "Not Checked"
 msgstr "檢查 "
 
-#: aggregate_graphs.php:783 graph.php:554 graphs.php:1609
+#: aggregate_graphs.php:783 graph.php:559 graphs.php:1609
 #, fuzzy
 msgid "RRDtool Says:"
 msgstr "RRDtool說："
@@ -685,7 +685,7 @@ msgstr "否"
 #: host_templates.php:875 include/global_settings.php:495
 #: include/global_settings.php:802 include/global_settings.php:1636
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
-#: lib/installer.php:3423 links.php:404 tree.php:2102 tree.php:2103
+#: lib/installer.php:3422 links.php:404 tree.php:2102 tree.php:2103
 #: user_admin.php:2347 user_domains.php:762 user_domains.php:766
 #: user_group_admin.php:1923 vdef.php:905
 msgid "Yes"
@@ -2771,7 +2771,7 @@ msgstr "樹創建標準"
 msgid "Change Leaf Type"
 msgstr "改變葉子類型"
 
-#: automation_tree_rules.php:706 lib/installer.php:3612 utilities.php:2240
+#: automation_tree_rules.php:706 lib/installer.php:3611 utilities.php:2240
 #: utilities.php:2241 utilities.php:2244 utilities.php:2245
 msgid "WARNING:"
 msgstr "警告："
@@ -4872,46 +4872,46 @@ msgstr "使用此GPRINT的圖表模板數。"
 msgid "No GPRINT Presets"
 msgstr "沒有GPRINT預設"
 
-#: graph.php:102
+#: graph.php:100
 #, fuzzy
 msgid "Viewing Graph"
 msgstr "查看圖表"
 
-#: graph.php:132 lib/html.php:435
+#: graph.php:138 lib/html.php:435
 #, fuzzy
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "圖形詳細信息，縮放和調試實用程序"
 
-#: graph.php:133
+#: graph.php:139
 msgid "CSV Export"
 msgstr "CSV匯出"
 
-#: graph.php:134 lib/html.php:454 lib/html.php:456
+#: graph.php:140 lib/html.php:454 lib/html.php:456
 #, fuzzy
 msgid "Click to view just this Graph in Real-time"
 msgstr "單擊以實時查看此圖表"
 
-#: graph.php:245 lib/html.php:2403
+#: graph.php:253 lib/html.php:2403
 #, fuzzy
 msgid "Utility View"
 msgstr "實用視圖"
 
-#: graph.php:350
+#: graph.php:358
 #, fuzzy
 msgid "Graph Utility View"
 msgstr "圖表工具視圖"
 
-#: graph.php:363
+#: graph.php:371
 #, fuzzy
 msgid "Graph Source/Properties"
 msgstr "圖源/屬性"
 
-#: graph.php:367
+#: graph.php:375
 #, fuzzy
 msgid "Graph Data"
 msgstr "圖數據"
 
-#: graph.php:544
+#: graph.php:552
 #, fuzzy
 msgid "RRDtool Graph Syntax"
 msgstr "RRDtool圖形語法"
@@ -6042,7 +6042,7 @@ msgid "Recovering"
 msgstr "正在復原"
 
 #: host.php:1598 lib/api_automation.php:175 lib/api_automation.php:1101
-#: lib/html_utility.php:943 lib/plugins.php:998 lib/plugins.php:999
+#: lib/html_utility.php:943 lib/plugins.php:1086 lib/plugins.php:1087
 #: lib/rrd.php:2919 lib/rrd.php:2931 user_admin.php:820 utilities.php:216
 #: utilities.php:217 utilities.php:2241
 msgid "Unknown"
@@ -7319,7 +7319,7 @@ msgid "Export Templates"
 msgstr "導出模板"
 
 #: include/global_arrays.php:927 include/global_arrays.php:949
-#: include/global_arrays.php:967 lib/plugins.php:954
+#: include/global_arrays.php:967 lib/plugins.php:1041
 msgid "Configuration"
 msgstr "組態"
 
@@ -8521,7 +8521,7 @@ msgid "Tree Rule Items"
 msgstr "樹規則項"
 
 #: include/global_arrays.php:2687 include/global_arrays.php:2703
-#: lib/api_device.php:1090
+#: lib/api_device.php:1142
 msgid "days"
 msgstr "天"
 
@@ -8537,11 +8537,11 @@ msgstr "分鐘"
 msgid "secs"
 msgstr "秒"
 
-#: include/global_arrays.php:2704 lib/api_device.php:1090
+#: include/global_arrays.php:2704 lib/api_device.php:1142
 msgid "hours"
 msgstr "小時"
 
-#: include/global_arrays.php:2705 lib/api_device.php:1090
+#: include/global_arrays.php:2705 lib/api_device.php:1142
 msgid "minutes"
 msgstr "分鐘"
 
@@ -11325,7 +11325,7 @@ msgstr "字體選擇方法"
 msgid "How do you wish fonts to be handled by default?"
 msgstr "您希望默認情況下如何處理字體？"
 
-#: include/global_settings.php:976 lib/api_device.php:1056
+#: include/global_settings.php:976 lib/api_device.php:1108
 msgid "System"
 msgstr "取得系統報表"
 
@@ -13425,82 +13425,82 @@ msgstr "規則項[％s的新規則項：％s]"
 msgid "Added by Cacti Automation"
 msgstr "由Cacti Automation添加"
 
-#: lib/api_device.php:986
+#: lib/api_device.php:1038
 #, fuzzy
 msgid "ERROR: Device ID is Blank"
 msgstr "錯誤：設備ID為空"
 
-#: lib/api_device.php:997 lib/api_device.php:999
+#: lib/api_device.php:1049 lib/api_device.php:1051
 #, fuzzy
 msgid "ERROR: Device["
 msgstr "錯誤：設備["
 
-#: lib/api_device.php:1020
+#: lib/api_device.php:1072
 #, fuzzy
 msgid "ERROR: Failed to connect to remote collector."
 msgstr "錯誤：無法連接到遠程收集器。"
 
-#: lib/api_device.php:1027
+#: lib/api_device.php:1079
 #, fuzzy
 msgid "Device is Disabled"
 msgstr "設備已禁用"
 
-#: lib/api_device.php:1028
+#: lib/api_device.php:1080
 #, fuzzy
 msgid "Device Availability Check Bypassed"
 msgstr "設備可用性檢查旁路"
 
-#: lib/api_device.php:1035
+#: lib/api_device.php:1087
 #, fuzzy
 msgid "SNMP Information"
 msgstr "SNMP信息"
 
-#: lib/api_device.php:1039
+#: lib/api_device.php:1091
 #, fuzzy
 msgid "SNMP not in use"
 msgstr "SNMP未使用"
 
-#: lib/api_device.php:1048 lib/api_device.php:1056 lib/api_device.php:1071
+#: lib/api_device.php:1100 lib/api_device.php:1108 lib/api_device.php:1123
 #, fuzzy
 msgid "SNMP error"
 msgstr "SNMP錯誤"
 
-#: lib/api_device.php:1048
+#: lib/api_device.php:1100
 msgid "Session"
 msgstr "課堂"
 
-#: lib/api_device.php:1071
+#: lib/api_device.php:1123
 msgid "Host"
 msgstr "主機"
 
-#: lib/api_device.php:1082
+#: lib/api_device.php:1134
 #, fuzzy
 msgid "System:"
 msgstr "取得系統報表"
 
-#: lib/api_device.php:1089
+#: lib/api_device.php:1141
 #, fuzzy
 msgid "Uptime:"
 msgstr "運行時間"
 
-#: lib/api_device.php:1091
+#: lib/api_device.php:1143
 msgid "Hostname:"
 msgstr "主機名稱："
 
-#: lib/api_device.php:1092
+#: lib/api_device.php:1144
 msgid "Location:"
 msgstr "地點:"
 
-#: lib/api_device.php:1093
+#: lib/api_device.php:1145
 msgid "Contact:"
 msgstr "聯繫方式："
 
-#: lib/api_device.php:1124 lib/functions.php:3961 lib/functions.php:3963
+#: lib/api_device.php:1176 lib/functions.php:3961 lib/functions.php:3963
 #: lib/functions.php:3967
 msgid "Ping Results"
 msgstr "Ping結果"
 
-#: lib/api_device.php:1129
+#: lib/api_device.php:1181
 #, fuzzy
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "無Ping或SNMP可用性檢查正在使用中"
@@ -14146,7 +14146,7 @@ msgid "User Community"
 msgstr "用戶社區"
 
 #: lib/functions.php:2398 lib/functions.php:2415 lib/html.php:2412
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 msgid "Documentation"
 msgstr "文件"
 
@@ -15513,7 +15513,7 @@ msgstr "糟糕的UTF-8錯誤！"
 msgid "Bad UTF-8 offset error!"
 msgstr "錯誤的UTF-8偏移錯誤！"
 
-#: lib/html_utility.php:940 lib/installer.php:1803 lib/installer.php:3534
+#: lib/html_utility.php:940 lib/installer.php:1803 lib/installer.php:3533
 msgid "Error"
 msgstr "錯誤"
 
@@ -15862,7 +15862,7 @@ msgid "Location checks"
 msgstr "位置檢查"
 
 #: lib/installer.php:1753 lib/installer.php:1891 lib/installer.php:1895
-#: lib/installer.php:2050 lib/installer.php:2055 lib/installer.php:3631
+#: lib/installer.php:2050 lib/installer.php:2055 lib/installer.php:3630
 msgid "ERROR:"
 msgstr "錯誤:"
 
@@ -16570,253 +16570,253 @@ msgstr "您的Cacti Server v％s已安裝/更新。您現在可以開始使用�
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr "您的Cacti Server v％s已安裝/更新時出錯"
 
-#: lib/installer.php:2838
+#: lib/installer.php:2837
 msgid "Get Help"
 msgstr "取得說明"
 
-#: lib/installer.php:2843
+#: lib/installer.php:2842
 #, fuzzy
 msgid "Report Issue"
 msgstr "報告問題"
 
-#: lib/installer.php:2846
+#: lib/installer.php:2845
 msgid "Get Started"
 msgstr "開始使用"
 
-#: lib/installer.php:2875
+#: lib/installer.php:2874
 #, fuzzy, php-format
 msgid "Starting %s Process for v%s"
 msgstr "為v％s啟動％s流程"
 
-#: lib/installer.php:2900
+#: lib/installer.php:2899
 #, fuzzy, php-format
 msgid "Finished %s Process for v%s"
 msgstr "v％s完成的％s處理"
 
-#: lib/installer.php:2937
+#: lib/installer.php:2936
 #, fuzzy, php-format
 msgid "Found %s templates to install"
 msgstr "找到了要安裝的％s模板"
 
-#: lib/installer.php:2947
+#: lib/installer.php:2946
 #, fuzzy, php-format
 msgid "About to import Package #%s '%s'."
 msgstr "即將導入軟件包＃％s'％s'。"
 
-#: lib/installer.php:2954
+#: lib/installer.php:2953
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
 msgstr "已成功在配置文件'％s'下導入軟件包＃％s'％s'"
 
-#: lib/installer.php:2960
+#: lib/installer.php:2959
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr "在配置文件“％s”下導入軟件包＃％s“％s”失敗"
 
-#: lib/installer.php:2975
+#: lib/installer.php:2974
 #, fuzzy, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
 msgstr "[已刪除模板]的自動化模板"
 
-#: lib/installer.php:2992
+#: lib/installer.php:2991
 #, fuzzy
 msgid "No templates were selected for import"
 msgstr "未選擇要導入的模板"
 
-#: lib/installer.php:3001
+#: lib/installer.php:3000
 #, fuzzy
 msgid "Updating remote configuration file"
 msgstr "等待配置"
 
-#: lib/installer.php:3033
+#: lib/installer.php:3032
 #, fuzzy, php-format
 msgid "Setting default data source profile to %s (%s)"
 msgstr "此數據模板的默認數據源配置文件。"
 
-#: lib/installer.php:3055
+#: lib/installer.php:3054
 #, fuzzy, php-format
 msgid "Failed to find selected profile (%s), no changes were made"
 msgstr "無法應用指定的配置文件％s！=％s"
 
-#: lib/installer.php:3064
+#: lib/installer.php:3063
 #, fuzzy, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr "更新自動化網絡（％s），模式“％s” =>“％s”，子網“％s” =>％s“"
 
-#: lib/installer.php:3074
+#: lib/installer.php:3073
 #, fuzzy
 msgid "Failed to find automation network, no changes were made"
 msgstr "找不到自動化網絡，未進行任何更改"
 
-#: lib/installer.php:3078
+#: lib/installer.php:3077
 #, fuzzy
 msgid "Adding extra snmp settings for automation"
 msgstr "添加額外的snmp設置以實現自動化"
 
-#: lib/installer.php:3084
+#: lib/installer.php:3083
 #, fuzzy, php-format
 msgid "Selecting Automation Option Set %s"
 msgstr "刪除自動化模板"
 
-#: lib/installer.php:3097
+#: lib/installer.php:3096
 #, fuzzy, php-format
 msgid "Updating Automation Option Set %s"
 msgstr "自動化SNMP選項"
 
-#: lib/installer.php:3100
+#: lib/installer.php:3099
 #, fuzzy, php-format
 msgid "Successfully updated Automation Option Set %s"
 msgstr "成功更新了自動化選項集％s"
 
-#: lib/installer.php:3102
+#: lib/installer.php:3101
 #, fuzzy, php-format
 msgid "Resequencing Automation Option Set %s"
 msgstr "在設備上運行自動化"
 
-#: lib/installer.php:3108
+#: lib/installer.php:3107
 #, fuzzy, php-format
 msgid "Failed to updated Automation Option Set %s"
 msgstr "無法應用指定的自動化範圍"
 
-#: lib/installer.php:3111
+#: lib/installer.php:3110
 #, fuzzy
 msgid "Failed to find any automation option set"
 msgstr "無法找到要復制的數據！"
 
-#: lib/installer.php:3141
+#: lib/installer.php:3140
 #, fuzzy, php-format
 msgid "Device Template for First Cacti Device is %s"
 msgstr "設備模板[編輯：％s]"
 
-#: lib/installer.php:3167
+#: lib/installer.php:3166
 #, fuzzy
 msgid "Creating Graphs for Default Device"
 msgstr "為此設備創建圖表"
 
-#: lib/installer.php:3174
+#: lib/installer.php:3173
 #, fuzzy
 msgid "Adding Device to Default Tree"
 msgstr "設備默認值"
 
-#: lib/installer.php:3182
+#: lib/installer.php:3181
 #, fuzzy
 msgid "No templated graphs for Default Device were found"
 msgstr "找不到默認設備的模板化圖"
 
-#: lib/installer.php:3186
+#: lib/installer.php:3185
 #, fuzzy
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
 msgstr "警告：找不到您的操作系統的設備模板。您將需要導入設備模板或Cacti軟件包來監視您的Cacti服務器。"
 
-#: lib/installer.php:3193
+#: lib/installer.php:3192
 #, fuzzy
 msgid "Running first-time data query for local host"
 msgstr "運行本地主機的首次數據查詢"
 
-#: lib/installer.php:3201
+#: lib/installer.php:3200
 #, fuzzy
 msgid "Repopulating poller cache"
 msgstr "重建輪詢器緩存"
 
-#: lib/installer.php:3206
+#: lib/installer.php:3205
 #, fuzzy
 msgid "Repopulating SNMP Agent cache"
 msgstr "重建SNMPAgent緩存"
 
-#: lib/installer.php:3211
+#: lib/installer.php:3210
 #, fuzzy
 msgid "Generating RSA Key Pair"
 msgstr "生成RSA密鑰對"
 
-#: lib/installer.php:3223
+#: lib/installer.php:3222
 #, fuzzy, php-format
 msgid "Found %s tables to convert"
 msgstr "找到要轉換的％s表"
 
-#: lib/installer.php:3230
+#: lib/installer.php:3229
 #, fuzzy, php-format
 msgid "Converting Table #%s '%s'"
 msgstr "轉換錶＃％s'％s'"
 
-#: lib/installer.php:3245
+#: lib/installer.php:3244
 #, fuzzy
 msgid "No tables where found or selected for conversion"
 msgstr "沒有找到或選擇要轉換的表"
 
-#: lib/installer.php:3256
+#: lib/installer.php:3255
 #, fuzzy, php-format
 msgid "Switched from %s to %s"
 msgstr "從％s切換到％s"
 
-#: lib/installer.php:3260
+#: lib/installer.php:3259
 #, fuzzy, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
 msgstr "注意：使用臨時文件進行數據庫高速緩存：％s"
 
-#: lib/installer.php:3282
+#: lib/installer.php:3281
 #, fuzzy, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
 msgstr "從v％s（數據庫％s）升級到v％s"
 
-#: lib/installer.php:3290
+#: lib/installer.php:3289
 #, fuzzy, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
 msgstr "警告：無法找到v％s的升級功能"
 
-#: lib/installer.php:3349
+#: lib/installer.php:3348
 #, fuzzy
 msgid "Install aborted due to no EULA acceptance"
 msgstr "由於未接受EULA，安裝被中止"
 
-#: lib/installer.php:3369
+#: lib/installer.php:3368
 #, fuzzy, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr "後台已在％s開始，此嘗試已在％s跳過"
 
-#: lib/installer.php:3389
+#: lib/installer.php:3388
 #, fuzzy, php-format
 msgid "Exception occurred during installation: #%s - %s"
 msgstr "安裝期間發生異常：＃"
 
-#: lib/installer.php:3398
+#: lib/installer.php:3397
 #, fuzzy, php-format
 msgid "Installation was started at %s, completed at %s"
 msgstr "安裝在％s開始，在％s完成"
 
-#: lib/installer.php:3425
+#: lib/installer.php:3424
 msgid "Both"
 msgstr "兩者"
 
-#: lib/installer.php:3425
+#: lib/installer.php:3424
 #, fuzzy, php-format
 msgid "No - %s"
 msgstr "%s Minutes"
 
-#: lib/installer.php:3427 lib/installer.php:3429
+#: lib/installer.php:3426 lib/installer.php:3428
 #, fuzzy, php-format
 msgid "%s - No"
 msgstr "%s Minutes"
 
-#: lib/installer.php:3427
+#: lib/installer.php:3426
 msgid "Web"
 msgstr "網頁"
 
-#: lib/installer.php:3429
+#: lib/installer.php:3428
 #, fuzzy
 msgid "Cli"
 msgstr "經典"
 
-#: lib/installer.php:3434
+#: lib/installer.php:3433
 #, fuzzy, php-format
 msgid "Setting PHP Option %s = %s"
 msgstr "設置PHP選項％s =％s"
 
-#: lib/installer.php:3440
+#: lib/installer.php:3439
 #, fuzzy, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
 msgstr "無法設置PHP選項％s，為％s（應為％s）"
 
-#: lib/installer.php:3459
+#: lib/installer.php:3458
 #, fuzzy
 msgid "No Remote Data Collectors found for full syncronization"
 msgstr "嘗試同步時找不到數據收集器"
@@ -16980,36 +16980,36 @@ msgstr "TCP ping超時"
 msgid "Ping not performed due to setting."
 msgstr "由於設置，Ping未執行。"
 
-#: lib/plugins.php:562
+#: lib/plugins.php:581
 #, fuzzy, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "％s版本％s或以上是％s所必需的。"
 
-#: lib/plugins.php:566
+#: lib/plugins.php:585
 #, fuzzy, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "％s是必需的，並且未安裝。"
 
-#: lib/plugins.php:582
+#: lib/plugins.php:603
 #, fuzzy
 msgid "Plugin cannot be installed."
 msgstr "插件無法安裝。"
 
-#: lib/plugins.php:954 lib/plugins.php:961 plugins.php:367 plugins.php:447
+#: lib/plugins.php:1041 lib/plugins.php:1048 plugins.php:367 plugins.php:447
 msgid "Plugins"
 msgstr "外掛"
 
-#: lib/plugins.php:972 lib/plugins.php:978
+#: lib/plugins.php:1060 lib/plugins.php:1066
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "需要：Cacti&gt; =％s"
 
-#: lib/plugins.php:975
+#: lib/plugins.php:1063
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "傳統插件"
 
-#: lib/plugins.php:1000
+#: lib/plugins.php:1088
 #, fuzzy
 msgid "Not Stated"
 msgstr "沒有說明"
@@ -17298,189 +17298,180 @@ msgstr "MySQL 5.6+和MariaDB 10.0+是很棒的版本，是非常好的版本。�
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "建議您在大於5.1的任何％s版本中啟用InnoDB。"
 
-#: lib/utility.php:872
-#, fuzzy
-msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-msgstr "將Cacti與英語以外的語言一起使用時，使用utf8_general_ci排序規則類型非常重要，因為某些字符佔用多個字節。如果您剛剛安裝Cacti，請停止，進行更改並重新開始。如果您的Cacti已經運行並且正在生產中，如果您計劃支持其他語言，請訪問互聯網以獲取有關轉換數據庫和表格的說明。"
-
-#: lib/utility.php:878
-#, fuzzy
-msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-msgstr "將Cacti與英語以外的語言一起使用時，使用utf8字符集非常重要，因為某些字符需要多個字節。如果您剛剛安裝Cacti，請停止，進行更改並重新開始。如果您的Cacti已經運行並且正在生產中，如果您計劃支持其他語言，請訪問互聯網以獲取有關轉換數據庫和表格的說明。"
-
-#: lib/utility.php:889
-#, fuzzy, php-format
-msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
-msgstr "建議您在大於5.1的任何％s版本中啟用InnoDB。"
-
-#: lib/utility.php:901
+#: lib/utility.php:872 lib/utility.php:907
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
 msgstr "將Cacti與英語以外的語言一起使用時，使用utf8mb4_unicode_ci校對類型非常重要，因為某些字符需要多個字節。"
 
-#: lib/utility.php:907
+#: lib/utility.php:878 lib/utility.php:884 lib/utility.php:913
+#: lib/utility.php:919
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
 msgstr "將Cacti與英語以外的語言一起使用時，使用utf8mb4字符集非常重要，因為某些字符需要多個字節。"
 
-#: lib/utility.php:916
+#: lib/utility.php:895
+#, fuzzy, php-format
+msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
+msgstr "建議您在大於5.1的任何％s版本中啟用InnoDB。"
+
+#: lib/utility.php:928
 #, fuzzy, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "根據登錄次數和使用脊椎數據收集器，％s將需要許多連接。 spine的計算是：total_connections = total_processes *（total_threads + script_servers + 1），然後您必須為用戶連接留出空間，這將根據並發登錄帳戶的數量而變化。"
 
-#: lib/utility.php:921
+#: lib/utility.php:933
 #, fuzzy
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "使用innodb_file_per_table時，保持表緩存更大意味著更少的文件打開/關閉操作。"
 
-#: lib/utility.php:926
+#: lib/utility.php:938
 #, fuzzy
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "使用遠程輪詢功能，大量數據將從主服務器同步到遠程輪詢器。因此，請將此值保持在16M或以上。"
 
-#: lib/utility.php:932
+#: lib/utility.php:944
 #, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "如果使用Cacti Performance Booster並選擇內存存儲引擎，則必須小心在系統內存表空間耗盡之前刷新Performance Booster緩衝區。這有兩種方法，首先將輸出列的大小減小到恰當的大小。此列位於表poller_output和poller_output_boost中。您可以做的第二件事是為內存表分配更多內存。我們已經任意選擇了10 %%系統內存的推薦值，但如果您使用的是SSD磁盤驅動器，或者係統較小，則可以忽略此建議或選擇其他存儲引擎。您可能會在Console  - &gt; System Utilities  - &gt; View Boost Status下看到Performance Booster表的預期消耗。"
 
-#: lib/utility.php:938
+#: lib/utility.php:950
 #, fuzzy
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "執行子查詢時，臨時表大小較大時，請將這些臨時表保留在內存中。"
 
-#: lib/utility.php:944
+#: lib/utility.php:956
 #, fuzzy
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file."
 msgstr "執行連接時，如果它們低於此大小，它們將保留在內存中，並且永遠不會寫入臨時文件。"
 
-#: lib/utility.php:950
+#: lib/utility.php:962
 #, fuzzy, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "使用InnoDB存儲時，將表空間分開是很重要的。這使得對於％s的長時間用戶來說，管理表更簡單。如果您當前正在運行此服務，則可以通過啟用該功能，然後在所有InnoDB表上運行alter語句來遷移到每個文件存儲。"
 
-#: lib/utility.php:956
+#: lib/utility.php:968
 #, fuzzy
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "使用innodb_file_per_table時，將innodb_file_format設置為Barracuda非常重要。此設置將允許更長的索引對某些Cacti表很重要。"
 
-#: lib/utility.php:962
+#: lib/utility.php:974
 #, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "如果表的索引很大，則必須使用梭子魚的innodb_file_format和innodb_large_prefix等於1的操作。否則可能導致插件無法正確創建表。"
 
-#: lib/utility.php:968
+#: lib/utility.php:980
 #, fuzzy, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "InnoDB將盡可能多地保存系統內存中的表和索引。因此，你應該使innodb_buffer_pool足夠大，以便在內存中保存盡可能多的表和索引。檢查/ var / lib / mysql / cacti目錄的大小將有助於確定此值。我們建議您的系統總內存佔25 %%，但您的要求會因係統大小而異。"
 
-#: lib/utility.php:974
+#: lib/utility.php:986
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "除非您的Cacti實例在ZFS或FusionI / O上運行，並且兩者都具有內部日記功能以適應突然的系統崩潰，否則此設置應保持為ON。但是，如果您的電源非常好，並且系統很少宕機並且有備份，那麼將此設置設置為OFF可以使數據庫性能提高近50％。"
 
-#: lib/utility.php:979
+#: lib/utility.php:991
 #, fuzzy
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "這是存儲元數據的地方。如果你有很多表，那麼增加它會很有用。"
 
-#: lib/utility.php:984
+#: lib/utility.php:996
 #, fuzzy
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "Rogue查詢不應該讓數據庫脫機到其他人。在殺死您的系統之前殺死這些查詢。"
 
-#: lib/utility.php:989
+#: lib/utility.php:1001
 #, fuzzy
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "使用O_DIRECT方法刷新頁面時，會發生最大I / O性能。"
 
-#: lib/utility.php:999
+#: lib/utility.php:1011
 #, fuzzy, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "將此值設置為2意味著您將每秒刷新所有事務而不是提交。這允許％s更少地執行寫入。"
 
-#: lib/utility.php:1004
+#: lib/utility.php:1016
 #, fuzzy
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1012 lib/utility.php:1054
+#: lib/utility.php:1024 lib/utility.php:1066
 #, fuzzy, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "從％s％s開始，您可以控制％s將事務刷新到磁盤的頻率。默認值為1秒，但在高I / O系統中設置為大於1的值可以允許磁盤I / O更順序"
 
-#: lib/utility.php:1017 lib/utility.php:1059
+#: lib/utility.php:1029 lib/utility.php:1071
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個讀取io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1022 lib/utility.php:1064
+#: lib/utility.php:1034 lib/utility.php:1076
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個寫入io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1028
+#: lib/utility.php:1040
 #, fuzzy, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64."
 msgstr "％s會將innodb_buffer_pool劃分為內存區域以提高性能。最大值為64.當你的innodb_buffer_pool小於1GB時，你應該使用池大小除以128MB。繼續使用此公式，最大值為64。"
 
-#: lib/utility.php:1034 lib/utility.php:1070
+#: lib/utility.php:1046 lib/utility.php:1082
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "如果您有SSD磁盤，請使用此建議。如果您有物理硬盤驅動器，請使用200 *陣列中的活動驅動器數量。如果使用NVMe或PCIe閃存，可以使用高達100000的更大數字。"
 
-#: lib/utility.php:1040 lib/utility.php:1076
+#: lib/utility.php:1052 lib/utility.php:1088
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "如果您有SSD磁盤，請使用此建議。如果您有物理硬盤驅動器，請使用2000 *陣列中的活動驅動器數量。如果使用NVMe或PCIe Flash，則可以使用高達200000的更大數字。"
 
-#: lib/utility.php:1046 lib/utility.php:1082
+#: lib/utility.php:1058 lib/utility.php:1094
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "如果您有SSD磁盤，請使用此建議。否則，請勿設置此設置。"
 
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "％s調整"
 
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "注意：以下許多更改都需要重新啟動數據庫"
 
-#: lib/utility.php:1105
+#: lib/utility.php:1117
 msgid "Variable"
 msgstr "变数"
 
-#: lib/utility.php:1106
+#: lib/utility.php:1118
 msgid "Current Value"
 msgstr "當前的數值"
 
-#: lib/utility.php:1108
+#: lib/utility.php:1120
 #, fuzzy
 msgid "Recommended Value"
 msgstr "推薦值"
 
-#: lib/utility.php:1109
+#: lib/utility.php:1121
 msgid "Comments"
 msgstr "評論"
 
-#: lib/utility.php:1519
+#: lib/utility.php:1531
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP％s是最小版本"
 
-#: lib/utility.php:1521
+#: lib/utility.php:1533
 #, fuzzy, php-format
 msgid "A minimum of %s memory limit"
 msgstr "至少％s MB內存限制"
 
-#: lib/utility.php:1523
+#: lib/utility.php:1535
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "至少％sm執行時間"
 
-#: lib/utility.php:1525
+#: lib/utility.php:1537
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "與MySQL和系統匹配的有效時區"
@@ -20961,6 +20952,14 @@ msgstr "使用此VDEF的圖表模板數。"
 #, fuzzy
 msgid "No VDEFs"
 msgstr "沒有VDEF"
+
+#, fuzzy
+#~ msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
+#~ msgstr "將Cacti與英語以外的語言一起使用時，使用utf8_general_ci排序規則類型非常重要，因為某些字符佔用多個字節。如果您剛剛安裝Cacti，請停止，進行更改並重新開始。如果您的Cacti已經運行並且正在生產中，如果您計劃支持其他語言，請訪問互聯網以獲取有關轉換數據庫和表格的說明。"
+
+#, fuzzy
+#~ msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
+#~ msgstr "將Cacti與英語以外的語言一起使用時，使用utf8字符集非常重要，因為某些字符需要多個字節。如果您剛剛安裝Cacti，請停止，進行更改並重新開始。如果您的Cacti已經運行並且正在生產中，如果您計劃支持其他語言，請訪問互聯網以獲取有關轉換數據庫和表格的說明。"
 
 #, fuzzy
 #~ msgid "%d Samples"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2020-10-19 20:03-0400\n"
+"POT-Creation-Date: 2020-10-28 16:57-0400\n"
 "PO-Revision-Date: 2020-09-13 17:53-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -430,17 +430,17 @@ msgstr "اعدادات الرسم الكلي"
 msgid "Aggregate Preview %s"
 msgstr "معاينة التجميع [٪ s]"
 
-#: aggregate_graphs.php:781 graph.php:546 graphs.php:1607
+#: aggregate_graphs.php:781 graph.php:554 graphs.php:1607
 #, fuzzy
 msgid "RRDtool Command:"
 msgstr "الأمر RRDtool:"
 
-#: aggregate_graphs.php:783 graph.php:559 graphs.php:1611
+#: aggregate_graphs.php:783 graph.php:563 graphs.php:1611
 #, fuzzy
 msgid "Not Checked"
 msgstr "لا الشيكات"
 
-#: aggregate_graphs.php:783 graph.php:554 graphs.php:1609
+#: aggregate_graphs.php:783 graph.php:559 graphs.php:1609
 #, fuzzy
 msgid "RRDtool Says:"
 msgstr "RRDtool يقول:"
@@ -685,7 +685,7 @@ msgstr "لا"
 #: host_templates.php:875 include/global_settings.php:495
 #: include/global_settings.php:802 include/global_settings.php:1636
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
-#: lib/installer.php:3423 links.php:404 tree.php:2102 tree.php:2103
+#: lib/installer.php:3422 links.php:404 tree.php:2102 tree.php:2103
 #: user_admin.php:2347 user_domains.php:762 user_domains.php:766
 #: user_group_admin.php:1923 vdef.php:905
 msgid "Yes"
@@ -2772,7 +2772,7 @@ msgstr "معايير إنشاء الشجرة"
 msgid "Change Leaf Type"
 msgstr "تغيير نوع ورقة"
 
-#: automation_tree_rules.php:706 lib/installer.php:3612 utilities.php:2240
+#: automation_tree_rules.php:706 lib/installer.php:3611 utilities.php:2240
 #: utilities.php:2241 utilities.php:2244 utilities.php:2245
 msgid "WARNING:"
 msgstr "تحذير:"
@@ -5039,46 +5039,46 @@ msgstr "عدد قوالب الرسوم البيانية باستخدام GPRINT 
 msgid "No GPRINT Presets"
 msgstr "لا GPRINT المسبقة"
 
-#: graph.php:102
+#: graph.php:100
 #, fuzzy
 msgid "Viewing Graph"
 msgstr "عرض الرسم البياني"
 
-#: graph.php:132 lib/html.php:435
+#: graph.php:138 lib/html.php:435
 #, fuzzy
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "تفاصيل الرسم البياني ، وتصغير المرافق وتصحيح الأخطاء"
 
-#: graph.php:133
+#: graph.php:139
 msgid "CSV Export"
 msgstr "تصديرCSV"
 
-#: graph.php:134 lib/html.php:454 lib/html.php:456
+#: graph.php:140 lib/html.php:454 lib/html.php:456
 #, fuzzy
 msgid "Click to view just this Graph in Real-time"
 msgstr "انقر لعرض هذا الرسم البياني في الوقت الفعلي"
 
-#: graph.php:245 lib/html.php:2403
+#: graph.php:253 lib/html.php:2403
 #, fuzzy
 msgid "Utility View"
 msgstr "عرض الأداة المساعدة"
 
-#: graph.php:350
+#: graph.php:358
 #, fuzzy
 msgid "Graph Utility View"
 msgstr "عرض أداة الرسم البياني"
 
-#: graph.php:363
+#: graph.php:371
 #, fuzzy
 msgid "Graph Source/Properties"
 msgstr "مصدر / خصائص الرسم البياني"
 
-#: graph.php:367
+#: graph.php:375
 #, fuzzy
 msgid "Graph Data"
 msgstr "بيانات الرسم البياني"
 
-#: graph.php:544
+#: graph.php:552
 #, fuzzy
 msgid "RRDtool Graph Syntax"
 msgstr "RRDtool الرسم البياني البناء"
@@ -6211,7 +6211,7 @@ msgid "Recovering"
 msgstr "يستردّ"
 
 #: host.php:1598 lib/api_automation.php:175 lib/api_automation.php:1101
-#: lib/html_utility.php:943 lib/plugins.php:998 lib/plugins.php:999
+#: lib/html_utility.php:943 lib/plugins.php:1086 lib/plugins.php:1087
 #: lib/rrd.php:2919 lib/rrd.php:2931 user_admin.php:820 utilities.php:216
 #: utilities.php:217 utilities.php:2241
 msgid "Unknown"
@@ -7486,7 +7486,7 @@ msgid "Export Templates"
 msgstr "قوالب التصدير"
 
 #: include/global_arrays.php:927 include/global_arrays.php:949
-#: include/global_arrays.php:967 lib/plugins.php:954
+#: include/global_arrays.php:967 lib/plugins.php:1041
 msgid "Configuration"
 msgstr "التكوين"
 
@@ -8683,7 +8683,7 @@ msgid "Tree Rule Items"
 msgstr "عناصر القاعدة الشجرية"
 
 #: include/global_arrays.php:2687 include/global_arrays.php:2703
-#: lib/api_device.php:1090
+#: lib/api_device.php:1142
 msgid "days"
 msgstr "أيام"
 
@@ -8699,11 +8699,11 @@ msgstr "دقيقة"
 msgid "secs"
 msgstr "ثانية"
 
-#: include/global_arrays.php:2704 lib/api_device.php:1090
+#: include/global_arrays.php:2704 lib/api_device.php:1142
 msgid "hours"
 msgstr "ساعات"
 
-#: include/global_arrays.php:2705 lib/api_device.php:1090
+#: include/global_arrays.php:2705 lib/api_device.php:1142
 msgid "minutes"
 msgstr "دقيقة"
 
@@ -11488,7 +11488,7 @@ msgstr "طريقة اختيار الخطوط"
 msgid "How do you wish fonts to be handled by default?"
 msgstr "كيف تريد التعامل مع الخطوط افتراضيًا؟"
 
-#: include/global_settings.php:976 lib/api_device.php:1056
+#: include/global_settings.php:976 lib/api_device.php:1108
 msgid "System"
 msgstr "النظام"
 
@@ -13585,82 +13585,82 @@ msgstr "عنصر القاعدة [عنصر قاعدة جديد لـ٪ s:٪ s]"
 msgid "Added by Cacti Automation"
 msgstr "أضيفت بواسطة Cacti الأتمتة"
 
-#: lib/api_device.php:986
+#: lib/api_device.php:1038
 #, fuzzy
 msgid "ERROR: Device ID is Blank"
 msgstr "خطأ: معرف الجهاز فارغ"
 
-#: lib/api_device.php:997 lib/api_device.php:999
+#: lib/api_device.php:1049 lib/api_device.php:1051
 #, fuzzy
 msgid "ERROR: Device["
 msgstr "خطأ: جهاز ["
 
-#: lib/api_device.php:1020
+#: lib/api_device.php:1072
 #, fuzzy
 msgid "ERROR: Failed to connect to remote collector."
 msgstr "خطأ: فشل الاتصال بجامع بعيد."
 
-#: lib/api_device.php:1027
+#: lib/api_device.php:1079
 #, fuzzy
 msgid "Device is Disabled"
 msgstr "الجهاز معطل"
 
-#: lib/api_device.php:1028
+#: lib/api_device.php:1080
 #, fuzzy
 msgid "Device Availability Check Bypassed"
 msgstr "تحقق من توفر الجهاز تم تجاوزه"
 
-#: lib/api_device.php:1035
+#: lib/api_device.php:1087
 #, fuzzy
 msgid "SNMP Information"
 msgstr "معلومات SNMP"
 
-#: lib/api_device.php:1039
+#: lib/api_device.php:1091
 #, fuzzy
 msgid "SNMP not in use"
 msgstr "SNMP غير مستخدم"
 
-#: lib/api_device.php:1048 lib/api_device.php:1056 lib/api_device.php:1071
+#: lib/api_device.php:1100 lib/api_device.php:1108 lib/api_device.php:1123
 #, fuzzy
 msgid "SNMP error"
 msgstr "خطأ SNMP"
 
-#: lib/api_device.php:1048
+#: lib/api_device.php:1100
 msgid "Session"
 msgstr "الجلسة"
 
-#: lib/api_device.php:1071
+#: lib/api_device.php:1123
 msgid "Host"
 msgstr "المستضيف Host"
 
-#: lib/api_device.php:1082
+#: lib/api_device.php:1134
 msgid "System:"
 msgstr "النظام:"
 
-#: lib/api_device.php:1089
+#: lib/api_device.php:1141
 #, fuzzy
 msgid "Uptime:"
 msgstr "مدة التشغيل"
 
-#: lib/api_device.php:1091
+#: lib/api_device.php:1143
 msgid "Hostname:"
 msgstr "أسم المضيف:"
 
-#: lib/api_device.php:1092
+#: lib/api_device.php:1144
 msgid "Location:"
 msgstr "موقعك:"
 
-#: lib/api_device.php:1093
+#: lib/api_device.php:1145
 msgid "Contact:"
 msgstr "بيانتت اتصال"
 
-#: lib/api_device.php:1124 lib/functions.php:3961 lib/functions.php:3963
+#: lib/api_device.php:1176 lib/functions.php:3961 lib/functions.php:3963
 #: lib/functions.php:3967
 #, fuzzy
 msgid "Ping Results"
 msgstr "نتائج بينغ"
 
-#: lib/api_device.php:1129
+#: lib/api_device.php:1181
 #, fuzzy
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "لا يوجد Ping أو SNMP Availability Check in Use"
@@ -14306,7 +14306,7 @@ msgid "User Community"
 msgstr "مجتمع المستخدم"
 
 #: lib/functions.php:2398 lib/functions.php:2415 lib/html.php:2412
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 msgid "Documentation"
 msgstr "الوثائق"
 
@@ -15666,7 +15666,7 @@ msgstr "خطأ UTF-8 سيء!"
 msgid "Bad UTF-8 offset error!"
 msgstr "سوء UTF-8 خطأ إزاحة!"
 
-#: lib/html_utility.php:940 lib/installer.php:1803 lib/installer.php:3534
+#: lib/html_utility.php:940 lib/installer.php:1803 lib/installer.php:3533
 msgid "Error"
 msgstr "خطأ"
 
@@ -16011,7 +16011,7 @@ msgid "Location checks"
 msgstr "الشيكات الموقع"
 
 #: lib/installer.php:1753 lib/installer.php:1891 lib/installer.php:1895
-#: lib/installer.php:2050 lib/installer.php:2055 lib/installer.php:3631
+#: lib/installer.php:2050 lib/installer.php:2055 lib/installer.php:3630
 msgid "ERROR:"
 msgstr "خطأ:"
 
@@ -16716,252 +16716,252 @@ msgstr "تم تثبيت / تحديث Cacti Server v٪ s. يمكنك الآن ا�
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr "تم تثبيت / تحديث خادم Cacti Server v٪ s مع وجود أخطاء"
 
-#: lib/installer.php:2838
+#: lib/installer.php:2837
 msgid "Get Help"
 msgstr "احصل على مساعدة"
 
-#: lib/installer.php:2843
+#: lib/installer.php:2842
 msgid "Report Issue"
 msgstr "إبلاغ عن مشكلة"
 
-#: lib/installer.php:2846
+#: lib/installer.php:2845
 msgid "Get Started"
 msgstr "البدء"
 
-#: lib/installer.php:2875
+#: lib/installer.php:2874
 #, fuzzy, php-format
 msgid "Starting %s Process for v%s"
 msgstr "بدء عملية٪ s لـ v٪ s"
 
-#: lib/installer.php:2900
+#: lib/installer.php:2899
 #, fuzzy, php-format
 msgid "Finished %s Process for v%s"
 msgstr "انتهت معالجة٪ s لـ v٪ s"
 
-#: lib/installer.php:2937
+#: lib/installer.php:2936
 #, fuzzy, php-format
 msgid "Found %s templates to install"
 msgstr "تم العثور على قوالب٪ s للتثبيت"
 
-#: lib/installer.php:2947
+#: lib/installer.php:2946
 #, fuzzy, php-format
 msgid "About to import Package #%s '%s'."
 msgstr "على وشك استيراد الحزمة #٪ s '٪ s'."
 
-#: lib/installer.php:2954
+#: lib/installer.php:2953
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
 msgstr "نجح استيراد الحزمة #٪ s '٪ s' ضمن ملف التعريف '٪ s'"
 
-#: lib/installer.php:2960
+#: lib/installer.php:2959
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr "فشل استيراد الحزمة #٪ s '٪ s' ضمن ملف التعريف '٪ s'"
 
-#: lib/installer.php:2975
+#: lib/installer.php:2974
 #, fuzzy, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
 msgstr "قوالب أتمتة لـ [حذف قالب]"
 
-#: lib/installer.php:2992
+#: lib/installer.php:2991
 #, fuzzy
 msgid "No templates were selected for import"
 msgstr "لم يتم تحديد أي قوالب للاستيراد"
 
-#: lib/installer.php:3001
+#: lib/installer.php:3000
 #, fuzzy
 msgid "Updating remote configuration file"
 msgstr "في انتظار التكوين"
 
-#: lib/installer.php:3033
+#: lib/installer.php:3032
 #, fuzzy, php-format
 msgid "Setting default data source profile to %s (%s)"
 msgstr "ملف تعريف مصدر البيانات الافتراضي لهذا القالب البيانات."
 
-#: lib/installer.php:3055
+#: lib/installer.php:3054
 #, fuzzy, php-format
 msgid "Failed to find selected profile (%s), no changes were made"
 msgstr "أخفق تطبيق الملف الشخصي المحدد٪ s! =٪ s"
 
-#: lib/installer.php:3064
+#: lib/installer.php:3063
 #, fuzzy, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr "تحديث شبكة الأتمتة (٪ s) ، الوضع \"٪ s\" => \"٪ s\" ، الشبكة الفرعية \"٪ s\" =>٪ s \""
 
-#: lib/installer.php:3074
+#: lib/installer.php:3073
 #, fuzzy
 msgid "Failed to find automation network, no changes were made"
 msgstr "فشل العثور على شبكة الأتمتة ، ولم يتم إجراء أي تغييرات"
 
-#: lib/installer.php:3078
+#: lib/installer.php:3077
 #, fuzzy
 msgid "Adding extra snmp settings for automation"
 msgstr "إضافة إعدادات snmp إضافية للأتمتة"
 
-#: lib/installer.php:3084
+#: lib/installer.php:3083
 #, fuzzy, php-format
 msgid "Selecting Automation Option Set %s"
 msgstr "حذف قالب (قوالب) التنفيذ التلقائي"
 
-#: lib/installer.php:3097
+#: lib/installer.php:3096
 #, fuzzy, php-format
 msgid "Updating Automation Option Set %s"
 msgstr "أتمتة SNMP خيارات"
 
-#: lib/installer.php:3100
+#: lib/installer.php:3099
 #, fuzzy, php-format
 msgid "Successfully updated Automation Option Set %s"
 msgstr "تم بنجاح تحديث مجموعة خيارات الأتمتة٪ s"
 
-#: lib/installer.php:3102
+#: lib/installer.php:3101
 #, fuzzy, php-format
 msgid "Resequencing Automation Option Set %s"
 msgstr "تشغيل التنفيذ على الجهاز (الأجهزة)"
 
-#: lib/installer.php:3108
+#: lib/installer.php:3107
 #, fuzzy, php-format
 msgid "Failed to updated Automation Option Set %s"
 msgstr "فشل في تطبيق نطاق الأتمتة المحدد"
 
-#: lib/installer.php:3111
+#: lib/installer.php:3110
 #, fuzzy
 msgid "Failed to find any automation option set"
 msgstr "تعذّر العثور على البيانات لنسخها!"
 
-#: lib/installer.php:3141
+#: lib/installer.php:3140
 #, fuzzy, php-format
 msgid "Device Template for First Cacti Device is %s"
 msgstr "قوالب الأجهزة [تحرير:٪ s]"
 
-#: lib/installer.php:3167
+#: lib/installer.php:3166
 #, fuzzy
 msgid "Creating Graphs for Default Device"
 msgstr "إنشاء الرسوم البيانية لهذا الجهاز"
 
-#: lib/installer.php:3174
+#: lib/installer.php:3173
 #, fuzzy
 msgid "Adding Device to Default Tree"
 msgstr "افتراضيات الجهاز"
 
-#: lib/installer.php:3182
+#: lib/installer.php:3181
 #, fuzzy
 msgid "No templated graphs for Default Device were found"
 msgstr "لم يتم العثور على الرسوم البيانية القوالب للجهاز الافتراضي"
 
-#: lib/installer.php:3186
+#: lib/installer.php:3185
 #, fuzzy
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
 msgstr "تحذير: لم يتم العثور على نموذج الجهاز لنظام التشغيل الخاص بك. ستحتاج إلى استيراد قوالب الأجهزة أو حزم Cacti لمراقبة خادم Cacti."
 
-#: lib/installer.php:3193
+#: lib/installer.php:3192
 #, fuzzy
 msgid "Running first-time data query for local host"
 msgstr "تشغيل استعلام بيانات لأول مرة للمضيف المحلي"
 
-#: lib/installer.php:3201
+#: lib/installer.php:3200
 #, fuzzy
 msgid "Repopulating poller cache"
 msgstr "إعادة بناء بولير"
 
-#: lib/installer.php:3206
+#: lib/installer.php:3205
 #, fuzzy
 msgid "Repopulating SNMP Agent cache"
 msgstr "إعادة بناء SNMPAgent ذاكرة التخزين المؤقت"
 
-#: lib/installer.php:3211
+#: lib/installer.php:3210
 #, fuzzy
 msgid "Generating RSA Key Pair"
 msgstr "توليد زوج مفاتيح RSA"
 
-#: lib/installer.php:3223
+#: lib/installer.php:3222
 #, fuzzy, php-format
 msgid "Found %s tables to convert"
 msgstr "تم العثور على جداول٪ s ليتم تحويلها"
 
-#: lib/installer.php:3230
+#: lib/installer.php:3229
 #, fuzzy, php-format
 msgid "Converting Table #%s '%s'"
 msgstr "تحويل الجدول #٪ s '٪ s'"
 
-#: lib/installer.php:3245
+#: lib/installer.php:3244
 #, fuzzy
 msgid "No tables where found or selected for conversion"
 msgstr "لم يتم العثور على جداول أو تحديدها للتحويل"
 
-#: lib/installer.php:3256
+#: lib/installer.php:3255
 #, fuzzy, php-format
 msgid "Switched from %s to %s"
 msgstr "تم التبديل من٪ s إلى٪ s"
 
-#: lib/installer.php:3260
+#: lib/installer.php:3259
 #, fuzzy, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
 msgstr "ملاحظة: استخدام ملف مؤقت لذاكرة التخزين المؤقت db:٪ s"
 
-#: lib/installer.php:3282
+#: lib/installer.php:3281
 #, fuzzy, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
 msgstr "الترقية من v٪ s (DB٪ s) إلى v٪ s"
 
-#: lib/installer.php:3290
+#: lib/installer.php:3289
 #, fuzzy, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
 msgstr "تحذير: فشل في العثور على وظيفة الترقية لـ v٪ s"
 
-#: lib/installer.php:3349
+#: lib/installer.php:3348
 #, fuzzy
 msgid "Install aborted due to no EULA acceptance"
 msgstr "تم إحباط التثبيت بسبب عدم قبول اتفاقية ترخيص المستخدم النهائي"
 
-#: lib/installer.php:3369
+#: lib/installer.php:3368
 #, fuzzy, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr "بدأت الخلفية بالفعل في٪ s ، وتم تخطي هذه المحاولة عند٪ s"
 
-#: lib/installer.php:3389
+#: lib/installer.php:3388
 #, fuzzy, php-format
 msgid "Exception occurred during installation: #%s - %s"
 msgstr "حدث استثناء أثناء التثبيت: #"
 
-#: lib/installer.php:3398
+#: lib/installer.php:3397
 #, fuzzy, php-format
 msgid "Installation was started at %s, completed at %s"
 msgstr "تم بدء التثبيت على٪ s ، وقد اكتمل في٪ s"
 
-#: lib/installer.php:3425
+#: lib/installer.php:3424
 msgid "Both"
 msgstr "كلاهما"
 
-#: lib/installer.php:3425
+#: lib/installer.php:3424
 #, fuzzy, php-format
 msgid "No - %s"
 msgstr "خطأ: %s"
 
-#: lib/installer.php:3427 lib/installer.php:3429
+#: lib/installer.php:3426 lib/installer.php:3428
 #, fuzzy, php-format
 msgid "%s - No"
 msgstr "خطأ: %s"
 
-#: lib/installer.php:3427
+#: lib/installer.php:3426
 msgid "Web"
 msgstr "شبكة الويب"
 
-#: lib/installer.php:3429
+#: lib/installer.php:3428
 #, fuzzy
 msgid "Cli"
 msgstr "كلاسيكي"
 
-#: lib/installer.php:3434
+#: lib/installer.php:3433
 #, fuzzy, php-format
 msgid "Setting PHP Option %s = %s"
 msgstr "تعيين خيار PHP٪ s =٪ s"
 
-#: lib/installer.php:3440
+#: lib/installer.php:3439
 #, fuzzy, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
 msgstr "فشل تعيين خيار PHP٪ s ، هو٪ s (يجب أن يكون٪ s)"
 
-#: lib/installer.php:3459
+#: lib/installer.php:3458
 #, fuzzy
 msgid "No Remote Data Collectors found for full syncronization"
 msgstr "لم يتم العثور على مجمّع بيانات (ق) عند محاولة المزامنة"
@@ -17124,36 +17124,36 @@ msgstr "انتهت مهلة TCP ping"
 msgid "Ping not performed due to setting."
 msgstr "لم يتم تنفيذ Ping بسبب الإعداد."
 
-#: lib/plugins.php:562
+#: lib/plugins.php:581
 #, fuzzy, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "يلزم وجود٪ s من الإصدار٪ s أو أحدث لـ٪ s."
 
-#: lib/plugins.php:566
+#: lib/plugins.php:585
 #, fuzzy, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "مطلوب٪ s لـ٪ s ، ولم يتم تثبيته."
 
-#: lib/plugins.php:582
+#: lib/plugins.php:603
 #, fuzzy
 msgid "Plugin cannot be installed."
 msgstr "لا يمكن تثبيت المكون الإضافي."
 
-#: lib/plugins.php:954 lib/plugins.php:961 plugins.php:367 plugins.php:447
+#: lib/plugins.php:1041 lib/plugins.php:1048 plugins.php:367 plugins.php:447
 msgid "Plugins"
 msgstr "الإضافات"
 
-#: lib/plugins.php:972 lib/plugins.php:978
+#: lib/plugins.php:1060 lib/plugins.php:1066
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "يتطلب: الصبار&gt; =٪ s"
 
-#: lib/plugins.php:975
+#: lib/plugins.php:1063
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "البرنامج المساعد القديم"
 
-#: lib/plugins.php:1000
+#: lib/plugins.php:1088
 msgid "Not Stated"
 msgstr "غير مذكور"
 
@@ -17441,189 +17441,180 @@ msgstr "MySQL 5.6+ و MariaDB 10.0+ هي إصدارات رائعة ، وهي إ�
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "من المستحسن تمكين InnoDB في أي إصدار٪ s أكبر من 5.1."
 
-#: lib/utility.php:872
-#, fuzzy
-msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-msgstr "عند استخدام Cacti بلغات أخرى غير اللغة الإنجليزية ، من المهم استخدام نوع ترتيب utf8_general_ci لأن بعض الأحرف تأخذ أكثر من بايت واحد. إذا كنت أولاً بصدد تثبيت Cacti أولاً ، فتوقف وقم بإجراء التغييرات وابدأ من جديد. إذا كان Cacti الخاص بك يعمل قيد التشغيل ، راجع الإنترنت للحصول على إرشادات حول تحويل قواعد البيانات والجداول الخاصة بك إذا كنت تخطط لدعم لغات أخرى."
-
-#: lib/utility.php:878
-#, fuzzy
-msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-msgstr "عند استخدام Cacti بلغات أخرى غير اللغة الإنجليزية ، من المهم استخدام مجموعة الأحرف utf8 لأن بعض الأحرف تأخذ أكثر من بايت واحد. إذا كنت أولاً بصدد تثبيت Cacti أولاً ، فتوقف وقم بإجراء التغييرات وابدأ من جديد. إذا كان Cacti الخاص بك يعمل قيد التشغيل ، راجع الإنترنت للحصول على إرشادات حول تحويل قواعد البيانات والجداول الخاصة بك إذا كنت تخطط لدعم لغات أخرى."
-
-#: lib/utility.php:889
-#, fuzzy, php-format
-msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
-msgstr "من المستحسن تمكين InnoDB في أي إصدار٪ s أكبر من 5.1."
-
-#: lib/utility.php:901
+#: lib/utility.php:872 lib/utility.php:907
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
 msgstr "عند استخدام Cacti بلغات أخرى غير اللغة الإنجليزية ، من المهم استخدام نوع ترتيب utf8mb4_unicode_ci حيث أن بعض الأحرف تأخذ أكثر من بايت واحد."
 
-#: lib/utility.php:907
+#: lib/utility.php:878 lib/utility.php:884 lib/utility.php:913
+#: lib/utility.php:919
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
 msgstr "عند استخدام Cacti بلغات أخرى غير اللغة الإنجليزية ، من المهم استخدام مجموعة الأحرف utf8mb4 لأن بعض الأحرف تأخذ أكثر من بايت واحد."
 
-#: lib/utility.php:916
+#: lib/utility.php:895
+#, fuzzy, php-format
+msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
+msgstr "من المستحسن تمكين InnoDB في أي إصدار٪ s أكبر من 5.1."
+
+#: lib/utility.php:928
 #, fuzzy, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "استنادًا إلى عدد عمليات تسجيل الدخول واستخدام أداة تجميع بيانات العمود الفقري ، سيحتاج٪ s إلى العديد من الاتصالات. الحساب للعمود الفقري هو: total_connections = total_processes * (total_threads + script_servers + 1) ، ثم يجب عليك ترك مساحة خالية لاتصالات المستخدم ، والتي ستتغير اعتمادًا على عدد حسابات تسجيل الدخول المتزامنة."
 
-#: lib/utility.php:921
+#: lib/utility.php:933
 #, fuzzy
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "حفظ التخزين المؤقت للجدول أكبر يعني أقل عمليات فتح / إغلاق الملف عند استخدام innodb_file_per_table."
 
-#: lib/utility.php:926
+#: lib/utility.php:938
 #, fuzzy
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "مع إمكانات الاستقصاء عن بعد ، ستتم مزامنة كميات كبيرة من البيانات من الخادم الرئيسي إلى القائمون بالاستطلاع عن بعد. لذلك ، احتفظ بهذه القيمة عند أو فوق 16M."
 
-#: lib/utility.php:932
+#: lib/utility.php:944
 #, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "في حالة استخدام Cacti Performance Booster واختيار محرك تخزين ذاكرة ، يجب أن تكون حذراً لتدفق المخزن المؤقت Performance Booster قبل نفاد مساحة ذاكرة النظام. يتم ذلك بطريقتين ، أولاً تقليل حجم عمود الإخراج الخاص بك إلى الحجم الصحيح فقط. هذا العمود موجود في الجداول poller_output ، و poller_output_boost. الشيء الثاني الذي يمكنك القيام به هو تخصيص المزيد من الذاكرة إلى جداول الذاكرة. لقد اخترنا بشكل عشوائي القيمة الموصى بها بنسبة 10 ٪٪ من ذاكرة النظام ، ولكن إذا كنت تستخدم محركات أقراص SSD أو لديك نظام أصغر ، فيمكنك تجاهل هذه التوصية أو اختيار محرك تخزين مختلف. قد ترى الاستهلاك المتوقع لجداول Booster Performance ضمن Console -&gt; System Utilities -&gt; View Boost Status."
 
-#: lib/utility.php:938
+#: lib/utility.php:950
 #, fuzzy
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "عند تنفيذ الاستعلامات الفرعية ، مع وجود حجم جدول مؤقت أكبر ، احتفظ بهذه الجداول المؤقتة في الذاكرة."
 
-#: lib/utility.php:944
+#: lib/utility.php:956
 #, fuzzy
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file."
 msgstr "عند إجراء الصلات ، إذا كانت أقل من هذا الحجم ، فسيتم الاحتفاظ بها في الذاكرة ولن تتم كتابتها أبدًا إلى ملف مؤقت."
 
-#: lib/utility.php:950
+#: lib/utility.php:962
 #, fuzzy, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "عند استخدام تخزين InnoDB ، من المهم الاحتفاظ بمساحات الطاولة منفصلة. وهذا يجعل إدارة الجداول أبسط للمستخدمين منذ وقت طويل من٪ s. إذا كنت تستخدم حاليًا ، فبإمكانك الترحيل إلى التخزين لكل ملف من خلال تمكين الميزة ، ثم تشغيل عبارة توضيحية على جميع جداول InnoDB."
 
-#: lib/utility.php:956
+#: lib/utility.php:968
 #, fuzzy
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "عند استخدام innodb_file_per_table ، من المهم تعيين innodb_file_format إلى Barracuda. سيسمح هذا الإعداد بفهارس أطول مهمة لجداول Cacti معينة."
 
-#: lib/utility.php:962
+#: lib/utility.php:974
 #, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "إذا كانت جداولك تحتوي على فهارس كبيرة جدًا ، فيجب أن تعمل باستخدام Barracuda innodb_file_format و innodb_large_prefix يساوي 1. قد يؤدي عدم القيام بذلك إلى مكونات إضافية لا يمكنها إنشاء الجداول بشكل صحيح."
 
-#: lib/utility.php:968
+#: lib/utility.php:980
 #, fuzzy, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "يحتفظ InnoDB بالكثير من الجداول والفهارس في ذاكرة النظام قدر الإمكان. لذلك ، يجب أن تجعل innodb_buffer_pool كبيرًا بما يكفي لاستيعاب الكثير من الجداول والفهرس في الذاكرة. سيساعدك فحص حجم / var / lib / mysql / cacti directory في تحديد هذه القيمة. نوصي بـ 25 ٪٪ من الذاكرة الإجمالية لنظامك ، ولكن ستختلف متطلباتك حسب حجم الأنظمة لديك."
 
-#: lib/utility.php:974
+#: lib/utility.php:986
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "يجب أن تظل هذه الإعدادات قيد التشغيل ما لم يتم تشغيل مثيلات Cacti إما على ZFS أو FusionI / O وكلاهما يحتوي على دفتر يومية داخلي لاستيعاب أعطال النظام المفاجئة. ومع ذلك ، إذا كانت لديك طاقة جيدة جدًا ، ونادرًا ما تنخفض أنظمتك وكان لديك نسخ احتياطية ، فإن تحويل هذا الإعداد إلى إيقاف التشغيل يمكن أن يؤدي إلى زيادة أداء قاعدة البيانات بنسبة 50٪ تقريبًا."
 
-#: lib/utility.php:979
+#: lib/utility.php:991
 #, fuzzy
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "هذا هو المكان الذي يتم تخزين البيانات الوصفية. إذا كان لديك الكثير من الجداول ، سيكون من المفيد زيادة هذا."
 
-#: lib/utility.php:984
+#: lib/utility.php:996
 #, fuzzy
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "يجب أن لا تقوم طلبات البحث المارقة بقاعدة البيانات بالاتصال بالآخرين. اقتل هذه الاستعلامات قبل أن تقتل نظامك."
 
-#: lib/utility.php:989
+#: lib/utility.php:1001
 #, fuzzy
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "الحد الأقصى لأداء الإدخال / الإخراج يحدث عند استخدام الأسلوب O_DIRECT لمسح الصفحات."
 
-#: lib/utility.php:999
+#: lib/utility.php:1011
 #, fuzzy, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "يعني تعيين هذه القيمة إلى 2 أنه سيتم مسح كافة المعاملات كل ثانية بدلاً من الالتزام. يسمح هذا لـ٪ s بأداء الكتابة بشكل أقل."
 
-#: lib/utility.php:1004
+#: lib/utility.php:1016
 #, fuzzy
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "مع التخزين الحديث لنوع SSD ، فإن وجود عدة مؤشرات ترابط io أمر مفيد لتطبيقات ذات خصائص io عالية."
 
-#: lib/utility.php:1012 lib/utility.php:1054
+#: lib/utility.php:1024 lib/utility.php:1066
 #, fuzzy, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "اعتبارًا من٪ s٪ s ، يمكنك التحكم في عدد المرات التي يتم فيها صرف المعاملات إلى القرص. الافتراضي هو 1 ثانية ، ولكن في إعداد أنظمة I / O عالية لقيمة أكبر من 1 يمكن أن تسمح I / O القرص أن يكون أكثر تسلسلي"
 
-#: lib/utility.php:1017 lib/utility.php:1059
+#: lib/utility.php:1029 lib/utility.php:1071
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "مع التخزين الحديث من نوع SSD ، فإن وجود عدة سلاسل io للقراءة يكون مفيدًا للتطبيقات ذات الخصائص io العالية."
 
-#: lib/utility.php:1022 lib/utility.php:1064
+#: lib/utility.php:1034 lib/utility.php:1076
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "مع تخزين نوع SSD الحديث ، وجود عدة سلاسل io الكتابة هو مفيد للتطبيقات مع خصائص io عالية."
 
-#: lib/utility.php:1028
+#: lib/utility.php:1040
 #, fuzzy, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64."
 msgstr "سينقسم٪ s innodb_buffer_pool إلى مناطق الذاكرة لتحسين الأداء. الحد الأقصى للقيمة هو 64. عندما يكون حجم innodb_buffer_pool أقل من 1 غيغابايت ، يجب استخدام حجم التجمع مقسومًا على 128 ميجابايت. استمر في استخدام هذه المعادلة حتى 64 كحد أقصى."
 
-#: lib/utility.php:1034 lib/utility.php:1070
+#: lib/utility.php:1046 lib/utility.php:1082
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "إذا كان لديك أقراص SSD ، استخدم هذا الاقتراح. إذا كان لديك محركات أقراص ثابتة فعلية ، فاستخدم 200 * عدد محركات الأقراص النشطة في الصفيف. في حالة استخدام NVMe أو PCIe Flash ، يمكن استخدام أرقام أكبر بكثير تصل إلى 100000."
 
-#: lib/utility.php:1040 lib/utility.php:1076
+#: lib/utility.php:1052 lib/utility.php:1088
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "إذا كان لديك أقراص SSD ، استخدم هذا الاقتراح. إذا كان لديك محركات أقراص ثابتة فعلية ، استخدم 2000 * عدد محركات الأقراص النشطة في الصفيف. في حالة استخدام NVMe أو PCIe Flash ، يمكن استخدام أرقام أكبر بكثير تصل إلى 200000."
 
-#: lib/utility.php:1046 lib/utility.php:1082
+#: lib/utility.php:1058 lib/utility.php:1094
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "إذا كان لديك أقراص SSD ، استخدم هذا الاقتراح. خلاف ذلك ، لا تقم بتعيين هذا الإعداد."
 
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "ضبط٪ s"
 
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "ملاحظة: تتطلب العديد من التغييرات أدناه إعادة تشغيل قاعدة البيانات"
 
-#: lib/utility.php:1105
+#: lib/utility.php:1117
 msgid "Variable"
 msgstr "متغير"
 
-#: lib/utility.php:1106
+#: lib/utility.php:1118
 msgid "Current Value"
 msgstr "القيمة الحالية"
 
-#: lib/utility.php:1108
+#: lib/utility.php:1120
 #, fuzzy
 msgid "Recommended Value"
 msgstr "القيمة الموصى بها"
 
-#: lib/utility.php:1109
+#: lib/utility.php:1121
 msgid "Comments"
 msgstr "التعليقات"
 
-#: lib/utility.php:1519
+#: lib/utility.php:1531
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP٪ s هو إصدار mimimum"
 
-#: lib/utility.php:1521
+#: lib/utility.php:1533
 #, fuzzy, php-format
 msgid "A minimum of %s memory limit"
 msgstr "حد لا يقل عن٪ s من ذاكرة MB"
 
-#: lib/utility.php:1523
+#: lib/utility.php:1535
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "حد أدنى من٪ sm وقت التنفيذ"
 
-#: lib/utility.php:1525
+#: lib/utility.php:1537
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "منطقة زمنية صالحة تطابق MySQL والنظام"
@@ -21293,6 +21284,14 @@ msgstr "عدد قوالب الرسوم البيانية باستخدام هذا 
 #, fuzzy
 msgid "No VDEFs"
 msgstr "لا VDEFs"
+
+#, fuzzy
+#~ msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
+#~ msgstr "عند استخدام Cacti بلغات أخرى غير اللغة الإنجليزية ، من المهم استخدام نوع ترتيب utf8_general_ci لأن بعض الأحرف تأخذ أكثر من بايت واحد. إذا كنت أولاً بصدد تثبيت Cacti أولاً ، فتوقف وقم بإجراء التغييرات وابدأ من جديد. إذا كان Cacti الخاص بك يعمل قيد التشغيل ، راجع الإنترنت للحصول على إرشادات حول تحويل قواعد البيانات والجداول الخاصة بك إذا كنت تخطط لدعم لغات أخرى."
+
+#, fuzzy
+#~ msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
+#~ msgstr "عند استخدام Cacti بلغات أخرى غير اللغة الإنجليزية ، من المهم استخدام مجموعة الأحرف utf8 لأن بعض الأحرف تأخذ أكثر من بايت واحد. إذا كنت أولاً بصدد تثبيت Cacti أولاً ، فتوقف وقم بإجراء التغييرات وابدأ من جديد. إذا كان Cacti الخاص بك يعمل قيد التشغيل ، راجع الإنترنت للحصول على إرشادات حول تحويل قواعد البيانات والجداول الخاصة بك إذا كنت تخطط لدعم لغات أخرى."
 
 #, fuzzy
 #~ msgid "%d Samples"

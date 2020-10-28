@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2020-10-19 20:03-0400\n"
+"POT-Creation-Date: 2020-10-28 16:57-0400\n"
 "PO-Revision-Date: 2020-09-13 18:10-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -429,17 +429,17 @@ msgstr "Συγκεντρωτικές ρυθμίσεις γραφήματος"
 msgid "Aggregate Preview %s"
 msgstr "Συνολική προεπισκόπηση [ %s]"
 
-#: aggregate_graphs.php:781 graph.php:546 graphs.php:1607
+#: aggregate_graphs.php:781 graph.php:554 graphs.php:1607
 #, fuzzy
 msgid "RRDtool Command:"
 msgstr "Εντολή RRDtool:"
 
-#: aggregate_graphs.php:783 graph.php:559 graphs.php:1611
+#: aggregate_graphs.php:783 graph.php:563 graphs.php:1611
 #, fuzzy
 msgid "Not Checked"
 msgstr "Δεν υπάρχουν έλεγχοι"
 
-#: aggregate_graphs.php:783 graph.php:554 graphs.php:1609
+#: aggregate_graphs.php:783 graph.php:559 graphs.php:1609
 #, fuzzy
 msgid "RRDtool Says:"
 msgstr "RRDtool Λέει:"
@@ -684,7 +684,7 @@ msgstr "Όχι"
 #: host_templates.php:875 include/global_settings.php:495
 #: include/global_settings.php:802 include/global_settings.php:1636
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
-#: lib/installer.php:3423 links.php:404 tree.php:2102 tree.php:2103
+#: lib/installer.php:3422 links.php:404 tree.php:2102 tree.php:2103
 #: user_admin.php:2347 user_domains.php:762 user_domains.php:766
 #: user_group_admin.php:1923 vdef.php:905
 msgid "Yes"
@@ -2770,7 +2770,7 @@ msgstr "Κριτήρια δημιουργίας δέντρου"
 msgid "Change Leaf Type"
 msgstr "Αλλαγή τύπου φύλλων"
 
-#: automation_tree_rules.php:706 lib/installer.php:3612 utilities.php:2240
+#: automation_tree_rules.php:706 lib/installer.php:3611 utilities.php:2240
 #: utilities.php:2241 utilities.php:2244 utilities.php:2245
 msgid "WARNING:"
 msgstr "ΠΡΟΕΙΔΟΠΟΙΗΣΗ:"
@@ -4899,46 +4899,46 @@ msgstr "Ο αριθμός των προτύπων γραφημάτων που χ
 msgid "No GPRINT Presets"
 msgstr "Δεν υπάρχουν προεπιλογές GPRINT"
 
-#: graph.php:102
+#: graph.php:100
 #, fuzzy
 msgid "Viewing Graph"
 msgstr "Προβολή γραφήματος"
 
-#: graph.php:132 lib/html.php:435
+#: graph.php:138 lib/html.php:435
 #, fuzzy
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "Λεπτομέρειες γραφήματος, βοηθητικά προγράμματα μεγέθυνσης και εντοπισμός σφαλμάτων"
 
-#: graph.php:133
+#: graph.php:139
 msgid "CSV Export"
 msgstr "Εξαγωγή CSV"
 
-#: graph.php:134 lib/html.php:454 lib/html.php:456
+#: graph.php:140 lib/html.php:454 lib/html.php:456
 #, fuzzy
 msgid "Click to view just this Graph in Real-time"
 msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
 
-#: graph.php:245 lib/html.php:2403
+#: graph.php:253 lib/html.php:2403
 #, fuzzy
 msgid "Utility View"
 msgstr "Προβολή βοηθητικού προγράμματος"
 
-#: graph.php:350
+#: graph.php:358
 #, fuzzy
 msgid "Graph Utility View"
 msgstr "Προβολή βοηθητικού προγράμματος γραφημάτων"
 
-#: graph.php:363
+#: graph.php:371
 #, fuzzy
 msgid "Graph Source/Properties"
 msgstr "Πηγή / ιδιότητες γραφήματος"
 
-#: graph.php:367
+#: graph.php:375
 #, fuzzy
 msgid "Graph Data"
 msgstr "Δεδομένα γραφήματος"
 
-#: graph.php:544
+#: graph.php:552
 #, fuzzy
 msgid "RRDtool Graph Syntax"
 msgstr "RRDtool Σύνταξη γραφήματος"
@@ -6072,7 +6072,7 @@ msgid "Recovering"
 msgstr "αναληπτικό"
 
 #: host.php:1598 lib/api_automation.php:175 lib/api_automation.php:1101
-#: lib/html_utility.php:943 lib/plugins.php:998 lib/plugins.php:999
+#: lib/html_utility.php:943 lib/plugins.php:1086 lib/plugins.php:1087
 #: lib/rrd.php:2919 lib/rrd.php:2931 user_admin.php:820 utilities.php:216
 #: utilities.php:217 utilities.php:2241
 msgid "Unknown"
@@ -7346,7 +7346,7 @@ msgid "Export Templates"
 msgstr "Εξαγωγή προτύπων"
 
 #: include/global_arrays.php:927 include/global_arrays.php:949
-#: include/global_arrays.php:967 lib/plugins.php:954
+#: include/global_arrays.php:967 lib/plugins.php:1041
 msgid "Configuration"
 msgstr "Παραμετροποίηση"
 
@@ -8547,7 +8547,7 @@ msgid "Tree Rule Items"
 msgstr "Στοιχεία διασταύρωσης"
 
 #: include/global_arrays.php:2687 include/global_arrays.php:2703
-#: lib/api_device.php:1090
+#: lib/api_device.php:1142
 msgid "days"
 msgstr "ημέρες"
 
@@ -8563,11 +8563,11 @@ msgstr "λεπτά"
 msgid "secs"
 msgstr "δευτερόλεπτα"
 
-#: include/global_arrays.php:2704 lib/api_device.php:1090
+#: include/global_arrays.php:2704 lib/api_device.php:1142
 msgid "hours"
 msgstr "ώρες"
 
-#: include/global_arrays.php:2705 lib/api_device.php:1090
+#: include/global_arrays.php:2705 lib/api_device.php:1142
 msgid "minutes"
 msgstr "λεπτά"
 
@@ -11345,7 +11345,7 @@ msgstr "Μέθοδος επιλογής γραμματοσειράς"
 msgid "How do you wish fonts to be handled by default?"
 msgstr "Πώς επιθυμείτε να επεξεργάζεται τις γραμματοσειρές από προεπιλογή;"
 
-#: include/global_settings.php:976 lib/api_device.php:1056
+#: include/global_settings.php:976 lib/api_device.php:1108
 msgid "System"
 msgstr "Σύστημα"
 
@@ -13448,81 +13448,81 @@ msgstr "Στοιχείο κανόνα [νέο στοιχείο κανόνα γι
 msgid "Added by Cacti Automation"
 msgstr "Προστέθηκε από την Cacti Automation"
 
-#: lib/api_device.php:986
+#: lib/api_device.php:1038
 #, fuzzy
 msgid "ERROR: Device ID is Blank"
 msgstr "ΣΦΑΛΜΑ: Το αναγνωριστικό συσκευής είναι κενό"
 
-#: lib/api_device.php:997 lib/api_device.php:999
+#: lib/api_device.php:1049 lib/api_device.php:1051
 #, fuzzy
 msgid "ERROR: Device["
 msgstr "ΣΦΑΛΜΑ: Η συσκευή ["
 
-#: lib/api_device.php:1020
+#: lib/api_device.php:1072
 #, fuzzy
 msgid "ERROR: Failed to connect to remote collector."
 msgstr "Σφάλμα: Αποτυχία σύνδεσης με απομακρυσμένο συλλέκτη."
 
-#: lib/api_device.php:1027
+#: lib/api_device.php:1079
 #, fuzzy
 msgid "Device is Disabled"
 msgstr "Η συσκευή είναι απενεργοποιημένη"
 
-#: lib/api_device.php:1028
+#: lib/api_device.php:1080
 #, fuzzy
 msgid "Device Availability Check Bypassed"
 msgstr "Έλεγχος διαθεσιμότητας συσκευής Παράκαμψη"
 
-#: lib/api_device.php:1035
+#: lib/api_device.php:1087
 #, fuzzy
 msgid "SNMP Information"
 msgstr "Πληροφορίες SNMP"
 
-#: lib/api_device.php:1039
+#: lib/api_device.php:1091
 #, fuzzy
 msgid "SNMP not in use"
 msgstr "Το SNMP δεν χρησιμοποιείται"
 
-#: lib/api_device.php:1048 lib/api_device.php:1056 lib/api_device.php:1071
+#: lib/api_device.php:1100 lib/api_device.php:1108 lib/api_device.php:1123
 #, fuzzy
 msgid "SNMP error"
 msgstr "Σφάλμα SNMP"
 
-#: lib/api_device.php:1048
+#: lib/api_device.php:1100
 msgid "Session"
 msgstr "Συνεδρία"
 
-#: lib/api_device.php:1071
+#: lib/api_device.php:1123
 msgid "Host"
 msgstr "Διακομιστής"
 
-#: lib/api_device.php:1082
+#: lib/api_device.php:1134
 msgid "System:"
 msgstr "Σύστημα:"
 
-#: lib/api_device.php:1089
+#: lib/api_device.php:1141
 msgid "Uptime:"
 msgstr "Χρόνος λειτουργίας:"
 
-#: lib/api_device.php:1091
+#: lib/api_device.php:1143
 msgid "Hostname:"
 msgstr "Όνομα κεντρικού υπολογιστή:"
 
-#: lib/api_device.php:1092
+#: lib/api_device.php:1144
 msgid "Location:"
 msgstr "Τοποθεσία:"
 
-#: lib/api_device.php:1093
+#: lib/api_device.php:1145
 msgid "Contact:"
 msgstr "Επαφή"
 
-#: lib/api_device.php:1124 lib/functions.php:3961 lib/functions.php:3963
+#: lib/api_device.php:1176 lib/functions.php:3961 lib/functions.php:3963
 #: lib/functions.php:3967
 #, fuzzy
 msgid "Ping Results"
 msgstr "Αποτελέσματα Ping"
 
-#: lib/api_device.php:1129
+#: lib/api_device.php:1181
 #, fuzzy
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "Δεν υπάρχει διαθεσιμότητα Ping ή SNMP"
@@ -14169,7 +14169,7 @@ msgid "User Community"
 msgstr "Κοινότητα χρηστών"
 
 #: lib/functions.php:2398 lib/functions.php:2415 lib/html.php:2412
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 msgid "Documentation"
 msgstr "Τεκμηρίωση"
 
@@ -15537,7 +15537,7 @@ msgstr "Κακό σφάλμα UTF-8!"
 msgid "Bad UTF-8 offset error!"
 msgstr "Κακό σφάλμα αντιστάθμισης UTF-8!"
 
-#: lib/html_utility.php:940 lib/installer.php:1803 lib/installer.php:3534
+#: lib/html_utility.php:940 lib/installer.php:1803 lib/installer.php:3533
 msgid "Error"
 msgstr "Σφάλμα"
 
@@ -15885,7 +15885,7 @@ msgid "Location checks"
 msgstr "Έλεγχοι τοποθεσίας"
 
 #: lib/installer.php:1753 lib/installer.php:1891 lib/installer.php:1895
-#: lib/installer.php:2050 lib/installer.php:2055 lib/installer.php:3631
+#: lib/installer.php:2050 lib/installer.php:2055 lib/installer.php:3630
 msgid "ERROR:"
 msgstr "ΣΦΑΛΜΑ:"
 
@@ -16589,252 +16589,252 @@ msgstr "Ο διακομιστής σας Cacti v %s έχει εγκαταστα�
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr "Ο διακομιστής Cacti v %s έχει εγκατασταθεί / ενημερωθεί με σφάλματα"
 
-#: lib/installer.php:2838
+#: lib/installer.php:2837
 msgid "Get Help"
 msgstr "Λήψη βοήθειας"
 
-#: lib/installer.php:2843
+#: lib/installer.php:2842
 msgid "Report Issue"
 msgstr "Αναφορά τεύχους"
 
-#: lib/installer.php:2846
+#: lib/installer.php:2845
 msgid "Get Started"
 msgstr "Ξεκίνα"
 
-#: lib/installer.php:2875
+#: lib/installer.php:2874
 #, fuzzy, php-format
 msgid "Starting %s Process for v%s"
 msgstr "Έναρξη%s Διαδικασία για v%s"
 
-#: lib/installer.php:2900
+#: lib/installer.php:2899
 #, fuzzy, php-format
 msgid "Finished %s Process for v%s"
 msgstr "Ολοκληρώθηκε η διαδικασία%s για v%s"
 
-#: lib/installer.php:2937
+#: lib/installer.php:2936
 #, fuzzy, php-format
 msgid "Found %s templates to install"
 msgstr "Βρέθηκαν πρότυπα%s για εγκατάσταση"
 
-#: lib/installer.php:2947
+#: lib/installer.php:2946
 #, fuzzy, php-format
 msgid "About to import Package #%s '%s'."
 msgstr "Πρόκειται να εισαγάγετε το πακέτο #%s '%s'."
 
-#: lib/installer.php:2954
+#: lib/installer.php:2953
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
 msgstr "Η εισαγωγή του πακέτου #%s '%s' στο προφίλ '%s' ολοκληρώθηκε με επιτυχία"
 
-#: lib/installer.php:2960
+#: lib/installer.php:2959
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr "Η εισαγωγή του πακέτου #%s '%s' στο προφίλ '%s' απέτυχε"
 
-#: lib/installer.php:2975
+#: lib/installer.php:2974
 #, fuzzy, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
 msgstr "Πρότυπα αυτοματισμού για το [Διαγραμμένο πρότυπο]"
 
-#: lib/installer.php:2992
+#: lib/installer.php:2991
 #, fuzzy
 msgid "No templates were selected for import"
 msgstr "Δεν επιλέχθηκαν πρότυπα για εισαγωγή"
 
-#: lib/installer.php:3001
+#: lib/installer.php:3000
 #, fuzzy
 msgid "Updating remote configuration file"
 msgstr "Αναμονή ρύθμισης παραμέτρων"
 
-#: lib/installer.php:3033
+#: lib/installer.php:3032
 #, fuzzy, php-format
 msgid "Setting default data source profile to %s (%s)"
 msgstr "Το προεπιλεγμένο προφίλ προέλευσης δεδομένων για αυτό το πρότυπο δεδομένων."
 
-#: lib/installer.php:3055
+#: lib/installer.php:3054
 #, fuzzy, php-format
 msgid "Failed to find selected profile (%s), no changes were made"
 msgstr "Αποτυχία εφαρμογής του καθορισμένου προφίλ %s! = %s"
 
-#: lib/installer.php:3064
+#: lib/installer.php:3063
 #, fuzzy, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr "Ενημέρωση δικτύου αυτοματισμού (%s), λειτουργία \"%s\" => \"%s\", υποδίκτυο \"%s\" =>%s \""
 
-#: lib/installer.php:3074
+#: lib/installer.php:3073
 #, fuzzy
 msgid "Failed to find automation network, no changes were made"
 msgstr "Αποτυχία εύρεσης δικτύου αυτοματισμού, δεν πραγματοποιήθηκαν αλλαγές"
 
-#: lib/installer.php:3078
+#: lib/installer.php:3077
 #, fuzzy
 msgid "Adding extra snmp settings for automation"
 msgstr "Προσθήκη επιπλέον ρυθμίσεων snmp για αυτοματοποίηση"
 
-#: lib/installer.php:3084
+#: lib/installer.php:3083
 #, fuzzy, php-format
 msgid "Selecting Automation Option Set %s"
 msgstr "Διαγραφή πρότυπου (ών) αυτοματισμού"
 
-#: lib/installer.php:3097
+#: lib/installer.php:3096
 #, fuzzy, php-format
 msgid "Updating Automation Option Set %s"
 msgstr "Επιλογές SNMP αυτοματοποίησης"
 
-#: lib/installer.php:3100
+#: lib/installer.php:3099
 #, fuzzy, php-format
 msgid "Successfully updated Automation Option Set %s"
 msgstr "Το σετ επιλογών αυτοματοποίησης%s ενημερώθηκε επιτυχώς"
 
-#: lib/installer.php:3102
+#: lib/installer.php:3101
 #, fuzzy, php-format
 msgid "Resequencing Automation Option Set %s"
 msgstr "Εκτέλεση αυτοματισμού σε συσκευές"
 
-#: lib/installer.php:3108
+#: lib/installer.php:3107
 #, fuzzy, php-format
 msgid "Failed to updated Automation Option Set %s"
 msgstr "Απέτυχε η εφαρμογή συγκεκριμένου εύρους αυτοματισμού"
 
-#: lib/installer.php:3111
+#: lib/installer.php:3110
 #, fuzzy
 msgid "Failed to find any automation option set"
 msgstr "Αποτυχία εύρεσης δεδομένων για αντιγραφή!"
 
-#: lib/installer.php:3141
+#: lib/installer.php:3140
 #, fuzzy, php-format
 msgid "Device Template for First Cacti Device is %s"
 msgstr "Πρότυπα συσκευών [επεξεργασία: %s]"
 
-#: lib/installer.php:3167
+#: lib/installer.php:3166
 #, fuzzy
 msgid "Creating Graphs for Default Device"
 msgstr "Δημιουργία γραφημάτων για αυτήν τη συσκευή"
 
-#: lib/installer.php:3174
+#: lib/installer.php:3173
 #, fuzzy
 msgid "Adding Device to Default Tree"
 msgstr "Προεπιλογές συσκευής"
 
-#: lib/installer.php:3182
+#: lib/installer.php:3181
 #, fuzzy
 msgid "No templated graphs for Default Device were found"
 msgstr "Δεν βρέθηκαν πρότυπα γραφήματα για προεπιλεγμένη συσκευή"
 
-#: lib/installer.php:3186
+#: lib/installer.php:3185
 #, fuzzy
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
 msgstr "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Το πρότυπο συσκευής για το λειτουργικό σας σύστημα δεν βρέθηκε. Θα χρειαστεί να εισαγάγετε πρότυπα συσκευών ή πακέτα Cacti για την παρακολούθηση του διακομιστή Cacti."
 
-#: lib/installer.php:3193
+#: lib/installer.php:3192
 #, fuzzy
 msgid "Running first-time data query for local host"
 msgstr "Εκτέλεση πρώτου ερωτήματος δεδομένων για τοπικό κεντρικό υπολογιστή"
 
-#: lib/installer.php:3201
+#: lib/installer.php:3200
 #, fuzzy
 msgid "Repopulating poller cache"
 msgstr "Ανασυγκρότηση της προσωρινής κρυφής μνήμης"
 
-#: lib/installer.php:3206
+#: lib/installer.php:3205
 #, fuzzy
 msgid "Repopulating SNMP Agent cache"
 msgstr "Ανακατασκευή της προσωρινής μνήμης SNMPAgent"
 
-#: lib/installer.php:3211
+#: lib/installer.php:3210
 #, fuzzy
 msgid "Generating RSA Key Pair"
 msgstr "Δημιουργία ζεύγους κλειδιών RSA"
 
-#: lib/installer.php:3223
+#: lib/installer.php:3222
 #, fuzzy, php-format
 msgid "Found %s tables to convert"
 msgstr "Βρέθηκαν πίνακες%s για μετατροπή"
 
-#: lib/installer.php:3230
+#: lib/installer.php:3229
 #, fuzzy, php-format
 msgid "Converting Table #%s '%s'"
 msgstr "Μετατροπή πίνακα #%s '%s'"
 
-#: lib/installer.php:3245
+#: lib/installer.php:3244
 #, fuzzy
 msgid "No tables where found or selected for conversion"
 msgstr "Δεν υπάρχουν πίνακες όπου βρέθηκαν ή επιλέχθηκαν για μετατροπή"
 
-#: lib/installer.php:3256
+#: lib/installer.php:3255
 #, php-format
 msgid "Switched from %s to %s"
 msgstr "Αλλαγή από %s σε %s"
 
-#: lib/installer.php:3260
+#: lib/installer.php:3259
 #, fuzzy, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
 msgstr "ΣΗΜΕΙΩΣΗ: Χρήση προσωρινού αρχείου για προσωρινή μνήμη db:%s"
 
-#: lib/installer.php:3282
+#: lib/installer.php:3281
 #, fuzzy, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
 msgstr "Αναβάθμιση από v%s (DB%s) σε v%s"
 
-#: lib/installer.php:3290
+#: lib/installer.php:3289
 #, fuzzy, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
 msgstr "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Αποτυχία εύρεσης λειτουργίας αναβάθμισης για v%s"
 
-#: lib/installer.php:3349
+#: lib/installer.php:3348
 #, fuzzy
 msgid "Install aborted due to no EULA acceptance"
 msgstr "Η εγκατάσταση ακυρώθηκε λόγω μη αποδοχής της EULA"
 
-#: lib/installer.php:3369
+#: lib/installer.php:3368
 #, fuzzy, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr "Το φόντο ξεκίνησε ήδη στο%s, αυτή η προσπάθεια στο%s παραλείφθηκε"
 
-#: lib/installer.php:3389
+#: lib/installer.php:3388
 #, fuzzy, php-format
 msgid "Exception occurred during installation: #%s - %s"
 msgstr "Εξαίρεση κατά την εγκατάσταση: #"
 
-#: lib/installer.php:3398
+#: lib/installer.php:3397
 #, fuzzy, php-format
 msgid "Installation was started at %s, completed at %s"
 msgstr "Η εγκατάσταση ξεκίνησε στο %s, ολοκληρώθηκε στο %s"
 
-#: lib/installer.php:3425
+#: lib/installer.php:3424
 msgid "Both"
 msgstr "Και τα δυο"
 
-#: lib/installer.php:3425
+#: lib/installer.php:3424
 #, fuzzy, php-format
 msgid "No - %s"
 msgstr "Σφάλμα: <ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/>"
 
-#: lib/installer.php:3427 lib/installer.php:3429
+#: lib/installer.php:3426 lib/installer.php:3428
 #, fuzzy, php-format
 msgid "%s - No"
 msgstr "Σφάλμα: <ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/>"
 
-#: lib/installer.php:3427
+#: lib/installer.php:3426
 msgid "Web"
 msgstr "Ιστότοπος"
 
-#: lib/installer.php:3429
+#: lib/installer.php:3428
 #, fuzzy
 msgid "Cli"
 msgstr "Κλασικό"
 
-#: lib/installer.php:3434
+#: lib/installer.php:3433
 #, fuzzy, php-format
 msgid "Setting PHP Option %s = %s"
 msgstr "Ρύθμιση επιλογής PHP%s =%s"
 
-#: lib/installer.php:3440
+#: lib/installer.php:3439
 #, fuzzy, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
 msgstr "Αποτυχία ορισμού της επιλογής PHP%s, είναι%s (θα πρέπει να είναι%s)"
 
-#: lib/installer.php:3459
+#: lib/installer.php:3458
 #, fuzzy
 msgid "No Remote Data Collectors found for full syncronization"
 msgstr "Οι συλλέκτες δεδομένων δεν βρέθηκαν κατά την προσπάθεια συγχρονισμού"
@@ -16995,36 +16995,36 @@ msgstr "Το ping του TCP έληξε"
 msgid "Ping not performed due to setting."
 msgstr "Το Ping δεν εκτελέστηκε λόγω ρύθμισης."
 
-#: lib/plugins.php:562
+#: lib/plugins.php:581
 #, fuzzy, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "%s Έκδοση %s ή παραπάνω απαιτείται για το %s."
 
-#: lib/plugins.php:566
+#: lib/plugins.php:585
 #, fuzzy, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "Το %s απαιτείται για το %s και δεν είναι εγκατεστημένο."
 
-#: lib/plugins.php:582
+#: lib/plugins.php:603
 #, fuzzy
 msgid "Plugin cannot be installed."
 msgstr "Δεν είναι δυνατή η εγκατάσταση της προσθήκης."
 
-#: lib/plugins.php:954 lib/plugins.php:961 plugins.php:367 plugins.php:447
+#: lib/plugins.php:1041 lib/plugins.php:1048 plugins.php:367 plugins.php:447
 msgid "Plugins"
 msgstr "Πρόσθετα"
 
-#: lib/plugins.php:972 lib/plugins.php:978
+#: lib/plugins.php:1060 lib/plugins.php:1066
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "Απαιτεί: Cacti&gt; = %s"
 
-#: lib/plugins.php:975
+#: lib/plugins.php:1063
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "Plugin Legacy"
 
-#: lib/plugins.php:1000
+#: lib/plugins.php:1088
 #, fuzzy
 msgid "Not Stated"
 msgstr "Δεν αναφέρεται"
@@ -17313,188 +17313,179 @@ msgstr "Το MySQL 5.6+ και το MariaDB 10.0+ είναι εξαιρετικ�
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "Συνιστάται να ενεργοποιήσετε το InnoDB σε οποιαδήποτε έκδοση %s μεγαλύτερη από 5.1."
 
-#: lib/utility.php:872
-#, fuzzy
-msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-msgstr "Όταν χρησιμοποιείτε το Cacti με γλώσσες διαφορετικές από την αγγλική, είναι σημαντικό να χρησιμοποιήσετε τον τύπο ταξινόμησης utf8_general_ci καθώς ορισμένοι χαρακτήρες παίρνουν περισσότερα από ένα μόνο byte. Εάν πρώτα εγκαταστήσετε τώρα το Cacti, σταματήστε, κάντε τις αλλαγές και ξεκινήστε ξανά. Εάν ο κάκτος σας λειτουργεί και βρίσκεται σε παραγωγή, ανατρέξτε στο διαδίκτυο για οδηγίες σχετικά με τη μετατροπή των βάσεων δεδομένων και των πινάκων σας εάν σκοπεύετε να υποστηρίξετε άλλες γλώσσες."
-
-#: lib/utility.php:878
-#, fuzzy
-msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-msgstr "Όταν χρησιμοποιείτε το Cacti με γλώσσες διαφορετικές από την αγγλική, είναι σημαντικό να χρησιμοποιήσετε το σύνολο χαρακτήρων utf8 καθώς ορισμένοι χαρακτήρες παίρνουν περισσότερα από ένα μόνο byte. Εάν πρώτα εγκαταστήσετε τώρα το Cacti, σταματήστε, κάντε τις αλλαγές και ξεκινήστε ξανά. Εάν ο κάκτος σας λειτουργεί και βρίσκεται σε παραγωγή, ανατρέξτε στο διαδίκτυο για οδηγίες σχετικά με τη μετατροπή των βάσεων δεδομένων και των πινάκων σας εάν σκοπεύετε να υποστηρίξετε άλλες γλώσσες."
-
-#: lib/utility.php:889
-#, fuzzy, php-format
-msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
-msgstr "Συνιστάται να ενεργοποιήσετε το InnoDB σε οποιαδήποτε έκδοση %s μεγαλύτερη από 5.1."
-
-#: lib/utility.php:901
+#: lib/utility.php:872 lib/utility.php:907
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
 msgstr "Όταν χρησιμοποιείτε το Cacti με γλώσσες διαφορετικές από την αγγλική, είναι σημαντικό να χρησιμοποιήσετε τον τύπο ταξινόμησης utf8mb4_unicode_ci καθώς ορισμένοι χαρακτήρες παίρνουν περισσότερα από ένα μόνο byte."
 
-#: lib/utility.php:907
+#: lib/utility.php:878 lib/utility.php:884 lib/utility.php:913
+#: lib/utility.php:919
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
 msgstr "Όταν χρησιμοποιείτε το Cacti με γλώσσες διαφορετικές από την αγγλική, είναι σημαντικό να χρησιμοποιήσετε το σύνολο χαρακτήρων utf8mb4 καθώς ορισμένοι χαρακτήρες παίρνουν περισσότερα από ένα μόνο byte."
 
-#: lib/utility.php:916
+#: lib/utility.php:895
+#, fuzzy, php-format
+msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
+msgstr "Συνιστάται να ενεργοποιήσετε το InnoDB σε οποιαδήποτε έκδοση %s μεγαλύτερη από 5.1."
+
+#: lib/utility.php:928
 #, fuzzy, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "Ανάλογα με τον αριθμό των συνδέσεων και τη χρήση του συλλέκτη δεδομένων σπονδυλικής στήλης, το %s θα χρειαστεί πολλές συνδέσεις. Ο υπολογισμός για τη σπονδυλική στήλη είναι: total_connections = total_processes * (total_threads + script_servers + 1), τότε πρέπει να αφήσετε χώρο για συνδέσεις χρηστών, οι οποίοι θα αλλάξουν ανάλογα με τον αριθμό των ταυτόχρονων λογαριασμών σύνδεσης."
 
-#: lib/utility.php:921
+#: lib/utility.php:933
 #, fuzzy
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "Η διατήρηση της μεγαλύτερης μνήμης cache του τραπέζι σημαίνει λιγότερες ανοικτές / κλειστές λειτουργίες κατά τη χρήση του innodb_file_per_table."
 
-#: lib/utility.php:926
+#: lib/utility.php:938
 #, fuzzy
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "Με τις δυνατότητες απομακρυσμένης διερεύνησης, θα συγχρονίζονται μεγάλα ποσά δεδομένων από τον κύριο διακομιστή στους απομακρυσμένους παραλήπτες. Συνεπώς, διατηρήστε αυτήν την τιμή 16M ή μεγαλύτερη."
 
-#: lib/utility.php:932
+#: lib/utility.php:944
 #, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "Εάν χρησιμοποιείτε το Cacti Performance Booster και επιλέγετε μια μηχανή αποθήκευσης μνήμης, θα πρέπει να είστε προσεκτικοί για να ξεπλύνετε το ρυθμιστή απόδοσης Booster πριν το σύστημα ξεπεράσει το χώρο μνήμης. Αυτό γίνεται με δύο τρόπους, αρχικά μειώνοντας το μέγεθος της στήλης εξόδου σας στο σωστό μέγεθος. Αυτή η στήλη βρίσκεται στους πίνακες poller_output και poller_output_boost. Το δεύτερο πράγμα που μπορείτε να κάνετε είναι να διαθέσετε περισσότερη μνήμη στους πίνακες μνήμης. Έχουμε επιλέξει αυθαίρετα μια συνιστώμενη τιμή 10 %% μνήμης συστήματος, αλλά αν χρησιμοποιείτε SSD δίσκους ή έχετε μικρότερο σύστημα, μπορείτε να αγνοήσετε αυτή τη σύσταση ή να επιλέξετε διαφορετική μηχανή αποθήκευσης. Ενδέχεται να δείτε την αναμενόμενη κατανάλωση των πινάκων Performance Booster κάτω από την Κονσόλα -&gt; Συστήματα Utilities -&gt; View Boost Status."
 
-#: lib/utility.php:938
+#: lib/utility.php:950
 #, fuzzy
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "Όταν εκτελείτε υποερωτήσεις, έχοντας ένα μεγαλύτερο προσωρινό μέγεθος πίνακα, κρατήστε αυτούς τους προσωρινούς πίνακες στη μνήμη."
 
-#: lib/utility.php:944
+#: lib/utility.php:956
 #, fuzzy
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file."
 msgstr "Όταν πραγματοποιείτε συνδέσεις, εάν είναι κάτω από αυτό το μέγεθος, θα διατηρούνται στη μνήμη και ποτέ δεν γράφονται σε προσωρινό αρχείο."
 
-#: lib/utility.php:950
+#: lib/utility.php:962
 #, fuzzy, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "Όταν χρησιμοποιείτε χώρο αποθήκευσης InnoDB, είναι σημαντικό να διατηρείτε χωριστά τους πίνακες σας. Αυτό καθιστά τη διαχείριση των πινάκων απλούστερη για τους χρήστες με μεγάλο χρονικό διάστημα του %s. Εάν εκτελείτε αυτήν την περίοδο αυτήν τη στιγμή, μπορείτε να κάνετε μετεγκατάσταση στο χώρο αποθήκευσης ανά αρχείο ενεργοποιώντας τη λειτουργία και, στη συνέχεια, τρέχοντας μια μεταβολή δήλωση σε όλους τους πίνακες InnoDB."
 
-#: lib/utility.php:956
+#: lib/utility.php:968
 #, fuzzy
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "Όταν χρησιμοποιείτε το innodb_file_per_table, είναι σημαντικό να ρυθμίσετε το innodb_file_format στο Barracuda. Αυτή η ρύθμιση θα επιτρέψει μεγαλύτερα ευρετήρια σημαντικά για ορισμένους πίνακες Cacti."
 
-#: lib/utility.php:962
+#: lib/utility.php:974
 #, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "Εάν τα τραπέζια σας έχουν πολύ μεγάλα ευρετήρια, πρέπει να λειτουργήσετε με το Barracuda innodb_file_format και το innodb_large_prefix ίσο με 1. Εάν δεν το κάνετε αυτό μπορεί να οδηγήσει σε προσθήκες που δεν μπορούν να δημιουργήσουν σωστά πίνακες."
 
-#: lib/utility.php:968
+#: lib/utility.php:980
 #, fuzzy, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "Το InnoDB θα κρατήσει όσο το δυνατόν περισσότερους πίνακες και ευρετήρια στη μνήμη του συστήματος. Επομένως, θα πρέπει να κάνετε το innodb_buffer_pool αρκετά μεγάλο για να κρατήσετε όσο περισσότερους πίνακες και ευρετήριο στη μνήμη. Ο έλεγχος του μεγέθους του κατάλογο / var / lib / mysql / cacti θα βοηθήσει στον προσδιορισμό αυτής της τιμής. Συνιστούμε 25 %% από τα συστήματα σας για μνήμη, αλλά οι απαιτήσεις σας θα διαφέρουν ανάλογα με το μέγεθος των συστημάτων σας."
 
-#: lib/utility.php:974
+#: lib/utility.php:986
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "Αυτές οι ρυθμίσεις θα πρέπει να παραμείνουν ΕΝΕΡΓΟ, εκτός εάν οι παρουσίες Cacti εκτελούνται είτε σε ZFS είτε σε FusionI / O, τα οποία έχουν και τα δύο εσωτερικά περιοδικά για να εξυπηρετήσουν απότομες διακοπές λειτουργίας του συστήματος. Ωστόσο, εάν έχετε πολύ καλή ισχύ και τα συστήματά σας σπάνια κατεβαίνουν και έχετε αντίγραφα ασφαλείας, η απενεργοποίηση αυτής της ρύθμισης μπορεί να σας οδηγήσει σε αύξηση σχεδόν 50% στην απόδοση της βάσης δεδομένων."
 
-#: lib/utility.php:979
+#: lib/utility.php:991
 #, fuzzy
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "Αυτό είναι όπου αποθηκεύονται τα μεταδεδομένα. Αν είχατε πολλά τραπέζια, θα ήταν χρήσιμο να αυξήσετε αυτό το ποσό."
 
-#: lib/utility.php:984
+#: lib/utility.php:996
 #, fuzzy
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "Τα ερωτήματα Rogue δεν πρέπει να αποσυνδεθούν από τη βάση δεδομένων για άλλους. Σκοτώστε αυτά τα ερωτήματα πριν σκοτώσουν το σύστημά σας."
 
-#: lib/utility.php:989
+#: lib/utility.php:1001
 #, fuzzy
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "Η μέγιστη απόδοση Ι / Ο συμβαίνει όταν χρησιμοποιείτε τη μέθοδο O_DIRECT για την εκκαθάριση σελίδων."
 
-#: lib/utility.php:999
+#: lib/utility.php:1011
 #, fuzzy, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "Ο ορισμός αυτής της τιμής σε 2 σημαίνει ότι θα ξεπλύνετε όλες τις συναλλαγές κάθε δευτερόλεπτο και όχι κατά τη διαδικασία δέσμευσης. Αυτό επιτρέπει στο %s να εκτελεί γραφή λιγότερο συχνά."
 
-#: lib/utility.php:1004
+#: lib/utility.php:1016
 #, fuzzy
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "Με τη σύγχρονη αποθήκευση τύπου SSD, η κατοχή πολλαπλών συνδέσμων io είναι πλεονεκτική για εφαρμογές με υψηλά χαρακτηριστικά io."
 
-#: lib/utility.php:1012 lib/utility.php:1054
+#: lib/utility.php:1024 lib/utility.php:1066
 #, fuzzy, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "Από το %s %s, μπορείτε να ελέγξετε πόσο συχνά το %s ξεχειλίζει τις συναλλαγές στο δίσκο. Η προεπιλογή είναι 1 δευτερόλεπτο, αλλά σε υψηλά συστήματα εισόδου / εξόδου ρύθμιση σε τιμή μεγαλύτερη από 1 μπορεί να επιτρέψει δίσκο I / O να είναι πιο διαδοχική"
 
-#: lib/utility.php:1017 lib/utility.php:1059
+#: lib/utility.php:1029 lib/utility.php:1071
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "Με τη σύγχρονη αποθήκευση τύπου SSD, η πολλαπλή ανάγνωση των νημάτων είναι πλεονεκτική για εφαρμογές με υψηλά χαρακτηριστικά io."
 
-#: lib/utility.php:1022 lib/utility.php:1064
+#: lib/utility.php:1034 lib/utility.php:1076
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "Με τη σύγχρονη αποθήκευση τύπου SSD, η ύπαρξη πολλαπλών κειμένων εγγραφής είναι πλεονεκτική για εφαρμογές με υψηλά χαρακτηριστικά io."
 
-#: lib/utility.php:1028
+#: lib/utility.php:1040
 #, fuzzy, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64."
 msgstr "Το %s θα διαιρέσει το innodb_buffer_pool σε περιοχές μνήμης για να βελτιώσει την απόδοση. Η μέγιστη τιμή είναι 64. Όταν το innodb_buffer_pool σας είναι μικρότερο από 1GB, θα πρέπει να χρησιμοποιήσετε το μέγεθος της πισίνας διαιρούμενο με 128MB. Συνεχίστε να χρησιμοποιείτε αυτήν την εξίσωση μέχρι το μέγιστο των 64."
 
-#: lib/utility.php:1034 lib/utility.php:1070
+#: lib/utility.php:1046 lib/utility.php:1082
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "Εάν διαθέτετε δίσκους SSD, χρησιμοποιήστε αυτήν την πρόταση. Εάν έχετε φυσικούς σκληρούς δίσκους, χρησιμοποιήστε 200 * τον αριθμό ενεργών μονάδων δίσκου στον πίνακα. Εάν χρησιμοποιείτε NVMe ή PCIe Flash, μπορούν να χρησιμοποιηθούν πολύ μεγαλύτεροι αριθμοί έως και 100000."
 
-#: lib/utility.php:1040 lib/utility.php:1076
+#: lib/utility.php:1052 lib/utility.php:1088
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "Εάν διαθέτετε δίσκους SSD, χρησιμοποιήστε αυτήν την πρόταση. Εάν διαθέτετε φυσικούς σκληρούς δίσκους, χρησιμοποιήστε 2000 * τον αριθμό ενεργών μονάδων δίσκου στον πίνακα. Εάν χρησιμοποιείτε NVMe ή PCIe Flash, μπορούν να χρησιμοποιηθούν πολύ μεγαλύτεροι αριθμοί έως 200000."
 
-#: lib/utility.php:1046 lib/utility.php:1082
+#: lib/utility.php:1058 lib/utility.php:1094
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "Εάν διαθέτετε δίσκους SSD, χρησιμοποιήστε αυτήν την πρόταση. Διαφορετικά, μην ορίσετε αυτήν τη ρύθμιση."
 
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "%s Συντονισμός"
 
-#: lib/utility.php:1097
+#: lib/utility.php:1109
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "Σημείωση: Πολλές αλλαγές παρακάτω απαιτούν την επανεκκίνηση της βάσης δεδομένων"
 
-#: lib/utility.php:1105
+#: lib/utility.php:1117
 msgid "Variable"
 msgstr "Μεταβλητή"
 
-#: lib/utility.php:1106
+#: lib/utility.php:1118
 msgid "Current Value"
 msgstr "Τρέχουσα αξία"
 
-#: lib/utility.php:1108
+#: lib/utility.php:1120
 msgid "Recommended Value"
 msgstr "Συνιστώμενη τιμή"
 
-#: lib/utility.php:1109
+#: lib/utility.php:1121
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: lib/utility.php:1519
+#: lib/utility.php:1531
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "Η PHP %s είναι η έκδοση mimimum"
 
-#: lib/utility.php:1521
+#: lib/utility.php:1533
 #, fuzzy, php-format
 msgid "A minimum of %s memory limit"
 msgstr "Ένα ελάχιστο όριο μνήμης %s MB"
 
-#: lib/utility.php:1523
+#: lib/utility.php:1535
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "Ένα ελάχιστο% χρόνου εκτέλεσης"
 
-#: lib/utility.php:1525
+#: lib/utility.php:1537
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "Μια έγκυρη ζώνη ώρας που ταιριάζει με τη MySQL και το σύστημα"
@@ -21012,6 +21003,14 @@ msgstr "Ο αριθμός των προτύπων γραφημάτων που χ
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Δεν υπάρχουν VDEF"
+
+#, fuzzy
+#~ msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
+#~ msgstr "Όταν χρησιμοποιείτε το Cacti με γλώσσες διαφορετικές από την αγγλική, είναι σημαντικό να χρησιμοποιήσετε τον τύπο ταξινόμησης utf8_general_ci καθώς ορισμένοι χαρακτήρες παίρνουν περισσότερα από ένα μόνο byte. Εάν πρώτα εγκαταστήσετε τώρα το Cacti, σταματήστε, κάντε τις αλλαγές και ξεκινήστε ξανά. Εάν ο κάκτος σας λειτουργεί και βρίσκεται σε παραγωγή, ανατρέξτε στο διαδίκτυο για οδηγίες σχετικά με τη μετατροπή των βάσεων δεδομένων και των πινάκων σας εάν σκοπεύετε να υποστηρίξετε άλλες γλώσσες."
+
+#, fuzzy
+#~ msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
+#~ msgstr "Όταν χρησιμοποιείτε το Cacti με γλώσσες διαφορετικές από την αγγλική, είναι σημαντικό να χρησιμοποιήσετε το σύνολο χαρακτήρων utf8 καθώς ορισμένοι χαρακτήρες παίρνουν περισσότερα από ένα μόνο byte. Εάν πρώτα εγκαταστήσετε τώρα το Cacti, σταματήστε, κάντε τις αλλαγές και ξεκινήστε ξανά. Εάν ο κάκτος σας λειτουργεί και βρίσκεται σε παραγωγή, ανατρέξτε στο διαδίκτυο για οδηγίες σχετικά με τη μετατροπή των βάσεων δεδομένων και των πινάκων σας εάν σκοπεύετε να υποστηρίξετε άλλες γλώσσες."
 
 #, fuzzy
 #~ msgid "%d Samples"
