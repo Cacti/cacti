@@ -725,6 +725,8 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		}
 	}
 
+	$quick_save = api_device_quick_save($save);
+
 	$save['availability_method']  = form_input_validate($availability_method, 'availability_method', '^[0-9]+$', false, 3);
 	$save['ping_method']          = form_input_validate($ping_method, 'ping_method', '^[0-9]+$', false, 3);
 	$save['ping_port']            = form_input_validate($ping_port, 'ping_port', '^[0-9]+$', true, 3);
@@ -781,7 +783,9 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 			api_device_cache_crc_update($save['poller_id']);
 
 			/* push out relavant fields to data sources using this host */
-			push_out_host($host_id, 0);
+			if (!$quick_save) {
+				push_out_host($host_id, 0);
+			}
 
 			/* the host substitution cache is now stale; purge it */
 			kill_session_var('sess_host_cache_array');
@@ -839,6 +843,41 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	}
 
 	return $host_id;
+}
+
+/* api_device_quick_save - checks if the poller cache needs to be
+   rebuilt as a part of a device save.
+   @arg $save - the save structure for the device
+   @returns boolean */
+function api_device_quick_save(&$save) {
+	if ($save['id'] > 0) {
+		$device = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($save['id']));
+
+		$compare = array(
+			'hostname',
+			'snmp_community',
+			'snmp_version',
+			'snmp_username',
+			'snmp_password',
+			'snmp_auth_protocol',
+			'snmp_priv_passphrase',
+			'snmp_priv_protocol',
+			'snmp_context',
+			'snmp_engine_id',
+			'snmp_port',
+			'snmp_timeout'
+		);
+
+		foreach($compare as $c) {
+			if ($save[$c] != $device[$c]) {
+				return false;
+			}
+		}
+
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /* api_device_update_host_template - changes the host template of a host
