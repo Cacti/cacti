@@ -55,6 +55,7 @@ Cacti CHANGELOG
 -issue#3874: The SHIFT functionnality in graphs does not accept negative values
 -issue#3881: Fixed wrong error message when file was not readable in import_package.php
 -issue#3883: No way to remove integrated/orphaned Plugin references from the Plugin Management interface
+-issue#3884: Improve MySQL Settings Recommendations for Character Set and Colation
 -issue#3888: Fix to IP sorting in single column
 -issue#3890: Saving a Device Should not always repopulate the poller cache
 -feature: Update FontAwesome to Version 5.14
