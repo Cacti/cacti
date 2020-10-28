@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#3711: Graphs New interface not validating page variables
 -issue#3722: External Links - switch between tabs
 -issue#3730: Change wording for the 21st century, but let's not forget our past
+-issue#3741: Replicate deleted device status instead of poller sync
 -issue#3743: Description field allows more characters entered than is stored
 -issue#3747: ldap.php cannot be loaded while installer is running
 -issue#3748: Unable to remove discovered device
@@ -55,6 +56,7 @@ Cacti CHANGELOG
 -issue#3881: Fixed wrong error message when file was not readable in import_package.php
 -issue#3883: No way to remove integrated/orphaned Plugin references from the Plugin Management interface
 -issue#3888: Fix to IP sorting in single column
+-issue#3890: Saving a Device Should not always repopulate the poller cache
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
