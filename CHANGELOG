@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#3711: Graphs New interface not validating page variables
 -issue#3722: External Links - switch between tabs
 -issue#3730: Change wording for the 21st century, but let's not forget our past
+-issue#3741: Replicate deleted device status instead of poller sync
 -issue#3743: Description field allows more characters entered than is stored
 -issue#3747: ldap.php cannot be loaded while installer is running
 -issue#3748: Unable to remove discovered device

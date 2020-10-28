@@ -79,29 +79,38 @@ function api_device_remove($device_id) {
 }
 
 /* api_device_purge_from_remote - removes a device from a remote data collectors
-   @arg $device_id - device id of a host
-   @arg $poller_id - the previous poller if it changed */
-function api_device_purge_from_remote($device_id, $poller_id = 0) {
+   @arg $device_ids - device id or an array of device_ids of a host or hosts
+   @arg $poller_id  - the previous poller if it changed */
+function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 	if ($poller_id > 1) {
 		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-			db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($device_id), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($device_id), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($device_id), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM host_snmp_cache  WHERE host_id = ?', array($device_id), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', array($device_id), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', array($device_id), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', array($device_id), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($device_id . ':%'), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', array($device_id . ':%'), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM data_local       WHERE host_id = ?', array($device_id), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM graph_local      WHERE host_id = ?', array($device_id), true, $rcnn_id);
+			if (!is_array($device_ids)) {
+				$device_ids = array($device_ids);
+
+				db_execute('DELETE FROM host             WHERE      id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_graph       WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_snmp_query  WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_snmp_cache  WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM poller_item      WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM poller_reindex   WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM graph_tree_items WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM reports_items    WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+
+				db_execute('DELETE FROM poller_command
+					WHERE SUBSTRING_INDEX(command, ":", 1) LIKE (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+
+				db_execute('DELETE FROM data_local       WHERE host_id IN (' . implode(', ', $device_ids), true, $rcnn_id);
+				db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $device_ids), true, $rcnn_id);
+			}
 		}
 
-		db_execute_prepared('INSERT INTO poller_command
-			(poller_id, time, action, command)
-			VALUES (?, NOW(), ?, ?)
-			ON DUPLICATE KEY UPDATE time=VALUES(time)',
-			array($poller_id, POLLER_COMMAND_PURGE, $device_id));
+		foreach($device_ids as $id) {
+			db_execute_prepared('INSERT INTO poller_command
+				(poller_id, time, action, command)
+				VALUES (?, NOW(), ?, ?)
+				ON DUPLICATE KEY UPDATE time=VALUES(time)',
+				array($poller_id, POLLER_COMMAND_PURGE, $id));
+		}
 	}
 }
 
