@@ -999,11 +999,9 @@ legend {
 }
 
 .iconLink {
-	padding: 2px;
-}
-
-.iconLink img {
-	padding-bottom: 2px;
+	width: 20px;
+	line-height: 20px;
+	display: inline-block;
 }
 
 .noLinkEditMain {
