@@ -864,6 +864,10 @@ ul#breadcrumbs {
 	padding: 3px 0px;
 }
 
+.tableRow {
+	line-height: 16px;
+}
+
 .cactiConsoleNavigationArea {
 	background: #161616;
 	border-right: #aaaaaa 1px solid;
@@ -2320,7 +2324,8 @@ tr#realtime td:first-child {
 }
 
 .ui-tooltip {
-	max-width: 400px;
+	max-width: 500px;
+	word-break: break-all;
 }
 
 .ui-tooltip-content div.header {
