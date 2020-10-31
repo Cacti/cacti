@@ -13,17 +13,18 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-10-28 17:03-0400\n"
-"PO-Revision-Date: 2020-09-13 18:02-0400\n"
-"Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
-"Language-Team: Cacti Developers <Cacti>\n"
-"Language: de_DE\n"
+"PO-Revision-Date: 2020-10-31 12:42+0000\n"
+"Last-Translator: Ronny Preiss <ronny.preiss@gmail.com>\n"
+"Language-Team: German <http://translate.cacti.net/projects/cacti/core/de-DE/>"
+"\n"
+"Language: de-DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.4-dev\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-KeywordsList: __;__date\n"
-"X-Generator: Poedit 2.4.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: about.php:29 include/global_arrays.php:2467 lib/html.php:2462
 msgid "About Cacti"
@@ -97,44 +98,38 @@ msgid "Delete"
 msgstr "Löschen"
 
 #: aggregate_graphs.php:43
-#, fuzzy
 msgid "Convert to Normal Graph"
-msgstr "Konvertieren in LINE1 Grafik"
+msgstr "In normale Grafik konvertieren"
 
 #: aggregate_graphs.php:44 graphs.php:58
-#, fuzzy
 msgid "Place Graphs on Report"
-msgstr "Grafiken auf dem Bericht platzieren"
+msgstr "Graphen auf Bericht platzieren"
 
 #: aggregate_graphs.php:45
-#, fuzzy
 msgid "Migrate Aggregate to use a Template"
-msgstr "Migration des Aggregats zur Verwendung einer Vorlage"
+msgstr "Aggregat zur Verwendung einer Vorlage migrieren"
 
 #: aggregate_graphs.php:46
-#, fuzzy
 msgid "Create New Aggregate from Aggregates"
 msgstr "Neues Aggregat aus Aggregaten erstellen"
 
 #: aggregate_graphs.php:50
-#, fuzzy
 msgid "Associate with Aggregate"
-msgstr "Assoziieren mit Aggregat"
+msgstr "Mit Aggregat assoziieren"
 
 #: aggregate_graphs.php:51
-#, fuzzy
 msgid "Disassociate with Aggregate"
 msgstr "Dissoziieren mit Aggregat"
 
 #: aggregate_graphs.php:84 graphs.php:197 host.php:195
-#, fuzzy, php-format
+#, php-format
 msgid "Place on a Tree (%s)"
 msgstr "Auf einem Baum platzieren (%s)"
 
 #: aggregate_graphs.php:352
-#, fuzzy
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Klicken Sie auf \"Weiter\", um die folgenden Aggregatgrafiken zu löschen."
+msgstr ""
+"Klicken Sie auf \"Weiter\", um die folgenden Aggregatgrafiken zu löschen."
 
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: aggregate_graphs.php:484 aggregate_graphs.php:497 aggregate_graphs.php:506
@@ -212,14 +207,14 @@ msgstr "Fortsetzen"
 
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: graphs.php:910
-#, fuzzy
 msgid "Delete Graph(s)"
 msgstr "Grafik(en) löschen"
 
 #: aggregate_graphs.php:387
-#, fuzzy
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
-msgstr "Die ausgewählten Aggregatdiagramme stellen Elemente aus mehr als einer Grafikvorlage dar."
+msgstr ""
+"Die ausgewählten Aggregatdiagramme stellen Elemente aus mehr als einer "
+"Grafikvorlage dar."
 
 #: aggregate_graphs.php:388
 #, fuzzy
@@ -237,9 +232,10 @@ msgid "Return"
 msgstr "Zurück"
 
 #: aggregate_graphs.php:397
-#, fuzzy
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
-msgstr "Die ausgewählten Aggregatdiagramme stellen Elemente aus mehr als einer Grafikvorlage dar."
+msgstr ""
+"Die ausgewählten Aggregatgrafiken scheinen keine passenden Aggregatvorlagen "
+"zu haben."
 
 #: aggregate_graphs.php:398
 #, fuzzy
@@ -247,19 +243,20 @@ msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template,
 msgstr "Um die untenstehenden Aggregatdiagramme in ein vorlagenbasiertes Aggregat zu migrieren, dürfen sie nur eine Grafikvorlage verwenden.  Bitte drücken Sie'Return' und wählen Sie dann nur Aggregatdiagramme aus, die die gleiche Diagrammvorlage verwenden."
 
 #: aggregate_graphs.php:414
-#, fuzzy
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
-msgstr "Klicken Sie auf \"Fortfahren\" und die folgenden Aggregatgrafiken werden migriert, um die unten von Ihnen gewählte Aggregatvorlage zu verwenden."
+msgstr ""
+"Klicken Sie auf \"Fortfahren\" und die folgenden Aggregatgrafiken werden "
+"migriert, um die unten von Ihnen gewählte Aggregatvorlage zu verwenden."
 
 #: aggregate_graphs.php:420
-#, fuzzy
 msgid "Aggregate Template:"
 msgstr "Aggregatvorlage:"
 
 #: aggregate_graphs.php:434
-#, fuzzy
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
-msgstr "Es sind derzeit keine Aggregatvorlagen für die ausgewählten Legacy-Aggregate definiert."
+msgstr ""
+"Derzeit sind für die ausgewählten Legacy-Aggregate keine Aggregatvorlagen "
+"definiert."
 
 #: aggregate_graphs.php:435
 #, fuzzy, php-format
@@ -267,29 +264,28 @@ msgid "In order to migrate the Aggregate Graphs below to a Template based Aggreg
 msgstr "Um die folgenden Aggregatdiagramme in ein vorlagenbasiertes Aggregat zu migrieren, erstellen Sie zunächst eine Aggregatvorlage für die Diagrammvorlage'%s'."
 
 #: aggregate_graphs.php:436
-#, fuzzy
 msgid "Please press 'Return' to continue."
-msgstr "Bitte drücken Sie'Return', um fortzufahren."
+msgstr "Bitte drücken Sie die 'Eingabetaste' um fortzufahren."
 
 #: aggregate_graphs.php:447
-#, fuzzy
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
-msgstr "Klicken Sie auf \"Weiter\", um die folgenden Aggregatdiagramme zu einem einzigen Aggregatdiagramm zusammenzufassen."
+msgstr ""
+"Klicken Sie auf 'Weiter', um die folgende(n) Aggregatgrafik(en) zu einer "
+"einzigen Aggregatgrafik zu kombinieren."
 
 #: aggregate_graphs.php:452
-#, fuzzy
 msgid "Aggregate Name:"
-msgstr "Name des Aggregats:"
+msgstr "Aggregatname:"
 
 #: aggregate_graphs.php:453
-#, fuzzy
 msgid "New Aggregate"
 msgstr "Neues Aggregat"
 
 #: aggregate_graphs.php:468 graphs.php:1238
-#, fuzzy
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
-msgstr "Klicken Sie auf \"Weiter\", um die ausgewählten Grafiken dem Bericht unten hinzuzufügen."
+msgstr ""
+"Klicken Sie auf 'Weiter', um die ausgewählten Diagramme zum Bericht unten "
+"hinzuzufügen."
 
 #: aggregate_graphs.php:472 graph_view.php:793 graphs.php:1242
 #: lib/html_reports.php:920 lib/html_reports.php:1596
@@ -306,19 +302,18 @@ msgid "Align"
 msgstr "Ausrichten"
 
 #: aggregate_graphs.php:484 graphs.php:1254
-#, fuzzy
 msgid "Add Graphs to Report"
-msgstr "Hinzufügen von Grafiken zum Bericht"
+msgstr "Grafiken zum Bericht hinzufügen"
 
 #: aggregate_graphs.php:486 graphs.php:1256
-#, fuzzy
 msgid "You currently have no reports defined."
 msgstr "Sie haben derzeit keine Berichte definiert."
 
 #: aggregate_graphs.php:492
-#, fuzzy
 msgid "Click 'Continue' to convert the following Aggregate Graph(s) into a normal Graph."
-msgstr "Klicken Sie auf \"Weiter\", um die folgenden Aggregatdiagramme zu einem einzigen Aggregatdiagramm zusammenzufassen."
+msgstr ""
+"Klicken Sie auf 'Weiter', um die folgende(n) Aggregatgrafik(en) in eine "
+"normale Grafik umzuwandeln."
 
 #: aggregate_graphs.php:497
 #, fuzzy
@@ -1235,6 +1230,7 @@ msgstr ""
 #: lib/html_reports.php:1651 lib/html_utility.php:931 links.php:499
 #: managers.php:242 managers.php:596 pollers.php:46 user_admin.php:1164
 #: user_domains.php:411 user_group_admin.php:697 utilities.php:1853
+#, fuzzy
 msgid "Disabled"
 msgstr "Deaktiviert"
 
