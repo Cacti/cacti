@@ -31,7 +31,6 @@ Cacti CHANGELOG
 -issue#3786: Real Time Graphs may cause invalid index errors
 -issue#3790: On newer versions of MySQL/MariaDB, 'system' keyword can cause issues
 -issue#3793: Plugin setup can generate errors when reading options via system function
--issue#3803: Plugin setup can generate errors when reading options via system function by kim-fitness
 -issue#3809: Plugin version numbers can be unexpectedly truncated
 -issue#3815: When PHP Session is set to autostart, an error can be reported as Cacti attempts to start it
 -issue#3820: When removing multiple items, selection process does not always work
@@ -53,7 +52,7 @@ Cacti CHANGELOG
 -issue#3869: Cacti Data Debug can show errors if the Data Source is damaged or has been removed
 -issue#3871: When importing a data query, an invalid column name error can sometimes be shown
 -issue#3874: When using shift functions on graphs, negative values are not allowed
--issue#3881: Correct issue when file is unreadable reporting no file was specified by kripper
+-issue#3881: Correct issue when file is unreadable reporting no file was specified
 -issue#3883: Orphaned Plugins have no option to be removed
 -issue#3884: Update MySQL recommendations for Character Set and Colation
 -issue#3888: Correct sorting of IP addresses to be numeric not alpha by JamesTilt
