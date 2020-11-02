@@ -1730,23 +1730,24 @@ function stri_replace(string $find, string $replace, string $string): string {
      new lines and the spaces around them
    @arg $string - the string to modify/clean
    @returns - the modified string */
-function clean_up_lines($string) {
+function clean_up_lines(?string $string): ?string {
 	if ($string != NULL) {
-		return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
-	} else {
-		return $string;
+		$string = preg_replace('/\s*[\r\n]+\s*/',' ', $string);
 	}
+
+	return $string;
 }
 
 /* clean_up_name - runs a string through a series of regular expressions designed to
      eliminate "bad" characters
    @arg $string - the string to modify/clean
    @returns - the modified string */
-function clean_up_name(string $string): string {
-	$string = preg_replace('/[\s\.]+/', '_', $string);
-	$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
-	$string = preg_replace('/_{2,}/', '_', $string);
-
+function clean_up_name(?string $string): ?string {
+	if ($string != NULL) {
+		$string = preg_replace('/[\s\.]+/', '_', $string);
+		$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
+		$string = preg_replace('/_{2,}/', '_', $string);
+	}
 	return $string;
 }
 
@@ -1754,10 +1755,12 @@ function clean_up_name(string $string): string {
      eliminate "bad" characters
    @arg $string - the string to modify/clean
    @returns - the modified string */
-function clean_up_file_name(string $string): string {
-	$string = preg_replace('/[\s\.]+/', '_', $string);
-	$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
-	$string = preg_replace('/_{2,}/', '_', $string);
+function clean_up_file_name(?string $string): ?string {
+	if ($string != NULL) {
+		$string = preg_replace('/[\s\.]+/', '_', $string);
+		$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
+		$string = preg_replace('/_{2,}/', '_', $string);
+	}
 
 	return $string;
 }
@@ -1766,13 +1769,15 @@ function clean_up_file_name(string $string): string {
      separators based on the current operating system
    @arg $path - the path to modify
    @returns - the modified path */
-function clean_up_path(string $path): string {
+function clean_up_path(?string $path): ?string {
 	global $config;
 
-	if ($config['cacti_server_os'] == 'win32') {
-		return str_replace('/', "\\", $path);
-	} elseif ($config['cacti_server_os'] == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
-		return str_replace("\\", '/', $path);
+	if ($path != NULL) {
+		if ($config['cacti_server_os'] == 'win32') {
+			$path = str_replace('/', "\\", $path);
+		} elseif ($config['cacti_server_os'] == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
+			$path = str_replace("\\", '/', $path);
+		}
 	}
 
 	return $path;
