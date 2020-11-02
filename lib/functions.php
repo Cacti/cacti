@@ -2706,12 +2706,12 @@ function stri_replace($find, $replace, $string) {
  *
  * @return mixed the modified string
  */
-function clean_up_lines($string) {
-	if ($string != '') {
-		return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
-	} else {
-		return $string;
+function clean_up_lines(?string $string): ?string {
+	if ($string !== null) {
+		$string = preg_replace('/\s*[\r\n]+\s*/',' ', $string);
 	}
+
+	return $string;
 }
 
 /**
@@ -2722,8 +2722,8 @@ function clean_up_lines($string) {
  *
  * @return mixed the modified string
  */
-function clean_up_name($string) {
-	if ($string != '') {
+function clean_up_name(?string $string): ?string {
+	if ($string !== null) {
 		$string = preg_replace('/[\s\.]+/', '_', $string);
 		$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
 		$string = preg_replace('/_{2,}/', '_', $string);
@@ -2740,8 +2740,8 @@ function clean_up_name($string) {
  *
  * @return mixed the modified string
  */
-function clean_up_file_name($string) {
-	if ($string != '') {
+function clean_up_file_name(?string $string): ?string {
+	if ($string !== null) {
 		$string = preg_replace('/[\s\.]+/', '_', $string);
 		$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
 		$string = preg_replace('/_{2,}/', '_', $string);
@@ -2758,16 +2758,18 @@ function clean_up_file_name($string) {
  *
  * @return mixed the modified path
  */
-function clean_up_path($path) {
+function clean_up_path(?string $path): ?string {
 	global $config;
 
-	if ($config['cacti_server_os'] == 'win32') {
-		return str_replace('/', "\\", $path);
-	} elseif ($config['cacti_server_os'] == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
-		return str_replace("\\", '/', $path);
-	} else {
-		return $path;
+	if ($path !== null) {
+		if ($config['cacti_server_os'] == 'win32') {
+			$path = str_replace('/', "\\", $path);
+		} elseif ($config['cacti_server_os'] == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
+			$path = str_replace("\\", '/', $path);
+		}
 	}
+
+	return $path;
 }
 
 /**
