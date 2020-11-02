@@ -13,10 +13,10 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-10-28 16:57-0400\n"
-"PO-Revision-Date: 2020-10-31 12:42+0000\n"
+"PO-Revision-Date: 2020-11-03 15:58+0000\n"
 "Last-Translator: Ronny Preiss <ronny.preiss@gmail.com>\n"
-"Language-Team: German <http://translate.cacti.net/projects/cacti/core-v12x/"
-"de-DE/>\n"
+"Language-Team: German <http://translate.cacti.net/projects/cacti-12x/"
+"core-12x/de-DE/>\n"
 "Language: de-DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -119,7 +119,7 @@ msgstr "Mit Aggregat assoziieren"
 
 #: aggregate_graphs.php:51
 msgid "Disassociate with Aggregate"
-msgstr "Dissoziieren mit Aggregat"
+msgstr "Mit Aggregat dissoziieren"
 
 #: aggregate_graphs.php:84 graphs.php:197 host.php:195
 #, php-format
@@ -129,7 +129,7 @@ msgstr "Auf einem Baum platzieren (%s)"
 #: aggregate_graphs.php:352
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
 msgstr ""
-"Klicken Sie auf \"Weiter\", um die folgenden Aggregatgrafiken zu löschen."
+"Klicken Sie auf 'Weiter', um die folgende(n) Aggregatgrafik(en) zu löschen."
 
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: aggregate_graphs.php:484 aggregate_graphs.php:497 aggregate_graphs.php:506
@@ -207,7 +207,7 @@ msgstr "Fortsetzen"
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: graphs.php:910
 msgid "Delete Graph(s)"
-msgstr "Grafik(en) löschen"
+msgstr "Graph(en) löschen"
 
 #: aggregate_graphs.php:387
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
@@ -243,8 +243,8 @@ msgstr "Um die untenstehenden Aggregatdiagramme in ein vorlagenbasiertes Aggrega
 #: aggregate_graphs.php:414
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
 msgstr ""
-"Klicken Sie auf \"Fortfahren\" und die folgenden Aggregatgrafiken werden "
-"migriert, um die unten von Ihnen gewählte Aggregatvorlage zu verwenden."
+"Klicken Sie auf 'Weiter' und die folgenden Aggregatgrafik(en) werden "
+"migriert, um die von Ihnen unten gewählte Aggregatvorlage zu verwenden."
 
 #: aggregate_graphs.php:420
 msgid "Aggregate Template:"
@@ -18181,7 +18181,7 @@ msgstr "Geben Sie die Stadt oder Ortschaft ein"
 
 #: sites.php:82 sites.php:575
 msgid "State"
-msgstr "Zustand"
+msgstr "Bundesland"
 
 #: sites.php:83
 msgid "The state for the Site."
