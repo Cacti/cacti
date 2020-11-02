@@ -1,63 +1,63 @@
 Cacti CHANGELOG
 
 1.2.15
--issue#3643: Maximum OIDs Per Get Request - field empty
--issue#3656: Cacti V1.2.12 Boost running too often
--issue#3693: Uptime Recache Event Loop on Devices Causing Interface Graph Gaps
--issue#3703: Graph Tree search problem
--issue#3711: Graphs New interface not validating page variables
--issue#3722: External Links - switch between tabs
--issue#3730: Change wording for the 21st century, but let's not forget our past
+-issue#3643: When editing Maximum OIDs Per Get Request, blank value can cause errors
+-issue#3656: Boost may run more often than it should
+-issue#3693: Recache Event Loop can cause Interface Graphs to show gaps
+-issue#3703: When searching Graph Tree's, non matching devices remain visible
+-issue#3711: Page validation errors may occur when opening real time graphs
+-issue#3722: External Links do not always open if they are still open from previous usage
+-issue#3730: Cultural changes to various word usage
 -issue#3741: Replicate deleted device status instead of poller sync
 -issue#3743: Description field allows more characters entered than is stored
--issue#3747: ldap.php cannot be loaded while installer is running
+-issue#3747: When installing or upgrading, LDAP functions may not always be included properly
 -issue#3748: Unable to remove discovered device
--issue#3753: Invalid argument supplied for foreach()
+-issue#3753: When installing or upgrading, PHP recommendations may not always return a valid value
 -issue#3755: Graph Templates has duplicate SQL delete statement
--issue#3759: Errors when doing a graph Sync 1.2.12
--issue#3760: Devices showing blank after deleteing and Poller sync
--issue#3761: Cacti 1.2.12 backtraces when deleting devices
--issue#3763: Function inject_form_variables not replacing all arguments
--issue#3764: Suggested values on Data Queries with multiple data templates gives error
+-issue#3759: When syncing to remote poller, missing function errors may occur
+-issue#3760: When removing devices from remote pollers, devices may reappear without details
+-issue#3761: When removing devices, array errors may sometimes be recorded
+-issue#3763: Variable injection does not always work as expected
+-issue#3764: Editing Data Queries with multiple data templates can give errors about Suggested values
 -issue#3767: Progress bar does not provide enough visual information during long page loads
--issue#3768: When using the Paw, Paper-plan, and Sunrise themes, there is no way to remind the user who is logged on
--issue#3769: Some users prefer to see all columns on the screen and do not wish that they be hidden despite the page size
+-issue#3768: Some themes do not allow for a way to see which user is currently signed in
+-issue#3769: When viewing tables, allow users to force all columns to be visible
 -issue#3770: Column sizing is being lost between pages refreshes
--issue#3771: All Cacti Console pages should include the ID of the object and the Data Input Method page is missing that ID
--issue#3775: Search field strange behavior when hitting enter in 1.2.14
--issue#3778: Export DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
--issue#3781: Cacti V1.2.14 php backtraces on Auth.php errors upon login
--issue#3782: Remove Devices shows undefined variable error
--issue#3786: Cacti 1.2.12 Realtime index errors
--issue#3790: Error Upgrading Cacti from Pre 1.x from Recent MariaDB version
--issue#3793: Calling function read_config_option in plugin's setup.php leads to error
--issue#3803: Allow Users to Specify Alternate Sources for Content-Security Policy
--issue#3809: The version number of plugin is not correct because the version length is too small in plugin_config schema
--issue#3815: Issues with Cacti login when session_autostart is configured in php.ini
--issue#3820: Removal of several items that require a confirmation have inconsistent bahavior
--issue#3821: The refresh circle still exist after export color done
+-issue#3771: When viewing input methods table, no ID is shown to help identify which method is being viewed
+-issue#3775: Filters do not always respect using keyboard to initiate searching
+-issue#3778: When exporting a data query, an invalid column name error can sometimes be shown
+-issue#3781: When checking if a view is allowed, having no session can result in errors
+-issue#3782: When removing devices via the CLI, undefined variable errors may be seen
+-issue#3786: Real Time Graphs may cause invalid index errors
+-issue#3790: On newer versions of MySQL/MariaDB, 'system' keyword can cause issues
+-issue#3793: Plugin setup can generate errors when reading options via system function
+-issue#3803: Plugin setup can generate errors when reading options via system function by kim-fitness
+-issue#3809: Plugin version numbers can be unexpectedly truncated
+-issue#3815: When PHP Session is set to autostart, an error can be reported as Cacti attempts to start it
+-issue#3820: When removing multiple items, selection process does not always work
+-issue#3821: When exporting colors, the indicator is not always removed upon completion
 -issue#3825: Unable to pass tree and leaf ID to 'graph_button' hook
--issue#3827: rrdcleaner not logging correctly on 1.2.14
--issue#3828: Early 'return' makes $current_user empty
--issue#3831: Minor errors in sep 8 of upgrade web page
--issue#3835: The function number_format_18n() does not properly use the decimal and thousands separators in some cases
--issue#3836: Undefined index in lib/timespan_settings.php
--issue#3844: Minor memory leaks and refresh issues when zooming on graph.php page
--issue#3847: Cacti 1.2.14 Real-Time Graphs not working
--issue#3849: Graph Tree - Redirect to host/tree/Graph Management
+-issue#3827: When performing maintenance, various errors may sometimes be seen
+-issue#3828: When Guest User setting is active, current user is not always properly set
+-issue#3831: When installing Cacti, minor errors in text can be seen
+-issue#3835: Numbers are not always formatted properly when there are no decimal places
+-issue#3836: When viewing Real Time Graphs, an undefined index error may be recorded
+-issue#3844: Minor memory leaks and refresh issues when zooming on graphs
+-issue#3847: Real Time Graphs may sometimes fail due to folder permissions
+-issue#3849: Navigation can sometimes occur unexpectedly due to background timers
 -issue#3850: Trees management screen not reporting correct number of trees
--issue#3858: Tree sequence wrongly increments
--issue#3862: Console > Setting > Auth > Guest User drop-down list should not list current log on user
--issue#3864: A link text in cacti table header cannot show clearly when in modern theme
+-issue#3858: Tree sequences can sometimes skip numbers during resorting
+-issue#3862: Guest user selection should not allow setting the currently logged in user
+-issue#3864: Links in Table Headers do not show clearly when in modern theme
 -issue#3868: Under some cases tree logic leads to undefined index errors
 -issue#3869: Cacti Data Debug can show errors if the Data Source is damaged or has been removed
--issue#3871: Import DataQuery show PHP Error: ERROR PHP NOTICE: Undefined index: fname
--issue#3874: The SHIFT functionnality in graphs does not accept negative values
--issue#3881: Fixed wrong error message when file was not readable in import_package.php
--issue#3883: No way to remove integrated/orphaned Plugin references from the Plugin Management interface
--issue#3884: Improve MySQL Settings Recommendations for Character Set and Colation
--issue#3888: Fix to IP sorting in single column
--issue#3890: Saving a Device Should not always repopulate the poller cache
+-issue#3871: When importing a data query, an invalid column name error can sometimes be shown
+-issue#3874: When using shift functions on graphs, negative values are not allowed
+-issue#3881: Correct issue when file is unreadable reporting no file was specified by kripper
+-issue#3883: Orphaned Plugins have no option to be removed
+-issue#3884: Update MySQL recommendations for Character Set and Colation
+-issue#3888: Correct sorting of IP addresses to be numeric not alpha by JamesTilt
+-issue#3890: Saving a device should not always repopulate the poller cache
 -feature: Update FontAwesome to Version 5.14
 
 1.2.14
