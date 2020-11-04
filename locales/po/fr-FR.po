@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-10-28 16:57-0400\n"
-"PO-Revision-Date: 2020-11-04 15:16+0000\n"
+"PO-Revision-Date: 2020-11-04 16:05+0000\n"
 "Last-Translator: Jimmy Conner <jimmy.conner@gmail.com>\n"
-"Language-Team: French <http://translate.cacti.net/projects/cacti/core-v12x/"
-"fr-FR/>\n"
+"Language-Team: French <http://translate.cacti.net/projects/cacti-12x/"
+"core-12x/fr-FR/>\n"
 "Language: fr-FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -287,7 +287,7 @@ msgstr "Cliquez sur 'Continuer' pour combiner le(s) graphique(s) agrégé(s) sui
 
 #: aggregate_graphs.php:497
 msgid "Convert to normal Graph(s)"
-msgstr "Convertir en graphique(s) normal(aux) "
+msgstr "Convertir en graphique(s) normal(aux)"
 
 #: aggregate_graphs.php:501
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
@@ -324,7 +324,7 @@ msgstr "Eléments du graphique [nouveau]"
 #: aggregate_graphs.php:581 graphs.php:1339
 #, php-format
 msgid "Graph Items [edit: %s]"
-msgstr "Éléments du graphique [éditer : %s]."
+msgstr "Éléments du graphique [éditer : %s]"
 
 #: aggregate_graphs.php:642 data_sources.php:1040 lib/html_reports.php:1155
 #: user_admin.php:1999
@@ -382,7 +382,7 @@ msgstr "Réglages du graphique agrégé"
 #: aggregate_graphs.php:763
 #, php-format
 msgid "Aggregate Preview %s"
-msgstr "Aperçu de l'agrégat %s."
+msgstr "Aperçu de l'agrégat %s"
 
 #: aggregate_graphs.php:781 graph.php:554 graphs.php:1607
 msgid "RRDtool Command:"
@@ -3660,7 +3660,9 @@ msgstr "Mise à jour RRA"
 
 #: data_input.php:725
 msgid "Output Fields can not be removed when Data Sources are present"
-msgstr "Les champs de sortie ne peuvent pas être supprimés si des sources de données sont présentes."
+msgstr ""
+"Les champs de sortie ne peuvent pas être supprimés si des sources de données "
+"sont présentes"
 
 #: data_input.php:734
 msgid "No Output Fields"
@@ -4141,7 +4143,9 @@ msgstr "Battement de cœur"
 
 #: data_source_profiles.php:1044
 msgid "The Amount of Time, in seconds, without good data before Data is stored as Unknown"
-msgstr "La durée, en secondes, sans données valides avant que les données ne soient stockées dans l'état 'inconnu'."
+msgstr ""
+"La durée, en secondes, sans données valides avant que les données ne soient "
+"stockées dans l'état 'inconnu'"
 
 #: data_source_profiles.php:1050
 msgid "The number of Data Sources using this Profile."
@@ -4305,7 +4309,7 @@ msgstr "Activer le mode Info de la source de données."
 
 #: data_sources.php:838 graphs.php:1480
 msgid "Edit Device."
-msgstr "Modifier l'équipement"
+msgstr "Modifier l'équipement."
 
 #: data_sources.php:841
 msgid "Edit Data Template."
@@ -5192,7 +5196,7 @@ msgstr "Cliquez sur 'Continuer' pour créer un graphique agrégé à partir du o
 
 #: graphs.php:1011
 msgid "The following Data Sources are in use by these Graphs:"
-msgstr "Les sources de données suivantes sont utilisées par ce(s) graphique(s)."
+msgstr "Les sources de données suivantes sont utilisées par ce(s) graphique(s):"
 
 #: graphs.php:1044
 msgid "Please confirm"
@@ -5586,7 +5590,7 @@ msgstr "Supprimer l'association de modèled de graphique"
 
 #: host.php:785 host_templates.php:513
 msgid "No associated graph templates."
-msgstr "Pas de modèles de graphique associés"
+msgstr "Pas de modèles de graphique associés."
 
 #: host.php:794 host_templates.php:522
 msgid "Add Graph Template"
@@ -5944,7 +5948,9 @@ msgstr "Installation en cours"
 
 #: include/auth.php:299
 msgid "Only Cacti Administrators with Install/Upgrade privilege may login at this time"
-msgstr "Seuls les administrateurs Cacti disposant des droits d'installation et de mise à jour peuvent se connecter en ce moment."
+msgstr ""
+"Seuls les administrateurs Cacti disposant des droits d'installation et de "
+"mise à jour peuvent se connecter en ce moment"
 
 #: include/auth.php:299
 msgid "There is an Installation or Upgrade in progress."
@@ -8883,7 +8889,7 @@ msgstr "Toutes les lignes de légende suivantes seront alignées comme indiqué 
 
 #: include/global_form.php:1007
 msgid "Text Format"
-msgstr "Format du texte "
+msgstr "Format du texte"
 
 #: include/global_form.php:1012
 #, fuzzy
@@ -9020,7 +9026,10 @@ msgstr "Détection des équipement tombés en panne"
 
 #: include/global_form.php:1207
 msgid "The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
-msgstr "C'est la méthode que Cacti utilisera pour vérifier qu'un hôte est disponible.  <br><i>NOTE : Il est recommandé au minimum que le protocole SNMP soit toujours sélectionné."
+msgstr ""
+"C'est la méthode que Cacti utilisera pour vérifier qu'un hôte est "
+"disponible.  <br><i>NOTE : Il est recommandé au minimum que le protocole "
+"SNMP soit toujours sélectionné.</i>"
 
 #: include/global_form.php:1216
 msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>"
@@ -12527,7 +12536,7 @@ msgstr "Les graphiques choisis pour le graphique agrégé ci-dessous représente
 
 #: lib/api_aggregate.php:1578 lib/api_aggregate.php:1597
 msgid "Press 'Return' to return and select different Graphs"
-msgstr "Appuyez sur 'Retour' pour revenir et sélectionner différents graphiques."
+msgstr "Appuyez sur 'Retour' pour revenir et sélectionner différents graphiques"
 
 #: lib/api_aggregate.php:1596
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
@@ -12560,7 +12569,7 @@ msgstr "Les éléments globaux ne sont pas modifiables."
 
 #: lib/api_aggregate.php:1803
 msgid "Aggregate Items are not editable"
-msgstr "Les éléments d'agrégat ne sont pas modifiables."
+msgstr "Les éléments d'agrégat ne sont pas modifiables"
 
 #: lib/api_automation.php:131
 #, fuzzy
@@ -12878,12 +12887,12 @@ msgstr " - Vue Admin"
 #: lib/clog_webapi.php:273
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "Log [Nombre total de lignes : %d %s - Filtre actif]."
+msgstr "Log [Nombre total de lignes : %d %s - Filtre actif]"
 
 #: lib/clog_webapi.php:275
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "Log [Nombre total de lignes : %d %s - Non filtré]."
+msgstr "Log [Nombre total de lignes : %d %s - Non filtré]"
 
 #: lib/clog_webapi.php:285 utilities.php:1252 utilities.php:1598
 #: utilities.php:1805 utilities.php:1885 utilities.php:2566 utilities.php:2774
@@ -14048,7 +14057,9 @@ msgstr "Data Query Les sources de données doivent être créées à l'aide de %
 
 #: lib/html_graph.php:193 lib/html_tree.php:1077
 msgid "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile"
-msgstr "Enregistrer les préférences des graphiques, des colonnes, des miniatures, des préréglages et de l'intervalle de temps courants dans votre profil."
+msgstr ""
+"Enregistrer les préférences des graphiques, des colonnes, des miniatures, "
+"des préréglages et de l'intervalle de temps courants dans votre profil"
 
 #: lib/html_graph.php:223 lib/html_tree.php:1101
 msgid "Columns"
@@ -14283,7 +14294,7 @@ msgstr "Taille de la police de l'élément"
 #: lib/html_reports.php:709
 #, php-format
 msgid "Report Item [edit Report: %s]"
-msgstr "Élément du rapport [éditer le rapport : %s]."
+msgstr "Élément du rapport [éditer le rapport : %s]"
 
 #: lib/html_reports.php:711
 #, fuzzy, php-format
@@ -14384,7 +14395,11 @@ msgstr "Horodatage suivant pour l'envoi du rapport par email"
 
 #: lib/html_reports.php:1022
 msgid "Start time for [first|next] mail to take place. All future mailing times will be based upon this start time. A good example would be 2:00am. The time must be in the future.  If a fractional time is used, say 2:00am, it is assumed to be in the future."
-msgstr "Heure de début de l'envoi de l'email [premier | suivant]. Toutes les futures heures d'envoi d'emails seront basées sur cette heure de début. Un bon exemple serait 02h00. L'heure doit être dans le futur. Si une fraction de temps est utilisée, disons 02h00, elle est supposée être dans le futur. "
+msgstr ""
+"Heure de début de l'envoi de l'email [premier | suivant]. Toutes les futures "
+"heures d'envoi d'emails seront basées sur cette heure de début. Un bon "
+"exemple serait 02h00. L'heure doit être dans le futur. Si une fraction de "
+"temps est utilisée, disons 02h00, elle est supposée être dans le futur."
 
 #: lib/html_reports.php:1030
 msgid "Report Interval"
@@ -14428,11 +14443,11 @@ msgstr "Cette valeur sera utilisée comme objet par défaut de l'email.  Le nom 
 
 #: lib/html_reports.php:1065
 msgid "This Name will be used as the default E-mail Sender"
-msgstr "Ce nom sera utilisé comme expéditeur par défaut."
+msgstr "Ce nom sera utilisé comme expéditeur par défaut"
 
 #: lib/html_reports.php:1073
 msgid "This Address will be used as the E-mail Senders address"
-msgstr "Cette adresse sera utilisée comme adresse email de l'expéditeur."
+msgstr "Cette adresse sera utilisée comme adresse email de l'expéditeur"
 
 #: lib/html_reports.php:1078
 msgid "To Email Address(es)"
@@ -14456,7 +14471,7 @@ msgstr "Type d'image attachée"
 
 #: lib/html_reports.php:1103
 msgid "Select one of the given Types for the Image Attachments"
-msgstr "Sélectionnez l'un des types suivants pour les images en pièces jointes."
+msgstr "Sélectionnez l'un des types suivants pour les images en pièces jointes"
 
 #: lib/html_reports.php:1156
 msgid "Events"
@@ -14728,7 +14743,7 @@ msgstr "Fichiers de paquets"
 
 #: lib/import.php:2105
 msgid "[preview] "
-msgstr "[aperçu]"
+msgstr "[aperçu] "
 
 #: lib/import.php:2110
 #, fuzzy
@@ -15950,7 +15965,7 @@ msgstr "Authentification réussie"
 
 #: lib/ldap.php:253
 msgid "Authentication Failure"
-msgstr "Échec de l'identification."
+msgstr "Échec de l'identification"
 
 #: lib/ldap.php:257
 #, fuzzy
@@ -17218,7 +17233,7 @@ msgstr "Notes pour cette base de données sur les collecteurs de données."
 
 #: pollers.php:95
 msgid "Collection Settings"
-msgstr " Paramètres de Collection "
+msgstr "Paramètres de Collection"
 
 #: pollers.php:99
 msgid "Processes"
@@ -17816,7 +17831,8 @@ msgstr "Nom alternatif"
 
 #: sites.php:168
 msgid "Used for cases where a Site has an alternate named used to describe it"
-msgstr "Utilisé dans les cas où un site possède un autre nom utilisé pour le décrire."
+msgstr ""
+"Utilisé dans les cas où un site possède un autre nom utilisé pour le décrire"
 
 #: sites.php:170
 msgid "If the Site is known by another name enter it here."
@@ -18095,7 +18111,9 @@ msgstr "Cet arbre a été verrouillé pour l'édition le %1$s par %2$s."
 
 #: tree.php:773
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
-msgstr "Pour modifier l'arbre, vous devez d'abord le déverrouiller, puis le verrouiller vous-même."
+msgstr ""
+"Pour modifier l'arbre, vous devez d'abord le déverrouiller, puis le "
+"verrouiller vous-même"
 
 #: tree.php:791
 msgid "Display"
