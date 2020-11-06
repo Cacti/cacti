@@ -18,7 +18,6 @@ before_script:
 - sudo a2enmod actions
 - sudo a2enmod rewrite
 - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
-- sudo ln -s `which php` /usr/bin/php
 - sudo service apache2 restart
 - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
 - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -35,7 +34,7 @@ before_install:
 - mysql -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
 - mysql -e "FLUSH PRIVILEGES;"
 - mysql cacti < cacti.sql
-- mysql -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/usr/bin/php')" cacti
+- mysql -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
 install:
 - mv include/config.php.dist include/config.php
