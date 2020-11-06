@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.16
+-issue#3898: Realtime graph pop up counter bug
 -issue#3903: Debian test shows new PHP errors in log
 -issue#3907: The cli script install_cacti.php does not exit with not zero exit code when errors occur
 -feature: Update phpseclib to version 2.0.29
