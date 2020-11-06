@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.16:
+-feature: Update phpseclib to version 2.0.29
+
 1.2.15
 -issue#3643: When editing Maximum OIDs Per Get Request, blank value can cause errors
 -issue#3656: Boost may run more often than it should
