@@ -312,6 +312,7 @@ function process_install_errors($results) {
 		$errors = $results['Errors'];
 		$count = 0;
 		$sections = 0;
+
 		foreach ($errors as $error_section => $error_array) {
 			$sections++;
 			print $error_section . PHP_EOL;
@@ -320,8 +321,10 @@ function process_install_errors($results) {
 				print $error_key . ' Error #' . $count . ' - ' . $error . PHP_EOL;
 			}
 		}
+
 		print PHP_EOL . 'Unable to continue as ' . $count . ' issue' . ($count == 1?'':'s') . ' in ' . $sections . ' section' . ($sections == 1?'':'s') . ' were found.' . PHP_EOL;
-		exit();
+
+		exit(1);
 	}
 }
 
