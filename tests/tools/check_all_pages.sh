@@ -6,7 +6,7 @@
 # ------------------------------------------------------------------------------
 # Debugging
 # ------------------------------------------------------------------------------
-# set -xv
+set -xv
 
 #exec 2> /dev/null
 
@@ -22,6 +22,7 @@ APACHE_ERROR="/var/log/apache2/error.log"
 APACHE_ACCESS="/var/log/apache2/access.log"
 POLLER="$BASE_PATH/poller.php"
 WEBUSER="www-data"
+DEBUG=1
 
 # ------------------------------------------------------------------------------
 # Ensure that the artifact directory is created.  No need for a mess
@@ -58,6 +59,17 @@ save_log_files() {
 		fi
 
 		chmod a+r ${logBase}/*.log
+
+		if [ $DEBUG -eq 1 ];then
+			echo "DEBUG: Dumping $CACTI_LOG"
+			cat $CACTI_LOG ${logBase}/cacti.log
+			echo "DEBUG: Dumping $CACTI_ERRLOG"
+			cat $CACTI_ERRLOG 
+			echo "DEBUG: Dumping $APACHE_ACCESS"
+			cat $APACHE_ACCESS 
+			echo "DEBUG: Dumping $APACHE_ERROR"
+			cat $APACHE_ERROR 
+		fi
 	fi
 }
 
