@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-1.2.16:
+1.2.16
 -issue#3903: Debian test shows new PHP errors in log
 -feature: Update phpseclib to version 2.0.29
 -feature: Update PHPMailer to version 6.1.8
