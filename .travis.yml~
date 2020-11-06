@@ -18,7 +18,6 @@ before_script:
 - sudo a2enmod actions
 - sudo a2enmod rewrite
 - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
-- sudo ln -s /bin/php /usr/bin/php
 - sudo service apache2 restart
 - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
 - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
