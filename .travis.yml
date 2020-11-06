@@ -15,7 +15,7 @@ php:
 
 before_script:
 # install required packages
-- sudo apt-get install apache2 libapache2-mod-fastcgi php5-mysql php5-gd php5-ldap php5-gmp rrdtool snmp
+- sudo apt-get install apache2 libapache2-mod-fastcgi php-mysql php-gd php-ldap php-gmp rrdtool snmp
 - sudo a2enmod actions fastcgi alias
 - sudo a2enmod rewrite
 # enable php-fpm
@@ -40,6 +40,7 @@ script:
 - php tests/tools/check_install_code.php
 - bash tests/tools/check_cli_version.sh
 - php /var/www/html/cacti/cli/install_cacti.php --accept-eula --install --force
+- sudo ln -s `which php` /bin/php
 - sudo bash tests/tools/check_all_pages.sh
 
 before_install:
