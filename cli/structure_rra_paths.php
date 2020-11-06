@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -224,7 +224,7 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print "\nusage: structure_rra_paths.php [--host-id=N] [--proceed] [--version|-V|-v] [--help|-H|-h]\n\n"; 
+	print "\nusage: structure_rra_paths.php [--host-id=N] [--proceed] [--version|-V|-v] [--help|-H|-h]\n\n";
 	print "A simple interactive command line utility that converts a Cacti system from using\n";
 	print "legacy RRA paths to using structured RRA paths with the following\n";
 	print "naming convention: <path_rra>/host_id/local_data_id.rrd\n\n";

@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#3903: Debian test shows new PHP errors in log
 -feature: Update phpseclib to version 2.0.29
 -feature: Update PHPMailer to version 6.1.8
+-feature: Use LSB shebang notation for cli scripts
 
 1.2.15
 -issue#3643: When editing Maximum OIDs Per Get Request, blank value can cause errors
