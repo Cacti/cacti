@@ -37,7 +37,7 @@ before_script:
 # restart apache
 - sudo service apache2 restart
 # setup link for php legacy
-- sudo ln -s $(phpenv version-name)/bin/php /bin/php
+- sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
 # run syntax check
 - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
 
