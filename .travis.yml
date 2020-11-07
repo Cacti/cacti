@@ -16,8 +16,6 @@ php:
 before_script:
 # install required packages
 - sudo apt-get install apache2 libapache2-mod-fastcgi php5-mysql php5-gd php5-ldap php5-gmp rrdtool snmp
-- sudo a2enmod actions fastcgi alias
-- sudo a2enmod rewrite
 # enable php-fpm
 - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
 - sudo a2enmod rewrite actions fastcgi alias
@@ -38,6 +36,8 @@ before_script:
 - sudo service apache2 restart
 # setup link for php legacy
 - sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
+# peak my head under the tent
+- ls -l /usr/lib/cgi-bin/
 # run syntax check
 - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
 
