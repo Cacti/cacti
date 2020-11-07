@@ -31,6 +31,7 @@ before_script:
 - sudo service apache2 restart
 # move cacti to web root
 - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
+- sudo chown -R www-data:www-date /var/www/html
 - sudo service apache2 restart
 # setup link for php legacy
 - sudo ln -s `which php` /bin/php
