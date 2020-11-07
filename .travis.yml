@@ -36,7 +36,7 @@ before_script:
 # setup link for php legacy
 - sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
 # peak my head under the tent
-- find ~/.phpenv/versions/$(phpenv version-name) -sl
+- find ~/.phpenv/versions/$(phpenv version-name) -ls
 # run syntax check
 - if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
