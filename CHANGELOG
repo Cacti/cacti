@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#3903: Debian test shows new PHP errors in log
 -issue#3907: The cli script install_cacti.php does not exit with not zero exit code when errors occur
 -issue#3910: Banners are not showing up
+-issue#3912: Some pages that export data, when the export is complete, the progress bar remains
 -feature: Update phpseclib to version 2.0.29
 -feature: Update PHPMailer to version 6.1.8
 -feature: Use LSB shebang notation for cli scripts

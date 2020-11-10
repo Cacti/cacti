@@ -591,6 +591,7 @@ function draw_filter() {
 
 			$('#export').click(function() {
 				document.location = 'automation_devices.php?action=export';
+				Pace.stop();
 			});
 		});
 
