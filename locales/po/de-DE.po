@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-10-28 16:57-0400\n"
-"PO-Revision-Date: 2020-11-03 15:58+0000\n"
+"PO-Revision-Date: 2020-11-13 08:42+0000\n"
 "Last-Translator: Ronny Preiss <ronny.preiss@gmail.com>\n"
 "Language-Team: German <http://translate.cacti.net/projects/cacti-12x/"
 "core-12x/de-DE/>\n"
@@ -858,7 +858,7 @@ msgstr "Diagramme mit"
 #: include/global_arrays.php:1226 include/global_form.php:1351
 #: include/global_form.php:1586 lib/html_reports.php:643 tree.php:1657
 msgid "Graph Template"
-msgstr "Graph Template"
+msgstr "Diagrammvorlage"
 
 #: aggregate_templates.php:690
 #, fuzzy
@@ -2441,7 +2441,7 @@ msgstr "Version"
 
 #: automation_snmp.php:535 include/global_settings.php:616
 msgid "Community"
-msgstr "Community"
+msgstr "Gemeinschaft"
 
 #: automation_snmp.php:536 lib/functions.php:3944
 msgid "Port"
@@ -2449,7 +2449,7 @@ msgstr "Port"
 
 #: automation_snmp.php:537 include/global_settings.php:691
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Zeitüberschreitung"
 
 #: automation_snmp.php:538 include/global_settings.php:699
 msgid "Retries"
@@ -5201,7 +5201,7 @@ msgstr "Enddatum"
 
 #: graph_xport.php:125 graph_xport.php:157 include/global_form.php:557
 msgid "Step"
-msgstr "Step"
+msgstr "Schritt"
 
 #: graph_xport.php:126 graph_xport.php:158
 #, fuzzy
@@ -6234,7 +6234,7 @@ msgstr "Speichern fehlgeschlagen aufgrund von Fehlern bei der Eingabe von Felder
 
 #: include/global_arrays.php:144
 msgid "Passwords do not match, please retype."
-msgstr "Passworte stimmen nicht überein; bitte neue Eingabe"
+msgstr "Passwörter stimmen nicht überein, bitte erneut eingeben."
 
 #: include/global_arrays.php:147
 msgid "You must select at least one field."
@@ -6486,7 +6486,7 @@ msgstr "LDAP/AD-basierte Passwortänderung wird nicht unterstützt."
 
 #: include/global_arrays.php:303
 msgid "Password successfully changed."
-msgstr "Passwort wurde erfolgreich geändert!"
+msgstr "Passwort erfolgreich geändert."
 
 #: include/global_arrays.php:306
 #, fuzzy
@@ -8681,7 +8681,9 @@ msgstr "Der vollständige Pfad zur RRDatei."
 
 #: include/global_form.php:545
 msgid "The script/source used to gather data for this data source."
-msgstr "Das Skript/der Ursprung der Daten für die Datenquelle sammelt"
+msgstr ""
+"Das Skript/die Quelle, das/die verwendet wurde, um Daten für diese "
+"Datenquelle zu sammeln."
 
 #: include/global_form.php:551 include/global_form.php:1650
 #, fuzzy
@@ -9740,7 +9742,7 @@ msgstr "Einstellungen der Gesamtvorlage"
 
 #: include/global_form.php:2008
 msgid "The name of this Color Template."
-msgstr "Der Name dieser Farbvorlage"
+msgstr "Der Name dieser Farbvorlage."
 
 #: include/global_form.php:2019
 #, fuzzy
@@ -9975,7 +9977,7 @@ msgstr "snmpwalk-Datei Pfad"
 
 #: include/global_settings.php:124
 msgid "The path to your snmpwalk binary."
-msgstr "Der Pfad zur ausführbaren snmpwalk-Datei"
+msgstr "Der Pfad zu Ihrer snmpwalk Binärdatei."
 
 #: include/global_settings.php:130
 #, fuzzy
@@ -10039,7 +10041,7 @@ msgstr "Der Pfad zu Ihrer PHP-Binärdatei (kann eine php-Rekompilierung erforder
 
 #: include/global_settings.php:172
 msgid "Logging"
-msgstr "Logging"
+msgstr "Protokollierung"
 
 #: include/global_settings.php:177
 #, fuzzy
@@ -12576,7 +12578,7 @@ msgstr "Start der Tagesverschiebung"
 
 #: include/global_settings.php:2295
 msgid "Start Time of the Daily Shift."
-msgstr "Startuhrzeit  der Tagesverschiebung"
+msgstr "Startzeit der Tagesschicht."
 
 #: include/global_settings.php:2302
 msgid "End of Daily Shift"
@@ -12584,7 +12586,7 @@ msgstr "Ende der Tagesverschiebung"
 
 #: include/global_settings.php:2303
 msgid "End Time of the Daily Shift."
-msgstr "Endeuhrzeit der Tagesverschiebung"
+msgstr "Endzeit der Tagesschicht."
 
 #: include/global_settings.php:2312
 msgid "Thumbnail Sections"
@@ -13402,11 +13404,11 @@ msgstr "Gefundene Datenabfrage-XML-Datei bei'%s'."
 
 #: lib/data_query.php:599 lib/data_query.php:779 lib/data_query.php:2154
 msgid "Error parsing XML file into an array."
-msgstr "Fehler beim Einlesen der XML-Datei in ein Array"
+msgstr "Fehler beim Parsen einer XML-Datei in ein Array."
 
 #: lib/data_query.php:603 lib/data_query.php:783
 msgid "XML file parsed ok."
-msgstr "XML Datei eingelesen"
+msgstr "XML-Datei geparst."
 
 #: lib/data_query.php:611 lib/data_query.php:786
 #, fuzzy, php-format
