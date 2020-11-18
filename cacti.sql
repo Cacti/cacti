@@ -1422,6 +1422,7 @@ CREATE TABLE `data_source_purge_action` (
   PRIMARY KEY (`id`),
   UNIQUE KEY name (`name`))
   ENGINE=InnoDB
+  ROW_FORMAT=Dynamic
   COMMENT='RRD Cleaner File Actions';
 
 --
@@ -1443,6 +1444,7 @@ CREATE TABLE `data_source_purge_temp` (
   KEY in_cacti (`in_cacti`),
   KEY data_template_id (`data_template_id`))
   ENGINE=InnoDB
+  ROW_FORMAT=Dynamic
   COMMENT='RRD Cleaner File Repository';
 
 	
@@ -2388,6 +2390,7 @@ CREATE TABLE `reports` (
   PRIMARY KEY (`id`),
   KEY `mailtime` (`mailtime`)) 
   ENGINE=InnoDB 
+  ROW_FORMAT=Dynamic
   COMMENT='Cacri Reporting Reports';
 
 --
@@ -2414,6 +2417,7 @@ CREATE TABLE `reports_items` (
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`)) 
   ENGINE=InnoDB 
+  ROW_FORMAT=Dynamic
   COMMENT='Cacti Reporting Items';
 
 --

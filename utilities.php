@@ -1140,7 +1140,7 @@ function utilities_view_logfile() {
 
 									$logParts = explode('-', $logFile);
 
-									$logDate = count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
+									$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 									$logName = $logParts[0];
 
 									print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . '</option>';
@@ -1247,7 +1247,7 @@ function utilities_view_logfile() {
 	$refreshTime  = get_request_var('refresh');
 	$message_type = get_request_var('message_type');
 	$tail_lines   = get_request_var('tail_lines');
-	$base_url     = 'utilities.php?action=view_logfile&rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refreshTime.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.basename($logfile);
+	$base_url     = 'utilities.php?action=view_logfile';
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
@@ -2016,18 +2016,18 @@ function utilities() {
 	);
 
 	if (snmpagent_enabled()) {
-		$utilities[__('SNMPAgent Utilities')] = array(
-			__('View SNMPAgent Cache') => array(
+		$utilities[__('SNMP Agent Utilities')] = array(
+			__('View SNMP Agent Cache') => array(
 				'link'  => 'utilities.php?action=view_snmpagent_cache',
-				'description' => __('This shows all objects being handled by the SNMPAgent.')
+				'description' => __('This shows all objects being handled by the SNMP Agent.')
 			),
-			__('Rebuild SNMPAgent Cache') => array(
+			__('Rebuild SNMP Agent Cache') => array(
 				'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
 				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
 			),
-			__('View SNMPAgent Notification Log') => array(
+			__('View SNMP Agent Notification Log') => array(
 				'link'  => 'utilities.php?action=view_snmpagent_events',
-				'description' => __('This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.')
+				'description' => __('This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers.')
 			),
 			__('SNMP Notification Receivers') => array(
 				'link'  => 'managers.php',
@@ -2478,7 +2478,7 @@ function snmpagent_utilities_run_cache() {
 	</script>
 	<?php
 
-	html_start_box(__('SNMPAgent Cache'), '100%', '', '3', 'center', '');
+	html_start_box(__('SNMP Agent Cache'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -2730,7 +2730,7 @@ function snmpagent_utilities_run_eventlog(){
 	</script>
 
 	<?php
-	html_start_box(__('SNMPAgent Notification Log'), '100%', '', '3', 'center', '');
+	html_start_box(__('SNMP Agent Notification Log'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

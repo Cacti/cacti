@@ -1445,6 +1445,7 @@ function host() {
 	function exportRecords() {
 		strURL = 'host.php?action=export';
 		document.location = strURL;
+		Pace.stop();
 	}
 
 	$(function() {

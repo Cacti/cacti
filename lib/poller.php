@@ -1078,7 +1078,6 @@ function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false)
 	return $rcnn_id;
 }
 
-
 function poller_connect_to_remote($poller_id) {
 	global $config, $local_db_cnn_id;
 
@@ -1278,6 +1277,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'host_snmp_cache', $remote_poller_id);
 
+		// Special class of 'update' for the table following tables 'poller_reindex', 'poller_item'
 		$data = db_fetch_assoc_prepared('SELECT pri.*
 			FROM poller_reindex AS pri
 			INNER JOIN host AS h
@@ -1285,7 +1285,27 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			WHERE h.poller_id = ?
 			AND h.deleted = ""',
 			array($remote_poller_id));
-		replicate_out_table($rcnn_id, $data, 'poller_reindex', $remote_poller_id);
+		replicate_out_table($rcnn_id, $data, 'poller_reindex', $remote_poller_id, false, array('assert_value'));
+
+		// Since we are doing an update, remove stale data
+		db_execute('DELETE pr
+			FROM poller_reindex AS pr
+			LEFT JOIN host_snmp_query AS hsq
+			ON pr.host_id = hsq.host_id
+			AND pr.data_query_id = hsq.snmp_query_id
+			WHERE hsq.host_id IS NULL', false, $rcnn_id);
+
+		$data = db_fetch_assoc_prepared('SELECT pi.*
+			FROM poller_item AS pi
+			WHERE pi.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id, false, array('last_updated'));
+
+		// Remove anything not updated recently
+		$min_date = db_fetch_cell('SELECT MAX(last_updated) FROM poller_item', false, $rcnn_id);
+		if (!empty($min_date)) {
+			db_execute("DELETE FROM poller_item WHERE last_updated < '$min_date'", false, $rcnn_id);
+		}
 
 		$data = db_fetch_assoc_prepared('SELECT dl.*
 			FROM data_local AS dl
@@ -1405,9 +1425,22 @@ function replicate_in() {
 	api_plugin_hook_function('replicate_in');
 }
 
-function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
+/** replicate_out_table - replicate out an entire table to
+ *  remote database.  Optionally, performs update rather
+ *  than a truncate and excluding columns from the on duplicate
+ *  clause. By default, the remote table will be recreated
+ *  if it's table structure does not match the main table.
+ *
+ * @param object $conn          - Connection to remote database
+ * @param array $data           - Associative array of the table data
+ * @param string $table         - The remote table to replicate to
+ * @param int $remote_poller_id - The remote data collector's id
+ * @param boolean $truncate     - A flag that if true, truncates, otherwise updates
+ * @param array $exclude        - An array of column names to not update on replication
+ */
+function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate = true, $exclude = false) {
 	if (cacti_sizeof($data)) {
-		/* check if the table structure changed */
+		/* check if the table structure changed, and if so, recreate */
 		$local_columns  = db_fetch_assoc('SHOW COLUMNS FROM ' . $table);
 		$remote_columns = db_fetch_assoc('SHOW COLUMNS FROM ' . $table, true, $conn);
 
@@ -1421,9 +1454,31 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 			}
 		}
 
-		db_execute("TRUNCATE TABLE $table", true, $conn);
+		if ($truncate) {
+			$prefix = "REPLACE INTO $table (";
+			$suffix = '';
 
-		$prefix    = "REPLACE INTO $table (";
+			db_execute("TRUNCATE TABLE $table", true, $conn);
+		} else {
+			$prefix = "INSERT INTO $table (";
+			$suffix = ' ON DUPLICATE KEY UPDATE ';
+
+			$cols = array_rekey($local_columns, 'Field', 'Field');
+
+			$i = 0;
+			foreach($cols as $col) {
+				if ($exclude != false) {
+					if (array_search($col, $exclude) === false) {
+						$suffix .= ($i > 0 ? ', ':'') . " $col=VALUES($col)";
+						$i++;
+					}
+				} else {
+					$suffix .= ($i > 0 ? ', ':'') . " $col=VALUES($col)";
+					$i++;
+				}
+			}
+		}
+
 		$sql       = '';
 		$colcnt    = 0;
 		$rows_done = 0;
@@ -1456,7 +1511,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 			$rowcnt++;
 
 			if ($rowcnt > 1000) {
-				db_execute($prefix . $sql, true, $conn);
+				db_execute($prefix . $sql . $suffix, true, $conn);
 				$rows_done += db_affected_rows($conn);
 				$sql = '';
 				$rowcnt = 0;
@@ -1464,7 +1519,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 		}
 
 		if ($rowcnt > 0) {
-			db_execute($prefix . $sql, true, $conn);
+			db_execute($prefix . $sql . $suffix, true, $conn);
 			$rows_done += db_affected_rows($conn);
 		}
 
@@ -1540,7 +1595,7 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 		);
 	}
 
-	if (sizeof($recache_hosts)) {
+	if (cacti_sizeof($recache_hosts)) {
 		$local_data_ids = db_fetch_assoc("SELECT *
 			FROM data_local
 			WHERE host_id IN (" . implode(', ', $recache_hosts) . ")
@@ -1711,7 +1766,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 			$sql[] = $string;
 		}
 
-		if (sizeof($dupes)) {
+		if (cacti_sizeof($dupes)) {
 			$dupe = ' ON DUPLICATE KEY UPDATE ';
 			$i = 0;
 			foreach($dupes as $item) {
@@ -1728,7 +1783,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 		}
 	}
 
-	return sizeof($records);
+	return cacti_sizeof($records);
 }
 
 function should_ignore_from_replication($path) {

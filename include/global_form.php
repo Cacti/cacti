@@ -1410,30 +1410,34 @@ $fields_tree_edit = array(
 		'value' => '|arg1:name|',
 		'max_length' => '255',
 		'size' => '80',
-		),
+	),
 	'sort_type' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('Sorting Type'),
 		'description' => __('Choose how items in this tree will be sorted.'),
 		'value' => '|arg1:sort_type|',
 		'array' => $tree_sort_types,
-		),
+	),
 	'enabled' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Publish'),
 		'description' => __('Should this Tree be published for users to access?'),
 		'value' => '|arg1:enabled|',
 		'default' => 'on'
-		),
+	),
 	'id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
-		),
+	),
+	'sequence' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:sequence|'
+	),
 	'save_component_tree' => array(
 		'method' => 'hidden',
 		'value' => '1'
-		)
-	);
+	)
+);
 
 /* file: user_admin.php, action: user_edit (host) */
 $fields_user_user_edit_host = array(

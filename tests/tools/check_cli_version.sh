@@ -31,7 +31,7 @@ for script in `ls *.php`; do
 
 	echo Testing script: $script
 	script_output=`head -n 1 $script`
-	if [[ $script_output != "#!/usr/bin/php -q" ]]; then
+	if [[ $script_output != "#!/usr/bin/env php" ]]; then
 		FAILED=2
 		echo "   x Failed header check (" $script_output ")"
 	fi

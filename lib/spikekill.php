@@ -96,7 +96,7 @@ class spikekill {
 				WHERE id = ?',
 				array($this->user));
 
-			if (sizeof($this->user_info)) {
+			if (cacti_sizeof($this->user_info)) {
 				$this->username = 'CactiUser:' . $this->user_info['username'];
 			}
 		}
@@ -156,7 +156,7 @@ class spikekill {
 	}
 
 	private function is_error_set() {
-		return sizeof($this->errors);
+		return cacti_sizeof($this->errors);
 	}
 
 	public function get_errors() {

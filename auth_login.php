@@ -66,7 +66,7 @@ if (read_config_option('auth_method') == '2') {
 		$records = file($mapfile);
 		$found   = false;
 
-		if (sizeof($records)) {
+		if (cacti_sizeof($records)) {
 			foreach($records as $r) {
 				list($basic, $shortform) = str_getcsv($r);
 

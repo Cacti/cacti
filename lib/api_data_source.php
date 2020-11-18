@@ -208,7 +208,7 @@ function api_data_source_remove_multi($local_data_ids) {
 					db_execute('DELETE FROM data_input_data
 						WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
 
-					if (sizeof($poller_ids)) {
+					if (cacti_sizeof($poller_ids)) {
 						foreach ($poller_ids as $poller_id) {
 							if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 								db_execute('DELETE FROM data_input_data
@@ -225,7 +225,7 @@ function api_data_source_remove_multi($local_data_ids) {
 				db_execute('DELETE FROM data_input_data
 					WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
 
-				if (sizeof($poller_ids)) {
+				if (cacti_sizeof($poller_ids)) {
 					foreach ($poller_ids as $poller_id) {
 						if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 							db_execute('DELETE FROM data_input_data
@@ -389,7 +389,7 @@ function api_data_source_disable_multi($local_data_ids) {
 				db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
 				db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
 
-				if (sizeof($poller_ids)) {
+				if (cacti_sizeof($poller_ids)) {
 					foreach ($poller_ids as $poller_id) {
 						if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 							db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
@@ -414,7 +414,7 @@ function api_data_source_disable_multi($local_data_ids) {
 			db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
 			db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
 
-			if (sizeof($poller_ids)) {
+			if (cacti_sizeof($poller_ids)) {
 				foreach ($poller_ids as $poller_id) {
 					if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 						db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);

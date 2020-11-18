@@ -1470,7 +1470,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		cacti_log('Obtaining \'Graph Template\' cache', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 		$cached = get_cached_allowed_type($hash, $init_rows);
 
-		if (is_array($cached) && sizeof($cached)) {
+		if (is_array($cached) && cacti_sizeof($cached)) {
 			cacti_log('Found Valid \'Graph Template\' priming cache', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 			return $cached;
 		}
@@ -1881,7 +1881,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	if ($host_id > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id=$host_id";
 	} else {
-		if (sizeof($cached)) {
+		if (cacti_sizeof($cached)) {
 			return db_fetch_assoc("SELECT *
 				FROM host AS h
 				$sql_where" .
