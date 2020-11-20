@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#3910: Banners are not showing up
 -issue#3912: Some pages that export data, when the export is complete, the progress bar remains
 -issue#3919: Log Administration show empty during page navigation if search field value length is 4
+-feature: Update Chart.js to version 2.9.4
 -feature: Update phpseclib to version 2.0.29
 -feature: Update PHPMailer to version 6.1.8
 -feature: Use LSB shebang notation for cli scripts
