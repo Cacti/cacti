@@ -1115,7 +1115,7 @@ $user_auth_realms = array(
 
 	21   => __('Reports Management'),
 	22   => __('Reports Creation'),
-	27   => __('Hide Graph Drilldown')
+	27   => __('Hide Graph Drilldowns')
 );
 
 $user_auth_roles = array(

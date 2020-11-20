@@ -14,7 +14,7 @@ Cacti CHANGELOG
 -feature: Update phpseclib to version 2.0.29
 -feature: Update PHPMailer to version 6.1.8
 -feature: Use LSB shebang notation for cli scripts
--feature: Added ability to Hide the Graph Drilldown icons from the graph_view.php and graph.php pages
+-feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature: Add support for cactid daemon based launcher
 
 1.2.15
