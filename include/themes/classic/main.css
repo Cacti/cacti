@@ -875,7 +875,7 @@ ul#breadcrumbs {
 }
 
 .cactiLoginTable input {
-	border: 1px solid #006400 !important;
+	border: 1px solid #BBBBBB !important;
 }
 
 .loginErrors, .logoutErrors {
