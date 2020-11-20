@@ -1,0 +1,15 @@
+[Unit]
+Description=Cacti Daemon Main Poller Service
+After=network.target
+
+[Service]
+Type=forking
+User=apache
+Group=apache
+EnvironmentFile=/etc/sysconfig/cactid
+ExecStart=/var/www/html/cacti/cactid.php
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

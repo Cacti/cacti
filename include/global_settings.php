@@ -1086,8 +1086,8 @@ $settings = array(
 			'array' => $poller_intervals,
 			),
 		'cron_interval' => array(
-			'friendly_name' => __('Cron Interval'),
-			'description' => __('The cron interval in use.  You need to set this setting to the interval that your cron or scheduled task is currently running.'),
+			'friendly_name' => __('Cron/Daemon Interval'),
+			'description' => __('The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory.'),
 			'method' => 'drop_array',
 			'default' => 300,
 			'array' => $cron_intervals,
