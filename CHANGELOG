@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -feature: Update phpseclib to version 2.0.29
 -feature: Update PHPMailer to version 6.1.8
 -feature: Use LSB shebang notation for cli scripts
+-feature: Add support for cactid daemon based launcher
 
 1.2.15
 -issue#3643: When editing Maximum OIDs Per Get Request, blank value can cause errors
