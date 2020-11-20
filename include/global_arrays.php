@@ -1115,11 +1115,11 @@ $user_auth_realms = array(
 
 	21   => __('Reports Management'),
 	22   => __('Reports Creation'),
-	2001 => __('Hide Graph Drilldown')
+	27 => __('Hide Graph Drilldown')
 );
 
 $user_auth_roles = array(
-	__('Normal User')            => array(7, 19, 20, 22, 24, 25, 2001),
+	__('Normal User')            => array(7, 19, 20, 22, 24, 25, 27),
 	__('Template Editor')        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
 	__('General Administration') => array(8, 3, 4, 5, 23, 1043),
 	__('System Administration')  => array(8, 15, 26, 1, 18, 21, 101)
