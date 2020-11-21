@@ -44,10 +44,16 @@ function sig_handler($signo) {
 
 // function to assist in logging
 function debug_level($host_id, $level) {
+	global $debug;
+
 	static $debug_enabled = array();
 
 	if (!isset($debug_enabled[$host_id])) {
-		$debug_enabled[$host_id] = is_device_debug_enabled($host_id);
+		if ($debug) {
+			$debug_enabled[$host_id] = true;
+		} else {
+			$debug_enabled[$host_id] = is_device_debug_enabled($host_id);
+		}
 	}
 
 	$level = $debug_enabled[$host_id] ? POLLER_VERBOSITY_NONE : $level;
@@ -357,7 +363,12 @@ if ($allhost) {
 			array($polling_interval, $poller_id));
 	}
 } else {
-	$print_data_to_stdout = false;
+	if ($debug) {
+		$print_data_to_stdout = true;
+	} else {
+		$print_data_to_stdout = false;
+	}
+
 	if ($first <= $last) {
 		// address potential exploits
 		input_validate_input_number($first);
@@ -705,6 +716,8 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 			$last_host = $current_host;
 		}
 
+		$thread_start = microtime(true);
+
 		if (!$host_down) {
 			switch ($item['action']) {
 			case POLLER_ACTION_SNMP: // snmp
@@ -736,7 +749,9 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 					}
 				}
 
-				cacti_log("Device[$host_id] DS[$data_source] SNMP: v" . $item['snmp_version'] . ': ' . $item['hostname'] . ', dsname: ' . $item['rrd_name'] . ', oid: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				$total_time = (microtime(true) - $thread_start) * 1000;
+
+				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . "] SNMP: v" . $item['snmp_version'] . ': ' . $item['hostname'] . ', dsname: ' . $item['rrd_name'] . ', oid: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			case POLLER_ACTION_SCRIPT: // script (popen)
@@ -756,7 +771,9 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 					}
 				}
 
-				cacti_log("Device[$host_id] DS[$data_source] CMD: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				$total_time = (microtime(true) - $thread_start) * 1000;
+
+				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . "] CMD: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			case POLLER_ACTION_SCRIPT_PHP: // script (php script server)
@@ -776,7 +793,9 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 					}
 				}
 
-				cacti_log("Device[$host_id] DS[$data_source] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				$total_time = (microtime(true) - $thread_start) * 1000;
+
+				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . "] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			default: // invalid polling option
