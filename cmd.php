@@ -290,29 +290,41 @@ $polling_interval = read_config_option('poller_interval');
 if ($allhost) {
 	if (isset($polling_interval)) {
 		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
-			FROM poller_item
-			WHERE poller_id = ?
-			AND rrd_next_step<=0
-			ORDER BY host_id',
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			WHERE pi.poller_id = ?
+			AND (h.disabled = "" OR h.disabled IS NULL)
+			AND pi.rrd_next_step <= 0
+			ORDER BY pi.host_id',
 			array($poller_id));
 
 		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
-			FROM poller_item
-			WHERE poller_id = ?
-			AND action IN (?, ?)
-			AND rrd_next_step<=0',
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			WHERE pi.poller_id = ?
+			AND (h.disabled = "" OR h.disabled IS NULL)
+			AND pi.action IN (?, ?)
+			AND pi.rrd_next_step <= 0',
 			array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT));
 	} else {
 		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
-			FROM poller_item
-			WHERE poller_id = ?
-			ORDER by host_id',
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			WHERE pi.poller_id = ?
+			AND (h.disabled = "" OR h.disabled IS NULL)
+			ORDER by pi.host_id',
 			array($poller_id));
 
 		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
-			FROM poller_item
-			WHERE poller_id = ?
-			AND action IN (?, ?)',
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			WHERE pi.poller_id = ?
+			AND (h.disabled = "" OR h.disabled IS NULL)
+			AND pi.action IN (?, ?)',
 			array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT));
 	}
 
@@ -322,7 +334,7 @@ if ($allhost) {
 	$hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 		FROM host
 		WHERE poller_id = ?
-		AND disabled=""
+		AND disabled = ""
 		ORDER BY id',
 		array($poller_id));
 
@@ -365,21 +377,27 @@ if ($allhost) {
 
 		if (isset($polling_interval)) {
 			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
-				FROM poller_item
-				WHERE poller_id = ?
-				AND host_id >= ?
-				AND host_id <= ?
-				AND rrd_next_step <= 0
-				ORDER by host_id',
+				FROM poller_item AS pi
+				LEFT JOIN host AS h
+				ON h.id = pi.host_id
+				WHERE pi.poller_id = ?
+				AND (h.disabled = "" OR h.disabled IS NULL)
+				AND pi.host_id >= ?
+				AND pi.host_id <= ?
+				AND pi.rrd_next_step <= 0
+				ORDER by pi.host_id',
 				array($poller_id, $first, $last));
 
 			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
-				FROM poller_item
-				WHERE poller_id = ?
-				AND action IN(?, ?)
-				AND host_id >= ?
-				AND host_id <= ?
-				AND rrd_next_step <= 0',
+				FROM poller_item AS pi
+				LEFT JOIN host AS h
+				ON h.id = pi.host_id
+				WHERE pi.poller_id = ?
+				AND (h.disabled = "" OR h.disabled IS NULL)
+				AND pi.action IN(?, ?)
+				AND pi.host_id >= ?
+				AND pi.host_id <= ?
+				AND pi.rrd_next_step <= 0',
 				array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last));
 
 			// setup next polling interval
@@ -399,18 +417,24 @@ if ($allhost) {
 				array($polling_interval, $poller_id, $first, $last));
 		} else {
 			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
-				FROM poller_item
-				WHERE poller_id = ?
-				AND host_id >= ? and host_id <= ?
-				ORDER by host_id',
+				FROM poller_item AS pi
+				LEFT JOIN host AS h
+				ON h.id = pi.host_id
+				WHERE pi.poller_id = ?
+				AND (h.disabled = "" OR h.disabled IS NULL)
+				AND pi.host_id >= ? AND pi.host_id <= ?
+				ORDER BY pi.host_id',
 				array($poller_id, $first, $last));
 
 			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
-				FROM poller_item
-				WHERE poller_id = ?
-				AND action IN (?, ?)
-				AND host_id >= ?
-				AND host_id <= ?',
+				FROM poller_item AS pi
+				LEFT JOIN host AS h
+				ON h.id = pi.host_id
+				WHERE pi.poller_id = ?
+				AND (h.disabled = "" OR h.disabled IS NULL)
+				AND pi.action IN (?, ?)
+				AND pi.host_id >= ?
+				AND pi.host_id <= ?',
 				array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last));
 		}
 	} else {
