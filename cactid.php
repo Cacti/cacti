@@ -34,7 +34,7 @@ function sig_handler($signo) {
 	switch ($signo) {
 	case SIGTERM:
 	case SIGINT:
-		cacti_log('WARNING: Cacti Daemon Process (' . getmypid() . ') terminated by user.', true, 'CACTID');
+		cacti_log('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID');
 		exit(1);
 		break;
 	default:
