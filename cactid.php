@@ -120,7 +120,7 @@ if (!$foreground) {
 		} elseif ($pid == 0) {
 			// We are the child
 		} else {
-			cacti_log('NOTE: Cacti Daemon Started on ' . gethostname());
+			cacti_log('NOTE: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']');
 
 			print '[OK]' . PHP_EOL;
 
