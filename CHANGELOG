@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#3929: Poller settings page is ambiguous on concurrent process and thread settings
 -issue#3930: Remove empty option from Devices-->Location filter
 -issue#3931: Recache due to failed to get OID but SNMPWALK works
+-issue#3933: When changing permissions, if those permissions are from the current user, they dont take effect till next login
 -feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature: Update c3.js to version 0.7.20
 -feature: Update d3.js to version 6.2.0
