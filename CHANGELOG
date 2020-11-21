@@ -9,13 +9,14 @@ Cacti CHANGELOG
 -issue#3919: Log Administration show empty during page navigation if search field value length is 4
 -issue#3924: Graph Templates filter is not updated after new graph created
 -issue#3926: Username and password on the login page is not visible in Classic theme
+-issue#3929: Poller settings page is ambiguous on concurrent process and thread settings
+-feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature: Update c3.js to version 0.7.20
 -feature: Update d3.js to version 6.2.0
 -feature: Update Chart.js to version 2.9.4
 -feature: Update phpseclib to version 2.0.29
 -feature: Update PHPMailer to version 6.1.8
 -feature: Use LSB shebang notation for cli scripts
--feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature: Add support for cactid daemon based launcher
 
 1.2.15

@@ -1092,14 +1092,6 @@ $settings = array(
 			'default' => 300,
 			'array' => $cron_intervals,
 			),
-		'concurrent_processes' => array(
-			'friendly_name' => __('Default Data Collector Processes'),
-			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
-			'method' => 'textbox',
-			'default' => '1',
-			'max_length' => '10',
-			'size' => '5'
-			),
 		'process_leveling' => array(
 			'friendly_name' => __('Balance Process Load'),
 			'description' => __('If you choose this option, Cacti will attempt to balance the load of each poller process by equally distributing poller items per process.'),
@@ -1225,8 +1217,30 @@ $settings = array(
 				'14400' => __('%s Hours', 4),
 				'28800' => __('%s Hours', 8))
 			),
+		'data_collector_header' => array(
+			'friendly_name' => __('Data Collector Defaults'),
+			'description'   => __('These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector.'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'concurrent_processes' => array(
+			'friendly_name' => __('Data Collector Processes'),
+			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
+			'method' => 'textbox',
+			'default' => '1',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'max_threads' => array(
+			'friendly_name' => __('Threads per Process'),
+			'description' => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
+			'method' => 'textbox',
+			'default' => '1',
+			'max_length' => '10',
+			'size' => '5'
+			),
 		'spine_header' => array(
-			'friendly_name' => __('Spine Specific Execution Parameters'),
+			'friendly_name' => __('Additional Spine Parameters'),
 			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
@@ -1239,14 +1253,6 @@ $settings = array(
 				'0'  => __('None'),
 				'1'  => __('Summary'),
 				'2'  => __('Detailed'))
-			),
-		'max_threads' => array(
-			'friendly_name' => __('Default Threads per Process'),
-			'description' => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
-			'method' => 'textbox',
-			'default' => '1',
-			'max_length' => '10',
-			'size' => '5'
 			),
 		'php_servers' => array(
 			'friendly_name' => __('Number of PHP Script Servers'),
