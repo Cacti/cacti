@@ -416,7 +416,15 @@ function discoverDevices($network_id, $thread) {
 		if (cacti_sizeof($device) && isset($device['ip_address'])) {
 			$count++;
 
-			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] .'\' to check',false,'AUTOM8',POLLER_VERBOSITY_MEDIUM);
+			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] .'\' to check', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
+
+			if (!filter_var($device['ip_address'], FILTER_VALIDATE_IP)) {
+				cacti_log(automation_get_pid() . ' WARNING: IP address \'' . $device['ip_address'] .'\' is not a valid IP address.', false, 'AUTOM8');
+
+				markIPDone($device['ip_address'], $network_id);
+
+				continue;
+			}
 
 			if ($dns != '') {
 				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 300);
