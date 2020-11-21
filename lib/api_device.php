@@ -303,6 +303,12 @@ function api_device_enable_devices($device_ids) {
 				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 			}
 		}
+
+		if ($poller_id > 1) {
+			if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+				poller_push_reindex_data_to_poller($device_id, 0, true, $rcnn_id);
+			}
+		}
 	}
 }
 
@@ -742,7 +748,9 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		$host_id = sql_save($save, 'host');
 
 		if ($host_id) {
-			api_device_purge_from_remote($host_id, $previous_poller);
+			if ($poller_id != $previous_poller) {
+				api_device_purge_from_remote($host_id, $previous_poller);
+			}
 
 			if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
 				$save['id'] = $host_id;

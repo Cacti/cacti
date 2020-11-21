@@ -1550,11 +1550,13 @@ function poller_push_reindex_only_data_to_main($device_id, $data_query_id) {
 	}
 }
 
-function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, $force = false) {
+function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, $force = false, $db_cnn_id = false) {
 	global $config, $remote_db_cnn_id, $local_db_cnn_id, $database_hostname, $rdatabase_hostname;
 
 	// If the hostnames are the same, replication is from main to remote
-	if (isset($rdatabase_hostname) && $database_hostname == $rdatabase_hostname) {
+	if ($db_cnn_id) {
+		// We are pushing forcibly to remote
+	} elseif (isset($rdatabase_hostname) && $database_hostname == $rdatabase_hostname) {
 		$db_cnn_id = $local_db_cnn_id;
 	} else {
 		$db_cnn_id = $remote_db_cnn_id;
