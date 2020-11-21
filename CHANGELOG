@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#3907: The cli script install_cacti.php does not exit with not zero exit code when errors occur
 -issue#3910: Banners are not showing up
 -issue#3912: Some pages that export data, when the export is complete, the progress bar remains
+-issue#3917: API Tree Warning Errors when pen testing Cacti in api_tree_rename_node()
 -issue#3919: Log Administration show empty during page navigation if search field value length is 4
 -issue#3924: Graph Templates filter is not updated after new graph created
 -issue#3926: Username and password on the login page is not visible in Classic theme
