@@ -428,6 +428,7 @@ function discoverDevices($network_id, $thread) {
 
 			if ($dns != '') {
 				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 300);
+
 				if ($dnsname != $device['ip_address'] && $dnsname != 'timed_out') {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
 
@@ -441,7 +442,9 @@ function discoverDevices($network_id, $thread) {
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
+
 					$netbios = ping_netbios_name($device['ip_address']);
+
 					if ($netbios === false) {
 						automation_debug(" Not found");
 						$device['hostname']      = $device['ip_address'];
@@ -460,6 +463,7 @@ function discoverDevices($network_id, $thread) {
 					}
 				} else {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
+
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
 					$device['dnsname_short'] = '';
@@ -467,6 +471,7 @@ function discoverDevices($network_id, $thread) {
 			} else {
 				$dnsname = @gethostbyaddr($device['ip_address']);
 				$device['hostname'] = $dnsname;
+
 				if ($dnsname != $device['ip_address']) {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
 
@@ -479,6 +484,7 @@ function discoverDevices($network_id, $thread) {
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
+
 					$netbios = ping_netbios_name($device['ip_address']);
 					if ($netbios === false) {
 						automation_debug(" Not found");
@@ -498,6 +504,7 @@ function discoverDevices($network_id, $thread) {
 					}
 				} else {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
+
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
 					$device['dnsname_short'] = '';
