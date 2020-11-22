@@ -41,7 +41,7 @@ install:
   - echo 'cgi.fix_pathinfo = 1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - sudo sed -i -e 's,www-data,travis,g' /etc/apache2/envvars
-  - sudo chown -R travis:travis /var/lib/apache2/fastcgi
+  #- sudo chown -R travis:travis /var/lib/apache2/fastcgi
   # start php-fpm
   - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
   # configure apache virtual hosts
