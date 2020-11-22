@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.16
 -issue#3704: Reporting - Cascade to Branches function not working (Graphs in reporting shows only in 1 column)
+-issue#3859: Page refresh in graph.php does not work
 -issue#3898: Realtime graph pop up counter bug
 -issue#3903: Debian test shows new PHP errors in log
 -issue#3907: The cli script install_cacti.php does not exit with not zero exit code when errors occur
