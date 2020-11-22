@@ -1255,12 +1255,6 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'poller_command', $remote_poller_id);
 
-		$data = db_fetch_assoc_prepared('SELECT pi.*
-			FROM poller_item AS pi
-			WHERE pi.poller_id = ?',
-			array($remote_poller_id));
-		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id);
-
 		$data = db_fetch_assoc_prepared('SELECT h.*
 			FROM host AS h
 			WHERE h.poller_id = ?
@@ -1302,9 +1296,13 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id, false, array('last_updated'));
 
 		// Remove anything not updated recently
-		$min_date = db_fetch_cell('SELECT MAX(last_updated) FROM poller_item', false, $rcnn_id);
-		if (!empty($min_date)) {
-			db_execute("DELETE FROM poller_item WHERE last_updated < '$min_date'", false, $rcnn_id);
+		$min_date1 = db_fetch_cell('SELECT MAX(last_updated) FROM poller_item', false, $rcnn_id);
+		$min_date2 = db_fetch_cell('SELECT MAX(last_updated) FROM poller_item');
+
+		if (!empty($min_date1) && !empty($min_date2)) {
+			db_execute_prepared("DELETE FROM poller_item
+				WHERE last_updated < ?",
+				array(min($min_date1, $min_date2)), false, $rcnn_id);
 		}
 
 		$data = db_fetch_assoc_prepared('SELECT dl.*
