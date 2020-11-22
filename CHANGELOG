@@ -40,6 +40,7 @@ Cacti CHANGELOG
 
 1.2.16
 -issue#3704: Reporting - Cascade to Branches function not working (Graphs in reporting shows only in 1 column)
+-issue#3859: Page refresh in graph.php does not work
 -issue#3898: Realtime graph pop up counter bug
 -issue#3903: Debian test shows new PHP errors in log
 -issue#3907: The cli script install_cacti.php does not exit with not zero exit code when errors occur
@@ -57,6 +58,7 @@ Cacti CHANGELOG
 -issue#3931: Recache due to failed to get OID but SNMPWALK works
 -issue#3932: Automation Networks allows discovery of invalid IP addresses
 -issue#3933: When changing permissions, if those permissions are from the current user, they dont take effect till next login
+-issue#3935: Device Re-index operations not returning to correct page location
 -feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature: Update c3.js to version 0.7.20
 -feature: Update d3.js to version 6.2.0

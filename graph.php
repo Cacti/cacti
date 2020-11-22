@@ -45,11 +45,6 @@ api_plugin_hook_function('graph');
 
 include_once('./lib/html_tree.php');
 
-$refresh['seconds'] = read_config_option('page_refresh');
-$refresh['page']    = 'graph.php?local_graph_id=' . get_request_var('local_graph_id');
-$refresh['logout']  = 'false';
-set_page_refresh($refresh);
-
 top_graph_header();
 
 if (!isset_request_var('rra_id')) {
@@ -62,9 +57,14 @@ if (get_request_var('rra_id') == 'all' || isempty_request_var('rra_id')) {
 	$sql_where = ' AND dspr.id=' . get_request_var('rra_id');
 }
 
+$exists = db_fetch_cell_prepared('SELECT local_graph_id
+	FROM graph_templates_graph
+	WHERE local_graph_id = ?',
+	array(get_request_var('local_graph_id')));
+
 /* make sure the graph requested exists (sanity) */
-if (!(db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id'))))) {
-	print "<strong><font class='txtErrorTextBox'>GRAPH DOES NOT EXIST</font></strong>";
+if (!$exists) {
+	print '<strong><font class="txtErrorTextBox">' . __('GRAPH DOES NOT EXIST') . '</font></strong>';
 	bottom_footer();
 	exit;
 }
@@ -98,14 +98,6 @@ case 'view':
 	<tr class='tableHeader'>
 		<td colspan='3' class='textHeaderDark'>
 			<strong><?php print __('Viewing Graph');?></strong> '<?php print html_escape($graph_title);?>'
-		<script type='text/javascript'>
-
-		$(function() {
-			$('#navigation').show();
-			$('#navigation_right').show();
-		});
-
-		</script>
 		</td>
 	</tr>
 	<?php
@@ -160,9 +152,10 @@ case 'view':
 
 	?>
 	<script type='text/javascript'>
-	/* turn off the page refresh */
-	var refreshMSeconds=9999999;
-	var originalWidth  = null;
+
+	var originalWidth = null;
+	var refreshTime   = <?php print read_user_setting('page_refresh')*1000;?>;
+	var graphTimeout  = null;
 
 	function initializeGraph() {
 		$('.graphWrapper').each(function() {
@@ -256,11 +249,19 @@ case 'view':
 					getPresentHTTPError(data);
 				});
 		});
+
+		graphTimeout = setTimeout(initializeGraph, refreshTime);
 	}
 
 	$(function() {
 		pageAction = 'graph';
+
+		if (graphTimeout !== null) {
+			clearTimeout(graphTimeout);
+		}
+
 		initializeGraph();
+
 		$('#navigation').show();
 		$('#navigation_right').show();
 	});
