@@ -714,13 +714,15 @@ function api_plugin_uninstall_integrated() {
 function api_plugin_uninstall($plugin, $tables = true) {
 	global $config;
 
-	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
+		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
 
-	// Run the Plugin's Uninstall Function first
-	$function = 'plugin_' . $plugin . '_uninstall';
+		// Run the Plugin's Uninstall Function first
+		$function = 'plugin_' . $plugin . '_uninstall';
 
-	if (function_exists($function)) {
-		$function();
+		if (function_exists($function)) {
+			$function();
+		}
 	}
 
 	api_plugin_remove_hooks($plugin);

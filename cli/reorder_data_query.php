@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -45,7 +45,7 @@ if (cacti_sizeof($parms)) {
 			$arg = $parameter;
 			$value = '';
 		}
-	
+
 		switch ($arg) {
 			case '-id':
 			case '--id':
@@ -106,17 +106,17 @@ if (is_numeric($query_id)) {
 }
 
 /* get all object that have to be scanned */
-$data_queries = db_fetch_assoc("SELECT data_local.host_id, data_local.snmp_query_id, 
-	data_local.snmp_index, data_template_data.local_data_id, data_template_data.data_input_id, 
-	data_input_data.data_template_data_id, data_input_data.data_input_field_id, data_input_data.value 
-	FROM data_local 
-	LEFT JOIN data_template_data 
-	ON data_local.id=data_template_data.local_data_id 
-	LEFT JOIN data_input_fields 
-	ON data_template_data.data_input_id = data_input_fields.data_input_id 
-	LEFT JOIN data_input_data 
-	ON data_template_data.id = data_input_data.data_template_data_id 
-	AND data_input_fields.id = data_input_data.data_input_field_id 
+$data_queries = db_fetch_assoc("SELECT data_local.host_id, data_local.snmp_query_id,
+	data_local.snmp_index, data_template_data.local_data_id, data_template_data.data_input_id,
+	data_input_data.data_template_data_id, data_input_data.data_input_field_id, data_input_data.value
+	FROM data_local
+	LEFT JOIN data_template_data
+	ON data_local.id=data_template_data.local_data_id
+	LEFT JOIN data_input_fields
+	ON data_template_data.data_input_id = data_input_fields.data_input_id
+	LEFT JOIN data_input_data
+	ON data_template_data.id = data_input_data.data_template_data_id
+	AND data_input_fields.id = data_input_data.data_input_field_id
 	$sql_where");
 
 /* issue warnings and start message if applicable */
@@ -132,7 +132,7 @@ if (cacti_sizeof($data_queries)) {
 		/* build array required for function call */
 		$data_query['snmp_index_on'] = get_best_data_query_index_type($data_query['host_id'], $data_query['snmp_query_id']);
 		/* as we request the output_type, 'value' gives the snmp_query_graph_id */
-		$data_query['snmp_query_graph_id'] = $data_query['value']; 
+		$data_query['snmp_query_graph_id'] = $data_query['value'];
 		debug("Data Query #'" . $i . "' host: '" . $data_query['host_id'] .
 			"' SNMP Query Id: '" . $data_query['snmp_query_id'] .
 			"' Index: " . $data_query['snmp_index'] .
@@ -164,7 +164,7 @@ function display_help () {
 
 function debug($message) {
 	global $debug;
-	
+
 	if ($debug) {
 		print "DEBUG: " . trim($message) . "\n";
 	}

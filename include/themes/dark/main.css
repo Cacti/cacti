@@ -864,6 +864,10 @@ ul#breadcrumbs {
 	padding: 3px 0px;
 }
 
+.tableRow {
+	line-height: 16px;
+}
+
 .cactiConsoleNavigationArea {
 	background: #161616;
 	border-right: #aaaaaa 1px solid;
@@ -1090,11 +1094,9 @@ legend {
 }
 
 .iconLink {
-	padding: 2px !important;
-}
-
-.iconLink img {
-	padding-bottom: 2px;
+	width: 20px;
+	line-height: 20px;
+	display: inline-block;
 }
 
 .noLinkEditMain {
@@ -2314,7 +2316,8 @@ tr#realtime td:first-child {
 }
 
 .ui-tooltip {
-	max-width: 400px;
+	max-width: 500px;
+	word-break: break-word;
 }
 
 .ui-tooltip-content div.header {

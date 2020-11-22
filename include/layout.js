@@ -280,7 +280,7 @@ $.fn.classes = function(callback) {
 			}
 		}
 	});
-	if ('function' === typeof callback) {
+	if ('function' == typeof callback) {
 		for (var i in classes) {
 			callback(classes[i]);
 		}
@@ -826,7 +826,7 @@ function displayMessages() {
 	var title   = '';
 	var header  = '';
 
-	if (typeof sessionMessageTimer === 'function' || sessionMessageTimer !== null) {
+	if (typeof sessionMessageTimer == 'function' || sessionMessageTimer !== null) {
 		clearInterval(sessionMessageTimer);
 	}
 
@@ -1076,7 +1076,9 @@ function makeFiltersResponsive() {
 					}
 				}
 
-				$('.cactiFilterState').attr('title', showHideFilter).tooltip();
+				if (typeof showHideFilter != 'undefined') {
+					$('.cactiFilterState').attr('title', showHideFilter).tooltip();
+				}
 
 				filterNum++;
 			}
@@ -1447,7 +1449,7 @@ function tuneTables() {
 }
 
 function pageHasHidableColumnsAndProfile() {
-	if (userSettings && $(document).find('th').length) {
+	if (typeof userSettings != 'undefined' && userSettings && $(document).find('th').length) {
 		return true;
 	}
 
@@ -2658,6 +2660,10 @@ function setTitleAndHref() {
 }
 
 function clearAllTimeouts() {
+	if (typeof installTimer != 'undefined') {
+		return true;
+	}
+
 	var id = window.setTimeout(function() {}, 0);
 
 	while (id--) {
@@ -2669,8 +2675,6 @@ $(function() {
 	statePushed = false;
 	popFired    = false;
 	var tapped  = false;
-
-	clearAllTimeouts();
 
 	// Use traditional popstate handler
 	window.onpopstate = handlePopState;
@@ -2983,7 +2987,7 @@ var pageAction = 'preview';
 function checkForLogout(data) {
 	if (typeof data == 'undefined') {
 		return true;
-	} else if (typeof data === 'object') {
+	} else if (typeof data == 'object') {
 		return true;
 	} else if (data.indexOf('cactiLoginSuspend') >= 0) {
 		document.location = urlPath + 'logout.php?action=disabled';
@@ -3034,7 +3038,7 @@ function finalizeGraphFilter(options) {
 function applyGraphFilter() {
 	var href = correctUrlParameters(graphPage+'?action='+pageAction+
 		'&rfilter=' + base64_encode($('#rfilter').val())+
-		(typeof($('#host_id').val()) !== 'undefined' ? '&host_id='+$('#host_id').val():'')+
+		(typeof($('#host_id').val()) != 'undefined' ? '&host_id='+$('#host_id').val():'')+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+
 		'&graph_template_id='+$('#graph_template_id').val()+

@@ -519,14 +519,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		$ids = implode(', ', $local_data_ids);
 
 		if ($ids != '') {
-			db_execute("UPDATE poller_item
+			db_execute_prepared("UPDATE poller_item
 				SET present=0
-				WHERE local_data_id IN ($ids)");
+				WHERE poller_id = ?
+				AND local_data_id IN ($ids)",
+				array($poller_id));
 
 			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-				db_execute("UPDATE poller_item
+				db_execute_prepared("UPDATE poller_item
 					SET present=0
-					WHERE local_data_id IN ($ids)", true, $rcnn_id);
+					WHERE poller_id = ?
+					AND local_data_id IN ($ids)",
+					array($poller_id), true, $rcnn_id);
 			}
 		}
 	} else {
@@ -602,14 +606,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 
 	/* remove stale records FROM the poller cache */
 	if ($ids != '') {
-		db_execute("DELETE FROM poller_item
-			WHERE present=0
-			AND local_data_id IN ($ids)");
+		db_execute_prepared("DELETE FROM poller_item
+			WHERE present = 0
+			AND poller_id = ?
+			AND local_data_id IN ($ids)",
+			array($poller_id));
 
 		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-			db_execute("DELETE FROM poller_item
-				WHERE present=0
-				AND local_data_id IN ($ids)", true, $rcnn_id);
+			db_execute_prepared("DELETE FROM poller_item
+				WHERE present = 0
+				AND poller_id = ?
+				AND local_data_id IN ($ids)",
+				array($poller_id), true, $rcnn_id);
 		}
 	} else {
 		/* only handle explicitely given local_data_ids */

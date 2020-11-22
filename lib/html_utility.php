@@ -784,6 +784,10 @@ function update_order_string($inplace = false) {
 			unset($_SESSION['sort_string'][$page]);
 
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
+
+			$column    = get_request_var('sort_column');
+			$direction = get_request_var('sort_direction');
+
 			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
 				$_SESSION['sort_string'][$page] ='ORDER BY INET_ATON(' . $column . ") " . $direction;
 			} else {

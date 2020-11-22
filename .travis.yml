@@ -22,13 +22,30 @@ before_install:
   - sudo apt-get update > /dev/null
 
 install:
-- sudo apt-get install apache2 php-mysql php-gd php-ldap php-gmp rrdtool snmp
-- sudo a2enmod actions
+- sudo apt-get install apache2 libapache2-mod-fastcgi php-fpm php-mysql php-gd php-ldap php-gmp rrdtool snmp
+- sudo a2enmod actions fastcgi alias
 - sudo a2enmod rewrite
 - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
+# set permissions to travis if not
+- sudo chown -R travis:travis /var/www/html
+# restart apache
 - sudo service apache2 restart
-- if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
-- echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+# setup link for php legacy
+- sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
+# peak my head under the tent
+- find -L ~/.phpenv/versions/$(phpenv version-name) -ls
+# run syntax check
+- if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
+# enable php-fpm
+- sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+- echo 'cgi.fix_pathinfo = 1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- sudo sed -i -e 's,www-data,travis,g' /etc/apache2/envvars
+- sudo chown -R travis:travis /var/lib/apache2/fastcgi
+# start php-fpm
+- ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+# configure apache virtual hosts
+- sudo cp -f tests/tools/travis-ci-apache /etc/apache2/sites-available/000-default.conf
 
 before_script:
 - mysql -e 'CREATE DATABASE cacti;'
@@ -36,7 +53,7 @@ before_script:
 - mysql -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
 - mysql -e "FLUSH PRIVILEGES;"
 - mysql cacti < cacti.sql
-- mysql -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/usr/bin/php')" cacti
+- mysql -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 - mv include/config.php.dist include/config.php
 
 script:

@@ -1166,19 +1166,11 @@ $settings = array(
 			'array' => $poller_intervals,
 			),
 		'cron_interval' => array(
-			'friendly_name' => __('Cron Interval'),
-			'description' => __('The cron interval in use.  You need to set this setting to the interval that your cron or scheduled task is currently running.'),
+			'friendly_name' => __('Cron/Daemon Interval'),
+			'description' => __('The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory.'),
 			'method' => 'drop_array',
 			'default' => 300,
 			'array' => $cron_intervals,
-			),
-		'concurrent_processes' => array(
-			'friendly_name' => __('Default Data Collector Processes'),
-			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
-			'method' => 'textbox',
-			'default' => '1',
-			'max_length' => '10',
-			'size' => '5'
 			),
 		'process_leveling' => array(
 			'friendly_name' => __('Balance Process Load'),
@@ -1293,6 +1285,28 @@ $settings = array(
 				'14400' => __('%s Hours', 4),
 				'28800' => __('%s Hours', 8))
 			),
+		'data_collector_header' => array(
+			'friendly_name' => __('Data Collector Defaults'),
+			'description'   => __('These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector.'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'concurrent_processes' => array(
+			'friendly_name' => __('Data Collector Processes'),
+			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
+			'method' => 'textbox',
+			'default' => '1',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'max_threads' => array(
+			'friendly_name' => __('Threads per Process'),
+			'description' => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
+			'method' => 'textbox',
+			'default' => '1',
+			'max_length' => '10',
+			'size' => '5'
+			),
 		'poller_warning_1h_count' => array(
 			'friendly_name' => __('1h count warning threshold'),
 			'description' => __('When this count of guarded ratio (below) is reached in one hour, warning will be written to log and email will be send. 0 = disable.'),
@@ -1328,7 +1342,7 @@ $settings = array(
 				'90' => '90',)
 			),
 		'spine_header' => array(
-			'friendly_name' => __('Spine Specific Execution Parameters'),
+			'friendly_name' => __('Additional Spine Parameters'),
 			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
@@ -1341,14 +1355,6 @@ $settings = array(
 				'0'  => __('None'),
 				'1'  => __('Summary'),
 				'2'  => __('Detailed'))
-			),
-		'max_threads' => array(
-			'friendly_name' => __('Default Threads per Process'),
-			'description' => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
-			'method' => 'textbox',
-			'default' => '1',
-			'max_length' => '10',
-			'size' => '5'
 			),
 		'php_servers' => array(
 			'friendly_name' => __('Number of PHP Script Servers'),

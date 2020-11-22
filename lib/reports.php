@@ -881,7 +881,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
  * @param bool $nested		- nested tree?
  * @return string			- html
  */
-function reports_expand_tree($report, $item, $parent, $output, $format_ok, $theme = 'classic', $nested = false) {
+function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $theme = 'classic', $nested = false) {
 	global $config, $alignment;
 
 	include($config['include_path'] . '/global_arrays.php');
@@ -932,6 +932,8 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 	} else{
 		$leaves = array();
 	}
+
+	$graphs = array();
 
 	if (cacti_sizeof($leaves)) {
 		foreach ($leaves as $leaf) {
@@ -1002,7 +1004,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 				$title_delimeter = '-> ';
 			}
 
-			if (!empty($graph_name)) {
+			if (!empty($graph_name) && !$nested) {
 				$title .= $title_delimeter . '<strong>' . __('Graph:') . "</strong> $graph_name";
 				$title_delimeter = '-> ';
 			}
@@ -1011,7 +1013,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
 			}
 
-			if (($leaf_type == 'header') && $nested) {
+			if ($leaf_type == 'header' && $nested) {
 				$mygraphs = array();
 
 				$graphs = db_fetch_assoc("SELECT DISTINCT
@@ -1049,6 +1051,21 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 					$outstr .= reports_graph_area($mygraphs, $report, $item, $timespan, $output, $format_ok, $theme);
 				}
+			} elseif ($leaf_type == 'graph' && $nested) {
+				$gr_where = '';
+				if ($item['graph_name_regexp'] != '') {
+					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+				}
+
+				$graph = db_fetch_row("SELECT local_graph_id, title_cache
+					FROM graph_templates_graph
+					WHERE local_graph_id=" . $leaf['local_graph_id'] . $gr_where);
+
+				if (cacti_sizeof($graph)) {
+					if (is_graph_allowed($graph['local_graph_id'], $user)) {
+						$graphs[$graph['local_graph_id']] = $graph;
+					}
+				}
 			} elseif ($leaf_type == 'graph') {
 				$gr_where = '';
 				if ($item['graph_name_regexp'] != '') {
@@ -1072,10 +1089,11 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 						$outstr .= "\t\t\t</td>" . PHP_EOL;
 						$outstr .= "\t\t</tr>" . PHP_EOL;
 					}
-
-					$graph_list = array(array('local_graph_id' => $leaf['local_graph_id'], 'title_cache' => $graph_name));
-					$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok, $theme);
 				}
+
+				$graph_list = array(array('local_graph_id' => $leaf['local_graph_id'], 'title_cache' => $graph_name));
+
+				$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok, $theme);
 			//} elseif ($leaf_type == 'host' && $nested) {
 			} elseif ($leaf_type == 'host') {
 				if ($item['tree_cascade'] == 'on') {
@@ -1294,6 +1312,23 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 				}
 			}
 		}
+
+		if (cacti_sizeof($graphs)) {
+			/* start graph display */
+			if ($title != '') {
+				$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+				if ($format_ok) {
+					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . "'>" . PHP_EOL;
+				} else {
+					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . PHP_EOL;
+				}
+				$outstr .= "\t\t\t\t$title" . PHP_EOL;
+				$outstr .= "\t\t\t</td>" . PHP_EOL;
+				$outstr .= "\t\t</tr>" . PHP_EOL;
+			}
+
+			$outstr .= reports_graph_area($graphs, $report, $item, $timespan, $output, $format_ok, $theme);
+		}
 	}
 
 	return $outstr;
@@ -1321,11 +1356,11 @@ function necturally_sort_graphs($a, $b) {
  * @param bool $format_ok	- use css styling
  * @return string
  */
-function reports_graph_area($graphs, $report, $item, $timespan, $output, $format_ok, $theme = 'classic') {
+function reports_graph_area($graphs, &$report, $item, $timespan, $output, $format_ok, $theme = 'classic') {
 	global $alignment;
 
-	$column = 0;
 	$outstr = '';
+	$column = 0;
 
 	if (cacti_sizeof($graphs)) {
 		foreach($graphs as $graph) {
@@ -1348,7 +1383,11 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 			$outstr .= "\t\t\t\t\t\t</td>" . PHP_EOL;
 
 			if ($report['graph_columns'] > 1) {
-				$column = ($column + 1) % ($report['graph_columns']);
+				if (($column + 1) % $report['graph_columns'] == 0) {
+					$column = 0;
+				} else {
+					$column++;
+				}
 			}
 
 			if ($column == 0) {

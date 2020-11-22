@@ -1458,6 +1458,7 @@ function host() {
 	function exportRecords() {
 		strURL = 'host.php?action=export';
 		document.location = strURL;
+		Pace.stop();
 	}
 
 	$(function() {
@@ -1567,7 +1568,7 @@ function host() {
 							} else {
 								$sql_where = '';
 							}
-							$locations = db_fetch_assoc("SELECT DISTINCT IF(location='', '" . __('Undefined') . "', location) AS location
+							$locations = db_fetch_assoc("SELECT DISTINCT IF(IFNULL(host.location,'') = '', '" . __('Undefined') . "', location) AS location
 								FROM host
 								$sql_where
 								ORDER BY location");

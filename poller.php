@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -658,7 +658,7 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 
 			if ($poller_type == '1') {
-				$max_threads = '0';
+				$max_threads = '1';
 			}
 
 			$rrds_processed = 0;
