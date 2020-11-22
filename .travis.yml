@@ -22,7 +22,7 @@ before_install:
   - sudo apt-get update > /dev/null
 
 install:
-- sudo apt-get install apache2 libapache2-mod-fastcgi php-fpm php-mysql php-gd php-ldap php-gmp rrdtool snmp
+- sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp rrdtool snmp
 - sudo a2enmod actions fastcgi alias
 - sudo a2enmod rewrite
 - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
