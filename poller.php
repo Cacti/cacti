@@ -1014,7 +1014,7 @@ function poller_run_stats ($loop_start) {
 	// last hour stats
 	if (date('G', $poller_lastrun) != date('G')) {
 
-		$count = db_fetch_cell_prepared('SELECT count(total_time) FROM poller_time_stats WHERE time > DATE_SUB(NOW(), INTERVAL 60 minute) 
+		$count = db_fetch_cell_prepared('SELECT count(total_time) FROM poller_time_stats WHERE time > DATE_SUB(NOW(), INTERVAL 60 minute)
 				AND (total_time/?) > (?/100)',
 				array($poller_interval, $threshold_1h));
 
@@ -1059,7 +1059,7 @@ function spikekill_poller_bottom () {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_BRIEF_TEXT;
+	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

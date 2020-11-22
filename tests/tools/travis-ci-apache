@@ -11,20 +11,35 @@
     Require all granted
   </Directory>
 
-
-  <FilesMatch \.(php|phar)$>
-    SetHandler "proxy:unix:/run/php-fpm/www.sock|fcgi://localhost"
-  </FilesMatch>
-
-  # Wire up Apache to use Travis CI's php-fpm.
-  #<IfModule mod_fastcgi.c>
-  #  AddHandler php5-fcgi .php
-  #  Action php5-fcgi /php5-fcgi
-  #  Alias /php5-fcgi /usr/lib/cgi-bin/php5-fcgi
-  #  FastCgiExternalServer /usr/lib/cgi-bin/php5-fcgi -host 127.0.0.1:9000 -pass-header Authorization
   #
-  #  <Directory /usr/lib/cgi-bin>
-  #      Require all granted
-  #  </Directory>
-  #</IfModule>
+  # Redirect to local php-fpm (no mod_php in default configuration)
+  #
+  <IfModule !mod_php5.c>
+    <IfModule !mod_php7.c>
+      # Enable http authorization headers
+      SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
+
+      <FilesMatch \.(php|phar)$>
+          SetHandler "proxy:unix:/run/php-fpm/www.sock|fcgi://localhost"
+      </FilesMatch>
+    </IfModule>
+  </IfModule>
+
+  <IfModule  mod_php7.c>
+    #
+    # Cause the PHP interpreter to handle files with a .php extension.
+    #
+    <FilesMatch \.(php|phar)$>
+        SetHandler application/x-httpd-php
+    </FilesMatch>
+
+    #
+    # Apache specific PHP configuration options
+    # those can be override in each configured vhost
+    #
+    php_value session.save_handler "files"
+    php_value session.save_path    "/tmp"
+
+    #php_value opcache.file_cache   "/var/lib/php/opcache"
+  </IfModule>
 </VirtualHost>
