@@ -38,6 +38,7 @@ install:
   - sudo chown -R www-data:www-data /var/www/html/cacti
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+  - sudo sed -i -e 's,nobody,www-data,g' ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   # restart apache
   - sudo service apache2 restart
   # start php-fpm
