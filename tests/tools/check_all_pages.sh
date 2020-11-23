@@ -15,13 +15,13 @@ started=0
 # ------------------------------------------------------------------------------
 # OS Specific Paths
 # ------------------------------------------------------------------------------
-BASE_PATH="/var/www/html/cacti"
+BASE_PATH="/home/travis/build/Cacti/cacti"
 CACTI_LOG="$BASE_PATH/log/cacti.log"
 CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
 APACHE_ERROR="/var/log/apache2/error.log"
 APACHE_ACCESS="/var/log/apache2/access.log"
 POLLER="$BASE_PATH/poller.php"
-WEBUSER="www-data"
+WEBUSER="travis"
 DEBUG=1
 
 # ------------------------------------------------------------------------------
