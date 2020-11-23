@@ -1025,7 +1025,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		 $filter       - (char) the filtering expression to search for
 		 $page_nr      - (int) the page we want to show rows for
 		 $total_rows   - (int) the total number of rows in the logfile */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows) {
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows = 0) {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -4363,7 +4363,7 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 	return trim($result,$text['suffix']);
 }
 
-function padleft($pad = '', $value, $min = 2) {
+function padleft($pad = '', $value = '', $min = 2) {
 	$result = "$value";
 	if (strlen($result) < $min && $pad != '') {
 		$padded = $pad . $result;
