@@ -4554,7 +4554,7 @@ function IgnoreErrorHandler($message) {
 	return false;
 }
 
-function CactiErrorHandler($level, $message, $file, $line, $context = '') {
+function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 	global $phperrors;
 
 	if (defined('IN_CACTI_INSTALL')) {
