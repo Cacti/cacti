@@ -37,6 +37,10 @@ install:
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   # restart apache
   - sudo service apache2 restart
+  # start php-fpm
+  - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+  # find the location of the socket
+  - ls -l /run
   # run syntax check
   - if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
