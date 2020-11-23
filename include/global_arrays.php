@@ -677,7 +677,7 @@ $sampling_intervals = array(
 	14400 => __('Every %d Hours', 4),
 	28800 => __('Every %d Hours', 8),
 	43200 => __('Every %d Hours', 12),
-	86400 => __('Every %1 Day', 1)
+	86400 => __('Every %d Day', 1)
 );
 
 $heartbeats = array(
