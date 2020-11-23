@@ -15,7 +15,7 @@ started=0
 # ------------------------------------------------------------------------------
 # OS Specific Paths
 # ------------------------------------------------------------------------------
-BASE_PATH="/home/travis/build/Cacti/cacti"
+BASE_PATH="/var/www/html/cacti"
 CACTI_LOG="$BASE_PATH/log/cacti.log"
 CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
 APACHE_ERROR="/var/log/apache2/error.log"

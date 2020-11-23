@@ -32,15 +32,16 @@ install:
   # set some required variables
   - echo 'cgi.fix_pathinfo = 1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - sudo sed -i -e 's,www-data,travis,g' /etc/apache2/envvars
+  # copy the Cacti website to the correct direcotry
+  - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
+  # change ownership on the Cacti directory
+  - sudo chown -R www-data:www-data /var/www/html/cacti
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   # restart apache
   - sudo service apache2 restart
   # start php-fpm
   - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
-  # find the location of the socket
-  - ls -l /run/php
   # run syntax check
   - if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
