@@ -541,7 +541,7 @@ function domains_login_process() {
 	}
 }
 
-function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
+function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	$ldap = new Ldap;
 
 	if (!empty($username)) $ldap->username = $username;
