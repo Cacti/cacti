@@ -50,7 +50,7 @@ before_script:
 script:
   - php tests/tools/check_install_code.php
   - bash tests/tools/check_cli_version.sh
-  - php /var/www/html/cacti/cli/install_cacti.php --accept-eula --install --force
+  - php cli/install_cacti.php --accept-eula --install --force
   - sudo bash tests/tools/check_all_pages.sh
 
 notifications:
