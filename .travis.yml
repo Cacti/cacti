@@ -25,8 +25,6 @@ install:
   - sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp rrdtool snmp
   - sudo a2enmod proxy_fcgi setenvif actions alias
   - sudo find /etc/apache2
-  #- sudo a2enconf php$(phpenv version-name)-fpm
-  - sudo a2enconf php7.2-fpm
   # configure apache virtual hosts
   - sudo cp -f tests/tools/cacti.conf /etc/apache2/sites-available/000-default.conf
   # setup link for php legacy
