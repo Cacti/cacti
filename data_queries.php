@@ -1141,6 +1141,9 @@ function data_query_edit() {
 	?>
 	<script type='text/javascript'>
 
+	var snmp_query_id = '<?php print isset($snmp_query['id']) ? $snmp_query['id']:'0';?>';
+	var snmp_query_graph_id = '<?php print isset($snmp_query_graph['id']) ? $snmp_query_graph['id']:'0';?>';
+
 	function removeDataQueryItemFinalize(data) {
 		$('#cdialog').dialog('close');
 		loadUrl({url:'data_queries.php?action=edit&id=<?php print $snmp_query['id'];?>'})
@@ -1170,8 +1173,8 @@ function data_query_edit() {
 
 						var data = {
 							__csrf_magic: csrfMagicToken,
-							snmp_query_id: <?php print $snmp_query['id'];?>,
-							id: <?php print $snmp_query_graph['id'];?>
+							snmp_query_id: snmp_query_id,
+							id: snmp_query_graph_id
 						}
 
 						postUrl(options, data);
@@ -1377,7 +1380,7 @@ function data_query() {
 		)
 	);
 
-	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Data Queries'), 'page', 'main');
+	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Queries'), 'page', 'main');
 
 	form_start('data_queries.php', 'chk');
 

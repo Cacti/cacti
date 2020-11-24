@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -33,7 +33,7 @@ require_once($config['base_path'] . '/lib/reports.php');
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_BRIEF_TEXT;
+	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

@@ -1004,4 +1004,3 @@ function data() {
 
 	form_end();
 }
-

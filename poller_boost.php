@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -338,7 +338,7 @@ function output_rrd_data($start_time, $force = false) {
 		SELECT DISTINCT local_data_id
 		FROM $archive_table");
 
-	$data_ids   = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM $archive_table");
+	$data_ids = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM $archive_table");
 
 	if (!empty($total_rows)) {
 		$passes  = ceil($total_rows / $max_per_select);
@@ -666,12 +666,12 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	/* restore original error handler */
 	restore_error_handler();
 
-	return sizeof($results);
+	return cacti_sizeof($results);
 }
 
 function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe) {
 	$outbuf = '';
-	if (sizeof($outarray)) {
+	if (cacti_sizeof($outarray)) {
 		foreach($outarray as $tsdata) {
 			$outbuf .= ($outbuf != '' ? ' ':'') . implode(':', $tsdata);
 		}
@@ -784,7 +784,7 @@ function purge_cached_png_files($forcerun) {
 /* do NOT run this script through a web browser */
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_BRIEF_TEXT;
+	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 

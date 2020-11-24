@@ -12,6 +12,7 @@ var rtHeight        = 0;
 var graphsRendered  = null;
 var prevTotalGraphs = null;
 var url;
+var local_graph_id  = null;
 
 function realtimeDetectBrowser() {
 	if (navigator.userAgent.indexOf('MSIE') >= 0) {
@@ -36,7 +37,8 @@ function imageOptionsChanged(action) {
 	var size           = $('#size').val();
 	var isThumb        = $('#thumbnails').is(':checked');
 	var url            = '';
-	var local_graph_id = $('#local_graph_id').val();
+
+	local_graph_id = $('#local_graph_id').val();
 
 	if (rtWidth == 0) {
 		rtWidth = $(window).width();
@@ -230,7 +232,11 @@ function realtimeGrapher() {
 				var position = $('#wrapper_'+local_graph_id).find('img').position();
 
 				Pace.ignore(function() {
-					position = $('#wrapper_'+local_graph_id).find('img').position();
+					if ($('#wrapper_'+local_graph_id).find('img').length) {
+						position = $('#wrapper_'+local_graph_id).find('img').position();
+					} else {
+						position = $('body').position();
+					}
 
 					$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
 						.done(function(data) {

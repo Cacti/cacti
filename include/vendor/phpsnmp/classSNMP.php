@@ -87,7 +87,7 @@ class SNMP {
 		if ($delcount == 1) {
 			$hostname       = explode(':', $hostname);
 			$this->hostname = array_shift($hostname);
-			$this->port     = (sizeof($hostname) ? array_shift($hostname) : 161);
+			$this->port     = (cacti_sizeof($hostname) ? array_shift($hostname) : 161);
 		} elseif ($delcount > 1) {
 			$hostname       = explode(':', $hostname);
 			$this->port     = $hostname[sizeof($hostname)-1];
@@ -138,7 +138,7 @@ class SNMP {
 	}
 
 	private function apply_options($backup = array()) {
-		if (sizeof($backup) == 0) {
+		if (cacti_sizeof($backup) == 0) {
 			if (function_exists('snmp_get_valueretrieval')) {
 				$backup['valueretrieval'] = snmp_get_valueretrieval();
 				snmp_set_valueretrieval($this->valueretrieval);
@@ -193,12 +193,12 @@ class SNMP {
 
 		$this->apply_options($options_backup);
 
-		if (sizeof($output) == 0) {
+		if (cacti_sizeof($output) == 0) {
 			$this->errno = SNMP::TIMEOUT;
 		}
 
 		if ($array_output == false) {
-			if (sizeof($output) == 0) {
+			if (cacti_sizeof($output) == 0) {
 				return false;
 			}
 			return array_shift($output);

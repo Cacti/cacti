@@ -1157,10 +1157,9 @@ legend {
 }
 
 .iconLink {
-}
-
-.iconLink img {
-	padding-bottom: 2px;
+	width: 20px;
+	line-height: 20px;
+	display: inline-block;
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
@@ -2201,7 +2200,8 @@ ul#nav {
 }
 
 .ui-tooltip {
-	max-width: none !important;
+	max-width: 500px;
+	word-break: break-word;
 }
 
 .ui-tooltip-content div.header {
@@ -2560,7 +2560,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 	width: 45px;
 	height: 24px;
-	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
 }

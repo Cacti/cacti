@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -41,7 +41,12 @@ unset($graph_template_id);
 unset($data_template_id);
 
 foreach($parms as $parameter) {
-	@list($arg, $value) = @explode("=", $parameter);
+	if (strpos($parameter, '=')) {
+		list($arg, $value) = explode('=', $parameter);
+	} else {
+		$arg = $parameter;
+		$value = '';
+	}
 
 	switch ($arg) {
 		case "--execute":

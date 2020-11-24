@@ -38,8 +38,8 @@ class CactiTableFilter {
 	public $default_filter = array();
 
 
-	public function __construct($form_header = '', $form_action = '', $form_id = '', $form_width,
-		$session_var = '', $action_url = '', $action_label = '') {
+	public function __construct($form_header = '', $form_action = '', $form_id = '',
+		$form_width = '', $session_var = '', $action_url = '', $action_label = '') {
 		global $item_rows;
 
 		$this->form_header   = $form_header;

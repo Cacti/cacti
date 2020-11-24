@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -43,7 +43,7 @@ if (file_exists(__DIR__ . '/../include/cli_check.php')) {
 // For legacy Cacti behavior
 if (!function_exists('cacti_sizeof')) {
 	function cacti_sizeof($object) {
-		return sizeof($object);
+		return cacti_sizeof($object);
 	}
 }
 
@@ -583,7 +583,7 @@ function flattenXML(&$xml) {
 	$maxarray = array();
 	$mintime  = 'NaN';
 
-	if (sizeof($xml['rra'])) {
+	if (cacti_sizeof($xml['rra'])) {
 		foreach($xml['rra'] as $rraid => $data) {
 			$cf = $data['cf'];
 
@@ -639,7 +639,7 @@ function flattenXML(&$xml) {
 					$stats = sprintf("DS:%2d, CF:%8s, Vals:%10s, Max:%10s, Avg:%10s",
 						$dsid,
 						$cf,
-						number_format(sizeof($timedata)),
+						number_format(cacti_sizeof($timedata)),
 						number_format(getMaxValue($timedata), 4),
 						number_format(getAvgValue($timedata), 4));
 
@@ -672,7 +672,7 @@ function getMaxValue(&$data) {
  *  for use in debug output.
  */
 function getAvgValue(&$data) {
-	$entries = sizeof($data);
+	$entries = cacti_sizeof($data);
 	$total   = array_sum($data);
 
 	if ($entries) {
@@ -803,7 +803,7 @@ function processXML(&$output) {
 		}
 	}
 
-	if (sizeof($dsnames)) {
+	if (cacti_sizeof($dsnames)) {
 		foreach($dsnames as $index => $name) {
 			$rrd['dsnames'][$name] = $index;
 		}

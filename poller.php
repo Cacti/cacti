@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -268,7 +268,7 @@ $ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id,
 	HAVING instances > 1',
 	array($poller_id));
 
-if (sizeof($ds_needing_fixes)) {
+if (cacti_sizeof($ds_needing_fixes)) {
 	foreach($ds_needing_fixes as $ds) {
 		db_execute_prepared('UPDATE poller_item
 			SET rrd_next_step = ?
@@ -658,7 +658,7 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 
 			if ($poller_type == '1') {
-				$max_threads = '0';
+				$max_threads = '1';
 			}
 
 			$rrds_processed = 0;
@@ -1014,7 +1014,7 @@ function poller_run_stats ($loop_start) {
 	// last hour stats
 	if (date('G', $poller_lastrun) != date('G')) {
 
-		$count = db_fetch_cell_prepared('SELECT count(total_time) FROM poller_time_stats WHERE time > DATE_SUB(NOW(), INTERVAL 60 minute) 
+		$count = db_fetch_cell_prepared('SELECT count(total_time) FROM poller_time_stats WHERE time > DATE_SUB(NOW(), INTERVAL 60 minute)
 				AND (total_time/?) > (?/100)',
 				array($poller_interval, $threshold_1h));
 
@@ -1059,7 +1059,7 @@ function spikekill_poller_bottom () {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_BRIEF_TEXT;
+	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

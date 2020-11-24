@@ -161,7 +161,13 @@ function set_user_setting(string $config_name, $value, int $user = -1): void {
 	}
 
 	if ($user == -1) {
-		cacti_log('Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
+		if (isset($_SESSION['sess_user_id'])) {
+			$mode = 'WEBUI';
+		} else {
+			$mode = 'POLLER';
+		}
+
+		cacti_log('NOTE: Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, $mode, POLLER_VERBOSITY_MEDIUM);
 	} elseif (db_table_exists('settings_user')) {
 		db_execute_prepared('REPLACE INTO settings_user
 			SET user_id = ?,
@@ -610,7 +616,7 @@ function check_changed(string $request, string $session): bool {
 function is_error_message(): bool {
 	global $config, $messages;
 
-	if (isset($_SESSION['sess_error_fields']) && sizeof($_SESSION['sess_error_fields'])) {
+	if (isset($_SESSION['sess_error_fields']) && cacti_sizeof($_SESSION['sess_error_fields'])) {
 		return true;
 	} else {
 		return false;
@@ -1028,7 +1034,7 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 		 $filter       - (char) the filtering expression to search for
 		 $page_nr      - (int) the page we want to show rows for
 		 $total_rows   - (int) the total number of rows in the logfile */
-function tail_file(string $file_name, int $number_of_lines, int $message_type = -1, string $filter = '', int &$page_nr = 1, int &$total_rows, array $field_map = array()): array {
+function tail_file(string $file_name, int $number_of_lines, int $message_type = -1, string $filter = '', int &$page_nr = 1, int &$total_rows = 0, array $field_map = array()): array {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -1730,23 +1736,24 @@ function stri_replace(string $find, string $replace, string $string): string {
      new lines and the spaces around them
    @arg $string - the string to modify/clean
    @returns - the modified string */
-function clean_up_lines($string) {
+function clean_up_lines(?string $string): ?string {
 	if ($string != NULL) {
-		return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
-	} else {
-		return $string;
+		$string = preg_replace('/\s*[\r\n]+\s*/',' ', $string);
 	}
+
+	return $string;
 }
 
 /* clean_up_name - runs a string through a series of regular expressions designed to
      eliminate "bad" characters
    @arg $string - the string to modify/clean
    @returns - the modified string */
-function clean_up_name(string $string): string {
-	$string = preg_replace('/[\s\.]+/', '_', $string);
-	$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
-	$string = preg_replace('/_{2,}/', '_', $string);
-
+function clean_up_name(?string $string): ?string {
+	if ($string != NULL) {
+		$string = preg_replace('/[\s\.]+/', '_', $string);
+		$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
+		$string = preg_replace('/_{2,}/', '_', $string);
+	}
 	return $string;
 }
 
@@ -1754,10 +1761,12 @@ function clean_up_name(string $string): string {
      eliminate "bad" characters
    @arg $string - the string to modify/clean
    @returns - the modified string */
-function clean_up_file_name(string $string): string {
-	$string = preg_replace('/[\s\.]+/', '_', $string);
-	$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
-	$string = preg_replace('/_{2,}/', '_', $string);
+function clean_up_file_name(?string $string): ?string {
+	if ($string != NULL) {
+		$string = preg_replace('/[\s\.]+/', '_', $string);
+		$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
+		$string = preg_replace('/_{2,}/', '_', $string);
+	}
 
 	return $string;
 }
@@ -1766,13 +1775,15 @@ function clean_up_file_name(string $string): string {
      separators based on the current operating system
    @arg $path - the path to modify
    @returns - the modified path */
-function clean_up_path(string $path): string {
+function clean_up_path(?string $path): ?string {
 	global $config;
 
-	if ($config['cacti_server_os'] == 'win32') {
-		return str_replace('/', "\\", $path);
-	} elseif ($config['cacti_server_os'] == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
-		return str_replace("\\", '/', $path);
+	if ($path != NULL) {
+		if ($config['cacti_server_os'] == 'win32') {
+			$path = str_replace('/', "\\", $path);
+		} elseif ($config['cacti_server_os'] == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
+			$path = str_replace("\\", '/', $path);
+		}
 	}
 
 	return $path;
@@ -4382,7 +4393,7 @@ function get_daysfromtime(int $time, bool $secs = false, string $pad = '', int $
 	return (int) trim($result, $text['suffix']);
 }
 
-function padleft(string $pad = '', $value, int $min = 2): string {
+function padleft(string $pad = '', $value = '', int $min = 2): string {
 	$result = "$value";
 	if (strlen($result) < $min && $pad != '') {
 		$padded = $pad . $result;
@@ -4574,7 +4585,7 @@ function IgnoreErrorHandler(string $message): bool {
 	return false;
 }
 
-function CactiErrorHandler(int $level, string $message, string $file, int $line, array $context): bool {
+function CactiErrorHandler(int $level, string $message, string $file, int $line, array $context = array()): bool {
 	global $phperrors;
 
 	if (defined('IN_CACTI_INSTALL')) {
