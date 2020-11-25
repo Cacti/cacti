@@ -37,6 +37,7 @@ Cacti CHANGELOG
 -feature#3738: Ability to see MySQL permissions associated with current database user
 -feature#3417: Add worst poller hosts to support page, log and email warning when poller time reached defined threshold
 -feature#3845: Allow non-standard Remote Agent port to be used
+-feature#3943: Add hooks for plugins to show customize graph source and customize template url (List View)
 
 1.2.16
 -issue#3704: Reporting - Cascade to Branches function not working (Graphs in reporting shows only in 1 column)
