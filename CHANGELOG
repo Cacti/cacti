@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -issue#3932: Automation Networks allows discovery of invalid IP addresses
 -issue#3933: When changing permissions, if those permissions are from the current user, they dont take effect till next login
 -issue#3935: Device Re-index operations not returning to correct page location
+-issue#3953: During upgrade, there are times when realms can be duplicated leading to SQL errors
 -feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature: Update c3.js to version 0.7.20
 -feature: Update d3.js to version 6.2.0
