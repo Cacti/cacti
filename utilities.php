@@ -1247,7 +1247,7 @@ function utilities_view_logfile() {
 	$refreshTime  = get_request_var('refresh');
 	$message_type = get_request_var('message_type');
 	$tail_lines   = get_request_var('tail_lines');
-	$base_url     = 'utilities.php?action=view_logfile';
+	$base_url     = 'utilities.php?action=view_logfile&filename='.basename($logfile);
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
