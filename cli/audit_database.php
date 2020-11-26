@@ -301,6 +301,9 @@ function plugin_installed($plugin) {
 function repair_database($run = true) {
 	$alters = report_audit_results(false);
 
+	$good = 0;
+	$bad = 0;
+
 	if (cacti_sizeof($alters)) {
 		foreach($alters as $table => $changes) {
 			$engine = db_fetch_cell_prepared('SELECT ENGINE
@@ -324,8 +327,10 @@ function repair_database($run = true) {
 				$result = db_execute($sql);
 
 				if ($result) {
+					$good++;
 					print ' - Success' . PHP_EOL;
 				} else {
+					$bad++;
 					print ' - Failed' . PHP_EOL;
 					print $sql . PHP_EOL;
 				}
@@ -335,6 +340,15 @@ function repair_database($run = true) {
 				print $sql . PHP_EOL . PHP_EOL;
 			}
 		}
+	}
+
+	print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+	if ($bad == 0 && $good == 0) {
+		print 'Repair Completed!  No changes performed.' . PHP_EOL;
+	} elseif ($bad) {
+		print 'Repair Completed!  ' . $good . ' Alters succeeded and ' . $bad . ' failed!' . PHP_EOL;
+	} else {
+		print 'Repair Completed!  All ' . $good . ' Alters succeeded!' . PHP_EOL;
 	}
 }
 
@@ -472,14 +486,10 @@ function report_audit_results($output = true) {
 										}
 									}
 
-									// This is an index error
-									if ($col != 'Key') {
-										$errors++;
-									}
-
 									if (array_search($dbc['table_field'], $col_alter) === false) {
 										$alter_cmds[] = make_column_alter($table_name, $dbc);
 										$col_alter[]  = $dbc['table_field'];
+										$errors++;
 									}
 								}
 							}
@@ -507,8 +517,7 @@ function report_audit_results($output = true) {
 
 								$alter_cmds[] = make_column_add($table_name, $dbc);
 								$col_added[] = $dbc['table_field'];
-
-								$warnings++;
+								$errors++;
 							}
 						}
 					}
@@ -553,8 +562,8 @@ function report_audit_results($output = true) {
 									}
 
 									$alter_cmds[]  = 'DROP INDEX ' . $i['Key_name'];
-									$warnings++;
 									$idx_dropped[] = $i['Key_name'];
+									$errors++;
 								}
 							}
 						} else {
@@ -568,8 +577,8 @@ function report_audit_results($output = true) {
 											}
 
 											$alter_cmds = array_merge($alter_cmds, make_index_alter($table_name, $i['Key_name']));
-											$errors++;
 											$idx_added[] = $i['Key_name'];
+											$errors++;
 										}
 									}
 								}
@@ -594,8 +603,8 @@ function report_audit_results($output = true) {
 								}
 
 								$alter_cmds = array_merge($alter_cmds, make_index_alter($table_name, $i['idx_key_name']));
-								$errors++;
 								$idx_added[] = $i['idx_key_name'];
+								$errors++;
 							}
 						} else {
 							$prop_seq = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -615,7 +624,9 @@ function report_audit_results($output = true) {
 									if ($output) {
 										if ($curr_seq != $prop_seq) {
 											print PHP_EOL . 'WARNING Index: \'' . $i['idx_key_name'] . '\', has differing number of columns.  Dropping.';
-										} else {
+										}
+
+										if ($curr_column_seq != $i['idx_seq_in_index']) {
 											print PHP_EOL . 'WARNING Index: \'' . $i['idx_key_name'] . '\', has resequenced columns.  Dropping.';
 										}
 									}
@@ -623,6 +634,7 @@ function report_audit_results($output = true) {
 									$alter_cmds = array_merge($alter_cmds, make_index_alter($table_name, $i['idx_key_name']));
 									$idx_added[]   = $i['idx_key_name'];
 									$idx_dropped[] = $i['idx_key_name'];
+									$errors++;
 								}
 							}
 						}
@@ -642,6 +654,17 @@ function report_audit_results($output = true) {
 				}
 			}
 		}
+	}
+
+	if ($output) {
+		print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+		if (cacti_sizeof($alters)) {
+			print 'ERRORS are fixable using the --repair option.  WARNINGS will not be rapaired' . PHP_EOL;
+			print 'due to ambiguous use of the column.' . PHP_EOL;
+		} else {
+			print 'Audit was clean, no errors or warnings' . PHP_EOL;
+		}
+		print '---------------------------------------------------------------------------------------------' . PHP_EOL;
 	}
 
 	return $alters;
@@ -729,6 +752,7 @@ function get_previous_column($table, $column) {
 function make_index_alter($table, $key) {
 	$alter_cmds = array();
 	$alter_cmd  = '';
+	$primary_dropped = false;
 
 	$parts = db_fetch_assoc_prepared('SELECT *
 		FROM table_indexes
@@ -743,6 +767,14 @@ function make_index_alter($table, $key) {
 
 	if ($sequence_cnt != cacti_sizeof($parts) && $sequence_cnt > 0) {
 		if ($key == 'PRIMARY') {
+			$primary_dropped = true;
+			$alter_cmd .= "DROP PRIMARY KEY,\n   ";
+		} else {
+			$alter_cmd .= "DROP INDEX `" . $key . "`,\n   ";
+		}
+	} elseif (db_index_exists($table, $key)) {
+		if ($key != 'PRIMARY') {
+			$primary_dropped = true;
 			$alter_cmd .= "DROP PRIMARY KEY,\n   ";
 		} else {
 			$alter_cmd .= "DROP INDEX `" . $key . "`,\n   ";
@@ -754,6 +786,9 @@ function make_index_alter($table, $key) {
 
 		foreach($parts as $p) {
 			if ($i == 0 && $p['idx_key_name'] == 'PRIMARY') {
+				if ($primary_dropped == false) {
+					$alter_cmd .= "DROP PRIMARY KEY,\n   ";
+				}
 				$alter_cmd .= 'ADD PRIMARY KEY (';
 			} elseif ($i == 0) {
 				if ($p['idx_non_unique'] == 1) {
