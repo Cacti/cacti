@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#3942: The audit_database.php script will only modify columns, and add indexes, it does not add column
 -issue#3948: Required MariaDB/MySQL connection count is confusing
 -issue#3953: During upgrade, there are times when realms can be duplicated leading to SQL errors
+-issue#3957: Cacti ping.php does not collect correct respone time when using UDP ping Timing
 -feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature: Update c3.js to version 0.7.20
 -feature: Update d3.js to version 6.2.0
