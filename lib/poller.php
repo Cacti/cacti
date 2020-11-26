@@ -1448,6 +1448,15 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 		/* check if the table structure changed, and if so, recreate */
 		$local_columns  = db_fetch_assoc('SHOW COLUMNS FROM ' . $table);
 		$remote_columns = db_fetch_assoc('SHOW COLUMNS FROM ' . $table, true, $conn);
+		$remote_rows    = db_fetch_cell('SELECT COUNT(*) FROM ' . $table, '', true, $conn);
+
+		if ($exclude !== false && !is_array($exclude)) {
+			$exclude = array($exclude);
+		}
+
+		if ($remote_rows == 0) {
+			$exclude = false;
+		}
 
 		if (cacti_sizeof($local_columns) != cacti_sizeof($remote_columns)) {
 			cacti_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table, false, 'REPLICATE');
@@ -1472,7 +1481,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 
 			$i = 0;
 			foreach($cols as $col) {
-				if ($exclude != false) {
+				if ($exclude !== false) {
 					if (array_search($col, $exclude) === false) {
 						$suffix .= ($i > 0 ? ', ':'') . " $col=VALUES($col)";
 						$i++;
@@ -1490,6 +1499,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 		$columns   = array_keys($data[0]);
 		$skipcols  = array();
 
+		// Find columns to skip, or exclude from updates
 		foreach($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $conn)) {
 				$skipcols[$index] = $c;
@@ -1632,11 +1642,11 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 			WHERE host_id IN (" . implode(', ', $recache_hosts) . ")
 			$sql_where1");
 
-		replicate_table_to_poller($db_cnn_id, $poller_reindex, 'poller_reindex');
+		replicate_table_to_poller($db_cnn_id, $poller_reindex, 'poller_reindex', array('assert_value'));
 	}
 }
 
-function replicate_table_to_poller($conn, &$data, $table) {
+function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 	if (cacti_sizeof($data)) {
 		$prefix    = "INSERT INTO $table (";
 		$suffix    = ' ON DUPLICATE KEY UPDATE ';
@@ -1646,9 +1656,22 @@ function replicate_table_to_poller($conn, &$data, $table) {
 		$columns   = array_keys($data[0]);
 		$skipcols  = array();
 
+		$remote_rows    = db_fetch_cell('SELECT COUNT(*) FROM ' . $table, '', true, $conn);
+
+		if ($exclude !== false && !is_array($exclude)) {
+			$exclude = array($exclude);
+		}
+
+		if ($remote_rows == 0) {
+			$exclude = false;
+		}
+
+		// Find columns to skip from updates
 		foreach($columns as $index => $c) {
 			if (!db_column_exists($table, $c, false, $conn)) {
 				$skipcols[$index] = $c;
+			} elseif ($exclude !== false && array_search($c, $exclude) === true) {
+				// Do not update this column
 			} else {
 				$prefix .= ($colcnt > 0 ? ', ':'') . $c;
 				$suffix .= ($colcnt > 0 ? ', ':'') . "$c=VALUES($c)";
