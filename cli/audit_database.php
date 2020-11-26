@@ -556,7 +556,7 @@ function report_audit_results($output = true) {
 								// Ignore till Phase II
 							} elseif (array_search($i['Key_name'], $idx_dropped) === false) {
 								// Primary keys come in Phase II
-								if ($i['Key_name'] !== 'PRIMARY') {
+								if ($i['Key_name'] != 'PRIMARY') {
 									if ($output) {
 										print PHP_EOL . 'WARNING Index: \'' . $i['Key_name'] . '\', does not exist in default Cacti.  Dropping.';
 									}
@@ -773,7 +773,7 @@ function make_index_alter($table, $key) {
 			$alter_cmd .= "DROP INDEX `" . $key . "`,\n   ";
 		}
 	} elseif (db_index_exists($table, $key)) {
-		if ($key != 'PRIMARY') {
+		if ($key == 'PRIMARY') {
 			$primary_dropped = true;
 			$alter_cmd .= "DROP PRIMARY KEY,\n   ";
 		} else {
