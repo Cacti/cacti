@@ -1032,8 +1032,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	}
 
 	if (!is_readable($file_name)) {
-		print __('Error %s is not readable', $file_name);
-		return array();
+		return array(__('Error %s is not readable', $file_name));
 	}
 
 	$filter = strtolower($filter);
