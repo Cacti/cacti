@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#3935: Device Re-index operations not returning to correct page location
 -issue#3942: The audit_database.php script will only modify columns, and add indexes, it does not add column
 -issue#3948: Required MariaDB/MySQL connection count is confusing
+-issue#3949: Log Administration can not view Cacti error log
 -issue#3953: During upgrade, there are times when realms can be duplicated leading to SQL errors
 -issue#3957: Cacti ping.php does not collect correct respone time when using UDP ping Timing
 -issue#3960: Improve warning you get when attempting to view a log file you don't have access to
