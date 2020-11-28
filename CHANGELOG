@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -issue#3960: Improve warning you get when attempting to view a log file you don't have access to
 -issue#3962: The Cacti Resource Cache in does not restore executable attributes on cli scripts
 -feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
+-feature#3943: Add hooks for plugins to show custom Graph Source and custom Template URL (List View)
 -feature: Update c3.js to version 0.7.20
 -feature: Update d3.js to version 6.2.0
 -feature: Update Chart.js to version 2.9.4
