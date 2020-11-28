@@ -1035,28 +1035,26 @@ function utilities_clear_user_log() {
 function utilities_view_logfile() {
 	global $log_tail_lines, $page_refresh_interval, $config;
 
-	$logfile = read_config_option('path_cactilog');
-	$logbase = basename($logfile);
-
-	if (isset_request_var('filename')) {
-		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
-		if (file_exists($requestedFile)) {
-			$logfile = $requestedFile;
-		} else {
-			$logfile = read_config_option('path_cactilog');
-		}
-	}
-
+	$logfile = basename(get_nfilter_request_var('filename'));
+	$logbase = basename(read_config_option('path_cactilog'));
+	
 	if ($logfile == '') {
-		$logfile = $config['base_path'] . '/log/cacti.log';
+		$logfile = $logbase;
 	}
+	
+	if ($logfile == '') {
+		$logfile = 'cacti.log';
+	}
+	
+	$logname = '';
+	$logpath = '';
 
-	if (get_nfilter_request_var('filename') != '') {
-		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
-			raise_message('clog_invalid');
-			header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
-			exit(0);
-		}
+	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {	
+		raise_message('clog_invalid');
+		header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
+		exit(0);
+	} else {
+		$logfile = $logpath . '/' . $logfile;
 	}
 
 	/* ================= input validation and session storage ================= */
