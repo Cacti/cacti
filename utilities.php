@@ -1035,24 +1035,27 @@ function utilities_clear_user_log() {
 function utilities_view_logfile() {
 	global $log_tail_lines, $page_refresh_interval, $config;
 
-    $logfile = basename(get_nfilter_request_var('filename'));
+	$logfile = basename(get_nfilter_request_var('filename'));
 	$logbase = basename(read_config_option('path_cactilog'));
-	if ($logfile == ''){
+	
+	if ($logfile == '') {
 		$logfile = $logbase;
 	}
-	if ($logfile == ''){
+	
+	if ($logfile == '') {
 		$logfile = 'cacti.log';
 	}
-    $logname = '';
-    $logpath = '';
+	
+	$logname = '';
+	$logpath = '';
 
-    if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
+	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {	
 		raise_message('clog_invalid');
 		header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
 		exit(0);
-    } else {
-        $logfile = $logpath . '/' . $logfile;
-    }
+	} else {
+		$logfile = $logpath . '/' . $logfile;
+	}
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
