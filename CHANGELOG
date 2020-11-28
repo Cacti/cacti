@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -issue#3953: During upgrade, there are times when realms can be duplicated leading to SQL errors
 -issue#3957: Cacti ping.php does not collect correct respone time when using UDP ping Timing
 -issue#3960: Improve warning you get when attempting to view a log file you don't have access to
+-issue#3962: The Cacti Resource Cache in does not restore executable attributes on cli scripts
 -feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature: Update c3.js to version 0.7.20
 -feature: Update d3.js to version 6.2.0

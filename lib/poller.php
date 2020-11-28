@@ -839,6 +839,10 @@ function update_db_from_path($path, $type, $recursive = true) {
 						continue;
 					}
 
+					$entry_path = $path . DIRECTORY_SEPARATOR . $entry;
+					$attributes = fileperms($entry_path);
+					$attributes = empty($attributes) ? 33188 : $attributes;
+
 					$save         = array();
 					$save['path'] = $spath;
 					$save['id']   = db_fetch_cell_prepared('SELECT id
@@ -846,11 +850,10 @@ function update_db_from_path($path, $type, $recursive = true) {
 						WHERE `path` = ?',
 						array($save['path']));
 
-					$entry_path = $path. DIRECTORY_SEPARATOR . $entry;
 					$save['resource_type'] = $type;
 					$save['md5sum']        = md5_file($entry_path);
 					$save['update_time']   = date('Y-m-d H:i:s');
-					$save['attributes']    = fileperms($entry_path);
+					$save['attributes']    = $attributes;
 					$save['contents']      = base64_encode(file_get_contents($entry_path));
 
 					sql_save($save, 'poller_resource_cache');
@@ -872,6 +875,9 @@ function update_db_from_path($path, $type, $recursive = true) {
 			if (array_search($extension, $excluded_extensions, true) === false) {
 				$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
 
+				$attributes = fileperms($path);
+				$attributes = empty($attributes) ? 33188 : $attributes;
+
 				$save         = array();
 				$save['path'] = $spath;
 
@@ -883,6 +889,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 				$save['resource_type'] = $type;
 				$save['md5sum']        = md5_file($path);
 				$save['update_time']   = date('Y-m-d H:i:s');
+				$save['attributes']    = $attributes;
 				$save['contents']      = base64_encode(file_get_contents($path));
 
 				sql_save($save, 'poller_resource_cache');
@@ -934,7 +941,9 @@ function resource_cache_out($type, $path) {
 
 				if (is_dir(dirname($mypath))) {
 					if ($md5sum != $e['md5sum'] && $e['path'] != 'include/config.php') {
-						$attributes = empty($e['attributes']) ? 0 : $e['attributes'];
+						// If for some reason, the attributes are empty, assume 0644
+						$attributes = empty($e['attributes']) ? 33188 : $e['attributes'];
+
 						$extension = substr(strrchr($e['path'], "."), 1);
 						$exit = -1;
 						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents
@@ -944,6 +953,16 @@ function resource_cache_out($type, $path) {
 
 						/* if the file type is PHP check syntax */
 						if ($extension == 'php' && $contents != '') {
+							// Executable check
+							$executable = false;
+							if (strpos($e['path'], 'lib/poller.php') === false) {
+								if (strpos($contents, '#!/usr/bin/env php') !== false) {
+									$executable = true;
+								} elseif (strpos($contents, '#!/usr/bin/php') !== false) {
+									$executable = true;
+								}
+							}
+
 							$tmpdir = sys_get_temp_dir();
 							$tmpfile = tempnam($tmpdir,'ccp');
 
@@ -957,12 +976,14 @@ function resource_cache_out($type, $path) {
 										if (is_writable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 											file_put_contents($mypath, $contents);
 
-											if ($attributes != 0) {
-												chmod($mypath, $attributes);
+											if ($executable) {
+												$attributes = 33261;
+											}
 
-												if (fileperms($mypath) != $attributes) {
-													cacti_log("WARNING: Cache cannot update permissions on '$mypath'", false, 'REPLICATE');
-												}
+											chmod($mypath, $attributes);
+
+											if (fileperms($mypath) != $attributes) {
+												cacti_log("WARNING: Cache cannot update permissions on '$mypath'", false, 'REPLICATE');
 											}
 										} else {
 											cacti_log("ERROR: Cache in cannot write to '$mypath', purge this location", false, 'REPLICATE');
@@ -981,9 +1002,12 @@ function resource_cache_out($type, $path) {
 							}
 						} elseif (is_writeable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 							cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'REPLICATE');
+
 							file_put_contents($mypath, $contents);
+
 							if ($attributes != 0) {
 								chmod($mypath, $attributes);
+
 								if (fileperms($mypath) != $attributes) {
 									cacti_log("WARNING: Cache cannot update permissions on '$mypath'", false, 'REPLICATE');
 								}
