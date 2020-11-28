@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -issue#3957: Cacti ping.php does not collect correct respone time when using UDP ping Timing
 -issue#3960: Improve warning you get when attempting to view a log file you don't have access to
 -issue#3962: The Cacti Resource Cache in does not restore executable attributes on cli scripts
+-issue#3963: Plugin table creation function misses the table collation setting
 -feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature#3943: Add hooks for plugins to show custom Graph Source and custom Template URL (List View)
 -feature: Update c3.js to version 0.7.20

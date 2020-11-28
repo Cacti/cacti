@@ -453,8 +453,8 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 
 		$sql .= ') ENGINE = ' . $data['type'];
 
-		if (isset($data['comment'])) {
-			$sql .= " COMMENT = '" . $data['comment'] . "'";
+		if (isset($data['collate'])) {
+			$sql .= " COLLATE = '" . $data['collate'] . "'";
 		}
 
 		if (isset($data['charset'])) {
@@ -463,6 +463,10 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 
 		if (isset($data['row_format']) && db_get_global_variable('innodb_file_format') == 'Barracuda') {
 			$sql .= ' ROW_FORMAT=' . $data['row_format'];
+		}
+
+		if (isset($data['comment'])) {
+			$sql .= " COMMENT = '" . $data['comment'] . "'";
 		}
 
 		if (db_execute($sql)) {
