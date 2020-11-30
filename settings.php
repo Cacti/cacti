@@ -176,19 +176,6 @@ case 'save':
 					array($field_name));
 			}
 		} elseif (isset_request_var($field_name)) {
-			if ($field_array['method'] == 'textbox' && isset($field_array['filter'])) {
-				if (isset($field_array['options'])) {
-					$value = filter_var(get_nfilter_request_var($field_name), $field_array['filter'], $field_array['options']);
-				} else {
-					$value = filter_var(get_nfilter_request_var($field_name), $field_array['filter']);
-				}
-				if ($value === false) {
-					$_SESSION['sess_error_fields'][$field_name] = $field_name;
-					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-					$errors[3] = 3;
-					continue;
-				}
-			}
 			if (is_array(get_nfilter_request_var($field_name))) {
 				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
 				db_execute_prepared('REPLACE INTO settings
