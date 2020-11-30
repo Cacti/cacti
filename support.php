@@ -280,19 +280,63 @@ function support_view_tech() {
 		print '</td>';
 		form_end_row();
 
+		$processes = db_fetch_cell('SELECT
+			GROUP_CONCAT(
+				CONCAT("' . __('Name: ') . '", name, ", ' . __('Procs: ') . '", processes) SEPARATOR "<br>"
+			) AS poller
+			FROM poller
+			WHERE disabled=""');
+
+		$threads = db_fetch_cell('SELECT
+			GROUP_CONCAT(
+				CONCAT("' . __('Name: ') . '", name, ", ' . __('Threads: ') . '", threads) SEPARATOR "<br>"
+			) AS poller
+			FROM poller
+			WHERE disabled=""');
+
 		form_alternate_row();
 		print '<td>' . __('Concurrent Processes') . '</td>';
-		print '<td>' . read_config_option('concurrent_processes') . '</td>';
+		print '<td>' . $processes . '</td>';
 		form_end_row();
 
 		form_alternate_row();
 		print '<td>' . __('Max Threads') . '</td>';
-		print '<td>' . read_config_option('max_threads') . '</td>';
+		print '<td>' . $threads . '</td>';
 		form_end_row();
+
+		$script_servers = read_config_option('php_servers');
 
 		form_alternate_row();
 		print '<td>' . __('PHP Servers') . '</td>';
-		print '<td>' . read_config_option('php_servers') . '</td>';
+		print '<td>' . html_escape($script_servers) . '</td>';
+		form_end_row();
+
+		$max_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+		if (cacti_sizeof($max_connections)) {
+			$max_connections = $max_connections['Value'];
+		} else {
+			$max_connections = 0;
+		}
+
+		$total_dc_threads = db_fetch_cell("SELECT
+			SUM((processes * threads) + (processes * $script_servers)) AS threads
+			FROM poller
+			WHERE disabled = ''");
+
+		$recommend_mc = $total_dc_threads + 100;
+
+		if ($recommend_mc > $max_connections) {
+			$db_connections = '<span class="deviceDown">' . __('Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+		} else {
+			$db_connections = '<span class="deviceUp">' . __('Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+		}
+
+		form_alternate_row();
+		print '<td>' . __('Minimum Connections:') . '</td>';
+		print '<td>' . $db_connections . '<br>' .
+			__('Assumes 100 spare connections for Web page users and other various connections.') . '<br>' .
+			__('The minimum required can vary greatly if there is heavy user Graph viewing activity.') . '<br>' .
+			__('Each browser tab can use upto 10 connections depending on the browser.') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
