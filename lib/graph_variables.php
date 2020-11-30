@@ -426,7 +426,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	}
 
 	$gi = array();
-	if (sizeof($graph_items)) {
+	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $item) {
 			if ($item['local_data_id'] > 0 && $item['data_source_name'] != '') {
 				if (!empty($item['data_template_rrd_id']) &&
@@ -449,7 +449,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	}
 
 	/* Get the Nth percentile values */
-	if (!sizeof($nth_cache)) {
+	if (!cacti_sizeof($nth_cache)) {
 		switch ($type) {
 			case 'current':
 				// Query data for the individual case
@@ -465,28 +465,28 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				break;
 			case 'total':
 			case 'all_max_current':
-				if (sizeof($local_data_array)) {
+				if (cacti_sizeof($local_data_array)) {
 					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
 				}
 
 				break;
 			case 'total_peak':
 			case 'all_max_peak':
-				if (sizeof($local_data_array)) {
+				if (cacti_sizeof($local_data_array)) {
 					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
 				}
 
 				break;
 			case 'aggregate':
 			case 'aggregate_sum':
-				if (sizeof($local_data_array)) {
+				if (cacti_sizeof($local_data_array)) {
 					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
 				}
 
 				break;
 			case 'aggregate_peak':
 			case 'aggregate_max':
-				if (sizeof($local_data_array)) {
+				if (cacti_sizeof($local_data_array)) {
 					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
 				}
 
@@ -504,7 +504,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 						}
 					}
 
-					if (sizeof($local_data_array)) {
+					if (cacti_sizeof($local_data_array)) {
 						$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
 					}
 				}

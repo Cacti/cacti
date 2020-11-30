@@ -361,12 +361,12 @@ function filter_sort($a, $b) {
 	$b_parts = explode('-', $b);
 
 	$a_date = '99999999';
-	if (count($a_parts) > 1) {
+	if (cacti_count($a_parts) > 1) {
 		$a_date = $a_parts[1];
 	}
 
 	$b_date = '99999999';
-	if (count($b_parts) > 1) {
+	if (cacti_count($b_parts) > 1) {
 		$b_date = $b_parts[1];
 	}
 
@@ -492,7 +492,7 @@ function filter($clogAdmin, $selectedFile) {
 
 								$logParts = explode('-', $logFile);
 
-								$logDate = count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
+								$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 								$logName = $logParts[0];
 
 								print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . "</option>\n";

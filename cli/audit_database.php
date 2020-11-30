@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -24,10 +24,18 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+chdir('..');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
+
+$upgrade = false;
+$create  = false;
+$load    = false;
+$report  = false;
+$repair  = false;
+$alters  = false;
 
 if (cacti_sizeof($parms)) {
 	$shortopts = 'VvHh';
@@ -36,6 +44,7 @@ if (cacti_sizeof($parms)) {
 		'create',
 		'load',
 		'report',
+		'upgrade',
 		'repair',
 		'alters',
 		'version',
@@ -47,23 +56,27 @@ if (cacti_sizeof($parms)) {
 	foreach($options as $arg => $value) {
 		switch($arg) {
 		case 'create':
-			create_tables();
+			$create = true;
 			break;
 
 		case 'load':
-			load_audit_database();
+			$load = true;
 
 			break;
 		case 'report':
-			report_audit_results();
+			$report = true;
 
 			break;
 		case 'repair':
-			repair_database();
+			$repair = true;
 
 			break;
 		case 'alters':
-			repair_database(false);
+			$alters = true;
+
+			break;
+		case 'upgrade':
+			$upgrade = true;
 
 			break;
 		case 'version':
@@ -83,24 +96,259 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
+	$db_version = db_fetch_cell('SELECT cacti FROM version');
+	if ($db_version != CACTI_VERSION && !isset($options['upgrade'])) {
+		$upgrade_required = true;
+	} else {
+		$upgrade_required = false;
+	}
+
+	if ($upgrade_required) {
+		print 'WARNING: Cacti must be upgraded first.  Use the --upgrade option to perform that upgrade' . PHP_EOL;
+		exit(1);
+	} elseif ($db_version != CACTI_VERSION && isset($options['upgrade'])) {
+		upgrade_database();
+	}
+
+	if ($repair) {
+		repair_database();
+	} elseif ($create) {
+		create_tables();
+	} elseif ($report) {
+		report_audit_results();
+	} elseif ($alters) {
+		repair_database(false);
+	} elseif ($load) {
+		load_audit_database();
+	}
+
 	exit(0);
 } else {
 	display_help();
 	exit(1);
 }
 
+function upgrade_database() {
+	global $config;
+
+	$start = microtime(true);
+
+	cacti_log('NOTE: Upgrading Cacti, this will take a few minutes.', true, 'UPGRADE');
+
+	$return_var = 0;
+	$output     = array();
+
+	exec('php ' . $config['base_path'] . '/cli/upgrade_database.php --debug', $output, $return_var);
+
+	$end = microtime(true);
+
+	if ($return_var == 0) {
+		cacti_log(sprintf('NOTE: Cacti Upgrade succeeded in %.2f seconds', $end - $start), true, 'UPGRADE');
+	} else {
+		cacti_log('WARNING: Cacti Upgrade Encountered Errors.  Messages below.  Details are below, but also in Cacti upgrade log.', true, 'UPGRADE');
+		print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+		print implode(PHP_EOL, $output) . PHP_EOL;
+		print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+	}
+
+	$pistart = microtime(true);
+
+	// Upgrade plugins now
+	$plugins = glob($config['base_path'] . '/plugins/*', GLOB_ONLYDIR);
+
+	// Do syslog and thold first if found
+	$preorder[] = $config['base_path'] . '/plugins/thold';
+	$preorder[] = $config['base_path'] . '/plugins/syslog';
+
+	foreach($plugins as $p) {
+		if (strpos($p, 'thold') !== false) {
+			// Skip, upgrading this first
+		} elseif (strpos($p, 'syslog') !== false) {
+			// Skip, upgrading this second
+		} else {
+			$preorder[] = $p;
+		}
+	}
+
+	$plugins = $preorder;
+
+	if (cacti_sizeof($plugins)) {
+		foreach($plugins as $plugin) {
+			$parts = explode('/', $plugin);
+			$pname = end($parts);
+			$ufunc1 = 'plugin_' . $pname . '_upgrade';
+			$ufunc2 = $pname . '_upgrade_database';
+			$ufunc3 = $pname . '_setup_table_new';
+
+			if (!plugin_installed($pname)) {
+				cacti_log("NOTE: Plugin $pname is not installed, skipping.", true, 'UPGRADE');
+
+				continue;
+			}
+
+			if (file_exists($plugin . '/INFO')) {
+				// See if the plugin requires upgrading
+				$info    = parse_ini_file($plugin . '/INFO', true);
+				$version = $info['info']['version'];
+
+				$old = db_fetch_cell_prepared('SELECT version
+					FROM plugin_config
+					WHERE directory = ?',
+					array($pname));
+
+				if ($version != $old) {
+					if (file_exists($plugin . '/setup.php')) {
+						include_once($plugin . '/setup.php');
+						if (file_exists($plugin . '/includes/database.php')) {
+							include_once($plugin . '/includes/database.php');
+						}
+
+						// Always run the new function if it's there
+						// Some plugins don't upgrade in the proper way
+						if (function_exists($ufunc3)) {
+							cacti_log("NOTE: Running Plugin $pname install function due to some plugins not upgrading properly.", true, 'UPGRADE');
+							$ufunc3(true);
+						}
+
+						if (function_exists($ufunc2)) {
+							cacti_log("NOTE: Upgrading Plugin $pname from $old to $version using alternate upgrade path.", true, 'UPGRADE');
+							$ufunc2(true);
+						} elseif (function_exists($ufunc1)) {
+							cacti_log("NOTE: Upgrading Plugin $pname from $old to $version using standard upgrade path.", true, 'UPGRADE');
+							$ufunc1;
+						} else {
+							cacti_log("WARNING: Plugin $pname lacks an upgrade function.", true, 'UPGRADE');
+						}
+
+						if (file_exists($plugin . '/database_upgrade.php')) {
+							cacti_log("NOTE: Upgrading Plugin $pname from $old to $version using upgrade script.", true, 'UPGRADE');
+							$return_var = 0;
+							$output     = array();
+
+							exec('php ' . $config['base_path'] . '/plugins/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
+
+							if ($return_var == 0) {
+								print implode(PHP_EOL, $output) . PHP_EOL;
+								cacti_log("NOTE: Cacti Plugin $pname Upgrade Succeeded.", true, 'UPGRADE');
+								print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+								print implode(PHP_EOL, $output) . PHP_EOL;
+								print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+							} else {
+								cacti_log("WARNING: Cacti Plugin $pname Upgrade Encountered Errors.", true, 'UPGRADE');
+								print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+								print implode(PHP_EOL, $output) . PHP_EOL;
+								print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+							}
+						}
+					} else {
+						cacti_log("WARNING: Plugin $pname lacks a setup file.", true, 'UPGRADE');
+					}
+				} else {
+					cacti_log("NOTE: Plugin $pname Does not Require Upgrade", true, 'UPGRADE');
+				}
+			} else {
+				cacti_log("WARNING: Plugin $pname lacks an INFO file.  Can not upgrade!", true, 'UPGRADE');
+			}
+		}
+	}
+
+	// Unregister plugins that no longer exist
+	// We keep legacy tables due to potential
+	// issues.
+
+	print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+	cacti_log('NOTE: Pruning invalid and deprecated plugins while preserving tables', true, 'UPGRADE');
+
+	$plugins = db_fetch_assoc('SELECT directory FROM plugin_config');
+	if (cacti_sizeof($plugins)) {
+		foreach($plugins as $p) {
+			$pname = $p['directory'];
+
+			if (!file_exists($config['base_path'] . '/plugins/' . $pname . '/INFO')) {
+				if (file_exists($config['base_path'] . '/plugins/' . $pname . '/setup.php')) {
+					cacti_log("NOTE: Uninstalling Plugin $pname which is not supported.  Preserving tables.", true, 'UPGRADE');
+
+					api_plugin_uninstall($pname, false);
+				} else {
+					cacti_log("NOTE: Uninstalling Plugin $pname which is not supported and setup.php not found.  Preserving tables.", true, 'UPGRADE');
+					db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', array($pname));
+					db_execute_prepared('DELETE FROM plugin_db_changes WHERE plugin = ?', array($pname));
+					db_execute_prepared('DELETE FROM plugin_hooks WHERE name = ?', array($pname));
+					db_execute_prepared('DELETE FROM plugin_realms WHERE plugin = ?', array($pname));
+				}
+			}
+		}
+	}
+	print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+
+	$end = microtime(true);
+
+	cacti_log(sprintf('NOTE: Cacti Plugin Upgrades completed in %.2f seconds', $end - $pistart), true, 'UPGRADE');
+
+	cacti_log(sprintf('NOTE: Audit Upgrade completed in %.2f seconds.', $end - $start), true, 'UPGRADE');
+}
+
+function plugin_installed($plugin) {
+	$installed = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM plugin_config
+		WHERE directory = ?
+		AND status = 1',
+		array($plugin));
+
+	return $installed ? true:false;
+}
+
 function repair_database($run = true) {
 	$alters = report_audit_results(false);
 
+	$good = 0;
+	$bad = 0;
+
 	if (cacti_sizeof($alters)) {
-		foreach($alters as $alter) {
-			print 'Executing : ' . trim($alter, ';');
-			if ($run) {
-				print (db_execute($alter) ? ' - Success':' - Failed') . PHP_EOL;
+		foreach($alters as $table => $changes) {
+			$engine = db_fetch_cell_prepared('SELECT ENGINE
+				FROM information_schema.tables
+				WHERE TABLE_SCHEMA="cacti"
+				AND TABLE_NAME = ?',
+				array($table));
+
+			if ($engine = 'MyISAM') {
+				$suffix = ",\n   ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=utf8mb4";
 			} else {
-				print ' - Dry Run' . PHP_EOL;
+				$suffix = ",\n   ROW_FORMAT=Dynamic CHARSET=utf8mb4";
+			}
+
+			$sql = 'ALTER TABLE `' . $table . "`\n   " . implode(",\n   ", $changes) . $suffix . ';';
+
+			if ($run) {
+				print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+				print 'Executing Alter for Table : ' . $table;
+
+				$result = db_execute($sql);
+
+				if ($result) {
+					$good++;
+					print ' - Success' . PHP_EOL;
+				} else {
+					$bad++;
+					print ' - Failed' . PHP_EOL;
+					print $sql . PHP_EOL;
+				}
+			} else {
+				print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+				print 'Proposed Alter for Table : ' . $table . PHP_EOL . PHP_EOL;
+				print $sql . PHP_EOL . PHP_EOL;
 			}
 		}
+	}
+
+	print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+	if ($bad == 0 && $good == 0) {
+		print 'Repair Completed!  No changes performed.' . PHP_EOL;
+	} elseif ($bad) {
+		print 'Repair Completed!  ' . $good . ' Alters succeeded and ' . $bad . ' failed!' . PHP_EOL;
+	} else {
+		print 'Repair Completed!  All ' . $good . ' Alters succeeded!' . PHP_EOL;
 	}
 }
 
@@ -113,7 +361,6 @@ function report_audit_results($output = true) {
 	$tables = db_fetch_assoc('SHOW TABLES');
 
 	$alters  = array();
-	$ialters = array();
 
 	$cols = array(
 		'table_type'    => 'Type',
@@ -136,9 +383,9 @@ function report_audit_results($output = true) {
 		foreach($tables as $table) {
 			$alter_cmds = array();
 			$table_name = $table[$db_name];
-			$columns = db_fetch_assoc('SHOW COLUMNS IN ' . $table_name);
 
 			$status  = db_fetch_row('SHOW TABLE STATUS LIKE "' . $table_name . '"');
+
 			if ($status['Collation'] == 'utf8mb4_unicode_ci' || $status['Collation'] == 'utf8_general_ci') {
 				$text = 'mediumtext';
 			} else {
@@ -147,7 +394,9 @@ function report_audit_results($output = true) {
 
 			if ($output) {
 				print '---------------------------------------------------------------------------------------------' . PHP_EOL;
-				printf('Checking Table: %-40s', '\'' . $table_name . '\'');
+				printf('Checking Table: %-45s', '\'' . $table_name . '\'');
+			} else {
+				printf('Scanning Table: %-45s', '\'' . $table_name . '\'');
 			}
 
 			$table_exists = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -172,7 +421,11 @@ function report_audit_results($output = true) {
 				if ($output) {
 					print ' - Plugin Detected' . PHP_EOL;
 					continue;
+				} else {
+					print ' - Completed' . PHP_EOL;
 				}
+			} elseif (!$output) {
+				print ' - Completed' . PHP_EOL;
 			}
 
 			/* Column scanning comes in two parts.  In the first part, we
@@ -184,174 +437,261 @@ function report_audit_results($output = true) {
 			$i = 1;
 			$errors = 0;
 			$warnings = 0;
+			$col_added = array();
+			$col_alter = array();
 
-			if (cacti_sizeof($columns)) {
-				foreach($columns as $c) {
-					$alter_cmd    = '';
-					$sequence_off = false;
-
-					$dbc = db_fetch_row_prepared('SELECT *
-						FROM table_columns
-						WHERE table_name = ?
-						AND table_field = ?',
-						array($table_name, $c['Field']));
-
-					if (!cacti_sizeof($dbc)) {
-						$plugin_column = db_fetch_row_prepared('SELECT *
-							FROM plugin_db_changes
-							WHERE `table` = ?
-							AND `column` = ?
-							AND method = ?',
-							array($table_name, $c['Field'], 'addcolumn'));
-
-						if (!cacti_sizeof($plugin_column)) {
-							if ($output) {
-								print PHP_EOL . 'WARNING Col: \'' . $c['Field'] . '\', does not exist in default Cacti.  Plugin possible';
-							}
-
-							$warnings++;
-						}
-					} else {
-						foreach($cols as $dbcol => $col) {
-							if ($col == 'Type' && $dbc[$dbcol] == 'text') {
-								if ($text == 'mediumtext') {
-									$dbc[$dbcol] = $text;
-								}
-							}
-
-							if ($c[$col] != $dbc[$dbcol] && $text != 'mediumtext') {
-								if ($output) {
-									if ($col != 'Key') {
-										print PHP_EOL . 'ERROR Col: \'' . $c['Field'] . '\', Attribute \'' . $col . '\' invalid. Should be: \'' . $dbc[$dbcol] . '\', Is: \'' . $c[$col] . '\'';
-									}
-								}
-
-								// This is an index error
-								if ($col != 'Key') {
-									$errors++;
-								}
-
-								$alter_cmd = make_column_alter($table_name, $dbc);
-							}
-						}
-					}
-
-					$i++;
-
-					if ($alter_cmd != '') {
-						$alter_cmds[] = $alter_cmd . ';';
-					}
-				}
-			}
-
-			if (isset($alter_cmds) && cacti_sizeof($alter_cmds)) {
-				$alters = array_merge($alters, $alter_cmds);
-			}
-
-			/* In this pass, we will gather the default schema and look for
-			 * missing information.
-			 */
-			$db_columns = db_fetch_assoc_prepared('SELECT *
-				FROM table_columns
+			$columns = db_fetch_assoc('SHOW COLUMNS IN ' . $table_name);
+			$exists  = db_fetch_cell_prepared('SELECT COUNT(*) FROM table_columns
 				WHERE table_name = ?',
 				array($table_name));
 
-			if (cacti_sizeof($db_columns)) {
-				foreach($db_columns as $c) {
-					if (!db_column_exists($table_name, $c['table_field'])) {
-						if ($output) {
-							print PHP_EOL . 'WARNING Col: \'' . $c['table_field'] . '\' is missing from \'' . $table_name . '\'';
-						}
+			if ($exists) {
+				if (cacti_sizeof($columns)) {
+					foreach($columns as $c) {
+						$sequence_off = false;
 
-						$warnings++;
-					}
-				}
-			}
+						$dbc = db_fetch_row_prepared('SELECT *
+							FROM table_columns
+							WHERE table_name = ?
+							AND table_field = ?',
+							array($table_name, $c['Field']));
 
-			/* Index scanning comes in two parts.  In the first part, we
-			 * scan the indexes in the current database to the saved schema
-			 * In the second pass, we look for the indexes from the saved
-			 * schema to look for missing ones.
-			 */
+						if (!cacti_sizeof($dbc)) {
+							$plugin_column = db_fetch_row_prepared('SELECT *
+								FROM plugin_db_changes
+								WHERE `table` = ?
+								AND `column` = ?
+								AND method = ?',
+								array($table_name, $c['Field'], 'addcolumn'));
 
-			$indexes = db_fetch_assoc('SHOW INDEXES IN ' . $table_name);
-
-			if (cacti_sizeof($indexes)) {
-				foreach($indexes as $i) {
-					$dbc = db_fetch_row_prepared('SELECT *
-						FROM table_indexes
-						WHERE idx_table_name = ?
-						AND idx_key_name = ?
-						AND idx_seq_in_index = ?
-						AND idx_column_name = ?',
-						array($i['Table'], $i['Key_name'], $i['Seq_in_index'], $i['Column_name']));
-
-					if (!cacti_sizeof($dbc)) {
-						if ($output) {
-							print PHP_EOL . 'WARNING Index: \'' . $i['Key_name'] . '\', does not exist in default Cacti.  Plugin possible';
-						}
-
-						$warnings++;
-					} else {
-						foreach($idxs as $dbidx => $idx) {
-							if ($i[$idx] != $dbc[$dbidx]) {
+							if (!cacti_sizeof($plugin_column)) {
 								if ($output) {
-									print PHP_EOL . 'ERROR Index: \'' . $i['Key_name'] . '\', Attribute \'' . $idx . '\' invalid. Should be: \'' . $dbc[$dbidx] . '\', Is: \'' . $i[$idx] . '\'';
+									print PHP_EOL . 'WARNING Col: \'' . $c['Field'] . '\', does not exist in default Cacti.  Plugin possible';
 								}
 
-								$alters = array_merge($alters, make_index_alter($table_name, $i['Key_name']));
+								$warnings++;
+							}
+						} else {
+							foreach($cols as $dbcol => $col) {
+								if ($col == 'Type' && $dbc[$dbcol] == 'text') {
+									if ($text == 'mediumtext') {
+										$dbc[$dbcol] = $text;
+									}
+								}
+
+								if ($c[$col] != $dbc[$dbcol] && $text != 'mediumtext') {
+									if ($output) {
+										if ($col != 'Key') {
+											print PHP_EOL . 'ERROR Col: \'' . $c['Field'] . '\', Attribute \'' . $col . '\' invalid. Should be: \'' . $dbc[$dbcol] . '\', Is: \'' . $c[$col] . '\'';
+										}
+									}
+
+									if (array_search($dbc['table_field'], $col_alter) === false) {
+										$alter_cmds[] = make_column_alter($table_name, $dbc);
+										$col_alter[]  = $dbc['table_field'];
+										$errors++;
+									}
+								}
+							}
+						}
+
+						$i++;
+					}
+				}
+
+				/* In this pass, we will gather the default schema and look for
+				 * missing information.
+				 */
+				$db_columns = db_fetch_assoc_prepared('SELECT *
+					FROM table_columns
+					WHERE table_name = ?',
+					array($table_name));
+
+				if (cacti_sizeof($db_columns)) {
+					foreach($db_columns as $dbc) {
+						if (!db_column_exists($table_name, $dbc['table_field'])) {
+							if (array_search($dbc['table_field'], $col_added) === false) {
+								if ($output) {
+									print PHP_EOL . 'WARNING Col: \'' . $dbc['table_field'] . '\' is missing from \'' . $table_name . '\'';
+								}
+
+								$alter_cmds[] = make_column_add($table_name, $dbc);
+								$col_added[] = $dbc['table_field'];
 								$errors++;
 							}
 						}
 					}
 				}
-			}
 
-			$db_indexes = db_fetch_assoc_prepared('SELECT *
-				FROM table_indexes
-				WHERE idx_table_name = ?',
-				array($table_name));
+				/* Index scanning comes in two parts.  In the first part, we
+				 * scan the indexes in the current database to the saved schema
+				 * In the second pass, we look for the indexes from the saved
+				 * schema to look for missing ones.
+				 */
 
-			if (cacti_sizeof($db_indexes)) {
-				foreach($db_indexes as $i) {
-					if (!db_index_exists($table_name, $i['idx_key_name'])) {
-						if ($output) {
-							print PHP_EOL . 'ERROR Index: \'' . $i['idx_key_name'] . '\', is missing from \'' . $table_name . '\'';;
+				$indexes = db_fetch_assoc('SHOW INDEXES IN ' . $table_name);
+
+				$idx_added = array();
+				$idx_dropped = array();
+
+				if (cacti_sizeof($indexes)) {
+					foreach($indexes as $i) {
+						$key_exists = db_fetch_cell('SELECT COUNT(*)
+							FROM table_indexes
+							WHERE idx_table_name = ?
+							AND idx_key_name = ?',
+							array($i['Table'], $i['Key_name']));
+
+						$dbc = db_fetch_row_prepared('SELECT *
+							FROM table_indexes
+							WHERE idx_table_name = ?
+							AND idx_key_name = ?
+							AND idx_seq_in_index = ?
+							AND idx_column_name = ?
+							ORDER BY idx_seq_in_index',
+							array($i['Table'], $i['Key_name'], $i['Seq_in_index'], $i['Column_name']));
+
+						if (!cacti_sizeof($dbc)) {
+							if ($key_exists) {
+								// Ignore till Phase II
+							} elseif (array_search($i['Key_name'], $idx_dropped) === false) {
+								// Primary keys come in Phase II
+								if ($i['Key_name'] != 'PRIMARY') {
+									if ($output) {
+										print PHP_EOL . 'WARNING Index: \'' . $i['Key_name'] . '\', does not exist in default Cacti.  Dropping.';
+									}
+
+									$alter_cmds[]  = 'DROP INDEX ' . $i['Key_name'];
+									$idx_dropped[] = $i['Key_name'];
+									$errors++;
+								}
+							}
+						} else {
+							foreach($idxs as $dbidx => $idx) {
+								if ($i[$idx] != $dbc[$dbidx]) {
+									// Primary keys come in Phase II
+									if ($i['Key_name'] != 'PRIMARY') {
+										if (array_search($i['Key_name'], $idx_added) === false) {
+											if ($output) {
+												print PHP_EOL . 'ERROR Index: \'' . $i['Key_name'] . '\', Attribute \'' . $idx . '\' invalid. Should be: \'' . $dbc[$dbidx] . '\', Is: \'' . $i[$idx] . '\'';
+											}
+
+											$alter_cmds = array_merge($alter_cmds, make_index_alter($table_name, $i['Key_name']));
+											$idx_added[] = $i['Key_name'];
+											$errors++;
+										}
+									}
+								}
+							}
 						}
-
-						$alters = array_merge($alters, make_index_alter($table_name, $i['idx_key_name']));
-						$errors++;
 					}
 				}
-			}
 
-			if ($output) {
-				if ($errors || $warnings) {
-					print PHP_EOL . PHP_EOL . 'ERRORS: ' . $errors . ', WARNINGS: ' . $warnings . PHP_EOL;
-				} else {
-					print ' - Clean' . PHP_EOL;
+				/* check for missing indexes and add them */
+
+				$db_indexes = db_fetch_assoc_prepared('SELECT *
+					FROM table_indexes
+					WHERE idx_table_name = ?',
+					array($table_name));
+
+				if (cacti_sizeof($db_indexes)) {
+					foreach($db_indexes as $i) {
+						if (!db_index_exists($table_name, $i['idx_key_name'])) {
+							if (array_search($i['idx_key_name'], $idx_added) === false) {
+								if ($output) {
+									print PHP_EOL . 'ERROR Index: \'' . $i['idx_key_name'] . '\', is missing from \'' . $table_name . '\'';;
+								}
+
+								$alter_cmds = array_merge($alter_cmds, make_index_alter($table_name, $i['idx_key_name']));
+								$idx_added[] = $i['idx_key_name'];
+								$errors++;
+							}
+						} else {
+							$prop_seq = db_fetch_cell_prepared('SELECT COUNT(*)
+								FROM table_indexes
+								WHERE idx_table_name = ?
+								AND idx_key_name = ?',
+								array($table_name, $i['idx_key_name']));
+
+							$curr_seq = get_sequence_count($table_name, $i['idx_key_name']);
+
+							$curr_column_seq = get_colunm_sequence_number($table_name, $i['idx_key_name'], $i['idx_column_name']);
+
+							//print PHP_EOL . "Prop Seq:" . $prop_seq . ", Curr Seq:" . $curr_seq . PHP_EOL;
+
+							if ($curr_seq != $prop_seq || $curr_column_seq != $i['idx_seq_in_index']) {
+								if (array_search($i['idx_key_name'], $idx_dropped) === false) {
+									if ($output) {
+										if ($curr_seq != $prop_seq) {
+											print PHP_EOL . 'WARNING Index: \'' . $i['idx_key_name'] . '\', has differing number of columns.  Dropping.';
+										}
+
+										if ($curr_column_seq != $i['idx_seq_in_index']) {
+											print PHP_EOL . 'WARNING Index: \'' . $i['idx_key_name'] . '\', has resequenced columns.  Dropping.';
+										}
+									}
+
+									$alter_cmds = array_merge($alter_cmds, make_index_alter($table_name, $i['idx_key_name']));
+									$idx_added[]   = $i['idx_key_name'];
+									$idx_dropped[] = $i['idx_key_name'];
+									$errors++;
+								}
+							}
+						}
+					}
+				}
+
+				if ($output) {
+					if ($errors || $warnings) {
+						print PHP_EOL . PHP_EOL . 'ERRORS: ' . $errors . ', WARNINGS: ' . $warnings . PHP_EOL;
+					} else {
+						print ' - Clean' . PHP_EOL;
+					}
+				}
+
+				if (cacti_sizeof($alter_cmds)) {
+					$alters[$table_name] = $alter_cmds;
 				}
 			}
 		}
 	}
 
-	if (cacti_sizeof($ialters)) {
-		$alters = array_merge($alters, $ialters);
+	if ($output) {
+		print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+		if (cacti_sizeof($alters)) {
+			print 'ERRORS are fixable using the --repair option.  WARNINGS will not be rapaired' . PHP_EOL;
+			print 'due to ambiguous use of the column.' . PHP_EOL;
+		} else {
+			print 'Audit was clean, no errors or warnings' . PHP_EOL;
+		}
+		print '---------------------------------------------------------------------------------------------' . PHP_EOL;
 	}
 
 	return $alters;
 }
 
-function make_column_alter($table, $dbc) {
-	$alter_cmd = 'ALTER TABLE `' . $table . '` MODIFY COLUMN `' . $dbc['table_field'] . '` ' . $dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL':'');
+function make_column_props(&$dbc) {
+	$alter_cmd = '';
 
-	if ($dbc['table_null'] == 'YES' && $dbc['table_default'] == 'NULL') {
-		$alter_cmd .= ' DEFAULT NULL';
-	} elseif ($dbc['table_default'] !== 'NULL') {
+	if ($dbc['table_null'] == 'YES') {
+		if ($dbc['table_default'] == 'NULL') {
+			// Ignore
+		} elseif ($dbc['table_default'] === NULL) {
+			// Ignore
+		} elseif ($dbc['table_default'] === '') {
+			// Ignore
+		} else {
+			$alter_cmd .= ' DEFAULT "' . $dbc['table_default'] . '"';
+		}
+	} elseif ($dbc['table_default'] !== 'NULL' && $dbc['table_default'] !== NULL) {
 		if ($dbc['table_default'] == 'CURRENT_TIMESTAMP') {
 			$alter_cmd .= ' DEFAULT CURRENT_TIMESTAMP';
 		} elseif ($dbc['table_extra'] != 'auto_increment') {
-			$alter_cmd .= ' DEFAULT \'' . $dbc['table_default'] . '\'';
+			if (strpos($dbc['table_type'], 'int(') !== false && $dbc['table_default'] == '') {
+				$alter_cmd .= ' DEFAULT "0"';
+			} else {
+				$alter_cmd .= ' DEFAULT \'' . $dbc['table_default'] . '\'';
+			}
 		}
 	}
 
@@ -362,13 +702,57 @@ function make_column_alter($table, $dbc) {
 	return $alter_cmd;
 }
 
+function make_column_alter($table, $dbc) {
+	$alter_cmd = 'MODIFY COLUMN `' . $dbc['table_field'] . '` ' .
+		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL':'');
+
+	$alter_cmd .= make_column_props($dbc);
+
+	return $alter_cmd;
+}
+
+function make_column_add($table, $dbc) {
+	$after = get_previous_column($table, $dbc['table_field']);
+	if ($after != 'first') {
+		$after = 'AFTER `' . $after . '`';
+	}
+
+	$alter_cmd = 'ADD COLUMN `' . $dbc['table_field'] . '` ' .
+		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL':'');
+
+	$alter_cmd .= make_column_props($dbc);
+
+	$alter_cmd .= ' ' . $after;
+
+	return $alter_cmd;
+}
+
+function get_previous_column($table, $column) {
+	$sequence = db_fetch_cell_prepared('SELECT table_sequence
+		FROM table_columns
+		WHERE table_name = ?
+		AND table_field = ?',
+		array($table, $column));
+
+	if (!empty($sequence)) {
+		if ($sequence == 1) {
+			return 'first';
+		} else {
+			$previous = db_fetch_cell_prepared('SELECT table_field
+				FROM table_columns
+				WHERE table_name = ?
+				AND table_sequence = ?',
+				array($table, $sequence - 1));
+
+			return $previous;
+		}
+	}
+}
+
 function make_index_alter($table, $key) {
 	$alter_cmds = array();
 	$alter_cmd  = '';
-
-	if (db_index_exists($table, $key)) {
-		$alter_cmds[] = 'ALTER TABLE `' . $table . '` DROP KEY `' . $key . '`';
-	}
+	$primary_dropped = false;
 
 	$parts = db_fetch_assoc_prepared('SELECT *
 		FROM table_indexes
@@ -377,16 +761,40 @@ function make_index_alter($table, $key) {
 		ORDER BY idx_seq_in_index',
 		array($table, $key));
 
+	$sequence_cnt = get_sequence_count($table, $key);
+
+	//print PHP_EOL . "NOTE: INDEX KEY is $key, Baseline Sequence: " . cacti_sizeof($parts) . ", Actual Sequence: $sequence_cnt" . PHP_EOL;
+
+	if ($sequence_cnt != cacti_sizeof($parts) && $sequence_cnt > 0) {
+		if ($key == 'PRIMARY') {
+			$primary_dropped = true;
+			$alter_cmd .= "DROP PRIMARY KEY,\n   ";
+		} else {
+			$alter_cmd .= "DROP INDEX `" . $key . "`,\n   ";
+		}
+	} elseif (db_index_exists($table, $key)) {
+		if ($key == 'PRIMARY') {
+			$primary_dropped = true;
+			$alter_cmd .= "DROP PRIMARY KEY,\n   ";
+		} else {
+			$alter_cmd .= "DROP INDEX `" . $key . "`,\n   ";
+		}
+	}
+
 	if (cacti_sizeof($parts)) {
 		$i = 0;
+
 		foreach($parts as $p) {
 			if ($i == 0 && $p['idx_key_name'] == 'PRIMARY') {
-				$alter_cmd = 'ALTER TABLE `' . $table . '` ADD PRIMARY KEY ' . $p['idx_index_type'] . ' (';
+				if ($primary_dropped == false) {
+					$alter_cmd .= "DROP PRIMARY KEY,\n   ";
+				}
+				$alter_cmd .= 'ADD PRIMARY KEY (';
 			} elseif ($i == 0) {
 				if ($p['idx_non_unique'] == 1) {
-					$alter_cmd = 'ALTER TABLE `' . $table . '` ADD INDEX `' . $key . '` (';
+					$alter_cmd .= 'ADD INDEX `' . $key . '` (';
 				} else {
-					$alter_cmd = 'ALTER TABLE `' . $table . '` ADD UNIQUE INDEX `' . $key . '` (';
+					$alter_cmd .= 'ADD UNIQUE INDEX `' . $key . '` (';
 				}
 			}
 
@@ -401,6 +809,39 @@ function make_index_alter($table, $key) {
 	}
 
 	return $alter_cmds;
+}
+
+function get_sequence_count($table, $index) {
+	$indexes = db_fetch_assoc("SHOW INDEXES IN $table");
+	$sequence_cnt = 0;
+
+	if (cacti_sizeof($indexes)) {
+		foreach($indexes as $i) {
+			if ($index == $i['Key_name']) {
+				$sequence_cnt++;
+			}
+		}
+	}
+
+	return $sequence_cnt;
+}
+
+function get_colunm_sequence_number($table, $index, $column) {
+	$indexes = db_fetch_assoc("SHOW INDEXES IN $table");
+
+	if (cacti_sizeof($indexes)) {
+		foreach($indexes as $i) {
+			$sequence = $i['Seq_in_index'];
+
+			if ($i['Key_name'] == $index) {
+				if ($i['Column_name'] == $column) {
+					return $sequence;
+				}
+			}
+		}
+	}
+
+	return -1;
 }
 
 function create_tables($load = true) {
@@ -470,7 +911,7 @@ function create_tables($load = true) {
 				print 'SUCCESS: Loaded the Audit Schema' . PHP_EOL;
 			} else {
 				print 'FATAL: Failed Load the Audit Schema' . PHP_EOL;
-				print 'ERROR: ' . implode(', ', $output) . PHP_EOL;
+				print 'ERROR: ' . implode(",\n   ", $output) . PHP_EOL;
 			}
 		} else {
 			print 'FATAL: Failed to find Audit Schema' . PHP_EOL;
@@ -569,11 +1010,16 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print PHP_EOL . "usage: audit_database.php --report | --repair" . PHP_EOL . PHP_EOL;
-	print "Cacti utility for auditing and correcting your Cacti database.  This utility can" . PHP_EOL;
-	print "will scan your Cacti database and report any problems in the schema that it finds." . PHP_EOL . PHP_EOL;
-	print "Options:" . PHP_EOL;
-	print "    --report - Report on any issues found in the audit of the database" . PHP_EOL;
-	print "    --repair - Repair any issues found during the audit of the database" . PHP_EOL . PHP_EOL;
+	print PHP_EOL . 'usage: audit_database.php --report | --repair [ --upgrade ]' . PHP_EOL . PHP_EOL;
+	print 'Cacti utility for auditing and correcting your Cacti database.  This utility can' . PHP_EOL;
+	print 'will scan your Cacti database and report any problems in the schema that it finds.' . PHP_EOL . PHP_EOL;
+	print 'Options:' . PHP_EOL;
+	print '    --report  - Report on any issues found in the audit of the database' . PHP_EOL;
+	print '    --repair  - Repair any issues found during the audit of the database' . PHP_EOL;
+	print '    --upgrade - Upgrade the Cacti database before running' . PHP_EOL . PHP_EOL;
+	print 'Developer Options:' . PHP_EOL;
+	print '    --create  - Initialize or Re-initialize the Audit Schema tables.' . PHP_EOL;
+	print '    --load    - Take a pristine Cacti install and create Audit Schema and file.' . PHP_EOL;
+	print '    --alters  - Print out all the alter commands vs. executing for debugging.' . PHP_EOL . PHP_EOL;
 }
 

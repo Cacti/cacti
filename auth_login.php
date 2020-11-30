@@ -66,7 +66,7 @@ if (read_config_option('auth_method') == '2') {
 		$records = file($mapfile);
 		$found   = false;
 
-		if (sizeof($records)) {
+		if (cacti_sizeof($records)) {
 			foreach($records as $r) {
 				list($basic, $shortform) = str_getcsv($r);
 
@@ -569,7 +569,7 @@ function domains_login_process() {
 	}
 }
 
-function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
+function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	$ldap = new Ldap;
 
 	if (!empty($username)) $ldap->username = $username;

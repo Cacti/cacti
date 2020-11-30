@@ -1846,7 +1846,7 @@ function upgrade_realms() {
 			if (cacti_sizeof($exists)) {
 				$old_realm = $exists['id'] + 100;
 
-				db_execute_prepared('UPDATE user_auth_realm
+				db_execute_prepared('UPDATE IGNORE user_auth_realm
 					SET realm_id = ?
 					WHERE realm_id = ?',
 					array($r['new_realm'], $old_realm));

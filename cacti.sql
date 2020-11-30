@@ -1401,14 +1401,14 @@ INSERT INTO `data_source_profiles_rra` VALUES (1,1,'Daily (5 Minute Average)',1,
 INSERT INTO `data_source_profiles_rra` VALUES (2,1,'Weekly (30 Minute Average)',6,700,604800);
 INSERT INTO `data_source_profiles_rra` VALUES (3,1,'Monthly (2 Hour Average)',24,775,2618784);
 INSERT INTO `data_source_profiles_rra` VALUES (4,1,'Yearly (1 Day Average)',288,797,31536000);
-INSERT INTO `data_source_profiles_rra` VALUES (5,2,'Daily (30 Second Average)',1,1500,86400);
+INSERT INTO `data_source_profiles_rra` VALUES (5,2,'Daily (30 Second Average)',1,2900,86400);
 INSERT INTO `data_source_profiles_rra` VALUES (6,2,'Weekly (15 Minute Average)',30,1346,604800);
 INSERT INTO `data_source_profiles_rra` VALUES (7,2,'Monthly (1 Hour Average)',120,1445,2618784);
 INSERT INTO `data_source_profiles_rra` VALUES (8,2,'Yearly (4 Hour Average)',480,4380,31536000);
 INSERT INTO `data_source_profiles_rra` VALUES (9,3,'Daily (1 Minute Average)',1,2900,86400);
-INSERT INTO `data_source_profiles_rra` VALUES (10,3,'Weekly (15 Minute Average)',15,1400,604800);
-INSERT INTO `data_source_profiles_rra` VALUES (11,3,'Monthly (1 Hour Average)',60,1465,2618784);
-INSERT INTO `data_source_profiles_rra` VALUES (12,3,'Yearly (4 Hour Average)',240,4380,31536000);
+INSERT INTO `data_source_profiles_rra` VALUES (10,3,'Weekly (15 Minute Average)',15,1440,604800);
+INSERT INTO `data_source_profiles_rra` VALUES (11,3,'Monthly (1 Hour Average)',60,8784,2618784);
+INSERT INTO `data_source_profiles_rra` VALUES (12,3,'Yearly (12 Hour Average)',720,7305,31536000);
 
 --
 -- Table structure for table `data_source_purge_action`
@@ -1422,6 +1422,7 @@ CREATE TABLE `data_source_purge_action` (
   PRIMARY KEY (`id`),
   UNIQUE KEY name (`name`))
   ENGINE=InnoDB
+  ROW_FORMAT=Dynamic
   COMMENT='RRD Cleaner File Actions';
 
 --
@@ -1443,6 +1444,7 @@ CREATE TABLE `data_source_purge_temp` (
   KEY in_cacti (`in_cacti`),
   KEY data_template_id (`data_template_id`))
   ENGINE=InnoDB
+  ROW_FORMAT=Dynamic
   COMMENT='RRD Cleaner File Repository';
 
 	
@@ -2388,6 +2390,7 @@ CREATE TABLE `reports` (
   PRIMARY KEY (`id`),
   KEY `mailtime` (`mailtime`)) 
   ENGINE=InnoDB 
+  ROW_FORMAT=Dynamic
   COMMENT='Cacri Reporting Reports';
 
 --
@@ -2414,6 +2417,7 @@ CREATE TABLE `reports_items` (
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`)) 
   ENGINE=InnoDB 
+  ROW_FORMAT=Dynamic
   COMMENT='Cacti Reporting Items';
 
 --

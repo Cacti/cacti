@@ -21,17 +21,20 @@
 #+-------------------------------------------------------------------------+
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-cd $SCRIPTPATH/../../cli/
+cd $SCRIPTPATH/../../
+FILES1=`find cli -name \*.php | grep -v "index.php"`
+FILES2=`ls -1 poller*.php | egrep -v "(index.php|pollers.php)"`
+FILES3="cactid.php cmd.php"
 
 FAILED=0
-for script in `ls *.php`; do
+for script in $FILES1 $FILES2 $FILES3; do
 	if [[ $script == "index.php" ]]; then
 		continue;
 	fi
 
 	echo Testing script: $script
 	script_output=`head -n 1 $script`
-	if [[ $script_output != "#!/usr/bin/php -q" ]]; then
+	if [[ $script_output != "#!/usr/bin/env php" ]]; then
 		FAILED=2
 		echo "   x Failed header check (" $script_output ")"
 	fi

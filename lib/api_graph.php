@@ -264,7 +264,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 			}
 		}
 
-		if (sizeof($matches)) {
+		if (cacti_sizeof($matches)) {
 			return true;
 		}
 	}

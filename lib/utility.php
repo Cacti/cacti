@@ -519,14 +519,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		$ids = implode(', ', $local_data_ids);
 
 		if ($ids != '') {
-			db_execute("UPDATE poller_item
+			db_execute_prepared("UPDATE poller_item
 				SET present=0
-				WHERE local_data_id IN ($ids)");
+				WHERE poller_id = ?
+				AND local_data_id IN ($ids)",
+				array($poller_id));
 
 			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-				db_execute("UPDATE poller_item
+				db_execute_prepared("UPDATE poller_item
 					SET present=0
-					WHERE local_data_id IN ($ids)", true, $rcnn_id);
+					WHERE poller_id = ?
+					AND local_data_id IN ($ids)",
+					array($poller_id), true, $rcnn_id);
 			}
 		}
 	} else {
@@ -602,14 +606,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 
 	/* remove stale records FROM the poller cache */
 	if ($ids != '') {
-		db_execute("DELETE FROM poller_item
-			WHERE present=0
-			AND local_data_id IN ($ids)");
+		db_execute_prepared("DELETE FROM poller_item
+			WHERE present = 0
+			AND poller_id = ?
+			AND local_data_id IN ($ids)",
+			array($poller_id));
 
 		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-			db_execute("DELETE FROM poller_item
-				WHERE present=0
-				AND local_data_id IN ($ids)", true, $rcnn_id);
+			db_execute_prepared("DELETE FROM poller_item
+				WHERE present = 0
+				AND poller_id = ?
+				AND local_data_id IN ($ids)",
+				array($poller_id), true, $rcnn_id);
 		}
 	} else {
 		/* only handle explicitely given local_data_ids */
@@ -869,13 +877,19 @@ function utilities_get_mysql_recommendations() {
 				'value' => 'utf8mb4_unicode_ci',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
+				),
+			'character_set_server' => array(
+				'value' => 'utf8mb4',
+				'class' => 'warning',
+				'measure' => 'equal',
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8mb4',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				)
 		);
 	} else {
@@ -899,6 +913,12 @@ function utilities_get_mysql_recommendations() {
 				'value' => 'utf8mb4_unicode_ci',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
+				),
+			'character_set_server' => array(
+				'value' => 'utf8mb4',
+				'class' => 'warning',
+				'measure' => 'equal',
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8mb4',
@@ -1511,7 +1531,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 }
 
 function utility_php_set_recommends_text(&$recs) {
-	if (is_array($recs) && sizeof($recs)) {
+	if (is_array($recs) && cacti_sizeof($recs)) {
 		foreach ($recs as $name => $recommends) {
 			if (cacti_sizeof($recommends)) {
 				foreach ($recommends as $index => $recommend) {

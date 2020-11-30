@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -268,7 +268,7 @@ $ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id,
 	HAVING instances > 1',
 	array($poller_id));
 
-if (sizeof($ds_needing_fixes)) {
+if (cacti_sizeof($ds_needing_fixes)) {
 	foreach($ds_needing_fixes as $ds) {
 		db_execute_prepared('UPDATE poller_item
 			SET rrd_next_step = ?
@@ -658,7 +658,7 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 
 			if ($poller_type == '1') {
-				$max_threads = '0';
+				$max_threads = '1';
 			}
 
 			$rrds_processed = 0;

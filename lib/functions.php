@@ -161,7 +161,13 @@ function set_user_setting($config_name, $value, $user = -1) {
 	}
 
 	if ($user == -1) {
-		cacti_log('Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
+		if (isset($_SESSION['sess_user_id'])) {
+			$mode = 'WEBUI';
+		} else {
+			$mode = 'POLLER';
+		}
+
+		cacti_log('NOTE: Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, $mode, POLLER_VERBOSITY_MEDIUM);
 	} elseif (db_table_exists('settings_user')) {
 		db_execute_prepared('REPLACE INTO settings_user
 			SET user_id = ?,
@@ -600,7 +606,7 @@ function check_changed($request, $session) {
 function is_error_message() {
 	global $config, $messages;
 
-	if (isset($_SESSION['sess_error_fields']) && sizeof($_SESSION['sess_error_fields'])) {
+	if (isset($_SESSION['sess_error_fields']) && cacti_sizeof($_SESSION['sess_error_fields'])) {
 		return true;
 	} else {
 		return false;
@@ -1019,15 +1025,14 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		 $filter       - (char) the filtering expression to search for
 		 $page_nr      - (int) the page we want to show rows for
 		 $total_rows   - (int) the total number of rows in the logfile */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows) {
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows = 0) {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
 	}
 
 	if (!is_readable($file_name)) {
-		print __('Error %s is not readable', $file_name);
-		return array();
+		return array(__('Error %s is not readable', $file_name));
 	}
 
 	$filter = strtolower($filter);
@@ -4357,7 +4362,7 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 	return trim($result,$text['suffix']);
 }
 
-function padleft($pad = '', $value, $min = 2) {
+function padleft($pad = '', $value = '', $min = 2) {
 	$result = "$value";
 	if (strlen($result) < $min && $pad != '') {
 		$padded = $pad . $result;
@@ -4548,7 +4553,7 @@ function IgnoreErrorHandler($message) {
 	return false;
 }
 
-function CactiErrorHandler($level, $message, $file, $line, $context) {
+function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 	global $phperrors;
 
 	if (defined('IN_CACTI_INSTALL')) {
