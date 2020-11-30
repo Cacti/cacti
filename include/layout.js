@@ -3507,6 +3507,7 @@ function initializeGraphs() {
 				'graph_xport.php?local_graph_id='+graph_id+
 				'&rra_id=0&view_type=tree&graph_start='+timestampDate1+
 				'&graph_end='+timestampDate2;
+			Pace.stop();
 		});
 	});
 
