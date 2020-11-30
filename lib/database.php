@@ -562,52 +562,138 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 		$columns[] = $arr['Field'];
 	}
 
-	if (isset($column['name']) && !in_array($column['name'], $columns)) {
-		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
-		if (isset($column['type'])) {
-			$sql .= ' ' . $column['type'];
-		}
-
-		if (isset($column['unsigned'])) {
-			$sql .= ' unsigned';
-		}
-
-		if (isset($column['NULL']) && $column['NULL'] === false) {
-			$sql .= ' NOT NULL';
-		}
-
-		if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default'])) {
-			$sql .= ' default NULL';
-		}
-
-		if (isset($column['default'])) {
-			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
-				$sql .= ' default CURRENT_TIMESTAMP';
-			} else {
-				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+	if (isset($column['name'])) {
+		if (!in_array($column['name'], $columns)) {
+			$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
+			if (isset($column['type'])) {
+				$sql .= ' ' . $column['type'];
 			}
+
+			if (isset($column['unsigned'])) {
+				$sql .= ' unsigned';
+			}
+
+			if (isset($column['NULL']) && $column['NULL'] === false) {
+				$sql .= ' NOT NULL';
+			}
+
+			if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default'])) {
+				$sql .= ' default NULL';
+			}
+
+			if (isset($column['default'])) {
+				if (in_array(strtolower($column['type']), array('timestamp','datetime','date')) && $column['default'] === 'CURRENT_TIMESTAMP') {
+					$sql .= ' default CURRENT_TIMESTAMP';
+				} else {
+					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+				}
+			}
+
+			if (isset($column['on_update'])) {
+				$sql .= ' ON UPDATE ' . $column['on_update'];
+			}
+
+			if (isset($column['auto_increment'])) {
+				$sql .= ' auto_increment';
+			}
+
+			if (isset($column['comment'])) {
+				$sql .= " COMMENT '" . $column['comment'] . "'";
+			}
+
+			if (isset($column['after'])) {
+				$sql .= ' AFTER ' . $column['after'];
+			}
+
+			return db_execute($sql, $log, $db_conn);
 		}
 
-		if (isset($column['on_update'])) {
-			$sql .= ' ON UPDATE ' . $column['on_update'];
-		}
+		return true;
+	}
+	return false;
+}
 
-		if (isset($column['auto_increment'])) {
-			$sql .= ' auto_increment';
-		}
+/* db_change_column - update a column to table
+   @param $table - the name of the table
+   @param $column - array of column data ex: array('old_name' => 'test', 'name' => 'newtest' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
+   @param $log - whether to log error messages, defaults to true
+   @returns - '1' for success, '0' for error */
+function db_change_column($table, $column, $log = true, $db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-		if (isset($column['comment'])) {
-			$sql .= " COMMENT '" . $column['comment'] . "'";
-		}
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 
-		if (isset($column['after'])) {
-			$sql .= ' AFTER ' . $column['after'];
+		if (!is_object($db_conn)) {
+			return false;
 		}
-
-		return db_execute($sql, $log, $db_conn);
 	}
 
-	return true;
+	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
+	if ($result === false) {
+		return false;
+	}
+
+	$columns = array();
+	foreach($result as $arr) {
+		$columns[] = $arr['Field'];
+	}
+
+	if (isset($column['name'])) {
+		if (!isset($column['old_name'])) {
+			$column['old_name'] = $column['name'];
+		}
+
+		if (in_array($column['old_name'], $columns)) {
+			if ($column['old_name'] == $column['name'] || !in_array('name', $columns)) {
+				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['old_name'] . '` `' . $column['name'] . '`';
+				if (isset($column['type'])) {
+					$sql .= ' ' . $column['type'];
+				}
+
+				if (isset($column['unsigned'])) {
+					$sql .= ' unsigned';
+				}
+
+				if (isset($column['NULL']) && $column['NULL'] === false) {
+					$sql .= ' NOT NULL';
+				}
+
+				if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default'])) {
+					$sql .= ' default NULL';
+				}
+
+				if (isset($column['default'])) {
+					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+						$sql .= ' default CURRENT_TIMESTAMP';
+					} else {
+						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+					}
+				}
+
+				if (isset($column['on_update'])) {
+					$sql .= ' ON UPDATE ' . $column['on_update'];
+				}
+
+				if (isset($column['auto_increment'])) {
+					$sql .= ' auto_increment';
+				}
+
+				if (isset($column['comment'])) {
+					$sql .= " COMMENT '" . $column['comment'] . "'";
+				}
+
+				if (isset($column['after'])) {
+					$sql .= ' AFTER ' . $column['after'];
+				}
+
+				return db_execute($sql, $log, $db_conn);
+			}
+		}
+	}
+
+	return false;
 }
 
 /* db_remove_column - remove a column to table
@@ -1585,3 +1671,96 @@ function db_force_remote_cnn() {
 	$database_ssl_ca    = $rdatabase_ssl_ca;
 }
 
+function db_create_permissions_array($default = false) {
+	return array(
+		'ALTER' => $default,
+		'ALTER ROUTINE' => $default,
+		'CREATE' => $default,
+		'CREATE ROLE' => $default,
+		'CREATE ROUTINE' => $default,
+		'CREATE TABLESPACE' => $default,
+		'CREATE TEMPORARY TABLES' => $default,
+		'CREATE USER' => $default,
+		'CREATE VIEW' => $default,
+		'DELETE' => $default,
+		'DROP' => $default,
+		'DROP ROLE' => $default,
+		'EVENT' => $default,
+		'EXECUTE' => $default,
+		'FILE' => $default,
+		'GRANT OPTION' => $default,
+		'INDEX' => $default,
+		'INSERT' => $default,
+		'LOCK TABLES' => $default,
+		'PROCESS' => $default,
+		'PROXY' => $default,
+		'REFERENCES' => $default,
+		'RELOAD' => $default,
+		'REPLICATION CLIENT' => $default,
+		'REPLICATION SLAVE' => $default,
+		'SELECT' => $default,
+		'SHOW DATABASES' => $default,
+		'SHOW VIEW' => $default,
+		'SHUTDOWN' => $default,
+		'SUPER' => $default,
+		'TRIGGER' => $default,
+		'UPDATE' => $default,
+		'USAGE' => $default,
+	);
+}
+
+function db_get_permissions($include_unknown = false, $log = false, $db_conn = false) {
+	$perms = db_create_permissions_array(false);
+
+	$perms_regex = '/(' . implode('|',array_reverse(array_keys($perms))). ')+/i';
+
+	$db_name   = db_fetch_cell('SELECT DATABASE()', $log, $db_conn);
+	$db_grants = db_fetch_assoc('SHOW GRANTS FOR CURRENT_USER', $log, $db_conn);
+
+	if (cacti_sizeof($db_grants)) {
+		foreach ($db_grants as $db_grants_user) {
+			foreach ($db_grants_user as $db_grant) {
+				if (preg_match('/GRANT (.*) ON (.+)\.(.+) TO/i', $db_grant, $db_grant_match)) {
+					if ($db_grant_match[2] == "`$db_name`" || $db_grant_match[2] == '*') {
+						$db_grant_perms = preg_split('/,[ ]*/', $db_grant_match[1]);
+						if (cacti_sizeof($db_grant_perms)) {
+							foreach ($db_grant_perms as $db_grant_perm) {
+								$db_grant_perm = strtoupper($db_grant_perm);
+								if ($db_grant_perm == 'ALL' ||
+								    $db_grant_perm == 'ALL PRIVILEGES') {
+									$perms = db_create_permissions_array(true);
+									break 3;
+								}
+
+								if (array_key_exists($db_grant_perm, $perms)) {
+									$perms[$db_grant_perm] = true;
+								} elseif ($include_unknown) {
+									$perms[$db_grant_perm.'*'] = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return $perms;
+}
+
+function db_has_permissions($permissions, $log = false, $db_conn = false) {
+	$perms = db_get_permissions(false, $log, $db_conn);
+
+	if (!is_array($permissions)) {
+		$permissions = array($permissions);
+	}
+
+	$result = true;
+	foreach ($permissions as $permission) {
+		if (empty($perms[$permission])) {
+			$result = false;
+		}
+	}
+
+	return $result;
+}

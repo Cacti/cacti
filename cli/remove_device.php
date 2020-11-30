@@ -100,7 +100,7 @@ if (cacti_sizeof($parms)) {
 	/* process the various lists into validation arrays */
 	$hosts     = getHostsByDescription();
 	$addresses = getAddresses();
-	$ids_host	 = array();
+	$ids_host  = array();
 	$ids_ip    = array();
 
 	/* process host description */

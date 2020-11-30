@@ -89,6 +89,8 @@ case 'countdown':
 		break;
 	}
 
+	cacti_session_close();
+
 	$graph_data_array = array();
 
 	/* ds */

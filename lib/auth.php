@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/FixedBitNotation.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticatorInterface.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticator.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/RuntimeException.php');
 
 /* clear_auth_cookie - clears a users security token
  * @return - NULL */
@@ -137,8 +142,8 @@ function check_auth_cookie() {
 function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
 
 	/* ================= input validation ================= */
-	input_validate_input_number($template_realm);
-	input_validate_input_number($new_realm);
+	input_validate_input_number($template_realm, 'template_realm');
+	input_validate_input_number($new_realm, 'new_realm');
 	/* ==================================================== */
 
 	/* Check get template users array */
@@ -148,7 +153,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		AND realm = ?',
 		array($template_user, $template_realm));
 
-	if (!isset($user_auth)) {
+	if (!cacti_sizeof($user_auth)) {
 		return false;
 	}
 
@@ -281,7 +286,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
    @arg $user_id - Id os the user account to remove */
 function user_remove($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	/* check for guest or template user */
@@ -316,7 +321,7 @@ function user_remove($user_id) {
    @arg $user_id - Id of the user account to disable */
 function user_disable($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE id = ?", array($user_id));
@@ -328,7 +333,7 @@ function user_disable($user_id) {
    @arg $user_id - Id of the user account to enable */
 function user_enable($user_id) {
 	/* ================= input validation ================= */
-	input_validate_input_number($user_id);
+	input_validate_input_number($user_id, 'user_id');
 	/* ==================================================== */
 
 	db_execute_prepared("UPDATE user_auth SET enabled = 'on' WHERE id = ?", array($user_id));
@@ -2492,7 +2497,7 @@ function secpass_login_process($username) {
 
 					if ($user['locked'] != '') {
 						display_custom_error_message(__('This account has been locked.'));
-						header('Location: index.php?header=false');
+						header('Location: index.php');
 						exit;
 					}
 
@@ -2501,7 +2506,7 @@ function secpass_login_process($username) {
 
 				if ($user['locked'] != '') {
 					display_custom_error_message(__('This account has been locked.'));
-					header('Location: index.php?header=false');
+					header('Location: index.php');
 					exit;
 				}
 			}
@@ -2560,6 +2565,42 @@ function secpass_check_pass($p) {
 		str_replace(array('~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '[', '{', ']', '}', ';', ':', '<', ',', '.', '>', '?', '|', '/', '\\'), '', $p) == $p
 	) {
 		return __('Your password must contain at least 1 special character!');
+	}
+
+	if (read_config_option('secpass_pwnedcheck') == 'on') {
+		$sha1 = strtoupper(sha1($p));
+		$prefix = substr($sha1,0,5);
+		$suffix = substr($sha1,5);
+		$options = array(
+			CURLOPT_RETURNTRANSFER => true,   // return web page
+			CURLOPT_HEADER	       => false,  // don't return headers
+			CURLOPT_FOLLOWLOCATION => true,   // follow redirects
+			CURLOPT_MAXREDIRS      => 10,     // stop after 10 redirects
+			CURLOPT_ENCODING       => "",     // handle compressed
+			CURLOPT_USERAGENT      => "test", // name of client
+			CURLOPT_AUTOREFERER    => true,   // set referrer on redirect
+			CURLOPT_CONNECTTIMEOUT => 120,    // time-out on connect
+			CURLOPT_TIMEOUT	       => 120,    // time-out on response
+		);
+
+		$ch = curl_init('https://api.pwnedpasswords.com/range/'.substr($sha1,0,5));
+		curl_setopt_array($ch, $options);
+
+		$content  = curl_exec($ch);
+
+		curl_close($ch);
+		$lines = explode("\r\n", $content);
+		$count = 0;
+		foreach ($lines as $line) {
+			$result = explode(':', $line);
+			if ($result[0] == $suffix) {
+				$count = $result[1];
+			}
+		}
+
+		if ($count >= read_config_option('secpass_pwnedcount')) {
+			return __('This password appears to be a well known password, please use a different one');
+		}
 	}
 
 	return 'ok';
@@ -2709,7 +2750,7 @@ function compat_password_verify($password, $hash) {
    If that does not exist, hash older md5 function instead
    @arg $password - (string) password to hash
    @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
-   @returns - true if password hash matches, false otherwise */
+   @returns - hash of password, false otherwise */
 function compat_password_hash($password, $algo, $options = array()) {
 	if (function_exists('password_hash')) {
 		// Check if options array has anything, only pass when required
@@ -2739,17 +2780,160 @@ function compat_password_needs_rehash($password, $algo, $options = array()) {
 	return true;
 }
 
-/* auth_login_redirect - provide default page re-direction when a user first logs in.
-   @arg $login_opts - (array) array of user details
-   @returns - null */
-function auth_login_redirect($login_opts = '') {
-	global $config;
+function disable_2fa($user_id) {
+	$current_user = db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id));
 
-	if ($login_opts == '') {
-		$login_opts = db_fetch_cell_prepared('SELECT login_opts
+	$result = array('status' => 500, 'text' => __('Unknown error'));
+	if (!cacti_sizeof($current_user)) {
+		$result['status'] = 404;
+		$result['text'] = __('ERROR: Unable to find user');
+	} else {
+		db_execute_prepared('UPDATE user_auth SET tfa_enabled = \'\', tfa_secret = \'\' WHERE id = ?', array($user_id));
+
+		$current_user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
 			array($_SESSION['sess_user_id']));
+
+		if ($current_user['tfa_enabled'] != '') {
+			$result['status'] = '501';
+			$result['text'] = __('2FA failed to be disabled');
+		} else {
+			$result['status'] = 200;
+			$result['text'] = __('2FA is now disabled');
+		}
+	}
+
+	return json_encode($result);
+}
+
+function enable_2fa($user_id) {
+	$current_user = db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id));
+
+	$result = array('status' => 500, 'text' => __('Unknown error'));
+	if (!cacti_sizeof($current_user)) {
+		$result['status'] = 404;
+		$result['text'] = __('ERROR: Unable to find user');
+	} else {
+		$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+		$secret = $g->generateSecret();
+		db_execute_prepared('UPDATE user_auth SET tfa_secret = ? WHERE id = ?', array($secret, $user_id));
+
+		$current_user = db_fetch_row_prepared('SELECT *
+			FROM user_auth
+			WHERE id = ?',
+			array($_SESSION['sess_user_id']));
+
+		if ($current_user['tfa_secret'] != $secret) {
+			$result['status'] = '501';
+			$result['text'] = __('2FA secret failed to be generated/updated');
+		} else {
+			$result['status'] = 200;
+			$result['text'] = __('2FA secret has needs verification');
+			$result['link'] = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate($current_user['username'] . '@' . $_SERVER['HTTP_HOST'], $current_user['tfa_secret'], 'Cacti');
+		}
+	}
+
+	return json_encode($result);
+}
+
+function verify_2fa($user_id, $code) {
+	$current_user = db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id));
+
+	$result = array('status' => 500, 'text' => __('Unknown error'));
+	if (!cacti_sizeof($current_user)) {
+		$result['status'] = 404;
+		$result['text'] = __('ERROR: Unable to find user');
+	} else {
+		$result['secret'] = $current_user['tfa_secret'];
+		$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+		$isValid = $g->checkCode($current_user['tfa_secret'], $code);
+
+		if (!$isValid) {
+			$result['status'] = 301;
+			$result['text'] = __('ERROR: Code was not verified, please try again');
+		} else {
+			db_execute_prepared('UPDATE user_auth SET tfa_enabled = ? WHERE id = ?', array('on', $user_id));
+
+			$result['status'] = 200;
+			$result['text'] = __('2FA has been enabled and verified');
+		}
+	}
+	return json_encode($result);
+}
+
+function is_2fa_enabled($user) {
+	$current_user = db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id));
+
+	return isset($current_user['2fa_enabled']) && ($current_user['2fa_enabled'] != '');
+}
+
+function auth_login($user) {
+	cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
+
+	$client_addr = get_client_addr('');
+
+	db_execute_prepared('INSERT IGNORE INTO user_log
+		(username, user_id, result, ip, time)
+		VALUES (?, ?, 1, ?, NOW())',
+		array($user['username'], $user['id'], $client_addr));
+
+	/* is user enabled */
+	if (isset($user['enabled'])) {
+		$user_enabled = $user['enabled'];
+	} else {
+		$user_enabled = 'on';
+	}
+
+	if ($user_enabled != 'on') {
+		/* Display error */
+		display_custom_error_message(__('Access Denied, user account disabled.'));
+		header('Location: index.php');
+		exit;
+	}
+
+	/* remember this user */
+	if (isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
+		set_auth_cookie($user);
+	}
+
+	/* set the php session */
+	$_SESSION['sess_user_id'] = $user['id'];
+}
+
+function auth_post_login_redirect($user) {
+	global $config;
+
+	/* handle 'force change password' */
+	if (($user['must_change_password'] == 'on') &&
+		(read_config_option('auth_method') == 1) &&
+		($user['password_change'] == 'on')) {
+
+		$_SESSION['sess_change_password'] = true;
+	}
+
+	if (db_table_exists('user_auth_group')) {
+		$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id=uagm.group_id
+			WHERE user_id=?', array($_SESSION['sess_user_id']));
+
+		if ($group_options > 0) {
+			$user['login_opts'] = $group_options;
+		}
 	}
 
 	$newtheme = false;
@@ -2758,8 +2942,9 @@ function auth_login_redirect($login_opts = '') {
 		$newtheme = true;
 	}
 
-	// Decide what to do with an authenticated user
-	switch ($login_opts) {
+	/* ok, at the point the user has been sucessfully authenticated; so we must
+	decide what to do next */
+	switch ($user['login_opts']) {
 		case '1': /* referer */
 			/* because we use plugins, we can't redirect back to graph_view.php if they don't
 			 * have console access
@@ -2810,9 +2995,8 @@ function auth_login_redirect($login_opts = '') {
 
 			break;
 		default:
-			api_plugin_hook_function('login_options_navigate', $login_opts);
+			api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 	}
-
 	exit;
 }
 
@@ -2824,4 +3008,3 @@ function auth_basename($referer) {
 
 	return basename($parts[0]);
 }
-

@@ -280,4 +280,3 @@ function setMenuVisibility() {
 		});
 	});
 }
-

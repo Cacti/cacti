@@ -136,7 +136,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: automation_devices.php?header=false');
+		header('Location: automation_devices.php');
 		exit;
 	}
 
@@ -228,7 +228,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: automation_devices.php?header=false');
+		header('Location: automation_devices.php');
 		exit;
 	}
 
@@ -586,7 +586,7 @@ function draw_filter() {
 			});
 
 			$('#purge').click(function() {
-				loadPageNoHeader('automation_devices.php?header=false&action=purge&network_id='+$('#network').val());
+				loadUrl({url:'automation_devices.php?action=purge&network_id='+$('#network').val()})
 			});
 
 			$('#export').click(function() {
@@ -596,19 +596,19 @@ function draw_filter() {
 		});
 
 		function clearFilter() {
-			loadPageNoHeader('automation_devices.php?header=false&clear=1');
+			loadUrl({url:'automation_devices.php?clear=1'})
 		}
 
 		function applyFilter() {
-			strURL  = 'automation_devices.php?header=false';
-			strURL += '&status=' + $('#status').val();
+			strURL  = 'automation_devices.php';
+			strURL += '?status=' + $('#status').val();
 			strURL += '&network=' + $('#network').val();
 			strURL += '&snmp=' + $('#snmp').val();
 			strURL += '&os=' + $('#os').val();
 			strURL += '&filter=' + $('#filter').val();
 			strURL += '&rows=' + $('#rows').val();
 
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		</script>
@@ -660,7 +660,7 @@ function purge_discovery_results() {
 		db_execute('TRUNCATE TABLE automation_devices');
 	}
 
-	header('Location: automation_devices.php?header=false');
+	header('Location: automation_devices.php');
 
 	exit;
 }

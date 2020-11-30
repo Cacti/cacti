@@ -326,10 +326,6 @@ function snmpagent_poller_bottom() {
 		snmpagent_cache_rebuilt();
 	}
 
-	if (api_plugin_is_enabled('maint')) {
-		include_once($config['base_path'] . '/plugins/maint/functions.php');
-	}
-
 	$device_in_maintenance = false;
 
 	$mc = new MibCache();
@@ -430,9 +426,7 @@ function snmpagent_poller_bottom() {
 
 	if (cacti_sizeof($devices)) {
 		foreach($devices as $device) {
-			if (function_exists('plugin_maint_check_cacti_host')) {
-				$device_in_maintenance = plugin_maint_check_cacti_host($index);
-			}
+			$device_in_maintenance = api_plugin_hook_function('is_device_in_maintenance', $device['id']);
 
 			if (!$device_in_maintenance) {
 				$varbinds = array(

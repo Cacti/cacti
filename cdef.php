@@ -144,7 +144,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: cdef.php?header=false&action=edit&id=' . (empty($cdef_id) ? get_nfilter_request_var('id') : $cdef_id));
+		header('Location: cdef.php?action=edit&id=' . (empty($cdef_id) ? get_nfilter_request_var('id') : $cdef_id));
 	} elseif (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -172,9 +172,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: cdef.php?header=false&action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_nfilter_request_var('id') : $cdef_item_id));
+			header('Location: cdef.php?action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_nfilter_request_var('id') : $cdef_item_id));
 		} else {
-			header('Location: cdef.php?header=false&action=edit&id=' . get_nfilter_request_var('cdef_id'));
+			header('Location: cdef.php?action=edit&id=' . get_nfilter_request_var('cdef_id'));
 		}
 	}
 }
@@ -243,7 +243,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: cdef.php?header=false');
+		header('Location: cdef.php');
 		exit;
 	}
 
@@ -294,7 +294,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: cdef.php?header=false');
+		header('Location: cdef.php');
 		exit;
 	}
 
@@ -506,13 +506,12 @@ function item_edit() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#type_select').unbind().change(function() {
+		$('#type_select').off('change').on('change', function() {
 			strURL  = 'cdef.php?action=item_edit';
 			strURL += '&id=' + $('#id').val();
 			strURL += '&cdef_id=' + $('#cdef_id').val();
 			strURL += '&type_select=' + $('#type_select').val();
-			strURL += '&header=false';
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		});
 	});
 	</script>
@@ -553,7 +552,7 @@ function cdef_item_dnd() {
 		}
 	}
 
-	header('Location: cdef.php?action=edit&header=false&id=' . get_request_var('id'));
+	header('Location: cdef.php?action=edit&id=' . get_request_var('id'));
 }
 
 function cdef_edit() {
@@ -655,7 +654,7 @@ function cdef_edit() {
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#cdef_item').tableDnD({
 			onDrop: function(table, row) {
-				loadPageNoHeader('cdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize());
+				loadUrl({url:'cdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize()})
 			}
 		});
 		<?php } ?>
@@ -672,15 +671,18 @@ function cdef_edit() {
 					applySkin();
 
 					$('#continue').off('click').on('click', function(data) {
-						$.post('cdef.php?action=item_remove', {
+						var options = {
+							url:'cdef.php?action=item_remove',
+							funcEnd: 'removeCdefItemFinalize'
+						}
+
+						var data = {
 							__csrf_magic: csrfMagicToken,
 							cdef_id: id[1],
 							id: id[0]
-						}).done(function(data) {
-							$('#cdialog').dialog('close');
-							$('.deleteMarker').blur();
-							loadPageNoHeader('cdef.php?action=edit&header=false&id='+id[0]);
-						});
+						}
+
+						postUrl(options, data);
 					});
 
 					$('#cdialog').dialog({
@@ -694,6 +696,12 @@ function cdef_edit() {
 				});
 		});
 	});
+
+	function removeCdefItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		$('.deleteMarker').blur();
+		loadUrl({url:'cdef.php?action=edit&id=<?php print get_request_var('id');?>'})
+	};
 	</script>
 	<?php
 }
@@ -791,16 +799,16 @@ function cdef() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL  = 'cdef.php?header=false';
-				strURL += '&filter='+$('#filter').val();
+				strURL  = 'cdef.php';
+				strURL += '?filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
 				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'cdef.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'cdef.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {
@@ -929,4 +937,3 @@ function cdef() {
 
 	form_end();
 }
-

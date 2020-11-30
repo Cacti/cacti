@@ -179,7 +179,12 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 
 	$hostname = db_fetch_cell('SELECT hostname FROM poller WHERE id = 1');
 
-	$url  = get_url_type() . '://' . $hostname . $config['url_path'] . 'remote_agent.php?action=graph_json';
+	$port = read_config_option('remote_agent_port');
+	if ($port != '') {
+		$port = ':' . $port;
+	}
+
+	$url  = get_url_type() . '://' . $hostname . $port . $config['url_path'] . 'remote_agent.php?action=graph_json';
 	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
 	$url .= '&rra_id=' . $rra_id;
 

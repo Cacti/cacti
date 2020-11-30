@@ -259,7 +259,7 @@ function update_policies() {
 		db_execute_prepared("UPDATE user_auth_group SET $set WHERE id = ?", array(get_nfilter_request_var('id')));
 	}
 
-	header('Location: user_group_admin.php?action=edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
+	header('Location: user_group_admin.php?action=edit&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
 	exit;
 }
 
@@ -289,7 +289,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=permsd&id=' . get_nfilter_request_var('id'));
+		header('Location: user_group_admin.php?action=edit&tab=permsd&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_graph')) {
 		foreach ($_POST as $var => $val) {
@@ -313,7 +313,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=permsg&id=' . get_nfilter_request_var('id'));
+		header('Location: user_group_admin.php?action=edit&tab=permsg&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_template')) {
 		foreach ($_POST as $var => $val) {
@@ -337,7 +337,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=permste&id=' . get_nfilter_request_var('id'));
+		header('Location: user_group_admin.php?action=edit&tab=permste&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_tree')) {
 		foreach ($_POST as $var => $val) {
@@ -361,7 +361,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=permstr&id=' . get_nfilter_request_var('id'));
+		header('Location: user_group_admin.php?action=edit&tab=permstr&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('associate_member')) {
 		foreach ($_POST as $var => $val) {
@@ -384,7 +384,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=members&id=' . get_nfilter_request_var('id'));
+		header('Location: user_group_admin.php?action=edit&tab=members&id=' . get_nfilter_request_var('id'));
 		exit;
 	} elseif (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -409,7 +409,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: user_group_admin.php?header=false');
+		header('Location: user_group_admin.php');
 		exit;
 	}
 
@@ -492,7 +492,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: user_group_admin.php?header=false');
+		header('Location: user_group_admin.php');
 		exit;
 	}
 
@@ -554,7 +554,7 @@ function form_save() {
 
 		}
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_nfilter_request_var('id')));
+		header('Location: user_group_admin.php?action=edit&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_nfilter_request_var('id')));
 		exit;
 	} elseif (isset_request_var('save_component_realm_perms')) {
 		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array(get_filter_request_var('id')));
@@ -571,7 +571,7 @@ function form_save() {
 
 		raise_message(1);
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=realms&id=' . get_request_var('id'));
+		header('Location: user_group_admin.php?action=edit&tab=realms&id=' . get_request_var('id'));
 		exit;
 	} elseif (isset_request_var('save_component_graph_settings')) {
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
@@ -592,14 +592,14 @@ function form_save() {
 
 		raise_message(1);
 
-		header('Location: user_group_admin.php?action=edit&header=false&tab=settings&id=' . get_nfilter_request_var('id'));
+		header('Location: user_group_admin.php?action=edit&tab=settings&id=' . get_nfilter_request_var('id'));
 		exit;
 	} else {
 		api_plugin_hook('user_group_admin_save');
 	}
 
 	/* redirect to the appropriate page */
-	header('Location: user_group_admin.php?action=edit&header=false&tab=general&id=' .  get_nfilter_request_var('id'));
+	header('Location: user_group_admin.php?action=edit&tab=general&id=' .  get_nfilter_request_var('id'));
 }
 
 /* --------------------------
@@ -622,7 +622,7 @@ function perm_remove() {
 		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=4 AND group_id = ? AND item_id = ?', array(get_request_var('group_id'), get_request_var('id')));
 	}
 
-	header('Location: user_group_admin.php?action=edit&header=false&tab=gperms&id=' . get_request_var('group_id'));
+	header('Location: user_group_admin.php?action=edit&tab=gperms&id=' . get_request_var('group_id'));
 }
 
 function user_group_members_edit($header_label) {
@@ -1713,7 +1713,7 @@ function group_edit() {
 		break;
 	case 'settings':
 		if (isempty_request_var('id')) {
-			header('Location: user_group_admin.php&header=false');
+			header('Location: user_group_admin.php');
 		}
 
 		user_group_settings_edit($header_label);
@@ -1721,7 +1721,7 @@ function group_edit() {
 		break;
 	case 'realms':
 		if (isempty_request_var('id')) {
-			header('Location: user_group_admin.php&header=false');
+			header('Location: user_group_admin.php');
 		}
 
 		user_group_realms_edit($header_label);
@@ -1732,7 +1732,7 @@ function group_edit() {
 	case 'permste':
 	case 'permstr':
 		if (isempty_request_var('id')) {
-			header('Location: user_group_admin.php&header=false');
+			header('Location: user_group_admin.php');
 		}
 
 		user_group_graph_perms_edit(get_request_var('tab'), $header_label);
@@ -1740,7 +1740,7 @@ function group_edit() {
 		break;
 	case 'members':
 		if (isempty_request_var('id')) {
-			header('Location: user_group_admin.php&header=false');
+			header('Location: user_group_admin.php');
 		}
 
 		user_group_members_edit($header_label);
@@ -1795,14 +1795,12 @@ function user_group() {
 	function applyFilter() {
 		strURL  = 'user_group_admin.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL = 'user_group_admin.php?clear=1';
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2123,14 +2121,12 @@ function graph_filter($header_label) {
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=permsg&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2231,14 +2227,12 @@ function device_filter($header_label) {
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=permsd&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2334,14 +2328,12 @@ function template_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=permste&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2419,14 +2411,12 @@ function tree_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=permstr&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2504,14 +2494,12 @@ function member_filter($header_label) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&associated=' + $('#associated').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
 		strURL = 'user_group_admin.php?action=edit&tab=members&id=<?php print get_request_var('id');?>&clear=true'
-		strURL = strURL + '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

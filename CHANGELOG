@@ -1,5 +1,44 @@
 Cacti CHANGELOG
 
+1.3.0-dev
+-issue#2205: Allow admins to disable RRDtool watermark
+-issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
+-issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
+-issue#3141: Fix FreeBSD IPv6 ping
+-issue#3547: Database Audit utility does not check database permissions
+-issue#3555: Increase device threads up to 10
+-issue#3559: When a developer uses backtracing, HTML output can be seen from command line bug confirmed
+-issue#3760: Devices showing blank after deleteing and Poller sync
+-issue#3560: When using `input_validate_xxx`, calls to `die_html_input_error()` do not pass variable name bug confirmed
+-issue#3710: When fetching tree information, database is not queried properly
+-issue#3636: Spikekill method variable is misinterpreted when calculating overall statistics
+-issue#3675: Spikekill fills in NaN values outside specified time range
+-issue#3793: Calling function read_config_option in plugin's setup.php leads to error
+-feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
+-feature#1523: Value above RRD maximum value
+-feature#2437: Create system-wide Proxy settings for plugins
+-feature#2474: Enable better version reporting for GitHub/Source/Package editions
+-feature#2550: Enable use of authenticator codes for Two-Factor Authentication
+-feature#2607: Allow adding sites from command line
+-feature#2767: Plugins should be temporarily disabled if a required plugin is also disabled
+-feature#3139: Added option in CLI tool remove_graphs for deletion of single graph
+-feature#3187: Feature: rra path should be configurable
+-feature#3260: When a device is added, populate the created date/time
+-feature#3513: Add hooks for plugins to show customize graph source and customize template url
+-feature#3558: Allow copy_user cli script to set various additional fields
+-feature#3584: Verify passwords against Pwned databases using API
+-feature#3585: CLI script to show database permissions that Cacti has
+-feature#3568; Allow exclusion of snmp fields / value(s) when adding graphs via CLI
+-feature#3620: Spikekill operation changed from left-to-right to highest-downward
+-feature#3677: Relocate the delete button for collectors to the edit page
+-feature#3679: Allow searching logs by name, not just id
+-feature#3724: Create Spikekill method to kill values over an absolute maximum
+-feature#3725: Create the ability for Spikekill to modify only certain DSes within an RRD
+-feature#3738: Ability to see MySQL permissions associated with current database user
+-feature#3417: Add worst poller hosts to support page, log and email warning when poller time reached defined threshold
+-feature#3845: Allow non-standard Remote Agent port to be used
+-feature#3943: Add hooks for plugins to show customize graph source and customize template url (List View)
+
 1.2.16
 -issue#3704: Reporting - Cascade to Branches function not working (Graphs in reporting shows only in 1 column)
 -issue#3859: Page refresh in graph.php does not work

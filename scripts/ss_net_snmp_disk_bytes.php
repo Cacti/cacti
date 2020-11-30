@@ -101,6 +101,14 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 			$parts = explode('.', $measure['oid']);
 			$indexes[$parts[cacti_sizeof($parts)-1]] = $parts[cacti_sizeof($parts)-1];
 		}
+		if (substr($measure['value'],0,6) == 'mmcblk') {
+			if (strlen($measure['value']) > 7) {
+				continue;
+			}
+
+			$parts = explode('.', $measure['oid']);
+			$indexes[$parts[cacti_sizeof($parts)-1]] = $parts[cacti_sizeof($parts)-1];
+		}
 	}
 
 	$bytesread = $byteswritten = 0;

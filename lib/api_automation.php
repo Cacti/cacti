@@ -100,13 +100,12 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rowsd=' + $('#rowsd').val();
 		strURL += '&filterd=' + $('#filterd').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearDeviceFilter() {
-		strURL = '<?php print $url;?>' + '&cleard=true&header=false';
-		loadPageNoHeader(strURL);
+		strURL = '<?php print $url;?>&cleard=true';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -382,13 +381,12 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&template_id=' + $('#template_id').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = '<?php print $url;?>' + '&clear=true&header=false';
-		loadPageNoHeader(strURL);
+		strURL = '<?php print $url;?>&clear=true';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -665,13 +663,12 @@ function display_new_graphs($rule, $url) {
 		strURL  = '<?php print $url;?>';
 		strURL += '&rows=' + $('#orows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearObjectFilter() {
-		strURL = '<?php print $url;?>' + '&oclear=true&header=false';
-		loadPageNoHeader(strURL);
+		strURL = '<?php print $url;?>&oclear=true';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -1026,13 +1023,12 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = '<?php print $url;?>' + '&clear=true&header=false';
-		loadPageNoHeader(strURL);
+		strURL = '<?php print $url;?>&clear=true';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {
@@ -2871,18 +2867,9 @@ function automation_add_device($device, $web = false) {
 
 	if ($host_id) {
 		automation_debug(" - Success\n");
-		/* Use the thold plugin if it exists */
-		if (api_plugin_is_enabled('thold')) {
-			automation_debug("     Creating Thresholds\n");
 
-			if (file_exists($config['base_path'] . '/plugins/thold/thold-functions.php')) {
-				include_once($config['base_path'] . '/plugins/thold/thold-functions.php');
-				autocreate($host_id);
-			} else if (file_exists($config['base_path'] . '/plugins/thold/thold_functions.php')) {
-				include_once($config['base_path'] . '/plugins/thold/thold_functions.php');
-				autocreate($host_id);
-			}
-		}
+		/* Use the thold plugin if it exists */
+		api_plugin_hook_function('device_threshold_autocreate', $host_id);
 
 		db_execute_prepared('DELETE FROM automation_devices WHERE ip = ? LIMIT 1', array($ip));
 	} else {

@@ -173,7 +173,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_source_profiles.php?header=false&action=edit&id=' . (empty($profile_id) ? get_request_var('id') : $profile_id));
+		header('Location: data_source_profiles.php?action=edit&id=' . (empty($profile_id) ? get_request_var('id') : $profile_id));
 	} elseif (isset_request_var('save_component_rra')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -213,9 +213,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_source_profiles.php?header=false&action=item_edit&profile_id=' . get_request_var('profile_id') . '&id=' . (empty($profile_rra_id) ? get_request_var('id') : $profile_rra_id));
+			header('Location: data_source_profiles.php?action=item_edit&profile_id=' . get_request_var('profile_id') . '&id=' . (empty($profile_rra_id) ? get_request_var('id') : $profile_rra_id));
 		} else {
-			header('Location: data_source_profiles.php?header=false&action=edit&id=' . get_request_var('profile_id'));
+			header('Location: data_source_profiles.php?action=edit&id=' . get_request_var('profile_id'));
 		}
 	}
 }
@@ -245,7 +245,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_source_profiles.php?header=false');
+		header('Location: data_source_profiles.php');
 		exit;
 	}
 
@@ -295,7 +295,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: data_source_profiles.php?header=false');
+		header('Location: data_source_profiles.php');
 		exit;
 	}
 
@@ -420,7 +420,6 @@ function profile_item_remove() {
 	db_execute_prepared('DELETE FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')));
 }
 
-
 function item_edit() {
 	global $fields_profile_rra_edit, $aggregation_levels;
 
@@ -515,10 +514,13 @@ function item_edit() {
 			get_size();
 		});
 
-        $('#rows').keyup(function() {
-            if (rows_to) { clearTimeout(rows_to); }
-            rows_to = setTimeout(function () { get_span(); get_size() }, 250);
-        });
+		$('#rows').keyup(function() {
+			if (rows_to) {
+				clearTimeout(rows_to);
+			}
+
+			rows_to = setTimeout(function () { get_span(); get_size() }, 250);
+		});
 
 		if (readonly) {
 			$('#steps').prop('disabled', true);
@@ -527,6 +529,7 @@ function item_edit() {
 			}
 
 			$('#rows').prop('disabled', true);
+
 			if ($('#rows').selectmenu('instance')) {
 				$('#rows').selectmenu('disable');
 			}
@@ -551,7 +554,6 @@ function item_edit() {
 			.fail(function(data) {
 				getPresentHTTPError(data);
 			});
-
 	}
 	</script>
 	<?php
@@ -661,19 +663,18 @@ function profile_edit() {
 	$(function() {
 		$('.cdialog').remove();
 		$('#main').append("<div class='cdialog' id='cdialog'></div>");
-
-        $('#consolidation_function_id').multiselect({
-            selectedList: 4,
-            noneSelectedText: '<?php print __('Select Consolidation Function(s)');?>',
-            header: false,
-            groupColumns: true,
-            groupColumnsWidth: 90,
-            height: 28,
-            menuWidth: 400,
-			click: function(event, ui){
+		$('#consolidation_function_id').multiselect({
+			selectedList: 4,
+			noneSelectedText: '<?php print __('Select Consolidation Function(s)');?>',
+			header: false,
+			groupColumns: true,
+			groupColumnsWidth: 90,
+			height: 28,
+			menuWidth: 400,
+			click: function(event, ui) {
 				get_size();
 			}
-        });
+		});
 
 		get_size();
 		$('consolidation_function_id').change(function() {
@@ -681,6 +682,11 @@ function profile_edit() {
 		});
 
 		<?php if (!$readonly) {?>
+		function removeDataSourceProfilesItemFinalize(data) {
+			$('#cdialog').dialog('close');
+			loadUrl({url:'data_source_profiles.php?action=edit&id=<?php print $profile['data_source_profile_id'];?>'})
+		}
+
 		$('.delete').click(function (event) {
 			event.preventDefault();
 
@@ -693,12 +699,18 @@ function profile_edit() {
 					applySkin();
 
 					$('#continue').off('click').on('click', function(data) {
-						$.post('data_source_profiles.php?action=item_remove', {
-							__csrf_magic: csrfMagicToken,
-							id: $('#rra_id').val()
-						}).done(function(data) {
-							$('#cdialog').dialog('close');
-							loadPageNoHeader('data_source_profiles.php?action=edit&header=false&id=' + $('#rra_profile_id').val());
+						$('#continue').click(function(data) {
+							var options = {
+								url: 'data_source_profiles.php?action=item_remove',
+								funcEnd: 'removeDataSourceProfilesItemFinalize'
+							}
+
+							var data = {
+								__csrf_magic: csrfMagicToken,
+								id: <?php print get_request_var('id');?>
+							}
+
+							postUrl(options, data);
 						});
 					});
 
@@ -926,16 +938,16 @@ function profile() {
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL  = 'data_source_profiles.php?header=false';
-				strURL += '&filter='+$('#filter').val();
+				strURL  = 'data_source_profiles.php';
+				strURL += '?filter='+$('#filter').val();
 				strURL += '&rows='+$('#rows').val();
 				strURL += '&has_data='+$('#has_data').is(':checked');
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'data_source_profiles.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'data_source_profiles.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {
@@ -1121,4 +1133,3 @@ function profile() {
 
 	form_end();
 }
-

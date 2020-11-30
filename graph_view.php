@@ -164,7 +164,7 @@ case 'ajax_reports':
 		raise_message('reports_no_graph');
 	}
 
-	header('Location: graph_view.php?action=list&header=false');
+	header('Location: graph_view.php?action=list');
 
 	break;
 case 'update_timespan':
@@ -392,6 +392,15 @@ case 'preview':
 	html_graph_preview_filter('graph_view.php', 'preview');
 
 	html_end_box();
+		
+	api_plugin_hook_function('graph_tree_page_buttons',
+	  array(
+	     'mode'      => 'preview',
+	     'timespan'  => $_SESSION['sess_current_timespan'],
+	     'starttime' => get_current_graph_start(),
+	     'endtime'   => get_current_graph_end()
+	  )
+	);
 
 	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
 	$sql_or = '';
@@ -479,7 +488,7 @@ case 'preview':
 		print $nav;
 	}
 
-	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'false') {
+	if (!$is_request_ajax) {
 		bottom_footer();
 	}
 
@@ -747,6 +756,11 @@ case 'list':
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_details = get_graph_template_details($graph['local_graph_id']);
 
+			if($graph['graph_source'] == '0') { //Not Templated, customize graph source and template details.
+				$template_details = api_plugin_hook_function('customize_template_details', $template_details);
+				$graph = api_plugin_hook_function('customize_graph', $graph);
+			}
+
 			if (isset($template_details['graph_name'])) {
 				$graph['name'] = $template_details['graph_name'];
 			}
@@ -817,18 +831,18 @@ case 'list':
 	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
 
 	function clearFilter() {
-		strURL = 'graph_view.php?action=list&header=false&clear=1';
-		loadPageNoHeader(strURL);
+		strURL = 'graph_view.php?action=list&clear=1';
+		loadUrl({url:strURL})
 	}
 
 	function applyFilter() {
-		strURL = 'graph_view.php?action=list&header=false&page=1';
+		strURL = 'graph_view.php?action=list&page=1';
 		strURL += '&host_id=' + $('#host_id').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&graph_template_id=' + $('#graph_template_id').val();
 		strURL += '&rfilter=' + base64_encode($('#rfilter').val());
 		strURL += url_graph('');
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function initializeChecks() {
@@ -869,9 +883,9 @@ case 'list':
 			}
 		});
 
-		strURL += '&reset=true&header=false';
+		strURL += '&reset=true';
 
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 
 		$('#breadcrumbs').empty().html('<li><a href="graph_view.php?action=preview"><?php print __('Preview Mode');?></a></li>');
 		$('#listview').removeClass('selected');
@@ -940,13 +954,12 @@ case 'list':
 						$(this).dialog('close');
 
 						strURL = 'graph_view.php?action=ajax_reports';
-							'&header=false' +
 							'&report_id='   + $('#report_id').val()  +
 							'&timespan='    + $('#timespan').val()   +
 							'&align='       + $('#align').val()      +
 							'&graph_list='  + $('#graph_list').val();
 
-						loadPageNoHeader(strURL);
+						loadUrl({url:strURL})
 					}
 				}
 			],
@@ -965,6 +978,8 @@ case 'list':
 	}
 
 	$(function() {
+		debugger;
+
 		pageAction = 'list';
 
 		initializeChecks();

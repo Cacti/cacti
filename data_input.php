@@ -52,7 +52,7 @@ switch (get_request_var('action')) {
 	case 'field_remove':
 		field_remove();
 
-		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
+		header('Location: data_input.php?action=edit&id=' . get_filter_request_var('data_input_id'));
 		break;
 	case 'field_edit':
 		top_header();
@@ -160,7 +160,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: data_input.php?header=false&action=edit&id=' . (empty($data_input_id) ? get_nfilter_request_var('id') : $data_input_id));
+		header('Location: data_input.php?action=edit&id=' . (empty($data_input_id) ? get_nfilter_request_var('id') : $data_input_id));
 	} elseif (isset_request_var('save_component_field')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -198,9 +198,9 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
+			header('Location: data_input.php?action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
 		} else {
-			header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
+			header('Location: data_input.php?action=edit&id=' . get_request_var('data_input_id'));
 		}
 	}
 }
@@ -255,7 +255,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: data_input.php?header=false');
+		header('Location: data_input.php');
 		exit;
 	}
 
@@ -305,7 +305,7 @@ function form_actions() {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', cacti_sizeof($di_array)) . "'>";
 	} else {
 		raise_message(40);
-		header('Location: data_input.php?header=none');
+		header('Location: data_input.php');
 		exit;
 	}
 
@@ -368,15 +368,25 @@ function field_remove_confirm() {
 	<script type='text/javascript'>
 	$(function() {
 		$('#continue').unbind('click').click(function(data) {
-			$.post('data_input.php?action=field_remove', {
+			var options = {
+				url: 'data_input.php?action=field_remove',
+				funcEnd: 'removeDataInputFieldFinalize'
+			}
+
+			var data = {
 				__csrf_magic: csrfMagicToken,
 				data_input_id: <?php print get_request_var('data_input_id');?>,
 				id: <?php print get_request_var('id');?>
-			}, function(data) {
-				loadPageNoHeader('data_input.php?action=edit&header=false&id=<?php print get_request_var('data_input_id');?>');
-			});
+			}
+
+			postUrl(options, data);
 		});
 	});
+
+	function removeDataInputFieldFinalize(data) {
+		loadUrl({url:'data_input.php?action=edit&id=<?php print get_request_var('data_input_id');?>'})
+	}
+
 	</script>
 	<?php
 }
@@ -462,7 +472,7 @@ function field_edit() {
 	/* if there are no input fields to choose from, complain */
 	if ((!isset($array_field_names)) && (isset_request_var('type') ? get_request_var('type') == 'in' : false) && ($data_input['type_id'] == '1')) {
 		display_custom_error_message(__('This script appears to have no input values, therefore there is nothing to add.'));
-		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
+		header('Location: data_input.php?action=edit&id=' . get_filter_request_var('data_input_id'));
 		exit;
 	}
 
@@ -855,15 +865,15 @@ function data() {
 		<script type='text/javascript'>
 
 		function applyFilter() {
-			strURL  = 'data_input.php?header=false';
-			strURL += '&filter='+$('#filter').val();
+			strURL  = 'data_input.php';
+			strURL += '?filter='+$('#filter').val();
 			strURL += '&rows='+$('#rows').val();
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			strURL = 'data_input.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'data_input.php?clear=1';
+			loadUrl({url:strURL})
 		}
 
 		$(function() {
@@ -994,4 +1004,3 @@ function data() {
 
 	form_end();
 }
-

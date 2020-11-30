@@ -44,7 +44,7 @@ $tabs = array(
 	'authentication' => __('Authentication'),
 	'boost'          => __('Performance'),
 	'spikes'         => __('Spikes'),
-	'mail'           => __('Mail/Reporting/DNS'));
+	'mail'           => __('Services'));
 
 $tabs_graphs = array(
 	'general'   => __('General Settings'),
@@ -72,11 +72,52 @@ if (db_table_exists('plugin_config')) {
 
 /* get the files for selective logging */
 $realm_files  = array_keys($user_auth_realm_filenames);
-$nohead_files = array_values($no_http_header_files);
 foreach($realm_files as $file) {
 	$logfiles[$file] = $file;
 }
 
+/* we need this list of files for selective debug */
+$no_http_header_files = array(
+	'add_device.php',
+	'add_graphs.php',
+	'add_perms.php',
+	'add_tree.php',
+	'boost_rrdupdate.php',
+	'cmd.php',
+	'cmd_realtime.php',
+	'copy_user.php',
+	'host_update_template.php',
+	'poller_automation.php',
+	'poller_boost.php',
+	'poller_commands.php',
+	'poller_dsstats.php',
+	'poller_export.php',
+	'poller_graphs_reapply_names.php',
+	'poller_maintenance.php',
+	'poller_output_empty.php',
+	'poller.php',
+	'poller_realtime.php',
+	'poller_recovery.php',
+	'poller_reindex_hosts.php',
+	'poller_reports.php',
+	'poller_spikekill.php',
+	'query_host_cpu.php',
+	'query_host_partitions.php',
+	'rebuild_poller_cache.php',
+	'remote_agent.php',
+	'repair_database.php',
+	'script_server.php',
+	'snmpagent_mibcachechild.php',
+	'snmpagent_mibcache.php',
+	'snmpagent_persist.php',
+	'sql.php',
+	'ss_host_cpu.php',
+	'ss_host_disk.php',
+	'ss_sql.php',
+	'structure_rra_paths.php',
+);
+
+$nohead_files = array_values($no_http_header_files);
 foreach($nohead_files as $file) {
 	$logfiles[$file] = $file;
 }
@@ -283,6 +324,13 @@ $settings = array(
 			'default' => POLLER_VERBOSITY_LOW,
 			'array' => $logfile_verbosity,
 			),
+		'log_expand' => array(
+			'friendly_name' => __('Expand log details'),
+			'description' => __('What level of expansion do you want on the log file? Increase expansion can slow search results'),
+			'method' => 'drop_array',
+			'default' => LOG_EXPAND_FULL,
+			'array' => $logfile_expansion
+			),
 		'log_validation' => array(
 			'friendly_name' => __('Log Input Validation Issues'),
 			'description' => __('Record when request fields are accessed without going through proper input validation'),
@@ -450,18 +498,18 @@ $settings = array(
 			'default' => 'on',
 			'method' => 'checkbox',
 			),
-                'ds_preselected_delete' => array(
-                        'friendly_name' => __('Data Source Preservation Preset'),
-                        'description' => __('When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs.'),
-                        'method' => 'checkbox',
-                        'default' => 'on'
-                        ),
-                'graphs_auto_unlock' => array(
-                        'friendly_name' => __('Graphs Auto Unlock'),
-                        'description' => __('When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph.'),
-                        'method' => 'checkbox',
-                        'default' => ''
-                        ),
+		'ds_preselected_delete' => array(
+			'friendly_name' => __('Data Source Preservation Preset'),
+			'description' => __('When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
+		'graphs_auto_unlock' => array(
+			'friendly_name' => __('Graphs Auto Unlock'),
+			'description' => __('When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph.'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'hide_console' => array(
 			'friendly_name' => __('Hide Cacti Dashboard'),
 			'description' => __('For use with Cacti\'s External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page.'),
@@ -501,6 +549,32 @@ $settings = array(
 			'default' => '',
 			'size' => '100',
 			'max_length' => '255',
+			),
+		'remote_agent_header' => array(
+			'friendly_name' => __('Remote Agent'),
+			'description' => __('When using multiple Data Collectors, there are the Settings for Communicating between Data Collectors'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'remote_agent_port' => array(
+			'friendly_name' => __('TCP Port'),
+			'description' => __('The TCP Port used for communicating with the Remote Data Collectors.  The protocol will match the Central Cacti web server (either HTTP or HTTPS).  Leave blank to use the default ports.'),
+			'method' => 'textbox',
+			'default' => '',
+			'size' => '5',
+			'max_length' => '5',
+			),
+		'remote_agent_timeout' => array(
+			'friendly_name' => __('Timeout'),
+			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
+			'method' => 'drop_array',
+			'default' => '5',
+			'array' => array(
+				5 => __('%d Seconds', 5),
+				10 => __('%d Seconds', 10),
+				15 => __('%d Seconds', 15),
+				20 => __('%d Seconds', 20)
+				)
 			),
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),
@@ -916,6 +990,12 @@ $settings = array(
 			'max_length' => '80',
 			'size' => '60'
 			),
+		'graph_watermark_rrd' => array(
+			'friendly_name' => __('Hide Tobi'),
+			'description' => __('Hide the default RRDtool text placed by Tobi'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
 		'clog_header' => array(
 			'friendly_name' => __('Log Viewer Settings'),
 			'collapsible' => 'true',
@@ -1110,18 +1190,6 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
-		'remote_agent_timeout' => array(
-			'friendly_name' => __('Remote Agent Timeout'),
-			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
-			'method' => 'drop_array',
-			'default' => '5',
-			'array' => array(
-				5 => __('%d Seconds', 5),
-				10 => __('%d Seconds', 10),
-				15 => __('%d Seconds', 15),
-				20 => __('%d Seconds', 20)
-				)
-			),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
 			'description' => __('How many OID\'s should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN.'),
@@ -1238,6 +1306,40 @@ $settings = array(
 			'default' => '1',
 			'max_length' => '10',
 			'size' => '5'
+			),
+		'poller_warning_1h_count' => array(
+			'friendly_name' => __('1h count warning threshold'),
+			'description' => __('When this count of guarded ratio (below) is reached in one hour, warning will be written to log and email will be send. 0 = disable.'),
+			'method' => 'textbox',
+			'default' => '3',
+			'max_length' => 1,
+			'size' => 4,
+			),
+		'poller_warning_1h_ratio' => array(
+			'friendly_name' => __('1 hour guarded poller ratio run/max'),
+			'description' => __('Define guarded ratio poller run/max time (in percent).'),
+			'method' => 'drop_array',
+			'default' => '70',
+			'array' => array(
+				'0' => '0',
+				'50' => '50',
+				'60' => '60',
+				'70' => '70',
+				'80' => '80',
+				'90' => '90',)
+			),
+		'poller_warning_24h_ratio' => array(
+			'friendly_name' => __('24 hours guarded poller ratio run/max'),
+			'description' => __('Define guarded average ratio poller run/max time (in percent). When it is reached, warning will be written to log and email will be send. 0 = disable'),
+			'method' => 'drop_array',
+			'default' => '60',
+			'array' => array(
+				'0' => '0',
+				'50' => '50',
+				'60' => '60',
+				'70' => '70',
+				'80' => '80',
+				'90' => '90',)
 			),
 		'spine_header' => array(
 			'friendly_name' => __('Additional Spine Parameters'),
@@ -1418,6 +1520,25 @@ $settings = array(
 				'10' => __('%d Changes', 10),
 				'11' => __('%d Changes', 11),
 				'12' => __('%d Changes', 12) )
+			),
+		'secpass_pwned_header' => array(
+			'friendly_name' => __('Pwned Checks (Online)'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'secpass_pwnedcheck' => array(
+			'friendly_name' => __('Pwned Check'),
+			'description' => __('Check password against haveibeenpwned.com'),
+			'method' => 'checkbox',
+			'default' => '',
+		),
+		'secpass_pwnedcount' => array(
+			'friendly_name' => __('Pwned Threshold'),
+			'description' => __('Block use of a password once it reaches this reported usage level'),
+			'method' => 'textbox',
+			'default' => '8',
+			'max_length' => 2,
+			'size' => 4
 			),
 		'secpass_lock_header' => array(
 			'friendly_name' => __('Account Locking'),
@@ -1785,6 +1906,43 @@ $settings = array(
 			'max_length' => '10',
 			'size' => '5'
 			),
+		'settings_proxy_header' => array(
+			'friendly_name' => __('Proxy Options'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'settings_proxy_header' => array(
+			'friendly_name' => __('Proxy Options'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'settings_proxy_host' => array(
+			'friendly_name' => __('Proxy Hostname'),
+			'description' => __('This is the hostname/IP of the Proxy Server you will send the Email to. For failover, separate your hosts using a semi-colon.'),
+			'method' => 'textbox',
+			'default' => 'localhost',
+			'max_length' => 255,
+			),
+		'settings_proxy_port' => array(
+			'friendly_name' => __('Proxy Port'),
+			'description' => __('The port on the Proxy Server to use.'),
+			'method' => 'textbox',
+			'max_length' => 255,
+			'default' => 25,
+			'size' => 5
+			),
+		'settings_proxy_username' => array(
+			'friendly_name' => __('Proxy Username'),
+			'description' => __('The username to authenticate with when sending via Proxy. (Leave blank if you do not require authentication.)'),
+			'method' => 'textbox',
+			'max_length' => 255,
+			),
+		'settings_proxy_password' => array(
+			'friendly_name' => __('Proxy Password'),
+			'description' => __('The password to authenticate with when sending via Proxy. (Leave blank if you do not require authentication.)'),
+			'method' => 'textbox_password',
+			'max_length' => 255,
+			),
 		),
 	'boost' => array(
 		'boost_hq_header' => array(
@@ -2130,6 +2288,37 @@ $settings = array(
                                 100 => __('%d Spikes', 100),
 				)
 			),
+		'spikekill_absmax' => array(
+			'friendly_name' => __('Absolute Maximum Value'),
+			'description' => __('This value represents the maximum raw value of any data point to remove from a Graph RRA.'),
+			'method' => 'drop_array',
+			'default' => '12500000000',
+			'array' => array(
+				1000  => __('1 Thousand'),
+				10000  => __('10 Thousand'),
+				100000  => __('100 Thousand'),
+				1000000  => __('1 Million'),
+				2500000  => __('2.5 Million (20 Megabits)'),
+				7500000  => __('7.5 Million (60 Megabits)'),
+				10000000  => __('10 Million'),
+				12500000  => __('12.5 Million (100 Megabits)'),
+				31250000  => __('31.3 Million (250 Megabits)'),
+				75000000  => __('75 Million (600 Megabits)'),
+				100000000  => __('100 Million'),
+				125000000  => __('125 Million (1 Gigabit)'),
+				1000000000  => __('1 Billion'),
+				1250000000  => __('1.25 Billion (10 Gigabits)'),
+				12500000000  => __('12.5 Billion (100 Gigabits)'),
+				)
+			),
+		'spikekill_dsfilter' => array(
+			'friendly_name' => __('DS Filter'),
+			'description' => __('Specifies the DSes inside an RRD upon which Spikekill will operate. A string of comma-separated values that contains index numbers or names of desired DSes. If left blank, all DSes will match. An example is <i>"5,traffic_*"</i>, which would match DS index 5 as well as any DS whose name begins with <i>"traffic_"</i>. '),
+			'method' => 'textbox',
+			'max_length' => '100',
+			'default' => '',
+			'size' => '30'
+			),
 		'spikekill_backupdir' => array(
 			'friendly_name' => __('RRDfile Backup Directory'),
 			'description' => __('If this directory is not empty, then your original RRDfiles will be backed up to this location.'),
@@ -2168,7 +2357,7 @@ $settings = array(
 			'method' => 'drop_multi',
 			'description' => __('When performing batch spike removal, only the templates selected below will be acted on.'),
 			'array' => $spikekill_templates,
-            ),
+			),
 		'spikekill_purge' => array(
 			'friendly_name' => __('Backup Retention'),
 			'description' => __('When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?'),
@@ -2498,4 +2687,3 @@ if (is_realm_allowed(25)) {
 }
 
 api_plugin_hook('config_settings');
-

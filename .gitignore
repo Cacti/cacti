@@ -40,13 +40,23 @@ include/themes/*
 # Ignore custom stylesheet (applied on all themes)
 include/themes/custom.css
 # Do not ignore standard Cacti theme folders
+!include/themes/cacti
+!include/themes/carrot
 !include/themes/classic
 !include/themes/dark
+!include/themes/hollyberry
 !include/themes/modern
 !include/themes/paper-plane
 !include/themes/paw
+!include/themes/raspberry
 !include/themes/sunrise
+
 # Ignore any mac DS_Store files
 .DS_Store
+
+# Ignore .well-known folders (certbot)
+.well-known
+
+# Ignore wrongly placed mo files
 locales/po/*.mo
 include/vendor/csrf/csrf-secret.php

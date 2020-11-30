@@ -1949,6 +1949,7 @@ CREATE TABLE host (
   failed_polls int(12) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY poller_id_disabled (poller_id, disabled),
   KEY site_id (site_id),
@@ -2340,6 +2341,18 @@ CREATE TABLE poller_time (
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
+-- Table structure for table `poller_time_stats`
+--
+
+CREATE TABLE poller_time_stats (
+  id bigint(20) unsigned NOT NULL auto_increment,
+  poller_id int(10) unsigned NOT NULL default '1',
+  total_time double default NULL,
+  `time` timestamp NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+
+--
 -- Table structure for table `processes`
 --
 
@@ -2607,6 +2620,8 @@ CREATE TABLE user_auth (
   `failed_attempts` int(5) NOT NULL DEFAULT '0',
   `lastfail` int(12) NOT NULL DEFAULT '0',
   `reset_perms` int(12) UNSIGNED NOT NULL DEFAULT '0',
+  `tfa_enabled` char(3) NOT NULL DEFAULT '',
+  `tfa_secret` char(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `username` (`username`),
   KEY `realm` (`realm`),
@@ -2617,8 +2632,8 @@ CREATE TABLE user_auth (
 -- Dumping data for table `user_auth`
 --
 
-INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','','on','on','on','on','on','on',2,1,1,1,1,'on',-1,-1,'-1','',0,0,0);
-INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','','on','on','on','on','on',3,1,1,1,1,1,'',-1,-1,'-1','',0,0,0);
+INSERT INTO user_auth VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3',0,'Administrator','','on','on','on','on','on','on',2,1,1,1,1,'on',-1,-1,'-1','',0,0,0,'','');
+INSERT INTO user_auth VALUES (3,'guest','43e9a4ab75570f5b',0,'Guest Account','','on','on','on','on','on',3,1,1,1,1,1,'',-1,-1,'-1','',0,0,0,'','');
 
 --
 -- Table structure for table `user_auth_cache`
@@ -3096,7 +3111,7 @@ INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '
 --
 
 CREATE TABLE version (
-  cacti char(20) default '',
+  cacti char(30) default '',
   PRIMARY KEY (cacti)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
@@ -3105,3 +3120,4 @@ CREATE TABLE version (
 --
 
 INSERT INTO version VALUES ('new_install');
+

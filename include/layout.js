@@ -631,22 +631,18 @@ function selectAll(attrib, checked) {
 function applyTimespanFilterChange() {
 	var strURL;
 
-	strURL = '?header=false&predefined_timespan=' + $('#predefined_timespan').val();
+	strURL = '?predefined_timespan=' + $('#predefined_timespan').val();
 	strURL = strURL + '&predefined_timeshift=' + $('#predefined_timeshift').val();
-	loadPageNoHeader(strURL);
+	loadUrl({url:strURL});
 }
 
 /** cactiReturnTo - This function simply returns to the previous page
  *  @args href - the previous page */
 function cactiReturnTo(href) {
-	if (typeof href == 'string') {
-		href = href + (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-		loadPageNoHeader(href);
-	} else {
-		href = document.location.href;
-		href = href + (href.indexOf('?') > 0 ? '&':'?') + 'header=false';
-		loadPageNoHeader(href);
+	if (typeof href !== 'string' || href.trim() == '') {
+		href = document.referrer;
 	}
+	loadUrl({url:href});
 }
 
 /** applySkin - This function re-asserts all javascript behavior to a page
@@ -1182,6 +1178,9 @@ function setGraphTabs() {
 
 function setupResponsiveMenuAndTabs() {
 	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').off('click').on('click', function(event) {
+		if (!shouldCaptureClick(event))
+			return;
+
 		page = basename($(this).attr('href'));
 
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
@@ -1778,227 +1777,59 @@ function menuShow() {
 }
 
 function loadTopTab(href, id, force) {
-	statePushed = false;
-	var cont = false;
+	var stack = ''; //getStackTrace(); // new Error().stack;
+	console.warn("Function loadTopTab is being called\n" + stack);
+	var url   = href+(href.indexOf('?') > 0 ? '&':'?') + 'headercontent=true';
 
-	if (force == undefined) {
-		force = false;
-	}
+	return loadUrl({
+		url:url,
+		tabId:id,
+		force:force,
+		loadType:'toptab',
+		funcStart:'loadTopTabStart',
+		funcEnd:'loadTopTabEnd',
+		elementId:'cactiContent'
+	});
+}
 
-	if (!force) {
-		cont = checkFormStatus(href, 'toptab', id);
+function loadTopTabStart(options) {
+	$('.submenuoptions').slideUp(120);
+	$('.menuoptions').slideUp(120);
+
+	if (href.indexOf('graph_view.php') >= 0) {
+		$('.cactiGraphHeaderBackground').show();
+		$('.cactiConsolePageHeadBackdrop').hide();
 	} else {
-		cont = true;
-	}
-
-	if (cont) {
-		var thref = stripHeaderSuppression(href);
-		var url   = thref+(thref.indexOf('?') > 0 ? '&':'?') + 'headercontent=true';
-
-		$('.submenuoptions').slideUp(120);
-		$('.menuoptions').slideUp(120);
-
-		if (href.indexOf('graph_view.php') >= 0) {
-			$('.cactiGraphHeaderBackground').show();
-			$('.cactiConsolePageHeadBackdrop').hide();
-		} else {
-			$('.cactiGraphHeaderBackground').hide();
-			$('.cactiConsolePageHeadBackdrop').show();
-		}
-
-		closeDateFilters();
-
-		clearAllTimeouts();
-
-		$.ajaxQ.abortAll();
-		$.get(url)
-			.done(function(html) {
-				var htmlObject  = $(html);
-				var matches     = html.match(/<title>(.*?)<\/title>/);
-
-				$('#main').hide();
-
-				if (matches != null) {
-					var htmlTitle   = matches[1];
-					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-					var parts       = html.split('</title>');
-					var html        = parts[1];
-
-					checkForLogout(html);
-
-					$('title').text(htmlTitle);
-					$('#breadcrumbs').html(breadCrumbs);
-					$('div[class^="ui-"]').remove();
-					$('#cactiContent').replaceWith(html);
-
-					myTitle = htmlTitle;
-					myHref  = cleanHeader(href);
-
-					pushState(myTitle, href);
-				} else {
-					checkForLogout(html);
-
-					$('#cactiContent').replaceWith(html);
-
-					thref = stripHeaderSuppression(href);
-
-					pushState(myTitle, href);
-				}
-
-				var hrefParts = href.split('?');
-				pageName = basename(hrefParts[0]);
-
-				if (pageName != '') {
-					if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
-						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
-					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
-						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
-					}
-				}
-
-				applySkin();
-
-				if (isMobile.any() != null) {
-					window.scrollTo(0,1);
-				} else {
-					window.scrollTo(0,0);
-				}
-
-				handleConsole(pageName);
-
-				$('#main').css('display', 'table');
-
-				Pace.stop();
-
-				return false;
-			})
-			.fail(function(html) {
-				getPresentHTTPError(html);
-			}
-		);
-
-		/* update menu selection */
-		if ($('#'+id).hasClass('lefttab')) {
-			$('.lefttab').removeClass('selected');
-			$('.submenuoptions').find('.selected').removeClass('selected');
-			$('#'+id).addClass('selected');
-			hideTabId = id.substring(0, id.length-9);
-			if (hideTabId) {
-				$('#'+hideTabId).addClass('selected');
-			}
-		} else if ($('#'+id).parents('.submenuoptions').length > 0) {
-			$('#'+id).parents('.submenuoptions').find('.selected').removeClass('selected');
-			$('#'+id).addClass('selected');
-		}
-
-		return true;
-	} else {
-		return false;
+		$('.cactiGraphHeaderBackground').hide();
+		$('.cactiConsolePageHeadBackdrop').show();
 	}
 }
 
-function loadPage(href, force) {
-	statePushed = false;
-	cont = false;
-
-	if (force == undefined) {
-		force = false;
+function loadTopTabEnd(options) {
+	if (options.pageName != '') {
+		if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
+			$('#menu').find('.pic').removeClass('selected');
+			$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
+		} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
+			$('#menu').find('.pic').removeClass('selected');
+			$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+		}
 	}
 
-	if (!force) {
-		cont = checkFormStatus(href, 'loadpage');
-	} else {
-		cont = true;
+	var tabElementId = '#'+options.tabId;
+	var tabElement = $(tabElementId);
+	if (tabElement.hasClass('lefttab')) {
+		$('.lefttab').removeClass('selected');
+		$('.submenuoptions').find('.selected').removeClass('selected');
+		tabElement.addClass('selected');
+		var hideTabId = tabElementId.substring(0, tabElementId.length-9);
+		if (hideTabId) {
+			$(hideTabId).addClass('selected');
+		}
+	} else if (tabElementId.parents('.submenuoptions').length > 0) {
+		tabElementId.parents('.submenuoptions').find('.selected').removeClass('selected');
+		tabElementId.addClass('selected');
 	}
-
-	if (cont) {
-		closeDateFilters();
-
-		clearAllTimeouts();
-
-		$.ajaxQ.abortAll();
-		$.get(href)
-			.done(function(html) {
-				var htmlObject  = $(html);
-				var matches     = html.match(/<title>(.*?)<\/title>/);
-
-				if (matches != null) {
-					var htmlTitle   = matches[1];
-					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-					var html        = htmlObject.find('#main').html();
-
-					checkForLogout(html);
-
-					$('#main').empty().hide();
-					$('title').text(htmlTitle);
-					$('#breadcrumbs').html(breadCrumbs);
-					$('div[class^="ui-"]').remove();
-					$('#main').html(html);
-
-					myTitle = htmlTitle;
-					myHref  = cleanHeader(href);
-
-					pushState(myTitle, href);
-				} else {
-					checkForLogout(html);
-
-					$('#main').empty().hide();
-					$('#main').html(html);
-
-					thref = stripHeaderSuppression(href);
-
-					pushState(myTitle, href);
-				}
-
-				var hrefParts = href.split('?');
-				pageName = basename(hrefParts[0]);
-
-				if (pageName != '') {
-					// Workaround for Create Device
-					if (pageName == 'host.php') {
-						if (href.indexOf('create') >= 0) {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href='"+escapeString(href)+"']").addClass('selected');
-						} else {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href$='host.php']").addClass('selected');
-						}
-					} else if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
-						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
-					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
-						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
-					}
-
-					if (pageName == 'graph_templates_items.php' || pageName == 'graph_templates_inputs.php') {
-						$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
-					}
-				}
-
-				applySkin();
-
-				if (isMobile.any() != null) {
-					window.scrollTo(0,1);
-				} else {
-					window.scrollTo(0,0);
-				}
-
-				handleConsole(pageName);
-
-				Pace.stop();
-
-				return false;
-			})
-			.fail(function(html) {
-				getPresentHTTPError(html);
-			}
-		);
-	}
-
-	return false;
 }
 
 function setNavigationScroll() {
@@ -2059,100 +1890,102 @@ function setNavigationScroll() {
 	});
 }
 
+function getStackTrace(levels) {
+	var callstack = [];
+	var isCallstackPopulated = false;
+	try {
+		i.dont.exist += 0; //doesn't exist- that's the point
+	} catch (e) {
+		if (e.stack) { //Firefox / chrome
+			var lines = e.stack.split('\n');
+			for (var i = 0, len = lines.length; i < len; i++) {
+					callstack.push(lines[i]);
+			}
+
+			//Remove call to logStackTrace()
+			callstack.shift();
+			isCallstackPopulated = true;
+		} else if (window.opera && e.message) { //Opera
+			var lines = e.message.split('\n');
+			for (var i = 0, len = lines.length; i < len; i++) {
+				if (lines[i].match(/^\s*[A-Za-z0-9\-_\$]+\(/)) {
+					var entry = lines[i];
+					//Append next line also since it has the file info
+					if (lines[i + 1]) {
+						entry += " at " + lines[i + 1];
+						i++;
+					}
+					callstack.push(entry);
+				}
+			}
+			//Remove call to logStackTrace()
+			callstack.shift();
+			isCallstackPopulated = true;
+		}
+	}
+
+	if (!isCallstackPopulated) { //IE and Safari
+		var currentFunction = arguments.callee.caller;
+		while (currentFunction) {
+			var fn = currentFunction.toString();
+			var fname = fn.substring(fn.indexOf("function") + 8, fn.indexOf("(")) || "anonymous";
+			callstack.push(fname);
+			currentFunction = currentFunction.caller;
+		}
+	}
+
+	if (levels) {
+		return callstack.slice(0, levels).join('\n');
+	} else {
+		return callstack.join('\n');
+	}
+};
+
+function loadPage(href, force) {
+	var stack = ''; //getStackTrace(); // new Error().stack;
+	console.error("Function loadPage is now depreciated, use loadUrl instead\n" + stack);
+	return loadUrl({
+		url:href,
+		force:force,
+		loadType:'loadPage'
+	});
+}
+
 function loadPageNoHeader(href, scroll, force) {
+	var stack = ''; //getStackTrace(); // new Error().stack;
+	console.error("Function loadPageNoHeader is now depreciated, load loadUrl instead\n" + stack);
+	return loadUrl({
+		url:href,
+		scroll:scroll,
+		force:force,
+		loadType:'noheader'
+	});
+}
+
+function loadUrl(options) {
 	statePushed = false;
 	cont = false;
 
-	if (scroll == undefined) {
-		scroll = false;
-	}
-
-	if (force == undefined) {
-		force = false;
-	}
-
-	if (!force) {
-		cont = checkFormStatus(href, 'noheader', scroll);
+	options = sanitizeAjaxOptions(options);
+	if (!options.force) {
+		cont = checkFormStatus(options.url, options.loadType, options.scroll);
 	} else {
 		cont = true;
 	}
 
 	if (cont) {
+		if (options.funcStart != '') {
+			window[options.funcStart](options);
+		}
+
 		closeDateFilters();
 
 		clearAllTimeouts();
 
 		$.ajaxQ.abortAll();
-		$.get(href)
+		$.get(options.url)
 			.done(function(html) {
-				var htmlObject  = $(html);
-				var matches     = html.match(/<title>(.*?)<\/title>/);
-
-				if (matches != null) {
-					checkForLogout(html);
-
-					var htmlTitle   = matches[1];
-					var breadCrumbs = htmlObject.filter('#breadcrumbs').html();
-					var html        = htmlObject.filter('#main').html();
-
-					$('#main').empty().hide();
-					$('title').text(htmlTitle);
-					$('#breadcrumbs').html(breadCrumbs);
-					$('div[class^="ui-"]').remove();
-					$('#main').html(html);
-
-					myTitle = htmlTitle;
-					myHref  = cleanHeader(href);
-
-					pushState(myTitle, href);
-				} else {
-					checkForLogout(html);
-
-					$('#main').empty().hide();
-					$('div[class^="ui-"]').remove();
-					$('#main').html(html);
-
-					var hrefParts = href.split('?');
-					pageName = basename(hrefParts[0]);
-
-					if (pageName != '') {
-						// Workaround for Create Device
-						if (pageName == 'host.php') {
-							if (href.indexOf('create') >= 0) {
-								$('#menu').find('.pic').removeClass('selected');
-								$('#menu').find("a[href='"+escapeString(href)+"']").addClass('selected');
-							} else {
-								$('#menu').find('.pic').removeClass('selected');
-								$('#menu').find("a[href$='host.php']").addClass('selected');
-							}
-						} else if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
-						} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
-						}
-
-						if (pageName == 'graph_templates_items.php' || pageName == 'graph_templates_inputs.php') {
-							$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
-						}
-					}
-
-					applySkin();
-
-					pushState(myTitle, href);
-				}
-
-				if (isMobile.any() != null) {
-					window.scrollTo(0,1);
-				} else {
-					window.scrollTo(0,0);
-				}
-
-				handleConsole(pageName);
-
-				Pace.stop();
-
+				handleAjaxResponse(html, options);
 				return false;
 			})
 			.fail(function(html) {
@@ -2162,6 +1995,187 @@ function loadPageNoHeader(href, scroll, force) {
 	}
 
 	return false;
+}
+
+function postUrl(options, data) {
+	statePushed = false;
+	cont = false;
+
+	options = sanitizeAjaxOptions(options);
+
+	if (options.funcStart != '') {
+		window[options.funcStart](options);
+	}
+
+	$.ajaxQ.abortAll();
+	$.post(options.url,data)
+		.done(function(html) {
+			handleAjaxResponse(html, options);
+			return false;
+		})
+		.fail(function(html) {
+			getPresentHTTPError(html);
+		}
+	);
+
+	return false;
+}
+
+function findElement(htmlObject, element) {
+	wanted = htmlObject.find(element);
+	if (typeof wanted == 'undefined' || wanted.length == 0) {
+		wanted = htmlObject.filter(element);
+	}
+	return wanted;
+}
+
+function sanitizeAjaxOptions(check) {
+	options = {
+		force:     false,
+		scroll:    false,
+		elementId: 'main',
+		tabId:     '',
+		loadType:  'noheader',
+		funcStart: '',
+		funcEnd:   '',
+		url:       '',
+		pageName:  '',
+		noState:   false,
+		handle:    true,
+		redirect:  '',
+	};
+
+	if (typeof check == 'undefined') {
+		check = {};
+	}
+
+	if (typeof check.url == 'string') {
+		options.url = check.url;
+		var hrefParts = options.url.split('?');
+		options.pageName = basename(hrefParts[0]);
+		options.noState = options.url.indexOf('nostate') > -1;
+	}
+
+	if (typeof check.noState != 'undefined') {
+		options.noState = check.noState;
+	}
+
+	if (typeof check.scroll != 'undefined') {
+		options.scroll = check.scroll;
+	}
+
+	if (typeof check.funcStart == 'string') {
+		options.funcStart = check.funcStart;
+	}
+
+	if (typeof check.funcEnd == 'string') {
+		options.funcEnd = check.funcEnd;
+	}
+
+	if (typeof check.elementId == 'string') {
+		options.elementId = check.elementId;
+	}
+
+	if (typeof check.tabId == 'string') {
+		options.tabId = check.tabId;
+	}
+
+	if (typeof check.loadType == 'string') {
+		options.loadType = check.loadType;
+	}
+
+	if (typeof check.redirect == 'string') {
+		options.redirect = check.redirect;
+	}
+
+	if (typeof check.handle == 'boolean') {
+		options.handle = check.handle;
+	}
+
+	if (options.elementId.trim() == '') {
+		options.elementId = 'main';
+	}
+
+	return options;
+}
+
+function handleAjaxResponse(html, options) {
+	checkForLogout(html);
+
+	options = sanitizeAjaxOptions(options);
+
+	if (options.handle && options.redirect.trim() == '') {
+		elementId = '#' + options.elementId;
+
+		var htmlObject  = $(html);
+		var matches     = html.match(/<title>(.*?)<\/title>/);
+
+		if (matches != null) {
+			var htmlTitle   = matches[1];
+			var breadCrumbs = findElement(htmlObject,'#breadcrumbs').html();
+			var htmlContent = findElement(htmlObject,elementId).html();
+
+			$('title').text(htmlTitle);
+			$('#breadcrumbs').html(breadCrumbs);
+
+			myTitle = htmlTitle;
+		}
+
+		if (typeof htmlContent == 'undefined') {
+			htmlContent = html;
+		}
+
+		pushState(myTitle, options);
+
+		$(elementId).empty().hide();
+		$('div[class^="ui-"]').remove();
+		$(elementId).html(htmlContent);
+		$(elementId).show();
+
+		if (options.pageName != '') {
+			// Workaround for Create Device
+			if (options.pageName == 'host.php') {
+				if (options.url.indexOf('create') >= 0) {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href='"+escapeString(options.url)+"']").addClass('selected');
+				} else {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href$='host.php']").addClass('selected');
+				}
+			} else if ($('#menu').find("a[href^='"+escapeString(options.url)+"']").length > 0) {
+				$('#menu').find('.pic').removeClass('selected');
+				$('#menu').find("a[href^='"+escapeString(options.url)+"']").addClass('selected');
+			} else if ($('#menu').find("a[href*='/"+options.pageName+"']").length > 0) {
+				$('#menu').find('.pic').removeClass('selected');
+				$('#menu').find("a[href*='/"+options.pageName+"']").addClass('selected');
+			}
+
+			if (options.pageName == 'graph_templates_items.php' || options.pageName == 'graph_templates_inputs.php') {
+				$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
+			}
+		}
+
+		applySkin()
+
+		var scrollTop = (isMobile.any() != null) ? 1 : 0;
+
+		if (options.scroll) {
+			scrollTop = options.scroll;
+		}
+
+		window.scrollTo(0,scrollTop);
+		handleConsole(options.pageName);
+
+		Pace.stop();
+	}
+
+	if (options.funcEnd != '') {
+		window[options.funcEnd](options, html);
+	}
+
+	if (options.redirect.trim() != '') {
+		document.location = options.redirect;
+	}
 }
 
 function getPresentHTTPError(data) {
@@ -2232,7 +2246,10 @@ function getPresentHTTPError(data) {
 function ajaxAnchors() {
 	var page = basename(location.pathname);
 
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').off('click').on('click', function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.lefttab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').off('click').on('click', function(event) {
+		if (!shouldCaptureClick(event))
+			return;
+
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -2270,7 +2287,10 @@ function ajaxAnchors() {
 			pageName = basename(href);
 		}
 
-		loadPage(href);
+		loadUrl({
+			url:href,
+			loadType:'loadPage'
+		});
 
 		return false;
 	});
@@ -2434,36 +2454,26 @@ function setupSortable() {
 			var url = page+(page.indexOf('?') > 0 ? '&':'?') +
 				'sort_column=' + column +
 				'&sort_direction=' + direction +
-				'&header=false' +
 				sortAdd;
 
-			closeDateFilters();
-
-			$.ajaxQ.abortAll();
-			$.get(url)
-				.done(function(data) {
-					checkForLogout(data);
-
-					$('#'+returnto).empty().hide();
-
-					if (returnto == 'main') {
-						$('div[class^="ui-"]').remove();
-					}
-
-					$('#'+returnto).html(data).show();
-
-					applySkin();
-				})
-				.fail(function(data) {
-					getPresentHTTPError(data);
-				}
-			);
+			loadUrl({
+				url:url,
+				elementId:returnto
+			});
 		}
 	});
 }
 
+function shouldCaptureClick(event) {
+	var evt = event ? event:window.event;
+	return !(evt.shiftKey || evt.altKey || evt.ctrlKey || evt.metaKey);
+}
+
 function setupBreadcrumbs() {
 	$('#breadcrumbs > li > a').click(function(event) {
+		if (!shouldCaptureClick(event))
+			return
+
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -2594,20 +2604,12 @@ function applyTableSizing() {
 	saveTableWidths(true);
 }
 
-function appendHeaderSuppression(url) {
+function correctUrlParameters(url) {
 	if (url.indexOf('action=tree_content') < 0 && url.indexOf('action=tree') >= 0) {
 		url = url.replace('action=tree', 'action=tree_content');
 	}
 
-	if (url.indexOf('header=false') < 0) {
-		url += (url.indexOf('?') > 0 ? '&header=false':'?header=false');
-	}
-
 	return url;
-}
-
-function stripHeaderSuppression(url) {
-	return url.replace('header=false', '').replace('?&', '?').replace('&&', '&');
 }
 
 /** setupPageTimeout - This function will setup the page timeout based upon
@@ -2630,24 +2632,8 @@ function setupPageTimeout() {
 				}
 
 				/* fix coner case with tree refresh */
-				refreshPage = appendHeaderSuppression(refreshPage);
-
-				closeDateFilters();
-
-				$.ajaxQ.abortAll();
-				$.get(refreshPage)
-					.done(function(data) {
-						checkForLogout(data);
-
-						$('#main').empty().hide();
-						$('div[class^="ui-"]').remove();
-						$('#main').html(data);
-						applySkin();
-					})
-					.fail(function(data) {
-						getPresentHTTPError(data);
-					}
-				);
+				refreshPage = correctUrlParameters(refreshPage);
+				loadUrl({url:refreshPage});
 			}
 		}, refreshMSeconds);
 	}
@@ -2691,9 +2677,7 @@ $(function() {
 	var tapped  = false;
 
 	// Use traditional popstate handler
-	window.onpopstate = function(event) {
-		handlePopState();
-	}
+	window.onpopstate = handlePopState;
 
 	$('#filter, #rfilter').keydown(function(event) {
 		if (event.keyCode == 8 && $(this).val() == '') {
@@ -3015,25 +2999,8 @@ function checkForLogout(data) {
 }
 
 function clearGraphFilter() {
-	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+'&clear=1');
-
-	closeDateFilters();
-
-	$.ajaxQ.abortAll();
-	$.get(href)
-		.done(function(data) {
-			checkForLogout(data);
-
-			$('#main').empty().hide();
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-
-			applySkin();
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
+	var href = correctUrlParameters(graphPage+'?action='+pageAction+'&clear=1');
+	loadUrl({url:href});
 }
 
 function closeDateFilters() {
@@ -3055,22 +3022,21 @@ function saveGraphFilter(section) {
 
 	closeDateFilters();
 
-	$.get(href+'&header=false&section='+section)
-		.done(function(data) {
-			checkForLogout(data);
-
-			$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
-				$('#text').empty();
-			});
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
+	loadUrl({
+		url:href+'&section='+section,
+		funcEnd:'finializeGraphFilter'
+	});
 }
 
+function finalizeGraphFilter(options) {
+	$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
+		$('#text').empty();
+	});
+}
+
+
 function applyGraphFilter() {
-	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
+	var href = correctUrlParameters(graphPage+'?action='+pageAction+
 		'&rfilter=' + base64_encode($('#rfilter').val())+
 		(typeof($('#host_id').val()) != 'undefined' ? '&host_id='+$('#host_id').val():'')+
 		'&columns='+$('#columns').val()+
@@ -3080,89 +3046,51 @@ function applyGraphFilter() {
 
 	closeDateFilters();
 
-	$.ajaxQ.abortAll();
-	$.get(href)
-		.done(function(data) {
-			checkForLogout(data);
-
-			$('#main').hide();
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			applySkin();
-
-			pushState(myTitle, myHref);
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
+	loadUrl({url:href});
 }
 
-function cleanHeader(href) {
-	href = stripHeaderSuppression(href);
+function cleanUrlParameters(href) {
 	href = href.replace('action=tree_content', 'action=tree');
 	href = href.replace('?nostate=true', '?').replace('&nostate=true', '').replace('?&', '?');
 
 	return href;
 }
 
-function pushState(myTitle, myHref) {
-	if (myHref.indexOf('nostate') < 0) {
+function pushState(myTitle, options) {
+	options = sanitizeAjaxOptions(options);
+	if (!options.noState) {
 		if (statePushed == false) {
 			if (typeof window.history.pushState != 'undefined') {
-				var myObject = { Page: myTitle, Url: cleanHeader(myHref) };
+				var myObject = { Page: myTitle, Url: cleanUrlParameters(options.url), Options: Object.assign({}, options) };
 				window.history.pushState(myObject, myObject.Page, myObject.Url);
 			}
 		}
-	} else if (typeof window.history.popState == 'function') {
-		window.history.popState();
+		statePushed = true;
 	}
-
-	statePushed = true;
 }
 
-function handlePopState() {
+function handlePopState(e) {
 	var href = document.location.href;
 
-	if (popFired == false) {
-		if (href.indexOf('#') == -1) {
-			if (href.indexOf('header=false') > 0) {
-				loadPageNoHeader(href + '&nostate=true');
-			} else if (basename(href) == lastPage) {
-				loadPageNoHeader(href + (href.indexOf('?') > 0 ? '&header=false&nostate=true':'?header=false&nostate=true'));
-			} else {
-				href.replace('header=false','').replace('?&', '?').replace('&&', '&');
-				document.location = href + (href.indexOf('?') > 0 ? '&nostate=true':'?nostate=true');
-			}
-		}
+	if (typeof e.state.Options != 'undefined') {
+		loadUrl(e.state.Options);
+		return false;
+	} else if (typeof e.state.Url != 'undefined') {
+		loadUrl({url:href});
+		return false;
 	}
-
-	popFired = true;
-	lastPage = basename(href);
+	return true;
 }
 
 function applyGraphTimespan() {
-	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
+	var href = correctUrlParameters(graphPage+'?action='+pageAction+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		($('#rfilter').length ? '&rfilter=' + base64_encode($('#rfilter').val()):'') +
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
 	closeDateFilters();
 
-	$.ajaxQ.abortAll();
-	$.get(href)
-		.done(function(data) {
-			checkForLogout(data);
-
-			$('#main').empty().hide();
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			applySkin();
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		}
-	);
+	loadUrl({url:href});
 }
 
 function refreshGraphTimespanFilter() {
@@ -3177,18 +3105,13 @@ function refreshGraphTimespanFilter() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
 	closeDateFilters();
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
-		checkForLogout(data);
-
-		$('#main').empty().hide();
-		$('div[class^="ui-"]').remove();
-		$('#main').html(data);
-		applySkin();
+		handleAjaxResponse(data);
 	});
 }
 
@@ -3203,7 +3126,7 @@ function timeshiftGraphFilterLeft() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
 	closeDateFilters();
 
@@ -3229,7 +3152,7 @@ function timeshiftGraphFilterRight() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
 	closeDateFilters();
 
@@ -3254,7 +3177,7 @@ function clearGraphTimespanFilter() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+	var href = correctUrlParameters(graphPage+'?action='+pageAction);
 
 	closeDateFilters();
 
@@ -3341,6 +3264,22 @@ function removeRangeFill(local_graph_id) {
 	);
 }
 
+function removeSpikesAbsolute(local_graph_id) {
+	var strURL = urlPath+'spikekill.php?method=absolute&local_graph_id='+local_graph_id;
+
+	$.getJSON(strURL)
+		.done(function(data) {
+			checkForLogout(data);
+
+			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		}
+	);
+}
+
 function dryRunStdDev(local_graph_id) {
 	var strURL = urlPath+'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
 
@@ -3412,6 +3351,24 @@ function dryRunRangeFill(local_graph_id) {
 			checkForLogout(data);
 
 			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		}
+	);
+}
+
+function dryRunAbsolute(local_graph_id) {
+	var strURL = urlPath+'spikekill.php?method=absolute&dryrun=true&local_graph_id='+local_graph_id;
+
+	$.getJSON(strURL)
+		.done(function(data) {
+			checkForLogout(data);
+
 			$('#spikeresults').remove();
 			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
 			$('#spikeresults').html(data.results);
@@ -3510,29 +3467,15 @@ function initializeGraphs() {
 		$(this).attr('href', urlPath+'graph.php?local_graph_id='+graph_id).addClass('linkEditMain');;
 
 		$(this).off('click').on('click', function(event) {
+			if (!shouldCaptureClick(event))
+				return;
+
 			var graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 
 			event.preventDefault();
 			event.stopPropagation();
 
-			closeDateFilters();
-
-			$.ajaxQ.abortAll();
-			$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false')
-				.done(function(data) {
-					checkForLogout(data);
-
-					$('#main').empty().hide();
-					$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
-					$('div[class^="ui-"]').remove();
-					$('#main').html(data);
-					applySkin();
-					clearTimeout(myRefresh);
-				})
-				.fail(function(data) {
-					getPresentHTTPError(data);
-				}
-			);
+			loadUrl({url:urlPath+'graph.php?local_graph_id='+graph_id});
 		});
 	});
 
@@ -3554,6 +3497,9 @@ function initializeGraphs() {
 			'&graph_end='+timestampDate2).addClass('linkEditMain');
 
 		$(this).off('click').on('click', function(event) {
+			if (!shouldCaptureClick(event))
+				return;
+
 			var graph_id = $(this).attr('id').replace('graph_','').replace('_csv','');
 			event.preventDefault();
 			event.stopPropagation();
@@ -3679,29 +3625,16 @@ function initializeGraphs() {
 			'&graph_end='+timestampDate2).addClass('linkEditMain');
 
 		$(this).off('click').on('click', function(event) {
+			if (!shouldCaptureClick(event))
+				return;
+
 			var graph_id = $(this).attr('id').replace('graph_','').replace('_util','');
+			var graph_url = urlPath+'graph.php?action=zoom&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val());
 
 			event.preventDefault();
 			event.stopPropagation();
 
-			closeDateFilters();
-
-			$.ajaxQ.abortAll();
-			$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()))
-				.done(function(data) {
-					checkForLogout(data);
-
-					$('#main').empty().hide();
-					$('div[class^="ui-"]').remove();
-					$('#main').html(data);
-					$('#breadcrumbs').append('<li><a id="nav_butil" href="#">'+utilityView+'</a></li>');
-					applySkin();
-					clearTimeout(myRefresh);
-				})
-				.fail(function(data) {
-					getPresentHTTPError(data);
-				}
-			);
+			loadUrl({url:graph_url});
 		});
 	});
 
@@ -3712,6 +3645,9 @@ function initializeGraphs() {
 		});
 
 		$(this).off('click').on('click', function(event) {
+			if (!shouldCaptureClick(event))
+				return;
+
 			var graph_id = $(this).attr('id').replace('graph_','').replace('_realtime','');
 
 			event.preventDefault();
@@ -4345,5 +4281,3 @@ function checkSNMPPassphraseConfirm(type) {
 		}
 	}
 }
-
-

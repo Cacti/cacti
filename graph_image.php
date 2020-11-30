@@ -46,6 +46,9 @@ if (isset_request_var('graph_nolegend')) {
 get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 /* ==================================================== */
 
+/* close the session, be faster */
+cacti_session_close();
+
 api_plugin_hook_function('graph_image');
 
 $graph_data_array = array();

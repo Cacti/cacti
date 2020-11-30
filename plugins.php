@@ -62,12 +62,6 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 	$mode = get_nfilter_request_var('mode');
 	$id   = sanitize_search_string(get_request_var('id'));
 
-	if (isset_request_var('header')) {
-		$option = 'header=false';
-	} else {
-		$option = '';
-	}
-
 	switch ($mode) {
 		case 'install':
 			if (!in_array($id, $plugins_integrated)) {
@@ -77,9 +71,9 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			define('IN_PLUGIN_INSTALL', 1);
 
 			if ($_SESSION['sess_plugins_state'] >= 0) {
-				header('Location: plugins.php?state=5' . ($option != '' ? '&' . $option:''));
+				header('Location: plugins.php?state=5');
 			} else {
-				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
+				header('Location: plugins.php');
 			}
 			exit;
 			break;
@@ -90,13 +84,13 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 			api_plugin_uninstall($id);
 
-			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'disable':
 			if (!in_array($id, $pluginslist)) break;
 			api_plugin_disable($id);
-			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'enable':
@@ -104,7 +98,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			if (!in_array($id, $plugins_integrated)) {
 				api_plugin_enable($id);
 			}
-			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'check':
@@ -114,14 +108,14 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			if (!in_array($id, $pluginslist)) break;
 			if (in_array($id, $plugins_integrated)) break;
 			api_plugin_moveup($id);
-			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
+			header('Location: plugins.php');
 			exit;
 			break;
 		case 'movedown':
 			if (!in_array($id, $pluginslist)) break;
 			if (in_array($id, $plugins_integrated)) break;
 			api_plugin_movedown($id);
-			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
+			header('Location: plugins.php');
 			exit;
 			break;
 	}
@@ -306,16 +300,16 @@ function update_show_current () {
 	?>
 	<script type="text/javascript">
 	function applyFilter() {
-		strURL  = 'plugins.php?header=false';
-		strURL += '&filter='+$('#filter').val();
+		strURL  = 'plugins.php';
+		strURL += '?filter='+$('#filter').val();
 		strURL += '&rows='+$('#rows').val();
 		strURL += '&state='+$('#state').val();
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'plugins.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'plugins.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

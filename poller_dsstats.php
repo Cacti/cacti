@@ -33,7 +33,7 @@ require_once($config['base_path'] . '/lib/dsstats.php');
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Data Source Staitistcs Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
@@ -191,6 +191,9 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 
 		/* if it's time to update daily statistics, do so now */
 		if (($last_run_daily != '' && ((strtotime($last_run_daily) + ($daily_interval * 60)) < $current_time)) || $forcerun) {
+			/* search for range errors */
+			dsstats_find_log_bad_maxvalues();
+
 			/* run the daily stats */
 			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 			dsstats_get_and_store_ds_avgpeak_values('daily');

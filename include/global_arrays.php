@@ -122,12 +122,13 @@ $cacti_version_codes = array(
 	'1.2.7'  => '0102',
 	'1.2.8'  => '0102',
 	'1.2.9'  => '0102',
-	'1.2.10'  => '0102',
-	'1.2.11'  => '0102',
-	'1.2.12'  => '0102',
-	'1.2.13'  => '0102',
-	'1.2.14'  => '0102',
-	'1.2.15'  => '0102',
+	'1.2.10' => '0102',
+	'1.2.11' => '0102',
+	'1.2.12' => '0102',
+	'1.2.13' => '0102',
+	'1.2.14' => '0102',
+	'1.2.15' => '0102',
+	'1.3.0'  => '0102',
 );
 
 $messages = array(
@@ -628,6 +629,12 @@ $logfile_verbosity = array(
 	POLLER_VERBOSITY_DEVDBG => __('DEVEL - Developer DEBUG Level')
 );
 
+$logfile_expansion = array(
+	LOG_EXPAND_NONE    => ('NONE - No expansion'),
+	LOG_EXPAND_DISPLAY => ('DISPLAY - Only when displaying'),
+	LOG_EXPAND_FULL    => ('FULL - Display and search expansion'),
+);
+
 $poller_options = array(
 	1 => 'cmd.php',
 	2 => 'spine'
@@ -748,7 +755,11 @@ $device_threads = array(
 	3 => __('%d Threads', 3),
 	4 => __('%d Threads', 4),
 	5 => __('%d Threads', 5),
-	6 => __('%d Threads', 6)
+	6 => __('%d Threads', 6),
+	7 => __('%d Threads', 7),
+	8 => __('%d Threads', 8),
+	9 => __('%d Threads', 9),
+	10 => __('%d Threads', 10)
 );
 
 $cron_intervals = array(
@@ -936,6 +947,8 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			),
 		__('Troubleshooting') => array(
 			'data_debug.php' => __('Data Sources'),
+			'support.php'    => __('Technical Info'),
+			'changelog.php'  => __('Change Log'),
 		)
 	);
 } else {
@@ -1190,6 +1203,8 @@ $user_auth_realm_filenames = array(
 	'aggregate_graphs.php' => 5,
 	'aggregate_items.php' => 5,
 	'spikekill.php' => 1043,
+	'support.php' => 15,
+	'changelog.php' => 15,
 	'permission_denied.php' => -1
 );
 
@@ -2275,6 +2290,12 @@ $navigation = array(
 		'url' => 'rrdcleaner.php?action=restart',
 		'level' => '2'
 	),
+	'support.php' => array(
+		'title' => __('Technical Support'),
+		'mapping' => 'index.php:,support.php:',
+		'url' => 'support.php',
+		'level' => '2'
+	),
 	'utilities.php:' => array(
 		'title' => __('Utilities'),
 		'mapping' => 'index.php:',
@@ -2319,12 +2340,6 @@ $navigation = array(
 	),
 	'utilities.php:clear_user_log' => array(
 		'title' => __('Clear User Log'),
-		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
-	),
-	'utilities.php:view_tech' => array(
-		'title' => __('Technical Support'),
 		'mapping' => 'index.php:,utilities.php:',
 		'url' => 'utilities.php',
 		'level' => '2'
@@ -2658,7 +2673,13 @@ $navigation = array(
 		'mapping' => 'index.php:,automation_tree_rules.php:,automation_tree_rules.php:edit',
 		'url' => '',
 		'level' => '3'
-	)
+	),
+	'changelog.php' => array(
+		'title' => __('Change Log'),
+		'mapping' => 'index.php:,changelog.php:',
+		'url' => 'changelog.php',
+		'level' => '2'
+	),
 );
 
 $snmpagent_event_severity = array(

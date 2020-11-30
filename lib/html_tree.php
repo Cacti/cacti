@@ -114,7 +114,7 @@ function grow_dhtml_trees() {
 				LIMIT 1',
 				array($_SESSION['sess_user_id']));
 		} else {
-			$default_tree_id = db_fetch_cell('SELECT graph_tree.id
+			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
 				FROM graph_tree
 				INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
 				AND user_auth_perms.type = 2
@@ -252,6 +252,7 @@ function grow_dhtml_trees() {
 	$(function () {
 		$('#jstree').each(function(data) {
 			var id=$(this).attr('id');
+			var pageGraphFirstLoad = true;
 
 			$(this)
 			.on('init.jstree', function() {
@@ -266,6 +267,7 @@ function grow_dhtml_trees() {
 			})
 			.on('ready.jstree', function() {
 				resizeTreePanel();
+				pageGraphFirstLoad = false;
 			})
 			.on('changed.jstree', function() {
 				resizeTreePanel();
@@ -295,7 +297,7 @@ function grow_dhtml_trees() {
 						href = href.replace('action=tree', 'action=tree_content');
 						href = href + '&hyper=true';
 						$('.cactiGraphContentArea').hide();
-						loadPage(href);
+						loadUrl({url:href,noState:pageGraphFirstLoad});
 					}
 
 					node = data.node.id;

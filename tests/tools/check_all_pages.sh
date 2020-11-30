@@ -21,7 +21,7 @@ CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
 APACHE_ERROR="/var/log/apache2/error.log"
 APACHE_ACCESS="/var/log/apache2/access.log"
 POLLER="$BASE_PATH/poller.php"
-WEBUSER="www-data"
+WEBUSER="travis"
 DEBUG=1
 
 # ------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ save_log_files() {
 # Some functions to handle settings consitently
 # ------------------------------------------------------------------------------
 set_cacti_admin_password() {
-	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password=MD5('$login_pw') WHERE id = 1" cacti 2>/dev/null
+	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password=MD5('$login_pw'), must_change_password='', password_change='' WHERE id = 1" cacti 2>/dev/null
 }
 
 enable_log_validation() {

@@ -54,7 +54,7 @@ switch (get_request_var('action')) {
 	case 'item_add_gt':
 		template_item_add_gt();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
     case 'item_remove_gt_confirm':
         template_item_remove_gt_confirm();
@@ -63,12 +63,12 @@ switch (get_request_var('action')) {
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'item_add_dq':
 		template_item_add_dq();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
     case 'item_remove_dq_confirm':
         template_item_remove_dq_confirm();
@@ -77,7 +77,7 @@ switch (get_request_var('action')) {
 	case 'item_remove_dq':
 		template_item_remove_dq();
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'edit':
 		top_header();
@@ -122,7 +122,7 @@ function form_save() {
 			}
 		}
 
-		header('Location: host_templates.php?header=false&action=edit&id=' . (empty($host_template_id) ? get_nfilter_request_var('id') : $host_template_id));
+		header('Location: host_templates.php?action=edit&id=' . (empty($host_template_id) ? get_nfilter_request_var('id') : $host_template_id));
 	}
 }
 
@@ -231,7 +231,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: host_templates.php?header=false');
+		header('Location: host_templates.php');
 		exit;
 	}
 
@@ -296,7 +296,7 @@ function form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: host_templates.php?header=false');
+		header('Location: host_templates.php');
 		exit;
 	}
 
@@ -354,16 +354,17 @@ function template_item_remove_gt_confirm() {
 	?>
 	<script type='text/javascript'>
 	$('#continue').click(function(data) {
-		$.post('host_templates.php?action=item_remove_gt', {
+		var options = {
+			url: 'host_templates.php?action=item_remove_gt'
+		}
+
+		var data = {
 			__csrf_magic: csrfMagicToken,
 			host_template_id: <?php print get_request_var('host_template_id');?>,
 			id: <?php print get_request_var('id');?>
-		}, function(data) {
-			$('#cdialog').dialog('close');
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			applySkin();
-		});
+		}
+
+		postUrl(options, data);
 	});
 	</script>
 	<?php
@@ -417,16 +418,17 @@ function template_item_remove_dq_confirm() {
 	?>
 	<script type='text/javascript'>
 	$('#continue').click(function(data) {
-		$.post('host_templates.php?action=item_remove_dq', {
+		var options = {
+			url: 'host_templates.php?action=item_remove_dq'
+		}
+
+		var data = {
 			__csrf_magic: csrfMagicToken,
 			host_template_id: <?php print get_request_var('host_template_id');?>,
 			id: <?php print get_request_var('id');?>
-		}, function(data) {
-			$('#cdialog').dialog('close');
-			$('div[class^="ui-"]').remove();
-			$('#main').html(data);
-			applySkin();
-		});
+		}
+
+		postUrl(options, data);
 	});
 	</script>
 	<?php
@@ -632,28 +634,32 @@ function template_edit() {
 		}).css('cursor', 'pointer');
 
 		$('#add_dq').click(function() {
-			$.post('host_templates.php?action=item_add_dq', {
+			var options = {
+				url: 'host_templates.php?action=item_add_dq'
+			}
+
+			var data = {
 				host_template_id: $('#id').val(),
 				snmp_query_id: $('#snmp_query_id').val(),
 				reindex_method: $('#reindex_method').val(),
 				__csrf_magic: csrfMagicToken
-			}).done(function(data) {
-				$('div[class^="ui-"]').remove();
-				$('#main').html(data);
-				applySkin();
-			});
+			}
+
+			postUrl(options, data);
 		});
 
 		$('#add_gt').click(function() {
-			$.post('host_templates.php?action=item_add_gt', {
+			var options = {
+				url: 'host_templates.php?action=item_add_gt'
+			}
+
+			var data = {
 				host_template_id: $('#id').val(),
 				graph_template_id: $('#graph_template_id').val(),
 				__csrf_magic: csrfMagicToken
-			}).done(function(data) {
-				$('div[class^="ui-"]').remove();
-				$('#main').html(data);
-				applySkin();
-			});
+			}
+
+			postUrl(options, data);
 		});
 	});
 
@@ -754,16 +760,16 @@ function template() {
 		</td>
 		<script type='text/javascript'>
 		function applyFilter() {
-			strURL  = 'host_templates.php?header=false';
-			strURL += '&filter='+$('#filter').val();
+			strURL  = 'host_templates.php';
+			strURL += '?filter='+$('#filter').val();
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&has_hosts='+$('#has_hosts').is(':checked');
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			strURL = 'host_templates.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'host_templates.php?clear=1';
+			loadUrl({url:strURL})
 		}
 
 		$(function() {

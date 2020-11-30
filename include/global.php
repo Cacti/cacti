@@ -30,10 +30,47 @@
 
 */
 
+$config = array();
+
+/* this should be auto-detected, set it manually if needed */
+$config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
+
+/* define cacti version */
+/* used for includes */
+if ($config['cacti_server_os'] == 'win32') {
+	$config['base_path']    = str_replace("\\", "/", substr(dirname(__FILE__),0,-8));
+	$config['library_path'] = $config['base_path'] . '/lib';
+} else {
+	$config['base_path']    = preg_replace("/(.*)[\/]include/", "\\1", dirname(__FILE__));
+	$config['library_path'] = preg_replace("/(.*[\/])include/", "\\1lib", dirname(__FILE__));
+}
+
+$config['include_path'] = dirname(__FILE__);
+
+/* if the rra path needs to be different, set it */
+if (isset($rra_path)) {
+	$config['rra_path'] = $rra_path;
+} else {
+	$config['rra_path'] = $config['base_path'] . '/rra';
+}
+
+/* for multiple pollers, we need to know this location */
+if (!isset($scripts_path)) {
+	$config['scripts_path'] = $config['base_path'] . '/scripts';
+} else {
+	$config['scripts_path'] = $scripts_path;
+}
+
+if (!isset($resource_path)) {
+	$config['resource_path'] = $config['base_path'] . '/resource';
+} else {
+	$config['resource_path'] = $resource_path;
+}
+
 /* load cacti version from file */
 $cacti_version_file = dirname(__FILE__) . '/cacti_version';
 
-if (! file_exists($cacti_version_file)) {
+if (!file_exists($cacti_version_file)) {
 	die ('ERROR: failed to find cacti version file');
 }
 
@@ -43,9 +80,11 @@ if ($cacti_version === false) {
 }
 $cacti_version = trim($cacti_version);
 
-/* define cacti version */
-define('CACTI_VERSION', $cacti_version);
-#define('CACTI_VERSION_BETA', 1);
+include_once($config['include_path'] . '/global_constants.php');
+include_once($config['library_path'] . '/functions.php');
+
+define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
+define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_FULL));
 
 /* define if cacti is in CLI mode */
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
@@ -55,6 +94,24 @@ if (defined('CACTI_CLI_ONLY') && !CACTI_CLI) {
 
 // define documentation table of contents
 define('CACTI_DOCUMENTATION_TOC', 'docs/Table-of-Contents.html');
+
+//By default, we assume that it is not
+//an AJAX request.
+global $is_request_ajax;
+$is_request_ajax = false;
+
+//If HTTP_X_REQUESTED_WITH is equal to xmlhttprequest
+//We assume this is an ajax call
+if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+    strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0) {
+	$is_request_ajax = true;
+}
+
+// NOTE: Cannot use isset_request_var() as that is in lib/html_utility.php
+//       which is not included yet!
+//if (isset($_REQUEST['headercontent'])) {
+//	$is_request_ajax = false;
+//}
 
 /* Default database settings*/
 $database_type     = 'mysql';
@@ -78,8 +135,6 @@ $url_path = '/cacti/';
 
 /* disable log rotation setting */
 $disable_log_rotation = false;
-
-$config = array();
 
 /* Include configuration, or use the defaults */
 if (file_exists(dirname(__FILE__) . '/config.php')) {
@@ -146,46 +201,6 @@ if (empty($url_path)) {
 /* set the local for international users */
 setlocale(LC_CTYPE, 'en_US.UTF-8');
 
-/* Files that do not need http header information - Command line scripts */
-$no_http_header_files = array(
-	'add_device.php',
-	'add_graphs.php',
-	'add_perms.php',
-	'add_tree.php',
-	'boost_rrdupdate.php',
-	'cmd.php',
-	'cmd_realtime.php',
-	'copy_user.php',
-	'host_update_template.php',
-	'poller_automation.php',
-	'poller_boost.php',
-	'poller_commands.php',
-	'poller_dsstats.php',
-	'poller_export.php',
-	'poller_graphs_reapply_names.php',
-	'poller_maintenance.php',
-	'poller_output_empty.php',
-	'poller.php',
-	'poller_realtime.php',
-	'poller_recovery.php',
-	'poller_reindex_hosts.php',
-	'poller_reports.php',
-	'poller_spikekill.php',
-	'query_host_cpu.php',
-	'query_host_partitions.php',
-	'rebuild_poller_cache.php',
-	'repair_database.php',
-	'script_server.php',
-	'snmpagent_mibcachechild.php',
-	'snmpagent_mibcache.php',
-	'snmpagent_persist.php',
-	'sql.php',
-	'ss_host_cpu.php',
-	'ss_host_disk.php',
-	'ss_sql.php',
-	'structure_rra_paths.php',
-);
-
 $colors = array();
 
 /* this should be auto-detected, set it manually if needed */
@@ -225,43 +240,17 @@ if (!isset($url_path)) {
 $config['url_path'] = $url_path;
 define('URL_PATH', $url_path);
 
-/* used for includes */
-if ($config['cacti_server_os'] == 'win32') {
-	$config['base_path']    = str_replace("\\", "/", substr(dirname(__FILE__),0,-8));
-	$config['library_path'] = $config['base_path'] . '/lib';
-} else {
-	$config['base_path']    = preg_replace("/(.*)[\/]include/", "\\1", dirname(__FILE__));
-	$config['library_path'] = preg_replace("/(.*[\/])include/", "\\1lib", dirname(__FILE__));
-}
-$config['include_path'] = dirname(__FILE__);
-$config['rra_path'] = $config['base_path'] . '/rra';
-
-/* for multiple pollers, we need to know this location */
-if (!isset($scripts_path)) {
-	$config['scripts_path'] = $config['base_path'] . '/scripts';
-} else {
-	$config['scripts_path'] = $scripts_path;
-}
-
-if (!isset($resource_path)) {
-	$config['resource_path'] = $config['base_path'] . '/resource';
-} else {
-	$config['resource_path'] = $resource_path;
-}
-
 if (isset($input_whitelist)) {
 	$config['input_whitelist'] = $input_whitelist;
 }
 
 /* include base modules */
 include_once($config['library_path'] . '/database.php');
-include_once($config['library_path'] . '/functions.php');
-include_once($config['include_path'] . '/global_constants.php');
 
 $filename = get_current_page();
 
 $config['is_web'] = !defined('CACTI_CLI_ONLY');
-if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename, $no_http_header_files, true)) {
+if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
 }
 
@@ -496,6 +485,14 @@ if ((bool)ini_get('register_globals')) {
 define('CACTI_DATE_TIME_FORMAT', date_time_format());
 
 include_once($config['include_path'] . '/global_languages.php');
+
+define('CACTI_VERSION_BRIEF', get_cacti_version_text(false,CACTI_VERSION));
+define('CACTI_VERSION_BRIEF_FULL', get_cacti_version_text(false,CACTI_VERSION_FULL));
+define('CACTI_VERSION_TEXT', get_cacti_version_text(true,CACTI_VERSION));
+define('CACTI_VERSION_TEXT_FULL', get_cacti_version_text(true,CACTI_VERSION_FULL));
+define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true,CACTI_VERSION_FULL));
+
+
 include_once($config['library_path'] . '/auth.php');
 include_once($config['library_path'] . '/plugins.php');
 include_once($config['include_path'] . '/plugins.php');
@@ -517,7 +514,15 @@ include_once($config['include_path'] . '/csrf.php');
 
 if ($config['is_web']) {
 	if (isset_request_var('newtheme')) {
-		unset($_SESSION['selected_theme']);
+		$newtheme=get_nfilter_request_var('newtheme');
+		$newtheme_css=__DIR__ . "/themes/$newtheme/main.css";
+
+		if (is_valid_theme($theme)) {
+			set_config_option('selected_theme', $newtheme);
+			$_SESSION['selected_theme'] = $newtheme;
+		} else {
+			unset($_SESSION['selected_theme']);
+		}
 	}
 
 	if (isset_request_var('csrf_timeout')) {
@@ -543,4 +548,3 @@ api_plugin_hook('config_insert');
 
 /* set config cacti_version for plugins */
 $config['cacti_version'] = CACTI_VERSION;;
-

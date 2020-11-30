@@ -23,9 +23,6 @@
  +-------------------------------------------------------------------------+
 */
 
-global $original_memory_limit;
-
-$original_memory_limit = ini_get('memory_limit');
 ini_set('memory_limit','-1');
 
 include(dirname(__FILE__) . '/../include/cli_check.php');

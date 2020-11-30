@@ -69,7 +69,7 @@ function form_save() {
 	if (isset_request_var('save_component_network')) {
 		$network_id = api_networks_save($_POST);
 
-		header('Location: automation_networks.php?header=false&action=edit&id=' . (empty($network_id) ? get_nfilter_request_var('id') : $network_id));
+		header('Location: automation_networks.php?action=edit&id=' . (empty($network_id) ? get_nfilter_request_var('id') : $network_id));
 	}
 }
 
@@ -140,9 +140,14 @@ function api_networks_discover($network_id, $discover_debug) {
 					WHERE id = ?',
 					array($poller_id));
 
+				$port = read_config_option('remote_agent_port');
+				if ($port != '') {
+					$port = ':' . $port;
+				}
+
 				$fgc_contextoption = get_default_contextoption();
 				$fgc_context       = stream_context_create($fgc_contextoption);
-				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
+				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $port . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
 			}
 		} else {
 			$_SESSION['automation_message'] = __esc('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'', $name);
@@ -313,7 +318,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: automation_networks.php?header=false');
+		header('Location: automation_networks.php');
 
 		exit;
 	}
@@ -383,7 +388,7 @@ function form_actions() {
 
 	if (!isset($networks_array)) {
 		raise_message(40);
-		header('Location: automation_networks.php?header=false');
+		header('Location: automation_networks.php');
 		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
@@ -1030,7 +1035,7 @@ function networks() {
 	validate_store_request_vars($filters, 'sess_networks');
 	/* ================= input validation ================= */
 
-	$refresh['page']    = 'automation_networks.php?header=false';
+	$refresh['page']    = 'automation_networks.php';
 	$refresh['seconds'] = get_request_var('refresh');
 	$refresh['logout']  = 'false';
 
@@ -1236,15 +1241,14 @@ function networks_filter() {
 				strURL  = '?rows=' + $('#rows').val();
 				strURL += '&filter=' + $('#filter').val();
 				strURL += '&refresh=' + $('#refresh').val();
-				strURL += '&header=false';
 
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = '?clear=true&header=false';
+				strURL = '?clear=true';
 
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL})
 			}
 
 			$(function() {

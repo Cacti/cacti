@@ -66,7 +66,7 @@ switch (get_request_var('action')) {
 function aggregate_form_save() {
 	/* make sure we are saving aggregate template */
 	if (!isset_request_var('save_component_template')) {
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+		header('Location: aggregate_templates.php?action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -101,7 +101,7 @@ function aggregate_form_save() {
 
 	/* form validation failed */
 	if (is_error_message()) {
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+		header('Location: aggregate_templates.php?action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -146,7 +146,7 @@ function aggregate_form_save() {
 
 	if (!$id) {
 		raise_message(2);
-		header('Location: aggregate_templates.php?header=false&action=edit&id=' . get_nfilter_request_var('id'));
+		header('Location: aggregate_templates.php?action=edit&id=' . get_nfilter_request_var('id'));
 		return null;
 	}
 
@@ -243,7 +243,7 @@ function aggregate_form_save() {
 
 	raise_message(1);
 
-	header('Location: aggregate_templates.php?header=false&action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+	header('Location: aggregate_templates.php?action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
 }
 
 
@@ -278,7 +278,7 @@ function aggregate_form_actions() {
 		} else {
 		}
 
-		header('Location: aggregate_templates.php?header=false');
+		header('Location: aggregate_templates.php');
 		exit;
 	}
 
@@ -315,7 +315,7 @@ function aggregate_form_actions() {
 		}
 	} else {
 		raise_message(40);
-		header('Location: aggregate_templates.php?header=false');
+		header('Location: aggregate_templates.php');
 		exit;
 	}
 
@@ -710,13 +710,12 @@ function aggregate_template() {
 		strURL += '?rows=' + $('#rows').val();
 		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
+		loadUrl({url:strURL})
 	}
 
 	function clearFilter() {
-		strURL = 'aggregate_templates.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
+		strURL = 'aggregate_templates.php?clear=1';
+		loadUrl({url:strURL})
 	}
 
 	$(function() {

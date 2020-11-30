@@ -22,12 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $menu, $user_menu;
+global $config, $menu, $user_menu, $is_request_ajax;
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 $using_guest_account = false;
 
-if (!isset_request_var('headercontent')) { ?>
+if (!$is_request_ajax) { ?>
 <!DOCTYPE html>
 <html lang='<?php print CACTI_LOCALE;?>'>
 <head>
