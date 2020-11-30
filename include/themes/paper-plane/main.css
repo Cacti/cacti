@@ -2569,3 +2569,26 @@ td.center > table {
 	color: #FFFFFF !important;
 }
 
+#graph_notice_dialog {
+	display:none;
+	position: fixed;
+	z-index: 5000;
+	background-color: rgba(64,64,64,0.8);
+	color: white;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+#graph_notice_dialog div {
+	background-color: black;
+	width: 250px;
+	margin: 10% auto;
+	padding: 15px;
+}
+
+.graph_notice_disp {
+	color: white;
+}
+

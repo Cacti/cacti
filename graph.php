@@ -137,6 +137,11 @@ case 'view':
 						<tr>
 							<td class='no-print center'>
 								<span><?php print html_escape($rra['name']);?></span>
+								<?php 
+								print '<br/>';
+								print  db_fetch_cell_prepared('SELECT notice FROM graph_local WHERE id = ?',
+										array(get_request_var('local_graph_id')));
+								?>
 							</td>
 						</tr>
 					</table>

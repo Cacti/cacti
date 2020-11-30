@@ -1007,7 +1007,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 
 		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gtg.local_graph_id,
 			h.description, gt.name AS template_name, gtg.title_cache,
-			gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
+			gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id, gl.notice,
 			$sql_select
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
@@ -1043,7 +1043,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	} else {
 		$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gtg.local_graph_id, h.description,
 			gt.name AS template_name, gtg.title_cache, gtg.width, gtg.height,
-			gl.snmp_index, gl.snmp_query_id
+			gl.snmp_index, gl.snmp_query_id, gl.notice
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
 			ON gl.id = gtg.local_graph_id
@@ -1175,6 +1175,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 		$graphs_sql = "SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source,
+			gl.notice, 
 			$sql_select
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
@@ -1198,7 +1199,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	} else {
 		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
-			IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source
+			IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source, gl.notice
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
 			ON gl.id=gtg.local_graph_id
@@ -1324,12 +1325,12 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 		$sql_having = "HAVING $sql_having";
 
 		$graphs_sql = "SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
-			gtg.title_cache, gtg.width, gtg.height, '' AS snmp_index, gl.snmp_query_id,
+			gtg.title_cache, gtg.width, gtg.height, '' AS snmp_index, gl.snmp_query_id, gl.notice,
 			$sql_select
 			FROM graph_templates_graph AS gtg
 			INNER JOIN (
 				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id,
-				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
+				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index, '_agr_' as notice
 				FROM aggregate_graphs AS ag
 				INNER JOIN aggregate_graphs_items AS agi
 				ON ag.id=agi.aggregate_graph_id
@@ -1357,11 +1358,11 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 			) AS rower");
 	} else {
 		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
-			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id
+			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id, gl.notice
 			FROM graph_templates_graph AS gtg
 			INNER JOIN (
 				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id,
-				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
+				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index, '_agr_' as notice
 				FROM aggregate_graphs AS ag
 				INNER JOIN aggregate_graphs_items AS agi
 				ON ag.id=agi.aggregate_graph_id

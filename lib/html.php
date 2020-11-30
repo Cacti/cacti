@@ -251,9 +251,65 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
-	</script>
-	<?php
 
+	$(function() {
+		$(".notice_button").click(function() {
+			var value = $(this).data("graph");
+
+			$("#graph_notice_id").val(value);
+			$("#graph_notice_dialog").show(500);
+
+			$.get('?action=notice_read&graph_id='+value)
+			.done(function(data) {
+				$("#graph_notice").val(data);
+				$("#graph_notice").focus();
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
+			return false;
+		});
+
+		$(document).keydown(function(event) {
+			if (event.keyCode == 27) {
+				$("#graph_notice_dialog").hide(400);
+			}
+		});
+
+		$("#notice_cancel").click(function() {
+			$("#graph_notice").val('');
+			$("#graph_notice_dialog").hide(400);
+		});
+
+		$("#notice_save").click(function() {
+			id = $("#graph_notice_id").val();
+			var regex = /(<([^>]+)>)/ig;
+			var result = $("#graph_notice").val().replace(regex,"");
+
+			$("#notice_"+id).html(result);
+			$.get('?action=notice_write&graph_id='+id+'&notice='+encodeURIComponent(result))
+			.done(function(data) {
+				$("#graph_notice_dialog").hide(400);
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
+		});
+	});
+	</script>
+	<div id="graph_notice_dialog">
+		<div>
+			<form>
+				<?php print __('Graph notice:'); ?><br/>
+				<input type="text" id="graph_notice"><br/>
+				<input type="hidden" id="graph_notice_id"><br/><br/>
+				<input type="button" value="<?php print __('save');?>" id="notice_save">
+				<input type="button" value="<?php print __('Cancel');?>" id="notice_cancel">
+			</form>
+		</div>
+	</div>
+
+	<?php
 	if ($num_graphs > 0) {
 		if ($header != '') {
 			print $header;
@@ -271,7 +327,17 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 					<tr>
 						<td>
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
-							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
+							<?php 
+							print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');
+							print '<br/><div id="notice_' . $graph['local_graph_id'] . '" class="graph_notice_disp">';
+							if ($graph['notice'] == '_agr_')	{
+								print db_fetch_cell('SELECT notice from graph_local where id=' . $graph['local_graph_id']);
+							}
+							else	{
+								print $graph['notice'];
+							}
+							print '</div>';
+							?>
 						</td>
 						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
@@ -389,7 +455,10 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 					<tr>
 						<td>
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
-							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
+							<?php 
+							print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');
+							print '<br/><div id="notice_' . $graph['local_graph_id'] . '">' . $graph['notice'] . '</div>';
+							?>
 						</td>
 						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
@@ -461,6 +530,8 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif' title='" . __esc('Kill Spikes in Graphs') . "'></span>";
 		print '<br/>';
 	}
+
+	print '<a class="iconLink notice_button" data-graph=' . $local_graph_id . ' href=""><i class="far fa-flag" title="Notice"></i></a><br/>';
 
 	if ($aggregate_url != '') {
 		print $aggregate_url;

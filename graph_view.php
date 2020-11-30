@@ -986,5 +986,18 @@ case 'list':
 	bottom_footer();
 
 	break;
+case 'notice_read':
+	if (get_filter_request_var('graph_id')) {
+		print db_fetch_cell_prepared('SELECT notice FROM graph_local WHERE id=?',
+			array(get_request_var('graph_id')));
+}
+	break;
+
+case 'notice_write':
+	if (get_filter_request_var('graph_id')) {
+		db_execute_prepared('UPDATE graph_local SET notice= ? WHERE id = ?',
+			array(sanitize_search_string(get_request_var('notice')), get_request_var('graph_id')));
+	}
+	break;
 }
 
