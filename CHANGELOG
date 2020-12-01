@@ -1,42 +1,41 @@
 Cacti CHANGELOG
 
 1.2.16
--issue#3704: Reporting - Cascade to Branches function not working (Graphs in reporting shows only in 1 column)
--issue#3859: Page refresh in graph.php does not work
+-issue#3704: When generating a report, the Cascade to Branches function does not as expected
+-issue#3859: When viewing graphs, automatic refresh so not always work as expected
 -issue#3898: Realtime graph pop up counter bug
--issue#3903: Debian test shows new PHP errors in log
--issue#3907: The cli script install_cacti.php does not exit with not zero exit code when errors occur
--issue#3910: Banners are not showing up
--issue#3912: Some pages that export data, when the export is complete, the progress bar remains
--issue#3915: Bulk Enabling Devices takes forever
--issue#3916: Certain Device actions cause the removal of poller items from the remote data collector
--issue#3917: API Tree Warning Errors when pen testing Cacti in api_tree_rename_node()
--issue#3919: Log Administration show empty during page navigation if search field value length is 4
--issue#3920: CSV Export with Summation Rows
--issue#3924: Graph Templates filter is not updated after new graph created
+-issue#3903: Undefined variable errors may occur when creating a new datasource
+-issue#3907: The cli-based installer does not exit with a non-zero exit code when error occurs
+-issue#3912: When an export is complete, sometimes the progress bar remains
+-issue#3915: When enabling many devices, a threshold can be reached causing a slowdown in the process
+-issue#3916: When performing actions against Devices, replicated device information could sometimes be lost
+-issue#3917: When using API to rename a tree node, backtrace may be incorrectly shown
+-issue#3919: When searching, valid pages can sometimes be shown as empty by ddb4github
+-issue#3920: When exporting data from graphs, not all data was properly included
+-issue#3924: Graph Templates filter is not updated after new graph created by ddb4github
 -issue#3926: Username and password on the login page is not visible in Classic theme
--issue#3929: Poller settings page is ambiguous on concurrent process and thread settings
--issue#3930: Remove empty option from Devices-->Location filter
--issue#3931: Recache due to failed to get OID but SNMPWALK works
+-issue#3929: Improve wording of concurrent process and thread settings
+-issue#3930: Location filter should remove blank entries by ddb4github
+-issue#3931: When syncing data collectors, a reindex event may be triggered unnecessarily
 -issue#3932: Automation Networks allows discovery of invalid IP addresses
--issue#3933: When changing permissions, if those permissions are from the current user, they dont take effect till next login
--issue#3935: Device Re-index operations not returning to correct page location
--issue#3942: The audit_database.php script will only modify columns, and add indexes, it does not add column
--issue#3948: Required MariaDB/MySQL connection count is confusing
--issue#3949: Log Administration can not view Cacti error log
+-issue#3933: When changing permissions of the current user, they don't take effect immediately
+-issue#3935: When reindexing a device, an incorrect page was sometimes displayed
+-issue#3942: When repairing database, audit_database.php does not add missing columns
+-issue#3948: Spine 1.2.15 - Spine Encountered An Unhandled Exception Signal Number: '6' [11, Resource temporarily unavailable] (Spine thread)
+-issue#3949: Log page should not be empty if no log info exists
 -issue#3953: During upgrade, there are times when realms can be duplicated leading to SQL errors
--issue#3957: Cacti ping.php does not collect correct respone time when using UDP ping Timing
+-issue#3957: When using ping.php, UDP response times are not interpreted properly by hypnotoad
 -issue#3960: Improve warning you get when attempting to view a log file you don't have access to
--issue#3962: The Cacti Resource Cache in does not restore executable attributes on cli scripts
--issue#3963: Plugin table creation function misses the table collation setting
--feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
--feature#3943: Add hooks for plugins to show custom Graph Source and custom Template URL (List View)
+-issue#3962: When replicating files, scripts are not marked as executable
+-issue#3963: When creating plugin tables, collation is not set properly
 -feature: Update c3.js to version 0.7.20
 -feature: Update Chart.js to version 2.9.4
 -feature: Update phpseclib to version 2.0.29
 -feature: Update PHPMailer to version 6.1.8
 -feature: Use LSB shebang notation for cli scripts
 -feature: Add support for cactid daemon based launcher
+-feature#3923: Add ability to hide the Graph Drilldown icons by datatecuk
+-feature#3943: Add hooks for plugins to show custom Graph Source and custom Template URL (List View)
 
 1.2.15
 -issue#3643: When editing Maximum OIDs Per Get Request, blank value can cause errors
