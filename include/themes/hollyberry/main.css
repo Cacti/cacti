@@ -2363,3 +2363,11 @@ td.center > table {
 .ui-menu-item-wrapper {
 	white-space: nowrap;
 }
+
+.ui-button {
+    padding: .4em .4em;
+}
+
+.cactiLogo {
+	display: none;
+}
