@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.17
+-feature#3513: Add hooks for plugins to show customize graph source and customize template url
+
 1.2.16
 -issue#3704: When generating a report, the Cascade to Branches function does not as expected
 -issue#3859: When viewing graphs, automatic refresh so not always work as expected
