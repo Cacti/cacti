@@ -599,7 +599,9 @@ function api_plugin_can_install($plugin, &$message) {
 function api_plugin_install($plugin) {
 	global $config;
 
-	define('IN_CACTI_INSTALL', 1);
+	if (!defined('IN_CACTI_INSTALL')) {
+		define('IN_CACTI_INSTALL', 1);
+	}
 
 	$dependencies = api_plugin_get_dependencies($plugin);
 
