@@ -1,8 +1,9 @@
 Cacti CHANGELOG
 
 1.2.17
--issue#3859: SNMPv3 Password Length Limit
+-issue#3969: SNMPv3 Password Length Limit
 -issue#3976: Multi-Selectable dropdown filter's option class is ignored
+-issue#3977: Cacti CLI upgrade_database.php misses constant IN_CACTI_INSTAL which may result in upgrade failures
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 
 1.2.16
