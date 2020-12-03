@@ -1788,7 +1788,7 @@ function display_graphs() {
 		$sql_where .= ($sql_where != '' ? ' AND ': 'WHERE ') . 'h.site_id = ' . get_request_var('site_id');
 	}
 
-	if (get_request_var('host_id') != '') {
+	if (get_filter_request_var('host_id') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gl.host_id = ' . get_request_var('host_id');
 	}
 
