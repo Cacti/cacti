@@ -1259,9 +1259,9 @@ function utilities_php_modules() {
 	$php_info = str_replace("\n", '', $php_info);
 	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
 	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
-	$php_info = preg_replace('/\<a.*\>/U', '', $php_info);
-	$php_info = preg_replace('/\<\/a\>/', '<hr>', $php_info);
+	$php_info = preg_replace('/(\<a name.*\>)([^<>]*)(\<\/a\>)/U', '$2', $php_info);
 	$php_info = preg_replace('/\<img.*\>/U', '', $php_info);
+	$php_info = preg_replace('/\<div[^<>]*\>\<\/div\>/U', '', $php_info);
 	$php_info = preg_replace('/\<\/?address\>/', '', $php_info);
 
 	return $php_info;
