@@ -700,13 +700,6 @@ $settings = array(
 			'default' => 'authPriv',
 			'array' => $snmp_security_levels,
 			),
-		'snmp_username' => array(
-			'friendly_name' => __('Auth User (v3)'),
-			'description' => __('Default SNMP v3 Authorization User for all new Devices.'),
-			'method' => 'textbox',
-			'default' => '',
-			'max_length' => '100',
-			),
 		'snmp_auth_protocol' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Auth Protocol (v3)'),
@@ -714,12 +707,21 @@ $settings = array(
 			'default' => 'MD5',
 			'array' => $snmp_auth_protocols,
 			),
+		'snmp_username' => array(
+			'friendly_name' => __('Auth User (v3)'),
+			'description' => __('Default SNMP v3 Authorization User for all new Devices.'),
+			'method' => 'textbox',
+			'default' => '',
+			'max_length' => '50',
+			'size' => '40'
+			),
 		'snmp_password' => array(
 			'friendly_name' => __('Auth Passphrase (v3)'),
 			'description' => __('Default SNMP v3 Authorization Passphrase for all new Devices.'),
 			'method' => 'textbox_password',
 			'default' => '',
-			'max_length' => '100',
+			'max_length' => '50',
+			'size' => '40'
 			),
 		'snmp_priv_protocol' => array(
 			'method' => 'drop_array',
@@ -733,7 +735,8 @@ $settings = array(
 			'friendly_name' => __('Privacy Passphrase (v3)'),
 			'description' => __('Default SNMPv3 Privacy Passphrase for all new Devices.'),
 			'default' => '',
-			'max_length' => '200'
+			'max_length' => '200',
+			'size' => '80'
 			),
 		'snmp_context' => array(
 			'method' => 'textbox',

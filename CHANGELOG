@@ -39,6 +39,16 @@ Cacti CHANGELOG
 -feature#3845: Allow non-standard Remote Agent port to be used
 -feature#3943: Add hooks for plugins to show customize graph source and customize template url (List View)
 
+1.2.17
+-issue#3981: PHP ERROR: Call to undefined function api_data_source_cache_crc_update()
+-issue#3879: Graph/Data Source creation with custom fields not prompting during 1st creation
+-issue#3969: SNMPv3 Password Length Limit
+-issue#3976: Multi-Selectable dropdown filter's option class is ignored
+-issue#3977: Cacti CLI upgrade_database.php misses constant IN_CACTI_INSTAL which may result in upgrade failures
+-issue#3978: CMDPHP Input Validation Not Performed for Tree
+-issue#3985: Update database library function to properly handle collate
+-feature#3513: Add hooks for plugins to show customize graph source and customize template url
+
 1.2.16
 -issue#3704: When generating a report, the Cascade to Branches function does not as expected
 -issue#3859: When viewing graphs, automatic refresh so not always work as expected

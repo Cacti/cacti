@@ -35,6 +35,10 @@ function update_replication_crc($poller_id, $variable) {
 }
 
 function repopulate_poller_cache() {
+	global $config;
+
+	include_once($config['library_path'] . '/api_data_source.php');
+
 	$poller_data    = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
 		FROM data_local AS dl
 		INNER JOIN host AS h
@@ -100,6 +104,10 @@ function repopulate_poller_cache() {
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
+	global $config;
+
+	include_once($config['library_path'] . '/api_data_source.php');
+
 	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 		FROM data_local
 		WHERE host_id = ?
@@ -631,6 +639,10 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
  * works on table data_input_data and poller cache
  */
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
+	global $config;
+
+	include_once($config['library_path'] . '/api_data_source.php');
+
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here FROM this host */
@@ -1259,9 +1271,9 @@ function utilities_php_modules() {
 	$php_info = str_replace("\n", '', $php_info);
 	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
 	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
-	$php_info = preg_replace('/\<a.*\>/U', '', $php_info);
-	$php_info = preg_replace('/\<\/a\>/', '<hr>', $php_info);
+	$php_info = preg_replace('/(\<a name.*\>)([^<>]*)(\<\/a\>)/U', '$2', $php_info);
 	$php_info = preg_replace('/\<img.*\>/U', '', $php_info);
+	$php_info = preg_replace('/\<div[^<>]*\>\<\/div\>/U', '', $php_info);
 	$php_info = preg_replace('/\<\/?address\>/', '', $php_info);
 
 	return $php_info;

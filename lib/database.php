@@ -1116,15 +1116,16 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	}
 
 	if (isset($data['row_format']) && db_get_global_variable('innodb_file_format', $db_conn) == 'Barracuda') {
-		db_execute("ALTER TABLE `$table` ROW_FORMAT=" . $data['row_format'], $log, $db_conn);
+		db_execute("ALTER TABLE `$table` ROW_FORMAT = " . $data['row_format'], $log, $db_conn);
 	}
 
-	$charset= '';
 	if (isset($data['charset'])) {
-		$charset = ' DEFAULT CHARSET=' . $data['charset'];
+		$charset .= ' DEFAULT CHARSET = ' . $data['charset'];
+		db_execute("ALTER TABLE `$table` " . $charset, $log, $db_conn);
 	}
 
-	if ($charset != '') {
+	if (isset($data['collate'])) {
+		$charset = ' COLLATE = ' . $data['collate'];
 		db_execute("ALTER TABLE `$table` " . $charset, $log, $db_conn);
 	}
 
@@ -1248,11 +1249,15 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 		}
 
 		if (isset($data['charset'])) {
-			$sql .= ' DEFAULT CHARSET=' . $data['charset'];
+			$sql .= ' DEFAULT CHARSET = ' . $data['charset'];
+		}
+
+		if (isset($data['collate'])) {
+			$sql .= ' COLLATE = ' . $data['collate'];
 		}
 
 		if (isset($data['row_format']) && db_get_global_variable('innodb_file_format', $db_conn) == 'Barracuda') {
-			$sql .= ' ROW_FORMAT=' . $data['row_format'];
+			$sql .= ' ROW_FORMAT = ' . $data['row_format'];
 		}
 
 		return db_execute($sql, $log, $db_conn);
