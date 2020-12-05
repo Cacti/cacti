@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#3976: Multi-Selectable dropdown filter's option class is ignored
 -issue#3977: Cacti CLI upgrade_database.php misses constant IN_CACTI_INSTAL which may result in upgrade failures
 -issue#3978: CMDPHP Input Validation Not Performed for Tree
+-issue#3985: Update database library function to properly handle collate
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 
 1.2.16
