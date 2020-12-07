@@ -58,15 +58,6 @@ $fields_snmp_item = array(
 		'default' => read_config_option('snmp_security_level'),
 		'array' => $snmp_security_levels
 		),
-	'snmp_username' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Username (v3)'),
-		'description' => __('SNMP v3 username for this device.'),
-		'value' => '|arg1:snmp_username|',
-		'default' => read_config_option('snmp_username'),
-		'max_length' => '50',
-		'size' => '20'
-		),
 	'snmp_auth_protocol' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('SNMP Auth Protocol (v3)'),
@@ -76,6 +67,15 @@ $fields_snmp_item = array(
 		'default' => read_config_option('snmp_auth_protocol'),
 		'array' => $snmp_auth_protocols,
 		),
+	'snmp_username' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Username (v3)'),
+		'description' => __('SNMP v3 username for this device.'),
+		'value' => '|arg1:snmp_username|',
+		'default' => read_config_option('snmp_username'),
+		'max_length' => '50',
+		'size' => '40'
+		),
 	'snmp_password' => array(
 		'method' => 'textbox_password',
 		'friendly_name' => __('SNMP Password (v3)'),
@@ -83,7 +83,7 @@ $fields_snmp_item = array(
 		'value' => '|arg1:snmp_password|',
 		'default' => read_config_option('snmp_password'),
 		'max_length' => '50',
-		'size' => '20'
+		'size' => '40'
 		),
 	'snmp_priv_protocol' => array(
 		'method' => 'drop_array',
@@ -101,7 +101,7 @@ $fields_snmp_item = array(
 		'value' => '|arg1:snmp_priv_passphrase|',
 		'default' => read_config_option('snmp_priv_passphrase'),
 		'max_length' => '200',
-		'size' => '40'
+		'size' => '80'
 		),
 	'snmp_context' => array(
 		'method' => 'textbox',

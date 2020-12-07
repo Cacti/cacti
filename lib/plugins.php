@@ -454,15 +454,15 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 		$sql .= ') ENGINE = ' . $data['type'];
 
 		if (isset($data['collate'])) {
-			$sql .= " COLLATE = '" . $data['collate'] . "'";
+			$sql .= ' COLLATE = ' . $data['collate'];
 		}
 
 		if (isset($data['charset'])) {
-			$sql .= ' DEFAULT CHARSET=' . $data['charset'];
+			$sql .= ' DEFAULT CHARSET = ' . $data['charset'];
 		}
 
 		if (isset($data['row_format']) && db_get_global_variable('innodb_file_format') == 'Barracuda') {
-			$sql .= ' ROW_FORMAT=' . $data['row_format'];
+			$sql .= ' ROW_FORMAT = ' . $data['row_format'];
 		}
 
 		if (isset($data['comment'])) {
@@ -598,6 +598,10 @@ function api_plugin_can_install($plugin, &$message) {
 
 function api_plugin_install($plugin) {
 	global $config;
+
+	if (!defined('IN_CACTI_INSTALL')) {
+		define('IN_CACTI_INSTALL', 1);
+	}
 
 	$dependencies = api_plugin_get_dependencies($plugin);
 

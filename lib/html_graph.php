@@ -449,7 +449,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	}
 
 	/* no fields were actually drawn on the form; just save without prompting the user */
-	if (array_sum($num_output_fields) == 0) {
+	if (!cacti_sizeof($num_output_fields)) {
 		ob_end_clean();
 
 		/* since the user didn't actually click "Create" to POST the data; we have to
