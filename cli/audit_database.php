@@ -536,7 +536,7 @@ function report_audit_results($output = true) {
 
 				if (cacti_sizeof($indexes)) {
 					foreach($indexes as $i) {
-						$key_exists = db_fetch_cell('SELECT COUNT(*)
+						$key_exists = db_fetch_cell_prepared('SELECT COUNT(*)
 							FROM table_indexes
 							WHERE idx_table_name = ?
 							AND idx_key_name = ?',
