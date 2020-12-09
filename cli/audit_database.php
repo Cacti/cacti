@@ -173,6 +173,10 @@ function upgrade_database() {
 	$plugins = $preorder;
 
 	if (cacti_sizeof($plugins)) {
+		if (!defined('IN_PLUGIN_INSTALL')) {
+			define('IN_PLUGIN_INSTALL', 1);
+		}
+
 		foreach($plugins as $plugin) {
 			$parts = explode('/', $plugin);
 			$pname = end($parts);
