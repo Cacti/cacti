@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#3978: CMDPHP Input Validation Not Performed for Tree
 -issue#3985: Update database library function to properly handle collate
 -issue#3990: Utilities-System Utilities-technich support-php info is not a row, should not use form_alternate_row
+-issue#3999: The chances of mysqldump with password should be minimized
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 
 1.2.16

@@ -997,7 +997,12 @@ function load_audit_database() {
 	if (is_dir($config['base_path'] . '/docs')) {
 		print PHP_EOL . 'Exporting Table Audit Table Creation Logic to ' . $config['base_path'] . '/docs/audit_schema.sql' . PHP_EOL;
 
-		exec('mysqldump -u' . $database_username . ' -p' . $database_password . ' ' . $database_default . ' table_columns table_indexes --extended-insert=FALSE > ' . $config['base_path'] . '/docs/audit_schema.sql');
+		exec('mysqldump ' . $database_default . ' version >/dev/null 2>&1', $output, $retval);
+		if ($retval) {
+			exec('mysqldump -u' . $database_username . ' -p' . $database_password . ' ' . $database_default . ' table_columns table_indexes --extended-insert=FALSE > ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $retval);
+		} else {
+			exec('mysqldump ' . $database_default . ' table_columns table_indexes --extended-insert=FALSE > ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $retval);
+		}
 
 		print 'Finished Creating Audit Schema' . PHP_EOL . PHP_EOL;
 	} else {
