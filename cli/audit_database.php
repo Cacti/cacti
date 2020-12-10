@@ -173,6 +173,10 @@ function upgrade_database() {
 	$plugins = $preorder;
 
 	if (cacti_sizeof($plugins)) {
+		if (!defined('IN_PLUGIN_INSTALL')) {
+			define('IN_PLUGIN_INSTALL', 1);
+		}
+
 		foreach($plugins as $plugin) {
 			$parts = explode('/', $plugin);
 			$pname = end($parts);
@@ -536,7 +540,7 @@ function report_audit_results($output = true) {
 
 				if (cacti_sizeof($indexes)) {
 					foreach($indexes as $i) {
-						$key_exists = db_fetch_cell('SELECT COUNT(*)
+						$key_exists = db_fetch_cell_prepared('SELECT COUNT(*)
 							FROM table_indexes
 							WHERE idx_table_name = ?
 							AND idx_key_name = ?',

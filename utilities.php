@@ -670,15 +670,12 @@ function utilities_view_tech() {
 		$php_info = utilities_php_modules();
 
 		html_section_header(__('PHP Module Information'), 2);
-		form_alternate_row();
 		$php_info = str_replace(
 			array('width="600"', 'th colspan="2"', ','),
 			array('', 'th class="subHeaderColumn"', ', '),
 			$php_info
 		);
-		print "<td colspan='2'>" . $php_info . '</td>';
-
-		form_end_row();
+		print "<tr><td colspan='2'>" . $php_info . '</td></tr>';
 	}
 
 	html_end_box();
