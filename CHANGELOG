@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#3985: Update database library function to properly handle collate
 -issue#3990: Utilities-System Utilities-technich support-php info is not a row, should not use form_alternate_row
 -issue#4001: PHP8 support: Debian test suites shows lots of PHP Errors and Warnings with PHP8
+-issue#4008: Fix #3808 causes a massive decrease in poller performance
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 
 1.2.16
