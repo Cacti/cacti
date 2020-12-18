@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#3977: Cacti CLI upgrade_database.php misses constant IN_CACTI_INSTAL which may result in upgrade failures
 -issue#3978: CMDPHP Input Validation Not Performed for Tree
 -issue#3985: Update database library function to properly handle collate
+-issue#3988: Automation raises errors when default snmp options is set to none
 -issue#3990: Utilities-System Utilities-technich support-php info is not a row, should not use form_alternate_row
 -issue#4001: PHP8 support: Debian test suites shows lots of PHP Errors and Warnings with PHP8
 -issue#4008: Fix #3808 causes a massive decrease in poller performance
