@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#3988: Automation raises errors when default snmp options is set to none
 -issue#3990: Utilities-System Utilities-technich support-php info is not a row, should not use form_alternate_row
 -issue#4001: PHP8 support: Debian test suites shows lots of PHP Errors and Warnings with PHP8
+-issue#4002: Poller Recovery is not predictable
 -issue#4005: Automation raises errors when default snmp options is set to none
 -issue#4008: Fix #3808 causes a massive decrease in poller performance
 -issue#4009: The function number_format_i18n() should consider null to align with standard number_format() function
