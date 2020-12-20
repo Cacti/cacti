@@ -109,6 +109,7 @@ define('POLLER_DELETE', 1);
 define('POLLER_DISABLE', 2);
 define('POLLER_ENABLE', 3);
 define('POLLER_RESYNC', 4);
+define('POLLER_CLEAR', 5);
 
 /* used both for polling and reindexing */
 define('POLLER_ACTION_SNMP', 0);

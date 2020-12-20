@@ -465,16 +465,14 @@ function read_config_option(string $config_name, bool $force = false) {
 				$value = $db_setting['value'];
 			}
 
-			if ($value != null) {
-				// Store whatever value we have in the array
-				$config_array[$config_name] = $value;
+			// Store whatever value we have in the array
+			$config_array[$config_name] = $value;
 
-				// Store the array back for later retrieval
-				if (isset($_SESSION)) {
-					$_SESSION['sess_config_array']  = $config_array;
-				} else {
-					$config['config_options_array'] = $config_array;
-				}
+			// Store the array back for later retrieval
+			if (isset($_SESSION)) {
+				$_SESSION['sess_config_array']  = $config_array;
+			} else {
+				$config['config_options_array'] = $config_array;
 			}
 		}
 	} else {

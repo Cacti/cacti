@@ -1248,19 +1248,23 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			$sql .= " COMMENT = '" . $data['comment'] . "'";
 		}
 
-		if (isset($data['charset'])) {
-			$sql .= ' DEFAULT CHARSET = ' . $data['charset'];
-		}
-
-		if (isset($data['collate'])) {
-			$sql .= ' COLLATE = ' . $data['collate'];
-		}
-
 		if (isset($data['row_format']) && db_get_global_variable('innodb_file_format', $db_conn) == 'Barracuda') {
 			$sql .= ' ROW_FORMAT = ' . $data['row_format'];
 		}
 
-		return db_execute($sql, $log, $db_conn);
+		if (db_execute($sql, $log, $db_conn)) {
+			if (isset($data['charset'])) {
+				db_execute("ALLTER TABLE `$table` CHARSET = " . $data['charset']);
+			}
+
+			if (isset($data['collate'])) {
+				db_execute("ALTER TABLE `$table` COLLATE = " . $data['collate']);
+			}
+
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 

@@ -262,11 +262,21 @@ $config['connection'] = 'online';
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
-	if (!isset($rdatabase_retries)) $rdatabase_retries = 5;
-	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
-	if (!isset($rdatabase_ssl_key)) $rdatabase_ssl_key = false;
+	if (!isset($rdatabase_retries))  $rdatabase_retries = 5;
+	if (!isset($rdatabase_ssl))      $rdatabase_ssl = false;
+	if (!isset($rdatabase_ssl_key))  $rdatabase_ssl_key = false;
 	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
-	if (!isset($rdatabase_ssl_ca)) $rdatabase_ssl_ca = false;
+	if (!isset($rdatabase_ssl_ca))   $rdatabase_ssl_ca = false;
+
+	// Check for recovery
+	if (is_object($local_db_cnn_id)) {
+		$boost_records = db_fetch_cell('SELECT COUNT(*)
+			FROM poller_output_boost', '', true, $local_db_cnn_id);
+
+		if ($boost_records > 0) {
+			$config['connection'] = 'recovery';
+		}
+	}
 
 	/* gather the existing cactidb version */
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
@@ -341,15 +351,6 @@ if ($config['poller_id'] > 1) {
 
 	if ($timezone != '') {
 		db_execute_prepared('SET time_zone = ?', array($timezone));
-	}
-}
-
-if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
-	$boost_records = db_fetch_cell('SELECT COUNT(*)
-		FROM poller_output_boost', '', true, $local_db_cnn_id);
-
-	if ($boost_records > 0) {
-		$config['connection'] = 'recovery';
 	}
 }
 
