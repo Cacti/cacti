@@ -33,9 +33,11 @@ class CactiTableFilter {
 	public $action_url     = '';
 	public $action_label   = '';
 	public $session_var    = 'sess_default';
+	public $default_filter = array();
+	public $rows_label     = '';
+	public $js_extra       = '';
 	private $item_rows     = array();
 	private $filter_array  = array();
-	public $default_filter = array();
 
 
 	public function __construct($form_header = '', $form_action = '', $form_id = '',
@@ -50,6 +52,7 @@ class CactiTableFilter {
 		$this->action_label  = $action_label;
 		$this->session_var   = $session_var;
 		$this->item_rows     = $item_rows;
+		$this->rows_label    = __('Rows');
 
 		if ($this->action_url != '' && $this->action_label == '') {
 			$this->action_label = __('Add');
@@ -69,7 +72,7 @@ class CactiTableFilter {
 						'max_length'     => '120'
 					),
 					'rows' => array(
-						'friendly_name' => __('Rows'),
+						'friendly_name' => $this->rows_label,
 						'filter'        => FILTER_VALIDATE_INT,
 						'method'        => 'drop_array',
 						'default'       => '-1',
@@ -134,13 +137,13 @@ class CactiTableFilter {
 
 	public function filter_render() {
 		/* setup filter variables */
-		sanitize_filter_variables();
+		$this->sanitize_filter_variables();
 
 		/* render the filter in the page */
-		create_filter();
+		print $this->create_filter();
 
 		/* create javascript to operate of the filter */
-		create_javascript();
+		print $this->create_javascript();
 
 		return true;
 	}
@@ -150,67 +153,73 @@ class CactiTableFilter {
 			$this->filter_array = $this->default_filter;
 		}
 
+		// Buffer output
+		ob_start();
+
 		html_start_box($this->form_header, $this->form_width, true, '3', 'center', $this->action_url, $this->action_label);
 
 		if (isset($this->form_array['rows'])) {
-			print "<form id='" . $this->filter_id . "' action='" . $this->filter_action . "'>\n";
+			print '<form id="' . $this->filter_id . '" action="' . $this->filter_action . '">' . PHP_EOL;
 
 			foreach($this->form_array['rows'] as $index => $row) {
-				print "<div class='filterTable'>\n";
-				print "<div class='formRow'>\n";
+				print '<div class="filterTable">' . PHP_EOL;
+				print '<div class="formRow">' . PHP_EOL;
 
 				foreach($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 					case 'button':
-						print "<div class='formColumnButton'>\n";
-						print "<input type='button' class='ui-button ui-corner-all ui-widget' id='" . $field_name . "' value='" . html_escape_request_var($field_name) . "'" . (isset($field_array->title) ? " title='" . html_escape($field_array->title, ENT_QUOTES, 'UTF-8'):'') . "'>";
-						print "</div>\n";
+						print '<div class="formColumnButton">' . PHP_EOL;
+						print '<input type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '" value="' . html_escape_request_var($field_name) . '"' . (isset($field_array->title) ? ' title="' . html_escape($field_array->title, ENT_QUOTES, 'UTF-8'):'') . '">';
+						print '</div>' . PHP_EOL;
 
 						break;
 					case 'submit':
-						print "<div class='formColumnButton'>\n";
-						print "<input type='submit' class='ui-button ui-corner-all ui-widget' id='" . $field_name . "' value='" . html_escape_request_var($field_name) . "'" . (isset($field_array->title) ? " title='" . html_escape($field_array->title):'') . "'>";
-						print "</div>\n";
+						print '<div class="formColumnButton">' . PHP_EOL;
+						print '<input type="submit" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '" value="' . html_escape_request_var($field_name) . '"' . (isset($field_array->title) ? ' title="' . html_escape($field_array->title):'') . '">';
+						print '</div>' . PHP_EOL;
 
 						break;
 					case 'timespan':
-						print "<div class='formColumn'><div class='formFieldName'>" . __('Presets') . "</div></div>\n";
+						print '<div class="formColumn"><div class="formFieldName">' . __('Presets') . '</div></div>' . PHP_EOL;
 
 						break;
 					default:
 						if (isset($field_array['friendly_name'])) {
-							print "<div class='formColumn'><div class='formFieldName'>" . $field_array['friendly_name'] . "</div></div>\n";
+							print '<div class="formColumn"><div class="formFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
 						}
 
-						print "<div class='formColumn'>\n";
+						print '<div class="formColumn">' . PHP_EOL;
 
 						draw_edit_control($field_name, $field_array);
 
-						print "</div>\n";
+						print '</div>' . PHP_EOL;
 					}
 				}
 
-				print "</div>\n";
-				print "</div>\n";
+				print '</div>' . PHP_EOL;
+				print '</div>' . PHP_EOL;
 			}
 
-			print "</form>\n";
+			print '</form>' . PHP_EOL;
 		}
 
 		html_end_box(true, true);
+
+		return ob_get_flush();
 	}
 
 	private function create_javascript() {
 		$applyFilter = '"' . $this->form_action;
 		$clearFilter = $applyFilter;
 
-		if (strpos('?', $clearFilter) === false) {
+		if (strpos('?', $applyFilter) === false) {
 			$separator = '?';
 		} else {
 			$separator = '&';
 		}
 
-		$clearFilter .= $separator . 'clear=true"';
+		$applyFilter .= $separator . 'header=false';
+		$clearFilter .= $separator . 'header=false&clear=true"';
 		$changeChain  = '';
 
 		$separator = "\"+\"&";
@@ -219,26 +228,34 @@ class CactiTableFilter {
 			foreach($this->form_array['rows'] as $index => $row) {
 				foreach($row as $field_name => $field_array) {
 					switch($field_array['method']) {
-					case 'button':
-					case 'submit':
-						break;
-					case 'checkbox':
-						$applyFilter .= $separator . $field_name . "=\"+\"$(\'#" . $field_name . "').is(':checked')";
-						break;
-					case 'textbox':
-					case 'drop_array':
-					case 'drop_files':
-					case 'drop_sql':
-					case 'drop_callback':
-					case 'drop_multi':
-					case 'drop_color':
-					case 'drop_tree':
-						if ($field_array['method'] != 'textbox') {
-							$changeChain .= ($changeChain != '' ? ', ':'') . '#' . $field_name;
-						}
-						$applyFilter .= $separator . $field_name . "=\"+\"$(\'#" . $field_name . "').val()";
-						break;
-					default:
+						case 'button':
+							if ($field_name == 'clear') {
+								// have to give this some thought
+							}
+							break;
+						case 'checkbox':
+							$applyFilter .= $separator . $field_name . "=\"+\"$(\'#" . $field_name . "').is(':checked')";
+
+							break;
+						case 'textbox':
+						case 'drop_array':
+						case 'drop_files':
+						case 'drop_sql':
+						case 'drop_callback':
+						case 'drop_multi':
+						case 'drop_color':
+						case 'drop_tree':
+							if ($field_array['method'] != 'textbox') {
+								$changeChain .= ($changeChain != '' ? ', ':'') . '#' . $field_name;
+							}
+
+							$applyFilter .= $separator . $field_name . "=\"+\"$(\'#" . $field_name . "').val()";
+
+							break;
+						case 'submit':
+							break;
+						default:
+							break;
 					}
 				}
 			}
@@ -246,35 +263,31 @@ class CactiTableFilter {
 			$applyFilter .= '";';
 		}
 
-		?>
-		<script type='text/javascript'>
+		return "<script type='text/javascript'>
+			function applyFilter() {
+				strURL = '" . $applyFilter . "';
+				loadPageNoHeader(strURL);
+			}
 
-		function applyFilter() {
-			strURL = <?php print $applyFilter;?>
-			loadUrl({url:strURL})
-		}
+			function clearFilter() {
+				loadPageNoHeader('" . $clearFilter . "');
+			}
 
-		function clearFilter() {
-			loadUrl({url:<?php print $clearFilter;?>})
-		}
+			$(function() {
+				$('#" . $this->form_id . "').submit(function(event) {
+					event.preventDefault();
+					applyFilter();
+				});
 
-		$(function() {
-			$('#<?php print $this->form_id;?>').submit(function(event) {
-				event.preventDefault();
-				applyFilter();
+				$('" . $changeChain . "').change(function() {
+					applyFilter();
+				});
+
+				$('#clear').click(function() {
+					clearFilter();
+				})
 			});
-
-			$('<?php print $changeChain;?>').change(function() {
-				applyFilter();
-			});
-
-			$('#clear').click(function() {
-				clearFilter();
-			})
-		});
-		</script>
-
-		<?php
+		</script>" . PHP_EOL;
 	}
 
 	private function sanitize_filter_variables() {
