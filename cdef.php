@@ -355,33 +355,6 @@ function cdef_item_remove_confirm() {
 	html_end_box();
 
 	form_end();
-
-	?>
-	<script type='text/javascript'>
-	$(function() {
-		$('#continue').click(function(data) {
-			var options = {
-				url:'cdef.php?action=item_remove',
-				funcEnd: 'remoteCdefItemFinalize'
-			}
-
-			var data = {
-				__csrf_magic: csrfMagicToken,
-				cdef_id: <?php print get_request_var('cdef_id');?>,
-				id: <?php print get_request_var('id');?>
-			}
-
-			postUrl(options, data);
-		});
-	});
-
-	function removeCdefItemFinalize(data) {
-		$('#cdialog').dialog('close');
-		$('.deleteMarker').blur();
-		loadUrl({url:'cdef.php?action=edit&id=<?php print get_request_var('id');?>'})
-	};
-	</script>
-	<?php
 }
 
 function cdef_item_remove() {
@@ -512,7 +485,7 @@ function item_edit() {
 		break;
 	case '5':
 		$form_cdef['value']['method'] = 'drop_sql';
-		$form_cdef['value']['sql']    = 'SELECT name, id FROM cdef WHERE `system`=0 ORDER BY name';
+		$form_cdef['value']['sql']    = 'SELECT name, id FROM cdef WHERE `system` = 0 ORDER BY name';
 
 		break;
 	case '6':
@@ -533,7 +506,7 @@ function item_edit() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#type_select').unbind().change(function() {
+		$('#type_select').off('change').on('change', function() {
 			strURL  = 'cdef.php?action=item_edit';
 			strURL += '&id=' + $('#id').val();
 			strURL += '&cdef_id=' + $('#cdef_id').val();
@@ -676,7 +649,7 @@ function cdef_edit() {
 	$(function() {
 		$('#cdef_edit3').find('.cactiTable').attr('id', 'cdef_item');
 		$('.cdialog').remove();
-		$('body').append("<div class='cdialog' id='cdialog'></div>");
+		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#cdef_item').tableDnD({
@@ -694,14 +667,41 @@ function cdef_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
-					$('#cdialog').dialog({ title: '<?php print __('Delete CDEF Item');?>', minHeight: 80, minWidth: 500 });
+
+					$('#continue').off('click').on('click', function(data) {
+						var options = {
+							url:'cdef.php?action=item_remove',
+							funcEnd: 'removeCdefItemFinalize'
+						}
+
+						var data = {
+							__csrf_magic: csrfMagicToken,
+							cdef_id: id[1],
+							id: id[0]
+						}
+
+						postUrl(options, data);
+					});
+
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete CDEF Item');?>',
+						minHeight: 80,
+						minWidth: 500
+					});
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
 				});
 		});
 	});
+
+	function removeCdefItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		$('.deleteMarker').blur();
+		loadUrl({url:'cdef.php?action=edit&id=<?php print get_request_var('id');?>'})
+	};
 	</script>
 	<?php
 }
@@ -839,9 +839,9 @@ function cdef() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' AND `system`=0)';
+		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' AND `system` = 0)';
 	} else {
-		$sql_where = 'WHERE `system`=0';
+		$sql_where = 'WHERE `system` = 0';
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
@@ -880,7 +880,7 @@ function cdef() {
 				FROM graph_templates_item
 			) AS gti
 			ON gti.cdef_id=cd.id
-			WHERE `system`=0
+			WHERE `system` = 0
 			GROUP BY cd.id, gti.graph_template_id, gti.local_graph_id
 		) AS rs
 		$sql_where
@@ -937,4 +937,3 @@ function cdef() {
 
 	form_end();
 }
-

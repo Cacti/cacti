@@ -492,7 +492,7 @@ function debug_wizard() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$checks = db_fetch_assoc("SELECT dd.*, dtd.local_data_id, dtd.name_cache
+	$checks = db_fetch_assoc("SELECT dd.*, dtd.local_data_id, dtd.name_cache, u.username
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
@@ -502,6 +502,8 @@ function debug_wizard() {
 		ON h.id = dl.host_id
 		$dd_join JOIN data_debug AS dd
 		ON dl.id = dd.datasource
+		LEFT JOIN user_auth AS u
+		ON u.id = dd.user
 		$sql_where1
 		$sql_order
 		$sql_limit");
@@ -528,17 +530,12 @@ function debug_wizard() {
 
 			$issue_title = implode('<br/>',$issues);
 
-			$user = db_fetch_cell_prepared('SELECT username
-				FROM user_auth
-				WHERE id = ?',
-				array($check['user']), 'username');
-
 			form_alternate_row('line' . $check['local_data_id']);
 
 			form_selectable_cell(filter_value(title_trim($check['name_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'data_debug.php?action=view&id=' . $check['local_data_id']), $check['local_data_id']);
 
 			if (!empty($check['datasource'])) {
-				form_selectable_ecell($user, $check['local_data_id']);
+				form_selectable_ecell($check['username'], $check['local_data_id']);
 				form_selectable_cell(date($datefmt, $check['started']), $check['local_data_id'], '', 'right');
 				form_selectable_cell($check['local_data_id'], $check['local_data_id'], '', 'right');
 				form_selectable_cell(debug_icon(($check['done'] ? (strlen($issue_line) ? 'off' : 'on'):'')), $check['local_data_id'], '', 'center');
@@ -611,9 +608,13 @@ function debug_view() {
 	$dtd = db_fetch_row_prepared('SELECT *
 		FROM data_template_data
 		WHERE local_data_id = ?',
-		array($check['datasource']));
+		array($id));
 
-	$real_pth = str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']);
+	if (cacti_sizeof($dtd)) {
+		$real_path = str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']);
+	} else {
+		$real_path = __('Not Found');
+	}
 
 	$poller_data = array();
 	if (!empty($check['info']['last_result'])) {
@@ -683,12 +684,12 @@ function debug_view() {
 		array(
 			'name' => 'rrd_folder_writable',
 			'title' => __('Is RRA Folder writeable by poller?'),
-			'value' => dirname($real_pth)
+			'value' => dirname($real_path)
 		),
 		array(
 			'name' => 'rrd_writable',
 			'title' => __('Is RRDfile writeable by poller?'),
-			'value' => $real_pth
+			'value' => $real_path
 		),
 		array(
 			'name' => 'rrd_exists',

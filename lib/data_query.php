@@ -34,8 +34,6 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		return false;
 	}
 
-	add_orphan_support();
-
 	/* don't run/rerun the query if the host is down, or disabled */
 	$status = db_fetch_row_prepared('SELECT status, disabled, poller_id
 		FROM host
@@ -56,9 +54,14 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 			WHERE id = ?',
 			array($poller_id));
 
+		$port = read_config_option('remote_agent_port');
+		if ($port != '') {
+			$port = ':' . $port;
+		}
+
 		$fgc_contextoption = get_default_contextoption();
 		$fgc_context       = stream_context_create($fgc_contextoption);
-		$response          = @file_get_contents(get_url_type() . '://' . $hostname . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id, false, $fgc_context);
+		$response          = @file_get_contents(get_url_type() . '://' . $hostname . $port . $config['url_path'] . '/remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id, false, $fgc_context);
 
 		if ($response != '') {
 			$response = json_decode($response, true);
@@ -362,7 +365,7 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 	/* update the auto reindex cache */
 	if (cacti_sizeof($changed_ids)) {
-		query_debug_timer_offset('data_query', __('Update Re-Index Cache complete. There were ' . sizeof($changed_ids) . ' index changes, and ' . sizeof($orphaned_ids) . ' orphaned indexes.'));
+		query_debug_timer_offset('data_query', __('Update Re-Index Cache complete. There were ' . cacti_sizeof($changed_ids) . ' index changes, and ' . cacti_sizeof($orphaned_ids) . ' orphaned indexes.'));
 
 		/* update the poller cache */
 		update_poller_cache_from_query($host_id, $snmp_query_id, $changed_ids);
@@ -441,7 +444,7 @@ function data_query_remove_disabled_items($orphaned_ids) {
 		if (cacti_sizeof($archive_tables)) {
 			foreach($archive_tables as $table) {
 				db_execute_prepared("DELETE FROM $table
-					WHERE local_data_id IN (' . implode(', ', $orphaned_ids) . ')", false);
+					WHERE local_data_id IN (" . implode(', ', $orphaned_ids) . ')', false);
 			}
 		}
 	}
@@ -627,7 +630,7 @@ function query_script_host($host_id, $snmp_query_id) {
 		$script_num_index_array = exec_into_array($script_path);
 
 		// if the number of indexes does not exist use emulation
-		if (!sizeof($script_num_index_array)) {
+		if (!cacti_sizeof($script_num_index_array)) {
 			query_debug_timer_offset('data_query', __('Data Query returned no indexes.'));
 			query_debug_timer_offset('data_query', __('&lt;arg_num_indexes&gt; exists in XML file but no data returned., \'Index Count Changed\' not supported'));
 		}
@@ -651,7 +654,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	/* fetch specified index */
 	$script_index_array = exec_into_array($script_path);
 
-	if (!sizeof($script_index_array)) {
+	if (!cacti_sizeof($script_index_array)) {
 		query_debug_timer_offset('data_query', __('ERROR: Data Query returned no indexes.'));
 		return false;
 	}
@@ -966,7 +969,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$oids[] = $value['oid'];
 					}
 
-					debug_log_insert('data_query', __('Executing SNMP get for %s oids (%s)' , count($oids), implode(', ', $oids)));
+					debug_log_insert('data_query', __('Executing SNMP get for %s oids (%s)' , cacti_count($oids), implode(', ', $oids)));
 
 					$value_output_format = SNMP_STRING_OUTPUT_GUESS;
 					if (isset($field_array['output_format'])) {
@@ -1996,7 +1999,7 @@ function get_ordered_index_type_list($host_id, $data_query_id) {
 	$return_array = array();
 
 	// Reorder the sort fields by desired order
-	if (sizeof($avail_indexes)) {
+	if (cacti_sizeof($avail_indexes)) {
 		foreach($avail_indexes as $index) {
 			if (array_search($index, $xml_outputs) !== false) {
 				$return_array[] = $index;
@@ -2081,7 +2084,7 @@ function get_best_data_query_index_type($host_id, $data_query_id) {
 	if ($index_type == '') {
 		$raw_xml = get_data_query_array($data_query_id);
 
-		if (sizeof($raw_xml)) {
+		if (cacti_sizeof($raw_xml)) {
 			if (isset($raw_xml['index_order']) && $raw_xml['index_order'] != '') {
 				$order = explode(':', $raw_xml['index_order']);
 
@@ -2092,7 +2095,7 @@ function get_best_data_query_index_type($host_id, $data_query_id) {
 					array($order[0], $host_id, $data_query_id));
 
 				return $order[0];
-			} elseif (isset($raw_xml['fields']) && sizeof($raw_xml['fields'])) {
+			} elseif (isset($raw_xml['fields']) && cacti_sizeof($raw_xml['fields'])) {
 				foreach($raw_xml['fields'] as $key => $attribs) {
 					break;
 				}
@@ -2260,7 +2263,7 @@ function api_data_query_errors($snmp_query_graph_id, $post) {
 
 	$errors = false;
 
-	if (sizeof($data_sources)) {
+	if (cacti_sizeof($data_sources)) {
 		foreach($data_sources as $ds) {
 			if (!isset($post['dsdt_' . $ds['data_template_id'] . '_' . $ds['id'] . '_check'])) {
 				raise_message('mapping_error', __('You must select an XML output column for Data Source \'%s\' and toggle the checkbox to its right', $ds['data_source_name']), MESSAGE_LEVEL_ERROR);
@@ -2275,10 +2278,3 @@ function api_data_query_errors($snmp_query_graph_id, $post) {
 
 	return $errors;
 }
-
-function add_orphan_support() {
-	if (!db_column_exists('data_local', 'orphan')) {
-		db_execute('ALTER TABLE data_local ADD COLUMN orphan tinyint unsigned NOT NULL default "0" AFTER snmp_index');
-	}
-}
-

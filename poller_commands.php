@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -191,7 +191,7 @@ unregister_process('commands', 'master', $poller_id);
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_BRIEF_TEXT;
+	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Poller Commands Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 

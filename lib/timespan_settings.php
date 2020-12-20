@@ -179,7 +179,7 @@ function set_preset_timespan(&$timespan) {
 	# get config option for first-day-of-the-week
 	$first_weekdayid = read_user_setting('first_weekdayid');
 	# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
-	get_timespan( $timespan, time(),$_SESSION['sess_current_timespan'] , $first_weekdayid);
+	get_timespan($timespan, time(),$_SESSION['sess_current_timespan'] , $first_weekdayid);
 
 	$_SESSION['custom'] = 0;
 }
@@ -205,7 +205,7 @@ function finalize_timespan(&$timespan) {
 	}
 
 	/* if moved to future although not allow by settings, stop at current time */
-	if ( ($timespan['end_now'] > time()) && (read_user_setting('allow_graph_dates_in_future') == '') ) {
+	if (($timespan['end_now'] > time()) && (read_user_setting('allow_graph_dates_in_future') == '')) {
 		$timespan['end_now'] = time();
 		# convert end time to human readable format
 		$timespan['current_value_date2'] = date('Y-m-d H:i', $timespan['end_now']);
@@ -219,7 +219,7 @@ function finalize_timespan(&$timespan) {
 	$timespan_sel_pos = strpos(get_browser_query_string(),'&predefined_timespan');
 	if ($timespan_sel_pos) {
 		$_SESSION['urlval'] = substr(get_browser_query_string(),0,$timespan_sel_pos);
-	}else {
+	} else {
 		$_SESSION['urlval'] = get_browser_query_string();
 	}
 }
@@ -229,14 +229,16 @@ function set_timeshift() {
 	global $config, $graph_timeshifts_vals;
 
 	# no current timeshift: get default timeshift
-	if ((!isset($_SESSION['sess_current_timeshift'])) ||
-		(isset_request_var('button_clear'))
-		) {
+	if (!isset($_SESSION['sess_current_timeshift']) || isset_request_var('button_clear')) {
 		$_SESSION['sess_current_timeshift'] = read_user_setting('default_timeshift');
 		set_request_var('predefined_timeshift', read_user_setting('default_timeshift'));
 		$_SESSION['custom'] = 0;
 	}
 
-	return $timeshift = $graph_timeshifts_vals[$_SESSION['sess_current_timeshift']];
+	if (isset($graph_timeshifts_vals[$_SESSION['sess_current_timeshift']])) {
+		return $graph_timeshifts_vals[$_SESSION['sess_current_timeshift']];
+	} else {
+		return DEFAULT_TIMESHIFT;
+	}
 }
 

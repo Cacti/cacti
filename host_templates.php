@@ -609,7 +609,7 @@ function template_edit() {
 
 	$(function() {
 		$('#cdialog').remove();
-		$('body').append("<div id='cdialog'></div>");
+		$('#main').append("<div id='cdialog' class='cdialog'></div>");
 
 		$('.delete').click(function (event) {
 			event.preventDefault();
@@ -618,17 +618,19 @@ function template_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
+
 					$('#cdialog').dialog({
-						title: '<?php print __('Delete Data Input Field');?>',
+						title: '<?php print __('Delete Item from Device Template');?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
 						minHeight: 80,
 						minWidth: 500
 					})
+				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
 				});
-			});
 		}).css('cursor', 'pointer');
 
 		$('#add_dq').click(function() {
@@ -661,12 +663,6 @@ function template_edit() {
 		});
 	});
 
-	</script>
-	<?php
-	?>
-	<script type='text/javascript'>
-	$(function() {
-	});
 	</script>
 	<?php
 }
@@ -860,7 +856,7 @@ function template() {
 		)
 	);
 
-	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Device Templates'), 'page', 'main');
+	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Device Templates'), 'page', 'main');
 
 	form_start('host_templates.php', 'chk');
 

@@ -75,7 +75,7 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	color: snow;
+	font-size: 13px;
 	vertical-align: middle;
 }
 
@@ -121,12 +121,10 @@ hr.menu {
 a, a:active {
 	color: #e3e3e3;
 	text-decoration: none;
-	padding: 0px;
 }
 
 a:hover {
 	text-decoration: none;
-	padding: 0px;
 	color: #fff;
 }
 
@@ -142,6 +140,7 @@ th i.fa {
 	width: 100%;
 	position: relative;
 	z-index: 3;
+	margin-bottom: 10px;
 }
 
 input {
@@ -830,7 +829,6 @@ ul#breadcrumbs {
 	width: 100%;
 	vertical-align: top;
 	padding-top: 56px;
-	display: inline-table;
 }
 
 .cactiTreeNavigationArea {
@@ -864,6 +862,10 @@ ul#breadcrumbs {
 
 .tableRowGraph td {
 	padding: 3px 0px;
+}
+
+.tableRow {
+	line-height: 16px;
 }
 
 .cactiConsoleNavigationArea {
@@ -1082,8 +1084,7 @@ legend {
 	padding-left: 5px;
 	vertical-align: top;
 	overflow-y: auto !important;
-	overflow-x: hidden !important;
-	height: 100vh;
+	overflow-x: hidden;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
@@ -1093,11 +1094,9 @@ legend {
 }
 
 .iconLink {
-	padding: 2px !important;
-}
-
-.iconLink img {
-	padding-bottom: 2px;
+	width: 20px;
+	line-height: 20px;
+	display: inline-block;
 }
 
 .noLinkEditMain {
@@ -1846,7 +1845,8 @@ legend {
 
 .moveArrow {
 	color: #00438C !important;
-	height: 14px !important;
+	display: inline-block;
+	width: 11.75px; !important;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -1857,7 +1857,8 @@ legend {
 }
 
 .moveArrowNone {
-	padding-left: 8.75px;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {
@@ -2315,7 +2316,8 @@ tr#realtime td:first-child {
 }
 
 .ui-tooltip {
-	max-width: none !important;
+	max-width: 500px;
+	word-break: break-word;
 }
 
 .ui-tooltip-content div.header {
@@ -2328,7 +2330,6 @@ tr#realtime td:first-child {
 }
 
 .ui-tooltip-content {
-	max-width: 500px !important;
 	overflow: auto !important;
 	opacity: 0.95;
 	border-radius: 5px !important;
@@ -2349,7 +2350,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 	width: 45px;
 	height: 24px;
-	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
 }

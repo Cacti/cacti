@@ -257,8 +257,6 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 	$preview_only = $preview;
 
-	@ini_set('zlib.output_compression', '0');
-
 	/* set new timeout and memory settings */
 	if ($limitex) {
 		ini_set('max_execution_time', '50');
@@ -981,7 +979,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 		$path = str_replace('<path_cacti>', $config['base_path'], $save['xml_path']);
 
 		if (!file_exists($path) || !is_readable($path)) {
-			raise_message('resource_missing_' . $counter, __('Resource File: \'%s\' is missing or not readable.  Make sure you install it before using Data Query: \'%s\'', $path, $save['name']), MESSAGE_LEVEL_ERROR);
+			raise_message('resource_missing_' . $counter, __esc('Resource File: \'%s\' is missing or not readable.  Make sure you install it before using Data Query: \'%s\'', $path, $save['name']), MESSAGE_LEVEL_ERROR);
 			$counter++;
 		}
 	}
@@ -1664,6 +1662,12 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	$save['hash'] = $hash;
 
 	foreach ($fields_data_input_edit as $field_name => $field_array) {
+		// Work around for templates exported during
+		// period where there was a bug in 1.2.13-1.2.15
+		if ($field_name == 'fname') {
+			$field_name = 'name';
+		}
+
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
 			if ($field_name == 'input_string' && import_is_base64_encoded($xml_array[$field_name])) {
@@ -1733,6 +1737,12 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			$save['data_input_id'] = $data_input_id;
 
 			foreach ($fields_data_input_field_edit as $field_name => $field_array) {
+				// Work around for templates exported during
+				// period where there was a bug in 1.2.13-1.2.15
+				if ($field_name == 'fname') {
+					$field_name = 'name';
+				}
+
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					$save[$field_name] = xml_character_decode($item_array[$field_name]);
@@ -2090,7 +2100,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 
 			print "<ul>";
 			foreach($filestatus as $filename => $status) {
-				print "<li>" . ($preview ? __("[preview] "):"") . $filename . " [" . $status . "]</li>\n";
+				print "<li>" . ($preview ? __("[preview] "):"") . html_escape($filename) . " [" . $status . "]</li>\n";
 			}
 			print "</ul>";
 		} else {

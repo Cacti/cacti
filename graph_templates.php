@@ -24,6 +24,7 @@
 
 include('./include/auth.php');
 include_once('./lib/api_graph.php');
+include_once('./lib/api_data_source.php');
 include_once('./lib/api_tree.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/poller.php');
@@ -233,9 +234,6 @@ function form_actions() {
 						WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 
 					db_execute('DELETE FROM snmp_query_graph_rrd
-						WHERE snmp_query_graph_id IN (' . implode(', ', $snmp_graph_ids) . ')');
-
-					db_execute('DELETE FROM snmp_query_graph_rrd_sv
 						WHERE snmp_query_graph_id IN (' . implode(', ', $snmp_graph_ids) . ')');
 
 					db_execute('DELETE FROM snmp_query_graph_rrd_sv
@@ -829,7 +827,7 @@ function template() {
 		)
 	);
 
-	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Graph Templates'), 'page', 'main');
+	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Graph Templates'), 'page', 'main');
 
 	form_start('graph_templates.php', 'chk');
 

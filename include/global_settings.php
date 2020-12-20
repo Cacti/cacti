@@ -137,6 +137,21 @@ if ($config['cacti_server_os'] == 'win32') {
 	unset($mail_methods[CACTI_MAIL_SENDMAIL]);
 }
 
+/* cache the admin account */
+$admin_account = '0';
+
+if (isset($_SESSION['admin_account']) && isset($_SESSION['sess_user_id'])) {
+	$admin_account = $_SESSION['admin_account'];
+} elseif (isset($_SESSION['sess_user_id'])) {
+	$admin_account = db_fetch_cell('SELECT value FROM settings WHERE name="admin_user"');
+
+	if (!empty($admin_account)) {
+		$_SESSION['admin_account'] = db_qstr($admin_account) . ', ' . $_SESSION['sess_user_id'];
+	} else {
+		$_SESSION['admin_account'] = $_SESSION['sess_user_id'];
+	}
+}
+
 /* setting information */
 $settings = array(
 	'path' => array(
@@ -483,18 +498,18 @@ $settings = array(
 			'default' => 'on',
 			'method' => 'checkbox',
 			),
-                'ds_preselected_delete' => array(
-                        'friendly_name' => __('Data Source Preservation Preset'),
-                        'description' => __('When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs.'),
-                        'method' => 'checkbox',
-                        'default' => 'on'
-                        ),
-                'graphs_auto_unlock' => array(
-                        'friendly_name' => __('Graphs Auto Unlock'),
-                        'description' => __('When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph.'),
-                        'method' => 'checkbox',
-                        'default' => ''
-                        ),
+		'ds_preselected_delete' => array(
+			'friendly_name' => __('Data Source Preservation Preset'),
+			'description' => __('When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
+		'graphs_auto_unlock' => array(
+			'friendly_name' => __('Graphs Auto Unlock'),
+			'description' => __('When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph.'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'hide_console' => array(
 			'friendly_name' => __('Hide Cacti Dashboard'),
 			'description' => __('For use with Cacti\'s External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page.'),
@@ -507,6 +522,11 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => 'on',
 			),
+		'security_header' => array(
+			'friendly_name' => __('Site Security'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
 		'force_https' => array(
 			'friendly_name' => __('Force Connections over HTTPS'),
 			'description' => __('When checked, any attempts to access Cacti will be redirected to HTTPS to ensure high security.'),
@@ -515,12 +535,46 @@ $settings = array(
 			),
 		'content_security_policy_script' => array(
 			'method' => 'drop_array',
-			'friendly_name' => __('Allow Unsafe JavaScript eval() calls'),
+			'friendly_name' => __('Content-Security Allow Unsafe JavaScript eval() calls'),
 			'description' => __('Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti.'),
 			'default' => '',
 			'array' => array(
 				'0'           => __('No'),
 				'unsafe-eval' => __('Yes'))
+			),
+		'content_security_alternate_sources' => array(
+			'friendly_name' => __('Content-Security Alternate Sources'),
+			'description' => __('Space delmited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only.'),
+			'method' => 'textbox',
+			'default' => '',
+			'size' => '100',
+			'max_length' => '255',
+			),
+		'remote_agent_header' => array(
+			'friendly_name' => __('Remote Agent'),
+			'description' => __('When using multiple Data Collectors, there are the Settings for Communicating between Data Collectors'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'remote_agent_port' => array(
+			'friendly_name' => __('TCP Port'),
+			'description' => __('The TCP Port used for communicating with the Remote Data Collectors.  The protocol will match the Central Cacti web server (either HTTP or HTTPS).  Leave blank to use the default ports.'),
+			'method' => 'textbox',
+			'default' => '',
+			'size' => '5',
+			'max_length' => '5',
+			),
+		'remote_agent_timeout' => array(
+			'friendly_name' => __('Timeout'),
+			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
+			'method' => 'drop_array',
+			'default' => '5',
+			'array' => array(
+				5 => __('%d Seconds', 5),
+				10 => __('%d Seconds', 10),
+				15 => __('%d Seconds', 15),
+				20 => __('%d Seconds', 20)
+				)
 			),
 		'automation_header' => array(
 			'friendly_name' => __('Automation'),
@@ -646,13 +700,6 @@ $settings = array(
 			'default' => 'authPriv',
 			'array' => $snmp_security_levels,
 			),
-		'snmp_username' => array(
-			'friendly_name' => __('Auth User (v3)'),
-			'description' => __('Default SNMP v3 Authorization User for all new Devices.'),
-			'method' => 'textbox',
-			'default' => '',
-			'max_length' => '100',
-			),
 		'snmp_auth_protocol' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Auth Protocol (v3)'),
@@ -660,12 +707,21 @@ $settings = array(
 			'default' => 'MD5',
 			'array' => $snmp_auth_protocols,
 			),
+		'snmp_username' => array(
+			'friendly_name' => __('Auth User (v3)'),
+			'description' => __('Default SNMP v3 Authorization User for all new Devices.'),
+			'method' => 'textbox',
+			'default' => '',
+			'max_length' => '50',
+			'size' => '40'
+			),
 		'snmp_password' => array(
 			'friendly_name' => __('Auth Passphrase (v3)'),
 			'description' => __('Default SNMP v3 Authorization Passphrase for all new Devices.'),
 			'method' => 'textbox_password',
 			'default' => '',
-			'max_length' => '100',
+			'max_length' => '50',
+			'size' => '40'
 			),
 		'snmp_priv_protocol' => array(
 			'method' => 'drop_array',
@@ -679,7 +735,8 @@ $settings = array(
 			'friendly_name' => __('Privacy Passphrase (v3)'),
 			'description' => __('Default SNMPv3 Privacy Passphrase for all new Devices.'),
 			'default' => '',
-			'max_length' => '200'
+			'max_length' => '200',
+			'size' => '80'
 			),
 		'snmp_context' => array(
 			'method' => 'textbox',
@@ -1112,19 +1169,11 @@ $settings = array(
 			'array' => $poller_intervals,
 			),
 		'cron_interval' => array(
-			'friendly_name' => __('Cron Interval'),
-			'description' => __('The cron interval in use.  You need to set this setting to the interval that your cron or scheduled task is currently running.'),
+			'friendly_name' => __('Cron/Daemon Interval'),
+			'description' => __('The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory.'),
 			'method' => 'drop_array',
 			'default' => 300,
 			'array' => $cron_intervals,
-			),
-		'concurrent_processes' => array(
-			'friendly_name' => __('Default Data Collector Processes'),
-			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
-			'method' => 'textbox',
-			'default' => '1',
-			'max_length' => '10',
-			'size' => '5'
 			),
 		'process_leveling' => array(
 			'friendly_name' => __('Balance Process Load'),
@@ -1143,18 +1192,6 @@ $settings = array(
 			'description' => __('Controls disabling check for increasing OID while walking OID tree.'),
 			'method' => 'checkbox',
 			'default' => ''
-			),
-		'remote_agent_timeout' => array(
-			'friendly_name' => __('Remote Agent Timeout'),
-			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
-			'method' => 'drop_array',
-			'default' => '5',
-			'array' => array(
-				5 => __('%d Seconds', 5),
-				10 => __('%d Seconds', 10),
-				15 => __('%d Seconds', 15),
-				20 => __('%d Seconds', 20)
-				)
 			),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
@@ -1251,8 +1288,64 @@ $settings = array(
 				'14400' => __('%s Hours', 4),
 				'28800' => __('%s Hours', 8))
 			),
+		'data_collector_header' => array(
+			'friendly_name' => __('Data Collector Defaults'),
+			'description'   => __('These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector.'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'concurrent_processes' => array(
+			'friendly_name' => __('Data Collector Processes'),
+			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
+			'method' => 'textbox',
+			'default' => '1',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'max_threads' => array(
+			'friendly_name' => __('Threads per Process'),
+			'description' => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
+			'method' => 'textbox',
+			'default' => '1',
+			'max_length' => '10',
+			'size' => '5'
+			),
+		'poller_warning_1h_count' => array(
+			'friendly_name' => __('1h count warning threshold'),
+			'description' => __('When this count of guarded ratio (below) is reached in one hour, warning will be written to log and email will be send. 0 = disable.'),
+			'method' => 'textbox',
+			'default' => '3',
+			'max_length' => 1,
+			'size' => 4,
+			),
+		'poller_warning_1h_ratio' => array(
+			'friendly_name' => __('1 hour guarded poller ratio run/max'),
+			'description' => __('Define guarded ratio poller run/max time (in percent).'),
+			'method' => 'drop_array',
+			'default' => '70',
+			'array' => array(
+				'0' => '0',
+				'50' => '50',
+				'60' => '60',
+				'70' => '70',
+				'80' => '80',
+				'90' => '90',)
+			),
+		'poller_warning_24h_ratio' => array(
+			'friendly_name' => __('24 hours guarded poller ratio run/max'),
+			'description' => __('Define guarded average ratio poller run/max time (in percent). When it is reached, warning will be written to log and email will be send. 0 = disable'),
+			'method' => 'drop_array',
+			'default' => '60',
+			'array' => array(
+				'0' => '0',
+				'50' => '50',
+				'60' => '60',
+				'70' => '70',
+				'80' => '80',
+				'90' => '90',)
+			),
 		'spine_header' => array(
-			'friendly_name' => __('Spine Specific Execution Parameters'),
+			'friendly_name' => __('Additional Spine Parameters'),
 			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
@@ -1265,14 +1358,6 @@ $settings = array(
 				'0'  => __('None'),
 				'1'  => __('Summary'),
 				'2'  => __('Detailed'))
-			),
-		'max_threads' => array(
-			'friendly_name' => __('Default Threads per Process'),
-			'description' => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
-			'method' => 'textbox',
-			'default' => '1',
-			'max_length' => '10',
-			'size' => '5'
 			),
 		'php_servers' => array(
 			'friendly_name' => __('Number of PHP Script Servers'),
@@ -1336,7 +1421,7 @@ $settings = array(
 			'description' => __('The name of the guest user for viewing graphs; is \'No User\' by default.'),
 			'method' => 'drop_sql',
 			'none_value' => __('No User'),
-			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
+			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 AND id NOT IN (' . $admin_account . ') ORDER BY username',
 			'default' => '0'
 			),
 		'user_template' => array(
@@ -1344,7 +1429,7 @@ $settings = array(
 			'description' => __('The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is \'guest\' by default.  This user account will be disabled from logging in upon being selected.'),
 			'method' => 'drop_sql',
 			'none_value' => __('No User'),
-			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
+			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 AND id NOT IN (' . $admin_account . ') ORDER BY username',
 			'default' => '0'
 			),
 		'path_basic_mapfile' => array(
@@ -1438,6 +1523,25 @@ $settings = array(
 				'10' => __('%d Changes', 10),
 				'11' => __('%d Changes', 11),
 				'12' => __('%d Changes', 12) )
+			),
+		'secpass_pwned_header' => array(
+			'friendly_name' => __('Pwned Checks (Online)'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+			),
+		'secpass_pwnedcheck' => array(
+			'friendly_name' => __('Pwned Check'),
+			'description' => __('Check password against haveibeenpwned.com'),
+			'method' => 'checkbox',
+			'default' => '',
+		),
+		'secpass_pwnedcount' => array(
+			'friendly_name' => __('Pwned Threshold'),
+			'description' => __('Block use of a password once it reaches this reported usage level'),
+			'method' => 'textbox',
+			'default' => '8',
+			'max_length' => 2,
+			'size' => 4
 			),
 		'secpass_lock_header' => array(
 			'friendly_name' => __('Account Locking'),
@@ -2098,7 +2202,8 @@ $settings = array(
 			'array' => array(
 				'avg'  => __('Average'),
 				'nan'  => __('NaN\'s'),
-				'last' => __('Last Known Good'))
+				'last' => __('Last Known Good'),
+				)
 			),
 		'spikekill_deviations' => array(
 			'friendly_name' => __('Number of Standard Deviations'),
@@ -2115,7 +2220,10 @@ $settings = array(
 				9 => __('%d Standard Deviations', 9),
 				10 => __('%d Standard Deviations', 10),
 				15 => __('%d Standard Deviations', 15),
-				20 => __('%d Standard Deviations', 20)
+				20 => __('%d Standard Deviations', 20),
+                                50 => __('%d Standard Deviations', 50),
+                                100 => __('%d Standard Deviations', 100),
+                                200 => __('%d Standard Deviations', 200),
 				)
 			),
 		'spikekill_percent' => array(
@@ -2135,7 +2243,11 @@ $settings = array(
 				900 => '900 %',
 				1000 => '1000 %',
 				2000 => '2000 %',
-				3000 => '3000 %'
+				3000 => '3000 %',
+                                10000 => '10000 %',
+                                50000 => '50000 %',
+                                100000 => '100000 %',
+                                500000 => '500000 %',
 				)
 			),
 		'spikekill_outliers' => array(
@@ -2152,6 +2264,11 @@ $settings = array(
 				8  => __('%d High/Low Samples', 8),
 				9  => __('%d High/Low Samples', 9),
 				10 => __('%d High/Low Samples', 10),
+                                20 => __('%d High/Low Samples', 20),
+                                50 => __('%d High/Low Samples', 50),
+                                100 => __('%d High/Low Samples', 100),
+                                500 => __('%d High/Low Samples', 500),
+                                1000 => __('%d High/Low Samples', 1000),
 				)
 			),
 		'spikekill_number' => array(
@@ -2160,15 +2277,50 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '5',
 			'array' => array(
-				3  => __('%d Samples', 3),
-				4  => __('%d Samples', 4),
-				5  => __('%d Samples', 5),
-				6  => __('%d Samples', 6),
-				7  => __('%d Samples', 7),
-				8  => __('%d Samples', 8),
-				9  => __('%d Samples', 9),
-				10 => __('%d Samples', 10),
+                                1  => __('%d Spikes', 1),
+                                2  => __('%d Spikes', 2),
+                                3  => __('%d Spikes', 3),
+                                4  => __('%d Spikes', 4),
+                                5  => __('%d Spikes', 5),
+                                6  => __('%d Spikes', 6),
+                                7  => __('%d Spikes', 7),
+                                8  => __('%d Spikes', 8),
+                                9  => __('%d Spikes', 9),
+                                10 => __('%d Spikes', 10),
+                                50 => __('%d Spikes', 50),
+                                100 => __('%d Spikes', 100),
 				)
+			),
+		'spikekill_absmax' => array(
+			'friendly_name' => __('Absolute Maximum Value'),
+			'description' => __('This value represents the maximum raw value of any data point to remove from a Graph RRA.'),
+			'method' => 'drop_array',
+			'default' => '12500000000',
+			'array' => array(
+				1000  => __('1 Thousand'),
+				10000  => __('10 Thousand'),
+				100000  => __('100 Thousand'),
+				1000000  => __('1 Million'),
+				2500000  => __('2.5 Million (20 Megabits)'),
+				7500000  => __('7.5 Million (60 Megabits)'),
+				10000000  => __('10 Million'),
+				12500000  => __('12.5 Million (100 Megabits)'),
+				31250000  => __('31.3 Million (250 Megabits)'),
+				75000000  => __('75 Million (600 Megabits)'),
+				100000000  => __('100 Million'),
+				125000000  => __('125 Million (1 Gigabit)'),
+				1000000000  => __('1 Billion'),
+				1250000000  => __('1.25 Billion (10 Gigabits)'),
+				12500000000  => __('12.5 Billion (100 Gigabits)'),
+				)
+			),
+		'spikekill_dsfilter' => array(
+			'friendly_name' => __('DS Filter'),
+			'description' => __('Specifies the DSes inside an RRD upon which Spikekill will operate. A string of comma-separated values that contains index numbers or names of desired DSes. If left blank, all DSes will match. An example is <i>"5,traffic_*"</i>, which would match DS index 5 as well as any DS whose name begins with <i>"traffic_"</i>. '),
+			'method' => 'textbox',
+			'max_length' => '100',
+			'default' => '',
+			'size' => '30'
 			),
 		'spikekill_backupdir' => array(
 			'friendly_name' => __('RRDfile Backup Directory'),
@@ -2208,7 +2360,7 @@ $settings = array(
 			'method' => 'drop_multi',
 			'description' => __('When performing batch spike removal, only the templates selected below will be acted on.'),
 			'array' => $spikekill_templates,
-            ),
+			),
 		'spikekill_purge' => array(
 			'friendly_name' => __('Backup Retention'),
 			'description' => __('When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?'),
@@ -2260,6 +2412,12 @@ $settings_user = array(
 			'description' => __('If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs'),
 			'method' => 'checkbox',
 			'default' => 'on'
+			),
+		'enable_hscroll' => array(
+			'friendly_name' => __('Enable Horizontal Scrolling'),
+			'description' => __('Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibility.'),
+			'method' => 'checkbox',
+			'default' => ''
 			),
 		'default_date_format' => array(
 			'friendly_name' => __('Date Display Format'),
@@ -2532,4 +2690,3 @@ if (is_realm_allowed(25)) {
 }
 
 api_plugin_hook('config_settings');
-

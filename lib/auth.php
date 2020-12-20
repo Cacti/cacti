@@ -598,6 +598,10 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
  */
 function is_view_allowed($view = 'show_tree') {
 	if (read_config_option('auth_method') != 0) {
+		if (!isset($_SESSION['sess_user_id'])) {
+			return false;
+		}
+
 		$values = array_rekey(
 			db_fetch_assoc_prepared("SELECT DISTINCT $view
 				FROM user_auth_group AS uag
@@ -1471,7 +1475,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		cacti_log('Obtaining \'Graph Template\' cache', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 		$cached = get_cached_allowed_type($hash, $init_rows);
 
-		if (is_array($cached) && sizeof($cached)) {
+		if (is_array($cached) && cacti_sizeof($cached)) {
 			cacti_log('Found Valid \'Graph Template\' priming cache', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 			return $cached;
 		}
@@ -1882,7 +1886,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	if ($host_id > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id=$host_id";
 	} else {
-		if (sizeof($cached)) {
+		if (cacti_sizeof($cached)) {
 			return db_fetch_assoc("SELECT *
 				FROM host AS h
 				$sql_where" .
@@ -2562,6 +2566,42 @@ function secpass_check_pass($p) {
 		return __('Your password must contain at least 1 special character!');
 	}
 
+	if (read_config_option('secpass_pwnedcheck') == 'on') {
+		$sha1 = strtoupper(sha1($p));
+		$prefix = substr($sha1,0,5);
+		$suffix = substr($sha1,5);
+		$options = array(
+			CURLOPT_RETURNTRANSFER => true,   // return web page
+			CURLOPT_HEADER	       => false,  // don't return headers
+			CURLOPT_FOLLOWLOCATION => true,   // follow redirects
+			CURLOPT_MAXREDIRS      => 10,     // stop after 10 redirects
+			CURLOPT_ENCODING       => "",     // handle compressed
+			CURLOPT_USERAGENT      => "test", // name of client
+			CURLOPT_AUTOREFERER    => true,   // set referrer on redirect
+			CURLOPT_CONNECTTIMEOUT => 120,    // time-out on connect
+			CURLOPT_TIMEOUT	       => 120,    // time-out on response
+		);
+
+		$ch = curl_init('https://api.pwnedpasswords.com/range/'.substr($sha1,0,5));
+		curl_setopt_array($ch, $options);
+
+		$content  = curl_exec($ch);
+
+		curl_close($ch);
+		$lines = explode("\r\n", $content);
+		$count = 0;
+		foreach ($lines as $line) {
+			$result = explode(':', $line);
+			if ($result[0] == $suffix) {
+				$count = $result[1];
+			}
+		}
+
+		if ($count >= read_config_option('secpass_pwnedcount')) {
+			return __('This password appears to be a well known password, please use a different one');
+		}
+	}
+
 	return 'ok';
 }
 
@@ -2649,6 +2689,12 @@ function reset_user_perms($user_id) {
 		SET reset_perms=FLOOR(RAND() * 4294967295) + 1
 		WHERE id = ?',
 		array($user_id));
+
+	if ($user_id == $_SESSION['sess_user_id']) {
+		kill_session_var('sess_user_realms');
+		kill_session_var('sess_user_config_array');
+		kill_session_var('sess_config_array');
+	}
 }
 
 /* is_user_perms_valid - checks to see if the admin has changed users permissions

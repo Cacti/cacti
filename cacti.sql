@@ -1291,6 +1291,7 @@ CREATE TABLE data_local (
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
   snmp_index varchar(255) NOT NULL default '',
+  orphan tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY data_template_id (data_template_id),
   KEY snmp_query_id (snmp_query_id),
@@ -1400,14 +1401,14 @@ INSERT INTO `data_source_profiles_rra` VALUES (1,1,'Daily (5 Minute Average)',1,
 INSERT INTO `data_source_profiles_rra` VALUES (2,1,'Weekly (30 Minute Average)',6,700,604800);
 INSERT INTO `data_source_profiles_rra` VALUES (3,1,'Monthly (2 Hour Average)',24,775,2618784);
 INSERT INTO `data_source_profiles_rra` VALUES (4,1,'Yearly (1 Day Average)',288,797,31536000);
-INSERT INTO `data_source_profiles_rra` VALUES (5,2,'Daily (30 Second Average)',1,1500,86400);
+INSERT INTO `data_source_profiles_rra` VALUES (5,2,'Daily (30 Second Average)',1,2900,86400);
 INSERT INTO `data_source_profiles_rra` VALUES (6,2,'Weekly (15 Minute Average)',30,1346,604800);
 INSERT INTO `data_source_profiles_rra` VALUES (7,2,'Monthly (1 Hour Average)',120,1445,2618784);
 INSERT INTO `data_source_profiles_rra` VALUES (8,2,'Yearly (4 Hour Average)',480,4380,31536000);
 INSERT INTO `data_source_profiles_rra` VALUES (9,3,'Daily (1 Minute Average)',1,2900,86400);
-INSERT INTO `data_source_profiles_rra` VALUES (10,3,'Weekly (15 Minute Average)',15,1400,604800);
-INSERT INTO `data_source_profiles_rra` VALUES (11,3,'Monthly (1 Hour Average)',60,1465,2618784);
-INSERT INTO `data_source_profiles_rra` VALUES (12,3,'Yearly (4 Hour Average)',240,4380,31536000);
+INSERT INTO `data_source_profiles_rra` VALUES (10,3,'Weekly (15 Minute Average)',15,1440,604800);
+INSERT INTO `data_source_profiles_rra` VALUES (11,3,'Monthly (1 Hour Average)',60,8784,2618784);
+INSERT INTO `data_source_profiles_rra` VALUES (12,3,'Yearly (12 Hour Average)',720,7305,31536000);
 
 --
 -- Table structure for table `data_source_purge_action`
@@ -1421,6 +1422,7 @@ CREATE TABLE `data_source_purge_action` (
   PRIMARY KEY (`id`),
   UNIQUE KEY name (`name`))
   ENGINE=InnoDB
+  ROW_FORMAT=Dynamic
   COMMENT='RRD Cleaner File Actions';
 
 --
@@ -1442,6 +1444,7 @@ CREATE TABLE `data_source_purge_temp` (
   KEY in_cacti (`in_cacti`),
   KEY data_template_id (`data_template_id`))
   ENGINE=InnoDB
+  ROW_FORMAT=Dynamic
   COMMENT='RRD Cleaner File Repository';
 
 	
@@ -1946,6 +1949,7 @@ CREATE TABLE host (
   failed_polls int(12) unsigned default '0',
   availability decimal(8,5) NOT NULL default '100.00000',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY poller_id_disabled (poller_id, disabled),
   KEY site_id (site_id),
@@ -2077,7 +2081,7 @@ CREATE TABLE `plugin_config` (
   `status` tinyint(2) NOT NULL default '0',
   `author` varchar(64) NOT NULL default '',
   `webpage` varchar(255) NOT NULL default '',
-  `version` varchar(8) NOT NULL default '',
+  `version` varchar(10) NOT NULL default '',
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)
@@ -2337,6 +2341,18 @@ CREATE TABLE poller_time (
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
+-- Table structure for table `poller_time_stats`
+--
+
+CREATE TABLE poller_time_stats (
+  id bigint(20) unsigned NOT NULL auto_increment,
+  poller_id int(10) unsigned NOT NULL default '1',
+  total_time double default NULL,
+  `time` timestamp NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+
+--
 -- Table structure for table `processes`
 --
 
@@ -2387,6 +2403,7 @@ CREATE TABLE `reports` (
   PRIMARY KEY (`id`),
   KEY `mailtime` (`mailtime`)) 
   ENGINE=InnoDB 
+  ROW_FORMAT=Dynamic
   COMMENT='Cacri Reporting Reports';
 
 --
@@ -2413,6 +2430,7 @@ CREATE TABLE `reports_items` (
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`)) 
   ENGINE=InnoDB 
+  ROW_FORMAT=Dynamic
   COMMENT='Cacti Reporting Items';
 
 --
@@ -3102,3 +3120,4 @@ CREATE TABLE version (
 --
 
 INSERT INTO version VALUES ('new_install');
+

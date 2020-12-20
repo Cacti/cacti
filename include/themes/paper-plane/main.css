@@ -55,7 +55,7 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	font-size: 1.1em;
+	font-size: 13px;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab, .menu_parent i.far, .menu_parent i.fal {
@@ -577,6 +577,7 @@ label {
 
 .tableRow {
 	background: none repeat scroll 0 0 #EBEDEF;
+	line-height: 20px;
 }
 
 .odd {
@@ -965,6 +966,7 @@ legend {
 	color: #93CEFF;
 	background: transparent;
 	outline-style: none;
+	padding: 4px;
 }
 
 .actionsDropdownButton > input.ui-button:hover {
@@ -1036,10 +1038,10 @@ legend {
 
 .cactiGraphContentArea {
 	height: 100vh;
+	display: none;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
-	height: 100vh;
 }
 
 .cactiGraphContentArea span[align="center"] {
@@ -1073,10 +1075,10 @@ legend {
 }
 
 .cactiConsoleContentArea {
-	height: 100vh;
 	overflow-y: auto !important;
-	overflow-x: hidden !important;
+	overflow-x: hidden;
 	border-left: 1px solid #000000;
+	height: 95vh;
 }
 
 #graph_view_preview2 table.cactiTable {
@@ -1103,10 +1105,9 @@ legend {
 }
 
 .iconLink {
-}
-
-.iconLink img {
-	padding-bottom: 2px;
+	width: 20px;
+	line-height: 20px;
+	display: inline-block;
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
@@ -1817,6 +1818,8 @@ tr>td.textInfo.right {
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
+	display: inline-block;
+	width: 11.75px;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -1827,7 +1830,8 @@ tr>td.textInfo.right {
 }
 
 .moveArrowNone {
-	padding-left: 8.75px;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {
@@ -2072,7 +2076,8 @@ th:last-child {
 }
 
 tr.selected {
-	background: #d3dce5 !important;
+	background: #AAAAAA !important;
+	color: #000000;
 }
 
 tr.selected td:first-child {
@@ -2097,7 +2102,8 @@ tr.selectable a.linkEditMain:hover {
 }
 
 tr.selectable:hover:not(.selected) {
-	background: #dbe3ea;
+	background: #AAAAAA;
+	color: #000000;
 }
 
 tr.selected a {
@@ -2173,7 +2179,8 @@ ul#nav {
 }
 
 .ui-tooltip {
-	max-width: none !important;
+	max-width: 500px;
+	word-break: break-word;
 }
 
 .ui-tooltip-content div.header {
@@ -2186,7 +2193,6 @@ ul#nav {
 }
 
 .ui-tooltip-content {
-	max-width: 500px !important;
 	overflow: auto !important;
 	opacity: 0.95;
 	border: transparent;
@@ -2246,49 +2252,49 @@ tr#realtime td:first-child {
 }
 
 .logCritical {
-	background-color: rgba(242, 23, 33, 0.2);
+	background-color: rgba(242, 23, 33, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logAlert {
-	background-color: rgba(242, 25, 36, 0.2);
+	background-color: rgba(242, 25, 36, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logWarning {
-	background-color: rgba(255, 122, 48, 0.2);
+	background-color: rgba(255, 122, 48, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logError {
-	background-color: rgba(251, 74, 20, 0.2);
+	background-color: rgba(251, 74, 20, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logNotice {
-	background-color: rgba(250, 253, 158, 0.2);
+	background-color: rgba(250, 253, 158, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logInfo {
-	background-color: rgba(204, 255, 204, 0.2);
+	background-color: rgba(204, 255, 204, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
 }
 
 .logDebug {
-	background-color: rgba(205, 207, 196, 0.2);
+	background-color: rgba(205, 207, 196, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: rgb(211, 211, 211);
@@ -2352,7 +2358,6 @@ tr#realtime td:first-child {
 
 .ui-multiselect-checkboxes span {
 	font-size: 12px;
-	color: black;
 }
 
 .ui-multiselect-header {
@@ -2404,7 +2409,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 	width: 45px;
 	height: 24px;
-	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
 }

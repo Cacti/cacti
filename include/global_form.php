@@ -58,15 +58,6 @@ $fields_snmp_item = array(
 		'default' => read_config_option('snmp_security_level'),
 		'array' => $snmp_security_levels
 		),
-	'snmp_username' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Username (v3)'),
-		'description' => __('SNMP v3 username for this device.'),
-		'value' => '|arg1:snmp_username|',
-		'default' => read_config_option('snmp_username'),
-		'max_length' => '50',
-		'size' => '20'
-		),
 	'snmp_auth_protocol' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('SNMP Auth Protocol (v3)'),
@@ -76,6 +67,15 @@ $fields_snmp_item = array(
 		'default' => read_config_option('snmp_auth_protocol'),
 		'array' => $snmp_auth_protocols,
 		),
+	'snmp_username' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Username (v3)'),
+		'description' => __('SNMP v3 username for this device.'),
+		'value' => '|arg1:snmp_username|',
+		'default' => read_config_option('snmp_username'),
+		'max_length' => '50',
+		'size' => '40'
+		),
 	'snmp_password' => array(
 		'method' => 'textbox_password',
 		'friendly_name' => __('SNMP Password (v3)'),
@@ -83,7 +83,7 @@ $fields_snmp_item = array(
 		'value' => '|arg1:snmp_password|',
 		'default' => read_config_option('snmp_password'),
 		'max_length' => '50',
-		'size' => '20'
+		'size' => '40'
 		),
 	'snmp_priv_protocol' => array(
 		'method' => 'drop_array',
@@ -101,7 +101,7 @@ $fields_snmp_item = array(
 		'value' => '|arg1:snmp_priv_passphrase|',
 		'default' => read_config_option('snmp_priv_passphrase'),
 		'max_length' => '200',
-		'size' => '40'
+		'size' => '80'
 		),
 	'snmp_context' => array(
 		'method' => 'textbox',
@@ -416,7 +416,7 @@ $fields_data_input_field_edit_2 = array(
 
 /* file: data_input.php, action: field_edit */
 $fields_data_input_field_edit = array(
-	'name' => array(
+	'fname' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Friendly Name'),
 		'description' => __('Enter a meaningful name for this data input method.'),
@@ -961,7 +961,7 @@ $struct_graph_item = array(
 	'cdef_id' => array(
 		'friendly_name' => __('CDEF Function'),
 		'method' => 'drop_sql',
-		'sql' => 'SELECT id, name FROM cdef WHERE name NOT LIKE "\_%" ORDER BY name',
+		'sql' => 'SELECT id, name FROM cdef ORDER BY name',
 		'default' => '0',
 		'none_value' => __('None'),
 		'description' => __('A CDEF (math) function to apply to this item on the graph or legend.')
@@ -1137,14 +1137,14 @@ $fields_host_edit = array(
 		'friendly_name' => __('Description'),
 		'description' => __('Give this host a meaningful description.'),
 		'value' => '|arg1:description|',
-		'max_length' => '250',
+		'max_length' => '150',
 		),
 	'hostname' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Hostname'),
 		'description' => __('Fully qualified hostname or IP address for this device.'),
 		'value' => '|arg1:hostname|',
-		'max_length' => '250',
+		'max_length' => '100',
 		'size' => '60',
 		),
 	'location' => array(
@@ -1417,30 +1417,34 @@ $fields_tree_edit = array(
 		'value' => '|arg1:name|',
 		'max_length' => '255',
 		'size' => '80',
-		),
+	),
 	'sort_type' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('Sorting Type'),
 		'description' => __('Choose how items in this tree will be sorted.'),
 		'value' => '|arg1:sort_type|',
 		'array' => $tree_sort_types,
-		),
+	),
 	'enabled' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Publish'),
 		'description' => __('Should this Tree be published for users to access?'),
 		'value' => '|arg1:enabled|',
 		'default' => 'on'
-		),
+	),
 	'id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
-		),
+	),
+	'sequence' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:sequence|'
+	),
 	'save_component_tree' => array(
 		'method' => 'hidden',
 		'value' => '1'
-		)
-	);
+	)
+);
 
 /* file: user_admin.php, action: user_edit (host) */
 $fields_user_user_edit_host = array(

@@ -23,7 +23,7 @@
 */
 
 /* include ldap support */
-include_once('./lib/ldap.php');
+include_once(__DIR__ . '/lib/ldap.php');
 
 /* set default action */
 set_default_action();
@@ -52,6 +52,36 @@ if (read_config_option('auth_method') == '2') {
 		cacti_log('ERROR: No username passed with Web Basic Authentication enabled.', false, 'AUTH');
 		auth_display_custom_error_message(__('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.'));
 		exit;
+	}
+
+	if (strpos($username, '@') !== false) {
+		$upart = explode('@', $username);
+		$username = $upart[0];
+	}
+
+	/* Handle mapping basic accounts to shortform accounts.
+	 * Fromat of map file is CSV: basic,shortform */
+	$mapfile = read_config_option('path_basic_mapfile');
+	if ($mapfile != '' && file_exists($mapfile) && is_readable($mapfile)) {
+		$records = file($mapfile);
+		$found   = false;
+
+		if (cacti_sizeof($records)) {
+			foreach($records as $r) {
+				list($basic, $shortform) = str_getcsv($r);
+
+				if (trim($basic) == $username) {
+					$username = trim($shortform);
+					$found    = true;
+
+					break;
+				}
+			}
+		}
+
+		if (!$found) {
+			cacti_log("WARNING: Username $username not found in basic mapfile.", false, 'AUTH');
+		}
 	}
 } else {
 	if (get_nfilter_request_var('action') == 'login') {
@@ -511,7 +541,7 @@ function domains_login_process() {
 	}
 }
 
-function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
+function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	$ldap = new Ldap;
 
 	if (!empty($username)) $ldap->username = $username;

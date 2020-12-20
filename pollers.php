@@ -30,8 +30,10 @@ ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '900');
 
 $poller_actions = array(
+	POLLER_DELETE  => __('Delete'),
 	POLLER_DISABLE => __('Disable'),
 	POLLER_ENABLE  => __('Enable'),
+	POLLER_CLEAR   => __('Clear Statistics')
 );
 
 if ($config['poller_id'] == 1) {
@@ -346,7 +348,7 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 
 		$ip_hostnames[$hostname] = $hostname;
 
-		if (sizeof($addresses)) {
+		if (cacti_sizeof($addresses)) {
 			foreach($addresses as $address) {
 				if (isset($address['target'])) {
 					$ip_hostnames[$address['host']] = $address['host'];
@@ -364,12 +366,12 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	}
 
 	$sql_where1 = '';
-	if (sizeof($ip_addresses)) {
+	if (cacti_sizeof($ip_addresses)) {
 		$sql_where1 = "$column IN ('" . implode("','", $ip_addresses) . "')";
 	}
 
 	$sql_where2 = '';
-	if (sizeof($ip_hostnames)) {
+	if (cacti_sizeof($ip_hostnames)) {
 		foreach($ip_hostnames as $host) {
 			$parts = explode('.', $host);
 			$sql_where2 .= ($sql_where2 != '' ? ' OR ' : ($sql_where1 != '' ? ' OR ' : '') . ' (') . "($column = '$parts[0]' OR $column LIKE '$parts[0].%' OR $column = '$host')";
@@ -475,11 +477,20 @@ function form_actions() {
 
 				cacti_session_start();
 
-				if (sizeof($failed)) {
-					cacti_log('WARNING: Some selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION['sess_user_id']) . ', Successful/Failed[' . sizeof($success) . '/' . sizeof($failed) . '].  See log for details.', false, 'WEBUI');
+				if (cacti_sizeof($failed)) {
+					cacti_log('WARNING: Some selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION['sess_user_id']) . ', Successful/Failed[' . cacti_sizeof($success) . '/' . cacti_sizeof($failed) . '].  See log for details.', false, 'WEBUI');
 				} else {
 					cacti_log('NOTE: All selected Remote Data Collectors in [' . implode(', ', $ids) . '] synchronized correctly by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 				}
+			} elseif (get_request_var('drp_action') == POLLER_CLEAR) { // clear statistics
+				foreach($selected_items as $item) {
+					db_execute_prepared('UPDATE poller
+						SET total_time = 0, max_time = 0, min_time = 9999999, avg_time = 0, total_polls = 0
+						WHERE id = ?',
+						array($item));
+				}
+
+				raise_message('poller_clear', __('Data Collector Statistics cleared.'), MESSAGE_LEVEL_INFO);
 			}
 		}
 
@@ -547,6 +558,15 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Collector', 'Synchronize Remote Data Collectors', cacti_sizeof($poller_array)) . "'>";
+		} elseif (get_request_var('drp_action') == POLLER_CLEAR) { // clear statistics
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>" . __n('Click \'Continue\' to Clear Data Collector Statistics for the Data Collector.', 'Click \'Continue\' to Clear DAta Collector Statistics for the Data Collectors.', cacti_sizeof($poller_array)) . "</p>
+					<div class='itemlist'><ul>$pollers</ul></div>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Clear Statistics for Data Collector', 'Clear Statistics for Data Collectors', cacti_sizeof($poller_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -1046,4 +1066,3 @@ function pollers() {
 
 	form_end();
 }
-

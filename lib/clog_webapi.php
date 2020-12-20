@@ -55,16 +55,16 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	global $config;
 
 	$logfile = read_config_option('path_cactilog');
-	$logbase = basename($logfile);
-
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	$errfile = read_config_option('path_stderrlog');
-	$errbase = basename($errfile);
+	$errfile  = read_config_option('path_stderrlog');
+	$errbase  = basename($errfile);
 
-	$file = basename($file);
+	$file     = basename($file);
+	$logbase  = basename($logfile);
+
 	$filepath = '';
 	$filename = '';
 	$filefull = '';
@@ -369,12 +369,12 @@ function filter_sort($a, $b) {
 	$b_parts = explode('-', $b);
 
 	$a_date = '99999999';
-	if (count($a_parts) > 1) {
+	if (cacti_count($a_parts) > 1) {
 		$a_date = $a_parts[1];
 	}
 
 	$b_date = '99999999';
-	if (count($b_parts) > 1) {
+	if (cacti_count($b_parts) > 1) {
 		$b_date = $b_parts[1];
 	}
 
@@ -500,7 +500,7 @@ function filter($clogAdmin, $selectedFile) {
 
 								$logParts = explode('-', $logFile);
 
-								$logDate = count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
+								$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 								$logName = $logParts[0];
 
 								print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . "</option>\n";
@@ -1019,8 +1019,7 @@ function clog_regex_graphs($matches, $link = false) {
 		}
 
 		if (cacti_sizeof($wanted_ids)) {
-
-			$sql =	'SELECT DISTINCT
+			$querys = db_fetch_assoc('SELECT DISTINCT
 				gtg.local_graph_id AS id,
 				gtg.title_cache AS title
 				FROM graph_templates_graph AS gtg
@@ -1028,10 +1027,7 @@ function clog_regex_graphs($matches, $link = false) {
 				ON gtg.local_graph_id=gti.local_graph_id
 				INNER JOIN data_template_rrd AS dtr
 				ON gti.task_item_id=dtr.id
-				WHERE gtg.local_graph_id in (' . implode(',',$wanted_ids) . ')';
-
-			cacti_log('SQL: ' . $sql);
-			$querys = db_fetch_assoc($sql);
+				WHERE gtg.local_graph_id in (' . implode(',',$wanted_ids) . ')');
 
 			if (cacti_sizeof($querys)) {
 				foreach ($querys as $query) {

@@ -360,7 +360,7 @@ function automation_snmp_item_remove_confirm() {
 			<p><?php print __('Click \'Continue\' to delete the following SNMP Option Item.'); ?></p>
 			<p><?php print __('SNMP Option:');?> <?php print html_escape($snmp['name']);?><br>
 			<?php print __('SNMP Version: <b>%s</b>', $item['snmp_version']);?><br>
-			<?php print __esc('SNMP Community/Username: <b>%s</b>', ($item['snmp_version'] != 3 ? $item['snmp_community']:$item['snmp_username']));?></p>
+			<?php print __esc('SNMP Community/Username: %s', ($item['snmp_version'] != 3 ? $item['snmp_community']:$item['snmp_username']));?></p>
 		</td>
 	</tr>
 	<tr>
@@ -610,7 +610,7 @@ function automation_snmp_edit() {
 	<script type='text/javascript'>
 	$(function() {
 		$('.cdialog').remove();
-		$('body').append("<div class='cdialog' id='cdialog'></div>");
+		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 		$('#automation_snmp_edit2_child').attr('id', 'snmp_item');
 		$('img.action').click(function() {
 			strURL = $(this).attr('href');
@@ -633,8 +633,15 @@ function automation_snmp_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
-					$('#cdialog').dialog({ title: '<?php print __('Delete SNMP Option Item');?>', minHeight: 80, minWidth: 500 });
+
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete SNMP Option Item');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					});
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -849,4 +856,3 @@ function automation_snmp() {
 	</script>
 	<?php
 }
-

@@ -392,6 +392,15 @@ case 'preview':
 	html_graph_preview_filter('graph_view.php', 'preview');
 
 	html_end_box();
+		
+	api_plugin_hook_function('graph_tree_page_buttons',
+	  array(
+	     'mode'      => 'preview',
+	     'timespan'  => $_SESSION['sess_current_timespan'],
+	     'starttime' => get_current_graph_start(),
+	     'endtime'   => get_current_graph_end()
+	  )
+	);
 
 	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
 	$sql_or = '';
@@ -746,6 +755,11 @@ case 'list':
 		foreach ($graphs as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_details = get_graph_template_details($graph['local_graph_id']);
+
+			if($graph['graph_source'] == '0') { //Not Templated, customize graph source and template details.
+				$template_details = api_plugin_hook_function('customize_template_details', $template_details);
+				$graph = api_plugin_hook_function('customize_graph', $graph);
+			}
 
 			if (isset($template_details['graph_name'])) {
 				$graph['name'] = $template_details['graph_name'];

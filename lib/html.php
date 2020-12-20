@@ -232,8 +232,11 @@ function html_graph_template_multiselect() {
    @arg $no_graphs_message - display this message if no graphs are found in $graph_array
    @arg $extra_url_args - extra arguments to append to the url
    @arg $header - html to use as a header
-   @arg $columns - the number of columns to present */
-function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0) {
+   @arg $columns - the number of columns to present
+   @arg $tree_id - the tree id if this is a tree thumbnail
+   @arg $branch_id - the branch id if this is a tree thumbnail
+*/
+function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
@@ -270,9 +273,9 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
-							<?php graph_drilldown_icons($graph['local_graph_id']);?>
-						</td>
+						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+							<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
+						</td><?php } ?>
 					</tr>
 				</table>
 				<div>
@@ -308,8 +311,11 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
    @arg $no_graphs_message - display this message if no graphs are found in $graph_array
    @arg $extra_url_args - extra arguments to append to the url
    @arg $header - html to use as a header
-   @arg $columns - the number of columns to present */
-function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0) {
+   @arg $columns - the number of columns to present
+   @arg $tree_id - the tree id if this is a tree thumbnail
+   @arg $branch_id - the branch id if this is a tree thumbnail
+*/
+function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
@@ -385,9 +391,9 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
-							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails');?>
-						</td>
+						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
+						</td><?php } ?>
 					</tr>
 				</table>
 			</td>
@@ -419,7 +425,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	}
 }
 
-function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
+function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
 	global $config;
 	static $rand = 0;
 
@@ -460,7 +466,14 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 		print $aggregate_url;
 	}
 
-	api_plugin_hook($type, array('hook' => 'graph_buttons_thumbnails', 'local_graph_id' => $local_graph_id, 'rra' =>  0, 'view_type' => ''));
+	api_plugin_hook($type, array(
+		'hook' => $type,
+		'local_graph_id' => $local_graph_id,
+		'rra' =>  0,
+		'view_type' => $tree_id > 0 ? 'tree':'preview',
+		'tree_id' => $tree_id,
+		'branch_id' => $branch_id)
+	);
 
 	print '</div>';
 }
@@ -1139,7 +1152,9 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if ($disable_controls == false) { print '</a>'; }
 			print '</td>';
 
-			if (empty($item['data_source_name'])) { $item['data_source_name'] = __('No Task'); }
+			if (empty($item['data_source_name'])) {
+				$item['data_source_name'] = __('No Source');
+			}
 
 			switch (true) {
 			case preg_match('/(TEXTALIGN)/', $_graph_type_name):
@@ -1195,20 +1210,27 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			}
 
 			if ($disable_controls == false) {
-				print "<td style='text-align:right;padding-right:10px;'>";
+				print "<td class='right nowrap'>";
+
 				if ($i != cacti_sizeof($item_list)-1) {
-					print "<a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a>";
+					print "<span><a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
+
 				if ($i > 0) {
-					print "<a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a>";
+					print "<span><a class='moveArrow fa fa-caret-up' title='" . __esc('Move Up') . "' href='" . html_escape("$filename?action=item_moveup&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
 				}
+
 				print '</td>';
 
-				print "<td style='text-align:right;'><a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a></td>";
+				print "<td style='width:1%' class='right'>";
+
+				print "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
+
+				print "</td>";
 			}
 
 			print '</tr>';
@@ -2104,6 +2126,9 @@ function html_spikekill_actions() {
 				case 'rkills':
 					set_user_setting('spikekill_number', get_filter_request_var('id'));
 					break;
+				case 'rabsmax':
+					set_user_setting('spikekill_absmax', get_filter_request_var('id'));
+					break;
 			}
 
 			break;
@@ -2142,6 +2167,7 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
 }
 
 function html_spikekill_menu($local_graph_id) {
+	global $settings;
 	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check':'fa', 'skmethod', 'method_avg');
 	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'fa fa-check':'fa', 'skmethod', 'method_nan');
 	$ravgnan3 = html_spikekill_menu_item(__('Last Known Good'), html_spikekill_setting('spikekill_avgnan') == 'last' ? 'fa fa-check':'fa', 'skmethod', 'method_last');
@@ -2149,28 +2175,34 @@ function html_spikekill_menu($local_graph_id) {
 	$ravgnan = html_spikekill_menu_item(__('Replacement Method'), '', '', '', '', $ravgnan1 . $ravgnan2 . $ravgnan3);
 
 	$rstddev = '';
-	for($i = 1; $i <= 10; $i++) {
-		$rstddev .= html_spikekill_menu_item(__('%s Standard Deviations', $i), html_spikekill_setting('spikekill_deviations') == $i ? 'fa fa-check':'fa', 'skstddev', 'stddev_' . $i);
+	foreach ($settings['spikes']['spikekill_deviations']['array'] as $key => $value) {
+		$rstddev .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_deviations') == $key ? 'fa fa-check':'fa', 'skstddev', 'stddev_' . $key);
 	}
 	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
 	$rvarpct = '';
-	for($i = 1; $i <= 10; $i++) {
-		$rvarpct .= html_spikekill_menu_item(round($i * 100,0) . ' %', html_spikekill_setting('spikekill_percent') == ($i * 100) ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . ($i * 100));
+	foreach ($settings['spikes']['spikekill_percent']['array'] as $key => $value) {
+		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . $key);
 	}
 	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
 
 	$rvarout  = '';
-	for($i = 3; $i <= 10; $i++) {
-		$rvarout .= html_spikekill_menu_item(__('%d Outliers', $i), html_spikekill_setting('spikekill_outliers') == $i ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $i);
+	foreach ($settings['spikes']['spikekill_outliers']['array'] as $key => $value) {
+		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $key);
 	}
 	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
 
 	$rkills  = '';
-	for($i = 1; $i <= 10; $i++) {
-		$rkills .= html_spikekill_menu_item(__('%d Spikes', $i),html_spikekill_setting('spikekill_number') == $i ? 'fa fa-check':'fa', 'skkills', 'kills_' . $i);
+	foreach ($settings['spikes']['spikekill_number']['array'] as $key => $value) {
+		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'fa fa-check':'fa', 'skkills', 'kills_' . $key);
 	}
 	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
+
+	$rabsmax  = '';
+	foreach ($settings['spikes']['spikekill_absmax']['array'] as $key => $value) {
+		$rabsmax .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_absmax') == $key ? 'fa fa-check':'fa', 'skabsmax', 'absmax_' . $key);
+	}
+	$rabsmax = html_spikekill_menu_item(__('Absolute Max Value'), '', '', '', '', $rabsmax);
 
 	?>
 	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
@@ -2180,13 +2212,15 @@ function html_spikekill_menu($local_graph_id) {
 	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering fa fa-life-ring', 'rvariance', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown fa fa-life-ring', 'routlier', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Float Range'), 'deviceDown fa fa-life-ring', 'rrangefill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Absolute Maximum'), 'deviceError fa fa-life-ring', 'rabsolute', '',  $local_graph_id);
 
 	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp fa fa-check', 'dstddev', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering fa fa-check', 'dvariance', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown fa fa-check', 'doutlier', '',  $local_graph_id);
 	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown fa fa-check', 'drangefill', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Absolute Maximum'), 'deviceError fa fa-check', 'dabsolute', '',  $local_graph_id);
 
-	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills);
+	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills . $rabsmax);
 }
 
 function html_spikekill_js() {
@@ -2285,6 +2319,16 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 		});
 
+		$('.rabsolute').unbind().click(function() {
+			removeSpikesAbsolute($(this).attr('data-graph'));
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+		});
+
+		$('.dabsolute').unbind().click(function() {
+			dryRunAbsolute($(this).attr('data-graph'));
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+		});
+
 		$('.skmethod').unbind().click(function() {
 			$('.skmethod').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
@@ -2344,6 +2388,18 @@ function html_spikekill_js() {
 					getPresentHTTPError(data);
 				});
 		});
+
+		$('.skabsmax').unbind().click(function() {
+			$('.skabsmax').find('i').removeClass('fa fa-check');
+			$(this).find('i:first').addClass('fa fa-check');
+			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
+
+			strURL = '?action=spikesave&setting=rabsmax&id='+$(this).attr('id').replace('absmax_','');
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
+		});
 	}
 	</script>
 	<?php
@@ -2370,18 +2426,22 @@ function html_common_header($title, $selectedTheme = '') {
 	if ($script_policy != '0' && $script_policy != '') {
 		$script_policy = "'$script_policy'";
 	}
+	$alternates = read_config_option('content_security_alternate_sources');
 
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' <?php print $script_policy;?> 'unsafe-inline'; worker-src 'self'">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print $script_policy;?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self'">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<script type='text/javascript'>
 		var theme='<?php print $selectedTheme;?>';
+		var hScroll=<?php print read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false';?>;
+		var userSettings=<?php print is_view_allowed('graph_settings') ? 'true':'false';?>;
+		var tableConstraints='<?php print __('Allow or limit the table columns to extend beyond the current windows limits.');?>';
 		var searchFilter='<?php print __esc('Enter a search term');?>';
 		var searchRFilter='<?php print __esc('Enter a regular expression');?>';
 		var noFileSelected='<?php print __esc('No file selected');?>';
@@ -2475,7 +2535,6 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
 	print get_md5_include_css('include/fa/css/all.css');
-	print get_md5_include_css('include/fa/css/fontawesome.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 	print get_md5_include_js('include/js/screenfull.js', true);

@@ -250,11 +250,34 @@ function form_save() {
 	if (isset_request_var('save_component_tree')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
-		form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		form_input_validate(get_nfilter_request_var('sort_type'), 'sort_type', '', true, 3);
+		get_filter_request_var('sequence');
 		/* ==================================================== */
 
-		$tree_id = 0;
+		if (get_filter_request_var('id') > 0) {
+			$prev_order = db_fetch_cell_prepared('SELECT sort_type
+				FROM graph_tree
+				WHERE id = ?',
+				array(get_request_var('id')));
+		} else {
+			$prev_order = 1;
+		}
+
+		$save['id']            = get_request_var('id');
+		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['sort_type']     = form_input_validate(get_nfilter_request_var('sort_type'), 'sort_type', '', true, 3);
+		$save['last_modified'] = date('Y-m-d H:i:s', time());
+		$save['enabled']       = get_nfilter_request_var('enabled') == 'true' ? 'on':'-';
+		$save['modified_by']   = $_SESSION['sess_user_id'];
+
+		if (isempty_request_var('sequence')) {
+			$save['sequence'] = tree_get_max_sequence() + 1;
+		} else {
+			$save['sequence'] = get_request_var('sequence');
+		}
+
+		if (empty($save['id'])) {
+			$save['user_id'] = $_SESSION['sess_user_id'];
+		}
 
 		if (!is_error_message()) {
 			$id        = get_request_var('id');
@@ -1682,7 +1705,7 @@ function tree() {
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT(ti.graph_tree_id))
+	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT(t.id))
 		FROM graph_tree AS t
 		LEFT JOIN graph_tree_items AS ti
 		ON t.id=ti.graph_tree_id

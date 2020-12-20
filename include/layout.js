@@ -171,7 +171,7 @@ function getTimestampFromDate(dateStamp) {
 
 /** base64_encode - Simple function to base64 encode a utf-8 string */
 function base64_encode(string) {
-	return escape(btoa(unescape(encodeURIComponent(string))));
+	return btoa(unescape(encodeURIComponent(string)));
 }
 
 /** getQueryString - this function will return the value
@@ -280,7 +280,7 @@ $.fn.classes = function(callback) {
 			}
 		}
 	});
-	if ('function' === typeof callback) {
+	if ('function' == typeof callback) {
 		for (var i in classes) {
 			callback(classes[i]);
 		}
@@ -750,7 +750,7 @@ function applySkin() {
 		shiftPressed = event.shiftKey;
 	});
 
-	$('#main').show();
+	$('#main').css('display', 'table');
 
 	var showPage = $('#main').map(function(i, el) {
 		var dfd = $.Deferred();
@@ -826,7 +826,7 @@ function displayMessages() {
 	var title   = '';
 	var header  = '';
 
-	if (typeof sessionMessageTimer === 'function' || sessionMessageTimer !== null) {
+	if (typeof sessionMessageTimer == 'function' || sessionMessageTimer !== null) {
 		clearInterval(sessionMessageTimer);
 	}
 
@@ -977,6 +977,44 @@ function makeFiltersResponsive() {
 
 				filterHeader.find('.cactiTableTitle, .cactiTableButton').css('cursor', 'pointer');
 
+				if (pageHasHidableColumnsAndProfile()) {
+					if (filterHeader.find('.cactiSwitchConstraints').length == 0) {
+						if (hScroll) {
+							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="'+tableConstraints+'" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-compress"></i></a></span>');
+						} else {
+							$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
+							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="'+tableConstraints+'" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-expand"></i></a></span>');
+						}
+
+						$('.cactiSwitchConstraints').off('click').on('click', function(event) {
+							event.preventDefault();
+							event.stopPropagation();
+
+							hScroll = !hScroll;
+
+							$.post(urlPath + 'auth_profile.php?tab=general&action=update_data', {
+								__csrf_magic: csrfMagicToken,
+								name: 'enable_hscroll',
+								value: hScroll ? 'on':''
+								}, function() {
+								if (hScroll) {
+									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+									$('#overflow').removeClass('fa-expand').addClass('fa-compress');
+
+									resetTables();
+								} else {
+									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
+									$('#overflow').removeClass('fa-compress').addClass('fa-expand');
+
+									tuneTables();
+								}
+
+							});
+						});
+					}
+				}
+
 				if (filterHeader.find('div.cactiTableButton').find('.cactiFilterAdd').length) {
 					markFilterTDs(child, filterNum);
 
@@ -1038,7 +1076,9 @@ function makeFiltersResponsive() {
 					}
 				}
 
-				$('.cactiFilterState').attr('title', showHideFilter).tooltip();
+				if (typeof showHideFilter != 'undefined') {
+					$('.cactiFilterState').attr('title', showHideFilter).tooltip();
+				}
 
 				filterNum++;
 			}
@@ -1159,7 +1199,7 @@ function setupResponsiveMenuAndTabs() {
 					menuShow();
 				}
 			}
-		} else if (pageName == page && pageName != 'graph_view.php') {
+		} else if (pageName == page && pageName != 'graph_view.php' && pageName != 'link.php') {
 			if ($('#navigation').length) {
 				if (menuOpen(page)) {
 					menuHide(true);
@@ -1251,11 +1291,7 @@ function responsiveUI(event) {
 		}
 	}
 
-	if ($('#navigation').length && $('#navigation').is(':visible')) {
-		var mainWidth = $('body').innerWidth() - $('#navigation').width();
-	} else {
-		var mainWidth = $('body').innerWidth();
-	}
+	var mainWidth = getMainWidth();
 
 	/* change textbox and textarea widths */
 	$('input[type="text"], textarea').each(function() {
@@ -1288,13 +1324,7 @@ function responsiveUI(event) {
 		tuneFilter($(this), mainWidth);
 	});
 
-	$('.cactiTable').each(function() {
-		$(this).find('th:first-child').each(function() {
-			var object = $(this).closest('.cactiTable');
-
-			tuneTable(object, mainWidth);
-		});
-	});
+	tuneTables();
 }
 
 function getMainWidth() {
@@ -1304,11 +1334,11 @@ function getMainWidth() {
 		var mainWidth = $('body').innerWidth();
 	}
 
-	return mainWidth - 30;
+	return mainWidth;
 }
 
 function responsiveResizeGraphs() {
-	var mainWidth = getMainWidth();
+	var mainWidth = getMainWidth() - 30;
 	var myColumns = $('#columns').val();
 	var isThumb   = $('#thumbnails').is(':checked');
 	var graphRow  = $('.tableRowGraph:first').width();
@@ -1406,6 +1436,46 @@ function countHiddenCols(object) {
 	return hidden;
 }
 
+function tuneTables() {
+	var mainWidth = getMainWidth();
+
+	$('.cactiTable').each(function() {
+		$(this).find('th:first-child').each(function() {
+			var object = $(this).closest('.cactiTable');
+
+			tuneTable(object, mainWidth);
+		});
+	});
+}
+
+function pageHasHidableColumnsAndProfile() {
+	if (typeof userSettings != 'undefined' && userSettings && $(document).find('th').length) {
+		return true;
+	}
+
+	return false;
+}
+
+function resetTables() {
+	$('.cactiTable').each(function() {
+		$(this).find('th:first-child').each(function() {
+			var object = $(this).closest('.cactiTable');
+
+			resetTable(object);
+		});
+	});
+}
+
+function resetTable(object) {
+	var id = $(object).attr('id');
+	var column = 1;
+	$(object).find('th').each(function() {
+		$('#'+id+' th:nth-child('+column+')').show();
+		$('#'+id+' td:nth-child('+column+')').show();
+		column++;
+	});
+}
+
 function tuneTable(object, width) {
 	var rows           = $(object).find('tr').length;
 	var width          = width;
@@ -1417,6 +1487,15 @@ function tuneTable(object, width) {
 	var id             = $(object).attr('id');
 
 	if (rows > 101) return false;
+
+	// Enable horizontal scroll bar
+	if (hScroll) {
+		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+
+		return false;
+	} else {
+		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
+	}
 
 	if (tableWidth > width) {
 		var column = totalCols;
@@ -1901,6 +1980,8 @@ function loadUrl(options) {
 
 		closeDateFilters();
 
+		clearAllTimeouts();
+
 		$.ajaxQ.abortAll();
 		$.get(options.url)
 			.done(function(html) {
@@ -2084,10 +2165,12 @@ function handleAjaxResponse(html, options) {
 
 		window.scrollTo(0,scrollTop);
 		handleConsole(options.pageName);
+
+		Pace.stop();
 	}
 
 	if (options.funcEnd != '') {
-		window[options.funcEnd](options);
+		window[options.funcEnd](options, html);
 	}
 
 	if (options.redirect.trim() != '') {
@@ -2430,9 +2513,6 @@ function saveTableWidths(initial) {
 
 			var sizes = new Array();
 			var items = new Array();
-
-			items[0] = width;
-			sizes[0] = width;
 		} else if (key !== undefined && initial) {
 			if (items.length > 0) {
 				if (items[0] + 18 < width) {
@@ -2440,14 +2520,15 @@ function saveTableWidths(initial) {
 
 					var sizes = new Array();
 					var items = new Array();
-
-					items[0] = width;
-					sizes[0] = width;
 				}
 			}
 		}
 
 		var i = 1;
+
+		items[0] = width;
+		sizes[0] = width;
+
 		if (key !== undefined) {
 			if (initial && items.length) {
 				$('#'+key).find('th.ui-resizable').each(function(data) {
@@ -2576,6 +2657,18 @@ function pulsateStop(element) {
 function setTitleAndHref() {
 	myHref  = $(location).attr('href');
 	myTitle = $(document).attr('title');
+}
+
+function clearAllTimeouts() {
+	if (typeof installTimer != 'undefined') {
+		return true;
+	}
+
+	var id = window.setTimeout(function() {}, 0);
+
+	while (id--) {
+		window.clearTimeout(id); // will do nothing if no timeout with id is present
+	}
 }
 
 $(function() {
@@ -2894,7 +2987,7 @@ var pageAction = 'preview';
 function checkForLogout(data) {
 	if (typeof data == 'undefined') {
 		return true;
-	} else if (typeof data === 'object') {
+	} else if (typeof data == 'object') {
 		return true;
 	} else if (data.indexOf('cactiLoginSuspend') >= 0) {
 		document.location = urlPath + 'logout.php?action=disabled';
@@ -2945,7 +3038,7 @@ function finalizeGraphFilter(options) {
 function applyGraphFilter() {
 	var href = correctUrlParameters(graphPage+'?action='+pageAction+
 		'&rfilter=' + base64_encode($('#rfilter').val())+
-		(typeof($('#host_id').val()) !== 'undefined' ? '&host_id='+$('#host_id').val():'')+
+		(typeof($('#host_id').val()) != 'undefined' ? '&host_id='+$('#host_id').val():'')+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+
 		'&graph_template_id='+$('#graph_template_id').val()+
@@ -2992,6 +3085,7 @@ function handlePopState(e) {
 function applyGraphTimespan() {
 	var href = correctUrlParameters(graphPage+'?action='+pageAction+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
+		($('#rfilter').length ? '&rfilter=' + base64_encode($('#rfilter').val()):'') +
 		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
 	closeDateFilters();
@@ -3004,6 +3098,7 @@ function refreshGraphTimespanFilter() {
 		custom: 1,
 		button_refresh_x: 1,
 		date1: $('#date1').val(),
+		rfilter: base64_encode($('#rfilter').val()),
 		date2: $('#date2').val(),
 		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
@@ -3134,7 +3229,7 @@ function removeSpikesVariance(local_graph_id) {
 }
 
 function removeSpikesInRange(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=fill&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
@@ -3152,9 +3247,25 @@ function removeSpikesInRange(local_graph_id) {
 }
 
 function removeRangeFill(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=float&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
+
+	$.getJSON(strURL)
+		.done(function(data) {
+			checkForLogout(data);
+
+			redrawGraph(local_graph_id);
+			$('#spikeresults').remove();
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		}
+	);
+}
+
+function removeSpikesAbsolute(local_graph_id) {
+	var strURL = urlPath+'spikekill.php?method=absolute&local_graph_id='+local_graph_id;
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3210,7 +3321,7 @@ function dryRunVariance(local_graph_id) {
 }
 
 function dryRunSpikesInRange(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=fill&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
@@ -3231,7 +3342,7 @@ function dryRunSpikesInRange(local_graph_id) {
 }
 
 function dryRunRangeFill(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=float&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
@@ -3251,8 +3362,26 @@ function dryRunRangeFill(local_graph_id) {
 	);
 }
 
+function dryRunAbsolute(local_graph_id) {
+	var strURL = urlPath+'spikekill.php?method=absolute&dryrun=true&local_graph_id='+local_graph_id;
+
+	$.getJSON(strURL)
+		.done(function(data) {
+			checkForLogout(data);
+
+			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		}
+	);
+}
+
 function redrawGraph(graph_id) {
-	var mainWidth = getMainWidth();
+	var mainWidth = getMainWidth() - 30;
 	var isThumb   = $('#thumbnails').is(':checked');
 	var myColumns = $('#columns').val();
 	var graphRow  = $('.tableRowGraph').width();
@@ -3378,6 +3507,7 @@ function initializeGraphs() {
 				'graph_xport.php?local_graph_id='+graph_id+
 				'&rra_id=0&view_type=tree&graph_start='+timestampDate1+
 				'&graph_end='+timestampDate2;
+			Pace.stop();
 		});
 	});
 
@@ -3489,6 +3619,7 @@ function initializeGraphs() {
 
 	$('a[id$="_util"]').each(function() {
 		var graph_id = $(this).attr('id').replace('graph_','').replace('_util','');
+
 		$(this).attr('href',urlPath+
 			'graph.php?action=zoom&local_graph_id='+graph_id+
 			'&rra_id=0&graph_start='+timestampDate1+

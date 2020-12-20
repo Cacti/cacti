@@ -260,6 +260,16 @@ class SFTP extends SSH2
     var $requestBuffer = array();
 
     /**
+     * Preserve timestamps on file downloads / uploads
+     *
+     * @see self::get()
+     * @see self::put()
+     * @var bool
+     * @access private
+     */
+    var $preserveTime = false;
+
+    /**
      * Default Constructor.
      *
      * Connects to an SFTP server
@@ -719,7 +729,7 @@ class SFTP extends SSH2
             }
         }
 
-        if ($path[0] != '/') {
+        if (!strlen($path) || $path[0] != '/') {
             $path = $this->pwd . '/' . $path;
         }
 
@@ -1198,6 +1208,9 @@ class SFTP extends SSH2
         $temp = &$this->stat_cache;
         $max = count($dirs) - 1;
         foreach ($dirs as $i => $dir) {
+            if (!is_array($temp)) {
+                return false;
+            }
             if ($i === $max) {
                 unset($temp[$dir]);
                 return true;
@@ -1224,6 +1237,9 @@ class SFTP extends SSH2
 
         $temp = &$this->stat_cache;
         foreach ($dirs as $dir) {
+            if (!is_array($temp)) {
+                return null;
+            }
             if (!isset($temp[$dir])) {
                 return null;
             }
@@ -2018,8 +2034,8 @@ class SFTP extends SSH2
         $sent = 0;
         $size = $size < 0 ? ($size & 0x7FFFFFFF) + 0x80000000 : $size;
 
-        $sftp_packet_size = 4096; // PuTTY uses 4096
-        // make the SFTP packet be exactly 4096 bytes by including the bytes in the NET_SFTP_WRITE packets "header"
+        $sftp_packet_size = $this->max_sftp_packet;
+        // make the SFTP packet be exactly the SFTP packet size by including the bytes in the NET_SFTP_WRITE packets "header"
         $sftp_packet_size-= strlen($handle) + 25;
         $i = $j = 0;
         while ($dataCallback || ($size === 0 || $sent < $size)) {
@@ -2069,7 +2085,14 @@ class SFTP extends SSH2
         }
 
         if ($mode & self::SOURCE_LOCAL_FILE) {
-            fclose($fp);
+            if ($this->preserveTime) {
+                $stat = fstat($fp);
+                $this->touch($remote_file, $stat['mtime'], $stat['atime']);
+            }
+
+            if (isset($fp) && is_resource($fp)) {
+                fclose($fp);
+            }
         }
 
         return $this->_close_handle($handle);
@@ -2286,6 +2309,11 @@ class SFTP extends SSH2
 
         if ($fclose_check) {
             fclose($fp);
+
+            if ($this->preserveTime) {
+                $stat = $this->stat($remote_file);
+                touch($local_file, $stat['mtime'], $stat['atime']);
+            }
         }
 
         if (!$this->_close_handle($handle)) {
@@ -2954,6 +2982,10 @@ class SFTP extends SSH2
      */
     function _send_sftp_packet($type, $data, $request_id = 1)
     {
+        // in SSH2.php the timeout is cumulative per function call. eg. exec() will
+        // timeout after 10s. but for SFTP.php it's cumulative per packet
+        $this->curTimeout = $this->timeout;
+
         $packet = $this->use_request_id ?
             pack('NCNa*', strlen($data) + 5, $type, $request_id, $data) :
             pack('NCa*',  strlen($data) + 1, $type, $data);
@@ -3169,5 +3201,25 @@ class SFTP extends SSH2
     {
         $this->pwd = false;
         parent::_disconnect($reason);
+    }
+
+    /**
+     * Enable Date Preservation
+     *
+     * @access public
+     */
+    function enableDatePreservation()
+    {
+        $this->preserveTime = true;
+    }
+
+    /**
+     * Disable Date Preservation
+     *
+     * @access public
+     */
+    function disableDatePreservation()
+    {
+        $this->preserveTime = false;
     }
 }

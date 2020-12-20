@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-define('CACTI_PHP_VERSION_MINIMUM', '5.4.0');
+define('CACTI_PHP_VERSION_MINIMUM', '7.2.5');
 
 define('CACTI_DEV_VERSION','1.3.0.99.1593739325');
 
@@ -109,6 +109,7 @@ define('POLLER_DELETE', 1);
 define('POLLER_DISABLE', 2);
 define('POLLER_ENABLE', 3);
 define('POLLER_RESYNC', 4);
+define('POLLER_CLEAR', 5);
 
 /* used both for polling and reindexing */
 define('POLLER_ACTION_SNMP', 0);

@@ -57,6 +57,7 @@ function themeReady() {
 
 	/* user menu on the right ... */
 	if ($('.usertabs').length == 0) {
+		$('.loggedInAs').show();
 		$('#userDocumentation').remove();
 		$('#userCommunity').remove();
 		$('.menuHr').remove();

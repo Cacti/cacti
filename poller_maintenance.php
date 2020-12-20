@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -38,10 +38,10 @@ error_reporting(E_ALL);
 $dir = dirname(__FILE__);
 chdir($dir);
 
+global $config, $database_default, $archived, $purged, $disable_log_rotation, $poller_start;
+
 /* record the start time */
 $poller_start = microtime(true);
-
-global $config, $database_default, $archived, $purged, $disable_log_rotation;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -90,11 +90,12 @@ maint_debug('Checking for Purge Actions');
 
 /* silently end if the registered process is still running, or process table missing */
 if (!register_process_start('maintenance', 'master', $config['poller_id'], read_config_option('maintenance_timeout'))) {
+	cacti_log('INFO: Another maintenance session is already running', false, 'MAINTENANCE', POLLER_VERBOSITY_LOW);
 	exit(0);
 }
 
 if ($config['poller_id'] == 1) {
-	rrdfile_purge();
+	rrdfile_purge($force);
 
 	authcache_purge();
 
@@ -110,11 +111,15 @@ api_device_purge_deleted_devices();
 // Rotate Cacti Logs
 logrotate_check($force);
 
+phpversion_check($force);
+
 unregister_process('maintenance', 'master', $config['poller_id']);
 
 exit(0);
 
 function logrotate_check($force) {
+	global $disable_log_rotation;
+
 	// Check whether the cacti log.  Rotations takes place around midnight
 	if (isset($disable_log_rotation) && $disable_log_rotation == true) {
 		// Skip log rotation as it's handled by logrotate.d
@@ -167,7 +172,38 @@ function authcache_purge() {
 	}
 }
 
-function rrdfile_purge() {
+function phpversion_check($force = false) {
+	$now  = time();
+	$last = db_fetch_cell('select value from settings where name = "phpver_last"');
+	if (empty($last)) {
+		$last = $now - 86500;
+	}
+
+	$date_now = new DateTime();
+	$date_now->setTimestamp($now);
+
+	// Take the last date/time, set the time to 59 seconds past midnight
+	// then remove one minute to make it the previous evening
+	$date_orig = new DateTime();
+	$date_orig->setTimestamp($last);
+	$date_last = new DateTime();
+	$date_last->setTimestamp($last)->setTime(0,0,59)->modify('-1 minute');
+
+	// Make sure we clone the last date, or we end up modifying the same object!
+	$date_next = clone $date_last;
+	$date_next->modify('+1day');
+
+	$phpbad_ver = version_compare(PHP_VERSION,CACTI_PHP_VERSION_MINIMUM,'<');
+
+	if ($phpbad_ver && ($date_next < $date_now || $force)) {
+		cacti_log('WARNING: This version of PHP (' . PHP_VERSION .') is below the minimum requirement of v' . CACTI_PHP_VERSION_MINIMUM . ' or higher, please upgrade', false, 'CACTI');
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("phpver_last", ?)', array($now));
+	}
+}
+
+function rrdfile_purge($force) {
+	global $archived, $purged, $poller_start;
+
 	/* are my tables already present? */
 	$purge = db_fetch_cell('SELECT count(*)
 		FROM data_source_purge_action');
@@ -635,7 +671,7 @@ function maint_debug($message) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_BRIEF_TEXT;
+	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

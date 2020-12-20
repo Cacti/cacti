@@ -892,7 +892,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 		if (cacti_count($arch_tables)) {
 			foreach($arch_tables as $table) {
-				db_execute_prepared('DELETE FROM ' . $table['name'] . '
+				db_execute_prepared('DELETE IGNORE FROM ' . $table['name'] . '
 					WHERE local_data_id = ?',
 					array($local_data_id));
 			}

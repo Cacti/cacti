@@ -53,7 +53,7 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	font-size: 1.1em;
+	font-size: 13px;
 	vertical-align: middle;
 }
 
@@ -674,6 +674,7 @@ label {
 	position: fixed;
 	bottom: 0;
 	left: 0;
+	z-index: 3;
 }
 
 .cactiConsolePageHeadBackdrop {
@@ -862,6 +863,7 @@ legend {
 	vertical-align: top;
 	float: right;
 	margin-left: 3px;
+	margin-right: 5px;
 	display: table-cell;
 }
 
@@ -928,6 +930,7 @@ legend {
 
 .cactiGraphContentArea {
 	height: 100vh;
+	display: none;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	margin-right: 5px;
@@ -950,9 +953,9 @@ legend {
 }
 
 .cactiConsoleContentArea {
-	height: 100vh;
+	height: 92vh;
 	overflow-y: auto !important;
-	overflow-x: hidden !important;
+	overflow-x: hidden;
 	padding-left: 10px;
 	margin-right: 5px;
 }
@@ -974,10 +977,9 @@ legend {
 }
 
 .iconLink {
-}
-
-.iconLink img {
-	padding-bottom: 2px;
+	width: 20px;
+	line-height: 20px;
+	display: inline-block;
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
@@ -1455,7 +1457,7 @@ th.sortable {
 }
 
 .tableRow td {
-	line-height: 25px !important;
+	line-height: 20px !important;
 }
 
 .image_table {
@@ -1659,6 +1661,8 @@ th.sortable {
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
+	display: inline-block;
+	width: 11.75px;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -1669,7 +1673,8 @@ th.sortable {
 }
 
 .moveArrowNone {
-	padding-left: 8.75px;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {
@@ -1980,7 +1985,8 @@ ul#nav {
 }
 
 .ui-tooltip {
-	max-width: none !important;
+	max-width: 500px;
+	word-break: break-word;
 }
 
 .ui-tooltip-content div.header {
@@ -1993,7 +1999,6 @@ ul#nav {
 }
 
 .ui-tooltip-content {
-	max-width: 500px !important;
 	overflow: auto !important;
 	opacity: 0.95;
 	border-radius: 5px !important;
@@ -2153,7 +2158,6 @@ tr#realtime td:first-child {
 
 .ui-multiselect-checkboxes span {
 	font-size: 12px;
-	color: black;
 }
 
 .ui-multiselect-header {
@@ -2204,7 +2208,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 	width: 45px;
 	height: 24px;
-	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
 }

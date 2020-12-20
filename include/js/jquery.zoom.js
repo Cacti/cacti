@@ -151,14 +151,14 @@
 			var $this = image;
 
 			if ($('#zoom-container').hasClass('zoom_active_' + zoomGetImageId($this))) {
-				zoomElements_remove();
+			    zoomElements_remove();
 				zoomFunction_init($this);
 			}
 
 			$this.parent().disableSelection();
 			$this.off().mouseover(
 				function(){
-					if (!mouseDown) {
+					if (!mouseDown && !zoom.marker[1].placed) {
 						zoomElements_remove();
 						zoomFunction_init($this);
 					}
@@ -177,7 +177,7 @@
 		function zoomGetImageId(image) {
 			var id = image.attr('id');
 			if (image.attr('rra_id') > 0) {
-				id += '_rra' +rra_id;
+				id += '_rra' + image.attr('rra_id');
 			}
 			return id;
 		}
@@ -185,7 +185,7 @@
 		function zoomGetId(zoom) {
 			var id = zoom.image.reference;
 			if (zoom.image.rra_id > 0) {
-				id += '_rra' + rra_id;
+				id += '_rra' + zoom.image.rra_id;
 			}
 			return id;
 		}
@@ -232,11 +232,11 @@
 			zoom.graph.end				= parseInt(zoom.initiator.attr('graph_end'));
 			zoom.graph.timespan			= zoom.graph.end - zoom.graph.start;
 			zoom.graph.secondsPerPixel	= zoom.graph.timespan/zoom.graph.width;
-			zoom.box.width				= zoom.graph.width;
+			zoom.box.width				= zoom.graph.width + ((zoom.custom.zoomMode === 'quick') ? 0 : 1);
 			zoom.box.height				= zoom.graph.height;
 			zoom.box.top 				= zoom.graph.top-1;
 			zoom.box.bottom 			= zoom.graph.top + zoom.box.height;
-			zoom.box.left				= zoom.graph.left-1;
+			zoom.box.left				= zoom.graph.left;
 			zoom.box.right				= zoom.box.left + zoom.box.width;
 
 			//console.log('BoxTop: '    + zoom.box.top);
@@ -427,7 +427,7 @@
 			$('#zoom-box').off();
 			$('#zoom-box').css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
 			$('#zoom-box').bind('contextmenu', function(e) { zoomContextMenu_toggle(e); return false;} );
-			$('#zoom-area').off().css({ top:zoom.box.top+'px', height:zoom.box.height+'px' });
+			$('#zoom-area').off().css({ top:zoom.graph.top+'px', height:zoom.graph.height+'px' });
 			$('.zoom-area-excluded').off();
 			$('.zoom-area-excluded').bind('contextmenu', function(e) { zoomContextMenu_toggle(e); return false;} );
 			$('.zoom-area-excluded').bind('click', function(e) { zoomContextMenu_hide(); return false;} );
@@ -441,6 +441,8 @@
 		*/
 		function zoomAction_init(image) {
 			if (zoom.custom.zoomMode == 'quick') {
+				zoom.box.width = zoom.graph.width;
+				$('#zoom-box').css({ width:zoom.box.width + 'px' });
 				$('#zoom-area').resizable({ containment: '#zoom-box', handles: 'e, w' });
 				$('#zoom-box').off('mousedown').on('mousedown', function(e) {
 					switch(e.which) {
@@ -496,12 +498,14 @@
 				});
 
 				/* moving the mouse pointer quickly will avoid that the mousemove event has enough time to actualize the zoom area */
-				$('#zoom-box').mouseout( function(e) {
+				$('#zoom-container').mouseout( function(e) {
 					zoomAction_draw(e);
 				} );
 
 			} else{
 				/* welcome to the advanced mode ;) */
+				zoom.box.width = zoom.graph.width+1;
+				$('#zoom-box').css({ width:zoom.box.width + 'px' });
 				$('#zoom-box').off('mousedown').on('mousedown', function(e) {
 					switch(e.which) {
 						case 1:
@@ -600,16 +604,16 @@
 									},
 								drag:
 									function(event, ui) {
-										if (ui.position['left'] < zoom.box.left) {
+										if (ui.position['left'] <= zoom.box.left) {
 											zoom.marker[marker].left = zoom.box.left;
-										} else if (ui.position['left'] > zoom.box.right) {
+										} else if (ui.position['left'] >= zoom.box.right) {
 											zoom.marker[marker].left = zoom.box.right;
 										} else {
-											zoom.marker[marker].left = ui.position['left'];
+											zoom.marker[marker].left = Math.ceil(parseFloat(ui.position['left']));
 										}
 
 										/* update the timestamp shown in tooltip */
-										zoom.marker[marker].unixtime = parseInt(parseInt(zoom.graph.start) + (zoom.marker[marker].left - zoom.box.left)*zoom.graph.secondsPerPixel);
+										zoom.marker[marker].unixtime = Math.ceil( parseFloat(parseInt(zoom.graph.start) + (zoom.marker[marker].left - zoom.graph.left)*zoom.graph.secondsPerPixel));
 										$('#zoom-marker-tooltip-value-' + marker).html(
 											unixTime2Date(zoom.marker[marker].unixtime).replace(' ', '<br>')
 										);
@@ -687,7 +691,7 @@
 			if (zoom.custom.zoomMode == 'quick') {
 				var newGraphStartTime 	= (zoom.attr.action == 'left2right') 	? parseInt(parseInt(zoom.graph.start) + (zoom.attr.start -zoom.image.left -zoom.box.left)*zoom.graph.secondsPerPixel)
 																				: parseInt(parseInt(zoom.graph.start) + (zoom.attr.end -zoom.image.left -zoom.box.left)*zoom.graph.secondsPerPixel);
-				var newGraphEndTime 	= (zoom.attr.action == 'left2right')	? parseInt(newGraphStartTime + (zoom.attr.end-zoom.attr.start)*zoom.graph.secondsPerPixel)
+				var newGraphEndTime 	= (zoom.attr.action == 'left2right')	? Math.ceil( parseFloat(newGraphStartTime + (zoom.attr.end-zoom.attr.start)*zoom.graph.secondsPerPixel))
 																				: parseInt(newGraphStartTime + (zoom.attr.start-zoom.attr.end)*zoom.graph.secondsPerPixel);
 
 				/* If the user only clicked on a graph then equal end and start date to ensure that we do not propergate NaNs */
@@ -901,7 +905,7 @@
 			} else {
 				zoom.attr.action = 'left2right';
 				zoom.attr.end = (event.pageX > zoom.image.left+zoom.box.right) ? zoom.image.left+zoom.box.right : event.pageX;
-				$('#zoom-area').css({ left:zoom.attr.start-zoom.image.left+'px', width:Math.abs(zoom.attr.end-zoom.attr.start-1)+'px' });
+				$('#zoom-area').css({ left:zoom.attr.start-zoom.image.left+'px', width:Math.abs(zoom.attr.end-zoom.attr.start)+'px' });
 			}
 		}
 

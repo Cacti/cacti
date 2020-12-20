@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -30,6 +30,9 @@ require_once($config['base_path'] . '/lib/utility.php');
 require_once($config['base_path'] . '/install/functions.php');
 
 ini_set('max_execution_time', '0');
+
+/* make sure installer knows we are installing */
+define('IN_CACTI_INSTALL', 1);
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

@@ -24,8 +24,6 @@
 
 include('./include/auth.php');
 
-$version = CACTI_VERSION_BRIEF_TEXT;;
-
 if (isset($_SERVER['HTTP_REFERER'])) {
 	$goBack = "[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]";
 } else {

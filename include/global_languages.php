@@ -685,7 +685,7 @@ function read_user_i18n_setting($config_name) {
  *
  * @return - formatted numer in the correct locale
  */
-function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
+function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	global $cacti_locale, $cacti_country;
 
 	$country = strtoupper($cacti_country);
@@ -705,8 +705,16 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	setlocale(LC_ALL, $cacti_locale);
 	$locale = localeconv();
 
-	if ($decimals == -1) {
-		$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
+	if (!isset($locale['decimal_point']) || $locale['decimal_point'] == '') {
+		$locale['decimal_point'] = '.';
+	}
+
+	if (!isset($locale['thousands_sep']) || $locale['thousands_sep'] == '') {
+		$locale['thousands_sep'] = ',';
+	}
+
+	if ($decimals == -1 || $decimals == null) {
+		$number =  number_format($number, null, $locale['decimal_point'], $locale['thousands_sep']);
 	} elseif ($number>=pow($baseu, 4)) {
 		$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
 	} elseif ($number>=pow($baseu, 3)) {

@@ -458,9 +458,13 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	default:
-		print '<em>' . html_escape($field_array['value']) . '</em>';
+		if (isset($field_array['value'])) {
+			print '<em>' . html_escape($field_array['value']) . '</em>';
 
-		form_hidden_box($field_name, $field_array['value'], '', true);
+			form_hidden_box($field_name, $field_array['value'], '', true);
+		} else {
+			cacti_log('ERROR: Field Name: ' . $field_name . ' includes Method: ' . $field_array['method'] . ' does not include a value \'value\' element.', false);
+		}
 
 		break;
 	}

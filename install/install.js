@@ -86,6 +86,8 @@ const FIELDS_TEMPLATES = {
 	templates:             { type: 'checkbox'                             },
 }
 
+var installTimer;
+
 function setSNMPOverride() {
 	element = $('#automation_override');
 	if (element != null && element.length > 0) {
@@ -841,11 +843,13 @@ $(function() {
 		getPresentHTTPError('');
 	});
 
-	setTimeout(function() {
-		$('#installRefresh').click(function() {
-			performStep();
-		});
+	waitForFinalEvent(function() {
+		installTimer = setTimeout(function() {
+			$('#installRefresh').click(function() {
+				performStep();
+			});
 
-		performStep();
-	}, 1000);
+			performStep();
+		}, 1000);
+	});
 });

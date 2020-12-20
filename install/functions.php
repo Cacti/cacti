@@ -633,7 +633,7 @@ function install_file_paths() {
 	/* PHP Binary Path */
 	$input['path_php_binary'] = install_tool_path('php_binary',
 		array(
-			'unix'  => '/usr/bin/php',
+			'unix'  => '/bin/php',
 			'win32' => 'c:/php/php.exe'
 		));
 

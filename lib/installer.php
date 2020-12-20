@@ -1768,7 +1768,7 @@ class Installer implements JsonSerializable {
 
 		$recs = utility_php_recommends();
 
-		foreach ($recs as $rec_title=>$recommends) {
+		foreach ($recs as $rec_title => $recommends) {
 			$output .= Installer::sectionSubTitle(__('PHP - Recommendations (%s)', $rec_title), 'php_recommends_'.$rec_title);
 
 			ob_start();
@@ -1777,7 +1777,7 @@ class Installer implements JsonSerializable {
 			html_header(array(__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')));
 
 			$status = DB_STATUS_SUCCESS;
-			if ($recommends === false) {
+			if (!cacti_sizeof($recommends)) {
 				$recommends = array(
 					array(
 						'status' => DB_STATUS_ERROR,
@@ -2468,7 +2468,7 @@ class Installer implements JsonSerializable {
 		html_end_box(false);
 		$output .= Installer::sectionNormal(ob_get_contents());
 		ob_end_clean();
-		$output .= Installer::sectionNormal(__('Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press \'Finish\' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes.'));
+		$output .= Installer::sectionNormal(__('Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press \'Next\' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes.'));
 
 		$this->stepData = array('Templates' => $this->templates);
 		return $output;
@@ -2520,12 +2520,12 @@ class Installer implements JsonSerializable {
 				$max_vars = 1000;
 			}
 
-			if ($max_vars < count($tables) + 10) {
-				$output .= Installer::sectionError(__('You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s', count($tables) + 100));
+			if ($max_vars < cacti_count($tables) + 10) {
+				$output .= Installer::sectionError(__('You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s', cacti_count($tables) + 100));
 				$this->buttonNext->Enabled = false;
 			} else {
 				$output .= Installer::sectionWarning(__('Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
-				$output .= Installer::sectionNote('max_input_vars: ' . $max_vars . ', tables: ' . count($tables));
+				$output .= Installer::sectionNote('max_input_vars: ' . $max_vars . ', tables: ' . cacti_count($tables));
 				$show_warning=false;
 				ob_start();
 				html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
@@ -2734,6 +2734,9 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated with errors', CACTI_VERSION_BRIEF_FULL));
 		}
 
+		// Remove integrated plugin references
+		api_plugin_uninstall_integrated();
+
 		$output .= Installer::sectionSubTitleEnd();
 
 		$sections = array();
@@ -2785,10 +2788,6 @@ class Installer implements JsonSerializable {
 
 							// show results from version upgrade
 							$sql_temp = $action[3];
-
-//						if (!empty($action[4])) {
-//							$sql .= "<br>Error: " . $action[4];
-//						}
 
 							if (isset($sqlclass[$action[2]])) {
 								$cssClass = $sqlclass[$action[2]];

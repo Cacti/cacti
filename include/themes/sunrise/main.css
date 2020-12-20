@@ -66,9 +66,8 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	font-size: 1.1em;
+	font-size: 13px;
 	vertical-align: middle;
-	color: #9D9D9D;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab, .menu_parent i.far, .menu_parent i.fal {
@@ -122,6 +121,7 @@ pre {
 	position: relative;
 	z-index: 0;
 	padding-right: 5px;
+	width: 100%;
 }
 
 #main > br {
@@ -1011,6 +1011,12 @@ legend {
 	display: table-cell;
 }
 
+.actionsDropdownButton > input.ui-button {
+	background: transparent;
+	outline-style: none;
+	padding: 4px 10px;
+}
+
 .actionsDropdownArrow {
 	margin-top: auto;
 	margin-bottom: auto;
@@ -1083,6 +1089,7 @@ legend {
 
 .cactiGraphContentArea {
 	height: 100vh;
+	display: none;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
@@ -1121,7 +1128,7 @@ legend {
 .cactiConsoleContentArea {
 	height: 100vh;
 	overflow-y: auto !important;
-	overflow-x: hidden !important;
+	overflow-x: hidden;
 	border-left: 1px solid #000000;
 }
 
@@ -1150,10 +1157,9 @@ legend {
 }
 
 .iconLink {
-}
-
-.iconLink img {
-	padding-bottom: 2px;
+	width: 20px;
+	line-height: 20px;
+	display: inline-block;
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
@@ -1858,6 +1864,8 @@ table.cactiTable {
 	color: #00438C !important;
 	height: 14px !important;
 	font-size: 14px !important;
+	display: inline-block;
+	width: 11.75px;
 	vertical-align: middle;
 	text-decoration: none !important;
 }
@@ -1867,7 +1875,8 @@ table.cactiTable {
 }
 
 .moveArrowNone {
-	padding-left: 8.75;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {
@@ -1953,7 +1962,7 @@ div#gtabs {
 
 .maintabs a.selected {
 	color: white;
-	font-size: 18px;
+	font-size: 17px;
 	background: none;
 	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
 	border-bottom: 3px solid #3C8A3C;
@@ -2191,7 +2200,8 @@ ul#nav {
 }
 
 .ui-tooltip {
-	max-width: none !important;
+	max-width: 500px;
+	word-break: break-word;
 }
 
 .ui-tooltip-content div.header {
@@ -2204,7 +2214,6 @@ ul#nav {
 }
 
 .ui-tooltip-content {
-	max-width: 500px !important;
 	overflow: auto !important;
 	opacity: 0.95;
 	border: transparent;
@@ -2551,7 +2560,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 	width: 45px;
 	height: 24px;
-	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
 }

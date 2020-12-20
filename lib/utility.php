@@ -35,6 +35,10 @@ function update_replication_crc($poller_id, $variable) {
 }
 
 function repopulate_poller_cache() {
+	global $config;
+
+	include_once($config['library_path'] . '/api_data_source.php');
+
 	$poller_data    = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
 		FROM data_local AS dl
 		INNER JOIN host AS h
@@ -100,6 +104,10 @@ function repopulate_poller_cache() {
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
+	global $config;
+
+	include_once($config['library_path'] . '/api_data_source.php');
+
 	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 		FROM data_local
 		WHERE host_id = ?
@@ -519,14 +527,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		$ids = implode(', ', $local_data_ids);
 
 		if ($ids != '') {
-			db_execute("UPDATE poller_item
+			db_execute_prepared("UPDATE poller_item
 				SET present=0
-				WHERE local_data_id IN ($ids)");
+				WHERE poller_id = ?
+				AND local_data_id IN ($ids)",
+				array($poller_id));
 
 			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-				db_execute("UPDATE poller_item
+				db_execute_prepared("UPDATE poller_item
 					SET present=0
-					WHERE local_data_id IN ($ids)", true, $rcnn_id);
+					WHERE poller_id = ?
+					AND local_data_id IN ($ids)",
+					array($poller_id), true, $rcnn_id);
 			}
 		}
 	} else {
@@ -602,14 +614,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 
 	/* remove stale records FROM the poller cache */
 	if ($ids != '') {
-		db_execute("DELETE FROM poller_item
-			WHERE present=0
-			AND local_data_id IN ($ids)");
+		db_execute_prepared("DELETE FROM poller_item
+			WHERE present = 0
+			AND poller_id = ?
+			AND local_data_id IN ($ids)",
+			array($poller_id));
 
 		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-			db_execute("DELETE FROM poller_item
-				WHERE present=0
-				AND local_data_id IN ($ids)", true, $rcnn_id);
+			db_execute_prepared("DELETE FROM poller_item
+				WHERE present = 0
+				AND poller_id = ?
+				AND local_data_id IN ($ids)",
+				array($poller_id), true, $rcnn_id);
 		}
 	} else {
 		/* only handle explicitely given local_data_ids */
@@ -623,6 +639,10 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
  * works on table data_input_data and poller cache
  */
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
+	global $config;
+
+	include_once($config['library_path'] . '/api_data_source.php');
+
 	/* ok here's the deal: first we need to find every data source that uses this host.
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here FROM this host */
@@ -869,13 +889,19 @@ function utilities_get_mysql_recommendations() {
 				'value' => 'utf8mb4_unicode_ci',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
+				),
+			'character_set_server' => array(
+				'value' => 'utf8mb4',
+				'class' => 'warning',
+				'measure' => 'equal',
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8mb4',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				)
 		);
 	} else {
@@ -899,6 +925,12 @@ function utilities_get_mysql_recommendations() {
 				'value' => 'utf8mb4_unicode_ci',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
+				),
+			'character_set_server' => array(
+				'value' => 'utf8mb4',
+				'class' => 'warning',
+				'measure' => 'equal',
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
 				'value' => 'utf8mb4',
@@ -1126,7 +1158,7 @@ function utilities_get_mysql_recommendations() {
 			switch($r['measure']) {
 			case 'gem':
 				$compare = '>=';
-				$value_display = ($variables[$name]/1024/1024) . 'M';
+				$value_display = ($variables[$name]/1024/1024) . ' M';
 				$value = trim($r['value'], 'M') * 1024 * 1024;
 				if ($variables[$name] < $value) {
 					$passed = false;
@@ -1166,8 +1198,8 @@ function utilities_get_mysql_recommendations() {
 
 				$compare = '>=';
 				$passed = ($variables[$name] >= ($r['value']*$totalMem/100));
-				$value_display = round($variables[$name]/1024/1024,0) . 'M';
-				$value_recommend = round($r['value']*$totalMem/100/1024/1024,0) . 'M';
+				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
+				$value_recommend = round($r['value']*$totalMem/100/1024/1024, 2) . ' M';
 				break;
 			case 'pinst':
 				$compare = '>=';
@@ -1239,9 +1271,9 @@ function utilities_php_modules() {
 	$php_info = str_replace("\n", '', $php_info);
 	$php_info = preg_replace('/^.*\<body\>/', '', $php_info);
 	$php_info = preg_replace('/\<\/body\>.*$/', '', $php_info);
-	$php_info = preg_replace('/\<a.*\>/U', '', $php_info);
-	$php_info = preg_replace('/\<\/a\>/', '<hr>', $php_info);
+	$php_info = preg_replace('/(\<a name.*\>)([^<>]*)(\<\/a\>)/U', '$2', $php_info);
 	$php_info = preg_replace('/\<img.*\>/U', '', $php_info);
+	$php_info = preg_replace('/\<div[^<>]*\>\<\/div\>/U', '', $php_info);
 	$php_info = preg_replace('/\<\/?address\>/', '', $php_info);
 
 	return $php_info;
@@ -1511,7 +1543,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 }
 
 function utility_php_set_recommends_text(&$recs) {
-	if (is_array($recs) && sizeof($recs)) {
+	if (is_array($recs) && cacti_sizeof($recs)) {
 		foreach ($recs as $name => $recommends) {
 			if (cacti_sizeof($recommends)) {
 				foreach ($recommends as $index => $recommend) {

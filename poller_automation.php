@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -416,10 +416,19 @@ function discoverDevices($network_id, $thread) {
 		if (cacti_sizeof($device) && isset($device['ip_address'])) {
 			$count++;
 
-			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] .'\' to check',false,'AUTOM8',POLLER_VERBOSITY_MEDIUM);
+			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] .'\' to check', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
+
+			if (!filter_var($device['ip_address'], FILTER_VALIDATE_IP)) {
+				cacti_log(automation_get_pid() . ' WARNING: IP address \'' . $device['ip_address'] .'\' is not a valid IP address.', false, 'AUTOM8');
+
+				markIPDone($device['ip_address'], $network_id);
+
+				continue;
+			}
 
 			if ($dns != '') {
 				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 300);
+
 				if ($dnsname != $device['ip_address'] && $dnsname != 'timed_out') {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
 
@@ -433,7 +442,9 @@ function discoverDevices($network_id, $thread) {
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
+
 					$netbios = ping_netbios_name($device['ip_address']);
+
 					if ($netbios === false) {
 						automation_debug(" Not found");
 						$device['hostname']      = $device['ip_address'];
@@ -452,6 +463,7 @@ function discoverDevices($network_id, $thread) {
 					}
 				} else {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
+
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
 					$device['dnsname_short'] = '';
@@ -459,6 +471,7 @@ function discoverDevices($network_id, $thread) {
 			} else {
 				$dnsname = @gethostbyaddr($device['ip_address']);
 				$device['hostname'] = $dnsname;
+
 				if ($dnsname != $device['ip_address']) {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
 
@@ -471,6 +484,7 @@ function discoverDevices($network_id, $thread) {
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				} elseif ($network['enable_netbios'] == 'on') {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
+
 					$netbios = ping_netbios_name($device['ip_address']);
 					if ($netbios === false) {
 						automation_debug(" Not found");
@@ -490,6 +504,7 @@ function discoverDevices($network_id, $thread) {
 					}
 				} else {
 					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
+
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
 					$device['dnsname_short'] = '';
@@ -517,7 +532,7 @@ function discoverDevices($network_id, $thread) {
 					$device['snmp_id']              = $network['snmp_id'];
 					$device['poller_id']            = $network['poller_id'];
 					$device['site_id']              = $network['site_id'];
-					$device['snmp_version']         = '';
+					$device['snmp_version']         = '2';
 					$device['snmp_port']            = '';
 					$device['snmp_community']       = '';
 					$device['snmp_username']        = '';
@@ -819,7 +834,7 @@ function discoverDevices($network_id, $thread) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_BRIEF_TEXT;
+	$version = CACTI_VERSION_TEXT_CLI;
     print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
@@ -829,8 +844,8 @@ function display_help () {
 
 	print "\nusage: poller_automation.php -M [--poller=ID] | --network=network_id [-T=thread_id]\n";
 	print "    [--debug] [--force]\n\n";
-	print "Cacti's automation poller.  This poller has two operating modes, Master and Slave.\n";
-	print "The Master process tracks and launches all Slaves based upon Cacti's automation\n";
+	print "Cacti's automation poller.  This poller has two operating modes, master and worker.\n";
+	print "The master process tracks and launches all workers based upon Cacti's automation\n";
 	print "settings.  If you only want to force a network to be collected, you only need to\n";
 	print "specify the Network ID and the force options.\n\n";
 	print "Master Process:\n";

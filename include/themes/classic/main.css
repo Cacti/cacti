@@ -55,7 +55,7 @@ img {
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
 	vertical-align: middle;
-	font-size: 1.1em;
+	font-size: 13px;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab, .menu_parent i.far, .menu_parent i.fal {
@@ -138,6 +138,10 @@ tr.selected {
 
 label {
 	white-space: nowrap;
+}
+
+.tableRow {
+	line-height: 18px;
 }
 
 .tableRowGraph td {
@@ -341,6 +345,8 @@ label {
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
+	display: inline-block;
+	width: 11.75px;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -351,7 +357,8 @@ label {
 }
 
 .moveArrowNone {
-	padding-left: 8.75px;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {
@@ -765,10 +772,10 @@ ul#breadcrumbs {
 
 .cactiContent {
 	clear: both;
-	width: 100%;
+	width: calc(100% - 1px);
 	height: 100%;
 	vertical-align: top;
-	display: inline-table;
+	display: table;
 }
 
 .cactiTreeNavigationArea {
@@ -859,6 +866,10 @@ ul#breadcrumbs {
 	padding-right: 6px;
 }
 
+.cactiLoginTable input {
+	border: 1px solid #BBBBBB !important;
+}
+
 .cactiAuthErrors {
 	color: red;
 	min-height: 15px;
@@ -911,6 +922,7 @@ legend {
 	float: right;
 	margin-top: 1px;
 	margin-left: 3px;
+	margin-right: 5px;
 	display: table-column;
 }
 
@@ -978,7 +990,6 @@ legend {
 	vertical-align: top;
 	display: table-cell;
 	overflow-y: auto !important;
-	overflow-x: hidden !important;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
@@ -991,11 +1002,9 @@ legend {
 }
 
 .iconLink {
-	padding: 2px;
-}
-
-.iconLink img {
-	padding-bottom: 2px;
+	width: 20px;
+	line-height: 20px;
+	display: inline-block;
 }
 
 .noLinkEditMain {
@@ -1154,13 +1163,13 @@ legend {
 .cactiTableTitleRow {
 	color: white;
 	float: left;
-	line-height: 22px;
-	height: 22px;
+	line-height: 25px;
 	text-align: left;
-	display: table-column;
+	display: block;
 	width: 100%;
 	background-color: #00438C;
 	font-size: 12px;
+	vertical-align: middle;
 }
 
 .cactiInstallTableTitleRow {
@@ -1170,23 +1179,24 @@ legend {
 .cactiTableTitle {
 	color: white;
 	float: left;
-	line-height: 22px;
-	height: 22px;
+	line-height: 25px;
 	text-align: left;
-	display: table-column;
+	display: block;
 	width: 70%;
 	background-color: #00438C;
 	font-size: 12px;
+	user-select: none;
 }
 
 .cactiTableButton {
 	float: right;
-	display: table-column;
+	display: block;
+	line-height: 25px;
 	text-align: right;
-	height: 22px;
 	width: 30%;
 	background-color: #00438C;
 	white-space: nowrap;
+	user-select: none;
 }
 
 .cactiTableButton.debug {
@@ -1197,12 +1207,11 @@ legend {
 .cactiTableButton span, .cactiTableTitle span {
 	color: white;
 	padding: 0px;
-	line-height: 22px;
-	height: 22px;
+	line-height: 25px;
 	white-space: nowrap;
 	overflow: hidden;
-	vertical-align: middle;
 	background: transparent;
+	user-select: none;
 }
 
 .cactiTableButton i {
@@ -1844,7 +1853,8 @@ ul#nav {
 }
 
 .ui-tooltip {
-	max-width: none !important;
+	max-width: 500px;
+	word-break: break-word;
 }
 
 .ui-tooltip-content div.header {
@@ -1853,7 +1863,6 @@ ul#nav {
 
 .ui-tooltip-content {
 	min-width: 100px !important;
-	max-width: 500px !important;
 	overflow: auto !important;
 	opacity: 0.95;
 	border-radius: 5px !important;
@@ -2008,7 +2017,6 @@ tr#realtime td:first-child {
 
 .ui-multiselect-checkboxes span {
 	font-size: 12px;
-	color: black;
 }
 
 .ui-multiselect-header {

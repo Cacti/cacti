@@ -1537,7 +1537,7 @@ function upgrade_to_1_0_0() {
 
 	// Update Aggregate CDEFs to become system level
 	db_install_add_column('cdef', array('name' => 'system', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => '0', 'after' => 'hash'));
-	db_install_execute("UPDATE cdef SET system=1 WHERE name LIKE '\_%'");
+	db_install_execute("UPDATE cdef SET `system` = 1 WHERE name LIKE '\_%'");
 
 	// Add some important missing indexes
 	db_install_add_key('data_local', 'INDEX', 'data_template_id', array('data_template_id'));
@@ -1846,7 +1846,7 @@ function upgrade_realms() {
 			if (cacti_sizeof($exists)) {
 				$old_realm = $exists['id'] + 100;
 
-				db_execute_prepared('UPDATE user_auth_realm
+				db_execute_prepared('UPDATE IGNORE user_auth_realm
 					SET realm_id = ?
 					WHERE realm_id = ?',
 					array($r['new_realm'], $old_realm));

@@ -89,6 +89,8 @@ case 'countdown':
 		break;
 	}
 
+	cacti_session_close();
+
 	$graph_data_array = array();
 
 	/* ds */
@@ -101,11 +103,15 @@ case 'countdown':
 	/* override: graph height (in pixels) */
 	if (!isempty_request_var('graph_height') && get_request_var('graph_height') < 3000) {
 		$graph_data_array['graph_height'] = get_request_var('graph_height');
+	} else {
+		$graph_data_array['graph_height'] = 125;
 	}
 
 	/* override: graph width (in pixels) */
 	if (!isempty_request_var('graph_width') && get_request_var('graph_width') < 3000) {
 		$graph_data_array['graph_width'] = get_request_var('graph_width');
+	} else {
+		$graph_data_array['graph_width'] = 425;
 	}
 
 	/* override: skip drawing the legend? */
@@ -372,9 +378,7 @@ $sizes = array(
 		<div class='cactiTable center'>
 			<span id='countdown'><?php print __('%d seconds left.',  get_request_var('ds_step')); ?></span>
 		</div>
-		<div id='image' class='center' style='padding:2px;'>
-			<i id='imaging' style='font-size:40px;' class='fa fa-spin fa-circle-notch'></i>
-		</div>
+		<div id='image' class='center' style='padding:2px;'></div>
 		<input type='hidden' id='url_path' name='url_path' value='<?php echo $config['url_path'];?>'/>
 		<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php echo get_request_var('local_graph_id'); ?>'/>
 		<script type='text/javascript'>

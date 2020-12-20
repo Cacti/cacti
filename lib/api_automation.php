@@ -3008,7 +3008,6 @@ function automation_get_valid_mask($range) {
 }
 
 function automation_get_network_info($range) {
-//	echo "function automation_get_network_info($range)" .PHP_EOL;
 	$network   = false;
 	$broadcast = false;
 	$mask      = false;
@@ -3018,7 +3017,12 @@ function automation_get_network_info($range) {
 	if (strpos($range, '/') !== false) {
 		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
 		$range_parts = explode('/', $range);
-		$mask        = automation_get_valid_mask($range_parts[1]);
+
+		if (!filter_var($range_parts[0], FILTER_VALIDATE_IP)) {
+			return false;
+		}
+
+		$mask = automation_get_valid_mask($range_parts[1]);
 		if ($mask !== false) {
 			$network = automation_get_valid_ip($range_parts[0]);
 			if ($mask['cidr'] != 0) {
@@ -3028,13 +3032,18 @@ function automation_get_network_info($range) {
 				$broadcast = long2ip($dec + $count);
 			}
 		}
-	} elseif (strpos($range, '*') !== false) {
+	} elseif (strpos($range, '*') !== false && strpos($range, '-') === false) {
+		$test = str_replace('*', 0, $range);
+
+		if (!filter_var($test, FILTER_VALIDATE_IP)) {
+			return false;
+		}
+
 		$range_parts = explode('.', $range);
 		$network     = '';
 		$broadcast   = '';
 		$part_count  = 0;
 		foreach ($range_parts as $part) {
-			//echo $part . ".";;
 			if ($part != '*') {
 				$part_count++;
 				if (is_numeric($part)) {
@@ -3067,10 +3076,9 @@ function automation_get_network_info($range) {
 			return automation_get_network_info(rtrim($network,'.').'/'.rtrim($broadcast,'.'));
 		}
 	} elseif (strpos($range, '-') !== false) {
-		$range_parts = explode('-', $range);
+		raise_message('automation_iprange', __('ERROR: IP ranges in the form of range1-range2 are no longer supported.'), MESSAGE_LEVEL_ERROR);
 
-		$network   = automation_get_valid_ip(long2ip(ip2long($range_parts[0]) - 1));
-		$broadcast = automation_get_valid_ip(long2ip(ip2long($range_parts[1]) + 1));
+		return false;
 	} else {
 		$network   = automation_get_valid_ip($range);
 		$broadcast = automation_get_valid_ip($range);
@@ -3095,7 +3103,10 @@ function automation_get_network_info($range) {
 				$detail['end']   = long2ip(ip2long($broadcast) - 1);
 			}
 		}
+	} else {
+		return false;
 	}
+
 	return $detail;
 }
 

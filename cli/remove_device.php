@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -38,6 +38,7 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
+
 	/* setup defaults */
 	$description   = '';
 	$ip            = '';
@@ -46,6 +47,7 @@ if (cacti_sizeof($parms)) {
 	$quietMode     = false;
 	$confirm       = false;
 	$quiet         = false;
+	$debug         = false;
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -96,10 +98,10 @@ if (cacti_sizeof($parms)) {
 	}
 
 	/* process the various lists into validation arrays */
-	$hosts		= getHostsByDescription();
-	$addresses	= getAddresses();
-	$ids_host	= array();
-	$ids_ip		= array();
+	$hosts     = getHostsByDescription();
+	$addresses = getAddresses();
+	$ids_host  = array();
+	$ids_ip    = array();
 
 	/* process host description */
 	if ($description > '') {

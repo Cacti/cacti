@@ -757,7 +757,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'><? print __('Default Graph Policy for this User Group');?></td>
+			<td class='nowrap'><?php print __('Default Graph Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_graphs', $policy_array, '', '', $policy['policy_graphs'], '', ''); ?>
 			</td>
@@ -900,7 +900,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'><? print __('Default Graph Policy for this User Group');?></td>
+			<td class='nowrap'><?php print __('Default Graph Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>

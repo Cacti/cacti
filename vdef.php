@@ -342,30 +342,6 @@ function vdef_item_remove_confirm() {
 	html_end_box();
 
 	form_end();
-
-	?>
-	<script type='text/javascript'>
-	$(function() {
-		$('#continue').click(function(data) {
-			var options = {
-				url: 'vdef.php?action=item_remove',
-				funcEnd: 'removeVdefItemFinalize'
-			}
-
-			var data = {
-				__csrf_magic: csrfMagicToken,
-				vdef_id: <?php print get_request_var('vdef_id');?>,
-				id: <?php print get_request_var('id');?>
-			}
-		});
-	});
-
-	function removeVdefItemFinalize(data) {
-		$('#cdialog').dialog('close');
-		loadUrl({url:'vdef.php?action=edit&id=<?php print get_request_var('id');?>'})
-	}
-	</script>
-	<?php
 }
 
 function vdef_item_remove() {
@@ -660,7 +636,7 @@ function vdef_edit() {
 	$(function() {
 		$('#vdef_edit3').find('.cactiTable').attr('id', 'vdef_item');
 		$('.cdialog').remove();
-		$('body').append("<div class='cdialog' id='cdialog'></div>");
+		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#vdef_item').unbind().tableDnD({
@@ -678,14 +654,41 @@ function vdef_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
-					$('#cdialog').dialog({ title: '<?php print __esc('Delete VDEF Item');?>', minHeight: 80, minWidth: 500 });
+
+					$('#continue').off('click').on('click', function(data) {
+						var options = {
+							url: 'vdef.php?action=item_remove',
+							funcEnd: 'removeVdefItemFinalize'
+						}
+
+						var data = {
+							__csrf_magic: csrfMagicToken,
+							vdef_id: id[1],
+							id: id[0]
+						}
+
+						postUrl(options, data);
+					});
+
+					$('#cdialog').dialog({
+						title: '<?php print __esc('Delete VDEF Item');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					});
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
 				});
 		}).css('cursor', 'pointer');
 	});
+
+	function removeVdefItemFinalize(data) {
+		$('#cdialog').dialog('close');
+		loadUrl({url:'vdef.php?action=edit&id=<?php print get_request_var('id');?>'})
+	}
 
 	</script>
 	<?php

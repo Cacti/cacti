@@ -46,7 +46,7 @@ $graph_actions = array(
 	1  => __('Delete'),
 );
 
-if (get_nfilter_request_var('template_id') != '-1' && get_nfilter_request_var('template_id') != '0') {
+if (get_nfilter_request_var('template_id') != '' && get_nfilter_request_var('template_id') != '-1' && get_nfilter_request_var('template_id') != '0') {
 	$graph_actions += array(
 		2  => __('Change Graph Template'),
 	);
@@ -69,9 +69,6 @@ if (read_config_option('grds_creation_method') == 1) {
 }
 
 $graph_actions = api_plugin_hook_function('graphs_action_array', $graph_actions);
-
-// Add interim support for enhanced orphan handling
-add_orphan_support();
 
 switch (get_request_var('action')) {
 	case 'save':

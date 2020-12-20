@@ -76,7 +76,7 @@ img {
 
 i.fa, i.fas, i.fab, i.far, i.fal {
 	padding: 0px 3px;
-	font-size: 1.1em;
+	font-size: 13px;
 	vertical-align: middle;
 }
 
@@ -143,6 +143,7 @@ th i.fa {
 	width: 100%;
 	position: relative;
 	z-index: 3;
+	margin-bottom: 10px;
 }
 
 input {
@@ -842,7 +843,6 @@ ul#breadcrumbs {
 	width: 100%;
 	vertical-align: top;
 	padding-top: 56px;
-	display: inline-table;
 }
 
 .cactiTreeNavigationArea {
@@ -1101,7 +1101,7 @@ legend {
 	padding-left: 5px;
 	vertical-align: top;
 	overflow-y: auto !important;
-	overflow-x: hidden !important;
+	overflow-x: hidden;
 	height: 100vh;
 }
 
@@ -1112,11 +1112,9 @@ legend {
 }
 
 .iconLink {
-	padding: 2px;
-}
-
-.iconLink img {
-	padding-bottom: 2px;
+	width: 20px;
+	line-height: 20px;
+	display: inline-block;
 }
 
 .noLinkEditMain {
@@ -1363,7 +1361,7 @@ legend {
 	padding: 0px 5px;
 }
 
-.cactiTableButton span a {
+.cactiTableButton span a, .cactiTableTitle span a {
 	color: snow;
 }
 
@@ -1894,6 +1892,8 @@ legend {
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
+	display: inline-block;
+	width: 11.75px;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -1904,7 +1904,8 @@ legend {
 }
 
 .moveArrowNone {
-	padding-left: 8.75px;
+	display: inline-block;
+	width: 11.75px;
 }
 
 .action, .shiftArrow, .calendar {
@@ -2278,7 +2279,8 @@ ul#nav {
 }
 
 .ui-tooltip {
-	max-width: none !important;
+	max-width: 500px;
+	word-break: break-word;
 }
 
 .ui-tooltip-content div.header {
@@ -2291,7 +2293,6 @@ ul#nav {
 }
 
 .ui-tooltip-content {
-	max-width: 500px !important;
 	overflow: auto !important;
 	opacity: 0.95;
 	border-radius: 5px !important;
@@ -2502,7 +2503,6 @@ tr#realtime td:first-child {
 	display: inline-block;
 	width: 45px;
 	height: 24px;
-	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
 }
@@ -2518,7 +2518,7 @@ tr#realtime td:first-child {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba(98,125,77,1);
+	background-color: rgba(200,200,200,1);
 	-webkit-transition: .4s;
 	transition: .4s;
 }
@@ -2599,7 +2599,7 @@ input:checked + .checkboxSlider:before {
 	bottom: 0;
 	height: 24px;
 	width: 24px;
-	background-color: rgba(98,125,77,1);
+	background-color: rgba(200,200,200,1);
 	-webkit-transition: .4s;
 	transition: .4s;
 }

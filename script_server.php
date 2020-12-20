@@ -153,7 +153,7 @@ while (1) {
 				$out = [];
 				exec("TASKLIST /FO LIST /FI \"PID eq $parent_pid\"", $out);
 
-				$isParentRunning = (count($out) > 1);
+				$isParentRunning = (cacti_count($out) > 1);
 			} elseif (function_exists('posix_kill')) {
 				$isParentRunning = posix_kill(intval($parent_pid), 0);
 			}

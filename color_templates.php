@@ -329,17 +329,19 @@ function aggregate_color_item() {
 	$(function() {
 		$('#color_templates_template_edit2_child').attr('id', 'color_item');
 		$('.cdialog').remove();
-		$('body').append("<div class='cdialog' id='cdialog'></div>");
+		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#color_item').tableDnD({
 			onDrop: function(table, row) {
-				loadUrl({url:'color_templates_items.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize()})
+				loadUrl({
+					url:'color_templates_items.php?action=ajax_dnd&id=<?php isset_request_var('color_template_id') ? print get_request_var('color_template_id') : print 0;?>&'+$.tableDnD.serialize()
+				})
 			}
 		});
 		<?php } ?>
 
-		$('.delete').click(function (event) {
+		$('.delete').click(function(event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
@@ -347,17 +349,24 @@ function aggregate_color_item() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
-					$('#cdialog').dialog({ title: '<?php print __('Delete Color Item');?>', minHeight: 80, minWidth: 500 });
+
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete Color Item');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					});
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
 				});
-			}).css('cursor', 'pointer');
-		});
+		}).css('cursor', 'pointer');
+	});
+
 	</script>
 	<?php
-
 }
 
 /* ----------------------------
@@ -708,4 +717,3 @@ function aggregate_color_template() {
 	</script>
 	<?php
 }
-

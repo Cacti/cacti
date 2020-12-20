@@ -172,7 +172,7 @@ function form_save() {
 		$save['id']            = get_request_var('id');
 		$save['hash']          = get_hash_data_input(get_nfilter_request_var('id'), 'data_input_field');
 		$save['data_input_id'] = get_request_var('data_input_id');
-		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['name']          = form_input_validate(get_nfilter_request_var('fname'), 'fname', '', false, 3);
 		$save['data_name']     = form_input_validate(get_nfilter_request_var('data_name'), 'data_name', '', false, 3);
 		$save['input_output']  = get_nfilter_request_var('input_output');
 		$save['update_rra']    = form_input_validate((isset_request_var('update_rra') ? get_nfilter_request_var('update_rra') : ''), 'update_rra', '', true, 3);
@@ -381,10 +381,6 @@ function field_remove_confirm() {
 
 			postUrl(options, data);
 		});
-
-		$('#cancel').unbind().click(function() {
-			$('#cdialog').dialog('close');
-		});
 	});
 
 	function removeDataInputFieldFinalize(data) {
@@ -548,6 +544,23 @@ function data_remove($id) {
 	update_replication_crc(0, 'poller_replicate_data_input_crc');
 }
 
+function data_input_more_inputs($id, $input_string) {
+	$input_string = str_replace('<path_cacti>', '', $input_string);
+	$inputs = substr_count($input_string, '<');
+
+	$existing = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM data_input_fields
+		WHERE data_input_id = ?
+		AND input_output = "in"',
+		array($id));
+
+	if ($inputs > $existing) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function data_edit() {
 	global $config, $fields_data_input_edit;
 
@@ -567,11 +580,11 @@ function data_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __esc('Data Input Methods [edit: %s]', $data_input['name']);
+		$header_label = __esc('Data Input Method [edit: %s]', $data_input['name']);
 	} else {
 		$data_input = array();
 
-		$header_label = __('Data Input Methods [new]');
+		$header_label = __('Data Input Method [new]');
 	}
 
 	if (!isset($config['input_whitelist'])) {
@@ -621,7 +634,13 @@ function data_edit() {
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
-		html_start_box(__('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . get_request_var('id'));
+		if (data_input_more_inputs(get_request_var('id'), $data_input['input_string'])) {
+			$url = 'data_input.php?action=field_edit&type=in&data_input_id=' . get_request_var('id');
+		} else {
+			$url = '';
+		}
+
+		html_start_box(__('Input Fields'), '100%', '', '3', 'center', $url);
 
 		print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem(__('Name'), '', 1);
@@ -734,7 +753,8 @@ function data_edit() {
 	<script type='text/javascript'>
 
 	$(function() {
-		$('body').append("<div id='cdialog'></div>");
+		$('.cdialog').remove();
+		$('#main').append("<div id='cdialog' class='cdialog'></div>");
 
 		$('.delete').unbind().click(function (event) {
 			event.preventDefault();
@@ -743,7 +763,9 @@ function data_edit() {
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
+
 					applySkin();
+
 					$('#cdialog').dialog({
 						title: '<?php print __('Delete Data Input Field');?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
@@ -915,10 +937,36 @@ function data() {
 
 	$display_text = array(
 		'name'         => array('display' => __('Data Input Name'),    'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
-		'nosort'       => array('display' => __('Deletable'),          'align' => 'right', 'tip' => __('Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')),
-		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources that use this Data Input Method.')),
-		'templates'    => array('display' => __('Templates Using'),    'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates that use this Data Input Method.')),
-		'type_id'      => array('display' => __('Data Input Method'),  'align' => 'right', 'sort' => 'ASC', 'tip' => __('The method used to gather information for this Data Input Method.')));
+		'id' => array(
+			'display' => __('ID'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database ID for this Data Input Method.  Useful when performing automation or debugging.')
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align'   => 'right',
+			'tip'     => __('Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template.')
+		),
+		'data_sources' => array(
+			'display' => __('Data Sources Using'),
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Data Sources that use this Data Input Method.')
+		),
+		'templates' => array(
+			'display' => __('Templates Using'),
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Data Templates that use this Data Input Method.')
+		),
+		'type_id' => array(
+			'display' => __('Data Input Method'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The method used to gather information for this Data Input Method.')
+		)
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -933,7 +981,8 @@ function data() {
 			}
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
 			form_selectable_cell(filter_value($data_input['name'], get_request_var('filter'), 'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $data_input['id'],'', 'right');
+			form_selectable_cell($data_input['id'], $data_input['id'], '', 'right');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $data_input['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($data_input['data_sources'], '-1'), $data_input['id'],'', 'right');
 			form_selectable_cell(number_format_i18n($data_input['templates'], '-1'), $data_input['id'],'', 'right');
 			form_selectable_cell($input_types[$data_input['type_id']], $data_input['id'], '', 'right');
@@ -955,4 +1004,3 @@ function data() {
 
 	form_end();
 }
-
