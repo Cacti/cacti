@@ -1,5 +1,5 @@
 {
-    "name": "Cacti/cacti",
+    "name": "cacti/cacti",
     "description": "Cacti Network Monitoring Framework",
     "type": "composer-plugin",
     "license": "GPL2",
@@ -33,6 +33,7 @@
     },
     "scripts": {
         "lint": "phplint --no-cache src/",
-        "phpcsfixer": "php-cs-fixer fix --diff --config=.php_cs --dry-run --ansi src/"
+        "phpcsfixer": "php-cs-fixer fix --diff --config=.php_cs --dry-run --ansi src/",
+        "phpcsfixit": "php-cs-fixer fix --config=.php_cs --ansi src/"
     }
 }

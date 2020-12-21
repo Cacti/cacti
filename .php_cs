@@ -24,7 +24,7 @@ $header = <<<'EOF'
 EOF;
 
 $finder = PhpCsFixer\Finder::create()
-    ->exclude('tests', 'include/vendor', 'plugins')
+    ->exclude('tests', 'include/vendor', 'include/fa', 'plugins')
     ->in(__DIR__)
     ->append([
         __DIR__.'/dev-tools/doc.php',
@@ -75,9 +75,10 @@ $config
 	'switch_case_semicolon_to_colon' => true,
 	'switch_case_space' => true,
 	'switch_continue_to_break' => true,
+	'logical_operators' => true,
 	'function_declaration' => ['closure_function_spacing' => 'one'],
 	'no_spaces_inside_parenthesis' => true,
-	'binary_operator_spaces' => ['operators' => ['+=' => 'align_single_space', '===' => 'align_single_space_minimal', '=' => 'align', '|' => 'single_space', '=>' => 'align']],
+	'binary_operator_spaces' => ['operators' => ['+=' => 'align_single_space', '===' => 'align_single_space_minimal', '=' => 'align', '|' => 'single_space', '=>' => 'align', '!=' => 'align']],
 	'not_operator_with_space' => false,
 	'no_spaces_around_offset' => ['positions' => ['outside', 'inside']],
 	'standardize_not_equals' => true,
@@ -92,6 +93,7 @@ $config
 	'no_singleline_whitespace_before_semicolons' => true,
 	'semicolon_after_instruction' => false,
 	//'space_after_semicolon' => ['remove_in_empty_for_expressions' => true],
+	'blank_line_before_statement' => ['statements' => ['break', 'continue', 'declare', 'default', 'do', 'exit', 'for', 'foreach', 'goto', 'if', 'return', 'switch', 'throw', 'try', 'while', 'yield', 'yield_from']],
 	'blank_line_before_return' => true,
 	'explicit_string_variable' => false,
 	'single_quote' => true,
