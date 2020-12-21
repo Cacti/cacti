@@ -524,6 +524,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 					if ($nodeType == '' || $nodeType == 'header') {
 						print $tree_item_types[$current_type]."\t";
 						print $node['id']."\t";
+
 						if ($parentNode == 0) {
 							print "N/A\t";
 						} else {
@@ -542,6 +543,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 					if ($nodeType == '' || $nodeType == 'graph') {
 						print $tree_item_types[$current_type] . "\t";
 						print $node['id'] . "\t";
+
 						if ($parentNode == 0) {
 							print "N/A\t";
 						} else {
@@ -562,6 +564,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 					if ($nodeType == '' || $nodeType == 'host') {
 						print $tree_item_types[$current_type] . "\t";
 						print $node['id'] . "\t";
+
 						if ($parentNode == 0) {
 							print "N/A\t";
 						} else {
@@ -574,6 +577,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 						print $host_group_types[$node['host_grouping_type']] . "\t";
 						print PHP_EOL;
 					}
+
 				break;
 			}
 		}

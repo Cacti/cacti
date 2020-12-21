@@ -34,6 +34,7 @@ function reports_item_dnd() {
 
 		if (cacti_sizeof($report_items)) {
 			$sequence = 1;
+
 			foreach ($report_items as $item) {
 				$item_id = str_replace('line', '', $item);
 				input_validate_input_number($item_id);
@@ -91,6 +92,7 @@ function reports_form_save() {
 
 		/* adjust mailtime according to rules */
 		$timestamp = strtotime(get_nfilter_request_var('mailtime'));
+
 		if ($timestamp === false) {
 			$timestamp  = $now;
 		} elseif (($timestamp + read_config_option('poller_interval')) < $now) {
@@ -117,6 +119,7 @@ function reports_form_save() {
 		$save['bcc']              = get_nfilter_request_var('bcc');
 
 		$atype = get_nfilter_request_var('attachment_type');
+
 		if (($atype != REPORTS_TYPE_INLINE_PNG) &&
 			($atype != REPORTS_TYPE_INLINE_JPG) &&
 			($atype != REPORTS_TYPE_INLINE_GIF) &&
@@ -143,8 +146,10 @@ function reports_form_save() {
 		}
 
 		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+
 		exit;
 	}
+
 	if (isset_request_var('save_component_report_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('report_id');
@@ -184,6 +189,7 @@ function reports_form_save() {
 	} else {
 		header('Location: ' . get_reports_page());
 	}
+
 	exit;
 }
 
@@ -250,6 +256,7 @@ function reports_form_actions() {
 		force_session_data();
 
 		header('Location: ' . get_reports_page());
+
 		exit;
 	}
 
@@ -279,6 +286,7 @@ function reports_form_actions() {
 	if (!isset($reports_array)) {
 		raise_message(40);
 		header('Location: ' . get_reports_page());
+
 		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
@@ -450,6 +458,7 @@ function reports_item_edit() {
 		/* get the hosts sql first */
 		$hosts      = null;
 		$total_rows = -1;
+
 		if (isset_request_var('host_template_id')) {
 			if (get_filter_request_var('host_template_id') > 0) {
 				$hosts = array_rekey(
@@ -475,6 +484,7 @@ function reports_item_edit() {
 		$total_rows = -1;
 
 		$graph_templates = array();
+
 		if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
 			$graph_templates = array_rekey(
 				get_allowed_graph_templates('h.id = ' . get_request_var('host_id')),
@@ -489,6 +499,7 @@ function reports_item_edit() {
 
 		$sql_where = '';
 		$graphs    = array();
+
 		if (isset_request_var('host_template_id')) {
 			if (get_filter_request_var('host_template_id') > 0) {
 				$sql_where = 'h.host_template_id=' . get_request_var('host_template_id');
@@ -514,6 +525,7 @@ function reports_item_edit() {
 		}
 
 		$skip_agg_where = false;
+
 		if ($sql_where == '') {
 			$skip_agg_where = true;
 			$sql_where      = 'gl.graph_template_id = 0';
@@ -560,6 +572,7 @@ function reports_item_edit() {
 		);
 
 		$sql_where = '';
+
 		if (isset_request_var('tree_id')) {
 			if (get_filter_request_var('tree_id') > 0) {
 				$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gt.id=' . get_request_var('tree_id');
@@ -1144,6 +1157,7 @@ function reports_edit() {
 
 	/* display the report */
 	$report = array();
+
 	if (get_filter_request_var('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array(get_request_var('id')));
 	}
@@ -1288,6 +1302,7 @@ function reports_edit() {
 			$timestamp = time();
 		}
 		$poller_interval                             = read_config_option('poller_interval');
+
 		if ($poller_interval == '') $poller_interval = 300;
 
 		$timestamp   = floor($timestamp / $poller_interval) * $poller_interval;
@@ -1295,6 +1310,7 @@ function reports_edit() {
 		$date_format = reports_date_time_format() . ' - l';
 
 		html_start_box(__esc('Scheduled Events %s', $header_label), '100%', '', '3', 'center', '');
+
 		for ($i=0; $i < 14; $i++) {
 			form_alternate_row('line' . $i, true);
 			form_selectable_cell(date($date_format, $next), $i);
@@ -1342,6 +1358,7 @@ function display_reports_items($report_id) {
 		), 2);
 
 	$i = 1;
+
 	if (cacti_sizeof($items)) {
 		foreach ($items as $item) {
 			switch ($item['item_type']) {
@@ -1350,12 +1367,14 @@ function display_reports_items($report_id) {
 				$align        = ($item['align'] > 0 ? $alignment[$item['align']] : '');
 				$size         = '';
 				$timespan     = ($item['timespan'] > 0 ? $graph_timespans[$item['timespan']] : '');
+
 				break;
 			case REPORTS_ITEM_TEXT:
 				$item_details = $item['item_text'];
 				$align        = ($item['align'] > 0 ? $alignment[$item['align']] : '');
 				$size         = ($item['font_size'] > 0 ? $item['font_size'] : '');
 				$timespan     = '';
+
 				break;
 			case REPORTS_ITEM_TREE:
 				if ($item['branch_id'] > 0) {
@@ -1373,6 +1392,7 @@ function display_reports_items($report_id) {
 					array($item['tree_id']));
 
 				$item_details = __('Tree: %s', $tree_name);
+
 				if ($item['branch_id'] > 0) {
 					if ($branch_details['host_id'] > 0) {
 						$description = db_fetch_cell_prepared('SELECT description
@@ -1395,7 +1415,9 @@ function display_reports_items($report_id) {
 				$align    = ($item['align'] > 0 ? $alignment[$item['align']] : '');
 				$size     = ($item['font_size'] > 0 ? $item['font_size'] : '');
 				$timespan = ($item['timespan'] > 0 ? $graph_timespans[$item['timespan']] : '');
+
 				break;
+
 			default:
 				$item_details = '';
 				$align        = '';
@@ -1529,6 +1551,7 @@ function reports() {
 					<td>
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'" . (get_request_var('rows') == '-1' ? ' selected':'') . '>' . __('Default') . '</option>';
+
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'" .
@@ -1629,6 +1652,7 @@ function reports() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($reports_list)) {
 		$date_format = reports_date_time_format();
 

@@ -52,6 +52,7 @@ switch (get_request_var('action')) {
 		$value = get_nfilter_request_var('value');
 
 		$current_tab = get_nfilter_request_var('tab');
+
 		if ($current_tab == 'general') {
 			api_auth_update_user_setting($name, $value);
 		} else {
@@ -61,14 +62,17 @@ switch (get_request_var('action')) {
 		break;
 	case 'disable_2fa':
 		print disable_2fa($_SESSION['sess_user_id']);
+
 		exit;
 
 	case 'enable_2fa':
 		print enable_2fa($_SESSION['sess_user_id']);
+
 		exit;
 
 	case 'verify_2fa':
 		print verify_2fa($_SESSION['sess_user_id'], substr('000000' . get_nfilter_request_var('code'),-6));
+
 		exit;
 
 	default:
@@ -127,6 +131,7 @@ switch (get_request_var('action')) {
 		}
 
 		bottom_footer();
+
 		break;
 }
 
@@ -286,6 +291,7 @@ function settings() {
 
 		if (strpos($referer, 'auth_profile.php') === false) {
 			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+
 			if ($timespan_sel_pos) {
 				$referer = substr($referer, 0, $timespan_sel_pos);
 			}
@@ -311,6 +317,7 @@ function settings() {
 
 	// Set the graph views the user has permission to
 	unset($graph_views);
+
 	if (is_view_allowed('show_tree')) {
 		$graph_views[1] = __('Tree View');
 	}
@@ -479,6 +486,7 @@ function settings_2fa() {
 
 		if (strpos($referer, 'auth_profile.php') === false) {
 			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+
 			if ($timespan_sel_pos) {
 				$referer = substr($referer, 0, $timespan_sel_pos);
 			}

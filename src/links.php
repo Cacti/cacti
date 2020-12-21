@@ -102,11 +102,13 @@ case 'save':
 		raise_message(1);
 
 		header('Location: links.php');
+
 		exit;
 	} else {
 		raise_message(2);
 
 		header('Location: links.php?action=edit&id=' . (isset_request_var('id') ? get_filter_request_var('id'):''));
+
 		exit;
 	}
 
@@ -119,6 +121,7 @@ case 'edit':
 	bottom_footer();
 
 	break;
+
 default:
 	top_header();
 
@@ -159,6 +162,7 @@ function form_actions() {
 		}
 
 		header('Location: links.php');
+
 		exit;
 	}
 
@@ -217,6 +221,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: links.php');
+
 		exit;
 	}
 
@@ -386,6 +391,7 @@ function pages() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
 
 	$i = 0;
+
 	if (cacti_sizeof($pages)) {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
@@ -452,6 +458,7 @@ function page_resort() {
 	$pages = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
 
 	$i = 1;
+
 	if (cacti_sizeof($pages)) {
 		foreach ($pages as $page) {
 			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?' . array($i, $page['id']));

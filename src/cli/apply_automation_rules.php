@@ -63,29 +63,37 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--hostname':
 				$hostname = $value;
+
 				break;
 			case '--description':
 				$description = $value;
+
 				break;
 			case '--ids':
 				$ids = explode(' ', $value);
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -94,6 +102,7 @@ if (cacti_sizeof($parms)) {
 // Check for matching like/regex
 if (!cacti_sizeof($ids) && $hostname == '' && $description == '') {
 	print 'FATAL: You must specify either ids, a hostname or host description pattern' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -104,6 +113,7 @@ if (cacti_sizeof($ids)) {
 	foreach ($ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print 'FATAL: Device id ' . $id . ' is not a valid device.  Can not continue.' . PHP_EOL;
+
 			exit(1);
 		}
 	}
@@ -126,6 +136,7 @@ if ($hostname != '') {
 }
 
 $dregex = false;
+
 if ($description != '') {
 	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(';
 	$regex = false;

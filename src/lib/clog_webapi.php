@@ -28,6 +28,7 @@ function clog_get_datasource_titles($local_data_ids) {
 	}
 
 	$titles = array();
+
 	foreach ($local_data_ids as $local_data_id) {
 		if (!array_key_exists($local_data_id, $titles)) {
 			$titles[$local_data_id] = get_data_source_title($local_data_id);
@@ -55,6 +56,7 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	global $config;
 
 	$logfile = read_config_option('path_cactilog');
+
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
@@ -90,6 +92,7 @@ function clog_purge_logfile() {
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
 		raise_message('clog_invalid');
 		header('Location: ' . get_current_page());
+
 		exit(0);
 	}
 
@@ -267,6 +270,7 @@ function clog_view_logfile() {
 
 	if (!$clogAdmin) {
 		$exclude_regex = read_config_option('clog_exclude', true);
+
 		if ($exclude_regex != '') {
 			$ad_filter = __(' - Admin Filter active');
 		} else {
@@ -304,12 +308,14 @@ function clog_view_logfile() {
 		AND deleted = ""');
 
 	$hostDescriptions = array();
+
 	foreach ($hosts as $host) {
 		$hostDescriptions[$host['id']] = html_escape($host['description']);
 	}
 
 	foreach ($logcontents as $item) {
 		$new_item = html_escape($item);
+
 		if ($should_expand) {
 			$new_item = preg_replace_callback($regex_map['data'],'clog_regex_parser_html',$new_item);
 		}
@@ -369,11 +375,13 @@ function filter_sort($a, $b) {
 	$b_parts = explode('-', $b);
 
 	$a_date = '99999999';
+
 	if (cacti_count($a_parts) > 1) {
 		$a_date = $a_parts[1];
 	}
 
 	$b_date = '99999999';
+
 	if (cacti_count($b_parts) > 1) {
 		$b_date = $b_parts[1];
 	}
@@ -411,12 +419,14 @@ function clog_get_logfiles() {
 	// After Defaults, do Cacti log first (of archived)
 	if (cacti_sizeof($files)) {
 		$stdLogFileArray = array();
+
 		foreach ($files as $logFile) {
 			if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase), true)) {
 				continue;
 			}
 
 			$explode = explode('.', $logFile);
+
 			if (substr($explode[max(array_keys($explode))], 0, 3) != 'log') {
 				continue;
 			}
@@ -444,14 +454,17 @@ function clog_get_logfiles() {
 		if (dirname($stderrLogPath) != $logPath) {
 			$errFiles = @scandir(dirname($stderrLogPath));
 			$files    = $errFiles;
+
 			if (cacti_sizeof($files)) {
 				$stdErrFileArray = array();
+
 				foreach ($files as $logFile) {
 					if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase), true)) {
 						continue;
 					}
 
 					$explode = explode('.', $logFile);
+
 					if (substr($explode[max(array_keys($explode))], 0, 3) != 'log') {
 						continue;
 					}
@@ -517,6 +530,7 @@ function filter($clogAdmin, $selectedFile) {
 							<?php
 							foreach ($log_tail_lines as $tail_lines => $display_text) {
 								print "<option value='" . $tail_lines . "'";
+
 								if (get_request_var('tail_lines') == $tail_lines) {
 									print ' selected';
 								}
@@ -566,6 +580,7 @@ function filter($clogAdmin, $selectedFile) {
 							<?php
 							foreach ($page_refresh_interval as $seconds => $display_text) {
 								print "<option value='" . $seconds . "'";
+
 								if (get_request_var('refresh') == $seconds) {
 									print ' selected';
 								}
@@ -675,6 +690,7 @@ function clog_get_regex_array() {
 
 		$regex_array    = api_plugin_hook_function('clog_regex_array',$regex_array);
 		$regex_complete = '';
+
 		foreach ($regex_array as $regex_key => $regex_setting) {
 			$regex_complete .= (strlen($regex_complete)?')|(':'').$regex_setting['regex'];
 		}
@@ -694,9 +710,11 @@ function clog_regex_parser($matches, $link = false) {
 	$match  = $matches[0];
 
 	$key_match = -1;
+
 	for ($index = 1; $index < cacti_sizeof($matches); $index++) {
 		if ($match == $matches[$index]) {
 			$key_match = $index;
+
 			break;
 		}
 	}
@@ -710,6 +728,7 @@ function clog_regex_parser($matches, $link = false) {
 				$regex_setting = $regex_array[$key_setting];
 
 				$rekey_array = array();
+
 				for ($j = 0; $j < 4; $j++) {
 					$rekey_array[$j] = $matches[$key_match + $j];
 				}
@@ -737,6 +756,7 @@ function clog_regex_device($matches, $link = false) {
 	$result = $matches[0];
 
 	$dev_ids = explode(',',str_replace(' ','',$matches[2]));
+
 	if (cacti_sizeof($dev_ids)) {
 		$result     = '';
 		$wanted_ids = array();
@@ -762,10 +782,12 @@ function clog_regex_device($matches, $link = false) {
 
 		foreach ($dev_ids as $host_id) {
 			$result .= $matches[1];
+
 			if ($link) {
 				$result .= '<a href=\'' . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $host_id) . '\'>';
 			}
 			$result .= isset($cache[$host_id]) ? $cache[$host_id]:$host_id;
+
 			if ($link) {
 				$result .= '</a>';
 			}
@@ -787,6 +809,7 @@ function clog_regex_datasource($matches, $link = false) {
 	$result = $matches[0];
 
 	$ds_ids = explode(',',str_replace(' ','',$matches[2]));
+
 	if (cacti_sizeof($ds_ids)) {
 		$result     = '';
 		$wanted_ids = array();
@@ -813,6 +836,7 @@ function clog_regex_datasource($matches, $link = false) {
 
 			$ds_ids    = array_filter(array_unique($ds_ids));
 			$ds_titles = clog_get_datasource_titles($ds_ids);
+
 			if (!isset($ds_titles)) {
 				$ds_titles = array();
 			}
@@ -823,6 +847,7 @@ function clog_regex_datasource($matches, $link = false) {
 
 			foreach ($wanted_ids as $ds_id) {
 				$ds_title = $ds_id;
+
 				if (array_key_exists($ds_id, $ds_titles)) {
 					$ds_title = $ds_titles[$ds_id];
 				}
@@ -832,6 +857,7 @@ function clog_regex_datasource($matches, $link = false) {
 				}
 
 				$cache[$ds_id]['name'] = $ds_title;
+
 				if (array_key_exists($ds_id, $graph_rows)) {
 					$cache[$ds_id]['graphs'] = $graph_rows[$ds_id];
 				}
@@ -847,10 +873,12 @@ function clog_regex_datasource($matches, $link = false) {
 
 		foreach ($ds_ids as $ds_id) {
 			$result .= ($first ? '':', ');
+
 			if ($link) {
 				$result .= "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>";
 			}
 			$result .= isset($cache[$ds_id]['name']) ? $cache[$ds_id]['name'] : $ds_id;
+
 			if ($link) {
 				$result .= '</a>';
 			}
@@ -862,6 +890,7 @@ function clog_regex_datasource($matches, $link = false) {
 		}
 
 		$result .= $matches[3];
+
 		if (!empty($graph_ids)) {
 			$graph_array = array( 0 => '', 1 => ' Graphs[', 2 => $graph_ids, 3 => ']');
 			$result .= clog_regex_graphs($graph_array, $link);
@@ -882,6 +911,7 @@ function clog_regex_poller($matches, $link = false) {
 	$result = $matches[0];
 
 	$poller_ids = explode(',',str_replace(' ','',$matches[2]));
+
 	if (cacti_sizeof($poller_ids)) {
 		$result     = '';
 		$wanted_ids = array();
@@ -907,10 +937,12 @@ function clog_regex_poller($matches, $link = false) {
 
 		foreach ($poller_ids as $poller_id) {
 			$result .= $matches[1];
+
 			if ($link) {
 				$result .= '<a href=\'' . html_escape($config['url_path'] . 'pollers.php?action=edit&id=' . $poller_id) . '\'>';
 			}
 			$result .= isset($cache[$poller_id]) ? $cache[$poller_id]:$poller_id;
+
 			if ($link) {
 				$result .= '</a>';
 			}
@@ -932,6 +964,7 @@ function clog_regex_dataquery($matches, $link = false) {
 	$result = $matches[0];
 
 	$query_ids = explode(',',str_replace(' ','',$matches[2]));
+
 	if (cacti_sizeof($query_ids)) {
 		$result     = '';
 		$wanted_ids = array();
@@ -957,10 +990,12 @@ function clog_regex_dataquery($matches, $link = false) {
 
 		foreach ($query_ids as $query_id) {
 			$result .= $matches[1];
+
 			if ($link) {
 				$result .= '<a href=\'' . html_escape($config['url_path'] . 'data_queries.php?action=edit&id=' . $query_id) . '\'>';
 			}
 			$result .= isset($cache[$query_id]) ? $cache[$query_id]:$query_id;
+
 			if ($link) {
 				$result .= '</a>';
 			}
@@ -982,9 +1017,11 @@ function clog_regex_rra($matches, $link = false) {
 	$result = $matches[0];
 
 	$local_data_ids = $matches[2];
+
 	if (strlen($local_data_ids)) {
 		$datasource_array  = array( 0 => '', 1 => ' DS[', 2 => $local_data_ids, 3 => ']');
 		$datasource_result = clog_regex_datasource($datasource_array, $link);
+
 		if (strlen($datasource_result)) {
 			$result .= ' '. $datasource_result;
 		}
@@ -1004,6 +1041,7 @@ function clog_regex_graphs($matches, $link = false) {
 	$result = $matches[0];
 
 	$query_ids = explode(',',str_replace(' ','',$matches[2]));
+
 	if (cacti_sizeof($query_ids)) {
 		$result     = $matches[1];
 		$title      = '';
@@ -1036,6 +1074,7 @@ function clog_regex_graphs($matches, $link = false) {
 		}
 
 		$titles = array();
+
 		foreach ($query_ids as $query_id) {
 			$titles[] = isset($cache[$query_id]) ? $cache[$query_id]:$query_id;
 		}
@@ -1044,6 +1083,7 @@ function clog_regex_graphs($matches, $link = false) {
 			$result .= "<a href='" . $graph_add . implode('%2C', $query_ids) ."'>";
 		}
 		$result .= implode(', ',$titles);
+
 		if ($link) {
 			$result .= '</a>';
 		}
@@ -1065,6 +1105,7 @@ function clog_regex_graphtemplates($matches, $link = false) {
 	$result = $matches[0];
 
 	$graphtemplate_ids = explode(',',str_replace(' ','',$matches[2]));
+
 	if (cacti_sizeof($graphtemplate_ids)) {
 		$result             = '';
 		$wanted_ids         = array();
@@ -1090,10 +1131,12 @@ function clog_regex_graphtemplates($matches, $link = false) {
 
 		foreach ($graphtemplate_ids as $graphtemplate_id) {
 			$result .= $matches[1];
+
 			if ($link) {
 				$result .= '<a href=\'' . html_escape($config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $graphtemplate_id) . '\'>';
 			}
 			$result .= isset($cache[$graphtemplate_id]) ? $cache[$graphtemplate_id]:$graphtemplate_id;
+
 			if ($link) {
 				$result .= '</a>';
 			}
@@ -1115,6 +1158,7 @@ function clog_regex_users($matches, $link = false) {
 	$result = $matches[0];
 
 	$user_ids = explode(',',str_replace(' ','',$matches[2]));
+
 	if (cacti_sizeof($query_ids)) {
 		$result     = '';
 		$wanted_ids = array();
@@ -1141,11 +1185,13 @@ function clog_regex_users($matches, $link = false) {
 
 		foreach ($user_ids as $user_id) {
 			$result .= $matches[1];
+
 			if (isset($cache[$query_id])) {
 				if ($link) {
 					$result .= '<a href=\'' . html_escape($config['url_path'] . 'user_admin.php?action=user_edit&tab=general&id=' . $query_id) . '\'>';
 				}
 				$result .= $cache[$query_id];
+
 				if ($link) {
 					$result .= '</a>';
 				}
@@ -1170,6 +1216,7 @@ function clog_regex_rule($matches, $link = false) {
 	$result = $matches[0];
 
 	$rule_ids = explode(',',str_replace(' ','',$matches[2]));
+
 	if (cacti_sizeof($rule_ids)) {
 		$result     = '';
 		$wanted_ids = array();
@@ -1195,10 +1242,12 @@ function clog_regex_rule($matches, $link = false) {
 
 		foreach ($rule_ids as $rule_id) {
 			$result .= $matches[1];
+
 			if ($link) {
 				$result .= '<a href=\'' . html_escape($config['url_path'] . 'automation_graph_rules.php?action=edit&id=' . $rule_id) . '\'>';
 			}
 			$result .= isset($ruleNames[$rule_id]) ? $ruleNames[$rule_id]:$rule_id;
+
 			if ($link) {
 				$result .= '</a>';
 			}

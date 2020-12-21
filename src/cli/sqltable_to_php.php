@@ -45,23 +45,29 @@ if (cacti_sizeof($parms)) {
 		switch ($arg) {
 			case '--table':
 				$table = trim(sql_clean($value));
+
 				break;
 			case '--plugin':
 				$plugin = trim(sql_clean($value));
+
 				break;
 			case '--update':
 				$create = false;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 		}
 	}
@@ -70,6 +76,7 @@ if (cacti_sizeof($parms)) {
 if ($table == '') {
 	print "ERROR: You must provide a table name\n";
 	display_help();
+
 	exit(1);
 } else {
 	print sqltable_to_php($table, $create, $plugin);
@@ -93,6 +100,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 		}
 	} else {
 		print "ERROR: Obtaining list of tables from $database_default\n";
+
 		exit;
 	}
 
@@ -141,10 +149,12 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			}
 		} else {
 			print "ERROR: Obtaining list of columns from $table\n";
+
 			exit;
 		}
 
 		$result = db_fetch_assoc("SHOW INDEX FROM $table");
+
 		if (cacti_sizeof($result)) {
 			foreach ($result as $r) {
 				if ($r['Key_name'] == 'PRIMARY') {
@@ -185,10 +195,12 @@ function sqltable_to_php($table, $create, $plugin = '') {
 		if (cacti_sizeof($result)) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
 			$text .= "\$data['charset'] = '" . $result['CHARACTER_SET_NAME'] . "';\n";
+
 			if (!empty($result['TABLE_COMMENT'])) {
 				$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
 			}
 			$text .= "\$data['row_format'] = '" . $result['ROW_FORMAT'] . "';\n";
+
 			if ($create) {
 				if ($plugin != '') {
 					$text .= "api_plugin_db_table_create ('$plugin', '$table', \$data);\n";
@@ -200,6 +212,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			}
 		} else {
 			print "ERROR: Unable to get tables details from Information Schema\n";
+
 			exit;
 		}
 	}

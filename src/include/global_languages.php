@@ -49,6 +49,7 @@ if (isset($_REQUEST['language'])) {
 
 /* determine whether or not we can support the language */
 $user_locale = '';
+
 if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) {
 	/* user requests another language */
 	$user_locale = apply_locale($_REQUEST['language']);
@@ -179,6 +180,7 @@ if (empty($l10n_handler) && !empty($config['l10n_language_handler'])) {
 
 if (empty($l10n_handler)) {
 	l10n_debug('Handler: not specified in config, autodetection is now in progress');
+
 	if (file_exists($config['include_path'] . '/vendor/gettext/src/Translator.php')) {
 		$l10n_handler = CACTI_LANGUAGE_HANDLER_OSCAROTERO;
 	} elseif (file_exists($config['include_path'] . '/vendor/phpgettext/streams.php')) {
@@ -189,22 +191,28 @@ if (empty($l10n_handler)) {
 }
 
 l10n_debug("require(1): Handler $l10n_handler");
+
 switch ($l10n_handler) {
 	case CACTI_LANGUAGE_HANDLER_OSCAROTERO:
 		//require($config['include_path'] . '/vendor/gettext/oscarotero.php');
 		require_once($config['include_path'] . '/vendor/gettext/src/autoloader.php');
 		require_once($config['include_path'] . '/vendor/cldr-to-gettext-plural-rules/src/autoloader.php');
+
 		break;
 	case CACTI_LANGUAGE_HANDLER_PHPGETTEXT:
 		require_once($config['include_path'] . '/vendor/phpgettext/streams.php');
 		require_once($config['include_path'] . '/vendor/phpgettext/gettext.php');
+
 		break;
 	case CACTI_LANGUAGE_HANDLER_MOTRANSLATOR:
 		require_once($config['include_path'] . '/vendor/motranslator/src/Translator.php');
 		require_once($config['include_path'] . '/vendor/motranslator/src/StringReader.php');
+
 		break;
+
 	default:
 		$l10n_handler = CACTI_LANGUAGE_HANDLER_NONE;
+
 		break;
 }
 
@@ -217,15 +225,19 @@ if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_NONE) {
 
 	foreach ($cacti_textdomains as $domain => $paths) {
 		l10n_debug("load_language($domain): " .$cacti_textdomains[$domain]['path2catalogue']);
+
 		switch (CACTI_LANGUAGE_HANDLER) {
 			case CACTI_LANGUAGE_HANDLER_PHPGETTEXT:
 				$l10n[$domain] = load_gettext_original($domain);
+
 				break;
 			case CACTI_LANGUAGE_HANDLER_MOTRANSLATOR:
 				$l10n[$domain] = load_gettext_motranslator($domain);
+
 				break;
 			case CACTI_LANGUAGE_HANDLER_OSCAROTERO:
 				$l10n[$domain] = load_gettext_oscarotero($domain);
+
 				break;
 		}
 
@@ -247,11 +259,13 @@ function load_gettext_original($domain) {
 
 	l10n_debug("load_gettext_original($domain): " .$cacti_textdomains[$domain]['path2catalogue']);
 	$input = new FileReader($cacti_textdomains[$domain]['path2catalogue']);
+
 	if ($input == false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
 
 	$l10n_domain = new gettext_reader($input);
+
 	if ($l10n_domain == false) {
 		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
@@ -264,6 +278,7 @@ function load_gettext_motranslator($domain) {
 
 	l10n_debug("load_gettext_mostranslator($domain): " .$cacti_textdomains[$domain]['path2catalogue']);
 	$input = new PhpMyAdmin\MoTranslator\Translator($cacti_textdomains[$domain]['path2catalogue']);
+
 	if ($input == false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
@@ -276,12 +291,14 @@ function load_gettext_oscarotero($domain) {
 
 	l10n_debug("load_gettext_oscarotero($domain): " .$cacti_textdomains[$domain]['path2catalogue']);
 	$input = Gettext\Translations::fromMoFile($cacti_textdomains[$domain]['path2catalogue']);
+
 	if ($input == false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
 
 	$l10n_domain = new Gettext\Translator();
 	$l10n_domain->loadTranslations($input);
+
 	if ($l10n_domain == false) {
 		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
@@ -293,6 +310,7 @@ function apply_locale($language) {
 	global $cacti_locale, $cacti_country, $lang2locale;
 
 	$locale_set = false;
+
 	if ($language != '') {
 		$language   = repair_locale($language);
 		$locale_set = isset($lang2locale[$language]);
@@ -310,6 +328,7 @@ function apply_locale($language) {
 
 	if (!$locale_set) {
 		$language = repair_locale(read_config_option('i18n_default_language'));
+
 		if ($language == false || $language == '') {
 			$language = repair_locale(read_default_config_option('i18n_default_language'));
 		}
@@ -334,14 +353,17 @@ function repair_locale($language) {
 	/* Repair legacy language support */
 	$found_locale = '';
 	$locale       = str_replace('_','-', $language);
+
 	if (array_key_exists($locale, $lang2locale)) {
 		$language = $locale;
 	} else {
 		$wanted_locale = substr($language, 0, 2);
 		$language      = '';
+
 		foreach ($lang2locale as $locale => $data) {
 			if (substr($locale, 0, 2) == $wanted_locale) {
 				$language = $locale;
+
 				break;
 			}
 		}
@@ -396,10 +418,12 @@ function __gettext($text, $domain = 'cacti') {
 		switch (CACTI_LANGUAGE_HANDLER) {
 			case CACTI_LANGUAGE_HANDLER_PHPGETTEXT:
 				$translated = $l10n[$domain]->translate($text);
+
 				break;
 			case CACTI_LANGUAGE_HANDLER_OSCAROTERO:
 			case CACTI_LANGUAGE_HANDLER_MOTRANSLATOR:
 				$translated = $l10n[$domain]->gettext($text);
+
 				break;
 		}
 	}
@@ -415,6 +439,7 @@ function __gettext($text, $domain = 'cacti') {
 
 function __n($singular, $plural, $number, $domain = 'cacti') {
 	global $l10n;
+
 	if (isset($l10n[$domain])) {
 		return __uf($l10n[$domain]->ngettext($singular, $plural, $number));
 	} else {
@@ -437,10 +462,12 @@ function __() {
 		return false;
 	/* convert pure text strings */
 	}
+
 	if ($num == 1) {
 		return __gettext($args[0]);
 	/* convert pure text strings by using a different textdomain */
 	}
+
 	if ($num == 2 && isset($l10n[$args[1]]) && $args[1] != 'cacti') {
 		return __gettext($args[0], $args[1]);
 	/* convert stings including one or more placeholders */
@@ -608,6 +635,7 @@ function get_installed_locales() {
 
 	$locations                    = array();
 	$supported_languages['en-US'] = $lang2locale['en-US']['language'];
+
 	foreach ($lang2locale as $locale => $properties) {
 		$locations[$properties['filename'] . '.mo'] = array(
 			'locale'   => $locale,
@@ -621,6 +649,7 @@ function get_installed_locales() {
 
 	/* create a list of all languages this Cacti system supports ... */
 	$dhandle = opendir($config['base_path'] . '/locales/LC_MESSAGES');
+
 	if (is_resource($dhandle)) {
 		while (false !== ($filename = readdir($dhandle))) {
 			if (isset($locations[$filename]['language'])) {
@@ -696,6 +725,7 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	if (function_exists('numfmt_create')) {
 		$fmt_key = $cacti_locale . '_'. $country;
 		$fmt     = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
+
 		if ($fmt !== false && $fmt !== null) {
 			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
@@ -756,6 +786,7 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 
 function get_new_user_default_language() {
 	$accepted = repair_locale(read_config_option('i18n_default_language'));
+
 	if ($accepted == '') {
 		$accepted = repair_locale(read_default_config_option('i18n_default_language'));
 	}

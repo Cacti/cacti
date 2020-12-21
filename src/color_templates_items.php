@@ -46,6 +46,7 @@ switch (get_request_var('action')) {
 		aggregate_color_item_remove();
 
 		header('Location: color_templates.php?action=template_edit&color_template_id=' . get_request_var('id'));
+
 		break;
 	case 'item_movedown':
 		get_filter_request_var('color_template_id');
@@ -53,6 +54,7 @@ switch (get_request_var('action')) {
 		aggregate_color_item_movedown();
 
 		header('Location: color_templates.php?action=template_edit&color_template_id=' . get_request_var('color_template_id'));
+
 		break;
 	case 'item_moveup':
 		get_filter_request_var('color_template_id');
@@ -60,16 +62,19 @@ switch (get_request_var('action')) {
 		aggregate_color_item_moveup();
 
 		header('Location: color_templates.php?action=template_edit&color_template_id=' . get_request_var('color_template_id'));
+
 		break;
 	case 'item_edit':
 		top_header();
 		aggregate_color_item_edit();
 		bottom_footer();
+
 		break;
 	case 'item':
 		top_header();
 		aggregate_color_item();
 		bottom_footer();
+
 		break;
 }
 
@@ -104,6 +109,7 @@ function aggregate_color_item_form_save() {
 
 			if (!is_error_message()) {
 				$color_template_item_id = sql_save($save, 'color_template_items', 'color_template_item_id');
+
 				if ($color_template_item_id) {
 					raise_message(1);
 				} else {
@@ -116,9 +122,11 @@ function aggregate_color_item_form_save() {
 
 		if (is_error_message()) {
 			header('Location: color_templates_items.php?action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? get_nfilter_request_var('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . get_nfilter_request_var('color_template_id'));
+
 			exit;
 		} else {
 			header('Location: color_templates.php?action=template_edit&color_template_id=' . get_nfilter_request_var('color_template_id'));
+
 			exit;
 		}
 	}
@@ -153,6 +161,7 @@ function color_templates_item_dnd() {
 	}
 
 	header('Location: color_templates.php?action=template_edit&color_template_id=' . get_request_var('id'));
+
 	exit;
 }
 

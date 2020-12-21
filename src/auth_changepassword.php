@@ -27,6 +27,7 @@ include('./include/global.php');
 set_default_action();
 
 $action = get_request_var('action');
+
 switch ($action) {
 	case 'checkpass':
 		$error = secpass_check_pass(get_nfilter_request_var('password'));
@@ -39,7 +40,6 @@ switch ($action) {
 
 		exit;
 
-		break;
 	default:
 		// If the user is not logged in, redirect them to the login page
 		if (!isset($_SESSION['sess_user_id'])) {
@@ -50,6 +50,7 @@ switch ($action) {
 			}
 
 			header('Location: index.php');
+
 			exit;
 		}
 }
@@ -89,12 +90,14 @@ if ($user['password_change'] != 'on') {
 	} else {
 		header('Location: index.php');
 	}
+
 	exit;
 }
 
 /* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
 if (cacti_sizeof($user) && $user['id'] == get_guest_account()) {
 	header('Location: graph_view.php');
+
 	exit;
 }
 
@@ -121,6 +124,7 @@ case 'changepassword':
 	if ($error != 'ok') {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>$error</span>";
+
 		break;
 	}
 
@@ -128,6 +132,7 @@ case 'changepassword':
 	if (!secpass_check_history($user_id, $password)) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('You cannot use a previously entered password!') . '</span>';
+
 		break;
 	}
 
@@ -135,6 +140,7 @@ case 'changepassword':
 	if ($password !== $password_confirm) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . '</span>';
+
 		break;
 	}
 
@@ -142,6 +148,7 @@ case 'changepassword':
 	if ((!empty($user['password']) || !empty($current_password)) && !compat_password_verify($current_password, $user['password'])) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . '</span>';
+
 		break;
 	}
 
@@ -149,6 +156,7 @@ case 'changepassword':
 	if (compat_password_verify($password, $user['password'])) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . '</span>';
+
 		break;
 	}
 
@@ -164,6 +172,7 @@ case 'changepassword':
 		}
 
 		$history = intval(read_config_option('secpass_history'));
+
 		if ($history > 0) {
 			$h = db_fetch_row_prepared("SELECT password, password_history
 				FROM user_auth
@@ -204,13 +213,17 @@ case 'changepassword':
 
 		// Clear the auth cache for the user
 		$token = '';
+
 		if (isset($_SERVER['HTTP_COOKIE']) && strpos($_SERVER['HTTP_COOKIE'], 'cacti_remembers') !== false) {
 			$parts = explode(';', $_SERVER['HTTP_COOKIE']);
+
 			foreach ($parts as $p) {
 				if (strpos($p, 'cacti_remembers') !== false) {
 					$pparts = explode('%2C', $p);
+
 					if (isset($pparts[1])) {
 						$token = $pparts[1];
+
 						break;
 					}
 				}
@@ -252,17 +265,25 @@ case 'changepassword':
 		if (!empty($has_console)) {
 			switch ($user['login_opts']) {
 				case '1': /* referer */
-					header('Location: ' . sanitize_uri(get_nfilter_request_var('ref'))); break;
+					header('Location: ' . sanitize_uri(get_nfilter_request_var('ref')));
+
+					break;
 				case '2': /* default console page */
-					header('Location: index.php'); break;
+					header('Location: index.php');
+
+					break;
 				case '3': /* default graph page */
-					header('Location: graph_view.php'); break;
+					header('Location: graph_view.php');
+
+					break;
+
 				default:
 					api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 			}
 		} else {
 			header('Location: graph_view.php');
 		}
+
 		exit;
 	} else {
 		$bad_password = true;

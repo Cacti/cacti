@@ -1054,6 +1054,7 @@ $item_rows = array(
 
 // Adjust the number of items rows based upon max_input_vars
 $max_size = ini_get('max_input_vars') - 20;
+
 foreach ($item_rows as $index => $row) {
 	if ($index > $max_size) {
 		unset($item_rows[$index]);
@@ -1548,6 +1549,7 @@ if (extension_loaded(REPORTS_EXTENSION_GD)) {
 
 if (read_config_option('reports_allow_ln') != '') {
 	$attach_types[REPORTS_TYPE_INLINE_PNG_LN] = __('Inline PNG Image, LN Style');
+
 	if (extension_loaded(REPORTS_EXTENSION_GD)) {
 		$attach_types[REPORTS_TYPE_INLINE_JPG_LN] = __('Inline JPEG Image, LN Style');
 		$attach_types[REPORTS_TYPE_INLINE_GIF_LN] = __('Inline GIF Image, LN Style');

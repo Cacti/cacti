@@ -44,6 +44,7 @@ switch (get_request_var('action')) {
 		color_remove();
 
 		header('Location: color.php');
+
 		break;
 	case 'edit':
 		top_header();
@@ -51,6 +52,7 @@ switch (get_request_var('action')) {
 		color_edit();
 
 		bottom_footer();
+
 		break;
 	case 'export':
 		color_export();
@@ -62,13 +64,16 @@ switch (get_request_var('action')) {
 		color_import();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		color();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -151,6 +156,7 @@ function form_actions() {
 		}
 
 		header('Location: color.php');
+
 		exit;
 	}
 
@@ -194,6 +200,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: color.php');
+
 		exit;
 	}
 
@@ -258,6 +265,7 @@ function color_import_processor(&$colors) {
 							$required++;
 
 							break;
+
 						default:
 							/* ignore unknown columns */
 					}
@@ -272,6 +280,7 @@ function color_import_processor(&$colors) {
 				array_push($return_array, '<b>HEADER LINE PROCESSED OK</b>:  <br>Columns found where: ' . $save_order . '<br>');
 			} else {
 				array_push($return_array, '<b>HEADER LINE PROCESSING ERROR</b>: Missing required field <br>Columns found where:' . $save_order . '<br>');
+
 				break;
 			}
 		} else {
@@ -540,7 +549,7 @@ function color() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -708,6 +717,7 @@ function color() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($colors)) {
 		foreach ($colors as $color) {
 			if ($color['graphs'] == 0 && $color['templates'] == 0) {

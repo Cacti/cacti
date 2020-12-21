@@ -241,6 +241,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 						$dsnames[trim($parts2[1])] = 1;
 					} elseif (substr_count($line, '.cf')) {
 						$parts = explode('=', $line);
+
 						if (substr_count($parts[1], 'AVERAGE')) {
 							$average = true;
 						} elseif (substr_count($parts[1], 'MAX')) {
@@ -293,15 +294,19 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 			switch($interval) {
 				case 'daily':
 					$interval = 'day';
+
 					break;
 				case 'weekly':
 					$interval = 'week';
+
 					break;
 				case 'monthly':
 					$interval = 'month';
+
 					break;
 				case 'yearly':
 					$interval = 'year';
+
 					break;
 			}
 
@@ -341,6 +346,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 				if (cacti_sizeof($xport_array)) {
 					foreach ($xport_array as $index => $line) {
 						if ($line == '') continue;
+
 						if ($index > 0) {
 							// Catch the last line
 							if (substr($line, 0, 2) == 'OK') {
@@ -350,15 +356,19 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 
 								foreach ($parts as $line) {
 									$sparts = explode(':', $line);
+
 									switch($sparts[0]) {
 										case 'u':
 											$user_time = $sparts[1];
+
 											break;
 										case 's':
 											$system_time = $sparts[1];
+
 											break;
 										case 'r':
 											$real_time = $sparts[1];
+
 											break;
 									}
 								}
@@ -447,6 +457,7 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 
 		/* let's ignore some lesser issues */
 		if (substr_count($errmsg, 'date_default_timezone')) return;
+
 		if (substr_count($errmsg, 'Only variables')) return;
 		/* log the error to the Cacti log */
 		cacti_log('PROGERR: ' . $err, false, 'DSSTATS');
@@ -539,6 +550,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 			/* process each array */
 			$n = 1;
+
 			foreach ($rrd_update_array as $data_source) {
 				if (isset($data_source['times'])) {
 					foreach ($data_source['times'] as $time => $sample) {
@@ -669,6 +681,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 								}
 
 								break;
+
 							default:
 								cacti_log("WARNING: Unknown RRDtool Data Type '" . $ds_types[$result['rrd_name']]['data_source_type_id'] . "', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
 
@@ -798,6 +811,7 @@ function dsstats_poller_bottom() {
 		chdir($config['base_path']);
 
 		$command_string = read_config_option('path_php_binary');
+
 		if (read_config_option('path_dsstats_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
 				$extra_args = '-q ' . $config['base_path'] . '/poller_dsstats.php >> ' . read_config_option('path_dsstats_log') . ' 2>&1';

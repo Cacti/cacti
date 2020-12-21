@@ -37,6 +37,7 @@ switch (get_request_var('action')) {
 		input_remove();
 
 		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
+
 		break;
 	case 'input_edit':
 		top_header();
@@ -44,6 +45,7 @@ switch (get_request_var('action')) {
 		input_edit();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -112,9 +114,11 @@ function form_save() {
 
 		if (is_error_message()) {
 			header('Location: graph_templates_inputs.php?action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? get_nfilter_request_var('graph_template_input_id') : $graph_template_input_id) . '&graph_template_id=' . get_nfilter_request_var('graph_template_id'));
+
 			exit;
 		} else {
 			header('Location: graph_templates.php?action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
+
 			exit;
 		}
 	}
@@ -196,6 +200,7 @@ function input_edit() {
 	html_start_box(__('Associated Graph Items'), '100%', false, '3', 'center', '');
 
 	$i = 0; $any_selected_item = '';
+
 	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			form_alternate_row();

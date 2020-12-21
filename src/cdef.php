@@ -56,6 +56,7 @@ switch (get_request_var('action')) {
 		item_movedown();
 
 		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+
 		break;
 	case 'item_moveup':
 		get_filter_request_var('cdef_id');
@@ -63,6 +64,7 @@ switch (get_request_var('action')) {
 		item_moveup();
 
 		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+
 		break;
 	case 'item_remove':
 		get_filter_request_var('cdef_id');
@@ -70,6 +72,7 @@ switch (get_request_var('action')) {
 		item_remove();
 
 		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
+
 		break;
 	case 'item_edit':
 		top_header();
@@ -77,6 +80,7 @@ switch (get_request_var('action')) {
 		item_edit();
 
 		bottom_footer();
+
 		break;
 	case 'edit':
 		top_header();
@@ -84,17 +88,20 @@ switch (get_request_var('action')) {
 		cdef_edit();
 
 		bottom_footer();
+
 		break;
 	case 'ajax_dnd':
 		cdef_item_dnd();
 
 		break;
+
 	default:
 		top_header();
 
 		cdef();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -242,6 +249,7 @@ function form_actions() {
 		}
 
 		header('Location: cdef.php');
+
 		exit;
 	}
 
@@ -293,6 +301,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: cdef.php');
+
 		exit;
 	}
 
@@ -536,6 +545,7 @@ function cdef_item_dnd() {
 
 		if (cacti_sizeof($cdef_ids)) {
 			$sequence = 1;
+
 			foreach ($cdef_ids as $cdef_id) {
 				$cdef_id = str_replace('line', '', $cdef_id);
 				input_validate_input_number($cdef_id);
@@ -777,9 +787,9 @@ function cdef() {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (cacti_sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key  ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -930,6 +940,7 @@ function cdef() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($cdef_list)) {
 		foreach ($cdef_list as $cdef) {
 			if ($cdef['graphs'] == 0 && $cdef['templates'] == 0) {

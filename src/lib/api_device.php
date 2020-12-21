@@ -817,6 +817,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	if ($host_id > 0) {
 		if (read_config_option('extended_paths') == 'on'){
 			$host_dir = $config['rra_path'] . '/' . $host_id;
+
 			if (!is_dir($host_dir)){
 				if (is_writable($config['rra_path'])) {
 					if (mkdir($host_dir, 0775)) {
@@ -1078,6 +1079,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			array($host['poller_id']));
 
 		$port = read_config_option('remote_agent_port');
+
 		if ($port != '') {
 			$port = ':' . $port;
 		}
@@ -1117,6 +1119,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 
 			if ($session === false || $snmp_error != '') {
 				print "<span class='hostDown'>" . __('Session') . ' ' . __('SNMP error');
+
 				if ($snmp_error != '') {
 					print " - $snmp_error";
 				} else {
@@ -1125,8 +1128,10 @@ function api_device_ping_device($device_id, $from_remote = false) {
 				print '</span>';
 			} else {
 				$snmp_system = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
+
 				if ($snmp_system === false || $snmp_system == 'U' || $snmp_error != '') {
 					print "<span class='hostDown'>" . __('System') . ' ' . __('SNMP error');
+
 					if ($snmp_error != '') {
 						print " - $snmp_error";
 					}
@@ -1141,6 +1146,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 
 					if ($snmp_system == '') {
 						print "<span class='hostDown'>" . __('Host') . ' ' .  __('SNMP error');
+
 						if ($snmp_error != '') {
 							print " - $snmp_error";
 						}

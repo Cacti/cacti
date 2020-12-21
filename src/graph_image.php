@@ -56,24 +56,31 @@ $graph_data_array = array();
 // Determine the graph type of the output
 if (!isset_request_var('image_format')) {
 	$type   = db_fetch_cell_prepared('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
+
 	switch($type) {
 	case '1':
 		$gtype = 'png';
+
 		break;
 	case '3':
 		$gtype = 'svg+xml';
+
 		break;
 	}
 } else {
 	switch(strtolower(get_nfilter_request_var('image_format'))) {
 	case 'png':
 		$gtype = 'png';
+
 		break;
 	case 'svg':
 		$gtype = 'svg+xml';
+
 		break;
+
 	default:
 		$gtype = 'png';
+
 		break;
 	}
 }

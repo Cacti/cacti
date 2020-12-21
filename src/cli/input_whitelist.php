@@ -49,28 +49,35 @@ if (cacti_sizeof($parms)) {
 			case '--audit':
 			case '-A':
 				$audit = true;
+
 				break;
 			case '--update':
 			case '-U':
 				$update = true;
+
 				break;
 			case '--push':
 			case '-P':
 				$push = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -78,12 +85,14 @@ if (cacti_sizeof($parms)) {
 
 if (!isset($config['input_whitelist'])) {
 	print 'NOTICE: Data Input Whitelist file not defined in config.php.' . PHP_EOL;
+
 	exit(0);
 }
 
 if ($audit) {
 	if (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
 		print 'ERROR: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' does not exist.  Please run with the \'--update\' option.' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -98,6 +107,7 @@ if ($audit) {
 
 		foreach ($input as $hash => $input_string) {
 			$aud = verify_data_input($hash, $input_string);
+
 			if ($aud['status'] == true) {
 				print 'ID: ' . $aud['id'] . ', Name: ' . $aud['name'] . ', Status: ' . 'Success' . PHP_EOL;
 				print '------------------------------------------------------------------------------------------------------------' . PHP_EOL;
@@ -122,6 +132,7 @@ if ($audit) {
 } elseif ($update) {
 	if (!is_writable(dirname($config['input_whitelist']))) {
 		print 'ERROR: Data Input whitelist file \'' . $config['input_whitelist'] . '\' not writeable.' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -140,6 +151,7 @@ if ($audit) {
 	if (cacti_sizeof($input_db)) {
 		// format data for easier consumption
 		$input = array();
+
 		foreach ($input_db as $value) {
 			if ($push && isset($input_ws[$value['hash']])) {
 				if ($value['input_string'] != $input_ws[$value['hash']]) {
@@ -160,6 +172,7 @@ if ($audit) {
 		}
 	} else {
 		print 'ERROR: No Data Input records found.' . PHP_EOL;
+
 		exit(1);
 	}
 } else {

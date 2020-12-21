@@ -70,6 +70,7 @@ function draw_edit_form($array) {
 					print "<div id='row_$field_name' class='formRow even-alternate $row_class'>";
 				} else {
 					print "<div id='row_$field_name' class='formRow $row_class'>";
+
 					if ($row_class == 'even') {
 						$row_class = 'odd';
 					} else {
@@ -457,6 +458,7 @@ function draw_edit_control($field_name, &$field_array) {
 		);
 
 		break;
+
 	default:
 		if (isset($field_array['value'])) {
 			print '<em>' . html_escape($field_array['value']) . '</em>';
@@ -542,6 +544,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 	$extra_color = '';
 	$extra_class = '';
 	$error_class = '';
+
 	if (is_array($data)) {
 		$extra_text  = $data['text'];
 		$extra_class = (isset($data['error']) ? 'fa-times-circle' : 'fa-check-circle');
@@ -579,6 +582,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 	}
 
 	$extra_data = '';
+
 	if ($extra_text != '') {
 		$extra_data = "<span class='cactiTooltipHint fa $extra_class' style='padding:5px;font-size:16px;color:$extra_color' title='$extra_text'></span>";
 	}
@@ -624,9 +628,9 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 
 	if (is_dir($form_previous_value)) {
 		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __esc('Directory Found') ."'></span>";
-	}elseif (is_file($form_previous_value)) {
+	} elseif (is_file($form_previous_value)) {
 		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('Path is a File and not a Directory'). '></span>';
-	}elseif ($form_previous_value == '') {
+	} elseif ($form_previous_value == '') {
 		$extra_data = '';
 	} else {
 		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('Directory is Not found'). "'></span>";
@@ -781,6 +785,7 @@ function form_droplanguage($form_name, $column_display, $column_id, $form_previo
 
 	foreach ($languages as $key => $value) {
 		$selected = '';
+
 		if ($form_previous_value == $key) {
 			$selected = ' selected';
 		}
@@ -822,6 +827,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 	}
 
 	$theme = get_selected_theme();
+
 	if ($theme == 'classic' || read_config_option('autocomplete') > 0) {
 		print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . '>';
 
@@ -976,6 +982,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	}
 
 	$labelClass = '';
+
 	if ($show_label) {
 		$labelClass = ' checkboxLabelWanted';
 	}
@@ -1077,13 +1084,16 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 	if (!is_array($sql_previous_values) && $sql_previous_values != '') {
 		$values              = explode(',', $sql_previous_values);
 		$sql_previous_values = array();
+
 		foreach ($values as $value) {
 			$sql_previous_values[][$column_id] = $value;
 		}
 	} elseif ($sql_previous_values == '') {
 		$values = db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', array($form_name));
+
 		if ($values != '') {
 			$values = explode(',', $values);
+
 			foreach ($values as $value) {
 				$sql_previous_values[][$column_id] = $value;
 			}
@@ -1098,6 +1108,7 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 	}
 
 	$class = 'multiselect';
+
 	if ($class != '') {
 		$class .= " $class";
 	}
@@ -1380,18 +1391,23 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 				<?php foreach ($buttons as $b) {
 					print "<input type='button' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "1' value='" . html_escape($b['value']) . "'";
 					$onclick = '';
+
 					if (!empty($b['method'])) {
 						$url  = empty($b['url']) ? '' : html_escape($b['url'], ENT_QUOTES);
 						$data = empty($b['data']) ? '{}' : $b['data'];
+
 						switch ($b['method']) {
 							case 'return':
 								$onclick = 'cactiReturnTo("' .$url . '")';
+
 								break;
 							case 'post':
 								$onclick = "var pv=$data;postUrl({ url: '$url' }, pv); return false;";
+
 								break;
 							case 'get':
 								$onclick = "var pv=$data;loadUrl({ url: '$url' }, pv); return false;";
+
 								break;
 						}
 					}

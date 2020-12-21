@@ -147,6 +147,7 @@ function snmpagent_data_source_action_bottom($data) {
 
 	$mc     = new MibCache();
 	$action = $data[0];
+
 	if ($action == '1') {
 		/* delete data sources */
 		$mc->object('cactiStatsTotalsDataSources')->set(snmpagent_read('cactiStatsTotalsDataSources'));
@@ -166,6 +167,7 @@ function snmpagent_graphs_action_bottom($data) {
 
 	$mc     = new MibCache();
 	$action = $data[0];
+
 	if ($action == '1') {
 		/* delete graphs */
 		$mc->object('cactiStatsTotalsDataSources')->set(snmpagent_read('cactiStatsTotalsDataSources'));
@@ -263,7 +265,9 @@ function snmpagent_device_action_bottom($data) {
 				}
 
 				$mc->object('cactiStatsLastUpdate')->set(time());
+
 				break;
+
 			default:
 				/* nothing to do */
 ;
@@ -305,6 +309,7 @@ function snmpagent_poller_bottom() {
 
 		return false;
 	}
+
 	if (!snmpagent_cache_initialized()) {
 		snmpagent_cache_rebuilt();
 	}
@@ -468,6 +473,7 @@ function snmpagent_poller_bottom() {
 	/* refill plugin mib table */
 	if ($pluginslist && cacti_sizeof($pluginslist) > 0) {
 		$i = 1;
+
 		foreach ($pluginslist as $plugin) {
 			$values = array(
 				'cactiApplPluginIndex'   => $i,
@@ -527,12 +533,14 @@ function snmpagent_get_pluginslist() {
 
 	$pluginslist        = array();
 	$registered_plugins = db_fetch_assoc('SELECT * FROM plugin_config ORDER BY name');
+
 	foreach ($registered_plugins as $t) {
 		$pluginslist[$t['directory']] = $t;
 	}
 
 	$path = $config['base_path'] . '/plugins/';
 	$dh   = opendir($path);
+
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
 			if ((is_dir("$path$file")) && !in_array($file, $plugins_integrated, true) &&
@@ -609,6 +617,7 @@ function snmpagent_cache_init() {
 
 	/* add pollers of a distributed system (future) */
 	$pollers = db_fetch_assoc('SELECT id FROM poller ORDER BY id ASC');
+
 	if ($pollers && cacti_sizeof($pollers) > 0) {
 		foreach ($pollers as $poller){
 			$poller_data = db_fetch_row_prepared('SELECT * FROM poller WHERE id = ?', array($poller['id']));
@@ -700,38 +709,50 @@ function snmpagent_read($object) {
 	switch($object) {
 		case 'cactiApplVersion':
 			$value = db_fetch_cell('SELECT `cacti` FROM `version`');
+
 			break;
 		case 'cactiApplSnmpVersion':
 			$snmp_version = read_config_option('snmp_version', true);
 			$value        = $snmp_version;
+
 			if (function_exists('snmpget')) {
 				$value = 3;
 			}
+
 			break;
 		case 'cactiStatsTotalsDevices':
 			$value = db_fetch_cell('SELECT COUNT(*) FROM host');
+
 			break;
 		case 'cactiStatsTotalsDataSources':
 			$value = db_fetch_cell('SELECT COUNT(*) FROM data_local');
+
 			break;
 		case 'cactiStatsTotalsGraphs':
 			$value = db_fetch_cell('SELECT COUNT(*) FROM graph_local');
+
 			break;
 		case 'cactiStatsTotalsDeviceStatusUnknown':
 			$value = db_fetch_cell('SELECT COUNT(*) FROM host WHERE status = 0');
+
 			break;
 		case 'cactiStatsTotalsDeviceStatusDown':
 			$value = db_fetch_cell('SELECT COUNT(*) FROM host WHERE status = 1');
+
 			break;
 		case 'cactiStatsTotalsDeviceStatusRecovering':
 			$value = db_fetch_cell('SELECT COUNT(*) FROM host WHERE status = 2');
+
 			break;
 		case 'cactiStatsTotalsDeviceStatusUp':
 			$value = db_fetch_cell('SELECT COUNT(*) FROM host WHERE status = 3');
+
 			break;
 		case 'cactiStatsTotalsDeviceStatusDisabled':
 			$value = db_fetch_cell('SELECT COUNT(*) FROM host WHERE status = 4');
+
 			break;
+
 		default:
 			$value = false;
 	}
@@ -783,6 +804,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 	if (cacti_sizeof($notification_managers) == 0) {
 		/* No receivers found for the message, record it to the cacti.log */
 		cacti_log('WARNING: No notification receivers configured for event: ' . $notification . ' (' . $mib . '), severity: ' . $snmpagent_event_severity[$severity], false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
+
 		if (!in_array($severity, array(SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL), true)) {
 			/* Prevent log spam of messages lower than a high severity */
 			$config['snmpagent']['notifications']['ignore'][$notification] = 1;
@@ -884,9 +906,9 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 
 				if ($notification_manager['snmp_version'] == 1) {
 					$args = ' -v 1 -c ' . $notification_manager['snmp_community'] . ' ' . $notification_manager['hostname'] . ':' . $notification_manager['snmp_port'] . ' ' . $enterprise_oid . ' "" 6 ' . $specific_trap_number . ' ""' . $snmp_notification_varbinds;
-				}elseif ($notification_manager['snmp_version'] == 2) {
+				} elseif ($notification_manager['snmp_version'] == 2) {
 					$args = ' -v 2c -c ' . $notification_manager['snmp_community'] . (($notification_manager['snmp_message_type'] == 2)? ' -Ci ' : '')  . ' ' . $notification_manager['hostname'] . ':' . $notification_manager['snmp_port'] . ' "" ' . $enterprise_oid . $snmp_notification_varbinds;
-				}elseif ($notification_manager['snmp_version'] == 3) {
+				} elseif ($notification_manager['snmp_version'] == 3) {
 					if ($overwrite && isset($overwrite['snmp_engine_id']) && $overwrite['snmp_engine_id']) {
 						$notification_manager['snmp_engine_id'] = $overwrite['snmp_engine_id'];
 					}

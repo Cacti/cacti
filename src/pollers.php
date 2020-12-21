@@ -245,13 +245,16 @@ switch (get_request_var('action')) {
 		poller_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		pollers();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -293,6 +296,7 @@ function form_save() {
 
 		// Check for duplicate hostname
 		$error = false;
+
 		if (poller_check_duplicate_poller_id($save['id'], $save['hostname'], 'hostname')) {
 			raise_message('dupe_hostname', __esc('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
 			$error = true;
@@ -365,11 +369,13 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	}
 
 	$sql_where1 = '';
+
 	if (cacti_sizeof($ip_addresses)) {
 		$sql_where1 = "$column IN ('" . implode("','", $ip_addresses) . "')";
 	}
 
 	$sql_where2 = '';
+
 	if (cacti_sizeof($ip_hostnames)) {
 		foreach ($ip_hostnames as $host) {
 			$parts = explode('.', $host);
@@ -456,11 +462,13 @@ function form_actions() {
 
 					if ($poller['dbhost'] == 'localhost') {
 						raise_message('poller_dbhost');
+
 						continue;
 					}
 
 					if ($item == 1) {
 						raise_message('poller_nomain');
+
 						continue;
 					} else {
 						if (replicate_out($item)) {
@@ -496,6 +504,7 @@ function form_actions() {
 		}
 
 		header('Location: pollers.php');
+
 		exit;
 	}
 
@@ -572,6 +581,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: pollers.php');
+
 		exit;
 	}
 
@@ -773,6 +783,7 @@ function test_database_connection($poller = array()) {
 		$poller['dbtype'] = 'mysql';
 
 		$fields = array('dbhost', 'dbuser', 'dbpass', 'dbdefault', 'dbport', 'dbssl', 'dbsslkey', 'dbsslcert', 'dbsslca');
+
 		foreach ($fields as $field) {
 			if ($field == 'dbssl') {
 				if (isset_request_var('dbssl') && get_nfilter_request_var('dbssl') == 'on') {
@@ -884,7 +895,7 @@ function pollers() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1007,6 +1018,7 @@ function pollers() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($pollers)) {
 		foreach ($pollers as $poller) {
 			if ($poller['id'] == 1) {
@@ -1017,7 +1029,7 @@ function pollers() {
 
 			if ($poller['disabled'] == 'on') {
 				$poller['status'] = 4;
-			}elseif ($poller['heartbeat'] > 310) {
+			} elseif ($poller['heartbeat'] > 310) {
 				$poller['status'] = 6;
 			}
 

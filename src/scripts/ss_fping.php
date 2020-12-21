@@ -40,16 +40,20 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type='ICMP', $port=80) {
 	switch ($ping_type) {
 	case 'ICMP':
 		$method = PING_ICMP;
+
 		break;
 	case 'TCP':
 		$method = PING_TCP;
+
 		break;
 	case 'UDP':
 		$method = PING_UDP;
+
 		break;
 	}
 
 	$i = 0;
+
 	while ($i < $ping_sweeps) {
 		$result = $ping->ping(AVAIL_PING, $method, read_config_option('ping_timeout'), 1);
 
@@ -58,7 +62,9 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type='ICMP', $port=80) {
 		} else {
 			$time[$i] = $ping->ping_status;
 			$total_time += $ping->ping_status;
+
 			if ($ping->ping_status < $min) $min = $ping->ping_status;
+
 			if ($ping->ping_status > $max) $max = $ping->ping_status;
 		}
 
@@ -71,6 +77,7 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type='ICMP', $port=80) {
 		/* if called from script server, end one second before a timeout occurs */
 		if (isset($called_by_script_server) && ($ss_fping_current - $ss_fping_start + ($ping_timeout / 1000) + 1) > $script_timeout) {
 			$ping_sweeps = $i;
+
 			break;
 		}
 	}
@@ -83,6 +90,7 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type='ICMP', $port=80) {
 
 		/* calculate standard deviation */
 		$predev = 0;
+
 		foreach ($time as $sample) {
 			$predev += pow(($sample - $avg),2);
 		}

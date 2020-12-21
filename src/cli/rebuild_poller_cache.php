@@ -47,12 +47,14 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--host-id':
 				$host_id = trim($value);
 
 				if (!is_numeric($host_id)) {
 					print "ERROR: You must supply a valid device id to run this script!\n";
+
 					exit(1);
 				}
 
@@ -61,15 +63,19 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -115,6 +121,7 @@ if (cacti_sizeof($poller_data)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
 }
+
 if (!$debug) print "\n";
 
 /* poller cache rebuilt, restore runtime parameters */

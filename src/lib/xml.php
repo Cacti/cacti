@@ -54,6 +54,7 @@ function get_children($vals, &$i) {
 		switch ($vals[$i]['type']) {
 		case 'cdata':
 			array_push($children, $vals[$i]['value']);
+
 			break;
 		case 'complete':
 			/* if the value is an empty string, php doesn't include the 'value' key
@@ -74,6 +75,7 @@ function get_children($vals, &$i) {
 			}
 
 			$children[$vals[$i]['tag']] = get_children($vals,$i);
+
 			break;
 		case 'close':
 			return $children;
@@ -94,6 +96,7 @@ function rrdxport2array($data) {
 			/* continue */
 		} else {
 			$new_array = array();
+
 			foreach ($array as $element) {
 				if ((substr(trim($element),0,1)) == '<') {
 					$new_array[] = $element;
@@ -140,6 +143,7 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 		switch ($vals[$i]['type']) {
 		case 'cdata':
 			array_push($children, $vals[$i]['value']);
+
 			break;
 		case 'complete':
 			/* if the value is an empty string, php doesn't include the 'value' key
@@ -149,14 +153,18 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 					case 'entry':
 						$column++;
 						$children['col' . $column] = $vals[$i]['value'];
+
 						break;
 					case 't':
 						$children['timestamp'] = $vals[$i]['value'];
+
 						break;
 					case 'v':
 						$column++;
 						$children['col' . $column] = $vals[$i]['value'];
+
 						break;
+
 					default:
 						$children[$vals[$i]['tag']] = $vals[$i]['value'];
 				}
@@ -178,6 +186,7 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 				case 'xport':
 				case 'legend':
 					$children[$vals[$i]['tag']] = get_rrd_children($vals,$i,$column,$row);
+
 					break;
 				case 'data':
 					break;

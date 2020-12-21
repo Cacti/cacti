@@ -46,13 +46,16 @@ switch (get_request_var('action')) {
 		gprint_presets_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		gprint_presets();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -83,6 +86,7 @@ function form_save() {
 
 		if (is_error_message()) {
 			header('Location: gprint_presets.php?action=edit&id=' . (empty($gprint_preset_id) ? get_nfilter_request_var('id') : $gprint_preset_id));
+
 			exit;
 		} else {
 			header('Location: gprint_presets.php');
@@ -155,6 +159,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: gprint_presets.php');
+
 		exit;
 	}
 
@@ -273,7 +278,7 @@ function gprint_presets() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -423,6 +428,7 @@ function gprint_presets() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($gprint_list)) {
 		foreach ($gprint_list as $gp) {
 			if ($gp['graphs'] == 0 && $gp['templates'] == 0) {

@@ -374,6 +374,7 @@ function get_auth_realms($login = false) {
 				}
 			} else {
 				$new_realms['0'] = __('Local');
+
 				foreach ($drealms as $realm) {
 					$new_realms[1000 + $realm['domain_id']] = $realm['domain_name'];
 				}
@@ -462,14 +463,17 @@ function auth_check_perms($objects, $policy) {
 		return false;
 	/* policy == deny AND matches = ALLOW */
 	}
+
 	if ($objectSize && $policy == 2) {
 		return true;
 	/* policy == allow AND no matches = ALLOW */
 	}
+
 	if (!$objectSize && $policy == 1) {
 		return true;
 	/* policy == deny AND no matches = DENY */
 	}
+
 	if (!$objectSize && $policy == 2) {
 		return false;
 	}
@@ -619,9 +623,11 @@ function is_view_allowed($view = 'show_tree') {
 		if (isset($values[3])) {
 			return false;
 		}
+
 		if (isset($values['on'])) {
 			return true;
 		}
+
 		if (isset($values[2])) {
 			return true;
 		} else {
@@ -679,6 +685,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 		}
 	} else {
 		$site_hosts = array();
+
 		foreach ($sites as $site) {
 			$site_hosts += array_rekey(
 				db_fetch_assoc_prepared('SELECT id
@@ -740,6 +747,7 @@ function is_realm_allowed($realm) {
 					kill_session_var('sess_config_array');
 
 					print '<span style="display:none;">cactiLoginSuspend</span>';
+
 					exit;
 				}
 			} else {
@@ -811,6 +819,7 @@ function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 
 
 	if (!$editing) {
 		$i = 0;
+
 		if (cacti_sizeof($items)) {
 			foreach ($items as $item) {
 				if ($item['host_id'] > 0) {
@@ -891,6 +900,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 
 	if (read_config_option('auth_method') != 0) {
 		$new_heirarchy = array();
+
 		if (cacti_sizeof($heirarchy)) {
 			foreach ($heirarchy as $h) {
 				if ($h['host_id'] > 0) {
@@ -1746,6 +1756,7 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 
 	$hosts           = get_allowed_devices('', 'description', '', $total_rows);
 	$sql_hosts_where = '';
+
 	if (cacti_sizeof($hosts) > 0) {
 		$sql_hosts_where =  'AND h.id IN (' . implode(',', array_keys(array_rekey($hosts, 'id', 'description'))) . ')';
 	}
@@ -2345,6 +2356,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	$return    = array();
 
 	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') . "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
 	}
@@ -2353,6 +2365,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 		if ($include_any) {
 			$return[] = array('label' => __('Any'), 'value' => __('Any'), 'id' => '-1');
 		}
+
 		if ($include_none) {
 			$return[] = array('label' => __('None'), 'value' => __('None'), 'id' => '0');
 		}
@@ -2361,6 +2374,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	$total_rows = -1;
 
 	$hosts = get_allowed_devices($sql_where, 'description', read_config_option('autocomplete_rows'), $total_rows);
+
 	if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			$return[] = array('label' => strip_domain($host['description']), 'value' => $host['description'], 'id' => $host['id']);
@@ -2374,6 +2388,7 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 	$return    = array();
 
 	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') . "name_cache LIKE '%$term%' OR data_source_name LIKE '%$term%'";
 	}
@@ -2385,6 +2400,7 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 	}
 
 	$graph_items = get_allowed_graph_items($sql_where, 'name_cache', read_config_option('autocomplete_rows'));
+
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $gi) {
 			$return[] = array('label' => $gi['name'], 'value' => $gi['name'], 'id' => $gi['id']);
@@ -2432,8 +2448,10 @@ function get_allowed_graph_items($sql_where, $sort = 'name' , $limit = 20, $user
 function secpass_login_process($username) {
 	// Mark failed login attempts
 	$secPassLockFailed = read_config_option('secpass_lockfailed');
+
 	if ($secPassLockFailed > 0) {
 		$max = intval($secPassLockFailed);
+
 		if ($max > 0) {
 			$p    = get_nfilter_request_var('login_password');
 			$user = db_fetch_row_prepared("SELECT id, username, lastfail, failed_attempts, `locked`, password
@@ -2445,6 +2463,7 @@ function secpass_login_process($username) {
 
 			if (isset($user['username'])) {
 				$unlock = intval(read_config_option('secpass_unlocktime'));
+
 				if ($unlock > 1440) {
 					$unlock = 1440;
 				}
@@ -2504,6 +2523,7 @@ function secpass_login_process($username) {
 					if ($user['locked'] != '') {
 						display_custom_error_message(__('This account has been locked.'));
 						header('Location: index.php');
+
 						exit;
 					}
 
@@ -2513,6 +2533,7 @@ function secpass_login_process($username) {
 				if ($user['locked'] != '') {
 					display_custom_error_message(__('This account has been locked.'));
 					header('Location: index.php');
+
 					exit;
 				}
 			}
@@ -2553,6 +2574,7 @@ function secpass_login_process($username) {
 
 function secpass_check_pass($p) {
 	$minlen = read_config_option('secpass_minlen');
+
 	if (strlen($p) < $minlen) {
 		return __('Password must be at least %d characters!', $minlen);
 	}
@@ -2597,8 +2619,10 @@ function secpass_check_pass($p) {
 		curl_close($ch);
 		$lines = explode("\r\n", $content);
 		$count = 0;
+
 		foreach ($lines as $line) {
 			$result = explode(':', $line);
+
 			if ($result[0] == $suffix) {
 				$count = $result[1];
 			}
@@ -2793,6 +2817,7 @@ function disable_2fa($user_id) {
 		array($user_id));
 
 	$result = array('status' => 500, 'text' => __('Unknown error'));
+
 	if (!cacti_sizeof($current_user)) {
 		$result['status'] = 404;
 		$result['text']   = __('ERROR: Unable to find user');
@@ -2823,6 +2848,7 @@ function enable_2fa($user_id) {
 		array($user_id));
 
 	$result = array('status' => 500, 'text' => __('Unknown error'));
+
 	if (!cacti_sizeof($current_user)) {
 		$result['status'] = 404;
 		$result['text']   = __('ERROR: Unable to find user');
@@ -2856,6 +2882,7 @@ function verify_2fa($user_id, $code) {
 		array($user_id));
 
 	$result = array('status' => 500, 'text' => __('Unknown error'));
+
 	if (!cacti_sizeof($current_user)) {
 		$result['status'] = 404;
 		$result['text']   = __('ERROR: Unable to find user');
@@ -2908,6 +2935,7 @@ function auth_login($user) {
 		/* Display error */
 		display_custom_error_message(__('Access Denied, user account disabled.'));
 		header('Location: index.php');
+
 		exit;
 	}
 
@@ -2943,6 +2971,7 @@ function auth_post_login_redirect($user) {
 	}
 
 	$newtheme = false;
+
 	if (user_setting_exists('selected_theme', $_SESSION['sess_user_id']) && read_config_option('selected_theme') != read_user_setting('selected_theme')) {
 		unset($_SESSION['selected_theme']);
 		$newtheme = true;
@@ -3000,9 +3029,11 @@ function auth_post_login_redirect($user) {
 			header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 
 			break;
+
 		default:
 			api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 	}
+
 	exit;
 }
 

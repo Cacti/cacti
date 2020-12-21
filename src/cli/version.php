@@ -78,6 +78,7 @@ if (cacti_sizeof($parms)) {
 				fail(EXIT_NORMAL);
 
 				break;
+
 			default:
 				if (strlen($md5_file)) {
 					fail(EXIT_ARGERR, $arg, true);
@@ -137,12 +138,14 @@ if ($debug) {
 	$sources = $tests;
 
 	$keys = array();
+
 	foreach (array_keys($tests) as $index => $key) {
 		$keys[$key] = chr($index + ord('a'));
 	}
 
 	$matrix = array();
 	$dkeys  = $keys;
+
 	foreach ($keys as $key) {
 		foreach ($dkeys as $dkey) {
 			$matrix[$key][$dkey] = ' ';
@@ -168,6 +171,7 @@ if ($debug) {
 	}
 
 	print '  ';
+
 	foreach ($keys as $key) {
 		print $key . ' ';
 	}
@@ -175,11 +179,13 @@ if ($debug) {
 
 	foreach ($keys as $name => $key) {
 		print $key;
+
 		foreach ($dkeys as $dkey) {
 			print ' ' . $matrix[$key][$dkey];
 		}
 		print ' ' . $name . PHP_EOL;
 	}
+
 	exit;
 }
 

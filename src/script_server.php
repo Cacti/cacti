@@ -40,7 +40,9 @@ function sig_handler($signo) {
 			db_close();
 
 			exit;
+
 			break;
+
 		default:
 			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
 
@@ -51,6 +53,7 @@ function sig_handler($signo) {
 /* used for includes */
 /* install signal handlers for UNIX only */
 $parent_pid = '';
+
 if (function_exists('posix_getppid')) {
 	$parent_pid = posix_getppid();
 }
@@ -144,6 +147,7 @@ while (1) {
 	$parameter_array = array();
 
 	$isParentRunning = true;
+
 	if (empty($input_string)) {
 		if (!empty($parent_pid)) {
 			if (strncasecmp(PHP_OS, 'win', 3) == 0) {
@@ -177,16 +181,19 @@ while (1) {
 			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
 			fflush(STDOUT);
 			cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+
 			if (!$log_keep && file_exists($log_file)) {
 				unlink($log_file);
 			}
 			db_close();
+
 			exit(0);
 		}
 
 		if ($input_string != '') {
 			/* pull off the parameters */
 			$i = 0;
+
 			while (true) {
 				$pos = strpos($input_string, ' ');
 
@@ -196,15 +203,18 @@ while (1) {
 						/* cut off include file as first part of input string and keep rest for further parsing */
 						$include_file = trim(substr($input_string,0,$pos));
 						$input_string = trim(strchr($input_string, ' ')) . ' ';
+
 						break;
 					case 1:
 						/* cut off function as second part of input string and keep rest for further parsing */
 						$function     = trim(substr($input_string,0,$pos), "' ");
 						$input_string = trim(strchr($input_string, ' ')) . ' ';
+
 						break;
 					case 2:
 						/* take the rest as parameter(s) to the function stripped off previously */
 						$parameters = trim($input_string);
+
 						break 2;
 					}
 				} else {
@@ -218,6 +228,7 @@ while (1) {
 				cacti_log("WARNING: Script Server count not parse '$parameters' for $function", false, 'PHPSVR');
 				fputs(STDOUT, "U\n");
 				fflush(STDOUT);
+
 				continue;
 			}
 
@@ -271,6 +282,7 @@ while (1) {
 	/* end the process if the runtime exceeds MAX_POLLER_RUNTIME */
 	if (($start + MAX_POLLER_RUNTIME) < time()) {
 		cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded for the Script Server. Exiting.', true, 'PHPSVR');
+
 		exit(-1);
 	}
 }
@@ -287,6 +299,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 	foreach ($delimiters as $delimiter) {
 		if (strpos($string, $delimiter) !== false) {
 			$delimited = true;
+
 			break;
 		}
 	}
@@ -308,6 +321,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 	$indelim    = false;
 	$parse_ok   = true;
 	$curstr     = '';
+
 	foreach ($char_array as $char) {
 		switch ($char) {
 		case '\'':
@@ -355,6 +369,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 			$msg      = 'Backtic (`) characters not allowed';
 
 			break;
+
 		default:
 			if ($escaping) {
 				$parse_ok = false;
@@ -362,6 +377,7 @@ function parseArgs($string, &$str_list, $debug = false) {
 			} else {
 				$curstr .= $char;
 			}
+
 			break;
 		}
 

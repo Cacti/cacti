@@ -94,6 +94,7 @@ if (cacti_sizeof($parms)) {
 				foreach ($value as $item) {
 					if (!validate_is_regex($item)) {
 						print "ERROR: Regex specified '$item', is not a valid Regex!" . PHP_EOL;
+
 						exit(1);
 					}
 				}
@@ -159,23 +160,28 @@ if (cacti_sizeof($parms)) {
 			case 'V':
 			case 'v':
 				display_version();
+
 				exit(0);
 			case 'help':
 			case 'H':
 			case 'h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 		}
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 
 if ($list && $force) {
 	print 'The --list and --force options are mutually exclusive.  Pick one or the other.' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -183,6 +189,7 @@ if (cacti_sizeof($host_template_ids)) {
 	foreach ($host_template_ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print "FATAL: Host Template ID $id is invalid" . PHP_EOL;
+
 			exit(1);
 		}
 	}
@@ -192,6 +199,7 @@ if (cacti_sizeof($graph_template_ids)) {
 	foreach ($graph_template_ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print "FATAL: Graph Template ID $id is invalid" . PHP_EOL;
+
 			exit(1);
 		}
 	}
@@ -201,6 +209,7 @@ if (cacti_sizeof($host_ids)) {
 	foreach ($host_ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print "FATAL: Host ID $id is invalid" . PHP_EOL;
+
 			exit(1);
 		}
 	}
@@ -210,6 +219,7 @@ if (cacti_sizeof($graph_ids)) {
 	foreach ($graph_ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print "FATAL: Graph ID $id is invalid" . PHP_EOL;
+
 			exit(1);
 		}
 	}
@@ -274,6 +284,7 @@ if ($listGraphTemplates) {
 
 	if ($all_option && $all === false && $list === false) {
 		print 'ERROR: The options specified will remove all graphs.  To do this you must use the --all option.  Exiting' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -313,6 +324,7 @@ if ($listGraphTemplates) {
 		}
 	} else {
 		print 'No matching Graphs found.' . PHP_EOL;
+
 		exit(1);
 	}
 }

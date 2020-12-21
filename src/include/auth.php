@@ -31,6 +31,7 @@ require_once('global.php');
 if (!isset($config['cacti_db_version'])) {
 	$version                    = get_cacti_db_version();
 	$config['cacti_db_version'] = $version;
+
 	if (!defined('CACTI_DB_VERSION')) {
 		define('CACTI_DB_VERSION', $version);
 	}
@@ -39,6 +40,7 @@ if (!isset($config['cacti_db_version'])) {
 }
 
 $auth_method = read_config_option('auth_method', true);
+
 if (read_config_option('auth_method') == 0) {
 	$admin_id = db_execute_prepared('SELECT id
 		FROM user_auth
@@ -46,6 +48,7 @@ if (read_config_option('auth_method') == 0) {
 		array(read_config_option('admin_user')));
 
 	cacti_log('Admin User (' . read_config_option('admin_user') . ' vs ' . $admin_id . ')', true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+
 	if (!$admin_id) {
 		$admin_sql_query = 'SELECT TOP 1 id FROM (
 			SELECT ua.id
@@ -106,11 +109,13 @@ if (read_config_option('auth_method') == 0) {
 	$_SESSION['sess_user_id']         = $admin_id;
 	$_SESSION['sess_change_password'] = true;
 	header('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
+
 	exit;
 }
 
 if (is_install_needed() && !defined('IN_CACTI_INSTALL')) {
 	header('Location: ' . $config['url_path'] . 'install/');
+
 	exit;
 }
 
@@ -124,12 +129,14 @@ api_plugin_hook_function('auth_alternate_realms');
 /* handle change password dialog */
 if ((isset($_SESSION['sess_change_password'])) && (read_config_option('webbasic_enabled') != 'on')) {
 	header('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
+
 	exit;
 }
 
 /* check for remember me function ality */
 if (!isset($_SESSION['sess_user_id'])) {
 	$cookie_user = check_auth_cookie();
+
 	if ($cookie_user !== false) {
 		$_SESSION['sess_user_id'] = $cookie_user;
 	}
@@ -184,6 +191,7 @@ if (empty($_SESSION['sess_user_2fa'])) {
 
 	if (!empty($user_2fa)) {
 		header('Location: ' . $config['url_path'] . 'auth_2fa.php');
+
 		exit;
 	} else {
 		$_SESSION['sess_user_2fa'] = true;
@@ -335,6 +343,7 @@ if ($realm_id != -1 && !$authorized) {
 	include_once('global_session.php');
 	print "</body>
 	</html>\n";
+
 	exit;
 }
 

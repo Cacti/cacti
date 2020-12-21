@@ -53,71 +53,92 @@ if (sizeof($parms)) {
 		switch ($arg) {
 		case '-d':
 			$debug_mode = true;
+
 			break;
 		case '--debug':
 			$debug_mode = true;
+
 			break;
 		case '--data-template-id':
 			$data_template_id = trim($value);
+
 			if (!is_numeric($data_template_id)) {
 				print 'ERROR: You must supply a valid data template id to run this script!' . PHP_EOL;
+
 				exit(1);
 			} else {
 				$data_template_id__valid = db_fetch_cell('SELECT id FROM data_template WHERE id =' . $data_template_id);
+
 				if ($data_template_id__valid === null) {
 					print 'ERROR: You must supply a valid data template id to run this script!' . PHP_EOL;
+
 					exit(1);
 				}
 			}
+
 			break;
 		case '--backup':
 			$backup_folder = trim($value);
+
 			if (!$backup_folder) {
 				print 'ERROR: You must supply a valid backup folder to run this script!' . PHP_EOL;
+
 				exit(1);
 			}
+
 			if (!file_exists($backup_folder)) {
 				if (mkdir($backup_folder, 0777, true) === false) {
 					print "ERROR: Cannot create backup folder: \"$backup_folder\"" . PHP_EOL;
+
 					exit(1);
 				}
 			} else {
 				if (is_dir($backup_folder) === false) {
 					print "ERROR: Given backup folder: \"$backup_folder\" is not a directory" . PHP_EOL;
+
 					exit(1);
 				} else {
 					if (!is_writable($backup_folder)) {
 						print "ERROR: No write permission to backup folder: \"$backup_folder\" given." . PHP_EOL;
+
 						exit(1);
 					}
 				}
 			}
 			$tmp_backup_folder = $backup_folder . '/' . date('d-m-Y_G-i-s') . '/';
+
 			break;
 		case '--dry-run':
 			$dry_run_mode = true;
+
 			break;
 		case '--list-data-templates':
 			$displayDataTemplates = true;
+
 			break;
 		case '--version':
 		case '-v':
 		case '-V':
 			display_version();
+
 			exit(0);
 		case '-h':
 		case '-H':
 		case '--help':
 			display_help();
+
 			exit(0);
+
 		default:
 			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 			display_help();
+
 			exit(1);
 		}
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 
@@ -139,6 +160,7 @@ if ($displayDataTemplates) {
 		ORDER BY id, name');
 
 	print 'Known Data Templates: (id, name)' . PHP_EOL;
+
 	if (sizeof($data_templates)) {
 		foreach ($data_templates as $data_template) {
 			print $data_template['id'] . "\t" . $data_template['name'] . PHP_EOL;
@@ -147,16 +169,19 @@ if ($displayDataTemplates) {
 		print 'ERROR: No data templates found.' . PHP_EOL;
 	}
 	print PHP_EOL;
+
 	exit(0);
 }
 
 if (!$data_template_id) {
 	print 'ERROR: You must supply a valid data template id to run this script!' . PHP_EOL;
+
 	exit(0);
 }
 
 if (!$backup_folder) {
 	print 'ERROR: You must define a backup folder!' . PHP_EOL;
+
 	exit(0);
 } else {
 	$tmp_xml_file = $tmp_backup_folder . 'tmp_rrdresize.xml';
@@ -218,6 +243,7 @@ if ($scanned_directory['folders']) {
 	/* create backup folder */
 	if (!mkdir($tmp_backup_folder)) {
 		print 'ERROR: Unable to create a backup folder!' . PHP_EOL;
+
 		exit(0);
 	}
 
@@ -237,12 +263,14 @@ if ($scanned_directory['folders']) {
 		array($data_template_id));
 
 	$dt_hosts = array();
+
 	if (sizeof($db_hosts) > 0) {
 		foreach ($db_hosts as $key => $value) {
 			$dt_hosts[] = $value['host_id'];
 		}
 	} else {
 		print 'No hosts found.' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -253,18 +281,21 @@ if ($scanned_directory['folders']) {
 		array($data_template_id));
 
 	$dt_data_sources = array();
+
 	if (sizeof($db_data_sources) > 0) {
 		foreach ($db_data_sources as $key => $value) {
 			$dt_data_sources[] = $value['local_data_id'];
 		}
 	} else {
 		print 'No data sources found.' . PHP_EOL;
+
 		exit(1);
 	}
 
 	$subfolders = $scanned_directory['content'];
 
 	$counter=0;
+
 	foreach ($subfolders as $host_id => $host_data) {
 		if (!in_array($host_id, $dt_hosts, true)) {
 			continue;
@@ -283,18 +314,21 @@ if ($scanned_directory['folders']) {
 				if (!$local_data_id) {
 					f_log('[ERROR] Unable to detect local data id: ' . $file);
 					$total_errors++;
+
 					continue;
 				}
 
 				if (!is_readable($file)) {
 					f_log('[ERROR] : Read permissions required for file: ' . $file);
 					$total_errors++;
+
 					continue;
 				}
 
 				if (!is_resource_writable($file)) {
 					f_log('[ERROR] : Write permissions required for file: ' . $file);
 					$total_errors++;
+
 					continue;
 				}
 
@@ -308,6 +342,7 @@ if ($scanned_directory['folders']) {
 					if ($local_data['data_template_id'] != $data_template_id) {
 						/* this file has not to be update due to template mismatches */
 						f_log('[SKIPPED] Template mismatch: ' . $file);
+
 						continue;
 					}
 
@@ -335,11 +370,13 @@ if ($scanned_directory['folders']) {
 					f_notify(false, "\033[0;32m[COMPLETED]\033[0m");
 				} else {
 					f_log('[OUTDATED] Unable to detect referenced local data id: ' . $file);
+
 					continue;
 				}
 
 				/************** BOOST update process *****************/
 				f_notify('Boost update');
+
 				if ($boost_enabled && !$dry_run_mode) {
 					$boost_update = true; //placeholder
 					//----- run on demand update if Boost is enabled and cached data is part of the report period -----
@@ -351,17 +388,21 @@ if ($scanned_directory['folders']) {
 
 				f_notify('RRDtool info');
 				$output = rrdtool_pipe_execute(' info ' . $file . "\r\n", $rrdtool_pipes);
+
 				if (strpos($output, 'ERROR')) {
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");
 					f_log('[ERROR] Unable to fetch RRDtool Info: ' . $file);
+
 					continue;
 				} else {
 					$rrd_info = rrdtool_parse_info($output);
+
 					if ($rrd_info) {
 						f_notify(false, "\033[0;32m[COMPLETED]\033[0m");
 					} else {
 						f_notify(false, "\033[0;31m[FAILED]\033[0m");
 						f_log('[ERROR] Unable to parse RRDtool Info: ' . $file);
+
 						continue;
 					}
 
@@ -380,6 +421,7 @@ if ($scanned_directory['folders']) {
 
 						if (isset($tmp_ds[$defined_ds_name])) {
 							$tmp_ds_rrd = $tmp_ds[$defined_ds_name];
+
 							if ($tmp_ds_rrd['type'] == $defined_ds_type && $tmp_ds_rrd['minimal_heartbeat'] == $defined_min_heartbeat && $tmp_ds_rrd['min'] == $defined_minimum && $tmp_ds_rrd['max'] == $defined_maximum) {
 								$found = true;
 							} else {
@@ -391,10 +433,12 @@ if ($scanned_directory['folders']) {
 									$rrd_info['ds'][$defined_ds_name]['minimal_heartbeat'] = $defined_min_heartbeat;
 									f_log('[NOTICE] Data Source \'' . $defined_ds_name . '\' heartbeat mismatch: ' . $file);
 								}
+
 								if ($tmp_ds_rrd['min'] != $defined_minimum) {
 									$rrd_info['ds'][$defined_ds_name]['min'] = $defined_minimum;
 									f_log('[NOTICE] Data Source \'' . $defined_ds_name . '\' minimum mismatch: ' . $file);
 								}
+
 								if ($tmp_ds_rrd['max'] != $defined_maximum) {
 									$rrd_info['ds'][$defined_ds_name]['max'] = $defined_maximum;
 									f_log('[NOTICE] Data Source \'' . $defined_ds_name . '\' maximum mismatch: ' . $file);
@@ -404,6 +448,7 @@ if ($scanned_directory['folders']) {
 						} else {
 							$ds_mismatch = true;
 							$ds_error    = 'missing';
+
 							break;
 						}
 					}
@@ -414,12 +459,15 @@ if ($scanned_directory['folders']) {
 						if ($ds_error == 'missing') {
 							f_notify(false, "\033[0;31m[COUNT - MISSING DS]\033[0m");
 							f_log('[ERROR] Data source missing: ' . $file);
+
 							continue;
 						}
+
 						if ($ds_error == 'definition') {
 							if (!$ds_mismatch_fixable) {
 								f_notify(false, "\033[0;31m[UNFIXABLE]\033[0m");
 								f_log('[ERROR] Unable to fix misconfigured data source: ' . $file);
+
 								continue;
 							} else {
 								f_notify(false, "\033[0;35m[FIXABLE]\033[0m");
@@ -432,6 +480,7 @@ if ($scanned_directory['folders']) {
 					if (!empty($tmp_ds)) {
 						/* Additional ds found ! :| */
 						$ds_names = array_keys($rrd_info['ds']);
+
 						foreach ($tmp_ds as $tmp_ds_name => $tmp_ds_settings) {
 							$ds_superfluos_ids += array_keys($ds_names, $tmp_ds_name, true);
 						}
@@ -459,12 +508,14 @@ if ($scanned_directory['folders']) {
 						foreach ($tmp_rras as $tmp_rra) {
 							if ($tmp_rra['cf'] == $defined_cf && $tmp_rra['rows'] == $defined_rows && $tmp_rra['xff'] == $defined_xff && $tmp_rra['pdp_per_row'] == $defined_ppr) {
 								$found = true;
+
 								break;
 							}
 						}
 
 						if (!$found) {
 							$rra_mismatch = true;
+
 							break;
 						}
 					}
@@ -478,6 +529,7 @@ if ($scanned_directory['folders']) {
 
 				if ($rra_mismatch == false & $ds_mismatch == false) {
 					f_notify('Update', "\033[0;35m[NOT NECESSARY]\033[0m");
+
 					continue;
 				}
 
@@ -490,6 +542,7 @@ if ($scanned_directory['folders']) {
 					continue;
 				} else {
 					$rrd_data = json_decode(json_encode(simplexml_load_string($file_dump)),true);
+
 					if ($rrd_data === false) {
 						f_notify(false, "\033[0;31m[FAILED]\033[0m");
 						### log_missing
@@ -504,6 +557,7 @@ if ($scanned_directory['folders']) {
 
 				$rra_timespans = array();
 				$tmp_step      = $rrd_info['step'];
+
 				foreach ($tmp_rras as $rra_index => $rra_settings) {
 					$rra_cf = $rra_settings['cf'];
 					$step   = $rra_settings['pdp_per_row'] * $tmp_step;
@@ -527,6 +581,7 @@ if ($scanned_directory['folders']) {
 
 				$rrd_new_ds_definition = '';
 				$i                     = 0;
+
 				foreach ($rrd_info['ds'] as $rrd_info_ds_name => $rrd_info_ds_settings) {
 					if (!in_array($i, $ds_superfluos_ids, true)) {
 						$rrd_new_ds_definition__ds_definition_template = "\t<ds>" . PHP_EOL .
@@ -553,6 +608,7 @@ if ($scanned_directory['folders']) {
 					$row_copy_fake = 'NaN';
 				} else {
 					$row_copy_fake = array();
+
 					for ($i = 0; $i < $data_template_ds_counter; $i++){
 						$row_copy_fake[] = 'NaN';
 					}
@@ -583,6 +639,7 @@ if ($scanned_directory['folders']) {
 						"\t\t<cdp_prep>" . PHP_EOL;
 
 					$rrd_new_body__ds_definition = '';
+
 					for ($i = 0; $i < $data_template_ds_counter; $i++){
 						$rrd_new_body__ds_definition_template = "\t\t\t<ds>" . PHP_EOL .
 							"\t\t\t<primary_value>__placeholder__$i</primary_value>" . PHP_EOL .
@@ -620,6 +677,7 @@ if ($scanned_directory['folders']) {
 									$consolidation_required = false;
 									$step                   = $g_rra_settings['step'];
 									$selected_archive_index = $g_rra_index;
+
 									break;
 								}
 							}
@@ -628,6 +686,7 @@ if ($scanned_directory['folders']) {
 						/* There's no data available we could reuse. Fill these entries with NaNs and jump to the next one */
 						if ($selected_archive_index === false) {
 							$rrd_new_body .= "\t\t\t<!-- " . date('Y-m-d H:i:s ', ($timestamp)) . 'GMT / ' . ($timestamp) . ' --> <row><v>' . (is_array($row_copy_fake) ? implode('</v><v>', $row_copy_fake) : $row_copy_fake)  . '</v></row>' . PHP_EOL;
+
 							continue;
 						}
 						$g_rra_settings = $rra_timespans[$defined_cf][$selected_archive_index];
@@ -635,11 +694,14 @@ if ($scanned_directory['folders']) {
 						if (!$consolidation_required) {
 							/* calculate the correct index number of the selected archive */
 							$calculated_index = ($timestamp - $timestamp % $g_rra_settings['step'] - $g_rra_settings['start'] - $defined_step) / $g_rra_settings['step'];
+
 							if ($g_rra_settings['step'] > $defined_step && ($timestamp % $g_rra_settings['step']) == 0) {
 								$calculated_index--;
 							}
+
 							if (isset($rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v'])) {
 								$row_copy = $rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v'];
+
 								if (!empty($ds_superfluos_ids)) {
 									foreach ($ds_superfluos_ids as $ds_superfluos_id) {
 										unset($row_copy[$ds_superfluos_id]);
@@ -682,15 +744,19 @@ if ($scanned_directory['folders']) {
 										switch($defined_cf) {
 											case 'AVERAGE':
 												$consolidated_value = empty($unconsolidated_ds_values) ? 'NaN' : array_sum($unconsolidated_ds_values) / $high_granulary_rows_required;
+
 												break;
 											case 'MAX':
 												$consolidated_value = empty($unconsolidated_ds_values) ? 'NaN' : max($unconsolidated_ds_values);
+
 												break;
 											case 'MIN':
 												$consolidated_value = empty($unconsolidated_ds_values) ? 'NaN' : min($unconsolidated_ds_values);
+
 												break;
 											case 'LAST':
 												$consolidated_value = empty($unconsolidated_ds_values) ? 'NaN' : end($unconsolidated_ds_values);
+
 												break;
 										}
 										$consolidated_ds_values[$ds_index] = preg_replace('/(e[+-])(\d)$/', '${1}0$2', sprintf('%.10e', $consolidated_value));
@@ -717,15 +783,19 @@ if ($scanned_directory['folders']) {
 									switch($defined_cf) {
 										case 'AVERAGE':
 											$consolidated_value = empty($unconsolidated_ds_values) ? 'NaN' : array_sum($unconsolidated_ds_values) / $high_granulary_rows_required;
+
 											break;
 										case 'MAX':
 											$consolidated_value = empty($unconsolidated_ds_values) ? 'NaN' : max($unconsolidated_ds_values);
+
 											break;
 										case 'MIN':
 											$consolidated_value = empty($unconsolidated_ds_values) ? 'NaN' : min($unconsolidated_ds_values);
+
 											break;
 										case 'LAST':
 											$consolidated_value = empty($unconsolidated_ds_values) ? 'NaN' : end($unconsolidated_ds_values);
+
 											break;
 									}
 									$consolidated_ds_values[0] = preg_replace('/(e[+-])(\d)$/', '${1}0$2', sprintf('%.10e', $consolidated_value));
@@ -745,6 +815,7 @@ if ($scanned_directory['folders']) {
 
 					/* return the last identified value */
 					$last_values = (!isset($calculated_index)) ? 'NaN' : $rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v'];
+
 					if (is_array($last_values)) {
 						foreach ($last_values as $index => $value) {
 							$rrd_new_body = str_replace('>__placeholder__' . $index . '<', '>' . $value . '<', $rrd_new_body);
@@ -760,13 +831,16 @@ if ($scanned_directory['folders']) {
 
 				/* update temporary XML file */
 				f_notify('Create Temp File');
+
 				if (!file_put_contents($tmp_xml_file, $rrd_new_header . $rrd_new_body . '</rrd>')) {
 					// Critical ERROR - This should never happen
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");
 					f_log('[ERROR] Unable to create and update temporary XML file: ./tmp_rrdresize.xml');
+
 					if (!$debug_mode) {
 						f_notify(false, '[ERROR] Unable to create and update temporary XML file: ./tmp_rrdresize.xml', false);
 					}
+
 					exit;
 				} else {
 					f_notify(false, "\033[0;32m[COMPLETED]\033[0m");
@@ -775,6 +849,7 @@ if ($scanned_directory['folders']) {
 				/* Use RRDtool to verify if XML structure is valid */
 				f_notify('RRDtool Restore');
 				$file_restore = rrdtool_pipe_execute(' restore -r -f ' . $tmp_xml_file . ' ' . $tmp_rrd_file . "\r\n", $rrdtool_pipes);
+
 				if (strpos($file_restore, 'ERROR')) {
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");
 					/// log_missing
@@ -786,12 +861,14 @@ if ($scanned_directory['folders']) {
 					if (!is_dir($tmp_backup_folder . $host_id)) mkdir($tmp_backup_folder . $host_id);
 
 					f_notify('RRDtool Backup');
+
 					if (!copy($file, $tmp_backup_folder . $host_id . '/' . $host_file)) {
 						f_notify(false, "\033[0;31m[FAILED]\033[0m");
 					} else {
 						f_notify(false, "\033[0;32m[COMPLETED]\033[0m");
 
 						f_notify('RRDtool Replace');
+
 						if (!$dry_run_mode) {
 							if (!copy($tmp_rrd_file, $file) || !chmod($file, 0644)) {
 								f_notify(false, "\033[0;31m[FAILED]\033[0m");
@@ -806,6 +883,7 @@ if ($scanned_directory['folders']) {
 
 				if (!$debug_mode) fwrite(STDOUT, '.');
 				$counter++;
+
 				if ($counter % 1000 == 0) fwrite(STDOUT, $counter);
 			}
 		}
@@ -813,6 +891,7 @@ if ($scanned_directory['folders']) {
 }
 
 if (!$debug_mode) fwrite(STDOUT, "\r\n");
+
 exit;
 
 function rrdtool_parse_info($lines) {
@@ -831,6 +910,7 @@ function rrdtool_parse_info($lines) {
 				$pointer[$key] = array();
 			}
 			$pointer = &$pointer[$key];
+
 			if ($key_num + 1 === $key_count) {
 				$pointer = trim($raw_val, '"');
 			}
@@ -871,6 +951,7 @@ function rrdtool_pipe_execute($command, $pipes) {
 		}
 		$stdout .= $line;
 	}
+
 	if (strlen($stdout)) return $stdout;
 }
 
@@ -883,6 +964,7 @@ function dirToArray($dir) {
 	$result = array();
 
 	$cdir = scandir($dir);
+
 	if ($cdir) {
 		foreach ($cdir as $key => $value) {
 			if (!in_array($value,array('.','..'), true)) {
@@ -927,6 +1009,7 @@ function f_log($msg) {
 	global $logging, $log_handle, $total_outdated, $total_errors, $total_skipped, $total_mismatches;
 
 	fwrite($log_handle, date('Y-m-d H:i:s T', time()) . '   ' . $msg . PHP_EOL);
+
 	if (strpos($msg, '[ERROR]')) {
 		$total_errors++;
 		$total_skipped++;

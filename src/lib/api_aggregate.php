@@ -240,9 +240,11 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 	/* create new entry(s): graph_templates_item */
 	$num_items = cacti_sizeof($graph_items);
+
 	if ($num_items > 0) {
 		# take care of items having a HR that shall be skipped
 		$i = 0;
+
 		for ($i; $i < $num_items; $i++) {
 			# remember existing hard returns (array must start at 1 to match $skipped_items
 			$_hr[$i + 1] = ($graph_items[$i]['hard_return'] != '');
@@ -278,6 +280,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 					if (isset($parts[1])) {
 						$pparts = explode(':', $parts[1]);
+
 						if (is_numeric($pparts[0])) {
 							continue;
 						}
@@ -475,6 +478,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
  */
 function aggregate_graph_items_save($items, $table) {
 	$defaults = array();
+
 	if ($table == 'aggregate_graphs_graph_item') {
 		$defaults['aggregate_graph_id'] = null;
 
@@ -498,6 +502,7 @@ function aggregate_graph_items_save($items, $table) {
 	$defaults['item_total']              = '';
 
 	$items_sql = array();
+
 	foreach ($items as $item) {
 		// substitute any missing fields with defaults
 		$item = array_merge($defaults, $item);
@@ -593,6 +598,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 			/* override checkbox off - use default value */
 			$params_new['t_' . $field] = '';
 			$params_new[$field]        = $defs['default'];
+
 			continue;
 		}
 
@@ -627,6 +633,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 			$graph_templates_item_id = str_replace('agg_color_', '', $var);
+
 			if (isset($graph_items[$graph_templates_item_id])) {
 				$graph_items[$graph_templates_item_id]['color_template'] = $val;
 			} else {
@@ -640,6 +647,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 			$graph_templates_item_id = str_replace('agg_skip_', '', $var);
+
 			if (isset($graph_items[$graph_templates_item_id])) {
 				$graph_items[$graph_templates_item_id]['item_skip'] = $val;
 			} else {
@@ -653,6 +661,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 			$graph_templates_item_id = str_replace('agg_total_', '', $var);
+
 			if (isset($graph_items[$graph_templates_item_id])) {
 				$graph_items[$graph_templates_item_id]['item_total'] = $val;
 			} else {
@@ -713,6 +722,7 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 
 		return true;
 	}
+
 	if ($reorder == AGGREGATE_ORDER_DS_GRAPH) {
 		$sql_order = 'dtr.data_source_name, gti.sequence';
 	} elseif ($reorder == AGGREGATE_ORDER_BASE_GRAPH) {
@@ -1027,6 +1037,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 	}
 
 	$aggregate_graphs = array();
+
 	if ($local_graph_id > 0) {
 		$aggregate_graphs[] = $local_graph_id;
 	} else {
@@ -1113,6 +1124,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 
 		/* save the aggregate information */
 		$save1 = array();
+
 		if ($local_graph_id == 0) {
 			# create new graph based on first graph selected
 			$local_graph_id = aggregate_graph_save($example_graph_id, $graph_template_id, $graph_title, $aggregate_template);
@@ -1250,6 +1262,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					case AGGREGATE_TOTAL_TYPE_SIMILAR:
 					case AGGREGATE_TOTAL_TYPE_ALL:
 						$gprint_prefix = $_total_prefix;
+
 						break;
 				}
 
@@ -1371,26 +1384,32 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 									switch($pparts[3]) {
 										case 'current':
 											$new_ppart = 'current';
+
 											break;
 										case 'total':
 											$new_ppart = 'aggregate_sum';
+
 											break;
 										case 'max':
 											$new_ppart = 'max';
+
 											break;
 										case 'total_peak':
 											$new_ppart = 'total_peak';
+
 											break;
 										case 'all_max_current':
 										case 'all_max_peak':
 										case 'aggregate_max':
 											$new_ppart = 'aggregate_peak';
+
 											break;
 										case 'aggregate_sum':
 										case 'aggregate_current':
 										case 'aggregate':
 										case 'aggregate_peak':
 											$new_ppart = $pparts[3];
+
 											break;
 									}
 
@@ -1421,6 +1440,7 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 							$hrule_found = true;
 
 							$parts = explode('|', $item['value']);
+
 							if (isset($parts[1])) {
 								$pparts = explode(':', $parts[1]);
 
@@ -1438,26 +1458,32 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 									switch($pparts[3]) {
 										case 'current':
 											$new_ppart = 'current';
+
 											break;
 										case 'total':
 											$new_ppart = 'aggregate_sum';
+
 											break;
 										case 'max':
 											$new_ppart = 'max';
+
 											break;
 										case 'total_peak':
 											$new_ppart = 'total_peak';
+
 											break;
 										case 'all_max_current':
 										case 'all_max_peak':
 										case 'aggregate_max':
 											$new_ppart = 'aggregate_peak';
+
 											break;
 										case 'aggregate_peak':
 										case 'aggregate_sum':
 										case 'aggregate_current':
 										case 'aggregate':
 											$new_ppart = $pparts[3];
+
 											break;
 									}
 
@@ -1508,16 +1534,19 @@ function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_to
 			$width        = '1.00';
 			$special_type = GRAPH_ITEM_TYPE_LINE1;
 			$special_line = true;
+
 			break;
 		case AGGREGATE_GRAPH_TYPE_LINE2_STACK:
 			$width        = '2.00';
 			$special_type = GRAPH_ITEM_TYPE_LINE2;
 			$special_line = true;
+
 			break;
 		case AGGREGATE_GRAPH_TYPE_LINE3_STACK:
 			$width        = '3.00';
 			$special_type = GRAPH_ITEM_TYPE_LINE3;
 			$special_line = true;
+
 			break;
 	}
 
@@ -1592,6 +1621,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			<p>" . __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.') . '</p>';
 			print '<p>' . __('Press \'Return\' to return and select different Graphs') . '</p>';
 			print '<ul>';
+
 			foreach ($used_graph_templates as $graph_template) {
 				print '<li>' . html_escape($graph_template['name']) . '</li>';
 			}
@@ -1677,6 +1707,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	$current_vals = array();
 	$is_edit      = false;
 	$is_templated = false;
+
 	if (cacti_sizeof($_object) > 0 && $_object['id'] > 0) {
 		/* drawing items for existing aggregate graph/template */
 		$is_edit =true;
@@ -1765,27 +1796,34 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			switch (true) {
 				case preg_match('/(TEXTALIGN)/', $_graph_type_name):
 					$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
+
 					break;
 				case preg_match('/(TICK)/', $_graph_type_name):
 					$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
+
 					break;
 				case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
 					$matrix_title = $item['text_format'];
+
 					break;
 				case preg_match('/(HRULE)/', $_graph_type_name):
 					$matrix_title = 'HRULE: ' . $item['value'];
+
 					if (preg_match('/(:bits:|:bytes:|\|sum:)/', $item['value'])) {
 						$force_skip = false;
 					} else {
 						$force_skip = true;
 					}
+
 					break;
 				case preg_match('/(VRULE)/', $_graph_type_name):
 					$force_skip   = true;
 					$matrix_title = 'VRULE: ' . $item['value'];
+
 					break;
 				case preg_match('/(COMMENT)/', $_graph_type_name):
 					$matrix_title = 'COMMENT: ' . $item['text_format'];
+
 					if (preg_match('/(:bits:|:bytes:|\|sum:)/', $item['text_format'])) {
 						$force_skip = false;
 					} elseif ($item['text_format'] != '') {
@@ -1793,6 +1831,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 					} else {
 						$force_skip = true;
 					}
+
 					break;
 			}
 
@@ -1810,6 +1849,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 			/* column 'Graph Item' */
 			print '<td title="' . __esc('Aggregate Items are not modifyable') . '">';
+
 			if ($is_edit == false) {
 				/* no existing aggregate graph/template */
 				print __('Item # %d', ($i + 1));
@@ -1842,6 +1882,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 			/* column 'Color Template' */
 			print '<td>';
+
 			if (!empty($item['hex'])) {
 				print "<select id='agg_color_" . $item['id'] ."' name='agg_color_" . $item['id'] ."'>";
 				print "<option value='0' selected>None</option>";
@@ -1906,6 +1947,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 	foreach ($struct_graph as $field_name => $field_array) {
 		if ($field_name == 'title')
 			continue;
+
 		if ($field_array['method'] != 'spacer') {
 			$form_array += array($field_name => $struct_graph[$field_name]);
 

@@ -57,24 +57,30 @@ if (cacti_sizeof($parms)) {
 		switch ($arg) {
 			case '--forcever':
 				$forcever = $value;
+
 				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -97,6 +103,7 @@ if (cacti_version_compare($old_cacti_version,CACTI_VERSION,'=')) {
 	exit_error('You are attempting to install cacti ' . CACTI_VERSION . ' onto a 0.6.x database.' . PHP_EOL . "To continue, you must create a new database, import 'cacti.sql' into it," . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database.");
 } elseif (empty($old_cacti_version)) {
 	exit_error('You have created a new database, but have not yet imported the \'cacti.sql\' file.');
+
 	exit;
 } elseif ($old_version_index == '') {
 	exit_version_error($old_cacti_version, 'Unable to identify version, cannot upgrade.');
@@ -124,6 +131,7 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 		print '  - from v' . $prev_cacti_version .' (DB ' . $orig_cacti_version . ')' . PHP_EOL;
 		print '      to v' . $cacti_upgrade_version . PHP_EOL;
 		include($upgrade_file);
+
 		if (function_exists($upgrade_function)) {
 			call_user_func($upgrade_function);
 			$status = db_install_errors($cacti_upgrade_version);
@@ -145,12 +153,14 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 
 	if (cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
 		db_execute("UPDATE version SET cacti = '" . CACTI_VERSION_FULL . "'");
+
 		break;
 	}
 }
 
 function exit_error($text) {
 	print "ERROR: $text" . PHP_EOL;
+
 	exit;
 }
 
@@ -180,6 +190,7 @@ function db_install_errors($cacti_version) {
 
 				if ($debug || $status < DB_STATUS_SUCCESS) {
 					$db_status = '[Unknown]';
+
 					if (isset($database_statuses[$status])) {
 						$db_status = $database_statuses[$status];
 					}

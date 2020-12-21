@@ -159,34 +159,42 @@ class spikekill {
 			 in the database, if exists -> overridden by the user's setting, if
 			 exists -> overridden by an argument provided during class creation */
 		$dmethod = read_config_option('spikekill_method', true);
+
 		if (isset($dmethod)) {
 			$this->dmethod = $dmethod;
 		}
 		$dnumspike = read_config_option('spikekill_number', true);
+
 		if (isset($dnumspike)) {
 			$this->dnumspike = $dnumspike;
 		}
 		$dstddev = read_config_option('spikekill_deviations', true);
+
 		if (isset($dstddev)) {
 			$this->dstddev = $dstddev;
 		}
 		$dpercent = read_config_option('spikekill_percent', true);
+
 		if (isset($dpercent)) {
 			$this->dpercent = $dpercent;
 		}
 		$doutliers = read_config_option('spikekill_outliers', true);
+
 		if (isset($doutliers)) {
 			$this->doutliers = $doutliers;
 		}
 		$davgnan = read_config_option('spikekill_avgnan', true);
+
 		if (isset($davgnan)) {
 			$this->davgnan = $davgnan;
 		}
 		$ddsfilter = read_config_option('spikekill_dsfilter',true);
+
 		if (isset($ddsfilter)) {
 			$this->ddsfilter = $ddsfilter;
 		}
 		$dabsmax = read_config_option('spikekill_absmax',true);
+
 		if (isset($dabsmax)) {
 			$this->dabsmax = $dabsmax;
 		}
@@ -251,24 +259,31 @@ class spikekill {
 		if ($this->avgnan == '') {
 			$this->avgnan = $uavgnan;
 		}
+
 		if ($this->method == '') {
 			$this->method = $umethod;
 		}
+
 		if ($this->numspike == '') {
 			$this->numspike = $unumspike;
 		}
+
 		if ($this->stddev == '') {
 			$this->stddev = $ustddev;
 		}
+
 		if ($this->percent == '') {
 			$this->percent = $upercent;
 		}
+
 		if ($this->outliers == '') {
 			$this->outliers = $uoutliers;
 		}
+
 		if ($this->dsfilter == '') {
 			$this->dsfilter = $udsfilter;
 		}
+
 		if ($this->absmax == '') {
 			$this->absmax = $uabsmax;
 		}
@@ -329,19 +344,25 @@ class spikekill {
 			/* the order of the following case statements reflects the order in the spikekill menu in the GUI. */
 			case 'stddev':
 				$this->method = SPIKE_METHOD_STDDEV;
+
 				break;
 			case 'variance':
 				$this->method = SPIKE_METHOD_VARIANCE;
+
 				break;
 			case 'fill':
 				$this->method = SPIKE_METHOD_FILL;
+
 				break;
 			case 'float':
 				$this->method = SPIKE_METHOD_FLOAT;
+
 				break;
 			case 'absolute':
 				$this->method = SPIKE_METHOD_ABSOLUTE;
+
 				break;
+
 			default:
 				$this->set_error("FATAL: You must specify either 'stddev', 'variance', 'float', 'fill', or 'absolute' as methods.");
 		}
@@ -359,12 +380,14 @@ class spikekill {
 			case 'last':
 			case 'nan':
 				break;
+
 			default:
 				$this->set_error("FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.");
 		}
 
 		/* convert dsfilter from string to array */
 		$this->dsfilter = $this->parse_ds($this->dsfilter);
+
 		if ($this->dsfilter === false) {
 			cacti_log('FATAL: Can not parse dsfilter.', false, 'SPIKEKILL');
 			$this->set_error('FATAL: Can not parse dsfilter.');
@@ -408,23 +431,29 @@ class spikekill {
 			case SPIKE_METHOD_STDDEV:
 				$mm  = 'StdDev';
 				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, StdDevs:$this->stddev, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers";
+
 				break;
 			case SPIKE_METHOD_VARIANCE:
 				$mm  = 'Variance';
 				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers, Percent:" . number_format($this->percent * 100);
+
 				break;
 			case SPIKE_METHOD_FLOAT:
 				$mm  = 'RangeFloat';
 				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
+
 				break;
 			case SPIKE_METHOD_FILL:
 				$mm  = 'GapFill';
 				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
+
 				break;
 			case SPIKE_METHOD_ABSOLUTE:
 				$mm  = 'Absolute';
 				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, AvgNan:$this->avgnan, AbsMax:$this->absmax";
+
 				break;
+
 			default:
 				$mm  = 'Undefined';
 				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm";
@@ -530,6 +559,7 @@ class spikekill {
 
 					/* get the timestamp */
 					$timestamp_part = $linearray[0];
+
 					if (strpos($timestamp_part, '<timestamp>') !== false) {
 						$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 						$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
@@ -541,6 +571,7 @@ class spikekill {
 					/* discard the first piece of the exploded line */
 					array_shift($linearray);
 					$ds_num = 0;
+
 					foreach ($linearray as $dsvalue) {
 						/* peel off garbage */
 						$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
@@ -685,6 +716,7 @@ class spikekill {
 
 		/* count the list_of_spikes array for logging purposes */
 		$count = 0;
+
 		foreach ($this->list_of_spikes as $this_rra) {
 			$count += count($this_rra);
 		}
@@ -696,6 +728,7 @@ class spikekill {
 			if ($this->std_kills) {
 				$this->debug('StdDev kills found');
 				cacti_log('DEBUG: StdDev kills found', false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+
 				if (!$this->dryrun) {
 					$new_output = $this->updateXML($output, $rra);
 					$output     = true;
@@ -709,6 +742,7 @@ class spikekill {
 			if ($this->var_kills) {
 				$this->debug('Variance kills found');
 				cacti_log('DEBUG: Variance kills found', false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+
 				if (!$this->dryrun) {
 					$new_output = $this->updateXML($output, $rra);
 					$output     = true;
@@ -721,6 +755,7 @@ class spikekill {
 		} elseif ($this->method == SPIKE_METHOD_FILL) {
 			if ($this->out_kills) {
 				$this->debug('Fill kills found');
+
 				if (!$this->dryrun) {
 					$new_output = $this->updateXML($output, $rra);
 					$output     = true;
@@ -733,6 +768,7 @@ class spikekill {
 		} elseif ($this->method == SPIKE_METHOD_FLOAT) {
 			if ($this->out_kills) {
 				$this->debug('Float kills found');
+
 				if (!$this->dryrun) {
 					$new_output = $this->updateXML($output, $rra);
 					$output     = true;
@@ -745,6 +781,7 @@ class spikekill {
 		} elseif ($this->method == SPIKE_METHOD_ABSOLUTE) {
 			if ($this->abs_kills) {
 				$this->debug('Absolute Max kills found');
+
 				if (!$this->dryrun) {
 					$new_output = $this->updateXML($output, $rra);
 					$output     = true;
@@ -760,6 +797,7 @@ class spikekill {
 		if (!$this->dryrun) {
 			if ($output === true) {
 				cacti_log("DEBUG: writing updates to XML {$xmlfile}", false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+
 				if ($this->writeXMLFile($new_output, $xmlfile)) {
 					if ($this->backupRRDFile($this->rrdfile)) {
 						$this->createRRDFileFromXML($xmlfile, $this->rrdfile);
@@ -900,6 +938,7 @@ class spikekill {
 						if (isset($samples[$rra_num][$ds_num])) {
 							if (count($this->dsfilter) == 0 || isset($this->dsfilter[$ds_num])) {
 								$rra[$rra_num][$ds_num]['standard_deviation'] = $this->processStandardDeviationCalculation($samples[$rra_num][$ds_num]);
+
 								if ($rra[$rra_num][$ds_num]['standard_deviation'] == 'NAN') {
 									$rra[$rra_num][$ds_num]['standard_deviation'] = 0;
 								}
@@ -917,21 +956,25 @@ class spikekill {
 								if ($this->method == SPIKE_METHOD_STDDEV) {
 									$rra[$rra_num][$ds_num]['swing']      = $this->stddev * $rra[$rra_num][$ds_num]['standard_deviation'];
 									$rra[$rra_num][$ds_num]['min_cutoff'] = $rra[$rra_num][$ds_num]['average'] - $rra[$rra_num][$ds_num]['swing'];
+
 									if ($rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
 										$rra[$rra_num][$ds_num]['min_cutoff'] = $this->ds_min[$ds_num];
 									}
 									$rra[$rra_num][$ds_num]['max_cutoff'] = $rra[$rra_num][$ds_num]['average'] + $rra[$rra_num][$ds_num]['swing'];
+
 									if ($rra[$rra_num][$ds_num]['max_cutoff'] > $this->ds_max[$ds_num]) {
 										$rra[$rra_num][$ds_num]['max_cutoff'] = $this->ds_max[$ds_num];
 									}
 								} elseif ($this->method == SPIKE_METHOD_VARIANCE || $this->method == SPIKE_METHOD_FLOAT || $this->method == SPIKE_METHOD_FILL) {
 									$rra[$rra_num][$ds_num]['swing']      = $this->percent * $rra[$rra_num][$ds_num]['variance_avg'];
 									$rra[$rra_num][$ds_num]['min_cutoff'] = $rra[$rra_num][$ds_num]['variance_avg'] - $rra[$rra_num][$ds_num]['swing'];
+
 									if ($rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
 										$rra[$rra_num][$ds_num]['min_cutoff'] = $this->ds_min[$ds_num];
 									}
 
 									$rra[$rra_num][$ds_num]['max_cutoff'] = $rra[$rra_num][$ds_num]['variance_avg'] + $rra[$rra_num][$ds_num]['swing'];
+
 									if ($rra[$rra_num][$ds_num]['max_cutoff'] > $this->ds_max[$ds_num]) {
 										$rra[$rra_num][$ds_num]['max_cutoff'] = $this->ds_max[$ds_num];
 									}
@@ -1082,6 +1125,7 @@ class spikekill {
 				$this->strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
 					'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'VarAvg', 'StdDev',
 					'MinValue', 'MaxValue', 'LowCutoff', 'HiCutoff', 'StdKilled', 'VarKilled', 'WindFilled', 'AbsKilled', 'StdDevAvg');
+
 				foreach ($rra as $rra_key => $dses) {
 					if (cacti_sizeof($dses)) {
 						foreach ($dses as $dskey => $ds) {
@@ -1190,6 +1234,7 @@ class spikekill {
 
 					/* get the timestamp */
 					$timestamp_part = $linearray[0];
+
 					if (strpos($timestamp_part, '<timestamp>') !== false) {
 						$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 						$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
@@ -1276,6 +1321,7 @@ class spikekill {
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
 				$line = trim($line);
+
 				if ($line == '') {
 					continue;
 				} else {
@@ -1283,10 +1329,12 @@ class spikekill {
 					$oline = $line;
 
 					$comment_start = strpos($line, '<!--');
+
 					if ($comment_start === false) {
 						/* do nothing no line */
 					} else {
 						$comment_end = strpos($line, '-->');
+
 						if ($comment_start == 0) {
 							$line = trim(substr($line, $comment_end + 3));
 						} else {
@@ -1412,10 +1460,13 @@ class spikekill {
 	private function parse_ds($exp) {
 		$exp  = trim($exp);
 		$list = array();
+
 		if (strlen($exp) > 0) {
 			$pieces = explode(',',$exp);
+
 			foreach ($pieces as $this_piece) {
 				$components = explode('-',$this_piece);
+
 				if (count($components) == 1) {
 					if (is_numeric($components[0])) {
 						$list[] = $components[0];
@@ -1459,6 +1510,7 @@ class spikekill {
 		 the filters had no matches */
 	private function evaluateDsFilter($filters) {
 		$ds_heap = array();
+
 		if (count($filters) > 0) {
 			cacti_log('applying dsfilter: ' . implode(',',$filters), false, 'SPIKEKILL', POLLER_VERBOSITY_HIGH);
 			/* go through each filter and find matching DSes */
@@ -1467,6 +1519,7 @@ class spikekill {
 					if (isset($this->ds_name[$needle])) { $ds_heap[$needle] = $this->ds_name[$needle]; }
 				} else {
 					$needle = str_replace('*', '.*', $needle);
+
 					foreach ($this->ds_name as $this_key => $this_name) {
 						if (preg_match('/^' . $needle . '$/',$this_name)) { $ds_heap[$this_key] = $this_name; }
 					}
@@ -1475,6 +1528,7 @@ class spikekill {
 			/* build a string that names each DS */
 			if (count($ds_heap) > 0) {
 				$mes = '';
+
 				foreach ($ds_heap as $key => $value) {
 					$mes .= $value . '(' . $key . '),';
 				}

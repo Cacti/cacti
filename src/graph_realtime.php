@@ -80,6 +80,7 @@ case 'countdown':
 		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
 
 		break;
+
 	default:
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
@@ -95,6 +96,7 @@ case 'countdown':
 
 	/* ds */
 	$graph_data_array['ds_step'] = read_user_setting('realtime_interval', 10);
+
 	if (!isempty_request_var('ds_step')) {
 		$graph_data_array['ds_step']      = get_request_var('ds_step');
 		$_SESSION['sess_realtime_dsstep'] = get_request_var('ds_step');
@@ -148,6 +150,7 @@ case 'countdown':
 	/* override: graph start */
 	if (!isempty_request_var('graph_start')) {
 		$graph_data_array['graph_start']  = get_request_var('graph_start');
+
 		if ($graph_data_array['graph_start'] < 0) {
 			$graph_data_array['graph_start'] = time() + $graph_data_array['graph_start'];
 		}
@@ -187,8 +190,10 @@ case 'countdown':
 	$output = rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 	$error = '';
+
 	if (file_exists($graph_rrd)) {
 		$graph_contents = file_get_contents($graph_rrd);
+
 		if (preg_match('/^ERROR/',$graph_contents)) {
 			$error  = $graph_contents;
 			$output = '';
@@ -211,6 +216,7 @@ case 'countdown':
 
 	if (!empty($error)) {
 		$graph_data_array['get_error'] = true;
+
 		if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
 			$graph_contents = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
 		} else {
@@ -256,6 +262,7 @@ case 'countdown':
 	print json_encode($return_array);
 
 	exit;
+
 	break;
 case 'view':
 	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
@@ -265,7 +272,9 @@ case 'view':
 	}
 
 	exit;
+
 	break;
+
 default:
 	load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 	load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
@@ -308,22 +317,27 @@ if (read_config_option('realtime_enabled') == '') {
 	print '	<p><strong>' . __('Real-time has been disabled by your administrator.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
+
 	exit;
 }
+
 if (!is_dir(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
 	print '	<p><strong>' . __('The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
+
 	exit;
 }
+
 if (!is_writable(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
 	print '	<p><strong>' . __('The Image Cache Directory is not writable.  Please set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
+
 	exit;
 }
 

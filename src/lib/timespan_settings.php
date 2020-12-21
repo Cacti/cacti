@@ -219,6 +219,7 @@ function finalize_timespan(&$timespan) {
 	$_SESSION['sess_current_date2']              = $timespan['current_value_date2'];
 
 	$timespan_sel_pos = strpos(get_browser_query_string(),'&predefined_timespan');
+
 	if ($timespan_sel_pos) {
 		$_SESSION['urlval'] = substr(get_browser_query_string(),0,$timespan_sel_pos);
 	} else {

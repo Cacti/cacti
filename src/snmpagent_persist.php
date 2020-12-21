@@ -100,17 +100,21 @@ while (1) {
 		case 'PING':
 			fwrite(STDOUT, 'PONG' . $eol);
 			cache_refresh();
+
 			break;
 		case 'get':
 			$oid = trim(fgets(STDIN));
+
 			if ($data = cache_read($oid)) {
 				fwrite(STDOUT, $oid . $eol . (isset($smi_base_datatypes[$data['type']]) ? $smi_base_datatypes[$data['type']] : 'INTEGER') . $eol . $data['value'] . $eol);
 			}else {
 				fwrite(STDOUT, 'NONE' . $eol);
 			}
+
 			break;
 		case 'getnext':
 			$oid = trim(fgets(STDIN));
+
 			if ($next_oid = cache_get_next($oid)) {
 				if ($data = cache_read($next_oid)) {
 					fwrite(STDOUT, $next_oid . $eol . (isset($smi_base_datatypes[$data['type']]) ? $smi_base_datatypes[$data['type']] : 'INTEGER') . $eol . $data['value'] . $eol);
@@ -120,12 +124,15 @@ while (1) {
 			}else {
 				fwrite(STDOUT, 'NONE' . $eol);
 			}
+
 			break;
 		case 'debug':
 			fwrite(STDOUT, print_r($cache, true));
+
 			break;
 		case 'shutdown':
 			fwrite(STDOUT, 'BYE' . $eol);
+
 			exit(0);
 	}
 }

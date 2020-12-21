@@ -51,13 +51,16 @@ switch (get_request_var('action')) {
 		domain_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		domains();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -198,6 +201,7 @@ function form_actions() {
 		}
 
 		header('Location: user_domains.php');
+
 		exit;
 	}
 
@@ -233,7 +237,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', cacti_sizeof($d_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '2') { // disable
+		} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to disable the following User Domain.', 'Click \'Continue\' to disable following User Domains.', cacti_sizeof($d_array)) . "</p>
@@ -242,7 +246,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', cacti_sizeof($d_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '3') { // enable
+		} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', cacti_sizeof($d_array)) . "</p>
@@ -251,7 +255,7 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', cacti_sizeof($d_array)) . "'>";
-		}elseif (get_nfilter_request_var('drp_action') == '4') { // default
+		} elseif (get_nfilter_request_var('drp_action') == '4') { // default
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to make the following the following User Domain the default one.') . "</p>
@@ -264,6 +268,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: user_domains.php');
+
 		exit;
 	}
 
@@ -664,7 +669,7 @@ function domains() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -752,6 +757,7 @@ function domains() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($domains)) {
 		foreach ($domains as $domain) {
 			/* hide system types */

@@ -52,6 +52,7 @@ if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 
 if (!remote_client_authorized()) {
 	print 'FATAL: You are not authorized to use this service';
+
 	exit;
 }
 
@@ -103,6 +104,7 @@ switch (get_request_var('action')) {
 		debug('End:Performing Network Discovery Request');
 
 		break;
+
 	default:
 		if (!api_plugin_hook_function('remote_agent', get_request_var('action'))) {
 			debug('WARNING: Unknown Agent Request');
@@ -135,6 +137,7 @@ function remote_client_authorized() {
 
 	/* don't allow to run from the command line */
 	$client_addr = get_client_addr();
+
 	if ($client_addr === false) {
 		return false;
 	}
@@ -160,6 +163,7 @@ function remote_client_authorized() {
 			if (remote_agent_strip_domain($poller['hostname']) == $client_name) {
 				return true;
 			}
+
 			if ($poller['hostname'] == $client_addr) {
 				return true;
 			}
@@ -455,6 +459,7 @@ function run_remote_discovery() {
 	$path      = cacti_escapeshellarg(read_config_option('path_webroot') . '/poller_automation.php');
 
 	$options   = ' --poller=' . $poller_id . ' --network=' . $network . ' --force';
+
 	if (isset_request_var('debug')) {
 		$options .= ' --debug';
 	}

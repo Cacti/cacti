@@ -72,6 +72,7 @@ function api_plugin_hook($name) {
 						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
 					}
 					$function = $hdata['function'];
+
 					if (function_exists($function)) {
 						api_plugin_run_plugin_hook($name, $hdata['name'], $function, $args);
 					}
@@ -89,6 +90,7 @@ function api_plugin_hook_function($name, $parm = null) {
 	global $config, $plugin_hooks, $plugins_integrated;
 
 	$ret = $parm;
+
 	if (defined('IN_CACTI_INSTALL') || !db_table_exists('plugin_hooks')) {
 		return $ret;
 	}
@@ -110,10 +112,12 @@ function api_plugin_hook_function($name, $parm = null) {
 			if (!in_array($hdata['name'], $plugins_integrated, true)) {
 				if (api_plugin_check_dependencies($hdata['name'], true) == PLUGIN_DEPENDENCY_OK) {
 					$p[] = $hdata['name'];
+
 					if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
 					}
 					$function = $hdata['function'];
+
 					if (function_exists($function)) {
 						$ret = api_plugin_run_plugin_hook_function($name, $hdata['name'], $function, $ret);
 					}
@@ -256,6 +260,7 @@ function api_plugin_get_dependencies($plugin) {
 
 			foreach ($parts as $p) {
 				$vparts = explode(':', $p);
+
 				if (isset($vparts[1])) {
 					$returndeps[$vparts[0]] = $vparts[1];
 				} else {
@@ -352,6 +357,7 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 		if ($status == 'online' && strpos($capability, 'online') === false) {
 			continue;
 		}
+
 		if (($status == 'offline' || $status == 'recovery') && strpos($capability, 'offline') === false) {
 			continue;
 		}
@@ -373,6 +379,7 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 				}
 
 				break;
+
 			default:
 				break;
 		}
@@ -388,6 +395,7 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 
 	$result = db_fetch_assoc('SHOW TABLES');
 	$tables = array();
+
 	foreach ($result as $index => $arr) {
 		foreach ($arr as $t) {
 			$tables[] = $t;
@@ -397,6 +405,7 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 	if (!in_array($table, $tables, true)) {
 		$c   = 0;
 		$sql = 'CREATE TABLE `' . $table . "` (\n";
+
 		foreach ($data['columns'] as $column) {
 			if (isset($column['name'])) {
 				if ($c > 0) {
@@ -530,6 +539,7 @@ function api_plugin_db_add_column($plugin, $table, $column) {
 
 	$result  = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '`');
 	$columns = array();
+
 	foreach ($result as $index => $arr) {
 		foreach ($arr as $t) {
 			$columns[] = $t;
@@ -582,6 +592,7 @@ function api_plugin_db_add_column($plugin, $table, $column) {
 
 function api_plugin_check_dependencies($plugin, $quick = false, $dependencies = false) {
 	$results = array();
+
 	if (!is_array($dependencies)) {
 		$dependencies = api_plugin_get_dependencies($plugin);
 	}
@@ -589,6 +600,7 @@ function api_plugin_check_dependencies($plugin, $quick = false, $dependencies = 
 	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
 		foreach ($dependencies as $dependency => $version) {
 			$result = PLUGIN_DEPENDENCY_OK;
+
 			if (!api_plugin_minimum_version($dependency, $version)) {
 				$result = PLUGIN_DEPENDENCY_VERSION;
 			} elseif (!api_plugin_installed($dependency)) {
@@ -614,6 +626,7 @@ function api_plugin_can_install($plugin) {
 	$dependencies = api_plugin_check_dependencies($plugin);
 	$message      = '';
 	$proceed      = true;
+
 	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
 		foreach ($dependencies as $dependency => $result) {
 			switch ($result['valid']) {
@@ -622,14 +635,18 @@ function api_plugin_can_install($plugin) {
 				case PLUGIN_DEPENDENCY_VERSION:
 					$message .= __('%s Version %s or above is required for %s. ', ucwords($dependency), $result['version'], ucwords($plugin));
 					$proceed = false;
+
 					break;
 				case PLUGIN_DEPENDENCY_MISSING:
 					$message .= __('%s is required for %s, and it is not installed. ', ucwords($dependency), ucwords($plugin));
 					$proceed = false;
+
 					break;
+
 				default:
 					$message .= __('%s is required for %s, but an unknown dependency error occurred. ', ucwords($dependency), ucwords($plugin));
 					$proceed = false;
+
 					break;
 			}
 		}
@@ -644,11 +661,13 @@ function api_plugin_install($plugin) {
 	$dependencies = api_plugin_check_dependencies($plugin);
 
 	$can_install = api_plugin_can_install($plugin);
+
 	if (!$can_install['proceed']) {
 		$message = $can_install['message'] . '<br><br>' . __('Plugin cannot be installed.');
 		raise_message($message, MESSAGE_LEVEL_ERROR);
 
 		header('Location: plugins.php');
+
 		exit;
 	}
 
@@ -693,9 +712,11 @@ function api_plugin_install($plugin) {
 		array($plugin, $name, $author, $webpage, $version));
 
 	$function = 'plugin_' . $plugin . '_install';
+
 	if (function_exists($function)){
 		$function();
 		$ready = api_plugin_check_config($plugin);
+
 		if ($ready) {
 			// Set the plugin as "disabled" so it can go live
 			db_execute_prepared('UPDATE plugin_config
@@ -931,6 +952,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 
 	$i         = 0;
 	$sql_where = '(';
+
 	foreach ($files as $tfile) {
 		$sql_where .= ($sql_where != '(' ? ' OR ':'') .
 			' (file = "' . $tfile . '" OR file LIKE "' . $tfile . ',%" OR file LIKE "%,' . $tfile . ',%" OR file LIKE "%,' . $tfile . '")';
@@ -1005,6 +1027,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 			$realm_id = $realm_id + 100;
 
 			$user_ids[] = read_config_option('admin_user');
+
 			if (isset($_SESSION['sess_user_id'])) {
 				$user_ids[] = $_SESSION['sess_user_id'];
 			}
@@ -1139,6 +1162,7 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	);
 
 	$info_fields = $info_fields + $defaults;
+
 	foreach ($info_fields as $name => $value) {
 		if (!array_key_exists($name, $result)) {
 			$result[$name] = $value;
@@ -1158,9 +1182,11 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 
 function plugin_load_info_file($file) {
 	$info = false;
+
 	if (file_exists($file)) {
 		if (is_readable($file)) {
 			$info = parse_ini_file($file, true);
+
 			if (cacti_sizeof($info) && array_key_exists('info', $info)) {
 				$info = plugin_load_info_defaults($file, $info['info']);
 			} else {

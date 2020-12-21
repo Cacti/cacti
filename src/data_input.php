@@ -53,6 +53,7 @@ switch (get_request_var('action')) {
 		field_remove();
 
 		header('Location: data_input.php?action=edit&id=' . get_filter_request_var('data_input_id'));
+
 		break;
 	case 'field_edit':
 		top_header();
@@ -60,6 +61,7 @@ switch (get_request_var('action')) {
 		field_edit();
 
 		bottom_footer();
+
 		break;
 	case 'edit':
 		top_header();
@@ -67,13 +69,16 @@ switch (get_request_var('action')) {
 		data_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		data();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -256,6 +261,7 @@ function form_actions() {
 		}
 
 		header('Location: data_input.php');
+
 		exit;
 	}
 
@@ -306,6 +312,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: data_input.php');
+
 		exit;
 	}
 
@@ -408,6 +415,7 @@ function field_remove() {
 	/* when a field is deleted; we need to re-order the field sequences */
 	if (($field['input_output'] == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array($field['data_input_id'])), $matches))) {
 		$j = 0;
+
 		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$j++;
@@ -454,11 +462,13 @@ function field_edit() {
 			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$current_field_name                     = $matches[1][$i];
 				$array_field_names[$current_field_name] = $current_field_name;
+
 				if (!isset($field)) {
 					$field_id = db_fetch_cell_prepared('SELECT id FROM data_input_fields
 						WHERE data_name = ?
 						AND data_input_id = ?',
 						array($current_field_name, get_filter_request_var('data_input_id')));
+
 					if (!$field_id > 0) {
 						$field              = array();
 						$field['name']      = ucwords($current_field_name);
@@ -473,6 +483,7 @@ function field_edit() {
 	if ((!isset($array_field_names)) && (isset_request_var('type') ? get_request_var('type') == 'in' : false) && ($data_input['type_id'] == '1')) {
 		display_custom_error_message(__('This script appears to have no input values, therefore there is nothing to add.'));
 		header('Location: data_input.php?action=edit&id=' . get_filter_request_var('data_input_id'));
+
 		exit;
 	}
 
@@ -570,6 +581,7 @@ function data_edit() {
 
 	if (!isempty_request_var('id')) {
 		$data_id = get_nonsystem_data_input(get_request_var('id'));
+
 		if ($data_id == 0 || $data_id == null) {
 			header('Location: data_input.php');
 
@@ -600,15 +612,19 @@ function data_edit() {
 		switch ($data_input['type_id']) {
 		case DATA_INPUT_TYPE_SNMP:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP] = __('SNMP Get');
+
 			break;
 		case DATA_INPUT_TYPE_SNMP_QUERY:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP_QUERY] = __('SNMP Query');
+
 			break;
 		case DATA_INPUT_TYPE_SCRIPT_QUERY:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SCRIPT_QUERY] = __('Script Query');
+
 			break;
 		case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER] = __('Script Query - Script Server');
+
 			break;
 		}
 
@@ -667,6 +683,7 @@ function data_edit() {
 
 		$output_disabled  = false;
 		$save_alt_message = false;
+
 		if (!cacti_sizeof($counts)) {
 			$output_disabled  = false;
 			$save_alt_message = false;
@@ -679,6 +696,7 @@ function data_edit() {
 		}
 
 		$i = 0;
+
 		if (cacti_sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
@@ -690,7 +708,13 @@ function data_edit() {
 					<?php print html_escape($field['name']);?>
 				</td>
 				<td>
-					<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
+					<?php
+					print $field['sequence'];
+
+					if ($field['sequence'] == '0') {
+						print ' ' . __('(Not In Use)');
+					}
+					?>
 				</td>
 				<td class="right">
 					<a class='delete deleteMarker fa fa-times' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
@@ -718,6 +742,7 @@ function data_edit() {
 			array(get_request_var('id')));
 
 		$i = 0;
+
 		if (cacti_sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
@@ -848,7 +873,7 @@ function data() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -939,9 +964,9 @@ function data() {
 	$display_text = array(
 		'name' => array(
 			'display' => __('Data Input Name'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The name of this Data Input Method.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this Data Input Method.')
 		),
 		'id' => array(
 			'display' => __('ID'),
@@ -977,6 +1002,7 @@ function data() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($data_inputs)) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */

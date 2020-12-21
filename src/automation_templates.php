@@ -36,35 +36,44 @@ set_default_action();
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
+
 		break;
 	case 'ajax_dnd':
 		automation_template_dnd();
+
 		break;
 	case 'actions':
 		form_actions();
+
 		break;
 	case 'movedown':
 		automation_movedown();
 		header('Location: automation_templates.php');
+
 		break;
 	case 'moveup':
 		automation_moveup();
 
 		header('Location: automation_templates.php');
+
 		break;
 	case 'remove':
 		automation_remove();
 		header('Location: automation_templates.php');
+
 		break;
 	case 'edit':
 		top_header();
 		template_edit();
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 		template();
 		bottom_footer();
+
 		break;
 }
 
@@ -91,6 +100,7 @@ function automation_template_dnd() {
 	}
 
 	header('Location: automation_templates.php');
+
 	exit;
 }
 
@@ -124,6 +134,7 @@ function form_actions() {
 		}
 
 		header('Location: automation_templates.php');
+
 		exit;
 	}
 
@@ -163,6 +174,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: automation_templates.php');
+
 		exit;
 	}
 
@@ -192,6 +204,7 @@ function form_save() {
 		$save['sysDescr']             = get_nfilter_request_var('sysDescr');
 		$save['sysName']              = get_nfilter_request_var('sysName');
 		$save['sysOid']               = get_nfilter_request_var('sysOid');
+
 		if (function_exists('filter_var')) {
 			$save['sysDescr'] = filter_var($save['sysDescr'], FILTER_SANITIZE_STRING);
 		} else {
@@ -240,6 +253,7 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 function automation_get_tree_headers() {
 	$headers = array();
 	$trees   = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
+
 	foreach ($trees as $tree) {
 		$headers['tr_' . $tree['id'] . '_br_0'] = $tree['name'];
 		$spaces                                 = '';
@@ -398,7 +412,7 @@ function template() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -496,6 +510,7 @@ function template() {
 
 	$i           = 1;
 	$total_items = cacti_sizeof($dts);
+
 	if (cacti_sizeof($dts)) {
 		foreach ($dts as $dt) {
 			if ($dt['name'] == '') {
@@ -513,6 +528,7 @@ function template() {
 
 			if (read_config_option('drag_and_drop') == '') {
 				$add_text = '';
+
 				if ($i < $total_items && $total_items > 1) {
 					$add_text .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
 				} else {

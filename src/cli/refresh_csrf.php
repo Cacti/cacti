@@ -45,15 +45,19 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -72,6 +76,7 @@ if (!file_exists($path_csrf_secret)) {
 	print 'WARNING: csrf_secret.php file does not exist!' . PHP_EOL;
 } elseif (!is_writable($path_csrf_secret)) {
 	print 'FATAL: unable to unlink csrf_secret.php!' . PHP_EOL;
+
 	exit(1);
 } else {
 	print 'NOTE: Removing old csrf_secret.php file.' . PHP_EOL;
@@ -79,14 +84,17 @@ if (!file_exists($path_csrf_secret)) {
 }
 
 $new_secret = csrf_generate_secret();
+
 if (csrf_writable($path_csrf_secret)) {
 	$fh = fopen($path_csrf_secret, 'w');
 	fwrite($fh, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
 	fclose($fh);
 	print 'NOTE: New csrf_secret.php file written.' . PHP_EOL;
+
 	exit(0);
 } else {
 	print 'FATAL: Unable to write new csrf_secret.php file.' . PHP_EOL;
+
 	exit(1);
 }
 

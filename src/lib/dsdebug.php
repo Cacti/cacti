@@ -89,6 +89,7 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 
 		/* let's ignore some lesser issues */
 		if (substr_count($errmsg, 'date_default_timezone')) return;
+
 		if (substr_count($errmsg, 'Only variables')) return;
 		/* log the error to the Cacti log */
 		cacti_log('PROGERR: ' . $err, false, 'DSDEBUG');
@@ -112,6 +113,7 @@ function dsdebug_poller_output(&$rrd_update_array) {
 
 	/* do not make any calculations unless enabled */
 	$checks = db_fetch_assoc('SELECT * FROM data_debug WHERE `done` = 0');
+
 	if (cacti_sizeof($checks)) {
 		if (cacti_sizeof($rrd_update_array)) {
 			foreach ($checks as $c) {

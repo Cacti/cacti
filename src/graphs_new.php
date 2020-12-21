@@ -36,6 +36,7 @@ include_once('./lib/utility.php');
 
 /* set default action */
 set_default_action();
+
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
@@ -45,6 +46,7 @@ switch (get_request_var('action')) {
 		host_reload_query();
 
 		header('Location: graphs_new.php?host_id=' . get_request_var('host_id'));
+
 		break;
 	case 'ajax_hosts':
 		get_allowed_ajax_hosts(false, false);
@@ -62,6 +64,7 @@ switch (get_request_var('action')) {
 		save_user_filter();
 
 		break;
+
 	default:
 		top_header();
 		graphs();
@@ -101,6 +104,7 @@ function store_get_selected_dq_index($snmp_query_id) {
 	if (!is_numeric($snmp_query_id)) {
 		return false;
 	}
+
 	if (isset_request_var('sgg_' . $snmp_query_id)) {
 		$selected = get_filter_request_var('sgg_' . $snmp_query_id);
 	} elseif (isset($_SESSION['sess_sgg_' . $snmp_query_id])) {
@@ -148,6 +152,7 @@ function form_save() {
 
 		if (isset($selected_graphs)) {
 			html_graph_new_graphs('graphs_new.php', $host_id, $host_template_id, $selected_graphs);
+
 			exit;
 		}
 
@@ -386,9 +391,9 @@ function graphs() {
 									ORDER BY snmp_query.name',
 									array($host['id']));
 
-								if (cacti_sizeof($snmp_queries) > 0) {
+								if (cacti_sizeof($snmp_queries)) {
 									foreach ($snmp_queries as $query) {
-										print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . html_escape($query['name']) . '</option>';
+										print "<option value='" . $query['id'] . "'" . (get_request_var('graph_type') == $query['id'] ? ' selected' : '') . '>' . html_escape($query['name']) . '</option>';
 									}
 								}
 								?>
@@ -421,7 +426,7 @@ function graphs() {
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
@@ -468,7 +473,7 @@ function graphs() {
 		}
 
 		load_current_session_value('page' . get_request_var('graph_type'), 'sess_grn_page' . get_request_var('graph_type'), '1');
-	}elseif (get_request_var('graph_type') == -2) {
+	} elseif (get_request_var('graph_type') == -2) {
 		foreach ($snmp_queries as $query) {
 			/* validate the page filter */
 			if (isset_request_var('page' . $query['id'])) {
@@ -512,6 +517,7 @@ function graphs() {
 				$script .= 'var gt_created_graphs = new Array(';
 
 				$cg_ctr = 0;
+
 				foreach ($template_graphs as $template_graph) {
 					$script .= (($cg_ctr > 0) ? ',' : '') . "'" . $template_graph['graph_template_id'] . "'";
 
@@ -650,6 +656,7 @@ function graphs() {
 						$script .= 'created_graphs[' . $snmp_query_graph['id'] . '] = new Array(';
 
 						$cg_ctr = 0;
+
 						if (cacti_sizeof($created_graphs)) {
 							foreach ($created_graphs as $created_graph) {
 								$script .= ($cg_ctr > 0 ? ',' : '') . "'" . encode_data_query_index($created_graph['snmp_index']) . "'";
@@ -668,6 +675,7 @@ function graphs() {
 
 					/* if there is a where clause, get the matching snmp_indexes */
 					$sql_where = '';
+
 					if (get_request_var('filter') != '') {
 						$sql_where = '';
 						$indexes   = db_fetch_assoc_prepared('SELECT DISTINCT snmp_index
@@ -695,9 +703,9 @@ function graphs() {
 						if (isset($xml_array['index_order_type'])) {
 							if ($xml_array['index_order_type'] == 'numeric') {
 								$sql_order = 'ORDER BY CAST(snmp_index AS unsigned)';
-							}elseif ($xml_array['index_order_type'] == 'alphabetic') {
+							} elseif ($xml_array['index_order_type'] == 'alphabetic') {
 								$sql_order = 'ORDER BY snmp_index';
-							}elseif ($xml_array['index_order_type'] == 'natural') {
+							} elseif ($xml_array['index_order_type'] == 'natural') {
 								$sql_order = 'ORDER BY INET_ATON(snmp_index)';
 							} else {
 								$sql_order = '';
@@ -751,6 +759,7 @@ function graphs() {
 							GROUP BY host_id, snmp_query_id, snmp_index";
 
 						$snmp_query_indexes = db_fetch_assoc($sql_query);
+
 						if (cacti_sizeof($snmp_query_indexes)) {
 							$snmp_query_indexes = db_fetch_assoc($sql_query_worder);
 						}
@@ -774,6 +783,7 @@ function graphs() {
 								foreach ($field_names as $row) {
 									if ($row['field_name'] == $field_name) {
 										$html_dq_header .= "<th class='tableSubHeaderColumn'>" . $field_array['name'] . "</th>\n";
+
 										break;
 									}
 								}
@@ -800,6 +810,7 @@ function graphs() {
 								print "<tr id='dqline$query_row' class='selectable " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>"; $i++;
 
 								$column_counter = 0;
+
 								foreach ($xml_array['fields'] as $field_name => $field_array) {
 									if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 										if (in_array($field_name, $fields, true)) {
@@ -893,6 +904,7 @@ function graphs() {
 	}
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
+
 	if (substr_count(get_nfilter_request_var('returnto'), 'host.php') == 0) {
 		set_request_var('returnto', '');
 	}

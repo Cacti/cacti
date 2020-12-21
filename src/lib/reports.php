@@ -41,6 +41,7 @@ function duplicate_reports($_id, $_title) {
 		array($_id));
 
 	$save = array();
+
 	foreach ($fields_reports_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method']) &&
 			!preg_match('/^spacer/', $array['method'])) {
@@ -157,21 +158,27 @@ function reports_date_time_format() {
 	switch ($date_fmt) {
 		case GD_MO_D_Y:
 			$graph_date = 'm' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
+
 			break;
 		case GD_MN_D_Y:
 			$graph_date = 'M' . $datecharacter . 'd' . $datecharacter . 'Y H:i:s';
+
 			break;
 		case GD_D_MO_Y:
 			$graph_date = 'd' . $datecharacter . 'm' . $datecharacter . 'Y H:i:s';
+
 			break;
 		case GD_D_MN_Y:
 			$graph_date = 'd' . $datecharacter . 'M' . $datecharacter . 'Y H:i:s';
+
 			break;
 		case GD_Y_MO_D:
 			$graph_date = 'Y' . $datecharacter . 'm' . $datecharacter . 'd H:i:s';
+
 			break;
 		case GD_Y_MN_D:
 			$graph_date = 'Y' . $datecharacter . 'M' . $datecharacter . 'd H:i:s';
+
 			break;
 	}
 
@@ -195,22 +202,27 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 		case REPORTS_SCHED_INTVL_MINUTE:
 			# add $count minutes to current mailtime
 			$ts = utime_add($timestamp,0,0,0,0,$count,$offset);
+
 			break;
 		case REPORTS_SCHED_INTVL_HOUR:
 			# add $count hours to current mailtime
 			$ts = utime_add($timestamp,0,0,0,$count,0,$offset);
+
 			break;
 		case REPORTS_SCHED_INTVL_DAY:
 			# add $count days to current mailtime
 			$ts = utime_add($timestamp,0,0,$count,0,0,$offset);
+
 			break;
 		case REPORTS_SCHED_INTVL_WEEK:
 			# add $count weeks = 7*$count days to current mailtime
 			$ts = utime_add($timestamp,0,0,7 * $count,0,0,$offset);
+
 			break;
 		case REPORTS_SCHED_INTVL_MONTH_DAY:
 			# add $count months to current mailtime
 			$ts = utime_add($timestamp,0,$count,0,0,0,$offset);
+
 			break;
 		case REPORTS_SCHED_INTVL_MONTH_WEEKDAY:
 			# add $count months to current mailtime, but if this is the nth weekday, it must be the same nth weekday in the new month
@@ -227,17 +239,22 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 			$date_str     = '+' . ($nth_weekday - 1) . ' week ' . $weekday;
 			$base         = strtotime($date_str, $new_month);
 			$ts           = mktime(date('H', $month_base), date('i', $month_base), date('s', $month_base), date('m', $base), date('d', $base), date('Y', $base));
+
 			break;
 		case REPORTS_SCHED_INTVL_YEAR:
 			# add $count years to current mailtime
 			$ts = utime_add($timestamp,$count,0,0,0,0,$offset);
+
 			break;
+
 		default:
 			$ts = 0;
+
 			break;
 	}
 
 	$now = time();
+
 	if ($ts < $now) {
 		$ts = $now;
 	}
@@ -321,6 +338,7 @@ function generate_report($report, $force = false) {
 	$offset      = 0;
 	$graphs      = array();
 	$attachments = array();
+
 	while (true) {
 		$pos = strpos($body, '<GRAPH:', $offset);
 
@@ -377,6 +395,7 @@ function generate_report($report, $force = false) {
 						'timespan'       => $timesp,
 						'inline'         => 'inline'
 					);
+
 					break;
 				case REPORTS_TYPE_INLINE_JPG:
 					$attachments[] = array(
@@ -387,6 +406,7 @@ function generate_report($report, $force = false) {
 						'timespan'       => $timesp,
 						'inline'         => 'inline'
 					);
+
 					break;
 				case REPORTS_TYPE_INLINE_GIF:
 					$attachments[] = array(
@@ -397,6 +417,7 @@ function generate_report($report, $force = false) {
 						'timespan'       => $timesp,
 						'inline'         => 'inline'
 					);
+
 					break;
 				case REPORTS_TYPE_ATTACH_PNG:
 					$attachments[] = array(
@@ -407,6 +428,7 @@ function generate_report($report, $force = false) {
 						'timespan'       => $timesp,
 						'inline'         => 'attachment'
 					);
+
 					break;
 				case REPORTS_TYPE_ATTACH_JPG:
 					$attachments[] = array(
@@ -417,6 +439,7 @@ function generate_report($report, $force = false) {
 						'timespan'       => $timesp,
 						'inline'         => 'attachment'
 					);
+
 					break;
 				case REPORTS_TYPE_ATTACH_GIF:
 					$attachments[] = array(
@@ -427,6 +450,7 @@ function generate_report($report, $force = false) {
 						'timespan'       => $timesp,
 						'inline'         => 'attachment'
 					);
+
 					break;
 				case REPORTS_TYPE_INLINE_PNG_LN:
 					$attachments[] = array(
@@ -437,6 +461,7 @@ function generate_report($report, $force = false) {
 						'timespan'       => $timesp,
 						'inline'         => 'inline'
 					);
+
 					break;
 				case REPORTS_TYPE_INLINE_JPG_LN:
 					$attachments[] = array(
@@ -447,6 +472,7 @@ function generate_report($report, $force = false) {
 						'timespan'       => $timesp,
 						'inline'         => 'inline'
 					);
+
 					break;
 				case REPORTS_TYPE_INLINE_GIF_LN:
 					$attachments[] = array(
@@ -457,6 +483,7 @@ function generate_report($report, $force = false) {
 						'timespan'       => $timesp,
 						'inline'         => 'inline'
 					);
+
 					break;
 			}
 		}
@@ -546,6 +573,7 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 	if (cacti_sizeof($contents)) {
 		foreach ($contents as $line) {
 			$line = trim($line);
+
 			if (substr_count($line, '<REPORT>')) {
 				$report_tag_included = true;
 			}
@@ -712,6 +740,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 		}
 
 		$outstr .= "\t\t<tr class='title_row'>" . PHP_EOL;
+
 		if ($format_ok) {
 			$outstr .= "\t\t\t<td class='title' style='text-align:" . $alignment[$report['alignment']] . ";'>" . PHP_EOL;
 		} else {
@@ -732,6 +761,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 		$_SESSION['custom'] = 'true';
 
 		$column = 0;
+
 		foreach ($reports_items as $item) {
 			reports_log(__FUNCTION__ . ', item_id: ' . $item['id'] . ' local_graph_id: ' . $item['local_graph_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
@@ -776,6 +806,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 				}
 			} elseif ($item['item_type'] == REPORTS_ITEM_TEXT) {
 				$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+
 				if ($format_ok) {
 					$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";' class='text'>" . PHP_EOL;
 				} else {
@@ -801,6 +832,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 		}
 
 		$outstr .= "\t</table>" . PHP_EOL;
+
 		if ($output == REPORTS_OUTPUT_EMAIL && $include_body) {
 			$outstr .= '</body>';
 		}
@@ -854,6 +886,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	global $config;
 
 	$out = '';
+
 	if ($output == REPORTS_OUTPUT_STDOUT) {
 		$out = "<img class='image' alt='' src='" . html_escape($config['url_path'] . 'graph_image.php' .
 			'?graph_width=' . $report['graph_width'] .
@@ -1055,6 +1088,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 					/* start graph display */
 					if ($title != '') {
 						$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+
 						if ($format_ok) {
 							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . "'>" . PHP_EOL;
 						} else {
@@ -1069,6 +1103,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 				}
 			} elseif ($leaf_type == 'graph' && $nested) {
 				$gr_where = '';
+
 				if ($item['graph_name_regexp'] != '') {
 					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
 				}
@@ -1084,6 +1119,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 				}
 			} elseif ($leaf_type == 'graph') {
 				$gr_where = '';
+
 				if ($item['graph_name_regexp'] != '') {
 					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
 				}
@@ -1096,6 +1132,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 				if ($graph > 0) {
 					if ($title != '') {
 						$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+
 						if ($format_ok) {
 							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
 						} else {
@@ -1146,6 +1183,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 						);
 
 						$outgraphs = array();
+
 						if (cacti_sizeof($graph_templates)) {
 							foreach ($graph_templates as $id => $name) {
 								$graphs = db_fetch_assoc('SELECT
@@ -1212,6 +1250,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 						}
 
 						$i = 0;
+
 						if (cacti_sizeof($data_queries)) {
 							foreach ($data_queries as $data_query) {
 								/* fetch a list of field names that are sorted by the preferred sort field */
@@ -1242,6 +1281,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 										/* start graph display */
 										if ($title != '') {
 											$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+
 											if ($format_ok) {
 												$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
 											} else {
@@ -1255,6 +1295,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 									$i++;
 
 									$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+
 									if ($format_ok) {
 										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'><strong>" . __('Data Query:') . '</strong> ' . $data_query['name'] . PHP_EOL;
 										$outstr .= "\t\t\t</td>" . PHP_EOL;
@@ -1275,6 +1316,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 
 								/* using the sorted data as they key; grab each snmp index from the master list */
 								$graph_list = array();
+
 								foreach ($sort_field_data as $snmp_index => $sort_field_value) {
 									/* render each graph for the current data query index */
 									if (isset($snmp_index_to_graph[$snmp_index])) {
@@ -1313,6 +1355,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 						/* start graph display */
 						if ($title != '') {
 							$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+
 							if ($format_ok) {
 								$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
 							} else {
@@ -1333,6 +1376,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			/* start graph display */
 			if ($title != '') {
 				$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+
 				if ($format_ok) {
 					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . "'>" . PHP_EOL;
 				} else {
@@ -1443,6 +1487,7 @@ function png2jpeg($png_data) {
 
 		/* create php-gd image object from file */
 		$im = imagecreatefrompng($fn);
+
 		if (!$im) {								/* check for errors */
 			$im  = imagecreate(150, 30);		/* create an empty image */
 			$bgc = imagecolorallocate($im, 255, 255, 255);
@@ -1484,6 +1529,7 @@ function png2gif($png_data) {
 
 		/* create php-gd image object from file */
 		$im = imagecreatefrompng($fn);
+
 		if (!$im) {								/* check for errors */
 			$im  = imagecreate(150, 30);		/* create an empty image */
 			$bgc = imagecolorallocate($im, 255, 255, 255);
@@ -1535,6 +1581,7 @@ function reports_get_format_files() {
 					if (cacti_sizeof($contents)) {
 						foreach ($contents as $line) {
 							$line = trim($line);
+
 							if (substr_count($line, 'Description:') && substr($line, 0, 1) == '#') {
 								$arr            = explode(':', $line);
 								$formats[$file] = trim($arr[1]) . ' (' . $file . ')';
@@ -1685,6 +1732,7 @@ function reports_graphs_action_execute($action) {
 						$save['sequence']          = $sequence;
 
 						$id = sql_save($save, 'reports_items');
+
 						if ($id) {
 							$message .= __('Created Report Graph Item \'<i>%s</i>\'', get_graph_title($local_graph_id)) . '<br>';
 						} else {

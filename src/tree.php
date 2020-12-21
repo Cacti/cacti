@@ -152,6 +152,7 @@ switch (get_request_var('action')) {
 		api_tree_up($tree_id);
 
 		header('Location: tree.php');
+
 		exit;
 
 		break;
@@ -160,6 +161,7 @@ switch (get_request_var('action')) {
 		api_tree_down($tree_id);
 
 		header('Location: tree.php');
+
 		exit;
 
 		break;
@@ -170,6 +172,7 @@ switch (get_request_var('action')) {
 		}
 
 		header('Location: tree.php');
+
 		exit;
 
 		break;
@@ -235,6 +238,7 @@ switch (get_request_var('action')) {
 		}
 
 		break;
+
 	default:
 		top_header();
 		tree();
@@ -296,6 +300,7 @@ function form_save() {
 		}
 
 		header("Location: tree.php?action=edit&id=$tree_id");
+
 		exit;
 	}
 }
@@ -327,6 +332,7 @@ function form_actions() {
 		}
 
 		header('Location: tree.php');
+
 		exit;
 	}
 
@@ -394,6 +400,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: tree.php');
+
 		exit;
 	}
 
@@ -476,6 +483,7 @@ function tree_edit() {
 		$editable = false;
 	} elseif (isset($tree['locked']) && $tree['locked'] == 1) {
 		$lockdiv = "<div style='padding:3px;'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='unlock' value='" . __esc('Finish Editing Tree') . "'></td><td><input type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' value='" . __esc('Add Root Branch') . "' onClick='createNode()'></td><td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %1$s by %2$s.', $tree['locked_date'], get_username($tree['modified_by']));
+
 		if ($tree['modified_by'] == $_SESSION['sess_user_id']) {
 			$editable = true;
 			$lockdiv .= '</td></tr></table></div>';
@@ -1657,7 +1665,7 @@ function tree() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1797,9 +1805,11 @@ function tree() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 1;
+
 	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
 			$sequence = '';
+
 			if (get_request_var('sort_column') == 'sequence' && get_request_var('sort_direction') == 'ASC') {
 				if ($i == 1 && cacti_sizeof($trees) == 1) {
 					$sequence .= '<span class="moveArrowNone"></span>';

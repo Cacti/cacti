@@ -41,19 +41,24 @@ if (get_request_var('action') == 'save') {
 switch (get_request_var('action')) {
 	case 'save':
 		aggregate_form_save();
+
 		break;
 	case 'actions':
 		aggregate_form_actions();
+
 		break;
 	case 'edit':
 		top_header();
 		aggregate_template_edit();
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 		aggregate_template();
 		bottom_footer();
+
 		break;
 }
 
@@ -84,8 +89,11 @@ function aggregate_form_save() {
 
 	/* set some defaults for possibly disabled values */
 	if (!isset_request_var('total'))        set_request_var('total', 0);
+
 	if (!isset_request_var('total_type'))   set_request_var('total_type', 0);
+
 	if (!isset_request_var('order_type'))   set_request_var('order_type', 0);
+
 	if (!isset_request_var('total_prefix')) set_request_var('total_prefix', '');
 
 	/* populate aggregate template save array and validate posted values*/
@@ -173,6 +181,7 @@ function aggregate_form_save() {
 		foreach ($params_old as $field => $value_old) {
 			if (isset($params_new[$field]) && $params_new[$field] != $value_old) {
 				$params_changed = true;
+
 				break;
 			}
 		}
@@ -281,6 +290,7 @@ function aggregate_form_actions() {
 		}
 
 		header('Location: aggregate_templates.php');
+
 		exit;
 	}
 
@@ -318,6 +328,7 @@ function aggregate_form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: aggregate_templates.php');
+
 		exit;
 	}
 
@@ -580,9 +591,11 @@ function aggregate_template() {
 	}
 
 	$filter_html .= '>' . __('Default') . '</option>';
+
 	if (cacti_sizeof($item_rows)) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
+
 			if (get_request_var('rows') == $key) {
 				$filter_html .= ' selected';
 			}
@@ -617,6 +630,7 @@ function aggregate_template() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
+
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (pgt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}

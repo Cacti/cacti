@@ -50,6 +50,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 if (!cacti_sizeof($page)) {
 	raise_message('page_not_defined');
 	header('Location: ' . $referer);
+
 	exit;
 } else {
 	global $link_nav;
@@ -92,6 +93,7 @@ if (!cacti_sizeof($page)) {
 	} else {
 		raise_message('permission_denied');
 		header('Location: ' . $referer);
+
 		exit;
 	}
 }

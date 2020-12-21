@@ -164,6 +164,7 @@ function file_exists_2gb($filename) {
 	global $config;
 
 	$rval = 0;
+
 	if ($config['cacti_server_os'] != 'win32') {
 		system("test -f $filename", $rval);
 
@@ -267,6 +268,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 					} else { /* count all indexes found */
 						$recache_stack[] = "($host_id, $data_query_id, " .  POLLER_ACTION_SNMP_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr($data_query_xml['oid_index']) . ', 1)';
 					}
+
 					break;
 				case DATA_INPUT_TYPE_SCRIPT_QUERY:
 					if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
@@ -276,6 +278,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 						/* escape path (windows!) and parameters for use with database sql; TODO: replace by db specific escape function like mysql_real_escape_string? */
 						$recache_stack[] = "($host_id, $data_query_id, " . POLLER_ACTION_SCRIPT_COUNT . ", '=', " . db_qstr($assert_value) . ', ' . db_qstr(get_script_query_path((isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ', 1)';
 					}
+
 					break;
 				case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
 					if (isset($data_query_xml['arg_num_indexes'])) { /* we have a specific request for counting indexes */
@@ -287,6 +290,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 						#$recache_stack[] = "($host_id, $data_query_id," . POLLER_ACTION_SCRIPT_PHP_COUNT . ", '=', " . db_qstr($assert_value) . ", " . db_qstr(get_script_query_path($data_query_xml['script_function'] . ' ' . (isset($data_query_xml['arg_prepend']) ? $data_query_xml['arg_prepend'] . ' ': '') . $data_query_xml['arg_index'], $data_query_xml['script_path'], $host_id)) . ", 1)";
 						# omit the assert value until we are able to run an 'index' command through script server
 					}
+
 					break;
 			}
 
@@ -396,6 +400,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 	if ($remainder) {
 		/* check if too many rows pending */
 		$rows = db_fetch_cell('SELECT COUNT(*) FROM poller_output');
+
 		if ($rows > $max_rows && $have_deleted_rows === true) {
 			$limit = ' LIMIT ' . $max_rows;
 		} else {
@@ -446,11 +451,13 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 			} elseif (is_hexadecimal($value)) {
 				/* attempt to accomodate 32bit and 64bit systems */
 				$value = str_replace(' ', '', $value);
+
 				if (strlen($value) <= 8 || ((2147483647 + 1) == intval(2147483647 + 1))) {
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = hexdec($value);
 				} elseif (function_exists('bcpow')) {
 					$dec    = 0;
 					$vallen = strlen($value);
+
 					for ($i = 1; $i <= $vallen; $i++) {
 						$dec = bcadd($dec, bcmul(strval(hexdec($value[$i - 1])), bcpow('16', strval($vallen - $i))));
 					}
@@ -526,6 +533,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 				if ($item['rrd_num'] <= cacti_sizeof($rrd_update_array[$rrd_path]['times'][$unix_time])) {
 					$data_ids[] = $item['local_data_id'];
 					$k++;
+
 					if ($k % 10000 == 0) {
 						db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
 
@@ -577,6 +585,7 @@ function update_resource_cache($poller_id = 1) {
 	global $config, $remote_db_cnn_id;
 
 	if ($config['cacti_server_os'] == 'win32') return;
+
 	if ($poller_id == 1) {
 		$conn = false;
 	} else {
@@ -610,6 +619,7 @@ function update_resource_cache($poller_id = 1) {
 		foreach ($paths as $type => $path) {
 			if (is_readable($path['path'])) {
 				$pathinfo = pathinfo($path['path']);
+
 				if (isset($pathinfo['extension'])) {
 					$extension = strtolower($pathinfo['extension']);
 				} else {
@@ -618,6 +628,7 @@ function update_resource_cache($poller_id = 1) {
 
 				/* exclude spurious extensions directories */
 				$exclude = false;
+
 				if (array_search($extension, $excluded_extensions, true) !== false) {
 					$exclude = true;
 				}
@@ -648,6 +659,7 @@ function update_resource_cache($poller_id = 1) {
 
 						if (isset($info['info']['nosync'])) {
 							$exclude_paths = explode(',', $info['info']['nosync']);
+
 							if (cacti_sizeof($exclude_paths)) {
 								foreach ($exclude_paths as $epath) {
 									if (strpos($epath, '*.') !== false) {
@@ -678,6 +690,7 @@ function update_resource_cache($poller_id = 1) {
 
 									/* exclude spurious extensions */
 									$exclude = false;
+
 									if (array_search($extension, $file_exclusions, true) !== false) {
 										$exclude = true;
 									}
@@ -699,6 +712,7 @@ function update_resource_cache($poller_id = 1) {
 
 		/* purge old entries */
 		$cache = db_fetch_assoc('SELECT path FROM poller_resource_cache');
+
 		if (cacti_sizeof($cache)) {
 			foreach ($cache as $item) {
 				if (!file_exists($item['path'])) {
@@ -780,6 +794,7 @@ function cache_in_path($path, $type, $recursive = true) {
 
 		/* exclude spurious extensions directories */
 		$exclude = false;
+
 		if (array_search($extension, $excluded_extensions, true) !== false) {
 			$exclude = true;
 		}
@@ -831,6 +846,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 		while (($entry = $pobject->read()) !== false) {
 			if (!should_ignore_from_replication($entry)) {
 				$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
+
 				if (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
 					if ($recursive) {
 						update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
@@ -841,6 +857,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 					continue;
 				} else {
 					$pathinfo = pathinfo($entry);
+
 					if (isset($pathinfo['extension'])) {
 						$extension = strtolower($pathinfo['extension']);
 					} else {
@@ -878,6 +895,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 	} else {
 		if (!should_ignore_from_replication($path)) {
 			$pathinfo = pathinfo($path);
+
 			if (isset($pathinfo['extension'])) {
 				$extension = strtolower($pathinfo['extension']);
 			} else {
@@ -968,6 +986,7 @@ function resource_cache_out($type, $path) {
 						if ($extension == 'php' && $contents != '') {
 							// Executable check
 							$executable = false;
+
 							if (strpos($e['path'], 'lib/poller.php') === false) {
 								if (strpos($contents, '#!/usr/bin/env php') !== false) {
 									$executable = true;
@@ -1056,6 +1075,7 @@ function md5sum_path($path, $recursive = true) {
 	while (($entry = $pobject->read()) !== false) {
 		if (!should_ignore_from_replication($entry)) {
 			$pathinfo = pathinfo($entry);
+
 			if (isset($pathinfo['extension'])) {
 				$extension = strtolower($pathinfo['extension']);
 			} else {
@@ -1502,6 +1522,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 		if (cacti_sizeof($local_columns) != cacti_sizeof($remote_columns)) {
 			cacti_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table, false, 'REPLICATE');
 			$create = db_fetch_row('SHOW CREATE TABLE ' . $table);
+
 			if (isset($create['Create Table'])) {
 				cacti_log('NOTE: Replication Recreating Remote Table Structure for ' . $table, false, 'REPLICATE');
 				db_execute('DROP TABLE IF EXISTS ' . $table, true, $conn);
@@ -1521,6 +1542,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 			$cols = array_rekey($local_columns, 'Field', 'Field');
 
 			$i = 0;
+
 			foreach ($cols as $col) {
 				if ($exclude !== false) {
 					if (array_search($col, $exclude, true) === false) {
@@ -1552,9 +1574,11 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 		$prefix .= ') VALUES ';
 
 		$rowcnt = 0;
+
 		foreach ($data as $row) {
 			$colcnt  = 0;
 			$sql_row = '(';
+
 			foreach ($row as $col => $value) {
 				if (array_search($col, $skipcols, true) === false) {
 					$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
@@ -1722,9 +1746,11 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 		$prefix .= ') VALUES ';
 
 		$rowcnt = 0;
+
 		foreach ($data as $row) {
 			$colcnt  = 0;
 			$sql_row = '(';
+
 			foreach ($row as $col => $value) {
 				if (array_search($col, $skipcols, true) === false) {
 					$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
@@ -1829,6 +1855,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 			}
 
 			$string = '(';
+
 			foreach ($r as $c) {
 				$string .= ($string == '(' ? '':', ') . db_qstr($c);
 			}
@@ -1840,6 +1867,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 		if (cacti_sizeof($dupes)) {
 			$dupe = ' ON DUPLICATE KEY UPDATE ';
 			$i    = 0;
+
 			foreach ($dupes as $item) {
 				$dupe .= ($i == 0 ? '':', ') . "$item=VALUES($item)";
 				$i++;

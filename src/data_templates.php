@@ -60,6 +60,7 @@ switch (get_request_var('action')) {
 		template_remove();
 
 		header('Location: data_templates.php');
+
 		break;
 	case 'template_edit':
 		top_header();
@@ -67,13 +68,16 @@ switch (get_request_var('action')) {
 		template_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		template();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -151,6 +155,7 @@ function form_save() {
 				$_SESSION['sess_error_fields']['rrd_maximum'] = 'rrd_maximum';
 
 				header('Location: data_templates.php?action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : get_request_var('data_template_rrd_id'))));
+
 				exit;
 			}
 		}
@@ -250,6 +255,7 @@ function form_save() {
 								/* unusual case where a form value comes back as an array
 								 * this should be cleaned up in the database repair script. */
 								$value = get_nfilter_request_var($form_value);
+
 								if (is_array($value)) {
 									$value = trim($value[0]);
 								} else {
@@ -345,6 +351,7 @@ function form_actions() {
 		}
 
 		header('Location: data_templates.php');
+
 		exit;
 	}
 
@@ -411,6 +418,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: data_templates.php');
+
 		exit;
 	}
 
@@ -468,6 +476,7 @@ function template_rrd_add() {
 	/* check for duplicated data source name */
 	$i      = 0;
 	$dsname = 'ds';
+
 	while (true) {
 		$exists = db_fetch_cell_prepared('SELECT data_source_name
 			FROM data_template_rrd
@@ -561,8 +570,10 @@ function template_edit() {
 				<td class='textInfo right' style='vertical-align:top;'>
 					<?php
 						$data_input_id = 0;
+
 						if (!empty($template_data['data_input_id'])) {
 							$data_input_id = get_nonsystem_data_input($template_data['data_input_id']);
+
 							if (!isset($data_input_id) || $data_input_id == null) {
 								$data_input_id = 0;
 							}
@@ -655,6 +666,7 @@ function template_edit() {
 	}
 
 	$i = 0;
+
 	if (isset($template_data_rrds)) {
 		if (cacti_sizeof($template_data_rrds) > 1) {
 			/* draw the data source tabs on the top of the page */
@@ -733,6 +745,7 @@ function template_edit() {
 	html_end_box(true, true);
 
 	$i = 0;
+
 	if (!isempty_request_var('id')) {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc_prepared('SELECT *
@@ -923,9 +936,10 @@ function template() {
 							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
+
 							if (cacti_sizeof($profiles)) {
 								foreach ($profiles as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('profile') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -940,7 +954,7 @@ function template() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1003,6 +1017,7 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	$rows_where = '';
+
 	if (get_request_var('filter') != '') {
 		$sql_where = ' WHERE (dt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
@@ -1118,6 +1133,7 @@ function template() {
 			}
 
 			$ds_url = 'data_sources.php?reset=true&template_id=' . $template['id'];
+
 			if (get_request_var('profile') != '-1') {
 				$ds_url .= '&profile=' . get_request_var('profile');
 			}

@@ -74,104 +74,136 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '--name':
 				$siteName = trim($value);
+
 				break;
 			case '--addr1':
 				$siteAddr1 = trim($value);
+
 				break;
 			case '--addr2':
 				$siteAddr2 = trim($value);
+
 				break;
 			case '--city':
 				$siteCity = trim($value);
+
 				break;
 			case '--state':
 				$siteState = trim($value);
+
 				break;
 			case '--postcode':
 				$siteZip = trim($value);
+
 				break;
 			case '--country':
 				$siteCountry = trim($value);
+
 				break;
 			case '--timezone':
 				$siteTimezone = trim($value);
+
 				break;
 			case '--latitude':
 				$siteLatitude = trim($value);
+
 				break;
 			case '--longitude':
 				$siteLongitude = trim($value);
+
 				break;
 			case '--alt-name':
 				$siteAltname = trim($value);
+
 				break;
 			case '--notes':
 				$siteNotes = trim($value);
+
 				break;
 			case '--device-map-regex':
 				$deviceMapRegex = trim($value);
+
 				break;
 			case '--device-map-wildcard':
 				$deviceMapWild = trim($value);
+
 				break;
 			case '--ip-map-regex':
 				$ipMapRegex = trim($value);
+
 				break;
 			case '--ip-map-wildcard':
 				$ipMapWild = trim($value);
+
 				break;
 			case '--do-map':
 				$doMap = true;
+
 				break;
 			case '--geocode':
 				$geocodeAddress = true;
+
 				break;
 			case '--geocode-api-key':
 				$geocodeApiKey = trim($value);
+
 				break;
 			case '--proxy':
 				$httpsProxy = trim($value);
+
 				break;
 			case '--quiet':
 				$quiet = true;
+
 				break;
 			case '--log':
 				$log = true;
+
 				break;
 			case '--list-sites':
 				$displaySites = true;
+
 				break;
 			case '--no-replace':
 				$replaceSites = 0;
+
 				break;
 			case '--verbose':
 				$verbose = true;
+
 				break;
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				displayVersion();
+
 				exit;
 			case '--help':
 			case '-H':
 			case '-h':
 				displayHelp();
+
 				exit;
+
 			default:
 				echoQuiet("ERROR: Invalid Argument: ($arg)\n\n");
 				displayHelp();
+
 				exit(1);
 		}
 	}
 
 	if ($displaySites) {
 		displaySites($hosts, $quiet);
+
 		exit(0);
 	} else {
 		$siteId = addSite();
+
 		if ($siteId && ($deviceMapRegex || $deviceMapWild || $ipMapRegex || $ipMapWild)) {
 			if ($doMap && !$quiet) 	{
 				echoQuiet("Attempting to map devices to site ID: $siteId\n");
@@ -183,6 +215,7 @@ if (sizeof($parms)) {
 	}
 } else {
 	displayHelp();
+
 	exit(0);
 }
 
@@ -220,6 +253,7 @@ function addSite() {
 			if (!$quiet) {
 				echoQuiet("Error - couldn't find ID for site name: $siteName");
 			}
+
 			exit;
 		}
 
@@ -346,8 +380,10 @@ function mapDevices($siteId, $doMap) {
 	}
 
 	$numMatched = sizeof($matchedDevices);
+
 	if ($numMatched) {
 		echoQuiet("\n Success: $numMatched devices matched filters for site $siteName.\n\n");
+
 		for ($i = 0; $i < $numMatched; $i++) {
 			echoQuiet("  $i. ".$matchedDevices[$i]."\n");
 		}
@@ -388,6 +424,7 @@ function geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry
 	}
 
 	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s',$googleApiUrl,urlencode($siteAddr1),urlencode($siteAddr2),urlencode($siteCity),urlencode($siteCountry),$geocodeApiKey);
+
 	if ($verbose || $debug) {
 		echoQuiet("Geocode URL: $requestUrl\n");
 	}
@@ -403,6 +440,7 @@ function geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry
 		if ($jsonResult && isset($jsonResult->results[0])) {
 			$latGeocode= $jsonResult->results[0]->geometry->location->lat;
 			$lngGeocode= $jsonResult->results[0]->geometry->location->lng;
+
 			if (!$quiet) {
 				echoQuiet("Geocoded Coordinates: $latGeocode,$lngGeocode\n");
 			}
@@ -487,11 +525,13 @@ function displayHelp($errorMessage = null) {
 	echoQuiet("      %DATE% - The current date in mysql format\n");
 	echoQuiet("      %TIME% - The current time in mysql format\n");
 	echoQuiet("      %GOOGLE_MAPS_URL% - The link to Google Maps for this sites GPS coordinates\n\n");
+
 	exit;
 }
 
 function echoQuiet($str,$level=0) {
 	global $quiet, $log;
+
 	if (!$quiet) {
 		print ("$str");
 	}

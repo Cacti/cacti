@@ -72,6 +72,7 @@ if (cacti_sizeof($parms) == 0) {
 			} else {
 				print "ERROR: Invalid Item Type: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
 
@@ -116,37 +117,45 @@ if (cacti_sizeof($parms) == 0) {
 		case '-V':
 		case '-v':
 			display_version();
+
 			exit(0);
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
+
 			exit(0);
+
 		default:
 			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
+
 			exit(1);
 		}
 	}
 
 	if ($displayGroups) {
 		displayGroups($quietMode);
+
 		exit(1);
 	}
 
 	if ($displayUsers) {
 		displayUsers($quietMode);
+
 		exit(1);
 	}
 
 	if ($displayTrees) {
 		displayTrees($quietMode);
+
 		exit(1);
 	}
 
 	if ($displayHosts) {
 		$hosts = getHosts();
 		displayHosts($hosts, $quietMode);
+
 		exit(1);
 	}
 
@@ -155,9 +164,11 @@ if (cacti_sizeof($parms) == 0) {
 			print "ERROR: You must supply a valid host_id before you can list its graphs\n";
 			print "Try --list-hosts\n";
 			display_help();
+
 			exit(1);
 		} else {
 			displayHostGraphs($hostId, $quietMode);
+
 			exit(1);
 		}
 	}
@@ -165,6 +176,7 @@ if (cacti_sizeof($parms) == 0) {
 	if ($displayGraphTemplates) {
 		$graphTemplates = getGraphTemplates();
 		displayGraphTemplates($graphTemplates, $quietMode);
+
 		exit(1);
 	}
 
@@ -178,6 +190,7 @@ if (cacti_sizeof($parms) == 0) {
 		} else {
 			print "ERROR: Invalid Userid: ($value)\n\n";
 			display_help();
+
 			exit(1);
 		}
 	}
@@ -187,12 +200,14 @@ if (cacti_sizeof($parms) == 0) {
 	if ($itemType == 0) {
 		print "ERROR: --item-type missing. Please specify.\n\n";
 		display_help();
+
 		exit(1);
 	}
 
 	if ($itemId == 0) {
 		print "ERROR: --item-id missing. Please specify.\n\n";
 		display_help();
+
 		exit(1);
 	}
 
@@ -202,29 +217,37 @@ if (cacti_sizeof($parms) == 0) {
 			if (!db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=$itemId")) {
 				print "ERROR: Invalid Graph item id: ($itemId)\n\n";
 				display_help();
+
 				exit(1);
 			}
+
 			break;
 		case 2: /* tree */
 			if (!db_fetch_cell("SELECT id FROM graph_tree WHERE id=$itemId")) {
 				print "ERROR: Invalid Tree item id: ($itemId)\n\n";
 				display_help();
+
 				exit(1);
 			}
+
 			break;
 		case 3: /* host */
 			if (!db_fetch_cell("SELECT id FROM host WHERE id=$itemId")) {
 				print "ERROR: Invalid Host item id: ($itemId)\n\n";
 				display_help();
+
 				exit(1);
 			}
+
 			break;
 		case 4: /* graph_template */
 			if (!db_fetch_cell("SELECT id FROM graph_templates WHERE id=$itemId")) {
 				print "ERROR: Invalid Graph Template item id: ($itemId)\n\n";
 				display_help();
+
 				exit(1);
 			}
+
 			break;
 	}
 	/* verified item-id */

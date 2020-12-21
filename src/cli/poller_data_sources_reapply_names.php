@@ -38,6 +38,7 @@ array_shift($parms);
 if (cacti_sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
+
 	exit(1);
 }
 
@@ -59,28 +60,35 @@ if (cacti_sizeof($parms)) {
 			case '--id':
 			case '--host-id':
 				$host_id = $value;
+
 				break;
 			case '-s':
 			case '--filter':
 				$filter = $value;
+
 				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-v':
 			case '-V':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -116,6 +124,7 @@ if (strtolower($host_id) == 'all') {
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
@@ -137,6 +146,7 @@ if (cacti_sizeof($data_source_list) > 0) {
 	debug("There are '" . cacti_sizeof($data_source_list) . "' Data Sources to rename");
 
 	$i = 1;
+
 	foreach ($data_source_list as $data_source) {
 		if (!$debug)
 			print '.';

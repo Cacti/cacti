@@ -149,6 +149,7 @@ case 'save':
 
 				break;
 			}
+
 			if (!isempty_request_var($field_name)) {
 				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 
@@ -209,6 +210,7 @@ case 'save':
 					continue;
 				}
 			}
+
 			if (is_array(get_nfilter_request_var($field_name))) {
 				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
 
@@ -311,7 +313,9 @@ case 'save':
 	break;
 case 'send_test':
 	email_test();
+
 	break;
+
 default:
 	top_header();
 

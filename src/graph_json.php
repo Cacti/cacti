@@ -130,24 +130,32 @@ if (!isset_request_var('image_format')) {
 	switch($type) {
 	case '1':
 		$gtype = 'png';
+
 		break;
 	case '3':
 		$gtype = 'svg+xml';
+
 		break;
+
 	default:
 		$gtype = 'png';
+
 		break;
 	}
 } else {
 	switch(strtolower(get_nfilter_request_var('image_format'))) {
 	case 'png':
 		$graph_data_array['image_format'] = 'png';
+
 		break;
 	case 'svg':
 		$gtype = 'svg+xml';
+
 		break;
+
 	default:
 		$gtype = 'png';
+
 		break;
 	}
 }
@@ -180,6 +188,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	$hostname = db_fetch_cell('SELECT hostname FROM poller WHERE id = 1');
 
 	$port = read_config_option('remote_agent_port');
+
 	if ($port != '') {
 		$port = ':' . $port;
 	}
@@ -211,6 +220,7 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 
 	// Parse and populate everything before the image definition row
 	$header_lines = explode("\n", substr($output, 0, $image_begin_pos - 1));
+
 	foreach ($header_lines as $line) {
 		$parts             = explode(' = ', $line);
 		$oarray[$parts[0]] = trim($parts[1]);

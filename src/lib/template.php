@@ -65,8 +65,10 @@ function push_out_data_source_custom_data($data_template_id) {
 	/* which data_input_fields are templated? */
 	$dif_ct     = 0;
 	$dif_in_str = '';
+
 	if (cacti_sizeof($template_input_fields)) {
 		$dif_in_str .= 'AND data_input_fields.id IN (';
+
 		foreach ($template_input_fields as $key => $value) {
 			$dif_in_str .= ($dif_ct == 0 ? '':',') . $key;
 			$dif_ct++;
@@ -94,6 +96,7 @@ function push_out_data_source_custom_data($data_template_id) {
 	$did_cnt   = 0;
 	$ds_in_str = '';
 	$did_vals  = '';
+
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			if (cacti_sizeof($input_fields)) {
@@ -382,6 +385,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 		WHERE graph_template_input_id = ?', array($graph_template_input_id));
 
 	$i = 0;
+
 	if (cacti_sizeof($graph_input_items)) {
 		foreach ($graph_input_items as $item) {
 			$include_items[$i] = $item['graph_template_item_id'];
@@ -405,6 +409,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 			GROUP BY local_graph_id");
 	} else {
 		$i = 0;
+
 		foreach ($session_members as $item_id => $item_id) {
 			$new_session_members[$i] = $item_id;
 			$i++;
@@ -574,10 +579,12 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 function parse_graph_template_id($value) {
 	if (strpos($value, '_') !== false) {
 		$template_parts = explode('_', $value);
+
 		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {
 			return array('graph_template_id' => $template_parts[0], 'output_type_id' => $template_parts[1]);
 		} else {
 			cacti_log('ERROR: Unable to parse graph_template_id with value ' . $value, false, 'WEBUI');
+
 			exit;
 		}
 	} else {
@@ -765,6 +772,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 	$cols = db_get_table_column_types('graph_templates_item');
 
 	$k=0;
+
 	if (cacti_sizeof($template_items_list)) {
 		foreach ($template_items_list as $template_item) {
 			unset($save);
@@ -776,11 +784,13 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 
 			/* go through the existing graph_items and look for the matching local_graph_template_item_id */
 			$found = false;
+
 			if (cacti_sizeof($graph_items_list) && $new_save == false) {
 				foreach ($graph_items_list as $item) {
 					if ($item['local_graph_template_item_id'] == $template_item['id']) {
 						$found_item = $item;
 						$found      = true;
+
 						break;
 					}
 				}
@@ -795,6 +805,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 					case 'graph_template_id':
 					case 'sequence':
 						break;
+
 					default:
 						if (strstr($cols[$column]['type'], 'int') !== false ||
 							strstr($cols[$column]['type'], 'float') !== false ||
@@ -808,6 +819,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 						} else {
 							$save[$column] = $value;
 						}
+
 						break;
 					}
 				}
@@ -855,6 +867,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 					case 'sequence':
 					case 'task_item_id':
 						break;
+
 					default:
 						if (strstr($cols[$column]['type'], 'int') !== false ||
 							strstr($cols[$column]['type'], 'float') !== false ||
@@ -868,6 +881,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 						} else {
 							$save[$column] = $value;
 						}
+
 						break;
 					}
 				}
@@ -1186,6 +1200,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 					/* validate the data source profile */
 					$profile = array();
+
 					if ($profile_id != 0) {
 						$profile = db_fetch_row_prepared('SELECT *
 							FROM data_source_profiles
@@ -1807,6 +1822,7 @@ function verify_data_input_whitelist($hash, $input_string) {
 	if (!isset($config['input_whitelist'])) {
 		return true;
 	}
+
 	if (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
 		return true;
 	}
@@ -1843,6 +1859,7 @@ function graph_template_whitelist_check($graph_template_id) {
 	// load whitelist, but only once within process execution
 	if ($data_input_whitelist == null) {
 		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+
 		if ($data_input_whitelist === null) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
 

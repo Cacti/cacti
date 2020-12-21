@@ -42,6 +42,7 @@ function usort_data_query_index($a, $b) {
 			if (intval($arr_a[$i]) > intval($arr_b[$i])) {
 				return 1;
 			}
+
 			if (intval($arr_a[$i]) < intval($arr_b[$i])) {
 				return -1;
 			}
@@ -57,6 +58,7 @@ function usort_data_query_index($a, $b) {
 	if (cacti_count($arr_a) < cacti_count($arr_b)) {
 		return 1;
 	}
+
 	if (cacti_count($arr_a) > cacti_count($arr_b)) {
 		return -1;
 	}
@@ -73,6 +75,7 @@ function usort_numeric($a, $b) {
 	if (intval($a) > intval($b)) {
 		return 1;
 	}
+
 	if (intval($a) < intval($b)) {
 		return -1;
 	} else {

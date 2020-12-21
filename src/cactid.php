@@ -35,8 +35,11 @@ function sig_handler($signo) {
 	case SIGTERM:
 	case SIGINT:
 		cacti_log('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID');
+
 		exit(1);
+
 		break;
+
 	default:
 		/* ignore all other signals */
 	}
@@ -171,6 +174,7 @@ function wait_for_start($frequency = -1) {
 		if ($prev_time > 0) {
 			if ($offset < $prev_time) {
 				debug('Time to Run Poller');
+
 				break;
 			}
 		}
@@ -223,15 +227,19 @@ function get_options() {
 				case 'V':
 				case 'v':
 					display_version();
+
 					exit(0);
 				case 'help':
 				case 'H':
 				case 'h':
 					display_help();
+
 					exit(0);
+
 				default:
 					print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 					display_help();
+
 					exit(1);
 			}
 		}

@@ -58,19 +58,25 @@ $dsfilter = read_config_option('spikekill_dsfilter',true);
 switch($method) {
 	case '1':
 		$method = 'stddev';
+
 		break;
 	case '2':
 		$method = 'variance';
+
 		break;
 	case '3':
 		$method = 'float';
+
 		break;
 	case '4':
 		$method = 'fill';
+
 		break;
 	case '5':
 		$method = 'absolute';
+
 		break;
+
 	default:
 		$method = 'variance';
 }
@@ -159,11 +165,13 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--absmax':
 				$absmax = $value;
@@ -173,14 +181,17 @@ if (cacti_sizeof($parms)) {
 				$dsfilter = $value;
 
 				break;
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(-3);
 		}
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 
@@ -207,9 +218,11 @@ $result = $spiker->remove_spikes();
 if (!$result) {
 	print "ERROR: Remove Spikes experienced errors\n";
 	print $spiker->get_errors();
+
 	exit(-1);
 } else {
 	print $spiker->get_output();
+
 	exit(0);
 }
 

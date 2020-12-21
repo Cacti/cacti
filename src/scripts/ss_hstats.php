@@ -37,28 +37,37 @@ function ss_hstats($host_id, $stat) {
 	switch ($stat) {
 		case 'polling_time':
 			$column = $stat;
+
 			break;
 		case 'min_time':
 			$column = $stat;
+
 			break;
 		case 'max_time':
 			$column = $stat;
+
 			break;
 		case 'cur_time':
 			$column = $stat;
+
 			break;
 		case 'avg_time':
 			$column = $stat;
+
 			break;
 		case 'uptime':
 			$column = 'snmp_sysUpTimeInstance';
+
 			break;
 		case 'failed_polls':
 			$column = $stat;
+
 			break;
 		case 'availability':
 			$column = $stat;
+
 			break;
+
 		default:
 			return '0';
 	}

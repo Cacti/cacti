@@ -208,13 +208,16 @@ switch (get_request_var('action')) {
 		site_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		sites();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -277,6 +280,7 @@ function duplicate_site($template_id, $name) {
 				if ($column == 'id') {
 					continue;
 				}
+
 				if ($column == 'name') {
 					$save['name'] = str_replace('<site>', $value, $name);
 				} else {
@@ -322,6 +326,7 @@ function form_actions() {
 		}
 
 		header('Location: sites.php');
+
 		exit;
 	}
 
@@ -372,6 +377,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: sites.php');
+
 		exit;
 	}
 
@@ -492,7 +498,7 @@ function sites() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -583,6 +589,7 @@ function sites() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($site_list)) {
 		foreach ($site_list as $site) {
 			$devices_url = html_escape($config['url_path'] . 'host.php?reset=1&site_id=' . $site['id']);

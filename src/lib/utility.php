@@ -201,6 +201,7 @@ function update_poller_cache($data_source, $commit = false) {
 			$field = data_query_field_list($data_input['data_template_data_id']);
 
 			$params = array();
+
 			if ($field['output_type'] != '') {
 				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ' . $field['output_type'];
 			} else {
@@ -417,6 +418,7 @@ function update_poller_cache($data_source, $commit = false) {
 								$action = POLLER_ACTION_SCRIPT_PHP;
 
 								$prepend = '';
+
 								if (isset($script_queries['arg_prepend']) && $script_queries['arg_prepend'] != '') {
 									$prepend = $script_queries['arg_prepend'];
 								}
@@ -426,6 +428,7 @@ function update_poller_cache($data_source, $commit = false) {
 								$action = POLLER_ACTION_SCRIPT;
 
 								$prepend = '';
+
 								if (isset($script_queries['arg_prepend']) && $script_queries['arg_prepend'] != '') {
 									$prepend = $script_queries['arg_prepend'];
 								}
@@ -498,6 +501,7 @@ function push_out_data_input_method($data_input_id) {
 
 	if (cacti_sizeof($data_sources)) {
 		$prev_poller = -1;
+
 		foreach ($data_sources as $data_source) {
 			if ($prev_poller > 0 && $data_source['poller_id'] != $prev_poller) {
 				poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
@@ -527,6 +531,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	$ids = '';
+
 	if (cacti_sizeof($local_data_ids)) {
 		$ids = implode(', ', $local_data_ids);
 
@@ -794,6 +799,7 @@ function data_input_whitelist_check($data_input_id) {
 		);
 
 		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+
 		if ($data_input_whitelist === null) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
 
@@ -1149,6 +1155,7 @@ function utilities_get_mysql_recommendations() {
 	print '</thead>';
 
 	$innodb_pool_size = 0;
+
 	foreach ($recommendations as $name => $r) {
 		if (isset($variables[$name])) {
 			$class = '';
@@ -1166,28 +1173,34 @@ function utilities_get_mysql_recommendations() {
 				$compare       = '>=';
 				$value_display = ($variables[$name] / 1024 / 1024) . ' M';
 				$value         = trim($r['value'], 'M') * 1024 * 1024;
+
 				if ($variables[$name] < $value) {
 					$passed = false;
 				}
+
 				break;
 			case 'ge':
 				$compare = '>=';
 				$passed  = (version_compare($value_current, $value_recommend, '>='));
+
 				break;
 			case 'equalint':
 			case 'equal':
 				$compare = '=';
+
 				if (!isset($variables[$name])) {
 					$passed = false;
 				} else {
 					$e_var = $variables[$name];
 					$e_rec = $value_recommend;
+
 					if ($r['measure'] == 'equalint') {
 						$e_var = (!strcasecmp('on', $e_var) ? 1 : (!strcasecmp('off', $e_var) ? 0 : $e_var));
 						$e_rec = (!strcasecmp('on', $e_rec) ? 1 : (!strcasecmp('off', $e_rec) ? 0 : $e_rec));
 					}
 					$passed = $e_var == $e_rec;
 				}
+
 				break;
 			case 'pmem':
 				if (isset($memInfo['MemTotal'])) {
@@ -1206,6 +1219,7 @@ function utilities_get_mysql_recommendations() {
 				$passed          = ($variables[$name] >= ($r['value'] * $totalMem / 100));
 				$value_display   = round($variables[$name] / 1024 / 1024, 2) . ' M';
 				$value_recommend = round($r['value'] * $totalMem / 100 / 1024 / 1024, 2) . ' M';
+
 				break;
 			case 'pinst':
 				$compare = '>=';
@@ -1221,7 +1235,9 @@ function utilities_get_mysql_recommendations() {
 
 				$passed          = ($variables[$name] >= $pool_instances);
 				$value_recommend = $pool_instances;
+
 				break;
+
 			default:
 				$compare = $r['measure'];
 				$passed  = true;
@@ -1231,11 +1247,13 @@ function utilities_get_mysql_recommendations() {
 				if (!$passed) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
+
 						if ($result == DB_STATUS_SUCCESS) {
 							$result = DB_STATUS_WARNING;
 						}
 					} else {
 						$class = 'textError';
+
 						if ($result != DB_STATUS_ERROR) {
 							$result = DB_STATUS_ERROR;
 						}
@@ -1289,6 +1307,7 @@ function memory_bytes($val) {
 	$val  = trim($val);
 	$last = strtolower($val[strlen($val) - 1]);
 	$val  = trim($val, 'GMKgmk');
+
 	switch($last) {
 		case 'g':
 			$val *= 1024;
@@ -1330,6 +1349,7 @@ function utilities_get_system_memory() {
 		exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
 		exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
 		exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
+
 		if (cacti_sizeof($memInfo)) {
 			foreach ($memInfo as $key => $values) {
 				$memInfo[$key] = $values[1] * 1000;
@@ -1337,6 +1357,7 @@ function utilities_get_system_memory() {
 		}
 	} else {
 		$file = '';
+
 		if (file_exists('/proc/meminfo')) {
 			$file = '/proc/meminfo';
 		} elseif (file_exists('/linux/proc/meminfo')) {
@@ -1349,6 +1370,7 @@ function utilities_get_system_memory() {
 
 		if ($file != '') {
 			$data = explode("\n", file_get_contents($file));
+
 			foreach ($data as $l) {
 				if (trim($l) != '') {
 					list($key, $val) = explode(':', $l);
@@ -1362,9 +1384,11 @@ function utilities_get_system_memory() {
 			$exit_code = 0;
 
 			exec('/usr/bin/free', $output, $exit_code);
+
 			if ($exit_code == 0) {
 				foreach ($output as $line) {
 					$parts = preg_split('/\s+/', $line);
+
 					switch ($parts[0]) {
 					case 'Mem:':
 						$memInfo['MemTotal']  = (isset($parts[1]) ? $parts[1] * 1000:0);
@@ -1373,14 +1397,17 @@ function utilities_get_system_memory() {
 						$memInfo['MemShared'] = (isset($parts[4]) ? $parts[4] * 1000:0);
 						$memInfo['Buffers']   = (isset($parts[5]) ? $parts[5] * 1000:0);
 						$memInfo['Cached']    = (isset($parts[6]) ? $parts[6] * 1000:0);
+
 						break;
 					case '-/+':
 						$memInfo['Active']    = (isset($parts[2]) ? $parts[3] * 1000:0);
 						$memInfo['Inactive']  = (isset($parts[3]) ? $parts[3] * 1000:0);
+
 						break;
 					case 'Swap:':
 						$memInfo['SwapTotal'] = (isset($parts[1]) ? $parts[1] * 1000:0);
 						$memInfo['SwapUsed']  = (isset($parts[2]) ? $parts[2] * 1000:0);
+
 						break;
 					}
 				}
@@ -1481,6 +1508,7 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 
 	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
 		$input_value = $matches[1];
+
 		if (isset($matches[2])) {
 			$default_type = $matches[2];
 		}

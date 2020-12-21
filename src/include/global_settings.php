@@ -23,6 +23,7 @@
 */
 
 $dir = dir($config['base_path'] . '/include/themes/');
+
 while (false !== ($entry = $dir->read())) {
 	if ($entry != '.' && $entry != '..') {
 		if (is_dir($config['base_path'] . '/include/themes/' . $entry)) {
@@ -72,6 +73,7 @@ if (db_table_exists('plugin_config')) {
 
 /* get the files for selective logging */
 $realm_files  = array_keys($user_auth_realm_filenames);
+
 foreach ($realm_files as $file) {
 	$logfiles[$file] = $file;
 }
@@ -118,6 +120,7 @@ $no_http_header_files = array(
 );
 
 $nohead_files = array_values($no_http_header_files);
+
 foreach ($nohead_files as $file) {
 	$logfiles[$file] = $file;
 }

@@ -82,14 +82,18 @@ if (cacti_sizeof($parms)) {
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
+
 				exit(1);
 		}
 	}
@@ -100,9 +104,11 @@ if (cacti_sizeof($parms)) {
 
 			if ($result !== false && cacti_sizeof($result)) {
 				print json_encode($result);
+
 				exit(0);
 			} else {
 				print "FATAL: Error processing package file.  Info not returned\n";
+
 				exit(1);
 			}
 		}
@@ -116,6 +122,7 @@ if (cacti_sizeof($parms)) {
 
 		if (empty($exists)) {
 			print 'FATAL: Data Source Profile ID ' . $profile_id . " does not exist!\n";
+
 			exit(1);
 		}
 	} else {
@@ -139,20 +146,24 @@ if (cacti_sizeof($parms)) {
 				import_display_results($debug_data, $filestatus, false, $preview_only);
 			} else {
 				print "ERROR: file $filename import process failed due to errors with the XML file\n\n";
+
 				exit(1);
 			}
 		} else {
 			print "ERROR: file $filename is not readable, or does not exist\n\n";
+
 			exit(1);
 		}
 	} else {
 		print "ERROR: no filename specified\n\n";
 		display_help();
+
 		exit(1);
 	}
 } else {
 	print "ERROR: no parameters given\n\n";
 	display_help();
+
 	exit(1);
 }
 

@@ -41,6 +41,7 @@ switch (get_request_var('action')) {
 		item_remove();
 
 		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
+
 		break;
 	case 'item_movedown':
 		get_filter_request_var('graph_template_id');
@@ -48,6 +49,7 @@ switch (get_request_var('action')) {
 		item_movedown();
 
 		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
+
 		break;
 	case 'item_moveup':
 		get_filter_request_var('graph_template_id');
@@ -55,6 +57,7 @@ switch (get_request_var('action')) {
 		item_moveup();
 
 		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
+
 		break;
 	case 'item_edit':
 		top_header();
@@ -62,6 +65,7 @@ switch (get_request_var('action')) {
 		item_edit();
 
 		bottom_footer();
+
 		break;
 	case 'item':
 		top_header();
@@ -69,6 +73,7 @@ switch (get_request_var('action')) {
 		item();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -180,13 +185,17 @@ function form_save() {
 				switch ($save['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_LINE1:
 					$save['line_width'] = 1;
+
 					break;
 				case GRAPH_ITEM_TYPE_LINE2:
 					$save['line_width'] = 2;
+
 					break;
 				case GRAPH_ITEM_TYPE_LINE3:
 					$save['line_width'] = 3;
+
 					break;
+
 				default:
 					$save['line_width'] = 0;
 				}
@@ -289,9 +298,11 @@ function form_save() {
 
 		if (is_error_message()) {
 			header('Location: graph_templates_items.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_nfilter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_nfilter_request_var('graph_template_id'));
+
 			exit;
 		} else {
 			header('Location: graph_templates.php?action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
+
 			exit;
 		}
 	}

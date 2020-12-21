@@ -51,60 +51,78 @@ foreach ($parms as $parameter) {
 	switch ($arg) {
 		case '--execute':
 			$execute = true;
+
 			break;
 		case '--show-sql':
 			$show_sql = true;
+
 			break;
 		case '--host-id':
 			$host_id = trim($value);
+
 			if (!is_numeric($host_id)) {
 				print "ERROR: You must supply a valid host-id to run this script!\n";
+
 				exit(1);
 			}
+
 			break;
 		case '--graph-template-id':
 			$graph_template_id = $value;
+
 			if (!is_numeric($graph_template_id)) {
 				print "ERROR: You must supply a numeric graph-template-id!\n";
+
 				exit(1);
 			}
+
 			break;
 		case '--data-template-id':
 			$data_template_id = $value;
+
 			if (!is_numeric($data_template_id)) {
 				print "ERROR: You must supply a numeric data-template-id!\n";
+
 				exit(1);
 			}
+
 			break;
 		case '--version':
 		case '-v':
 		case '-V':
 			display_version();
+
 			exit(0);
 		case '--help':
 		case '-h':
 		case '-H':
 			display_help();
+
 			exit(0);
+
 		default:
 			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 			display_help();
+
 			exit(1);
 	}
 }
 
 if (!$show_sql && !$execute) {
 	display_help();
+
 	exit(1);
 }
 
 if (!isset($data_template_id)) {
 	print "ERROR: You must supply a valid data-template-id!\n";
+
 	exit(1);
 }
 
 if (!isset($graph_template_id)) {
 	print "ERROR: You must supply a valid graph-template-id!\n";
+
 	exit(1);
 }
 
@@ -143,6 +161,7 @@ if (cacti_sizeof($graph)) {
 
 		if (!cacti_sizeof($rrd_data)) {
 			print 'Could not get correct rrd id for datasource=' . $ds['id'] . "\n";
+
 			continue;
 		}
 
@@ -175,6 +194,7 @@ if (cacti_sizeof($graph)) {
 					AND data_template_id=' . $data_template_id . '
 				)
 			)');
+
 		if (!cacti_sizeof($graph_templates_items_wrong)) {
 			// Everything correct here.
 			continue;

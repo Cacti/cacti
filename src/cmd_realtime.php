@@ -36,6 +36,7 @@ $start = date('Y-m-d H:i:s'); // for runtime measurement
 if (cacti_count($_SERVER['argv']) < 4) {
 	print "No graph_id, interval, pollerid specified.\n\n";
 	print "Usage: cmd_realtime.php POLLER_ID GRAPH_ID INTERVAL\n\n";
+
 	exit(-1);
 }
 
@@ -45,11 +46,13 @@ $interval  = (int)$_SERVER['argv'][3];
 
 if ($graph_id <= 0) {
 	print "Invalid graph_id specified.\n\n";
+
 	exit(-1);
 }
 
 if ($interval <= 0) {
 	print "Invalid interval specified.\n\n";
+
 	exit(-1);
 }
 
@@ -72,6 +75,7 @@ $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dl
 
 if (!cacti_count($local_data_ids)) {
 	print "No local_graph_id found\n\n";
+
 	exit(-1);
 }
 
@@ -143,6 +147,7 @@ if (cacti_sizeof($idbyhost)) {
 				array($col_poller_id));
 
 			$port = read_config_option('remote_agent_port');
+
 			if ($port != '') {
 				$port = ':' . $port;
 			}
@@ -160,6 +165,7 @@ if (cacti_sizeof($idbyhost)) {
 
 			if (cacti_sizeof($output)) {
 				$sql = '';
+
 				foreach ($output as $item) {
 					$sql .= ($sql != '' ? ', ':'')      . '(' .
 						db_qstr($item['local_data_id']) . ', ' .

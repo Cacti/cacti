@@ -122,6 +122,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 				if ($snmp_data < 0) {
 					return (abs($snmp_data) + 2147483647) * $sau;
 				}
+
 				if (is_numeric($snmp_data) && is_numeric($sau)) {
 					return $snmp_data * $sau;
 				} else {

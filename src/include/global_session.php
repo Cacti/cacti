@@ -49,6 +49,7 @@ if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
 }
 
 $script = basename($_SERVER['SCRIPT_NAME']);
+
 if ($script == 'graph_view.php' || $script == 'graph.php') {
 	if (isset($_SESSION['custom']) && $_SESSION['custom'] == true) {
 		$refreshIsLogout = 'true';
@@ -60,6 +61,7 @@ if ($script == 'graph_view.php' || $script == 'graph.php') {
 	}
 } elseif (strstr($_SERVER['SCRIPT_NAME'], 'plugins')) {
 	$refresh = api_plugin_hook_function('top_graph_refresh', $refresh);
+
 	if (empty($refresh)) {
 		$refreshIsLogout = 'true';
 	} else {

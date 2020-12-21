@@ -508,6 +508,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 
 	/* loop through each field found */
 	$i = 0;
+
 	if (cacti_sizeof($fields)) {
 		foreach ($fields as $field) {
 			$data_input_data = db_fetch_row_prepared('SELECT *

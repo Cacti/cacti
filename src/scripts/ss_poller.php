@@ -64,6 +64,7 @@ function ss_thold_time() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^Time/', $_stat)) $stats .= str_replace('Time:', '', $_stat);
 	}
@@ -75,6 +76,7 @@ function ss_thold_checks() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^Tholds/', $_stat)) $stats .= str_replace('Tholds:', '', $_stat);
 	}
@@ -86,6 +88,7 @@ function ss_thold_hstats() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_thold"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^TotalDevices/', $_stat)) {
 			$stats .= $_stat . ' ';
@@ -101,6 +104,7 @@ function ss_monitor_time() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^Time/', $_stat)) $stats .= str_replace('Time:', '', $_stat);
 	}
@@ -112,6 +116,7 @@ function ss_monitor_stats() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_monitor"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^Reboots/', $_stat)) {
 			$stats .= $_stat . ' ';
@@ -131,6 +136,7 @@ function ss_syslog_time() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^time/', $_stat)) $stats .= str_replace('time:', '', $_stat);
 	}
@@ -142,6 +148,7 @@ function ss_syslog_stats() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="syslog_stats"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^deletes/', $_stat)) {
 			$stats .= $_stat . ' ';
@@ -173,6 +180,7 @@ function ss_poller() {
 
 function ss_webseer_counts() {
 	$stats = array();
+
 	if (db_table_exists('plugin_webseer_urls')) {
 		$stats = db_fetch_row('SELECT SUM(triggered) AS triggered,
 			SUM(CASE WHEN triggered=0 THEN 1 ELSE 0 END) AS successful,
@@ -187,6 +195,7 @@ function ss_webseer_stats() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_webseer"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^Time/', $_stat)) {
 			$stats .= $_stat . ' ';
@@ -276,6 +285,7 @@ function ss_boost_timing() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_detail_boost"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^get_records:/', $_stat)) {
 			$stats .= str_replace('get_records', 'rrd_get_records', $_stat) . ' ';
@@ -299,6 +309,7 @@ function ss_export() {
 	$_stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_export"'));
 
 	$stats = '';
+
 	foreach ($_stats as $_stat) {
 		if (preg_match('/^ExportDuration/', $_stat)) {
 			$stats .= $_stat . ' ';

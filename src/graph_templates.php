@@ -56,6 +56,7 @@ switch (get_request_var('action')) {
 		input_remove();
 
 		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
+
 		break;
 	case 'input_edit':
 		top_header();
@@ -63,6 +64,7 @@ switch (get_request_var('action')) {
 		input_edit();
 
 		bottom_footer();
+
 		break;
 	case 'template_edit':
 		top_header();
@@ -70,13 +72,16 @@ switch (get_request_var('action')) {
 		template_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		template();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -306,6 +311,7 @@ function form_actions() {
 		}
 
 		header('Location: graph_templates.php');
+
 		exit;
 	}
 
@@ -387,6 +393,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: graph_templates.php');
+
 		exit;
 	}
 
@@ -461,6 +468,7 @@ function item() {
 		ORDER BY name', array(get_request_var('id')));
 
 	$i = 0;
+
 	if (cacti_sizeof($template_item_list) > 0) {
 		foreach ($template_item_list as $item) {
 			form_alternate_row('', true);
@@ -671,7 +679,7 @@ function template() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -838,6 +846,7 @@ function template() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['graphs'] > 0) {

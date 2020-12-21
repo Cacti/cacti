@@ -21,11 +21,11 @@ $cmd       = $_SERVER['argv'][4];
 
 /* support for SNMP V2 and SNMP V3 parameters */
 $snmp          = explode(':', $snmp_auth);
-$snmp_version = $snmp[0];
-$snmp_port    = $snmp[1];
-$snmp_timeout = $snmp[2];
-$ping_retries = $snmp[3];
-$max_oids     = $snmp[4];
+$snmp_version  = $snmp[0];
+$snmp_port     = $snmp[1];
+$snmp_timeout  = $snmp[2];
+$ping_retries  = $snmp[3];
+$max_oids      = $snmp[4];
 
 $snmp_auth_username   = '';
 $snmp_auth_password   = '';

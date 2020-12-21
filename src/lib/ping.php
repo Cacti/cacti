@@ -191,6 +191,7 @@ class Net_Ping
 					$result = shell_exec('ping6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
 				} else {
 					$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
+
 					if ((strpos($result, 'unknown host') !== false || strpos($result, 'Address family') !== false) && file_exists('/bin/ping6')) {
 						$result = shell_exec('ping6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
 					}
@@ -391,6 +392,7 @@ class Net_Ping
 
 			$error       = '';
 			$retry_count = 0;
+
 			while (true) {
 				if ($retry_count >= $this->retries) {
 					$this->status        = 'down';
@@ -429,6 +431,7 @@ class Net_Ping
 
 						$errno = socket_last_error($this->socket);
 						socket_clear_error($this->socket);
+
 						if (($code == -1 || empty($code)) &&
 							($errno == EHOSTUNREACH || $errno == ECONNRESET || $errno == ECONNREFUSED)) {
 							/* set the return message */
@@ -710,6 +713,7 @@ class Net_Ping
 				} else {
 					return false;
 				}
+
 			default:
 				return false;
 		}
@@ -734,12 +738,14 @@ class Net_Ping
 		/* clean up hostname if specifying snmp_transport */
 		if (strpos($ip_address, 'tcp6:') !== false) {
 			$ip_address = str_replace('tcp6:', '', strtolower($ip_address));
+
 			if (strpos($ip_address, '[') !== false) {
 				$parts      = explode(']', $ip_address);
 				$ip_address = trim($parts[0], '[');
 			}
 		} elseif (strpos($ip_address, 'udp6:') !== false) {
 			$ip_address = str_replace('udp6:', '', strtolower($ip_address));
+
 			if (strpos($ip_address, '[') !== false) {
 				$parts      = explode(']', $ip_address);
 				$ip_address = trim($parts[0], '[');

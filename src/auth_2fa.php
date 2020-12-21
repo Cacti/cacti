@@ -29,6 +29,7 @@ set_default_action();
 
 if (!isset($_SESSION['sess_user_id'])) {
 	header('Location: logout.php');
+
 	exit;
 }
 
@@ -38,6 +39,7 @@ $user = db_fetch_row_prepared('SELECT *
 	array($_SESSION['sess_user_id']));
 
 $message = '';
+
 if (isset($_COOKIE[session_name() . '_otp'])) {
 	$daysUntilInvalid = 0;
 
@@ -61,10 +63,10 @@ if (get_nfilter_request_var('action') == 'login') {
 			$_SESSION['sess_user_2fa'] = true;
 		} else {
 			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
 			$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
 
-			$_SESSION['sess_user_2fa'] = $g->checkCode($user['tfa_secret'],  $token);
-
+			$_SESSION['sess_user_2fa'] = $g->checkCode($user['tfa_secret'], $token);
 			$time = floor(time() / (3600 * 24)); // get day number
 
 			//about using the user agent: It's easy to fake it, but it increases the barrier for stealing and reusing cookies nevertheless
@@ -108,6 +110,7 @@ if (empty($user['tfa_enabled'])) {
 
 if (isset($_SESSION['sess_user_2fa']) && $_SESSION['sess_user_2fa']) {
 	auth_post_login_redirect($user);
+
 	exit;
 }
 

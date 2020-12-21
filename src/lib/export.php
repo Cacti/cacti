@@ -78,6 +78,7 @@ function graph_template_to_xml($graph_template_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
+
 	if (cacti_sizeof($graph_template_items) > 0) {
 		foreach ($graph_template_items as $item) {
 			$hash['graph_template_item'] = get_hash_version('graph_template_item') . get_hash_graph_template($item['id'], 'graph_template_item');
@@ -89,21 +90,28 @@ function graph_template_to_xml($graph_template_id) {
 					switch ($field_name) {
 						case 'task_item_id':
 							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item[$field_name], 'data_template_item') . "</$field_name>\n";
+
 							break;
 						case 'cdef_id':
 							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('cdef') . get_hash_cdef($item[$field_name]) . "</$field_name>\n";
+
 							break;
 						case 'vdef_id':
 							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('vdef') . get_hash_vdef($item[$field_name]) . "</$field_name>\n";
+
 							break;
 						case 'gprint_id':
 							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('gprint_preset') . get_hash_gprint($item[$field_name]) . "</$field_name>\n";
+
 							break;
 						case 'color_id':
 							$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($item[$field_name])) . "</$field_name>\n";
+
 							break;
+
 						default:
 							$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
+
 							break;
 					}
 				} else {
@@ -124,6 +132,7 @@ function graph_template_to_xml($graph_template_id) {
 	$xml_text .= "\t<inputs>\n";
 
 	$i = 0;
+
 	if (cacti_sizeof($graph_template_inputs) > 0) {
 		foreach ($graph_template_inputs as $item) {
 			$hash['graph_template_input'] = get_hash_version('graph_template_input') . get_hash_graph_template($item['id'], 'graph_template_input');
@@ -144,6 +153,7 @@ function graph_template_to_xml($graph_template_id) {
 			$xml_text .= "\t\t\t<items>";
 
 			$j = 0;
+
 			if (cacti_sizeof($graph_template_input_items) > 0) {
 				foreach ($graph_template_input_items as $item2) {
 					$xml_text .= 'hash_' . get_hash_version('graph_template') . get_hash_graph_template($item2['graph_template_item_id'], 'graph_template_item');
@@ -233,6 +243,7 @@ function data_template_to_xml($data_template_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
+
 	if (cacti_sizeof($data_template_rrd) > 0) {
 		foreach ($data_template_rrd as $item) {
 			$hash['data_template_item'] = get_hash_version('data_template_item') . get_hash_data_template($item['id'], 'data_template_item');
@@ -266,6 +277,7 @@ function data_template_to_xml($data_template_id) {
 	$xml_text .= "\t<data>\n";
 
 	$i = 0;
+
 	if (cacti_sizeof($data_input_data) > 0) {
 		foreach ($data_input_data as $item) {
 			$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
@@ -420,6 +432,7 @@ function cdef_to_xml($cdef_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
+
 	if (cacti_sizeof($cdef_items) > 0) {
 		foreach ($cdef_items as $item) {
 			$hash['cdef_item'] = get_hash_version('cdef_item') . get_hash_cdef($item['id'], 'cdef_item');
@@ -481,6 +494,7 @@ function vdef_to_xml($vdef_id) {
 
 	/* XML Branch: <> */
 	$fields_vdef_edit = preset_vdef_form_list();
+
 	foreach ($fields_vdef_edit as $field_name => $field_array) {
 		if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden') && ($field_array['method'] != 'spacer')) {
 			$xml_text .= "\t<$field_name>" . xml_character_encode($vdef[$field_name]) . "</$field_name>\n";
@@ -492,12 +506,14 @@ function vdef_to_xml($vdef_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
+
 	if (cacti_sizeof($vdef_items) > 0) {
 		foreach ($vdef_items as $item) {
 			$hash['vdef_item'] = get_hash_version('vdef_item') . get_hash_vdef($item['id'], 'vdef_item');
 
 			$xml_text .= "\t\t<hash_" . $hash['vdef_item'] . ">\n";
 			$fields_vdef_item_edit = preset_vdef_item_form_list();
+
 			foreach ($fields_vdef_item_edit as $field_name) {
 				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
 			}
@@ -592,6 +608,7 @@ function data_source_profile_to_xml($data_source_profile_id) {
 
 	/* XML Branch: <cf_items> */
 	$i = 0;
+
 	if (cacti_sizeof($profile_cf) > 0) {
 		foreach ($profile_cf as $item) {
 			$xml_text .= $item['consolidation_function_id'];
@@ -609,9 +626,11 @@ function data_source_profile_to_xml($data_source_profile_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
+
 	if (cacti_sizeof($profile_rra)) {
 		foreach ($profile_rra as $item) {
 			$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
+
 			foreach ($fields_profile_rra_edit as $field_name => $field_array) {
 				if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden' && ($field_array['method'] != 'other')) && ($field_array['method'] != 'spacer')) {
 					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
@@ -674,6 +693,7 @@ function host_template_to_xml($host_template_id) {
 	$xml_text .= "\t<graph_templates>";
 
 	$j = 0;
+
 	if (cacti_sizeof($host_template_graph) > 0) {
 		foreach ($host_template_graph as $item) {
 			$xml_text .= 'hash_' . get_hash_version('graph_template') . get_hash_graph_template($item['graph_template_id']);
@@ -692,6 +712,7 @@ function host_template_to_xml($host_template_id) {
 	$xml_text .= "\t<data_queries>";
 
 	$j = 0;
+
 	if (cacti_sizeof($host_template_snmp_query) > 0) {
 		foreach ($host_template_snmp_query as $item) {
 			$xml_text .= 'hash_' . get_hash_version('data_query') . get_hash_data_query($item['snmp_query_id']);
@@ -754,6 +775,7 @@ function data_query_to_xml($data_query_id) {
 	$xml_text .= "\t<graphs>\n";
 
 	$i = 0;
+
 	if (cacti_sizeof($snmp_query_graph) > 0) {
 		foreach ($snmp_query_graph as $item) {
 			$hash['data_query_graph'] = get_hash_version('data_query_graph') . get_hash_data_query($item['id'], 'data_query_graph');
@@ -794,6 +816,7 @@ function data_query_to_xml($data_query_id) {
 			$xml_text .= "\t\t\t<rrd>\n";
 
 			$i = 0;
+
 			if (cacti_sizeof($snmp_query_graph_rrd) > 0) {
 				foreach ($snmp_query_graph_rrd as $item2) {
 					$xml_text .= "\t\t\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
@@ -815,6 +838,7 @@ function data_query_to_xml($data_query_id) {
 			$xml_text .= "\t\t\t<sv_graph>\n";
 
 			$j = 0;
+
 			if (cacti_sizeof($snmp_query_graph_sv) > 0) {
 				foreach ($snmp_query_graph_sv as $item2) {
 					$hash['data_query_sv_graph'] = get_hash_version('data_query_sv_graph') . get_hash_data_query($item2['id'], 'data_query_sv_graph');
@@ -838,6 +862,7 @@ function data_query_to_xml($data_query_id) {
 			$xml_text .= "\t\t\t<sv_data_source>\n";
 
 			$j = 0;
+
 			if (cacti_sizeof($snmp_query_graph_rrd_sv) > 0) {
 				foreach ($snmp_query_graph_rrd_sv as $item2) {
 					$hash['data_query_sv_data_source'] = get_hash_version('data_query_sv_data_source') . get_hash_data_query($item2['id'], 'data_query_sv_data_source');
@@ -907,6 +932,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$recursive = true;
 		/* in the first turn, search all inherited cdef items related to all cdef's known on highest recursion level */
 		$search_cdef_items = array_rekey($cdef_items, 'cdef_id', 'cdef_id');
+
 		if (cacti_sizeof($cdef_items) > 0) {
 			while ($recursive) {
 				/* are there any inherited cdef's within those referenced by any graph item?
@@ -1071,6 +1097,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		}
 
 		break;
+
 	default:
 		$param = array();
 
@@ -1081,6 +1108,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$param = api_plugin_hook_function('resolve_dependencies', $param);
 
 		$dep_array = $param['dep_array'];
+
 		break;
 	}
 
@@ -1108,31 +1136,41 @@ function get_item_xml($type, $id, $follow_deps) {
 				switch($dep_type) {
 				case 'graph_template':
 					$xml_text .= "\n" . graph_template_to_xml($dep_id);
+
 					break;
 				case 'data_template':
 					$xml_text .= "\n" . data_template_to_xml($dep_id);
+
 					break;
 				case 'host_template':
 					$xml_text .= "\n" . host_template_to_xml($dep_id);
+
 					break;
 				case 'data_input_method':
 					$xml_text .= "\n" . data_input_method_to_xml($dep_id);
+
 					break;
 				case 'data_query':
 					$xml_text .= "\n" . data_query_to_xml($dep_id);
+
 					break;
 				case 'gprint_preset':
 					$xml_text .= "\n" . gprint_preset_to_xml($dep_id);
+
 					break;
 				case 'cdef':
 					$xml_text .= "\n" . cdef_to_xml($dep_id);
+
 					break;
 				case 'vdef':
 					$xml_text .= "\n" . vdef_to_xml($dep_id);
+
 					break;
 				case 'data_source_profile':
 					$xml_text .= "\n" . data_source_profile_to_xml($dep_id);
+
 					break;
+
 				default:
 					$param = array();
 

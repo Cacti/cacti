@@ -37,6 +37,7 @@ if (file_exists(__DIR__ . '/../include/cli_check.php')) {
 	require(__DIR__ . '/../include/global.php');
 } else {
 	print 'FATAL: Can not initialize the Cacti API' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -117,11 +118,13 @@ if (cacti_sizeof($parms)) {
 
 				if (!file_exists($oldrrd)) {
 					print 'FATAL: File \'' . $oldrrd . '\' does not exist.' . PHP_EOL;
+
 					exit(-9);
 				}
 
 				if (!is_resource_writable($oldrrd)) {
 					print 'FATAL: File \'' . $oldrrd . '\' is not writable by this account.' . PHP_EOL;
+
 					exit(-8);
 				}
 
@@ -131,11 +134,13 @@ if (cacti_sizeof($parms)) {
 
 				if (!file_exists($newrrd)) {
 					print 'FATAL: File \'' . $newrrd . '\' does not exist.' . PHP_EOL;
+
 					exit(-9);
 				}
 
 				if (!is_resource_writable($newrrd)) {
 					print 'FATAL: File \'' . $newrrd . '\' is not writable by this account.' . PHP_EOL;
+
 					exit(-8);
 				}
 
@@ -145,6 +150,7 @@ if (cacti_sizeof($parms)) {
 
 				if (!is_resource_writable(dirname($finrrd) . '/') || (file_exists($finrrd) && !is_resource_writable($finrrd))) {
 					print 'FATAL: File \'' . $finrrd . '\' is not writable by this account.' . PHP_EOL;
+
 					exit(-8);
 				}
 
@@ -178,14 +184,18 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '--version':
 				display_version();
+
 				exit(0);
 			case '-H':
 			case '--help':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(-3);
 		}
 	}
@@ -195,12 +205,14 @@ if (cacti_sizeof($parms)) {
 if ($oldrrd == '') {
 	print 'FATAL: You must specify a old RRDfile!' . PHP_EOL . PHP_EOL;
 	display_help();
+
 	exit(-2);
 }
 
 if ($newrrd == '') {
 	print 'FATAL: You must specify a New RRDfile!' . PHP_EOL . PHP_EOL;
 	display_help();
+
 	exit(-2);
 }
 
@@ -211,6 +223,7 @@ if ($overwrite && $finrrd == '') {
 if ($finrrd == '') {
 	print 'FATAL: You must specify a New RRDfile or use the overwrite option!' . PHP_EOL . PHP_EOL;
 	display_help();
+
 	exit(-2);
 }
 
@@ -230,6 +243,7 @@ if (class_exists('SQLite3')) {
 
 /* verify the location of rrdtool */
 $rrdtool = read_config_option('path_rrdtool');
+
 if (!file_exists($rrdtool)) {
 	if (substr_count(PHP_OS, 'WIN')) {
 		$rrdtool = 'rrdtool.exe';
@@ -245,11 +259,13 @@ if (strlen($response)) {
 	print 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . PHP_EOL;
 } else {
 	print 'FATAL: RRDTool not found in configuation or path.' . PHP_EOL . 'Please insure RRDTool can be found using one of these methods!' . PHP_EOL;
+
 	exit(-1);
 }
 
 /* determine the temporary file name */
 $seed = mt_rand();
+
 if (substr_count(PHP_OS, 'WIN')) {
 	$tempdir    = getenv('TEMP');
 	$oldxmlfile = $tempdir . '/' . str_replace('.rrd', '', basename($oldrrd)) . '.dump.' . $seed;
@@ -281,6 +297,7 @@ if (file_exists($oldxmlfile)) {
 	unlink($oldxmlfile);
 } else {
 	print 'FATAL: RRDtool Command Failed on \'' . $oldrrd . '\'.  Please insure your RRDtool install is valid!' . PHP_EOL;
+
 	exit(-12);
 }
 
@@ -291,6 +308,7 @@ if (file_exists($newxmlfile)) {
 	unlink($newxmlfile);
 } else {
 	print 'FATAL: RRDtool Command Failed on \'' . $newrrd . '\'.  Please insure your RRDtool install is valid!' . PHP_EOL;
+
 	exit(-12);
 }
 
@@ -361,6 +379,7 @@ function spliceRRDs(&$new_rrd, &$old_flat, &$old_dsnames) {
 			foreach ($new_rrd['rra'] as $rra_num => $rra) {
 				$cf  = $new_rrd['rra'][$rra_num]['cf'];
 				$pdp = $new_rrd['rra'][$rra_num]['pdp_per_row'];
+
 				if (isset($rra['database'])) {
 					foreach ($rra['database'] as $cdp_ds_num => $value) {
 						$dsname    = $new_rrd['ds'][$cdp_ds_num]['name'];
@@ -450,6 +469,7 @@ function getOldRRDValue(&$old_flat, $dsnum, $cf, $time) {
 
 					return 'NaN';
 				}
+
 				if ($time >= $timestamp) {
 					debug("Good for $time offset is " . number_format(abs($time - $timestamp), 0));
 
@@ -529,6 +549,7 @@ function recreateXML($new_rrd) {
 			$rrd .= "\t\t\t</ds>\n";
 
 			$output = array();
+
 			foreach ($new_rrd['rra'][$rra_num]['database'] as $dsnum => $v) {
 				foreach ($v as $time => $value) {
 					$output[$time][$dsnum] = $value;
@@ -541,6 +562,7 @@ function recreateXML($new_rrd) {
 
 		foreach ($output as $time => $v) {
 			$rrd .= "\t\t\t<row>";
+
 			foreach ($v as $dsnum => $value) {
 				$rrd .= '<v> ' . $value . ' </v>';
 			}
@@ -635,6 +657,7 @@ function flattenXML(&$xml) {
 
 				// Get rid of NaN
 				$last_data = 0;
+
 				foreach ($timedata as $timestamp => $data) {
 					if ($data == 'NaN') {
 						$timedata[$timestamp] = $last_data;
@@ -672,6 +695,7 @@ function flattenXML(&$xml) {
  */
 function getMaxValue(&$data) {
 	$max = 0;
+
 	foreach ($data as $timestamp => $value) {
 		if ($value != 'NaN' && $value > $max) {
 			$max = $value;
@@ -743,6 +767,7 @@ function processXML(&$output) {
 
 				array_shift($larray);
 				$tdsno  = 0;
+
 				foreach ($larray as $l) {
 					$value                                           = trim(str_replace('</v>', '', $l));
 					$rrd['rra'][$rra_num]['database'][$tdsno][$time] = $value;
@@ -834,6 +859,7 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 	/* execute the dump command */
 	print 'NOTE: Re-Importing \'' . $xmlfile . '\' to \'' . $rrdfile . '\'' . PHP_EOL;
 	$response = shell_exec("$rrdtool restore -f -r $xmlfile $rrdfile");
+
 	if (strlen($response)) print $response . PHP_EOL;
 }
 
@@ -871,11 +897,13 @@ function preProcessXML(&$output) {
 		foreach ($output as $line) {
 			$line = trim($line);
 			$date = '';
+
 			if ($line == '') {
 				continue;
 			} else {
 				/* is there a comment, remove it */
 				$comment_start = strpos($line, '<!--');
+
 				if ($comment_start === false) {
 					/* do nothing no line */
 				} else {
@@ -947,10 +975,12 @@ function loadTable($db, &$records) {
 	$db->exec('BEGIN TRANSACTION');
 
 	$sql = '';
+
 	foreach ($records as $dsid => $cfdata) {
 		if (is_numeric($dsid)) {
 			foreach ($cfdata as $cf => $timedata) {
 				$i = 0;
+
 				foreach ($timedata as $timestamp => $value) {
 					$sql .= ($sql != '' ? ', ':'') . '(' . $dsid . ',"' . $cf . '",' . $timestamp . ', ' . $value . ')';
 					$i++;

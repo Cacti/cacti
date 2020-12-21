@@ -70,7 +70,9 @@ function form_save() {
 			$xml_data = fread($fp,filesize($_FILES['import_file']['tmp_name']));
 			fclose($fp);
 		} else {
-			header('Location: templates_import.php'); exit;
+			header('Location: templates_import.php');
+
+			exit;
 		}
 
 		if (get_filter_request_var('import_data_source_profile') == '0') {
@@ -95,6 +97,7 @@ function form_save() {
 
 		/* obtain debug information if it's set */
 		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans);
+
 		if ($debug_data !== false && cacti_sizeof($debug_data)) {
 			$_SESSION['import_debug_info'] = $debug_data;
 		} else {
@@ -132,6 +135,7 @@ function import() {
 		html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
 
 		$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
+
 		if (empty($default_profile)) {
 			$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
 		}

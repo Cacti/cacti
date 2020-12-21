@@ -91,6 +91,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts':
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -100,6 +101,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts_noany':
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -117,6 +119,7 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
+
 	default:
 		top_header();
 		validate_graph_request_vars();
@@ -205,13 +208,16 @@ function add_tree_names_to_actions_array() {
 
 function parse_validate_graph_template_id($variable) {
 	$output_type_id = 0;
+
 	if (strpos(get_nfilter_request_var($variable), '_') !== false) {
 		$template_parts = explode('_', get_nfilter_request_var($variable));
+
 		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {
 			set_request_var('graph_template_id', $template_parts[0]);
 			$output_type_id = $template_parts[1];
 		} else {
 			cacti_log('ERROR: Unable to parse graph_template_id with value ' . get_nfilter_request_var($variable), false, 'WEBUI');
+
 			exit;
 		}
 	} else {
@@ -578,12 +584,14 @@ function form_actions() {
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
+
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], 0, 0, 0, 0, false);
 				}
 			} elseif (get_request_var('drp_action') == '5') { // change host
 				get_filter_request_var('host_id');
 				$failures = false;
+
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					if (!api_graph_change_device($selected_items[$i], get_request_var('host_id'))) {
 						$failures = true;
@@ -612,8 +620,11 @@ function form_actions() {
 
 				if (get_request_var('drp_action') == '9') {
 					if (!isset_request_var('aggregate_total_type'))   set_request_var('aggregate_total_type', 0);
+
 					if (!isset_request_var('aggregate_total'))        set_request_var('aggregate_total', 0);
+
 					if (!isset_request_var('aggregate_total_prefix')) set_request_var('aggregate_total_prefix', '');
+
 					if (!isset_request_var('aggregate_order_type'))   set_request_var('aggregate_order_type', 0);
 
 					$item_no = form_input_validate(get_nfilter_request_var('item_no'), 'item_no', '^[0-9]+$', true, 3);
@@ -688,6 +699,7 @@ function form_actions() {
 					aggregate_validate_graph_items($_POST, $graph_templates_items);
 
 					$aggregate_graph_items = array();
+
 					foreach ($graph_templates_items as $item_id => $data) {
 						$item_new                            = array();
 						$item_new['aggregate_graph_id']      = $aggregate_graph_id;
@@ -745,6 +757,7 @@ function form_actions() {
 				aggregate_create_update($local_graph_id, $member_graphs, $attribs);
 
 				header("Location: aggregate_graphs.php?action=edit&tab=details&id=$local_graph_id");
+
 				exit;
 			} elseif (get_request_var('drp_action') == '8') { // automation
 				cacti_log('automation_graph_action_execute called: ' . get_request_var('drp_action'), true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -756,10 +769,12 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '11') {
 				// Add to a report
 				$good = true;
+
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					if (!reports_add_graphs(get_filter_request_var('report_id'), $selected_items[$i], get_request_var('timespan'), get_request_var('align'))) {
 						raise_message('reports_add_error');
 						$good = false;
+
 						break;
 					}
 				}
@@ -881,6 +896,7 @@ function form_actions() {
 				print "<tr><td class='textArea'><p>" . __('The following Data Source(s) are in use by these Graph(s).') . "</p>\n";
 
 				print '<div class="itemlist"><ul>';
+
 				foreach ($data_sources as $data_source) {
 					print '<li>' . html_escape($data_source['name_cache']) . "</li>\n";
 				}
@@ -889,6 +905,7 @@ function form_actions() {
 				print '<span class="nowrap">';
 
 				$ds_preselected_delete = read_config_option('ds_preselected_delete');
+
 				if ($ds_preselected_delete == 'on') {
 					$delete_radio_button_1_state = '2';
 					$delete_radio_button_2_state = '1';
@@ -1010,6 +1027,7 @@ function form_actions() {
 					print "<td class='textArea'>" .
 					'<p>' . __('The following Data Sources are in use by these Graphs:') . '</p>
 					<div class="itemlist"><ul>';
+
 					foreach ($data_sources as $data_source) {
 						print '<li>' . html_escape($data_source['name_cache']) . '</li>';
 					}
@@ -1268,6 +1286,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: graphs.php');
+
 		exit;
 	}
 
@@ -1425,6 +1444,7 @@ function graph_edit() {
 		if (!cacti_sizeof($graph)) {
 			raise_message(31);
 			header('Location: graphs.php');
+
 			exit;
 		}
 
@@ -1476,9 +1496,11 @@ function graph_edit() {
 						if (!empty($graph['graph_template_id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graph_templates.php?action=template_edit&id=' . (isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'));?>'><?php print __('Edit Graph Template.');?></a><br><?php
 						}
+
 						if (!isempty_request_var('host_id') || !empty($host_id)) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a><br><?php
 						}
+
 						if ($locked) {
 							?><span class='linkMarker'>*</span><a href='#' class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></a><?php
 						} else {
@@ -1935,7 +1957,7 @@ function graph_management() {
 
 							if (cacti_sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . "</option>\n";
+									print "<option value='" . $template['id'] . "'" . (get_request_var('template_id') == $template['id'] ? ' selected' : '') . '>' . html_escape($template['name']) . '</option>';
 								}
 							}
 							?>
@@ -1972,7 +1994,7 @@ function graph_management() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1989,6 +2011,7 @@ function graph_management() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
+
 	if (get_request_var('rfilter') != '') {
 		$sql_where = " WHERE (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
@@ -2017,6 +2040,7 @@ function graph_management() {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id = 0';
 	} elseif (!isempty_request_var('template_id')) {
 		$parts = explode('_', get_request_var('template_id'));
+
 		if ($parts[0] == 'cg') {
 			input_validate_input_number($parts[1]);
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id = ' . $parts[1];
@@ -2139,6 +2163,7 @@ function graph_management() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */

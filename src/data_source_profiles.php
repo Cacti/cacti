@@ -85,6 +85,7 @@ switch (get_request_var('action')) {
 		item_edit();
 
 		bottom_footer();
+
 		break;
 	case 'edit':
 		top_header();
@@ -92,13 +93,16 @@ switch (get_request_var('action')) {
 		profile_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		profile();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -144,6 +148,7 @@ function form_save() {
 				if (isset_request_var('step')) {
 					// Validate consolidation functions
 					$cfs = get_nfilter_request_var('consolidation_function_id');
+
 					if (cacti_sizeof($cfs) && !empty($cfs)) {
 						foreach ($cfs as $cf) {
 							input_validate_input_number($cf);
@@ -156,6 +161,7 @@ function form_save() {
 
 					// Validate consolidation functions
 					$cfs = get_nfilter_request_var('consolidation_function_id');
+
 					if (cacti_sizeof($cfs) && !empty($cfs)) {
 						foreach ($cfs as $cf) {
 							db_execute_prepared('REPLACE INTO data_source_profiles_cf
@@ -244,6 +250,7 @@ function form_actions() {
 		}
 
 		header('Location: data_source_profiles.php');
+
 		exit;
 	}
 
@@ -294,6 +301,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: data_source_profiles.php');
+
 		exit;
 	}
 
@@ -337,6 +345,7 @@ function duplicate_data_source_profile($source_profile, $title_format) {
 				if ($column == 'id') {
 					continue;
 				}
+
 				if ($column == 'hash') {
 					$save['hash'] = get_hash_data_source_profile(0);
 				} elseif ($column == 'name') {
@@ -623,6 +632,7 @@ function profile_edit() {
 			array(get_request_var('id')));
 
 		$i = 0;
+
 		if (cacti_sizeof($profile_rras)) {
 			foreach ($profile_rras as $rra) {
 				form_alternate_row('line' . $rra['id']);$i++;?>
@@ -913,7 +923,7 @@ function profile() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1079,6 +1089,7 @@ function profile() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($profile_list)) {
 		foreach ($profile_list as $profile) {
 			if ($profile['data_sources'] == 0 && $profile['templates'] == 0) {

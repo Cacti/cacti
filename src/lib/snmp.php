@@ -59,12 +59,15 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 	switch ($version) {
 		case '1':
 			$version = SNMP::VERSION_1;
+
 			break;
 		case '2':
 			$version = SNMP::VERSION_2c;
+
 			break;
 		case '3':
 			$version = SNMP::VERSION_3;
+
 			break;
 	}
 
@@ -388,6 +391,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 
 function cacti_get_snmpv3_auth($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass, $context, $engineid) {
 	$sec_details = ' -a ' . snmp_escape_string($auth_proto) . ' -A ' . snmp_escape_string($auth_pass);
+
 	if ($priv_proto == '[None]' || $priv_pass == '') {
 		if ($auth_pass == '' || $auth_proto == '[None]') {
 			$sec_level   = 'noAuthNoPriv';
@@ -426,6 +430,7 @@ function cacti_get_snmpv3_auth($auth_proto, $auth_user, $auth_pass, $priv_proto,
 function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetitions = null,
 	$non_repeaters = null, $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 	$info = $session->info;
+
 	if (is_array($oid) && cacti_sizeof($oid) == 0) {
 		cacti_log('Empty OID!', false);
 
@@ -436,6 +441,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 
 	if ($non_repeaters === null)
 		$non_repeaters = 0;
+
 	if ($max_repetitions === null)
 		$max_repetitions = $session->max_oids;
 
@@ -511,6 +517,7 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 
 function cacti_snmp_session_getnext($session, $oid) {
 	$info = $session->info;
+
 	if (is_array($oid) && cacti_sizeof($oid) == 0) {
 		cacti_log('Empty OID!', false);
 
@@ -602,12 +609,14 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				foreach ($banned_snmp_strings as $item) {
 					if (strstr($value, $item) != '') {
 						unset($temp_array[$key]);
+
 						continue 2;
 					}
 				}
 			}
 
 			$o = 0;
+
 			for (reset($temp_array); $i = key($temp_array); next($temp_array)) {
 				if ($temp_array[$i] != 'NULL') {
 					$snmp_array[$o]['oid']   = preg_replace('/^\./', '', $i);
@@ -668,12 +677,14 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				foreach ($banned_snmp_strings as $item) {
 					if (strstr($value, $item) != '') {
 						unset($temp_array[$key]);
+
 						continue 2;
 					}
 				}
 			}
 
 			$i = 0;
+
 			foreach ($temp_array as $index => $value) {
 				if (preg_match('/(.*) =.*/', $value)) {
 					$snmp_array[$i]['oid']   = trim(preg_replace('/(.*) =.*/', '\\1', $value));
@@ -731,6 +742,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 	/* account for invalid MIB files */
 	if (strpos($string, 'Wrong Type') !== false) {
 		$string = strrev($string);
+
 		if ($position = strpos($string, ':')) {
 			$string = trim(strrev(substr($string, 0, $position)));
 		} else {
@@ -824,6 +836,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 			/* convert the hex string into an ascii string */
 			foreach ($parts as $part) {
 				$output .= ($output != '' ? ':' : '');
+
 				if ($part == '00') {
 					$output .= '00';
 				} else {
@@ -853,6 +866,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 			/* convert the hex string into an ascii string */
 			foreach ($parts as $part) {
 				$output .= ($output != '' ? ':' : '');
+
 				if ($part == '00') {
 					$output .= '00';
 				} else {
@@ -873,6 +887,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 	foreach ($banned_snmp_strings as $item) {
 		if (strpos($string, $item) !== false) {
 			$string = '';
+
 			break;
 		}
 	}

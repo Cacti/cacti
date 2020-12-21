@@ -254,6 +254,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	if ($errno == 0) return;
 	# define constants not available with PHP 4
 	if (!defined('E_STRICT'))            define('E_STRICT', 2048);
+
 	if (!defined('E_RECOVERABLE_ERROR')) define('E_RECOVERABLE_ERROR', 4096);
 
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
@@ -281,6 +282,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 
 		/* let's ignore some lesser issues */
 		if (substr_count($errmsg, 'date_default_timezone')) return;
+
 		if (substr_count($errmsg, 'Only variables')) return;
 		/* log the error to the Cacti log */
 		cacti_log('PROGERR: ' . $err, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -425,6 +427,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 		case GRAPH_ITEM_TYPE_HRULE:
 		case GRAPH_ITEM_TYPE_VRULE:
 			return $old_graph_type;
+
 			break;
 	}
 
@@ -433,6 +436,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 		case AGGREGATE_GRAPH_TYPE_KEEP:
 			/* keep entry as defined by the Graph */
 			return $old_graph_type;
+
 			break;
 		case GRAPH_ITEM_TYPE_STACK:
 			/* create an AREA/STACK graph
@@ -449,10 +453,12 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 				/* if the graph type is a stack and the item is 1, it must be converted to area */
 				return GRAPH_ITEM_TYPE_AREA;
 			}
+
 			if ($graph_index > 0 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {
 				/* if the graph type is a stack and the item is 1, it must be converted to area */
 				return GRAPH_ITEM_TYPE_STACK;
 			}
+
 			if ($graph_index == 0 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {
 				/* don't change (multi-)AREAs on the first graph */
 				return $old_graph_type;
@@ -480,6 +486,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 			} else {
 				return GRAPH_ITEM_TYPE_STACK;
 			}
+
 			break;
 		case AGGREGATE_GRAPH_TYPE_LINE1_STACK:
 			if ($graph_index == 0) {
@@ -487,6 +494,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 			} else {
 				return GRAPH_ITEM_TYPE_LINESTACK;
 			}
+
 			break;
 		case AGGREGATE_GRAPH_TYPE_LINE2_STACK:
 			if ($graph_index == 0) {
@@ -494,6 +502,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 			} else {
 				return GRAPH_ITEM_TYPE_LINESTACK;
 			}
+
 			break;
 		case AGGREGATE_GRAPH_TYPE_LINE3_STACK:
 			if ($graph_index == 0) {
@@ -501,12 +510,14 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 			} else {
 				return GRAPH_ITEM_TYPE_LINESTACK;
 			}
+
 			break;
 		case GRAPH_ITEM_TYPE_LINE1:
 		case GRAPH_ITEM_TYPE_LINE2:
 		case GRAPH_ITEM_TYPE_LINE3:
 		case GRAPH_ITEM_TYPE_LINESTACK:
 			return $new_graph_type;
+
 			break;
 	}
 }
@@ -662,8 +673,10 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 
 	/* new CDEF(s) are required! */
 	$num_items = cacti_sizeof($graph_template_items);
+
 	if ($num_items > 0) {
 		$i = 0;
+
 		foreach ($graph_template_items as $graph_template_item) {
 			# current cdef
 			$cdef_id   = $graph_template_item['cdef_id'];
@@ -674,17 +687,21 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 
 			# new cdef
 			$new_cdef_text = 'INVALID';	# in case sth goes wrong
+
 			switch ($_total_type) {
 				case AGGREGATE_TOTAL_TYPE_SIMILAR:
 					$new_cdef_text = str_replace('CURRENT_DATA_SOURCE', 'SIMILAR_DATA_SOURCES_NODUPS', $cdef_text);
+
 					break;
 				case AGGREGATE_TOTAL_TYPE_ALL:
 					$new_cdef_text = str_replace('CURRENT_DATA_SOURCE', 'ALL_DATA_SOURCES_NODUPS', $cdef_text);
+
 					break;
 			}
 
 			# is the new cdef already present?
 			$new_cdef_id = '';
+
 			foreach ($cdefs as $cdef) {
 				cacti_log(__FUNCTION__ . ' verify matching cdef: ' . $cdef['id'] . ' on: ' . $cdef['cdef_text'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -708,9 +725,11 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 				switch ($_total_type) {
 					case AGGREGATE_TOTAL_TYPE_SIMILAR:
 						$new_cdef_name = '_AGGREGATE SIMILAR ' . $cdef_name;
+
 						break;
 					case AGGREGATE_TOTAL_TYPE_ALL:
 						$new_cdef_name = '_AGGREGATE ALL ' . $cdef_name;
+
 						break;
 				}
 
@@ -846,6 +865,7 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	$local_graph_ids  = array();
 
 	$sql_where        = '';
+
 	if ($local_graph_id > 0) {
 		$sql_where = "AND pagi.local_graph_id=$local_graph_id";
 	}

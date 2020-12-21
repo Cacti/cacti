@@ -53,6 +53,7 @@ case 'edit':
 	bottom_footer();
 
 	break;
+
 default:
 	top_header();
 	networks();
@@ -141,6 +142,7 @@ function api_networks_discover($network_id, $discover_debug) {
 					array($poller_id));
 
 				$port = read_config_option('remote_agent_port');
+
 				if ($port != '') {
 					$port = ':' . $port;
 				}
@@ -246,12 +248,14 @@ function api_networks_save($post) {
 		if (cacti_sizeof($networks)) {
 			foreach ($networks as $net) {
 				$ips = automation_calculate_total_ips($net);
+
 				if ($ips !== false) {
 					$total_ips += $ips;
 				} else {
 					$continue                       = false;
 					$_SESSION['automation_message'] = __esc('ERROR: Network \'%s\' is Invalid.', $net);
 					raise_message('automation_message');
+
 					break;
 				}
 			}
@@ -261,6 +265,7 @@ function api_networks_save($post) {
 			$save['total_ips'] = $total_ips;
 
 			$network_id = 0;
+
 			if (!is_error_message()) {
 				$network_id = sql_save($save, 'automation_networks');
 
@@ -290,6 +295,7 @@ function form_actions() {
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				foreach ($selected_items as $item) {
@@ -389,6 +395,7 @@ function form_actions() {
 	if (!isset($networks_array)) {
 		raise_message(40);
 		header('Location: automation_networks.php');
+
 		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
@@ -1199,7 +1206,7 @@ function networks_filter() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . $value . '</option>';
 								}
 							}
 							?>

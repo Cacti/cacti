@@ -223,6 +223,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					break;
 				case 'data_source_profile':
 					$cache_add = xml_to_data_source_profile($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $import_as_new, $profile_id);
+
 					if ($cache_add !== false) {
 						$hash_cache += $cache_add;
 					}
@@ -232,6 +233,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					// Deprecated
 
 					break;
+
 				default:
 					$param = array();
 
@@ -303,6 +305,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 				return false;
 			}
+
 			if (strpos($x, '<signature>') !== false) {
 				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)), true);
 				$x                = "   <signature></signature>\n";
@@ -320,6 +323,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 	// Verify Signature
 	$ok = openssl_verify($xml, $binary_signature, $public_key);
+
 	if ($ok == 1) {
 		cacti_log('NOTE: File is Signed Correctly', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 	} elseif ($ok == 0) {
@@ -685,6 +689,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 	if (isset($new_items) && cacti_sizeof($new_items)) {
 		$new_text = array();
+
 		foreach ($new_items as $item) {
 			$new_text[] = 'New Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
 		}
@@ -693,6 +698,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 	if (isset($orphaned_items) && cacti_sizeof($orphaned_items)) {
 		$orphan_text = array();
+
 		foreach ($orphaned_items as $item) {
 			if ($remove_orphans) {
 				$orphan_text[] = 'Removed Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
@@ -1573,6 +1579,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	$save['hash'] = $hash;
 
 	$fields_vdef_edit = preset_vdef_form_list();
+
 	foreach ($fields_vdef_edit as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
@@ -1623,6 +1630,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 			$save['vdef_id'] = $vdef_id;
 
 			$fields_vdef_item_edit = preset_vdef_item_form_list();
+
 			foreach ($fields_vdef_item_edit as $field_name => $field_array) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
@@ -1742,6 +1750,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			if ($parsed_hash['hash'] == '5240353b8f7f259acaf30e6229bc14e7') {
 				continue;
 			}
+
 			if ($parsed_hash['hash'] == 'd94caa7cc3733bd95ee00a3917fdcbb5') {
 				continue;
 			}
@@ -1832,8 +1841,10 @@ function compare_data($save, $previous_data, $table) {
 		return 0;
 	} else {
 		$different = 0;
+
 		foreach ($save as $column => $value) {
 			if (array_search($column, $ignores, true) !== false) continue;
+
 			if ($previous_data[$column] != $value) {
 				$cols = db_get_table_column_types($table);
 
@@ -1844,9 +1855,11 @@ function compare_data($save, $previous_data, $table) {
 					if (empty($previous_data[$column]) && empty($value)) {
 						continue;
 					}
+
 					if ($table == 'data_template_rrd' && $column == 'rrd_heartbeat') {
 						continue;
 					}
+
 					if ($table == 'data_template_data' && $column == 'rrd_step') {
 						continue;
 					}
@@ -1938,6 +1951,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
 			array($parsed_hash['hash'])));
 		case 'round_robin_archive':
 			return $prepend;
+
 		default:
 			$param = array();
 
@@ -2152,6 +2166,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 			print '<p><strong>' . __('Package Files') . "</strong></p>\n";
 
 			print '<ul>';
+
 			foreach ($filestatus as $filename => $status) {
 				print '<li>' . ($preview ? __('[preview] '):'') . html_escape($filename) . ' [' . $status . "]</li>\n";
 			}
@@ -2188,6 +2203,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 
 				if (isset($vals['orphans'])) {
 					print '<ul class="monoSpace">';
+
 					foreach ($vals['orphans'] as $orphan) {
 						print '<li>' . html_escape($orphan) . "</li>\n";
 					}
@@ -2196,6 +2212,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 
 				if (isset($vals['new_items'])) {
 					print '<ul class="monoSpace">';
+
 					foreach ($vals['new_items'] as $item) {
 						print '<li>' . html_escape($item) . "</li>\n";
 					}
@@ -2204,6 +2221,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 
 				if (isset($vals['differences'])) {
 					print '<ul class="monoSpace">';
+
 					foreach ($vals['differences'] as $diff) {
 						print '<li>' . html_escape($diff) . "</li>\n";
 					}
@@ -2245,6 +2263,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 	} else {
 		$output = ob_get_clean();
 		$output = explode("\n", $output);
+
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
 				$line = trim(str_replace('&nbsp;', '', strip_tags($line)));

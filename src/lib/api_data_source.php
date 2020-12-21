@@ -186,6 +186,7 @@ function api_data_source_remove_multi($local_data_ids) {
 	$acmethod  = read_config_option('rrd_autoclean_method');
 
 	$local_data_ids_chunks = array_chunk($local_data_ids, 1000);
+
 	foreach ($local_data_ids_chunks as $ids_to_delete) {
 		$poller_ids = get_remote_poller_ids_from_data_sources($ids_to_delete);
 
@@ -688,6 +689,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 			$save['local_data_id']              = (isset($local_data_id) ? $local_data_id : 0);
 			$save['local_data_template_rrd_id'] = (isset($data_template_rrd['local_data_template_rrd_id']) ? $data_template_rrd['local_data_template_rrd_id'] : 0);
 			$save['data_template_id']           = (!empty($_local_data_id) ? $data_template_rrd['data_template_id'] : $data_template_id);
+
 			if ($save['local_data_id'] == 0) {
 				$save['hash']                   = get_hash_data_template($data_template_rrd['local_data_template_rrd_id'], 'data_template_item');
 			} else {

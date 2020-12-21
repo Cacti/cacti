@@ -46,6 +46,7 @@ array_shift($parms);
 if (cacti_sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
+
 	exit(1);
 }
 
@@ -66,30 +67,38 @@ if (cacti_sizeof($parms)) {
 			case '--host-template':
 			case '--host-template-id':
 				$template = $value;
+
 				break;
 			case '--host-id':
 				$host_id = $value;
+
 				break;
 			case '--list-host-templates':
 				displayHostTemplates(getHostTemplates());
+
 				exit(0);
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -98,11 +107,12 @@ if (cacti_sizeof($parms)) {
 /* determine the hosts to reindex */
 if (strtolower($host_id) == 'all') {
 	$sql_where = '';
-}elseif (is_numeric($host_id)) {
+} elseif (is_numeric($host_id)) {
 	$sql_where = ' WHERE id=' . $host_id;
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n\n";
 	display_help();
+
 	exit;
 }
 
@@ -112,6 +122,7 @@ if (is_numeric($template)) {
 } else {
 	print "ERROR: You must specify a Host Template to proceed.\n\n";
 	display_help();
+
 	exit;
 }
 
@@ -128,6 +139,7 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 
 		if (cacti_sizeof($snmp_queries) > 0) {
 			print "NOTE: Updating Data Queries. There were '" . cacti_sizeof($snmp_queries) . "' Found\n";
+
 			foreach ($snmp_queries as $snmp_query) {
 				print "NOTE: Updating Data Query ID '" . $snmp_query['snmp_query_id'] . "'\n";
 				db_execute('REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method)
@@ -155,6 +167,7 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 	}
 } else {
 	print "ERROR: The selected Host Template does not exist, try --list-host-templates\n\n";
+
 	exit(1);
 }
 

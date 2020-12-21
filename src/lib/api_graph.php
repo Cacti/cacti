@@ -241,6 +241,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	$matches = array();
 
 	$suggested_values_graph = array();
+
 	if (cacti_sizeof($suggested_values)) {
 		foreach ($suggested_values as $suggested_value) {
 			/* once we find a match; don't try to find more */

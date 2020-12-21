@@ -45,6 +45,7 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 
 	if ($objects && cacti_sizeof($objects) > 0) {
 		$oids = array();
+
 		foreach ($objects as &$object) {
 			$oids[] = $object['oid'];
 			$object = ($object['otype'] == 'DATA' && $object['max-access'] != 'not-accessible') ? array('type' => $object['type'], 'value' => $object['value']) : false;
@@ -60,6 +61,7 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 				if ($last_accessible_object) {
 					$cache[$last_accessible_object]['next'] = $oid;
 				}
+
 				if (cacti_sizeof($next_accessible_object_required) > 0) {
 					foreach ($next_accessible_object_required as $next_accessible_object_required_oid) {
 						$cache[$next_accessible_object_required_oid]['next'] = $oid;

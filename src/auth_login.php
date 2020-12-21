@@ -50,6 +50,7 @@ if (read_config_option('auth_method') == '2') {
 		$username = '';
 		cacti_log('ERROR: No username passed with Web Basic Authentication enabled.', false, 'AUTH');
 		auth_display_custom_error_message(__('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.'));
+
 		exit;
 	}
 
@@ -61,6 +62,7 @@ if (read_config_option('auth_method') == '2') {
 	/* Handle mapping basic accounts to shortform accounts.
 	 * Fromat of map file is CSV: basic,shortform */
 	$mapfile = read_config_option('path_basic_mapfile');
+
 	if ($mapfile != '' && file_exists($mapfile) && is_readable($mapfile)) {
 		$records = file($mapfile);
 		$found   = false;
@@ -119,6 +121,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	case '0':
 		/* No auth, no action, also shouldn't get here */
 		$auth_local_required = false;
+
 		exit;
 
 		break;
@@ -142,6 +145,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 			display_custom_error_message(__('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username));
 			header('Location: index.php');
+
 			exit;
 		}
 
@@ -199,6 +203,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		}
 
 		break;
+
 	default:
 		$auth_local_required = true;
 
@@ -206,6 +211,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	}
 
 	cacti_log("DEBUG: User '" . $username . "' attempt login locally? " . ($auth_local_required ? 'Yes':'No'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
 	if ($auth_local_required) {
 		secpass_login_process($username);
 
@@ -222,6 +228,7 @@ if (get_nfilter_request_var('action') == 'login') {
 					$valid = compat_password_verify($p, $stored_pass);
 
 					cacti_log("DEBUG: User '" . $username . "' password is " . ($valid?'':'in') . 'valid', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
 					if ($valid) {
 						$user = db_fetch_row_prepared('SELECT *
 							FROM user_auth
@@ -302,12 +309,14 @@ if (get_nfilter_request_var('action') == 'login') {
 			display_custom_error_message(__('Template user id %s does not exist.', read_config_option('user_template')));
 			cacti_log("LOGIN: Template user id '" . read_config_option('user_template') . "' does not exist.", false, 'AUTH');
 			header('Location: index.php');
+
 			exit;
 		}
 	}
 
 	/* Guest account checking - Not for builtin */
 	$guest_user = false;
+
 	if ((!cacti_sizeof($user)) && ($user_auth) && (get_guest_account() != '0')) {
 		/* Locate guest user record */
 		$user = db_fetch_row_prepared('SELECT id, username, enabled
@@ -324,6 +333,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			display_custom_error_message(__('Guest user id %s does not exist.', read_config_option('guest_user')));
 			cacti_log("LOGIN: Unable to locate guest user '" . read_config_option('guest_user') . "'", false, 'AUTH');
 			header('Location: index.php');
+
 			exit;
 		}
 	}
@@ -331,8 +341,10 @@ if (get_nfilter_request_var('action') == 'login') {
 	/* Process the user  */
 	if (cacti_sizeof($user)) {
 		auth_login($user);
+
 		if ($user['tfa_enabled'] != '') {
 			header('Location: auth_2fa.php');
+
 			exit;
 		} else {
 			auth_post_login_redirect($user);
@@ -375,6 +387,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
 		cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
 		header('Location: index.php');
+
 		exit;
 	} else {
 		if ((!$guest_user) && ($user_auth)) {
@@ -382,6 +395,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
 			cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
 			header('Location: index.php');
+
 			exit;
 		} else {
 			/* BAD username/password builtin and LDAP */
@@ -420,6 +434,7 @@ function domains_login_process() {
 	if (is_numeric(get_nfilter_request_var('realm')) && get_nfilter_request_var('login_password') != '') {
 		/* get user DN */
 		$ldap_dn_search_response = domains_ldap_search_dn($username, get_nfilter_request_var('realm'));
+
 		if ($ldap_dn_search_response['error_num'] == '0') {
 			$ldap_dn = $ldap_dn_search_response['dn'];
 		} else {
@@ -524,6 +539,7 @@ function domains_login_process() {
 						display_custom_error_message(__('Template user id %s does not exist.', $template_user));
 						cacti_log("LOGIN: Template user id '" . $template_user . "' does not exist.", false, 'AUTH');
 						header('Location: index.php?header=false');
+
 						exit;
 					}
 				}
@@ -542,7 +558,9 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	$ldap = new Ldap;
 
 	if (!empty($username)) $ldap->username = $username;
+
 	if (!empty($password)) $ldap->password = $password;
+
 	if (!empty($dn))       $ldap->dn       = $dn;
 
 	$ld = db_fetch_row_prepared('SELECT *
@@ -552,17 +570,27 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 
 	if (cacti_sizeof($ld)) {
 		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+
 		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
+
 		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
+
 		if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];
+
 		if (!empty($ld['proto_version']))     $ldap->version           = $ld['proto_version'];
+
 		if (!empty($ld['encryption']))        $ldap->encryption        = $ld['encryption'];
+
 		if (!empty($ld['referrals']))         $ldap->referrals         = $ld['referrals'];
 
 		if (!empty($ld['mode']))              $ldap->mode              = $ld['mode'];
+
 		if (!empty($ld['search_base']))       $ldap->search_base       = $ld['search_base'];
+
 		if (!empty($ld['search_filter']))     $ldap->search_filter     = $ld['search_filter'];
+
 		if (!empty($ld['specific_dn']))       $ldap->specific_dn       = $ld['specific_dn'];
+
 		if (!empty($ld['specific_password'])) $ldap->specific_password = $ld['specific_password'];
 
 		if ($ld['group_require'] == 'on') {
@@ -570,8 +598,11 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 		} else {
 			$ldap->group_require = false;
 		}
+
 		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
+
 		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
+
 		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
 
 		return $ldap->Authenticate();
@@ -592,17 +623,27 @@ function domains_ldap_search_dn($username, $realm) {
 
 	if (cacti_sizeof($ld)) {
 		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+
 		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
+
 		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
+
 		if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];
+
 		if (!empty($ld['proto_version']))     $ldap->version           = $ld['proto_version'];
+
 		if (!empty($ld['encryption']))        $ldap->encryption        = $ld['encryption'];
+
 		if (!empty($ld['referrals']))         $ldap->referrals         = $ld['referrals'];
 
 		if (!empty($ld['mode']))              $ldap->mode              = $ld['mode'];
+
 		if (!empty($ld['search_base']))       $ldap->search_base       = $ld['search_base'];
+
 		if (!empty($ld['search_filter']))     $ldap->search_filter     = $ld['search_filter'];
+
 		if (!empty($ld['specific_dn']))       $ldap->specific_dn       = $ld['specific_dn'];
+
 		if (!empty($ld['specific_password'])) $ldap->specific_password = $ld['specific_password'];
 
 		if ($ld['group_require'] == 'on') {
@@ -612,7 +653,9 @@ function domains_ldap_search_dn($username, $realm) {
 		}
 
 		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
+
 		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
+
 		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
 
 		return $ldap->Search();
@@ -687,7 +730,9 @@ if (read_config_option('auth_method') == '3' || read_config_option('auth_method'
 			</td>
 		</tr>
 <?php
-} if (read_config_option('auth_cache_enabled') == 'on') { ?>
+}
+
+if (read_config_option('auth_cache_enabled') == 'on') { ?>
 		<tr>
 			<td>&nbsp;</td>
 			<td>
@@ -705,12 +750,14 @@ if (read_config_option('auth_method') == '3' || read_config_option('auth_method'
 		</tr>
 <?php
 $error_message = '';
+
 if ($ldap_error) {
 	$error_message = $ldap_error;
 } else {
 	if (get_nfilter_request_var('action') == 'login') {
 		$error_message = __('Invalid User Name/Password Please Retype');
 	}
+
 	if ($user_enabled == '0') {
 		$error_message =  __('User Account Disabled');
 	}

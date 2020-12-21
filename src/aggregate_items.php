@@ -39,21 +39,25 @@ switch (get_request_var('action')) {
 		item_remove();
 
 		header('Location: aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
+
 		break;
 	case 'item_edit':
 		top_header();
 		item_edit();
 		bottom_footer();
+
 		break;
 	case 'item_movedown':
 		item_movedown();
 
 		header('Location: aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
+
 		break;
 	case 'item_moveup':
 		item_moveup();
 
 		header('Location: aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
+
 		break;
 }
 
@@ -147,9 +151,11 @@ function form_save() {
 
 		if (is_error_message()) {
 			header('Location: ' . $config['url_path'] . 'aggregate_items.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_filter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_filter_request_var('local_graph_id'));
+
 			exit;
 		} else {
 			header('Location: ' . $config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
+
 			exit;
 		}
 	}
@@ -192,12 +198,14 @@ function form_save_aggregate() {
 		// sql_save will not give usefull return values when row key is
 		// composed from multiple columns. need to manualy build query
 		$sql_set = 'SET ';
+
 		foreach ($save as $key => $value) {
 			$sql_set .= $key . '=' . db_qstr($value) . ', ';
 		}
 		$sql_set = substr($sql_set, 0, -2);
 
 		$sql_where = 'graph_templates_item_id = ' . get_filter_request_var('graph_template_item_id') . ' AND ';
+
 		if ($save_to == 'aggregate_graph_templates_item') {
 			$sql_where .= 'aggregate_template_id=' . get_filter_request_var('aggregate_template_id');
 		} else {
@@ -221,9 +229,11 @@ function form_save_aggregate() {
 
 	if (is_error_message()) {
 		header('Location: ' . $config['url_path'] . $location_failure);
+
 		exit;
 	} else {
 		header('Location: ' . $config['url_path'] . $location_success);
+
 		exit;
 	}
 }

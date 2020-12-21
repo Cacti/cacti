@@ -49,19 +49,24 @@ get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_sear
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
+
 		break;
 	case 'actions':
 		form_actions();
+
 		break;
 	case 'edit':
 		top_header();
 		manager_edit();
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 		manager();
 		bottom_footer();
+
 	break;
 }
 
@@ -159,7 +164,7 @@ function manager() {
 								<?php
 								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
@@ -232,6 +237,7 @@ function manager() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($managers)) {
 		foreach ($managers as $item) {
 			$description = filter_value($item['description'], get_request_var('filter'));
@@ -330,6 +336,7 @@ function manager_edit() {
 			manager_logs($id, $header_label);
 
 			break;
+
 		default:
 			form_start('managers.php');
 
@@ -376,6 +383,7 @@ function manager_notifications($id, $header_label) {
 	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
 
 	$registered_mibs = array();
+
 	if ($mibs && $mibs > 0) {
 		foreach ($mibs as $mib) { $registered_mibs[] = $mib['mib']; }
 	}
@@ -482,7 +490,7 @@ function manager_notifications($id, $header_label) {
 								<?php
 								if (cacti_sizeof($mibs)) {
 									foreach ($mibs as $mib) {
-										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . $mib['mib'] . '</option>';
+										print "<option value='" . html_escape($mib['mib']) . "'" . (get_request_var('mib') == $mib['mib'] ? ' selected' : '') . '>' . html_escape($mib['mib']) . '</option>';
 									}
 								}
 								?>
@@ -503,7 +511,7 @@ function manager_notifications($id, $header_label) {
 								<?php
 								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
@@ -736,7 +744,7 @@ function manager_logs($id, $header_label) {
 								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
-									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . $name . '</option>';
+									print "<option value='" . $level . "'" . (get_request_var('severity') == $level ? ' selected' : '') . '>' . $name . '</option>';
 								}
 								?>
 							</select>
@@ -817,6 +825,7 @@ function manager_logs($id, $header_label) {
 			if ($item['description']) {
 				$description = '';
 				$lines       = preg_split('/\r\n|\r|\n/', $item['description']);
+
 				foreach ($lines as $line) {
 					$description .= html_escape(trim($line)) . '<br>';
 				}
@@ -858,7 +867,9 @@ function form_save() {
 	switch(get_nfilter_request_var('tab')){
 		case 'notifications':
 			header('Location: managers.php?action=edit&tab=notifications&id=' . get_request_var('id'));
+
 			break;
+
 		default:
 			$save['id']                       = get_request_var('id');
 			$save['description']              = form_input_validate(trim(get_nfilter_request_var('description')), 'description', '', false, 3);
@@ -898,10 +909,12 @@ function form_save() {
 			}
 
 			$manager_id = 0;
+
 			if (!is_error_message()) {
 				$manager_id = sql_save($save, 'snmpagent_managers');
 				raise_message(($manager_id)? 1 : 2);
 			}
+
 			break;
 	}
 
@@ -927,6 +940,7 @@ function form_actions() {
 				}
 
 				header('Location: managers.php');
+
 				exit;
 			}
 		} elseif (isset_request_var('action_receiver_notifications')) {
@@ -961,12 +975,14 @@ function form_actions() {
 			}
 
 			header('Location: managers.php?action=edit&id=' . get_nfilter_request_var('id') . '&tab=notifications');
+
 			exit;
 		}
 	}else {
 		if (isset_request_var('action_receivers')) {
 			$selected_items = array();
 			$list           = '';
+
 			foreach ($_POST as $key => $value) {
 				if (strstr($key, 'chk_')) {
 					/* grep manager's id */
@@ -1005,6 +1021,7 @@ function form_actions() {
 			} else {
 				raise_message(40);
 				header('Location: managers.php');
+
 				exit;
 			}
 

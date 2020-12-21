@@ -66,12 +66,14 @@ $exists = db_fetch_cell_prepared('SELECT local_graph_id
 if (!$exists) {
 	print '<strong><font class="txtErrorTextBox">' . __('GRAPH DOES NOT EXIST') . '</font></strong>';
 	bottom_footer();
+
 	exit;
 }
 
 /* take graph permissions into account here */
 if (!is_graph_allowed(get_request_var('local_graph_id'))) {
 	header('Location: permission_denied.php');
+
 	exit;
 }
 
@@ -108,8 +110,10 @@ case 'view':
 		array(get_request_var('local_graph_id')));
 
 	$i = 0;
+
 	if (cacti_sizeof($rras)) {
 		$graph_end   = time() - 30;
+
 		foreach ($rras as $rra) {
 			if (!empty($rra['timespan'])) {
 				$graph_start = $graph_end - $rra['timespan'];
@@ -279,6 +283,7 @@ case 'view':
 case 'zoom':
 	/* find the maximum time span a graph can show */
 	$max_timespan=1;
+
 	if (cacti_sizeof($rras)) {
 		foreach ($rras as $rra) {
 			if ($rra['steps'] * $rra['rows'] * $rra['rrd_step'] > $max_timespan) {
@@ -565,6 +570,7 @@ case 'properties':
 	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 	unset($graph_data_array['print_source']);
 	print "<span class='textInfo'>" . __('RRDtool Says:') . '</span><br>';
+
 	if ($config['poller_id'] == 1) {
 		print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 	} else {
@@ -572,7 +578,9 @@ case 'properties':
 	}
 	print "</pre></td></tr>\n";
 	print "</table></td></tr></table>\n";
+
 	exit;
+
 	break;
 }
 

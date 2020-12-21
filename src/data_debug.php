@@ -106,6 +106,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts':
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -115,6 +116,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts_noany':
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -122,6 +124,7 @@ switch (get_request_var('action')) {
 		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
 
 		break;
+
 	default:
 		validate_request_vars();
 
@@ -136,6 +139,7 @@ switch (get_request_var('action')) {
 		top_header();
 		debug_wizard();
 		bottom_footer();
+
 		break;
 }
 
@@ -148,9 +152,11 @@ function debug_process_status($id) {
 	if (cacti_sizeof($status) == 0) {
 		return 'notset';
 	}
+
 	if ($status['issue'] == 'waiting') {
 		return 'waiting';
 	}
+
 	if ($status['done'] == 1) {
 		return 'complete';
 	} else {
@@ -167,6 +173,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 
 	$selected_items = array();
+
 	if (isset_request_var('save_list')) {
 		/* loop through each of the lists selected on the previous page and get more info about them */
 		foreach ($_POST as $var=>$val) {
@@ -619,6 +626,7 @@ function debug_view() {
 	}
 
 	$poller_data = array();
+
 	if (!empty($check['info']['last_result'])) {
 		foreach ($check['info']['last_result'] as $a => $l) {
 			$poller_data[] = "$a = $l";
@@ -627,21 +635,25 @@ function debug_view() {
 	$poller_data = implode('<br>', $poller_data);
 
 	$rra_updated = '';
+
 	if (isset($check['info']['rra_timestamp2'])) {
 		$rra_updated = $check['info']['rra_timestamp2'] != '' ? __('Yes') : '';
 	}
 
 	$rrd_exists = '';
+
 	if (isset($check['info']['rrd_exists'])) {
 		$rrd_exists = $check['info']['rrd_exists'] == '1' ? __('Yes') : __('Not Checked Yet');
 	}
 
 	$active = '';
+
 	if (isset($check['info']['active'])) {
 		$active = $check['info']['active'] == 'on' ? __('Yes') : __('Not Checked Yet');
 	}
 
 	$issue = '';
+
 	if (isset($check['issue'])) {
 		$issue = $check['issue'];
 	}
@@ -761,6 +773,7 @@ function debug_view() {
 	);
 
 	$i = 1;
+
 	foreach ($fields as $field) {
 		$field_name = $field['name'];
 
@@ -772,6 +785,7 @@ function debug_view() {
 
 		if (array_key_exists($field_name, $check['info'])) {
 			$value = $check['info'][$field_name];
+
 			if ($field_name == 'last_result') {
 				$icon  = debug_icon_valid_result($value);
 			} else {
@@ -788,6 +802,7 @@ function debug_view() {
 		}
 
 		$value_title = $value;
+
 		if (strlen($value) > 100) {
 			$value = substr($value, 0, 100);
 		}
@@ -813,11 +828,13 @@ function debug_view() {
 
 		if (isset($check['info']['rrd_match_array']['ds'])) {
 			$i = 0;
+
 			foreach ($check['info']['rrd_match_array']['ds'] as $data_source => $details) {
 				form_alternate_row('line2_' . $i, true);
 				form_selectable_cell($data_source, $i);
 
 				$output = '';
+
 				foreach ($details as $attribute => $recommendation) {
 					$output .= __('For attrbitute \'%s\', issue found \'%s\'', $attribute, $recommendation);
 				}
@@ -843,6 +860,7 @@ function debug_view() {
 			$rrdtool_path = read_config_option('path_rrdtool');
 
 			$i = 0;
+
 			foreach ($check['info']['rrd_match_array']['tune'] as $options) {
 				form_alternate_row('line3_' . $i, true);
 				form_selectable_cell($rrdtool_path . ' tune ' . $options, 'line3_' . $i);
@@ -902,6 +920,7 @@ function debug_icon_valid_result($result) {
 
 		return '<i class="fa fa-check" style="color:green"></i>';
 	}
+
 	if (prepare_validate_result($result)) {
 		return '<i class="fa fa-check" style="color:green"></i>';
 	} else {
@@ -972,7 +991,7 @@ function data_debug_filter() {
 
 							if (cacti_sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . '</option>';
+									print "<option value='" . $template['id'] . "'" . (get_request_var('template_id') == $template['id'] ? ' selected' : '') . '>' . title_trim(html_escape($template['name']), 40) . '</option>';
 								}
 							}
 							?>
@@ -998,9 +1017,10 @@ function data_debug_filter() {
 							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
+
 							if (cacti_sizeof($profiles)) {
 								foreach ($profiles as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('profile') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1039,6 +1059,7 @@ function data_debug_filter() {
 
 							foreach ($page_refresh_interval as $seconds => $display_text) {
 								print "<option value='" . $seconds . "'";
+
 								if (get_request_var('refresh') == $seconds) {
 									print ' selected';
 								}
@@ -1066,7 +1087,7 @@ function data_debug_filter() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>

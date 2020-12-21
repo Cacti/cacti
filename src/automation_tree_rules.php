@@ -48,41 +48,50 @@ switch (get_request_var('action')) {
 		automation_tree_rules_change_leaf();
 
 		header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
+
 		break;
 	case 'item_movedown':
 		automation_tree_rules_item_movedown();
 
 		header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
+
 		break;
 	case 'item_moveup':
 		automation_tree_rules_item_moveup();
 
 		header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
+
 		break;
 	case 'item_remove':
 		automation_tree_rules_item_remove();
 
 		header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id'));
+
 		break;
 	case 'item_edit':
 		top_header();
 		automation_tree_rules_item_edit();
 		bottom_footer();
+
 		break;
 	case 'remove':
 		automation_tree_rules_remove();
 
 		header('Location: automation_tree_rules.php');
+
 		break;
 	case 'edit':
 		top_header();
 		automation_tree_rules_edit();
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 		automation_tree_rules();
 		bottom_footer();
+
 		break;
 }
 
@@ -103,6 +112,7 @@ function automation_tree_rules_form_save() {
 		$save['leaf_type']          = (isset_request_var('leaf_type')) ? form_input_validate(get_nfilter_request_var('leaf_type'), 'leaf_type', '^[0-9]+$', false, 3) : 0;
 		$save['host_grouping_type'] = isset_request_var('host_grouping_type') ? form_input_validate(get_nfilter_request_var('host_grouping_type'), 'host_grouping_type', '^[0-9]+$', false, 3) : 0;
 		$save['enabled']            = (isset_request_var('enabled') ? 'on' : '');
+
 		if (!is_error_message()) {
 			$rule_id = sql_save($save, 'automation_tree_rules');
 
@@ -284,6 +294,7 @@ function automation_tree_rules_form_actions() {
 	if (!isset($automation_tree_rules_array)) {
 		raise_message(40);
 		header('Location: automation_tree_rules.php');
+
 		exit;
 	}else {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
@@ -381,6 +392,7 @@ function automation_tree_rules_item_edit() {
 	if (!isempty_request_var('rule_type') && !isempty_request_var('item_id')) {
 		if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_TREE_ACTION) {
 		$item = db_fetch_row_prepared('SELECT * FROM automation_tree_rule_items WHERE id = ?', array(get_request_var('item_id')));
+
 			if ($item['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING) {
 				?>
 <table style='width:100%;text-align:center;'>
@@ -400,6 +412,7 @@ function automation_tree_rules_item_edit() {
 	form_hidden_box('rule_type', get_request_var('rule_type'), get_request_var('rule_type'));
 	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
 	form_hidden_box('item_id', (isset_request_var('item_id') ? get_request_var('item_id') : '0'), '');
+
 	if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_TREE_MATCH) {
 		form_hidden_box('save_component_automation_match_item', '1', '');
 	} else {
@@ -479,6 +492,7 @@ function automation_tree_rules_remove() {
 		top_header();
 		form_confirm(__('Are You Sure?'), __("Are you sure you want to DELETE the Rule '%s'?", db_fetch_cell_prepared('SELECT name FROM automation_tree_rules WHERE id = ?', array(get_request_var('id')))), 'automation_tree_rules.php', 'automation_tree_rules.php?action=remove&id=' . get_request_var('id'));
 		bottom_footer();
+
 		exit;
 	}
 
@@ -546,6 +560,7 @@ function automation_tree_rules_edit() {
 	 * display the rule
 	 */
 	$rule = array();
+
 	if (!isempty_request_var('id')) {
 		$rule = db_fetch_row_prepared('SELECT *
 			FROM automation_tree_rules

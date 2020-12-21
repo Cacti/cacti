@@ -75,6 +75,7 @@ if (!file_exists($cacti_version_file)) {
 }
 
 $cacti_version = file_get_contents($cacti_version_file, false);
+
 if ($cacti_version === false) {
 	die('ERROR: failed to load cacti version file');
 }
@@ -88,6 +89,7 @@ define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_
 
 /* define if cacti is in CLI mode */
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
+
 if (defined('CACTI_CLI_ONLY') && !CACTI_CLI) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
@@ -146,6 +148,7 @@ if (file_exists(__DIR__ . '/config.php')) {
 
 if (isset($config['cacti_version'])) {
 	die('Invalid include/config.php file detected.' . PHP_EOL);
+
 	exit;
 }
 
@@ -171,14 +174,17 @@ $db_var_defaults = array(
 );
 
 $db_var_prefixes = array('');
+
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$db_var_prefixes[] = 'r';
 }
 
 $db_missing_vars = '';
+
 foreach ($db_var_prefixes as $db_var_prefix) {
 	foreach ($db_var_defaults as $db_var_name => $db_var_default) {
 		$db_var_full = $db_var_prefix . $db_var_name;
+
 		if (!isset($$db_var_full)) {
 			if ($db_var_default !== null) {
 				$$db_var_full = $db_var_default;
@@ -250,6 +256,7 @@ include_once($config['library_path'] . '/database.php');
 $filename = get_current_page();
 
 $config['is_web'] = !defined('CACTI_CLI_ONLY');
+
 if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
 }
@@ -263,9 +270,13 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
 	if (!isset($rdatabase_retries))  $rdatabase_retries  = 5;
+
 	if (!isset($rdatabase_ssl))      $rdatabase_ssl      = false;
+
 	if (!isset($rdatabase_ssl_key))  $rdatabase_ssl_key  = false;
+
 	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
+
 	if (!isset($rdatabase_ssl_ca))   $rdatabase_ssl_ca   = false;
 
 	// Check for recovery
@@ -306,8 +317,11 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	}
 } else {
 	if (!isset($database_ssl)) $database_ssl           = false;
+
 	if (!isset($database_ssl_key)) $database_ssl_key   = false;
+
 	if (!isset($database_ssl_cert)) $database_ssl_cert = false;
+
 	if (!isset($database_ssl_ca)) $database_ssl_ca     = false;
 
 	if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
@@ -322,13 +336,16 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		print $li . 'the database is running.' . $il;
 		print $li . 'the credentials in config.php are valid.' . $il;
 		print $lu . $sp;
+
 		if (isset($_REQUEST['display_db_errors']) & !empty($config['DATABASE_ERROR'])) {
 			print $ps . 'The following database errors occurred: ' . $ul;
+
 			foreach ($config['DATABASE_ERROR'] as $e) {
 				print $li . $e['Code'] . ': ' . $e['Error'] . $il;
 			}
 			print $lu . $sp;
 		}
+
 		exit;
 	} else {
 		/* gather the existing cactidb version */
@@ -338,6 +355,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 
 /* check cacti log is available */
 $log_filename = cacti_log_file();
+
 if (!is_resource_writable($log_filename)) {
 	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
 }
@@ -371,6 +389,7 @@ if ($config['is_web']) {
 	if (read_config_option('force_https') == 'on') {
 		if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 			header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . PHP_EOL . PHP_EOL);
+
 			exit;
 		}
 	}
@@ -414,6 +433,7 @@ if ($config['is_web']) {
 
 	/* increased web hardening */
 	$script_policy = read_config_option('content_security_policy_script');
+
 	if ($script_policy != '0' && $script_policy != '') {
 		$script_policy = "'$script_policy'";
 	}
@@ -541,6 +561,7 @@ if ($config['is_web']) {
 		foreach ($bad_actions as $bad) {
 			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
 				cacti_log('WARNING: Attempt to use GET method for POST operations from IP ' . get_client_addr(), false, 'WEBUI');
+
 				exit;
 			}
 		}

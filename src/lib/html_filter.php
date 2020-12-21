@@ -113,6 +113,7 @@ class CactiTableFilter {
 		if ($index === false) {
 			return false;
 		}
+
 		if (array_key_exists($index, $this->filter_array['rows'])) {
 			return $this->filter_array['rows'][$index];
 		} else {
@@ -183,6 +184,7 @@ class CactiTableFilter {
 						print '<div class="formColumn"><div class="formFieldName">' . __('Presets') . '</div></div>' . PHP_EOL;
 
 						break;
+
 					default:
 						if (isset($field_array['friendly_name'])) {
 							print '<div class="formColumn"><div class="formFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
@@ -232,6 +234,7 @@ class CactiTableFilter {
 							if ($field_name == 'clear') {
 								// have to give this some thought
 							}
+
 							break;
 						case 'checkbox':
 							$applyFilter .= $separator . $field_name . "=\"+\"$(\'#" . $field_name . "').is(':checked')";
@@ -254,6 +257,7 @@ class CactiTableFilter {
 							break;
 						case 'submit':
 							break;
+
 						default:
 							break;
 					}
@@ -300,6 +304,7 @@ class CactiTableFilter {
 					case 'button':
 					case 'submit':
 						break;
+
 					default:
 						$filters[$field_name]['filter'] = $field_array['filter'];
 

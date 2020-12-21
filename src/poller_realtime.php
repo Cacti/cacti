@@ -59,29 +59,37 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--force':
 				$force = true;
+
 				break;
 			case '--graph':
 				$graph_id = (int)$value;
+
 				break;
 			case '--interval':
 				$interval = (int)$value;
+
 				break;
 			case '--poller_id':
 				$poller_id = $value;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit;
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit;
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -90,12 +98,14 @@ if (cacti_sizeof($parms)) {
 if ($graph_id === false || $graph_id < 0) {
 	print "ERROR: No --graph=ID specified\n\n";
 	display_help();
+
 	exit(1);
 }
 
 if ($interval === false || $interval < 0) {
 	print "ERROR: No --interval=SEC specified\n\n";
 	display_help();
+
 	exit(1);
 }
 
@@ -268,7 +278,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			/* fallback values */
 			if ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] != '')) {
 				$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$item['rrd_name']] = 'U';
-			}elseif ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] == '')) {
+			} elseif ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] == '')) {
 				unset($rrd_update_array[$item['rrd_path']]);
 			}
 		}

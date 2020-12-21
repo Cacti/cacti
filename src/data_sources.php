@@ -71,17 +71,21 @@ switch (get_request_var('action')) {
 		data_edit();
 
 		bottom_footer();
+
 		break;
 	case 'ds_disable':
 		ds_disable();
+
 		break;
 	case 'ds_enable':
 		ds_enable();
+
 		break;
 	case 'ds_remove':
 		ds_remove();
 
 		header('Location: data_sources.php');
+
 		break;
 	case 'ds_edit':
 		ds_edit();
@@ -89,6 +93,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts':
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -98,6 +103,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts_noany':
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -105,12 +111,14 @@ switch (get_request_var('action')) {
 		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
 
 		break;
+
 	default:
 		top_header();
 
 		ds();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -447,6 +455,7 @@ function form_actions() {
 		api_plugin_hook_function('data_source_action_bottom', array(get_nfilter_request_var('drp_action'), $selected_items));
 
 		header('Location: data_sources.php');
+
 		exit;
 	}
 
@@ -500,6 +509,7 @@ function form_actions() {
 				print "<tr><td class='textArea'><p class='textArea'>" . __n('The following graph is using these data sources:', 'The following graphs are using these data sources:', cacti_sizeof($graphs)) . '</p>';
 
 				print '<div class="itemlist"><ul>';
+
 				foreach ($graphs as $graph) {
 					print '<li>' . html_escape($graph['title_cache']) . '</li>';
 				}
@@ -563,6 +573,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: data_sources.php');
+
 		exit;
 	}
 
@@ -615,6 +626,7 @@ function data_edit($incform = true) {
 	}
 
 	$i = 0;
+
 	if (!empty($data['data_input_id'])) {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc_prepared('SELECT *
@@ -788,6 +800,7 @@ function ds_edit() {
 		} else {
 			raise_message(11);
 			header('Location: data_sources.php');
+
 			exit;
 		}
 
@@ -836,9 +849,11 @@ function ds_edit() {
 						if (!empty($data_local['host_id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . $data_local['host_id']);?>'><?php print __('Edit Device.');?></a><br><?php
 						}
+
 						if (!empty($data_template['id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
 						}
+
 						if (isset_request_var('id') && get_request_var('id') > 0) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . get_request_var('id')) ?>'><?php print ($data['active'] == 'on' ? __('Disable Data Source') : __('Enable Data Source'));?></a><br>
 					<?php
@@ -1042,6 +1057,7 @@ function ds_edit() {
 		}
 
 		$i = 0;
+
 		if (isset($template_data_rrds)) {
 			if (cacti_sizeof($template_data_rrds) > 1) {
 				/* draw the data source tabs on the top of the page */
@@ -1146,6 +1162,7 @@ function ds_edit() {
 				if (cacti_sizeof($rrd_info['rra'])) {
 					$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
 					rrdtool_info2html($rrd_info, $diff);
+
 					if (cacti_sizeof($diff)) {
 						html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
 						print '<tr><td style="padding:4px;">';
@@ -1363,7 +1380,7 @@ function ds() {
 
 							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . '</option>';
+									print "<option value='" . $template['id'] . "'" . (get_request_var('template_id') == $template['id'] ? ' selected' : '') . '>' . title_trim(html_escape($template['name']), 40) . '</option>';
 								}
 							}
 							?>
@@ -1391,7 +1408,7 @@ function ds() {
 
 							if (cacti_sizeof($profiles)) {
 								foreach ($profiles as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('profile') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1436,7 +1453,7 @@ function ds() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1642,6 +1659,7 @@ function ds() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			if (api_data_source_deletable($data_source['local_data_id'])) {

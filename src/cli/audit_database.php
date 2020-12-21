@@ -57,6 +57,7 @@ if (cacti_sizeof($parms)) {
 		switch($arg) {
 		case 'create':
 			$create = true;
+
 			break;
 		case 'load':
 			$load = true;
@@ -82,20 +83,25 @@ if (cacti_sizeof($parms)) {
 		case 'V':
 		case 'v':
 			display_version();
+
 			exit(0);
 		case 'help':
 		case 'H':
 		case 'h':
 			display_help();
+
 			exit(0);
+
 		default:
 			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 			display_help();
+
 			exit(1);
 		}
 	}
 
 	$db_version = db_fetch_cell('SELECT cacti FROM version');
+
 	if ($db_version != CACTI_VERSION && !isset($options['upgrade'])) {
 		$upgrade_required = true;
 	} else {
@@ -104,8 +110,10 @@ if (cacti_sizeof($parms)) {
 
 	if ($upgrade_required) {
 		print 'WARNING: Cacti must be upgraded first.  Use the --upgrade option to perform that upgrade' . PHP_EOL;
+
 		exit(1);
 	}
+
 	if ($db_version != CACTI_VERSION && isset($options['upgrade'])) {
 		upgrade_database();
 	}
@@ -125,6 +133,7 @@ if (cacti_sizeof($parms)) {
 	exit(0);
 } else {
 	display_help();
+
 	exit(1);
 }
 
@@ -203,6 +212,7 @@ function upgrade_database() {
 				if ($version != $old) {
 					if (file_exists($plugin . '/setup.php')) {
 						include_once($plugin . '/setup.php');
+
 						if (file_exists($plugin . '/includes/database.php')) {
 							include_once($plugin . '/includes/database.php');
 						}
@@ -263,6 +273,7 @@ function upgrade_database() {
 	cacti_log('NOTE: Pruning invalid and deprecated plugins while preserving tables', true, 'UPGRADE');
 
 	$plugins = db_fetch_assoc('SELECT directory FROM plugin_config');
+
 	if (cacti_sizeof($plugins)) {
 		foreach ($plugins as $p) {
 			$pname = $p['directory'];
@@ -306,6 +317,7 @@ function repair_database($run = true) {
 
 	if (!db_has_permissions(array('ALTER', 'DROP','INSERT','LOCK TABLES'))) {
 		print 'ERROR: Required a required permission is missing for DB repair' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -351,6 +363,7 @@ function repair_database($run = true) {
 	}
 
 	print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+
 	if ($bad == 0 && $good == 0) {
 		print 'Repair Completed!  No changes performed.' . PHP_EOL;
 	} elseif ($bad) {
@@ -422,12 +435,14 @@ function report_audit_results($output = true) {
 				if (!cacti_sizeof($plugin_table)) {
 					if ($output) {
 						print ' - Not in audit data.  Possible Plugin' . PHP_EOL;
+
 						continue;
 					}
 				}
 
 				if ($output) {
 					print ' - Plugin Detected' . PHP_EOL;
+
 					continue;
 				} else {
 					print ' - Completed' . PHP_EOL;
@@ -666,6 +681,7 @@ function report_audit_results($output = true) {
 
 	if ($output) {
 		print '---------------------------------------------------------------------------------------------' . PHP_EOL;
+
 		if (cacti_sizeof($alters)) {
 			print 'ERRORS are fixable using the --repair option.  WARNINGS will not be rapaired' . PHP_EOL;
 			print 'due to ambiguous use of the column.' . PHP_EOL;
@@ -721,6 +737,7 @@ function make_column_alter($table, $dbc) {
 
 function make_column_add($table, $dbc) {
 	$after = get_previous_column($table, $dbc['table_field']);
+
 	if ($after != 'first') {
 		$after = 'AFTER `' . $after . '`';
 	}
@@ -857,6 +874,7 @@ function create_tables($load = true) {
 
 	if (!db_has_permissions('CREATE')) {
 		print 'ERROR: Unable to create audit tables, permission required' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -877,6 +895,7 @@ function create_tables($load = true) {
 
 	if (!$exists_columns) {
 		print "Failed to create 'table_coluns'";
+
 		exit;
 	}
 
@@ -901,12 +920,14 @@ function create_tables($load = true) {
 
 	if (!$exists_indexes) {
 		print "Failed to create 'table_indexes'";
+
 		exit;
 	}
 
 	if ($load) {
 		if (!db_has_permissions(array('DROP','INSERT','LOCK TABLES'))) {
 			print 'ERROR: Required a required permission is missing for DB load' . PHP_EOL;
+
 			exit(1);
 		}
 
@@ -945,6 +966,7 @@ function load_audit_database() {
 
 	if (!db_has_permissions(array('DROP','INSERT','LOCK TABLES'))) {
 		print 'ERROR: Required a required permission is missing for DB load' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -965,6 +987,7 @@ function load_audit_database() {
 			print 'Importing Table: ' . $table_name;
 
 			$i = 1;
+
 			if (cacti_sizeof($columns)) {
 				foreach ($columns as $c) {
 					db_execute_prepared('INSERT INTO table_columns

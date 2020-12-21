@@ -78,6 +78,7 @@ switch(get_request_var('action')) {
 		export_discovery_results();
 
 		break;
+
 	default:
 		display_discovery_page();
 
@@ -113,6 +114,7 @@ function form_actions() {
 
 					// pull ping options from network_id
 					$n = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array($d['network_id']));
+
 					if (cacti_sizeof($n)) {
 						$d['ping_method']  = $n['ping_method'];
 						$d['ping_port']    = $n['ping_port'];
@@ -141,6 +143,7 @@ function form_actions() {
 		}
 
 		header('Location: automation_devices.php');
+
 		exit;
 	}
 
@@ -186,6 +189,7 @@ function form_actions() {
 
 			foreach ($devices as $device) {
 				$os = automation_find_os($device['sysDescr'], '', $device['sysName']);
+
 				if (isset($os['host_template']) && $os['host_template'] > 0) {
 					if ($host_template == 0) {
 						$host_template       = $os['host_template'];
@@ -194,12 +198,14 @@ function form_actions() {
 						// End up here if we have 2 devices with different Host Template matches
 						$host_template       = 0;
 						$availability_method = 0;
+
 						break;
 					}
 				} else {
 					// Couldn't determine the Host Template for a device, so abort and don't set a default
 					$host_template       = 0;
 					$availability_method = 0;
+
 					break;
 				}
 			}
@@ -241,6 +247,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: automation_devices.php');
+
 		exit;
 	}
 
@@ -268,6 +275,7 @@ function display_discovery_page() {
 	draw_filter();
 
 	$total_rows = 0;
+
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
 	} else {
@@ -355,6 +363,7 @@ function display_discovery_page() {
 	$availability_method = read_config_option('availability_method');
 
 	$status = array("<span class='deviceDown'>" . __('Down') . '</span>',"<span class='deviceUp'>" . __('Up') . '</span>');
+
 	if (cacti_sizeof($results)) {
 		foreach ($results as $host) {
 			form_alternate_row('line' . base64_encode($host['ip']), true);
@@ -537,11 +546,12 @@ function draw_filter() {
 					</td>
 					<td>
 						<select id='network' onChange='applyFilter()'>
-							<option value='-1' <?php if (get_request_var('network') == -1) {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
+							print '<option value="-1" ' . (get_request_var('network') == -1 ? 'selected' : '') . '>' . __('Any') . '</option>';
+
 							if (cacti_sizeof($networks)) {
 								foreach ($networks as $key => $name) {
-									print "<option value='" . $key . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . $name . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('network') == $key ? ' selected' : '') . '>' . html_escape($name) . '</option>';
 								}
 							}
 							?>
@@ -567,11 +577,12 @@ function draw_filter() {
 					</td>
 					<td>
 						<select id='status' onChange='applyFilter()'>
-							<option value='-1' <?php if (get_request_var('status') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
+							print '<option value="-1" ' . (get_request_var('status') == -1 ? 'selected' : '') . '>' . __('Any') . '</option>';
+
 							if (cacti_sizeof($status_arr)) {
 								foreach ($status_arr as $st) {
-									print "<option value='" . $st . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . $st . '</option>';
+									print "<option value='" . $st . "'" . (get_request_var('status') == $st ? ' selected' : '') . '>' . $st . '</option>';
 								}
 							}
 							?>
@@ -582,11 +593,12 @@ function draw_filter() {
 					</td>
 					<td>
 						<select id='os' onChange='applyFilter()'>
-							<option value='-1' <?php if (get_request_var('os') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
+							print '<option value="-1" ' . (get_request_var('os') == -1 ? 'selected' : '') . '>' . __('Any') . '</option>';
+
 							if (cacti_sizeof($os_arr)) {
 								foreach ($os_arr as $st) {
-									print "<option value='" . $st . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . $st . '</option>';
+									print "<option value='" . $st . "'" . (get_request_var('os') == $st ? ' selected' : '') . '>' . $st . '</option>';
 								}
 							}
 							?>
@@ -597,11 +609,12 @@ function draw_filter() {
 					</td>
 					<td>
 						<select id='snmp' onChange='applyFilter()'>
-							<option value='-1' <?php if (get_request_var('snmp') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
+							print '<option value="-1" ' . (get_request_var('snmp') == -1 ? 'selected' : '') . '>' . __('Any') . '</option>';
+
 							if (cacti_sizeof($status_arr)) {
 								foreach ($status_arr as $st) {
-									print "<option value='" . $st . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . $st . '</option>';
+									print "<option value='" . $st . "'" . (get_request_var('snmp') == $st ? ' selected' : '') . '>' . $st . '</option>';
 								}
 							}
 							?>
@@ -612,11 +625,12 @@ function draw_filter() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
+							print '<option value="-1" ' . (get_request_var('rows') == -1 ? 'selected' : '') . '>' . __('Any') . '</option>';
+
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . $value . '</option>';
 								}
 							}
 							?>
@@ -690,6 +704,7 @@ function export_discovery_results() {
 		} else {
 			$uptime = '';
 		}
+
 		foreach ($host as $h=>$r) {
 			$host['$h'] = str_replace(',','',$r);
 		}

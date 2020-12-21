@@ -103,11 +103,13 @@ if (is_array($xport_array['meta'])) {
 
 header('Content-type: application/vnd.ms-excel; charset=UTF-8');
 header('Content-Transfer-Encoding: binary');
+
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 	header('Pragma: cache');
 }
 
 header('Cache-Control: max-age=15');
+
 if (!isset_request_var('stdout')) {
 	header('Content-Disposition: attachment; filename="' . $filename . '"');
 }
@@ -145,6 +147,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		$output .= '""' . "\n";
 
 		$header = '"' . __('Date') . '"';
+
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 			$header .= ',"' . $xport_array['meta']['legend']['col' . $i] . '"';
 		}
@@ -198,6 +201,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		</tr>\n";
 
 		$class = 'even';
+
 		if (isset($xport_meta['NthPercentile'])) {
 			foreach ($xport_meta['NthPercentile'] as $item) {
 				if ($class == 'even') {
@@ -247,8 +251,10 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 	if (!$html) {
 		$j = 1;
+
 		foreach ($xport_array['data'] as $row) {
 			$data = '"' . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j * $xport_array['meta']['step'])) . '"';
+
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				$data .= ',"' . $row['col' . $i] . '"';
 			}
@@ -261,6 +267,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 		print $output;
 	} else {
 		$j = 1;
+
 		foreach ($xport_array['data'] as $row) {
 			print "<tr><td class='left'>" . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j * $xport_array['meta']['step'])) . '</td>';
 

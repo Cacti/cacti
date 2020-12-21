@@ -132,31 +132,38 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
 
 	if ($displaySites) {
 		displaySites($sites, $quietMode);
+
 		exit(0);
 	}
 
 	if ($displayHosts) {
 		displayHosts($hosts, $quietMode);
+
 		exit(0);
 	}
 
 	if ($displayTrees) {
 		displayTrees($quietMode);
+
 		exit(0);
 	}
 
@@ -164,15 +171,18 @@ if (cacti_sizeof($parms)) {
 		if (!isset($treeId)) {
 			print "ERROR: You must supply a tree_id before you can list its nodes\n";
 			print "Try --list-trees\n";
+
 			exit(1);
 		}
 
 		displayTreeNodes($treeId, $nodeType, $parentNode, $quietMode);
+
 		exit(0);
 	}
 
 	if ($displayRRAs) {
 		displayRRAs($quietMode);
+
 		exit(0);
 	}
 
@@ -180,10 +190,12 @@ if (cacti_sizeof($parms)) {
 		if (!isset($hostId) || $hostId == 0) {
 			print "ERROR: You must supply a host_id before you can list its graphs\n";
 			print "Try --list-hosts\n";
+
 			exit(1);
 		}
 
 		displayHostGraphs($hostId, $quietMode);
+
 		exit(0);
 	}
 
@@ -192,6 +204,7 @@ if (cacti_sizeof($parms)) {
 		if (empty($name)) {
 			print "ERROR: You must supply a name with --name\n";
 			display_help();
+
 			exit(1);
 		}
 
@@ -208,12 +221,15 @@ if (cacti_sizeof($parms)) {
 		} else {
 			print "ERROR: Invalid sort-method: ($sortMethod)\n";
 			display_help();
+
 			exit(1);
 		}
 
 		$existsAlready = db_fetch_cell("SELECT id FROM graph_tree WHERE name = '$name'");
+
 		if ($existsAlready) {
 			print "ERROR: Not adding tree - it already exists - tree-id: ($existsAlready)\n";
+
 			exit(1);
 		}
 
@@ -225,6 +241,7 @@ if (cacti_sizeof($parms)) {
 
 		exit(0);
 	}
+
 	if ($type == 'node') {
 		# Add a new node to a tree
 		if ($nodeType == 'header' ||
@@ -235,14 +252,17 @@ if (cacti_sizeof($parms)) {
 		} else {
 			print "ERROR: Invalid node-type: ($nodeType)\n";
 			display_help();
+
 			exit(1);
 		}
 
 		if (!is_numeric($parentNode)) {
 			print "ERROR: parent-node $parentNode must be numeric > 0\n";
 			display_help();
+
 			exit(1);
 		}
+
 		if ($parentNode > 0) {
 			$parentNodeExists = db_fetch_cell("SELECT id
 				FROM graph_tree_items
@@ -251,6 +271,7 @@ if (cacti_sizeof($parms)) {
 
 			if (!isset($parentNodeExists)) {
 				print "ERROR: parent-node $parentNode does not exist\n";
+
 				exit(1);
 			}
 		}
@@ -260,6 +281,7 @@ if (cacti_sizeof($parms)) {
 			if (empty($name)) {
 				print "ERROR: You must supply a name with --name\n";
 				display_help();
+
 				exit(1);
 			}
 
@@ -281,6 +303,7 @@ if (cacti_sizeof($parms)) {
 
 			if (!cacti_sizeof($graphs)) {
 				print "ERROR: No such graph-id ($graphId) exists. Try --list-graphs\n";
+
 				exit(1);
 			}
 		} elseif ($nodeType == 'site') {
@@ -291,6 +314,7 @@ if (cacti_sizeof($parms)) {
 
 			if (!isset($sites[$siteId])) {
 				print "ERROR: No such site-id ($siteId) exists. Try --list-sites\n";
+
 				exit(1);
 			}
 		} elseif ($nodeType == 'host') {
@@ -301,12 +325,14 @@ if (cacti_sizeof($parms)) {
 
 			if (!isset($hosts[$hostId])) {
 				print "ERROR: No such host-id ($hostId) exists. Try --list-hosts\n";
+
 				exit(1);
 			}
 
 			if ($hostGroupStyle != 1 && $hostGroupStyle != 2) {
 				print "ERROR: Host Group Style must be 1 or 2 (Graph Template or Data Query Index)\n";
 				display_help();
+
 				exit(1);
 			}
 		}
@@ -320,10 +346,12 @@ if (cacti_sizeof($parms)) {
 	} else {
 		print "ERROR: Unknown type: ($type)\n";
 		display_help();
+
 		exit(1);
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 

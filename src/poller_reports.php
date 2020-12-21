@@ -61,7 +61,9 @@ function sig_handler($signo) {
 			reports_log('WARNING: Reports Poller terminated by user', false, 'REPORTS TRACE', POLLER_VERBOSITY_LOW);
 
 			exit(1);
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
@@ -89,24 +91,30 @@ if (cacti_sizeof($parms)) {
 			case '-f':
 			case '--force':
 				$force = true;
+
 				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -152,6 +160,7 @@ if (cacti_sizeof($reports)) {
 	foreach ($reports as $report) {
 		reports_log('Reports processing report: ' . $report['name'], true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($report['user_id']));
+
 		if (isset($report['email'])) {
 			generate_report($report, false, 'poller');
 			$number_sent++;

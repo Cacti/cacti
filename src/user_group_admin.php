@@ -166,6 +166,7 @@ if (isset_request_var('update_policy')) {
 		bottom_footer();
 
 		break;
+
 	default:
 		if (!api_plugin_hook_function('user_group_admin_action', get_request_var('action'))) {
 			top_header();
@@ -260,6 +261,7 @@ function update_policies() {
 	}
 
 	header('Location: user_group_admin.php?action=edit&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
+
 	exit;
 }
 
@@ -290,6 +292,7 @@ function form_actions() {
 		}
 
 		header('Location: user_group_admin.php?action=edit&tab=permsd&id=' . get_nfilter_request_var('id'));
+
 		exit;
 	}
 
@@ -316,6 +319,7 @@ function form_actions() {
 		}
 
 		header('Location: user_group_admin.php?action=edit&tab=permsg&id=' . get_nfilter_request_var('id'));
+
 		exit;
 	}
 
@@ -342,6 +346,7 @@ function form_actions() {
 		}
 
 		header('Location: user_group_admin.php?action=edit&tab=permste&id=' . get_nfilter_request_var('id'));
+
 		exit;
 	}
 
@@ -368,6 +373,7 @@ function form_actions() {
 		}
 
 		header('Location: user_group_admin.php?action=edit&tab=permstr&id=' . get_nfilter_request_var('id'));
+
 		exit;
 	}
 
@@ -393,6 +399,7 @@ function form_actions() {
 		}
 
 		header('Location: user_group_admin.php?action=edit&tab=members&id=' . get_nfilter_request_var('id'));
+
 		exit;
 	}
 
@@ -420,6 +427,7 @@ function form_actions() {
 		}
 
 		header('Location: user_group_admin.php');
+
 		exit;
 	}
 
@@ -505,6 +513,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: user_group_admin.php');
+
 		exit;
 	}
 
@@ -567,6 +576,7 @@ function form_save() {
 		}
 
 		header('Location: user_group_admin.php?action=edit&tab=general&id=' . (isset($group_id) && $group_id > 0 ? $group_id : get_nfilter_request_var('id')));
+
 		exit;
 	}
 
@@ -586,6 +596,7 @@ function form_save() {
 		raise_message(1);
 
 		header('Location: user_group_admin.php?action=edit&tab=realms&id=' . get_request_var('id'));
+
 		exit;
 	}
 
@@ -609,6 +620,7 @@ function form_save() {
 		raise_message(1);
 
 		header('Location: user_group_admin.php?action=edit&tab=settings&id=' . get_nfilter_request_var('id'));
+
 		exit;
 	} else {
 		api_plugin_hook('user_group_admin_save');
@@ -705,6 +717,7 @@ function user_group_members_edit($header_label) {
 			form_selectable_cell(filter_value($g['username'], get_request_var('filter'), 'user_admin.php?action=user_edit&id=' . $g['id']), $g['id']);
 			form_selectable_cell(filter_value($g['full_name'], get_request_var('filter')), $g['id']);
 			form_selectable_cell($g['id'], $g['id']);
+
 			if (user_group_is_member($g['id'], get_request_var('id'))) {
 				form_selectable_cell('<span class="accessGranted">' . __('Group Member') . '</span>', $g['id']);
 			} else {
@@ -855,6 +868,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_alternate_row('line' . $g['local_graph_id'], true);
 				form_selectable_cell(filter_value($g['title_cache'], get_request_var('filter')), $g['local_graph_id']);
 				form_selectable_cell($g['local_graph_id'], $g['local_graph_id']);
+
 				if (empty($g['group_id']) || $g['group_id'] == null) {
 					if ($policy['policy_graphs'] == 1) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['local_graph_id']);
@@ -1002,6 +1016,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_alternate_row('line' . $host['id'], true);
 				form_selectable_cell(filter_value($host['description'], get_request_var('filter')), $host['id']);
 				form_selectable_cell($host['id'], $host['id']);
+
 				if (empty($host['group_id']) || $host['group_id'] == null) {
 					if ($policy['policy_hosts'] == 1) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);
@@ -1145,6 +1160,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_alternate_row('line' . $g['id'], true);
 				form_selectable_cell(filter_value($g['name'], get_request_var('filter')), $g['id']);
 				form_selectable_cell($g['id'], $g['id']);
+
 				if (empty($g['group_id']) || $g['group_id'] == null) {
 					if ($policy['policy_graph_templates'] == 1) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
@@ -1279,6 +1295,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_alternate_row('line' . $t['id'], true);
 				form_selectable_cell(filter_value($t['name'], get_request_var('filter')), $t['id']);
 				form_selectable_cell($t['id'], $t['id']);
+
 				if (empty($t['group_id']) || $t['group_id'] == null) {
 					if ($policy['policy_trees'] == 1) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
@@ -1423,9 +1440,12 @@ function user_group_realms_edit($header_label) {
 			switch($r['style']) {
 			case 'CONSOLE':
 				$description = $style_translate[$r['style']] . ': ' . ($r['extendedstyle'] == '' ? __('External Links') : $r['extendedstyle']) . '/' . $r['title'];
+
 				break;
+
 			default:
 				$description = $style_translate[$r['style']] . ': ' . ucfirst($r['title']);
+
 				break;
 			}
 
@@ -1455,6 +1475,7 @@ function user_group_realms_edit($header_label) {
 				foreach ($rrealms as $realm_id) {
 					if ($realm == $realm_id) {
 						unset($all_realms[$realm]);
+
 						continue 3;
 					}
 				}
@@ -1682,6 +1703,7 @@ function group_edit() {
 	);
 
 	$tabs = api_plugin_hook_function('ugroup_tabs', $tabs);
+
 	if (!isempty_request_var('id')) {
 		$group        = db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE id = ?', array(get_request_var('id')));
 		$header_label = __esc('User Group Management [edit: %s]', $group['name']);
@@ -1857,7 +1879,7 @@ function user_group() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -2184,7 +2206,7 @@ function graph_filter($header_label) {
 
 							if (cacti_sizeof($graph_templates)) {
 								foreach ($graph_templates as $gt) {
-									print "<option value='" . $gt['id'] . "'"; if (get_request_var('graph_template_id') == $gt['id']) { print ' selected'; } print '>' . html_escape($gt['name']) . '</option>';
+									print "<option value='" . $gt['id'] . "'" . (get_request_var('graph_template_id') == $gt['id'] ? ' selected' : '') . '>' . html_escape($gt['name']) . '</option>';
 								}
 							}
 							?>
@@ -2199,7 +2221,7 @@ function graph_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -2286,7 +2308,7 @@ function device_filter($header_label) {
 
 							if (cacti_sizeof($host_templates) > 0) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . '</option>';
+									print "<option value='" . $host_template['id'] . "'" . (get_request_var('host_template_id') == $host_template['id'] ? ' selected' : '') . '>' . html_escape($host_template['name']) . '</option>';
 								}
 							}
 							?>
@@ -2301,7 +2323,7 @@ function device_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -2384,7 +2406,7 @@ function template_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -2467,7 +2489,7 @@ function tree_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -2550,7 +2572,7 @@ function member_filter($header_label) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>

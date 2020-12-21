@@ -85,6 +85,7 @@ function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 
 		/* let's ignore some lesser issues */
 		if (substr_count($errmsg, 'date_default_timezone')) return;
+
 		if (substr_count($errmsg, 'Only variables')) return;
 		/* log the error to the Cacti log */
 		cacti_log('PROGERR: ' . $err, false, 'BOOST');
@@ -287,12 +288,15 @@ function boost_return_cached_image(&$graph_data_array) {
 	if (isset($graph_data_array['export_csv'])) {
 		return false;
 	}
+
 	if (isset($graph_data_array['export_realtime'])) {
 		return false;
 	}
+
 	if (isset($graph_data_array['disable_cache']) && $graph_data_array['disable_cache'] == true) {
 		return false;
 	}
+
 	if (read_config_option('boost_png_cache_enable') == 'on' && boost_determine_caching_state()) {
 		return true;
 	} else {
@@ -352,6 +356,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 		/* first update the RRD files */
 		if (cacti_sizeof($local_data_ids)) {
 			$updates = 0;
+
 			foreach ($local_data_ids as $local_data_id) {
 				$updates += boost_process_poller_output($local_data_id['local_data_id'], $rrdtool_pipe);
 			}
@@ -392,6 +397,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 					if (isset($graph_data_array['graph_height'])) {
 						$cache_file .= '_height_' . $graph_data_array['graph_height'];
 					}
+
 					if (isset($graph_data_array['graph_width'])) {
 						$cache_file .= '_width_' . $graph_data_array['graph_width'];
 					}
@@ -580,6 +586,7 @@ function boost_timer_get_overhead() {
 
 	$start = microtime(true);
 	$area  = 'calibrate';
+
 	for ($i = 0; $i < BOOST_TIMER_OVERHEAD_MULTIPLIER; $i++) {
 		boost_timer($area, BOOST_TIMER_START);
 		boost_timer($area, BOOST_TIMER_END);
@@ -598,6 +605,7 @@ function boost_get_arch_table_name() {
 
 	foreach ($tables as $table) {
 		$rows = db_fetch_cell('SELECT COUNT(local_data_id) FROM ' . $table['name']);
+
 		if (is_numeric($rows) && intval($rows) > 0) {
 			return $table['name'];
 		}
@@ -1245,6 +1253,7 @@ function boost_poller_bottom() {
 		boost_update_snmp_statistics();
 
 		$command_string = read_config_option('path_php_binary');
+
 		if (read_config_option('path_boost_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
 				$extra_args    = '-q ' . $config['base_path'] . '/poller_boost.php --debug';

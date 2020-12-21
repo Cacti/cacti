@@ -67,7 +67,9 @@ function sig_handler($signo) {
 			db_execute('TRUNCATE TABLE poller_time', true, $poller_db_cnn_id);
 
 			exit;
+
 			break;
+
 		default:
 			// ignore all other signals
 	}
@@ -118,15 +120,19 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit;
 			case '-H':
 			case '-h':
 			case '--help':
 				display_help();
+
 				exit;
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -135,6 +141,7 @@ if (cacti_sizeof($parms)) {
 // catch upgrade case
 if (!db_column_exists('poller', 'dbhost')) {
 	cacti_log('Poller is upgrading from pre Cacti 1.0, exiting till upgraded.', false, 'POLLER');
+
 	exit(0);
 }
 
@@ -170,6 +177,7 @@ if ($dbhostname == '' || $dbhostname == 'localhost' || $dbhostname == '127.0.0.1
 
 // if you have more than one poller, boost must be enabled
 $total_pollers = db_fetch_cell('SELECT COUNT(*) FROM poller');
+
 if ($total_pollers > 1) {
 	set_config_option('boost_rrd_update_system_enable', 'on');
 	set_config_option('boost_redirect', 'on');
@@ -326,6 +334,7 @@ if ($debug) {
 }
 
 $poller_seconds_sincerun = 'never';
+
 if (isset($poller_lastrun)) {
 	$poller_seconds_sincerun = $poller_start - $poller_lastrun;
 }
@@ -344,6 +353,7 @@ if ((isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) &
 	// give the user some flexibility to run a little moe often
 	if ((($poller_start - $poller_lastrun) * 1.3) < MAX_POLLER_RUNTIME) {
 		cacti_log("NOTE: $task_type is configured to run too often!  The Poller Interval is '$poller_interval' seconds, with a minimum $task_type period of '$min_period' seconds, but only " . number_format_i18n($poller_start - $poller_lastrun, 1) . ' seconds have passed since the poller last ran.', true, 'POLLER', $level);
+
 		exit;
 	}
 }
@@ -412,12 +422,15 @@ while ($poller_runs_completed < $poller_runs) {
 			switch($value['action']) {
 			case '0': // SNMP
 				$snmp = $value['totals'];
+
 				break;
 			case '1': // Script
 				$script = $value['totals'];
+
 				break;
 			case '2': // Server
 				$server = $value['totals'];
+
 				break;
 			}
 		}
@@ -564,12 +577,14 @@ while ($poller_runs_completed < $poller_runs) {
 		if (($poller_type == '2') && (!file_exists(read_config_option('path_spine')))) {
 			cacti_log('ERROR: The spine path: ' . read_config_option('path_spine') . ' is invalid.  Poller can not continue!', true, 'POLLER');
 			admin_email(__('Cacti System Warning'), __('ERROR: The spine path: %s is invalid for poller id %d.  Poller can not continue!', read_config_option('path_spine'), $poller_id));
+
 			exit;
 		}
 
 		// determine command name
 		if ($poller_type == '2') {
 			$command_string = cacti_escapeshellcmd(read_config_option('path_spine'));
+
 			if (read_config_option('path_spine_config') != '' && file_exists(read_config_option('path_spine_config'))) {
 				$extra_args     = ' -C ' . cacti_escapeshellarg(read_config_option('path_spine_config'));
 			} else {
@@ -800,6 +815,7 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 
 			$plugin_end = microtime(true);
+
 			if ($sleep_time > 0) {
 				usleep($sleep_time * 1000000);
 			}

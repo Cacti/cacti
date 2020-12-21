@@ -53,16 +53,20 @@ if (cacti_sizeof($parms)) {
 			break;
 		case '--host-id':
 			$host_id = trim($value);
+
 			if (!is_numeric($host_id)) {
 				print "ERROR: You must supply a valid host-id to run this script!\n";
+
 				exit(1);
 			}
 
 			break;
 		case '--graph-template-id':
 			$graph_template_id = $value;
+
 			if (!is_numeric($graph_template_id)) {
 				print "ERROR: You must supply a numeric graph-template-id for all hosts!\n";
+
 				exit(1);
 			}
 
@@ -71,24 +75,31 @@ if (cacti_sizeof($parms)) {
 		case '-V':
 		case '-v':
 			display_version();
+
 			exit(0);
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
+
 			exit(0);
 		case '--list-hosts':
 			$displayHosts = true;
+
 			break;
 		case '--list-graph-templates':
 			$displayGraphTemplates = true;
+
 			break;
 		case '--quiet':
 			$quietMode = true;
+
 			break;
+
 		default:
 			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
+
 			exit(1);
 		}
 	}
@@ -97,12 +108,14 @@ if (cacti_sizeof($parms)) {
 	if ($displayHosts) {
 		$hosts = getHosts();
 		displayHosts($hosts, $quietMode);
+
 		exit(0);
 	}
 
 	if ($displayGraphTemplates) {
 		$graphTemplates = getGraphTemplates();
 		displayGraphTemplates($graphTemplates, $quietMode);
+
 		exit(0);
 	}
 
@@ -112,11 +125,13 @@ if (cacti_sizeof($parms)) {
 	 */
 	if (!isset($host_id)) {
 		print "ERROR: You must supply a valid host-id for all hosts!\n";
+
 		exit(1);
 	}
 
 	if (!isset($graph_template_id)) {
 		print "ERROR: You must supply a valid data-query-id for all hosts!\n";
+
 		exit(1);
 	}
 
@@ -130,6 +145,7 @@ if (cacti_sizeof($parms)) {
 
 	if (!isset($host_name)) {
 		print "ERROR: Unknown Host Id ($host_id)\n";
+
 		exit(1);
 	}
 
@@ -143,6 +159,7 @@ if (cacti_sizeof($parms)) {
 
 	if (!isset($graph_template_name)) {
 		print "ERROR: Unknown Graph Template Id ($graph_template_id)\n";
+
 		exit(1);
 	}
 
@@ -156,6 +173,7 @@ if (cacti_sizeof($parms)) {
 	if ((isset($exists_already)) &&
 		($exists_already > 0)) {
 		print "ERROR: Graph Template is already associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
+
 		exit(1);
 	} else {
 		db_execute('REPLACE INTO host_graph
@@ -169,13 +187,16 @@ if (cacti_sizeof($parms)) {
 
 	if (is_error_message()) {
 		print "ERROR: Failed to add this graph template for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
+
 		exit(1);
 	} else {
 		print "Success: Graph Template associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
+
 		exit(0);
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 

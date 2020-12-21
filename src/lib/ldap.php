@@ -70,17 +70,29 @@ function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port 
 	$ldap = new Ldap;
 
 	if (!empty($username))          $ldap->username          = $username;
+
 	if (!empty($password))          $ldap->password          = $password;
+
 	if (!empty($dn))                $ldap->dn                = $dn;
+
 	if (!empty($host))              $ldap->host              = $host;
+
 	if (!empty($port))              $ldap->port              = $port;
+
 	if (!empty($port_ssl))          $ldap->port_ssl          = $port_ssl;
+
 	if (!empty($version))           $ldap->version           = $version;
+
 	if (!empty($encryption))        $ldap->encryption        = $encryption;
+
 	if (!empty($referrals))         $ldap->referrals         = $referrals;
+
 	if (!empty($group_require))     $ldap->group_require     = $group_require;
+
 	if (!empty($group_dn))          $ldap->group_dn          = $group_dn;
+
 	if (!empty($group_attrib))      $ldap->group_attrib      = $group_attrib;
+
 	if (!empty($group_member_type)) $ldap->group_member_type = $group_member_type;
 
 	return $ldap->Authenticate();
@@ -134,17 +146,29 @@ function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port
 	$ldap = new Ldap;
 
 	if (!empty($username))          $ldap->username          = $username;
+
 	if (!empty($dn))                $ldap->dn                = $dn;
+
 	if (!empty($host))              $ldap->host              = $host;
+
 	if (!empty($port))              $ldap->port              = $port;
+
 	if (!empty($port_ssl))          $ldap->port_ssl          = $port_ssl;
+
 	if (!empty($version))           $ldap->version           = $version;
+
 	if (!empty($encryption))        $ldap->encryption        = $encryption;
+
 	if (!empty($referrals))         $ldap->referrals         = $referrals;
+
 	if (!empty($mode))              $ldap->mode              = $mode;
+
 	if (!empty($search_base))       $ldap->search_base       = $search_base;
+
 	if (!empty($search_filter))     $ldap->search_filter     = $search_filter;
+
 	if (!empty($specific_dn))       $ldap->specific_dn       = $specific_dn;
+
 	if (!empty($specific_password)) $ldap->specific_password = $specific_password;
 
 	return $ldap->Search();
@@ -196,18 +220,31 @@ function cacti_ldap_search_cn($username, $cn = array(), $dn = '', $host = '', $p
 	$ldap = new Ldap;
 
 	if (!empty($username))          $ldap->username          = $username;
+
 	if (!empty($cn))                $ldap->cn                = $cn;
+
 	if (!empty($dn))                $ldap->dn                = $dn;
+
 	if (!empty($host))              $ldap->host              = $host;
+
 	if (!empty($port))              $ldap->port              = $port;
+
 	if (!empty($port_ssl))          $ldap->port_ssl          = $port_ssl;
+
 	if (!empty($version))           $ldap->version           = $version;
+
 	if (!empty($encryption))        $ldap->encryption        = $encryption;
+
 	if (!empty($referrals))         $ldap->referrals         = $referrals;
+
 	if (!empty($mode))              $ldap->mode              = $mode;
+
 	if (!empty($search_base))       $ldap->search_base       = $search_base;
+
 	if (!empty($search_filter))     $ldap->search_filter     = $search_filter;
+
 	if (!empty($specific_dn))       $ldap->specific_dn       = $specific_dn;
+
 	if (!empty($specific_password)) $ldap->specific_password = $specific_password;
 
 	return $ldap->Getcn();
@@ -236,6 +273,7 @@ abstract class LdapError {
 
 	public static function GetErrorDetails($returnError, $ldapConn = null, $ldapError = 0) {
 		$error_num = $returnError;
+
 		if ($returnError > 0 && $ldapError == 0 && $ldapConn > 0) {
 			$ldapError = ldap_error($ldapConn);
 		}
@@ -244,60 +282,80 @@ abstract class LdapError {
 			case LdapError::None:
 			case LdapError::Success:
 				$error_text = __('Authentication Success');
+
 				break;
 			case LdapError::Failure:
 				$error_text = __('Authentication Failure');
+
 				break;
 			case LdapError::Disabled:
 				$error_text = __('PHP LDAP not enabled');
+
 				break;
 			case LdapError::UndefinedUsername:
 				$error_text = __('No username defined');
+
 				break;
 			case LdapError::ProtocolErrorVersion:
 				$error_text = __('Protocol Error, Unable to set version');
+
 				break;
 			case LdapError::ProtocolErrorReferral:
 				$error_text = __('Protocol Error, Unable to set referrals option');
+
 				break;
 			case LdapError::ProtocolErrorTls:
 				$error_text = __('Protocol Error, unable to start TLS communications');
+
 				break;
 			case LdapError::ProtocolErrorGeneral:
 				$error_text = __('Protocol Error, General failure (%s)', $ldapError);
+
 				break;
 			case LdapError::ProtocolErrorBind:
 				$error_text = __('Protocol Error, Unable to bind, LDAP result: %s', $ldapError);
+
 				break;
 			case LdapError::ConnectionUnavailable:
 				$error_text = __('Unable to Connect to Server');
+
 				break;
 			case LdapError::ConnectionTimeout:
 				$error_text =  __('Connection Timeout');
+
 				break;
 			case LdapError::InsufficientAccess:
 				$error_text = __('Insufficient access');
+
 				break;
 			case LdapError::SearchFoundNoGroup:
 				$error_text = __('Group DN could not be found to compare');
+
 				break;
 			case LdapError::SearchFoundMultiUser:
 				$error_text = __('More than one matching user found');
+
 				break;
 			case LdapError::SearchFoundNoUserDN:
 				$error_text = __('Unable to find user from DN');
+
 				break;
 			case LdapError::SearchFoundNoUser:
 				$error_text = __('Unable to find users DN');
+
 				break;
 			case LdapError::MissingLdapObject:
 				$error_text = __('Unable to create LDAP connection object');
+
 				break;
 			case LdapError::UndefinedDnOrPassword:
 				$error_text = __('Specific DN and Password required');
+
 				break;
+
 			default:
 				$error_text = __('Unexpected error %s (Ldap Error: %s)', $returnError, $ldapError);
+
 				break;
 		}
 
@@ -441,6 +499,7 @@ class Ldap {
 			/* Bind to the LDAP directory */
 			cacti_log('LDAP: Binding with "' . $this->dn . '"', false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_response = ldap_bind($ldap_conn, $this->dn, $this->password);
+
 			if ($ldap_response) {
 				if ($this->group_require == 1) {
 					$ldap_group_response = false;
@@ -448,6 +507,7 @@ class Ldap {
 					/* Process group membership if required */
 					if ($this->group_member_type == 1) {
 						$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
+
 						if (!$ldap_group_response) {
 							$ldap_group_response = Ldap::isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
 						}
@@ -495,6 +555,7 @@ class Ldap {
 			} else {
 				/* unable to bind */
 				$ldap_error = ldap_errno($ldap_conn);
+
 				if ($ldap_error == 0x03) {
 					/* protocol error */
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, null, $ldap_error);
@@ -570,6 +631,7 @@ class Ldap {
 
 			return $output;
 		}
+
 		if ($this->mode == '2') {
 			/* Specific */
 			if (empty($this->specific_dn) || empty($this->specific_password)) {
@@ -648,6 +710,7 @@ class Ldap {
 			if (ldap_bind($ldap_conn, $this->specific_dn, $this->specific_password)) {
 				/* Search */
 				$ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, array('dn'));
+
 				if ($ldap_results) {
 					$ldap_entries = ldap_get_entries($ldap_conn, $ldap_results);
 
@@ -670,6 +733,7 @@ class Ldap {
 			} else {
 				/* unable to bind */
 				$ldap_error = ldap_errno($ldap_conn);
+
 				if ($ldap_error == 0x03) {
 					/* protocol error */
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral,null,$ldap_error);
@@ -736,6 +800,7 @@ class Ldap {
 
 			return $output;
 		}
+
 		if ($this->mode == '2') {
 			/* Specific */
 			if (empty($this->specific_dn) || empty($this->specific_password)) {
@@ -842,6 +907,7 @@ class Ldap {
 			} else {
 				/* unable to bind */
 				$ldap_error = ldap_errno($ldap_conn);
+
 				if ($ldap_error == 0x03) {
 					/* protocol error */
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, null, $ldap_error);

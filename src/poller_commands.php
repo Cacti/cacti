@@ -73,22 +73,28 @@ if (cacti_sizeof($parms)) {
 			case '--version':
 			case '-V':
 				display_version();
+
 				exit(0);
 			case '-H':
 			case '--help':
 				display_help();
+
 				exit(0);
 			case '--poller':
 			case '-p':
 				$poller_id = $value;
+
 				break;
 			case '--debug':
 			case '-d':
 				$debug = true;
+
 				break;
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -152,6 +158,7 @@ if (cacti_sizeof($poller_commands)) {
 			cacti_log("Device[$device_id] PURGE: Purged successfully.", true, 'PCOMMAND', $verbosity);
 
 			break;
+
 		default:
 			cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
 		}
@@ -162,6 +169,7 @@ if (cacti_sizeof($poller_commands)) {
 		/* end if runtime has been exceeded */
 		if (($current - $start) > MAX_RECACHE_RUNTIME) {
 			cacti_log("ERROR: Poller Command processing timed out after processing '$command'", true, 'PCOMMAND');
+
 			break;
 		}
 	}

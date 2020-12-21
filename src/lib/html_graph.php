@@ -26,6 +26,7 @@ function initialize_realtime_step_and_window() {
 	if (!isset($_SESSION['sess_realtime_dsstep'])) {
 		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
 	}
+
 	if (!isset($_SESSION['sess_realtime_window'])) {
 		$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
 	}
@@ -40,17 +41,21 @@ function set_default_graph_action() {
 				if (is_view_allowed('show_tree')) {
 					set_request_var('action', 'tree');
 				}
+
 				break;
 			case '2':
 				if (is_view_allowed('show_list')) {
 					set_request_var('action', 'list');
 				}
+
 				break;
 			case '3':
 				if (is_view_allowed('show_preview')) {
 					set_request_var('action', 'preview');
 				}
+
 				break;
+
 			default:
 				break;
 			}
@@ -164,6 +169,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
+
 								foreach ($graph_templates as $gt) {
 									$found = db_fetch_cell_prepared('SELECT id
 										FROM graph_local
@@ -172,6 +178,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 									if ($found) {
 										print "<option value='" . $gt['id'] . "'";
+
 										if (cacti_sizeof($selected)) {
 											if (in_array($gt['id'], $selected, true)) {
 												print ' selected';
@@ -212,9 +219,9 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<select id='graphs' onChange='applyGraphFilter()'>
 							<?php
 							if (cacti_sizeof($graphs_per_page)) {
-							foreach ($graphs_per_page as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+								foreach ($graphs_per_page as $key => $value) {
+									print "<option value='" . $key . "'" . (get_request_var('graphs') == $key ? ' selected' : '') . '>' . $value . '</option>';
+								}
 							}
 							?>
 						</select>
@@ -261,7 +268,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 							if (cacti_sizeof($graph_timespans)) {
 								foreach ($graph_timespans as $value => $text) {
-									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . "</option>\n";
+									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected' : '') . '>' . $text . '</option>';
 								}
 							}
 							?>
@@ -292,9 +299,10 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 								<?php
 								$start_val = 1;
 								$end_val   = cacti_sizeof($graph_timeshifts) + 1;
+
 								if (cacti_sizeof($graph_timeshifts) > 0) {
 									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+										print "<option value='$shift_value'" . ($_SESSION['sess_current_timeshift'] == $shift_value ? ' selected' : '') . '>' . title_trim($graph_timeshifts[$shift_value], 40) . '</option>';
 									}
 								}
 								?>
@@ -461,6 +469,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 		host_new_graphs_save($host_id);
 
 		header('Location: ' . $page . '?host_id=' . $host_id);
+
 		exit;
 	}
 

@@ -117,6 +117,7 @@ switch (get_request_var('action')) {
 		raise_message('query_reloaded', __('Data Query Re-indexed.'), MESSAGE_LEVEL_INFO);
 
 		header('Location: host.php?action=edit&id=' . get_request_var('host_id'));
+
 		break;
 	case 'query_verbose':
 		get_filter_request_var('host_id');
@@ -125,6 +126,7 @@ switch (get_request_var('action')) {
 		raise_message('query_reloaded', __('Device Data Query Re-indexed.  Verbose output displayed.'), MESSAGE_LEVEL_INFO);
 
 		header('Location: host.php?action=edit&id=' . get_request_var('host_id') . '&display_dq_details=true');
+
 		break;
 	case 'edit':
 		top_header();
@@ -168,6 +170,7 @@ switch (get_request_var('action')) {
 		get_site_locations();
 
 		break;
+
 	default:
 		top_header();
 
@@ -337,6 +340,7 @@ function form_actions() {
 		api_plugin_hook_function('device_action_bottom', array(get_nfilter_request_var('drp_action'), $selected_items));
 
 		header('Location: host.php');
+
 		exit;
 	}
 
@@ -506,6 +510,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: host.php');
+
 		exit;
 	}
 
@@ -634,6 +639,7 @@ function host_edit() {
 	$header_label = __('Device [new]');
 	$debug_link   = '';
 	$repop_link   = '';
+
 	if (!isempty_request_var('id')) {
 		$_SESSION['cur_device_id'] = get_request_var('id');
 
@@ -644,6 +650,7 @@ function host_edit() {
 
 		if (cacti_sizeof($host)) {
 			$header_label = __esc('Device [edit: %s]', $host['description']);
+
 			if (is_device_debug_enabled($host['id'])) {
 				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . '</a><br>';
 			} else {
@@ -882,6 +889,7 @@ function host_edit() {
 			ORDER BY snmp_query.name");
 
 		$i = 0;
+
 		if (cacti_sizeof($selected_data_queries)) {
 			foreach ($selected_data_queries as $item) {
 				$i++;
@@ -962,6 +970,7 @@ function device_reindex_methods($item, $host) {
 	$selectedTheme = get_selected_theme();
 
 	$i = 0;
+
 	foreach ($reindex_types as $key => $type) {
 		if ($selectedTheme != 'classic') {
 			if ($i == 0) {
@@ -971,6 +980,7 @@ function device_reindex_methods($item, $host) {
 			print "<label title='" . html_escape($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . '_' . $key . "'>" . $type . '</label>';
 		} else {
 			print $reindex_types[$item['reindex_method']];
+
 			break;
 		}
 
@@ -1550,7 +1560,7 @@ function host() {
 
 							if (cacti_sizeof($sites)) {
 								foreach ($sites as $site) {
-									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . '</option>';
+									print "<option value='" . $site['id'] . "'" . (get_request_var('site_id') == $site['id'] ? ' selected' : '') . '>' . html_escape($site['name']) . '</option>';
 								}
 							}
 							?>
@@ -1567,7 +1577,7 @@ function host() {
 
 							if (cacti_sizeof($pollers)) {
 								foreach ($pollers as $poller) {
-									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . html_escape($poller['name']) . '</option>';
+									print "<option value='" . $poller['id'] . "'" . (get_request_var('poller_id') == $poller['id'] ? ' selected' : '') . '>' . html_escape($poller['name']) . '</option>';
 								}
 							}
 							?>
@@ -1585,7 +1595,7 @@ function host() {
 
 							if (cacti_sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . '</option>';
+									print "<option value='" . $host_template['id'] . "'" . (get_request_var('host_template_id') == $host_template['id'] ? ' selected' : '') . '>' . html_escape($host_template['name']) . '</option>';
 								}
 							}
 							?>
@@ -1611,7 +1621,7 @@ function host() {
 
 							if (cacti_sizeof($locations)) {
 								foreach ($locations as $l) {
-									print "<option value='" . $l['location'] . "'"; if (get_request_var('location') == $l['location']) { print ' selected'; } print '>' . html_escape($l['location']) . '</option>';
+									print "<option value='" . $l['location'] . "'" . (get_request_var('location') == $l['location'] ? ' selected' : '') . '>' . html_escape($l['location']) . '</option>';
 								}
 							}
 							?>
@@ -1658,7 +1668,7 @@ function host() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>

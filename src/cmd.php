@@ -37,7 +37,9 @@ function sig_handler($signo) {
 			db_close();
 
 			exit;
+
 			break;
+
 		default:
 			// ignore all other signals
 	}
@@ -196,42 +198,52 @@ if (cacti_sizeof($parms)) {
 		case '-V':
 		case '-v':
 			display_version();
+
 			exit;
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
+
 			exit;
 		case '--poller':
 		case '-p':
 			cacti_log('Forcing poller to ' . $value, true, 'POLLER', POLLER_VERBOSITY_HIGH);
 			$poller_id = $value;
+
 			break;
 		case '--first':
 		case '-f':
 			$first   = $value;
 			$allhost = false;
+
 			break;
 		case '--last':
 		case '-l':
 			$last    = $value;
 			$allhost = false;
+
 			break;
 		case '--mibs':
 		case '-m':
 			$mibs    = true;
+
 			break;
 		case '--mode':
 		case '-N':
 			$mode = $value;
+
 			break;
 		case '--debug':
 		case '-d':
 			$debug = true;
+
 			break;
+
 		default:
 			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
+
 			exit(1);
 		}
 	}
@@ -249,18 +261,22 @@ if ($first == null && $last == null) {
 	// This is valid
 } elseif (!is_numeric($first) || $first < 0) {
 	cacti_log('FATAL: The first host in the host range is invalid!', true, 'POLLER');
+
 	exit(-1);
 } elseif (!is_numeric($last) || $last < 0) {
 	cacti_log('FATAL: The last host in the host range is invalid!', true, 'POLLER');
+
 	exit(-1);
 } elseif ($last < $first) {
 	cacti_log('FATAL: The first host must always be less or equal to the last host!', true, 'POLLER');
+
 	exit(-1);
 }
 
 // verify the poller_id
 if (!is_numeric($poller_id) || $poller_id < 1) {
 	cacti_log('FATAL: The poller needs to be a positive numeric value', true, 'POLLER');
+
 	exit(-1);
 }
 
@@ -275,6 +291,7 @@ $exists = db_fetch_cell_prepared('SELECT COUNT(*)
 if (empty($exists)) {
 	record_cmdphp_done();
 	db_close();
+
 	exit(-1);
 }
 
@@ -458,6 +475,7 @@ if ($allhost) {
 		// record the process as having completed
 		record_cmdphp_done();
 		db_close();
+
 		exit('-1');
 	}
 }
@@ -647,6 +665,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE SERVER COUNT: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 							break;
+
 						default: // invalid reindex option
 							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE ERROR: Invalid reindex option: ' . $index_item['action'], $print_data_to_stdout, 'POLLER');
 						}
@@ -797,6 +816,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . '] SERVER: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
+
 			default: // invalid polling option
 				$error_ds[$data_source] = $data_source;
 
@@ -838,8 +858,10 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 
 		// check for an over running poller
 		$now = microtime(true);
+
 		if ($now - $start > $polling_interval) {
 			cacti_log('WARNING: cmd.php poller over ran its polling intervale and therefore ending');
+
 			break;
 		}
 	}

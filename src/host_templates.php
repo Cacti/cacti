@@ -55,6 +55,7 @@ switch (get_request_var('action')) {
 		template_item_add_gt();
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
+
 		break;
 	case 'item_remove_gt_confirm':
 		template_item_remove_gt_confirm();
@@ -64,11 +65,13 @@ switch (get_request_var('action')) {
 		template_item_remove_gt();
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
+
 		break;
 	case 'item_add_dq':
 		template_item_add_dq();
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
+
 		break;
 	case 'item_remove_dq_confirm':
 		template_item_remove_dq_confirm();
@@ -78,6 +81,7 @@ switch (get_request_var('action')) {
 		template_item_remove_dq();
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
+
 		break;
 	case 'edit':
 		top_header();
@@ -85,13 +89,16 @@ switch (get_request_var('action')) {
 		template_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		template();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -232,6 +239,7 @@ function form_actions() {
 		}
 
 		header('Location: host_templates.php');
+
 		exit;
 	}
 
@@ -297,6 +305,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: host_templates.php');
+
 		exit;
 	}
 
@@ -496,6 +505,7 @@ function template_edit() {
 			ORDER BY graph_templates.name', array(get_request_var('id')));
 
 		$i = 0;
+
 		if (cacti_sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
 				form_alternate_row("gt$i", true);
@@ -553,6 +563,7 @@ function template_edit() {
 			ORDER BY snmp_query.name', array(get_request_var('id')));
 
 		$i = 0;
+
 		if (cacti_sizeof($selected_data_queries)) {
 			foreach ($selected_data_queries as $item) {
 				form_alternate_row("dq$i", true);
@@ -736,7 +747,7 @@ function template() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -867,6 +878,7 @@ function template() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['hosts'] > 0) {

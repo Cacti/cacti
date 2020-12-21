@@ -60,7 +60,9 @@ function sig_handler($signo) {
 			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') ."')");
 
 			exit;
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
@@ -107,27 +109,34 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '-f':
 			case '--force':
 				$forcerun = true;
+
 				break;
 			case '--verbose':
 				$verbose = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit;
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit;
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit;
 		}
 	}
@@ -136,6 +145,7 @@ if (cacti_sizeof($parms)) {
 /* check for an invalid run locaiton */
 if ($poller_id == 1) {
 	print "ERROR: This command is only to be run on remote Cacti Data Collectors\n";
+
 	exit(1);
 }
 
@@ -156,6 +166,7 @@ debug('About to start recovery processing');
 
 if (!empty($recovery_pid)) {
 	$pid = posix_kill($recovery_pid, 0);
+
 	if ($pid === false) {
 		$run = true;
 	} else {
@@ -244,6 +255,7 @@ if ($run) {
 } else {
 	debug('Recovery process still running, exiting');
 	cacti_log('Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid);
+
 	exit(1);
 }
 

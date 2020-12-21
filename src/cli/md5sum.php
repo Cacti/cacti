@@ -104,6 +104,7 @@ if (cacti_sizeof($parms)) {
 				fail(EXIT_NORMAL);
 
 				break;
+
 			default:
 				if (strlen($md5_file)) {
 					fail(EXIT_ARGERR,$arg,true);
@@ -156,6 +157,7 @@ $ignore_files = array(
 );
 
 $ignore_regex='';
+
 foreach ($ignore_files as $ignore) {
 	$ignore_regex .= (strlen($ignore_regex)?'|':'').'('.$ignore.')';
 }
@@ -198,6 +200,7 @@ if ($create) {
 
 	foreach ($contents as $md5) {
 		$line++;
+
 		if (strlen($md5)) {
 			if ($md5[32] != ' ') {
 				fail(EXIT_MD5LIN,array($line,$md5));
@@ -273,6 +276,7 @@ function dirToArray($dir,$base,$ignore) {
 					$dir_list[] = $partpath;
 				} else {
 					$md5_sum = @md5_file($fullpath);
+
 					if (!$quiet && $debug) {
 						print "[$md5_sum] $value\n";
 					}

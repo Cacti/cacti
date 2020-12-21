@@ -48,42 +48,54 @@ foreach ($parms as $parameter) {
 	switch ($arg) {
 	case '--host-id':
 		$host_id = trim($value);
+
 		if (!is_numeric($host_id)) {
 			print 'ERROR: You must supply a valid host-id to run this script!' . PHP_EOL;
+
 			exit(1);
 		}
+
 		break;
 	case '--data-template-id':
 		$data_template_id = $value;
+
 		if (!is_numeric($data_template_id)) {
 			print 'ERROR: You must supply a numeric data-template-id!' . PHP_EOL;
+
 			exit(1);
 		}
+
 		break;
 	case '--version':
 	case '-V':
 	case '-v':
 		display_version();
+
 		exit(0);
 	case '--help':
 	case '-H':
 	case '-h':
 		display_help();
+
 		exit(0);
+
 	default:
 		print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 		display_help();
+
 		exit(1);
 	}
 }
 
 if (!isset($host_id)) {
 	print "ERROR: You must supply a valid host-id!\n";
+
 	exit(1);
 }
 
 if (!isset($data_template_id)) {
 	print "ERROR: You must supply a valid data-template-id!\n";
+
 	exit(1);
 }
 

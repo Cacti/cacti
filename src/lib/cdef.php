@@ -32,11 +32,26 @@ function get_cdef_item_name($cdef_item_id) {
 	$current_cdef_value = $cdef_item['value'];
 
 	switch ($cdef_item['type']) {
-		case '1': return $cdef_functions[$current_cdef_value]; break;
-		case '2': return $cdef_operators[$current_cdef_value]; break;
-		case '4': return $current_cdef_value; break;
-		case '5': return db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($current_cdef_value)); break;
-		case '6': return $current_cdef_value; break;
+		case '1':
+			return $cdef_functions[$current_cdef_value];
+
+			break;
+		case '2':
+			return $cdef_operators[$current_cdef_value];
+
+			break;
+		case '4':
+			return $current_cdef_value;
+
+			break;
+		case '5':
+			return db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($current_cdef_value));
+
+			break;
+		case '6':
+			return $current_cdef_value;
+
+			break;
 	}
 }
 
@@ -47,19 +62,23 @@ function get_cdef_item_name($cdef_item_id) {
 function get_cdef($cdef_id) {
 	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
 
-	$i = 0; $cdef_string = '';
+	$i = 0;
 
-	if (cacti_sizeof($cdef_items) > 0) {
+	$cdef_string = '';
+
+	if (cacti_sizeof($cdef_items)) {
 		foreach ($cdef_items as $cdef_item) {
 			if ($i > 0) {
 				$cdef_string .= ',';
 			}
+
 			if ($cdef_item['type'] == 5) {
 				$current_cdef_id = $cdef_item['value'];
 				$cdef_string .= get_cdef($current_cdef_id);
 			} else {
 				$cdef_string .= get_cdef_item_name($cdef_item['id']);
 			}
+
 			$i++;
 		}
 	}

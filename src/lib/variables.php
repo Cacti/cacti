@@ -231,6 +231,7 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	);
 
 	$data = api_plugin_hook_function('expand_title', $data);
+
 	if (isset($data['title'])) {
 		$title = $data['title'];
 	}

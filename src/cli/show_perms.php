@@ -30,6 +30,7 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 $output_json = false;
+
 if (cacti_sizeof($parms)) {
 	$shortopts = 'JjVvHh';
 
@@ -45,22 +46,26 @@ if (cacti_sizeof($parms)) {
 		switch($arg) {
 			case 'json':
 				$output_json = true;
+
 				break;
 			case 'version':
 			case 'V':
 			case 'v':
 				display_version();
+
 				exit(0);
 
 			case 'help':
 			case 'H':
 			case 'h':
 				display_help();
+
 				exit(0);
 
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -76,6 +81,7 @@ if ($output_json) {
 	foreach ($perms as $perm => $value) {
 		$count++;
 		printf('%25s %5s    ', $perm, $value?'Yes':'No');
+
 		if ($count % 2 == 0) print PHP_EOL;
 	}
 }

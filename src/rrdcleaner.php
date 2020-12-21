@@ -65,6 +65,7 @@ case 'arcall':
 	bottom_footer();
 
 	break;
+
 default:
 	top_header();
 	/* fill files name table */
@@ -136,6 +137,7 @@ function rrdclean_truncate_tables() {
  */
 function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	global $debug;
+
 	if ($debug) {
 		/* define all error types */
 		$errortype = array(
@@ -162,6 +164,7 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		/* let's ignore some lesser issues */
 		if (substr_count($errmsg, 'date_default_timezone'))
 			return;
+
 		if (substr_count($errmsg, 'Only variables'))
 			return;
 		print ('PROGERR: ' . $err . "\n"); # print_r($vars); print('</pre>');
@@ -185,6 +188,7 @@ function get_files() {
 
 	$files_unused = array();
 	$arc_path     = read_config_option('rrd_archive');
+
 	if (substr_count($arc_path, $rra_path)) {
 		$archive = true;
 		$arcbase = basename($arc_path);
@@ -206,6 +210,7 @@ function get_files() {
 
 	$size = 0;
 	$sql  = array();
+
 	foreach ($iterator as $file) {
 		if (substr($file->getPathname(),-3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
 			$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
@@ -501,7 +506,7 @@ function filter() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print '<option value="' . $key . '"'; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									print '<option value="' . $key . '"' . (get_request_var('rows') == $key ? ' selected' : '') . '>' . $value . '</option>';
 								}
 							}
 							?>

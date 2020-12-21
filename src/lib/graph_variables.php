@@ -36,6 +36,7 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
 		if (array_key_exists('peak', $stats)) {
 			return $stats['peak'];
 		}
+
 		if (array_key_exists('avg', $stats)) {
 			return $stats['avg'];
 		} else {
@@ -45,6 +46,7 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
 		if (array_key_exists('avg', $stats)) {
 			return $stats['avg'];
 		}
+
 		if (array_key_exists('peak', $stats)) {
 			return $stats['peak'];
 		} else {
@@ -183,6 +185,7 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 
 	/* next get the max values of all the data sources */
 	$max_values_array = array();
+
 	if (cacti_sizeof($asum_array)) {
 		foreach ($asum_array as $ds_name => $sum_by_timestamp) {
 			foreach ($sum_by_timestamp as $timestamp => $data) {
@@ -200,6 +203,7 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 
 	/* get the sum data now across all data sources */
 	$sum_values_array = array();
+
 	if (cacti_sizeof($asum_array)) {
 		foreach ($asum_array as $ds_name => $sum_by_timestamp) {
 			if ($ds_name == 'nth_percentile_maximum') {
@@ -427,6 +431,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	}
 
 	$gi = array();
+
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $item) {
 			if ($item['local_data_id'] > 0 && $item['data_source_name'] != '') {
@@ -494,6 +499,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				break;
 			case 'aggregate_current':
 				$local_data_array = array();
+
 				if (!empty($graph_item['data_source_name'])) {
 					foreach ($graph_items as $graph_element) {
 						if ($graph_item['data_source_name'] == $graph_element['data_source_name'] &&
@@ -613,6 +619,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 	}
 
 	$summation_cache = array();
+
 	switch($regexp_match_array[2]) {
 		case 'current':
 			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, $ds_step);

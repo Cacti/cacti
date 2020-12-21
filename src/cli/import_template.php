@@ -74,14 +74,18 @@ if (cacti_sizeof($parms)) {
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
+
 				exit(1);
 		}
 	}
@@ -103,6 +107,7 @@ if (cacti_sizeof($parms)) {
 
 	if (empty($id)) {
 		print "FATAL: No valid Data Source Profiles found on the system.  Exiting!\n";
+
 		exit(1);
 	}
 
@@ -119,16 +124,19 @@ if (cacti_sizeof($parms)) {
 			import_display_results($debug_data, array(), $preview_only);
 		} else {
 			print "ERROR: file $filename is not readable, or does not exist\n\n";
+
 			exit(1);
 		}
 	} else {
 		print "ERROR: no filename specified\n\n";
 		display_help();
+
 		exit(1);
 	}
 } else {
 	print "ERROR: no parameters given\n\n";
 	display_help();
+
 	exit(1);
 }
 

@@ -48,6 +48,7 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
+
 	default:
 		top_header();
 		aggregate_color_template();
@@ -203,6 +204,7 @@ function aggregate_color_form_actions() {
 		}
 
 		header('Location: color_templates.php');
+
 		exit;
 	}
 
@@ -267,6 +269,7 @@ function aggregate_color_form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: color_templates.php');
+
 		exit;
 	}
 
@@ -441,6 +444,7 @@ function sync_color_templates($color_template) {
 	if (cacti_sizeof($aggregate_templates)) {
 		$found     = true;
 		$templates = cacti_sizeof($aggregate_templates);
+
 		foreach ($aggregate_templates as $id) {
 			push_out_aggregates($id);
 		}
@@ -458,6 +462,7 @@ function sync_color_templates($color_template) {
 	if (cacti_sizeof($aggregate_graphs)) {
 		$found  = true;
 		$graphs = cacti_sizeof($aggregate_graphs);
+
 		foreach ($aggregate_templates as $id) {
 			push_out_aggregates($id['aggregate_template_id'], $id['local_graph_id']);
 		}
@@ -540,6 +545,7 @@ function aggregate_color_template() {
 					<td>
 						<select id="rows" onChange="applyFilter()">
 							<option value="-1" ';
+
 	if (get_request_var('rows') == '-1') {
 		$filter_html .= 'selected';
 	}
@@ -549,6 +555,7 @@ function aggregate_color_template() {
 	if (cacti_sizeof($item_rows)) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
+
 			if (get_request_var('rows') == $key) {
 				$filter_html .= ' selected';
 			}
@@ -583,6 +590,7 @@ function aggregate_color_template() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
+
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (ct.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}

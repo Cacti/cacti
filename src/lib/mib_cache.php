@@ -63,6 +63,7 @@ class MibCache{
 		if (isset($mp->mib) && isset($mp->oids) && $mp->mib) {
 			/* check if this mib has already been installed */
 			$existing = db_fetch_cell_prepared('SELECT 1 FROM snmpagent_mibs WHERE `name` = ?', array($mp->mib));
+
 			if ($existing) {
 				if ($replace == false) {
 					unset($mp->oids);
@@ -201,8 +202,10 @@ class MibCache{
 
 	public function insert($values) {
 		$oid_entry = $this->exists();
+
 		if ($oid_entry == false) {
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
+
 			if ($columns && cacti_sizeof($columns) > 0) {
 				foreach ($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
@@ -232,9 +235,11 @@ class MibCache{
 
 	public function select($column=false) {
 		$result = array();
+
 		if ($this->active_table_entry) {
 			/* focus on a dedicated MIB table row only */
 			$oid_entry = $this->exists();
+
 			if ($oid_entry !== false) {
 				if ($column == false) {
 					/* fetch the whole row */
@@ -284,6 +289,7 @@ class MibCache{
 		} else {
 			/* query the whole MIB table */
 			$oid_entry = $this->cache__tables[$this->active_mib][$this->active_table] . '.1';
+
 			if ($column == false) {
 				/* fetch all rows */
 				$columns     = $this->cache__tables_columns[$this->active_mib][$this->active_table];
@@ -299,8 +305,10 @@ class MibCache{
 				if ($num_columns && $entries && cacti_sizeof($entries)) {
 					$num_entries        = cacti_sizeof($entries);
 					$entries_per_object = $num_entries / $num_columns;
+
 					for ($i = 0; $i < $entries_per_object; $i++) {
 						$result[$i]=array();
+
 						for ($j=0; $j < $num_columns; $j++) {
 							$result[$i][$entries[$i + $j * $entries_per_object]['name']] = $entries[$i + $j * $entries_per_object]['value'];
 						}
@@ -334,8 +342,10 @@ class MibCache{
 					$num_objects        = cacti_sizeof($column);
 					$num_entries        = cacti_sizeof($entries);
 					$entries_per_object = $num_entries / $num_objects;
+
 					for ($i = 0; $i < $entries_per_object; $i++) {
 						$result[$i]=array();
+
 						for ($j=0; $j < $num_objects; $j++) {
 							$result[$i][$entries[$i + $j * $entries_per_object]['name']] = $entries[$i + $j * $entries_per_object]['value'];
 						}
@@ -353,9 +363,11 @@ class MibCache{
 
 	public function delete() {
 		$oid_entry = $this->exists();
+
 		if ($oid_entry !== false) {
 			/* get list of columns for this mib table */
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
+
 			if ($columns & cacti_sizeof($columns) > 0) {
 				foreach ($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
@@ -371,13 +383,16 @@ class MibCache{
 
 	public function update($values) {
 		$oid_entry = $this->exists();
+
 		if ($oid_entry !== false) {
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
+
 			if ($columns & cacti_sizeof($columns) > 0) {
 				$sql = array();
 
 				foreach ($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
+
 					if (isset($values[$column_params['name']])) {
 						$sql[] = '(' . db_qstr($column_params['name']) . ', ' . db_qstr($values[$column_params['name']]) . ', ' . db_qstr($column_params['oid']) . ')';
 					}

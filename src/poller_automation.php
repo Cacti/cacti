@@ -47,6 +47,7 @@ if ($config['poller_id'] > 1) {
 		db_force_remote_cnn();
 	} else {
 		cacti_log('WARNING: Main Cacti database offline.  Can not run automation', false, 'AUTOM8');
+
 		exit(1);
 	}
 }
@@ -63,8 +64,10 @@ function sig_handler($signo) {
 		case SIGINT:
 			if ($thread > 0) {
 				clearTask($network_id, getmypid());
+
 				exit(0);
 			}
+
 			if ($thread == 0 && !$master) {
 				$pids = array_rekey(db_fetch_assoc_prepared("SELECT pid
 					FROM automation_processes
@@ -105,6 +108,7 @@ function sig_handler($signo) {
 			exit(0);
 
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
@@ -148,35 +152,45 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '-M':
 			case '--master':
 				$master = true;
+
 				break;
 			case '--poller':
 				$poller_id = $value;
+
 				break;
 			case '-f':
 			case '--force':
 				$force = true;
+
 				break;
 			case '--network':
 				$network_id = $value;
+
 				break;
 			case '--thread':
 				$thread = $value;
+
 				break;
 			case '-v':
 			case '--version':
 				display_version();
+
 				exit(0);
 			case '-h':
 			case '--help':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -191,6 +205,7 @@ if (function_exists('pcntl_signal')) {
 // Let's ensure that we were called correctly
 if (!$master && !$network_id) {
 	print "FATAL: You must specify -M to Start the Master Control Process, or the Network ID using --network\n";
+
 	exit(1);
 }
 
@@ -204,6 +219,7 @@ if (!$master && $thread == 0) {
 
 	if ($status != 'on' && !$force) {
 		cacti_log(automation_get_pid() . " WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force it's execution.", true, 'AUTOM8');
+
 		exit(1);
 	}
 }
@@ -219,6 +235,7 @@ if ($master) {
 		array($poller_id));
 
 	$launched = 0;
+
 	if (cacti_sizeof($networks)) {
 		foreach ($networks as $network) {
 			if (api_automation_is_time_to_start($network['id']) || $force) {
@@ -248,6 +265,7 @@ if (!$master && $thread == 0) {
 	);
 
 	automation_debug("Killing any prior running threads\n");
+
 	if (cacti_sizeof($pids)) {
 		foreach ($pids as $pid) {
 			if (isProcessRunning($pid)) {
@@ -294,6 +312,7 @@ if (!$master && $thread == 0) {
 		array(date('Y-m-d H:i:s', $startTime), $network_id));
 
 	$curthread = 1;
+
 	while ($curthread <= $threads) {
 		automation_debug("Launching Thread $curthread\n");
 		exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force':'') . ($debug ? ' --debug':''));
@@ -304,6 +323,7 @@ if (!$master && $thread == 0) {
 	automation_debug("Checking for Running Threads\n");
 
 	$failcount = 0;
+
 	while (true) {
 		$command = db_fetch_cell_prepared('SELECT command
 			FROM automation_processes
@@ -397,6 +417,7 @@ function discoverDevices($network_id, $thread) {
 		if ($command == 'cancel' || empty($command)) {
 			removeMyProcess(getmypid(), $network_id);
 			killProcess(getmypid());
+
 			exit(0);
 		}
 
@@ -490,6 +511,7 @@ function discoverDevices($network_id, $thread) {
 					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found, Checking NetBIOS:');
 
 					$netbios = ping_netbios_name($device['ip_address']);
+
 					if ($netbios === false) {
 						automation_debug(' Not found');
 						$device['hostname']      = $device['ip_address'];
@@ -568,6 +590,7 @@ function discoverDevices($network_id, $thread) {
 					/* perform the appropriate ping check of the host */
 					$bypass_ping = false;
 					$result      = false;
+
 					if ($network['ping_method'] == PING_SNMP) {
 						$bypass_ping = true;
 					}
@@ -588,11 +611,14 @@ function discoverDevices($network_id, $thread) {
 					if (($result || $bypass_ping) && automation_valid_snmp_device($device)) {
 						$snmp_sysName       = trim($device['snmp_sysName']);
 						$snmp_sysName_short = '';
+
 						if (!is_ipaddress($snmp_sysName)) {
 							$parts = explode('.', $snmp_sysName);
+
 							foreach ($parts as $part) {
 								if (is_numeric($part)) {
 									$snmp_sysName_short = $snmp_sysName;
+
 									break;
 								}
 							}
@@ -633,6 +659,7 @@ function discoverDevices($network_id, $thread) {
 
 							if ($snmp_sysName != '') {
 								$hostname = gethostbyaddr($device['ip_address']);
+
 								if ($hostname != $device['ip_address']) {
 									if (strpos($hostname, '.')) {
 										$hostname = substr($hostname, 0, strpos($hostname, '.') - 1);
@@ -648,6 +675,7 @@ function discoverDevices($network_id, $thread) {
 								if ($isCactiSysName) {
 									automation_debug(", Skipping sysName '" . $snmp_sysName . "' already in Cacti!\n");
 									markIPDone($device['ip_address'], $network_id);
+
 									continue;
 								}
 
@@ -669,6 +697,7 @@ function discoverDevices($network_id, $thread) {
 									if ($isDuplicateSysNameDiscovery || $isDuplicateSysNameCacti) {
 										automation_debug(", Skipping sysName '" . $snmp_sysName . "' already Discovered!\n");
 										markIPDone($device['ip_address'], $network_id);
+
 										continue;
 									}
 								}
@@ -940,6 +969,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 		if ($details['notification_enabled'] == 'on') {
 			if ($details['notification_fromname'] == '') {
 				$fromname = read_config_option('automation_fromname');
+
 				if ($fromname == '') {
 					$fromname = read_config_option('settings_from_name');
 
@@ -953,6 +983,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 
 			if ($details['notification_fromemail'] == '') {
 				$fromemail = read_config_option('automation_fromemail');
+
 				if ($fromemail == '') {
 					$fromemail = read_config_option('settings_from_email');
 
@@ -1055,6 +1086,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 			$headers['User-Agent'] = 'Cacti-Automation-v' . $v;
 
 			$status = ($count_new + $count_exist) . ' devices discovered';
+
 			if ($count_new > 0) {
 				$status .= ', ' . $count_new . ' new!';
 			}
@@ -1076,6 +1108,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 
 			if ($count_new > 0 || $count_exist > 0) {
 				$output .= '<table cellspacing="5" cellpadding="5">';
+
 				if ($count_new > 0) {
 					$output .= '<tr><td colspan="5"><h3>New Devices</h3></td></tr>' . $table_head . $table_new;
 				}

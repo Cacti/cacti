@@ -49,30 +49,38 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--force':
 				$force = true;
+
 				break;
 			case '--dynamic':
 				$dynamic = true;
+
 				break;
 			case '-form':
 			case '--form':
 				$form = ' USE_FRM';
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -146,6 +154,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	AND graph_templates_item.gprint_id > 0');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM graph_templates_item
@@ -164,6 +173,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	WHERE cdef.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM cdef_items
@@ -181,6 +191,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	WHERE data_input.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_template_data
@@ -198,6 +209,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	WHERE data_input.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_fields
@@ -219,6 +231,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	WHERE data_template_data.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_data
@@ -235,6 +248,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	WHERE data_input_fields.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_data

@@ -40,6 +40,7 @@ switch (get_request_var('action')) {
 		item_remove();
 
 		header('Location: graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
+
 		break;
 	case 'item_edit':
 		top_header();
@@ -47,6 +48,7 @@ switch (get_request_var('action')) {
 		item_edit();
 
 		bottom_footer();
+
 		break;
 	case 'item_movedown':
 		get_filter_request_var('local_graph_id');
@@ -54,6 +56,7 @@ switch (get_request_var('action')) {
 		item_movedown();
 
 		header('Location: graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
+
 		break;
 	case 'item_moveup':
 		get_filter_request_var('local_graph_id');
@@ -61,6 +64,7 @@ switch (get_request_var('action')) {
 		item_moveup();
 
 		header('Location: graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
+
 		break;
 	case 'ajax_hosts':
 		get_allowed_ajax_hosts();
@@ -193,13 +197,17 @@ function form_save() {
 				switch ($save['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_LINE1:
 					$save['line_width'] = 1;
+
 					break;
 				case GRAPH_ITEM_TYPE_LINE2:
 					$save['line_width'] = 2;
+
 					break;
 				case GRAPH_ITEM_TYPE_LINE3:
 					$save['line_width'] = 3;
+
 					break;
+
 				default:
 					$save['line_width'] = 0;
 				}
@@ -233,9 +241,11 @@ function form_save() {
 
 		if (is_error_message()) {
 			header('Location: graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_nfilter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_nfilter_request_var('local_graph_id'));
+
 			exit;
 		} else {
 			header('Location: graphs.php?action=graph_edit&id=' . get_nfilter_request_var('local_graph_id'));
+
 			exit;
 		}
 	}
@@ -450,6 +460,7 @@ function item_edit() {
 
 		if (get_selected_theme() != 'classic' && read_config_option('autocomplete_enabled') > 0) {
 			$action = 'ajax_graph_items';
+
 			if (get_request_var('host_id') > 0) {
 				$action .= '&host_id=' . get_filter_request_var('host_id');
 			}

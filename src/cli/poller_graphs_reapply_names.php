@@ -49,34 +49,42 @@ if (cacti_sizeof($parms)) {
 			case '-id':
 			case '--host-id':
 				$host_id = $value;
+
 				break;
 			case '-s':
 			case '--filter':
 				$filter = $value;
+
 				break;
 			case '--debug':
 			case '-d':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
 } else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
+
 	exit(1);
 }
 
@@ -108,6 +116,7 @@ if (strtolower($host_id) == 'all') {
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
@@ -129,6 +138,7 @@ print "WARNING: Do not interrupt this script.  Interrupting during rename can ca
 debug("There are '" . cacti_sizeof($graph_list) . "' Graphs to rename");
 
 $i = 1;
+
 foreach ($graph_list as $graph) {
 	if (!$debug) print '.';
 	debug("Graph Name '" . $graph['title_cache'] . "' starting");

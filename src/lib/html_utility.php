@@ -81,6 +81,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 								if (isset($$matches1)) {
 									if (is_array($$matches1)) {
 										$array = $$matches1;
+
 										if (is_array($array) && isset($array[$matches2]) && $array[$matches2] != '') {
 											$string = str_replace($matches0, $array[$matches2], $string);
 										} else {
@@ -122,9 +123,11 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 							 * in the special case of 'sql' for example.
 							 */
 							$additional = preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string);
+
 							if (empty($additional)) {
 								break;
 							}
+
 							if ($count >= 3) {
 								break;
 							} else {
@@ -222,11 +225,13 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 	if ($style_or_class != '') {
 		if (strpos($style_or_class, ':') === false) {
 			$output = "class='nowrap " . $style_or_class . "'";
+
 			if ($width != '') {
 				$output .= " style='width:$width;'";
 			}
 		} else {
 			$output = "class='nowrap' style='" . $style_or_class;
+
 			if ($width != '') {
 				$output .= ";width:$width;";
 			}
@@ -391,6 +396,7 @@ function get_request_var($name, $default = '') {
 	if (isset($_CACTI_REQUEST[$name])) {
 		return $_CACTI_REQUEST[$name];
 	}
+
 	if (isset_request_var($name)) {
 		if ($log_validation == 'on') {
 			html_log_input_error($name);
@@ -430,6 +436,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 
 			return get_request_var($name);
 		}
+
 		if (get_nfilter_request_var($name) == 'undefined') {
 			if (isset($options['default'])) {
 				set_request_var($name, $options['default']);
@@ -457,6 +464,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				}
 
 				$valid = validate_is_regex($_REQUEST[$name]);
+
 				if ($valid === true) {
 					$value = $_REQUEST[$name];
 				} else {
@@ -465,10 +473,12 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
 				$valid = true;
+
 				if (is_array($_REQUEST[$name])) {
 					foreach ($_REQUEST[$name] as $number) {
 						if (!is_numeric($number)) {
 							$valid = false;
+
 							break;
 						}
 					}
@@ -484,9 +494,11 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 				$valid  = true;
 				$values = preg_split('/,/', $_REQUEST[$name], null, PREG_SPLIT_NO_EMPTY);
+
 				foreach ($values as $number) {
 					if (!is_numeric($number)) {
 						$valid = false;
+
 						break;
 					}
 				}
@@ -539,6 +551,7 @@ function get_nfilter_request_var($name, $default = '') {
 	if (isset($_CACTI_REQUEST[$name])) {
 		return $_CACTI_REQUEST[$name];
 	}
+
 	if (isset($_REQUEST[$name])) {
 		return $_REQUEST[$name];
 	} else {
@@ -678,6 +691,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					}
 
 					$valid = validate_is_regex($_REQUEST[$variable]);
+
 					if ($valid === true) {
 						$value = $_REQUEST[$variable];
 					} else {
@@ -686,10 +700,12 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					}
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_ARRAY) {
 					$valid = true;
+
 					if (is_array($_REQUEST[$variable])) {
 						foreach ($_REQUEST[$variable] as $number) {
 							if (!is_numeric($number)) {
 								$valid = false;
+
 								break;
 							}
 						}
@@ -705,9 +721,11 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 					$valid  = true;
 					$values = preg_split('/,/', $_REQUEST[$variable], null, PREG_SPLIT_NO_EMPTY);
+
 					foreach ($values as $number) {
 						if (!is_numeric($number)) {
 							$valid = false;
+
 							break;
 						}
 					}
@@ -771,6 +789,7 @@ function update_order_string($inplace = false) {
 
 	if ($inplace) {
 		$_SESSION['sort_string'][$page] = 'ORDER BY ';
+
 		foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
 			if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
 				$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
@@ -812,6 +831,7 @@ function update_order_string($inplace = false) {
 					$del = '`';
 				} else {
 					$del = '';
+
 					break;
 				}
 			}
@@ -943,18 +963,24 @@ function get_colored_device_status($disabled, $status) {
 		switch ($status) {
 			case HOST_DOWN:
 				return "<span class='deviceDown'>" . __('Down') . '</span>';
+
 				break;
 			case HOST_RECOVERING:
 				return "<span class='deviceRecovering'>" . __('Recovering') . '</span>';
+
 				break;
 			case HOST_UP:
 				return "<span class='deviceUp'>" . __('Up') . '</span>';
+
 				break;
 			case HOST_ERROR:
 				return "<span class='deviceError'>" . __('Error') . '</span>';
+
 				break;
+
 			default:
 				return "<span class='deviceUnknown'>" . __('Unknown') . '</span>';
+
 				break;
 		}
 	}
@@ -1061,6 +1087,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	for ($page_number=0; (($page_number + $start_page) <= $end_page); $page_number++) {
 		$page = $page_number + $start_page;
+
 		if ($page_number < $pages_per_screen) {
 			if ($page_number == 0 && $start_page > 2) {
 				$nav .= $url_ellipsis;

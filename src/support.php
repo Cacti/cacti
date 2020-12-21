@@ -148,20 +148,24 @@ function support_view_tech() {
 
 		/* Check RRDtool issues */
 		$rrdtool_errors = array();
+
 		if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
 			$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . '</span>';
 		}
 
 		$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
+
 		if ($graph_gif_count > 0) {
 			$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span>';
 		}
 
 		/* Get spine version */
 		$spine_version = 'Unknown';
+
 		if ((file_exists(read_config_option('path_spine'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_spine'))))) {
 			$out_array = array();
 			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+
 			if (cacti_sizeof($out_array) > 0) {
 				$spine_version = $out_array[0];
 			}
@@ -210,6 +214,7 @@ function support_view_tech() {
 			print '<td>&nbsp;</td>';
 			$br = '';
 			print '<td>';
+
 			foreach ($rrdtool_errors as $rrdtool_error) {
 				print $br . $rrdtool_error;
 				$br = '<br/>';
@@ -232,6 +237,7 @@ function support_view_tech() {
 		print '<td>' . __('Data Sources') . '</td>';
 		print '<td>';
 		$data_total = 0;
+
 		if (cacti_sizeof($data_count)) {
 			foreach ($data_count as $item) {
 				print $input_types[$item['type_id']] . ': ' . number_format_i18n($item['total'], -1) . '<br>';
@@ -249,8 +255,10 @@ function support_view_tech() {
 		form_alternate_row();
 		print '<td>' . __('Interval') . '</td>';
 		print '<td>' . read_config_option('poller_interval') . '</td>';
+
 		if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
 			$type = $spine_version;
+
 			if (!strpos($spine_version, CACTI_VERSION)) {
 				$type .= '<span class="textError"> (' . __('Different version of Cacti and Spine!') . ')</span>';
 			}
@@ -268,6 +276,7 @@ function support_view_tech() {
 		print '<td>' . __('Items') . '</td>';
 		print '<td>';
 		$total = 0;
+
 		if (cacti_sizeof($poller_item)) {
 			foreach ($poller_item as $item) {
 				print __('Action[%s]', $item['action']) . ': ' . number_format_i18n($item['total'], -1) . '<br>';
@@ -312,6 +321,7 @@ function support_view_tech() {
 		form_end_row();
 
 		$max_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+
 		if (cacti_sizeof($max_connections)) {
 			$max_connections = $max_connections['Value'];
 		} else {
@@ -392,6 +402,7 @@ function support_view_tech() {
 
 		form_alternate_row();
 		print '<td>' . __('PHP Version') . '</td>';
+
 		if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
 			print '<td>' . PHP_VERSION . '</td>';
 		} else {
@@ -407,6 +418,7 @@ function support_view_tech() {
 		form_alternate_row();
 		print '<td>' . __('PHP uname') . '</td>';
 		print '<td>';
+
 		if (function_exists('php_uname')) {
 			print php_uname();
 		} else {
@@ -418,6 +430,7 @@ function support_view_tech() {
 		form_alternate_row();
 		print '<td>' . __('PHP SNMP') . '</td>';
 		print '<td>';
+
 		if (function_exists('snmpget')) {
 			print __('Installed. <span class="deviceDown">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>');
 		} else {
@@ -450,8 +463,10 @@ function support_view_tech() {
 
 		/* Suggest values in 8M increments */
 		$memory_suggestion = round($memory_suggestion / 8388608) * 8388608;
+
 		if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
 			print "<br><span class='deviceDown'>";
+
 			if ((ini_get('memory_limit') == -1)) {
 				print __("You've set memory limit to 'unlimited'.") . '<br>';
 			}
@@ -494,6 +509,7 @@ function support_view_tech() {
 		print '</thead>';
 
 		$r = 0;
+
 		foreach ($status as $k => $v) {
 			if (($r % 2) == 0) {
 				form_alternate_row();
@@ -566,6 +582,7 @@ function support_view_tech() {
 			print "  <th class='tableSubHeaderColumn'>" . __('Comment') . '</th>';
 			print '</tr>';
 			print '</thead>';
+
 			foreach ($tables as $table) {
 				form_alternate_row();
 				print '<td>' . $table['TABLE_NAME'] . '</td>';

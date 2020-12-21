@@ -55,6 +55,7 @@ switch (get_request_var('action')) {
 		item_movedown();
 
 		header('Location: vdef.php?action=edit&id=' . get_request_var('vdef_id'));
+
 		break;
 	case 'item_moveup':
 		get_filter_request_var('vdef_id');
@@ -62,6 +63,7 @@ switch (get_request_var('action')) {
 		item_moveup();
 
 		header('Location: vdef.php?action=edit&id=' . get_request_var('vdef_id'));
+
 		break;
 	case 'item_edit':
 		top_header();
@@ -81,6 +83,7 @@ switch (get_request_var('action')) {
 		vdef_item_dnd();
 
 		break;
+
 	default:
 		top_header();
 
@@ -168,6 +171,7 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	$save['hash'] = get_hash_vdef(0);
 
 	$fields_vdef_edit = preset_vdef_form_list();
+
 	foreach ($fields_vdef_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method'])) {
 			$save[$field] = $vdef[$field];
@@ -282,6 +286,7 @@ function vdef_form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: vdef.php');
+
 		exit;
 	}
 
@@ -514,6 +519,7 @@ function vdef_item_dnd() {
 
 		if (cacti_sizeof($vdef_ids)) {
 			$sequence = 1;
+
 			foreach ($vdef_ids as $vdef_id) {
 				$vdef_id = str_replace('line', '', $vdef_id);
 				input_validate_input_number($vdef_id);
@@ -720,7 +726,7 @@ function vdef_filter() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . $value . '</option>';
 								}
 							}
 							?>
@@ -921,6 +927,7 @@ function vdef($refresh = true) {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($vdefs)) {
 		foreach ($vdefs as $vdef) {
 			if ($vdef['graphs'] == 0 && $vdef['templates'] == 0) {

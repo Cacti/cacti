@@ -50,19 +50,24 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--host-id':
 			case '--hostId':
 				$hostId = $value;
+
 				break;
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -71,6 +76,7 @@ if (cacti_sizeof($parms)) {
 if ($proceed == false) {
 	print "\nFATAL: You Must Explicitally Instruct This Script to Proceed with the '--proceed' Option\n\n";
 	display_help();
+
 	exit -1;
 }
 
@@ -83,11 +89,13 @@ $group_id      = filegroup($base_rra_path);
 disable_poller();
 
 $poller_running = shell_exec('ps -ef | grep poller.php | wc -l');
+
 if ($poller_running == '1') {
 	/* turn on the poller */
 	enable_poller();
 
 	print "FATAL: The Poller is Currently Running\n";
+
 	exit -4;
 }
 
@@ -120,6 +128,7 @@ foreach ($data_sources as $info) {
 		/* see if we can create the dirctory for the new file */
 		if (mkdir($new_base_path, 0775)) {
 			print "NOTE: New Directory '$new_base_path' Created for RRD Files\n";
+
 			if ($config['cacti_server_os'] != 'win32') {
 				if (chown($new_base_path, $owner_id) && chgrp($new_base_path, $group_id)) {
 					print "NOTE: New Directory '$new_base_path' Permissions Set\n";
@@ -128,6 +137,7 @@ foreach ($data_sources as $info) {
 					enable_poller();
 
 					print "FATAL: Could not Set Permissions for Directory '$new_base_path'\n";
+
 					exit -5;
 				}
 			}
@@ -136,6 +146,7 @@ foreach ($data_sources as $info) {
 			enable_poller();
 
 			print "FATAL: Could NOT Make New Directory '$new_base_path'\n";
+
 			exit -1;
 		}
 	}
@@ -152,6 +163,7 @@ foreach ($data_sources as $info) {
 		$done_count++;
 
 		print "NOTE: HardLink Complete:'" . $old_rrd_path . "' -> '" . $new_rrd_path . "'\n";
+
 		if ($config['cacti_server_os'] != 'win32') {
 			if (chown($new_rrd_path, $owner_id) && chgrp($new_rrd_path, $group_id)) {
 				print "NOTE: Permissions set for '$new_rrd_path'\n";
@@ -160,6 +172,7 @@ foreach ($data_sources as $info) {
 				enable_poller();
 
 				print "FATAL: Could not Set Permissions for File '$new_rrd_path'\n";
+
 				exit -6;
 			}
 		}
@@ -174,6 +187,7 @@ foreach ($data_sources as $info) {
 			enable_poller();
 
 			print "FATAL: Old File '$old_rrd_path' Could not be removed\n";
+
 			exit -2;
 		}
 	} else {
@@ -181,6 +195,7 @@ foreach ($data_sources as $info) {
 		enable_poller();
 
 		print "FATAL: Could not Copy RRD File '$old_rrd_path' to '$new_rrd_path'\n";
+
 		exit -3;
 	}
 }

@@ -35,9 +35,12 @@ if (isset_request_var('method')) {
 		case 'float':
 		case 'absolute':
 			break;
+
 		default:
 			print __("FATAL: Spike Kill method '%s' is Invalid\n", html_escape(get_nfilter_request_var('method')));
+
 			exit(1);
+
 			break;
 	}
 }
@@ -51,6 +54,7 @@ if (is_realm_allowed(1043)) {
 		array(get_filter_request_var('local_graph_id')));
 
 	$results = '';
+
 	if (cacti_sizeof($local_data_ids)) {
 		foreach ($local_data_ids as $local_data_id) {
 			$data_source_path = get_data_source_path($local_data_id['local_data_id'], true);

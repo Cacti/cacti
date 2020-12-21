@@ -33,12 +33,14 @@ switch (get_request_var('action')) {
 		form_save();
 
 		break;
+
 	default:
 		top_header();
 
 		export();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -65,6 +67,7 @@ function form_save() {
 			bottom_footer();
 		} elseif (get_nfilter_request_var('output_format') == '2') {
 			header('Content-type: application/xml');
+
 			if ($export_errors) print __('WARNING: Export Errors Encountered. Refresh Browser Window for Details!') . "\n";
 			print $xml_data;
 		} elseif (get_nfilter_request_var('output_format') == '3') {
@@ -95,6 +98,7 @@ function export() {
 
 	foreach ($export_types as $id => $type) {
 		$export_array[$id] = $type['name'];
+
 		if (get_nfilter_request_var('export_type') == $id) {
 			$type_found = true;
 		}

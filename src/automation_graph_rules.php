@@ -48,41 +48,50 @@ switch (get_request_var('action')) {
 		automation_graph_rules_item_movedown();
 
 		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
+
 		break;
 	case 'item_moveup':
 		automation_graph_rules_item_moveup();
 
 		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
+
 		break;
 	case 'item_remove':
 		automation_graph_rules_item_remove();
 
 		header('Location: automation_graph_rules.php?action=edit&id=' . get_filter_request_var('id'));
+
 		break;
 	case 'item_edit':
 		top_header();
 		automation_graph_rules_item_edit();
 		bottom_footer();
+
 		break;
 	case 'qedit':
 		automation_change_query_type();
 
 		header('Location: automation_graph_rules.php?action=edit&name=' . get_request_var('name') . '&id=' . get_filter_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+
 		break;
 	case 'remove':
 		automation_graph_rules_remove();
 
 		header('Location: automation_graph_rules.php');
+
 		break;
 	case 'edit':
 		top_header();
 		automation_graph_rules_edit();
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 		automation_graph_rules();
 		bottom_footer();
+
 		break;
 }
 
@@ -101,6 +110,7 @@ function save() {
 		$save['snmp_query_id'] = form_input_validate(get_nfilter_request_var('snmp_query_id'), 'snmp_query_id', '^[0-9]+$', false, 3);
 		$save['graph_type_id'] = (isset_request_var('graph_type_id')) ? form_input_validate(get_nfilter_request_var('graph_type_id'), 'graph_type_id', '^[0-9]+$', false, 3) : 0;
 		$save['enabled']       = (isset_request_var('enabled') ? 'on' : '');
+
 		if (!is_error_message()) {
 			$rule_id = sql_save($save, 'automation_graph_rules');
 
@@ -285,6 +295,7 @@ function automation_graph_rules_form_actions() {
 	if (!isset($automation_graph_rules_array)) {
 		raise_message(40);
 		header('Location: automation_graph_rules.php');
+
 		exit;
 	} else {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
@@ -418,6 +429,7 @@ function automation_graph_rules_remove() {
 		top_header();
 		form_confirm(__('Are You Sure?'), __("Are you sure you want to delete the Rule '%s'?", db_fetch_cell_prepared('SELECT name FROM automation_graph_rules WHERE id = ?', array(get_request_var('id')))), 'automation_graph_rules.php', 'automation_graph_rules.php?action=remove&id=' . get_request_var('id'));
 		bottom_footer();
+
 		exit;
 	}
 
@@ -523,6 +535,7 @@ function automation_graph_rules_edit() {
 	 * display the rule -------------------------------------------------------------------------------------
 	 */
 	$rule = array();
+
 	if (!isempty_request_var('id')) {
 		$rule = db_fetch_row_prepared('SELECT * FROM automation_graph_rules where id = ?', array(get_request_var('id')));
 

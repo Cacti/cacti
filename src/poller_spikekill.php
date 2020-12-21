@@ -51,27 +51,34 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--templates':
 				$templates = $value;
+
 				break;
 			case '-f':
 			case '--force':
 				$forcerun = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -86,6 +93,7 @@ print "NOTE: SpikeKill Running\n";
 
 if (!$templates) {
 	$templates = db_fetch_cell("SELECT value FROM settings WHERE name='spikekill_templates'");
+
 	if ($templates != '') {
 		$templates = explode(',', $templates);
 	}
@@ -96,12 +104,14 @@ if (!$templates) {
 if (!cacti_sizeof($templates)) {
 	print "ERROR: No valid Graph Templates selected\n\n";
 	unregister_process('spikekill', 'master', 0);
+
 	exit(1);
 } else {
 	foreach ($templates as $template) {
 		if (!is_numeric($template)) {
 			print "ERROR: Graph Template '" . $template . "' Invalid\n\n";
 			unregister_process('spikekill', 'master', 0);
+
 			exit(1);
 		}
 	}
@@ -114,6 +124,7 @@ if (timeToRun()) {
 	$graphs = kill_spikes($templates, $kills);
 
 	$purges = 0;
+
 	if (read_config_option('spikekill_purge') > 0) {
 		$purges = purge_spike_backups();
 	}
@@ -154,6 +165,7 @@ function timeToRun() {
 	$now       = time();
 
 	debug("LastRun:'$lastrun', Frequency:'$frequency', BaseTime:'" . date('Y-m-d H:i:s', $basetime) . "', BaseUpper:'$baseupper', BaseLower:'$baselower', Now:'" . date('Y-m-d H:i:s', $now) . "'");
+
 	if ($frequency > 0 && ($now - $lastrun > $frequency)) {
 		debug("Frequency is '$frequency' Seconds");
 

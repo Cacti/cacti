@@ -25,6 +25,7 @@ function csrf_error_callback() {
 	ob_end_clean();
 	header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
 	csrf_log(__FUNCTION__, 'Timeout, redirecting to ' . sanitize_uri($_SERVER['REQUEST_URI']));
+
 	exit;
 }
 

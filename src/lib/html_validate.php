@@ -62,8 +62,10 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 	if (defined('CACTI_CLI_ONLY')) {
 		cacti_debug_backtrace('Validation Error' . $variable . $value, false);
 		print $message . PHP_EOL;
+
 		exit(1);
 	}
+
 	if (isset_request_var('json')) {
 		cacti_debug_backtrace('Validation Error' . $variable . $value, false);
 		print json_encode(

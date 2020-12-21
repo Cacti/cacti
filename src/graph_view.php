@@ -91,8 +91,10 @@ function get_matching_nodes() {
 		// Now flatten the list of nodes
 		$final_array = array();
 		$level       = 0;
+
 		while (true) {
 			$found = 0;
+
 			foreach ($my_matches as $match) {
 				if (isset($match[$level])) {
 					if ($level == 0) {
@@ -133,6 +135,7 @@ case 'ajax_hosts':
 	break;
 case 'ajax_search':
 	get_matching_nodes();
+
 	exit;
 
 	break;
@@ -152,6 +155,7 @@ case 'ajax_reports':
 				if (!reports_add_graphs(get_filter_request_var('report_id'), $item, get_request_var('timespan'), get_request_var('align'))) {
 					raise_message('reports_add_error');
 					$good = false;
+
 					break;
 				}
 			}
@@ -191,9 +195,11 @@ case 'save':
 			if (isset_request_var('columns')) {
 				set_graph_config_option('num_columns', get_request_var('columns'));
 			}
+
 			if (isset_request_var('graphs')) {
 				set_graph_config_option('preview_graphs_per_page', get_request_var('graphs'));
 			}
+
 			if (isset_request_var('thumbnails')) {
 				set_graph_config_option('thumbnail_section_preview', get_nfilter_request_var('thumbnails') == 'true' ? 'on':'');
 			}
@@ -201,9 +207,11 @@ case 'save':
 			if (isset_request_var('columns')) {
 				set_graph_config_option('num_columns_tree', get_request_var('columns'));
 			}
+
 			if (isset_request_var('graphs')) {
 				set_graph_config_option('treeview_graphs_per_page', get_request_var('graphs'));
 			}
+
 			if (isset_request_var('thumbnails')) {
 				set_graph_config_option('thumbnail_section_tree_2', get_request_var('thumbnails') == 'true' ? 'on':'');
 			}
@@ -240,7 +248,7 @@ case 'get_node':
 				FROM graph_tree_items
 				WHERE id = ?',
 				array(str_replace('tbranch-', '', get_nfilter_request_var('id'))));
-		}elseif (get_nfilter_request_var('tree_id') == 'default' ||
+		} elseif (get_nfilter_request_var('tree_id') == 'default' ||
 			get_nfilter_request_var('tree_id') == 'undefined' ||
 			get_nfilter_request_var('tree_id') == '') {
 			$tree_id = read_user_setting('default_tree_id');
@@ -288,6 +296,7 @@ case 'tree_content':
 
 	if (!is_view_allowed('show_tree')) {
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . '</font>';
+
 		exit;
 	}
 
@@ -356,6 +365,7 @@ case 'tree_content':
 	if ($tree_id > 0) {
 		if (!is_tree_allowed($tree_id)) {
 			header('Location: permission_denied.php');
+
 			exit;
 		}
 
@@ -369,11 +379,13 @@ case 'preview':
 	if (!is_view_allowed('show_preview')) {
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW') . '</font>';
 		bottom_footer();
+
 		exit;
 	}
 
 	if (isset_request_var('external_id')) {
 		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE external_id = ?', array(get_nfilter_request_var('external_id')));
+
 		if (!empty($host_id)) {
 			set_request_var('host_id', $host_id);
 			set_request_var('reset',true);
@@ -415,6 +427,7 @@ case 'preview':
 					}
 				}
 			}
+
 			if (!isempty_request_var('graph_add')) {
 				foreach (explode(',', get_request_var('graph_add')) as $item) {
 					if (is_numeric($item)) {
@@ -430,6 +443,7 @@ case 'preview':
 			}
 
 			$i = 0;
+
 			foreach ($graph_list as $item => $value) {
 				$graph_array[$i] = $item;
 				$i++;
@@ -446,6 +460,7 @@ case 'preview':
 
 	/* create filter for sql */
 	$sql_where  = '';
+
 	if (!isempty_request_var('rfilter')) {
 		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	}
@@ -498,6 +513,7 @@ case 'list':
 	if (!is_view_allowed('show_list')) {
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') . '</font>';
 		bottom_footer();
+
 		exit;
 	}
 
@@ -638,8 +654,10 @@ case 'list':
 							$total_rows = -1;
 
 							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
+
 								foreach ($graph_templates as $gt) {
 									if ($gt['id'] != 0) {
 										$found = db_fetch_cell_prepared('SELECT id
@@ -649,6 +667,7 @@ case 'list':
 
 										if ($found) {
 											print "<option value='" . $gt['id'] . "'";
+
 											if (cacti_sizeof($selected)) {
 												if (in_array($gt['id'], $selected, true)) {
 													print ' selected';
@@ -672,7 +691,7 @@ case 'list':
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . $value . '</option>';
 								}
 							}
 							?>
@@ -692,6 +711,7 @@ case 'list':
 
 	/* create filter for sql */
 	$sql_where  = '';
+
 	if (!isempty_request_var('rfilter')) {
 		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	}
@@ -750,6 +770,7 @@ case 'list':
 	html_header_checkbox($display_text, false);
 
 	$i = 0;
+
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
@@ -796,6 +817,7 @@ case 'list':
 
 		$report_text .= '<tr><td>' . __('Report Name') . '</td>';
 		$report_text .= '<td><select id="report_id">';
+
 		foreach ($reports as $report) {
 			$report_text .= '<option value="' . $report['id'] . '">' . html_escape($report['name']) . '</option>';
 		}
@@ -803,6 +825,7 @@ case 'list':
 
 		$report_text .= '<tr><td>' . __('Timespan') . '</td>';
 		$report_text .= '<td><select id="timespan">';
+
 		foreach ($graph_timespans as $key => $value) {
 			$report_text .= '<option value="' . $key . '"' . ($key == read_user_setting('default_timespan') ? ' selected':'') . '>' . $value . '</option>';
 		}
@@ -810,6 +833,7 @@ case 'list':
 
 		$report_text .= '<tr><td>' . __('Align') . '</td>';
 		$report_text .= '<td><select id="align">';
+
 		foreach ($alignment as $key => $value) {
 			$report_text .= '<option value="' . $key . '"' . ($key == REPORTS_ALIGN_CENTER ? ' selected':'') . '>' . $value . '</option>';
 		}
