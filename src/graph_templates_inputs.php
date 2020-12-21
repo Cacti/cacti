@@ -49,7 +49,7 @@ switch (get_request_var('action')) {
 
 function form_save() {
 	if ((isset_request_var('save_component_input')) && (!is_error_message())) {
-		$graph_input_values = array();
+		$graph_input_values   = array();
 		$selected_graph_items = array();
 
 		/* ================= input validation ================= */
@@ -57,12 +57,12 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 
-		$save['id'] = get_nfilter_request_var('graph_template_input_id');
-		$save['hash'] = get_hash_graph_template(get_nfilter_request_var('graph_template_input_id'), 'graph_template_input');
+		$save['id']                = get_nfilter_request_var('graph_template_input_id');
+		$save['hash']              = get_hash_graph_template(get_nfilter_request_var('graph_template_input_id'), 'graph_template_input');
 		$save['graph_template_id'] = get_nfilter_request_var('graph_template_id');
-		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['description'] = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
-		$save['column_name'] = form_input_validate(get_nfilter_request_var('column_name'), 'column_name', '', true, 3);
+		$save['name']              = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['description']       = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
+		$save['column_name']       = form_input_validate(get_nfilter_request_var('column_name'), 'column_name', '', true, 3);
 
 		if (!is_error_message()) {
 			$graph_template_input_id = sql_save($save, 'graph_template_input');
@@ -121,7 +121,7 @@ function form_save() {
 }
 
 /* ------------------------------------
-    input - Graph Template Item Inputs
+	input - Graph Template Item Inputs
    ------------------------------------ */
 
 function input_remove() {
@@ -203,7 +203,7 @@ function input_edit() {
 			if ($item['graph_template_input_id'] == '') {
 				$old_value = '';
 			} else {
-				$old_value = 'on';
+				$old_value         = 'on';
 				$any_selected_item = $item['graph_templates_item_id'];
 			}
 
@@ -217,7 +217,7 @@ function input_edit() {
 
 			print '<td>';
 
-			$name = $start_bold . __('Item #%s', $i+1) . ': ' . $graph_item_types[$item['graph_type_id']] . ' (' . $consolidation_functions[$item['consolidation_function_id']] . ')' . $end_bold;
+			$name = $start_bold . __('Item #%s', $i + 1) . ': ' . $graph_item_types[$item['graph_type_id']] . ' (' . $consolidation_functions[$item['consolidation_function_id']] . ')' . $end_bold;
 
 			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, '', '', '', get_request_var('graph_template_id'));
 			print "<label for='i_" . $item['graph_templates_item_id'] . "'>" . $name . '</label>';

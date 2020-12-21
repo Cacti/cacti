@@ -59,11 +59,11 @@ if (cacti_sizeof($parms)) {
 	$hosts          = getHosts();
 	$sites          = getSites();
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -196,10 +196,11 @@ if (cacti_sizeof($parms)) {
 		}
 
 		$treeOpts = array();
+
 		$treeOpts['id']        = 0; # Zero means create a new one rather than save over an existing one
 		$treeOpts['name']      = $name;
 
-		if ($sortMethod == 'manual'||
+		if ($sortMethod == 'manual' ||
 			$sortMethod == 'alpha' ||
 			$sortMethod == 'numeric' ||
 			$sortMethod == 'natural') {
@@ -223,9 +224,10 @@ if (cacti_sizeof($parms)) {
 		print "Tree Created - tree-id: ($treeId)\n";
 
 		exit(0);
-	} elseif ($type == 'node') {
+	}
+	if ($type == 'node') {
 		# Add a new node to a tree
-		if ($nodeType == 'header'||
+		if ($nodeType == 'header' ||
 			$nodeType == 'graph' ||
 			$nodeType == 'site' ||
 			$nodeType == 'host') {
@@ -240,7 +242,8 @@ if (cacti_sizeof($parms)) {
 			print "ERROR: parent-node $parentNode must be numeric > 0\n";
 			display_help();
 			exit(1);
-		} elseif ($parentNode > 0 ) {
+		}
+		if ($parentNode > 0) {
 			$parentNodeExists = db_fetch_cell("SELECT id
 				FROM graph_tree_items
 				WHERE graph_tree_id=$treeId
@@ -265,7 +268,7 @@ if (cacti_sizeof($parms)) {
 			$hostId         = 0;
 			$siteId         = 0;
 			$hostGroupStyle = 1;
-		}else if($nodeType == 'graph') {
+		} elseif ($nodeType == 'graph') {
 			# Blank out name, hostID, host_grouping_style
 			$name           = '';
 			$hostId         = 0;
@@ -280,7 +283,7 @@ if (cacti_sizeof($parms)) {
 				print "ERROR: No such graph-id ($graphId) exists. Try --list-graphs\n";
 				exit(1);
 			}
-		}else if ($nodeType == 'site') {
+		} elseif ($nodeType == 'site') {
 			# Blank out graphId, name fields
 			$graphId        = 0;
 			$hostId         = 0;
@@ -290,7 +293,7 @@ if (cacti_sizeof($parms)) {
 				print "ERROR: No such site-id ($siteId) exists. Try --list-sites\n";
 				exit(1);
 			}
-		}else if ($nodeType == 'host') {
+		} elseif ($nodeType == 'host') {
 			# Blank out graphId, name fields
 			$graphId        = 0;
 			$siteId         = 0;

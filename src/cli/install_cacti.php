@@ -32,7 +32,7 @@ array_shift($parms);
 
 global $debug;
 
-$debug = false;
+$debug   = false;
 $options = array('Runtime' => 'Cli');
 
 $should_install = false;
@@ -45,11 +45,11 @@ db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'insta
 define('log_install_echo', 'on');
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -57,13 +57,13 @@ if (cacti_sizeof($parms)) {
 			/* Standard parameters */
 			case '-d':
 			case '--debug':
-				$logname = 'log_install';
+				$logname  = 'log_install';
 				$tmplevel = false;
 				if (!empty($value)) {
 					$pos = strpos($value,':');
 					if ($pos !== false) {
-						$tmplevel = substr($value,$pos+1);
-						$value = substr($value,0,$pos);
+						$tmplevel = substr($value,$pos + 1);
+						$value    = substr($value,0,$pos);
 					}
 					if (!empty($value)) {
 						$logname .= '_' . $value;
@@ -151,7 +151,6 @@ if (cacti_sizeof($parms)) {
 			case '-t':
 				set_install_option($options, 'Theme', 'Theme', $value);
 				break;
-
 			/* Bad or unexpected parameter! */
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
@@ -172,12 +171,12 @@ include_once($config['base_path'] . '/lib/utility.php');
 
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 
-$results = array('Step' => $options['Step']);
+$results     = array('Step' => $options['Step']);
 $update_char = 'o';
 
 debug_install_array('Options', $options);
 $installer = new Installer($options);
-$results = $installer->jsonSerialize();
+$results   = $installer->jsonSerialize();
 debug_install_array('Result', $results);
 
 process_install_errors($results);
@@ -278,7 +277,7 @@ function set_install_multioption(&$options, $key, $display_name, $value, $prefix
 		}
 		$prefix_len = strlen($prefix);
 		if ($prefix_len > 0 && substr($option_name, 0, $prefix_len) == $prefix) {
-			$option_key = $option_name;
+			$option_key  = $option_name;
 			$option_name = substr($option_key, $prefix_len);
 		} else {
 			$option_key = $prefix . $option_name;
@@ -286,7 +285,7 @@ function set_install_multioption(&$options, $key, $display_name, $value, $prefix
 		$option_value = trim(substr($value, $option_pos + 1));
 		set_install_option($options[$key], $option_key, $display_name . ' \'' . $option_name . '\'', $option_value);
 	} else {
-		echo 'ERROR: Invalid ' . $display_name . ' value ' . $value . PHP_EOL . PHP_EOL;
+		print 'ERROR: Invalid ' . $display_name . ' value ' . $value . PHP_EOL . PHP_EOL;
 		exit(1);
 	}
 }
@@ -309,8 +308,8 @@ function debug_install_array($parent, $contents, $indent = 0) {
 
 function process_install_errors($results) {
 	if (isset($results['Errors']) && cacti_sizeof($results['Errors']) > 0) {
-		$errors = $results['Errors'];
-		$count = 0;
+		$errors   = $results['Errors'];
+		$count    = 0;
 		$sections = 0;
 
 		foreach ($errors as $error_section => $error_array) {
@@ -335,7 +334,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	print PHP_EOL . 'usage: install_cacti.php [--debug] --accept-eula ' . PHP_EOL;
 	print '                         [--automationmode=] [--automationrange=] [--cron=]' . PHP_EOL;
 	print '                         [--language=] [--mode=] [--profile=] [--path=]' . PHP_EOL;

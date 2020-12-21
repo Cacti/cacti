@@ -42,11 +42,11 @@ $table_name  = '';
 $skip_tables = array();
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -117,7 +117,7 @@ if (!($innodb || $utf8)) {
 }
 
 if (cacti_sizeof($skip_tables)) {
-	foreach($skip_tables as $table) {
+	foreach ($skip_tables as $table) {
 		if (!db_table_exists($table)) {
 			print "ERROR: Skip Table $table does not Exist.  Can not continue.\n\n";
 			display_help();
@@ -136,7 +136,7 @@ print "Converting Database Tables to $convert with less than '$size' Records\n";
 if ($innodb) {
 	$engines = db_fetch_assoc('SHOW ENGINES');
 
-	foreach($engines as $engine) {
+	foreach ($engines as $engine) {
 		if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support'] == 'off')) {
 			print "InnoDB Engine is not enabled\n";
 			exit;
@@ -158,7 +158,7 @@ if (strlen($table_name)) {
 }
 
 if (cacti_sizeof($tables)) {
-	foreach($tables AS $table) {
+	foreach ($tables as $table) {
 		$canConvert = $rebuild;
 		$canInnoDB  = false;
 		if (!$canConvert && $innodb) {
@@ -166,7 +166,7 @@ if (cacti_sizeof($tables)) {
 			$canInnoDB  = true;
 		}
 
-		if (in_array($table['Name'], $skip_tables)) {
+		if (in_array($table['Name'], $skip_tables, true)) {
 			$canInnoDB = false;
 		}
 
@@ -216,7 +216,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--table=N] [--size=N] [--rebuild] [--dynamic]\n\n";

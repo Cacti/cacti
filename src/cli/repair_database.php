@@ -37,11 +37,11 @@ $force   = false;
 $dynamic = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -84,7 +84,7 @@ db_execute('UNLOCK TABLES');
 $tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
 
 if (cacti_sizeof($tables)) {
-	foreach($tables AS $table) {
+	foreach ($tables as $table) {
 		print "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
 		$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . $form);
 		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
@@ -99,7 +99,7 @@ if (cacti_sizeof($tables)) {
 
 print "\nNOTE: Running some Data Query repair scripts\n";
 
-db_execute("UPDATE graph_local AS gl
+db_execute('UPDATE graph_local AS gl
 	INNER JOIN graph_templates_item AS gti
 	ON gti.local_graph_id = gl.id
 	INNER JOIN data_template_rrd AS dtr
@@ -108,7 +108,7 @@ db_execute("UPDATE graph_local AS gl
 	ON dl.id = dtr.local_data_id
 	SET gl.snmp_query_id = dl.snmp_query_id, gl.snmp_index = dl.snmp_index
 	WHERE gl.graph_template_id IN (SELECT graph_template_id FROM snmp_query_graph)
-	AND gl.snmp_query_id = 0");
+	AND gl.snmp_query_id = 0');
 
 db_execute("UPDATE graph_local AS gl
 	INNER JOIN (
@@ -157,11 +157,11 @@ if ($rows > 0) {
 }
 
 /* remove invalid CDEF Items from the Database, validated */
-$rows = db_fetch_cell("SELECT count(*)
+$rows = db_fetch_cell('SELECT count(*)
 	FROM cdef_items
 	LEFT JOIN cdef
 	ON cdef_items.cdef_id=cdef.id
-	WHERE cdef.id IS NULL");
+	WHERE cdef.id IS NULL');
 
 $total_rows += $rows;
 if ($rows > 0) {
@@ -259,7 +259,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: repair_database.php [--dynamic] [--debug] [--force] [--form]\n\n";

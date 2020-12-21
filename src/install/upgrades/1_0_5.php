@@ -50,7 +50,7 @@ function upgrade_to_1_0_5() {
 		$links         = $links_results['data'];
 		$order         = 1;
 
-		foreach($links as $link) {
+		foreach ($links as $link) {
 			db_install_execute('UPDATE external_links SET sortorder = ? WHERE id = ?', array($order, $link['id']));
 			$order++;
 		}

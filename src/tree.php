@@ -41,39 +41,39 @@ if (get_request_var('action') != '') {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'tree_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => ''
 			),
 		'leaf_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => ''
 			),
 		'graph_tree_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => ''
 			),
 		'parent_item_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => ''
 			),
 		'parent' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
 			'pageset' => true,
 			'default' => ''
 			),
 		'position' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => ''
 			),
 		'nodeid' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
 			'pageset' => true,
 			'default' => ''
 			),
 		'id' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
 			'pageset' => true,
 			'default' => ''
@@ -90,9 +90,9 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'actions':
-        form_actions();
+		form_actions();
 
-        break;
+		break;
 	case 'sortasc':
 		api_tree_sort_name_asc();
 
@@ -244,7 +244,7 @@ switch (get_request_var('action')) {
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 function form_save() {
 	if (isset_request_var('save_component_tree')) {
@@ -301,7 +301,7 @@ function form_save() {
 }
 
 /* -----------------------
-    Tree Item Functions
+	Tree Item Functions
    ----------------------- */
 function form_actions() {
 	global $tree_actions;
@@ -414,7 +414,7 @@ function form_actions() {
 }
 
 /* ---------------------
-    Tree Functions
+	Tree Functions
    --------------------- */
 
 function tree_edit() {
@@ -472,7 +472,7 @@ function tree_edit() {
 	$lockdiv = '';
 
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
-		$lockdiv = "<div style='padding:3px;'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='lock' value='" . __esc('Edit Tree') . "'></td><td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . "</td></tr></table></div>\n";
+		$lockdiv  = "<div style='padding:3px;'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='lock' value='" . __esc('Edit Tree') . "'></td><td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . "</td></tr></table></div>\n";
 		$editable = false;
 	} elseif (isset($tree['locked']) && $tree['locked'] == 1) {
 		$lockdiv = "<div style='padding:3px;'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='unlock' value='" . __esc('Finish Editing Tree') . "'></td><td><input type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' value='" . __esc('Add Root Branch') . "' onClick='createNode()'></td><td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %1$s by %2$s.', $tree['locked_date'], get_username($tree['modified_by']));
@@ -485,7 +485,7 @@ function tree_edit() {
 		}
 	} else {
 		$tree['id'] = 0;
-		$editable = true;
+		$editable   = true;
 	}
 
 	if ($editable) {
@@ -499,14 +499,14 @@ function tree_edit() {
 
 		print "<tr class='even' id='tree_filter'>\n";
 		print "<td colspan='4'>";
-		print "<table><tr><td>" . __('Display') . "</td>";
+		print '<table><tr><td>' . __('Display') . '</td>';
 		print "<td>\n";
 		print "<select id='element'>\n";
-		print "<option id='0'>" . __('All') . "</option>";
-		print "<option id='1'>" . __('Sites') . "</option>";
-		print "<option id='2'>" . __('Devices') . "</option>";
-		print "<option id='3'>" . __('Graphs') . "</option>";
-		print "</select></td></tr></table></td></tr>";
+		print "<option id='0'>" . __('All') . '</option>';
+		print "<option id='1'>" . __('Sites') . '</option>';
+		print "<option id='2'>" . __('Devices') . '</option>';
+		print "<option id='3'>" . __('Graphs') . '</option>';
+		print '</select></td></tr></table></td></tr>';
 
 		print "<tr class='tableRow'><td class='treeArea'>\n";
 
@@ -1456,8 +1456,8 @@ function tree_edit() {
 function tree_display_sites($filter = '') {
 	if ($filter != '') {
 		$sql_where = 'WHERE
-			name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR city LIKE '    . db_qstr('%' . get_request_var('filter') . '%') . '
+			name LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR city LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . '
 			OR state LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR country LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 	} else {
@@ -1467,7 +1467,7 @@ function tree_display_sites($filter = '') {
 	$sites = db_fetch_assoc("SELECT * FROM sites $sql_where");
 
 	if (cacti_sizeof($sites)) {
-		foreach($sites as $s) {
+		foreach ($sites as $s) {
 			print "<ul><li id='tsite:" . $s['id'] . "' data-jstree='{ \"type\" : \"site\"}'>" . html_escape($s['name']) . "</li></ul>\n";
 		}
 	}
@@ -1478,7 +1478,7 @@ function tree_display_hosts($filter = '', $site_id = '') {
 
 	if ($filter != '') {
 		$sql_where .= 'h.hostname LIKE ' . db_qstr('%' . $filter . '%') . '
-			OR h.description LIKE '      . db_qstr('%' . $filter . '%');
+			OR h.description LIKE '	  . db_qstr('%' . $filter . '%');
 	}
 
 	if (!empty($site_id) && $site_id > 0) {
@@ -1488,7 +1488,7 @@ function tree_display_hosts($filter = '', $site_id = '') {
 	$hosts = get_allowed_devices($sql_where, 'description', read_config_option('autocomplete_rows'));
 
 	if (cacti_sizeof($hosts)) {
-		foreach($hosts as $h) {
+		foreach ($hosts as $h) {
 			print "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . html_escape($h['description']) . ' (' . html_escape($h['hostname']) . ')' . "</li></ul>\n";
 		}
 	}
@@ -1530,7 +1530,7 @@ function tree_display_graphs($filter = '', $site_id = '', $host_id = '') {
 		LIMIT " . read_config_option('autocomplete_rows'));
 
 	if (cacti_sizeof($graphs)) {
-		foreach($graphs as $g) {
+		foreach ($graphs as $g) {
 			if (is_graph_allowed($g['id'])) {
 				print "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . html_escape($g['title']) . '</li></ul>';
 			}
@@ -1544,21 +1544,21 @@ function tree() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'sequence',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
@@ -1683,14 +1683,14 @@ function tree() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (
-			t.name LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
+			t.name LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR ti.title LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$trees = db_fetch_assoc("SELECT t.*,
 		SUM(CASE WHEN ti.host_id > 0 THEN 1 ELSE 0 END) AS hosts,
@@ -1722,75 +1722,75 @@ function tree() {
 	$display_text = array(
 		'name' => array(
 			'display' => __('Tree Name'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The name by which this Tree will be referred to as.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name by which this Tree will be referred to as.')
 		),
 		'id' => array(
 			'display' => __('ID'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The internal database ID for this Tree.  Useful when performing automation or debugging.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database ID for this Tree.  Useful when performing automation or debugging.')
 		),
 		'enabled' => array(
 			'display' => __('Published'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('Unpublished Trees cannot be viewed from the Graph tab')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('Unpublished Trees cannot be viewed from the Graph tab')
 		),
 		'locked' => array(
 			'display' => __('Locked'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('A Tree must be locked in order to be edited.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('A Tree must be locked in order to be edited.')
 		),
 		'user_id' => array(
 			'display' => __('Owner'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The original author of this Tree.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The original author of this Tree.')
 		),
 		'sequence' => array(
 			'display' => __('Order'),
-			'align' => 'center',
-			'sort' => 'ASC',
-			'tip' => __('To change the order of the trees, first sort by this column, press the up or down arrows once they appear.')
+			'align'   => 'center',
+			'sort'    => 'ASC',
+			'tip'     => __('To change the order of the trees, first sort by this column, press the up or down arrows once they appear.')
 		),
 		'last_modified' => array(
 			'display' => __('Last Edited'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The date that this Tree was last edited.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The date that this Tree was last edited.')
 		),
 		'modified_by' => array(
 			'display' => __('Edited By'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The last user to have modified this Tree.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The last user to have modified this Tree.')
 		),
 		'sites' => array(
 			'display' => __('Sites'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The total number of Site Branches in this Tree.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The total number of Site Branches in this Tree.')
 		),
 		'branches' => array(
 			'display' => __('Branches'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The total number of Branches in this Tree.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The total number of Branches in this Tree.')
 		),
 		'hosts' => array(
 			'display' => __('Devices'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The total number of individual Devices in this Tree.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The total number of individual Devices in this Tree.')
 		),
 		'graphs' => array(
 			'display' => __('Graphs'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The total number of individual Graphs in this Tree.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The total number of individual Graphs in this Tree.')
 		)
 	);
 
@@ -1810,7 +1810,6 @@ function tree() {
 				} elseif ($i == cacti_sizeof($trees)) {
 					$sequence .= '<span class="moveArrowNone"></span>';
 					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
-
 				} else {
 					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
 					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
@@ -1836,7 +1835,7 @@ function tree() {
 			$i++;
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Trees Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Trees Found') . '</em></td></tr>';
 	}
 	html_end_box(false);
 

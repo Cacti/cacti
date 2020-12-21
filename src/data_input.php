@@ -78,7 +78,7 @@ switch (get_request_var('action')) {
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function duplicate_data_input($_data_input_id, $input_title) {
@@ -104,7 +104,7 @@ function duplicate_data_input($_data_input_id, $input_title) {
 				array($_data_input_id));
 
 			if (cacti_sizeof($data_input_fields)) {
-				foreach($data_input_fields as $dif) {
+				foreach ($data_input_fields as $dif) {
 					unset($save);
 					$save['id']            = 0;
 					$save['hash']          = get_hash_data_input(0, 'data_input_field');
@@ -206,13 +206,13 @@ function form_save() {
 }
 
 function data_input_save_message($data_input_id, $type = 'input') {
-	$counts = db_fetch_row_prepared("SELECT
+	$counts = db_fetch_row_prepared('SELECT
 		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
 		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 		FROM data_input AS di
 		LEFT JOIN data_template_data AS dtd
 		ON di.id=dtd.data_input_id
-		WHERE di.id = ?",
+		WHERE di.id = ?',
 		array($data_input_id));
 
 	if ($counts['templates'] == 0 && $counts['data_sources'] == 0) {
@@ -245,11 +245,11 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { // delete
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					data_remove($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					duplicate_data_input($selected_items[$i], get_nfilter_request_var('input_title'));
 				}
 			}
@@ -297,7 +297,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s).') . "</p>
                     <div class='itemlist'><ul>$di_list</ul></div>
-                    <p><strong>" . __('Input Name:'). "</strong><br>"; form_text_box('input_title', '<input_title> (1)', '', '255', '30', 'text'); print "</p>
+                    <p><strong>" . __('Input Name:'). '</strong><br>'; form_text_box('input_title', '<input_title> (1)', '', '255', '30', 'text'); print "</p>
                 </td>
 			</tr>\n";
 		}
@@ -326,7 +326,7 @@ function form_actions() {
 }
 
 /* --------------------------
-    CDEF Item Functions
+	CDEF Item Functions
    -------------------------- */
 
 function field_remove_confirm() {
@@ -409,7 +409,7 @@ function field_remove() {
 	if (($field['input_output'] == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array($field['data_input_id'])), $matches))) {
 		$j = 0;
 		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
-			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
+			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$j++;
 				db_execute_prepared("UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND input_output = 'in' AND data_name = ?", array($j, $field['data_input_id'], $matches[1][$i]));
 			}
@@ -451,8 +451,8 @@ function field_edit() {
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(!isempty_request_var('data_input_id') ? get_request_var('data_input_id') : $field['data_input_id'])), $matches))) {
 		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
-			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-				$current_field_name = $matches[1][$i];
+			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
+				$current_field_name                     = $matches[1][$i];
 				$array_field_names[$current_field_name] = $current_field_name;
 				if (!isset($field)) {
 					$field_id = db_fetch_cell_prepared('SELECT id FROM data_input_fields
@@ -460,8 +460,8 @@ function field_edit() {
 						AND data_input_id = ?',
 						array($current_field_name, get_filter_request_var('data_input_id')));
 					if (!$field_id > 0) {
-						$field = array();
-						$field['name'] = ucwords($current_field_name);
+						$field              = array();
+						$field['name']      = ucwords($current_field_name);
 						$field['data_name'] = $current_field_name;
 					}
 				}
@@ -522,7 +522,7 @@ function field_edit() {
 }
 
 /* -----------------------
-    Data Input Functions
+	Data Input Functions
    ----------------------- */
 
 function data_remove($id) {
@@ -546,7 +546,7 @@ function data_remove($id) {
 
 function data_input_more_inputs($id, $input_string) {
 	$input_string = str_replace('<path_cacti>', '', $input_string);
-	$inputs = substr_count($input_string, '<');
+	$inputs       = substr_count($input_string, '<');
 
 	$existing = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM data_input_fields
@@ -570,8 +570,9 @@ function data_edit() {
 
 	if (!isempty_request_var('id')) {
 		$data_id = get_nonsystem_data_input(get_request_var('id'));
-		if ($data_id == 0 || $data_id == NULL) {
+		if ($data_id == 0 || $data_id == null) {
 			header('Location: data_input.php');
+
 			return;
 		}
 
@@ -655,13 +656,13 @@ function data_edit() {
 			ORDER BY sequence, data_name",
 			array(get_request_var('id')));
 
-		$counts = db_fetch_row_prepared("SELECT
+		$counts = db_fetch_row_prepared('SELECT
 			SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
 			SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 			FROM data_input AS di
 			LEFT JOIN data_template_data AS dtd
 			ON di.id=dtd.data_input_id
-			WHERE di.id = ?",
+			WHERE di.id = ?',
 			array(get_request_var('id')));
 
 		$output_disabled  = false;
@@ -790,26 +791,26 @@ function data() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
@@ -914,7 +915,7 @@ function data() {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$data_inputs = db_fetch_assoc("SELECT di.*,
 		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
@@ -936,7 +937,12 @@ function data() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'         => array('display' => __('Data Input Name'),    'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
+		'name' => array(
+			'display' => __('Data Input Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name of this Data Input Method.')
+		),
 		'id' => array(
 			'display' => __('ID'),
 			'align'   => 'right',
@@ -990,7 +996,7 @@ function data() {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow"><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
+		print '<tr class="tableRow"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

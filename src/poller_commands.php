@@ -61,11 +61,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -130,7 +130,7 @@ if (cacti_sizeof($poller_commands)) {
 
 			if ($last_host_id != $device_id) {
 				$last_host_id = $device_id;
-				$first_host = true;
+				$first_host   = true;
 				$recached_hosts++;
 			} else {
 				$first_host = false;
@@ -160,7 +160,7 @@ if (cacti_sizeof($poller_commands)) {
 		$current = microtime(true);
 
 		/* end if runtime has been exceeded */
-		if (($current-$start) > MAX_RECACHE_RUNTIME) {
+		if (($current - $start) > MAX_RECACHE_RUNTIME) {
 			cacti_log("ERROR: Poller Command processing timed out after processing '$command'", true, 'PCOMMAND');
 			break;
 		}
@@ -195,7 +195,7 @@ function display_version() {
 	print "Cacti Poller Commands Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_commands.php [--poller=ID] [--debug]\n\n";

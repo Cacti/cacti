@@ -30,7 +30,7 @@ function update_replication_crc($poller_id, $variable) {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
 
 	db_execute_prepared("REPLACE INTO settings
-		SET value = ?, name='$variable" . ($poller_id > 0 ? "_" . "$poller_id'":"'"),
+		SET value = ?, name='$variable" . ($poller_id > 0 ? '_' . "$poller_id'":"'"),
 		array($hash));
 }
 
@@ -49,6 +49,7 @@ function repopulate_poller_cache() {
 	$poller_items   = array();
 	$local_data_ids = array();
 	$poller_prev    = 1;
+
 	$i = 0;
 	$j = 0;
 
@@ -62,7 +63,9 @@ function repopulate_poller_cache() {
 
 			if ($i > 500 || $poller_prev != $poller_id) {
 				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_prev);
+
 				$i = 0;
+
 				$local_data_ids = array();
 				$poller_items   = array();
 			}
@@ -122,6 +125,7 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 		array($host_id));
 
 	$i = 0;
+
 	$poller_items = $local_data_ids = array();
 
 	if (cacti_sizeof($poller_data)) {
@@ -220,13 +224,13 @@ function update_poller_cache($data_source, $commit = false) {
 			if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT) || ($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER)) { /* script */
 				/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
 				if (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (function_exists('proc_open'))) {
-					$action = POLLER_ACTION_SCRIPT_PHP;
+					$action      = POLLER_ACTION_SCRIPT_PHP;
 					$script_path = get_full_script_path($data_source['id']);
 				} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
-					$action = POLLER_ACTION_SCRIPT;
+					$action      = POLLER_ACTION_SCRIPT;
 					$script_path = read_config_option('path_php_binary') . ' -q ' . get_full_script_path($data_source['id']);
 				} else {
-					$action = POLLER_ACTION_SCRIPT;
+					$action      = POLLER_ACTION_SCRIPT;
 					$script_path = get_full_script_path($data_source['id']);
 				}
 
@@ -282,7 +286,7 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (cacti_sizeof($host_fields)) {
 					if (cacti_sizeof($data_template_fields)) {
-						foreach($data_template_fields as $key => $value) {
+						foreach ($data_template_fields as $key => $value) {
 							if (!isset($host_fields[$key])) {
 								$host_fields[$key] = $value;
 							}
@@ -428,7 +432,7 @@ function update_poller_cache($data_source, $commit = false) {
 
 								$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
 							} else {
-								$action = POLLER_ACTION_SCRIPT;
+								$action      = POLLER_ACTION_SCRIPT;
 								$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
 							}
 						}
@@ -489,7 +493,7 @@ function push_out_data_input_method($data_input_id) {
 		ORDER BY h.poller_id ASC',
 		array($data_input_id));
 
-	$poller_items = array();
+	$poller_items       = array();
 	$_my_local_data_ids = array();
 
 	if (cacti_sizeof($data_sources)) {
@@ -498,10 +502,10 @@ function push_out_data_input_method($data_input_id) {
 			if ($prev_poller > 0 && $data_source['poller_id'] != $prev_poller) {
 				poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
 				$_my_local_data_ids = array();
-				$poller_items = array();
+				$poller_items       = array();
 			} else {
 				$_my_local_data_ids[] = $data_source['id'];
-				$poller_items = array_merge($poller_items, update_poller_cache($data_source));
+				$poller_items         = array_merge($poller_items, update_poller_cache($data_source));
 			}
 
 			$prev_poller = $data_source['poller_id'];
@@ -734,7 +738,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			$local_data_ids[] = $data_source['local_data_id'];
 
 			/* create a new compatible structure */
-			$data = $data_source;
+			$data       = $data_source;
 			$data['id'] = $data['local_data_id'];
 
 			$poller_items = array_merge($poller_items, update_poller_cache($data));
@@ -742,7 +746,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	}
 
 	if (cacti_sizeof($hosts)) {
-		foreach($hosts as $host) {
+		foreach ($hosts as $host) {
 			if (isset($host['poller_id'])) {
 				$poller_ids[$host['poller_id']] = $host['poller_id'];
 			}
@@ -770,7 +774,7 @@ function data_input_whitelist_check($data_input_id) {
 
 	static $data_input_whitelist = null;
 	static $validated_input_ids  = null;
-	static $notified = array();
+	static $notified             = array();
 
 	// no whitelist file defined, everything whitelisted
 	if (!isset($config['input_whitelist'])) {
@@ -792,6 +796,7 @@ function data_input_whitelist_check($data_input_id) {
 		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
 		if ($data_input_whitelist === null) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
+
 			return true;
 		}
 
@@ -822,6 +827,7 @@ function data_input_whitelist_check($data_input_id) {
 		} else {
 			cacti_log('WARNING: Data Input ' . $data_input_id . ' failing validation check.');
 			$notified[$data_input_id] = true;
+
 			return false;
 		}
 	} else {
@@ -861,8 +867,8 @@ function utilities_get_mysql_recommendations() {
 
 	$recommendations = array(
 		'version' => array(
-			'value' => '5.6',
-			'class' => 'warning',
+			'value'   => '5.6',
+			'class'   => 'warning',
 			'measure' => 'ge',
 			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
 			)
@@ -873,8 +879,8 @@ function utilities_get_mysql_recommendations() {
 			if (!isset($variables['innodb_version'])) {
 				$recommendations += array(
 					'innodb' => array(
-						'value' => 'ON',
-						'class' => 'warning',
+						'value'   => 'ON',
+						'class'   => 'warning',
 						'measure' => 'equalint',
 						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.', $database)
 					)
@@ -886,20 +892,20 @@ function utilities_get_mysql_recommendations() {
 
 		$recommendations += array(
 			'collation_server' => array(
-				'value' => 'utf8mb4_unicode_ci',
-				'class' => 'warning',
+				'value'   => 'utf8mb4_unicode_ci',
+				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
 				),
 			'character_set_server' => array(
-				'value' => 'utf8mb4',
-				'class' => 'warning',
+				'value'   => 'utf8mb4',
+				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
-				'value' => 'utf8mb4',
-				'class' => 'warning',
+				'value'   => 'utf8mb4',
+				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				)
@@ -909,8 +915,8 @@ function utilities_get_mysql_recommendations() {
 			if (!isset($variables['innodb_version'])) {
 				$recommendations += array(
 					'innodb' => array(
-						'value' => 'ON',
-						'class' => 'warning',
+						'value'   => 'ON',
+						'class'   => 'warning',
 						'measure' => 'equalint',
 						'comment' => __('It is recommended that you enable InnoDB in any %s version greater than 5.1.', $database)
 					)
@@ -922,19 +928,19 @@ function utilities_get_mysql_recommendations() {
 
 		$recommendations += array(
 			'collation_server' => array(
-				'value' => 'utf8mb4_unicode_ci',
+				'value'   => 'utf8mb4_unicode_ci',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
 				),
 			'character_set_server' => array(
-				'value' => 'utf8mb4',
-				'class' => 'warning',
+				'value'   => 'utf8mb4',
+				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				),
 			'character_set_client' => array(
-				'value' => 'utf8mb4',
-				'class' => 'warning',
+				'value'   => 'utf8mb4',
+				'class'   => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				)
@@ -996,13 +1002,13 @@ function utilities_get_mysql_recommendations() {
 		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
 			'measure' => 'pmem',
-			'class' => 'warning',
+			'class'   => 'warning',
 			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.')
 			),
 		'innodb_doublewrite' => array(
 			'value'   => 'ON',
 			'measure' => 'equalint',
-			'class' => 'error',
+			'class'   => 'error',
 			'comment' => __('This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
 			),
 		'innodb_additional_mem_pool_size' => array(
@@ -1039,7 +1045,7 @@ function utilities_get_mysql_recommendations() {
 		} elseif (version_compare($variables['innodb_version'], '10.5', '<')) {
 			$recommendations += array(
 				'innodb_flush_log_at_timeout' => array(
-					'value'   => '3',
+					'value'    => '3',
 					'measure'  => 'ge',
 					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
 					),
@@ -1054,34 +1060,34 @@ function utilities_get_mysql_recommendations() {
 					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
 					),
 				'innodb_buffer_pool_instances' => array(
-					'value' => '16',
+					'value'   => '16',
 					'measure' => 'pinst',
-					'class' => 'warning',
+					'class'   => 'warning',
 					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
 					),
 				'innodb_io_capacity' => array(
-					'value' => '5000',
+					'value'   => '5000',
 					'measure' => 'ge',
-					'class' => 'warning',
+					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
 					),
 				'innodb_io_capacity_max' => array(
-					'value' => '10000',
+					'value'   => '10000',
 					'measure' => 'ge',
-					'class' => 'warning',
+					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
 					),
 				'innodb_flush_neighbor_pages' => array(
-					'value' => 'none',
+					'value'   => 'none',
 					'measure' => 'eq',
-					'class' => 'warning',
+					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
 					)
 			);
 		} else {
 			$recommendations += array(
 				'innodb_flush_log_at_timeout' => array(
-					'value'   => '3',
+					'value'    => '3',
 					'measure'  => 'ge',
 					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
 					),
@@ -1096,21 +1102,21 @@ function utilities_get_mysql_recommendations() {
 					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
 					),
 				'innodb_io_capacity' => array(
-					'value' => '5000',
+					'value'   => '5000',
 					'measure' => 'ge',
-					'class' => 'warning',
+					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
 					),
 				'innodb_io_capacity_max' => array(
-					'value' => '10000',
+					'value'   => '10000',
 					'measure' => 'ge',
-					'class' => 'warning',
+					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
 					),
 				'innodb_flush_neighbor_pages' => array(
-					'value' => 'none',
+					'value'   => 'none',
 					'measure' => 'eq',
-					'class' => 'warning',
+					'class'   => 'warning',
 					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
 					)
 			);
@@ -1132,15 +1138,15 @@ function utilities_get_mysql_recommendations() {
 	form_alternate_row();
 	print "<td colspan='2' style='text-align:left;padding:0px'>";
 	print "<table id='mysql' class='cactiTable' style='width:100%'>";
-	print "<thead>";
+	print '<thead>';
 	print "<tr class='tableHeader'>";
-	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . "</th>";
-	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). "</th>";
+	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . '</th>';
+	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). '</th>';
 	print "  <th class='tableSubHeaderColumn center'>&nbsp;</th>";
-	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . "</th>";
-	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . "</th>";
-	print "</tr>";
-	print "</thead>";
+	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . '</th>';
+	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . '</th>';
+	print '</tr>';
+	print '</thead>';
 
 	$innodb_pool_size = 0;
 	foreach ($recommendations as $name => $r) {
@@ -1150,23 +1156,23 @@ function utilities_get_mysql_recommendations() {
 			// Unset $passed so that we only display fields that we checked
 			unset($passed);
 
-			$compare = '';
+			$compare         = '';
 			$value_recommend = isset($r['value']) ? $r['value'] : '<unset>';
 			$value_current   = isset($variables[$name]) ? $variables[$name] : '<unset>';
 			$value_display   = $value_current;
 
 			switch($r['measure']) {
 			case 'gem':
-				$compare = '>=';
-				$value_display = ($variables[$name]/1024/1024) . ' M';
-				$value = trim($r['value'], 'M') * 1024 * 1024;
+				$compare       = '>=';
+				$value_display = ($variables[$name] / 1024 / 1024) . ' M';
+				$value         = trim($r['value'], 'M') * 1024 * 1024;
 				if ($variables[$name] < $value) {
 					$passed = false;
 				}
 				break;
 			case 'ge':
 				$compare = '>=';
-				$passed = (version_compare($value_current, $value_recommend, '>='));
+				$passed  = (version_compare($value_current, $value_recommend, '>='));
 				break;
 			case 'equalint':
 			case 'equal':
@@ -1196,10 +1202,10 @@ function utilities_get_mysql_recommendations() {
 					$innodb_pool_size = $variables[$name];
 				}
 
-				$compare = '>=';
-				$passed = ($variables[$name] >= ($r['value']*$totalMem/100));
-				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
-				$value_recommend = round($r['value']*$totalMem/100/1024/1024, 2) . ' M';
+				$compare         = '>=';
+				$passed          = ($variables[$name] >= ($r['value'] * $totalMem / 100));
+				$value_display   = round($variables[$name] / 1024 / 1024, 2) . ' M';
+				$value_recommend = round($r['value'] * $totalMem / 100 / 1024 / 1024, 2) . ' M';
 				break;
 			case 'pinst':
 				$compare = '>=';
@@ -1213,12 +1219,12 @@ function utilities_get_mysql_recommendations() {
 					$pool_instances = 64;
 				}
 
-				$passed = ($variables[$name] >= $pool_instances);
+				$passed          = ($variables[$name] >= $pool_instances);
 				$value_recommend = $pool_instances;
 				break;
 			default:
 				$compare = $r['measure'];
-				$passed = true;
+				$passed  = true;
 			}
 
 			if (isset($passed)) {
@@ -1238,20 +1244,20 @@ function utilities_get_mysql_recommendations() {
 
 				form_alternate_row();
 
-				print "<td>" . $name . "</td>";
+				print '<td>' . $name . '</td>';
 				print "<td class='right $class'>$value_display</td>";
 				print "<td class='center'>$compare</td>";
 				print "<td>$value_recommend</td>";
-				print "<td class='$class'>" . $r['comment'] . "</td>";
+				print "<td class='$class'>" . $r['comment'] . '</td>';
 
 				form_end_row();
 			}
-
 		}
 	}
-	print "</table>";
-	print "</td>";
+	print '</table>';
+	print '</td>';
 	form_end_row();
+
 	return $result;
 }
 
@@ -1281,7 +1287,7 @@ function utilities_php_modules() {
 
 function memory_bytes($val) {
 	$val  = trim($val);
-	$last = strtolower($val[strlen($val)-1]);
+	$last = strtolower($val[strlen($val) - 1]);
 	$val  = trim($val, 'GMKgmk');
 	switch($last) {
 		case 'g':
@@ -1333,11 +1339,11 @@ function utilities_get_system_memory() {
 		$file = '';
 		if (file_exists('/proc/meminfo')) {
 			$file = '/proc/meminfo';
-		} elseif(file_exists('/linux/proc/meminfo')) {
+		} elseif (file_exists('/linux/proc/meminfo')) {
 			$file = '/linux/proc/meminfo';
-		} elseif(file_exists('/compat/linux/proc/meminfo')) {
+		} elseif (file_exists('/compat/linux/proc/meminfo')) {
 			$file = '/compat/linux/proc/meminfo';
-		} elseif(file_exists('/usr/compat/linux/proc/meminfo')) {
+		} elseif (file_exists('/usr/compat/linux/proc/meminfo')) {
 			$file = '/usr/compat/linux/proc/meminfo';
 		}
 
@@ -1346,8 +1352,8 @@ function utilities_get_system_memory() {
 			foreach ($data as $l) {
 				if (trim($l) != '') {
 					list($key, $val) = explode(':', $l);
-					$val = trim($val, " kBb\r\n");
-					$memInfo[$key] = round($val * 1000,0);
+					$val             = trim($val, " kBb\r\n");
+					$memInfo[$key]   = round($val * 1000,0);
 				}
 			}
 		} elseif (file_exists('/usr/bin/free')) {
@@ -1361,20 +1367,20 @@ function utilities_get_system_memory() {
 					$parts = preg_split('/\s+/', $line);
 					switch ($parts[0]) {
 					case 'Mem:':
-						$memInfo['MemTotal']  = (isset($parts[1]) ? $parts[1]*1000:0);
-						$memInfo['MemUsed']   = (isset($parts[2]) ? $parts[2]*1000:0);
-						$memInfo['MemFree']   = (isset($parts[3]) ? $parts[3]*1000:0);
-						$memInfo['MemShared'] = (isset($parts[4]) ? $parts[4]*1000:0);
-						$memInfo['Buffers']   = (isset($parts[5]) ? $parts[5]*1000:0);
-						$memInfo['Cached']    = (isset($parts[6]) ? $parts[6]*1000:0);
+						$memInfo['MemTotal']  = (isset($parts[1]) ? $parts[1] * 1000:0);
+						$memInfo['MemUsed']   = (isset($parts[2]) ? $parts[2] * 1000:0);
+						$memInfo['MemFree']   = (isset($parts[3]) ? $parts[3] * 1000:0);
+						$memInfo['MemShared'] = (isset($parts[4]) ? $parts[4] * 1000:0);
+						$memInfo['Buffers']   = (isset($parts[5]) ? $parts[5] * 1000:0);
+						$memInfo['Cached']    = (isset($parts[6]) ? $parts[6] * 1000:0);
 						break;
 					case '-/+':
-						$memInfo['Active']    = (isset($parts[2]) ? $parts[3]*1000:0);
-						$memInfo['Inactive']  = (isset($parts[3]) ? $parts[3]*1000:0);
+						$memInfo['Active']    = (isset($parts[2]) ? $parts[3] * 1000:0);
+						$memInfo['Inactive']  = (isset($parts[3]) ? $parts[3] * 1000:0);
 						break;
 					case 'Swap:':
-						$memInfo['SwapTotal'] = (isset($parts[1]) ? $parts[1]*1000:0);
-						$memInfo['SwapUsed']  = (isset($parts[2]) ? $parts[2]*1000:0);
+						$memInfo['SwapTotal'] = (isset($parts[1]) ? $parts[1] * 1000:0);
+						$memInfo['SwapUsed']  = (isset($parts[2]) ? $parts[2] * 1000:0);
 						break;
 					}
 				}
@@ -1388,17 +1394,17 @@ function utilities_get_system_memory() {
 function utility_php_sort_extensions($a, $b) {
 	$name_a = isset($a['name']) ? $a['name'] : '';
 	$name_b = isset($b['name']) ? $b['name'] : '';
+
 	return strcasecmp($name_a, $name_b);
 }
-
 
 function utility_php_extensions() {
 	global $config;
 
-	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' extensions';
-	$json = shell_exec($php . ' -q ' . $php_file);
-	$ext = @json_decode($json, true);
+	$json     = shell_exec($php . ' -q ' . $php_file);
+	$ext      = @json_decode($json, true);
 
 	utility_php_verify_extensions($ext, 'web');
 	utility_php_set_installed($ext);
@@ -1440,9 +1446,9 @@ function utility_php_verify_extensions(&$extensions, $source) {
 		}
 	}
 
-	uksort($extensions, "utility_php_sort_extensions");
+	uksort($extensions, 'utility_php_sort_extensions');
 
-	foreach ($extensions as $name=>$extension) {
+	foreach ($extensions as $name=> $extension) {
 		if (extension_loaded($name)){
 			$extensions[$name][$source] = true;
 		}
@@ -1452,10 +1458,10 @@ function utility_php_verify_extensions(&$extensions, $source) {
 function utility_php_recommends() {
 	global $config;
 
-	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
-	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' recommends';
-	$json = shell_exec($php . ' -q ' . $php_file);
-	$ext = array('web' => '', 'cli' => '');
+	$php        = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php_file   = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' recommends';
+	$json       = shell_exec($php . ' -q ' . $php_file);
+	$ext        = array('web' => '', 'cli' => '');
 	$ext['cli'] = @json_decode($json, true);
 
 	utility_php_verify_recommends($ext['web'], 'web');
@@ -1465,13 +1471,12 @@ function utility_php_recommends() {
 }
 
 function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value, $default_type = 'B') {
-
 	$default_type = strtoupper($default_type);
-	$multiplier = array(
+	$multiplier   = array(
 		'B' => 1,
 		'K' => 1024,
-		'M' => 1024*1024,
-		'G' => 1024*1024*1024,
+		'M' => 1024 * 1024,
+		'G' => 1024 * 1024 * 1024,
 	);
 
 	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
@@ -1494,6 +1499,7 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 	} else {
 		$output_value = $input_value . 'B';
 	}
+
 	return $input_value;
 }
 
@@ -1565,10 +1571,10 @@ function utility_php_set_recommends_text(&$recs) {
 function utility_php_optionals() {
 	global $config;
 
-	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' optionals';
-	$json = shell_exec($php . ' -q ' . $php_file);
-	$opt = @json_decode($json, true);
+	$json     = shell_exec($php . ' -q ' . $php_file);
+	$opt      = @json_decode($json, true);
 
 	utility_php_verify_optionals($opt, 'web');
 	utility_php_set_installed($opt);
@@ -1592,7 +1598,7 @@ function utility_php_verify_optionals(&$optionals, $source) {
 		}
 	}
 
-	$optionals['TrueType Box'][$source] = function_exists('imagettfbbox');
+	$optionals['TrueType Box'][$source]  = function_exists('imagettfbbox');
 	$optionals['TrueType Text'][$source] = function_exists('imagettftext');
 }
 

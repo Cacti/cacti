@@ -57,18 +57,19 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 	}
 
 	$variable = ($variable != '' ? ', Variable:' . $variable : '');
-	$value    = ($value    != '' ? ', Value:'    . $value    : '');
+	$value    = ($value != '' ? ', Value:'    . $value    : '');
 
 	if (defined('CACTI_CLI_ONLY')) {
 		cacti_debug_backtrace('Validation Error' . $variable . $value, false);
 		print $message . PHP_EOL;
 		exit(1);
-	} elseif (isset_request_var('json')) {
+	}
+	if (isset_request_var('json')) {
 		cacti_debug_backtrace('Validation Error' . $variable . $value, false);
 		print json_encode(
 			array(
-				'status' => '500',
-				'statusText' => __('Validation Error'),
+				'status'       => '500',
+				'statusText'   => __('Validation Error'),
 				'responseText' => $message
 			)
 		);
@@ -81,4 +82,3 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 
 	exit;
 }
-

@@ -27,7 +27,7 @@ ob_start();
 
 $guest_account = true;
 $auth_text     = true;
-$gtype = 'png';
+$gtype         = 'png';
 
 include('./include/auth.php');
 include_once('./lib/rrd.php');
@@ -133,7 +133,7 @@ if (isset_request_var('rra_id')) {
 }
 
 $null_param = array();
-$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+$output     = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 if ($output !== false && $output != '') {
 	/* flush the headers now */
@@ -148,7 +148,9 @@ if ($output !== false && $output != '') {
 
 	/* get the error string */
 	$graph_data_array['get_error'] = true;
+
 	$null_param = array();
+
 	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 	$error = ob_get_contents();
@@ -174,4 +176,3 @@ if ($output !== false && $output != '') {
 		print file_get_contents(__DIR__ . '/images/cacti_error_image.png');
 	}
 }
-

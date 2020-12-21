@@ -34,6 +34,7 @@ $page = db_fetch_row_prepared('SELECT
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if (strpos($_SERVER['HTTP_REFERER'], 'link.php') === false) {
 		$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+
 		$_SESSION['link_referer'] = $referer;
 	} elseif (isset($_SESSION['link_referer'])) {
 		$referer = sanitize_uri($_SESSION['link_referer']);
@@ -53,8 +54,8 @@ if (!cacti_sizeof($page)) {
 } else {
 	global $link_nav;
 
-	if (is_realm_allowed($page['id']+10000)) {
-		unset ($refresh);
+	if (is_realm_allowed($page['id'] + 10000)) {
+		unset($refresh);
 
 		if (!empty($page['refresh'])) {
 			$refresh['seconds'] = $page['refresh'];
@@ -76,7 +77,7 @@ if (!cacti_sizeof($page)) {
 		} else {
 			print '<div id="content">';
 
-			$file = $config['base_path'] . "/include/content/" . $page['contentfile'];
+			$file = $config['base_path'] . '/include/content/' . $page['contentfile'];
 
 			if (file_exists($file)) {
 				include_once($file);
@@ -94,4 +95,3 @@ if (!cacti_sizeof($page)) {
 		exit;
 	}
 }
-

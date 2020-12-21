@@ -39,11 +39,11 @@ $templates = false;
 $kills     = 0;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -98,7 +98,7 @@ if (!cacti_sizeof($templates)) {
 	unregister_process('spikekill', 'master', 0);
 	exit(1);
 } else {
-	foreach($templates as $template) {
+	foreach ($templates as $template) {
 		if (!is_numeric($template)) {
 			print "ERROR: Graph Template '" . $template . "' Invalid\n\n";
 			unregister_process('spikekill', 'master', 0);
@@ -110,9 +110,7 @@ if (!cacti_sizeof($templates)) {
 if (timeToRun()) {
 	debug('Starting Spikekill Process');
 
-	list($micro,$seconds) = explode(' ', microtime());
-	$start   = $seconds + $micro;
-
+	$start  = microtime(true);
 	$graphs = kill_spikes($templates, $kills);
 
 	$purges = 0;
@@ -120,24 +118,23 @@ if (timeToRun()) {
 		$purges = purge_spike_backups();
 	}
 
-	list($micro,$seconds) = explode(' ', microtime());
-	$end  = $seconds + $micro;
+	$end = microtime(true);
 
-    $cacti_stats = sprintf(
-        'Time:%01.4f ' .
-        'Graphs:%s ' .
-        'Purges:%s ' .
+	$cacti_stats = sprintf(
+		'Time:%01.4f ' .
+		'Graphs:%s ' .
+		'Purges:%s ' .
 		'Kills:%s',
-        round($end-$start,2),
-        $graphs,
-        $purges,
+		round($end - $start,2),
+		$graphs,
+		$purges,
 		$kills);
 
-    /* log to the database */
-    db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("stats_spikekill", ?)', array($cacti_stats));
+	/* log to the database */
+	db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("stats_spikekill", ?)', array($cacti_stats));
 
-    /* log to the logfile */
-    cacti_log('SPIKEKILL STATS: ' . $cacti_stats , true, 'SYSTEM');
+	/* log to the logfile */
+	cacti_log('SPIKEKILL STATS: ' . $cacti_stats , true, 'SYSTEM');
 }
 
 print "NOTE: SpikeKill Finished\n";
@@ -166,21 +163,28 @@ function timeToRun() {
 		if ((empty($lastrun)) && ($nowfreq > $baseupper) && ($nowfreq < $baselower)) {
 			debug('Time to Run');
 			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
+
 			return true;
-		} elseif (($now - $lastrun > 3600) && ($nowfreq > $baseupper) && ($nowfreq < $baselower)) {
+		}
+
+		if (($now - $lastrun > 3600) && ($nowfreq > $baseupper) && ($nowfreq < $baselower)) {
 			debug('Time to Run');
 			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
+
 			return true;
 		} else {
 			debug('Not Time to Run');
+
 			return false;
 		}
 	} elseif ($forcerun) {
 		debug('Force to Run');
 		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?', array(time()));
+
 		return true;
 	} else {
 		debug('Not time to Run');
+
 		return false;
 	}
 }
@@ -192,7 +196,6 @@ function debug($message) {
 		print 'DEBUG: ' . trim($message) . "\n";
 	}
 }
-
 
 function purge_spike_backups() {
 	$directory = read_config_option('spikekill_backupdir');
@@ -210,7 +213,7 @@ function purge_spike_backups() {
 		$files = array_diff(scandir($directory), array('.', '..'));
 
 		if (cacti_sizeof($files)) {
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				$filepath = $directory . '/' . $file;
 
 				if (is_file($filepath) && strpos($filepath, 'rrd') !== false) {
@@ -245,7 +248,7 @@ function kill_spikes($templates, &$found) {
 		WHERE gt.id IN (' . implode(',', $templates) . ')'), 'rrd_path', 'rrd_path');
 
 	if (cacti_sizeof($rrdfiles)) {
-		foreach($rrdfiles as $f) {
+		foreach ($rrdfiles as $f) {
 			debug("Removing Spikes from '$f'");
 
 			$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .

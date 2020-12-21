@@ -25,7 +25,7 @@ error_reporting(E_ALL);
 
 define('IN_CACTI_INSTALL', 1);
 
-include_once(dirname(__FILE__) . '/../include/cli_check.php');
+include_once(__DIR__ . '/../include/cli_check.php');
 include_once($config['base_path'] . '/install/functions.php');
 include_once($config['base_path'] . '/lib/api_data_source.php');
 include_once($config['base_path'] . '/lib/api_device.php');

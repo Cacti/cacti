@@ -53,17 +53,19 @@ if ($config['poller_id'] > 1) {
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
  * @arg $signo  - (int) the signal that was thrown by the interface.
+ * @param mixed $signo
  * @return      - null */
 function sig_handler($signo) {
 	global $network_id, $thread, $master, $poller_id;
 
-    switch ($signo) {
-        case SIGTERM:
-        case SIGINT:
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
 			if ($thread > 0) {
 				clearTask($network_id, getmypid());
 				exit(0);
-			} elseif($thread == 0 && !$master) {
+			}
+			if ($thread == 0 && !$master) {
 				$pids = array_rekey(db_fetch_assoc_prepared("SELECT pid
 					FROM automation_processes
 					WHERE network_id = ?
@@ -71,7 +73,7 @@ function sig_handler($signo) {
 					array($network_id)), 'pid', 'pid');
 
 				if (cacti_sizeof($pids)) {
-					foreach($pids as $pid) {
+					foreach ($pids as $pid) {
 						posix_kill($pid, SIGTERM);
 					}
 				}
@@ -92,7 +94,7 @@ function sig_handler($signo) {
 					array($poller_id)), 'pid', 'pid');
 
 				if (cacti_sizeof($pids)) {
-					foreach($pids as $pid) {
+					foreach ($pids as $pid) {
 						posix_kill($pid, SIGTERM);
 					}
 				}
@@ -100,12 +102,12 @@ function sig_handler($signo) {
 				clearTask($network_id, getmypid());
 			}
 
-            exit(0);
+			exit(0);
 
-            break;
-        default:
-            /* ignore all other signals */
-    }
+			break;
+		default:
+			/* ignore all other signals */
+	}
 }
 
 /* take time and log performance data */
@@ -117,7 +119,7 @@ $startTime = time();
 /* let PHP run just as long as it has to */
 ini_set('max_execution_time', '0');
 
-$dir = dirname(__FILE__);
+$dir = __DIR__;
 chdir($dir);
 
 /* process calling arguments */
@@ -134,11 +136,11 @@ $master     = false;
 global $debug, $poller_id, $network_id, $thread, $master;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -182,8 +184,8 @@ if (cacti_sizeof($parms)) {
 
 /* install signal handlers for UNIX only */
 if (function_exists('pcntl_signal')) {
-    pcntl_signal(SIGTERM, 'sig_handler');
-    pcntl_signal(SIGINT, 'sig_handler');
+	pcntl_signal(SIGTERM, 'sig_handler');
+	pcntl_signal(SIGINT, 'sig_handler');
 }
 
 // Let's ensure that we were called correctly
@@ -218,7 +220,7 @@ if ($master) {
 
 	$launched = 0;
 	if (cacti_sizeof($networks)) {
-		foreach($networks as $network) {
+		foreach ($networks as $network) {
 			if (api_automation_is_time_to_start($network['id']) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
@@ -247,7 +249,7 @@ if (!$master && $thread == 0) {
 
 	automation_debug("Killing any prior running threads\n");
 	if (cacti_sizeof($pids)) {
-		foreach($pids as $pid) {
+		foreach ($pids as $pid) {
 			if (isProcessRunning($pid)) {
 				killProcess($pid);
 				cacti_log("WARNING: Automation Process $pid is still running for Network ID: $network_id", true, 'AUTOM8');
@@ -292,7 +294,7 @@ if (!$master && $thread == 0) {
 		array(date('Y-m-d H:i:s', $startTime), $network_id));
 
 	$curthread = 1;
-	while($curthread <= $threads) {
+	while ($curthread <= $threads) {
 		automation_debug("Launching Thread $curthread\n");
 		exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . " --thread=$curthread --network=$network_id" . ($force ? ' --force':'') . ($debug ? ' --debug':''));
 		$curthread++;
@@ -376,6 +378,7 @@ function discoverDevices($network_id, $thread) {
 
 	/* Let's do some stats! */
 	$stats = array();
+
 	$stats['scanned'] = 0;
 	$stats['ping']    = 0;
 	$stats['snmp']    = 0;
@@ -383,7 +386,7 @@ function discoverDevices($network_id, $thread) {
 	$count_graph      = 0;
 	$count            = 0;
 
-	while(true) {
+	while (true) {
 		// Check for cancel
 		$command = db_fetch_cell_prepared('SELECT command
 			FROM automation_processes
@@ -430,7 +433,7 @@ function discoverDevices($network_id, $thread) {
 				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 300);
 
 				if ($dnsname != $device['ip_address'] && $dnsname != 'timed_out') {
-					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
+					automation_debug('Device: ' . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
 
 					db_execute_prepared('UPDATE automation_ips
 						SET hostname = ?
@@ -441,12 +444,12 @@ function discoverDevices($network_id, $thread) {
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				} elseif ($network['enable_netbios'] == 'on') {
-					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
+					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found, Checking NetBIOS:');
 
 					$netbios = ping_netbios_name($device['ip_address']);
 
 					if ($netbios === false) {
-						automation_debug(" Not found");
+						automation_debug(' Not found');
 						$device['hostname']      = $device['ip_address'];
 						$device['dnsname']       = '';
 						$device['dnsname_short'] = '';
@@ -462,7 +465,7 @@ function discoverDevices($network_id, $thread) {
 						$device['dnsname_short'] = $netbios;
 					}
 				} else {
-					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
+					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found');
 
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
@@ -470,10 +473,11 @@ function discoverDevices($network_id, $thread) {
 				}
 			} else {
 				$dnsname = @gethostbyaddr($device['ip_address']);
+
 				$device['hostname'] = $dnsname;
 
 				if ($dnsname != $device['ip_address']) {
-					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
+					automation_debug('Device: ' . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
 
 					db_execute_prepared('UPDATE automation_ips
 						SET hostname = ?
@@ -483,11 +487,11 @@ function discoverDevices($network_id, $thread) {
 					$device['dnsname']       = $dnsname;
 					$device['dnsname_short'] = preg_split('/[\.]+/', strtolower($dnsname), -1, PREG_SPLIT_NO_EMPTY);
 				} elseif ($network['enable_netbios'] == 'on') {
-					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found, Checking NetBIOS:");
+					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found, Checking NetBIOS:');
 
 					$netbios = ping_netbios_name($device['ip_address']);
 					if ($netbios === false) {
-						automation_debug(" Not found");
+						automation_debug(' Not found');
 						$device['hostname']      = $device['ip_address'];
 						$device['dnsname']       = '';
 						$device['dnsname_short'] = '';
@@ -503,7 +507,7 @@ function discoverDevices($network_id, $thread) {
 						$device['dnsname_short'] = $netbios;
 					}
 				} else {
-					automation_debug("Device: " . $device['ip_address'] . ", Checking DNS: Not found");
+					automation_debug('Device: ' . $device['ip_address'] . ', Checking DNS: Not found');
 
 					$device['hostname']      = $device['ip_address'];
 					$device['dnsname']       = '';
@@ -517,7 +521,7 @@ function discoverDevices($network_id, $thread) {
 				array($device['ip_address'], $device['hostname']));
 
 			if (!cacti_sizeof($exists)) {
-				automation_debug(", Status: Not in Cacti");
+				automation_debug(', Status: Not in Cacti');
 
 				if (substr($device['ip_address'], -3) < 255) {
 					automation_debug(', Ping: ');
@@ -556,9 +560,10 @@ function discoverDevices($network_id, $thread) {
 
 					/* create new ping socket for host pinging */
 					$ping = new Net_Ping;
+
 					$ping->host['hostname'] = $device['ip_address'];
-					$ping->retries = $network['ping_retries'];
-					$ping->port    = $network['ping_port'];;
+					$ping->retries          = $network['ping_retries'];
+					$ping->port             = $network['ping_port'];
 
 					/* perform the appropriate ping check of the host */
 					$bypass_ping = false;
@@ -571,22 +576,21 @@ function discoverDevices($network_id, $thread) {
 						$result = $ping->ping(AVAIL_PING, $network['ping_method'], $network['ping_timeout'], 1);
 
 						if (!$result) {
-							automation_debug(" No response");
+							automation_debug(' No response');
 							updateDownDevice($network_id, $device['ip_address']);
 						} else {
-							automation_debug(" Responded");
+							automation_debug(' Responded');
 							$stats['ping']++;
 							addUpDevice($network_id, getmypid());
 						}
 					}
-
 
 					if (($result || $bypass_ping) && automation_valid_snmp_device($device)) {
 						$snmp_sysName       = trim($device['snmp_sysName']);
 						$snmp_sysName_short = '';
 						if (!is_ipaddress($snmp_sysName)) {
 							$parts = explode('.', $snmp_sysName);
-							foreach($parts as $part) {
+							foreach ($parts as $part) {
 								if (is_numeric($part)) {
 									$snmp_sysName_short = $snmp_sysName;
 									break;
@@ -672,7 +676,7 @@ function discoverDevices($network_id, $thread) {
 								$stats['snmp']++;
 								addSNMPDevice($network_id, getmypid());
 
-								automation_debug(" Responded");
+								automation_debug(' Responded');
 
 								$fos = automation_find_os($device['snmp_sysDescr'], $device['snmp_sysObjectID'], $device['snmp_sysName']);
 
@@ -734,7 +738,7 @@ function discoverDevices($network_id, $thread) {
 								} elseif ($fos == false) {
 									automation_debug(", Template: Not found, Not adding to Cacti\n");
 								} else {
-									automation_debug(", Template: " . $fos['name']);
+									automation_debug(', Template: ' . $fos['name']);
 									$device['os'] = $fos['name'];
 									automation_debug(", Skipped: Add to Cacti disabled\n");
 								}
@@ -789,7 +793,7 @@ function discoverDevices($network_id, $thread) {
 							. db_qstr($device['snmp_sysUptime'])       . ', '
 							. '"", 0, 1,' . time() . ')');
 
-						automation_debug(", Alive no SNMP!");
+						automation_debug(', Alive no SNMP!');
 
 						markIPDone($device['ip_address'], $network_id);
 					} else {
@@ -835,11 +839,11 @@ function discoverDevices($network_id, $thread) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
-    print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_automation.php -M [--poller=ID] | --network=network_id [-T=thread_id]\n";
@@ -860,7 +864,7 @@ function display_help () {
 }
 
 function isProcessRunning($pid) {
-    return posix_kill($pid, 0);
+	return posix_kill($pid, 0);
 }
 
 function killProcess($pid) {
@@ -887,7 +891,7 @@ function rerunDataQueries($host_id, &$network) {
 			array($host_id));
 
 		if (cacti_sizeof($snmp_queries)) {
-			foreach($snmp_queries as $query) {
+			foreach ($snmp_queries as $query) {
 				run_data_query($host_id, $query['snmp_query_id']);
 			}
 		}
@@ -983,11 +987,13 @@ function reportNetworkStatus($network_id, $old_devices) {
 
 					if (!cacti_sizeof($details)) {
 						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not exist.', false, 'POLLER');
+
 						return false;
 					}
 
 					if ($details['notification_email'] == '') {
 						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not have an Email Address.', false, 'POLLER');
+
 						return false;
 					}
 
@@ -1002,7 +1008,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 			populateDeviceIndex($ids, 1, $new_devices);
 
 			$table_head_style = 'style="border-bottom: 1px solid black"';
-			$table_head = '<tr>' .
+			$table_head       = '<tr>' .
 				"<td $table_head_style><i>Hostname</i></td>" .
 				"<td $table_head_style><i>IP Address</i></td>" .
 				"<td $table_head_style><i>SNMP Name</i></td>" .
@@ -1011,15 +1017,15 @@ function reportNetworkStatus($network_id, $old_devices) {
 				'</tr>';
 
 			$table_exist = '';
-			$table_new = '';
+			$table_new   = '';
 			$count_exist = 0;
-			$count_new = 0;
+			$count_new   = 0;
 
-			$font_up = '<font color="green">up</font>';
+			$font_up   = '<font color="green">up</font>';
 			$font_down = '<font color="red">down</font>';
 
 			foreach ($new_devices as $device) {
-				$id = $device['ip'];
+				$id        = $device['ip'];
 				$html_line = '<tr><td>' . $device['hostname'] .
 					'</td><td>' . $device['ip'] .
 					'</td><td>' . (empty($device['sysName']) ? '<i><u>None</u></i>' : $device['sysName']) .
@@ -1045,6 +1051,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 			}
 
 			$v = CACTI_VERSION;
+
 			$headers['User-Agent'] = 'Cacti-Automation-v' . $v;
 
 			$status = ($count_new + $count_exist) . ' devices discovered';
@@ -1058,7 +1065,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 				array($network_id));
 
 			$subject = 'Discovery of ' . $network['name'] . ' (' . $network['subnet_range'] . ') - ' . $status;
-			$output = '<h1>Discovery of ' . $network['name'] . '</h1><hr><br>' .
+			$output  = '<h1>Discovery of ' . $network['name'] . '</h1><hr><br>' .
 				'<h2>Summary</h2><table>' .
 				'<tr><td>Network:</td><td>' . $network['subnet_range'] . '</td></tr>'.
 				'<tr><td>Started:</td><td>' . $network['last_started'] . '</td></tr>' .

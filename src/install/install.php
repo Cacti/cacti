@@ -109,7 +109,7 @@ if ($hasEverything) {
 		<div class='cactiInstallCopyrightArea textHeaderDark'><?php print COPYRIGHT_YEARS;?></div>
 	</div>
 <?php
-include_once(dirname(__FILE__) . '/../include/global_session.php');
+include_once(__DIR__ . '/../include/global_session.php');
 ?>
 </body>
 </html>

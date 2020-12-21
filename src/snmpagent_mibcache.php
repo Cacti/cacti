@@ -30,9 +30,9 @@ require(__DIR__ . '/include/cli_check.php');
 /* allow the script to hang around. */
 set_time_limit(0);
 
-chdir(dirname(__FILE__));
+chdir(__DIR__);
 
-$path_mibcache = $config['base_path'] . '/cache/mibcache/mibcache.tmp';
+$path_mibcache      = $config['base_path'] . '/cache/mibcache/mibcache.tmp';
 $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 
 /* remove temporary cache */
@@ -42,11 +42,11 @@ $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 @unlink($path_mibcache_lock);
 
 /* start background caching process if not running */
-$php = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+$php            = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 $extra_args     = ' ' . cacti_escapeshellarg('./snmpagent_mibcachechild.php');
 
-while(1) {
-	if(strstr(PHP_OS, 'WIN')) {
+while (1) {
+	if (strstr(PHP_OS, 'WIN')) {
 		popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
 	} else {
 		exec($php . ' ' . $extra_args . ' > /dev/null &');
@@ -54,4 +54,3 @@ while(1) {
 
 	sleep(30 - time() % 30);
 }
-

@@ -44,7 +44,7 @@ switch (get_request_var('action')) {
 }
 
 /* -----------------------
-    Functions
+	Functions
    ----------------------- */
 
 function changelog_view() {
@@ -84,14 +84,14 @@ function changelog_view() {
 		print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 			" href='" . html_escape($config['url_path'] .
 			'changelog.php?tab=' . $tab_short_name) .
-			"'>" . $tabs[$tab_short_name] . "</a></li>";
+			"'>" . $tabs[$tab_short_name] . '</a></li>';
 
 		$i++;
 	}
 
 	api_plugin_hook('changelog_tab');
 
-	print "</ul></nav></div>";
+	print '</ul></nav></div>';
 
 	$header_label = __esc('Change Log [%s]', $tabs[get_request_var('tab')]);
 
@@ -119,7 +119,7 @@ function changelog_view() {
 
 			$type = 'unknown';
 			if (isset($parts[1])) {
-				$type = strtolower($parts[1]);
+				$type                          = strtolower($parts[1]);
 				if ($type == 'security') $type = ' security';
 			}
 
@@ -129,11 +129,11 @@ function changelog_view() {
 				}
 				$details[$type][] = $detail;
 			}
-		} else if (!empty($line)) {
+		} elseif (!empty($line)) {
 			if (!empty($ver)) {
 				$vers[$ver] = $details;
-				$first=true;
-				$details = array();
+				$first      =true;
+				$details    = array();
 			}
 
 			if (count($vers) > 4) {
@@ -144,7 +144,7 @@ function changelog_view() {
 	}
 
 	krsort($vers);
-	foreach($vers as $ver => $changelog) {
+	foreach ($vers as $ver => $changelog) {
 		if (!empty($ver)) {
 			html_start_box(__('Version %s', $ver), '100%', '', '3', 'center', '');
 			ksort($changelog);
@@ -157,14 +157,14 @@ function changelog_view() {
 							$icon = '<i class="fas fa-wrench"></i>';
 							break;
 						case 'feature':
-							$icon = '<i class="fas fa-rocket"></i>';
+							$icon      = '<i class="fas fa-rocket"></i>';
 							$highlight = true;
 							break;
 						case ' security':
-							$icon = '<i class="fas fa-shield-alt"></i>';
+							$icon      = '<i class="fas fa-shield-alt"></i>';
 							$highlight = true;
 							break;
-						default;
+						default:
 							$icon = '<i class="far fa-question-circle"></i>';
 							break;
 					}
@@ -193,7 +193,6 @@ function changelog_view() {
 			}
 		}
 	}
-
 
 	?>
 	<script type='text/javascript'>

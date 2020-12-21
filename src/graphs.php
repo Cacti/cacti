@@ -127,7 +127,7 @@ switch (get_request_var('action')) {
 }
 
 /* --------------------------
-    Global Form Functions
+	Global Form Functions
    -------------------------- */
 
 function get_ajax_graph_items() {
@@ -177,7 +177,7 @@ function get_ajax_graph_items() {
 		LIMIT " . read_config_option('autocomplete_rows'),
 		array($rrd_id));
 
-	foreach($items as $key => $item) {
+	foreach ($items as $key => $item) {
 		$items[$key]['label'] = $item['name'];
 	}
 
@@ -200,7 +200,7 @@ function add_tree_names_to_actions_array() {
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function parse_validate_graph_template_id($variable) {
@@ -253,7 +253,7 @@ function form_save() {
 
 			/* lastly push host-specific information to our data sources */
 			if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-				foreach($return_array['local_data_id'] as $item) {
+				foreach ($return_array['local_data_id'] as $item) {
 					push_out_host($host_id, $item);
 				}
 			} else {
@@ -280,46 +280,46 @@ function form_save() {
 		$save1['host_id']              = get_request_var('host_id');
 		$save1['graph_template_id']    = get_nfilter_request_var('graph_template_id');
 
-		$save2['id']                   = get_nfilter_request_var('graph_template_graph_id');
+		$save2['id']                            = get_nfilter_request_var('graph_template_graph_id');
 		$save2['local_graph_template_graph_id'] = get_nfilter_request_var('local_graph_template_graph_id');
-		$save2['graph_template_id']    = get_nfilter_request_var('graph_template_id');
-		$save2['image_format_id']      = form_input_validate(get_nfilter_request_var('image_format_id'), 'image_format_id', '^[0-9]+$', true, 3);
-		$save2['title']                = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
-		$save2['height']               = form_input_validate(get_nfilter_request_var('height'), 'height', '^[0-9]+$', false, 3);
-		$save2['width']                = form_input_validate(get_nfilter_request_var('width'), 'width', '^[0-9]+$', false, 3);
-		$save2['upper_limit']          = form_input_validate(get_nfilter_request_var('upper_limit'), 'upper_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(get_nfilter_request_var('upper_limit')) === 0) ? true : false), 3);
-		$save2['lower_limit']          = form_input_validate(get_nfilter_request_var('lower_limit'), 'lower_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(get_nfilter_request_var('lower_limit')) === 0) ? true : false), 3);
-		$save2['vertical_label']       = form_input_validate(get_nfilter_request_var('vertical_label'), 'vertical_label', '', true, 3);
-		$save2['slope_mode']           = form_input_validate((isset_request_var('slope_mode') ? get_nfilter_request_var('slope_mode') : ''), 'slope_mode', '', true, 3);
-		$save2['auto_scale']           = form_input_validate((isset_request_var('auto_scale') ? get_nfilter_request_var('auto_scale') : ''), 'auto_scale', '', true, 3);
-		$save2['auto_scale_opts']      = form_input_validate(get_nfilter_request_var('auto_scale_opts'), 'auto_scale_opts', '', true, 3);
-		$save2['auto_scale_log']       = form_input_validate((isset_request_var('auto_scale_log') ? get_nfilter_request_var('auto_scale_log') : ''), 'auto_scale_log', '', true, 3);
-		$save2['scale_log_units']      = form_input_validate((isset_request_var('scale_log_units') ? get_nfilter_request_var('scale_log_units') : ''), 'scale_log_units', '', true, 3);
-		$save2['auto_scale_rigid']     = form_input_validate((isset_request_var('auto_scale_rigid') ? get_nfilter_request_var('auto_scale_rigid') : ''), 'auto_scale_rigid', '', true, 3);
-		$save2['auto_padding']         = form_input_validate((isset_request_var('auto_padding') ? get_nfilter_request_var('auto_padding') : ''), 'auto_padding', '', true, 3);
-		$save2['base_value']           = form_input_validate(get_nfilter_request_var('base_value'), 'base_value', '^[0-9]+$', false, 3);
-		$save2['unit_value']           = form_input_validate(get_nfilter_request_var('unit_value'), 'unit_value', '', true, 3);
-		$save2['unit_exponent_value']  = form_input_validate(get_nfilter_request_var('unit_exponent_value'), 'unit_exponent_value', '^-?[0-9]+$', true, 3);
-		$save2['alt_y_grid']           = form_input_validate((isset_request_var('alt_y_grid') ? get_nfilter_request_var('alt_y_grid') : ''), 'alt_y_grid', '', true, 3);
-		$save2['right_axis']           = form_input_validate((isset_request_var('right_axis') ? get_nfilter_request_var('right_axis') : ''), 'right_axis', '^-?([0-9]+(\.[0-9]*)?|\.[0-9]+):-?([0-9]+(\.[0-9]*)?|\.[0-9]+)$', true, 3);
-		$save2['right_axis_label']     = form_input_validate((isset_request_var('right_axis_label') ? get_nfilter_request_var('right_axis_label') : ''), 'right_axis_label', '', true, 3);
-		$save2['right_axis_format']    = form_input_validate((isset_request_var('right_axis_format') ? get_nfilter_request_var('right_axis_format') : ''), 'right_axis_format', '^[0-9]+$', true, 3);
-		$save2['no_gridfit']           = form_input_validate((isset_request_var('no_gridfit') ? get_nfilter_request_var('no_gridfit') : ''), 'no_gridfit', '', true, 3);
-		$save2['unit_length']          = form_input_validate((isset_request_var('unit_length') ? get_nfilter_request_var('unit_length') : ''), 'unit_length', '^[0-9]+$', true, 3);
-		$save2['tab_width']            = form_input_validate((isset_request_var('tab_width') ? get_nfilter_request_var('tab_width') : ''), 'tab_width', '^[0-9]*$', true, 3);
-		$save2['dynamic_labels']       = form_input_validate((isset_request_var('dynamic_labels') ? get_nfilter_request_var('dynamic_labels') : ''), 'dynamic_labels', '', true, 3);
-		$save2['force_rules_legend']   = form_input_validate((isset_request_var('force_rules_legend') ? get_nfilter_request_var('force_rules_legend') : ''), 'force_rules_legend', '', true, 3);
-		$save2['legend_position']      = form_input_validate((isset_request_var('legend_position') ? get_nfilter_request_var('legend_position') : ''), 'legend_position', '', true, 3);
-		$save2['legend_direction']     = form_input_validate((isset_request_var('legend_direction') ? get_nfilter_request_var('legend_direction') : ''), 'legend_direction', '', true, 3);
-		$save2['right_axis_formatter'] = form_input_validate((isset_request_var('right_axis_formatter') ? get_nfilter_request_var('right_axis_formatter') : ''), 'right_axis_formatter', '', true, 3);
-		$save2['left_axis_formatter']  = form_input_validate((isset_request_var('left_axis_formatter') ? get_nfilter_request_var('left_axis_formatter') : ''), 'left_axis_formatter', '', true, 3);
+		$save2['graph_template_id']             = get_nfilter_request_var('graph_template_id');
+		$save2['image_format_id']               = form_input_validate(get_nfilter_request_var('image_format_id'), 'image_format_id', '^[0-9]+$', true, 3);
+		$save2['title']                         = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
+		$save2['height']                        = form_input_validate(get_nfilter_request_var('height'), 'height', '^[0-9]+$', false, 3);
+		$save2['width']                         = form_input_validate(get_nfilter_request_var('width'), 'width', '^[0-9]+$', false, 3);
+		$save2['upper_limit']                   = form_input_validate(get_nfilter_request_var('upper_limit'), 'upper_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(get_nfilter_request_var('upper_limit')) === 0) ? true : false), 3);
+		$save2['lower_limit']                   = form_input_validate(get_nfilter_request_var('lower_limit'), 'lower_limit', "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$", ((strlen(get_nfilter_request_var('lower_limit')) === 0) ? true : false), 3);
+		$save2['vertical_label']                = form_input_validate(get_nfilter_request_var('vertical_label'), 'vertical_label', '', true, 3);
+		$save2['slope_mode']                    = form_input_validate((isset_request_var('slope_mode') ? get_nfilter_request_var('slope_mode') : ''), 'slope_mode', '', true, 3);
+		$save2['auto_scale']                    = form_input_validate((isset_request_var('auto_scale') ? get_nfilter_request_var('auto_scale') : ''), 'auto_scale', '', true, 3);
+		$save2['auto_scale_opts']               = form_input_validate(get_nfilter_request_var('auto_scale_opts'), 'auto_scale_opts', '', true, 3);
+		$save2['auto_scale_log']                = form_input_validate((isset_request_var('auto_scale_log') ? get_nfilter_request_var('auto_scale_log') : ''), 'auto_scale_log', '', true, 3);
+		$save2['scale_log_units']               = form_input_validate((isset_request_var('scale_log_units') ? get_nfilter_request_var('scale_log_units') : ''), 'scale_log_units', '', true, 3);
+		$save2['auto_scale_rigid']              = form_input_validate((isset_request_var('auto_scale_rigid') ? get_nfilter_request_var('auto_scale_rigid') : ''), 'auto_scale_rigid', '', true, 3);
+		$save2['auto_padding']                  = form_input_validate((isset_request_var('auto_padding') ? get_nfilter_request_var('auto_padding') : ''), 'auto_padding', '', true, 3);
+		$save2['base_value']                    = form_input_validate(get_nfilter_request_var('base_value'), 'base_value', '^[0-9]+$', false, 3);
+		$save2['unit_value']                    = form_input_validate(get_nfilter_request_var('unit_value'), 'unit_value', '', true, 3);
+		$save2['unit_exponent_value']           = form_input_validate(get_nfilter_request_var('unit_exponent_value'), 'unit_exponent_value', '^-?[0-9]+$', true, 3);
+		$save2['alt_y_grid']                    = form_input_validate((isset_request_var('alt_y_grid') ? get_nfilter_request_var('alt_y_grid') : ''), 'alt_y_grid', '', true, 3);
+		$save2['right_axis']                    = form_input_validate((isset_request_var('right_axis') ? get_nfilter_request_var('right_axis') : ''), 'right_axis', '^-?([0-9]+(\.[0-9]*)?|\.[0-9]+):-?([0-9]+(\.[0-9]*)?|\.[0-9]+)$', true, 3);
+		$save2['right_axis_label']              = form_input_validate((isset_request_var('right_axis_label') ? get_nfilter_request_var('right_axis_label') : ''), 'right_axis_label', '', true, 3);
+		$save2['right_axis_format']             = form_input_validate((isset_request_var('right_axis_format') ? get_nfilter_request_var('right_axis_format') : ''), 'right_axis_format', '^[0-9]+$', true, 3);
+		$save2['no_gridfit']                    = form_input_validate((isset_request_var('no_gridfit') ? get_nfilter_request_var('no_gridfit') : ''), 'no_gridfit', '', true, 3);
+		$save2['unit_length']                   = form_input_validate((isset_request_var('unit_length') ? get_nfilter_request_var('unit_length') : ''), 'unit_length', '^[0-9]+$', true, 3);
+		$save2['tab_width']                     = form_input_validate((isset_request_var('tab_width') ? get_nfilter_request_var('tab_width') : ''), 'tab_width', '^[0-9]*$', true, 3);
+		$save2['dynamic_labels']                = form_input_validate((isset_request_var('dynamic_labels') ? get_nfilter_request_var('dynamic_labels') : ''), 'dynamic_labels', '', true, 3);
+		$save2['force_rules_legend']            = form_input_validate((isset_request_var('force_rules_legend') ? get_nfilter_request_var('force_rules_legend') : ''), 'force_rules_legend', '', true, 3);
+		$save2['legend_position']               = form_input_validate((isset_request_var('legend_position') ? get_nfilter_request_var('legend_position') : ''), 'legend_position', '', true, 3);
+		$save2['legend_direction']              = form_input_validate((isset_request_var('legend_direction') ? get_nfilter_request_var('legend_direction') : ''), 'legend_direction', '', true, 3);
+		$save2['right_axis_formatter']          = form_input_validate((isset_request_var('right_axis_formatter') ? get_nfilter_request_var('right_axis_formatter') : ''), 'right_axis_formatter', '', true, 3);
+		$save2['left_axis_formatter']           = form_input_validate((isset_request_var('left_axis_formatter') ? get_nfilter_request_var('left_axis_formatter') : ''), 'left_axis_formatter', '', true, 3);
 
 		if (!is_error_message()) {
 			$local_graph_id = sql_save($save1, 'graph_local');
 		}
 
 		if (!is_error_message()) {
-			$save2['local_graph_id'] = $local_graph_id;
+			$save2['local_graph_id']  = $local_graph_id;
 			$graph_templates_graph_id = sql_save($save2, 'graph_templates_graph');
 
 			if ($graph_templates_graph_id) {
@@ -424,7 +424,7 @@ function form_save() {
 }
 
 /* ------------------------
-    The "actions" function
+	The "actions" function
    ------------------------ */
 
 function get_current_graph_template($local_graph_id) {
@@ -564,27 +564,27 @@ function form_actions() {
 				$gt_id_prev_unparsed = get_nfilter_request_var('graph_template_id_prev');
 				parse_validate_graph_template_id('graph_template_id');
 
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					change_graph_template($selected_items[$i], $gt_id_unparsed, true);
 				}
 			} elseif (get_request_var('drp_action') == '3') { // duplicate
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_duplicate_graph($selected_items[$i], 0, get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_request_var('drp_action') == '4') { // graph -> graph template
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					graph_to_graph_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], 0, 0, 0, 0, false);
 				}
 			} elseif (get_request_var('drp_action') == '5') { // change host
 				get_filter_request_var('host_id');
 				$failures = false;
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					if (!api_graph_change_device($selected_items[$i], get_request_var('host_id'))) {
 						$failures = true;
 					}
@@ -594,7 +594,7 @@ function form_actions() {
 					}
 				}
 			} elseif (get_request_var('drp_action') == '6') { // reapply suggested naming
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_reapply_suggested_graph_title($selected_items[$i]);
 					update_graph_title_cache($selected_items[$i]);
 				}
@@ -605,8 +605,8 @@ function form_actions() {
 				$graph_title    = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', true, 3);
 
 				/* future aggregate_graphs entry */
-				$ag_data = array();
-				$ag_data['id'] = 0;
+				$ag_data                 = array();
+				$ag_data['id']           = 0;
 				$ag_data['title_format'] = $graph_title;
 				$ag_data['user_id']      = $_SESSION['sess_user_id'];
 
@@ -657,8 +657,8 @@ function form_actions() {
 					$ag_data['aggregate_template_id']
 				);
 
-				$ag_data['local_graph_id'] = $local_graph_id;
-				$aggregate_graph_id = sql_save($ag_data, 'aggregate_graphs');
+				$ag_data['local_graph_id']     = $local_graph_id;
+				$aggregate_graph_id            = sql_save($ag_data, 'aggregate_graphs');
 				$ag_data['aggregate_graph_id'] = $aggregate_graph_id;
 
 				// 	/* save member graph info */
@@ -709,10 +709,10 @@ function form_actions() {
 						array($ag_data['aggregate_template_id']));
 				}
 
-				$attribs = $ag_data;
-				$attribs['graph_title'] = $ag_data['title_format'];
-				$attribs['reorder'] = $ag_data['order_type'];
-				$attribs['item_no'] = $item_no;
+				$attribs                    = $ag_data;
+				$attribs['graph_title']     = $ag_data['title_format'];
+				$attribs['reorder']         = $ag_data['order_type'];
+				$attribs['item_no']         = $item_no;
 				$attribs['color_templates'] = array();
 				$attribs['skipped_items']   = array();
 				$attribs['total_items']     = array();
@@ -721,23 +721,23 @@ function form_actions() {
 
 				foreach ($aggregate_graph_items as $item) {
 					if (isset($item['color_template']) && $item['color_template'] > 0) {
-						$attribs['color_templates'][ $item['sequence'] ] = $item['color_template'];
+						$attribs['color_templates'][$item['sequence']] = $item['color_template'];
 					}
 
 					if (isset($item['item_skip']) && $item['item_skip'] == 'on') {
-						$attribs['skipped_items'][ $item['sequence'] ] = $item['sequence'];
+						$attribs['skipped_items'][$item['sequence']] = $item['sequence'];
 					}
 
 					if (isset($item['item_total']) && $item['item_total'] == 'on') {
-						$attribs['total_items'][ $item['sequence'] ] = $item['sequence'];
+						$attribs['total_items'][$item['sequence']] = $item['sequence'];
 					}
 
 					if (isset($item['cdef_id']) && isset($item['t_cdef_id']) && $item['t_cdef_id'] == 'on') {
-						$attribs['cdefs'][ $item['sequence'] ] = $item['cdef_id'];
+						$attribs['cdefs'][$item['sequence']] = $item['cdef_id'];
 					}
 
 					if (isset($item['graph_type_id']) && isset($item['t_graph_type_id']) && $item['t_graph_type_id'] == 'on') {
-						$attribs['graph_item_types'][ $item['sequence'] ] = $item['graph_type_id'];
+						$attribs['graph_item_types'][$item['sequence']] = $item['graph_type_id'];
 					}
 				}
 
@@ -750,13 +750,13 @@ function form_actions() {
 				cacti_log('automation_graph_action_execute called: ' . get_request_var('drp_action'), true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				/* work on all selected graphs */
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					automation_execute_graph_create_tree($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '11') {
 				// Add to a report
 				$good = true;
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					if (!reports_add_graphs(get_filter_request_var('report_id'), $selected_items[$i], get_request_var('timespan'), get_request_var('align'))) {
 						raise_message('reports_add_error');
 						$good = false;
@@ -913,7 +913,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Choose a Graph Template and click \'Continue\' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p>" . __('New Graph Template') . "<br>";
+					<p>" . __('New Graph Template') . '<br>';
 
 					$gtsql = get_common_graph_templates($graph);
 
@@ -929,7 +929,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Graph(s). You can optionally change the title format for the new Graph(s).') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p>" . __('Title Format') . "<br>";
+					<p>" . __('Title Format') . '<br>';
 			form_text_box('title_format', __('<graph_title> (1)'), '', '255', '30', 'text');
 			print "</p>
 				</td>
@@ -940,7 +940,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to convert the following Graph(s) into Graph Template(s).  You can optionally change the title format for the new Graph Template(s).') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p>" . __('Title Format') . "<br>";
+					<p>" . __('Title Format') . '<br>';
 			form_text_box('title_format', __('<graph_title> Template'), '', '255', '30', 'text');
 			print "</p>
 				</td>
@@ -951,7 +951,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Graph(s) under the Tree Branch selected below.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p>" . __('Destination Branch') . "<br>";
+					<p>" . __('Destination Branch') . '<br>';
 
 			grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0');
 
@@ -966,7 +966,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Choose a new Device for these Graph(s) and click \'Continue\'.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p>" . __('New Device'). "<br>";
+					<p>" . __('New Device'). '<br>';
 
 			form_dropdown('host_id',db_fetch_assoc("SELECT id,CONCAT_WS('',description,' (',hostname,')') as name FROM host ORDER BY description,hostname"),'name','id','','','0');
 
@@ -1184,9 +1184,9 @@ function form_actions() {
 						</td>
 					</tr>\n";
 
-					print "<tr><td><table>
+					print '<tr><td><table>
 						<tr>
-							<td>" . __('Graph Title') . "</td>
+							<td>' . __('Graph Title') . "</td>
 							<td><input type='text' class='ui-state-default ui-corner-all' name='title_format' size='40'></td>
 						</tr>
 						<tr>
@@ -1204,8 +1204,8 @@ function form_actions() {
 				} else {
 					print "<tr>
 						<td class='textArea'>
-							<p>" . __('There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph.') . "</p>
-							<p>" . __('Press \'Return\' to return and select different Graphs.') . "</p>
+							<p>" . __('There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph.') . '</p>
+							<p>' . __('Press \'Return\' to return and select different Graphs.') . "</p>
 						</td>
 					</tr>\n";
 
@@ -1257,8 +1257,8 @@ function form_actions() {
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			}
 		} else {
-			$save['drp_action'] = get_nfilter_request_var('drp_action');
-			$save['graph_list'] = $graph_list;
+			$save['drp_action']  = get_nfilter_request_var('drp_action');
+			$save['graph_list']  = $graph_list;
 			$save['graph_array'] = (isset($graph_array) ? $graph_array : array());
 
 			api_plugin_hook_function('graphs_action_prepare', $save);
@@ -1288,7 +1288,7 @@ function form_actions() {
 }
 
 /* -----------------------
-    item - Graph Items
+	item - Graph Items
    ----------------------- */
 
 function item() {
@@ -1360,7 +1360,7 @@ function item() {
 }
 
 /* ------------------------------------
-    graph - Graphs
+	graph - Graphs
    ------------------------------------ */
 
 function graph_edit() {
@@ -1393,7 +1393,7 @@ function graph_edit() {
 			}
 			$_SESSION['sess_graph_locked'] = $locked;
 		} elseif (empty($local_graph_template_graph_id)) {
-			$locked = false;
+			$locked                        = false;
 			$_SESSION['sess_graph_locked'] = $locked;
 		} elseif (isset($_SESSION['sess_graph_locked'])) {
 			$locked = $_SESSION['sess_graph_locked'];
@@ -1434,7 +1434,7 @@ function graph_edit() {
 			$use_graph_template = 'false';
 		}
 	} else {
-		$header_label = __('Graph [new]');
+		$header_label       = __('Graph [new]');
 		$use_graph_template = false;
 
 		if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
@@ -1497,10 +1497,10 @@ function graph_edit() {
 
 	if (!empty($graph['local_graph_id'])) {
 		$graph_template_id = get_current_graph_template($graph['local_graph_id']);
-		$gtsql = get_common_graph_templates($graph);
+		$gtsql             = get_common_graph_templates($graph);
 	} else {
 		$graph_template_id = 0;
-		$gtsql = 'SELECT gt.id, gt.name
+		$gtsql             = 'SELECT gt.id, gt.name
 			FROM graph_templates AS gt
 			WHERE id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
 			ORDER BY name';
@@ -1508,42 +1508,42 @@ function graph_edit() {
 
 	$form_array = array(
 		'graph_template_id' => array(
-			'method' => 'drop_sql',
+			'method'        => 'drop_sql',
 			'friendly_name' => __('Selected Graph Template'),
-			'description' => __('Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources.'),
-			'value' => $graph_template_id,
-			'none_value' => (!isset($graph['graph_template_id']) || $graph['graph_template_id'] == 0 ? __('None'):''),
-			'sql' => $gtsql
-  			),
+			'description'   => __('Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources.'),
+			'value'         => $graph_template_id,
+			'none_value'    => (!isset($graph['graph_template_id']) || $graph['graph_template_id'] == 0 ? __('None'):''),
+			'sql'           => $gtsql
+			),
 		'host_id' => array(
-			'method' => 'drop_callback',
+			'method'        => 'drop_callback',
 			'friendly_name' => __('Device'),
-			'description' => __('Choose the Device that this Graph belongs to.'),
-			'sql' => 'SELECT id, description as name FROM host ORDER BY name',
-			'action' => 'ajax_hosts_noany',
-			'none_value' => __('None'),
-			'id' => $host_id,
-			'value' => db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id)),
+			'description'   => __('Choose the Device that this Graph belongs to.'),
+			'sql'           => 'SELECT id, description as name FROM host ORDER BY name',
+			'action'        => 'ajax_hosts_noany',
+			'none_value'    => __('None'),
+			'id'            => $host_id,
+			'value'         => db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id)),
 			),
 		'graph_template_graph_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graph['id']) ? $graph['id'] : '0')
+			'value'  => (isset($graph['id']) ? $graph['id'] : '0')
 			),
 		'local_graph_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graph['local_graph_id']) ? $graph['local_graph_id'] : '0')
+			'value'  => (isset($graph['local_graph_id']) ? $graph['local_graph_id'] : '0')
 			),
 		'local_graph_template_graph_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($graph['local_graph_template_graph_id']) ? $graph['local_graph_template_graph_id'] : '0')
+			'value'  => (isset($graph['local_graph_template_graph_id']) ? $graph['local_graph_template_graph_id'] : '0')
 			),
 		'graph_template_id_prev' => array(
 			'method' => 'hidden',
-			'value' => $graph_template_id
+			'value'  => $graph_template_id
 			),
 		'host_id_prev' => array(
 			'method' => 'hidden',
-			'value' => (isset($host_id) ? $host_id : '0')
+			'value'  => (isset($host_id) ? $host_id : '0')
 			)
 		);
 
@@ -1555,7 +1555,7 @@ function graph_edit() {
 
 		if ($graph['graph_template_id'] > 0 && $host_id > 0) {
 			$form_array['graph_template_id']['method'] = 'hidden';
-			$form_array['host_id']['method'] = 'hidden';
+			$form_array['host_id']['method']           = 'hidden';
 		}
 	}
 
@@ -1594,7 +1594,7 @@ function graph_edit() {
 			<div id='graphLocation' class='center'></div>
 		<?php
 		if ((isset($_SESSION['graph_debug_mode'])) && (isset_request_var('id'))) {
-			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
+			$graph_data_array['output_flag']  = RRDTOOL_OUTPUT_STDERR;
 			$graph_data_array['print_source'] = 1;
 			$graph_data_array['graph_end']    = $graph_end;
 			$graph_data_array['graph_start']  = $graph_start;
@@ -1626,12 +1626,12 @@ function graph_edit() {
 		foreach ($struct_graph as $field_name => $field_array) {
 			$form_array += array($field_name => $struct_graph[$field_name]);
 
-			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
-				$form_array[$field_name]['value'] = (isset($graph[$field_name]) ? $graph[$field_name] : '');
+			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer')){
+				$form_array[$field_name]['value']   = (isset($graph[$field_name]) ? $graph[$field_name] : '');
 				$form_array[$field_name]['form_id'] = (isset($graph[$field_name]) ? $graph['id'] : '0');
 
 				if ($use_graph_template == true && isset($graph_template['t_' . $field_name]) && ($graph_template['t_' . $field_name] == 'on')) {
-					$form_array[$field_name]['method'] = 'template_' . $form_array[$field_name]['method'];
+					$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];
 					$form_array[$field_name]['description'] = '';
 				}
 			}
@@ -1772,58 +1772,58 @@ function validate_graph_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
 			),
 		'orphans' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'title_cache',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'site_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'template_id' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])')),
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'custom' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => ''
 			),
 		'local_graph_ids' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => ''
 			)
@@ -1893,6 +1893,7 @@ function graph_management() {
 		$header = __('Graph Management [ Non Device Based ]');
 	} else {
 		$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array(get_request_var('host_id')));
+
 		$header = __esc('Graph Management [ %s ]', $description);
 	}
 
@@ -2074,7 +2075,7 @@ function graph_management() {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$graph_list = db_fetch_assoc("SELECT gtg.id, gl.id AS local_graph_id,
 		gtg.height, gtg.width, gtg.title_cache, gt.name, gl.host_id,
@@ -2143,9 +2144,9 @@ function graph_management() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_details = get_graph_template_details($graph['local_graph_id']);
 
-			if($graph['graph_source'] == '0') { //Not Templated, customize graph source and template details.
+			if ($graph['graph_source'] == '0') { //Not Templated, customize graph source and template details.
 				$template_details = api_plugin_hook_function('customize_template_details', $template_details);
-				$graph = api_plugin_hook_function('customize_graph', $graph);
+				$graph            = api_plugin_hook_function('customize_graph', $graph);
 			}
 
 			if (isset($template_details['graph_name'])) {
@@ -2170,7 +2171,7 @@ function graph_management() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Graphs Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Graphs Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -2187,4 +2188,3 @@ function graph_management() {
 
 	form_end();
 }
-

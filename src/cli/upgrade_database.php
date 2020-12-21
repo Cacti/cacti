@@ -46,11 +46,11 @@ $session     = array();
 $forcever    = '';
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -73,7 +73,7 @@ if (cacti_sizeof($parms)) {
 				display_help();
 				exit(0);
 			default:
-				print "ERROR: Invalid Parameter " . $parameter . PHP_EOL . PHP_EOL;
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 				exit(1);
 		}
@@ -115,7 +115,7 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 	}
 
 	// construct version upgrade include path
-	$upgrade_file = $config['base_path'] . '/install/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
+	$upgrade_file     = $config['base_path'] . '/install/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
 	$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_upgrade_version);
 
 	// check for upgrade version file, then include, check for function and execute
@@ -179,14 +179,14 @@ function db_install_errors($cacti_version) {
 				}
 
 				if ($debug || $status < DB_STATUS_SUCCESS) {
-					$db_status = "[Unknown]";
+					$db_status = '[Unknown]';
 					if (isset($database_statuses[$status])) {
 						$db_status = $database_statuses[$status];
 					}
 
 					$sep1 = '################################';
 					$sep2 = '+------------------------------+';
-					printf("%s%s%s%-10s   -   %s%s%s%s%s%s%s%s", PHP_EOL, $sep1, PHP_EOL, $db_status, $error, PHP_EOL, $sep2, PHP_EOL, clean_up_lines($sql), PHP_EOL, $sep1, PHP_EOL);
+					printf('%s%s%s%-10s   -   %s%s%s%s%s%s%s%s', PHP_EOL, $sep1, PHP_EOL, $db_status, $error, PHP_EOL, $sep2, PHP_EOL, clean_up_lines($sql), PHP_EOL, $sep1, PHP_EOL);
 				}
 			}
 		}
@@ -202,15 +202,15 @@ function display_version() {
 }
 
 /*  display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
-	print PHP_EOL . "usage: upgrade_database.php [--debug] [--forcever=VERSION]" . PHP_EOL . PHP_EOL;
-	print "A command line version of the Cacti database upgrade tool.  You must execute" . PHP_EOL;
-	print "this command as a super user, or someone who can write a PHP session file." . PHP_EOL;
-	print "Typically, this user account will be apache, www-run, or root." . PHP_EOL . PHP_EOL;
-	print "If you are running a beta or alpha version of Cacti and need to rerun" . PHP_EOL;
-	print "the upgrade script, simply set the forcever to the previous release." . PHP_EOL . PHP_EOL;
-	print "--forcever - Force the starting version, say " . CACTI_VERSION . PHP_EOL;
-	print "--debug    - Display verbose output during execution" . PHP_EOL . PHP_EOL;
+	print PHP_EOL . 'usage: upgrade_database.php [--debug] [--forcever=VERSION]' . PHP_EOL . PHP_EOL;
+	print 'A command line version of the Cacti database upgrade tool.  You must execute' . PHP_EOL;
+	print 'this command as a super user, or someone who can write a PHP session file.' . PHP_EOL;
+	print 'Typically, this user account will be apache, www-run, or root.' . PHP_EOL . PHP_EOL;
+	print 'If you are running a beta or alpha version of Cacti and need to rerun' . PHP_EOL;
+	print 'the upgrade script, simply set the forcever to the previous release.' . PHP_EOL . PHP_EOL;
+	print '--forcever - Force the starting version, say ' . CACTI_VERSION . PHP_EOL;
+	print '--debug    - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 }

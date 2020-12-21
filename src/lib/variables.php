@@ -433,7 +433,7 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 	}
 
 	if (!empty($data_template_data_id)) {
-		$data = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . "
+		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . "
 			dif.data_name, did.value
 			FROM data_input_fields AS dif
 			INNER JOIN data_input_data AS did
@@ -457,4 +457,3 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 
 	return $string;
 }
-

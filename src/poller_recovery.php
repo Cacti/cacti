@@ -38,7 +38,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_recovery.php [--verbose] [--force] [--debug]\n\n";
@@ -64,7 +64,6 @@ function sig_handler($signo) {
 		default:
 			/* ignore all other signals */
 	}
-
 }
 
 function debug($string) {
@@ -96,11 +95,11 @@ $verbose        = false;
 $poller_id      = $config['poller_id'];
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -189,7 +188,6 @@ if ($run) {
 				LIMIT $record_limit
 			) AS rs", '', true, $local_db_cnn_id);
 
-
 		if (empty($max_time)) {
 			break;
 		} else {
@@ -203,7 +201,7 @@ if ($run) {
 				$count     = 0;
 				$sql_array = array();
 
-				foreach($rows as $r) {
+				foreach ($rows as $r) {
 					$sql = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
 					$count += strlen($sql);
 
@@ -214,16 +212,16 @@ if ($run) {
 
 						$inserted += cacti_sizeof($sql_array);
 						$sql_array = array();
-						$count = 0;
+						$count     = 0;
 					}
 
 					$sql_array[] = $sql;
 				}
 
 				if ($count > 0) {
-					db_execute("INSERT IGNORE INTO poller_output_boost
+					db_execute('INSERT IGNORE INTO poller_output_boost
 						(local_data_id, rrd_name, time, output)
-						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
+						VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 					$inserted += cacti_sizeof($rows);
 				}
 

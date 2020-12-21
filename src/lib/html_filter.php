@@ -39,7 +39,6 @@ class CactiTableFilter {
 	private $item_rows     = array();
 	private $filter_array  = array();
 
-
 	public function __construct($form_header = '', $form_action = '', $form_id = '',
 		$form_width = '', $session_var = '', $action_url = '', $action_label = '') {
 		global $item_rows;
@@ -92,7 +91,7 @@ class CactiTableFilter {
 				)
 			),
 			'sort' => array(
-				'sort_column' => 'name',
+				'sort_column'    => 'name',
 				'sort_direction' => 'ASC'
 			)
 		);
@@ -111,9 +110,10 @@ class CactiTableFilter {
 	}
 
 	public function get_filter_row($index) {
-		if ($index === false ) {
+		if ($index === false) {
 			return false;
-		} elseif (array_key_exists($index, $this->filter_array['rows'])) {
+		}
+		if (array_key_exists($index, $this->filter_array['rows'])) {
 			return $this->filter_array['rows'][$index];
 		} else {
 			return false;
@@ -130,7 +130,7 @@ class CactiTableFilter {
 
 	public function set_sort_array($sort_column, $sort_direction) {
 		$this->filter_array['sort'] = array(
-			'sort_column' => $sort_column,
+			'sort_column'    => $sort_column,
 			'sort_direction' => $sort_direction
 		);
 	}
@@ -161,11 +161,11 @@ class CactiTableFilter {
 		if (isset($this->form_array['rows'])) {
 			print '<form id="' . $this->filter_id . '" action="' . $this->filter_action . '">' . PHP_EOL;
 
-			foreach($this->form_array['rows'] as $index => $row) {
+			foreach ($this->form_array['rows'] as $index => $row) {
 				print '<div class="filterTable">' . PHP_EOL;
 				print '<div class="formRow">' . PHP_EOL;
 
-				foreach($row as $field_name => $field_array) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 					case 'button':
 						print '<div class="formColumnButton">' . PHP_EOL;
@@ -222,11 +222,11 @@ class CactiTableFilter {
 		$clearFilter .= $separator . 'header=false&clear=true"';
 		$changeChain  = '';
 
-		$separator = "\"+\"&";
+		$separator = '"+"&';
 
 		if (isset($this->form_array['rows'])) {
-			foreach($this->form_array['rows'] as $index => $row) {
-				foreach($row as $field_name => $field_array) {
+			foreach ($this->form_array['rows'] as $index => $row) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 						case 'button':
 							if ($field_name == 'clear') {
@@ -294,8 +294,8 @@ class CactiTableFilter {
 		$filters = array();
 
 		if (isset($this->form_array['rows'])) {
-			foreach($this->form_array['rows'] as $index => $row) {
-				foreach($row as $field_name => $field_array) {
+			foreach ($this->form_array['rows'] as $index => $row) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 					case 'button':
 					case 'submit':

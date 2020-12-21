@@ -62,7 +62,7 @@ if (trim($result) == '') {
 	$result_array = explode("\n", $result);
 
 	if (cacti_sizeof($result_array)) {
-		$result = $result_array[cacti_sizeof($result_array)-2];
+		$result = $result_array[cacti_sizeof($result_array) - 2];
 	} else {
 		$result = 'ERROR: Detected unknown error';
 	}
@@ -78,4 +78,3 @@ pclose($handle);
 
 /* return the rrdupdate results */
 return $result;
-

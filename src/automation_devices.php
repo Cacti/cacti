@@ -99,8 +99,12 @@ function form_actions() {
 			if (get_nfilter_request_var('drp_action') == '1') { /* add to cacti */
 				$i = 0;
 
-				foreach($selected_items as $id) {
-					$d = db_fetch_row_prepared('SELECT * FROM automation_devices WHERE id = ?', array($id));
+				foreach ($selected_items as $id) {
+					$d = db_fetch_row_prepared('SELECT *
+						FROM automation_devices
+						WHERE id = ?',
+						array($id));
+
 					$d['poller_id']           = get_filter_request_var('poller_id');
 					$d['host_template']       = get_filter_request_var('host_template');
 					$d['availability_method'] = get_filter_request_var('availability_method');
@@ -116,7 +120,7 @@ function form_actions() {
 						$d['ping_retries'] = $n['ping_retries'];
 					}
 
-					$host_id = automation_add_device($d, true);
+					$host_id     = automation_add_device($d, true);
 					$description = (trim($d['hostname']) != '' ? $d['hostname'] : $d['ip']);
 
 					if ($host_id) {
@@ -128,7 +132,7 @@ function form_actions() {
 					$i++;
 				}
 			} elseif (get_nfilter_request_var('drp_action') == 2) { /* remove device */
-				foreach($selected_items as $id) {
+				foreach ($selected_items as $id) {
 					db_execute_prepared('DELETE FROM automation_devices WHERE id = ?', array($id));
 				}
 
@@ -163,30 +167,38 @@ function form_actions() {
 
 	html_start_box($device_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	$available_host_templates = db_fetch_assoc_prepared('SELECT id, name FROM host_template ORDER BY name');
+	$available_host_templates = db_fetch_assoc_prepared('SELECT id, name
+		FROM host_template
+		ORDER BY name');
 
 	if (isset($device_array) && cacti_sizeof($device_array)) {
 		if (get_request_var('drp_action') == '1') { /* add */
-			$pollers = db_fetch_assoc_prepared('SELECT id, name FROM poller ORDER BY name');
+			$pollers = db_fetch_assoc_prepared('SELECT id, name
+				FROM poller
+				ORDER BY name');
 
 			$availability_method = 0;
-			$host_template = 0;
-			$devices = db_fetch_assoc('SELECT id, sysName, sysDescr FROM automation_devices WHERE id IN (' . implode(',', $device_array) . ')');
+			$host_template       = 0;
+
+			$devices = db_fetch_assoc('SELECT id, sysName, sysDescr
+				FROM automation_devices
+				WHERE id IN (' . implode(',', $device_array) . ')');
+
 			foreach ($devices as $device) {
 				$os = automation_find_os($device['sysDescr'], '', $device['sysName']);
 				if (isset($os['host_template']) && $os['host_template'] > 0) {
 					if ($host_template == 0) {
-						$host_template = $os['host_template'];
+						$host_template       = $os['host_template'];
 						$availability_method = $os['availability_method'];
-					} else if ($host_template != $os['host_template']) {
+					} elseif ($host_template != $os['host_template']) {
 						// End up here if we have 2 devices with different Host Template matches
-						$host_template = 0;
+						$host_template       = 0;
 						$availability_method = 0;
 						break;
 					}
 				} else {
 					// Couldn't determine the Host Template for a device, so abort and don't set a default
-					$host_template = 0;
+					$host_template       = 0;
 					$availability_method = 0;
 					break;
 				}
@@ -199,21 +211,21 @@ function form_actions() {
 			</tr>
 			<tr>
 				<td class='textArea odd'>
-					<table><tr><td>" . __('Pollers') . "</td><td>";
+					<table><tr><td>" . __('Pollers') . '</td><td>';
 
 			form_dropdown('poller_id', $pollers, 'name', 'id', '', '', '');
 
-			print "</td></tr><tr><td>" . __('Select Template') . "</td><td>";
+			print '</td></tr><tr><td>' . __('Select Template') . '</td><td>';
 
 			form_dropdown('host_template', $available_host_templates, 'name', 'id', '', '', $host_template);
 
-			print "</td></tr>";
+			print '</td></tr>';
 
-			print "<tr><td>" . __('Availability Method') . "</td><td>";
+			print '<tr><td>' . __('Availability Method') . '</td><td>';
 
 			form_dropdown('availability_method', $availability_options, '', '', '', '', $availability_method);
 
-			print "</td></tr></table></td></tr>";
+			print '</td></tr></table></td></tr>';
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { /* remove */
@@ -274,17 +286,62 @@ function display_discovery_page() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'hostname'    => array('display' => __('Device Name'), 'align' => 'left', 'sort' => 'ASC'),
-		'ip'          => array('display' => __('IP'),          'align' => 'left', 'sort' => 'ASC'),
-		'sysName'     => array('display' => __('SNMP Name'),   'align' => 'left', 'sort' => 'ASC'),
-		'sysLocation' => array('display' => __('Location'),    'align' => 'left', 'sort' => 'ASC'),
-		'sysContact'  => array('display' => __('Contact'),     'align' => 'left', 'sort' => 'ASC'),
-		'sysDescr'    => array('display' => __('Description'), 'align' => 'left', 'sort' => 'ASC'),
-		'os'          => array('display' => __('OS'),          'align' => 'left', 'sort' => 'ASC'),
-		'time'        => array('display' => __('Uptime'),      'align' => 'right', 'sort' => 'DESC'),
-		'snmp'        => array('display' => __('SNMP'),        'align' => 'right', 'sort' => 'DESC'),
-		'up'          => array('display' => __('Status'),      'align' => 'right', 'sort' => 'ASC'),
-		'mytime'      => array('display' => __('Last Check'),  'align' => 'right', 'sort' => 'DESC'));
+		'hostname' => array(
+			'display' => __('Device Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'ip' => array(
+			'display' => __('IP'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'sysName' => array(
+			'display' => __('SNMP Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'sysLocation' => array(
+			'display' => __('Location'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'sysContact' => array(
+			'display' => __('Contact'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'sysDescr' => array(
+			'display' => __('Description'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'os' => array(
+			'display' => __('OS'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'time' => array(
+			'display' => __('Uptime'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'snmp' => array(
+			'display' => __('SNMP'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'up' => array(
+			'display' => __('Status'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		),
+		'mytime' => array(
+			'display' => __('Last Check'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		)
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -299,7 +356,7 @@ function display_discovery_page() {
 
 	$status = array("<span class='deviceDown'>" . __('Down') . '</span>',"<span class='deviceUp'>" . __('Up') . '</span>');
 	if (cacti_sizeof($results)) {
-		foreach($results as $host) {
+		foreach ($results as $host) {
 			form_alternate_row('line' . base64_encode($host['ip']), true);
 
 			if ($host['hostname'] == '') {
@@ -321,7 +378,7 @@ function display_discovery_page() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Devices Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Devices Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -342,50 +399,49 @@ function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'hostname',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'status' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'network' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'snmp' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'os' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
@@ -408,7 +464,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 
 	if ($status == __('Down')) {
 		$sql_where .= 'WHERE up=0';
-	} else if ($status == __('Up')) {
+	} elseif ($status == __('Up')) {
 		$sql_where .= 'WHERE up=1';
 	}
 
@@ -418,11 +474,11 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 
 	if ($snmp == __('Down')) {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmp=0';
-	} else if ($snmp == __('Up')) {
+	} elseif ($snmp == __('Up')) {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmp=1';
 	}
 
-	if ($os != '-1' && in_array($os, $os_arr)) {
+	if ($os != '-1' && in_array($os, $os_arr, true)) {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "os='$os'";
 	}
 
@@ -447,7 +503,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 		$page = get_request_var('page');
 
 		$sql_order = get_order_string();
-		$sql_limit = ' LIMIT ' . ($rows*($page-1)) . ',' . $rows;
+		$sql_limit = ' LIMIT ' . ($rows * ($page - 1)) . ',' . $rows;
 
 		$sql_query = "SELECT *,sysUptime snmp_sysUpTimeInstance, FROM_UNIXTIME(time) AS mytime
 			FROM automation_devices
@@ -485,7 +541,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($networks)) {
 								foreach ($networks as $key => $name) {
-									print "<option value='" . $key . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . $name . "</option>";
+									print "<option value='" . $key . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . $name . '</option>';
 								}
 							}
 							?>
@@ -515,7 +571,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($status_arr)) {
 								foreach ($status_arr as $st) {
-									print "<option value='" . $st . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . $st . "</option>";
+									print "<option value='" . $st . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . $st . '</option>';
 								}
 							}
 							?>
@@ -530,7 +586,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($os_arr)) {
 								foreach ($os_arr as $st) {
-									print "<option value='" . $st . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . $st . "</option>";
+									print "<option value='" . $st . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . $st . '</option>';
 								}
 							}
 							?>
@@ -545,7 +601,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($status_arr)) {
 								foreach ($status_arr as $st) {
-									print "<option value='" . $st . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . $st . "</option>";
+									print "<option value='" . $st . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . $st . '</option>';
 								}
 							}
 							?>
@@ -560,7 +616,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>';
 								}
 							}
 							?>
@@ -628,13 +684,13 @@ function export_discovery_results() {
 	if (cacti_sizeof($results)) {
 	foreach ($results as $host) {
 		if ($host['sysUptime'] != 0) {
-			$days = intval($host['sysUptime']/8640000);
-			$hours = intval(($host['sysUptime'] - ($days * 8640000)) / 360000);
+			$days   = intval($host['sysUptime'] / 8640000);
+			$hours  = intval(($host['sysUptime'] - ($days * 8640000)) / 360000);
 			$uptime = $days . ' days ' . $hours . ' hours';
 		} else {
 			$uptime = '';
 		}
-		foreach($host as $h=>$r) {
+		foreach ($host as $h=>$r) {
 			$host['$h'] = str_replace(',','',$r);
 		}
 		print ($host['hostname'] == '' ? __('Not Detected'):$host['hostname']) . ',';
@@ -680,4 +736,3 @@ function export_data($item) {
 		return $item;
 	}
 }
-

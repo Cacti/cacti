@@ -54,7 +54,7 @@ function set_default_graph_action() {
 			default:
 				break;
 			}
-		} elseif (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'))) {
+		} elseif (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'), true)) {
 			if (is_view_allowed('show_' . $_SESSION['sess_graph_view_action'])) {
 				set_request_var('action', $_SESSION['sess_graph_view_action']);
 			}
@@ -82,53 +82,53 @@ function html_graph_validate_preview_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('preview_graphs_per_page', 20)
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => '-1',
 			),
 		'columns' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('num_columns', '2')
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
 			),
 		'thumbnails' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'default' => read_user_setting('thumbnail_section_preview', '') == 'on' ? 'true':'false'
 			),
 		'graph_list' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'graph_add' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'graph_remove' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'style' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'default' => ''
 			)
 	);
@@ -173,7 +173,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 									if ($found) {
 										print "<option value='" . $gt['id'] . "'";
 										if (cacti_sizeof($selected)) {
-											if (in_array($gt['id'], $selected)) {
+											if (in_array($gt['id'], $selected, true)) {
 												print ' selected';
 											}
 										}
@@ -255,11 +255,12 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<select id='predefined_timespan' onChange='applyGraphTimespan()'>
 							<?php
 							$graph_timespans[GT_CUSTOM] = __('Custom');
+
 							$start_val = 0;
-							$end_val = cacti_sizeof($graph_timespans);
+							$end_val   = cacti_sizeof($graph_timespans);
 
 							if (cacti_sizeof($graph_timespans)) {
-								foreach($graph_timespans as $value => $text) {
+								foreach ($graph_timespans as $value => $text) {
 									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . "</option>\n";
 								}
 							}
@@ -290,7 +291,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<select id='predefined_timeshift' name='predefined_timeshift' title='<?php print __esc('Define Shifting Interval');?>'>
 								<?php
 								$start_val = 1;
-								$end_val = cacti_sizeof($graph_timeshifts)+1;
+								$end_val   = cacti_sizeof($graph_timeshifts) + 1;
 								if (cacti_sizeof($graph_timeshifts) > 0) {
 									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
 										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
@@ -350,7 +351,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<script type='text/javascript'>
 
     	var refreshIsLogout = false;
-		var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+		var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
 		var graph_start     = <?php print get_current_graph_start();?>;
 		var graph_end       = <?php print get_current_graph_end();?>;
 		var timeOffset      = <?php print date('Z');?>;
@@ -439,7 +440,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 
 	form_start($page);
 
-	$snmp_query_id = 0;
+	$snmp_query_id     = 0;
 	$num_output_fields = array();
 
 	foreach ($selected_graphs_array as $form_type => $form_array) {
@@ -580,4 +581,3 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 
 	return $num_output_fields;
 }
-

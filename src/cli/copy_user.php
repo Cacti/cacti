@@ -28,16 +28,16 @@ require(__DIR__ . '/../include/cli_check.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$data = array('tfa_enabled' => '', 'tfa_secret' => '');
-$salt = '';
-$new_user = '';
+$data          = array('tfa_enabled' => '', 'tfa_secret' => '');
+$salt          = '';
+$new_user      = '';
 $template_user = '';
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -46,33 +46,27 @@ if (cacti_sizeof($parms)) {
 			case '-F':
 				$data['full_name'] = validate_field('Full Name', $value);
 				break;
-
 			case '-e':
 			case '-E':
 				$data['email_address'] = validate_field('Email', $value);
 				break;
-
 			case '-l':
 			case '-L':
 				$data['locked'] = validate_boolean('Locked', $value);
 				break;
-
 			case '-p':
 			case '-P':
 				$salt = $value;
 				break;
-
 			case '-r':
 			case '-R':
 				$data['must_change_password'] = validate_boolean('Require Change', $value);
 				break;
-
 			case '-t':
 			case '-T':
 				$data['tfa_enabled'] = validate_boolean('Two-Factor Enabled', 'on');
 				$data['tfa_secret']  = validate_field('Two-Factor Secret', $value);
 				break;
-
 			case '--help':
 			case '-H':
 			case '-h':
@@ -96,7 +90,6 @@ if (cacti_sizeof($parms)) {
 					exit(1);
 				}
 		}
-
 	}
 }
 
@@ -117,7 +110,7 @@ $data['password'] = compat_password_hash($salt . '_' . $new_user, PASSWORD_DEFAU
 /* Check that user exists */
 $user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = 0");
 if (! isset($user_auth)) {
-	die(PHP_EOL . "Error: Template user does not exist!" . PHP_EOL . PHP_EOL);
+	die(PHP_EOL . 'Error: Template user does not exist!' . PHP_EOL . PHP_EOL);
 }
 
 print PHP_EOL . 'Copying User...: ' . (cacti_sizeof($data) - 3) . ' extra option(s)';
@@ -139,6 +132,7 @@ function validate_field($field, $value) {
 		display_help();
 		exit(1);
 	}
+
 	return $value;
 }
 

@@ -71,17 +71,17 @@ if (cacti_sizeof($parms)) {
 	$ping_retries   = read_config_option('ping_retries');
 	$max_oids       = read_config_option('max_get_size');
 	$proxy          = false;
-	$device_threads = read_config_option('device_threads');;
+	$device_threads = read_config_option('device_threads');
 
 	$displayHostTemplates = false;
 	$displayCommunities   = false;
 	$quietMode            = false;
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -402,8 +402,9 @@ if (cacti_sizeof($parms)) {
 	/* process snmp information */
 	if ($snmp_ver < 0 || $snmp_ver > 3) {
 		print "ERROR: Invalid snmp version ($snmp_ver)\n";
- 		exit(1);
-	} elseif ($snmp_ver > 0) {
+		exit(1);
+	}
+	if ($snmp_ver > 0) {
 		if ($snmp_port <= 1 || $snmp_port > 65534) {
 			print "ERROR: Invalid port.  Valid values are from 1-65534\n";
 			exit(1);
@@ -419,7 +420,7 @@ if (cacti_sizeof($parms)) {
 	if ($snmp_ver < 3) {
 		/* snmp community can be blank */
 	} else {
-		if ($snmp_username == "" || $snmp_password == "") {
+		if ($snmp_username == '' || $snmp_password == '') {
 			print "ERROR: When using snmpv3 you must supply an username and password\n";
 			exit(1);
 		}
@@ -432,9 +433,9 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($disable == 0) {
-		$disable = "";
+		$disable = '';
 	} else {
-		$disable = "on";
+		$disable = 'on';
 	}
 
 	print "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with community \"$community\"\n";

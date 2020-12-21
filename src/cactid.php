@@ -95,6 +95,7 @@ if (DIRECTORY_SEPARATOR != '\\') {
 
 	if (sizeof($output) >= 2) {
 		print 'The Cacti Daemon is still running' . PHP_EOL;
+
 		return;
 	}
 } else {
@@ -117,9 +118,9 @@ if (!$foreground) {
 			print '[FAILED]' . PHP_EOL;
 
 			exit(1);
-		} elseif ($pid == 0) {
-			// We are the child
-		} else {
+		}
+
+		if ($pid > 0) {
 			cacti_log('NOTE: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']');
 
 			print '[OK]' . PHP_EOL;
@@ -131,7 +132,7 @@ if (!$foreground) {
 		print '[OK]' . PHP_EOL . '[NOTE] This system does not support forking.' . PHP_EOL;
 	}
 } else {
-	print  '[OK]' . PHP_EOL . '[NOTE] The Cacti Daemon is running in foreground mode.' . PHP_EOL;
+	print '[OK]' . PHP_EOL . '[NOTE] The Cacti Daemon is running in foreground mode.' . PHP_EOL;
 }
 
 sleep(2);
@@ -149,7 +150,7 @@ while (true) {
 
 function wait_for_start($frequency = -1) {
 	$prev_time = -1;
-	$i = 0;
+	$i         = 0;
 
 	while (true) {
 		if ($frequency <= 0) {
@@ -213,7 +214,7 @@ function get_options() {
 
 		$options = getopt($shortopts, $longopts);
 
-		foreach($options as $arg => $value) {
+		foreach ($options as $arg => $value) {
 			switch($arg) {
 				case 'foreground':
 				case 'debug':
@@ -240,7 +241,7 @@ function get_options() {
 }
 
 function db_check_reconnect() {
-	chdir(dirname(__FILE__));
+	chdir(__DIR__);
 
 	include('./include/config.php');
 
@@ -273,7 +274,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL . 'usage: cactid.php [ --foreground ] [ --debug ]' . PHP_EOL . PHP_EOL;
@@ -282,4 +283,3 @@ function display_help () {
 	print '  --foreground       Run cactid in foreground mode, otherwise this is a forking daemon.' . PHP_EOL;
 	print '  --debug            Used for debugging in --foreground mode.' . PHP_EOL;
 }
-

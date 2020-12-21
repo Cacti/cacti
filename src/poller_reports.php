@@ -39,7 +39,7 @@ function display_version() {
 
 /** display_help - generic help screen for utilities
  * @return		 - null */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_reports.php [--force] [--debug]\n\n";
@@ -52,6 +52,7 @@ function display_help () {
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
  * @arg $signo 	- (int) the signal that was thrown by the interface.
+ * @param mixed $signo
  * @return 		- null */
 function sig_handler($signo) {
 	switch ($signo) {
@@ -76,11 +77,11 @@ $debug = false;
 $force = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -123,7 +124,7 @@ $start = microtime(true);
 /* let's give this script lot of time to run for ever */
 ini_set('max_execution_time', '0');
 
-$t = time();
+$t           = time();
 $number_sent = 0;
 
 if (!$force) {
@@ -171,4 +172,3 @@ if (!$force) {
 }
 
 exit(0);
-

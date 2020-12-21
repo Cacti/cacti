@@ -31,17 +31,18 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	$displayHosts 			= false;
-	$displayGraphTemplates 	= false;
-	$quietMode				= false;
+	$displayHosts          = false;
+	$displayGraphTemplates = false;
+	$quietMode             = false;
+
 	unset($host_id);
 	unset($graph_template_id);
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -122,7 +123,11 @@ if (cacti_sizeof($parms)) {
 	/*
 	 * verify valid host id and get a name for it
 	 */
-	$host_name = db_fetch_cell("SELECT hostname FROM host WHERE id = " . $host_id);
+	$host_name = db_fetch_cell_prepared('SELECT hostname
+		FROM host
+		WHERE id = ?',
+		array($host_id));
+
 	if (!isset($host_name)) {
 		print "ERROR: Unknown Host Id ($host_id)\n";
 		exit(1);
@@ -131,24 +136,35 @@ if (cacti_sizeof($parms)) {
 	/*
 	 * verify valid graph template and get a name for it
 	 */
-	$graph_template_name = db_fetch_cell("SELECT name FROM graph_templates WHERE id = " . $graph_template_id);
+	$graph_template_name = db_fetch_cell_prepared('SELECT name
+		FROM graph_templates
+		WHERE id = ?',
+		array($graph_template_id));
+
 	if (!isset($graph_template_name)) {
 		print "ERROR: Unknown Graph Template Id ($graph_template_id)\n";
 		exit(1);
 	}
 
 	/* check, if graph template was already associated */
-	$exists_already = db_fetch_cell("SELECT host_id FROM host_graph WHERE graph_template_id=$graph_template_id AND host_id=$host_id");
+	$exists_already = db_fetch_cell_prepared('SELECT host_id
+		FROM host_graph
+		WHERE graph_template_id = ?
+		AND host_id = ?',
+		array($graph_template_id, $host_id));
+
 	if ((isset($exists_already)) &&
 		($exists_already > 0)) {
 		print "ERROR: Graph Template is already associated for host: ($host_id: $host_name) - graph-template: ($graph_template_id: $graph_template_name)\n";
 		exit(1);
 	} else {
-		db_execute("replace into host_graph (host_id,graph_template_id) values (" . $host_id . "," . $graph_template_id . ")");
+		db_execute('REPLACE INTO host_graph
+			(host_id, graph_template_id)
+			VALUES (' . $host_id . ',' . $graph_template_id . ')');
 
 		automation_hook_graph_template($host_id, $graph_template_id);
 
-		api_plugin_hook_function('add_graph_template_to_host', array("host_id" => $host_id, "graph_template_id" => $graph_template_id));
+		api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host_id, 'graph_template_id' => $graph_template_id));
 	}
 
 	if (is_error_message()) {

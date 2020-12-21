@@ -41,11 +41,11 @@ if (cacti_sizeof($parms)) {
 	$preview_only   = 0;
 	$profile_id     = '';
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -86,7 +86,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	if($profile_id > 0) {
+	if ($profile_id > 0) {
 		if ($with_profile) {
 			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
 		} else {
@@ -107,8 +107,8 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($filename != '') {
-		if(file_exists($filename) && is_readable($filename)) {
-			$fp = fopen($filename,'r');
+		if (file_exists($filename) && is_readable($filename)) {
+			$fp       = fopen($filename,'r');
 			$xml_data = fread($fp,filesize($filename));
 			fclose($fp);
 

@@ -31,15 +31,15 @@ require_once($config['base_path'] . '/lib/utility.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug = false;
+$debug   = false;
 $host_id = 0;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -90,7 +90,7 @@ if ($host_id > 0) {
 
 /* initialize some variables */
 $current_ds = 1;
-$total_ds = cacti_sizeof($poller_data);
+$total_ds   = cacti_sizeof($poller_data);
 
 /* setting local_data_ids to an empty array saves time during updates */
 $local_data_ids = array();
@@ -105,7 +105,7 @@ if (cacti_sizeof($poller_data)) {
 	foreach ($poller_data as $data) {
 		if (!$debug) print '.';
 		$local_data_ids[] = $data['id'];
-		$poller_items = array_merge($poller_items, update_poller_cache($data));
+		$poller_items     = array_merge($poller_items, update_poller_cache($data));
 
 		debug("Data Source Item '$current_ds' of '$total_ds' updated");
 		$current_ds++;
@@ -127,7 +127,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: rebuild_poller_cache.php [--host-id=ID] [--debug]\n\n";

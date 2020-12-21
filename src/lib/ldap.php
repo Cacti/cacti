@@ -42,8 +42,8 @@ LDAP functions
   @arg $group_require - '1' DN or '2' Username, user group member ship type
 
   @return - array of values
-    'error_num' = error number returned
-    'error_text' = error text
+	'error_num' = error number returned
+	'error_text' = error text
 
 Error codes:
 
@@ -67,7 +67,6 @@ Error codes:
 */
 function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port = '', $port_ssl = '', $version = '',
 	$encryption = '', $referrals = '', $group_require = '', $group_dn = '', $group_attrib = '', $group_member_type = '') {
-
 	$ldap = new Ldap;
 
 	if (!empty($username))          $ldap->username          = $username;
@@ -103,9 +102,9 @@ function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port 
   @arg $specific_password - Password for binding to perform user search, Default - Configured settings value
 
   @return - array of values
-    'error_num' = error number returned
-    'error_text' = error text
-    'dn' = found dn of user
+	'error_num' = error number returned
+	'error_text' = error text
+	'dn' = found dn of user
 
 Error codes:
 
@@ -132,7 +131,6 @@ Error codes:
 */
 function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
-
 	$ldap = new Ldap;
 
 	if (!empty($username))          $ldap->username          = $username;
@@ -168,10 +166,10 @@ function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port
   @arg $specific_dn - DN for binding to perform user search, Default = Configured settings value
   @arg $specific_password - Password for binding to perform user search, Default - Configured settings value
   @return - array of values
-    'cn' = array of values
-    'error_num' = error number returned
-    'error_text' = error text
-    'dn' = found dn of user
+	'cn' = array of values
+	'error_num' = error number returned
+	'error_text' = error text
+	'dn' = found dn of user
 Error codes:
 #       Text
 ==============================================================
@@ -195,7 +193,6 @@ Error codes:
 */
 function cacti_ldap_search_cn($username, $cn = array(), $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
-
 	$ldap = new Ldap;
 
 	if (!empty($username))          $ldap->username          = $username;
@@ -248,75 +245,57 @@ abstract class LdapError {
 			case LdapError::Success:
 				$error_text = __('Authentication Success');
 				break;
-
 			case LdapError::Failure:
 				$error_text = __('Authentication Failure');
 				break;
-
 			case LdapError::Disabled:
 				$error_text = __('PHP LDAP not enabled');
 				break;
-
 			case LdapError::UndefinedUsername:
 				$error_text = __('No username defined');
 				break;
-
 			case LdapError::ProtocolErrorVersion:
 				$error_text = __('Protocol Error, Unable to set version');
 				break;
-
 			case LdapError::ProtocolErrorReferral:
 				$error_text = __('Protocol Error, Unable to set referrals option');
 				break;
-
 			case LdapError::ProtocolErrorTls:
 				$error_text = __('Protocol Error, unable to start TLS communications');
 				break;
-
 			case LdapError::ProtocolErrorGeneral:
 				$error_text = __('Protocol Error, General failure (%s)', $ldapError);
 				break;
-
 			case LdapError::ProtocolErrorBind:
 				$error_text = __('Protocol Error, Unable to bind, LDAP result: %s', $ldapError);
 				break;
-
 			case LdapError::ConnectionUnavailable:
 				$error_text = __('Unable to Connect to Server');
 				break;
-
 			case LdapError::ConnectionTimeout:
 				$error_text =  __('Connection Timeout');
 				break;
-
 			case LdapError::InsufficientAccess:
 				$error_text = __('Insufficient access');
 				break;
-
 			case LdapError::SearchFoundNoGroup:
 				$error_text = __('Group DN could not be found to compare');
 				break;
-
 			case LdapError::SearchFoundMultiUser:
 				$error_text = __('More than one matching user found');
 				break;
-
 			case LdapError::SearchFoundNoUserDN:
 				$error_text = __('Unable to find user from DN');
 				break;
-
 			case LdapError::SearchFoundNoUser:
 				$error_text = __('Unable to find users DN');
 				break;
-
 			case LdapError::MissingLdapObject:
 				$error_text = __('Unable to create LDAP connection object');
 				break;
-
 			case LdapError::UndefinedDnOrPassword:
 				$error_text = __('Specific DN and Password required');
 				break;
-
 			default:
 				$error_text = __('Unexpected error %s (Ldap Error: %s)', $returnError, $ldapError);
 				break;
@@ -431,6 +410,7 @@ class Ldap {
 				Ldap::RecordError($output);
 				ldap_close($ldap_conn);
 				$this->RestoreCactiHandler();
+
 				return $output;
 			}
 
@@ -441,6 +421,7 @@ class Ldap {
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
 					$this->RestoreCactiHandler();
+
 					return $output;
 				}
 			}
@@ -452,6 +433,7 @@ class Ldap {
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
 					$this->RestoreCactiHandler();
+
 					return $output;
 				}
 			}
@@ -469,19 +451,19 @@ class Ldap {
 						if (!$ldap_group_response) {
 							$ldap_group_response = Ldap::isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
 						}
-					} else if ($this->group_member_type == 2) {
+					} elseif ($this->group_member_type == 2) {
 						/* Do a lookup to find this user's true DN. */
 						/* ldap_exop_whoami is not yet included in PHP. For reference, the
 						 * feature request: http://bugs.php.net/bug.php?id=42060
 						 * And the patch against lastest PHP release:
 						 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
-						*/
+						 */
 						$true_dn_result = ldap_search($ldap_conn, $this->search_base, 'userPrincipalName=' . $this->dn, array('dn'));
 						$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
 
 						/* we will test in two ways */
 						if ($first_entry !== false) {
-							$true_dn     = ldap_get_dn($ldap_conn, $first_entry);
+							$true_dn             = ldap_get_dn($ldap_conn, $first_entry);
 							$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $true_dn);
 						} else {
 							$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->username);
@@ -491,17 +473,19 @@ class Ldap {
 					if ($ldap_group_response === true) {
 						/* Auth ok */
 						$output = LdapError::GetErrorDetails(LdapError::Success);
-					} else if ($ldap_group_response === false) {
+					} elseif ($ldap_group_response === false) {
 						$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess);
 						Ldap::RecordError($output);
 						ldap_close($ldap_conn);
 						$this->RestoreCactiHandler();
+
 						return $output;
 					} else {
 						$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoGroup);
 						Ldap::RecordError($output);
 						ldap_close($ldap_conn);
 						$this->RestoreCactiHandler();
+
 						return $output;
 					}
 				} else {
@@ -568,6 +552,7 @@ class Ldap {
 		if (empty($this->username)) {
 			$output = LdapError::GetErrorDetails(LdapError::UndefinedUsername);
 			Ldap::RecordError($output);
+
 			return $output;
 		}
 
@@ -576,19 +561,22 @@ class Ldap {
 
 		/* strip bad chars from username - prevent altering filter from username */
 		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
-		$this->dn = str_replace('<username>', $this->username, $this->dn);
+		$this->dn       = str_replace('<username>', $this->username, $this->dn);
 
 		if ($this->mode == '0') {
 			/* Just bind mode, make dn and return */
-			$output = LdapError::GetErrorDetails(LdapError::Success);
+			$output       = LdapError::GetErrorDetails(LdapError::Success);
 			$output['dn'] = $this->dn;
+
 			return $output;
-		} elseif ($this->mode == '2') {
+		}
+		if ($this->mode == '2') {
 			/* Specific */
 			if (empty($this->specific_dn) || empty($this->specific_password)) {
-				$output = LdapError::GetErrorDetails(LdapError::UndefinedDnOrPassword);
+				$output       = LdapError::GetErrorDetails(LdapError::UndefinedDnOrPassword);
 				$output['dn'] = $this->dn;
 				Ldap::RecordError($output, 'LDAP_SEARCH');
+
 				return $output;
 			}
 		} elseif ($this->mode == '1'){
@@ -624,6 +612,7 @@ class Ldap {
 				ldap_close($ldap_conn);
 
 				$this->RestoreCactiHandler();
+
 				return $output;
 			}
 
@@ -636,6 +625,7 @@ class Ldap {
 					ldap_close($ldap_conn);
 
 					$this->RestoreCactiHandler();
+
 					return $output;
 				}
 			}
@@ -649,6 +639,7 @@ class Ldap {
 					ldap_close($ldap_conn);
 
 					$this->RestoreCactiHandler();
+
 					return $output;
 				}
 			}
@@ -662,7 +653,7 @@ class Ldap {
 
 					if ($ldap_entries['count'] == '1') {
 						/* single response return user dn */
-						$output = LdapError::GetErrorDetails(LdapError::Success);
+						$output       = LdapError::GetErrorDetails(LdapError::Success);
 						$output['dn'] = $ldap_entries['0']['dn'];
 						Ldap::RecordError($output, 'LDAP_SEARCH');
 					} elseif ($ldap_entries['count'] > 1) {
@@ -711,6 +702,7 @@ class Ldap {
 		}
 
 		$this->RestoreCactiHandler();
+
 		return $output;
 	}
 
@@ -726,6 +718,7 @@ class Ldap {
 		if (empty($this->username)) {
 			$output = LdapError::GetErrorDetails(LdapError::Disabled);
 			Ldap::RecordError($output, 'LDAP_SEARCH');
+
 			return $output;
 		}
 
@@ -734,18 +727,21 @@ class Ldap {
 
 		/* strip bad chars from username - prevent altering filter from username */
 		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
-		$this->dn = str_replace('<username>', $this->username, $this->dn);
+		$this->dn       = str_replace('<username>', $this->username, $this->dn);
 
 		if ($this->mode == '0') {
 			/* Just bind mode, make dn and return */
-			$output = LdapError::GetErrorDetails(LdapError::Success);
+			$output       = LdapError::GetErrorDetails(LdapError::Success);
 			$output['dn'] = $this->dn;
+
 			return $output;
-		} elseif ($this->mode == '2') {
+		}
+		if ($this->mode == '2') {
 			/* Specific */
 			if (empty($this->specific_dn) || empty($this->specific_password)) {
-				$output = LdapError::GetErrorDetails(LdapError::UndefinedDnOrPassword);
+				$output       = LdapError::GetErrorDetails(LdapError::UndefinedDnOrPassword);
 				$output['dn'] = $this->dn;
+
 				return $output;
 			}
 		} elseif ($this->mode == '1'){
@@ -781,6 +777,7 @@ class Ldap {
 				ldap_close($ldap_conn);
 
 				$this->RestoreCactiHandler();
+
 				return $output;
 			}
 
@@ -793,6 +790,7 @@ class Ldap {
 					ldap_close($ldap_conn);
 
 					$this->RestoreCactiHandler();
+
 					return $output;
 				}
 			}
@@ -806,6 +804,7 @@ class Ldap {
 					ldap_close($ldap_conn);
 
 					$this->RestoreCactiHandler();
+
 					return $output;
 				}
 			}
@@ -828,7 +827,7 @@ class Ldap {
 						}
 
 						// check if we got an email entry
-						if(array_key_exists($this->cn[1], $ldap_entries[0])) {
+						if (array_key_exists($this->cn[1], $ldap_entries[0])) {
 							$output['cn'][$this->cn[1]] = $ldap_entries[0][$this->cn[1]][0];
 						} else {
 							$output['cn'][$this->cn[1]] = '';
@@ -875,16 +874,16 @@ class Ldap {
 		}
 
 		$this->RestoreCactiHandler();
+
 		return $output;
 	}
 
 	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
 		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
-		$ldapSearch  = @ldap_search($ldapConn,$ldapbasedn,$query,array("dn"));
+		$ldapSearch  = @ldap_search($ldapConn,$ldapbasedn,$query,array('dn'));
 		$ldapResults = @ldap_get_entries($ldapConn, $ldapSearch);
 
 		// user should only be returned once IF they're a member of the group
 		return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true:false;
 	}
 }
-

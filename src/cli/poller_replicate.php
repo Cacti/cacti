@@ -38,11 +38,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -86,7 +86,8 @@ $start = microtime(true);
 if ($poller_id < 0) {
 	print 'FATAL: The poller needs to be greater than 0!' . PHP_EOL;
 	exit(1);
-} elseif ($poller_id == 0) {
+}
+if ($poller_id == 0) {
 	$pollers = db_fetch_assoc('SELECT id
 		FROM poller
 		WHERE id > 1
@@ -123,7 +124,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nA utility to fully Synchronize Remote Data Collectors.\n\n";

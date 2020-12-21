@@ -118,7 +118,9 @@ function process_user_input(&$timespan, $timeshift) {
 			$timespan['current_value_date2']   = sanitize_search_string(get_nfilter_request_var('date2'));
 			$timespan['end_now']               = strtotime($timespan['current_value_date2']);
 			$_SESSION['sess_current_timespan'] = GT_CUSTOM;
+
 			$_SESSION['custom'] = 1;
+
 			set_request_var('predefined_timespan', GT_CUSTOM);
 		}else {
 			/* the default button wasn't pushed */
@@ -241,4 +243,3 @@ function set_timeshift() {
 		return DEFAULT_TIMESHIFT;
 	}
 }
-

@@ -32,152 +32,152 @@ $site_actions = array(
 /* file: sites.php, action: edit */
 $fields_site_edit = array(
 	'spacer0' => array(
-		'method' => 'spacer',
+		'method'        => 'spacer',
 		'friendly_name' => __('Site Information'),
-		'collapsible' => 'true'
+		'collapsible'   => 'true'
 	),
 	'name' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('Name'),
-		'description' => __('The primary name for the Site.'),
-		'value' => '|arg1:name|',
-		'size' => '50',
-		'default' => __('New Site'),
-		'max_length' => '100'
+		'description'   => __('The primary name for the Site.'),
+		'value'         => '|arg1:name|',
+		'size'          => '50',
+		'default'       => __('New Site'),
+		'max_length'    => '100'
 	),
 	'spacer1' => array(
-		'method' => 'spacer',
+		'method'        => 'spacer',
 		'friendly_name' => __('Address Information'),
-		'collapsible' => 'true'
+		'collapsible'   => 'true'
 	),
 	'address1' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('Address1'),
-		'description' => __('The primary address for the Site.'),
-		'value' => '|arg1:address1|',
-		'placeholder' => __('Enter the Site Address'),
-		'size' => '70',
-		'max_length' => '100'
+		'description'   => __('The primary address for the Site.'),
+		'value'         => '|arg1:address1|',
+		'placeholder'   => __('Enter the Site Address'),
+		'size'          => '70',
+		'max_length'    => '100'
 	),
 	'address2' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('Address2'),
-		'description' => __('Additional address information for the Site.'),
-		'value' => '|arg1:address2|',
-		'placeholder' => __('Additional Site Address information'),
-		'size' => '70',
-		'max_length' => '100'
+		'description'   => __('Additional address information for the Site.'),
+		'value'         => '|arg1:address2|',
+		'placeholder'   => __('Additional Site Address information'),
+		'size'          => '70',
+		'max_length'    => '100'
 	),
 	'city' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('City'),
-		'description' => __('The city or locality for the Site.'),
-		'value' => '|arg1:city|',
-		'placeholder' => __('Enter the City or Locality'),
-		'size' => '30',
-		'max_length' => '30'
+		'description'   => __('The city or locality for the Site.'),
+		'value'         => '|arg1:city|',
+		'placeholder'   => __('Enter the City or Locality'),
+		'size'          => '30',
+		'max_length'    => '30'
 	),
 	'state' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('State'),
-		'description' => __('The state for the Site.'),
-		'value' => '|arg1:state|',
-		'placeholder' => __('Enter the state'),
-		'size' => '15',
-		'max_length' => '20'
+		'description'   => __('The state for the Site.'),
+		'value'         => '|arg1:state|',
+		'placeholder'   => __('Enter the state'),
+		'size'          => '15',
+		'max_length'    => '20'
 	),
 	'postal_code' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('Postal/Zip Code'),
-		'description' => __('The postal or zip code for the Site.'),
-		'value' => '|arg1:postal_code|',
-		'placeholder' => __('Enter the postal code'),
-		'size' => '20',
-		'max_length' => '20'
+		'description'   => __('The postal or zip code for the Site.'),
+		'value'         => '|arg1:postal_code|',
+		'placeholder'   => __('Enter the postal code'),
+		'size'          => '20',
+		'max_length'    => '20'
 	),
 	'country' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('Country'),
-		'description' => __('The country for the Site.'),
-		'value' => '|arg1:country|',
-		'placeholder' => __('Enter the country'),
-		'size' => '20',
-		'max_length' => '30'
+		'description'   => __('The country for the Site.'),
+		'value'         => '|arg1:country|',
+		'placeholder'   => __('Enter the country'),
+		'size'          => '20',
+		'max_length'    => '30'
 	),
 	'timezone' => array(
-		'method' => 'drop_callback',
+		'method'        => 'drop_callback',
 		'friendly_name' => __('TimeZone'),
-		'description' => __('The TimeZone for the Site.'),
-		'sql' => 'SELECT Name AS id, Name AS name FROM mysql.time_zone_name ORDER BY name',
-		'action' => 'ajax_tz',
-		'id' => '|arg1:timezone|',
-		'value' => '|arg1:timezone|'
+		'description'   => __('The TimeZone for the Site.'),
+		'sql'           => 'SELECT Name AS id, Name AS name FROM mysql.time_zone_name ORDER BY name',
+		'action'        => 'ajax_tz',
+		'id'            => '|arg1:timezone|',
+		'value'         => '|arg1:timezone|'
 		),
 	'spacer2' => array(
-		'method' => 'spacer',
+		'method'        => 'spacer',
 		'friendly_name' => __('Geolocation Information'),
-		'collapsible' => 'true'
+		'collapsible'   => 'true'
 	),
 	'latitude' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('Latitude'),
-		'description' => __('The Latitude for this Site.'),
-		'value' => '|arg1:latitude|',
-		'placeholder' => __('example 38.889488'),
-		'size' => '20',
-		'max_length' => '30'
+		'description'   => __('The Latitude for this Site.'),
+		'value'         => '|arg1:latitude|',
+		'placeholder'   => __('example 38.889488'),
+		'size'          => '20',
+		'max_length'    => '30'
 	),
 	'longitude' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('Longitude'),
-		'description' => __('The Longitude for this Site.'),
-		'value' => '|arg1:longitude|',
-		'placeholder' => __('example -77.0374678'),
-		'size' => '20',
-		'max_length' => '30'
+		'description'   => __('The Longitude for this Site.'),
+		'value'         => '|arg1:longitude|',
+		'placeholder'   => __('example -77.0374678'),
+		'size'          => '20',
+		'max_length'    => '30'
 	),
 	'zoom' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('Zoom'),
-		'description' => __('The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15.'),
-		'value' => '|arg1:zoom|',
-		'placeholder' => __('0 - 23'),
-		'default' => '12',
-		'size' => '4',
-		'max_length' => '4'
+		'description'   => __('The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15.'),
+		'value'         => '|arg1:zoom|',
+		'placeholder'   => __('0 - 23'),
+		'default'       => '12',
+		'size'          => '4',
+		'max_length'    => '4'
 	),
 	'spacer3' => array(
-		'method' => 'spacer',
+		'method'        => 'spacer',
 		'friendly_name' => __('Additional Information'),
-		'collapsible' => 'true'
+		'collapsible'   => 'true'
 	),
 	'notes' => array(
-		'method' => 'textarea',
+		'method'        => 'textarea',
 		'friendly_name' => __('Notes'),
 		'textarea_rows' => '3',
 		'textarea_cols' => '70',
-		'description' => __('Additional area use for random notes related to this Site.'),
-		'value' => '|arg1:notes|',
-		'max_length' => '255',
-		'placeholder' => __('Enter some useful information about the Site.'),
-		'class' => 'textAreaNotes'
+		'description'   => __('Additional area use for random notes related to this Site.'),
+		'value'         => '|arg1:notes|',
+		'max_length'    => '255',
+		'placeholder'   => __('Enter some useful information about the Site.'),
+		'class'         => 'textAreaNotes'
 	),
 	'alternate_id' => array(
-		'method' => 'textbox',
+		'method'        => 'textbox',
 		'friendly_name' => __('Alternate Name'),
-		'description' => __('Used for cases where a Site has an alternate named used to describe it'),
-		'value' => '|arg1:alternate_id|',
-		'placeholder' => __('If the Site is known by another name enter it here.'),
-		'size' => '50',
-		'max_length' => '30'
+		'description'   => __('Used for cases where a Site has an alternate named used to describe it'),
+		'value'         => '|arg1:alternate_id|',
+		'placeholder'   => __('If the Site is known by another name enter it here.'),
+		'size'          => '50',
+		'max_length'    => '30'
 	),
 	'id' => array(
 		'method' => 'hidden_zero',
-		'value' => '|arg1:id|'
+		'value'  => '|arg1:id|'
 	),
 	'save_component_site' => array(
 		'method' => 'hidden',
-		'value' => '1'
+		'value'  => '1'
 	)
 );
 
@@ -219,11 +219,11 @@ switch (get_request_var('action')) {
 }
 
 /* --------------------------
-    Global Form Functions
+	Global Form Functions
    -------------------------- */
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() {
@@ -262,7 +262,7 @@ function duplicate_site($template_id, $name) {
 		$template_id = array($template_id);
 	}
 
-	foreach($template_id as $id) {
+	foreach ($template_id as $id) {
 		$site = db_fetch_row_prepared('SELECT *
 			FROM sites
 			WHERE id = ?',
@@ -273,10 +273,11 @@ function duplicate_site($template_id, $name) {
 
 			$save['id'] = 0;
 
-			foreach($site as $column => $value) {
+			foreach ($site as $column => $value) {
 				if ($column == 'id') {
 					continue;
-				} elseif ($column == 'name') {
+				}
+				if ($column == 'name') {
 					$save['name'] = str_replace('<site>', $value, $name);
 				} else {
 					$save[$column] = $value;
@@ -297,7 +298,7 @@ function duplicate_site($template_id, $name) {
 }
 
 /* ------------------------
-    The 'actions' function
+	The 'actions' function
    ------------------------ */
 
 function form_actions() {
@@ -362,7 +363,7 @@ function form_actions() {
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to Duplicate the following Site.', 'Click \'Continue\' to Duplicate all following Sites.', cacti_sizeof($site_array)) . "</p>
 					<div class='itemlist'><ul>$site_list</ul></div>
-					<p><strong>" . __('Site Name:'). "</strong><br>"; form_text_box('site_name', '<site> (1)', '', '255', '30', 'text'); print "</p>
+					<p><strong>" . __('Site Name:'). '</strong><br>'; form_text_box('site_name', '<site> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
@@ -391,7 +392,7 @@ function form_actions() {
 }
 
 /* ---------------------
-    Site Functions
+	Site Functions
    --------------------- */
 
 function site_edit() {
@@ -402,7 +403,11 @@ function site_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$site = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
+		$site = db_fetch_row_prepared('SELECT *
+			FROM sites
+			WHERE id = ?',
+			array(get_request_var('id')));
+
 		$header_label = __esc('Site [edit: %s]', $site['name']);
 	} else {
 		$header_label = __('Site [new]');
@@ -430,26 +435,26 @@ function sites() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
@@ -464,7 +469,7 @@ function sites() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('Sites'), '100%', '', '3', 'center', 'sites.php?action=edit');
+	html_start_box(__('Sites'), '100%', '', '3', 'center', 'sites.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -548,7 +553,7 @@ function sites() {
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM sites $sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$site_list = db_fetch_assoc("SELECT sites.*, count(h.id) AS hosts
 		FROM sites
@@ -592,7 +597,7 @@ function sites() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Sites Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Sites Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -606,4 +611,3 @@ function sites() {
 
 	form_end();
 }
-

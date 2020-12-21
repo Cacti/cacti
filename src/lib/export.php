@@ -26,7 +26,7 @@ function graph_template_to_xml($graph_template_id) {
 	global $struct_graph, $fields_graph_template_input_edit, $struct_graph_item, $export_errors;
 
 	$hash['graph_template'] = get_hash_version('graph_template') . get_hash_graph_template($graph_template_id);
-	$xml_text = '';
+	$xml_text               = '';
 
 	$graph_template = db_fetch_row_prepared('SELECT id, name
 		FROM graph_templates
@@ -57,6 +57,7 @@ function graph_template_to_xml($graph_template_id) {
 		$export_errors++;
 		raise_message(30);
 		cacti_log('ERROR: Invalid Graph Template found in Database for Template ' . $graph_template['name'] . '[' . $graph_template['id'] . '] GTGid: ' . $graph_template_graph['id'] . '.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+
 		return;
 	}
 
@@ -147,7 +148,7 @@ function graph_template_to_xml($graph_template_id) {
 				foreach ($graph_template_input_items as $item2) {
 					$xml_text .= 'hash_' . get_hash_version('graph_template') . get_hash_graph_template($item2['graph_template_item_id'], 'graph_template_item');
 
-					if (($j+1) < cacti_sizeof($graph_template_input_items)) {
+					if (($j + 1) < cacti_sizeof($graph_template_input_items)) {
 						$xml_text .= '|';
 					}
 
@@ -172,7 +173,7 @@ function data_template_to_xml($data_template_id) {
 	global $struct_data_source, $struct_data_source_item, $export_errors;
 
 	$hash['data_template'] = get_hash_version('data_template') . get_hash_data_template($data_template_id);
-	$xml_text = '';
+	$xml_text              = '';
 
 	$data_template = db_fetch_row_prepared('SELECT id, name
 		FROM data_template
@@ -202,6 +203,7 @@ function data_template_to_xml($data_template_id) {
 		$export_errors++;
 		raise_message(27);
 		cacti_log('ERROR: Invalid Data Template found in Database.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+
 		return;
 	}
 
@@ -292,7 +294,7 @@ function data_input_method_to_xml($data_input_id) {
 	$fields_data_input_field_edit += $fields_data_input_field_edit_1;
 
 	$hash['data_input_method'] = get_hash_version('data_input_method') . get_hash_data_input($data_input_id);
-	$xml_text = '';
+	$xml_text                  = '';
 
 	$data_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
@@ -309,6 +311,7 @@ function data_input_method_to_xml($data_input_id) {
 		$export_errors++;
 		raise_message(26);
 		cacti_log('ERROR: Invalid Data Input Method found in Data Template.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+
 		return;
 	}
 
@@ -368,7 +371,6 @@ function data_input_method_to_xml($data_input_id) {
 	return $xml_text;
 }
 
-
 /** encode a cdef along with all cdef_items as XML text
  * @param int $cdef_id	- the id of the cdef that has to be encoded
  * @return string		- the resulting XML text
@@ -378,12 +380,12 @@ function cdef_to_xml($cdef_id) {
 
 	$fields_cdef_item_edit = array(
 		'sequence' => 'sequence',
-		'type' => 'type',
-		'value' => 'value'
+		'type'     => 'type',
+		'value'    => 'value'
 	);
 
 	$hash['cdef'] = get_hash_version('cdef') . get_hash_cdef($cdef_id);
-	$xml_text = '';
+	$xml_text     = '';
 
 	$cdef = db_fetch_row_prepared('SELECT *
 		FROM cdef
@@ -400,6 +402,7 @@ function cdef_to_xml($cdef_id) {
 		$export_errors++;
 		raise_message(25);
 		cacti_log('ERROR: Invalid CDEF found in Graph Template.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+
 		return;
 	}
 
@@ -455,7 +458,7 @@ function vdef_to_xml($vdef_id) {
 	include_once($config['library_path'] . '/vdef.php');
 
 	$hash['vdef'] = get_hash_version('vdef') . get_hash_vdef($vdef_id);
-	$xml_text = '';
+	$xml_text     = '';
 
 	$vdef = db_fetch_row_prepared('SELECT *
 		FROM vdef
@@ -470,6 +473,7 @@ function vdef_to_xml($vdef_id) {
 
 	if (empty($vdef['id'])) {
 		$err_msg = 'Invalid VDEF.';
+
 		return $err_msg;
 	}
 
@@ -512,7 +516,7 @@ function vdef_to_xml($vdef_id) {
 function gprint_preset_to_xml($gprint_preset_id) {
 	global $fields_grprint_presets_edit, $export_errors;
 
-	$hash = get_hash_version('gprint_preset') . get_hash_gprint($gprint_preset_id);
+	$hash     = get_hash_version('gprint_preset') . get_hash_gprint($gprint_preset_id);
 	$xml_text = '';
 
 	$graph_templates_gprint = db_fetch_row_prepared('SELECT *
@@ -524,6 +528,7 @@ function gprint_preset_to_xml($gprint_preset_id) {
 		$export_errors++;
 		raise_message(24);
 		cacti_log('ERROR: Invalid GPRINT preset found in Graph Template.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+
 		return;
 	}
 
@@ -568,6 +573,7 @@ function data_source_profile_to_xml($data_source_profile_id) {
 		$export_errors++;
 		raise_message(23);
 		cacti_log('ERROR: Invalid Data Source Profile found during Data Template export.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+
 		return;
 	}
 
@@ -590,7 +596,7 @@ function data_source_profile_to_xml($data_source_profile_id) {
 		foreach ($profile_cf as $item) {
 			$xml_text .= $item['consolidation_function_id'];
 
-			if (($i+1) < cacti_sizeof($profile_cf)) {
+			if (($i + 1) < cacti_sizeof($profile_cf)) {
 				$xml_text .= '|';
 			}
 
@@ -619,7 +625,6 @@ function data_source_profile_to_xml($data_source_profile_id) {
 
 	$xml_text .= "\t</items>\n";
 
-
 	$xml_text .= "</hash_$hash>";
 
 	return $xml_text;
@@ -628,7 +633,7 @@ function data_source_profile_to_xml($data_source_profile_id) {
 function host_template_to_xml($host_template_id) {
 	global $fields_host_template_edit, $export_errors;
 
-	$hash = get_hash_version('host_template') . get_hash_host_template($host_template_id);
+	$hash     = get_hash_version('host_template') . get_hash_host_template($host_template_id);
 	$xml_text = '';
 
 	$host_template = db_fetch_row_prepared('SELECT *
@@ -652,6 +657,7 @@ function host_template_to_xml($host_template_id) {
 		$export_errors++;
 		raise_message(28);
 		cacti_log('ERROR: Invalid Device Template found during Export.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+
 		return;
 	}
 
@@ -672,7 +678,7 @@ function host_template_to_xml($host_template_id) {
 		foreach ($host_template_graph as $item) {
 			$xml_text .= 'hash_' . get_hash_version('graph_template') . get_hash_graph_template($item['graph_template_id']);
 
-			if (($j+1) < cacti_sizeof($host_template_graph)) {
+			if (($j + 1) < cacti_sizeof($host_template_graph)) {
 				$xml_text .= '|';
 			}
 
@@ -690,7 +696,7 @@ function host_template_to_xml($host_template_id) {
 		foreach ($host_template_snmp_query as $item) {
 			$xml_text .= 'hash_' . get_hash_version('data_query') . get_hash_data_query($item['snmp_query_id']);
 
-			if (($j+1) < cacti_sizeof($host_template_snmp_query)) {
+			if (($j + 1) < cacti_sizeof($host_template_snmp_query)) {
 				$xml_text .= '|';
 			}
 
@@ -709,7 +715,7 @@ function data_query_to_xml($data_query_id) {
 	global $fields_data_query_edit, $fields_data_query_item_edit, $export_errors;
 
 	$hash['data_query'] = get_hash_version('data_query') . get_hash_data_query($data_query_id);
-	$xml_text = '';
+	$xml_text           = '';
 
 	$snmp_query = db_fetch_row_prepared('SELECT *
 		FROM snmp_query
@@ -726,6 +732,7 @@ function data_query_to_xml($data_query_id) {
 		$export_errors++;
 		raise_message(28);
 		cacti_log('ERROR: Invalid Data Query found during Export.  Please run database repair script to identify and/or correct.', false, 'WEBUI');
+
 		return;
 	}
 
@@ -1066,6 +1073,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		break;
 	default:
 		$param = array();
+
 		$param['type']      = $type;
 		$param['id']        = $id;
 		$param['dep_array'] = $dep_array;
@@ -1083,7 +1091,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 }
 
 function get_item_xml($type, $id, $follow_deps) {
-	$xml_text = '';
+	$xml_text   = '';
 	$xml_indent = '';
 
 	if ($follow_deps == true) {
@@ -1125,9 +1133,9 @@ function get_item_xml($type, $id, $follow_deps) {
 				case 'data_source_profile':
 					$xml_text .= "\n" . data_source_profile_to_xml($dep_id);
 					break;
-
 				default:
 					$param = array();
+
 					$param['dep_id']   = $dep_id;
 					$param['dep_type'] = $dep_type;
 					$param['xml_text'] = $xml_text;
@@ -1142,7 +1150,7 @@ function get_item_xml($type, $id, $follow_deps) {
 
 	$xml_array = explode("\n", $xml_text);
 
-	for ($i=0; $i<cacti_count($xml_array); $i++) {
+	for ($i=0; $i < cacti_count($xml_array); $i++) {
 		$xml_indent .= "\t" . $xml_array[$i] . "\n";
 	}
 
@@ -1154,4 +1162,3 @@ function get_item_xml($type, $id, $follow_deps) {
 function xml_character_encode($text) {
 	return html_escape($text);
 }
-

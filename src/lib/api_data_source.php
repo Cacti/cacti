@@ -190,7 +190,7 @@ function api_data_source_remove_multi($local_data_ids) {
 		$poller_ids = get_remote_poller_ids_from_data_sources($ids_to_delete);
 
 		if (is_array($ids_to_delete)) {
-			cacti_log("Found as an array");
+			cacti_log('Found as an array');
 			$ids_to_delete = implode(', ', $ids_to_delete);
 		}
 
@@ -234,7 +234,6 @@ function api_data_source_remove_multi($local_data_ids) {
 					}
 				}
 			}
-
 		}
 
 		/* core data */
@@ -368,6 +367,7 @@ function api_data_source_disable($local_data_id) {
 function api_data_source_disable_multi($local_data_ids) {
 	/* initialize variables */
 	$ids_to_disable = '';
+
 	$i = 0;
 
 	/* build the array */
@@ -399,6 +399,7 @@ function api_data_source_disable_multi($local_data_ids) {
 				}
 
 				$i = 0;
+
 				$ids_to_disable = '';
 			}
 		}
@@ -486,7 +487,7 @@ function api_data_source_get_interface_speed($data_local) {
 
 function api_data_source_change_host($data_sources, $device_id) {
 	if (cacti_sizeof($data_sources)) {
-		foreach($data_sources as $data_source) {
+		foreach ($data_sources as $data_source) {
 			db_execute_prepared('UPDATE data_local
 				SET host_id = ?
 				WHERE id = ?',
@@ -544,12 +545,12 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 		return;
 	}
 
-	$svs = db_fetch_assoc_prepared("SELECT
+	$svs = db_fetch_assoc_prepared('SELECT
 		text, field_name
 		FROM snmp_query_graph_rrd_sv
 		WHERE snmp_query_graph_id = ?
 		AND data_template_id = ?
-		ORDER BY sequence",
+		ORDER BY sequence',
 		array($snmp_query_graph_id, $data_local['data_template_id']));
 
 	$matches = array();
@@ -569,7 +570,7 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 
 			/* if there are no '|query' characters, all of the substitutions were successful */
 			if (strpos($subs_string, '|query') === false) {
-				if (in_array($sv['field_name'], $matches)) {
+				if (in_array($sv['field_name'], $matches, true)) {
 					continue;
 				}
 
@@ -719,4 +720,3 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 		update_data_source_title_cache($local_data_id);
 	}
 }
-

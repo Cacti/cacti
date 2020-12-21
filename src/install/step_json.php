@@ -42,7 +42,6 @@ include('lib/utility.php');
 
 $debug = false;
 
-
 $initialData = array();
 /* ================= input validation ================= */
 get_nfilter_request_var('data', array());
@@ -59,18 +58,17 @@ log_install_high('json','Start: ' . clean_up_lines(json_encode($initialData)));
 
 $initialData = array_merge(array('Runtime' => 'Web'), $initialData);
 if (isset($initialData['step']) && $initialData['step'] == Installer::STEP_TEST_REMOTE) {
-	$json = install_test_remote_database_connection();
+	$json       = install_test_remote_database_connection();
 	$json_debug = $json;
 } else {
 	$installer = new Installer($initialData);
-	$json = json_encode($installer);
+	$json      = json_encode($installer);
 
 	$json_debug = $json;
 	if ($json_level < POLLER_VERBOSITY_DEBUG) {
 		$installer->setRuntime('Json');
 		$json_debug = json_encode($installer);
 	}
-
 }
 log_install_high('json','  End: ' . clean_up_lines($json_debug) . PHP_EOL);
 header('Content-Type: application/json');

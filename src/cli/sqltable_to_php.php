@@ -34,11 +34,11 @@ $plugin = '';
 $create = true;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -63,7 +63,6 @@ if (cacti_sizeof($parms)) {
 				display_help();
 				exit(0);
 			default:
-
 		}
 	}
 }
@@ -87,7 +86,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 	$text   = '';
 
 	if (cacti_sizeof($result)) {
-		foreach($result as $index => $arr) {
+		foreach ($result as $index => $arr) {
 			foreach ($arr as $t) {
 				$tables[] = $t;
 			}
@@ -97,7 +96,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 		exit;
 	}
 
-	if (in_array($table, $tables)) {
+	if (in_array($table, $tables, true)) {
 		$result = db_fetch_assoc("SHOW FULL columns FROM $table");
 
 		$cols   = array();
@@ -157,7 +156,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 
 			if (!empty($pri)) {
 				if ($plugin != '' || $create) {
-					$text .= "\$data['primary'] = '" . implode("`,`", $pri) . "';\n";
+					$text .= "\$data['primary'] = '" . implode('`,`', $pri) . "';\n";
 				} else {
 					$text .= "\$data['primary'] = array('" . implode("','", $pri) . "');\n";
 				}
@@ -166,7 +165,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			if (!empty($keys)) {
 				foreach ($keys as $n => $k) {
 					if ($plugin != '') {
-						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => '" . implode("`,`", $k) . "');\n";
+						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => '" . implode('`,`', $k) . "');\n";
 					} else {
 						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => array('" . implode("','", $k) . "'));\n";
 					}
@@ -209,7 +208,8 @@ function sqltable_to_php($table, $create, $plugin = '') {
 }
 
 function sql_clean($text) {
-	$text = str_replace(array("\\", '/', "'", '"', '|'), '', $text);
+	$text = str_replace(array('\\', '/', "'", '"', '|'), '', $text);
+
 	return $text;
 }
 
@@ -236,4 +236,3 @@ function display_help() {
 	print "--update           - The utility provides create syntax.  If the update flag is\n";
 	print "                     specified, the utility will provide update syntax\n\n";
 }
-

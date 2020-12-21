@@ -36,11 +36,11 @@ $form  = '';
 $start = time();
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -60,7 +60,7 @@ if (cacti_sizeof($parms)) {
 				display_help();
 				exit(0);
 			default:
-				print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
 				exit(1);
 		}
@@ -72,7 +72,7 @@ print "Analyzing All Cacti Database Tables\n";
 $tables = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
 
 if (cacti_sizeof($tables)) {
-	foreach($tables AS $table) {
+	foreach ($tables as $table) {
 		print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
 		$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
 		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
@@ -88,7 +88,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: analyze_database.php [-d|--debug]\n\n";

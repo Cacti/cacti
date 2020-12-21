@@ -116,13 +116,14 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		cacti_log("REMOTE DEBUG: " . trim($message), false, 'WEBSVCS');
+		cacti_log('REMOTE DEBUG: ' . trim($message), false, 'WEBSVCS');
 	}
 }
 
 function remote_agent_strip_domain($host) {
 	if (strpos($host, '.') !== false) {
 		$parts = explode('.', $host);
+
 		return $parts[0];
 	} else {
 		return $host;
@@ -140,6 +141,7 @@ function remote_client_authorized() {
 
 	if (!filter_var($client_addr, FILTER_VALIDATE_IP)) {
 		cacti_log('ERROR: Invalid remote agent client IP Address.  Exiting');
+
 		return false;
 	}
 
@@ -154,10 +156,11 @@ function remote_client_authorized() {
 	$pollers = db_fetch_assoc('SELECT * FROM poller', true, $poller_db_cnn_id);
 
 	if (cacti_sizeof($pollers)) {
-		foreach($pollers as $poller) {
+		foreach ($pollers as $poller) {
 			if (remote_agent_strip_domain($poller['hostname']) == $client_name) {
 				return true;
-			} elseif ($poller['hostname'] == $client_addr) {
+			}
+			if ($poller['hostname'] == $client_addr) {
 				return true;
 			}
 		}
@@ -246,6 +249,7 @@ function get_snmp_data() {
 
 	if (!empty($host_id)) {
 		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+
 		$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 			$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 			$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
@@ -267,7 +271,7 @@ function get_snmp_data_walk() {
 	$oid     = get_nfilter_request_var('oid');
 
 	if (!empty($host_id)) {
-		$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 		$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 			$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 			$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
@@ -304,7 +308,7 @@ function poll_for_data() {
 	$i = 0;
 
 	if (cacti_sizeof($local_data_ids)) {
-		foreach($local_data_ids as $local_data_id) {
+		foreach ($local_data_ids as $local_data_id) {
 			input_validate_input_number($local_data_id);
 
 			$items = db_fetch_assoc_prepared('SELECT *
@@ -321,13 +325,13 @@ function poll_for_data() {
 				array($host_id, $local_data_id));
 
 			if (cacti_sizeof($items)) {
-				foreach($items as $item) {
+				foreach ($items as $item) {
 					switch ($item['action']) {
 					case POLLER_ACTION_SNMP: /* snmp */
 						if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 							$output = 'U';
 						} else {
-							$host = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE hostname = ?', array($item['hostname']));
+							$host    = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE hostname = ?', array($item['hostname']));
 							$session = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 								$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
 								$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
@@ -383,7 +387,9 @@ function poll_for_data() {
 
 						if (function_exists('proc_open')) {
 							$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php realtime ' . $poller_id, $cactides, $pipes);
+
 							$output = fgets($pipes[1], 1024);
+
 							$using_proc_function = true;
 						} else {
 							$using_proc_function = false;
@@ -432,7 +438,7 @@ function poll_for_data() {
 }
 
 function run_remote_data_query() {
-	$host_id = get_filter_request_var('host_id');
+	$host_id       = get_filter_request_var('host_id');
 	$data_query_id = get_filter_request_var('data_query_id');
 
 	if ($host_id > 0 && $data_query_id > 0) {
@@ -459,4 +465,3 @@ function run_remote_discovery() {
 
 	return;
 }
-

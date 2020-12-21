@@ -127,28 +127,28 @@ case 'changepassword':
 	// Check user password history
 	if (!secpass_check_history($user_id, $password)) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('You cannot use a previously entered password!') . "</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('You cannot use a previously entered password!') . '</span>';
 		break;
 	}
 
 	// Password and Confirmed password checks
 	if ($password !== $password_confirm) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . "</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . '</span>';
 		break;
 	}
 
 	// Compare current password with stored password
 	if ((!empty($user['password']) || !empty($current_password)) && !compat_password_verify($current_password, $user['password'])) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . '</span>';
 		break;
 	}
 
 	// Check new password does not match stored password
 	if (compat_password_verify($password, $user['password'])) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . '</span>';
 		break;
 	}
 
@@ -173,14 +173,14 @@ case 'changepassword':
 				array($user_id));
 
 			$op = $h['password'];
-			$h = explode('|', $h['password_history']);
+			$h  = explode('|', $h['password_history']);
 
 			while (cacti_count($h) > $history - 1) {
 				array_shift($h);
 			}
 
 			$h[] = $op;
-			$h = implode('|', $h);
+			$h   = implode('|', $h);
 
 			db_execute_prepared("UPDATE user_auth
 				SET password_history = ?
@@ -206,7 +206,7 @@ case 'changepassword':
 		$token = '';
 		if (isset($_SERVER['HTTP_COOKIE']) && strpos($_SERVER['HTTP_COOKIE'], 'cacti_remembers') !== false) {
 			$parts = explode(';', $_SERVER['HTTP_COOKIE']);
-			foreach($parts as $p) {
+			foreach ($parts as $p) {
 				if (strpos($p, 'cacti_remembers') !== false) {
 					$pparts = explode('%2C', $p);
 					if (isset($pparts[1])) {
@@ -264,7 +264,6 @@ case 'changepassword':
 			header('Location: graph_view.php');
 		}
 		exit;
-
 	} else {
 		$bad_password = true;
 	}
@@ -277,11 +276,11 @@ if (api_plugin_hook_function('custom_password', OPER_MODE_NATIVE) == OPER_MODE_R
 }
 
 if (get_request_var('action') == 'force') {
-	$errorMessage = "<span class='loginErrors'>*** " . __('Forced password change') . " ***</span>";
+	$errorMessage = "<span class='loginErrors'>*** " . __('Forced password change') . ' ***</span>';
 }
 
 /* Create tooltip for password complexity */
-$secpass_tooltip = "<span style='font-weight:normal;'>" . __('Password requirements include:') . "</span><br>";
+$secpass_tooltip = "<span style='font-weight:normal;'>" . __('Password requirements include:') . '</span><br>';
 $secpass_body    = '';
 
 if (read_config_option('secpass_minlen') > 0) {
@@ -301,7 +300,7 @@ if (read_config_option('secpass_reqspec') == 'on') {
 }
 
 if (read_config_option('secpass_history') != '0') {
-	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history')+1);
+	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history') + 1);
 }
 
 $secpass_tooltip .= $secpass_body;
@@ -345,7 +344,7 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 	<tr>
 		<td>&nbsp;</td>
 		<td class='nowrap'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
-			<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":"";?>
+			<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":'';?>
 		</td>
 	</tr>
 <?php

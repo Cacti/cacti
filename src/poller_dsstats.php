@@ -39,7 +39,7 @@ function display_version() {
 
 /* display_help - generic help screen for utilities
    @returns - null */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_dsstats.php [--force] [--debug]\n\n";
@@ -85,11 +85,11 @@ $total_user_time   = 0;
 $total_real_time   = 0;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -158,14 +158,14 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 	}
 
 	/* store the current averages into the hourly table */
-	db_execute("INSERT INTO data_source_stats_hourly
+	db_execute('INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
 		(SELECT local_data_id, rrd_name, AVG(`value`), MAX(`value`)
 		 FROM data_source_stats_hourly_cache
 		 WHERE `value` IS NOT NULL
 		 GROUP BY local_data_id, rrd_name
 		)
-		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)");
+		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
 
 	log_dsstats_statistics('HOURLY');
 

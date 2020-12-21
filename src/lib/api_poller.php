@@ -53,20 +53,20 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 				return;
 			}
 
-			$host['id'] = 0;
-			$host['poller_id']      = 1;
-			$host['snmp_community'] = '';
-			$host['snmp_timeout'] = '';
-			$host['snmp_username'] = '';
-			$host['snmp_password'] = '';
-			$host['snmp_auth_protocol'] = '';
+			$host['id']                   = 0;
+			$host['poller_id']            = 1;
+			$host['snmp_community']       = '';
+			$host['snmp_timeout']         = '';
+			$host['snmp_username']        = '';
+			$host['snmp_password']        = '';
+			$host['snmp_auth_protocol']   = '';
 			$host['snmp_priv_passphrase'] = '';
-			$host['snmp_priv_protocol'] = '';
-			$host['snmp_context'] = '';
-			$host['snmp_engine_id'] = '';
-			$host['snmp_version'] = '';
-			$host['snmp_port'] = '';
-			$host['hostname'] = 'None';
+			$host['snmp_priv_protocol']   = '';
+			$host['snmp_context']         = '';
+			$host['snmp_engine_id']       = '';
+			$host['snmp_version']         = '';
+			$host['snmp_port']            = '';
+			$host['hostname']             = 'None';
 
 			$hosts[0] = $host;
 		}
@@ -105,9 +105,9 @@ function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
 	global $config;
 
 	static $rrd_step_counter = 0;
-	static $last_host = -1;
-	static $last_data_id = -1;
-	static $warning_issued = false;
+	static $last_host        = -1;
+	static $last_data_id     = -1;
+	static $warning_issued   = false;
 
 	$poller_interval = read_config_option('poller_interval');
 	$rrd_next_step   = 0;
@@ -133,7 +133,7 @@ function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
 			$rrd_step_counter++;
 		}
 
-		$modulus = ceil($rrd_step / $poller_interval);
+		$modulus       = ceil($rrd_step / $poller_interval);
 		$rrd_next_step = $poller_interval * ($rrd_step_counter % $modulus);
 	}
 
@@ -142,4 +142,3 @@ function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
 
 	return $rrd_next_step;
 }
-

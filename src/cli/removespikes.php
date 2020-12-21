@@ -23,7 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$dir = dirname(__FILE__);
+$dir = __DIR__;
 chdir($dir);
 
 /* Start Initialization Section */
@@ -80,11 +80,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -220,7 +220,7 @@ function display_version() {
 }
 
 /* display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";

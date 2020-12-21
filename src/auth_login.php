@@ -34,18 +34,17 @@ if (read_config_option('auth_method') == '2') {
 	set_request_var('action', 'login');
 
 	if (isset($_SERVER['PHP_AUTH_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['PHP_AUTH_USER']);
+		$username = str_replace('\\', '\\\\', $_SERVER['PHP_AUTH_USER']);
 	} elseif (isset($_SERVER['REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['REMOTE_USER']);
+		$username = str_replace('\\', '\\\\', $_SERVER['REMOTE_USER']);
 	} elseif (isset($_SERVER['REDIRECT_REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['REDIRECT_REMOTE_USER']);
+		$username = str_replace('\\', '\\\\', $_SERVER['REDIRECT_REMOTE_USER']);
 	} elseif (isset($_SERVER['HTTP_PHP_AUTH_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['HTTP_PHP_AUTH_USER']);
+		$username = str_replace('\\', '\\\\', $_SERVER['HTTP_PHP_AUTH_USER']);
 	} elseif (isset($_SERVER['HTTP_REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['HTTP_REMOTE_USER']);
+		$username = str_replace('\\', '\\\\', $_SERVER['HTTP_REMOTE_USER']);
 	} elseif (isset($_SERVER['HTTP_REDIRECT_REMOTE_USER'])) {
-		$username = str_replace("\\", "\\\\", $_SERVER['HTTP_REDIRECT_REMOTE_USER']);
-
+		$username = str_replace('\\', '\\\\', $_SERVER['HTTP_REDIRECT_REMOTE_USER']);
 	} else {
 		/* No user - Bad juju! */
 		$username = '';
@@ -55,7 +54,7 @@ if (read_config_option('auth_method') == '2') {
 	}
 
 	if (strpos($username, '@') !== false) {
-		$upart = explode('@', $username);
+		$upart    = explode('@', $username);
 		$username = $upart[0];
 	}
 
@@ -67,7 +66,7 @@ if (read_config_option('auth_method') == '2') {
 		$found   = false;
 
 		if (cacti_sizeof($records)) {
-			foreach($records as $r) {
+			foreach ($records as $r) {
 				list($basic, $shortform) = str_getcsv($r);
 
 				if (trim($basic) == $username) {
@@ -95,14 +94,14 @@ if (read_config_option('auth_method') == '2') {
 $username = sanitize_search_string($username);
 
 /* process login */
-$user         = array();
-$copy_user    = false;
-$user_auth    = false;
-$user_enabled = 1;
-$ldap_error   = false;
+$user               = array();
+$copy_user          = false;
+$user_auth          = false;
+$user_enabled       = 1;
+$ldap_error         = false;
 $ldap_error_message = '';
-$realm        = 0;
-$frv_realm    = get_nfilter_request_var('realm');
+$realm              = 0;
+$frv_realm          = get_nfilter_request_var('realm');
 
 if (get_nfilter_request_var('action') == 'login') {
 	if ($frv_realm == '1') {
@@ -111,7 +110,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm ". $frv_realm . ", using method " . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm ". $frv_realm . ', using method ' . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 	// Realms of 1 or below are internal
 	$auth_local_required = ($frv_realm < 2);
@@ -126,9 +125,9 @@ if (get_nfilter_request_var('action') == 'login') {
 	case '2':
 		/* Web Basic Auth */
 		$auth_local_required = false;
-		$copy_user = true;
-		$user_auth = true;
-		$realm = 2;
+		$copy_user           = true;
+		$user_auth           = true;
+		$realm               = 2;
 
 		/* Locate user in database */
 		$user = db_fetch_row_prepared('SELECT *
@@ -149,7 +148,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		break;
 	case '3':
 		/* LDAP Auth */
- 		if ($frv_realm == '2' && get_nfilter_request_var('login_password') != '') {
+		if ($frv_realm == '2' && get_nfilter_request_var('login_password') != '') {
 			/* get user DN */
 			$ldap_dn_search_response = cacti_ldap_search_dn($username);
 
@@ -158,9 +157,9 @@ if (get_nfilter_request_var('action') == 'login') {
 			} else {
 				/* Error searching */
 				cacti_log('LOGIN: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
-				$ldap_error = true;
+				$ldap_error         = true;
 				$ldap_error_message =  __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
-				$user_auth = false;
+				$user_auth          = false;
 			}
 
 			if (!$ldap_error) {
@@ -171,7 +170,7 @@ if (get_nfilter_request_var('action') == 'login') {
 					/* User ok */
 					$user_auth = true;
 					$copy_user = true;
-					$realm = 3;
+					$realm     = 3;
 
 					/* Locate user in database */
 					cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated", false, 'AUTH');
@@ -184,17 +183,16 @@ if (get_nfilter_request_var('action') == 'login') {
 				} else {
 					/* error */
 					cacti_log('LOGIN: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
-					$ldap_error = true;
+					$ldap_error         = true;
 					$ldap_error_message = __('LDAP Error: %s', $ldap_auth_response['error_text']);
-					$user_auth = false;
+					$user_auth          = false;
 				}
 			}
-
 		}
 
 		break;
 	case '4':
-		cacti_log("DEBUG: User '" . $username . "' attempting domain lookup for realm " . $frv_realm . " with " . ($auth_local_required ? '':'no') . " local lookup", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+		cacti_log("DEBUG: User '" . $username . "' attempting domain lookup for realm " . $frv_realm . ' with ' . ($auth_local_required ? '':'no') . ' local lookup', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 		if ($frv_realm > 0) {
 			domains_login_process($username);
@@ -220,10 +218,10 @@ if (get_nfilter_request_var('action') == 'login') {
 					array($username));
 
 				if ($stored_pass != '') {
-					$p = get_nfilter_request_var('login_password');
+					$p     = get_nfilter_request_var('login_password');
 					$valid = compat_password_verify($p, $stored_pass);
 
-					cacti_log("DEBUG: User '" . $username . "' password is " . ($valid?'':'in') . "valid", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+					cacti_log("DEBUG: User '" . $username . "' password is " . ($valid?'':'in') . 'valid', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 					if ($valid) {
 						$user = db_fetch_row_prepared('SELECT *
 							FROM user_auth
@@ -264,7 +262,7 @@ if (get_nfilter_request_var('action') == 'login') {
 				if ($cn_full_name != '' || $cn_email != '') {
 					$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name, $cn_email));
 
-   					if (isset($ldap_cn_search_response['cn'])) {
+					if (isset($ldap_cn_search_response['cn'])) {
 						$data_override = array();
 
 						if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {
@@ -282,7 +280,7 @@ if (get_nfilter_request_var('action') == 'login') {
 						user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
 					} else {
 						$ldap_response = (isset($ldap_cn_search_response[0]) ? $ldap_cn_search_response[0] : '(no response given)');
-						$ldap_code = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
+						$ldap_code     = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
 						cacti_log('LOGIN: Email Address and Full Name fields not found, reason: ' . $ldap_response . 'code: ' . $ldap_code, false, 'AUTH');
 						user_copy($user_template['username'], $username, 0, $realm);
 					}
@@ -427,9 +425,9 @@ function domains_login_process() {
 		} else {
 			/* Error searching */
 			cacti_log('LOGIN: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
-			$ldap_error = true;
+			$ldap_error         = true;
 			$ldap_error_message = __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
-			$user_auth = false;
+			$user_auth          = false;
 		}
 
 		if (!$ldap_error) {
@@ -445,7 +443,7 @@ function domains_login_process() {
 				$domain_name = db_fetch_cell_prepared('SELECT domain_name
 					FROM user_domains
 					WHERE domain_id = ?',
-					array($realm-1000));
+					array($realm - 1000));
 
 				/* Locate user in database */
 				cacti_log("LOGIN: LDAP User '$username' Authenticated from Domain '$domain_name'", false, 'AUTH');
@@ -460,7 +458,7 @@ function domains_login_process() {
 				$template_user = db_fetch_cell_prepared('SELECT user_id
 					FROM user_domains
 					WHERE domain_id = ?',
-					array(get_nfilter_request_var('realm')-1000));
+					array(get_nfilter_request_var('realm') - 1000));
 
 				$template_username = db_fetch_cell_prepared('SELECT username
 					FROM user_auth
@@ -481,15 +479,15 @@ function domains_login_process() {
 						$cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name
 							FROM user_domains_ldap
 							WHERE domain_id = ?',
-							array(get_nfilter_request_var('realm')-1000));
+							array(get_nfilter_request_var('realm') - 1000));
 
 						$cn_email = db_fetch_cell_prepared('SELECT cn_email
 							FROM user_domains_ldap
 							WHERE domain_id = ?',
-							array(get_nfilter_request_var('realm')-1000));
+							array(get_nfilter_request_var('realm') - 1000));
 
 						if ($cn_full_name != '' || $cn_email != '') {
-							$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email) );
+							$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email));
 
 							if (isset($ldap_cn_search_response['cn'])) {
 								$data_override = array();
@@ -532,12 +530,11 @@ function domains_login_process() {
 			} else {
 				/* error */
 				cacti_log('LOGIN: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
-				$ldap_error = true;
+				$ldap_error         = true;
 				$ldap_error_message = __('LDAP Error: %s', $ldap_auth_response['error_text']);
-				$user_auth = false;
+				$user_auth          = false;
 			}
 		}
-
 	}
 }
 
@@ -551,7 +548,7 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	$ld = db_fetch_row_prepared('SELECT *
 		FROM user_domains_ldap
 		WHERE domain_id = ?',
-		array($realm-1000));
+		array($realm - 1000));
 
 	if (cacti_sizeof($ld)) {
 		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
@@ -591,7 +588,7 @@ function domains_ldap_search_dn($username, $realm) {
 	$ld = db_fetch_row_prepared('SELECT *
 		FROM user_domains_ldap
 		WHERE domain_id = ?',
-		array($realm-1000));
+		array($realm - 1000));
 
 	if (cacti_sizeof($ld)) {
 		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
@@ -632,11 +629,11 @@ $selectedTheme = get_selected_theme();
 
 html_auth_header('login', __('Login to Cacti'), __('User Login'), __('Enter your Username and Password below'),
 	array(
-		'ldap_error' => $ldap_error,
+		'ldap_error'         => $ldap_error,
 		'ldap_error_message' => $ldap_error_message,
-		'username' => $username,
-		'user_enabled' => $user_enabled,
-		'action' => get_nfilter_request_var('action')));
+		'username'           => $username,
+		'user_enabled'       => $user_enabled,
+		'action'             => get_nfilter_request_var('action')));
 ?>
 		<tr>
 			<td>
@@ -681,7 +678,7 @@ if (read_config_option('auth_method') == '3' || read_config_option('auth_method'
 			<td>
 				<select id='realm' name='realm'><?php
 		if (cacti_sizeof($realms)) {
-			foreach($realms as $index => $realm) {
+			foreach ($realms as $index => $realm) {
 				print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . "</option>\n";
 			}
 		}
@@ -707,7 +704,7 @@ if (read_config_option('auth_method') == '3' || read_config_option('auth_method'
 			</td>
 		</tr>
 <?php
-$error_message = "";
+$error_message = '';
 if ($ldap_error) {
 	$error_message = $ldap_error;
 } else {

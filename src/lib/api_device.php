@@ -29,7 +29,7 @@
 function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_device_cache_crc') {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
 
-	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . "_" . "$poller_id'", array($hash));
+	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . '_' . "$poller_id'", array($hash));
 }
 
 /* api_device_remove - removes a device
@@ -104,7 +104,7 @@ function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 			db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 		}
 
-		foreach($device_ids as $id) {
+		foreach ($device_ids as $id) {
 			db_execute_prepared('INSERT INTO poller_command
 				(poller_id, time, action, command)
 				VALUES (?, NOW(), ?, ?)
@@ -121,7 +121,7 @@ function api_device_purge_deleted_devices() {
 		AND UNIX_TIMESTAMP(last_updated) < UNIX_TIMESTAMP()-500');
 
 	if (cacti_sizeof($devices)) {
-		foreach($devices as $d) {
+		foreach ($devices as $d) {
 			db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($d['id']));
@@ -146,6 +146,7 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 	global $config;
 
 	$devices_to_delete = '';
+
 	$i = 0;
 
 	if (cacti_sizeof($device_ids)) {
@@ -169,7 +170,7 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		);
 
 		/* build the list */
-		foreach($device_ids as $device_id) {
+		foreach ($device_ids as $device_id) {
 			if ($i == 0) {
 				$devices_to_delete .= $device_id;
 			} else {
@@ -211,7 +212,7 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		}
 
 		if (cacti_sizeof($poller_ids)) {
-			foreach($poller_ids as $poller_id) {
+			foreach ($poller_ids as $poller_id) {
 				api_device_cache_crc_update($poller_id);
 				api_device_purge_from_remote($device_ids, $poller_id);
 			}
@@ -333,7 +334,7 @@ function api_device_change_options($device_ids, $post) {
 					}
 
 					// Update the local device and replicate
-					if ($old_poller !=  get_nfilter_request_var($field_name && get_nfilter_request_var($field_name) > 1)) {
+					if ($old_poller != get_nfilter_request_var($field_name && get_nfilter_request_var($field_name) > 1)) {
 						api_device_replicate_out($device_id, get_nfilter_request_var($field_name));
 					}
 				}
@@ -418,7 +419,7 @@ function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
 			array($device_id, $data_query_id, $reindex_method), true, $rcnn_id);
 	}
 
-    /* recache snmp data */
+	/* recache snmp data */
 	run_data_query($device_id, $data_query_id);
 }
 
@@ -880,7 +881,7 @@ function api_device_quick_save(&$save) {
 			'snmp_timeout'
 		);
 
-		foreach($compare as $c) {
+		foreach ($compare as $c) {
 			if ($save[$c] != $device[$c]) {
 				return false;
 			}
@@ -984,9 +985,9 @@ function api_device_update_host_template($host_id, $host_template_id) {
 		) AS result
 		ON hg.graph_template_id=result.gtid
 		WHERE gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
-	    HAVING gtid IS NULL
-	    ORDER BY gt.name',
-	    array($host_id, $host_template_id)
+		HAVING gtid IS NULL
+		ORDER BY gt.name',
+		array($host_id, $host_template_id)
 	);
 
 	if (cacti_sizeof($unused_graph_templates)) {
@@ -1037,7 +1038,7 @@ function api_device_template_sync_template($device_template, $host_ids = '', $do
 	);
 
 	if (cacti_sizeof($devices)) {
-		foreach($devices as $device) {
+		foreach ($devices as $device) {
 			api_device_update_host_template($device, $device_template);
 		}
 	}
@@ -1048,6 +1049,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 
 	if (empty($device_id)) {
 		print __('ERROR: Device ID is Blank');
+
 		return;
 	}
 
@@ -1062,6 +1064,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		} else {
 			print __('ERROR: Device[' . $device_id . '] not found.  Please check database for errors.');
 		}
+
 		return;
 	}
 
@@ -1098,7 +1101,6 @@ function api_device_ping_device($device_id, $from_remote = false) {
 	} elseif ($am == AVAIL_SNMP || $am == AVAIL_SNMP_GET_NEXT ||
 		$am == AVAIL_SNMP_GET_SYSDESC || $am == AVAIL_SNMP_AND_PING ||
 		$am == AVAIL_SNMP_OR_PING) {
-
 		$anym = true;
 
 		print __('SNMP Information') . '<br>';
@@ -1108,9 +1110,9 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			print "<span style='color: #ab3f1e; font-weight: bold;'>" . __('SNMP not in use') . '</span>';
 		} else {
 			$snmp_error = '';
-			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
- 				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
- 				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
+			$session    = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
+				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
 				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
 			if ($session === false || $snmp_error != '') {
@@ -1130,7 +1132,6 @@ function api_device_ping_device($device_id, $from_remote = false) {
 					}
 					print '</span>';
 				} else {
-
 					/* modify for some system descriptions */
 					/* 0000937: System output in host.php poor for Alcatel */
 					if (substr_count($snmp_system, '00:')) {
@@ -1143,27 +1144,28 @@ function api_device_ping_device($device_id, $from_remote = false) {
 						if ($snmp_error != '') {
 							print " - $snmp_error";
 						}
-						'</span>';
 					} else {
-						$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
-						$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
-						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
-						$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
+						$snmp_uptime   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+						$snmp_hostname = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
+						$snmp_location = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
+						$snmp_contact  = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
 
 						print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . '<br>';
+
 						$snmp_uptime_ticks = intval($snmp_uptime);
-						$days      = intval($snmp_uptime_ticks / (60*60*24*100));
-						$remainder = $snmp_uptime_ticks % (60*60*24*100);
-						$hours     = intval($remainder / (60*60*100));
-						$remainder = $remainder % (60*60*100);
-						$minutes   = intval($remainder / (60*100));
+
+						$days      = intval($snmp_uptime_ticks / (60 * 60 * 24 * 100));
+						$remainder = $snmp_uptime_ticks % (60 * 60 * 24 * 100);
+						$hours     = intval($remainder / (60 * 60 * 100));
+						$remainder = $remainder % (60 * 60 * 100);
+						$minutes   = intval($remainder / (60 * 100));
+
 						print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
 						print '&nbsp;(' . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ')<br>';
 						print '<strong>' . __('Hostname:') . "</strong> $snmp_hostname<br>";
 						print '<strong>' . __('Location:') . "</strong> $snmp_location<br>";
 						print '<strong>' . __('Contact:') . "</strong> $snmp_contact<br>";
 					}
-
 				}
 
 				$session->close();
@@ -1200,4 +1202,3 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		print __('No Ping or SNMP Availability Check in Use') . "<br><br>\n";
 	}
 }
-

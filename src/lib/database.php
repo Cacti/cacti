@@ -24,7 +24,7 @@
 
 /* db_connect_real - makes a connection to the database server
    @param $device - the hostname of the database server, 'localhost' if the database server is running
-      on this machine
+	  on this machine
    @param $user - the username to connect to the database server as
    @param $pass - the password to connect to the database server with
    @param $db_name - the name of the database to connect to
@@ -64,7 +64,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			return false;
 		}
 
-		$flags[PDO::ATTR_PERSISTENT] = true;
+		$flags[PDO::ATTR_PERSISTENT]       = true;
 		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
 		if ($db_ssl) {
 			if ($db_ssl_key != '' && $db_ssl_cert != '' && $db_ssl_ca != '') {
@@ -104,7 +104,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$ver = db_get_global_variable('version', $cnn_id);
 
 			if (strpos($ver, 'MariaDB') !== false) {
-				$srv = 'MariaDB';
+				$srv  = 'MariaDB';
 				$ver  = str_replace('-MariaDB', '', $ver);
 			} else {
 				$srv = 'MySQL';
@@ -115,11 +115,11 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			}
 
 			// Get rid of bad modes
-			$modes = explode(',', db_fetch_cell('SELECT @@sql_mode', '', false));
+			$modes     = explode(',', db_fetch_cell('SELECT @@sql_mode', '', false));
 			$new_modes = array();
 
-			foreach($modes as $mode) {
-				if (array_search($mode, $bad_modes) === false) {
+			foreach ($modes as $mode) {
+				if (array_search($mode, $bad_modes, true) === false) {
 					$new_modes[] = $mode;
 				}
 			}
@@ -128,8 +128,8 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$required_modes[] = 'ALLOW_INVALID_DATES';
 			$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
 
-			foreach($required_modes as $mode) {
-				if (array_search($mode, $new_modes) === false) {
+			foreach ($required_modes as $mode) {
+				if (array_search($mode, $new_modes, true) === false) {
 					$new_modes[] = $mode;
 				}
 			}
@@ -159,6 +159,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			if (!empty($config['DEBUG_READ_CONFIG_OPTION_DB_OPEN'])) {
 				$config['DEBUG_READ_CONFIG_OPTION'] = false;
 			}
+
 			return $cnn_id;
 		} catch (PDOException $e) {
 			if (!isset($config['DATABASE_ERROR'])) {
@@ -166,7 +167,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			}
 
 			$config['DATABASE_ERROR'][] = array(
-				'Code' => $e->getCode(),
+				'Code'  => $e->getCode(),
 				'Error' => $e->getMessage(),
 			);
 			// Must catch this exception or else PDO will display an error with our username/password
@@ -199,7 +200,7 @@ function db_close($db_conn = false) {
 		}
 	}
 
-	$db_conn = null;
+	$db_conn                                                                  = null;
 	$database_sessions["$database_hostname:$database_port:$database_default"] = null;
 
 	return true;
@@ -233,6 +234,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 		if (!is_object($db_conn)) {
 			$database_last_error = 'DB ' . $execute_name . ' -- No connection found';
+
 			return false;
 		}
 	}
@@ -243,14 +245,14 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		db_echo_sql('db_' . $execute_name . ': "' . $sql . "\"\n");
 	}
 
-	$errors = 0;
+	$errors                 = 0;
 	$db_conn->affected_rows = 0;
 
 	while (true) {
 		$query = $db_conn->prepare($sql);
 
 		$code = 0;
-		$en = '';
+		$en   = '';
 
 		if (!empty($config['DEBUG_SQL_CMD'])) {
 			db_echo_sql('db_' . $execute_name . ' Memory [Before]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
@@ -264,8 +266,8 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 				$query->execute($params);
 			}
 		} catch (Exception $ex) {
-			$code = $ex->getCode();
-			$en = $code;
+			$code      = $ex->getCode();
+			$en        = $code;
 			$errorinfo = array(1=>$code, 2=>$ex->getMessage());
 		}
 		restore_error_handler();
@@ -278,12 +280,12 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			$code = $query->errorCode();
 			if ($code != '00000' && $code != '01000') {
 				$errorinfo = $query->errorInfo();
-				$en = $errorinfo[1];
+				$en        = $errorinfo[1];
 			}  else {
 				$code = $db_conn->errorCode();
 				if ($code != '00000' && $code != '01000') {
 					$errorinfo = $db_conn->errorInfo();
-					$en = $errorinfo[1];
+					$en        = $errorinfo[1];
 				}
 			}
 		}
@@ -315,6 +317,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			if (!empty($config['DEBUG_SQL_FLOW'])) {
 				db_echo_sql('db_' . $execute_name . ': returns ' . clean_up_lines(var_export($return_value, true)) . "\n", true);
 			}
+
 			return $return_value;
 		} else {
 			$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . (isset($errorinfo[2]) ? $errorinfo[2] : '<no error>');
@@ -328,13 +331,13 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 					$errors++;
 					if ($errors > 30) {
 						cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-						$database_last_error = "Too many Lock/Deadlock errors occurred!";
+						$database_last_error = 'Too many Lock/Deadlock errors occurred!';
 					} else {
 						usleep(200000);
 
 						continue;
 					}
-				} else if ($en == 1153) {
+				} elseif ($en == 1153) {
 					if (strlen($sql) > 1024) {
 						$sql = substr($sql, 0, 1024) . '...';
 					}
@@ -356,6 +359,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			if (!empty($config['DEBUG_SQL_FLOW'])) {
 				db_echo_sql($database_last_error);
 			}
+
 			return false;
 		}
 	}
@@ -369,9 +373,8 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 	return false;
 }
 
-
 /* db_fetch_cell - run a 'select' sql query and return the first column of the
-     first row found
+	 first row found
    @param $sql - the sql query to execute
    @param $col_name - use this column name instead of the first one
    @param $log - whether to log error messages, defaults to true
@@ -387,7 +390,7 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
 }
 
 /* db_fetch_cell_prepared - run a 'select' sql query and return the first column of the
-     first row found
+	 first row found
    @param $sql - the sql query to execute
    @param $col_name - use this column name instead of the first one
    @param $log - whether to log error messages, defaults to true
@@ -417,6 +420,7 @@ function db_fetch_cell_return($query, $col_name = '') {
 			return reset($r[0]);
 		}
 	}
+
 	return false;
 }
 
@@ -498,6 +502,7 @@ function db_fetch_assoc_return($query) {
 	}
 
 	$r = $query->fetchAll(PDO::FETCH_ASSOC);
+
 	return (is_array($r)) ? $r : array();
 }
 
@@ -558,12 +563,12 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 	}
 
 	$columns = array();
-	foreach($result as $arr) {
+	foreach ($result as $arr) {
 		$columns[] = $arr['Field'];
 	}
 
 	if (isset($column['name'])) {
-		if (!in_array($column['name'], $columns)) {
+		if (!in_array($column['name'], $columns, true)) {
 			$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
 			if (isset($column['type'])) {
 				$sql .= ' ' . $column['type'];
@@ -582,7 +587,7 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 			}
 
 			if (isset($column['default'])) {
-				if (in_array(strtolower($column['type']), array('timestamp','datetime','date')) && $column['default'] === 'CURRENT_TIMESTAMP') {
+				if (in_array(strtolower($column['type']), array('timestamp','datetime','date'), true) && $column['default'] === 'CURRENT_TIMESTAMP') {
 					$sql .= ' default CURRENT_TIMESTAMP';
 				} else {
 					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -610,6 +615,7 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 
 		return true;
 	}
+
 	return false;
 }
 
@@ -636,7 +642,7 @@ function db_change_column($table, $column, $log = true, $db_conn = false) {
 	}
 
 	$columns = array();
-	foreach($result as $arr) {
+	foreach ($result as $arr) {
 		$columns[] = $arr['Field'];
 	}
 
@@ -645,8 +651,8 @@ function db_change_column($table, $column, $log = true, $db_conn = false) {
 			$column['old_name'] = $column['name'];
 		}
 
-		if (in_array($column['old_name'], $columns)) {
-			if ($column['old_name'] == $column['name'] || !in_array('name', $columns)) {
+		if (in_array($column['old_name'], $columns, true)) {
+			if ($column['old_name'] == $column['name'] || !in_array('name', $columns, true)) {
 				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['old_name'] . '` `' . $column['name'] . '`';
 				if (isset($column['type'])) {
 					$sql .= ' ' . $column['type'];
@@ -713,14 +719,15 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 		}
 	}
 
-	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
+	$result  = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 	$columns = array();
-	foreach($result as $arr) {
+	foreach ($result as $arr) {
 		$columns[] = $arr['Field'];
 	}
 
-	if (isset($column) && in_array($column, $columns)) {
+	if (isset($column) && in_array($column, $columns, true)) {
 		$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
+
 		return db_execute($sql, $log, $db_conn);
 	}
 
@@ -762,20 +769,20 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
 		$database_log = false;
 	}
 
-	$_log  = $database_log;
+	$_log         = $database_log;
 	$database_log = false;
 
 	$_data = db_fetch_assoc("SHOW KEYS FROM `$table`", $log, $db_conn);
-	$_keys = array_rekey($_data, "Key_name", "Key_name");
+	$_keys = array_rekey($_data, 'Key_name', 'Key_name');
 
 	$database_log = $_log;
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_index_exists(\'' . $table . '\', \'' . $index .'\'): '
-			. in_array($index, $_keys) . ' - '
+			. in_array($index, $_keys, true) . ' - '
 			. clean_up_lines(var_export($_keys, true)));
 	}
 
-	return in_array($index, $_keys);
+	return in_array($index, $_keys, true);
 }
 
 /* db_index_exists - checks whether an index exists
@@ -795,7 +802,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 		$columns = array($columns);
 	}
 
-	$_log  = $database_log;
+	$_log         = $database_log;
 	$database_log = false;
 
 	$_data = db_fetch_assoc("SHOW KEYS FROM `$table`", $log, $db_conn);
@@ -811,7 +818,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 
 	$status = 0;
 	foreach ($columns as $column) {
-		if (!in_array($column, $_cols)) {
+		if (!in_array($column, $_cols, true)) {
 			$status = -1;
 			break;
 		}
@@ -819,7 +826,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 
 	if ($status == 0) {
 		foreach ($_cols as $column) {
-			if (!in_array($column, $columns)) {
+			if (!in_array($column, $columns, true)) {
 				$status = 1;
 			}
 		}
@@ -830,7 +837,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 		db_echo_sql('db_index_matches(\'' . $table . '\', \'' . $index .'\'): '
 			. $status . "\n ::: "
 			. clean_up_lines(var_export($columns, true))
-			. " ::: "
+			. ' ::: '
 			. clean_up_lines(var_export($_cols, true)));
 	}
 
@@ -933,8 +940,8 @@ function db_get_table_column_types($table, $db_conn = false) {
 	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table", false, $db_conn);
 	$cols    = array();
 	if (cacti_sizeof($columns)) {
-		foreach($columns as $col) {
-			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']);;
+		foreach ($columns as $col) {
+			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']);
 		}
 	}
 
@@ -969,7 +976,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
 			if ($column['type'] != $arr['Type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != $arr['Null'])
-			    || (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
+				|| (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
 				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['name'] . '` `' . $column['name'] . '`';
 				if (isset($column['type'])) {
 					$sql .= ' ' . $column['type'];
@@ -1016,8 +1023,8 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 
 	if ($removecolumns) {
 		$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
-		foreach($result as $arr) {
-			if (!in_array($arr['Field'], $allcolumns)) {
+		foreach ($result as $arr) {
+			if (!in_array($arr['Field'], $allcolumns, true)) {
 				if (!db_remove_column($table, $arr['Field'], $log, $db_conn)) {
 					return false;
 				}
@@ -1043,11 +1050,11 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	}
 
 	// Correct any indexes
-	$indexes = db_fetch_assoc("SHOW INDEX FROM `$table`", $log, $db_conn);
+	$indexes    = db_fetch_assoc("SHOW INDEX FROM `$table`", $log, $db_conn);
 	$allindexes = array();
 
 	foreach ($indexes as $index) {
-		$allindexes[$index['Key_name']][$index['Seq_in_index']-1] = $index['Column_name'];
+		$allindexes[$index['Key_name']][$index['Seq_in_index'] - 1] = $index['Column_name'];
 	}
 
 	foreach ($allindexes as $n => $index) {
@@ -1056,11 +1063,11 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			foreach ($data['keys'] as $k) {
 				if ($k['name'] == $n) {
 					$removeindex = false;
-					$add = array_diff($k['columns'], $index);
-					$del = array_diff($index, $k['columns']);
+					$add         = array_diff($k['columns'], $index);
+					$del         = array_diff($index, $k['columns']);
 					if (!empty($add) || !empty($del)) {
 						if (!db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn) ||
-						    !db_execute("ALTER TABLE `$table` ADD INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
+							!db_execute("ALTER TABLE `$table` ADD INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
 							return false;
 						}
 					}
@@ -1108,7 +1115,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			$del = array_diff($allindexes['PRIMARY'], $data['primary']);
 			if (!empty($add) || !empty($del)) {
 				if (!db_execute("ALTER TABLE `$table` DROP PRIMARY KEY", $log, $db_conn) ||
-				    !db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . db_format_index_create($data['primary']) . ')', $log, $db_conn)) {
+					!db_execute("ALTER TABLE `$table` ADD PRIMARY KEY(" . db_format_index_create($data['primary']) . ')', $log, $db_conn)) {
 					return false;
 				}
 			}
@@ -1135,7 +1142,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 function db_format_index_create($indexes) {
 	if (is_array($indexes)) {
 		$outindex = '';
-		foreach($indexes as $index) {
+		foreach ($indexes as $index) {
 			$index = trim($index);
 			if (substr($index, -1) == ')') {
 				$outindex .= ($outindex != '' ? ',':'') . $index;
@@ -1173,7 +1180,7 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 	}
 
 	if (!db_table_exists($table, $log, $db_conn)) {
-		$c = 0;
+		$c   = 0;
 		$sql = 'CREATE TABLE `' . $table . "` (\n";
 		foreach ($data['columns'] as $column) {
 			if (isset($column['name'])) {
@@ -1373,9 +1380,9 @@ function db_rollback_transaction($db_conn = false) {
 }
 
 /* array_to_sql_or - loops through a single dimentional array and converts each
-     item to a string that can be used in the OR portion of an sql query in the
-     following form:
-        column=item1 OR column=item2 OR column=item2 ...
+	 item to a string that can be used in the OR portion of an sql query in the
+	 following form:
+		column=item1 OR column=item2 OR column=item2 ...
    @param $array - the array to convert
    @param $sql_column - the column to set each item in the array equal to
    @returns - a string that can be placed in a SQL OR statement */
@@ -1413,7 +1420,6 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 	return db_fetch_insert_id($db_conn);
 }
 
-
 // FIXME:  Need to Rename and cleanup a bit
 
 function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
@@ -1438,16 +1444,19 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 
 	$first  = true;
 	$first3 = true;
-	foreach($fieldArray as $k => $v) {
+	foreach ($fieldArray as $k => $v) {
 		if (!$first) {
 			$sql  .= ', ';
 			$sql2 .= ', ';
 		}
-		$sql   .= "`$k`";
-		$sql2  .= $v;
-		$first  = false;
 
-		if (in_array($k, $keyCols)) continue; // skip UPDATE if is key
+		$sql  .= "`$k`";
+		$sql2 .= $v;
+		$first = false;
+
+		if (in_array($k, $keyCols, true)) {
+			continue; // skip UPDATE if is key
+		}
 
 		if (!$first3) {
 			$sql3 .= ', ';
@@ -1488,6 +1497,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 		raise_message('sql_save_table', $error_message, MESSAGE_LEVEL_ERROR);
 		cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
 		cacti_debug_backtrace('SQL', false, true, 0, 1);
+
 		return false;
 	}
 
@@ -1501,6 +1511,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 			raise_message('sql_save_key', $error_message, MESSAGE_LEVEL_ERROR);
 			cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
 			cacti_debug_backtrace('SQL', false, true, 0, 1);
+
 			return false;
 		}
 
@@ -1564,7 +1575,7 @@ function db_qstr($s, $db_conn = false) {
 
 	$s = str_replace(array('\\', "\0", "'"), array('\\\\', "\\\0", "\\'"), $s);
 
-	return  "'" . $s . "'";
+	return "'" . $s . "'";
 }
 
 function db_strip_control_chars($sql) {
@@ -1624,7 +1635,8 @@ function db_check_password_length() {
 
 	if ($len === false) {
 		die(__('Failed to determine password field length, can not continue as may corrupt password'));
-	} else if ($len < 80) {
+	}
+	if ($len < 80) {
 		/* Ensure that the password length is increased before we start updating it */
 		db_execute("ALTER TABLE user_auth MODIFY COLUMN password varchar(256) NOT NULL default ''");
 		$len = db_get_column_length('user_auth','password');
@@ -1682,39 +1694,39 @@ function db_force_remote_cnn() {
 
 function db_create_permissions_array($default = false) {
 	return array(
-		'ALTER' => $default,
-		'ALTER ROUTINE' => $default,
-		'CREATE' => $default,
-		'CREATE ROLE' => $default,
-		'CREATE ROUTINE' => $default,
-		'CREATE TABLESPACE' => $default,
+		'ALTER'                   => $default,
+		'ALTER ROUTINE'           => $default,
+		'CREATE'                  => $default,
+		'CREATE ROLE'             => $default,
+		'CREATE ROUTINE'          => $default,
+		'CREATE TABLESPACE'       => $default,
 		'CREATE TEMPORARY TABLES' => $default,
-		'CREATE USER' => $default,
-		'CREATE VIEW' => $default,
-		'DELETE' => $default,
-		'DROP' => $default,
-		'DROP ROLE' => $default,
-		'EVENT' => $default,
-		'EXECUTE' => $default,
-		'FILE' => $default,
-		'GRANT OPTION' => $default,
-		'INDEX' => $default,
-		'INSERT' => $default,
-		'LOCK TABLES' => $default,
-		'PROCESS' => $default,
-		'PROXY' => $default,
-		'REFERENCES' => $default,
-		'RELOAD' => $default,
-		'REPLICATION CLIENT' => $default,
-		'REPLICATION SLAVE' => $default,
-		'SELECT' => $default,
-		'SHOW DATABASES' => $default,
-		'SHOW VIEW' => $default,
-		'SHUTDOWN' => $default,
-		'SUPER' => $default,
-		'TRIGGER' => $default,
-		'UPDATE' => $default,
-		'USAGE' => $default,
+		'CREATE USER'             => $default,
+		'CREATE VIEW'             => $default,
+		'DELETE'                  => $default,
+		'DROP'                    => $default,
+		'DROP ROLE'               => $default,
+		'EVENT'                   => $default,
+		'EXECUTE'                 => $default,
+		'FILE'                    => $default,
+		'GRANT OPTION'            => $default,
+		'INDEX'                   => $default,
+		'INSERT'                  => $default,
+		'LOCK TABLES'             => $default,
+		'PROCESS'                 => $default,
+		'PROXY'                   => $default,
+		'REFERENCES'              => $default,
+		'RELOAD'                  => $default,
+		'REPLICATION CLIENT'      => $default,
+		'REPLICATION SLAVE'       => $default,
+		'SELECT'                  => $default,
+		'SHOW DATABASES'          => $default,
+		'SHOW VIEW'               => $default,
+		'SHUTDOWN'                => $default,
+		'SUPER'                   => $default,
+		'TRIGGER'                 => $default,
+		'UPDATE'                  => $default,
+		'USAGE'                   => $default,
 	);
 }
 
@@ -1736,7 +1748,7 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 							foreach ($db_grant_perms as $db_grant_perm) {
 								$db_grant_perm = strtoupper($db_grant_perm);
 								if ($db_grant_perm == 'ALL' ||
-								    $db_grant_perm == 'ALL PRIVILEGES') {
+									$db_grant_perm == 'ALL PRIVILEGES') {
 									$perms = db_create_permissions_array(true);
 									break 3;
 								}

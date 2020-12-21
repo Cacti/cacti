@@ -28,7 +28,7 @@ function upgrade_to_0_8_6a() {
 	$item    = $results['data'];
 
 	if (cacti_sizeof($item)) {
-		foreach($item as $i) {
+		foreach ($item as $i) {
 			db_install_execute('UPDATE data_template
 				SET hash = ?
 				WHERE id = ?',
@@ -43,7 +43,7 @@ function upgrade_to_0_8_6a() {
 			$item2 = $results['data'];
 
 			if (cacti_sizeof($item2)) {
-				foreach($item2 as $j) {
+				foreach ($item2 as $j) {
 					db_install_execute('UPDATE data_template_rrd
 						SET hash = ?
 						WHERE id = ?',
@@ -57,7 +57,7 @@ function upgrade_to_0_8_6a() {
 	$item    = $results['data'];
 
 	if (cacti_sizeof($item)) {
-		foreach($item as $i) {
+		foreach ($item as $i) {
 			db_install_execute('UPDATE graph_templates
 				SET hash = ?
 				WHERE id = ?',
@@ -72,7 +72,7 @@ function upgrade_to_0_8_6a() {
 			$item2 = $results['data'];
 
 			if (cacti_sizeof($item2)) {
-				foreach($item2 as $j) {
+				foreach ($item2 as $j) {
 					db_install_execute('UPDATE graph_templates_item
 						SET hash = ?
 						WHERE id = ?',
@@ -88,7 +88,7 @@ function upgrade_to_0_8_6a() {
 			$item2 = $results['data'];
 
 			if (cacti_sizeof($item2)) {
-				foreach($item2 as $j) {
+				foreach ($item2 as $j) {
 					db_install_execute('UPDATE graph_template_input
 						SET hash = ?
 						WHERE id = ?',
@@ -185,4 +185,3 @@ function upgrade_to_0_8_6a() {
 		}
 	}
 }
-

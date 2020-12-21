@@ -30,18 +30,18 @@ require_once($config['base_path'] . '/lib/utility.php');
 require_once($config['base_path'] . '/lib/template.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 unset($host_id);
 unset($graph_template_id);
 unset($data_template_id);
 
-foreach($parms as $parameter) {
+foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
 		list($arg, $value) = explode('=', $parameter);
 	} else {
-		$arg = $parameter;
+		$arg   = $parameter;
 		$value = '';
 	}
 
@@ -89,11 +89,12 @@ if (!isset($data_template_id)) {
 
 //Following code was copied from data_sources.php->function form_save->save_component_data_source_new
 
-$save["id"] = "0";
-$save["data_template_id"] = $data_template_id;
-$save["host_id"] = $host_id;
+$save['id'] = '0';
 
-$local_data_id = sql_save($save, "data_local");
+$save['data_template_id'] = $data_template_id;
+$save['host_id']          = $host_id;
+
+$local_data_id = sql_save($save, 'data_local');
 
 change_data_template($local_data_id, $data_template_id);
 
@@ -120,4 +121,3 @@ function display_help() {
 	print "--host-id=id - The host id\n";
 	print "--data-template-id=id - The numerical ID of the data template to be added\n";
 }
-

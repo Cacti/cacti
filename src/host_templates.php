@@ -56,10 +56,10 @@ switch (get_request_var('action')) {
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
-    case 'item_remove_gt_confirm':
-        template_item_remove_gt_confirm();
+	case 'item_remove_gt_confirm':
+		template_item_remove_gt_confirm();
 
-        break;
+		break;
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
@@ -70,10 +70,10 @@ switch (get_request_var('action')) {
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
-    case 'item_remove_dq_confirm':
-        template_item_remove_dq_confirm();
+	case 'item_remove_dq_confirm':
+		template_item_remove_dq_confirm();
 
-        break;
+		break;
 	case 'item_remove_dq':
 		template_item_remove_dq();
 
@@ -96,7 +96,7 @@ switch (get_request_var('action')) {
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() {
@@ -170,7 +170,7 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 }
 
 /* ------------------------
-    The "actions" function
+	The "actions" function
    ------------------------ */
 
 function template_item_add_dq() {
@@ -221,11 +221,11 @@ function form_actions() {
 				/* "undo" any device that is currently using this template */
 				db_execute('UPDATE host SET host_template_id = 0 WHERE deleted = "" AND ' . array_to_sql_or($selected_items, 'host_template_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					duplicate_host_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // sync
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_device_template_sync_template($selected_items[$i]);
 				}
 			}
@@ -317,7 +317,7 @@ function form_actions() {
 }
 
 /* ---------------------
-    Template Functions
+	Template Functions
    --------------------- */
 
 function template_item_remove_gt_confirm() {
@@ -480,7 +480,7 @@ function template_edit() {
 
 	/* we have to hide this button to make a form change in the main form trigger the correct
 	 * submit action */
-	echo "<div style='display:none;'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Default Submit Button') . "'></div>";
+	print "<div style='display:none;'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Default Submit Button') . "'></div>";
 
 	html_end_box(true, true);
 
@@ -673,31 +673,31 @@ function template() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_hosts' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
@@ -817,7 +817,7 @@ function template() {
 		) AS rs");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$template_list = db_fetch_assoc("SELECT
 		host_template.id,host_template.name, COUNT(DISTINCT host.id) AS hosts
@@ -832,27 +832,27 @@ function template() {
 	$display_text = array(
 		'name' => array(
 			'display' => __('Device Template Name'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The name of this Device Template.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this Device Template.')
 		),
 		'host_template.id' => array(
 			'display' => __('ID'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')
 		),
 		'nosort' => array(
 			'display' => __('Deletable'),
-			'align' => 'right',
-			'sort' => '',
-			'tip' => __('Device Templates in use cannot be Deleted.  In use is defined as being referenced by a Device.')
+			'align'   => 'right',
+			'sort'    => '',
+			'tip'     => __('Device Templates in use cannot be Deleted.  In use is defined as being referenced by a Device.')
 		),
 		'hosts' => array(
 			'display' => __('Devices Using'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The number of Devices using this Device Template.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Devices using this Device Template.')
 		)
 	);
 
@@ -884,7 +884,7 @@ function template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Device Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Device Templates Found') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
 
@@ -897,5 +897,3 @@ function template() {
 
 	form_end();
 }
-
-

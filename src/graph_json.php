@@ -156,7 +156,7 @@ $graph_data_array['image_format'] = $gtype;
 
 if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	$xport_meta = array();
-	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $xport_meta, $_SESSION['sess_user_id']);
+	$output     = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $xport_meta, $_SESSION['sess_user_id']);
 
 	ob_end_clean();
 } else {
@@ -188,7 +188,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
 	$url .= '&rra_id=' . $rra_id;
 
-	foreach($graph_data_array as $variable => $value) {
+	foreach ($graph_data_array as $variable => $value) {
 		$url .= '&' . $variable . '=' . $value;
 	}
 
@@ -212,7 +212,7 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 	// Parse and populate everything before the image definition row
 	$header_lines = explode("\n", substr($output, 0, $image_begin_pos - 1));
 	foreach ($header_lines as $line) {
-		$parts = explode(' = ', $line);
+		$parts             = explode(' = ', $line);
 		$oarray[$parts[0]] = trim($parts[1]);
 	}
 } else {
@@ -242,10 +242,10 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 
 	if (isset($graph_data_array['graph_width'])) {
 		if (isset($graph_data_array['graph_nolegend'])) {
-			$oarray['image_width']  = round($graph_data_array['graph_width']  * 1.24, 0);
+			$oarray['image_width']  = round($graph_data_array['graph_width'] * 1.24, 0);
 			$oarray['image_height'] = round($graph_data_array['graph_height'] * 1.45, 0);
 		} else {
-			$oarray['image_width']  = round($graph_data_array['graph_width']  * 1.15, 0);
+			$oarray['image_width']  = round($graph_data_array['graph_width'] * 1.15, 0);
 			$oarray['image_height'] = round($graph_data_array['graph_height'] * 1.8, 0);
 		}
 	} else {
@@ -272,5 +272,3 @@ header('Cache-Control: max-age=15');
 $json = json_encode($oarray);
 header('Content-Length: ' . strlen($json));
 print $json;
-
-

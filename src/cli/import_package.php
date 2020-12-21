@@ -45,11 +45,11 @@ if (cacti_sizeof($parms)) {
 	$info_only      = false;
 	$profile_id     = '';
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -115,7 +115,7 @@ if (cacti_sizeof($parms)) {
 			array($profile_id));
 
 		if (empty($exists)) {
-			print "FATAL: Data Source Profile ID " . $profile_id . " does not exist!\n";
+			print 'FATAL: Data Source Profile ID ' . $profile_id . " does not exist!\n";
 			exit(1);
 		}
 	} else {
@@ -124,7 +124,7 @@ if (cacti_sizeof($parms)) {
 
 	if ($filename != '') {
 		if (file_exists($filename) && is_readable($filename)) {
-			$fp = fopen($filename,'r');
+			$fp   = fopen($filename,'r');
 			$data = fread($fp,filesize($filename));
 			fclose($fp);
 

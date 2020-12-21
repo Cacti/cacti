@@ -41,19 +41,19 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	$displayHosts 		= false;
+	$displayHosts       = false;
 	$displayDataQueries = false;
-	$quietMode			= false;
+	$quietMode          = false;
 
 	unset($host_id);
 	unset($data_query_id);
 	unset($reindex_method);
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -159,7 +159,6 @@ if (cacti_sizeof($parms)) {
 		print "ERROR: You must supply a valid reindex-method for all hosts!\n";
 		exit(1);
 	}
-
 
 	/*
 	 * verify valid host id and get a name for it

@@ -33,7 +33,7 @@
 function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 	# unless changed later, $span['end_now'] is always $curr_time
 	$span['begin_now'] 	= $curr_time; # initialization only!
-	$span['end_now'] 	= $curr_time;
+	$span['end_now'] 	  = $curr_time;
 
 	switch ($timespan_given)  {
 		case GT_LAST_HALF_HOUR:
@@ -107,8 +107,8 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 		case GT_THIS_WEEK:
 			# compute offset to start-of-week
 			# remember: start-of-week may be > current-weekday, so do modulo calc
-			$offset = (date('w',$curr_time) - $first_weekdayid + 7) % 7;
-			$span['begin_now'] = strtotime( '-' . $offset . ' days' . date('Y-m-d', $curr_time));
+			$offset            = (date('w',$curr_time) - $first_weekdayid + 7) % 7;
+			$span['begin_now'] = strtotime('-' . $offset . ' days' . date('Y-m-d', $curr_time));
 			$span['end_now']   = strtotime('+1 week', $span['begin_now']) - 1;
 			break;
 		case GT_THIS_MONTH:
@@ -128,8 +128,8 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 		case GT_PREV_WEEK:
 			# compute offset to start-of-week
 			# remember: start-of-week may be > current-weekday, so do modulo calc
-			$offset = (date('w',$curr_time) - $first_weekdayid + 7) % 7;
-			$span['begin_now'] = strtotime( '-1 week -' . $offset . ' days' . date('Y-m-d', $curr_time));
+			$offset            = (date('w',$curr_time) - $first_weekdayid + 7) % 7;
+			$span['begin_now'] = strtotime('-1 week -' . $offset . ' days' . date('Y-m-d', $curr_time));
 			$span['end_now']   = strtotime('+1 week', $span['begin_now']) - 1;
 			break;
 		case GT_PREV_MONTH:
@@ -156,7 +156,7 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
  */
 function month_shift($shift_size) {
 	# is monthly shifting required?
-	return ( strpos(strtolower($shift_size), 'month') > 0);
+	return (strpos(strtolower($shift_size), 'month') > 0);
 }
 
 /* check_month_boundaries 	- check given boundaries for begin/end of month matching
@@ -166,7 +166,7 @@ function month_shift($shift_size) {
 function check_month_boundaries(&$span) {
 	# check left boundary -----------------------------------------------
 	$begin_of_month = strtotime(date('Y-m-01', $span['begin_now']));
-	$begin_match 	= ( $begin_of_month == $span['begin_now']);
+	$begin_match 	  = ($begin_of_month == $span['begin_now']);
 
 	# check right boundary ----------------------------------------------
 	# first, get a defined date of the month, $span['end_now'] belongs to
@@ -175,9 +175,9 @@ function check_month_boundaries(&$span) {
 	$end_of_month = strtotime('+1 month', $begin_of_month) - 1;
 
 	# accept end of month if no seconds given (adjust for 59 missing seconds)
-	$end_match = ( (($end_of_month - 59) <= $span['end_now']) && ($span['end_now'] <= $end_of_month));
+	$end_match = ((($end_of_month - 59) <= $span['end_now']) && ($span['end_now'] <= $end_of_month));
 
-	return ( $begin_match && $end_match );
+	return ($begin_match && $end_match);
 }
 
 /* shift_right_boundary	- shift right boundary with end-of-month adjustment
@@ -208,7 +208,7 @@ function shift_time(&$span, $direction, $shift_size) {
 	# base dates are taken from array $span
 
 	# is this a month shift AND current timespane is on month boundaries?
-	if ( month_shift($shift_size) && check_month_boundaries($span) ) {
+	if (month_shift($shift_size) && check_month_boundaries($span)) {
 		# shift left boundary
 		$span['begin_now'] 	= strtotime($direction . $shift_size . ' ' . $span['current_value_date1']);
 		# shifting right boundary is somewhat complicated
@@ -216,7 +216,7 @@ function shift_time(&$span, $direction, $shift_size) {
 	} else {
 		# 'normal' time shifting: use strtotime magic
 		$span['begin_now'] 	= strtotime($direction . $shift_size . ' ' . $span['current_value_date1']);
-		$span['end_now'] 	= strtotime($direction . $shift_size . ' ' . $span['current_value_date2']);
+		$span['end_now'] 	  = strtotime($direction . $shift_size . ' ' . $span['current_value_date2']);
 	}
 
 	# convert to human readable format
@@ -225,7 +225,6 @@ function shift_time(&$span, $direction, $shift_size) {
 
 	# now custom time settings in effect
 	$_SESSION['sess_current_timespan'] = GT_CUSTOM;
-	$_SESSION['custom'] = 1;
+	$_SESSION['custom']                = 1;
 	set_request_var('predefined_timespan', GT_CUSTOM);
 }
-

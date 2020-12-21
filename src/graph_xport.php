@@ -124,20 +124,20 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		$output .= '"' . __('Vertical Label') . '","' . $xport_array['meta']['vertical_label'] . '"' . "\n";
 
 		$output .= '"' . __('Start Date') . '","'     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . '"' . "\n";
-		$output .= '"' . __('End Date') . '","'       . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step']*($xport_array['meta']['rows']-1) : $xport_array['meta']['end']) . '"' . "\n";
+		$output .= '"' . __('End Date') . '","'       . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end']) . '"' . "\n";
 		$output .= '"' . __('Step') . '","'           . $xport_array['meta']['step']                       . '"' . "\n";
 		$output .= '"' . __('Total Rows') . '","'     . $xport_array['meta']['rows']                       . '"' . "\n";
 		$output .= '"' . __('Graph ID') . '","'       . $xport_array['meta']['local_graph_id']             . '"' . "\n";
 		$output .= '"' . __('Host ID') . '","'        . $xport_array['meta']['host_id']                    . '"' . "\n";
 
 		if (isset($xport_meta['NthPercentile'])) {
-			foreach($xport_meta['NthPercentile'] as $item) {
+			foreach ($xport_meta['NthPercentile'] as $item) {
 				$output .= '"' . __('Nth Percentile') . '","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
 			}
 		}
 
 		if (isset($xport_meta['Summation'])) {
-			foreach($xport_meta['Summation'] as $item) {
+			foreach ($xport_meta['Summation'] as $item) {
 				$output .= '"' . __('Summation') . '","' . $item['value'] . '","' . $item['format'] . '"' . "\n";
 			}
 		}
@@ -174,7 +174,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 
 		print "<tr class='odd'>
 			<td class='left'>" . __('End Date') . "</td>
-			<td class='right'>" . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step']*($xport_array['meta']['rows']-1) : $xport_array['meta']['end']) . "</td>
+			<td class='right'>" . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step'] * ($xport_array['meta']['rows'] - 1) : $xport_array['meta']['end']) . "</td>
 		</tr>\n";
 
 		print "<tr class='even'>
@@ -199,7 +199,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 
 		$class = 'even';
 		if (isset($xport_meta['NthPercentile'])) {
-			foreach($xport_meta['NthPercentile'] as $item) {
+			foreach ($xport_meta['NthPercentile'] as $item) {
 				if ($class == 'even') {
 					$class = 'odd';
 				} else {
@@ -214,7 +214,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		}
 
 		if (isset($xport_meta['Summation'])) {
-			foreach($xport_meta['Summation'] as $item) {
+			foreach ($xport_meta['Summation'] as $item) {
 				if ($class == 'even') {
 					$class = 'odd';
 				} else {
@@ -247,8 +247,8 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 	if (!$html) {
 		$j = 1;
-		foreach($xport_array['data'] as $row) {
-			$data = '"' . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j*$xport_array['meta']['step'])) . '"';
+		foreach ($xport_array['data'] as $row) {
+			$data = '"' . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j * $xport_array['meta']['step'])) . '"';
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				$data .= ',"' . $row['col' . $i] . '"';
 			}
@@ -261,13 +261,13 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 		print $output;
 	} else {
 		$j = 1;
-		foreach($xport_array['data'] as $row) {
-			print "<tr><td class='left'>" . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j*$xport_array['meta']['step'])) . "</td>";
+		foreach ($xport_array['data'] as $row) {
+			print "<tr><td class='left'>" . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j * $xport_array['meta']['step'])) . '</td>';
 
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
 					print "<td class='right'>" . trim(number_format_i18n(round($row['col' . $i],3),2,$graph_info['base_value'])) . '</td>';
-				} elseif($row['col' . $i] == 0) {
+				} elseif ($row['col' . $i] == 0) {
 					print "<td class='right'>-</td>";
 				} else {
 					print "<td class='right'>" . round($row['col' . $i],4) . '</td>';
@@ -328,4 +328,3 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 
 /* log the memory usage */
 cacti_log("The Peak Graph XPORT Memory Usage was '" . memory_get_peak_usage() . "'", false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
-

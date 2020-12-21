@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-$hostId  = NULL;
+$hostId  = null;
 $proceed = false;
 
 /* process calling arguments */
@@ -33,11 +33,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -75,15 +75,15 @@ if ($proceed == false) {
 }
 
 /* check ownership of the current base path */
-$base_rra_path = $config["rra_path"];
+$base_rra_path = $config['rra_path'];
 $owner_id      = fileowner($base_rra_path);
 $group_id      = filegroup($base_rra_path);
 
 /* turn off the poller */
 disable_poller();
 
-$poller_running = shell_exec("ps -ef | grep poller.php | wc -l");
-if ($poller_running == "1") {
+$poller_running = shell_exec('ps -ef | grep poller.php | wc -l');
+if ($poller_running == '1') {
 	/* turn on the poller */
 	enable_poller();
 
@@ -103,7 +103,7 @@ $data_sources = db_fetch_assoc("SELECT local_data_id, host_id, data_source_path,
 	INNER JOIN data_local ON data_local.id=data_template_data.local_data_id
 	INNER JOIN host ON host.id=data_local.host_id
 	WHERE data_source_path != CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd')"
-	. ($hostId === NULL ? '' : " AND host_id=$hostId"));
+	. ($hostId === null ? '' : " AND host_id=$hostId"));
 
 /* setup some counters */
 $done_count   = 0;

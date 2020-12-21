@@ -116,14 +116,14 @@ function get_max_column_width() {
 	$bcol_data = db_fetch_row("SHOW COLUMNS FROM poller_output_boost WHERE Field='output'");
 
 	if (isset($pcol_data['Type'])) {
-		$pcol = $pcol_data['Type'];
-		$data = explode('(', $pcol);
+		$pcol  = $pcol_data['Type'];
+		$data  = explode('(', $pcol);
 		$pmax  = trim($data[1], ')');
 	}
 
 	if (cacti_sizeof($bcol_data)) {
-		$bcol = $bcol_data['Type'];
-		$data = explode('(', $bcol);
+		$bcol  = $bcol_data['Type'];
+		$data  = explode('(', $bcol);
 		$bmax  = trim($data[1], ')');
 	}
 
@@ -132,33 +132,33 @@ function get_max_column_width() {
 
 function display_version() {
 	$version = get_cacti_cli_version();
-	echo "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 //	display_help - displays the usage of the function
-function display_help () {
+function display_help() {
 	display_version();
 
-	echo "\nusage: cmd.php --first=ID --last=ID [--poller=ID] [--mibs] [--debug]\n\n";
-	echo "Cacti's legacy data collector.  This data collector is called by poller.php\n";
-	echo "every poller interval to gather information from devices.  It is recommended\n";
-	echo "that every system deploy spine instead of cmd.php in production due to the built\n";
-	echo "in scalability limits of cmd.php.\n\n";
-	echo "Required\n";
-	echo "    --first  - First host id in the range to collect from.\n";
-	echo "    --last   - Last host id in the range to collect from.\n\n";
-	echo "Optional:\n";
-	echo "    --poller - The poller to run as.  Defaults to the system poller.\n";
-	echo "    --mode   - The poller mode, either online, offline, or recovery.\n";
-	echo "    --mibs   - Refresh all system mibs from hosts supporting snmp.\n";
-	echo "    --debug  - Display verbose output during execution.\n\n";
+	print "\nusage: cmd.php --first=ID --last=ID [--poller=ID] [--mibs] [--debug]\n\n";
+	print "Cacti's legacy data collector.  This data collector is called by poller.php\n";
+	print "every poller interval to gather information from devices.  It is recommended\n";
+	print "that every system deploy spine instead of cmd.php in production due to the built\n";
+	print "in scalability limits of cmd.php.\n\n";
+	print "Required\n";
+	print "    --first  - First host id in the range to collect from.\n";
+	print "    --last   - Last host id in the range to collect from.\n\n";
+	print "Optional:\n";
+	print "    --poller - The poller to run as.  Defaults to the system poller.\n";
+	print "    --mode   - The poller mode, either online, offline, or recovery.\n";
+	print "    --mibs   - Refresh all system mibs from hosts supporting snmp.\n";
+	print "    --debug  - Display verbose output during execution.\n\n";
 }
 
 function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print('DEBUG: ' . $message . "\n");
+		print ('DEBUG: ' . $message . "\n");
 	}
 }
 
@@ -173,8 +173,8 @@ $no_http_headers = true;
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$first     = NULL;
-$last      = NULL;
+$first     = null;
+$last      = null;
 $allhost   = true;
 $debug     = false;
 $mibs      = false;
@@ -183,11 +183,11 @@ $poller_id = $config['poller_id'];
 $maxwidth  = get_max_column_width();
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -230,7 +230,7 @@ if (cacti_sizeof($parms)) {
 			$debug = true;
 			break;
 		default:
-			echo "ERROR: Invalid Argument: ($arg)\n\n";
+			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
 			exit(1);
 		}
@@ -245,7 +245,7 @@ if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$poller_db_cnn_id = false;
 }
 
-if ($first == NULL && $last == NULL) {
+if ($first == null && $last == null) {
 	// This is valid
 } elseif (!is_numeric($first) || $first < 0) {
 	cacti_log('FATAL: The first host in the host range is invalid!', true, 'POLLER');
@@ -375,7 +375,7 @@ if ($allhost) {
 		input_validate_input_number($first);
 		input_validate_input_number($last);
 
-		$hosts = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
+		$hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " *
 			FROM host
 			WHERE poller_id = ?
 			AND disabled = ''
@@ -487,7 +487,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 		);
 
 		$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php cmd', $cactides, $pipes);
-		$output = fgets($pipes[1], 1024);
+		$output   = fgets($pipes[1], 1024);
 
 		if (substr_count($output, 'Started') != 0) {
 			cacti_log('PHP Script Server Started Properly', $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_HIGH);
@@ -570,10 +570,8 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 					foreach ($reindex as $index_item) {
 						$assert_fail = false;
 
-
 						// do the check
 						switch ($index_item['action']) {
-
 						case POLLER_ACTION_SNMP: // snmp
 							open_snmp_session($host_id, $item);
 
@@ -637,7 +635,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 						case POLLER_ACTION_SCRIPT_COUNT: // script (popen); count items
 							// count items found
 							$script_index_array = exec_into_array($index_item['arg1']);
-							$output = cacti_sizeof($script_index_array);
+							$output             = cacti_sizeof($script_index_array);
 
 							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE CMD COUNT: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
@@ -713,7 +711,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 				}
 			}
 
-			$new_host = false;
+			$new_host  = false;
 			$last_host = $current_host;
 		}
 
@@ -752,7 +750,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 
 				$total_time = (microtime(true) - $thread_start) * 1000;
 
-				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . "] SNMP: v" . $item['snmp_version'] . ': ' . $item['hostname'] . ', dsname: ' . $item['rrd_name'] . ', oid: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . '] SNMP: v' . $item['snmp_version'] . ': ' . $item['hostname'] . ', dsname: ' . $item['rrd_name'] . ', oid: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			case POLLER_ACTION_SCRIPT: // script (popen)
@@ -774,7 +772,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 
 				$total_time = (microtime(true) - $thread_start) * 1000;
 
-				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . "] CMD: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . '] CMD: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			case POLLER_ACTION_SCRIPT_PHP: // script (php script server)
@@ -796,7 +794,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 
 				$total_time = (microtime(true) - $thread_start) * 1000;
 
-				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . "] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . '] SERVER: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			default: // invalid polling option
@@ -892,7 +890,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 		'Poller: %s, ' .
 		'Threads: N/A, ' .
 		'Devices: %d',
-		round($end-$start,4),
+		round($end - $start,4),
 		$poller_id,
 		$host_count), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 } else {
@@ -904,4 +902,3 @@ record_cmdphp_done();
 
 // close the database connection
 db_close();
-

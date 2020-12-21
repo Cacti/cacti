@@ -54,11 +54,11 @@ $template = '';
 $hostid   = '';
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -98,7 +98,7 @@ if (cacti_sizeof($parms)) {
 /* determine the hosts to reindex */
 if (strtolower($host_id) == 'all') {
 	$sql_where = '';
-}else if (is_numeric($host_id)) {
+}elseif (is_numeric($host_id)) {
 	$sql_where = ' WHERE id=' . $host_id;
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n\n";
@@ -120,7 +120,7 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 	$hosts = db_fetch_assoc("SELECT * FROM host $sql_where");
 
 	if (cacti_sizeof($hosts)) {
-	foreach($hosts as $host) {
+	foreach ($hosts as $host) {
 		print "NOTE: Updating Host '" . $host['description'] . "'\n";
 		$snmp_queries = db_fetch_assoc('SELECT snmp_query_id
 			FROM host_template_snmp_query
@@ -165,7 +165,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: host_update_template.php --host-id=[host-id|all] [--host-template=[ID]] [--debug]\n\n";
@@ -183,6 +183,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print("DEBUG: " . $message . "\n");
+		print ('DEBUG: ' . $message . "\n");
 	}
 }

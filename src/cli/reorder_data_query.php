@@ -33,16 +33,16 @@ ini_set('max_execution_time', '0');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		= false;
-$host_id	= 'all';
-$host_descr	= '';
+$debug      = false;
+$host_id    = 'all';
+$host_descr = '';
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -82,14 +82,13 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
-
 $sql_where = "WHERE data_input_fields.type_code='output_type'";
 
 /* determine the hosts to reindex */
 if (strtolower($host_id) == 'all') {
 	/* NOP */
-}else if (is_numeric($host_id)) {
-	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ' ) . 'data_local.host_id = ' . $host_id;
+} elseif (is_numeric($host_id)) {
+	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.host_id = ' . $host_id;
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
@@ -98,7 +97,7 @@ if (strtolower($host_id) == 'all') {
 
 /* determine data queries to rerun */
 if (is_numeric($query_id)) {
-	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ' ) . 'data_local.snmp_query_id= ' . $query_id;
+	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.snmp_query_id= ' . $query_id;
 } else {
 	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
 	display_help();
@@ -150,7 +149,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]\n\n";
@@ -166,6 +165,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print "DEBUG: " . trim($message) . "\n";
+		print 'DEBUG: ' . trim($message) . "\n";
 	}
 }

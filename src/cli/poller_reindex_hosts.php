@@ -43,18 +43,18 @@ ini_set('max_execution_time', '0');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		= false;
-$host_id	= '';
-$query_id	= 'all';		/* just to mimic the old behaviour */
+$debug		    = false;
+$host_id	   = '';
+$query_id	  = 'all';		/* just to mimic the old behaviour */
 $host_descr	= '';
 $force      = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -103,7 +103,7 @@ if (cacti_sizeof($parms)) {
 /* determine the hosts to reindex */
 if (strtolower($host_id) == 'all') {
 	$sql_where = '';
-}else if (is_numeric($host_id) && $host_id > 0) {
+}elseif (is_numeric($host_id) && $host_id > 0) {
 	$sql_where = 'WHERE host_id = ' . $host_id;
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
@@ -114,7 +114,7 @@ if (strtolower($host_id) == 'all') {
 /* determine data queries to rerun */
 if (strtolower($query_id) == 'all') {
 	/* do nothing */
-}else if (is_numeric($query_id) && $query_id > 0) {
+}elseif (is_numeric($query_id) && $query_id > 0) {
 	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' snmp_query_id=' . $query_id;
 } else {
 	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
@@ -154,7 +154,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 	print "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]\n";
 	print "   [--host-descr=[description]] [--debug]\n\n";
@@ -169,6 +169,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print('DEBUG: ' . $message . "\n");
+		print ('DEBUG: ' . $message . "\n");
 	}
 }

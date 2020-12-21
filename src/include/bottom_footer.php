@@ -29,4 +29,3 @@ if (!$is_ajax_request) {
 	api_plugin_hook('page_bottom');
 	print "\t</body>\n</html>\n";
 }
-

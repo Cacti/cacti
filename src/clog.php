@@ -31,7 +31,7 @@ include_once('./lib/utility.php');
 
 /* check edit/alter permissions */
 if (!clog_admin()) {
-	echo __('FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI');
+	print __('FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI');
 	exit;
 }
 

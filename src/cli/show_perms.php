@@ -41,12 +41,11 @@ if (cacti_sizeof($parms)) {
 
 	$options = getopt($shortopts, $longopts);
 
-	foreach($options as $arg => $value) {
+	foreach ($options as $arg => $value) {
 		switch($arg) {
 			case 'json':
 				$output_json = true;
 				break;
-
 			case 'version':
 			case 'V':
 			case 'v':
@@ -67,7 +66,6 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-
 $perms = db_get_permissions(true);
 
 $count = 0;
@@ -84,7 +82,6 @@ if ($output_json) {
 
 if ($count % 2 == 1) print PHP_EOL;
 
-
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
@@ -94,9 +91,9 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print PHP_EOL . "usage: show_perms.php [--json]" . PHP_EOL . PHP_EOL;
-	print "Cacti utility for auditing your Cacti database permissions.  This utility" . PHP_EOL;
-	print "will scan your Cacti database and report any permissons that it finds." . PHP_EOL . PHP_EOL;
-	print "Options:" . PHP_EOL;
-	print "    --json - Report on any permissions found in the database" . PHP_EOL;
+	print PHP_EOL . 'usage: show_perms.php [--json]' . PHP_EOL . PHP_EOL;
+	print 'Cacti utility for auditing your Cacti database permissions.  This utility' . PHP_EOL;
+	print 'will scan your Cacti database and report any permissons that it finds.' . PHP_EOL . PHP_EOL;
+	print 'Options:' . PHP_EOL;
+	print '    --json - Report on any permissions found in the database' . PHP_EOL;
 }

@@ -56,7 +56,7 @@ $modes = array(
 	'movedown'
 );
 
-if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $modes) && isset_request_var('id')) {
+if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $modes, true) && isset_request_var('id')) {
 	get_filter_request_var('id', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9 _]+)$/')));
 
 	$mode = get_nfilter_request_var('mode');
@@ -64,7 +64,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 	switch ($mode) {
 		case 'install':
-			if (!in_array($id, $plugins_integrated)) {
+			if (!in_array($id, $plugins_integrated, true)) {
 				api_plugin_install($id);
 			}
 
@@ -78,8 +78,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			exit;
 			break;
 		case 'uninstall':
-			if (!in_array($id, $pluginslist)) break;
-
+			if (!in_array($id, $pluginslist, true)) break;
 			define('IN_PLUGIN_INSTALL', 1);
 
 			api_plugin_uninstall($id);
@@ -88,32 +87,32 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			exit;
 			break;
 		case 'disable':
-			if (!in_array($id, $pluginslist)) break;
+			if (!in_array($id, $pluginslist, true)) break;
 			api_plugin_disable($id);
 			header('Location: plugins.php');
 			exit;
 			break;
 		case 'enable':
-			if (!in_array($id, $pluginslist)) break;
-			if (!in_array($id, $plugins_integrated)) {
+			if (!in_array($id, $pluginslist, true)) break;
+			if (!in_array($id, $plugins_integrated, true)) {
 				api_plugin_enable($id);
 			}
 			header('Location: plugins.php');
 			exit;
 			break;
 		case 'check':
-			if (!in_array($id, $pluginslist)) break;
+			if (!in_array($id, $pluginslist, true)) break;
 			break;
 		case 'moveup':
-			if (!in_array($id, $pluginslist)) break;
-			if (in_array($id, $plugins_integrated)) break;
+			if (!in_array($id, $pluginslist, true)) break;
+			if (in_array($id, $plugins_integrated, true)) break;
 			api_plugin_moveup($id);
 			header('Location: plugins.php');
 			exit;
 			break;
 		case 'movedown':
-			if (!in_array($id, $pluginslist)) break;
-			if (in_array($id, $plugins_integrated)) break;
+			if (!in_array($id, $pluginslist, true)) break;
+			if (in_array($id, $plugins_integrated, true)) break;
 			api_plugin_movedown($id);
 			header('Location: plugins.php');
 			exit;
@@ -123,10 +122,11 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 function retrieve_plugin_list() {
 	$pluginslist = array();
-	$temp = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY name');
+	$temp        = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY name');
 	foreach ($temp as $t) {
 		$pluginslist[] = $t['directory'];
 	}
+
 	return $pluginslist;
 }
 
@@ -173,10 +173,10 @@ function plugins_load_temp_table() {
 	$cinfo = array();
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
-			if (is_dir("$path$file") && file_exists("$path$file/setup.php") && !in_array($file, $plugins_integrated)) {
+			if (is_dir("$path$file") && file_exists("$path$file/setup.php") && !in_array($file, $plugins_integrated, true)) {
 				$info_file = "$path$file/INFO";
 				if (file_exists($info_file)) {
-					$cinfo[$file] = plugin_load_info_file($info_file);
+					$cinfo[$file]  = plugin_load_info_file($info_file);
 					$pluginslist[] = $file;
 				} else {
 					$cinfo[$file] = plugin_load_info_defaults($info_file, false);
@@ -216,11 +216,11 @@ function plugins_load_temp_table() {
 	}
 
 	$found_plugins = array_keys($cinfo);
-	$plugins = db_fetch_assoc('SELECT id, directory, status FROM plugin_config');
+	$plugins       = db_fetch_assoc('SELECT id, directory, status FROM plugin_config');
 
 	if ($plugins !== false && sizeof($plugins)) {
 		foreach ($plugins as $plugin) {
-			if (!in_array($plugin['directory'], $found_plugins)) {
+			if (!in_array($plugin['directory'], $found_plugins, true)) {
 				$plugin['status'] = '-5';
 
 				$exists = db_fetch_cell_prepared("SELECT COUNT(*)
@@ -256,37 +256,37 @@ function plugins_load_temp_table() {
 	return $table;
 }
 
-function update_show_current () {
+function update_show_current() {
 	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'state' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-99'
 			)
@@ -424,7 +424,7 @@ function update_show_current () {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$sql_order = str_replace('`version` ', 'INET_ATON(`version`) ', $sql_order);
 	$sql_order = str_replace('version ', 'version+0 ', $sql_order);
@@ -463,7 +463,7 @@ function update_show_current () {
 	if (cacti_sizeof($plugins)) {
 		$j = 0;
 		foreach ($plugins as $plugin) {
-			if ((isset($plugins[$j+1]) && $plugins[$j+1]['status'] < 0) || (!isset($plugins[$j+1]))) {
+			if ((isset($plugins[$j + 1]) && $plugins[$j + 1]['status'] < 0) || (!isset($plugins[$j + 1]))) {
 				$last_plugin = true;
 			} else {
 				$last_plugin = false;
@@ -494,7 +494,7 @@ function update_show_current () {
 
 	form_end();
 
-	$uninstall_msg = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
+	$uninstall_msg   = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
 	$uninstall_title = __('Are you sure you want to Uninstall?');
 
 	?>
@@ -561,7 +561,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 
 	if ($plugin['requires'] != '') {
 		$requires = explode(' ', $plugin['requires']);
-		foreach($requires as $r) {
+		foreach ($requires as $r) {
 			$nr[] = ucfirst($r);
 		}
 
@@ -608,7 +608,7 @@ function plugin_required_for_others($plugin, $table) {
 
 	if ($required_for_others) {
 		$parts = explode(',', $required_for_others);
-		foreach($parts as $p) {
+		foreach ($parts as $p) {
 			$np[] = ucfirst($p);
 		}
 
@@ -621,6 +621,7 @@ function plugin_required_for_others($plugin, $table) {
 function plugin_required_installed($plugin, $table) {
 	$not_installed = '';
 	api_plugin_can_install($plugin['infoname'], $not_installed);
+
 	return $not_installed;
 }
 
@@ -631,7 +632,7 @@ function plugin_actions($plugin, $table) {
 	switch ($plugin['status']) {
 		case '0': // Not Installed
 			$not_installed = plugin_required_installed($plugin, $table);
-		 	if ($not_installed != '') {
+			if ($not_installed != '') {
 				$link .= "<a href='#' title='" . __esc('Unable to Install Plugin.  The following Plugins must be installed first: %s', ucfirst($not_installed)) . "' class='linkEditMain'><img src='" . $config['url_path'] . "images/cog_error.png'></a>";
 			} else {
 				$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='linkEditMain'><img src='" . $config['url_path'] . "images/cog_add.png'></a>";
@@ -673,14 +674,14 @@ function plugin_actions($plugin, $table) {
 
 			break;
 		default: // Old PIA
-			$path = $config['base_path'] . '/plugins/' . $plugin['directory'];
+			$path       = $config['base_path'] . '/plugins/' . $plugin['directory'];
 			$directory  = $plugin['name'];
 
 			if (!file_exists("$path/setup.php")) {
 				$link .= "<a href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			} elseif (!file_exists("$path/INFO")) {
 				$link .= "<a href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
-			} elseif (in_array($directory, $plugins_integrated)) {
+			} elseif (in_array($directory, $plugins_integrated, true)) {
 				$link .= "<a href='#' title='" . __esc('Plugin is integrated into Cacti core') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			} else {
 				$link .= "<a href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
@@ -692,4 +693,3 @@ function plugin_actions($plugin, $table) {
 
 	return $link;
 }
-

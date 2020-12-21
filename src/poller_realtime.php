@@ -43,11 +43,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -133,11 +133,16 @@ $extra_args     = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cmd_real
 
 /* Determine if Realtime will work or not */
 $cache_dir = read_config_option('realtime_cache_path');
+
 if (!is_dir($cache_dir)) {
 	cacti_log("FATAL: Realtime Cache Directory '$cache_dir' Does Not Exist!");
+
 	return -1;
-} elseif (!is_writable($cache_dir)) {
+}
+
+if (!is_writable($cache_dir)) {
 	cacti_log("FATAL: Realtime Cache Directory '$cache_dir' is Not Writable!");
+
 	return -2;
 }
 
@@ -216,7 +221,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 				Also make sure to replace all of the fancy "\"s at the end of the line,
 				but make sure not to get rid of the "\n"s that are supposed to be
 				in there (text format) */
-				$command = str_replace("\\\n", " ", $command);
+				$command = str_replace("\\\n", ' ', $command);
 
 				/* create the rrdfile */
 				shell_exec($command);
@@ -251,7 +256,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 					WHERE data_template_rrd.data_input_field_id=data_input_fields.id
 					AND data_template_rrd.local_data_id = ?', array($item['local_data_id'])), 'data_name', 'data_source_name');
 
-				for ($i=0; $i<cacti_count($values); $i++) {
+				for ($i=0; $i < cacti_count($values); $i++) {
 					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/', $values[$i], $matches)) {
 						if (isset($rrd_field_names[$matches[1]])) {
 							$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$rrd_field_names[$matches[1]]] = $matches[2];
@@ -263,7 +268,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			/* fallback values */
 			if ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] != '')) {
 				$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$item['rrd_name']] = 'U';
-			}else if ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] == '')) {
+			}elseif ((!isset($rrd_update_array[$item['rrd_path']]['times'][$unix_time])) && ($item['rrd_name'] == '')) {
 				unset($rrd_update_array[$item['rrd_path']]);
 			}
 		}

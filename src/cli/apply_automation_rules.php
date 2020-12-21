@@ -51,11 +51,11 @@ $description = '';
 $ids         = array();
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -84,7 +84,7 @@ if (cacti_sizeof($parms)) {
 				display_help();
 				exit(0);
 			default:
-				print "ERROR: Invalid Parameter " . $parameter . PHP_EOL . PHP_EOL;
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 				exit(1);
 		}
@@ -101,7 +101,7 @@ $sql_where = '';
 
 // Check device id range
 if (cacti_sizeof($ids)) {
-	foreach($ids as $id) {
+	foreach ($ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print 'FATAL: Device id ' . $id . ' is not a valid device.  Can not continue.' . PHP_EOL;
 			exit(1);
@@ -149,7 +149,7 @@ if (cacti_sizeof($devices)) {
 		print 'DEBUG: Found ' . cacti_sizeof($devices) . ' devices to run automation on' . PHP_EOL;
 	}
 
-	foreach($devices as $device_id) {
+	foreach ($devices as $device_id) {
 		if ($debug) {
 			print 'DEBUG: Running automation for Device ID ' . $device_id . PHP_EOL;
 		}
@@ -173,7 +173,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL;

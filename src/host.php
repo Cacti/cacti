@@ -179,7 +179,7 @@ switch (get_request_var('action')) {
 }
 
 /* --------------------------
-    Global Form Functions
+	Global Form Functions
    -------------------------- */
 
 function host_reindex() {
@@ -232,7 +232,7 @@ function get_site_locations() {
 		array($site_id, "%$term%"));
 
 	if (cacti_sizeof($locations)) {
-		foreach($locations as $l) {
+		foreach ($locations as $l) {
 			$return[] = array('label' => $l['location'], 'value' => $l['location'], 'id' => $l['location']);
 		}
 	}
@@ -241,14 +241,14 @@ function get_site_locations() {
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() {
 	if (isset_request_var('save_component_host')) {
 		if (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_password') != get_nfilter_request_var('snmp_password_confirm'))) {
 			raise_message(14);
-		} else if (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_priv_passphrase') != get_nfilter_request_var('snmp_priv_passphrase_confirm'))) {
+		} elseif (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_priv_passphrase') != get_nfilter_request_var('snmp_priv_passphrase_confirm'))) {
 			raise_message(13);
 		} else {
 			get_filter_request_var('id');
@@ -279,7 +279,7 @@ function form_save() {
 }
 
 /* ------------------------
-    The "actions" function
+	The "actions" function
    ------------------------ */
 
 function form_actions() {
@@ -341,7 +341,7 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$host_list = '';
+	$host_list  = '';
 	$host_array = array();
 
 	/* loop through each of the host templates selected on the previous page and get more info about them */
@@ -412,12 +412,12 @@ function form_actions() {
 						$form_array[$field_name]['description'] = '';
 					}
 
-					$form_array[$field_name]['form_id'] = 0;
+					$form_array[$field_name]['form_id']      = 0;
 					$form_array[$field_name]['sub_checkbox'] = array(
-						'name' => 't_' . $field_name,
+						'name'          => 't_' . $field_name,
 						'friendly_name' => __('Update this Field'),
-						'class' => 'ui-state-disabled',
-						'value' => ''
+						'class'         => 'ui-state-disabled',
+						'value'         => ''
 					);
 
 					$form_array['location']['method']     = 'textbox';
@@ -466,9 +466,9 @@ function form_actions() {
 					form_radio_button('delete_type', '2', '1', __('Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.'), '1'); print '<br>';
 					form_radio_button('delete_type', '2', '2', __('Delete all associated Graph(s) and Data Source(s).'), '1'); print '<br>';
 
-			print "</td></tr>
+			print '</td></tr>
 				</td>
-			</tr>";
+			</tr>';
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
 		} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
@@ -476,7 +476,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Device(s) under the branch selected below.') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
-					<p>" . __('Destination Branch:') . "<br>";
+					<p>" . __('Destination Branch:') . '<br>';
 					grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0');
 
 			print "</p>
@@ -543,7 +543,7 @@ function host_export() {
 		$columns = array_keys($hosts[0]);
 		fputcsv($stdout, $columns);
 
-		foreach($hosts as $h) {
+		foreach ($hosts as $h) {
 			fputcsv($stdout, $h);
 		}
 	}
@@ -552,7 +552,7 @@ function host_export() {
 }
 
 /* -------------------
-    Data Query Functions
+	Data Query Functions
    ------------------- */
 
 function host_add_query() {
@@ -619,7 +619,7 @@ function host_remove_gt() {
 }
 
 /* ---------------------
-    Device Functions
+	Device Functions
    --------------------- */
 
 function host_edit() {
@@ -645,12 +645,12 @@ function host_edit() {
 		if (cacti_sizeof($host)) {
 			$header_label = __esc('Device [edit: %s]', $host['description']);
 			if (is_device_debug_enabled($host['id'])) {
-				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . "</a><br>";
+				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . '</a><br>';
 			} else {
-				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=enable_debug&host_id=' . $host['id']) . "'>" . __('Enable Device Debug') . "</a><br>";
+				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=enable_debug&host_id=' . $host['id']) . "'>" . __('Enable Device Debug') . '</a><br>';
 			}
 
-			$repop_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=repopulate&host_id=' . $host['id']) . "'>" . __('Repopulate Poller Cache') . "</a><br>";
+			$repop_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=repopulate&host_id=' . $host['id']) . "'>" . __('Repopulate Poller Cache') . '</a><br>';
 		}
 	} else {
 		$_SESSION['cur_device_id'] = 0;
@@ -712,7 +712,7 @@ function host_edit() {
 				array('display' => __('Status'), 'align' => 'left', 'nohide' => true)
 			), 2);
 
-		$selected_graph_templates = db_fetch_assoc_prepared("
+		$selected_graph_templates = db_fetch_assoc_prepared('
 			SELECT result.id, result.name, graph_local.id AS graph_local_id
 			FROM (
 				SELECT DISTINCT gt.id, gt.name
@@ -724,11 +724,11 @@ function host_edit() {
 			LEFT JOIN graph_local
 			ON graph_local.graph_template_id = result.id
 			AND graph_local.host_id = ?
-			ORDER BY result.name",
+			ORDER BY result.name',
 			array(get_request_var('id'), get_request_var('id'))
 		);
 
-		$available_graph_templates = db_fetch_assoc_prepared("SELECT DISTINCT gt.id, gt.name
+		$available_graph_templates = db_fetch_assoc_prepared('SELECT DISTINCT gt.id, gt.name
 			FROM graph_templates AS gt
 			LEFT JOIN snmp_query_graph AS sqg
 			ON sqg.graph_template_id = gt.id
@@ -742,12 +742,14 @@ function host_edit() {
 			AND gti.local_graph_id = 0
 			AND dtr.local_data_id = 0
 			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
-			ORDER BY gt.name",
+			ORDER BY gt.name',
 			array(get_request_var('id'))
 		);
 
 		$i = 0;
+
 		$displayed_templates = array();
+
 		if (cacti_sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
 				if (isset($displayed_templates[$item['id']])) {
@@ -767,7 +769,7 @@ function host_edit() {
 						<strong><?php print $i;?>)</strong> <?php print html_escape($item['name']);?>
 					</td>
 					<td class='nowrap'>
-						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . html_escape('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) . "'>" . __('Edit') . "</a>)" : "<span class='notBeingGraphed'>" . __('Not Being Graphed') ."</span>");?>
+						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . html_escape('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) . "'>" . __('Edit') . '</a>)' : "<span class='notBeingGraphed'>" . __('Not Being Graphed') .'</span>');?>
 					</td>
 					<td class='nowrap right'>
 						<span title='<?php print __esc('Delete Graph Template Association');?>' class='deletequery fa fa-times' id='gtremove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
@@ -777,7 +779,7 @@ function host_edit() {
 				form_end_row();
 			}
 		} else {
-			print "<tr class='tableRow'><td colspan='3'><em>" . __('No associated graph templates.') . "</em></td></tr>";
+			print "<tr class='tableRow'><td colspan='3'><em>" . __('No associated graph templates.') . '</em></td></tr>';
 		}
 
 		?>
@@ -896,7 +898,7 @@ function host_edit() {
 					<?php device_reindex_methods($item, $host);?>
 					</td>
 					<td>
-						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail')) . "</span>" . __(' [%d Items, %d Rows]', $item['itemCount'], $item['rowCount']);?>
+						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . '</span>' : "<span class='failed'>" . __('Fail')) . '</span>' . __(' [%d Items, %d Rows]', $item['itemCount'], $item['rowCount']);?>
 					</td>
 					<td class='nowrap right' style='vertical-align:middle;'>
 						<span class='reloadquery fa fa-sync' id='reload<?php print $item['id'];?>' title='<?php print __esc('Reload Query');?>' data-id='<?php print $item['id'];?>'></span>
@@ -907,7 +909,7 @@ function host_edit() {
 				form_end_row();
 			}
 		} else {
-			print "<tr class='tableRow'><td colspan='4'><em>" . __('No Associated Data Queries.') . "</em></td></tr>";
+			print "<tr class='tableRow'><td colspan='4'><em>" . __('No Associated Data Queries.') . '</em></td></tr>';
 		}
 
 		if ($host['snmp_version'] == 0) {
@@ -960,13 +962,13 @@ function device_reindex_methods($item, $host) {
 	$selectedTheme = get_selected_theme();
 
 	$i = 0;
-	foreach($reindex_types as $key => $type) {
+	foreach ($reindex_types as $key => $type) {
 		if ($selectedTheme != 'classic') {
 			if ($i == 0) {
 				print "<fieldset class='reindex_methods'>";
 			}
-			print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . "_" . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"':'') . " />";
-			print "<label title='" . html_escape($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . "_" . $key . "'>" . $type . "</label>";
+			print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . '_' . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"':'') . ' />';
+			print "<label title='" . html_escape($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . '_' . $key . "'>" . $type . '</label>';
 		} else {
 			print $reindex_types[$item['reindex_method']];
 			break;
@@ -976,7 +978,7 @@ function device_reindex_methods($item, $host) {
 	}
 
 	if ($selectedTheme != 'classic') {
-		print "</fieldset>";
+		print '</fieldset>';
 	}
 }
 
@@ -1312,51 +1314,51 @@ function host_validate_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'location' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'description',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_status' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'host_template_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'site_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'poller_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -1372,9 +1374,9 @@ function get_device_records(&$total_rows, $rows) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (deleted = "" AND (
-			host.hostname LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			host.hostname LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR host.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR host.id = '             . db_qstr(get_request_var('filter')) . '))';
+			OR host.id = '			 . db_qstr(get_request_var('filter')) . '))';
 	} else {
 		$sql_where = "WHERE deleted = ''";
 	}
@@ -1382,7 +1384,7 @@ function get_device_records(&$total_rows, $rows) {
 	if (get_request_var('location') == __('Undefined') || get_request_var('location') == '') {
 		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' IFNULL(host.location,"") = ""';
 	} elseif (get_request_var('location') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
+		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));
 	}
 
 	if (get_request_var('host_status') == '-1') {
@@ -1429,7 +1431,7 @@ function get_device_records(&$total_rows, $rows) {
 	$poller_interval = read_config_option('poller_interval');
 
 	$sql_order = get_order_string();
-	$sql_limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = 'LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$sql_query = "SELECT host.*, graphs, data_sources,
 		CAST(IF(availability_method = 0, '0',
@@ -1548,7 +1550,7 @@ function host() {
 
 							if (cacti_sizeof($sites)) {
 								foreach ($sites as $site) {
-									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>";
+									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . '</option>';
 								}
 							}
 							?>
@@ -1565,7 +1567,7 @@ function host() {
 
 							if (cacti_sizeof($pollers)) {
 								foreach ($pollers as $poller) {
-									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . html_escape($poller['name']) . "</option>";
+									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . html_escape($poller['name']) . '</option>';
 								}
 							}
 							?>
@@ -1583,7 +1585,7 @@ function host() {
 
 							if (cacti_sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>";
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . '</option>';
 								}
 							}
 							?>
@@ -1609,7 +1611,7 @@ function host() {
 
 							if (cacti_sizeof($locations)) {
 								foreach ($locations as $l) {
-									print "<option value='" . $l['location'] . "'"; if (get_request_var('location') == $l['location']) { print ' selected'; } print '>' . html_escape($l['location']) . "</option>";
+									print "<option value='" . $l['location'] . "'"; if (get_request_var('location') == $l['location']) { print ' selected'; } print '>' . html_escape($l['location']) . '</option>';
 								}
 							}
 							?>
@@ -1656,7 +1658,7 @@ function host() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1675,86 +1677,86 @@ function host() {
 	$display_text = array(
 		'description' => array(
 			'display' => __('Device Description'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The name by which this Device will be referred to.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name by which this Device will be referred to.')
 		),
 		'hostname' => array(
 			'display' => __('Hostname'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file.')
 		),
 		'id' => array(
 			'display' => __('ID'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The internal database ID for this Device.  Useful when performing automation or debugging.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database ID for this Device.  Useful when performing automation or debugging.')
 		),
 		'graphs' => array(
 			'display' => __('Graphs'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The total number of Graphs generated from this Device.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The total number of Graphs generated from this Device.')
 		),
 		'data_sources' => array(
 			'display' => __('Data Sources'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The total number of Data Sources generated from this Device.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The total number of Data Sources generated from this Device.')
 		),
 		'status' => array(
 			'display' => __('Status'),
-			'align' => 'center',
-			'sort' => 'ASC',
-			'tip' => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')
+			'align'   => 'center',
+			'sort'    => 'ASC',
+			'tip'     => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')
 		),
 		'instate' => array(
 			'display' => __('In State'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The amount of time that this Device has been in its current state.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The amount of time that this Device has been in its current state.')
 		),
 		'snmp_sysUpTimeInstance' => array(
 			'display' => __('Uptime'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The current amount of time that the host has been up.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The current amount of time that the host has been up.')
 		),
 		'polling_time' => array(
 			'display' => __('Poll Time'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The amount of time it takes to collect data from this Device.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The amount of time it takes to collect data from this Device.')
 		),
 		'cur_time' => array(
 			'display' => __('Current (ms)'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The current ping time in milliseconds to reach the Device.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The current ping time in milliseconds to reach the Device.')
 		),
 		'avg_time' => array(
 			'display' => __('Average (ms)'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The average ping time in milliseconds to reach the Device since the counters were cleared for this Device.')
 		),
 		'availability' => array(
 			'display' => __('Availability'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The availability percentage based upon ping results since the counters were cleared for this Device.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The availability percentage based upon ping results since the counters were cleared for this Device.')
 		),
 		'nosort_created' => array(
 			'display' => __('Created'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The date this device wasadded to the database'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The date this device wasadded to the database'),
 		),
 	);
 
 	$display_text_size = sizeof($display_text);
-	$display_text = api_plugin_hook_function('device_display_text', $display_text);
+	$display_text      = api_plugin_hook_function('device_display_text', $display_text);
 
 	$hosts = get_device_records($total_rows, $rows);
 
@@ -1770,7 +1772,7 @@ function host() {
 
 	if (sizeof($display_text) != $display_text_size && cacti_sizeof($hosts)) {//display_text changed
 		api_plugin_hook_function('device_table_replace', $hosts);
-	} else if (cacti_sizeof($hosts)) {
+	} elseif (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			if ($host['disabled'] == '' &&
 				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&
@@ -1801,7 +1803,7 @@ function host() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Devices Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Devices Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

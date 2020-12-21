@@ -37,11 +37,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -90,13 +90,13 @@ if ($audit) {
 	$input = json_decode(file_get_contents($config['input_whitelist']), true);
 
 	$totals = 0;
-	$items = cacti_sizeof($input);
+	$items  = cacti_sizeof($input);
 
 	if ($items) {
 		print 'Data Input Methods Whitelist Verification' . PHP_EOL . PHP_EOL;
 		print '------------------------------------------------------------------------------------------------------------' . PHP_EOL;
 
-		foreach($input as $hash => $input_string) {
+		foreach ($input as $hash => $input_string) {
 			$aud = verify_data_input($hash, $input_string);
 			if ($aud['status'] == true) {
 				print 'ID: ' . $aud['id'] . ', Name: ' . $aud['name'] . ', Status: ' . 'Success' . PHP_EOL;
@@ -153,7 +153,7 @@ if ($audit) {
 		print 'SUCCESS: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' successfully updated.' . PHP_EOL;
 
 		if (cacti_sizeof($pushes)) {
-			foreach($pushes as $data_input_method => $name) {
+			foreach ($pushes as $data_input_method => $name) {
 				print 'NOTE: Pushing Out Data Input Method: ' . $name . ' (' . $data_input_method . ')' . PHP_EOL;
 				push_out_data_input_method($data_input_method);
 			}
@@ -179,17 +179,17 @@ function display_version() {
 /*
  * display_help - displays the usage of the function
  */
-function display_help () {
+function display_help() {
 	display_version();
 
-	print PHP_EOL . "usage: input_whitelist.php [--audit | --update [--push]]" . PHP_EOL . PHP_EOL;
+	print PHP_EOL . 'usage: input_whitelist.php [--audit | --update [--push]]' . PHP_EOL . PHP_EOL;
 
-	print "A utility audit and update the Data Input whitelist status and" . PHP_EOL;
-	print "Data Input protection file." . PHP_EOL . PHP_EOL;
+	print 'A utility audit and update the Data Input whitelist status and' . PHP_EOL;
+	print 'Data Input protection file.' . PHP_EOL . PHP_EOL;
 
-	print "Optional:" . PHP_EOL;
-	print "    --audit       Audit but do not update the whitelist file." . PHP_EOL;
-	print "    --update      Update the whitelist file with latest information." . PHP_EOL;
-	print "    --push        If any input strings are being updated to new values," . PHP_EOL;
-	print "                  push out the Data Input Methods with new input strings." . PHP_EOL . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
+	print '    --audit       Audit but do not update the whitelist file.' . PHP_EOL;
+	print '    --update      Update the whitelist file with latest information.' . PHP_EOL;
+	print '    --push        If any input strings are being updated to new values,' . PHP_EOL;
+	print '                  push out the Data Input Methods with new input strings.' . PHP_EOL . PHP_EOL;
 }

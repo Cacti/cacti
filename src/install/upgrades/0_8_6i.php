@@ -24,12 +24,12 @@
 
 function upgrade_to_0_8_6i() {
 	/* once again, larger fields for OIDs and the like */
-	db_install_execute("ALTER TABLE `poller_item` MODIFY COLUMN `arg1` TEXT;");
-	db_install_execute("ALTER TABLE `poller_reindex` MODIFY COLUMN `arg1` VARCHAR(255) NOT NULL;");
-	db_install_execute("ALTER TABLE `host_snmp_cache` MODIFY COLUMN `oid` TEXT NOT NULL;");
+	db_install_execute('ALTER TABLE `poller_item` MODIFY COLUMN `arg1` TEXT;');
+	db_install_execute('ALTER TABLE `poller_reindex` MODIFY COLUMN `arg1` VARCHAR(255) NOT NULL;');
+	db_install_execute('ALTER TABLE `host_snmp_cache` MODIFY COLUMN `oid` TEXT NOT NULL;');
 
 	/* let's add more graph tree items for those larger installations */
-	db_install_execute("ALTER TABLE `graph_tree_items` MODIFY COLUMN `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;");
+	db_install_execute('ALTER TABLE `graph_tree_items` MODIFY COLUMN `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;');
 
 	/* let's keep track of an important statistical value */
 	db_install_add_column('poller_time', array('name' => 'pid', 'type' => 'INTEGER UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'id'));

@@ -107,4 +107,3 @@ function get_graph_template_details($local_graph_id) {
 		}
 	}
 }
-

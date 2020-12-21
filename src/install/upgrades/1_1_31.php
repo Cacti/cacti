@@ -72,4 +72,3 @@ function upgrade_to_1_1_31() {
 		db_install_execute('UPDATE settings SET name="snmp_version" WHERE name="snmp_ver"');
 	}
 }
-

@@ -105,8 +105,8 @@ function form_automation_snmp_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
-		$save['id']     = get_nfilter_request_var('id');
-		$save['name']   = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['id']   = get_nfilter_request_var('id');
+		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 
 		if (!is_error_message()) {
 			$id = sql_save($save, 'automation_snmp');
@@ -125,22 +125,23 @@ function form_automation_snmp_save() {
 		/* ==================================================== */
 
 		$save = array();
-		$save['id']						= form_input_validate(get_nfilter_request_var('item_id'), '', '^[0-9]+$', false, 3);
-		$save['snmp_id'] 				= form_input_validate(get_nfilter_request_var('id'), 'snmp_id', '^[0-9]+$', false, 3);
-		$save['sequence'] 				= form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
-		$save['snmp_community'] 		= form_input_validate(get_nfilter_request_var('snmp_community'), 'snmp_community', '', false, 3);
-		$save['snmp_version'] 			= form_input_validate(get_nfilter_request_var('snmp_version'), 'snmp_version', '', false, 3);
-		$save['snmp_username']			= form_input_validate(get_nfilter_request_var('snmp_username'), 'snmp_username', '', true, 3);
-		$save['snmp_password']			= form_input_validate(get_nfilter_request_var('snmp_password'), 'snmp_password', '', true, 3);
-		$save['snmp_auth_protocol']		= form_input_validate(get_nfilter_request_var('snmp_auth_protocol'), 'snmp_auth_protocol', '', true, 3);
-		$save['snmp_priv_passphrase']	= form_input_validate(get_nfilter_request_var('snmp_priv_passphrase'), 'snmp_priv_passphrase', '', true, 3);
-		$save['snmp_priv_protocol']		= form_input_validate(get_nfilter_request_var('snmp_priv_protocol'), 'snmp_priv_protocol', '', true, 3);
-		$save['snmp_context']			= form_input_validate(get_nfilter_request_var('snmp_context'), 'snmp_context', '', true, 3);
-		$save['snmp_engine_id']			= form_input_validate(get_nfilter_request_var('snmp_engine_id'), 'snmp_engine_id', '', true, 3);
-		$save['snmp_port']				= form_input_validate(get_nfilter_request_var('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
-		$save['snmp_timeout']			= form_input_validate(get_nfilter_request_var('snmp_timeout'), 'snmp_timeout', '^[0-9]+$', false, 3);
-		$save['snmp_retries']			= form_input_validate(get_nfilter_request_var('snmp_retries'), 'snmp_retries', '^[0-9]+$', false, 3);
-		$save['max_oids']				= form_input_validate(get_nfilter_request_var('max_oids'), 'max_oids', '^[0-9]+$', false, 3);
+
+		$save['id']                   = form_input_validate(get_nfilter_request_var('item_id'), '', '^[0-9]+$', false, 3);
+		$save['snmp_id']              = form_input_validate(get_nfilter_request_var('id'), 'snmp_id', '^[0-9]+$', false, 3);
+		$save['sequence']             = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
+		$save['snmp_community']       = form_input_validate(get_nfilter_request_var('snmp_community'), 'snmp_community', '', false, 3);
+		$save['snmp_version']         = form_input_validate(get_nfilter_request_var('snmp_version'), 'snmp_version', '', false, 3);
+		$save['snmp_username']        = form_input_validate(get_nfilter_request_var('snmp_username'), 'snmp_username', '', true, 3);
+		$save['snmp_password']        = form_input_validate(get_nfilter_request_var('snmp_password'), 'snmp_password', '', true, 3);
+		$save['snmp_auth_protocol']   = form_input_validate(get_nfilter_request_var('snmp_auth_protocol'), 'snmp_auth_protocol', '', true, 3);
+		$save['snmp_priv_passphrase'] = form_input_validate(get_nfilter_request_var('snmp_priv_passphrase'), 'snmp_priv_passphrase', '', true, 3);
+		$save['snmp_priv_protocol']   = form_input_validate(get_nfilter_request_var('snmp_priv_protocol'), 'snmp_priv_protocol', '', true, 3);
+		$save['snmp_context']         = form_input_validate(get_nfilter_request_var('snmp_context'), 'snmp_context', '', true, 3);
+		$save['snmp_engine_id']       = form_input_validate(get_nfilter_request_var('snmp_engine_id'), 'snmp_engine_id', '', true, 3);
+		$save['snmp_port']            = form_input_validate(get_nfilter_request_var('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
+		$save['snmp_timeout']         = form_input_validate(get_nfilter_request_var('snmp_timeout'), 'snmp_timeout', '^[0-9]+$', false, 3);
+		$save['snmp_retries']         = form_input_validate(get_nfilter_request_var('snmp_retries'), 'snmp_retries', '^[0-9]+$', false, 3);
+		$save['max_oids']             = form_input_validate(get_nfilter_request_var('max_oids'), 'max_oids', '^[0-9]+$', false, 3);
 
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'automation_snmp_items');
@@ -163,7 +164,6 @@ function form_automation_snmp_save() {
 	}
 }
 
-
 /* ------------------------
  The 'actions' function
  ------------------------ */
@@ -183,7 +183,7 @@ function form_automation_snmp_actions() {
 				db_execute('DELETE FROM automation_snmp WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id', 'snmp_id', array_to_sql_or($selected_items, 'id')));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					automation_duplicate_snmp_option($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			}
@@ -240,9 +240,9 @@ function form_automation_snmp_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options.') . "</p>
 					<div class='itemlist'><ul>$snmp_groups</ul></div>
-					<p>" . __('Name Format') . '<br>'; form_text_box('name_format', '<' . __('name') . '> (1)', '', '255', '30', 'text'); print "</p>
+					<p>" . __('Name Format') . '<br>'; form_text_box('name_format', '<' . __('name') . '> (1)', '', '255', '30', 'text'); print '</p>
 				</td>
-			</tr>";
+			</tr>';
 		}
 	}
 
@@ -274,7 +274,7 @@ function automation_duplicate_snmp_option($id, $new_name) {
 
 	$new_name = str_replace('<name>', $name, $new_name);
 
-	$save['id'] = 0;
+	$save['id']   = 0;
 	$save['name'] = $new_name;
 
 	$newid = sql_save($save, 'automation_snmp');
@@ -306,7 +306,7 @@ function automation_snmp_item_dnd() {
 		$items    = get_request_var('snmp_item');
 		$sequence = 1;
 
-		foreach($items as $item) {
+		foreach ($items as $item) {
 			$item = str_replace('line', '', $item);
 			input_validate_input_number($item);
 
@@ -435,9 +435,9 @@ function automation_snmp_item_edit() {
 
 		$header_label = __esc('SNMP Options [edit: %s]', $snmp_option['name']);
 	} else {
-		$header_label = __('SNMP Options [new]');
-		$automation_snmp_item = array();
-		$automation_snmp_item['snmp_id'] = get_request_var('id');
+		$header_label                     = __('SNMP Options [new]');
+		$automation_snmp_item             = array();
+		$automation_snmp_item['snmp_id']  = get_request_var('id');
 		$automation_snmp_item['sequence'] = get_sequence('', 'sequence', 'automation_snmp_items', 'snmp_id=' . get_request_var('id'));
 	}
 
@@ -453,10 +453,10 @@ function automation_snmp_item_edit() {
 	/* file: mactrack_snmp.php, action: item_edit */
 	$fields_automation_snmp_item_edit = $fields_snmp_item_with_retry + array(
 		'sequence' => array(
-			'method' => 'view',
+			'method'        => 'view',
 			'friendly_name' => __('Sequence'),
-			'description' => __('Sequence of Item.'),
-			'value' => '|arg1:sequence|'),
+			'description'   => __('Sequence of Item.'),
+			'value'         => '|arg1:sequence|'),
 	);
 
 	draw_edit_form(array(
@@ -509,13 +509,13 @@ function automation_snmp_edit() {
 	/* file: automation_snmp.php, action: edit */
 	$fields_automation_snmp_edit = array(
 		'name' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('Name'),
-			'description' => __('Fill in the name of this SNMP Option Set.'),
-			'value' => '|arg1:name|',
-			'default' => '',
-			'max_length' => '100',
-			'size' => '40'
+			'description'   => __('Fill in the name of this SNMP Option Set.'),
+			'value'         => '|arg1:name|',
+			'default'       => '',
+			'max_length'    => '100',
+			'size'          => '40'
 		)
 	);
 
@@ -556,24 +556,26 @@ function automation_snmp_edit() {
 
 		html_header($display_text);
 
-		$i = 1;
+		$i           = 1;
 		$total_items = cacti_sizeof($items);
+
 		if (cacti_sizeof($items)) {
 			foreach ($items as $item) {
 				form_alternate_row('line' . $item['id'], true, true);
+
 				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item#%d', $i) . '</a></td>';
-				$form_data .= '<td>' . 	$item['snmp_version'] . '</td>';
-				$form_data .= '<td class="left">' . 	($item['snmp_version'] == 3 ? __('none') : html_escape($item['snmp_community'])) . '</td>';
-				$form_data .= '<td class="right">' . 	$item['snmp_port'] . '</td>';
-				$form_data .= '<td class="right">' . 	$item['snmp_timeout'] . '</td>';
-				$form_data .= '<td class="right">' . 	$item['snmp_retries'] . '</td>';
-				$form_data .= '<td class="right">' . 	$item['max_oids'] . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? html_escape($item['snmp_username']) : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	(($item['snmp_version'] == 3 AND $item['snmp_password'] !== '') ? '*********' : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_auth_protocol'] : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? '*********' : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? $item['snmp_priv_protocol'] : __('N/A')) . '</td>';
-				$form_data .= '<td>' . 	($item['snmp_version'] == 3 ? html_escape($item['snmp_context']) : __('N/A')) . '</td>';
+				$form_data .= '<td>' . $item['snmp_version'] . '</td>';
+				$form_data .= '<td class="left">'  . ($item['snmp_version'] == 3 ? __('none') : html_escape($item['snmp_community'])) . '</td>';
+				$form_data .= '<td class="right">' . $item['snmp_port'] . '</td>';
+				$form_data .= '<td class="right">' . $item['snmp_timeout'] . '</td>';
+				$form_data .= '<td class="right">' . $item['snmp_retries'] . '</td>';
+				$form_data .= '<td class="right">' . $item['max_oids'] . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? html_escape($item['snmp_username']) : __('N/A')) . '</td>';
+				$form_data .= '<td>' . (($item['snmp_version'] == 3 and $item['snmp_password'] !== '') ? '*********' : __('N/A')) . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? $item['snmp_auth_protocol'] : __('N/A')) . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? '*********' : __('N/A')) . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? $item['snmp_priv_protocol'] : __('N/A')) . '</td>';
+				$form_data .= '<td>' . ($item['snmp_version'] == 3 ? html_escape($item['snmp_context']) : __('N/A')) . '</td>';
 				$form_data .= '<td class="nowrap right">';
 
 				if (read_config_option('drag_and_drop') == '') {
@@ -598,7 +600,7 @@ function automation_snmp_edit() {
 				$i++;
 			}
 		} else {
-			print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No SNMP Items') . "</em></td></tr>";
+			print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No SNMP Items') . '</em></td></tr>';
 		}
 
 		html_end_box();
@@ -658,26 +660,26 @@ function automation_snmp() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
@@ -714,7 +716,7 @@ function automation_snmp() {
 <?php
 	if (cacti_sizeof($item_rows)) {
 		foreach ($item_rows as $key => $value) {
-			print "\n\t\t\t\t\t\t\t<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
+			print "\n\t\t\t\t\t\t\t<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 		}
 	}
 ?>
@@ -781,7 +783,7 @@ function automation_snmp() {
 		GROUP BY asnmp.id");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$snmp_groups = db_fetch_assoc("SELECT asnmp.*, COUNT(anw.id) AS networks,
 		COUNT(asnmpi.snmp_id) AS totals,
@@ -832,7 +834,7 @@ function automation_snmp() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No SNMP Option Sets Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

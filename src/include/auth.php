@@ -29,7 +29,7 @@ require_once('global.php');
 //cacti_log('After global.php (' . implode(', ', $included_files) . ')', true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 
 if (!isset($config['cacti_db_version'])) {
-	$version = get_cacti_db_version();
+	$version                    = get_cacti_db_version();
 	$config['cacti_db_version'] = $version;
 	if (!defined('CACTI_DB_VERSION')) {
 		define('CACTI_DB_VERSION', $version);
@@ -103,14 +103,14 @@ if (read_config_option('auth_method') == 0) {
 
 	set_config_option('auth_method', 1);
 
-	$_SESSION['sess_user_id'] = $admin_id;
+	$_SESSION['sess_user_id']         = $admin_id;
 	$_SESSION['sess_change_password'] = true;
-	header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
+	header('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
 	exit;
 }
 
 if (is_install_needed() && !defined('IN_CACTI_INSTALL')) {
-	header ('Location: ' . $config['url_path'] . 'install/');
+	header('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }
 
@@ -123,7 +123,7 @@ api_plugin_hook_function('auth_alternate_realms');
 
 /* handle change password dialog */
 if ((isset($_SESSION['sess_change_password'])) && (read_config_option('webbasic_enabled') != 'on')) {
-	header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
+	header('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
 	exit;
 }
 
@@ -142,6 +142,7 @@ if (isset($guest_account) && empty($_SESSION['sess_user_id'])) {
 	/* cannot find guest user */
 	if (!empty($guest_user_id)) {
 		$_SESSION['sess_user_id'] = $guest_user_id;
+
 		return true;
 	}
 }
@@ -161,8 +162,8 @@ if (empty($_SESSION['sess_user_id'])) {
 	if (isset($auth_json) && $auth_json == true) {
 		print json_encode(
 			array(
-				'status' => '500',
-				'statusText' => __('Not Logged In'),
+				'status'       => '500',
+				'statusText'   => __('Not Logged In'),
 				'responseText' => __('You must be logged in to access this area of Cacti.')
 			)
 		);
@@ -289,17 +290,17 @@ if ($realm_id > 0) {
 
 if ($realm_id != -1 && !$authorized) {
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		$goBack = "<td colspan='2' class='center'>[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+		$goBack = "<td colspan='2' class='center'>[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . '</a>]</td>';
 	} else {
-		$goBack = "<td colspan='2' class='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+		$goBack = "<td colspan='2' class='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . '</a>]</td>';
 	}
 
 	$title_header = __('Permission Denied');
-	$title_body = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
+	$title_body   = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
 
 	if ($realm_id == 26) {
 		$title_header = __('Installation In Progress');
-		$title_body = '<p>' . __('There is an Installation or Upgrade in progress.') . '</p><p>' . __('Only Cacti Administrators with Install/Upgrade privilege may login at this time') . '</p>';
+		$title_body   = '<p>' . __('There is an Installation or Upgrade in progress.') . '</p><p>' . __('Only Cacti Administrators with Install/Upgrade privilege may login at this time') . '</p>';
 	}
 
 	raise_ajax_permission_denied();
@@ -316,13 +317,13 @@ if ($realm_id != -1 && !$authorized) {
 			<div class='cactiLogoutLogo'></div>
 			<legend>" . $title_header . "</legend>
 			<div class='logoutTitle'>
-				" . $title_body . "
+				" . $title_body . '
 				</p>
-				<center>" . $goBack . "</center>
+				<center>' . $goBack . "</center>
 			</div>
 			<div class='logoutErrors'></div>
 		</div>
-		<div class='versionInfo'>" . __('Version') . ' ' . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
+		<div class='versionInfo'>" . __('Version') . ' ' . $version . ' | ' . COPYRIGHT_YEARS_SHORT . "</div>
 	</div>
 	<div class='logoutRight'></div>
 	<script type='text/javascript'>
