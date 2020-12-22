@@ -325,7 +325,7 @@ class Net_Ping {
 
 			return false;
 		}
-	} /* ping_snmp */
+	}
 
 	function ping_udp() {
 		$this->set_ping_error_handler();
@@ -463,7 +463,7 @@ class Net_Ping {
 
 			return false;
 		}
-	} /* end ping_udp */
+	}
 
 	function ping_tcp() {
 		$this->set_ping_error_handler();
@@ -592,7 +592,7 @@ class Net_Ping {
 
 			return false;
 		}
-	} /* end ping_tcp */
+	}
 
 	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = PING_ICMP, $timeout=500, $retries=3) {
 		$this->set_ping_error_handler();
@@ -716,7 +716,7 @@ class Net_Ping {
 			default:
 				return false;
 		}
-	} /* end_ping */
+	}
 
 	function is_ipaddress($ip_address = '') {
 		/* check for ipv4/v6 */

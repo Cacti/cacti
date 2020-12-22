@@ -98,11 +98,10 @@ class Installer implements JsonSerializable {
 	private $buttonPrevious = null;
 	private $buttonTest     = null;
 
-	/*
+	/**
 	 * class Installer initialization
 	 *
-	 * usage:
-	 *    $installer = new Installer($installData)
+	 * usage: $installer = new Installer($installData)
 	 *
 	 * @param installData - array of fields to update
 	 */
@@ -181,8 +180,10 @@ class Installer implements JsonSerializable {
 		log_install_debug('step', 'Done: ' . clean_up_lines(var_export($this->stepCurrent, true)));
 	}
 
-	/* jsonSerialize() - provides JSON object of return data with optional
-	 *                   values output dependant on Runtime mode */
+	/**
+	 * jsonSerialize() - provides JSON object of return data with optional
+	 * values output dependant on Runtime mode
+	 */
 	public function jsonSerialize() {
 		if (empty($this->output)) {
 			$this->output = $this->processCurrentStep();
@@ -232,9 +233,11 @@ class Installer implements JsonSerializable {
 		return (isset($this->errors) && !empty($this->errors)) ? $this->errors : array();
 	}
 
-	/* processParameters - process array of parameters to override defaults
-	 * @param params_install - array of parameters to process where key
-	 *                       matches XXX from setXXX/getXXX functions
+	/**
+	 * processParameters - process array of parameters to override defaults
+	 *
+	 * @param param params_install - array of parameters to process where key
+	 *   matches XXX from setXXX/getXXX functions
 	 */
 	protected function processParameters($params_install = array()) {
 		if (empty($params_install) || !is_array($params_install)) {
@@ -1810,11 +1813,6 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->setStep($this->stepPrevious);
 	}
 
-	/**************************************************
-	 * The following sections of code are all related
-	 * to the installation process of the current step
-	 **************************************************/
-
 	public function processCurrentStep() {
 		$exitReason = $this->shouldExitWithReason();
 
@@ -3149,10 +3147,6 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
-	/*****************************************************************
-	 * The following functions perform the leg work for installation *
-	 *****************************************************************/
-
 	private function install() {
 		global $config, $cacti_upgrade_version;
 
@@ -3875,11 +3869,6 @@ class Installer implements JsonSerializable {
 			}
 		}
 	}
-
-	/*****************************************************************
-	 * The following functions are for rendering output which is     *
-	 * returned when $this->Runtime is in Web mode only              *
-	 *****************************************************************/
 
 	public static function sectionTitleError($title = '') {
 		if (empty($title)) {

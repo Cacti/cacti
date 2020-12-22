@@ -709,16 +709,16 @@ function maint_debug($message) {
 	}
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /**
- * display_help
- *
- * displays the usage of the function
+ * display_help - display help information
  */
 function display_help() {
 	display_version();

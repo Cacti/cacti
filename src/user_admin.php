@@ -1986,10 +1986,6 @@ function settings_edit($header_label) {
 	<?php
 }
 
-/* --------------------------
-	User Administration
-   -------------------------- */
-
 function user_edit() {
 	global $config, $fields_user_user_edit_host;
 

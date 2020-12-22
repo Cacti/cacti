@@ -1080,12 +1080,17 @@ function spikekill_poller_bottom() {
 	exec_background($command_string, $extra_args);
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays help information
+ */
 function display_help() {
 	display_version();
 

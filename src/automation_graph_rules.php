@@ -95,10 +95,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
- The Save Function
- -------------------------- */
-
 function save() {
 	if (isset_request_var('save_component_automation_graph_rule')) {
 		/* ================= input validation ================= */

@@ -23,10 +23,7 @@
 */
 
 /**
- * LDAP functions
- */
-
-/* cacti_ldap_auth - a method to login a user via ldap
+ * cacti_ldap_auth - a method to login a user via ldap
  *
  * Error codes:
  *

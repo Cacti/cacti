@@ -1663,7 +1663,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	<?php
 }
 
-/*
+/**
  * DrawMatrixHeaderItem - draws a table header
  *
  * @deprecated: deprecated function

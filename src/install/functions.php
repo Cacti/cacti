@@ -86,8 +86,11 @@ function install_test_local_database_connection() {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
 	if (!isset($database_ssl)) $rdatabase_ssl           = false;
+
 	if (!isset($database_ssl_key)) $rdatabase_ssl_key   = false;
+
 	if (!isset($database_ssl_cert)) $rdatabase_ssl_cert = false;
+
 	if (!isset($database_ssl_ca)) $rdatabase_ssl_ca     = false;
 
 	$connection = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
@@ -105,8 +108,11 @@ function install_test_remote_database_connection() {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
 	if (!isset($rdatabase_ssl)) $rdatabase_ssl           = false;
+
 	if (!isset($rdatabase_ssl_key)) $rdatabase_ssl_key   = false;
+
 	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
+
 	if (!isset($rdatabase_ssl_ca)) $rdatabase_ssl_ca     = false;
 
 	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
@@ -149,6 +155,7 @@ function db_install_fetch_function($func, $sql, $params = array(), $log = true) 
 
 	$database_last_error = false;
 	$data                = false;
+
 	if (!is_callable($func) || !function_exists($func)) {
 		$status = DB_STATUS_ERROR;
 	}
@@ -233,6 +240,7 @@ function db_install_add_key($table, $type, $key, $columns, $using = '') {
 	}
 
 	$type = strtoupper($type);
+
 	if ($type == 'KEY' && $key == 'PRIMARY') {
 		$sql = 'ALTER TABLE `' . $table . '` ADD ' . $key . ' ' . $type . '(' . implode(',', $columns) . ')';
 	} else {
@@ -244,6 +252,7 @@ function db_install_add_key($table, $type, $key, $columns, $using = '') {
 	}
 
 	$status = DB_STATUS_SKIPPED;
+
 	if (db_index_matches($table, $key, $columns, false) !== 0) {
 		if (db_index_exists($table, $key)) {
 			$status = db_install_drop_key($table, $type, $key);
@@ -261,6 +270,7 @@ function db_install_add_key($table, $type, $key, $columns, $using = '') {
 
 function db_install_drop_key($table, $type, $key) {
 	$type = strtoupper(str_ireplace('UNIQUE ', '', $type));
+
 	if ($type == 'KEY' && $key == 'PRIMARY') {
 		$sql = "ALTER TABLE $table DROP $key $type;";
 	} else {
@@ -268,6 +278,7 @@ function db_install_drop_key($table, $type, $key) {
 	}
 
 	$status = DB_STATUS_SKIPPED;
+
 	if (db_index_exists($table, $key, false)) {
 		$status = db_install_execute($sql);
 	}
@@ -281,6 +292,7 @@ function db_install_drop_table($table) {
 	$sql = 'DROP TABLE `' . $table . '`';
 
 	$status = DB_STATUS_SKIPPED;
+
 	if (db_table_exists($table, false)) {
 		$status = db_install_execute($sql, array(), false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
@@ -294,6 +306,7 @@ function db_install_rename_table($table, $newname) {
 	$sql = 'RENAME TABLE `' . $table . '` TO `' . $newname . '`';
 
 	$status = DB_STATUS_SKIPPED;
+
 	if (db_table_exists($table, false) && !db_table_exists($newname, false)) {
 		$status = db_install_execute($sql, array(), false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
@@ -307,6 +320,7 @@ function db_install_drop_column($table, $column) {
 	$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
 
 	$status = DB_STATUS_SKIPPED;
+
 	if (db_column_exists($table, $column, false)) {
 		$status = db_remove_column($table, $column) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
@@ -334,6 +348,7 @@ function db_install_add_cache($status, $sql, $params = null) {
 	}
 
 	print $status_char;
+
 	if (!isset($database_upgrade_status)) {
 		$database_upgrade_status = array();
 	}
@@ -350,6 +365,7 @@ function db_install_add_cache($status, $sql, $params = null) {
 	if (cacti_sizeof($params)) {
 		foreach ($params as $arg) {
 			$pos = strpos($query, '?');
+
 			if ($pos !== false) {
 				$actual++;
 				$query = substr_replace($query, "'$arg'", $pos, 1);
@@ -358,6 +374,7 @@ function db_install_add_cache($status, $sql, $params = null) {
 	}
 
 	$sql = clean_up_lines($query);
+
 	if ($actual !== $expected) {
 		$sql .= "\n [[ WARNING: $expected parameters expected, $actual provided ]]";
 	}
@@ -365,6 +382,7 @@ function db_install_add_cache($status, $sql, $params = null) {
 	$database_upgrade_status[$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql, 'error' => $database_last_error);
 
 	$cacheFile = '';
+
 	if (isset($database_upgrade_status['file'])) {
 		$cacheFile = $database_upgrade_status['file'];
 	}
@@ -419,8 +437,10 @@ function find_search_paths($os = 'unix') {
 	}
 
 	$env_path = getenv('PATH');
+
 	if ($env_path) {
 		$env_paths = explode($search_suffix,$env_path);
+
 		if (!empty($search_slash)) {
 			foreach ($env_paths as $env_key => $env_folder) {
 				$env_paths[$env_key] = str_replace($search_slash, '/', $env_folder);
@@ -430,6 +450,7 @@ function find_search_paths($os = 'unix') {
 	}
 
 	$env_php = getenv('PHP_BINDIR');
+
 	if ($env_php) {
 		$search_paths = array_merge(explode($search_suffix,$env_php), $search_paths);
 	}
@@ -446,6 +467,7 @@ function find_search_paths($os = 'unix') {
 
 function db_install_swap_setting($old_setting, $new_setting) {
 	$exists = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = ?', array($new_setting));
+
 	if (empty($exists['data'])) {
 		db_install_execute('UPDATE `settings` SET name = ? WHERE name = ?', array($new_setting, $old_setting));
 	} else {
@@ -463,6 +485,7 @@ function find_best_path($binary_name) {
 	if (cacti_sizeof($search_paths)) {
 		foreach ($search_paths as $path) {
 			$desired_path = $path . '/' . $binary_name;
+
 			if ((@file_exists($desired_path)) && (@is_readable($desired_path))) {
 				return $desired_path;
 			}
@@ -533,11 +556,13 @@ function install_setup_get_templates() {
 function install_setup_get_tables() {
 	/* ensure all tables are utf8 enabled */
 	$db_tables = db_fetch_assoc('SHOW TABLES');
+
 	if ($db_tables === false) {
 		return false;
 	}
 
 	$t = array();
+
 	foreach ($db_tables as $tables) {
 		foreach ($tables as $table) {
 			$table_status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
@@ -586,15 +611,19 @@ function to_array($data) {
 	return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
 }
 
-/* Here, we define each name, default value, type, and path check for each value
-we want the user to input. The "name" field must exist in the 'settings' table for
-this to work. Cacti also uses different default values depending on what OS it is
-running on. */
-
+/**
+ * install_tool_path
+ *
+ * Here, we define each name, default value, type, and path check for each value
+ * we want the user to input. The "name" field must exist in the 'settings' table for
+ * this to work. Cacti also uses different default values depending on what OS it is
+ * running on.
+ */
 function install_tool_path($name, $defaultPaths) {
 	global $config, $settings;
 
 	$os = $config['cacti_server_os'];
+
 	if (!isset($defaultPaths[$os])) {
 		return false;
 	}
@@ -608,6 +637,7 @@ function install_tool_path($name, $defaultPaths) {
 	);
 
 	log_install_debug('file', "$name: Locations ($os), Paths: " . clean_up_lines(var_export($defaultPaths, true)));
+
 	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
 		$tool = $settings['path']['path_'.$name];
 	} elseif (isset($settings) && isset($settings['mail']) && isset($settings['mail'][$name])) {
@@ -615,6 +645,7 @@ function install_tool_path($name, $defaultPaths) {
 	}
 
 	$which_tool = '';
+
 	if (config_value_exists('path_' . $name)) {
 		$which_tool = read_config_option('path_'.$name, true);
 		log_install_high('file', "Using config location: $which_tool");
@@ -653,9 +684,11 @@ function install_file_paths() {
 	// Workaround to support xampp
 	if ($config['cacti_server_os'] == 'win32') {
 		$paths = array('c:/php/php.exe', 'd:/php/php.exe', 'c:/xampp/php/php.exe', 'd:/xampp/php/php.exe');
+
 		foreach ($paths as $path) {
 			if (file_exists($path)) {
 				$input['path_php_binary']['default'] = $path;
+
 				break;
 			}
 		}
@@ -733,6 +766,7 @@ function install_file_paths() {
 	/* stderr log file path */
 	if (!config_value_exists('path_cactilog')) {
 		$input['path_stderrlog'] = $settings['path']['path_stderrlog'];
+
 		if (empty($input['path_stderrlog']['default'])) {
 			$input['path_stderrlog']['default'] = $config['base_path'] . '/log/cacti.stderr.log';
 		}
@@ -814,6 +848,7 @@ function remote_update_config_file() {
 					}
 
 					$fp = fopen($config_file, 'w');
+
 					foreach ($newfile as $line) {
 						fwrite($fp, $line);
 					}
@@ -854,6 +889,7 @@ function import_colors() {
 			$name    = $parts[2];
 
 			$id = db_fetch_cell("SELECT hex FROM colors WHERE hex='$hex'");
+
 			if (!empty($id)) {
 				db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'");
 			} else {
@@ -888,6 +924,7 @@ function log_install_always($section, $string) {
 function log_install_and_file($level, $string, $section = '') {
 	$level = log_install_level_sanitize($level);
 	$name  = 'INSTALL:';
+
 	if (!empty($section)) {
 		$name = 'INSTALL-' . strtoupper($section) . ':';
 	}
@@ -935,21 +972,27 @@ function log_install_level_sanitize($level, $default_level = POLLER_VERBOSITY_NO
 
 function log_install_level_name($level) {
 	$name = 'Unknown (' . $level . ')';
+
 	switch ($level) {
 		case POLLER_VERBOSITY_NONE:
 			$name = 'always';
+
 			break;
 		case POLLER_VERBOSITY_LOW:
 			$name = 'general';
+
 			break;
 		case POLLER_VERBOSITY_MEDIUM:
 			$name = 'info';
+
 			break;
 		case POLLER_VERBOSITY_HIGH:
 			$name = 'notice';
+
 			break;
 		case POLLER_VERBOSITY_DEBUG:
 			$name = 'debug';
+
 			break;
 	}
 

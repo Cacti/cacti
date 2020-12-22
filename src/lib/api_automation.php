@@ -1699,11 +1699,13 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 	return $sql_filter;
 }
 
-/*
+/**
  * build_sort_order
- * @arg $index_order	sort order given by e.g. xml_array[index_order_type]
- * @arg $default_order	default order if any
- * return				sql sort order string
+ *
+ * @param $index_order   - sort order given by e.g. xml_array[index_order_type]
+ * @param $default_order - default order if any
+ *
+ * @return - sql sort order string
  */
 function build_sort_order($index_order, $default_order = '') {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -1807,10 +1809,12 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 	return $results;
 }
 
-/*
+/**
  * get_created_graphs
- * @arg $rule		provide snmp_query_id, graph_type_id
- * return			all graphs that have already been created for the given selection
+ *
+ * @param $rule - provide snmp_query_id, graph_type_id
+ *
+ * @return - all graphs that have already been created for the given selection
  */
 function get_created_graphs($rule) {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -1915,10 +1919,12 @@ function get_query_fields($table, $excluded_fields) {
 	return $new_fields;
 }
 
-/*
+/**
  * get_field_names
- * @arg $snmp_query_id	snmp query id
- * return				all field names for that snmp query, taken from snmp_cache
+ *
+ * @param $snmp_query_id - snmp query id
+ *
+ * @return - all field names for that snmp query, taken from snmp_cache
  */
 function get_field_names($snmp_query_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -2591,14 +2597,17 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	}
 }
 
-/* create_all_header_nodes - walk across all tree rule items
- * 					- get all related rule items
- * 					- take header type into account
- * 					- create (multiple) header nodes
+/**
+ * create_all_header_nodes - walk across all tree rule items
  *
- * @arg $item_id	id of the host/graph we're working on
- * @arg $rule		the rule we're working on
- * returns			the last tree item that was hooked into the tree
+ * get all related rule items
+ * take header type into account
+ * create (multiple) header nodes
+ *
+ * @param $item_id - id of the host/graph we're working on
+ * @param $rule - the rule we're working on
+ *
+ * @return - the last tree item that was hooked into the tree
  */
 function create_all_header_nodes($item_id, $rule) {
 	global $config, $automation_tree_header_types;
@@ -2672,15 +2681,19 @@ function create_all_header_nodes($item_id, $rule) {
 	return $parent_tree_item_id;
 }
 
-/* create_multi_header_node - work on a single header item
- * 							- evaluate replacement rule
- * 							- this may return an array of new header items
- * 							- walk that array to create all header items for this single rule item
- * @arg $target		string (name) of the object; e.g. ht.name
- * @arg $rule		rule
- * @arg $tree_item	rule item; replacement_pattern may result in multi-line replacement
- * @arg $parent_tree_item_id	parent tree item id
- * returns 			id of the header that was hooked in
+/**
+ * create_multi_header_node - work on a single header item
+ *
+ * evaluate replacement rule
+ * this may return an array of new header items
+ * walk that array to create all header items for this single rule item
+ *
+ * @param $target              - string (name) of the object; e.g. ht.name
+ * @param $rule                - rule
+ * @param $tree_item           - rule item; replacement_pattern may result in multi-line replacement
+ * @param $parent_tree_item_id - parent tree item id
+ *
+ * @return - id of the header that was hooked in
  */
 function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_id) {
 	global $config;
@@ -3422,9 +3435,10 @@ function automation_valid_snmp_device(&$device) {
 	return $host_up;
 }
 
-/*	gethostbyaddr_wtimeout - This function provides a good method of performing
-  a rapid lookup of a DNS entry for a host so long as you don't have to look far.
-*/
+/**
+ * gethostbyaddr_wtimeout - This function provides a good method of performing
+ * a rapid lookup of a DNS entry for a host so long as you don't have to look far.
+ */
 function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	/* random transaction number (for routers etc to get the reply back) */
 	$data = rand(10, 99);
