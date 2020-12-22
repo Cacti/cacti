@@ -53,10 +53,6 @@ if ($is_tmp && $is_save && $action == 'save') {
 	bottom_footer();
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	global $preview_only;
 
@@ -115,9 +111,6 @@ function bad_tmp() {
 	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
 	html_end_box();
 }
-/* ---------------------------
-	Template Import Functions
-   --------------------------- */
 
 function import() {
 	global $hash_type_names, $fields_template_import;

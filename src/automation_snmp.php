@@ -172,9 +172,6 @@ function form_automation_snmp_save() {
 	}
 }
 
-/* ------------------------
- The 'actions' function
- ------------------------ */
 function form_automation_snmp_actions() {
 	global $config, $automation_snmp_actions;
 
@@ -272,10 +269,6 @@ function form_automation_snmp_actions() {
 
 	bottom_footer();
 }
-
-/* --------------------------
- SNMP Options Functions
- -------------------------- */
 
 function automation_duplicate_snmp_option($id, $new_name) {
 	$name = db_fetch_cell_prepared('SELECT name

@@ -77,10 +77,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
@@ -307,10 +303,6 @@ function form_save() {
 		}
 	}
 }
-
-/* -----------------------
-	item - Graph Items
-   ----------------------- */
 
 function item_movedown() {
 	/* ================= input validation ================= */

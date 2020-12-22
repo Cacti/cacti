@@ -45,7 +45,11 @@ function sig_handler($signo) {
 	}
 }
 
-// function to assist in logging
+/**
+ *
+ * function to assist in logging
+ *
+ */
 function debug_level($host_id, $level) {
 	global $debug;
 
@@ -70,7 +74,11 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 require_once($config['base_path'] . '/lib/ping.php');
 
-// let the poller server know about cmd.php being finished
+/**
+ *
+ * let the poller server know about cmd.php being finished
+ *
+ */
 function record_cmdphp_done($pid = '') {
 	global $poller_id, $poller_db_cnn_id;
 
@@ -83,7 +91,11 @@ function record_cmdphp_done($pid = '') {
 		array($poller_id, $pid), true, $poller_db_cnn_id);
 }
 
-// let cacti processes know that a poller has started
+/**
+ *
+ * let cacti processes know that a poller has started
+ *
+ */
 function record_cmdphp_started() {
 	global $poller_id, $poller_db_cnn_id;
 
@@ -137,7 +149,12 @@ function display_version() {
 	print "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-//	display_help - displays the usage of the function
+/**
+ * display_help
+ *
+ * displays the usage of the function
+ *
+ */
 function display_help() {
 	display_version();
 

@@ -62,10 +62,6 @@ default:
 	break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_network')) {
 		$network_id = api_networks_save($_POST);
@@ -280,10 +276,6 @@ function api_networks_save($post) {
 		}
 	}
 }
-
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
 
 function form_actions() {
 	global $config, $network_actions, $fields_networkss_edit;

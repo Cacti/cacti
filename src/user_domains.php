@@ -64,10 +64,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	global $registered_cacti_names;
 
@@ -287,10 +283,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* -----------------------
-	Domain Functions
-   ----------------------- */
 
 function domain_remove($domain_id) {
 	db_execute_prepared('DELETE FROM user_domains WHERE domain_id = ?', array($domain_id));

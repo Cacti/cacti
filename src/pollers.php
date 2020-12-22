@@ -258,14 +258,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_poller')) {
 		// Common data
@@ -600,10 +592,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* ---------------------
-	Site Functions
-   --------------------- */
 
 function poller_edit() {
 	global $fields_poller_edit;

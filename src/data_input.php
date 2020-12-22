@@ -82,10 +82,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function duplicate_data_input($_data_input_id, $input_title) {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
@@ -332,10 +328,6 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* --------------------------
-	CDEF Item Functions
-   -------------------------- */
-
 function field_remove_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -531,10 +523,6 @@ function field_edit() {
 
 	form_save_button('data_input.php?action=edit&id=' . get_request_var('data_input_id'));
 }
-
-/* -----------------------
-	Data Input Functions
-   ----------------------- */
 
 function data_remove($id) {
 	$data_input_fields = db_fetch_assoc_prepared('SELECT id

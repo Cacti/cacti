@@ -94,10 +94,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
 function draw_vdef_preview($vdef_id) {
 	?>
 	<tr class='even'>
@@ -107,10 +103,6 @@ function draw_vdef_preview($vdef_id) {
 	</tr>
 	<?php
 }
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
 
 function vdef_form_save() {
 	if (isset_request_var('save_component_vdef')) {
@@ -196,10 +188,6 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 		}
 	}
 }
-
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
 
 function vdef_form_actions() {
 	global $vdef_actions;
@@ -305,10 +293,6 @@ function vdef_form_actions() {
 
 	bottom_footer();
 }
-
-/* --------------------------
-	VDEF Item Functions
-   -------------------------- */
 
 function vdef_item_remove_confirm() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
@@ -484,10 +468,6 @@ function vdef_item_edit() {
 
 	form_save_button('vdef.php?action=edit&id=' . get_request_var('vdef_id'));
 }
-
-/* ---------------------
-	VDEF Functions
-   --------------------- */
 
 function item_movedown() {
 	/* ================= input validation ================= */

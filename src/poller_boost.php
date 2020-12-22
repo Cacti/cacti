@@ -417,10 +417,14 @@ function output_rrd_data($start_time, $force = false) {
 	return $total_rows;
 }
 
-/* boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
-	 results to RRDTool for processing
-   @arg $last_id - the last id to process
-   @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation */
+/**
+ * boost_process_local_data_ids
+ *
+ * grabs data from the 'poller_output' table and feeds the *completed* results to RRDTool for processing
+ *
+ * @arg $last_id - the last id to process
+ * @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation
+ */
 function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
@@ -805,14 +809,21 @@ function purge_cached_png_files($forcerun) {
 	}
 }
 
-/* do NOT run this script through a web browser */
-/*  display_version - displays version information */
+/**
+ * display_version
+ *
+ * displays version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * display_help
+ *
+ * displays the usage of the function
+ */
 function display_help() {
 	display_version();
 

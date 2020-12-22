@@ -62,11 +62,11 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
 /**
- * aggregate_form_save	the save function
+ * aggregate_form_save
+ *
+ * the save function
+ *
  */
 function aggregate_form_save() {
 	/* make sure we are saving aggregate template */
@@ -262,11 +262,11 @@ function aggregate_form_save() {
 function aggregate_get_graph_items($table, $id) {
 }
 
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
 /**
- * aggregate_form_actions		the action function
+ * aggregate_form_actions
+ *
+ * the action function
+ *
  */
 function aggregate_form_actions() {
 	global $aggregate_actions, $config;
@@ -349,7 +349,10 @@ function aggregate_form_actions() {
 }
 
 /**
- * aggregate_template_edit	edit the color template
+ * aggregate_template_edit
+ *
+ * edit the color template
+ *
  */
 function aggregate_template_edit() {
 	global $image_types, $struct_aggregate_template;
@@ -518,6 +521,7 @@ function aggregate_template_edit() {
 
 /**
  * aggregate_template
+ *
  */
 function aggregate_template() {
 	global $aggregate_actions, $item_rows, $config;

@@ -35,10 +35,6 @@ set_default_action();
 
 support_view_tech();
 
-/* -----------------------
-	Functions
-   ----------------------- */
-
 function support_view_tech() {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 

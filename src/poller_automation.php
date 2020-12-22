@@ -52,10 +52,14 @@ if ($config['poller_id'] > 1) {
 	}
 }
 
-/** sig_handler - provides a generic means to catch exceptions to the Cacti log.
+/**
+ * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ *
  * @arg $signo  - (int) the signal that was thrown by the interface.
  * @param mixed $signo
- * @return      - null */
+ *
+ * @return      - null
+ */
 function sig_handler($signo) {
 	global $network_id, $thread, $master, $poller_id;
 
@@ -865,13 +869,21 @@ function discoverDevices($network_id, $thread) {
 	return true;
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version
+ *
+ * displays version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * display_help
+ *
+ * displays the usage of the function
+ */
 function display_help() {
 	display_version();
 

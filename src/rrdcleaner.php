@@ -75,7 +75,7 @@ default:
 	break;
 }
 
-/*
+/**
  * Fill RRDCleaner's table
  */
 function rrdclean_fill_table() {
@@ -98,7 +98,7 @@ function rrdclean_fill_table() {
 	restore_error_handler();
 }
 
-/*
+/**
  * Determine the last time the rrdcleaner table was updated
  */
 function rrdcleaner_lastupdate() {
@@ -109,7 +109,7 @@ function rrdcleaner_lastupdate() {
 	}
 }
 
-/*
+/**
  * Delete RRDCleaner's intermediate tables
  */
 function rrdclean_truncate_tables() {
@@ -132,7 +132,7 @@ function rrdclean_truncate_tables() {
 	restore_error_handler();
 }
 
-/*
+/**
  * PHP Error Handler
  */
 function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
@@ -173,7 +173,7 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	return;
 }
 
-/*
+/**
  * Find all unused files from Cacti tables
  * and get file system information for them
  */
@@ -239,7 +239,7 @@ function get_files() {
 	restore_error_handler();
 }
 
-/*
+/**
  * Display all rrd file entries
  */
 function list_rrd() {
@@ -429,7 +429,7 @@ function remove_all_rrds() {
 	restore_error_handler();
 }
 
-/*
+/**
  * Read all checked list items and put them into
  * a temporary table for the poller
  */

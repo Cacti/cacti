@@ -124,10 +124,6 @@ function form_save() {
 	}
 }
 
-/* ------------------------------------
-	input - Graph Template Item Inputs
-   ------------------------------------ */
-
 function input_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');

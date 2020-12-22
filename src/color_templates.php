@@ -57,14 +57,17 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/** draw_color_template_items_list 	- draws a nicely formatted list of color items for display
- *   								  on an edit form
- * @param array $item_list 			- an array representing the list of color items. this array should
- *   								  come directly from the output of db_fetch_assoc()
- * @param string $filename 			- the filename to use when referencing any external url
- * @param string $url_data 			- any extra GET url information to pass on when referencing any
- *   								  external url
- * @param bool $disable_controls 	- whether to hide all edit/delete functionality on this form
+/**
+ * draw_color_template_items_list
+ *
+ * draws a nicely formatted list of color items for display on an edit form
+ *
+ * @param array $item_list          an array representing the list of color items. this array should
+ *                                  come directly from the output of db_fetch_assoc()
+ * @param string $filename          the filename to use when referencing any external url
+ * @param string $url_data          any extra GET url information to pass on when referencing any external url
+ *
+ * @param bool $disable_controls    whether to hide all edit/delete functionality on this form
  */
 function draw_color_template_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $config;
@@ -136,11 +139,10 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 	}
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
 /**
- * aggregate_color_form_save	the save function
+ * aggregate_color_form_save
+ *
+ * the save function
  */
 function aggregate_color_form_save() {
 	if (isset_request_var('save_component_color')) {
@@ -170,11 +172,10 @@ function aggregate_color_form_save() {
 	header('Location: color_templates.php?action=template_edit&color_template_id=' . (empty($color_template_id) ? get_nfilter_request_var('color_template_id') : $color_template_id));
 }
 
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
 /**
- * aggregate_color_form_actions		the action function
+ * aggregate_color_form_actions
+ *
+ * the action function
  */
 function aggregate_color_form_actions() {
 	global $aggregate_actions, $config;
@@ -290,7 +291,9 @@ function aggregate_color_form_actions() {
 }
 
 /**
- * aggregate_color_item		show all color template items
+ * aggregate_color_item
+ *
+ * show all color template items
  */
 function aggregate_color_item() {
 	global $config;
@@ -373,11 +376,10 @@ function aggregate_color_item() {
 	<?php
 }
 
-/* ----------------------------
-	template - Color Templates
-   ---------------------------- */
 /**
- * aggregate_color_template_edit	edit the color template
+ * aggregate_color_template_edit
+ *
+ * edit the color template
  */
 function aggregate_color_template_edit() {
 	global $config, $image_types, $fields_color_template_template_edit, $struct_aggregate;
@@ -476,7 +478,9 @@ function sync_color_templates($color_template) {
 }
 
 /**
- * aggregate_color_template		maintain color templates
+ * aggregate_color_template
+ *
+ * maintain color templates
  */
 function aggregate_color_template() {
 	global $aggregate_actions, $item_rows, $config;

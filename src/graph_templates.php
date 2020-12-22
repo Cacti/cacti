@@ -85,10 +85,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	// sanitize ids
 	if (isset_request_var('graph_template_id') && !is_numeric(get_nfilter_request_var('graph_template_id'))) {
@@ -206,10 +202,6 @@ function form_save() {
 
 	header('Location: graph_templates.php?action=template_edit&id=' . (empty($graph_template_id) ? get_nfilter_request_var('graph_template_id') : $graph_template_id));
 }
-
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
 
 function form_actions() {
 	global $graph_actions, $config, $image_types;
@@ -499,10 +491,6 @@ function item() {
 
 	html_end_box();
 }
-
-/* ----------------------------
-	template - Graph Templates
-   ---------------------------- */
 
 function template_edit() {
 	global $struct_graph, $image_types, $fields_graph_template_template_edit;

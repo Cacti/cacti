@@ -78,10 +78,6 @@ if (isset_request_var('update_policy')) {
 	}
 }
 
-/* --------------------------
-	Actions Function
-   -------------------------- */
-
 function update_policies() {
 	$set = '';
 
@@ -473,10 +469,6 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* --------------------------
-	Save Function
-   -------------------------- */
-
 function form_save() {
 	global $settings_user;
 
@@ -688,10 +680,6 @@ function form_save() {
 	/* redirect to the appropriate page */
 	header('Location: user_admin.php?action=user_edit&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
 }
-
-/* --------------------------
-	Graph Permissions
-   -------------------------- */
 
 function perm_remove() {
 	/* ================= input validation ================= */

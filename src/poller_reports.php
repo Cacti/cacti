@@ -31,14 +31,23 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 require_once($config['base_path'] . '/lib/reports.php');
 
-/*  display_version - displays version information */
+/**
+ * display_version
+ *
+ * displays version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/** display_help - generic help screen for utilities
- * @return		 - null */
+/**
+ * display_help
+ *
+ * generic help screen for utilities
+ *
+ * @return null
+ */
 function display_help() {
 	display_version();
 
@@ -50,10 +59,16 @@ function display_help() {
 	print "    --debug     - Display verbose output during execution\n\n";
 }
 
-/** sig_handler - provides a generic means to catch exceptions to the Cacti log.
+/**
+ * sig_handler
+ *
+ * provides a generic means to catch exceptions to the Cacti log.
+ *
  * @arg $signo 	- (int) the signal that was thrown by the interface.
  * @param mixed $signo
- * @return 		- null */
+ *
+ * @return 		- null
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:

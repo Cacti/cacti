@@ -247,9 +247,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
 function form_save() {
 	if (isset_request_var('save_component_tree')) {
 		/* ================= input validation ================= */
@@ -305,9 +302,6 @@ function form_save() {
 	}
 }
 
-/* -----------------------
-	Tree Item Functions
-   ----------------------- */
 function form_actions() {
 	global $tree_actions;
 
@@ -419,10 +413,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* ---------------------
-	Tree Functions
-   --------------------- */
 
 function tree_edit() {
 	global $fields_tree_edit;

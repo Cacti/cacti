@@ -95,10 +95,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
- The Save Function
- -------------------------- */
-
 function automation_tree_rules_form_save() {
 	if (isset_request_var('save_component_automation_tree_rule')) {
 		/* ================= input validation ================= */
@@ -192,10 +188,6 @@ function automation_tree_rules_form_save() {
 		header('Location: automation_tree_rules.php');
 	}
 }
-
-/* ------------------------
- The 'actions' function
- ------------------------ */
 
 function automation_tree_rules_form_actions() {
 	global $automation_tree_rules_actions;
@@ -324,10 +316,6 @@ function automation_tree_rules_change_leaf() {
 
 	automation_change_tree_rule_leaf_type(get_request_var('leaf_type'), get_request_var('id'));
 }
-
-/* --------------------------
- Rule Item Functions
- -------------------------- */
 
 function automation_tree_rules_item_movedown() {
 	/* ================= input validation ================= */
@@ -478,10 +466,6 @@ function toggle_operator() {
 </script>
 <?php
 }
-
-/* ---------------------
- Rule Functions
- --------------------- */
 
 function automation_tree_rules_remove() {
 	/* ================= input validation ================= */

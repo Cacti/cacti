@@ -189,10 +189,6 @@ function save() {
 	}
 }
 
-/* ------------------------
- The 'actions' function
- ------------------------ */
-
 function automation_graph_rules_form_actions() {
 	global $config, $automation_graph_rules_actions;
 
@@ -317,9 +313,6 @@ function automation_graph_rules_form_actions() {
 	bottom_footer();
 }
 
-/* --------------------------
- Rule Item Functions
- -------------------------- */
 function automation_graph_rules_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -415,10 +408,6 @@ function automation_graph_rules_item_edit() {
 	</script>
 	<?php
 }
-
-/* ---------------------
- Rule Functions
- --------------------- */
 
 function automation_graph_rules_remove() {
 	/* ================= input validation ================= */

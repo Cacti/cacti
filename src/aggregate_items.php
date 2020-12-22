@@ -61,10 +61,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	global $config;
 
@@ -161,11 +157,12 @@ function form_save() {
 	}
 }
 
-/* -----------------------
-	save aggregate graph item
-	This saves any overrides to item properties from graph template item.
-	Inserting new items here is not possible. Just editing existing ones.
-   ----------------------- */
+/**
+ *  save aggregate graph item
+ *
+ *  This saves any overrides to item properties from graph template item.
+ *  Inserting new items here is not possible. Just editing existing ones.
+ */
 function form_save_aggregate() {
 	global $config;
 
@@ -237,10 +234,6 @@ function form_save_aggregate() {
 		exit;
 	}
 }
-
-/* -----------------------
-	item - Graph Items
-   ----------------------- */
 
 function item_movedown() {
 	global $graph_item_types;

@@ -221,14 +221,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_site')) {
 		$save['id']           = get_filter_request_var('id');
@@ -300,10 +292,6 @@ function duplicate_site($template_id, $name) {
 		}
 	}
 }
-
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
 
 function form_actions() {
 	global $site_actions;
@@ -396,10 +384,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* ---------------------
-	Site Functions
-   --------------------- */
 
 function site_edit() {
 	global $fields_site_edit;

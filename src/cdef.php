@@ -105,10 +105,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
 function draw_cdef_preview($cdef_id) {
 	?>
 	<tr class='even'>
@@ -118,10 +114,6 @@ function draw_cdef_preview($cdef_id) {
 	</tr>
 	<?php
 }
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
 
 function form_save() {
 	// make sure ids are numeric
@@ -222,10 +214,6 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	}
 }
 
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
-
 function form_actions() {
 	global $cdef_actions;
 
@@ -320,10 +308,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* --------------------------
-	CDEF Item Functions
-   -------------------------- */
 
 function cdef_item_remove_confirm() {
 	global $cdef_functions, $cdef_item_types, $custom_cdef_data_source_types;
@@ -528,10 +512,6 @@ function item_edit() {
 
 	form_save_button('cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 }
-
-/* ---------------------
-	CDEF Functions
-   --------------------- */
 
 function cdef_item_dnd() {
 	/* ================= Input validation ================= */

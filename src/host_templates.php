@@ -102,10 +102,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -175,10 +171,6 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 		}
 	}
 }
-
-/* ------------------------
-	The "actions" function
-   ------------------------ */
 
 function template_item_add_dq() {
 	/* ================= input validation ================= */
@@ -324,10 +316,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* ---------------------
-	Template Functions
-   --------------------- */
 
 function template_item_remove_gt_confirm() {
 	/* ================= input validation ================= */

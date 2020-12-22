@@ -26,7 +26,9 @@ require(__DIR__ . '/include/cli_check.php');
 
 declare(ticks = 1);
 
-/* need to capture signals from users */
+/**
+ * generic signal handler for Cacti CLI
+ */
 function sig_handler($signo) {
 	global $include_file, $function, $parameters;
 

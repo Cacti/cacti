@@ -106,14 +106,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	// make sure ids are numeric
 	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
@@ -224,10 +216,6 @@ function form_save() {
 	}
 }
 
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
-
 function form_actions() {
 	global $profile_actions;
 
@@ -320,10 +308,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* --------------------------
-	CDEF Item Functions
-   -------------------------- */
 
 function duplicate_data_source_profile($source_profile, $title_format) {
 	if (!is_array($source_profile)) {
@@ -566,10 +550,6 @@ function item_edit() {
 	</script>
 	<?php
 }
-
-/* ---------------------
-	Profile Functions
-   --------------------- */
 
 function profile_edit() {
 	global $fields_profile_edit, $timespans;

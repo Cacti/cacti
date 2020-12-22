@@ -44,10 +44,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* -----------------------
-	Functions
-   ----------------------- */
-
 function changelog_view() {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 

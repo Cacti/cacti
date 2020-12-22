@@ -251,8 +251,12 @@ function rrdfile_purge($force) {
 	}
 }
 
-/** realtime_purge_cache() - This function will purge files in the realtime directory
- *  that are older than 2 hours without changes */
+/**
+ * realtime_purge_cache()
+ *
+ * This function will purge files in the realtime directory that
+ * are older than 2 hours without changes
+ */
 function realtime_purge_cache() {
 	/* remove all Realtime files over than 2 hours */
 	if (read_config_option('realtime_cache_path') != '') {
@@ -277,8 +281,9 @@ function realtime_purge_cache() {
 	db_execute('DELETE FROM poller_output_realtime WHERE time < FROM_UNIXTIME(UNIX_TIMESTAMP()-300)');
 }
 
-/*
+/**
  * logrotate_rotatenow
+ *
  * Rotates the cacti log
  */
 function logrotate_rotatenow() {
@@ -332,7 +337,9 @@ function logrotate_rotatenow() {
 	cacti_log($string, true, 'SYSTEM');
 }
 
-/* logrotate_file_rotate()
+/**
+ * logrotate_file_rotate()
+ *
  * rotates the specified log file, appending date given
  */
 function logrotate_file_rotate($name, $log, $date) {
@@ -386,8 +393,9 @@ function logrotate_file_rotate($name, $log, $date) {
 	return 0;
 }
 
-/*
+/**
  * logrotate_file_clean
+ *
  * Cleans up any old log files that should be removed
  */
 function logrotate_file_clean($name, $log, $date, $rotation) {
@@ -449,8 +457,9 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 	clearstatcache();
 }
 
-/*
+/**
  * secpass_check_expired
+ *
  * Checks user accounts to determine if the accounts and/or their passwords should be expired
  */
 function secpass_check_expired() {
@@ -500,8 +509,9 @@ function secpass_check_expired() {
 	}
 }
 
-/*
+/**
  * remove_files
+ *
  * remove all unwanted files; the list is given by table data_source_purge_action
  */
 function remove_files($file_array) {
@@ -624,8 +634,10 @@ function rrdclean_create_path($path) {
 	return is_dir($path) && is_writable($path);
 }
 
-/*
- * cleanup_ds_and_graphs - courtesy John Rembo
+/**
+ * cleanup_ds_and_graphs
+ *
+ * courtesy John Rembo
  */
 function cleanup_ds_and_graphs() {
 	global $config;
@@ -703,8 +715,9 @@ function display_version() {
 	print "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*
+/**
  * display_help
+ *
  * displays the usage of the function
  */
 function display_help() {

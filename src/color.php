@@ -77,10 +77,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_color')) {
 		/* ================= input validation ================= */
@@ -133,10 +129,6 @@ function form_save() {
 
 	exit;
 }
-
-/* -----------------------
-	Color Functions
-   ----------------------- */
 
 function form_actions() {
 	global $color_actions;

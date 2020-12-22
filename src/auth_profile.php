@@ -135,10 +135,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function api_auth_logout_everywhere() {
 	$user = $_SESSION['sess_user_id'];
 
@@ -271,10 +267,6 @@ function form_save() {
 	kill_session_var('sess_user_config_array');
 	kill_session_var('selected_theme');
 }
-
-/* --------------------------
-	User Settings Functions
-   -------------------------- */
 
 function settings() {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;

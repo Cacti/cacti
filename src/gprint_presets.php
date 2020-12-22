@@ -59,10 +59,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_gprint_presets')) {
 		/* ================= input validation ================= */
@@ -95,10 +91,6 @@ function form_save() {
 		}
 	}
 }
-
-/* -----------------------------------
-	gprint_presets - GPRINT Presets
-   ----------------------------------- */
 
 function form_actions() {
 	global $gprint_actions;

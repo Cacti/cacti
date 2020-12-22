@@ -565,10 +565,6 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* -----------------------
-	item - Graph Items
-   ----------------------- */
-
 function item() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -612,10 +608,6 @@ function item() {
 	draw_graph_items_list($template_item_list, 'aggregate_items.php', 'local_graph_id=' . get_request_var('id') , (empty($graph_template_id) ? false : true));
 	html_end_box(false);
 }
-
-/* ------------------------------------
-	graph - Graphs
-   ------------------------------------ */
 
 function graph_edit() {
 	global $config, $struct_graph, $struct_aggregate_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;

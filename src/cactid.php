@@ -25,9 +25,13 @@
 
 declare(ticks = 1);
 
-/* sig_handler - provides a generic means to catch exceptions to the Cacti log.
-   @arg $signo - (int) the signal that was thrown by the interface.
-   @returns - null */
+/**
+ * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ *
+ * @arg $signo - (int) the signal that was thrown by the interface.
+ *
+ * @returns - null
+ */
 function sig_handler($signo) {
 	global $config, $hostname;
 
@@ -281,7 +285,12 @@ function display_version() {
 	print 'The Cacti Daemon (cactid), Version ' . CACTI_VERSION . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * display_help
+ *
+ * displays the usage of the function
+ *
+ */
 function display_help() {
 	display_version();
 

@@ -170,7 +170,11 @@ rrd_close($rrdtool_pipe);
 /* close db */
 db_close();
 
-/*  display_version - displays version information */
+/**
+ * display_version
+ *
+ * displays version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Realtime Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
@@ -191,7 +195,9 @@ function display_help() {
 	print "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
 
-/* process_poller_output REAL TIME MODIFIED */
+/**
+ * process_poller_output REAL TIME MODIFIED
+ */
 function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 	global $config;
 

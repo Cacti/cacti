@@ -78,11 +78,10 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
 /**
- * aggregate_color_item_form_save	the save function
+ * aggregate_color_item_form_save
+ *
+ * the save function
  */
 function aggregate_color_item_form_save() {
 	if (isset_request_var('save_component_item')) {
@@ -132,10 +131,6 @@ function aggregate_color_item_form_save() {
 	}
 }
 
-/* -----------------------
-	item - Graph Items
-   ----------------------- */
-
 function color_templates_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -166,7 +161,9 @@ function color_templates_item_dnd() {
 }
 
 /**
- * aggregate_color_item_movedown		move item down
+ * aggregate_color_item_movedown
+ *
+ * move item down
  */
 function aggregate_color_item_movedown() {
 	/* ================= input validation ================= */
@@ -206,7 +203,9 @@ function aggregate_color_item_movedown() {
 }
 
 /**
- * aggregate_color_item_moveup		move item up
+ * aggregate_color_item_moveup
+ *
+ * move item up
  */
 function aggregate_color_item_moveup() {
 	/* ================= input validation ================= */
@@ -313,7 +312,9 @@ function aggregate_color_item_remove_confirm() {
 }
 
 /**
- * aggregate_color_item_remove		remove item
+ * aggregate_color_item_remove
+ *
+ * remove item
  */
 function aggregate_color_item_remove() {
 	/* ================= input validation ================= */
@@ -327,7 +328,9 @@ function aggregate_color_item_remove() {
 }
 
 /**
- * aggregate_color_item_edit		edit item
+ * aggregate_color_item_edit
+ *
+ * edit item
  */
 function aggregate_color_item_edit() {
 	global $struct_color_template_item;

@@ -90,10 +90,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_item')) {
 		global $graph_item_types;
@@ -250,10 +246,6 @@ function form_save() {
 		}
 	}
 }
-
-/* -----------------------
-	item - Graph Items
-   ----------------------- */
 
 function item_movedown() {
 	global $graph_item_types;
