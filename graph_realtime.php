@@ -387,7 +387,7 @@ $sizes = array(
 		var count   = 0;
 		var realtimePopout = true;
 		var refreshIsLogout= false;
-		var refreshPage=urlPath+'/graph_realtime.php?action=countdown';
+		var refreshPage=urlPath+'/graph_realtime.php?action=countdown&size='+$('#size').val();
 		var refreshMSeconds=999999999;
 		var myCountdown = {};
 		var secondsLeft = '<?php print __(' seconds left.');?>';
