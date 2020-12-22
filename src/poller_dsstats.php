@@ -48,7 +48,7 @@ function display_version() {
  *
  * generic help screen for utilities
  *
- * @returns - null
+ * @return - null
  */
 function display_help() {
 	display_version();
@@ -69,7 +69,7 @@ function display_help() {
  *
  * @arg $signo - (int) the signal that was thrown by the interface.
  *
- * @returns - null
+ * @return - null
  */
 function sig_handler($signo) {
 	switch ($signo) {

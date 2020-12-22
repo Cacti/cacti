@@ -22,8 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-class Net_Ping
-{
+class Net_Ping {
 	var $socket;
 	var $host;
 	var $ping_status;

@@ -26,7 +26,7 @@
  * dsstats_debug - this simple routine print's a standard message to the console
  * when running in debug mode.
  *
- * @returns - NULL
+ * @return - NULL
  */
 function dsdebug_debug($message) {
 	global $debug;
@@ -42,7 +42,7 @@ function dsdebug_debug($message) {
  *
  * @param $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
  *
- * @returns - null
+ * @return - null
  */
 function log_dsdebug_statistics($type, $checks, $issues) {
 	global $start;
@@ -69,7 +69,7 @@ function log_dsdebug_statistics($type, $checks, $issues) {
  * @param $linenum - (int) The line number where the error occurred
  * @param $vars - (mixed) The current state of PHP variables.
  *
- * @returns - (bool) always returns true for some reason
+ * @return - (bool) always returns true for some reason
  */
 function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {

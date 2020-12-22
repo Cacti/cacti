@@ -839,7 +839,6 @@ class spikekill {
 		return true;
 	}
 
-	/* All Functions */
 	private function createRRDFileFromXML($xmlfile, $rrdfile) {
 		/* execute the dump command */
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -1438,11 +1437,15 @@ class spikekill {
 		return stats_standard_deviation($items, false);
 	}
 
-	/* sort_by_third_element_desc - used as a sorting mechanism by comparing two
-		 arrays and returning a value that represents which is greater than the other
-	   @arg $a - an array containing a number at key '2'
-	   @arg $b - an array containing a number at key '2'
-	   @returns - an integer -1, 0, or 1 */
+	/**
+	 * sort_by_third_element_desc - used as a sorting mechanism by comparing two
+	 * arrays and returning a value that represents which is greater than the other
+	 *
+	 * @param $a - an array containing a number at key '2'
+	 * @param $b - an array containing a number at key '2'
+	 *
+	 * @return - an integer -1, 0, or 1
+	 */
 	private function sort_by_third_element_desc($a, $b) {
 		/* sort order is descending (largest to smallest) */
 		if ($a[2] == $b[2]) {
@@ -1452,11 +1455,15 @@ class spikekill {
 		return ($a[2] > $b[2]) ? -1 : 1;
 	}
 
-	/* parse_ds - takes a string of text and attempts to convert it into an array
-		 containing the complete set of all phrases included within $exp
-	   @arg $exp - the string expression to evaluate
-	   @returns - an array containing all values represented by the string, or
-		 false if the string doesn't parse */
+	/**
+	 * parse_ds - takes a string of text and attempts to convert it into an array
+	 * containing the complete set of all phrases included within $exp
+	 *
+	 * @param $exp - the string expression to evaluate
+	 *
+	 * @return - an array containing all values represented by the string, or
+	 *   false if the string doesn't parse
+	 */
 	private function parse_ds($exp) {
 		$exp  = trim($exp);
 		$list = array();
@@ -1502,12 +1509,16 @@ class spikekill {
 		return $list;
 	}
 
-	/* evaluateDsFilter - compares the list of DS filters against the list of DSes
-		 that exist inside the RRD.  This produces an array of relevant matches
-		 for this particular spikekill execution
-	   @arg $filters - an array containing individual filters
-	   @returns - an array represeting the DSes in this RRD file, or false if
-		 the filters had no matches */
+	/**
+	 * evaluateDsFilter - compares the list of DS filters against the list of DSes
+	 * that exist inside the RRD.  This produces an array of relevant matches
+	 * for this particular spikekill execution
+	 *
+	 * @param $filters - an array containing individual filters
+	 *
+	 * @return - an array represeting the DSes in this RRD file, or false if
+	 *   the filters had no matches
+	 */
 	private function evaluateDsFilter($filters) {
 		$ds_heap = array();
 

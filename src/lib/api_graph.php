@@ -284,7 +284,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
  *
  * @arg $local_data_id - the id of the data source
  *
- * @returns - array($id => $name_cache) returns the graph id's and names of the graphs
+ * @return - array($id => $name_cache) returns the graph id's and names of the graphs
  */
 function api_get_graphs_from_datasource($local_data_id) {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT graph_templates_graph.local_graph_id AS id,

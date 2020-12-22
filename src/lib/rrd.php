@@ -45,8 +45,11 @@ function escape_command($command) {
 	#TODO return preg_replace((\\\$(?=\w+|\*|\@|\#|\?|\-|\\\$|\!|\_|[0-9]|\(.*\))|`(?=.*(?=`)))","$2", $command);  #suggested by ldevantier to allow for a single $
 }
 
-/** set the language environment variable for rrdtool functions
+/**
+ * set the language environment variable for rrdtool functions
+ *
  * @param string $lang		- the desired language to set
+ *
  * @return null
  */
 function rrdtool_set_language($lang = -1) {
@@ -61,7 +64,9 @@ function rrdtool_set_language($lang = -1) {
 	}
 }
 
-/** restore the default language environment variable after rrdtool functions
+/**
+ * restore the default language environment variable after rrdtool functions
+ *
  * @return null
  */
 function rrdtool_reset_language() {
@@ -885,34 +890,39 @@ function rrdtool_function_tune($rrd_tune_array) {
 	}
 }
 
-/* rrdtool_function_fetch - given a data source, return all of its data in an array
-   @arg $local_data_id - the data source to fetch data for
-   @arg $start_time - the start time to use for the data calculation. this value can
-	 either be absolute (unix timestamp) or relative (to now)
-   @arg $end_time - the end time to use for the data calculation. this value can
-	 either be absolute (unix timestamp) or relative (to now)
-   @arg $resolution - the accuracy of the data measured in seconds
-   @arg $show_unknown - Show unknown 'NAN' values in the output as 'U'
-   @arg $rrdtool_file - Don't force Cacti to calculate the file
-   @arg $cf - Specify the consolidation function to use
-   @arg $rrdtool_pipe - a pipe to an rrdtool command
-   @returns - (array) an array containing all data in this data source broken down
-	 by each data source item. the maximum of all data source items is included in
-	 an item called 'nth_percentile_maximum'.  The array will look as follows:
+/**
+ * rrdtool_function_fetch - given a data source, return all of its data in an array
+ *
+ * Returns an array containing all data in this data source broken down
+ * by each data source item. the maximum of all data source items is included in
+ * an item called 'nth_percentile_maximum'.  The array will look as follows:
+ *
+ * Again, the 'nth_percentile_maximum' will have the maximum value amoungst all the
+ * data sources for each set of data.  So, if you have traffic_in and traffic_out,
+ * each member element in the array will have the maximum of traffic_in and traffic_out
+ * in it.
 
-	 $fetch_array['data_source_names'][0] = 'ds1'
-	 $fetch_array['data_source_names'][1] = 'ds2'
-	 $fetch_array['data_source_names'][2] = 'nth_percentile_maximum'
-	 $fetch_array['start_time'] = $timestamp;
-	 $fetch_array['end_time']   = $timestamp;
-	 $fetch_array['values'][$dsindex1][...]  = $value;
-	 $fetch_array['values'][$dsindex2][...]  = $value;
-	 $fetch_array['values'][$nth_index][...] = $value;
-
-	 Again, the 'nth_percentile_maximum' will have the maximum value amoungst all the
-	 data sources for each set of data.  So, if you have traffic_in and traffic_out,
-	 each member element in the array will have the maximum of traffic_in and traffic_out
-	 in it.
+ * $fetch_array['data_source_names'][0] = 'ds1'
+ * $fetch_array['data_source_names'][1] = 'ds2'
+ * $fetch_array['data_source_names'][2] = 'nth_percentile_maximum'
+ * $fetch_array['start_time'] = $timestamp;
+ * $fetch_array['end_time']   = $timestamp;
+ * $fetch_array['values'][$dsindex1][...]  = $value;
+ * $fetch_array['values'][$dsindex2][...]  = $value;
+ * $fetch_array['values'][$nth_index][...] = $value;
+ *
+ * @param $local_data_id - the data source to fetch data for
+ * @param $start_time - the start time to use for the data calculation. this value can
+ *   either be absolute (unix timestamp) or relative (to now)
+ * @param $end_time - the end time to use for the data calculation. this value can
+ *   either be absolute (unix timestamp) or relative (to now)
+ * @param $resolution - the accuracy of the data measured in seconds
+ * @param $show_unknown - Show unknown 'NAN' values in the output as 'U'
+ * @param $rrdtool_file - Don't force Cacti to calculate the file
+ * @param $cf - Specify the consolidation function to use
+ * @param $rrdtool_pipe - a pipe to an rrdtool command
+ *
+ * @return - (array) of data
  */
 function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = false) {
 	global $config;
@@ -2674,8 +2684,11 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 	return 0;
 }
 
-/** given a data source id, return rrdtool info array
+/**
+ * given a data source id, return rrdtool info array
+ *
  * @param $local_data_id - data source id
+ *
  * @return - (array) an array containing all data from rrdtool info command
  */
 function rrdtool_function_info($local_data_id) {
@@ -2723,9 +2736,12 @@ function rrdtool_function_info($local_data_id) {
 	return $rrd_info;
 }
 
-/** rrdtool_function_contains_cf  verifies if the RRDfile contains the 'MAX' consolidation function
+/**
+ * rrdtool_function_contains_cf - verifies if the RRDfile contains the 'MAX' consolidation function
+ *
  * @param $local_data_id    the id of the data source
  * @param $cf               the consolidation function to search for
+ *
  * @return					boolean true or false depending on the result
  */
 function rrdtool_function_contains_cf($local_data_id, $cf) {
@@ -2744,9 +2760,12 @@ function rrdtool_function_contains_cf($local_data_id, $cf) {
 	return false;
 }
 
-/** rrdtool_cacti_compare 	compares cacti information to rrd file information
+/**
+ * rrdtool_cacti_compare - compares cacti information to rrd file information
+ *
  * @param $data_source_id		the id of the data source
  * @param $info				rrdtool info as an array
+ *
  * @return					array build like $info defining html class in case of error
  */
 function rrdtool_cacti_compare($data_source_id, &$info) {
@@ -2983,9 +3002,12 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	return $diff;
 }
 
-/** take output from rrdtool info array and build html table
+/**
+ * take output from rrdtool info array and build html table
+ *
  * @param array $info_array - array of rrdtool info data
  * @param array $diff - array of differences between definition and current rrd file settings
+ *
  * @return string - html code
  */
 function rrdtool_info2html($info_array, $diff=array()) {
@@ -3117,8 +3139,9 @@ function rrdtool_info2html($info_array, $diff=array()) {
 	html_end_box();
 }
 
-/** rrdtool_tune			- create rrdtool tune/resize commands
- * 						  html+cli enabled
+/**
+ * rrdtool_tune			- create rrdtool tune/resize commands html+cli enabled
+ *
  * @param $rrd_file		- rrd file name
  * @param $diff			- array of discrepancies between cacti setttings and rrd file info
  * @param $show_source	- only show text+commands or execute all commands, execute is for cli mode only!
@@ -3175,8 +3198,11 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 	}
 }
 
-/** Given a data source id, check the rrdtool file to the data source definition
+/**
+ * Given a data source id, check the rrdtool file to the data source definition
+ *
  * @param $data_source_id - data source id
+ *
  * @return - (array) an array containing issues with the rrdtool file definition vs data source
  */
 function rrd_check($data_source_id) {
@@ -3187,8 +3213,11 @@ function rrd_check($data_source_id) {
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 }
 
-/** Given a data source id, update the rrdtool file to match the data source definition
+/**
+ * Given a data source id, update the rrdtool file to match the data source definition
+ *
  * @param $data_source_id - data source id
+ *
  * @return - 1 success, 2 false
  */
 function rrd_repair($data_source_id) {
@@ -3199,10 +3228,13 @@ function rrd_repair($data_source_id) {
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 }
 
-/** add a (list of) datasource(s) to an (array of) rrd file(s)
+/**
+ * add a (list of) datasource(s) to an (array of) rrd file(s)
+ *
  * @param array $file_array	- array of rrd files
  * @param array $ds_array	- array of datasouce parameters
  * @param bool $debug		- debug mode
+ *
  * @return mixed			- success (bool) or error message (array)
  */
 function rrd_datasource_add($file_array, $ds_array, $debug) {
@@ -3275,10 +3307,13 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 	return true;
 }
 
-/** delete a (list of) rra(s) from an (array of) rrd file(s)
+/**
+ * delete a (list of) rra(s) from an (array of) rrd file(s)
+ *
  * @param array $file_array	- array of rrd files
  * @param array $rra_array	- array of rra parameters
  * @param bool $debug		- debug mode
+ *
  * @return mixed			- success (bool) or error message (array)
  */
 function rrd_rra_delete($file_array, $rra_array, $debug) {
@@ -3334,11 +3369,14 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 	return true;
 }
 
-/** clone a (list of) rra(s) from an (array of) rrd file(s)
+/**
+ * clone a (list of) rra(s) from an (array of) rrd file(s)
+ *
  * @param array $file_array	- array of rrd files
  * @param string $cf		- new consolidation function
  * @param array $rra_array	- array of rra parameters
  * @param bool $debug		- debug mode
+ *
  * @return mixed			- success (bool) or error message (array)
  */
 function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
@@ -3394,7 +3432,9 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 	return true;
 }
 
-/** appends a <DS> subtree to an RRD XML structure
+/**
+ * appends a <DS> subtree to an RRD XML structure
+ *
  * @param object $dom	- the DOM object, where the RRD XML is stored
  * @param string $version- rrd file version
  * @param string $name	- name of the new ds
@@ -3402,6 +3442,7 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
  * @param int $min_hb	- heartbeat of the new ds
  * @param string $min	- min value of the new ds or [NaN|U]
  * @param string $max	- max value of the new ds or [NaN|U]
+ *
  * @return object		- modified DOM
  */
 function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
@@ -3449,12 +3490,15 @@ function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
 	$insert->parentNode->insertBefore($new_node, $insert);
 }
 
-/** COMPUTE DS: appends a <DS> subtree to an RRD XML structure
+/**
+ * COMPUTE DS: appends a <DS> subtree to an RRD XML structure
+ *
  * @param object $dom	- the DOM object, where the RRD XML is stored
  * @param string $version- rrd file version
  * @param string $name	- name of the new ds
  * @param string $type	- type of the new ds
  * @param int $cdef		- the cdef rpn used for COMPUTE
+ *
  * @return object		- modified DOM
  */
 function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
@@ -3499,9 +3543,12 @@ function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
 	$insert->parentNode->insertBefore($new_node, $insert);
 }
 
-/** append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure
+/**
+ * append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure
+ *
  * @param object $dom		- the DOM object, where the RRD XML is stored
  * @param string $version	- rrd file version
+ *
  * @return object			- the modified DOM object
  */
 function rrd_append_cdp_prep_ds($dom, $version) {
@@ -3538,8 +3585,11 @@ function rrd_append_cdp_prep_ds($dom, $version) {
 	}
 }
 
-/** append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
+/**
+ * append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
+ *
  * @param object $dom	- the DOM object, where the RRD XML is stored
+ *
  * @return object		- the modified DOM object
  */
 function rrd_append_value($dom) {
@@ -3563,9 +3613,12 @@ function rrd_append_value($dom) {
 	}
 }
 
-/** delete an <RRA> subtree from the <RRD> XML structure
+/**
+ * delete an <RRA> subtree from the <RRD> XML structure
+ *
  * @param object $dom		- the DOM document, where the RRD XML is stored
  * @param array $rra_parm	- a single rra parameter set, given by the user
+ *
  * @return object			- the modified DOM object
  */
 function rrd_delete_rra($dom, $rra_parm) {
@@ -3599,10 +3652,13 @@ function rrd_delete_rra($dom, $rra_parm) {
 	return $dom;
 }
 
-/** clone an <RRA> subtree of the <RRD> XML structure, replacing cf
+/**
+ * clone an <RRA> subtree of the <RRD> XML structure, replacing cf
+ *
  * @param object $dom		- the DOM document, where the RRD XML is stored
  * @param string $cf		- new consolidation function
  * @param array $rra_parm	- a single rra parameter set, given by the user
+ *
  * @return object			- the modified DOM object
  */
 function rrd_copy_rra($dom, $cf, $rra_parm) {

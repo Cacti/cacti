@@ -22,7 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-/** duplicate_reports  duplicates a report and all items
+/**
+ * duplicate_reports  duplicates a report and all items
+ *
  * @param int $_id			- id of the report
  * @param string $_title	- title of the new report
  */
@@ -133,7 +135,9 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 	}
 }
 
-/** reports_date_time_format		fetches the date/time formatting information for current user
+/**
+ * reports_date_time_format - fetches the date/time formatting information for current user
+ *
  * @return string	- string defining the datetime format specific to this user
  */
 function reports_date_time_format() {
@@ -187,11 +191,14 @@ function reports_date_time_format() {
 	return $graph_date;
 }
 
-/** reports_interval_start	computes the next start time for the given set of parameters
+/**
+ * reports_interval_start - computes the next start time for the given set of parameters
+ *
  * @param int $interval		- given interval
  * @param int $count		- given repeat count
  * @param int $offset		- offset in seconds to be added to the new start time
  * @param int $timestamp	- current start time for report
+ *
  * @return					- new timestamp
  */
 function reports_interval_start($interval, $count, $offset, $timestamp) {
@@ -262,7 +269,9 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 	return $ts;
 }
 
-/** utime_add			add offsets to given timestamp
+/**
+ * utime_add - add offsets to given timestamp
+ *
  * @param int $timestamp- base timestamp
  * @param int $yr		- offset in years
  * @param int $mon		- offset in months
@@ -270,6 +279,7 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
  * @param int $hr		- offset in hours
  * @param int $min		- offset in minutes
  * @param int $sec		- offset in seconds
+ *
  * @return				- unix time
  */
 function utime_add($timestamp, $yr=0, $mon=0, $day=0, $hr=0, $min=0, $sec=0) {
@@ -281,14 +291,17 @@ function utime_add($timestamp, $yr=0, $mon=0, $day=0, $hr=0, $min=0, $sec=0) {
 	return $unixnewtime;
 }
 
-/** reports_log - logs a string to Cacti's log file or optionally to the browser
+/**
+ * reports_log - logs a string to Cacti's log file or optionally to the browser
+ *
  * @param string $string 	- the string to append to the log file
  * @param bool $output 	- whether to output the log line to the browser using pring() or not
  * @param mixed $string
  * @param mixed $output
  * @param mixed $environ
  * @param mixed $level
- * @param string $environ - tell's from where the script was called from */
+ * @param string $environ - tell's from where the script was called from
+ */
 function reports_log($string, $output = false, $environ = 'REPORTS', $level = POLLER_VERBOSITY_NONE) {
 	# Define REPORTS_DEBUG if not already set
 	if (!defined('REPORTS_DEBUG')) {
@@ -307,7 +320,9 @@ function reports_log($string, $output = false, $environ = 'REPORTS', $level = PO
 	}
 }
 
-/** generate_report		create the complete mail for a single report and send it
+/**
+ * generate_report - create the complete mail for a single report and send it
+ *
  * @param array $report	- complete row of reports table for the report to work upon
  * @param bool $force	- when forced, lastsent time will not be entered (e.g. Send Now)
  */
@@ -550,11 +565,14 @@ function generate_report($report, $force = false) {
 	}
 }
 
-/** reports_load_format_file  read the format file from disk and determines it's formating
+/**
+ * reports_load_format_file  read the format file from disk and determines it's formating
+ *
  * @param string $format_file		- the file to read from the formats directory
  * @param string $output			- the html and css output from that file
  * @param bool $report_tag_included - a boolean that informs the caller if the report tag is present
  * @param mixed $theme
+ *
  * @return bool						- wether or not the format file was processed correctly
  */
 function reports_load_format_file($format_file, &$output, &$report_tag_included, &$theme) {
@@ -594,6 +612,7 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 
 /**
  * determine, if the given tree has graphs; taking permissions into account
+ *
  * @param int $tree_id			- tree id
  * @param int $branch_id		- branch id
  * @param int $effective_user	- user id
@@ -669,10 +688,13 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 	return cacti_sizeof($graphs);
 }
 
-/** reports_generate_html  print report to html for online verification
+/**
+ * reports_generate_html  print report to html for online verification
+ *
  * @param int $reports_id	- id of report report
  * @param int $output		- type of output
  * @param mixed $theme
+ *
  * @return string			- generated html output
  */
 function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$theme = '') {
@@ -875,11 +897,13 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 
 /**
  * return html code for an embetted image
+ *
  * @param array $report	- parameters for this report mail report
  * @param $item			- current graph item
  * @param $timespan		- timespan
  * @param $output		- type of output
  * @param mixed $theme
+ *
  * @return string		- generated html
  */
  function reports_graph_image($report, $item, $timespan, $output, $theme = 'classic') {
@@ -921,6 +945,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 
 /**
  * expand a tree for including into report
+ *
  * @param array $report		- parameters for this report mail report
  * @param int $item			- current graph item
  * @param int $output		- type of output
@@ -928,6 +953,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
  * @param bool $nested		- nested tree?
  * @param mixed $parent
  * @param mixed $theme
+ *
  * @return string			- html
  */
 function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $theme = 'classic', $nested = false) {
@@ -1396,8 +1422,10 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 
 /**
  * natural sort function
+ *
  * @param $a
  * @param $b
+ *
  * @return string
  */
 function necturally_sort_graphs($a, $b) {
@@ -1406,6 +1434,7 @@ function necturally_sort_graphs($a, $b) {
 
 /**
  * draw graph area
+ *
  * @param array $graphs		- array of graphs
  * @param array $report		- report parameters
  * @param int $item			- current item
@@ -1413,6 +1442,7 @@ function necturally_sort_graphs($a, $b) {
  * @param int $output		- type of output
  * @param bool $format_ok	- use css styling
  * @param mixed $theme
+ *
  * @return string
  */
 function reports_graph_area($graphs, &$report, $item, $timespan, $output, $format_ok, $theme = 'classic') {
@@ -1472,6 +1502,7 @@ function reports_graph_area($graphs, &$report, $item, $timespan, $output, $forma
  * convert png images stream to jpeg using php-gd
  *
  * @param string $png_data	- the png image as a stream
+ *
  * @return string			- the jpeg image as a stream
  */
 function png2jpeg($png_data) {
@@ -1514,6 +1545,7 @@ function png2jpeg($png_data) {
  * convert png images stream to gif using php-gd
  *
  * @param string $png_data	- the png image as a stream
+ *
  * @return string			- the gif image as a stream
  */
 function png2gif($png_data) {
@@ -1554,6 +1586,7 @@ function png2gif($png_data) {
 
 /**
  * get available format files for cacti reporting
+ *
  * @return array	- available format files
  */
 function reports_get_format_files() {
@@ -1610,8 +1643,10 @@ function reports_poller_bottom() {
 
 /**
  * Setup the new dropdown action for Graph Management
- * @arg $action		actions to be performed from dropdown
- * @param mixed $action
+ *
+ * @param $action actions to be performed from dropdown
+ *
+ * @return mixed $action
  */
 function reports_graphs_action_array($action) {
 	$action['reports'] = __('Add to Report');
@@ -1621,11 +1656,13 @@ function reports_graphs_action_array($action) {
 
 /**
  * reports_graphs_action_prepare - perform reports_graph prepare action
+ *
  * @param array $save - drp_action: selected action from dropdown
- *              graph_array: graphs titles selected from graph management's list
- *              graph_list: graphs selected from graph management's list
- * returns array $save				-
- *  */
+ *   graph_array: graphs titles selected from graph management's list
+ *   graph_list: graphs selected from graph management's list
+ *
+ * @return array $save				-
+ */
 function reports_graphs_action_prepare($save) {
 	global $config, $graph_timespans, $alignment;
 
@@ -1658,9 +1695,11 @@ function reports_graphs_action_prepare($save) {
 
 /**
  * reports_graphs_action_execute - perform reports_graph execute action
+ *
  * @param string $action - action to be performed
- * return -
- *  */
+ *
+ * @return null
+ */
 function reports_graphs_action_execute($action) {
 	global $config;
 

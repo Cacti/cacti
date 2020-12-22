@@ -22,10 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* push_out_data_source_custom_data - pushes out the "custom data" associated with a data
-	template to all of its children. this includes all fields inhereted from the host
-	and the data template
-   @arg $data_template_id - the id of the data template to push out values for */
+/**
+ * push_out_data_source_custom_data - pushes out the "custom data" associated with a data
+ * template to all of its children. this includes all fields inhereted from the host
+ * and the data template
+ *
+ * @param $data_template_id - the id of the data template to push out values for
+ */
 function push_out_data_source_custom_data($data_template_id) {
 	/* valid data template id? */
 	if (empty($data_template_id)) {
@@ -138,7 +141,9 @@ function push_out_data_source_custom_data($data_template_id) {
 	}
 }
 
-/* push out changed data template fields to related data sources
+/**
+ * push out changed data template fields to related data sources
+ *
  * @parm string $did_vals	- data input data fields
  * @parm string $ds_in_str	- all data sources, formatted as SQL 'IN' clause
  */
@@ -152,9 +157,12 @@ function push_out_data_source_templates($did_vals, $ds_in_str) {
 	}
 }
 
-/* push_out_data_source_item - pushes out templated data template item fields to all matching
-	children
-   @arg $data_template_rrd_id - the id of the data template item to push out values for */
+/**
+ * push_out_data_source_item - pushes out templated data template item fields to
+ * all matching children
+ *
+ * @param $data_template_rrd_id - the id of the data template item to push out values for
+ */
 function push_out_data_source_item($data_template_rrd_id) {
 	global $struct_data_source_item;
 
@@ -178,8 +186,12 @@ function push_out_data_source_item($data_template_rrd_id) {
 	}
 }
 
-/* push_out_data_source - pushes out templated data template fields to all matching children
-   @arg $data_template_data_id - the id of the data template to push out values for */
+/**
+ * push_out_data_source - pushes out templated data template fields to all
+ * matching children
+ *
+ * @param $data_template_data_id - the id of the data template to push out values for
+ */
 function push_out_data_source($data_template_data_id) {
 	global $struct_data_source;
 
@@ -206,12 +218,14 @@ function push_out_data_source($data_template_data_id) {
 	}
 }
 
-/* change_data_template - changes the data template for a particular data source to
-	$data_template_id
-   @arg $local_data_id - the id of the data source to change the data template for
-   @arg $data_template_id - id the of the data template to change to. specify '0' for no
-   @arg $profile - a structure of data source profile attributes
-	data template */
+/**
+ * change_data_template - changes the data template for a particular data source to
+ * $data_template_id
+ *
+ * @param $local_data_id - the id of the data source to change the data template for
+ * @param $data_template_id - id the of the data template to change to. specify '0' for no
+ * @param $profile - a structure of data source profile attributes data template
+ */
 function change_data_template($local_data_id, $data_template_id, $profile = array()) {
 	global $struct_data_source, $struct_data_source_item;
 
@@ -323,8 +337,11 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	}
 }
 
-/* push_out_graph - pushes out templated graph template fields to all matching children
-   @arg $graph_template_graph_id - the id of the graph template to push out values for */
+/**
+ * push_out_graph - pushes out templated graph template fields to all matching children
+ *
+ * @param $graph_template_graph_id - the id of the graph template to push out values for
+ */
 function push_out_graph($graph_template_graph_id) {
 	global $struct_graph;
 
@@ -366,15 +383,18 @@ function push_out_graph($graph_template_graph_id) {
 	}
 }
 
-/* push_out_graph_input - pushes out the value of a graph input to a single child item. this function
-	differs from other push_out_* functions in that it does not push out the value of this element to
-	all attached children. instead, it obtains the current value of the graph input based on other
-	graph items and pushes out the 'active' value
-   @arg $graph_template_input_id - the id of the graph input to push out values for
-   @arg $graph_template_item_id - the id the graph template item to push out
-   @arg $session_members - when looking for the 'active' value of the graph input, ignore these graph
-	template items. typically you want to ignore all items that were just selected and have yet to be
-	saved to the database. this is because these items most likely contain incorrect data */
+/**
+ * push_out_graph_input - pushes out the value of a graph input to a single child item. this function
+ * differs from other push_out_* functions in that it does not push out the value of this element to
+ * all attached children. instead, it obtains the current value of the graph input based on other
+ * graph items and pushes out the 'active' value
+ *
+ * @param $graph_template_input_id - the id of the graph input to push out values for
+ * @param $graph_template_item_id - the id the graph template item to push out
+ * @param $session_members - when looking for the 'active' value of the graph input, ignore these graph
+ *   template items. typically you want to ignore all items that were just selected and have yet to be
+ *   saved to the database. this is because these items most likely contain incorrect data
+ */
 function push_out_graph_input($graph_template_input_id, $graph_template_item_id, $session_members) {
 	$graph_input = db_fetch_row_prepared('SELECT graph_template_id, column_name
 		FROM graph_template_input
@@ -435,10 +455,13 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 	}
 }
 
-/* push_out_graph_item - pushes out templated graph template item fields to all matching
-	children. if the graph template item is part of a graph input, the field will not be
-	pushed out
-   @arg $graph_template_item_id - the id of the graph template item to push out values for */
+/**
+ * push_out_graph_item - pushes out templated graph template item fields to all matching
+ * children. if the graph template item is part of a graph input, the field will not be
+ * pushed out
+ *
+ * @param $graph_template_item_id - the id of the graph template item to push out values for
+ */
 function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	global $struct_graph_item;
 
@@ -627,11 +650,14 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 	}
 }
 
-/* retemplate_graphs - reapply the graph template as it currently exists to all
-	graphs using that template.  This is important when you have graphs that
-	have multiple versions of a template.
-   @arg $graph_template_id - the graph template id to retemplate
-   @arg $local_graph_id - optional local graph id */
+/**
+ * retemplate_graphs - reapply the graph template as it currently exists to all
+ * graphs using that template.  This is important when you have graphs that
+ * have multiple versions of a template.
+ *
+ * @param $graph_template_id - the graph template id to retemplate
+ * @param $local_graph_id - optional local graph id
+ */
 function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
 	if ($local_graph_id == 0) {
 		$graphs = db_fetch_assoc_prepared('SELECT id
@@ -653,14 +679,17 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
 	}
 }
 
-/* change_graph_template - changes the graph template for a particular graph to
-	$graph_template_id
-   @arg $local_graph_id - the id of the graph to change the graph template for
-   @arg $graph_template_id - id the of the graph template to change to. specify '0' for no
-	graph template
-   @arg $force - (true) if the target graph template has more or less graph items than
-	the current graph, remove or add the items from the current graph to make them equal.
-	(false) leave the graph item count alone */
+/**
+ * change_graph_template - changes the graph template for a particular graph to
+ * $graph_template_id
+ *
+ * @param $local_graph_id - the id of the graph to change the graph template for
+ * @param $graph_template_id - id the of the graph template to change to. specify '0' for no
+ *   graph template
+ * @param $force - (true) if the target graph template has more or less graph items than
+ *   the current graph, remove or add the items from the current graph to make them equal.
+ *   (false) leave the graph item count alone
+ */
 function change_graph_template($local_graph_id, $graph_template_id, $force = true) {
 	global $struct_graph, $struct_graph_item;
 
@@ -922,10 +951,13 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 	return true;
 }
 
-/* graph_to_graph_template - converts a graph to a graph template
-   @arg $local_graph_id - the id of the graph to be converted
-   @arg $graph_title - the graph title to use for the new graph template. the variable
-	<graph_title> will be substituted for the current graph title */
+/**
+ * graph_to_graph_template - converts a graph to a graph template
+ *
+ * @param $local_graph_id - the id of the graph to be converted
+ * @param $graph_title - the graph title to use for the new graph template. the variable
+ *   <graph_title> will be substituted for the current graph title
+ */
 function graph_to_graph_template($local_graph_id, $graph_title) {
 	/* create a new graph template entry */
 	$title_template = db_fetch_cell_prepared('SELECT title
@@ -969,10 +1001,13 @@ function graph_to_graph_template($local_graph_id, $graph_title) {
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', array($local_graph_id));
 }
 
-/* data_source_to_data_template - converts a data source to a data template
-   @arg $local_data_id - the id of the data source to be converted
-   @arg $data_source_title - the data source title to use for the new data template. the variable
-	<ds_title> will be substituted for the current data source title */
+/**
+ * data_source_to_data_template - converts a data source to a data template
+ *
+ * @param $local_data_id - the id of the data source to be converted
+ * @param $data_source_title - the data source title to use for the new data template. the variable
+ *   <ds_title> will be substituted for the current data source title
+ */
 function data_source_to_data_template($local_data_id, $data_source_title) {
 	/* create a new graph template entry */
 	$title_template = db_fetch_cell_prepared('SELECT name
@@ -1018,27 +1053,30 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	db_execute_prepared('DELETE FROM poller_item WHERE local_data_id= ?', array($local_data_id));
 }
 
-/* create_complete_graph_from_template - creates a graph and all necessary data sources based on a
-	graph template
-   @arg $graph_template_id - the id of the graph template that will be used to create the new
-	graph
-   @arg $host_id - the id of the host to associate the new graph and data sources with
-   @arg $snmp_query_array - if the new data sources are to be based on a data query, specify the
-	necessary data query information here. it must contain the following information:
-	  $snmp_query_array['snmp_query_id']
-	  $snmp_query_array['snmp_index_on']
-	  $snmp_query_array['snmp_query_graph_id']
-	  $snmp_query_array['snmp_index']
-   @arg $sugested_vals - any additional information to be included in the new graphs or
-	data sources must be included in the array. data is to be included in the following format:
-	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
-	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
-	  $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
-	  $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
-	  $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
-	  $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
+/**
+ * create_complete_graph_from_template - creates a graph and all necessary data sources based on a
+ * graph template
+ *
+ * @param $graph_template_id - the id of the graph template that will be used to create the new
+ *   graph
+ * @param $host_id - the id of the host to associate the new graph and data sources with
+ * @param $snmp_query_array - if the new data sources are to be based on a data query, specify the
+ *   necessary data query information here. it must contain the following information:
+ *     $snmp_query_array['snmp_query_id']
+ *     $snmp_query_array['snmp_index_on']
+ *     $snmp_query_array['snmp_query_graph_id']
+ *     $snmp_query_array['snmp_index']
+ * @param $sugested_vals - any additional information to be included in the new graphs or
+ *   data sources must be included in the array. data is to be included in the following format:
+ *     $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
+ *     $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
+ *     $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
+ *     $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
+ *     $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
+ *     $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
+ *     $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
+ *     $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
+ */
 function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals) {
 	global $config;
 
@@ -1390,20 +1428,23 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	return $cache_array;
 }
 
-/* create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
-   data source properties.  If so, then you must duplicate the Data Source and not use
-   the existing one.
-   @arg $sugested_vals - any additional information to be included in the new graphs or
-	data sources must be included in the array. data is to be included in the following format:
-	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
-	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
-	  $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
-	  $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
-	  $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
-	  $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
-   @arg $previous_data_source - the previous data source if this data source id duplicate. */
+/**
+ * create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
+ * data source properties.  If so, then you must duplicate the Data Source and not use
+ * the existing one.
+ *
+ * @param $sugested_vals - any additional information to be included in the new graphs or
+ *   data sources must be included in the array. data is to be included in the following format:
+ *     $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
+ *     $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
+ *     $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
+ *     $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
+ *     $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
+ *     $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
+ *     $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
+ *     $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
+ * @param $previous_data_source - the previous data source if this data source id duplicate.
+ */
 function create_graph_custom_data_compatible($suggested_vals, $previous_data_source) {
 	$compatible = true;
 

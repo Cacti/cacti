@@ -309,7 +309,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
  * @param string $group_query 	- an SQL 'where' clause to limit the query
  * @param mixed $key_field
  *
- * @returns int					- the next available sequence id
+ * @return int					- the next available sequence id
  */
 function get_next_sequence($id, $field, $table_name, $group_query, $key_field='id') {
 	cacti_log(__FUNCTION__ . '  called. Id: ' . $id . ' field: ' . $field . ' table: ' . $table_name, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);

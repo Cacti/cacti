@@ -27,7 +27,7 @@
  * so as to be processed when performin the Daily, Weekly, Monthly and Yearly
  * average and peak calculations.
  *
- * @returns - (mixed) The RRDfile names
+ * @return - (mixed) The RRDfile names
  */
 function get_rrdfile_names() {
 	return db_fetch_assoc('SELECT data_template_data.local_data_id, data_source_path
@@ -42,7 +42,7 @@ function get_rrdfile_names() {
  * dsstats_debug - this simple routine prints a standard message to the console
  * when running in debug mode.
  *
- * @returns - NULL
+ * @return - NULL
  */
 function dsstats_debug($message) {
 	global $debug;
@@ -88,7 +88,7 @@ function dsstats_find_log_bad_maxvalues() {
  *
  * @param $interval - (string) either 'daily', 'weekly', 'monthly', or 'yearly'
  *
- * @returns - NULL
+ * @return - NULL
  */
 function dsstats_get_and_store_ds_avgpeak_values($interval) {
 	global $config;
@@ -157,7 +157,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
  * @param $interval - (string) 'daily', 'weekly', 'monthly', and 'yearly'.  Used for determining the table to
  * update during the dumping of the buffer.
  *
- * @returns - NULL
+ * @return - NULL
  */
 function dsstats_write_buffer(&$stats_array, $interval) {
 	/* initialize some variables */
@@ -217,7 +217,7 @@ function dsstats_write_buffer(&$stats_array, $interval) {
  * components and then calculates the AVERAGE and MAX values from that data and returns an array to the calling
  * function for storage into the respective database table.
  *
- * @returns - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name
+ * @return - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name
  */
 function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) {
 	global $config, $user_time, $system_time, $real_time;
@@ -418,7 +418,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
  *
  * @param $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
  *
- * @returns - null
+ * @return - null
  */
 function log_dsstats_statistics($type) {
 	global $start, $total_user_time, $total_system_time, $total_real_time;
@@ -452,7 +452,7 @@ function log_dsstats_statistics($type) {
  * @param $linenum - (int) The line number where the error occurred
  * @param $vars - (mixed) The current state of PHP variables.
  *
- * @returns - (bool) always returns true for some reason
+ * @return - (bool) always returns true for some reason
  */
 function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
@@ -804,7 +804,7 @@ function dsstats_poller_output(&$rrd_update_array) {
  * has completed.  The use of boost will require boost version 2.5 or above.  The idea
  * if that daily averages will be updated on the boost cycle.
  *
- * @returns - NULL
+ * @return - NULL
  */
 function dsstats_boost_bottom() {
 	global $config;
@@ -830,7 +830,7 @@ function dsstats_boost_bottom() {
  * It is divided into two functions as the main dsstats poller calls this function directly
  * as opposed to the call during the processing of poller output in the main cacti poller.
  *
- * @returns - NULL
+ * @return - NULL
  */
 function dsstats_memory_limit() {
 	ini_set('memory_limit', read_config_option('dsstats_poller_mem_limit') . 'M');
@@ -870,7 +870,7 @@ function dsstats_poller_bottom() {
  * it provides a high speed connection to rrdfile in the case where the traditional Cacti call does
  * not when performing fetch type calls.
  *
- * @returns - (mixed) An array that includes both the process resource and the pipes to communicate with RRDtool.
+ * @return - (mixed) An array that includes both the process resource and the pipes to communicate with RRDtool.
  */
 function dsstats_rrdtool_init() {
 	global $config;
@@ -915,7 +915,7 @@ function dsstats_rrdtool_init() {
  * @param $command - (string) The rrdtool command to execute
  * @param $pipes - (array) An array of stdin and stdout pipes to read and write data from
  *
- * @returns - (string) The output from RRDtool
+ * @return - (string) The output from RRDtool
  */
 function dsstats_rrdtool_execute($command, $pipes) {
 	$stdout = '';
@@ -943,7 +943,7 @@ function dsstats_rrdtool_execute($command, $pipes) {
  * dsstats_rrdtool_close - this routine closes the RRDtool process thus also
  * closing the pipes.
  *
- * @returns - NULL
+ * @return - NULL
  */
 function dsstats_rrdtool_close($process) {
 	proc_close($process);

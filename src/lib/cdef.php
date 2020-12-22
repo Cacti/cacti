@@ -27,12 +27,16 @@
  *
  * @arg $cdef_item_id - the id of the individual cdef item
  *
- * @returns - a text-based representation of the cdef item
+ * @return - a text-based representation of the cdef item
  */
 function get_cdef_item_name($cdef_item_id) {
 	global $cdef_functions, $cdef_operators;
 
-	$cdef_item          = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', array($cdef_item_id));
+	$cdef_item = db_fetch_row_prepared('SELECT type, value
+		FROM cdef_items
+		WHERE id = ?',
+		array($cdef_item_id));
+
 	$current_cdef_value = $cdef_item['value'];
 
 	switch ($cdef_item['type']) {
@@ -65,10 +69,14 @@ function get_cdef_item_name($cdef_item_id) {
  *
  * @arg $cdef_id - the id of the cdef to resolve
  *
- * @returns - a text-based representation of the cdef
+ * @return - a text-based representation of the cdef
  */
 function get_cdef($cdef_id) {
-	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
+	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value
+		FROM cdef_items
+		WHERE cdef_id = ?
+		ORDER BY sequence',
+		array($cdef_id));
 
 	$i = 0;
 

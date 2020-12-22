@@ -422,7 +422,7 @@ function get_auth_realms($login = false) {
  * @arg $policy_hosts - (int) the current host policy
  * @arg $policy_graph_templates - (int) the current graph template policy
  *
- * @returns - an SQL "where" statement
+ * @return - an SQL "where" statement
  */
 function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_templates) {
 	$sql            = '';
@@ -476,7 +476,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
  *
  * @arg $local_graph_id - (int) the ID of the graph to check permissions for
  *
- * @returns - (bool) whether the current user is allowed the view the specified graph or not
+ * @return - (bool) whether the current user is allowed the view the specified graph or not
  */
 function is_graph_allowed($local_graph_id, $user = 0) {
 	$rows  = 0;
@@ -540,7 +540,7 @@ function auth_augment_roles($role_name, $files) {
  *
  * @arg $tree_id - (int) the ID of the graph tree to check permissions for
  *
- * @returns - (bool) whether the current user is allowed the view the specified graph tree or not
+ * @return - (bool) whether the current user is allowed the view the specified graph tree or not
  */
 function is_tree_allowed($tree_id, $user = 0) {
 	if ($user == -1) {
@@ -620,7 +620,7 @@ function is_tree_allowed($tree_id, $user = 0) {
  *
  * @arg $host_id - (int) the ID of the device to check permissions for
  *
- * @returns - (bool) whether the current user is allowed the view the specified device or not
+ * @return - (bool) whether the current user is allowed the view the specified device or not
  */
 function is_device_allowed($host_id, $user = 0) {
 	$total_rows = -2;
@@ -634,7 +634,7 @@ function is_device_allowed($host_id, $user = 0) {
  *
  * @arg $graph_template_id - (int) the ID of the graph template to check permissions for
  *
- * @returns - (bool) whether the current user is allowed the view the specified graph template or not
+ * @return - (bool) whether the current user is allowed the view the specified graph template or not
  */
 function is_graph_template_allowed($graph_template_id, $user = 0) {
 	$total_rows = -2;
@@ -2385,7 +2385,7 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 /**
  * get_host_array - returns a list of hosts taking permissions into account if necessary
  *
- * @returns - (array) an array containing a list of hosts
+ * @return - (array) an array containing a list of hosts
  */
 function get_host_array() {
 	$total_rows = -1;
@@ -2749,7 +2749,7 @@ function rsa_check_keypair() {
  *
  * @arg $user_id - (int) the id of the current user
  *
- * @returns - null
+ * @return - null
  */
 function reset_group_perms($group_id) {
 	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
@@ -2769,7 +2769,7 @@ function reset_group_perms($group_id) {
  *
  * @arg $user_id - (int) the id of the current user
  *
- * @returns - null
+ * @return - null
  */
 function reset_user_perms($user_id) {
 	db_execute_prepared('UPDATE user_auth
@@ -2788,7 +2788,7 @@ function reset_user_perms($user_id) {
  * is_user_perms_valid - checks to see if the admin has changed users permissions
  *
  * @arg $user_id - (int) the id of the current user
- * @returns - true if still valid, false otherwise
+ * @return - true if still valid, false otherwise
  */
 function is_user_perms_valid($user_id) {
 	global $config;
@@ -2825,7 +2825,7 @@ function is_user_perms_valid($user_id) {
  * @arg $password - (string) password to verify
  * @arg $hash     - (string) current password hash
  *
- * @returns - true if password hash matches, false otherwise
+ * @return - true if password hash matches, false otherwise
  */
 function compat_password_verify($password, $hash) {
 	if (function_exists('password_verify')) {
@@ -2846,7 +2846,7 @@ function compat_password_verify($password, $hash) {
  * @arg $password - (string) password to hash
  * @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
  *
- * @returns - hash of password, false otherwise
+ * @return - hash of password, false otherwise
  */
 function compat_password_hash($password, $algo, $options = array()) {
 	if (function_exists('password_hash')) {
@@ -2867,7 +2867,7 @@ function compat_password_hash($password, $algo, $options = array()) {
  * @arg $password - (string) password to hash
  * @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
  *
- * @returns - true if password hash needs changing, false otherwise
+ * @return - true if password hash needs changing, false otherwise
  */
 function compat_password_needs_rehash($password, $algo, $options = array()) {
 	if (function_exists('password_needs_rehash')) {
@@ -3112,7 +3112,7 @@ function auth_post_login_redirect($user) {
  *
  * @arg $referer - (string) a URL that will included a basename
  *
- * @returns - (string) the file name without the arguments
+ * @return - (string) the file name without the arguments
  */
 function auth_basename($referer) {
 	$parts = explode('?', $referer);

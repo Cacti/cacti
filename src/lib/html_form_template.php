@@ -22,19 +22,22 @@
  +-------------------------------------------------------------------------+
 */
 
-/* draw_nontemplated_fields_graph - draws a form that consists of all non-templated graph fields associated
-	 with a particular graph template
-   @arg $graph_template_id - the id of the graph template to base the form after
-   @arg $values_array - any values that should be included by default on the form
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |field| - the current field name
-   @arg $header_title - the title to use on the header for this form
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-	 html input elements or omitted altogether?
-   @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
-	 will be used to determine if a given field is using suggested values */
+/**
+ * draw_nontemplated_fields_graph - draws a form that consists of all non-templated graph fields associated
+ * with a particular graph template
+ *
+ * @param $graph_template_id - the id of the graph template to base the form after
+ * @param $values_array - any values that should be included by default on the form
+ * @param $field_name_format - all fields on the form will be named using the following format, the following
+ *   variables can be used:
+ *   |field| - the current field name
+ * @param $header_title - the title to use on the header for this form
+ * @param $alternate_colors (bool) - whether to alternate colors for each row on the form or not
+ * @param $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
+ *   html input elements or omitted altogether?
+ * @param $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
+ *   will be used to determine if a given field is using suggested values
+ */
 function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_graph;
 
@@ -99,16 +102,19 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	return (isset($form_array) ? cacti_sizeof($form_array) : 0);
 }
 
-/* draw_nontemplated_fields_graph_item - draws a form that consists of all non-templated graph item fields
-	 associated with a particular graph template
-   @arg $graph_template_id - the id of the graph template to base the form after
-   @arg $local_graph_id - specify the id of the associated graph if it exists
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |field| - the current field name
-	   |id| - the current graph input id
-   @arg $header_title - the title to use on the header for this form
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not */
+/**
+ * draw_nontemplated_fields_graph_item - draws a form that consists of all non-templated graph item fields
+ * associated with a particular graph template
+ *
+ * @param $graph_template_id - the id of the graph template to base the form after
+ * @param $local_graph_id - specify the id of the associated graph if it exists
+ * @param $field_name_format - all fields on the form will be named using the following format, the following
+ *   variables can be used:
+ *   |field| - the current field name
+ *   |id| - the current graph input id
+ * @param $header_title - the title to use on the header for this form
+ * @param $alternate_colors (bool) - whether to alternate colors for each row on the form or not
+ */
 function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = '|field|_|id|', $header_title = '', $alternate_colors = true, $locked = 'false') {
 	global $struct_graph_item;
 
@@ -257,20 +263,23 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	return (isset($form_array) ? cacti_sizeof($form_array) : 0);
 }
 
-/* draw_nontemplated_fields_data_source - draws a form that consists of all non-templated data source fields
-	 associated with a particular data template
-   @arg $data_template_id - the id of the data template to base the form after
-   @arg $local_data_id - specify the id of the associated data source if it exists
-   @arg $values_array - any values that should be included by default on the form
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |field| - the current field name
-   @arg $header_title - the title to use on the header for this form
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-	 html input elements or omitted altogether?
-   @arg $snmp_query_graph_id - if this data template is part of a data query, specify the graph id here. this
-	 will be used to determine if a given field is using suggested values */
+/**
+ * draw_nontemplated_fields_data_source - draws a form that consists of all non-templated data source fields
+ * associated with a particular data template
+ *
+ * @param $data_template_id - the id of the data template to base the form after
+ * @param $local_data_id - specify the id of the associated data source if it exists
+ * @param $values_array - any values that should be included by default on the form
+ * @param $field_name_format - all fields on the form will be named using the following format, the following
+ *   variables can be used:
+ *     |field| - the current field name
+ * @param $header_title - the title to use on the header for this form
+ * @param $alternate_colors (bool) - whether to alternate colors for each row on the form or not
+ * @param $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
+ *   html input elements or omitted altogether?
+ * @param $snmp_query_graph_id - if this data template is part of a data query, specify the graph id here. this
+ *   will be used to determine if a given field is using suggested values
+ */
 function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source;
 
@@ -342,22 +351,25 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 	return (isset($form_array) ? cacti_sizeof($form_array) : 0);
 }
 
-/* draw_nontemplated_fields_data_source_item - draws a form that consists of all non-templated data source
-	 item fields associated with a particular data template
-   @arg $data_template_id - the id of the data template to base the form after
-   @arg $values_array - any values that should be included by default on the form
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |field| - the current field name
-	   |id| - the id of the current data source item
-   @arg $header_title - the title to use on the header for this form
-   @arg $draw_title_for_each_item (bool) - should a separate header be drawn for each data source item, or
-	 should all data source items be drawn under one header?
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-	 html input elements or omitted altogether?
-   @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
-	 will be used to determine if a given field is using suggested values */
+/**
+ * draw_nontemplated_fields_data_source_item - draws a form that consists of all non-templated data source
+ * item fields associated with a particular data template
+ *
+ * @param $data_template_id - the id of the data template to base the form after
+ * @param $values_array - any values that should be included by default on the form
+ * @param $field_name_format - all fields on the form will be named using the following format, the following
+ *   variables can be used:
+ *     |field| - the current field name
+ *     |id| - the id of the current data source item
+ * @param $header_title - the title to use on the header for this form
+ * @param $draw_title_for_each_item (bool) - should a separate header be drawn for each data source item, or
+ *   should all data source items be drawn under one header?
+ * @param $alternate_colors (bool) - whether to alternate colors for each row on the form or not
+ * @param $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
+ *   html input elements or omitted altogether?
+ * @param $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
+ *   will be used to determine if a given field is using suggested values
+ */
 function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = '|field_id|', $header_title = '', $draw_title_for_each_item = true, $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source_item;
 
@@ -462,20 +474,23 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 	return $num_fields_drawn;
 }
 
-/* draw_nontemplated_fields_custom_data - draws a form that consists of all non-templated custom data fields
-	 associated with a particular data template
-   @arg $data_template_id - the id of the data template to base the form after
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |id| - the id of the current field
-   @arg $header_title - the title to use on the header for this form
-   @arg $draw_title_for_each_item (bool) - should a separate header be drawn for each data source item, or
-	 should all data source items be drawn under one header?
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-	 html input elements or omitted altogether?
-   @arg $snmp_query_id - if this graph template is part of a data query, specify the data query id here. this
-	 will be used to determine if a given field is associated with a suggested value */
+/**
+ * draw_nontemplated_fields_custom_data - draws a form that consists of all non-templated custom data fields
+ * associated with a particular data template
+ *
+ * @param $data_template_id - the id of the data template to base the form after
+ * @param $field_name_format - all fields on the form will be named using the following format, the following
+ *   variables can be used:
+ *     |id| - the id of the current field
+ * @param $header_title - the title to use on the header for this form
+ * @param $draw_title_for_each_item (bool) - should a separate header be drawn for each data source item, or
+ *   should all data source items be drawn under one header?
+ * @param $alternate_colors (bool) - whether to alternate colors for each row on the form or not
+ * @param $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
+ *   html input elements or omitted altogether?
+ * @param $snmp_query_id - if this graph template is part of a data query, specify the data query id here. this
+ *   will be used to determine if a given field is associated with a suggested value
+ */
 function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = '|field|',
 	$header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
 	$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
@@ -576,14 +591,17 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 	return $i;
 }
 
-/* draw_custom_data_row - draws a single row representing 'custom data' for a single data input field.
-	 this function is where additional logic can be applied to control how a certain field of custom
-	 data is represented on the HTML form
-   @arg $field_name - the name of this form element
-   @arg $data_input_field_id - the id of the data input field that this row represents
-   @arg $data_template_data_id - the id of the data source data element that this data input field
-	 belongs to
-   @arg $current_value - the current value of this field */
+/**
+ * draw_custom_data_row - draws a single row representing 'custom data' for a single data input field.
+ * this function is where additional logic can be applied to control how a certain field of custom
+ * data is represented on the HTML form
+ *
+ * @param $field_name - the name of this form element
+ * @param $data_input_field_id - the id of the data input field that this row represents
+ * @param $data_template_data_id - the id of the data source data element that this data input field
+ *   belongs to
+ * @param $current_value - the current value of this field
+ */
 function draw_custom_data_row($field_name, $data_input_field_id, $data_template_data_id, $current_value) {
 	$field = db_fetch_row_prepared('SELECT data_name, type_code
 		FROM data_input_fields

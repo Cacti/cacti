@@ -1367,7 +1367,7 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
  * @param $fields_processed - array of field names that are already processed in query_snmp_host(),
  * refusing non-processed (e.g. stale) fields to be used as index rewrite source
  *
- * @returns - (array) of original snmp indexes associated with rewritten ones
+ * @return - (array) of original snmp indexes associated with rewritten ones
  */
 function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite_index, $snmp_indexes, $fields_processed = false) {
 	global $data_query_rewrite_indexes_cache;
@@ -1471,7 +1471,7 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
  * @param $value - value to be translated
  * @param $map - translation map in serialize()/array form
  *
- * @returns - rewritten value if possible, original one otherwise
+ * @return - rewritten value if possible, original one otherwise
  */
 function rewrite_snmp_enum_value($field_name, $value=null, $map=null) {
 	static $mapcache = array();
@@ -1546,7 +1546,7 @@ function rewrite_snmp_enum_value($field_name, $value=null, $map=null) {
  * @param $host_id - (int) the host ID to match
  * @param $data_query_id - (int) the data query ID to match
  *
- * @returns - (array) the data query ID and index that matches the three arguments
+ * @return - (array) the data query ID and index that matches the three arguments
  */
 function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
 	return db_fetch_cell_prepared('SELECT snmp_index
@@ -1563,7 +1563,7 @@ function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
  *
  * @param $data_template_data_id - the ID of the data source to retrieve information for
  *
- * @returns - (array) an array that looks like: array ( [index_type] => ifIndex [index_value] => 3 [output_type] => 13)
+ * @return - (array) an array that looks like: array ( [index_type] => ifIndex [index_value] => 3 [output_type] => 13)
  */
 function data_query_field_list($data_template_data_id) {
 	if (!is_numeric($data_template_data_id)) {
@@ -1592,7 +1592,7 @@ function data_query_field_list($data_template_data_id) {
  *
  * @param $index - the index name to encode
  *
- * @returns - the encoded data query index */
+ * @return - the encoded data query index */
 function encode_data_query_index($index) {
 	return md5($index);
 }
@@ -1604,7 +1604,7 @@ function encode_data_query_index($index) {
  * @param $data_query_id - the id of the data query that this index belongs to
  * @param $encoded_index - the id of the host that this index belongs to
  *
- * @returns - the decoded data query index
+ * @return - the decoded data query index
  */
 function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
 	/* yes, i know MySQL has a MD5() function that would make this a bit quicker. however i would like to
@@ -1792,7 +1792,7 @@ function update_data_source_data_query_cache($local_data_id, $host_id = '', $dat
  * @param $host_id - the id of the host which contains the data query
  * @param $data_query_id - the id of the data query to retrieve a list of indexes for
  *
- * @returns - an array formatted like the following: $arr[snmp_index] = 'formatted data query index string'
+ * @return - an array formatted like the following: $arr[snmp_index] = 'formatted data query index string'
  */
 function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	global $config;
@@ -1878,7 +1878,7 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
  * @param $data_query_id - the id of the data query which contains the data query index
  * @param $data_query_index - the index to retrieve the formatted name for
  *
- * @returns - a string containing the formatted name for the given data query index
+ * @return - a string containing the formatted name for the given data query index
  */
 function get_formatted_data_query_index($host_id, $data_query_id, $data_query_index) {
 	/* from the xml; cached in 'host_snmp_query' */
@@ -1911,7 +1911,7 @@ function calculate_or_set_index_order(&$raw_xml) {
  * @param $host_id - the id of the host which contains the data query
  * @param $data_query_id - the id of the data query to build the type list from
  *
- * @returns - an array of data query types either ordered or unordered depending on whether
+ * @return - an array of data query types either ordered or unordered depending on whether
  * the xml file has a manual ordering preference specified
  */
 function get_ordered_index_type_list($host_id, $data_query_id) {
@@ -2176,7 +2176,7 @@ function update_data_query_sort_cache_by_host($host_id) {
  * @param $host_id - the id of the host which contains the data query
  * @param $data_query_id - the id of the data query to fetch the best data query index type for
  *
- * @returns - a string containing containing best data query index type. this will be one of the
+ * @return - a string containing containing best data query index type. this will be one of the
  * valid input field names as specified in the data query xml file
  */
 function get_best_data_query_index_type($host_id, $data_query_id) {
@@ -2234,7 +2234,7 @@ function get_best_data_query_index_type($host_id, $data_query_id) {
  * @param $script_path - the path on the disk to the script file
  * @param $host_id - the id of the host that this script query belongs to
  *
- * @returns - a full path to the script query script containing all arguments
+ * @return - a full path to the script query script containing all arguments
  */
 function get_script_query_path($args, $script_path, $host_id) {
 	global $config;

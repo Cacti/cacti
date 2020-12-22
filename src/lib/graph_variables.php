@@ -31,7 +31,7 @@
  * @param $percentile - Nth Percentile to calculate, integer between 1 and 99
  * @param $resolution - the accuracy of the data measured in seconds
  *
- * @returns - (array) an array containing each data source item, and its 95th percentile
+ * @return - (array) an array containing each data source item, and its 95th percentile
  */
 function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
@@ -69,7 +69,7 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
  * @param $percentile - Nth Percentile to calculate, integer between 1 and 99
  * @param $resolution - the accuracy of the data measured in seconds
  *
- * @returns - (array) an array containing each data source item, and its 95th percentile
+ * @return - (array) an array containing each data source item, and its 95th percentile
  */
 function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	global $config;
@@ -334,7 +334,7 @@ function cacti_stats_calc($array, $ptile = 95) {
  * result in an averaged summation
  * @param $ds_steps - how many seconds each period represents
  *
- * @returns - (array) an array containing each data source item, and its sum
+ * @return - (array) an array containing each data source item, and its sum
  */
 function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
 	static $vstats = array();
@@ -404,7 +404,7 @@ function is_graphable_item($item) {
  * @param $seconds_between_graph_updates - the number of seconds between each update on the graph which
  *   varies depending on the RRA in use
  *
- * @returns - a string containing the Nth percentile suitable for placing on the graph
+ * @return - a string containing the Nth percentile suitable for placing on the graph
  */
 function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end) {
 	global $graph_item_types;
@@ -610,7 +610,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
  *   averaged summation
  * @param $ds_step - how many seconds each period represents
  *
- * @returns - a string containg the bandwidth summation suitable for placing on the graph
+ * @return - a string containg the bandwidth summation suitable for placing on the graph
  */
 function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
 	global $graph_item_types;

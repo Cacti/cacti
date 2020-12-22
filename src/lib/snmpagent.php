@@ -560,7 +560,9 @@ function snmpagent_get_pluginslist() {
 
 /**
  * snmpagent_cache_install()
+ *
  * Generates a SNMP caching tables reflecting all objects of the Cacti MIB
+ *
  * @return
  */
 function snmpagent_cache_install() {

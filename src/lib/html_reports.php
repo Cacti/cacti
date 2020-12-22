@@ -193,9 +193,6 @@ function reports_form_save() {
 	exit;
 }
 
-/* ------------------------
- The 'actions' function
- ------------------------ */
 function reports_form_actions() {
 	global $config, $reports_actions;
 
@@ -359,9 +356,6 @@ function reports_form_actions() {
 	bottom_footer();
 }
 
-/* --------------------------
- Report Item Functions
- -------------------------- */
 function reports_send($id) {
 	global $config;
 
@@ -913,10 +907,6 @@ function reports_item_edit() {
 	<?php
 }
 
-/* ---------------------
- Report Functions
- --------------------- */
-
 function reports_edit() {
 	global $config, $attach_types, $alignment, $reports_interval;
 
@@ -1331,8 +1321,12 @@ function reports_edit() {
 	}
 }
 
-/* display_reports_items		display the list of all items related to a single report
- * @arg $report_id				id of the report
+/**
+ * display_reports_items
+ *
+ * display the list of all items related to a single report
+ *
+ * @param $report_id id of the report
  */
 function display_reports_items($report_id) {
 	global $graph_timespans;

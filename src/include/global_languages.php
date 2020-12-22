@@ -346,7 +346,9 @@ function apply_locale($language) {
 	return false;
 }
 
-/* best effort function to repair locale */
+/**
+ * best effort function to repair locale
+ */
 function repair_locale($language) {
 	global $lang2locale;
 
@@ -373,7 +375,7 @@ function repair_locale($language) {
 }
 
 /**
- * Universal escaping wrappers
+ * universal escaping wrappers
  */
 function __esc() {
 	return htmlspecialchars(call_user_func_array('__', func_get_args()), ENT_QUOTES);
@@ -394,7 +396,7 @@ function __esc_xn() {
 /**
  * load_fallback_procedure - loads wrapper package if native language (English) has to be used
  *
- * @return
+ * @return null
  */
 function load_fallback_procedure() {
 	global $cacti_textdomains, $cacti_locale, $cacti_country, $lang2locale;
@@ -663,10 +665,14 @@ function get_installed_locales() {
 	return $supported_languages;
 }
 
-/* read_user_i18n_setting - finds the current value of a i18n configuration setting
-   @arg $config_name - the name of the configuration setting as specified $settings_user array
-	 in 'include/global_settings.php'
-   @returns - the current value of the i18n configuration option or the system default value */
+/**
+ * read_user_i18n_setting - finds the current value of a i18n configuration setting
+ *
+ * @param $config_name - the name of the configuration setting as specified $settings_user array
+ *   in 'include/global_settings.php'
+ *
+ * @return - the current value of the i18n configuration option or the system default value
+ */
 function read_user_i18n_setting($config_name) {
 	global $config;
 
@@ -712,10 +718,11 @@ function read_user_i18n_setting($config_name) {
 /**
  * number_format_i18n - local specific number format wrapper
  *
- * @return - formatted numer in the correct locale
  * @param mixed $number
  * @param null|mixed $decimals
  * @param mixed $baseu
+ *
+ * @return - formatted numer in the correct locale
  */
 function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	global $cacti_locale, $cacti_country;

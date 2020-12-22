@@ -22,10 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* update_replication_crc - update hash stored in settings table to inform
-   remote pollers to replicate tables
-   @arg $poller_id - the id of the poller impacted by hash update
-   @arg $variable  - the variable name to store in the settings table */
+/**
+ * update_replication_crc - update hash stored in settings table to inform
+ * remote pollers to replicate tables
+ *
+ * @param $poller_id - the id of the poller impacted by hash update
+ * @param $variable  - the variable name to store in the settings table
+ */
 function update_replication_crc($poller_id, $variable) {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
 
@@ -521,7 +524,9 @@ function push_out_data_input_method($data_input_id) {
 	}
 }
 
-/** mass update of poller cache - can run in parallel to poller
+/**
+ * mass update of poller cache - can run in parallel to poller
+ *
  * @param array/int $local_data_ids - either a scalar (all ids) or an array of data source to act on
  * @param array $poller_items - the new items for poller cache
  * @param int $poller_id - the poller_id of the buffer
@@ -641,11 +646,13 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	}
 }
 
-/** for a given data template, update all input data and the poller cache
+/**
+ * for a given data template, update all input data and the poller cache
+ *
  * @param int $host_id - id of host, if any
  * @param int $local_data_id - id of a single data source, if any
  * @param int $data_template_id - id of data template
- * works on table data_input_data and poller cache
+ *   works on table data_input_data and poller cache
  */
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	global $config;

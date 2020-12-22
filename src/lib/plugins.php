@@ -39,7 +39,9 @@ function api_user_realm_auth($filename = '') {
 
 /**
  * This function executes a hook.
+ *
  * @param string $name Name of hook to fire
+ *
  * @return mixed $data
  */
 function api_plugin_hook($name) {

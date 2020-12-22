@@ -30,7 +30,7 @@ declare(ticks = 1);
  *
  * @arg $signo - (int) the signal that was thrown by the interface.
  *
- * @returns - null
+ * @return - null
  */
 function sig_handler($signo) {
 	global $config, $hostname;

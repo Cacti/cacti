@@ -884,7 +884,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
  *
  * @arg $save - the save structure for the device
  *
- * @returns boolean
+ * @return boolean
  */
 function api_device_quick_save(&$save) {
 	if ($save['id'] > 0) {
