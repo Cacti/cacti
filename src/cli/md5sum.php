@@ -301,12 +301,17 @@ function dirToArray($dir,$base,$ignore) {
 	return $result;
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti md5sum Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 
@@ -326,7 +331,7 @@ function display_help() {
 	print "\nWhen no filename is passed, .md5sum is assumed. Only one filename allowed\n";
 }
 
-function fail($exit_value,$args = array(),$display_help = 0) {
+function fail($exit_value, $args = array(), $display_help = 0) {
 	global $quiet,$fail_msg;
 
 	if (!$quiet) {

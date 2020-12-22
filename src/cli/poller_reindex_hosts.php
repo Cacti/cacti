@@ -161,12 +161,17 @@ if (cacti_sizeof($data_queries)) {
 	}
 }
 
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 	print "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]\n";
@@ -178,6 +183,9 @@ function display_help() {
 	print "--debug                  - Display verbose output during execution\n";
 }
 
+/**
+ * debug - simple function to send debug message to stdout
+ */
 function debug($message) {
 	global $debug;
 

@@ -1021,11 +1021,17 @@ function f_log($msg) {
 	}
 }
 
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "RRDfile Reassign Data Template, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 	print "A simple command line utility to analyse and reassign data template settings\nto RRDfiles based upon." . PHP_EOL . PHP_EOL;

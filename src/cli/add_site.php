@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -185,13 +185,13 @@ if (sizeof($parms)) {
 			case '--help':
 			case '-H':
 			case '-h':
-				displayHelp();
+				display_help();
 
 				exit;
 
 			default:
 				echoQuiet("ERROR: Invalid Argument: ($arg)\n\n");
-				displayHelp();
+				display_help();
 
 				exit(1);
 		}
@@ -214,16 +214,16 @@ if (sizeof($parms)) {
 		}
 	}
 } else {
-	displayHelp();
+	display_help();
 
 	exit(0);
 }
 
-##
-# Add a new site, or update and existing one
-# Returns the id of the site added
-##
-
+/**
+ * Add a new site, or update and existing one
+ *
+ * @return int - the id of the site added
+ */
 function addSite() {
 	global $siteName, $siteAddr1, $siteAddr2, $siteCity, $siteState, $siteZip, $siteCountry, $siteTimezone, $siteLatitude, $siteLongitude, $siteAltname, $siteNotes, $geocodeAddress;
 
@@ -391,8 +391,10 @@ function mapDevices($siteId, $doMap) {
 	}
 }
 
-/* doDeviceMap(): updates the host.site_id entry
- * Returns true if successful
+/**
+ * doDeviceMap(): updates the host.site_id entry
+ *
+ * @return bool - true if successful
  */
 function doDeviceMap($deviceId,$siteId) {
 	if (!$deviceId && $siteId) {
@@ -405,11 +407,11 @@ function doDeviceMap($deviceId,$siteId) {
 	return $numUpdates > 0;
 }
 
- ##
- # geocodeAddress(): Use Google Geocode API to turn addresses into GPS coordinates
- # Requires an API key, which must be provided with the --geocode-api-key parameter
- ##
-
+/**
+ * geocodeAddress(): Use Google Geocode API to turn addresses into GPS coordinates
+ *
+ * Requires an API key, which must be provided with the --geocode-api-key parameter
+ */
 function geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry) {
 	global $verbose, $debug, $quiet, $geocodeApiKey, $httpsProxy;
 
@@ -420,7 +422,7 @@ function geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry
 
 	if (!$geocodeApiKey) {
 		# Dont even try without the key
-		displayHelp('Error: --geocode-api-key must be given with --geocode-address');
+		display_help('Error: --geocode-api-key must be given with --geocode-address');
 	}
 
 	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s',$googleApiUrl,urlencode($siteAddr1),urlencode($siteAddr2),urlencode($siteCity),urlencode($siteCountry),$geocodeApiKey);
@@ -468,16 +470,21 @@ function fixCoordinates($lat,$lng) {
 	return (array($lat,$lng));
 }
 
-/*  displayVersion - displays version information */
-function displayVersion() {
+/**
+ * display_version - displays Cacti CLI version information
+ */
+function display_version() {
 	$version = get_cacti_cli_version();
 	echoQuiet("Cacti Add Site Utility, Version $version, " . COPYRIGHT_YEARS . "\n");
 }
 
-function displayHelp($errorMessage = null) {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help($errorMessage = null) {
 	global $log;
 	$log = false;
-	displayVersion();
+	display_version();
 
 	if ($errorMessage) {
 		echoQuiet("$errorMessage\n\n");
@@ -546,7 +553,7 @@ function fetchCurl($url) {
 	global $verbose, $debug, $httpsProxy;
 
 	if (!function_exists('curl_init')) {
-		displayHelp("Error: cURL must be enabled in PHP if --geocode is specified.\nSee http://php.net/manual/en/curl.setup.php for help.\n");
+		display_help("Error: cURL must be enabled in PHP if --geocode is specified.\nSee http://php.net/manual/en/curl.setup.php for help.\n");
 	}
 
 	$curl      = curl_init();

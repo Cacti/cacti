@@ -257,12 +257,17 @@ if (cacti_sizeof($parms) == 0) {
 	}
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 
@@ -277,6 +282,9 @@ function display_help() {
 	print "    --list-graphs --host-id=[ID]\n";
 }
 
+/**
+ * displayGroups - unfinished and deprecate
+ */
 function displayGroups() {
 	/**
 	 * Todo implement

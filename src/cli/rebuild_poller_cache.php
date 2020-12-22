@@ -127,13 +127,17 @@ if (!$debug) print "\n";
 /* poller cache rebuilt, restore runtime parameters */
 ini_set('max_execution_time', $max_execution);
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Rebuild Poller Cache Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 
@@ -145,6 +149,9 @@ function display_help() {
 	print "    --debug      - Display verbose output during execution\n\n";
 }
 
+/**
+ * debug - simple function to send debug message to stdout
+ */
 function debug($message) {
 	global $debug;
 

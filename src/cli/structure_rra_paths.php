@@ -205,7 +205,9 @@ enable_poller();
 
 print "NOTE: Process Complete, '$done_count' Completed, '$warn_count' Skipped\n";
 
-/* update database */
+/**
+ * update database with new information
+ */
 function update_database($info) {
 	/* upate table poller_item */
 	db_execute("UPDATE poller_item
@@ -220,22 +222,31 @@ function update_database($info) {
 	print "NOTE: Database Changes Complete for File '" . $info['new_rrd_path'] . "'\n";
 }
 
-/* turn on the poller */
+/**
+ * turn on the poller
+ */
 function enable_poller() {
 	set_config_option('poller_enabled', 'on');
 }
 
-/* turn off the poller */
+/**
+ * turn off the poller
+ */
 function disable_poller() {
 	set_config_option('poller_enabled', '');
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Structured Paths Creation Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 
