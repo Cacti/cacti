@@ -39,6 +39,15 @@ if (read_config_option('storage_location')) {
 	$encryption = true;
 }
 
+/**
+ * escape_command
+ *
+ * Insert description here
+ *
+ * @param type $command
+ *
+ * @return type
+ */
 function escape_command($command) {
 	return $command;		# we escape every single argument now, no need for 'special' escaping
 	#return preg_replace("/(\\\$|`)/", "", $command); # current cacti code
@@ -75,6 +84,15 @@ function rrdtool_reset_language() {
 	putenv('LANG=' . $prev_lang);
 }
 
+/**
+ * rrd_init
+ *
+ * Insert description here
+ *
+ * @param true $output_to_term
+ *
+ * @return type
+ */
 function rrd_init($output_to_term = true) {
 	global $config;
 
@@ -87,6 +105,15 @@ function rrd_init($output_to_term = true) {
 	return call_user_func_array($function, $args);
 }
 
+/**
+ * __rrd_init
+ *
+ * Insert description here
+ *
+ * @param true $output_to_term
+ *
+ * @return type
+ */
 function __rrd_init($output_to_term = true) {
 	global $config;
 
@@ -108,6 +135,15 @@ function __rrd_init($output_to_term = true) {
 	return popen($command, 'w');
 }
 
+/**
+ * __rrd_proxy_init
+ *
+ * Insert description here
+ *
+ * @param 'WEBLOG' $logopt
+ *
+ * @return type
+ */
 function __rrd_proxy_init($logopt = 'WEBLOG') {
 	global $encryption;
 	$terminator = "_EOT_\r\n";
@@ -199,6 +235,14 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 	}
 }
 
+/**
+ * rrd_close
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function rrd_close() {
 	global $config;
 
@@ -211,6 +255,13 @@ function rrd_close() {
 	return call_user_func_array($function, $args);
 }
 
+/**
+ * __rrd_close
+ *
+ * Insert description here
+ *
+ * @param type $rrdtool_pipe
+ */
 function __rrd_close($rrdtool_pipe) {
 	/* close the rrdtool file descriptor */
 	if (is_resource($rrdtool_pipe)) {
@@ -220,6 +271,15 @@ function __rrd_close($rrdtool_pipe) {
 	rrdtool_reset_language();
 }
 
+/**
+ * __rrd_proxy_close
+ *
+ * Insert description here
+ *
+ * @param type $rrdp
+ *
+ * @return type
+ */
 function __rrd_proxy_close($rrdp) {
 	/* close the rrdtool proxy server connection */
 	$terminator = "_EOT_\r\n";
@@ -233,6 +293,16 @@ function __rrd_proxy_close($rrdp) {
 	}
 }
 
+/**
+ * encrypt
+ *
+ * Insert description here
+ *
+ * @param type $output
+ * @param type $rsa_key
+ *
+ * @return type
+ */
 function encrypt($output, $rsa_key) {
 	global $encryption;
 
@@ -253,6 +323,15 @@ function encrypt($output, $rsa_key) {
 	}
 }
 
+/**
+ * decrypt
+ *
+ * Insert description here
+ *
+ * @param type $input
+ *
+ * @return type
+ */
 function decrypt($input) {
 	global $encryption;
 
@@ -277,6 +356,14 @@ function decrypt($input) {
 	}
 }
 
+/**
+ * rrdtool_execute
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function rrdtool_execute() {
 	global $config;
 
@@ -289,6 +376,19 @@ function rrdtool_execute() {
 	return call_user_func_array($function, $args);
 }
 
+/**
+ * __rrd_execute
+ *
+ * Insert description here
+ *
+ * @param type $command_line
+ * @param type $log_to_stdout
+ * @param type $output_flag
+ * @param false $rrdtool_pipe
+ * @param 'WEBLOG' $logopt
+ *
+ * @return type
+ */
 function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	global $config;
 
@@ -443,6 +543,13 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	}
 }
 
+/**
+ * rrdtool_trim_output
+ *
+ * Insert description here
+ *
+ * @param type $output
+ */
 function rrdtool_trim_output(&$output) {
 	/* When using RRDtool with proc_open for long strings
 	 * and using the '-' to handle standard in from inside
@@ -458,6 +565,19 @@ function rrdtool_trim_output(&$output) {
 	}
 }
 
+/**
+ * __rrd_proxy_execute
+ *
+ * Insert description here
+ *
+ * @param type $command_line
+ * @param type $log_to_stdout
+ * @param type $output_flag
+ * @param string $rrdp
+ * @param 'WEBLOG' $logopt
+ *
+ * @return type
+ */
 function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp='', $logopt = 'WEBLOG') {
 	global $config, $encryption;
 
@@ -589,6 +709,15 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	}
 }
 
+/**
+ * rrdtool_function_interface_speed
+ *
+ * Insert description here
+ *
+ * @param type $data_local
+ *
+ * @return type
+ */
 function rrdtool_function_interface_speed($data_local) {
 	$ifHighSpeed = db_fetch_cell_prepared('SELECT field_value
 		FROM host_snmp_cache
@@ -625,6 +754,17 @@ function rrdtool_function_interface_speed($data_local) {
 	return $speed;
 }
 
+/**
+ * rrdtool_function_create
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ * @param type $show_source
+ * @param false $rrdtool_pipe
+ *
+ * @return type
+ */
 function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = false) {
 	global $config, $data_source_types, $consolidation_functions, $encryption;
 
@@ -781,6 +921,16 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	}
 }
 
+/**
+ * rrdtool_function_update
+ *
+ * Insert description here
+ *
+ * @param type $update_cache_array
+ * @param false $rrdtool_pipe
+ *
+ * @return type
+ */
 function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
@@ -845,6 +995,13 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 	return $rrds_processed;
 }
 
+/**
+ * rrdtool_function_tune
+ *
+ * Insert description here
+ *
+ * @param type $rrd_tune_array
+ */
 function rrdtool_function_tune($rrd_tune_array) {
 	global $config, $data_source_types;
 
@@ -1008,6 +1165,18 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	return $fetch_array;
 }
 
+/**
+ * rrd_function_process_graph_options
+ *
+ * Insert description here
+ *
+ * @param type $graph_start
+ * @param type $graph_end
+ * @param type $graph
+ * @param type $graph_data_array
+ *
+ * @return type
+ */
 function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array) {
 	global $config, $image_types;
 
@@ -1317,6 +1486,20 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	return $graph_opts;
 }
 
+/**
+ * rrdtool_function_graph
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param type $rra_id
+ * @param type $graph_data_array
+ * @param false $rrdtool_pipe
+ * @param array $xport_meta
+ * @param 0 $user
+ *
+ * @return type
+ */
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = false, &$xport_meta = array(), $user = 0) {
 	global $config, $consolidation_functions, $graph_item_types, $encryption;
 
@@ -2447,6 +2630,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 }
 
+/**
+ * rrdtool_escape_string
+ *
+ * Insert description here
+ *
+ * @param type $text
+ * @param true $ignore_percent
+ *
+ * @return type
+ */
 function rrdtool_escape_string($text, $ignore_percent = true) {
 	if ($ignore_percent) {
 		return str_replace(array('"', ':'), array('\"', '\:'), $text);
@@ -2455,10 +2648,32 @@ function rrdtool_escape_string($text, $ignore_percent = true) {
 	}
 }
 
+/**
+ * rrdtool_function_xport
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param type $rra_id
+ * @param type $xport_data_array
+ * @param type $xport_meta
+ * @param 0 $user
+ *
+ * @return type
+ */
 function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, $user = 0) {
 	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, null, $xport_meta, $user);
 }
 
+/**
+ * rrdtool_function_format_graph_date
+ *
+ * Insert description here
+ *
+ * @param type $graph_data_array
+ *
+ * @return type
+ */
 function rrdtool_function_format_graph_date(&$graph_data_array) {
 	global $datechar;
 
@@ -2511,6 +2726,15 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 	return $graph_legend;
 }
 
+/**
+ * rrdtool_function_theme_font_options
+ *
+ * Insert description here
+ *
+ * @param type $graph_data_array
+ *
+ * @return type
+ */
 function rrdtool_function_theme_font_options(&$graph_data_array) {
 	global $config;
 
@@ -2563,10 +2787,32 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	return $graph_opts;
 }
 
+/**
+ * rrdtool_set_font
+ *
+ * Insert description here
+ *
+ * @param type $type
+ * @param string $no_legend
+ * @param array $themefonts
+ *
+ * @return type
+ */
 function rrdtool_set_font($type, $no_legend = '', $themefonts = array()) {
 	return rrdtool_function_set_font($type, $no_legend, $themefonts);
 }
 
+/**
+ * rrdtool_function_set_font
+ *
+ * Insert description here
+ *
+ * @param type $type
+ * @param type $no_legend
+ * @param type $themefonts
+ *
+ * @return type
+ */
 function rrdtool_function_set_font($type, $no_legend, $themefonts) {
 	global $config;
 
@@ -2605,6 +2851,17 @@ function rrdtool_function_set_font($type, $no_legend, $themefonts) {
 	return '--font ' . strtoupper($type) . ':' . floatval($size) . ':' . $font . RRD_NL;
 }
 
+/**
+ * rrd_substitute_host_query_data
+ *
+ * Insert description here
+ *
+ * @param type $txt_graph_item
+ * @param type $graph
+ * @param type $graph_item
+ *
+ * @return type
+ */
 function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	/* replace host variables in graph elements */
 	$host_id = 0;
@@ -2640,6 +2897,18 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	}
 }
 
+/**
+ * rrdtool_function_get_resstep
+ *
+ * Insert description here
+ *
+ * @param type $local_data_ids
+ * @param type $graph_start
+ * @param type $graph_end
+ * @param 'res' $type
+ *
+ * @return type
+ */
 function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end, $type = 'res') {
 	if (!is_array($local_data_ids)) {
 		$local_data_ids = array($local_data_ids);
@@ -3147,6 +3416,14 @@ function rrdtool_info2html($info_array, $diff=array()) {
  * @param $show_source	- only show text+commands or execute all commands, execute is for cli mode only!
  */
 function rrdtool_tune($rrd_file, $diff, $show_source = true) {
+	/**
+	 * print_leaves
+	 *
+	 * Insert description here
+	 *
+	 * @param type $array
+	 * @param type $nl
+	 */
 	function print_leaves($array, $nl) {
 		foreach ($array as $key => $line) {
 			if (!is_array($line)) {
@@ -3702,6 +3979,15 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 	return $dom;
 }
 
+/**
+ * rrdtool_parse_error
+ *
+ * Insert description here
+ *
+ * @param type $string
+ *
+ * @return type
+ */
 function rrdtool_parse_error($string) {
 	global $config;
 
@@ -3745,6 +4031,17 @@ function rrdtool_parse_error($string) {
 	return $string;
 }
 
+/**
+ * rrdtool_create_error_image
+ *
+ * Insert description here
+ *
+ * @param type $string
+ * @param string $width
+ * @param string $height
+ *
+ * @return type
+ */
 function rrdtool_create_error_image($string, $width = '', $height = '') {
 	global $config;
 

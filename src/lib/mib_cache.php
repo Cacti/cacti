@@ -22,6 +22,12 @@
    +-------------------------------------------------------------------------+
 */
 
+/**
+ * MibCache
+ * Insert description here
+ *
+ *
+ */
 class MibCache{
 	private $active_mib            = '';
 	private $active_object         = '';
@@ -30,15 +36,41 @@ class MibCache{
 	private $cache__tables         = array();
 	private $cache__tables_columns = array();
 
+	/**
+	 * __construct
+	 *
+	 * Insert description here
+	 *
+	 * @param 'CACTI-MIB' $mib
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function __construct($mib='CACTI-MIB') {
 		$this->active_mib = $mib;
 
 		return $this;
 	}
 
+	/**
+	 * __destruct
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 */
 	public function __destruct() {
 	}
 
+	/**
+	 * uninstall
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function uninstall() {
 		/* avoid that our default mib will be dropped by some plugin developer */
 		if ($this->active_mib == 'CACTI-MIB') {
@@ -51,6 +83,18 @@ class MibCache{
 		}
 	}
 
+	/**
+	 * install
+	 *
+	 * Insert description here
+	 *
+	 * @param type $path
+	 * @param false $replace
+	 * @param 'optional' $mib_name
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function install($path, $replace=false, $mib_name='optional') {
 		global $config;
 
@@ -108,6 +152,16 @@ class MibCache{
 		}
 	}
 
+	/**
+	 * mib
+	 *
+	 * Insert description here
+	 *
+	 * @param type $mib
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function mib($mib) {
 		$this->active_mib         = $mib;
 		$this->active_object      = '';
@@ -117,12 +171,32 @@ class MibCache{
 		return $this;
 	}
 
+	/**
+	 * object
+	 *
+	 * Insert description here
+	 *
+	 * @param type $object
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function object($object) {
 		$this->active_object = $object;
 
 		return $this;
 	}
 
+	/**
+	 * table
+	 *
+	 * Insert description here
+	 *
+	 * @param type $table
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function table($table) {
 		if ($this->active_table != $table) {
 			if (!isset($this->cache__tables[$this->active_mib][$table])) {
@@ -164,6 +238,16 @@ class MibCache{
 		}
 	}
 
+	/**
+	 * row
+	 *
+	 * Insert description here
+	 *
+	 * @param type $index
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function row($index) {
 		/* limited to one single $index so far */
 		$this->active_table_entry = $index;
@@ -171,9 +255,26 @@ class MibCache{
 		return $this;
 	}
 
+	/**
+	 * gettype
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 */
 	public function gettype() {
 	}
 
+	/**
+	 * set
+	 *
+	 * Insert description here
+	 *
+	 * @param type $value
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function set($value) {
 		return db_execute_prepared('UPDATE `snmpagent_cache`
 			SET `value` = ?
@@ -182,6 +283,15 @@ class MibCache{
 			array($value, $this->active_mib, $this->active_object));
 	}
 
+	/**
+	 * get
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function get() {
 		return db_fetch_row_prepared('SELECT *
 			FROM snmpagent_cache
@@ -190,6 +300,15 @@ class MibCache{
 			array($this->active_object, $this->active_mib));
 	}
 
+	/**
+	 * count
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function count() {
 		return db_execute_prepared('UPDATE snmpagent_cache
 			SET `value` = CASE
@@ -200,6 +319,16 @@ class MibCache{
 			array($this->active_mib, $this->active_object));
 	}
 
+	/**
+	 * insert
+	 *
+	 * Insert description here
+	 *
+	 * @param type $values
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function insert($values) {
 		$oid_entry = $this->exists();
 
@@ -233,6 +362,16 @@ class MibCache{
 		return false;
 	}
 
+	/**
+	 * select
+	 *
+	 * Insert description here
+	 *
+	 * @param false $column
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function select($column=false) {
 		$result = array();
 
@@ -361,6 +500,15 @@ class MibCache{
 		return false;
 	}
 
+	/**
+	 * delete
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function delete() {
 		$oid_entry = $this->exists();
 
@@ -381,6 +529,16 @@ class MibCache{
 		return false;
 	}
 
+	/**
+	 * update
+	 *
+	 * Insert description here
+	 *
+	 * @param type $values
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function update($values) {
 		$oid_entry = $this->exists();
 
@@ -412,12 +570,31 @@ class MibCache{
 		return false;
 	}
 
+	/**
+	 * replace
+	 *
+	 * Insert description here
+	 *
+	 * @param type $values
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function replace($values) {
 		$this->delete();
 
 		return $this->insert($values);
 	}
 
+	/**
+	 * truncate
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function truncate() {
 		$oid_entry = $this->cache__tables[$this->active_mib][$this->active_table] . '.1.%';
 		db_execute_prepared('DELETE FROM `snmpagent_cache`
@@ -429,6 +606,15 @@ class MibCache{
 		return true;
 	}
 
+	/**
+	 * columns
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function columns() {
 		/* As defined by SMI the OID value assigned to the row must be the same as the OID value assigned to the table containing
 		   the row with addition of a single value of one. */
@@ -442,6 +628,15 @@ class MibCache{
 			array($filter));
 	}
 
+	/**
+	 * exists
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function exists() {
 		$oid_entry = $this->cache__tables[$this->active_mib][$this->active_table] . '.1';
 

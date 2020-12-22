@@ -38,6 +38,20 @@ class CactiTableFilter {
 	private $item_rows     = array();
 	private $filter_array  = array();
 
+	/**
+	 * __construct
+	 *
+	 * Insert description here
+	 *
+	 * @param string $form_header
+	 * @param string $form_action
+	 * @param string $form_id
+	 * @param string $form_width
+	 * @param string $session_var
+	 * @param string $action_url
+	 * @param string $action_label
+	 * @access public
+	 */
 	public function __construct($form_header = '', $form_action = '', $form_id = '',
 		$form_width = '', $session_var = '', $action_url = '', $action_label = '') {
 		global $item_rows;
@@ -96,10 +110,28 @@ class CactiTableFilter {
 		);
 	}
 
+	/**
+	 * __destruct
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function __destruct() {
 		return true;
 	}
 
+	/**
+	 * set_filter_row
+	 *
+	 * Insert description here
+	 *
+	 * @param type $array
+	 * @param false $index
+	 * @access public
+	 */
 	public function set_filter_row($array, $index = false) {
 		if ($index === false) {
 			$this->filter_array['rows'][] = $array;
@@ -108,6 +140,16 @@ class CactiTableFilter {
 		}
 	}
 
+	/**
+	 * get_filter_row
+	 *
+	 * Insert description here
+	 *
+	 * @param type $index
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function get_filter_row($index) {
 		if ($index === false) {
 			return false;
@@ -120,14 +162,40 @@ class CactiTableFilter {
 		}
 	}
 
+	/**
+	 * set_filter_array
+	 *
+	 * Insert description here
+	 *
+	 * @param type $array
+	 * @access public
+	 */
 	public function set_filter_array($array) {
 		$this->filter_array = $array;
 	}
 
+	/**
+	 * get_filter
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function get_filter() {
 		return $this->filter_array;
 	}
 
+	/**
+	 * set_sort_array
+	 *
+	 * Insert description here
+	 *
+	 * @param type $sort_column
+	 * @param type $sort_direction
+	 * @access public
+	 */
 	public function set_sort_array($sort_column, $sort_direction) {
 		$this->filter_array['sort'] = array(
 			'sort_column'    => $sort_column,
@@ -135,6 +203,15 @@ class CactiTableFilter {
 		);
 	}
 
+	/**
+	 * filter_render
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function filter_render() {
 		/* setup filter variables */
 		$this->sanitize_filter_variables();
@@ -148,6 +225,15 @@ class CactiTableFilter {
 		return true;
 	}
 
+	/**
+	 * create_filter
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function create_filter() {
 		if (!cacti_sizeof($this->filter_array)) {
 			$this->filter_array = $this->default_filter;
@@ -209,6 +295,15 @@ class CactiTableFilter {
 		return ob_get_flush();
 	}
 
+	/**
+	 * create_javascript
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function create_javascript() {
 		$applyFilter = '"' . $this->form_action;
 		$clearFilter = $applyFilter;
@@ -293,6 +388,13 @@ class CactiTableFilter {
 		</script>" . PHP_EOL;
 	}
 
+	/**
+	 * sanitize_filter_variables
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 */
 	private function sanitize_filter_variables() {
 		$filters = array();
 

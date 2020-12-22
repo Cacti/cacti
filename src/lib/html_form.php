@@ -776,6 +776,20 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 	print "</select>\n";
 }
 
+/**
+ * form_droplanguage
+ *
+ * Insert description here
+ *
+ * @param type $form_name
+ * @param type $column_display
+ * @param type $column_id
+ * @param type $form_previous_value
+ * @param type $form_none_entry
+ * @param type $form_default_value
+ * @param string $class
+ * @param string $on_change
+ */
 function form_droplanguage($form_name, $column_display, $column_id, $form_previous_value, $form_none_entry, $form_default_value, $class = '', $on_change = '') {
 	if ($form_previous_value == '') {
 		$form_previous_value = $form_default_value;
@@ -827,6 +841,23 @@ function form_droplanguage($form_name, $column_display, $column_id, $form_previo
 	print '</select>';
 }
 
+/**
+ * form_callback
+ *
+ * Insert description here
+ *
+ * @param type $form_name
+ * @param type $classic_sql
+ * @param type $column_display
+ * @param type $column_id
+ * @param type $callback
+ * @param type $previous_id
+ * @param type $previous_value
+ * @param type $none_entry
+ * @param type $default_value
+ * @param string $class
+ * @param string $on_change
+ */
 function form_callback($form_name, $classic_sql, $column_display, $column_id, $callback, $previous_id, $previous_value, $none_entry, $default_value, $class = '', $on_change = '') {
 	if ($previous_value == '') {
 		$previous_value = $default_value;

@@ -22,6 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * boost_file_size_display
+ *
+ * Insert description here
+ *
+ * @param type $file_size
+ * @param 2 $digits
+ *
+ * @return type
+ */
 function boost_file_size_display($file_size, $digits = 2) {
 	if ($file_size > 1024) {
 		$file_size = $file_size / 1024;
@@ -44,6 +54,14 @@ function boost_file_size_display($file_size, $digits = 2) {
 	}
 }
 
+/**
+ * boost_get_total_rows
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function boost_get_total_rows() {
 	return db_fetch_cell("SELECT SUM(TABLE_ROWS)
 		FROM information_schema.tables
@@ -52,6 +70,19 @@ function boost_get_total_rows() {
 		OR table_name LIKE 'poller_output_boost')");
 }
 
+/**
+ * boost_error_handler
+ *
+ * Insert description here
+ *
+ * @param type $errno
+ * @param type $errmsg
+ * @param type $filename
+ * @param type $linenum
+ * @param type $vars
+ *
+ * @return type
+ */
 function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */
@@ -94,6 +125,14 @@ function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	return;
 }
 
+/**
+ * boost_check_correct_enabled
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function boost_check_correct_enabled() {
 	if ((read_config_option('boost_rrd_update_enable') == 'on') ||
 		(read_config_option('boost_rrd_update_system_enable') == 'on')) {
@@ -111,6 +150,15 @@ function boost_check_correct_enabled() {
 	return true;
 }
 
+/**
+ * boost_poller_on_demand
+ *
+ * Insert description here
+ *
+ * @param type $results
+ *
+ * @return type
+ */
 function boost_poller_on_demand(&$results) {
 	global $config, $remote_db_cnn_id;
 
@@ -217,6 +265,14 @@ function boost_poller_on_demand(&$results) {
 	}
 }
 
+/**
+ * boost_poller_id_check
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function boost_poller_id_check() {
 	global $config;
 
@@ -239,6 +295,16 @@ function boost_poller_id_check() {
 	return true;
 }
 
+/**
+ * boost_fetch_cache_check
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ * @param false $rrdtool_pipe
+ *
+ * @return type
+ */
 function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
 	global $config;
 
@@ -284,6 +350,15 @@ function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
 	}
 }
 
+/**
+ * boost_return_cached_image
+ *
+ * Insert description here
+ *
+ * @param type $graph_data_array
+ *
+ * @return type
+ */
 function boost_return_cached_image(&$graph_data_array) {
 	if (isset($graph_data_array['export_csv'])) {
 		return false;
@@ -304,6 +379,19 @@ function boost_return_cached_image(&$graph_data_array) {
 	}
 }
 
+/**
+ * boost_graph_cache_check
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param type $rra_id
+ * @param type $rrdtool_pipe
+ * @param type $graph_data_array
+ * @param true $return
+ *
+ * @return type
+ */
 function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$graph_data_array, $return = true) {
 	global $config;
 
@@ -454,6 +542,15 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 	return false;
 }
 
+/**
+ * boost_prep_graph_array
+ *
+ * Insert description here
+ *
+ * @param type $graph_data_array
+ *
+ * @return type
+ */
 function boost_prep_graph_array($graph_data_array) {
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
@@ -479,6 +576,15 @@ function boost_prep_graph_array($graph_data_array) {
 	return $graph_data_array;
 }
 
+/**
+ * boost_graph_set_file
+ *
+ * Insert description here
+ *
+ * @param type $output
+ * @param type $local_graph_id
+ * @param type $rra_id
+ */
 function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	global $config, $boost_sock, $graph_data_array;
 
@@ -584,6 +690,14 @@ function boost_timer($area, $type) {
 	}
 }
 
+/**
+ * boost_timer_get_overhead
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function boost_timer_get_overhead() {
 	global $boost_stats_log;
 
@@ -940,6 +1054,16 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	return cacti_sizeof($results);
 }
 
+/**
+ * boost_rrdtool_get_last_update_time
+ *
+ * Insert description here
+ *
+ * @param type $rrd_path
+ * @param type $rrdtool_pipe
+ *
+ * @return type
+ */
 function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
 	$return_value = 0;
 
@@ -966,6 +1090,14 @@ function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
 	return trim($return_value);
 }
 
+/**
+ * boost_determine_caching_state
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function boost_determine_caching_state() {
 	set_default_action();
 
@@ -1046,6 +1178,17 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 	return array('rrd_path' => $rrd_path, 'rrd_template' => trim($rrd_template));
 }
 
+/**
+ * boost_rrdtool_function_create
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ * @param type $show_source
+ * @param type $rrdtool_pipe
+ *
+ * @return type
+ */
 function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe) {
 	global $config;
 
@@ -1251,10 +1394,22 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 }
 
+/**
+ * boost_memory_limit
+ *
+ * Insert description here
+ *
+ */
 function boost_memory_limit() {
 	ini_set('memory_limit', read_config_option('boost_poller_mem_limit') . 'M');
 }
 
+/**
+ * boost_poller_bottom
+ *
+ * Insert description here
+ *
+ */
 function boost_poller_bottom() {
 	global $config;
 
@@ -1285,6 +1440,12 @@ function boost_poller_bottom() {
 	}
 }
 
+/**
+ * boost_update_snmp_statistics
+ *
+ * Insert description here
+ *
+ */
 function boost_update_snmp_statistics() {
 	global $config;
 	$mc = new MibCache('CACTI-BOOST-MIB');

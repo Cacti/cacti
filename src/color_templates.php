@@ -421,6 +421,13 @@ function aggregate_color_template_edit() {
 	form_save_button('color_templates.php', 'return', 'color_template_id');
 }
 
+/**
+ * sync_color_templates
+ *
+ * Insert description here
+ *
+ * @param type $color_template
+ */
 function sync_color_templates($color_template) {
 	global $config;
 

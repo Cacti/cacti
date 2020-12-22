@@ -73,6 +73,18 @@ function duplicate_reports($_id, $_title) {
 	}
 }
 
+/**
+ * reports_add_graphs
+ *
+ * Insert description here
+ *
+ * @param type $report_id
+ * @param type $local_graph_id
+ * @param type $timespan
+ * @param type $align
+ *
+ * @return type
+ */
 function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 	$report_user = db_fetch_cell_prepared('SELECT user_id
 		FROM reports
@@ -871,6 +883,20 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 	}
 }
 
+/**
+ * expand_branch
+ *
+ * Insert description here
+ *
+ * @param type $report
+ * @param type $item
+ * @param type $branch_id
+ * @param type $output
+ * @param type $format_ok
+ * @param 'classic' $theme
+ *
+ * @return type
+ */
 function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme = 'classic') {
 	$outstr = '';
 

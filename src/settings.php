@@ -1240,6 +1240,15 @@ default:
 	break;
 }
 
+/**
+ * is_remote_path_setting
+ *
+ * Insert description here
+ *
+ * @param type $field_name
+ *
+ * @return type
+ */
 function is_remote_path_setting($field_name) {
 	global $config;
 

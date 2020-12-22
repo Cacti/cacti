@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_2_0
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_2_0() {
 	db_install_add_column('user_domains_ldap', array('name' => 'cn_full_name', 'type' => 'varchar(50)', 'NULL' => true, 'default' => ''));
 	db_install_add_column('user_domains_ldap', array('name' => 'cn_email', 'type' => 'varchar(50)', 'NULL' => true, 'default' => ''));
@@ -46,12 +52,16 @@ function upgrade_to_1_2_0() {
 
 		// Ensure value falls in line with what we expect for processes
 		$max_processes                          = read_config_option('concurrent_processes');
+
 		if ($max_processes < 1) $max_processes  = 1;
+
 		if ($max_processes > 10) $max_processes = 10;
 
 		// Ensure value falls in line with what we expect for threads
 		$max_threads                         = read_config_option('max_threads');
+
 		if ($max_threads < 1) $max_threads   = 1;
+
 		if ($max_threads > 100) $max_threads = 100;
 
 		db_install_execute("UPDATE poller SET processes = $max_processes, threads = $max_threads");

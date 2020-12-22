@@ -247,6 +247,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_tree')) {
 		/* ================= input validation ================= */
@@ -302,6 +308,12 @@ function form_save() {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $tree_actions;
 
@@ -414,6 +426,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * tree_edit
+ *
+ * Insert description here
+ *
+ */
 function tree_edit() {
 	global $fields_tree_edit;
 
@@ -1451,6 +1469,13 @@ function tree_edit() {
 	}
 }
 
+/**
+ * tree_display_sites
+ *
+ * Insert description here
+ *
+ * @param string $filter
+ */
 function tree_display_sites($filter = '') {
 	if ($filter != '') {
 		$sql_where = 'WHERE
@@ -1471,6 +1496,14 @@ function tree_display_sites($filter = '') {
 	}
 }
 
+/**
+ * tree_display_hosts
+ *
+ * Insert description here
+ *
+ * @param string $filter
+ * @param string $site_id
+ */
 function tree_display_hosts($filter = '', $site_id = '') {
 	$sql_where = '';
 
@@ -1492,6 +1525,15 @@ function tree_display_hosts($filter = '', $site_id = '') {
 	}
 }
 
+/**
+ * tree_display_graphs
+ *
+ * Insert description here
+ *
+ * @param string $filter
+ * @param string $site_id
+ * @param string $host_id
+ */
 function tree_display_graphs($filter = '', $site_id = '', $host_id = '') {
 	$sql_where = '';
 
@@ -1536,6 +1578,12 @@ function tree_display_graphs($filter = '', $site_id = '', $host_id = '') {
 	}
 }
 
+/**
+ * tree
+ *
+ * Insert description here
+ *
+ */
 function tree() {
 	global $tree_actions, $item_rows;
 

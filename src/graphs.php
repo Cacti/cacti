@@ -129,6 +129,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * get_ajax_graph_items
+ *
+ * Insert description here
+ *
+ */
 function get_ajax_graph_items() {
 	$rrd_id  = get_filter_request_var('rrd_id');
 	$host_id = get_filter_request_var('host_id');
@@ -183,6 +189,12 @@ function get_ajax_graph_items() {
 	print json_encode($items);
 }
 
+/**
+ * add_tree_names_to_actions_array
+ *
+ * Insert description here
+ *
+ */
 function add_tree_names_to_actions_array() {
 	global $graph_actions;
 
@@ -198,6 +210,15 @@ function add_tree_names_to_actions_array() {
 	}
 }
 
+/**
+ * parse_validate_graph_template_id
+ *
+ * Insert description here
+ *
+ * @param type $variable
+ *
+ * @return type
+ */
 function parse_validate_graph_template_id($variable) {
 	$output_type_id = 0;
 
@@ -219,6 +240,12 @@ function parse_validate_graph_template_id($variable) {
 	return $output_type_id;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	/* ================= input validation ================= */
 	get_filter_request_var('local_graph_id');
@@ -421,6 +448,15 @@ function form_save() {
 	exit;
 }
 
+/**
+ * get_current_graph_template
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ *
+ * @return type
+ */
 function get_current_graph_template($local_graph_id) {
 	$graph_local = db_fetch_row_prepared('SELECT *
 		FROM graph_local
@@ -471,6 +507,15 @@ function get_current_graph_template($local_graph_id) {
 	}
 }
 
+/**
+ * get_common_graph_templates
+ *
+ * Insert description here
+ *
+ * @param type $graph
+ *
+ * @return type
+ */
 function get_common_graph_templates(&$graph) {
 	$dqid = 0;
 
@@ -535,6 +580,12 @@ function get_common_graph_templates(&$graph) {
 	return $gtsql;
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $graph_actions, $struct_aggregate;
 
@@ -1294,6 +1345,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * item
+ *
+ * Insert description here
+ *
+ */
 function item() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -1362,6 +1419,12 @@ function item() {
 	html_end_box();
 }
 
+/**
+ * graph_edit
+ *
+ * Insert description here
+ *
+ */
 function graph_edit() {
 	global $config, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -1770,6 +1833,12 @@ function graph_edit() {
 	}
 }
 
+/**
+ * validate_graph_request_vars
+ *
+ * Insert description here
+ *
+ */
 function validate_graph_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1835,6 +1904,12 @@ function validate_graph_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * graph_management
+ *
+ * Insert description here
+ *
+ */
 function graph_management() {
 	global $graph_actions, $graph_sources, $item_rows, $config;
 

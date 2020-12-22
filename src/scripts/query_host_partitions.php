@@ -101,6 +101,15 @@ if ($cmd == 'index') {
 	print 'ERROR: Invalid command given' . PHP_EOL;
 }
 
+/**
+ * reindex
+ *
+ * Insert description here
+ *
+ * @param type $arr
+ *
+ * @return type
+ */
 function reindex($arr) {
 	$return_arr = array();
 

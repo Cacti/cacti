@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_7
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_7() {
 	/* add slope mode as an option */
 	db_install_add_column('graph_templates_graph', array('name' => 't_slope_mode', 'type' => 'CHAR(2)', 'default' => '0', 'after' => 'vertical_label'));
@@ -85,6 +91,7 @@ function upgrade_to_0_8_7() {
 	}
 
 	$auth_method_results = db_install_fetch_cell('SELECT value FROM settings WHERE name = \'auth_method\'');
+
 	if ($auth_method_results['data'] !== false) {
 		if ($global_auth == 'on') {
 			if ($ldap_enabled == 'on') {
@@ -147,6 +154,7 @@ function upgrade_to_0_8_7() {
 				array_push($params, $host['id']);
 
 				$sqlFields = '';
+
 				foreach ($fields as $field) {
 					$sqlFields .= (empty($sqlFields) ? '' : ', ') . $field . ' => ?';
 				}

@@ -109,6 +109,13 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	return;
 }
 
+/**
+ * dsdebug_poller_output
+ *
+ * Insert description here
+ *
+ * @param type $rrd_update_array
+ */
 function dsdebug_poller_output(&$rrd_update_array) {
 	global $config, $ds_types, $ds_last, $ds_steps, $ds_multi;
 
@@ -146,6 +153,14 @@ function dsdebug_poller_output(&$rrd_update_array) {
 	restore_error_handler();
 }
 
+/**
+ * dsdebug_poller_bottom
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function dsdebug_poller_bottom() {
 	global $config, $start;
 
@@ -340,6 +355,15 @@ function dsdebug_poller_bottom() {
 	restore_error_handler();
 }
 
+/**
+ * dsdebug_run_repair
+ *
+ * Insert description here
+ *
+ * @param type $id
+ *
+ * @return type
+ */
 function dsdebug_run_repair($id) {
 	$check = db_fetch_row_prepared('SELECT *
 		FROM data_debug

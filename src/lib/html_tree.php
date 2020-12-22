@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * process_tree_settings
+ *
+ * Insert description here
+ *
+ */
 function process_tree_settings() {
 	global $current_user;
 
@@ -43,6 +49,17 @@ function process_tree_settings() {
 	}
 }
 
+/**
+ * grow_dropdown_tree
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param 0 $parent
+ * @param string $form_name
+ * @param string $selected_tree_item_id
+ * @param 0 $tier
+ */
 function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '', $tier = 0) {
 	global $config;
 
@@ -87,6 +104,12 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 	}
 }
 
+/**
+ * grow_dhtml_trees
+ *
+ * Insert description here
+ *
+ */
 function grow_dhtml_trees() {
 	global $config;
 
@@ -381,6 +404,14 @@ function grow_dhtml_trees() {
 	<?php
 }
 
+/**
+ * get_tree_path
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_tree_path() {
 	if (isset_request_var('node')) {
 		$nodes  = array();
@@ -479,6 +510,15 @@ function get_tree_path() {
 	}
 }
 
+/**
+ * get_device_leaf_class
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ *
+ * @return type
+ */
 function get_device_leaf_class($host_id) {
 	$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', array($host_id));
 
@@ -511,6 +551,17 @@ function get_device_leaf_class($host_id) {
 	return $class;
 }
 
+/**
+ * draw_dhtml_tree_level
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param 0 $parent
+ * @param false $editing
+ *
+ * @return type
+ */
 function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 	$dhtml_tree = array();
 
@@ -537,6 +588,16 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 	return $dhtml_tree;
 }
 
+/**
+ * draw_dhtml_tree_level_graphing
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param 0 $parent
+ *
+ * @return type
+ */
 function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 	global $config;
 
@@ -575,6 +636,15 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 	return $dhtml_tree;
 }
 
+/**
+ * create_site_branch
+ *
+ * Insert description here
+ *
+ * @param type $leaf
+ *
+ * @return type
+ */
 function create_site_branch($leaf) {
 	global $config, $unique_id;
 
@@ -636,6 +706,15 @@ function create_site_branch($leaf) {
 	return $dhtml_tree;
 }
 
+/**
+ * create_branch
+ *
+ * Insert description here
+ *
+ * @param type $leaf
+ *
+ * @return type
+ */
 function create_branch($leaf) {
 	global $config;
 
@@ -652,6 +731,17 @@ function create_branch($leaf) {
 	return $dhtml_tree;
 }
 
+/**
+ * create_host_branch
+ *
+ * Insert description here
+ *
+ * @param type $leaf
+ * @param 1 $site_id
+ * @param 1 $ht
+ *
+ * @return type
+ */
 function create_host_branch($leaf, $site_id = -1, $ht = -1) {
 	global $config, $unique_id;
 
@@ -689,6 +779,17 @@ function create_host_branch($leaf, $site_id = -1, $ht = -1) {
 	return $dhtml_tree;
 }
 
+/**
+ * create_graph_template_branch
+ *
+ * Insert description here
+ *
+ * @param type $leaf
+ * @param 1 $site_id
+ * @param 1 $ht
+ *
+ * @return type
+ */
 function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
 	global $config, $unique_id;
 
@@ -710,6 +811,17 @@ function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
 	return $dhtml_tree;
 }
 
+/**
+ * create_data_query_branch
+ *
+ * Insert description here
+ *
+ * @param type $leaf
+ * @param 1 $site_id
+ * @param 1 $ht
+ *
+ * @return type
+ */
 function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 	global $config, $unique_id;
 
@@ -791,6 +903,14 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 	return $dhtml_tree;
 }
 
+/**
+ * create_dhtml_tree
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function create_dhtml_tree() {
 	$dhtml_tree = array();
 
@@ -805,6 +925,14 @@ function create_dhtml_tree() {
 	return $dhtml_tree;
 }
 
+/**
+ * html_validate_tree_vars
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function html_validate_tree_vars() {
 	static $count = false;
 
@@ -884,6 +1012,17 @@ function html_validate_tree_vars() {
 	$count = true;
 }
 
+/**
+ * grow_right_pane_tree
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param type $leaf_id
+ * @param type $host_group_data
+ *
+ * @return type
+ */
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	global $current_user, $config, $graphs_per_page, $graph_timeshifts;
 
@@ -1481,6 +1620,19 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 }
 
+/**
+ * get_host_graph_list
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $graph_template_id
+ * @param type $data_query_id
+ * @param string $host_grouping_type
+ * @param string $data_query_index
+ *
+ * @return type
+ */
 function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host_grouping_type = '', $data_query_index = '') {
 	$graph_list = array();
 	$sql_where  = '';

@@ -16,6 +16,18 @@ if (!isset($called_by_script_server)) {
 include_once(__DIR__ . '/../lib/snmp.php');
 include_once(__DIR__ . '/../lib/ping.php');
 
+/**
+ * ss_fping
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param 6 $ping_sweeps
+ * @param 'ICMP' $ping_type
+ * @param 80 $port
+ *
+ * @return type
+ */
 function ss_fping($hostname, $ping_sweeps=6, $ping_type='ICMP', $port=80) {
 	/* record start time */
 	list($micro,$seconds) = explode(' ', microtime());

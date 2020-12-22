@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_1_36
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_1_36() {
 	// Repair locales
 	$def_locale = repair_locale(read_config_option('i18n_default_language'));

@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_1_34
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_1_34() {
 	if (!db_column_exists('automation_snmp_items', 'snmp_community')) {
 		db_install_execute('ALTER TABLE `automation_snmp_items`

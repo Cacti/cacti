@@ -393,6 +393,13 @@ function list_rrd() {
 	restore_error_handler();
 }
 
+/**
+ * rrdcleaner_legend
+ *
+ * Insert description here
+ *
+ * @param type $total_size
+ */
 function rrdcleaner_legend($total_size) {
 	html_start_box('', '100%', '', '3', 'center', '');
 	print '<tr>';
@@ -403,6 +410,12 @@ function rrdcleaner_legend($total_size) {
 	html_end_box(false);
 }
 
+/**
+ * remove_all_rrds
+ *
+ * Insert description here
+ *
+ */
 function remove_all_rrds() {
 	global $config, $rra_path;
 
@@ -466,6 +479,12 @@ function do_rrd() {
 	restore_error_handler();
 }
 
+/**
+ * filter
+ *
+ * Insert description here
+ *
+ */
 function filter() {
 	global $item_rows;
 

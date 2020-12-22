@@ -22,6 +22,18 @@
  +-------------------------------------------------------------------------+
  */
 
+/**
+ * aggregate_build_children_url
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param 1 $graph_start
+ * @param 1 $graph_end
+ * @param 1 $rra_id
+ *
+ * @return type
+ */
 function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph_end = -1, $rra_id = -1) {
 	global $config;
 
@@ -53,6 +65,13 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 	}
 }
 
+/**
+ * api_aggregate_convert_template
+ *
+ * Insert description here
+ *
+ * @param type $graphs
+ */
 function api_aggregate_convert_template($graphs) {
 	$aggregate_template_id = get_nfilter_request_var('aggregate_template_id');
 	$aggregate_template    = db_fetch_row_prepared('SELECT *
@@ -106,6 +125,14 @@ function api_aggregate_convert_template($graphs) {
 	}
 }
 
+/**
+ * api_aggregate_associate
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param type $graphs
+ */
 function api_aggregate_associate($local_graph_id, $graphs) {
 	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
 		FROM aggregate_graphs
@@ -140,6 +167,14 @@ function api_aggregate_associate($local_graph_id, $graphs) {
 	}
 }
 
+/**
+ * api_aggregate_disassociate
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param type $graphs
+ */
 function api_aggregate_disassociate($local_graph_id, $graphs) {
 	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
 		FROM aggregate_graphs
@@ -163,6 +198,15 @@ function api_aggregate_disassociate($local_graph_id, $graphs) {
 	}
 }
 
+/**
+ * api_aggregate_create
+ *
+ * Insert description here
+ *
+ * @param type $aggregate_name
+ * @param type $graphs
+ * @param 0 $agg_template_id
+ */
 function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 	/* get the first aggregate graph */
 	if ($agg_template_id == 0) {
@@ -395,6 +439,15 @@ function aggregate_is_stacked_graph($_local_graph_id) {
 	return $_stacked_graph;
 }
 
+/**
+ * aggregate_conditional_convert_graph_type
+ *
+ * Insert description here
+ *
+ * @param type $_graph_id
+ * @param type $_old_type
+ * @param type $_new_type
+ */
 function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_type) {
 	cacti_log(__FUNCTION__ . '  called: graph: ' . $_graph_id . ' old item type: ' . $_old_type . ' new item type: ' . $_new_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -416,6 +469,17 @@ function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_
 	}
 }
 
+/**
+ * aggregate_change_graph_type
+ *
+ * Insert description here
+ *
+ * @param type $graph_index
+ * @param type $old_graph_type
+ * @param type $new_graph_type
+ *
+ * @return type
+ */
 function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_type) {
 	cacti_log(__FUNCTION__ . ' called. Index ' . $graph_index . ' old type ' . $old_graph_type . ' Graph Type: ' . $new_graph_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -843,6 +907,13 @@ function auto_title($_local_graph_id) {
 	return $graph_title;
 }
 
+/**
+ * api_aggregate_remove_multi
+ *
+ * Insert description here
+ *
+ * @param type $graphs
+ */
 function api_aggregate_remove_multi($graphs) {
 	global $config;
 
@@ -872,6 +943,13 @@ function api_aggregate_remove_multi($graphs) {
 	}
 }
 
+/**
+ * aggregate_prune_graphs
+ *
+ * Insert description here
+ *
+ * @param 0 $local_graph_id
+ */
 function aggregate_prune_graphs($local_graph_id = 0) {
 	$aggregate_graphs = array();
 	$local_graph_ids  = array();
@@ -937,6 +1015,13 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	}
 }
 
+/**
+ * api_aggregate_convert_to_graph
+ *
+ * Insert description here
+ *
+ * @param type $graphs
+ */
 function api_aggregate_convert_to_graph($graphs) {
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {

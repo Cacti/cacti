@@ -94,6 +94,13 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * draw_vdef_preview
+ *
+ * Insert description here
+ *
+ * @param type $vdef_id
+ */
 function draw_vdef_preview($vdef_id) {
 	?>
 	<tr class='even'>
@@ -104,6 +111,12 @@ function draw_vdef_preview($vdef_id) {
 	<?php
 }
 
+/**
+ * vdef_form_save
+ *
+ * Insert description here
+ *
+ */
 function vdef_form_save() {
 	if (isset_request_var('save_component_vdef')) {
 		$save['id']   = get_filter_request_var('id');
@@ -149,6 +162,14 @@ function vdef_form_save() {
 	}
 }
 
+/**
+ * duplicate_vdef
+ *
+ * Insert description here
+ *
+ * @param type $_vdef_id
+ * @param type $vdef_title
+ */
 function duplicate_vdef($_vdef_id, $vdef_title) {
 	global $fields_vdef_edit;
 
@@ -189,6 +210,12 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	}
 }
 
+/**
+ * vdef_form_actions
+ *
+ * Insert description here
+ *
+ */
 function vdef_form_actions() {
 	global $vdef_actions;
 
@@ -294,6 +321,12 @@ function vdef_form_actions() {
 	bottom_footer();
 }
 
+/**
+ * vdef_item_remove_confirm
+ *
+ * Insert description here
+ *
+ */
 function vdef_item_remove_confirm() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
@@ -333,6 +366,12 @@ function vdef_item_remove_confirm() {
 	form_end();
 }
 
+/**
+ * vdef_item_remove
+ *
+ * Insert description here
+ *
+ */
 function vdef_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('vdef_id');
@@ -341,6 +380,12 @@ function vdef_item_remove() {
 	db_execute_prepared('DELETE FROM vdef_items WHERE id = ?', array(get_request_var('vdef_id')));
 }
 
+/**
+ * vdef_item_edit
+ *
+ * Insert description here
+ *
+ */
 function vdef_item_edit() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
@@ -469,6 +514,12 @@ function vdef_item_edit() {
 	form_save_button('vdef.php?action=edit&id=' . get_request_var('vdef_id'));
 }
 
+/**
+ * item_movedown
+ *
+ * Insert description here
+ *
+ */
 function item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -478,6 +529,12 @@ function item_movedown() {
 	move_item_down('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
 }
 
+/**
+ * item_moveup
+ *
+ * Insert description here
+ *
+ */
 function item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -487,6 +544,12 @@ function item_moveup() {
 	move_item_up('vdef_items', get_request_var('id'), 'vdef_id=' . get_request_var('vdef_id'));
 }
 
+/**
+ * vdef_item_dnd
+ *
+ * Insert description here
+ *
+ */
 function vdef_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -517,6 +580,12 @@ function vdef_item_dnd() {
 	header('Location: vdef.php?action=edit&id=' . get_request_var('id'));
 }
 
+/**
+ * vdef_edit
+ *
+ * Insert description here
+ *
+ */
 function vdef_edit() {
 	global $vdef_item_types;
 
@@ -681,6 +750,12 @@ function vdef_edit() {
 	<?php
 }
 
+/**
+ * vdef_filter
+ *
+ * Insert description here
+ *
+ */
 function vdef_filter() {
 	global $item_rows;
 
@@ -769,6 +844,16 @@ function vdef_filter() {
 	html_end_box();
 }
 
+/**
+ * get_vdef_records
+ *
+ * Insert description here
+ *
+ * @param type $total_rows
+ * @param type $rows
+ *
+ * @return type
+ */
 function get_vdef_records(&$total_rows, &$rows) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -816,6 +901,13 @@ function get_vdef_records(&$total_rows, &$rows) {
 		$sql_limit");
 }
 
+/**
+ * vdef
+ *
+ * Insert description here
+ *
+ * @param true $refresh
+ */
 function vdef($refresh = true) {
 	global $vdef_actions;
 

@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_5
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_5() {
 	/* bug#109 */
 	db_install_execute("UPDATE host_snmp_cache set field_name='ifDescr' where field_name='ifDesc' and snmp_query_id=1;");

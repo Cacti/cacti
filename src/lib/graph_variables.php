@@ -167,6 +167,18 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 	return json_encode($stats);
 }
 
+/**
+ * nth_percentile_fetch_statistics
+ *
+ * Insert description here
+ *
+ * @param type $percentile
+ * @param type $local_data_ids
+ * @param type $fetch_array
+ * @param type $cf
+ *
+ * @return type
+ */
 function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_array, $cf) {
 	/* start by summing the data across local data ids, for the average cf */
 	$asum_array = array();
@@ -256,6 +268,16 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 	return ($stats);
 }
 
+/**
+ * cacti_stats_calc
+ *
+ * Insert description here
+ *
+ * @param type $array
+ * @param 95 $ptile
+ *
+ * @return type
+ */
 function cacti_stats_calc($array, $ptile = 95) {
 	rsort($array, SORT_NUMERIC);
 
@@ -374,6 +396,15 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 	return $return_array;
 }
 
+/**
+ * is_graphable_item
+ *
+ * Insert description here
+ *
+ * @param type $item
+ *
+ * @return type
+ */
 function is_graphable_item($item) {
 	if (preg_match('/(AREA|STACK|LINE[123])/', $item)) {
 		return true;

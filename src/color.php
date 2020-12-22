@@ -77,6 +77,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_color')) {
 		/* ================= input validation ================= */
@@ -130,6 +136,12 @@ function form_save() {
 	exit;
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $color_actions;
 
@@ -212,6 +224,15 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * color_import_processor
+ *
+ * Insert description here
+ *
+ * @param type $colors
+ *
+ * @return type
+ */
 function color_import_processor(&$colors) {
 	$i            = 0;
 	$hexcol       = 0;
@@ -343,6 +364,12 @@ function color_import_processor(&$colors) {
 	return $return_array;
 }
 
+/**
+ * color_import
+ *
+ * Insert description here
+ *
+ */
 function color_import() {
 	form_start('color.php?action=import', '', true);
 
@@ -406,6 +433,12 @@ function color_import() {
 	form_save_button('color.php', 'import');
 }
 
+/**
+ * color_edit
+ *
+ * Insert description here
+ *
+ */
 function color_edit() {
 	global $fields_color_edit;
 
@@ -462,6 +495,12 @@ function color_edit() {
 	<?php
 }
 
+/**
+ * process_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -507,6 +546,12 @@ function process_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * color
+ *
+ * Insert description here
+ *
+ */
 function color() {
 	global $color_actions, $item_rows;
 
@@ -749,6 +794,12 @@ function color() {
 	form_end();
 }
 
+/**
+ * color_export
+ *
+ * Insert description here
+ *
+ */
 function color_export() {
 	process_request_vars();
 

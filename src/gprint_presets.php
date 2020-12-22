@@ -59,6 +59,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_gprint_presets')) {
 		/* ================= input validation ================= */
@@ -92,6 +98,12 @@ function form_save() {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $gprint_actions;
 
@@ -171,6 +183,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * gprint_presets_edit
+ *
+ * Insert description here
+ *
+ */
 function gprint_presets_edit() {
 	global $fields_grprint_presets_edit;
 
@@ -201,6 +219,12 @@ function gprint_presets_edit() {
 	form_save_button('gprint_presets.php');
 }
 
+/**
+ * gprint_presets
+ *
+ * Insert description here
+ *
+ */
 function gprint_presets() {
 	global $gprint_actions, $item_rows;
 

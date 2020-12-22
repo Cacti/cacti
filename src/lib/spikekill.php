@@ -29,6 +29,12 @@ define('SPIKE_METHOD_FILL',     4);
 define('SPIKE_METHOD_FLOAT',    3);
 define('SPIKE_METHOD_ABSOLUTE', 5);
 
+/**
+ * spikekill
+ * Insert description here
+ *
+ *
+ */
 class spikekill {
 	/* setup defaults */
 	private $std_kills = false;
@@ -88,6 +94,26 @@ class spikekill {
 	// For error handling
 	private $errors = array();
 
+	/**
+	 * __construct
+	 *
+	 * Insert description here
+	 *
+	 * @param string $rrdfile
+	 * @param string $method
+	 * @param string $avgnan
+	 * @param string $stddev
+	 * @param string $out_start
+	 * @param string $out_end
+	 * @param string $outliers
+	 * @param string $percent
+	 * @param string $numspike
+	 * @param string $dsfilter
+	 * @param string $absmax
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function __construct($rrdfile = '', $method = '', $avgnan = '', $stddev = '',
 		$out_start = '', $out_end = '', $outliers = '', $percent = '', $numspike = '',
 		$dsfilter = '', $absmax = '') {
@@ -202,18 +228,53 @@ class spikekill {
 		return true;
 	}
 
+	/**
+	 * __destruct
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function __destruct() {
 		return true;
 	}
 
+	/**
+	 * set_error
+	 *
+	 * Insert description here
+	 *
+	 * @param type $string
+	 * @access private
+	 */
 	private function set_error($string) {
 		$this->errors[] = $string;
 	}
 
+	/**
+	 * is_error_set
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function is_error_set() {
 		return cacti_sizeof($this->errors);
 	}
 
+	/**
+	 * get_errors
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function get_errors() {
 		$output = '';
 
@@ -226,10 +287,29 @@ class spikekill {
 		return $output;
 	}
 
+	/**
+	 * get_output
+	 *
+	 * Insert description here
+	 *
+	 * @param true $html
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function get_output($html = true) {
 		return $this->strout;
 	}
 
+	/**
+	 * initialize_spikekill
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function initialize_spikekill() {
 		/* additional error check */
 		if ($this->rrdfile == '') {
@@ -396,6 +476,15 @@ class spikekill {
 		return false;
 	}
 
+	/**
+	 * remove_spikes
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function remove_spikes() {
 		global $config;
 
@@ -839,6 +928,15 @@ class spikekill {
 		return true;
 	}
 
+	/**
+	 * createRRDFileFromXML
+	 *
+	 * Insert description here
+	 *
+	 * @param type $xmlfile
+	 * @param type $rrdfile
+	 * @access private
+	 */
 	private function createRRDFileFromXML($xmlfile, $rrdfile) {
 		/* execute the dump command */
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -851,10 +949,31 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * writeXMLFile
+	 *
+	 * Insert description here
+	 *
+	 * @param type $output
+	 * @param type $xmlfile
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function writeXMLFile($output, $xmlfile) {
 		return file_put_contents($xmlfile, $output);
 	}
 
+	/**
+	 * backupRRDFile
+	 *
+	 * Insert description here
+	 *
+	 * @param type $rrdfile
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function backupRRDFile($rrdfile) {
 		$backupdir = read_config_option('spikekill_backupdir');
 
@@ -874,6 +993,15 @@ class spikekill {
 		return copy($rrdfile, $backupdir . '/' . $newfile);
 	}
 
+	/**
+	 * calculateVarianceAverages
+	 *
+	 * Insert description here
+	 *
+	 * @param type $rra
+	 * @param type $samples
+	 * @access private
+	 */
 	private function calculateVarianceAverages(&$rra, &$samples) {
 		/* the `variance_avg` is defined as the average of the remaining samples
 		   after the outliers are dropped, and NANs are ignored */
@@ -921,10 +1049,29 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * removeNanFromSamples
+	 *
+	 * Insert description here
+	 *
+	 * @param type $string
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function removeNanFromSamples(&$string) {
 		return stripos($string, 'nan') === false;
 	}
 
+	/**
+	 * calculateOverallStatistics
+	 *
+	 * Insert description here
+	 *
+	 * @param type $rra
+	 * @param type $samples
+	 * @access private
+	 */
 	private function calculateOverallStatistics(&$rra, &$samples) {
 		$rra_num = 0;
 
@@ -1118,6 +1265,14 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * outputStatistics
+	 *
+	 * Insert description here
+	 *
+	 * @param type $rra
+	 * @access private
+	 */
 	private function outputStatistics($rra) {
 		if (cacti_sizeof($rra)) {
 			if ($this->html) {
@@ -1211,6 +1366,17 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * updateXML
+	 *
+	 * Insert description here
+	 *
+	 * @param type $output
+	 * @param type $rra
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function updateXML(&$output, &$rra) {
 		$rra_num   = 0;
 		$ds_num    = 0;
@@ -1316,6 +1482,16 @@ class spikekill {
 		return $new_array;
 	}
 
+	/**
+	 * removeComments
+	 *
+	 * Insert description here
+	 *
+	 * @param type $output
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function removeComments(&$output) {
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
@@ -1360,6 +1536,16 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * displayTime
+	 *
+	 * Insert description here
+	 *
+	 * @param type $pdp
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function displayTime($pdp) {
 		$total_time = $pdp * $this->step; // seconds
 
@@ -1384,12 +1570,30 @@ class spikekill {
 		}
 	}
 
+	/**
+	 * debug
+	 *
+	 * Insert description here
+	 *
+	 * @param type $string
+	 * @access private
+	 */
 	private function debug($string) {
 		if ($this->debug) {
 			print 'DEBUG: ' . $string . "\n";
 		}
 	}
 
+	/**
+	 * processStandardDeviationCalculation
+	 *
+	 * Insert description here
+	 *
+	 * @param type $samples
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function processStandardDeviationCalculation($samples) {
 		$my_samples = $samples;
 
@@ -1405,8 +1609,26 @@ class spikekill {
 		return $this->calculateStandardDeviation($my_samples);
 	}
 
+	/**
+	 * calculateStandardDeviation
+	 *
+	 * Insert description here
+	 *
+	 * @param type $items
+	 * @access private
+	 */
 	private function calculateStandardDeviation($items) {
 		if (!function_exists('stats_standard_deviation')) {
+			/**
+			 * stats_standard_deviation
+			 *
+			 * Insert description here
+			 *
+			 * @param type $items
+			 * @param false $sample
+			 *
+			 * @return type
+			 */
 			function stats_standard_deviation($items, $sample = false) {
 				$total_items = cacti_count($items);
 

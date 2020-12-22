@@ -22,6 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * xml2array
+ *
+ * Insert description here
+ *
+ * @param type $data
+ *
+ * @return type
+ */
 function xml2array($data) {
 	/* mvo voncken@mailandnews.com
 	original ripped from  on the php-manual:gdemartini@bol.com.br
@@ -41,6 +50,16 @@ function xml2array($data) {
 	return $tree;
 }
 
+/**
+ * get_children
+ *
+ * Insert description here
+ *
+ * @param type $vals
+ * @param type $i
+ *
+ * @return type
+ */
 function get_children($vals, &$i) {
 	$children = array();
 
@@ -83,6 +102,15 @@ function get_children($vals, &$i) {
 	}
 }
 
+/**
+ * rrdxport2array
+ *
+ * Insert description here
+ *
+ * @param type $data
+ *
+ * @return type
+ */
 function rrdxport2array($data) {
 	// Bug force encoding to UTF-8
 	$data = str_replace(array('US-ASCII', 'ISO-8859-1'), 'UTF-8', $data);
@@ -130,6 +158,18 @@ function rrdxport2array($data) {
 	return $tree;
 }
 
+/**
+ * get_rrd_children
+ *
+ * Insert description here
+ *
+ * @param type $vals
+ * @param type $i
+ * @param type $column
+ * @param type $row
+ *
+ * @return type
+ */
 function get_rrd_children($vals, &$i, &$column, &$row) {
 	$children = array();
 

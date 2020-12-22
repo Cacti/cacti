@@ -22,6 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * clog_get_datasource_titles
+ *
+ * Insert description here
+ *
+ * @param type $local_data_ids
+ *
+ * @return type
+ */
 function clog_get_datasource_titles($local_data_ids) {
 	if (!is_array($local_data_ids)) {
 		$local_data_ids = array($local_data_ids);
@@ -38,6 +47,15 @@ function clog_get_datasource_titles($local_data_ids) {
 	return $titles;
 }
 
+/**
+ * clog_get_graphs_from_datasource
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ *
+ * @return type
+ */
 function clog_get_graphs_from_datasource($local_data_id) {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
 		gtg.local_graph_id AS id,
@@ -52,6 +70,18 @@ function clog_get_graphs_from_datasource($local_data_id) {
 		array($local_data_id)), 'id', 'name');
 }
 
+/**
+ * clog_validate_filename
+ *
+ * Insert description here
+ *
+ * @param type $file
+ * @param type $filepath
+ * @param type $filename
+ * @param false $filecheck
+ *
+ * @return type
+ */
 function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = false) {
 	global $config;
 
@@ -84,6 +114,12 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	return ($filecheck ? file_exists($filefull) : !empty($filefull));
 }
 
+/**
+ * clog_purge_logfile
+ *
+ * Insert description here
+ *
+ */
 function clog_purge_logfile() {
 	global $config;
 
@@ -127,6 +163,14 @@ function clog_purge_logfile() {
 	}
 }
 
+/**
+ * clog_view_logfile
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function clog_view_logfile() {
 	global $config;
 
@@ -370,6 +414,16 @@ function clog_view_logfile() {
 	bottom_footer();
 }
 
+/**
+ * filter_sort
+ *
+ * Insert description here
+ *
+ * @param type $a
+ * @param type $b
+ *
+ * @return type
+ */
 function filter_sort($a, $b) {
 	$a_parts = explode('-', $a);
 	$b_parts = explode('-', $b);
@@ -392,6 +446,14 @@ function filter_sort($a, $b) {
 	return strcmp($b_date . '-' . str_replace('_','+',$b_parts[0]), $a_date . '-' . str_replace('_','+',$a_parts[0]));
 }
 
+/**
+ * clog_get_logfiles
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function clog_get_logfiles() {
 	global $config;
 
@@ -487,6 +549,14 @@ function clog_get_logfiles() {
 	return array_unique(array_merge($stdFileArray, $stdLogFileArray, $stdErrFileArray));
 }
 
+/**
+ * filter
+ *
+ * Insert description here
+ *
+ * @param type $clogAdmin
+ * @param type $selectedFile
+ */
 function filter($clogAdmin, $selectedFile) {
 	global $page_refresh_interval, $log_tail_lines, $config;
 	?>
@@ -670,6 +740,14 @@ function filter($clogAdmin, $selectedFile) {
 	<?php
 }
 
+/**
+ * clog_get_regex_array
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function clog_get_regex_array() {
 	static $regex_array = array();
 
@@ -701,10 +779,29 @@ function clog_get_regex_array() {
 	return $regex_array;
 }
 
+/**
+ * clog_regex_parser_html
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ *
+ * @return type
+ */
 function clog_regex_parser_html($matches) {
 	return clog_regex_parser($matches, true);
 }
 
+/**
+ * clog_regex_parser
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_parser($matches, $link = false) {
 	$result = $matches[0];
 	$match  = $matches[0];
@@ -745,6 +842,16 @@ function clog_regex_parser($matches, $link = false) {
 	return $result;
 }
 
+/**
+ * clog_regex_device
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_device($matches, $link = false) {
 	global $config;
 	static $cache;
@@ -798,6 +905,16 @@ function clog_regex_device($matches, $link = false) {
 	return $result;
 }
 
+/**
+ * clog_regex_datasource
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_datasource($matches, $link = false) {
 	global $config;
 	static $cache;
@@ -900,6 +1017,16 @@ function clog_regex_datasource($matches, $link = false) {
 	return $result;
 }
 
+/**
+ * clog_regex_poller
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_poller($matches, $link = false) {
 	global $config;
 	static $cache;
@@ -953,6 +1080,16 @@ function clog_regex_poller($matches, $link = false) {
 	return $result;
 }
 
+/**
+ * clog_regex_dataquery
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_dataquery($matches, $link = false) {
 	global $config;
 	static $cache;
@@ -1006,6 +1143,16 @@ function clog_regex_dataquery($matches, $link = false) {
 	return $result;
 }
 
+/**
+ * clog_regex_rra
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_rra($matches, $link = false) {
 	global $config;
 	static $cache;
@@ -1030,6 +1177,16 @@ function clog_regex_rra($matches, $link = false) {
 	return $result;
 }
 
+/**
+ * clog_regex_graphs
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_graphs($matches, $link = false) {
 	global $config;
 	static $cache;
@@ -1094,6 +1251,16 @@ function clog_regex_graphs($matches, $link = false) {
 	return $result;
 }
 
+/**
+ * clog_regex_graphtemplates
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_graphtemplates($matches, $link = false) {
 	global $config;
 	static $cache;
@@ -1147,6 +1314,16 @@ function clog_regex_graphtemplates($matches, $link = false) {
 	return $result;
 }
 
+/**
+ * clog_regex_users
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_users($matches, $link = false) {
 	global $config;
 	static $cache;
@@ -1205,6 +1382,16 @@ function clog_regex_users($matches, $link = false) {
 	return $result;
 }
 
+/**
+ * clog_regex_rule
+ *
+ * Insert description here
+ *
+ * @param type $matches
+ * @param false $link
+ *
+ * @return type
+ */
 function clog_regex_rule($matches, $link = false) {
 	global $config;
 	static $cache;

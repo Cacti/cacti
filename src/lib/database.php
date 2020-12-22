@@ -188,6 +188,17 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
+/**
+ * db_warning_handler
+ *
+ * Insert description here
+ *
+ * @param type $errno
+ * @param type $errstr
+ * @param type $errfile
+ * @param type $errline
+ * @param type $errcontext
+ */
 function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 	throw new Exception($errstr, $errno);
 }
@@ -437,6 +448,16 @@ function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = 
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Cell', false, 'db_fetch_cell_return', $col_name);
 }
 
+/**
+ * db_fetch_cell_return
+ *
+ * Insert description here
+ *
+ * @param type $query
+ * @param string $col_name
+ *
+ * @return type
+ */
 function db_fetch_cell_return($query, $col_name = '') {
 	global $config;
 
@@ -493,6 +514,15 @@ function db_fetch_row_prepared($sql, $params = array(), $log = true, $db_conn = 
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return');
 }
 
+/**
+ * db_fetch_row_return
+ *
+ * Insert description here
+ *
+ * @param type $query
+ *
+ * @return type
+ */
 function db_fetch_row_return($query) {
 	global $config;
 
@@ -543,6 +573,15 @@ function db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn 
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', array(), 'db_fetch_assoc_return');
 }
 
+/**
+ * db_fetch_assoc_return
+ *
+ * Insert description here
+ *
+ * @param type $query
+ *
+ * @return type
+ */
 function db_fetch_assoc_return($query) {
 	global $config;
 
@@ -1059,6 +1098,19 @@ function db_get_table_column_types($table, $db_conn = false) {
 	return $cols;
 }
 
+/**
+ * db_update_table
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $data
+ * @param false $removecolumns
+ * @param true $log
+ * @param false $db_conn
+ *
+ * @return type
+ */
 function db_update_table($table, $data, $removecolumns = false, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1259,6 +1311,15 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	return true;
 }
 
+/**
+ * db_format_index_create
+ *
+ * Insert description here
+ *
+ * @param type $indexes
+ *
+ * @return type
+ */
 function db_format_index_create($indexes) {
 	if (is_array($indexes)) {
 		$outindex = '';
@@ -1576,6 +1637,18 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 	return db_fetch_insert_id($db_conn);
 }
 
+/**
+ * _db_replace
+ *
+ * Insert description here
+ *
+ * @param type $db_conn
+ * @param type $table
+ * @param type $fieldArray
+ * @param type $keyCols
+ *
+ * @return type
+ */
 function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1717,6 +1790,16 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 	}
 }
 
+/**
+ * db_qstr
+ *
+ * Insert description here
+ *
+ * @param type $s
+ * @param false $db_conn
+ *
+ * @return type
+ */
 function db_qstr($s, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1738,10 +1821,29 @@ function db_qstr($s, $db_conn = false) {
 	return "'" . $s . "'";
 }
 
+/**
+ * db_strip_control_chars
+ *
+ * Insert description here
+ *
+ * @param type $sql
+ *
+ * @return type
+ */
 function db_strip_control_chars($sql) {
 	return trim(clean_up_lines($sql), ';');
 }
 
+/**
+ * db_get_column_attributes
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $columns
+ *
+ * @return type
+ */
 function db_get_column_attributes($table, $columns) {
 	if (empty($columns) || empty($table)) {
 		return false;
@@ -1771,6 +1873,16 @@ function db_get_column_attributes($table, $columns) {
 	return db_fetch_assoc_prepared($sql, $params);
 }
 
+/**
+ * db_get_columns_length
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $columns
+ *
+ * @return type
+ */
 function db_get_columns_length($table, $columns) {
 	$column_data = db_get_column_attributes($table, $columns);
 
@@ -1781,6 +1893,16 @@ function db_get_columns_length($table, $columns) {
 	return false;
 }
 
+/**
+ * db_get_column_length
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $column
+ *
+ * @return type
+ */
 function db_get_column_length($table, $column) {
 	$column_data = db_get_columns_length($table, $column);
 
@@ -1791,6 +1913,12 @@ function db_get_column_length($table, $column) {
 	return false;
 }
 
+/**
+ * db_check_password_length
+ *
+ * Insert description here
+ *
+ */
 function db_check_password_length() {
 	$len = db_get_column_length('user_auth', 'password');
 
@@ -1809,6 +1937,14 @@ function db_check_password_length() {
 	}
 }
 
+/**
+ * db_echo_sql
+ *
+ * Insert description here
+ *
+ * @param type $line
+ * @param false $force
+ */
 function db_echo_sql($line, $force = false) {
 	global $config;
 
@@ -1865,6 +2001,15 @@ function db_force_remote_cnn() {
 	$database_ssl_ca    = $rdatabase_ssl_ca;
 }
 
+/**
+ * db_create_permissions_array
+ *
+ * Insert description here
+ *
+ * @param false $default
+ *
+ * @return type
+ */
 function db_create_permissions_array($default = false) {
 	return array(
 		'ALTER'                   => $default,
@@ -1903,6 +2048,17 @@ function db_create_permissions_array($default = false) {
 	);
 }
 
+/**
+ * db_get_permissions
+ *
+ * Insert description here
+ *
+ * @param false $include_unknown
+ * @param false $log
+ * @param false $db_conn
+ *
+ * @return type
+ */
 function db_get_permissions($include_unknown = false, $log = false, $db_conn = false) {
 	$perms = db_create_permissions_array(false);
 
@@ -1945,6 +2101,17 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 	return $perms;
 }
 
+/**
+ * db_has_permissions
+ *
+ * Insert description here
+ *
+ * @param type $permissions
+ * @param false $log
+ * @param false $db_conn
+ *
+ * @return type
+ */
 function db_has_permissions($permissions, $log = false, $db_conn = false) {
 	$perms = db_get_permissions(false, $log, $db_conn);
 

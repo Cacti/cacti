@@ -122,6 +122,14 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function form_save() {
 	if (isset_request_var('save_component_snmp_query')) {
 		get_filter_request_var('id');
@@ -324,6 +332,12 @@ function form_save() {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $dq_actions;
 
@@ -412,6 +426,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * data_query_item_movedown_gsv
+ *
+ * Insert description here
+ *
+ */
 function data_query_item_movedown_gsv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -421,6 +441,12 @@ function data_query_item_movedown_gsv() {
 	move_item_down('snmp_query_graph_sv', get_request_var('id'), 'snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . ' AND field_name = ' . db_qstr(get_nfilter_request_var('field_name')));
 }
 
+/**
+ * data_query_item_moveup_gsv
+ *
+ * Insert description here
+ *
+ */
 function data_query_item_moveup_gsv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -430,6 +456,12 @@ function data_query_item_moveup_gsv() {
 	move_item_up('snmp_query_graph_sv', get_request_var('id'), 'snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . ' AND field_name = ' . db_qstr(get_nfilter_request_var('field_name')));
 }
 
+/**
+ * data_query_item_remove_gsv
+ *
+ * Insert description here
+ *
+ */
 function data_query_item_remove_gsv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -440,6 +472,12 @@ function data_query_item_remove_gsv() {
 		array(get_request_var('id')));
 }
 
+/**
+ * data_query_item_movedown_dssv
+ *
+ * Insert description here
+ *
+ */
 function data_query_item_movedown_dssv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -450,6 +488,12 @@ function data_query_item_movedown_dssv() {
 	move_item_down('snmp_query_graph_rrd_sv', get_request_var('id'), 'data_template_id=' . get_request_var('data_template_id') . ' AND snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . ' AND field_name = ' . db_qstr(get_nfilter_request_var('field_name')));
 }
 
+/**
+ * data_query_item_moveup_dssv
+ *
+ * Insert description here
+ *
+ */
 function data_query_item_moveup_dssv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -460,6 +504,17 @@ function data_query_item_moveup_dssv() {
 	move_item_up('snmp_query_graph_rrd_sv', get_request_var('id'), 'data_template_id=' . get_request_var('data_template_id') . ' AND snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . ' AND field_name = ' . db_qstr(get_nfilter_request_var('field_name')));
 }
 
+/**
+ * data_query_sv_check_sequences
+ *
+ * Insert description here
+ *
+ * @param type $type
+ * @param type $snmp_query_graph_id
+ * @param type $field_name
+ *
+ * @return type
+ */
 function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name) {
 	if ($type == 'ds' || $type == 'gr') {
 		if ($type == 'ds') {
@@ -511,6 +566,12 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 	}
 }
 
+/**
+ * data_query_item_remove_dssv
+ *
+ * Insert description here
+ *
+ */
 function data_query_item_remove_dssv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -522,6 +583,12 @@ function data_query_item_remove_dssv() {
 		array(get_request_var('id')));
 }
 
+/**
+ * data_query_item_remove_confirm
+ *
+ * Insert description here
+ *
+ */
 function data_query_item_remove_confirm() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
 
@@ -559,6 +626,12 @@ function data_query_item_remove_confirm() {
 	form_end();
 }
 
+/**
+ * data_query_item_remove
+ *
+ * Insert description here
+ *
+ */
 function data_query_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -585,6 +658,12 @@ function data_query_item_remove() {
 		array(get_request_var('id')));
 }
 
+/**
+ * data_query_item_edit
+ *
+ * Insert description here
+ *
+ */
 function data_query_item_edit() {
 	global $fields_data_query_item_edit;
 
@@ -1023,6 +1102,13 @@ function data_query_item_edit() {
 	form_save_button('data_queries.php?action=edit&id=' . get_request_var('snmp_query_id'), 'return');
 }
 
+/**
+ * data_query_remove
+ *
+ * Insert description here
+ *
+ * @param type $id
+ */
 function data_query_remove($id) {
 	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id
 		FROM snmp_query_graph
@@ -1066,6 +1152,12 @@ function data_query_remove($id) {
 	update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 }
 
+/**
+ * data_query_edit
+ *
+ * Insert description here
+ *
+ */
 function data_query_edit() {
 	global $fields_data_query_edit, $config;
 
@@ -1232,6 +1324,12 @@ function data_query_edit() {
 	<?php
 }
 
+/**
+ * data_query
+ *
+ * Insert description here
+ *
+ */
 function data_query() {
 	global $dq_actions, $item_rows;
 

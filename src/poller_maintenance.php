@@ -124,6 +124,13 @@ unregister_process('maintenance', 'master', $config['poller_id']);
 
 exit(0);
 
+/**
+ * logrotate_check
+ *
+ * Insert description here
+ *
+ * @param type $force
+ */
 function logrotate_check($force) {
 	global $disable_log_rotation;
 
@@ -169,6 +176,12 @@ function logrotate_check($force) {
 	}
 }
 
+/**
+ * authcache_purge
+ *
+ * Insert description here
+ *
+ */
 function authcache_purge() {
 	/* removing security tokens older than 90 days */
 	if (read_config_option('auth_cache_enabled') == 'on') {
@@ -180,6 +193,13 @@ function authcache_purge() {
 	}
 }
 
+/**
+ * phpversion_check
+ *
+ * Insert description here
+ *
+ * @param false $force
+ */
 function phpversion_check($force = false) {
 	$now  = time();
 	$last = db_fetch_cell('select value from settings where name = "phpver_last"');
@@ -210,6 +230,13 @@ function phpversion_check($force = false) {
 	}
 }
 
+/**
+ * rrdfile_purge
+ *
+ * Insert description here
+ *
+ * @param type $force
+ */
 function rrdfile_purge($force) {
 	global $archived, $purged, $poller_start;
 
@@ -611,6 +638,15 @@ function remove_files($file_array) {
 	maint_debug('RRDClean has finished a purge pass of ' . cacti_sizeof($file_array) . ' items');
 }
 
+/**
+ * rrdclean_create_path
+ *
+ * Insert description here
+ *
+ * @param type $path
+ *
+ * @return type
+ */
 function rrdclean_create_path($path) {
 	global $config;
 
@@ -701,6 +737,13 @@ function cleanup_ds_and_graphs() {
 	maint_debug('removed graphs:' . cacti_count($remove_lgis) . ' removed data-sources:' . cacti_count($remove_ldis));
 }
 
+/**
+ * maint_debug
+ *
+ * Insert description here
+ *
+ * @param type $message
+ */
 function maint_debug($message) {
 	global $debug;
 

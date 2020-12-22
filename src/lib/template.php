@@ -541,6 +541,14 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	}
 }
 
+/**
+ * update_graph_data_source_output_type
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param type $output_type_id
+ */
 function update_graph_data_source_output_type($local_graph_id, $output_type_id) {
 	$graph_local = db_fetch_row_prepared('SELECT *
 		FROM graph_local
@@ -599,6 +607,15 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 	}
 }
 
+/**
+ * parse_graph_template_id
+ *
+ * Insert description here
+ *
+ * @param type $value
+ *
+ * @return type
+ */
 function parse_graph_template_id($value) {
 	if (strpos($value, '_') !== false) {
 		$template_parts = explode('_', $value);
@@ -615,6 +632,14 @@ function parse_graph_template_id($value) {
 	}
 }
 
+/**
+ * resequence_graphs
+ *
+ * Insert description here
+ *
+ * @param type $graph_template_id
+ * @param 0 $local_graph_id
+ */
 function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 	$template_items = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
@@ -1674,6 +1699,17 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 	return $compatible;
 }
 
+/**
+ * create_save_graph
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $form_type
+ * @param type $form_id1
+ * @param type $form_array2
+ * @param type $values
+ */
 function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values) {
 	/* ================= input validation ================= */
 	input_validate_input_number($form_id1);
@@ -1743,6 +1779,18 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 	}
 }
 
+/**
+ * data_source_exists
+ *
+ * Insert description here
+ *
+ * @param type $graph_template_id
+ * @param type $host_id
+ * @param type $data_template
+ * @param type $snmp_query_array
+ *
+ * @return type
+ */
 function data_source_exists($graph_template_id, $host_id, &$data_template, &$snmp_query_array) {
 	if (cacti_sizeof($snmp_query_array)) {
 		$input_fields = db_fetch_cell_prepared('SELECT
@@ -1840,6 +1888,16 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 	}
 }
 
+/**
+ * verify_data_input
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $input_string
+ *
+ * @return type
+ */
 function verify_data_input($hash, $input_string) {
 	$input = db_fetch_row_prepared('SELECT *
 		FROM data_input
@@ -1857,6 +1915,16 @@ function verify_data_input($hash, $input_string) {
 	}
 }
 
+/**
+ * verify_data_input_whitelist
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $input_string
+ *
+ * @return type
+ */
 function verify_data_input_whitelist($hash, $input_string) {
 	global $config;
 
@@ -1881,6 +1949,15 @@ function verify_data_input_whitelist($hash, $input_string) {
 	}
 }
 
+/**
+ * graph_template_whitelist_check
+ *
+ * Insert description here
+ *
+ * @param type $graph_template_id
+ *
+ * @return type
+ */
 function graph_template_whitelist_check($graph_template_id) {
 	global $config;
 

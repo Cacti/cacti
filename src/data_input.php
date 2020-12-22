@@ -82,6 +82,14 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * duplicate_data_input
+ *
+ * Insert description here
+ *
+ * @param type $_data_input_id
+ * @param type $input_title
+ */
 function duplicate_data_input($_data_input_id, $input_title) {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
@@ -126,6 +134,12 @@ function duplicate_data_input($_data_input_id, $input_title) {
 	}
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	global $registered_cacti_names;
 
@@ -206,6 +220,14 @@ function form_save() {
 	}
 }
 
+/**
+ * data_input_save_message
+ *
+ * Insert description here
+ *
+ * @param type $data_input_id
+ * @param 'input' $type
+ */
 function data_input_save_message($data_input_id, $type = 'input') {
 	$counts = db_fetch_row_prepared('SELECT
 		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
@@ -233,6 +255,12 @@ function data_input_save_message($data_input_id, $type = 'input') {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $di_actions;
 
@@ -328,6 +356,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * field_remove_confirm
+ *
+ * Insert description here
+ *
+ */
 function field_remove_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -390,6 +424,12 @@ function field_remove_confirm() {
 	<?php
 }
 
+/**
+ * field_remove
+ *
+ * Insert description here
+ *
+ */
 function field_remove() {
 	global $registered_cacti_names;
 
@@ -419,6 +459,12 @@ function field_remove() {
 	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 }
 
+/**
+ * field_edit
+ *
+ * Insert description here
+ *
+ */
 function field_edit() {
 	global $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
 
@@ -524,6 +570,13 @@ function field_edit() {
 	form_save_button('data_input.php?action=edit&id=' . get_request_var('data_input_id'));
 }
 
+/**
+ * data_remove
+ *
+ * Insert description here
+ *
+ * @param type $id
+ */
 function data_remove($id) {
 	$data_input_fields = db_fetch_assoc_prepared('SELECT id
 		FROM data_input_fields
@@ -543,6 +596,16 @@ function data_remove($id) {
 	update_replication_crc(0, 'poller_replicate_data_input_crc');
 }
 
+/**
+ * data_input_more_inputs
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $input_string
+ *
+ * @return type
+ */
 function data_input_more_inputs($id, $input_string) {
 	$input_string = str_replace('<path_cacti>', '', $input_string);
 	$inputs       = substr_count($input_string, '<');
@@ -560,6 +623,14 @@ function data_input_more_inputs($id, $input_string) {
 	}
 }
 
+/**
+ * data_edit
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function data_edit() {
 	global $config, $fields_data_input_edit;
 
@@ -798,6 +869,12 @@ function data_edit() {
 	<?php
 }
 
+/**
+ * data
+ *
+ * Insert description here
+ *
+ */
 function data() {
 	global $input_types, $di_actions, $item_rows;
 

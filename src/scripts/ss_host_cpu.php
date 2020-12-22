@@ -13,6 +13,20 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
+/**
+ * ss_host_cpu
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $host_id
+ * @param type $snmp_auth
+ * @param type $cmd
+ * @param string $arg1
+ * @param string $arg2
+ *
+ * @return type
+ */
 function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = '') {
 	$snmp         = explode(':', $snmp_auth);
 	$snmp_version = $snmp[0];
@@ -121,6 +135,27 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 	}
 }
 
+/**
+ * ss_host_cpu_get_cpu_usage
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $snmp_community
+ * @param type $snmp_version
+ * @param type $snmp_auth_username
+ * @param type $snmp_auth_password
+ * @param type $snmp_auth_protocol
+ * @param type $snmp_priv_passphrase
+ * @param type $snmp_priv_protocol
+ * @param type $snmp_context
+ * @param type $snmp_port
+ * @param type $snmp_timeout
+ * @param type $ping_retries
+ * @param type $max_oids
+ *
+ * @return type
+ */
 function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids) {
 	$arr        = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1.2', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
@@ -147,6 +182,27 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 	}
 }
 
+/**
+ * ss_host_cpu_get_indexes
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $snmp_community
+ * @param type $snmp_version
+ * @param type $snmp_auth_username
+ * @param type $snmp_auth_password
+ * @param type $snmp_auth_protocol
+ * @param type $snmp_priv_passphrase
+ * @param type $snmp_priv_protocol
+ * @param type $snmp_context
+ * @param type $snmp_port
+ * @param type $snmp_timeout
+ * @param type $ping_retries
+ * @param type $max_oids
+ *
+ * @return type
+ */
 function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids) {
 	$arr        = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1.2', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
@@ -164,6 +220,15 @@ function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snm
 	return $return_arr;
 }
 
+/**
+ * ss_host_cpu_reindex
+ *
+ * Insert description here
+ *
+ * @param type $arr
+ *
+ * @return type
+ */
 function ss_host_cpu_reindex($arr) {
 	$return_arr = array();
 

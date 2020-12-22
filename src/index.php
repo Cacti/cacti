@@ -26,6 +26,13 @@ top_header();
 
 api_plugin_hook('console_before');
 
+/**
+ * render_external_links
+ *
+ * Insert description here
+ *
+ * @param 'FRONT' $style
+ */
 function render_external_links($style = 'FRONT') {
 	global $config;
 

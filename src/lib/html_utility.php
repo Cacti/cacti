@@ -947,6 +947,13 @@ function get_order_string() {
 	}
 }
 
+/**
+ * remove_column_from_order_string
+ *
+ * Insert description here
+ *
+ * @param type $column
+ */
 function remove_column_from_order_string($column) {
 	$page = get_order_string_page();
 
@@ -956,6 +963,14 @@ function remove_column_from_order_string($column) {
 	}
 }
 
+/**
+ * get_order_string_page
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_order_string_page() {
 	$page = str_replace('.php', '', get_current_page());
 
@@ -970,6 +985,15 @@ function get_order_string_page() {
 	return $page;
 }
 
+/**
+ * validate_is_regex
+ *
+ * Insert description here
+ *
+ * @param type $regex
+ *
+ * @return type
+ */
 function validate_is_regex($regex) {
 	if ($regex == '') {
 		return true;

@@ -88,6 +88,27 @@ if ($cmd == 'index') {
 	}
 }
 
+/**
+ * get_cpu_usage
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $snmp_community
+ * @param type $snmp_version
+ * @param type $snmp_auth_username
+ * @param type $snmp_auth_password
+ * @param type $snmp_auth_protocol
+ * @param type $snmp_priv_passphrase
+ * @param type $snmp_priv_protocol
+ * @param type $snmp_context
+ * @param type $snmp_port
+ * @param type $snmp_timeout
+ * @param type $ping_retries
+ * @param type $max_oids
+ *
+ * @return type
+ */
 function get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids) {
 	$arr        = reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
@@ -104,6 +125,27 @@ function get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_use
 	return $return_arr;
 }
 
+/**
+ * get_indexes
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $snmp_community
+ * @param type $snmp_version
+ * @param type $snmp_auth_username
+ * @param type $snmp_auth_password
+ * @param type $snmp_auth_protocol
+ * @param type $snmp_priv_passphrase
+ * @param type $snmp_priv_protocol
+ * @param type $snmp_context
+ * @param type $snmp_port
+ * @param type $snmp_timeout
+ * @param type $ping_retries
+ * @param type $max_oids
+ *
+ * @return type
+ */
 function get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids) {
 	$arr        = reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
@@ -120,6 +162,15 @@ function get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_usern
 	return $return_arr;
 }
 
+/**
+ * reindex
+ *
+ * Insert description here
+ *
+ * @param type $arr
+ *
+ * @return type
+ */
 function reindex($arr) {
 	$return_arr = array();
 

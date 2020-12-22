@@ -85,6 +85,12 @@ switch(get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $device_actions, $availability_options;
 
@@ -267,6 +273,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * display_discovery_page
+ *
+ * Insert description here
+ *
+ */
 function display_discovery_page() {
 	global $item_rows, $os_arr, $status_arr, $networks, $device_actions;
 
@@ -404,6 +416,12 @@ function display_discovery_page() {
 	bottom_footer();
 }
 
+/**
+ * process_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -461,6 +479,17 @@ function process_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * get_discovery_results
+ *
+ * Insert description here
+ *
+ * @param 0 $total_rows
+ * @param 0 $rows
+ * @param false $export
+ *
+ * @return type
+ */
 function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	global $os_arr, $status_arr, $networks, $device_actions;
 
@@ -524,6 +553,12 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	}
 }
 
+/**
+ * draw_filter
+ *
+ * Insert description here
+ *
+ */
 function draw_filter() {
 	global $item_rows, $os_arr, $status_arr, $networks, $device_actions;
 
@@ -688,6 +723,12 @@ function draw_filter() {
 	html_end_box();
 }
 
+/**
+ * export_discovery_results
+ *
+ * Insert description here
+ *
+ */
 function export_discovery_results() {
 	$results = get_discovery_results($total_rows, 0, true);
 
@@ -722,6 +763,12 @@ function export_discovery_results() {
 	}
 }
 
+/**
+ * purge_discovery_results
+ *
+ * Insert description here
+ *
+ */
 function purge_discovery_results() {
 	get_filter_request_var('network');
 
@@ -736,6 +783,15 @@ function purge_discovery_results() {
 	exit;
 }
 
+/**
+ * snmp_data
+ *
+ * Insert description here
+ *
+ * @param type $item
+ *
+ * @return type
+ */
 function snmp_data($item) {
 	if ($item == '') {
 		return __('N/A');
@@ -744,6 +800,15 @@ function snmp_data($item) {
 	}
 }
 
+/**
+ * export_data
+ *
+ * Insert description here
+ *
+ * @param type $item
+ *
+ * @return type
+ */
 function export_data($item) {
 	if ($item == '') {
 		return 'N/A';

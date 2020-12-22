@@ -137,18 +137,44 @@ while (1) {
 	}
 }
 
+/**
+ * cache_read
+ *
+ * Insert description here
+ *
+ * @param type $oid
+ *
+ * @return type
+ */
 function cache_read($oid) {
 	global $cache;
 
 	return (isset($cache[$oid]) && $cache[$oid]) ? $cache[$oid] : false;
 }
 
+/**
+ * cache_get_next
+ *
+ * Insert description here
+ *
+ * @param type $oid
+ *
+ * @return type
+ */
 function cache_get_next($oid) {
 	global $cache;
 
 	return (isset($cache[$oid]['next'])) ? $cache[$oid]['next'] : false;
 }
 
+/**
+ * cache_refresh
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function cache_refresh() {
 	global $config, $cache, $cache_last_refresh;
 

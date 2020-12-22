@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Net_Ping
+ * Insert description here
+ *
+ *
+ */
 class Net_Ping {
 	var $socket;
 	var $host;
@@ -38,25 +44,62 @@ class Net_Ping {
 	var $time;
 	var $timer_start_time;
 
+	/**
+	 * __construct
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function __construct() {
 		$this->port = 33439;
 
 		return true;
 	}
 
+	/**
+	 * __destruct
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function __destruct() {
 		return true;
 	}
 
+	/**
+	 * close_socket
+	 *
+	 * Insert description here
+	 *
+	 */
 	function close_socket() {
 		@socket_shutdown($this->socket, 2);
 		socket_close($this->socket);
 	}
 
+	/**
+	 * start_time
+	 *
+	 * Insert description here
+	 *
+	 */
 	function start_time() {
 		$this->timer_start_time = microtime(true);
 	}
 
+	/**
+	 * get_time
+	 *
+	 * Insert description here
+	 *
+	 * @param 2 $acc
+	 *
+	 * @return type
+	 */
 	function get_time($acc=2) {
 		// format start time
 		$start_time = $this->timer_start_time;
@@ -66,6 +109,12 @@ class Net_Ping {
 		return number_format($end_time - $start_time, $acc);
 	}
 
+	/**
+	 * build_udp_packet
+	 *
+	 * Insert description here
+	 *
+	 */
 	function build_udp_packet() {
 		$data  = 'cacti-monitoring-system'; // the actual test data
 
@@ -74,18 +123,49 @@ class Net_Ping {
 		$this->request_len = strlen($this->request);
 	}
 
+	/**
+	 * ping_error_handler
+	 *
+	 * Insert description here
+	 *
+	 * @param type $errno
+	 * @param type $errmsg
+	 * @param type $filename
+	 * @param type $linenum
+	 * @param type $vars
+	 *
+	 * @return type
+	 */
 	function ping_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		return true;
 	}
 
+	/**
+	 * set_ping_error_handler
+	 *
+	 * Insert description here
+	 *
+	 */
 	function set_ping_error_handler() {
 		set_error_handler(array($this, 'ping_error_handler'));
 	}
 
+	/**
+	 * restore_cacti_error_handler
+	 *
+	 * Insert description here
+	 *
+	 */
 	function restore_cacti_error_handler() {
 		restore_error_handler();
 	}
 
+	/**
+	 * build_icmp_packet
+	 *
+	 * Insert description here
+	 *
+	 */
 	function build_icmp_packet() {
 		$seq_low   = rand(0,255);
 		$seq_high  = rand(0,255);
@@ -106,6 +186,15 @@ class Net_Ping {
 		$this->request_len = strlen($this->request);
 	}
 
+	/**
+	 * get_checksum
+	 *
+	 * Insert description here
+	 *
+	 * @param type $data
+	 *
+	 * @return type
+	 */
 	function get_checksum($data) {
 		if (strlen($data) % 2) {
 			$data .= "\x00";
@@ -121,6 +210,14 @@ class Net_Ping {
 		return pack('n*', ~$sum);
 	}
 
+	/**
+	 * ping_icmp
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function ping_icmp() {
 		global $config;
 
@@ -242,6 +339,14 @@ class Net_Ping {
 		}
 	}
 
+	/**
+	 * seteuid
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function seteuid() {
 		global $config;
 		$cacti_user = '';
@@ -256,6 +361,13 @@ class Net_Ping {
 		return $cacti_user;
 	}
 
+	/**
+	 * setuid
+	 *
+	 * Insert description here
+	 *
+	 * @param type $cacti_poller_account
+	 */
 	function setuid($cacti_poller_account) {
 		global $config;
 
@@ -266,6 +378,14 @@ class Net_Ping {
 		}
 	}
 
+	/**
+	 * ping_snmp
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function ping_snmp() {
 		/* initialize variables */
 		$this->snmp_status   = 'down';
@@ -327,6 +447,14 @@ class Net_Ping {
 		}
 	}
 
+	/**
+	 * ping_udp
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function ping_udp() {
 		$this->set_ping_error_handler();
 
@@ -465,6 +593,14 @@ class Net_Ping {
 		}
 	}
 
+	/**
+	 * ping_tcp
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function ping_tcp() {
 		$this->set_ping_error_handler();
 
@@ -594,6 +730,18 @@ class Net_Ping {
 		}
 	}
 
+	/**
+	 * ping
+	 *
+	 * Insert description here
+	 *
+	 * @param AVAIL_SNMP_AND_PING $avail_method
+	 * @param PING_ICMP $ping_type
+	 * @param 500 $timeout
+	 * @param 3 $retries
+	 *
+	 * @return type
+	 */
 	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = PING_ICMP, $timeout=500, $retries=3) {
 		$this->set_ping_error_handler();
 
@@ -718,6 +866,15 @@ class Net_Ping {
 		}
 	}
 
+	/**
+	 * is_ipaddress
+	 *
+	 * Insert description here
+	 *
+	 * @param string $ip_address
+	 *
+	 * @return type
+	 */
 	function is_ipaddress($ip_address = '') {
 		/* check for ipv4/v6 */
 		if (function_exists('filter_var')) {
@@ -733,6 +890,15 @@ class Net_Ping {
 		}
 	}
 
+	/**
+	 * strip_ip_address
+	 *
+	 * Insert description here
+	 *
+	 * @param type $ip_address
+	 *
+	 * @return type
+	 */
 	function strip_ip_address($ip_address) {
 		/* clean up hostname if specifying snmp_transport */
 		if (strpos($ip_address, 'tcp6:') !== false) {

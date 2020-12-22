@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_2_2
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_2_2() {
 	db_install_execute('ALTER TABLE poller_time MODIFY COLUMN id bigint(20) unsigned auto_increment');
 

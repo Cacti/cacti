@@ -223,6 +223,15 @@ function display_help() {
 	print "         --debug      show debug testing and matrix\n\n";
 }
 
+/**
+ * fail
+ *
+ * Insert description here
+ *
+ * @param type $exit_value
+ * @param array $args
+ * @param 0 $display_help
+ */
 function fail($exit_value,$args = array(),$display_help = 0) {
 	global $quiet,$fail_msg;
 
@@ -248,6 +257,15 @@ function fail($exit_value,$args = array(),$display_help = 0) {
 	exit($exit_value);
 }
 
+/**
+ * define_exit
+ *
+ * Insert description here
+ *
+ * @param type $name
+ * @param type $value
+ * @param type $text
+ */
 function define_exit($name, $value, $text) {
 	global $fail_msg;
 

@@ -81,6 +81,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_template')) {
 		/* ================= input validation ================= */
@@ -297,6 +303,12 @@ function form_save() {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $ds_actions;
 
@@ -430,6 +442,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * template_rrd_remove
+ *
+ * Insert description here
+ *
+ */
 function template_rrd_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -453,6 +471,12 @@ function template_rrd_remove() {
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('data_template_id'));
 }
 
+/**
+ * template_rrd_add
+ *
+ * Insert description here
+ *
+ */
 function template_rrd_add() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -507,6 +531,12 @@ function template_rrd_add() {
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
+/**
+ * template_edit
+ *
+ * Insert description here
+ *
+ */
 function template_edit() {
 	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit, $fields_host_edit, $hash_system_data_inputs;
 
@@ -851,6 +881,12 @@ function template_edit() {
 	<?php
 }
 
+/**
+ * template
+ *
+ * Insert description here
+ *
+ */
 function template() {
 	global $ds_actions, $item_rows;
 

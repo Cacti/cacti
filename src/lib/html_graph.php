@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * initialize_realtime_step_and_window
+ *
+ * Insert description here
+ *
+ */
 function initialize_realtime_step_and_window() {
 	if (!isset($_SESSION['sess_realtime_dsstep'])) {
 		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
@@ -32,6 +38,12 @@ function initialize_realtime_step_and_window() {
 	}
 }
 
+/**
+ * set_default_graph_action
+ *
+ * Insert description here
+ *
+ */
 function set_default_graph_action() {
 	if (!isset_request_var('action')) {
 		/* setup the default action */
@@ -83,6 +95,12 @@ function set_default_graph_action() {
 	}
 }
 
+/**
+ * html_graph_validate_preview_request_vars
+ *
+ * Insert description here
+ *
+ */
 function html_graph_validate_preview_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -142,6 +160,16 @@ function html_graph_validate_preview_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * html_graph_preview_filter
+ *
+ * Insert description here
+ *
+ * @param type $page
+ * @param type $action
+ * @param string $devices_where
+ * @param string $templates_where
+ */
 function html_graph_preview_filter($page, $action, $devices_where = '', $templates_where = '') {
 	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans, $config;
 
@@ -439,6 +467,16 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 	<?php
 }
 
+/**
+ * html_graph_new_graphs
+ *
+ * Insert description here
+ *
+ * @param type $page
+ * @param type $host_id
+ * @param type $host_template_id
+ * @param type $selected_graphs_array
+ */
 function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_graphs_array) {
 	/* we use object buffering on this page to allow redirection to another page if no
 	fields are actually drawn */
@@ -491,6 +529,20 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	bottom_footer();
 }
 
+/**
+ * html_graph_custom_data
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $host_template_id
+ * @param type $snmp_query_id
+ * @param type $form_type
+ * @param type $form_id1
+ * @param type $form_array2
+ *
+ * @return type
+ */
 function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2) {
 	/* ================= input validation ================= */
 	input_validate_input_number($form_id1);

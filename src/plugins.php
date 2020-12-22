@@ -136,6 +136,14 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 	}
 }
 
+/**
+ * retrieve_plugin_list
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function retrieve_plugin_list() {
 	$pluginslist = array();
 	$temp        = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY name');
@@ -153,10 +161,27 @@ update_show_current();
 
 bottom_footer();
 
+/**
+ * plugins_temp_table_exists
+ *
+ * Insert description here
+ *
+ * @param type $table
+ *
+ * @return type
+ */
 function plugins_temp_table_exists($table) {
 	return cacti_sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
 }
 
+/**
+ * plugins_load_temp_table
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function plugins_load_temp_table() {
 	global $config, $plugins, $plugins_integrated;
 
@@ -277,6 +302,12 @@ function plugins_load_temp_table() {
 	return $table;
 }
 
+/**
+ * update_show_current
+ *
+ * Insert description here
+ *
+ */
 function update_show_current() {
 	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
@@ -568,6 +599,18 @@ function update_show_current() {
 	db_execute("DROP TABLE $table");
 }
 
+/**
+ * format_plugin_row
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $last_plugin
+ * @param type $include_ordering
+ * @param type $table
+ *
+ * @return type
+ */
 function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 	global $status_names, $config;
 	static $first_plugin = true;
@@ -631,6 +674,16 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 	return $row;
 }
 
+/**
+ * plugin_required_for_others
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $table
+ *
+ * @return type
+ */
 function plugin_required_for_others($plugin, $table) {
 	$required_for_others = db_fetch_cell("SELECT GROUP_CONCAT(directory)
 		FROM $table
@@ -650,6 +703,16 @@ function plugin_required_for_others($plugin, $table) {
 	}
 }
 
+/**
+ * plugin_required_installed
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $table
+ *
+ * @return type
+ */
 function plugin_required_installed($plugin, $table) {
 	$not_installed = '';
 	api_plugin_can_install($plugin['infoname'], $not_installed);
@@ -657,6 +720,16 @@ function plugin_required_installed($plugin, $table) {
 	return $not_installed;
 }
 
+/**
+ * plugin_actions
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $table
+ *
+ * @return type
+ */
 function plugin_actions($plugin, $table) {
 	global $config, $pluginslist, $plugins_integrated;
 

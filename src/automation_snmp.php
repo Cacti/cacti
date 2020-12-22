@@ -106,6 +106,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_automation_snmp_save
+ *
+ * Insert description here
+ *
+ */
 function form_automation_snmp_save() {
 	if (isset_request_var('save_component_automation_snmp')) {
 		/* ================= input validation ================= */
@@ -172,6 +178,12 @@ function form_automation_snmp_save() {
 	}
 }
 
+/**
+ * form_automation_snmp_actions
+ *
+ * Insert description here
+ *
+ */
 function form_automation_snmp_actions() {
 	global $config, $automation_snmp_actions;
 
@@ -270,6 +282,14 @@ function form_automation_snmp_actions() {
 	bottom_footer();
 }
 
+/**
+ * automation_duplicate_snmp_option
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $new_name
+ */
 function automation_duplicate_snmp_option($id, $new_name) {
 	$name = db_fetch_cell_prepared('SELECT name
 		FROM automation_snmp
@@ -300,6 +320,12 @@ function automation_duplicate_snmp_option($id, $new_name) {
 	}
 }
 
+/**
+ * automation_snmp_item_dnd
+ *
+ * Insert description here
+ *
+ */
 function automation_snmp_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -327,6 +353,12 @@ function automation_snmp_item_dnd() {
 	exit;
 }
 
+/**
+ * automation_snmp_item_movedown
+ *
+ * Insert description here
+ *
+ */
 function automation_snmp_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -336,6 +368,12 @@ function automation_snmp_item_movedown() {
 	move_item_down('automation_snmp_items', get_request_var('item_id'), 'snmp_id=' . get_request_var('id'));
 }
 
+/**
+ * automation_snmp_item_moveup
+ *
+ * Insert description here
+ *
+ */
 function automation_snmp_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -345,6 +383,12 @@ function automation_snmp_item_moveup() {
 	move_item_up('automation_snmp_items', get_request_var('item_id'), 'snmp_id=' . get_request_var('id'));
 }
 
+/**
+ * automation_snmp_item_remove_confirm
+ *
+ * Insert description here
+ *
+ */
 function automation_snmp_item_remove_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -408,6 +452,12 @@ function automation_snmp_item_remove_confirm() {
 
 }
 
+/**
+ * automation_snmp_item_remove
+ *
+ * Insert description here
+ *
+ */
 function automation_snmp_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -416,6 +466,12 @@ function automation_snmp_item_remove() {
 	db_execute_prepared('DELETE FROM automation_snmp_items WHERE id = ?', array(get_request_var('item_id')));
 }
 
+/**
+ * automation_snmp_item_edit
+ *
+ * Insert description here
+ *
+ */
 function automation_snmp_item_edit() {
 	global $config, $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions, $snmp_security_levels;
 
@@ -489,6 +545,12 @@ function automation_snmp_item_edit() {
 	<?php
 }
 
+/**
+ * automation_snmp_edit
+ *
+ * Insert description here
+ *
+ */
 function automation_snmp_edit() {
 	global $config, $fields_automation_snmp_edit;
 
@@ -659,6 +721,12 @@ function automation_snmp_edit() {
 <?php
 }
 
+/**
+ * automation_snmp
+ *
+ * Insert description here
+ *
+ */
 function automation_snmp() {
 	global $config, $item_rows, $automation_snmp_actions;
 

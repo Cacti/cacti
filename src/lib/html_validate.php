@@ -22,28 +22,70 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * input_validate_input_equals
+ *
+ * Insert description here
+ *
+ * @param type $value
+ * @param type $c_value
+ * @param string $name
+ */
 function input_validate_input_equals($value, $c_value, $name = '') {
 	if ($value != $c_value) {
 		die_html_input_error($name, $value);
 	}
 }
 
+/**
+ * input_validate_input_number
+ *
+ * Insert description here
+ *
+ * @param type $value
+ * @param string $name
+ */
 function input_validate_input_number($value, $name = '') {
 	if ((!is_numeric($value)) && ($value != '')) {
 		die_html_input_error($name, $value);
 	}
 }
 
+/**
+ * input_validate_input_regex
+ *
+ * Insert description here
+ *
+ * @param type $value
+ * @param type $regex
+ * @param string $name
+ */
 function input_validate_input_regex($value, $regex, $name = '') {
 	if ($value != null && $value != '' && (!preg_match('/' . $regex . '/', $value))) {
 		die_html_input_error($name, $value);
 	}
 }
 
+/**
+ * html_log_input_error
+ *
+ * Insert description here
+ *
+ * @param type $variable
+ */
 function html_log_input_error($variable) {
 	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
 }
 
+/**
+ * die_html_input_error
+ *
+ * Insert description here
+ *
+ * @param string $variable
+ * @param string $value
+ * @param string $message
+ */
 function die_html_input_error($variable = '', $value = '', $message = '') {
 	global $config;
 

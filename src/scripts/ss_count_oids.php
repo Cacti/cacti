@@ -13,6 +13,16 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
+/**
+ * ss_count_oids
+ *
+ * Insert description here
+ *
+ * @param string $hostid
+ * @param string $oid
+ *
+ * @return type
+ */
 function ss_count_oids($hostid = '', $oid = '') {
 	if ($hostid > 0) {
 		$host = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version, snmp_username, snmp_password,

@@ -122,6 +122,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if ((isset_request_var('save_component_data_source_new')) && (!isempty_request_var('data_template_id'))) {
 		$save['id']               = get_filter_request_var('local_data_id');
@@ -349,6 +355,12 @@ function form_save() {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $ds_actions;
 
@@ -585,6 +597,13 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * data_edit
+ *
+ * Insert description here
+ *
+ * @param true $incform
+ */
 function data_edit($incform = true) {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -696,6 +715,12 @@ function data_edit($incform = true) {
 	form_hidden_box('save_component_data', '1', '');
 }
 
+/**
+ * ds_rrd_remove
+ *
+ * Insert description here
+ *
+ */
 function ds_rrd_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -713,6 +738,12 @@ function ds_rrd_remove() {
 	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('local_data_id'));
 }
 
+/**
+ * ds_rrd_add
+ *
+ * Insert description here
+ *
+ */
 function ds_rrd_add() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -728,6 +759,12 @@ function ds_rrd_add() {
 	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
+/**
+ * ds_disable
+ *
+ * Insert description here
+ *
+ */
 function ds_disable() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -737,6 +774,12 @@ function ds_disable() {
 	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('id'));
 }
 
+/**
+ * ds_enable
+ *
+ * Insert description here
+ *
+ */
 function ds_enable() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -746,6 +789,12 @@ function ds_enable() {
 	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('id'));
 }
 
+/**
+ * ds_edit
+ *
+ * Insert description here
+ *
+ */
 function ds_edit() {
 	global $struct_data_source, $struct_data_source_item;
 
@@ -1174,6 +1223,16 @@ function ds_edit() {
 	bottom_footer();
 }
 
+/**
+ * get_poller_interval
+ *
+ * Insert description here
+ *
+ * @param type $seconds
+ * @param type $data_source_profile_id
+ *
+ * @return type
+ */
 function get_poller_interval($seconds, $data_source_profile_id) {
 	if ($seconds == 0 || $data_source_profile_id == 0) {
 		return '<em>' . __('External') . '</em>';
@@ -1190,6 +1249,12 @@ function get_poller_interval($seconds, $data_source_profile_id) {
 	}
 }
 
+/**
+ * validate_data_source_vars
+ *
+ * Insert description here
+ *
+ */
 function validate_data_source_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1254,6 +1319,12 @@ function validate_data_source_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * ds
+ *
+ * Insert description here
+ *
+ */
 function ds() {
 	global $ds_actions, $item_rows, $sampling_intervals;
 
@@ -1708,6 +1779,15 @@ function ds() {
 	form_end();
 }
 
+/**
+ * get_graphs_aggregates_url
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ *
+ * @return type
+ */
 function get_graphs_aggregates_url($local_data_id) {
 	$graphs = db_fetch_row_prepared('SELECT GROUP_CONCAT(DISTINCT gl.id) AS graphs, COUNT(DISTINCT gl.id) AS total
 		FROM data_local AS dl

@@ -143,6 +143,15 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * debug_process_status
+ *
+ * Insert description here
+ *
+ * @param type $id
+ *
+ * @return type
+ */
 function debug_process_status($id) {
 	$status = db_fetch_row_prepared('SELECT done, IFNULL(issue, "waiting") AS issue
 		FROM data_debug
@@ -164,6 +173,12 @@ function debug_process_status($id) {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $actions, $assoc_actions;
 
@@ -201,6 +216,13 @@ function form_actions() {
 	}
 }
 
+/**
+ * debug_rerun
+ *
+ * Insert description here
+ *
+ * @param type $selected_items
+ */
 function debug_rerun($selected_items) {
 	$info = array(
 		'rrd_folder_writable' => '',
@@ -251,6 +273,13 @@ function debug_rerun($selected_items) {
 	}
 }
 
+/**
+ * debug_delete
+ *
+ * Insert description here
+ *
+ * @param type $selected_items
+ */
 function debug_delete($selected_items) {
 	if (!empty($selected_items)) {
 		foreach ($selected_items as $id) {
@@ -262,6 +291,12 @@ function debug_delete($selected_items) {
 	}
 }
 
+/**
+ * validate_request_vars
+ *
+ * Insert description here
+ *
+ */
 function validate_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -330,6 +365,12 @@ function validate_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * debug_wizard
+ *
+ * Insert description here
+ *
+ */
 function debug_wizard() {
 	global $actions;
 
@@ -596,6 +637,12 @@ function debug_wizard() {
 	form_end();
 }
 
+/**
+ * debug_view
+ *
+ * Insert description here
+ *
+ */
 function debug_view() {
 	global $config, $refresh;
 
@@ -902,6 +949,15 @@ function debug_view() {
 	<?php
 }
 
+/**
+ * debug_icon_valid_result
+ *
+ * Insert description here
+ *
+ * @param type $result
+ *
+ * @return type
+ */
 function debug_icon_valid_result($result) {
 	if ($result === '' || $result === false) {
 		return '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
@@ -928,6 +984,15 @@ function debug_icon_valid_result($result) {
 	}
 }
 
+/**
+ * debug_icon
+ *
+ * Insert description here
+ *
+ * @param type $result
+ *
+ * @return type
+ */
 function debug_icon($result) {
 	if ($result === '' || $result === false) {
 		return '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
@@ -948,6 +1013,12 @@ function debug_icon($result) {
 	return '<i class="fa fa-exclamation-triangle" style="color:orange"></i>';
 }
 
+/**
+ * data_debug_filter
+ *
+ * Insert description here
+ *
+ */
 function data_debug_filter() {
 	global $item_rows, $page_refresh_interval;
 

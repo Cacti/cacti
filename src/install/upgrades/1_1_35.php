@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_1_35
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_1_35() {
 	db_install_execute('DELETE FROM data_input_data
 		WHERE data_input_field_id=0');

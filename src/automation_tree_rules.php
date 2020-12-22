@@ -95,6 +95,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * automation_tree_rules_form_save
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules_form_save() {
 	if (isset_request_var('save_component_automation_tree_rule')) {
 		/* ================= input validation ================= */
@@ -189,6 +195,12 @@ function automation_tree_rules_form_save() {
 	}
 }
 
+/**
+ * automation_tree_rules_form_actions
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules_form_actions() {
 	global $automation_tree_rules_actions;
 	global $config;
@@ -308,6 +320,12 @@ function automation_tree_rules_form_actions() {
 	bottom_footer();
 }
 
+/**
+ * automation_tree_rules_change_leaf
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules_change_leaf() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -317,6 +335,12 @@ function automation_tree_rules_change_leaf() {
 	automation_change_tree_rule_leaf_type(get_request_var('leaf_type'), get_request_var('id'));
 }
 
+/**
+ * automation_tree_rules_item_movedown
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -331,6 +355,12 @@ function automation_tree_rules_item_movedown() {
 	}
 }
 
+/**
+ * automation_tree_rules_item_moveup
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -345,6 +375,12 @@ function automation_tree_rules_item_moveup() {
 	}
 }
 
+/**
+ * automation_tree_rules_item_remove
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -358,6 +394,12 @@ function automation_tree_rules_item_remove() {
 	}
 }
 
+/**
+ * automation_tree_rules_item_edit
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules_item_edit() {
 	global $config;
 
@@ -467,6 +509,12 @@ function toggle_operator() {
 <?php
 }
 
+/**
+ * automation_tree_rules_remove
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -496,6 +544,12 @@ function automation_tree_rules_remove() {
 	}
 }
 
+/**
+ * automation_tree_rules_edit
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules_edit() {
 	global $config;
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
@@ -744,6 +798,12 @@ function automation_tree_rules_edit() {
 	<?php
 }
 
+/**
+ * automation_tree_rules
+ *
+ * Insert description here
+ *
+ */
 function automation_tree_rules() {
 	global $automation_tree_rules_actions, $config, $item_rows;
 	global $automation_tree_item_types, $host_group_types;

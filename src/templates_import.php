@@ -53,6 +53,12 @@ if ($is_tmp && $is_save && $action == 'save') {
 	bottom_footer();
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	global $preview_only;
 
@@ -105,6 +111,12 @@ function form_save() {
 	}
 }
 
+/**
+ * bad_tmp
+ *
+ * Insert description here
+ *
+ */
 function bad_tmp() {
 	html_start_box(__('Import Template'), '60%', '', '1', 'center', '');
 	form_alternate_row();
@@ -112,6 +124,12 @@ function bad_tmp() {
 	html_end_box();
 }
 
+/**
+ * import
+ *
+ * Insert description here
+ *
+ */
 function import() {
 	global $hash_type_names, $fields_template_import;
 
@@ -163,6 +181,15 @@ function import() {
 	}
 }
 
+/**
+ * is_tmp_writable
+ *
+ * Insert description here
+ *
+ * @param type $tmp_dir
+ *
+ * @return type
+ */
 function is_tmp_writable($tmp_dir) {
 	$tmp_dir = sys_get_temp_dir();
 	$tmp_len = strlen($tmp_dir);

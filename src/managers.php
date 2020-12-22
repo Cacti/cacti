@@ -70,6 +70,12 @@ switch (get_request_var('action')) {
 	break;
 }
 
+/**
+ * manager
+ *
+ * Insert description here
+ *
+ */
 function manager() {
 	global $config, $manager_actions, $item_rows;
 
@@ -269,6 +275,12 @@ function manager() {
 	form_end();
 }
 
+/**
+ * manager_edit
+ *
+ * Insert description here
+ *
+ */
 function manager_edit() {
 	global $config, $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions,
 		$tabs_manager_edit, $fields_manager_edit, $manager_notification_actions;
@@ -377,6 +389,14 @@ function manager_edit() {
 	<?php
 }
 
+/**
+ * manager_notifications
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $header_label
+ */
 function manager_notifications($id, $header_label) {
 	global $item_rows, $manager_notification_actions;
 
@@ -627,6 +647,14 @@ function manager_notifications($id, $header_label) {
 	form_end();
 }
 
+/**
+ * manager_logs
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $header_label
+ */
 function manager_logs($id, $header_label) {
 	$severity_levels = array(
 		SNMPAGENT_EVENT_SEVERITY_LOW      => 'LOW',
@@ -852,6 +880,12 @@ function manager_logs($id, $header_label) {
 	<?php
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (!isset_request_var('tab')) set_request_var('tab', 'general');
 
@@ -921,6 +955,12 @@ function form_save() {
 	header('Location: managers.php?action=edit&id=' . (empty($manager_id) ? get_nfilter_request_var('id') : $manager_id));
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $manager_actions, $manager_notification_actions;
 

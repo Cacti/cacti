@@ -22,10 +22,27 @@
    +-------------------------------------------------------------------------+
 */
 
+/**
+ * snmpagent_enabled
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function snmpagent_enabled() {
 	return read_config_option('enable_snmp_agent') == 'on';
 }
 
+/**
+ * snmpagent_cacti_stats_update
+ *
+ * Insert description here
+ *
+ * @param type $data
+ *
+ * @return type
+ */
 function snmpagent_cacti_stats_update($data) {
 	$mc = new MibCache();
 
@@ -61,6 +78,12 @@ function snmpagent_cacti_stats_update($data) {
 	$mc->object('cactiStatsLastUpdate')->set(time());
 }
 
+/**
+ * snmpagent_global_settings_update
+ *
+ * Insert description here
+ *
+ */
 function snmpagent_global_settings_update() {
 	$mc = new MibCache();
 	$mc->object('cactiApplVersion')->set(snmpagent_read('cactiApplVersion'));
@@ -92,6 +115,15 @@ function snmpagent_global_settings_update() {
 	$mc->object('boostApplLastUpdate')->set(time());
 }
 
+/**
+ * snmpagent_api_device_new
+ *
+ * Insert description here
+ *
+ * @param type $device
+ *
+ * @return type
+ */
 function snmpagent_api_device_new($device) {
 	if (!snmpagent_enabled()) {
 		return false;
@@ -140,6 +172,15 @@ function snmpagent_api_device_new($device) {
 	}
 }
 
+/**
+ * snmpagent_data_source_action_bottom
+ *
+ * Insert description here
+ *
+ * @param type $data
+ *
+ * @return type
+ */
 function snmpagent_data_source_action_bottom($data) {
 	if (!snmpagent_enabled()) {
 		return false;
@@ -160,6 +201,15 @@ function snmpagent_data_source_action_bottom($data) {
 	}
 }
 
+/**
+ * snmpagent_graphs_action_bottom
+ *
+ * Insert description here
+ *
+ * @param type $data
+ *
+ * @return type
+ */
 function snmpagent_graphs_action_bottom($data) {
 	if (!snmpagent_enabled()) {
 		return false;
@@ -180,6 +230,15 @@ function snmpagent_graphs_action_bottom($data) {
 	}
 }
 
+/**
+ * snmpagent_device_action_bottom
+ *
+ * Insert description here
+ *
+ * @param type $data
+ *
+ * @return type
+ */
 function snmpagent_device_action_bottom($data) {
 	if (!snmpagent_enabled()) {
 		return false;
@@ -275,6 +334,15 @@ function snmpagent_device_action_bottom($data) {
 	}
 }
 
+/**
+ * snmpagent_poller_exiting
+ *
+ * Insert description here
+ *
+ * @param 1 $poller_index
+ *
+ * @return type
+ */
 function snmpagent_poller_exiting($poller_index = 1) {
 	if (!snmpagent_enabled()) {
 		return false;
@@ -297,6 +365,14 @@ function snmpagent_poller_exiting($poller_index = 1) {
 	}
 }
 
+/**
+ * snmpagent_poller_bottom
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function snmpagent_poller_bottom() {
 	global $config;
 
@@ -524,6 +600,14 @@ function snmpagent_poller_bottom() {
 	}
 }
 
+/**
+ * snmpagent_get_pluginslist
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function snmpagent_get_pluginslist() {
 	global $config, $plugins, $plugins_integrated;
 	/* update the list of known plugins only once per polling cycle. In all other cases we would
@@ -588,6 +672,12 @@ function snmpagent_cache_install() {
 	api_plugin_hook('snmpagent_cache_install');
 }
 
+/**
+ * snmpagent_cache_uninstall
+ *
+ * Insert description here
+ *
+ */
 function snmpagent_cache_uninstall() {
 	/* drop everything */
 	db_execute('TRUNCATE `snmpagent_cache`');
@@ -596,14 +686,36 @@ function snmpagent_cache_uninstall() {
 	db_execute('TRUNCATE `snmpagent_cache_textual_conventions`;');
 }
 
+/**
+ * snmpagent_cache_initialized
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function snmpagent_cache_initialized() {
 	return db_fetch_cell('SELECT COUNT(*) FROM `snmpagent_cache`') > 0;
 }
 
+/**
+ * snmpagent_cache_rebuilt
+ *
+ * Insert description here
+ *
+ */
 function snmpagent_cache_rebuilt() {
 	snmpagent_cache_install();
 }
 
+/**
+ * snmpagent_cache_init
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function snmpagent_cache_init() {
 	/* fill up the cache with a minimum of data data and ignore all values that
 	 *  will be updated automatically at the bottom of the next poller run
@@ -707,6 +819,15 @@ function snmpagent_cache_init() {
 	}
 }
 
+/**
+ * snmpagent_read
+ *
+ * Insert description here
+ *
+ * @param type $object
+ *
+ * @return type
+ */
 function snmpagent_read($object) {
 	switch($object) {
 		case 'cactiApplVersion':
@@ -762,6 +883,19 @@ function snmpagent_read($object) {
 	return $value;
 }
 
+/**
+ * snmpagent_notification
+ *
+ * Insert description here
+ *
+ * @param type $notification
+ * @param type $mib
+ * @param type $varbinds
+ * @param SNMPAGENT_EVENT_SEVERITY_MEDIUM $severity
+ * @param false $overwrite
+ *
+ * @return type
+ */
 function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMPAGENT_EVENT_SEVERITY_MEDIUM, $overwrite = false) {
 	global $config, $snmpagent_event_severity;
 

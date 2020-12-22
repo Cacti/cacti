@@ -178,18 +178,39 @@ if (isset_request_var('update_policy')) {
 	}
 }
 
+/**
+ * user_group_disable
+ *
+ * Insert description here
+ *
+ * @param type $id
+ */
 function user_group_disable($id) {
 	db_execute_prepared("UPDATE user_auth_group SET enabled = '' WHERE id = ?", array($id));
 
 	reset_group_perms($id);
 }
 
+/**
+ * user_group_enable
+ *
+ * Insert description here
+ *
+ * @param type $id
+ */
 function user_group_enable($id) {
 	db_execute_prepared("UPDATE user_auth_group SET enabled = 'on' WHERE id = ?", array($id));
 
 	reset_group_perms($id);
 }
 
+/**
+ * user_group_remove
+ *
+ * Insert description here
+ *
+ * @param type $id
+ */
 function user_group_remove($id) {
 	db_execute_prepared('DELETE FROM user_auth_group WHERE id = ?', array($id));
 	db_execute_prepared('DELETE FROM user_auth_group_members WHERE group_id = ?', array($id));
@@ -197,6 +218,14 @@ function user_group_remove($id) {
 	db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ?', array($id));
 }
 
+/**
+ * user_group_copy
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param 'New Group' $prefix
+ */
 function user_group_copy($id, $prefix = 'New Group') {
 	static $count = 1;
 
@@ -244,6 +273,12 @@ function user_group_copy($id, $prefix = 'New Group') {
 	$count++;
 }
 
+/**
+ * update_policies
+ *
+ * Insert description here
+ *
+ */
 function update_policies() {
 	$set = '';
 
@@ -261,6 +296,12 @@ function update_policies() {
 	exit;
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $group_actions, $user_auth_realms;
 
@@ -530,6 +571,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	global $settings_user;
 
@@ -622,6 +669,12 @@ function form_save() {
 	header('Location: user_group_admin.php?action=edit&tab=general&id=' .  get_nfilter_request_var('id'));
 }
 
+/**
+ * perm_remove
+ *
+ * Insert description here
+ *
+ */
 function perm_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -641,6 +694,13 @@ function perm_remove() {
 	header('Location: user_group_admin.php?action=edit&tab=gperms&id=' . get_request_var('group_id'));
 }
 
+/**
+ * user_group_members_edit
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function user_group_members_edit($header_label) {
 	global $config, $auth_realms;
 
@@ -741,6 +801,14 @@ function user_group_members_edit($header_label) {
 	form_end();
 }
 
+/**
+ * user_group_graph_perms_edit
+ *
+ * Insert description here
+ *
+ * @param type $tab
+ * @param type $header_label
+ */
 function user_group_graph_perms_edit($tab, $header_label) {
 	global $config, $assoc_actions;
 
@@ -1334,6 +1402,16 @@ function user_group_graph_perms_edit($tab, $header_label) {
 	}
 }
 
+/**
+ * user_group_is_member
+ *
+ * Insert description here
+ *
+ * @param type $user_id
+ * @param type $group_id
+ *
+ * @return type
+ */
 function user_group_is_member($user_id, $group_id) {
 	return db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_group_members
@@ -1342,6 +1420,13 @@ function user_group_is_member($user_id, $group_id) {
 		array($user_id, $group_id));
 }
 
+/**
+ * user_group_realms_edit
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function user_group_realms_edit($header_label) {
 	global $user_auth_realms, $user_auth_roles;
 
@@ -1557,6 +1642,13 @@ function user_group_realms_edit($header_label) {
 	form_save_button('user_group_admin.php', 'return');
 }
 
+/**
+ * user_group_settings_edit
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function user_group_settings_edit($header_label) {
 	global $settings_user, $tabs_graphs, $graph_views;
 
@@ -1666,6 +1758,12 @@ function user_group_settings_edit($header_label) {
 	<?php
 }
 
+/**
+ * group_edit
+ *
+ * Insert description here
+ *
+ */
 function group_edit() {
 	global $config, $fields_user_group_edit;
 
@@ -1770,6 +1868,12 @@ function group_edit() {
 	}
 }
 
+/**
+ * user_group
+ *
+ * Insert description here
+ *
+ */
 function user_group() {
 	global $group_actions, $item_rows;
 
@@ -1970,6 +2074,12 @@ function user_group() {
 	form_end();
 }
 
+/**
+ * process_graph_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_graph_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2004,6 +2114,12 @@ function process_graph_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * process_device_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_device_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2038,6 +2154,12 @@ function process_device_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * process_template_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_template_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2072,6 +2194,12 @@ function process_template_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * process_tree_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_tree_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2101,6 +2229,12 @@ function process_tree_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * process_member_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_member_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2130,6 +2264,13 @@ function process_member_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * graph_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function graph_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2236,6 +2377,13 @@ function graph_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * device_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function device_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2338,6 +2486,13 @@ function device_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * template_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function template_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2421,6 +2576,13 @@ function template_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * tree_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function tree_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2504,6 +2666,13 @@ function tree_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * member_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function member_filter($header_label) {
 	global $config, $item_rows;
 

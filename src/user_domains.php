@@ -64,6 +64,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	global $registered_cacti_names;
 
@@ -165,6 +171,12 @@ function form_save() {
 	header('Location: user_domains.php?action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $actions;
 
@@ -284,24 +296,58 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * domain_remove
+ *
+ * Insert description here
+ *
+ * @param type $domain_id
+ */
 function domain_remove($domain_id) {
 	db_execute_prepared('DELETE FROM user_domains WHERE domain_id = ?', array($domain_id));
 	db_execute_prepared('DELETE FROM user_domains_ldap WHERE domain_id = ?', array($domain_id));
 }
 
+/**
+ * domain_disable
+ *
+ * Insert description here
+ *
+ * @param type $domain_id
+ */
 function domain_disable($domain_id) {
 	db_execute_prepared('UPDATE user_domains SET enabled = "" WHERE domain_id = ?', array($domain_id));
 }
 
+/**
+ * domain_enable
+ *
+ * Insert description here
+ *
+ * @param type $domain_id
+ */
 function domain_enable($domain_id) {
 	db_execute_prepared('UPDATE user_domains SET enabled = "on" WHERE domain_id = ?', array($domain_id));
 }
 
+/**
+ * domain_default
+ *
+ * Insert description here
+ *
+ * @param type $domain_id
+ */
 function domain_default($domain_id) {
 	db_execute('UPDATE user_domains SET defdomain = 0');
 	db_execute_prepared('UPDATE user_domains SET defdomain = 1 WHERE domain_id = ?', array($domain_id));
 }
 
+/**
+ * domain_edit
+ *
+ * Insert description here
+ *
+ */
 function domain_edit() {
 	global $ldap_versions, $ldap_encryption, $ldap_modes, $domain_types;
 
@@ -598,6 +644,12 @@ function domain_edit() {
 	form_save_button('user_domains.php', 'return', 'domain_id');
 }
 
+/**
+ * domains
+ *
+ * Insert description here
+ *
+ */
 function domains() {
 	global $domain_types, $actions, $item_rows;
 

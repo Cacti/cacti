@@ -26,6 +26,13 @@
 // tick use required as of PHP 4.3.0 to accomodate signal handling
 declare(ticks = 1);
 
+/**
+ * sig_handler
+ *
+ * Insert description here
+ *
+ * @param type $signo
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
@@ -105,6 +112,14 @@ function record_cmdphp_started() {
 		array($poller_id, getmypid()), true, $poller_db_cnn_id);
 }
 
+/**
+ * open_snmp_session
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $item
+ */
 function open_snmp_session($host_id, &$item) {
 	global $sessions, $downhosts;
 
@@ -125,6 +140,14 @@ function open_snmp_session($host_id, &$item) {
 	}
 }
 
+/**
+ * get_max_column_width
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_max_column_width() {
 	$pcol_data = db_fetch_row("SHOW COLUMNS FROM poller_output WHERE Field='output'");
 	$bcol_data = db_fetch_row("SHOW COLUMNS FROM poller_output_boost WHERE Field='output'");
@@ -144,6 +167,12 @@ function get_max_column_width() {
 	return min($pmax, $bmax);
 }
 
+/**
+ * display_version
+ *
+ * Insert description here
+ *
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n";
@@ -173,6 +202,13 @@ function display_help() {
 	print "    --debug  - Display verbose output during execution.\n\n";
 }
 
+/**
+ * debug
+ *
+ * Insert description here
+ *
+ * @param type $message
+ */
 function debug($message) {
 	global $debug;
 

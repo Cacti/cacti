@@ -254,6 +254,15 @@ define('CACTI_COUNTRY', $cacti_country);
 define('CACTI_LANGUAGE', $lang2locale[CACTI_LOCALE]['language']);
 define('CACTI_LANGUAGE_FILE', $catalogue);
 
+/**
+ * load_gettext_original
+ *
+ * Insert description here
+ *
+ * @param type $domain
+ *
+ * @return type
+ */
 function load_gettext_original($domain) {
 	global $cacti_textdomains;
 
@@ -273,6 +282,15 @@ function load_gettext_original($domain) {
 	return $l10n_domain;
 }
 
+/**
+ * load_gettext_motranslator
+ *
+ * Insert description here
+ *
+ * @param type $domain
+ *
+ * @return type
+ */
 function load_gettext_motranslator($domain) {
 	global $cacti_textdomains;
 
@@ -286,6 +304,15 @@ function load_gettext_motranslator($domain) {
 	return $input;
 }
 
+/**
+ * load_gettext_oscarotero
+ *
+ * Insert description here
+ *
+ * @param type $domain
+ *
+ * @return type
+ */
 function load_gettext_oscarotero($domain) {
 	global $cacti_textdomains;
 
@@ -306,6 +333,15 @@ function load_gettext_oscarotero($domain) {
 	return $l10n_domain;
 }
 
+/**
+ * apply_locale
+ *
+ * Insert description here
+ *
+ * @param type $language
+ *
+ * @return type
+ */
 function apply_locale($language) {
 	global $cacti_locale, $cacti_country, $lang2locale;
 
@@ -381,14 +417,38 @@ function __esc() {
 	return htmlspecialchars(call_user_func_array('__', func_get_args()), ENT_QUOTES);
 }
 
+/**
+ * __esc_n
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function __esc_n() {
 	return htmlspecialchars(call_user_func_array('__n', func_get_args()), ENT_QUOTES);
 }
 
+/**
+ * __esc_x
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function __esc_x() {
 	return htmlspecialchars(call_user_func_array('__x', func_get_args()), ENT_QUOTES);
 }
 
+/**
+ * __esc_xn
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function __esc_xn() {
 	return htmlspecialchars(call_user_func_array('__xn', func_get_args()), ENT_QUOTES);
 }
@@ -412,6 +472,16 @@ function load_fallback_procedure() {
 	define('CACTI_LANGUAGE_HANDLER', CACTI_LANGUAGE_HANDLER_NONE);
 }
 
+/**
+ * __gettext
+ *
+ * Insert description here
+ *
+ * @param type $text
+ * @param 'cacti' $domain
+ *
+ * @return type
+ */
 function __gettext($text, $domain = 'cacti') {
 	global $l10n;
 
@@ -439,6 +509,18 @@ function __gettext($text, $domain = 'cacti') {
 	return __uf($translated);
 }
 
+/**
+ * __n
+ *
+ * Insert description here
+ *
+ * @param type $singular
+ * @param type $plural
+ * @param type $number
+ * @param 'cacti' $domain
+ *
+ * @return type
+ */
 function __n($singular, $plural, $number, $domain = 'cacti') {
 	global $l10n;
 
@@ -449,10 +531,27 @@ function __n($singular, $plural, $number, $domain = 'cacti') {
 	}
 }
 
+/**
+ * __uf
+ *
+ * Insert description here
+ *
+ * @param type $text
+ *
+ * @return type
+ */
 function __uf($text) {
 	return str_replace('%%', '%', $text);
 }
 
+/**
+ * __
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function __() {
 	global $l10n;
 
@@ -489,6 +588,19 @@ function __() {
 	}
 }
 
+/**
+ * __xn
+ *
+ * Insert description here
+ *
+ * @param type $context
+ * @param type $singular
+ * @param type $plural
+ * @param type $number
+ * @param 'cacti' $domain
+ *
+ * @return type
+ */
 function __xn($context, $singular, $plural, $number, $domain = 'cacti') {
 	$xsingular = $context . chr(4) . $singular;
 	$xplural   = $context . chr(4) . $plural;
@@ -502,6 +614,14 @@ function __xn($context, $singular, $plural, $number, $domain = 'cacti') {
 	}
 }
 
+/**
+ * __x
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function __x() {
 	global $l10n;
 
@@ -537,6 +657,17 @@ function __x() {
 	}
 }
 
+/**
+ * __date
+ *
+ * Insert description here
+ *
+ * @param type $format
+ * @param false $timestamp
+ * @param 'cacti' $domain
+ *
+ * @return type
+ */
 function __date($format, $timestamp = false, $domain = 'cacti') {
 	global $i18n_date_placeholders;
 
@@ -791,6 +922,14 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	return $number;
 }
 
+/**
+ * get_new_user_default_language
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_new_user_default_language() {
 	$accepted = repair_locale(read_config_option('i18n_default_language'));
 
@@ -801,6 +940,15 @@ function get_new_user_default_language() {
 	return $accepted;
 }
 
+/**
+ * l10n_debug
+ *
+ * Insert description here
+ *
+ * @param type $text
+ * @param FILE_APPEND $mode
+ * @param PHP_EOL $eol
+ */
 function l10n_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
 	if (is_dir('/share/') && is_writeable('/share/i18n.log')) {
 		file_put_contents('/share/i18n.log', $text . $eol, $mode);

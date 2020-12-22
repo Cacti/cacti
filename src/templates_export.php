@@ -44,6 +44,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	global $export_types, $export_errors;
 
@@ -78,6 +84,12 @@ function form_save() {
 	}
 }
 
+/**
+ * export
+ *
+ * Insert description here
+ *
+ */
 function export() {
 	global $export_types;
 

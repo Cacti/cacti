@@ -207,6 +207,12 @@ function display_version() {
 	print "Cacti Poller Commands Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help
+ *
+ * Insert description here
+ *
+ */
 function display_help() {
 	display_version();
 

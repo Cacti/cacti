@@ -159,6 +159,15 @@ function exec_background($filename, $args = '', $redirect_args = '') {
 	}
 }
 
+/**
+ * file_escaped
+ *
+ * Insert description here
+ *
+ * @param type $file
+ *
+ * @return type
+ */
 function file_escaped($file) {
 	if (substr($file, 0, 1) == '"' && substr($file, -1, 1) == '"') {
 		return true;
@@ -340,6 +349,15 @@ function update_reindex_cache($host_id, $data_query_id) {
 	}
 }
 
+/**
+ * poller_update_poller_reindex_from_buffer
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $data_query_id
+ * @param type $recache_stack
+ */
 function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$recache_stack) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	db_execute_prepared('UPDATE poller_reindex
@@ -1135,6 +1153,16 @@ function md5sum_path($path, $recursive = true) {
 	return md5(implode('', $filemd5s));
 }
 
+/**
+ * poller_push_to_remote_db_connect
+ *
+ * Insert description here
+ *
+ * @param type $device_or_poller
+ * @param false $is_poller
+ *
+ * @return type
+ */
 function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false) {
 	global $config;
 	static $device_poller_ids = array();
@@ -1167,6 +1195,15 @@ function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false)
 	return $rcnn_id;
 }
 
+/**
+ * poller_connect_to_remote
+ *
+ * Insert description here
+ *
+ * @param type $poller_id
+ *
+ * @return type
+ */
 function poller_connect_to_remote($poller_id) {
 	global $config, $local_db_cnn_id;
 
@@ -1223,6 +1260,16 @@ function poller_connect_to_remote($poller_id) {
 	return $rcnn_id;
 }
 
+/**
+ * replicate_out
+ *
+ * Insert description here
+ *
+ * @param 1 $remote_poller_id
+ * @param 'all' $class
+ *
+ * @return type
+ */
 function replicate_out($remote_poller_id = 1, $class = 'all') {
 	global $config;
 
@@ -1491,6 +1538,12 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 	return true;
 }
 
+/**
+ * replicate_in
+ *
+ * Insert description here
+ *
+ */
 function replicate_in() {
 	$replicate_inout_tables = array(
 		'host' => array(
@@ -1645,6 +1698,14 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 	}
 }
 
+/**
+ * poller_push_reindex_only_data_to_main
+ *
+ * Insert description here
+ *
+ * @param type $device_id
+ * @param type $data_query_id
+ */
 function poller_push_reindex_only_data_to_main($device_id, $data_query_id) {
 	global $remote_db_cnn_id;
 
@@ -1664,6 +1725,16 @@ function poller_push_reindex_only_data_to_main($device_id, $data_query_id) {
 	}
 }
 
+/**
+ * poller_push_reindex_data_to_poller
+ *
+ * Insert description here
+ *
+ * @param 0 $device_id
+ * @param 0 $data_query_id
+ * @param false $force
+ * @param false $db_cnn_id
+ */
 function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, $force = false, $db_cnn_id = false) {
 	global $config, $remote_db_cnn_id, $local_db_cnn_id, $database_hostname, $rdatabase_hostname;
 
@@ -1745,6 +1816,16 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 	}
 }
 
+/**
+ * replicate_table_to_poller
+ *
+ * Insert description here
+ *
+ * @param type $conn
+ * @param type $data
+ * @param type $table
+ * @param false $exclude
+ */
 function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 	if (cacti_sizeof($data)) {
 		$prefix    = "INSERT INTO $table (";
@@ -1813,6 +1894,13 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 	}
 }
 
+/**
+ * poller_recovery_flush_boost
+ *
+ * Insert description here
+ *
+ * @param type $poller_id
+ */
 function poller_recovery_flush_boost($poller_id) {
 	global $config;
 
@@ -1825,6 +1913,12 @@ function poller_recovery_flush_boost($poller_id) {
 	}
 }
 
+/**
+ * poller_push_data_to_main
+ *
+ * Insert description here
+ *
+ */
 function poller_push_data_to_main() {
 	global $config, $remote_db_cnn_id;
 
@@ -1876,6 +1970,19 @@ function poller_push_data_to_main() {
 	}
 }
 
+/**
+ * poller_push_table
+ *
+ * Insert description here
+ *
+ * @param type $db_cnn
+ * @param type $records
+ * @param type $table
+ * @param false $ignore
+ * @param array $dupes
+ *
+ * @return type
+ */
 function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = array()) {
 	$prefix = 'INSERT ' . ($ignore ? 'IGNORE':'') . ' INTO ' . $table . ' ';
 	$first  = true;
@@ -1919,12 +2026,30 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 	return cacti_sizeof($records);
 }
 
+/**
+ * should_ignore_from_replication
+ *
+ * Insert description here
+ *
+ * @param type $path
+ *
+ * @return type
+ */
 function should_ignore_from_replication($path) {
 	$entry = basename($path);
 
 	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '');
 }
 
+/**
+ * get_remote_poller_ids_from_graphs
+ *
+ * Insert description here
+ *
+ * @param type $graphs
+ *
+ * @return type
+ */
 function get_remote_poller_ids_from_graphs(&$graphs) {
 	if (cacti_sizeof($graphs)) {
 		$graphs = implode(', ', $graphs);
@@ -1945,6 +2070,15 @@ function get_remote_poller_ids_from_graphs(&$graphs) {
 	}
 }
 
+/**
+ * get_remote_poller_ids_from_data_sources
+ *
+ * Insert description here
+ *
+ * @param type $data_sources
+ *
+ * @return type
+ */
 function get_remote_poller_ids_from_data_sources(&$data_sources) {
 	if (cacti_sizeof($data_sources)) {
 		$data_sources = implode(', ', $data_sources);
@@ -1965,6 +2099,15 @@ function get_remote_poller_ids_from_data_sources(&$data_sources) {
 	}
 }
 
+/**
+ * get_remote_poller_ids_from_devices
+ *
+ * Insert description here
+ *
+ * @param type $devices
+ *
+ * @return type
+ */
 function get_remote_poller_ids_from_devices(&$devices) {
 	if (cacti_sizeof($devices)) {
 		$devices = implode(', ', $devices);

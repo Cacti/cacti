@@ -123,6 +123,12 @@ function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 	}
 }
 
+/**
+ * api_device_purge_deleted_devices
+ *
+ * Insert description here
+ *
+ */
 function api_device_purge_deleted_devices() {
 	$devices = db_fetch_assoc_prepared('SELECT id, poller_id
 		FROM host
@@ -234,6 +240,13 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 	clear_cached_allowed_types();
 }
 
+/**
+ * api_device_disable_devices
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ */
 function api_device_disable_devices($device_ids) {
 	global $config;
 
@@ -259,6 +272,13 @@ function api_device_disable_devices($device_ids) {
 	}
 }
 
+/**
+ * api_device_enable_devices
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ */
 function api_device_enable_devices($device_ids) {
 	global $config;
 
@@ -325,6 +345,14 @@ function api_device_enable_devices($device_ids) {
 	}
 }
 
+/**
+ * api_device_change_options
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ * @param type $post
+ */
 function api_device_change_options($device_ids, $post) {
 	global $config, $fields_host_edit;
 
@@ -375,6 +403,13 @@ function api_device_change_options($device_ids, $post) {
 	}
 }
 
+/**
+ * api_device_clear_statistics
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ */
 function api_device_clear_statistics($device_ids) {
 	global $config;
 
@@ -397,6 +432,13 @@ function api_device_clear_statistics($device_ids) {
 	}
 }
 
+/**
+ * api_device_sync_device_templates
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ */
 function api_device_sync_device_templates($device_ids) {
 	global $config;
 
@@ -538,6 +580,16 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 	}
 }
 
+/**
+ * api_device_replicate_out
+ *
+ * Insert description here
+ *
+ * @param type $device_id
+ * @param 1 $poller_id
+ *
+ * @return type
+ */
 function api_device_replicate_out($device_id, $poller_id = 1) {
 	global $config;
 
@@ -674,6 +726,42 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 	return true;
 }
 
+/**
+ * api_device_save
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $host_template_id
+ * @param type $description
+ * @param type $hostname
+ * @param type $snmp_community
+ * @param type $snmp_version
+ * @param type $snmp_username
+ * @param type $snmp_password
+ * @param type $snmp_port
+ * @param type $snmp_timeout
+ * @param type $disabled
+ * @param type $availability_method
+ * @param type $ping_method
+ * @param type $ping_port
+ * @param type $ping_timeout
+ * @param type $ping_retries
+ * @param type $notes
+ * @param type $snmp_auth_protocol
+ * @param type $snmp_priv_passphrase
+ * @param type $snmp_priv_protocol
+ * @param type $snmp_context
+ * @param type $snmp_engine_id
+ * @param 5 $max_oids
+ * @param 1 $device_threads
+ * @param 1 $poller_id
+ * @param 1 $site_id
+ * @param string $external_id
+ * @param string $location
+ *
+ * @return type
+ */
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
@@ -1079,6 +1167,16 @@ function api_device_template_sync_template($device_template, $host_ids = '', $do
 	}
 }
 
+/**
+ * api_device_ping_device
+ *
+ * Insert description here
+ *
+ * @param type $device_id
+ * @param false $from_remote
+ *
+ * @return type
+ */
 function api_device_ping_device($device_id, $from_remote = false) {
 	global $config, $snmp_error;
 

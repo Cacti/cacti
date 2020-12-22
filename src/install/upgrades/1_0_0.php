@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_0_0
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_0_0() {
 	global $config, $plugins_integrated;
 
@@ -461,6 +467,7 @@ function upgrade_to_1_0_0() {
 					foreach ($tree_items as $item) {
 						$translated_key = rtrim($item['order_key'], "0\r\n");
 						$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
+
 						if ($missing_len > 0) {
 							$translated_key .= substr('000', 0, $missing_len);
 						}
@@ -509,6 +516,7 @@ function upgrade_to_1_0_0() {
 
 				$position  = 0;
 				$parent_id = 0;
+
 				if (cacti_sizeof($tree_items)) {
 					foreach ($tree_items as $item) {
 						db_install_execute('UPDATE graph_tree_items
@@ -551,6 +559,7 @@ function upgrade_to_1_0_0() {
 	// If we have never install Nectar before, we can simply install
 	$nectar_tables_result = db_install_fetch_row("SHOW TABLES LIKE '%plugin_nectar%'");
 	$nectar_tables        = $nectar_tables_result['data'];
+
 	if (!cacti_sizeof($nectar_tables)) {
 		db_install_execute("CREATE TABLE IF NOT EXISTS `reports` (
 			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -635,6 +644,7 @@ function upgrade_to_1_0_0() {
 		/* fix host templates and graph template ids */
 		$items_result = db_install_fetch_assoc('SELECT * FROM reports_items WHERE item_type=1');
 		$items        = $items_result['data'];
+
 		if (cacti_sizeof($items)) {
 			foreach ($items as $row) {
 				$host_results = db_install_fetch_row('SELECT host.*
@@ -866,6 +876,7 @@ function upgrade_to_1_0_0() {
 		$columns[] = array('name' => 'graph_type_id', 'type' => 'tinyint(3)', 'NULL' => false, 'default' => 0, 'after' => 't_graph_type_id');
 		$columns[] = array('name' => 't_cdef_id', 'type' => 'char(2)', 'default' => '', 'after' => 'graph_type_id');
 		$columns[] = array('name' => 'cdef_id', 'type' => 'mediumint(8)',  'unsigned' => true, 'NULL' => true, 'after' => 't_cdef_id');
+
 		foreach (array('plugin_aggregate_graphs_graph_item', 'plugin_aggregate_graph_templates_item') as $table) {
 			foreach ($columns as $column) {
 				db_install_add_column($table, $column);
@@ -1292,6 +1303,7 @@ function upgrade_to_1_0_0() {
 	import_colors();
 
 	db_install_execute("ALTER TABLE settings MODIFY COLUMN value varchar(2048) NOT NULL default ''");
+
 	if (db_table_exists('settings_graphs', false)) {
 		db_install_execute("ALTER TABLE settings_graphs MODIFY COLUMN value varchar(2048) NOT NULL default ''");
 	}
@@ -1456,6 +1468,7 @@ function upgrade_to_1_0_0() {
 		$profiles = $profiles_results['data'];
 
 		$i = 1;
+
 		if (cacti_sizeof($profiles)) {
 			foreach ($profiles as $profile) {
 				$pattern = $profile['pattern'];
@@ -1573,6 +1586,7 @@ function upgrade_to_1_0_0() {
 		db_install_drop_column('external_links', 'imagecache');
 
 		db_install_add_column('external_links', array('name' => 'enabled', 'type' => 'CHAR(2)', 'default' => 'on', 'after' => 'disabled'));
+
 		if (db_column_exists('external_links', 'disabled')) {
 			db_install_execute('UPDATE external_links SET enabled="on" WHERE disabled=""');
 			db_install_execute('UPDATE external_links SET enabled="" WHERE disabled="on"');
@@ -1725,6 +1739,7 @@ function upgrade_to_1_0_0() {
 		db_install_add_column('graph_tree', array('name' => 'sequence', 'type' => 'int(10) unsigned', 'NULL' => false, 'default' => '1', 'after' => 'name'));
 		$trees_results = db_install_fetch_assoc('SELECT id FROM graph_tree ORDER BY name');
 		$trees         = $trees_results['data'];
+
 		if (cacti_sizeof($trees)) {
 			foreach ($trees as $sequence => $tree) {
 				db_install_execute('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($sequence + 1, $tree['id']));
@@ -1767,6 +1782,7 @@ function upgrade_to_1_0_0() {
 
 	/* repair install issues */
 	$fields = explode(' ', $fields);
+
 	foreach ($fields as $field) {
 		db_install_execute("UPDATE graph_templates_graph SET $field='' WHERE $field IS NULL");
 		db_install_execute("UPDATE graph_templates_graph SET $field='' WHERE $field='0'");
@@ -1782,6 +1798,7 @@ function upgrade_to_1_0_0() {
 	if ($wathermark == 'graph_wathermark') {
 		$wathermark_results = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = "graph_wathermark"');
 		$wathermark         = $wathermark_results['data'];
+
 		if ($wathermark == 0) {
 			db_install_execute('UPDATE settings SET name = "graph_watermark" WHERE name = "graph_wathermark"');
 		} else {
@@ -1790,6 +1807,12 @@ function upgrade_to_1_0_0() {
 	}
 }
 
+/**
+ * upgrade_realms
+ *
+ * Insert description here
+ *
+ */
 function upgrade_realms() {
 	$upgrade_realms = array(
 		array('new_realm' => 101, 'file_pattern' => 'plugins.php'),
@@ -1947,6 +1970,7 @@ function upgrade_realms() {
 
 	// Add realms to the admin user if it exists
 	$user_auth = db_install_fetch_row('SELECT * FROM user_auth WHERE id=1');
+
 	if (cacti_sizeof($user_auth['data'])) {
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (18,1)');
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (20,1)');
@@ -1956,6 +1980,7 @@ function upgrade_realms() {
 
 	/* add admin permissions */
 	$userid= db_install_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
+
 	if (!empty($userid['data'])) {
 		db_install_execute('REPLACE INTO `user_auth_realm` VALUES (19,1);');
 		db_install_execute('REPLACE INTO `user_auth_realm` VALUES (22,1);');

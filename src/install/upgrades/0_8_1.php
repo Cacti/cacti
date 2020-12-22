@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_1
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_1() {
 	db_install_add_column('user_log', array('name' => 'user_id', 'type' => 'mediumint(8)', 'NULL' => false, 'after' => 'username'));
 	db_install_add_column('user_auth', array('name' => 'realm', 'type' => 'mediumint(8)', 'NULL' => false, 'after' => 'password'));

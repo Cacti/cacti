@@ -433,6 +433,12 @@ function auth_display_custom_error_message($message) {
 	print "</body>\n</html>\n";
 }
 
+/**
+ * domains_login_process
+ *
+ * Insert description here
+ *
+ */
 function domains_login_process() {
 	global $user, $realm, $username, $user_auth, $ldap_error, $ldap_error_message;
 
@@ -559,6 +565,18 @@ function domains_login_process() {
 	}
 }
 
+/**
+ * domains_ldap_auth
+ *
+ * Insert description here
+ *
+ * @param type $username
+ * @param string $password
+ * @param string $dn
+ * @param 0 $realm
+ *
+ * @return type
+ */
 function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	$ldap = new Ldap;
 
@@ -616,6 +634,16 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	}
 }
 
+/**
+ * domains_ldap_search_dn
+ *
+ * Insert description here
+ *
+ * @param type $username
+ * @param type $realm
+ *
+ * @return type
+ */
 function domains_ldap_search_dn($username, $realm) {
 	$ldap = new Ldap;
 

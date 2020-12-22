@@ -242,6 +242,17 @@ if ($create) {
 	}
 }
 
+/**
+ * dirToArray
+ *
+ * Insert description here
+ *
+ * @param type $dir
+ * @param type $base
+ * @param type $ignore
+ *
+ * @return type
+ */
 function dirToArray($dir,$base,$ignore) {
 	global $debug,$quiet;
 
@@ -331,6 +342,15 @@ function display_help() {
 	print "\nWhen no filename is passed, .md5sum is assumed. Only one filename allowed\n";
 }
 
+/**
+ * fail
+ *
+ * Insert description here
+ *
+ * @param type $exit_value
+ * @param array $args
+ * @param 0 $display_help
+ */
 function fail($exit_value, $args = array(), $display_help = 0) {
 	global $quiet,$fail_msg;
 
@@ -357,6 +377,15 @@ function fail($exit_value, $args = array(), $display_help = 0) {
 	exit($exit_value);
 }
 
+/**
+ * define_exit
+ *
+ * Insert description here
+ *
+ * @param type $name
+ * @param type $value
+ * @param type $text
+ */
 function define_exit($name, $value, $text) {
 	global $fail_msg;
 

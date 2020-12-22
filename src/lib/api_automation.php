@@ -22,6 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * display_matching_hosts
+ *
+ * Insert description here
+ *
+ * @param type $rule
+ * @param type $rule_type
+ * @param type $url
+ */
 function display_matching_hosts($rule, $rule_type, $url) {
 	global $device_actions, $item_rows;
 
@@ -317,6 +326,15 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	form_end();
 }
 
+/**
+ * display_matching_graphs
+ *
+ * Insert description here
+ *
+ * @param type $rule
+ * @param type $rule_type
+ * @param type $url
+ */
 function display_matching_graphs($rule, $rule_type, $url) {
 	global $graph_actions, $item_rows;
 
@@ -610,6 +628,14 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	form_end();
 }
 
+/**
+ * display_new_graphs
+ *
+ * Insert description here
+ *
+ * @param type $rule
+ * @param type $url
+ */
 function display_new_graphs($rule, $url) {
 	global $config, $item_rows;
 
@@ -962,6 +988,16 @@ function display_new_graphs($rule, $url) {
 	print '<br>';
 }
 
+/**
+ * display_matching_trees
+ *
+ * Insert description here
+ *
+ * @param type $rule_id
+ * @param type $rule_type
+ * @param type $item
+ * @param type $url
+ */
 function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	global $automation_tree_header_types;
 	global $device_actions, $item_rows;
@@ -1278,6 +1314,16 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	print "</form>\n";
 }
 
+/**
+ * display_match_rule_items
+ *
+ * Insert description here
+ *
+ * @param type $title
+ * @param type $rule_id
+ * @param type $rule_type
+ * @param type $module
+ */
 function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
@@ -1346,6 +1392,16 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 	html_end_box(true);
 }
 
+/**
+ * display_graph_rule_items
+ *
+ * Insert description here
+ *
+ * @param type $title
+ * @param type $rule_id
+ * @param type $rule_type
+ * @param type $module
+ */
 function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
@@ -1408,6 +1464,17 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 	html_end_box(true);
 }
 
+/**
+ * display_tree_rule_items
+ *
+ * Insert description here
+ *
+ * @param type $title
+ * @param type $rule_id
+ * @param type $item_type
+ * @param type $rule_type
+ * @param type $module
+ */
 function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $module) {
 	global $automation_tree_header_types, $tree_sort_types, $host_group_types;
 
@@ -1478,6 +1545,14 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 	html_end_box(true);
 }
 
+/**
+ * duplicate_automation_graph_rules
+ *
+ * Insert description here
+ *
+ * @param type $_id
+ * @param type $_title
+ */
 function duplicate_automation_graph_rules($_id, $_title) {
 	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
 
@@ -1522,6 +1597,14 @@ function duplicate_automation_graph_rules($_id, $_title) {
 	}
 }
 
+/**
+ * duplicate_automation_tree_rules
+ *
+ * Insert description here
+ *
+ * @param type $_id
+ * @param type $_title
+ */
 function duplicate_automation_tree_rules($_id, $_title) {
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
 
@@ -1569,6 +1652,16 @@ function duplicate_automation_tree_rules($_id, $_title) {
 	}
 }
 
+/**
+ * build_graph_object_sql_having
+ *
+ * Insert description here
+ *
+ * @param type $rule
+ * @param type $filter
+ *
+ * @return type
+ */
 function build_graph_object_sql_having($rule, $filter) {
 	if ($filter != '') {
 		$field_names = get_field_names($rule['snmp_query_id']);
@@ -1589,6 +1682,15 @@ function build_graph_object_sql_having($rule, $filter) {
 	}
 }
 
+/**
+ * build_data_query_sql
+ *
+ * Insert description here
+ *
+ * @param type $rule
+ *
+ * @return type
+ */
 function build_data_query_sql($rule) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' called: ' . json_encode($rule), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -1624,6 +1726,16 @@ function build_data_query_sql($rule) {
 	return $sql_query;
 }
 
+/**
+ * build_matching_objects_filter
+ *
+ * Insert description here
+ *
+ * @param type $rule_id
+ * @param type $rule_type
+ *
+ * @return type
+ */
 function build_matching_objects_filter($rule_id, $rule_type) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . " called rule id: $rule_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -1659,6 +1771,16 @@ function build_matching_objects_filter($rule_id, $rule_type) {
 	return $sql_filter;
 }
 
+/**
+ * build_rule_item_filter
+ *
+ * Insert description here
+ *
+ * @param type $automation_rule_items
+ * @param string $prefix
+ *
+ * @return type
+ */
 function build_rule_item_filter($automation_rule_items, $prefix = '') {
 	global $automation_op_array, $automation_oper;
 
@@ -1873,6 +1995,16 @@ function get_created_graphs($rule) {
 	return $items;
 }
 
+/**
+ * get_query_fields
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $excluded_fields
+ *
+ * @return type
+ */
 function get_query_fields($table, $excluded_fields) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' called', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -1939,6 +2071,16 @@ function get_field_names($snmp_query_id) {
 	return $fields;
 }
 
+/**
+ * array_to_list
+ *
+ * Insert description here
+ *
+ * @param type $array
+ * @param type $sql_column
+ *
+ * @return type
+ */
 function array_to_list($array, $sql_column) {
 	$function = automation_function_with_pid(__FUNCTION__);
 
@@ -1969,6 +2111,16 @@ function array_to_list($array, $sql_column) {
 	}
 }
 
+/**
+ * array_minus
+ *
+ * Insert description here
+ *
+ * @param type $big_array
+ * @param type $small_array
+ *
+ * @return type
+ */
 function array_minus($big_array, $small_array) {
 	# remove all unwanted fields
 	if (cacti_sizeof($small_array)) {
@@ -1982,12 +2134,32 @@ function array_minus($big_array, $small_array) {
 	return $big_array;
 }
 
+/**
+ * automation_string_replace
+ *
+ * Insert description here
+ *
+ * @param type $search
+ * @param type $replace
+ * @param type $target
+ *
+ * @return type
+ */
 function automation_string_replace($search, $replace, $target) {
 	$repl = preg_replace('/' . $search . '/i', $replace, $target);
 
 	return preg_split('/\\\\n/', $repl, -1, PREG_SPLIT_NO_EMPTY);
 }
 
+/**
+ * global_item_edit
+ *
+ * Insert description here
+ *
+ * @param type $rule_id
+ * @param type $rule_item_id
+ * @param type $rule_type
+ */
 function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 	global $config, $fields_automation_match_rule_item_edit, $fields_automation_graph_rule_item_edit;
 	global $fields_automation_tree_rule_item_edit, $automation_tree_header_types;
@@ -2885,6 +3057,12 @@ function create_graph_node($graph_id, $parent, $rule) {
 	return $new_item;
 }
 
+/**
+ * automation_poller_bottom
+ *
+ * Insert description here
+ *
+ */
 function automation_poller_bottom() {
 	global $config;
 
@@ -2900,6 +3078,16 @@ function automation_poller_bottom() {
 	exec_background($command_string, $extra_args);
 }
 
+/**
+ * automation_add_device
+ *
+ * Insert description here
+ *
+ * @param type $device
+ * @param false $web
+ *
+ * @return type
+ */
 function automation_add_device($device, $web = false) {
 	global $plugins, $config;
 
@@ -2953,6 +3141,16 @@ function automation_add_device($device, $web = false) {
 	return $host_id;
 }
 
+/**
+ * automation_add_tree
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $tree
+ *
+ * @return type
+ */
 function automation_add_tree($host_id, $tree) {
 	automation_debug("     Adding to tree\n");
 
@@ -2971,6 +3169,17 @@ function automation_add_tree($host_id, $tree) {
 	$nodeId = api_tree_item_save(0, $tree_id, 3, $parent, '', 0, $host_id, 0, 1, 1, false);
 }
 
+/**
+ * automation_find_os
+ *
+ * Insert description here
+ *
+ * @param type $sysDescr
+ * @param type $sysObject
+ * @param type $sysName
+ *
+ * @return type
+ */
 function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where  = '';
 	$sql_where .= trim($sysDescr)  != '' ? 'WHERE (' . db_qstr($sysDescr) . ' RLIKE sysDescr OR ' . db_qstr($sysDescr) . ' LIKE CONCAT("%", sysDescr, "%"))':'';
@@ -2991,6 +3200,13 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 	}
 }
 
+/**
+ * automation_debug
+ *
+ * Insert description here
+ *
+ * @param type $text
+ */
 function automation_debug($text) {
 	global $debug, $config;
 	static $message = '';
@@ -3020,6 +3236,15 @@ function automation_debug($text) {
 	}
 }
 
+/**
+ * automation_masktocidr
+ *
+ * Insert description here
+ *
+ * @param type $mask
+ *
+ * @return type
+ */
 function automation_masktocidr($mask) {
 	$cidr = false;
 	$long = ip2long($mask);
@@ -3032,12 +3257,30 @@ function automation_masktocidr($mask) {
 	return $cidr;
 }
 
+/**
+ * automation_get_valid_ip
+ *
+ * Insert description here
+ *
+ * @param type $range
+ *
+ * @return type
+ */
 function automation_get_valid_ip($range) {
 	$long = ip2long($range);
 
 	return $long === false ? false : long2ip($long);
 }
 
+/**
+ * automation_get_valid_subnet_cidr
+ *
+ * Insert description here
+ *
+ * @param type $range
+ *
+ * @return type
+ */
 function automation_get_valid_subnet_cidr($range) {
 	$long = ip2long($range);
 
@@ -3067,6 +3310,15 @@ function automation_get_valid_subnet_cidr($range) {
 	return $long === false ? false : array('cidr' => $cidr, 'subnet' => long2ip($long));
 }
 
+/**
+ * automation_get_valid_mask
+ *
+ * Insert description here
+ *
+ * @param type $range
+ *
+ * @return type
+ */
 function automation_get_valid_mask($range) {
 	$cidr = false;
 
@@ -3095,6 +3347,15 @@ function automation_get_valid_mask($range) {
 	return $mask;
 }
 
+/**
+ * automation_get_network_info
+ *
+ * Insert description here
+ *
+ * @param type $range
+ *
+ * @return type
+ */
 function automation_get_network_info($range) {
 	$network   = false;
 	$broadcast = false;
@@ -3205,6 +3466,15 @@ function automation_get_network_info($range) {
 	return $detail;
 }
 
+/**
+ * automation_calculate_start
+ *
+ * Insert description here
+ *
+ * @param type $range
+ *
+ * @return type
+ */
 function automation_calculate_start($range) {
 	$detail = automation_get_network_info($range);
 
@@ -3217,6 +3487,15 @@ function automation_calculate_start($range) {
 	return false;
 }
 
+/**
+ * automation_calculate_total_ips
+ *
+ * Insert description here
+ *
+ * @param type $range
+ *
+ * @return type
+ */
 function automation_calculate_total_ips($range) {
 	$detail = automation_get_network_info($range);
 
@@ -3229,6 +3508,18 @@ function automation_calculate_total_ips($range) {
 	return false;
 }
 
+/**
+ * automation_get_next_host
+ *
+ * Insert description here
+ *
+ * @param type $start
+ * @param type $total
+ * @param type $count
+ * @param type $range
+ *
+ * @return type
+ */
 function automation_get_next_host($start, $total, $count, $range) {
 	if ($count == $total || $total < 1) {
 		return false;
@@ -3257,6 +3548,13 @@ function automation_get_next_host($start, $total, $count, $range) {
 	}
 }
 
+/**
+ * automation_primeIPAddressTable
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ */
 function automation_primeIPAddressTable($network_id) {
 	$subNets = db_fetch_cell_prepared('SELECT subnet_range
 		FROM automation_networks
@@ -3307,6 +3605,15 @@ function automation_primeIPAddressTable($network_id) {
 	automation_debug("A Total of $total IP Addresses Primed\n");
 }
 
+/**
+ * automation_valid_snmp_device
+ *
+ * Insert description here
+ *
+ * @param type $device
+ *
+ * @return type
+ */
 function automation_valid_snmp_device(&$device) {
 	global $snmp_logging;
 
@@ -3545,6 +3852,15 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	return strtoupper($ip);
 }
 
+/**
+ * api_automation_is_time_to_start
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ *
+ * @return type
+ */
 function api_automation_is_time_to_start($network_id) {
 	$net = db_fetch_row_prepared('SELECT *
 		FROM automation_networks
@@ -3643,6 +3959,15 @@ function api_automation_is_time_to_start($network_id) {
 	}
 }
 
+/**
+ * calculateNextStart
+ *
+ * Insert description here
+ *
+ * @param type $net
+ *
+ * @return type
+ */
 function calculateNextStart($net) {
 	$now    = time();
 	$dates  = array();
@@ -3855,6 +4180,16 @@ function calculateNextStart($net) {
 	return false;
 }
 
+/**
+ * ping_netbios_name
+ *
+ * Insert description here
+ *
+ * @param type $ip
+ * @param 1000 $timeout_ms
+ *
+ * @return type
+ */
 function ping_netbios_name($ip, $timeout_ms = 1000) {
 	$handle = @fsockopen("udp://$ip", 137);
 
@@ -3902,6 +4237,13 @@ function ping_netbios_name($ip, $timeout_ms = 1000) {
 	}
 }
 
+/**
+ * automation_update_device
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ */
 function automation_update_device($host_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' Device[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -3954,10 +4296,27 @@ function automation_update_device($host_id) {
 	automation_execute_device_create_tree($host_id);
 }
 
+/**
+ * automation_function_with_pid
+ *
+ * Insert description here
+ *
+ * @param type $functionName
+ *
+ * @return type
+ */
 function automation_function_with_pid($functionName) {
 	return automation_get_pid() . ' ' . $functionName . '()';
 }
 
+/**
+ * automation_get_pid
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function automation_get_pid() {
 	static $pid;
 
@@ -3968,6 +4327,14 @@ function automation_get_pid() {
 	return "[PID: $pid]";
 }
 
+/**
+ * automation_change_tree_rule_leaf_type
+ *
+ * Insert description here
+ *
+ * @param type $leaf_type
+ * @param type $rule_id
+ */
 function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
 

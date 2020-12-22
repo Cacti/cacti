@@ -114,6 +114,13 @@ switch (get_request_var('action')) {
 
 exit;
 
+/**
+ * debug
+ *
+ * Insert description here
+ *
+ * @param type $message
+ */
 function debug($message) {
 	global $debug;
 
@@ -122,6 +129,15 @@ function debug($message) {
 	}
 }
 
+/**
+ * remote_agent_strip_domain
+ *
+ * Insert description here
+ *
+ * @param type $host
+ *
+ * @return type
+ */
 function remote_agent_strip_domain($host) {
 	if (strpos($host, '.') !== false) {
 		$parts = explode('.', $host);
@@ -132,6 +148,14 @@ function remote_agent_strip_domain($host) {
 	}
 }
 
+/**
+ * remote_client_authorized
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function remote_client_authorized() {
 	global $poller_db_cnn_id;
 
@@ -175,6 +199,14 @@ function remote_client_authorized() {
 	return false;
 }
 
+/**
+ * get_graph_data
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_graph_data() {
 	get_filter_request_var('graph_start');
 	get_filter_request_var('graph_end');
@@ -247,6 +279,12 @@ function get_graph_data() {
 	return true;
 }
 
+/**
+ * get_snmp_data
+ *
+ * Insert description here
+ *
+ */
 function get_snmp_data() {
 	$host_id = get_filter_request_var('host_id');
 	$oid     = get_nfilter_request_var('oid');
@@ -270,6 +308,12 @@ function get_snmp_data() {
 	print $output;
 }
 
+/**
+ * get_snmp_data_walk
+ *
+ * Insert description here
+ *
+ */
 function get_snmp_data_walk() {
 	$host_id = get_filter_request_var('host_id');
 	$oid     = get_nfilter_request_var('oid');
@@ -296,11 +340,23 @@ function get_snmp_data_walk() {
 	}
 }
 
+/**
+ * ping_device
+ *
+ * Insert description here
+ *
+ */
 function ping_device() {
 	$host_id = get_filter_request_var('host_id');
 	api_device_ping_device($host_id, true);
 }
 
+/**
+ * poll_for_data
+ *
+ * Insert description here
+ *
+ */
 function poll_for_data() {
 	global $config;
 
@@ -441,6 +497,12 @@ function poll_for_data() {
 	print json_encode($return);
 }
 
+/**
+ * run_remote_data_query
+ *
+ * Insert description here
+ *
+ */
 function run_remote_data_query() {
 	$host_id       = get_filter_request_var('host_id');
 	$data_query_id = get_filter_request_var('data_query_id');
@@ -450,6 +512,14 @@ function run_remote_data_query() {
 	}
 }
 
+/**
+ * run_remote_discovery
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function run_remote_discovery() {
 	global $config;
 

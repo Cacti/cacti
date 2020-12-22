@@ -62,6 +62,12 @@ default:
 	break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_network')) {
 		$network_id = api_networks_save($_POST);
@@ -70,6 +76,13 @@ function form_save() {
 	}
 }
 
+/**
+ * api_networks_remove
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ */
 function api_networks_remove($network_id) {
 	db_execute_prepared('DELETE FROM automation_networks
 		WHERE id = ?',
@@ -80,6 +93,13 @@ function api_networks_remove($network_id) {
 		array($network_id));
 }
 
+/**
+ * api_networks_enable
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ */
 function api_networks_enable($network_id) {
 	db_execute_prepared('UPDATE automation_networks
 		SET enabled="on"
@@ -87,6 +107,13 @@ function api_networks_enable($network_id) {
 		array($network_id));
 }
 
+/**
+ * api_networks_disable
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ */
 function api_networks_disable($network_id) {
 	db_execute_prepared('UPDATE automation_networks
 		SET enabled=""
@@ -94,6 +121,13 @@ function api_networks_disable($network_id) {
 		array($network_id));
 }
 
+/**
+ * api_networks_cancel
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ */
 function api_networks_cancel($network_id) {
 	db_execute_prepared('UPDATE IGNORE automation_processes
 		SET command="cancel"
@@ -102,6 +136,14 @@ function api_networks_cancel($network_id) {
 		array($network_id));
 }
 
+/**
+ * api_networks_discover
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ * @param type $discover_debug
+ */
 function api_networks_discover($network_id, $discover_debug) {
 	global $config;
 
@@ -159,6 +201,15 @@ function api_networks_discover($network_id, $discover_debug) {
 	force_session_data();
 }
 
+/**
+ * api_networks_save
+ *
+ * Insert description here
+ *
+ * @param type $post
+ *
+ * @return type
+ */
 function api_networks_save($post) {
 	if (empty($post['network_id'])) {
 		$save['id']            = form_input_validate($post['id'], 'id', '^[0-9]+$', false, 3);
@@ -277,6 +328,12 @@ function api_networks_save($post) {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $config, $network_actions, $fields_networkss_edit;
 
@@ -410,6 +467,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * network_edit
+ *
+ * Insert description here
+ *
+ */
 function network_edit() {
 	global $config, $ping_methods;
 
@@ -972,6 +1035,17 @@ function network_edit() {
 	<?php
 }
 
+/**
+ * get_networks
+ *
+ * Insert description here
+ *
+ * @param type $sql_where
+ * @param type $rows
+ * @param true $apply_limits
+ *
+ * @return type
+ */
 function get_networks(&$sql_where, $rows, $apply_limits = true) {
 	if (get_request_var('filter') != '') {
 		$sql_where = ' WHERE (automation_networks.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
@@ -996,6 +1070,12 @@ function get_networks(&$sql_where, $rows, $apply_limits = true) {
 	return db_fetch_assoc($query_string);
 }
 
+/**
+ * networks
+ *
+ * Insert description here
+ *
+ */
 function networks() {
 	global $network_actions, $networkss, $config, $item_rows;
 
@@ -1174,6 +1254,12 @@ function networks() {
 	form_end();
 }
 
+/**
+ * networks_filter
+ *
+ * Insert description here
+ *
+ */
 function networks_filter() {
 	global $item_rows;
 

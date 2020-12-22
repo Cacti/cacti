@@ -33,6 +33,17 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_gexport', $_SERVER['argv']);
 }
 
+/**
+ * ss_gexport
+ *
+ * Insert description here
+ *
+ * @param type $cmd
+ * @param string $arg1
+ * @param string $arg2
+ *
+ * @return type
+ */
 function ss_gexport($cmd, $arg1 = '', $arg2 = '') {
 	if ($cmd == 'index') {
 		if (db_table_exists('graph_exports')) {

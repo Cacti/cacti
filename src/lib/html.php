@@ -442,6 +442,16 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	}
 }
 
+/**
+ * graph_drilldown_icons
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param 'graph_buttons' $type
+ * @param 0 $tree_id
+ * @param 0 $branch_id
+ */
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
 	global $config;
 	static $rand = 0;
@@ -1676,6 +1686,13 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1
 	<?php
 }
 
+/**
+ * form_area
+ *
+ * Insert description here
+ *
+ * @param type $text
+ */
 function form_area($text) { ?>
 	<tr>
 		<td class='textArea'>
@@ -1724,6 +1741,12 @@ function is_console_page($url) {
 	return false;
 }
 
+/**
+ * html_show_tabs_left
+ *
+ * Insert description here
+ *
+ */
 function html_show_tabs_left() {
 	global $config, $tabs_left;
 
@@ -1996,6 +2019,12 @@ function html_show_tabs_left() {
 	}
 }
 
+/**
+ * html_graph_tabs_right
+ *
+ * Insert description here
+ *
+ */
 function html_graph_tabs_right() {
 	global $config, $tabs_right;
 
@@ -2109,6 +2138,17 @@ function html_graph_tabs_right() {
 	}
 }
 
+/**
+ * html_host_filter
+ *
+ * Insert description here
+ *
+ * @param '-1' $host_id
+ * @param 'applyFilter' $call_back
+ * @param string $sql_where
+ * @param false $noany
+ * @param false $nonone
+ */
 function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
@@ -2171,6 +2211,17 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 	}
 }
 
+/**
+ * html_site_filter
+ *
+ * Insert description here
+ *
+ * @param '-1' $site_id
+ * @param 'applyFilter' $call_back
+ * @param string $sql_where
+ * @param false $noany
+ * @param false $nonone
+ */
 function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
@@ -2205,6 +2256,12 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 	<?php
 }
 
+/**
+ * html_spikekill_actions
+ *
+ * Insert description here
+ *
+ */
 function html_spikekill_actions() {
 	switch(get_nfilter_request_var('action')) {
 		case 'spikemenu':
@@ -2252,10 +2309,33 @@ function html_spikekill_actions() {
 	}
 }
 
+/**
+ * html_spikekill_setting
+ *
+ * Insert description here
+ *
+ * @param type $name
+ *
+ * @return type
+ */
 function html_spikekill_setting($name) {
 	return read_user_setting($name, read_config_option($name), true);
 }
 
+/**
+ * html_spikekill_menu_item
+ *
+ * Insert description here
+ *
+ * @param type $text
+ * @param string $icon
+ * @param string $class
+ * @param string $id
+ * @param string $data_graph
+ * @param string $subitem
+ *
+ * @return type
+ */
 function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $data_graph = '', $subitem = '') {
 	$output = '<li ';
 
@@ -2285,6 +2365,13 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
 	return $output;
 }
 
+/**
+ * html_spikekill_menu
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ */
 function html_spikekill_menu($local_graph_id) {
 	global $settings;
 	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check':'fa', 'skmethod', 'method_avg');
@@ -2347,6 +2434,12 @@ function html_spikekill_menu($local_graph_id) {
 	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills . $rabsmax);
 }
 
+/**
+ * html_spikekill_js
+ *
+ * Insert description here
+ *
+ */
 function html_spikekill_js() {
 	?>
 	<script type='text/javascript'>
@@ -2709,6 +2802,17 @@ function html_common_header($title, $selectedTheme = '') {
 	api_plugin_hook('page_head');
 }
 
+/**
+ * html_auth_header
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $browser_title
+ * @param type $legend
+ * @param type $title
+ * @param array $hook_args
+ */
 function html_auth_header($section, $browser_title, $legend, $title, $hook_args = array()) {
 	global $themes;
 ?>
@@ -2736,6 +2840,15 @@ function html_auth_header($section, $browser_title, $legend, $title, $hook_args 
 <?php
 }
 
+/**
+ * html_auth_footer
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param string $error
+ * @param string $html
+ */
 function html_auth_footer($section, $error = '', $html = '') {
 ?>
 					</table>

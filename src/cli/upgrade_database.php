@@ -158,16 +158,40 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 	}
 }
 
+/**
+ * exit_error
+ *
+ * Insert description here
+ *
+ * @param type $text
+ */
 function exit_error($text) {
 	print "ERROR: $text" . PHP_EOL;
 
 	exit;
 }
 
+/**
+ * exit_version_error
+ *
+ * Insert description here
+ *
+ * @param type $old_cacti_version
+ * @param type $text
+ */
 function exit_version_error($old_cacti_version, $text) {
 	exit_error($text . PHP_EOL . '  - from: v' . get_cacti_version_text(false, $old_cacti_version) . PHP_EOL . '      to: v' . CACTI_VERSION_BRIEF_FULL);
 }
 
+/**
+ * db_install_errors
+ *
+ * Insert description here
+ *
+ * @param type $cacti_version
+ *
+ * @return type
+ */
 function db_install_errors($cacti_version) {
 	global $database_upgrade_status, $debug, $database_statuses;
 

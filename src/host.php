@@ -181,6 +181,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * host_reindex
+ *
+ * Insert description here
+ *
+ */
 function host_reindex() {
 	global $config;
 
@@ -200,6 +206,12 @@ function host_reindex() {
 	raise_message('host_reindex', __('Device Reindex Completed in %0.2f seconds.  There were %d items updated.', $total_time, $items), MESSAGE_LEVEL_INFO);
 }
 
+/**
+ * add_tree_names_to_actions_array
+ *
+ * Insert description here
+ *
+ */
 function add_tree_names_to_actions_array() {
 	global $device_actions;
 
@@ -213,6 +225,12 @@ function add_tree_names_to_actions_array() {
 	}
 }
 
+/**
+ * get_site_locations
+ *
+ * Insert description here
+ *
+ */
 function get_site_locations() {
 	$return  = array();
 	$term    = get_nfilter_request_var('term');
@@ -239,6 +257,12 @@ function get_site_locations() {
 	print json_encode($return);
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_host')) {
 		if (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_password') != get_nfilter_request_var('snmp_password_confirm'))) {
@@ -273,6 +297,12 @@ function form_save() {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $device_actions, $fields_host_edit;
 
@@ -518,6 +548,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * host_export
+ *
+ * Insert description here
+ *
+ */
 function host_export() {
 	host_validate_vars();
 
@@ -540,6 +576,12 @@ function host_export() {
 	fclose($stdout);
 }
 
+/**
+ * host_add_query
+ *
+ * Insert description here
+ *
+ */
 function host_add_query() {
 	/* ================= input validation ================= */
 	get_filter_request_var('host_id');
@@ -550,6 +592,12 @@ function host_add_query() {
 	api_device_dq_add(get_request_var('host_id'), get_request_var('snmp_query_id'), get_request_var('reindex_method'));
 }
 
+/**
+ * host_reload_query
+ *
+ * Insert description here
+ *
+ */
 function host_reload_query() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -559,6 +607,12 @@ function host_reload_query() {
 	run_data_query(get_request_var('host_id'), get_request_var('id'));
 }
 
+/**
+ * host_remove_query
+ *
+ * Insert description here
+ *
+ */
 function host_remove_query() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -568,6 +622,12 @@ function host_remove_query() {
 	api_device_dq_remove(get_request_var('host_id'), get_request_var('id'));
 }
 
+/**
+ * host_change_query
+ *
+ * Insert description here
+ *
+ */
 function host_change_query() {
 	/* ================= input validation ================= */
 	get_filter_request_var('data_query_id');
@@ -578,6 +638,12 @@ function host_change_query() {
 	api_device_dq_change(get_request_var('host_id'), get_request_var('data_query_id'), get_request_var('reindex_method'));
 }
 
+/**
+ * host_add_gt
+ *
+ * Insert description here
+ *
+ */
 function host_add_gt() {
 	/* ================= input validation ================= */
 	get_filter_request_var('host_id');
@@ -594,6 +660,12 @@ function host_add_gt() {
 	api_plugin_hook_function('add_graph_template_to_host', array('host_id' => get_nfilter_request_var('host_id'), 'graph_template_id' => get_nfilter_request_var('graph_template_id')));
 }
 
+/**
+ * host_remove_gt
+ *
+ * Insert description here
+ *
+ */
 function host_remove_gt() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -603,6 +675,12 @@ function host_remove_gt() {
 	api_device_gt_remove(get_request_var('host_id'), get_request_var('id'));
 }
 
+/**
+ * host_edit
+ *
+ * Insert description here
+ *
+ */
 function host_edit() {
 	global $fields_host_edit, $reindex_types;
 
@@ -940,6 +1018,14 @@ function host_edit() {
 	api_plugin_hook('host_edit_bottom');
 }
 
+/**
+ * device_reindex_methods
+ *
+ * Insert description here
+ *
+ * @param type $item
+ * @param type $host
+ */
 function device_reindex_methods($item, $host) {
 	global $config, $reindex_types, $reindex_types_tips;
 
@@ -968,6 +1054,12 @@ function device_reindex_methods($item, $host) {
 	}
 }
 
+/**
+ * device_change_javascript
+ *
+ * Insert description here
+ *
+ */
 function device_change_javascript() {
 	?>
 	<script type="text/javascript">
@@ -1010,6 +1102,12 @@ function device_change_javascript() {
 	<?php
 }
 
+/**
+ * device_javascript
+ *
+ * Insert description here
+ *
+ */
 function device_javascript() {
 	?>
 	<script type='text/javascript'>
@@ -1296,6 +1394,12 @@ function device_javascript() {
 	<?php
 }
 
+/**
+ * host_validate_vars
+ *
+ * Insert description here
+ *
+ */
 function host_validate_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1356,6 +1460,16 @@ function host_validate_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * get_device_records
+ *
+ * Insert description here
+ *
+ * @param type $total_rows
+ * @param type $rows
+ *
+ * @return type
+ */
 function get_device_records(&$total_rows, $rows) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -1439,6 +1553,12 @@ function get_device_records(&$total_rows, $rows) {
 	return db_fetch_assoc($sql_query);
 }
 
+/**
+ * host
+ *
+ * Insert description here
+ *
+ */
 function host() {
 	global $device_actions, $item_rows, $config;
 

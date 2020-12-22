@@ -387,6 +387,16 @@ if (!$master && $thread == 0) {
 
 exit(0);
 
+/**
+ * discoverDevices
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ * @param type $thread
+ *
+ * @return type
+ */
 function discoverDevices($network_id, $thread) {
 	$network = db_fetch_row_prepared('SELECT *
 		FROM automation_networks
@@ -904,14 +914,40 @@ function display_help() {
 	print "    --debug       - Display verbose output during execution\n\n";
 }
 
+/**
+ * isProcessRunning
+ *
+ * Insert description here
+ *
+ * @param type $pid
+ *
+ * @return type
+ */
 function isProcessRunning($pid) {
 	return posix_kill($pid, 0);
 }
 
+/**
+ * killProcess
+ *
+ * Insert description here
+ *
+ * @param type $pid
+ *
+ * @return type
+ */
 function killProcess($pid) {
 	return posix_kill($pid, SIGTERM);
 }
 
+/**
+ * removeMyProcess
+ *
+ * Insert description here
+ *
+ * @param type $pid
+ * @param type $network_id
+ */
 function removeMyProcess($pid, $network_id) {
 	db_execute_prepared('DELETE FROM automation_processes
 		WHERE pid = ?
@@ -924,6 +960,14 @@ function removeMyProcess($pid, $network_id) {
 		array($pid, $network_id));
 }
 
+/**
+ * rerunDataQueries
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $network
+ */
 function rerunDataQueries($host_id, &$network) {
 	if ($network['rerun_data_queries'] == 'on') {
 		$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
@@ -939,6 +983,16 @@ function rerunDataQueries($host_id, &$network) {
 	}
 }
 
+/**
+ * registerTask
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ * @param type $pid
+ * @param type $poller_id
+ * @param 'collector' $task
+ */
 function registerTask($network_id, $pid, $poller_id, $task = 'collector') {
 	db_execute_prepared("REPLACE INTO automation_processes
 		(pid, poller_id, network_id, task, status, heartbeat, command)
@@ -946,6 +1000,14 @@ function registerTask($network_id, $pid, $poller_id, $task = 'collector') {
 		array($pid, $poller_id, $network_id, $task));
 }
 
+/**
+ * endTask
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ * @param type $pid
+ */
 function endTask($network_id, $pid) {
 	db_execute_prepared("UPDATE automation_processes
 		SET status='done', heartbeat=NOW()
@@ -954,6 +1016,14 @@ function endTask($network_id, $pid) {
 		array($pid, $network_id));
 }
 
+/**
+ * addUpDevice
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ * @param type $pid
+ */
 function addUpDevice($network_id, $pid) {
 	db_execute_prepared('UPDATE automation_processes
 		SET up_hosts=up_hosts+1, heartbeat=NOW()
@@ -962,6 +1032,14 @@ function addUpDevice($network_id, $pid) {
 		array($pid, $network_id));
 }
 
+/**
+ * addSNMPDevice
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ * @param type $pid
+ */
 function addSNMPDevice($network_id, $pid) {
 	db_execute_prepared('UPDATE automation_processes
 		SET snmp_hosts=snmp_hosts+1, heartbeat=NOW()
@@ -970,6 +1048,16 @@ function addSNMPDevice($network_id, $pid) {
 		array($pid, $network_id));
 }
 
+/**
+ * reportNetworkStatus
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ * @param type $old_devices
+ *
+ * @return type
+ */
 function reportNetworkStatus($network_id, $old_devices) {
 	$details = db_fetch_row_prepared('SELECT notification_enabled, notification_email,
 		notification_fromname, notification_fromemail
@@ -1153,6 +1241,15 @@ function reportNetworkStatus($network_id, $old_devices) {
 	}
 }
 
+/**
+ * populateDeviceIndex
+ *
+ * Insert description here
+ *
+ * @param type $ids
+ * @param type $is_new
+ * @param type $devices
+ */
 function populateDeviceIndex(&$ids, $is_new, $devices) {
 	$field = ($is_new ? 'new' : 'old');
 
@@ -1167,6 +1264,14 @@ function populateDeviceIndex(&$ids, $is_new, $devices) {
 	}
 }
 
+/**
+ * clearTask
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ * @param type $pid
+ */
 function clearTask($network_id, $pid) {
 	db_execute_prepared('DELETE
 		FROM automation_processes
@@ -1180,12 +1285,27 @@ function clearTask($network_id, $pid) {
 		array($network_id));
 }
 
+/**
+ * clearAllTasks
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ */
 function clearAllTasks($network_id) {
 	db_execute_prepared('DELETE FROM automation_processes
 		WHERE network_id = ?',
 		array($network_id));
 }
 
+/**
+ * markIPRunning
+ *
+ * Insert description here
+ *
+ * @param type $ip_address
+ * @param type $network_id
+ */
 function markIPRunning($ip_address, $network_id) {
 	db_execute_prepared('UPDATE automation_ips
 		SET status=1
@@ -1194,6 +1314,14 @@ function markIPRunning($ip_address, $network_id) {
 		array($ip_address, $network_id));
 }
 
+/**
+ * markIPDone
+ *
+ * Insert description here
+ *
+ * @param type $ip_address
+ * @param type $network_id
+ */
 function markIPDone($ip_address, $network_id) {
 	db_execute_prepared('UPDATE automation_ips
 		SET status=2
@@ -1202,6 +1330,15 @@ function markIPDone($ip_address, $network_id) {
 		array($ip_address, $network_id));
 }
 
+/**
+ * getNetworkDevices
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ *
+ * @return type
+ */
 function getNetworkDevices($network_id) {
 	return db_fetch_assoc_prepared('SELECT id, hostname, ip, sysName, snmp, up, time
 		FROM automation_devices
@@ -1210,6 +1347,14 @@ function getNetworkDevices($network_id) {
 		array($network_id));
 }
 
+/**
+ * updateDownDevice
+ *
+ * Insert description here
+ *
+ * @param type $network_id
+ * @param type $ip
+ */
 function updateDownDevice($network_id, $ip) {
 	$exists = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM automation_devices

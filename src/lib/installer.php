@@ -1,6 +1,12 @@
 <?php
 include_once(__DIR__ . '/../lib/poller.php');
 
+/**
+ * Installer
+ * Insert description here
+ *
+ *
+ */
 class Installer implements JsonSerializable {
 	const EXIT_DB_EMPTY = 1;
 	const EXIT_DB_OLD   = 2;
@@ -621,6 +627,15 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * getLanguage
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function getLanguage() {
 		$language = read_config_option('install_language');
 		$section  = 'install';
@@ -1595,10 +1610,28 @@ class Installer implements JsonSerializable {
 		set_config_option('install_next', $this->stepNext);
 	}
 
+	/**
+	 * shouldRedirectToHome
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function shouldRedirectToHome() {
 		return (cacti_version_compare($this->old_cacti_version,CACTI_VERSION,'='));
 	}
 
+	/**
+	 * shouldExitWithReason
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function shouldExitWithReason() {
 		if ($this->isDatabaseEmpty()) {
 			return Installer::EXIT_DB_EMPTY;
@@ -1611,6 +1644,18 @@ class Installer implements JsonSerializable {
 		return false;
 	}
 
+	/**
+	 * isValidCollation
+	 *
+	 * Insert description here
+	 *
+	 * @param type $collation_vars
+	 * @param type $charset_vars
+	 * @param type $type
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function isValidCollation($collation_vars, $charset_vars, $type) {
 		$collation_value = '';
 		$charset_value   = '';
@@ -1629,34 +1674,97 @@ class Installer implements JsonSerializable {
 			$charset_value == 'utf8mb4');
 	}
 
+	/**
+	 * isDatabaseEmpty
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function isDatabaseEmpty() {
 		return empty($this->old_cacti_version);
 	}
 
+	/**
+	 * isDatabaseTooOld
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function isDatabaseTooOld() {
 		return preg_match('/^0\.6/', $this->old_cacti_version);
 	}
 
+	/**
+	 * isNewInstall
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function isNewInstall() {
 		return ($this->old_cacti_version == 'new_install');
 	}
 
+	/**
+	 * isPre_v0_8_UpgradeNeeded
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function isPre_v0_8_UpgradeNeeded() {
 		return version_compare($this->old_cacti_version, '0.8.5a', '<=');
 	}
 
+	/**
+	 * hasRemoteDatabaseInfo
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function hasRemoteDatabaseInfo() {
 		global $rdatabase_default;
 
 		return !empty($rdatabase_default);
 	}
 
+	/**
+	 * isConfigurationWritable
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function isConfigurationWritable() {
 		global $config;
 
 		return is_resource_writable($config['base_path'] . '/include/config.php');
 	}
 
+	/**
+	 * isRemoteDatabaseGood
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function isRemoteDatabaseGood() {
 		global $rdatabase_default, $rdatabase_username, $rdatabase_hostname, $rdatabase_port;
 
@@ -1666,6 +1774,16 @@ class Installer implements JsonSerializable {
 			isset($rdatabase_port)) ? true : false;
 	}
 
+	/**
+	 * exitWithReason
+	 *
+	 * Insert description here
+	 *
+	 * @param type $reason
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function exitWithReason($reason) {
 		global $config;
 
@@ -1680,6 +1798,16 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * exitWithUnknownReason
+	 *
+	 * Insert description here
+	 *
+	 * @param type $reason
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function exitWithUnknownReason($reason) {
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__('The Installer could not proceed due to an unexpected error.'));
@@ -1689,6 +1817,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * exitDbTooOld
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function exitDbTooOld() {
 		global $database_username, $database_default;
 		$output  = Installer::sectionTitleError();
@@ -1701,6 +1838,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * exitSqlNeeded
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function exitSqlNeeded() {
 		global $config, $database_username, $database_default, $database_password;
 		$output  = Installer::sectionTitleError();
@@ -1813,6 +1959,15 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->setStep($this->stepPrevious);
 	}
 
+	/**
+	 * processCurrentStep
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processCurrentStep() {
 		$exitReason = $this->shouldExitWithReason();
 
@@ -1855,6 +2010,15 @@ class Installer implements JsonSerializable {
 		return $this->exitWithReason((0 - $this->stepCurrent));
 	}
 
+	/**
+	 * processStepWelcome
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepWelcome() {
 		global $config, $cacti_version_codes;
 
@@ -1932,6 +2096,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepCheckDependancies
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepCheckDependancies() {
 		global $config;
 		global $database_default, $database_username, $database_port;
@@ -2168,6 +2341,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepMode
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepMode() {
 		global $config;
 		global $database_default, $database_username, $database_hostname, $database_port;
@@ -2337,6 +2519,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepBinaryLocations
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepBinaryLocations() {
 		$output = Installer::sectionTitle(__('Critical Binary Locations and Versions'));
 		$output .= Installer::sectionNormal(__('Make sure all of these values are correct before continuing.'));
@@ -2421,6 +2612,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepPermissionCheck
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepPermissionCheck() {
 		global $config;
 
@@ -2566,6 +2766,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepInputValidation
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepInputValidation() {
 		$output  = Installer::sectionTitle(__('Input Validation Whitelist Protection'));
 		$output .= Installer::sectionNormal(__('Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure.'));
@@ -2593,6 +2802,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepProfileAndAutomation
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepProfileAndAutomation() {
 		global $cron_intervals;
 
@@ -2699,6 +2917,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepTemplateInstall
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepTemplateInstall() {
 		$output = Installer::sectionTitle(__('Template Setup'));
 
@@ -2738,6 +2965,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepCheckTables
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepCheckTables() {
 		global $config;
 		$output = Installer::sectionTitle(__('Server Collation'));
@@ -2847,6 +3083,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepInstallConfirm
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepInstallConfirm() {
 		switch ($this->mode) {
 			case Installer::MODE_UPGRADE:
@@ -2888,6 +3133,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepInstall
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepInstall() {
 		global $config;
 		$time = read_config_option('install_updated', true);
@@ -3002,6 +3256,15 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * processStepComplete
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function processStepComplete() {
 		global $cacti_version_codes, $database_statuses;
 
@@ -3147,6 +3410,13 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * install
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 */
 	private function install() {
 		global $config, $cacti_upgrade_version;
 
@@ -3227,6 +3497,15 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * installTemplate
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function installTemplate() {
 		global $config;
 
@@ -3301,6 +3580,15 @@ class Installer implements JsonSerializable {
 		return '';
 	}
 
+	/**
+	 * installPoller
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function installPoller() {
 		log_install_always('', __('Updating remote configuration file'));
 		global $local_db_cnn_id;
@@ -3320,6 +3608,15 @@ class Installer implements JsonSerializable {
 		return $failure;
 	}
 
+	/**
+	 * installServer
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function installServer() {
 		global $config;
 
@@ -3531,6 +3828,13 @@ class Installer implements JsonSerializable {
 		return '';
 	}
 
+	/**
+	 * convertDatabase
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 */
 	private function convertDatabase() {
 		global $config;
 
@@ -3566,6 +3870,15 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * upgradeDatabase
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function upgradeDatabase() {
 		global $cacti_version_codes, $config, $cacti_upgrade_version, $database_statuses, $database_upgrade_status;
 		$failure = DB_STATUS_SKIPPED;
@@ -3646,6 +3959,16 @@ class Installer implements JsonSerializable {
 		return false;
 	}
 
+	/**
+	 * checkDatabaseUpgrade
+	 *
+	 * Insert description here
+	 *
+	 * @param type $cacti_upgrade_version
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function checkDatabaseUpgrade($cacti_upgrade_version) {
 		global $database_upgrade_status;
 		$failure = DB_STATUS_SKIPPED;
@@ -3669,6 +3992,18 @@ class Installer implements JsonSerializable {
 		return $failure;
 	}
 
+	/**
+	 * beginInstall
+	 *
+	 * Insert description here
+	 *
+	 * @param type $backgroundArg
+	 * @param null $installer
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function beginInstall($backgroundArg, $installer = null) {
 		$eula = read_config_option('install_eula', true);
 
@@ -3736,6 +4071,16 @@ class Installer implements JsonSerializable {
 		return true;
 	}
 
+	/**
+	 * getInstallLog
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function getInstallLog() {
 		global $config;
 
@@ -3757,6 +4102,18 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	/**
+	 * formatModuleStatus
+	 *
+	 * Insert description here
+	 *
+	 * @param type $module
+	 * @param 'red' $badColor
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function formatModuleStatus($module, $badColor = 'red') {
 		if ($module['installed']) {
 			return '<font color=green>' . __('Yes') . '</font>';
@@ -3775,6 +4132,16 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * setPhpOption
+	 *
+	 * Insert description here
+	 *
+	 * @param type $option_name
+	 * @param type $option_value
+	 * @access public
+	 * @static
+	 */
 	public static function setPhpOption($option_name, $option_value) {
 		log_install_always('', __('Setting PHP Option %s = %s', $option_name, $option_value));
 
@@ -3791,6 +4158,16 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * fullSyncDataCollectorLog
+	 *
+	 * Insert description here
+	 *
+	 * @param type $poller_ids
+	 * @param type $format
+	 * @access private
+	 * @static
+	 */
 	private static function fullSyncDataCollectorLog($poller_ids, $format) {
 		if (cacti_sizeof($poller_ids) > 0) {
 			foreach ($poller_ids as $id) {
@@ -3800,6 +4177,14 @@ class Installer implements JsonSerializable {
 			}
 		}
 	}
+	/**
+	 * fullSyncDataCollectors
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 * @static
+	 */
 	private static function fullSyncDataCollectors() {
 		// Perform full sync to complete upgrade
 		$status = install_full_sync();
@@ -3814,6 +4199,14 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * disableInvalidPlugins
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 * @static
+	 */
 	private static function disableInvalidPlugins() {
 		global $plugins_integrated, $config;
 
@@ -3870,6 +4263,17 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * sectionTitleError
+	 *
+	 * Insert description here
+	 *
+	 * @param string $title
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function sectionTitleError($title = '') {
 		if (empty($title)) {
 			$title = __('Error');
@@ -3878,6 +4282,19 @@ class Installer implements JsonSerializable {
 		return Installer::sectionTitle($title, null, 'cactiInstallSectionTitleError');
 	}
 
+	/**
+	 * sectionTitle
+	 *
+	 * Insert description here
+	 *
+	 * @param string $title
+	 * @param string $id
+	 * @param string $class
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function sectionTitle($title = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3890,6 +4307,19 @@ class Installer implements JsonSerializable {
 		return Installer::section($title, $id, $class, 'cactiInstallSectionTitle', 'h2');
 	}
 
+	/**
+	 * sectionSubTitle
+	 *
+	 * Insert description here
+	 *
+	 * @param string $title
+	 * @param string $id
+	 * @param string $class
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function sectionSubTitle($title = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3905,10 +4335,33 @@ class Installer implements JsonSerializable {
 		return $subtitle;
 	}
 
+	/**
+	 * sectionSubTitleEnd
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function sectionSubTitleEnd() {
 		return '</div>';
 	}
 
+	/**
+	 * sectionNormal
+	 *
+	 * Insert description here
+	 *
+	 * @param string $text
+	 * @param string $id
+	 * @param string $class
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function sectionNormal($text = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3923,6 +4376,20 @@ class Installer implements JsonSerializable {
 		return Installer::section($text, $id, trim($class), 'cactiInstallSection', 'p');
 	}
 
+	/**
+	 * sectionNote
+	 *
+	 * Insert description here
+	 *
+	 * @param string $text
+	 * @param string $id
+	 * @param string $class
+	 * @param string $title
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function sectionNote($text = '', $id = '', $class = '', $title = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3941,6 +4408,20 @@ class Installer implements JsonSerializable {
 		return Installer::section('<span class="cactiInstallSectionNoteTitle">' . $title . '</span><span class=\'cactiInstallSectionNoteBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
 	}
 
+	/**
+	 * sectionWarning
+	 *
+	 * Insert description here
+	 *
+	 * @param string $text
+	 * @param string $id
+	 * @param string $class
+	 * @param string $title
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function sectionWarning($text = '', $id = '', $class = '', $title = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3959,6 +4440,19 @@ class Installer implements JsonSerializable {
 		return Installer::section('<span class="cactiInstallSectionWarningTitle">' . $title . '</span><span class=\'cactiInstallSectionWarningBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
 	}
 
+	/**
+	 * sectionError
+	 *
+	 * Insert description here
+	 *
+	 * @param string $text
+	 * @param string $id
+	 * @param string $class
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function sectionError($text = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
@@ -3973,6 +4467,20 @@ class Installer implements JsonSerializable {
 		return Installer::section('<span class="cactiInstallSectionErrorTitle">' . __('ERROR:') . '</span><span class=\'cactiInstallSectionErrorBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
 	}
 
+	/**
+	 * sectionCode
+	 *
+	 * Insert description here
+	 *
+	 * @param string $text
+	 * @param string $id
+	 * @param string $class
+	 * @param 'p' $elementType
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function sectionCode($text = '', $id = '', $class = '', $elementType = 'p') {
 		if (empty($class)) {
 			$class = '';
@@ -3987,6 +4495,21 @@ class Installer implements JsonSerializable {
 		return Installer::section($text, $id, trim($class), '', $elementType);
 	}
 
+	/**
+	 * section
+	 *
+	 * Insert description here
+	 *
+	 * @param string $text
+	 * @param string $id
+	 * @param string $class
+	 * @param 'cactiInstallSection' $baseClass
+	 * @param 'div' $elementType
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function section($text = '', $id = '', $class = '', $baseClass = 'cactiInstallSection', $elementType = 'div') {
 		if (empty($elementType)) {
 			$elementType = 'div';
@@ -4026,6 +4549,14 @@ class InstallerButton implements JsonSerializable {
 	public $Visible = true;
 	public $Enabled = true;
 
+	/**
+	 * __construct
+	 *
+	 * Insert description here
+	 *
+	 * @param array $params
+	 * @access public
+	 */
 	public function __construct($params = array()) {
 		if (empty($params) || !is_array($params)) {
 			$params = array();
@@ -4053,11 +4584,28 @@ class InstallerButton implements JsonSerializable {
 		}
 	}
 
+	/**
+	 * setStep
+	 *
+	 * Insert description here
+	 *
+	 * @param type $step
+	 * @access public
+	 */
 	public function setStep($step) {
 		$this->Step    = $step;
 		$this->Enabled = !empty($this->Step);
 	}
 
+	/**
+	 * jsonSerialize
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function jsonSerialize() {
 		return array(
 			'Text'    => $this->Text,

@@ -8,6 +8,14 @@ if (!isset($called_by_script_server)) {
 	print call_user_func('ss_sql');
 }
 
+/**
+ * ss_sql
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function ss_sql() {
 	global $database_username;
 	global $database_password;

@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_0_5
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_0_5() {
 	db_install_execute('ALTER TABLE host_snmp_cache MODIFY COLUMN snmp_index varchar(191) NOT NULL default ""');
 	db_install_execute('ALTER TABLE poller_command MODIFY COLUMN command varchar(191) NOT NULL default ""');

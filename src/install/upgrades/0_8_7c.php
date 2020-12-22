@@ -22,9 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_7c
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_7c() {
 	/* speed up the UI, missed in 0.8.7b upgrade, avoid failures if index already exists */
 	db_install_add_key('data_local', 'index', 'host_id', array('host_id'));
+
 	if (db_column_exists('host_snmp_cache', 'field_name')) {
 		db_install_add_key('host_snmp_cache', 'index', 'field_name', array('field_name'));
 	}

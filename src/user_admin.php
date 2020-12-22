@@ -78,6 +78,12 @@ if (isset_request_var('update_policy')) {
 	}
 }
 
+/**
+ * update_policies
+ *
+ * Insert description here
+ *
+ */
 function update_policies() {
 	$set = '';
 
@@ -95,6 +101,12 @@ function update_policies() {
 	exit;
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $user_actions, $auth_realms;
 
@@ -469,6 +481,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	global $settings_user;
 
@@ -681,6 +699,12 @@ function form_save() {
 	header('Location: user_admin.php?action=user_edit&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
 }
 
+/**
+ * perm_remove
+ *
+ * Insert description here
+ *
+ */
 function perm_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -716,6 +740,16 @@ function perm_remove() {
 	header('Location: user_admin.php?action=user_edit&tab=graph_perms_edit&id=' . get_request_var('user_id'));
 }
 
+/**
+ * get_permission_string
+ *
+ * Insert description here
+ *
+ * @param type $graph
+ * @param type $policies
+ *
+ * @return type
+ */
 function get_permission_string(&$graph, &$policies) {
 	$grantStr   = '';
 	$rejectStr  = '';
@@ -835,6 +869,14 @@ function get_permission_string(&$graph, &$policies) {
 	return $permStr;
 }
 
+/**
+ * graph_perms_edit
+ *
+ * Insert description here
+ *
+ * @param type $tab
+ * @param type $header_label
+ */
 function graph_perms_edit($tab, $header_label) {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -1661,6 +1703,13 @@ function graph_perms_edit($tab, $header_label) {
 	}
 }
 
+/**
+ * user_realms_edit
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function user_realms_edit($header_label) {
 	global $user_auth_realms, $user_auth_roles;
 
@@ -1877,6 +1926,13 @@ function user_realms_edit($header_label) {
 	form_save_button('user_admin.php', 'return');
 }
 
+/**
+ * settings_edit
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function settings_edit($header_label) {
 	global $settings_user, $tabs_graphs, $graph_views;
 
@@ -1986,6 +2042,12 @@ function settings_edit($header_label) {
 	<?php
 }
 
+/**
+ * user_edit
+ *
+ * Insert description here
+ *
+ */
 function user_edit() {
 	global $config, $fields_user_user_edit_host;
 
@@ -2204,6 +2266,12 @@ function user_edit() {
 	}
 }
 
+/**
+ * user
+ *
+ * Insert description here
+ *
+ */
 function user() {
 	global $config, $auth_realms, $user_actions, $item_rows;
 
@@ -2415,6 +2483,12 @@ function user() {
 	form_end();
 }
 
+/**
+ * process_graph_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_graph_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2449,6 +2523,12 @@ function process_graph_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * process_group_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_group_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2478,6 +2558,12 @@ function process_group_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * process_device_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_device_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2512,6 +2598,12 @@ function process_device_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * process_template_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_template_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2546,6 +2638,12 @@ function process_template_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * process_tree_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_tree_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2580,6 +2678,13 @@ function process_tree_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * graph_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function graph_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2686,6 +2791,13 @@ function graph_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * group_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function group_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2769,6 +2881,13 @@ function group_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * device_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function device_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2871,6 +2990,13 @@ function device_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * template_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function template_filter($header_label) {
 	global $config, $item_rows;
 
@@ -2954,6 +3080,13 @@ function template_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * tree_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function tree_filter($header_label) {
 	global $config, $item_rows;
 
@@ -3037,6 +3170,13 @@ function tree_filter($header_label) {
 	html_end_box();
 }
 
+/**
+ * member_filter
+ *
+ * Insert description here
+ *
+ * @param type $header_label
+ */
 function member_filter($header_label) {
 	global $config, $item_rows;
 

@@ -219,6 +219,16 @@ function display_help() {
 	print "    --quiet - batch mode value return\n\n";
 }
 
+/**
+ * preg_array_key_match
+ *
+ * Insert description here
+ *
+ * @param type $needle
+ * @param type $haystack
+ *
+ * @return type
+ */
 function preg_array_key_match($needle, $haystack) {
 	global $debug;
 	$matches = array();

@@ -331,6 +331,12 @@ function cacti_ldap_search_cn($username, $cn = array(), $dn = '', $host = '', $p
 	return $ldap->Getcn();
 }
 
+/**
+ * LdapError
+ * Insert description here
+ *
+ *
+ */
 abstract class LdapError {
 	const None                  = 0;
 	const Success               = 0;
@@ -352,6 +358,19 @@ abstract class LdapError {
 	const UndefinedDnOrPassword = 16;
 	const Disabled              = 99;
 
+	/**
+	 * GetErrorDetails
+	 *
+	 * Insert description here
+	 *
+	 * @param type $returnError
+	 * @param null $ldapConn
+	 * @param 0 $ldapError
+	 * @access public
+	 * @static
+	 *
+	 * @return type
+	 */
 	public static function GetErrorDetails($returnError, $ldapConn = null, $ldapError = 0) {
 		$error_num = $returnError;
 
@@ -444,6 +463,12 @@ abstract class LdapError {
 	}
 }
 
+/**
+ * Ldap
+ * Insert description here
+ *
+ *
+ */
 class Ldap {
 	function __construct() {
 		/* Initialize LDAP parameters for Authenticate */
@@ -475,14 +500,41 @@ class Ldap {
 		return true;
 	}
 
+	/**
+	 * __destruct
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function __destruct() {
 		return true;
 	}
 
+	/**
+	 * ErrorHandler
+	 *
+	 * Insert description here
+	 *
+	 * @param type $level
+	 * @param type $message
+	 * @param type $file
+	 * @param type $line
+	 * @param type $context
+	 *
+	 * @return type
+	 */
 	function ErrorHandler($level, $message, $file, $line, $context) {
 		return true;
 	}
 
+	/**
+	 * SetLdapHandler
+	 *
+	 * Insert description here
+	 *
+	 */
 	function SetLdapHandler() {
 		/* drop out of cactis error handler */
 		restore_error_handler();
@@ -493,6 +545,12 @@ class Ldap {
 		cacti_session_close();
 	}
 
+	/**
+	 * RestoreCactiHandler
+	 *
+	 * Insert description here
+	 *
+	 */
 	function RestoreCactiHandler() {
 		/* drop out of ldaps error handler */
 		restore_error_handler();
@@ -503,12 +561,28 @@ class Ldap {
 		cacti_session_start();
 	}
 
+	/**
+	 * RecordError
+	 *
+	 * Insert description here
+	 *
+	 * @param type $output
+	 * @param 'LDAP' $section
+	 */
 	function RecordError($output, $section = 'LDAP') {
 		$logDN = empty($output['dn']) ? '' : (', DN: ' . $output['dn']);
 		cacti_log($section . ': ' . $output['error_text'] . $logDN, false, 'AUTH');
 		cacti_log($section . ': ' . $output['stack'], false, 'AUTH', POLLER_VERBOSITY_HIGH);
 	}
 
+	/**
+	 * Authenticate
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function Authenticate() {
 		$output = array();
 
@@ -674,6 +748,14 @@ class Ldap {
 		return $output;
 	}
 
+	/**
+	 * GetMask
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function GetMask() {
 		if (!defined('ENT_HTML401')) {
 			return ENT_COMPAT;
@@ -682,6 +764,14 @@ class Ldap {
 		}
 	}
 
+	/**
+	 * Search
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function Search() {
 		$output = array();
 
@@ -851,6 +941,14 @@ class Ldap {
 		return $output;
 	}
 
+	/**
+	 * Getcn
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function Getcn() {
 		$output = array();
 
@@ -1025,6 +1123,18 @@ class Ldap {
 		return $output;
 	}
 
+	/**
+	 * isUserInLDAPGroup
+	 *
+	 * Insert description here
+	 *
+	 * @param type $ldapConn
+	 * @param type $ldapbasedn
+	 * @param type $groupDN
+	 * @param type $ldapUser
+	 *
+	 * @return type
+	 */
 	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
 		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
 		$ldapSearch  = @ldap_search($ldapConn,$ldapbasedn,$query,array('dn'));

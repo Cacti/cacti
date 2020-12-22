@@ -61,6 +61,7 @@ if ($hasEverything) {
 <head>
 <?php
 print html_common_header(__('Cacti Server v%s - Maintenance', format_cacti_version_text(CACTI_VERSION)));
+
 if ($hasEverything) {
 	print get_md5_include_js('install/install.js');
 }
@@ -83,10 +84,12 @@ if ($hasEverything) {
 	print '<div class="installErrorText">';
 	print '<p>' . __('FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 5.4 or later.') . '</p>';
 	print '<ul>';
+
 	if (!$hasJson) {
 		print '<li>' . __('The php-json module must also be installed.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/book.json.php">JavaScript Object Notation</a>.') . '</li>';
 		print '<br>';
 	}
+
 	if (!($hasExec && $hasShellExec)) {
 		print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') .'</li>';
 	}

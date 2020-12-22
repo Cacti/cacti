@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_2_5
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_2_5() {
 	db_install_execute('UPDATE graph_local AS gl
 		INNER JOIN graph_templates_item AS gti

@@ -77,6 +77,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * automation_template_dnd
+ *
+ * Insert description here
+ *
+ */
 function automation_template_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -104,18 +110,42 @@ function automation_template_dnd() {
 	exit;
 }
 
+/**
+ * automation_movedown
+ *
+ * Insert description here
+ *
+ */
 function automation_movedown() {
 	move_item_down('automation_templates', get_filter_request_var('id'));
 }
 
+/**
+ * automation_moveup
+ *
+ * Insert description here
+ *
+ */
 function automation_moveup() {
 	move_item_up('automation_templates', get_filter_request_var('id'));
 }
 
+/**
+ * automation_remove
+ *
+ * Insert description here
+ *
+ */
 function automation_remove() {
 	db_execute_prepared('DELETE FROM automation_templates WHERE id = ?', array(get_filter_request_var('id')));
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $at_actions;
 
@@ -194,6 +224,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_template')) {
 		$redirect_back = false;
@@ -229,6 +265,18 @@ function form_save() {
 	}
 }
 
+/**
+ * automation_get_child_branches
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param type $id
+ * @param type $spaces
+ * @param type $headers
+ *
+ * @return type
+ */
 function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 	$items = db_fetch_assoc_prepared('SELECT id, title
 		FROM graph_tree_items
@@ -250,6 +298,14 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 	return $headers;
 }
 
+/**
+ * automation_get_tree_headers
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function automation_get_tree_headers() {
 	$headers = array();
 	$trees   = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
@@ -263,6 +319,12 @@ function automation_get_tree_headers() {
 	return $headers;
 }
 
+/**
+ * template_edit
+ *
+ * Insert description here
+ *
+ */
 function template_edit() {
 	global $availability_options;
 
@@ -359,6 +421,12 @@ function template_edit() {
 	form_save_button('automation_templates.php');
 }
 
+/**
+ * template
+ *
+ * Insert description here
+ *
+ */
 function template() {
 	global $at_actions, $item_rows, $availability_options;
 

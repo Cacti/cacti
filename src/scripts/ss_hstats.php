@@ -33,6 +33,16 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_hstats', $_SERVER['argv']);
 }
 
+/**
+ * ss_hstats
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $stat
+ *
+ * @return type
+ */
 function ss_hstats($host_id, $stat) {
 	switch ($stat) {
 		case 'polling_time':

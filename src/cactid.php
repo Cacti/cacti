@@ -155,6 +155,15 @@ while (true) {
 	$frequency = -1;
 }
 
+/**
+ * wait_for_start
+ *
+ * Insert description here
+ *
+ * @param 1 $frequency
+ *
+ * @return type
+ */
 function wait_for_start($frequency = -1) {
 	$prev_time = -1;
 	$i         = 0;
@@ -192,6 +201,12 @@ function wait_for_start($frequency = -1) {
 	return $frequency;
 }
 
+/**
+ * run_poller
+ *
+ * Insert description here
+ *
+ */
 function run_poller() {
 	global $config, $debug;
 
@@ -204,6 +219,14 @@ function run_poller() {
 	exec_background(read_config_option('path_php_binary'), $command);
 }
 
+/**
+ * get_options
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_options() {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
@@ -252,6 +275,12 @@ function get_options() {
 	return $options;
 }
 
+/**
+ * db_check_reconnect
+ *
+ * Insert description here
+ *
+ */
 function db_check_reconnect() {
 	chdir(__DIR__);
 
@@ -269,6 +298,13 @@ function db_check_reconnect() {
 	}
 }
 
+/**
+ * debug
+ *
+ * Insert description here
+ *
+ * @param type $string
+ */
 function debug($string) {
 	global $debug;
 
@@ -279,6 +315,12 @@ function debug($string) {
 	}
 }
 
+/**
+ * display_version
+ *
+ * Insert description here
+ *
+ */
 function display_version() {
 	global $config;
 

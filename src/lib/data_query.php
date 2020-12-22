@@ -22,6 +22,18 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * run_data_query
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $snmp_query_id
+ * @param false $automation
+ * @param false $force
+ *
+ * @return type
+ */
 function run_data_query($host_id, $snmp_query_id, $automation = false, $force = false) {
 	global $config, $input_types;
 
@@ -432,6 +444,13 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 	return (isset($result) ? $result : true);
 }
 
+/**
+ * data_query_remove_disabled_items
+ *
+ * Insert description here
+ *
+ * @param type $orphaned_ids
+ */
 function data_query_remove_disabled_items($orphaned_ids) {
 	if (cacti_sizeof($orphaned_ids)) {
 		db_execute_prepared('DELETE FROM poller_item
@@ -456,6 +475,18 @@ function data_query_remove_disabled_items($orphaned_ids) {
 	}
 }
 
+/**
+ * query_check_suitable
+ *
+ * Insert description here
+ *
+ * @param type $new_sort_field
+ * @param type $old_sort_field
+ * @param type $host_id
+ * @param type $snmp_query_id
+ *
+ * @return type
+ */
 function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_query_id) {
 	if ($new_sort_field == $old_sort_field) {
 		query_debug_timer_offset('data_query', __('Checking for Sort Field change.  No changes detected.'));
@@ -497,6 +528,13 @@ function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_
 	return true;
 }
 
+/**
+ * data_query_remap_indexes
+ *
+ * Insert description here
+ *
+ * @param type $local_data
+ */
 function data_query_remap_indexes($local_data) {
 	if (cacti_sizeof($local_data)) {
 		foreach ($local_data as $id) {
@@ -525,6 +563,15 @@ function data_query_remap_indexes($local_data) {
 	}
 }
 
+/**
+ * data_query_update_input_method
+ *
+ * Insert description here
+ *
+ * @param type $snmp_query_id
+ * @param type $previous_input_id
+ * @param string $new_input_id
+ */
 function data_query_update_input_method($snmp_query_id, $previous_input_id, $new_input_id = '') {
 	$change_data_input = false;
 
@@ -566,6 +613,15 @@ function data_query_update_input_method($snmp_query_id, $previous_input_id, $new
 	}
 }
 
+/**
+ * get_data_query_array
+ *
+ * Insert description here
+ *
+ * @param type $snmp_query_id
+ *
+ * @return type
+ */
 function get_data_query_array($snmp_query_id) {
 	global $config, $data_query_xml_arrays;
 
@@ -603,6 +659,16 @@ function get_data_query_array($snmp_query_id) {
 	return $data_query_xml_arrays[$snmp_query_id];
 }
 
+/**
+ * query_script_host
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $snmp_query_id
+ *
+ * @return type
+ */
 function query_script_host($host_id, $snmp_query_id) {
 	$script_queries = get_data_query_array($snmp_query_id);
 
@@ -724,6 +790,12 @@ function query_script_host($host_id, $snmp_query_id) {
 	return true;
 }
 
+/**
+ * query_debug_timer_start
+ *
+ * Insert description here
+ *
+ */
 function query_debug_timer_start() {
 	global $query_debug_timer, $query_debug_start;
 
@@ -732,6 +804,16 @@ function query_debug_timer_start() {
 	$query_debug_start = $query_debug_timer;
 }
 
+/**
+ * query_debug_timer_offset
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $message
+ *
+ * @return type
+ */
 function query_debug_timer_offset($section, $message) {
 	global $query_debug_timer, $query_debug_start;
 
@@ -750,6 +832,16 @@ function query_debug_timer_offset($section, $message) {
 	return $delta;
 }
 
+/**
+ * query_debug_timer_stop
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $message
+ *
+ * @return type
+ */
 function query_debug_timer_stop($section, $message) {
 	global $query_debug_timer, $query_debug_start;
 
@@ -765,6 +857,16 @@ function query_debug_timer_stop($section, $message) {
 	return $delta;
 }
 
+/**
+ * query_snmp_host
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $snmp_query_id
+ *
+ * @return type
+ */
 function query_snmp_host($host_id, $snmp_query_id) {
 	global $config, $data_query_rewrite_indexes_cache;
 
@@ -1263,6 +1365,21 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	return true;
 }
 
+/**
+ * data_query_format_record
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $snmp_query_id
+ * @param type $field_name
+ * @param type $rewrite_value
+ * @param type $value
+ * @param type $snmp_index
+ * @param type $oid
+ *
+ * @return type
+ */
 function data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $snmp_index, $oid) {
 	global $data_query_rewrite_indexes_cache;
 
@@ -1285,12 +1402,31 @@ function data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrit
 	return "($host_id, $snmp_query_id, " . db_qstr($field_name) . ', ' . db_qstr($value) . ', ' . db_qstr($snmp_index) . ', ' . db_qstr($oid) . ', 1)';
 }
 
+/**
+ * data_query_ctype_print_unicode
+ *
+ * Insert description here
+ *
+ * @param type $value
+ *
+ * @return type
+ */
 function data_query_ctype_print_unicode($value) {
 	$pattern = "~^[\pL\pN\s\"\~" . preg_quote("!#$%&'()*+,-./:;<=>?@[\]^_`{|}´") . ']+$~u';
 
 	return preg_match($pattern, $value);
 }
 
+/**
+ * data_query_update_host_cache_from_buffer
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $snmp_query_id
+ * @param type $output_array
+ * @param type $empty_types
+ */
 function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array, &$empty_types) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	db_execute_prepared('UPDATE host_snmp_cache
@@ -1891,6 +2027,13 @@ function get_formatted_data_query_index($host_id, $data_query_id, $data_query_in
 	return substitute_snmp_query_data($sort_cache['title_format'], $host_id, $data_query_id, $data_query_index);
 }
 
+/**
+ * calculate_or_set_index_order
+ *
+ * Insert description here
+ *
+ * @param type $raw_xml
+ */
 function calculate_or_set_index_order(&$raw_xml) {
 	if (!isset($raw_xml['index_order']) && isset($raw_xml['fields']) && is_array($raw_xml['fields'])) {
 		foreach ($raw_xml['fields'] as $name => $attribs) {

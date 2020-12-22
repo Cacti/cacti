@@ -37,6 +37,12 @@ function update_replication_crc($poller_id, $variable) {
 		array($hash));
 }
 
+/**
+ * repopulate_poller_cache
+ *
+ * Insert description here
+ *
+ */
 function repopulate_poller_cache() {
 	global $config;
 
@@ -109,6 +115,15 @@ function repopulate_poller_cache() {
 		GROUP BY dtr.data_template_id, dif.data_name');
 }
 
+/**
+ * update_poller_cache_from_query
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $data_query_id
+ * @param type $local_data_ids
+ */
 function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
 	global $config;
 
@@ -155,6 +170,16 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 	}
 }
 
+/**
+ * update_poller_cache
+ *
+ * Insert description here
+ *
+ * @param type $data_source
+ * @param false $commit
+ *
+ * @return type
+ */
 function update_poller_cache($data_source, $commit = false) {
 	global $config;
 
@@ -483,6 +508,13 @@ function update_poller_cache($data_source, $commit = false) {
 	}
 }
 
+/**
+ * push_out_data_input_method
+ *
+ * Insert description here
+ *
+ * @param type $data_input_id
+ */
 function push_out_data_input_method($data_input_id) {
 	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
 		FROM data_local AS dl
@@ -781,6 +813,15 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	api_data_source_cache_crc_update($poller_id);
 }
 
+/**
+ * data_input_whitelist_check
+ *
+ * Insert description here
+ *
+ * @param type $data_input_id
+ *
+ * @return type
+ */
 function data_input_whitelist_check($data_input_id) {
 	global $config;
 
@@ -848,6 +889,14 @@ function data_input_whitelist_check($data_input_id) {
 	}
 }
 
+/**
+ * utilities_get_mysql_recommendations
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function utilities_get_mysql_recommendations() {
 	global $config, $local_db_cnn_id;
 
@@ -1286,6 +1335,14 @@ function utilities_get_mysql_recommendations() {
 	return $result;
 }
 
+/**
+ * utilities_php_modules
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function utilities_php_modules() {
 	/*
 	   Gather phpinfo into a string variable - This has to be done before
@@ -1310,6 +1367,15 @@ function utilities_php_modules() {
 	return $php_info;
 }
 
+/**
+ * memory_bytes
+ *
+ * Insert description here
+ *
+ * @param type $val
+ *
+ * @return type
+ */
 function memory_bytes($val) {
 	$val  = trim($val);
 	$last = strtolower($val[strlen($val) - 1]);
@@ -1327,6 +1393,15 @@ function memory_bytes($val) {
 	return $val;
 }
 
+/**
+ * memory_readable
+ *
+ * Insert description here
+ *
+ * @param type $val
+ *
+ * @return type
+ */
 function memory_readable($val) {
 	if ($val < 1024) {
 		$val_label = 'bytes';
@@ -1344,6 +1419,14 @@ function memory_readable($val) {
 	return $val . $val_label;
 }
 
+/**
+ * utilities_get_system_memory
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function utilities_get_system_memory() {
 	global $config;
 
@@ -1425,6 +1508,16 @@ function utilities_get_system_memory() {
 	return $memInfo;
 }
 
+/**
+ * utility_php_sort_extensions
+ *
+ * Insert description here
+ *
+ * @param type $a
+ * @param type $b
+ *
+ * @return type
+ */
 function utility_php_sort_extensions($a, $b) {
 	$name_a = isset($a['name']) ? $a['name'] : '';
 	$name_b = isset($b['name']) ? $b['name'] : '';
@@ -1432,6 +1525,14 @@ function utility_php_sort_extensions($a, $b) {
 	return strcasecmp($name_a, $name_b);
 }
 
+/**
+ * utility_php_extensions
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function utility_php_extensions() {
 	global $config;
 
@@ -1446,6 +1547,14 @@ function utility_php_extensions() {
 	return $ext;
 }
 
+/**
+ * utility_php_verify_extensions
+ *
+ * Insert description here
+ *
+ * @param type $extensions
+ * @param type $source
+ */
 function utility_php_verify_extensions(&$extensions, $source) {
 	global $config;
 
@@ -1489,6 +1598,14 @@ function utility_php_verify_extensions(&$extensions, $source) {
 	}
 }
 
+/**
+ * utility_php_recommends
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function utility_php_recommends() {
 	global $config;
 
@@ -1504,6 +1621,18 @@ function utility_php_recommends() {
 	return $ext;
 }
 
+/**
+ * utility_get_formatted_bytes
+ *
+ * Insert description here
+ *
+ * @param type $input_value
+ * @param type $wanted_type
+ * @param type $output_value
+ * @param 'B' $default_type
+ *
+ * @return type
+ */
 function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value, $default_type = 'B') {
 	$default_type = strtoupper($default_type);
 	$multiplier   = array(
@@ -1538,6 +1667,14 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 	return $input_value;
 }
 
+/**
+ * utility_php_verify_recommends
+ *
+ * Insert description here
+ *
+ * @param type $recommends
+ * @param type $source
+ */
 function utility_php_verify_recommends(&$recommends, $source) {
 	global $original_memory_limit;
 
@@ -1583,6 +1720,13 @@ function utility_php_verify_recommends(&$recommends, $source) {
 	);
 }
 
+/**
+ * utility_php_set_recommends_text
+ *
+ * Insert description here
+ *
+ * @param type $recs
+ */
 function utility_php_set_recommends_text(&$recs) {
 	if (is_array($recs) && cacti_sizeof($recs)) {
 		foreach ($recs as $name => $recommends) {
@@ -1603,6 +1747,14 @@ function utility_php_set_recommends_text(&$recs) {
 	}
 }
 
+/**
+ * utility_php_optionals
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function utility_php_optionals() {
 	global $config;
 
@@ -1617,6 +1769,14 @@ function utility_php_optionals() {
 	return $opt;
 }
 
+/**
+ * utility_php_verify_optionals
+ *
+ * Insert description here
+ *
+ * @param type $optionals
+ * @param type $source
+ */
 function utility_php_verify_optionals(&$optionals, $source) {
 	if (empty($optionals)) {
 		$optionals = array(
@@ -1637,6 +1797,13 @@ function utility_php_verify_optionals(&$optionals, $source) {
 	$optionals['TrueType Text'][$source] = function_exists('imagettftext');
 }
 
+/**
+ * utility_php_set_installed
+ *
+ * Insert description here
+ *
+ * @param type $extensions
+ */
 function utility_php_set_installed(&$extensions) {
 	foreach ($extensions as $name=>$extension) {
 		$extensions[$name]['installed'] = $extension['web'] && $extension['cli'];

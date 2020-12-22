@@ -106,6 +106,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	// make sure ids are numeric
 	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
@@ -216,6 +222,12 @@ function form_save() {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $profile_actions;
 
@@ -309,6 +321,14 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * duplicate_data_source_profile
+ *
+ * Insert description here
+ *
+ * @param type $source_profile
+ * @param type $title_format
+ */
 function duplicate_data_source_profile($source_profile, $title_format) {
 	if (!is_array($source_profile)) {
 		$source_profile = array($source_profile);
@@ -367,6 +387,12 @@ function duplicate_data_source_profile($source_profile, $title_format) {
 	}
 }
 
+/**
+ * profile_item_remove_confirm
+ *
+ * Insert description here
+ *
+ */
 function profile_item_remove_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -404,6 +430,12 @@ function profile_item_remove_confirm() {
 	form_end();
 }
 
+/**
+ * profile_item_remove
+ *
+ * Insert description here
+ *
+ */
 function profile_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -412,6 +444,12 @@ function profile_item_remove() {
 	db_execute_prepared('DELETE FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')));
 }
 
+/**
+ * item_edit
+ *
+ * Insert description here
+ *
+ */
 function item_edit() {
 	global $fields_profile_rra_edit, $aggregation_levels;
 
@@ -551,6 +589,12 @@ function item_edit() {
 	<?php
 }
 
+/**
+ * profile_edit
+ *
+ * Insert description here
+ *
+ */
 function profile_edit() {
 	global $fields_profile_edit, $timespans;
 
@@ -749,6 +793,17 @@ function profile_edit() {
 	<?php
 }
 
+/**
+ * get_size
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $type
+ * @param string $cfs
+ *
+ * @return type
+ */
 function get_size($id, $type, $cfs = '') {
 	// On x86_64 platform, here is the equation
 	// file_size = $header + (# data sources * 300) + (# cfs * #rows in all RRAs)
@@ -782,6 +837,15 @@ function get_size($id, $type, $cfs = '') {
 	}
 }
 
+/**
+ * get_span
+ *
+ * Insert description here
+ *
+ * @param type $duration
+ *
+ * @return type
+ */
 function get_span($duration) {
 	$years  = '';
 	$months = '';
@@ -834,6 +898,12 @@ function get_span($duration) {
 	return $output;
 }
 
+/**
+ * profile
+ *
+ * Insert description here
+ *
+ */
 function profile() {
 	global $profile_actions, $item_rows, $sampling_intervals, $heartbeats, $config;
 

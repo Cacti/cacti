@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * reports_item_dnd
+ *
+ * Insert description here
+ *
+ */
 function reports_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -51,6 +57,12 @@ function reports_item_dnd() {
 	}
 }
 
+/**
+ * reports_form_save
+ *
+ * Insert description here
+ *
+ */
 function reports_form_save() {
 	global $config, $messages;
 
@@ -193,6 +205,12 @@ function reports_form_save() {
 	exit;
 }
 
+/**
+ * reports_form_actions
+ *
+ * Insert description here
+ *
+ */
 function reports_form_actions() {
 	global $config, $reports_actions;
 
@@ -356,6 +374,13 @@ function reports_form_actions() {
 	bottom_footer();
 }
 
+/**
+ * reports_send
+ *
+ * Insert description here
+ *
+ * @param type $id
+ */
 function reports_send($id) {
 	global $config;
 
@@ -392,6 +417,12 @@ function reports_send($id) {
 	}
 }
 
+/**
+ * reports_item_movedown
+ *
+ * Insert description here
+ *
+ */
 function reports_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -401,6 +432,12 @@ function reports_item_movedown() {
 	move_item_down('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
+/**
+ * reports_item_moveup
+ *
+ * Insert description here
+ *
+ */
 function reports_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -409,6 +446,12 @@ function reports_item_moveup() {
 	move_item_up('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
+/**
+ * reports_item_remove
+ *
+ * Insert description here
+ *
+ */
 function reports_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -416,6 +459,12 @@ function reports_item_remove() {
 	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', array(get_request_var('item_id')));
 }
 
+/**
+ * reports_item_edit
+ *
+ * Insert description here
+ *
+ */
 function reports_item_edit() {
 	global $config, $item_types, $graph_timespans, $alignment;
 
@@ -907,6 +956,12 @@ function reports_item_edit() {
 	<?php
 }
 
+/**
+ * reports_edit
+ *
+ * Insert description here
+ *
+ */
 function reports_edit() {
 	global $config, $attach_types, $alignment, $reports_interval;
 
@@ -1450,14 +1505,36 @@ function display_reports_items($report_id) {
 	}
 }
 
+/**
+ * get_reports_page
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_reports_page() {
 	return (is_realm_allowed(22) ? 'reports_admin.php' : 'reports_user.php');
 }
 
+/**
+ * is_reports_admin
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function is_reports_admin() {
 	return (is_realm_allowed(22) ? true:false);
 }
 
+/**
+ * reports
+ *
+ * Insert description here
+ *
+ */
 function reports() {
 	global $config, $item_rows, $reports_interval;
 	global $reports_actions, $attach_types;
@@ -1728,14 +1805,40 @@ function reports() {
 	<?php
 }
 
+/**
+ * reports_html_account_exists
+ *
+ * Insert description here
+ *
+ * @param type $user_id
+ *
+ * @return type
+ */
 function reports_html_account_exists($user_id) {
 	return db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($user_id));
 }
 
+/**
+ * reports_html_report_disable
+ *
+ * Insert description here
+ *
+ * @param type $report_id
+ */
 function reports_html_report_disable($report_id) {
 	db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', array($report_id));
 }
 
+/**
+ * set_reports_item_var
+ *
+ * Insert description here
+ *
+ * @param type $reports_item
+ * @param type $var_id
+ *
+ * @return type
+ */
 function set_reports_item_var($reports_item, $var_id) {
 	// if a different host_id was selected, use it
 	if (isset_request_var($var_id) && get_filter_request_var($var_id) >= 0) {

@@ -317,6 +317,14 @@ function addSite() {
 	}
 }
 
+/**
+ * mapDevices
+ *
+ * Insert description here
+ *
+ * @param type $siteId
+ * @param type $doMap
+ */
 function mapDevices($siteId, $doMap) {
 	global $deviceMapRegex, $deviceMapWild, $ipMapRegex, $ipMapWild, $siteName, $verbose, $debug, $quiet;
 	$devices = getHosts();
@@ -456,6 +464,16 @@ function geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry
 	return (array($latGeocode,$lngGeocode));
 }
 
+/**
+ * fixCoordinates
+ *
+ * Insert description here
+ *
+ * @param type $lat
+ * @param type $lng
+ *
+ * @return type
+ */
 function fixCoordinates($lat,$lng) {
 	$utfCoord = utf8_decode("$lat $lng");    # Normalise the characters to put them through a regex
 
@@ -536,6 +554,14 @@ function display_help($errorMessage = null) {
 	exit;
 }
 
+/**
+ * echoQuiet
+ *
+ * Insert description here
+ *
+ * @param type $str
+ * @param 0 $level
+ */
 function echoQuiet($str,$level=0) {
 	global $quiet, $log;
 
@@ -549,6 +575,15 @@ function echoQuiet($str,$level=0) {
 	}
 }
 
+/**
+ * fetchCurl
+ *
+ * Insert description here
+ *
+ * @param type $url
+ *
+ * @return type
+ */
 function fetchCurl($url) {
 	global $verbose, $debug, $httpsProxy;
 

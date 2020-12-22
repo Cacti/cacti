@@ -149,6 +149,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * rebuild_resource_cache
+ *
+ * Insert description here
+ *
+ */
 function rebuild_resource_cache() {
 	db_execute('DELETE FROM settings WHERE name LIKE "md5dirsum%"');
 	db_execute('TRUNCATE TABLE poller_resource_cache');
@@ -158,6 +164,12 @@ function rebuild_resource_cache() {
 	cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 }
 
+/**
+ * utilities_view_user_log
+ *
+ * Insert description here
+ *
+ */
 function utilities_view_user_log() {
 	global $auth_realms, $item_rows;
 
@@ -436,6 +448,12 @@ function utilities_view_user_log() {
 	}
 }
 
+/**
+ * utilities_clear_user_log
+ *
+ * Insert description here
+ *
+ */
 function utilities_clear_user_log() {
 	$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth');
 
@@ -488,6 +506,12 @@ function utilities_clear_user_log() {
 	}
 }
 
+/**
+ * utilities_view_logfile
+ *
+ * Insert description here
+ *
+ */
 function utilities_view_logfile() {
 	global $log_tail_lines, $page_refresh_interval, $config;
 
@@ -816,6 +840,12 @@ function utilities_view_logfile() {
 	bottom_footer();
 }
 
+/**
+ * utilities_clear_logfile
+ *
+ * Insert description here
+ *
+ */
 function utilities_clear_logfile() {
 	load_current_session_value('refresh', 'sess_logfile_refresh', read_config_option('log_refresh_interval'));
 
@@ -857,6 +887,12 @@ function utilities_clear_logfile() {
 	html_end_box();
 }
 
+/**
+ * utilities_view_snmp_cache
+ *
+ * Insert description here
+ *
+ */
 function utilities_view_snmp_cache() {
 	global $poller_actions, $item_rows;
 
@@ -1139,6 +1175,12 @@ function utilities_view_snmp_cache() {
 	}
 }
 
+/**
+ * utilities_view_poller_cache
+ *
+ * Insert description here
+ *
+ */
 function utilities_view_poller_cache() {
 	global $poller_actions, $item_rows;
 
@@ -1458,6 +1500,12 @@ function utilities_view_poller_cache() {
 	}
 }
 
+/**
+ * utilities
+ *
+ * Insert description here
+ *
+ */
 function utilities() {
 	global $utilities;
 
@@ -1561,6 +1609,12 @@ function utilities() {
 	html_end_box();
 }
 
+/**
+ * purge_data_source_statistics
+ *
+ * Insert description here
+ *
+ */
 function purge_data_source_statistics() {
 	$tables = array(
 		'data_source_stats_daily',
@@ -1577,6 +1631,12 @@ function purge_data_source_statistics() {
 	}
 }
 
+/**
+ * boost_display_run_status
+ *
+ * Insert description here
+ *
+ */
 function boost_display_run_status() {
 	global $config, $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
 
@@ -2133,6 +2193,12 @@ function snmpagent_utilities_run_cache() {
 	<?php
 }
 
+/**
+ * snmpagent_utilities_run_eventlog
+ *
+ * Insert description here
+ *
+ */
 function snmpagent_utilities_run_eventlog() {
 	global $item_rows;
 

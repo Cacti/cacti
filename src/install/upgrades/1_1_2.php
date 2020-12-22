@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_1_2
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_1_2() {
 	db_install_drop_key('graph_templates_item', 'key', 'local_graph_id');
 	db_install_add_key('graph_templates_item', 'index', 'local_graph_id_sequence', array('local_graph_id', 'sequence'));

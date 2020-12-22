@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_6e
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_6e() {
 	/* changes for logarithmic rrd files */
 	db_install_execute('ALTER TABLE `data_template_rrd` CHANGE `rrd_minimum` `rrd_minimum` VARCHAR( 20 ) NOT NULL;');
@@ -44,6 +50,7 @@ function upgrade_to_0_8_6e() {
 	db_install_add_key('graph_templates_graph', 'key', 'title_cache', array('title_cache'));
 	db_install_add_key('graph_tree_items', 'key', 'host_id', array('host_id'));
 	db_install_add_key('graph_tree_items', 'key', 'local_graph_id', array('local_graph_id'));
+
 	if (db_column_exists('graph_tree_items','order_key')) {
 		db_install_add_key('graph_tree_items', 'key', 'order_key', array('order_key'));
 	}

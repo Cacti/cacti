@@ -102,6 +102,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -129,6 +135,14 @@ function form_save() {
 	}
 }
 
+/**
+ * duplicate_host_template
+ *
+ * Insert description here
+ *
+ * @param type $_host_template_id
+ * @param type $host_template_title
+ */
 function duplicate_host_template($_host_template_id, $host_template_title) {
 	global $fields_host_template_edit;
 
@@ -172,6 +186,12 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	}
 }
 
+/**
+ * template_item_add_dq
+ *
+ * Insert description here
+ *
+ */
 function template_item_add_dq() {
 	/* ================= input validation ================= */
 	get_filter_request_var('host_template_id');
@@ -186,6 +206,12 @@ function template_item_add_dq() {
 	raise_message(41);
 }
 
+/**
+ * template_item_add_gt
+ *
+ * Insert description here
+ *
+ */
 function template_item_add_gt() {
 	/* ================= input validation ================= */
 	get_filter_request_var('host_template_id');
@@ -200,6 +226,12 @@ function template_item_add_gt() {
 	raise_message(41);
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $host_actions;
 
@@ -317,6 +349,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * template_item_remove_gt_confirm
+ *
+ * Insert description here
+ *
+ */
 function template_item_remove_gt_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -367,6 +405,12 @@ function template_item_remove_gt_confirm() {
 	<?php
 }
 
+/**
+ * template_item_remove_gt
+ *
+ * Insert description here
+ *
+ */
 function template_item_remove_gt() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -381,6 +425,12 @@ function template_item_remove_gt() {
 	raise_message(41);
 }
 
+/**
+ * template_item_remove_dq_confirm
+ *
+ * Insert description here
+ *
+ */
 function template_item_remove_dq_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -431,6 +481,12 @@ function template_item_remove_dq_confirm() {
 	<?php
 }
 
+/**
+ * template_item_remove_dq
+ *
+ * Insert description here
+ *
+ */
 function template_item_remove_dq() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -445,6 +501,12 @@ function template_item_remove_dq() {
 	raise_message(41);
 }
 
+/**
+ * template_edit
+ *
+ * Insert description here
+ *
+ */
 function template_edit() {
 	global $fields_host_template_edit;
 
@@ -666,6 +728,12 @@ function template_edit() {
 	<?php
 }
 
+/**
+ * template
+ *
+ * Insert description here
+ *
+ */
 function template() {
 	global $host_actions, $item_rows;
 

@@ -894,6 +894,15 @@ if (!$debug_mode) fwrite(STDOUT, "\r\n");
 
 exit;
 
+/**
+ * rrdtool_parse_info
+ *
+ * Insert description here
+ *
+ * @param type $lines
+ *
+ * @return type
+ */
 function rrdtool_parse_info($lines) {
 	$store = array();
 	$lines = explode(PHP_EOL, trim($lines));
@@ -920,6 +929,15 @@ function rrdtool_parse_info($lines) {
 	return $store;
 }
 
+/**
+ * rrdtool_pipe_init
+ *
+ * Insert description here
+ *
+ * @param type $path_rrdtool
+ *
+ * @return type
+ */
 function rrdtool_pipe_init($path_rrdtool) {
 	$fds = array(
 		0  => array('pipe', 'r'),		// stdin
@@ -935,10 +953,27 @@ function rrdtool_pipe_init($path_rrdtool) {
 	return array($process, $pipes);
 }
 
+/**
+ * rrdtool_pipe_close
+ *
+ * Insert description here
+ *
+ * @param type $process
+ */
 function rrdtool_pipe_close($process) {
 	proc_close($process);
 }
 
+/**
+ * rrdtool_pipe_execute
+ *
+ * Insert description here
+ *
+ * @param type $command
+ * @param type $pipes
+ *
+ * @return type
+ */
 function rrdtool_pipe_execute($command, $pipes) {
 	$stdout      = '';
 	$return_code = fwrite($pipes[0], $command);
@@ -955,6 +990,15 @@ function rrdtool_pipe_execute($command, $pipes) {
 	if (strlen($stdout)) return $stdout;
 }
 
+/**
+ * dirToArray
+ *
+ * Insert description here
+ *
+ * @param type $dir
+ *
+ * @return type
+ */
 function dirToArray($dir) {
 	global $total_files;
 
@@ -985,6 +1029,17 @@ function dirToArray($dir) {
 	return $summary = array('files' => $files, 'folders' => $folders, 'content' => $result);
 }
 
+/**
+ * f_notify
+ *
+ * Insert description here
+ *
+ * @param false $category
+ * @param false $status
+ * @param true $debug_mode_only
+ *
+ * @return type
+ */
 function f_notify($category=false, $status=false, $debug_mode_only=true) {
 	global $debug_mode;
 
@@ -1005,6 +1060,13 @@ function f_notify($category=false, $status=false, $debug_mode_only=true) {
 	return true;
 }
 
+/**
+ * f_log
+ *
+ * Insert description here
+ *
+ * @param type $msg
+ */
 function f_log($msg) {
 	global $logging, $log_handle, $total_outdated, $total_errors, $total_skipped, $total_mismatches;
 

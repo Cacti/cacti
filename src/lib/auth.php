@@ -486,6 +486,16 @@ function is_graph_allowed($local_graph_id, $user = 0) {
 	return ($rows > 0);
 }
 
+/**
+ * auth_check_perms
+ *
+ * Insert description here
+ *
+ * @param type $objects
+ * @param type $policy
+ *
+ * @return type
+ */
 function auth_check_perms($objects, $policy) {
 	$objectSize = cacti_sizeof($objects);
 
@@ -510,6 +520,14 @@ function auth_check_perms($objects, $policy) {
 	}
 }
 
+/**
+ * auth_augment_roles
+ *
+ * Insert description here
+ *
+ * @param type $role_name
+ * @param type $files
+ */
 function auth_augment_roles($role_name, $files) {
 	global $user_auth_roles, $user_auth_realm_filenames;
 
@@ -688,6 +706,16 @@ function is_view_allowed($view = 'show_tree') {
 	}
 }
 
+/**
+ * is_tree_branch_empty
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param 0 $parent
+ *
+ * @return type
+ */
 function is_tree_branch_empty($tree_id, $parent = 0) {
 	$graphs = array_rekey(
 		db_fetch_assoc_prepared('SELECT local_graph_id
@@ -764,6 +792,15 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 	return true;
 }
 
+/**
+ * is_realm_allowed
+ *
+ * Insert description here
+ *
+ * @param type $realm
+ *
+ * @return type
+ */
 function is_realm_allowed($realm) {
 	global $config;
 
@@ -845,6 +882,18 @@ function is_realm_allowed($realm) {
 	}
 }
 
+/**
+ * get_allowed_tree_level
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param type $parent_id
+ * @param false $editing
+ * @param 0 $user
+ *
+ * @return type
+ */
 function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 0) {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id,
 		gti.site_id, gti.local_graph_id, gti.host_grouping_type,
@@ -884,6 +933,21 @@ function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 
 	return $items;
 }
 
+/**
+ * get_allowed_tree_content
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param 0 $parent
+ * @param string $sql_where
+ * @param string $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ *
+ * @return type
+ */
 function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order_by = '', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
@@ -971,6 +1035,21 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 	}
 }
 
+/**
+ * get_allowed_tree_header_graphs
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param 0 $leaf_id
+ * @param string $sql_where
+ * @param 'gti.position' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ *
+ * @return type
+ */
 function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '', $order_by = 'gti.position', $limit = '', &$total_rows = 0, $user = 0) {
 	if (!is_numeric($tree_id)) {
 		return array();
@@ -1138,6 +1217,20 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	return $graphs;
 }
 
+/**
+ * get_allowed_graphs
+ *
+ * Insert description here
+ *
+ * @param string $sql_where
+ * @param 'gtg.title_cache' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ * @param 0 $graph_id
+ *
+ * @return type
+ */
 function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
@@ -1289,6 +1382,20 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	return $graphs;
 }
 
+/**
+ * get_allowed_aggregate_graphs
+ *
+ * Insert description here
+ *
+ * @param string $sql_where
+ * @param 'gtg.title_cache' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ * @param 0 $graph_id
+ *
+ * @return type
+ */
 function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_cache', $limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
@@ -1464,6 +1571,20 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 	return $graphs;
 }
 
+/**
+ * get_allowed_type_hash
+ *
+ * Insert description here
+ *
+ * @param type $type
+ * @param type $init_where
+ * @param type $init_order
+ * @param type $limit
+ * @param type $item
+ * @param type $user
+ *
+ * @return type
+ */
 function get_allowed_type_hash($type, $init_where, $init_order, $limit, $item, $user) {
 	if ($item == 0) {
 		return md5($type . '_' . $init_where . '_' . $init_order . '_' . $limit . '_' . $user);
@@ -1472,6 +1593,14 @@ function get_allowed_type_hash($type, $init_where, $init_order, $limit, $item, $
 	}
 }
 
+/**
+ * prime_devices_type_cache
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $user
+ */
 function prime_devices_type_cache($hash, $user) {
 	$init_rows = -1;
 
@@ -1482,6 +1611,16 @@ function prime_devices_type_cache($hash, $user) {
 	}
 }
 
+/**
+ * get_cached_allowed_type
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $init_rows
+ *
+ * @return type
+ */
 function get_cached_allowed_type($hash, $init_rows) {
 	if ($hash !== false) {
 		// verify if the user needs to reset cache
@@ -1506,6 +1645,16 @@ function get_cached_allowed_type($hash, $init_rows) {
 	return array();
 }
 
+/**
+ * set_cached_allowed_type
+ *
+ * Insert description here
+ *
+ * @param type $type
+ * @param type $items
+ * @param type $hash
+ * @param type $init_rows
+ */
 function set_cached_allowed_type($type, &$items, $hash, $init_rows) {
 	if ($hash !== false && $init_rows == -1) {
 		cacti_log('Store InitRows:' . $init_rows . ', Hash:' . $hash, false, 'WEBUI', POLLER_VERBOSITY_HIGH);
@@ -1521,12 +1670,32 @@ function set_cached_allowed_type($type, &$items, $hash, $init_rows) {
 	}
 }
 
+/**
+ * clear_cached_allowed_types
+ *
+ * Insert description here
+ *
+ */
 function clear_cached_allowed_types() {
 	cacti_log('Killing Session Cache due to device or template change', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 	kill_session_var('sess_allowed_templates');
 	set_config_option('sess_allowed_templates_lastchange', time());
 }
 
+/**
+ * get_allowed_graph_templates
+ *
+ * Insert description here
+ *
+ * @param string $sql_where
+ * @param 'gt.name' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ * @param 0 $graph_template_id
+ *
+ * @return type
+ */
 function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	$hash      = get_allowed_type_hash('graph_templates', $sql_where, $order_by, $limit, $graph_template_id, $user);
 	$init_rows = $total_rows;
@@ -1688,6 +1857,21 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 	return $templates;
 }
 
+/**
+ * get_allowed_trees
+ *
+ * Insert description here
+ *
+ * @param false $edit
+ * @param false $return_sql
+ * @param string $sql_where
+ * @param 'name' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ *
+ * @return type
+ */
 function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
@@ -1780,6 +1964,19 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 	return $trees;
 }
 
+/**
+ * get_allowed_branches
+ *
+ * Insert description here
+ *
+ * @param string $sql_where
+ * @param 'name' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ *
+ * @return type
+ */
 function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
@@ -1910,6 +2107,20 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 	return $branches;
 }
 
+/**
+ * get_allowed_devices
+ *
+ * Insert description here
+ *
+ * @param string $sql_where
+ * @param 'description' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ * @param 0 $host_id
+ *
+ * @return type
+ */
 function get_allowed_devices($sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0, $host_id = 0) {
 	$hash      = get_allowed_type_hash('devices', '', '', '', 0, $user);
 	$init_rows = $total_rows;
@@ -2114,6 +2325,20 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	return $host_list;
 }
 
+/**
+ * get_allowed_sites
+ *
+ * Insert description here
+ *
+ * @param string $sql_where
+ * @param 'name' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ * @param 0 $site_id
+ *
+ * @return type
+ */
 function get_allowed_sites($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $site_id = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
@@ -2162,6 +2387,20 @@ function get_allowed_sites($sql_where = '', $order_by = 'name', $limit = '', &$t
 	return $sites;
 }
 
+/**
+ * get_allowed_site_devices
+ *
+ * Insert description here
+ *
+ * @param type $site_id
+ * @param string $sql_where
+ * @param 'description' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ *
+ * @return type
+ */
 function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
@@ -2345,6 +2584,20 @@ function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'descri
 	return $host_list;
 }
 
+/**
+ * get_allowed_graph_templates_normalized
+ *
+ * Insert description here
+ *
+ * @param string $sql_where
+ * @param 'name' $order_by
+ * @param string $limit
+ * @param 0 $total_rows
+ * @param 0 $user
+ * @param 0 $graph_template_id
+ *
+ * @return type
+ */
 function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	$templates = array_rekey(get_allowed_graph_templates($sql_where, $order_by, $limit, $total_rows, $user, $graph_template_id), 'id', 'name');
 
@@ -2399,6 +2652,15 @@ function get_host_array() {
 	return $return_devices;
 }
 
+/**
+ * get_allowed_ajax_hosts
+ *
+ * Insert description here
+ *
+ * @param true $include_any
+ * @param true $include_none
+ * @param string $sql_where
+ */
 function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_where = '') {
 	$return    = array();
 
@@ -2431,6 +2693,14 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	print json_encode($return);
 }
 
+/**
+ * get_allowed_ajax_graph_items
+ *
+ * Insert description here
+ *
+ * @param true $include_none
+ * @param string $sql_where
+ */
 function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 	$return    = array();
 
@@ -2457,6 +2727,18 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 	print json_encode($return);
 }
 
+/**
+ * get_allowed_graph_items
+ *
+ * Insert description here
+ *
+ * @param type $sql_where
+ * @param 'name' $sort
+ * @param 20 $limit
+ * @param 0 $user
+ *
+ * @return type
+ */
 function get_allowed_graph_items($sql_where, $sort = 'name' , $limit = 20, $user = 0) {
 	$return = array();
 
@@ -2492,6 +2774,15 @@ function get_allowed_graph_items($sql_where, $sort = 'name' , $limit = 20, $user
 	return $return;
 }
 
+/**
+ * secpass_login_process
+ *
+ * Insert description here
+ *
+ * @param type $username
+ *
+ * @return type
+ */
 function secpass_login_process($username) {
 	// Mark failed login attempts
 	$secPassLockFailed = read_config_option('secpass_lockfailed');
@@ -2619,6 +2910,15 @@ function secpass_login_process($username) {
 	return true;
 }
 
+/**
+ * secpass_check_pass
+ *
+ * Insert description here
+ *
+ * @param type $p
+ *
+ * @return type
+ */
 function secpass_check_pass($p) {
 	$minlen = read_config_option('secpass_minlen');
 
@@ -2683,6 +2983,16 @@ function secpass_check_pass($p) {
 	return 'ok';
 }
 
+/**
+ * secpass_check_history
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $p
+ *
+ * @return type
+ */
 function secpass_check_history($id, $p) {
 	$history = intval(read_config_option('secpass_history'));
 
@@ -2715,6 +3025,12 @@ function secpass_check_history($id, $p) {
 	return true;
 }
 
+/**
+ * rsa_check_keypair
+ *
+ * Insert description here
+ *
+ */
 function rsa_check_keypair() {
 	global $config;
 
@@ -2880,6 +3196,15 @@ function compat_password_needs_rehash($password, $algo, $options = array()) {
 	return true;
 }
 
+/**
+ * disable_2fa
+ *
+ * Insert description here
+ *
+ * @param type $user_id
+ *
+ * @return type
+ */
 function disable_2fa($user_id) {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
@@ -2911,6 +3236,15 @@ function disable_2fa($user_id) {
 	return json_encode($result);
 }
 
+/**
+ * enable_2fa
+ *
+ * Insert description here
+ *
+ * @param type $user_id
+ *
+ * @return type
+ */
 function enable_2fa($user_id) {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
@@ -2945,6 +3279,16 @@ function enable_2fa($user_id) {
 	return json_encode($result);
 }
 
+/**
+ * verify_2fa
+ *
+ * Insert description here
+ *
+ * @param type $user_id
+ * @param type $code
+ *
+ * @return type
+ */
 function verify_2fa($user_id, $code) {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
@@ -2975,6 +3319,15 @@ function verify_2fa($user_id, $code) {
 	return json_encode($result);
 }
 
+/**
+ * is_2fa_enabled
+ *
+ * Insert description here
+ *
+ * @param type $user
+ *
+ * @return type
+ */
 function is_2fa_enabled($user) {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
@@ -2984,6 +3337,13 @@ function is_2fa_enabled($user) {
 	return isset($current_user['2fa_enabled']) && ($current_user['2fa_enabled'] != '');
 }
 
+/**
+ * auth_login
+ *
+ * Insert description here
+ *
+ * @param type $user
+ */
 function auth_login($user) {
 	cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
 
@@ -3018,6 +3378,13 @@ function auth_login($user) {
 	$_SESSION['sess_user_id'] = $user['id'];
 }
 
+/**
+ * auth_post_login_redirect
+ *
+ * Insert description here
+ *
+ * @param type $user
+ */
 function auth_post_login_redirect($user) {
 	global $config;
 

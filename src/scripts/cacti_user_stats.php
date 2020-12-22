@@ -158,6 +158,14 @@ print 'valid:'      . $user_logins_valid .
 	' uactive:'   . $user_counter_active .
 	' usleeping:' . $user_counter_sleeping;
 
+/**
+ * get_session_save_path
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_session_save_path() {
 	if (session_save_path() !== '') {
 		/* if default temp path is not in use */

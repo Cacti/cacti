@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_2_7
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_2_7() {
 	db_install_add_key('data_input_data', 'index', 'data_template_data_id', array('data_template_data_id'));
 }

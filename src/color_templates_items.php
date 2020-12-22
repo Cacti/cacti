@@ -131,6 +131,12 @@ function aggregate_color_item_form_save() {
 	}
 }
 
+/**
+ * color_templates_item_dnd
+ *
+ * Insert description here
+ *
+ */
 function color_templates_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -244,6 +250,12 @@ function aggregate_color_item_moveup() {
 		array($current_sequence['sequence'], get_request_var('color_template_id'), $previous_sequence['color_template_item_id']));
 }
 
+/**
+ * aggregate_color_item_remove_confirm
+ *
+ * Insert description here
+ *
+ */
 function aggregate_color_item_remove_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');

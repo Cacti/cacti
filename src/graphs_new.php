@@ -73,6 +73,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * save_default_query_option
+ *
+ * Insert description here
+ *
+ */
 function save_default_query_option() {
 	$data_query = get_filter_request_var('query');
 	$default    = get_filter_request_var('item');
@@ -82,6 +88,12 @@ function save_default_query_option() {
 	print __('Default Settings Saved') . "\n";
 }
 
+/**
+ * save_user_filter
+ *
+ * Insert description here
+ *
+ */
 function save_user_filter() {
 	$rows = get_filter_request_var('rows');
 
@@ -95,6 +107,15 @@ function save_user_filter() {
 	set_user_setting('graph_type', $graph_type);
 }
 
+/**
+ * store_get_selected_dq_index
+ *
+ * Insert description here
+ *
+ * @param type $snmp_query_id
+ *
+ * @return type
+ */
 function store_get_selected_dq_index($snmp_query_id) {
 	// Always restore the last used filter, otherwise, use the default
 	if (!is_numeric($snmp_query_id)) {
@@ -114,6 +135,12 @@ function store_get_selected_dq_index($snmp_query_id) {
 	return $selected;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_graph')) {
 		/* summarize the 'create graph from host template/snmp index' stuff into an array */
@@ -162,6 +189,12 @@ function form_save() {
 	}
 }
 
+/**
+ * host_reload_query
+ *
+ * Insert description here
+ *
+ */
 function host_reload_query() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -171,6 +204,13 @@ function host_reload_query() {
 	run_data_query(get_request_var('host_id'), get_request_var('id'));
 }
 
+/**
+ * host_new_graphs_save
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ */
 function host_new_graphs_save($host_id) {
 	$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
 
@@ -238,6 +278,12 @@ function host_new_graphs_save($host_id) {
 	}
 }
 
+/**
+ * graphs
+ *
+ * Insert description here
+ *
+ */
 function graphs() {
 	global $config, $item_rows;
 

@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_6a
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_6a() {
 	/* fix import/export template bug */
 	$results = db_install_fetch_assoc('SELECT id FROM data_template');

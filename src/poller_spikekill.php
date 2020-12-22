@@ -154,6 +154,14 @@ unregister_process('spikekill', 'master', 0);
 
 exit(0);
 
+/**
+ * timeToRun
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function timeToRun() {
 	global $forcerun;
 
@@ -201,6 +209,13 @@ function timeToRun() {
 	}
 }
 
+/**
+ * debug
+ *
+ * Insert description here
+ *
+ * @param type $message
+ */
 function debug($message) {
 	global $debug;
 
@@ -209,6 +224,14 @@ function debug($message) {
 	}
 }
 
+/**
+ * purge_spike_backups
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function purge_spike_backups() {
 	$directory = read_config_option('spikekill_backupdir');
 	$retention = read_config_option('spikekil_backup');
@@ -247,6 +270,16 @@ function purge_spike_backups() {
 	return $purges;
 }
 
+/**
+ * kill_spikes
+ *
+ * Insert description here
+ *
+ * @param type $templates
+ * @param type $found
+ *
+ * @return type
+ */
 function kill_spikes($templates, &$found) {
 	global $debug, $config;
 
@@ -287,6 +320,12 @@ function display_version() {
 	print "Cacti SpikeKiller Batch Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help
+ *
+ * Insert description here
+ *
+ */
 function display_help() {
 	display_version();
 

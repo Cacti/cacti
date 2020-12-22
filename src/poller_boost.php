@@ -225,6 +225,13 @@ purge_cached_png_files($forcerun);
 
 exit(0);
 
+/**
+ * sig_handler
+ *
+ * Insert description here
+ *
+ * @param type $signo
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
@@ -243,6 +250,16 @@ function sig_handler($signo) {
 	}
 }
 
+/**
+ * output_rrd_data
+ *
+ * Insert description here
+ *
+ * @param type $start_time
+ * @param false $force
+ *
+ * @return type
+ */
 function output_rrd_data($start_time, $force = false) {
 	global $start, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 
@@ -693,6 +710,17 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	return cacti_sizeof($results);
 }
 
+/**
+ * boost_process_output
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ * @param type $outarray
+ * @param type $rrd_path
+ * @param type $rrd_tmplp
+ * @param type $rrdtool_pipe
+ */
 function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe) {
 	$outbuf = '';
 
@@ -718,6 +746,13 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 	}
 }
 
+/**
+ * log_boost_statistics
+ *
+ * Insert description here
+ *
+ * @param type $rrd_updates
+ */
 function log_boost_statistics($rrd_updates) {
 	global $start, $boost_stats_log, $verbose;
 
@@ -767,6 +802,13 @@ function log_boost_statistics($rrd_updates) {
 	}
 }
 
+/**
+ * purge_cached_png_files
+ *
+ * Insert description here
+ *
+ * @param type $forcerun
+ */
 function purge_cached_png_files($forcerun) {
 	/* remove stale png's from the cache.  I consider png's stale afer 1 hour */
 	if ((read_config_option('boost_png_cache_enable') == 'on') || $forcerun) {

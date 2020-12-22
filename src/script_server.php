@@ -289,6 +289,17 @@ while (1) {
 	}
 }
 
+/**
+ * parseArgs
+ *
+ * Insert description here
+ *
+ * @param type $string
+ * @param type $str_list
+ * @param false $debug
+ *
+ * @return type
+ */
 function parseArgs($string, &$str_list, $debug = false) {
 	$delimiters = array("'",'"');
 	$delimited  = false;

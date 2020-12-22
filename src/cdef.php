@@ -105,6 +105,13 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * draw_cdef_preview
+ *
+ * Insert description here
+ *
+ * @param type $cdef_id
+ */
 function draw_cdef_preview($cdef_id) {
 	?>
 	<tr class='even'>
@@ -115,6 +122,12 @@ function draw_cdef_preview($cdef_id) {
 	<?php
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	// make sure ids are numeric
 	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
@@ -176,6 +189,14 @@ function form_save() {
 	}
 }
 
+/**
+ * duplicate_cdef
+ *
+ * Insert description here
+ *
+ * @param type $_cdef_id
+ * @param type $cdef_title
+ */
 function duplicate_cdef($_cdef_id, $cdef_title) {
 	global $fields_cdef_edit;
 
@@ -214,6 +235,12 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $cdef_actions;
 
@@ -309,6 +336,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * cdef_item_remove_confirm
+ *
+ * Insert description here
+ *
+ */
 function cdef_item_remove_confirm() {
 	global $cdef_functions, $cdef_item_types, $custom_cdef_data_source_types;
 
@@ -348,6 +381,12 @@ function cdef_item_remove_confirm() {
 	form_end();
 }
 
+/**
+ * cdef_item_remove
+ *
+ * Insert description here
+ *
+ */
 function cdef_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('cdef_id');
@@ -356,6 +395,12 @@ function cdef_item_remove() {
 	db_execute_prepared('DELETE FROM cdef_items WHERE id = ?', array(get_request_var('cdef_id')));
 }
 
+/**
+ * item_movedown
+ *
+ * Insert description here
+ *
+ */
 function item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -365,6 +410,12 @@ function item_movedown() {
 	move_item_down('cdef_items', get_request_var('id'), 'cdef_id=' . get_request_var('cdef_id'));
 }
 
+/**
+ * item_moveup
+ *
+ * Insert description here
+ *
+ */
 function item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -374,6 +425,12 @@ function item_moveup() {
 	move_item_up('cdef_items', get_request_var('id'), 'cdef_id=' . get_request_var('cdef_id'));
 }
 
+/**
+ * item_remove
+ *
+ * Insert description here
+ *
+ */
 function item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -383,6 +440,12 @@ function item_remove() {
 	db_execute_prepared('DELETE FROM cdef_items WHERE id = ?', array(get_request_var('id')));
 }
 
+/**
+ * item_edit
+ *
+ * Insert description here
+ *
+ */
 function item_edit() {
 	global $cdef_item_types, $cdef_functions, $cdef_operators, $custom_data_source_types;
 
@@ -513,6 +576,12 @@ function item_edit() {
 	form_save_button('cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 }
 
+/**
+ * cdef_item_dnd
+ *
+ * Insert description here
+ *
+ */
 function cdef_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -543,6 +612,12 @@ function cdef_item_dnd() {
 	header('Location: cdef.php?action=edit&id=' . get_request_var('id'));
 }
 
+/**
+ * cdef_edit
+ *
+ * Insert description here
+ *
+ */
 function cdef_edit() {
 	global $cdef_item_types, $fields_cdef_edit;
 
@@ -700,6 +775,12 @@ function cdef_edit() {
 	<?php
 }
 
+/**
+ * cdef
+ *
+ * Insert description here
+ *
+ */
 function cdef() {
 	global $cdef_actions, $item_rows;
 

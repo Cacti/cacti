@@ -52,6 +52,12 @@ function dsstats_debug($message) {
 	}
 }
 
+/**
+ * dsstats_find_log_bad_maxvalues
+ *
+ * Insert description here
+ *
+ */
 function dsstats_find_log_bad_maxvalues() {
 	$last_date = read_config_option('dsstats_last_daily_run_time');
 

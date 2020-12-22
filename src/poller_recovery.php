@@ -58,6 +58,13 @@ function display_help() {
 	print "    --debug   - Display verbose output during execution\n\n";
 }
 
+/**
+ * sig_handler
+ *
+ * Insert description here
+ *
+ * @param type $signo
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
@@ -76,6 +83,13 @@ function sig_handler($signo) {
 	}
 }
 
+/**
+ * debug
+ *
+ * Insert description here
+ *
+ * @param type $string
+ */
 function debug($string) {
 	global $debug;
 

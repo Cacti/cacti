@@ -135,6 +135,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * api_auth_logout_everywhere
+ *
+ * Insert description here
+ *
+ */
 function api_auth_logout_everywhere() {
 	$user = $_SESSION['sess_user_id'];
 
@@ -145,6 +151,12 @@ function api_auth_logout_everywhere() {
 	}
 }
 
+/**
+ * api_auth_clear_user_settings
+ *
+ * Insert description here
+ *
+ */
 function api_auth_clear_user_settings() {
 	$user = $_SESSION['sess_user_id'];
 
@@ -163,6 +175,13 @@ function api_auth_clear_user_settings() {
 	}
 }
 
+/**
+ * api_auth_clear_user_setting
+ *
+ * Insert description here
+ *
+ * @param type $name
+ */
 function api_auth_clear_user_setting($name) {
 	global $settings_user;
 
@@ -197,6 +216,14 @@ function api_auth_clear_user_setting($name) {
 	}
 }
 
+/**
+ * api_auth_update_user_setting
+ *
+ * Insert description here
+ *
+ * @param type $name
+ * @param type $value
+ */
 function api_auth_update_user_setting($name, $value) {
 	global $settings_user;
 
@@ -227,6 +254,12 @@ function api_auth_update_user_setting($name, $value) {
 	}
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	global $settings_user;
 
@@ -268,6 +301,14 @@ function form_save() {
 	kill_session_var('selected_theme');
 }
 
+/**
+ * settings
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function settings() {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
@@ -463,6 +504,14 @@ function settings() {
 	form_end();
 }
 
+/**
+ * settings_2fa
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function settings_2fa() {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
@@ -634,6 +683,12 @@ function settings_2fa() {
 	form_end();
 }
 
+/**
+ * settings_javascript
+ *
+ * Insert description here
+ *
+ */
 function settings_javascript() {
 	global $config;
 

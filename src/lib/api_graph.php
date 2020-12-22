@@ -22,6 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * api_delete_graphs
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_ids
+ * @param type $delete_type
+ *
+ * @return type
+ */
 function api_delete_graphs(&$local_graph_ids, $delete_type) {
 	if (!cacti_sizeof($local_graph_ids)) {
 		return;
@@ -95,6 +105,15 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 	}
 }
 
+/**
+ * api_graph_remove
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ *
+ * @return type
+ */
 function api_graph_remove($local_graph_id) {
 	if (empty($local_graph_id)) {
 		return;
@@ -111,6 +130,13 @@ function api_graph_remove($local_graph_id) {
 	db_execute_prepared('DELETE FROM graph_local WHERE id = ?', array($local_graph_id));
 }
 
+/**
+ * api_graph_remove_aggregate_items
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_ids
+ */
 function api_graph_remove_aggregate_items($local_graph_ids) {
 	if (!is_array($local_graph_ids)) {
 		$local_graph_ids = explode(',', $local_graph_ids);
@@ -133,6 +159,15 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
 	}
 }
 
+/**
+ * api_graph_remove_multi
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_ids
+ *
+ * @return type
+ */
 function api_graph_remove_multi($local_graph_ids) {
 	if (!cacti_sizeof($local_graph_ids)) {
 		return;
@@ -298,6 +333,15 @@ function api_get_graphs_from_datasource($local_data_id) {
 		AND data_template_rrd.local_data_id = ?', array($local_data_id)), 'id', 'name');
 }
 
+/**
+ * api_duplicate_graph
+ *
+ * Insert description here
+ *
+ * @param type $_local_graph_id
+ * @param type $_graph_template_id
+ * @param type $graph_title
+ */
 function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
 	global $struct_graph, $struct_graph_item;
 
@@ -540,6 +584,16 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	}
 }
 
+/**
+ * api_graph_change_device
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param type $host_id
+ *
+ * @return type
+ */
 function api_graph_change_device($local_graph_id, $host_id) {
 	$dqgraph = db_fetch_cell_prepared('SELECT snmp_query_id
 		FROM graph_local

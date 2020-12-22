@@ -43,6 +43,13 @@ if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$poller_db_cnn_id = false;
 }
 
+/**
+ * sig_handler
+ *
+ * Insert description here
+ *
+ * @param type $signo
+ */
 function sig_handler($signo) {
 	global $poller_db_cnn_id;
 
@@ -855,6 +862,13 @@ if ($poller_id == 1) {
 	poller_maintenance();
 }
 
+/**
+ * bad_index_check
+ *
+ * Insert description here
+ *
+ * @param type $mibs
+ */
 function bad_index_check($mibs) {
 	if ($mibs == true) {
 		$bad_index_devices = db_fetch_cell('SELECT GROUP_CONCAT(DISTINCT dl.host_id)
@@ -882,6 +896,12 @@ function bad_index_check($mibs) {
 	}
 }
 
+/**
+ * poller_replicate_check
+ *
+ * Insert description here
+ *
+ */
 function poller_replicate_check() {
 	global $config;
 	include_once($config['base_path'] . '/lib/poller.php');
@@ -910,6 +930,13 @@ function poller_replicate_check() {
 	}
 }
 
+/**
+ * poller_enabled_check
+ *
+ * Insert description here
+ *
+ * @param type $poller_id
+ */
 function poller_enabled_check($poller_id) {
 	global $poller_db_cnn_id;
 
@@ -930,6 +957,20 @@ function poller_enabled_check($poller_id) {
 	}
 }
 
+/**
+ * log_cacti_stats
+ *
+ * Insert description here
+ *
+ * @param type $loop_start
+ * @param type $method
+ * @param type $concurrent_processes
+ * @param type $max_threads
+ * @param type $num_hosts
+ * @param type $hosts_per_process
+ * @param type $num_polling_items
+ * @param type $rrds_processed
+ */
 function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads, $num_hosts,
 	$hosts_per_process, $num_polling_items, $rrds_processed) {
 	global $poller_id, $poller_db_cnn_id, $logged;
@@ -1006,6 +1047,13 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	$logged = true;
 }
 
+/**
+ * poller_run_stats
+ *
+ * Insert description here
+ *
+ * @param type $loop_start
+ */
 function poller_run_stats($loop_start) {
 	global $poller_id, $poller_interval, $poller_lastrun;
 
@@ -1056,6 +1104,12 @@ function poller_run_stats($loop_start) {
 	db_execute('DELETE FROM poller_time_stats WHERE `time` <  DATE_SUB(NOW(), INTERVAL 24 HOUR)');
 }
 
+/**
+ * multiple_poller_boost_check
+ *
+ * Insert description here
+ *
+ */
 function multiple_poller_boost_check() {
 	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled="" AND id > 1');
 

@@ -132,6 +132,12 @@ default:
 	break;
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $actions;
 
@@ -241,6 +247,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * pages
+ *
+ * Insert description here
+ *
+ */
 function pages() {
 	global $item_rows, $config, $link_actions;
 
@@ -446,6 +458,13 @@ function pages() {
 	form_end();
 }
 
+/**
+ * page_delete
+ *
+ * Insert description here
+ *
+ * @param type $id
+ */
 function page_delete($id) {
 	db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($id));
 	db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id + 10000));
@@ -454,6 +473,12 @@ function page_delete($id) {
 	page_resort();
 }
 
+/**
+ * page_resort
+ *
+ * Insert description here
+ *
+ */
 function page_resort() {
 	$pages = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
 
@@ -467,6 +492,15 @@ function page_resort() {
 	}
 }
 
+/**
+ * page_move
+ *
+ * Insert description here
+ *
+ * @param type $pageid
+ * @param type $junk
+ * @param type $direction
+ */
 function page_move($pageid, $junk, $direction) {
 	$oldorder = db_fetch_cell_prepared('SELECT sortorder FROM external_links WHERE id = ?', array($pageid));
 	$neworder = $oldorder + $direction;
@@ -478,6 +512,12 @@ function page_move($pageid, $junk, $direction) {
 	}
 }
 
+/**
+ * edit_page
+ *
+ * Insert description here
+ *
+ */
 function edit_page() {
 	global $config, $poller_intervals;
 

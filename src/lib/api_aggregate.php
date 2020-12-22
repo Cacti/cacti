@@ -1353,6 +1353,17 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 	restore_error_handler();
 }
 
+/**
+ * aggregate_handle_ptile_type
+ *
+ * Insert description here
+ *
+ * @param type $member_graphs
+ * @param type $skipped_items
+ * @param type $local_graph_id
+ * @param type $_total
+ * @param type $_total_type
+ */
 function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_total, $_total_type) {
 	$comments_hrules = db_fetch_assoc('SELECT *
 		FROM graph_templates_item
@@ -1535,6 +1546,17 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 	}
 }
 
+/**
+ * aggregate_handle_stacked_lines
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param type $_orig_graph_type
+ * @param type $_total
+ * @param type $_total_type
+ * @param type $_total_prefix
+ */
 function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_total, $_total_type, $_total_prefix) {
 	// Handle the stcked line cases switch line widths
 	$width        = '0.01';
@@ -1603,6 +1625,17 @@ function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_to
 		array(GRAPH_ITEM_TYPE_LINESTACK, $local_graph_id));
 }
 
+/**
+ * aggregate_get_data_sources
+ *
+ * Insert description here
+ *
+ * @param type $graph_array
+ * @param type $data_sources
+ * @param type $graph_template
+ *
+ * @return type
+ */
 function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_template) {
 	/* find out which (if any) data sources are being used by this graph, so we can tell the user */
 	if (isset($graph_array)) {

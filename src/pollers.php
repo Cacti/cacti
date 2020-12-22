@@ -258,6 +258,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_poller')) {
 		// Common data
@@ -319,6 +325,17 @@ function form_save() {
 	}
 }
 
+/**
+ * poller_check_duplicate_poller_id
+ *
+ * Insert description here
+ *
+ * @param type $poller_id
+ * @param type $hostname
+ * @param type $column
+ *
+ * @return type
+ */
 function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	$ip_addresses  = array();
 	$ip_hostnames  = array();
@@ -389,6 +406,16 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	}
 }
 
+/**
+ * poller_host_duplicate
+ *
+ * Insert description here
+ *
+ * @param type $poller_id
+ * @param type $host
+ *
+ * @return type
+ */
 function poller_host_duplicate($poller_id, $host) {
 	if ($host == 'localhost') {
 		return true;
@@ -401,6 +428,12 @@ function poller_host_duplicate($poller_id, $host) {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $config, $poller_actions;
 
@@ -593,6 +626,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * poller_edit
+ *
+ * Insert description here
+ *
+ */
 function poller_edit() {
 	global $fields_poller_edit;
 
@@ -766,6 +805,15 @@ function poller_edit() {
 	form_save_buttons($form_buttons);
 }
 
+/**
+ * test_database_connection
+ *
+ * Insert description here
+ *
+ * @param array $poller
+ *
+ * @return type
+ */
 function test_database_connection($poller = array()) {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
@@ -810,6 +858,12 @@ function test_database_connection($poller = array()) {
 	}
 }
 
+/**
+ * pollers
+ *
+ * Insert description here
+ *
+ */
 function pollers() {
 	global $poller_actions, $poller_status, $item_rows;
 

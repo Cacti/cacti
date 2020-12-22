@@ -603,6 +603,16 @@ function get_selected_theme(string $theme = 'cacti'): string {
 	return $theme;
 }
 
+/**
+ * is_valid_theme
+ *
+ * Insert description here
+ *
+ * @param type $theme
+ * @param 0 $set_user
+ *
+ * @return type
+ */
 function is_valid_theme(string &$theme, int $set_user = 0) {
 	global $themes, $config;
 	$valid = true;
@@ -708,6 +718,15 @@ function is_error_message(): bool {
 	}
 }
 
+/**
+ * get_message_level
+ *
+ * Insert description here
+ *
+ * @param type $current_message
+ *
+ * @return type
+ */
 function get_message_level(array $current_message): int {
 	$current_level = MESSAGE_LEVEL_NONE;
 
@@ -900,6 +919,13 @@ function display_output_messages(): string {
 	return json_encode($omessage);
 }
 
+/**
+ * display_custom_error_message
+ *
+ * Insert description here
+ *
+ * @param type $message
+ */
 function display_custom_error_message(string $message): void {
 	raise_message('custom_error', $message);
 }
@@ -1643,6 +1669,15 @@ function is_mac_address(string $result): bool {
 	return filter_var($result, FILTER_VALIDATE_MAC);
 }
 
+/**
+ * is_hex_string
+ *
+ * Insert description here
+ *
+ * @param type $result
+ *
+ * @return type
+ */
 function is_hex_string(string &$result): bool {
 	if ($result == '') {
 		return false;
@@ -2717,6 +2752,14 @@ function get_web_browser(): string {
 	return 'other';
 }
 
+/**
+ * get_guest_account
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_guest_account(): int {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM user_auth
@@ -2726,6 +2769,14 @@ function get_guest_account(): int {
 	return intval($id);
 }
 
+/**
+ * get_template_account
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_template_account(): int {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM user_auth
@@ -3660,6 +3711,15 @@ function sanitize_unserialize_selected_items(array $items): array {
 	return $return_items;
 }
 
+/**
+ * cacti_escapeshellcmd
+ *
+ * Insert description here
+ *
+ * @param type $string
+ *
+ * @return type
+ */
 function cacti_escapeshellcmd(string $string): string {
 	global $config;
 
@@ -3750,6 +3810,12 @@ function set_page_refresh(array $refresh): void {
 	}
 }
 
+/**
+ * bottom_footer
+ *
+ * Insert description here
+ *
+ */
 function bottom_footer(): void {
 	global $config, $no_session_write;
 
@@ -3774,24 +3840,50 @@ function bottom_footer(): void {
 	db_close();
 }
 
+/**
+ * top_header
+ *
+ * Insert description here
+ *
+ */
 function top_header(): void {
 	global $config;
 
 	include_once($config['base_path'] . '/include/top_header.php');
 }
 
+/**
+ * top_graph_header
+ *
+ * Insert description here
+ *
+ */
 function top_graph_header(): void {
 	global $config;
 
 	include_once($config['base_path'] . '/include/top_graph_header.php');
 }
 
+/**
+ * general_header
+ *
+ * Insert description here
+ *
+ */
 function general_header(): void {
 	global $config;
 
 	include_once($config['base_path'] . '/include/top_general_header.php');
 }
 
+/**
+ * admin_email
+ *
+ * Insert description here
+ *
+ * @param type $subject
+ * @param type $message
+ */
 function admin_email(string $subject, string $message): void {
 	if (read_config_option('admin_user')) {
 		if (read_config_option('notify_admin')) {
@@ -3832,6 +3924,21 @@ function admin_email(string $subject, string $message): void {
 	}
 }
 
+/**
+ * send_mail
+ *
+ * Insert description here
+ *
+ * @param type $to
+ * @param type $from
+ * @param type $subject
+ * @param type $body
+ * @param array $attachments
+ * @param array $headers
+ * @param false $html
+ *
+ * @return type
+ */
 function send_mail($to, $from, string $subject, string $body, array $attachments = array(), array $headers = array(), bool $html = false): string {
 	$fromname = '';
 
@@ -4237,6 +4344,16 @@ function mailer($from, $to, $cc, $bcc, $replyto, string $subject, string $body, 
 	return $error;
 }
 
+/**
+ * record_mailer_error
+ *
+ * Insert description here
+ *
+ * @param type $retError
+ * @param type $mailError
+ *
+ * @return type
+ */
 function record_mailer_error(string $retError, string $mailError) : string {
 	$errorInfo = empty($retError) ? $mailError : $retError;
 	cacti_log('ERROR: ' . $errorInfo, false, 'CMDPHP MAILER');
@@ -4245,6 +4362,17 @@ function record_mailer_error(string $retError, string $mailError) : string {
 	return $errorInfo;
 }
 
+/**
+ * add_email_details
+ *
+ * Insert description here
+ *
+ * @param type $emails
+ * @param type $result
+ * @param type $addFunc
+ *
+ * @return type
+ */
 function add_email_details(array $emails, array &$result, callable $addFunc): string {
 	$arrText = array();
 
@@ -4272,6 +4400,17 @@ function add_email_details(array $emails, array &$result, callable $addFunc): st
 	return $text;
 }
 
+/**
+ * parse_email_details
+ *
+ * Insert description here
+ *
+ * @param type $emails
+ * @param 0 $max_records
+ * @param array $details
+ *
+ * @return type
+ */
 function parse_email_details(array $emails, int $max_records = 0, array $details = array()): array {
 	if (!is_array($emails)) {
 		$emails = array($emails);
@@ -4325,6 +4464,15 @@ function parse_email_details(array $emails, int $max_records = 0, array $details
 	return $results;
 }
 
+/**
+ * split_emaildetail
+ *
+ * Insert description here
+ *
+ * @param type $email
+ *
+ * @return type
+ */
 function split_emaildetail(string $email): array {
 	$rname  = '';
 	$rmail  = '';
@@ -4350,6 +4498,15 @@ function split_emaildetail(string $email): array {
 	return array('name' => $rname, 'email' => $rmail);
 }
 
+/**
+ * create_emailtext
+ *
+ * Insert description here
+ *
+ * @param type $e
+ *
+ * @return type
+ */
 function create_emailtext(array $e) : string {
 	if (empty($e['email'])) {
 		$text = '';
@@ -4364,6 +4521,20 @@ function create_emailtext(array $e) : string {
 	return $text;
 }
 
+/**
+ * ping_mail_server
+ *
+ * Insert description here
+ *
+ * @param type $host
+ * @param type $port
+ * @param type $user
+ * @param type $password
+ * @param 10 $timeout
+ * @param 'none' $secure
+ *
+ * @return type
+ */
 function ping_mail_server(string $host, int $port, int $user, string $password, int $timeout = 10, string $secure = 'none') {
 	global $config;
 
@@ -4421,6 +4592,12 @@ function ping_mail_server(string $host, int $port, int $user, string $password, 
 	return $results;
 }
 
+/**
+ * email_test
+ *
+ * Insert description here
+ *
+ */
 function email_test(): void {
 	global $config;
 
@@ -4615,6 +4792,12 @@ function get_dns_from_ip(string $ip, string $dns, int $timeout = 1000): string {
 	return strtoupper($ip);
 }
 
+/**
+ * poller_maintenance
+ *
+ * Insert description here
+ *
+ */
 function poller_maintenance(): void {
 	global $config;
 
@@ -4630,6 +4813,14 @@ function poller_maintenance(): void {
 	exec_background($command_string, $extra_args);
 }
 
+/**
+ * clog_admin
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function clog_admin(): bool {
 	if (!isset($_SESSION['sess_clog_level'])) {
 		clog_authorized();
@@ -4642,6 +4833,14 @@ function clog_admin(): bool {
 	}
 }
 
+/**
+ * clog_authorized
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function clog_authorized(): bool {
 	if (!isset($_SESSION['sess_clog_level'])) {
 		if (isset($_SESSION['sess_user_id'])) {
@@ -4670,6 +4869,13 @@ function clog_authorized(): bool {
 	}
 }
 
+/**
+ * update_system_mibs
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ */
 function update_system_mibs(int $host_id): void {
 	global $sessions;
 
@@ -4702,6 +4908,19 @@ function update_system_mibs(int $host_id): void {
 	}
 }
 
+/**
+ * cacti_debug_backtrace
+ *
+ * Insert description here
+ *
+ * @param string $entry
+ * @param false $html
+ * @param true $record
+ * @param 0 $limit
+ * @param 0 $skip
+ *
+ * @return type
+ */
 function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $record = true, int $limit = 0, int $skip = 0): string {
 	global $config;
 
@@ -4828,6 +5047,15 @@ function calculate_percentiles(array $data, int $percentile = 95, bool $whisker 
 	return $results;
 }
 
+/**
+ * get_timeinstate
+ *
+ * Insert description here
+ *
+ * @param type $host
+ *
+ * @return type
+ */
 function get_timeinstate(array $host): string {
 	$interval = read_config_option('poller_interval');
 
@@ -4850,10 +5078,32 @@ function get_timeinstate(array $host): string {
 	return ($time > 0) ? get_daysfromtime($time) : __('N/A');
 }
 
+/**
+ * get_uptime
+ *
+ * Insert description here
+ *
+ * @param type $host
+ *
+ * @return type
+ */
 function get_uptime(array $host): string {
 	return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime($host['snmp_sysUpTimeInstance'] / 100) : __('N/A');
 }
 
+/**
+ * get_daysfromtime
+ *
+ * Insert description here
+ *
+ * @param type $time
+ * @param false $secs
+ * @param string $pad
+ * @param DAYS_FORMAT_SHORT $format
+ * @param false $all
+ *
+ * @return type
+ */
 function get_daysfromtime(int $time, bool $secs = false, string $pad = '', int $format = DAYS_FORMAT_SHORT, bool $all = false): int {
 	global $days_from_time_settings;
 
@@ -4889,6 +5139,17 @@ function get_daysfromtime(int $time, bool $secs = false, string $pad = '', int $
 	return (int) trim($result, $text['suffix']);
 }
 
+/**
+ * padleft
+ *
+ * Insert description here
+ *
+ * @param string $pad
+ * @param string $value
+ * @param 2 $min
+ *
+ * @return type
+ */
 function padleft(string $pad = '', $value = '', int $min = 2): string {
 	$result = "$value";
 
@@ -4904,6 +5165,16 @@ function padleft(string $pad = '', $value = '', int $min = 2): string {
 	return $result;
 }
 
+/**
+ * get_classic_tabimage
+ *
+ * Insert description here
+ *
+ * @param type $text
+ * @param false $down
+ *
+ * @return type
+ */
 function get_classic_tabimage(string $text, bool $down = false): string {
 	global $config;
 
@@ -5046,6 +5317,12 @@ function get_classic_tabimage(string $text, bool $down = false): string {
 	return '';
 }
 
+/**
+ * cacti_oid_numeric_format
+ *
+ * Insert description here
+ *
+ */
 function cacti_oid_numeric_format(): void {
 	if (function_exists('snmp_set_oid_output_format')) {
 		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
@@ -5054,6 +5331,15 @@ function cacti_oid_numeric_format(): void {
 	}
 }
 
+/**
+ * IgnoreErrorHandler
+ *
+ * Insert description here
+ *
+ * @param type $message
+ *
+ * @return type
+ */
 function IgnoreErrorHandler(string $message): bool {
 	global $snmp_error;
 
@@ -5091,6 +5377,19 @@ function IgnoreErrorHandler(string $message): bool {
 	return false;
 }
 
+/**
+ * CactiErrorHandler
+ *
+ * Insert description here
+ *
+ * @param type $level
+ * @param type $message
+ * @param type $file
+ * @param type $line
+ * @param array $context
+ *
+ * @return type
+ */
 function CactiErrorHandler(int $level, string $message, string $file, int $line, array $context = array()): bool {
 	global $phperrors;
 
@@ -5160,6 +5459,14 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 	return false;
 }
 
+/**
+ * CactiShutdownHandler
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function CactiShutdownHandler(): bool {
 	global $phperrors;
 	$error = error_get_last();
@@ -5502,6 +5809,16 @@ function repair_system_data_input_methods(string $step = 'import'): void {
 }
 
 if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
+	/**
+	 * posix_kill
+	 *
+	 * Insert description here
+	 *
+	 * @param type $pid
+	 * @param SIGTERM $signal
+	 *
+	 * @return type
+	 */
 	function posix_kill(int $pid, int $signal = SIGTERM) {
 		$wmi   = new COM('winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2');
 		$procs = $wmi->ExecQuery("SELECT ProcessId FROM Win32_Process WHERE ProcessId='" . $pid . "'");
@@ -5520,6 +5837,15 @@ if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' &
 	}
 }
 
+/**
+ * is_ipaddress
+ *
+ * Insert description here
+ *
+ * @param string $ip_address
+ *
+ * @return type
+ */
 function is_ipaddress(string $ip_address = ''): bool {
 	/* check for ipv4/v6 */
 	if (function_exists('filter_var')) {
@@ -5576,6 +5902,14 @@ function date_time_format(): string {
 	}
 }
 
+/**
+ * get_source_timestamp
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_source_timestamp(): array {
 	global $config;
 	$timestamp = 0;
@@ -5594,6 +5928,16 @@ function get_source_timestamp(): array {
 	return $parts;
 }
 
+/**
+ * format_cacti_version
+ *
+ * Insert description here
+ *
+ * @param type $version
+ * @param CACTI_VERSION_FORMAT_FULL $format
+ *
+ * @return type
+ */
 function format_cacti_version(string $version, int $format = CACTI_VERSION_FORMAT_FULL) {
 	if ($version == 'new_install') {
 		$version = ($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
@@ -5617,6 +5961,15 @@ function format_cacti_version(string $version, int $format = CACTI_VERSION_FORMA
 	return implode('.', $parts);
 }
 
+/**
+ * format_cacti_version_text
+ *
+ * Insert description here
+ *
+ * @param type $version
+ *
+ * @return type
+ */
 function format_cacti_version_text($version) {
 	$version = format_cacti_version($version);
 
@@ -5779,6 +6132,15 @@ function cacti_version_compare(string $version1, string $version2, string $opera
 	return false;
 }
 
+/**
+ * is_install_needed
+ *
+ * Insert description here
+ *
+ * @param null $version
+ *
+ * @return type
+ */
 function is_install_needed(?string $version = null): bool {
 	$mode = '==';
 	$db   = get_cacti_db_version();
@@ -5801,6 +6163,15 @@ function is_install_needed(?string $version = null): bool {
 	return $result;
 }
 
+/**
+ * is_cacti_develop
+ *
+ * Insert description here
+ *
+ * @param null $version
+ *
+ * @return type
+ */
 function is_cacti_develop(?string $version = null): bool {
 	static $isStaticRelease = null;
 
@@ -5824,6 +6195,15 @@ function is_cacti_develop(?string $version = null): bool {
 	return $isRelease;
 }
 
+/**
+ * is_cacti_release
+ *
+ * Insert description here
+ *
+ * @param null $version
+ *
+ * @return type
+ */
 function is_cacti_release(?string $version = null): bool {
 	static $isStaticRelease = null;
 
@@ -5959,6 +6339,15 @@ function cacti_gethostbyname(string $hostname, int $type = 0): string {
 	return $hostname;
 }
 
+/**
+ * get_nonsystem_data_input
+ *
+ * Insert description here
+ *
+ * @param type $data_input_id
+ *
+ * @return type
+ */
 function get_nonsystem_data_input(int $data_input_id): int {
 	global $hash_system_data_inputs;
 
@@ -5970,10 +6359,26 @@ function get_nonsystem_data_input(int $data_input_id): int {
 	return intval($diid);
 }
 
+/**
+ * get_rrdtool_version
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_rrdtool_version(): string {
 	return str_replace('rrd-', '', str_replace('.x', '.0', read_config_option('rrdtool_version', true)));
 }
 
+/**
+ * get_installed_rrdtool_version
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_installed_rrdtool_version(): string {
 	global $config, $rrdtool_versions;
 
@@ -5999,6 +6404,15 @@ function get_installed_rrdtool_version(): string {
 	return $version;
 }
 
+/**
+ * get_md5_hash
+ *
+ * Insert description here
+ *
+ * @param type $path
+ *
+ * @return type
+ */
 function get_md5_hash($path): string {
 	$md5 = 0;
 
@@ -6020,6 +6434,16 @@ function get_md5_hash($path): string {
 	return $md5;
 }
 
+/**
+ * get_md5_include_js
+ *
+ * Insert description here
+ *
+ * @param type $path
+ * @param false $async
+ *
+ * @return type
+ */
 function get_md5_include_js(string $path, bool $async = false): string {
 	global $config;
 
@@ -6036,12 +6460,30 @@ function get_md5_include_js(string $path, bool $async = false): string {
 	}
 }
 
+/**
+ * get_md5_include_css
+ *
+ * Insert description here
+ *
+ * @param type $path
+ *
+ * @return type
+ */
 function get_md5_include_css(string $path): string {
 	global $config;
 
 	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
 }
 
+/**
+ * is_resource_writable
+ *
+ * Insert description here
+ *
+ * @param type $path
+ *
+ * @return type
+ */
 function is_resource_writable(string $path): bool {
 	if (empty($path)) {
 		return false;
@@ -6071,6 +6513,16 @@ function is_resource_writable(string $path): bool {
 	return false;
 }
 
+/**
+ * get_validated_theme
+ *
+ * Insert description here
+ *
+ * @param type $theme
+ * @param type $defaultTheme
+ *
+ * @return type
+ */
 function get_validated_theme(string $theme, string $defaultTheme): string {
 	global $config;
 
@@ -6085,6 +6537,16 @@ function get_validated_theme(string $theme, string $defaultTheme): string {
 	return $defaultTheme;
 }
 
+/**
+ * get_validated_language
+ *
+ * Insert description here
+ *
+ * @param type $language
+ * @param type $defaultLanguage
+ *
+ * @return type
+ */
 function get_validated_language(string $language, string $defaultLanguage): string {
 	if (isset($language) && strlen($language)) {
 		return $language;
@@ -6093,6 +6555,14 @@ function get_validated_language(string $language, string $defaultLanguage): stri
 	return $defaultLanguage;
 }
 
+/**
+ * get_running_user
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_running_user(): string {
 	global $config;
 
@@ -6184,6 +6654,14 @@ function get_running_user(): string {
 	return (empty($tmp_user) ? 'apache' : $tmp_user);
 }
 
+/**
+ * get_debug_prefix
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_debug_prefix(): string {
 	$dateTime = new DateTime('NOW');
 	$dateTime = $dateTime->format('Y-m-d H:i:s.u');
@@ -6191,6 +6669,14 @@ function get_debug_prefix(): string {
 	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
 }
 
+/**
+ * get_client_addr
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_client_addr(): string {
 	$http_addr_headers = array(
 		'X-Forwarded-For',
@@ -6232,6 +6718,15 @@ function get_client_addr(): string {
 	return $client_addr;
 }
 
+/**
+ * cacti_pton
+ *
+ * Insert description here
+ *
+ * @param type $ipaddr
+ *
+ * @return type
+ */
 function cacti_pton(string $ipaddr): ?array {
 	// Strip out the netmask, if there is one.
 	$subnet_pos = strpos($ipaddr, '/');
@@ -6297,6 +6792,15 @@ function cacti_pton(string $ipaddr): ?array {
 	return $result;
 }
 
+/**
+ * cacti_ntop
+ *
+ * Insert description here
+ *
+ * @param type $addr
+ *
+ * @return type
+ */
 function cacti_ntop($addr): int {
 	if (empty($addr)) {
 		return false;
@@ -6313,6 +6817,16 @@ function cacti_ntop($addr): int {
 	return @inet_ntop($addr);
 }
 
+/**
+ * cacti_ntoc
+ *
+ * Insert description here
+ *
+ * @param type $subnet
+ * @param false $ipv6
+ *
+ * @return type
+ */
 function cacti_ntoc($subnet, bool $ipv6 = false): int {
 	$result = false;
 	$count  = 0;
@@ -6329,6 +6843,14 @@ function cacti_ntoc($subnet, bool $ipv6 = false): int {
 	return $count;
 }
 
+/**
+ * cacti_ptoa
+ *
+ * Insert description here
+ *
+ * @param type $title
+ * @param type $addr
+ */
 function cacti_ptoa(string $title, $addr): void {
 	// Let's display it as hexadecimal format
 	foreach (str_split($addr) as $char) {
@@ -6336,20 +6858,55 @@ function cacti_ptoa(string $title, $addr): void {
 	}
 }
 
+/**
+ * cacti_sizeof
+ *
+ * Insert description here
+ *
+ * @param type $array
+ *
+ * @return type
+ */
 function cacti_sizeof($array): int {
 	return ($array === false || !is_array($array)) ? 0 : sizeof($array);
 }
 
+/**
+ * cacti_count
+ *
+ * Insert description here
+ *
+ * @param type $array
+ *
+ * @return type
+ */
 function cacti_count($array): int {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
 
+/**
+ * is_function_enabled
+ *
+ * Insert description here
+ *
+ * @param type $name
+ *
+ * @return type
+ */
 function is_function_enabled(string $name): bool {
 	return function_exists($name) &&
 		!in_array($name, array_map('trim', explode(', ', ini_get('disable_functions'))), true) &&
 		strtolower(ini_get('safe_mode')) != 1;
 }
 
+/**
+ * is_page_ajax
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function is_page_ajax(): bool {
 	if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 		return true;
@@ -6358,6 +6915,12 @@ function is_page_ajax(): bool {
 	return false;
 }
 
+/**
+ * raise_ajax_permission_denied
+ *
+ * Insert description here
+ *
+ */
 function raise_ajax_permission_denied(): bool {
 	if (is_page_ajax()) {
 		header('HTTP/1.1 401 ' . __('Permission Denied'));

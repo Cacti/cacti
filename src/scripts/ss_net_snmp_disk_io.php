@@ -13,6 +13,15 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
+/**
+ * ss_net_snmp_disk_io
+ *
+ * Insert description here
+ *
+ * @param string $host_id_or_hostname
+ *
+ * @return type
+ */
 function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 	global $environ, $poller_id, $config;
 

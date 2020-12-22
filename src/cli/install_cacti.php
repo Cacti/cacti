@@ -346,6 +346,15 @@ function set_install_multioption(&$options, $key, $display_name, $value, $prefix
 	}
 }
 
+/**
+ * debug_install_array
+ *
+ * Insert description here
+ *
+ * @param type $parent
+ * @param type $contents
+ * @param 0 $indent
+ */
 function debug_install_array($parent, $contents, $indent = 0) {
 	$hasContents = false;
 
@@ -363,6 +372,13 @@ function debug_install_array($parent, $contents, $indent = 0) {
 	}
 }
 
+/**
+ * process_install_errors
+ *
+ * Insert description here
+ *
+ * @param type $results
+ */
 function process_install_errors($results) {
 	if (isset($results['Errors']) && cacti_sizeof($results['Errors']) > 0) {
 		$errors   = $results['Errors'];

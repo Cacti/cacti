@@ -48,6 +48,7 @@ $cli_install = true;
 
 if (cacti_sizeof($params) == 0) {
 	log_install_always('','no parameters passed' . PHP_EOL);
+
 	exit();
 }
 

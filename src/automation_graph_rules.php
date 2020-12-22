@@ -95,6 +95,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * save
+ *
+ * Insert description here
+ *
+ */
 function save() {
 	if (isset_request_var('save_component_automation_graph_rule')) {
 		/* ================= input validation ================= */
@@ -185,6 +191,12 @@ function save() {
 	}
 }
 
+/**
+ * automation_graph_rules_form_actions
+ *
+ * Insert description here
+ *
+ */
 function automation_graph_rules_form_actions() {
 	global $config, $automation_graph_rules_actions;
 
@@ -309,6 +321,12 @@ function automation_graph_rules_form_actions() {
 	bottom_footer();
 }
 
+/**
+ * automation_graph_rules_item_movedown
+ *
+ * Insert description here
+ *
+ */
 function automation_graph_rules_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -323,6 +341,12 @@ function automation_graph_rules_item_movedown() {
 	}
 }
 
+/**
+ * automation_graph_rules_item_moveup
+ *
+ * Insert description here
+ *
+ */
 function automation_graph_rules_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -337,6 +361,12 @@ function automation_graph_rules_item_moveup() {
 	}
 }
 
+/**
+ * automation_graph_rules_item_remove
+ *
+ * Insert description here
+ *
+ */
 function automation_graph_rules_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -350,6 +380,12 @@ function automation_graph_rules_item_remove() {
 	}
 }
 
+/**
+ * automation_graph_rules_item_edit
+ *
+ * Insert description here
+ *
+ */
 function automation_graph_rules_item_edit() {
 	global $config;
 
@@ -405,6 +441,12 @@ function automation_graph_rules_item_edit() {
 	<?php
 }
 
+/**
+ * automation_graph_rules_remove
+ *
+ * Insert description here
+ *
+ */
 function automation_graph_rules_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -434,6 +476,12 @@ function automation_graph_rules_remove() {
 	}
 }
 
+/**
+ * automation_change_query_type
+ *
+ * Insert description here
+ *
+ */
 function automation_change_query_type() {
 	$id = get_filter_request_var('id');
 
@@ -467,6 +515,12 @@ function automation_change_query_type() {
 	}
 }
 
+/**
+ * automation_graph_rules_edit
+ *
+ * Insert description here
+ *
+ */
 function automation_graph_rules_edit() {
 	global $config;
 	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
@@ -670,6 +724,12 @@ function automation_graph_rules_edit() {
 	<?php
 }
 
+/**
+ * automation_graph_rules
+ *
+ * Insert description here
+ *
+ */
 function automation_graph_rules() {
 	global $automation_graph_rules_actions, $config, $item_rows;
 

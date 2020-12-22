@@ -42,18 +42,44 @@ if (file_exists(__DIR__ . '/../include/cli_check.php')) {
 }
 
 if (!function_exists('cacti_sizeof')) {
+	/**
+	 * cacti_sizeof
+	 *
+	 * Insert description here
+	 *
+	 * @param type $object
+	 *
+	 * @return type
+	 */
 	function cacti_sizeof($object) {
 		return cacti_sizeof($object);
 	}
 }
 
 if (!function_exists('get_cacti_cli_version')) {
+	/**
+	 * get_cacti_cli_version
+	 *
+	 * Insert description here
+	 *
+	 *
+	 * @return type
+	 */
 	function get_cacti_cli_version() {
 		return db_fetch_cell('SELECT cacti FROM version');
 	}
 }
 
 if (!function_exists('is_resource_writable')) {
+	/**
+	 * is_resource_writable
+	 *
+	 * Insert description here
+	 *
+	 * @param type $path
+	 *
+	 * @return type
+	 */
 	function is_resource_writable($path) {
 		if ($path[strlen($path) - 1] == '/') {
 			return is_resource_writable($path.uniqid(mt_rand()).'.tmp');
@@ -866,6 +892,14 @@ function processXML(&$output) {
 	return $rrd;
 }
 
+/**
+ * createRRDFileFromXML
+ *
+ * Insert description here
+ *
+ * @param type $xmlfile
+ * @param type $rrdfile
+ */
 function createRRDFileFromXML($xmlfile, $rrdfile) {
 	global $rrdtool;
 
@@ -876,14 +910,43 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 	if (strlen($response)) print $response . PHP_EOL;
 }
 
+/**
+ * XMLrip
+ *
+ * Insert description here
+ *
+ * @param type $tag
+ * @param type $line
+ *
+ * @return type
+ */
 function XMLrip($tag, $line) {
 	return trim(str_replace("<$tag>", '', str_replace("</$tag>", '', $line)));
 }
 
+/**
+ * writeXMLFile
+ *
+ * Insert description here
+ *
+ * @param type $output
+ * @param type $xmlfile
+ *
+ * @return type
+ */
 function writeXMLFile($output, $xmlfile) {
 	return file_put_contents($xmlfile, $output);
 }
 
+/**
+ * backupRRDFile
+ *
+ * Insert description here
+ *
+ * @param type $rrdfile
+ *
+ * @return type
+ */
 function backupRRDFile($rrdfile) {
 	global $tempdir, $seed, $html;
 
@@ -951,6 +1014,13 @@ function preProcessXML(&$output) {
 	}
 }
 
+/**
+ * debug
+ *
+ * Insert description here
+ *
+ * @param type $string
+ */
 function debug($string) {
 	global $debug;
 

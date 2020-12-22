@@ -60,6 +60,15 @@ function api_data_source_deletable($local_data_id) {
 	}
 }
 
+/**
+ * api_data_source_remove
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ *
+ * @return type
+ */
 function api_data_source_remove($local_data_id) {
 	if (empty($local_data_id)) {
 		return;
@@ -180,6 +189,15 @@ function api_data_source_remove($local_data_id) {
 	api_data_source_cache_crc_update($poller_id);
 }
 
+/**
+ * api_data_source_remove_multi
+ *
+ * Insert description here
+ *
+ * @param type $local_data_ids
+ *
+ * @return type
+ */
 function api_data_source_remove_multi($local_data_ids) {
 	// Shortcut out if no data
 	if (!cacti_sizeof($local_data_ids)) {
@@ -323,6 +341,13 @@ function api_data_source_remove_multi($local_data_ids) {
 	}
 }
 
+/**
+ * api_data_source_enable
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ */
 function api_data_source_enable($local_data_id) {
 	db_execute_prepared("UPDATE data_template_data
 		SET active = 'on'
@@ -344,6 +369,13 @@ function api_data_source_enable($local_data_id) {
 	update_poller_cache($local_data_id, true);
  }
 
+/**
+ * api_data_source_disable
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ */
 function api_data_source_disable($local_data_id) {
 	db_execute_prepared('DELETE FROM poller_item
 		WHERE local_data_id = ?',
@@ -371,6 +403,13 @@ function api_data_source_disable($local_data_id) {
 	}
 }
 
+/**
+ * api_data_source_disable_multi
+ *
+ * Insert description here
+ *
+ * @param type $local_data_ids
+ */
 function api_data_source_disable_multi($local_data_ids) {
 	/* initialize variables */
 	$ids_to_disable = '';
@@ -440,6 +479,15 @@ function api_data_source_disable_multi($local_data_ids) {
 	}
 }
 
+/**
+ * api_data_source_get_interface_speed
+ *
+ * Insert description here
+ *
+ * @param type $data_local
+ *
+ * @return type
+ */
 function api_data_source_get_interface_speed($data_local) {
 	$ifHighSpeed = db_fetch_cell_prepared('SELECT field_value
 		FROM host_snmp_cache
@@ -492,6 +540,14 @@ function api_data_source_get_interface_speed($data_local) {
 	return $speed;
 }
 
+/**
+ * api_data_source_change_host
+ *
+ * Insert description here
+ *
+ * @param type $data_sources
+ * @param type $device_id
+ */
 function api_data_source_change_host($data_sources, $device_id) {
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
@@ -514,6 +570,15 @@ function api_data_source_change_host($data_sources, $device_id) {
 	}
 }
 
+/**
+ * api_reapply_suggested_data_source_data
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ *
+ * @return type
+ */
 function api_reapply_suggested_data_source_data($local_data_id) {
 	$data_template_data_id = db_fetch_cell_prepared('SELECT id
 		FROM data_template_data
@@ -601,6 +666,15 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 	}
 }
 
+/**
+ * api_duplicate_data_source
+ *
+ * Insert description here
+ *
+ * @param type $_local_data_id
+ * @param type $_data_template_id
+ * @param type $data_source_title
+ */
 function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
 	global $struct_data_source, $struct_data_source_item;
 

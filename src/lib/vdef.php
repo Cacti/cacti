@@ -83,6 +83,14 @@ function get_vdef($vdef_id, $display = false) {
 	return $vdef_string;
 }
 
+/**
+ * preset_vdef_form_list
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function preset_vdef_form_list() {
 	$fields_vdef_edit = array(
 		'name' => array(
@@ -97,6 +105,14 @@ function preset_vdef_form_list() {
 	return $fields_vdef_edit;
 }
 
+/**
+ * preset_vdef_item_form_list
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function preset_vdef_item_form_list() {
 	$fields_vdef_item_edit = array(
 		'sequence' => 'sequence',

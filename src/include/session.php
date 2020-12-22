@@ -10,16 +10,41 @@ if (php_sapi_name() == 'cli') {
 	return;
 }
 
+/**
+ * cacti_db_session_open
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function cacti_db_session_open() {
 	// Cacti database is already active
 	return true;
 }
 
+/**
+ * cacti_db_session_close
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function cacti_db_session_close() {
 	// Cacti database is not closed by sessions
 	return true;
 }
 
+/**
+ * cacti_db_session_read
+ *
+ * Insert description here
+ *
+ * @param type $id
+ *
+ * @return type
+ */
 function cacti_db_session_read($id) {
 	db_execute_prepared('UPDATE IGNORE sessions SET access = ? WHERE id = ?', array(time(), $id));
 	$session = db_fetch_cell_prepared('SELECT data FROM sessions WHERE id = ?', array($id));
@@ -32,16 +57,44 @@ function cacti_db_session_read($id) {
 	return $session;
 }
 
+/**
+ * cacti_db_session_write
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $data
+ *
+ * @return type
+ */
 function cacti_db_session_write($id, $data) {
 	$access = time();
 
 	return db_execute_prepared('REPLACE INTO sessions VALUES (?, ?, ?, ?)', array($id, $_SERVER['REMOTE_ADDR'], $access, $data));
 }
 
+/**
+ * cacti_db_session_destroy
+ *
+ * Insert description here
+ *
+ * @param type $id
+ *
+ * @return type
+ */
 function cacti_db_session_destroy($id) {
 	return db_execute_prepared('DELETE FROM sessions WHERE id = ?', array($id));
 }
 
+/**
+ * cacti_db_session_clean
+ *
+ * Insert description here
+ *
+ * @param type $max
+ *
+ * @return type
+ */
 function cacti_db_session_clean($max) {
 	$old = time() - $max;
 

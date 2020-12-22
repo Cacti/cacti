@@ -77,6 +77,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
@@ -304,6 +310,12 @@ function form_save() {
 	}
 }
 
+/**
+ * item_movedown
+ *
+ * Insert description here
+ *
+ */
 function item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -336,6 +348,12 @@ function item_movedown() {
 	}
 }
 
+/**
+ * item_moveup
+ *
+ * Insert description here
+ *
+ */
 function item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -368,6 +386,12 @@ function item_moveup() {
 	}
 }
 
+/**
+ * item_remove
+ *
+ * Insert description here
+ *
+ */
 function item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -397,6 +421,12 @@ function item_remove() {
 	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_item_id = ?', array(get_request_var('id')));
 }
 
+/**
+ * item_edit
+ *
+ * Insert description here
+ *
+ */
 function item_edit() {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 

@@ -85,6 +85,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	// sanitize ids
 	if (isset_request_var('graph_template_id') && !is_numeric(get_nfilter_request_var('graph_template_id'))) {
@@ -203,6 +209,12 @@ function form_save() {
 	header('Location: graph_templates.php?action=template_edit&id=' . (empty($graph_template_id) ? get_nfilter_request_var('graph_template_id') : $graph_template_id));
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $graph_actions, $config, $image_types;
 
@@ -405,6 +417,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * item
+ *
+ * Insert description here
+ *
+ */
 function item() {
 	global $consolidation_functions, $graph_item_types;
 
@@ -492,6 +510,12 @@ function item() {
 	html_end_box();
 }
 
+/**
+ * template_edit
+ *
+ * Insert description here
+ *
+ */
 function template_edit() {
 	global $struct_graph, $image_types, $fields_graph_template_template_edit;
 
@@ -598,6 +622,12 @@ function template_edit() {
 	<?php
 }
 
+/**
+ * template
+ *
+ * Insert description here
+ *
+ */
 function template() {
 	global $graph_actions, $item_rows, $image_types;
 

@@ -22,6 +22,14 @@
  +-------------------------------------------------------------------------+
  */
 
+/**
+ * getHostTemplates
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function getHostTemplates() {
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY id');
 
@@ -36,6 +44,15 @@ function getHostTemplates() {
 	return $host_templates;
 }
 
+/**
+ * getHostsByDescription
+ *
+ * Insert description here
+ *
+ * @param false $hostTemplateIds
+ *
+ * @return type
+ */
 function getHostsByDescription($hostTemplateIds = false) {
 	$hosts = array();
 
@@ -73,6 +90,14 @@ function getHostsByDescription($hostTemplateIds = false) {
 	return $hosts;
 }
 
+/**
+ * getSites
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function getSites() {
 	$sites    = array();
 	$tmpArray = db_fetch_assoc('SELECT * FROM sites ORDER BY id');
@@ -86,6 +111,15 @@ function getSites() {
 	return $sites;
 }
 
+/**
+ * getHosts
+ *
+ * Insert description here
+ *
+ * @param false $hostTemplateIds
+ *
+ * @return type
+ */
 function getHosts($hostTemplateIds = false) {
 	$hosts = array();
 
@@ -123,6 +157,15 @@ function getHosts($hostTemplateIds = false) {
 	return $hosts;
 }
 
+/**
+ * getInputFields
+ *
+ * Insert description here
+ *
+ * @param type $templateId
+ *
+ * @return type
+ */
 function getInputFields($templateId) {
 	$fields = array();
 
@@ -156,6 +199,14 @@ function getInputFields($templateId) {
 	return $fields;
 }
 
+/**
+ * getAddresses
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function getAddresses() {
 	$addresses = array();
 	$tmpArray  = db_fetch_assoc('SELECT id, hostname FROM host ORDER BY hostname');
@@ -169,6 +220,16 @@ function getAddresses() {
 	return $addresses;
 }
 
+/**
+ * getSNMPFields
+ *
+ * Insert description here
+ *
+ * @param type $hostId
+ * @param string $snmp_query_id
+ *
+ * @return type
+ */
 function getSNMPFields($hostId, $snmp_query_id = '') {
 	$fieldNames = array();
 
@@ -193,6 +254,17 @@ function getSNMPFields($hostId, $snmp_query_id = '') {
 	return $fieldNames;
 }
 
+/**
+ * getSNMPValues
+ *
+ * Insert description here
+ *
+ * @param type $hostId
+ * @param type $field
+ * @param string $snmp_query_id
+ *
+ * @return type
+ */
 function getSNMPValues($hostId, $field, $snmp_query_id = '') {
 	$values   = array();
 
@@ -218,6 +290,14 @@ function getSNMPValues($hostId, $field, $snmp_query_id = '') {
 	return $values;
 }
 
+/**
+ * getSNMPQueries
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function getSNMPQueries() {
 	$queries  = array();
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM snmp_query ORDER by id');
@@ -231,6 +311,15 @@ function getSNMPQueries() {
 	return $queries;
 }
 
+/**
+ * getSNMPQueryTypes
+ *
+ * Insert description here
+ *
+ * @param type $snmpQueryId
+ *
+ * @return type
+ */
 function getSNMPQueryTypes($snmpQueryId) {
 	$types    = array();
 
@@ -249,6 +338,14 @@ function getSNMPQueryTypes($snmpQueryId) {
 	return $types;
 }
 
+/**
+ * getGraphTemplates
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function getGraphTemplates() {
 	$graph_templates = array();
 
@@ -263,6 +360,15 @@ function getGraphTemplates() {
 	return $graph_templates;
 }
 
+/**
+ * getGraphTemplatesByHostTemplate
+ *
+ * Insert description here
+ *
+ * @param false $host_template_ids
+ *
+ * @return type
+ */
 function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 	$graph_templates = array();
 
@@ -300,6 +406,14 @@ function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 	return $graph_templates;
 }
 
+/**
+ * displayQueryTypes
+ *
+ * Insert description here
+ *
+ * @param type $types
+ * @param false $quietMode
+ */
 function displayQueryTypes($types, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Query Types: (id, name)' . PHP_EOL;
@@ -316,6 +430,14 @@ function displayQueryTypes($types, $quietMode = false) {
 	}
 }
 
+/**
+ * displayHostTemplates
+ *
+ * Insert description here
+ *
+ * @param type $host_templates
+ * @param false $quietMode
+ */
 function displayHostTemplates($host_templates, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Valid Device Templates: (id, name)' . PHP_EOL;
@@ -332,6 +454,13 @@ function displayHostTemplates($host_templates, $quietMode = false) {
 	}
 }
 
+/**
+ * displayCommunities
+ *
+ * Insert description here
+ *
+ * @param false $quietMode
+ */
 function displayCommunities($quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Communities: (community)' . PHP_EOL;
@@ -352,6 +481,15 @@ function displayCommunities($quietMode = false) {
 	}
 }
 
+/**
+ * displaySNMPFields
+ *
+ * Insert description here
+ *
+ * @param type $fields
+ * @param type $hostId
+ * @param false $quietMode
+ */
 function displaySNMPFields($fields, $hostId, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Fields for host-id ' . $hostId . ': (name)' . PHP_EOL;
@@ -368,6 +506,16 @@ function displaySNMPFields($fields, $hostId, $quietMode = false) {
 	}
 }
 
+/**
+ * displaySNMPValues
+ *
+ * Insert description here
+ *
+ * @param type $values
+ * @param type $hostId
+ * @param type $field
+ * @param false $quietMode
+ */
 function displaySNMPValues($values, $hostId, $field, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Values for Field ' . $field . ' and host-id ' . $hostId . ': (name)' . PHP_EOL;
@@ -384,6 +532,14 @@ function displaySNMPValues($values, $hostId, $field, $quietMode = false) {
 	}
 }
 
+/**
+ * displaySNMPQueries
+ *
+ * Insert description here
+ *
+ * @param type $queries
+ * @param false $quietMode
+ */
 function displaySNMPQueries($queries, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known SNMP Queries: (id, name)' . PHP_EOL;
@@ -400,6 +556,14 @@ function displaySNMPQueries($queries, $quietMode = false) {
 	}
 }
 
+/**
+ * displayInputFields
+ *
+ * Insert description here
+ *
+ * @param type $input_fields
+ * @param false $quietMode
+ */
 function displayInputFields($input_fields, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Input Fields: (name, default, description)' . PHP_EOL;
@@ -416,6 +580,14 @@ function displayInputFields($input_fields, $quietMode = false) {
 	}
 }
 
+/**
+ * displayGraphTemplates
+ *
+ * Insert description here
+ *
+ * @param type $templates
+ * @param false $quietMode
+ */
 function displayGraphTemplates($templates, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Graph Templates: (id, name)' . PHP_EOL;
@@ -432,6 +604,14 @@ function displayGraphTemplates($templates, $quietMode = false) {
 	}
 }
 
+/**
+ * displayHosts
+ *
+ * Insert description here
+ *
+ * @param type $hosts
+ * @param false $quietMode
+ */
 function displayHosts($hosts, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Devices: (id, hostname, template, description)' . PHP_EOL;
@@ -448,6 +628,14 @@ function displayHosts($hosts, $quietMode = false) {
 	}
 }
 
+/**
+ * displaySites
+ *
+ * Insert description here
+ *
+ * @param type $sites
+ * @param false $quietMode
+ */
 function displaySites($sites, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Sites: (id, name)' . PHP_EOL;
@@ -464,6 +652,13 @@ function displaySites($sites, $quietMode = false) {
 	}
 }
 
+/**
+ * displayTrees
+ *
+ * Insert description here
+ *
+ * @param false $quietMode
+ */
 function displayTrees($quietMode = false) {
 	global $tree_sort_types;
 
@@ -488,6 +683,16 @@ function displayTrees($quietMode = false) {
 	}
 }
 
+/**
+ * displayTreeNodes
+ *
+ * Insert description here
+ *
+ * @param type $tree_id
+ * @param string $nodeType
+ * @param 0 $parentNode
+ * @param false $quietMode
+ */
 function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode = false) {
 	global $tree_sort_types, $tree_item_types, $host_group_types;
 
@@ -590,6 +795,13 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 	}
 }
 
+/**
+ * displayRRAs
+ *
+ * Insert description here
+ *
+ * @param false $quietMode
+ */
 function displayRRAs($quietMode = false) {
 	if (!$quietMode) {
 		print 'Known RRAs: (id, steps, rows, name)' . PHP_EOL;
@@ -611,6 +823,14 @@ function displayRRAs($quietMode = false) {
 	}
 }
 
+/**
+ * displayHostGraphs
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param false $quietMode
+ */
 function displayHostGraphs($host_id, $quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Device Graphs: (id, name, template)' . PHP_EOL;
@@ -640,6 +860,13 @@ function displayHostGraphs($host_id, $quietMode = false) {
 	}
 }
 
+/**
+ * displayUsers
+ *
+ * Insert description here
+ *
+ * @param false $quietMode
+ */
 function displayUsers($quietMode = false) {
 	if (!$quietMode) {
 		print 'Known Users: (id, username, full_name)'. PHP_EOL;

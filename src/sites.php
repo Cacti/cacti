@@ -221,6 +221,12 @@ switch (get_request_var('action')) {
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_site')) {
 		$save['id']           = get_filter_request_var('id');
@@ -252,6 +258,14 @@ function form_save() {
 	}
 }
 
+/**
+ * duplicate_site
+ *
+ * Insert description here
+ *
+ * @param type $template_id
+ * @param type $name
+ */
 function duplicate_site($template_id, $name) {
 	if (!is_array($template_id)) {
 		$template_id = array($template_id);
@@ -293,6 +307,12 @@ function duplicate_site($template_id, $name) {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $site_actions;
 
@@ -385,6 +405,12 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * site_edit
+ *
+ * Insert description here
+ *
+ */
 function site_edit() {
 	global $fields_site_edit;
 
@@ -419,6 +445,12 @@ function site_edit() {
 	form_save_button('sites.php', 'return');
 }
 
+/**
+ * sites
+ *
+ * Insert description here
+ *
+ */
 function sites() {
 	global $site_actions, $item_rows, $config;
 

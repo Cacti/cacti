@@ -13,6 +13,20 @@ if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
+/**
+ * ss_host_disk
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $host_id
+ * @param type $snmp_auth
+ * @param type $cmd
+ * @param string $arg1
+ * @param string $arg2
+ *
+ * @return type
+ */
 function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = '') {
 	$snmp           = explode(':', $snmp_auth);
 	$snmp_version   = $snmp[0];
@@ -139,6 +153,15 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 	}
 }
 
+/**
+ * ss_host_disk_reindex
+ *
+ * Insert description here
+ *
+ * @param type $arr
+ *
+ * @return type
+ */
 function ss_host_disk_reindex($arr) {
 	$return_arr = array();
 

@@ -44,6 +44,12 @@ process_tree_settings();
 /* setup realtime defaults if they are not set */
 initialize_realtime_step_and_window();
 
+/**
+ * get_matching_nodes
+ *
+ * Insert description here
+ *
+ */
 function get_matching_nodes() {
 	$my_matches = array();
 	$match      = array();

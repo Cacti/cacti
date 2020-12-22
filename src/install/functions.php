@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * prime_default_settings
+ *
+ * Insert description here
+ *
+ */
 function prime_default_settings() {
 	global $settings;
 
@@ -65,6 +71,15 @@ function prime_default_settings() {
 	$_SESSION['settings_primed'] = true;
 }
 
+/**
+ * install_create_csrf_secret
+ *
+ * Insert description here
+ *
+ * @param type $file
+ *
+ * @return type
+ */
 function install_create_csrf_secret($file) {
 	if (!file_exists($file)) {
 		if (is_resource_writable($file)) {
@@ -82,6 +97,14 @@ function install_create_csrf_secret($file) {
 	return true;
 }
 
+/**
+ * install_test_local_database_connection
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function install_test_local_database_connection() {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
@@ -104,6 +127,14 @@ function install_test_local_database_connection() {
 	}
 }
 
+/**
+ * install_test_remote_database_connection
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function install_test_remote_database_connection() {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
@@ -126,6 +157,14 @@ function install_test_remote_database_connection() {
 	}
 }
 
+/**
+ * install_test_temporary_table
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function install_test_temporary_table() {
 	$table = 'test_temp_' . rand();
 
@@ -140,6 +179,17 @@ function install_test_temporary_table() {
 	return true;
 }
 
+/**
+ * db_install_execute
+ *
+ * Insert description here
+ *
+ * @param type $sql
+ * @param array $params
+ * @param true $log
+ *
+ * @return type
+ */
 function db_install_execute($sql, $params = array(), $log = true) {
 	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
@@ -150,6 +200,18 @@ function db_install_execute($sql, $params = array(), $log = true) {
 	return $status;
 }
 
+/**
+ * db_install_fetch_function
+ *
+ * Insert description here
+ *
+ * @param type $func
+ * @param type $sql
+ * @param array $params
+ * @param true $log
+ *
+ * @return type
+ */
 function db_install_fetch_function($func, $sql, $params = array(), $log = true) {
 	global $database_last_error;
 
@@ -174,18 +236,62 @@ function db_install_fetch_function($func, $sql, $params = array(), $log = true) 
 	return array('status' => $status, 'data' => $data);
 }
 
+/**
+ * db_install_fetch_assoc
+ *
+ * Insert description here
+ *
+ * @param type $sql
+ * @param array $params
+ * @param true $log
+ *
+ * @return type
+ */
 function db_install_fetch_assoc($sql, $params = array(), $log = true) {
 	return db_install_fetch_function('db_fetch_assoc_prepared', $sql, $params, $log);
 }
 
+/**
+ * db_install_fetch_cell
+ *
+ * Insert description here
+ *
+ * @param type $sql
+ * @param array $params
+ * @param true $log
+ *
+ * @return type
+ */
 function db_install_fetch_cell($sql, $params = array(), $log = true) {
 	return db_install_fetch_function('db_fetch_cell_prepared', $sql, $params, $log);
 }
 
+/**
+ * db_install_fetch_row
+ *
+ * Insert description here
+ *
+ * @param type $sql
+ * @param array $params
+ * @param true $log
+ *
+ * @return type
+ */
 function db_install_fetch_row($sql, $params = array(), $log = true) {
 	return db_install_fetch_function('db_fetch_row_prepared', $sql, $params, $log);
 }
 
+/**
+ * db_install_change_column
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $column
+ * @param true $ignore
+ *
+ * @return type
+ */
 function db_install_change_column($table, $column, $ignore = true) {
 	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 	global $database_last_error;
@@ -211,6 +317,17 @@ function db_install_change_column($table, $column, $ignore = true) {
 	return $status;
 }
 
+/**
+ * db_install_add_column
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $column
+ * @param true $ignore
+ *
+ * @return type
+ */
 function db_install_add_column($table, $column, $ignore = true) {
 	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 	global $database_last_error;
@@ -234,6 +351,19 @@ function db_install_add_column($table, $column, $ignore = true) {
 	return $status;
 }
 
+/**
+ * db_install_add_key
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $type
+ * @param type $key
+ * @param type $columns
+ * @param string $using
+ *
+ * @return type
+ */
 function db_install_add_key($table, $type, $key, $columns, $using = '') {
 	if (!is_array($columns)) {
 		$columns = array($columns);
@@ -268,6 +398,17 @@ function db_install_add_key($table, $type, $key, $columns, $using = '') {
 	return $status;
 }
 
+/**
+ * db_install_drop_key
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $type
+ * @param type $key
+ *
+ * @return type
+ */
 function db_install_drop_key($table, $type, $key) {
 	$type = strtoupper(str_ireplace('UNIQUE ', '', $type));
 
@@ -288,6 +429,15 @@ function db_install_drop_key($table, $type, $key) {
 	return $status;
 }
 
+/**
+ * db_install_drop_table
+ *
+ * Insert description here
+ *
+ * @param type $table
+ *
+ * @return type
+ */
 function db_install_drop_table($table) {
 	$sql = 'DROP TABLE `' . $table . '`';
 
@@ -302,6 +452,16 @@ function db_install_drop_table($table) {
 	return $status;
 }
 
+/**
+ * db_install_rename_table
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $newname
+ *
+ * @return type
+ */
 function db_install_rename_table($table, $newname) {
 	$sql = 'RENAME TABLE `' . $table . '` TO `' . $newname . '`';
 
@@ -316,6 +476,16 @@ function db_install_rename_table($table, $newname) {
 	return $status;
 }
 
+/**
+ * db_install_drop_column
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $column
+ *
+ * @return type
+ */
 function db_install_drop_column($table, $column) {
 	$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
 
@@ -330,6 +500,15 @@ function db_install_drop_column($table, $column) {
 	return $status;
 }
 
+/**
+ * db_install_add_cache
+ *
+ * Insert description here
+ *
+ * @param type $status
+ * @param type $sql
+ * @param null $params
+ */
 function db_install_add_cache($status, $sql, $params = null) {
 	global $cacti_upgrade_version, $database_last_error, $database_upgrade_status;
 
@@ -393,6 +572,13 @@ function db_install_add_cache($status, $sql, $params = null) {
 	}
 }
 
+/**
+ * find_search_paths
+ *
+ * Insert description here
+ *
+ * @param 'unix' $os
+ */
 function find_search_paths($os = 'unix') {
 	global $config;
 
@@ -465,6 +651,14 @@ function find_search_paths($os = 'unix') {
 	return $search_paths;
 }
 
+/**
+ * db_install_swap_setting
+ *
+ * Insert description here
+ *
+ * @param type $old_setting
+ * @param type $new_setting
+ */
 function db_install_swap_setting($old_setting, $new_setting) {
 	$exists = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = ?', array($new_setting));
 
@@ -477,6 +671,15 @@ function db_install_swap_setting($old_setting, $new_setting) {
 	}
 }
 
+/**
+ * find_best_path
+ *
+ * Insert description here
+ *
+ * @param type $binary_name
+ *
+ * @return type
+ */
 function find_best_path($binary_name) {
 	global $config;
 
@@ -495,6 +698,14 @@ function find_best_path($binary_name) {
 	return '';
 }
 
+/**
+ * install_setup_get_templates
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function install_setup_get_templates() {
 	global $config;
 
@@ -553,6 +764,14 @@ function install_setup_get_templates() {
 	return $info;
 }
 
+/**
+ * install_setup_get_tables
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function install_setup_get_tables() {
 	/* ensure all tables are utf8 enabled */
 	$db_tables = db_fetch_assoc('SHOW TABLES');
@@ -603,6 +822,15 @@ function install_setup_get_tables() {
 	return $t;
 }
 
+/**
+ * to_array
+ *
+ * Insert description here
+ *
+ * @param type $data
+ *
+ * @return type
+ */
 function to_array($data) {
 	if (is_object($data)) {
 		$data = get_object_vars($data);
@@ -669,6 +897,14 @@ function install_tool_path($name, $defaultPaths) {
 	return $tool;
 }
 
+/**
+ * install_file_paths
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function install_file_paths() {
 	global $config, $settings;
 
@@ -795,6 +1031,14 @@ function install_file_paths() {
 	return $input;
 }
 
+/**
+ * remote_update_config_file
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function remote_update_config_file() {
 	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
 		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl;
@@ -871,6 +1115,14 @@ function remote_update_config_file() {
 	return $failure;
 }
 
+/**
+ * import_colors
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function import_colors() {
 	global $config;
 
@@ -901,26 +1153,75 @@ function import_colors() {
 	return true;
 }
 
+/**
+ * log_install_debug
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $string
+ */
 function log_install_debug($section, $string) {
 	log_install_and_file(POLLER_VERBOSITY_DEBUG, $string, $section);
 }
 
+/**
+ * log_install_low
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $string
+ */
 function log_install_low($section, $string) {
 	log_install_and_file(POLLER_VERBOSITY_LOW, $string, $section);
 }
 
+/**
+ * log_install_medium
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $string
+ */
 function log_install_medium($section, $string) {
 	log_install_and_file(POLLER_VERBOSITY_MEDIUM, $string, $section);
 }
 
+/**
+ * log_install_high
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $string
+ */
 function log_install_high($section, $string) {
 	log_install_and_file(POLLER_VERBOSITY_HIGH, $string, $section);
 }
 
+/**
+ * log_install_always
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $string
+ */
 function log_install_always($section, $string) {
 	log_install_and_file(POLLER_VERBOSITY_NONE, $string, $section);
 }
 
+/**
+ * log_install_and_file
+ *
+ * Insert description here
+ *
+ * @param type $level
+ * @param type $string
+ * @param string $section
+ */
 function log_install_and_file($level, $string, $section = '') {
 	$level = log_install_level_sanitize($level);
 	$name  = 'INSTALL:';
@@ -932,6 +1233,15 @@ function log_install_and_file($level, $string, $section = '') {
 	log_install_to_file($section, $string, FILE_APPEND, $level);
 }
 
+/**
+ * log_install_section_level
+ *
+ * Insert description here
+ *
+ * @param type $section
+ *
+ * @return type
+ */
 function log_install_section_level($section) {
 	$log_level   = POLLER_VERBOSITY_NONE;
 	$log_install = log_install_level('log_install', POLLER_VERBOSITY_NONE);
@@ -948,12 +1258,33 @@ function log_install_section_level($section) {
 	return $log_level;
 }
 
+/**
+ * log_install_level
+ *
+ * Insert description here
+ *
+ * @param type $option
+ * @param type $default_level
+ *
+ * @return type
+ */
 function log_install_level($option, $default_level) {
 	$level = read_config_option($option, true);
 
 	return log_install_level_sanitize($level, $default_level, $option);
 }
 
+/**
+ * log_install_level_sanitize
+ *
+ * Insert description here
+ *
+ * @param type $level
+ * @param POLLER_VERBOSITY_NONE $default_level
+ * @param string $option
+ *
+ * @return type
+ */
 function log_install_level_sanitize($level, $default_level = POLLER_VERBOSITY_NONE, $option = '') {
 	if (empty($level) || !is_numeric($level)) {
 		$level = $default_level;
@@ -970,6 +1301,15 @@ function log_install_level_sanitize($level, $default_level = POLLER_VERBOSITY_NO
 	return $level;
 }
 
+/**
+ * log_install_level_name
+ *
+ * Insert description here
+ *
+ * @param type $level
+ *
+ * @return type
+ */
 function log_install_level_name($level) {
 	$name = 'Unknown (' . $level . ')';
 
@@ -999,6 +1339,17 @@ function log_install_level_name($level) {
 	return $name;
 }
 
+/**
+ * log_install_to_file
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $data
+ * @param FILE_APPEND $flags
+ * @param POLLER_VERBOSITY_DEBUG $level
+ * @param false $force
+ */
 function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POLLER_VERBOSITY_DEBUG, $force = false) {
 	global $config, $debug;
 	$log_level = log_install_section_level($section);
@@ -1096,6 +1447,14 @@ function repair_automation() {
 	}
 }
 
+/**
+ * install_full_sync
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function install_full_sync() {
 	global $config;
 

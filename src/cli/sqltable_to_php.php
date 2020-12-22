@@ -82,6 +82,17 @@ if ($table == '') {
 	print sqltable_to_php($table, $create, $plugin);
 }
 
+/**
+ * sqltable_to_php
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $create
+ * @param string $plugin
+ *
+ * @return type
+ */
 function sqltable_to_php($table, $create, $plugin = '') {
 	global $config, $database_default;
 
@@ -220,6 +231,15 @@ function sqltable_to_php($table, $create, $plugin = '') {
 	return $text;
 }
 
+/**
+ * sql_clean
+ *
+ * Insert description here
+ *
+ * @param type $text
+ *
+ * @return type
+ */
 function sql_clean($text) {
 	$text = str_replace(array('\\', '/', "'", '"', '|'), '', $text);
 

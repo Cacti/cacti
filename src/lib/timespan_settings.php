@@ -194,6 +194,13 @@ function set_preset_timespan(&$timespan) {
 	$_SESSION['custom'] = 0;
 }
 
+/**
+ * finalize_timespan
+ *
+ * Insert description here
+ *
+ * @param type $timespan
+ */
 function finalize_timespan(&$timespan) {
 	if (!isset($timespan['current_value_date1'])) {
 		/* Default end date is now default time span */

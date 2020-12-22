@@ -53,6 +53,28 @@ if ($config['php_snmp_support']) {
 
 use phpsnmp\SNMP;
 
+/**
+ * cacti_snmp_session
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $community
+ * @param type $version
+ * @param string $auth_user
+ * @param string $auth_pass
+ * @param string $auth_proto
+ * @param string $priv_pass
+ * @param string $priv_proto
+ * @param string $context
+ * @param string $engineid
+ * @param 161 $port
+ * @param 500 $timeout_ms
+ * @param 0 $retries
+ * @param 10 $max_oids
+ *
+ * @return type
+ */
 function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '', $engineid = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $max_oids = 10) {
@@ -116,6 +138,30 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 	return $session;
 }
 
+/**
+ * cacti_snmp_get
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $community
+ * @param type $oid
+ * @param type $version
+ * @param string $auth_user
+ * @param string $auth_pass
+ * @param string $auth_proto
+ * @param string $priv_pass
+ * @param string $priv_proto
+ * @param string $context
+ * @param 161 $port
+ * @param 500 $timeout_ms
+ * @param 0 $retries
+ * @param SNMP_POLLER $environ
+ * @param string $engineid
+ * @param SNMP_STRING_OUTPUT_GUESS $value_output_format
+ *
+ * @return type
+ */
 function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $environ = SNMP_POLLER,
@@ -210,6 +256,30 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 	return $snmp_value;
 }
 
+/**
+ * cacti_snmp_get_raw
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $community
+ * @param type $oid
+ * @param type $version
+ * @param string $auth_user
+ * @param string $auth_pass
+ * @param string $auth_proto
+ * @param string $priv_pass
+ * @param string $priv_proto
+ * @param string $context
+ * @param 161 $port
+ * @param 500 $timeout_ms
+ * @param 0 $retries
+ * @param SNMP_POLLER $environ
+ * @param string $engineid
+ * @param SNMP_STRING_OUTPUT_GUESS $value_output_format
+ *
+ * @return type
+ */
 function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $environ = SNMP_POLLER,
@@ -300,6 +370,30 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 	return $snmp_value;
 }
 
+/**
+ * cacti_snmp_getnext
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $community
+ * @param type $oid
+ * @param type $version
+ * @param string $auth_user
+ * @param string $auth_pass
+ * @param string $auth_proto
+ * @param string $priv_pass
+ * @param string $priv_proto
+ * @param string $context
+ * @param 161 $port
+ * @param 500 $timeout_ms
+ * @param 0 $retries
+ * @param SNMP_POLLER $environ
+ * @param string $engineid
+ * @param SNMP_STRING_OUTPUT_GUESS $value_output_format
+ *
+ * @return type
+ */
 function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $environ = SNMP_POLLER,
@@ -389,6 +483,21 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 	return $snmp_value;
 }
 
+/**
+ * cacti_get_snmpv3_auth
+ *
+ * Insert description here
+ *
+ * @param type $auth_proto
+ * @param type $auth_user
+ * @param type $auth_pass
+ * @param type $priv_proto
+ * @param type $priv_pass
+ * @param type $context
+ * @param type $engineid
+ *
+ * @return type
+ */
 function cacti_get_snmpv3_auth($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass, $context, $engineid) {
 	$sec_details = ' -a ' . snmp_escape_string($auth_proto) . ' -A ' . snmp_escape_string($auth_pass);
 
@@ -427,6 +536,20 @@ function cacti_get_snmpv3_auth($auth_proto, $auth_user, $auth_pass, $priv_proto,
 		' '    . $engineid);
 }
 
+/**
+ * cacti_snmp_session_walk
+ *
+ * Insert description here
+ *
+ * @param type $session
+ * @param type $oid
+ * @param false $dummy
+ * @param null $max_repetitions
+ * @param null $non_repeaters
+ * @param SNMP_STRING_OUTPUT_GUESS $value_output_format
+ *
+ * @return type
+ */
 function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetitions = null,
 	$non_repeaters = null, $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 	$info = $session->info;
@@ -477,6 +600,17 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 	return $out;
 }
 
+/**
+ * cacti_snmp_session_get
+ *
+ * Insert description here
+ *
+ * @param type $session
+ * @param type $oid
+ * @param false $strip_alpha
+ *
+ * @return type
+ */
 function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 	$info = $session->info;
 
@@ -515,6 +649,16 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 	return $out;
 }
 
+/**
+ * cacti_snmp_session_getnext
+ *
+ * Insert description here
+ *
+ * @param type $session
+ * @param type $oid
+ *
+ * @return type
+ */
 function cacti_snmp_session_getnext($session, $oid) {
 	$info = $session->info;
 
@@ -551,6 +695,31 @@ function cacti_snmp_session_getnext($session, $oid) {
 	return $out;
 }
 
+/**
+ * cacti_snmp_walk
+ *
+ * Insert description here
+ *
+ * @param type $hostname
+ * @param type $community
+ * @param type $oid
+ * @param type $version
+ * @param string $auth_user
+ * @param string $auth_pass
+ * @param string $auth_proto
+ * @param string $priv_pass
+ * @param string $priv_proto
+ * @param string $context
+ * @param 161 $port
+ * @param 500 $timeout_ms
+ * @param 0 $retries
+ * @param 10 $max_oids
+ * @param SNMP_POLLER $environ
+ * @param string $engineid
+ * @param SNMP_STRING_OUTPUT_GUESS $value_output_format
+ *
+ * @return type
+ */
 function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout_ms = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER,
@@ -700,6 +869,18 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 	return $snmp_array;
 }
 
+/**
+ * format_snmp_string
+ *
+ * Insert description here
+ *
+ * @param type $string
+ * @param type $snmp_oid_included
+ * @param SNMP_STRING_OUTPUT_GUESS $value_output_format
+ * @param false $strip_alpha
+ *
+ * @return type
+ */
 function format_snmp_string($string, $snmp_oid_included, $value_output_format = SNMP_STRING_OUTPUT_GUESS, $strip_alpha = false) {
 	global $banned_snmp_strings;
 
@@ -895,6 +1076,15 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 	return $string;
 }
 
+/**
+ * snmp_escape_string
+ *
+ * Insert description here
+ *
+ * @param type $string
+ *
+ * @return type
+ */
 function snmp_escape_string($string) {
 	global $config;
 
@@ -913,6 +1103,19 @@ function snmp_escape_string($string) {
 	return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
 }
 
+/**
+ * snmp_get_method
+ *
+ * Insert description here
+ *
+ * @param 'walk' $type
+ * @param 1 $version
+ * @param string $context
+ * @param string $engineid
+ * @param SNMP_STRING_OUTPUT_GUESS $value_output_format
+ *
+ * @return type
+ */
 function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid = '',
 	$value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 	global $config;
@@ -952,6 +1155,20 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 	}
 }
 
+/**
+ * cacti_snmp_options_sanitize
+ *
+ * Insert description here
+ *
+ * @param type $version
+ * @param type $community
+ * @param type $port
+ * @param type $timeout
+ * @param type $retries
+ * @param type $max_oids
+ *
+ * @return type
+ */
 function cacti_snmp_options_sanitize($version, $community, &$port, &$timeout, &$retries, &$max_oids) {
 	/* determine default retries */
 	if (($retries == 0) || (!is_numeric($retries))) {

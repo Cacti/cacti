@@ -22,6 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * get_graph_template_details
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ *
+ * @return type
+ */
 function get_graph_template_details($local_graph_id) {
 	global $config;
 

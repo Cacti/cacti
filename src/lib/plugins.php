@@ -22,6 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * do_hook
+ *
+ * Insert description here
+ *
+ * @param type $name
+ *
+ * @return type
+ */
 function do_hook($name) {
 	$data = func_get_args();
 	$data = api_plugin_hook($name, $data);
@@ -29,10 +38,29 @@ function do_hook($name) {
 	return $data;
 }
 
+/**
+ * do_hook_function
+ *
+ * Insert description here
+ *
+ * @param type $name
+ * @param null $parm
+ *
+ * @return type
+ */
 function do_hook_function($name,$parm=null) {
 	return api_plugin_hook_function($name, $parm);
 }
 
+/**
+ * api_user_realm_auth
+ *
+ * Insert description here
+ *
+ * @param string $filename
+ *
+ * @return type
+ */
 function api_user_realm_auth($filename = '') {
 	return api_plugin_user_realm_auth($filename);
 }
@@ -88,6 +116,16 @@ function api_plugin_hook($name) {
 	return $args;
 }
 
+/**
+ * api_plugin_hook_function
+ *
+ * Insert description here
+ *
+ * @param type $name
+ * @param null $parm
+ *
+ * @return type
+ */
 function api_plugin_hook_function($name, $parm = null) {
 	global $config, $plugin_hooks, $plugins_integrated;
 
@@ -133,6 +171,18 @@ function api_plugin_hook_function($name, $parm = null) {
 	return $ret;
 }
 
+/**
+ * api_plugin_run_plugin_hook
+ *
+ * Insert description here
+ *
+ * @param type $hook
+ * @param type $plugin
+ * @param type $function
+ * @param type $args
+ *
+ * @return type
+ */
 function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 	global $config, $menu;
 
@@ -191,6 +241,18 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 	return $args;
 }
 
+/**
+ * api_plugin_run_plugin_hook_function
+ *
+ * Insert description here
+ *
+ * @param type $hook
+ * @param type $plugin
+ * @param type $function
+ * @param type $ret
+ *
+ * @return type
+ */
 function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 	global $config;
 
@@ -235,6 +297,17 @@ function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 	return $ret;
 }
 
+/**
+ * api_plugin_hook_is_remote_collect
+ *
+ * Insert description here
+ *
+ * @param type $hook
+ * @param type $plugin
+ * @param type $required_capabilities
+ *
+ * @return type
+ */
 function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities) {
 	if (isset($required_capabilities[$hook])) {
 		foreach ($required_capabilities[$hook] as $capability) {
@@ -247,6 +320,15 @@ function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilitie
 	return false;
 }
 
+/**
+ * api_plugin_get_dependencies
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ *
+ * @return type
+ */
 function api_plugin_get_dependencies($plugin) {
 	global $config;
 
@@ -277,6 +359,16 @@ function api_plugin_get_dependencies($plugin) {
 	return false;
 }
 
+/**
+ * api_plugin_minimum_version
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $version
+ *
+ * @return type
+ */
 function api_plugin_minimum_version($plugin, $version) {
 	if (strlen($version)) {
 		$plugin_version = db_fetch_cell_prepared('SELECT version
@@ -293,6 +385,15 @@ function api_plugin_minimum_version($plugin, $version) {
 	return $result;
 }
 
+/**
+ * api_plugin_installed
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ *
+ * @return type
+ */
 function api_plugin_installed($plugin) {
 	$plugin_data = db_fetch_row_prepared('SELECT directory, status
 		FROM plugin_config
@@ -308,6 +409,15 @@ function api_plugin_installed($plugin) {
 	return false;
 }
 
+/**
+ * api_plugin_remote_capabilities
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ *
+ * @return type
+ */
 function api_plugin_remote_capabilities($plugin) {
 	global $config, $info_data;
 
@@ -336,6 +446,16 @@ function api_plugin_remote_capabilities($plugin) {
 	return false;
 }
 
+/**
+ * api_plugin_has_capability
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $capability
+ *
+ * @return type
+ */
 function api_plugin_has_capability($plugin, $capability) {
 	$capabilities = api_plugin_remote_capabilities($plugin);
 
@@ -346,6 +466,17 @@ function api_plugin_has_capability($plugin, $capability) {
 	}
 }
 
+/**
+ * api_plugin_status_run
+ *
+ * Insert description here
+ *
+ * @param type $hook
+ * @param type $required_capabilities
+ * @param type $plugin_capabilities
+ *
+ * @return type
+ */
 function api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities) {
 	global $config;
 
@@ -390,6 +521,15 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 	return false;
 }
 
+/**
+ * api_plugin_db_table_create
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $table
+ * @param type $data
+ */
 function api_plugin_db_table_create($plugin, $table, $data) {
 	global $config;
 
@@ -495,6 +635,13 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 	}
 }
 
+/**
+ * api_plugin_db_changes_remove
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_db_changes_remove($plugin) {
 	$tables = db_fetch_assoc_prepared("SELECT `table`
 		FROM plugin_db_changes
@@ -531,6 +678,15 @@ function api_plugin_db_changes_remove($plugin) {
 	}
 }
 
+/**
+ * api_plugin_db_add_column
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $table
+ * @param type $column
+ */
 function api_plugin_db_add_column($plugin, $table, $column) {
 	global $config, $database_default;
 
@@ -592,6 +748,17 @@ function api_plugin_db_add_column($plugin, $table, $column) {
 	}
 }
 
+/**
+ * api_plugin_check_dependencies
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param false $quick
+ * @param false $dependencies
+ *
+ * @return type
+ */
 function api_plugin_check_dependencies($plugin, $quick = false, $dependencies = false) {
 	$results = array();
 
@@ -620,6 +787,15 @@ function api_plugin_check_dependencies($plugin, $quick = false, $dependencies = 
 	return $quick ? PLUGIN_DEPENDENCY_OK : $results;
 }
 
+/**
+ * api_plugin_can_install
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ *
+ * @return type
+ */
 function api_plugin_can_install($plugin) {
 	if (!defined('IN_CACTI_INSTALL')) {
 		define('IN_CACTI_INSTALL', 1);
@@ -657,6 +833,13 @@ function api_plugin_can_install($plugin) {
 	return array('proceed' => $proceed, 'message' => $message);
 }
 
+/**
+ * api_plugin_install
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_install($plugin) {
 	global $config;
 
@@ -735,6 +918,12 @@ function api_plugin_install($plugin) {
 	}
 }
 
+/**
+ * api_plugin_uninstall_integrated
+ *
+ * Insert description here
+ *
+ */
 function api_plugin_uninstall_integrated() {
 	global $config, $plugin_hooks, $plugins_integrated;
 
@@ -743,6 +932,14 @@ function api_plugin_uninstall_integrated() {
 	}
 }
 
+/**
+ * api_plugin_uninstall
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param true $tables
+ */
 function api_plugin_uninstall($plugin, $tables = true) {
 	global $config;
 
@@ -773,6 +970,15 @@ function api_plugin_uninstall($plugin, $tables = true) {
 	}
 }
 
+/**
+ * api_plugin_check_config
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ *
+ * @return type
+ */
 function api_plugin_check_config($plugin) {
 	global $config;
 
@@ -793,6 +999,13 @@ function api_plugin_check_config($plugin) {
 	return false;
 }
 
+/**
+ * api_plugin_enable
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_enable($plugin) {
 	$ready = api_plugin_check_config($plugin);
 
@@ -806,6 +1019,15 @@ function api_plugin_enable($plugin) {
 	}
 }
 
+/**
+ * api_plugin_is_enabled
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ *
+ * @return type
+ */
 function api_plugin_is_enabled($plugin) {
 	$status = db_fetch_cell_prepared('SELECT status
 		FROM plugin_config
@@ -819,6 +1041,13 @@ function api_plugin_is_enabled($plugin) {
 	return false;
 }
 
+/**
+ * api_plugin_disable
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_disable($plugin) {
 	api_plugin_disable_hooks($plugin);
 
@@ -828,6 +1057,13 @@ function api_plugin_disable($plugin) {
 		array($plugin));
 }
 
+/**
+ * api_plugin_disable_all
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_disable_all($plugin) {
 	api_plugin_disable_hooks_all($plugin);
 
@@ -837,6 +1073,13 @@ function api_plugin_disable_all($plugin) {
 		array($plugin));
 }
 
+/**
+ * api_plugin_moveup
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_moveup($plugin) {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM plugin_config
@@ -858,6 +1101,13 @@ function api_plugin_moveup($plugin) {
 	}
 }
 
+/**
+ * api_plugin_movedown
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_movedown($plugin) {
 	$id      = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
 	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
@@ -869,6 +1119,17 @@ function api_plugin_movedown($plugin) {
 	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
 }
 
+/**
+ * api_plugin_register_hook
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $hook
+ * @param type $function
+ * @param type $file
+ * @param false $enable
+ */
 function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = false) {
 	$status = 0;
 
@@ -919,12 +1180,26 @@ function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = fa
 	}
 }
 
+/**
+ * api_plugin_remove_hooks
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_remove_hooks($plugin) {
 	db_execute_prepared('DELETE FROM plugin_hooks
 		WHERE name = ?',
 		array($plugin));
 }
 
+/**
+ * api_plugin_enable_hooks
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_enable_hooks($plugin) {
 	db_execute_prepared('UPDATE plugin_hooks
 		SET status = 1
@@ -932,6 +1207,13 @@ function api_plugin_enable_hooks($plugin) {
 		array($plugin));
 }
 
+/**
+ * api_plugin_disable_hooks
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_disable_hooks($plugin) {
 	db_execute_prepared("UPDATE plugin_hooks
 		SET status = 0
@@ -942,6 +1224,13 @@ function api_plugin_disable_hooks($plugin) {
 		array($plugin));
 }
 
+/**
+ * api_plugin_disable_hooks_all
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_disable_hooks_all($plugin) {
 	db_execute_prepared('UPDATE plugin_hooks
 		SET status = 0
@@ -949,6 +1238,16 @@ function api_plugin_disable_hooks_all($plugin) {
 		array($plugin));
 }
 
+/**
+ * api_plugin_register_realm
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ * @param type $file
+ * @param type $display
+ * @param true $admin
+ */
 function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	$files = explode(',', $file);
 
@@ -1052,6 +1351,13 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	}
 }
 
+/**
+ * api_plugin_remove_realms
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ */
 function api_plugin_remove_realms($plugin) {
 	$realms = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_realms
@@ -1074,6 +1380,12 @@ function api_plugin_remove_realms($plugin) {
 		array($plugin));
 }
 
+/**
+ * api_plugin_load_realms
+ *
+ * Insert description here
+ *
+ */
 function api_plugin_load_realms() {
 	global $user_auth_realms, $user_auth_realm_filenames;
 
@@ -1094,6 +1406,15 @@ function api_plugin_load_realms() {
 	}
 }
 
+/**
+ * api_plugin_user_realm_auth
+ *
+ * Insert description here
+ *
+ * @param string $filename
+ *
+ * @return type
+ */
 function api_plugin_user_realm_auth($filename = '') {
 	global $user_auth_realm_filenames;
 	/* list all realms that this user has access to */
@@ -1107,6 +1428,12 @@ function api_plugin_user_realm_auth($filename = '') {
 	return false;
 }
 
+/**
+ * plugin_config_arrays
+ *
+ * Insert description here
+ *
+ */
 function plugin_config_arrays() {
 	global $config, $menu;
 
@@ -1117,12 +1444,30 @@ function plugin_config_arrays() {
 	api_plugin_load_realms();
 }
 
+/**
+ * plugin_draw_navigation_text
+ *
+ * Insert description here
+ *
+ * @param type $nav
+ *
+ * @return type
+ */
 function plugin_draw_navigation_text($nav) {
 	$nav['plugins.php:'] = array('title' => __('Plugins'), 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
 
 	return $nav;
 }
 
+/**
+ * plugin_is_compatible
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ *
+ * @return type
+ */
 function plugin_is_compatible($plugin) {
 	global $config;
 
@@ -1139,6 +1484,17 @@ function plugin_is_compatible($plugin) {
 	return array('compat' => true, 'requires' => __('Requires: Cacti >= %s', $info['compat']));
 }
 
+/**
+ * plugin_load_info_defaults
+ *
+ * Insert description here
+ *
+ * @param type $file
+ * @param type $info
+ * @param array $defaults
+ *
+ * @return type
+ */
 function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	$result = $info;
 	$dir    = @basename(@dirname($file));
@@ -1182,6 +1538,15 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	return $result;
 }
 
+/**
+ * plugin_load_info_file
+ *
+ * Insert description here
+ *
+ * @param type $file
+ *
+ * @return type
+ */
 function plugin_load_info_file($file) {
 	$info = false;
 

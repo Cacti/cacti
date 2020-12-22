@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_6i
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_6i() {
 	/* once again, larger fields for OIDs and the like */
 	db_install_execute('ALTER TABLE `poller_item` MODIFY COLUMN `arg1` TEXT;');

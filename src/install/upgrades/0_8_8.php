@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_8
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_8() {
 	/* speed up the joins */
 	if (db_column_exists('poller_item', 'host_id')) {

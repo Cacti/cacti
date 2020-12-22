@@ -22,6 +22,24 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * api_poller_cache_item_add
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $host_field_override
+ * @param type $local_data_id
+ * @param type $rrd_step
+ * @param type $poller_action_id
+ * @param type $data_source_item_name
+ * @param type $num_rrd_items
+ * @param string $arg1
+ * @param string $arg2
+ * @param string $arg3
+ *
+ * @return type
+ */
 function api_poller_cache_item_add($host_id, $host_field_override, $local_data_id, $rrd_step, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = '', $arg2 = '', $arg3 = '') {
 	static $hosts = array();
 
@@ -101,6 +119,17 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 	}
 }
 
+/**
+ * api_poller_get_rrd_next_step
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $rrd_step
+ * @param type $local_data_id
+ *
+ * @return type
+ */
 function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
 	global $config;
 

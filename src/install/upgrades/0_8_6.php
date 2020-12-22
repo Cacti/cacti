@@ -27,6 +27,14 @@ include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/import.php');
 include_once($config['base_path'] . '/lib/poller.php');
 
+/**
+ * upgrade_to_0_8_6
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function upgrade_to_0_8_6() {
 	db_install_drop_table('snmp_query_field');
 	db_install_drop_table('data_input_data_cache');
@@ -188,9 +196,11 @@ function upgrade_to_0_8_6() {
 					}
 
 					$search_key = preg_replace('/0+$/', '', $tree_item['order_key']);
+
 					if (strlen($search_key) % 2 != 0) { $search_key .= '0'; }
 
 					$new_search_key = '';
+
 					for ($i=1; $i < $tier; $i++) {
 						$new_search_key .= str_pad(strval($tier_counter[$i]),3,'0',STR_PAD_LEFT);
 					}

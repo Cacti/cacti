@@ -33,6 +33,17 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_cpoller', $_SERVER['argv']);
 }
 
+/**
+ * ss_cpoller
+ *
+ * Insert description here
+ *
+ * @param type $cmd
+ * @param string $arg1
+ * @param string $arg2
+ *
+ * @return type
+ */
 function ss_cpoller($cmd, $arg1 = '', $arg2 = '') {
 	if ($cmd == 'index') {
 		$collectors = db_fetch_assoc('SELECT id FROM poller ORDER BY id');

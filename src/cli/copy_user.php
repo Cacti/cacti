@@ -139,6 +139,16 @@ if (! isset($user_auth)) {
 }
 print PHP_EOL . 'User copied successfully' . PHP_EOL;
 
+/**
+ * validate_field
+ *
+ * Insert description here
+ *
+ * @param type $field
+ * @param type $value
+ *
+ * @return type
+ */
 function validate_field($field, $value) {
 	if (empty($value)) {
 		print "ERROR: Value for '$field' cannot be blank" . PHP_EOL . PHP_EOL;
@@ -150,6 +160,16 @@ function validate_field($field, $value) {
 	return $value;
 }
 
+/**
+ * validate_boolean
+ *
+ * Insert description here
+ *
+ * @param type $field
+ * @param type $value
+ *
+ * @return type
+ */
 function validate_boolean($field, $value) {
 	$value = empty($value) ? '' : strtolower($value);
 

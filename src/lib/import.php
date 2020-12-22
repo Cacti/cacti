@@ -22,6 +22,18 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * import_xml_data
+ *
+ * Insert description here
+ *
+ * @param type $xml_data
+ * @param type $import_as_new
+ * @param type $profile_id
+ * @param false $remove_orphans
+ *
+ * @return type
+ */
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false) {
 	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $import_debug_info, $legacy_template;
 
@@ -264,6 +276,14 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	return $info_array;
 }
 
+/**
+ * get_public_key
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_public_key() {
 $public_key = <<<EOD
 -----BEGIN PUBLIC KEY-----
@@ -275,6 +295,20 @@ EOD;
 	return $public_key;
 }
 
+/**
+ * import_package
+ *
+ * Insert description here
+ *
+ * @param type $xmlfile
+ * @param 1 $profile_id
+ * @param false $remove_orphans
+ * @param false $preview
+ * @param false $info_only
+ * @param true $limitex
+ *
+ * @return type
+ */
 function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $preview = false, $info_only = false, $limitex = true) {
 	global $config, $preview_only;
 
@@ -425,6 +459,19 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	return array($debug_data, $filestatus);
 }
 
+/**
+ * xml_to_graph_template
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $xml_array
+ * @param type $hash_cache
+ * @param type $hash_version
+ * @param false $remove_orphans
+ *
+ * @return type
+ */
 function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, $remove_orphans = false) {
 	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $cacti_version_codes, $preview_only, $graph_item_types, $import_debug_info;
 
@@ -724,6 +771,19 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	return $hash_cache;
 }
 
+/**
+ * xml_to_data_template
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $xml_array
+ * @param type $hash_cache
+ * @param type $import_as_new
+ * @param type $profile_id
+ *
+ * @return type
+ */
 function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
 	global $struct_data_source, $struct_data_source_item, $import_template_id, $preview_only, $import_debug_info, $legacy_template;
 
@@ -973,6 +1033,17 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	return $hash_cache;
 }
 
+/**
+ * xml_to_data_query
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $xml_array
+ * @param type $hash_cache
+ *
+ * @return type
+ */
 function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 	global $config, $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
 
@@ -1211,6 +1282,17 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * xml_to_gprint_preset
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $xml_array
+ * @param type $hash_cache
+ *
+ * @return type
+ */
 function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	global $fields_grprint_presets_edit, $preview_only, $import_debug_info;
 
@@ -1261,6 +1343,19 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * xml_to_data_source_profile
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $xml_array
+ * @param type $hash_cache
+ * @param type $import_as_new
+ * @param type $profile_id
+ *
+ * @return type
+ */
 function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
 	global $fields_profile_edit, $fields_profile_rra_edit, $import_template_id, $preview_only, $import_debug_info;
 
@@ -1335,6 +1430,17 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 	}
 }
 
+/**
+ * xml_to_host_template
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $xml_array
+ * @param type $hash_cache
+ *
+ * @return type
+ */
 function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 	global $fields_host_template_edit, $preview_only, $import_debug_info;
 
@@ -1425,6 +1531,17 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * xml_to_cdef
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $xml_array
+ * @param type $hash_cache
+ *
+ * @return type
+ */
 function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	global $fields_cdef_edit, $preview_only, $import_debug_info;
 
@@ -1552,6 +1669,17 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * xml_to_vdef
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $xml_array
+ * @param type $hash_cache
+ *
+ * @return type
+ */
 function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	global $config, $preview_only, $import_debug_info;
 
@@ -1659,6 +1787,17 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * xml_to_data_input_method
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $xml_array
+ * @param type $hash_cache
+ *
+ * @return type
+ */
 function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1, $preview_only, $import_debug_info;
 
@@ -1818,6 +1957,17 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
+/**
+ * compare_data
+ *
+ * Insert description here
+ *
+ * @param type $save
+ * @param type $previous_data
+ * @param type $table
+ *
+ * @return type
+ */
 function compare_data($save, $previous_data, $table) {
 	global $preview_only, $import_debug_info;
 
@@ -1876,6 +2026,16 @@ function compare_data($save, $previous_data, $table) {
 	}
 }
 
+/**
+ * hash_to_friendly_name
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $display_type_name
+ *
+ * @return type
+ */
 function hash_to_friendly_name($hash, $display_type_name) {
 	global $hash_type_names;
 
@@ -1965,6 +2125,16 @@ function hash_to_friendly_name($hash, $display_type_name) {
 	}
 }
 
+/**
+ * resolve_hash_to_id
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $hash_cache_array
+ *
+ * @return type
+ */
 function resolve_hash_to_id($hash, &$hash_cache_array) {
 	global $import_debug_info;
 
@@ -2006,6 +2176,15 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 	}
 }
 
+/**
+ * parse_xml_hash
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ *
+ * @return type
+ */
 function parse_xml_hash($hash) {
 	global $legacy_template;
 
@@ -2059,6 +2238,15 @@ function parse_xml_hash($hash) {
 	return $parsed_hash;
 }
 
+/**
+ * check_hash_type
+ *
+ * Insert description here
+ *
+ * @param type $hash_type
+ *
+ * @return type
+ */
 function check_hash_type($hash_type) {
 	global $hash_type_codes;
 
@@ -2080,6 +2268,15 @@ function check_hash_type($hash_type) {
 	return $current_type;
 }
 
+/**
+ * check_hash_version
+ *
+ * Insert description here
+ *
+ * @param type $hash_version
+ *
+ * @return type
+ */
 function check_hash_version($hash_version) {
 	global $cacti_version_codes, $config;
 
@@ -2119,6 +2316,15 @@ function check_hash_version($hash_version) {
 	return $current_version;
 }
 
+/**
+ * get_version_index
+ *
+ * Insert description here
+ *
+ * @param type $string_version
+ *
+ * @return type
+ */
 function get_version_index($string_version) {
 	global $cacti_version_codes;
 
@@ -2136,6 +2342,15 @@ function get_version_index($string_version) {
 	return -1;
 }
 
+/**
+ * xml_character_decode
+ *
+ * Insert description here
+ *
+ * @param type $text
+ *
+ * @return type
+ */
 function xml_character_decode($text) {
 	if (function_exists('html_entity_decode')) {
 		return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
@@ -2147,6 +2362,16 @@ function xml_character_decode($text) {
 	}
 }
 
+/**
+ * import_display_results
+ *
+ * Insert description here
+ *
+ * @param type $import_debug_info
+ * @param type $filestatus
+ * @param false $web
+ * @param false $preview
+ */
 function import_display_results($import_debug_info, $filestatus, $web = false, $preview = false) {
 	global $hash_type_names;
 
@@ -2276,6 +2501,15 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 	}
 }
 
+/**
+ * xml_to_array
+ *
+ * Insert description here
+ *
+ * @param type $data
+ *
+ * @return type
+ */
 function xml_to_array($data) {
 	if (is_object($data)) {
 		$data = get_object_vars($data);
@@ -2284,6 +2518,15 @@ function xml_to_array($data) {
 	return (is_array($data)) ? array_map(__FUNCTION__,$data) : $data;
 }
 
+/**
+ * import_is_base64_encoded
+ *
+ * Insert description here
+ *
+ * @param type $string
+ *
+ * @return type
+ */
 function import_is_base64_encoded($string) {
 	if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $string)) {
 		return true;

@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_6h
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_6h() {
 	/* changes for ping result times */
 	db_install_execute('ALTER TABLE `host` MODIFY COLUMN `min_time` DECIMAL(10,5) DEFAULT 9.99999;');

@@ -137,6 +137,12 @@ if (cacti_sizeof($parms)) {
 	exit(1);
 }
 
+/**
+ * upgrade_database
+ *
+ * Insert description here
+ *
+ */
 function upgrade_database() {
 	global $config;
 
@@ -302,6 +308,15 @@ function upgrade_database() {
 	cacti_log(sprintf('NOTE: Audit Upgrade completed in %.2f seconds.', $end - $start), true, 'UPGRADE');
 }
 
+/**
+ * plugin_installed
+ *
+ * Insert description here
+ *
+ * @param type $plugin
+ *
+ * @return type
+ */
 function plugin_installed($plugin) {
 	$installed = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_config
@@ -312,6 +327,13 @@ function plugin_installed($plugin) {
 	return $installed ? true:false;
 }
 
+/**
+ * repair_database
+ *
+ * Insert description here
+ *
+ * @param true $run
+ */
 function repair_database($run = true) {
 	$alters = report_audit_results(false);
 
@@ -373,6 +395,15 @@ function repair_database($run = true) {
 	}
 }
 
+/**
+ * report_audit_results
+ *
+ * Insert description here
+ *
+ * @param true $output
+ *
+ * @return type
+ */
 function report_audit_results($output = true) {
 	global $database_default;
 	$db_name = 'Tables_in_' . $database_default;
@@ -694,6 +725,15 @@ function report_audit_results($output = true) {
 	return $alters;
 }
 
+/**
+ * make_column_props
+ *
+ * Insert description here
+ *
+ * @param type $dbc
+ *
+ * @return type
+ */
 function make_column_props(&$dbc) {
 	$alter_cmd = '';
 
@@ -726,6 +766,16 @@ function make_column_props(&$dbc) {
 	return $alter_cmd;
 }
 
+/**
+ * make_column_alter
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $dbc
+ *
+ * @return type
+ */
 function make_column_alter($table, $dbc) {
 	$alter_cmd = 'MODIFY COLUMN `' . $dbc['table_field'] . '` ' .
 		$dbc['table_type'] . ($dbc['table_null'] == 'NO' ? ' NOT NULL':'');
@@ -735,6 +785,16 @@ function make_column_alter($table, $dbc) {
 	return $alter_cmd;
 }
 
+/**
+ * make_column_add
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $dbc
+ *
+ * @return type
+ */
 function make_column_add($table, $dbc) {
 	$after = get_previous_column($table, $dbc['table_field']);
 
@@ -752,6 +812,16 @@ function make_column_add($table, $dbc) {
 	return $alter_cmd;
 }
 
+/**
+ * get_previous_column
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $column
+ *
+ * @return type
+ */
 function get_previous_column($table, $column) {
 	$sequence = db_fetch_cell_prepared('SELECT table_sequence
 		FROM table_columns
@@ -774,6 +844,16 @@ function get_previous_column($table, $column) {
 	}
 }
 
+/**
+ * make_index_alter
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $key
+ *
+ * @return type
+ */
 function make_index_alter($table, $key) {
 	$alter_cmds      = array();
 	$alter_cmd       = '';
@@ -836,6 +916,16 @@ function make_index_alter($table, $key) {
 	return $alter_cmds;
 }
 
+/**
+ * get_sequence_count
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $index
+ *
+ * @return type
+ */
 function get_sequence_count($table, $index) {
 	$indexes      = db_fetch_assoc("SHOW INDEXES IN $table");
 	$sequence_cnt = 0;
@@ -851,6 +941,17 @@ function get_sequence_count($table, $index) {
 	return $sequence_cnt;
 }
 
+/**
+ * get_colunm_sequence_number
+ *
+ * Insert description here
+ *
+ * @param type $table
+ * @param type $index
+ * @param type $column
+ *
+ * @return type
+ */
 function get_colunm_sequence_number($table, $index, $column) {
 	$indexes = db_fetch_assoc("SHOW INDEXES IN $table");
 
@@ -869,6 +970,13 @@ function get_colunm_sequence_number($table, $index, $column) {
 	return -1;
 }
 
+/**
+ * create_tables
+ *
+ * Insert description here
+ *
+ * @param true $load
+ */
 function create_tables($load = true) {
 	global $config, $database_default, $database_username, $database_password, $database_port, $database_hostname;
 
@@ -959,6 +1067,12 @@ function create_tables($load = true) {
 	}
 }
 
+/**
+ * load_audit_database
+ *
+ * Insert description here
+ *
+ */
 function load_audit_database() {
 	global $config, $database_default, $database_username, $database_password;
 
