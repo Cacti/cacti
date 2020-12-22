@@ -557,9 +557,12 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	restore_error_handler();
 }
 
-/* boost_timer - allows you to time events in boost and provide stats
-   @arg $area - a text string that determines what area is being measured
-   @arg $type - either 'start' or 'end' to start or end the timing */
+/**
+ * boost_timer - allows you to time events in boost and provide stats
+ *
+ * @arg $area - a text string that determines what area is being measured
+ * @arg $type - either 'start' or 'end' to start or end the timing
+ */
 function boost_timer($area, $type) {
 	global $boost_stats_log;
 
@@ -596,7 +599,9 @@ function boost_timer_get_overhead() {
 	return (microtime(true) - $start);
 }
 
-/* boost_get_arch_table_name - returns current archive boost table or false if no arch table is present currently */
+/**
+ * boost_get_arch_table_name - returns current archive boost table or false if no arch table is present currently
+ */
 function boost_get_arch_table_name() {
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
@@ -614,9 +619,12 @@ function boost_get_arch_table_name() {
 	return false;
 }
 
-/* boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
-	 results to RRDtool for processing
-   @arg $local_data_id - if you are using boost, you need to update only an rra id at a time */
+/**
+ * boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
+ * results to RRDtool for processing
+ *
+ * @arg $local_data_id - if you are using boost, you need to update only an rra id at a time
+ */
 function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
@@ -991,11 +999,15 @@ function boost_determine_caching_state() {
 	}
 }
 
-/* boost_get_rrd_filename_and_template - pulls
-   1) the rrd_update template from the database in form of
-	  update decisions for multi-output RRDs
-   2) rrd filename
-   @arg $local_data_id - the data source to obtain information from */
+/**
+ *  boost_get_rrd_filename_and_template - pulls
+ *
+ * 1) the rrd_update template from the database in form of
+ *    update decisions for multi-output RRDs
+ * 2) rrd filename
+ *
+ * @arg $local_data_id - the data source to obtain information from
+ */
 function boost_get_rrd_filename_and_template($local_data_id) {
 	$rrd_path     = '';
 	$all_nulls    = true;
@@ -1184,12 +1196,15 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	}
 }
 
-/* boost_rrdtool_function_update - a re-write of the Cacti rrdtool update command
-   specifically designed for bulk updates.
-   @arg $local_data_id - the data source to obtain information from
-   @arg $rrd_path      - the path to the RRD file
-   @arg $rrd_update_template  - the order in which values need to be added
-   @arg $rrd_update_values    - values to include in the database */
+/**
+ * boost_rrdtool_function_update - a re-write of the Cacti rrdtool update command
+ * specifically designed for bulk updates.
+ *
+ * @arg $local_data_id - the data source to obtain information from
+ * @arg $rrd_path      - the path to the RRD file
+ * @arg $rrd_update_template  - the order in which values need to be added
+ * @arg $rrd_update_values    - values to include in the database
+ */
 function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, &$rrd_update_values, &$rrdtool_pipe) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;

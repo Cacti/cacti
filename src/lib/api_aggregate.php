@@ -177,7 +177,9 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 	return $graph_templates_graph_id;
 }
 
-/** aggregate_graphs_insert_graph_items	- inserts all graph items of an existing graph
+/**
+ * aggregate_graphs_insert_graph_items	- inserts all graph items of an existing graph
+ *
  * @param int $_new_graph_id			- id of the new graph
  * @param int $_old_graph_id			- id of the old graph
  * @param int $_graph_template_id		- template id of the old graph if the old graph is 0
@@ -195,8 +197,9 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
  * @param int $_total_type				- Totalling: SIMILAR/ALL data sources
  * @param array $member_graph			- Totalling: Used for determining the consolidation function id
  * @param mixed $member_graphs
+ *
  * @return int							- id of the next graph item to be inserted
- *  */
+ */
 function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_graph_template_id,
 	$_skip, $_totali, $_graph_item_sequence, $_selected_graph_index, $_color_templates, $_graph_item_types, $_cdefs,
 	$_graph_type, $_gprint_prefix, $_gprint_format, $_total, $_total_type = '', $member_graphs = array()) {
@@ -472,8 +475,10 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 /**
  * insert or update aggregate graph items in DB tables
+ *
  * @param array $items
  * @param string $table
+ *
  * @return bool ture if save was succesfull, false otherwise
  */
 function aggregate_graph_items_save($items, $table) {
@@ -552,8 +557,10 @@ function aggregate_graph_items_save($items, $table) {
 /**
  * Validate extra graph parameters posted from graph edit form.
  * You can check for validation errors with cacti function is_error_message
+ *
  * @param array $posted      - values posted from form
  * @param bool $has_override - form had override checkboxes
+ *
  * @return array             - cleaned up graph parameters
  */
 function aggregate_validate_graph_params($posted, $has_override = false) {
@@ -620,10 +627,10 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 
 /**
  * Populate grraph items array with posted values.
+ *
  * $graph_items array must be keyed on graph item id.
  * @param array $posted      - values posted from form
  * @param array $graph_items - reference to graph items array to update with form values
- *
  */
 function aggregate_validate_graph_items($posted, &$graph_items) {
 	foreach ($_POST as $var => $val) {
@@ -673,6 +680,7 @@ function aggregate_validate_graph_items($posted, &$graph_items) {
 
 /**
  * cleanup of graph items of the new graph
+ *
  * @param int $base			- base graph id
  * @param int $aggregate	- graph id of aggregate
  * @param int $reorder		- type of reordering
@@ -696,6 +704,7 @@ function aggregate_graphs_cleanup($base, $aggregate, $reorder) {
 
 /**
  * reorder graph items
+ *
  * @param int $base              - base graph id
  * @param int $aggregate         - graph id of aggregate
  * @param int $reorder           - type of reordering
@@ -872,11 +881,12 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 
 /**
  * push_out_aggregates				- update all aggregates based upon the template
+ *
  * @param int aggregate_template_id	- the aggregate template id
  * @param int local_graph_id		- the specific aggregate graph to update
  * @param mixed $aggregate_template_id
  * @param mixed $local_graph_id
- *  */
+ */
 function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 	$attribs                    = array();
 	$attribs['skipped_items']   = array();
@@ -1083,11 +1093,13 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 
 /**
  * aggregate_create_update - either create or update an aggregate based on criteria
+ *
  * @param int $local_graph_id  - the local graph id of the existing graph.  0 if one needs to be created
  * @param array $member_graphs - the graphs that will be included in this aggregate
  * @param mixed $attribs
+ *
  * @return array $attribs      - the attributes for this new graph
- *  */
+ */
 function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 	global $config;
 
@@ -1666,7 +1678,8 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
  * @param int $_graph_template_id - id of the graph for which the items shall be listed
  * @param mixed $_graph_id
  * @param mixed $_object
- * # @param int $_object            - either the aggregate or aggregate_template
+ * @param int $_object            - either the aggregate or aggregate_template
+ *
  */
 function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0, $_object = array()) {
 	global $config;

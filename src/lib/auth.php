@@ -28,8 +28,11 @@ include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticator.ph
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/RuntimeException.php');
 
-/* clear_auth_cookie - clears a users security token
- * @return - NULL */
+/**
+ * clear_auth_cookie - clears a users security token
+ *
+ * @return - NULL
+ */
 function clear_auth_cookie() {
 	global $config;
 
@@ -57,9 +60,13 @@ function clear_auth_cookie() {
 	}
 }
 
-/* set_auth_cookie - sets a users security token
+/**
+ * set_auth_cookie - sets a users security token
+ *
  * @arg - (string) $user - The user_auth row for the user
- * @return - (boolean) True if token set worked, otherwise false */
+ *
+ * @return - (boolean) True if token set worked, otherwise false
+ */
 function set_auth_cookie($user) {
 	global $config;
 
@@ -80,8 +87,11 @@ function set_auth_cookie($user) {
 	}
 }
 
-/* check_auth_cookie - clears a users security token
- * @return - (int) The user of the session cookie, otherwise false */
+/**
+ * check_auth_cookie - clears a users security token
+ *
+ * @return - (int) The user of the session cookie, otherwise false
+ */
 function check_auth_cookie() {
 	if (isset($_COOKIE['cacti_remembers']) &&
 		read_config_option('auth_cache_enabled') == 'on' &&
@@ -131,13 +141,17 @@ function check_auth_cookie() {
 	return false;
 }
 
-/* user_copy - copies user account
-   @arg $template_user - username of the user account that should be used as the template
-   @arg $new_user - new username of the account to be created/overwritten
-   @arg $new_realm - new realm of the account to be created, overwrite not affected, but is used for lookup
-   @arg $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm
-   @arg $data_override - Array of user_auth field and values to override on the new user
-   @return - the new users id, or false on no copy */
+/**
+ * user_copy - copies user account
+ *
+ * @arg $template_user - username of the user account that should be used as the template
+ * @arg $new_user - new username of the account to be created/overwritten
+ * @arg $new_realm - new realm of the account to be created, overwrite not affected, but is used for lookup
+ * @arg $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm
+ * @arg $data_override - Array of user_auth field and values to override on the new user
+ *
+ * @return - the new users id, or false on no copy
+ */
 function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
 	/* ================= input validation ================= */
 	input_validate_input_number($template_realm, 'template_realm');
@@ -279,8 +293,11 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 	return $new_id;
 }
 
-/* user_remove - remove a user account
-   @arg $user_id - Id os the user account to remove */
+/**
+ * user_remove - remove a user account
+ *
+ * @arg $user_id - Id os the user account to remove
+ */
 function user_remove($user_id) {
 	/* ================= input validation ================= */
 	input_validate_input_number($user_id, 'user_id');
@@ -316,8 +333,10 @@ function user_remove($user_id) {
 	api_plugin_hook_function('user_remove', $user_id);
 }
 
-/* user_disable - disable a user account
-   @arg $user_id - Id of the user account to disable */
+/**
+ * user_disable - disable a user account
+ * @arg $user_id - Id of the user account to disable
+ */
 function user_disable($user_id) {
 	/* ================= input validation ================= */
 	input_validate_input_number($user_id, 'user_id');
@@ -328,8 +347,10 @@ function user_disable($user_id) {
 	reset_user_perms($user_id);
 }
 
-/* user_enable - enable a user account
-   @arg $user_id - Id of the user account to enable */
+/**
+ * user_enable - enable a user account
+ * @arg $user_id - Id of the user account to enable
+ */
 function user_enable($user_id) {
 	/* ================= input validation ================= */
 	input_validate_input_number($user_id, 'user_id');
@@ -340,7 +361,9 @@ function user_enable($user_id) {
 	reset_user_perms($user_id);
 }
 
-/* get_auth_realms - return a list of system user authentication realms */
+/**
+ * get_auth_realms - return a list of system user authentication realms
+ */
 function get_auth_realms($login = false) {
 	if (read_config_option('auth_method') == 4) {
 		$drealms = db_fetch_assoc('SELECT domain_id, domain_name
@@ -391,12 +414,16 @@ function get_auth_realms($login = false) {
 	);
 }
 
-/* get_graph_permissions_sql - creates SQL that reprents the current graph, host and graph
-	 template policies
-   @arg $policy_graphs - (int) the current graph policy
-   @arg $policy_hosts - (int) the current host policy
-   @arg $policy_graph_templates - (int) the current graph template policy
-   @returns - an SQL "where" statement */
+/**
+ * get_graph_permissions_sql - creates SQL that reprents the current graph, host and graph
+ * template policies.
+ *
+ * @arg $policy_graphs - (int) the current graph policy
+ * @arg $policy_hosts - (int) the current host policy
+ * @arg $policy_graph_templates - (int) the current graph template policy
+ *
+ * @returns - an SQL "where" statement
+ */
 function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_templates) {
 	$sql            = '';
 	$sql_or         = '';
@@ -444,9 +471,13 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
 	}
 }
 
-/* is_graph_allowed - determines whether the current user is allowed to view a certain graph
-   @arg $local_graph_id - (int) the ID of the graph to check permissions for
-   @returns - (bool) whether the current user is allowed the view the specified graph or not */
+/**
+ * is_graph_allowed - determines whether the current user is allowed to view a certain graph
+ *
+ * @arg $local_graph_id - (int) the ID of the graph to check permissions for
+ *
+ * @returns - (bool) whether the current user is allowed the view the specified graph or not
+ */
 function is_graph_allowed($local_graph_id, $user = 0) {
 	$rows  = 0;
 
@@ -504,9 +535,13 @@ function auth_augment_roles($role_name, $files) {
 	}
 }
 
-/* is_tree_allowed - determines whether the current user is allowed to view a certain graph tree
-   @arg $tree_id - (int) the ID of the graph tree to check permissions for
-   @returns - (bool) whether the current user is allowed the view the specified graph tree or not */
+/**
+ * is_tree_allowed - determines whether the current user is allowed to view a certain graph tree
+ *
+ * @arg $tree_id - (int) the ID of the graph tree to check permissions for
+ *
+ * @returns - (bool) whether the current user is allowed the view the specified graph tree or not
+ */
 function is_tree_allowed($tree_id, $user = 0) {
 	if ($user == -1) {
 		return true;
@@ -580,9 +615,13 @@ function is_tree_allowed($tree_id, $user = 0) {
 	}
 }
 
-/* is_device_allowed - determines whether the current user is allowed to view a certain device
-   @arg $host_id - (int) the ID of the device to check permissions for
-   @returns - (bool) whether the current user is allowed the view the specified device or not */
+/**
+ * is_device_allowed - determines whether the current user is allowed to view a certain device
+ *
+ * @arg $host_id - (int) the ID of the device to check permissions for
+ *
+ * @returns - (bool) whether the current user is allowed the view the specified device or not
+ */
 function is_device_allowed($host_id, $user = 0) {
 	$total_rows = -2;
 	get_allowed_devices('', '', '', $total_rows, $user, $host_id);
@@ -590,9 +629,13 @@ function is_device_allowed($host_id, $user = 0) {
 	return ($total_rows > 0);
 }
 
-/* is_graph_template_allowed - determines whether the current user is allowed to view a certain graph template
-   @arg $graph_template_id - (int) the ID of the graph template to check permissions for
-   @returns - (bool) whether the current user is allowed the view the specified graph template or not */
+/**
+ * is_graph_template_allowed - determines whether the current user is allowed to view a certain graph template
+ *
+ * @arg $graph_template_id - (int) the ID of the graph template to check permissions for
+ *
+ * @returns - (bool) whether the current user is allowed the view the specified graph template or not
+ */
 function is_graph_template_allowed($graph_template_id, $user = 0) {
 	$total_rows = -2;
 	get_allowed_graph_templates('', '', '', $total_rows, $user, $graph_template_id);
@@ -600,8 +643,9 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
 	return ($total_rows > 0);
 }
 
-/* is_view_allowed - Returns a true or false as to wether or not a specific view type is allowed
- *                   View options include 'show_tree', 'show_list', 'show_preview', 'graph_settings'
+/**
+ * is_view_allowed - Returns a true or false as to wether or not a specific view type is allowed
+ * view options include 'show_tree', 'show_list', 'show_preview', 'graph_settings'
  */
 function is_view_allowed($view = 'show_tree') {
 	if (read_config_option('auth_method') != 0) {
@@ -2338,8 +2382,11 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 	return $templates;
 }
 
-/* get_host_array - returns a list of hosts taking permissions into account if necessary
-   @returns - (array) an array containing a list of hosts */
+/**
+ * get_host_array - returns a list of hosts taking permissions into account if necessary
+ *
+ * @returns - (array) an array containing a list of hosts
+ */
 function get_host_array() {
 	$total_rows = -1;
 
@@ -2697,9 +2744,13 @@ function rsa_check_keypair() {
 	}
 }
 
-/* reset_group_perms - sets a flag for all users of a group logged in that their perms need to be reloaded from the database
-   @arg $user_id - (int) the id of the current user
-   @returns - null */
+/**
+ * reset_group_perms - sets a flag for all users of a group logged in that their perms need to be reloaded from the database
+ *
+ * @arg $user_id - (int) the id of the current user
+ *
+ * @returns - null
+ */
 function reset_group_perms($group_id) {
 	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
 		FROM user_auth_group_members
@@ -2713,9 +2764,13 @@ function reset_group_perms($group_id) {
 	}
 }
 
-/* reset_user_perms - sets a flag for all users logged in as this user that their perms need to be reloaded from the database
-   @arg $user_id - (int) the id of the current user
-   @returns - null */
+/**
+ * reset_user_perms - sets a flag for all users logged in as this user that their perms need to be reloaded from the database
+ *
+ * @arg $user_id - (int) the id of the current user
+ *
+ * @returns - null
+ */
 function reset_user_perms($user_id) {
 	db_execute_prepared('UPDATE user_auth
 		SET reset_perms=FLOOR(RAND() * 4294967295) + 1
@@ -2729,9 +2784,12 @@ function reset_user_perms($user_id) {
 	}
 }
 
-/* is_user_perms_valid - checks to see if the admin has changed users permissions
-   @arg $user_id - (int) the id of the current user
-   @returns - true if still valid, false otherwise */
+/**
+ * is_user_perms_valid - checks to see if the admin has changed users permissions
+ *
+ * @arg $user_id - (int) the id of the current user
+ * @returns - true if still valid, false otherwise
+ */
 function is_user_perms_valid($user_id) {
 	global $config;
 
@@ -2759,12 +2817,16 @@ function is_user_perms_valid($user_id) {
 	return $valid;
 }
 
-/* compat_password_verify - if the secure function exists, verify against that
-   first.  If that checks fails or does not exist, check against older md5
-   version
-   @arg $password - (string) password to verify
-   @arg $hash     - (string) current password hash
-   @returns - true if password hash matches, false otherwise */
+/**
+ * compat_password_verify - if the secure function exists, verify against that
+ * first.  If that checks fails or does not exist, check against older md5
+ * version
+ *
+ * @arg $password - (string) password to verify
+ * @arg $hash     - (string) current password hash
+ *
+ * @returns - true if password hash matches, false otherwise
+ */
 function compat_password_verify($password, $hash) {
 	if (function_exists('password_verify')) {
 		if (password_verify($password, $hash)) {
@@ -2777,11 +2839,15 @@ function compat_password_verify($password, $hash) {
 	return ($md5 == $hash);
 }
 
-/* compat_password_hash - if the secure function exists, hash using that.
-   If that does not exist, hash older md5 function instead
-   @arg $password - (string) password to hash
-   @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
-   @returns - hash of password, false otherwise */
+/**
+ * compat_password_hash - if the secure function exists, hash using that.
+ * If that does not exist, hash older md5 function instead
+ *
+ * @arg $password - (string) password to hash
+ * @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+ *
+ * @returns - hash of password, false otherwise
+ */
 function compat_password_hash($password, $algo, $options = array()) {
 	if (function_exists('password_hash')) {
 		// Check if options array has anything, only pass when required
@@ -2793,12 +2859,16 @@ function compat_password_hash($password, $algo, $options = array()) {
 	return md5($password);
 }
 
-/* compat_password_needs_rehash - if the secure function exists, check hash
-   using that. If that does not exist, return false as md5 doesn't need a
-   rehash
-   @arg $password - (string) password to hash
-   @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
-   @returns - true if password hash needs changing, false otherwise */
+/**
+ * compat_password_needs_rehash - if the secure function exists, check hash
+ * using that. If that does not exist, return false as md5 doesn't need a
+ * rehash.
+ *
+ * @arg $password - (string) password to hash
+ * @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+ *
+ * @returns - true if password hash needs changing, false otherwise
+ */
 function compat_password_needs_rehash($password, $algo, $options = array()) {
 	if (function_exists('password_needs_rehash')) {
 		// Check if options array has anything, only pass when required
@@ -3037,9 +3107,13 @@ function auth_post_login_redirect($user) {
 	exit;
 }
 
-/* auth_basename - provides a URL knowledgable basename function
-   @arg $referer - (string) a URL that will included a basename
-   @returns - (string) the file name without the arguments */
+/**
+ * auth_basename - provides a URL knowledgable basename function
+ *
+ * @arg $referer - (string) a URL that will included a basename
+ *
+ * @returns - (string) the file name without the arguments
+ */
 function auth_basename($referer) {
 	$parts = explode('?', $referer);
 

@@ -22,10 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-/*
+/**
  * Create a consistent responsive filter
  */
-
 class CactiTableFilter {
 	public $form_header    = '';
 	public $form_action    = '';

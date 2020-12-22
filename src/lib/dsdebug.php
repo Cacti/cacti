@@ -22,9 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
-/* dsstats_debug - this simple routine print's a standard message to the console
-	 when running in debug mode.
-   @returns - NULL */
+/**
+ * dsstats_debug - this simple routine print's a standard message to the console
+ * when running in debug mode.
+ *
+ * @returns - NULL
+ */
 function dsdebug_debug($message) {
 	global $debug;
 
@@ -33,10 +36,14 @@ function dsdebug_debug($message) {
 	}
 }
 
-/* log_dsstats_statistics - provides generic timing message to both the Cacti log and the settings
-	 table so that the statistcs can be graphed as well.
-   @arg $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
-   @returns - null */
+/**
+ * log_dsstats_statistics - provides generic timing message to both the Cacti log and the settings
+ * table so that the statistcs can be graphed as well.
+ *
+ * @param $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
+ *
+ * @returns - null
+ */
 function log_dsdebug_statistics($type, $checks, $issues) {
 	global $start;
 
@@ -52,14 +59,18 @@ function log_dsdebug_statistics($type, $checks, $issues) {
 	cacti_log('DSDEBUG STATS: Type:' . $type . ', ' . $cacti_stats , true, 'SYSTEM');
 }
 
-/* dsstats_error_handler - this routine logs all PHP error transactions
-	 to make sure they are properly logged.
-   @arg $errno - (int) The errornum reported by the system
-   @arg $errmsg - (string) The error message provides by the error
-   @arg $filename - (string) The filename that encountered the error
-   @arg $linenum - (int) The line number where the error occurred
-   @arg $vars - (mixed) The current state of PHP variables.
-   @returns - (bool) always returns true for some reason */
+/**
+ * dsstats_error_handler - this routine logs all PHP error transactions
+ * to make sure they are properly logged.
+ *
+ * @param $errno - (int) The errornum reported by the system
+ * @param $errmsg - (string) The error message provides by the error
+ * @param $filename - (string) The filename that encountered the error
+ * @param $linenum - (int) The line number where the error occurred
+ * @param $vars - (mixed) The current state of PHP variables.
+ *
+ * @returns - (bool) always returns true for some reason
+ */
 function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */

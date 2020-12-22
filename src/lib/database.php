@@ -22,20 +22,23 @@
  +-------------------------------------------------------------------------+
 */
 
-/* db_connect_real - makes a connection to the database server
-   @param $device - the hostname of the database server, 'localhost' if the database server is running
-	  on this machine
-   @param $user - the username to connect to the database server as
-   @param $pass - the password to connect to the database server with
-   @param $db_name - the name of the database to connect to
-   @param $db_type - the type of database server to connect to, only 'mysql' is currently supported
-   @param $port - the port to communicate with MySQL/MariaDB on
-   @param $retries - the number a time the server should attempt to connect before failing
-   @param $db_ssl - boolean true or false
-   @param $db_ssl_key - the client ssl key
-   @param $db_ssl_cert - the client ssl cert
-   @param $db_ssl_ca - the ssl ca
-   @returns - (bool) '1' for success, '0' for error */
+/**
+ * db_connect_real - makes a connection to the database server
+ *
+ * @param $device - the hostname of the database server, 'localhost' if the database server is running on this machine
+ * @param $user - the username to connect to the database server as
+ * @param $pass - the password to connect to the database server with
+ * @param $db_name - the name of the database to connect to
+ * @param $db_type - the type of database server to connect to, only 'mysql' is currently supported
+ * @param $port - the port to communicate with MySQL/MariaDB on
+ * @param $retries - the number a time the server should attempt to connect before failing
+ * @param $db_ssl - boolean true or false
+ * @param $db_ssl_key - the client ssl key
+ * @param $db_ssl_cert - the client ssl cert
+ * @param $db_ssl_ca - the ssl ca
+ *
+ * @returns - (bool) '1' for success, '0' for error
+ */
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
 	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '') {
 	global $database_sessions, $database_total_queries, $config;
@@ -189,8 +192,11 @@ function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 	throw new Exception($errstr, $errno);
 }
 
-/* db_close - closes the open connection
-   @returns - the result of the close command */
+/**
+ * db_close - closes the open connection
+ *
+ * @returns - the result of the close command
+ */
 function db_close($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -209,18 +215,26 @@ function db_close($db_conn = false) {
 	return true;
 }
 
-/* db_execute - run an sql query and do not return any output
-   @param $sql - the sql query to execute
-   @param $log - whether to log error messages, defaults to true
-   @returns - '1' for success, '0' for error */
+/**
+ * db_execute - run an sql query and do not return any output
+ *
+ * @param $sql - the sql query to execute
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - '1' for success, '0' for error
+ */
 function db_execute($sql, $log = true, $db_conn = false) {
 	return db_execute_prepared($sql, array(), $log, $db_conn);
 }
 
-/* db_execute_prepared - run an sql query and do not return any output
-   @param $sql - the sql query to execute
-   @param $log - whether to log error messages, defaults to true
-   @returns - '1' for success, '0' for error */
+/**
+ * db_execute_prepared - run an sql query and do not return any output
+ *
+ * @param $sql - the sql query to execute
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - '1' for success, '0' for error
+ */
 function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log;
 	$database_total_queries++;
@@ -383,12 +397,16 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 	return false;
 }
 
-/* db_fetch_cell - run a 'select' sql query and return the first column of the
-	 first row found
-   @param $sql - the sql query to execute
-   @param $col_name - use this column name instead of the first one
-   @param $log - whether to log error messages, defaults to true
-   @returns - (bool) the output of the sql query as a single variable */
+/**
+ * db_fetch_cell - run a 'select' sql query and return the first column of the
+ * first row found
+ *
+ * @param $sql - the sql query to execute
+ * @param $col_name - use this column name instead of the first one
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - (bool) the output of the sql query as a single variable
+ */
 function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
 	global $config;
 
@@ -399,12 +417,16 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
 	return db_fetch_cell_prepared($sql, array(), $col_name, $log, $db_conn);
 }
 
-/* db_fetch_cell_prepared - run a 'select' sql query and return the first column of the
-	 first row found
-   @param $sql - the sql query to execute
-   @param $col_name - use this column name instead of the first one
-   @param $log - whether to log error messages, defaults to true
-   @returns - (bool) the output of the sql query as a single variable */
+/**
+ * db_fetch_cell_prepared - run a 'select' sql query and return the first column of the
+ * first row found
+ *
+ * @param $sql - the sql query to execute
+ * @param $col_name - use this column name instead of the first one
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - (bool) the output of the sql query as a single variable
+ */
 function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = true, $db_conn = false) {
 	global $config;
 
@@ -435,10 +457,14 @@ function db_fetch_cell_return($query, $col_name = '') {
 	return false;
 }
 
-/* db_fetch_row - run a 'select' sql query and return the first row found
-   @param $sql - the sql query to execute
-   @param $log - whether to log error messages, defaults to true
-   @returns - the first row of the result as a hash */
+/**
+ * db_fetch_row - run a 'select' sql query and return the first row found
+ *
+ * @param $sql - the sql query to execute
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - the first row of the result as a hash
+ */
 function db_fetch_row($sql, $log = true, $db_conn = false) {
 	global $config;
 
@@ -449,10 +475,14 @@ function db_fetch_row($sql, $log = true, $db_conn = false) {
 	return db_fetch_row_prepared($sql, array(), $log, $db_conn);
 }
 
-/* db_fetch_row_prepared - run a 'select' sql query and return the first row found
-   @param $sql - the sql query to execute
-   @param $log - whether to log error messages, defaults to true
-   @returns - the first row of the result as a hash */
+/**
+ * db_fetch_row_prepared - run a 'select' sql query and return the first row found
+ *
+ * @param $sql - the sql query to execute
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - the first row of the result as a hash
+ */
 function db_fetch_row_prepared($sql, $params = array(), $log = true, $db_conn = false) {
 	global $config;
 
@@ -477,10 +507,14 @@ function db_fetch_row_return($query) {
 	return (isset($r[0])) ? $r[0] : array();
 }
 
-/* db_fetch_assoc - run a 'select' sql query and return all rows found
-   @param $sql - the sql query to execute
-   @param $log - whether to log error messages, defaults to true
-   @returns - the entire result set as a multi-dimensional hash */
+/**
+ * db_fetch_assoc - run a 'select' sql query and return all rows found
+ *
+ * @param $sql - the sql query to execute
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - the entire result set as a multi-dimensional hash
+ */
 function db_fetch_assoc($sql, $log = true, $db_conn = false) {
 	global $config;
 
@@ -491,10 +525,14 @@ function db_fetch_assoc($sql, $log = true, $db_conn = false) {
 	return db_fetch_assoc_prepared($sql, array(), $log, $db_conn);
 }
 
-/* db_fetch_assoc_prepared - run a 'select' sql query and return all rows found
-   @param $sql - the sql query to execute
-   @param $log - whether to log error messages, defaults to true
-   @returns - the entire result set as a multi-dimensional hash */
+/**
+ * db_fetch_assoc_prepared - run a 'select' sql query and return all rows found
+ *
+ * @param $sql - the sql query to execute
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - the entire result set as a multi-dimensional hash
+ */
 function db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false) {
 	global $config;
 
@@ -517,8 +555,11 @@ function db_fetch_assoc_return($query) {
 	return (is_array($r)) ? $r : array();
 }
 
-/* db_fetch_insert_id - get the last insert_id or auto incriment
-   @returns - the id of the last auto increment row that was created */
+/**
+ * db_fetch_insert_id - get the last insert_id or auto incriment
+ *
+ * @returns - the id of the last auto increment row that was created
+ */
 function db_fetch_insert_id($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -534,8 +575,11 @@ function db_fetch_insert_id($db_conn = false) {
 	return false;
 }
 
-/* db_affected_rows - return the number of rows affected by the last transaction
- * @returns - the number of rows affected by the last transaction */
+/**
+ * db_affected_rows - return the number of rows affected by the last transaction
+ *
+ * @returns - the number of rows affected by the last transaction
+ */
 function db_affected_rows($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -551,11 +595,15 @@ function db_affected_rows($db_conn = false) {
 	return $db_conn->affected_rows;
 }
 
-/* db_add_column - add a column to table
-   @param $table - the name of the table
-   @param $column - array of column data ex: array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
-   @param $log - whether to log error messages, defaults to true
-   @returns - '1' for success, '0' for error */
+/**
+ * db_add_column - add a column to table
+ *
+ * @param $table - the name of the table
+ * @param $column - array of column data ex: array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - '1' for success, '0' for error
+ */
 function db_add_column($table, $column, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -633,11 +681,15 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 	return false;
 }
 
-/* db_change_column - update a column to table
-   @param $table - the name of the table
-   @param $column - array of column data ex: array('old_name' => 'test', 'name' => 'newtest' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
-   @param $log - whether to log error messages, defaults to true
-   @returns - '1' for success, '0' for error */
+/**
+ * db_change_column - update a column to table
+ *
+ * @param $table - the name of the table
+ * @param $column - array of column data ex: array('old_name' => 'test', 'name' => 'newtest' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - '1' for success, '0' for error
+ */
 function db_change_column($table, $column, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -719,11 +771,15 @@ function db_change_column($table, $column, $log = true, $db_conn = false) {
 	return false;
 }
 
-/* db_remove_column - remove a column to table
-   @param $table - the name of the table
-   @param $column - column name
-   @param $log - whether to log error messages, defaults to true
-   @returns - '1' for success, '0' for error */
+/**
+ * db_remove_column - remove a column to table
+ *
+ * @param $table - the name of the table
+ * @param $column - column name
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - '1' for success, '0' for error
+ */
 function db_remove_column($table, $column, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -752,12 +808,16 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 	return true;
 }
 
-/* db_add_index - adds a new index to a table
-   @param $table - the name of the table
-   @param $type - the type of the index
-   @param $key - the name of the index
-   @param $columns - an array that defines the columns to include in the index
-   @returns - (bool) the result of the operation true or false */
+/**
+ * db_add_index - adds a new index to a table
+ *
+ * @param $table - the name of the table
+ * @param $type - the type of the index
+ * @param $key - the name of the index
+ * @param $columns - an array that defines the columns to include in the index
+ *
+ * @returns - (bool) the result of the operation true or false
+ */
 function db_add_index($table, $type, $key, $columns) {
 	if (!is_array($columns)) {
 		$columns = array($columns);
@@ -776,11 +836,15 @@ function db_add_index($table, $type, $key, $columns) {
 	return db_execute($sql);
 }
 
-/* db_index_exists - checks whether an index exists
-   @param $table - the name of the table
-   @param $index - the name of the index
-   @param $log - whether to log error messages, defaults to true
-   @returns - (bool) the output of the sql query as a single variable */
+/**
+ * db_index_exists - checks whether an index exists
+ *
+ * @param $table - the name of the table
+ * @param $index - the name of the index
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - (bool) the output of the sql query as a single variable
+ */
 function db_index_exists($table, $index, $log = true, $db_conn = false) {
 	global $database_log, $config;
 
@@ -805,12 +869,16 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
 	return in_array($index, $_keys, true);
 }
 
-/* db_index_exists - checks whether an index exists
-   @param $table - the name of the table
-   @param $index - the name of the index
-   @param $columns - the columns of the index that should match
-   @param $log - whether to log error messages, defaults to true
-   @returns - (bool) the output of the sql query as a single variable */
+/**
+ * db_index_exists - checks whether an index exists
+ *
+ * @param $table - the name of the table
+ * @param $index - the name of the index
+ * @param $columns - the columns of the index that should match
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - (bool) the output of the sql query as a single variable
+ */
 function db_index_matches($table, $index, $columns, $log = true, $db_conn = false) {
 	global $database_log, $config;
 
@@ -869,10 +937,14 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 	return $status;
 }
 
-/* db_table_exists - checks whether a table exists
-   @param $table - the name of the table
-   @param $log - whether to log error messages, defaults to true
-   @returns - (bool) the output of the sql query as a single variable */
+/**
+ * db_table_exists - checks whether a table exists
+ *
+ * @param $table - the name of the table
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - (bool) the output of the sql query as a single variable
+ */
 function db_table_exists($table, $log = true, $db_conn = false) {
 	static $results;
 
@@ -894,9 +966,13 @@ function db_table_exists($table, $log = true, $db_conn = false) {
 	return false;
 }
 
-/* db_cacti_initialized - checks whether cacti has been initialized properly and if not exits with a message
-   @param $is_web - is the session a web session.
-   @returns - (null)  */
+/**
+ * db_cacti_initialized - checks whether cacti has been initialized properly and if not exits with a message
+ *
+ * @param $is_web - is the session a web session.
+ *
+ * @returns - (null)
+ */
 function db_cacti_initialized($is_web = true) {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $config;
 
@@ -931,11 +1007,15 @@ function db_cacti_initialized($is_web = true) {
 	}
 }
 
-/* db_column_exists - checks whether a column exists
-   @param $table - the name of the table
-   @param $column - the name of the column
-   @param $log - whether to log error messages, defaults to true
-   @returns - (bool) the output of the sql query as a single variable */
+/**
+ * db_column_exists - checks whether a column exists
+ *
+ * @param $table - the name of the table
+ * @param $column - the name of the column
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - (bool) the output of the sql query as a single variable
+ */
 function db_column_exists($table, $column, $log = true, $db_conn = false) {
 	static $results = array();
 
@@ -948,9 +1028,13 @@ function db_column_exists($table, $column, $log = true, $db_conn = false) {
 	return $results[$table][$column];
 }
 
-/* db_get_table_column_types - returns all the types for each column of a table
-   @param $table - the name of the table
-   @returns - (array) an array of column types indexed by the column names */
+/**
+ * db_get_table_column_types - returns all the types for each column of a table
+ *
+ * @param $table - the name of the table
+ *
+ * @returns - (array) an array of column types indexed by the column names
+ */
 function db_get_table_column_types($table, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1201,11 +1285,15 @@ function db_format_index_create($indexes) {
 	}
 }
 
-/* db_table_create - checks whether a table exists
-   @param $table - the name of the table
-   @param $data - data array
-   @param $log - whether to log error messages, defaults to true
-   @returns - (bool) the output of the sql query as a single variable */
+/**
+ * db_table_create - checks whether a table exists
+ *
+ * @param $table - the name of the table
+ * @param $data - data array
+ * @param $log - whether to log error messages, defaults to true
+ *
+ * @returns - (bool) the output of the sql query as a single variable
+ */
 function db_table_create($table, $data, $log = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1315,10 +1403,14 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 	}
 }
 
-/* db_get_global_variable - get the value of a global variable
-   @param $variable - the variable to obtain
-   @param $db_conn - the database connection to use
-   @returns - (string) the value of the variable if found */
+/**
+ * db_get_global_variable - get the value of a global variable
+ *
+ * @param $variable - the variable to obtain
+ * @param $db_conn - the database connection to use
+ *
+ * @returns - (string) the value of the variable if found
+ */
 function db_get_global_variable($variable, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1340,10 +1432,14 @@ function db_get_global_variable($variable, $db_conn = false) {
 	}
 }
 
-/* db_get_session_variable - get the value of a session variable
-   @param $variable - the variable to obtain
-   @param $db_conn - the database connection to use
-   @returns - (string) the value of the variable if found */
+/**
+ * db_get_session_variable - get the value of a session variable
+ *
+ * @param $variable - the variable to obtain
+ * @param $db_conn - the database connection to use
+ *
+ * @returns - (string) the value of the variable if found
+ */
 function db_get_session_variable($variable, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1365,9 +1461,13 @@ function db_get_session_variable($variable, $db_conn = false) {
 	}
 }
 
-/* db_begin_transaction - start a transaction
-   @param $db_conn - the database connection to use
-   @returns - (bool) if the begin transaction was successful */
+/**
+ * db_begin_transaction - start a transaction
+ *
+ * @param $db_conn - the database connection to use
+ *
+ * @returns - (bool) if the begin transaction was successful
+ */
 function db_begin_transaction($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1383,9 +1483,13 @@ function db_begin_transaction($db_conn = false) {
 	return $db_conn->beginTransaction();
 }
 
-/* db_commit_transaction - commit a transaction
-   @param $db_conn - the database connection to use
-   @returns - (bool) if the commit transaction was successful */
+/**
+ * db_commit_transaction - commit a transaction
+ *
+ * @param $db_conn - the database connection to use
+ *
+ * @returns - (bool) if the commit transaction was successful
+ */
 function db_commit_transaction($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1401,9 +1505,13 @@ function db_commit_transaction($db_conn = false) {
 	return $db_conn->commit();
 }
 
-/* db_rollback_transaction - rollback a transaction
-   @param $db_conn - the database connection to use
-   @returns - (bool) if the rollback transaction was successful */
+/**
+ * db_rollback_transaction - rollback a transaction
+ *
+ * @param $db_conn - the database connection to use
+ *
+ * @returns - (bool) if the rollback transaction was successful
+ */
 function db_rollback_transaction($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1419,13 +1527,17 @@ function db_rollback_transaction($db_conn = false) {
 	return $db_conn->rollBack();
 }
 
-/* array_to_sql_or - loops through a single dimentional array and converts each
-	 item to a string that can be used in the OR portion of an sql query in the
-	 following form:
-		column=item1 OR column=item2 OR column=item2 ...
-   @param $array - the array to convert
-   @param $sql_column - the column to set each item in the array equal to
-   @returns - a string that can be placed in a SQL OR statement */
+/**
+ * array_to_sql_or - loops through a single dimentional array and converts each
+ * item to a string that can be used in the OR portion of an sql query in the
+ * following form:
+ * column=item1 OR column=item2 OR column=item2 ...
+ *
+ * @param $array - the array to convert
+ * @param $sql_column - the column to set each item in the array equal to
+ *
+ * @returns - a string that can be placed in a SQL OR statement
+ */
 function array_to_sql_or($array, $sql_column) {
 	/* if the last item is null; pop it off */
 	if (end($array) === null) {
@@ -1439,12 +1551,16 @@ function array_to_sql_or($array, $sql_column) {
 	}
 }
 
-/* db_replace - replaces the data contained in a particular row
-   @param $table_name - the name of the table to make the replacement in
-   @param $array_items - an array containing each column -> value mapping in the row
-   @param $keyCols - a string or array of primary keys
-   @param $autoQuote - whether to use intelligent quoting or not
-   @returns - the auto incriment id column (if applicable) */
+/**
+ * db_replace - replaces the data contained in a particular row
+ *
+ * @param $table_name - the name of the table to make the replacement in
+ * @param $array_items - an array containing each column -> value mapping in the row
+ * @param $keyCols - a string or array of primary keys
+ * @param $autoQuote - whether to use intelligent quoting or not
+ *
+ * @returns - the auto incriment id column (if applicable)
+ */
 function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
@@ -1459,8 +1575,6 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 
 	return db_fetch_insert_id($db_conn);
 }
-
-// FIXME:  Need to Rename and cleanup a bit
 
 function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -1519,11 +1633,15 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 	return db_fetch_insert_id($db_conn);
 }
 
-/* sql_save - saves data to an sql table
-   @param $array_items - an array containing each column -> value mapping in the row
-   @param $table_name - the name of the table to make the replacement in
-   @param $key_cols - the primary key(s)
-   @returns - the auto incriment id column (if applicable) */
+/**
+ * sql_save - saves data to an sql table
+ *
+ * @param $array_items - an array containing each column -> value mapping in the row
+ * @param $table_name - the name of the table to make the replacement in
+ * @param $key_cols - the primary key(s)
+ *
+ * @returns - the auto incriment id column (if applicable)
+ */
 function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $database_last_error;
 
@@ -1697,16 +1815,22 @@ function db_echo_sql($line, $force = false) {
 	file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 }
 
-/* db_error - return the last error from the database
-   @returns - string - the last database error if any */
+/**
+ * db_error - return the last error from the database
+ *
+ * @returns - string - the last database error if any
+ */
 function db_error() {
 	global $database_last_error;
 
 	return $database_last_error;
 }
 
-/* db_get_default_database - Get the database name of the current database or return the default database name
-   @returns - string - either current db name or configuration default if no connection/name */
+/**
+ * db_get_default_database - Get the database name of the current database or return the default database name
+ *
+ * @returns - string - either current db name or configuration default if no connection/name
+ */
 function db_get_default_database($db_conn = false) {
 	global $database_default;
 
@@ -1717,8 +1841,11 @@ function db_get_default_database($db_conn = false) {
 	}
 }
 
-/* db_force_remote_cnn - force the remote collector to use main data collector connection
-   @returns - null */
+/**
+ * db_force_remote_cnn - force the remote collector to use main data collector connection
+ *
+ * @returns - null
+ */
 function db_force_remote_cnn() {
 	global $database_default, $database_hostname, $database_username, $database_password;
 	global $database_port, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;

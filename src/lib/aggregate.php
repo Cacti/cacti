@@ -241,6 +241,7 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 
 /**
  * aggregate_error_handler	- PHP error handler
+ *
  * @param int $errno		- error id
  * @param string $errmsg	- error message
  * @param string $filename	- file name
@@ -307,7 +308,8 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
  * @param string $table_name 	- the table name that contains the target id
  * @param string $group_query 	- an SQL 'where' clause to limit the query
  * @param mixed $key_field
- * + @returns int					- the next available sequence id
+ *
+ * @returns int					- the next available sequence id
  */
 function get_next_sequence($id, $field, $table_name, $group_query, $key_field='id') {
 	cacti_log(__FUNCTION__ . '  called. Id: ' . $id . ' field: ' . $field . ' table: ' . $table_name, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -329,7 +331,9 @@ function get_next_sequence($id, $field, $table_name, $group_query, $key_field='i
 
 /**
  * find out, if this is a pure STACKed graph
+ *
  * @param int $_local_graph_id	- graph to be examined
+ *
  * @return bool					- true, if pure STACKed graph
  */
 function aggregate_is_pure_stacked_graph($_local_graph_id) {
@@ -360,7 +364,9 @@ function aggregate_is_pure_stacked_graph($_local_graph_id) {
 
 /**
  * find out, if graph has a STACK
+ *
  * @param int $_local_graph_id	- graph to be examined
+ *
  * @return bool					- true, if pure STACKed graph
  */
 function aggregate_is_stacked_graph($_local_graph_id) {
@@ -573,7 +579,7 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 }
 
 /**
- * aggregate_cdef_make0			- return the id of a 'Make 0' cdef, create that cdef if necessary
+ * aggregate_cdef_make0	- return the id of a 'Make 0' cdef, create that cdef if necessary
  */
 function aggregate_cdef_make0() {
 	global $config;
@@ -626,6 +632,7 @@ function aggregate_cdef_make0() {
 
 /**
  * aggregate_cdef_totalling			- create a totalling CDEF, if need be
+ *
  * @param int $_new_graph_id		- id of new graph
  * @param int $_graph_item_sequence	- current graph item sequence
  * @param int $_total_type			- what type of totalling is required?
@@ -774,9 +781,12 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 	}
 }
 
-/** auto_hr			- set a new hr when items are skipped
+/**
+ * auto_hr			- set a new hr when items are skipped
+ *
  * @param array $s	- array of skipped items
  * @param array $h	- array of items with HR
+ *
  * returns array	- array with new HR markers
  */
 function auto_hr($s, $h) {
@@ -799,8 +809,11 @@ function auto_hr($s, $h) {
 	return $h;
 }
 
-/** auto_title					- generate a title suggested to the user
+/**
+ * auto_title - generate a title suggested to the user
+ *
  * @param int $_local_graph_id	- the id of the graph stanza
+ *
  * returns string				- the title
  */
 function auto_title($_local_graph_id) {
@@ -859,7 +872,6 @@ function api_aggregate_remove_multi($graphs) {
 	}
 }
 
-/* To-do remove orphaned elements */
 function aggregate_prune_graphs($local_graph_id = 0) {
 	$aggregate_graphs = array();
 	$local_graph_ids  = array();

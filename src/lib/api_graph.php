@@ -183,11 +183,13 @@ function api_graph_remove_multi($local_graph_ids) {
 	}
 }
 
-/* api_resize_graphs - resizes the selected graph, overriding the template value
-   @arg $graph_templates_graph_id - the id of the graph to resize
-   @arg $graph_width - the width of the resized graph
-   @arg $graph_height - the height of the resized graph
-  */
+/**
+ * api_resize_graphs - resizes the selected graph, overriding the template value
+ *
+ * @arg $graph_templates_graph_id - the id of the graph to resize
+ * @arg $graph_width - the width of the resized graph
+ * @arg $graph_height - the height of the resized graph
+ */
 function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
 	/* get graphs template id */
 	db_execute_prepared('UPDATE graph_templates_graph
@@ -196,9 +198,11 @@ function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
 		array($graph_width, $graph_height, $local_graph_id));
 }
 
-/* api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
-   @param int $graph_templates_graph_id - the id of the graph to reapply the name to
-*/
+/**
+ * api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
+ *
+ * @param int $graph_templates_graph_id - the id of the graph to reapply the name to
+ */
 function api_reapply_suggested_graph_title($local_graph_id) {
 	global $config;
 
@@ -275,10 +279,13 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	return false;
 }
 
-/* api_get_graphs_from_datasource - get's all graphs related to a data source
-   @arg $local_data_id - the id of the data source
-   @returns - array($id => $name_cache) returns the graph id's and names of the graphs
-  */
+/**
+ * api_get_graphs_from_datasource - get's all graphs related to a data source
+ *
+ * @arg $local_data_id - the id of the data source
+ *
+ * @returns - array($id => $name_cache) returns the graph id's and names of the graphs
+ */
 function api_get_graphs_from_datasource($local_data_id) {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
 		graph_templates_graph.title_cache AS name

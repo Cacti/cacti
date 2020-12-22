@@ -1734,9 +1734,11 @@ function build_sort_order($index_order, $default_order = '') {
 
 /**
  * get an array of hosts matching a host_match rule
+ *
  * @param array $rule		- rule
  * @param int $rule_type	- rule type
  * @param string $sql_where - additional where clause
+ *
  * @return array			- array of matching hosts
  */
 function get_matching_hosts($rule, $rule_type, $sql_where='') {
@@ -1767,9 +1769,11 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 
 /**
  * get an array of graphs matching a graph_match rule
+ *
  * @param array $rule		- rule
  * @param int $rule_type	- rule type
  * @param string $sql_where - additional where clause
+ *
  * @return array			- matching graphs
  */
 function get_matching_graphs($rule, $rule_type, $sql_where = '') {
@@ -2130,6 +2134,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 
 /**
  * hook executed for a graph template
+ *
  * @param $host_id - the host to perform automation on
  * @param $graph_template_id - the graph_template_id to perform automation on
  */
@@ -2150,6 +2155,7 @@ function automation_hook_graph_template($host_id, $graph_template_id) {
 
 /**
  * hook executed for a new graph on a tree
+ *
  * @param $data - data passed from hook
  */
 function automation_hook_graph_create_tree($data) {
@@ -2173,6 +2179,7 @@ function automation_hook_graph_create_tree($data) {
 
 /**
  * run rules for a data query
+ *
  * @param $data - data passed from hook
  * @param mixed $host_id
  * @param mixed $snmp_query_id
@@ -2234,6 +2241,7 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 
 /**
  * run rules for a graph template
+ *
  * @param $data - data passed from hook
  * @param mixed $host_id
  * @param mixed $graph_template_id
@@ -2314,6 +2322,7 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 
 /**
  * run rules for a new device in a tree
+ *
  * @param $host_id - the host id of the device
  */
 function automation_execute_device_create_tree($host_id) {
@@ -2372,6 +2381,7 @@ function automation_execute_device_create_tree($host_id) {
 
 /**
  * run rules for a new graph on a tree
+ *
  * @param $data - data passed from hook
  * @param mixed $graph_id
  */
@@ -2429,6 +2439,7 @@ function automation_execute_graph_create_tree($graph_id) {
 
 /**
  * create all graphs for a data query
+ *
  * @param int $host_id			- host id
  * @param int $snmp_query_id	- snmp query id
  * @param array $rule			- matching rule
@@ -2697,10 +2708,12 @@ function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_
 
 /**
  * create a single tree header node
+ *
  * @param string $title				- graph title
  * @param array $rule				- rule
  * @param array $item				- item
  * @param int $parent_tree_item_id	- parent item id
+ *
  * @return int						- id of new item
  */
 function create_header_node($title, $rule, $item, $parent_tree_item_id) {
@@ -2732,9 +2745,11 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 
 /**
  * add a device to the tree
+ *
  * @param int $host_id	- host id
  * @param int $parent	- parent id
  * @param array $rule 	- rule
+ *
  * @return int			- id of new item
  */
 function create_device_node($host_id, $parent, $rule) {
@@ -2773,9 +2788,11 @@ function create_device_node($host_id, $parent, $rule) {
 
 /**
  * add a site to the tree
+ *
  * @param int $site_id	- site id
  * @param int $parent	- parent id
  * @param array $rule 	- rule
+ *
  * @return int			- id of new item
  */
 function create_site_node($site_id, $parent, $rule) {
@@ -2814,9 +2831,11 @@ function create_site_node($site_id, $parent, $rule) {
 
 /**
  * add a device to the tree
+ *
  * @param int $graph_id	- graph id
  * @param int $parent	- parent id
  * @param array $rule	- rule
+ *
  * @return int			- id of new item
  */
 function create_graph_node($graph_id, $parent, $rule) {

@@ -383,8 +383,11 @@ function data_input_method_to_xml($data_input_id) {
 	return $xml_text;
 }
 
-/** encode a cdef along with all cdef_items as XML text
+/**
+ * encode a cdef along with all cdef_items as XML text
+ *
  * @param int $cdef_id	- the id of the cdef that has to be encoded
+ *
  * @return string		- the resulting XML text
  */
 function cdef_to_xml($cdef_id) {
@@ -461,8 +464,11 @@ function cdef_to_xml($cdef_id) {
 	return $xml_text;
 }
 
-/** encode given VDEF as XML string
+/**
+ * encode given VDEF as XML string
+ *
  * @param int $vdef_id  - id of VDEF
+ *
  * @return string       - XML text of encoded VDEF
  */
 function vdef_to_xml($vdef_id) {
