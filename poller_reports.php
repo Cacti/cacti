@@ -32,9 +32,7 @@ require_once($config['base_path'] . '/lib/rrd.php');
 require_once($config['base_path'] . '/lib/reports.php');
 
 /**
- * display_version
- *
- * displays version information
+ * display_version - displays Cacti CLI version information
  */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
@@ -42,11 +40,7 @@ function display_version() {
 }
 
 /**
- * display_help
- *
- * generic help screen for utilities
- *
- * @return null
+ * display_help - displays Cacti CLI help information
  */
 function display_help() {
 	display_version();

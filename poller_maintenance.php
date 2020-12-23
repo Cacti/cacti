@@ -761,7 +761,7 @@ function display_version() {
 }
 
 /**
- * display_help - display help information
+ * display_help - displays Cacti CLI help information
  */
 function display_help() {
 	display_version();

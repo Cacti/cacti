@@ -316,10 +316,7 @@ function debug($string) {
 }
 
 /**
- * display_version
- *
- * Insert description here
- *
+ * display_version - displays Cacti CLI version information
  */
 function display_version() {
 	global $config;
@@ -328,10 +325,7 @@ function display_version() {
 }
 
 /**
- * display_help
- *
- * displays the usage of the function
- *
+ * display_help - displays Cacti CLI help information
  */
 function display_help() {
 	display_version();
