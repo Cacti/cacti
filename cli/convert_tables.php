@@ -42,11 +42,11 @@ $table_name  = '';
 $skip_tables = array();
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -54,51 +54,64 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '-r':
 			case '--rebuild':
 				$rebuild = true;
+
 				break;
 			case '--dynamic':
 				$dynamic = true;
+
 				break;
 			case '-s':
 			case '--size':
 				$size = $value;
+
 				break;
 			case '-t':
 			case '--table':
 				$table_name = $value;
+
 				break;
 			case '-i':
 			case '--innodb':
 				$innodb = true;
+
 				break;
 			case '-n':
 			case '--skip-innodb':
 				$skip_tables = explode(' ', $value);
+
 				break;
 			case '-f':
 			case '--force':
 				$force = true;
+
 				break;
 			case '-u':
 			case '--utf8':
 				$utf8 = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -107,26 +120,30 @@ if (cacti_sizeof($parms)) {
 if (cacti_sizeof($skip_tables) && $table_name != '') {
 	print "ERROR: You can not specify a single table and skip tables at the same time.\n\n";
 	display_help();
+
 	exit;
 }
 
 if (!($innodb || $utf8)) {
 	print "ERROR: Must select either UTF8 or InnoDB conversion.\n\n";
 	display_help();
+
 	exit;
 }
 
 if (cacti_sizeof($skip_tables)) {
-	foreach($skip_tables as $table) {
+	foreach ($skip_tables as $table) {
 		if (!db_table_exists($table)) {
 			print "ERROR: Skip Table $table does not Exist.  Can not continue.\n\n";
 			display_help();
+
 			exit;
 		}
 	}
 }
 
 $convert = $innodb ? 'InnoDB' : '';
+
 if ($utf8) {
 	$convert .= (strlen($convert) ? ' and ' : '') . ' utf8';
 }
@@ -136,9 +153,10 @@ print "Converting Database Tables to $convert with less than '$size' Records\n";
 if ($innodb) {
 	$engines = db_fetch_assoc('SHOW ENGINES');
 
-	foreach($engines as $engine) {
+	foreach ($engines as $engine) {
 		if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support'] == 'off')) {
 			print "InnoDB Engine is not enabled\n";
+
 			exit;
 		}
 	}
@@ -147,6 +165,7 @@ if ($innodb) {
 
 	if (strtolower($file_per_table['Value']) != 'on') {
 		print 'innodb_file_per_table not enabled';
+
 		exit;
 	}
 }
@@ -158,15 +177,16 @@ if (strlen($table_name)) {
 }
 
 if (cacti_sizeof($tables)) {
-	foreach($tables AS $table) {
+	foreach ($tables as $table) {
 		$canConvert = $rebuild;
 		$canInnoDB  = false;
+
 		if (!$canConvert && $innodb) {
 			$canConvert = $table['Engine'] == 'MyISAM';
 			$canInnoDB  = true;
 		}
 
-		if (in_array($table['Name'], $skip_tables)) {
+		if (in_array($table['Name'], $skip_tables, true)) {
 			$canInnoDB = false;
 		}
 
@@ -183,6 +203,7 @@ if (cacti_sizeof($tables)) {
 				print "Converting Table -> '" . $table['Name'] . "'";
 
 				$sql = '';
+
 				if ($utf8) {
 					$sql .= ' CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
 				}
@@ -209,14 +230,18 @@ if (cacti_sizeof($tables)) {
 	}
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
-function display_help () {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--table=N] [--size=N] [--rebuild] [--dynamic]\n\n";

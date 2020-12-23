@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_7b
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_7b() {
 	/* add Task Item Id Index */
 	db_install_add_key('graph_templates_item', 'index', 'task_item_id', array('task_item_id'));

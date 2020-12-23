@@ -25,9 +25,9 @@
 include('./include/auth.php');
 
 if (isset($_SERVER['HTTP_REFERER'])) {
-	$goBack = "[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]";
+	$goBack = "[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . '</a>]';
 } else {
-	$goBack = "[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]";
+	$goBack = "[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . '</a>]';
 }
 
 /* allow for plugin based permissiion denied page */

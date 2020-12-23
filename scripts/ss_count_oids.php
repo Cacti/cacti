@@ -3,16 +3,26 @@
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
-	include(dirname(__FILE__) . '/../include/cli_check.php');
-	include_once(dirname(__FILE__) . '/../lib/snmp.php');
+	include(__DIR__ . '/../include/cli_check.php');
+	include_once(__DIR__ . '/../lib/snmp.php');
 
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_count_oids', $_SERVER['argv']);
 } else {
-	include_once(dirname(__FILE__) . '/../lib/snmp.php');
+	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
+/**
+ * ss_count_oids
+ *
+ * Insert description here
+ *
+ * @param string $hostid
+ * @param string $oid
+ *
+ * @return type
+ */
 function ss_count_oids($hostid = '', $oid = '') {
 	if ($hostid > 0) {
 		$host = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version, snmp_username, snmp_password,
@@ -37,4 +47,3 @@ function ss_count_oids($hostid = '', $oid = '') {
 
 	return '0';
 }
-

@@ -35,10 +35,12 @@ set_default_action();
 
 support_view_tech();
 
-/* -----------------------
-    Functions
-   ----------------------- */
-
+/**
+ * support_view_tech
+ *
+ * Insert description here
+ *
+ */
 function support_view_tech() {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 
@@ -86,14 +88,14 @@ function support_view_tech() {
 				" href='" . html_escape($config['url_path'] .
 				'utilities.php?action=view_tech' .
 				'&tab=' . $tab_short_name) .
-				"'>" . $tabs[$tab_short_name] . "</a></li>";
+				"'>" . $tabs[$tab_short_name] . '</a></li>';
 
 			$i++;
 		}
 
 		api_plugin_hook('utilities_tab');
 
-		print "</ul></nav></div>";
+		print '</ul></nav></div>';
 	}
 
 	/* Display tech information */
@@ -115,8 +117,8 @@ function support_view_tech() {
 			GROUP BY i.type_id');
 
 		/* Get RRDtool version */
-		$rrdtool_version = __('Unknown');
-		$rrdtool_release = __('Unknown');
+		$rrdtool_version  = __('Unknown');
+		$rrdtool_release  = __('Unknown');
 		$storage_location = read_config_option('$storage_location');
 
 		$out_array = array();
@@ -127,7 +129,7 @@ function support_view_tech() {
 			}
 		}else {
 			$rrdtool_pipe = rrd_init();
-			$out_array = rrdtool_execute('info', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'WEBLOG');
+			$out_array    = rrdtool_execute('info', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'WEBLOG');
 			rrd_close($rrdtool_pipe);
 		}
 
@@ -143,25 +145,29 @@ function support_view_tech() {
 		if ((file_exists(read_config_option('path_snmpget'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_snmpget'))))) {
 			$snmp_version = shell_exec(cacti_escapeshellcmd(read_config_option('path_snmpget')) . ' -V 2>&1');
 		} else {
-			$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . "</span>";
+			$snmp_version = "<span class='deviceDown'>" . __('NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices.') . '</span>';
 		}
 
 		/* Check RRDtool issues */
 		$rrdtool_errors = array();
+
 		if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
-			$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span>";
+			$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . '</span>';
 		}
 
 		$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
+
 		if ($graph_gif_count > 0) {
 			$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span>';
 		}
 
 		/* Get spine version */
 		$spine_version = 'Unknown';
+
 		if ((file_exists(read_config_option('path_spine'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_spine'))))) {
 			$out_array = array();
 			exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
+
 			if (cacti_sizeof($out_array) > 0) {
 				$spine_version = $out_array[0];
 			}
@@ -197,7 +203,7 @@ function support_view_tech() {
 
 		form_alternate_row();
 		print '<td>' . __('RRDtool Version') . ' ' . __('Configured') . '</td>';
-		print '<td>' . get_rrdtool_version() . "+</td>";
+		print '<td>' . get_rrdtool_version() . '+</td>';
 		form_end_row();
 
 		form_alternate_row();
@@ -207,9 +213,10 @@ function support_view_tech() {
 
 		if (!empty($rrdtool_errors)) {
 			form_alternate_row();
-			print "<td>&nbsp;</td>";
+			print '<td>&nbsp;</td>';
 			$br = '';
 			print '<td>';
+
 			foreach ($rrdtool_errors as $rrdtool_error) {
 				print $br . $rrdtool_error;
 				$br = '<br/>';
@@ -232,6 +239,7 @@ function support_view_tech() {
 		print '<td>' . __('Data Sources') . '</td>';
 		print '<td>';
 		$data_total = 0;
+
 		if (cacti_sizeof($data_count)) {
 			foreach ($data_count as $item) {
 				print $input_types[$item['type_id']] . ': ' . number_format_i18n($item['total'], -1) . '<br>';
@@ -249,8 +257,10 @@ function support_view_tech() {
 		form_alternate_row();
 		print '<td>' . __('Interval') . '</td>';
 		print '<td>' . read_config_option('poller_interval') . '</td>';
+
 		if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
 			$type = $spine_version;
+
 			if (!strpos($spine_version, CACTI_VERSION)) {
 				$type .= '<span class="textError"> (' . __('Different version of Cacti and Spine!') . ')</span>';
 			}
@@ -268,6 +278,7 @@ function support_view_tech() {
 		print '<td>' . __('Items') . '</td>';
 		print '<td>';
 		$total = 0;
+
 		if (cacti_sizeof($poller_item)) {
 			foreach ($poller_item as $item) {
 				print __('Action[%s]', $item['action']) . ': ' . number_format_i18n($item['total'], -1) . '<br>';
@@ -275,7 +286,7 @@ function support_view_tech() {
 			}
 			print __('Total: %s', number_format_i18n($total, -1));
 		} else {
-			print "<span class='deviceDown'>" . __('No items to poll') . "</span>";
+			print "<span class='deviceDown'>" . __('No items to poll') . '</span>';
 		}
 		print '</td>';
 		form_end_row();
@@ -312,6 +323,7 @@ function support_view_tech() {
 		form_end_row();
 
 		$max_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+
 		if (cacti_sizeof($max_connections)) {
 			$max_connections = $max_connections['Value'];
 		} else {
@@ -360,11 +372,11 @@ function support_view_tech() {
 		if (cacti_sizeof($memInfo)) {
 			html_section_header(__('System Memory'), 2);
 
-			foreach($memInfo as $name => $value) {
+			foreach ($memInfo as $name => $value) {
 				if ($config['cacti_server_os'] == 'win32') {
 					form_alternate_row();
 					print "<td>$name</td>";
-					print '<td>' . number_format_i18n($value/1000, 2) . " MB</td>";
+					print '<td>' . number_format_i18n($value / 1000, 2) . ' MB</td>';
 					form_end_row();
 				} else {
 					switch($name) {
@@ -392,10 +404,11 @@ function support_view_tech() {
 
 		form_alternate_row();
 		print '<td>' . __('PHP Version') . '</td>';
+
 		if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
 			print '<td>' . PHP_VERSION . '</td>';
 		} else {
-			print '<td>' . PHP_VERSION . "</br><span class='deviceDown'>" . __('PHP Version 5.5.0+ is recommended due to strong password hashing support.') . "</span></td>";
+			print '<td>' . PHP_VERSION . "</br><span class='deviceDown'>" . __('PHP Version 5.5.0+ is recommended due to strong password hashing support.') . '</span></td>';
 		}
 		form_end_row();
 
@@ -407,6 +420,7 @@ function support_view_tech() {
 		form_alternate_row();
 		print '<td>' . __('PHP uname') . '</td>';
 		print '<td>';
+
 		if (function_exists('php_uname')) {
 			print php_uname();
 		} else {
@@ -418,6 +432,7 @@ function support_view_tech() {
 		form_alternate_row();
 		print '<td>' . __('PHP SNMP') . '</td>';
 		print '<td>';
+
 		if (function_exists('snmpget')) {
 			print __('Installed. <span class="deviceDown">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>');
 		} else {
@@ -427,12 +442,12 @@ function support_view_tech() {
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>max_execution_time</td>";
+		print '<td>max_execution_time</td>';
 		print '<td>' . ini_get('max_execution_time') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
-		print "<td>memory_limit</td>";
+		print '<td>memory_limit</td>';
 		print '<td>' . ini_get('memory_limit');
 
 		/* Calculate memory suggestion based off of data source count */
@@ -450,10 +465,12 @@ function support_view_tech() {
 
 		/* Suggest values in 8M increments */
 		$memory_suggestion = round($memory_suggestion / 8388608) * 8388608;
+
 		if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
 			print "<br><span class='deviceDown'>";
+
 			if ((ini_get('memory_limit') == -1)) {
-				print __("You've set memory limit to 'unlimited'.") . "<br>";
+				print __("You've set memory limit to 'unlimited'.") . '<br>';
 			}
 			print __('It is highly suggested that you alter you php.ini memory_limit to %s or higher.', memory_readable($memory_suggestion)) . ' <br/>' .
 				__('This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.');
@@ -474,7 +491,7 @@ function support_view_tech() {
 		print '</tr>';
 		print '</thead>';
 
-		foreach($status as $s) {
+		foreach ($status as $s) {
 			form_alternate_row();
 			print '<td>' . html_escape($s['Variable_name']) . '</td>';
 			print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):html_escape($s['Value'])) . '</td>';
@@ -494,7 +511,8 @@ function support_view_tech() {
 		print '</thead>';
 
 		$r = 0;
-		foreach($status as $k => $v) {
+
+		foreach ($status as $k => $v) {
 			if (($r % 2) == 0) {
 				form_alternate_row();
 			}
@@ -524,7 +542,7 @@ function support_view_tech() {
 		print '</tr>';
 		print '</thead>';
 
-		foreach($status as $s) {
+		foreach ($status as $s) {
 			form_alternate_row();
 			print '<td>' . html_escape($s['Variable_name']) . '</td>';
 
@@ -566,6 +584,7 @@ function support_view_tech() {
 			print "  <th class='tableSubHeaderColumn'>" . __('Comment') . '</th>';
 			print '</tr>';
 			print '</thead>';
+
 			foreach ($tables as $table) {
 				form_alternate_row();
 				print '<td>' . $table['TABLE_NAME'] . '</td>';
@@ -580,7 +599,7 @@ function support_view_tech() {
 				form_end_row();
 			}
 
-			print "</table>";
+			print '</table>';
 		} else {
 			print __('Unable to retrieve table status');
 		}
@@ -620,7 +639,7 @@ function support_view_tech() {
 				form_end_row();
 			}
 
-			print "</table>";
+			print '</table>';
 		} else {
 			print __('No host found');
 		}
@@ -658,7 +677,7 @@ function support_view_tech() {
 				form_end_row();
 			}
 
-			print "</table>";
+			print '</table>';
 		} else {
 			print __('No host found');
 		}

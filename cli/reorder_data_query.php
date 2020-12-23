@@ -33,16 +33,16 @@ ini_set('max_execution_time', '0');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		= false;
-$host_id	= 'all';
-$host_descr	= '';
+$debug      = false;
+$host_id    = 'all';
+$host_descr = '';
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -51,57 +51,66 @@ if (cacti_sizeof($parms)) {
 			case '--id':
 			case '--host-id':
 				$host_id = $value;
+
 				break;
 			case '-qid':
 			case '--qid':
 				$query_id = $value;
+
 				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
 } else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
+
 	exit(1);
 }
-
 
 $sql_where = "WHERE data_input_fields.type_code='output_type'";
 
 /* determine the hosts to reindex */
 if (strtolower($host_id) == 'all') {
 	/* NOP */
-}else if (is_numeric($host_id)) {
-	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ' ) . 'data_local.host_id = ' . $host_id;
+} elseif (is_numeric($host_id)) {
+	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.host_id = ' . $host_id;
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
 /* determine data queries to rerun */
 if (is_numeric($query_id)) {
-	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ' ) . 'data_local.snmp_query_id= ' . $query_id;
+	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.snmp_query_id= ' . $query_id;
 } else {
 	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
@@ -124,6 +133,7 @@ print "WARNING: Do not interrupt this script.  Reordering can take quite some ti
 debug("There are '" . cacti_sizeof($data_queries) . "' data query index items to run");
 
 $i = 1;
+
 if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
 		if (!$debug) print '.';
@@ -143,14 +153,18 @@ if (cacti_sizeof($data_queries)) {
 	}
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Reorder Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
-function display_help () {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]\n\n";
@@ -162,10 +176,13 @@ function display_help () {
 	print "    --debug | -d   - Display verbose output during execution\n\n";
 }
 
+/**
+ * debug - simple function to send debug message to stdout
+ */
 function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print "DEBUG: " . trim($message) . "\n";
+		print 'DEBUG: ' . trim($message) . "\n";
 	}
 }

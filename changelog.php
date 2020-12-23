@@ -40,13 +40,16 @@ switch (get_request_var('action')) {
 			changelog_view();
 			bottom_footer();
 		}
+
 		break;
 }
 
-/* -----------------------
-    Functions
-   ----------------------- */
-
+/**
+ * changelog_view
+ *
+ * Insert description here
+ *
+ */
 function changelog_view() {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 
@@ -84,14 +87,14 @@ function changelog_view() {
 		print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 			" href='" . html_escape($config['url_path'] .
 			'changelog.php?tab=' . $tab_short_name) .
-			"'>" . $tabs[$tab_short_name] . "</a></li>";
+			"'>" . $tabs[$tab_short_name] . '</a></li>';
 
 		$i++;
 	}
 
 	api_plugin_hook('changelog_tab');
 
-	print "</ul></nav></div>";
+	print '</ul></nav></div>';
 
 	$header_label = __esc('Change Log [%s]', $tabs[get_request_var('tab')]);
 
@@ -107,10 +110,13 @@ function changelog_view() {
 	$vers    = array();
 	$details = array();
 	$first   = '';
+
 	foreach ($changelog as $line) {
 		$line = trim($line);
+
 		if (isset($line[0]) && ($line[0] == '*' || $line[0] == '-')) {
 			$detail = false;
+
 			if (preg_match('/-(issue|feature|security): (.*)/i', $line, $parts)) {
 				$detail = array('desc' => $parts[2]);
 			} elseif (preg_match('/-(issue|feature|security)#(\d+)\: (.*)/i', $line, $parts)) {
@@ -118,8 +124,10 @@ function changelog_view() {
 			}
 
 			$type = 'unknown';
+
 			if (isset($parts[1])) {
-				$type = strtolower($parts[1]);
+				$type                          = strtolower($parts[1]);
+
 				if ($type == 'security') $type = ' security';
 			}
 
@@ -129,11 +137,11 @@ function changelog_view() {
 				}
 				$details[$type][] = $detail;
 			}
-		} else if (!empty($line)) {
+		} elseif (!empty($line)) {
 			if (!empty($ver)) {
 				$vers[$ver] = $details;
-				$first=true;
-				$details = array();
+				$first      =true;
+				$details    = array();
 			}
 
 			if (count($vers) > 4) {
@@ -144,28 +152,37 @@ function changelog_view() {
 	}
 
 	krsort($vers);
-	foreach($vers as $ver => $changelog) {
+
+	foreach ($vers as $ver => $changelog) {
 		if (!empty($ver)) {
 			html_start_box(__('Version %s', $ver), '100%', '', '3', 'center', '');
 			ksort($changelog);
+
 			foreach ($changelog as $type => $details) {
 				$output = false;
+
 				foreach ($details as $detail) {
 					$highlight = false;
+
 					switch ($type) {
 						case 'issue':
 							$icon = '<i class="fas fa-wrench"></i>';
+
 							break;
 						case 'feature':
-							$icon = '<i class="fas fa-rocket"></i>';
+							$icon      = '<i class="fas fa-rocket"></i>';
 							$highlight = true;
+
 							break;
 						case ' security':
-							$icon = '<i class="fas fa-shield-alt"></i>';
+							$icon      = '<i class="fas fa-shield-alt"></i>';
 							$highlight = true;
+
 							break;
-						default;
+
+						default:
 							$icon = '<i class="far fa-question-circle"></i>';
+
 							break;
 					}
 
@@ -178,6 +195,7 @@ function changelog_view() {
 						form_alternate_row();
 
 						print '<td>' . $icon . '</td><td>' . html_escape($type) . '</td><td>';
+
 						if (!empty($detail['issue'])) {
 							print '<a target="_blank" href="https://github.com/cacti/cacti/issues/' . html_escape($detail['issue']) . '">' . html_escape($detail['issue']) . '</a>';
 						}
@@ -188,12 +206,12 @@ function changelog_view() {
 				}
 			}
 			html_end_box();
+
 			if ($current_tab !== 'full') {
 				break;
 			}
 		}
 	}
-
 
 	?>
 	<script type='text/javascript'>

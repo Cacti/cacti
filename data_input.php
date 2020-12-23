@@ -53,6 +53,7 @@ switch (get_request_var('action')) {
 		field_remove();
 
 		header('Location: data_input.php?action=edit&id=' . get_filter_request_var('data_input_id'));
+
 		break;
 	case 'field_edit':
 		top_header();
@@ -60,6 +61,7 @@ switch (get_request_var('action')) {
 		field_edit();
 
 		bottom_footer();
+
 		break;
 	case 'edit':
 		top_header();
@@ -67,20 +69,27 @@ switch (get_request_var('action')) {
 		data_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		data();
 
 		bottom_footer();
+
 		break;
 }
 
-/* --------------------------
-    The Save Function
-   -------------------------- */
-
+/**
+ * duplicate_data_input
+ *
+ * Insert description here
+ *
+ * @param type $_data_input_id
+ * @param type $input_title
+ */
 function duplicate_data_input($_data_input_id, $input_title) {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
@@ -104,7 +113,7 @@ function duplicate_data_input($_data_input_id, $input_title) {
 				array($_data_input_id));
 
 			if (cacti_sizeof($data_input_fields)) {
-				foreach($data_input_fields as $dif) {
+				foreach ($data_input_fields as $dif) {
 					unset($save);
 					$save['id']            = 0;
 					$save['hash']          = get_hash_data_input(0, 'data_input_field');
@@ -125,6 +134,12 @@ function duplicate_data_input($_data_input_id, $input_title) {
 	}
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	global $registered_cacti_names;
 
@@ -205,14 +220,22 @@ function form_save() {
 	}
 }
 
+/**
+ * data_input_save_message
+ *
+ * Insert description here
+ *
+ * @param type $data_input_id
+ * @param 'input' $type
+ */
 function data_input_save_message($data_input_id, $type = 'input') {
-	$counts = db_fetch_row_prepared("SELECT
+	$counts = db_fetch_row_prepared('SELECT
 		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
 		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 		FROM data_input AS di
 		LEFT JOIN data_template_data AS dtd
 		ON di.id=dtd.data_input_id
-		WHERE di.id = ?",
+		WHERE di.id = ?',
 		array($data_input_id));
 
 	if ($counts['templates'] == 0 && $counts['data_sources'] == 0) {
@@ -232,6 +255,12 @@ function data_input_save_message($data_input_id, $type = 'input') {
 	}
 }
 
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $di_actions;
 
@@ -245,17 +274,18 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { // delete
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					data_remove($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					duplicate_data_input($selected_items[$i], get_nfilter_request_var('input_title'));
 				}
 			}
 		}
 
 		header('Location: data_input.php');
+
 		exit;
 	}
 
@@ -297,7 +327,7 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s).') . "</p>
                     <div class='itemlist'><ul>$di_list</ul></div>
-                    <p><strong>" . __('Input Name:'). "</strong><br>"; form_text_box('input_title', '<input_title> (1)', '', '255', '30', 'text'); print "</p>
+                    <p><strong>" . __('Input Name:'). '</strong><br>'; form_text_box('input_title', '<input_title> (1)', '', '255', '30', 'text'); print "</p>
                 </td>
 			</tr>\n";
 		}
@@ -306,6 +336,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: data_input.php');
+
 		exit;
 	}
 
@@ -325,10 +356,12 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* --------------------------
-    CDEF Item Functions
-   -------------------------- */
-
+/**
+ * field_remove_confirm
+ *
+ * Insert description here
+ *
+ */
 function field_remove_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -391,6 +424,12 @@ function field_remove_confirm() {
 	<?php
 }
 
+/**
+ * field_remove
+ *
+ * Insert description here
+ *
+ */
 function field_remove() {
 	global $registered_cacti_names;
 
@@ -408,8 +447,9 @@ function field_remove() {
 	/* when a field is deleted; we need to re-order the field sequences */
 	if (($field['input_output'] == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array($field['data_input_id'])), $matches))) {
 		$j = 0;
+
 		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
-			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
+			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
 				$j++;
 				db_execute_prepared("UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND input_output = 'in' AND data_name = ?", array($j, $field['data_input_id'], $matches[1][$i]));
 			}
@@ -419,6 +459,12 @@ function field_remove() {
 	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 }
 
+/**
+ * field_edit
+ *
+ * Insert description here
+ *
+ */
 function field_edit() {
 	global $registered_cacti_names, $fields_data_input_field_edit_1, $fields_data_input_field_edit_2, $fields_data_input_field_edit;
 
@@ -451,17 +497,19 @@ function field_edit() {
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(!isempty_request_var('data_input_id') ? get_request_var('data_input_id') : $field['data_input_id'])), $matches))) {
 		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
-			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
-				$current_field_name = $matches[1][$i];
+			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
+				$current_field_name                     = $matches[1][$i];
 				$array_field_names[$current_field_name] = $current_field_name;
+
 				if (!isset($field)) {
 					$field_id = db_fetch_cell_prepared('SELECT id FROM data_input_fields
 						WHERE data_name = ?
 						AND data_input_id = ?',
 						array($current_field_name, get_filter_request_var('data_input_id')));
+
 					if (!$field_id > 0) {
-						$field = array();
-						$field['name'] = ucwords($current_field_name);
+						$field              = array();
+						$field['name']      = ucwords($current_field_name);
 						$field['data_name'] = $current_field_name;
 					}
 				}
@@ -473,6 +521,7 @@ function field_edit() {
 	if ((!isset($array_field_names)) && (isset_request_var('type') ? get_request_var('type') == 'in' : false) && ($data_input['type_id'] == '1')) {
 		display_custom_error_message(__('This script appears to have no input values, therefore there is nothing to add.'));
 		header('Location: data_input.php?action=edit&id=' . get_filter_request_var('data_input_id'));
+
 		exit;
 	}
 
@@ -521,10 +570,13 @@ function field_edit() {
 	form_save_button('data_input.php?action=edit&id=' . get_request_var('data_input_id'));
 }
 
-/* -----------------------
-    Data Input Functions
-   ----------------------- */
-
+/**
+ * data_remove
+ *
+ * Insert description here
+ *
+ * @param type $id
+ */
 function data_remove($id) {
 	$data_input_fields = db_fetch_assoc_prepared('SELECT id
 		FROM data_input_fields
@@ -544,9 +596,19 @@ function data_remove($id) {
 	update_replication_crc(0, 'poller_replicate_data_input_crc');
 }
 
+/**
+ * data_input_more_inputs
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $input_string
+ *
+ * @return type
+ */
 function data_input_more_inputs($id, $input_string) {
 	$input_string = str_replace('<path_cacti>', '', $input_string);
-	$inputs = substr_count($input_string, '<');
+	$inputs       = substr_count($input_string, '<');
 
 	$existing = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM data_input_fields
@@ -561,6 +623,14 @@ function data_input_more_inputs($id, $input_string) {
 	}
 }
 
+/**
+ * data_edit
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function data_edit() {
 	global $config, $fields_data_input_edit;
 
@@ -570,8 +640,10 @@ function data_edit() {
 
 	if (!isempty_request_var('id')) {
 		$data_id = get_nonsystem_data_input(get_request_var('id'));
-		if ($data_id == 0 || $data_id == NULL) {
+
+		if ($data_id == 0 || $data_id == null) {
 			header('Location: data_input.php');
+
 			return;
 		}
 
@@ -599,15 +671,19 @@ function data_edit() {
 		switch ($data_input['type_id']) {
 		case DATA_INPUT_TYPE_SNMP:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP] = __('SNMP Get');
+
 			break;
 		case DATA_INPUT_TYPE_SNMP_QUERY:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP_QUERY] = __('SNMP Query');
+
 			break;
 		case DATA_INPUT_TYPE_SCRIPT_QUERY:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SCRIPT_QUERY] = __('Script Query');
+
 			break;
 		case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER] = __('Script Query - Script Server');
+
 			break;
 		}
 
@@ -655,17 +731,18 @@ function data_edit() {
 			ORDER BY sequence, data_name",
 			array(get_request_var('id')));
 
-		$counts = db_fetch_row_prepared("SELECT
+		$counts = db_fetch_row_prepared('SELECT
 			SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
 			SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 			FROM data_input AS di
 			LEFT JOIN data_template_data AS dtd
 			ON di.id=dtd.data_input_id
-			WHERE di.id = ?",
+			WHERE di.id = ?',
 			array(get_request_var('id')));
 
 		$output_disabled  = false;
 		$save_alt_message = false;
+
 		if (!cacti_sizeof($counts)) {
 			$output_disabled  = false;
 			$save_alt_message = false;
@@ -678,6 +755,7 @@ function data_edit() {
 		}
 
 		$i = 0;
+
 		if (cacti_sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
@@ -689,7 +767,13 @@ function data_edit() {
 					<?php print html_escape($field['name']);?>
 				</td>
 				<td>
-					<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
+					<?php
+					print $field['sequence'];
+
+					if ($field['sequence'] == '0') {
+						print ' ' . __('(Not In Use)');
+					}
+					?>
 				</td>
 				<td class="right">
 					<a class='delete deleteMarker fa fa-times' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
@@ -717,6 +801,7 @@ function data_edit() {
 			array(get_request_var('id')));
 
 		$i = 0;
+
 		if (cacti_sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
@@ -784,32 +869,38 @@ function data_edit() {
 	<?php
 }
 
+/**
+ * data
+ *
+ * Insert description here
+ *
+ */
 function data() {
 	global $input_types, $di_actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
@@ -847,7 +938,7 @@ function data() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -914,7 +1005,7 @@ function data() {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$data_inputs = db_fetch_assoc("SELECT di.*,
 		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
@@ -936,7 +1027,12 @@ function data() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'         => array('display' => __('Data Input Name'),    'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')),
+		'name' => array(
+			'display' => __('Data Input Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this Data Input Method.')
+		),
 		'id' => array(
 			'display' => __('ID'),
 			'align'   => 'right',
@@ -971,6 +1067,7 @@ function data() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($data_inputs)) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
@@ -990,7 +1087,7 @@ function data() {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow"><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
+		print '<tr class="tableRow"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

@@ -71,17 +71,17 @@ if (cacti_sizeof($parms)) {
 	$ping_retries   = read_config_option('ping_retries');
 	$max_oids       = read_config_option('max_get_size');
 	$proxy          = false;
-	$device_threads = read_config_option('device_threads');;
+	$device_threads = read_config_option('device_threads');
 
 	$displayHostTemplates = false;
 	$displayCommunities   = false;
 	$quietMode            = false;
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -109,6 +109,7 @@ if (cacti_sizeof($parms)) {
 		case '--version':
 			if (cacti_sizeof($parms) == 1) {
 				display_version();
+
 				exit(0);
 			} else {
 				$snmp_ver = trim($value);
@@ -209,9 +210,11 @@ if (cacti_sizeof($parms)) {
 				$avail = AVAIL_SNMP_OR_PING;
 
 				break;
+
 			default:
 				print "ERROR: Invalid Availability Parameter: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
 
@@ -230,9 +233,11 @@ if (cacti_sizeof($parms)) {
 				$ping_method = PING_UDP;
 
 				break;
+
 			default:
 				print "ERROR: Invalid Ping Method: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
 
@@ -243,6 +248,7 @@ if (cacti_sizeof($parms)) {
 			} else {
 				print "ERROR: Invalid Ping Port: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
 
@@ -253,6 +259,7 @@ if (cacti_sizeof($parms)) {
 			} else {
 				print "ERROR: Invalid Ping Retries: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
 
@@ -263,6 +270,7 @@ if (cacti_sizeof($parms)) {
 			} else {
 				print "ERROR: Invalid Max OIDS: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
 
@@ -271,11 +279,13 @@ if (cacti_sizeof($parms)) {
 		case '-V':
 		case '-v':
 			display_version();
+
 			exit(0);
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
+
 			exit(0);
 		case '--list-communities':
 			$displayCommunities = true;
@@ -289,20 +299,24 @@ if (cacti_sizeof($parms)) {
 			$quietMode = true;
 
 			break;
+
 		default:
 			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
+
 			exit(1);
 		}
 	}
 
 	if ($displayCommunities) {
 		displayCommunities($quietMode);
+
 		exit(0);
 	}
 
 	if ($displayHostTemplates) {
 		displayHostTemplates(getHostTemplates(), $quietMode);
+
 		exit(0);
 	}
 
@@ -314,6 +328,7 @@ if (cacti_sizeof($parms)) {
 	/* process templates */
 	if (!isset($host_templates[$template_id])) {
 		print "ERROR: Unknown template id ($template_id)\n";
+
 		exit(1);
 	}
 
@@ -321,21 +336,25 @@ if (cacti_sizeof($parms)) {
 	if (isset($hosts[$description])) {
 		db_execute("UPDATE host SET hostname='$ip' WHERE deleted = '' AND id=" . $hosts[$description]);
 		print "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ")\n";
+
 		exit(1);
 	}
 
 	if ($description == '') {
 		print "ERROR: You must supply a description for all hosts!\n";
+
 		exit(1);
 	}
 
 	if ($ip == '') {
 		print "ERROR: You must supply an IP address for all hosts!\n";
+
 		exit(1);
 	}
 
 	if ($snmp_ver > 3 || $snmp_ver < 0 || !is_numeric($snmp_ver)) {
 		print "ERROR: The snmp version must be between 0 and 3.  If you did not specify one, goto Configuration > Settings > Device Defaults and resave your defaults.\n";
+
 		exit(1);
 	}
 
@@ -353,6 +372,7 @@ if (cacti_sizeof($parms)) {
 					// assuming an snmp-proxy
 				} else {
 					print "ERROR: This IP ($id) already exists in the database and --proxy was not specified.\n";
+
 					exit(1);
 				}
 			} else {
@@ -373,6 +393,7 @@ if (cacti_sizeof($parms)) {
 					// assuming a proxy
 				} else {
 					print "ERROR: This IP ($id) already exists in the database and --proxy was not specified.\n";
+
 					exit(1);
 				}
 			} else {
@@ -385,32 +406,40 @@ if (cacti_sizeof($parms)) {
 		if ($fail) {
 			db_execute("UPDATE host SET description = '$description' WHERE deleted = '' AND id = " . $addresses[$ip]);
 			print "ERROR: This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ")\n";
+
 			exit(1);
 		}
 	}
 
 	if (!is_numeric($site_id) || $site_id < 0) {
 		print "ERROR: You have specified an invalid site id!\n";
+
 		exit(1);
 	}
 
 	if (!is_numeric($poller_id) || $poller_id < 0) {
 		print "ERROR: You have specified an invalid poller id!\n";
+
 		exit(1);
 	}
 
 	/* process snmp information */
 	if ($snmp_ver < 0 || $snmp_ver > 3) {
 		print "ERROR: Invalid snmp version ($snmp_ver)\n";
- 		exit(1);
-	} elseif ($snmp_ver > 0) {
+
+		exit(1);
+	}
+
+	if ($snmp_ver > 0) {
 		if ($snmp_port <= 1 || $snmp_port > 65534) {
 			print "ERROR: Invalid port.  Valid values are from 1-65534\n";
+
 			exit(1);
 		}
 
 		if ($snmp_timeout <= 0 || $snmp_timeout > 20000) {
 			print "ERROR: Invalid timeout.  Valid values are from 1 to 20000\n";
+
 			exit(1);
 		}
 	}
@@ -419,8 +448,9 @@ if (cacti_sizeof($parms)) {
 	if ($snmp_ver < 3) {
 		/* snmp community can be blank */
 	} else {
-		if ($snmp_username == "" || $snmp_password == "") {
+		if ($snmp_username == '' || $snmp_password == '') {
 			print "ERROR: When using snmpv3 you must supply an username and password\n";
+
 			exit(1);
 		}
 	}
@@ -428,13 +458,14 @@ if (cacti_sizeof($parms)) {
 	/* validate the disable state */
 	if ($disable != 1 && $disable != 0) {
 		print "ERROR: Invalid disable flag ($disable)\n";
+
 		exit(1);
 	}
 
 	if ($disable == 0) {
-		$disable = "";
+		$disable = '';
 	} else {
-		$disable = "on";
+		$disable = 'on';
 	}
 
 	print "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with community \"$community\"\n";
@@ -449,22 +480,30 @@ if (cacti_sizeof($parms)) {
 
 	if (is_error_message()) {
 		print "ERROR: Failed to add this device\n";
+
 		exit(1);
 	} else {
 		print "Success - new device-id: ($host_id)\n";
+
 		exit(0);
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 

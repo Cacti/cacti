@@ -34,8 +34,9 @@ $start = date('Y-m-d H:i:s'); // for runtime measurement
 
 /* correct for a windows PHP bug. fixed in 5.2.0 */
 if (cacti_count($_SERVER['argv']) < 4) {
-	echo "No graph_id, interval, pollerid specified.\n\n";
-	echo "Usage: cmd_realtime.php POLLER_ID GRAPH_ID INTERVAL\n\n";
+	print "No graph_id, interval, pollerid specified.\n\n";
+	print "Usage: cmd_realtime.php POLLER_ID GRAPH_ID INTERVAL\n\n";
+
 	exit(-1);
 }
 
@@ -44,12 +45,14 @@ $graph_id  = (int)$_SERVER['argv'][2];
 $interval  = (int)$_SERVER['argv'][3];
 
 if ($graph_id <= 0) {
-	echo "Invalid graph_id specified.\n\n";
+	print "Invalid graph_id specified.\n\n";
+
 	exit(-1);
 }
 
 if ($interval <= 0) {
-	echo "Invalid interval specified.\n\n";
+	print "Invalid interval specified.\n\n";
+
 	exit(-1);
 }
 
@@ -71,7 +74,8 @@ $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dl
 	array($graph_id));
 
 if (!cacti_count($local_data_ids)) {
-	echo "No local_graph_id found\n\n";
+	print "No local_graph_id found\n\n";
+
 	exit(-1);
 }
 
@@ -113,7 +117,8 @@ if (cacti_sizeof($idbyhost)) {
 
 		if (function_exists('proc_open')) {
 			$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php realtime ' . $poller_id, $cactides, $pipes);
-			$output = fgets($pipes[1], 1024);
+			$output   = fgets($pipes[1], 1024);
+
 			$using_proc_function = true;
 		} else {
 			$using_proc_function = false;
@@ -128,7 +133,8 @@ if (cacti_sizeof($idbyhost)) {
 	foreach ($idbyhost as $host_id => $local_data_ids) {
 		$col_poller_id = db_fetch_cell_prepared('SELECT poller_id
 			FROM host
-			WHERE id = ?', array($host_id));
+			WHERE id = ?',
+			array($host_id));
 
 		$local_data_ids = array(
 			'local_data_ids' => $local_data_ids
@@ -141,6 +147,7 @@ if (cacti_sizeof($idbyhost)) {
 				array($col_poller_id));
 
 			$port = read_config_option('remote_agent_port');
+
 			if ($port != '') {
 				$port = ':' . $port;
 			}
@@ -154,11 +161,12 @@ if (cacti_sizeof($idbyhost)) {
 
 			$fgc_contextoption = get_default_contextoption();
 			$fgc_context       = stream_context_create($fgc_contextoption);
-			$output            = json_decode(@file_get_contents($url, FALSE, $fgc_context), true);
+			$output            = json_decode(@file_get_contents($url, false, $fgc_context), true);
 
 			if (cacti_sizeof($output)) {
 				$sql = '';
-				foreach($output as $item) {
+
+				foreach ($output as $item) {
 					$sql .= ($sql != '' ? ', ':'')      . '(' .
 						db_qstr($item['local_data_id']) . ', ' .
 						db_qstr($item['rrd_name'])      . ', ' .
@@ -179,7 +187,7 @@ if (cacti_sizeof($idbyhost)) {
 				array($host_id));
 
 			if (cacti_sizeof($poller_items)) {
-				foreach($poller_items as $item) {
+				foreach ($poller_items as $item) {
 					switch ($item['action']) {
 					case POLLER_ACTION_SNMP: /* snmp */
 						if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
@@ -192,7 +200,7 @@ if (cacti_sizeof($idbyhost)) {
 
 							if (!cacti_sizeof($host)) {
 								$host['ping_retries'] = 1;
-								$host['max_oids'] = 1;
+								$host['max_oids']     = 1;
 							}
 
 							$session = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
@@ -275,4 +283,3 @@ if (cacti_sizeof($idbyhost)) {
 		$return_value = proc_close($cactiphp);
 	}
 }
-

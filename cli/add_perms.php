@@ -44,19 +44,19 @@ if (cacti_sizeof($parms) == 0) {
 	$itemId   = 0;
 	$hostId   = 0;
 
-	$quietMode				= false;
-	$displayGroups			= false;
-	$displayUsers			= false;
-	$displayTrees			= false;
-	$displayHosts			= false;
-	$displayGraphs			= false;
-	$displayGraphTemplates 	= false;
+	$quietMode             = false;
+	$displayGroups         = false;
+	$displayUsers          = false;
+	$displayTrees          = false;
+	$displayHosts          = false;
+	$displayGraphs         = false;
+	$displayGraphTemplates = false;
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -67,11 +67,12 @@ if (cacti_sizeof($parms) == 0) {
 			break;
 		case '--item-type':
 			/* TODO replace magic numbers by global constants, treat user_admin as well */
-			if ( ($value == 'graph') || ($value == 'tree') || ($value == 'host') || ($value == 'graph_template')) {
+			if (($value == 'graph') || ($value == 'tree') || ($value == 'host') || ($value == 'graph_template')) {
 				$itemType = $itemTypes[$value];
 			} else {
 				print "ERROR: Invalid Item Type: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
 
@@ -116,37 +117,45 @@ if (cacti_sizeof($parms) == 0) {
 		case '-V':
 		case '-v':
 			display_version();
+
 			exit(0);
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
+
 			exit(0);
+
 		default:
 			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
+
 			exit(1);
 		}
 	}
 
 	if ($displayGroups) {
 		displayGroups($quietMode);
+
 		exit(1);
 	}
 
 	if ($displayUsers) {
 		displayUsers($quietMode);
+
 		exit(1);
 	}
 
 	if ($displayTrees) {
 		displayTrees($quietMode);
+
 		exit(1);
 	}
 
 	if ($displayHosts) {
 		$hosts = getHosts();
 		displayHosts($hosts, $quietMode);
+
 		exit(1);
 	}
 
@@ -155,9 +164,11 @@ if (cacti_sizeof($parms) == 0) {
 			print "ERROR: You must supply a valid host_id before you can list its graphs\n";
 			print "Try --list-hosts\n";
 			display_help();
+
 			exit(1);
 		} else {
 			displayHostGraphs($hostId, $quietMode);
+
 			exit(1);
 		}
 	}
@@ -165,6 +176,7 @@ if (cacti_sizeof($parms) == 0) {
 	if ($displayGraphTemplates) {
 		$graphTemplates = getGraphTemplates();
 		displayGraphTemplates($graphTemplates, $quietMode);
+
 		exit(1);
 	}
 
@@ -173,11 +185,12 @@ if (cacti_sizeof($parms) == 0) {
 
 	if (isset($userId) && $userId > 0) {
 		/* verify existing user id */
-		if ( db_fetch_cell("SELECT id FROM user_auth WHERE id=$userId") ) {
+		if (db_fetch_cell("SELECT id FROM user_auth WHERE id=$userId")) {
 			array_push($userIds, $userId);
 		} else {
 			print "ERROR: Invalid Userid: ($value)\n\n";
 			display_help();
+
 			exit(1);
 		}
 	}
@@ -187,44 +200,54 @@ if (cacti_sizeof($parms) == 0) {
 	if ($itemType == 0) {
 		print "ERROR: --item-type missing. Please specify.\n\n";
 		display_help();
+
 		exit(1);
 	}
 
 	if ($itemId == 0) {
 		print "ERROR: --item-id missing. Please specify.\n\n";
 		display_help();
+
 		exit(1);
 	}
 
 	/* TODO replace magic numbers by global constants, treat user_admin as well */
 	switch ($itemType) {
 		case 1: /* graph */
-			if (!db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=$itemId") ) {
+			if (!db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=$itemId")) {
 				print "ERROR: Invalid Graph item id: ($itemId)\n\n";
 				display_help();
+
 				exit(1);
 			}
+
 			break;
 		case 2: /* tree */
-			if (!db_fetch_cell("SELECT id FROM graph_tree WHERE id=$itemId") ) {
+			if (!db_fetch_cell("SELECT id FROM graph_tree WHERE id=$itemId")) {
 				print "ERROR: Invalid Tree item id: ($itemId)\n\n";
 				display_help();
+
 				exit(1);
 			}
+
 			break;
 		case 3: /* host */
-			if (!db_fetch_cell("SELECT id FROM host WHERE id=$itemId") ) {
+			if (!db_fetch_cell("SELECT id FROM host WHERE id=$itemId")) {
 				print "ERROR: Invalid Host item id: ($itemId)\n\n";
 				display_help();
+
 				exit(1);
 			}
+
 			break;
 		case 4: /* graph_template */
-			if (!db_fetch_cell("SELECT id FROM graph_templates WHERE id=$itemId") ) {
+			if (!db_fetch_cell("SELECT id FROM graph_templates WHERE id=$itemId")) {
 				print "ERROR: Invalid Graph Template item id: ($itemId)\n\n";
 				display_help();
+
 				exit(1);
 			}
+
 			break;
 	}
 	/* verified item-id */
@@ -234,12 +257,17 @@ if (cacti_sizeof($parms) == 0) {
 	}
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 
@@ -254,9 +282,12 @@ function display_help() {
 	print "    --list-graphs --host-id=[ID]\n";
 }
 
+/**
+ * displayGroups - unfinished and deprecate
+ */
 function displayGroups() {
-    /**
-     * Todo implement
-     */
+	/**
+	 * Todo implement
+	 */
 	print 'This option has not yet been implemented';
 }

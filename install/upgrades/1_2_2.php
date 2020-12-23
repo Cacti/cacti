@@ -22,15 +22,21 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_2_2
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_2_2() {
-	db_install_execute("ALTER TABLE poller_time MODIFY COLUMN id bigint(20) unsigned auto_increment");
+	db_install_execute('ALTER TABLE poller_time MODIFY COLUMN id bigint(20) unsigned auto_increment');
 
 	// Find aggregates with orphaned items
 	$aggregates_results = db_install_fetch_assoc('SELECT local_graph_id FROM aggregate_graphs');
-	$aggregates = array_rekey($aggregates_results['data'], 'local_graph_id', 'local_graph_id');
+	$aggregates         = array_rekey($aggregates_results['data'], 'local_graph_id', 'local_graph_id');
 
 	if (cacti_sizeof($aggregates)) {
-		foreach($aggregates as $a) {
+		foreach ($aggregates as $a) {
 			$orphans_results = db_fetch_assoc_prepared('SELECT local_data_id, COUNT(DISTINCT local_graph_id) AS graphs
 					FROM graph_templates_item AS gti
 					INNER JOIN data_template_rrd AS dtr

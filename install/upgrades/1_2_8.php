@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_2_8
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_2_8() {
 	db_install_execute('ALTER TABLE host_snmp_cache ROW_FORMAT=Dynamic, DROP INDEX snmp_index, DROP INDEX field_value');
 	db_install_execute('ALTER TABLE host_snmp_cache MODIFY COLUMN snmp_index VARCHAR(255) NOT NULL default ""');

@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_1_8
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_1_8() {
 	// update graph_watermark if set
 	$watermark = '';

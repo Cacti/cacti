@@ -22,18 +22,24 @@
  +-------------------------------------------------------------------------+
 */
 
-/* api_device_crc_update - update hash stored in settings table to inform
-   remote pollers to update their caches
-   @arg $poller_id - the id of the poller impacted by hash update
-   @arg $variable  - the hash variable prefix for the replication setting. */
+/**
+ * api_device_crc_update - update hash stored in settings table to inform
+ * remote pollers to update their caches
+ *
+ * @arg $poller_id - the id of the poller impacted by hash update
+ * @arg $variable  - the hash variable prefix for the replication setting.
+ */
 function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_device_cache_crc') {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
 
-	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . "_" . "$poller_id'", array($hash));
+	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . '_' . "$poller_id'", array($hash));
 }
 
-/* api_device_remove - removes a device
-   @arg $device_id - the id of the device to remove */
+/**
+ * api_device_remove - removes a device
+ *
+ * @arg $device_id - the id of the device to remove
+ */
 function api_device_remove($device_id) {
 	global $config;
 
@@ -78,9 +84,12 @@ function api_device_remove($device_id) {
 	api_device_cache_crc_update($poller_id);
 }
 
-/* api_device_purge_from_remote - removes a device from a remote data collectors
-   @arg $device_ids - device id or an array of device_ids of a host or hosts
-   @arg $poller_id  - the previous poller if it changed */
+/**
+ * api_device_purge_from_remote - removes a device from a remote data collectors
+ *
+ * @arg $device_ids - device id or an array of device_ids of a host or hosts
+ * @arg $poller_id  - the previous poller if it changed
+ */
 function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 	if ($poller_id > 1) {
 		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
@@ -104,7 +113,7 @@ function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 			db_execute('DELETE FROM graph_local      WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 		}
 
-		foreach($device_ids as $id) {
+		foreach ($device_ids as $id) {
 			db_execute_prepared('INSERT INTO poller_command
 				(poller_id, time, action, command)
 				VALUES (?, NOW(), ?, ?)
@@ -114,6 +123,12 @@ function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 	}
 }
 
+/**
+ * api_device_purge_deleted_devices
+ *
+ * Insert description here
+ *
+ */
 function api_device_purge_deleted_devices() {
 	$devices = db_fetch_assoc_prepared('SELECT id, poller_id
 		FROM host
@@ -121,7 +136,7 @@ function api_device_purge_deleted_devices() {
 		AND UNIX_TIMESTAMP(last_updated) < UNIX_TIMESTAMP()-500');
 
 	if (cacti_sizeof($devices)) {
-		foreach($devices as $d) {
+		foreach ($devices as $d) {
 			db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($d['id']));
@@ -139,13 +154,17 @@ function api_device_purge_deleted_devices() {
 	}
 }
 
-/* api_device_remove_multi - removes multiple devices in one call
-   @arg $device_ids - an array of device id's to remove
-   @arg $delete_type - boolean to keep data source and graphs or remove */
+/**
+ * api_device_remove_multi - removes multiple devices in one call
+ *
+ * @arg $device_ids - an array of device id's to remove
+ * @arg $delete_type - boolean to keep data source and graphs or remove
+ */
 function api_device_remove_multi($device_ids, $delete_type = 2) {
 	global $config;
 
 	$devices_to_delete = '';
+
 	$i = 0;
 
 	if (cacti_sizeof($device_ids)) {
@@ -169,7 +188,7 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		);
 
 		/* build the list */
-		foreach($device_ids as $device_id) {
+		foreach ($device_ids as $device_id) {
 			if ($i == 0) {
 				$devices_to_delete .= $device_id;
 			} else {
@@ -211,7 +230,7 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		}
 
 		if (cacti_sizeof($poller_ids)) {
-			foreach($poller_ids as $poller_id) {
+			foreach ($poller_ids as $poller_id) {
 				api_device_cache_crc_update($poller_id);
 				api_device_purge_from_remote($device_ids, $poller_id);
 			}
@@ -221,6 +240,13 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 	clear_cached_allowed_types();
 }
 
+/**
+ * api_device_disable_devices
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ */
 function api_device_disable_devices($device_ids) {
 	global $config;
 
@@ -246,6 +272,13 @@ function api_device_disable_devices($device_ids) {
 	}
 }
 
+/**
+ * api_device_enable_devices
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ */
 function api_device_enable_devices($device_ids) {
 	global $config;
 
@@ -312,6 +345,14 @@ function api_device_enable_devices($device_ids) {
 	}
 }
 
+/**
+ * api_device_change_options
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ * @param type $post
+ */
 function api_device_change_options($device_ids, $post) {
 	global $config, $fields_host_edit;
 
@@ -333,7 +374,7 @@ function api_device_change_options($device_ids, $post) {
 					}
 
 					// Update the local device and replicate
-					if ($old_poller !=  get_nfilter_request_var($field_name && get_nfilter_request_var($field_name) > 1)) {
+					if ($old_poller != get_nfilter_request_var($field_name && get_nfilter_request_var($field_name) > 1)) {
 						api_device_replicate_out($device_id, get_nfilter_request_var($field_name));
 					}
 				}
@@ -362,6 +403,13 @@ function api_device_change_options($device_ids, $post) {
 	}
 }
 
+/**
+ * api_device_clear_statistics
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ */
 function api_device_clear_statistics($device_ids) {
 	global $config;
 
@@ -384,6 +432,13 @@ function api_device_clear_statistics($device_ids) {
 	}
 }
 
+/**
+ * api_device_sync_device_templates
+ *
+ * Insert description here
+ *
+ * @param type $device_ids
+ */
 function api_device_sync_device_templates($device_ids) {
 	global $config;
 
@@ -399,10 +454,13 @@ function api_device_sync_device_templates($device_ids) {
 	}
 }
 
-/* api_device_dq_add - adds a device->data query mapping
-   @arg $device_id - the id of the device which contains the mapping
-   @arg $data_query_id - the id of the data query to remove the mapping for
-   @arg $reindex_method - the reindex method to user when adding the data query */
+/**
+ * api_device_dq_add - adds a device->data query mapping
+ *
+ * @arg $device_id - the id of the device which contains the mapping
+ * @arg $data_query_id - the id of the data query to remove the mapping for
+ * @arg $reindex_method - the reindex method to user when adding the data query
+ */
 function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
 	global $config;
 
@@ -418,13 +476,16 @@ function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
 			array($device_id, $data_query_id, $reindex_method), true, $rcnn_id);
 	}
 
-    /* recache snmp data */
+	/* recache snmp data */
 	run_data_query($device_id, $data_query_id);
 }
 
-/* api_device_dq_remove - removes a device->data query mapping
-   @arg $device_id - the id of the device which contains the mapping
-   @arg $data_query_id - the id of the data query to remove the mapping for */
+/**
+ * api_device_dq_remove - removes a device->data query mapping
+ *
+ * @arg $device_id - the id of the device which contains the mapping
+ * @arg $data_query_id - the id of the data query to remove the mapping for
+ */
 function api_device_dq_remove($device_id, $data_query_id) {
 	global $config;
 
@@ -461,10 +522,13 @@ function api_device_dq_remove($device_id, $data_query_id) {
 	}
 }
 
-/* api_device_dq_change - changes a device->data query mapping
-   @arg $device_id - the id of the device which contains the mapping
-   @arg $data_query_id - the id of the data query to remove the mapping for
-   @arg $reindex_method - the reindex method to use when changing the data query */
+/**
+ * api_device_dq_change - changes a device->data query mapping
+ *
+ * @arg $device_id - the id of the device which contains the mapping
+ * @arg $data_query_id - the id of the data query to remove the mapping for
+ * @arg $reindex_method - the reindex method to use when changing the data query
+ */
 function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 	global $config;
 
@@ -494,9 +558,12 @@ function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 	run_data_query($device_id, $data_query_id);
 }
 
-/* api_device_gt_remove - removes a device->graph template mapping
-   @arg $device_id - the id of the device which contains the mapping
-   @arg $graph_template_id - the id of the graph template to remove the mapping for */
+/**
+ * api_device_gt_remove - removes a device->graph template mapping
+ *
+ * @arg $device_id - the id of the device which contains the mapping
+ * @arg $graph_template_id - the id of the graph template to remove the mapping for
+ */
 function api_device_gt_remove($device_id, $graph_template_id) {
 	global $config;
 
@@ -513,6 +580,16 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 	}
 }
 
+/**
+ * api_device_replicate_out
+ *
+ * Insert description here
+ *
+ * @param type $device_id
+ * @param 1 $poller_id
+ *
+ * @return type
+ */
 function api_device_replicate_out($device_id, $poller_id = 1) {
 	global $config;
 
@@ -649,6 +726,42 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 	return true;
 }
 
+/**
+ * api_device_save
+ *
+ * Insert description here
+ *
+ * @param type $id
+ * @param type $host_template_id
+ * @param type $description
+ * @param type $hostname
+ * @param type $snmp_community
+ * @param type $snmp_version
+ * @param type $snmp_username
+ * @param type $snmp_password
+ * @param type $snmp_port
+ * @param type $snmp_timeout
+ * @param type $disabled
+ * @param type $availability_method
+ * @param type $ping_method
+ * @param type $ping_port
+ * @param type $ping_timeout
+ * @param type $ping_retries
+ * @param type $notes
+ * @param type $snmp_auth_protocol
+ * @param type $snmp_priv_passphrase
+ * @param type $snmp_priv_protocol
+ * @param type $snmp_context
+ * @param type $snmp_engine_id
+ * @param 5 $max_oids
+ * @param 1 $device_threads
+ * @param 1 $poller_id
+ * @param 1 $site_id
+ * @param string $external_id
+ * @param string $location
+ *
+ * @return type
+ */
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
@@ -816,6 +929,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	if ($host_id > 0) {
 		if (read_config_option('extended_paths') == 'on'){
 			$host_dir = $config['rra_path'] . '/' . $host_id;
+
 			if (!is_dir($host_dir)){
 				if (is_writable($config['rra_path'])) {
 					if (mkdir($host_dir, 0775)) {
@@ -852,10 +966,14 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	return $host_id;
 }
 
-/* api_device_quick_save - checks if the poller cache needs to be
-   rebuilt as a part of a device save.
-   @arg $save - the save structure for the device
-   @returns boolean */
+/**
+ * api_device_quick_save - checks if the poller cache needs to be
+ * rebuilt as a part of a device save.
+ *
+ * @arg $save - the save structure for the device
+ *
+ * @return boolean
+ */
 function api_device_quick_save(&$save) {
 	if ($save['id'] > 0) {
 		$device = db_fetch_row_prepared('SELECT *
@@ -880,7 +998,7 @@ function api_device_quick_save(&$save) {
 			'snmp_timeout'
 		);
 
-		foreach($compare as $c) {
+		foreach ($compare as $c) {
 			if ($save[$c] != $device[$c]) {
 				return false;
 			}
@@ -892,9 +1010,12 @@ function api_device_quick_save(&$save) {
 	}
 }
 
-/* api_device_update_host_template - changes the host template of a host
-   @arg $host_id - the id of the device which contains the mapping
-   @arg $host_template_id - the id of the host template alter the device to */
+/**
+ * api_device_update_host_template - changes the host template of a host
+ *
+ * @arg $host_id - the id of the device which contains the mapping
+ * @arg $host_template_id - the id of the host template alter the device to
+ */
 function api_device_update_host_template($host_id, $host_template_id) {
 	global $config;
 
@@ -984,9 +1105,9 @@ function api_device_update_host_template($host_id, $host_template_id) {
 		) AS result
 		ON hg.graph_template_id=result.gtid
 		WHERE gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
-	    HAVING gtid IS NULL
-	    ORDER BY gt.name',
-	    array($host_id, $host_template_id)
+		HAVING gtid IS NULL
+		ORDER BY gt.name',
+		array($host_id, $host_template_id)
 	);
 
 	if (cacti_sizeof($unused_graph_templates)) {
@@ -1008,10 +1129,13 @@ function api_device_update_host_template($host_id, $host_template_id) {
 	}
 }
 
-/* api_device_template_sync_template - updates the device template mapping for all devices mapped to a template
-   @arg $device_template - the device template to syncronize
-   @arg $host_ids - an array of host_ids or a string with a single host_id
-   @arg $down_devices - also update mapping of down devices */
+/**
+ * api_device_template_sync_template - updates the device template mapping for all devices mapped to a template
+ *
+ * @arg $device_template - the device template to syncronize
+ * @arg $host_ids - an array of host_ids or a string with a single host_id
+ * @arg $down_devices - also update mapping of down devices
+ */
 function api_device_template_sync_template($device_template, $host_ids = '', $down_devices = false) {
 	if ($down_devices == true) {
 		$status_where = '';
@@ -1037,17 +1161,28 @@ function api_device_template_sync_template($device_template, $host_ids = '', $do
 	);
 
 	if (cacti_sizeof($devices)) {
-		foreach($devices as $device) {
+		foreach ($devices as $device) {
 			api_device_update_host_template($device, $device_template);
 		}
 	}
 }
 
+/**
+ * api_device_ping_device
+ *
+ * Insert description here
+ *
+ * @param type $device_id
+ * @param false $from_remote
+ *
+ * @return type
+ */
 function api_device_ping_device($device_id, $from_remote = false) {
 	global $config, $snmp_error;
 
 	if (empty($device_id)) {
 		print __('ERROR: Device ID is Blank');
+
 		return;
 	}
 
@@ -1062,6 +1197,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		} else {
 			print __('ERROR: Device[' . $device_id . '] not found.  Please check database for errors.');
 		}
+
 		return;
 	}
 
@@ -1075,6 +1211,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			array($host['poller_id']));
 
 		$port = read_config_option('remote_agent_port');
+
 		if ($port != '') {
 			$port = ':' . $port;
 		}
@@ -1098,7 +1235,6 @@ function api_device_ping_device($device_id, $from_remote = false) {
 	} elseif ($am == AVAIL_SNMP || $am == AVAIL_SNMP_GET_NEXT ||
 		$am == AVAIL_SNMP_GET_SYSDESC || $am == AVAIL_SNMP_AND_PING ||
 		$am == AVAIL_SNMP_OR_PING) {
-
 		$anym = true;
 
 		print __('SNMP Information') . '<br>';
@@ -1108,13 +1244,14 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			print "<span style='color: #ab3f1e; font-weight: bold;'>" . __('SNMP not in use') . '</span>';
 		} else {
 			$snmp_error = '';
-			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
- 				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
- 				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
+			$session    = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
+				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
 				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
 			if ($session === false || $snmp_error != '') {
 				print "<span class='hostDown'>" . __('Session') . ' ' . __('SNMP error');
+
 				if ($snmp_error != '') {
 					print " - $snmp_error";
 				} else {
@@ -1123,14 +1260,15 @@ function api_device_ping_device($device_id, $from_remote = false) {
 				print '</span>';
 			} else {
 				$snmp_system = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
+
 				if ($snmp_system === false || $snmp_system == 'U' || $snmp_error != '') {
 					print "<span class='hostDown'>" . __('System') . ' ' . __('SNMP error');
+
 					if ($snmp_error != '') {
 						print " - $snmp_error";
 					}
 					print '</span>';
 				} else {
-
 					/* modify for some system descriptions */
 					/* 0000937: System output in host.php poor for Alcatel */
 					if (substr_count($snmp_system, '00:')) {
@@ -1140,30 +1278,32 @@ function api_device_ping_device($device_id, $from_remote = false) {
 
 					if ($snmp_system == '') {
 						print "<span class='hostDown'>" . __('Host') . ' ' .  __('SNMP error');
+
 						if ($snmp_error != '') {
 							print " - $snmp_error";
 						}
-						'</span>';
 					} else {
-						$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
-						$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
-						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
-						$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
+						$snmp_uptime   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+						$snmp_hostname = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
+						$snmp_location = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
+						$snmp_contact  = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
 
 						print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . '<br>';
+
 						$snmp_uptime_ticks = intval($snmp_uptime);
-						$days      = intval($snmp_uptime_ticks / (60*60*24*100));
-						$remainder = $snmp_uptime_ticks % (60*60*24*100);
-						$hours     = intval($remainder / (60*60*100));
-						$remainder = $remainder % (60*60*100);
-						$minutes   = intval($remainder / (60*100));
+
+						$days      = intval($snmp_uptime_ticks / (60 * 60 * 24 * 100));
+						$remainder = $snmp_uptime_ticks % (60 * 60 * 24 * 100);
+						$hours     = intval($remainder / (60 * 60 * 100));
+						$remainder = $remainder % (60 * 60 * 100);
+						$minutes   = intval($remainder / (60 * 100));
+
 						print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
 						print '&nbsp;(' . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ')<br>';
 						print '<strong>' . __('Hostname:') . "</strong> $snmp_hostname<br>";
 						print '<strong>' . __('Location:') . "</strong> $snmp_location<br>";
 						print '<strong>' . __('Contact:') . "</strong> $snmp_contact<br>";
 					}
-
 				}
 
 				$session->close();
@@ -1200,4 +1340,3 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		print __('No Ping or SNMP Availability Check in Use') . "<br><br>\n";
 	}
 }
-

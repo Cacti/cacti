@@ -22,38 +22,41 @@
  +-------------------------------------------------------------------------+
 */
 
-/* html_start_box - draws the start of an HTML box with an optional title
-   @arg $title - the title of this box ("" for no title)
-   @arg $width - the width of the box in pixels or percent
-   @arg $div - end with a starting div
-   @arg $cell_padding - the amount of cell padding to use inside of the box
-   @arg $align - the HTML alignment to use for the box (center, left, or right)
-   @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
-        corner of the box ("" for no 'Add' link)
-        This function has two method.  This first is for legacy behavior where you
-        you pass in a href to the function, and an optional label as $add_label
-        The new format accepts an array of hrefs to add to the start box.  The format
-        of the array is as follows:
+/**
+ * html_start_box - draws the start of an HTML box with an optional title
+ *
+ * @param $title - the title of this box ("" for no title)
+ * @param $width - the width of the box in pixels or percent
+ * @param $div - end with a starting div
+ * @param $cell_padding - the amount of cell padding to use inside of the box
+ * @param $align - the HTML alignment to use for the box (center, left, or right)
+ * @param $add_text - the url to use when the user clicks 'Add' in the upper-right
+ *   corner of the box ("" for no 'Add' link)
+ *   This function has two method.  This first is for legacy behavior where you
+ *   you pass in a href to the function, and an optional label as $add_label
+ *   The new format accepts an array of hrefs to add to the start box.  The format
+ *   of the array is as follows:
 
-        $add_text = array(
-            array(
-                'id' => 'uniqueid',
-                'href' => 'value',
-                'title' => 'title',
-                'callback' => true|false,
-                'class' => 'fa fa-icon'
-            ),
-            ...
-        );
-
-        If the callback is true, the Cacti attribute will be added to the href
-        to present only the contents and not to include both the headers.  If
-        the link must go off page, simply make sure $callback is false.  There
-        is a requirement to use fontawesome icon sets for this class, but it
-        can include other classes.  In addition, the href can be a hash '#' if
-        your page has a ready function that has it's own javascript.
-   @arg $add_label - used with legacy behavior to add specific text to the link.
-        This parameter is only used in the legacy behavior.
+ *   $add_text = array(
+ *     array(
+ *       'id' => 'uniqueid',
+ *       'href' => 'value',
+ *       'title' => 'title',
+ *       'callback' => true|false,
+ *       'class' => 'fa fa-icon'
+ *     ),
+ *     ...
+ *   );
+ *
+ *   If the callback is true, the Cacti attribute will be added to the href
+ *   to present only the contents and not to include both the headers.  If
+ *   the link must go off page, simply make sure $callback is false.  There
+ *   is a requirement to use fontawesome icon sets for this class, but it
+ *   can include other classes.  In addition, the href can be a hash '#' if
+ *   your page has a ready function that has it's own javascript.
+ *
+ * @param $add_label - used with legacy behavior to add specific text to the link.
+ *   This parameter is only used in the legacy behavior.
  */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
 	static $table_suffix = 1;
@@ -66,7 +69,8 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		$title .= ' [ ' . CACTI_VERSION_BRIEF_FULL . ' ]';
 	}
 
-	$table_prefix = basename(get_current_page(), '.php');;
+	$table_prefix = basename(get_current_page(), '.php');
+
 	if (!isempty_request_var('action')) {
 		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('action'));
 	} elseif (!isempty_request_var('report')) {
@@ -81,12 +85,13 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print '<div>';
 		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
 		print "<div class='cactiTableButton'>";
+
 		if ($add_text != '' && !is_array($add_text)) {
 			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
 			if (is_array($add_text)) {
 				if (cacti_sizeof($add_text)) {
-					foreach($add_text as $icon) {
+					foreach ($add_text as $icon) {
 						if (isset($icon['callback']) && $icon['callback'] === true) {
 							$classo = 'linkOverDark';
 						} else {
@@ -138,9 +143,12 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 	$table_suffix++;
 }
 
-/* html_end_box - draws the end of an HTML box
-   @arg $trailing_br (bool) - whether to draw a trailing <br> tag after ending
-   @arg $div (bool) - whether type of box is div or table */
+/**
+ *  html_end_box - draws the end of an HTML box
+ *
+ * @param $trailing_br (bool) - whether to draw a trailing <br> tag after ending
+ * @param $div (bool) - whether type of box is div or table
+ */
 function html_end_box($trailing_br = true, $div = false) {
 	if ($div) {
 		print '</div></div>';
@@ -153,7 +161,9 @@ function html_end_box($trailing_br = true, $div = false) {
 	}
 }
 
-/* html_graph_template_multiselect - consistent multiselect javascript library for cacti. */
+/**
+ * html_graph_template_multiselect consistent multiselect javascript library for cacti.
+ */
 function html_graph_template_multiselect() {
 	?>
 	var msWidth = 200;
@@ -224,18 +234,20 @@ function html_graph_template_multiselect() {
 	<?php
 }
 
-/* html_graph_area - draws an area the contains full sized graphs
-   @arg $graph_array - the array to contains graph information. for each graph in the
-        array, the following two keys must exist
-        $arr[0]["local_graph_id"] // graph id
-        $arr[0]["title_cache"] // graph title
-   @arg $no_graphs_message - display this message if no graphs are found in $graph_array
-   @arg $extra_url_args - extra arguments to append to the url
-   @arg $header - html to use as a header
-   @arg $columns - the number of columns to present
-   @arg $tree_id - the tree id if this is a tree thumbnail
-   @arg $branch_id - the branch id if this is a tree thumbnail
-*/
+/**
+ * html_graph_area - draws an area the contains full sized graphs
+ *
+ * @param $graph_array - the array to contains graph information. for each graph in the
+ *   array, the following two keys must exist
+ *   $arr[0]["local_graph_id"] // graph id
+ *   $arr[0]["title_cache"] // graph title
+ * @param $no_graphs_message - display this message if no graphs are found in $graph_array
+ * @param $extra_url_args - extra arguments to append to the url
+ * @param $header - html to use as a header
+ * @param $columns - the number of columns to present
+ * @param $tree_id - the tree id if this is a tree thumbnail
+ * @param $branch_id - the branch id if this is a tree thumbnail
+ */
 function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
@@ -248,7 +260,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 	?>
 	<script type='text/javascript'>
-	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+	var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
 	</script>
@@ -273,7 +285,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php if (!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -290,7 +302,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 			}
 		}
 
-		while(($i % $columns) != 0) {
+		while (($i % $columns) != 0) {
 			print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>";
 			$i++;
 		}
@@ -303,18 +315,20 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	}
 }
 
-/* html_graph_thumbnail_area - draws an area the contains thumbnail sized graphs
-   @arg $graph_array - the array to contains graph information. for each graph in the
-        array, the following two keys must exist
-        $arr[0]["local_graph_id"] // graph id
-        $arr[0]["title_cache"] // graph title
-   @arg $no_graphs_message - display this message if no graphs are found in $graph_array
-   @arg $extra_url_args - extra arguments to append to the url
-   @arg $header - html to use as a header
-   @arg $columns - the number of columns to present
-   @arg $tree_id - the tree id if this is a tree thumbnail
-   @arg $branch_id - the branch id if this is a tree thumbnail
-*/
+/**
+ * html_graph_thumbnail_area - draws an area the contains thumbnail sized graphs
+ *
+ * @param $graph_array - the array to contains graph information. for each graph in the
+ *   array, the following two keys must exist
+ *   $arr[0]["local_graph_id"] // graph id
+ *   $arr[0]["title_cache"] // graph title
+ * @param $no_graphs_message - display this message if no graphs are found in $graph_array
+ * @param $extra_url_args - extra arguments to append to the url
+ * @param $header - html to use as a header
+ * @param $columns - the number of columns to present
+ * @param $tree_id - the tree id if this is a tree thumbnail
+ * @param $branch_id - the branch id if this is a tree thumbnail
+ */
 function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 	$i = 0; $k = 0; $j = 0;
@@ -327,7 +341,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 	?>
 	<script type='text/javascript'>
-	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+	var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
 	</script>
@@ -339,6 +353,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 		}
 
 		$start = true;
+
 		foreach ($graph_array as $graph) {
 			if (isset($graph['graph_template_name'])) {
 				if (isset($prev_graph_template_name)) {
@@ -351,19 +366,21 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			} elseif (isset($graph['data_query_name'])) {
 				if (isset($prev_data_query_name)) {
 					if ($prev_data_query_name != $graph['data_query_name']) {
-						$print  = true;
+						$print = true;
+
 						$prev_data_query_name = $graph['data_query_name'];
 					} else {
 						$print = false;
 					}
 				} else {
-					$print  = true;
+					$print = true;
+
 					$prev_data_query_name = $graph['data_query_name'];
 				}
 
 				if ($print) {
 					if (!$start) {
-						while(($i % $columns) != 0) {
+						while (($i % $columns) != 0) {
 							print "<td style='text-align:center;width:" . round(100 / $columns, 3) . "%;'></td>";
 							$i++;
 						}
@@ -391,7 +408,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php if (!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -411,7 +428,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 		}
 
 		if (!$start) {
-			while(($i % $columns) != 0) {
+			while (($i % $columns) != 0) {
 				print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>";
 				$i++;
 			}
@@ -425,6 +442,16 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	}
 }
 
+/**
+ * graph_drilldown_icons
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param 'graph_buttons' $type
+ * @param 0 $tree_id
+ * @param 0 $branch_id
+ */
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
 	global $config;
 	static $rand = 0;
@@ -467,28 +494,31 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	}
 
 	api_plugin_hook($type, array(
-		'hook' => $type,
+		'hook'           => $type,
 		'local_graph_id' => $local_graph_id,
-		'rra' =>  0,
-		'view_type' => $tree_id > 0 ? 'tree':'preview',
-		'tree_id' => $tree_id,
-		'branch_id' => $branch_id)
+		'rra'            => 0,
+		'view_type'      => $tree_id > 0 ? 'tree':'preview',
+		'tree_id'        => $tree_id,
+		'branch_id'      => $branch_id)
 	);
 
 	print '</div>';
 }
 
-/* html_nav_bar - draws a navigation bar which includes previous/next links as well as current
-	page information
-   @arg $base_url - the base URL will all filter options except page (should include url_path)
-   @arg $max_pages - the maximum number of pages to display
-   @arg $current_page - the current page in the navigation system
-   @arg $rows_per_page - the number of rows that are displayed on a single page
-   @arg $total_rows - the total number of rows in the navigation system
-   @arg $object - the object types that is being displayed
-   @arg $page_var - the object types that is being displayed
-   @arg $return_to - paint the resulting page into this dom object
-   @arg $page_count - provide a page count */
+/**
+ * html_nav_bar - draws a navigation bar which includes previous/next links as well as current
+ * page information
+ *
+ * @param $base_url - the base URL will all filter options except page (should include url_path)
+ * @param $max_pages - the maximum number of pages to display
+ * @param $current_page - the current page in the navigation system
+ * @param $rows_per_page - the number of rows that are displayed on a single page
+ * @param $total_rows - the total number of rows in the navigation system
+ * @param $object - the object types that is being displayed
+ * @param $page_var - the object types that is being displayed
+ * @param $return_to - paint the resulting page into this dom object
+ * @param $page_count - provide a page count
+ */
 function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = '', $page_var = 'page', $return_to = '', $page_count = true) {
 	if ($object == '') $object = __('Rows');
 
@@ -503,17 +533,17 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 		$nav = "<div class='navBarNavigation'>
 			<div class='navBarNavigationPrevious'>
-				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>':'') . "
+				" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>':'') . "
 			</div>
 			<div class='navBarNavigationCenter'>
-				" . __('%d to %d of %s [ %s ]', (($rows_per_page*($current_page-1))+1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page*$current_page)) ? $total_rows : $rows_per_page*$current_page), $total_rows, $url_page_select) . "
+				" . __('%d to %d of %s [ %s ]', (($rows_per_page * ($current_page - 1)) + 1), (($total_rows < $rows_per_page) || ($total_rows < ($rows_per_page * $current_page)) ? $total_rows : $rows_per_page * $current_page), $total_rows, $url_page_select) . "
 			</div>
 			<div class='navBarNavigationNext'>
-				" . (($current_page*$rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":'') . "
+				" . (($current_page * $rows_per_page) < $total_rows ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":'') . '
 			</div>
-		</div>";
+		</div>';
 	} elseif ($total_rows > 0) {
-		if ($page_count || ($total_rows < $rows_per_page && $current_page ==1) ) {
+		if ($page_count || ($total_rows < $rows_per_page && $current_page == 1)) {
 			$nav = "<div class='navBarNavigation'>
 				<div class='navBarNavigationNone'>
 					" . __('All %d %s', $total_rows, $object) . "
@@ -532,13 +562,13 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 
 			$nav = "<div class='navBarNavigation'>
 				<div class='navBarNavigationPrevious'>
-					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
+					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page - 1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). '</a>':'') . "
 				</div>
 				<div class='navBarNavigationCenter'>
 					" . __('Current Page: %s', $url_page_select) . "
 				</div>
 				<div class='navBarNavigationNext'>
-					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
+					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page + 1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":'') . "
 				</div>
 			</div>\n";
 
@@ -574,19 +604,22 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 	return $nav;
 }
 
-/* html_header_sort - draws a header row suitable for display inside of a box element.  When
-        a user selects a column header, the collback function "filename" will be called to handle
-        the sort the column and display the altered results.
-   @arg $header_items - an array containing a list of column items to display.  The
-        format is similar to the html_header, with the exception that it has three
-        dimensions associated with each element (db_column => display_text, default_sort_order)
-        alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
-   @arg $sort_column - the value of current sort column.
-   @arg $sort_direction - the value the current sort direction.  The actual sort direction
-        will be opposite this direction if the user selects the same named column.
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
-   @arg $url - a base url to redirect sort actions to
-   @arg $return_to - the id of the object to inject output into as a result of the sort action */
+/**
+ * html_header_sort - draws a header row suitable for display inside of a box element.  When
+ * a user selects a column header, the collback function "filename" will be called to handle
+ * the sort the column and display the altered results.
+ *
+ * @param $header_items - an array containing a list of column items to display.  The
+ *   format is similar to the html_header, with the exception that it has three
+ *   dimensions associated with each element (db_column => display_text, default_sort_order)
+ *   alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
+ * @param $sort_column - the value of current sort column.
+ * @param $sort_direction - the value the current sort direction.  The actual sort direction
+ *   will be opposite this direction if the user selects the same named column.
+ * @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ * @param $url - a base url to redirect sort actions to
+ * @param $return_to - the id of the object to inject output into as a result of the sort action
+ */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
@@ -596,6 +629,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	}
 
 	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+
 	if (isset_request_var('action')) {
 		$page .= '_' . get_request_var('action');
 	}
@@ -610,16 +644,19 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$order_data = array(get_request_var('sort_column') => get_request_var('sort_direction'));
 	}
 
-	foreach($order_data as $key => $direction) {
+	foreach ($order_data as $key => $direction) {
 		$primarySort = $key;
+
 		break;
 	}
 
 	print "<tr class='tableHeader'>";
 
 	$i = 1;
+
 	foreach ($header_items as $db_column => $display_array) {
 		$isSort = '';
+
 		if (isset($display_array['nohide'])) {
 			$nohide = 'nohide';
 		} else {
@@ -628,6 +665,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 
 		if (array_key_exists('display', $display_array)) {
 			$display_text = $display_array['display'];
+
 			if ($sort_column == $db_column) {
 				$icon      = $sort_direction;
 				$direction = $new_sort_direction;
@@ -640,6 +678,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			} else {
 				if (isset($order_data[$db_column])) {
 					$icon = $order_data[$db_column];
+
 					if ($order_data[$db_column] == 'DESC') {
 						$direction = 'ASC';
 					} else {
@@ -653,6 +692,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 					}
 				} else {
 					$icon = '';
+
 					if (isset($display_array['sort'])) {
 						$direction = $display_array['sort'];
 					} else {
@@ -687,6 +727,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 			} else {
 				if (isset($order_data[$db_column])) {
 					$icon = $order_data[$db_column];
+
 					if ($order_data[$db_column] == 'DESC') {
 						$direction = 'ASC';
 					} else {
@@ -699,7 +740,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 						$isSort = 'secondarySort';
 					}
 				} else {
-					$icon = '';
+					$icon      = '';
 					$direction = $display_array[1];
 				}
 
@@ -719,7 +760,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
 		} else {
 			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='sortable $align $nohide $isSort'>";
 			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main':$return_to) . "' sort-page='" . ($url == '' ? html_escape(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
@@ -731,19 +772,21 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	print '</tr>';
 }
 
-/* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
-        suitable for display inside of a box element.  When a user selects a column header,
-        the collback function "filename" will be called to handle the sort the column and display
-        the altered results.
-   @arg $header_items - an array containing a list of column items to display.  The
-        format is similar to the html_header, with the exception that it has three
-        dimensions associated with each element (db_column => display_text, default_sort_order)
-        alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
-   @arg $sort_column - the value of current sort column.
-   @arg $sort_direction - the value the current sort direction.  The actual sort direction
-        will be opposite this direction if the user selects the same named column.
-   @arg $form_action - the url to post the 'select all' form to
-   @arg $return_to - the id of the object to inject output into as a result of the sort action */
+/**
+ * html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
+ *   suitable for display inside of a box element.  When a user selects a column header,
+ *   the collback function "filename" will be called to handle the sort the column and display
+ *   the altered results.
+   @param $header_items - an array containing a list of column items to display.  The
+ *   format is similar to the html_header, with the exception that it has three
+ *   dimensions associated with each element (db_column => display_text, default_sort_order)
+ *   alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
+ * @param $sort_column - the value of current sort column.
+ * @param $sort_direction - the value the current sort direction.  The actual sort direction
+ *   will be opposite this direction if the user selects the same named column.
+ * @param $form_action - the url to post the 'select all' form to
+ * @param $return_to - the id of the object to inject output into as a result of the sort action
+ */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '') {
 	static $page = 0;
 
@@ -755,6 +798,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	}
 
 	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+
 	if (isset_request_var('action')) {
 		$page .= '_' . get_request_var('action');
 	}
@@ -769,8 +813,9 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		$order_data = array(get_request_var('sort_column') => get_request_var('sort_direction'));
 	}
 
-	foreach($order_data as $key => $direction) {
+	foreach ($order_data as $key => $direction) {
 		$primarySort = $key;
+
 		break;
 	}
 
@@ -779,8 +824,9 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 	print "<tr class='tableHeader'>";
 
-	foreach($header_items as $db_column => $display_array) {
+	foreach ($header_items as $db_column => $display_array) {
 		$isSort = '';
+
 		if (isset($display_array['nohide'])) {
 			$nohide = 'nohide';
 		} else {
@@ -788,8 +834,10 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		$icon   = '';
+
 		if (array_key_exists('display', $display_array)) {
 			$display_text = $display_array['display'];
+
 			if ($sort_column == $db_column) {
 				$icon      = $sort_direction;
 				$direction = $new_sort_direction;
@@ -802,6 +850,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			} else {
 				if (isset($order_data[$db_column])) {
 					$icon = $order_data[$db_column];
+
 					if ($order_data[$db_column] == 'DESC') {
 						$direction = 'ASC';
 					} else {
@@ -815,6 +864,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 					}
 				} else {
 					$icon = '';
+
 					if (isset($display_array['sort'])) {
 						$direction = $display_array['sort'];
 					} else {
@@ -849,6 +899,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 			} else {
 				if (isset($order_data[$db_column])) {
 					$icon = $order_data[$db_column];
+
 					if ($order_data[$db_column] == 'DESC') {
 						$direction = 'ASC';
 					} else {
@@ -861,7 +912,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 						$isSort = 'secondarySort';
 					}
 				} else {
-					$icon = '';
+					$icon      = '';
 					$direction = $display_array[1];
 				}
 
@@ -894,15 +945,19 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	$page++;
 }
 
-/* html_header - draws a header row suitable for display inside of a box element
-   @arg $header_items - an array containing a list of items to be included in the header
-        alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+/**
+ * html_header - draws a header row suitable for display inside of a box element
+ *
+ * @param $header_items - an array containing a list of items to be included in the header
+ *   alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
+ * @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ */
 function html_header($header_items, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>";
 
 	$i = 0;
-	foreach($header_items as $item) {
+
+	foreach ($header_items as $item) {
 		if (is_array($item)) {
 			if (isset($item['nohide'])) {
 				$nohide = 'nohide';
@@ -922,9 +977,9 @@ function html_header($header_items, $last_item_colspan = 1) {
 				$tip = '';
 			}
 
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "' ":'') . "class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($item['display']) . '</th>';
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "' ":'') . "class='$nohide $align' " . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($item['display']) . '</th>';
 		} else {
-			print '<th ' . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($item) . '</th>';
+			print '<th ' . ((($i + 1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . html_escape($item) . '</th>';
 		}
 
 		$i++;
@@ -933,16 +988,18 @@ function html_header($header_items, $last_item_colspan = 1) {
 	print '</tr>';
 }
 
-/* html_section_header - draws a header row suitable for display inside of a box element
-         but for display as a secton title and not as a series of table header columns
-   @arg $header_name - an array of the display name of the header for the section and
-        optional alignment.
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+/**
+ * html_section_header - draws a header row suitable for display inside of a box element
+ *   but for display as a secton title and not as a series of table header columns
+ * @param $header_name - an array of the display name of the header for the section and
+ *   optional alignment.
+ * @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ */
 function html_section_header($header_item, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>";
 
 	if (is_array($header_item) && isset($header_item['display'])) {
-		print "<th " . (isset($header_item['align']) ? "style='text-align:" . $header_item['align'] . ";'":"") . " colspan='$last_item_colspan'>" . $header_item['display'] . '</th>';
+		print '<th ' . (isset($header_item['align']) ? "style='text-align:" . $header_item['align'] . ";'":'') . " colspan='$last_item_colspan'>" . $header_item['display'] . '</th>';
 	} else {
 		print "<th colspan='$last_item_colspan'>" . $header_item . '</th>';
 	}
@@ -950,18 +1007,21 @@ function html_section_header($header_item, $last_item_colspan = 1) {
 	print '</tr>';
 }
 
-/* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
-        suitable for display inside of a box element
-   @arg $header_items - an array containing a list of items to be included in the header
-        alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
-   @arg $form_action - the url to post the 'select all' form to */
+/**
+ * html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
+ * suitable for display inside of a box element
+ *
+ * @param $header_items - an array containing a list of items to be included in the header
+ *   alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
+ * @param $form_action - the url to post the 'select all' form to
+ */
 function html_header_checkbox($header_items, $include_form = true, $form_action = '', $resizable = true) {
 	/* default to the 'current' file */
 	if ($form_action == '') { $form_action = get_current_page(); }
 
 	print "<tr class='tableHeader " . (!$resizable ? 'tableFixed':'') . "'>";
 
-	foreach($header_items as $item) {
+	foreach ($header_items as $item) {
 		if (is_array($item)) {
 			if (isset($item['nohide'])) {
 				$nohide = 'nohide';
@@ -991,18 +1051,21 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 	print '</tr>';
 }
 
-/* html_create_list - draws the items for an html dropdown given an array of data
-   @arg $form_data - an array containing data for this dropdown. it can be formatted
-        in one of two ways:
-        $array["id"] = "value";
-        -- or --
-        $array[0]["id"] = 43;
-        $array[0]["name"] = "Red";
-   @arg $column_display - used to indentify the key to be used for display data. this
-        is only applicable if the array is formatted using the second method above
-   @arg $column_id - used to indentify the key to be used for id data. this
-        is only applicable if the array is formatted using the second method above
-   @arg $form_previous_value - the current value of this form element */
+/**
+ * html_create_list - draws the items for an html dropdown given an array of data
+ *
+ * @param $form_data - an array containing data for this dropdown. it can be formatted
+ *   in one of two ways:
+ *   $array["id"] = "value";
+ *   -- or --
+ *   $array[0]["id"] = 43;
+ *   $array[0]["name"] = "Red";
+ * @param $column_display - used to indentify the key to be used for display data. this
+ *   is only applicable if the array is formatted using the second method above
+ * @param $column_id - used to indentify the key to be used for id data. this
+ *   is only applicable if the array is formatted using the second method above
+ * @param $form_previous_value - the current value of this form element
+ */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
 		if (cacti_sizeof($form_data)) {
@@ -1035,16 +1098,24 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 	}
 }
 
-/* html_escape_request_var - sanitizes a request variable for display
-   @arg $string - string the request variable to escape
-   @returns $new_string - the escaped request variable to be returned. */
+/**
+ * html_escape_request_var - sanitizes a request variable for display
+ *
+ * @param $string - string the request variable to escape
+ *
+ * @return $new_string - the escaped request variable to be returned.
+ */
 function html_escape_request_var($string) {
 	return html_escape(get_request_var($string));
 }
 
-/* html_escape - sanitizes a string for display
-   @arg $string - string the string to escape
-   @returns $new_string - the escaped string to be returned. */
+/**
+ * html_escape - sanitizes a string for display
+ *
+ * @param $string - string the string to escape
+ *
+ * @return $new_string - the escaped string to be returned.
+ */
 function html_escape($string) {
 	static $charset;
 
@@ -1059,48 +1130,55 @@ function html_escape($string) {
 	return htmlspecialchars($string, ENT_QUOTES, $charset, false);
 }
 
-/* html_split_string - takes a string and breaks it into a number of <br> separated segments
-   @arg $string - string to be modified and returned
-   @arg $length - the maximal string length to split to
-   @arg $forgiveness - the maximum number of characters to walk back from to determine
-        the correct break location.
-   @returns $new_string - the modified string to be returned. */
+/**
+ * html_split_string - takes a string and breaks it into a number of <br> separated segments
+ *
+ * @param $string - string to be modified and returned
+ * @param $length - the maximal string length to split to
+ * @param $forgiveness - the maximum number of characters to walk back from to determine
+ *   the correct break location.
+ *
+ * @return $new_string - the modified string to be returned.
+ */
 function html_split_string($string, $length = 90, $forgiveness = 10) {
 	$new_string = '';
-	$j    = 0;
-	$done = false;
+	$j          = 0;
+	$done       = false;
 
 	while (!$done) {
 		if (mb_strlen($string, 'UTF-8') > $length) {
-			for($i = 0; $i < $forgiveness; $i++) {
-				if (substr($string, $length-$i, 1) == ' ') {
-					$new_string .= mb_substr($string, 0, $length-$i, 'UTF-8') . '<br>';
+			for ($i = 0; $i < $forgiveness; $i++) {
+				if (substr($string, $length - $i, 1) == ' ') {
+					$new_string .= mb_substr($string, 0, $length - $i, 'UTF-8') . '<br>';
 
 					break;
 				}
 			}
 
-			$string = mb_substr($string, $length-$i, NULL, 'UTF-8');
+			$string = mb_substr($string, $length - $i, null, 'UTF-8');
 		} else {
 			$new_string .= $string;
 			$done        = true;
 		}
 
 		$j++;
+
 		if ($j > 4) break;
 	}
 
 	return $new_string;
 }
 
-/* draw_graph_items_list - draws a nicely formatted list of graph items for display
-        on an edit form
-   @arg $item_list - an array representing the list of graph items. this array should
-        come directly from the output of db_fetch_assoc()
-   @arg $filename - the filename to use when referencing any external url
-   @arg $url_data - any extra GET url information to pass on when referencing any
-        external url
-   @arg $disable_controls - whether to hide all edit/delete functionality on this form */
+/** draw_graph_items_list - draws a nicely formatted list of graph items for display
+ *  on an edit form
+ *
+ * @param $item_list - an array representing the list of graph items. this array should
+ *   come directly from the output of db_fetch_assoc()
+ * @param $filename - the filename to use when referencing any external url
+ * @param $url_data - any extra GET url information to pass on when referencing any
+ *   external url
+ * @param $disable_controls - whether to hide all edit/delete functionality on this form
+ */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $config;
 
@@ -1125,7 +1203,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$hard_return      = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
-				$this_row_style = 'font-weight: bold;';
+				$this_row_style   = 'font-weight: bold;';
 				$use_custom_class = true;
 
 				if ($group_counter % 2 == 0) {
@@ -1147,8 +1225,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			}
 
 			print '<td>';
+
 			if ($disable_controls == false) { print "<a class='linkEditMain' href='" . html_escape("$filename?action=item_edit&id=" . $item['id'] . "&$url_data") . "'>"; }
-			print __('Item # %d', ($i+1));
+			print __('Item # %d', ($i + 1));
+
 			if ($disable_controls == false) { print '</a>'; }
 			print '</td>';
 
@@ -1159,21 +1239,27 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			switch (true) {
 			case preg_match('/(TEXTALIGN)/', $_graph_type_name):
 				$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
+
 				break;
 			case preg_match('/(TICK)/', $_graph_type_name):
 				$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
+
 				break;
 			case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
 				$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
+
 				break;
 			case preg_match('/(HRULE)/', $_graph_type_name):
 				$matrix_title = 'HRULE: ' . $item['value'];
+
 				break;
 			case preg_match('/(VRULE)/', $_graph_type_name):
 				$matrix_title = 'VRULE: ' . $item['value'];
+
 				break;
 			case preg_match('/(COMMENT)/', $_graph_type_name):
 				$matrix_title = 'COMMENT: ' . $item['text_format'];
+
 				break;
 			}
 
@@ -1188,6 +1274,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* graph item type */
 			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . '</td>';
+
 			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', $_graph_type_name)) {
 				print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . '</td>';
 			} else {
@@ -1196,7 +1283,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* alpha type */
 			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
-				print "<td style='$this_row_style'>" . round((hexdec($item['alpha'])/255)*100) . '%</td>';
+				print "<td style='$this_row_style'>" . round((hexdec($item['alpha']) / 255) * 100) . '%</td>';
 			} else {
 				print "<td style='$this_row_style'></td>";
 			}
@@ -1212,7 +1299,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if ($disable_controls == false) {
 				print "<td class='right nowrap'>";
 
-				if ($i != cacti_sizeof($item_list)-1) {
+				if ($i != cacti_sizeof($item_list) - 1) {
 					print "<span><a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item['id'] . "&$url_data") . "'></a></span>";
 				} else {
 					print "<span class='moveArrowNone'></span>";
@@ -1230,7 +1317,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 				print "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
 
-				print "</td>";
+				print '</td>';
 			}
 
 			print '</tr>';
@@ -1242,10 +1329,13 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	}
 }
 
-/* is_menu_pick_active - determines if current selection is active
-   @arg $menu_url - url of current page
-   @returns true if active, false if not
-*/
+/**
+ * is_menu_pick_active - determines if current selection is active
+ *
+ * @param $menu_url - url of current page
+ *
+ * @return true if active, false if not
+ */
 function is_menu_pick_active($menu_url) {
 	static $url_array, $url_parts;
 
@@ -1282,6 +1372,7 @@ function is_menu_pick_active($menu_url) {
 	} elseif (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
 		/* break out the URL and variables */
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
+
 		if (isset($url_array['query'])) {
 			parse_str($url_array['query'], $url_parts);
 		} else {
@@ -1295,6 +1386,7 @@ function is_menu_pick_active($menu_url) {
 	}
 
 	$menu_array = parse_url($menu_url);
+
 	if ($menu_array === false) {
 		return false;
 	}
@@ -1330,7 +1422,9 @@ function is_menu_pick_active($menu_url) {
 	return false;
 }
 
-/* draw_menu - draws the cacti menu for display in the console */
+/**
+ * draw_menu - draws the cacti menu for display in the console
+ */
 function draw_menu($user_menu = '') {
 	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
 
@@ -1341,14 +1435,16 @@ function draw_menu($user_menu = '') {
 	print "<tr><td><table width='100%'><tr><td><div id='menu'><ul id='nav' role='menu'>";
 
 	/* loop through each header */
-	$i = 0;
+	$i       = 0;
 	$headers = array();
+
 	foreach ($user_menu as $header_name => $header_array) {
 		/* pass 1: see if we are allowed to view any children */
 		$show_header_items = false;
+
 		foreach ($header_array as $item_url => $item_title) {
 			if (preg_match('#link.php\?id=(\d+)#', $item_url, $matches)) {
-				if (is_realm_allowed($matches[1]+10000)) {
+				if (is_realm_allowed($matches[1] + 10000)) {
 					$show_header_items = true;
 				} else {
 					$show_header_items = false;
@@ -1367,6 +1463,7 @@ function draw_menu($user_menu = '') {
 		if ($show_header_items == true) {
 			// Let's give our menu li's a unique id
 			$id = 'menu_' . strtolower(clean_up_name($header_name));
+
 			if (isset($headers[$id])) {
 				$id .= '_' . $i++;
 			}
@@ -1383,8 +1480,8 @@ function draw_menu($user_menu = '') {
 
 			/* pass 2: loop through each top level item and render it */
 			foreach ($header_array as $item_url => $item_title) {
-				$basename = explode('?', basename($item_url));
-				$basename = $basename[0];
+				$basename         = explode('?', basename($item_url));
+				$basename         = $basename[0];
 				$current_realm_id = (isset($user_auth_realm_filenames[$basename]) ? $user_auth_realm_filenames[$basename] : 0);
 
 				/* if this item is an array, then it contains sub-items. if not, is just
@@ -1403,10 +1500,10 @@ function draw_menu($user_menu = '') {
 						foreach ($item_title as $item_sub_url => $item_sub_title) {
 							if (substr($item_sub_url, 0, 10) == 'EXTERNAL::') {
 								$item_sub_external = true;
-								$item_sub_url = substr($item_sub_url, 10);
+								$item_sub_url      = substr($item_sub_url, 10);
 							} else {
 								$item_sub_external = false;
-								$item_sub_url = $config['url_path'] . $item_sub_url;
+								$item_sub_url      = $config['url_path'] . $item_sub_url;
 							}
 
 							/* always draw the first item (parent), only draw the children if we are viewing a page
@@ -1415,6 +1512,7 @@ function draw_menu($user_menu = '') {
 								if (is_menu_pick_active($item_sub_url)) {
 									print "<li><a role='menuitem' class='pic selected' href='";
 									print html_escape($item_sub_url) . "'";
+
 									if ($item_sub_external) {
 										print " target='_blank' rel='noopener'";
 									}
@@ -1422,6 +1520,7 @@ function draw_menu($user_menu = '') {
 								} else {
 									print "<li><a role='menuitem' class='pic' href='";
 									print html_escape($item_sub_url) . "'";
+
 									if ($item_sub_external) {
 										print " target='_blank' rel='noopener'";
 									}
@@ -1437,14 +1536,16 @@ function draw_menu($user_menu = '') {
 						/* draw normal (non sub-item) menu item */
 						if (substr($item_url, 0, 10) == 'EXTERNAL::') {
 							$item_external = true;
-							$item_url = substr($item_url, 10);
+							$item_url      = substr($item_url, 10);
 						} else {
 							$item_external = false;
-							$item_url = $config['url_path'] . $item_url;
+							$item_url      = $config['url_path'] . $item_url;
 						}
+
 						if (is_menu_pick_active($item_url)) {
 							print "<li><a role='menuitem' class='pic selected' href='";
 							print html_escape($item_url) . "'";
+
 							if ($item_external) {
 								print " target='_blank' rel='noopener'";
 							}
@@ -1452,6 +1553,7 @@ function draw_menu($user_menu = '') {
 						} else {
 							print "<li><a role='menuitem' class='pic' href='";
 							print html_escape($item_url) . "'";
+
 							if ($item_external) {
 								print " target='_blank' rel='noopener'";
 							}
@@ -1468,16 +1570,19 @@ function draw_menu($user_menu = '') {
 	print '</ul></div></td></tr></table></td></tr>';
 }
 
-/* draw_actions_dropdown - draws a table the allows the user to select an action to perform
-        on one or more data elements
-   @arg $actions_array - an array that contains a list of possible actions. this array should
-        be compatible with the form_dropdown() function
-   @arg $delete_action - if there is a delete action that should surpress removal of rows
-        specify it here.  If you don't want any delete actions, set to 0.*/
+/**
+ * draw_actions_dropdown - draws a table the allows the user to select an action to perform
+ * on one or more data elements
+ *
+ * @param $actions_array - an array that contains a list of possible actions. this array should
+ *   be compatible with the form_dropdown() function
+ * @param $delete_action - if there is a delete action that should surpress removal of rows
+ *   specify it here.  If you don't want any delete actions, set to 0.
+ */
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	global $config;
 
-	if ($actions_array === NULL || cacti_sizeof($actions_array) == 0) {
+	if ($actions_array === null || cacti_sizeof($actions_array) == 0) {
 		return;
 	}
 
@@ -1568,10 +1673,11 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	<?php
 }
 
-/*
- * Deprecated functions
+/**
+ * DrawMatrixHeaderItem - draws a table header
+ *
+ * @deprecated: deprecated function
  */
-
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
 	?>
 	<th style='height:1px;' colspan='<?php print $column_span;?>'>
@@ -1580,6 +1686,13 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1
 	<?php
 }
 
+/**
+ * form_area
+ *
+ * Insert description here
+ *
+ * @param type $text
+ */
 function form_area($text) { ?>
 	<tr>
 		<td class='textArea'>
@@ -1588,11 +1701,14 @@ function form_area($text) { ?>
 	</tr>
 <?php }
 
-/* is_console_page - determinese if current passed url is considered to be
-          a console page
-   @arg url - url to be checked
-   @returns true if console page, false if not
-*/
+/**
+ * is_console_page - determinese if current passed url is considered to be
+ * a console page
+ *
+ * @param url - url to be checked
+ *
+ * @return true if console page, false if not
+ */
 function is_console_page($url) {
 	global $menu;
 
@@ -1611,9 +1727,9 @@ function is_console_page($url) {
 	}
 
 	if (cacti_sizeof($menu)) {
-		foreach($menu as $section => $children) {
+		foreach ($menu as $section => $children) {
 			if (cacti_sizeof($children)) {
-				foreach($children as $page => $name) {
+				foreach ($children as $page => $name) {
 					if (basename($page) == $basename) {
 						return true;
 					}
@@ -1625,6 +1741,12 @@ function is_console_page($url) {
 	return false;
 }
 
+/**
+ * html_show_tabs_left
+ *
+ * Insert description here
+ *
+ */
 function html_show_tabs_left() {
 	global $config, $tabs_left;
 
@@ -1644,7 +1766,7 @@ function html_show_tabs_left() {
 
 	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {
-			?><a id='tab-console' <?php print (is_console_page(get_current_page()) ? " class='selected'":'');?> href='<?php print $config['url_path']; ?>index.php'><img src='<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif' alt='<?php print __('Console');?>'></a><?php
+			?><a id='tab-console' <?php print (is_console_page(get_current_page()) ? " class='selected'":'');?> href='<?php print $config['url_path']; ?>index.php'><img src='<?php print $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif' alt='<?php print __('Console');?>'></a><?php
 		}
 
 		if ($realm_allowed[7]) {
@@ -1652,6 +1774,7 @@ function html_show_tabs_left() {
 				// Don't show graphs tab when offline
 			} else {
 				$file = get_current_page();
+
 				if ($file == 'graph_view.php' || $file == 'graph.php') {
 					print "<a id='tab-graphs' class='selected' href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs_down.gif' alt='" . __('Graphs') . "'></a>";
 				} else {
@@ -1692,19 +1815,22 @@ function html_show_tabs_left() {
 				ORDER BY sortorder');
 
 			if (cacti_sizeof($external_links)) {
-				foreach($external_links as $tab) {
-					if (is_realm_allowed($tab['id']+10000)) {
+				foreach ($external_links as $tab) {
+					if (is_realm_allowed($tab['id'] + 10000)) {
 						$parsed_url = parse_url($_SERVER['REQUEST_URI']);
-						$down = false;
+						$down       = false;
 
 						if (basename($parsed_url['path']) == 'link.php') {
 							if (isset($parsed_url['query'])) {
 								$queries = explode('&', $parsed_url['query']);
-								foreach($queries as $q) {
+
+								foreach ($queries as $q) {
 									list($var, $value) = explode('=', $q);
+
 									if ($var == 'id') {
 										if ($value == $tab['id']) {
 											$down = true;
+
 											break;
 										}
 									}
@@ -1722,7 +1848,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 			array(
 				'title' => __('Console'),
-				'id'	=> 'tab-console',
+				'id'	   => 'tab-console',
 				'url'   => $config['url_path'] . 'index.php',
 			);
 		}
@@ -1734,7 +1860,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Graphs'),
-						'id'	=> 'tab-graphs',
+						'id'	   => 'tab-graphs',
 						'url'   => $config['url_path'] . 'graph_view.php',
 					);
 			}
@@ -1747,7 +1873,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Reporting'),
-						'id'	=> 'tab-reports',
+						'id'	   => 'tab-reports',
 						'url'   => $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php'),
 					);
 			}
@@ -1757,7 +1883,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 				array(
 					'title' => __('Logs'),
-					'id'	=> 'tab-logs',
+					'id'	   => 'tab-logs',
 					'url'   => $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
 				);
 		}
@@ -1776,7 +1902,7 @@ function html_show_tabs_left() {
 		$elements = explode('|', $tab_text);
 		$count    = 0;
 
-		foreach($elements as $p) {
+		foreach ($elements as $p) {
 			$p = trim($p);
 
 			if ($p == '') {
@@ -1788,8 +1914,9 @@ function html_show_tabs_left() {
 			$idpos   = strpos($p, 'id=');
 
 			if ($altpos !== false) {
-				$alt = substr($p, $altpos+4);
+				$alt   = substr($p, $altpos + 4);
 				$parts = explode("'", $alt);
+
 				if ($parts[0] == '') {
 					$alt = $parts[1];
 				} else {
@@ -1800,8 +1927,9 @@ function html_show_tabs_left() {
 			}
 
 			if ($hrefpos !== false) {
-				$href = substr($p, $hrefpos+5);
+				$href  = substr($p, $hrefpos + 5);
 				$parts = explode("'", $href);
+
 				if ($parts[0] == '') {
 					$href = $parts[1];
 				} else {
@@ -1812,8 +1940,9 @@ function html_show_tabs_left() {
 			}
 
 			if ($idpos !== false) {
-				$id = substr($p, $idpos+3);
+				$id    = substr($p, $idpos + 3);
 				$parts = explode("'", $id);
+
 				if ($parts[0] == '') {
 					$id = $parts[1];
 				} else {
@@ -1837,8 +1966,8 @@ function html_show_tabs_left() {
 				ORDER BY sortorder');
 
 			if (cacti_sizeof($external_links)) {
-				foreach($external_links as $tab) {
-					if (is_realm_allowed($tab['id']+10000)) {
+				foreach ($external_links as $tab) {
+					if (is_realm_allowed($tab['id'] + 10000)) {
 						$tabs_left[] =
 							array(
 								'title' => $tab['title'],
@@ -1850,9 +1979,10 @@ function html_show_tabs_left() {
 			}
 		}
 
-		$i = 0;
+		$i       = 0;
 		$me_base = get_current_page();
-		foreach($tabs_left as $tab) {
+
+		foreach ($tabs_left as $tab) {
 			$tab_base = basename($tab['url']);
 
 			if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
@@ -1872,7 +2002,7 @@ function html_show_tabs_left() {
 
 		print "<div class='maintabs'><nav><ul role='tablist'>";
 
-		foreach($tabs_left as $tab) {
+		foreach ($tabs_left as $tab) {
 			if (isset($tab['id'])) {
 				$id = $tab['id'];
 			} else {
@@ -1889,6 +2019,12 @@ function html_show_tabs_left() {
 	}
 }
 
+/**
+ * html_graph_tabs_right
+ *
+ * Insert description here
+ *
+ */
 function html_graph_tabs_right() {
 	global $config, $tabs_right;
 
@@ -1947,7 +2083,8 @@ function html_graph_tabs_right() {
 		}
 
 		$i = 0;
-		foreach($tabs_right as $tab) {
+
+		foreach ($tabs_right as $tab) {
 			if ($tab['id'] == 'tree') {
 				if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
 					$tabs_right[$i]['selected'] = true;
@@ -1968,7 +2105,8 @@ function html_graph_tabs_right() {
 		}
 
 		print "<div class='tabs' style='float:right;'><nav><ul role='tablist'>";
-		foreach($tabs_right as $tab) {
+
+		foreach ($tabs_right as $tab) {
 			switch($tab['id']) {
 			case 'tree':
 				if (isset($tab['image']) && $tab['image'] != '') {
@@ -1976,6 +2114,7 @@ function html_graph_tabs_right() {
 				} else {
 					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 				}
+
 				break;
 			case 'list':
 				if (isset($tab['image']) && $tab['image'] != '') {
@@ -1999,6 +2138,17 @@ function html_graph_tabs_right() {
 	}
 }
 
+/**
+ * html_host_filter
+ *
+ * Insert description here
+ *
+ * @param '-1' $host_id
+ * @param 'applyFilter' $call_back
+ * @param string $sql_where
+ * @param false $noany
+ * @param false $nonone
+ */
 function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
@@ -2025,7 +2175,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				if (cacti_sizeof($devices)) {
 					foreach ($devices as $device) {
-						print "<option value='" . $device['id'] . "'"; if ($host_id == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape(strip_domain($device['description'])), 40) . '</option>';
+						print "<option value='" . $device['id'] . "'" . ($host_id == $device['id'] ? ' selected' : '') . '>' . title_trim(html_escape(strip_domain($device['description'])), 40) . '</option>';
 					}
 				}
 				?>
@@ -2061,6 +2211,17 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 	}
 }
 
+/**
+ * html_site_filter
+ *
+ * Insert description here
+ *
+ * @param '-1' $site_id
+ * @param 'applyFilter' $call_back
+ * @param string $sql_where
+ * @param false $noany
+ * @param false $nonone
+ */
 function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
@@ -2086,7 +2247,7 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 			if (cacti_sizeof($sites)) {
 				foreach ($sites as $site) {
-					print "<option value='" . $site['id'] . "'"; if ($site_id == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . '</option>';
+					print "<option value='" . $site['id'] . "'" . ($site_id == $site['id'] ? ' selected' : '') . '>' . html_escape($site['name']) . '</option>';
 				}
 			}
 			?>
@@ -2095,6 +2256,12 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 	<?php
 }
 
+/**
+ * html_spikekill_actions
+ *
+ * Insert description here
+ *
+ */
 function html_spikekill_actions() {
 	switch(get_nfilter_request_var('action')) {
 		case 'spikemenu':
@@ -2105,29 +2272,36 @@ function html_spikekill_actions() {
 			switch(get_nfilter_request_var('setting')) {
 				case 'ravgnan':
 					$id = get_nfilter_request_var('id');
+
 					switch($id) {
 						case 'avg':
 						case 'last':
 						case 'nan':
 							set_user_setting('spikekill_avgnan', $id);
+
 							break;
 					}
 
 					break;
 				case 'rstddev':
 					set_user_setting('spikekill_deviations', get_filter_request_var('id'));
+
 					break;
 				case 'rvarout':
 					set_user_setting('spikekill_outliers', get_filter_request_var('id'));
+
 					break;
 				case 'rvarpct':
 					set_user_setting('spikekill_percent', get_filter_request_var('id'));
+
 					break;
 				case 'rkills':
 					set_user_setting('spikekill_number', get_filter_request_var('id'));
+
 					break;
 				case 'rabsmax':
 					set_user_setting('spikekill_absmax', get_filter_request_var('id'));
+
 					break;
 			}
 
@@ -2135,10 +2309,33 @@ function html_spikekill_actions() {
 	}
 }
 
+/**
+ * html_spikekill_setting
+ *
+ * Insert description here
+ *
+ * @param type $name
+ *
+ * @return type
+ */
 function html_spikekill_setting($name) {
 	return read_user_setting($name, read_config_option($name), true);
 }
 
+/**
+ * html_spikekill_menu_item
+ *
+ * Insert description here
+ *
+ * @param type $text
+ * @param string $icon
+ * @param string $class
+ * @param string $id
+ * @param string $data_graph
+ * @param string $subitem
+ *
+ * @return type
+ */
 function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $data_graph = '', $subitem = '') {
 	$output = '<li ';
 
@@ -2152,6 +2349,7 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
 
 	$output .= 'class=\'' . (empty($class)?'': " $class") . '\'>';
 	$output .= '<span class=\'spikeKillMenuItem\'>';
+
 	if (!empty($icon)) {
 		$output .= "<i class='$icon'></i>";
 	}
@@ -2163,9 +2361,17 @@ function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $dat
 	}
 
 	$output .= '</li>';
+
 	return $output;
 }
 
+/**
+ * html_spikekill_menu
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ */
 function html_spikekill_menu($local_graph_id) {
 	global $settings;
 	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check':'fa', 'skmethod', 'method_avg');
@@ -2175,30 +2381,35 @@ function html_spikekill_menu($local_graph_id) {
 	$ravgnan = html_spikekill_menu_item(__('Replacement Method'), '', '', '', '', $ravgnan1 . $ravgnan2 . $ravgnan3);
 
 	$rstddev = '';
+
 	foreach ($settings['spikes']['spikekill_deviations']['array'] as $key => $value) {
 		$rstddev .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_deviations') == $key ? 'fa fa-check':'fa', 'skstddev', 'stddev_' . $key);
 	}
 	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
 	$rvarpct = '';
+
 	foreach ($settings['spikes']['spikekill_percent']['array'] as $key => $value) {
 		$rvarpct .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_percent') == $key ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . $key);
 	}
 	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
 
 	$rvarout  = '';
+
 	foreach ($settings['spikes']['spikekill_outliers']['array'] as $key => $value) {
 		$rvarout .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_outliers') == $key ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $key);
 	}
 	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
 
 	$rkills  = '';
+
 	foreach ($settings['spikes']['spikekill_number']['array'] as $key => $value) {
 		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'fa fa-check':'fa', 'skkills', 'kills_' . $key);
 	}
 	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
 
 	$rabsmax  = '';
+
 	foreach ($settings['spikes']['spikekill_absmax']['array'] as $key => $value) {
 		$rabsmax .= html_spikekill_menu_item($value, html_spikekill_setting('spikekill_absmax') == $key ? 'fa fa-check':'fa', 'skabsmax', 'absmax_' . $key);
 	}
@@ -2223,6 +2434,12 @@ function html_spikekill_menu($local_graph_id) {
 	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills . $rabsmax);
 }
 
+/**
+ * html_spikekill_js
+ *
+ * Insert description here
+ *
+ */
 function html_spikekill_js() {
 	?>
 	<script type='text/javascript'>
@@ -2405,10 +2622,12 @@ function html_spikekill_js() {
 	<?php
 }
 
-/* dhtml_common_header - prints a common set of header, css and javascript links
-   @arg title - the title of the page to place in the browser
-   @arg selectedTheme - optionally sets a specific theme over the current one
-*/
+/**
+ * dhtml_common_header - prints a common set of header, css and javascript links
+ *
+ * @param title - the title of the page to place in the browser
+ * @param selectedTheme - optionally sets a specific theme over the current one
+ */
 function html_common_header($title, $selectedTheme = '') {
 	global $config, $path2calendar, $path2timepicker, $path2colorpicker;
 
@@ -2423,6 +2642,7 @@ function html_common_header($title, $selectedTheme = '') {
 	}
 
 	$script_policy = read_config_option('content_security_policy_script');
+
 	if ($script_policy != '0' && $script_policy != '') {
 		$script_policy = "'$script_policy'";
 	}
@@ -2582,6 +2802,17 @@ function html_common_header($title, $selectedTheme = '') {
 	api_plugin_hook('page_head');
 }
 
+/**
+ * html_auth_header
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param type $browser_title
+ * @param type $legend
+ * @param type $title
+ * @param array $hook_args
+ */
 function html_auth_header($section, $browser_title, $legend, $title, $hook_args = array()) {
 	global $themes;
 ?>
@@ -2609,6 +2840,15 @@ function html_auth_header($section, $browser_title, $legend, $title, $hook_args 
 <?php
 }
 
+/**
+ * html_auth_footer
+ *
+ * Insert description here
+ *
+ * @param type $section
+ * @param string $error
+ * @param string $html
+ */
 function html_auth_footer($section, $error = '', $html = '') {
 ?>
 					</table>
@@ -2627,7 +2867,7 @@ function html_auth_footer($section, $error = '', $html = '') {
 	<div class='cactiAuthLogo'></div>
 <?php
 	print $html;
-	include_once(dirname(__FILE__) . '/../include/global_session.php');
+	include_once(__DIR__ . '/../include/global_session.php');
 ?>
 </div>
 </body>

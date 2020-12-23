@@ -31,15 +31,24 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 require_once($config['base_path'] . '/lib/reports.php');
 
-/*  display_version - displays version information */
+/**
+ * display_version
+ *
+ * displays version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/** display_help - generic help screen for utilities
- * @return		 - null */
-function display_help () {
+/**
+ * display_help
+ *
+ * generic help screen for utilities
+ *
+ * @return null
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_reports.php [--force] [--debug]\n\n";
@@ -50,9 +59,16 @@ function display_help () {
 	print "    --debug     - Display verbose output during execution\n\n";
 }
 
-/** sig_handler - provides a generic means to catch exceptions to the Cacti log.
+/**
+ * sig_handler
+ *
+ * provides a generic means to catch exceptions to the Cacti log.
+ *
  * @arg $signo 	- (int) the signal that was thrown by the interface.
- * @return 		- null */
+ * @param mixed $signo
+ *
+ * @return 		- null
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
@@ -60,7 +76,9 @@ function sig_handler($signo) {
 			reports_log('WARNING: Reports Poller terminated by user', false, 'REPORTS TRACE', POLLER_VERBOSITY_LOW);
 
 			exit(1);
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
@@ -76,11 +94,11 @@ $debug = false;
 $force = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -88,24 +106,30 @@ if (cacti_sizeof($parms)) {
 			case '-f':
 			case '--force':
 				$force = true;
+
 				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -123,7 +147,7 @@ $start = microtime(true);
 /* let's give this script lot of time to run for ever */
 ini_set('max_execution_time', '0');
 
-$t = time();
+$t           = time();
 $number_sent = 0;
 
 if (!$force) {
@@ -151,6 +175,7 @@ if (cacti_sizeof($reports)) {
 	foreach ($reports as $report) {
 		reports_log('Reports processing report: ' . $report['name'], true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($report['user_id']));
+
 		if (isset($report['email'])) {
 			generate_report($report, false, 'poller');
 			$number_sent++;
@@ -171,4 +196,3 @@ if (!$force) {
 }
 
 exit(0);
-

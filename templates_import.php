@@ -31,7 +31,7 @@ include_once('./lib/utility.php');
 /* set default action */
 set_default_action();
 
-$action = get_request_var('action');
+$action  = get_request_var('action');
 $is_save = isset_request_var('save_component_import');
 
 $tmp_dir = sys_get_temp_dir();
@@ -53,10 +53,12 @@ if ($is_tmp && $is_save && $action == 'save') {
 	bottom_footer();
 }
 
-/* --------------------------
-    The Save Function
-   -------------------------- */
-
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	global $preview_only;
 
@@ -66,19 +68,21 @@ function form_save() {
 			$xml_data = get_nfilter_request_var('import_text');
 		} elseif (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 			/* file upload */
-			$fp = fopen($_FILES['import_file']['tmp_name'],'r');
+			$fp       = fopen($_FILES['import_file']['tmp_name'],'r');
 			$xml_data = fread($fp,filesize($_FILES['import_file']['tmp_name']));
 			fclose($fp);
 		} else {
-			header('Location: templates_import.php'); exit;
+			header('Location: templates_import.php');
+
+			exit;
 		}
 
 		if (get_filter_request_var('import_data_source_profile') == '0') {
 			$import_as_new = true;
-			$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+			$profile_id    = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 		} else {
 			$import_as_new = false;
-			$profile_id = get_request_var('import_data_source_profile');
+			$profile_id    = get_request_var('import_data_source_profile');
 		}
 
 		if (get_nfilter_request_var('preview_only') == 'on') {
@@ -95,10 +99,11 @@ function form_save() {
 
 		/* obtain debug information if it's set */
 		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans);
+
 		if ($debug_data !== false && cacti_sizeof($debug_data)) {
 			$_SESSION['import_debug_info'] = $debug_data;
 		} else {
-			cacti_log("ERROR: Import or Preview failed!", false, 'IMPORT');
+			cacti_log('ERROR: Import or Preview failed!', false, 'IMPORT');
 			raise_message('import_error', __('The Template Import Failed.  See the cacti.log for more details.', MESSAGE_LEVEL_ERROR));
 		}
 
@@ -106,16 +111,25 @@ function form_save() {
 	}
 }
 
+/**
+ * bad_tmp
+ *
+ * Insert description here
+ *
+ */
 function bad_tmp() {
 	html_start_box(__('Import Template'), '60%', '', '1', 'center', '');
 	form_alternate_row();
-	print "<td class='textarea'><p><strong>" . __('ERROR') . ":</strong> " .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
+	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
 	html_end_box();
 }
-/* ---------------------------
-    Template Import Functions
-   --------------------------- */
 
+/**
+ * import
+ *
+ * Insert description here
+ *
+ */
 function import() {
 	global $hash_type_names, $fields_template_import;
 
@@ -132,6 +146,7 @@ function import() {
 		html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
 
 		$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
+
 		if (empty($default_profile)) {
 			$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
 		}
@@ -166,10 +181,20 @@ function import() {
 	}
 }
 
+/**
+ * is_tmp_writable
+ *
+ * Insert description here
+ *
+ * @param type $tmp_dir
+ *
+ * @return type
+ */
 function is_tmp_writable($tmp_dir) {
 	$tmp_dir = sys_get_temp_dir();
 	$tmp_len = strlen($tmp_dir);
 	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
 	$is_tmp = is_resource_writable($tmp_dir);
+
 	return $is_tmp;
 }

@@ -22,13 +22,21 @@
  +-------------------------------------------------------------------------+
 */
 
-/* get_vdef_item_name - resolves a single VDEF item into its text-based representation
-   @param $vdef_item_id - the id of the individual vdef item
-   @returns - a text-based representation of the vdef item */
-function get_vdef_item_name($vdef_item_id) 	{
+/**
+ * get_vdef_item_name - resolves a single VDEF item into its text-based representation
+ *
+ * @param $vdef_item_id - the id of the individual vdef item
+ *
+ * @return - a text-based representation of the vdef item
+ */
+function get_vdef_item_name($vdef_item_id) {
 	global $vdef_functions, $vdef_item_types;
 
-	$vdef_item = db_fetch_row_prepared('SELECT type, value FROM vdef_items WHERE id = ?', array($vdef_item_id));
+	$vdef_item = db_fetch_row_prepared('SELECT type, value
+		FROM vdef_items
+		WHERE id = ?',
+		array($vdef_item_id));
+
 	$current_vdef_value = $vdef_item['value'];
 
 	switch ($vdef_item['type']) {
@@ -38,12 +46,20 @@ function get_vdef_item_name($vdef_item_id) 	{
 	}
 }
 
-/* get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
-     string. this name will be resolved recursively if necessary
-   @param $vdef_id - the id of the vdef to resolve
-   @returns - a text-based representation of the vdef */
+/**
+ * get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
+ * string. this name will be resolved recursively if necessary
+ *
+ * @param $vdef_id - the id of the vdef to resolve
+ *
+ * @return - a text-based representation of the vdef
+ */
 function get_vdef($vdef_id, $display = false) {
-	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', array($vdef_id));
+	$vdef_items = db_fetch_assoc_prepared('SELECT *
+		FROM vdef_items
+		WHERE vdef_id = ?
+		ORDER BY sequence',
+		array($vdef_id));
 
 	$i = 0; $vdef_string = '';
 
@@ -67,6 +83,14 @@ function get_vdef($vdef_id, $display = false) {
 	return $vdef_string;
 }
 
+/**
+ * preset_vdef_form_list
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function preset_vdef_form_list() {
 	$fields_vdef_edit = array(
 		'name' => array(
@@ -81,11 +105,19 @@ function preset_vdef_form_list() {
 	return $fields_vdef_edit;
 }
 
+/**
+ * preset_vdef_item_form_list
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function preset_vdef_item_form_list() {
 	$fields_vdef_item_edit = array(
 		'sequence' => 'sequence',
-		'type' => 'type',
-		'value' => 'value'
+		'type'     => 'type',
+		'value'    => 'value'
 	);
 
 	return $fields_vdef_item_edit;

@@ -43,7 +43,8 @@ switch (get_request_var('action')) {
 	case 'remove':
 		color_remove();
 
-		header ('Location: color.php');
+		header('Location: color.php');
+
 		break;
 	case 'edit':
 		top_header();
@@ -51,6 +52,7 @@ switch (get_request_var('action')) {
 		color_edit();
 
 		bottom_footer();
+
 		break;
 	case 'export':
 		color_export();
@@ -62,20 +64,25 @@ switch (get_request_var('action')) {
 		color_import();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		color();
 
 		bottom_footer();
+
 		break;
 }
 
-/* --------------------------
-    The Save Function
-   -------------------------- */
-
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if (isset_request_var('save_component_color')) {
 		/* ================= input validation ================= */
@@ -110,7 +117,7 @@ function form_save() {
 	} elseif (isset_request_var('save_component_import')) {
 		if (isset($_FILES['import_file']['tmp_name'])) {
 			if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
-				$csv_data = file($_FILES['import_file']['tmp_name']);
+				$csv_data   = file($_FILES['import_file']['tmp_name']);
 				$debug_data = color_import_processor($csv_data);
 
 				if (cacti_sizeof($debug_data)) {
@@ -129,10 +136,12 @@ function form_save() {
 	exit;
 }
 
-/* -----------------------
-    Color Functions
-   ----------------------- */
-
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $color_actions;
 
@@ -151,12 +160,13 @@ function form_actions() {
 		}
 
 		header('Location: color.php');
+
 		exit;
 	}
 
 	/* setup some variables */
 	$color_list = '';
-	$i = 0;
+	$i          = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -194,6 +204,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: color.php');
+
 		exit;
 	}
 
@@ -213,26 +224,35 @@ function form_actions() {
 	bottom_footer();
 }
 
+/**
+ * color_import_processor
+ *
+ * Insert description here
+ *
+ * @param type $colors
+ *
+ * @return type
+ */
 function color_import_processor(&$colors) {
-	$i      = 0;
-	$hexcol = 0;
+	$i            = 0;
+	$hexcol       = 0;
 	$return_array = array();
 
 	if (cacti_sizeof($colors)) {
-		foreach($colors as $color_line) {
+		foreach ($colors as $color_line) {
 			/* parse line */
 			$line_array = explode(',', $color_line);
 
 			/* header row */
 			if ($i == 0) {
-				$save_order = '(';
-				$j = 0;
-				$first_column = true;
-				$required = 0;
+				$save_order    = '(';
+				$j             = 0;
+				$first_column  = true;
+				$required      = 0;
 				$update_suffix = '';
 
 				if (cacti_sizeof($line_array)) {
-				foreach($line_array as $line_item) {
+				foreach ($line_array as $line_item) {
 					$line_item = trim(str_replace("'", '', $line_item));
 					$line_item = trim(str_replace('"', '', $line_item));
 
@@ -247,7 +267,7 @@ function color_import_processor(&$colors) {
 							$save_order .= $line_item;
 
 							$insert_columns[] = $j;
-							$first_column = false;
+							$first_column     = false;
 
 							if ($update_suffix != '') {
 								$update_suffix .= ", $line_item=VALUES($line_item)";
@@ -258,6 +278,7 @@ function color_import_processor(&$colors) {
 							$required++;
 
 							break;
+
 						default:
 							/* ignore unknown columns */
 					}
@@ -272,17 +293,18 @@ function color_import_processor(&$colors) {
 				array_push($return_array, '<b>HEADER LINE PROCESSED OK</b>:  <br>Columns found where: ' . $save_order . '<br>');
 			} else {
 				array_push($return_array, '<b>HEADER LINE PROCESSING ERROR</b>: Missing required field <br>Columns found where:' . $save_order . '<br>');
+
 				break;
 			}
 		} else {
-			$save_value = '(';
-			$j = 0;
+			$save_value   = '(';
+			$j            = 0;
 			$first_column = true;
-			$sql_where = '';
+			$sql_where    = '';
 
 			if (cacti_sizeof($line_array)) {
-			foreach($line_array as $line_item) {
-				if (in_array($j, $insert_columns)) {
+			foreach ($line_array as $line_item) {
+				if (in_array($j, $insert_columns, true)) {
 					$line_item = trim(str_replace("'", '', $line_item));
 					$line_item = trim(str_replace('"', '', $line_item));
 
@@ -342,6 +364,12 @@ function color_import_processor(&$colors) {
 	return $return_array;
 }
 
+/**
+ * color_import
+ *
+ * Insert description here
+ *
+ */
 function color_import() {
 	form_start('color.php?action=import', '', true);
 
@@ -353,7 +381,7 @@ function color_import() {
 		</td></tr>\n";
 
 		if (cacti_sizeof($_SESSION['import_debug_info'])) {
-			foreach($_SESSION['import_debug_info'] as $import_result) {
+			foreach ($_SESSION['import_debug_info'] as $import_result) {
 				print "<tr class='even'><td>" . $import_result . "</td></tr>\n";
 			}
 		}
@@ -363,7 +391,7 @@ function color_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box( __('Import Colors'), '100%', '', '3', 'center', '');
+	html_start_box(__('Import Colors'), '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
 		<td width='50%'><font class='textEditTitle'><?php print __('Import Colors from Local File'); ?></font><br>
@@ -387,7 +415,7 @@ function color_import() {
 
 	html_end_box(false);
 
-	html_start_box( __('Required File Format Notes'), '100%', '', '3', 'center', '');
+	html_start_box(__('Required File Format Notes'), '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
 		<td><strong><?php print __('The file must contain a header row with the following column headings.');?></strong>
@@ -405,6 +433,12 @@ function color_import() {
 	form_save_button('color.php', 'import');
 }
 
+/**
+ * color_edit
+ *
+ * Insert description here
+ *
+ */
 function color_edit() {
 	global $fields_color_edit;
 
@@ -413,7 +447,7 @@ function color_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
+		$color        = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
 		$header_label = __esc('Colors [edit: %s]', $color['hex']);
 	} else {
 		$header_label = __('Colors [new]');
@@ -461,41 +495,47 @@ function color_edit() {
 	<?php
 }
 
+/**
+ * process_request_vars
+ *
+ * Insert description here
+ *
+ */
 function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_graphs' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
 			),
 		'named' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
@@ -506,6 +546,12 @@ function process_request_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * color
+ *
+ * Insert description here
+ *
+ */
 function color() {
 	global $color_actions, $item_rows;
 
@@ -540,7 +586,7 @@ function color() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -666,7 +712,7 @@ function color() {
 		) AS rs");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$colors = db_fetch_assoc("SELECT *,
         SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
@@ -687,11 +733,11 @@ function color() {
 		$sql_order
 		$sql_limit");
 
-    $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Colors'), 'page', 'main');
+	$nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Colors'), 'page', 'main');
 
 	form_start('color.php', 'chk');
 
-    print $nav;
+	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -708,6 +754,7 @@ function color() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($colors)) {
 		foreach ($colors as $color) {
 			if ($color['graphs'] == 0 && $color['templates'] == 0) {
@@ -747,6 +794,12 @@ function color() {
 	form_end();
 }
 
+/**
+ * color_export
+ *
+ * Insert description here
+ *
+ */
 function color_export() {
 	process_request_vars();
 
@@ -791,9 +844,8 @@ function color_export() {
 
 		print '"name","hex"' . "\n";
 
-		foreach($colors as $color) {
+		foreach ($colors as $color) {
 			print '"' . $color['name'] . '","' . $color['hex'] . '"' . "\n";
 		}
 	}
 }
-

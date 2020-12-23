@@ -31,15 +31,26 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 require_once($config['base_path'] . '/lib/dsstats.php');
 
-/*  display_version - displays version information */
+/**
+ *
+ * display_version
+ *
+ * displays version information
+ *
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Data Source Staitistcs Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
-/* display_help - generic help screen for utilities
-   @returns - null */
-function display_help () {
+/**
+ * display_help
+ *
+ * generic help screen for utilities
+ *
+ * @return - null
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_dsstats.php [--force] [--debug]\n\n";
@@ -51,9 +62,15 @@ function display_help () {
 	print "    --debug     - Display verbose output during execution\n\n";
 }
 
-/* sig_handler - provides a generic means to catch exceptions to the Cacti log.
-   @arg $signo - (int) the signal that was thrown by the interface.
-   @returns - null */
+/**
+ * sig_handler
+ *
+ * provides a generic means to catch exceptions to the Cacti log.
+ *
+ * @arg $signo - (int) the signal that was thrown by the interface.
+ *
+ * @return - null
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
@@ -64,7 +81,9 @@ function sig_handler($signo) {
 			set_config_option('dsstats_poller_status', 'terminated - end time:' . date('Y-m-d G:i:s'));
 
 			exit(1);
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
@@ -85,11 +104,11 @@ $total_user_time   = 0;
 $total_real_time   = 0;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -97,24 +116,30 @@ if (cacti_sizeof($parms)) {
 		case '-d':
 		case '--debug':
 			$debug = true;
+
 			break;
 		case '-f':
 		case '--force':
 			$forcerun = true;
+
 			break;
 		case '--version':
 		case '-v':
 		case '-V':
 			display_version();
+
 			exit(0);
 		case '--help':
 		case '-h':
 		case '-H':
 			display_help();
+
 			exit(0);
+
 		default:
 			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 			display_help();
+
 			exit(1);
 		}
 	}
@@ -158,14 +183,14 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 	}
 
 	/* store the current averages into the hourly table */
-	db_execute("INSERT INTO data_source_stats_hourly
+	db_execute('INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
 		(SELECT local_data_id, rrd_name, AVG(`value`), MAX(`value`)
 		 FROM data_source_stats_hourly_cache
 		 WHERE `value` IS NOT NULL
 		 GROUP BY local_data_id, rrd_name
 		)
-		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)");
+		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
 
 	log_dsstats_statistics('HOURLY');
 
@@ -174,6 +199,7 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 
 	/* next let's see if it's time to update the daily interval */
 	$current_time = time();
+
 	if ($boost_active == 'on') {
 		/* boost will spawn the collector */
 	} else {

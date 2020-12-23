@@ -31,14 +31,22 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/boost.php');
 require_once($config['base_path'] . '/lib/dsstats.php');
 
-/*  display_version - displays version information */
+/**
+ * display_version
+ *
+ * displays version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
-function display_help () {
+/**
+ * display_help
+ *
+ * displays the usage of the function
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_recovery.php [--verbose] [--force] [--debug]\n\n";
@@ -50,6 +58,13 @@ function display_help () {
 	print "    --debug   - Display verbose output during execution\n\n";
 }
 
+/**
+ * sig_handler
+ *
+ * Insert description here
+ *
+ * @param type $signo
+ */
 function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
@@ -60,13 +75,21 @@ function sig_handler($signo) {
 			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') ."')");
 
 			exit;
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
-
 }
 
+/**
+ * debug
+ *
+ * Insert description here
+ *
+ * @param type $string
+ */
 function debug($string) {
 	global $debug;
 
@@ -96,11 +119,11 @@ $verbose        = false;
 $poller_id      = $config['poller_id'];
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -108,27 +131,34 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '-f':
 			case '--force':
 				$forcerun = true;
+
 				break;
 			case '--verbose':
 				$verbose = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit;
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit;
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit;
 		}
 	}
@@ -137,6 +167,7 @@ if (cacti_sizeof($parms)) {
 /* check for an invalid run locaiton */
 if ($poller_id == 1) {
 	print "ERROR: This command is only to be run on remote Cacti Data Collectors\n";
+
 	exit(1);
 }
 
@@ -157,6 +188,7 @@ debug('About to start recovery processing');
 
 if (!empty($recovery_pid)) {
 	$pid = posix_kill($recovery_pid, 0);
+
 	if ($pid === false) {
 		$run = true;
 	} else {
@@ -189,7 +221,6 @@ if ($run) {
 				LIMIT $record_limit
 			) AS rs", '', true, $local_db_cnn_id);
 
-
 		if (empty($max_time)) {
 			break;
 		} else {
@@ -203,7 +234,7 @@ if ($run) {
 				$count     = 0;
 				$sql_array = array();
 
-				foreach($rows as $r) {
+				foreach ($rows as $r) {
 					$sql = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
 					$count += strlen($sql);
 
@@ -214,16 +245,16 @@ if ($run) {
 
 						$inserted += cacti_sizeof($sql_array);
 						$sql_array = array();
-						$count = 0;
+						$count     = 0;
 					}
 
 					$sql_array[] = $sql;
 				}
 
 				if ($count > 0) {
-					db_execute("INSERT IGNORE INTO poller_output_boost
+					db_execute('INSERT IGNORE INTO poller_output_boost
 						(local_data_id, rrd_name, time, output)
-						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
+						VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 					$inserted += cacti_sizeof($rows);
 				}
 
@@ -246,6 +277,7 @@ if ($run) {
 } else {
 	debug('Recovery process still running, exiting');
 	cacti_log('Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid);
+
 	exit(1);
 }
 

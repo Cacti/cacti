@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_1_4
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_1_4() {
 	db_install_add_key('cdef', 'index', 'hash', array('hash'));
 	db_install_drop_key('cdef_items', 'index', 'cdef_id');

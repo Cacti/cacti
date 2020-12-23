@@ -26,96 +26,98 @@
 require(__DIR__ . '/../include/cli_check.php');
 
 $fail_msg = array();
-define_exit('EXIT_UNKNOWN',-1, "ERROR: Failed due to unknown reason\n");
-define_exit('EXIT_NORMAL',  0, "");
-define_exit('EXIT_ARGERR',  1, "ERROR: Invalid Argument: (%s)\n\n");
-define_exit('EXIT_NOTDIR',  2, "ERROR: Path '%s' is not a Cacti root folder\n");
-define_exit('EXIT_MD5OVR',  3, "ERROR: MD5 file '%s' exists, but not --confirm to overwrite\n");
-define_exit('EXIT_MD5WRI',  4, "ERROR: Failed to write to MD5 file '%s'\n");
-define_exit('EXIT_MD5MIS',  5, "ERROR: MD5 file '%s' is missing, cannot verify\n");
-define_exit('EXIT_MD5CON',  6, "ERROR: Failed to read from MD5 file '%s'\n");
-define_exit('EXIT_MD5LIN',  7, "ERROR: Failed to parse line %d:\n      %s\n");
+define_exit('EXIT_UNKNOWN', -1, "ERROR: Failed due to unknown reason\n");
+define_exit('EXIT_NORMAL',   0, '');
+define_exit('EXIT_ARGERR',   1, "ERROR: Invalid Argument: (%s)\n\n");
+define_exit('EXIT_NOTDIR',   2, "ERROR: Path '%s' is not a Cacti root folder\n");
+define_exit('EXIT_MD5OVR',   3, "ERROR: MD5 file '%s' exists, but not --confirm to overwrite\n");
+define_exit('EXIT_MD5WRI',   4, "ERROR: Failed to write to MD5 file '%s'\n");
+define_exit('EXIT_MD5MIS',   5, "ERROR: MD5 file '%s' is missing, cannot verify\n");
+define_exit('EXIT_MD5CON',   6, "ERROR: Failed to read from MD5 file '%s'\n");
+define_exit('EXIT_MD5LIN',   7, "ERROR: Failed to parse line %d:\n      %s\n");
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 /* setup defaults */
-$confirm = false;
-$create = false;
-$quiet = false;
-$debug = false;
-$md5_file = '';
+$confirm   = false;
+$create    = false;
+$quiet     = false;
+$debug     = false;
+$md5_file  = '';
 $show_hash = false;
-$base_dir = dirname(__FILE__).'/../';
+$base_dir  = __DIR__.'/../';
 
 if (cacti_sizeof($parms)) {
+	foreach ($parms as $parameter) {
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg   = $parameter;
+			$value = '';
+		}
 
-	foreach($parms as $parameter) {
-
-	        if (strpos($parameter, '=')) {
-	                list($arg, $value) = explode('=', $parameter);
-	        } else {
-	                $arg = $parameter;
-	                $value = '';
-	        }
-
-	        switch ($arg) {
-
+		switch ($arg) {
 			case '-b':
 			case '--basedir':
-				$base_dir=trim($value);
-				break;
+				$base_dir = trim($value);
 
+				break;
 			case '-c':
 			case '--create':
-				$create=true;
-				break;
+				$create = true;
 
+				break;
 			case '--confirm':
-				$confirm=true;
+				$confirm = true;
+
 				break;
+			case '-d':
+			case '--debug':
+				display_version();
+				$debug = true;
 
-		        case '-d':
-		        case '--debug':
-		                display_version();
-		                $debug = true;
-		                break;
-
+				break;
 			case '-q':
 			case '--quiet':
-				$quiet=true;
-				break;
+				$quiet = true;
 
+				break;
 			case '-s':
 			case '--show':
 			case '--show-hash':
-				$show_hash=true;
+				$show_hash = true;
+
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+				fail(EXIT_NORMAL);
+
+				break;
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+				fail(EXIT_NORMAL);
+
 				break;
 
-		        case '--version':
-		        case '-V':
-		        case '-v':
-	                display_version();
-	                fail(EXIT_NORMAL);
-
-		        case '--help':
-		        case '-H':
-		        case '-h':
-	                display_help();
-	                fail(EXIT_NORMAL);
-
-		        default:
+			default:
 				if (strlen($md5_file)) {
 					fail(EXIT_ARGERR,$arg,true);
 				}
-				$md5_file=strlen($value)?"$arg=$value":"$arg";
+
+				$md5_file = strlen($value)? "$arg=$value" : "$arg";
+
 				break;
 		}
 	}
 }
 
-if(substr($base_dir, -1) == '/') {
+if (substr($base_dir, -1) == '/') {
 	$base_dir = substr($base_dir, 0, -1);
 }
 $base_dir = realpath($base_dir);
@@ -155,8 +157,9 @@ $ignore_files = array(
 );
 
 $ignore_regex='';
+
 foreach ($ignore_files as $ignore) {
-	$ignore_regex.=(strlen($ignore_regex)?'|':'').'('.$ignore.')';
+	$ignore_regex .= (strlen($ignore_regex)?'|':'').'('.$ignore.')';
 }
 $ignore_regex="~($ignore_regex)~";
 
@@ -164,6 +167,7 @@ $file_array = dirToArray('',$base_dir,$ignore_regex);
 
 if ($create) {
 	$output = '';
+
 	foreach ($file_array as $filename => $md5) {
 		$output .= "$md5  $filename\n";
 	}
@@ -185,20 +189,25 @@ if ($create) {
 	}
 
 	$contents = file_get_contents($md5_file, false);
+
 	if ($contents === false) {
 		fail(EXIT_MD5CON,$md5_file);
 	}
-	$contents = explode("\n",$contents);
-	$line = 0;
+
+	$contents     = explode("\n",$contents);
+	$line         = 0;
 	$verify_array = array();
+
 	foreach ($contents as $md5) {
 		$line++;
+
 		if (strlen($md5)) {
 			if ($md5[32] != ' ') {
 				fail(EXIT_MD5LIN,array($line,$md5));
 			}
 
 			$filename = trim(substr($md5,33));
+
 			$verify_array[$filename] = substr($md5,0,32);
 		}
 	}
@@ -206,12 +215,14 @@ if ($create) {
 	$all_keys = array_unique(array_merge(array_keys($file_array),array_keys($verify_array)));
 
 	foreach ($all_keys as $filename) {
-		$hash_read = sprintf("%32s","Missing");
+		$hash_read = sprintf('%32s','Missing');
+
 		if (array_key_exists($filename, $file_array)) {
 			$hash_read = $file_array[$filename];
 		}
 
-		$hash_file = sprintf("%32s","Missing");
+		$hash_file = sprintf('%32s','Missing');
+
 		if (array_key_exists($filename, $verify_array)) {
 			$hash_file = $verify_array[$filename];
 		}
@@ -222,6 +233,7 @@ if ($create) {
 			}
 
 			print "$filename: FAILED\n";
+
 			if ($debug || $show_hash) {
 				print "  Read: [$hash_read]\n";
 				print "  File: [$hash_file]\n";
@@ -230,16 +242,29 @@ if ($create) {
 	}
 }
 
+/**
+ * dirToArray
+ *
+ * Insert description here
+ *
+ * @param type $dir
+ * @param type $base
+ * @param type $ignore
+ *
+ * @return type
+ */
 function dirToArray($dir,$base,$ignore) {
 	global $debug,$quiet;
 
-	$result = array();
-
+	$result  = array();
 	$fulldir = $base;
+
 	if (isset($dir) && strlen($dir)) {
 		$fulldir .= DIRECTORY_SEPARATOR.$dir;
 	}
+
 	$fulldir = realpath($fulldir);
+
 	if (strpos($fulldir,$base) !== false) {
 		if (is_dir($fulldir)) {
 			$cdir = scandir($fulldir);
@@ -252,15 +277,17 @@ function dirToArray($dir,$base,$ignore) {
 		}
 
 		$dir_list = array();
+
 		foreach ($cdir as $key => $value) {
 			$fullpath = $fulldir.DIRECTORY_SEPARATOR.$value;
 			$partpath = substr($fullpath,strlen($base));
 
-			if (preg_match($ignore,$partpath)==0) {
+			if (preg_match($ignore,$partpath) == 0) {
 				if (is_dir($fullpath)) {
 					$dir_list[] = $partpath;
 				} else {
 					$md5_sum = @md5_file($fullpath);
+
 					if (!$quiet && $debug) {
 						print "[$md5_sum] $value\n";
 					}
@@ -276,21 +303,26 @@ function dirToArray($dir,$base,$ignore) {
 		foreach ($dir_list as $partpath) {
 			$result = array_merge($result,dirToArray($partpath, $base, $ignore));
 		}
-	} else if (!$quiet && ($debug || !strlen($dir))) {
-		$value = substr($dir,strlen(dirname($dir))+1);
+	} elseif (!$quiet && ($debug || !strlen($dir))) {
+		$value = substr($dir,strlen(dirname($dir)) + 1);
+
 		print "[           Outside Base, Ignored] $value\n";
 	}
-
 
 	return $result;
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti md5sum Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 
@@ -310,13 +342,22 @@ function display_help() {
 	print "\nWhen no filename is passed, .md5sum is assumed. Only one filename allowed\n";
 }
 
-function fail($exit_value,$args = array(),$display_help = 0) {
+/**
+ * fail
+ *
+ * Insert description here
+ *
+ * @param type $exit_value
+ * @param array $args
+ * @param 0 $display_help
+ */
+function fail($exit_value, $args = array(), $display_help = 0) {
 	global $quiet,$fail_msg;
 
 	if (!$quiet) {
 		if (!isset($args)) {
 			$args = array();
-		} else if (!is_array($args)) {
+		} elseif (!is_array($args)) {
 			$args = array($args);
 		}
 
@@ -325,6 +366,7 @@ function fail($exit_value,$args = array(),$display_help = 0) {
 		} else {
 			$format = $fail_msg[$exit_value];
 		}
+
 		call_user_func_array('printf', array_merge((array)$format, $args));
 
 		if ($display_help) {
@@ -335,6 +377,15 @@ function fail($exit_value,$args = array(),$display_help = 0) {
 	exit($exit_value);
 }
 
+/**
+ * define_exit
+ *
+ * Insert description here
+ *
+ * @param type $name
+ * @param type $value
+ * @param type $text
+ */
 function define_exit($name, $value, $text) {
 	global $fail_msg;
 
@@ -343,6 +394,7 @@ function define_exit($name, $value, $text) {
 	}
 
 	define($name,$value);
-	$fail_msg[$name] = $text;
+
+	$fail_msg[$name]  = $text;
 	$fail_msg[$value] = $text;
 }

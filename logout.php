@@ -59,4 +59,3 @@ if (get_request_var('action') == 'timeout') {
 
 	header('Location: index.php');
 }
-

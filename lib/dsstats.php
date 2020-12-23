@@ -22,10 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* get_rrdfile_names - this routine returns all of the RRDfiles know to Cacti
-     so as to be processed when performin the Daily, Weekly, Monthly and Yearly
-     average and peak calculations.
-   @returns - (mixed) The RRDfile names */
+/**
+ * get_rrdfile_names - this routine returns all of the RRDfiles know to Cacti
+ * so as to be processed when performin the Daily, Weekly, Monthly and Yearly
+ * average and peak calculations.
+ *
+ * @return - (mixed) The RRDfile names
+ */
 function get_rrdfile_names() {
 	return db_fetch_assoc('SELECT data_template_data.local_data_id, data_source_path
 		FROM data_template_data
@@ -35,9 +38,12 @@ function get_rrdfile_names() {
 		AND data_template_data.local_data_id != 0');
 }
 
-/* dsstats_debug - this simple routine prints a standard message to the console
-     when running in debug mode.
-   @returns - NULL */
+/**
+ * dsstats_debug - this simple routine prints a standard message to the console
+ * when running in debug mode.
+ *
+ * @return - NULL
+ */
 function dsstats_debug($message) {
 	global $debug;
 
@@ -46,6 +52,12 @@ function dsstats_debug($message) {
 	}
 }
 
+/**
+ * dsstats_find_log_bad_maxvalues
+ *
+ * Insert description here
+ *
+ */
 function dsstats_find_log_bad_maxvalues() {
 	$last_date = read_config_option('dsstats_last_daily_run_time');
 
@@ -65,7 +77,7 @@ function dsstats_find_log_bad_maxvalues() {
 		array($last_date));
 
 	if (cacti_sizeof($bad_values)) {
-		foreach($bad_values as $v) {
+		foreach ($bad_values as $v) {
 			if ($v['max_value'] > $v['rrd_maximum']) {
 				cacti_log('WARNING: Max Range Error for DS[' . $local_data_id . '] Observed: ' . $v['max_value'] . ' RRDMax: ' . $v['rrd_maximum'] . '.', false, 'DSSTATS');
 			} else {
@@ -75,11 +87,15 @@ function dsstats_find_log_bad_maxvalues() {
 	}
 }
 
-/* dsstats_get_and_store_ds_avgpeak_values - this routine is a generic routine that takes an time interval as an
-     input parameter and then, though additional function calls, reads the RRDfiles for the correct information
-     and stores that information into the various database tables.
-   @arg $interval - (string) either 'daily', 'weekly', 'monthly', or 'yearly'
-   @returns - NULL */
+/**
+ * dsstats_get_and_store_ds_avgpeak_values - this routine is a generic routine that takes an time interval as an
+ * input parameter and then, though additional function calls, reads the RRDfiles for the correct information
+ * and stores that information into the various database tables.
+ *
+ * @param $interval - (string) either 'daily', 'weekly', 'monthly', or 'yearly'
+ *
+ * @return - NULL
+ */
 function dsstats_get_and_store_ds_avgpeak_values($interval) {
 	global $config;
 	global $user_time, $system_time, $real_time;
@@ -99,8 +115,8 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 		$rrdtool_pipe = rrd_init(false);
 	}else {
 		$process_pipes = dsstats_rrdtool_init();
-		$process = $process_pipes[0];
-		$pipes   = $process_pipes[1];
+		$process       = $process_pipes[0];
+		$pipes         = $process_pipes[1];
 	}
 
 	$system_time = 0;
@@ -137,17 +153,22 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 	dsstats_write_buffer($stats, $interval);
 }
 
-/* dsstats_write_buffer - this routine provide bulk database insert services to the various tables that store
-     the average and peak information for Data Sources.
-   @arg $stats_array - (mixed) A multi dimensional array keyed by the local_data_id that contains both
-     the average and max values for each internal RRDfile Data Source.
-   @arg $interval - (string) 'daily', 'weekly', 'monthly', and 'yearly'.  Used for determining the table to
-     update during the dumping of the buffer.
-   @returns - NULL */
+/**
+ * dsstats_write_buffer - this routine provide bulk database insert services to the various tables that store
+ * the average and peak information for Data Sources.
+ *
+ * @param $stats_array - (mixed) A multi dimensional array keyed by the local_data_id that contains both
+ * the average and max values for each internal RRDfile Data Source.
+ *
+ * @param $interval - (string) 'daily', 'weekly', 'monthly', and 'yearly'.  Used for determining the table to
+ * update during the dumping of the buffer.
+ *
+ * @return - NULL
+ */
 function dsstats_write_buffer(&$stats_array, $interval) {
 	/* initialize some variables */
 	$sql_prefix = "INSERT INTO data_source_stats_$interval (local_data_id, rrd_name, average, peak) VALUES";
-	$sql_suffix = " ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)";
+	$sql_suffix = ' ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)';
 	$overhead   = strlen($sql_prefix) + strlen($sql_suffix);
 	$outbuf     = '';
 	$out_length = 0;
@@ -156,10 +177,10 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 
 	/* don't attempt to process an empty array */
 	if (cacti_sizeof($stats_array)) {
-		foreach($stats_array as $local_data_id => $stats) {
+		foreach ($stats_array as $local_data_id => $stats) {
 			/* some additional sanity checking */
 			if (is_array($stats) && cacti_sizeof($stats)) {
-				foreach($stats as $rrd_name => $avgpeak_stats) {
+				foreach ($stats as $rrd_name => $avgpeak_stats) {
 					$outbuf .= ($i == 1 ? ' ':', ') . "('" . $local_data_id . "','" .
 						$rrd_name . "','" .
 						$avgpeak_stats['AVG'] . "','" .
@@ -187,20 +208,23 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 	}
 }
 
-/* dsstats_obtain_data_source_avgpeak_values - this routine, given the rrdfile name, interval and RRDtool process
-     pipes, will obtain the average a peak values from the RRDfile.  It does this in two steps:
+/**
+ * dsstats_obtain_data_source_avgpeak_values - this routine, given the rrdfile name, interval and RRDtool process
+ * pipes, will obtain the average a peak values from the RRDfile.  It does this in two steps:
 
-     1) It first reads the RRDfile's information header to obtain all of the internal data source names,
-     poller interval and consolidation functions.
-     2) Based upon the available consolidation functions, it then grabs either AVERAGE, and MAX, or just AVERAGE
-        in the case where the MAX consolidation function is not included in the RRDfile, and then proceeds to
-        gather data from the RRDfile for the time period in question.  It allows RRDtool to select the RRA to
-        use by simply limiting the number of rows to be returned to the default.
+ * 1) It first reads the RRDfile's information header to obtain all of the internal data source names,
+ *    poller interval and consolidation functions.
+ * 2) Based upon the available consolidation functions, it then grabs either AVERAGE, and MAX, or just AVERAGE
+ *    in the case where the MAX consolidation function is not included in the RRDfile, and then proceeds to
+ *    gather data from the RRDfile for the time period in question.  It allows RRDtool to select the RRA to
+ *    use by simply limiting the number of rows to be returned to the default.
 
-     Once it has all of the information from the RRDfile.  It then decomposes the resulting XML file to its
-     components and then calculates the AVERAGE and MAX values from that data and returns an array to the calling
-     function for storage into the respective database table.
-   @returns - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name */
+ * Once it has all of the information from the RRDfile.  It then decomposes the resulting XML file to its
+ * components and then calculates the AVERAGE and MAX values from that data and returns an array to the calling
+ * function for storage into the respective database table.
+ *
+ * @return - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name
+ */
 function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) {
 	global $config, $user_time, $system_time, $real_time;
 
@@ -236,18 +260,19 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 			if (cacti_sizeof($info_array)) {
 				foreach ($info_array as $line) {
 					if (substr_count($line, 'ds[')) {
-						$parts = explode(']', $line);
-						$parts2 = explode('[', $parts[0]);
+						$parts                     = explode(']', $line);
+						$parts2                    = explode('[', $parts[0]);
 						$dsnames[trim($parts2[1])] = 1;
-					} else if (substr_count($line, '.cf')) {
+					} elseif (substr_count($line, '.cf')) {
 						$parts = explode('=', $line);
+
 						if (substr_count($parts[1], 'AVERAGE')) {
 							$average = true;
 						} elseif (substr_count($parts[1], 'MAX')) {
 							$max = true;
 						}
-					} else if (substr_count($line, 'step')) {
-						$parts = explode('=', $line);
+					} elseif (substr_count($line, 'step')) {
+						$parts           = explode('=', $line);
 						$poller_interval = trim($parts[1]);
 					}
 				}
@@ -264,20 +289,20 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 
 			/* escape the file name if on Windows */
 			if ($config['cacti_server_os'] != 'unix') {
-				$rrdfile = str_replace(':', "\\:", $rrdfile);
+				$rrdfile = str_replace(':', '\\:', $rrdfile);
 			}
 
 			/* setup the graph command by parsing throught the internal data source names */
 			if (cacti_sizeof($dsnames)) {
 				foreach ($dsnames as $dsname => $present) {
 					if ($average) {
-						$def .= 'DEF:' . $defs[$j] . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':AVERAGE ';
+						$def .= 'DEF:' . $defs[$j] . $defs[$i] . '="' . $rrdfile . '":' . $dsname . ':AVERAGE ';
 						$command .= ' VDEF:' . $defs[$j] . $defs[$i] . '_out=' . $defs[$j] . $defs[$i] . ',AVERAGE PRINT:' . $defs[$j] . $defs[$i] . '_out:%lf';
 						$i++;
 					}
 
 					if ($max) {
-						$def .= 'DEF:' . $defs[$j] . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':MAX ';
+						$def .= 'DEF:' . $defs[$j] . $defs[$i] . '="' . $rrdfile . '":' . $dsname . ':MAX ';
 						$command .= ' VDEF:' . $defs[$j] . $defs[$i] . '_out=' . $defs[$j] . $defs[$i] . ',MAXIMUM PRINT:' . $defs[$j] . $defs[$i] . '_out:%lf';
 						$i++;
 					}
@@ -293,15 +318,19 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 			switch($interval) {
 				case 'daily':
 					$interval = 'day';
+
 					break;
 				case 'weekly':
 					$interval = 'week';
+
 					break;
 				case 'monthly':
 					$interval = 'month';
+
 					break;
 				case 'yearly':
 					$interval = 'year';
+
 					break;
 			}
 
@@ -316,11 +345,11 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 				$xport_data = dsstats_rrdtool_execute($stats_cmd, $pipes);
 			}
 
-			$position = array();
+			$position   = array();
 			$position[] = array('RETURN' => 'RETURN');
 
 			/* initialize the array of return values */
-			foreach($dsnames as $dsname => $present) {
+			foreach ($dsnames as $dsname => $present) {
 				$dsvalues[$dsname]['AVG']    = 0;
 				$dsvalues[$dsname]['MAX']    = 0;
 
@@ -339,7 +368,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 				//print_r($xport_array);
 
 				if (cacti_sizeof($xport_array)) {
-					foreach($xport_array as $index => $line) {
+					foreach ($xport_array as $index => $line) {
 						if ($line == '') continue;
 
 						if ($index > 0) {
@@ -349,24 +378,28 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 								$parts = explode(' ', $line);
 								//print $line . PHP_EOL;
 
-								foreach($parts as $line) {
+								foreach ($parts as $line) {
 									$sparts = explode(':', $line);
+
 									switch($sparts[0]) {
 										case 'u':
 											$user_time = $sparts[1];
+
 											break;
 										case 's':
 											$system_time = $sparts[1];
+
 											break;
 										case 'r':
 											$real_time = $sparts[1];
+
 											break;
 									}
 								}
 
 								break;
 							} else {
-								foreach($position[$index] as $dsname => $stat) {
+								foreach ($position[$index] as $dsname => $stat) {
 									$dsvalues[$dsname][$stat] = trim($line);
 								}
 							}
@@ -385,17 +418,21 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) 
 	}
 }
 
-/* log_dsstats_statistics - provides generic timing message to both the Cacti log and the settings
-     table so that the statistcs can be graphed as well.
-   @arg $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
-   @returns - null */
+/**
+ * log_dsstats_statistics - provides generic timing message to both the Cacti log and the settings
+ * table so that the statistcs can be graphed as well.
+ *
+ * @param $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
+ *
+ * @return - null
+ */
 function log_dsstats_statistics($type) {
-	global $start, $total_user_time, $total_system_time, $total_real_time;;
+	global $start, $total_user_time, $total_system_time, $total_real_time;
 
 	/* take time and log performance data */
 	$end = microtime(true);
 
-	$cacti_stats = sprintf('Time:%01.4f RRDUser:%01.4f RRDSystem:%01.4f RRDReal:%01.4f', round($end-$start,4), $total_user_time, $total_system_time, $total_real_time);
+	$cacti_stats = sprintf('Time:%01.4f RRDUser:%01.4f RRDSystem:%01.4f RRDReal:%01.4f', round($end - $start,4), $total_user_time, $total_system_time, $total_real_time);
 
 	$total_user_time   = 0;
 	$total_system_time = 0;
@@ -411,14 +448,18 @@ function log_dsstats_statistics($type) {
 	cacti_log('DSSTATS STATS: Type:' . $type . ', ' . $cacti_stats , true, 'SYSTEM');
 }
 
-/* dsstats_error_handler - this routine logs all PHP error transactions
-     to make sure they are properly logged.
-   @arg $errno - (int) The errornum reported by the system
-   @arg $errmsg - (string) The error message provides by the error
-   @arg $filename - (string) The filename that encountered the error
-   @arg $linenum - (int) The line number where the error occurred
-   @arg $vars - (mixed) The current state of PHP variables.
-   @returns - (bool) always returns true for some reason */
+/**
+ * dsstats_error_handler - this routine logs all PHP error transactions
+ * to make sure they are properly logged.
+ *
+ * @param $errno - (int) The errornum reported by the system
+ * @param $errmsg - (string) The error message provides by the error
+ * @param $filename - (string) The filename that encountered the error
+ * @param $linenum - (int) The line number where the error occurred
+ * @param $vars - (mixed) The current state of PHP variables.
+ *
+ * @return - (bool) always returns true for some reason
+ */
 function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */
@@ -448,8 +489,8 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 
 		/* let's ignore some lesser issues */
 		if (substr_count($errmsg, 'date_default_timezone')) return;
-		if (substr_count($errmsg, 'Only variables')) return;
 
+		if (substr_count($errmsg, 'Only variables')) return;
 		/* log the error to the Cacti log */
 		cacti_log('PROGERR: ' . $err, false, 'DSSTATS');
 	}
@@ -457,33 +498,37 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	return;
 }
 
-/* dsstats_poller_output - this routine runs in parallel with the cacti poller and
-     populates the last and cache tables.  On larger systems, it should be noted that
-     the memory overhead for the global arrays, $ds_types, $ds_last, $ds_steps, $ds_multi
-     could be serval hundred megabytes.  So, this should be kept in mind when running the
-     sizing your system.
+/**
+ * dsstats_poller_output - this routine runs in parallel with the cacti poller and
+ * populates the last and cache tables.
+ *
+ * On larger systems, it should be noted that
+ * the memory overhead for the global arrays, $ds_types, $ds_last, $ds_steps, $ds_multi
+ * could be serval hundred megabytes.  So, this should be kept in mind when running the
+ * sizing your system.
+ *
+ * The routine basically loads those 4 structures into memory, and then uses them to
+ * determine what should be stored in both the Cache and the Last tables.  The 4 structures
+ * contain the following information:
 
-     The routine basically loads those 4 structures into memory, and then uses them to
-     determine what should be stored in both the Cache and the Last tables.  The 4 structures
-     contain the following information:
+ * $ds_types - The type of data source, keyed by the local_data_id and the rrd_name stored inside
+ *             of the RRDfile.
+ * $ds_last  - For the COUNTER, and DERIVE DS types, the last measured and stored value.
+ *             for every Data Source so that rates can be stored.
+ * $ds_multi - For Multi Part responses, stores the mapping of the Data Input Fields to the
+ *             Internal RRDfile DS names.
+ *
+ * The routine loops through all poller output items and makes decisions relative to the output
+ * that should be stored into the two tables, and then bulk inserts that information once
+ * all poller items have been processed.
 
-     $ds_types - The type of data source, keyed by the local_data_id and the rrd_name stored inside
-                 of the RRDfile.
-     $ds_last  - For the COUNTER, and DERIVE DS types, the last measured and stored value.
-     $ds_steps - Records the poller interval for every Data Source so that rates can be stored.
-     $ds_multi - For Multi Part responses, stores the mapping of the Data Input Fields to the
-                 Internal RRDfile DS names.
-
-     The routine loops through all poller output items and makes decisions relative to the output
-     that should be stored into the two tables, and then bulk inserts that information once
-     all poller items have been processed.
-
-     The pupose for loading then entire structures into memory at one time is to reduce the latency
-     related to multiple database calls.  The author believed that PHP's array hashing algorythms
-     would be as fast, if not faster, than MySQL, when considering the transaction overhead and therefore
-     chose this method.
-
-   @arg $rrd_update_array - (mixed) The output from the poller output table to be processed by dsstats */
+ * The pupose for loading then entire structures into memory at one time is to reduce the latency
+ * related to multiple database calls.  The author believed that PHP's array hashing algorythms
+ * would be as fast, if not faster, than MySQL, when considering the transaction overhead and therefore
+ * chose this method.
+ *
+ * @param $rrd_update_array - (mixed) The output from the poller output table to be processed by dsstats
+ */
 function dsstats_poller_output(&$rrd_update_array) {
 	global $config, $ds_types, $ds_last, $ds_steps, $ds_multi;
 
@@ -541,10 +586,11 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 			/* process each array */
 			$n = 1;
-			foreach($rrd_update_array as $data_source) {
+
+			foreach ($rrd_update_array as $data_source) {
 				if (isset($data_source['times'])) {
-					foreach($data_source['times'] as $time => $sample) {
-						foreach($sample as $ds => $value) {
+					foreach ($data_source['times'] as $time => $sample) {
+						foreach ($sample as $ds => $value) {
 							$result['local_data_id'] = $data_source['local_data_id'];
 							$result['rrd_name']      = $ds;
 							$result['time']          = date('Y-m-d H:i:s', $time);
@@ -556,11 +602,11 @@ function dsstats_poller_output(&$rrd_update_array) {
 							} else {
 								$result['output'] = 'NULL';
 
-								cacti_log("ERROR: Output from local_data_id " .
+								cacti_log('ERROR: Output from local_data_id ' .
 									$data_source['local_data_id'] .
 									", for RRDfile DS Name '$ds', is invalid.  " .
 									"It outputs was : '" . $value . "'. " .
-									"Please check your script or data input method for errors.");
+									'Please check your script or data input method for errors.');
 							}
 
 							$lastval = '';
@@ -651,7 +697,6 @@ function dsstats_poller_output(&$rrd_update_array) {
 								if ($result['output'] != 'NULL' &&
 									$result['output'] != 'U' &&
 									strtolower($result['output']) != 'nan') {
-
 									$currentval = abs($result['output']);
 									$lastval    = $currentval;
 								} else {
@@ -664,7 +709,6 @@ function dsstats_poller_output(&$rrd_update_array) {
 								if ($result['output'] != 'NULL' &&
 									$result['output'] != 'U' &&
 									strtolower($result['output']) != 'nan') {
-
 									$currentval = $result['output'];
 									$lastval    = $result['output'];
 								} else {
@@ -673,6 +717,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 								}
 
 								break;
+
 							default:
 								cacti_log("WARNING: Unknown RRDtool Data Type '" . $ds_types[$result['rrd_name']]['data_source_type_id'] . "', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
 
@@ -712,7 +757,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 									$last_delim . '(' .
 									$result['local_data_id'] . ", '" .
 									$result['rrd_name'] . "', " .
-									$lastval . ", " .
+									$lastval . ', ' .
 									$currentval . ')';
 
 								$last_i++;
@@ -721,7 +766,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 							/* if we exceed our output buffer, it's time to write */
 							if ((($out_length + $overhead) > $max_packet) ||
-								(($last_length + $overhead_last) > $max_packet )) {
+								(($last_length + $overhead_last) > $max_packet)) {
 								db_execute($sql_cache_prefix . $cachebuf . $sql_suffix);
 
 								if ($last_i > 1) {
@@ -760,10 +805,13 @@ function dsstats_poller_output(&$rrd_update_array) {
 	restore_error_handler();
 }
 
-/* dsstats_boost_bottom - this routine accomodates mass updates after the boost process
-     has completed.  The use of boost will require boost version 2.5 or above.  The idea
-     if that daily averages will be updated on the boost cycle.
-   @returns - NULL */
+/**
+ * dsstats_boost_bottom - this routine accomodates mass updates after the boost process
+ * has completed.  The use of boost will require boost version 2.5 or above.  The idea
+ * if that daily averages will be updated on the boost cycle.
+ *
+ * @return - NULL
+ */
 function dsstats_boost_bottom() {
 	global $config;
 
@@ -782,18 +830,24 @@ function dsstats_boost_bottom() {
 	}
 }
 
-/* dsstats_memory_limit - this routine increases/decreases the memory available for the script
-     It is divided into two functions as the main dsstats poller calls this function directly
-     as opposed to the call during the processing of poller output in the main cacti poller.
-   @returns - NULL */
+/**
+ * dsstats_memory_limit - this routine increases/decreases the memory available for the script
+ *
+ * It is divided into two functions as the main dsstats poller calls this function directly
+ * as opposed to the call during the processing of poller output in the main cacti poller.
+ *
+ * @return - NULL
+ */
 function dsstats_memory_limit() {
 	ini_set('memory_limit', read_config_option('dsstats_poller_mem_limit') . 'M');
 }
 
-/* dsstats_poller_bottom - this routine launches the main dsstats poller so that it might
-     calculate the Hourly, Daily, Weekly, Monthly, and Yearly averages.  It is forked independently
-     to the Cacti poller after all polling has finished. */
-function dsstats_poller_bottom () {
+/**
+ * dsstats_poller_bottom - this routine launches the main dsstats poller so that it might
+ * calculate the Hourly, Daily, Weekly, Monthly, and Yearly averages.  It is forked independently
+ * to the Cacti poller after all polling has finished.
+ */
+function dsstats_poller_bottom() {
 	global $config;
 
 	if (read_config_option('dsstats_enable') == 'on') {
@@ -802,6 +856,7 @@ function dsstats_poller_bottom () {
 		chdir($config['base_path']);
 
 		$command_string = read_config_option('path_php_binary');
+
 		if (read_config_option('path_dsstats_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
 				$extra_args = '-q ' . $config['base_path'] . '/poller_dsstats.php >> ' . read_config_option('path_dsstats_log') . ' 2>&1';
@@ -816,11 +871,13 @@ function dsstats_poller_bottom () {
 	}
 }
 
-/* dsstats_rrdtool_init - this routine provides a bi-directional socket based connection to RRDtool.
-     it provides a high speed connection to rrdfile in the case where the traditional Cacti call does
-     not when performing fetch type calls.
-   @returns - (mixed) An array that includes both the process resource and the pipes to communicate
-     with RRDtool. */
+/**
+ * dsstats_rrdtool_init - this routine provides a bi-directional socket based connection to RRDtool.
+ * it provides a high speed connection to rrdfile in the case where the traditional Cacti call does
+ * not when performing fetch type calls.
+ *
+ * @return - (mixed) An array that includes both the process resource and the pipes to communicate with RRDtool.
+ */
 function dsstats_rrdtool_init() {
 	global $config;
 
@@ -854,19 +911,22 @@ function dsstats_rrdtool_init() {
 	return array($process, $pipes);
 }
 
-/* dsstats_rrdtool_execute - this routine passes commands to RRDtool and returns the information
-     back to DSStats.  It is important to note here that RRDtool needs to provide an either 'OK'
-     or 'ERROR' response accross the pipe as it does not provide EOF characters to key upon.
-     This may not be the best method and may be changed after I have a conversation with a few
-     developers.
-   @arg $command - (string) The rrdtool command to execute
-   @arg $pipes - (array) An array of stdin and stdout pipes to read and write data from
-   @returns - (string) The output from RRDtool */
+/**
+ * dsstats_rrdtool_execute - this routine passes commands to RRDtool and returns the information
+ * back to DSStats.  It is important to note here that RRDtool needs to provide an either 'OK'
+ * or 'ERROR' response accross the pipe as it does not provide EOF characters to key upon.
+ * This may not be the best method and may be changed after I have a conversation with a few
+ * developers.
+ *
+ * @param $command - (string) The rrdtool command to execute
+ * @param $pipes - (array) An array of stdin and stdout pipes to read and write data from
+ *
+ * @return - (string) The output from RRDtool
+ */
 function dsstats_rrdtool_execute($command, $pipes) {
 	$stdout = '';
 
 	if ($command == '') return;
-
 	$command .= "\r\n";
 	$return_code = fwrite($pipes[0], $command);
 
@@ -885,10 +945,12 @@ function dsstats_rrdtool_execute($command, $pipes) {
 	if (strlen($stdout)) return $stdout;
 }
 
-/* dsstats_rrdtool_close - this routine closes the RRDtool process thus also
-     closing the pipes.
-   @returns - NULL */
+/**
+ * dsstats_rrdtool_close - this routine closes the RRDtool process thus also
+ * closing the pipes.
+ *
+ * @return - NULL
+ */
 function dsstats_rrdtool_close($process) {
 	proc_close($process);
 }
-

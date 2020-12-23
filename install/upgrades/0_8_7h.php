@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_7h
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_7h() {
 	global $config;
 

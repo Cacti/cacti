@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_0_5
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_0_5() {
 	db_install_execute('ALTER TABLE host_snmp_cache MODIFY COLUMN snmp_index varchar(191) NOT NULL default ""');
 	db_install_execute('ALTER TABLE poller_command MODIFY COLUMN command varchar(191) NOT NULL default ""');
@@ -50,7 +56,7 @@ function upgrade_to_1_0_5() {
 		$links         = $links_results['data'];
 		$order         = 1;
 
-		foreach($links as $link) {
+		foreach ($links as $link) {
 			db_install_execute('UPDATE external_links SET sortorder = ? WHERE id = ?', array($order, $link['id']));
 			$order++;
 		}

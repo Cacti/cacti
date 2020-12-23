@@ -26,13 +26,24 @@
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
-	include_once(dirname(__FILE__) . '/../include/cli_check.php');
+	include_once(__DIR__ . '/../include/cli_check.php');
 
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_gexport', $_SERVER['argv']);
 }
 
+/**
+ * ss_gexport
+ *
+ * Insert description here
+ *
+ * @param type $cmd
+ * @param string $arg1
+ * @param string $arg2
+ *
+ * @return type
+ */
 function ss_gexport($cmd, $arg1 = '', $arg2 = '') {
 	if ($cmd == 'index') {
 		if (db_table_exists('graph_exports')) {
@@ -95,4 +106,3 @@ function ss_gexport($cmd, $arg1 = '', $arg2 = '') {
 		return ($value == '' ? '0' : $value);
 	}
 }
-

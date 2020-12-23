@@ -26,39 +26,58 @@
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
-	include_once(dirname(__FILE__) . '/../include/cli_check.php');
+	include_once(__DIR__ . '/../include/cli_check.php');
 
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_hstats', $_SERVER['argv']);
 }
 
+/**
+ * ss_hstats
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $stat
+ *
+ * @return type
+ */
 function ss_hstats($host_id, $stat) {
 	switch ($stat) {
 		case 'polling_time':
 			$column = $stat;
+
 			break;
 		case 'min_time':
 			$column = $stat;
+
 			break;
 		case 'max_time':
 			$column = $stat;
+
 			break;
 		case 'cur_time':
 			$column = $stat;
+
 			break;
 		case 'avg_time':
 			$column = $stat;
+
 			break;
 		case 'uptime':
 			$column = 'snmp_sysUpTimeInstance';
+
 			break;
 		case 'failed_polls':
 			$column = $stat;
+
 			break;
 		case 'availability':
 			$column = $stat;
+
 			break;
+
 		default:
 			return '0';
 	}
@@ -74,4 +93,3 @@ function ss_hstats($host_id, $stat) {
 
 	return '0';
 }
-

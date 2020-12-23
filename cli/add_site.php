@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -34,168 +34,176 @@ array_shift($parms);
 
 if (sizeof($parms)) {
 	/* setup defaults */
-	$siteName      	= '';  					# Site Name
-	$siteAddr1	= '';  					# Site Address 1
-	$siteAddr2	= '';  					# Site Address 2
-	$siteCity	= '';  					# Site City
-	$siteState	= '';  					# Site State
-	$siteZip	= '';  					# Site Zip/Postal Code
-	$siteCountry   	= '';  					# Site Country
-	$siteTimezone	= '';  					# Site Timezone in PHP format http://php.net/manual/en/timezones.php
-	$siteLatitude  	= '';	 				# Site Latitude - preferably in dotted decimal, but will convert DMS backwards
-	$siteLongitude 	= '';					# Site Longitude - preferably in dotted decimal, but will convert DMS backwards
-	$siteAltname	= '';					# Site Alternative Name
-	$siteNotes	= 'Added by script: %DATE% %TIME%';	# Site Notes
-	$replaceSites	= true;					# Default: Replace sites with the same name to stop duplicates being made
-	$displaySites	= false;				# Default: Only when --display-sites is passed
-	$deviceMapRegex	= '';					# Map devices to site by regex
-	$deviceMapWild  = '';					# Map devices to site by mysql wildcard
-	$ipMapRegex	= '';					# Map device IPs to site by regex
-	$ipMapWild      = '';					# Map device IPs to site by mysql wildcard
-	$doMap      	= '';					# Must pass the --do-map to make it work
-	$geocodeAddress = false;				# Geocode addresses into GPS coordinates?
-	$geocodeApiKey  = '';					# Get from https://developers.google.com/maps/documentation/geocoding/get-api-key
-	$httpsProxy  	= '';					# If this is set then load it as a default
+	$siteName       = '';    # Site Name
+	$siteAddr1      = '';    # Site Address 1
+	$siteAddr2      = '';    # Site Address 2
+	$siteCity       = '';    # Site City
+	$siteState      = '';    # Site State
+	$siteZip        = '';    # Site Zip/Postal Code
+	$siteCountry    = '';    # Site Country
+	$siteTimezone   = '';    # Site Timezone in PHP format http://php.net/manual/en/timezones.php
+	$siteLatitude   = '';    # Site Latitude - preferably in dotted decimal, but will convert DMS backwards
+	$siteLongitude  = '';    # Site Longitude - preferably in dotted decimal, but will convert DMS backwards
+	$siteAltname    = '';    # Site Alternative Name
+	$replaceSites   = true;  # Default: Replace sites with the same name to stop duplicates being made
+	$displaySites   = false; # Default: Only when --display-sites is passed
+	$deviceMapRegex = '';    # Map devices to site by regex
+	$deviceMapWild  = '';    # Map devices to site by mysql wildcard
+	$ipMapRegex     = '';    # Map device IPs to site by regex
+	$ipMapWild      = '';    # Map device IPs to site by mysql wildcard
+	$doMap          = '';    # Must pass the --do-map to make it work
+	$geocodeAddress = false; # Geocode addresses into GPS coordinates?
+	$geocodeApiKey  = '';    # Get from https://developers.google.com/maps/documentation/geocoding/get-api-key
+	$httpsProxy     = '';    # If this is set then load it as a default
 
-	$verbose	= false;
-	$debug		= false;
-	$quiet		= false;
-	$log		= false;
+	$siteNotes      = 'Added by script: %DATE% %TIME%';	# Site Notes
 
-	foreach($parms as $parameter) {
+	$verbose = false;
+	$debug   = false;
+	$quiet   = false;
+	$log     = false;
+
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
 			case '--name':
 				$siteName = trim($value);
-				break;
 
+				break;
 			case '--addr1':
 				$siteAddr1 = trim($value);
-				break;
 
+				break;
 			case '--addr2':
 				$siteAddr2 = trim($value);
-				break;
 
+				break;
 			case '--city':
 				$siteCity = trim($value);
-				break;
 
+				break;
 			case '--state':
 				$siteState = trim($value);
-				break;
 
+				break;
 			case '--postcode':
 				$siteZip = trim($value);
-				break;
 
+				break;
 			case '--country':
 				$siteCountry = trim($value);
-				break;
 
+				break;
 			case '--timezone':
 				$siteTimezone = trim($value);
-				break;
 
+				break;
 			case '--latitude':
 				$siteLatitude = trim($value);
-				break;
 
+				break;
 			case '--longitude':
 				$siteLongitude = trim($value);
-				break;
 
+				break;
 			case '--alt-name':
 				$siteAltname = trim($value);
-				break;
 
+				break;
 			case '--notes':
 				$siteNotes = trim($value);
+
 				break;
 			case '--device-map-regex':
 				$deviceMapRegex = trim($value);
-				break;
 
+				break;
 			case '--device-map-wildcard':
 				$deviceMapWild = trim($value);
-				break;
 
+				break;
 			case '--ip-map-regex':
 				$ipMapRegex = trim($value);
-				break;
 
+				break;
 			case '--ip-map-wildcard':
 				$ipMapWild = trim($value);
-				break;
 
+				break;
 			case '--do-map':
 				$doMap = true;
-				break;
 
+				break;
 			case '--geocode':
 				$geocodeAddress = true;
-				break;
 
+				break;
 			case '--geocode-api-key':
 				$geocodeApiKey = trim($value);
-				break;
 
+				break;
 			case '--proxy':
 				$httpsProxy = trim($value);
-				break;
 
+				break;
 			case '--quiet':
 				$quiet = true;
-				break;
 
+				break;
 			case '--log':
 				$log = true;
-				break;
 
+				break;
 			case '--list-sites':
 				$displaySites = true;
-				break;
 
+				break;
 			case '--no-replace':
 				$replaceSites = 0;
-				break;
 
+				break;
 			case '--verbose':
 				$verbose = true;
-				break;
 
+				break;
 			case '--debug':
 				$debug = true;
-				break;
 
+				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				displayVersion();
+
 				exit;
 			case '--help':
 			case '-H':
 			case '-h':
-				displayHelp();
+				display_help();
+
 				exit;
+
 			default:
 				echoQuiet("ERROR: Invalid Argument: ($arg)\n\n");
-				displayHelp();
+				display_help();
+
 				exit(1);
 		}
 	}
 
 	if ($displaySites) {
 		displaySites($hosts, $quiet);
+
 		exit(0);
 	} else {
 		$siteId = addSite();
+
 		if ($siteId && ($deviceMapRegex || $deviceMapWild || $ipMapRegex || $ipMapWild)) {
 			if ($doMap && !$quiet) 	{
 				echoQuiet("Attempting to map devices to site ID: $siteId\n");
@@ -205,20 +213,18 @@ if (sizeof($parms)) {
 			mapDevices($siteId, $doMap);
 		}
 	}
-
 } else {
-	displayHelp();
+	display_help();
+
 	exit(0);
 }
 
-
-##
-# Add a new site, or update and existing one
-# Returns the id of the site added
-##
-
+/**
+ * Add a new site, or update and existing one
+ *
+ * @return int - the id of the site added
+ */
 function addSite() {
-
 	global $siteName, $siteAddr1, $siteAddr2, $siteCity, $siteState, $siteZip, $siteCountry, $siteTimezone, $siteLatitude, $siteLongitude, $siteAltname, $siteNotes, $geocodeAddress;
 
 	$siteData = db_fetch_assoc_prepared('SELECT * from sites where name = ?',array($siteName));
@@ -230,8 +236,8 @@ function addSite() {
 		list($siteLatitude, $siteLongitude) = geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry);
 	}
 
-	$dateNow = date('Y-m-d');
-	$timeNow = date('H:i:s');
+	$dateNow       = date('Y-m-d');
+	$timeNow       = date('H:i:s');
 	$googleMapsUrl = sprintf('https://www.google.com/maps?&q=%s,%s',$siteLatitude,$siteLongitude);
 
 	$siteNotes = str_replace('%DATE%',$dateNow,$siteNotes);
@@ -239,9 +245,7 @@ function addSite() {
 	$siteNotes = str_replace('%GOOGLE_MAPS_URL%',$googleMapsUrl,$siteNotes);
 	$siteNotes = str_replace('%BR%',"\n",$siteNotes);
 
-
 	if ($siteData) {
-
 		echoQuiet("Updating existing site: $siteName\n");
 		$siteId = isset($siteData[0]['id']) ? $siteData[0]['id'] : 0;
 
@@ -249,6 +253,7 @@ function addSite() {
 			if (!$quiet) {
 				echoQuiet("Error - couldn't find ID for site name: $siteName");
 			}
+
 			exit;
 		}
 
@@ -283,22 +288,22 @@ function addSite() {
 			notes		= ?
 			WHERE sites.id = ?',$params);
 
-		return($siteData[0]['id']);
+		return ($siteData[0]['id']);
 	} else {
 		echoQuiet("Adding new site: $siteName\n");
 		$params=array(
-			$siteName      ? $siteName           : "",
-			$siteAddr1     ? $siteAddr1          : "",
-			$siteAddr2     ? $siteAddr2          : "",
-			$siteCity      ? $siteCity           : "",
-			$siteState     ? $siteState          : "",
-			$siteZip       ? $siteZip            : "",
-			$siteCountry   ? $siteCountry        : "",
-			$siteTimezone  ? $siteTimezone       : "",
-			$siteLatitude  ? $siteLatitude       : "",
-			$siteLongitude ? $siteLongitude      : "",
-			$siteAltname   ? $siteAltname        : "",
-			$siteNotes     ? $siteNotes          : "",
+			$siteName      ? $siteName           : '',
+			$siteAddr1     ? $siteAddr1          : '',
+			$siteAddr2     ? $siteAddr2          : '',
+			$siteCity      ? $siteCity           : '',
+			$siteState     ? $siteState          : '',
+			$siteZip       ? $siteZip            : '',
+			$siteCountry   ? $siteCountry        : '',
+			$siteTimezone  ? $siteTimezone       : '',
+			$siteLatitude  ? $siteLatitude       : '',
+			$siteLongitude ? $siteLongitude      : '',
+			$siteAltname   ? $siteAltname        : '',
+			$siteNotes     ? $siteNotes          : '',
 		);
 
 		db_execute_prepared('INSERT into sites
@@ -307,11 +312,19 @@ function addSite() {
 			VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', $params);
 
 		$siteId = db_fetch_insert_id();
-		return($siteId);
-	}
 
+		return ($siteId);
+	}
 }
 
+/**
+ * mapDevices
+ *
+ * Insert description here
+ *
+ * @param type $siteId
+ * @param type $doMap
+ */
 function mapDevices($siteId, $doMap) {
 	global $deviceMapRegex, $deviceMapWild, $ipMapRegex, $ipMapWild, $siteName, $verbose, $debug, $quiet;
 	$devices = getHosts();
@@ -327,13 +340,12 @@ function mapDevices($siteId, $doMap) {
 	}
 
 	# Cheating and just expanding % into .+ regex matches to avoid having to do DB queries again
-	$deviceMapWild 	= $deviceMapWild ? '/'.str_replace('%','.+',$deviceMapWild) .'/' : "";
-	$ipMapWild 	= $ipMapWild ? '/'.str_replace('%','.+',$ipMapWild) .'/' : "";
+	$deviceMapWild = $deviceMapWild ? '/'.str_replace('%','.+',$deviceMapWild) .'/' : '';
+	$ipMapWild     = $ipMapWild ? '/'.str_replace('%','.+',$ipMapWild) .'/' : '';
 
 	$matchedDevices = array();
 
 	foreach ($devices as $device) {
-
 		$deviceId   = $device['id'];
 		$deviceName = $device['description'];
 		$deviceIP   = $device['hostname'];
@@ -373,12 +385,13 @@ function mapDevices($siteId, $doMap) {
 				array_push($matchedDevices,"$deviceName [$deviceId]");
 			}
 		}
-
 	}
 
 	$numMatched = sizeof($matchedDevices);
+
 	if ($numMatched) {
 		echoQuiet("\n Success: $numMatched devices matched filters for site $siteName.\n\n");
+
 		for ($i = 0; $i < $numMatched; $i++) {
 			echoQuiet("  $i. ".$matchedDevices[$i]."\n");
 		}
@@ -386,40 +399,42 @@ function mapDevices($siteId, $doMap) {
 	}
 }
 
-/* doDeviceMap(): updates the host.site_id entry
- * Returns true if successful
+/**
+ * doDeviceMap(): updates the host.site_id entry
+ *
+ * @return bool - true if successful
  */
 function doDeviceMap($deviceId,$siteId) {
 	if (!$deviceId && $siteId) {
 		return false;
 	}
 
-	db_execute_prepared("UPDATE host set site_id = ? where id = ?", array($siteId,$deviceId));
+	db_execute_prepared('UPDATE host set site_id = ? where id = ?', array($siteId,$deviceId));
 	$numUpdates = db_affected_rows();
 
 	return $numUpdates > 0;
 }
 
-
- ##
- # geocodeAddress(): Use Google Geocode API to turn addresses into GPS coordinates
- # Requires an API key, which must be provided with the --geocode-api-key parameter
- ##
-
+/**
+ * geocodeAddress(): Use Google Geocode API to turn addresses into GPS coordinates
+ *
+ * Requires an API key, which must be provided with the --geocode-api-key parameter
+ */
 function geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry) {
 	global $verbose, $debug, $quiet, $geocodeApiKey, $httpsProxy;
 
-	$latGeocode = "";
-	$lngGeocode = "";
+	$latGeocode = '';
+	$lngGeocode = '';
 
-	$googleApiUrl = "https://maps.googleapis.com/maps/api/geocode/json";
+	$googleApiUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 	if (!$geocodeApiKey) {
 		# Dont even try without the key
-		displayHelp("Error: --geocode-api-key must be given with --geocode-address");
+		display_help('Error: --geocode-api-key must be given with --geocode-address');
 	}
 
-	$requestUrl = sprintf("%s?address=%s,%s,%s,%s&key=%s",$googleApiUrl,urlencode($siteAddr1),urlencode($siteAddr2),urlencode($siteCity),urlencode($siteCountry),$geocodeApiKey);
+	$requestUrl = sprintf('%s?address=%s,%s,%s,%s&key=%s',$googleApiUrl,urlencode($siteAddr1),urlencode($siteAddr2),urlencode($siteCity),urlencode($siteCountry),$geocodeApiKey);
+
 	if ($verbose || $debug) {
 		echoQuiet("Geocode URL: $requestUrl\n");
 	}
@@ -429,12 +444,13 @@ function geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry
 		$jsonResult = json_decode($result);
 
 		if ($debug) {
-			echoQuiet("Result was: ". print_r($jsonResult,1));
+			echoQuiet('Result was: '. print_r($jsonResult,1));
 		}
 
 		if ($jsonResult && isset($jsonResult->results[0])) {
 			$latGeocode= $jsonResult->results[0]->geometry->location->lat;
 			$lngGeocode= $jsonResult->results[0]->geometry->location->lng;
+
 			if (!$quiet) {
 				echoQuiet("Geocoded Coordinates: $latGeocode,$lngGeocode\n");
 			}
@@ -445,34 +461,48 @@ function geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry
 		}
 	}
 
-	return(array($latGeocode,$lngGeocode));
+	return (array($latGeocode,$lngGeocode));
 }
 
+/**
+ * fixCoordinates
+ *
+ * Insert description here
+ *
+ * @param type $lat
+ * @param type $lng
+ *
+ * @return type
+ */
 function fixCoordinates($lat,$lng) {
 	$utfCoord = utf8_decode("$lat $lng");    # Normalise the characters to put them through a regex
 
 	if (preg_match('/(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([NS]) +(\d+)\xB0(\d+)\'((?:[.]\d+|\d+(?:[.]\d*)?))"?([EW])/', $utfCoord,$matches)) {
 		array_shift($matches);                                                          # Get rid of $matches[0]
-		list ($degN, $minN,$secN,$NS, $degE, $minE, $secE, $EW) = $matches;             # Get the matches from the regex
+		list($degN, $minN,$secN,$NS, $degE, $minE, $secE, $EW) = $matches;             # Get the matches from the regex
 
-		$lat = sprintf("%0.6f",( $NS == 'S' ? -1 : 1 ) * ( $degN + ( $minN / 60 ) + ($secN/3600) ));
-		$lng = sprintf("%0.6f",( $EW == 'W' ? -1 : 1 ) * ( $degE + ( $minE / 60 ) + ($secE/3600) ));
+		$lat = sprintf('%0.6f',($NS == 'S' ? -1 : 1) * ($degN + ($minN / 60) + ($secN / 3600)));
+		$lng = sprintf('%0.6f',($EW == 'W' ? -1 : 1) * ($degE + ($minE / 60) + ($secE / 3600)));
 	}
-	return(array($lat,$lng));
+
+	return (array($lat,$lng));
 }
 
-
-
-/*  displayVersion - displays version information */
-function displayVersion() {
+/**
+ * display_version - displays Cacti CLI version information
+ */
+function display_version() {
 	$version = get_cacti_cli_version();
 	echoQuiet("Cacti Add Site Utility, Version $version, " . COPYRIGHT_YEARS . "\n");
 }
 
-function displayHelp($errorMessage = null) {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help($errorMessage = null) {
 	global $log;
 	$log = false;
-	displayVersion();
+	display_version();
 
 	if ($errorMessage) {
 		echoQuiet("$errorMessage\n\n");
@@ -520,15 +550,23 @@ function displayHelp($errorMessage = null) {
 	echoQuiet("      %DATE% - The current date in mysql format\n");
 	echoQuiet("      %TIME% - The current time in mysql format\n");
 	echoQuiet("      %GOOGLE_MAPS_URL% - The link to Google Maps for this sites GPS coordinates\n\n");
+
 	exit;
 }
 
-
+/**
+ * echoQuiet
+ *
+ * Insert description here
+ *
+ * @param type $str
+ * @param 0 $level
+ */
 function echoQuiet($str,$level=0) {
-
 	global $quiet, $log;
+
 	if (!$quiet) {
-		echo("$str");
+		print ("$str");
 	}
 
 	if ($log) {
@@ -537,23 +575,30 @@ function echoQuiet($str,$level=0) {
 	}
 }
 
-
-function fetchCurl($url){
+/**
+ * fetchCurl
+ *
+ * Insert description here
+ *
+ * @param type $url
+ *
+ * @return type
+ */
+function fetchCurl($url) {
 	global $verbose, $debug, $httpsProxy;
 
 	if (!function_exists('curl_init')) {
-		displayHelp("Error: cURL must be enabled in PHP if --geocode is specified.\nSee http://php.net/manual/en/curl.setup.php for help.\n");
+		display_help("Error: cURL must be enabled in PHP if --geocode is specified.\nSee http://php.net/manual/en/curl.setup.php for help.\n");
 	}
 
-	$curl = curl_init();
-	$header[0] = "Accept: text/xml,application/xml,application/json,application/xhtml+xml,";
-	$header[0] .= "text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
-	$header[] = "Cache-Control: max-age=0";
-	$header[] = "Connection: keep-alive";
-	$header[] = "Keep-Alive: 300";
-	$header[] = "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7";
-	$header[] = "Accept-Language: en-us,en;q=0.5";
-
+	$curl      = curl_init();
+	$header[0] = 'Accept: text/xml,application/xml,application/json,application/xhtml+xml,';
+	$header[0] .= 'text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5';
+	$header[] = 'Cache-Control: max-age=0';
+	$header[] = 'Connection: keep-alive';
+	$header[] = 'Keep-Alive: 300';
+	$header[] = 'Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7';
+	$header[] = 'Accept-Language: en-us,en;q=0.5';
 
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
@@ -572,5 +617,6 @@ function fetchCurl($url){
 
 	$buffer = curl_exec($curl);
 	curl_close($curl);
+
 	return $buffer;
 }

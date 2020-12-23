@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-$hostId  = NULL;
+$hostId  = null;
 $proceed = false;
 
 /* process calling arguments */
@@ -33,11 +33,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -50,19 +50,24 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--host-id':
 			case '--hostId':
 				$hostId = $value;
+
 				break;
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -71,23 +76,26 @@ if (cacti_sizeof($parms)) {
 if ($proceed == false) {
 	print "\nFATAL: You Must Explicitally Instruct This Script to Proceed with the '--proceed' Option\n\n";
 	display_help();
+
 	exit -1;
 }
 
 /* check ownership of the current base path */
-$base_rra_path = $config["rra_path"];
+$base_rra_path = $config['rra_path'];
 $owner_id      = fileowner($base_rra_path);
 $group_id      = filegroup($base_rra_path);
 
 /* turn off the poller */
 disable_poller();
 
-$poller_running = shell_exec("ps -ef | grep poller.php | wc -l");
-if ($poller_running == "1") {
+$poller_running = shell_exec('ps -ef | grep poller.php | wc -l');
+
+if ($poller_running == '1') {
 	/* turn on the poller */
 	enable_poller();
 
 	print "FATAL: The Poller is Currently Running\n";
+
 	exit -4;
 }
 
@@ -103,7 +111,7 @@ $data_sources = db_fetch_assoc("SELECT local_data_id, host_id, data_source_path,
 	INNER JOIN data_local ON data_local.id=data_template_data.local_data_id
 	INNER JOIN host ON host.id=data_local.host_id
 	WHERE data_source_path != CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd')"
-	. ($hostId === NULL ? '' : " AND host_id=$hostId"));
+	. ($hostId === null ? '' : " AND host_id=$hostId"));
 
 /* setup some counters */
 $done_count   = 0;
@@ -120,6 +128,7 @@ foreach ($data_sources as $info) {
 		/* see if we can create the dirctory for the new file */
 		if (mkdir($new_base_path, 0775)) {
 			print "NOTE: New Directory '$new_base_path' Created for RRD Files\n";
+
 			if ($config['cacti_server_os'] != 'win32') {
 				if (chown($new_base_path, $owner_id) && chgrp($new_base_path, $group_id)) {
 					print "NOTE: New Directory '$new_base_path' Permissions Set\n";
@@ -128,6 +137,7 @@ foreach ($data_sources as $info) {
 					enable_poller();
 
 					print "FATAL: Could not Set Permissions for Directory '$new_base_path'\n";
+
 					exit -5;
 				}
 			}
@@ -136,6 +146,7 @@ foreach ($data_sources as $info) {
 			enable_poller();
 
 			print "FATAL: Could NOT Make New Directory '$new_base_path'\n";
+
 			exit -1;
 		}
 	}
@@ -152,6 +163,7 @@ foreach ($data_sources as $info) {
 		$done_count++;
 
 		print "NOTE: HardLink Complete:'" . $old_rrd_path . "' -> '" . $new_rrd_path . "'\n";
+
 		if ($config['cacti_server_os'] != 'win32') {
 			if (chown($new_rrd_path, $owner_id) && chgrp($new_rrd_path, $group_id)) {
 				print "NOTE: Permissions set for '$new_rrd_path'\n";
@@ -160,6 +172,7 @@ foreach ($data_sources as $info) {
 				enable_poller();
 
 				print "FATAL: Could not Set Permissions for File '$new_rrd_path'\n";
+
 				exit -6;
 			}
 		}
@@ -174,6 +187,7 @@ foreach ($data_sources as $info) {
 			enable_poller();
 
 			print "FATAL: Old File '$old_rrd_path' Could not be removed\n";
+
 			exit -2;
 		}
 	} else {
@@ -181,6 +195,7 @@ foreach ($data_sources as $info) {
 		enable_poller();
 
 		print "FATAL: Could not Copy RRD File '$old_rrd_path' to '$new_rrd_path'\n";
+
 		exit -3;
 	}
 }
@@ -190,7 +205,9 @@ enable_poller();
 
 print "NOTE: Process Complete, '$done_count' Completed, '$warn_count' Skipped\n";
 
-/* update database */
+/**
+ * update database with new information
+ */
 function update_database($info) {
 	/* upate table poller_item */
 	db_execute("UPDATE poller_item
@@ -205,22 +222,31 @@ function update_database($info) {
 	print "NOTE: Database Changes Complete for File '" . $info['new_rrd_path'] . "'\n";
 }
 
-/* turn on the poller */
+/**
+ * turn on the poller
+ */
 function enable_poller() {
 	set_config_option('poller_enabled', 'on');
 }
 
-/* turn off the poller */
+/**
+ * turn off the poller
+ */
 function disable_poller() {
 	set_config_option('poller_enabled', '');
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Structured Paths Creation Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 
