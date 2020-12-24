@@ -1590,3 +1590,29 @@ function db_force_remote_cnn() {
 	$database_ssl_ca    = $rdatabase_ssl_ca;
 }
 
+/* db_dump_data - dump data into a file by mysqldump
+   @param $database - default $database_default
+   @param $tables - default all tables
+   @param $credentials - 'false' for no credentials file is set in $options, 'true' for --defaults-extra-file set is in $options.
+   @param $output_file - dump file name, default /tmp/cacti.dump.sql
+   @param $options - option strings for mysqldump
+   @returns - returnl status of the executed command */
+function db_dump_data($database = '', $tables = '', $credentials = false, $output_file = false, $options = '--extended-insert=FALSE') {
+	global $database_default, $database_username, $database_password;
+
+	if($database == '') {
+		$database = $database_default;
+	}
+	if ($credentials) {
+		exec("mysqldump $options $database $tables > " . $output_file, $output, $retval);
+	} else {
+		exec("mysqldump $options " . $database . ' version >/dev/null 2>&1', $output, $retval);
+		if ($retval) {
+			exec("mysqldump $options -u" . $database_username . ' -p' . $database_password . ' ' . $database . " $tables > " . $output_file, $output, $retval);
+		} else {
+			exec("mysqldump $options $database $tables > " . $output_file, $output, $retval);
+		}
+	}
+	return $retval;
+}
+

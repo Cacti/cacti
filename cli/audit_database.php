@@ -997,14 +997,13 @@ function load_audit_database() {
 	if (is_dir($config['base_path'] . '/docs')) {
 		print PHP_EOL . 'Exporting Table Audit Table Creation Logic to ' . $config['base_path'] . '/docs/audit_schema.sql' . PHP_EOL;
 
-		exec('mysqldump ' . $database_default . ' version >/dev/null 2>&1', $output, $retval);
+		$retval = db_dump_data($database_default, 'table_columns table_indexes', false, $config['base_path'] . '/docs/audit_schema.sql');
 		if ($retval) {
-			exec('mysqldump -u' . $database_username . ' -p' . $database_password . ' ' . $database_default . ' table_columns table_indexes --extended-insert=FALSE > ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $retval);
+			print 'Finished Creating Audit Schema with ERROR' . PHP_EOL . PHP_EOL;
 		} else {
-			exec('mysqldump ' . $database_default . ' table_columns table_indexes --extended-insert=FALSE > ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $retval);
+			print 'Finished Creating Audit Schema' . PHP_EOL . PHP_EOL;
 		}
 
-		print 'Finished Creating Audit Schema' . PHP_EOL . PHP_EOL;
 	} else {
 		print PHP_EOL . 'FATAL: Docs directory does not exist!' . PHP_EOL . PHP_EOL;
 	}
