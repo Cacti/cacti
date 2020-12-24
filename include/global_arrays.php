@@ -749,7 +749,11 @@ $device_threads = array(
 	3 => __('%d Threads', 3),
 	4 => __('%d Threads', 4),
 	5 => __('%d Threads', 5),
-	6 => __('%d Threads', 6)
+	6 => __('%d Threads', 6),
+	7 => __('%d Threads', 7),
+	8 => __('%d Threads', 8),
+	9 => __('%d Threads', 9),
+	10 => __('%d Threads', 10)
 );
 
 $cron_intervals = array(
