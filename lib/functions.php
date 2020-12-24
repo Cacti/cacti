@@ -391,23 +391,19 @@ function config_value_exists($config_name) {
 function read_default_config_option($config_name) {
 	global $config, $settings;
 
-	if (isset($settings)) {
-		if (is_array($settings)) {
-			foreach ($settings as $tab_array) {
-				if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
-					return $tab_array[$config_name]['default'];
-				} else {
-					foreach ($tab_array as $field_array) {
-						if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
-							return $field_array['items'][$config_name]['default'];
-						}
+	if (isset($settings) && is_array($settings)) {
+		foreach ($settings as $tab_array) {
+			if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
+				return $tab_array[$config_name]['default'];
+			} else {
+				foreach ($tab_array as $field_array) {
+					if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
+						return $field_array['items'][$config_name]['default'];
 					}
 				}
 			}
 		}
 	}
-
-	return null;
 }
 
 /* read_config_option - finds the current value of a Cacti configuration setting

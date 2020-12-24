@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#4005: Automation raises errors when default snmp options is set to none
 -issue#4008: Fix #3808 causes a massive decrease in poller performance
 -issue#4009: The function number_format_i18n() should consider null to align with standard number_format() function
+-issue#4021: Change Device Threads, Revert read_config_option() (#4008, #3555)
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
