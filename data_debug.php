@@ -35,6 +35,8 @@ ini_set('memory_limit', '-1');
 
 set_default_action();
 
+validate_request_vars();
+
 switch (get_request_var('action')) {
 	case 'actions':
 		form_actions();
@@ -123,8 +125,6 @@ switch (get_request_var('action')) {
 
 		break;
 	default:
-		validate_request_vars();
-
 		$refresh = array(
 			'seconds' => get_request_var('refresh'),
 			'page'    => 'data_debug.php?header=false',
