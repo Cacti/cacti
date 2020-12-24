@@ -38,6 +38,10 @@ function imageOptionsChanged(action) {
 	var isThumb        = $('#thumbnails').is(':checked');
 	var url            = '';
 
+	if (size == null) {
+		size = 100;
+	}
+
 	local_graph_id = $('#local_graph_id').val();
 
 	if (rtWidth == 0) {
@@ -211,6 +215,10 @@ function realtimeGrapher() {
     var isThumb     = $('#thumbnails').is(':checked');
 	var totalGraphs = countRealtimeGraphs();
 	var key;
+
+	if (size == null) {
+		size = 100;
+	}
 
 	if (graphsRendered == null || graphsRendered >= totalGraphs || prevTotalGraphs != totalGraphs) {
 		//console.log('Rendering: Total Graphs:' + totalGraphs + ', Rendered Graphs:' + graphsRendered);

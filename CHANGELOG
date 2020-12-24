@@ -8,9 +8,17 @@ Cacti CHANGELOG
 -issue#3977: Cacti CLI upgrade_database.php misses constant IN_CACTI_INSTAL which may result in upgrade failures
 -issue#3978: CMDPHP Input Validation Not Performed for Tree
 -issue#3985: Update database library function to properly handle collate
+-issue#3988: Automation raises errors when default snmp options is set to none
 -issue#3990: Utilities-System Utilities-technich support-php info is not a row, should not use form_alternate_row
 -issue#3999: The chances of mysqldump with password should be minimized
+-issue#4001: PHP8 support: Debian test suites shows lots of PHP Errors and Warnings with PHP8
+-issue#4002: Poller Recovery is not predictable
+-issue#4005: Automation raises errors when default snmp options is set to none
+-issue#4008: Fix #3808 causes a massive decrease in poller performance
+-issue#4009: The function number_format_i18n() should consider null to align with standard number_format() function
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
+-feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
+-feature#4013: Remote Poller - reset avg/max polling time
 
 1.2.16
 -issue#3704: When generating a report, the Cascade to Branches function does not as expected
