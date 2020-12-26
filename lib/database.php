@@ -1594,27 +1594,64 @@ function db_force_remote_cnn() {
 	$database_ssl_ca    = $rdatabase_ssl_ca;
 }
 
-/* db_dump_data - dump data into a file by mysqldump
+/* db_dump_data - dump data into a file by mysqldump, minimize password be caught.
    @param $database - default $database_default
    @param $tables - default all tables
-   @param $credentials - 'false' for no credentials file is set in $options, 'true' for --defaults-extra-file set is in $options.
+   @param $credentials - array($name => value, ...) for user, password, host, port, ssl ...
    @param $output_file - dump file name, default /tmp/cacti.dump.sql
-   @param $options - option strings for mysqldump
+   @param $options - option strings for mysqldump, if --defaults-extra-file set, dump the data directly
    @returns - returnl status of the executed command */
-function db_dump_data($database = '', $tables = '', $credentials = false, $output_file = false, $options = '--extended-insert=FALSE') {
+function db_dump_data($database = '', $tables = '', $credentials = array(), $output_file = false, $options = '--extended-insert=FALSE') {
 	global $database_default, $database_username, $database_password;
+	$credentials_string = '';
 
-	if($database == '') {
+	if ($database == '') {
 		$database = $database_default;
 	}
-	if ($credentials) {
-		exec("mysqldump $options $database $tables > " . $output_file, $output, $retval);
+	if (cacti_sizeof($credentials)) {
+		foreach ($credentials as $key => $value) {
+			$name = trim($key);
+			if (strstr($name, '--') !== false) {      //name like --host
+				if($name == '--password') {
+					$password = $value;
+				} else if ($name == '--user') {
+					$username = $value;
+				} else {
+					$credentials_string .= $name . '=' . $value . ' ';
+				}
+			} else if(strstr($name, '-') !== false) { //name like -h
+				if($name == '-p') {
+					$password = $value;
+				} else if ($name == '-u') {
+					$username = $value;
+				} else {
+					$credentials_string .= $name . $value . ' ';
+				}
+			} else {                                  //name like host
+				if($name == 'password') {
+					$password = $value;
+				} else if ($name == 'user') {
+					$username = $value;
+				} else {
+					$credentials_string .= '--' . $name . '=' . $value . ' ';
+				}
+			}
+		}
+	}
+	if (!isset($password)) {
+		$password = $database_password;
+	}
+	if (!isset($username)) {
+		$username = $database_username;
+	}
+	if (strstr($options, '--defaults-extra-file') !== false) {
+		exec("mysqldump $options $credentials_string $database $tables > " . $output_file, $output, $retval);
 	} else {
-		exec("mysqldump $options " . $database . ' version >/dev/null 2>&1', $output, $retval);
+		exec("mysqldump $options $credentials_string " . $database . ' version >/dev/null 2>&1', $output, $retval);
 		if ($retval) {
-			exec("mysqldump $options -u" . $database_username . ' -p' . $database_password . ' ' . $database . " $tables > " . $output_file, $output, $retval);
+			exec("mysqldump $options $credentials_string -u" . $username . ' -p' . $password . ' ' . $database . " $tables > " . $output_file, $output, $retval);
 		} else {
-			exec("mysqldump $options $database $tables > " . $output_file, $output, $retval);
+			exec("mysqldump $options $credentials_string $database $tables > " . $output_file, $output, $retval);
 		}
 	}
 	return $retval;
