@@ -812,7 +812,7 @@ function utilities_view_user_log() {
 
 							if (cacti_sizeof($users)) {
 								foreach ($users as $user) {
-									print "<option value='" . $user['username'] . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . $user['username'] . '</option>';
+									print "<option value='" . html_escape($user['username']) . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . html_escape($user['username']) . '</option>';
 								}
 							}
 							?>
@@ -1034,19 +1034,19 @@ function utilities_view_logfile() {
 
 	$logfile = basename(get_nfilter_request_var('filename'));
 	$logbase = basename(read_config_option('path_cactilog'));
-	
+
 	if ($logfile == '') {
 		$logfile = $logbase;
 	}
-	
+
 	if ($logfile == '') {
 		$logfile = 'cacti.log';
 	}
-	
+
 	$logname = '';
 	$logpath = '';
 
-	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {	
+	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
 		raise_message('clog_invalid');
 		header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
 		exit(0);
@@ -1171,7 +1171,7 @@ function utilities_view_logfile() {
 
 							if (cacti_sizeof($logFileArray)) {
 								foreach ($logFileArray as $logFile) {
-									print "<option value='" . $logFile . "'";
+									print "<option value='" . html_escape($logFile) . "'";
 
 									if (get_nfilter_request_var('filename') == $logFile) {
 										print ' selected';
@@ -1182,7 +1182,7 @@ function utilities_view_logfile() {
 									$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 									$logName = $logParts[0];
 
-									print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . '</option>';
+									print '>' . html_escape($logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'')) . '</option>';
 								}
 							}
 							?>
@@ -1807,7 +1807,7 @@ function utilities_view_poller_cache() {
 
 							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . '</option>';
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . '</option>';
 								}
 							}
 							?>
@@ -2540,7 +2540,7 @@ function snmpagent_utilities_run_cache() {
 								<?php
 								if (cacti_sizeof($mibs) > 0) {
 									foreach ($mibs as $mib) {
-										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . html_escape($mib['mib']) . '</option>';
+										print "<option value='" . html_escape($mib['mib']) . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . html_escape($mib['mib']) . '</option>';
 									}
 								}
 								?>
@@ -2804,7 +2804,7 @@ function snmpagent_utilities_run_eventlog(){
 								<option value='-1'<?php if (get_request_var('receiver') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($receivers as $receiver) {
-									print "<option value='" . $receiver['manager_id'] . "'"; if (get_request_var('receiver') == $receiver['manager_id']) { print ' selected'; } print '>' . $receiver['hostname'] . '</option>';
+									print "<option value='" . $receiver['manager_id'] . "'"; if (get_request_var('receiver') == $receiver['manager_id']) { print ' selected'; } print '>' . html_escape($receiver['hostname']) . '</option>';
 								}
 								?>
 							</select>

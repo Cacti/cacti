@@ -1138,7 +1138,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 							if (cacti_sizeof($graph_timespans)) {
 								foreach($graph_timespans as $value => $text) {
-									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . '</option>';
+									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . html_escape($text) . '</option>';
 								}
 							}
 							?>
@@ -1171,7 +1171,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 								$end_val = cacti_sizeof($graph_timeshifts)+1;
 								if (cacti_sizeof($graph_timeshifts)) {
 									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . '</option>';
+										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
 									}
 								}
 								?>

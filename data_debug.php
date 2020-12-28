@@ -35,6 +35,8 @@ ini_set('memory_limit', '-1');
 
 set_default_action();
 
+validate_request_vars();
+
 switch (get_request_var('action')) {
 	case 'actions':
 		form_actions();
@@ -123,8 +125,6 @@ switch (get_request_var('action')) {
 
 		break;
 	default:
-		validate_request_vars();
-
 		$refresh = array(
 			'seconds' => get_request_var('refresh'),
 			'page'    => 'data_debug.php?header=false',
@@ -969,7 +969,7 @@ function data_debug_filter() {
 
 							if (cacti_sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . "</option>";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . '</option>';
 								}
 							}
 							?>
@@ -997,7 +997,7 @@ function data_debug_filter() {
 							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
 							if (cacti_sizeof($profiles)) {
 								foreach ($profiles as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
+									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1063,7 +1063,7 @@ function data_debug_filter() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
