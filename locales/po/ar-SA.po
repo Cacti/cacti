@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2020-12-12 22:15-0500\n"
+"POT-Creation-Date: 2020-12-28 13:06-0500\n"
 "PO-Revision-Date: 2020-09-13 17:53-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Generator: Poedit 2.4.1\n"
 
-#: about.php:29 include/global_arrays.php:2454 lib/html.php:2414
+#: about.php:29 include/global_arrays.php:2454 lib/html.php:2415
 #, fuzzy
 msgid "About Cacti"
 msgstr "حول الصبار"
@@ -160,17 +160,17 @@ msgstr "انقر فوق &quot;متابعة&quot; لحذف الرسم البيا�
 #: host.php:386 host.php:441 host.php:450 host.php:459 host.php:473
 #: host.php:487 host.php:496 host.php:504 host_templates.php:270
 #: host_templates.php:284 host_templates.php:295 host_templates.php:344
-#: host_templates.php:407 lib/clog_webapi.php:221 lib/html.php:2447
+#: host_templates.php:407 lib/clog_webapi.php:221 lib/html.php:2448
 #: lib/html_form.php:1272 lib/html_form.php:1284 lib/html_form.php:1295
 #: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
-#: managers.php:1004 managers.php:1062 plugins.php:517 pollers.php:523
-#: pollers.php:532 pollers.php:541 pollers.php:550 sites.php:359 sites.php:369
-#: tree.php:654 tree.php:663 tree.php:672 tree.php:681 user_admin.php:340
-#: user_admin.php:380 user_admin.php:391 user_admin.php:402 user_admin.php:425
-#: user_domains.php:235 user_domains.php:244 user_domains.php:253
-#: user_domains.php:262 user_group_admin.php:450 user_group_admin.php:469
-#: user_group_admin.php:480 user_group_admin.php:491 vdef.php:270 vdef.php:280
-#: vdef.php:336
+#: managers.php:1004 managers.php:1062 plugins.php:517 pollers.php:533
+#: pollers.php:542 pollers.php:551 pollers.php:560 pollers.php:569
+#: sites.php:359 sites.php:369 tree.php:654 tree.php:663 tree.php:672
+#: tree.php:681 user_admin.php:340 user_admin.php:380 user_admin.php:391
+#: user_admin.php:402 user_admin.php:425 user_domains.php:235
+#: user_domains.php:244 user_domains.php:253 user_domains.php:262
+#: user_group_admin.php:450 user_group_admin.php:469 user_group_admin.php:480
+#: user_group_admin.php:491 vdef.php:270 vdef.php:280 vdef.php:336
 msgid "Cancel"
 msgstr "إلغاء"
 
@@ -197,12 +197,12 @@ msgstr "إلغاء"
 #: host.php:450 host.php:459 host.php:473 host.php:487 host.php:496
 #: host.php:504 host_templates.php:270 host_templates.php:284
 #: host_templates.php:295 host_templates.php:345 host_templates.php:408
-#: lib/clog_webapi.php:222 lib/html.php:2446 lib/html_reports.php:284
+#: lib/clog_webapi.php:222 lib/html.php:2447 lib/html_reports.php:284
 #: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
-#: managers.php:1004 managers.php:1062 pollers.php:523 pollers.php:532
-#: pollers.php:541 pollers.php:550 sites.php:359 sites.php:369 tree.php:654
-#: tree.php:663 tree.php:672 tree.php:681 user_admin.php:340 user_admin.php:380
-#: user_admin.php:391 user_admin.php:402 user_admin.php:425
+#: managers.php:1004 managers.php:1062 pollers.php:533 pollers.php:542
+#: pollers.php:551 pollers.php:560 pollers.php:569 sites.php:359 sites.php:369
+#: tree.php:654 tree.php:663 tree.php:672 tree.php:681 user_admin.php:340
+#: user_admin.php:380 user_admin.php:391 user_admin.php:402 user_admin.php:425
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:450 user_group_admin.php:469
 #: user_group_admin.php:480 user_group_admin.php:491 vdef.php:270 vdef.php:280
@@ -491,10 +491,10 @@ msgstr "مطابقة الرسوم البيانية"
 #: graph_view.php:600 graphs.php:1961 graphs_new.php:410 host.php:1615
 #: host_templates.php:719 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
-#: lib/clog_webapi.php:574 lib/html.php:220 lib/html_filter.php:63
+#: lib/clog_webapi.php:574 lib/html.php:220 lib/html_filter.php:66
 #: lib/html_graph.php:203 lib/html_reports.php:1501 lib/html_tree.php:131
 #: lib/html_tree.php:1032 links.php:310 managers.php:149 managers.php:493
-#: managers.php:725 plugins.php:347 pollers.php:819 rrdcleaner.php:476
+#: managers.php:725 plugins.php:347 pollers.php:838 rrdcleaner.php:476
 #: settings.php:491 settings.php:510 settings.php:559 sites.php:476
 #: tree.php:818 tree.php:853 tree.php:888 tree.php:1925 user_admin.php:2256
 #: user_admin.php:2591 user_admin.php:2698 user_admin.php:2784
@@ -534,7 +534,7 @@ msgstr "الرسوم"
 #: include/global_form.php:212 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
 #: lib/api_automation.php:1109 lib/html_reports.php:1521 links.php:320
-#: managers.php:159 managers.php:503 plugins.php:371 pollers.php:829
+#: managers.php:159 managers.php:503 plugins.php:371 pollers.php:848
 #: rrdcleaner.php:502 sites.php:486 tree.php:1935 user_admin.php:2266
 #: user_admin.php:2623 user_admin.php:2708 user_admin.php:2812
 #: user_admin.php:2897 user_admin.php:2982 user_admin.php:3067
@@ -563,10 +563,10 @@ msgstr "جزء من التجميع"
 #: graph_view.php:608 graphs.php:1952 graphs_new.php:399 host.php:1605
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
-#: lib/clog_webapi.php:522 lib/html.php:1480 lib/html_filter.php:80
+#: lib/clog_webapi.php:522 lib/html.php:1480 lib/html_filter.php:83
 #: lib/html_graph.php:190 lib/html_reports.php:1532 lib/html_tree.php:1074
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
-#: plugins.php:383 pollers.php:864 sites.php:498 tree.php:1947
+#: plugins.php:383 pollers.php:883 sites.php:498 tree.php:1947
 #: user_admin.php:2278 user_admin.php:2641 user_admin.php:2726
 #: user_admin.php:2830 user_admin.php:2915 user_admin.php:3000
 #: user_admin.php:3085
@@ -581,7 +581,7 @@ msgstr "أذهب"
 #: graph_templates.php:688 graph_view.php:608 graphs.php:1952
 #: graphs_new.php:399 host.php:1605 host_templates.php:747
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
-#: plugins.php:383 pollers.php:864 sites.php:498 tree.php:1947
+#: plugins.php:383 pollers.php:883 sites.php:498 tree.php:1947
 #: user_admin.php:2278 user_admin.php:2641 user_admin.php:2726
 #: user_admin.php:2830 user_admin.php:2915 user_admin.php:3000
 #: user_admin.php:3085 user_domains.php:675 user_group_admin.php:1855
@@ -604,10 +604,10 @@ msgstr "مجموعة / تحديث الفلاتر"
 #: graph_view.php:609 graphs.php:1953 graphs_new.php:400 host.php:1606
 #: host_templates.php:748 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
-#: lib/clog_webapi.php:523 lib/html_filter.php:85 lib/html_graph.php:191
+#: lib/clog_webapi.php:523 lib/html_filter.php:88 lib/html_graph.php:191
 #: lib/html_graph.php:307 lib/html_reports.php:1533 lib/html_tree.php:1075
 #: lib/html_tree.php:1185 links.php:331 managers.php:172 managers.php:516
-#: managers.php:746 plugins.php:384 pollers.php:865 sites.php:499 tree.php:1948
+#: managers.php:746 plugins.php:384 pollers.php:884 sites.php:499 tree.php:1948
 #: user_admin.php:2279 user_admin.php:2642 user_admin.php:2727
 #: user_admin.php:2831 user_admin.php:2916 user_admin.php:3001
 #: user_admin.php:3086 user_domains.php:676
@@ -621,7 +621,7 @@ msgstr "واضح"
 #: graph_templates.php:689 graph_view.php:609 graphs.php:1953
 #: graphs_new.php:400 host.php:1606 host_templates.php:748
 #: lib/html_graph.php:191 lib/html_tree.php:1075 managers.php:172
-#: managers.php:516 managers.php:746 plugins.php:384 pollers.php:865
+#: managers.php:516 managers.php:746 plugins.php:384 pollers.php:884
 #: sites.php:499 tree.php:1948 user_admin.php:2279 user_admin.php:2642
 #: user_admin.php:2727 user_admin.php:2831 user_admin.php:2916
 #: user_admin.php:3001 user_admin.php:3086 user_domains.php:676
@@ -644,7 +644,7 @@ msgstr "عنوان الرسم البياني"
 #: data_debug.php:345 data_input.php:931 data_queries.php:1375
 #: data_sources.php:1603 data_templates.php:1066 graph_templates.php:794
 #: graphs.php:2114 host.php:1673 host_templates.php:834
-#: lib/api_automation.php:282 pollers.php:939 sites.php:572 tree.php:2009
+#: lib/api_automation.php:282 pollers.php:958 sites.php:572 tree.php:2009
 #: user_admin.php:1038 user_admin.php:1152 user_admin.php:1299
 #: user_admin.php:1447 user_admin.php:1588 user_group_admin.php:682
 #: user_group_admin.php:833 user_group_admin.php:980 user_group_admin.php:1123
@@ -932,7 +932,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "لا يمكن إعادة استخدامها لـ٪ d تغييرات كلمة المرور"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1503 lib/functions.php:2417
+#: include/global_form.php:1503 lib/functions.php:2415
 msgid "Change Password"
 msgstr "تغيير كلمة المرور"
 
@@ -947,7 +947,7 @@ msgid "Please enter your new Cacti password."
 msgstr "يرجى إدخال كلمة المرور الحالية والخاصة بك <br> كلمة السر الصبار."
 
 #: auth_changepassword.php:342 auth_login.php:694 auth_login.php:697
-#: include/global_settings.php:1555 lib/functions.php:3953
+#: include/global_settings.php:1555 lib/functions.php:3951
 msgid "Username"
 msgstr "اسم المستخدم"
 
@@ -1052,7 +1052,7 @@ msgstr "تسجيل دخول المستخدم"
 msgid "Enter your Username and Password below"
 msgstr "أدخل اسم المستخدم وكلمة المرور الخاصين بك أدناه"
 
-#: auth_login.php:702 include/global_form.php:1470 lib/functions.php:3954
+#: auth_login.php:702 include/global_form.php:1470 lib/functions.php:3952
 msgid "Password"
 msgstr "كلمة المرور"
 
@@ -1101,18 +1101,18 @@ msgstr "تفاصيل حساب المستخدم"
 
 #: auth_profile.php:296 include/global_arrays.php:765
 #: include/global_settings.php:2330 lib/html.php:1887 lib/html.php:1909
-#: lib/html.php:2406
+#: lib/html.php:2407
 #, fuzzy
 msgid "Tree View"
 msgstr "عرض الشجرة"
 
 #: auth_profile.php:300 include/global_arrays.php:766 lib/html.php:1894
-#: lib/html.php:1918 lib/html.php:2407
+#: lib/html.php:1918 lib/html.php:2408
 msgid "List View"
 msgstr "عرض على شكل قائمة"
 
 #: auth_profile.php:304 include/global_arrays.php:767 lib/html.php:1901
-#: lib/html.php:2408
+#: lib/html.php:2409
 #, fuzzy
 msgid "Preview View"
 msgstr "معاينة العرض"
@@ -1217,7 +1217,7 @@ msgstr "حذف الجهاز (الأجهزة)"
 #: automation_devices.php:409 automation_devices.php:419
 #: automation_devices.php:648 automation_devices.php:649 host.php:1630
 #: lib/api_automation.php:173 lib/api_automation.php:1099
-#: lib/html_utility.php:939 pollers.php:46
+#: lib/html_utility.php:939 pollers.php:47
 msgid "Down"
 msgstr "المرض"
 
@@ -1253,7 +1253,7 @@ msgstr ""
 msgid "Click 'Continue' to add the following Discovered device(s)."
 msgstr "انقر فوق &quot;متابعة&quot; لإضافة الأجهزة (الأجهزة) المكتشفة التالية."
 
-#: automation_devices.php:202 pollers.php:929
+#: automation_devices.php:202 pollers.php:948
 #, fuzzy
 msgid "Pollers"
 msgstr "Pollers"
@@ -1288,7 +1288,7 @@ msgstr "حذف الجهاز (الأجهزة)"
 #: include/global_arrays.php:945 include/global_arrays.php:2160
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
-#: lib/api_automation.php:1211 pollers.php:945 sites.php:573 tree.php:796
+#: lib/api_automation.php:1211 pollers.php:964 sites.php:573 tree.php:796
 #: tree.php:2063 user_admin.php:1291 user_admin.php:2808
 #: user_group_admin.php:972 user_group_admin.php:2287 utilities.php:320
 msgid "Devices"
@@ -1345,7 +1345,7 @@ msgstr "SNMP"
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
 #: lib/html_reports.php:1507 lib/installer.php:1769 managers.php:218
-#: plugins.php:353 plugins.php:459 pollers.php:941 user_admin.php:1299
+#: plugins.php:353 plugins.php:459 pollers.php:960 user_admin.php:1299
 #: user_group_admin.php:980
 msgid "Status"
 msgstr "الحالة"
@@ -1403,8 +1403,8 @@ msgstr "أجهزة تطهير اكتشفت"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1753
-#: lib/functions.php:4324 lib/functions.php:4328 lib/html.php:1179
-#: pollers.php:994 user_admin.php:2342 utilities.php:511 utilities.php:953
+#: lib/functions.php:4322 lib/functions.php:4326 lib/html.php:1179
+#: pollers.php:1013 user_admin.php:2342 utilities.php:511 utilities.php:953
 #: utilities.php:2284 utilities.php:2381 utilities.php:2389 utilities.php:2392
 #: utilities.php:2395 utilities.php:2401 utilities.php:2631
 msgid "N/A"
@@ -1565,9 +1565,9 @@ msgstr "مفعل"
 #: include/global_settings.php:1399 include/global_settings.php:1411
 #: include/global_settings.php:1436 include/global_settings.php:1450
 #: include/global_settings.php:1510 include/global_settings.php:2155
-#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2472
+#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2473
 #: lib/html_reports.php:1513 lib/html_reports.php:1651 lib/html_utility.php:935
-#: links.php:500 managers.php:243 managers.php:598 pollers.php:47
+#: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1164 user_domains.php:411 user_group_admin.php:697
 #: utilities.php:2416
 msgid "Disabled"
@@ -1726,7 +1726,7 @@ msgstr "الاعدادات العامة"
 #: include/global_form.php:2028 include/global_form.php:2126
 #: include/global_form.php:2171 lib/installer.php:1769 lib/installer.php:1835
 #: lib/installer.php:1865 lib/installer.php:2445 lib/installer.php:2524
-#: lib/vdef.php:74 managers.php:562 pollers.php:60 sites.php:41
+#: lib/vdef.php:74 managers.php:562 pollers.php:61 sites.php:41
 #: user_admin.php:1152 user_domains.php:326 utilities.php:637
 #: utilities.php:2611
 msgid "Name"
@@ -1844,7 +1844,7 @@ msgid "After the selected Run Limit, the discovery process will be terminated."
 msgstr "بعد &quot;حد التشغيل&quot; المحدد ، سيتم إنهاء عملية الاكتشاف."
 
 #: automation_networks.php:523 automation_networks.php:1214
-#: include/global_arrays.php:681 pollers.php:851
+#: include/global_arrays.php:681 pollers.php:870
 #, fuzzy, php-format
 msgid "%d Minute"
 msgstr "٪ d دقيقة"
@@ -1866,7 +1866,7 @@ msgstr "٪ d دقيقة"
 #: include/global_arrays.php:1491 include/global_settings.php:1452
 #: include/global_settings.php:1453 include/global_settings.php:1454
 #: include/global_settings.php:1455 include/global_settings.php:1456
-#: include/global_settings.php:2257 pollers.php:852 pollers.php:853
+#: include/global_settings.php:2257 pollers.php:871 pollers.php:872
 #, fuzzy, php-format
 msgid "%d Minutes"
 msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/> دقيقة (دقائق)"
@@ -2306,7 +2306,7 @@ msgstr "مؤشر التقدم"
 msgid "Up/SNMP Hosts"
 msgstr "Up / SNMP Hosts"
 
-#: automation_networks.php:1081 pollers.php:108
+#: automation_networks.php:1081 pollers.php:109
 msgid "Threads"
 msgstr "مواضيع"
 
@@ -2325,11 +2325,11 @@ msgstr "البدء التالي"
 msgid "Last Started"
 msgstr "بدأت في الماضي"
 
-#: automation_networks.php:1113 pollers.php:44 utilities.php:2221
+#: automation_networks.php:1113 pollers.php:45 utilities.php:2221
 msgid "Running"
 msgstr "مفتوح"
 
-#: automation_networks.php:1137 pollers.php:45 utilities.php:2220
+#: automation_networks.php:1137 pollers.php:46 utilities.php:2220
 msgid "Idle"
 msgstr "عاطل"
 
@@ -2345,7 +2345,7 @@ msgstr "لم يتم العثور على شبكات"
 
 #: automation_networks.php:1204 data_debug.php:1028 lib/clog_webapi.php:554
 #: lib/html_graph.php:306 lib/html_tree.php:1184 lib/html_tree.php:1205
-#: pollers.php:840 utilities.php:1237 utilities.php:2171
+#: pollers.php:859 utilities.php:1237 utilities.php:2171
 msgid "Refresh"
 msgstr "تحديث"
 
@@ -2366,8 +2366,8 @@ msgstr "تحديث"
 #: include/global_settings.php:1123 include/global_settings.php:1124
 #: include/global_settings.php:1125 include/global_settings.php:2253
 #: include/global_settings.php:2254 include/global_settings.php:2255
-#: pollers.php:846 pollers.php:847 pollers.php:848 pollers.php:849
-#: pollers.php:850
+#: pollers.php:865 pollers.php:866 pollers.php:867 pollers.php:868
+#: pollers.php:869
 #, fuzzy, php-format
 msgid "%d Seconds"
 msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/> ثواني"
@@ -2489,7 +2489,7 @@ msgstr "الإصدار"
 msgid "Community"
 msgstr "القرية/ الحي/ البلدة"
 
-#: automation_snmp.php:536 lib/functions.php:3949
+#: automation_snmp.php:536 lib/functions.php:3947
 msgid "Port"
 msgstr "منفذ"
 
@@ -3354,32 +3354,32 @@ msgstr "تشغيل الاختيار"
 msgid "Delete Check"
 msgstr "حذف الشيك"
 
-#: data_debug.php:50
+#: data_debug.php:52
 #, fuzzy
 msgid "Data Source debug started."
 msgstr "تصحيح مصدر البيانات"
 
-#: data_debug.php:53
+#: data_debug.php:55
 #, fuzzy
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "تلقى تصحيح مصدر البيانات معرف مصدر بيانات غير صالح."
 
-#: data_debug.php:62
+#: data_debug.php:64
 #, fuzzy
 msgid "All RRDfile repairs succeeded."
 msgstr "نجحت جميع الإصلاحات RRDfile."
 
-#: data_debug.php:64
+#: data_debug.php:66
 #, fuzzy
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "فشل واحد أو أكثر من الإصلاحات RRDfile. انظر سجل Cacti عن الأخطاء."
 
-#: data_debug.php:72
+#: data_debug.php:74
 #, fuzzy
 msgid "Automatic Data Source debug being rerun after repair."
 msgstr "تصحيح مصدر البيانات التلقائي يتم إعادة تشغيل بعد الإصلاح."
 
-#: data_debug.php:76
+#: data_debug.php:78
 #, fuzzy
 msgid "Data Source repair received an invalid Data Source ID."
 msgstr "تلقى إصلاح مصدر البيانات معرف مصدر بيانات غير صالح."
@@ -4035,7 +4035,7 @@ msgstr "القيمة المقترحة"
 
 #: data_queries.php:833 data_queries.php:934 host.php:795 host.php:938
 #: host_templates.php:535 host_templates.php:589 lib/html.php:62
-#: lib/html_filter.php:55
+#: lib/html_filter.php:58
 msgid "Add"
 msgstr "إضافة"
 
@@ -4272,7 +4272,7 @@ msgid "Steps"
 msgstr "خطوات"
 
 #: data_source_profiles.php:613 graphs_new.php:416 include/global_form.php:254
-#: lib/html.php:493 lib/html_filter.php:72 lib/installer.php:2524
+#: lib/html.php:493 lib/html_filter.php:55 lib/installer.php:2524
 #: lib/rrd.php:2964 utilities.php:639 utilities.php:1552
 msgid "Rows"
 msgstr "الصفوف"
@@ -4418,7 +4418,7 @@ msgid "The Polling Frequency for the Profile"
 msgstr "وتيرة الاستطلاع للتوصيف"
 
 #: data_source_profiles.php:1041 include/global_form.php:188
-#: include/global_form.php:608 pollers.php:49
+#: include/global_form.php:608 pollers.php:50
 msgid "Heartbeat"
 msgstr "نبضة قلب"
 
@@ -4678,7 +4678,7 @@ msgstr "الاسم المعطى لقالب البيانات هذا. يرجى م�
 #: data_sources.php:916 graph_view.php:721 graphs.php:1520
 #: include/global_arrays.php:854 include/global_arrays.php:903
 #: include/global_arrays.php:1713 lib/api_automation.php:425
-#: lib/functions.php:3948 lib/html.php:2001 lib/html.php:2033
+#: lib/functions.php:3946 lib/html.php:2001 lib/html.php:2033
 #: lib/html_reports.php:633 utilities.php:1643
 msgid "Device"
 msgstr "جهاز"
@@ -5062,7 +5062,7 @@ msgstr "تصديرCSV"
 msgid "Click to view just this Graph in Real-time"
 msgstr "انقر لعرض هذا الرسم البياني في الوقت الفعلي"
 
-#: graph.php:246 lib/html.php:2403
+#: graph.php:246 lib/html.php:2404
 #, fuzzy
 msgid "Utility View"
 msgstr "عرض الأداة المساعدة"
@@ -5434,7 +5434,7 @@ msgstr "بوضع المعاينة"
 msgid "Add Selected Graphs to Report"
 msgstr "إضافة الرسوم البيانية المحددة لتقرير"
 
-#: graph_view.php:934 lib/html.php:2444
+#: graph_view.php:934 lib/html.php:2445
 msgid "Ok"
 msgstr "أوك"
 
@@ -5797,7 +5797,7 @@ msgstr "رسومات بيانية جديدة لـ [جميع الأجهزة]"
 msgid "New Graphs for None Host Type"
 msgstr "رسومات بيانية جديدة لـ None Host Type"
 
-#: graphs_new.php:337 lib/html.php:2401
+#: graphs_new.php:337 lib/html.php:2402
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "تصفية الإعدادات المحفوظة"
@@ -5897,7 +5897,7 @@ msgstr "تعين كافتراضي"
 msgid "Change Device Settings"
 msgstr "تغيير إعدادات الجهاز"
 
-#: host.php:44
+#: host.php:44 pollers.php:36
 #, fuzzy
 msgid "Clear Statistics"
 msgstr "مسح الاحصائيات"
@@ -6118,7 +6118,7 @@ msgstr "إضافة قالب الرسم البياني إلى الجهاز"
 msgid "Data Query Debug Information"
 msgstr "بيانات تصحيح الاستعلام عن البيانات"
 
-#: host.php:815 lib/functions.php:2989 tree.php:1517 tree.php:1591
+#: host.php:815 lib/functions.php:2987 tree.php:1517 tree.php:1591
 #: tree.php:1699 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "نسخ"
@@ -6160,7 +6160,7 @@ msgstr "[٪ d عناصر ،٪ d صفوف]"
 msgid "Fail"
 msgstr "فشل"
 
-#: host.php:899 lib/functions.php:3963 lib/functions.php:3968
+#: host.php:899 lib/functions.php:3961 lib/functions.php:3966
 msgid "Success"
 msgstr "نجاح"
 
@@ -6242,7 +6242,7 @@ msgid "Not Up"
 msgstr "لا يصل"
 
 #: host.php:1631 lib/api_automation.php:174 lib/api_automation.php:1100
-#: lib/html_utility.php:942 pollers.php:48
+#: lib/html_utility.php:942 pollers.php:49
 msgid "Recovering"
 msgstr "يستردّ"
 
@@ -6266,7 +6266,7 @@ msgstr "الاسم الذي سيشار إليه بهذا الجهاز."
 #: host.php:1667 include/global_form.php:1137 include/global_form.php:1674
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
-#: pollers.php:129 pollers.php:940 user_admin.php:1299 user_group_admin.php:980
+#: pollers.php:130 pollers.php:959 user_admin.php:1299 user_group_admin.php:980
 msgid "Hostname"
 msgstr "اسم الخادم"
 
@@ -6506,17 +6506,17 @@ msgstr "FATAL: يجب تسجيل الدخول للوصول إلى هذه الم�
 msgid "Login Again"
 msgstr "تسجيل الدخول مرة أخرى"
 
-#: include/auth.php:294 lib/functions.php:5537 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:5535 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "تم رفض الإذن"
 
-#: include/auth.php:295 lib/functions.php:5538 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5536 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "إذا كنت تشعر أن هذا خطأ. يرجى الاتصال بمدير Cacti."
 
-#: include/auth.php:295 lib/functions.php:5538 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5536 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "لا يسمح لك بالوصول إلى هذا القسم من Cacti."
@@ -7064,7 +7064,7 @@ msgstr "يمين"
 msgid "Justified"
 msgstr "ضبط"
 
-#: include/global_arrays.php:529 lib/html.php:2470
+#: include/global_arrays.php:529 lib/html.php:2471
 msgid "Center"
 msgstr "وسط"
 
@@ -7348,7 +7348,7 @@ msgstr "رأس"
 
 #: include/global_arrays.php:853 include/global_arrays.php:904
 #: include/global_arrays.php:1544 include/global_arrays.php:1712
-#: lib/html.php:2459
+#: lib/html.php:2460
 msgid "Graph"
 msgstr "الرسم البياني"
 
@@ -7464,7 +7464,7 @@ msgstr "الأشجار"
 msgid "Data Collection"
 msgstr "جمع البيانات"
 
-#: include/global_arrays.php:898 include/global_arrays.php:948 pollers.php:810
+#: include/global_arrays.php:898 include/global_arrays.php:948 pollers.php:829
 #, fuzzy
 msgid "Data Collectors"
 msgstr "جامعي البيانات"
@@ -7489,7 +7489,7 @@ msgid "Device Rules"
 msgstr "قواعد الجهاز"
 
 #: include/global_arrays.php:917 include/global_arrays.php:966
-#: include/global_arrays.php:1105 lib/html_filter.php:177
+#: include/global_arrays.php:1105 lib/html_filter.php:183
 #: lib/html_graph.php:252 lib/html_tree.php:1130
 msgid "Presets"
 msgstr "إعدادات مسبقة"
@@ -7527,7 +7527,7 @@ msgid "Configuration"
 msgstr "التكوين"
 
 #: include/global_arrays.php:929 include/global_arrays.php:951
-#: lib/html.php:2197 lib/html.php:2474
+#: lib/html.php:2197 lib/html.php:2475
 msgid "Settings"
 msgstr "إعدادات"
 
@@ -8517,7 +8517,7 @@ msgid "List Mode"
 msgstr "وضع قائمة"
 
 #: include/global_arrays.php:1920 include/global_arrays.php:1926
-#: lib/functions.php:2622 lib/html.php:1632 lib/html.php:1709 links.php:344
+#: lib/functions.php:2620 lib/html.php:1632 lib/html.php:1709 links.php:344
 #: user_admin.php:1704 user_group_admin.php:1380
 msgid "Console"
 msgstr "وحدة التحكم"
@@ -9831,7 +9831,7 @@ msgstr "نوع حزمة ping لإرسالها. <br> <i>ملاحظة: يتطلب 
 msgid "Additional Options"
 msgstr "خيارات إضافية"
 
-#: include/global_form.php:1257 include/global_form.php:1717 pollers.php:87
+#: include/global_form.php:1257 include/global_form.php:1717 pollers.php:88
 #: sites.php:156
 msgid "Notes"
 msgstr "الملاحظات"
@@ -10418,7 +10418,7 @@ msgstr "بيانات"
 msgid "Visual"
 msgstr "بصري، يتعلق بالرؤية. إبصاري – شخص بصري الفطانة"
 
-#: include/global_settings.php:44 lib/functions.php:3952 lib/functions.php:3957
+#: include/global_settings.php:44 lib/functions.php:3950 lib/functions.php:3955
 msgid "Authentication"
 msgstr "المصادقة"
 
@@ -10460,12 +10460,12 @@ msgstr "خطوط الرسم البياني"
 msgid "PHP Mail() Function"
 msgstr "وظيفة PHP Mail ()"
 
-#: include/global_settings.php:91 lib/functions.php:3935
+#: include/global_settings.php:91 lib/functions.php:3933
 #, fuzzy
 msgid "Sendmail"
 msgstr "ارسل بريد"
 
-#: include/global_settings.php:92 lib/functions.php:3940
+#: include/global_settings.php:92 lib/functions.php:3938
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10888,7 +10888,7 @@ msgstr "في حالة التعيين على Simple ، لا يمكن إنشاء �
 msgid "Simple"
 msgstr "منتج بسيط"
 
-#: include/global_settings.php:439 lib/html.php:2461
+#: include/global_settings.php:439 lib/html.php:2462
 msgid "Advanced"
 msgstr "المتقدمة"
 
@@ -12385,7 +12385,7 @@ msgstr "هذا هو عدد الأحرف المسموح بها قبل أن يتم
 msgid "Sendmail Options"
 msgstr "خيارات Sendmail"
 
-#: include/global_settings.php:1674 lib/functions.php:3935
+#: include/global_settings.php:1674 lib/functions.php:3933
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "مسار Sendmail"
@@ -13707,8 +13707,8 @@ msgstr "موقعك:"
 msgid "Contact:"
 msgstr "بيانتت اتصال"
 
-#: lib/api_device.php:1188 lib/functions.php:3966 lib/functions.php:3968
-#: lib/functions.php:3972
+#: lib/api_device.php:1188 lib/functions.php:3964 lib/functions.php:3966
+#: lib/functions.php:3970
 #, fuzzy
 msgid "Ping Results"
 msgstr "نتائج بينغ"
@@ -14265,12 +14265,12 @@ msgstr "يجب تحديد عمود إخراج XML لمصدر البيانات '�
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr "لا يحتوي قالب الرسم البياني على قوالب بيانات قيد الاستخدام. يرجى تصحيح قالب الرسم البياني الخاص بك"
 
-#: lib/database.php:1587
+#: lib/database.php:1540
 #, fuzzy
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr "فشل في تحديد طول حقل كلمة المرور ، لا يمكن الاستمرار كما قد تلف كلمة المرور"
 
-#: lib/database.php:1593
+#: lib/database.php:1546
 #, fuzzy
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr "فشل في تعديل طول حقل كلمة المرور ، لا يمكن الاستمرار كما قد تلف كلمة المرور"
@@ -14330,185 +14330,185 @@ msgstr "لم يتم استقصاء مصدر البيانات"
 msgid "No issues found"
 msgstr "لم يتم العثور على اى مشكلات"
 
-#: lib/functions.php:641 lib/functions.php:726
+#: lib/functions.php:639 lib/functions.php:724
 #, fuzzy
 msgid "Message Not Found."
 msgstr "الرسالة غير موجودة."
 
-#: lib/functions.php:1035
+#: lib/functions.php:1033
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "الخطأ٪ s غير قابل للقراءة"
 
-#: lib/functions.php:2400 lib/functions.php:2411
+#: lib/functions.php:2398 lib/functions.php:2409
 msgid "Logged in as"
 msgstr "مسجل الدخول بإسم"
 
-#: lib/functions.php:2400
+#: lib/functions.php:2398
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "تسجيل الدخول كمستخدم عادي"
 
-#: lib/functions.php:2400
+#: lib/functions.php:2398
 msgid "guest"
 msgstr "زائر"
 
-#: lib/functions.php:2402 lib/functions.php:2419 lib/html.php:2411
+#: lib/functions.php:2400 lib/functions.php:2417 lib/html.php:2412
 #, fuzzy
 msgid "User Community"
 msgstr "مجتمع المستخدم"
 
-#: lib/functions.php:2403 lib/functions.php:2420 lib/html.php:2412
+#: lib/functions.php:2401 lib/functions.php:2418 lib/html.php:2413
 #: lib/utility.php:1129
 msgid "Documentation"
 msgstr "الوثائق"
 
-#: lib/functions.php:2414
+#: lib/functions.php:2412
 #, php-format
 msgid "Logged in as %s"
 msgstr "مسجل دخول كـ  <ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/>"
 
-#: lib/functions.php:2416
+#: lib/functions.php:2414
 msgid "Edit Profile"
 msgstr "تحرير الملف الشخصي"
 
-#: lib/functions.php:2422
+#: lib/functions.php:2420
 msgid "Logout"
 msgstr "تسجيل خروج"
 
-#: lib/functions.php:2570
+#: lib/functions.php:2568
 msgid "Leaf"
 msgstr "ورقة"
 
-#: lib/functions.php:2590 lib/html_tree.php:713 lib/html_tree.php:749
+#: lib/functions.php:2588 lib/html_tree.php:713 lib/html_tree.php:749
 #: lib/html_tree.php:978 lib/html_tree.php:986 lib/html_tree.php:1559
 #, fuzzy
 msgid "Non Query Based"
 msgstr "غير الاستفسار القائمة"
 
-#: lib/functions.php:2623
+#: lib/functions.php:2621
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "الرابط٪ s"
 
-#: lib/functions.php:3567
+#: lib/functions.php:3565
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "ميلر خطأ: لا <b>لمعالجة</b> وضع !! <br> إذا كنت تستخدم رابط <i>اختبار البريد</i> ، فيرجى ضبط إعداد <b>البريد الإلكتروني التنبيه</b> ."
 
-#: lib/functions.php:3899
+#: lib/functions.php:3897
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "فشل المصادقة:٪ s"
 
-#: lib/functions.php:3903
+#: lib/functions.php:3901
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "فشلت HELO:٪ s"
 
-#: lib/functions.php:3906
+#: lib/functions.php:3904
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "فشل الاتصال:٪ s"
 
-#: lib/functions.php:3909
+#: lib/functions.php:3907
 #, fuzzy
 msgid "SMTP error: "
 msgstr "خطأ SMTP:"
 
-#: lib/functions.php:3922
+#: lib/functions.php:3920
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "هذه رسالة اختبار تم إنشاؤها من Cacti. تم إرسال هذه الرسالة لاختبار تهيئة إعدادات البريد الخاصة بك."
 
-#: lib/functions.php:3923
+#: lib/functions.php:3921
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "يتم ضبط إعدادات بريدك الإلكتروني حاليًا على النحو التالي"
 
-#: lib/functions.php:3924
+#: lib/functions.php:3922
 msgid "Method"
 msgstr "طريقة"
 
-#: lib/functions.php:3926
+#: lib/functions.php:3924
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "التحقق من التكوين ... <br>"
 
-#: lib/functions.php:3933
+#: lib/functions.php:3931
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP&#39;s Mailer Class"
 
-#: lib/functions.php:3939
+#: lib/functions.php:3937
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "الطريقة: SMTP"
 
-#: lib/functions.php:3954
+#: lib/functions.php:3952
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "غير معروض لأسباب أمنية"
 
-#: lib/functions.php:3955
+#: lib/functions.php:3953
 msgid "Security"
 msgstr "الأمان"
 
-#: lib/functions.php:3963
+#: lib/functions.php:3961
 #, fuzzy
 msgid "Ping Results:"
 msgstr "نتائج بينغ:"
 
-#: lib/functions.php:3972
+#: lib/functions.php:3970
 #, fuzzy
 msgid "Bypassed"
 msgstr "تجاوز"
 
-#: lib/functions.php:3980
+#: lib/functions.php:3978
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "إنشاء نص الرسالة ..."
 
-#: lib/functions.php:3983
+#: lib/functions.php:3981
 msgid "Sending Message..."
 msgstr "إرسال رسالة …"
 
-#: lib/functions.php:3987
+#: lib/functions.php:3985
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "رسالة اختبار الصبار"
 
-#: lib/functions.php:3989
+#: lib/functions.php:3987
 msgid "Success!"
 msgstr "نجح!"
 
-#: lib/functions.php:3992
+#: lib/functions.php:3990
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "رسالة غير مرسلة بسبب فشل اختبار الاتصال."
 
-#: lib/functions.php:4586 lib/functions.php:4649 poller.php:356 poller.php:477
+#: lib/functions.php:4584 lib/functions.php:4647 poller.php:356 poller.php:477
 #: poller.php:539 poller.php:562 poller.php:702
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "تحذير نظام الصبار"
 
-#: lib/functions.php:4586 lib/functions.php:4649
+#: lib/functions.php:4584 lib/functions.php:4647
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "تم تعطيل المكون الإضافي لـ Cacti٪ s بسبب الخطأ التالي:٪ s! انظر ملف السجل Cacti لمزيد من التفاصيل."
 
-#: lib/functions.php:5027 lib/functions.php:5029
+#: lib/functions.php:5025 lib/functions.php:5027
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "-٪ s بيتا"
 
-#: lib/functions.php:5027
+#: lib/functions.php:5025
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "الإصدار٪ s٪ s"
 
-#: lib/functions.php:5029
+#: lib/functions.php:5027
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -14546,7 +14546,7 @@ msgstr "استعلام البيانات:"
 msgid "CSV Export of Graph Data"
 msgstr "CSV تصدير بيانات الرسم البياني"
 
-#: lib/html.php:437 lib/html.php:2400
+#: lib/html.php:437 lib/html.php:2401
 #, fuzzy
 msgid "Time Graph View"
 msgstr "عرض الرسم البياني الزمني"
@@ -14668,286 +14668,286 @@ msgstr "جاف المدى الفجوة ملء المدى"
 msgid "Dry Run Float Range"
 msgstr "المدى الجاف تعويم المدى"
 
-#: lib/html.php:2396
+#: lib/html.php:2397
 #, fuzzy
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
 msgstr "السماح أو الحد من أعمدة الجدول لتتجاوز حدود النوافذ الحالية."
 
-#: lib/html.php:2397 lib/html_filter.php:65
+#: lib/html.php:2398 lib/html_filter.php:68
 #, fuzzy
 msgid "Enter a search term"
 msgstr "أدخل مصطلح البحث"
 
-#: lib/html.php:2398
+#: lib/html.php:2399
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "أدخل تعبيرًا عاديًا"
 
-#: lib/html.php:2399
+#: lib/html.php:2400
 msgid "No file selected"
 msgstr "لم يتم تحديد الملف"
 
-#: lib/html.php:2402 lib/html.php:2415
+#: lib/html.php:2403 lib/html.php:2416
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "SpikeKill النتائج"
 
-#: lib/html.php:2404
+#: lib/html.php:2405
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "انقر لعرض هذا الرسم البياني في الوقت الفعلي"
 
-#: lib/html.php:2405
+#: lib/html.php:2406
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "انقر مرة أخرى لأخراج هذا الرسم البياني من الوقت الفعلي"
 
-#: lib/html.php:2409
+#: lib/html.php:2410
 #, fuzzy
 msgid "Cacti Home"
 msgstr "كاكتي هوم"
 
-#: lib/html.php:2410
+#: lib/html.php:2411
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "صفحة مشروع الصبار"
 
-#: lib/html.php:2413
+#: lib/html.php:2414
 msgid "Report a bug"
 msgstr "الإبلاغ عن خطأ"
 
-#: lib/html.php:2416
+#: lib/html.php:2417
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "انقر لعرض / إخفاء التصفية"
 
-#: lib/html.php:2417
+#: lib/html.php:2418
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "مسح التصفية الحالية"
 
-#: lib/html.php:2418
+#: lib/html.php:2419
 msgid "Clipboard"
 msgstr "حافظة"
 
-#: lib/html.php:2419
+#: lib/html.php:2420
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "معرف الحافظة"
 
-#: lib/html.php:2420
+#: lib/html.php:2421
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "عملية النسخ غير متوفرة في هذا الوقت"
 
-#: lib/html.php:2421
+#: lib/html.php:2422
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "تعذّر العثور على البيانات لنسخها!"
 
-#: lib/html.php:2422
+#: lib/html.php:2423
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "تم تحديث الحافظة"
 
-#: lib/html.php:2423
+#: lib/html.php:2424
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "عذرًا ، لا يمكن تحديث الحافظة الخاصة بك في هذا الوقت"
 
-#: lib/html.php:2427
+#: lib/html.php:2428
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "يصل طول كلمة المرور إلى 8 أحرف كحد أدنى"
 
-#: lib/html.php:2428
+#: lib/html.php:2429
 msgid "Passphrase too short"
 msgstr "عبارة المرور قصيرة جدًا"
 
-#: lib/html.php:2429
+#: lib/html.php:2430
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "عبارة المرور تتطابق ولكنها قصيرة جدًا"
 
-#: lib/html.php:2430
+#: lib/html.php:2431
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "عبارة المرور قصيرة جدًا وغير متطابقة"
 
-#: lib/html.php:2431
+#: lib/html.php:2432
 #, fuzzy
 msgid "Passphrases match"
 msgstr "مطابقة عبارات المرور"
 
-#: lib/html.php:2432
+#: lib/html.php:2433
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "عبارات المرور غير متطابقة"
 
-#: lib/html.php:2433
+#: lib/html.php:2434
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "عذرًا ، لم نتمكن من معالجة الإجراء الأخير."
 
-#: lib/html.php:2434
+#: lib/html.php:2435
 msgid "Error:"
 msgstr "خطأ:"
 
-#: lib/html.php:2435
+#: lib/html.php:2436
 msgid "Reason:"
 msgstr "السبب:"
 
-#: lib/html.php:2436
+#: lib/html.php:2437
 #, fuzzy
 msgid "Action failed"
 msgstr "العمل: فشل"
 
-#: lib/html.php:2437 pollers.php:754
+#: lib/html.php:2438 pollers.php:773
 #, fuzzy
 msgid "Connection Successful"
 msgstr "تمت العملية بنجاح"
 
-#: lib/html.php:2438 pollers.php:756
+#: lib/html.php:2439 pollers.php:775
 msgid "Connection Failed"
 msgstr "فشل الاتصال"
 
-#: lib/html.php:2439
+#: lib/html.php:2440
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "كانت الاستجابة للإجراء الأخير غير متوقعة."
 
-#: lib/html.php:2440
+#: lib/html.php:2441
 msgid "Some Actions failed"
 msgstr "فشل بعض الإجراءات"
 
-#: lib/html.php:2441
+#: lib/html.php:2442
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "لاحظ أننا لم نتمكن من معالجة جميع إجراءاتك. التفاصيل أدناه."
 
-#: lib/html.php:2442
+#: lib/html.php:2443
 msgid "Operation successful"
 msgstr "تمت العملية بنجاح"
 
-#: lib/html.php:2443
+#: lib/html.php:2444
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "كانت العملية ناجحة. التفاصيل أدناه."
 
-#: lib/html.php:2445
+#: lib/html.php:2446
 msgid "Pause"
 msgstr "توقف"
 
-#: lib/html.php:2448
+#: lib/html.php:2449
 msgid "Zoom In"
 msgstr "تصغير"
 
-#: lib/html.php:2449
+#: lib/html.php:2450
 msgid "Zoom Out"
 msgstr "تصغير"
 
-#: lib/html.php:2450
+#: lib/html.php:2451
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "Zoom Out Factor"
 
-#: lib/html.php:2451
+#: lib/html.php:2452
 msgid "Timestamps"
 msgstr "ختم زمني"
 
-#: lib/html.php:2452
+#: lib/html.php:2453
 msgid "2x"
 msgstr "2X"
 
-#: lib/html.php:2453
+#: lib/html.php:2454
 msgid "4x"
 msgstr "4X"
 
-#: lib/html.php:2454
+#: lib/html.php:2455
 #, fuzzy
 msgid "8x"
 msgstr "8X"
 
-#: lib/html.php:2455
+#: lib/html.php:2456
 #, fuzzy
 msgid "16x"
 msgstr "16X"
 
-#: lib/html.php:2456
+#: lib/html.php:2457
 #, fuzzy
 msgid "32x"
 msgstr "32X"
 
-#: lib/html.php:2457
+#: lib/html.php:2458
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "تكبير المواقع"
 
-#: lib/html.php:2458
+#: lib/html.php:2459
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "وضع التكبير"
 
-#: lib/html.php:2460
+#: lib/html.php:2461
 msgid "Quick"
 msgstr "سريع. حي. حبلى"
 
-#: lib/html.php:2462
+#: lib/html.php:2463
 msgid "Open in new tab"
 msgstr "فتح في علامة تبويب جديدة"
 
-#: lib/html.php:2463
+#: lib/html.php:2464
 #, fuzzy
 msgid "Save graph"
 msgstr "حفظ الرسم البياني"
 
-#: lib/html.php:2464
+#: lib/html.php:2465
 #, fuzzy
 msgid "Copy graph"
 msgstr "نسخ الرسم البياني"
 
-#: lib/html.php:2465
+#: lib/html.php:2466
 #, fuzzy
 msgid "Copy graph link"
 msgstr "نسخ الرابط الرسم البياني"
 
-#: lib/html.php:2466
+#: lib/html.php:2467
 msgid "Always On"
 msgstr "يعمل دائماً"
 
-#: lib/html.php:2467
+#: lib/html.php:2468
 msgid "Auto"
 msgstr "تلقاءي"
 
-#: lib/html.php:2468
+#: lib/html.php:2469
 #, fuzzy
 msgid "Always Off"
 msgstr "دائما خارج"
 
-#: lib/html.php:2469
+#: lib/html.php:2470
 #, fuzzy
 msgid "Begin with"
 msgstr "إبتدئ ب"
 
-#: lib/html.php:2471
+#: lib/html.php:2472
 #, fuzzy
 msgid "End with"
 msgstr "تاريخ النهاية"
 
-#: lib/html.php:2473 lib/html_form.php:1303
+#: lib/html.php:2474 lib/html_form.php:1303
 msgid "Close"
 msgstr "إغلاق"
 
-#: lib/html.php:2475
+#: lib/html.php:2476
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "زر الماوس الثالث"
 
-#: lib/html_filter.php:81
+#: lib/html_filter.php:84
 #, fuzzy
 msgid "Apply filter to table"
 msgstr "تطبيق مرشح لجدول"
 
-#: lib/html_filter.php:86
+#: lib/html_filter.php:89
 #, fuzzy
 msgid "Reset filter to default values"
 msgstr "إعادة تعيين عامل التصفية إلى القيم الافتراضية"
@@ -15976,7 +15976,7 @@ msgstr "في Windows ، يجب أن تتبع الإرشادات الواردة �
 msgid "Then run the following within MySQL as an administrator:"
 msgstr "ثم قم بتشغيل ما يلي داخل MySQL كمسؤول:"
 
-#: lib/installer.php:1516 pollers.php:637
+#: lib/installer.php:1516 pollers.php:656
 msgid "Test Connection"
 msgstr "اختبار الاتصال"
 
@@ -18285,185 +18285,190 @@ msgstr "Cacti Primary Admin"
 msgid "Cacti Automation Report requires an html based Email client"
 msgstr "يتطلب تقرير Cacti Automation عميل بريد إلكتروني يستند إلى html"
 
-#: pollers.php:39
+#: pollers.php:40
 #, fuzzy
 msgid "Full Sync"
 msgstr "مزامنة كاملة"
 
-#: pollers.php:43
+#: pollers.php:44
 #, fuzzy
 msgid "New/Idle"
 msgstr "جديد / الخمول"
 
-#: pollers.php:56
+#: pollers.php:57
 #, fuzzy
 msgid "Data Collector Information"
 msgstr "بيانات جامع البيانات"
 
-#: pollers.php:61
+#: pollers.php:62
 #, fuzzy
 msgid "The primary name for this Data Collector."
 msgstr "الاسم الأساسي لمجمع البيانات هذا."
 
-#: pollers.php:64
+#: pollers.php:65
 #, fuzzy
 msgid "New Data Collector"
 msgstr "جامع البيانات الجديد"
 
-#: pollers.php:69
+#: pollers.php:70
 #, fuzzy
 msgid "Data Collector Hostname"
 msgstr "اسم مضيف البيانات"
 
-#: pollers.php:70
+#: pollers.php:71
 #, fuzzy
 msgid "The hostname for Data Collector.  It may have to be a Fully Qualified Domain name for the remote Pollers to contact it for activities such as re-indexing, Real-time graphing, etc."
 msgstr "اسم المضيف لمجمع البيانات. قد يكون من الضروري أن يكون اسم نطاق مؤهل بالكامل لملامسات الاستقصاء عن بُعد للاتصال به من أجل أنشطة مثل إعادة الفهرسة ، الرسوم البيانية في الوقت الفعلي ، إلخ."
 
-#: pollers.php:78 sites.php:109
+#: pollers.php:79 sites.php:109
 #, fuzzy
 msgid "TimeZone"
 msgstr "وحدة زمنية"
 
-#: pollers.php:79
+#: pollers.php:80
 #, fuzzy
 msgid "The TimeZone for the Data Collector."
 msgstr "The TimeZone لمجمع البيانات."
 
-#: pollers.php:88
+#: pollers.php:89
 #, fuzzy
 msgid "Notes for this Data Collectors Database."
 msgstr "ملاحظات لقاعدة بيانات جامعي البيانات هذه."
 
-#: pollers.php:95
+#: pollers.php:96
 msgid "Collection Settings"
 msgstr "إعدادات التجميعة"
 
-#: pollers.php:99
+#: pollers.php:100
 msgid "Processes"
 msgstr "العمليات"
 
-#: pollers.php:100
+#: pollers.php:101
 #, fuzzy
 msgid "The number of Data Collector processes to use to spawn."
 msgstr "عدد عمليات تجميع البيانات لاستخدامها في إنتاجها."
 
-#: pollers.php:109
+#: pollers.php:110
 #, fuzzy
 msgid "The number of Spine Threads to use per Data Collector process."
 msgstr "عدد مؤشرات نهاية العمود الفقري لاستخدامها في عملية تجميع البيانات."
 
-#: pollers.php:117
+#: pollers.php:118
 #, fuzzy
 msgid "Sync Interval"
 msgstr "فترة المزامنة"
 
-#: pollers.php:118
+#: pollers.php:119
 #, fuzzy
 msgid "The polling sync interval in use.  This setting will affect how often this poller is checked and updated."
 msgstr "الفاصل الزمني لمزامنة الاستقصاء قيد الاستخدام. سيؤثر هذا الإعداد على عدد المرات التي يتم فيها فحص هذا الاستقصاء وتحديثه."
 
-#: pollers.php:125
+#: pollers.php:126
 #, fuzzy
 msgid "Remote Database Connection"
 msgstr "اتصال قاعدة البيانات عن بعد"
 
-#: pollers.php:130
+#: pollers.php:131
 #, fuzzy
 msgid "The hostname for the remote database server."
 msgstr "اسم المضيف لخادم قاعدة البيانات البعيدة."
 
-#: pollers.php:138
+#: pollers.php:139
 #, fuzzy
 msgid "Remote Database Name"
 msgstr "اسم قاعدة البيانات عن بعد"
 
-#: pollers.php:139
+#: pollers.php:140
 #, fuzzy
 msgid "The name of the remote database."
 msgstr "اسم قاعدة البيانات عن بعد."
 
-#: pollers.php:147
+#: pollers.php:148
 #, fuzzy
 msgid "Remote Database User"
 msgstr "مستخدم قاعدة البيانات عن بعد"
 
-#: pollers.php:148
+#: pollers.php:149
 #, fuzzy
 msgid "The user name to use to connect to the remote database."
 msgstr "اسم المستخدم المراد الاتصال به لقاعدة البيانات البعيدة."
 
-#: pollers.php:156
+#: pollers.php:157
 #, fuzzy
 msgid "Remote Database Password"
 msgstr "كلمة مرور قاعدة البيانات عن بعد"
 
-#: pollers.php:157
+#: pollers.php:158
 #, fuzzy
 msgid "The user password to use to connect to the remote database."
 msgstr "كلمة مرور المستخدم لاستخدامها للاتصال بقاعدة البيانات البعيدة."
 
-#: pollers.php:165
+#: pollers.php:166
 #, fuzzy
 msgid "Remote Database Port"
 msgstr "منفذ قاعدة البيانات عن بعد"
 
-#: pollers.php:166
+#: pollers.php:167
 #, fuzzy
 msgid "The TCP port to use to connect to the remote database."
 msgstr "منفذ TCP لاستخدامه للاتصال بقاعدة البيانات البعيدة."
 
-#: pollers.php:174
+#: pollers.php:175
 #, fuzzy
 msgid "Remote Database SSL"
 msgstr "قاعدة بيانات عن بعد SSL"
 
-#: pollers.php:175
+#: pollers.php:176
 #, fuzzy
 msgid "If the remote database uses SSL to connect, check the checkbox below."
 msgstr "إذا كانت قاعدة البيانات البعيدة تستخدم SSL للاتصال ، فحدد مربع الاختيار أدناه."
 
-#: pollers.php:181
+#: pollers.php:182
 #, fuzzy
 msgid "Remote Database SSL Key"
 msgstr "مفتاح قاعدة البيانات عن بعد SSL"
 
-#: pollers.php:182
+#: pollers.php:183
 #, fuzzy
 msgid "The file holding the SSL Key to use to connect to the remote database."
 msgstr "الملف الذي يحتفظ بمفتاح SSL لاستخدامه للاتصال بقاعدة البيانات البعيدة."
 
-#: pollers.php:190
+#: pollers.php:191
 #, fuzzy
 msgid "Remote Database SSL Certificate"
 msgstr "شهادة SSL لقاعدة البيانات البعيدة"
 
-#: pollers.php:191
+#: pollers.php:192
 #, fuzzy
 msgid "The file holding the SSL Certificate to use to connect to the remote database."
 msgstr "الملف الذي يحتفظ بشهادة SSL لاستخدامه للاتصال بقاعدة البيانات البعيدة."
 
-#: pollers.php:199
+#: pollers.php:200
 #, fuzzy
 msgid "Remote Database SSL Authority"
 msgstr "قاعدة بيانات SSL البعيدة"
 
-#: pollers.php:200
+#: pollers.php:201
 #, fuzzy
 msgid "The file holding the SSL Certificate Authority to use to connect to the remote database.  This is an optional parameter that can be required by the database provider if they have started SSL using the --ssl-mode=VERIFY_CA option."
 msgstr "الملف الذي يحتفظ بمرجع تصديق SSL لاستخدامه للاتصال بقاعدة البيانات البعيدة. هذه معلمة اختيارية يمكن أن يطلبها موفر قاعدة البيانات إذا بدأ SSL باستخدام الخيار --ssl-mode = VERIFY_CA."
 
-#: pollers.php:297
+#: pollers.php:298
 #, fuzzy, php-format
 msgid "You have already used this hostname '%s'.  Please enter a non-duplicate hostname."
 msgstr "لقد استخدمت بالفعل اسم المضيف هذا '٪ s'. الرجاء إدخال اسم مضيف غير مكرر."
 
-#: pollers.php:303
+#: pollers.php:304
 #, fuzzy, php-format
 msgid "You have already used this database hostname '%s'.  Please enter a non-duplicate database hostname."
 msgstr "لقد استخدمت بالفعل اسم مضيف قاعدة البيانات هذا '٪ s'. الرجاء إدخال اسم مضيف قاعدة بيانات غير مكرر."
 
-#: pollers.php:518
+#: pollers.php:493
+#, fuzzy
+msgid "Data Collector Statistics cleared."
+msgstr "احصائيات مصادر البيانات"
+
+#: pollers.php:528
 #, fuzzy
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
 msgid_plural "Click 'Continue' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector."
@@ -18474,7 +18479,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: pollers.php:523
+#: pollers.php:533
 #, fuzzy
 msgid "Delete Data Collector"
 msgid_plural "Delete Data Collectors"
@@ -18485,7 +18490,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: pollers.php:527
+#: pollers.php:537
 #, fuzzy
 msgid "Click 'Continue' to disable the following Data Collector."
 msgid_plural "Click 'Continue' to disable the following Data Collectors."
@@ -18496,7 +18501,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: pollers.php:532
+#: pollers.php:542
 #, fuzzy
 msgid "Disable Data Collector"
 msgid_plural "Disable Data Collectors"
@@ -18507,7 +18512,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: pollers.php:536
+#: pollers.php:546
 #, fuzzy
 msgid "Click 'Continue' to enable the following Data Collector."
 msgid_plural "Click 'Continue' to enable the following Data Collectors."
@@ -18518,7 +18523,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: pollers.php:541 pollers.php:550
+#: pollers.php:551 pollers.php:560
 #, fuzzy
 msgid "Enable Data Collector"
 msgid_plural "Enable Data Collectors"
@@ -18529,7 +18534,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: pollers.php:545
+#: pollers.php:555
 #, fuzzy
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
 msgid_plural "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
@@ -18540,148 +18545,170 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: pollers.php:591 sites.php:406
+#: pollers.php:564
+#, fuzzy
+msgid "Click 'Continue' to Clear Data Collector Statistics for the Data Collector."
+msgid_plural "Click 'Continue' to Clear DAta Collector Statistics for the Data Collectors."
+msgstr[0] "انقر فوق &quot;متابعة&quot; لتمكين جامع البيانات التالي."
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: pollers.php:569
+#, fuzzy
+msgid "Clear Statistics for Data Collector"
+msgid_plural "Clear Statistics for Data Collectors"
+msgstr[0] "حالة جامع البيانات هذا."
+msgstr[1] "حالة جامع البيانات هذا."
+msgstr[2] "حالة جامع البيانات هذا."
+msgstr[3] "حالة جامع البيانات هذا."
+msgstr[4] "حالة جامع البيانات هذا."
+msgstr[5] "حالة جامع البيانات هذا."
+
+#: pollers.php:610 sites.php:406
 #, fuzzy, php-format
 msgid "Site [edit: %s]"
 msgstr "الموقع [تحرير:٪ s]"
 
-#: pollers.php:595 sites.php:408
+#: pollers.php:614 sites.php:408
 #, fuzzy
 msgid "Site [new]"
 msgstr "الموقع [جديد]"
 
-#: pollers.php:629
+#: pollers.php:648
 #, fuzzy
 msgid "Remote Data Collectors must be able to communicate to the Main Data Collector, and vice versa.  Use this button to verify that the Main Data Collector can communicate to this Remote Data Collector."
 msgstr "يجب أن يكون جامع البيانات عن بعد قادرين على الاتصال بجامع البيانات الرئيسي ، والعكس بالعكس. استخدم هذا الزر للتحقق من قدرة مجمع تجميع البيانات الرئيسي على الاتصال بمجمع البيانات البعيد هذا."
 
-#: pollers.php:637
+#: pollers.php:656
 #, fuzzy
 msgid "Test Database Connection"
 msgstr "اختبار اتصال قاعدة البيانات"
 
-#: pollers.php:825
+#: pollers.php:844
 #, fuzzy
 msgid "Collectors"
 msgstr "جامعي"
 
-#: pollers.php:938
+#: pollers.php:957
 #, fuzzy
 msgid "Collector Name"
 msgstr "اسم جامع"
 
-#: pollers.php:938
+#: pollers.php:957
 #, fuzzy
 msgid "The Name of this Data Collector."
 msgstr "اسم جامع البيانات هذا."
 
-#: pollers.php:939
+#: pollers.php:958
 #, fuzzy
 msgid "The unique id associated with this Data Collector."
 msgstr "الرقم الفريد المرتبط بجهاز تجميع البيانات هذا."
 
-#: pollers.php:940
+#: pollers.php:959
 #, fuzzy
 msgid "The Hostname where the Data Collector is running."
 msgstr "اسم المضيف حيث يتم تشغيل أداة تجميع البيانات."
 
-#: pollers.php:941
+#: pollers.php:960
 #, fuzzy
 msgid "The Status of this Data Collector."
 msgstr "حالة جامع البيانات هذا."
 
-#: pollers.php:942
+#: pollers.php:961
 #, fuzzy
 msgid "Proc/Threads"
 msgstr "إجراءات / المواضيع"
 
-#: pollers.php:942
+#: pollers.php:961
 #, fuzzy
 msgid "The Number of Poller Processes and Threads for this Data Collector."
 msgstr "عدد عمليات الاستقطاب والخيوط الخاصة بهذه أداة تجميع البيانات."
 
-#: pollers.php:943
+#: pollers.php:962
 #, fuzzy
 msgid "Polling Time"
 msgstr "وقت الاقتراع"
 
-#: pollers.php:943
+#: pollers.php:962
 #, fuzzy
 msgid "The last data collection time for this Data Collector."
 msgstr "آخر وقت لتجميع البيانات لمجمع البيانات هذا."
 
-#: pollers.php:944
+#: pollers.php:963
 #, fuzzy
 msgid "Avg/Max"
 msgstr "متوسط / ماكس"
 
-#: pollers.php:944
+#: pollers.php:963
 #, fuzzy
 msgid "The Average and Maximum Collector timings for this Data Collector."
 msgstr "توقيت متوسط و Collector الأقصى لمجمع البيانات هذا."
 
-#: pollers.php:945
+#: pollers.php:964
 #, fuzzy
 msgid "The number of Devices associated with this Data Collector."
 msgstr "عدد الأجهزة المرتبطة بمجمع البيانات هذا."
 
-#: pollers.php:946
+#: pollers.php:965
 #, fuzzy
 msgid "SNMP Gets"
 msgstr "SNMP يحصل"
 
-#: pollers.php:946
+#: pollers.php:965
 #, fuzzy
 msgid "The number of SNMP gets associated with this Collector."
 msgstr "يتم ربط عدد SNMP بهذا المجمّع."
 
-#: pollers.php:947
+#: pollers.php:966
 msgid "Scripts"
 msgstr "الوثائق"
 
-#: pollers.php:947
+#: pollers.php:966
 #, fuzzy
 msgid "The number of script calls associated with this Data Collector."
 msgstr "عدد مكالمات البرنامج النصي المرتبطة بمجمع البيانات هذا."
 
-#: pollers.php:948
+#: pollers.php:967
 msgid "Servers"
 msgstr "السيرفرات"
 
-#: pollers.php:948
+#: pollers.php:967
 #, fuzzy
 msgid "The number of script server calls associated with this Data Collector."
 msgstr "عدد مكالمات خادم البرامج النصية المقترنة مع أداة تجميع البيانات هذه."
 
-#: pollers.php:949
+#: pollers.php:968
 #, fuzzy
 msgid "Last Finished"
 msgstr "آخر انتهى"
 
-#: pollers.php:949
+#: pollers.php:968
 #, fuzzy
 msgid "The last time this Data Collector completed."
 msgstr "آخر مرة اكتمل فيها أداة تجميع البيانات هذه."
 
-#: pollers.php:950
+#: pollers.php:969
 msgid "Last Update"
 msgstr "اخر تحديث"
 
-#: pollers.php:950
+#: pollers.php:969
 #, fuzzy
 msgid "The last time this Data Collector checked in with the main Cacti site."
 msgstr "آخر مرة وصل فيها مجمع تجميع البيانات هذا بموقع Cacti الرئيسي."
 
-#: pollers.php:951
+#: pollers.php:970
 msgid "Last Sync"
 msgstr "آخر مزامنة"
 
-#: pollers.php:951
+#: pollers.php:970
 #, fuzzy
 msgid "The last time this Data Collector was full synced with main Cacti site."
 msgstr "كانت آخر مرة تمت فيها مزامنة أداة تجميع البيانات هذه مع موقع Cacti الرئيسي."
 
-#: pollers.php:1003
+#: pollers.php:1022
 #, fuzzy
 msgid "No Data Collectors Found"
 msgstr "لا توجد جامعي البيانات"
