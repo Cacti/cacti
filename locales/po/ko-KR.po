@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2020-12-12 22:15-0500\n"
+"POT-Creation-Date: 2020-12-28 13:06-0500\n"
 "PO-Revision-Date: 2020-09-13 18:51-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.4.1\n"
 
-#: about.php:29 include/global_arrays.php:2454 lib/html.php:2414
+#: about.php:29 include/global_arrays.php:2454 lib/html.php:2415
 #, fuzzy
 msgid "About Cacti"
 msgstr "Cacti 소개"
@@ -160,17 +160,17 @@ msgstr "다음 집계 그래프를 삭제하려면 &#39;계속&#39;을 클릭하
 #: host.php:386 host.php:441 host.php:450 host.php:459 host.php:473
 #: host.php:487 host.php:496 host.php:504 host_templates.php:270
 #: host_templates.php:284 host_templates.php:295 host_templates.php:344
-#: host_templates.php:407 lib/clog_webapi.php:221 lib/html.php:2447
+#: host_templates.php:407 lib/clog_webapi.php:221 lib/html.php:2448
 #: lib/html_form.php:1272 lib/html_form.php:1284 lib/html_form.php:1295
 #: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
-#: managers.php:1004 managers.php:1062 plugins.php:517 pollers.php:523
-#: pollers.php:532 pollers.php:541 pollers.php:550 sites.php:359 sites.php:369
-#: tree.php:654 tree.php:663 tree.php:672 tree.php:681 user_admin.php:340
-#: user_admin.php:380 user_admin.php:391 user_admin.php:402 user_admin.php:425
-#: user_domains.php:235 user_domains.php:244 user_domains.php:253
-#: user_domains.php:262 user_group_admin.php:450 user_group_admin.php:469
-#: user_group_admin.php:480 user_group_admin.php:491 vdef.php:270 vdef.php:280
-#: vdef.php:336
+#: managers.php:1004 managers.php:1062 plugins.php:517 pollers.php:533
+#: pollers.php:542 pollers.php:551 pollers.php:560 pollers.php:569
+#: sites.php:359 sites.php:369 tree.php:654 tree.php:663 tree.php:672
+#: tree.php:681 user_admin.php:340 user_admin.php:380 user_admin.php:391
+#: user_admin.php:402 user_admin.php:425 user_domains.php:235
+#: user_domains.php:244 user_domains.php:253 user_domains.php:262
+#: user_group_admin.php:450 user_group_admin.php:469 user_group_admin.php:480
+#: user_group_admin.php:491 vdef.php:270 vdef.php:280 vdef.php:336
 msgid "Cancel"
 msgstr "취소"
 
@@ -197,12 +197,12 @@ msgstr "취소"
 #: host.php:450 host.php:459 host.php:473 host.php:487 host.php:496
 #: host.php:504 host_templates.php:270 host_templates.php:284
 #: host_templates.php:295 host_templates.php:345 host_templates.php:408
-#: lib/clog_webapi.php:222 lib/html.php:2446 lib/html_reports.php:284
+#: lib/clog_webapi.php:222 lib/html.php:2447 lib/html_reports.php:284
 #: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
-#: managers.php:1004 managers.php:1062 pollers.php:523 pollers.php:532
-#: pollers.php:541 pollers.php:550 sites.php:359 sites.php:369 tree.php:654
-#: tree.php:663 tree.php:672 tree.php:681 user_admin.php:340 user_admin.php:380
-#: user_admin.php:391 user_admin.php:402 user_admin.php:425
+#: managers.php:1004 managers.php:1062 pollers.php:533 pollers.php:542
+#: pollers.php:551 pollers.php:560 pollers.php:569 sites.php:359 sites.php:369
+#: tree.php:654 tree.php:663 tree.php:672 tree.php:681 user_admin.php:340
+#: user_admin.php:380 user_admin.php:391 user_admin.php:402 user_admin.php:425
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:450 user_group_admin.php:469
 #: user_group_admin.php:480 user_group_admin.php:491 vdef.php:270 vdef.php:280
@@ -490,10 +490,10 @@ msgstr "매칭 그래프"
 #: graph_view.php:600 graphs.php:1961 graphs_new.php:410 host.php:1615
 #: host_templates.php:719 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
-#: lib/clog_webapi.php:574 lib/html.php:220 lib/html_filter.php:63
+#: lib/clog_webapi.php:574 lib/html.php:220 lib/html_filter.php:66
 #: lib/html_graph.php:203 lib/html_reports.php:1501 lib/html_tree.php:131
 #: lib/html_tree.php:1032 links.php:310 managers.php:149 managers.php:493
-#: managers.php:725 plugins.php:347 pollers.php:819 rrdcleaner.php:476
+#: managers.php:725 plugins.php:347 pollers.php:838 rrdcleaner.php:476
 #: settings.php:491 settings.php:510 settings.php:559 sites.php:476
 #: tree.php:818 tree.php:853 tree.php:888 tree.php:1925 user_admin.php:2256
 #: user_admin.php:2591 user_admin.php:2698 user_admin.php:2784
@@ -533,7 +533,7 @@ msgstr "그래프 "
 #: include/global_form.php:212 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
 #: lib/api_automation.php:1109 lib/html_reports.php:1521 links.php:320
-#: managers.php:159 managers.php:503 plugins.php:371 pollers.php:829
+#: managers.php:159 managers.php:503 plugins.php:371 pollers.php:848
 #: rrdcleaner.php:502 sites.php:486 tree.php:1935 user_admin.php:2266
 #: user_admin.php:2623 user_admin.php:2708 user_admin.php:2812
 #: user_admin.php:2897 user_admin.php:2982 user_admin.php:3067
@@ -562,10 +562,10 @@ msgstr "집계의 일부"
 #: graph_view.php:608 graphs.php:1952 graphs_new.php:399 host.php:1605
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
-#: lib/clog_webapi.php:522 lib/html.php:1480 lib/html_filter.php:80
+#: lib/clog_webapi.php:522 lib/html.php:1480 lib/html_filter.php:83
 #: lib/html_graph.php:190 lib/html_reports.php:1532 lib/html_tree.php:1074
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
-#: plugins.php:383 pollers.php:864 sites.php:498 tree.php:1947
+#: plugins.php:383 pollers.php:883 sites.php:498 tree.php:1947
 #: user_admin.php:2278 user_admin.php:2641 user_admin.php:2726
 #: user_admin.php:2830 user_admin.php:2915 user_admin.php:3000
 #: user_admin.php:3085
@@ -580,7 +580,7 @@ msgstr "가기"
 #: graph_templates.php:688 graph_view.php:608 graphs.php:1952
 #: graphs_new.php:399 host.php:1605 host_templates.php:747
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
-#: plugins.php:383 pollers.php:864 sites.php:498 tree.php:1947
+#: plugins.php:383 pollers.php:883 sites.php:498 tree.php:1947
 #: user_admin.php:2278 user_admin.php:2641 user_admin.php:2726
 #: user_admin.php:2830 user_admin.php:2915 user_admin.php:3000
 #: user_admin.php:3085 user_domains.php:675 user_group_admin.php:1855
@@ -603,10 +603,10 @@ msgstr "필터 설정 / 새로 고침"
 #: graph_view.php:609 graphs.php:1953 graphs_new.php:400 host.php:1606
 #: host_templates.php:748 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
-#: lib/clog_webapi.php:523 lib/html_filter.php:85 lib/html_graph.php:191
+#: lib/clog_webapi.php:523 lib/html_filter.php:88 lib/html_graph.php:191
 #: lib/html_graph.php:307 lib/html_reports.php:1533 lib/html_tree.php:1075
 #: lib/html_tree.php:1185 links.php:331 managers.php:172 managers.php:516
-#: managers.php:746 plugins.php:384 pollers.php:865 sites.php:499 tree.php:1948
+#: managers.php:746 plugins.php:384 pollers.php:884 sites.php:499 tree.php:1948
 #: user_admin.php:2279 user_admin.php:2642 user_admin.php:2727
 #: user_admin.php:2831 user_admin.php:2916 user_admin.php:3001
 #: user_admin.php:3086 user_domains.php:676
@@ -620,7 +620,7 @@ msgstr "지우기"
 #: graph_templates.php:689 graph_view.php:609 graphs.php:1953
 #: graphs_new.php:400 host.php:1606 host_templates.php:748
 #: lib/html_graph.php:191 lib/html_tree.php:1075 managers.php:172
-#: managers.php:516 managers.php:746 plugins.php:384 pollers.php:865
+#: managers.php:516 managers.php:746 plugins.php:384 pollers.php:884
 #: sites.php:499 tree.php:1948 user_admin.php:2279 user_admin.php:2642
 #: user_admin.php:2727 user_admin.php:2831 user_admin.php:2916
 #: user_admin.php:3001 user_admin.php:3086 user_domains.php:676
@@ -643,7 +643,7 @@ msgstr "그래프 제목"
 #: data_debug.php:345 data_input.php:931 data_queries.php:1375
 #: data_sources.php:1603 data_templates.php:1066 graph_templates.php:794
 #: graphs.php:2114 host.php:1673 host_templates.php:834
-#: lib/api_automation.php:282 pollers.php:939 sites.php:572 tree.php:2009
+#: lib/api_automation.php:282 pollers.php:958 sites.php:572 tree.php:2009
 #: user_admin.php:1038 user_admin.php:1152 user_admin.php:1299
 #: user_admin.php:1447 user_admin.php:1588 user_group_admin.php:682
 #: user_group_admin.php:833 user_group_admin.php:980 user_group_admin.php:1123
@@ -931,7 +931,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "% d 개의 암호 변경에 재사용 할 수 없습니다."
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1503 lib/functions.php:2417
+#: include/global_form.php:1503 lib/functions.php:2415
 msgid "Change Password"
 msgstr "비밀번호 변경"
 
@@ -946,7 +946,7 @@ msgid "Please enter your new Cacti password."
 msgstr "현재 비밀번호와 새 비밀번호를 입력하십시오. <br> 선인장 암호."
 
 #: auth_changepassword.php:342 auth_login.php:694 auth_login.php:697
-#: include/global_settings.php:1555 lib/functions.php:3953
+#: include/global_settings.php:1555 lib/functions.php:3951
 msgid "Username"
 msgstr "아이디"
 
@@ -1051,7 +1051,7 @@ msgstr "사용자 로그인"
 msgid "Enter your Username and Password below"
 msgstr "아래에 사용자 이름과 암호를 입력하십시오"
 
-#: auth_login.php:702 include/global_form.php:1470 lib/functions.php:3954
+#: auth_login.php:702 include/global_form.php:1470 lib/functions.php:3952
 msgid "Password"
 msgstr "비밀번호"
 
@@ -1100,17 +1100,17 @@ msgstr "사용자 계정 정보"
 
 #: auth_profile.php:296 include/global_arrays.php:765
 #: include/global_settings.php:2330 lib/html.php:1887 lib/html.php:1909
-#: lib/html.php:2406
+#: lib/html.php:2407
 msgid "Tree View"
 msgstr "트리 보기"
 
 #: auth_profile.php:300 include/global_arrays.php:766 lib/html.php:1894
-#: lib/html.php:1918 lib/html.php:2407
+#: lib/html.php:1918 lib/html.php:2408
 msgid "List View"
 msgstr "목록형식 보기"
 
 #: auth_profile.php:304 include/global_arrays.php:767 lib/html.php:1901
-#: lib/html.php:2408
+#: lib/html.php:2409
 #, fuzzy
 msgid "Preview View"
 msgstr "미리보기"
@@ -1216,7 +1216,7 @@ msgstr "기기 삭제"
 #: automation_devices.php:409 automation_devices.php:419
 #: automation_devices.php:648 automation_devices.php:649 host.php:1630
 #: lib/api_automation.php:173 lib/api_automation.php:1099
-#: lib/html_utility.php:939 pollers.php:46
+#: lib/html_utility.php:939 pollers.php:47
 msgid "Down"
 msgstr "아래로"
 
@@ -1252,7 +1252,7 @@ msgstr ""
 msgid "Click 'Continue' to add the following Discovered device(s)."
 msgstr "&#39;계속&#39;을 클릭하여 다음과 같은 검색된 기기를 추가하십시오."
 
-#: automation_devices.php:202 pollers.php:929
+#: automation_devices.php:202 pollers.php:948
 #, fuzzy
 msgid "Pollers"
 msgstr "폴러"
@@ -1287,7 +1287,7 @@ msgstr "기기 삭제"
 #: include/global_arrays.php:945 include/global_arrays.php:2160
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
-#: lib/api_automation.php:1211 pollers.php:945 sites.php:573 tree.php:796
+#: lib/api_automation.php:1211 pollers.php:964 sites.php:573 tree.php:796
 #: tree.php:2063 user_admin.php:1291 user_admin.php:2808
 #: user_group_admin.php:972 user_group_admin.php:2287 utilities.php:320
 msgid "Devices"
@@ -1344,7 +1344,7 @@ msgstr "SNMP"
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
 #: lib/html_reports.php:1507 lib/installer.php:1769 managers.php:218
-#: plugins.php:353 plugins.php:459 pollers.php:941 user_admin.php:1299
+#: plugins.php:353 plugins.php:459 pollers.php:960 user_admin.php:1299
 #: user_group_admin.php:980
 msgid "Status"
 msgstr "상태"
@@ -1401,8 +1401,8 @@ msgstr "검색된 장치 제거"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1753
-#: lib/functions.php:4324 lib/functions.php:4328 lib/html.php:1179
-#: pollers.php:994 user_admin.php:2342 utilities.php:511 utilities.php:953
+#: lib/functions.php:4322 lib/functions.php:4326 lib/html.php:1179
+#: pollers.php:1013 user_admin.php:2342 utilities.php:511 utilities.php:953
 #: utilities.php:2284 utilities.php:2381 utilities.php:2389 utilities.php:2392
 #: utilities.php:2395 utilities.php:2401 utilities.php:2631
 msgid "N/A"
@@ -1563,9 +1563,9 @@ msgstr "활성화"
 #: include/global_settings.php:1399 include/global_settings.php:1411
 #: include/global_settings.php:1436 include/global_settings.php:1450
 #: include/global_settings.php:1510 include/global_settings.php:2155
-#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2472
+#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2473
 #: lib/html_reports.php:1513 lib/html_reports.php:1651 lib/html_utility.php:935
-#: links.php:500 managers.php:243 managers.php:598 pollers.php:47
+#: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1164 user_domains.php:411 user_group_admin.php:697
 #: utilities.php:2416
 msgid "Disabled"
@@ -1726,7 +1726,7 @@ msgstr "일반 설정"
 #: include/global_form.php:2028 include/global_form.php:2126
 #: include/global_form.php:2171 lib/installer.php:1769 lib/installer.php:1835
 #: lib/installer.php:1865 lib/installer.php:2445 lib/installer.php:2524
-#: lib/vdef.php:74 managers.php:562 pollers.php:60 sites.php:41
+#: lib/vdef.php:74 managers.php:562 pollers.php:61 sites.php:41
 #: user_admin.php:1152 user_domains.php:326 utilities.php:637
 #: utilities.php:2611
 msgid "Name"
@@ -1844,7 +1844,7 @@ msgid "After the selected Run Limit, the discovery process will be terminated."
 msgstr "선택한 실행 제한 후 검색 프로세스가 종료됩니다."
 
 #: automation_networks.php:523 automation_networks.php:1214
-#: include/global_arrays.php:681 pollers.php:851
+#: include/global_arrays.php:681 pollers.php:870
 #, fuzzy, php-format
 msgid "%d Minute"
 msgstr "% d 분"
@@ -1866,7 +1866,7 @@ msgstr "% d 분"
 #: include/global_arrays.php:1491 include/global_settings.php:1452
 #: include/global_settings.php:1453 include/global_settings.php:1454
 #: include/global_settings.php:1455 include/global_settings.php:1456
-#: include/global_settings.php:2257 pollers.php:852 pollers.php:853
+#: include/global_settings.php:2257 pollers.php:871 pollers.php:872
 #, fuzzy, php-format
 msgid "%d Minutes"
 msgstr "%d 분"
@@ -2306,7 +2306,7 @@ msgstr "진행"
 msgid "Up/SNMP Hosts"
 msgstr "Up / SNMP 호스트"
 
-#: automation_networks.php:1081 pollers.php:108
+#: automation_networks.php:1081 pollers.php:109
 msgid "Threads"
 msgstr "참여글"
 
@@ -2325,11 +2325,11 @@ msgstr "다음 시작"
 msgid "Last Started"
 msgstr "마지막 시작"
 
-#: automation_networks.php:1113 pollers.php:44 utilities.php:2221
+#: automation_networks.php:1113 pollers.php:45 utilities.php:2221
 msgid "Running"
 msgstr "실행 중"
 
-#: automation_networks.php:1137 pollers.php:45 utilities.php:2220
+#: automation_networks.php:1137 pollers.php:46 utilities.php:2220
 msgid "Idle"
 msgstr "게으른"
 
@@ -2345,7 +2345,7 @@ msgstr "네트워크를 찾을 수 없음"
 
 #: automation_networks.php:1204 data_debug.php:1028 lib/clog_webapi.php:554
 #: lib/html_graph.php:306 lib/html_tree.php:1184 lib/html_tree.php:1205
-#: pollers.php:840 utilities.php:1237 utilities.php:2171
+#: pollers.php:859 utilities.php:1237 utilities.php:2171
 msgid "Refresh"
 msgstr "새로고침"
 
@@ -2366,8 +2366,8 @@ msgstr "새로고침"
 #: include/global_settings.php:1123 include/global_settings.php:1124
 #: include/global_settings.php:1125 include/global_settings.php:2253
 #: include/global_settings.php:2254 include/global_settings.php:2255
-#: pollers.php:846 pollers.php:847 pollers.php:848 pollers.php:849
-#: pollers.php:850
+#: pollers.php:865 pollers.php:866 pollers.php:867 pollers.php:868
+#: pollers.php:869
 #, fuzzy, php-format
 msgid "%d Seconds"
 msgstr "%d 초"
@@ -2488,7 +2488,7 @@ msgstr "버전"
 msgid "Community"
 msgstr "커뮤니티"
 
-#: automation_snmp.php:536 lib/functions.php:3949
+#: automation_snmp.php:536 lib/functions.php:3947
 msgid "Port"
 msgstr "포트"
 
@@ -3292,32 +3292,32 @@ msgstr "확인 실행"
 msgid "Delete Check"
 msgstr "확인 삭제"
 
-#: data_debug.php:50
+#: data_debug.php:52
 #, fuzzy
 msgid "Data Source debug started."
 msgstr "데이터 소스 디버그"
 
-#: data_debug.php:53
+#: data_debug.php:55
 #, fuzzy
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "데이터 소스 디버그가 잘못된 데이터 소스 ID를 받았습니다."
 
-#: data_debug.php:62
+#: data_debug.php:64
 #, fuzzy
 msgid "All RRDfile repairs succeeded."
 msgstr "모든 RRDfile 복구가 성공했습니다."
 
-#: data_debug.php:64
+#: data_debug.php:66
 #, fuzzy
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "하나 이상의 RRDfile 복구가 실패했습니다. Cacti 로그에서 오류를 확인하십시오."
 
-#: data_debug.php:72
+#: data_debug.php:74
 #, fuzzy
 msgid "Automatic Data Source debug being rerun after repair."
 msgstr "복구 후 자동 데이터 소스 디버그가 다시 실행됩니다."
 
-#: data_debug.php:76
+#: data_debug.php:78
 #, fuzzy
 msgid "Data Source repair received an invalid Data Source ID."
 msgstr "데이터 소스 복구에 잘못된 데이터 소스 ID가 수신되었습니다."
@@ -3954,7 +3954,7 @@ msgstr "제안 된 가치"
 
 #: data_queries.php:833 data_queries.php:934 host.php:795 host.php:938
 #: host_templates.php:535 host_templates.php:589 lib/html.php:62
-#: lib/html_filter.php:55
+#: lib/html_filter.php:58
 msgid "Add"
 msgstr "추가"
 
@@ -4171,7 +4171,7 @@ msgid "Steps"
 msgstr "단계"
 
 #: data_source_profiles.php:613 graphs_new.php:416 include/global_form.php:254
-#: lib/html.php:493 lib/html_filter.php:72 lib/installer.php:2524
+#: lib/html.php:493 lib/html_filter.php:55 lib/installer.php:2524
 #: lib/rrd.php:2964 utilities.php:639 utilities.php:1552
 msgid "Rows"
 msgstr "행"
@@ -4316,7 +4316,7 @@ msgid "The Polling Frequency for the Profile"
 msgstr "프로필의 폴링 빈도"
 
 #: data_source_profiles.php:1041 include/global_form.php:188
-#: include/global_form.php:608 pollers.php:49
+#: include/global_form.php:608 pollers.php:50
 msgid "Heartbeat"
 msgstr "하트비트"
 
@@ -4511,7 +4511,7 @@ msgstr "이 데이터 템플릿에 주어진 이름입니다. 그래프 템플�
 #: data_sources.php:916 graph_view.php:721 graphs.php:1520
 #: include/global_arrays.php:854 include/global_arrays.php:903
 #: include/global_arrays.php:1713 lib/api_automation.php:425
-#: lib/functions.php:3948 lib/html.php:2001 lib/html.php:2033
+#: lib/functions.php:3946 lib/html.php:2001 lib/html.php:2033
 #: lib/html_reports.php:633 utilities.php:1643
 msgid "Device"
 msgstr "장치"
@@ -4896,7 +4896,7 @@ msgstr "CSV"
 msgid "Click to view just this Graph in Real-time"
 msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
 
-#: graph.php:246 lib/html.php:2403
+#: graph.php:246 lib/html.php:2404
 #, fuzzy
 msgid "Utility View"
 msgstr "유틸리티보기"
@@ -5268,7 +5268,7 @@ msgstr "RTL Mode"
 msgid "Add Selected Graphs to Report"
 msgstr "선택한 그래프를 보고서에 추가"
 
-#: graph_view.php:934 lib/html.php:2444
+#: graph_view.php:934 lib/html.php:2445
 msgid "Ok"
 msgstr "확인"
 
@@ -5630,7 +5630,7 @@ msgstr "[모든 장치]의 새로운 그래프"
 msgid "New Graphs for None Host Type"
 msgstr "없음 호스트 유형에 대한 새 그래프"
 
-#: graphs_new.php:337 lib/html.php:2401
+#: graphs_new.php:337 lib/html.php:2402
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "저장된 필터 설정"
@@ -5730,7 +5730,7 @@ msgstr "기본 설정"
 msgid "Change Device Settings"
 msgstr "기기 설정 변경"
 
-#: host.php:44
+#: host.php:44 pollers.php:36
 #, fuzzy
 msgid "Clear Statistics"
 msgstr "통계 지우기"
@@ -5951,7 +5951,7 @@ msgstr "장치에 그래프 템플릿 추가"
 msgid "Data Query Debug Information"
 msgstr "데이터 쿼리 디버그 정보"
 
-#: host.php:815 lib/functions.php:2989 tree.php:1517 tree.php:1591
+#: host.php:815 lib/functions.php:2987 tree.php:1517 tree.php:1591
 #: tree.php:1699 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "복사"
@@ -5993,7 +5993,7 @@ msgstr "[% d 개 항목, % d 개 행]"
 msgid "Fail"
 msgstr "실패"
 
-#: host.php:899 lib/functions.php:3963 lib/functions.php:3968
+#: host.php:899 lib/functions.php:3961 lib/functions.php:3966
 msgid "Success"
 msgstr "성공"
 
@@ -6075,7 +6075,7 @@ msgid "Not Up"
 msgstr "안 함"
 
 #: host.php:1631 lib/api_automation.php:174 lib/api_automation.php:1100
-#: lib/html_utility.php:942 pollers.php:48
+#: lib/html_utility.php:942 pollers.php:49
 #, fuzzy
 msgid "Recovering"
 msgstr "복구 중"
@@ -6100,7 +6100,7 @@ msgstr "이 장치가 참조되는 이름입니다."
 #: host.php:1667 include/global_form.php:1137 include/global_form.php:1674
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
-#: pollers.php:129 pollers.php:940 user_admin.php:1299 user_group_admin.php:980
+#: pollers.php:130 pollers.php:959 user_admin.php:1299 user_group_admin.php:980
 msgid "Hostname"
 msgstr "호스트명"
 
@@ -6340,17 +6340,17 @@ msgstr "치명적 : Cacti의이 영역에 액세스하려면 로그인해야합�
 msgid "Login Again"
 msgstr "다시 로그인"
 
-#: include/auth.php:294 lib/functions.php:5537 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:5535 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "사용 권한이 거부되었습니다."
 
-#: include/auth.php:295 lib/functions.php:5538 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5536 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "이것이 오류라고 생각하면. Cacti 관리자에게 문의하십시오."
 
-#: include/auth.php:295 lib/functions.php:5538 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5536 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Cacti의이 섹션에 액세스하는 것은 허용되지 않습니다."
@@ -6897,7 +6897,7 @@ msgstr "오른쪽"
 msgid "Justified"
 msgstr "양쪽 맞춤"
 
-#: include/global_arrays.php:529 lib/html.php:2470
+#: include/global_arrays.php:529 lib/html.php:2471
 msgid "Center"
 msgstr "중앙"
 
@@ -7183,7 +7183,7 @@ msgstr "헤더"
 
 #: include/global_arrays.php:853 include/global_arrays.php:904
 #: include/global_arrays.php:1544 include/global_arrays.php:1712
-#: lib/html.php:2459
+#: lib/html.php:2460
 msgid "Graph"
 msgstr "그래프"
 
@@ -7300,7 +7300,7 @@ msgstr "나무"
 msgid "Data Collection"
 msgstr "데이터 수집"
 
-#: include/global_arrays.php:898 include/global_arrays.php:948 pollers.php:810
+#: include/global_arrays.php:898 include/global_arrays.php:948 pollers.php:829
 #, fuzzy
 msgid "Data Collectors"
 msgstr "데이터 수집기"
@@ -7325,7 +7325,7 @@ msgid "Device Rules"
 msgstr "기기 규칙"
 
 #: include/global_arrays.php:917 include/global_arrays.php:966
-#: include/global_arrays.php:1105 lib/html_filter.php:177
+#: include/global_arrays.php:1105 lib/html_filter.php:183
 #: lib/html_graph.php:252 lib/html_tree.php:1130
 msgid "Presets"
 msgstr "사전 설정"
@@ -7362,7 +7362,7 @@ msgid "Configuration"
 msgstr "구성"
 
 #: include/global_arrays.php:929 include/global_arrays.php:951
-#: lib/html.php:2197 lib/html.php:2474
+#: lib/html.php:2197 lib/html.php:2475
 msgid "Settings"
 msgstr "설정"
 
@@ -8362,7 +8362,7 @@ msgid "List Mode"
 msgstr "목록 모드"
 
 #: include/global_arrays.php:1920 include/global_arrays.php:1926
-#: lib/functions.php:2622 lib/html.php:1632 lib/html.php:1709 links.php:344
+#: lib/functions.php:2620 lib/html.php:1632 lib/html.php:1709 links.php:344
 #: user_admin.php:1704 user_group_admin.php:1380
 msgid "Console"
 msgstr "콘솔"
@@ -9671,7 +9671,7 @@ msgstr "전송할 ping 패킷 유형입니다. <br> <i>참고 : Linux / UNIX의 
 msgid "Additional Options"
 msgstr "추가 옵션"
 
-#: include/global_form.php:1257 include/global_form.php:1717 pollers.php:87
+#: include/global_form.php:1257 include/global_form.php:1717 pollers.php:88
 #: sites.php:156
 msgid "Notes"
 msgstr "노트"
@@ -10259,7 +10259,7 @@ msgstr "데이터"
 msgid "Visual"
 msgstr "시각적"
 
-#: include/global_settings.php:44 lib/functions.php:3952 lib/functions.php:3957
+#: include/global_settings.php:44 lib/functions.php:3950 lib/functions.php:3955
 msgid "Authentication"
 msgstr "인증"
 
@@ -10301,11 +10301,11 @@ msgstr "그래프 글꼴"
 msgid "PHP Mail() Function"
 msgstr "PHP 메일 () 함수"
 
-#: include/global_settings.php:91 lib/functions.php:3935
+#: include/global_settings.php:91 lib/functions.php:3933
 msgid "Sendmail"
 msgstr "@ option"
 
-#: include/global_settings.php:92 lib/functions.php:3940
+#: include/global_settings.php:92 lib/functions.php:3938
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10728,7 +10728,7 @@ msgstr "단순으로 설정하면 그래프 및 데이터 소스는 새 그래�
 msgid "Simple"
 msgstr "단순"
 
-#: include/global_settings.php:439 lib/html.php:2461
+#: include/global_settings.php:439 lib/html.php:2462
 msgid "Advanced"
 msgstr "고급"
 
@@ -12226,7 +12226,7 @@ msgstr "전자 메일의 줄이 자동으로 줄 바꿈되기 전에 허용되�
 msgid "Sendmail Options"
 msgstr "센드 메일 옵션"
 
-#: include/global_settings.php:1674 lib/functions.php:3935
+#: include/global_settings.php:1674 lib/functions.php:3933
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "센드 메일 경로"
@@ -13556,8 +13556,8 @@ msgstr "위치:"
 msgid "Contact:"
 msgstr "연락처:"
 
-#: lib/api_device.php:1188 lib/functions.php:3966 lib/functions.php:3968
-#: lib/functions.php:3972
+#: lib/api_device.php:1188 lib/functions.php:3964 lib/functions.php:3966
+#: lib/functions.php:3970
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping 결과"
@@ -14115,12 +14115,12 @@ msgstr "데이터 소스 ' %s'에 대한 XML 출력 열을 선택하고 오른�
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr "그래프 템플릿에 데이터 템플릿이 사용되지 않았습니다. 그래프 템플릿을 수정하십시오."
 
-#: lib/database.php:1587
+#: lib/database.php:1540
 #, fuzzy
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr "암호 필드 길이를 확인하지 못했습니다. 암호가 손상 될 수 있으므로 계속할 수 없습니다."
 
-#: lib/database.php:1593
+#: lib/database.php:1546
 #, fuzzy
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr "암호 필드 길이를 변경하는 데 실패했으며 암호를 손상시킬 수 있으므로 계속할 수 없습니다."
@@ -14180,186 +14180,186 @@ msgstr "데이터 소스가 폴링되지 않았습니다."
 msgid "No issues found"
 msgstr "발견 된 문제 없음"
 
-#: lib/functions.php:641 lib/functions.php:726
+#: lib/functions.php:639 lib/functions.php:724
 #, fuzzy
 msgid "Message Not Found."
 msgstr "메시지를 찾을 수 없습니다."
 
-#: lib/functions.php:1035
+#: lib/functions.php:1033
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "오류  %s을 (를) 읽을 수 없습니다."
 
-#: lib/functions.php:2400 lib/functions.php:2411
+#: lib/functions.php:2398 lib/functions.php:2409
 msgid "Logged in as"
 msgstr "다음 계정으로 로그인"
 
-#: lib/functions.php:2400
+#: lib/functions.php:2398
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "일반 사용자로 로그인"
 
-#: lib/functions.php:2400
+#: lib/functions.php:2398
 msgid "guest"
 msgstr "명"
 
-#: lib/functions.php:2402 lib/functions.php:2419 lib/html.php:2411
+#: lib/functions.php:2400 lib/functions.php:2417 lib/html.php:2412
 #, fuzzy
 msgid "User Community"
 msgstr "사용자 커뮤니티"
 
-#: lib/functions.php:2403 lib/functions.php:2420 lib/html.php:2412
+#: lib/functions.php:2401 lib/functions.php:2418 lib/html.php:2413
 #: lib/utility.php:1129
 msgid "Documentation"
 msgstr "문서"
 
-#: lib/functions.php:2414
+#: lib/functions.php:2412
 #, php-format
 msgid "Logged in as %s"
 msgstr "%s으로 로그인됨"
 
-#: lib/functions.php:2416
+#: lib/functions.php:2414
 msgid "Edit Profile"
 msgstr "프로필 수정"
 
-#: lib/functions.php:2422
+#: lib/functions.php:2420
 msgid "Logout"
 msgstr "로그아웃"
 
-#: lib/functions.php:2570
+#: lib/functions.php:2568
 msgid "Leaf"
 msgstr "잎"
 
-#: lib/functions.php:2590 lib/html_tree.php:713 lib/html_tree.php:749
+#: lib/functions.php:2588 lib/html_tree.php:713 lib/html_tree.php:749
 #: lib/html_tree.php:978 lib/html_tree.php:986 lib/html_tree.php:1559
 #, fuzzy
 msgid "Non Query Based"
 msgstr "비 쿼리 기반"
 
-#: lib/functions.php:2623
+#: lib/functions.php:2621
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "%s 링크"
 
-#: lib/functions.php:3567
+#: lib/functions.php:3565
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "메일러 오류 : <b>TO</b> 주소 세트가 없습니다! <br> <i>메일 테스트</i> 링크를 사용하는 경우 <b>경고 전자 메일</b> 설정을 지정하십시오."
 
-#: lib/functions.php:3899
+#: lib/functions.php:3897
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "인증 실패 :  %s"
 
-#: lib/functions.php:3903
+#: lib/functions.php:3901
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO 실패 :  %s"
 
-#: lib/functions.php:3906
+#: lib/functions.php:3904
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "연결 실패 :  %s"
 
-#: lib/functions.php:3909
+#: lib/functions.php:3907
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP 오류 :"
 
-#: lib/functions.php:3922
+#: lib/functions.php:3920
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Cacti에서 생성 된 테스트 메시지입니다. 이 메시지는 메일 설정의 구성을 테스트하기 위해 전송되었습니다."
 
-#: lib/functions.php:3923
+#: lib/functions.php:3921
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "이메일 설정은 현재 다음과 같이 설정되어 있습니다."
 
-#: lib/functions.php:3924
+#: lib/functions.php:3922
 msgid "Method"
 msgstr "방법"
 
-#: lib/functions.php:3926
+#: lib/functions.php:3924
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "구성 확인 중 ... <br>"
 
-#: lib/functions.php:3933
+#: lib/functions.php:3931
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP 메일러 클래스"
 
-#: lib/functions.php:3939
+#: lib/functions.php:3937
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "방법 : SMTP"
 
-#: lib/functions.php:3954
+#: lib/functions.php:3952
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "보안상의 이유로 표시되지 않음"
 
-#: lib/functions.php:3955
+#: lib/functions.php:3953
 msgid "Security"
 msgstr "보안"
 
-#: lib/functions.php:3963
+#: lib/functions.php:3961
 #, fuzzy
 msgid "Ping Results:"
 msgstr "핑 결과 :"
 
-#: lib/functions.php:3972
+#: lib/functions.php:3970
 #, fuzzy
 msgid "Bypassed"
 msgstr "우회"
 
-#: lib/functions.php:3980
+#: lib/functions.php:3978
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "메시지 텍스트 작성 중 ..."
 
-#: lib/functions.php:3983
+#: lib/functions.php:3981
 #, fuzzy
 msgid "Sending Message..."
 msgstr "메시지를 보내는 중 ..."
 
-#: lib/functions.php:3987
+#: lib/functions.php:3985
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "선인장 테스트 메시지"
 
-#: lib/functions.php:3989
+#: lib/functions.php:3987
 msgid "Success!"
 msgstr "성공!"
 
-#: lib/functions.php:3992
+#: lib/functions.php:3990
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "핑 실패로 인해 메시지가 전송되지 않았습니다."
 
-#: lib/functions.php:4586 lib/functions.php:4649 poller.php:356 poller.php:477
+#: lib/functions.php:4584 lib/functions.php:4647 poller.php:356 poller.php:477
 #: poller.php:539 poller.php:562 poller.php:702
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "선인장 시스템 경고"
 
-#: lib/functions.php:4586 lib/functions.php:4649
+#: lib/functions.php:4584 lib/functions.php:4647
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti 플러그인  %s이 (가) 다음 오류 때문에 비활성화되었습니다 :  %s! 자세한 내용은 Cacti 로그 파일을 참조하십시오."
 
-#: lib/functions.php:5027 lib/functions.php:5029
+#: lib/functions.php:5025 lib/functions.php:5027
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- 베타  %s"
 
-#: lib/functions.php:5027
+#: lib/functions.php:5025
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "버전  %s  %s"
 
-#: lib/functions.php:5029
+#: lib/functions.php:5027
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -14398,7 +14398,7 @@ msgstr "데이터 쿼리 :"
 msgid "CSV Export of Graph Data"
 msgstr "그래프 데이터의 CSV 내보내기"
 
-#: lib/html.php:437 lib/html.php:2400
+#: lib/html.php:437 lib/html.php:2401
 #, fuzzy
 msgid "Time Graph View"
 msgstr "시간 그래프보기"
@@ -14519,287 +14519,287 @@ msgstr "드라이 런 갭 충진 범위"
 msgid "Dry Run Float Range"
 msgstr "드라이 런 플로트 범위"
 
-#: lib/html.php:2396
+#: lib/html.php:2397
 #, fuzzy
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
 msgstr "현재 창 제한을 초과하여 확장하도록 테이블 열을 허용하거나 제한합니다."
 
-#: lib/html.php:2397 lib/html_filter.php:65
+#: lib/html.php:2398 lib/html_filter.php:68
 #, fuzzy
 msgid "Enter a search term"
 msgstr "검색어 입력"
 
-#: lib/html.php:2398
+#: lib/html.php:2399
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "정규 표현식 입력"
 
-#: lib/html.php:2399
+#: lib/html.php:2400
 msgid "No file selected"
 msgstr "선택된 파일이 없음"
 
-#: lib/html.php:2402 lib/html.php:2415
+#: lib/html.php:2403 lib/html.php:2416
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "스파이크 킬 결과"
 
-#: lib/html.php:2404
+#: lib/html.php:2405
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
 
-#: lib/html.php:2405
+#: lib/html.php:2406
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "이 그래프를 실시간으로 가져 오려면 다시 클릭하십시오."
 
-#: lib/html.php:2409
+#: lib/html.php:2410
 #, fuzzy
 msgid "Cacti Home"
 msgstr "선인장 홈"
 
-#: lib/html.php:2410
+#: lib/html.php:2411
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "선인장 프로젝트 페이지"
 
-#: lib/html.php:2413
+#: lib/html.php:2414
 msgid "Report a bug"
 msgstr "버그 보고하기"
 
-#: lib/html.php:2416
+#: lib/html.php:2417
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "클릭하여 필터 표시 / 숨기기"
 
-#: lib/html.php:2417
+#: lib/html.php:2418
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "현재 필터 지우기"
 
-#: lib/html.php:2418
+#: lib/html.php:2419
 msgid "Clipboard"
 msgstr "클립보드"
 
-#: lib/html.php:2419
+#: lib/html.php:2420
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "클립 보드 ID"
 
-#: lib/html.php:2420
+#: lib/html.php:2421
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "현재 복사 작업을 사용할 수 없습니다."
 
-#: lib/html.php:2421
+#: lib/html.php:2422
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "복사 할 데이터를 찾지 못했습니다!"
 
-#: lib/html.php:2422
+#: lib/html.php:2423
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "클립 보드가 업데이트되었습니다."
 
-#: lib/html.php:2423
+#: lib/html.php:2424
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "죄송합니다. 현재 클립 보드를 업데이트 할 수 없습니다."
 
-#: lib/html.php:2427
+#: lib/html.php:2428
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "암호 길이가 최소 8자를 충족시킵니다."
 
-#: lib/html.php:2428
+#: lib/html.php:2429
 #, fuzzy
 msgid "Passphrase too short"
 msgstr "암호가 너무 짧다."
 
-#: lib/html.php:2429
+#: lib/html.php:2430
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "암호는 일치하지만 너무 짧습니다."
 
-#: lib/html.php:2430
+#: lib/html.php:2431
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "암호가 너무 짧고 일치하지 않습니다."
 
-#: lib/html.php:2431
+#: lib/html.php:2432
 #, fuzzy
 msgid "Passphrases match"
 msgstr "암호가 일치 함"
 
-#: lib/html.php:2432
+#: lib/html.php:2433
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "암호가 일치하지 않습니다."
 
-#: lib/html.php:2433
+#: lib/html.php:2434
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "죄송합니다. 마지막 작업을 처리 할 수 없습니다."
 
-#: lib/html.php:2434
+#: lib/html.php:2435
 msgid "Error:"
 msgstr "오류:"
 
-#: lib/html.php:2435
+#: lib/html.php:2436
 msgid "Reason:"
 msgstr "이유:"
 
-#: lib/html.php:2436
+#: lib/html.php:2437
 #, fuzzy
 msgid "Action failed"
 msgstr "작업이 실패했습니다."
 
-#: lib/html.php:2437 pollers.php:754
+#: lib/html.php:2438 pollers.php:773
 #, fuzzy
 msgid "Connection Successful"
 msgstr "작업 성공"
 
-#: lib/html.php:2438 pollers.php:756
+#: lib/html.php:2439 pollers.php:775
 msgid "Connection Failed"
 msgstr "연결 실패"
 
-#: lib/html.php:2439
+#: lib/html.php:2440
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "마지막 행동에 대한 반응은 예상치 못했습니다."
 
-#: lib/html.php:2440
+#: lib/html.php:2441
 msgid "Some Actions failed"
 msgstr "일부 조치가 실패했습니다."
 
-#: lib/html.php:2441
+#: lib/html.php:2442
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "모든 행동을 처리 할 수는 없습니다. 세부 사항은 아래와 같습니다."
 
-#: lib/html.php:2442
+#: lib/html.php:2443
 #, fuzzy
 msgid "Operation successful"
 msgstr "작업 성공"
 
-#: lib/html.php:2443
+#: lib/html.php:2444
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "작업이 성공적으로 완료되었습니다. 세부 사항은 아래와 같습니다."
 
-#: lib/html.php:2445
+#: lib/html.php:2446
 msgid "Pause"
 msgstr "일시 정지"
 
-#: lib/html.php:2448
+#: lib/html.php:2449
 msgid "Zoom In"
 msgstr "확대"
 
-#: lib/html.php:2449
+#: lib/html.php:2450
 msgid "Zoom Out"
 msgstr "축소"
 
-#: lib/html.php:2450
+#: lib/html.php:2451
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "축소 계수"
 
-#: lib/html.php:2451
+#: lib/html.php:2452
 msgid "Timestamps"
 msgstr "타임스탬프"
 
-#: lib/html.php:2452
+#: lib/html.php:2453
 msgid "2x"
 msgstr "2x"
 
-#: lib/html.php:2453
+#: lib/html.php:2454
 msgid "4x"
 msgstr "4 배"
 
-#: lib/html.php:2454
+#: lib/html.php:2455
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2455
+#: lib/html.php:2456
 #, fuzzy
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2456
+#: lib/html.php:2457
 #, fuzzy
 msgid "32x"
 msgstr "32 배"
 
-#: lib/html.php:2457
+#: lib/html.php:2458
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "위치 조정 축소"
 
-#: lib/html.php:2458
+#: lib/html.php:2459
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "줌 모드"
 
-#: lib/html.php:2460
+#: lib/html.php:2461
 msgid "Quick"
 msgstr "빨리"
 
-#: lib/html.php:2462
+#: lib/html.php:2463
 msgid "Open in new tab"
 msgstr "새 탭으로 열기"
 
-#: lib/html.php:2463
+#: lib/html.php:2464
 #, fuzzy
 msgid "Save graph"
 msgstr "그래프 저장"
 
-#: lib/html.php:2464
+#: lib/html.php:2465
 #, fuzzy
 msgid "Copy graph"
 msgstr "그래프 복사"
 
-#: lib/html.php:2465
+#: lib/html.php:2466
 #, fuzzy
 msgid "Copy graph link"
 msgstr "그래프 링크 복사"
 
-#: lib/html.php:2466
+#: lib/html.php:2467
 msgid "Always On"
 msgstr "항상 켬"
 
-#: lib/html.php:2467
+#: lib/html.php:2468
 msgid "Auto"
 msgstr "자동"
 
-#: lib/html.php:2468
+#: lib/html.php:2469
 #, fuzzy
 msgid "Always Off"
 msgstr "항상 꺼짐"
 
-#: lib/html.php:2469
+#: lib/html.php:2470
 #, fuzzy
 msgid "Begin with"
 msgstr "시작하다"
 
-#: lib/html.php:2471
+#: lib/html.php:2472
 #, fuzzy
 msgid "End with"
 msgstr "종료일"
 
-#: lib/html.php:2473 lib/html_form.php:1303
+#: lib/html.php:2474 lib/html_form.php:1303
 msgid "Close"
 msgstr "닫기"
 
-#: lib/html.php:2475
+#: lib/html.php:2476
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "세 번째 마우스 버튼"
 
-#: lib/html_filter.php:81
+#: lib/html_filter.php:84
 #, fuzzy
 msgid "Apply filter to table"
 msgstr "표에 필터 적용"
 
-#: lib/html_filter.php:86
+#: lib/html_filter.php:89
 #, fuzzy
 msgid "Reset filter to default values"
 msgstr "필터를 기본값으로 재설정"
@@ -15830,7 +15830,7 @@ msgstr "Windows에서는 <a target='_blank' href='https://dev.mysql.com/download
 msgid "Then run the following within MySQL as an administrator:"
 msgstr "그런 다음 MySQL에서 관리자로 다음을 실행하십시오."
 
-#: lib/installer.php:1516 pollers.php:637
+#: lib/installer.php:1516 pollers.php:656
 msgid "Test Connection"
 msgstr "연결 테스트"
 
@@ -18128,367 +18128,384 @@ msgstr "선인장 기본 관리자"
 msgid "Cacti Automation Report requires an html based Email client"
 msgstr "Cacti Automation Report는 HTML 기반 이메일 클라이언트가 필요합니다"
 
-#: pollers.php:39
+#: pollers.php:40
 #, fuzzy
 msgid "Full Sync"
 msgstr "전체 동기화"
 
-#: pollers.php:43
+#: pollers.php:44
 #, fuzzy
 msgid "New/Idle"
 msgstr "신규 / 유휴"
 
-#: pollers.php:56
+#: pollers.php:57
 #, fuzzy
 msgid "Data Collector Information"
 msgstr "데이터 수집기 정보"
 
-#: pollers.php:61
+#: pollers.php:62
 #, fuzzy
 msgid "The primary name for this Data Collector."
 msgstr "이 데이터 수집기의 기본 이름입니다."
 
-#: pollers.php:64
+#: pollers.php:65
 #, fuzzy
 msgid "New Data Collector"
 msgstr "새로운 데이터 수집기"
 
-#: pollers.php:69
+#: pollers.php:70
 #, fuzzy
 msgid "Data Collector Hostname"
 msgstr "데이터 수집기 호스트 이름"
 
-#: pollers.php:70
+#: pollers.php:71
 #, fuzzy
 msgid "The hostname for Data Collector.  It may have to be a Fully Qualified Domain name for the remote Pollers to contact it for activities such as re-indexing, Real-time graphing, etc."
 msgstr "데이터 수집기의 호스트 이름입니다. 원격 폴러가 재 인덱싱, 실시간 그래프 작성 등과 같은 활동을 위해 원격 폴러에게 연락하는 데는 정규화 된 도메인 이름이어야합니다."
 
-#: pollers.php:78 sites.php:109
+#: pollers.php:79 sites.php:109
 msgid "TimeZone"
 msgstr "시간ㄷ"
 
-#: pollers.php:79
+#: pollers.php:80
 #, fuzzy
 msgid "The TimeZone for the Data Collector."
 msgstr "데이터 수집기의 TimeZone입니다."
 
-#: pollers.php:88
+#: pollers.php:89
 #, fuzzy
 msgid "Notes for this Data Collectors Database."
 msgstr "이 데이터 수집기 데이터베이스에 대한 참고 사항."
 
-#: pollers.php:95
+#: pollers.php:96
 msgid "Collection Settings"
 msgstr "컬렉션 설정"
 
-#: pollers.php:99
+#: pollers.php:100
 msgid "Processes"
 msgstr "프로세스"
 
-#: pollers.php:100
+#: pollers.php:101
 #, fuzzy
 msgid "The number of Data Collector processes to use to spawn."
 msgstr "생성에 사용할 데이터 수집기 프로세스 수입니다."
 
-#: pollers.php:109
+#: pollers.php:110
 #, fuzzy
 msgid "The number of Spine Threads to use per Data Collector process."
 msgstr "Data Collector 프로세스 당 사용할 Spine Threads 수입니다."
 
-#: pollers.php:117
+#: pollers.php:118
 #, fuzzy
 msgid "Sync Interval"
 msgstr "동기화 간격"
 
-#: pollers.php:118
+#: pollers.php:119
 #, fuzzy
 msgid "The polling sync interval in use.  This setting will affect how often this poller is checked and updated."
 msgstr "사용중인 폴링 동기화 간격입니다. 이 설정은이 폴러가 확인되고 업데이트되는 빈도에 영향을줍니다."
 
-#: pollers.php:125
+#: pollers.php:126
 #, fuzzy
 msgid "Remote Database Connection"
 msgstr "원격 데이터베이스 연결"
 
-#: pollers.php:130
+#: pollers.php:131
 #, fuzzy
 msgid "The hostname for the remote database server."
 msgstr "원격 데이터베이스 서버의 호스트 이름."
 
-#: pollers.php:138
+#: pollers.php:139
 #, fuzzy
 msgid "Remote Database Name"
 msgstr "원격 데이터베이스 이름"
 
-#: pollers.php:139
+#: pollers.php:140
 #, fuzzy
 msgid "The name of the remote database."
 msgstr "원격 데이터베이스의 이름."
 
-#: pollers.php:147
+#: pollers.php:148
 #, fuzzy
 msgid "Remote Database User"
 msgstr "원격 데이터베이스 사용자"
 
-#: pollers.php:148
+#: pollers.php:149
 #, fuzzy
 msgid "The user name to use to connect to the remote database."
 msgstr "원격 데이터베이스에 연결할 때 사용할 사용자 이름입니다."
 
-#: pollers.php:156
+#: pollers.php:157
 #, fuzzy
 msgid "Remote Database Password"
 msgstr "원격 데이터베이스 암호"
 
-#: pollers.php:157
+#: pollers.php:158
 #, fuzzy
 msgid "The user password to use to connect to the remote database."
 msgstr "원격 데이터베이스에 연결하는 데 사용할 사용자 암호."
 
-#: pollers.php:165
+#: pollers.php:166
 #, fuzzy
 msgid "Remote Database Port"
 msgstr "원격 데이터베이스 포트"
 
-#: pollers.php:166
+#: pollers.php:167
 #, fuzzy
 msgid "The TCP port to use to connect to the remote database."
 msgstr "원격 데이터베이스에 연결하는 데 사용할 TCP 포트."
 
-#: pollers.php:174
+#: pollers.php:175
 #, fuzzy
 msgid "Remote Database SSL"
 msgstr "원격 데이터베이스 SSL"
 
-#: pollers.php:175
+#: pollers.php:176
 #, fuzzy
 msgid "If the remote database uses SSL to connect, check the checkbox below."
 msgstr "원격 데이터베이스가 SSL을 사용하여 연결하는 경우, 아래의 확인란을 선택하십시오."
 
-#: pollers.php:181
+#: pollers.php:182
 #, fuzzy
 msgid "Remote Database SSL Key"
 msgstr "원격 데이터베이스 SSL 키"
 
-#: pollers.php:182
+#: pollers.php:183
 #, fuzzy
 msgid "The file holding the SSL Key to use to connect to the remote database."
 msgstr "원격 데이터베이스에 연결하는 데 사용할 SSL 키가있는 파일입니다."
 
-#: pollers.php:190
+#: pollers.php:191
 #, fuzzy
 msgid "Remote Database SSL Certificate"
 msgstr "원격 데이터베이스 SSL 인증서"
 
-#: pollers.php:191
+#: pollers.php:192
 #, fuzzy
 msgid "The file holding the SSL Certificate to use to connect to the remote database."
 msgstr "원격 데이터베이스에 연결하는 데 사용할 SSL 인증서가있는 파일입니다."
 
-#: pollers.php:199
+#: pollers.php:200
 #, fuzzy
 msgid "Remote Database SSL Authority"
 msgstr "원격 데이터베이스 SSL 기관"
 
-#: pollers.php:200
+#: pollers.php:201
 #, fuzzy
 msgid "The file holding the SSL Certificate Authority to use to connect to the remote database.  This is an optional parameter that can be required by the database provider if they have started SSL using the --ssl-mode=VERIFY_CA option."
 msgstr "원격 데이터베이스에 연결하는 데 사용할 SSL 인증 기관이있는 파일입니다. --ssl-mode = VERIFY_CA 옵션을 사용하여 SSL을 시작한 경우 데이터베이스 공급자가 요구할 수있는 선택적 매개 변수입니다."
 
-#: pollers.php:297
+#: pollers.php:298
 #, fuzzy, php-format
 msgid "You have already used this hostname '%s'.  Please enter a non-duplicate hostname."
 msgstr "이 호스트 이름 '%s'을 (를) 이미 사용했습니다. 중복되지 않는 호스트 이름을 입력하십시오."
 
-#: pollers.php:303
+#: pollers.php:304
 #, fuzzy, php-format
 msgid "You have already used this database hostname '%s'.  Please enter a non-duplicate database hostname."
 msgstr "이 데이터베이스 호스트 이름 '%s'을 (를) 이미 사용했습니다. 중복되지 않는 데이터베이스 호스트 이름을 입력하십시오."
 
-#: pollers.php:518
+#: pollers.php:493
+#, fuzzy
+msgid "Data Collector Statistics cleared."
+msgstr "데이터 출처 통계"
+
+#: pollers.php:528
 #, fuzzy
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
 msgid_plural "Click 'Continue' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector."
 msgstr[0] "다음 데이터 수집기를 삭제하려면 &#39;계속&#39;을 클릭하십시오. 모든 장치는이 Data Collector와의 연결을 끊고 Main Cacti Data Collector에 매핑됩니다."
 
-#: pollers.php:523
+#: pollers.php:533
 #, fuzzy
 msgid "Delete Data Collector"
 msgid_plural "Delete Data Collectors"
 msgstr[0] "데이터 수집기 삭제"
 
-#: pollers.php:527
+#: pollers.php:537
 #, fuzzy
 msgid "Click 'Continue' to disable the following Data Collector."
 msgid_plural "Click 'Continue' to disable the following Data Collectors."
 msgstr[0] "다음 데이터 수집기를 비활성화하려면 &#39;계속&#39;을 클릭하십시오."
 
-#: pollers.php:532
+#: pollers.php:542
 #, fuzzy
 msgid "Disable Data Collector"
 msgid_plural "Disable Data Collectors"
 msgstr[0] "데이터 수집기 사용 안 함"
 
-#: pollers.php:536
+#: pollers.php:546
 #, fuzzy
 msgid "Click 'Continue' to enable the following Data Collector."
 msgid_plural "Click 'Continue' to enable the following Data Collectors."
 msgstr[0] "&#39;계속&#39;을 클릭하여 다음 데이터 수집기를 활성화하십시오."
 
-#: pollers.php:541 pollers.php:550
+#: pollers.php:551 pollers.php:560
 #, fuzzy
 msgid "Enable Data Collector"
 msgid_plural "Enable Data Collectors"
 msgstr[0] "데이터 수집기 사용"
 
-#: pollers.php:545
+#: pollers.php:555
 #, fuzzy
 msgid "Click 'Continue' to Synchronize the Remote Data Collector for Offline Operation."
 msgid_plural "Click 'Continue' to Synchronize the Remote Data Collectors for Offline Operation."
 msgstr[0] "오프라인 데이터 수집을 위해 원격 데이터 수집기를 동기화하려면 &#39;계속&#39;을 클릭하십시오."
 
-#: pollers.php:591 sites.php:406
+#: pollers.php:564
+#, fuzzy
+msgid "Click 'Continue' to Clear Data Collector Statistics for the Data Collector."
+msgid_plural "Click 'Continue' to Clear DAta Collector Statistics for the Data Collectors."
+msgstr[0] "&#39;계속&#39;을 클릭하여 다음 데이터 수집기를 활성화하십시오."
+
+#: pollers.php:569
+#, fuzzy
+msgid "Clear Statistics for Data Collector"
+msgid_plural "Clear Statistics for Data Collectors"
+msgstr[0] "이 데이터 수집기의 상태."
+
+#: pollers.php:610 sites.php:406
 #, fuzzy, php-format
 msgid "Site [edit: %s]"
 msgstr "사이트 [편집 :  %s]"
 
-#: pollers.php:595 sites.php:408
+#: pollers.php:614 sites.php:408
 #, fuzzy
 msgid "Site [new]"
 msgstr "사이트 [신규]"
 
-#: pollers.php:629
+#: pollers.php:648
 #, fuzzy
 msgid "Remote Data Collectors must be able to communicate to the Main Data Collector, and vice versa.  Use this button to verify that the Main Data Collector can communicate to this Remote Data Collector."
 msgstr "원격 데이터 수집기는 주 데이터 수집기와 통신 할 수 있어야하며 반대의 경우도 마찬가지입니다. 이 단추를 사용하여 주 데이터 수집기가이 원격 데이터 수집기와 통신 할 수 있는지 확인하십시오."
 
-#: pollers.php:637
+#: pollers.php:656
 #, fuzzy
 msgid "Test Database Connection"
 msgstr "데이터베이스 연결 테스트"
 
-#: pollers.php:825
+#: pollers.php:844
 #, fuzzy
 msgid "Collectors"
 msgstr "수집가"
 
-#: pollers.php:938
+#: pollers.php:957
 #, fuzzy
 msgid "Collector Name"
 msgstr "수집기 이름"
 
-#: pollers.php:938
+#: pollers.php:957
 #, fuzzy
 msgid "The Name of this Data Collector."
 msgstr "이 데이터 수집기의 이름입니다."
 
-#: pollers.php:939
+#: pollers.php:958
 #, fuzzy
 msgid "The unique id associated with this Data Collector."
 msgstr "이 데이터 수집기와 연관된 고유 ID입니다."
 
-#: pollers.php:940
+#: pollers.php:959
 #, fuzzy
 msgid "The Hostname where the Data Collector is running."
 msgstr "데이터 수집기가 실행중인 호스트 이름."
 
-#: pollers.php:941
+#: pollers.php:960
 #, fuzzy
 msgid "The Status of this Data Collector."
 msgstr "이 데이터 수집기의 상태."
 
-#: pollers.php:942
+#: pollers.php:961
 #, fuzzy
 msgid "Proc/Threads"
 msgstr "Proc / Threads"
 
-#: pollers.php:942
+#: pollers.php:961
 #, fuzzy
 msgid "The Number of Poller Processes and Threads for this Data Collector."
 msgstr "이 데이터 수집기의 폴러 프로세스 및 스레드 수입니다."
 
-#: pollers.php:943
+#: pollers.php:962
 #, fuzzy
 msgid "Polling Time"
 msgstr "폴링 시간"
 
-#: pollers.php:943
+#: pollers.php:962
 #, fuzzy
 msgid "The last data collection time for this Data Collector."
 msgstr "이 데이터 수집기의 마지막 데이터 수집 시간입니다."
 
-#: pollers.php:944
+#: pollers.php:963
 #, fuzzy
 msgid "Avg/Max"
 msgstr "평균 / 최대"
 
-#: pollers.php:944
+#: pollers.php:963
 #, fuzzy
 msgid "The Average and Maximum Collector timings for this Data Collector."
 msgstr "이 데이터 수집기의 평균 및 최대 수집기 타이밍."
 
-#: pollers.php:945
+#: pollers.php:964
 #, fuzzy
 msgid "The number of Devices associated with this Data Collector."
 msgstr "이 데이터 수집기와 연결된 장치 수입니다."
 
-#: pollers.php:946
+#: pollers.php:965
 #, fuzzy
 msgid "SNMP Gets"
 msgstr "SNMP 가져 오기"
 
-#: pollers.php:946
+#: pollers.php:965
 #, fuzzy
 msgid "The number of SNMP gets associated with this Collector."
 msgstr "이 Collector와 연관된 SNMP의 수입니다."
 
-#: pollers.php:947
+#: pollers.php:966
 msgid "Scripts"
 msgstr "스크립트"
 
-#: pollers.php:947
+#: pollers.php:966
 #, fuzzy
 msgid "The number of script calls associated with this Data Collector."
 msgstr "이 Data Collector와 연관된 스크립트 호출 수입니다."
 
-#: pollers.php:948
+#: pollers.php:967
 msgid "Servers"
 msgstr "서버"
 
-#: pollers.php:948
+#: pollers.php:967
 #, fuzzy
 msgid "The number of script server calls associated with this Data Collector."
 msgstr "이 Data Collector와 연관된 스크립트 서버 호출 수입니다."
 
-#: pollers.php:949
+#: pollers.php:968
 #, fuzzy
 msgid "Last Finished"
 msgstr "마지막으로 완료된"
 
-#: pollers.php:949
+#: pollers.php:968
 #, fuzzy
 msgid "The last time this Data Collector completed."
 msgstr "이 데이터 수집기가 마지막으로 완료 한 시간."
 
-#: pollers.php:950
+#: pollers.php:969
 msgid "Last Update"
 msgstr "마지막 업데이트"
 
-#: pollers.php:950
+#: pollers.php:969
 #, fuzzy
 msgid "The last time this Data Collector checked in with the main Cacti site."
 msgstr "이 데이터 수집기가 주요 Cacti 사이트에 마지막으로 체크인 한 시간입니다."
 
-#: pollers.php:951
+#: pollers.php:970
 msgid "Last Sync"
 msgstr "마지막 동기화"
 
-#: pollers.php:951
+#: pollers.php:970
 #, fuzzy
 msgid "The last time this Data Collector was full synced with main Cacti site."
 msgstr "이 데이터 수집기가 Cacti 주요 사이트와 완전히 동기화 된 마지막 시간입니다."
 
-#: pollers.php:1003
+#: pollers.php:1022
 #, fuzzy
 msgid "No Data Collectors Found"
 msgstr "데이터 수집기 없음"
