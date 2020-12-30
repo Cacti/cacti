@@ -30,8 +30,7 @@ include_once(__DIR__ . '/../lib/ping.php');
  */
 function ss_fping($hostname, $ping_sweeps=6, $ping_type='ICMP', $port=80) {
 	/* record start time */
-	list($micro,$seconds) = explode(' ', microtime());
-	$ss_fping_start       = $seconds + $micro;
+	$ss_fping_start = microtime(true);
 
 	$ping = new Net_Ping;
 
@@ -83,8 +82,7 @@ function ss_fping($hostname, $ping_sweeps=6, $ping_type='ICMP', $port=80) {
 		$i++;
 
 		/* get current time */
-		list($micro,$seconds) = explode(' ', microtime());
-		$ss_fping_current     = $seconds + $micro;
+		$ss_fping_current = microtime(true);
 
 		/* if called from script server, end one second before a timeout occurs */
 		if (isset($called_by_script_server) && ($ss_fping_current - $ss_fping_start + ($ping_timeout / 1000) + 1) > $script_timeout) {

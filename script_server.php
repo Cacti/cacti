@@ -102,17 +102,21 @@ ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
 
 /* Record the calling environment */
 if ($_SERVER['argc'] >= 2) {
-	if ($_SERVER['argv'][1] == 'spine')
+	if ($_SERVER['argv'][1] == 'spine') {
 		$environ = 'spine';
-	elseif (($_SERVER['argv'][1] == 'cmd.php') || ($_SERVER['argv'][1] == 'cmd'))
-			$environ = 'cmd';
-		elseif ($_SERVER['argv'][1] == 'realtime')
-			$environ     = 'realtime';
-		else $environ = 'other';
+	} elseif (($_SERVER['argv'][1] == 'cmd.php') || ($_SERVER['argv'][1] == 'cmd')) {
+		$environ = 'cmd';
+	} elseif ($_SERVER['argv'][1] == 'realtime') {
+		$environ     = 'realtime';
+	} else {
+		$environ = 'other';
+	}
 
-	if ($_SERVER['argc'] == 3)
+	if ($_SERVER['argc'] == 3) {
 		$poller_id     = $_SERVER['argv'][2];
-	else $poller_id = 1;
+	} else {
+		$poller_id = 1;
+	}
 } else {
 	$environ   = 'cmd';
 	$poller_id = 1;
@@ -187,6 +191,7 @@ while (1) {
 			if (!$log_keep && file_exists($log_file)) {
 				unlink($log_file);
 			}
+
 			db_close();
 
 			exit(0);

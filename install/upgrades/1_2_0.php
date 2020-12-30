@@ -51,18 +51,27 @@ function upgrade_to_1_2_0() {
 		// the new Data Collector table settings
 
 		// Ensure value falls in line with what we expect for processes
-		$max_processes                          = read_config_option('concurrent_processes');
+		$max_processes = read_config_option('concurrent_processes');
 
-		if ($max_processes < 1) $max_processes  = 1;
 
-		if ($max_processes > 10) $max_processes = 10;
+		if ($max_processes < 1) {
+			$max_processes  = 1;
+		}
+
+		if ($max_processes > 10) {
+			$max_processes = 10;
+		}
 
 		// Ensure value falls in line with what we expect for threads
-		$max_threads                         = read_config_option('max_threads');
+		$max_threads = read_config_option('max_threads');
 
-		if ($max_threads < 1) $max_threads   = 1;
+		if ($max_threads < 1) {
+			$max_threads   = 1;
+		}
 
-		if ($max_threads > 100) $max_threads = 100;
+		if ($max_threads > 100) {
+			$max_threads = 100;
+		}
 
 		db_install_execute("UPDATE poller SET processes = $max_processes, threads = $max_threads");
 	}

@@ -295,12 +295,19 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 	$errno = $errno & error_reporting();
 
-	# return if error handling disabled by @
-	if ($errno == 0) return;
-	# define constants not available with PHP 4
-	if (!defined('E_STRICT'))            define('E_STRICT', 2048);
+	// return if error handling disabled by @
+	if ($errno == 0) {
+		return;
+	}
 
-	if (!defined('E_RECOVERABLE_ERROR')) define('E_RECOVERABLE_ERROR', 4096);
+	// define constants not available with PHP 4
+	if (!defined('E_STRICT')) {
+		define('E_STRICT', 2048);
+	}
+
+	if (!defined('E_RECOVERABLE_ERROR')) {
+		define('E_RECOVERABLE_ERROR', 4096);
+	}
 
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */

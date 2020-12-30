@@ -109,7 +109,8 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 				continue;
 			}
 
-			$parts                                     = explode('.', $measure['oid']);
+			$parts = explode('.', $measure['oid']);
+
 			$indexes[$parts[cacti_sizeof($parts) - 1]] = $parts[cacti_sizeof($parts) - 1];
 		}
 
@@ -118,7 +119,8 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 				continue;
 			}
 
-			$parts                                     = explode('.', $measure['oid']);
+			$parts = explode('.', $measure['oid']);
+
 			$indexes[$parts[cacti_sizeof($parts) - 1]] = $parts[cacti_sizeof($parts) - 1];
 		}
 	}
@@ -203,6 +205,7 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 		}
 
 		$data = "'" . json_encode($current) . "'";
+
 		shell_exec("echo $data > $tmpdir/$tmpfile");
 	}
 

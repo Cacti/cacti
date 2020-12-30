@@ -249,7 +249,8 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 
 	foreach ($asum_array as $ds_name => $data_by_timestamp) {
 		$cstats['stats_' . $ds_name] = cacti_stats_calc($data_by_timestamp, $percentile);
-		$stats[$ds_name]             = $cstats['stats_' . $ds_name]['p' . $percentile . 'n'];
+
+		$stats[$ds_name] = $cstats['stats_' . $ds_name]['p' . $percentile . 'n'];
 
 		/* scan all non built-in data sources for aggregate total data */
 		if ($ds_name != 'nth_percentile_sum' &&

@@ -35,7 +35,8 @@ function graph_template_to_xml($graph_template_id) {
 	global $struct_graph, $fields_graph_template_input_edit, $struct_graph_item, $export_errors;
 
 	$hash['graph_template'] = get_hash_version('graph_template') . get_hash_graph_template($graph_template_id);
-	$xml_text               = '';
+
+	$xml_text = '';
 
 	$graph_template = db_fetch_row_prepared('SELECT id, name
 		FROM graph_templates
@@ -201,7 +202,8 @@ function data_template_to_xml($data_template_id) {
 	global $struct_data_source, $struct_data_source_item, $export_errors;
 
 	$hash['data_template'] = get_hash_version('data_template') . get_hash_data_template($data_template_id);
-	$xml_text              = '';
+
+	$xml_text = '';
 
 	$data_template = db_fetch_row_prepared('SELECT id, name
 		FROM data_template
@@ -333,7 +335,8 @@ function data_input_method_to_xml($data_input_id) {
 	$fields_data_input_field_edit += $fields_data_input_field_edit_1;
 
 	$hash['data_input_method'] = get_hash_version('data_input_method') . get_hash_data_input($data_input_id);
-	$xml_text                  = '';
+
+	$xml_text = '';
 
 	$data_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
@@ -427,7 +430,8 @@ function cdef_to_xml($cdef_id) {
 	);
 
 	$hash['cdef'] = get_hash_version('cdef') . get_hash_cdef($cdef_id);
-	$xml_text     = '';
+
+	$xml_text = '';
 
 	$cdef = db_fetch_row_prepared('SELECT *
 		FROM cdef
@@ -504,7 +508,8 @@ function vdef_to_xml($vdef_id) {
 	include_once($config['library_path'] . '/vdef.php');
 
 	$hash['vdef'] = get_hash_version('vdef') . get_hash_vdef($vdef_id);
-	$xml_text     = '';
+
+	$xml_text = '';
 
 	$vdef = db_fetch_row_prepared('SELECT *
 		FROM vdef
@@ -616,8 +621,9 @@ function gprint_preset_to_xml($gprint_preset_id) {
 function data_source_profile_to_xml($data_source_profile_id) {
 	global $fields_profile_edit, $fields_profile_rra_edit, $export_errors;
 
-	$hash        = get_hash_version('data_source_profile') . get_hash_data_source_profile($data_source_profile_id);
-	$xml_text    = '';
+	$hash = get_hash_version('data_source_profile') . get_hash_data_source_profile($data_source_profile_id);
+
+	$xml_text = '';
 
 	$profile = db_fetch_row_prepared('SELECT *
 		FROM data_source_profiles
@@ -805,7 +811,8 @@ function data_query_to_xml($data_query_id) {
 	global $fields_data_query_edit, $fields_data_query_item_edit, $export_errors;
 
 	$hash['data_query'] = get_hash_version('data_query') . get_hash_data_query($data_query_id);
-	$xml_text           = '';
+
+	$xml_text = '';
 
 	$snmp_query = db_fetch_row_prepared('SELECT *
 		FROM snmp_query
