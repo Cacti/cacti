@@ -629,8 +629,14 @@ function vdef_edit() {
 		html_start_box(__('VDEF Items'), '100%', '', '3', 'center', 'vdef.php?action=item_edit&vdef_id=' . $vdef['id']);
 
 		$header_items = array(
-			array('display' => __('Item'), 'align' => 'left'),
-			array('display' => __('Item Value'), 'align' => 'left')
+			array(
+				'display' => __('Item'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Item Value'),
+				'align'   => 'left'
+			)
 		);
 
 		html_header($header_items, 2);

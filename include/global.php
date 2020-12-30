@@ -498,7 +498,7 @@ if ((bool)ini_get('register_globals')) {
 	unset($input['not_unset']);
 
 	foreach ($input as $var => $val) {
-		if (!in_array($var, $not_unset, true)) {
+		if (!in_array($var, $not_unset, false)) {
 			unset($$var);
 		}
 	}

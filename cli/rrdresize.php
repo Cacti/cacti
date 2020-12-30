@@ -92,19 +92,16 @@ if (sizeof($parms)) {
 
 					exit(1);
 				}
-			} else {
-				if (is_dir($backup_folder) === false) {
-					print "ERROR: Given backup folder: \"$backup_folder\" is not a directory" . PHP_EOL;
+			} elseif (is_dir($backup_folder) === false) {
+				print "ERROR: Given backup folder: \"$backup_folder\" is not a directory" . PHP_EOL;
+
+				exit(1);
+			} elseif (!is_writable($backup_folder)) {
+				print "ERROR: No write permission to backup folder: \"$backup_folder\" given." . PHP_EOL;
 
 					exit(1);
-				} else {
-					if (!is_writable($backup_folder)) {
-						print "ERROR: No write permission to backup folder: \"$backup_folder\" given." . PHP_EOL;
-
-						exit(1);
-					}
-				}
 			}
+
 			$tmp_backup_folder = $backup_folder . '/' . date('d-m-Y_G-i-s') . '/';
 
 			break;
@@ -294,7 +291,7 @@ if ($scanned_directory['folders']) {
 
 	$subfolders = $scanned_directory['content'];
 
-	$counter=0;
+	$counter = 0;
 
 	foreach ($subfolders as $host_id => $host_data) {
 		if (!in_array($host_id, $dt_hosts, true)) {
@@ -307,7 +304,10 @@ if ($scanned_directory['folders']) {
 			foreach ($host_files as $host_file) {
 				$local_data_id = intval(substr($host_file, 0, -4));
 
-				if (!in_array($local_data_id, $dt_data_sources, true))	continue;
+				if (!in_array($local_data_id, $dt_data_sources, true)) {
+					continue;
+				}
+
 				/************** Data Template Data *****************/
 				$file = $path_rra . DIRECTORY_SEPARATOR . $host_id . DIRECTORY_SEPARATOR . $host_file;
 
@@ -333,12 +333,13 @@ if ($scanned_directory['folders']) {
 				}
 
 				$search_pattern = '<path_rra>/' . $host_id . '/' . $host_file;
-				$local_data     = db_fetch_row('SELECT *
+
+				$local_data = db_fetch_row('SELECT *
 					FROM data_template_data
 					WHERE data_source_path = ?',
 					array(db_qstr($search_pattern)));
 
-				if ($local_data) {
+				if (cacti_sizeof($local_data)) {
 					if ($local_data['data_template_id'] != $data_template_id) {
 						/* this file has not to be update due to template mismatches */
 						f_log('[SKIPPED] Template mismatch: ' . $file);
@@ -358,7 +359,9 @@ if ($scanned_directory['folders']) {
 						WHERE hash != ''
 						AND data_template_id = ? ORDER BY id",
 						array($local_data['data_template_id']));
+
 					$data_template_ds_counter    = sizeof($data_template_ds);
+
 					$data_template_data_settings = db_fetch_assoc_prepared('SELECT *
 						FROM data_template_data_rra
 						LEFT JOIN rra
@@ -482,7 +485,7 @@ if ($scanned_directory['folders']) {
 						$ds_names = array_keys($rrd_info['ds']);
 
 						foreach ($tmp_ds as $tmp_ds_name => $tmp_ds_settings) {
-							$ds_superfluos_ids += array_keys($ds_names, $tmp_ds_name, true);
+							$ds_superfluos_ids += array_keys($ds_names, $tmp_ds_name, false);
 						}
 
 						f_notify('DS COUNT');
@@ -580,10 +583,11 @@ if ($scanned_directory['folders']) {
 					"\t<lastupdate>" . $rrd_info['last_update'] . '</lastupdate>' . PHP_EOL;
 
 				$rrd_new_ds_definition = '';
-				$i                     = 0;
+
+				$i = 0;
 
 				foreach ($rrd_info['ds'] as $rrd_info_ds_name => $rrd_info_ds_settings) {
-					if (!in_array($i, $ds_superfluos_ids, true)) {
+					if (!in_array($i, $ds_superfluos_ids, false)) {
 						$rrd_new_ds_definition__ds_definition_template = "\t<ds>" . PHP_EOL .
 							"\t\t<name> " . $rrd_info_ds_name . ' </name>' . PHP_EOL .
 							"\t\t<type> " . $rrd_info_ds_settings['type'] . ' </type>' . PHP_EOL .
@@ -858,7 +862,9 @@ if ($scanned_directory['folders']) {
 					f_notify(false, "\033[0;32m[COMPLETED]\033[0m");
 
 					/* create host backup directory if it is still not existing */
-					if (!is_dir($tmp_backup_folder . $host_id)) mkdir($tmp_backup_folder . $host_id);
+					if (!is_dir($tmp_backup_folder . $host_id)) {
+						mkdir($tmp_backup_folder . $host_id);
+					}
 
 					f_notify('RRDtool Backup');
 
@@ -881,16 +887,23 @@ if ($scanned_directory['folders']) {
 					}
 				}
 
-				if (!$debug_mode) fwrite(STDOUT, '.');
+				if (!$debug_mode) {
+					fwrite(STDOUT, '.');
+				}
+
 				$counter++;
 
-				if ($counter % 1000 == 0) fwrite(STDOUT, $counter);
+				if ($counter % 1000 == 0) {
+					fwrite(STDOUT, $counter);
+				}
 			}
 		}
 	}
 }
 
-if (!$debug_mode) fwrite(STDOUT, "\r\n");
+if (!$debug_mode) {
+	fwrite(STDOUT, "\r\n");
+}
 
 exit;
 
@@ -940,10 +953,11 @@ function rrdtool_parse_info($lines) {
  */
 function rrdtool_pipe_init($path_rrdtool) {
 	$fds = array(
-		0  => array('pipe', 'r'),		// stdin
-			1 => array('pipe', 'w'),		// stdout
-			2 => array('file', '/dev/null', 'a')	// stderr
+		0 => array('pipe', 'r'),             // stdin
+		1 => array('pipe', 'w'),             // stdout
+		2 => array('file', '/dev/null', 'a') // stderr
 	);
+
 	$process = proc_open($path_rrdtool . ' -', $fds, $pipes);
 
 	/* make stdin/stdout/stderr non-blocking */

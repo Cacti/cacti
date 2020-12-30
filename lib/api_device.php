@@ -26,8 +26,8 @@
  * api_device_crc_update - update hash stored in settings table to inform
  * remote pollers to update their caches
  *
- * @arg $poller_id - the id of the poller impacted by hash update
- * @arg $variable  - the hash variable prefix for the replication setting.
+ * @param $poller_id - the id of the poller impacted by hash update
+ * @param $variable  - the hash variable prefix for the replication setting.
  */
 function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_device_cache_crc') {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
@@ -38,7 +38,7 @@ function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_d
 /**
  * api_device_remove - removes a device
  *
- * @arg $device_id - the id of the device to remove
+ * @param $device_id - the id of the device to remove
  */
 function api_device_remove($device_id) {
 	global $config;
@@ -87,8 +87,8 @@ function api_device_remove($device_id) {
 /**
  * api_device_purge_from_remote - removes a device from a remote data collectors
  *
- * @arg $device_ids - device id or an array of device_ids of a host or hosts
- * @arg $poller_id  - the previous poller if it changed
+ * @param $device_ids - device id or an array of device_ids of a host or hosts
+ * @param $poller_id  - the previous poller if it changed
  */
 function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 	if ($poller_id > 1) {
@@ -157,8 +157,8 @@ function api_device_purge_deleted_devices() {
 /**
  * api_device_remove_multi - removes multiple devices in one call
  *
- * @arg $device_ids - an array of device id's to remove
- * @arg $delete_type - boolean to keep data source and graphs or remove
+ * @param $device_ids - an array of device id's to remove
+ * @param $delete_type - boolean to keep data source and graphs or remove
  */
 function api_device_remove_multi($device_ids, $delete_type = 2) {
 	global $config;
@@ -457,9 +457,9 @@ function api_device_sync_device_templates($device_ids) {
 /**
  * api_device_dq_add - adds a device->data query mapping
  *
- * @arg $device_id - the id of the device which contains the mapping
- * @arg $data_query_id - the id of the data query to remove the mapping for
- * @arg $reindex_method - the reindex method to user when adding the data query
+ * @param $device_id - the id of the device which contains the mapping
+ * @param $data_query_id - the id of the data query to remove the mapping for
+ * @param $reindex_method - the reindex method to user when adding the data query
  */
 function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
 	global $config;
@@ -483,8 +483,8 @@ function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
 /**
  * api_device_dq_remove - removes a device->data query mapping
  *
- * @arg $device_id - the id of the device which contains the mapping
- * @arg $data_query_id - the id of the data query to remove the mapping for
+ * @param $device_id - the id of the device which contains the mapping
+ * @param $data_query_id - the id of the data query to remove the mapping for
  */
 function api_device_dq_remove($device_id, $data_query_id) {
 	global $config;
@@ -525,9 +525,9 @@ function api_device_dq_remove($device_id, $data_query_id) {
 /**
  * api_device_dq_change - changes a device->data query mapping
  *
- * @arg $device_id - the id of the device which contains the mapping
- * @arg $data_query_id - the id of the data query to remove the mapping for
- * @arg $reindex_method - the reindex method to use when changing the data query
+ * @param $device_id - the id of the device which contains the mapping
+ * @param $data_query_id - the id of the data query to remove the mapping for
+ * @param $reindex_method - the reindex method to use when changing the data query
  */
 function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 	global $config;
@@ -561,8 +561,8 @@ function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 /**
  * api_device_gt_remove - removes a device->graph template mapping
  *
- * @arg $device_id - the id of the device which contains the mapping
- * @arg $graph_template_id - the id of the graph template to remove the mapping for
+ * @param $device_id - the id of the device which contains the mapping
+ * @param $graph_template_id - the id of the graph template to remove the mapping for
  */
 function api_device_gt_remove($device_id, $graph_template_id) {
 	global $config;
@@ -970,7 +970,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
  * api_device_quick_save - checks if the poller cache needs to be
  * rebuilt as a part of a device save.
  *
- * @arg $save - the save structure for the device
+ * @param $save - the save structure for the device
  *
  * @return boolean
  */
@@ -1013,8 +1013,8 @@ function api_device_quick_save(&$save) {
 /**
  * api_device_update_host_template - changes the host template of a host
  *
- * @arg $host_id - the id of the device which contains the mapping
- * @arg $host_template_id - the id of the host template alter the device to
+ * @param $host_id - the id of the device which contains the mapping
+ * @param $host_template_id - the id of the host template alter the device to
  */
 function api_device_update_host_template($host_id, $host_template_id) {
 	global $config;
@@ -1132,9 +1132,9 @@ function api_device_update_host_template($host_id, $host_template_id) {
 /**
  * api_device_template_sync_template - updates the device template mapping for all devices mapped to a template
  *
- * @arg $device_template - the device template to syncronize
- * @arg $host_ids - an array of host_ids or a string with a single host_id
- * @arg $down_devices - also update mapping of down devices
+ * @param $device_template - the device template to syncronize
+ * @param $host_ids - an array of host_ids or a string with a single host_id
+ * @param $down_devices - also update mapping of down devices
  */
 function api_device_template_sync_template($device_template, $host_ids = '', $down_devices = false) {
 	if ($down_devices == true) {

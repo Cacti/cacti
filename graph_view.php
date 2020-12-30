@@ -675,12 +675,12 @@ case 'list':
 											print "<option value='" . $gt['id'] . "'";
 
 											if (cacti_sizeof($selected)) {
-												if (in_array($gt['id'], $selected, true)) {
+												if (in_array($gt['id'], $selected, false)) {
 													print ' selected';
 												}
 											}
 											print '>';
-											print html_escape($gt['name']) . "</option>\n";
+											print html_escape($gt['name']) . '</option>';
 										}
 									}
 								}

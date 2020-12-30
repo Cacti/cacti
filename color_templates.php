@@ -74,9 +74,21 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 	global $struct_color_template_item;
 
 	$display_text = array(
-		array('display' => __('Color Item'), 'align' => 'left', 'nohide' => true),
-		array('display' => __('Color'), 'align' => 'left', 'nohide' => true),
-		array('display' => __('Hex'), 'align' => 'left', 'nohide' => true),
+		array(
+			'display' => __('Color Item'),
+			'align'   => 'left',
+			'nohide'  => true
+		),
+		array(
+			'display' => __('Color'),
+			'align'   => 'left',
+			'nohide'  => true
+		),
+		array(
+			'display' => __('Hex'),
+			'align'   => 'left',
+			'nohide'  => true
+		),
 	);
 
 	html_header($display_text, 2);
@@ -658,10 +670,25 @@ function aggregate_color_template() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'      => array(__('Template Title'), 'ASC'),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template.')),
-		'graphs'    => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC'),
-		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC')
+		'name' => array(
+			'display' => __('Template Title'),
+			'sort'    => 'ASC'
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align'   => 'right',
+			'tip'     => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template.')
+		),
+		'graphs' => array(
+			'display' => __('Graphs'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'templates' => array(
+			'display' => __('Templates'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);

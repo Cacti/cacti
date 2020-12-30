@@ -196,24 +196,25 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
 
 							if (cacti_sizeof($graph_templates)) {
-								$selected    = explode(',', get_request_var('graph_template_id'));
+								$selected = explode(',', get_request_var('graph_template_id'));
 
 								foreach ($graph_templates as $gt) {
 									$found = db_fetch_cell_prepared('SELECT id
 										FROM graph_local
-										WHERE graph_template_id = ? LIMIT 1',
+										WHERE graph_template_id = ?
+										LIMIT 1',
 										array($gt['id']));
 
 									if ($found) {
 										print "<option value='" . $gt['id'] . "'";
 
 										if (cacti_sizeof($selected)) {
-											if (in_array($gt['id'], $selected, true)) {
+											if (in_array($gt['id'], $selected, false)) {
 												print ' selected';
 											}
 										}
 										print '>';
-										print html_escape($gt['name']) . "</option>\n";
+										print html_escape($gt['name']) . '</option>';
 									}
 								}
 							}

@@ -304,7 +304,7 @@ function color_import_processor(&$colors) {
 
 			if (cacti_sizeof($line_array)) {
 			foreach ($line_array as $line_item) {
-				if (in_array($j, $insert_columns, true)) {
+				if (in_array($j, $insert_columns, false)) {
 					$line_item = trim(str_replace("'", '', $line_item));
 					$line_item = trim(str_replace('"', '', $line_item));
 
@@ -742,13 +742,48 @@ function color() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'hex'       => array('display' => __('Hex'), 'align' => 'left', 'sort' => 'DESC', 'tip' => __('The Hex Value for this Color.')),
-		'name'      => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
-		'read_only' => array('display' => __('Named Color'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Is this color a named color which are read only.')),
-		'nosort1'   => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
-		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
-		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
+		'hex' => array(
+			'display' => __('Hex'),
+			'align'   => 'left',
+			'sort'    => 'DESC',
+			'tip'     => __('The Hex Value for this Color.')
+		),
+		'name' => array(
+			'display' => __('Color Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this Color definition.')
+		),
+		'read_only' => array(
+			'display' => __('Named Color'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('Is this color a named color which are read only.')
+		),
+		'nosort1' => array(
+			'display' => __('Color'),
+			'align'   => 'center',
+			'sort'    => 'DESC',
+			'tip'     => __('The Color as shown on the screen.')
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align'   => 'right',
+			'sort'    => '',
+			'tip'     => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')
+		),
+		'graphs' => array(
+			'display' => __('Graphs Using'),
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Graph using this Color.')
+		),
+		'templates' => array(
+			'display' => __('Templates Using'),
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Graph Templates using this Color.')
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);

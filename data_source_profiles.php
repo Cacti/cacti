@@ -640,11 +640,26 @@ function profile_edit() {
 		}
 
 		$display_text = array(
-			array('display' => __('Name'),           'align' => 'left'),
-			array('display' => __('Data Retention'), 'align' => 'left'),
-			array('display' => __('Graph Timespan'), 'align' => 'left'),
-			array('display' => __('Steps'),          'align' => 'left'),
-			array('display' => __('Rows'),           'align' => 'left'),
+			array(
+				'display' => __('Name'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Data Retention'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Graph Timespan'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Steps'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Rows'),
+				'align'   => 'left'
+			),
 		);
 
 		html_header($display_text, 2);

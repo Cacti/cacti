@@ -404,8 +404,10 @@ function manager_notifications($id, $header_label) {
 
 	$registered_mibs = array();
 
-	if ($mibs && $mibs > 0) {
-		foreach ($mibs as $mib) { $registered_mibs[] = $mib['mib']; }
+	if (cacti_sizeof($mibs)) {
+		foreach ($mibs as $mib) {
+			$registered_mibs[] = $mib['mib'];
+		}
 	}
 
 	/* ================= input validation ================= */
@@ -680,7 +682,7 @@ function manager_logs($id, $header_label) {
 		die_html_input_error('id');
 	}
 
-	if (!in_array(get_request_var('severity'), array_keys($severity_levels), true) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
+	if (!in_array(get_request_var('severity'), array_keys($severity_levels), false) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
 		die_html_input_error('severity');
 	}
 
@@ -893,7 +895,7 @@ function form_save() {
 	get_filter_request_var('id');
 	get_filter_request_var('max_log_size');
 
-	if (!in_array(get_nfilter_request_var('max_log_size'), range(1,31), true)) {
+	if (!in_array(get_nfilter_request_var('max_log_size'), range(1, 31), false)) {
 		//	die_html_input_error();
 	}
 	/* ================= input validation ================= */

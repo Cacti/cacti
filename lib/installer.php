@@ -1857,7 +1857,7 @@ class Installer implements JsonSerializable {
 
 		if ($config['cacti_server_os'] == 'unix') {
 			$output .= Installer::sectionNormal(__("On Linux/UNIX, run the following as 'root' in a shell:"));
-			$output .= Installer::sectionCode(sprintf('mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql'));
+			$output .= Installer::sectionCode('mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql');
 		} else {
 			$output .= Installer::sectionNormal(__("On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"));
 		}

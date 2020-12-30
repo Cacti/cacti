@@ -605,20 +605,62 @@ function automation_snmp_edit() {
 		html_start_box(__('Automation SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . get_request_var('id'));
 
 		$display_text = array(
-			array('display' => __('Item'), 'align' => 'left'),
-			array('display' => __('Version'), 'align' => 'left'),
-			array('display' => __('Community'), 'align' => 'left'),
-			array('display' => __('Port'), 'align' => 'right'),
-			array('display' => __('Timeout'), 'align' => 'right'),
-			array('display' => __('Retries'), 'align' => 'right'),
-			array('display' => __('Max OIDS'), 'align' => 'right'),
-			array('display' => __('Auth Username'), 'align' => 'left'),
-			array('display' => __('Auth Password'), 'align' => 'left'),
-			array('display' => __('Auth Protocol'), 'align' => 'left'),
-			array('display' => __('Priv Passphrase'), 'align' => 'left'),
-			array('display' => __('Priv Protocol'), 'align' => 'left'),
-			array('display' => __('Context'), 'align' => 'left'),
-			array('display' => __('Action'), 'align' => 'right')
+			array(
+				'display' => __('Item'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Version'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Community'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Port'),
+				'align'   => 'right'
+			),
+			array(
+				'display' => __('Timeout'),
+				'align'   => 'right'
+			),
+			array(
+				'display' => __('Retries'),
+				'align'   => 'right'
+			),
+			array(
+				'display' => __('Max OIDS'),
+				'align'   => 'right'
+			),
+			array(
+				'display' => __('Auth Username'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Auth Password'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Auth Protocol'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Priv Passphrase'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Priv Protocol'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Context'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Action'),
+				'align'   => 'right'
+			)
 		);
 
 		html_header($display_text);
@@ -882,12 +924,36 @@ function automation_snmp() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'      => array('display' => __('SNMP Option Set'), 'align' => 'left',  'sort' => 'ASC'),
-		'networks'  => array('display' => __('Networks Using'),  'align' => 'right', 'sort' => 'DESC'),
-		'totals'    => array('display' => __('SNMP Entries'),    'align' => 'right', 'sort' => 'DESC'),
-		'v1entries' => array('display' => __('V1 Entries'),      'align' => 'right', 'sort' => 'DESC'),
-		'v2entries' => array('display' => __('V2 Entries'),      'align' => 'right', 'sort' => 'DESC'),
-		'v3entries' => array('display' => __('V3 Entries'),      'align' => 'right', 'sort' => 'DESC')
+		'name' => array(
+			'display' => __('SNMP Option Set'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'networks' => array(
+			'display' => __('Networks Using'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'totals' => array(
+			'display' => __('SNMP Entries'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'v1entries' => array(
+			'display' => __('V1 Entries'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'v2entries' => array(
+			'display' => __('V2 Entries'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'v3entries' => array(
+			'display' => __('V3 Entries'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);

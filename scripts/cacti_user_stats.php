@@ -108,12 +108,12 @@ if ($cacti_db_session == true) {
 						$session_counter_active++;
 
 						/* count all active users */
-						if (false === ($key = array_search($session_user_id, $user_ids_active, true))) {
+						if (false === ($key = array_search($session_user_id, $user_ids_active, false))) {
 							$user_ids_active[] = $session_user_id;
 						}
 
 						/* if the same user has more than one session and this one is active then the user is not sleeping */
-						if (false !== ($key = array_search($session_user_id, $user_ids_sleeping, true))) {
+						if (false !== ($key = array_search($session_user_id, $user_ids_sleeping, false))) {
 							unset($user_ids_sleeping[$key]);
 						}
 
@@ -126,7 +126,7 @@ if ($cacti_db_session == true) {
 						$session_counter_sleeping++;
 
 						/* count all sleeping users if they have no active sessions */
-						if (!in_array($session_user_id, $user_ids_active, true) & !in_array($session_user_id, $user_ids_sleeping, true)) {
+						if (!in_array($session_user_id, $user_ids_active, true) & !in_array($session_user_id, $user_ids_sleeping, false)) {
 							$user_ids_sleeping[] = $session_user_id;
 						}
 

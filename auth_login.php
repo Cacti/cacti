@@ -112,7 +112,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm ". $frv_realm . ', using method ' . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+	cacti_log("DEBUG: User '$username' attempting to login with realm $frv_realm, using method $auth_method", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 	// Realms of 1 or below are internal
 	$auth_local_required = ($frv_realm < 2);
@@ -140,7 +140,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			array($username));
 
 		if (!$user && get_template_account() == '0' && get_guest_account() == '0') {
-			cacti_log("ERROR: User '" . $username . "' authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.  Exiting.", false, 'AUTH');
+			cacti_log("ERROR: User '$username' authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.  Exiting.", false, 'AUTH');
 			$username = html_escape($username);
 
 			display_custom_error_message(__('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username));
@@ -177,7 +177,7 @@ if (get_nfilter_request_var('action') == 'login') {
 					$realm     = 3;
 
 					/* Locate user in database */
-					cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated", false, 'AUTH');
+					cacti_log("LOGIN: LDAP User '$username' Authenticated", false, 'AUTH');
 
 					$user = db_fetch_row_prepared('SELECT *
 						FROM user_auth
@@ -196,7 +196,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		break;
 	case '4':
-		cacti_log("DEBUG: User '" . $username . "' attempting domain lookup for realm " . $frv_realm . ' with ' . ($auth_local_required ? '':'no') . ' local lookup', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+		cacti_log("DEBUG: User '$username' attempting domain lookup for realm $frv_realm with " . ($auth_local_required ? '' : 'no') . ' local lookup', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 		if ($frv_realm > 0) {
 			domains_login_process($username);
@@ -210,7 +210,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		break;
 	}
 
-	cacti_log("DEBUG: User '" . $username . "' attempt login locally? " . ($auth_local_required ? 'Yes':'No'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+	cacti_log("DEBUG: User '$username' attempt login locally? " . ($auth_local_required ? 'Yes' : 'No'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 	if ($auth_local_required) {
 		secpass_login_process($username);
@@ -227,7 +227,7 @@ if (get_nfilter_request_var('action') == 'login') {
 					$p     = get_nfilter_request_var('login_password');
 					$valid = compat_password_verify($p, $stored_pass);
 
-					cacti_log("DEBUG: User '" . $username . "' password is " . ($valid?'':'in') . 'valid', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+					cacti_log("DEBUG: User '$username' password is " . ($valid ? '' : 'in') . 'valid', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 					if ($valid) {
 						$user = db_fetch_row_prepared('SELECT *
@@ -252,7 +252,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 	/* Create user from template if requested */
 	if (!cacti_sizeof($user) && $copy_user && get_template_account() != '0' && $username != '') {
-		cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
+		cacti_log("NOTE: User '$username' does not exist, copying template user", false, 'AUTH');
 
 		$user_template = db_fetch_row_prepared('SELECT *
 			FROM user_auth
@@ -413,7 +413,7 @@ if (get_nfilter_request_var('action') == 'login') {
  * displays a custom error message to the browser that looks like
  * the pre-defined error messages
  *
- * @arg $message - the actual text of the error message to display
+ * @param $message - the actual text of the error message to display
  *
  */
 function auth_display_custom_error_message($message) {
@@ -492,7 +492,7 @@ function domains_login_process() {
 					array($template_user));
 
 				if (!cacti_sizeof($user) && $copy_user && $template_user > 0 && $username != '') {
-					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
+					cacti_log("WARN: User '$username' does not exist, copying template user", false, 'AUTH');
 
 					/* check that template user exists */
 					$user_template = db_fetch_row_prepared('SELECT *

@@ -1337,13 +1337,34 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = array(
-		array('display' => __('Item'),      'align' => 'left'),
-		array('display' => __('Sequence'),  'align' => 'left'),
-		array('display' => __('Operation'), 'align' => 'left'),
-		array('display' => __('Field'),     'align' => 'left'),
-		array('display' => __('Operator'),  'align' => 'left'),
-		array('display' => __('Pattern'),   'align' => 'left'),
-		array('display' => __('Actions'),   'align' => 'right')
+		array(
+			'display' => __('Item'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Sequence'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Operation'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Field'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Operator'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Pattern'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Actions'),
+			'align'   => 'right'
+		)
 	);
 
 	html_header($display_text, 2);
@@ -1410,13 +1431,34 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = array(
-		array('display' => __('Item'),      'align' => 'left'),
-		array('display' => __('Sequence'),  'align' => 'left'),
-		array('display' => __('Operation'), 'align' => 'left'),
-		array('display' => __('Field'),     'align' => 'left'),
-		array('display' => __('Operator'),  'align' => 'left'),
-		array('display' => __('Pattern'),   'align' => 'left'),
-		array('display' => __('Actions'),   'align' => 'right')
+		array(
+			'display' => __('Item'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Sequence'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Operation'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Field'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Operator'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Pattern'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Actions'),
+			'align'   => 'right'
+		)
 	);
 
 	html_header($display_text, 2);
@@ -1487,14 +1529,38 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = array(
-		array('display' => __('Item'),             'align' => 'left'),
-		array('display' => __('Sequence'),         'align' => 'left'),
-		array('display' => __('Field Name'),       'align' => 'left'),
-		array('display' => __('Sorting Type'),     'align' => 'left'),
-		array('display' => __('Propagate Change'), 'align' => 'left'),
-		array('display' => __('Search Pattern'),   'align' => 'left'),
-		array('display' => __('Replace Pattern'),  'align' => 'left'),
-		array('display' => __('Actions'),          'align' => 'right')
+		array(
+			'display' => __('Item'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Sequence'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Field Name'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Sorting Type'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Propagate Change'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Search Pattern'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Replace Pattern'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Actions'),
+			'align'   => 'right'
+		)
 	);
 
 	html_header($display_text, 2);

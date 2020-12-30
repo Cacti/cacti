@@ -738,7 +738,7 @@ function graph_edit() {
 		default:
 			if (isset($_SESSION['agg_tab'])) {
 				set_request_var('tab', $_SESSION['agg_tab']);
-			}else {
+			} else {
 				$_SESSION['agg_tab'] = 'details';
 				set_request_var('tab', 'details');
 			}
@@ -1373,10 +1373,27 @@ function aggregate_items() {
 	print $nav;
 
 	$display_text = array(
-		'title_cache'    => array('display' => __('Graph Title'), 'align' => 'left', 'sort' => 'ASC'),
-		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC'),
-		'agg_graph_id'   => array('display' => __('Included in Aggregate'), 'align' => 'left', 'sort' => 'ASC'),
-		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC'));
+		'title_cache' => array(
+			'display' => __('Graph Title'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'local_graph_id' => array(
+			'display' => __('ID'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		),
+		'agg_graph_id' => array(
+			'display' => __('Included in Aggregate'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'height' => array(
+			'display' => __('Size'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		)
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'aggregate_graphs.php?action=edit&id=' . get_request_var('id'));
 
@@ -1739,10 +1756,29 @@ function aggregate_graph() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'title_cache'    => array('display' => __('Graph Title'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The title for the Aggregate Graphs')),
-		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database identifier for this object')),
-		'name'           => array('display' => __('Aggregate Template'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Aggregate Template that this Aggregate Graphs is based upon')),
-		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC')
+		'title_cache' => array(
+			'display' => __('Graph Title'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The title for the Aggregate Graphs')
+		),
+		'local_graph_id' => array(
+			'display' => __('ID'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database identifier for this object')
+		),
+		'name' => array(
+			'display' => __('Aggregate Template'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The Aggregate Template that this Aggregate Graphs is based upon')
+		),
+		'height' => array(
+			'display' => __('Size'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'aggregate_graphs.php?filter=' . get_request_var('filter'));

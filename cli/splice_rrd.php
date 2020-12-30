@@ -1025,7 +1025,7 @@ function debug($string) {
 	global $debug;
 
 	if ($debug) {
-		print 'DEBUG: ' . trim($string) . PHP_EOL;
+		print "DEBUG: $message" . PHP_EOL;
 	}
 }
 

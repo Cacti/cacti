@@ -363,12 +363,12 @@ function debug_install_array($parent, $contents, $indent = 0) {
 			debug_install_array($parent . '.' . $key, $value, $indent + 1);
 		} else {
 			$hasContents = true;
-			log_install_debug('cli',$parent . '.' . $key . ': ' . $value);
+			log_install_debug('cli', $parent . '.' . $key . ': ' . $value);
 		}
 	}
 
 	if (!$hasContents) {
-		log_install_debug('cli',$parent . ' (no items)');
+		log_install_debug('cli', $parent . ' (no items)');
 	}
 }
 

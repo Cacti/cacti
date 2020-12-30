@@ -903,9 +903,21 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		return false;
 	}
 
+	$valid_severities = array(
+		SNMPAGENT_EVENT_SEVERITY_LOW,
+		SNMPAGENT_EVENT_SEVERITY_MEDIUM,
+		SNMPAGENT_EVENT_SEVERITY_HIGH,
+		SNMPAGENT_EVENT_SEVERITY_CRITICAL
+	);
+
+	$high_severe_severities = array(
+		SNMPAGENT_EVENT_SEVERITY_HIGH,
+		SNMPAGENT_EVENT_SEVERITY_CRITICAL
+	);
+
 	$path_snmptrap = read_config_option('path_snmptrap');
 
-	if (!in_array($severity, array(SNMPAGENT_EVENT_SEVERITY_LOW, SNMPAGENT_EVENT_SEVERITY_MEDIUM, SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL), true)) {
+	if (!in_array($severity, $valid_severities, true)) {
 		cacti_log('ERROR: Unknown event severity: "' . $severity . '" for ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
 
 		return false;
@@ -941,7 +953,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		/* No receivers found for the message, record it to the cacti.log */
 		cacti_log('WARNING: No notification receivers configured for event: ' . $notification . ' (' . $mib . '), severity: ' . $snmpagent_event_severity[$severity], false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
 
-		if (!in_array($severity, array(SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL), true)) {
+		if (!in_array($severity, $high_severe_severities, true)) {
 			/* Prevent log spam of messages lower than a high severity */
 			$config['snmpagent']['notifications']['ignore'][$notification] = 1;
 		}

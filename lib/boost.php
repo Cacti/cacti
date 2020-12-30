@@ -666,8 +666,8 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 /**
  * boost_timer - allows you to time events in boost and provide stats
  *
- * @arg $area - a text string that determines what area is being measured
- * @arg $type - either 'start' or 'end' to start or end the timing
+ * @param $area - a text string that determines what area is being measured
+ * @param $type - either 'start' or 'end' to start or end the timing
  */
 function boost_timer($area, $type) {
 	global $boost_stats_log;
@@ -737,7 +737,7 @@ function boost_get_arch_table_name() {
  * boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
  * results to RRDtool for processing
  *
- * @arg $local_data_id - if you are using boost, you need to update only an rra id at a time
+ * @param $local_data_id - if you are using boost, you need to update only an rra id at a time
  */
 function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
@@ -1138,7 +1138,7 @@ function boost_determine_caching_state() {
  *    update decisions for multi-output RRDs
  * 2) rrd filename
  *
- * @arg $local_data_id - the data source to obtain information from
+ * @param $local_data_id - the data source to obtain information from
  */
 function boost_get_rrd_filename_and_template($local_data_id) {
 	$rrd_path     = '';
@@ -1343,10 +1343,10 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
  * boost_rrdtool_function_update - a re-write of the Cacti rrdtool update command
  * specifically designed for bulk updates.
  *
- * @arg $local_data_id - the data source to obtain information from
- * @arg $rrd_path      - the path to the RRD file
- * @arg $rrd_update_template  - the order in which values need to be added
- * @arg $rrd_update_values    - values to include in the database
+ * @param $local_data_id - the data source to obtain information from
+ * @param $rrd_path      - the path to the RRD file
+ * @param $rrd_update_template  - the order in which values need to be added
+ * @param $rrd_update_values    - values to include in the database
  */
 function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, &$rrd_update_values, &$rrdtool_pipe) {
 	/* lets count the number of rrd files processed */

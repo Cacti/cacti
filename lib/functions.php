@@ -2351,7 +2351,7 @@ function generate_data_input_field_sequences(string $string, int $data_input_id)
 		$j = 0;
 
 		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
-			if (in_array($matches[1][$i], $registered_cacti_names, true) == false) {
+			if (in_array($matches[1][$i], $registered_cacti_names, true) === false) {
 				$j++;
 
 				db_execute_prepared("UPDATE data_input_fields
@@ -5521,7 +5521,7 @@ function enable_device_debug(int $host_id): void {
 	if ($device_debug != '') {
 		$devices = explode(',', $device_debug);
 
-		if (array_search($host_id, $devices, true) === false) {
+		if (array_search($host_id, $devices, false) === false) {
 			set_config_option('selective_device_debug', $device_debug . ',' . $host_id);
 		}
 	} else {
@@ -5568,7 +5568,7 @@ function is_device_debug_enabled(int $host_id): bool {
 	if ($device_debug != '') {
 		$devices = explode(',', $device_debug);
 
-		if (array_search($host_id, $devices, true) !== false) {
+		if (array_search($host_id, $devices, false) !== false) {
 			return true;
 		}
 	}

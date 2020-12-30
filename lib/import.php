@@ -1993,7 +1993,9 @@ function compare_data($save, $previous_data, $table) {
 		$different = 0;
 
 		foreach ($save as $column => $value) {
-			if (array_search($column, $ignores, true) !== false) continue;
+			if (array_search($column, $ignores, true) !== false) {
+				continue;
+			}
 
 			if ($previous_data[$column] != $value) {
 				$cols = db_get_table_column_types($table);

@@ -80,7 +80,10 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 			break;
 		case 'uninstall':
-			if (!in_array($id, $pluginslist, true)) break;
+			if (!in_array($id, $pluginslist, true)) {
+				break;
+			}
+
 			define('IN_PLUGIN_INSTALL', 1);
 
 			api_plugin_uninstall($id);
@@ -91,43 +94,64 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 			break;
 		case 'disable':
-			if (!in_array($id, $pluginslist, true)) break;
+			if (!in_array($id, $pluginslist, true)) {
+				break;
+			}
+
 			api_plugin_disable($id);
+
 			header('Location: plugins.php');
 
 			exit;
 
 			break;
 		case 'enable':
-			if (!in_array($id, $pluginslist, true)) break;
+			if (!in_array($id, $pluginslist, true)) {
+				break;
+			}
 
 			if (!in_array($id, $plugins_integrated, true)) {
 				api_plugin_enable($id);
 			}
+
 			header('Location: plugins.php');
 
 			exit;
 
 			break;
 		case 'check':
-			if (!in_array($id, $pluginslist, true)) break;
+			if (!in_array($id, $pluginslist, true)) {
+				break;
+			}
 
 			break;
 		case 'moveup':
-			if (!in_array($id, $pluginslist, true)) break;
+			if (!in_array($id, $pluginslist, true)) {
+				break;
+			}
 
-			if (in_array($id, $plugins_integrated, true)) break;
+			if (in_array($id, $plugins_integrated, true)) {
+				break;
+			}
+
 			api_plugin_moveup($id);
+
 			header('Location: plugins.php');
 
 			exit;
 
 			break;
 		case 'movedown':
-			if (!in_array($id, $pluginslist, true)) break;
+			if (!in_array($id, $pluginslist, true)) {
+				break;
+			}
 
-			if (in_array($id, $plugins_integrated, true)) break;
+			if (in_array($id, $plugins_integrated, true)) {
+				break;
+			}
+
 			api_plugin_movedown($id);
+
 			header('Location: plugins.php');
 
 			exit;
@@ -503,14 +527,54 @@ function update_show_current() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'nosort'    => array('display' => __('Actions'), 'align' => 'left', 'sort' => '', 'tip' => __('Actions available include \'Install\', \'Activate\', \'Disable\', \'Enable\', \'Uninstall\'.')),
-		'directory' => array('display' => __('Plugin Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name for this Plugin.  The name is controlled by the directory it resides in.')),
-		'name'      => array('display' => __('Plugin Description'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A description that the Plugins author has given to the Plugin.')),
-		'status'    => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The status of this Plugin.')),
-		'author'    => array('display' => __('Author'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The author of this Plugin.')),
-		'requires'  => array('display' => __('Requires'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('This Plugin requires the following Plugins be installed first.')),
-		'version'   => array('display' => __('Version'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The version of this Plugin.')),
-		'id'        => array('display' => __('Load Order'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.'))
+		'nosort' => array(
+			'display' => __('Actions'),
+			'align'   => 'left',
+			'sort'    => '',
+			'tip'     => __('Actions available include \'Install\', \'Activate\', \'Disable\', \'Enable\', \'Uninstall\'.')
+		),
+		'directory' => array(
+			'display' => __('Plugin Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name for this Plugin.  The name is controlled by the directory it resides in.')
+		),
+		'name' => array(
+			'display' => __('Plugin Description'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('A description that the Plugins author has given to the Plugin.')
+		),
+		'status' => array(
+			'display' => __('Status'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The status of this Plugin.')
+		),
+		'author' => array(
+			'display' => __('Author'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The author of this Plugin.')
+		),
+		'requires' => array(
+			'display' => __('Requires'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('This Plugin requires the following Plugins be installed first.')
+		),
+		'version' => array(
+			'display' => __('Version'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The version of this Plugin.')
+		),
+		'id' => array(
+			'display' => __('Load Order'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.')
+		)
 	);
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1);

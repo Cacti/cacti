@@ -28,7 +28,7 @@ declare(ticks = 1);
 /**
  * sig_handler - provides a generic means to catch exceptions to the Cacti log.
  *
- * @arg $signo - (int) the signal that was thrown by the interface.
+ * @param $signo - (int) the signal that was thrown by the interface.
  *
  * @return - null
  */

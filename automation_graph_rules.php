@@ -945,11 +945,33 @@ function automation_graph_rules() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'            => array('display' => __('Rule Name'),  'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this rule.')),
-		'id'              => array('display' => __('ID'),         'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this rule.  Useful in performing debugging and automation.')),
-		'snmp_query_name' => array('display' => __('Data Query'), 'align' => 'left', 'sort' => 'ASC'),
-		'graph_type_name' => array('display' => __('Graph Type'), 'align' => 'left', 'sort' => 'ASC'),
-		'enabled'         => array('display' => __('Enabled'),    'align' => 'right', 'sort' => 'ASC'),
+		'name' => array(
+			'display' => __('Rule Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this rule.')
+		),
+		'id' => array(
+			'display' => __('ID'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database ID for this rule.  Useful in performing debugging and automation.')
+		),
+		'snmp_query_name' => array(
+			'display' => __('Data Query'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'graph_type_name' => array(
+			'display' => __('Graph Type'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'enabled' => array(
+			'display' => __('Enabled'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);

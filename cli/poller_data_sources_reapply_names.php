@@ -198,6 +198,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print ('DEBUG: ' . $message . "\n");
+		print "DEBUG: $message" . PHP_EOL;
 	}
 }

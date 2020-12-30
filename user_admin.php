@@ -772,7 +772,7 @@ function get_permission_string(&$graph, &$policies) {
 		$allowed  = 0;
 		$rejected = 0;
 
-		if ($p['policy_graphs'] == 1) {
+		if ($p['policy_graphs'] == POLICY_ALLOW) {
 			if ($graph["user$i"] == '') {
 				$grantStr .= $grantStr . ($grantStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			} else {
@@ -787,7 +787,7 @@ function get_permission_string(&$graph, &$policies) {
 		}
 		$i++;
 
-		if ($p['policy_hosts'] == 1) {
+		if ($p['policy_hosts'] == POLICY_ALLOW) {
 			if ($graph["user$i"] == '') {
 				if ($method == 'loose') {
 					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
@@ -808,7 +808,7 @@ function get_permission_string(&$graph, &$policies) {
 		}
 		$i++;
 
-		if ($p['policy_graph_templates'] == 1) {
+		if ($p['policy_graph_templates'] == POLICY_ALLOW) {
 			if ($graph["user$i"] == '') {
 				if ($method == 'loose') {
 					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
@@ -888,8 +888,8 @@ function graph_perms_edit($tab, $header_label) {
 	$sql_having = '';
 
 	$policy_array = array(
-		1 => __('Allow'),
-		2 => __('Deny')
+		POLICY_ALLOW => __('Allow'),
+		POLICY_DENY  => __('Deny')
 	);
 
 	if (!isempty_request_var('id')) {
@@ -898,10 +898,10 @@ function graph_perms_edit($tab, $header_label) {
 			WHERE id = ?', array(get_request_var('id')));
 	} else {
 		$policy = array(
-			'policy_graphs'          => '1',
-			'policy_trees'           => '1',
-			'policy_hosts'           => '1',
-			'policy_graph_templates' => '1'
+			'policy_graphs'          => POLICY_ALLOW,
+			'policy_trees'           => POLICY_ALLOW,
+			'policy_hosts'           => POLICY_ALLOW,
+			'policy_graph_templates' => POLICY_ALLOW
 		);
 	}
 
@@ -931,7 +931,7 @@ function graph_perms_edit($tab, $header_label) {
 			<td><table><tr>
 			<td class='nowrap'><?php print __('Default Graph Policy for this User');?></td>
 			<td>
-				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
+				<?php form_dropdown('policy_graphs', $policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
 			<td>
 				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
@@ -1010,7 +1010,7 @@ function graph_perms_edit($tab, $header_label) {
 			}
 
 			if (get_request_var('associated') == 'false') {
-				if ($policy['policy_graphs'] == 1) {
+				if ($policy['policy_graphs'] == POLICY_ALLOW) {
 					$sql_having .= ($sql_having != '' ? ' OR ':'') . " (user$i IS NULL";
 				} else {
 					$sql_having .= ($sql_having != '' ? ' OR ':'') . " (user$i IS NOT NULL";
@@ -1022,7 +1022,7 @@ function graph_perms_edit($tab, $header_label) {
 			$i++;
 
 			if (get_request_var('associated') == 'false') {
-				if ($policy['policy_hosts'] == 1) {
+				if ($policy['policy_hosts'] == POLICY_ALLOW) {
 					$sql_having .= " OR (user$i IS NULL";
 				} else {
 					$sql_having .= " OR (user$i IS NOT NULL";
@@ -1034,7 +1034,7 @@ function graph_perms_edit($tab, $header_label) {
 			$i++;
 
 			if (get_request_var('associated') == 'false') {
-				if ($policy['policy_graph_templates'] == 1) {
+				if ($policy['policy_graph_templates'] == POLICY_ALLOW) {
 					$sql_having .= " $sql_operator user$i IS NULL))";
 				} else {
 					$sql_having .= " $sql_operator user$i IS NOT NULL))";
@@ -1117,7 +1117,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_graph', '1', '');
 
-		if ($policy['policy_graphs'] == 1) {
+		if ($policy['policy_graphs'] == POLICY_ALLOW) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -1215,7 +1215,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_selectable_cell(filter_value($g['description'], get_request_var('filter')), $g['id']);
 				form_selectable_cell($g['user_id'] > 0 ? __('Member'):__('Non Member'), $g['id']);
 				form_selectable_cell(($g['id']), $g['id']);
-				form_selectable_cell(($g['policy_graphs'] == 1 ? __('ALLOW'):__('DENY')) . '/' . ($g['policy_hosts'] == 1 ? __('ALLOW'):__('DENY')) . '/' . ($g['policy_graph_templates'] == 1 ? __('ALLOW'):__('DENY')), $g['id']);
+				form_selectable_cell(($g['policy_graphs'] == POLICY_ALLOW ? __('ALLOW'):__('DENY')) . '/' . ($g['policy_hosts'] == POLICY_ALLOW ? __('ALLOW'):__('DENY')) . '/' . ($g['policy_graph_templates'] == POLICY_ALLOW ? __('ALLOW'):__('DENY')), $g['id']);
 				form_selectable_cell($g['enabled'] == 'on' ? __('Enabled'):__('Disabled'), $g['id']);
 				form_checkbox_cell($g['name'], $g['id']);
 				form_end_row();
@@ -1263,7 +1263,7 @@ function graph_perms_edit($tab, $header_label) {
 			<td><table><tr>
 			<td class='nowrap'><?php print __('Default Device Policy for this User');?></td>
 			<td>
-				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
+				<?php form_dropdown('policy_hosts', $policy_array, '', '', $policy['policy_hosts'], '', ''); ?>
 			</td>
 			<td>
 				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
@@ -1362,13 +1362,13 @@ function graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($host['id'], $host['id']);
 
 				if (empty($host['user_id']) || $host['user_id'] == null) {
-					if ($policy['policy_hosts'] == 1) {
+					if ($policy['policy_hosts'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);
 					} else {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $host['id']);
 					}
 				} else {
-					if ($policy['policy_hosts'] == 1) {
+					if ($policy['policy_hosts'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $host['id']);
 					} else {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);
@@ -1395,7 +1395,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_host', '1', '');
 
-		if ($policy['policy_hosts'] == 1) {
+		if ($policy['policy_hosts'] == POLICY_ALLOW) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -1431,7 +1431,7 @@ function graph_perms_edit($tab, $header_label) {
 			<td><table><tr>
 			<td class='nowrap'><?php print __('Default Graph Template Policy for this User');?></td>
 			<td>
-				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
+				<?php form_dropdown('policy_graph_templates', $policy_array, '', '', $policy['policy_graph_templates'], '', ''); ?>
 			</td>
 			<td>
 				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
@@ -1511,13 +1511,13 @@ function graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($g['id'], $g['id']);
 
 				if (empty($g['user_id']) || $g['user_id'] == null) {
-					if ($policy['policy_graph_templates'] == 1) {
+					if ($policy['policy_graph_templates'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
 					} else {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['id']);
 					}
 				} else {
-					if ($policy['policy_graph_templates'] == 1) {
+					if ($policy['policy_graph_templates'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['id']);
 					} else {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
@@ -1541,7 +1541,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_template', '1', '');
 
-		if ($policy['policy_graph_templates'] == 1) {
+		if ($policy['policy_graph_templates'] == POLICY_ALLOW) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -1577,7 +1577,7 @@ function graph_perms_edit($tab, $header_label) {
 			<td><table><tr>
 			<td class='nowrap'><?php print __('Default Tree Policy for this User');?></td>
 			<td>
-				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
+				<?php form_dropdown('policy_trees',$policy_array, '', '', $policy['policy_trees'], '', ''); ?>
 			</td>
 			<td>
 				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
@@ -1653,13 +1653,13 @@ function graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($t['id'], $t['id']);
 
 				if (empty($t['user_id']) || $t['user_id'] == null) {
-					if ($policy['policy_trees'] == 1) {
+					if ($policy['policy_trees'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
 					} else {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $t['id']);
 					}
 				} else {
-					if ($policy['policy_trees'] == 1) {
+					if ($policy['policy_trees'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $t['id']);
 					} else {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
@@ -1682,7 +1682,7 @@ function graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_tree', '1', '');
 
-		if ($policy['policy_trees'] == 1) {
+		if ($policy['policy_trees'] == POLICY_ALLOW) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -2461,9 +2461,9 @@ function user() {
 			form_selectable_cell(filter_value($user['full_name'], get_request_var('filter')), $user['id']);
 			form_selectable_cell($enabled, $user['id']);
 			form_selectable_cell($realm, $user['id']);
-			form_selectable_cell(($user['policy_graphs'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
-			form_selectable_cell(($user['policy_hosts'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
-			form_selectable_cell(($user['policy_graph_templates'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
+			form_selectable_cell(($user['policy_graphs'] == POLICY_ALLOW ? __('ALLOW'):__('DENY')), $user['id']);
+			form_selectable_cell(($user['policy_hosts'] == POLICY_ALLOW ? __('ALLOW'):__('DENY')), $user['id']);
+			form_selectable_cell(($user['policy_graph_templates'] == POLICY_ALLOW ? __('ALLOW'):__('DENY')), $user['id']);
 			form_selectable_cell($last_login, $user['id']);
 			form_checkbox_cell($user['username'], $user['id']);
 			form_end_row();

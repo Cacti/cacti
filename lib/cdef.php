@@ -25,7 +25,7 @@
 /**
  * get_cdef_item_name - resolves a single CDEF item into its text-based representation
  *
- * @arg $cdef_item_id - the id of the individual cdef item
+ * @param $cdef_item_id - the id of the individual cdef item
  *
  * @return - a text-based representation of the cdef item
  */
@@ -67,7 +67,7 @@ function get_cdef_item_name($cdef_item_id) {
  * get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
  * string. this name will be resolved recursively if necessary
  *
- * @arg $cdef_id - the id of the cdef to resolve
+ * @param $cdef_id - the id of the cdef to resolve
  *
  * @return - a text-based representation of the cdef
  */

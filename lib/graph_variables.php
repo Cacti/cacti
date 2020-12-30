@@ -121,7 +121,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			/* discard the unused data sources, we will figure it out ourselves */
 			foreach ($fetch_array_avg[$ldi]['data_source_names'] as $index => $name) {
 				/* clean up DS items that aren't defined on the graph */
-				if (!in_array($name, $local_data_ids[$ldi], true)) {
+				if (!in_array($name, $local_data_ids[$ldi], false)) {
 					unset($fetch_array_avg[$ldi]['data_source_names'][$index], $fetch_array_avg[$ldi]['values'][$index]);
 				}
 			}
@@ -140,7 +140,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			/* discard the unused data sources, we will figure it out ourselves */
 			foreach ($fetch_array_max[$ldi]['data_source_names'] as $index => $name) {
 				/* clean up DS items that aren't defined on the graph */
-				if (!in_array($name, $local_data_ids[$ldi], true)) {
+				if (!in_array($name, $local_data_ids[$ldi], false)) {
 					unset($fetch_array_max[$ldi]['data_source_names'][$index], $fetch_array_max[$ldi]['values'][$index]);
 				}
 			}

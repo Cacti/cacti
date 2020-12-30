@@ -657,8 +657,14 @@ function cdef_edit() {
 		html_start_box(__('CDEF Items'), '100%', '', '3', 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id']);
 
 		$display_text = array(
-			array('display' => __('Item'), 'align' => 'left'),
-			array('display' => __('Item Value'), 'align' => 'left')
+			array(
+				'display' => __('Item'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Item Value'),
+				'align'   => 'left'
+			)
 		);
 
 		html_header($display_text, 2);

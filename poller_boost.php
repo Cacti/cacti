@@ -439,8 +439,8 @@ function output_rrd_data($start_time, $force = false) {
  *
  * grabs data from the 'poller_output' table and feeds the *completed* results to RRDTool for processing
  *
- * @arg $last_id - the last id to process
- * @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation
+ * @param $last_id - the last id to process
+ * @param $rrdtool_pipe - the socket that has been opened for the RRDtool operation
  */
 function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;

@@ -392,12 +392,36 @@ function pages() {
 	html_start_box('', '100%', '', '4', 'center', '');
 
 	$display_text = array(
-		'nosort0'     => array('display' => __('Actions'), 'align' => 'left',  'sort' => ''),
-		'contentfile' => array('display' => __('Page'),    'align' => 'left',  'sort' => 'ASC'),
-		'title'       => array('display' => __('Title'),   'align' => 'left',  'sort' => 'ASC'),
-		'style'       => array('display' => __('Style'),   'align' => 'left',  'sort' => 'ASC'),
-		'disabled'    => array('display' => __('Enabled'), 'align' => 'left',  'sort' => 'ASC'),
-		'sortorder'   => array('display' => __('Order'),   'align' => 'center', 'sort' => 'ASC')
+		'nosort0' => array(
+			'display' => __('Actions'),
+			'align'   => 'left',
+			'sort'    => ''
+		),
+		'contentfile' => array(
+			'display' => __('Page'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'title' => array(
+			'display' => __('Title'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'style' => array(
+			'display' => __('Style'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'disabled' => array(
+			'display' => __('Enabled'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'sortorder' => array(
+			'display' => __('Order'),
+			'align'   => 'center',
+			'sort'    => 'ASC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));

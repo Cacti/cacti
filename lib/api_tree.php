@@ -25,11 +25,11 @@
 /**
  * api_tree_create - create or update a Cacti tree
  *
- * @arg $tree_id - the tree id of an existing tree of 0 for new tree
- * @arg $name - the name of the tree
- * @arg $sort_type - the sort_type of the tree
- * @arg $enabled - either true or false
- * @arg $user_id - the user id
+ * @param $tree_id - the tree id of an existing tree of 0 for new tree
+ * @param $name - the name of the tree
+ * @param $sort_type - the sort_type of the tree
+ * @param $enabled - either true or false
+ * @param $user_id - the user id
  *
  * @return - the tree id if successful otherwise false
  */
@@ -81,7 +81,7 @@ function api_tree_create($tree_id, $name, $sort_type, $enabled, $user_id = 0) {
 /**
  * api_tree_delete - deletes a tree or trees
  *
- * @arg $tree_ids - the tree id or ids
+ * @param $tree_ids - the tree id or ids
  *
  * @return - true or false
  */
@@ -107,8 +107,8 @@ function api_tree_delete($tree_ids) {
 /**
  * api_tree_lock - locks a tree or trees for editing
  *
- * @arg $tree_ids - the tree id or ids
- * @arg $user_id - the user id
+ * @param $tree_ids - the tree id or ids
+ * @param $user_id - the user id
  *
  * @return - true or false
  */
@@ -140,8 +140,8 @@ function api_tree_lock($tree_ids, $user_id = 0) {
 /**
  *api_tree_unlock - unlockes a locked tree or trees that have been locked for editing
  *
- * @arg $tree_ids - the tree id or ids
- * @arg $user_id - the user id
+ * @param $tree_ids - the tree id or ids
+ * @param $user_id - the user id
  *
  * @return - true or false
  */
@@ -173,8 +173,8 @@ function api_tree_unlock($tree_ids, $user_id = 0) {
 /**
  * api_tree_publish - publishes a tree or trees for viewing
  *
- * @arg $tree_ids - an array of tree ids or a tree id
- * @arg $user_id - the user id
+ * @param $tree_ids - an array of tree ids or a tree id
+ * @param $user_id - the user id
  *
  * @return - true if the tree was published
  */
@@ -208,8 +208,8 @@ function api_tree_publish($tree_ids, $user_id = 0) {
 /**
  * api_tree_unpublish - un-publishes a tree or trees for viewing
  *
- * @arg $tree_ids - an array of tree ids or a tree id
- * @arg $user_id - the user id
+ * @param $tree_ids - an array of tree ids or a tree id
+ * @param $user_id - the user id
  *
  * @return - true if the tree was un-published
  */
@@ -244,10 +244,10 @@ function api_tree_unpublish($tree_ids, $user_id = 0) {
  * api_tree_copy_node - given a tree id, a new node location,
  * it's original paren, make a copy of the prior node.
  *
- * @arg $tree_id - The name of the lock to be created
- * @arg $node_id - The node to be copied
- * @arg $new_parent - The new parent of the copied node
- * @arg $new_position - The manual position of the copied node
+ * @param $tree_id - The name of the lock to be created
+ * @param $node_id - The node to be copied
+ * @param $new_parent - The new parent of the copied node
+ * @param $new_position - The manual position of the copied node
  *
  * @return - json encoded new location information
  */
@@ -361,7 +361,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
  *
  * This function allows simulating transactions in an MyISAM database.
  *
- * @arg $lockname - The name of the lock to be created
+ * @param $lockname - The name of the lock to be created
  *
  * @return - true depending on outcome
  */
@@ -385,7 +385,7 @@ function api_tree_get_lock($lockname, $timeout = 10) {
  *
  * This function allows simulating transactions in an MyISAM database.
  *
- * @arg $lockname - The name of the lock to be released
+ * @param $lockname - The name of the lock to be released
  *
  * @return - true or false depending on outcome
  */
@@ -397,9 +397,9 @@ function api_tree_release_lock($lockname) {
 /**
  * api_tree_create_node - given a tree, a desintation leaf_id, order position, and title, create a branch/leaf.
  *
- * @arg $tree_id - The tree to remove from
- * @arg $node_id - The branch/leaf to place the new branch/leaf
- * @arg $title - The new brnach/leaf title
+ * @param $tree_id - The tree to remove from
+ * @param $node_id - The branch/leaf to place the new branch/leaf
+ * @param $title - The new brnach/leaf title
  *
  * @return - json encoded new leaf information
  */
@@ -461,9 +461,9 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 /**
  * api_tree_branch_exists - given a tree, parent branch, and a title, will check for a branch
  *
- * @arg $tree_id - The tree_id to search
- * @arg $parent - The parent leaf_id to search
- * @arg $title - The branch name to search for
+ * @param $tree_id - The tree_id to search
+ * @param $parent - The parent leaf_id to search
+ * @param $title - The branch name to search for
  *
  * @return - the id of the branch if it exists
  */
@@ -485,9 +485,9 @@ function api_tree_branch_exists($tree_id, $parent, $title) {
 /**
  * api_tree_site_exists - given a tree, parent branch, and a host_id, will check host on that branch
  *
- * @arg $tree_id - The tree_id to search
- * @arg $parent - The parent leaf_id to search
- * @arg $site_id - The host_id to search for
+ * @param $tree_id - The tree_id to search
+ * @param $parent - The parent leaf_id to search
+ * @param $site_id - The host_id to search for
  *
  * @return - the id of the leaf if it exists
  */
@@ -509,9 +509,9 @@ function api_tree_site_exists($tree_id, $parent, $site_id) {
 /**
  * api_tree_host_exists - given a tree, parent branch, and a host_id, will check host on that branch
  *
- * @arg $tree_id - The tree_id to search
- * @arg $parent - The parent leaf_id to search
- * @arg $host_id - The host_id to search for
+ * @param $tree_id - The tree_id to search
+ * @param $parent - The parent leaf_id to search
+ * @param $host_id - The host_id to search for
  *
  * @return - the id of the leaf if it exists
  */
@@ -533,9 +533,9 @@ function api_tree_host_exists($tree_id, $parent, $host_id) {
 /**
  * api_tree_graph_exists - given a tree, parent branch, and a local_graph_id, will check graph on that branch
  *
- * @arg $tree_id - The tree_id to search
- * @arg $parent - The parent leaf_id to search
- * @arg $local_graph_id - The local_graph_id to search for
+ * @param $tree_id - The tree_id to search
+ * @param $parent - The parent leaf_id to search
+ * @param $local_graph_id - The local_graph_id to search for
  *
  * @return - the id of the leaf if it exists
  */
@@ -557,8 +557,8 @@ function api_tree_graph_exists($tree_id, $parent, $local_graph_id) {
 /**
  * api_tree_delete - given a tree and a branch/leaf, delete the node and it's content
  *
- * @arg $tree_id - The tree to remove from
- * @arg $leaf_id - The branch to remove
+ * @param $tree_id - The tree to remove from
+ * @param $leaf_id - The branch to remove
  *
  * @return - null
  */
@@ -595,8 +595,8 @@ function api_tree_delete_node($tree_id, $node_id) {
 /**
  * api_tree_delete_content - given a tree and a branch/leaf, recursively remove all elements
  *
- * @arg $tree_id - The tree to remove from
- * @arg $leaf_id - The branch to remove
+ * @param $tree_id - The tree to remove from
+ * @param $leaf_id - The branch to remove
  *
  * @return - null
  */
@@ -622,7 +622,7 @@ function api_tree_delete_node_content($tree_id, $leaf_id) {
 /**
  * api_tree_move_node - given the current node information and it's new branch, move it.
  *
- * @arg $variable - The request variable to parse
+ * @param $variable - The request variable to parse
  *
  * @return - array of information about the variable
  */
@@ -715,7 +715,7 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 /**
  * api_tree_parse_node_data - given the node information parse into a branch, parent, host, graph array
  *
- * @arg $variable - The request variable to parse
+ * @param $variable - The request variable to parse
  *
  * @return - array of information about the variable
  */
@@ -776,9 +776,9 @@ function api_tree_parse_node_data($variable) {
  *
  * This function is used for editing.
  *
- * @arg $tree_id - The id of the tree you are parsing
- * @arg $node_id - The branch/leaf id of the node to be renamed
- * @arg $title - The new branch/leaf title
+ * @param $tree_id - The id of the tree you are parsing
+ * @param $node_id - The branch/leaf id of the node to be renamed
+ * @param $title - The new branch/leaf title
  *
  * @return - string of the tree items in html format
  */
@@ -870,8 +870,8 @@ function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
  *
  * This function is used for graphing.
  *
- * @arg $tree_id - The id of the tree you are parsing
- * @arg $parent - The parent id of the branch/leaf
+ * @param $tree_id - The id of the tree you are parsing
+ * @param $parent - The parent id of the branch/leaf
  *
  * @return - string of the tree items in html format
  */
@@ -924,9 +924,9 @@ function api_tree_get_main($tree_id, $parent = 0) {
 /**
  * api_tree_get_node - given the tree and the node information return tree elements
  *
- * @arg $tree_id - The id of the tree you are parsing
- * @arg $node_id - The encoded node id of the branch/leaf
- * @arg $editing - The determine if we are building a user tree or a tree for editing
+ * @param $tree_id - The id of the tree you are parsing
+ * @param $node_id - The encoded node id of the branch/leaf
+ * @param $editing - The determine if we are building a user tree or a tree for editing
  *
  * @return - string of the tree items in html format
  */
@@ -955,17 +955,17 @@ function api_tree_get_node($tree_id, $node_id, $editing = false) {
 /**
  * api_tree_item_save - saves the tree object and then resorts the tree
  *
- * @arg $id - the leaf_id for the object
- * @arg $tree_id - the tree id for the object
- * @arg $type - the item type graph, host, leaf
- * @arg $parent_tree_item_id - The parent leaf for the object
- * @arg $title - The leaf title in the caseo a leaf
- * @arg $local_graph_id - The graph id in the case of a graph
- * @arg $host_id - The host id in the case of a graph
- * @arg $site_id - The site id in the case of a graph
- * @arg $host_grouping_type - The sort order for the host under expanded hosts
- * @arg $sort_children_type - The sort type in the case of a leaf
- * @arg $propagate_changes - Wether the changes should be cascaded through all children
+ * @param $id - the leaf_id for the object
+ * @param $tree_id - the tree id for the object
+ * @param $type - the item type graph, host, leaf
+ * @param $parent_tree_item_id - The parent leaf for the object
+ * @param $title - The leaf title in the caseo a leaf
+ * @param $local_graph_id - The graph id in the case of a graph
+ * @param $host_id - The host id in the case of a graph
+ * @param $site_id - The site id in the case of a graph
+ * @param $host_grouping_type - The sort order for the host under expanded hosts
+ * @param $sort_children_type - The sort type in the case of a leaf
+ * @param $propagate_changes - Wether the changes should be cascaded through all children
  * @param mixed $id
  * @param mixed $tree_id
  * @param mixed $type
@@ -1055,7 +1055,7 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 /**
  * api_tree_get_item_type - gets the type of tree item
  *
- * @arg $tree_item_id - the id of the tree item to fetch the type for
+ * @param $tree_item_id - the id of the tree item to fetch the type for
  *
  * @return - a string reprenting the type of the tree item. valid return values are 'header', 'graph', and 'host'
  */
@@ -1093,8 +1093,8 @@ function api_tree_get_item_type($tree_item_id) {
  *
  * This function is used to sort graphs and trees
  *
- * @arg $a - first graph array to compare
- * @arg $b - second graph array to compare
+ * @param $a - first graph array to compare
+ * @param $b - second graph array to compare
  *
  * @return - the re-ordered arrays
  */
@@ -1107,7 +1107,7 @@ function naturally_sort_graphs($a, $b) {
  *
  * This function is to assist with ordering tree items
  *
- * @arg $leaf_id - the leaf_id of the element
+ * @param $leaf_id - the leaf_id of the element
  *
  * @return - the ordering of the parent leaf/branch
  */
@@ -1136,8 +1136,8 @@ function api_tree_get_branch_ordering($leaf_id) {
  *
  * This function is to assist with editing trees
  *
- * @arg $tree_id - the tree id
- * @arg $leaf_id - the leaf id
+ * @param $tree_id - the tree id
+ * @param $leaf_id - the leaf id
  *
  * @return - the name of the leaf
  */
@@ -1148,9 +1148,9 @@ function api_tree_get_branch_name($tree_id, $leaf_id) {
 /**
  * api_tree_get_branch_id - given a tree, parent, and title return the leaf_id
  *
- * @arg $tree_id - the tree id
- * @arg $parent - the parent leaf id
- * @arg $title - the branch/leaf title
+ * @param $tree_id - the tree id
+ * @param $parent - the parent leaf id
+ * @param $title - the branch/leaf title
  *
  * @return - the name of the leaf
  */
@@ -1163,8 +1163,8 @@ function api_tree_get_branch_id($tree_id, $parent, $title) {
  *
  * Trees always go first, then hosts, and finally, graphs.
  *
- * @arg $leaf_id - the leaf id
- * @arg $tree_id - the tree id
+ * @param $leaf_id - the leaf id
+ * @param $tree_id - the tree id
  *
  * @return - the name of the leaf
  */

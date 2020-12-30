@@ -724,7 +724,7 @@ function reports_item_edit() {
 			'array'         => $graph_timespans,
 			'value'         => '|arg1:timespan|'
 		),
-		'align' => array(
+		'align'   => array(
 			'friendly_name' => __('Alignment'),
 			'method'        => 'drop_array',
 			'default'       => REPORTS_ALIGN_LEFT,
@@ -1396,14 +1396,38 @@ function display_reports_items($report_id) {
 
 	html_header(
 		array(
-			array('display' => __('Item'),         'align' => 'left'),
-			array('display' => __('Sequence'),     'align' => 'left'),
-			array('display' => __('Type'),         'align' => 'left'),
-			array('display' => __('Item Details'), 'align' => 'left'),
-			array('display' => __('Timespan'),     'align' => 'left'),
-			array('display' => __('Alignment'),    'align' => 'left'),
-			array('display' => __('Font Size'),    'align' => 'left'),
-			array('display' => __('Actions'),      'align' => 'right')
+			array(
+				'display' => __('Item'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Sequence'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Type'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Item Details'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Timespan'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Alignment'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Font Size'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Actions'),
+				'align'   => 'right'
+			)
 		), 2);
 
 	$i = 1;
@@ -1697,26 +1721,94 @@ function reports() {
 
 	if (is_reports_admin()) {
 		$display_text = array(
-			'name'            => array('display' => __('Report Name'), 'align' => 'left', 'sort' => 'ASC'),
-			'full_name'       => array('display' => __('Owner'),       'align' => 'left', 'sort' => 'ASC'),
-			'cint'            => array('display' => __('Frequency'),   'align' => 'left', 'sort' => 'ASC'),
-			'lastsent'        => array('display' => __('Last Run'),    'align' => 'left', 'sort' => 'ASC'),
-			'mailtime'        => array('display' => __('Next Run'),    'align' => 'left', 'sort' => 'ASC'),
-			'from_name'       => array('display' => __('From'),        'align' => 'left', 'sort' => 'ASC'),
-			'nosort'          => array('display' => __('To'),          'align' => 'left', 'sort' => 'ASC'),
-			'attachment_type' => array('display' => __('Type'),        'align' => 'left', 'sort' => 'ASC'),
-			'enabled'         => array('display' => __('Enabled'),     'align' => 'left', 'sort' => 'ASC'),
+			'name' => array(
+				'display' => __('Report Name'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'full_name' => array(
+				'display' => __('Owner'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'cint' => array(
+				'display' => __('Frequency'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'lastsent' => array(
+				'display' => __('Last Run'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'mailtime' => array(
+				'display' => __('Next Run'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'from_name' => array(
+				'display' => __('From'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'nosort' => array(
+				'display' => __('To'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'attachment_type' => array(
+				'display' => __('Type'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'enabled' => array(
+				'display' => __('Enabled'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			)
 		);
 	} else {
 		$display_text = array(
-			'name'            => array('display' => __('Report Title'), 'align' => 'left', 'sort' => 'ASC'),
-			'cint'            => array('display' => __('Frequency'),    'align' => 'left', 'sort' => 'ASC'),
-			'lastsent'        => array('display' => __('Last Run'),     'align' => 'left', 'sort' => 'ASC'),
-			'mailtime'        => array('display' => __('Next Run'),     'align' => 'left', 'sort' => 'ASC'),
-			'from_name'       => array('display' => __('From'),         'align' => 'left', 'sort' => 'ASC'),
-			'nosort'          => array('display' => __('To'),           'align' => 'left', 'sort' => 'ASC'),
-			'attachment_type' => array('display' => __('Type'),         'align' => 'left', 'sort' => 'ASC'),
-			'enabled'         => array('display' => __('Enabled'),      'align' => 'left', 'sort' => 'ASC'),
+			'name' => array(
+				'display' => __('Report Title'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'cint' => array(
+				'display' => __('Frequency'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'lastsent' => array(
+				'display' => __('Last Run'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'mailtime' => array(
+				'display' => __('Next Run'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'from_name' => array(
+				'display' => __('From'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'nosort' => array(
+				'display' => __('To'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'attachment_type' => array(
+				'display' => __('Type'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'enabled' => array(
+				'display' => __('Enabled'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			)
 		);
 	}
 

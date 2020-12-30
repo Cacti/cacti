@@ -153,10 +153,15 @@ $i = 1;
 
 if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
-		if (!$debug) print '.';
+		if (!$debug) {
+			print '.';
+		}
+
 		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' starting");
 		run_data_query($data_query['host_id'], $data_query['snmp_query_id'], false, $force);
+
 		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' ending");
+
 		$i++;
 	}
 }
@@ -190,6 +195,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print ('DEBUG: ' . $message . "\n");
+		print "DEBUG: $message" . PHP_EOL;
 	}
 }

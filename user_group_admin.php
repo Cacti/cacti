@@ -817,8 +817,8 @@ function user_group_graph_perms_edit($tab, $header_label) {
 	/* ==================================================== */
 
 	$policy_array = array(
-		1 => __('Allow'),
-		2 => __('Deny')
+		POLICY_ALLOW => __('Allow'),
+		POLICY_DENY  => __('Deny')
 	);
 
 	if (!isempty_request_var('id')) {
@@ -926,13 +926,13 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($g['local_graph_id'], $g['local_graph_id']);
 
 				if (empty($g['group_id']) || $g['group_id'] == null) {
-					if ($policy['policy_graphs'] == 1) {
+					if ($policy['policy_graphs'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['local_graph_id']);
 					} else {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['local_graph_id']);
 					}
 				} else {
-					if ($policy['policy_graphs'] == 1) {
+					if ($policy['policy_graphs'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['local_graph_id']);
 					} else {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['local_graph_id']);
@@ -955,7 +955,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_graph', '1', '');
 
-		if ($policy['policy_graphs'] == 1) {
+		if ($policy['policy_graphs'] == POLICY_ALLOW) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -988,7 +988,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			<td><table><tr>
 			<td class='nowrap'><?php print __('Default Graph Policy for this User Group');?></td>
 			<td>
-				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
+				<?php form_dropdown('policy_hosts',$policy_array, '', '', $policy['policy_hosts'], '', ''); ?>
 			</td>
 			<td>
 				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
@@ -1074,13 +1074,13 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($host['id'], $host['id']);
 
 				if (empty($host['group_id']) || $host['group_id'] == null) {
-					if ($policy['policy_hosts'] == 1) {
+					if ($policy['policy_hosts'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);
 					} else {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $host['id']);
 					}
 				} else {
-					if ($policy['policy_hosts'] == 1) {
+					if ($policy['policy_hosts'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $host['id']);
 					} else {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);
@@ -1106,7 +1106,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_host', '1', '');
 
-		if ($policy['policy_hosts'] == 1) {
+		if ($policy['policy_hosts'] == POLICY_ALLOW) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -1139,7 +1139,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			<td><table><tr>
 			<td class='nowrap'><?php print __('Default Graph Template Policy for this User Group');?></td>
 			<td>
-				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
+				<?php form_dropdown('policy_graph_templates', $policy_array, '', '', $policy['policy_graph_templates'], '', ''); ?>
 			</td>
 			<td>
 				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
@@ -1218,13 +1218,13 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($g['id'], $g['id']);
 
 				if (empty($g['group_id']) || $g['group_id'] == null) {
-					if ($policy['policy_graph_templates'] == 1) {
+					if ($policy['policy_graph_templates'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
 					} else {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['id']);
 					}
 				} else {
-					if ($policy['policy_graph_templates'] == 1) {
+					if ($policy['policy_graph_templates'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['id']);
 					} else {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['id']);
@@ -1248,7 +1248,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_template', '1', '');
 
-		if ($policy['policy_graph_templates'] == 1) {
+		if ($policy['policy_graph_templates'] == POLICY_ALLOW) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -1281,7 +1281,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			<td><table><tr>
 			<td class='nowrap'><?php print __('Default Tree Policy for this User Group');?></td>
 			<td>
-				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
+				<?php form_dropdown('policy_trees', $policy_array, '', '', $policy['policy_trees'], '', ''); ?>
 			</td>
 			<td>
 				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
@@ -1353,13 +1353,13 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_selectable_cell($t['id'], $t['id']);
 
 				if (empty($t['group_id']) || $t['group_id'] == null) {
-					if ($policy['policy_trees'] == 1) {
+					if ($policy['policy_trees'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
 					} else {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $t['id']);
 					}
 				} else {
-					if ($policy['policy_trees'] == 1) {
+					if ($policy['policy_trees'] == POLICY_ALLOW) {
 						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $t['id']);
 					} else {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $t['id']);
@@ -1381,7 +1381,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		form_hidden_box('id', get_request_var('id'), '');
 		form_hidden_box('associate_tree', '1', '');
 
-		if ($policy['policy_trees'] == 1) {
+		if ($policy['policy_trees'] == POLICY_ALLOW) {
 			$assoc_actions = array(
 				1 => __('Revoke Access'),
 				2 => __('Grant Access')
@@ -2052,9 +2052,9 @@ function user_group() {
 			form_selectable_cell(filter_value($group['name'], get_request_var('filter'), 'user_group_admin.php?action=edit&tab=general&id=' . $group['id']), $group['id']);
 			form_selectable_cell(($group['members'] > 0 ? number_format_i18n($group['members'], 0):'None'), $group['id']);
 			form_selectable_cell(filter_value($group['description'], get_request_var('filter')), $group['id']);
-			form_selectable_cell(($group['policy_graphs'] == 1 ? __('ALLOW') : __('DENY')), $group['id']);
-			form_selectable_cell(($group['policy_hosts'] == 1 ? __('ALLOW') : __('DENY')), $group['id']);
-			form_selectable_cell(($group['policy_graph_templates'] == 1 ? __('ALLOW') : __('DENY')), $group['id']);
+			form_selectable_cell(($group['policy_graphs'] == POLICY_ALLOW ? __('ALLOW') : __('DENY')), $group['id']);
+			form_selectable_cell(($group['policy_hosts'] == POLICY_ALLOW ? __('ALLOW') : __('DENY')), $group['id']);
+			form_selectable_cell(($group['policy_graph_templates'] == POLICY_ALLOW ? __('ALLOW') : __('DENY')), $group['id']);
 			form_selectable_cell($enabled, $group['id']);
 			form_checkbox_cell($group['name'], $group['id']);
 			form_end_row();

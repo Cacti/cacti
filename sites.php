@@ -595,12 +595,43 @@ function sites() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'    => array('display' => __('Site Name'), 'align' => 'left',  'sort' => 'ASC', 'tip' => __('The name of this Site.')),
-		'id'      => array('display' => __('ID'),        'align' => 'right', 'sort' => 'ASC', 'tip' => __('The unique id associated with this Site.')),
-		'hosts'   => array('display' => __('Devices'),   'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Devices associated with this Site.')),
-		'city'    => array('display' => __('City'),      'align' => 'left',  'sort' => 'DESC', 'tip' => __('The City associated with this Site.')),
-		'state'   => array('display' => __('State'),     'align' => 'left',  'sort' => 'DESC', 'tip' => __('The State associated with this Site.')),
-		'country' => array('display' => __('Country'),   'align' => 'left',  'sort' => 'DESC', 'tip' => __('The Country associated with this Site.')));
+		'name' => array(
+			'display' => __('Site Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this Site.')
+		),
+		'id' => array(
+			'display' => __('ID'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The unique id associated with this Site.')
+		),
+		'hosts' => array(
+			'display' => __('Devices'),
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Devices associated with this Site.')
+		),
+		'city' => array(
+			'display' => __('City'),
+			'align'   => 'left',
+			'sort'    => 'DESC',
+			'tip'     => __('The City associated with this Site.')
+		),
+		'state' => array(
+			'display' => __('State'),
+			'align'   => 'left',
+			'sort'    => 'DESC',
+			'tip'     => __('The State associated with this Site.')
+		),
+		'country' => array(
+			'display' => __('Country'),
+			'align'   => 'left',
+			'sort'    => 'DESC',
+			'tip'     => __('The Country associated with this Site.')
+		)
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

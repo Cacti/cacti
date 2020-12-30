@@ -1420,7 +1420,7 @@ class spikekill {
 						$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
 
 						if (isset($this->list_of_spikes[$rra_num])) {
-							if (in_array(array($ds_num,$timestamp),$this->list_of_spikes[$rra_num], true)) {
+							if (in_array(array($ds_num,$timestamp), $this->list_of_spikes[$rra_num], false)) {
 								/* this dsvalue is a spike, so we need to kill it */
 								if ($this->avgnan == 'avg') {
 									if ($this->method == SPIKE_METHOD_STDDEV) {

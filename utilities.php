@@ -2224,7 +2224,7 @@ function snmpagent_utilities_run_eventlog() {
 	/* ================= input validation ================= */
 	get_filter_request_var('receiver');
 
-	if (!in_array(get_request_var('severity'), array_keys($severity_levels), true) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
+	if (!in_array(get_request_var('severity'), array_keys($severity_levels), false) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
 		die_html_input_error('severity');
 	}
 	/* ==================================================== */

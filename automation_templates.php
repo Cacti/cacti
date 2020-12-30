@@ -281,18 +281,20 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 	$items = db_fetch_assoc_prepared('SELECT id, title
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
-		AND host_id=0
-		AND local_graph_id=0
+		AND host_id = 0
+		AND local_graph_id = 0
 		AND parent = ?
-		ORDER BY position', array($tree_id, $id));
+		ORDER BY position',
+		array($tree_id, $id));
 
 	$spaces .= '--';
 
 	if (cacti_sizeof($items)) {
-	foreach ($items as $i) {
-		$headers['tr_' . $tree_id . '_bi_' . $i['id']] = $spaces . ' ' . $i['title'];
-		$headers                                       = automation_get_child_branches($tree_id, $i['id'], $spaces, $headers);
-	}
+		foreach ($items as $i) {
+			$headers['tr_' . $tree_id . '_bi_' . $i['id']] = $spaces . ' ' . $i['title'];
+
+			$headers = automation_get_child_branches($tree_id, $i['id'], $spaces, $headers);
+		}
 	}
 
 	return $headers;
@@ -308,12 +310,17 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
  */
 function automation_get_tree_headers() {
 	$headers = array();
-	$trees   = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
 
-	foreach ($trees as $tree) {
-		$headers['tr_' . $tree['id'] . '_br_0'] = $tree['name'];
-		$spaces                                 = '';
-		$headers                                = automation_get_child_branches($tree['id'], 0, $spaces, $headers);
+	$trees = db_fetch_assoc('SELECT id, name
+		FROM graph_tree
+		ORDER BY name');
+
+	if (cacti_sizeof($trees)) {
+		foreach ($trees as $tree) {
+			$headers['tr_' . $tree['id'] . '_br_0'] = $tree['name'];
+
+			$headers = automation_get_child_branches($tree['id'], 0, '', $headers);
+		}
 	}
 
 	return $headers;
@@ -563,15 +570,33 @@ function template() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		array('display' => __('Template Name'), 'align' => 'left'),
-		array('display' => __('Availability Method'), 'align' => 'left'),
-		array('display' => __('System Description Match'), 'align' => 'left'),
-		array('display' => __('System Name Match'), 'align' => 'left'),
-		array('display' => __('System ObjectId Match'), 'align' => 'left')
+		array(
+			'display' => __('Template Name'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Availability Method'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('System Description Match'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('System Name Match'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('System ObjectId Match'),
+			'align'   => 'left'
+		)
 	);
 
 	if (read_config_option('drag_and_drop') == '') {
-		$display_text[] = array('display' => __('Order'), 'align' => 'center');
+		$display_text[] = array(
+			'display' => __('Order'),
+			'align'   => 'center'
+		);
 	}
 
 	html_header_checkbox($display_text, false);

@@ -769,8 +769,16 @@ function host_edit() {
 
 		html_header(
 			array(
-				array('display' => __('Graph Template Name'), 'align' => 'left', 'nohide' => true),
-				array('display' => __('Status'), 'align' => 'left', 'nohide' => true)
+				array(
+					'display' => __('Graph Template Name'),
+					'align'   => 'left',
+					'nohide'  => true
+				),
+				array(
+					'display' => __('Status'),
+					'align'   => 'left',
+					'nohide'  => true
+				)
 			), 2);
 
 		$selected_graph_templates = db_fetch_assoc_prepared('
@@ -895,10 +903,24 @@ function host_edit() {
 
 		html_header(
 			array(
-				array('display' => __('Data Query Name'), 'align' => 'left', 'nohide' => true),
-				array('display' => __('Re-Index Method'), 'align' => 'left', 'nohide' => true),
-				array('display' => __('Status'), 'align' => 'left'),
-				array('display' => __('Actions'), 'align' => 'right')
+				array(
+					'display' => __('Data Query Name'),
+					'align'   => 'left',
+					'nohide'  => true
+				),
+				array(
+					'display' => __('Re-Index Method'),
+					'align'   => 'left',
+					'nohide'  => true
+				),
+				array(
+					'display' => __('Status'),
+					'align'   => 'left'
+				),
+				array(
+					'display' => __('Actions'),
+					'align'   => 'right'
+				)
 			)
 		);
 

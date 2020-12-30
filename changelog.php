@@ -126,15 +126,18 @@ function changelog_view() {
 			$type = 'unknown';
 
 			if (isset($parts[1])) {
-				$type                          = strtolower($parts[1]);
+				$type = strtolower($parts[1]);
 
-				if ($type == 'security') $type = ' security';
+				if ($type == 'security') {
+					$type = ' security';
+				}
 			}
 
 			if (!empty($detail)) {
 				if (empty($details[$type])) {
 					$details[$type] = array();
 				}
+
 				$details[$type][] = $detail;
 			}
 		} elseif (!empty($line)) {
@@ -147,6 +150,7 @@ function changelog_view() {
 			if (count($vers) > 4) {
 				break;
 			}
+
 			$ver = $line;
 		}
 	}

@@ -3288,8 +3288,14 @@ function rrdtool_info2html($info_array, $diff=array()) {
 
 	# header data
 	$header_items = array(
-		array('display' =>__('Header'), 'align' => 'left'),
-		array('display' => '', 'align' => 'left')
+		array(
+			'display' =>__('Header'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => '',
+			'align'   => 'left'
+		)
 	);
 
 	html_header($header_items, 1);
@@ -3316,14 +3322,38 @@ function rrdtool_info2html($info_array, $diff=array()) {
 
 	# data sources
 	$header_items = array(
-		array('display' => __('Data Source Items'), 'align' => 'left'),
-		array('display' => __('Type'),              'align' => 'left'),
-		array('display' => __('Minimal Heartbeat'), 'align' => 'right'),
-		array('display' => __('Min'),               'align' => 'right'),
-		array('display' => __('Max'),               'align' => 'right'),
-		array('display' => __('Last DS'),           'align' => 'right'),
-		array('display' => __('Value'),             'align' => 'right'),
-		array('display' => __('Unknown Sec'),       'align' => 'right')
+		array(
+			'display' => __('Data Source Items'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Type'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Minimal Heartbeat'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('Min'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('Max'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('Last DS'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('Value'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('Unknown Sec'),
+			'align'   => 'right'
+		)
 	);
 
 	html_start_box('', '100%', '', '3', 'center', '');
@@ -3374,14 +3404,38 @@ function rrdtool_info2html($info_array, $diff=array()) {
 
 	# round robin archive
 	$header_items = array(
-		array('display' => __('Round Robin Archive'),         'align' => 'left'),
-		array('display' => __('Consolidation Function'),      'align' => 'left'),
-		array('display' => __('Rows'),                        'align' => 'right'),
-		array('display' => __('Cur Row'),                     'align' => 'right'),
-		array('display' => __('PDP per Row'),                 'align' => 'right'),
-		array('display' => __('X-Files Factor'),              'align' => 'right'),
-		array('display' => __('CDP Prep Value (0)'),          'align' => 'right'),
-		array('display' => __('CDP Unknown Data points (0)'), 'align' => 'right')
+		array(
+			'display' => __('Round Robin Archive'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Consolidation Function'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Rows'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('Cur Row'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('PDP per Row'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('X-Files Factor'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('CDP Prep Value (0)'),
+			'align'   => 'right'
+		),
+		array(
+			'display' => __('CDP Unknown Data points (0)'),
+			'align'   => 'right'
+		)
 	);
 
 	html_start_box('', '100%', '', '3', 'center', '');

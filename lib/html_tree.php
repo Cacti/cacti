@@ -1219,7 +1219,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 										print "<option value='" . $gt['id'] . "'";
 
 										if (cacti_sizeof($selected)) {
-											if (in_array($gt['id'], $selected, true)) {
+											if (in_array($gt['id'], $selected, false)) {
 												print ' selected';
 											}
 										}

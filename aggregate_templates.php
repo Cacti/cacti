@@ -690,10 +690,26 @@ function aggregate_template() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'pgt.name'            => array('display' => __('Template Title'), 'align' => 'left', 'sort' => 'ASC'),
-		'nosort'              => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate.')),
-		'graphs.graphs'       => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC'),
-		'graph_template_name' => array('display' => __('Graph Template'), 'align' => 'left', 'sort' => 'ASC')
+		'pgt.name' => array(
+			'display' => __('Template Title'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align'   => 'right',
+			'tip'     => __('Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate.')
+		),
+		'graphs.graphs' => array(
+			'display' => __('Graphs Using'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'graph_template_name' => array(
+			'display' => __('Graph Template'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
