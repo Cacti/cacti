@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#3985: Update database library function to properly handle collate
 -issue#3988: Automation raises errors when default snmp options is set to none
 -issue#3990: Utilities-System Utilities-technich support-php info is not a row, should not use form_alternate_row
+-issue#3999: The chances of mysqldump with password should be minimized
 -issue#4001: PHP8 support: Debian test suites shows lots of PHP Errors and Warnings with PHP8
 -issue#4002: Poller Recovery is not predictable
 -issue#4005: Automation raises errors when default snmp options is set to none
