@@ -108,13 +108,21 @@ function install_create_csrf_secret($file) {
 function install_test_local_database_connection() {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
-	if (!isset($database_ssl)) $rdatabase_ssl           = false;
+	if (!isset($database_ssl)) {
+		$rdatabase_ssl = false;
+	}
 
-	if (!isset($database_ssl_key)) $rdatabase_ssl_key   = false;
+	if (!isset($database_ssl_key)) {
+		$rdatabase_ssl_key = false;
+	}
 
-	if (!isset($database_ssl_cert)) $rdatabase_ssl_cert = false;
+	if (!isset($database_ssl_cert)) {
+		$rdatabase_ssl_cert = false;
+	}
 
-	if (!isset($database_ssl_ca)) $rdatabase_ssl_ca     = false;
+	if (!isset($database_ssl_ca)) {
+		$rdatabase_ssl_ca = false;
+	}
 
 	$connection = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
@@ -138,13 +146,21 @@ function install_test_local_database_connection() {
 function install_test_remote_database_connection() {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
-	if (!isset($rdatabase_ssl)) $rdatabase_ssl           = false;
+	if (!isset($rdatabase_ssl)) {
+		$rdatabase_ssl = false;
+	}
 
-	if (!isset($rdatabase_ssl_key)) $rdatabase_ssl_key   = false;
+	if (!isset($rdatabase_ssl_key)) {
+		$rdatabase_ssl_key = false;
+	}
 
-	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
+	if (!isset($rdatabase_ssl_cert)) {
+		$rdatabase_ssl_cert = false;
+	}
 
-	if (!isset($rdatabase_ssl_ca)) $rdatabase_ssl_ca     = false;
+	if (!isset($rdatabase_ssl_ca)) {
+		$rdatabase_ssl_ca = false;
+	}
 
 	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
 
@@ -301,7 +317,8 @@ function db_install_change_column($table, $column, $ignore = true) {
 
 	if (!db_table_exists($table)) {
 		$database_last_error = 'Table \'' . $table . '\' missing, cannot change column \'' . $column['name'] . '\'';
-		$status              = DB_STATUS_WARNING;
+
+		$status = DB_STATUS_WARNING;
 	} elseif (db_column_exists($table, $column['name'], false)) {
 		$status = db_change_column($table, $column, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	} elseif (!empty($column['newname']) && !db_column_exists($table, $column['newname'], false)) {
@@ -337,7 +354,8 @@ function db_install_add_column($table, $column, $ignore = true) {
 
 	if (!db_table_exists($table)) {
 		$database_last_error = 'Table \'' . $table . '\' missing, cannot add column \'' . $column['name'] . '\'';
-		$status              = DB_STATUS_WARNING;
+
+		$status = DB_STATUS_WARNING;
 	} elseif (!db_column_exists($table, $column['name'], false)) {
 		$status = db_add_column($table, $column, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	} elseif (!$ignore) {

@@ -1496,9 +1496,9 @@ function get_device_records(&$total_rows, $rows) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (deleted = "" AND (
-			host.hostname LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
+			host.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR host.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR host.id = '			 . db_qstr(get_request_var('filter')) . '))';
+			OR host.id = ' . db_qstr(get_request_var('filter')) . '))';
 	} else {
 		$sql_where = "WHERE deleted = ''";
 	}

@@ -565,9 +565,9 @@ function manager_notifications($id, $header_label) {
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			`oid` LIKE '	 . db_qstr('%' . get_request_var('filter') . '%') . '
+			`oid` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR `name` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR `mib` LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR `mib` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 	$sql_where .= ' ORDER by `oid`';
 

@@ -3712,9 +3712,9 @@ class Installer implements JsonSerializable {
 					log_install_always('', __('Resequencing Automation Option Set %s', $snmp_id));
 
 					db_execute_prepared('UPDATE automation_snmp_items
-					     SET sequence = sequence + 1
-					     WHERE snmp_id = ?',
-						 array($snmp_id));
+						SET sequence = sequence + 1
+						WHERE snmp_id = ?',
+						array($snmp_id));
 				} else {
 					log_install_always('', __('Failed to updated Automation Option Set %s', $snmp_id));
 				}

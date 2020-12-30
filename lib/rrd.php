@@ -1762,22 +1762,26 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
+					$graph_cf = $graph_item['consolidation_function_id'];
+
 					$graph_items[$key]['cf_reference'] = $graph_cf;
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_LAST:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
+					$graph_cf = $graph_item['consolidation_function_id'];
+
 					$graph_items[$key]['cf_reference'] = $graph_cf;
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MAX:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
+					$graph_cf = $graph_item['consolidation_function_id'];
+
 					$graph_items[$key]['cf_reference'] = $graph_cf;
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MIN:
-					$graph_cf                          = $graph_item['consolidation_function_id'];
+					$graph_cf = $graph_item['consolidation_function_id'];
+
 					$graph_items[$key]['cf_reference'] = $graph_cf;
 
 					break;
@@ -1994,10 +1998,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$cdef_graph_defs = '';
 
 			if ((!empty($graph_item['cdef_id'])) && (!isset($cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]))) {
-				$cdef_string 	= $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
-				$magic_item 	 = array();
-				$already_seen	= array();
-				$sources_seen	= array();
+				$cdef_string  = $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
+				$magic_item   = array();
+				$already_seen = array();
+				$sources_seen = array();
 
 				$count_all_ds_dups       = 0;
 				$count_all_ds_nodups     = 0;

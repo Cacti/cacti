@@ -123,7 +123,8 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 		if (cacti_sizeof($aggregate_data)) {
 			foreach ($aggregate_data as $field => $value) {
 				if (substr($field, 0, 2) == 't_' && $value == 'on') {
-					$value_field_name                 = substr($field, 2);
+					$value_field_name = substr($field, 2);
+
 					$template_data[$value_field_name] = $aggregate_data[$value_field_name];
 				}
 			}
@@ -260,7 +261,8 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 		$prepend_ct = 0;
 		$skip_graph = false;
 		$make0_cdef = aggregate_cdef_make0();
-		$i          = 0;
+
+		$i = 0;
 
 		foreach ($graph_items as $graph_item) {
 			// loop starts at 0, but $_skip starts at 1, so increment before comparing
@@ -828,7 +830,8 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 		cacti_log(__FUNCTION__ .  ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 		$items = db_fetch_assoc($sql);
-		$i     = 0;
+
+		$i = 0;
 
 		foreach ($items as $item) {
 			$new_graph_type = aggregate_change_graph_type($i, $item['graph_type_id'], $graph_type);

@@ -180,20 +180,23 @@ class spikekill {
 		}
 
 		/* if there are global options in the database, then override the static
-			 defaults stored in the class.  The precedence order goes something like
-			 this: static default in the class -> overridden by the global default
-			 in the database, if exists -> overridden by the user's setting, if
-			 exists -> overridden by an argument provided during class creation */
+		 * defaults stored in the class.  The precedence order goes something like
+		 * this: static default in the class -> overridden by the global default
+		 * in the database, if exists -> overridden by the user's setting, if
+		 * exists -> overridden by an argument provided during class creation
+		 */
 		$dmethod = read_config_option('spikekill_method', true);
 
 		if (isset($dmethod)) {
 			$this->dmethod = $dmethod;
 		}
+
 		$dnumspike = read_config_option('spikekill_number', true);
 
 		if (isset($dnumspike)) {
 			$this->dnumspike = $dnumspike;
 		}
+
 		$dstddev = read_config_option('spikekill_deviations', true);
 
 		if (isset($dstddev)) {
@@ -204,21 +207,25 @@ class spikekill {
 		if (isset($dpercent)) {
 			$this->dpercent = $dpercent;
 		}
+
 		$doutliers = read_config_option('spikekill_outliers', true);
 
 		if (isset($doutliers)) {
 			$this->doutliers = $doutliers;
 		}
+
 		$davgnan = read_config_option('spikekill_avgnan', true);
 
 		if (isset($davgnan)) {
 			$this->davgnan = $davgnan;
 		}
+
 		$ddsfilter = read_config_option('spikekill_dsfilter',true);
 
 		if (isset($ddsfilter)) {
 			$this->ddsfilter = $ddsfilter;
 		}
+
 		$dabsmax = read_config_option('spikekill_absmax',true);
 
 		if (isset($dabsmax)) {

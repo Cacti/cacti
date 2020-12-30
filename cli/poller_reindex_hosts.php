@@ -43,10 +43,10 @@ ini_set('max_execution_time', '0');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		    = false;
-$host_id	   = '';
-$query_id	  = 'all';		/* just to mimic the old behaviour */
-$host_descr	= '';
+$debug      = false;
+$host_id    = '';
+$query_id   = 'all'; /* just to mimic the old behaviour */
+$host_descr = '';
 $force      = false;
 
 if (cacti_sizeof($parms)) {

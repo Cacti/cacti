@@ -295,10 +295,12 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
  * @return				- unix time
  */
 function utime_add($timestamp, $yr=0, $mon=0, $day=0, $hr=0, $min=0, $sec=0) {
-	$dt          = localtime($timestamp, true);
+	$dt = localtime($timestamp, true);
+
 	$unixnewtime = mktime(
-	$dt['tm_hour'] + $hr, $dt['tm_min'] + $min, $dt['tm_sec'] + $sec,
-	$dt['tm_mon'] + 1 + $mon, $dt['tm_mday'] + $day, $dt['tm_year'] + 1900 + $yr);
+		$dt['tm_hour'] + $hr, $dt['tm_min'] + $min, $dt['tm_sec'] + $sec,
+		$dt['tm_mon'] + 1 + $mon, $dt['tm_mday'] + $day, $dt['tm_year'] + 1900 + $yr
+	);
 
 	return $unixnewtime;
 }

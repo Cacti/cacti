@@ -35,8 +35,8 @@
  */
 function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 	# unless changed later, $span['end_now'] is always $curr_time
-	$span['begin_now'] 	= $curr_time; # initialization only!
-	$span['end_now'] 	  = $curr_time;
+	$span['begin_now'] = $curr_time; # initialization only!
+	$span['end_now']   = $curr_time;
 
 	switch ($timespan_given)  {
 		case GT_LAST_HALF_HOUR:
@@ -254,13 +254,14 @@ function shift_time(&$span, $direction, $shift_size) {
 	# is this a month shift AND current timespane is on month boundaries?
 	if (month_shift($shift_size) && check_month_boundaries($span)) {
 		# shift left boundary
-		$span['begin_now'] 	= strtotime($direction . $shift_size . ' ' . $span['current_value_date1']);
+		$span['begin_now'] = strtotime($direction . $shift_size . ' ' . $span['current_value_date1']);
+
 		# shifting right boundary is somewhat complicated
-		$span['end_now'] 	= shift_right_boundary($span, $direction, $shift_size);
+		$span['end_now']   = shift_right_boundary($span, $direction, $shift_size);
 	} else {
 		# 'normal' time shifting: use strtotime magic
-		$span['begin_now'] 	= strtotime($direction . $shift_size . ' ' . $span['current_value_date1']);
-		$span['end_now'] 	  = strtotime($direction . $shift_size . ' ' . $span['current_value_date2']);
+		$span['begin_now'] = strtotime($direction . $shift_size . ' ' . $span['current_value_date1']);
+		$span['end_now']   = strtotime($direction . $shift_size . ' ' . $span['current_value_date2']);
 	}
 
 	# convert to human readable format
@@ -269,6 +270,8 @@ function shift_time(&$span, $direction, $shift_size) {
 
 	# now custom time settings in effect
 	$_SESSION['sess_current_timespan'] = GT_CUSTOM;
-	$_SESSION['custom']                = 1;
+
+	$_SESSION['custom'] = 1;
+
 	set_request_var('predefined_timespan', GT_CUSTOM);
 }

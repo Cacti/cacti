@@ -269,8 +269,10 @@ function api_networks_save($post) {
 		/* check for bad rules */
 		if ($save['sched_type'] == '3') {
 			if ($save['day_of_week'] == '') {
-				$save['enabled']                = '';
+				$save['enabled'] = '';
+
 				$_SESSION['automation_message'] = __esc('ERROR: You must specify the day of the week.  Disabling Network %s!.', $save['name']);
+
 				raise_message('automation_message');
 			}
 		} elseif ($save['sched_type'] == '4') {

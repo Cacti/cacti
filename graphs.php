@@ -1455,7 +1455,8 @@ function graph_edit() {
 			}
 			$_SESSION['sess_graph_locked'] = $locked;
 		} elseif (empty($local_graph_template_graph_id)) {
-			$locked                        = false;
+			$locked = false;
+
 			$_SESSION['sess_graph_locked'] = $locked;
 		} elseif (isset($_SESSION['sess_graph_locked'])) {
 			$locked = $_SESSION['sess_graph_locked'];

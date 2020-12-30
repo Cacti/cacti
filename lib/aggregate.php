@@ -80,7 +80,8 @@ function api_aggregate_convert_template($graphs) {
 		array($aggregate_template_id));
 
 	foreach ($graphs as $graph) {
-		$save                          = array();
+		$save = array();
+
 		$save['id']                    = '';
 		$save['local_graph_id']        = $graph;
 		$save['aggregate_template_id'] = $aggregate_template_id;
@@ -333,18 +334,26 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */
-		if (substr_count($errmsg, 'date_default_timezone')) return;
+		if (substr_count($errmsg, 'date_default_timezone')) {
+			return;
+		}
 
-		if (substr_count($errmsg, 'Only variables')) return;
+		if (substr_count($errmsg, 'Only variables')) {
+			return;
+		}
+
 		/* log the error to the Cacti log */
-		cacti_log('PROGERR: ' . $err, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
-		print ('PROGERR: ' . $err . '<br><pre>');
+		cacti_log("PROGERR: $err", false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+
+		print "PROGERR: $err <br><pre>";
 
 		# backtrace, if available
 		cacti_debug_backtrace('AGGREGATE', true);
 
 		if (isset($GLOBALS['error_fatal'])) {
-			if ($GLOBALS['error_fatal'] & $errno) die("Fatal error $errno" . PHP_EOL);
+			if ($GLOBALS['error_fatal'] & $errno) {
+				die("Fatal error $errno" . PHP_EOL);
+			}
 		}
 	}
 
@@ -673,7 +682,8 @@ function aggregate_cdef_make0() {
 	}
 
 	# create a new cdef entry
-	$save           = array();
+	$save = array();
+
 	$save['id']     = 0;
 	$save['hash']   = get_hash_cdef(0);
 	$save['system'] = 1;
@@ -685,7 +695,8 @@ function aggregate_cdef_make0() {
 	cacti_log(__FUNCTION__ . ' created new cdef: ' . $new_cdef_id . ' name: ' . $magic, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	# create a new cdef item entry
-	$save             = array();
+	$save = array();
+
 	$save['id']       = 0;
 	$save['hash']     = get_hash_cdef(0, 'cdef_item');
 	$save['cdef_id']  = $new_cdef_id;
@@ -794,7 +805,8 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			# in case, we have NO match
 			if (empty($new_cdef_id)) {
 				# create a new cdef entry
-				$save           = array();
+				$save = array();
+
 				$save['id']     = 0;
 				$save['hash']   = get_hash_cdef(0);
 				$save['system'] = 1;
@@ -819,7 +831,8 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 				cacti_log(__FUNCTION__ . ' created new cdef: ' . $new_cdef_id . ' name: ' . $new_cdef_name . ' value: ' . $new_cdef_text, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 				# create a new cdef item entry
-				$save             = array();
+				$save = array();
+
 				$save['id']       = 0;
 				$save['hash']     = get_hash_cdef(0, 'cdef_item');
 				$save['cdef_id']  = $new_cdef_id;
@@ -839,13 +852,10 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			}
 
 			# now that we have a new cdef id, update record accordingly
-			$sql = "UPDATE graph_templates_item
-				SET cdef_id=$new_cdef_id
-				WHERE id=" . $graph_template_item['id'];
-
-			cacti_log(__FUNCTION__ . ' sql: ' . $sql, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
-
-			$ok = db_execute($sql);
+			db_execute_prepared('UPDATE graph_templates_item
+				SET cdef_id = ?
+				WHERE id= ?',
+				array($new_cdef_id, $graph_template_item['id']));
 
 			cacti_log(__FUNCTION__ . ' updated new cdef id: ' . $new_cdef_id . ' for item: ' . $graph_template_item['id'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 		}

@@ -498,7 +498,8 @@ function field_edit() {
 	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(!isempty_request_var('data_input_id') ? get_request_var('data_input_id') : $field['data_input_id'])), $matches))) {
 		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names, true) === false) {
-				$current_field_name                     = $matches[1][$i];
+				$current_field_name = $matches[1][$i];
+
 				$array_field_names[$current_field_name] = $current_field_name;
 
 				if (!isset($field)) {
@@ -508,7 +509,8 @@ function field_edit() {
 						array($current_field_name, get_filter_request_var('data_input_id')));
 
 					if (!$field_id > 0) {
-						$field              = array();
+						$field = array();
+
 						$field['name']      = ucwords($current_field_name);
 						$field['data_name'] = $current_field_name;
 					}

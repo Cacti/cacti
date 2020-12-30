@@ -766,7 +766,8 @@ function get_list_of_locales() {
 function get_installed_locales() {
 	global $config, $lang2locale;
 
-	$locations                    = array();
+	$locations = array();
+
 	$supported_languages['en-US'] = $lang2locale['en-US']['language'];
 
 	foreach ($lang2locale as $locale => $properties) {

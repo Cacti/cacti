@@ -333,14 +333,16 @@ function graphs() {
 
 			$header =  __esc('New Graphs for [ %s ] (%s %s)', $host['description'], $host['hostname'], (!empty($host['host_template_id']) ? $name:''));
 		} else {
-			$header                   =  __('New Graphs for [ All Devices ]');
+			$header =  __('New Graphs for [ All Devices ]');
+
 			$host['id']               = -1;
 			$host['host_template_id'] = 0;
 		}
 	} else {
+		$header = __('New Graphs for None Host Type');
+
 		$host['id']               = 0;
 		$host['host_template_id'] = 0;
-		$header                   = __('New Graphs for None Host Type');
 	}
 
 	html_start_box($header, '100%', '', '3', 'center', '');

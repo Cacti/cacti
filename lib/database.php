@@ -273,7 +273,8 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		db_echo_sql('db_' . $execute_name . ': "' . $sql . "\"\n");
 	}
 
-	$errors                 = 0;
+	$errors = 0;
+
 	$db_conn->affected_rows = 0;
 
 	while (true) {

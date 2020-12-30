@@ -216,9 +216,9 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filterd') != '') {
 		$sql_where = 'WHERE h.deleted = ""
-			AND (h.hostname LIKE '  . db_qstr('%' . get_request_var('filterd') . '%') . '
+			AND (h.hostname LIKE ' . db_qstr('%' . get_request_var('filterd') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filterd') . '%') . '
-			OR ht.name LIKE '	   . db_qstr('%' . get_request_var('filterd') . '%') . ')';
+			OR ht.name LIKE ' . db_qstr('%' . get_request_var('filterd') . '%') . ')';
 	} else {
 		$sql_where = "WHERE h.deleted = ''";
 	}
@@ -520,10 +520,10 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (
-			gtg.title_cache LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR gt.name LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
+			gtg.title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.hostname LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -1196,9 +1196,9 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			h.hostname LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
+			h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ht.name LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR ht.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	if (get_request_var('host_status') == '-1') {
