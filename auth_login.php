@@ -580,11 +580,17 @@ function domains_login_process() {
 function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	$ldap = new Ldap;
 
-	if (!empty($username)) $ldap->username = $username;
+	if (!empty($username)) {
+		$ldap->username = $username;
+	}
 
-	if (!empty($password)) $ldap->password = $password;
+	if (!empty($password)) {
+		$ldap->password = $password;
+	}
 
-	if (!empty($dn))       $ldap->dn       = $dn;
+	if (!empty($dn)) {
+		$ldap->dn = $dn;
+	}
 
 	$ld = db_fetch_row_prepared('SELECT *
 		FROM user_domains_ldap
@@ -592,29 +598,53 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 		array($realm - 1000));
 
 	if (cacti_sizeof($ld)) {
-		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+		if (!empty($ld['dn'])) {
+			$ldap->dn = $ld['dn'];
+		}
 
-		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
+		if (!empty($ld['server'])) {
+			$ldap->host = $ld['server'];
+		}
 
-		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
+		if (!empty($ld['port'])) {
+			$ldap->port = $ld['port'];
+		}
 
-		if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];
+		if (!empty($ld['port_ssl'])) {
+			$ldap->port_ssl = $ld['port_ssl'];
+		}
 
-		if (!empty($ld['proto_version']))     $ldap->version           = $ld['proto_version'];
+		if (!empty($ld['proto_version'])) {
+			$ldap->version = $ld['proto_version'];
+		}
 
-		if (!empty($ld['encryption']))        $ldap->encryption        = $ld['encryption'];
+		if (!empty($ld['encryption'])) {
+			$ldap->encryption = $ld['encryption'];
+		}
 
-		if (!empty($ld['referrals']))         $ldap->referrals         = $ld['referrals'];
+		if (!empty($ld['referrals'])) {
+			$ldap->referrals = $ld['referrals'];
+		}
 
-		if (!empty($ld['mode']))              $ldap->mode              = $ld['mode'];
+		if (!empty($ld['mode'])) {
+			$ldap->mode = $ld['mode'];
+		}
 
-		if (!empty($ld['search_base']))       $ldap->search_base       = $ld['search_base'];
+		if (!empty($ld['search_base'])) {
+			$ldap->search_base = $ld['search_base'];
+		}
 
-		if (!empty($ld['search_filter']))     $ldap->search_filter     = $ld['search_filter'];
+		if (!empty($ld['search_filter'])) {
+			$ldap->search_filter = $ld['search_filter'];
+		}
 
-		if (!empty($ld['specific_dn']))       $ldap->specific_dn       = $ld['specific_dn'];
+		if (!empty($ld['specific_dn'])) {
+			$ldap->specific_dn = $ld['specific_dn'];
+		}
 
-		if (!empty($ld['specific_password'])) $ldap->specific_password = $ld['specific_password'];
+		if (!empty($ld['specific_password'])) {
+			$ldap->specific_password = $ld['specific_password'];
+		}
 
 		if ($ld['group_require'] == 'on') {
 			$ldap->group_require = true;
@@ -622,11 +652,17 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 			$ldap->group_require = false;
 		}
 
-		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
+		if (!empty($ld['group_dn'])) {
+			$ldap->group_dn = $ld['group_dn'];
+		}
 
-		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
+		if (!empty($ld['group_attrib'])) {
+			$ldap->group_attrib = $ld['group_attrib'];
+		}
 
-		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
+		if (!empty($ld['group_member_type'])) {
+			$ldap->group_member_type = $ld['group_member_type'];
+		}
 
 		return $ldap->Authenticate();
 	} else {
@@ -655,29 +691,53 @@ function domains_ldap_search_dn($username, $realm) {
 		array($realm - 1000));
 
 	if (cacti_sizeof($ld)) {
-		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+		if (!empty($ld['dn'])) {
+			$ldap->dn = $ld['dn'];
+		}
 
-		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
+		if (!empty($ld['server'])) {
+			$ldap->host = $ld['server'];
+		}
 
-		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
+		if (!empty($ld['port'])) {
+			$ldap->port = $ld['port'];
+		}
 
-		if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];
+		if (!empty($ld['port_ssl'])) {
+			$ldap->port_ssl = $ld['port_ssl'];
+		}
 
-		if (!empty($ld['proto_version']))     $ldap->version           = $ld['proto_version'];
+		if (!empty($ld['proto_version'])) {
+			$ldap->version = $ld['proto_version'];
+		}
 
-		if (!empty($ld['encryption']))        $ldap->encryption        = $ld['encryption'];
+		if (!empty($ld['encryption'])) {
+			$ldap->encryption = $ld['encryption'];
+		}
 
-		if (!empty($ld['referrals']))         $ldap->referrals         = $ld['referrals'];
+		if (!empty($ld['referrals'])) {
+			$ldap->referrals = $ld['referrals'];
+		}
 
-		if (!empty($ld['mode']))              $ldap->mode              = $ld['mode'];
+		if (!empty($ld['mode'])) {
+			$ldap->mode = $ld['mode'];
+		}
 
-		if (!empty($ld['search_base']))       $ldap->search_base       = $ld['search_base'];
+		if (!empty($ld['search_base'])) {
+			$ldap->search_base = $ld['search_base'];
+		}
 
-		if (!empty($ld['search_filter']))     $ldap->search_filter     = $ld['search_filter'];
+		if (!empty($ld['search_filter'])) {
+			$ldap->search_filter = $ld['search_filter'];
+		}
 
-		if (!empty($ld['specific_dn']))       $ldap->specific_dn       = $ld['specific_dn'];
+		if (!empty($ld['specific_dn'])) {
+			$ldap->specific_dn = $ld['specific_dn'];
+		}
 
-		if (!empty($ld['specific_password'])) $ldap->specific_password = $ld['specific_password'];
+		if (!empty($ld['specific_password'])) {
+			$ldap->specific_password = $ld['specific_password'];
+		}
 
 		if ($ld['group_require'] == 'on') {
 			$ldap->group_require = true;
@@ -685,11 +745,17 @@ function domains_ldap_search_dn($username, $realm) {
 			$ldap->group_require = false;
 		}
 
-		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
+		if (!empty($ld['group_dn'])) {
+			$ldap->group_dn = $ld['group_dn'];
+		}
 
-		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
+		if (!empty($ld['group_attrib'])) {
+			$ldap->group_attrib = $ld['group_attrib'];
+		}
 
-		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
+		if (!empty($ld['group_member_type'])) {
+			$ldap->group_member_type = $ld['group_member_type'];
+		}
 
 		return $ldap->Search();
 	} else {

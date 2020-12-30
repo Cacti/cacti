@@ -215,16 +215,16 @@ function api_networks_save($post) {
 		$save['id']            = form_input_validate($post['id'], 'id', '^[0-9]+$', false, 3);
 
 		/* general information */
-		$save['name']          = form_input_validate($post['name'], 'name', '', false, 3);
-		$save['poller_id']     = form_input_validate($post['poller_id'], 'poller_id', '^[0-9]+$', false, 3);
-		$save['site_id']       = form_input_validate($post['site_id'], 'site_id', '^[0-9]+$', false, 3);
-		$save['subnet_range']  = form_input_validate($post['subnet_range'], 'subnet_range', '', false, 3);
-		$save['dns_servers']   = form_input_validate($post['dns_servers'], 'dns_servers', '', true, 3);
+		$save['name']         = form_input_validate($post['name'], 'name', '', false, 3);
+		$save['poller_id']    = form_input_validate($post['poller_id'], 'poller_id', '^[0-9]+$', false, 3);
+		$save['site_id']      = form_input_validate($post['site_id'], 'site_id', '^[0-9]+$', false, 3);
+		$save['subnet_range'] = form_input_validate($post['subnet_range'], 'subnet_range', '', false, 3);
+		$save['dns_servers']  = form_input_validate($post['dns_servers'], 'dns_servers', '', true, 3);
 
-		$save['threads']       = form_input_validate($post['threads'], 'threads', '^[0-9]+$', false, 3);
-		$save['run_limit']     = form_input_validate($post['run_limit'], 'run_limit', '^[0-9]+$', false, 3);
+		$save['threads']      = form_input_validate($post['threads'], 'threads', '^[0-9]+$', false, 3);
+		$save['run_limit']    = form_input_validate($post['run_limit'], 'run_limit', '^[0-9]+$', false, 3);
 
-		$save['enabled']              = (isset($post['enabled']) ? 'on':'');
+		$save['enabled']      = (isset($post['enabled']) ? 'on':'');
 
 		/* notification settings */
 		$save['notification_enabled'] = (isset($post['notification_enabled']) ? 'on':'');
@@ -233,21 +233,21 @@ function api_networks_save($post) {
 		$save['notification_fromname']  = form_input_validate($post['notification_fromname'], 'notification_fromname', '', true, 3);
 		$save['notification_fromemail'] = form_input_validate($post['notification_fromemail'], 'notification_fromemail', '', true, 3);
 
-		$save['enable_netbios']       = (isset($post['enable_netbios']) ? 'on':'');
-		$save['add_to_cacti']         = (isset($post['add_to_cacti']) ? 'on':'');
-		$save['same_sysname']         = (isset($post['same_sysname']) ? 'on':'');
-		$save['rerun_data_queries']   = (isset($post['rerun_data_queries']) ? 'on':'');
+		$save['enable_netbios']     = (isset($post['enable_netbios']) ? 'on':'');
+		$save['add_to_cacti']       = (isset($post['add_to_cacti']) ? 'on':'');
+		$save['same_sysname']       = (isset($post['same_sysname']) ? 'on':'');
+		$save['rerun_data_queries'] = (isset($post['rerun_data_queries']) ? 'on':'');
 
 		/* discovery connectivity settings */
-		$save['snmp_id']       = form_input_validate($post['snmp_id'], 'snmp_id', '^[0-9]+$', false, 3);
-		$save['ping_method']   = form_input_validate($post['ping_method'], 'ping_method', '^[0-9]+$', false, 3);
-		$save['ping_port']     = form_input_validate($post['ping_port'], 'ping_port', '^[0-9]+$', false, 3);
-		$save['ping_timeout']  = form_input_validate($post['ping_timeout'], 'ping_timeout', '^[0-9]+$', false, 3);
-		$save['ping_retries']  = form_input_validate($post['ping_retries'], 'ping_retries', '^[0-9]+$', false, 3);
+		$save['snmp_id']      = form_input_validate($post['snmp_id'], 'snmp_id', '^[0-9]+$', false, 3);
+		$save['ping_method']  = form_input_validate($post['ping_method'], 'ping_method', '^[0-9]+$', false, 3);
+		$save['ping_port']    = form_input_validate($post['ping_port'], 'ping_port', '^[0-9]+$', false, 3);
+		$save['ping_timeout'] = form_input_validate($post['ping_timeout'], 'ping_timeout', '^[0-9]+$', false, 3);
+		$save['ping_retries'] = form_input_validate($post['ping_retries'], 'ping_retries', '^[0-9]+$', false, 3);
 
 		/* discovery schedule settings */
-		$save['sched_type']    = form_input_validate($post['sched_type'], 'sched_type', '^[0-9]+$', false, 3);
-		$save['start_at']      = form_input_validate($post['start_at'], 'start_at', '', false, 3);
+		$save['sched_type']   = form_input_validate($post['sched_type'], 'sched_type', '^[0-9]+$', false, 3);
+		$save['start_at']     = form_input_validate($post['start_at'], 'start_at', '', false, 3);
 
 		// accomodate a schedule start change
 		if ($post['orig_start_at'] != $post['start_at']) {
@@ -258,13 +258,13 @@ function api_networks_save($post) {
 			$save['next_start'] = '0000-00-00';
 		}
 
-		$save['recur_every']   = form_input_validate($post['recur_every'], 'recur_every', '', true, 3);
+		$save['recur_every']  = form_input_validate($post['recur_every'], 'recur_every', '', true, 3);
 
-		$save['day_of_week']   = form_input_validate(isset($post['day_of_week']) ? implode(',', $post['day_of_week']):'', 'day_of_week', '', true, 3);
-		$save['month']         = form_input_validate(isset($post['month']) ? implode(',', $post['month']):'', 'month', '', true, 3);
-		$save['day_of_month']  = form_input_validate(isset($post['day_of_month']) ? implode(',', $post['day_of_month']):'', 'day_of_month', '', true, 3);
-		$save['monthly_week']  = form_input_validate(isset($post['monthly_week']) ? implode(',', $post['monthly_week']):'', 'monthly_week', '', true, 3);
-		$save['monthly_day']   = form_input_validate(isset($post['monthly_day']) ? implode(',', $post['monthly_day']):'', 'monthly_day', '', true, 3);
+		$save['day_of_week']  = form_input_validate(isset($post['day_of_week']) ? implode(',', $post['day_of_week']):'', 'day_of_week', '', true, 3);
+		$save['month']        = form_input_validate(isset($post['month']) ? implode(',', $post['month']):'', 'month', '', true, 3);
+		$save['day_of_month'] = form_input_validate(isset($post['day_of_month']) ? implode(',', $post['day_of_month']):'', 'day_of_month', '', true, 3);
+		$save['monthly_week'] = form_input_validate(isset($post['monthly_week']) ? implode(',', $post['monthly_week']):'', 'monthly_week', '', true, 3);
+		$save['monthly_day']  = form_input_validate(isset($post['monthly_day']) ? implode(',', $post['monthly_day']):'', 'monthly_day', '', true, 3);
 
 		/* check for bad rules */
 		if ($save['sched_type'] == '3') {
@@ -275,14 +275,18 @@ function api_networks_save($post) {
 			}
 		} elseif ($save['sched_type'] == '4') {
 			if ($save['month'] == '' || $save['day_of_month'] == '') {
-				$save['enabled']                = '';
+				$save['enabled'] = '';
+
 				$_SESSION['automation_message'] = __esc('ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!', $save['name']);
+
 				raise_message('automation_message');
 			}
 		} elseif ($save['sched_type'] == '5') {
 			if ($save['month'] == '' || $save['monthly_day'] == '' || $save['monthly_week'] == '') {
-				$save['enabled']                = '';
+				$save['enabled'] = '';
+
 				$_SESSION['automation_message'] = __esc('ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!', $save['name']);
+
 				raise_message('automation_message');
 			}
 		}
@@ -299,8 +303,10 @@ function api_networks_save($post) {
 				if ($ips !== false) {
 					$total_ips += $ips;
 				} else {
-					$continue                       = false;
+					$continue = false;
+
 					$_SESSION['automation_message'] = __esc('ERROR: Network \'%s\' is Invalid.', $net);
+
 					raise_message('automation_message');
 
 					break;

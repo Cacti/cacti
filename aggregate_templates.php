@@ -88,13 +88,21 @@ function aggregate_form_save() {
 	}
 
 	/* set some defaults for possibly disabled values */
-	if (!isset_request_var('total'))        set_request_var('total', 0);
+	if (!isset_request_var('total')) {
+		set_request_var('total', 0);
+	}
 
-	if (!isset_request_var('total_type'))   set_request_var('total_type', 0);
+	if (!isset_request_var('total_type')) {
+		set_request_var('total_type', 0);
+	}
 
-	if (!isset_request_var('order_type'))   set_request_var('order_type', 0);
+	if (!isset_request_var('order_type')) {
+		set_request_var('order_type', 0);
+	}
 
-	if (!isset_request_var('total_prefix')) set_request_var('total_prefix', '');
+	if (!isset_request_var('total_prefix')) {
+		set_request_var('total_prefix', '');
+	}
 
 	/* populate aggregate template save array and validate posted values*/
 	$save1['name']              = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
