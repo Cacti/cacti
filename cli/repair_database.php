@@ -37,11 +37,11 @@ $force   = false;
 $dynamic = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -49,30 +49,38 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--force':
 				$force = true;
+
 				break;
 			case '--dynamic':
 				$dynamic = true;
+
 				break;
 			case '-form':
 			case '--form':
 				$form = ' USE_FRM';
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -84,7 +92,7 @@ db_execute('UNLOCK TABLES');
 $tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
 
 if (cacti_sizeof($tables)) {
-	foreach($tables AS $table) {
+	foreach ($tables as $table) {
 		print "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
 		$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . $form);
 		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
@@ -99,7 +107,7 @@ if (cacti_sizeof($tables)) {
 
 print "\nNOTE: Running some Data Query repair scripts\n";
 
-db_execute("UPDATE graph_local AS gl
+db_execute('UPDATE graph_local AS gl
 	INNER JOIN graph_templates_item AS gti
 	ON gti.local_graph_id = gl.id
 	INNER JOIN data_template_rrd AS dtr
@@ -108,7 +116,7 @@ db_execute("UPDATE graph_local AS gl
 	ON dl.id = dtr.local_data_id
 	SET gl.snmp_query_id = dl.snmp_query_id, gl.snmp_index = dl.snmp_index
 	WHERE gl.graph_template_id IN (SELECT graph_template_id FROM snmp_query_graph)
-	AND gl.snmp_query_id = 0");
+	AND gl.snmp_query_id = 0');
 
 db_execute("UPDATE graph_local AS gl
 	INNER JOIN (
@@ -146,6 +154,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	AND graph_templates_item.gprint_id > 0');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM graph_templates_item
@@ -157,13 +166,14 @@ if ($rows > 0) {
 }
 
 /* remove invalid CDEF Items from the Database, validated */
-$rows = db_fetch_cell("SELECT count(*)
+$rows = db_fetch_cell('SELECT count(*)
 	FROM cdef_items
 	LEFT JOIN cdef
 	ON cdef_items.cdef_id=cdef.id
-	WHERE cdef.id IS NULL");
+	WHERE cdef.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM cdef_items
@@ -181,6 +191,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	WHERE data_input.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_template_data
@@ -198,6 +209,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	WHERE data_input.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_fields
@@ -219,6 +231,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	WHERE data_template_data.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_data
@@ -235,6 +248,7 @@ $rows = db_fetch_cell('SELECT count(*)
 	WHERE data_input_fields.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_data
@@ -252,14 +266,18 @@ if ($total_rows > 0 && !$force) {
 	print "NOTE: No Invalid Cacti Template Records found in your Database\n\n";
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Database Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
-function display_help () {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: repair_database.php [--dynamic] [--debug] [--force] [--form]\n\n";

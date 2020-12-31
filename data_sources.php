@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include ('./include/auth.php');
+include('./include/auth.php');
 include_once('./lib/api_data_source.php');
 include_once('./lib/api_device.php');
 include_once('./lib/api_graph.php');
@@ -71,17 +71,21 @@ switch (get_request_var('action')) {
 		data_edit();
 
 		bottom_footer();
+
 		break;
 	case 'ds_disable':
 		ds_disable();
+
 		break;
 	case 'ds_enable':
 		ds_enable();
+
 		break;
 	case 'ds_remove':
 		ds_remove();
 
-		header ('Location: data_sources.php');
+		header('Location: data_sources.php');
+
 		break;
 	case 'ds_edit':
 		ds_edit();
@@ -89,6 +93,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts':
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -97,8 +102,8 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_hosts_noany':
-
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -106,19 +111,23 @@ switch (get_request_var('action')) {
 		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
 
 		break;
+
 	default:
 		top_header();
 
 		ds();
 
 		bottom_footer();
+
 		break;
 }
 
-/* --------------------------
-    The Save Function
-   -------------------------- */
-
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if ((isset_request_var('save_component_data_source_new')) && (!isempty_request_var('data_template_id'))) {
 		$save['id']               = get_filter_request_var('local_data_id');
@@ -228,7 +237,7 @@ function form_save() {
 			$local_data_id = sql_save($save1, 'data_local');
 
 			$save2['local_data_id'] = $local_data_id;
-			$data_template_data_id = sql_save($save2, 'data_template_data');
+			$data_template_data_id  = sql_save($save2, 'data_template_data');
 
 			if ($data_template_data_id) {
 				raise_message(1);
@@ -260,7 +269,7 @@ function form_save() {
 							$name_modifier = '_' . $rrd['id'];
 						}
 
-						$save3['id'] = $rrd['id'];
+						$save3['id']            = $rrd['id'];
 						$save3['local_data_id'] = $local_data_id;
 
 						$save3['local_data_template_rrd_id'] = db_fetch_cell_prepared('SELECT local_data_template_rrd_id
@@ -346,10 +355,12 @@ function form_save() {
 	}
 }
 
-/* ------------------------
-    The "actions" function
-   ------------------------ */
-
+/**
+ * form_actions
+ *
+ * Insert description here
+ *
+ */
 function form_actions() {
 	global $ds_actions;
 
@@ -391,7 +402,7 @@ function form_actions() {
 								AND local_graph_id > 0');
 
 							if (cacti_sizeof($poller_ids)) {
-								foreach($poller_ids as $poller_id) {
+								foreach ($poller_ids as $poller_id) {
 									if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 										db_execute('DELETE FROM graph_templates_item
 											WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
@@ -425,15 +436,15 @@ function form_actions() {
 
 				api_data_source_change_host($selected_items, get_request_var('host_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '6') { // data source enable
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_data_source_enable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '7') { // data source disable
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_data_source_disable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '8') { // reapply suggested data source naming
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_reapply_suggested_data_source_data($selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
@@ -448,6 +459,7 @@ function form_actions() {
 		api_plugin_hook_function('data_source_action_bottom', array(get_nfilter_request_var('drp_action'), $selected_items));
 
 		header('Location: data_sources.php');
+
 		exit;
 	}
 
@@ -498,11 +510,12 @@ function form_actions() {
 					<div class='itemlist'><ul>$ds_list</ul></div>";
 
 			if (cacti_sizeof($graphs)) {
-				print "<tr><td class='textArea'><p class='textArea'>" . __n('The following graph is using these data sources:', 'The following graphs are using these data sources:', cacti_sizeof($graphs)) . "</p>";
+				print "<tr><td class='textArea'><p class='textArea'>" . __n('The following graph is using these data sources:', 'The following graphs are using these data sources:', cacti_sizeof($graphs)) . '</p>';
 
 				print '<div class="itemlist"><ul>';
+
 				foreach ($graphs as $graph) {
-					print '<li>' . html_escape($graph['title_cache']) . "</li>";
+					print '<li>' . html_escape($graph['title_cache']) . '</li>';
 				}
 				print '</ul></div>';
 				print '<br>';
@@ -513,8 +526,8 @@ function form_actions() {
 				print '</td></tr>';
 			}
 
-			print "</td>
-				</tr>";
+			print '</td>
+				</tr>';
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source', 'Delete Data Sources', cacti_sizeof($ds_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '3') { // change host
@@ -522,9 +535,9 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __n('Choose a new Device for this Data Source and click \'Continue\'.', 'Choose a new Device for these Data Sources and click \'Continue\'', cacti_sizeof($ds_array)) . "</p>
 					<div class='itemlist'><ul>$ds_list</ul></div>
-					<p>" . __('New Device:') . "<br>"; form_dropdown('host_id', db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print "</p>
+					<p>" . __('New Device:') . '<br>'; form_dropdown('host_id', db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0'); print '</p>
 				</td>
-			</tr>";
+			</tr>';
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Device') . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '6') { // data source enable
@@ -556,14 +569,15 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Reapply Suggested Naming to Data Source', 'Reapply Suggested Naming to Data Sources', cacti_sizeof($ds_array)) . "'>";
 		} else {
 			$save['drp_action'] = get_nfilter_request_var('drp_action');
-			$save['ds_list'] = $ds_list;
-			$save['ds_array'] = (isset($ds_array)? $ds_array : array());
+			$save['ds_list']    = $ds_list;
+			$save['ds_array']   = (isset($ds_array)? $ds_array : array());
 			api_plugin_hook_function('data_source_action_prepare', $save);
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
 		}
 	} else {
 		raise_message(40);
 		header('Location: data_sources.php');
+
 		exit;
 	}
 
@@ -583,10 +597,13 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* ----------------------------
-    data - Custom Data
-   ---------------------------- */
-
+/**
+ * data_edit
+ *
+ * Insert description here
+ *
+ * @param true $incform
+ */
 function data_edit($incform = true) {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -616,6 +633,7 @@ function data_edit($incform = true) {
 	}
 
 	$i = 0;
+
 	if (!empty($data['data_input_id'])) {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc_prepared('SELECT *
@@ -664,13 +682,13 @@ function data_edit($incform = true) {
 				form_alternate_row();
 
 				if ((!empty($host['id'])) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']))) {
-					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . '</strong> ' . __('(From Device: %s)', html_escape($host['hostname'])) . "</td>";
-					print "<td><em>" . html_escape($old_value) . "</em></td>";
+					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . '</strong> ' . __('(From Device: %s)', html_escape($host['hostname'])) . '</td>';
+					print '<td><em>' . html_escape($old_value) . '</em></td>';
 				} elseif (empty($can_template)) {
-					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . '</strong> ' . __('(From Data Template)') . "</td>";
-					print '<td><em>' . (empty($old_value) ? __('Nothing Entered') : html_escape($old_value)) . "</em></td>";
+					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . '</strong> ' . __('(From Data Template)') . '</td>';
+					print '<td><em>' . (empty($old_value) ? __('Nothing Entered') : html_escape($old_value)) . '</em></td>';
 				} else {
-					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . "</strong></td>";
+					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . '</strong></td>';
 					print '<td>';
 
 					draw_custom_data_row('value_' . $field['id'], $field['id'], $data['id'], $old_value);
@@ -678,7 +696,7 @@ function data_edit($incform = true) {
 					print '</td>';
 				}
 
-				print "</tr>";
+				print '</tr>';
 
 				$i++;
 			}
@@ -697,10 +715,12 @@ function data_edit($incform = true) {
 	form_hidden_box('save_component_data', '1', '');
 }
 
-/* ------------------------
-    Data Source Functions
-   ------------------------ */
-
+/**
+ * ds_rrd_remove
+ *
+ * Insert description here
+ *
+ */
 function ds_rrd_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -718,6 +738,12 @@ function ds_rrd_remove() {
 	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('local_data_id'));
 }
 
+/**
+ * ds_rrd_add
+ *
+ * Insert description here
+ *
+ */
 function ds_rrd_add() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -733,6 +759,12 @@ function ds_rrd_add() {
 	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
+/**
+ * ds_disable
+ *
+ * Insert description here
+ *
+ */
 function ds_disable() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -742,6 +774,12 @@ function ds_disable() {
 	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('id'));
 }
 
+/**
+ * ds_enable
+ *
+ * Insert description here
+ *
+ */
 function ds_enable() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -751,6 +789,12 @@ function ds_enable() {
 	header('Location: data_sources.php?action=ds_edit&id=' . get_request_var('id'));
 }
 
+/**
+ * ds_edit
+ *
+ * Insert description here
+ *
+ */
 function ds_edit() {
 	global $struct_data_source, $struct_data_source_item;
 
@@ -788,7 +832,8 @@ function ds_edit() {
 				array($data_local['data_template_id']));
 		} else {
 			raise_message(11);
-			header ('Location: data_sources.php');
+			header('Location: data_sources.php');
+
 			exit;
 		}
 
@@ -837,9 +882,11 @@ function ds_edit() {
 						if (!empty($data_local['host_id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . $data_local['host_id']);?>'><?php print __('Edit Device.');?></a><br><?php
 						}
+
 						if (!empty($data_template['id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
 						}
+
 						if (isset_request_var('id') && get_request_var('id') > 0) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . get_request_var('id')) ?>'><?php print ($data['active'] == 'on' ? __('Disable Data Source') : __('Enable Data Source'));?></a><br>
 					<?php
@@ -876,7 +923,7 @@ function ds_edit() {
 		);
 
 		if (cacti_sizeof($dts)) {
-			foreach($dts as $dtid) {
+			foreach ($dts as $dtid) {
 				$dtids[] = $dtid['data_template_id'];
 			}
 		}
@@ -904,46 +951,46 @@ function ds_edit() {
 
 	$form_array = array(
 		'data_template_id' => array(
-			'method' => 'drop_sql',
+			'method'        => 'drop_sql',
 			'friendly_name' => __('Selected Data Template'),
-			'description' => __('The name given to this data template.  Please note that you may only change Graph Templates to a 100%$ compatible Graph Template, which means that it includes identical Data Sources.'),
-			'value' => (cacti_sizeof($data_template) ? $data_template['id'] : '0'),
-			'none_value' => (cacti_sizeof($data_template) ? '' : 'None'),
-			'sql' => $dtsql
+			'description'   => __('The name given to this data template.  Please note that you may only change Graph Templates to a 100%$ compatible Graph Template, which means that it includes identical Data Sources.'),
+			'value'         => (cacti_sizeof($data_template) ? $data_template['id'] : '0'),
+			'none_value'    => (cacti_sizeof($data_template) ? '' : 'None'),
+			'sql'           => $dtsql
 			),
 		'host_id' => array(
-			'method' => 'drop_callback',
+			'method'        => 'drop_callback',
 			'friendly_name' => __('Device'),
-			'description' => __('Choose the Device that this Data Source belongs to.'),
-			'none_value' => __('None'),
-			'sql' => 'SELECT id, description AS name FROM host ORDER BY name',
-			'action' => 'ajax_hosts_noany',
-			'id' => (isset($data_local['host_id']) ? $data_local['host_id'] : 0),
-			'value' => $hostDescription
+			'description'   => __('Choose the Device that this Data Source belongs to.'),
+			'none_value'    => __('None'),
+			'sql'           => 'SELECT id, description AS name FROM host ORDER BY name',
+			'action'        => 'ajax_hosts_noany',
+			'id'            => (isset($data_local['host_id']) ? $data_local['host_id'] : 0),
+			'value'         => $hostDescription
 			),
 		'_data_template_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($data_template['id']) ? $data_template['id'] : '0')
+			'value'  => (isset($data_template['id']) ? $data_template['id'] : '0')
 			),
 		'_host_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($data_local['host_id']) ? $data_local['host_id'] : '0')
+			'value'  => (isset($data_local['host_id']) ? $data_local['host_id'] : '0')
 			),
 		'_data_input_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($data['data_input_id']) ? $data['data_input_id'] : '0')
+			'value'  => (isset($data['data_input_id']) ? $data['data_input_id'] : '0')
 			),
 		'data_template_data_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($data['id']) ? $data['id'] : '0')
+			'value'  => (isset($data['id']) ? $data['id'] : '0')
 			),
 		'local_data_template_data_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($data['local_data_template_data_id']) ? $data['local_data_template_data_id'] : '0')
+			'value'  => (isset($data['local_data_template_data_id']) ? $data['local_data_template_data_id'] : '0')
 			),
 		'local_data_id' => array(
 			'method' => 'hidden',
-			'value' => (isset($data['local_data_id']) ? $data['local_data_id'] : '0')
+			'value'  => (isset($data['local_data_id']) ? $data['local_data_id'] : '0')
 			),
 		);
 
@@ -976,19 +1023,19 @@ function ds_edit() {
 	}
 
 	if (((isset_request_var('id')) || (isset_request_var('new'))) && (empty($data['data_template_id']))) {
-		html_start_box( __('Data Source'), '100%', true, '3', 'center', '');
+		html_start_box(__('Data Source'), '100%', true, '3', 'center', '');
 
 		$form_array = array();
 
 		foreach ($struct_data_source as $field_name => $field_array) {
 			$form_array += array($field_name => $struct_data_source[$field_name]);
 
-			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
+			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer')){
 				if (!(($use_data_template == false) || (!empty($data_template_data['t_' . $field_name])) || ($field_array['flags'] == 'NOTEMPLATE'))) {
 					$form_array[$field_name]['description'] = '';
 				}
 
-				$form_array[$field_name]['value'] = (isset($data[$field_name]) ? $data[$field_name] : '');
+				$form_array[$field_name]['value']   = (isset($data[$field_name]) ? $data[$field_name] : '');
 				$form_array[$field_name]['form_id'] = (empty($data['id']) ? '0' : $data['id']);
 
 				if (!(($use_data_template == false) || (!empty($data_template_data['t_' . $field_name])) || ($field_array['flags'] == 'NOTEMPLATE'))) {
@@ -1043,6 +1090,7 @@ function ds_edit() {
 		}
 
 		$i = 0;
+
 		if (isset($template_data_rrds)) {
 			if (cacti_sizeof($template_data_rrds) > 1) {
 				/* draw the data source tabs on the top of the page */
@@ -1050,13 +1098,13 @@ function ds_edit() {
 
 				foreach ($template_data_rrds as $template_data_rrd) {
 					$i++;
-					print "	<td " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='even'" : "class='odd'") . " style='width:" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . ";text-align:center;' class='tab'>
-						<span class='textHeader'><a href='" . html_escape('data_sources.php?action=ds_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . html_escape($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a class='pic deleteMarker fa fa-times' href='" . html_escape('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . get_request_var('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . "</span>
-						</td>";
+					print '	<td ' . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='even'" : "class='odd'") . " style='width:" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . ";text-align:center;' class='tab'>
+						<span class='textHeader'><a href='" . html_escape('data_sources.php?action=ds_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . html_escape($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a class='pic deleteMarker fa fa-times' href='" . html_escape('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . get_request_var('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . '</span>
+						</td>';
 					print "<td style='width:1px;'></td>";
 				}
 
-				print "<td></td></tr></table>";
+				print '<td></td></tr></table>';
 			} elseif (cacti_sizeof($template_data_rrds) == 1) {
 				set_request_var('view_rrd', $template_data_rrds[0]['id']);
 			}
@@ -1069,9 +1117,9 @@ function ds_edit() {
 				" . __esc('Data Source Item %s', $header_label) . "
 			</div>
 			<div class='tableSubHeaderColumn right'>
-				" . ((!isempty_request_var('id') && (empty($data_template['id']))) ? "<a class='linkOverDark' href='" . html_escape('data_sources.php?action=rrd_add&id=' . get_request_var('id')) . "'>" . __('New') . "</a>&nbsp;" : '') . "
+				" . ((!isempty_request_var('id') && (empty($data_template['id']))) ? "<a class='linkOverDark' href='" . html_escape('data_sources.php?action=rrd_add&id=' . get_request_var('id')) . "'>" . __('New') . '</a>&nbsp;' : '') . '
 			</div>
-		</div>";
+		</div>';
 
 		/* data input fields list */
 		if ((empty($data['data_input_id'])) || (db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', array($data['data_input_id'])) > '1')) {
@@ -1085,7 +1133,7 @@ function ds_edit() {
 		foreach ($struct_data_source_item as $field_name => $field_array) {
 			$form_array += array($field_name => $struct_data_source_item[$field_name]);
 
-			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer' )){
+			if (($field_array['method'] != 'header') && ($field_array['method'] != 'spacer')){
 				if (!(($use_data_template == false) || ($rrd_template['t_' . $field_name] == 'on'))) {
 					$form_array[$field_name]['description'] = '';
 				}
@@ -1104,11 +1152,11 @@ function ds_edit() {
 				'fields' => array(
 					'data_template_rrd_id' => array(
 						'method' => 'hidden',
-						'value' => (isset($rrd) ? $rrd['id'] : '0')
+						'value'  => (isset($rrd) ? $rrd['id'] : '0')
 					),
 					'local_data_template_rrd_id' => array(
 						'method' => 'hidden',
-						'value' => (isset($rrd) ? $rrd['local_data_template_rrd_id'] : '0')
+						'value'  => (isset($rrd) ? $rrd['local_data_template_rrd_id'] : '0')
 					)
 				) + $form_array
 			)
@@ -1147,6 +1195,7 @@ function ds_edit() {
 				if (cacti_sizeof($rrd_info['rra'])) {
 					$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
 					rrdtool_info2html($rrd_info, $diff);
+
 					if (cacti_sizeof($diff)) {
 						html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
 						print '<tr><td style="padding:4px;">';
@@ -1174,73 +1223,93 @@ function ds_edit() {
 	bottom_footer();
 }
 
+/**
+ * get_poller_interval
+ *
+ * Insert description here
+ *
+ * @param type $seconds
+ * @param type $data_source_profile_id
+ *
+ * @return type
+ */
 function get_poller_interval($seconds, $data_source_profile_id) {
 	if ($seconds == 0 || $data_source_profile_id == 0) {
 		return '<em>' . __('External') . '</em>';
-	}else if ($seconds < 60) {
+	}
+
+	if ($seconds < 60) {
 		return '<em>' . __('%d Seconds', $seconds) . '</em>';
-	}else if ($seconds == 60) {
-		return  __('1 Minute');
+	}
+
+	if ($seconds == 60) {
+		return __('1 Minute');
 	} else {
 		return '<em>' . __('%d Minutes', ($seconds / 60)) . '</em>';
 	}
 }
 
+/**
+ * validate_data_source_vars
+ *
+ * Insert description here
+ *
+ */
 function validate_data_source_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name_cache',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'site_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'status' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'template_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'profile' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'orphans' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -1250,6 +1319,12 @@ function validate_data_source_vars() {
 	/* ================= input validation ================= */
 }
 
+/**
+ * ds
+ *
+ * Insert description here
+ *
+ */
 function ds() {
 	global $ds_actions, $item_rows, $sampling_intervals;
 
@@ -1305,7 +1380,7 @@ function ds() {
 	</script>
 	<?php
 
-	if (read_config_option('grds_creation_method') == 1 ) {
+	if (read_config_option('grds_creation_method') == 1) {
 		if (get_request_var('host_id') == '-1') {
 			$new_host_id = 0;
 		} else {
@@ -1329,7 +1404,7 @@ function ds() {
 		$header = __('Data Sources [ Non Device Based ]');
 	} else {
 		$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array(get_request_var('host_id')));
-		$header = __esc('Data Sources [ %s ]', $description);
+		$header      = __esc('Data Sources [ %s ]', $description);
 	}
 
 	html_start_box($header, '100%', '', '3', 'center', $add_url);
@@ -1360,7 +1435,7 @@ function ds() {
 
 							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . '</option>';
+									print "<option value='" . $template['id'] . "'" . (get_request_var('template_id') == $template['id'] ? ' selected' : '') . '>' . title_trim(html_escape($template['name']), 40) . '</option>';
 								}
 							}
 							?>
@@ -1388,7 +1463,7 @@ function ds() {
 
 							if (cacti_sizeof($profiles)) {
 								foreach ($profiles as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('profile') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1433,7 +1508,7 @@ function ds() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1513,7 +1588,7 @@ function ds() {
 	}
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	if ($orphan_where != '') {
 		$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -1639,6 +1714,7 @@ function ds() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			if (api_data_source_deletable($data_source['local_data_id'])) {
@@ -1648,6 +1724,7 @@ function ds() {
 			}
 
 			$data_source['data_template_name'] = html_escape($data_source['data_template_name']);
+
 			$data_name_cache = title_trim(html_escape($data_source['name_cache']), read_config_option('max_title_length'));
 
 			if (get_request_var('rfilter') != '') {
@@ -1656,7 +1733,7 @@ function ds() {
 
 			/* keep copy of data source for comparison */
 			$data_source_orig = $data_source;
-			$data_source = api_plugin_hook_function('data_sources_table', $data_source);
+			$data_source      = api_plugin_hook_function('data_sources_table', $data_source);
 
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			if (empty($data_source['data_template_name'])) {
@@ -1687,7 +1764,7 @@ function ds() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Data Sources Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Sources Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -1702,6 +1779,15 @@ function ds() {
 	form_end();
 }
 
+/**
+ * get_graphs_aggregates_url
+ *
+ * Insert description here
+ *
+ * @param type $local_data_id
+ *
+ * @return type
+ */
 function get_graphs_aggregates_url($local_data_id) {
 	$graphs = db_fetch_row_prepared('SELECT GROUP_CONCAT(DISTINCT gl.id) AS graphs, COUNT(DISTINCT gl.id) AS total
 		FROM data_local AS dl
@@ -1746,4 +1832,3 @@ function get_graphs_aggregates_url($local_data_id) {
 
 	return $url;
 }
-

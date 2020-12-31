@@ -29,6 +29,7 @@ set_default_action();
 
 if (!isset($_SESSION['sess_user_id'])) {
 	header('Location: logout.php');
+
 	exit;
 }
 
@@ -38,8 +39,10 @@ $user = db_fetch_row_prepared('SELECT *
 	array($_SESSION['sess_user_id']));
 
 $message = '';
+
 if (isset($_COOKIE[session_name() . '_otp'])) {
 	$daysUntilInvalid = 0;
+
 	$time = (string) floor((time() / (3600 * 24))); // get day number
 
 	list($otpday, $hash) = explode(':', $_COOKIE[session_name() . '_otp']);
@@ -60,13 +63,17 @@ if (get_nfilter_request_var('action') == 'login') {
 			$_SESSION['sess_user_2fa'] = true;
 		} else {
 			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
 			$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
-			$_SESSION['sess_user_2fa'] = $g->checkCode($user['tfa_secret'],  $token);
-		        $time = floor(time() / (3600 * 24)); // get day number
-		        //about using the user agent: It's easy to fake it, but it increases the barrier for stealing and reusing cookies nevertheless
-		        // and it doesn't do any harm (except that it's invalid after a browser upgrade, but that may be even intented)
-		        $cookie = $time.':'.hash_hmac('sha1', $user['username'].':'.$time.':'.$_SERVER['HTTP_USER_AGENT'], $user['tfa_secret']);
-		        setcookie(session_name() . '_otp', $cookie, time() + (30 * 24 * 3600), null, null, null, true);
+
+			$_SESSION['sess_user_2fa'] = $g->checkCode($user['tfa_secret'], $token);
+			$time = floor(time() / (3600 * 24)); // get day number
+
+			//about using the user agent: It's easy to fake it, but it increases the barrier for stealing and reusing cookies nevertheless
+			// and it doesn't do any harm (except that it's invalid after a browser upgrade, but that may be even intented)
+			$cookie = $time.':'.hash_hmac('sha1', $user['username'].':'.$time.':'.$_SERVER['HTTP_USER_AGENT'], $user['tfa_secret']);
+
+			setcookie(session_name() . '_otp', $cookie, time() + (30 * 24 * 3600), null, null, null, true);
 		}
 	} else {
 		$_SESSION['sess_user_2fa'] = true;
@@ -103,6 +110,7 @@ if (empty($user['tfa_enabled'])) {
 
 if (isset($_SESSION['sess_user_2fa']) && $_SESSION['sess_user_2fa']) {
 	auth_post_login_redirect($user);
+
 	exit;
 }
 
@@ -115,7 +123,7 @@ $selectedTheme = get_selected_theme();
 html_auth_header('login_2fa', __('2nd Factor Authentication'), __('2FA Verification'), __('Enter your token'),
 	array(
 		'username' => $user['username'],
-		'action' => get_nfilter_request_var('action')
+		'action'   => get_nfilter_request_var('action')
 	)
 );
 ?>

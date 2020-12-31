@@ -80,6 +80,7 @@ case 'countdown':
 		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
 
 		break;
+
 	default:
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
@@ -95,6 +96,7 @@ case 'countdown':
 
 	/* ds */
 	$graph_data_array['ds_step'] = read_user_setting('realtime_interval', 10);
+
 	if (!isempty_request_var('ds_step')) {
 		$graph_data_array['ds_step']      = get_request_var('ds_step');
 		$_SESSION['sess_realtime_dsstep'] = get_request_var('ds_step');
@@ -121,6 +123,7 @@ case 'countdown':
 
 	if (isset_request_var('size') && get_request_var('size') > 0) {
 		$_SESSION['sess_realtime_size'] = get_request_var('size');
+
 		$size = get_request_var('size');
 	} elseif (isset($_SESSION['sess_realtime_size']) && $_SESSION['sess_realtime_size'] != '') {
 		$size = $_SESSION['sess_realtime_size'];
@@ -142,12 +145,13 @@ case 'countdown':
 
 	if (isset_request_var('size') && get_request_var('size') < 100) {
 		$graph_data_array['graph_height'] = $graph_data_array['graph_height'] * $size / 100;
-		$graph_data_array['graph_width']  = $graph_data_array['graph_width']  * $size / 100;
+		$graph_data_array['graph_width']  = $graph_data_array['graph_width'] * $size / 100;
 	}
 
 	/* override: graph start */
 	if (!isempty_request_var('graph_start')) {
 		$graph_data_array['graph_start']  = get_request_var('graph_start');
+
 		if ($graph_data_array['graph_start'] < 0) {
 			$graph_data_array['graph_start'] = time() + $graph_data_array['graph_start'];
 		}
@@ -181,22 +185,27 @@ case 'countdown':
 	/* construct the image name  */
 	$graph_data_array['export_realtime'] = $graph_rrd;
 	$graph_data_array['output_flag']     = RRDTOOL_OUTPUT_GRAPH_DATA;
+
 	$null_param = array();
 
 	$output = rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 	$error = '';
+
 	if (file_exists($graph_rrd)) {
 		$graph_contents = file_get_contents($graph_rrd);
+
 		if (preg_match('/^ERROR/',$graph_contents)) {
-			$error = $graph_contents;
+			$error  = $graph_contents;
 			$output = '';
 		}
 	}
 
 	if (empty($output) && empty($error)) {
 		$graph_data_array['get_error'] = true;
+
 		$null_param = array();
+
 		rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 		$error = ob_get_contents();
@@ -208,6 +217,7 @@ case 'countdown':
 
 	if (!empty($error)) {
 		$graph_data_array['get_error'] = true;
+
 		if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
 			$graph_contents = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
 		} else {
@@ -253,6 +263,7 @@ case 'countdown':
 	print json_encode($return_array);
 
 	exit;
+
 	break;
 case 'view':
 	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
@@ -262,7 +273,9 @@ case 'view':
 	}
 
 	exit;
+
 	break;
+
 default:
 	load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 	load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
@@ -302,23 +315,30 @@ set_user_setting('realtime_nolegend', get_request_var('graph_nolegend'));
 if (read_config_option('realtime_enabled') == '') {
 	print "<html>\n";
 	print "<body>\n";
-	print "	<p><strong>" . __('Real-time has been disabled by your administrator.') . "</strong></p>\n";
+	print '	<p><strong>' . __('Real-time has been disabled by your administrator.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
+
 	exit;
-} elseif (!is_dir(read_config_option('realtime_cache_path'))) {
+}
+
+if (!is_dir(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
-	print "	<p><strong>" . __('The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
+	print '	<p><strong>' . __('The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
+
 	exit;
-} elseif (!is_writable(read_config_option('realtime_cache_path'))) {
+}
+
+if (!is_writable(read_config_option('realtime_cache_path'))) {
 	print "<html>\n";
 	print "<body>\n";
-	print "	<p><strong>" . __('The Image Cache Directory is not writable.  Please set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
+	print '	<p><strong>' . __('The Image Cache Directory is not writable.  Please set permissions and then attempt to open another Real-time graph.') . "</strong></p>\n";
 	print "</body>\n";
 	print "</html>\n";
+
 	exit;
 }
 
@@ -379,8 +399,8 @@ $sizes = array(
 			<span id='countdown'><?php print __('%d seconds left.',  get_request_var('ds_step')); ?></span>
 		</div>
 		<div id='image' class='center' style='padding:2px;'></div>
-		<input type='hidden' id='url_path' name='url_path' value='<?php echo $config['url_path'];?>'/>
-		<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php echo get_request_var('local_graph_id'); ?>'/>
+		<input type='hidden' id='url_path' name='url_path' value='<?php print $config['url_path'];?>'/>
+		<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php print get_request_var('local_graph_id'); ?>'/>
 		<script type='text/javascript'>
 
 		var url;

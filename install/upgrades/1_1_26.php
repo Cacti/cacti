@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_1_26
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_1_26() {
 	db_install_add_key('host', 'key', 'status', array('status'));
 	db_install_add_key('user_auth_cache', 'key', 'last_update', array('last_update'));

@@ -61,11 +61,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -73,22 +73,28 @@ if (cacti_sizeof($parms)) {
 			case '--version':
 			case '-V':
 				display_version();
+
 				exit(0);
 			case '-H':
 			case '--help':
 				display_help();
+
 				exit(0);
 			case '--poller':
 			case '-p':
 				$poller_id = $value;
+
 				break;
 			case '--debug':
 			case '-d':
 				$debug = true;
+
 				break;
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -130,7 +136,7 @@ if (cacti_sizeof($poller_commands)) {
 
 			if ($last_host_id != $device_id) {
 				$last_host_id = $device_id;
-				$first_host = true;
+				$first_host   = true;
 				$recached_hosts++;
 			} else {
 				$first_host = false;
@@ -152,6 +158,7 @@ if (cacti_sizeof($poller_commands)) {
 			cacti_log("Device[$device_id] PURGE: Purged successfully.", true, 'PCOMMAND', $verbosity);
 
 			break;
+
 		default:
 			cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
 		}
@@ -160,8 +167,9 @@ if (cacti_sizeof($poller_commands)) {
 		$current = microtime(true);
 
 		/* end if runtime has been exceeded */
-		if (($current-$start) > MAX_RECACHE_RUNTIME) {
+		if (($current - $start) > MAX_RECACHE_RUNTIME) {
 			cacti_log("ERROR: Poller Command processing timed out after processing '$command'", true, 'PCOMMAND');
+
 			break;
 		}
 	}
@@ -189,13 +197,18 @@ db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
 
 unregister_process('commands', 'master', $poller_id);
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Poller Commands Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
-function display_help () {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_commands.php [--poller=ID] [--debug]\n\n";

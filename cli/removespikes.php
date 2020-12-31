@@ -23,7 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$dir = dirname(__FILE__);
+$dir = __DIR__;
 chdir($dir);
 
 /* Start Initialization Section */
@@ -58,19 +58,25 @@ $dsfilter = read_config_option('spikekill_dsfilter',true);
 switch($method) {
 	case '1':
 		$method = 'stddev';
+
 		break;
 	case '2':
 		$method = 'variance';
+
 		break;
 	case '3':
 		$method = 'float';
+
 		break;
 	case '4':
 		$method = 'fill';
+
 		break;
 	case '5':
 		$method = 'absolute';
+
 		break;
+
 	default:
 		$method = 'variance';
 }
@@ -80,11 +86,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -159,11 +165,13 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--absmax':
 				$absmax = $value;
@@ -173,14 +181,17 @@ if (cacti_sizeof($parms)) {
 				$dsfilter = $value;
 
 				break;
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(-3);
 		}
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 
@@ -207,20 +218,26 @@ $result = $spiker->remove_spikes();
 if (!$result) {
 	print "ERROR: Remove Spikes experienced errors\n";
 	print $spiker->get_errors();
+
 	exit(-1);
 } else {
 	print $spiker->get_output();
+
 	exit(0);
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/* display_help - displays the usage of the function */
-function display_help () {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";

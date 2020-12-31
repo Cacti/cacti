@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_1_2_11
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_1_2_11() {
 	db_install_execute("CREATE TABLE IF NOT EXISTS `processes` (
 		`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -39,4 +45,3 @@ function upgrade_to_1_2_11() {
 		ENGINE=MEMORY
 		COMMENT='Stores Process Status for Cacti Background Processes'");
 }
-

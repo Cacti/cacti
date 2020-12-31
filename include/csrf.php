@@ -1,7 +1,9 @@
 <?php
 require_once($config['include_path'] .'/vendor/csrf/csrf-conf.php');
 
-/* cross site request forgery library */
+/**
+ * cross site request forgery library
+ */
 function csrf_startup() {
 	global $config;
 
@@ -20,11 +22,18 @@ function csrf_startup() {
 	}
 }
 
+/**
+ * csrf_error_callback
+ *
+ * Insert description here
+ *
+ */
 function csrf_error_callback() {
 	raise_message('csrf_timeout');
 	ob_end_clean();
 	header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
 	csrf_log(__FUNCTION__, 'Timeout, redirecting to ' . sanitize_uri($_SERVER['REQUEST_URI']));
+
 	exit;
 }
 

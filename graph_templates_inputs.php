@@ -37,6 +37,7 @@ switch (get_request_var('action')) {
 		input_remove();
 
 		header('Location: graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
+
 		break;
 	case 'input_edit':
 		top_header();
@@ -44,12 +45,19 @@ switch (get_request_var('action')) {
 		input_edit();
 
 		bottom_footer();
+
 		break;
 }
 
+/**
+ * form_save
+ *
+ * Insert description here
+ *
+ */
 function form_save() {
 	if ((isset_request_var('save_component_input')) && (!is_error_message())) {
-		$graph_input_values = array();
+		$graph_input_values   = array();
 		$selected_graph_items = array();
 
 		/* ================= input validation ================= */
@@ -57,12 +65,12 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 
-		$save['id'] = get_nfilter_request_var('graph_template_input_id');
-		$save['hash'] = get_hash_graph_template(get_nfilter_request_var('graph_template_input_id'), 'graph_template_input');
+		$save['id']                = get_nfilter_request_var('graph_template_input_id');
+		$save['hash']              = get_hash_graph_template(get_nfilter_request_var('graph_template_input_id'), 'graph_template_input');
 		$save['graph_template_id'] = get_nfilter_request_var('graph_template_id');
-		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['description'] = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
-		$save['column_name'] = form_input_validate(get_nfilter_request_var('column_name'), 'column_name', '', true, 3);
+		$save['name']              = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['description']       = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
+		$save['column_name']       = form_input_validate(get_nfilter_request_var('column_name'), 'column_name', '', true, 3);
 
 		if (!is_error_message()) {
 			$graph_template_input_id = sql_save($save, 'graph_template_input');
@@ -112,18 +120,22 @@ function form_save() {
 
 		if (is_error_message()) {
 			header('Location: graph_templates_inputs.php?action=input_edit&graph_template_input_id=' . (empty($graph_template_input_id) ? get_nfilter_request_var('graph_template_input_id') : $graph_template_input_id) . '&graph_template_id=' . get_nfilter_request_var('graph_template_id'));
+
 			exit;
 		} else {
 			header('Location: graph_templates.php?action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
+
 			exit;
 		}
 	}
 }
 
-/* ------------------------------------
-    input - Graph Template Item Inputs
-   ------------------------------------ */
-
+/**
+ * input_remove
+ *
+ * Insert description here
+ *
+ */
 function input_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -134,6 +146,12 @@ function input_remove() {
 	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
 }
 
+/**
+ * input_edit
+ *
+ * Insert description here
+ *
+ */
 function input_edit() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
 
@@ -196,6 +214,7 @@ function input_edit() {
 	html_start_box(__('Associated Graph Items'), '100%', false, '3', 'center', '');
 
 	$i = 0; $any_selected_item = '';
+
 	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			form_alternate_row();
@@ -203,7 +222,7 @@ function input_edit() {
 			if ($item['graph_template_input_id'] == '') {
 				$old_value = '';
 			} else {
-				$old_value = 'on';
+				$old_value         = 'on';
 				$any_selected_item = $item['graph_templates_item_id'];
 			}
 
@@ -217,7 +236,7 @@ function input_edit() {
 
 			print '<td>';
 
-			$name = $start_bold . __('Item #%s', $i+1) . ': ' . $graph_item_types[$item['graph_type_id']] . ' (' . $consolidation_functions[$item['consolidation_function_id']] . ')' . $end_bold;
+			$name = $start_bold . __('Item #%s', $i + 1) . ': ' . $graph_item_types[$item['graph_type_id']] . ' (' . $consolidation_functions[$item['consolidation_function_id']] . ')' . $end_bold;
 
 			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, '', '', '', get_request_var('graph_template_id'));
 			print "<label for='i_" . $item['graph_templates_item_id'] . "'>" . $name . '</label>';

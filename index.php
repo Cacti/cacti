@@ -26,6 +26,13 @@ top_header();
 
 api_plugin_hook('console_before');
 
+/**
+ * render_external_links
+ *
+ * Insert description here
+ *
+ * @param 'FRONT' $style
+ */
 function render_external_links($style = 'FRONT') {
 	global $config;
 
@@ -35,14 +42,14 @@ function render_external_links($style = 'FRONT') {
 		AND style = ?', array($style));
 
 	if (cacti_sizeof($consoles)) {
-		foreach($consoles as $page) {
+		foreach ($consoles as $page) {
 			if (is_realm_allowed($page['id'] + 10000)) {
 				if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
 					print '<iframe class="content" src="' . $page['contentfile'] . '" frameborder="0"></iframe>';
 				} else {
 					print '<div id="content">';
 
-					$file = $config['base_path'] . "/include/content/" . $page['contentfile'];
+					$file = $config['base_path'] . '/include/content/' . $page['contentfile'];
 
 					if (file_exists($file)) {
 						include_once($file);
@@ -121,4 +128,3 @@ function resizeWindow() {
 <?php
 
 bottom_footer();
-

@@ -128,10 +128,13 @@ jQuery.ajaxQ = (function(){
 	};
 })();
 
-/** basename - this function will return the basename
- *  of the php script called
- *  @args path - the document.url
- *  @args suffix - remove the named suffix from the file */
+/**
+ * basename - this function will return the basename
+ * of the php script called
+ *
+ * @param path - the document.url
+ * @param suffix - remove the named suffix from the file
+ */
 function basename(path, suffix) {
 	var b = path;
 	var lastChar = b.charAt(b.length - 1);
@@ -154,8 +157,10 @@ function basename(path, suffix) {
 	return b;
 }
 
-/** getTimestampFromDate - Simple function to convert a MySQL Date
- * to a timestamp */
+/**
+ * getTimestampFromDate - Simple function to convert a MySQL Date
+ * to a timestamp
+ */
 function getTimestampFromDate(dateStamp) {
 	if (typeof(dateStamp) != 'undefined') {
 		var dateParts = dateStamp.split(' ');
@@ -169,25 +174,33 @@ function getTimestampFromDate(dateStamp) {
 	return '';
 }
 
-/** base64_encode - Simple function to base64 encode a utf-8 string */
+/**
+ * base64_encode - Simple function to base64 encode a utf-8 string
+ */
 function base64_encode(string) {
 	return btoa(unescape(encodeURIComponent(string)));
 }
 
-/** getQueryString - this function will return the value
- *  of the get request variable defined as input.
- *  @args name - the variable name to return */
+/**
+ * getQueryString - this function will return the value
+ * of the get request variable defined as input.
+ *
+ * @param name - the variable name to return
+ */
 function getQueryString(name) {
 	var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
 	return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 }
 
 
-/** delayKeyup - this function will delay the keyup to
- *  provide debouncing of input strokes on the keyboard
- *  this preventing your backend server from becoming overloaded
- *  usage: $("#yourid").delayKeyup(function(){ console.log('do something'); }, 500);
- *  @args name - the variable name to return */
+/**
+ * delayKeyup - this function will delay the keyup to
+ * provide debouncing of input strokes on the keyboard
+ * this preventing your backend server from becoming overloaded
+ * usage: $("#yourid").delayKeyup(function(){ console.log('do something'); }, 500);
+ *
+ * @param name - the variable name to return
+ */
 $.fn.delayKeyup = function(callback, ms){
 	var timer = 0;
 	$(this).keyup(function(){
@@ -197,8 +210,10 @@ $.fn.delayKeyup = function(callback, ms){
 	return $(this);
 };
 
-/** bindFirst - Function ensures that the event is found at the top
- * of the event stack. */
+/**
+ * bindFirst - Function ensures that the event is found at the top
+ * of the event stack.
+ */
 $.fn.bindFirst = function(which, handler) {
 	var $el = $(this);
 	$el.off(which, handler);
@@ -211,7 +226,9 @@ $.fn.bindFirst = function(which, handler) {
 	events[which] = registered;
 };
 
-/** replaceOptions - function replaces the options in a select dropdown */
+/**
+ * replaceOptions - function replaces the options in a select dropdown
+ */
 $.fn.replaceOptions = function(options, selected) {
 	var self, $option;
 
@@ -233,8 +250,10 @@ $.fn.replaceOptions = function(options, selected) {
 	});
 };
 
-/** textWidth - This function will return the natural width of a string
- *  without any wrapping. */
+/**
+ * textWidth - This function will return the natural width of a string
+ * without any wrapping.
+ */
 $.fn.textWidth = function(text){
 	var org = $(this);
 	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
@@ -251,8 +270,10 @@ $.fn.textWidth = function(text){
 	return width;
 };
 
-/** textBoxWidth - This function will return the natural width of a string
- *  without any wrapping. */
+/**
+ * textBoxWidth - This function will return the natural width of a string
+ * without any wrapping.
+ */
 $.fn.textBoxWidth = function() {
 	var org = $(this);
 	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.text() + '</span>');
@@ -267,8 +288,10 @@ $.fn.textBoxWidth = function() {
 	return width;
 };
 
-/** classes - This function will return an array of all
- *  classes of an element */
+/**
+ * classes - This function will return an array of all
+ * classes of an element
+ */
 $.fn.classes = function(callback) {
 	var classes = [];
 	$.each(this, function(i, v) {
@@ -288,8 +311,10 @@ $.fn.classes = function(callback) {
 	return classes;
 };
 
-/** These three functions will set the cursor into
- *  a textbox or textara and optionally select characters */
+/**
+ * These three functions will set the cursor into
+ * a textbox or textara and optionally select characters
+ */
 $.fn.setCursorPosition = function(position) {
 	if (this.length == 0) return this;
 	return this.setSelection(position, position);
@@ -426,14 +451,18 @@ $.tablesorter.addParser({
 	type: 'numeric'
 });
 
-/** Mini jquery plugin to determine if an element has a scrollbar present */
+/**
+ * Mini jquery plugin to determine if an element has a scrollbar present
+ */
 (function($) {
     $.fn.hasScrollBar = function() {
         return this.get(0).scrollHeight > this.outerHeight();
     };
 })(jQuery);
 
-/** Mini jquery plugin to create a bind to show/hide events */
+/**
+ * Mini jquery plugin to create a bind to show/hide events
+ */
 (function ($) {
 	$.each(['show', 'hide'], function (i, ev) {
 		var el = $.fn[ev];
@@ -444,7 +473,9 @@ $.tablesorter.addParser({
 	});
 })(jQuery);
 
-// helper function which selects row range when shift key is pressed during click
+/**
+ * helper function which selects row range when shift key is pressed during click
+ */
 function updateCheckboxes(checkboxes, clicked_element) {
 	var prev_checkbox = clicked_element.closest('table').find('[data-prev-check]:checkbox');
 	if (!prev_checkbox.length) {
@@ -465,9 +496,11 @@ function updateCheckboxes(checkboxes, clicked_element) {
 	}
 }
 
-/** applySelectorVisibility - This function set's the initial visibility
- *  of graphs for creation. Is will scan the against preset variables
- *  taking action as required to enable or disable rows. */
+/**
+ * applySelectorVisibility - This function set's the initial visibility
+ * of graphs for creation. Is will scan the against preset variables
+ * taking action as required to enable or disable rows.
+ */
 function applySelectorVisibilityAndActions() {
 	// Change for accessibility
 	$('input[type="radio"]').off('click').on('click', function() {
@@ -515,9 +548,12 @@ function enableSelection() {
 	$('tr.selectable').css('user-select','');
 }
 
-/** selectUpdateRow - Highlight a selectable row combined with checkbox
- *  @arg event - The click event to support multiple selections
- *  @arg element - The jQuery selected object */
+/**
+ * selectUpdateRow - Highlight a selectable row combined with checkbox
+ *
+ * @param event - The click event to support multiple selections
+ * @param element - The jQuery selected object
+ */
 function selectUpdateRow(event, element) {
 	var checkboxes = element.closest('table').find('input[type=checkbox]:not(:disabled)');
 
@@ -539,9 +575,12 @@ function selectUpdateRow(event, element) {
 	}
 }
 
-/** dqUpdateDeps - When a user changes the Graph dropdown for a data query
- *  we have to check to see if those graphs are already created.
- *  @arg snmp_query_id - The snmp query id the is current */
+/**
+ * dqUpdateDeps - When a user changes the Graph dropdown for a data query
+ * we have to check to see if those graphs are already created.
+ *
+ * @param snmp_query_id - The snmp query id the is current
+ */
 function dqUpdateDeps(snmp_query_id) {
 	$('tr[id^="dqline'+snmp_query_id+'_"]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
 
@@ -579,8 +618,11 @@ function dqUpdateDeps(snmp_query_id) {
 	});
 }
 
-/** selectAll - This function will select all non-disabled rows
- *  @arg attrib - The Graph Type either graph template, or data query */
+/**
+ * selectAll - This function will select all non-disabled rows
+ *
+ * @param attrib - The Graph Type either graph template, or data query
+ */
 function selectAll(attrib, checked) {
 	if (attrib == 'chk') {
 		if (checked == true) {
@@ -627,7 +669,9 @@ function selectAll(attrib, checked) {
 	}
 }
 
-/* graph filtering */
+/**
+ * graph filtering
+ */
 function applyTimespanFilterChange() {
 	var strURL;
 
@@ -636,8 +680,11 @@ function applyTimespanFilterChange() {
 	loadUrl({url:strURL});
 }
 
-/** cactiReturnTo - This function simply returns to the previous page
- *  @args href - the previous page */
+/**
+ * cactiReturnTo - This function simply returns to the previous page
+ *
+ * @param href - the previous page
+ */
 function cactiReturnTo(href) {
 	if (typeof href !== 'string' || href.trim() == '') {
 		href = document.referrer;
@@ -645,8 +692,10 @@ function cactiReturnTo(href) {
 	loadUrl({url:href});
 }
 
-/** applySkin - This function re-asserts all javascript behavior to a page
- *  that can't be set using a live attrbute 'on()' */
+/**
+ * applySkin - This function re-asserts all javascript behavior to a page
+ * that can't be set using a live attrbute 'on()'
+ */
 function applySkin() {
 	pageName = basename($(location).attr('pathname'));
 
@@ -2429,8 +2478,10 @@ function setupSpecialKeys() {
 	}
 }
 
-/** setupSortable - This function will set all actions for sortable columns
- *  every time a page is regenerated */
+/**
+ * setupSortable - This function will set all actions for sortable columns
+ * every time a page is regenerated
+ */
 function setupSortable() {
 	$('th.sortable').on('click', function(e) {
 		document.getSelection().removeAllRanges();
@@ -2487,8 +2538,10 @@ function setupBreadcrumbs() {
 	});
 }
 
-/** saveTableWidths - This function will initialize table widths on page
- *  load.  It includes the 'initial' boolean to initialize the page */
+/**
+ * saveTableWidths - This function will initialize table widths on page
+ * load.  It includes the 'initial' boolean to initialize the page
+ */
 function saveTableWidths(initial) {
 	// We will save columns widths persistently
 	var storage = Storages.localStorage;
@@ -2562,9 +2615,11 @@ function saveTableWidths(initial) {
 	});
 }
 
-/** applyTableSizing - This function sets all table headers to be resizable using
- *  the jQueryUI function resizable.  It also calls the saveTableWidths function
- *  to store the widths in localStorage every time a column is resized. */
+/**
+ * applyTableSizing - This function sets all table headers to be resizable using
+ * the jQueryUI function resizable.  It also calls the saveTableWidths function
+ * to store the widths in localStorage every time a column is resized.
+ */
 function applyTableSizing() {
 	var originalSize = 0;
 	var colWidth = 0;
@@ -2612,11 +2667,13 @@ function correctUrlParameters(url) {
 	return url;
 }
 
-/** setupPageTimeout - This function will setup the page timeout based upon
- *  the plugin developers $refresh requirements.  It also sets up a location
- *  to redirect the user to upon timeout.  This is generally done for automatically
- *  logging out the user, but can be used for simply refreshing the page as in the
- *  case of the Graphs page. */
+/**
+ * setupPageTimeout - This function will setup the page timeout based upon
+ * the plugin developers $refresh requirements.  It also sets up a location
+ * to redirect the user to upon timeout.  This is generally done for automatically
+ * logging out the user, but can be used for simply refreshing the page as in the
+ * case of the Graphs page.
+ */
 function setupPageTimeout() {
 	if (typeof myRefresh != 'undefined') {
 		clearTimeout(myRefresh);

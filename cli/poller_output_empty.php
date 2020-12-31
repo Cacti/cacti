@@ -36,11 +36,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -49,15 +49,19 @@ if (cacti_sizeof($parms)) {
 		case '-V':
 		case '-v':
 			display_version();
+
 			exit(0);
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
+
 			exit(0);
+
 		default:
 			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 			display_help();
+
 			exit(1);
 		}
 	}
@@ -79,14 +83,18 @@ print "There were $rrds_processed RRD updates made this pass\n";
 
 rrd_close($rrdtool_pipe);
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Process Poller Output Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
-function display_help () {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_output_empty.php\n\n";

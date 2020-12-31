@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * reports_item_dnd
+ *
+ * Insert description here
+ *
+ */
 function reports_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -30,26 +36,33 @@ function reports_item_dnd() {
 	$continue = true;
 
 	if (isset_request_var('report_item') && is_array(get_nfilter_request_var('report_item'))) {
-        $report_items = get_nfilter_request_var('report_item');
+		$report_items = get_nfilter_request_var('report_item');
 
-        if (cacti_sizeof($report_items)) {
-            $sequence = 1;
-            foreach($report_items as $item) {
-                $item_id = str_replace('line', '', $item);
-                input_validate_input_number($item_id);
+		if (cacti_sizeof($report_items)) {
+			$sequence = 1;
 
-                db_execute_prepared('UPDATE reports_items
+			foreach ($report_items as $item) {
+				$item_id = str_replace('line', '', $item);
+				input_validate_input_number($item_id);
+
+				db_execute_prepared('UPDATE reports_items
                     SET sequence = ?
                     WHERE id = ?
 					AND report_id = ?',
-                    array($sequence, $item_id, get_request_var('id')));
+					array($sequence, $item_id, get_request_var('id')));
 
-                $sequence++;
-            }
-        }
-    }
+				$sequence++;
+			}
+		}
+	}
 }
 
+/**
+ * reports_form_save
+ *
+ * Insert description here
+ *
+ */
 function reports_form_save() {
 	global $config, $messages;
 
@@ -91,6 +104,7 @@ function reports_form_save() {
 
 		/* adjust mailtime according to rules */
 		$timestamp = strtotime(get_nfilter_request_var('mailtime'));
+
 		if ($timestamp === false) {
 			$timestamp  = $now;
 		} elseif (($timestamp + read_config_option('poller_interval')) < $now) {
@@ -117,6 +131,7 @@ function reports_form_save() {
 		$save['bcc']              = get_nfilter_request_var('bcc');
 
 		$atype = get_nfilter_request_var('attachment_type');
+
 		if (($atype != REPORTS_TYPE_INLINE_PNG) &&
 			($atype != REPORTS_TYPE_INLINE_JPG) &&
 			($atype != REPORTS_TYPE_INLINE_GIF) &&
@@ -143,8 +158,11 @@ function reports_form_save() {
 		}
 
 		header('Location: ' . get_reports_page() . '?action=edit&id=' . (empty($id) ? get_nfilter_request_var('id') : $id));
+
 		exit;
-	} elseif (isset_request_var('save_component_report_item')) {
+	}
+
+	if (isset_request_var('save_component_report_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('report_id');
 		get_filter_request_var('id');
@@ -183,13 +201,16 @@ function reports_form_save() {
 	} else {
 		header('Location: ' . get_reports_page());
 	}
+
 	exit;
 }
 
-
-/* ------------------------
- The 'actions' function
- ------------------------ */
+/**
+ * reports_form_actions
+ *
+ * Insert description here
+ *
+ */
 function reports_form_actions() {
 	global $config, $reports_actions;
 
@@ -206,7 +227,7 @@ function reports_form_actions() {
 				db_execute('DELETE FROM reports WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM reports_items WHERE ' . str_replace('id', 'report_id', array_to_sql_or($selected_items, 'id')));
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_OWN) { // take ownership
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared('UPDATE reports
@@ -215,13 +236,13 @@ function reports_form_actions() {
 						array($_SESSION['sess_user_id'], $selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { // duplicate
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					duplicate_reports($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { // enable
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared('UPDATE reports
@@ -230,7 +251,7 @@ function reports_form_actions() {
 						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared('UPDATE reports
@@ -241,7 +262,7 @@ function reports_form_actions() {
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
 				$message = '';
 
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					reports_send($selected_items[$i]);
 				}
 			}
@@ -250,6 +271,7 @@ function reports_form_actions() {
 		force_session_data();
 
 		header('Location: ' . get_reports_page());
+
 		exit;
 	}
 
@@ -279,6 +301,7 @@ function reports_form_actions() {
 	if (!isset($reports_array)) {
 		raise_message(40);
 		header('Location: ' . get_reports_page());
+
 		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
@@ -351,9 +374,13 @@ function reports_form_actions() {
 	bottom_footer();
 }
 
-/* --------------------------
- Report Item Functions
- -------------------------- */
+/**
+ * reports_send
+ *
+ * Insert description here
+ *
+ * @param type $id
+ */
 function reports_send($id) {
 	global $config;
 
@@ -390,6 +417,12 @@ function reports_send($id) {
 	}
 }
 
+/**
+ * reports_item_movedown
+ *
+ * Insert description here
+ *
+ */
 function reports_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -399,6 +432,12 @@ function reports_item_movedown() {
 	move_item_down('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
+/**
+ * reports_item_moveup
+ *
+ * Insert description here
+ *
+ */
 function reports_item_moveup() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -407,6 +446,12 @@ function reports_item_moveup() {
 	move_item_up('reports_items', get_request_var('item_id'), 'report_id=' . get_request_var('id'));
 }
 
+/**
+ * reports_item_remove
+ *
+ * Insert description here
+ *
+ */
 function reports_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('item_id');
@@ -414,6 +459,12 @@ function reports_item_remove() {
 	db_execute_prepared('DELETE FROM reports_items WHERE id = ?', array(get_request_var('item_id')));
 }
 
+/**
+ * reports_item_edit
+ *
+ * Insert description here
+ *
+ */
 function reports_item_edit() {
 	global $config, $item_types, $graph_timespans, $alignment;
 
@@ -424,10 +475,11 @@ function reports_item_edit() {
 	$graphs          = array();
 
 	$report_item = array();
-	$report_item['item_type'] = REPORTS_ITEM_GRAPH;
-	$report_item['host_template_id'] = 0;
+
+	$report_item['item_type']         = REPORTS_ITEM_GRAPH;
+	$report_item['host_template_id']  = 0;
 	$report_item['graph_template_id'] = 0;
-	$report_item['host_id'] = 0;
+	$report_item['host_id']           = 0;
 
 	if (isset_request_var('item_id') && get_filter_request_var('item_id') > 0) {
 		$report_item = db_fetch_row_prepared('SELECT *
@@ -447,8 +499,9 @@ function reports_item_edit() {
 		$branches = array();
 
 		/* get the hosts sql first */
-		$hosts = null;
+		$hosts      = null;
 		$total_rows = -1;
+
 		if (isset_request_var('host_template_id')) {
 			if (get_filter_request_var('host_template_id') > 0) {
 				$hosts = array_rekey(
@@ -474,6 +527,7 @@ function reports_item_edit() {
 		$total_rows = -1;
 
 		$graph_templates = array();
+
 		if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
 			$graph_templates = array_rekey(
 				get_allowed_graph_templates('h.id = ' . get_request_var('host_id')),
@@ -488,6 +542,7 @@ function reports_item_edit() {
 
 		$sql_where = '';
 		$graphs    = array();
+
 		if (isset_request_var('host_template_id')) {
 			if (get_filter_request_var('host_template_id') > 0) {
 				$sql_where = 'h.host_template_id=' . get_request_var('host_template_id');
@@ -513,9 +568,10 @@ function reports_item_edit() {
 		}
 
 		$skip_agg_where = false;
+
 		if ($sql_where == '') {
 			$skip_agg_where = true;
-			$sql_where = 'gl.graph_template_id = 0';
+			$sql_where      = 'gl.graph_template_id = 0';
 		}
 
 		if ($sql_where != '') {
@@ -537,7 +593,7 @@ function reports_item_edit() {
 			}
 		} else {
 			$sql_where = 'gl.graph_template_id=0';
-			$graphs = array_rekey(
+			$graphs    = array_rekey(
 				get_allowed_graphs($sql_where),
 				'local_graph_id', 'title_cache'
 			);
@@ -559,6 +615,7 @@ function reports_item_edit() {
 		);
 
 		$sql_where = '';
+
 		if (isset_request_var('tree_id')) {
 			if (get_filter_request_var('tree_id') > 0) {
 				$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gt.id=' . get_request_var('tree_id');
@@ -576,126 +633,126 @@ function reports_item_edit() {
 	$fields_reports_item_edit = array(
 		'item_type' => array(
 			'friendly_name' => __('Type'),
-			'method' => 'drop_array',
-			'default' => REPORTS_ITEM_GRAPH,
-			'description' => __('Item Type to be added.'),
-			'value' => '|arg1:item_type|',
-			'on_change' => 'toggle_item_type()',
-			'array' => $item_types
+			'method'        => 'drop_array',
+			'default'       => REPORTS_ITEM_GRAPH,
+			'description'   => __('Item Type to be added.'),
+			'value'         => '|arg1:item_type|',
+			'on_change'     => 'toggle_item_type()',
+			'array'         => $item_types
 		),
 		'tree_id' => array(
 			'friendly_name' => __('Graph Tree'),
-			'method' => 'drop_array',
-			'default' => REPORTS_TREE_NONE,
-			'none_value' => __('None'),
-			'description' => __('Select a Tree to use.'),
-			'value' => '|arg1:tree_id|',
-			'on_change' => 'applyChange()',
-			'array' => $trees
+			'method'        => 'drop_array',
+			'default'       => REPORTS_TREE_NONE,
+			'none_value'    => __('None'),
+			'description'   => __('Select a Tree to use.'),
+			'value'         => '|arg1:tree_id|',
+			'on_change'     => 'applyChange()',
+			'array'         => $trees
 		),
 		'branch_id' => array(
 			'friendly_name' => __('Graph Tree Branch'),
-			'method' => 'drop_array',
-			'default' => REPORTS_TREE_NONE,
-			'none_value' => __('All'),
-			'description' => __('Select a Tree Branch to use.'),
-			'value' => '|arg1:branch_id|',
-			'on_change' => 'applyChange()',
-			'array' => $branches
+			'method'        => 'drop_array',
+			'default'       => REPORTS_TREE_NONE,
+			'none_value'    => __('All'),
+			'description'   => __('Select a Tree Branch to use.'),
+			'value'         => '|arg1:branch_id|',
+			'on_change'     => 'applyChange()',
+			'array'         => $branches
 		),
 		'tree_cascade' => array(
 			'friendly_name' => __('Cascade to Branches'),
-			'method' => 'checkbox',
-			'default' => '',
-			'description' => __('Should all children branch Graphs be rendered?'),
-			'value' => '|arg1:tree_cascade|'
+			'method'        => 'checkbox',
+			'default'       => '',
+			'description'   => __('Should all children branch Graphs be rendered?'),
+			'value'         => '|arg1:tree_cascade|'
 		),
 		'graph_name_regexp' => array(
 			'friendly_name' => __('Graph Name Regular Expression'),
-			'method' => 'textbox',
-			'default' => '',
-			'description' => __('A Perl compatible regular expression (REGEXP) used to select graphs to include from the tree.'),
-			'max_length' => 255,
-			'size' => 80,
-			'value' => '|arg1:graph_name_regexp|'
+			'method'        => 'textbox',
+			'default'       => '',
+			'description'   => __('A Perl compatible regular expression (REGEXP) used to select graphs to include from the tree.'),
+			'max_length'    => 255,
+			'size'          => 80,
+			'value'         => '|arg1:graph_name_regexp|'
 		),
 		'host_template_id' => array(
 			'friendly_name' => __('Device Template'),
-			'method' => 'drop_sql',
-			'default' => REPORTS_HOST_NONE,
-			'none_value' => __('None'),
-			'description' => __('Select a Device Template to use.'),
-			'value' => '|arg1:host_template_id|',
-			'on_change' => 'applyChange()',
-			'sql' => "SELECT DISTINCT ht.id, ht.name FROM host_template AS ht INNER JOIN host AS h ON h.host_template_id=ht.id WHERE h.deleted = '' AND h.disabled = '' ORDER BY name"
+			'method'        => 'drop_sql',
+			'default'       => REPORTS_HOST_NONE,
+			'none_value'    => __('None'),
+			'description'   => __('Select a Device Template to use.'),
+			'value'         => '|arg1:host_template_id|',
+			'on_change'     => 'applyChange()',
+			'sql'           => "SELECT DISTINCT ht.id, ht.name FROM host_template AS ht INNER JOIN host AS h ON h.host_template_id=ht.id WHERE h.deleted = '' AND h.disabled = '' ORDER BY name"
 		),
 		'host_id' => array(
 			'friendly_name' => __('Device'),
-			'method' => 'drop_array',
-			'default' => REPORTS_HOST_NONE,
-			'description' => __('Select a Device to specify a Graph'),
-			'value' => '|arg1:host_id|',
-			'none_value' => __('None'),
-			'on_change' => 'applyChange()',
-			'array' => $hosts
+			'method'        => 'drop_array',
+			'default'       => REPORTS_HOST_NONE,
+			'description'   => __('Select a Device to specify a Graph'),
+			'value'         => '|arg1:host_id|',
+			'none_value'    => __('None'),
+			'on_change'     => 'applyChange()',
+			'array'         => $hosts
 		),
 		'graph_template_id' => array(
 			'friendly_name' => __('Graph Template'),
-			'method' => 'drop_array',
-			'default' => '0',
-			'description' => __('Select a Graph Template for the host'),
-			'none_value' => __('None'),
-			'on_change' => 'applyChange()',
-			'value' => '|arg1:graph_template_id|',
-			'array' => $graph_templates
+			'method'        => 'drop_array',
+			'default'       => '0',
+			'description'   => __('Select a Graph Template for the host'),
+			'none_value'    => __('None'),
+			'on_change'     => 'applyChange()',
+			'value'         => '|arg1:graph_template_id|',
+			'array'         => $graph_templates
 		),
 		'local_graph_id' => array(
 			'friendly_name' => __('Graph Name'),
-			'method' => 'drop_array',
-			'default' => '0',
-			'description' => __('The Graph to use for this report item.'),
-			'none_value' => __('None'),
-			'on_change' => 'graphImage(this.value)',
-			'value' => '|arg1:local_graph_id|',
-			'array' => $graphs
+			'method'        => 'drop_array',
+			'default'       => '0',
+			'description'   => __('The Graph to use for this report item.'),
+			'none_value'    => __('None'),
+			'on_change'     => 'graphImage(this.value)',
+			'value'         => '|arg1:local_graph_id|',
+			'array'         => $graphs
 		),
 		'timespan' => array(
 			'friendly_name' => __('Graph Timespan'),
-			'method' => 'drop_array',
-			'default' => GT_LAST_DAY,
-			'description' => __('The Graph End time will be set to the scheduled report send time.  So, if you wish the end time on the various Graphs to be midnight, ensure you send the report at midnight.  The Graph Start time will be the End Time minus the Graph Timespan.'),
-			'array' => $graph_timespans,
-			'value' => '|arg1:timespan|'
+			'method'        => 'drop_array',
+			'default'       => GT_LAST_DAY,
+			'description'   => __('The Graph End time will be set to the scheduled report send time.  So, if you wish the end time on the various Graphs to be midnight, ensure you send the report at midnight.  The Graph Start time will be the End Time minus the Graph Timespan.'),
+			'array'         => $graph_timespans,
+			'value'         => '|arg1:timespan|'
 		),
-		'align' => array(
+		'align'   => array(
 			'friendly_name' => __('Alignment'),
-			'method' => 'drop_array',
-			'default' => REPORTS_ALIGN_LEFT,
-			'description' => __('Alignment of the Item'),
-			'value' => '|arg1:align|',
-			'array' => $alignment
+			'method'        => 'drop_array',
+			'default'       => REPORTS_ALIGN_LEFT,
+			'description'   => __('Alignment of the Item'),
+			'value'         => '|arg1:align|',
+			'array'         => $alignment
 		),
 		'item_text' => array(
 			'friendly_name' => __('Fixed Text'),
-			'method' => 'textbox',
-			'default' => '',
-			'description' => __('Enter descriptive Text'),
-			'max_length' => 255,
-			'value' => '|arg1:item_text|'
+			'method'        => 'textbox',
+			'default'       => '',
+			'description'   => __('Enter descriptive Text'),
+			'max_length'    => 255,
+			'value'         => '|arg1:item_text|'
 		),
 		'font_size' => array(
 			'friendly_name' => __('Font Size'),
-			'method' => 'drop_array',
-			'default' => REPORTS_FONT_SIZE,
-			'array' => array(7 => 7, 8 => 8, 10 => 10, 12 => 12, 14 => 14, 16 => 16, 18 => 18, 20 => 20, 24 => 24, 28 => 28, 32 => 32),
-			'description' => __('Font Size of the Item'),
-			'value' => '|arg1:font_size|'
+			'method'        => 'drop_array',
+			'default'       => REPORTS_FONT_SIZE,
+			'array'         => array(7 => 7, 8 => 8, 10 => 10, 12 => 12, 14 => 14, 16 => 16, 18 => 18, 20 => 20, 24 => 24, 28 => 28, 32 => 32),
+			'description'   => __('Font Size of the Item'),
+			'value'         => '|arg1:font_size|'
 		),
 		'sequence' => array(
-			'method' => 'view',
+			'method'        => 'view',
 			'friendly_name' => __('Sequence'),
-			'description' => __('Sequence of Item.'),
-			'value' => '|arg1:sequence|'
+			'description'   => __('Sequence of Item.'),
+			'value'         => '|arg1:sequence|'
 		),
 	);
 
@@ -708,8 +765,8 @@ function reports_item_edit() {
 
 		$header_label = __esc('Report Item [edit Report: %s]', $report['name']);
 	} else {
-		$header_label = __esc('Report Item [new Report: %s]', $report['name']);
-		$reports_item = array();
+		$header_label              = __esc('Report Item [new Report: %s]', $report['name']);
+		$reports_item              = array();
 		$reports_item['report_id'] = get_request_var('id');
 		$reports_item['sequence']  = get_sequence('', 'sequence', 'reports_items', 'report_id=' . get_request_var('id'));
 		$reports_item['host_id']   = REPORTS_HOST_NONE;
@@ -899,11 +956,12 @@ function reports_item_edit() {
 	<?php
 }
 
-
-/* ---------------------
- Report Functions
- --------------------- */
-
+/**
+ * reports_edit
+ *
+ * Insert description here
+ *
+ */
 function reports_edit() {
 	global $config, $attach_types, $alignment, $reports_interval;
 
@@ -913,221 +971,221 @@ function reports_edit() {
 	$fields_reports_edit = array(
 		'genhead' => array(
 			'friendly_name' => __('General Settings'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
+			'method'        => 'spacer',
+			'collapsible'   => 'true'
 			),
 		'name' => array(
 			'friendly_name' => __('Report Name'),
-			'method' => 'textbox',
-			'default' => __('New Report'),
-			'description' => __('Give this Report a descriptive Name'),
-			'max_length' => 99,
-			'value' => '|arg1:name|'
+			'method'        => 'textbox',
+			'default'       => __('New Report'),
+			'description'   => __('Give this Report a descriptive Name'),
+			'max_length'    => 99,
+			'value'         => '|arg1:name|'
 			),
 		'enabled' => array(
 			'friendly_name' => __('Enable Report'),
-			'method' => 'checkbox',
-			'default' => '',
-			'description' => __('Check this box to enable this Report.'),
-			'value' => '|arg1:enabled|',
-			'form_id' => false
+			'method'        => 'checkbox',
+			'default'       => '',
+			'description'   => __('Check this box to enable this Report.'),
+			'value'         => '|arg1:enabled|',
+			'form_id'       => false
 			),
 		'formathead' => array(
 			'friendly_name' => __('Output Formatting'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
+			'method'        => 'spacer',
+			'collapsible'   => 'true'
 			),
 		'cformat' => array(
 			'friendly_name' => __('Use Custom Format HTML'),
-			'method' => 'checkbox',
-			'default' => '',
-			'description' => __('Check this box if you want to use custom html and CSS for the report.'),
-			'value' => '|arg1:cformat|',
-			'form_id' => false
+			'method'        => 'checkbox',
+			'default'       => '',
+			'description'   => __('Check this box if you want to use custom html and CSS for the report.'),
+			'value'         => '|arg1:cformat|',
+			'form_id'       => false
 			),
 		'format_file' => array(
 			'friendly_name' => __('Format File to Use'),
-			'method' => 'drop_array',
-			'default' => 'default.format',
-			'description' => __('Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the \'formats\' directory.'),
-			'value' => '|arg1:format_file|',
-			'array' => $formats
+			'method'        => 'drop_array',
+			'default'       => 'default.format',
+			'description'   => __('Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the \'formats\' directory.'),
+			'value'         => '|arg1:format_file|',
+			'array'         => $formats
 			),
 		'font_size' => array(
 			'friendly_name' => __('Default Text Font Size'),
-			'description' => __('Defines the default font size for all text in the report including the Report Title.'),
-			'default' => 16,
-			'method' => 'drop_array',
-			'array' => array(7 => 7, 8 => 8, 10 => 10, 12 => 12, 14 => 14, 16 => 16, 18 => 18, 20 => 20, 24 => 24, 28 => 28, 32 => 32),
-			'value' => '|arg1:font_size|'
+			'description'   => __('Defines the default font size for all text in the report including the Report Title.'),
+			'default'       => 16,
+			'method'        => 'drop_array',
+			'array'         => array(7 => 7, 8 => 8, 10 => 10, 12 => 12, 14 => 14, 16 => 16, 18 => 18, 20 => 20, 24 => 24, 28 => 28, 32 => 32),
+			'value'         => '|arg1:font_size|'
 			),
 		'alignment' => array(
 			'friendly_name' => __('Default Object Alignment'),
-			'description' => __('Defines the default Alignment for Text and Graphs.'),
-			'default' => 0,
-			'method' => 'drop_array',
-			'array' => $alignment,
-			'value' => '|arg1:alignment|'
+			'description'   => __('Defines the default Alignment for Text and Graphs.'),
+			'default'       => 0,
+			'method'        => 'drop_array',
+			'array'         => $alignment,
+			'value'         => '|arg1:alignment|'
 			),
 		'graph_linked' => array(
 			'friendly_name' => __('Graph Linked'),
-			'method' => 'checkbox',
-			'default' => '',
-			'description' => __('Should the Graphs be linked back to the Cacti site?'),
-			'value' => '|arg1:graph_linked|'
+			'method'        => 'checkbox',
+			'default'       => '',
+			'description'   => __('Should the Graphs be linked back to the Cacti site?'),
+			'value'         => '|arg1:graph_linked|'
 			),
 		'graphhead' => array(
 			'friendly_name' => __('Graph Settings'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
+			'method'        => 'spacer',
+			'collapsible'   => 'true'
 			),
 		'graph_columns' => array(
 			'friendly_name' => __('Graph Columns'),
-			'method' => 'drop_array',
-			'default' => '1',
-			'array' => array(1 => 1, 2, 3, 4, 5),
-			'description' => __('The number of Graph columns.'),
-			'value' => '|arg1:graph_columns|'
+			'method'        => 'drop_array',
+			'default'       => '1',
+			'array'         => array(1 => 1, 2, 3, 4, 5),
+			'description'   => __('The number of Graph columns.'),
+			'value'         => '|arg1:graph_columns|'
 			),
 		'graph_width' => array(
 			'friendly_name' => __('Graph Width'),
-			'method' => 'drop_array',
-			'default' => '300',
-			'array' => array(100 => 100, 150 => 150, 200 => 200, 250 => 250, 300 => 300, 350 => 350, 400 => 400, 500 => 500, 600 => 600, 700 => 700, 800 => 800, 900 => 900, 1000 => 1000),
-			'description' => __('The Graph width in pixels.'),
-			'value' => '|arg1:graph_width|'
+			'method'        => 'drop_array',
+			'default'       => '300',
+			'array'         => array(100 => 100, 150 => 150, 200 => 200, 250 => 250, 300 => 300, 350 => 350, 400 => 400, 500 => 500, 600 => 600, 700 => 700, 800 => 800, 900 => 900, 1000 => 1000),
+			'description'   => __('The Graph width in pixels.'),
+			'value'         => '|arg1:graph_width|'
 			),
 		'graph_height' => array(
 			'friendly_name' => __('Graph Height'),
-			'method' => 'drop_array',
-			'default' => '125',
-			'array' => array(75 => 75, 100 => 100, 125 => 125, 150 => 150, 175 => 175, 200 => 200, 250 => 250, 300 => 300),
-			'description' => __('The Graph height in pixels.'),
-			'value' => '|arg1:graph_height|'
+			'method'        => 'drop_array',
+			'default'       => '125',
+			'array'         => array(75 => 75, 100 => 100, 125 => 125, 150 => 150, 175 => 175, 200 => 200, 250 => 250, 300 => 300),
+			'description'   => __('The Graph height in pixels.'),
+			'value'         => '|arg1:graph_height|'
 			),
 		'thumbnails' => array(
 			'friendly_name' => __('Thumbnails'),
-			'method' => 'checkbox',
-			'default' => '',
-			'description' => __('Should the Graphs be rendered as Thumbnails?'),
-			'value' => '|arg1:thumbnails|'
+			'method'        => 'checkbox',
+			'default'       => '',
+			'description'   => __('Should the Graphs be rendered as Thumbnails?'),
+			'value'         => '|arg1:thumbnails|'
 			),
 		'freqhead' => array(
 			'friendly_name' => __('Email Frequency'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
+			'method'        => 'spacer',
+			'collapsible'   => 'true'
 			),
 		'mailtime' => array(
 			'friendly_name' => __('Next Timestamp for Sending Mail Report'),
-			'description' => __('Start time for [first|next] mail to take place. All future mailing times will be based upon this start time. A good example would be 2:00am. The time must be in the future.  If a fractional time is used, say 2:00am, it is assumed to be in the future.'),
-			'default' => 0,
-			'method' => 'textbox',
-			'size' => 20,
-			'max_length' => 20,
-			'value' => '|arg1:mailtime|'
+			'description'   => __('Start time for [first|next] mail to take place. All future mailing times will be based upon this start time. A good example would be 2:00am. The time must be in the future.  If a fractional time is used, say 2:00am, it is assumed to be in the future.'),
+			'default'       => 0,
+			'method'        => 'textbox',
+			'size'          => 20,
+			'max_length'    => 20,
+			'value'         => '|arg1:mailtime|'
 			),
 		'intrvl' => array(
 			'friendly_name' => __('Report Interval'),
-			'description' => __('Defines a Report Frequency relative to the given Mailtime above.') . '<br>' .
+			'description'   => __('Defines a Report Frequency relative to the given Mailtime above.') . '<br>' .
 				__('e.g. \'Week(s)\' represents a weekly Reporting Interval.'),
 			'default' => REPORTS_SCHED_INTVL_DAY,
-			'method' => 'drop_array',
-			'array' => $reports_interval,
-			'value' => '|arg1:intrvl|'
+			'method'  => 'drop_array',
+			'array'   => $reports_interval,
+			'value'   => '|arg1:intrvl|'
 			),
 		'count' => array(
 			'friendly_name' => __('Interval Frequency'),
-			'description' => __('Based upon the Timespan of the Report Interval above, defines the Frequency within that Interval.') . '<br>' .
+			'description'   => __('Based upon the Timespan of the Report Interval above, defines the Frequency within that Interval.') . '<br>' .
 				__('e.g. If the Report Interval is \'Month(s)\', then \'2\' indicates Every \'2 Month(s) from the next Mailtime.\' Lastly, if using the Month(s) Report Intervals, the \'Day of Week\' and the \'Day of Month\' are both calculated based upon the Mailtime you specify above.'),
-			'default' => REPORTS_SCHED_COUNT,
-			'method' => 'textbox',
-			'size' => 10,
+			'default'    => REPORTS_SCHED_COUNT,
+			'method'     => 'textbox',
+			'size'       => 10,
 			'max_length' => 10,
-			'value' => '|arg1:count|'
+			'value'      => '|arg1:count|'
 			),
 		'emailhead' => array(
 			'friendly_name' => __('Email Sender/Receiver Details'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
+			'method'        => 'spacer',
+			'collapsible'   => 'true'
 			),
 		'subject' => array(
 			'friendly_name' => __('Subject'),
-			'method' => 'textbox',
-			'default' => __('Cacti Report'),
-			'description' => __('This value will be used as the default Email subject.  The report name will be used if left blank.'),
-			'max_length' => 255,
-			'value' => '|arg1:subject|'
+			'method'        => 'textbox',
+			'default'       => __('Cacti Report'),
+			'description'   => __('This value will be used as the default Email subject.  The report name will be used if left blank.'),
+			'max_length'    => 255,
+			'value'         => '|arg1:subject|'
 			),
 		'from_name' => array(
 			'friendly_name' => __('From Name'),
-			'method' => 'textbox',
-			'default' => read_config_option('settings_from_name'),
-			'description' => __('This Name will be used as the default E-mail Sender'),
-			'max_length' => 255,
-			'value' => '|arg1:from_name|'
+			'method'        => 'textbox',
+			'default'       => read_config_option('settings_from_name'),
+			'description'   => __('This Name will be used as the default E-mail Sender'),
+			'max_length'    => 255,
+			'value'         => '|arg1:from_name|'
 			),
 		'from_email' => array(
 			'friendly_name' => __('From Email Address'),
-			'method' => 'textbox',
-			'default' => read_config_option('settings_from_email'),
-			'description' => __('This Address will be used as the E-mail Senders address'),
-			'max_length' => 255,
-			'value' => '|arg1:from_email|'
+			'method'        => 'textbox',
+			'default'       => read_config_option('settings_from_email'),
+			'description'   => __('This Address will be used as the E-mail Senders address'),
+			'max_length'    => 255,
+			'value'         => '|arg1:from_email|'
 			),
 		'email' => array(
 			'friendly_name' => __('To Email Address(es)'),
-			'method' => 'textarea',
+			'method'        => 'textarea',
 			'textarea_rows' => '5',
 			'textarea_cols' => '60',
-			'class' => 'textAreaNotes',
-			'default' => '',
-			'description' => __('Please separate multiple addresses by comma (,)'),
-			'max_length' => 255,
-			'value' => '|arg1:email|'
+			'class'         => 'textAreaNotes',
+			'default'       => '',
+			'description'   => __('Please separate multiple addresses by comma (,)'),
+			'max_length'    => 255,
+			'value'         => '|arg1:email|'
 			),
 		'bcc' => array(
 			'friendly_name' => __('BCC Address(es)'),
-			'method' => 'textarea',
+			'method'        => 'textarea',
 			'textarea_rows' => '5',
 			'textarea_cols' => '60',
-			'class' => 'textAreaNotes',
-			'default' => '',
-			'description' => __('Blind carbon copy. Please separate multiple addresses by comma (,)'),
-			'max_length' => 255,
-			'value' => '|arg1:bcc|'
+			'class'         => 'textAreaNotes',
+			'default'       => '',
+			'description'   => __('Blind carbon copy. Please separate multiple addresses by comma (,)'),
+			'max_length'    => 255,
+			'value'         => '|arg1:bcc|'
 			),
 		'attachment_type' => array(
 			'friendly_name' => __('Image attach type'),
-			'method' => 'drop_array',
-			'default' => read_config_option('reports_default_image_format'),
-			'description' => __('Select one of the given Types for the Image Attachments'),
-			'value' => '|arg1:attachment_type|',
-			'array' => $attach_types
+			'method'        => 'drop_array',
+			'default'       => read_config_option('reports_default_image_format'),
+			'description'   => __('Select one of the given Types for the Image Attachments'),
+			'value'         => '|arg1:attachment_type|',
+			'array'         => $attach_types
 			),
 	);
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'name' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'tab' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'details',
 			'options' => array('options' => 'sanitize_search_string')
 			)
@@ -1144,6 +1202,7 @@ function reports_edit() {
 
 	/* display the report */
 	$report = array();
+
 	if (get_filter_request_var('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array(get_request_var('id')));
 	}
@@ -1151,14 +1210,25 @@ function reports_edit() {
 	if ($report !== false && isset($report['id'])) {
 		# reformat mailtime to human readable format
 		$report['mailtime'] = date(reports_date_time_format(), $report['mailtime']);
+
 		# setup header
 		$header_label = __('[edit: %s]', $report['name']);
-		$tabs = array('details' => __('Details'), 'items' => __('Items'), 'preview' => __('Preview'), 'events' => __('Events'));
+
+		$tabs = array(
+			'details' => __('Details'),
+			'items'   => __('Items'),
+			'preview' => __('Preview'),
+			'events'  => __('Events')
+		);
 	} else {
 		$header_label = __('[new]');
+
 		# initialize mailtime with current timestamp
 		$report['mailtime'] = date(reports_date_time_format(), floor(time() / read_config_option('poller_interval')) * read_config_option('poller_interval'));
-		$tabs = array('details' => __('Details'));
+
+		$tabs = array(
+			'details' => __('Details')
+		);
 	}
 	/* if there was an error on the form, display the date in the correct format */
 	if (isset($_SESSION['sess_field_values']['mailtime'])) {
@@ -1184,7 +1254,6 @@ function reports_edit() {
 
 			$i++;
 		}
-
 
 		if (!isempty_request_var('id')) {
 			print "<li style='float:right;position:relative;'><a class='tab' href='" . html_escape(get_reports_page() . '?action=send&id=' . get_request_var('id') . '&tab=' . get_request_var('tab')) . "'>" . __('Send Report') . "</a></li>\n";
@@ -1277,7 +1346,8 @@ function reports_edit() {
 		if (($timestamp = strtotime($report['mailtime'])) === false) {
 			$timestamp = time();
 		}
-		$poller_interval = read_config_option('poller_interval');
+		$poller_interval                             = read_config_option('poller_interval');
+
 		if ($poller_interval == '') $poller_interval = 300;
 
 		$timestamp   = floor($timestamp / $poller_interval) * $poller_interval;
@@ -1285,7 +1355,8 @@ function reports_edit() {
 		$date_format = reports_date_time_format() . ' - l';
 
 		html_start_box(__esc('Scheduled Events %s', $header_label), '100%', '', '3', 'center', '');
-		for ($i=0; $i<14; $i++) {
+
+		for ($i=0; $i < 14; $i++) {
 			form_alternate_row('line' . $i, true);
 			form_selectable_cell(date($date_format, $next), $i);
 			form_end_row();
@@ -1305,8 +1376,12 @@ function reports_edit() {
 	}
 }
 
-/* display_reports_items		display the list of all items related to a single report
- * @arg $report_id				id of the report
+/**
+ * display_reports_items
+ *
+ * display the list of all items related to a single report
+ *
+ * @param $report_id id of the report
  */
 function display_reports_items($report_id) {
 	global $graph_timespans;
@@ -1321,31 +1396,58 @@ function display_reports_items($report_id) {
 
 	html_header(
 		array(
-			array('display' => __('Item'),         'align' => 'left'),
-			array('display' => __('Sequence'),     'align' => 'left'),
-			array('display' => __('Type'),         'align' => 'left'),
-			array('display' => __('Item Details'), 'align' => 'left'),
-			array('display' => __('Timespan'),     'align' => 'left'),
-			array('display' => __('Alignment'),    'align' => 'left'),
-			array('display' => __('Font Size'),    'align' => 'left'),
-			array('display' => __('Actions'),      'align' => 'right')
+			array(
+				'display' => __('Item'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Sequence'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Type'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Item Details'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Timespan'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Alignment'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Font Size'),
+				'align'   => 'left'
+			),
+			array(
+				'display' => __('Actions'),
+				'align'   => 'right'
+			)
 		), 2);
 
 	$i = 1;
+
 	if (cacti_sizeof($items)) {
 		foreach ($items as $item) {
 			switch ($item['item_type']) {
 			case REPORTS_ITEM_GRAPH:
 				$item_details = get_graph_title($item['local_graph_id']);
-				$align = ($item['align'] > 0 ? $alignment[$item['align']] : '');
-				$size = '';
-				$timespan = ($item['timespan'] > 0 ? $graph_timespans[$item['timespan']] : '');
+				$align        = ($item['align'] > 0 ? $alignment[$item['align']] : '');
+				$size         = '';
+				$timespan     = ($item['timespan'] > 0 ? $graph_timespans[$item['timespan']] : '');
+
 				break;
 			case REPORTS_ITEM_TEXT:
 				$item_details = $item['item_text'];
-				$align = ($item['align'] > 0 ? $alignment[$item['align']] : '');
-				$size = ($item['font_size'] > 0 ? $item['font_size'] : '');
-				$timespan = '';
+				$align        = ($item['align'] > 0 ? $alignment[$item['align']] : '');
+				$size         = ($item['font_size'] > 0 ? $item['font_size'] : '');
+				$timespan     = '';
+
 				break;
 			case REPORTS_ITEM_TREE:
 				if ($item['branch_id'] > 0) {
@@ -1363,6 +1465,7 @@ function display_reports_items($report_id) {
 					array($item['tree_id']));
 
 				$item_details = __('Tree: %s', $tree_name);
+
 				if ($item['branch_id'] > 0) {
 					if ($branch_details['host_id'] > 0) {
 						$description = db_fetch_cell_prepared('SELECT description
@@ -1382,15 +1485,17 @@ function display_reports_items($report_id) {
 					}
 				}
 
-				$align    = ($item['align']     > 0 ? $alignment[$item['align']] : '');
+				$align    = ($item['align'] > 0 ? $alignment[$item['align']] : '');
 				$size     = ($item['font_size'] > 0 ? $item['font_size'] : '');
-				$timespan = ($item['timespan']  > 0 ? $graph_timespans[$item['timespan']] : '');
+				$timespan = ($item['timespan'] > 0 ? $graph_timespans[$item['timespan']] : '');
+
 				break;
+
 			default:
 				$item_details = '';
-				$align = '';
-				$size = '';
-				$timespan = '';
+				$align        = '';
+				$size         = '';
+				$timespan     = '';
 			}
 
 			if ($css == 'on') {
@@ -1424,14 +1529,36 @@ function display_reports_items($report_id) {
 	}
 }
 
+/**
+ * get_reports_page
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function get_reports_page() {
 	return (is_realm_allowed(22) ? 'reports_admin.php' : 'reports_user.php');
 }
 
+/**
+ * is_reports_admin
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function is_reports_admin() {
 	return (is_realm_allowed(22) ? true:false);
 }
 
+/**
+ * reports
+ *
+ * Insert description here
+ *
+ */
 function reports() {
 	global $config, $item_rows, $reports_interval;
 	global $reports_actions, $attach_types;
@@ -1439,35 +1566,35 @@ function reports() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'status' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_graphs' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
@@ -1508,17 +1635,18 @@ function reports() {
 					</td>
 					<td>
 						<select id='status' onChange='applyFilter()'>
-							<option value='-1'" . (get_request_var('status') == '-1' ? ' selected':'') . ">" . __('Any') . "</option>
-							<option value='-2'" . (get_request_var('status') == '-2' ? ' selected':'') . ">" . __('Enabled') . "</option>
-							<option value='-3'" . (get_request_var('status') == '-3' ? ' selected':'') . ">" . __('Disabled') . "</option>
+							<option value='-1'" . (get_request_var('status') == '-1' ? ' selected':'') . '>' . __('Any') . "</option>
+							<option value='-2'" . (get_request_var('status') == '-2' ? ' selected':'') . '>' . __('Enabled') . "</option>
+							<option value='-3'" . (get_request_var('status') == '-3' ? ' selected':'') . '>' . __('Disabled') . '</option>
 						</select>
 					</td>
 					<td>
-						" . __('Reports') . "
+						' . __('Reports') . "
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'" . (get_request_var('rows') == '-1' ? ' selected':'') . '>' . __('Default') . '</option>';
+
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'" .
@@ -1581,7 +1709,7 @@ function reports() {
 		ORDER BY " .
 		get_request_var('sort_column') . ' ' .
 		get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
 
 	form_start(get_reports_page(), 'chk');
 
@@ -1593,32 +1721,101 @@ function reports() {
 
 	if (is_reports_admin()) {
 		$display_text = array(
-			'name'            => array('display' => __('Report Name'), 'align' => 'left', 'sort' => 'ASC'),
-			'full_name'       => array('display' => __('Owner'),       'align' => 'left', 'sort' => 'ASC'),
-			'cint'            => array('display' => __('Frequency'),   'align' => 'left', 'sort' => 'ASC'),
-			'lastsent'        => array('display' => __('Last Run'),    'align' => 'left', 'sort' => 'ASC'),
-			'mailtime'        => array('display' => __('Next Run'),    'align' => 'left', 'sort' => 'ASC'),
-			'from_name'       => array('display' => __('From'),        'align' => 'left', 'sort' => 'ASC'),
-			'nosort'          => array('display' => __('To'),          'align' => 'left', 'sort' => 'ASC'),
-			'attachment_type' => array('display' => __('Type'),        'align' => 'left', 'sort' => 'ASC'),
-			'enabled'         => array('display' => __('Enabled'),     'align' => 'left', 'sort' => 'ASC'),
+			'name' => array(
+				'display' => __('Report Name'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'full_name' => array(
+				'display' => __('Owner'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'cint' => array(
+				'display' => __('Frequency'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'lastsent' => array(
+				'display' => __('Last Run'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'mailtime' => array(
+				'display' => __('Next Run'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'from_name' => array(
+				'display' => __('From'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'nosort' => array(
+				'display' => __('To'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'attachment_type' => array(
+				'display' => __('Type'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'enabled' => array(
+				'display' => __('Enabled'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			)
 		);
 	} else {
 		$display_text = array(
-			'name'            => array('display' => __('Report Title'), 'align' => 'left', 'sort' => 'ASC'),
-			'cint'            => array('display' => __('Frequency'),    'align' => 'left', 'sort' => 'ASC'),
-			'lastsent'        => array('display' => __('Last Run'),     'align' => 'left', 'sort' => 'ASC'),
-			'mailtime'        => array('display' => __('Next Run'),     'align' => 'left', 'sort' => 'ASC'),
-			'from_name'       => array('display' => __('From'),         'align' => 'left', 'sort' => 'ASC'),
-			'nosort'          => array('display' => __('To'),           'align' => 'left', 'sort' => 'ASC'),
-			'attachment_type' => array('display' => __('Type'),         'align' => 'left', 'sort' => 'ASC'),
-			'enabled'         => array('display' => __('Enabled'),      'align' => 'left', 'sort' => 'ASC'),
+			'name' => array(
+				'display' => __('Report Title'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'cint' => array(
+				'display' => __('Frequency'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'lastsent' => array(
+				'display' => __('Last Run'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'mailtime' => array(
+				'display' => __('Next Run'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'from_name' => array(
+				'display' => __('From'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'nosort' => array(
+				'display' => __('To'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'attachment_type' => array(
+				'display' => __('Type'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			),
+			'enabled' => array(
+				'display' => __('Enabled'),
+				'align'   => 'left',
+				'sort'    => 'ASC'
+			)
 		);
 	}
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($reports_list)) {
 		$date_format = reports_date_time_format();
 
@@ -1654,7 +1851,7 @@ function reports() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Reports Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Reports Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -1700,14 +1897,40 @@ function reports() {
 	<?php
 }
 
+/**
+ * reports_html_account_exists
+ *
+ * Insert description here
+ *
+ * @param type $user_id
+ *
+ * @return type
+ */
 function reports_html_account_exists($user_id) {
 	return db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($user_id));
 }
 
+/**
+ * reports_html_report_disable
+ *
+ * Insert description here
+ *
+ * @param type $report_id
+ */
 function reports_html_report_disable($report_id) {
 	db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', array($report_id));
 }
 
+/**
+ * set_reports_item_var
+ *
+ * Insert description here
+ *
+ * @param type $reports_item
+ * @param type $var_id
+ *
+ * @return type
+ */
 function set_reports_item_var($reports_item, $var_id) {
 	// if a different host_id was selected, use it
 	if (isset_request_var($var_id) && get_filter_request_var($var_id) >= 0) {

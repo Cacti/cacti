@@ -44,14 +44,20 @@ process_tree_settings();
 /* setup realtime defaults if they are not set */
 initialize_realtime_step_and_window();
 
+/**
+ * get_matching_nodes
+ *
+ * Insert description here
+ *
+ */
 function get_matching_nodes() {
 	$my_matches = array();
-	$match = array();
+	$match      = array();
 
 	$filter = '%' . get_nfilter_request_var('str') . '%';
 
 	if (get_nfilter_request_var('str') != '') {
-		$matching = db_fetch_assoc_prepared("SELECT gti.parent, gti.graph_tree_id
+		$matching = db_fetch_assoc_prepared('SELECT gti.parent, gti.graph_tree_id
 			FROM graph_tree_items AS gti
 			LEFT JOIN host AS h
 			ON h.id=gti.host_id
@@ -60,14 +66,14 @@ function get_matching_nodes() {
 			WHERE gtg.title_cache LIKE ?
 			OR h.description LIKE ?
 			OR h.hostname LIKE ?
-			OR gti.title LIKE ?",
+			OR gti.title LIKE ?',
 			array($filter, $filter, $filter, $filter));
 	} else {
-		$matching = db_fetch_assoc("SELECT parent, graph_tree_id FROM graph_tree_items");
+		$matching = db_fetch_assoc('SELECT parent, graph_tree_id FROM graph_tree_items');
 	}
 
 	if (cacti_sizeof($matching)) {
-		foreach($matching as $row) {
+		foreach ($matching as $row) {
 			while ($row['parent'] != '0') {
 				$match[] = 'tbranch-' . $row['parent'];
 
@@ -77,7 +83,7 @@ function get_matching_nodes() {
 					array($row['parent']));
 
 				if (!cacti_sizeof($row)) {
-				    break;
+					break;
 				}
 			}
 
@@ -90,10 +96,12 @@ function get_matching_nodes() {
 
 		// Now flatten the list of nodes
 		$final_array = array();
-		$level = 0;
+		$level       = 0;
+
 		while (true) {
 			$found = 0;
-			foreach($my_matches as $match) {
+
+			foreach ($my_matches as $match) {
 				if (isset($match[$level])) {
 					if ($level == 0) {
 						$final_array[$match[$level]][$match[$level]] = 1;
@@ -106,15 +114,15 @@ function get_matching_nodes() {
 			$level++;
 
 			if ($found == 0) {
-			    break;
+				break;
 			}
 		}
 
 		if (cacti_sizeof($final_array)) {
 			$fa = array();
 
-			foreach($final_array as $key => $matches) {
-				foreach($matches as $branch => $dnc) {
+			foreach ($final_array as $key => $matches) {
+				foreach ($matches as $branch => $dnc) {
 					$fa[] = $branch;
 				}
 			}
@@ -133,6 +141,7 @@ case 'ajax_hosts':
 	break;
 case 'ajax_search':
 	get_matching_nodes();
+
 	exit;
 
 	break;
@@ -148,10 +157,11 @@ case 'ajax_reports':
 		if (cacti_sizeof($items)) {
 			$good = true;
 
-			foreach($items as $item) {
+			foreach ($items as $item) {
 				if (!reports_add_graphs(get_filter_request_var('report_id'), $item, get_request_var('timespan'), get_request_var('align'))) {
 					raise_message('reports_add_error');
 					$good = false;
+
 					break;
 				}
 			}
@@ -191,9 +201,11 @@ case 'save':
 			if (isset_request_var('columns')) {
 				set_graph_config_option('num_columns', get_request_var('columns'));
 			}
+
 			if (isset_request_var('graphs')) {
 				set_graph_config_option('preview_graphs_per_page', get_request_var('graphs'));
 			}
+
 			if (isset_request_var('thumbnails')) {
 				set_graph_config_option('thumbnail_section_preview', get_nfilter_request_var('thumbnails') == 'true' ? 'on':'');
 			}
@@ -201,9 +213,11 @@ case 'save':
 			if (isset_request_var('columns')) {
 				set_graph_config_option('num_columns_tree', get_request_var('columns'));
 			}
+
 			if (isset_request_var('graphs')) {
 				set_graph_config_option('treeview_graphs_per_page', get_request_var('graphs'));
 			}
+
 			if (isset_request_var('thumbnails')) {
 				set_graph_config_option('thumbnail_section_tree_2', get_request_var('thumbnails') == 'true' ? 'on':'');
 			}
@@ -240,15 +254,13 @@ case 'get_node':
 				FROM graph_tree_items
 				WHERE id = ?',
 				array(str_replace('tbranch-', '', get_nfilter_request_var('id'))));
-		}else if (get_nfilter_request_var('tree_id') == 'default' ||
+		} elseif (get_nfilter_request_var('tree_id') == 'default' ||
 			get_nfilter_request_var('tree_id') == 'undefined' ||
 			get_nfilter_request_var('tree_id') == '') {
-
 			$tree_id = read_user_setting('default_tree_id');
 		} elseif (get_nfilter_request_var('tree_id') == 0 &&
 			substr_count(get_nfilter_request_var('id'), 'tree_anchor') > 0) {
-
-			$ndata = explode('-', get_nfilter_request_var('id'));
+			$ndata   = explode('-', get_nfilter_request_var('id'));
 			$tree_id = $ndata[1];
 			input_validate_input_number($tree_id);
 		}
@@ -262,7 +274,7 @@ case 'get_node':
 		} else {
 			$ndata = explode('_', get_nfilter_request_var('id'));
 
-			foreach($ndata as $node) {
+			foreach ($ndata as $node) {
 				$pnode = explode('-', $node);
 
 				if ($pnode[0] == 'tbranch') {
@@ -290,6 +302,7 @@ case 'tree_content':
 
 	if (!is_view_allowed('show_tree')) {
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . '</font>';
+
 		exit;
 	}
 
@@ -310,7 +323,7 @@ case 'tree_content':
 	<script type='text/javascript'>
 	var refreshIsLogout = false;
 	var refreshPage     = '<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
-	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+	var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
 	var graph_start     = <?php print get_current_graph_start();?>;
 	var graph_end       = <?php print get_current_graph_end();?>;
 	var timeOffset      = <?php print date('Z');?>
@@ -328,11 +341,11 @@ case 'tree_content':
 	</script>
 	<?php
 
-	$access_denied = false;
+	$access_denied   = false;
 	$tree_parameters = array();
-	$tree_id = 0;
-	$node_id = 0;
-	$hgdata  = 0;
+	$tree_id         = 0;
+	$node_id         = 0;
+	$hgdata          = 0;
 
 	if (isset_request_var('node')) {
 		$parts = explode('-', sanitize_search_string(get_request_var('node')));
@@ -358,6 +371,7 @@ case 'tree_content':
 	if ($tree_id > 0) {
 		if (!is_tree_allowed($tree_id)) {
 			header('Location: permission_denied.php');
+
 			exit;
 		}
 
@@ -369,13 +383,15 @@ case 'tree_content':
 	break;
 case 'preview':
 	if (!is_view_allowed('show_preview')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW') . "</font>";
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW') . '</font>';
 		bottom_footer();
+
 		exit;
 	}
 
 	if (isset_request_var('external_id')) {
 		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE external_id = ?', array(get_nfilter_request_var('external_id')));
+
 		if (!empty($host_id)) {
 			set_request_var('host_id', $host_id);
 			set_request_var('reset',true);
@@ -392,18 +408,19 @@ case 'preview':
 	html_graph_preview_filter('graph_view.php', 'preview');
 
 	html_end_box();
-		
+
 	api_plugin_hook_function('graph_tree_page_buttons',
 	  array(
-	     'mode'      => 'preview',
-	     'timespan'  => $_SESSION['sess_current_timespan'],
-	     'starttime' => get_current_graph_start(),
-	     'endtime'   => get_current_graph_end()
+		'mode'      => 'preview',
+		'timespan'  => $_SESSION['sess_current_timespan'],
+		'starttime' => get_current_graph_start(),
+		'endtime'   => get_current_graph_end()
 	  )
 	);
 
 	/* the user select a bunch of graphs of the 'list' view and wants them displayed here */
 	$sql_or = '';
+
 	if (isset_request_var('style')) {
 		if (get_request_var('style') == 'selective') {
 			$graph_list = array();
@@ -416,6 +433,7 @@ case 'preview':
 					}
 				}
 			}
+
 			if (!isempty_request_var('graph_add')) {
 				foreach (explode(',', get_request_var('graph_add')) as $item) {
 					if (is_numeric($item)) {
@@ -431,6 +449,7 @@ case 'preview':
 			}
 
 			$i = 0;
+
 			foreach ($graph_list as $item => $value) {
 				$graph_array[$i] = $item;
 				$i++;
@@ -447,6 +466,7 @@ case 'preview':
 
 	/* create filter for sql */
 	$sql_where  = '';
+
 	if (!isempty_request_var('rfilter')) {
 		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	}
@@ -465,10 +485,10 @@ case 'preview':
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 	}
 
-	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
-	$order      = 'gtg.title_cache';
+	$limit  = (get_request_var('graphs') * (get_request_var('page') - 1)) . ',' . get_request_var('graphs');
+	$order  = 'gtg.title_cache';
 
-	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
+	$graphs = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
 
 	$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
@@ -499,6 +519,7 @@ case 'list':
 	if (!is_view_allowed('show_list')) {
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') . '</font>';
 		bottom_footer();
+
 		exit;
 	}
 
@@ -510,39 +531,39 @@ case 'list':
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'graph_add' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'graph_list' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'graph_remove' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			)
 	);
@@ -639,8 +660,10 @@ case 'list':
 							$total_rows = -1;
 
 							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
+
 								foreach ($graph_templates as $gt) {
 									if ($gt['id'] != 0) {
 										$found = db_fetch_cell_prepared('SELECT id
@@ -650,13 +673,14 @@ case 'list':
 
 										if ($found) {
 											print "<option value='" . $gt['id'] . "'";
+
 											if (cacti_sizeof($selected)) {
-												if (in_array($gt['id'], $selected)) {
+												if (in_array($gt['id'], $selected, false)) {
 													print ' selected';
 												}
 											}
 											print '>';
-											print html_escape($gt['name']) . "</option>\n";
+											print html_escape($gt['name']) . '</option>';
 										}
 									}
 								}
@@ -673,7 +697,7 @@ case 'list':
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . $value . '</option>';
 								}
 							}
 							?>
@@ -693,6 +717,7 @@ case 'list':
 
 	/* create filter for sql */
 	$sql_where  = '';
+
 	if (!isempty_request_var('rfilter')) {
 		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	}
@@ -710,7 +735,7 @@ case 'list':
 	}
 
 	$total_rows = 0;
-	$limit      = ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$limit      = ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', $limit, $total_rows);
 
@@ -751,14 +776,15 @@ case 'list':
 	html_header_checkbox($display_text, false);
 
 	$i = 0;
+
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_details = get_graph_template_details($graph['local_graph_id']);
 
-			if($graph['graph_source'] == '0') { //Not Templated, customize graph source and template details.
+			if ($graph['graph_source'] == '0') { //Not Templated, customize graph source and template details.
 				$template_details = api_plugin_hook_function('customize_template_details', $template_details);
-				$graph = api_plugin_hook_function('customize_graph', $graph);
+				$graph            = api_plugin_hook_function('customize_graph', $graph);
 			}
 
 			if (isset($template_details['graph_name'])) {
@@ -797,21 +823,24 @@ case 'list':
 
 		$report_text .= '<tr><td>' . __('Report Name') . '</td>';
 		$report_text .= '<td><select id="report_id">';
-		foreach($reports as $report) {
+
+		foreach ($reports as $report) {
 			$report_text .= '<option value="' . $report['id'] . '">' . html_escape($report['name']) . '</option>';
 		}
 		$report_text .= '</select></td></tr>';
 
 		$report_text .= '<tr><td>' . __('Timespan') . '</td>';
 		$report_text .= '<td><select id="timespan">';
-		foreach($graph_timespans as $key => $value) {
+
+		foreach ($graph_timespans as $key => $value) {
 			$report_text .= '<option value="' . $key . '"' . ($key == read_user_setting('default_timespan') ? ' selected':'') . '>' . $value . '</option>';
 		}
 		$report_text .= '</select></td></tr>';
 
 		$report_text .= '<tr><td>' . __('Align') . '</td>';
 		$report_text .= '<td><select id="align">';
-		foreach($alignment as $key => $value) {
+
+		foreach ($alignment as $key => $value) {
 			$report_text .= '<option value="' . $key . '"' . ($key == REPORTS_ALIGN_CENTER ? ' selected':'') . '>' . $value . '</option>';
 		}
 		$report_text .= '</select></td></tr>';
@@ -1002,4 +1031,3 @@ case 'list':
 
 	break;
 }
-

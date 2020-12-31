@@ -40,74 +40,95 @@ switch (get_request_var('action')) {
 		ini_set('max_execution_time', '0');
 		repopulate_poller_cache();
 		ini_set('max_execution_time', $max_execution);
-		header('Location: utilities.php?action=view_poller_cache');exit;
+		header('Location: utilities.php?action=view_poller_cache');
+
+		exit;
+
 		break;
 	case 'rebuild_resource_cache':
 		rebuild_resource_cache();
 		header('Location: utilities.php');
+
 		exit;
+
 		break;
 	case 'view_snmp_cache':
 		top_header();
 		utilities_view_snmp_cache();
 		bottom_footer();
+
 		break;
 	case 'view_poller_cache':
 		top_header();
 		utilities_view_poller_cache();
 		bottom_footer();
+
 		break;
 	case 'view_logfile':
 		utilities_view_logfile();
+
 		break;
 	case 'clear_logfile':
 		utilities_clear_logfile();
 		utilities_view_logfile();
+
 		break;
 	case 'purge_logfile':
 		clog_purge_logfile();
 		utilities_view_logfile();
+
 		break;
 	case 'view_cleaner':
 		top_header();
 		utilities_view_cleaner();
 		bottom_footer();
+
 		break;
 	case 'view_user_log':
 		top_header();
 		utilities_view_user_log();
 		bottom_footer();
+
 		break;
 	case 'clear_user_log':
 		utilities_clear_user_log();
 		utilities_view_user_log();
+
 		break;
 	case 'view_tech':
 		header('Location: support.php?action=view_tech&tab=' . get_nfilter_request_var('tab'));
+
 		exit();
 	case 'view_boost_status':
 		top_header();
 		boost_display_run_status();
 		bottom_footer();
+
 		break;
 	case 'view_snmpagent_cache':
 		top_header();
 		snmpagent_utilities_run_cache();
 		bottom_footer();
+
 		break;
-	case 'purge_data_source_statistics';
+	case 'purge_data_source_statistics':
 		purge_data_source_statistics();
 		raise_message('purge_dss', __('Data Source Statistics Purged.'), MESSAGE_LEVEL_INFO);
 		header('Location: utilities.php');
+
 		break;
-	case 'rebuild_snmpagent_cache';
+	case 'rebuild_snmpagent_cache':
 		snmpagent_cache_rebuilt();
-		header('Location: utilities.php?action=view_snmpagent_cache');exit;
+		header('Location: utilities.php?action=view_snmpagent_cache');
+
+		exit;
+
 		break;
 	case 'view_snmpagent_events':
 		top_header();
 		snmpagent_utilities_run_eventlog();
 		bottom_footer();
+
 		break;
 	case 'ajax_hosts':
 		get_allowed_ajax_hosts();
@@ -117,19 +138,23 @@ switch (get_request_var('action')) {
 		get_allowed_ajax_hosts(false);
 
 		break;
+
 	default:
 		if (!api_plugin_hook_function('utilities_action', get_request_var('action'))) {
 			top_header();
 			utilities();
 			bottom_footer();
 		}
+
 		break;
 }
 
-/* -----------------------
-    Utilities Functions
-   ----------------------- */
-
+/**
+ * rebuild_resource_cache
+ *
+ * Insert description here
+ *
+ */
 function rebuild_resource_cache() {
 	db_execute('DELETE FROM settings WHERE name LIKE "md5dirsum%"');
 	db_execute('TRUNCATE TABLE poller_resource_cache');
@@ -139,42 +164,48 @@ function rebuild_resource_cache() {
 	cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 }
 
+/**
+ * utilities_view_user_log
+ *
+ * Insert description here
+ *
+ */
 function utilities_view_user_log() {
 	global $auth_realms, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'time',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'DESC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'username' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'result' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -251,7 +282,7 @@ function utilities_view_user_log() {
 
 							if (cacti_sizeof($users)) {
 								foreach ($users as $user) {
-									print "<option value='" . $user['username'] . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . $user['username'] . '</option>';
+									print "<option value='" . html_escape($user['username']) . "'" . (get_request_var('username') == $user['username'] ? ' selected' : '') . '>' . html_escape($user['username']) . '</option>';
 								}
 							}
 							?>
@@ -278,7 +309,7 @@ function utilities_view_user_log() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -328,10 +359,10 @@ function utilities_view_user_log() {
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
-			ul.username LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ul.time LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
+			ul.username LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ul.time LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR ua.full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ul.ip LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR ul.ip LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$total_rows = db_fetch_cell("SELECT
@@ -348,7 +379,7 @@ function utilities_view_user_log() {
 		ON ua.username=ul.username
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$user_log = db_fetch_assoc($user_log_sql);
 
@@ -370,6 +401,7 @@ function utilities_view_user_log() {
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_user_log');
 
 	$i = 0;
+
 	if (cacti_sizeof($user_log)) {
 		foreach ($user_log as $item) {
 			form_alternate_row('line' . $i, true);
@@ -416,6 +448,12 @@ function utilities_view_user_log() {
 	}
 }
 
+/**
+ * utilities_clear_user_log
+ *
+ * Insert description here
+ *
+ */
 function utilities_clear_user_log() {
 	$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth');
 
@@ -468,6 +506,12 @@ function utilities_clear_user_log() {
 	}
 }
 
+/**
+ * utilities_view_logfile
+ *
+ * Insert description here
+ *
+ */
 function utilities_view_logfile() {
 	global $log_tail_lines, $page_refresh_interval, $config;
 
@@ -488,6 +532,7 @@ function utilities_view_logfile() {
 	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
 		raise_message('clog_invalid');
 		header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
+
 		exit(0);
 	} else {
 		$logfile = $logpath . '/' . $logfile;
@@ -496,7 +541,7 @@ function utilities_view_logfile() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'tail_lines' => array(
@@ -631,8 +676,8 @@ function utilities_view_logfile() {
 					<td>
 						<select id='tail_lines' onChange='applyFilter()'>
 							<?php
-							foreach($log_tail_lines AS $tail_lines => $display_text) {
-								print "<option value='" . $tail_lines . "'"; if (get_request_var('tail_lines') == $tail_lines) { print ' selected'; } print '>' . $display_text . '</option>';
+							foreach ($log_tail_lines as $tail_lines => $display_text) {
+								print "<option value='" . $tail_lines . "'" . (get_request_var('tail_lines') == $tail_lines ? ' selected' : '') . '>' . $display_text . '</option>';
 							}
 							?>
 						</select>
@@ -676,8 +721,8 @@ function utilities_view_logfile() {
 					<td>
 						<select id='refresh' onChange='applyFilter()'>
 							<?php
-							foreach($page_refresh_interval AS $seconds => $display_text) {
-								print "<option value='" . $seconds . "'"; if (get_request_var('refresh') == $seconds) { print ' selected'; } print '>' . $display_text . '</option>';
+							foreach ($page_refresh_interval as $seconds => $display_text) {
+								print "<option value='" . $seconds . "'" . (get_request_var('refresh') == $seconds ? ' selected' : '') . '>' . $display_text . '</option>';
 							}
 							?>
 						</select>
@@ -727,11 +772,12 @@ function utilities_view_logfile() {
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
-	echo $nav;
+	print $nav;
 
 	html_start_box($start_string, '100%', '', '3', 'center', '');
 
 	$linecolor = false;
+
 	foreach ($logcontents as $item) {
 		$host_start = strpos($item, 'Device[');
 		$ds_start   = strpos($item, 'DS[');
@@ -740,15 +786,17 @@ function utilities_view_logfile() {
 			$new_item = html_escape($item);
 		} else {
 			$new_item = '';
+
 			while ($host_start) {
 				$host_end   = strpos($item, ']', $host_start);
 				$host_id    = substr($item, $host_start + 7, $host_end - ($host_start + 7));
-				$new_item  .= html_escape(substr($item, 0, $host_start + 7)) . "<a href='" . html_escape('host.php?action=edit&id=' . $host_id) . "'>" . html_escape(substr($item, $host_start + 7, $host_end - ($host_start + 7))) . '</a>';
+				$new_item .= html_escape(substr($item, 0, $host_start + 7)) . "<a href='" . html_escape('host.php?action=edit&id=' . $host_id) . "'>" . html_escape(substr($item, $host_start + 7, $host_end - ($host_start + 7))) . '</a>';
 				$item       = substr($item, $host_end);
 				$host_start = strpos($item, 'Device[');
 			}
 
 			$ds_start = strpos($item, 'DS[');
+
 			while ($ds_start) {
 				$ds_end    = strpos($item, ']', $ds_start);
 				$ds_id     = substr($item, $ds_start + 3, $ds_end - ($ds_start + 3));
@@ -780,18 +828,24 @@ function utilities_view_logfile() {
 			$linecolor = !$linecolor;
 		}
 
-		print "<tr class='" . $class . "'><td>" . $new_item . "</td></tr>";
+		print "<tr class='" . $class . "'><td>" . $new_item . '</td></tr>';
 	}
 
 	html_end_box();
 
 	if ($total_rows) {
-		echo $nav;
+		print $nav;
 	}
 
 	bottom_footer();
 }
 
+/**
+ * utilities_clear_logfile
+ *
+ * Insert description here
+ *
+ */
 function utilities_clear_logfile() {
 	load_current_session_value('refresh', 'sess_logfile_refresh', read_config_option('log_refresh_interval'));
 
@@ -810,6 +864,7 @@ function utilities_clear_logfile() {
 	}
 
 	html_start_box(__('Clear Cacti Log'), '100%', '', '3', 'center', '');
+
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
 			/* fill in the current date for printing in the log */
@@ -824,49 +879,55 @@ function utilities_clear_logfile() {
 			fclose($log_fh);
 			print '<tr><td>' . __('Cacti Log Cleared') . '</td></tr>';
 		} else {
-			print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, no write permissions.') . "<b></td></tr>";
+			print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, no write permissions.') . '<b></td></tr>';
 		}
 	} else {
-		print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, file does not exist.'). "</b></td></tr>";
+		print "<tr><td class='deviceDown'><b>" . __('Error: Unable to clear log, file does not exist.'). '</b></td></tr>';
 	}
 	html_end_box();
 }
 
+/**
+ * utilities_view_snmp_cache
+ *
+ * Insert description here
+ *
+ */
 function utilities_view_snmp_cache() {
 	global $poller_actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'with_index' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '0'
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'snmp_query_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'poller_action' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -951,18 +1012,18 @@ function utilities_view_snmp_cache() {
 									ON hsc.host_id=h.id
 									ORDER by sq.name');
 							} else {
-								$snmp_queries = db_fetch_assoc_prepared("SELECT DISTINCT sq.id, sq.name
+								$snmp_queries = db_fetch_assoc_prepared('SELECT DISTINCT sq.id, sq.name
 									FROM host_snmp_cache AS hsc
 									INNER JOIN snmp_query AS sq
 									ON hsc.snmp_query_id=sq.id
 									INNER JOIN host AS h
 									ON hsc.host_id=h.id
-									ORDER by sq.name", array(get_request_var('host_id')));
+									ORDER by sq.name', array(get_request_var('host_id')));
 							}
 
 							if (cacti_sizeof($snmp_queries)) {
 								foreach ($snmp_queries as $snmp_query) {
-									print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . html_escape($snmp_query['name']) . '</option>';
+									print "<option value='" . $snmp_query['id'] . "'" . (get_request_var('snmp_query_id') == $snmp_query['id'] ? ' selected' : '') . '>' . html_escape($snmp_query['name']) . '</option>';
 								}
 							}
 							?>
@@ -993,7 +1054,7 @@ function utilities_view_snmp_cache() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1034,11 +1095,11 @@ function utilities_view_snmp_cache() {
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			h.description LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR sq.name LIKE '         . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR hsc.field_name LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
+			h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR sq.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR hsc.field_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR hsc.field_value LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR hsc.oid LIKE '         . db_qstr('%' . get_request_var('filter') . '%');
+			OR hsc.oid LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 
 		if (get_request_var('with_index') == 1) {
 			$sql_where .= ' OR hsc.snmp_index LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
@@ -1066,7 +1127,7 @@ function utilities_view_snmp_cache() {
 		WHERE hsc.host_id = h.id
 		AND hsc.snmp_query_id = sq.id
 		$sql_where
-		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		LIMIT " . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
@@ -1079,6 +1140,7 @@ function utilities_view_snmp_cache() {
 	html_header(array(__('Device'), __('Data Query Name'), __('Index'), __('Field Name'), __('Field Value'), __('OID')));
 
 	$i = 0;
+
 	if (cacti_sizeof($snmp_cache)) {
 	foreach ($snmp_cache as $item) {
 		form_alternate_row();
@@ -1113,48 +1175,54 @@ function utilities_view_snmp_cache() {
 	}
 }
 
+/**
+ * utilities_view_poller_cache
+ *
+ * Insert description here
+ *
+ */
 function utilities_view_poller_cache() {
 	global $poller_actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'dtd.name_cache',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'template_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'poller_action' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -1242,7 +1310,7 @@ function utilities_view_poller_cache() {
 
 							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . '</option>';
+									print "<option value='" . $template['id'] . "'" . (get_request_var('template_id') == $template['id'] ? ' selected' : '') . '>' . title_trim(html_escape($template['name']), 40) . '</option>';
 								}
 							}
 							?>
@@ -1284,7 +1352,7 @@ function utilities_view_poller_cache() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1325,11 +1393,11 @@ function utilities_view_poller_cache() {
 
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
+			dtd.name_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR pi.arg1 LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR pi.hostname LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR pi.arg1 LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR pi.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR pi.rrd_path  LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -1352,7 +1420,7 @@ function utilities_view_poller_cache() {
 		ON pi.host_id = h.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . ', action ASC
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$poller_cache = db_fetch_assoc($poller_sql);
 
@@ -1364,12 +1432,13 @@ function utilities_view_poller_cache() {
 
 	$display_text = array(
 		'dtd.name_cache' => array(__('Data Source Name'), 'ASC'),
-		'h.description' => array(__('Device Description'), 'ASC'),
-		'nosort' => array(__('Details'), 'ASC'));
+		'h.description'  => array(__('Device Description'), 'ASC'),
+		'nosort'         => array(__('Details'), 'ASC'));
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
 
 	$i = 0;
+
 	if (cacti_sizeof($poller_cache)) {
 		foreach ($poller_cache as $item) {
 			if ($i % 2 == 0) {
@@ -1431,60 +1500,66 @@ function utilities_view_poller_cache() {
 	}
 }
 
+/**
+ * utilities
+ *
+ * Insert description here
+ *
+ */
 function utilities() {
 	global $utilities;
 
 	$utilities[__('Technical Support')] = array(
 		__('Technical Support') => array(
-			'link'  => 'utilities.php?action=view_tech',
+			'link'        => 'utilities.php?action=view_tech',
 			'description' => __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.')
 		),
 		__('Log Administration') => array(
-			'link'  => 'utilities.php?action=view_logfile',
+			'link'        => 'utilities.php?action=view_logfile',
 			'description' => __('The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.')
 		),
 		__('View User Log') => array(
-			'link'  => 'utilities.php?action=view_user_log',
+			'link'        => 'utilities.php?action=view_user_log',
 			'description' => __('Allows Administrators to browse the user log.  Administrators can filter and export the log as well.')
 		)
 	);
 
 	$utilities[__('Poller Cache Administration')] = array(
 		__('View Poller Cache') => array(
-			'link'  => 'utilities.php?action=view_poller_cache',
+			'link'        => 'utilities.php?action=view_poller_cache',
 			'description' => __('This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display.')
 		),
 		__('View Data Query Cache') => array(
-			'link'  => 'utilities.php?action=view_snmp_cache',
+			'link'        => 'utilities.php?action=view_snmp_cache',
 			'description' => __('The Data Query Cache stores information gathered from Data Query input types. The values from these fields can be used in the text area of Graphs for Legends, Vertical Labels, and GPRINTS as well as in CDEF\'s.')
 		),
 		__('Rebuild Poller Cache') => array(
-			'link'  => 'utilities.php?action=clear_poller_cache',
+			'link'        => 'utilities.php?action=clear_poller_cache',
 			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class="deviceDown">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run \'php -q cli/rebuild_poller_cache.php --help\' at the command line for more information.</i>')
 		),
 		__('Rebuild Resource Cache') => array(
-			'link'  => 'utilities.php?action=rebuild_resource_cache',
+			'link'        => 'utilities.php?action=rebuild_resource_cache',
 			'description' => __('When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency.')
 		),
 	);
 
 	$utilities[__('Boost Utilities')] = array(
 		__('View Boost Status') => array(
-			'link'  => 'utilities.php?action=view_boost_status',
+			'link'        => 'utilities.php?action=view_boost_status',
 			'description' => __('This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.')
 		),
 	);
 
 	$utilities[__('Data Source Statistics Utilities')] = array(
 		__('Purge Data Source Statistics') => array(
-			'link'  => 'utilities.php?action=purge_data_source_statistics',
+			'link'        => 'utilities.php?action=purge_data_source_statistics',
 			'description' => __('This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass.')
 		),
 	);
 
 	$utilities[__('RRD Utilities')] = array(
 		__('RRDfile Cleaner') => array(
-			'link'  => 'rrdcleaner.php',
+			'link'        => 'rrdcleaner.php',
 			'description' => __('When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.')
 		),
 	);
@@ -1492,19 +1567,19 @@ function utilities() {
 	if (snmpagent_enabled()) {
 		$utilities[__('SNMP Agent Utilities')] = array(
 			__('View SNMP Agent Cache') => array(
-				'link'  => 'utilities.php?action=view_snmpagent_cache',
+				'link'        => 'utilities.php?action=view_snmpagent_cache',
 				'description' => __('This shows all objects being handled by the SNMP Agent.')
 			),
 			__('Rebuild SNMP Agent Cache') => array(
-				'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
+				'link'        => 'utilities.php?action=rebuild_snmpagent_cache',
 				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
 			),
 			__('View SNMP Agent Notification Log') => array(
-				'link'  => 'utilities.php?action=view_snmpagent_events',
+				'link'        => 'utilities.php?action=view_snmpagent_events',
 				'description' => __('This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers.')
 			),
 			__('SNMP Notification Receivers') => array(
-				'link'  => 'managers.php',
+				'link'        => 'managers.php',
 				'description' => __('Allows Administrators to maintain SNMP notification receivers.')
 			),
 		);
@@ -1514,9 +1589,10 @@ function utilities() {
 
 	html_start_box(__('Cacti System Utilities'), '100%', '', '3', 'center', '');
 
-	foreach($utilities as $header => $content) {
+	foreach ($utilities as $header => $content) {
 		html_section_header($header, 2);
-		foreach($content as $title => $details) {
+
+		foreach ($content as $title => $details) {
 			form_alternate_row();
 			print "<td class='nowrap' style='vertical-align:top;'>";
 			print "<a class='hyperLink' href='" . html_escape($details['link']) . "'>" . $title . '</a>';
@@ -1533,6 +1609,12 @@ function utilities() {
 	html_end_box();
 }
 
+/**
+ * purge_data_source_statistics
+ *
+ * Insert description here
+ *
+ */
 function purge_data_source_statistics() {
 	$tables = array(
 		'data_source_stats_daily',
@@ -1544,11 +1626,17 @@ function purge_data_source_statistics() {
 		'data_source_stats_yearly'
 	);
 
-	foreach($tables as $table) {
+	foreach ($tables as $table) {
 		db_execute('TRUNCATE TABLE ' . $table);
 	}
 }
 
+/**
+ * boost_display_run_status
+ *
+ * Insert description here
+ *
+ */
 function boost_display_run_status() {
 	global $config, $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
 
@@ -1598,7 +1686,7 @@ function boost_display_run_status() {
 						<select id='refresh' name='refresh' onChange='applyFilter()'>
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
-							print '<option value="' . $key . '"'; if (get_request_var('refresh') == $key) { print ' selected'; } print '>' . $interval . '</option>';
+							print '<option value="' . $key . '"' . (get_request_var('refresh') == $key ? ' selected' : '') . '>' . $interval . '</option>';
 						}
 						?>
 					</td>
@@ -1628,7 +1716,7 @@ function boost_display_run_status() {
 	$engine          = '';
 	$max_data_length = 0;
 
-	foreach($boost_table_status as $table) {
+	foreach ($boost_table_status as $table) {
 		if ($table['TABLE_NAME'] == 'poller_output_boost') {
 			$pending_records += $table['TABLE_ROWS'];
 		} else {
@@ -1647,33 +1735,41 @@ function boost_display_run_status() {
 	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
 
 	$boost_status = read_config_option('boost_poller_status', true);
+
 	if ($boost_status != '') {
 		$boost_status_array = explode(':', $boost_status);
 
 		$boost_status_date  = $boost_status_array[1];
 
-		if (substr_count($boost_status_array[0], 'complete'))    $boost_status_text = __('Idle');
-		elseif (substr_count($boost_status_array[0], 'running')) $boost_status_text = __('Running');
-		elseif (substr_count($boost_status_array[0], 'overrun')) $boost_status_text = __('Overrun Warning');
-		elseif (substr_count($boost_status_array[0], 'timeout')) $boost_status_text = __('Timed Out');
-		else   $boost_status_text = __('Other');
+		if (substr_count($boost_status_array[0], 'complete')) {
+			$boost_status_text = __('Idle');
+		} elseif (substr_count($boost_status_array[0], 'running')) {
+			$boost_status_text = __('Running');
+		} elseif (substr_count($boost_status_array[0], 'overrun')) {
+			$boost_status_text = __('Overrun Warning');
+		} elseif (substr_count($boost_status_array[0], 'timeout')) {
+			$boost_status_text = __('Timed Out');
+		} else {
+			$boost_status_text = __('Other');
+		}
 	} else {
 		$boost_status_text = __('Never Run');
 		$boost_status_date = '';
 	}
 
 	$stats_boost = read_config_option('stats_boost', true);
+
 	if ($stats_boost != '') {
 		$stats_boost_array = explode(' ', $stats_boost);
 
-		$stats_duration = explode(':', $stats_boost_array[0]);
+		$stats_duration          = explode(':', $stats_boost_array[0]);
 		$boost_last_run_duration = $stats_duration[1];
 
-		$stats_rrds = explode(':', $stats_boost_array[1]);
+		$stats_rrds         = explode(':', $stats_boost_array[1]);
 		$boost_rrds_updated = $stats_rrds[1];
 	} else {
 		$boost_last_run_duration = '';
-		$boost_rrds_updated = '';
+		$boost_rrds_updated      = '';
 	}
 
 	/* get cache directory size/contents */
@@ -1698,7 +1794,7 @@ function boost_display_run_status() {
 				chdir($cache_directory);
 
 				/* check and fry as applicable */
-				foreach($directory_contents as $file) {
+				foreach ($directory_contents as $file) {
 					/* only remove jpeg's and png's */
 					if ((substr_count(strtolower($file), '.png')) ||
 						(substr_count(strtolower($file), '.jpg'))) {
@@ -1758,9 +1854,11 @@ function boost_display_run_status() {
 
 	/* tell the user about the average size/record */
 	$output_length = read_config_option('boost_max_output_length');
+
 	if ($output_length != '') {
 		$parts = explode(':', $output_length);
-		if ((time()-1200) > $parts[0]) {
+
+		if ((time() - 1200) > $parts[0]) {
 			$ref = true;
 		} else {
 			$ref = false;
@@ -1787,12 +1885,13 @@ function boost_display_run_status() {
 
 	/* tell the user about the "Maximum Size" this table can be */
 	form_alternate_row();
+
 	if (strcmp($engine, 'MEMORY')) {
 		$max_table_allowed = __('Unlimited');
 		$max_table_records = __('Unlimited');
 	} else {
 		$max_table_allowed = boost_file_size_display($max_data_length, 2);
-		$max_table_records = number_format_i18n(($avg_row_length ? $max_data_length/$avg_row_length : 0), 3, 1000);
+		$max_table_records = number_format_i18n(($avg_row_length ? $max_data_length / $avg_row_length : 0), 3, 1000);
 	}
 	print '<td>' . __('Max Allowed Boost Table Size:') . '</td><td>' . $max_table_allowed . '</td>';
 
@@ -1810,8 +1909,9 @@ function boost_display_run_status() {
 	print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
 
 	if (is_numeric($boost_last_run_duration)) {
-		print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) : '' ) . __('%d seconds', $boost_last_run_duration%60);
-		if ($rrd_updates != ''){ print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));}
+		print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration / 60)) : '') . __('%d seconds', $boost_last_run_duration % 60);
+
+		if ($rrd_updates != ''){ print ' (' . __('%0.2f percent of update frequency)', round(100 * $boost_last_run_duration / $update_interval / 60));}
 	} else {
 		print __('N/A');
 	}
@@ -1821,7 +1921,7 @@ function boost_display_run_status() {
 	print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . ($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated, -1):'-') . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '' && is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
+	print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '' && is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory') / 1024 / 1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Detailed Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
@@ -1863,11 +1963,10 @@ function boost_display_run_status() {
 }
 
 /**
- *
- *
  * snmpagent_utilities_run_cache()
  *
  * @param mixed
+ *
  * @return
  */
 function snmpagent_utilities_run_cache() {
@@ -1876,13 +1975,15 @@ function snmpagent_utilities_run_cache() {
 	get_filter_request_var('mib', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
 	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
+
 	$registered_mibs = array();
-	if($mibs && $mibs >0) {
-		foreach($mibs as $mib) { $registered_mibs[] = $mib['mib']; }
+
+	if ($mibs && $mibs > 0) {
+		foreach ($mibs as $mib) { $registered_mibs[] = $mib['mib']; }
 	}
 
 	/* ================= input validation ================= */
-	if(!in_array(get_request_var('mib'), $registered_mibs) && get_request_var('mib') != '-1' && get_request_var('mib') != '') {
+	if (!in_array(get_request_var('mib'), $registered_mibs, true) && get_request_var('mib') != '-1' && get_request_var('mib') != '') {
 		die_html_input_error('mib');
 	}
 	/* ==================================================== */
@@ -1890,21 +1991,21 @@ function snmpagent_utilities_run_cache() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'mib' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			)
@@ -1972,9 +2073,9 @@ function snmpagent_utilities_run_cache() {
 							<select id='mib' onChange='applyFilter()'>
 								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
-								if (cacti_sizeof($mibs) > 0) {
+								if (cacti_sizeof($mibs)) {
 									foreach ($mibs as $mib) {
-										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . html_escape($mib['mib']) . '</option>';
+										print "<option value='" . $mib['mib'] . "'" . (get_request_var('mib') == $mib['mib'] ? ' selected' : '') . '>' . html_escape($mib['mib']) . '</option>';
 									}
 								}
 								?>
@@ -1989,7 +2090,7 @@ function snmpagent_utilities_run_cache() {
 								<?php
 								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
@@ -2022,17 +2123,23 @@ function snmpagent_utilities_run_cache() {
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			`oid` LIKE '           . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR `name` LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR `mib` LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . '
+			`oid` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR `name` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR `mib` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR `max-access` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$sql_where .= ' ORDER by `oid`';
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_cache WHERE 1 $sql_where");
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM snmpagent_cache
+		WHERE 1 $sql_where");
 
-	$snmp_cache_sql = "SELECT * FROM snmpagent_cache WHERE 1 $sql_where LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$snmp_cache_sql = "SELECT *
+		FROM snmpagent_cache
+		WHERE 1 $sql_where
+		LIMIT " . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+
 	$snmp_cache = db_fetch_assoc($snmp_cache_sql);
 
 	/* generate page list */
@@ -2046,7 +2153,6 @@ function snmpagent_utilities_run_cache() {
 
 	if (cacti_sizeof($snmp_cache)) {
 		foreach ($snmp_cache as $item) {
-
 			$oid        = filter_value($item['oid'], get_request_var('filter'));
 			$name       = filter_value($item['name'], get_request_var('filter'));
 			$mib        = filter_value($item['mib'], get_request_var('filter'));
@@ -2054,15 +2160,16 @@ function snmpagent_utilities_run_cache() {
 
 			form_alternate_row('line' . $item['oid'], false);
 			form_selectable_cell($oid, $item['oid']);
-			if($item['description']) {
+
+			if ($item['description']) {
 				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . $name . '</a></td>';
-			}else {
+			} else {
 				print "<td>$name</td>";
 			}
 			form_selectable_cell($mib, $item['oid']);
 			form_selectable_cell($item['kind'], $item['oid']);
 			form_selectable_cell($max_access, $item['oid']);
-			form_selectable_ecell((in_array($item['kind'], array(__('Scalar'), __('Column Data'))) ? $item['value'] : __('N/A')), $item['oid']);
+			form_selectable_ecell((in_array($item['kind'], array(__('Scalar'), __('Column Data')), true) ? $item['value'] : __('N/A')), $item['oid']);
 			form_end_row();
 		}
 	}
@@ -2086,7 +2193,13 @@ function snmpagent_utilities_run_cache() {
 	<?php
 }
 
-function snmpagent_utilities_run_eventlog(){
+/**
+ * snmpagent_utilities_run_eventlog
+ *
+ * Insert description here
+ *
+ */
+function snmpagent_utilities_run_eventlog() {
 	global $item_rows;
 
 	$severity_levels = array(
@@ -2111,7 +2224,7 @@ function snmpagent_utilities_run_eventlog(){
 	/* ================= input validation ================= */
 	get_filter_request_var('receiver');
 
-	if(!in_array(get_request_var('severity'), array_keys($severity_levels)) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
+	if (!in_array(get_request_var('severity'), array_keys($severity_levels), false) && get_request_var('severity') != '-1' && get_request_var('severity') != '') {
 		die_html_input_error('severity');
 	}
 	/* ==================================================== */
@@ -2126,26 +2239,26 @@ function snmpagent_utilities_run_eventlog(){
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'severity' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'receiver' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -2224,7 +2337,7 @@ function snmpagent_utilities_run_eventlog(){
 								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
-									print "<option value='" . $level . "'"; if (get_request_var('severity') == $level) { print ' selected'; } print '>' . html_escape($name) . '</option>';
+									print "<option value='" . $level . "'" . (get_request_var('severity') == $level ? ' selected' : '') . '>' . html_escape($name) . '</option>';
 								}
 								?>
 							</select>
@@ -2237,7 +2350,7 @@ function snmpagent_utilities_run_eventlog(){
 								<option value='-1'<?php if (get_request_var('receiver') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($receivers as $receiver) {
-									print "<option value='" . $receiver['manager_id'] . "'"; if (get_request_var('receiver') == $receiver['manager_id']) { print ' selected'; } print '>' . $receiver['hostname'] . '</option>';
+									print "<option value='" . $receiver['manager_id'] . "'" . (get_request_var('receiver') == $receiver['manager_id'] ? ' selected' : '') . '>' . $receiver['hostname'] . '</option>';
 								}
 								?>
 							</select>
@@ -2251,7 +2364,7 @@ function snmpagent_utilities_run_eventlog(){
 								<?php
 								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected' : '') . '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
@@ -2276,7 +2389,7 @@ function snmpagent_utilities_run_eventlog(){
 	$sql_where = ' 1';
 
 	/* filter by severity */
-	if(get_request_var('receiver') != '-1') {
+	if (get_request_var('receiver') != '-1') {
 		$sql_where .= " AND snl.manager_id='" . get_request_var('receiver') . "'";
 	}
 
@@ -2301,7 +2414,7 @@ function snmpagent_utilities_run_eventlog(){
 		LEFT JOIN snmpagent_cache AS sc
 		ON sc.name = snl.notification
 		WHERE $sql_where
-		LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		LIMIT " . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM snmpagent_notifications_log AS snl
@@ -2328,9 +2441,9 @@ function snmpagent_utilities_run_eventlog(){
 			print "<td class='nowrap'>" . date('Y-m-d H:i:s', $item['time']) . '</td>';
 			print '<td>' . html_escape($item['hostname']) . '</td>';
 
-			if($item['description']) {
+			if ($item['description']) {
 				print '<td><a href="#" title="<div class=\'header\'>' . html_escape($item['notification']) . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . html_escape($item['notification']) . '</a></td>';
-			}else {
+			} else {
 				print '<td>' . html_escape($item['notification']) . '</td>';
 			}
 

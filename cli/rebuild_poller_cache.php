@@ -31,15 +31,15 @@ require_once($config['base_path'] . '/lib/utility.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug = false;
+$debug   = false;
 $host_id = 0;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -47,12 +47,14 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--host-id':
 				$host_id = trim($value);
 
 				if (!is_numeric($host_id)) {
 					print "ERROR: You must supply a valid device id to run this script!\n";
+
 					exit(1);
 				}
 
@@ -61,15 +63,19 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -90,7 +96,7 @@ if ($host_id > 0) {
 
 /* initialize some variables */
 $current_ds = 1;
-$total_ds = cacti_sizeof($poller_data);
+$total_ds   = cacti_sizeof($poller_data);
 
 /* setting local_data_ids to an empty array saves time during updates */
 $local_data_ids = array();
@@ -105,7 +111,7 @@ if (cacti_sizeof($poller_data)) {
 	foreach ($poller_data as $data) {
 		if (!$debug) print '.';
 		$local_data_ids[] = $data['id'];
-		$poller_items = array_merge($poller_items, update_poller_cache($data));
+		$poller_items     = array_merge($poller_items, update_poller_cache($data));
 
 		debug("Data Source Item '$current_ds' of '$total_ds' updated");
 		$current_ds++;
@@ -115,19 +121,24 @@ if (cacti_sizeof($poller_data)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
 }
+
 if (!$debug) print "\n";
 
 /* poller cache rebuilt, restore runtime parameters */
 ini_set('max_execution_time', $max_execution);
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Rebuild Poller Cache Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
-function display_help () {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help() {
 	display_version();
 
 	print "\nusage: rebuild_poller_cache.php [--host-id=ID] [--debug]\n\n";
@@ -138,10 +149,13 @@ function display_help () {
 	print "    --debug      - Display verbose output during execution\n\n";
 }
 
+/**
+ * debug - simple function to send debug message to stdout
+ */
 function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print 'DEBUG: ' . trim($message) . "\n";
+		print "DEBUG: $message" . PHP_EOL;
 	}
 }

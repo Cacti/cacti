@@ -43,18 +43,18 @@ ini_set('max_execution_time', '0');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		= false;
-$host_id	= '';
-$query_id	= 'all';		/* just to mimic the old behaviour */
-$host_descr	= '';
+$debug      = false;
+$host_id    = '';
+$query_id   = 'all'; /* just to mimic the old behaviour */
+$host_descr = '';
 $force      = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -62,63 +62,75 @@ if (cacti_sizeof($parms)) {
 			case '-id':
 			case '--id':
 				$host_id = $value;
+
 				break;
 			case '-qid':
 			case '--qid':
 				$query_id = $value;
+
 				break;
 			case '--force':
 				$force = true;
+
 				break;
 			case '-host-descr':
 			case '--host-descr':
 				$host_descr = $value;
+
 				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
 } else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
+
 	exit(1);
 }
 
 /* determine the hosts to reindex */
 if (strtolower($host_id) == 'all') {
 	$sql_where = '';
-}else if (is_numeric($host_id) && $host_id > 0) {
+} elseif (is_numeric($host_id) && $host_id > 0) {
 	$sql_where = 'WHERE host_id = ' . $host_id;
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
 /* determine data queries to rerun */
 if (strtolower($query_id) == 'all') {
 	/* do nothing */
-}else if (is_numeric($query_id) && $query_id > 0) {
+} elseif (is_numeric($query_id) && $query_id > 0) {
 	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' snmp_query_id=' . $query_id;
 } else {
 	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
@@ -138,23 +150,34 @@ print "WARNING: Do not interrupt this script.  Reindexing can take quite some ti
 debug("There are '" . cacti_sizeof($data_queries) . "' data queries to run");
 
 $i = 1;
+
 if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
-		if (!$debug) print '.';
+		if (!$debug) {
+			print '.';
+		}
+
 		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' starting");
 		run_data_query($data_query['host_id'], $data_query['snmp_query_id'], false, $force);
+
 		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' ending");
+
 		$i++;
 	}
 }
 
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*	display_help - displays the usage of the function */
-function display_help () {
+/**
+ * display_help - displays Cacti CLI help information
+ */
+function display_help() {
 	display_version();
 	print "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]\n";
 	print "   [--host-descr=[description]] [--debug]\n\n";
@@ -165,10 +188,13 @@ function display_help () {
 	print "--debug                  - Display verbose output during execution\n";
 }
 
+/**
+ * debug - simple function to send debug message to stdout
+ */
 function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print('DEBUG: ' . $message . "\n");
+		print "DEBUG: $message" . PHP_EOL;
 	}
 }

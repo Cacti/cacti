@@ -43,9 +43,9 @@ array_shift($parms);
 
 if (cacti_sizeof($parms)) {
 	/* setup defaults */
-	$graph_type    = '';
-	$templateGraph = array();
-	$dsGraph       = array();
+	$graph_type                  = '';
+	$templateGraph               = array();
+	$dsGraph                     = array();
 	$dsGraph['snmpFieldSpec']    = '';
 	$dsGraph['snmpQueryId']      = '';
 	$dsGraph['snmpQueryType']    = '';
@@ -62,23 +62,23 @@ if (cacti_sizeof($parms)) {
 	$hosts          = getHosts();
 	$graphTemplates = getGraphTemplates();
 
-	$graphTitle = '';
+	$graphTitle    = '';
 	$cgInputFields = '';
 
-	$host_id     	= 0;
-	$template_id 	= 0;
+	$host_id        = 0;
+	$template_id    = 0;
 	$hostTemplateId = 0;
-	$force      	= 0;
+	$force          = 0;
 
-	$listHosts       		= false;
-	$listGraphTemplates 	= false;
-	$listSNMPFields  		= false;
-	$listSNMPValues  		= false;
-	$listQueryTypes  		= false;
-	$listSNMPQueries 		= false;
-	$listInputFields 		= false;
+	$listHosts          = false;
+	$listGraphTemplates = false;
+	$listSNMPFields     = false;
+	$listSNMPValues     = false;
+	$listQueryTypes     = false;
+	$listSNMPQueries    = false;
+	$listInputFields    = false;
 
-	$quietMode       = false;
+	$quietMode = false;
 
 	$shortopts = 'VvHh';
 
@@ -114,7 +114,7 @@ if (cacti_sizeof($parms)) {
 
 	$options = getopt($shortopts, $longopts);
 
-	foreach($options as $arg => $value) {
+	foreach ($options as $arg => $value) {
 		$allow_multi = false;
 
 		switch($arg) {
@@ -156,6 +156,7 @@ if (cacti_sizeof($parms)) {
 			}
 
 			$dsGraph['snmpField'] = $value;
+
 			$allow_multi = true;
 
 			break;
@@ -164,14 +165,16 @@ if (cacti_sizeof($parms)) {
 				$value = array($value);
 			}
 
-			foreach($value as $item) {
+			foreach ($value as $item) {
 				if (!validate_is_regex($item)) {
 					print "ERROR: Regex specified '$item', is not a valid Regex!\n";
+
 					exit(1);
 				}
 			}
 
 			$dsGraph['snmpValueRegex'] = $value;
+
 			$allow_multi = true;
 
 			break;
@@ -181,6 +184,7 @@ if (cacti_sizeof($parms)) {
 			}
 
 			$dsGraph['snmpValue'] = $value;
+
 			$allow_multi = true;
 
 			break;
@@ -190,6 +194,7 @@ if (cacti_sizeof($parms)) {
 			}
 
 			$dsGraph['snmpFieldExclude'] = $value;
+
 			$allow_multi = true;
 
 			break;
@@ -198,14 +203,16 @@ if (cacti_sizeof($parms)) {
 				$value = array($value);
 			}
 
-			foreach($value as $item) {
+			foreach ($value as $item) {
 				if (!validate_is_regex($item)) {
 					print "ERROR: Exclude Regex specified '$item', is not a valid Regex!\n";
+
 					exit(1);
 				}
 			}
 
 			$dsGraph['snmpValueExclude'] = $value;
+
 			$allow_multi = true;
 
 			break;
@@ -218,18 +225,24 @@ if (cacti_sizeof($parms)) {
 				switch (strtolower($value)) {
 					case 'none':
 						$dsGraph['reindex_method'] = DATA_QUERY_AUTOINDEX_NONE;
+
 						break;
 					case 'uptime':
 						$dsGraph['reindex_method'] = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
+
 						break;
 					case 'index':
 						$dsGraph['reindex_method'] = DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE;
+
 						break;
 					case 'fields':
 						$dsGraph['reindex_method'] = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;
+
 						break;
+
 					default:
 						print "ERROR: You must supply a valid reindex method for this graph!\n";
+
 						exit(1);
 				}
 			}
@@ -275,20 +288,25 @@ if (cacti_sizeof($parms)) {
 		case 'V':
 		case 'v':
 			display_version();
+
 			exit(0);
 		case 'help':
 		case 'H':
 		case 'h':
 			display_help();
+
 			exit(0);
+
 		default:
 			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
+
 			exit(1);
 		}
 
 		if (!$allow_multi && isset($value) && is_array($value)) {
 			print "ERROR: Multiple values specified for non-multi argument: ($arg)\n\n";
+
 			exit(1);
 		}
 	}
@@ -297,9 +315,11 @@ if (cacti_sizeof($parms)) {
 		/* is a Host Template Id is given, print the related Graph Templates */
 		if ($hostTemplateId > 0) {
 			$graphTemplates = getGraphTemplatesByHostTemplate($hostTemplateId);
+
 			if (!cacti_sizeof($graphTemplates)) {
 				print "ERROR: You must supply a valid --host-template-id before you can list its graph templates\n";
 				print "Try --list-graph-template-id --host-template-id=[ID]\n";
+
 				exit(1);
 			}
 		}
@@ -316,6 +336,7 @@ if (cacti_sizeof($parms)) {
 		} else {
 			print "ERROR: You must supply an graph-template-id before you can list its input fields\n";
 			print "Try --graph-template-id=[ID] --list-input-fields\n";
+
 			exit(1);
 		}
 
@@ -324,6 +345,7 @@ if (cacti_sizeof($parms)) {
 
 	if ($listHosts) {
 		displayHosts($hosts, $quietMode);
+
 		exit(0);
 	}
 
@@ -332,6 +354,7 @@ if (cacti_sizeof($parms)) {
 
 	if ($listSNMPQueries) {
 		displaySNMPQueries($snmpQueries, $quietMode);
+
 		exit(0);
 	}
 
@@ -340,6 +363,7 @@ if (cacti_sizeof($parms)) {
 		if (!isset($snmpQueries[$dsGraph['snmpQueryId']])) {
 			print 'ERROR: Unknown snmp-query-id (' . $dsGraph['snmpQueryId'] . ")\n";
 			print "Try --list-snmp-queries\n";
+
 			exit(1);
 		}
 
@@ -348,6 +372,7 @@ if (cacti_sizeof($parms)) {
 
 		if ($listQueryTypes) {
 			displayQueryTypes($snmp_query_types, $quietMode);
+
 			exit(0);
 		}
 
@@ -355,6 +380,7 @@ if (cacti_sizeof($parms)) {
 			if (!isset($snmp_query_types[$dsGraph['snmpQueryType']])) {
 				print 'ERROR: Unknown snmp-query-type-id (' . $dsGraph['snmpQueryType'] . ")\n";
 				print 'Try --snmp-query-id=' . $dsGraph['snmpQueryId'] . " --list-query-types\n";
+
 				exit(1);
 			}
 		}
@@ -365,7 +391,6 @@ if (cacti_sizeof($parms)) {
 			$listQueryTypes ||
 			$listSNMPQueries ||
 			$listInputFields)) {
-
 			/* if data query is not yet associated,
 			 * add it and run it once to get the cache filled */
 
@@ -398,6 +423,7 @@ if (cacti_sizeof($parms)) {
 	if (!isset($hosts[$host_id]) || $host_id == 0) {
 		print "ERROR: Unknown Host ID ($host_id)\n";
 		print "Try --list-hosts\n";
+
 		exit(1);
 	}
 
@@ -407,6 +433,7 @@ if (cacti_sizeof($parms)) {
 
 		if ($listSNMPFields) {
 			displaySNMPFields($snmpFields, $host_id, $quietMode);
+
 			exit(0);
 		}
 
@@ -414,8 +441,9 @@ if (cacti_sizeof($parms)) {
 
 		/* More sanity checking */
 		/* Testing SnmpValues and snmpFields args */
-		if ($dsGraph['snmpValue'] and $dsGraph['snmpValueRegex'] ) {
+		if ($dsGraph['snmpValue'] && $dsGraph['snmpValueRegex']) {
 			print "ERROR: You can't supply --snmp-value and --snmp-value-regex at the same time\n";
+
 			exit(1);
 		}
 
@@ -428,29 +456,35 @@ if (cacti_sizeof($parms)) {
 		if ($nbSnmpValues) {
 			if ($nbSnmpFields != $nbSnmpValues) {
 				print "ERROR: number of --snmp-field and --snmp-value does not match\n";
+
 				exit(1);
 			}
 		} elseif ($nbSnmpValuesExclude) {
 			if ($nbSnmpFieldsExclude != $nbSnmpValuesExclude) {
 				print "ERROR: number of --snmp-field-exclude and --snmp-value-exclude does not match\n";
+
 				exit(1);
 			}
 		} elseif ($nbSnmpValuesRegex) {
 			if ($nbSnmpFields != $nbSnmpValuesRegex) {
 				print "ERROR: number of --snmp-field ($nbSnmpFields) and --snmp-value-regex ($nbSnmpValuesRegex) does not match\n";
+
 				exit(1);
 			}
 		} elseif (!$listSNMPValues) {
 			print "ERROR: You must supply a --snmp-value or --snmp-value-regex option with --snmp-field\n";
+
 			exit(1);
 		}
 
 		$index_filter = 0;
-		foreach($dsGraph['snmpField'] as $snmpField) {
+
+		foreach ($dsGraph['snmpField'] as $snmpField) {
 			if ($snmpField != '') {
-				if (!isset($snmpFields[$snmpField] )) {
+				if (!isset($snmpFields[$snmpField])) {
 					print 'ERROR: Unknown snmp-field ' . $dsGraph['snmpField'][$index_filter] . " for host $host_id\n";
 					print "Try --list-snmp-fields\n";
+
 					exit(1);
 				}
 			}
@@ -472,6 +506,7 @@ if (cacti_sizeof($parms)) {
 				foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
 					if ($snmpValue == $snmpValueKnown) {
 						$ok = true;
+
 						break;
 					}
 				}
@@ -479,6 +514,7 @@ if (cacti_sizeof($parms)) {
 				if (!$ok) {
 					print "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
 					print "Try --snmp-field=$snmpField --list-snmp-values\n";
+
 					exit(1);
 				}
 			} elseif ($snmpValueRegex) {
@@ -487,6 +523,7 @@ if (cacti_sizeof($parms)) {
 				foreach ($snmpValues as $snmpValueKnown => $snmpValueSet) {
 					if (preg_match("/$snmpValueRegex/i", $snmpValueKnown)) {
 						$ok = true;
+
 						break;
 					}
 				}
@@ -494,6 +531,7 @@ if (cacti_sizeof($parms)) {
 				if (!$ok) {
 					print "ERROR: Unknown snmp-value for field $snmpField - $snmpValue\n";
 					print "Try --snmp-field=$snmpField --list-snmp-values\n";
+
 					exit(1);
 				}
 			}
@@ -502,29 +540,33 @@ if (cacti_sizeof($parms)) {
 		}
 
 		$index_filter = 0;
-		foreach($dsGraph['snmpFieldExclude'] as $snmpField) {
+
+		foreach ($dsGraph['snmpFieldExclude'] as $snmpField) {
 			if ($snmpField != '') {
-				if (!isset($snmpFields[$snmpField] )) {
+				if (!isset($snmpFields[$snmpField])) {
 					print 'ERROR: Unknown snmp-field-exclude ' . $dsGraph['snmpFieldExclude'][$index_filter] . " for host $host_id\n";
 					print "Try --list-snmp-fields\n";
+
 					exit(1);
 				}
 			}
 			$index_filter++;
 		}
-		
+
 		if ($listSNMPValues)  {
 			if (!$dsGraph['snmpField']) {
 				print "ERROR: You must supply an snmp-field before you can list its values\n";
 				print "Try --list-snmp-fields\n";
+
 				exit(1);
 			}
 
 			if (cacti_sizeof($dsGraph['snmpField'])) {
-				foreach($dsGraph['snmpField'] as $snmpField) {
-					if ($snmpField = "") {
+				foreach ($dsGraph['snmpField'] as $snmpField) {
+					if ($snmpField = '') {
 						print "ERROR: You must supply a valid snmp-field before you can list its values\n";
 						print "Try --list-snmp-fields\n";
+
 						exit(1);
 					}
 
@@ -539,17 +581,20 @@ if (cacti_sizeof($parms)) {
 	if (!isset($graphTemplates[$template_id])) {
 		print 'ERROR: Unknown graph-template-id (' . $template_id . ")\n";
 		print "Try --list-graph-templates\n";
+
 		exit(1);
 	}
 
 	if ((!isset($template_id)) || (!isset($host_id))) {
 		print "ERROR: Must have at least a host-id and a graph-template-id\n\n";
 		display_help();
+
 		exit(1);
 	}
 
 	if ($cgInputFields != '') {
 		$fields = explode(' ', $cgInputFields);
+
 		if ($template_id > 0) {
 			$input_fields = getInputFields($template_id, $quietMode);
 		}
@@ -557,10 +602,10 @@ if (cacti_sizeof($parms)) {
 		if (cacti_sizeof($fields)) {
 			foreach ($fields as $option) {
 				$data_template_id = 0;
-				$option_value = explode('=', $option);
+				$option_value     = explode('=', $option);
 
 				if (substr_count($option_value[0], ':')) {
-					$compound = explode(':', $option_value[0]);
+					$compound         = explode(':', $option_value[0]);
 					$data_template_id = $compound[0];
 					$field_name       = $compound[1];
 				} else {
@@ -569,6 +614,7 @@ if (cacti_sizeof($parms)) {
 
 				/* check for the input fields existance */
 				$field_found = false;
+
 				if (cacti_sizeof($input_fields)) {
 					foreach ($input_fields as $key => $row) {
 						if (substr_count($key, $field_name)) {
@@ -586,6 +632,7 @@ if (cacti_sizeof($parms)) {
 				if (!$field_found) {
 					print 'ERROR: Unknown input-field (' . $field_name . ")\n";
 					print "Try --list-input-fields\n";
+
 					exit(1);
 				}
 
@@ -620,9 +667,10 @@ if (cacti_sizeof($parms)) {
 				array($existsAlready));
 
 			print "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)\n";
+
 			exit(1);
 		} else {
-			$returnArray = create_complete_graph_from_template($template_id, $host_id, null, $values['cg']);
+			$returnArray  = create_complete_graph_from_template($template_id, $host_id, null, $values['cg']);
 			$dataSourceId = '';
 		}
 
@@ -639,7 +687,7 @@ if (cacti_sizeof($parms)) {
 
 		if (is_array($returnArray) && cacti_sizeof($returnArray)) {
 			if (cacti_sizeof($returnArray['local_data_id'])) {
-				foreach($returnArray['local_data_id'] as $item) {
+				foreach ($returnArray['local_data_id'] as $item) {
 					push_out_host($host_id, $item);
 
 					if ($dataSourceId != '') {
@@ -654,20 +702,22 @@ if (cacti_sizeof($parms)) {
 			db_execute_prepared('REPLACE INTO host_graph
 				(host_id, graph_template_id) VALUES
 				(?, ?)',
-				array($host_id , $template_id));
+				array($host_id, $template_id));
 
 			print 'Graph Added - Graph[' . $returnArray['local_graph_id'] . "] - DS[$dataSourceId]\n";
 		} else {
 			print "Graph Not Added due to whitelist check failure.\n";
 		}
 	} elseif ($graph_type == 'ds') {
-		if (($dsGraph['snmpQueryId'] == '') || ($dsGraph['snmpQueryType'] == '') || (cacti_sizeof($dsGraph['snmpField']) == 0) ) {
+		if (($dsGraph['snmpQueryId'] == '') || ($dsGraph['snmpQueryType'] == '') || (cacti_sizeof($dsGraph['snmpField']) == 0)) {
 			print "ERROR: For graph-type of 'ds' you must supply more options\n";
 			display_help();
+
 			exit(1);
 		}
 
 		$snmp_query_array = array();
+
 		$snmp_query_array['snmp_query_id']       = $dsGraph['snmpQueryId'];
 		$snmp_query_array['snmp_index_on']       = get_best_data_query_index_type($host_id, $dsGraph['snmpQueryId']);
 		$snmp_query_array['snmp_query_graph_id'] = $dsGraph['snmpQueryType'];
@@ -678,9 +728,10 @@ if (cacti_sizeof($parms)) {
 			AND snmp_query_id=' . $dsGraph['snmpQueryId'];
 
 		$index_snmp_filter = 0;
+
 		if (cacti_sizeof($dsGraph['snmpField'])) {
 			foreach ($dsGraph['snmpField'] as $snmpField) {
-				$req  .= ' AND snmp_index IN (
+				$req .= ' AND snmp_index IN (
 					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
 
 				if (isset($dsGraph['snmpValue'][$index_snmp_filter])) {
@@ -692,17 +743,18 @@ if (cacti_sizeof($parms)) {
 				$index_snmp_filter++;
 			}
 		}
-		
+
 		$index_snmp_filter = 0;
+
 		if (cacti_sizeof($dsGraph['snmpFieldExclude'])) {
 			foreach ($dsGraph['snmpFieldExclude'] as $snmpField) {
-					$req  .= ' AND snmp_index NOT IN (
+					$req .= ' AND snmp_index NOT IN (
 					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
 					$req .= ' AND field_value REGEXP "' . addslashes($dsGraph['snmpValueExclude'][$index_snmp_filter]) . '")';
 					$index_snmp_filter++;
 			}
 		}
-		
+
 		$snmp_indexes = db_fetch_assoc($req);
 
 		if (cacti_sizeof($snmp_indexes)) {
@@ -765,7 +817,7 @@ if (cacti_sizeof($parms)) {
 						LIMIT 1',
 						array($returnArray['local_graph_id']));
 
-					foreach($returnArray['local_data_id'] as $item) {
+					foreach ($returnArray['local_data_id'] as $item) {
 						push_out_host($host_id, $item);
 
 						if ($dataSourceId != '') {
@@ -788,34 +840,42 @@ if (cacti_sizeof($parms)) {
 			} else {
 				$err_msg .= implode(',',$dsGraph['snmpValueRegex']);
 			}
-			
+
 			if (cacti_sizeof($dsGraph['snmpValueExclude'])) {
 			$err_msg .= ') and snmp-field-exclude (' . implode(',',$dsGraph['snmpFieldExclude']) . ' ) with values (' . implode(',',$dsGraph['snmpValueExclude']);
 			}
-			
+
 			$err_msg .= ') for host-id ' . $host_id . ' (' . $hosts[$host_id]['hostname'] . ")\n";
 
 			print $err_msg;
 			print 'Try --host-id=' . $host_id . " --list-snmp-fields\n";
+
 			exit(1);
 		}
 	} else {
 		print "ERROR: Graph Types must be either 'cg' or 'ds'\n";
+
 		exit(1);
 	}
 
 	exit(0);
 } else {
 	display_help();
+
 	exit(1);
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Graphs Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 
@@ -836,8 +896,8 @@ function display_help() {
 	print "    [--graph-title=S]       Defaults to what ever is in the Graph Template/Data Template.\n";
 	print "    [--reindex-method=N]    The reindex method to be used for that data query.\n";
 	print "                            NOTE: If Data Query is already associated, the reindex method will NOT be changed.\n\n";
-	print "    --snmp-field-exclude=[SNMP Field] | --snmp-value-exclude=[REGEX]";
-	print "				   Optionally used to exclude specific word/s in adding graphs";
+	print '    --snmp-field-exclude=[SNMP Field] | --snmp-value-exclude=[REGEX]';
+	print '				   Optionally used to exclude specific word/s in adding graphs';
 	print "    Valid --reindex-methos include\n";
 	print "        0|None   = No reindexing\n";
 	print "        1|Uptime = Uptime goes Backwards (Default)\n";

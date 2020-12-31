@@ -30,70 +30,83 @@ require_once($config['base_path'] . '/lib/utility.php');
 require_once($config['base_path'] . '/lib/template.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 
 unset($host_id);
 unset($graph_template_id);
 unset($data_template_id);
 
-foreach($parms as $parameter) {
+foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
 		list($arg, $value) = explode('=', $parameter);
 	} else {
-		$arg = $parameter;
+		$arg   = $parameter;
 		$value = '';
 	}
 
 	switch ($arg) {
 	case '--host-id':
 		$host_id = trim($value);
+
 		if (!is_numeric($host_id)) {
 			print 'ERROR: You must supply a valid host-id to run this script!' . PHP_EOL;
+
 			exit(1);
 		}
+
 		break;
 	case '--data-template-id':
 		$data_template_id = $value;
+
 		if (!is_numeric($data_template_id)) {
 			print 'ERROR: You must supply a numeric data-template-id!' . PHP_EOL;
+
 			exit(1);
 		}
+
 		break;
 	case '--version':
 	case '-V':
 	case '-v':
 		display_version();
+
 		exit(0);
 	case '--help':
 	case '-H':
 	case '-h':
 		display_help();
+
 		exit(0);
+
 	default:
 		print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 		display_help();
+
 		exit(1);
 	}
 }
 
 if (!isset($host_id)) {
 	print "ERROR: You must supply a valid host-id!\n";
+
 	exit(1);
 }
 
 if (!isset($data_template_id)) {
 	print "ERROR: You must supply a valid data-template-id!\n";
+
 	exit(1);
 }
 
 //Following code was copied from data_sources.php->function form_save->save_component_data_source_new
 
-$save["id"] = "0";
-$save["data_template_id"] = $data_template_id;
-$save["host_id"] = $host_id;
+$save['id'] = '0';
 
-$local_data_id = sql_save($save, "data_local");
+$save['data_template_id'] = $data_template_id;
+$save['host_id']          = $host_id;
+
+$local_data_id = sql_save($save, 'data_local');
 
 change_data_template($local_data_id, $data_template_id);
 
@@ -107,12 +120,17 @@ if (!empty($host_id)) {
 
 print "DS Added - DS[$local_data_id]\n";
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Add Data Source, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 	print "usage: add_datasource.php --host-id=[ID] --data-template-id=[ID]\n\n";
@@ -120,4 +138,3 @@ function display_help() {
 	print "--host-id=id - The host id\n";
 	print "--data-template-id=id - The numerical ID of the data template to be added\n";
 }
-

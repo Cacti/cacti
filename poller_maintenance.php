@@ -35,7 +35,7 @@ require_once($config['library_path'] . '/utility.php');
 ini_set('max_execution_time', '0');
 
 error_reporting(E_ALL);
-$dir = dirname(__FILE__);
+$dir = __DIR__;
 chdir($dir);
 
 global $config, $database_default, $archived, $purged, $disable_log_rotation, $poller_start;
@@ -57,30 +57,36 @@ if (cacti_sizeof($parms)) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
-			case '--version' :
-			case '-V' :
-			case '-v' :
+			case '--version':
+			case '-V':
+			case '-v':
 				display_version();
+
 				exit(0);
-			case '--help' :
-			case '-H' :
-			case '-h' :
+			case '--help':
+			case '-H':
+			case '-h':
 				display_help();
+
 				exit(0);
-			case '--force' :
+			case '--force':
 				$force = true;
+
 				break;
-			case '--debug' :
+			case '--debug':
 				$debug = true;
+
 				break;
-			default :
+
+			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -91,6 +97,7 @@ maint_debug('Checking for Purge Actions');
 /* silently end if the registered process is still running, or process table missing */
 if (!register_process_start('maintenance', 'master', $config['poller_id'], read_config_option('maintenance_timeout'))) {
 	cacti_log('INFO: Another maintenance session is already running', false, 'MAINTENANCE', POLLER_VERBOSITY_LOW);
+
 	exit(0);
 }
 
@@ -117,6 +124,13 @@ unregister_process('maintenance', 'master', $config['poller_id']);
 
 exit(0);
 
+/**
+ * logrotate_check
+ *
+ * Insert description here
+ *
+ * @param type $force
+ */
 function logrotate_check($force) {
 	global $disable_log_rotation;
 
@@ -125,6 +139,7 @@ function logrotate_check($force) {
 		// Skip log rotation as it's handled by logrotate.d
 	} elseif (read_config_option('logrotate_enabled') == 'on') {
 		$frequency  = read_config_option('logrotate_frequency');
+
 		if (empty($frequency)) {
 			$frequency = 1;
 		}
@@ -161,20 +176,34 @@ function logrotate_check($force) {
 	}
 }
 
+/**
+ * authcache_purge
+ *
+ * Insert description here
+ *
+ */
 function authcache_purge() {
 	/* removing security tokens older than 90 days */
 	if (read_config_option('auth_cache_enabled') == 'on') {
 		db_execute_prepared('DELETE FROM user_auth_cache
 			WHERE last_update < ?',
-			array(date('Y-m-d H:i:s', time()-(86400*90))));
+			array(date('Y-m-d H:i:s', time() - (86400 * 90))));
 	} else {
 		db_execute('TRUNCATE TABLE user_auth_cache');
 	}
 }
 
+/**
+ * phpversion_check
+ *
+ * Insert description here
+ *
+ * @param false $force
+ */
 function phpversion_check($force = false) {
 	$now  = time();
 	$last = db_fetch_cell('select value from settings where name = "phpver_last"');
+
 	if (empty($last)) {
 		$last = $now - 86500;
 	}
@@ -201,6 +230,13 @@ function phpversion_check($force = false) {
 	}
 }
 
+/**
+ * rrdfile_purge
+ *
+ * Insert description here
+ *
+ * @param type $force
+ */
 function rrdfile_purge($force) {
 	global $archived, $purged, $poller_start;
 
@@ -237,13 +273,17 @@ function rrdfile_purge($force) {
 
 		/* record the start time */
 		$poller_end = microtime(true);
-		$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
+		$string     = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
 		cacti_log($string, true, 'SYSTEM');
 	}
 }
 
-/** realtime_purge_cache() - This function will purge files in the realtime directory
- *  that are older than 2 hours without changes */
+/**
+ * realtime_purge_cache()
+ *
+ * This function will purge files in the realtime directory that
+ * are older than 2 hours without changes
+ */
 function realtime_purge_cache() {
 	/* remove all Realtime files over than 2 hours */
 	if (read_config_option('realtime_cache_path') != '') {
@@ -265,11 +305,12 @@ function realtime_purge_cache() {
 		}
 	}
 
-	db_execute("DELETE FROM poller_output_realtime WHERE time < FROM_UNIXTIME(UNIX_TIMESTAMP()-300)");
+	db_execute('DELETE FROM poller_output_realtime WHERE time < FROM_UNIXTIME(UNIX_TIMESTAMP()-300)');
 }
 
-/*
+/**
  * logrotate_rotatenow
+ *
  * Rotates the cacti log
  */
 function logrotate_rotatenow() {
@@ -278,13 +319,15 @@ function logrotate_rotatenow() {
 	$poller_start = microtime(true);
 
 	$logs = array();
-	$log = read_config_option('path_cactilog');
+	$log  = read_config_option('path_cactilog');
+
 	if (empty($log)) {
 		$log = $config['base_path'] . '/log/cacti.log';
 	}
 	$logs['Cacti'] = $log;
 
 	$log = read_config_option('path_stderrlog');
+
 	if (!empty($log)) {
 		$logs['Cacti StdErr'] = $log;
 	}
@@ -299,6 +342,7 @@ function logrotate_rotatenow() {
 	$cleaned = 0;
 
 	$days = read_config_option('logrotate_retain');
+
 	if ($days == '' || $days < 0) {
 		$days = 7;
 	}
@@ -316,11 +360,13 @@ function logrotate_rotatenow() {
 
 	/* record the start time */
 	$poller_end = microtime(true);
-	$string = sprintf('LOGMAINT STATS: Time:%4.4f, Rotated:%d, Removed:%d, Days Retained:%d', ($poller_end - $poller_start), $rotated, $cleaned, $days);
+	$string     = sprintf('LOGMAINT STATS: Time:%4.4f, Rotated:%d, Removed:%d, Days Retained:%d', ($poller_end - $poller_start), $rotated, $cleaned, $days);
 	cacti_log($string, true, 'SYSTEM');
 }
 
-/* logrotate_file_rotate()
+/**
+ * logrotate_file_rotate()
+ *
  * rotates the specified log file, appending date given
  */
 function logrotate_file_rotate($name, $log, $date) {
@@ -329,13 +375,15 @@ function logrotate_file_rotate($name, $log, $date) {
 	}
 
 	clearstatcache();
+
 	if (!file_exists($log)) {
 		cacti_log('Cacti Log Rotation - Skipped missing ' . $name . ' Log : ' . $log, true, 'MAINT');
+
 		return 0;
 	}
 
 	if (is_writable(dirname($log) . '/') && is_writable($log)) {
-		$perms = octdec(substr(decoct( fileperms($log) ), 2));
+		$perms = octdec(substr(decoct(fileperms($log)), 2));
 		$owner = fileowner($log);
 		$group = filegroup($log);
 
@@ -344,6 +392,7 @@ function logrotate_file_rotate($name, $log, $date) {
 
 			if (file_exists($log . '-' . $ext)) {
 				$ext_inc = 1;
+
 				while (file_exists($log . '-' . $ext . '-' . $ext_inc) && $ext_inc < 99) {
 					$ext_inc++;
 				}
@@ -356,6 +405,7 @@ function logrotate_file_rotate($name, $log, $date) {
 				chgrp($log, $group);
 				chmod($log, $perms);
 				cacti_log('Cacti Log Rotation - Created ' . $name . ' Log : ' . basename($log) . '-' . $ext, true, 'MAINT');
+
 				return 1;
 			} else {
 				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . $name . ' Log "' . basename($log) . '" to "' . basename($log) . '-' . $ext . '"', true, 'MAINT');
@@ -366,11 +416,13 @@ function logrotate_file_rotate($name, $log, $date) {
 	} else {
 		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log as directory or file are not writable : ' . $log, true, 'MAINT');
 	}
+
 	return 0;
 }
 
-/*
+/**
  * logrotate_file_clean
+ *
  * Cleans up any old log files that should be removed
  */
 function logrotate_file_clean($name, $log, $date, $rotation) {
@@ -389,6 +441,7 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 
 	clearstatcache();
 	$dir = scandir($baselogdir);
+
 	if (cacti_sizeof($dir)) {
 		$date_log = clone $date;
 		$date_log->modify('-'.$rotation.'day');
@@ -402,10 +455,11 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 
 			if (strpos($d, $baselogname) !== false) {
 				if ($fileparts > 1) {
-					foreach($fileparts as $p) {
+					foreach ($fileparts as $p) {
 						// Is it in the form YYYYMMDD?
 						if (is_numeric($p) && strlen($p) == 8) {
 							$matches = true;
+
 							if ($p < $e) {
 								if (is_writable($baselogdir . $d)) {
 									@unlink($baselogdir . $d);
@@ -430,15 +484,17 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 	clearstatcache();
 }
 
-/*
+/**
  * secpass_check_expired
+ *
  * Checks user accounts to determine if the accounts and/or their passwords should be expired
  */
-function secpass_check_expired () {
+function secpass_check_expired() {
 	maint_debug('Checking for Account / Password expiration');
 
 	// Expire Old Accounts
 	$e = read_config_option('secpass_expireaccount');
+
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
 		db_execute_prepared("UPDATE user_auth
@@ -459,6 +515,7 @@ function secpass_check_expired () {
 			array($t));
 	}
 	$e = read_config_option('secpass_expirepass');
+
 	if ($e > 0 && is_numeric($e)) {
 		$t = time();
 		db_execute_prepared("UPDATE user_auth
@@ -479,8 +536,9 @@ function secpass_check_expired () {
 	}
 }
 
-/*
+/**
  * remove_files
+ *
  * remove all unwanted files; the list is given by table data_source_purge_action
  */
 function remove_files($file_array) {
@@ -489,7 +547,7 @@ function remove_files($file_array) {
 	maint_debug('RRDClean is now running on ' . cacti_sizeof($file_array) . ' items');
 
 	/* determine the location of the RRA files */
-	if (isset ($config['rra_path'])) {
+	if (isset($config['rra_path'])) {
 		$rra_path = $config['rra_path'];
 	} else {
 		$rra_path = $config['base_path'] . '/rra';
@@ -497,6 +555,7 @@ function remove_files($file_array) {
 
 	/* let's prepare the archive directory */
 	$rrd_archive = read_config_option('rrd_archive', true);
+
 	if ($rrd_archive == '') {
 		$rrd_archive = $rra_path . '/archive';
 	}
@@ -505,18 +564,21 @@ function remove_files($file_array) {
 	/* now scan the files */
 	foreach ($file_array as $file) {
 		$source_file = $rra_path . '/' . $file['name'];
+
 		switch ($file['action']) {
-		case '1' :
+		case '1':
 			if (unlink($source_file)) {
 				maint_debug('Deleted: ' . $file['name']);
 			} else {
 				cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to delete from $rra_path!", true, 'MAINT');
 			}
 			$purged++;
+
 			break;
-		case '3' :
+		case '3':
 			$target_file = $rrd_archive . '/' . $file['name'];
-			$target_dir = dirname($target_file);
+			$target_dir  = dirname($target_file);
+
 			if (!is_dir($target_dir)) {
 				rrdclean_create_path($target_dir);
 			}
@@ -527,6 +589,7 @@ function remove_files($file_array) {
 				cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to move to $rrd_archive!", true, 'MAINT');
 			}
 			$archived++;
+
 			break;
 		}
 
@@ -560,7 +623,7 @@ function remove_files($file_array) {
 			}
 
 			/* and remove them in a single run */
-			if (!empty ($remove_lgis)) {
+			if (!empty($remove_lgis)) {
 				api_graph_remove_multi($remove_lgis);
 			}
 		}
@@ -575,6 +638,15 @@ function remove_files($file_array) {
 	maint_debug('RRDClean has finished a purge pass of ' . cacti_sizeof($file_array) . ' items');
 }
 
+/**
+ * rrdclean_create_path
+ *
+ * Insert description here
+ *
+ * @param type $path
+ *
+ * @return type
+ */
 function rrdclean_create_path($path) {
 	global $config;
 
@@ -598,14 +670,16 @@ function rrdclean_create_path($path) {
 	return is_dir($path) && is_writable($path);
 }
 
-/*
- * cleanup_ds_and_graphs - courtesy John Rembo
+/**
+ * cleanup_ds_and_graphs
+ *
+ * courtesy John Rembo
  */
 function cleanup_ds_and_graphs() {
 	global $config;
 
-	$remove_ldis = array ();
-	$remove_lgis = array ();
+	$remove_ldis = array();
+	$remove_lgis = array();
 
 	maint_debug('RRDClean now cleans up all data sources and graphs');
 
@@ -616,20 +690,22 @@ function cleanup_ds_and_graphs() {
 
 	//filter those whose rrd files doesn't exist
 	foreach ($rrds as $item) {
-		$ldi = $item['local_data_id'];
-		$name = $item['name_cache'];
-		$ds_pth = $item['data_source_path'];
+		$ldi      = $item['local_data_id'];
+		$name     = $item['name_cache'];
+		$ds_pth   = $item['data_source_path'];
 		$real_pth = str_replace('<path_rra>', $config['rra_path'], $ds_pth);
+
 		if (!file_exists($real_pth)) {
-			if (!in_array($ldi, $remove_ldis)) {
+			if (!in_array($ldi, $remove_ldis, true)) {
 				$remove_ldis[] = $ldi;
 				maint_debug("RRD file is missing for data source name: $name (local_data_id=$ldi)");
 			}
 		}
 	}
 
-	if (empty ($remove_ldis)) {
+	if (empty($remove_ldis)) {
 		maint_debug('No missing rrd files found');
+
 		return 0;
 	}
 
@@ -650,7 +726,7 @@ function cleanup_ds_and_graphs() {
 		maint_debug('RRD file missing for local_graph_id=' . $item['id']);
 	}
 
-	if (!empty ($remove_lgis)) {
+	if (!empty($remove_lgis)) {
 		maint_debug('removing graphs');
 		api_graph_remove_multi($remove_lgis);
 	}
@@ -661,6 +737,13 @@ function cleanup_ds_and_graphs() {
 	maint_debug('removed graphs:' . cacti_count($remove_lgis) . ' removed data-sources:' . cacti_count($remove_ldis));
 }
 
+/**
+ * maint_debug
+ *
+ * Insert description here
+ *
+ * @param type $message
+ */
 function maint_debug($message) {
 	global $debug;
 
@@ -669,15 +752,16 @@ function maint_debug($message) {
 	}
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays version information
+ */
 function display_version() {
 	$version = CACTI_VERSION_TEXT_CLI;
 	print "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
-/*
- * display_help
- * displays the usage of the function
+/**
+ * display_help - displays Cacti CLI help information
  */
 function display_help() {
 	display_version();

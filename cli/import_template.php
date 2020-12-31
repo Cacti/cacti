@@ -41,11 +41,11 @@ if (cacti_sizeof($parms)) {
 	$preview_only   = 0;
 	$profile_id     = '';
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -74,19 +74,23 @@ if (cacti_sizeof($parms)) {
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
+
 				exit(1);
 		}
 	}
 
-	if($profile_id > 0) {
+	if ($profile_id > 0) {
 		if ($with_profile) {
 			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
 		} else {
@@ -103,12 +107,13 @@ if (cacti_sizeof($parms)) {
 
 	if (empty($id)) {
 		print "FATAL: No valid Data Source Profiles found on the system.  Exiting!\n";
+
 		exit(1);
 	}
 
 	if ($filename != '') {
-		if(file_exists($filename) && is_readable($filename)) {
-			$fp = fopen($filename,'r');
+		if (file_exists($filename) && is_readable($filename)) {
+			$fp       = fopen($filename,'r');
 			$xml_data = fread($fp,filesize($filename));
 			fclose($fp);
 
@@ -119,25 +124,33 @@ if (cacti_sizeof($parms)) {
 			import_display_results($debug_data, array(), $preview_only);
 		} else {
 			print "ERROR: file $filename is not readable, or does not exist\n\n";
+
 			exit(1);
 		}
 	} else {
 		print "ERROR: no filename specified\n\n";
 		display_help();
+
 		exit(1);
 	}
 } else {
 	print "ERROR: no parameters given\n\n";
 	display_help();
+
 	exit(1);
 }
 
-/*  display_version - displays version information */
+/**
+ * display_version - displays Cacti CLI version information
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
+/**
+ * display_help - displays Cacti CLI help information
+ */
 function display_help() {
 	display_version();
 

@@ -22,10 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* push_out_data_source_custom_data - pushes out the "custom data" associated with a data
-	template to all of its children. this includes all fields inhereted from the host
-	and the data template
-   @arg $data_template_id - the id of the data template to push out values for */
+/**
+ * push_out_data_source_custom_data - pushes out the "custom data" associated with a data
+ * template to all of its children. this includes all fields inhereted from the host
+ * and the data template
+ *
+ * @param $data_template_id - the id of the data template to push out values for
+ */
 function push_out_data_source_custom_data($data_template_id) {
 	/* valid data template id? */
 	if (empty($data_template_id)) {
@@ -63,10 +66,12 @@ function push_out_data_source_custom_data($data_template_id) {
 		array($data_template_data['id'])), 'id', array('type_code', 'value', 't_value'));
 
 	/* which data_input_fields are templated? */
-	$dif_ct = 0;
+	$dif_ct     = 0;
 	$dif_in_str = '';
+
 	if (cacti_sizeof($template_input_fields)) {
 		$dif_in_str .= 'AND data_input_fields.id IN (';
+
 		foreach ($template_input_fields as $key => $value) {
 			$dif_in_str .= ($dif_ct == 0 ? '':',') . $key;
 			$dif_ct++;
@@ -94,6 +99,7 @@ function push_out_data_source_custom_data($data_template_id) {
 	$did_cnt   = 0;
 	$ds_in_str = '';
 	$did_vals  = '';
+
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			if (cacti_sizeof($input_fields)) {
@@ -135,7 +141,9 @@ function push_out_data_source_custom_data($data_template_id) {
 	}
 }
 
-/* push out changed data template fields to related data sources
+/**
+ * push out changed data template fields to related data sources
+ *
  * @parm string $did_vals	- data input data fields
  * @parm string $ds_in_str	- all data sources, formatted as SQL 'IN' clause
  */
@@ -149,9 +157,12 @@ function push_out_data_source_templates($did_vals, $ds_in_str) {
 	}
 }
 
-/* push_out_data_source_item - pushes out templated data template item fields to all matching
-	children
-   @arg $data_template_rrd_id - the id of the data template item to push out values for */
+/**
+ * push_out_data_source_item - pushes out templated data template item fields to
+ * all matching children
+ *
+ * @param $data_template_rrd_id - the id of the data template item to push out values for
+ */
 function push_out_data_source_item($data_template_rrd_id) {
 	global $struct_data_source_item;
 
@@ -175,8 +186,12 @@ function push_out_data_source_item($data_template_rrd_id) {
 	}
 }
 
-/* push_out_data_source - pushes out templated data template fields to all matching children
-   @arg $data_template_data_id - the id of the data template to push out values for */
+/**
+ * push_out_data_source - pushes out templated data template fields to all
+ * matching children
+ *
+ * @param $data_template_data_id - the id of the data template to push out values for
+ */
 function push_out_data_source($data_template_data_id) {
 	global $struct_data_source;
 
@@ -203,12 +218,14 @@ function push_out_data_source($data_template_data_id) {
 	}
 }
 
-/* change_data_template - changes the data template for a particular data source to
-	$data_template_id
-   @arg $local_data_id - the id of the data source to change the data template for
-   @arg $data_template_id - id the of the data template to change to. specify '0' for no
-   @arg $profile - a structure of data source profile attributes
-	data template */
+/**
+ * change_data_template - changes the data template for a particular data source to
+ * $data_template_id
+ *
+ * @param $local_data_id - the id of the data source to change the data template for
+ * @param $data_template_id - id the of the data template to change to. specify '0' for no
+ * @param $profile - a structure of data source profile attributes data template
+ */
 function change_data_template($local_data_id, $data_template_id, $profile = array()) {
 	global $struct_data_source, $struct_data_source_item;
 
@@ -238,7 +255,8 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	}
 
 	/* some basic field values that ALL data sources should have */
-	$save['id']                          = (isset($data['id']) ? $data['id'] : 0);
+	$save['id'] = (isset($data['id']) ? $data['id'] : 0);
+
 	$save['local_data_template_data_id'] = $template_data['id'];
 	$save['local_data_id']               = $local_data_id;
 	$save['data_template_id']            = $data_template_id;
@@ -258,7 +276,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	}
 
 	/* these fields should never be overwritten by the template */
-	$save['data_source_path'] = (isset($data['data_source_path']) ? $data['data_source_path']:'');;
+	$save['data_source_path'] = (isset($data['data_source_path']) ? $data['data_source_path']:'');
 
 	$data_template_data_id = sql_save($save, 'data_template_data');
 
@@ -279,6 +297,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 				unset($save);
 
 				$save['id'] = 0;
+
 				$save['local_data_template_rrd_id'] = $template_rrd['id'];
 				$save['local_data_id']              = $local_data_id;
 				$save['data_template_id']           = $template_rrd['data_template_id'];
@@ -318,8 +337,11 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	}
 }
 
-/* push_out_graph - pushes out templated graph template fields to all matching children
-   @arg $graph_template_graph_id - the id of the graph template to push out values for */
+/**
+ * push_out_graph - pushes out templated graph template fields to all matching children
+ *
+ * @param $graph_template_graph_id - the id of the graph template to push out values for
+ */
 function push_out_graph($graph_template_graph_id) {
 	global $struct_graph;
 
@@ -361,15 +383,18 @@ function push_out_graph($graph_template_graph_id) {
 	}
 }
 
-/* push_out_graph_input - pushes out the value of a graph input to a single child item. this function
-	differs from other push_out_* functions in that it does not push out the value of this element to
-	all attached children. instead, it obtains the current value of the graph input based on other
-	graph items and pushes out the 'active' value
-   @arg $graph_template_input_id - the id of the graph input to push out values for
-   @arg $graph_template_item_id - the id the graph template item to push out
-   @arg $session_members - when looking for the 'active' value of the graph input, ignore these graph
-	template items. typically you want to ignore all items that were just selected and have yet to be
-	saved to the database. this is because these items most likely contain incorrect data */
+/**
+ * push_out_graph_input - pushes out the value of a graph input to a single child item. this function
+ * differs from other push_out_* functions in that it does not push out the value of this element to
+ * all attached children. instead, it obtains the current value of the graph input based on other
+ * graph items and pushes out the 'active' value
+ *
+ * @param $graph_template_input_id - the id of the graph input to push out values for
+ * @param $graph_template_item_id - the id the graph template item to push out
+ * @param $session_members - when looking for the 'active' value of the graph input, ignore these graph
+ *   template items. typically you want to ignore all items that were just selected and have yet to be
+ *   saved to the database. this is because these items most likely contain incorrect data
+ */
 function push_out_graph_input($graph_template_input_id, $graph_template_item_id, $session_members) {
 	$graph_input = db_fetch_row_prepared('SELECT graph_template_id, column_name
 		FROM graph_template_input
@@ -380,6 +405,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 		WHERE graph_template_input_id = ?', array($graph_template_input_id));
 
 	$i = 0;
+
 	if (cacti_sizeof($graph_input_items)) {
 		foreach ($graph_input_items as $item) {
 			$include_items[$i] = $item['graph_template_item_id'];
@@ -403,6 +429,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 			GROUP BY local_graph_id");
 	} else {
 		$i = 0;
+
 		foreach ($session_members as $item_id => $item_id) {
 			$new_session_members[$i] = $item_id;
 			$i++;
@@ -420,18 +447,21 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 			/* this is just an extra check that i threw in to prevent users' graphs from getting really messed up */
 			if (!(($graph_input['column_name'] == 'task_item_id') && (empty($value[$graph_input['column_name']])))) {
 				db_execute('UPDATE graph_templates_item
-					SET ' . $graph_input['column_name'] . "=" . db_qstr($value[$graph_input['column_name']]) . "
-					WHERE local_graph_id=" . $value['local_graph_id'] . "
+					SET ' . $graph_input['column_name'] . '=' . db_qstr($value[$graph_input['column_name']]) . '
+					WHERE local_graph_id=' . $value['local_graph_id'] . "
 					AND local_graph_template_item_id=$graph_template_item_id");
 			}
 		}
 	}
 }
 
-/* push_out_graph_item - pushes out templated graph template item fields to all matching
-	children. if the graph template item is part of a graph input, the field will not be
-	pushed out
-   @arg $graph_template_item_id - the id of the graph template item to push out values for */
+/**
+ * push_out_graph_item - pushes out templated graph template item fields to all matching
+ * children. if the graph template item is part of a graph input, the field will not be
+ * pushed out
+ *
+ * @param $graph_template_item_id - the id of the graph template item to push out values for
+ */
 function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	global $struct_graph_item;
 
@@ -511,6 +541,14 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	}
 }
 
+/**
+ * update_graph_data_source_output_type
+ *
+ * Insert description here
+ *
+ * @param type $local_graph_id
+ * @param type $output_type_id
+ */
 function update_graph_data_source_output_type($local_graph_id, $output_type_id) {
 	$graph_local = db_fetch_row_prepared('SELECT *
 		FROM graph_local
@@ -569,13 +607,24 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 	}
 }
 
+/**
+ * parse_graph_template_id
+ *
+ * Insert description here
+ *
+ * @param type $value
+ *
+ * @return type
+ */
 function parse_graph_template_id($value) {
 	if (strpos($value, '_') !== false) {
 		$template_parts = explode('_', $value);
+
 		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {
 			return array('graph_template_id' => $template_parts[0], 'output_type_id' => $template_parts[1]);
 		} else {
 			cacti_log('ERROR: Unable to parse graph_template_id with value ' . $value, false, 'WEBUI');
+
 			exit;
 		}
 	} else {
@@ -583,6 +632,14 @@ function parse_graph_template_id($value) {
 	}
 }
 
+/**
+ * resequence_graphs
+ *
+ * Insert description here
+ *
+ * @param type $graph_template_id
+ * @param 0 $local_graph_id
+ */
 function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 	$template_items = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
@@ -592,7 +649,7 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 		array($graph_template_id));
 
 	if (cacti_sizeof($template_items)) {
-		foreach($template_items as $item) {
+		foreach ($template_items as $item) {
 			if ($local_graph_id == -1) {
 				db_execute_prepared('UPDATE graph_templates_item
 					SET sequence = ?
@@ -618,11 +675,14 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 	}
 }
 
-/* retemplate_graphs - reapply the graph template as it currently exists to all
-    graphs using that template.  This is important when you have graphs that
-    have multiple versions of a template.
-   @arg $graph_template_id - the graph template id to retemplate
-   @arg $local_graph_id - optional local graph id */
+/**
+ * retemplate_graphs - reapply the graph template as it currently exists to all
+ * graphs using that template.  This is important when you have graphs that
+ * have multiple versions of a template.
+ *
+ * @param $graph_template_id - the graph template id to retemplate
+ * @param $local_graph_id - optional local graph id
+ */
 function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
 	if ($local_graph_id == 0) {
 		$graphs = db_fetch_assoc_prepared('SELECT id
@@ -638,20 +698,23 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
 	}
 
 	if (cacti_sizeof($graphs)) {
-		foreach($graphs as $graph) {
+		foreach ($graphs as $graph) {
 			change_graph_template($graph['id'], $graph_template_id, true);
 		}
 	}
 }
 
-/* change_graph_template - changes the graph template for a particular graph to
-	$graph_template_id
-   @arg $local_graph_id - the id of the graph to change the graph template for
-   @arg $graph_template_id - id the of the graph template to change to. specify '0' for no
-	graph template
-   @arg $force - (true) if the target graph template has more or less graph items than
-	the current graph, remove or add the items from the current graph to make them equal.
-	(false) leave the graph item count alone */
+/**
+ * change_graph_template - changes the graph template for a particular graph to
+ * $graph_template_id
+ *
+ * @param $local_graph_id - the id of the graph to change the graph template for
+ * @param $graph_template_id - id the of the graph template to change to. specify '0' for no
+ *   graph template
+ * @param $force - (true) if the target graph template has more or less graph items than
+ *   the current graph, remove or add the items from the current graph to make them equal.
+ *   (false) leave the graph item count alone
+ */
 function change_graph_template($local_graph_id, $graph_template_id, $force = true) {
 	global $struct_graph, $struct_graph_item;
 
@@ -685,7 +748,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 		$changed = true;
 	} elseif ($output_type_id > 0) {
 		$changed = true;
-	} else if (cacti_sizeof($graph_list) && $graph_template_id != $graph_list['graph_template_id']) {
+	} elseif (cacti_sizeof($graph_list) && $graph_template_id != $graph_list['graph_template_id']) {
 		$changed = false;
 	} else {
 		$changed = true;
@@ -715,6 +778,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 
 	/* some basic field values that ALL graphs should have */
 	$save['id'] = (isset($graph_list['id']) ? $graph_list['id'] : 0);
+
 	$save['local_graph_template_graph_id'] = $template_graph_list['id'];
 	$save['local_graph_id']                = $local_graph_id;
 	$save['graph_template_id']             = $graph_template_id;
@@ -762,6 +826,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 	$cols = db_get_table_column_types('graph_templates_item');
 
 	$k=0;
+
 	if (cacti_sizeof($template_items_list)) {
 		foreach ($template_items_list as $template_item) {
 			unset($save);
@@ -773,18 +838,20 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 
 			/* go through the existing graph_items and look for the matching local_graph_template_item_id */
 			$found = false;
+
 			if (cacti_sizeof($graph_items_list) && $new_save == false) {
-				foreach($graph_items_list as $item) {
+				foreach ($graph_items_list as $item) {
 					if ($item['local_graph_template_item_id'] == $template_item['id']) {
 						$found_item = $item;
-						$found = true;
+						$found      = true;
+
 						break;
 					}
 				}
 			}
 
 			if ($found) {
-				foreach($found_item as $column => $value) {
+				foreach ($found_item as $column => $value) {
 					switch($column) {
 					case 'local_graph_id':
 					case 'hash':
@@ -792,6 +859,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 					case 'graph_template_id':
 					case 'sequence':
 						break;
+
 					default:
 						if (strstr($cols[$column]['type'], 'int') !== false ||
 							strstr($cols[$column]['type'], 'float') !== false ||
@@ -805,6 +873,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 						} else {
 							$save[$column] = $value;
 						}
+
 						break;
 					}
 				}
@@ -842,7 +911,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 					$save['task_item_id'] = 0;
 				}
 
-				foreach($template_item as $column => $value) {
+				foreach ($template_item as $column => $value) {
 					switch($column) {
 					case 'id':
 					case 'hash':
@@ -852,6 +921,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 					case 'sequence':
 					case 'task_item_id':
 						break;
+
 					default:
 						if (strstr($cols[$column]['type'], 'int') !== false ||
 							strstr($cols[$column]['type'], 'float') !== false ||
@@ -865,6 +935,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 						} else {
 							$save[$column] = $value;
 						}
+
 						break;
 					}
 				}
@@ -884,7 +955,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 		array($local_graph_id));
 
 	if ($new_save == false && cacti_sizeof($graph_items_list) > cacti_sizeof($template_items_list)) {
-		foreach($template_items_list as $item) {
+		foreach ($template_items_list as $item) {
 			$ids[] = $item['id'];
 		}
 
@@ -905,10 +976,13 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 	return true;
 }
 
-/* graph_to_graph_template - converts a graph to a graph template
-   @arg $local_graph_id - the id of the graph to be converted
-   @arg $graph_title - the graph title to use for the new graph template. the variable
-	<graph_title> will be substituted for the current graph title */
+/**
+ * graph_to_graph_template - converts a graph to a graph template
+ *
+ * @param $local_graph_id - the id of the graph to be converted
+ * @param $graph_title - the graph title to use for the new graph template. the variable
+ *   <graph_title> will be substituted for the current graph title
+ */
 function graph_to_graph_template($local_graph_id, $graph_title) {
 	/* create a new graph template entry */
 	$title_template = db_fetch_cell_prepared('SELECT title
@@ -941,7 +1015,7 @@ function graph_to_graph_template($local_graph_id, $graph_title) {
 		AND local_graph_id=0',
 		array($graph_template_id));
 
-	for ($j=0; $j<cacti_count($items); $j++) {
+	for ($j=0; $j < cacti_count($items); $j++) {
 		db_execute_prepared('UPDATE graph_templates_item
 			SET hash = ? WHERE id= ?',
 			array(get_hash_graph_template($items[$j]['id'], 'graph_template_item'), $items[$j]['id']));
@@ -952,10 +1026,13 @@ function graph_to_graph_template($local_graph_id, $graph_title) {
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', array($local_graph_id));
 }
 
-/* data_source_to_data_template - converts a data source to a data template
-   @arg $local_data_id - the id of the data source to be converted
-   @arg $data_source_title - the data source title to use for the new data template. the variable
-	<ds_title> will be substituted for the current data source title */
+/**
+ * data_source_to_data_template - converts a data source to a data template
+ *
+ * @param $local_data_id - the id of the data source to be converted
+ * @param $data_source_title - the data source title to use for the new data template. the variable
+ *   <ds_title> will be substituted for the current data source title
+ */
 function data_source_to_data_template($local_data_id, $data_source_title) {
 	/* create a new graph template entry */
 	$title_template = db_fetch_cell_prepared('SELECT name
@@ -990,7 +1067,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 		AND local_data_id=0',
 		array($data_template_id));
 
-	for ($j=0; $j<cacti_count($items); $j++) {
+	for ($j=0; $j < cacti_count($items); $j++) {
 		db_execute_prepared('UPDATE data_template_rrd
 			SET hash = ? WHERE id =?',
 			array(get_hash_data_template($items[$j]['id'], 'data_template_item'), $items[$j]['id']));
@@ -1001,27 +1078,30 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	db_execute_prepared('DELETE FROM poller_item WHERE local_data_id= ?', array($local_data_id));
 }
 
-/* create_complete_graph_from_template - creates a graph and all necessary data sources based on a
-	graph template
-   @arg $graph_template_id - the id of the graph template that will be used to create the new
-	graph
-   @arg $host_id - the id of the host to associate the new graph and data sources with
-   @arg $snmp_query_array - if the new data sources are to be based on a data query, specify the
-	necessary data query information here. it must contain the following information:
-	  $snmp_query_array['snmp_query_id']
-	  $snmp_query_array['snmp_index_on']
-	  $snmp_query_array['snmp_query_graph_id']
-	  $snmp_query_array['snmp_index']
-   @arg $sugested_vals - any additional information to be included in the new graphs or
-	data sources must be included in the array. data is to be included in the following format:
-	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
-	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
-	  $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
-	  $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
-	  $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
-	  $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
+/**
+ * create_complete_graph_from_template - creates a graph and all necessary data sources based on a
+ * graph template
+ *
+ * @param $graph_template_id - the id of the graph template that will be used to create the new
+ *   graph
+ * @param $host_id - the id of the host to associate the new graph and data sources with
+ * @param $snmp_query_array - if the new data sources are to be based on a data query, specify the
+ *   necessary data query information here. it must contain the following information:
+ *     $snmp_query_array['snmp_query_id']
+ *     $snmp_query_array['snmp_index_on']
+ *     $snmp_query_array['snmp_query_graph_id']
+ *     $snmp_query_array['snmp_index']
+ * @param $sugested_vals - any additional information to be included in the new graphs or
+ *   data sources must be included in the array. data is to be included in the following format:
+ *     $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
+ *     $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
+ *     $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
+ *     $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
+ *     $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
+ *     $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
+ *     $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
+ *     $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
+ */
 function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals) {
 	global $config;
 
@@ -1029,6 +1109,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	if (!graph_template_whitelist_check($graph_template_id)) {
 		raise_message(10);
+
 		return false;
 	}
 
@@ -1036,6 +1117,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	if (empty($graph_template_id)) {
 		raise_message('bad_template', __('Attempting to Create Graph from Non-Template'), MESSAGE_LEVEL_ERROR);
 		cacti_log('Attempting to Create Graph from Non-Template', false, 'AUTOM8');
+
 		return false;
 	}
 
@@ -1048,11 +1130,13 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	if (empty($gt)) {
 		raise_message('bad_template', __('Attempting to Create Graph from Removed Graph Template'), MESSAGE_LEVEL_ERROR);
 		cacti_log('Attempting to Create Graph from Removed Graph Template ' . $graph_template_id, false, 'AUTOM8');
+
 		return false;
 	}
 
 	/* create the graph */
-	$save['id']                  = 0;
+	$save['id'] = 0;
+
 	$save['graph_template_id']   = $graph_template_id;
 	$save['host_id']             = $host_id;
 
@@ -1156,7 +1240,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				// Save the data source
 				unset($save);
 
-				$save['id']               = 0;
+				$save['id'] = 0;
+
 				$save['data_template_id'] = $data_template['id'];
 				$save['host_id']          = $host_id;
 
@@ -1178,6 +1263,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 					/* validate the data source profile */
 					$profile = array();
+
 					if ($profile_id != 0) {
 						$profile = db_fetch_row_prepared('SELECT *
 							FROM data_source_profiles
@@ -1342,7 +1428,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	/* now that we have the id of the new host, we may plugin postprocessing code */
 	if (isset($cache_array['local_graph_id'])) {
-		$save['id']                = $cache_array['local_graph_id'];
+		$save['id'] = $cache_array['local_graph_id'];
+
 		$save['graph_template_id'] = $graph_template_id;	// attention: unset!
 
 		if (cacti_sizeof($snmp_query_array)) {
@@ -1366,20 +1453,23 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	return $cache_array;
 }
 
-/* create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
-   data source properties.  If so, then you must duplicate the Data Source and not use
-   the existing one.
-   @arg $sugested_vals - any additional information to be included in the new graphs or
-	data sources must be included in the array. data is to be included in the following format:
-	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
-	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
-	  $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
-	  $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
-	  $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
-	  $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
-   @arg $previous_data_source - the previous data source if this data source id duplicate. */
+/**
+ * create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
+ * data source properties.  If so, then you must duplicate the Data Source and not use
+ * the existing one.
+ *
+ * @param $sugested_vals - any additional information to be included in the new graphs or
+ *   data sources must be included in the array. data is to be included in the following format:
+ *     $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
+ *     $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
+ *     $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
+ *     $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
+ *     $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
+ *     $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
+ *     $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
+ *     $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
+ * @param $previous_data_source - the previous data source if this data source id duplicate.
+ */
 function create_graph_custom_data_compatible($suggested_vals, $previous_data_source) {
 	$compatible = true;
 
@@ -1387,22 +1477,22 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 		return $compatible;
 	}
 
-	foreach($suggested_vals as $template => $items) {
+	foreach ($suggested_vals as $template => $items) {
 		if (cacti_sizeof($items)) {
-			foreach($items as $type => $item) {
+			foreach ($items as $type => $item) {
 				if (read_config_option('data_source_trace') == 'on') {
 					cacti_log('Type: "' . $type . '"', false, 'DSTRACE');
 					cacti_log('Item Keys: "' . implode('", "', array_keys($item)) . '"', false, 'DSTRACE');
 				}
 
-				foreach($item as $key => $values) {
+				foreach ($item as $key => $values) {
 					if ($type == 'data_template') {
 						if (read_config_option('data_source_trace') == 'on') {
 							cacti_log('Item Element Key1: "' . $key . '"', false, 'DSTRACE');
 						}
 
 						if (is_array($values)) {
-							foreach($values as $vkey => $vvalue) {
+							foreach ($values as $vkey => $vvalue) {
 								if (read_config_option('data_source_trace') == 'on') {
 									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 									cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -1433,7 +1523,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 						}
 
 						if (is_array($values)) {
-							foreach($values as $vkey => $vvalue) {
+							foreach ($values as $vkey => $vvalue) {
 								if (read_config_option('data_source_trace') == 'on') {
 									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 									cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -1464,7 +1554,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 						}
 
 						if (is_array($values)) {
-							foreach($values as $vkey => $vvalue) {
+							foreach ($values as $vkey => $vvalue) {
 								if (read_config_option('data_source_trace') == 'on') {
 									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 									cacti_log('Item Sub Element Value: "' . $vvalue . '"');
@@ -1475,11 +1565,11 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 									WHERE local_data_id = ?',
 									array($previous_data_source['id']));
 
-								$previous_value = db_fetch_cell_prepared("SELECT value
+								$previous_value = db_fetch_cell_prepared('SELECT value
 									FROM data_input_data
 									WHERE data_template_data_id = ?
 									AND data_input_field_id = ?
-									AND value = ?",
+									AND value = ?',
 									array($data_template_data_id, $vkey, $vvalue));
 
 								if (read_config_option('data_source_trace') == 'on') {
@@ -1497,14 +1587,14 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 						}
 					} elseif (is_numeric($type)) {
 						if (cacti_sizeof($item)) {
-							foreach($item as $ftype => $fitem) {
+							foreach ($item as $ftype => $fitem) {
 								if ($ftype == 'data_template') {
 									if (read_config_option('data_source_trace') == 'on') {
 										cacti_log('Item Element Key4: "' . $key . '"', false, 'DSTRACE');
 									}
 
 									if (is_array($fitem)) {
-										foreach($fitem as $vkey => $vvalue) {
+										foreach ($fitem as $vkey => $vvalue) {
 											if (read_config_option('data_source_trace') == 'on') {
 												cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 												cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -1535,7 +1625,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 									}
 
 									if (is_array($fitem)) {
-										foreach($fitem as $vkey => $vvalue) {
+										foreach ($fitem as $vkey => $vvalue) {
 											if (read_config_option('data_source_trace') == 'on') {
 												cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 												cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -1566,7 +1656,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 									}
 
 									if (is_array($fitem)) {
-										foreach($fitem as $vkey => $vvalue) {
+										foreach ($fitem as $vkey => $vvalue) {
 											if (read_config_option('data_source_trace') == 'on') {
 												cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 												cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -1577,11 +1667,11 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 												WHERE local_data_id = ?',
 												array($previous_data_source['id']));
 
-											$previous_value = db_fetch_cell_prepared("SELECT value
+											$previous_value = db_fetch_cell_prepared('SELECT value
 												FROM data_input_data
 												WHERE data_template_data_id = ?
 												AND data_input_field_id = ?
-												AND value = ?",
+												AND value = ?',
 												array($data_template_data_id, $vkey, $vvalue));
 
 											if (read_config_option('data_source_trace') == 'on') {
@@ -1609,6 +1699,17 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 	return $compatible;
 }
 
+/**
+ * create_save_graph
+ *
+ * Insert description here
+ *
+ * @param type $host_id
+ * @param type $form_type
+ * @param type $form_id1
+ * @param type $form_array2
+ * @param type $values
+ */
 function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values) {
 	/* ================= input validation ================= */
 	input_validate_input_number($form_id1);
@@ -1624,8 +1725,8 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 
 			$snmp_index_array = $form_array3;
 
-			$snmp_query_array['snmp_query_id'] = $form_id1;
-			$snmp_query_array['snmp_index_on'] = get_best_data_query_index_type($host_id, $form_id1);
+			$snmp_query_array['snmp_query_id']       = $form_id1;
+			$snmp_query_array['snmp_index_on']       = get_best_data_query_index_type($host_id, $form_id1);
 			$snmp_query_array['snmp_query_graph_id'] = $form_id2;
 		}
 
@@ -1645,7 +1746,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 
 			/* lastly push host-specific information to our data sources */
 			if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-				foreach($return_array['local_data_id'] as $item) {
+				foreach ($return_array['local_data_id'] as $item) {
 					push_out_host($host_id, $item);
 				}
 			} else {
@@ -1665,7 +1766,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 
 				/* lastly push host-specific information to our data sources */
 				if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-					foreach($return_array['local_data_id'] as $item) {
+					foreach ($return_array['local_data_id'] as $item) {
 						push_out_host($host_id, $item);
 					}
 				} else {
@@ -1678,6 +1779,18 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 	}
 }
 
+/**
+ * data_source_exists
+ *
+ * Insert description here
+ *
+ * @param type $graph_template_id
+ * @param type $host_id
+ * @param type $data_template
+ * @param type $snmp_query_array
+ *
+ * @return type
+ */
 function data_source_exists($graph_template_id, $host_id, &$data_template, &$snmp_query_array) {
 	if (cacti_sizeof($snmp_query_array)) {
 		$input_fields = db_fetch_cell_prepared('SELECT
@@ -1702,7 +1815,7 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 				cacti_log('Data Source Exists Special Case "' . $input_fields . '"', false, 'DSTRACE');
 			}
 
-			$case_where = "AND input_fields LIKE ?";
+			$case_where = 'AND input_fields LIKE ?';
 			$case_array = array(
 				$host_id,
 				$data_template['id'],
@@ -1716,7 +1829,7 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 				cacti_log('Data Source Exists NOT Special Case "' . $input_fields . '"', false, 'DSTRACE');
 			}
 
-			$case_where = "AND input_fields = ?";
+			$case_where = 'AND input_fields = ?';
 			$case_array = array(
 				$host_id,
 				$data_template['id'],
@@ -1775,6 +1888,16 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 	}
 }
 
+/**
+ * verify_data_input
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $input_string
+ *
+ * @return type
+ */
 function verify_data_input($hash, $input_string) {
 	$input = db_fetch_row_prepared('SELECT *
 		FROM data_input
@@ -1783,19 +1906,33 @@ function verify_data_input($hash, $input_string) {
 
 	if ($input['input_string'] == $input_string) {
 		$input['status'] = true;
+
 		return $input;
 	} else {
 		$input['status'] = false;
+
 		return $input;
 	}
 }
 
+/**
+ * verify_data_input_whitelist
+ *
+ * Insert description here
+ *
+ * @param type $hash
+ * @param type $input_string
+ *
+ * @return type
+ */
 function verify_data_input_whitelist($hash, $input_string) {
 	global $config;
 
 	if (!isset($config['input_whitelist'])) {
 		return true;
-	} elseif (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
+	}
+
+	if (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
 		return true;
 	}
 
@@ -1812,11 +1949,20 @@ function verify_data_input_whitelist($hash, $input_string) {
 	}
 }
 
+/**
+ * graph_template_whitelist_check
+ *
+ * Insert description here
+ *
+ * @param type $graph_template_id
+ *
+ * @return type
+ */
 function graph_template_whitelist_check($graph_template_id) {
 	global $config;
 
 	static $data_input_whitelist = null;
-	static $notified = array();
+	static $notified             = array();
 
 	// no whitelist file defined, everything whitelisted
 	if (!isset($config['input_whitelist'])) {
@@ -1831,8 +1977,10 @@ function graph_template_whitelist_check($graph_template_id) {
 	// load whitelist, but only once within process execution
 	if ($data_input_whitelist == null) {
 		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+
 		if ($data_input_whitelist === null) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
+
 			return true;
 		}
 	}
@@ -1851,7 +1999,7 @@ function graph_template_whitelist_check($graph_template_id) {
 
 	if (cacti_sizeof($data_input_ids)) {
 		foreach ($data_input_ids as $dii) {
-			$found = false;
+			$found      = false;
 			$data_input = db_fetch_row_prepared('SELECT *
 				FROM data_input
 				WHERE id = ?',
@@ -1874,4 +2022,3 @@ function graph_template_whitelist_check($graph_template_id) {
 
 	return $valid;
 }
-

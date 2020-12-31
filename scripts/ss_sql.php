@@ -3,11 +3,19 @@
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
-	include_once(dirname(__FILE__) . '/../include/cli_check.php');
+	include_once(__DIR__ . '/../include/cli_check.php');
 
 	print call_user_func('ss_sql');
 }
 
+/**
+ * ss_sql
+ *
+ * Insert description here
+ *
+ *
+ * @return type
+ */
 function ss_sql() {
 	global $database_username;
 	global $database_password;
@@ -28,4 +36,3 @@ function ss_sql() {
 
 	return trim($result);
 }
-

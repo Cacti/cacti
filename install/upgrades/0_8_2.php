@@ -22,6 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * upgrade_to_0_8_2
+ *
+ * Insert description here
+ *
+ */
 function upgrade_to_0_8_2() {
 	global $database_log;
 

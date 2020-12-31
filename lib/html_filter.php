@@ -22,10 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-/*
+/**
  * Create a consistent responsive filter
  */
-
 class CactiTableFilter {
 	public $form_header    = '';
 	public $form_action    = '';
@@ -39,7 +38,20 @@ class CactiTableFilter {
 	private $item_rows     = array();
 	private $filter_array  = array();
 
-
+	/**
+	 * __construct
+	 *
+	 * Insert description here
+	 *
+	 * @param string $form_header
+	 * @param string $form_action
+	 * @param string $form_id
+	 * @param string $form_width
+	 * @param string $session_var
+	 * @param string $action_url
+	 * @param string $action_label
+	 * @access public
+	 */
 	public function __construct($form_header = '', $form_action = '', $form_id = '',
 		$form_width = '', $session_var = '', $action_url = '', $action_label = '') {
 		global $item_rows;
@@ -92,16 +104,34 @@ class CactiTableFilter {
 				)
 			),
 			'sort' => array(
-				'sort_column' => 'name',
+				'sort_column'    => 'name',
 				'sort_direction' => 'ASC'
 			)
 		);
 	}
 
+	/**
+	 * __destruct
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function __destruct() {
 		return true;
 	}
 
+	/**
+	 * set_filter_row
+	 *
+	 * Insert description here
+	 *
+	 * @param type $array
+	 * @param false $index
+	 * @access public
+	 */
 	public function set_filter_row($array, $index = false) {
 		if ($index === false) {
 			$this->filter_array['rows'][] = $array;
@@ -110,31 +140,78 @@ class CactiTableFilter {
 		}
 	}
 
+	/**
+	 * get_filter_row
+	 *
+	 * Insert description here
+	 *
+	 * @param type $index
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function get_filter_row($index) {
-		if ($index === false ) {
+		if ($index === false) {
 			return false;
-		} elseif (array_key_exists($index, $this->filter_array['rows'])) {
+		}
+
+		if (array_key_exists($index, $this->filter_array['rows'])) {
 			return $this->filter_array['rows'][$index];
 		} else {
 			return false;
 		}
 	}
 
+	/**
+	 * set_filter_array
+	 *
+	 * Insert description here
+	 *
+	 * @param type $array
+	 * @access public
+	 */
 	public function set_filter_array($array) {
 		$this->filter_array = $array;
 	}
 
+	/**
+	 * get_filter
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function get_filter() {
 		return $this->filter_array;
 	}
 
+	/**
+	 * set_sort_array
+	 *
+	 * Insert description here
+	 *
+	 * @param type $sort_column
+	 * @param type $sort_direction
+	 * @access public
+	 */
 	public function set_sort_array($sort_column, $sort_direction) {
 		$this->filter_array['sort'] = array(
-			'sort_column' => $sort_column,
+			'sort_column'    => $sort_column,
 			'sort_direction' => $sort_direction
 		);
 	}
 
+	/**
+	 * filter_render
+	 *
+	 * Insert description here
+	 *
+	 * @access public
+	 *
+	 * @return type
+	 */
 	public function filter_render() {
 		/* setup filter variables */
 		$this->sanitize_filter_variables();
@@ -148,6 +225,15 @@ class CactiTableFilter {
 		return true;
 	}
 
+	/**
+	 * create_filter
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function create_filter() {
 		if (!cacti_sizeof($this->filter_array)) {
 			$this->filter_array = $this->default_filter;
@@ -161,11 +247,11 @@ class CactiTableFilter {
 		if (isset($this->form_array['rows'])) {
 			print '<form id="' . $this->filter_id . '" action="' . $this->filter_action . '">' . PHP_EOL;
 
-			foreach($this->form_array['rows'] as $index => $row) {
+			foreach ($this->form_array['rows'] as $index => $row) {
 				print '<div class="filterTable">' . PHP_EOL;
 				print '<div class="formRow">' . PHP_EOL;
 
-				foreach($row as $field_name => $field_array) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 					case 'button':
 						print '<div class="formColumnButton">' . PHP_EOL;
@@ -183,6 +269,7 @@ class CactiTableFilter {
 						print '<div class="formColumn"><div class="formFieldName">' . __('Presets') . '</div></div>' . PHP_EOL;
 
 						break;
+
 					default:
 						if (isset($field_array['friendly_name'])) {
 							print '<div class="formColumn"><div class="formFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
@@ -208,6 +295,15 @@ class CactiTableFilter {
 		return ob_get_flush();
 	}
 
+	/**
+	 * create_javascript
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 *
+	 * @return type
+	 */
 	private function create_javascript() {
 		$applyFilter = '"' . $this->form_action;
 		$clearFilter = $applyFilter;
@@ -222,16 +318,17 @@ class CactiTableFilter {
 		$clearFilter .= $separator . 'header=false&clear=true"';
 		$changeChain  = '';
 
-		$separator = "\"+\"&";
+		$separator = '"+"&';
 
 		if (isset($this->form_array['rows'])) {
-			foreach($this->form_array['rows'] as $index => $row) {
-				foreach($row as $field_name => $field_array) {
+			foreach ($this->form_array['rows'] as $index => $row) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 						case 'button':
 							if ($field_name == 'clear') {
 								// have to give this some thought
 							}
+
 							break;
 						case 'checkbox':
 							$applyFilter .= $separator . $field_name . "=\"+\"$(\'#" . $field_name . "').is(':checked')";
@@ -254,6 +351,7 @@ class CactiTableFilter {
 							break;
 						case 'submit':
 							break;
+
 						default:
 							break;
 					}
@@ -290,16 +388,24 @@ class CactiTableFilter {
 		</script>" . PHP_EOL;
 	}
 
+	/**
+	 * sanitize_filter_variables
+	 *
+	 * Insert description here
+	 *
+	 * @access private
+	 */
 	private function sanitize_filter_variables() {
 		$filters = array();
 
 		if (isset($this->form_array['rows'])) {
-			foreach($this->form_array['rows'] as $index => $row) {
-				foreach($row as $field_name => $field_array) {
+			foreach ($this->form_array['rows'] as $index => $row) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 					case 'button':
 					case 'submit':
 						break;
+
 					default:
 						$filters[$field_name]['filter'] = $field_array['filter'];
 
