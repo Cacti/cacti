@@ -542,29 +542,78 @@ function item_edit() {
 		});
 
 		setRowVisibility();
+		cdefAlignment();
+
+		if ($('#cdef_id').selectmenu('instance') !== undefined) {
+			$('#cdef_id').selectmenu('destroy');
+			$('#cdef_id').selectmenu({
+				open: function() {
+					cdefAlignment();
+				}
+			});
+		} else {
+			$('#cdef_id').click(function() {
+				cdefAlignment();
+			});
+		}
+
 		$('#graph_type_id').change(function(data) {
 			setRowVisibility();
 		});
 	});
 
-	/*
-	columns - task_item_id color_id alpha graph_type_id consolidation_function_id cdef_id value gprint_id text_format hard_return
-
-	graph_type_ids - 1 - Comment 2 - HRule 3 - Vrule 4 - Line1 5 - Line2 6 - Line3 7 - Area 8 - Stack 9 - Gprint 10 - Legend
-	*/
+	/**
+	 * columns - task_item_id color_id alpha graph_type_id consolidation_function_id cdef_id value gprint_id text_format hard_return
+	 *
+	 * graph_type_ids
+	 *   1  - Comment
+	 *   2  - HRule
+	 *   3  - Vrule
+	 *   4  - Line1
+	 *   5  - Line2
+	 *   6  - Line3
+	 *   7  - Area
+	 *   8  - Stack
+	 *   9  - Gprint
+	 *   10 - Legend
+	 *
+	 */
 
 	function changeColorId() {
 		$('#alpha').prop('disabled', true);
+
 		if ($('#color_id').val() != 0) {
 			$('#alpha').prop('disabled', false);
 		}
+
 		switch($('#graph_type_id').val()) {
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-			$('#alpha').prop('disabled', false);
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+				$('#alpha').prop('disabled', false);
+		}
+	}
+
+	function cdefAlignment() {
+		if ($('#task_item_id').val() == '0') {
+			$('#cdef_id option').each(function() {
+				if ($(this).text().indexOf('_AGGREGATE') >= 0) {
+					$(this).prop('disabled', true);
+				}
+			});
+		} else {
+			$('#cdef_id option').each(function() {
+				if ($(this).text().indexOf('_AGGREGATE') >= 0) {
+					$(this).prop('disabled', false);
+					$(this).removeAttr('disabled');
+				}
+			});
+		}
+
+		if ($('#cdef_id').selectmenu('instance') !== undefined) {
+			$('#cdef_id').selectmenu('refresh');
 		}
 	}
 
@@ -743,6 +792,7 @@ function item_edit() {
 		}
 
 		changeColorId();
+		cdefAlignment();
 	}
 
 	</script>

@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#3392: Customize filters and host list in Console->Devices page
 -issue#3981: PHP ERROR: Call to undefined function api_data_source_cache_crc_update()
 -issue#3879: Graph/Data Source creation with custom fields not prompting during 1st creation
+-issue#3936: Aggregate Graph that has been converted to a normal graph breaks when edited
 -issue#3969: SNMPv3 Password Length Limit
 -issue#3976: Multi-Selectable dropdown filter's option class is ignored
 -issue#3977: Cacti CLI upgrade_database.php misses constant IN_CACTI_INSTAL which may result in upgrade failures
