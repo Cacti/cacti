@@ -752,6 +752,7 @@ function get_message_level(array $current_message): int {
  * get_format_message_instance - finds the level of the current message instance
  *
  * @param message mixed the message instance
+ * @param mixed $current_message
  *
  * @return - (string) a formatted message
  */
@@ -2211,6 +2212,7 @@ function generate_data_source_path(int $local_data_id): string {
  * @param $data_template_id
  * @param $requested_cf
  * @param $ds_step
+ * @param mixed $local_data_id
  *
  * @return - the best cf to use
  */
@@ -3264,6 +3266,7 @@ function get_hash_data_template(int $data_template_id, string $sub_type = 'data_
  *
  * @param $graph_template_id - (int) the ID of the data input method to return a hash for
  * @param $sub_type (optional) return the hash for a particular subtype of this type
+ * @param mixed $data_input_id
  *
  * @return - a 128-bit, hexadecimal hash
  */

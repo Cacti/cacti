@@ -198,6 +198,9 @@ function display_help() {
 
 /**
  * process_poller_output REAL TIME MODIFIED
+ * @param mixed $rrdtool_pipe
+ * @param mixed $poller_id
+ * @param mixed $interval
  */
 function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 	global $config;

@@ -1058,7 +1058,7 @@ function rrdtool_function_tune($rrd_tune_array) {
  * data sources for each set of data.  So, if you have traffic_in and traffic_out,
  * each member element in the array will have the maximum of traffic_in and traffic_out
  * in it.
-
+ *
  * $fetch_array['data_source_names'][0] = 'ds1'
  * $fetch_array['data_source_names'][1] = 'ds2'
  * $fetch_array['data_source_names'][2] = 'nth_percentile_maximum'
@@ -3293,7 +3293,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 	# header data
 	$header_items = array(
 		array(
-			'display' =>__('Header'),
+			'display' => __('Header'),
 			'align'   => 'left'
 		),
 		array(

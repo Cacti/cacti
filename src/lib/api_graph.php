@@ -224,6 +224,7 @@ function api_graph_remove_multi($local_graph_ids) {
  * @param $graph_templates_graph_id - the id of the graph to resize
  * @param $graph_width - the width of the resized graph
  * @param $graph_height - the height of the resized graph
+ * @param mixed $local_graph_id
  */
 function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
 	/* get graphs template id */
@@ -237,6 +238,7 @@ function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
  * api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
  *
  * @param int $graph_templates_graph_id - the id of the graph to reapply the name to
+ * @param mixed $local_graph_id
  */
 function api_reapply_suggested_graph_title($local_graph_id) {
 	global $config;

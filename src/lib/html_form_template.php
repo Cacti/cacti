@@ -114,6 +114,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
  *   |id| - the current graph input id
  * @param $header_title - the title to use on the header for this form
  * @param $alternate_colors (bool) - whether to alternate colors for each row on the form or not
+ * @param mixed $locked
  */
 function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = '|field|_|id|', $header_title = '', $alternate_colors = true, $locked = 'false') {
 	global $struct_graph_item;
@@ -490,6 +491,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
  *   html input elements or omitted altogether?
  * @param $snmp_query_id - if this graph template is part of a data query, specify the data query id here. this
  *   will be used to determine if a given field is associated with a suggested value
+ * @param mixed $data_template_data_id
  */
 function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = '|field|',
 	$header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {

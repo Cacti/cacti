@@ -67,6 +67,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
 
 			$_SESSION['sess_user_2fa'] = $g->checkCode($user['tfa_secret'], $token);
+
 			$time = floor(time() / (3600 * 24)); // get day number
 
 			//about using the user agent: It's easy to fake it, but it increases the barrier for stealing and reusing cookies nevertheless

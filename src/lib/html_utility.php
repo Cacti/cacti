@@ -188,6 +188,7 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
  * @param $light - Alternate odd style
  * @param $row_id - The id of the row
  * @param $reset - Reset to top of table
+ * @param mixed $disabled
  */
 function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	static $i = 1;
@@ -274,6 +275,8 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
  * form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
  *
  * @param $title - the text that will be displayed if your hover over the checkbox
+ * @param mixed $id
+ * @param mixed $disabled
  */
 function form_checkbox_cell($title, $id, $disabled = false) {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
@@ -292,6 +295,10 @@ function form_end_row() {
  * form_confirm_buttons - provides confirm buttons in the gui
  *
  * @param $message - the value of the HTML checkbox
+ * @param mixed $post_variable
+ * @param mixed $item_array
+ * @param mixed $save_message
+ * @param mixed $return
  */
 function form_confim_buttons($post_variable, $item_array, $save_message, $return = false) {
 	print "<tr>
@@ -490,6 +497,8 @@ function get_request_var_request($name, $default = '') {
  *   $_REQUEST array
  * @param $default - the value to return if the specified name does not exist in the
  *   $_REQUEST array
+ * @param mixed $filter
+ * @param mixed $options
  *
  * @return - the value of the request variable
  */
@@ -705,6 +714,7 @@ function get_request_var_post($name, $default = '') {
  *
  * @param $filters - an array keyed with the filter methods.
  * @param $session_prefix - the prefix for the session variable
+ * @param mixed $sess_prefix
  *
  * @return - the $_REQUEST variable validated and sanitized.
  */
@@ -850,6 +860,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
  * update_order_string - creates a sort string for standard Cacti tables
  *
  * @return - null
+ * @param mixed $inplace
  */
 function update_order_string($inplace = false) {
 	$page = get_order_string_page();
@@ -1148,6 +1159,9 @@ function display_tooltip($text) {
  * @param $current_page - the current page number
  * @param $total_rows - the total number of available rows
  * @param $url - the url string to prepend to each page click
+ * @param mixed $rows_per_page
+ * @param mixed $page_var
+ * @param mixed $return_to
  *
  * @return - a string containing html that represents the a page list
  */

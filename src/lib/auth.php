@@ -149,6 +149,7 @@ function check_auth_cookie() {
  * @param $new_realm - new realm of the account to be created, overwrite not affected, but is used for lookup
  * @param $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm
  * @param $data_override - Array of user_auth field and values to override on the new user
+ * @param mixed $template_realm
  *
  * @return - the new users id, or false on no copy
  */
@@ -363,6 +364,7 @@ function user_enable($user_id) {
 
 /**
  * get_auth_realms - return a list of system user authentication realms
+ * @param mixed $login
  */
 function get_auth_realms($login = false) {
 	if (read_config_option('auth_method') == 4) {
@@ -475,6 +477,7 @@ function get_graph_permissions_sql($policy_graphs, $policy_hosts, $policy_graph_
  * is_graph_allowed - determines whether the current user is allowed to view a certain graph
  *
  * @param $local_graph_id - (int) the ID of the graph to check permissions for
+ * @param mixed $user
  *
  * @return - (bool) whether the current user is allowed the view the specified graph or not
  */
@@ -557,6 +560,7 @@ function auth_augment_roles($role_name, $files) {
  * is_tree_allowed - determines whether the current user is allowed to view a certain graph tree
  *
  * @param $tree_id - (int) the ID of the graph tree to check permissions for
+ * @param mixed $user
  *
  * @return - (bool) whether the current user is allowed the view the specified graph tree or not
  */
@@ -637,6 +641,7 @@ function is_tree_allowed($tree_id, $user = 0) {
  * is_device_allowed - determines whether the current user is allowed to view a certain device
  *
  * @param $host_id - (int) the ID of the device to check permissions for
+ * @param mixed $user
  *
  * @return - (bool) whether the current user is allowed the view the specified device or not
  */
@@ -651,6 +656,7 @@ function is_device_allowed($host_id, $user = 0) {
  * is_graph_template_allowed - determines whether the current user is allowed to view a certain graph template
  *
  * @param $graph_template_id - (int) the ID of the graph template to check permissions for
+ * @param mixed $user
  *
  * @return - (bool) whether the current user is allowed the view the specified graph template or not
  */
@@ -664,6 +670,7 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
 /**
  * is_view_allowed - Returns a true or false as to wether or not a specific view type is allowed
  * view options include 'show_tree', 'show_list', 'show_preview', 'graph_settings'
+ * @param mixed $view
  */
 function is_view_allowed($view = 'show_tree') {
 	if (read_config_option('auth_method') != 0) {
@@ -3064,6 +3071,7 @@ function rsa_check_keypair() {
  * reset_group_perms - sets a flag for all users of a group logged in that their perms need to be reloaded from the database
  *
  * @param $user_id - (int) the id of the current user
+ * @param mixed $group_id
  *
  * @return - null
  */
@@ -3161,6 +3169,7 @@ function compat_password_verify($password, $hash) {
  *
  * @param $password - (string) password to hash
  * @param $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+ * @param mixed $options
  *
  * @return - hash of password, false otherwise
  */
@@ -3182,6 +3191,7 @@ function compat_password_hash($password, $algo, $options = array()) {
  *
  * @param $password - (string) password to hash
  * @param $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+ * @param mixed $options
  *
  * @return - true if password hash needs changing, false otherwise
  */

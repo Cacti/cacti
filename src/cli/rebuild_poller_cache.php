@@ -151,6 +151,8 @@ function display_help() {
 
 /**
  * debug - simple function to send debug message to stdout
+ *
+ * @param mixed $message
  */
 function debug($message) {
 	global $debug;

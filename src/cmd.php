@@ -56,6 +56,8 @@ function sig_handler($signo) {
  *
  * function to assist in logging
  *
+ * @param mixed $host_id
+ * @param mixed $level
  */
 function debug_level($host_id, $level) {
 	global $debug;
@@ -85,6 +87,7 @@ require_once($config['base_path'] . '/lib/ping.php');
  *
  * let the poller server know about cmd.php being finished
  *
+ * @param mixed $pid
  */
 function record_cmdphp_done($pid = '') {
 	global $poller_id, $poller_db_cnn_id;

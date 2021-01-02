@@ -271,6 +271,10 @@ print PHP_EOL;
 
 /**
  * get_install_option - gets the install options from a json file
+ *
+ * @param mixed $options
+ * @param mixed $file
+ * @param mixed $json
  */
 function get_install_option(&$options, $file, $json = true) {
 	if (empty($file)) {
@@ -308,6 +312,11 @@ function get_install_option(&$options, $file, $json = true) {
 
 /**
  * set_install_option - sets and optional displays debug line of action
+ *
+ * @param mixed $options
+ * @param mixed $key
+ * @param mixed $display_name
+ * @param mixed $value
  */
 function set_install_option(&$options, $key, $display_name, $value) {
 	global $debug;
@@ -319,6 +328,13 @@ function set_install_option(&$options, $key, $display_name, $value) {
 /**
  * set_install_multioption - sets sub-options that have mutiple
  * key/value combinations with optional prefix
+ *
+ * @param mixed $options
+ * @param mixed $key
+ * @param mixed $display_name
+ * @param mixed $value
+ * @param mixed $prefix
+ * @param mixed $replace_dots
  */
 function set_install_multioption(&$options, $key, $display_name, $value, $prefix, $replace_dots = false) {
 	$option_pos = strpos($value, ':');

@@ -207,6 +207,7 @@ function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext) {
  * db_close - closes the open connection
  *
  * @return - the result of the close command
+ * @param mixed $db_conn
  */
 function db_close($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -231,6 +232,7 @@ function db_close($db_conn = false) {
  *
  * @param $sql - the sql query to execute
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - '1' for success, '0' for error
  */
@@ -243,6 +245,12 @@ function db_execute($sql, $log = true, $db_conn = false) {
  *
  * @param $sql - the sql query to execute
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $params
+ * @param mixed $db_conn
+ * @param mixed $execute_name
+ * @param mixed $default_value
+ * @param mixed $return_func
+ * @param mixed $return_params
  *
  * @return - '1' for success, '0' for error
  */
@@ -416,6 +424,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
  * @param $sql - the sql query to execute
  * @param $col_name - use this column name instead of the first one
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - (bool) the output of the sql query as a single variable
  */
@@ -436,6 +445,8 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
  * @param $sql - the sql query to execute
  * @param $col_name - use this column name instead of the first one
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $params
+ * @param mixed $db_conn
  *
  * @return - (bool) the output of the sql query as a single variable
  */
@@ -484,6 +495,7 @@ function db_fetch_cell_return($query, $col_name = '') {
  *
  * @param $sql - the sql query to execute
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - the first row of the result as a hash
  */
@@ -502,6 +514,8 @@ function db_fetch_row($sql, $log = true, $db_conn = false) {
  *
  * @param $sql - the sql query to execute
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $params
+ * @param mixed $db_conn
  *
  * @return - the first row of the result as a hash
  */
@@ -543,6 +557,7 @@ function db_fetch_row_return($query) {
  *
  * @param $sql - the sql query to execute
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - the entire result set as a multi-dimensional hash
  */
@@ -561,6 +576,8 @@ function db_fetch_assoc($sql, $log = true, $db_conn = false) {
  *
  * @param $sql - the sql query to execute
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $params
+ * @param mixed $db_conn
  *
  * @return - the entire result set as a multi-dimensional hash
  */
@@ -599,6 +616,7 @@ function db_fetch_assoc_return($query) {
  * db_fetch_insert_id - get the last insert_id or auto incriment
  *
  * @return - the id of the last auto increment row that was created
+ * @param mixed $db_conn
  */
 function db_fetch_insert_id($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -619,6 +637,7 @@ function db_fetch_insert_id($db_conn = false) {
  * db_affected_rows - return the number of rows affected by the last transaction
  *
  * @return - the number of rows affected by the last transaction
+ * @param mixed $db_conn
  */
 function db_affected_rows($db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -641,6 +660,7 @@ function db_affected_rows($db_conn = false) {
  * @param $table - the name of the table
  * @param $column - array of column data ex: array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - '1' for success, '0' for error
  */
@@ -727,6 +747,7 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
  * @param $table - the name of the table
  * @param $column - array of column data ex: array('old_name' => 'test', 'name' => 'newtest' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - '1' for success, '0' for error
  */
@@ -817,6 +838,7 @@ function db_change_column($table, $column, $log = true, $db_conn = false) {
  * @param $table - the name of the table
  * @param $column - column name
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - '1' for success, '0' for error
  */
@@ -882,6 +904,7 @@ function db_add_index($table, $type, $key, $columns) {
  * @param $table - the name of the table
  * @param $index - the name of the index
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - (bool) the output of the sql query as a single variable
  */
@@ -916,6 +939,7 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
  * @param $index - the name of the index
  * @param $columns - the columns of the index that should match
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - (bool) the output of the sql query as a single variable
  */
@@ -982,6 +1006,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
  *
  * @param $table - the name of the table
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - (bool) the output of the sql query as a single variable
  */
@@ -1053,6 +1078,7 @@ function db_cacti_initialized($is_web = true) {
  * @param $table - the name of the table
  * @param $column - the name of the column
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - (bool) the output of the sql query as a single variable
  */
@@ -1072,6 +1098,7 @@ function db_column_exists($table, $column, $log = true, $db_conn = false) {
  * db_get_table_column_types - returns all the types for each column of a table
  *
  * @param $table - the name of the table
+ * @param mixed $db_conn
  *
  * @return - (array) an array of column types indexed by the column names
  */
@@ -1353,6 +1380,7 @@ function db_format_index_create($indexes) {
  * @param $table - the name of the table
  * @param $data - data array
  * @param $log - whether to log error messages, defaults to true
+ * @param mixed $db_conn
  *
  * @return - (bool) the output of the sql query as a single variable
  */
@@ -1620,6 +1648,7 @@ function array_to_sql_or($array, $sql_column) {
  * @param $array_items - an array containing each column -> value mapping in the row
  * @param $keyCols - a string or array of primary keys
  * @param $autoQuote - whether to use intelligent quoting or not
+ * @param mixed $db_conn
  *
  * @return - the auto incriment id column (if applicable)
  */
@@ -1713,6 +1742,8 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
  * @param $array_items - an array containing each column -> value mapping in the row
  * @param $table_name - the name of the table to make the replacement in
  * @param $key_cols - the primary key(s)
+ * @param mixed $autoinc
+ * @param mixed $db_conn
  *
  * @return - the auto incriment id column (if applicable)
  */
@@ -1967,6 +1998,7 @@ function db_error() {
  * db_get_default_database - Get the database name of the current database or return the default database name
  *
  * @return - string - either current db name or configuration default if no connection/name
+ * @param mixed $db_conn
  */
 function db_get_default_database($db_conn = false) {
 	global $database_default;

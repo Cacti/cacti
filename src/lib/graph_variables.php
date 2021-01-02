@@ -30,6 +30,8 @@
  * @param $stop_seconds - stop seconds of time range
  * @param $percentile - Nth Percentile to calculate, integer between 1 and 99
  * @param $resolution - the accuracy of the data measured in seconds
+ * @param mixed $end_seconds
+ * @param mixed $peak
  *
  * @return - (array) an array containing each data source item, and its 95th percentile
  */
@@ -68,6 +70,8 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
  * @param $stop_seconds - stop seconds of time range
  * @param $percentile - Nth Percentile to calculate, integer between 1 and 99
  * @param $resolution - the accuracy of the data measured in seconds
+ * @param mixed $end_seconds
+ * @param mixed $peak
  *
  * @return - (array) an array containing each data source item, and its 95th percentile
  */

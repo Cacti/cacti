@@ -51,6 +51,7 @@ function get_vdef_item_name($vdef_item_id) {
  * string. this name will be resolved recursively if necessary
  *
  * @param $vdef_id - the id of the vdef to resolve
+ * @param mixed $display
  *
  * @return - a text-based representation of the vdef
  */

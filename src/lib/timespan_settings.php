@@ -47,6 +47,7 @@ finalize_timespan($timespan);
 
 /**
  * initialize the timespan selector for first use
+ * @param mixed $timespan
  */
 function initialize_timespan(&$timespan) {
 	/* initialize the default timespan if not set */
@@ -114,6 +115,8 @@ function process_html_variables() {
 /**
  * when a span time preselection has been defined update the span time fields
  * someone hit a button and not a dropdown
+ * @param mixed $timespan
+ * @param mixed $timeshift
  */
 function process_user_input(&$timespan, $timeshift) {
 	if (isset_request_var('date1')) {
@@ -179,6 +182,7 @@ function process_user_input(&$timespan, $timeshift) {
 
 /**
  * establish graph timespan from either a user select or the default
+ * @param mixed $timespan
  */
 function set_preset_timespan(&$timespan) {
 	# no current timespan: get default timespan

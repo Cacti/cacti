@@ -146,6 +146,8 @@ function push_out_data_source_custom_data($data_template_id) {
  *
  * @parm string $did_vals	- data input data fields
  * @parm string $ds_in_str	- all data sources, formatted as SQL 'IN' clause
+ * @param mixed $did_vals
+ * @param mixed $ds_in_str
  */
 function push_out_data_source_templates($did_vals, $ds_in_str) {
 	/* update all templated input fields */
@@ -461,6 +463,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
  * pushed out
  *
  * @param $graph_template_item_id - the id of the graph template item to push out values for
+ * @param mixed $local_graph_id
  */
 function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	global $struct_graph_item;
@@ -1101,6 +1104,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
  *     $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
  *     $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
  *     $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
+ * @param mixed $suggested_vals
  */
 function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals) {
 	global $config;
@@ -1469,6 +1473,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
  *     $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
  *     $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
  * @param $previous_data_source - the previous data source if this data source id duplicate.
+ * @param mixed $suggested_vals
  */
 function create_graph_custom_data_compatible($suggested_vals, $previous_data_source) {
 	$compatible = true;
