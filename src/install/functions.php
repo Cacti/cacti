@@ -864,6 +864,9 @@ function to_array($data) {
  * we want the user to input. The "name" field must exist in the 'settings' table for
  * this to work. Cacti also uses different default values depending on what OS it is
  * running on.
+ *
+ * @param mixed $name
+ * @param mixed $defaultPaths
  */
 function install_tool_path($name, $defaultPaths) {
 	global $config, $settings;

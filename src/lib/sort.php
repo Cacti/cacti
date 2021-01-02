@@ -32,7 +32,8 @@
  * @param $b - the second string to compare
  *
  * @return - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
- *   $b is equal to $b */
+ *   $b is equal to $b
+ */
 function usort_data_query_index($a, $b) {
 	/* split strings to be compared into chunks
 	 * that shall be compared seperately,
@@ -118,6 +119,10 @@ function usort_natural($a, $b) {
 
 /**
  * sort_by_subkey - takes the list of templates and performa a final sort
+ *
+ * @param mixed $array
+ * @param mixed $subkey
+ * @param mixed $sort
  *
  * @return (array) an array of sorted templates
  */

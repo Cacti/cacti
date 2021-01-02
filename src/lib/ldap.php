@@ -57,6 +57,7 @@
  * @param $group_dn - LDAP Group DN
  * @param $group_attrib - Name of the LDAP Attrib that contains members
  * @param $group_require - '1' DN or '2' Username, user group member ship type
+ * @param mixed $group_member_type
  *
  * @return - array of values
  *   'error_num' = error number returned

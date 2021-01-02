@@ -2940,6 +2940,7 @@ function create_all_header_nodes($item_id, $rule) {
  * @param $rule                - rule
  * @param $tree_item           - rule item; replacement_pattern may result in multi-line replacement
  * @param $parent_tree_item_id - parent tree item id
+ * @param mixed $object
  *
  * @return - id of the header that was hooked in
  */
@@ -3821,6 +3822,10 @@ function automation_valid_snmp_device(&$device) {
 /**
  * gethostbyaddr_wtimeout - This function provides a good method of performing
  * a rapid lookup of a DNS entry for a host so long as you don't have to look far.
+ *
+ * @param mixed $ip
+ * @param mixed $dns
+ * @param mixed $timeout
  */
 function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	/* random transaction number (for routers etc to get the reply back) */

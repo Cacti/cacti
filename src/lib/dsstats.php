@@ -43,6 +43,7 @@ function get_rrdfile_names() {
  * when running in debug mode.
  *
  * @return - NULL
+ * @param mixed $message
  */
 function dsstats_debug($message) {
 	global $debug;
@@ -211,19 +212,22 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 /**
  * dsstats_obtain_data_source_avgpeak_values - this routine, given the rrdfile name, interval and RRDtool process
  * pipes, will obtain the average a peak values from the RRDfile.  It does this in two steps:
-
+ *
  * 1) It first reads the RRDfile's information header to obtain all of the internal data source names,
  *    poller interval and consolidation functions.
  * 2) Based upon the available consolidation functions, it then grabs either AVERAGE, and MAX, or just AVERAGE
  *    in the case where the MAX consolidation function is not included in the RRDfile, and then proceeds to
  *    gather data from the RRDfile for the time period in question.  It allows RRDtool to select the RRA to
  *    use by simply limiting the number of rows to be returned to the default.
-
+ *
  * Once it has all of the information from the RRDfile.  It then decomposes the resulting XML file to its
  * components and then calculates the AVERAGE and MAX values from that data and returns an array to the calling
  * function for storage into the respective database table.
  *
  * @return - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name
+ * @param mixed $rrdfile
+ * @param mixed $interval
+ * @param mixed $pipes
  */
 function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) {
 	global $config, $user_time, $system_time, $real_time;
@@ -510,7 +514,7 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
  * The routine basically loads those 4 structures into memory, and then uses them to
  * determine what should be stored in both the Cache and the Last tables.  The 4 structures
  * contain the following information:
-
+ *
  * $ds_types - The type of data source, keyed by the local_data_id and the rrd_name stored inside
  *             of the RRDfile.
  * $ds_last  - For the COUNTER, and DERIVE DS types, the last measured and stored value.
@@ -521,7 +525,7 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
  * The routine loops through all poller output items and makes decisions relative to the output
  * that should be stored into the two tables, and then bulk inserts that information once
  * all poller items have been processed.
-
+ *
  * The pupose for loading then entire structures into memory at one time is to reduce the latency
  * related to multiple database calls.  The author believed that PHP's array hashing algorythms
  * would be as fast, if not faster, than MySQL, when considering the transaction overhead and therefore
@@ -950,6 +954,7 @@ function dsstats_rrdtool_execute($command, $pipes) {
  * closing the pipes.
  *
  * @return - NULL
+ * @param mixed $process
  */
 function dsstats_rrdtool_close($process) {
 	proc_close($process);

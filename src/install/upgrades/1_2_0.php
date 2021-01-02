@@ -53,7 +53,6 @@ function upgrade_to_1_2_0() {
 		// Ensure value falls in line with what we expect for processes
 		$max_processes = read_config_option('concurrent_processes');
 
-
 		if ($max_processes < 1) {
 			$max_processes  = 1;
 		}

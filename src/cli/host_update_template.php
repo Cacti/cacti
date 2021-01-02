@@ -198,6 +198,8 @@ function display_help() {
 
 /**
  * debug - simple debug function to print to stdout
+ *
+ * @param mixed $message
  */
 function debug($message) {
 	global $debug;

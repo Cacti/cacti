@@ -27,6 +27,7 @@
  * when running in debug mode.
  *
  * @return - NULL
+ * @param mixed $message
  */
 function dsdebug_debug($message) {
 	global $debug;
@@ -41,6 +42,8 @@ function dsdebug_debug($message) {
  * table so that the statistcs can be graphed as well.
  *
  * @param $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
+ * @param mixed $checks
+ * @param mixed $issues
  *
  * @return - null
  */

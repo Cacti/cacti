@@ -362,6 +362,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
  * This function allows simulating transactions in an MyISAM database.
  *
  * @param $lockname - The name of the lock to be created
+ * @param mixed $timeout
  *
  * @return - true depending on outcome
  */
@@ -400,6 +401,7 @@ function api_tree_release_lock($lockname) {
  * @param $tree_id - The tree to remove from
  * @param $node_id - The branch/leaf to place the new branch/leaf
  * @param $title - The new brnach/leaf title
+ * @param mixed $position
  *
  * @return - json encoded new leaf information
  */
@@ -559,6 +561,7 @@ function api_tree_graph_exists($tree_id, $parent, $local_graph_id) {
  *
  * @param $tree_id - The tree to remove from
  * @param $leaf_id - The branch to remove
+ * @param mixed $node_id
  *
  * @return - null
  */
@@ -623,6 +626,10 @@ function api_tree_delete_node_content($tree_id, $leaf_id) {
  * api_tree_move_node - given the current node information and it's new branch, move it.
  *
  * @param $variable - The request variable to parse
+ * @param mixed $tree_id
+ * @param mixed $node_id
+ * @param mixed $new_parent
+ * @param mixed $new_position
  *
  * @return - array of information about the variable
  */
@@ -1165,6 +1172,7 @@ function api_tree_get_branch_id($tree_id, $parent, $title) {
  *
  * @param $leaf_id - the leaf id
  * @param $tree_id - the tree id
+ * @param mixed $lock
  *
  * @return - the name of the leaf
  */
@@ -1399,6 +1407,7 @@ function api_tree_sort_name_desc() {
  * This function queries the Cacti database and move a tree down one sequence.
  *
  * @return - null
+ * @param mixed $tree_id
  */
 function tree_down($tree_id) {
 	/* ================= input validation ================= */
@@ -1433,6 +1442,7 @@ function tree_down($tree_id) {
  * This function queries the Cacti database and move a tree up one sequence.
  *
  * @return - null
+ * @param mixed $tree_id
  */
 function tree_up($tree_id) {
 	/* ================= input validation ================= */
@@ -1467,6 +1477,7 @@ function tree_up($tree_id) {
  * This function given an array of Cacti tree ids, will sort the trees by that array.
  *
  * @return - null
+ * @param mixed $tree_ids
  */
 function api_tree_dnd($tree_ids) {
 	$tids     = $tree_ids;
@@ -1491,6 +1502,7 @@ function api_tree_dnd($tree_ids) {
  * This function given a Cacti tree's nodeid, will return the sort type.
  *
  * @return - the sort type
+ * @param mixed $nodeid
  */
 function api_tree_get_host_sort_type($nodeid) {
 	if (!empty($nodeid)) {
@@ -1528,6 +1540,8 @@ function api_tree_get_host_sort_type($nodeid) {
  * This function given a Cacti tree's nodeid, will return the sort type.
  *
  * @return - null
+ * @param mixed $nodetype
+ * @param mixed $nodeid
  */
 function api_tree_set_host_sort_type($nodetype, $nodeid) {
 	$type   = '';
@@ -1567,6 +1581,7 @@ function api_tree_set_host_sort_type($nodetype, $nodeid) {
  * This function given a Cacti tree's nodeid, will return the sort type.
  *
  * @return - the sort type
+ * @param mixed $nodeid
  */
 function api_tree_get_branch_sort_type($nodeid) {
 	$ndata = explode('_', $nodeid);
@@ -1629,6 +1644,8 @@ function api_tree_get_branch_sort_type($nodeid) {
  * This function given a Cacti tree's nodeid, will set the sort type.
  *
  * @return - null
+ * @param mixed $nodetype
+ * @param mixed $nodeid
  */
 function api_tree_set_branch_sort_type($nodetype, $nodeid) {
 	$type   = '';
@@ -1702,6 +1719,8 @@ function api_tree_set_branch_sort_type($nodetype, $nodeid) {
  * This function given a branch id within a tree and a tree id, will sort it recursively
  *
  * @return - null
+ * @param mixed $branch
+ * @param mixed $tree_id
  */
 function api_tree_sort_recursive($branch, $tree_id) {
 	/* ================= input validation ================= */
@@ -1743,6 +1762,8 @@ function api_tree_sort_recursive($branch, $tree_id) {
  * This function given a parent branch id and tree, return if a parent has children
  *
  * @return - true or false
+ * @param mixed $parent
+ * @param mixed $tree_id
  */
 function api_tree_leaves_exist($parent, $tree_id) {
 	/* ================= input validation ================= */

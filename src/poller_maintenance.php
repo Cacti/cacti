@@ -368,6 +368,9 @@ function logrotate_rotatenow() {
  * logrotate_file_rotate()
  *
  * rotates the specified log file, appending date given
+ * @param mixed $name
+ * @param mixed $log
+ * @param mixed $date
  */
 function logrotate_file_rotate($name, $log, $date) {
 	if (empty($log)) {
@@ -424,6 +427,10 @@ function logrotate_file_rotate($name, $log, $date) {
  * logrotate_file_clean
  *
  * Cleans up any old log files that should be removed
+ * @param mixed $name
+ * @param mixed $log
+ * @param mixed $date
+ * @param mixed $rotation
  */
 function logrotate_file_clean($name, $log, $date, $rotation) {
 	global $config;
@@ -540,6 +547,7 @@ function secpass_check_expired() {
  * remove_files
  *
  * remove all unwanted files; the list is given by table data_source_purge_action
+ * @param mixed $file_array
  */
 function remove_files($file_array) {
 	global $config, $debug, $archived, $purged;

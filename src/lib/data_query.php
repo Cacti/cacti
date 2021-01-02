@@ -1739,6 +1739,7 @@ function encode_data_query_index($index) {
  * @param $encoded_index - the index that was encoded with encode_data_query_index()
  * @param $data_query_id - the id of the data query that this index belongs to
  * @param $encoded_index - the id of the host that this index belongs to
+ * @param mixed $host_id
  *
  * @return - the decoded data query index
  */
@@ -1805,6 +1806,9 @@ function update_data_query_cache($host_id, $data_query_id) {
  * update_graph_data_query_cache - updates the local data query cache for a particular graph
  *
  * @param $local_graph_id - the id of the graph to update the data query cache for
+ * @param mixed $host_id
+ * @param mixed $data_query_id
+ * @param mixed $previous_index
  */
 function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_query_id = '', $previous_index = '') {
 	global $data_query_id_cache;
@@ -1864,6 +1868,9 @@ function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_que
  * update_data_source_data_query_cache - updates the local data query cache for a particular data source
  *
  * @param $local_data_id - the id of the data source to update the data query cache for
+ * @param mixed $host_id
+ * @param mixed $data_query_id
+ * @param mixed $previous_index
  */
 function update_data_source_data_query_cache($local_data_id, $host_id = '', $data_query_id = '', $previous_index = '') {
 	global $data_query_id_cache;

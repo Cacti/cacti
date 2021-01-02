@@ -207,6 +207,8 @@ print "NOTE: Process Complete, '$done_count' Completed, '$warn_count' Skipped\n"
 
 /**
  * update database with new information
+ *
+ * @param mixed $info
  */
 function update_database($info) {
 	/* upate table poller_item */

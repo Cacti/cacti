@@ -384,6 +384,8 @@ function apply_locale($language) {
 
 /**
  * best effort function to repair locale
+ *
+ * @param mixed $language
  */
 function repair_locale($language) {
 	global $lang2locale;

@@ -68,6 +68,8 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
  * that match a given host
  *
  * @param $host_id - (int) the ID of the host to match
+ * @param mixed $query_id
+ * @param mixed $ids
  */
 function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids = array()) {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
@@ -161,6 +163,8 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
  * that match a given host
  *
  * @param $host_id - (int) the ID of the host to match
+ * @param mixed $query_id
+ * @param mixed $ids
  */
 function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = array()) {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
@@ -449,6 +453,7 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
  * @param $string - the original string that contains the data input variables
  * @param $local_data_id - (int) the local data id to match
  * @param $max_chars - the maximum number of characters to substitute
+ * @param mixed $graph
  *
  * @return - the original string with all of the variable substitutions made
  */

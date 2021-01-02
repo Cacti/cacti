@@ -36,7 +36,7 @@
  *   you pass in a href to the function, and an optional label as $add_label
  *   The new format accepts an array of hrefs to add to the start box.  The format
  *   of the array is as follows:
-
+ *
  *   $add_text = array(
  *     array(
  *       'id' => 'uniqueid',
@@ -518,6 +518,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
  * @param $page_var - the object types that is being displayed
  * @param $return_to - paint the resulting page into this dom object
  * @param $page_count - provide a page count
+ * @param mixed $colspan
  */
 function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = '', $page_var = 'page', $return_to = '', $page_count = true) {
 	if ($object == '') $object = __('Rows');
@@ -777,7 +778,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
  *   suitable for display inside of a box element.  When a user selects a column header,
  *   the collback function "filename" will be called to handle the sort the column and display
  *   the altered results.
-   @param $header_items - an array containing a list of column items to display.  The
+ * @param $header_items - an array containing a list of column items to display.  The
  *   format is similar to the html_header, with the exception that it has three
  *   dimensions associated with each element (db_column => display_text, default_sort_order)
  *   alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
@@ -786,6 +787,8 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
  *   will be opposite this direction if the user selects the same named column.
  * @param $form_action - the url to post the 'select all' form to
  * @param $return_to - the id of the object to inject output into as a result of the sort action
+ * @param mixed $header_items
+ * @param mixed $include_form
  */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '') {
 	static $page = 0;
@@ -994,6 +997,7 @@ function html_header($header_items, $last_item_colspan = 1) {
  * @param $header_name - an array of the display name of the header for the section and
  *   optional alignment.
  * @param $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ * @param mixed $header_item
  */
 function html_section_header($header_item, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>";
@@ -1014,6 +1018,8 @@ function html_section_header($header_item, $last_item_colspan = 1) {
  * @param $header_items - an array containing a list of items to be included in the header
  *   alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
  * @param $form_action - the url to post the 'select all' form to
+ * @param mixed $include_form
+ * @param mixed $resizable
  */
 function html_header_checkbox($header_items, $include_form = true, $form_action = '', $resizable = true) {
 	/* default to the 'current' file */
@@ -1424,6 +1430,7 @@ function is_menu_pick_active($menu_url) {
 
 /**
  * draw_menu - draws the cacti menu for display in the console
+ * @param mixed $user_menu
  */
 function draw_menu($user_menu = '') {
 	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
@@ -1677,6 +1684,9 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
  * DrawMatrixHeaderItem - draws a table header
  *
  * @deprecated: deprecated function
+ * @param mixed $matrix_name
+ * @param mixed $matrix_text_color
+ * @param mixed $column_span
  */
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
 	?>
@@ -1706,6 +1716,7 @@ function form_area($text) { ?>
  * a console page
  *
  * @param url - url to be checked
+ * @param mixed $url
  *
  * @return true if console page, false if not
  */
@@ -2627,6 +2638,8 @@ function html_spikekill_js() {
  *
  * @param title - the title of the page to place in the browser
  * @param selectedTheme - optionally sets a specific theme over the current one
+ * @param mixed $title
+ * @param mixed $selectedTheme
  */
 function html_common_header($title, $selectedTheme = '') {
 	global $config, $path2calendar, $path2timepicker, $path2colorpicker;

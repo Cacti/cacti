@@ -402,6 +402,9 @@ function mapDevices($siteId, $doMap) {
 /**
  * doDeviceMap(): updates the host.site_id entry
  *
+ * @param mixed $deviceId
+ * @param mixed $siteId
+ *
  * @return bool - true if successful
  */
 function doDeviceMap($deviceId,$siteId) {
@@ -419,6 +422,12 @@ function doDeviceMap($deviceId,$siteId) {
  * geocodeAddress(): Use Google Geocode API to turn addresses into GPS coordinates
  *
  * Requires an API key, which must be provided with the --geocode-api-key parameter
+ *
+ * @param mixed $siteAddr1
+ * @param mixed $siteAddr2
+ * @param mixed $siteCity
+ * @param mixed $siteZip
+ * @param mixed $siteCountry
  */
 function geocodeAddress($siteAddr1,$siteAddr2, $siteCity, $siteZip, $siteCountry) {
 	global $verbose, $debug, $quiet, $geocodeApiKey, $httpsProxy;
@@ -498,6 +507,8 @@ function display_version() {
 
 /**
  * display_help - displays Cacti CLI help information
+ *
+ * @param null|mixed $errorMessage
  */
 function display_help($errorMessage = null) {
 	global $log;

@@ -28,6 +28,7 @@ declare(ticks = 1);
 
 /**
  * generic signal handler for Cacti CLI
+ * @param mixed $signo
  */
 function sig_handler($signo) {
 	global $include_file, $function, $parameters;

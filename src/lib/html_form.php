@@ -545,6 +545,7 @@ function form_file($form_name, $form_size = 30) {
  *   exists or not. a $current_id of '0' indicates that no current value exists,
  *   a non-zero value indicates that a current value does exist
  * @param data - array containing 'text' element for display and if 'error' element present, shows failure
+ * @param mixed $data
  */
 function form_filepath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $data = false) {
 	if (($form_previous_value == '') && (empty($current_id))) {
@@ -619,6 +620,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
  * @param $current_id - used to determine if a current value for this form element
  *   exists or not. a $current_id of '0' indicates that no current value exists,
  *   a non-zero value indicates that a current value does exist
+ * @param mixed $form_default_value
  */
 function form_dirpath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0) {
 	if (($form_previous_value == '') && (empty($current_id))) {
@@ -710,6 +712,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
  * @param $form_previous_value - the current value of this form element
  * @param $form_default_value - the value of this form element to use if there is
  *   no current value available
+ * @param mixed $in_form
  */
 function form_hidden_box($form_name, $form_previous_value, $form_default_value, $in_form = false) {
 	if ($form_previous_value == '') {
@@ -738,6 +741,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value, 
  *   no current value available
  * @param $css_class - any css that needs to be applied to this form element
  * @param $on_change - onChange modifier
+ * @param mixed $class
  */
 function form_dropdown($form_name, $form_data, $column_display, $column_id, $form_previous_value, $form_none_entry, $form_default_value, $class = '', $on_change = '') {
 	if ($form_previous_value == '') {
@@ -1058,6 +1062,8 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
  * @param $form_caption - the text to display to the right of the checkbox
  * @param $form_default_value - the value of this form element to use if there is
  *   no current value available
+ * @param mixed $class
+ * @param mixed $on_change
  */
 function form_radio_button($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value, $class = '', $on_change = '') {
 	if ($form_previous_value == '') {
@@ -1103,6 +1109,9 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
  * @param $form_columns - the number of columns in the text area box
  * @param $form_default_value - the value of this form element to use if there is
  *   no current value available
+ * @param mixed $class
+ * @param mixed $on_change
+ * @param mixed $placeholder
  */
 function form_text_area($form_name, $form_previous_value, $form_rows, $form_columns, $form_default_value, $class = '', $on_change = '', $placeholder = '') {
 	if ($form_previous_value == '') {
@@ -1144,6 +1153,8 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
  *   it must be formatted like:
  *   $array[0][$column_id] = key
  * @param $column_id - the name of the key used to reference the keys above
+ * @param mixed $class
+ * @param mixed $on_change
  */
 function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id, $class = '', $on_change = '') {
 	if (!is_array($sql_previous_values) && $sql_previous_values != '') {
@@ -1212,6 +1223,8 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
  * @param $form_none_entry - the name to use for a default 'none' element in the dropdown
  * @param $form_default_value - the value of this form element to use if there is
  *   no current value available
+ * @param mixed $class
+ * @param mixed $on_change
  */
 function form_color_dropdown($form_name, $form_previous_value, $form_none_entry, $form_default_value, $class = '', $on_change = '') {
 	if ($form_previous_value == '') {
@@ -1285,6 +1298,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
  * @param $current_id - used to determine if a current value for this form element
  *   exists or not. a $current_id of '0' indicates that no current value exists,
  *   a non-zero value indicates that a current value does exist
+ * @param mixed $placeholder
  */
 function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '') {
 	global $config;
@@ -1328,6 +1342,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  * @param $body_text - the text to prompt the user with on this form
  * @param $cancel_url - the url to go to when the user clicks 'cancel'
  * @param $action_url - the url to go to when the user clicks 'delete'
+ * @param mixed $title_text
  */
 function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 	<br>
@@ -1373,6 +1388,8 @@ function form_confirm_buttons($action_url, $cancel_url) {
  * @param $cancel_url - the url to go to when the user clicks 'cancel'
  * @param $force_type - if specified, will force the 'action' button to be either
  *   'save' or 'create'. otherwise this field should be properly auto-detected
+ * @param mixed $key_field
+ * @param mixed $ajax
  */
 function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $ajax = true) {
 	$calt = __('Cancel');
@@ -1427,6 +1444,10 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
  * an html edit form
  *
  * @param $buttons - an array of 'id', 'name' buttons
+ * @param mixed $cancel_url
+ * @param mixed $force_type
+ * @param mixed $key_field
+ * @param mixed $ajax
  */
 function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_field = 'id', $ajax = true) {
 	$calt = __('Cancel');
@@ -1508,6 +1529,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
  *
  * @param $action - a mandatory php file URI
  * @param $id     - an optional id, if empty, one will be generated
+ * @param mixed $multipart
  */
 function form_start($action, $id = '', $multipart = false) {
 	global $form_id, $form_action;
@@ -1527,6 +1549,7 @@ function form_start($action, $id = '', $multipart = false) {
 
 /**
  * form_end - draws post form end. To be combined with form_start()
+ * @param mixed $ajax
  */
 function form_end($ajax = true) {
 	global $form_id, $form_action;

@@ -738,6 +738,7 @@ function boost_get_arch_table_name() {
  * results to RRDtool for processing
  *
  * @param $local_data_id - if you are using boost, you need to update only an rra id at a time
+ * @param mixed $rrdtool_pipe
  */
 function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
@@ -1347,6 +1348,7 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
  * @param $rrd_path      - the path to the RRD file
  * @param $rrd_update_template  - the order in which values need to be added
  * @param $rrd_update_values    - values to include in the database
+ * @param mixed $rrdtool_pipe
  */
 function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, &$rrd_update_values, &$rrdtool_pipe) {
 	/* lets count the number of rrd files processed */

@@ -26,10 +26,10 @@
 require(__DIR__ . '/../include/global.php');
 
 // determine if we have html documentation otherwise send to Github Documentation Repo
-if (file_exists($config['base_path'] . "/" . CACTI_DOCUMENTATION_TOC)) {
+if (file_exists($config['base_path'] . '/' . CACTI_DOCUMENTATION_TOC)) {
 	// slurp up TOC and output
-	print file_get_contents($config['base_path'] . "/" . CACTI_DOCUMENTATION_TOC);
+	print file_get_contents($config['base_path'] . '/' . CACTI_DOCUMENTATION_TOC);
 } else {
 	// Redirect to Github documentation
-	header("Location: https://github.com/Cacti/documentation/blob/develop/README.md");
+	header('Location: https://github.com/Cacti/documentation/blob/develop/README.md');
 }

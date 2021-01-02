@@ -225,6 +225,7 @@ function check_month_boundaries(&$span) {
  * @param $span         - timespan array
  * @param $direction    - shift left/right (-/+)
  * @param $shift_sizei  - amount of shift
+ * @param mixed $shift_size
  *
  * @return              - time-since-epoch for shifted right boundary
  */
@@ -245,6 +246,7 @@ function shift_right_boundary(&$span, $direction, $shift_size) {
  * @param &$span     - given timespan (start/end time as time-since-epoch and human readable)
  * @param $direction - "-" for shifting left, "+" for shifting right
  * @param $timeshift - amount of shifting
+ * @param mixed $shift_size
  */
 function shift_time(&$span, $direction, $shift_size) {
 	# move left/right according to $direction
