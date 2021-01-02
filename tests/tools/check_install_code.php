@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -36,7 +37,7 @@ set_error_handler('error_handler');
 ini_set('max_execution_time', '0');
 
 // define base path of Cacti
-define('CACTI_PATH', str_replace('/tests/tools', '', dirname(__FILE__)));
+define('CACTI_PATH', str_replace('/tests/tools', '/src', dirname(__FILE__)));
 
 global $config;
 $config = array('base_path' => CACTI_PATH);
