@@ -61,6 +61,7 @@ function support_view_tech() {
 
 	/* set the default tab */
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
+
 	$current_tab = get_nfilter_request_var('tab');
 
 	$page = 'utilities.php?action=view_tech&header=false&tab=' . $current_tab;

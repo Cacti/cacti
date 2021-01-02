@@ -96,7 +96,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'view_tech':
-		header('Location: support.php?action=view_tech&tab=' . get_nfilter_request_var('tab'));
+		header('Location: support.php?action=view_tech&tab=summary');
 
 		exit();
 	case 'view_boost_status':
@@ -1511,7 +1511,7 @@ function utilities() {
 
 	$utilities[__('Technical Support')] = array(
 		__('Technical Support') => array(
-			'link'        => 'utilities.php?action=view_tech',
+			'link'        => 'utilities.php?action=view_tech&tab=summary',
 			'description' => __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.')
 		),
 		__('Log Administration') => array(
