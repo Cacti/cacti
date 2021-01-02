@@ -78,7 +78,7 @@ switch (get_request_var('action')) {
 		utilities_view_user_log();
 		break;
 	case 'view_tech':
-		header('Location: support.php?action=view_tech&tab=' . get_nfilter_request_var('tab'));
+		header('Location: support.php?tab=summary');
 		exit();
 	case 'view_boost_status':
 		top_header();
