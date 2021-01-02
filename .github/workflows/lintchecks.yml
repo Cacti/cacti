@@ -38,5 +38,5 @@ jobs:
 
     - name: Primary Lint Check
       run: composer run-script phpcsfixer
-      env: PHP_CS_FIXER_IGNORE_ENV
+      env: PHP_CS_FIXER_IGNORE_ENV=true
 
