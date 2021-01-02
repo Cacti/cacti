@@ -1445,6 +1445,11 @@ function draw_menu($user_menu = '') {
 				$basename = $basename[0];
 				$current_realm_id = (isset($user_auth_realm_filenames[$basename]) ? $user_auth_realm_filenames[$basename] : 0);
 
+				/* don't show the menu pick if the file does not exist */
+				if (!file_exists($config['base_path'] . '/' . $basename)) {
+					continue;
+				}
+
 				/* if this item is an array, then it contains sub-items. if not, is just
 				the title string and needs to be displayed */
 				if (is_array($item_title)) {
