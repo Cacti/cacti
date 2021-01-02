@@ -1313,39 +1313,45 @@ $settings = array(
 			'max_length'    => '10',
 			'size'          => '5'
 			),
+		'guarded_header' => array(
+			'friendly_name' => __('Data Collector Guarded Runtime Settings'),
+			'description'   => __('These settings will be used to notify the primary Cacti administrator when the Cacti poller runs longer than expected.'),
+			'collapsible'   => 'true',
+			'method'        => 'spacer',
+			),
+		'poller_warning_1h_ratio' => array(
+			'friendly_name' => __('Hourly Runtime Ratio (Run/Max)'),
+			'description'   => __('Define an Hourly Guarded Poller Runtime percentage ratio (run/max) time.'),
+			'method'        => 'drop_array',
+			'default'       => '70',
+			'array'         => array(
+				'0'  => __('Disabled'),
+				'50' => '50 %',
+				'60' => '60 %',
+				'70' => '70 %',
+				'80' => '80 %',
+				'90' => '90 %',)
+			),
+		'poller_warning_24h_ratio' => array(
+			'friendly_name' => __('Daily Runtime Ratio (Run/Max)'),
+			'description'   => __('Define a Daily Average Guarded Poller Runtime percentage ratio (run/max) time.  This Ratio is checked once a day, and if the average eclipses the maximum seen, a warning will be written to log and Email will be sent to the primary Cacti administrator.'),
+			'method'        => 'drop_array',
+			'default'       => '60',
+			'array'         => array(
+				'0'  => __('Disabled'),
+				'50' => '50 %',
+				'60' => '60 %',
+				'70' => '70 %',
+				'80' => '80 %',
+				'90' => '90 %',)
+			),
 		'poller_warning_1h_count' => array(
-			'friendly_name' => __('1h count warning threshold'),
-			'description'   => __('When this count of guarded ratio (below) is reached in one hour, warning will be written to log and email will be send. 0 = disable.'),
+			'friendly_name' => __('Hourly Warning Threshold'),
+			'description'   => __('When this count of Guarded Poller Ratio is eclipsed in one hour, a warning will be written to log and Email will be sent to the primary Cacti administrator.'),
 			'method'        => 'textbox',
 			'default'       => '3',
 			'max_length'    => 1,
 			'size'          => 4,
-			),
-		'poller_warning_1h_ratio' => array(
-			'friendly_name' => __('1 hour guarded poller ratio run/max'),
-			'description'   => __('Define guarded ratio poller run/max time (in percent).'),
-			'method'        => 'drop_array',
-			'default'       => '70',
-			'array'         => array(
-				'0'  => '0',
-				'50' => '50',
-				'60' => '60',
-				'70' => '70',
-				'80' => '80',
-				'90' => '90',)
-			),
-		'poller_warning_24h_ratio' => array(
-			'friendly_name' => __('24 hours guarded poller ratio run/max'),
-			'description'   => __('Define guarded average ratio poller run/max time (in percent). When it is reached, warning will be written to log and email will be send. 0 = disable'),
-			'method'        => 'drop_array',
-			'default'       => '60',
-			'array'         => array(
-				'0'  => '0',
-				'50' => '50',
-				'60' => '60',
-				'70' => '70',
-				'80' => '80',
-				'90' => '90',)
 			),
 		'spine_header' => array(
 			'friendly_name' => __('Additional Spine Parameters'),
