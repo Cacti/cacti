@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.16\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-04 20:18-0500\n"
+"POT-Creation-Date: 2021-01-04 22:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6503,7 +6503,7 @@ msgid "Reports Creation"
 msgstr ""
 
 #: include/global_arrays.php:1123
-msgid "Hide Graph Drilldowns"
+msgid "Show Graph Action Icons"
 msgstr ""
 
 #: include/global_arrays.php:1127
