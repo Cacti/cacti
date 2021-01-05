@@ -1065,6 +1065,10 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 
 	$graph_opts .= '--pango-markup ' . RRD_NL;
 
+	if (read_config_option('rrdtool_watermark') == 'on') {
+		$graph_opts .= '--disable-rrdtool-tag ' . RRD_NL;
+	}
+
 	foreach($graph as $key => $value) {
 		switch($key) {
 		case 'title_cache':
@@ -1248,6 +1252,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	if (getenv('LANG') == '') {
 		putenv('LANG=' . str_replace('-', '_', CACTI_LOCALE) . '.UTF-8');
+	}
+
+	if (isset($_COOKIE['CactiTimeZone'])) {
+		$minutes = $_COOKIE['CactiTimeZone'];
+		$hours   = $minutes / 60;
+
+		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
 	}
 
 	/* check the purge the boost poller output cache, and check for a live image file if caching is enabled */

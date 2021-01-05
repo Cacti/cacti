@@ -2685,6 +2685,14 @@ function clearAllTimeouts() {
 	}
 }
 
+function setZoneInfo() {
+	var dt = new Date();
+	var tz = -dt.getTimezoneOffset();
+
+	$.cookie('CactiDateTime', dt.toString(), { expires: 365, path: urlPath, secure: true });
+	$.cookie('CactiTimeZone', tz.toString(), { expires: 365, path: urlPath, secure: true });
+}
+
 $(function() {
 	statePushed = false;
 	popFired    = false;
@@ -2700,6 +2708,8 @@ $(function() {
 			handlePopState();
 		}
 	});
+
+	setZoneInfo();
 
 	setTitleAndHref();
 
