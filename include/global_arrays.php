@@ -129,7 +129,6 @@ $cacti_version_codes = array(
 	'1.2.14'  => '0102',
 	'1.2.15'  => '0102',
 	'1.2.16'  => '0102',
-	'1.2.17'  => '0102',
 );
 
 $messages = array(
@@ -1121,7 +1120,7 @@ $user_auth_realms = array(
 
 	21   => __('Reports Management'),
 	22   => __('Reports Creation'),
-	27   => __('Hide Graph Drilldowns')
+	27   => __('Show Graph Action Icons')
 );
 
 $user_auth_roles = array(
