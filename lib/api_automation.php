@@ -3409,7 +3409,7 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	/* close the socket */
 	@fclose($handle);
 
-	if ($info['timed_out']) {
+	if (isset($info['timed_out'])) {
 		return 'timed_out';
 	}
 
