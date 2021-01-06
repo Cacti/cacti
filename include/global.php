@@ -258,6 +258,8 @@ include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 include_once($config['library_path'] . '/html.php');
+include_once($config['library_path'] . '/html_utility.php');
+include_once($config['library_path'] . '/html_validate.php');
 
 $filename = get_current_page();
 
@@ -508,8 +510,6 @@ include_once($config['include_path'] . '/global_languages.php');
 include_once($config['library_path'] . '/auth.php');
 include_once($config['library_path'] . '/plugins.php');
 include_once($config['include_path'] . '/plugins.php');
-include_once($config['library_path'] . '/html_validate.php');
-include_once($config['library_path'] . '/html_utility.php');
 include_once($config['include_path'] . '/global_arrays.php');
 include_once($config['include_path'] . '/global_settings.php');
 include_once($config['include_path'] . '/global_form.php');
