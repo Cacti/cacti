@@ -545,6 +545,14 @@ if ($config['is_web']) {
 			}
 		}
 	}
+
+	if (isset($_COOKIE['CactiTimeZone'])) {
+		$minutes = $_COOKIE['CactiTimeZone'];
+		$hours   = $minutes / 60;
+
+		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+		ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+	}
 }
 
 api_plugin_hook('config_insert');
