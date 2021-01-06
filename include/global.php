@@ -257,6 +257,7 @@ if (isset($input_whitelist)) {
 include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
+include_once($config['library_path'] . '/html.php');
 
 $filename = get_current_page();
 
@@ -426,10 +427,12 @@ if ($config['is_web']) {
 
 	/* increased web hardening */
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy != '0' && $script_policy != '') {
+	if ($script_policy == 'unsafe-eval') {
 		$script_policy = "'$script_policy'";
+	} else {
+		$script_policy = '';
 	}
-	$alternates = read_config_option('content_security_alternate_sources');
+	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
 
 	header("Content-Security-Policy: default-src *; img-src 'self' $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self'; worker-src 'self'");
 
@@ -466,6 +469,11 @@ if ($config['is_web']) {
 		if ($_SESSION['cacti_cwd'] != $config['base_path']) {
 			cacti_session_destroy();
 		}
+	}
+
+	/* Sanitize the http referer */
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		$_SERVER['HTTP_REFERER'] = sanitize_uri($_SERVER['HTTP_REFERER']);
 	}
 }
 
@@ -505,7 +513,6 @@ include_once($config['library_path'] . '/html_utility.php');
 include_once($config['include_path'] . '/global_arrays.php');
 include_once($config['include_path'] . '/global_settings.php');
 include_once($config['include_path'] . '/global_form.php');
-include_once($config['library_path'] . '/html.php');
 include_once($config['library_path'] . '/html_form.php');
 include_once($config['library_path'] . '/html_filter.php');
 include_once($config['library_path'] . '/variables.php');

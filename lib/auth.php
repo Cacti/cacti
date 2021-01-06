@@ -2770,7 +2770,7 @@ function auth_login_redirect($login_opts = '') {
 					$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'];
 				}
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
-				$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+				$referer = $_SERVER['HTTP_REFERER'];
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';

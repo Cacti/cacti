@@ -44,7 +44,7 @@ switch ($action) {
 		// If the user is not logged in, redirect them to the login page
 		if (!isset($_SESSION['sess_user_id'])) {
 			if (isset($_SERVER['HTTP_REFERER'])) {
-				header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
+				header('Location: ' . $_SERVER['HTTP_REFERER']);
 			} else {
 				header('Location: index.php');
 			}
@@ -69,7 +69,7 @@ if (!cacti_sizeof($user) || $user['realm'] != 0) {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
+		header('Location: ' . $_SERVER['HTTP_REFERER']);
 	} else {
 		header('Location: index.php');
 	}
@@ -85,7 +85,7 @@ if ($user['password_change'] != 'on') {
 	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
+		header('Location: ' . $_SERVER['HTTP_REFERER']);
 	} else {
 		header('Location: index.php');
 	}

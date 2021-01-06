@@ -472,7 +472,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	form_hidden_box('selected_graphs_array', serialize($selected_graphs_array), '');
 
 	if (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
+		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
 	}
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
 
