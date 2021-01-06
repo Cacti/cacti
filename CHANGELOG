@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.17
 -security#4019: In a recent audit of core Cacti code, there were a few stored XSS issues that can be exposed
 -security#4022: SQL Injection in data_debug.php (CVE-2020-35701)
+-security#4035: XSS security issue from WebScan report
 -issue#3392: Customize filters and host list in Console->Devices page
 -issue#3981: PHP ERROR: Call to undefined function api_data_source_cache_crc_update()
 -issue#3879: Graph/Data Source creation with custom fields not prompting during 1st creation
