@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -2770,7 +2770,7 @@ function auth_login_redirect($login_opts = '') {
 					$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'];
 				}
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
-				$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+				$referer = $_SERVER['HTTP_REFERER'];
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';

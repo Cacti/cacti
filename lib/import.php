@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -256,8 +256,6 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	global $config, $preview_only;
 
 	$preview_only = $preview;
-
-	@ini_set('zlib.output_compression', '0');
 
 	/* set new timeout and memory settings */
 	if ($limitex) {

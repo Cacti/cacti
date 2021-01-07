@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -485,7 +485,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($networks)) {
 								foreach ($networks as $key => $name) {
-									print "<option value='" . $key . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . $name . "</option>";
+									print "<option value='" . html_escape($key) . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . html_escape($name) . "</option>";
 								}
 							}
 							?>
@@ -515,7 +515,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($status_arr)) {
 								foreach ($status_arr as $st) {
-									print "<option value='" . $st . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . $st . "</option>";
+									print "<option value='" . html_escape($st) . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . html_escape($st) . "</option>";
 								}
 							}
 							?>
@@ -530,7 +530,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($os_arr)) {
 								foreach ($os_arr as $st) {
-									print "<option value='" . $st . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . $st . "</option>";
+									print "<option value='" . html_escape($st) . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . html_escape($st) . "</option>";
 								}
 							}
 							?>
@@ -545,7 +545,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($status_arr)) {
 								foreach ($status_arr as $st) {
-									print "<option value='" . $st . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . $st . "</option>";
+									print "<option value='" . html_escape($st) . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . html_escape($st) . "</option>";
 								}
 							}
 							?>
@@ -560,7 +560,7 @@ function draw_filter() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>

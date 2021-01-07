@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1363,6 +1363,19 @@ function item() {
     graph - Graphs
    ------------------------------------ */
 
+function is_multi_device_graph($local_graph_id) {
+	$devices = db_fetch_cell_prepared('SELECT COUNT(DISTINCT host_id)
+		FROM data_template_rrd AS dtr
+		INNER JOIN graph_templates_item AS gti
+		ON gti.task_item_id = dtr.id
+		INNER JOIN data_local AS dl
+		ON dl.id = dtr.local_data_id
+		WHERE gti.local_graph_id = ?',
+		array($local_graph_id));
+
+	return $devices > 1 ? true : false;
+}
+
 function graph_edit() {
 	global $config, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -1497,9 +1510,11 @@ function graph_edit() {
 
 	if (!empty($graph['local_graph_id'])) {
 		$graph_template_id = get_current_graph_template($graph['local_graph_id']);
+
 		$gtsql = get_common_graph_templates($graph);
 	} else {
 		$graph_template_id = 0;
+
 		$gtsql = 'SELECT gt.id, gt.name
 			FROM graph_templates AS gt
 			WHERE id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
@@ -1555,6 +1570,10 @@ function graph_edit() {
 
 		if ($graph['graph_template_id'] > 0 && $host_id > 0) {
 			$form_array['graph_template_id']['method'] = 'hidden';
+			$form_array['host_id']['method'] = 'hidden';
+		}
+
+		if (is_multi_device_graph($graph['local_graph_id'])) {
 			$form_array['host_id']['method'] = 'hidden';
 		}
 	}

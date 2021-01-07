@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,6 +33,7 @@ $poller_actions = array(
 	1 => __('Delete'),
 	2 => __('Disable'),
 	3 => __('Enable'),
+	5 => __('Clear Statistics'),
 );
 
 if ($config['poller_id'] == 1) {
@@ -481,6 +482,15 @@ function form_actions() {
 				} else {
 					cacti_log('NOTE: All selected Remote Data Collectors in [' . implode(', ', $ids) . '] synchronized correctly by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 				}
+			} elseif (get_request_var('drp_action') == '5') { // clear statistics
+				foreach($selected_items as $item) {
+					db_execute_prepared('UPDATE poller
+						SET total_time = 0, max_time = 0, min_time = 9999999, avg_time = 0, total_polls = 0
+						WHERE id = ?',
+						array($item));
+				}
+
+				raise_message('poller_clear', __('Data Collector Statistics cleared.'), MESSAGE_LEVEL_INFO);
 			}
 		}
 
@@ -548,6 +558,15 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Collector', 'Synchronize Remote Data Collectors', cacti_sizeof($poller_array)) . "'>";
+		} elseif (get_request_var('drp_action') == '5') { // clear statistics
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>" . __n('Click \'Continue\' to Clear Data Collector Statistics for the Data Collector.', 'Click \'Continue\' to Clear DAta Collector Statistics for the Data Collectors.', cacti_sizeof($poller_array)) . "</p>
+					<div class='itemlist'><ul>$pollers</ul></div>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Clear Statistics for Data Collector', 'Clear Statistics for Data Collectors', cacti_sizeof($poller_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -861,7 +880,7 @@ function pollers() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
@@ -884,10 +903,6 @@ function pollers() {
 			}
 
 			$(function() {
-				$('#refresh').click(function() {
-					applyFilter();
-				});
-
 				$('#clear').click(function() {
 					clearFilter();
 				});

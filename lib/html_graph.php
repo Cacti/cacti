@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -212,9 +212,9 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<select id='graphs' onChange='applyGraphFilter()'>
 							<?php
 							if (cacti_sizeof($graphs_per_page)) {
-							foreach ($graphs_per_page as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+								foreach ($graphs_per_page as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								}
 							}
 							?>
 						</select>
@@ -260,7 +260,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 							if (cacti_sizeof($graph_timespans)) {
 								foreach($graph_timespans as $value => $text) {
-									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . "</option>\n";
+									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . html_escape($text) . '</option>';
 								}
 							}
 							?>
@@ -293,7 +293,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 								$end_val = cacti_sizeof($graph_timeshifts)+1;
 								if (cacti_sizeof($graph_timeshifts) > 0) {
 									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
 									}
 								}
 								?>
@@ -472,7 +472,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	form_hidden_box('selected_graphs_array', serialize($selected_graphs_array), '');
 
 	if (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
+		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
 	}
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
 

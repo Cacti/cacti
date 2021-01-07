@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -391,23 +391,19 @@ function config_value_exists($config_name) {
 function read_default_config_option($config_name) {
 	global $config, $settings;
 
-	if (isset($settings)) {
-		if (is_array($settings)) {
-			foreach ($settings as $tab_array) {
-				if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
-					return $tab_array[$config_name]['default'];
-				} else {
-					foreach ($tab_array as $field_array) {
-						if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
-							return $field_array['items'][$config_name]['default'];
-						}
+	if (isset($settings) && is_array($settings)) {
+		foreach ($settings as $tab_array) {
+			if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
+				return $tab_array[$config_name]['default'];
+			} else {
+				foreach ($tab_array as $field_array) {
+					if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
+						return $field_array['items'][$config_name]['default'];
 					}
 				}
 			}
 		}
 	}
-
-	return null;
 }
 
 /* read_config_option - finds the current value of a Cacti configuration setting
@@ -467,16 +463,14 @@ function read_config_option($config_name, $force = false) {
 				$value = $db_setting['value'];
 			}
 
-			if ($value != null) {
-				// Store whatever value we have in the array
-				$config_array[$config_name] = $value;
+			// Store whatever value we have in the array
+			$config_array[$config_name] = $value;
 
-				// Store the array back for later retrieval
-				if (isset($_SESSION)) {
-					$_SESSION['sess_config_array']  = $config_array;
-				} else {
-					$config['config_options_array'] = $config_array;
-				}
+			// Store the array back for later retrieval
+			if (isset($_SESSION)) {
+				$_SESSION['sess_config_array']  = $config_array;
+			} else {
+				$config['config_options_array'] = $config_array;
 			}
 		}
 	} else {

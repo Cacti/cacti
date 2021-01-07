@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -273,7 +273,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -391,7 +391,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -998,7 +998,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 					print ' selected';
 				}
 
-				print '>' . title_trim(null_out_substitutions(html_escape($form_data[$id])), 75) . '</option>';
+				print '>' . html_escape(null_out_substitutions($form_data[$id])) . '</option>';
 			}
 		}
 	} else {
@@ -1011,9 +1011,9 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 				}
 
 				if (isset($row['host_id'])) {
-					print '>' . title_trim(html_escape($row[$column_display]), 75) . '</option>';
+					print '>' . html_escape($row[$column_display]) . '</option>';
 				} else {
-					print '>' . title_trim(null_out_substitutions(html_escape($row[$column_display])), 75) . '</option>';
+					print '>' . html_escape(null_out_substitutions($row[$column_display])) . '</option>';
 				}
 			}
 		}
@@ -1041,7 +1041,7 @@ function html_escape($string) {
 		$charset = 'UTF-8';
 	}
 
-	return htmlspecialchars($string, ENT_QUOTES, $charset, false);
+	return htmlspecialchars($string, ENT_QUOTES|ENT_HTML5, $charset, false);
 }
 
 /* html_split_string - takes a string and breaks it into a number of <br> separated segments
@@ -2010,7 +2010,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				if (cacti_sizeof($devices)) {
 					foreach ($devices as $device) {
-						print "<option value='" . $device['id'] . "'"; if ($host_id == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape(strip_domain($device['description'])), 40) . '</option>';
+						print "<option value='" . $device['id'] . "'"; if ($host_id == $device['id']) { print ' selected'; } print '>' . html_escape(strip_domain($device['description'])) . '</option>';
 					}
 				}
 				?>
@@ -2375,17 +2375,20 @@ function html_common_header($title, $selectedTheme = '') {
 	}
 
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy != '0' && $script_policy != '') {
+	if ($script_policy == 'unsafe-eval') {
 		$script_policy = "'$script_policy'";
+	} else {
+		$script_policy = '';
 	}
-	$alternates = read_config_option('content_security_alternate_sources');
+	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
 
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print $script_policy;?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self'">
+	<meta name="theme-color" content="#161616"/>
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print html_escape($script_policy);?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self'">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -2493,7 +2496,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.js');
 	print get_md5_include_js('include/js/jquery-ui.js');
 	print get_md5_include_js('include/js/jquery.ui.touch.punch.js', true);
-	print get_md5_include_js('include/js/jquery.cookie.js', true);
+	print get_md5_include_js('include/js/jquery.cookie.js');
 	print get_md5_include_js('include/js/js.storage.js');
 	print get_md5_include_js('include/js/jstree.js');
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);

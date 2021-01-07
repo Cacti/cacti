@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1064,6 +1064,10 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		'--end=' . cacti_escapeshellarg($graph_end) . RRD_NL;
 
 	$graph_opts .= '--pango-markup ' . RRD_NL;
+
+	if (read_config_option('rrdtool_watermark') == 'on') {
+		$graph_opts .= '--disable-rrdtool-tag ' . RRD_NL;
+	}
 
 	foreach($graph as $key => $value) {
 		switch($key) {

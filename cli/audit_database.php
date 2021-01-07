@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -997,9 +997,13 @@ function load_audit_database() {
 	if (is_dir($config['base_path'] . '/docs')) {
 		print PHP_EOL . 'Exporting Table Audit Table Creation Logic to ' . $config['base_path'] . '/docs/audit_schema.sql' . PHP_EOL;
 
-		exec('mysqldump -u' . $database_username . ' -p' . $database_password . ' ' . $database_default . ' table_columns table_indexes --extended-insert=FALSE > ' . $config['base_path'] . '/docs/audit_schema.sql');
+		$retval = db_dump_data($database_default, 'table_columns table_indexes', array(), $config['base_path'] . '/docs/audit_schema.sql');
+		if ($retval) {
+			print 'Finished Creating Audit Schema with ERROR' . PHP_EOL . PHP_EOL;
+		} else {
+			print 'Finished Creating Audit Schema' . PHP_EOL . PHP_EOL;
+		}
 
-		print 'Finished Creating Audit Schema' . PHP_EOL . PHP_EOL;
 	} else {
 		print PHP_EOL . 'FATAL: Docs directory does not exist!' . PHP_EOL . PHP_EOL;
 	}

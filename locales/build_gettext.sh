@@ -1,6 +1,6 @@
 #!/bin/sh
 #+-------------------------------------------------------------------------+
-#| Copyright (C) 2004-2020 The Cacti Group                                 |
+#| Copyright (C) 2004-2021 The Cacti Group                                 |
 #|                                                                         |
 #| This program is free software; you can redistribute it and/or           |
 #| modify it under the terms of the GNU General Public License             |
@@ -59,7 +59,7 @@ echo "Merging updates to language files..."
 
 for file in `ls -1 locales/po/*.po`;do
 	echo "Updating $file from cacti.pot"
-	msgmerge --backup off --update --no-wrap -F $file locales/po/cacti.pot
+	msgmerge --backup off --no-wrap --update -F $file locales/po/cacti.pot
 done
 
 for file in `ls -1 locales/po/*.po`;do

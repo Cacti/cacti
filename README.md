@@ -327,4 +327,4 @@ Cacti supports most RRDtool graphing abilities including:
 - Text alignment
 
 -----------------------------------------------------------------------------
-Copyright (c) 2020 - The Cacti Group, Inc.
+Copyright (c) 2021 - The Cacti Group, Inc.

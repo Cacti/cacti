@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -532,7 +532,7 @@ function discoverDevices($network_id, $thread) {
 					$device['snmp_id']              = $network['snmp_id'];
 					$device['poller_id']            = $network['poller_id'];
 					$device['site_id']              = $network['site_id'];
-					$device['snmp_version']         = '';
+					$device['snmp_version']         = '2';
 					$device['snmp_port']            = '';
 					$device['snmp_community']       = '';
 					$device['snmp_username']        = '';
