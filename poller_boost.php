@@ -293,25 +293,30 @@ function output_rrd_data($start_time, $force = false) {
 	db_execute("CREATE TABLE $interim_table LIKE poller_output_boost");
 	db_execute("RENAME TABLE poller_output_boost TO $archive_table, $interim_table TO poller_output_boost");
 
-	$more_arch_tables = db_fetch_assoc_prepared("SELECT table_name AS name
+	$arch_tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
 		WHERE table_schema = SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_name != ?
-		AND table_rows > 0", array($archive_table));
-
-	if (cacti_count($more_arch_tables)) {
-		foreach($more_arch_tables as $table) {
+		AND table_rows > 0");
+		
+	$arch_view_sql = '';
+	$arch_view = 'arch_view';
+	if (cacti_count($arch_tables)) {
+		$arch_view_prefix = "CREATE VIEW " . $arch_view . " AS ";
+		$arch_view_tables = '';
+		foreach($arch_tables as $table) {
 			$table_name = $table['name'];
-			$rows = db_fetch_cell("SELECT count(local_data_id) FROM $table_name");
-			if (is_numeric($rows) && intval($rows) > 0) {
-				db_execute("INSERT INTO $archive_table SELECT * FROM $table_name");
-				db_execute("TRUNCATE TABLE $table_name");
+			if (0 == strlen($arch_view_tables)) {
+				$arch_view_tables = "SELECT * FROM " . $table_name;
+			} else {
+				$arch_view_tables = $arch_view_tables . " UNION ALL SELECT * FROM " . $table_name;
 			}
 		}
+		$arch_view_sql = $arch_view_prefix . $arch_view_tables;
+		db_execute($arch_view_sql);
 	}
 
-	if ($archive_table == '') {
+	if ($arch_view_sql == '') {
 		db_execute("SELECT RELEASE_LOCK('poller_boost');");
 		cacti_log('ERROR: Failed to retrieve archive table name');
 
@@ -319,7 +324,7 @@ function output_rrd_data($start_time, $force = false) {
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id)
-		FROM $archive_table");
+		FROM $arch_view");
 
 	if ($total_rows == 0 && !cacti_sizeof($more_arch_tables)) {
 		db_execute("SELECT RELEASE_LOCK('poller_boost');");
@@ -336,9 +341,9 @@ function output_rrd_data($start_time, $force = false) {
 
 	db_execute("INSERT INTO boost_local_data_ids
 		SELECT DISTINCT local_data_id
-		FROM $archive_table");
+		FROM $arch_view");
 
-	$data_ids = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM $archive_table");
+	$data_ids = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM $arch_view");
 
 	if (!empty($total_rows)) {
 		$passes  = ceil($total_rows / $max_per_select);
@@ -383,7 +388,11 @@ function output_rrd_data($start_time, $force = false) {
 
 	rrd_close($rrdtool_pipe);
 
-	/* cleanup  - remove empty arch tables */
+	/* cleanup  - remove empty arch tables and related view*/
+	if ($arch_view_sql == '') {
+		db_execute("DROP VIEW IF EXISTS " . $arch_view);
+	}
+	
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
 		WHERE table_schema = SCHEMA()
