@@ -431,27 +431,34 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 }
 
 function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_graphs_array) {
-	/* we use object buffering on this page to allow redirection to another page if no
-	fields are actually drawn */
-	ob_start();
-
-	top_header();
-
-	form_start($page);
-
-	$snmp_query_id = 0;
+	$snmp_query_id     = 0;
 	$num_output_fields = array();
+	$output_started    = false;
 
 	foreach ($selected_graphs_array as $form_type => $form_array) {
 		foreach ($form_array as $form_id1 => $form_array2) {
-			$num_output_fields += html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2);
+			ob_start();
+
+			$count = html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2);
+
+			if (array_sum($count)) {
+				if (!$output_started) {
+					$output_started = true;
+
+					top_header();
+
+					form_start($page);
+				}
+
+				ob_end_flush();
+			} else {
+				ob_end_clean();
+			}
 		}
 	}
 
 	/* no fields were actually drawn on the form; just save without prompting the user */
-	if (!cacti_sizeof($num_output_fields)) {
-		ob_end_clean();
-
+	if (!$output_started) {
 		/* since the user didn't actually click "Create" to POST the data; we have to
 		pretend like they did here */
 		set_request_var('save_component_new_graphs', '1');
@@ -462,9 +469,6 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 		header('Location: ' . $page . '?host_id=' . $host_id . '&header=false');
 		exit;
 	}
-
-	/* flush the current output buffer to the browser */
-	ob_end_flush();
 
 	form_hidden_box('host_template_id', $host_template_id, '0');
 	form_hidden_box('host_id', $host_id, '0');
