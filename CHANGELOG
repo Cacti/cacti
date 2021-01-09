@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -issue#4033: Change 'Hide' Graph Action Icon's to 'Show' Action Icons
 -issue#4036: Automation Discovery Trying to access array offset on value of type null
 -issue#4038: Creating new graphs prompts for second click regardless
+-issue#4042: Clicking save in performance tab turns off rrd_update_enable on remote pollers
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
