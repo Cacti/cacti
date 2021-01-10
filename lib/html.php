@@ -1041,6 +1041,9 @@ function html_escape($string) {
 		$charset = 'UTF-8';
 	}
 
+	// Grave Accent character can lead to xss
+	$string = str_replace('`', '&#96;', $string);
+
 	return htmlspecialchars($string, ENT_QUOTES|ENT_HTML5, $charset, false);
 }
 
