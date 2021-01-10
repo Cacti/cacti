@@ -1161,6 +1161,14 @@ $settings = array(
 				'150' => '150',
 				'200' => '200')
 		),
+		'max_get_size' => array(
+			'friendly_name' => __('SNMP Get OID Limit'),
+			'description' => __('The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti\'s SNMP API natively in your scripts or plugins.'),
+			'method' => 'textbox',
+			'default' => '10',
+			'max_length' => '10',
+			'size' => '5'
+		),
 		'disable_cache_replication' => array(
 			'friendly_name' => __('Disable Resource Cache Replication'),
 			'description' => __('By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themeselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting.'),
@@ -1293,14 +1301,6 @@ $settings = array(
 			'description' => __('The maximum time that Cacti will wait on a script to complete.  This timeout value is in seconds'),
 			'method' => 'textbox',
 			'default' => '25',
-			'max_length' => '10',
-			'size' => '5'
-		),
-		'max_get_size' => array(
-			'friendly_name' => __('The Maximum SNMP OIDs Per SNMP Get Request'),
-			'description' => __('The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk'),
-			'method' => 'textbox',
-			'default' => '10',
 			'max_length' => '10',
 			'size' => '5'
 		),
