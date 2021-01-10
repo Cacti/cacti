@@ -1041,7 +1041,7 @@ function html_escape($string) {
 		$charset = 'UTF-8';
 	}
 
-	return htmlentities($string, ENT_QUOTES|ENT_HTML5, $charset, false);
+	return htmlspecialchars($string, ENT_QUOTES|ENT_HTML5, $charset, false);
 }
 
 /* html_split_string - takes a string and breaks it into a number of <br> separated segments
