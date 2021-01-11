@@ -584,8 +584,10 @@ function boost_timer_get_overhead() {
 	return (microtime(true) - $start);
 }
 
-/* boost_get_arch_table_name - returns current archive boost table or false if no arch table is present currently */
-function boost_get_arch_table_name() {
+/* boost_get_arch_table_names - returns current archive boost tables or false if no arch table is present currently */
+function boost_get_arch_table_names() {
+	$tableNames = array();
+	
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
 		WHERE table_schema = SCHEMA()
@@ -594,11 +596,15 @@ function boost_get_arch_table_name() {
 	foreach($tables as $table) {
 		$rows = db_fetch_cell('SELECT COUNT(local_data_id) FROM ' . $table['name']);
 		if (is_numeric($rows) && intval($rows) > 0) {
-			return $table['name'];
+			array_push($tableNames, $table['name']);
 		}
 	}
 
-	return false;
+	if (0 >= count($tableNames)) {
+		return false;
+	} else {
+		return $tableNames;
+	}
 }
 
 /* boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
