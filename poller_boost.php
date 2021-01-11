@@ -420,7 +420,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
 	/* cache this call as it takes time */
-	static $archive_table   = false;
+	static $archive_tables   = false;
 	static $rrdtool_version = '';
 
 	include_once($config['library_path'] . '/rrd.php');
@@ -451,20 +451,34 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	$rrd_update_interval = read_config_option('boost_rrd_update_interval');
 	$data_ids_to_get     = read_config_option('boost_rrd_update_max_records_per_select');
 
-	if ($archive_table === false) {
-		$archive_table = boost_get_arch_table_name();
+	if ($archive_tables === false) {
+		$archive_tables = boost_get_arch_table_names();
 	}
 
-	if ($archive_table === false) {
+	if ($archive_tables === false) {
 		cacti_log('Failed to determine archive table', false, 'BOOST');
 		return 0;
 	}
-
-	$query_string = "SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp,
-		rrd_name, output
-		FROM $archive_table
-		WHERE local_data_id <= $last_id
-		ORDER BY local_data_id ASC, time ASC, rrd_name ASC";
+		
+	$query_string = "SELECT * FROM (";
+	$query_string_suffix = "ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC";
+		
+	$sub_query_string = "";
+	for ($i=0; $i < count($archive_tables); $i++) {
+		if (0 == strlen($sub_query_string)) {
+			$sub_query_string = "SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp,
+			rrd_name, output
+			FROM $archive_tables[$i]
+			WHERE local_data_id <= $last_id";
+		} else {
+			$sub_query_string = $sub_query_string . " UNION ALL SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp,
+			rrd_name, output
+			FROM $archive_tables[$i]
+			WHERE local_data_id <= $last_id";		
+		}
+	}
+	
+	$query_string = $query_string . $sub_query_string . ") t " . $query_string_suffix;
 
 	boost_timer('get_records', BOOST_TIMER_START);
 	$results = db_fetch_assoc($query_string);
@@ -667,8 +681,10 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 
 		/* remove the entries from the table */
 		boost_timer('delete', BOOST_TIMER_START);
-		db_execute("DELETE FROM $archive_table
-			WHERE local_data_id <= $last_id");
+		foreach ($archive_tables as $archive_table) {
+			db_execute("DELETE FROM $archive_table
+				WHERE local_data_id <= $last_id");
+		}
 		boost_timer('delete', BOOST_TIMER_END);
 	}
 
