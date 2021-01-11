@@ -711,33 +711,48 @@ case 'list':
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$display_text = array(
-		'title_cache' => array(
-			'display' => __('Graph Name'),
-			'align'   => 'left',
-			'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
-		),
-		'local_graph_id' => array(
-			'display' => __('Device'),
-			'align'   => 'left',
-			'tip'     => __('The device for this Graph.')
-		),
-		'source' => array(
-			'display' => __('Source Type'),
-			'align'   => 'right',
-			'tip'     => __('The underlying source that this Graph was based upon.')
-		),
-		'name' => array(
-			'display' => __('Source Name'),
-			'align'   => 'left',
-			'tip'     => __('The Graph Template or Data Query that this Graph was based upon.')
-		),
-		'height' => array(
-			'display' => __('Size'),
-			'align'   => 'left',
-			'tip'     => __('The size of this Graph when not in Preview mode.')
-		)
-	);
+	if (is_realm_allowed(10)) {
+		$display_text = array(
+			'title_cache' => array(
+				'display' => __('Graph Name'),
+				'align'   => 'left',
+				'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+			),
+			'local_graph_id' => array(
+				'display' => __('Device'),
+				'align'   => 'left',
+				'tip'     => __('The device for this Graph.')
+			),
+			'source' => array(
+				'display' => __('Source Type'),
+				'align'   => 'right',
+				'tip'     => __('The underlying source that this Graph was based upon.')
+			),
+			'name' => array(
+				'display' => __('Source Name'),
+				'align'   => 'left',
+				'tip'     => __('The Graph Template or Data Query that this Graph was based upon.')
+			),
+			'height' => array(
+				'display' => __('Size'),
+				'align'   => 'left',
+				'tip'     => __('The size of this Graph when not in Preview mode.')
+			)
+		);
+	} else {
+		$display_text = array(
+			'title_cache' => array(
+				'display' => __('Graph Name'),
+				'align'   => 'left',
+				'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+			),
+			'height' => array(
+				'display' => __('Size'),
+				'align'   => 'left',
+				'tip'     => __('The size of this Graph when not in Preview mode.')
+			)
+		);
+	}
 
 	html_header_checkbox($display_text, false);
 
@@ -762,9 +777,11 @@ case 'list':
 
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter'), 'graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
-			form_selectable_ecell($graph['description'], $graph['local_graph_id']);
-			form_selectable_cell(filter_value($graph_sources[$template_details['source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
-			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter'), $template_details['url']), $graph['local_graph_id'], '', 'left');
+			if (is_realm_allowed(10)) {
+				form_selectable_ecell($graph['description'], $graph['local_graph_id']);
+				form_selectable_cell(filter_value($graph_sources[$template_details['source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
+				form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter'), $template_details['url']), $graph['local_graph_id'], '', 'left');
+			}
 			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
