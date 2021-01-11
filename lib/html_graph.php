@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -212,9 +212,9 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<select id='graphs' onChange='applyGraphFilter()'>
 							<?php
 							if (cacti_sizeof($graphs_per_page)) {
-							foreach ($graphs_per_page as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+								foreach ($graphs_per_page as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+								}
 							}
 							?>
 						</select>
@@ -260,7 +260,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 							if (cacti_sizeof($graph_timespans)) {
 								foreach($graph_timespans as $value => $text) {
-									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . "</option>\n";
+									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . html_escape($text) . '</option>';
 								}
 							}
 							?>
@@ -293,7 +293,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 								$end_val = cacti_sizeof($graph_timeshifts)+1;
 								if (cacti_sizeof($graph_timeshifts) > 0) {
 									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
+										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
 									}
 								}
 								?>
@@ -431,27 +431,34 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 }
 
 function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_graphs_array) {
-	/* we use object buffering on this page to allow redirection to another page if no
-	fields are actually drawn */
-	ob_start();
-
-	top_header();
-
-	form_start($page);
-
-	$snmp_query_id = 0;
+	$snmp_query_id     = 0;
 	$num_output_fields = array();
+	$output_started    = false;
 
 	foreach ($selected_graphs_array as $form_type => $form_array) {
 		foreach ($form_array as $form_id1 => $form_array2) {
-			$num_output_fields += html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2);
+			ob_start();
+
+			$count = html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $form_type, $form_id1, $form_array2);
+
+			if (array_sum($count)) {
+				if (!$output_started) {
+					$output_started = true;
+
+					top_header();
+
+					form_start($page);
+				}
+
+				ob_end_flush();
+			} else {
+				ob_end_clean();
+			}
 		}
 	}
 
 	/* no fields were actually drawn on the form; just save without prompting the user */
-	if (array_sum($num_output_fields) == 0) {
-		ob_end_clean();
-
+	if (!$output_started) {
 		/* since the user didn't actually click "Create" to POST the data; we have to
 		pretend like they did here */
 		set_request_var('save_component_new_graphs', '1');
@@ -463,16 +470,13 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 		exit;
 	}
 
-	/* flush the current output buffer to the browser */
-	ob_end_flush();
-
 	form_hidden_box('host_template_id', $host_template_id, '0');
 	form_hidden_box('host_id', $host_id, '0');
 	form_hidden_box('save_component_new_graphs', '1', '');
 	form_hidden_box('selected_graphs_array', serialize($selected_graphs_array), '');
 
 	if (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
+		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
 	}
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
 

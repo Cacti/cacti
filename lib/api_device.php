@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -231,15 +231,6 @@ function api_device_disable_devices($device_ids) {
 			AND (deleted = '' OR (deleted = 'on' AND disabled = ''))",
 			array($device_id));
 
-		/* update poller cache */
-		db_execute_prepared('DELETE FROM poller_item
-			WHERE host_id = ?',
-			array($device_id));
-
-		db_execute_prepared('DELETE FROM poller_reindex
-			WHERE host_id = ?',
-			array($device_id));
-
 		$poller_id = db_fetch_cell_prepared('SELECT poller_id
 			FROM host
 			WHERE id = ?',
@@ -250,15 +241,6 @@ function api_device_disable_devices($device_ids) {
 				SET disabled='on'
 				WHERE id = ?
 				AND (deleted = '' OR (deleted = 'on' AND disabled = ''))",
-				array($device_id), true, $rcnn_id);
-
-			/* update poller cache */
-			db_execute_prepared('DELETE FROM poller_item
-				WHERE host_id = ?',
-				array($device_id), true, $rcnn_id);
-
-			db_execute_prepared('DELETE FROM poller_reindex
-				WHERE host_id = ?',
 				array($device_id), true, $rcnn_id);
 		}
 	}
@@ -279,30 +261,53 @@ function api_device_enable_devices($device_ids) {
 			AND deleted = ''",
 			array($device_id));
 
-		/* update poller cache */
-		$data_sources = db_fetch_assoc_prepared('SELECT id
-			FROM data_local
-			WHERE host_id = ?',
-			array($device_id));
+		if ($poller_id > 1) {
+			if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+				db_execute_prepared("UPDATE host
+					SET disabled = ''
+					WHERE id = ?",
+					array($device_id), true, $rcnn_id);
+			}
 
-		$poller_items = $local_data_ids = array();
+			$poller_cache = db_fetch_cell_prepared('SELECT COUNT(local_data_id)
+				FROM poller_item
+				WHERE host_id = ?',
+				array($device_id), '', true, $rcnn_id);
+		} else {
+			$poller_cache = db_fetch_cell_prepared('SELECT COUNT(local_data_id)
+				FROM poller_item
+				WHERE host_id = ?',
+				array($device_id));
+		}
 
-		if (cacti_sizeof($data_sources)) {
-			foreach ($data_sources as $data_source) {
-				$local_data_ids[] = $data_source['id'];
-				$poller_items     = array_merge($poller_items, update_poller_cache($data_source['id']));
+		// Only reprime poller cache if empty
+		// this allows support for pre 1.2.16
+		// enable behavior.
+		if (!cacti_sizeof($poller_cache)) {
+			/* update poller cache */
+			$data_sources = db_fetch_assoc_prepared('SELECT id
+				FROM data_local
+				WHERE host_id = ?',
+				array($device_id));
+
+			$poller_items = $local_data_ids = array();
+
+			if (cacti_sizeof($data_sources)) {
+				foreach ($data_sources as $data_source) {
+					$local_data_ids[] = $data_source['id'];
+					$poller_items     = array_merge($poller_items, update_poller_cache($data_source['id']));
+				}
+			}
+
+			if (cacti_sizeof($local_data_ids)) {
+				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 			}
 		}
 
-		if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
-			db_execute_prepared("UPDATE host
-				SET disabled = ''
-				WHERE id = ?",
-				array($device_id), true, $rcnn_id);
-		}
-
-		if (cacti_sizeof($local_data_ids)) {
-			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+		if ($poller_id > 1) {
+			if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+				poller_push_reindex_data_to_poller($device_id, 0, true, $rcnn_id);
+			}
 		}
 	}
 }
@@ -743,7 +748,9 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		$host_id = sql_save($save, 'host');
 
 		if ($host_id) {
-			api_device_purge_from_remote($host_id, $previous_poller);
+			if ($poller_id != $previous_poller) {
+				api_device_purge_from_remote($host_id, $previous_poller);
+			}
 
 			if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
 				$save['id'] = $host_id;
@@ -851,9 +858,14 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
    @returns boolean */
 function api_device_quick_save(&$save) {
 	if ($save['id'] > 0) {
-		$device = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($save['id']));
+		$device = db_fetch_row_prepared('SELECT *
+			FROM host
+			WHERE id = ?',
+			array($save['id']));
 
 		$compare = array(
+			'poller_id',
+			'disabled',
 			'hostname',
 			'snmp_community',
 			'snmp_version',

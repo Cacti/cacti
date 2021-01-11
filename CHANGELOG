@@ -1,21 +1,74 @@
 Cacti CHANGELOG
 
+1.2.17
+-security#4019: In a recent audit of core Cacti code, there were a few stored XSS issues that can be exposed
+-security#4022: SQL Injection in data_debug.php (CVE-2020-35701)
+-security#4035: XSS security issue from WebScan report
+-issue#3392: Customize filters and host list in Console > Management > Devices page
+-issue#3981: PHP ERROR: Call to undefined function api_data_source_cache_crc_update()
+-issue#3879: Graph/Data Source creation with custom fields not prompting during 1st creation
+-issue#3936: Aggregate Graph that has been converted to a normal graph breaks when edited
+-issue#3945: Graph CSV export NaN with wrong date range if browser timezone is different with web server
+-issue#3969: SNMPv3 Password Length Limit
+-issue#3976: Multi-Selectable dropdown filter's option class is ignored
+-issue#3977: Cacti CLI upgrade_database.php misses constant IN_CACTI_INSTAL which may result in upgrade failures
+-issue#3978: CMDPHP Input Validation Not Performed for Tree
+-issue#3985: Update database library function to properly handle collate
+-issue#3988: Automation raises errors when default snmp options is set to none
+-issue#3990: Utilities-System Utilities-technich support-php info is not a row, should not use form_alternate_row
+-issue#3999: The chances of mysqldump with password should be minimized
+-issue#4001: PHP8 support: Debian test suites shows lots of PHP Errors and Warnings with PHP8
+-issue#4002: Poller Recovery is not predictable
+-issue#4005: Automation raises errors when default snmp options is set to none
+-issue#4008: Fix #3808 causes a massive decrease in poller performance
+-issue#4009: The function number_format_i18n() should consider null to align with standard number_format() function
+-issue#4021: Change Device Threads, Revert read_config_option() (#4008, #3555)
+-issue#4031: Data Collectors and Data Profiles Filter Sub-Panel Go buttons not working as expected
+-issue#4033: Change 'Hide' Graph Action Icon's to 'Show' Action Icons
+-issue#4036: Automation Discovery Trying to access array offset on value of type null
+-issue#4038: Creating new graphs prompts for second click regardless
+-issue#4042: Clicking save in performance tab turns off rrd_update_enable on remote pollers
+-feature#3513: Add hooks for plugins to show customize graph source and customize template url
+-feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
+-feature#4013: Remote Poller - reset avg/max polling time
+
 1.2.16
+-issue#3704: When generating a report, the Cascade to Branches function does not as expected
+-issue#3859: When viewing graphs, automatic refresh so not always work as expected
 -issue#3898: Realtime graph pop up counter bug
--issue#3903: Debian test shows new PHP errors in log
--issue#3907: The cli script install_cacti.php does not exit with not zero exit code when errors occur
--issue#3910: Banners are not showing up
--issue#3912: Some pages that export data, when the export is complete, the progress bar remains
--issue#3919: Log Administration show empty during page navigation if search field value length is 4
--issue#3924: Graph Templates filter is not updated after new graph created
+-issue#3903: Undefined variable errors may occur when creating a new datasource
+-issue#3907: The cli-based installer does not exit with a non-zero exit code when error occurs
+-issue#3912: When an export is complete, sometimes the progress bar remains
+-issue#3915: When enabling many devices, a threshold can be reached causing a slowdown in the process
+-issue#3916: When performing actions against Devices, replicated device information could sometimes be lost
+-issue#3917: When using API to rename a tree node, backtrace may be incorrectly shown
+-issue#3919: When searching, valid pages can sometimes be shown as empty by ddb4github
+-issue#3920: When exporting data from graphs, not all data was properly included
+-issue#3924: Graph Templates filter is not updated after new graph created by ddb4github
+-issue#3926: Username and password on the login page is not visible in Classic theme
+-issue#3929: Improve wording of concurrent process and thread settings
+-issue#3930: Location filter should remove blank entries by ddb4github
+-issue#3931: When syncing data collectors, a reindex event may be triggered unnecessarily
+-issue#3932: Automation Networks allows discovery of invalid IP addresses
+-issue#3933: When changing permissions of the current user, they don't take effect immediately
+-issue#3935: When reindexing a device, an incorrect page was sometimes displayed
+-issue#3942: When repairing database, audit_database.php does not add missing columns
+-issue#3948: Spine 1.2.15 - Spine Encountered An Unhandled Exception Signal Number: '6' [11, Resource temporarily unavailable] (Spine thread)
+-issue#3949: Log page should not be empty if no log info exists
+-issue#3953: During upgrade, there are times when realms can be duplicated leading to SQL errors
+-issue#3957: When using ping.php, UDP response times are not interpreted properly by hypnotoad
+-issue#3960: Improve warning you get when attempting to view a log file you don't have access to
+-issue#3962: When replicating files, scripts are not marked as executable
+-issue#3963: When creating plugin tables, collation is not set properly
 -feature: Update c3.js to version 0.7.20
--feature: Update d3.js to version 6.2.0
 -feature: Update Chart.js to version 2.9.4
 -feature: Update phpseclib to version 2.0.29
 -feature: Update PHPMailer to version 6.1.8
 -feature: Use LSB shebang notation for cli scripts
 -feature#3923: Added ability to Hide the Graph Drilldowns icons from the graph_view.php and graph.php pages
 -feature: Add support for cactid daemon based launcher
+-feature#3923: Add ability to hide the Graph Drilldown icons by datatecuk
+-feature#3943: Add hooks for plugins to show custom Graph Source and custom Template URL (List View)
 
 1.2.15
 -issue#3643: When editing Maximum OIDs Per Get Request, blank value can cause errors

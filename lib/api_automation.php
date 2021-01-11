@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -154,7 +154,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 								if (cacti_sizeof($host_templates)) {
 									foreach ($host_templates as $host_template) {
-										print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . $host_template['name'] . "</option>\n";
+										print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . '</option>';
 									}
 								}
 								?>
@@ -184,7 +184,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 								<?php
 								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='". $key . "'"; if (get_request_var('rowsd') == $key) { print ' selected'; } print '>' . $value . '</option>\n';
+										print "<option value='". $key . "'"; if (get_request_var('rowsd') == $key) { print ' selected'; } print '>' . $value . '</option>';
 									}
 								}
 								?>
@@ -432,7 +432,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 								$hosts = get_allowed_devices();
 								if (cacti_sizeof($hosts)) {
 									foreach ($hosts as $host) {
-										print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . html_escape($host['description']) . "</option>\n";
+										print "<option value='" . $host['id'] . "'"; if (get_request_var('host_id') == $host['id']) { print ' selected'; } print '>' . html_escape($host['description']) . '</option>';
 									}
 								}
 								?>
@@ -453,7 +453,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 								if (cacti_sizeof($templates) > 0) {
 									foreach ($templates as $template) {
-										print "<option value=' " . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim($template['name'], 40) . "</option>\n";
+										print "<option value=' " . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . '</option>';
 									}
 								}
 								?>
@@ -484,7 +484,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 								<?php
 								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>';
 									}
 								}
 								?>
@@ -718,7 +718,7 @@ function display_new_graphs($rule, $url) {
 								<?php
 								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='". $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>\n';
+										print "<option value='". $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>';
 									}
 								}
 								?>
@@ -1078,10 +1078,10 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 							<?php
 							$host_templates = db_fetch_assoc('select id,name from host_template order by name');
 
-							if (cacti_sizeof($host_templates) > 0) {
-							foreach ($host_templates as $host_template) {
-								print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . $host_template['name'] . "</option>\n";
-							}
+							if (cacti_sizeof($host_templates)) {
+								foreach ($host_templates as $host_template) {
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . '</option>';
+								}
 							}
 							?>
 						</select>
@@ -1110,7 +1110,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . '</option>';
 								}
 							}
 							?>
@@ -3021,7 +3021,6 @@ function automation_get_valid_mask($range) {
 }
 
 function automation_get_network_info($range) {
-//	echo "function automation_get_network_info($range)" .PHP_EOL;
 	$network   = false;
 	$broadcast = false;
 	$mask      = false;
@@ -3031,7 +3030,12 @@ function automation_get_network_info($range) {
 	if (strpos($range, '/') !== false) {
 		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
 		$range_parts = explode('/', $range);
-		$mask        = automation_get_valid_mask($range_parts[1]);
+
+		if (!filter_var($range_parts[0], FILTER_VALIDATE_IP)) {
+			return false;
+		}
+
+		$mask = automation_get_valid_mask($range_parts[1]);
 		if ($mask !== false) {
 			$network = automation_get_valid_ip($range_parts[0]);
 			if ($mask['cidr'] != 0) {
@@ -3041,13 +3045,18 @@ function automation_get_network_info($range) {
 				$broadcast = long2ip($dec + $count);
 			}
 		}
-	} elseif (strpos($range, '*') !== false) {
+	} elseif (strpos($range, '*') !== false && strpos($range, '-') === false) {
+		$test = str_replace('*', 0, $range);
+
+		if (!filter_var($test, FILTER_VALIDATE_IP)) {
+			return false;
+		}
+
 		$range_parts = explode('.', $range);
 		$network     = '';
 		$broadcast   = '';
 		$part_count  = 0;
 		foreach ($range_parts as $part) {
-			//echo $part . ".";;
 			if ($part != '*') {
 				$part_count++;
 				if (is_numeric($part)) {
@@ -3080,10 +3089,9 @@ function automation_get_network_info($range) {
 			return automation_get_network_info(rtrim($network,'.').'/'.rtrim($broadcast,'.'));
 		}
 	} elseif (strpos($range, '-') !== false) {
-		$range_parts = explode('-', $range);
+		raise_message('automation_iprange', __('ERROR: IP ranges in the form of range1-range2 are no longer supported.'), MESSAGE_LEVEL_ERROR);
 
-		$network   = automation_get_valid_ip(long2ip(ip2long($range_parts[0]) - 1));
-		$broadcast = automation_get_valid_ip(long2ip(ip2long($range_parts[1]) + 1));
+		return false;
 	} else {
 		$network   = automation_get_valid_ip($range);
 		$broadcast = automation_get_valid_ip($range);
@@ -3108,7 +3116,10 @@ function automation_get_network_info($range) {
 				$detail['end']   = long2ip(ip2long($broadcast) - 1);
 			}
 		}
+	} else {
+		return false;
 	}
+
 	return $detail;
 }
 
@@ -3398,7 +3409,7 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	/* close the socket */
 	@fclose($handle);
 
-	if ($info['timed_out']) {
+	if (isset($info['timed_out'])) {
 		return 'timed_out';
 	}
 

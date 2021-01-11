@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -38,8 +38,8 @@ class CactiTableFilter {
 	public $default_filter = array();
 
 
-	public function __construct($form_header = '', $form_action = '', $form_id = '', $form_width,
-		$session_var = '', $action_url = '', $action_label = '') {
+	public function __construct($form_header = '', $form_action = '', $form_id = '',
+		$form_width = '', $session_var = '', $action_url = '', $action_label = '') {
 		global $item_rows;
 
 		$this->form_header   = $form_header;

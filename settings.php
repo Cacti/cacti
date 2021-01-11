@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -176,6 +176,19 @@ case 'save':
 					array($field_name));
 			}
 		} elseif (isset_request_var($field_name)) {
+			if ($field_array['method'] == 'textbox' && isset($field_array['filter'])) {
+				if (isset($field_array['options'])) {
+					$value = filter_var(get_nfilter_request_var($field_name), $field_array['filter'], $field_array['options']);
+				} else {
+					$value = filter_var(get_nfilter_request_var($field_name), $field_array['filter']);
+				}
+				if ($value === false) {
+					$_SESSION['sess_error_fields'][$field_name] = $field_name;
+					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+					$errors[3] = 3;
+					continue;
+				}
+			}
 			if (is_array(get_nfilter_request_var($field_name))) {
 				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
 				db_execute_prepared('REPLACE INTO settings
@@ -437,7 +450,7 @@ default:
 			loadPageNoHeader(strURL, true, false);
 		});
 
-		$('input[value="<?php print __esc('Save');?>"]').click(function(event) {
+		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
 			event.preventDefault();
 
 			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {
@@ -448,12 +461,12 @@ default:
 			}
 
 			if (themeChanged != true) {
-				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
+				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
 					$('#main').hide().html(data);
 					applySkin();
 				});
 			} else {
-				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
+				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
 					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
 				});
 			}

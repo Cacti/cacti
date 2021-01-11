@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -128,6 +128,8 @@ $cacti_version_codes = array(
 	'1.2.13'  => '0102',
 	'1.2.14'  => '0102',
 	'1.2.15'  => '0102',
+	'1.2.16'  => '0102',
+	'1.2.17'  => '0102',
 );
 
 $messages = array(
@@ -670,7 +672,7 @@ $sampling_intervals = array(
 	14400 => __('Every %d Hours', 4),
 	28800 => __('Every %d Hours', 8),
 	43200 => __('Every %d Hours', 12),
-	86400 => __('Every %1 Day', 1)
+	86400 => __('Every %d Day', 1)
 );
 
 $heartbeats = array(
@@ -748,7 +750,11 @@ $device_threads = array(
 	3 => __('%d Threads', 3),
 	4 => __('%d Threads', 4),
 	5 => __('%d Threads', 5),
-	6 => __('%d Threads', 6)
+	6 => __('%d Threads', 6),
+	7 => __('%d Threads', 7),
+	8 => __('%d Threads', 8),
+	9 => __('%d Threads', 9),
+	10 => __('%d Threads', 10)
 );
 
 $cron_intervals = array(
@@ -1115,7 +1121,7 @@ $user_auth_realms = array(
 
 	21   => __('Reports Management'),
 	22   => __('Reports Creation'),
-	27   => __('Hide Graph Drilldowns')
+	27   => __('Show Graph Action Icons')
 );
 
 $user_auth_roles = array(

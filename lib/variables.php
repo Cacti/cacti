@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -82,8 +82,6 @@ function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids 
 	}
 
 	if (cacti_sizeof($data)) {
-		cacti_log('Updating ' . cacti_sizeof($data) . ' Data Source');
-
 		foreach ($data as $item) {
 			update_data_source_title_cache($item['id']);
 		}

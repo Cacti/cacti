@@ -1,7 +1,8 @@
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -44,10 +45,16 @@ function sig_handler($signo) {
 
 // function to assist in logging
 function debug_level($host_id, $level) {
+	global $debug;
+
 	static $debug_enabled = array();
 
 	if (!isset($debug_enabled[$host_id])) {
-		$debug_enabled[$host_id] = is_device_debug_enabled($host_id);
+		if ($debug) {
+			$debug_enabled[$host_id] = true;
+		} else {
+			$debug_enabled[$host_id] = is_device_debug_enabled($host_id);
+		}
 	}
 
 	$level = $debug_enabled[$host_id] ? POLLER_VERBOSITY_NONE : $level;
@@ -290,29 +297,41 @@ $polling_interval = read_config_option('poller_interval');
 if ($allhost) {
 	if (isset($polling_interval)) {
 		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
-			FROM poller_item
-			WHERE poller_id = ?
-			AND rrd_next_step<=0
-			ORDER BY host_id',
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			WHERE pi.poller_id = ?
+			AND (h.disabled = "" OR h.disabled IS NULL)
+			AND pi.rrd_next_step <= 0
+			ORDER BY pi.host_id',
 			array($poller_id));
 
 		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
-			FROM poller_item
-			WHERE poller_id = ?
-			AND action IN (?, ?)
-			AND rrd_next_step<=0',
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			WHERE pi.poller_id = ?
+			AND (h.disabled = "" OR h.disabled IS NULL)
+			AND pi.action IN (?, ?)
+			AND pi.rrd_next_step <= 0',
 			array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT));
 	} else {
 		$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
-			FROM poller_item
-			WHERE poller_id = ?
-			ORDER by host_id',
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			WHERE pi.poller_id = ?
+			AND (h.disabled = "" OR h.disabled IS NULL)
+			ORDER by pi.host_id',
 			array($poller_id));
 
 		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
-			FROM poller_item
-			WHERE poller_id = ?
-			AND action IN (?, ?)',
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			WHERE pi.poller_id = ?
+			AND (h.disabled = "" OR h.disabled IS NULL)
+			AND pi.action IN (?, ?)',
 			array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT));
 	}
 
@@ -322,7 +341,7 @@ if ($allhost) {
 	$hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 		FROM host
 		WHERE poller_id = ?
-		AND disabled=""
+		AND disabled = ""
 		ORDER BY id',
 		array($poller_id));
 
@@ -345,7 +364,12 @@ if ($allhost) {
 			array($polling_interval, $poller_id));
 	}
 } else {
-	$print_data_to_stdout = false;
+	if ($debug) {
+		$print_data_to_stdout = true;
+	} else {
+		$print_data_to_stdout = false;
+	}
+
 	if ($first <= $last) {
 		// address potential exploits
 		input_validate_input_number($first);
@@ -365,21 +389,27 @@ if ($allhost) {
 
 		if (isset($polling_interval)) {
 			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
-				FROM poller_item
-				WHERE poller_id = ?
-				AND host_id >= ?
-				AND host_id <= ?
-				AND rrd_next_step <= 0
-				ORDER by host_id',
+				FROM poller_item AS pi
+				LEFT JOIN host AS h
+				ON h.id = pi.host_id
+				WHERE pi.poller_id = ?
+				AND (h.disabled = "" OR h.disabled IS NULL)
+				AND pi.host_id >= ?
+				AND pi.host_id <= ?
+				AND pi.rrd_next_step <= 0
+				ORDER by pi.host_id',
 				array($poller_id, $first, $last));
 
 			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
-				FROM poller_item
-				WHERE poller_id = ?
-				AND action IN(?, ?)
-				AND host_id >= ?
-				AND host_id <= ?
-				AND rrd_next_step <= 0',
+				FROM poller_item AS pi
+				LEFT JOIN host AS h
+				ON h.id = pi.host_id
+				WHERE pi.poller_id = ?
+				AND (h.disabled = "" OR h.disabled IS NULL)
+				AND pi.action IN(?, ?)
+				AND pi.host_id >= ?
+				AND pi.host_id <= ?
+				AND pi.rrd_next_step <= 0',
 				array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last));
 
 			// setup next polling interval
@@ -399,18 +429,24 @@ if ($allhost) {
 				array($polling_interval, $poller_id, $first, $last));
 		} else {
 			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
-				FROM poller_item
-				WHERE poller_id = ?
-				AND host_id >= ? and host_id <= ?
-				ORDER by host_id',
+				FROM poller_item AS pi
+				LEFT JOIN host AS h
+				ON h.id = pi.host_id
+				WHERE pi.poller_id = ?
+				AND (h.disabled = "" OR h.disabled IS NULL)
+				AND pi.host_id >= ? AND pi.host_id <= ?
+				ORDER BY pi.host_id',
 				array($poller_id, $first, $last));
 
 			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
-				FROM poller_item
-				WHERE poller_id = ?
-				AND action IN (?, ?)
-				AND host_id >= ?
-				AND host_id <= ?',
+				FROM poller_item AS pi
+				LEFT JOIN host AS h
+				ON h.id = pi.host_id
+				WHERE pi.poller_id = ?
+				AND (h.disabled = "" OR h.disabled IS NULL)
+				AND pi.action IN (?, ?)
+				AND pi.host_id >= ?
+				AND pi.host_id <= ?',
 				array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last));
 		}
 	} else {
@@ -681,6 +717,8 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 			$last_host = $current_host;
 		}
 
+		$thread_start = microtime(true);
+
 		if (!$host_down) {
 			switch ($item['action']) {
 			case POLLER_ACTION_SNMP: // snmp
@@ -712,7 +750,9 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 					}
 				}
 
-				cacti_log("Device[$host_id] DS[$data_source] SNMP: v" . $item['snmp_version'] . ': ' . $item['hostname'] . ', dsname: ' . $item['rrd_name'] . ', oid: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				$total_time = (microtime(true) - $thread_start) * 1000;
+
+				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . "] SNMP: v" . $item['snmp_version'] . ': ' . $item['hostname'] . ', dsname: ' . $item['rrd_name'] . ', oid: ' . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			case POLLER_ACTION_SCRIPT: // script (popen)
@@ -732,7 +772,9 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 					}
 				}
 
-				cacti_log("Device[$host_id] DS[$data_source] CMD: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				$total_time = (microtime(true) - $thread_start) * 1000;
+
+				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . "] CMD: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			case POLLER_ACTION_SCRIPT_PHP: // script (php script server)
@@ -752,7 +794,9 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 					}
 				}
 
-				cacti_log("Device[$host_id] DS[$data_source] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+				$total_time = (microtime(true) - $thread_start) * 1000;
+
+				cacti_log("Device[$host_id] DS[$data_source] TT[" . round($total_time, 2) . "] SERVER: " . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				break;
 			default: // invalid polling option

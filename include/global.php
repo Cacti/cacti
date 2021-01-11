@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -257,6 +257,9 @@ if (isset($input_whitelist)) {
 include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
+include_once($config['library_path'] . '/html.php');
+include_once($config['library_path'] . '/html_utility.php');
+include_once($config['library_path'] . '/html_validate.php');
 
 $filename = get_current_page();
 
@@ -273,11 +276,21 @@ $config['connection'] = 'online';
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
-	if (!isset($rdatabase_retries)) $rdatabase_retries = 5;
-	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
-	if (!isset($rdatabase_ssl_key)) $rdatabase_ssl_key = false;
+	if (!isset($rdatabase_retries))  $rdatabase_retries = 5;
+	if (!isset($rdatabase_ssl))      $rdatabase_ssl = false;
+	if (!isset($rdatabase_ssl_key))  $rdatabase_ssl_key = false;
 	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
-	if (!isset($rdatabase_ssl_ca)) $rdatabase_ssl_ca = false;
+	if (!isset($rdatabase_ssl_ca))   $rdatabase_ssl_ca = false;
+
+	// Check for recovery
+	if (is_object($local_db_cnn_id)) {
+		$boost_records = db_fetch_cell('SELECT COUNT(*)
+			FROM poller_output_boost', '', true, $local_db_cnn_id);
+
+		if ($boost_records > 0) {
+			$config['connection'] = 'recovery';
+		}
+	}
 
 	/* gather the existing cactidb version */
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
@@ -355,15 +368,6 @@ if ($config['poller_id'] > 1) {
 	}
 }
 
-if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
-	$boost_records = db_fetch_cell('SELECT COUNT(*)
-		FROM poller_output_boost', '', true, $local_db_cnn_id);
-
-	if ($boost_records > 0) {
-		$config['connection'] = 'recovery';
-	}
-}
-
 if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')) {
 	include(dirname(__FILE__) . '/session.php');
 } else {
@@ -425,10 +429,12 @@ if ($config['is_web']) {
 
 	/* increased web hardening */
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy != '0' && $script_policy != '') {
+	if ($script_policy == 'unsafe-eval') {
 		$script_policy = "'$script_policy'";
+	} else {
+		$script_policy = '';
 	}
-	$alternates = read_config_option('content_security_alternate_sources');
+	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
 
 	header("Content-Security-Policy: default-src *; img-src 'self' $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self'; worker-src 'self'");
 
@@ -466,6 +472,11 @@ if ($config['is_web']) {
 			cacti_session_destroy();
 		}
 	}
+
+	/* Sanitize the http referer */
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		$_SERVER['HTTP_REFERER'] = sanitize_uri($_SERVER['HTTP_REFERER']);
+	}
 }
 
 /* emulate 'register_globals' = 'off' if turned on */
@@ -499,12 +510,9 @@ include_once($config['include_path'] . '/global_languages.php');
 include_once($config['library_path'] . '/auth.php');
 include_once($config['library_path'] . '/plugins.php');
 include_once($config['include_path'] . '/plugins.php');
-include_once($config['library_path'] . '/html_validate.php');
-include_once($config['library_path'] . '/html_utility.php');
 include_once($config['include_path'] . '/global_arrays.php');
 include_once($config['include_path'] . '/global_settings.php');
 include_once($config['include_path'] . '/global_form.php');
-include_once($config['library_path'] . '/html.php');
 include_once($config['library_path'] . '/html_form.php');
 include_once($config['library_path'] . '/html_filter.php');
 include_once($config['library_path'] . '/variables.php');
@@ -536,6 +544,14 @@ if ($config['is_web']) {
 				exit;
 			}
 		}
+	}
+
+	if (isset($_COOKIE['CactiTimeZone'])) {
+		$minutes = $_COOKIE['CactiTimeZone'];
+		$hours   = $minutes / 60;
+
+		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+		ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
 	}
 }
 

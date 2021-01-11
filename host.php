@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -114,6 +114,7 @@ switch (get_request_var('action')) {
 		get_filter_request_var('host_id');
 
 		host_reload_query();
+		raise_message('query_reloaded', __('Data Query Re-indexed.'), MESSAGE_LEVEL_INFO);
 
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 		break;
@@ -121,6 +122,7 @@ switch (get_request_var('action')) {
 		get_filter_request_var('host_id');
 
 		host_reload_query();
+		raise_message('query_reloaded', __('Device Data Query Re-indexed.  Verbose output displayed.'), MESSAGE_LEVEL_INFO);
 
 		header('Location: host.php?header=' . (isset_request_var('header') && get_nfilter_request_var('header') == 'true' ? 'true':'false') . '&action=edit&id=' . get_request_var('host_id') . '&display_dq_details=true');
 		break;
@@ -139,11 +141,26 @@ switch (get_request_var('action')) {
 		break;
 	case 'enable_debug':
 		enable_device_debug(get_filter_request_var('host_id'));
+		raise_message('enable_debug', __('Device Debugging Enabled for Device.'), MESSAGE_LEVEL_INFO);
+
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 
 		break;
 	case 'disable_debug':
 		disable_device_debug(get_filter_request_var('host_id'));
+		raise_message('disable_debug', __('Device Debugging Disabled for Device.'), MESSAGE_LEVEL_INFO);
+
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+
+		break;
+	case 'repopulate':
+		if (get_filter_request_var('host_id') > 0) {
+			push_out_host(get_request_var('host_id'));
+			raise_message('repopulate_message', __('Poller Cache for Device Refreshed.'), MESSAGE_LEVEL_INFO);
+		} else {
+			raise_message('repopulate_error', __('ERROR: Invalid Device ID.'), MESSAGE_LEVEL_ERROR);
+		}
+
 		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
 
 		break;
@@ -616,6 +633,7 @@ function host_edit() {
 
 	$header_label = __('Device [new]');
 	$debug_link   = '';
+	$repop_link   = '';
 	if (!isempty_request_var('id')) {
 		$_SESSION['cur_device_id'] = get_request_var('id');
 
@@ -631,6 +649,8 @@ function host_edit() {
 			} else {
 				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=enable_debug&host_id=' . $host['id']) . "'>" . __('Enable Device Debug') . "</a><br>";
 			}
+
+			$repop_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=repopulate&host_id=' . $host['id']) . "'>" . __('Repopulate Poller Cache') . "</a><br>";
 		}
 	} else {
 		$_SESSION['cur_device_id'] = 0;
@@ -648,6 +668,7 @@ function host_edit() {
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs_new.php?reset=true&host_id=' . $host['id']);?>'><?php print __('Create Graphs for this Device');?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=reindex&host_id=' . $host['id']);?>'><?php print __('Re-Index Device');?></a><br>
 					<?php print $debug_link;?>
+					<?php print $repop_link;?>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?reset=true&host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'><?php print __('Data Source List');?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs.php?reset=true&host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'><?php print __('Graph List');?></a>
 					<?php api_plugin_hook('device_edit_top_links'); ?>
@@ -681,32 +702,6 @@ function host_edit() {
 	html_end_box(true, true);
 
 	device_javascript();
-
-	if ((isset_request_var('display_dq_details')) && (isset($_SESSION['debug_log']['data_query']))) {
-		$dbg_copy_uid = generate_hash();
-		?>
-		<div id='dqdebug' class='cactiTable'>
-			<div id='clipboardHeader<?php print $dbg_copy_uid;?>'>
-				<div class='cactiTableTitle'>
-					<span style='padding:3px;'><?php print __('Data Query Debug Information');?></span>
-				</div>
-				<div class='cactiTableButton'>
-					<span>
-						<a class='linkCopyDark cactiTableCopy' id='copyToClipboard<?php print $dbg_copy_uid;?>'><?php print __('Copy');?></a>
-						<a id='dbghide' class='fa fa-times' href='#'><?php print __('Hide');?></a>
-					</span>
-				</div>
-				<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
-					<tr class='tableRow'>
-						<td class='debug'>
-							<span><?php print debug_log_return('data_query');?></span>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<?php
-	}
 
 	if (!empty($host['id'])) {
 		html_start_box(__('Associated Graph Templates'), '100%', '', '3', 'center', '');
@@ -806,6 +801,32 @@ function host_edit() {
 
 		<?php
 		html_end_box();
+
+		if ((isset_request_var('display_dq_details')) && (isset($_SESSION['debug_log']['data_query']))) {
+			$dbg_copy_uid = generate_hash();
+			?>
+			<div id='dqdebug' class='cactiTable'>
+				<div id='clipboardHeader<?php print $dbg_copy_uid;?>'>
+					<div class='cactiTableTitle'>
+						<span style='padding:3px;'><?php print __('Data Query Debug Information');?></span>
+					</div>
+					<div class='cactiTableButton'>
+						<span>
+							<a class='linkCopyDark cactiTableCopy' id='copyToClipboard<?php print $dbg_copy_uid;?>'><?php print __('Copy');?></a>
+							<a id='dbghide' class='fa fa-times' href='#'><?php print __('Hide');?></a>
+						</span>
+					</div>
+					<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
+						<tr class='tableRow'>
+							<td class='debug'>
+								<span><?php print debug_log_return('data_query');?></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<?php
+		}
 
 		html_start_box(__('Associated Data Queries'), '100%', '', '3', 'center', '');
 
@@ -1142,6 +1163,15 @@ function device_javascript() {
 		setPing();
 	}
 
+	function hostPageLoad(strURL) {
+		var scrollTop = $(window).scrollTop();
+		$.get(strURL, function(data) {
+			$('#main').html(data);
+			applySkin();
+			$(window).scrollTop(scrollTop);
+		});
+	}
+
 	$(function() {
 		// Need to set this for global snmpv3 functions to remain sane between edits
 		snmp_security_initialized = false;
@@ -1175,23 +1205,22 @@ function device_javascript() {
 		$('[id^="reload"]').click(function(data) {
 			$(this).addClass('fa-spin');
 			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
-			loadPageNoHeader(strURL, true);
+			hostPageLoad(strURL);
 		});
 
 		$('[id^="verbose"]').click(function(data) {
-			$(this).addClass('fa-spin');
-			strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
+			var strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="remove"]').click(function(data) {
-			strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
-			loadPageNoHeader(strURL, true);
+			var strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
+			hostPageLoad(strURL);
 		});
 
 		$('[id^="gtremove"]').click(function(data) {
 			strURL = 'host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
-			loadPageNoHeader(strURL, true);
+			hostPageLoad(strURL);
 		});
 
 		$('#add_dq').click(function() {
@@ -1217,6 +1246,11 @@ function device_javascript() {
 			$('#dqdebug').empty().fadeOut('fast');
 		});
 
+		if ($('#dbghide').length) {
+			var dbgloc = parseInt($('#dbghide').offset().top - $('.breadCrumbBar').outerHeight() - $('.cactiPageHead').outerHeight());
+			$('.cactiConsoleContentArea').scrollTop(dbgloc);
+		}
+
 		$('[id$="spacer"]').click(function() {
 			changeHostForm();
 		});
@@ -1236,7 +1270,6 @@ function device_javascript() {
 			.done(function(data) {
 				$('#ping_results').html(data);
 				hostInfoHeight = $('.hostInfoHeader').height();
-				$('#navigation_right, #main').scrollTop(0);
 			})
 			.fail(function(data) {
 				getPresentHTTPError(data);
@@ -1488,6 +1521,7 @@ function host() {
 		<form id='form_devices' action='host.php'>
 			<table class='filterTable'>
 				<tr>
+					<?php api_plugin_hook('device_filter_start'); ?>
 					<td>
 						<?php print __('Site');?>
 					</td>
@@ -1554,7 +1588,7 @@ function host() {
 							} else {
 								$sql_where = '';
 							}
-							$locations = db_fetch_assoc("SELECT DISTINCT IF(location='', '" . __('Undefined') . "', location) AS location
+							$locations = db_fetch_assoc("SELECT DISTINCT IF(IFNULL(host.location,'') = '', '" . __('Undefined') . "', location) AS location
 								FROM host
 								$sql_where
 								ORDER BY location");
@@ -1614,6 +1648,7 @@ function host() {
 							?>
 						</select>
 					</td>
+					<?php api_plugin_hook('device_filter_end'); ?>
 				</tr>
 			</table>
 		</form>
@@ -1698,6 +1733,9 @@ function host() {
 		)
 	);
 
+	$display_text_size = sizeof($display_text);
+	$display_text = api_plugin_hook_function('device_display_text', $display_text);
+
 	$hosts = get_device_records($total_rows, $rows);
 
 	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Devices'), 'page', 'main');
@@ -1710,7 +1748,9 @@ function host() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (cacti_sizeof($hosts)) {
+	if (sizeof($display_text) != $display_text_size && cacti_sizeof($hosts)) {//display_text changed
+		api_plugin_hook_function('device_table_replace', $hosts);
+	} else if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			if ($host['disabled'] == '' &&
 				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -658,7 +658,7 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 
 			if ($poller_type == '1') {
-				$max_threads = '0';
+				$max_threads = '1';
 			}
 
 			$rrds_processed = 0;

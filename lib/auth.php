@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -2648,6 +2648,12 @@ function reset_user_perms($user_id) {
 		SET reset_perms=FLOOR(RAND() * 4294967295) + 1
 		WHERE id = ?',
 		array($user_id));
+
+	if ($user_id == $_SESSION['sess_user_id']) {
+		kill_session_var('sess_user_realms');
+		kill_session_var('sess_user_config_array');
+		kill_session_var('sess_config_array');
+	}
 }
 
 /* is_user_perms_valid - checks to see if the admin has changed users permissions
@@ -2764,7 +2770,7 @@ function auth_login_redirect($login_opts = '') {
 					$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'];
 				}
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
-				$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+				$referer = $_SERVER['HTTP_REFERER'];
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';

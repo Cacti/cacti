@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -102,7 +102,7 @@ if (read_config_option('auth_method') == 0) {
 
 	$_SESSION['sess_user_id'] = $admin_id;
 	$_SESSION['sess_change_password'] = true;
-	header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
+	header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 	exit;
 }
 
@@ -121,7 +121,7 @@ if (read_config_option('auth_method') != 0) {
 
 	/* handle change password dialog */
 	if ((isset($_SESSION['sess_change_password'])) && (read_config_option('webbasic_enabled') != 'on')) {
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
+		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 		exit;
 	}
 
@@ -143,8 +143,8 @@ if (read_config_option('auth_method') != 0) {
 			}
 
 			$current_user = db_fetch_row_prepared('SELECT *
-				FROM user_auth 
-				WHERE id = ?', 
+				FROM user_auth
+				WHERE id = ?',
 				array($_SESSION['sess_user_id']));
 
 			return true;
@@ -284,7 +284,7 @@ if (read_config_option('auth_method') != 0) {
 				exit;
 			}
 			if (isset($_SERVER['HTTP_REFERER'])) {
-				$goBack = "<td colspan='2' class='center'>[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+				$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			} else {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
@@ -331,9 +331,9 @@ if (read_config_option('auth_method') != 0) {
 			exit;
 		}
 
-		$current_user = db_fetch_row_prepared('SELECT * 
-			FROM user_auth 
-			WHERE id = ?', 
+		$current_user = db_fetch_row_prepared('SELECT *
+			FROM user_auth
+			WHERE id = ?',
 			array($_SESSION['sess_user_id']));
 	}
 }

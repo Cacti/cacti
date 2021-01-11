@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -746,6 +746,11 @@ case 'list':
 		foreach ($graphs as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_details = get_graph_template_details($graph['local_graph_id']);
+
+			if($graph['graph_source'] == '0') { //Not Templated, customize graph source and template details.
+				$template_details = api_plugin_hook_function('customize_template_details', $template_details);
+				$graph = api_plugin_hook_function('customize_graph', $graph);
+			}
 
 			if (isset($template_details['graph_name'])) {
 				$graph['name'] = $template_details['graph_name'];

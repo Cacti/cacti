@@ -874,6 +874,10 @@ ul#breadcrumbs {
 	padding-right: 6px;
 }
 
+.cactiLoginTable input {
+	border: 1px solid #BBBBBB !important;
+}
+
 .loginErrors, .logoutErrors {
 	color: red;
 	min-height: 0px;
@@ -2014,7 +2018,6 @@ tr#realtime td:first-child {
 
 .ui-multiselect-checkboxes span {
 	font-size: 12px;
-	color: black;
 }
 
 .ui-multiselect-header {

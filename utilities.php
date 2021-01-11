@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -378,19 +378,63 @@ function utilities_view_tech() {
 		print '</td>';
 		form_end_row();
 
+		$processes = db_fetch_cell('SELECT
+			GROUP_CONCAT(
+				CONCAT("' . __('Name: ') . '", name, ", ' . __('Procs: ') . '", processes) SEPARATOR "<br>"
+			) AS poller
+			FROM poller
+			WHERE disabled=""');
+
+		$threads = db_fetch_cell('SELECT
+			GROUP_CONCAT(
+				CONCAT("' . __('Name: ') . '", name, ", ' . __('Threads: ') . '", threads) SEPARATOR "<br>"
+			) AS poller
+			FROM poller
+			WHERE disabled=""');
+
 		form_alternate_row();
 		print '<td>' . __('Concurrent Processes') . '</td>';
-		print '<td>' . read_config_option('concurrent_processes') . '</td>';
+		print '<td>' . $processes . '</td>';
 		form_end_row();
 
 		form_alternate_row();
 		print '<td>' . __('Max Threads') . '</td>';
-		print '<td>' . read_config_option('max_threads') . '</td>';
+		print '<td>' . $threads . '</td>';
 		form_end_row();
+
+		$script_servers = read_config_option('php_servers');
 
 		form_alternate_row();
 		print '<td>' . __('PHP Servers') . '</td>';
-		print '<td>' . read_config_option('php_servers') . '</td>';
+		print '<td>' . html_escape($script_servers) . '</td>';
+		form_end_row();
+
+		$max_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+		if (cacti_sizeof($max_connections)) {
+			$max_connections = $max_connections['Value'];
+		} else {
+			$max_connections = 0;
+		}
+
+		$total_dc_threads = db_fetch_cell("SELECT
+			SUM((processes * threads) + (processes * $script_servers)) AS threads
+			FROM poller
+			WHERE disabled = ''");
+
+		$recommend_mc = $total_dc_threads + 100;
+
+		if ($recommend_mc > $max_connections) {
+			$db_connections = '<span class="deviceDown">' . __('Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+		} else {
+			$db_connections = '<span class="deviceUp">' . __('Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+		}
+
+		form_alternate_row();
+		print '<td>' . __('Minimum Connections:') . '</td>';
+		print '<td>' . $db_connections . '<br>' .
+			__('Assumes 100 spare connections for Web page users and other various connections.') . '<br>' .
+			__('The minimum required can vary greatly if there is heavy user Graph viewing activity.') . '<br>' .
+			__('Each browser tab can use upto 10 connections depending on the browser.') . '</td>';
 		form_end_row();
 
 		form_alternate_row();
@@ -626,15 +670,12 @@ function utilities_view_tech() {
 		$php_info = utilities_php_modules();
 
 		html_section_header(__('PHP Module Information'), 2);
-		form_alternate_row();
 		$php_info = str_replace(
 			array('width="600"', 'th colspan="2"', ','),
 			array('', 'th class="subHeaderColumn"', ', '),
 			$php_info
 		);
-		print "<td colspan='2'>" . $php_info . '</td>';
-
-		form_end_row();
+		print "<tr><td colspan='2'>" . $php_info . '</td></tr>';
 	}
 
 	html_end_box();
@@ -771,7 +812,7 @@ function utilities_view_user_log() {
 
 							if (cacti_sizeof($users)) {
 								foreach ($users as $user) {
-									print "<option value='" . $user['username'] . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . $user['username'] . '</option>';
+									print "<option value='" . html_escape($user['username']) . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . html_escape($user['username']) . '</option>';
 								}
 							}
 							?>
@@ -991,28 +1032,26 @@ function utilities_clear_user_log() {
 function utilities_view_logfile() {
 	global $log_tail_lines, $page_refresh_interval, $config;
 
-	$logfile = read_config_option('path_cactilog');
-	$logbase = basename($logfile);
+	$logfile = basename(get_nfilter_request_var('filename'));
+	$logbase = basename(read_config_option('path_cactilog'));
 
-	if (isset_request_var('filename')) {
-		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
-		if (file_exists($requestedFile)) {
-			$logfile = $requestedFile;
-		} else {
-			$logfile = read_config_option('path_cactilog');
-		}
+	if ($logfile == '') {
+		$logfile = $logbase;
 	}
 
 	if ($logfile == '') {
-		$logfile = $config['base_path'] . '/log/cacti.log';
+		$logfile = 'cacti.log';
 	}
 
-	if (get_nfilter_request_var('filename') != '') {
-		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
-			raise_message('clog_invalid');
-			header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
-			exit(0);
-		}
+	$logname = '';
+	$logpath = '';
+
+	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
+		raise_message('clog_invalid');
+		header('Location: utilities.php?action=view_logfile&filename=' . $logbase);
+		exit(0);
+	} else {
+		$logfile = $logpath . '/' . $logfile;
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -1132,7 +1171,7 @@ function utilities_view_logfile() {
 
 							if (cacti_sizeof($logFileArray)) {
 								foreach ($logFileArray as $logFile) {
-									print "<option value='" . $logFile . "'";
+									print "<option value='" . html_escape($logFile) . "'";
 
 									if (get_nfilter_request_var('filename') == $logFile) {
 										print ' selected';
@@ -1143,7 +1182,7 @@ function utilities_view_logfile() {
 									$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 									$logName = $logParts[0];
 
-									print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . '</option>';
+									print '>' . html_escape($logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'')) . '</option>';
 								}
 							}
 							?>
@@ -1247,7 +1286,7 @@ function utilities_view_logfile() {
 	$refreshTime  = get_request_var('refresh');
 	$message_type = get_request_var('message_type');
 	$tail_lines   = get_request_var('tail_lines');
-	$base_url     = 'utilities.php?action=view_logfile';
+	$base_url     = 'utilities.php?action=view_logfile&filename='.basename($logfile);
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
 
@@ -1768,7 +1807,7 @@ function utilities_view_poller_cache() {
 
 							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . '</option>';
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . '</option>';
 								}
 							}
 							?>
@@ -2501,7 +2540,7 @@ function snmpagent_utilities_run_cache() {
 								<?php
 								if (cacti_sizeof($mibs) > 0) {
 									foreach ($mibs as $mib) {
-										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . html_escape($mib['mib']) . '</option>';
+										print "<option value='" . html_escape($mib['mib']) . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . html_escape($mib['mib']) . '</option>';
 									}
 								}
 								?>
@@ -2765,7 +2804,7 @@ function snmpagent_utilities_run_eventlog(){
 								<option value='-1'<?php if (get_request_var('receiver') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($receivers as $receiver) {
-									print "<option value='" . $receiver['manager_id'] . "'"; if (get_request_var('receiver') == $receiver['manager_id']) { print ' selected'; } print '>' . $receiver['hostname'] . '</option>';
+									print "<option value='" . $receiver['manager_id'] . "'"; if (get_request_var('receiver') == $receiver['manager_id']) { print ' selected'; } print '>' . html_escape($receiver['hostname']) . '</option>';
 								}
 								?>
 							</select>

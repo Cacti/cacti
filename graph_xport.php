@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -147,17 +147,52 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		}
 		$output .= $header . "\n";
 	} else {
-		$second = "class='right' colspan='2'";
 		print "<table class='cactiTable' class='center'>\n";
-		print "<tr class='tableHeader'><td colspan='2' class='linkOverDark' style='font-weight:bold;'>" . __('Summary Details') . "</td><td class='right'><a href='#' role='link' style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>" . __('Download') . "</a></td></tr>\n";
-		print "<tr class='even'><td class='left' style='width:40%;'>" . __('Title') . "</td><td $second>"          . html_escape($xport_array['meta']['title_cache'])      . "</td></tr>\n";
-		print "<tr class='odd'><td class='left'>" . __('Vertical Label') . "</td><td $second>" . html_escape($xport_array['meta']['vertical_label'])    . "</td></tr>\n";
-		print "<tr class='even'><td class='left'>" . __('Start Date') . "</td><td $second>"     . date('Y-m-d H:i:s', $xport_array['meta']['start']) . "</td></tr>\n";
-		print "<tr class='odd'><td class='left'>" . __('End Date') . "</td><td $second>"       . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step']*($xport_array['meta']['rows']-1) : $xport_array['meta']['end']) . "</td></tr>\n";
-		print "<tr class='even'><td class='left'>" . __('Step') . "</td><td $second>"           . $xport_array['meta']['step']                       . "</td></tr>\n";
-		print "<tr class='odd'><td class='left'>" . __('Total Rows') . "</td><td $second>"     . $xport_array['meta']['rows']                        . "</td></tr>\n";
-		print "<tr class='even'><td class='left'>" . __('Graph ID') . "</td><td $second>"       . $xport_array['meta']['local_graph_id']             . "</td></tr>\n";
-		print "<tr class='odd'><td class='left'>" . __('Host ID') . "</td><td $second>"        . $xport_array['meta']['host_id']                     . "</td></tr>\n";
+
+		print "<tr class='tableHeader'>
+			<td>" . __('Summary Details') . "</td>
+			<td class='right'><a href='#' role='link' style='cursor:pointer;' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>" . __('Download') . "</a></td>
+		</tr>\n";
+
+		print "<tr class='even'>
+			<td class='left' style='width:40%;'>" . __('Title') . "</td>
+			<td class='right'>" . html_escape($xport_array['meta']['title_cache']) . "</td>
+		</tr>\n";
+
+		print "<tr class='odd'>
+			<td class='left'>" . __('Vertical Label') . "</td>
+			<td class='right'>" . html_escape($xport_array['meta']['vertical_label']) . "</td>
+		</tr>\n";
+
+		print "<tr class='even'>
+			<td class='left'>" . __('Start Date') . "</td>
+			<td class='right'>" . date('Y-m-d H:i:s', $xport_array['meta']['start']) . "</td>
+		</tr>\n";
+
+		print "<tr class='odd'>
+			<td class='left'>" . __('End Date') . "</td>
+			<td class='right'>" . date('Y-m-d H:i:s', ($xport_array['meta']['end'] == $xport_array['meta']['start']) ? $xport_array['meta']['start'] + $xport_array['meta']['step']*($xport_array['meta']['rows']-1) : $xport_array['meta']['end']) . "</td>
+		</tr>\n";
+
+		print "<tr class='even'>
+			<td class='left'>" . __('Step') . "</td>
+			<td class='right'>" . $xport_array['meta']['step'] . "</td>
+		</tr>\n";
+
+		print "<tr class='odd'>
+			<td class='left'>" . __('Total Rows') . "</td>
+			<td class='right'>" . $xport_array['meta']['rows'] . "</td>
+		</tr>\n";
+
+		print "<tr class='even'>
+			<td class='left'>" . __('Graph ID') . "</td>
+			<td class='right'>" . $xport_array['meta']['local_graph_id'] . "</td>
+		</tr>\n";
+
+		print "<tr class='odd'>
+			<td class='left'>"  . __('Host ID') . "</td>
+			<td class='right'>" . $xport_array['meta']['host_id'] . "</td>
+		</tr>\n";
 
 		$class = 'even';
 		if (isset($xport_meta['NthPercentile'])) {
@@ -167,9 +202,14 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 				} else {
 					$class = 'even';
 				}
-				print "<tr class='$class'><td>" . __('Nth Percentile') . "</td><td class='left'>" . $item['value'] . "</td><td class='right'>" . $item['format'] . "</td></tr>\n";
+
+				print "<tr class='$class'>
+					<td class='left'>" . __('Nth Percentile') . ' [ ' . html_escape($item['format']) . " ]</td>
+					<td class='right'>" . html_escape($item['value']) . "</td>
+				</tr>\n";
 			}
 		}
+
 		if (isset($xport_meta['Summation'])) {
 			foreach($xport_meta['Summation'] as $item) {
 				if ($class == 'even') {
@@ -177,7 +217,11 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 				} else {
 					$class = 'even';
 				}
-				print "<tr class='$class'><td>" . __('Summation') . "</td><td class='left'>" . $item['value'] . "</td><td class='right'>" . $item['format'] . "</td></tr>\n";
+
+				print "<tr class='$class'>
+					<td class='left'>" . __('Summation') . ' [ ' . html_escape($item['format']) . " ]</td>
+					<td class='right'>" . html_escape($item['value']) . "</td>
+				</tr>\n";
 			}
 		}
 
@@ -186,10 +230,13 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		print "<div class='wrapperMain' style='display:none;'>\n";
 		print "<table id='csvExport' class='cactiTable'><thead>\n";
 
-		print "<tr class='tableHeader'><th class='tableSubHeaderColumn left ui-resizable'>Date</th>";
+		print "<tr class='tableHeader'>
+			<th class='tableSubHeaderColumn left ui-resizable'>" . __('Date') . "</th>\n";
+
 		for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right ui-resizable'>" . $xport_array['meta']['legend']['col' . $i] . "</th>";
+			print "<th class='{sorter: \"numberFormat\"} tableSubHeaderColumn right ui-resizable'>" . $xport_array['meta']['legend']['col' . $i] . "</th>\n";
 		}
+
 		print "</tr></thead>\n";
 	}
 }
@@ -213,6 +260,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 		$j = 1;
 		foreach($xport_array['data'] as $row) {
 			print "<tr><td class='left'>" . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j*$xport_array['meta']['step'])) . "</td>";
+
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				if ($row['col' . $i] > 1) {
 					print "<td class='right'>" . trim(number_format_i18n(round($row['col' . $i],3),2,$graph_info['base_value'])) . '</td>';
@@ -222,11 +270,12 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 					print "<td class='right'>" . round($row['col' . $i],4) . '</td>';
 				}
 			}
+
 			print "</tr>\n";
 			$j++;
 		}
 
-		print "</table></div>\n";
+		print "<tr><td>\n";
 
 		?>
 		<script type='text/javascript'>
@@ -269,6 +318,8 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 		}
 		</script>
 		<?php
+
+		print "</td></tr></table></div>\n";
 	}
 }
 

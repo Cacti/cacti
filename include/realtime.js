@@ -38,6 +38,10 @@ function imageOptionsChanged(action) {
 	var isThumb        = $('#thumbnails').is(':checked');
 	var url            = '';
 
+	if (size == null) {
+		size = 100;
+	}
+
 	local_graph_id = $('#local_graph_id').val();
 
 	if (rtWidth == 0) {
@@ -49,7 +53,7 @@ function imageOptionsChanged(action) {
 	}
 
 	if (action == 'countdown') {
-		url = 'graph_realtime.php?action=countdown&top=0&left=0&local_graph_id='+local_graph_id;
+		url = 'graph_realtime.php?action=countdown&top=0&left=0&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size+'&graph_nolegend='+isThumb;
 	} else if (action == 'initial') {
 		url = 'graph_realtime.php?action=initial&top=0&left=0&local_graph_id='+local_graph_id+'&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&ds_step='+ds_step+'&count='+count+'&size='+size;
 	} else {
@@ -211,6 +215,10 @@ function realtimeGrapher() {
     var isThumb     = $('#thumbnails').is(':checked');
 	var totalGraphs = countRealtimeGraphs();
 	var key;
+
+	if (size == null) {
+		size = 100;
+	}
 
 	if (graphsRendered == null || graphsRendered >= totalGraphs || prevTotalGraphs != totalGraphs) {
 		//console.log('Rendering: Total Graphs:' + totalGraphs + ', Rendered Graphs:' + graphsRendered);

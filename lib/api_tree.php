@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -545,6 +545,15 @@ function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
 	$ndata = explode('_', $node_id);
 	if (cacti_sizeof($ndata)) {
 		foreach($ndata as $data) {
+			if (strpos($data, ':') === false) {
+				cacti_log("ERROR: Invalid NodeID: '" . $node_id . "', Function rename_node", false);
+
+				header('Content-Type: application/json; charset=utf-8');
+				print json_encode(array('id' => $node_id, 'result' => 'false'));
+
+				return;
+			}
+
 			list($type, $tid) = explode(':', $data);
 
 			/* watch out for monkey business */

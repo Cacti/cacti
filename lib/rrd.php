@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1065,6 +1065,10 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 
 	$graph_opts .= '--pango-markup ' . RRD_NL;
 
+	if (read_config_option('rrdtool_watermark') == 'on') {
+		$graph_opts .= '--disable-rrdtool-tag ' . RRD_NL;
+	}
+
 	foreach($graph as $key => $value) {
 		switch($key) {
 		case 'title_cache':
@@ -1434,6 +1438,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	$i = 0;
 	$j = 0;
+	$nth = 0;
+	$sum = 0;
 	$last_graph_cf = array();
 	if (cacti_sizeof($graph_items)) {
 		/* we need to add a new column 'cf_reference', so unless PHP 5 is used, this foreach syntax is required */
@@ -1580,7 +1586,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate_peak|aggregate):(\d)?\|/', $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 					foreach ($matches as $match) {
 						$search[]  = $match[0];
-						$replace[] = variable_nth_percentile($match, $graph, $graph_item, $graph_items, $graph_start, $graph_end);
+						$value     = variable_nth_percentile($match, $graph, $graph_item, $graph_items, $graph_start, $graph_end);
+						$replace[] = $value;
+
+						if ($field_name == 'value') {
+							$xport_meta['NthPercentile'][$nth]['format'] = $match[0];
+							$xport_meta['NthPercentile'][$nth]['value']  = str_replace($match[0], $value, $graph_variables[$field_name][$graph_item_id]);
+							$nth++;
+						}
 					}
 				}
 
@@ -1588,7 +1601,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (preg_match_all('/\|sum:(\d|auto):(current|total|atomic):(\d):(\d+|auto)\|/', $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 					foreach ($matches as $match) {
 						$search[]  = $match[0];
-						$replace[] = variable_bandwidth_summation($match, $graph, $graph_item, $graph_items, $graph_start, $graph_end, $rra['steps'], $ds_step);
+						$value     = variable_bandwidth_summation($match, $graph, $graph_item, $graph_items, $graph_start, $graph_end, $rra['steps'], $ds_step);
+						$replace[] = $value;
+
+						if ($field_name == 'text_format') {
+							$xport_meta['Summation'][$sum]['format'] = $match[0];
+							$xport_meta['Summation'][$sum]['value']  = str_replace($match[0], $value, $graph_variables[$field_name][$graph_item_id]);
+							$sum++;
+						}
 					}
 				}
 

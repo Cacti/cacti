@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -30,6 +30,9 @@ require_once($config['base_path'] . '/lib/utility.php');
 require_once($config['base_path'] . '/install/functions.php');
 
 ini_set('max_execution_time', '0');
+
+/* make sure installer knows we are installing */
+define('IN_CACTI_INSTALL', 1);
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

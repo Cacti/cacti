@@ -1,8 +1,8 @@
-#!/bin/php
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -34,7 +34,7 @@ function sig_handler($signo) {
 	switch ($signo) {
 	case SIGTERM:
 	case SIGINT:
-		cacti_log('WARNING: Cacti Daemon Process (' . getmypid() . ') terminated by user.', true, 'CACTID');
+		cacti_log('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID');
 		exit(1);
 		break;
 	default:
@@ -120,7 +120,7 @@ if (!$foreground) {
 		} elseif ($pid == 0) {
 			// We are the child
 		} else {
-			cacti_log('NOTE: Cacti Daemon Started on ' . gethostname());
+			cacti_log('NOTE: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']');
 
 			print '[OK]' . PHP_EOL;
 

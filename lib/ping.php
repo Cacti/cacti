@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -412,15 +412,15 @@ class Net_Ping
 					switch($num_changed_sockets) {
 					case 2: /* response received, so host is available */
 					case 1:
-						/* get the end time */
-						$this->time = $this->get_time($this->precision);
-
 						/* get packet response */
 						//$code = socket_recv($this->socket, $this->reply, 256, 0);
 						$code = socket_recv($this->socket, $this->reply, 256, 0);
+
+						/* get the end time after the packet was received */
+						$this->time = $this->get_time($this->precision);
+							
 						$errno = socket_last_error($this->socket);
 						socket_clear_error($this->socket);
-
 						if (($code == -1 || empty($code)) && 
 							($errno == EHOSTUNREACH || $errno == ECONNRESET || $errno == ECONNREFUSED)) {
 

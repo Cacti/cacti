@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2020 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -391,23 +391,19 @@ function config_value_exists($config_name) {
 function read_default_config_option($config_name) {
 	global $config, $settings;
 
-	if (isset($settings)) {
-		if (is_array($settings)) {
-			foreach ($settings as $tab_array) {
-				if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
-					return $tab_array[$config_name]['default'];
-				} else {
-					foreach ($tab_array as $field_array) {
-						if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
-							return $field_array['items'][$config_name]['default'];
-						}
+	if (isset($settings) && is_array($settings)) {
+		foreach ($settings as $tab_array) {
+			if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
+				return $tab_array[$config_name]['default'];
+			} else {
+				foreach ($tab_array as $field_array) {
+					if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
+						return $field_array['items'][$config_name]['default'];
 					}
 				}
 			}
 		}
 	}
-
-	return null;
 }
 
 /* read_config_option - finds the current value of a Cacti configuration setting
@@ -467,16 +463,14 @@ function read_config_option($config_name, $force = false) {
 				$value = $db_setting['value'];
 			}
 
-			if ($value != null) {
-				// Store whatever value we have in the array
-				$config_array[$config_name] = $value;
+			// Store whatever value we have in the array
+			$config_array[$config_name] = $value;
 
-				// Store the array back for later retrieval
-				if (isset($_SESSION)) {
-					$_SESSION['sess_config_array']  = $config_array;
-				} else {
-					$config['config_options_array'] = $config_array;
-				}
+			// Store the array back for later retrieval
+			if (isset($_SESSION)) {
+				$_SESSION['sess_config_array']  = $config_array;
+			} else {
+				$config['config_options_array'] = $config_array;
 			}
 		}
 	} else {
@@ -1025,15 +1019,14 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		 $filter       - (char) the filtering expression to search for
 		 $page_nr      - (int) the page we want to show rows for
 		 $total_rows   - (int) the total number of rows in the logfile */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows) {
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows = 0) {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
 	}
 
 	if (!is_readable($file_name)) {
-		print __('Error %s is not readable', $file_name);
-		return array();
+		return array(__('Error %s is not readable', $file_name));
 	}
 
 	$filter = strtolower($filter);
@@ -4363,7 +4356,7 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 	return trim($result,$text['suffix']);
 }
 
-function padleft($pad = '', $value, $min = 2) {
+function padleft($pad = '', $value = '', $min = 2) {
 	$result = "$value";
 	if (strlen($result) < $min && $pad != '') {
 		$padded = $pad . $result;
@@ -4554,7 +4547,7 @@ function IgnoreErrorHandler($message) {
 	return false;
 }
 
-function CactiErrorHandler($level, $message, $file, $line, $context) {
+function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 	global $phperrors;
 
 	if (defined('IN_CACTI_INSTALL')) {
