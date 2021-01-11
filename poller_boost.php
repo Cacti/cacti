@@ -298,33 +298,23 @@ function output_rrd_data($start_time, $force = false) {
 		WHERE table_schema = SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'
 		AND table_rows > 0");
-		
-	$arch_view_sql = '';
-	$arch_view = 'arch_view';
-	if (cacti_count($arch_tables)) {
-		$arch_view_prefix = "CREATE VIEW " . $arch_view . " AS ";
-		$arch_view_tables = '';
-		foreach($arch_tables as $table) {
-			$table_name = $table['name'];
-			if (0 == strlen($arch_view_tables)) {
-				$arch_view_tables = "SELECT * FROM " . $table_name;
-			} else {
-				$arch_view_tables = $arch_view_tables . " UNION ALL SELECT * FROM " . $table_name;
-			}
-		}
-		$arch_view_sql = $arch_view_prefix . $arch_view_tables;
-		db_execute($arch_view_sql);
-	}
 
-	if ($arch_view_sql == '') {
+	if (!cacti_count($arch_tables)) {
 		db_execute("SELECT RELEASE_LOCK('poller_boost');");
 		cacti_log('ERROR: Failed to retrieve archive table name');
 
 		return -1;
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id)
-		FROM $arch_view");
+	$subQuery = "";
+	foreach($arch_tables as $table) {
+		if (0 == strlen($subQuery)) {
+			$subQuery = "SELECT COUNT(local_data_id) as cl FROM " . $table['name'];
+		} else {
+			$subQuery .= " UNION ALL SELECT COUNT(local_data_id) as cl FROM " . $table['name'];
+		}
+	}
+	$total_rows = db_fetch_cell("SELECT SUM(cl) FROM (" . $subQuery . ") c");
 
 	if ($total_rows == 0 && !cacti_sizeof($more_arch_tables)) {
 		db_execute("SELECT RELEASE_LOCK('poller_boost');");
@@ -339,11 +329,19 @@ function output_rrd_data($start_time, $force = false) {
 		PRIMARY KEY (local_data_id))
 		ENGINE=MEMORY');
 
+	$subQuery = "";
+	foreach($arch_tables as $table) {
+		if (0 == strlen($subQuery)) {
+			$subQuery = "SELECT DISTINCT local_data_id FROM " . $table['name'];
+		} else {
+			$subQuery .= " UNION ALL SELECT DISTINCT local_data_id FROM " . $table['name'];
+		}
+	}
 	db_execute("INSERT INTO boost_local_data_ids
 		SELECT DISTINCT local_data_id
-		FROM $arch_view");
+		FROM (" . $subQuery . ") dl");
 
-	$data_ids = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM $arch_view");
+	$data_ids = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM (" . $subQuery . ") cdl");
 
 	if (!empty($total_rows)) {
 		$passes  = ceil($total_rows / $max_per_select);
@@ -388,11 +386,7 @@ function output_rrd_data($start_time, $force = false) {
 
 	rrd_close($rrdtool_pipe);
 
-	/* cleanup  - remove empty arch tables and related view*/
-	if ($arch_view_sql == '') {
-		db_execute("DROP VIEW IF EXISTS " . $arch_view);
-	}
-	
+	/* cleanup  - remove empty arch tables*/
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
 		WHERE table_schema = SCHEMA()
