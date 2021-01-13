@@ -450,7 +450,7 @@ default:
 			loadPageNoHeader(strURL, true, false);
 		});
 
-		$('input[value="<?php print __esc('Save');?>"]').click(function(event) {
+		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
 			event.preventDefault();
 
 			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {
@@ -461,12 +461,12 @@ default:
 			}
 
 			if (themeChanged != true) {
-				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
+				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
 					$('#main').hide().html(data);
 					applySkin();
 				});
 			} else {
-				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').serialize()).done(function(data) {
+				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
 					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
 				});
 			}
