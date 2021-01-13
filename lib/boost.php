@@ -600,7 +600,7 @@ function boost_get_arch_table_names() {
 		}
 	}
 
-	if (0 >= count($tableNames)) {
+	if (count($tableNames) <= 0) {
 		return false;
 	} else {
 		return $tableNames;
