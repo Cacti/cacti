@@ -586,24 +586,14 @@ function boost_timer_get_overhead() {
 
 /* boost_get_arch_table_names - returns current archive boost tables or false if no arch table is present currently */
 function boost_get_arch_table_names() {
-	$tableNames = array();
-	
-	$tables = db_fetch_assoc("SELECT table_name AS name
-		FROM information_schema.tables
-		WHERE table_schema = SCHEMA()
-		AND table_name LIKE 'poller_output_boost_arch_%'");
-
-	foreach($tables as $table) {
-		$rows = db_fetch_cell_prepared('SELECT TABLE_ROWS 
+	$tablesNames = array_rekey(
+		db_fetch_assoc("SELECT TABLE_NAME AS name
 			FROM information_schema.TABLES
 			WHERE TABLE_SCHEMA = SCHEMA()
-			AND TABLE_NAME = ?',
-			array($table['name']));
-
-		if ($rows > 0) {
-			$tableNames[] = $table['name'];
-		}
-	}
+			AND TABLE_NAME LIKE 'poller_output_boost_arch_%'
+			AND TABLE_ROWS > 0"),
+		'name', 'name'
+	);
 
 	if (!cacti_sizeof($tableNames)) {
 		return false;
