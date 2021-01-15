@@ -441,25 +441,19 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 		return 0;
 	}
 		
-	$query_string = "SELECT * FROM (";
-	$query_string_suffix = "ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC";
+	$query_string = 'SELECT * FROM (';
+	$query_string_suffix = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
 		
-	$sub_query_string = "";
-	for ($i=0; $i < count($archive_tables); $i++) {
-		if (0 == strlen($sub_query_string)) {
-			$sub_query_string = "SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp,
-			rrd_name, output
-			FROM $archive_tables[$i]
-			WHERE local_data_id <= $last_id";
-		} else {
-			$sub_query_string = $sub_query_string . " UNION ALL SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp,
-			rrd_name, output
-			FROM $archive_tables[$i]
+	$sub_query_string = '';
+	foreach ($archive_tables as $table) {
+		$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
+			" SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+			FROM " . $archive_tables[$i] . "
 			WHERE local_data_id <= $last_id";		
 		}
 	}
 	
-	$query_string = $query_string . $sub_query_string . ") t " . $query_string_suffix;
+	$query_string = $query_string . $sub_query_string . ') t ' . $query_string_suffix;
 
 	boost_timer('get_records', BOOST_TIMER_START);
 	$results = db_fetch_assoc($query_string);
