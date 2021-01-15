@@ -448,7 +448,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	foreach ($archive_tables as $table) {
 		$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
 			" SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
-			FROM " . $archive_tables[$i] . "
+			FROM $table
 			WHERE local_data_id <= $last_id";		
 		}
 	}
