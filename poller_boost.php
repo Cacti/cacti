@@ -278,7 +278,8 @@ function output_rrd_data($start_time, $force = false) {
 	}
 
 	$delayed_inserts = db_fetch_row("SHOW STATUS LIKE 'Not_flushed_delayed_rows'");
-	while($delayed_inserts['Value']) {
+
+	while ($delayed_inserts['Value']) {
 		cacti_log('BOOST WAIT: Waiting 1s for delayed inserts are made' , true, 'SYSTEM');
 		usleep(1000000);
 		$delayed_inserts = db_fetch_row("SHOW STATUS LIKE 'Not_flushed_delayed_rows'");
@@ -303,8 +304,9 @@ function output_rrd_data($start_time, $force = false) {
 	}
 
 	$total_rows = 0;
+
 	foreach($arch_tables as $table) {
-		$total_rows += db_fetch_cell_prepared('SELECT TOTAL_ROWS
+		$total_rows += db_fetch_cell_prepared('SELECT TABLE_ROWS
 			FROM information_schema.TABLES
 			WHERE TABLE_SCHEMA = SCHEMA()
 			AND TABLE_NAME = ?',
@@ -329,14 +331,15 @@ function output_rrd_data($start_time, $force = false) {
 			SELECT DISTINCT local_data_id
 			FROM " . $table);
 	}
-		
-	$data_ids = db_fetch_cell("SELECT 
-		COUNT(local_data_id) 
+
+	$data_ids = db_fetch_cell("SELECT
+		COUNT(local_data_id)
 		FROM boost_local_data_ids");
 
-	$passes  = ceil($total_rows / $max_per_select);
+	$passes       = ceil($total_rows / $max_per_select);
 	$ids_per_pass = ceil($data_ids / $passes);
-	$curpass = 0;
+	$curpass      = 0;
+
 	while ($curpass <= $passes) {
 		$last_id = db_fetch_cell("SELECT MAX(local_data_id)
 			FROM (
@@ -440,19 +443,19 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 		cacti_log('Failed to determine archive table', false, 'BOOST');
 		return 0;
 	}
-		
+
 	$query_string = 'SELECT * FROM (';
 	$query_string_suffix = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
-		
+
 	$sub_query_string = '';
+
 	foreach ($archive_tables as $table) {
 		$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
 			" SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
 			FROM $table
-			WHERE local_data_id <= $last_id";		
-		}
+			WHERE local_data_id <= $last_id";
 	}
-	
+
 	$query_string = $query_string . $sub_query_string . ') t ' . $query_string_suffix;
 
 	boost_timer('get_records', BOOST_TIMER_START);
@@ -462,6 +465,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	/* log memory */
 	if ($get_memory) {
 		$cur_memory = memory_get_usage();
+
 		if ($cur_memory > $memory_used) {
 			$memory_used = $cur_memory;
 		}
