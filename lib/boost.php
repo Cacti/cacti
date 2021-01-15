@@ -596,7 +596,8 @@ function boost_get_arch_table_names() {
 	foreach($tables as $table) {
 		$rows = db_fetch_cell_prepared('SELECT TABLE_ROWS 
 			FROM information_schema.TABLES
-			WHERE TABLE_NAME = ?',
+			WHERE TABLE_SCHEMA = SCHEMA()
+			AND TABLE_NAME = ?',
 			array($table['name']));
 
 		if ($rows > 0) {
