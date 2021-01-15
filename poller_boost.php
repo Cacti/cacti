@@ -293,30 +293,25 @@ function output_rrd_data($start_time, $force = false) {
 	db_execute("CREATE TABLE $interim_table LIKE poller_output_boost");
 	db_execute("RENAME TABLE poller_output_boost TO $archive_table, $interim_table TO poller_output_boost");
 
-	$arch_tables = db_fetch_assoc("SELECT table_name AS name
-		FROM information_schema.tables
-		WHERE table_schema = SCHEMA()
-		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_rows > 0");
+	$arch_tables = boost_get_arch_table_names();
 
-	if (!cacti_count($arch_tables)) {
+	if (!cacti_sizeof($arch_tables)) {
 		db_execute("SELECT RELEASE_LOCK('poller_boost');");
 		cacti_log('ERROR: Failed to retrieve archive table name');
 
 		return -1;
 	}
 
-	$subQuery = "";
+	$total_rows = 0;
 	foreach($arch_tables as $table) {
-		if (0 == strlen($subQuery)) {
-			$subQuery = "SELECT COUNT(local_data_id) as cl FROM " . $table['name'];
-		} else {
-			$subQuery .= " UNION ALL SELECT COUNT(local_data_id) as cl FROM " . $table['name'];
-		}
+		$total_rows += db_fetch_cell_prepared('SELECT TOTAL_ROWS
+			FROM information_schema.TABLES
+			WHERE TABLE_SCHEMA = SCHEMA()
+			AND TABLE_NAME = ?',
+			array($table));
 	}
-	$total_rows = db_fetch_cell("SELECT SUM(cl) FROM (" . $subQuery . ") c");
 
-	if ($total_rows == 0 && !cacti_sizeof($more_arch_tables)) {
+	if ($total_rows == 0) {
 		db_execute("SELECT RELEASE_LOCK('poller_boost');");
 
 		return -1;
@@ -329,45 +324,39 @@ function output_rrd_data($start_time, $force = false) {
 		PRIMARY KEY (local_data_id))
 		ENGINE=MEMORY');
 
-	$subQuery = "";
-	foreach($arch_tables as $table) {
-		if (0 == strlen($subQuery)) {
-			$subQuery = "SELECT DISTINCT local_data_id FROM " . $table['name'];
-		} else {
-			$subQuery .= " UNION ALL SELECT DISTINCT local_data_id FROM " . $table['name'];
-		}
+	foreach ($arch_tables as $table) {
+		db_execute("INSERT IGNORE INTO boost_local_data_ids
+			SELECT DISTINCT local_data_id
+			FROM " . $table);
 	}
-	db_execute("INSERT INTO boost_local_data_ids
-		SELECT DISTINCT local_data_id
-		FROM (" . $subQuery . ") dl");
+		
+	$data_ids = db_fetch_cell("SELECT 
+		COUNT(local_data_id) 
+		FROM boost_local_data_ids");
 
-	$data_ids = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM (" . $subQuery . ") cdl");
+	$passes  = ceil($total_rows / $max_per_select);
+	$ids_per_pass = ceil($data_ids / $passes);
+	$curpass = 0;
+	while ($curpass <= $passes) {
+		$last_id = db_fetch_cell("SELECT MAX(local_data_id)
+			FROM (
+				SELECT local_data_id
+				FROM boost_local_data_ids
+				ORDER BY local_data_id
+				LIMIT " . (($curpass * $ids_per_pass) + 1) . ", $ids_per_pass
+			) AS result");
 
-	if (!empty($total_rows)) {
-		$passes  = ceil($total_rows / $max_per_select);
-		$ids_per_pass = ceil($data_ids / $passes);
-		$curpass = 0;
-		while ($curpass <= $passes) {
-			$last_id = db_fetch_cell("SELECT MAX(local_data_id)
-				FROM (
-					SELECT local_data_id
-					FROM boost_local_data_ids
-					ORDER BY local_data_id
-					LIMIT " . (($curpass * $ids_per_pass) + 1) . ", $ids_per_pass
-				) AS result");
+		if (empty($last_id)) {
+			break;
+		}
 
-			if (empty($last_id)) {
-				break;
-			}
+		boost_process_local_data_ids($last_id, $rrdtool_pipe);
 
-			boost_process_local_data_ids($last_id, $rrdtool_pipe);
+		$curpass++;
 
-			$curpass++;
-
-			if (((time()-$start) > $max_run_duration) && (!$runtime_exceeded)) {
-				cacti_log('WARNING: RRD On Demand Updater Exceeded Runtime Limits. Continuing to Process!!!');
-				$runtime_exceeded = true;
-			}
+		if (((time()-$start) > $max_run_duration) && (!$runtime_exceeded)) {
+			cacti_log('WARNING: RRD On Demand Updater Exceeded Runtime Limits. Continuing to Process!!!');
+			$runtime_exceeded = true;
 		}
 	}
 
@@ -389,15 +378,13 @@ function output_rrd_data($start_time, $force = false) {
 	/* cleanup  - remove empty arch tables*/
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
-		WHERE table_schema = SCHEMA()
-		AND table_name LIKE 'poller_output_boost_arch_%'");
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME LIKE 'poller_output_boost_arch_%'
+		AND TABLE_ROWS = 0");
 
-	if (cacti_count($tables)) {
+	if (cacti_sizeof($tables)) {
 		foreach($tables as $table) {
-			$rows = db_fetch_cell('SELECT count(local_data_id) FROM ' . $table['name']);
-			if (is_numeric($rows) && intval($rows) == 0) {
-				db_execute('DROP TABLE IF EXISTS ' . $table['name']);
-			}
+			db_execute('DROP TABLE IF EXISTS ' . $table['name']);
 		}
 	}
 
