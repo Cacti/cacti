@@ -594,13 +594,17 @@ function boost_get_arch_table_names() {
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	foreach($tables as $table) {
-		$rows = db_fetch_cell('SELECT COUNT(local_data_id) FROM ' . $table['name']);
-		if (is_numeric($rows) && intval($rows) > 0) {
-			array_push($tableNames, $table['name']);
+		$rows = db_fetch_cell_prepared('SELECT TABLE_ROWS 
+			FROM information_schema.TABLES
+			WHERE TABLE_NAME = ?',
+			array($table['name']));
+
+		if ($rows > 0) {
+			$tableNames[] = $table['name'];
 		}
 	}
 
-	if (count($tableNames) <= 0) {
+	if (!cacti_sizeof($tableNames)) {
 		return false;
 	} else {
 		return $tableNames;
