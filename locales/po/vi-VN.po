@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-09 13:37-0500\n"
+"POT-Creation-Date: 2021-01-17 18:24+0000\n"
 "PO-Revision-Date: 2020-09-13 19:50-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.4.1\n"
 
-#: about.php:29 include/global_arrays.php:2459 lib/html.php:2417
+#: about.php:29 include/global_arrays.php:2460 lib/html.php:2420
 #, fuzzy
 msgid "About Cacti"
 msgstr "Về xương rồng"
@@ -87,9 +87,9 @@ msgstr "Chương trình này được phân phối với hy vọng nó sẽ hữ
 #: data_sources.php:1054 data_templates.php:34 data_templates.php:664
 #: gprint_presets.php:28 graph_templates.php:35 graph_templates.php:472
 #: graphs.php:46 host.php:40 host_templates.php:35 host_templates.php:505
-#: host_templates.php:562 include/global_arrays.php:1514
+#: host_templates.php:562 include/global_arrays.php:1515
 #: include/global_settings.php:256 lib/api_automation.php:1327
-#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1216
+#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1219
 #: lib/html_form.php:1273 lib/html_reports.php:1417 links.php:28
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1401 tree.php:1554
 #: tree.php:1614 tree.php:1635 user_admin.php:28 user_domains.php:30
@@ -153,14 +153,14 @@ msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Biểu đồ Tổng
 #: data_sources.php:547 data_sources.php:556 data_sources.php:562
 #: data_templates.php:383 data_templates.php:393 data_templates.php:409
 #: gprint_presets.php:153 graph_templates.php:344 graph_templates.php:354
-#: graph_templates.php:376 graph_templates.php:385 graph_view.php:928
+#: graph_templates.php:376 graph_templates.php:385 graph_view.php:945
 #: graphs.php:910 graphs.php:926 graphs.php:937 graphs.php:948 graphs.php:963
 #: graphs.php:977 graphs.php:986 graphs.php:1160 graphs.php:1203
 #: graphs.php:1225 graphs.php:1254 graphs.php:1266 graphs.php:1771 host.php:377
 #: host.php:386 host.php:441 host.php:450 host.php:459 host.php:473
 #: host.php:487 host.php:496 host.php:504 host_templates.php:270
 #: host_templates.php:284 host_templates.php:295 host_templates.php:344
-#: host_templates.php:407 lib/clog_webapi.php:221 lib/html.php:2450
+#: host_templates.php:407 lib/clog_webapi.php:221 lib/html.php:2453
 #: lib/html_form.php:1272 lib/html_form.php:1284 lib/html_form.php:1295
 #: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
 #: managers.php:1004 managers.php:1062 plugins.php:517 pollers.php:533
@@ -197,7 +197,7 @@ msgstr "Hủy"
 #: host.php:450 host.php:459 host.php:473 host.php:487 host.php:496
 #: host.php:504 host_templates.php:270 host_templates.php:284
 #: host_templates.php:295 host_templates.php:345 host_templates.php:408
-#: lib/clog_webapi.php:222 lib/html.php:2449 lib/html_reports.php:284
+#: lib/clog_webapi.php:222 lib/html.php:2452 lib/html_reports.php:284
 #: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
 #: managers.php:1004 managers.php:1062 pollers.php:533 pollers.php:542
 #: pollers.php:551 pollers.php:560 pollers.php:569 sites.php:359 sites.php:369
@@ -290,17 +290,17 @@ msgstr "Tập hợp mới"
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "Nhấp vào &#39;Tiếp tục&#39; để thêm Đồ thị đã chọn vào Báo cáo bên dưới."
 
-#: aggregate_graphs.php:472 graph_view.php:789 graphs.php:1242
+#: aggregate_graphs.php:472 graph_view.php:806 graphs.php:1242
 #: lib/html_reports.php:920 lib/html_reports.php:1596
 msgid "Report Name"
 msgstr "Tên report"
 
-#: aggregate_graphs.php:476 graph_view.php:796 graphs.php:1246
+#: aggregate_graphs.php:476 graph_view.php:813 graphs.php:1246
 #: lib/html_reports.php:1328
 msgid "Timespan"
 msgstr "Thời gian"
 
-#: aggregate_graphs.php:480 graph_view.php:803 graphs.php:1250
+#: aggregate_graphs.php:480 graph_view.php:820 graphs.php:1250
 msgid "Align"
 msgstr "Căn chỉnh"
 
@@ -390,7 +390,7 @@ msgstr "Chi tiết"
 msgid "Items"
 msgstr "Sản phẩm"
 
-#: aggregate_graphs.php:661 aggregate_graphs.php:667 lib/html.php:1927
+#: aggregate_graphs.php:661 aggregate_graphs.php:667 lib/html.php:1930
 #: lib/html_reports.php:1156
 msgid "Preview"
 msgstr "Xem trước"
@@ -512,8 +512,8 @@ msgstr "Tìm kiếm"
 #: data_sources.php:1737 graph_view.php:464 graph_view.php:659
 #: graph_view.php:708 graphs.php:1986 graphs.php:2117 host.php:1681
 #: include/global_arrays.php:898 include/global_arrays.php:1105
-#: include/global_arrays.php:1875 lib/api_automation.php:283 lib/html.php:1641
-#: lib/html.php:1643 lib/html.php:1721 lib/html_graph.php:209
+#: include/global_arrays.php:1876 lib/api_automation.php:283 lib/html.php:1644
+#: lib/html.php:1646 lib/html.php:1724 lib/html_graph.php:209
 #: lib/html_tree.php:1087 lib/html_tree.php:1415 tree.php:797 tree.php:2069
 #: user_admin.php:1030 user_admin.php:1299 user_admin.php:2619
 #: user_group_admin.php:825 user_group_admin.php:980 user_group_admin.php:2183
@@ -563,7 +563,7 @@ msgstr "Một phần của cốt liệu"
 #: graph_view.php:608 graphs.php:1971 graphs_new.php:399 host.php:1606
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
-#: lib/clog_webapi.php:522 lib/html.php:1480 lib/html_filter.php:80
+#: lib/clog_webapi.php:522 lib/html.php:1483 lib/html_filter.php:80
 #: lib/html_graph.php:190 lib/html_reports.php:1532 lib/html_tree.php:1074
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:883 sites.php:498 tree.php:1947
@@ -659,7 +659,7 @@ msgid "Included in Aggregate"
 msgstr "Bao gồm trong cốt liệu"
 
 #: aggregate_graphs.php:1327 aggregate_graphs.php:1663 graph_templates.php:811
-#: graph_view.php:736 graphs.php:2151
+#: graph_view.php:737 graph_view.php:750 graphs.php:2151
 msgid "Size"
 msgstr "Kích thước"
 
@@ -703,14 +703,14 @@ msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[Danh sách biểu đồ tùy chỉnh được áp dụng - Bộ lọc TỪ danh sách]"
 
 #: aggregate_graphs.php:1543 aggregate_graphs.php:1651
-#: include/global_arrays.php:2585
+#: include/global_arrays.php:2586
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "Đồ thị tổng hợp"
 
 #: aggregate_graphs.php:1558 data_debug.php:955 data_sources.php:1347
 #: graph_view.php:621 graphs.php:1936 host.php:1561
-#: include/global_arrays.php:2731 include/global_settings.php:564
+#: include/global_arrays.php:2732 include/global_settings.php:564
 #: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:1038
 #: rrdcleaner.php:352 user_admin.php:2597 user_admin.php:2790
 #: user_group_admin.php:2161 user_group_admin.php:2269 utilities.php:1788
@@ -726,7 +726,7 @@ msgstr "Mẫu"
 #: lib/api_automation.php:150 lib/api_automation.php:168
 #: lib/api_automation.php:429 lib/api_automation.php:446
 #: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2342
-#: lib/html.php:2005 lib/html.php:2028 lib/html.php:2066
+#: lib/html.php:2008 lib/html.php:2031 lib/html.php:2069
 #: lib/html_reports.php:1511 managers.php:482 managers.php:735
 #: user_admin.php:2601 user_admin.php:2794 user_group_admin.php:2165
 #: user_group_admin.php:2273 utilities.php:826 utilities.php:1507
@@ -744,7 +744,7 @@ msgstr "Bất kỳ"
 #: graphs_items.php:467 host.php:1103 host.php:1114 host.php:1531 host.php:1566
 #: include/global_arrays.php:468 include/global_arrays.php:526
 #: include/global_arrays.php:609 include/global_arrays.php:798
-#: include/global_arrays.php:1602 include/global_form.php:544
+#: include/global_arrays.php:1603 include/global_form.php:544
 #: include/global_form.php:850 include/global_form.php:858
 #: include/global_form.php:866 include/global_form.php:904
 #: include/global_form.php:911 include/global_form.php:937
@@ -753,11 +753,11 @@ msgstr "Bất kỳ"
 #: include/global_form.php:1175 include/global_form.php:2055
 #: include/global_form.php:2097 include/global_settings.php:568
 #: include/global_settings.php:576 include/global_settings.php:584
-#: include/global_settings.php:1278 include/global_settings.php:1746
+#: include/global_settings.php:1286 include/global_settings.php:1746
 #: lib/api_automation.php:151 lib/api_automation.php:430
 #: lib/api_automation.php:447 lib/api_automation.php:589
 #: lib/api_automation.php:1077 lib/auth.php:2345 lib/html.php:180
-#: lib/html.php:2006 lib/html.php:2026 lib/html.php:2067 lib/html_form.php:331
+#: lib/html.php:2009 lib/html.php:2029 lib/html.php:2070 lib/html_form.php:331
 #: lib/html_reports.php:590 lib/html_reports.php:626 lib/html_reports.php:638
 #: lib/html_reports.php:647 lib/html_reports.php:657 settings.php:484
 #: settings.php:503 settings.php:529 user_admin.php:2602 user_admin.php:2795
@@ -821,7 +821,7 @@ msgid "Aggregate Template [new]"
 msgstr "Mẫu tổng hợp [mới]"
 
 #: aggregate_templates.php:557 aggregate_templates.php:656
-#: include/global_arrays.php:2567
+#: include/global_arrays.php:2568
 #, fuzzy
 msgid "Aggregate Templates"
 msgstr "Mẫu tổng hợp"
@@ -866,7 +866,7 @@ msgid "Graphs Using"
 msgstr "Đồ thị sử dụng"
 
 #: aggregate_templates.php:668 include/global_arrays.php:863
-#: include/global_arrays.php:1233 include/global_form.php:1351
+#: include/global_arrays.php:1234 include/global_form.php:1351
 #: include/global_form.php:1586 lib/html_reports.php:643 tree.php:1657
 #, fuzzy
 msgid "Graph Template"
@@ -948,7 +948,7 @@ msgid "Please enter your new Cacti password."
 msgstr "Vui lòng nhập mật khẩu hiện tại của bạn và mới <br> Mật khẩu xương rồng."
 
 #: auth_changepassword.php:342 auth_login.php:694 auth_login.php:697
-#: include/global_settings.php:1580 lib/functions.php:3947
+#: include/global_settings.php:1580 lib/functions.php:3949
 msgid "Username"
 msgstr "Tên đăng nhập"
 
@@ -1054,7 +1054,7 @@ msgstr "Đăng nhập"
 msgid "Enter your Username and Password below"
 msgstr "Nhập tên người dùng và mật khẩu của bạn dưới đây"
 
-#: auth_login.php:702 include/global_form.php:1470 lib/functions.php:3948
+#: auth_login.php:702 include/global_form.php:1470 lib/functions.php:3950
 msgid "Password"
 msgstr "Mật khẩu"
 
@@ -1102,18 +1102,18 @@ msgid "User Account Details"
 msgstr "Chi tiết tài khoản người dùng"
 
 #: auth_profile.php:296 include/global_arrays.php:770
-#: include/global_settings.php:2363 lib/html.php:1887 lib/html.php:1909
-#: lib/html.php:2409
+#: include/global_settings.php:2363 lib/html.php:1890 lib/html.php:1912
+#: lib/html.php:2412
 msgid "Tree View"
 msgstr "Xem dạng sơ đồ cây"
 
-#: auth_profile.php:300 include/global_arrays.php:771 lib/html.php:1894
-#: lib/html.php:1918 lib/html.php:2410
+#: auth_profile.php:300 include/global_arrays.php:771 lib/html.php:1897
+#: lib/html.php:1921 lib/html.php:2413
 msgid "List View"
 msgstr "Xem danh sách"
 
-#: auth_profile.php:304 include/global_arrays.php:772 lib/html.php:1901
-#: lib/html.php:2411
+#: auth_profile.php:304 include/global_arrays.php:772 lib/html.php:1904
+#: lib/html.php:2414
 #, fuzzy
 msgid "Preview View"
 msgstr "Xem trước"
@@ -1287,7 +1287,7 @@ msgstr "Xóa thiết bị"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1516
 #: host.php:1637 host.php:1741 include/global_arrays.php:895
-#: include/global_arrays.php:950 include/global_arrays.php:2165
+#: include/global_arrays.php:950 include/global_arrays.php:2166
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
 #: lib/api_automation.php:1211 pollers.php:960 sites.php:573 tree.php:796
@@ -1405,7 +1405,7 @@ msgstr "Thiết bị phát hiện"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1760
-#: lib/functions.php:4318 lib/functions.php:4322 lib/html.php:1179
+#: lib/functions.php:4320 lib/functions.php:4324 lib/html.php:1182
 #: pollers.php:1009 user_admin.php:2342 utilities.php:511 utilities.php:953
 #: utilities.php:2284 utilities.php:2381 utilities.php:2389 utilities.php:2392
 #: utilities.php:2395 utilities.php:2401 utilities.php:2631
@@ -1416,13 +1416,13 @@ msgstr "N/A"
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
 #: data_input.php:33 data_source_profiles.php:31 data_templates.php:35
 #: graph_templates.php:36 graphs.php:66 host_templates.php:36
-#: include/global_arrays.php:1511 sites.php:29 vdef.php:30
+#: include/global_arrays.php:1512 sites.php:29 vdef.php:30
 msgid "Duplicate"
 msgstr "Bản sao"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:41
-#: include/global_arrays.php:1512 include/global_settings.php:1535 links.php:29
+#: include/global_arrays.php:1513 include/global_settings.php:1535 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:411
 #: user_group_admin.php:32
@@ -1431,7 +1431,7 @@ msgstr "Bật"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:41 host.php:42
-#: include/global_arrays.php:1513 links.php:30 managers.php:30 managers.php:34
+#: include/global_arrays.php:1514 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
@@ -1531,13 +1531,13 @@ msgstr "Tiêu chí tạo đồ thị"
 
 #: automation_graph_rules.php:734 automation_graph_rules.php:781
 #: automation_graph_rules.php:886 include/global_arrays.php:918
-#: include/global_arrays.php:2621
+#: include/global_arrays.php:2622
 #, fuzzy
 msgid "Graph Rules"
 msgstr "Quy tắc đồ thị"
 
 #: automation_graph_rules.php:749 automation_graph_rules.php:897
-#: include/global_arrays.php:1236 include/global_arrays.php:2730
+#: include/global_arrays.php:1237 include/global_arrays.php:2731
 #: include/global_form.php:1596 include/global_form.php:2134
 #, fuzzy
 msgid "Data Query"
@@ -1563,12 +1563,12 @@ msgstr "Bật"
 #: automation_networks.php:1093 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1014 data_sources.php:1405
 #: data_templates.php:1131 host.php:1628 include/global_arrays.php:821
-#: include/global_arrays.php:1435 include/global_arrays.php:1726
+#: include/global_arrays.php:1436 include/global_arrays.php:1727
 #: include/global_settings.php:368 include/global_settings.php:1408
 #: include/global_settings.php:1422 include/global_settings.php:1435
 #: include/global_settings.php:1460 include/global_settings.php:1474
 #: include/global_settings.php:1534 include/global_settings.php:2186
-#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2475
+#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2478
 #: lib/html_reports.php:1513 lib/html_reports.php:1651 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1164 user_domains.php:411 user_group_admin.php:697
@@ -1681,17 +1681,17 @@ msgid "Manual"
 msgstr "Thủ công"
 
 #: automation_networks.php:420 automation_networks.php:1067
-#: include/global_arrays.php:1740
+#: include/global_arrays.php:1741
 msgid "Daily"
 msgstr "Hàng ngày"
 
 #: automation_networks.php:421 automation_networks.php:1068
-#: include/global_arrays.php:1741
+#: include/global_arrays.php:1742
 msgid "Weekly"
 msgstr "Hàng tuần"
 
 #: automation_networks.php:422 automation_networks.php:1069
-#: include/global_arrays.php:1742
+#: include/global_arrays.php:1743
 msgid "Monthly"
 msgstr "Hàng tháng"
 
@@ -1863,12 +1863,12 @@ msgstr "%d phút"
 #: include/global_arrays.php:684 include/global_arrays.php:685
 #: include/global_arrays.php:686 include/global_arrays.php:687
 #: include/global_arrays.php:688 include/global_arrays.php:1084
-#: include/global_arrays.php:1085 include/global_arrays.php:1442
-#: include/global_arrays.php:1446 include/global_arrays.php:1454
-#: include/global_arrays.php:1455 include/global_arrays.php:1479
-#: include/global_arrays.php:1480 include/global_arrays.php:1481
-#: include/global_arrays.php:1482 include/global_arrays.php:1483
-#: include/global_arrays.php:1496 include/global_settings.php:1476
+#: include/global_arrays.php:1085 include/global_arrays.php:1443
+#: include/global_arrays.php:1447 include/global_arrays.php:1455
+#: include/global_arrays.php:1456 include/global_arrays.php:1480
+#: include/global_arrays.php:1481 include/global_arrays.php:1482
+#: include/global_arrays.php:1483 include/global_arrays.php:1484
+#: include/global_arrays.php:1497 include/global_settings.php:1476
 #: include/global_settings.php:1477 include/global_settings.php:1478
 #: include/global_settings.php:1479 include/global_settings.php:1480
 #: include/global_settings.php:2289 pollers.php:871 pollers.php:872
@@ -1877,7 +1877,7 @@ msgid "%d Minutes"
 msgstr "%d phút"
 
 #: automation_networks.php:528 include/global_arrays.php:689
-#: include/global_arrays.php:699 include/global_arrays.php:1323
+#: include/global_arrays.php:699 include/global_arrays.php:1324
 #, fuzzy, php-format
 msgid "%d Hour"
 msgstr "% d giờ"
@@ -1890,14 +1890,14 @@ msgstr "% d giờ"
 #: include/global_arrays.php:691 include/global_arrays.php:692
 #: include/global_arrays.php:693 include/global_arrays.php:700
 #: include/global_arrays.php:701 include/global_arrays.php:702
-#: include/global_arrays.php:703 include/global_arrays.php:1324
-#: include/global_arrays.php:1325 include/global_arrays.php:1326
-#: include/global_arrays.php:1327 include/global_arrays.php:1394
-#: include/global_arrays.php:1395 include/global_arrays.php:1396
-#: include/global_arrays.php:1397 include/global_arrays.php:1398
-#: include/global_arrays.php:1415 include/global_arrays.php:1416
-#: include/global_arrays.php:1417 include/global_arrays.php:1418
-#: include/global_arrays.php:1419 include/global_settings.php:1482
+#: include/global_arrays.php:703 include/global_arrays.php:1325
+#: include/global_arrays.php:1326 include/global_arrays.php:1327
+#: include/global_arrays.php:1328 include/global_arrays.php:1395
+#: include/global_arrays.php:1396 include/global_arrays.php:1397
+#: include/global_arrays.php:1398 include/global_arrays.php:1399
+#: include/global_arrays.php:1416 include/global_arrays.php:1417
+#: include/global_arrays.php:1418 include/global_arrays.php:1419
+#: include/global_arrays.php:1420 include/global_settings.php:1482
 #: include/global_settings.php:1483 include/global_settings.php:1484
 #: include/global_settings.php:1485
 #, fuzzy, php-format
@@ -2027,37 +2027,37 @@ msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr "Ngày nào trong tuần, Phạm vi Mạng này sẽ được phát hiện."
 
 #: automation_networks.php:638 automation_networks.php:696
-#: include/global_arrays.php:1782
+#: include/global_arrays.php:1783
 msgid "Sunday"
 msgstr "Chủ nhật"
 
 #: automation_networks.php:639 automation_networks.php:697
-#: include/global_arrays.php:1783
+#: include/global_arrays.php:1784
 msgid "Monday"
 msgstr "Thứ hai"
 
 #: automation_networks.php:640 automation_networks.php:698
-#: include/global_arrays.php:1784
+#: include/global_arrays.php:1785
 msgid "Tuesday"
 msgstr "Thứ ba"
 
 #: automation_networks.php:641 automation_networks.php:699
-#: include/global_arrays.php:1785
+#: include/global_arrays.php:1786
 msgid "Wednesday"
 msgstr "Thứ tư"
 
 #: automation_networks.php:642 automation_networks.php:700
-#: include/global_arrays.php:1786
+#: include/global_arrays.php:1787
 msgid "Thursday"
 msgstr "Thứ năm"
 
 #: automation_networks.php:643 automation_networks.php:701
-#: include/global_arrays.php:1787
+#: include/global_arrays.php:1788
 msgid "Friday"
 msgstr "Thứ sáu"
 
 #: automation_networks.php:644 automation_networks.php:702
-#: include/global_arrays.php:1788
+#: include/global_arrays.php:1789
 msgid "Saturday"
 msgstr "Thứ bảy"
 
@@ -2071,51 +2071,51 @@ msgstr "Tháng trong năm"
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "Tháng nào trong năm của Phạm vi Mạng này sẽ được phát hiện."
 
-#: automation_networks.php:654 include/global_arrays.php:1752
+#: automation_networks.php:654 include/global_arrays.php:1753
 msgid "January"
 msgstr "Tháng 1"
 
-#: automation_networks.php:655 include/global_arrays.php:1753
+#: automation_networks.php:655 include/global_arrays.php:1754
 msgid "February"
 msgstr "Tháng 2"
 
-#: automation_networks.php:656 include/global_arrays.php:1754
+#: automation_networks.php:656 include/global_arrays.php:1755
 msgid "March"
 msgstr "Tháng 3"
 
-#: automation_networks.php:657 include/global_arrays.php:1755
+#: automation_networks.php:657 include/global_arrays.php:1756
 msgid "April"
 msgstr "Tháng 4"
 
-#: automation_networks.php:658 include/global_arrays.php:1756
+#: automation_networks.php:658 include/global_arrays.php:1757
 msgid "May"
 msgstr "Tháng 5"
 
-#: automation_networks.php:659 include/global_arrays.php:1757
+#: automation_networks.php:659 include/global_arrays.php:1758
 msgid "June"
 msgstr "Tháng 6"
 
-#: automation_networks.php:660 include/global_arrays.php:1758
+#: automation_networks.php:660 include/global_arrays.php:1759
 msgid "July"
 msgstr "Tháng 7"
 
-#: automation_networks.php:661 include/global_arrays.php:1759
+#: automation_networks.php:661 include/global_arrays.php:1760
 msgid "August"
 msgstr "Tháng 8"
 
-#: automation_networks.php:662 include/global_arrays.php:1760
+#: automation_networks.php:662 include/global_arrays.php:1761
 msgid "September"
 msgstr "Tháng 9"
 
-#: automation_networks.php:663 include/global_arrays.php:1761
+#: automation_networks.php:663 include/global_arrays.php:1762
 msgid "October"
 msgstr "Tháng 10"
 
-#: automation_networks.php:664 include/global_arrays.php:1762
+#: automation_networks.php:664 include/global_arrays.php:1763
 msgid "November"
 msgstr "Tháng 11"
 
-#: automation_networks.php:665 include/global_arrays.php:1763
+#: automation_networks.php:665 include/global_arrays.php:1764
 msgid "December"
 msgstr "Tháng 12"
 
@@ -2359,14 +2359,14 @@ msgstr "Làm mới"
 #: include/global_arrays.php:679 include/global_arrays.php:680
 #: include/global_arrays.php:681 include/global_arrays.php:1079
 #: include/global_arrays.php:1080 include/global_arrays.php:1081
-#: include/global_arrays.php:1082 include/global_arrays.php:1436
-#: include/global_arrays.php:1437 include/global_arrays.php:1438
-#: include/global_arrays.php:1439 include/global_arrays.php:1440
-#: include/global_arrays.php:1475 include/global_arrays.php:1476
-#: include/global_arrays.php:1488 include/global_arrays.php:1489
-#: include/global_arrays.php:1490 include/global_arrays.php:1491
-#: include/global_arrays.php:1492 include/global_arrays.php:1493
-#: include/global_arrays.php:1494 include/global_settings.php:1139
+#: include/global_arrays.php:1082 include/global_arrays.php:1437
+#: include/global_arrays.php:1438 include/global_arrays.php:1439
+#: include/global_arrays.php:1440 include/global_arrays.php:1441
+#: include/global_arrays.php:1476 include/global_arrays.php:1477
+#: include/global_arrays.php:1489 include/global_arrays.php:1490
+#: include/global_arrays.php:1491 include/global_arrays.php:1492
+#: include/global_arrays.php:1493 include/global_arrays.php:1494
+#: include/global_arrays.php:1495 include/global_settings.php:1139
 #: include/global_settings.php:1140 include/global_settings.php:1141
 #: include/global_settings.php:1142 include/global_settings.php:2285
 #: include/global_settings.php:2286 include/global_settings.php:2287
@@ -2493,7 +2493,7 @@ msgstr "Phiên bản"
 msgid "Community"
 msgstr "Cộng đồng"
 
-#: automation_snmp.php:536 lib/functions.php:3943
+#: automation_snmp.php:536 lib/functions.php:3945
 msgid "Port"
 msgstr "Cổng"
 
@@ -2557,7 +2557,7 @@ msgstr "trống"
 #: automation_snmp.php:573 automation_templates.php:524 cdef.php:621
 #: color_templates.php:111 data_queries.php:789 data_queries.php:889
 #: lib/api_automation.php:1314 lib/api_automation.php:1376
-#: lib/api_automation.php:1444 lib/html.php:1201 lib/html_reports.php:1410
+#: lib/api_automation.php:1444 lib/html.php:1204 lib/html_reports.php:1410
 #: lib/html_reports.php:1412 tree.php:2087 tree.php:2094 vdef.php:607
 msgid "Move Down"
 msgstr "Chuyển xuống"
@@ -2565,7 +2565,7 @@ msgstr "Chuyển xuống"
 #: automation_snmp.php:579 automation_templates.php:530 cdef.php:627
 #: color_templates.php:117 data_queries.php:794 data_queries.php:894
 #: lib/api_automation.php:1320 lib/api_automation.php:1382
-#: lib/api_automation.php:1450 lib/html.php:1207 lib/html_reports.php:1412
+#: lib/api_automation.php:1450 lib/html.php:1210 lib/html_reports.php:1412
 #: lib/html_reports.php:1414 tree.php:2091 tree.php:2095 vdef.php:613
 msgid "Move Up"
 msgstr "Chuyển lên"
@@ -2635,7 +2635,7 @@ msgstr "Nhấp vào &#39;Tiếp tục&#39; để xóa (các) Mẫu tự động 
 msgid "Delete Automation Template(s)"
 msgstr "Xóa (các) Mẫu tự động hóa"
 
-#: automation_templates.php:274 include/global_arrays.php:1237
+#: automation_templates.php:274 include/global_arrays.php:1238
 #: include/global_form.php:1172 include/global_form.php:1581
 #: lib/html_reports.php:623
 #, fuzzy
@@ -2799,7 +2799,7 @@ msgstr "Bạn có chắc muốn tiếp tục không?"
 
 #: automation_tree_rules.php:801 automation_tree_rules.php:826
 #: automation_tree_rules.php:926 include/global_arrays.php:919
-#: include/global_arrays.php:2645
+#: include/global_arrays.php:2646
 #, fuzzy
 msgid "Tree Rules"
 msgstr "Quy tắc cây"
@@ -2919,7 +2919,7 @@ msgstr "CDEF [chỉnh sửa: %s]"
 msgid "CDEF [new]"
 msgstr "CDEF [mới]"
 
-#: cdef.php:591 include/global_arrays.php:2015
+#: cdef.php:591 include/global_arrays.php:2016
 #, fuzzy
 msgid "CDEF Items"
 msgstr "Mục CDEF"
@@ -2940,7 +2940,7 @@ msgid "Delete CDEF Item"
 msgstr "Xóa mục CDEF"
 
 #: cdef.php:747 cdef.php:762 cdef.php:884 include/global_arrays.php:924
-#: include/global_arrays.php:1997
+#: include/global_arrays.php:1998
 #, fuzzy
 msgid "CDEFs"
 msgstr "CDEF"
@@ -3074,7 +3074,7 @@ msgid "Colors [new]"
 msgstr "Màu sắc [mới]"
 
 #: color.php:520 color.php:535 color.php:690 include/global_arrays.php:926
-#: include/global_arrays.php:2063
+#: include/global_arrays.php:2064
 msgid "Colors"
 msgstr "Màu sắc"
 
@@ -3162,13 +3162,13 @@ msgid "Color Item"
 msgstr "Mục màu"
 
 #: color_templates.php:94 lib/api_aggregate.php:1795 lib/api_aggregate.php:1798
-#: lib/api_aggregate.php:1803 lib/html.php:1136 lib/html_reports.php:1401
+#: lib/api_aggregate.php:1803 lib/html.php:1139 lib/html_reports.php:1401
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "Mục #% d"
 
 #: color_templates.php:133 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1855 lib/html.php:1226
+#: lib/api_aggregate.php:1855 lib/html.php:1229
 #, fuzzy
 msgid "No Items"
 msgstr "Sản phẩm"
@@ -3245,7 +3245,7 @@ msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color
 msgstr "Mẫu màu '%s' không có Mẫu tổng hợp hoặc Đồ thị sử dụng Mẫu màu này."
 
 #: color_templates.php:523 color_templates.php:536 color_templates.php:631
-#: include/global_arrays.php:2543
+#: include/global_arrays.php:2544
 #, fuzzy
 msgid "Color Templates"
 msgstr "Mẫu màu"
@@ -3332,7 +3332,7 @@ msgstr "Sửa chữa nguồn dữ liệu nhận được ID nguồn dữ liệu 
 #: data_debug.php:329 data_debug.php:807 data_queries.php:712
 #: data_sources.php:979 data_templates.php:596 graphs_items.php:463
 #: include/global_arrays.php:910 include/global_form.php:926
-#: lib/api_aggregate.php:1709 lib/html.php:1096
+#: lib/api_aggregate.php:1709 lib/html.php:1099
 msgid "Data Source"
 msgstr "Nguồn dữ liệu"
 
@@ -3438,7 +3438,7 @@ msgstr "Bất kỳ vấn đề tóm tắt nào được tìm thấy cho Nguồn 
 
 #: data_debug.php:511 data_debug.php:1058 data_sources.php:1429
 #: data_sources.php:1587 host.php:1687 include/global_arrays.php:899
-#: include/global_arrays.php:944 include/global_arrays.php:2147
+#: include/global_arrays.php:944 include/global_arrays.php:2148
 #: lib/api_automation.php:284 user_admin.php:1299 user_group_admin.php:980
 #: utilities.php:330
 msgid "Data Sources"
@@ -3823,7 +3823,7 @@ msgid "Delete Data Input Field"
 msgstr "Xóa trường nhập dữ liệu"
 
 #: data_input.php:817 include/global_arrays.php:905
-#: include/global_arrays.php:1101 include/global_arrays.php:2201
+#: include/global_arrays.php:1101 include/global_arrays.php:2202
 #, fuzzy
 msgid "Data Input Methods"
 msgstr "Phương thức nhập dữ liệu"
@@ -3868,7 +3868,7 @@ msgstr "Số lượng Nguồn dữ liệu sử dụng Phương thức nhập d�
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "Số lượng Mẫu dữ liệu sử dụng Phương thức nhập dữ liệu này."
 
-#: data_input.php:954 data_queries.php:1398 include/global_arrays.php:1229
+#: data_input.php:954 data_queries.php:1398 include/global_arrays.php:1230
 #: include/global_form.php:540 include/global_form.php:1332
 #, fuzzy
 msgid "Data Input Method"
@@ -4002,7 +4002,7 @@ msgid "Could not locate XML file."
 msgstr "Không thể định vị tệp XML."
 
 #: data_queries.php:1109 host.php:707 host_templates.php:486
-#: include/global_arrays.php:2255
+#: include/global_arrays.php:2256
 #, fuzzy
 msgid "Associated Graph Templates"
 msgstr "Mẫu biểu đồ liên kết"
@@ -4040,7 +4040,7 @@ msgstr "Xóa đồ thị liên kết"
 
 #: data_queries.php:1262 data_queries.php:1277 data_queries.php:1405
 #: include/global_arrays.php:904 include/global_arrays.php:1102
-#: include/global_arrays.php:2237 lib/api_automation.php:1105
+#: include/global_arrays.php:2238 lib/api_automation.php:1105
 #, fuzzy
 msgid "Data Queries"
 msgstr "Truy vấn dữ liệu"
@@ -4210,7 +4210,7 @@ msgstr "%s KBytes trên mỗi nguồn dữ liệu"
 #: include/global_arrays.php:719 include/global_arrays.php:720
 #: include/global_arrays.php:721 include/global_arrays.php:722
 #: include/global_arrays.php:723 include/global_arrays.php:724
-#: include/global_arrays.php:1340 include/global_settings.php:1414
+#: include/global_arrays.php:1341 include/global_settings.php:1414
 #, fuzzy, php-format
 msgid "%d Years"
 msgstr "% d Năm"
@@ -4220,30 +4220,30 @@ msgid "1 Year"
 msgstr "1 Năm"
 
 #: data_source_profiles.php:803 include/global_arrays.php:710
-#: include/global_arrays.php:1334 rrdcleaner.php:490
+#: include/global_arrays.php:1335 rrdcleaner.php:490
 #, fuzzy, php-format
 msgid "%d Month"
 msgstr "% d tháng"
 
 #: data_source_profiles.php:803 include/global_arrays.php:711
 #: include/global_arrays.php:712 include/global_arrays.php:713
-#: include/global_arrays.php:714 include/global_arrays.php:1335
-#: include/global_arrays.php:1336 include/global_arrays.php:1337
-#: include/global_arrays.php:1338 rrdcleaner.php:491 rrdcleaner.php:492
+#: include/global_arrays.php:714 include/global_arrays.php:1336
+#: include/global_arrays.php:1337 include/global_arrays.php:1338
+#: include/global_arrays.php:1339 rrdcleaner.php:491 rrdcleaner.php:492
 #: rrdcleaner.php:493
 #, fuzzy, php-format
 msgid "%d Months"
 msgstr "% d tháng"
 
 #: data_source_profiles.php:812 include/global_arrays.php:657
-#: include/global_arrays.php:707 include/global_arrays.php:1332
+#: include/global_arrays.php:707 include/global_arrays.php:1333
 #: rrdcleaner.php:486 rrdcleaner.php:487
 #, fuzzy, php-format
 msgid "%d Week"
 msgstr "% d tuần"
 
 #: data_source_profiles.php:812 include/global_arrays.php:708
-#: include/global_arrays.php:709 include/global_arrays.php:1333
+#: include/global_arrays.php:709 include/global_arrays.php:1334
 #: rrdcleaner.php:488 rrdcleaner.php:489
 #, fuzzy, php-format
 msgid "%d Weeks"
@@ -4251,15 +4251,15 @@ msgstr "% d tuần"
 
 #: data_source_profiles.php:821 include/global_arrays.php:656
 #: include/global_arrays.php:694 include/global_arrays.php:704
-#: include/global_arrays.php:1328
+#: include/global_arrays.php:1329
 #, fuzzy, php-format
 msgid "%d Day"
 msgstr "% d ngày"
 
 #: data_source_profiles.php:821 include/global_arrays.php:695
 #: include/global_arrays.php:705 include/global_arrays.php:706
-#: include/global_arrays.php:1329 include/global_arrays.php:1330
-#: include/global_arrays.php:1331 include/global_settings.php:1409
+#: include/global_arrays.php:1330 include/global_arrays.php:1331
+#: include/global_arrays.php:1332 include/global_settings.php:1409
 #: include/global_settings.php:1410 include/global_settings.php:1411
 #: include/global_settings.php:1412 include/global_settings.php:1423
 #: include/global_settings.php:1424 include/global_settings.php:1425
@@ -4269,9 +4269,9 @@ msgid "%d Days"
 msgstr "% d ngày"
 
 #: data_source_profiles.php:829 include/global_arrays.php:650
-#: include/global_arrays.php:1393 include/global_arrays.php:1414
-#: include/global_arrays.php:1447 include/global_arrays.php:1456
-#: include/global_arrays.php:1484 include/global_settings.php:1481
+#: include/global_arrays.php:1394 include/global_arrays.php:1415
+#: include/global_arrays.php:1448 include/global_arrays.php:1457
+#: include/global_arrays.php:1485 include/global_settings.php:1481
 msgid "1 Hour"
 msgstr "1 Giờ"
 
@@ -4517,10 +4517,10 @@ msgstr "Mẫu dữ liệu đã chọn"
 msgid "The name given to this data template.  Please note that you may only change Graph Templates to a 100%$ compatible Graph Template, which means that it includes identical Data Sources."
 msgstr "Tên được đặt cho mẫu dữ liệu này. Xin lưu ý rằng bạn chỉ có thể thay đổi Mẫu biểu đồ thành Mẫu biểu đồ tương thích 100% $, có nghĩa là nó bao gồm Nguồn dữ liệu giống hệt nhau."
 
-#: data_sources.php:916 graph_view.php:721 graphs.php:1535
+#: data_sources.php:916 graph_view.php:722 graphs.php:1535
 #: include/global_arrays.php:859 include/global_arrays.php:908
-#: include/global_arrays.php:1718 lib/api_automation.php:425
-#: lib/functions.php:3942 lib/html.php:2001 lib/html.php:2033
+#: include/global_arrays.php:1719 lib/api_automation.php:425
+#: lib/functions.php:3944 lib/html.php:2004 lib/html.php:2036
 #: lib/html_reports.php:633 utilities.php:1643
 msgid "Device"
 msgstr "Thiết bị"
@@ -4573,8 +4573,8 @@ msgid "External"
 msgstr "Bên ngoài"
 
 #: data_sources.php:1183 include/global_arrays.php:645
-#: include/global_arrays.php:1083 include/global_arrays.php:1441
-#: include/global_arrays.php:1477 include/global_arrays.php:1495
+#: include/global_arrays.php:1083 include/global_arrays.php:1442
+#: include/global_arrays.php:1478 include/global_arrays.php:1496
 #: include/global_settings.php:1475 include/global_settings.php:2288
 msgid "1 Minute"
 msgstr "1 Phút"
@@ -4753,7 +4753,7 @@ msgid "Value will be derived from the device if this field is left empty."
 msgstr "Giá trị sẽ được lấy từ thiết bị nếu trường này bị bỏ trống."
 
 #: data_templates.php:904 data_templates.php:935 data_templates.php:1102
-#: include/global_arrays.php:1113 include/global_arrays.php:2129
+#: include/global_arrays.php:1113 include/global_arrays.php:2130
 #, fuzzy
 msgid "Data Templates"
 msgstr "Mẫu dữ liệu"
@@ -4832,7 +4832,7 @@ msgstr "Các cài đặt trước GPRINT [chỉnh sửa: %s]"
 msgid "GPRINT Presets [new]"
 msgstr "Cài đặt trước GPRINT [mới]"
 
-#: gprint_presets.php:253 include/global_arrays.php:1979
+#: gprint_presets.php:253 include/global_arrays.php:1980
 #, fuzzy
 msgid "GPRINT Presets"
 msgstr "GPRINT cài sẵn"
@@ -4905,7 +4905,7 @@ msgstr "Xuất CSV"
 msgid "Click to view just this Graph in Real-time"
 msgstr "Nhấp để xem Biểu đồ này trong thời gian thực"
 
-#: graph.php:246 lib/html.php:2406
+#: graph.php:246 lib/html.php:2409
 #, fuzzy
 msgid "Utility View"
 msgstr "Chế độ xem tiện ích"
@@ -5039,7 +5039,7 @@ msgstr "Đồng bộ hóa biểu đồ thành (các) biểu đồ"
 msgid "Graph Template Items [edit: %s]"
 msgstr "Mục mẫu biểu đồ [chỉnh sửa: %s]"
 
-#: graph_templates.php:452 include/global_arrays.php:2099
+#: graph_templates.php:452 include/global_arrays.php:2100
 #, fuzzy
 msgid "Graph Item Inputs"
 msgstr "Mục đầu vào đồ thị"
@@ -5071,7 +5071,7 @@ msgstr "Chọn hộp kiểm này nếu bạn muốn cho phép người dùng ghi
 
 #: graph_templates.php:651 graph_templates.php:666 graph_templates.php:830
 #: graphs_new.php:485 include/global_arrays.php:1112
-#: include/global_arrays.php:2075 lib/html_tree.php:606 user_admin.php:1439
+#: include/global_arrays.php:2076 lib/html_tree.php:606 user_admin.php:1439
 #: user_group_admin.php:1115
 #, fuzzy
 msgid "Graph Templates"
@@ -5193,11 +5193,11 @@ msgstr "Danh sách đồ thị Xem bộ lọc"
 msgid "[ Custom Graph List Applied - Filter FROM List ]"
 msgstr "[Danh sách biểu đồ tùy chỉnh được áp dụng - Bộ lọc TỪ danh sách]"
 
-#: graph_view.php:610 graph_view.php:817
+#: graph_view.php:610 graph_view.php:834
 msgid "View"
 msgstr "Xem"
 
-#: graph_view.php:610 graph_view.php:817 include/global_arrays.php:1091
+#: graph_view.php:610 graph_view.php:834 include/global_arrays.php:1091
 #, fuzzy
 msgid "View Graphs"
 msgstr "Xem đồ thị"
@@ -5217,73 +5217,73 @@ msgstr "Báo cáo"
 msgid "All Graphs & Templates"
 msgstr "Tất cả đồ thị và mẫu"
 
-#: graph_view.php:626 include/global_arrays.php:2729 lib/graphs.php:58
+#: graph_view.php:626 include/global_arrays.php:2730 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:173 lib/html_graph.php:158
 #: lib/html_tree.php:1043
 #, fuzzy
 msgid "Not Templated"
 msgstr "Không khuôn mẫu"
 
-#: graph_view.php:716 graphs.php:2127 include/global_form.php:1811
-#: lib/html_reports.php:653 tree.php:901
+#: graph_view.php:717 graph_view.php:745 graphs.php:2127
+#: include/global_form.php:1811 lib/html_reports.php:653 tree.php:901
 #, fuzzy
 msgid "Graph Name"
 msgstr "Tên đồ thị"
 
-#: graph_view.php:718 graphs.php:2130
+#: graph_view.php:719 graph_view.php:747 graphs.php:2130
 #, fuzzy
 msgid "The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
 msgstr "Tiêu đề của đồ thị này. Thường được lập trình tạo từ định nghĩa Mẫu biểu đồ hoặc quy tắc Đặt tên được đề xuất. Độ dài tối đa của Tiêu đề được kiểm soát trong Cài đặt-&gt; Trực quan."
 
-#: graph_view.php:723
+#: graph_view.php:724
 #, fuzzy
 msgid "The device for this Graph."
 msgstr "Tên của nhóm này."
 
-#: graph_view.php:726 graphs.php:2139
+#: graph_view.php:727 graphs.php:2139
 msgid "Source Type"
 msgstr "Loại nguồn"
 
-#: graph_view.php:728 graphs.php:2142
+#: graph_view.php:729 graphs.php:2142
 #, fuzzy
 msgid "The underlying source that this Graph was based upon."
 msgstr "Nguồn cơ bản mà đồ thị này dựa trên."
 
-#: graph_view.php:731 graphs.php:2145
+#: graph_view.php:732 graphs.php:2145
 msgid "Source Name"
 msgstr "Tên Nguồn"
 
-#: graph_view.php:733 graphs.php:2148
+#: graph_view.php:734 graphs.php:2148
 #, fuzzy
 msgid "The Graph Template or Data Query that this Graph was based upon."
 msgstr "Mẫu biểu đồ hoặc Truy vấn dữ liệu mà Biểu đồ này dựa trên."
 
-#: graph_view.php:738 graphs.php:2154
+#: graph_view.php:739 graph_view.php:752 graphs.php:2154
 #, fuzzy
 msgid "The size of this Graph when not in Preview mode."
 msgstr "Kích thước của đồ thị này khi không ở chế độ Xem trước."
 
-#: graph_view.php:786
+#: graph_view.php:803
 #, fuzzy
 msgid "Select the Report to add the selected Graphs to."
 msgstr "Chọn Báo cáo để thêm Đồ thị đã chọn vào."
 
-#: graph_view.php:881 include/global_arrays.php:1899
+#: graph_view.php:898 include/global_arrays.php:1900
 #: include/global_settings.php:2359
 msgid "Preview Mode"
 msgstr "Chế độ xem trước"
 
-#: graph_view.php:920
+#: graph_view.php:937
 #, fuzzy
 msgid "Add Selected Graphs to Report"
 msgstr "Thêm đồ thị được chọn vào báo cáo"
 
-#: graph_view.php:934 lib/html.php:2447
+#: graph_view.php:951 lib/html.php:2450
 msgid "Ok"
 msgstr "Đồng ý"
 
 #: graph_xport.php:120 graph_xport.php:158 include/global_form.php:1736
-#: include/global_form.php:2004 lib/html.php:1784 links.php:381
+#: include/global_form.php:2004 lib/html.php:1787 links.php:381
 msgid "Title"
 msgstr "Tiêu đề"
 
@@ -5335,7 +5335,7 @@ msgstr "Tóm tắt chi tiết"
 msgid "Download"
 msgstr "Tải xuống"
 
-#: graphs.php:51 graphs.php:926 include/global_arrays.php:1949
+#: graphs.php:51 graphs.php:926 include/global_arrays.php:1950
 #, fuzzy
 msgid "Change Graph Template"
 msgstr "Thay đổi mẫu biểu đồ"
@@ -5604,7 +5604,7 @@ msgstr "Nguồn dữ liệu [Không có thiết bị]"
 msgid "Data Sources [%s]"
 msgstr "Nguồn dữ liệu [ %s]"
 
-#: graphs_items.php:350 include/global_arrays.php:1228
+#: graphs_items.php:350 include/global_arrays.php:1229
 #: include/global_form.php:1591
 #, fuzzy
 msgid "Data Template"
@@ -5640,7 +5640,7 @@ msgstr "Đồ thị mới cho [Tất cả thiết bị]"
 msgid "New Graphs for None Host Type"
 msgstr "Đồ thị mới cho Không có Loại máy chủ"
 
-#: graphs_new.php:337 lib/html.php:2404
+#: graphs_new.php:337 lib/html.php:2407
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "Cài đặt bộ lọc đã lưu"
@@ -5961,7 +5961,7 @@ msgstr "Thêm mẫu biểu đồ vào thiết bị"
 msgid "Data Query Debug Information"
 msgstr "Truy vấn dữ liệu Thông tin gỡ lỗi"
 
-#: host.php:815 lib/functions.php:2983 tree.php:1517 tree.php:1591
+#: host.php:815 lib/functions.php:2985 tree.php:1517 tree.php:1591
 #: tree.php:1699 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Sao chép"
@@ -5980,15 +5980,15 @@ msgstr "Truy vấn dữ liệu liên quan"
 msgid "Re-Index Method"
 msgstr "Phương pháp lập chỉ mục lại"
 
-#: host.php:838 include/global_arrays.php:1955 include/global_arrays.php:2021
-#: include/global_arrays.php:2087 include/global_arrays.php:2123
-#: include/global_arrays.php:2141 include/global_arrays.php:2159
-#: include/global_arrays.php:2177 include/global_arrays.php:2207
-#: include/global_arrays.php:2243 include/global_arrays.php:2273
-#: include/global_arrays.php:2363 include/global_arrays.php:2555
-#: include/global_arrays.php:2579 include/global_arrays.php:2597
-#: include/global_arrays.php:2615 include/global_arrays.php:2633
-#: include/global_arrays.php:2657 lib/api_automation.php:1293
+#: host.php:838 include/global_arrays.php:1956 include/global_arrays.php:2022
+#: include/global_arrays.php:2088 include/global_arrays.php:2124
+#: include/global_arrays.php:2142 include/global_arrays.php:2160
+#: include/global_arrays.php:2178 include/global_arrays.php:2208
+#: include/global_arrays.php:2244 include/global_arrays.php:2274
+#: include/global_arrays.php:2364 include/global_arrays.php:2556
+#: include/global_arrays.php:2580 include/global_arrays.php:2598
+#: include/global_arrays.php:2616 include/global_arrays.php:2634
+#: include/global_arrays.php:2658 lib/api_automation.php:1293
 #: lib/api_automation.php:1355 lib/api_automation.php:1422
 #: lib/html_reports.php:1331 links.php:379 plugins.php:456
 msgid "Actions"
@@ -6003,7 +6003,7 @@ msgstr "[% d Mục,% d Hàng]"
 msgid "Fail"
 msgstr "Không Đạt"
 
-#: host.php:899 lib/functions.php:3957 lib/functions.php:3962
+#: host.php:899 lib/functions.php:3959 lib/functions.php:3964
 msgid "Success"
 msgstr "Thành công"
 
@@ -6070,7 +6070,7 @@ msgstr "SNMP GetNext"
 msgid "Undefined"
 msgstr "Mùi không xác định"
 
-#: host.php:1526 include/global_settings.php:572 lib/html.php:2062
+#: host.php:1526 include/global_settings.php:572 lib/html.php:2065
 msgid "Site"
 msgstr "Trang"
 
@@ -6283,7 +6283,7 @@ msgid "Delete Item from Device Template"
 msgstr "Xóa (các) mẫu thiết bị"
 
 #: host_templates.php:710 host_templates.php:725 host_templates.php:853
-#: include/global_arrays.php:1114 include/global_arrays.php:2111
+#: include/global_arrays.php:1114 include/global_arrays.php:2112
 #, fuzzy
 msgid "Device Templates"
 msgstr "Mẫu thiết bị"
@@ -6349,18 +6349,18 @@ msgstr "FATAL: Bạn phải đăng nhập để truy cập vào khu vực này c
 msgid "Login Again"
 msgstr "Đăng nhập lại"
 
-#: include/auth.php:294 lib/functions.php:5531 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:5533 permission_denied.php:45
 #: permission_denied.php:52
 #, fuzzy
 msgid "Permission Denied"
 msgstr "Quyền bị từ chối"
 
-#: include/auth.php:295 lib/functions.php:5532 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5534 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Nếu bạn cảm thấy rằng đây là một lỗi. Vui lòng liên hệ với Quản trị viên Cacti của bạn."
 
-#: include/auth.php:295 lib/functions.php:5532 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5534 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Bạn không được phép truy cập vào phần này của Cacti."
@@ -6907,7 +6907,7 @@ msgstr "Phải"
 msgid "Justified"
 msgstr "正当化された"
 
-#: include/global_arrays.php:530 lib/html.php:2473
+#: include/global_arrays.php:530 lib/html.php:2476
 msgid "Center"
 msgstr "Giữa"
 
@@ -7067,9 +7067,9 @@ msgstr "Mỗi tiếng"
 #: include/global_arrays.php:673 include/global_arrays.php:674
 #: include/global_arrays.php:740 include/global_arrays.php:741
 #: include/global_arrays.php:742 include/global_arrays.php:743
-#: include/global_arrays.php:1728 include/global_arrays.php:1729
-#: include/global_arrays.php:1730 include/global_arrays.php:1731
-#: include/global_arrays.php:1732 include/global_settings.php:2187
+#: include/global_arrays.php:1729 include/global_arrays.php:1730
+#: include/global_arrays.php:1731 include/global_arrays.php:1732
+#: include/global_arrays.php:1733 include/global_settings.php:2187
 #: include/global_settings.php:2188
 #, fuzzy, php-format
 msgid "Every %d Hours"
@@ -7080,7 +7080,7 @@ msgstr "Mỗi% d giờ"
 msgid "Every %d Day"
 msgstr "Mỗi% 1 ngày"
 
-#: include/global_arrays.php:715 include/global_arrays.php:1339
+#: include/global_arrays.php:715 include/global_arrays.php:1340
 #: include/global_settings.php:1413 rrdcleaner.php:494
 #, fuzzy, php-format
 msgid "%d Year"
@@ -7194,8 +7194,8 @@ msgid "Header"
 msgstr "Đầu trang"
 
 #: include/global_arrays.php:858 include/global_arrays.php:909
-#: include/global_arrays.php:1549 include/global_arrays.php:1717
-#: lib/html.php:2462
+#: include/global_arrays.php:1550 include/global_arrays.php:1718
+#: lib/html.php:2465
 msgid "Graph"
 msgstr "Biểu đồ"
 
@@ -7316,7 +7316,7 @@ msgstr "Thu thập dữ liệu"
 msgid "Data Collectors"
 msgstr "Người thu thập dữ liệu"
 
-#: include/global_arrays.php:911 include/global_arrays.php:2732
+#: include/global_arrays.php:911 include/global_arrays.php:2733
 msgid "Aggregate"
 msgstr "cốt liệu"
 
@@ -7346,7 +7346,7 @@ msgstr "Đặt trước"
 msgid "Data Profiles"
 msgstr "Hồ sơ dữ liệu"
 
-#: include/global_arrays.php:925 include/global_arrays.php:2357 vdef.php:692
+#: include/global_arrays.php:925 include/global_arrays.php:2358 vdef.php:692
 #: vdef.php:706 vdef.php:877
 #, fuzzy
 msgid "VDEFs"
@@ -7357,13 +7357,13 @@ msgid "Import/Export"
 msgstr "Nhập vào/Xuất ra"
 
 #: include/global_arrays.php:930 include/global_arrays.php:1117
-#: include/global_arrays.php:2477
+#: include/global_arrays.php:2478
 #, fuzzy
 msgid "Import Templates"
 msgstr "Nhập mẫu"
 
 #: include/global_arrays.php:931 include/global_arrays.php:1116
-#: include/global_arrays.php:2465 templates_export.php:159
+#: include/global_arrays.php:2466 templates_export.php:159
 #, fuzzy
 msgid "Export Templates"
 msgstr "Xuất mẫu"
@@ -7374,28 +7374,28 @@ msgid "Configuration"
 msgstr "Cấu hình"
 
 #: include/global_arrays.php:934 include/global_arrays.php:956
-#: lib/html.php:2197 lib/html.php:2477
+#: lib/html.php:2200 lib/html.php:2480
 msgid "Settings"
 msgstr "Cài đặt"
 
-#: include/global_arrays.php:935 include/global_arrays.php:2411
+#: include/global_arrays.php:935 include/global_arrays.php:2412
 #: user_admin.php:2262 user_admin.php:2318 user_group_admin.php:674
 #: user_group_admin.php:2542
 msgid "Users"
 msgstr "Người dùng"
 
-#: include/global_arrays.php:936 include/global_arrays.php:2441
+#: include/global_arrays.php:936 include/global_arrays.php:2442
 msgid "User Groups"
 msgstr "Nhóm người dùng"
 
-#: include/global_arrays.php:937 include/global_arrays.php:2429
+#: include/global_arrays.php:937 include/global_arrays.php:2430
 #: user_domains.php:644 user_domains.php:736
 #, fuzzy
 msgid "User Domains"
 msgstr "Tên miền người dùng"
 
 #: include/global_arrays.php:939 include/global_arrays.php:958
-#: include/global_arrays.php:974 include/global_arrays.php:2285
+#: include/global_arrays.php:974 include/global_arrays.php:2286
 msgid "Utilities"
 msgstr "Tiện Ích"
 
@@ -7497,1118 +7497,1122 @@ msgstr "Tạo báo cáo"
 msgid "Show Graph Action Icons"
 msgstr "Hiển thị tiêu đề đồ thị"
 
-#: include/global_arrays.php:1128
+#: include/global_arrays.php:1125
+msgid "Show User Help Links"
+msgstr ""
+
+#: include/global_arrays.php:1129
 msgid "Normal User"
 msgstr "Người dùng bình thường"
 
-#: include/global_arrays.php:1129
+#: include/global_arrays.php:1130
 #, fuzzy
 msgid "Template Editor"
 msgstr "Trình chỉnh sửa mẫu"
 
-#: include/global_arrays.php:1130
+#: include/global_arrays.php:1131
 #, fuzzy
 msgid "General Administration"
 msgstr "Quản lý chung"
 
-#: include/global_arrays.php:1131
+#: include/global_arrays.php:1132
 msgid "System Administration"
 msgstr "Quản lí hệ thống"
 
-#: include/global_arrays.php:1225
+#: include/global_arrays.php:1226
 #, fuzzy
 msgid "CDEF"
 msgstr "CDEF"
 
-#: include/global_arrays.php:1226
+#: include/global_arrays.php:1227
 #, fuzzy
 msgid "CDEF Item"
 msgstr "Mục CDEF"
 
-#: include/global_arrays.php:1227
+#: include/global_arrays.php:1228
 #, fuzzy
 msgid "GPRINT Preset"
 msgstr "GPRINT cài sẵn"
 
-#: include/global_arrays.php:1230
+#: include/global_arrays.php:1231
 #, fuzzy
 msgid "Data Input Field"
 msgstr "Trường nhập dữ liệu"
 
-#: include/global_arrays.php:1231 include/global_form.php:549
+#: include/global_arrays.php:1232 include/global_form.php:549
 #: include/global_form.php:1648
 #, fuzzy
 msgid "Data Source Profile"
 msgstr "Hồ sơ nguồn dữ liệu"
 
-#: include/global_arrays.php:1232
+#: include/global_arrays.php:1233
 #, fuzzy
 msgid "Data Template Item"
 msgstr "Mục mẫu dữ liệu"
 
-#: include/global_arrays.php:1234
+#: include/global_arrays.php:1235
 #, fuzzy
 msgid "Graph Template Item"
 msgstr "Mục mẫu biểu đồ"
 
-#: include/global_arrays.php:1235
+#: include/global_arrays.php:1236
 #, fuzzy
 msgid "Graph Template Input"
 msgstr "Nhập mẫu biểu đồ"
 
-#: include/global_arrays.php:1238
+#: include/global_arrays.php:1239
 #, fuzzy
 msgid "VDEF"
 msgstr "VDEF"
 
-#: include/global_arrays.php:1239
+#: include/global_arrays.php:1240
 #, fuzzy
 msgid "VDEF Item"
 msgstr "Mục VDEF"
 
-#: include/global_arrays.php:1290
+#: include/global_arrays.php:1291
 #, fuzzy
 msgid "Last Half Hour"
 msgstr "Nửa giờ qua"
 
-#: include/global_arrays.php:1291
+#: include/global_arrays.php:1292
 msgid "Last Hour"
 msgstr "1 giờ trước"
 
-#: include/global_arrays.php:1292 include/global_arrays.php:1293
-#: include/global_arrays.php:1294 include/global_arrays.php:1295
+#: include/global_arrays.php:1293 include/global_arrays.php:1294
+#: include/global_arrays.php:1295 include/global_arrays.php:1296
 #, fuzzy, php-format
 msgid "Last %d Hours"
 msgstr "% D giờ cuối cùng"
 
-#: include/global_arrays.php:1296
+#: include/global_arrays.php:1297
 #, fuzzy
 msgid "Last Day"
 msgstr "Ngày cuối"
 
-#: include/global_arrays.php:1297 include/global_arrays.php:1298
-#: include/global_arrays.php:1299
+#: include/global_arrays.php:1298 include/global_arrays.php:1299
+#: include/global_arrays.php:1300
 #, fuzzy, php-format
 msgid "Last %d Days"
 msgstr "% D ngày cuối cùng"
 
-#: include/global_arrays.php:1300
+#: include/global_arrays.php:1301
 msgid "Last Week"
 msgstr "Tuần trước"
 
-#: include/global_arrays.php:1301
+#: include/global_arrays.php:1302
 #, fuzzy, php-format
 msgid "Last %d Weeks"
 msgstr "% D tuần trước"
 
-#: include/global_arrays.php:1302
+#: include/global_arrays.php:1303
 msgid "Last Month"
 msgstr "Tháng trước"
 
-#: include/global_arrays.php:1303 include/global_arrays.php:1304
-#: include/global_arrays.php:1305 include/global_arrays.php:1306
+#: include/global_arrays.php:1304 include/global_arrays.php:1305
+#: include/global_arrays.php:1306 include/global_arrays.php:1307
 #, fuzzy, php-format
 msgid "Last %d Months"
 msgstr "% D tháng trước"
 
-#: include/global_arrays.php:1307
+#: include/global_arrays.php:1308
 msgid "Last Year"
 msgstr "Năm trước"
 
-#: include/global_arrays.php:1308
+#: include/global_arrays.php:1309
 #, fuzzy, php-format
 msgid "Last %d Years"
 msgstr "% D năm trước"
 
-#: include/global_arrays.php:1309
+#: include/global_arrays.php:1310
 #, fuzzy
 msgid "Day Shift"
 msgstr "Ca ngày"
 
-#: include/global_arrays.php:1310
+#: include/global_arrays.php:1311
 #, fuzzy
 msgid "This Day"
 msgstr "Hàng ngày"
 
-#: include/global_arrays.php:1311
+#: include/global_arrays.php:1312
 msgid "This Week"
 msgstr "Tuần này"
 
-#: include/global_arrays.php:1312
+#: include/global_arrays.php:1313
 msgid "This Month"
 msgstr "Tháng này"
 
-#: include/global_arrays.php:1313
+#: include/global_arrays.php:1314
 msgid "This Year"
 msgstr "Năm nay"
 
-#: include/global_arrays.php:1314
+#: include/global_arrays.php:1315
 msgid "Previous Day"
 msgstr "Ngày trước"
 
-#: include/global_arrays.php:1315
+#: include/global_arrays.php:1316
 #, fuzzy
 msgid "Previous Week"
 msgstr "Tuần trước"
 
-#: include/global_arrays.php:1316
+#: include/global_arrays.php:1317
 #, fuzzy
 msgid "Previous Month"
 msgstr "Tháng trước"
 
-#: include/global_arrays.php:1317
+#: include/global_arrays.php:1318
 #, fuzzy
 msgid "Previous Year"
 msgstr "Năm trước"
 
-#: include/global_arrays.php:1322
+#: include/global_arrays.php:1323
 #, fuzzy, php-format
 msgid "%d Min"
 msgstr "% d tối thiểu"
 
-#: include/global_arrays.php:1377
+#: include/global_arrays.php:1378
 #, fuzzy
 msgid "Month Number, Day, Year"
 msgstr "Số tháng, ngày, năm"
 
-#: include/global_arrays.php:1378
+#: include/global_arrays.php:1379
 #, fuzzy
 msgid "Month Name, Day, Year"
 msgstr "Tên tháng, ngày, năm"
 
-#: include/global_arrays.php:1379
+#: include/global_arrays.php:1380
 #, fuzzy
 msgid "Day, Month Number, Year"
 msgstr "Ngày, số tháng, năm"
 
-#: include/global_arrays.php:1380
+#: include/global_arrays.php:1381
 #, fuzzy
 msgid "Day, Month Name, Year"
 msgstr "Ngày, tháng tên, năm"
 
-#: include/global_arrays.php:1381
+#: include/global_arrays.php:1382
 #, fuzzy
 msgid "Year, Month Number, Day"
 msgstr "Năm, số tháng, ngày"
 
-#: include/global_arrays.php:1382
+#: include/global_arrays.php:1383
 #, fuzzy
 msgid "Year, Month Name, Day"
 msgstr "Năm, tháng tên, ngày"
 
-#: include/global_arrays.php:1392
+#: include/global_arrays.php:1393
 #, fuzzy
 msgid "After Boost"
 msgstr "Sau khi tăng"
 
-#: include/global_arrays.php:1402 include/global_arrays.php:1403
-#: include/global_arrays.php:1404 include/global_arrays.php:1405
-#: include/global_arrays.php:1406 include/global_arrays.php:1461
-#: include/global_arrays.php:1462
+#: include/global_arrays.php:1403 include/global_arrays.php:1404
+#: include/global_arrays.php:1405 include/global_arrays.php:1406
+#: include/global_arrays.php:1407 include/global_arrays.php:1462
+#: include/global_arrays.php:1463
 #, fuzzy, php-format
 msgid "%d MBytes"
 msgstr "% d MByte"
 
-#: include/global_arrays.php:1407
+#: include/global_arrays.php:1408
 #, fuzzy
 msgid "1 GByte"
 msgstr "1 GByte"
 
-#: include/global_arrays.php:1408 include/global_arrays.php:1464
+#: include/global_arrays.php:1409 include/global_arrays.php:1465
 #: lib/boost.php:34
 #, fuzzy, php-format
 msgid "%s GBytes"
 msgstr "%s GB"
 
-#: include/global_arrays.php:1409 include/global_arrays.php:1410
-#: include/global_arrays.php:1465 include/global_arrays.php:1466
-#: include/global_arrays.php:1467 include/global_arrays.php:1468
-#: include/global_arrays.php:1469 include/global_arrays.php:1470
+#: include/global_arrays.php:1410 include/global_arrays.php:1411
+#: include/global_arrays.php:1466 include/global_arrays.php:1467
+#: include/global_arrays.php:1468 include/global_arrays.php:1469
+#: include/global_arrays.php:1470 include/global_arrays.php:1471
 #, fuzzy, php-format
 msgid "%d GBytes"
 msgstr "% d GByte"
 
-#: include/global_arrays.php:1423
+#: include/global_arrays.php:1424
 #, fuzzy
 msgid "2,000 Data Source Items"
 msgstr "2.000 mục nguồn dữ liệu"
 
-#: include/global_arrays.php:1424
+#: include/global_arrays.php:1425
 #, fuzzy
 msgid "5,000 Data Source Items"
 msgstr "5.000 mục nguồn dữ liệu"
 
-#: include/global_arrays.php:1425
+#: include/global_arrays.php:1426
 #, fuzzy
 msgid "10,000 Data Source Items"
 msgstr "10.000 mục nguồn dữ liệu"
 
-#: include/global_arrays.php:1426
+#: include/global_arrays.php:1427
 #, fuzzy
 msgid "15,000 Data Source Items"
 msgstr "15.000 mục nguồn dữ liệu"
 
-#: include/global_arrays.php:1427
+#: include/global_arrays.php:1428
 #, fuzzy
 msgid "25,000 Data Source Items"
 msgstr "25.000 mục nguồn dữ liệu"
 
-#: include/global_arrays.php:1428
+#: include/global_arrays.php:1429
 #, fuzzy
 msgid "50,000 Data Source Items (Default)"
 msgstr "50.000 mục nguồn dữ liệu (Mặc định)"
 
-#: include/global_arrays.php:1429
+#: include/global_arrays.php:1430
 #, fuzzy
 msgid "100,000 Data Source Items"
 msgstr "100.000 mục nguồn dữ liệu"
 
-#: include/global_arrays.php:1430
+#: include/global_arrays.php:1431
 #, fuzzy
 msgid "200,000 Data Source Items"
 msgstr "200.000 mục nguồn dữ liệu"
 
-#: include/global_arrays.php:1431
+#: include/global_arrays.php:1432
 #, fuzzy
 msgid "400,000 Data Source Items"
 msgstr "400.000 mục nguồn dữ liệu"
 
-#: include/global_arrays.php:1448
+#: include/global_arrays.php:1449
 msgid "2 Hours"
 msgstr "2 Giờ"
 
-#: include/global_arrays.php:1449
+#: include/global_arrays.php:1450
 msgid "4 Hours"
 msgstr "4 Giờ"
 
-#: include/global_arrays.php:1450
+#: include/global_arrays.php:1451
 msgid "6 Hours"
 msgstr "6 Giờ"
 
-#: include/global_arrays.php:1457 include/global_settings.php:1240
-#: include/global_settings.php:1241 include/global_settings.php:1242
+#: include/global_arrays.php:1458 include/global_settings.php:1248
+#: include/global_settings.php:1249 include/global_settings.php:1250
 #, fuzzy, php-format
 msgid "%s Hours"
 msgstr "%s giờ"
 
-#: include/global_arrays.php:1463
+#: include/global_arrays.php:1464
 #, fuzzy, php-format
 msgid "%d GByte"
 msgstr "% d GByte"
 
-#: include/global_arrays.php:1471
+#: include/global_arrays.php:1472
 msgid "Infinity"
 msgstr "Infinity"
 
-#: include/global_arrays.php:1478 include/global_settings.php:1182
-#: include/global_settings.php:1183 include/global_settings.php:1184
-#: include/global_settings.php:1185 include/global_settings.php:1195
-#: include/global_settings.php:1196 include/global_settings.php:1197
-#: include/global_settings.php:1198 include/global_settings.php:1208
-#: include/global_settings.php:1209 include/global_settings.php:1210
-#: include/global_settings.php:1211 include/global_settings.php:1221
-#: include/global_settings.php:1222 include/global_settings.php:1223
-#: include/global_settings.php:1224 include/global_settings.php:1235
-#: include/global_settings.php:1236 include/global_settings.php:1237
-#: include/global_settings.php:1238
+#: include/global_arrays.php:1479 include/global_settings.php:1190
+#: include/global_settings.php:1191 include/global_settings.php:1192
+#: include/global_settings.php:1193 include/global_settings.php:1203
+#: include/global_settings.php:1204 include/global_settings.php:1205
+#: include/global_settings.php:1206 include/global_settings.php:1216
+#: include/global_settings.php:1217 include/global_settings.php:1218
+#: include/global_settings.php:1219 include/global_settings.php:1229
+#: include/global_settings.php:1230 include/global_settings.php:1231
+#: include/global_settings.php:1232 include/global_settings.php:1243
+#: include/global_settings.php:1244 include/global_settings.php:1245
+#: include/global_settings.php:1246
 #, fuzzy, php-format
 msgid "%s Minutes"
 msgstr "%s Phút"
 
-#: include/global_arrays.php:1500
+#: include/global_arrays.php:1501
 #, fuzzy
 msgid "1 Megabyte"
 msgstr "1 Megabyte"
 
-#: include/global_arrays.php:1501 include/global_arrays.php:1502
-#: include/global_arrays.php:1503 include/global_arrays.php:1504
-#: include/global_arrays.php:1505 include/global_arrays.php:1506
+#: include/global_arrays.php:1502 include/global_arrays.php:1503
+#: include/global_arrays.php:1504 include/global_arrays.php:1505
+#: include/global_arrays.php:1506 include/global_arrays.php:1507
 #, fuzzy, php-format
 msgid "%d Megabytes"
 msgstr "% d Megabyte"
 
-#: include/global_arrays.php:1510
+#: include/global_arrays.php:1511
 msgid "Send Now"
 msgstr "Gửi ngay"
 
-#: include/global_arrays.php:1518
+#: include/global_arrays.php:1519
 #, fuzzy
 msgid "Take Ownership"
 msgstr "Lấy quyền sở hữu"
 
-#: include/global_arrays.php:1522
+#: include/global_arrays.php:1523
 #, fuzzy
 msgid "Inline PNG Image"
 msgstr "Hình ảnh nội tuyến PNG"
 
-#: include/global_arrays.php:1527
+#: include/global_arrays.php:1528
 #, fuzzy
 msgid "Inline JPEG Image"
 msgstr "Hình ảnh JPEG nội tuyến"
 
-#: include/global_arrays.php:1528
+#: include/global_arrays.php:1529
 #, fuzzy
 msgid "Inline GIF Image"
 msgstr "Ảnh GIF nội tuyến"
 
-#: include/global_arrays.php:1531
+#: include/global_arrays.php:1532
 #, fuzzy
 msgid "Attached PNG Image"
 msgstr "Hình ảnh PNG đính kèm"
 
-#: include/global_arrays.php:1534
+#: include/global_arrays.php:1535
 #, fuzzy
 msgid "Attached JPEG Image"
 msgstr "Ảnh JPEG đính kèm"
 
-#: include/global_arrays.php:1535
+#: include/global_arrays.php:1536
 #, fuzzy
 msgid "Attached GIF Image"
 msgstr "Ảnh GIF đính kèm"
 
-#: include/global_arrays.php:1539
+#: include/global_arrays.php:1540
 #, fuzzy
 msgid "Inline PNG Image, LN Style"
 msgstr "Hình ảnh nội tuyến PNG, kiểu LN"
 
-#: include/global_arrays.php:1541
+#: include/global_arrays.php:1542
 #, fuzzy
 msgid "Inline JPEG Image, LN Style"
 msgstr "Hình ảnh JPEG nội tuyến, kiểu LN"
 
-#: include/global_arrays.php:1542
+#: include/global_arrays.php:1543
 #, fuzzy
 msgid "Inline GIF Image, LN Style"
 msgstr "Ảnh GIF nội tuyến, kiểu LN"
 
-#: include/global_arrays.php:1547
+#: include/global_arrays.php:1548
 msgid "Text"
 msgstr "Văn bản"
 
-#: include/global_arrays.php:1548 include/global_form.php:2179
+#: include/global_arrays.php:1549 include/global_form.php:2179
 msgid "Tree"
 msgstr "Cây thân gỗ"
 
-#: include/global_arrays.php:1550
+#: include/global_arrays.php:1551
 msgid "Horizontal Rule"
 msgstr "Viền ngang"
 
-#: include/global_arrays.php:1554
+#: include/global_arrays.php:1555
 msgid "left"
 msgstr "trái"
 
-#: include/global_arrays.php:1555
+#: include/global_arrays.php:1556
 msgid "center"
 msgstr "giữa"
 
-#: include/global_arrays.php:1556
+#: include/global_arrays.php:1557
 msgid "right"
 msgstr "phải"
 
-#: include/global_arrays.php:1560
+#: include/global_arrays.php:1561
 msgid "Minute(s)"
 msgstr "Phút"
 
-#: include/global_arrays.php:1561
+#: include/global_arrays.php:1562
 msgid "Hour(s)"
 msgstr "Giờ"
 
-#: include/global_arrays.php:1562
+#: include/global_arrays.php:1563
 msgid "Day(s)"
 msgstr "Ngày"
 
-#: include/global_arrays.php:1563
+#: include/global_arrays.php:1564
 msgid "Week(s)"
 msgstr "We(e)k(en)"
 
-#: include/global_arrays.php:1564
+#: include/global_arrays.php:1565
 #, fuzzy
 msgid "Month(s), Day of Month"
 msgstr "Tháng, ngày trong tháng"
 
-#: include/global_arrays.php:1565
+#: include/global_arrays.php:1566
 #, fuzzy
 msgid "Month(s), Day of Week"
 msgstr "Tháng, ngày trong tuần"
 
-#: include/global_arrays.php:1566
+#: include/global_arrays.php:1567
 msgid "Year(s)"
 msgstr "Năm"
 
-#: include/global_arrays.php:1570
+#: include/global_arrays.php:1571
 #, fuzzy
 msgid "Keep Graph Types"
 msgstr "Giữ các loại đồ thị"
 
-#: include/global_arrays.php:1571
+#: include/global_arrays.php:1572
 #, fuzzy
 msgid "Keep Type and STACK"
 msgstr "Giữ Type và STACK"
 
-#: include/global_arrays.php:1572
+#: include/global_arrays.php:1573
 #, fuzzy
 msgid "Convert to AREA/STACK Graph"
 msgstr "Chuyển đổi thành đồ thị DIỆN / STACK"
 
-#: include/global_arrays.php:1573
+#: include/global_arrays.php:1574
 #, fuzzy
 msgid "Convert to LINE1 Graph"
 msgstr "Chuyển đổi sang đồ thị LINE1"
 
-#: include/global_arrays.php:1574
+#: include/global_arrays.php:1575
 #, fuzzy
 msgid "Convert to LINE2 Graph"
 msgstr "Chuyển đổi sang đồ thị LINE2"
 
-#: include/global_arrays.php:1575
+#: include/global_arrays.php:1576
 #, fuzzy
 msgid "Convert to LINE3 Graph"
 msgstr "Chuyển đổi sang đồ thị LINE3"
 
-#: include/global_arrays.php:1576
+#: include/global_arrays.php:1577
 #, fuzzy
 msgid "Convert to LINE1/STACK Graph"
 msgstr "Chuyển đổi sang đồ thị LINE1"
 
-#: include/global_arrays.php:1577
+#: include/global_arrays.php:1578
 #, fuzzy
 msgid "Convert to LINE2/STACK Graph"
 msgstr "Chuyển đổi sang đồ thị LINE2"
 
-#: include/global_arrays.php:1578
+#: include/global_arrays.php:1579
 #, fuzzy
 msgid "Convert to LINE3/STACK Graph"
 msgstr "Chuyển đổi sang đồ thị LINE3"
 
-#: include/global_arrays.php:1582
+#: include/global_arrays.php:1583
 #, fuzzy
 msgid "No Totals"
 msgstr "Không có tổng số"
 
-#: include/global_arrays.php:1583
+#: include/global_arrays.php:1584
 #, fuzzy
 msgid "Print All Legend Items"
 msgstr "In tất cả các mục Huyền thoại"
 
-#: include/global_arrays.php:1584
+#: include/global_arrays.php:1585
 #, fuzzy
 msgid "Print Totaling Legend Items Only"
 msgstr "Chỉ in các mục Huyền thoại"
 
-#: include/global_arrays.php:1588
+#: include/global_arrays.php:1589
 #, fuzzy
 msgid "Total Similar Data Sources"
 msgstr "Tổng nguồn dữ liệu tương tự"
 
-#: include/global_arrays.php:1589
+#: include/global_arrays.php:1590
 #, fuzzy
 msgid "Total All Data Sources"
 msgstr "Tổng cộng tất cả các nguồn dữ liệu"
 
-#: include/global_arrays.php:1593
+#: include/global_arrays.php:1594
 #, fuzzy
 msgid "No Reordering"
 msgstr "Không sắp xếp lại"
 
-#: include/global_arrays.php:1594
+#: include/global_arrays.php:1595
 #, fuzzy
 msgid "Data Source, Graph"
 msgstr "Nguồn dữ liệu, đồ thị"
 
-#: include/global_arrays.php:1595
+#: include/global_arrays.php:1596
 #, fuzzy
 msgid "Graph, Data Source"
 msgstr "Biểu đồ, nguồn dữ liệu"
 
-#: include/global_arrays.php:1596
+#: include/global_arrays.php:1597
 #, fuzzy
 msgid "Base Graph Order"
 msgstr "Có đồ thị"
 
-#: include/global_arrays.php:1603
+#: include/global_arrays.php:1604
 msgid "contains"
 msgstr "có chứa"
 
-#: include/global_arrays.php:1604
+#: include/global_arrays.php:1605
 msgid "does not contain"
 msgstr "không chứa"
 
-#: include/global_arrays.php:1605
+#: include/global_arrays.php:1606
 msgid "begins with"
 msgstr "bắt đầu là"
 
-#: include/global_arrays.php:1606
+#: include/global_arrays.php:1607
 #, fuzzy
 msgid "does not begin with"
 msgstr "không bắt đầu với"
 
-#: include/global_arrays.php:1607
+#: include/global_arrays.php:1608
 msgid "ends with"
 msgstr "kết thúc với"
 
-#: include/global_arrays.php:1608
+#: include/global_arrays.php:1609
 msgid "does not end with"
 msgstr "không kết thúc với"
 
-#: include/global_arrays.php:1609
+#: include/global_arrays.php:1610
 msgid "matches"
 msgstr "Phù hợp"
 
-#: include/global_arrays.php:1610
+#: include/global_arrays.php:1611
 msgid "is not equal to"
 msgstr "không phải"
 
-#: include/global_arrays.php:1611
+#: include/global_arrays.php:1612
 msgid "is less than"
 msgstr "là nhỏ hơn"
 
-#: include/global_arrays.php:1612
+#: include/global_arrays.php:1613
 #, fuzzy
 msgid "is less than or equal"
 msgstr "nhỏ hơn hoặc bằng"
 
-#: include/global_arrays.php:1613
+#: include/global_arrays.php:1614
 msgid "is greater than"
 msgstr "là lớn hơn"
 
-#: include/global_arrays.php:1614
+#: include/global_arrays.php:1615
 #, fuzzy
 msgid "is greater than or equal"
 msgstr "lớn hơn hoặc bằng"
 
-#: include/global_arrays.php:1615
+#: include/global_arrays.php:1616
 #, fuzzy
 msgid "is unknown"
 msgstr "Không xác định"
 
-#: include/global_arrays.php:1616
+#: include/global_arrays.php:1617
 #, fuzzy
 msgid "is not unknown"
 msgstr "không biết"
 
-#: include/global_arrays.php:1617
-msgid "is empty"
-msgstr "trống"
-
 #: include/global_arrays.php:1618
-#, fuzzy
-msgid "is not empty"
+msgid "is empty"
 msgstr "trống"
 
 #: include/global_arrays.php:1619
 #, fuzzy
+msgid "is not empty"
+msgstr "trống"
+
+#: include/global_arrays.php:1620
+#, fuzzy
 msgid "matches regular expression"
 msgstr "khớp với biểu thức chính quy"
 
-#: include/global_arrays.php:1620
+#: include/global_arrays.php:1621
 #, fuzzy
 msgid "does not match regular expression"
 msgstr "không khớp với biểu thức chính quy"
 
-#: include/global_arrays.php:1722
+#: include/global_arrays.php:1723
 #, fuzzy
 msgid "Fixed String"
 msgstr "Chuỗi cố định"
 
-#: include/global_arrays.php:1727
+#: include/global_arrays.php:1728
 #, fuzzy
 msgid "Every 1 Hour"
 msgstr "Cứ sau 1 giờ"
 
-#: include/global_arrays.php:1733
+#: include/global_arrays.php:1734
 #, fuzzy
 msgid "Every Day"
 msgstr "Hàng ngày"
 
-#: include/global_arrays.php:1734
+#: include/global_arrays.php:1735
 #, fuzzy
 msgid "Every Week"
 msgstr "Mỗi tuần"
 
-#: include/global_arrays.php:1735 include/global_arrays.php:1736
+#: include/global_arrays.php:1736 include/global_arrays.php:1737
 #, fuzzy, php-format
 msgid "Every %d Weeks"
 msgstr "Mỗi% d tuần"
 
-#: include/global_arrays.php:1767
+#: include/global_arrays.php:1768
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr "Tháng 1"
 
-#: include/global_arrays.php:1768
+#: include/global_arrays.php:1769
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr "Tháng 2"
 
-#: include/global_arrays.php:1769
+#: include/global_arrays.php:1770
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "Tháng 3"
 
-#: include/global_arrays.php:1770
+#: include/global_arrays.php:1771
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "Tháng 4"
 
-#: include/global_arrays.php:1771
+#: include/global_arrays.php:1772
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "Tháng 5"
 
-#: include/global_arrays.php:1772
+#: include/global_arrays.php:1773
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "Tháng 6"
 
-#: include/global_arrays.php:1773
+#: include/global_arrays.php:1774
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "Tháng 7"
 
-#: include/global_arrays.php:1774
+#: include/global_arrays.php:1775
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr "Tháng 8"
 
-#: include/global_arrays.php:1775
+#: include/global_arrays.php:1776
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr "Tháng 9"
 
-#: include/global_arrays.php:1776
+#: include/global_arrays.php:1777
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr "Tháng 10"
 
-#: include/global_arrays.php:1777
+#: include/global_arrays.php:1778
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr "Tháng 11"
 
-#: include/global_arrays.php:1778
+#: include/global_arrays.php:1779
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr "Tháng 12"
 
-#: include/global_arrays.php:1792
+#: include/global_arrays.php:1793
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "CN"
 
-#: include/global_arrays.php:1793
+#: include/global_arrays.php:1794
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "T2"
 
-#: include/global_arrays.php:1794
+#: include/global_arrays.php:1795
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "T3"
 
-#: include/global_arrays.php:1795
+#: include/global_arrays.php:1796
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr "T4"
 
-#: include/global_arrays.php:1796
+#: include/global_arrays.php:1797
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "T5"
 
-#: include/global_arrays.php:1797
+#: include/global_arrays.php:1798
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "T6"
 
-#: include/global_arrays.php:1798
+#: include/global_arrays.php:1799
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr "T7"
 
-#: include/global_arrays.php:1802
+#: include/global_arrays.php:1803
 msgid "Arabic"
 msgstr "Tiếng A-rập"
 
-#: include/global_arrays.php:1803
+#: include/global_arrays.php:1804
 msgid "Bulgarian"
 msgstr "Tiếng Bungari"
 
-#: include/global_arrays.php:1804
+#: include/global_arrays.php:1805
 #, fuzzy
 msgid "Chinese (China)"
 msgstr "Trung Quốc (Trung Quốc)"
 
-#: include/global_arrays.php:1805
+#: include/global_arrays.php:1806
 #, fuzzy
 msgid "Chinese (Taiwan)"
 msgstr "Trung Quốc (Đài Loan)"
 
-#: include/global_arrays.php:1806
+#: include/global_arrays.php:1807
 msgid "Dutch"
 msgstr "Tiếng Hà Lan"
 
-#: include/global_arrays.php:1807
+#: include/global_arrays.php:1808
 msgid "English"
 msgstr "Tiếng Anh"
 
-#: include/global_arrays.php:1808
+#: include/global_arrays.php:1809
 msgid "French"
 msgstr "Pháp"
 
-#: include/global_arrays.php:1809
+#: include/global_arrays.php:1810
 msgid "German"
 msgstr "Đức"
 
-#: include/global_arrays.php:1810
+#: include/global_arrays.php:1811
 msgid "Greek"
 msgstr "Hy Lạp"
 
-#: include/global_arrays.php:1811
+#: include/global_arrays.php:1812
 msgid "Hebrew"
 msgstr "Hebrew"
 
-#: include/global_arrays.php:1812
+#: include/global_arrays.php:1813
 msgid "Hindi"
 msgstr "Tiếng Hindi"
 
-#: include/global_arrays.php:1813
+#: include/global_arrays.php:1814
 msgid "Italian"
 msgstr "Ý"
 
-#: include/global_arrays.php:1814
+#: include/global_arrays.php:1815
 msgid "Japanese"
 msgstr "Tiếng Nhật"
 
-#: include/global_arrays.php:1815
+#: include/global_arrays.php:1816
 msgid "Korean"
 msgstr "Tiếng Hàn Quốc"
 
-#: include/global_arrays.php:1816
+#: include/global_arrays.php:1817
 msgid "Polish"
 msgstr "Tiếng Ba Lan"
 
-#: include/global_arrays.php:1817
+#: include/global_arrays.php:1818
 msgid "Portuguese"
 msgstr "Bồ Đào Nha"
 
-#: include/global_arrays.php:1818
+#: include/global_arrays.php:1819
 msgid "Portuguese (Brazil)"
 msgstr "Tiếng Bồ Đào Nha (Brazil)"
 
-#: include/global_arrays.php:1819
+#: include/global_arrays.php:1820
 msgid "Russian"
 msgstr "Tiếng Nga"
 
-#: include/global_arrays.php:1820
+#: include/global_arrays.php:1821
 msgid "Spanish"
 msgstr "Tiếng Tây Ban Nha"
 
-#: include/global_arrays.php:1821
+#: include/global_arrays.php:1822
 msgid "Swedish"
 msgstr "Tiếng Thụy Điển"
 
-#: include/global_arrays.php:1822
+#: include/global_arrays.php:1823
 msgid "Turkish"
 msgstr "Thổ Nhĩ Kỳ"
 
-#: include/global_arrays.php:1823
+#: include/global_arrays.php:1824
 msgid "Vietnamese"
 msgstr "Tiếng Việt"
 
-#: include/global_arrays.php:1827
+#: include/global_arrays.php:1828
 msgid "Classic"
 msgstr "Cổ điển"
 
-#: include/global_arrays.php:1828
+#: include/global_arrays.php:1829
 msgid "Modern"
 msgstr "Hiện đại"
 
-#: include/global_arrays.php:1829
+#: include/global_arrays.php:1830
 msgid "Dark"
 msgstr "Tối"
 
-#: include/global_arrays.php:1830
+#: include/global_arrays.php:1831
 #, fuzzy
 msgid "Paper-plane"
 msgstr "Máy bay giấy"
 
-#: include/global_arrays.php:1831
+#: include/global_arrays.php:1832
 msgid "Paw"
 msgstr "Quấu"
 
-#: include/global_arrays.php:1832
+#: include/global_arrays.php:1833
 msgid "Sunrise"
 msgstr "Bình minh"
 
-#: include/global_arrays.php:1836
+#: include/global_arrays.php:1837
 #, fuzzy
 msgid "[Fail]"
 msgstr "Không Đạt"
 
-#: include/global_arrays.php:1837
+#: include/global_arrays.php:1838
 #, fuzzy
 msgid "[Warning]"
 msgstr "LƯU Ý:"
 
-#: include/global_arrays.php:1838
+#: include/global_arrays.php:1839
 #, fuzzy
 msgid "[Success]"
 msgstr "Thành công!"
 
-#: include/global_arrays.php:1839
+#: include/global_arrays.php:1840
 #, fuzzy
 msgid "[Skipped]"
 msgstr "[Bỏ qua]"
 
-#: include/global_arrays.php:1863 include/global_arrays.php:1869
+#: include/global_arrays.php:1864 include/global_arrays.php:1870
 #, fuzzy
 msgid "User Profile (Edit)"
 msgstr "Hồ sơ người dùng (Chỉnh sửa)"
 
-#: include/global_arrays.php:1881 include/global_arrays.php:1887
+#: include/global_arrays.php:1882 include/global_arrays.php:1888
 #, fuzzy
 msgid "Tree Mode"
 msgstr "Chế độ cây"
 
-#: include/global_arrays.php:1893
+#: include/global_arrays.php:1894
 #, fuzzy
 msgid "List Mode"
 msgstr "Chế độ danh sách"
 
-#: include/global_arrays.php:1925 include/global_arrays.php:1931
-#: lib/functions.php:2616 lib/html.php:1632 lib/html.php:1709 links.php:344
+#: include/global_arrays.php:1926 include/global_arrays.php:1932
+#: lib/functions.php:2618 lib/html.php:1635 lib/html.php:1712 links.php:344
 #: user_admin.php:1704 user_group_admin.php:1380
 msgid "Console"
 msgstr "ÄÃ³ng"
 
-#: include/global_arrays.php:1937
+#: include/global_arrays.php:1938
 #, fuzzy
 msgid "Graph Management"
 msgstr "Quản lý đồ thị"
 
-#: include/global_arrays.php:1943 include/global_arrays.php:1985
-#: include/global_arrays.php:2003 include/global_arrays.php:2057
-#: include/global_arrays.php:2069 include/global_arrays.php:2081
-#: include/global_arrays.php:2117 include/global_arrays.php:2135
-#: include/global_arrays.php:2153 include/global_arrays.php:2171
-#: include/global_arrays.php:2189 include/global_arrays.php:2213
-#: include/global_arrays.php:2249 include/global_arrays.php:2369
-#: include/global_arrays.php:2393 include/global_arrays.php:2417
-#: include/global_arrays.php:2435 include/global_arrays.php:2447
-#: include/global_arrays.php:2549 include/global_arrays.php:2573
-#: include/global_arrays.php:2591 include/global_arrays.php:2609
-#: include/global_arrays.php:2627 include/global_arrays.php:2651
+#: include/global_arrays.php:1944 include/global_arrays.php:1986
+#: include/global_arrays.php:2004 include/global_arrays.php:2058
+#: include/global_arrays.php:2070 include/global_arrays.php:2082
+#: include/global_arrays.php:2118 include/global_arrays.php:2136
+#: include/global_arrays.php:2154 include/global_arrays.php:2172
+#: include/global_arrays.php:2190 include/global_arrays.php:2214
+#: include/global_arrays.php:2250 include/global_arrays.php:2370
+#: include/global_arrays.php:2394 include/global_arrays.php:2418
+#: include/global_arrays.php:2436 include/global_arrays.php:2448
+#: include/global_arrays.php:2550 include/global_arrays.php:2574
+#: include/global_arrays.php:2592 include/global_arrays.php:2610
+#: include/global_arrays.php:2628 include/global_arrays.php:2652
 msgid "(Edit)"
 msgstr "(Sửa)"
 
-#: include/global_arrays.php:1961 lib/api_aggregate.php:1704
+#: include/global_arrays.php:1962 lib/api_aggregate.php:1704
 #, fuzzy
 msgid "Graph Items"
 msgstr "Mục đồ thị"
 
-#: include/global_arrays.php:1967
+#: include/global_arrays.php:1968
 #, fuzzy
 msgid "Create New Graphs"
 msgstr "Tạo đồ thị mới"
 
-#: include/global_arrays.php:1973
+#: include/global_arrays.php:1974
 #, fuzzy
 msgid "Create Graphs from Data Query"
 msgstr "Tạo đồ thị từ truy vấn dữ liệu"
 
-#: include/global_arrays.php:1991 include/global_arrays.php:2009
-#: include/global_arrays.php:2105 include/global_arrays.php:2195
-#: include/global_arrays.php:2219 include/global_arrays.php:2375
+#: include/global_arrays.php:1992 include/global_arrays.php:2010
+#: include/global_arrays.php:2106 include/global_arrays.php:2196
+#: include/global_arrays.php:2220 include/global_arrays.php:2376
 #, fuzzy
 msgid "(Remove)"
 msgstr "Xóa"
 
-#: include/global_arrays.php:2027 include/global_arrays.php:2033
-#: include/global_arrays.php:2039 include/global_arrays.php:2045
-#: include/global_arrays.php:2309
+#: include/global_arrays.php:2028 include/global_arrays.php:2034
+#: include/global_arrays.php:2040 include/global_arrays.php:2046
+#: include/global_arrays.php:2310
 msgid "View Log"
 msgstr "viewログ"
 
-#: include/global_arrays.php:2051
+#: include/global_arrays.php:2052
 #, fuzzy
 msgid "Graph Trees"
 msgstr "Cây đồ thị"
 
-#: include/global_arrays.php:2093 lib/api_aggregate.php:1704
+#: include/global_arrays.php:2094 lib/api_aggregate.php:1704
 #, fuzzy
 msgid "Graph Template Items"
 msgstr "Mục mẫu biểu đồ"
 
-#: include/global_arrays.php:2183
+#: include/global_arrays.php:2184
 #, fuzzy
 msgid "Round Robin Archives"
 msgstr "Lưu trữ vòng Robin"
 
-#: include/global_arrays.php:2225
+#: include/global_arrays.php:2226
 #, fuzzy
 msgid "Data Input Fields"
 msgstr "Trường nhập dữ liệu"
 
-#: include/global_arrays.php:2231 include/global_arrays.php:2261
+#: include/global_arrays.php:2232 include/global_arrays.php:2262
 #, fuzzy
 msgid "(Remove Item)"
 msgstr "(Loại bỏ mục)"
 
-#: include/global_arrays.php:2267 include/global_settings.php:241
+#: include/global_arrays.php:2268 include/global_settings.php:241
 #: rrdcleaner.php:294
 #, fuzzy
 msgid "RRD Cleaner"
 msgstr "Chất tẩy rửa RRD"
 
-#: include/global_arrays.php:2279
+#: include/global_arrays.php:2280
 #, fuzzy
 msgid "List unused Files"
 msgstr "Liệt kê các tập tin không sử dụng"
 
-#: include/global_arrays.php:2291 include/global_arrays.php:2303
+#: include/global_arrays.php:2292 include/global_arrays.php:2304
 #: utilities.php:2018
 #, fuzzy
 msgid "View Poller Cache"
 msgstr "Xem Cache Poller"
 
-#: include/global_arrays.php:2297 utilities.php:2022
+#: include/global_arrays.php:2298 utilities.php:2022
 #, fuzzy
 msgid "View Data Query Cache"
 msgstr "Xem Cache truy vấn dữ liệu"
 
-#: include/global_arrays.php:2315
+#: include/global_arrays.php:2316
 msgid "Clear Log"
 msgstr "Xóa Log"
 
-#: include/global_arrays.php:2321 utilities.php:2011
+#: include/global_arrays.php:2322 utilities.php:2011
 #, fuzzy
 msgid "View User Log"
 msgstr "Xem nhật ký người dùng"
 
-#: include/global_arrays.php:2327
+#: include/global_arrays.php:2328
 #, fuzzy
 msgid "Clear User Log"
 msgstr "Xóa nhật ký người dùng"
 
-#: include/global_arrays.php:2333 utilities.php:2002 utilities.php:2003
+#: include/global_arrays.php:2334 utilities.php:2002 utilities.php:2003
 msgid "Technical Support"
 msgstr "Hỗ trợ Kỹ thuật"
 
-#: include/global_arrays.php:2339 utilities.php:2144
+#: include/global_arrays.php:2340 utilities.php:2144
 #, fuzzy
 msgid "Boost Status"
 msgstr "Tăng trạng thái"
 
-#: include/global_arrays.php:2345 utilities.php:2059
+#: include/global_arrays.php:2346 utilities.php:2059
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "Xem bộ đệm SNMP Agent"
 
-#: include/global_arrays.php:2351 utilities.php:2067
+#: include/global_arrays.php:2352 utilities.php:2067
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "Xem Nhật ký thông báo đại lý SNMP"
 
-#: include/global_arrays.php:2381 vdef.php:575
+#: include/global_arrays.php:2382 vdef.php:575
 #, fuzzy
 msgid "VDEF Items"
 msgstr "Mục VDEF"
 
-#: include/global_arrays.php:2387
+#: include/global_arrays.php:2388
 #, fuzzy
 msgid "View SNMP Notification Receivers"
 msgstr "Xem người nhận thông báo SNMP"
 
-#: include/global_arrays.php:2399
+#: include/global_arrays.php:2400
 #, fuzzy
 msgid "Cacti Settings"
 msgstr "Cài đặt xương rồng"
 
-#: include/global_arrays.php:2405
+#: include/global_arrays.php:2406
 msgid "External Link"
 msgstr "Liên kết bên ngoài"
 
-#: include/global_arrays.php:2423 include/global_arrays.php:2453
+#: include/global_arrays.php:2424 include/global_arrays.php:2454
 #, fuzzy
 msgid "(Action)"
 msgstr "Hành động"
 
-#: include/global_arrays.php:2471
+#: include/global_arrays.php:2472
 msgid "Export Results"
 msgstr "Xuất kết quả"
 
-#: include/global_arrays.php:2483 include/global_arrays.php:2513
-#: lib/html.php:1653 lib/html.php:1655 lib/html.php:1734
+#: include/global_arrays.php:2484 include/global_arrays.php:2514
+#: lib/html.php:1656 lib/html.php:1658 lib/html.php:1737
 msgid "Reporting"
 msgstr "Báo cáo"
 
-#: include/global_arrays.php:2489 include/global_arrays.php:2519
+#: include/global_arrays.php:2490 include/global_arrays.php:2520
 #, fuzzy
 msgid "Report Add"
 msgstr "Thêm báo cáo"
 
-#: include/global_arrays.php:2495 include/global_arrays.php:2525
+#: include/global_arrays.php:2496 include/global_arrays.php:2526
 #, fuzzy
 msgid "Report Delete"
 msgstr "Xóa báo cáo"
 
-#: include/global_arrays.php:2501 include/global_arrays.php:2531
+#: include/global_arrays.php:2502 include/global_arrays.php:2532
 #, fuzzy
 msgid "Report Edit"
 msgstr "Báo cáo chỉnh sửa"
 
-#: include/global_arrays.php:2507 include/global_arrays.php:2537
+#: include/global_arrays.php:2508 include/global_arrays.php:2538
 #, fuzzy
 msgid "Report Edit Item"
 msgstr "Báo cáo mục sửa"
 
-#: include/global_arrays.php:2561
+#: include/global_arrays.php:2562
 #, fuzzy
 msgid "Color Template Items"
 msgstr "Mục mẫu màu"
 
-#: include/global_arrays.php:2603
+#: include/global_arrays.php:2604
 #, fuzzy
 msgid "Aggregate Items"
 msgstr "Mục tổng hợp"
 
-#: include/global_arrays.php:2639
+#: include/global_arrays.php:2640
 #, fuzzy
 msgid "Graph Rule Items"
 msgstr "Mục quy tắc đồ thị"
 
-#: include/global_arrays.php:2663
+#: include/global_arrays.php:2664
 #, fuzzy
 msgid "Tree Rule Items"
 msgstr "Mục quy tắc cây"
 
-#: include/global_arrays.php:2694 include/global_arrays.php:2710
+#: include/global_arrays.php:2695 include/global_arrays.php:2711
 #: lib/api_device.php:1154
 msgid "days"
 msgstr "ngày"
 
-#: include/global_arrays.php:2695
+#: include/global_arrays.php:2696
 #, fuzzy
 msgid "hrs"
 msgstr "giờ"
 
-#: include/global_arrays.php:2696
+#: include/global_arrays.php:2697
 msgid "mins"
 msgstr "phút"
 
-#: include/global_arrays.php:2697
+#: include/global_arrays.php:2698
 msgid "secs"
 msgstr "giây"
 
-#: include/global_arrays.php:2711 lib/api_device.php:1154
+#: include/global_arrays.php:2712 lib/api_device.php:1154
 msgid "hours"
 msgstr "giờ"
 
-#: include/global_arrays.php:2712 lib/api_device.php:1154
+#: include/global_arrays.php:2713 lib/api_device.php:1154
 msgid "minutes"
 msgstr "phút"
 
-#: include/global_arrays.php:2713
+#: include/global_arrays.php:2714
 msgid "seconds"
 msgstr "giây"
 
@@ -9428,7 +9432,7 @@ msgstr "Hướng huyền thoại (--legend-direction = &lt;direction&gt;)"
 msgid "Place the legend items in the given vertical order."
 msgstr "Đặt các mục huyền thoại theo thứ tự dọc cho trước."
 
-#: include/global_form.php:919 lib/api_aggregate.php:1710 lib/html.php:1097
+#: include/global_form.php:919 lib/api_aggregate.php:1710 lib/html.php:1100
 #, fuzzy
 msgid "Graph Item Type"
 msgstr "Loại đồ thị"
@@ -10274,7 +10278,7 @@ msgstr "Dữ liệu"
 msgid "Visual"
 msgstr "Hình ảnh"
 
-#: include/global_settings.php:44 lib/functions.php:3946 lib/functions.php:3951
+#: include/global_settings.php:44 lib/functions.php:3948 lib/functions.php:3953
 msgid "Authentication"
 msgstr "Xác thực"
 
@@ -10317,12 +10321,12 @@ msgstr "Phông chữ đồ thị"
 msgid "PHP Mail() Function"
 msgstr "Hàm PHP Mail ()"
 
-#: include/global_settings.php:93 lib/functions.php:3929
+#: include/global_settings.php:93 lib/functions.php:3931
 #, fuzzy
 msgid "Sendmail"
 msgstr "Gửi thư"
 
-#: include/global_settings.php:94 lib/functions.php:3934
+#: include/global_settings.php:94 lib/functions.php:3936
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10720,7 +10724,7 @@ msgstr "Nếu được đặt thành Đơn giản, Đồ thị và Nguồn dữ 
 msgid "Simple"
 msgstr "Đơn giản"
 
-#: include/global_settings.php:421 lib/html.php:2464
+#: include/global_settings.php:421 lib/html.php:2467
 msgid "Advanced"
 msgstr "Nâng cao"
 
@@ -11599,162 +11603,161 @@ msgstr "Cần trả lại bao nhiêu OID cho mỗi yêu cầu snmpbulkwalk? Đ�
 
 #: include/global_settings.php:1165
 #, fuzzy
+msgid "SNMP Get OID Limit"
+msgstr "Nhận SNMP"
+
+#: include/global_settings.php:1166
+msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
+msgstr ""
+
+#: include/global_settings.php:1173
+#, fuzzy
 msgid "Disable Resource Cache Replication"
 msgstr "Xây dựng lại bộ đệm tài nguyên"
 
-#: include/global_settings.php:1166
+#: include/global_settings.php:1174
 #, fuzzy
 msgid "By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themeselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting."
 msgstr "Theo mặc định, Trình thu thập dữ liệu Cacti chính sẽ lưu trữ toàn bộ trang web và bổ sung vào Bộ đệm tài nguyên. Sau đó, định kỳ Trình thu thập dữ liệu từ xa sẽ cập nhật các chủ đề với bất kỳ cập nhật nào từ Trình thu thập dữ liệu Cacti chính. Resource Cache này về cơ bản cho phép Trình thu thập dữ liệu từ xa tự nâng cấp. Nếu bạn không muốn sử dụng tùy chọn này, bạn có thể tắt nó bằng cài đặt này."
 
-#: include/global_settings.php:1171
+#: include/global_settings.php:1179
 #, fuzzy
 msgid "Background Timeout Settings"
 msgstr "Cài đặt phông chữ huyền thoại"
 
-#: include/global_settings.php:1176
+#: include/global_settings.php:1184
 #, fuzzy
 msgid "Report Generation Timeout"
 msgstr "Thời gian chờ đại lý từ xa"
 
-#: include/global_settings.php:1177
+#: include/global_settings.php:1185
 #, fuzzy
 msgid "The maximum amount of time Cacti's Reports Generation script can run without generating a timeout error and being killed."
 msgstr "Lượng thời gian tối đa Tập lệnh tạo báo cáo của Cacti có thể chạy mà không gây ra lỗi hết thời gian và bị giết."
 
-#: include/global_settings.php:1181 include/global_settings.php:1194
-#: include/global_settings.php:1207 include/global_settings.php:1220
-#: include/global_settings.php:1234
+#: include/global_settings.php:1189 include/global_settings.php:1202
+#: include/global_settings.php:1215 include/global_settings.php:1228
+#: include/global_settings.php:1242
 #, fuzzy, php-format
 msgid "%s Minute"
 msgstr "%s Phút"
 
-#: include/global_settings.php:1189
+#: include/global_settings.php:1197
 #, fuzzy
 msgid "Data Source Statistics Timeout"
 msgstr "Thống kê nguồn dữ liệu"
 
-#: include/global_settings.php:1190
+#: include/global_settings.php:1198
 #, fuzzy
 msgid "The maximum amount of time Cacti's Data Source Statistics script can run without generating a timeout error and being killed."
 msgstr "Lượng thời gian tối đa của tập lệnh Thống kê nguồn dữ liệu của Cacti có thể chạy mà không gây ra lỗi hết thời gian và bị giết."
 
-#: include/global_settings.php:1202
+#: include/global_settings.php:1210
 #, fuzzy
 msgid "Background Commands Timeout"
 msgstr "Lệnh thời gian chờ"
 
-#: include/global_settings.php:1203
+#: include/global_settings.php:1211
 #, fuzzy
 msgid "The maximum amount of time Cacti's Background Commands script can run without generating a timeout error and being killed."
 msgstr "Lượng thời gian tối đa của tập lệnh Lệnh nền của Cacti có thể chạy mà không gây ra lỗi hết thời gian và bị giết."
 
-#: include/global_settings.php:1215
+#: include/global_settings.php:1223
 #, fuzzy
 msgid "Maintenance Background Generation Timeout"
 msgstr "Thời gian chờ bảo trì nền"
 
-#: include/global_settings.php:1216
+#: include/global_settings.php:1224
 #, fuzzy
 msgid "The maximum amount of time a Cacti's Maintenance script can run without generating a timeout error and being killed."
 msgstr "Lượng thời gian tối đa mà tập lệnh Bảo trì của Cacti có thể chạy mà không gây ra lỗi hết thời gian và bị giết."
 
-#: include/global_settings.php:1225 include/global_settings.php:1239
+#: include/global_settings.php:1233 include/global_settings.php:1247
 #, fuzzy, php-format
 msgid "%s Hour"
 msgstr "%s giờ"
 
-#: include/global_settings.php:1229
+#: include/global_settings.php:1237
 #, fuzzy
 msgid "Spikekill Background Generation Timeout"
 msgstr "Hết thời gian tạo thế hệ Spikekill"
 
-#: include/global_settings.php:1230
+#: include/global_settings.php:1238
 #, fuzzy
 msgid "The maximum amount of time a Cacti's Spikekill script can run without generating a timeout error and being killed."
 msgstr "Lượng thời gian tối đa mà tập lệnh Spikekill của Cacti có thể chạy mà không gây ra lỗi hết thời gian và bị giết."
 
-#: include/global_settings.php:1246
+#: include/global_settings.php:1254
 #, fuzzy
 msgid "Data Collector Defaults"
 msgstr "Người thu thập dữ liệu"
 
-#: include/global_settings.php:1247
+#: include/global_settings.php:1255
 msgid "These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector."
 msgstr ""
 
-#: include/global_settings.php:1252
+#: include/global_settings.php:1260
 #, fuzzy
 msgid "Data Collector Processes"
 msgstr "Quy trình thu thập dữ liệu mặc định"
 
-#: include/global_settings.php:1253
+#: include/global_settings.php:1261
 #, fuzzy
 msgid "The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores."
 msgstr "Số lượng quy trình đồng thời để thực thi trên mỗi Trình thu thập dữ liệu. LƯU Ý: Bắt đầu từ Cacti 1.2, cài đặt này được duy trì trong Trình thu thập dữ liệu. Tiến về phía trước, giá trị này chỉ là giá trị đặt trước cho Trình thu thập dữ liệu. Sử dụng số cao hơn khi sử dụng cmd.php sẽ cải thiện hiệu suất. Cải thiện hiệu suất trong Spine được giải quyết tốt nhất với tham số chủ đề. Khi sử dụng Spine, chúng tôi khuyên bạn nên sử dụng số lượng thấp hơn và tận dụng các chuỗi thay thế. Khi sử dụng cmd.php, sử dụng không quá 2 lần số lõi CPU."
 
-#: include/global_settings.php:1260
+#: include/global_settings.php:1268
 #, fuzzy
 msgid "Threads per Process"
 msgstr "Chủ đề mặc định cho mỗi quy trình"
 
-#: include/global_settings.php:1261
+#: include/global_settings.php:1269
 #, fuzzy
 msgid "The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well."
 msgstr "Chủ đề mặc định được phép cho mỗi quá trình. LƯU Ý: Bắt đầu từ Cacti 1.2+, cài đặt này được duy trì trong Trình thu thập dữ liệu và đây đơn giản là Cài đặt sẵn. Sử dụng số cao hơn khi sử dụng Spine sẽ cải thiện hiệu suất. Tuy nhiên, đảm bảo rằng bạn có đủ kết nối MySQL / MariaDB để hỗ trợ phương trình sau: links = bộ thu thập dữ liệu * quy trình * (chủ đề + máy chủ tập lệnh). Bạn cũng phải đảm bảo rằng bạn cũng có đủ kết nối dự phòng cho kết nối đăng nhập của người dùng."
 
-#: include/global_settings.php:1268
+#: include/global_settings.php:1276
 #, fuzzy
 msgid "Additional Spine Parameters"
 msgstr "Tùy chọn bổ sung"
 
-#: include/global_settings.php:1273
+#: include/global_settings.php:1281
 #, fuzzy
 msgid "Invalid Data Logging"
 msgstr "Ghi nhật ký dữ liệu không hợp lệ"
 
-#: include/global_settings.php:1274
+#: include/global_settings.php:1282
 #, fuzzy
 msgid "How would you like Spine output errors logged?  The options are: 'Detailed' which is similar to cmd.php logging; 'Summary' which provides the number of output errors per Device; and 'None', which does not provide error counts."
 msgstr "Làm thế nào bạn muốn lỗi đầu ra cột sống được ghi lại? Các tùy chọn là: &#39;Chi tiết&#39; tương tự như ghi nhật ký cmd.php; &#39;Tóm tắt&#39; cung cấp số lượng lỗi đầu ra trên mỗi Thiết bị; và &#39;Không&#39;, không cung cấp số lỗi."
 
-#: include/global_settings.php:1279 utilities.php:150
+#: include/global_settings.php:1287 utilities.php:150
 msgid "Summary"
 msgstr "Tóm tắt"
 
-#: include/global_settings.php:1280
+#: include/global_settings.php:1288
 msgid "Detailed"
 msgstr "Chi tiết"
 
-#: include/global_settings.php:1284
+#: include/global_settings.php:1292
 #, fuzzy
 msgid "Number of PHP Script Servers"
 msgstr "Số lượng máy chủ tập lệnh PHP"
 
-#: include/global_settings.php:1285
+#: include/global_settings.php:1293
 #, fuzzy
 msgid "The number of concurrent script server processes to run per Spine process.  Settings between 1 and 10 are accepted.  This parameter will help if you are running several threads and script server scripts."
 msgstr "Số lượng quy trình máy chủ tập lệnh đồng thời để chạy trên mỗi quy trình Spine. Cài đặt từ 1 đến 10 được chấp nhận. Tham số này sẽ giúp nếu bạn đang chạy một số chủ đề và tập lệnh máy chủ kịch bản."
 
-#: include/global_settings.php:1292
+#: include/global_settings.php:1300
 #, fuzzy
 msgid "Script and Script Server Timeout Value"
 msgstr "Giá trị hết thời gian chờ của Script và Script Server"
 
-#: include/global_settings.php:1293
+#: include/global_settings.php:1301
 #, fuzzy
 msgid "The maximum time that Cacti will wait on a script to complete.  This timeout value is in seconds"
 msgstr "Thời gian tối đa mà Cacti sẽ đợi trên một kịch bản để hoàn thành. Giá trị thời gian chờ này tính bằng giây"
-
-#: include/global_settings.php:1300
-#, fuzzy
-msgid "The Maximum SNMP OIDs Per SNMP Get Request"
-msgstr "OIDs SNMP tối đa trên mỗi SNMP"
-
-#: include/global_settings.php:1301
-#, fuzzy
-msgid "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk"
-msgstr "Số lượng SNMP tối đa khiến OID phát hành theo yêu cầu snmpbulkwalk. Tăng giá trị này tăng tốc hiệu suất pug trên các liên kết chậm. Giá trị tối đa là 100 OID. Giảm giá trị này xuống 0 hoặc 1 sẽ vô hiệu hóa snmpbulkwalk"
 
 #: include/global_settings.php:1315
 #, fuzzy
@@ -12250,7 +12253,7 @@ msgstr "Đây là số lượng ký tự sẽ được phép trước khi một 
 msgid "Sendmail Options"
 msgstr "Tùy chọn gửi thư"
 
-#: include/global_settings.php:1701 lib/functions.php:3929
+#: include/global_settings.php:1701 lib/functions.php:3931
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "Đường dẫn gửi thư"
@@ -12718,7 +12721,7 @@ msgstr "Độ lệch tiêu chuẩn"
 msgid "Variance Based w/Outliers Removed"
 msgstr "Phương sai dựa trên w / Outliers bị xóa"
 
-#: include/global_settings.php:2071 lib/html.php:2157
+#: include/global_settings.php:2071 lib/html.php:2160
 #, fuzzy
 msgid "Replacement Method"
 msgstr "Phương pháp thay thế"
@@ -12728,16 +12731,16 @@ msgstr "Phương pháp thay thế"
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "Có ba phương pháp thay thế. Phương pháp đầu tiên thay thế mức tăng đột biến bằng mức trung bình của nguồn dữ liệu được đề cập. Phương pháp thứ hai thay thế mũi nhọn bằng &#39;NaN&#39;. Cái cuối cùng thay thế cho sự tăng đột biến với giá trị tốt được biết đến cuối cùng được tìm thấy."
 
-#: include/global_settings.php:2076 lib/html.php:2153
+#: include/global_settings.php:2076 lib/html.php:2156
 msgid "Average"
 msgstr "Trung bình"
 
-#: include/global_settings.php:2077 lib/html.php:2154
+#: include/global_settings.php:2077 lib/html.php:2157
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN"
 
-#: include/global_settings.php:2078 lib/html.php:2155
+#: include/global_settings.php:2078 lib/html.php:2158
 #, fuzzy
 msgid "Last Known Good"
 msgstr "Được biết đến tốt nhất"
@@ -12763,7 +12766,7 @@ msgstr "Bất kỳ giá trị nào có nhiều độ lệch chuẩn trên trung 
 msgid "%d Standard Deviations"
 msgstr "% d Độ lệch chuẩn"
 
-#: include/global_settings.php:2103 lib/html.php:2169
+#: include/global_settings.php:2103 lib/html.php:2172
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "Tỷ lệ phần trăm phương sai"
@@ -13328,17 +13331,17 @@ msgstr "Nhấn &#39;Return&#39; để quay lại và chọn các biểu đồ kh
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
 msgstr "Các biểu đồ được chọn cho Biểu đồ tổng hợp không sử dụng Biểu đồ mẫu. Uẩn không hỗ trợ tạo Đồ thị tổng hợp từ các đồ thị không có templated."
 
-#: lib/api_aggregate.php:1708 lib/html.php:1095
+#: lib/api_aggregate.php:1708 lib/html.php:1098
 #, fuzzy
 msgid "Graph Item"
 msgstr "Mục đồ thị"
 
-#: lib/api_aggregate.php:1711 lib/html.php:1098
+#: lib/api_aggregate.php:1711 lib/html.php:1101
 #, fuzzy
 msgid "CF Type"
 msgstr "Loại CF"
 
-#: lib/api_aggregate.php:1712 lib/html.php:1100
+#: lib/api_aggregate.php:1712 lib/html.php:1103
 msgid "Item Color"
 msgstr "Màu mục"
 
@@ -13579,8 +13582,8 @@ msgstr "Địa điểm:"
 msgid "Contact:"
 msgstr "Liên hệ:"
 
-#: lib/api_device.php:1188 lib/functions.php:3960 lib/functions.php:3962
-#: lib/functions.php:3966
+#: lib/api_device.php:1188 lib/functions.php:3962 lib/functions.php:3964
+#: lib/functions.php:3968
 #, fuzzy
 msgid "Ping Results"
 msgstr "Kết quả Ping"
@@ -14225,12 +14228,12 @@ msgstr "Đăng nhập như người dùng thông thường"
 msgid "guest"
 msgstr "khách"
 
-#: lib/functions.php:2396 lib/functions.php:2413 lib/html.php:2414
+#: lib/functions.php:2396 lib/functions.php:2414 lib/html.php:2417
 #, fuzzy
 msgid "User Community"
 msgstr "Cộng đồng người dùng"
 
-#: lib/functions.php:2397 lib/functions.php:2414 lib/html.php:2415
+#: lib/functions.php:2397 lib/functions.php:2415 lib/html.php:2418
 #: lib/utility.php:1129
 msgid "Documentation"
 msgstr "Tài liệu"
@@ -14244,143 +14247,143 @@ msgstr "Đăng nhập như %s"
 msgid "Edit Profile"
 msgstr "Chỉnh sửa hồ sơ"
 
-#: lib/functions.php:2416
+#: lib/functions.php:2418
 msgid "Logout"
 msgstr "Đăng xuất"
 
-#: lib/functions.php:2564
+#: lib/functions.php:2566
 msgid "Leaf"
 msgstr "Lá"
 
-#: lib/functions.php:2584 lib/html_tree.php:713 lib/html_tree.php:749
+#: lib/functions.php:2586 lib/html_tree.php:713 lib/html_tree.php:749
 #: lib/html_tree.php:978 lib/html_tree.php:986 lib/html_tree.php:1559
 #, fuzzy
 msgid "Non Query Based"
 msgstr "Không dựa trên truy vấn"
 
-#: lib/functions.php:2617
+#: lib/functions.php:2619
 #, php-format
 msgid "Link %s"
 msgstr "Liên kết %s"
 
-#: lib/functions.php:3561
+#: lib/functions.php:3563
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Lỗi Mailer: Không có địa chỉ <b>TO</b> được đặt !! <br> Nếu sử dụng liên kết <i>Kiểm tra Thư</i> , vui lòng đặt cài đặt <b>e-mail Thông báo</b> ."
 
-#: lib/functions.php:3893
+#: lib/functions.php:3895
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Xác thực thất bại: %s"
 
-#: lib/functions.php:3897
+#: lib/functions.php:3899
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "Helo thất bại: %s"
 
-#: lib/functions.php:3900
+#: lib/functions.php:3902
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Kết nối thất bại: %s"
 
-#: lib/functions.php:3903
+#: lib/functions.php:3905
 #, fuzzy
 msgid "SMTP error: "
 msgstr "Lỗi SMTP:"
 
-#: lib/functions.php:3916
+#: lib/functions.php:3918
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Đây là một thông báo thử nghiệm được tạo ra từ Cacti. Thông báo này đã được gửi để kiểm tra cấu hình Cài đặt thư của bạn."
 
-#: lib/functions.php:3917
+#: lib/functions.php:3919
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "Cài đặt email của bạn hiện được đặt như sau"
 
-#: lib/functions.php:3918
+#: lib/functions.php:3920
 msgid "Method"
 msgstr "Phương thức"
 
-#: lib/functions.php:3920
+#: lib/functions.php:3922
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Kiểm tra cấu hình ... <br>"
 
-#: lib/functions.php:3927
+#: lib/functions.php:3929
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "Lớp thư của PHP"
 
-#: lib/functions.php:3933
+#: lib/functions.php:3935
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Phương thức: SMTP"
 
-#: lib/functions.php:3948
+#: lib/functions.php:3950
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Không hiển thị vì lý do bảo mật"
 
-#: lib/functions.php:3949
+#: lib/functions.php:3951
 msgid "Security"
 msgstr "Bảo mật"
 
-#: lib/functions.php:3957
+#: lib/functions.php:3959
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Kết quả Ping:"
 
-#: lib/functions.php:3966
+#: lib/functions.php:3968
 #, fuzzy
 msgid "Bypassed"
 msgstr "Bỏ qua"
 
-#: lib/functions.php:3974
+#: lib/functions.php:3976
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Tạo tin nhắn văn bản ..."
 
-#: lib/functions.php:3977
+#: lib/functions.php:3979
 msgid "Sending Message..."
 msgstr "Đang gửi tin nhắn…"
 
-#: lib/functions.php:3981
+#: lib/functions.php:3983
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Thông báo kiểm tra xương rồng"
 
-#: lib/functions.php:3983
+#: lib/functions.php:3985
 msgid "Success!"
 msgstr "Thành công!"
 
-#: lib/functions.php:3986
+#: lib/functions.php:3988
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Tin nhắn không được gửi do lỗi ping."
 
-#: lib/functions.php:4580 lib/functions.php:4643 poller.php:356 poller.php:477
+#: lib/functions.php:4582 lib/functions.php:4645 poller.php:356 poller.php:477
 #: poller.php:539 poller.php:562 poller.php:702
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "Cảnh báo hệ thống Cacti"
 
-#: lib/functions.php:4580 lib/functions.php:4643
+#: lib/functions.php:4582 lib/functions.php:4645
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti đã tắt plugin %s do lỗi sau: %s! Xem logfile Cacti để biết thêm chi tiết."
 
-#: lib/functions.php:5021 lib/functions.php:5023
+#: lib/functions.php:5023 lib/functions.php:5025
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:5021
+#: lib/functions.php:5023
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "Phiên bản %s %s"
 
-#: lib/functions.php:5023
+#: lib/functions.php:5025
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -14418,7 +14421,7 @@ msgstr "Truy vấn dữ liệu:"
 msgid "CSV Export of Graph Data"
 msgstr "Xuất dữ liệu CSV"
 
-#: lib/html.php:437 lib/html.php:2403
+#: lib/html.php:437 lib/html.php:2406
 #, fuzzy
 msgid "Time Graph View"
 msgstr "Chế độ xem biểu đồ thời gian"
@@ -14460,359 +14463,359 @@ msgstr "Giá trị hiện tại"
 msgid "No %s Found"
 msgstr "Không tìm thấy %s"
 
-#: lib/html.php:1099
+#: lib/html.php:1102
 #, fuzzy
 msgid "Alpha %"
 msgstr "anfa"
 
-#: lib/html.php:1141
+#: lib/html.php:1144
 msgid "No Source"
 msgstr "Không có nguồn"
 
-#: lib/html.php:1470
+#: lib/html.php:1473
 #, fuzzy
 msgid "Choose an action"
 msgstr "Chọn một hành động"
 
-#: lib/html.php:1480
+#: lib/html.php:1483
 #, fuzzy
 msgid "Execute Action"
 msgstr "Thực thi hành động"
 
-#: lib/html.php:1662 lib/html.php:1664 lib/html.php:1744 managers.php:41
+#: lib/html.php:1665 lib/html.php:1667 lib/html.php:1747 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "Nhật ký"
 
-#: lib/html.php:2163
+#: lib/html.php:2166
 #, fuzzy
 msgid "Standard Deviations"
 msgstr "Độ lệch chuẩn"
 
-#: lib/html.php:2175
+#: lib/html.php:2178
 #, fuzzy
 msgid "Variance Outliers"
 msgstr "Ngoại lệ phương sai"
 
-#: lib/html.php:2181
+#: lib/html.php:2184
 #, fuzzy
 msgid "Kills Per RRA"
 msgstr "Giết chết mỗi RRA"
 
-#: lib/html.php:2187
+#: lib/html.php:2190
 #, fuzzy
 msgid "Remove StdDev"
 msgstr "Xóa StdDev"
 
-#: lib/html.php:2188
+#: lib/html.php:2191
 #, fuzzy
 msgid "Remove Variance"
 msgstr "Xóa phương sai"
 
-#: lib/html.php:2189
+#: lib/html.php:2192
 #, fuzzy
 msgid "Gap Fill Range"
 msgstr "Khoảng cách điền vào"
 
-#: lib/html.php:2190
+#: lib/html.php:2193
 #, fuzzy
 msgid "Float Range"
 msgstr "Phao nổi"
 
-#: lib/html.php:2192
+#: lib/html.php:2195
 #, fuzzy
 msgid "Dry Run StdDev"
 msgstr "Chạy khô StdDev"
 
-#: lib/html.php:2193
+#: lib/html.php:2196
 #, fuzzy
 msgid "Dry Run Variance"
 msgstr "Phương pháp chạy khô"
 
-#: lib/html.php:2194
+#: lib/html.php:2197
 #, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "Dry Run Gap Fill Range"
 
-#: lib/html.php:2195
+#: lib/html.php:2198
 #, fuzzy
 msgid "Dry Run Float Range"
 msgstr "Phao khô chạy"
 
-#: lib/html.php:2399
+#: lib/html.php:2402
 #, fuzzy
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
 msgstr "Cho phép hoặc giới hạn các cột trong bảng vượt ra ngoài giới hạn cửa sổ hiện tại."
 
-#: lib/html.php:2400 lib/html_filter.php:65
+#: lib/html.php:2403 lib/html_filter.php:65
 #, fuzzy
 msgid "Enter a search term"
 msgstr "Nhập cụm từ tìm kiếm"
 
-#: lib/html.php:2401
+#: lib/html.php:2404
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "Nhập một biểu thức chính quy"
 
-#: lib/html.php:2402
+#: lib/html.php:2405
 msgid "No file selected"
 msgstr "Không có tệp tin nào được chọn"
 
-#: lib/html.php:2405 lib/html.php:2418
+#: lib/html.php:2408 lib/html.php:2421
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "Kết quả SpikeKill"
 
-#: lib/html.php:2407
+#: lib/html.php:2410
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "Nhấn vào đây để xem chỉ đồ thị này trong thời gian thực"
 
-#: lib/html.php:2408
+#: lib/html.php:2411
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "Nhấp lại để đưa Biểu đồ này ra khỏi Thời gian thực"
 
-#: lib/html.php:2412
+#: lib/html.php:2415
 #, fuzzy
 msgid "Cacti Home"
 msgstr "Trang chủ xương rồng"
 
-#: lib/html.php:2413
+#: lib/html.php:2416
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "Trang dự án xương rồng"
 
-#: lib/html.php:2416
+#: lib/html.php:2419
 msgid "Report a bug"
 msgstr "Báo cáo lỗi"
 
-#: lib/html.php:2419
+#: lib/html.php:2422
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "Nhấp để hiển thị / Ẩn bộ lọc"
 
-#: lib/html.php:2420
+#: lib/html.php:2423
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "Xóa bộ lọc hiện tại"
 
-#: lib/html.php:2421
+#: lib/html.php:2424
 msgid "Clipboard"
 msgstr "Báº­t lÃªn trÃ¬nh ÄÆ¡n khá»i cháº¡y"
 
-#: lib/html.php:2422
+#: lib/html.php:2425
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "ID Clipboard"
 
-#: lib/html.php:2423
+#: lib/html.php:2426
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "Hoạt động sao chép không có sẵn tại thời điểm này"
 
-#: lib/html.php:2424
+#: lib/html.php:2427
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "Không thể tìm thấy dữ liệu để sao chép!"
 
-#: lib/html.php:2425
+#: lib/html.php:2428
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "Clipboard đã được cập nhật"
 
-#: lib/html.php:2426
+#: lib/html.php:2429
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "Xin lỗi, clipboard của bạn không thể được cập nhật tại thời điểm này"
 
-#: lib/html.php:2430
+#: lib/html.php:2433
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "Độ dài cụm mật khẩu đáp ứng tối thiểu 8 ký tự"
 
-#: lib/html.php:2431
+#: lib/html.php:2434
 msgid "Passphrase too short"
 msgstr "Cụm từ mật khẩu quá ngắn"
 
-#: lib/html.php:2432
+#: lib/html.php:2435
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "Cụm mật khẩu phù hợp nhưng quá ngắn"
 
-#: lib/html.php:2433
+#: lib/html.php:2436
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "Cụm mật khẩu quá ngắn và không khớp"
 
-#: lib/html.php:2434
+#: lib/html.php:2437
 #, fuzzy
 msgid "Passphrases match"
 msgstr "Mật khẩu phù hợp"
 
-#: lib/html.php:2435
+#: lib/html.php:2438
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "Cụm mật khẩu không khớp"
 
-#: lib/html.php:2436
+#: lib/html.php:2439
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "Xin lỗi, chúng tôi không thể xử lý hành động cuối cùng của bạn."
 
-#: lib/html.php:2437
+#: lib/html.php:2440
 msgid "Error:"
 msgstr "Lỗi:"
 
-#: lib/html.php:2438
+#: lib/html.php:2441
 msgid "Reason:"
 msgstr "Reason:"
 
-#: lib/html.php:2439
+#: lib/html.php:2442
 msgid "Action failed"
 msgstr "Hành động không thành công"
 
-#: lib/html.php:2440 pollers.php:773
+#: lib/html.php:2443 pollers.php:773
 #, fuzzy
 msgid "Connection Successful"
 msgstr "Operation successful"
 
-#: lib/html.php:2441 pollers.php:775
+#: lib/html.php:2444 pollers.php:775
 msgid "Connection Failed"
 msgstr "Kết nối không thành công"
 
-#: lib/html.php:2442
+#: lib/html.php:2445
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "Phản ứng với hành động cuối cùng là bất ngờ."
 
-#: lib/html.php:2443
+#: lib/html.php:2446
 #, fuzzy
 msgid "Some Actions failed"
 msgstr "Một số hành động thất bại"
 
-#: lib/html.php:2444
+#: lib/html.php:2447
 #, fuzzy
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "Lưu ý, chúng tôi không thể xử lý tất cả các hành động của bạn. Chi tiết bên dưới."
 
-#: lib/html.php:2445
+#: lib/html.php:2448
 msgid "Operation successful"
 msgstr "Operation successful"
 
-#: lib/html.php:2446
+#: lib/html.php:2449
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "Chiến dịch đã thành công. Chi tiết bên dưới."
 
-#: lib/html.php:2448
+#: lib/html.php:2451
 msgid "Pause"
 msgstr "Tạm dừng"
 
-#: lib/html.php:2451
+#: lib/html.php:2454
 msgid "Zoom In"
 msgstr "Thu nhỏ"
 
-#: lib/html.php:2452
+#: lib/html.php:2455
 msgid "Zoom Out"
 msgstr "Phóng to"
 
-#: lib/html.php:2453
+#: lib/html.php:2456
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "Yếu tố thu nhỏ"
 
-#: lib/html.php:2454
+#: lib/html.php:2457
 #, fuzzy
 msgid "Timestamps"
 msgstr "Dấu thời gian"
 
-#: lib/html.php:2455
+#: lib/html.php:2458
 #, fuzzy
 msgid "2x"
 msgstr "2 lần"
 
-#: lib/html.php:2456
+#: lib/html.php:2459
 #, fuzzy
 msgid "4x"
 msgstr "4 lần"
 
-#: lib/html.php:2457
+#: lib/html.php:2460
 #, fuzzy
 msgid "8x"
 msgstr "8"
 
-#: lib/html.php:2458
+#: lib/html.php:2461
 #, fuzzy
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2459
+#: lib/html.php:2462
 #, fuzzy
 msgid "32x"
 msgstr "32x"
 
-#: lib/html.php:2460
+#: lib/html.php:2463
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "Thu nhỏ định vị"
 
-#: lib/html.php:2461
+#: lib/html.php:2464
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "Chế độ thu phóng"
 
-#: lib/html.php:2463
+#: lib/html.php:2466
 msgid "Quick"
 msgstr "Nhanh chóng"
 
-#: lib/html.php:2465
+#: lib/html.php:2468
 msgid "Open in new tab"
 msgstr "Mở ra trong trang mới"
 
-#: lib/html.php:2466
+#: lib/html.php:2469
 #, fuzzy
 msgid "Save graph"
 msgstr "Lưu đồ thị"
 
-#: lib/html.php:2467
+#: lib/html.php:2470
 #, fuzzy
 msgid "Copy graph"
 msgstr "Sao chép biểu đồ"
 
-#: lib/html.php:2468
+#: lib/html.php:2471
 #, fuzzy
 msgid "Copy graph link"
 msgstr "Sao chép liên kết đồ thị"
 
-#: lib/html.php:2469
+#: lib/html.php:2472
 msgid "Always On"
 msgstr "Luôn bật"
 
-#: lib/html.php:2470
+#: lib/html.php:2473
 msgid "Auto"
 msgstr "Tự động"
 
-#: lib/html.php:2471
+#: lib/html.php:2474
 #, fuzzy
 msgid "Always Off"
 msgstr "Luôn luôn tắt"
 
-#: lib/html.php:2472
+#: lib/html.php:2475
 #, fuzzy
 msgid "Begin with"
 msgstr "Bắt đầu với"
 
-#: lib/html.php:2474
+#: lib/html.php:2477
 #, fuzzy
 msgid "End with"
 msgstr "Ngày kết thúc"
 
-#: lib/html.php:2476 lib/html_form.php:1303
+#: lib/html.php:2479 lib/html_form.php:1303
 msgid "Close"
 msgstr "Đóng"
 
-#: lib/html.php:2478
+#: lib/html.php:2481
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "Nút chuột thứ 3"
@@ -21107,6 +21110,14 @@ msgstr "Số lượng mẫu biểu đồ sử dụng VDEF này."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Không có VDEF"
+
+#, fuzzy
+#~ msgid "The Maximum SNMP OIDs Per SNMP Get Request"
+#~ msgstr "OIDs SNMP tối đa trên mỗi SNMP"
+
+#, fuzzy
+#~ msgid "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk"
+#~ msgstr "Số lượng SNMP tối đa khiến OID phát hành theo yêu cầu snmpbulkwalk. Tăng giá trị này tăng tốc hiệu suất pug trên các liên kết chậm. Giá trị tối đa là 100 OID. Giảm giá trị này xuống 0 hoặc 1 sẽ vô hiệu hóa snmpbulkwalk"
 
 #, fuzzy
 #~ msgid "Other Defaults"
