@@ -40,6 +40,7 @@ Cacti CHANGELOG
 -feature#3943: Add hooks for plugins to show customize graph source and customize template url (List View)
 
 1.2.17
+-issue#4058: When calling get_client_addr REMOTE_ADDR is always returned
 -issue#3981: PHP ERROR: Call to undefined function api_data_source_cache_crc_update()
 -issue#3879: Graph/Data Source creation with custom fields not prompting during 1st creation
 -issue#3969: SNMPv3 Password Length Limit
