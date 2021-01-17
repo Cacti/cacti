@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.17
+-issue#4058: When calling get_client_addr REMOTE_ADDR is always returned
 -security#4019: In a recent audit of core Cacti code, there were a few stored XSS issues that can be exposed
 -security#4022: SQL Injection in data_debug.php (CVE-2020-35701)
 -security#4035: XSS security issue from WebScan report
