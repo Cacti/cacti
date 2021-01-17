@@ -5408,7 +5408,7 @@ function get_client_addr($client_addr = false) {
 					} else {
 						$client_addr = $header_ip;
 						cacti_log('DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-						break;
+						break 2;
 					}
 				}
 			}

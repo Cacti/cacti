@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.17
+-issue#4060: When calling get_client_addr REMOTE_ADDR is always returned
 -security#4019: In a recent audit of core Cacti code, there were a few stored XSS issues that can be exposed
 -security#4022: SQL Injection in data_debug.php (CVE-2020-35701)
 -security#4035: XSS security issue from WebScan report
@@ -26,8 +27,10 @@ Cacti CHANGELOG
 -issue#4031: Data Collectors and Data Profiles Filter Sub-Panel Go buttons not working as expected
 -issue#4033: Change 'Hide' Graph Action Icon's to 'Show' Action Icons
 -issue#4036: Automation Discovery Trying to access array offset on value of type null
+-issue#4043: The poller_boost.php performance issue: copying data from poller_output_boost_arch_*
 -issue#4038: Creating new graphs prompts for second click regardless
 -issue#4042: Clicking save in performance tab turns off rrd_update_enable on remote pollers
+-issue#4050: Missing slash in absolute path to cli/convert_tables.php shown during upgrade
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
