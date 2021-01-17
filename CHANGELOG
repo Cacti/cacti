@@ -1,7 +1,9 @@
 Cacti CHANGELOG
 
-1.2.15
+1.2.17
 -issue#4058: When calling get_client_addr REMOTE_ADDR is always returned
+
+1.2.15
 -issue#3643: When editing Maximum OIDs Per Get Request, blank value can cause errors
 -issue#3656: Boost may run more often than it should
 -issue#3693: Recache Event Loop can cause Interface Graphs to show gaps
