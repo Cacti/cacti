@@ -2814,7 +2814,7 @@ function device_filter($header_label) {
 					<td>
 						<span>
 							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
-							<label for='associated'><?php print __('Show Exceptions');?></label>
+							<label for='associated'><?php print __('Only Show Exceptions');?></label>
 						</span>
 					</td>
 					<td>
@@ -2899,7 +2899,7 @@ function template_filter($header_label) {
 					<td>
 						<span>
 							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
-							<label for='associated'><?php print __('Show Exceptions');?></label>
+							<label for='associated'><?php print __('Only Show Exceptions');?></label>
 						</span>
 					</td>
 					<td>
@@ -2984,7 +2984,7 @@ function tree_filter($header_label) {
 					<td>
 						<span>
 							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
-							<label for='associated'><?php print __('Show Exceptions');?></label>
+							<label for='associated'><?php print __('Only Show Exceptions');?></label>
 						</span>
 					</td>
 					<td>
@@ -3069,7 +3069,7 @@ function member_filter($header_label) {
 					<td>
 						<span>
 							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
-							<label for='associated'><?php print __('Show Exceptions');?></label>
+							<label for='associated'><?php print __('Only Show Exceptions');?></label>
 						</span>
 					</td>
 					<td>
@@ -3090,4 +3090,3 @@ function member_filter($header_label) {
 
 	html_end_box();
 }
-

@@ -19393,8 +19393,8 @@ msgstr "Autorizzazione dei dispositivi %s"
 #: user_admin.php:3072 user_group_admin.php:2200 user_group_admin.php:2304
 #: user_group_admin.php:2389 user_group_admin.php:2474
 #, fuzzy
-msgid "Show Exceptions"
-msgstr "Mostra Eccezioni"
+msgid "Only Show Exceptions"
+msgstr "Mostra Solo Eccezioni"
 
 #: user_admin.php:2870 user_group_admin.php:2357
 #, fuzzy, php-format

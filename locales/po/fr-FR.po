@@ -18399,8 +18399,8 @@ msgstr "Appareils Permission %s"
 #: user_admin.php:3099 user_group_admin.php:2213 user_group_admin.php:2317
 #: user_group_admin.php:2402 user_group_admin.php:2487
 #, fuzzy
-msgid "Show Exceptions"
-msgstr "Afficher les exceptions"
+msgid "Only Show Exceptions"
+msgstr "Afficher uniquement les exceptions"
 
 #: user_admin.php:2897 user_group_admin.php:2370
 #, fuzzy, php-format
