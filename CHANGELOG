@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#4043: The poller_boost.php performance issue: copying data from poller_output_boost_arch_*
 -issue#4038: Creating new graphs prompts for second click regardless
 -issue#4042: Clicking save in performance tab turns off rrd_update_enable on remote pollers
+-issue#4049: Only show sensitive graph information to Template Editors in the List View screen
 -issue#4050: Missing slash in absolute path to cli/convert_tables.php shown during upgrade
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
