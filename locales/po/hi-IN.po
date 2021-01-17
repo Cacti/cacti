@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-09 13:37-0500\n"
+"POT-Creation-Date: 2021-01-17 18:24+0000\n"
 "PO-Revision-Date: 2020-09-13 18:33-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
 "X-Generator: Poedit 2.4.1\n"
 
-#: about.php:29 include/global_arrays.php:2459 lib/html.php:2417
+#: about.php:29 include/global_arrays.php:2460 lib/html.php:2420
 #, fuzzy
 msgid "About Cacti"
 msgstr "कैक्टि के बारे में"
@@ -85,9 +85,9 @@ msgstr "This program is distributed in the hope that it will be useful, but WITH
 #: data_sources.php:1054 data_templates.php:34 data_templates.php:664
 #: gprint_presets.php:28 graph_templates.php:35 graph_templates.php:472
 #: graphs.php:46 host.php:40 host_templates.php:35 host_templates.php:505
-#: host_templates.php:562 include/global_arrays.php:1514
+#: host_templates.php:562 include/global_arrays.php:1515
 #: include/global_settings.php:256 lib/api_automation.php:1327
-#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1216
+#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1219
 #: lib/html_form.php:1273 lib/html_reports.php:1417 links.php:28
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1401 tree.php:1554
 #: tree.php:1614 tree.php:1635 user_admin.php:28 user_domains.php:30
@@ -151,14 +151,14 @@ msgstr "निम्नलिखित एग्रीगेट ग्राफ 
 #: data_sources.php:547 data_sources.php:556 data_sources.php:562
 #: data_templates.php:383 data_templates.php:393 data_templates.php:409
 #: gprint_presets.php:153 graph_templates.php:344 graph_templates.php:354
-#: graph_templates.php:376 graph_templates.php:385 graph_view.php:928
+#: graph_templates.php:376 graph_templates.php:385 graph_view.php:945
 #: graphs.php:910 graphs.php:926 graphs.php:937 graphs.php:948 graphs.php:963
 #: graphs.php:977 graphs.php:986 graphs.php:1160 graphs.php:1203
 #: graphs.php:1225 graphs.php:1254 graphs.php:1266 graphs.php:1771 host.php:377
 #: host.php:386 host.php:441 host.php:450 host.php:459 host.php:473
 #: host.php:487 host.php:496 host.php:504 host_templates.php:270
 #: host_templates.php:284 host_templates.php:295 host_templates.php:344
-#: host_templates.php:407 lib/clog_webapi.php:221 lib/html.php:2450
+#: host_templates.php:407 lib/clog_webapi.php:221 lib/html.php:2453
 #: lib/html_form.php:1272 lib/html_form.php:1284 lib/html_form.php:1295
 #: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
 #: managers.php:1004 managers.php:1062 plugins.php:517 pollers.php:533
@@ -195,7 +195,7 @@ msgstr "कैंसिल करें"
 #: host.php:450 host.php:459 host.php:473 host.php:487 host.php:496
 #: host.php:504 host_templates.php:270 host_templates.php:284
 #: host_templates.php:295 host_templates.php:345 host_templates.php:408
-#: lib/clog_webapi.php:222 lib/html.php:2449 lib/html_reports.php:284
+#: lib/clog_webapi.php:222 lib/html.php:2452 lib/html_reports.php:284
 #: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
 #: managers.php:1004 managers.php:1062 pollers.php:533 pollers.php:542
 #: pollers.php:551 pollers.php:560 pollers.php:569 sites.php:359 sites.php:369
@@ -288,18 +288,18 @@ msgstr "न्यू एग्रीगेट"
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "नीचे दी गई रिपोर्ट में चयनित ग्राफ़ जोड़ने के लिए &#39;जारी रखें&#39; पर क्लिक करें।"
 
-#: aggregate_graphs.php:472 graph_view.php:789 graphs.php:1242
+#: aggregate_graphs.php:472 graph_view.php:806 graphs.php:1242
 #: lib/html_reports.php:920 lib/html_reports.php:1596
 #, fuzzy
 msgid "Report Name"
 msgstr "रिपोर्ट का नाम"
 
-#: aggregate_graphs.php:476 graph_view.php:796 graphs.php:1246
+#: aggregate_graphs.php:476 graph_view.php:813 graphs.php:1246
 #: lib/html_reports.php:1328
 msgid "Timespan"
 msgstr "काल"
 
-#: aggregate_graphs.php:480 graph_view.php:803 graphs.php:1250
+#: aggregate_graphs.php:480 graph_view.php:820 graphs.php:1250
 msgid "Align"
 msgstr "पंक्ति में होना"
 
@@ -389,7 +389,7 @@ msgstr "विवरण"
 msgid "Items"
 msgstr "वस्तुएं"
 
-#: aggregate_graphs.php:661 aggregate_graphs.php:667 lib/html.php:1927
+#: aggregate_graphs.php:661 aggregate_graphs.php:667 lib/html.php:1930
 #: lib/html_reports.php:1156
 msgid "Preview"
 msgstr "पूर्वावलोकन"
@@ -512,8 +512,8 @@ msgstr "खोजें"
 #: data_sources.php:1737 graph_view.php:464 graph_view.php:659
 #: graph_view.php:708 graphs.php:1986 graphs.php:2117 host.php:1681
 #: include/global_arrays.php:898 include/global_arrays.php:1105
-#: include/global_arrays.php:1875 lib/api_automation.php:283 lib/html.php:1641
-#: lib/html.php:1643 lib/html.php:1721 lib/html_graph.php:209
+#: include/global_arrays.php:1876 lib/api_automation.php:283 lib/html.php:1644
+#: lib/html.php:1646 lib/html.php:1724 lib/html_graph.php:209
 #: lib/html_tree.php:1087 lib/html_tree.php:1415 tree.php:797 tree.php:2069
 #: user_admin.php:1030 user_admin.php:1299 user_admin.php:2619
 #: user_group_admin.php:825 user_group_admin.php:980 user_group_admin.php:2183
@@ -564,7 +564,7 @@ msgstr "एग्रीगेट का हिस्सा"
 #: graph_view.php:608 graphs.php:1971 graphs_new.php:399 host.php:1606
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
-#: lib/clog_webapi.php:522 lib/html.php:1480 lib/html_filter.php:80
+#: lib/clog_webapi.php:522 lib/html.php:1483 lib/html_filter.php:80
 #: lib/html_graph.php:190 lib/html_reports.php:1532 lib/html_tree.php:1074
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:883 sites.php:498 tree.php:1947
@@ -660,7 +660,7 @@ msgid "Included in Aggregate"
 msgstr "एग्रीगेट में शामिल"
 
 #: aggregate_graphs.php:1327 aggregate_graphs.php:1663 graph_templates.php:811
-#: graph_view.php:736 graphs.php:2151
+#: graph_view.php:737 graph_view.php:750 graphs.php:2151
 msgid "Size"
 msgstr "आकार"
 
@@ -704,14 +704,14 @@ msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[कस्टम ग्राफ सूची लागू - सूची से फ़िल्टर करें]"
 
 #: aggregate_graphs.php:1543 aggregate_graphs.php:1651
-#: include/global_arrays.php:2585
+#: include/global_arrays.php:2586
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "सकल रेखांकन"
 
 #: aggregate_graphs.php:1558 data_debug.php:955 data_sources.php:1347
 #: graph_view.php:621 graphs.php:1936 host.php:1561
-#: include/global_arrays.php:2731 include/global_settings.php:564
+#: include/global_arrays.php:2732 include/global_settings.php:564
 #: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:1038
 #: rrdcleaner.php:352 user_admin.php:2597 user_admin.php:2790
 #: user_group_admin.php:2161 user_group_admin.php:2269 utilities.php:1788
@@ -727,7 +727,7 @@ msgstr "खाका"
 #: lib/api_automation.php:150 lib/api_automation.php:168
 #: lib/api_automation.php:429 lib/api_automation.php:446
 #: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2342
-#: lib/html.php:2005 lib/html.php:2028 lib/html.php:2066
+#: lib/html.php:2008 lib/html.php:2031 lib/html.php:2069
 #: lib/html_reports.php:1511 managers.php:482 managers.php:735
 #: user_admin.php:2601 user_admin.php:2794 user_group_admin.php:2165
 #: user_group_admin.php:2273 utilities.php:826 utilities.php:1507
@@ -745,7 +745,7 @@ msgstr "कोई भी@ label"
 #: graphs_items.php:467 host.php:1103 host.php:1114 host.php:1531 host.php:1566
 #: include/global_arrays.php:468 include/global_arrays.php:526
 #: include/global_arrays.php:609 include/global_arrays.php:798
-#: include/global_arrays.php:1602 include/global_form.php:544
+#: include/global_arrays.php:1603 include/global_form.php:544
 #: include/global_form.php:850 include/global_form.php:858
 #: include/global_form.php:866 include/global_form.php:904
 #: include/global_form.php:911 include/global_form.php:937
@@ -754,11 +754,11 @@ msgstr "कोई भी@ label"
 #: include/global_form.php:1175 include/global_form.php:2055
 #: include/global_form.php:2097 include/global_settings.php:568
 #: include/global_settings.php:576 include/global_settings.php:584
-#: include/global_settings.php:1278 include/global_settings.php:1746
+#: include/global_settings.php:1286 include/global_settings.php:1746
 #: lib/api_automation.php:151 lib/api_automation.php:430
 #: lib/api_automation.php:447 lib/api_automation.php:589
 #: lib/api_automation.php:1077 lib/auth.php:2345 lib/html.php:180
-#: lib/html.php:2006 lib/html.php:2026 lib/html.php:2067 lib/html_form.php:331
+#: lib/html.php:2009 lib/html.php:2029 lib/html.php:2070 lib/html_form.php:331
 #: lib/html_reports.php:590 lib/html_reports.php:626 lib/html_reports.php:638
 #: lib/html_reports.php:647 lib/html_reports.php:657 settings.php:484
 #: settings.php:503 settings.php:529 user_admin.php:2602 user_admin.php:2795
@@ -822,7 +822,7 @@ msgid "Aggregate Template [new]"
 msgstr "सकल टेम्पलेट [नया]"
 
 #: aggregate_templates.php:557 aggregate_templates.php:656
-#: include/global_arrays.php:2567
+#: include/global_arrays.php:2568
 #, fuzzy
 msgid "Aggregate Templates"
 msgstr "अलग-अलग टेम्प्लेट"
@@ -868,7 +868,7 @@ msgid "Graphs Using"
 msgstr "रेखांकन का उपयोग करना"
 
 #: aggregate_templates.php:668 include/global_arrays.php:863
-#: include/global_arrays.php:1233 include/global_form.php:1351
+#: include/global_arrays.php:1234 include/global_form.php:1351
 #: include/global_form.php:1586 lib/html_reports.php:643 tree.php:1657
 #, fuzzy
 msgid "Graph Template"
@@ -950,7 +950,7 @@ msgid "Please enter your new Cacti password."
 msgstr "कृपया अपना वर्तमान पासवर्ड और अपना नया दर्ज करें <br> कैक्टि पासवर्ड।"
 
 #: auth_changepassword.php:342 auth_login.php:694 auth_login.php:697
-#: include/global_settings.php:1580 lib/functions.php:3947
+#: include/global_settings.php:1580 lib/functions.php:3949
 msgid "Username"
 msgstr "उपयोगकर्ता नाम"
 
@@ -1056,7 +1056,7 @@ msgstr "उपयोक्ता लॉगइन"
 msgid "Enter your Username and Password below"
 msgstr "नीचे अपना यूजरनेम और पासवर्ड डालें"
 
-#: auth_login.php:702 include/global_form.php:1470 lib/functions.php:3948
+#: auth_login.php:702 include/global_form.php:1470 lib/functions.php:3950
 msgid "Password"
 msgstr "पासवर्ड"
 
@@ -1105,18 +1105,18 @@ msgid "User Account Details"
 msgstr "उपयोगकर्ता खाता विवरण"
 
 #: auth_profile.php:296 include/global_arrays.php:770
-#: include/global_settings.php:2363 lib/html.php:1887 lib/html.php:1909
-#: lib/html.php:2409
+#: include/global_settings.php:2363 lib/html.php:1890 lib/html.php:1912
+#: lib/html.php:2412
 msgid "Tree View"
 msgstr "विस्तृत दृश्य"
 
-#: auth_profile.php:300 include/global_arrays.php:771 lib/html.php:1894
-#: lib/html.php:1918 lib/html.php:2410
+#: auth_profile.php:300 include/global_arrays.php:771 lib/html.php:1897
+#: lib/html.php:1921 lib/html.php:2413
 msgid "List View"
 msgstr "सूची दृश्य"
 
-#: auth_profile.php:304 include/global_arrays.php:772 lib/html.php:1901
-#: lib/html.php:2411
+#: auth_profile.php:304 include/global_arrays.php:772 lib/html.php:1904
+#: lib/html.php:2414
 msgid "Preview View"
 msgstr "पूर्वद्रिश्श द्रिश्श"
 
@@ -1290,7 +1290,7 @@ msgstr "उपकरण हटाएं"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1516
 #: host.php:1637 host.php:1741 include/global_arrays.php:895
-#: include/global_arrays.php:950 include/global_arrays.php:2165
+#: include/global_arrays.php:950 include/global_arrays.php:2166
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
 #: lib/api_automation.php:1211 pollers.php:960 sites.php:573 tree.php:796
@@ -1409,7 +1409,7 @@ msgstr "खोजे गए उपकरण"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1760
-#: lib/functions.php:4318 lib/functions.php:4322 lib/html.php:1179
+#: lib/functions.php:4320 lib/functions.php:4324 lib/html.php:1182
 #: pollers.php:1009 user_admin.php:2342 utilities.php:511 utilities.php:953
 #: utilities.php:2284 utilities.php:2381 utilities.php:2389 utilities.php:2392
 #: utilities.php:2395 utilities.php:2401 utilities.php:2631
@@ -1420,13 +1420,13 @@ msgstr "लागू नहीं"
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
 #: data_input.php:33 data_source_profiles.php:31 data_templates.php:35
 #: graph_templates.php:36 graphs.php:66 host_templates.php:36
-#: include/global_arrays.php:1511 sites.php:29 vdef.php:30
+#: include/global_arrays.php:1512 sites.php:29 vdef.php:30
 msgid "Duplicate"
 msgstr "डुप्लीकेट"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:41
-#: include/global_arrays.php:1512 include/global_settings.php:1535 links.php:29
+#: include/global_arrays.php:1513 include/global_settings.php:1535 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:411
 #: user_group_admin.php:32
@@ -1435,7 +1435,7 @@ msgstr "सक्षम करें"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:41 host.php:42
-#: include/global_arrays.php:1513 links.php:30 managers.php:30 managers.php:34
+#: include/global_arrays.php:1514 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
@@ -1535,13 +1535,13 @@ msgstr "ग्राफ निर्माण मानदंड"
 
 #: automation_graph_rules.php:734 automation_graph_rules.php:781
 #: automation_graph_rules.php:886 include/global_arrays.php:918
-#: include/global_arrays.php:2621
+#: include/global_arrays.php:2622
 #, fuzzy
 msgid "Graph Rules"
 msgstr "ग्राफ नियम"
 
 #: automation_graph_rules.php:749 automation_graph_rules.php:897
-#: include/global_arrays.php:1236 include/global_arrays.php:2730
+#: include/global_arrays.php:1237 include/global_arrays.php:2731
 #: include/global_form.php:1596 include/global_form.php:2134
 #, fuzzy
 msgid "Data Query"
@@ -1567,12 +1567,12 @@ msgstr "सक्षम"
 #: automation_networks.php:1093 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1014 data_sources.php:1405
 #: data_templates.php:1131 host.php:1628 include/global_arrays.php:821
-#: include/global_arrays.php:1435 include/global_arrays.php:1726
+#: include/global_arrays.php:1436 include/global_arrays.php:1727
 #: include/global_settings.php:368 include/global_settings.php:1408
 #: include/global_settings.php:1422 include/global_settings.php:1435
 #: include/global_settings.php:1460 include/global_settings.php:1474
 #: include/global_settings.php:1534 include/global_settings.php:2186
-#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2475
+#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2478
 #: lib/html_reports.php:1513 lib/html_reports.php:1651 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1164 user_domains.php:411 user_group_admin.php:697
@@ -1687,17 +1687,17 @@ msgid "Manual"
 msgstr "मैन्युअल"
 
 #: automation_networks.php:420 automation_networks.php:1067
-#: include/global_arrays.php:1740
+#: include/global_arrays.php:1741
 msgid "Daily"
 msgstr "प्रतिदिन"
 
 #: automation_networks.php:421 automation_networks.php:1068
-#: include/global_arrays.php:1741
+#: include/global_arrays.php:1742
 msgid "Weekly"
 msgstr "साप्ताहिक"
 
 #: automation_networks.php:422 automation_networks.php:1069
-#: include/global_arrays.php:1742
+#: include/global_arrays.php:1743
 msgid "Monthly"
 msgstr "मासिक"
 
@@ -1870,12 +1870,12 @@ msgstr "% d मिनट"
 #: include/global_arrays.php:684 include/global_arrays.php:685
 #: include/global_arrays.php:686 include/global_arrays.php:687
 #: include/global_arrays.php:688 include/global_arrays.php:1084
-#: include/global_arrays.php:1085 include/global_arrays.php:1442
-#: include/global_arrays.php:1446 include/global_arrays.php:1454
-#: include/global_arrays.php:1455 include/global_arrays.php:1479
-#: include/global_arrays.php:1480 include/global_arrays.php:1481
-#: include/global_arrays.php:1482 include/global_arrays.php:1483
-#: include/global_arrays.php:1496 include/global_settings.php:1476
+#: include/global_arrays.php:1085 include/global_arrays.php:1443
+#: include/global_arrays.php:1447 include/global_arrays.php:1455
+#: include/global_arrays.php:1456 include/global_arrays.php:1480
+#: include/global_arrays.php:1481 include/global_arrays.php:1482
+#: include/global_arrays.php:1483 include/global_arrays.php:1484
+#: include/global_arrays.php:1497 include/global_settings.php:1476
 #: include/global_settings.php:1477 include/global_settings.php:1478
 #: include/global_settings.php:1479 include/global_settings.php:1480
 #: include/global_settings.php:2289 pollers.php:871 pollers.php:872
@@ -1884,7 +1884,7 @@ msgid "%d Minutes"
 msgstr "% d मिनट"
 
 #: automation_networks.php:528 include/global_arrays.php:689
-#: include/global_arrays.php:699 include/global_arrays.php:1323
+#: include/global_arrays.php:699 include/global_arrays.php:1324
 #, fuzzy, php-format
 msgid "%d Hour"
 msgstr "% d घंटा"
@@ -1897,14 +1897,14 @@ msgstr "% d घंटा"
 #: include/global_arrays.php:691 include/global_arrays.php:692
 #: include/global_arrays.php:693 include/global_arrays.php:700
 #: include/global_arrays.php:701 include/global_arrays.php:702
-#: include/global_arrays.php:703 include/global_arrays.php:1324
-#: include/global_arrays.php:1325 include/global_arrays.php:1326
-#: include/global_arrays.php:1327 include/global_arrays.php:1394
-#: include/global_arrays.php:1395 include/global_arrays.php:1396
-#: include/global_arrays.php:1397 include/global_arrays.php:1398
-#: include/global_arrays.php:1415 include/global_arrays.php:1416
-#: include/global_arrays.php:1417 include/global_arrays.php:1418
-#: include/global_arrays.php:1419 include/global_settings.php:1482
+#: include/global_arrays.php:703 include/global_arrays.php:1325
+#: include/global_arrays.php:1326 include/global_arrays.php:1327
+#: include/global_arrays.php:1328 include/global_arrays.php:1395
+#: include/global_arrays.php:1396 include/global_arrays.php:1397
+#: include/global_arrays.php:1398 include/global_arrays.php:1399
+#: include/global_arrays.php:1416 include/global_arrays.php:1417
+#: include/global_arrays.php:1418 include/global_arrays.php:1419
+#: include/global_arrays.php:1420 include/global_settings.php:1482
 #: include/global_settings.php:1483 include/global_settings.php:1484
 #: include/global_settings.php:1485
 #, fuzzy, php-format
@@ -2036,37 +2036,37 @@ msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr "सप्ताह का कौन सा दिन (दिन) इस नेटवर्क रेंज को खोजा जाएगा।"
 
 #: automation_networks.php:638 automation_networks.php:696
-#: include/global_arrays.php:1782
+#: include/global_arrays.php:1783
 msgid "Sunday"
 msgstr "रविवार"
 
 #: automation_networks.php:639 automation_networks.php:697
-#: include/global_arrays.php:1783
+#: include/global_arrays.php:1784
 msgid "Monday"
 msgstr "सोमवार"
 
 #: automation_networks.php:640 automation_networks.php:698
-#: include/global_arrays.php:1784
+#: include/global_arrays.php:1785
 msgid "Tuesday"
 msgstr "मंगलवार"
 
 #: automation_networks.php:641 automation_networks.php:699
-#: include/global_arrays.php:1785
+#: include/global_arrays.php:1786
 msgid "Wednesday"
 msgstr "बुधवार"
 
 #: automation_networks.php:642 automation_networks.php:700
-#: include/global_arrays.php:1786
+#: include/global_arrays.php:1787
 msgid "Thursday"
 msgstr "वृहस्पतिवार"
 
 #: automation_networks.php:643 automation_networks.php:701
-#: include/global_arrays.php:1787
+#: include/global_arrays.php:1788
 msgid "Friday"
 msgstr "शुक्रवार"
 
 #: automation_networks.php:644 automation_networks.php:702
-#: include/global_arrays.php:1788
+#: include/global_arrays.php:1789
 msgid "Saturday"
 msgstr "शनिवार"
 
@@ -2080,51 +2080,51 @@ msgstr "साल का महीना"
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "इस नेटवर्क रेंज को वर्ष के कितने महीनों के लिए खोजा जाएगा।"
 
-#: automation_networks.php:654 include/global_arrays.php:1752
+#: automation_networks.php:654 include/global_arrays.php:1753
 msgid "January"
 msgstr "जनवरी"
 
-#: automation_networks.php:655 include/global_arrays.php:1753
+#: automation_networks.php:655 include/global_arrays.php:1754
 msgid "February"
 msgstr "फरवरी"
 
-#: automation_networks.php:656 include/global_arrays.php:1754
+#: automation_networks.php:656 include/global_arrays.php:1755
 msgid "March"
 msgstr "मार्च"
 
-#: automation_networks.php:657 include/global_arrays.php:1755
+#: automation_networks.php:657 include/global_arrays.php:1756
 msgid "April"
 msgstr "अप्रैल"
 
-#: automation_networks.php:658 include/global_arrays.php:1756
+#: automation_networks.php:658 include/global_arrays.php:1757
 msgid "May"
 msgstr "मई"
 
-#: automation_networks.php:659 include/global_arrays.php:1757
+#: automation_networks.php:659 include/global_arrays.php:1758
 msgid "June"
 msgstr "जून"
 
-#: automation_networks.php:660 include/global_arrays.php:1758
+#: automation_networks.php:660 include/global_arrays.php:1759
 msgid "July"
 msgstr "जुलाई"
 
-#: automation_networks.php:661 include/global_arrays.php:1759
+#: automation_networks.php:661 include/global_arrays.php:1760
 msgid "August"
 msgstr "अगस्त"
 
-#: automation_networks.php:662 include/global_arrays.php:1760
+#: automation_networks.php:662 include/global_arrays.php:1761
 msgid "September"
 msgstr "सितम्बर"
 
-#: automation_networks.php:663 include/global_arrays.php:1761
+#: automation_networks.php:663 include/global_arrays.php:1762
 msgid "October"
 msgstr "अक्टूबर"
 
-#: automation_networks.php:664 include/global_arrays.php:1762
+#: automation_networks.php:664 include/global_arrays.php:1763
 msgid "November"
 msgstr "नवम्बर"
 
-#: automation_networks.php:665 include/global_arrays.php:1763
+#: automation_networks.php:665 include/global_arrays.php:1764
 msgid "December"
 msgstr "दिसंबर"
 
@@ -2370,14 +2370,14 @@ msgstr "रीफ्रैश करो"
 #: include/global_arrays.php:679 include/global_arrays.php:680
 #: include/global_arrays.php:681 include/global_arrays.php:1079
 #: include/global_arrays.php:1080 include/global_arrays.php:1081
-#: include/global_arrays.php:1082 include/global_arrays.php:1436
-#: include/global_arrays.php:1437 include/global_arrays.php:1438
-#: include/global_arrays.php:1439 include/global_arrays.php:1440
-#: include/global_arrays.php:1475 include/global_arrays.php:1476
-#: include/global_arrays.php:1488 include/global_arrays.php:1489
-#: include/global_arrays.php:1490 include/global_arrays.php:1491
-#: include/global_arrays.php:1492 include/global_arrays.php:1493
-#: include/global_arrays.php:1494 include/global_settings.php:1139
+#: include/global_arrays.php:1082 include/global_arrays.php:1437
+#: include/global_arrays.php:1438 include/global_arrays.php:1439
+#: include/global_arrays.php:1440 include/global_arrays.php:1441
+#: include/global_arrays.php:1476 include/global_arrays.php:1477
+#: include/global_arrays.php:1489 include/global_arrays.php:1490
+#: include/global_arrays.php:1491 include/global_arrays.php:1492
+#: include/global_arrays.php:1493 include/global_arrays.php:1494
+#: include/global_arrays.php:1495 include/global_settings.php:1139
 #: include/global_settings.php:1140 include/global_settings.php:1141
 #: include/global_settings.php:1142 include/global_settings.php:2285
 #: include/global_settings.php:2286 include/global_settings.php:2287
@@ -2504,7 +2504,7 @@ msgstr "सरूप"
 msgid "Community"
 msgstr "कम्युनिटी"
 
-#: automation_snmp.php:536 lib/functions.php:3943
+#: automation_snmp.php:536 lib/functions.php:3945
 msgid "Port"
 msgstr "पोर्ट"
 
@@ -2568,7 +2568,7 @@ msgstr "कुछ भी नहीं"
 #: automation_snmp.php:573 automation_templates.php:524 cdef.php:621
 #: color_templates.php:111 data_queries.php:789 data_queries.php:889
 #: lib/api_automation.php:1314 lib/api_automation.php:1376
-#: lib/api_automation.php:1444 lib/html.php:1201 lib/html_reports.php:1410
+#: lib/api_automation.php:1444 lib/html.php:1204 lib/html_reports.php:1410
 #: lib/html_reports.php:1412 tree.php:2087 tree.php:2094 vdef.php:607
 msgid "Move Down"
 msgstr "नीचे ले जाएं"
@@ -2576,7 +2576,7 @@ msgstr "नीचे ले जाएं"
 #: automation_snmp.php:579 automation_templates.php:530 cdef.php:627
 #: color_templates.php:117 data_queries.php:794 data_queries.php:894
 #: lib/api_automation.php:1320 lib/api_automation.php:1382
-#: lib/api_automation.php:1450 lib/html.php:1207 lib/html_reports.php:1412
+#: lib/api_automation.php:1450 lib/html.php:1210 lib/html_reports.php:1412
 #: lib/html_reports.php:1414 tree.php:2091 tree.php:2095 vdef.php:613
 msgid "Move Up"
 msgstr "ऊपर ले जाएं"
@@ -2646,7 +2646,7 @@ msgstr "फोलिंग ऑटोमेशन टेम्प्लेट क
 msgid "Delete Automation Template(s)"
 msgstr "स्वचालन खाका हटाएं"
 
-#: automation_templates.php:274 include/global_arrays.php:1237
+#: automation_templates.php:274 include/global_arrays.php:1238
 #: include/global_form.php:1172 include/global_form.php:1581
 #: lib/html_reports.php:623
 #, fuzzy
@@ -2810,7 +2810,7 @@ msgstr "पुष्टि करें कि आप आगे जारी र
 
 #: automation_tree_rules.php:801 automation_tree_rules.php:826
 #: automation_tree_rules.php:926 include/global_arrays.php:919
-#: include/global_arrays.php:2645
+#: include/global_arrays.php:2646
 #, fuzzy
 msgid "Tree Rules"
 msgstr "वृक्ष नियम"
@@ -2934,7 +2934,7 @@ msgstr "CDEF [संपादित करें: %s]"
 msgid "CDEF [new]"
 msgstr "CDEF [नया]"
 
-#: cdef.php:591 include/global_arrays.php:2015
+#: cdef.php:591 include/global_arrays.php:2016
 #, fuzzy
 msgid "CDEF Items"
 msgstr "CDEF आइटम"
@@ -2955,7 +2955,7 @@ msgid "Delete CDEF Item"
 msgstr "CDEF आइटम हटाएं"
 
 #: cdef.php:747 cdef.php:762 cdef.php:884 include/global_arrays.php:924
-#: include/global_arrays.php:1997
+#: include/global_arrays.php:1998
 #, fuzzy
 msgid "CDEFs"
 msgstr "CDEFs"
@@ -3090,7 +3090,7 @@ msgid "Colors [new]"
 msgstr "रंग [नया]"
 
 #: color.php:520 color.php:535 color.php:690 include/global_arrays.php:926
-#: include/global_arrays.php:2063
+#: include/global_arrays.php:2064
 msgid "Colors"
 msgstr "रंग"
 
@@ -3177,13 +3177,13 @@ msgid "Color Item"
 msgstr "रंग की वस्तु"
 
 #: color_templates.php:94 lib/api_aggregate.php:1795 lib/api_aggregate.php:1798
-#: lib/api_aggregate.php:1803 lib/html.php:1136 lib/html_reports.php:1401
+#: lib/api_aggregate.php:1803 lib/html.php:1139 lib/html_reports.php:1401
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "आइटम #% d"
 
 #: color_templates.php:133 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1855 lib/html.php:1226
+#: lib/api_aggregate.php:1855 lib/html.php:1229
 #, fuzzy
 msgid "No Items"
 msgstr "वस्तुएं"
@@ -3266,7 +3266,7 @@ msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color
 msgstr "कलर टेम्प्लेट '%s' में इस कलर टेम्प्लेट का उपयोग करने के लिए कोई एग्रीगेट टेम्पलेट या ग्राफ़ नहीं थे।"
 
 #: color_templates.php:523 color_templates.php:536 color_templates.php:631
-#: include/global_arrays.php:2543
+#: include/global_arrays.php:2544
 #, fuzzy
 msgid "Color Templates"
 msgstr "रंग टेम्पलेट"
@@ -3354,7 +3354,7 @@ msgstr "डेटा स्रोत की मरम्मत को एक अ
 #: data_debug.php:329 data_debug.php:807 data_queries.php:712
 #: data_sources.php:979 data_templates.php:596 graphs_items.php:463
 #: include/global_arrays.php:910 include/global_form.php:926
-#: lib/api_aggregate.php:1709 lib/html.php:1096
+#: lib/api_aggregate.php:1709 lib/html.php:1099
 msgid "Data Source"
 msgstr "डाटा स्रोत"
 
@@ -3461,7 +3461,7 @@ msgstr "डेटा स्रोत के लिए कोई सारां�
 
 #: data_debug.php:511 data_debug.php:1058 data_sources.php:1429
 #: data_sources.php:1587 host.php:1687 include/global_arrays.php:899
-#: include/global_arrays.php:944 include/global_arrays.php:2147
+#: include/global_arrays.php:944 include/global_arrays.php:2148
 #: lib/api_automation.php:284 user_admin.php:1299 user_group_admin.php:980
 #: utilities.php:330
 #, fuzzy
@@ -3851,7 +3851,7 @@ msgid "Delete Data Input Field"
 msgstr "डेटा इनपुट फ़ील्ड हटाएं"
 
 #: data_input.php:817 include/global_arrays.php:905
-#: include/global_arrays.php:1101 include/global_arrays.php:2201
+#: include/global_arrays.php:1101 include/global_arrays.php:2202
 #, fuzzy
 msgid "Data Input Methods"
 msgstr "डेटा इनपुट के तरीके"
@@ -3895,7 +3895,7 @@ msgstr "इस डेटा इनपुट विधि का उपयोग 
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "इस डेटा इनपुट विधि का उपयोग करने वाले डेटा टेम्प्लेट की संख्या।"
 
-#: data_input.php:954 data_queries.php:1398 include/global_arrays.php:1229
+#: data_input.php:954 data_queries.php:1398 include/global_arrays.php:1230
 #: include/global_form.php:540 include/global_form.php:1332
 #, fuzzy
 msgid "Data Input Method"
@@ -4031,7 +4031,7 @@ msgid "Could not locate XML file."
 msgstr "XML फ़ाइल नहीं मिली।"
 
 #: data_queries.php:1109 host.php:707 host_templates.php:486
-#: include/global_arrays.php:2255
+#: include/global_arrays.php:2256
 #, fuzzy
 msgid "Associated Graph Templates"
 msgstr "संबद्ध ग्राफ़ टेम्पलेट"
@@ -4069,7 +4069,7 @@ msgstr "एसोसिएटेड ग्राफ़ हटाएं"
 
 #: data_queries.php:1262 data_queries.php:1277 data_queries.php:1405
 #: include/global_arrays.php:904 include/global_arrays.php:1102
-#: include/global_arrays.php:2237 lib/api_automation.php:1105
+#: include/global_arrays.php:2238 lib/api_automation.php:1105
 #, fuzzy
 msgid "Data Queries"
 msgstr "डेटा क्वेरी"
@@ -4243,7 +4243,7 @@ msgstr "डेटा स्रोत प्रति %s KBytes"
 #: include/global_arrays.php:719 include/global_arrays.php:720
 #: include/global_arrays.php:721 include/global_arrays.php:722
 #: include/global_arrays.php:723 include/global_arrays.php:724
-#: include/global_arrays.php:1340 include/global_settings.php:1414
+#: include/global_arrays.php:1341 include/global_settings.php:1414
 #, fuzzy, php-format
 msgid "%d Years"
 msgstr "% d वष"
@@ -4253,30 +4253,30 @@ msgid "1 Year"
 msgstr "1 वर्ष"
 
 #: data_source_profiles.php:803 include/global_arrays.php:710
-#: include/global_arrays.php:1334 rrdcleaner.php:490
+#: include/global_arrays.php:1335 rrdcleaner.php:490
 #, fuzzy, php-format
 msgid "%d Month"
 msgstr "% d महीना"
 
 #: data_source_profiles.php:803 include/global_arrays.php:711
 #: include/global_arrays.php:712 include/global_arrays.php:713
-#: include/global_arrays.php:714 include/global_arrays.php:1335
-#: include/global_arrays.php:1336 include/global_arrays.php:1337
-#: include/global_arrays.php:1338 rrdcleaner.php:491 rrdcleaner.php:492
+#: include/global_arrays.php:714 include/global_arrays.php:1336
+#: include/global_arrays.php:1337 include/global_arrays.php:1338
+#: include/global_arrays.php:1339 rrdcleaner.php:491 rrdcleaner.php:492
 #: rrdcleaner.php:493
 #, fuzzy, php-format
 msgid "%d Months"
 msgstr "% d माह"
 
 #: data_source_profiles.php:812 include/global_arrays.php:657
-#: include/global_arrays.php:707 include/global_arrays.php:1332
+#: include/global_arrays.php:707 include/global_arrays.php:1333
 #: rrdcleaner.php:486 rrdcleaner.php:487
 #, fuzzy, php-format
 msgid "%d Week"
 msgstr "% d वीक"
 
 #: data_source_profiles.php:812 include/global_arrays.php:708
-#: include/global_arrays.php:709 include/global_arrays.php:1333
+#: include/global_arrays.php:709 include/global_arrays.php:1334
 #: rrdcleaner.php:488 rrdcleaner.php:489
 #, fuzzy, php-format
 msgid "%d Weeks"
@@ -4284,15 +4284,15 @@ msgstr "% द वीक"
 
 #: data_source_profiles.php:821 include/global_arrays.php:656
 #: include/global_arrays.php:694 include/global_arrays.php:704
-#: include/global_arrays.php:1328
+#: include/global_arrays.php:1329
 #, fuzzy, php-format
 msgid "%d Day"
 msgstr "% द डे"
 
 #: data_source_profiles.php:821 include/global_arrays.php:695
 #: include/global_arrays.php:705 include/global_arrays.php:706
-#: include/global_arrays.php:1329 include/global_arrays.php:1330
-#: include/global_arrays.php:1331 include/global_settings.php:1409
+#: include/global_arrays.php:1330 include/global_arrays.php:1331
+#: include/global_arrays.php:1332 include/global_settings.php:1409
 #: include/global_settings.php:1410 include/global_settings.php:1411
 #: include/global_settings.php:1412 include/global_settings.php:1423
 #: include/global_settings.php:1424 include/global_settings.php:1425
@@ -4302,9 +4302,9 @@ msgid "%d Days"
 msgstr "% ड डय"
 
 #: data_source_profiles.php:829 include/global_arrays.php:650
-#: include/global_arrays.php:1393 include/global_arrays.php:1414
-#: include/global_arrays.php:1447 include/global_arrays.php:1456
-#: include/global_arrays.php:1484 include/global_settings.php:1481
+#: include/global_arrays.php:1394 include/global_arrays.php:1415
+#: include/global_arrays.php:1448 include/global_arrays.php:1457
+#: include/global_arrays.php:1485 include/global_settings.php:1481
 msgid "1 Hour"
 msgstr "1 घंटा"
 
@@ -4564,10 +4564,10 @@ msgstr "चयनित डेटा टेम्प्लेट"
 msgid "The name given to this data template.  Please note that you may only change Graph Templates to a 100%$ compatible Graph Template, which means that it includes identical Data Sources."
 msgstr "इस डेटा टेम्प्लेट को दिया गया नाम। कृपया ध्यान दें कि आप केवल ग्राफ़ टेम्पलेट को 100% $ संगत ग्राफ़ टेम्पलेट में बदल सकते हैं, जिसका अर्थ है कि इसमें समान डेटा स्रोत शामिल हैं।"
 
-#: data_sources.php:916 graph_view.php:721 graphs.php:1535
+#: data_sources.php:916 graph_view.php:722 graphs.php:1535
 #: include/global_arrays.php:859 include/global_arrays.php:908
-#: include/global_arrays.php:1718 lib/api_automation.php:425
-#: lib/functions.php:3942 lib/html.php:2001 lib/html.php:2033
+#: include/global_arrays.php:1719 lib/api_automation.php:425
+#: lib/functions.php:3944 lib/html.php:2004 lib/html.php:2036
 #: lib/html_reports.php:633 utilities.php:1643
 msgid "Device"
 msgstr "डिवाइस"
@@ -4620,8 +4620,8 @@ msgid "External"
 msgstr "बाह्‌री"
 
 #: data_sources.php:1183 include/global_arrays.php:645
-#: include/global_arrays.php:1083 include/global_arrays.php:1441
-#: include/global_arrays.php:1477 include/global_arrays.php:1495
+#: include/global_arrays.php:1083 include/global_arrays.php:1442
+#: include/global_arrays.php:1478 include/global_arrays.php:1496
 #: include/global_settings.php:1475 include/global_settings.php:2288
 msgid "1 Minute"
 msgstr "1 मिनट"
@@ -4801,7 +4801,7 @@ msgid "Value will be derived from the device if this field is left empty."
 msgstr "यदि यह फ़ील्ड खाली छोड़ दी जाती है, तो मान डिवाइस से प्राप्त किया जाएगा।"
 
 #: data_templates.php:904 data_templates.php:935 data_templates.php:1102
-#: include/global_arrays.php:1113 include/global_arrays.php:2129
+#: include/global_arrays.php:1113 include/global_arrays.php:2130
 #, fuzzy
 msgid "Data Templates"
 msgstr "डेटा टेम्प्लेट"
@@ -4880,7 +4880,7 @@ msgstr "GPRINT प्रीसेट [संपादित करें: %s]"
 msgid "GPRINT Presets [new]"
 msgstr "GPRINT प्रीसेट [नया]"
 
-#: gprint_presets.php:253 include/global_arrays.php:1979
+#: gprint_presets.php:253 include/global_arrays.php:1980
 #, fuzzy
 msgid "GPRINT Presets"
 msgstr "GPRINT प्रीसेट"
@@ -4953,7 +4953,7 @@ msgstr "सीएसवी निर्यात"
 msgid "Click to view just this Graph in Real-time"
 msgstr "वास्तविक समय में केवल इस ग्राफ़ को देखने के लिए क्लिक करें"
 
-#: graph.php:246 lib/html.php:2406
+#: graph.php:246 lib/html.php:2409
 #, fuzzy
 msgid "Utility View"
 msgstr "उपयोगिता देखें"
@@ -5086,7 +5086,7 @@ msgstr "रेखांकन को ग्राफ टेम्प्लेट
 msgid "Graph Template Items [edit: %s]"
 msgstr "ग्राफ़ टेम्पलेट आइटम [संपादित करें: %s]"
 
-#: graph_templates.php:452 include/global_arrays.php:2099
+#: graph_templates.php:452 include/global_arrays.php:2100
 #, fuzzy
 msgid "Graph Item Inputs"
 msgstr "ग्राफ़ आइटम इनपुट"
@@ -5118,7 +5118,7 @@ msgstr "यदि आप उपयोगकर्ता को ग्राफ�
 
 #: graph_templates.php:651 graph_templates.php:666 graph_templates.php:830
 #: graphs_new.php:485 include/global_arrays.php:1112
-#: include/global_arrays.php:2075 lib/html_tree.php:606 user_admin.php:1439
+#: include/global_arrays.php:2076 lib/html_tree.php:606 user_admin.php:1439
 #: user_group_admin.php:1115
 #, fuzzy
 msgid "Graph Templates"
@@ -5240,11 +5240,11 @@ msgstr "ग्राफ सूची देखें फ़िल्टर"
 msgid "[ Custom Graph List Applied - Filter FROM List ]"
 msgstr "[कस्टम ग्राफ सूची लागू - सूची से फ़िल्टर करें]"
 
-#: graph_view.php:610 graph_view.php:817
+#: graph_view.php:610 graph_view.php:834
 msgid "View"
 msgstr "देखें"
 
-#: graph_view.php:610 graph_view.php:817 include/global_arrays.php:1091
+#: graph_view.php:610 graph_view.php:834 include/global_arrays.php:1091
 #, fuzzy
 msgid "View Graphs"
 msgstr "रेखांकन देखें"
@@ -5264,76 +5264,76 @@ msgstr "रिपोर्ट"
 msgid "All Graphs & Templates"
 msgstr "सभी रेखांकन और टेम्पलेट"
 
-#: graph_view.php:626 include/global_arrays.php:2729 lib/graphs.php:58
+#: graph_view.php:626 include/global_arrays.php:2730 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:173 lib/html_graph.php:158
 #: lib/html_tree.php:1043
 #, fuzzy
 msgid "Not Templated"
 msgstr "अस्थायी नहीं है"
 
-#: graph_view.php:716 graphs.php:2127 include/global_form.php:1811
-#: lib/html_reports.php:653 tree.php:901
+#: graph_view.php:717 graph_view.php:745 graphs.php:2127
+#: include/global_form.php:1811 lib/html_reports.php:653 tree.php:901
 #, fuzzy
 msgid "Graph Name"
 msgstr "ग्राफ नाम"
 
-#: graph_view.php:718 graphs.php:2130
+#: graph_view.php:719 graph_view.php:747 graphs.php:2130
 #, fuzzy
 msgid "The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
 msgstr "इस ग्राफ का शीर्षक। आम तौर पर प्रोग्राम ग्राफ ग्राफ परिभाषा या सामान्य नामकरण नियमों से उत्पन्न होता है। शीर्षक की अधिकतम लंबाई सेटिंग्स-&gt; दृश्य के तहत नियंत्रित की जाती है।"
 
-#: graph_view.php:723
+#: graph_view.php:724
 #, fuzzy
 msgid "The device for this Graph."
 msgstr "इस समूह का नाम।"
 
-#: graph_view.php:726 graphs.php:2139
+#: graph_view.php:727 graphs.php:2139
 #, fuzzy
 msgid "Source Type"
 msgstr "स्रोत प्रकार"
 
-#: graph_view.php:728 graphs.php:2142
+#: graph_view.php:729 graphs.php:2142
 #, fuzzy
 msgid "The underlying source that this Graph was based upon."
 msgstr "यह ग्राफ़ जिस अंतर्निहित स्रोत पर आधारित था।"
 
-#: graph_view.php:731 graphs.php:2145
+#: graph_view.php:732 graphs.php:2145
 #, fuzzy
 msgid "Source Name"
 msgstr "स्रोत का नाम"
 
-#: graph_view.php:733 graphs.php:2148
+#: graph_view.php:734 graphs.php:2148
 #, fuzzy
 msgid "The Graph Template or Data Query that this Graph was based upon."
 msgstr "ग्राफ़ टेम्पलेट या डेटा क्वेरी जो इस ग्राफ़ पर आधारित थी।"
 
-#: graph_view.php:738 graphs.php:2154
+#: graph_view.php:739 graph_view.php:752 graphs.php:2154
 #, fuzzy
 msgid "The size of this Graph when not in Preview mode."
 msgstr "पूर्वावलोकन मोड में नहीं होने पर इस ग्राफ़ का आकार।"
 
-#: graph_view.php:786
+#: graph_view.php:803
 #, fuzzy
 msgid "Select the Report to add the selected Graphs to."
 msgstr "चयनित ग्राफ़ को जोड़ने के लिए रिपोर्ट का चयन करें।"
 
-#: graph_view.php:881 include/global_arrays.php:1899
+#: graph_view.php:898 include/global_arrays.php:1900
 #: include/global_settings.php:2359
 #, fuzzy
 msgid "Preview Mode"
 msgstr "पूर्वावलोकन मोड"
 
-#: graph_view.php:920
+#: graph_view.php:937
 #, fuzzy
 msgid "Add Selected Graphs to Report"
 msgstr "रिपोर्ट में चयनित ग्राफ़ जोड़ें"
 
-#: graph_view.php:934 lib/html.php:2447
+#: graph_view.php:951 lib/html.php:2450
 msgid "Ok"
 msgstr "ठीक"
 
 #: graph_xport.php:120 graph_xport.php:158 include/global_form.php:1736
-#: include/global_form.php:2004 lib/html.php:1784 links.php:381
+#: include/global_form.php:2004 lib/html.php:1787 links.php:381
 msgid "Title"
 msgstr "शीर्षक"
 
@@ -5386,7 +5386,7 @@ msgstr "सारांश विवरण"
 msgid "Download"
 msgstr "डाउनलोड"
 
-#: graphs.php:51 graphs.php:926 include/global_arrays.php:1949
+#: graphs.php:51 graphs.php:926 include/global_arrays.php:1950
 #, fuzzy
 msgid "Change Graph Template"
 msgstr "ग्राफ़ टेम्पलेट बदलें"
@@ -5656,7 +5656,7 @@ msgstr "डेटा स्रोत [कोई उपकरण नहीं]"
 msgid "Data Sources [%s]"
 msgstr "डेटा स्रोत [ %s]"
 
-#: graphs_items.php:350 include/global_arrays.php:1228
+#: graphs_items.php:350 include/global_arrays.php:1229
 #: include/global_form.php:1591
 #, fuzzy
 msgid "Data Template"
@@ -5692,7 +5692,7 @@ msgstr "[सभी उपकरणों] के लिए नए रेखा�
 msgid "New Graphs for None Host Type"
 msgstr "कोई भी होस्ट प्रकार के लिए नए रेखांकन"
 
-#: graphs_new.php:337 lib/html.php:2404
+#: graphs_new.php:337 lib/html.php:2407
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "फ़िल्टर सेटिंग्स सहेजे गए"
@@ -6013,7 +6013,7 @@ msgstr "डिवाइस में ग्राफ़ टेम्पलेट
 msgid "Data Query Debug Information"
 msgstr "डेटा क्वेरी डिबग जानकारी"
 
-#: host.php:815 lib/functions.php:2983 tree.php:1517 tree.php:1591
+#: host.php:815 lib/functions.php:2985 tree.php:1517 tree.php:1591
 #: tree.php:1699 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "कॉपी करें"
@@ -6032,15 +6032,15 @@ msgstr "एसोसिएटेड डेटा क्वेरीज़"
 msgid "Re-Index Method"
 msgstr "पुन: सूचकांक विधि"
 
-#: host.php:838 include/global_arrays.php:1955 include/global_arrays.php:2021
-#: include/global_arrays.php:2087 include/global_arrays.php:2123
-#: include/global_arrays.php:2141 include/global_arrays.php:2159
-#: include/global_arrays.php:2177 include/global_arrays.php:2207
-#: include/global_arrays.php:2243 include/global_arrays.php:2273
-#: include/global_arrays.php:2363 include/global_arrays.php:2555
-#: include/global_arrays.php:2579 include/global_arrays.php:2597
-#: include/global_arrays.php:2615 include/global_arrays.php:2633
-#: include/global_arrays.php:2657 lib/api_automation.php:1293
+#: host.php:838 include/global_arrays.php:1956 include/global_arrays.php:2022
+#: include/global_arrays.php:2088 include/global_arrays.php:2124
+#: include/global_arrays.php:2142 include/global_arrays.php:2160
+#: include/global_arrays.php:2178 include/global_arrays.php:2208
+#: include/global_arrays.php:2244 include/global_arrays.php:2274
+#: include/global_arrays.php:2364 include/global_arrays.php:2556
+#: include/global_arrays.php:2580 include/global_arrays.php:2598
+#: include/global_arrays.php:2616 include/global_arrays.php:2634
+#: include/global_arrays.php:2658 lib/api_automation.php:1293
 #: lib/api_automation.php:1355 lib/api_automation.php:1422
 #: lib/html_reports.php:1331 links.php:379 plugins.php:456
 msgid "Actions"
@@ -6055,7 +6055,7 @@ msgstr "[% d आइटम,% d पंक्तियाँ]"
 msgid "Fail"
 msgstr "असफल"
 
-#: host.php:899 lib/functions.php:3957 lib/functions.php:3962
+#: host.php:899 lib/functions.php:3959 lib/functions.php:3964
 msgid "Success"
 msgstr "सफलता"
 
@@ -6122,7 +6122,7 @@ msgstr "SNMP GetNext"
 msgid "Undefined"
 msgstr "अपरिभाशत"
 
-#: host.php:1526 include/global_settings.php:572 lib/html.php:2062
+#: host.php:1526 include/global_settings.php:572 lib/html.php:2065
 msgid "Site"
 msgstr "साइट"
 
@@ -6336,7 +6336,7 @@ msgid "Delete Item from Device Template"
 msgstr "उपकरण टेम्पलेट हटाएं"
 
 #: host_templates.php:710 host_templates.php:725 host_templates.php:853
-#: include/global_arrays.php:1114 include/global_arrays.php:2111
+#: include/global_arrays.php:1114 include/global_arrays.php:2112
 #, fuzzy
 msgid "Device Templates"
 msgstr "डिवाइस टेम्पलेट"
@@ -6403,17 +6403,17 @@ msgstr "FATAL: Cacti के इस क्षेत्र तक पहुंच�
 msgid "Login Again"
 msgstr "फिर से लॉगिन करें"
 
-#: include/auth.php:294 lib/functions.php:5531 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:5533 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "अनुमति अस्वीकृत"
 
-#: include/auth.php:295 lib/functions.php:5532 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5534 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "यदि आपको लगता है कि यह एक त्रुटि है। कृपया अपने कैक्टि प्रशासक से संपर्क करें।"
 
-#: include/auth.php:295 lib/functions.php:5532 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:5534 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "आपको Cacti के इस अनुभाग तक पहुंचने की अनुमति नहीं है।"
@@ -6962,7 +6962,7 @@ msgstr "सही"
 msgid "Justified"
 msgstr "न्याययुक्त"
 
-#: include/global_arrays.php:530 lib/html.php:2473
+#: include/global_arrays.php:530 lib/html.php:2476
 msgid "Center"
 msgstr "केंद्र"
 
@@ -7123,9 +7123,9 @@ msgstr "प्रत्येक घंटे"
 #: include/global_arrays.php:673 include/global_arrays.php:674
 #: include/global_arrays.php:740 include/global_arrays.php:741
 #: include/global_arrays.php:742 include/global_arrays.php:743
-#: include/global_arrays.php:1728 include/global_arrays.php:1729
-#: include/global_arrays.php:1730 include/global_arrays.php:1731
-#: include/global_arrays.php:1732 include/global_settings.php:2187
+#: include/global_arrays.php:1729 include/global_arrays.php:1730
+#: include/global_arrays.php:1731 include/global_arrays.php:1732
+#: include/global_arrays.php:1733 include/global_settings.php:2187
 #: include/global_settings.php:2188
 #, fuzzy, php-format
 msgid "Every %d Hours"
@@ -7136,7 +7136,7 @@ msgstr "हर द% ख ड"
 msgid "Every %d Day"
 msgstr "हर% 1 दन"
 
-#: include/global_arrays.php:715 include/global_arrays.php:1339
+#: include/global_arrays.php:715 include/global_arrays.php:1340
 #: include/global_settings.php:1413 rrdcleaner.php:494
 #, fuzzy, php-format
 msgid "%d Year"
@@ -7249,8 +7249,8 @@ msgid "Header"
 msgstr "हेडर"
 
 #: include/global_arrays.php:858 include/global_arrays.php:909
-#: include/global_arrays.php:1549 include/global_arrays.php:1717
-#: lib/html.php:2462
+#: include/global_arrays.php:1550 include/global_arrays.php:1718
+#: lib/html.php:2465
 msgid "Graph"
 msgstr "काल ग्राफ"
 
@@ -7373,7 +7373,7 @@ msgstr "डेटा संग्रहण"
 msgid "Data Collectors"
 msgstr "डेटा संग्राहक"
 
-#: include/global_arrays.php:911 include/global_arrays.php:2732
+#: include/global_arrays.php:911 include/global_arrays.php:2733
 #, fuzzy
 msgid "Aggregate"
 msgstr "कुल"
@@ -7404,7 +7404,7 @@ msgstr "प्रीसेट"
 msgid "Data Profiles"
 msgstr "डेटा प्रोफाइल"
 
-#: include/global_arrays.php:925 include/global_arrays.php:2357 vdef.php:692
+#: include/global_arrays.php:925 include/global_arrays.php:2358 vdef.php:692
 #: vdef.php:706 vdef.php:877
 #, fuzzy
 msgid "VDEFs"
@@ -7415,13 +7415,13 @@ msgid "Import/Export"
 msgstr "दरामद करो / बरामद करो"
 
 #: include/global_arrays.php:930 include/global_arrays.php:1117
-#: include/global_arrays.php:2477
+#: include/global_arrays.php:2478
 #, fuzzy
 msgid "Import Templates"
 msgstr "आयात टेम्पलेट्स"
 
 #: include/global_arrays.php:931 include/global_arrays.php:1116
-#: include/global_arrays.php:2465 templates_export.php:159
+#: include/global_arrays.php:2466 templates_export.php:159
 #, fuzzy
 msgid "Export Templates"
 msgstr "निर्यात टेम्पलेट्स"
@@ -7432,29 +7432,29 @@ msgid "Configuration"
 msgstr "कॉन्फ़िगरेशन"
 
 #: include/global_arrays.php:934 include/global_arrays.php:956
-#: lib/html.php:2197 lib/html.php:2477
+#: lib/html.php:2200 lib/html.php:2480
 msgid "Settings"
 msgstr "सेटिंग्स"
 
-#: include/global_arrays.php:935 include/global_arrays.php:2411
+#: include/global_arrays.php:935 include/global_arrays.php:2412
 #: user_admin.php:2262 user_admin.php:2318 user_group_admin.php:674
 #: user_group_admin.php:2542
 msgid "Users"
 msgstr "उपयोगकर्ता"
 
-#: include/global_arrays.php:936 include/global_arrays.php:2441
+#: include/global_arrays.php:936 include/global_arrays.php:2442
 #, fuzzy
 msgid "User Groups"
 msgstr "यूसर समूह"
 
-#: include/global_arrays.php:937 include/global_arrays.php:2429
+#: include/global_arrays.php:937 include/global_arrays.php:2430
 #: user_domains.php:644 user_domains.php:736
 #, fuzzy
 msgid "User Domains"
 msgstr "उपयोगकर्ता डोमेन"
 
 #: include/global_arrays.php:939 include/global_arrays.php:958
-#: include/global_arrays.php:974 include/global_arrays.php:2285
+#: include/global_arrays.php:974 include/global_arrays.php:2286
 msgid "Utilities"
 msgstr "यूटिलिटीज"
 
@@ -7558,1130 +7558,1134 @@ msgstr "रिपोर्ट निर्माण"
 msgid "Show Graph Action Icons"
 msgstr "ग्राफ का शीर्षक दिखाएं"
 
-#: include/global_arrays.php:1128
+#: include/global_arrays.php:1125
+msgid "Show User Help Links"
+msgstr ""
+
+#: include/global_arrays.php:1129
 msgid "Normal User"
 msgstr "सामान्य उपयोगकर्ता"
 
-#: include/global_arrays.php:1129
+#: include/global_arrays.php:1130
 #, fuzzy
 msgid "Template Editor"
 msgstr "खाका संपादक"
 
-#: include/global_arrays.php:1130
+#: include/global_arrays.php:1131
 #, fuzzy
 msgid "General Administration"
 msgstr "सामान्य प्रशासन"
 
-#: include/global_arrays.php:1131
+#: include/global_arrays.php:1132
 msgid "System Administration"
 msgstr "तंत्र प्रशासन"
 
-#: include/global_arrays.php:1225
+#: include/global_arrays.php:1226
 #, fuzzy
 msgid "CDEF"
 msgstr "CDEF"
 
-#: include/global_arrays.php:1226
+#: include/global_arrays.php:1227
 #, fuzzy
 msgid "CDEF Item"
 msgstr "CDEF आइटम"
 
-#: include/global_arrays.php:1227
+#: include/global_arrays.php:1228
 #, fuzzy
 msgid "GPRINT Preset"
 msgstr "GPRINT पूर्व निर्धारित"
 
-#: include/global_arrays.php:1230
+#: include/global_arrays.php:1231
 #, fuzzy
 msgid "Data Input Field"
 msgstr "डेटा इनपुट फ़ील्ड"
 
-#: include/global_arrays.php:1231 include/global_form.php:549
+#: include/global_arrays.php:1232 include/global_form.php:549
 #: include/global_form.php:1648
 #, fuzzy
 msgid "Data Source Profile"
 msgstr "डेटा स्रोत प्रोफ़ाइल"
 
-#: include/global_arrays.php:1232
+#: include/global_arrays.php:1233
 #, fuzzy
 msgid "Data Template Item"
 msgstr "डेटा टेम्प्लेट आइटम"
 
-#: include/global_arrays.php:1234
+#: include/global_arrays.php:1235
 #, fuzzy
 msgid "Graph Template Item"
 msgstr "ग्राफ टेम्पलेट आइटम"
 
-#: include/global_arrays.php:1235
+#: include/global_arrays.php:1236
 #, fuzzy
 msgid "Graph Template Input"
 msgstr "ग्राफ टेम्पलेट इनपुट"
 
-#: include/global_arrays.php:1238
+#: include/global_arrays.php:1239
 #, fuzzy
 msgid "VDEF"
 msgstr "VDEF"
 
-#: include/global_arrays.php:1239
+#: include/global_arrays.php:1240
 #, fuzzy
 msgid "VDEF Item"
 msgstr "VDEF आइटम"
 
-#: include/global_arrays.php:1290
+#: include/global_arrays.php:1291
 #, fuzzy
 msgid "Last Half Hour"
 msgstr "पिछले आधे घंटे"
 
-#: include/global_arrays.php:1291
+#: include/global_arrays.php:1292
 msgid "Last Hour"
 msgstr "पिछला घैंटा"
 
-#: include/global_arrays.php:1292 include/global_arrays.php:1293
-#: include/global_arrays.php:1294 include/global_arrays.php:1295
+#: include/global_arrays.php:1293 include/global_arrays.php:1294
+#: include/global_arrays.php:1295 include/global_arrays.php:1296
 #, fuzzy, php-format
 msgid "Last %d Hours"
 msgstr "अंतिम% d घंटे"
 
-#: include/global_arrays.php:1296
+#: include/global_arrays.php:1297
 #, fuzzy
 msgid "Last Day"
 msgstr "आखरी दिन"
 
-#: include/global_arrays.php:1297 include/global_arrays.php:1298
-#: include/global_arrays.php:1299
+#: include/global_arrays.php:1298 include/global_arrays.php:1299
+#: include/global_arrays.php:1300
 #, fuzzy, php-format
 msgid "Last %d Days"
 msgstr "अंतिम% d दिन"
 
-#: include/global_arrays.php:1300
+#: include/global_arrays.php:1301
 msgid "Last Week"
 msgstr "पिछला खोज"
 
-#: include/global_arrays.php:1301
+#: include/global_arrays.php:1302
 #, fuzzy, php-format
 msgid "Last %d Weeks"
 msgstr "अंतिम% d सप्ताह"
 
-#: include/global_arrays.php:1302
+#: include/global_arrays.php:1303
 msgid "Last Month"
 msgstr "पिछले माह"
 
-#: include/global_arrays.php:1303 include/global_arrays.php:1304
-#: include/global_arrays.php:1305 include/global_arrays.php:1306
+#: include/global_arrays.php:1304 include/global_arrays.php:1305
+#: include/global_arrays.php:1306 include/global_arrays.php:1307
 #, fuzzy, php-format
 msgid "Last %d Months"
 msgstr "अंतिम% d महीने"
 
-#: include/global_arrays.php:1307
+#: include/global_arrays.php:1308
 #, fuzzy
 msgid "Last Year"
 msgstr "पिछले साल"
 
-#: include/global_arrays.php:1308
+#: include/global_arrays.php:1309
 #, fuzzy, php-format
 msgid "Last %d Years"
 msgstr "अंतिम% d वर्ष"
 
-#: include/global_arrays.php:1309
+#: include/global_arrays.php:1310
 #, fuzzy
 msgid "Day Shift"
 msgstr "दिन की शिफ़्ट"
 
-#: include/global_arrays.php:1310
+#: include/global_arrays.php:1311
 #, fuzzy
 msgid "This Day"
 msgstr "हर रोज"
 
-#: include/global_arrays.php:1311
+#: include/global_arrays.php:1312
 msgid "This Week"
 msgstr "इस सप्ताह"
 
-#: include/global_arrays.php:1312
+#: include/global_arrays.php:1313
 msgid "This Month"
 msgstr "इस महीने@ label"
 
-#: include/global_arrays.php:1313
+#: include/global_arrays.php:1314
 msgid "This Year"
 msgstr "यह साल@ label"
 
-#: include/global_arrays.php:1314
+#: include/global_arrays.php:1315
 #, fuzzy
 msgid "Previous Day"
 msgstr "पिछले दिन"
 
-#: include/global_arrays.php:1315
+#: include/global_arrays.php:1316
 #, fuzzy
 msgid "Previous Week"
 msgstr "पिछला सप्ताह"
 
-#: include/global_arrays.php:1316
+#: include/global_arrays.php:1317
 msgid "Previous Month"
 msgstr "पिछला महीना"
 
-#: include/global_arrays.php:1317
+#: include/global_arrays.php:1318
 #, fuzzy
 msgid "Previous Year"
 msgstr "पिछला साल"
 
-#: include/global_arrays.php:1322
+#: include/global_arrays.php:1323
 #, fuzzy, php-format
 msgid "%d Min"
 msgstr "% d मिन"
 
-#: include/global_arrays.php:1377
+#: include/global_arrays.php:1378
 #, fuzzy
 msgid "Month Number, Day, Year"
 msgstr "महीना संख्या, दिन, वर्ष"
 
-#: include/global_arrays.php:1378
+#: include/global_arrays.php:1379
 #, fuzzy
 msgid "Month Name, Day, Year"
 msgstr "माह का नाम, दिन, वर्ष"
 
-#: include/global_arrays.php:1379
+#: include/global_arrays.php:1380
 #, fuzzy
 msgid "Day, Month Number, Year"
 msgstr "दिन, महीना संख्या, वर्ष"
 
-#: include/global_arrays.php:1380
+#: include/global_arrays.php:1381
 #, fuzzy
 msgid "Day, Month Name, Year"
 msgstr "दिन, महीने का नाम, वर्ष"
 
-#: include/global_arrays.php:1381
+#: include/global_arrays.php:1382
 #, fuzzy
 msgid "Year, Month Number, Day"
 msgstr "वर्ष, महीना संख्या, दिन"
 
-#: include/global_arrays.php:1382
+#: include/global_arrays.php:1383
 #, fuzzy
 msgid "Year, Month Name, Day"
 msgstr "वर्ष, माह का नाम, दिन"
 
-#: include/global_arrays.php:1392
+#: include/global_arrays.php:1393
 #, fuzzy
 msgid "After Boost"
 msgstr "बूस्ट के बाद"
 
-#: include/global_arrays.php:1402 include/global_arrays.php:1403
-#: include/global_arrays.php:1404 include/global_arrays.php:1405
-#: include/global_arrays.php:1406 include/global_arrays.php:1461
-#: include/global_arrays.php:1462
+#: include/global_arrays.php:1403 include/global_arrays.php:1404
+#: include/global_arrays.php:1405 include/global_arrays.php:1406
+#: include/global_arrays.php:1407 include/global_arrays.php:1462
+#: include/global_arrays.php:1463
 #, fuzzy, php-format
 msgid "%d MBytes"
 msgstr "% d एमबीटीज़"
 
-#: include/global_arrays.php:1407
+#: include/global_arrays.php:1408
 #, fuzzy
 msgid "1 GByte"
 msgstr "1 जीबीटी"
 
-#: include/global_arrays.php:1408 include/global_arrays.php:1464
+#: include/global_arrays.php:1409 include/global_arrays.php:1465
 #: lib/boost.php:34
 #, fuzzy, php-format
 msgid "%s GBytes"
 msgstr "%s GBytes"
 
-#: include/global_arrays.php:1409 include/global_arrays.php:1410
-#: include/global_arrays.php:1465 include/global_arrays.php:1466
-#: include/global_arrays.php:1467 include/global_arrays.php:1468
-#: include/global_arrays.php:1469 include/global_arrays.php:1470
+#: include/global_arrays.php:1410 include/global_arrays.php:1411
+#: include/global_arrays.php:1466 include/global_arrays.php:1467
+#: include/global_arrays.php:1468 include/global_arrays.php:1469
+#: include/global_arrays.php:1470 include/global_arrays.php:1471
 #, fuzzy, php-format
 msgid "%d GBytes"
 msgstr "% d GBytes"
 
-#: include/global_arrays.php:1423
+#: include/global_arrays.php:1424
 #, fuzzy
 msgid "2,000 Data Source Items"
 msgstr "2,000 डेटा स्रोत आइटम"
 
-#: include/global_arrays.php:1424
+#: include/global_arrays.php:1425
 #, fuzzy
 msgid "5,000 Data Source Items"
 msgstr "5,000 डेटा स्रोत आइटम"
 
-#: include/global_arrays.php:1425
+#: include/global_arrays.php:1426
 #, fuzzy
 msgid "10,000 Data Source Items"
 msgstr "10,000 डेटा स्रोत आइटम"
 
-#: include/global_arrays.php:1426
+#: include/global_arrays.php:1427
 #, fuzzy
 msgid "15,000 Data Source Items"
 msgstr "15,000 डेटा स्रोत आइटम"
 
-#: include/global_arrays.php:1427
+#: include/global_arrays.php:1428
 #, fuzzy
 msgid "25,000 Data Source Items"
 msgstr "25,000 डेटा स्रोत आइटम"
 
-#: include/global_arrays.php:1428
+#: include/global_arrays.php:1429
 #, fuzzy
 msgid "50,000 Data Source Items (Default)"
 msgstr "50,000 डेटा स्रोत आइटम (डिफ़ॉल्ट)"
 
-#: include/global_arrays.php:1429
+#: include/global_arrays.php:1430
 #, fuzzy
 msgid "100,000 Data Source Items"
 msgstr "100,000 डेटा स्रोत आइटम"
 
-#: include/global_arrays.php:1430
+#: include/global_arrays.php:1431
 #, fuzzy
 msgid "200,000 Data Source Items"
 msgstr "200,000 डेटा स्रोत आइटम"
 
-#: include/global_arrays.php:1431
+#: include/global_arrays.php:1432
 #, fuzzy
 msgid "400,000 Data Source Items"
 msgstr "400,000 डेटा स्रोत आइटम"
 
-#: include/global_arrays.php:1448
+#: include/global_arrays.php:1449
 msgid "2 Hours"
 msgstr "2 घंटे"
 
-#: include/global_arrays.php:1449
+#: include/global_arrays.php:1450
 msgid "4 Hours"
 msgstr "4 घंटे"
 
-#: include/global_arrays.php:1450
+#: include/global_arrays.php:1451
 #, fuzzy
 msgid "6 Hours"
 msgstr "6 घंटे"
 
-#: include/global_arrays.php:1457 include/global_settings.php:1240
-#: include/global_settings.php:1241 include/global_settings.php:1242
+#: include/global_arrays.php:1458 include/global_settings.php:1248
+#: include/global_settings.php:1249 include/global_settings.php:1250
 #, fuzzy, php-format
 msgid "%s Hours"
 msgstr "%s घंटे"
 
-#: include/global_arrays.php:1463
+#: include/global_arrays.php:1464
 #, fuzzy, php-format
 msgid "%d GByte"
 msgstr "% d GBytes"
 
-#: include/global_arrays.php:1471
+#: include/global_arrays.php:1472
 msgid "Infinity"
 msgstr "अनंतता"
 
-#: include/global_arrays.php:1478 include/global_settings.php:1182
-#: include/global_settings.php:1183 include/global_settings.php:1184
-#: include/global_settings.php:1185 include/global_settings.php:1195
-#: include/global_settings.php:1196 include/global_settings.php:1197
-#: include/global_settings.php:1198 include/global_settings.php:1208
-#: include/global_settings.php:1209 include/global_settings.php:1210
-#: include/global_settings.php:1211 include/global_settings.php:1221
-#: include/global_settings.php:1222 include/global_settings.php:1223
-#: include/global_settings.php:1224 include/global_settings.php:1235
-#: include/global_settings.php:1236 include/global_settings.php:1237
-#: include/global_settings.php:1238
+#: include/global_arrays.php:1479 include/global_settings.php:1190
+#: include/global_settings.php:1191 include/global_settings.php:1192
+#: include/global_settings.php:1193 include/global_settings.php:1203
+#: include/global_settings.php:1204 include/global_settings.php:1205
+#: include/global_settings.php:1206 include/global_settings.php:1216
+#: include/global_settings.php:1217 include/global_settings.php:1218
+#: include/global_settings.php:1219 include/global_settings.php:1229
+#: include/global_settings.php:1230 include/global_settings.php:1231
+#: include/global_settings.php:1232 include/global_settings.php:1243
+#: include/global_settings.php:1244 include/global_settings.php:1245
+#: include/global_settings.php:1246
 #, fuzzy, php-format
 msgid "%s Minutes"
 msgstr "%s मिनट"
 
-#: include/global_arrays.php:1500
+#: include/global_arrays.php:1501
 #, fuzzy
 msgid "1 Megabyte"
 msgstr "1 मेगाबाइट"
 
-#: include/global_arrays.php:1501 include/global_arrays.php:1502
-#: include/global_arrays.php:1503 include/global_arrays.php:1504
-#: include/global_arrays.php:1505 include/global_arrays.php:1506
+#: include/global_arrays.php:1502 include/global_arrays.php:1503
+#: include/global_arrays.php:1504 include/global_arrays.php:1505
+#: include/global_arrays.php:1506 include/global_arrays.php:1507
 #, fuzzy, php-format
 msgid "%d Megabytes"
 msgstr "% d मेगाबाइट्स"
 
-#: include/global_arrays.php:1510
+#: include/global_arrays.php:1511
 msgid "Send Now"
 msgstr "अभी भेजें"
 
-#: include/global_arrays.php:1518
+#: include/global_arrays.php:1519
 #, fuzzy
 msgid "Take Ownership"
 msgstr "स्वामित्व लेने"
 
-#: include/global_arrays.php:1522
+#: include/global_arrays.php:1523
 #, fuzzy
 msgid "Inline PNG Image"
 msgstr "इनलाइन PNG इमेज"
 
-#: include/global_arrays.php:1527
+#: include/global_arrays.php:1528
 #, fuzzy
 msgid "Inline JPEG Image"
 msgstr "इनलाइन जेपीईजी इमेज"
 
-#: include/global_arrays.php:1528
+#: include/global_arrays.php:1529
 #, fuzzy
 msgid "Inline GIF Image"
 msgstr "इनलाइन जीआईएफ इमेज"
 
-#: include/global_arrays.php:1531
+#: include/global_arrays.php:1532
 #, fuzzy
 msgid "Attached PNG Image"
 msgstr "संलग्न पीएनजी छवि"
 
-#: include/global_arrays.php:1534
+#: include/global_arrays.php:1535
 #, fuzzy
 msgid "Attached JPEG Image"
 msgstr "संलग्न JPEG छवि"
 
-#: include/global_arrays.php:1535
+#: include/global_arrays.php:1536
 #, fuzzy
 msgid "Attached GIF Image"
 msgstr "संलग्न GIF छवि"
 
-#: include/global_arrays.php:1539
+#: include/global_arrays.php:1540
 #, fuzzy
 msgid "Inline PNG Image, LN Style"
 msgstr "इनलाइन पीएनजी इमेज, एलएन स्टाइल"
 
-#: include/global_arrays.php:1541
+#: include/global_arrays.php:1542
 #, fuzzy
 msgid "Inline JPEG Image, LN Style"
 msgstr "इनलाइन जेपीईजी इमेज, एलएन स्टाइल"
 
-#: include/global_arrays.php:1542
+#: include/global_arrays.php:1543
 #, fuzzy
 msgid "Inline GIF Image, LN Style"
 msgstr "इनलाइन जीआईएफ इमेज, एलएन स्टाइल"
 
-#: include/global_arrays.php:1547
+#: include/global_arrays.php:1548
 msgid "Text"
 msgstr "टेक्स्ट"
 
-#: include/global_arrays.php:1548 include/global_form.php:2179
+#: include/global_arrays.php:1549 include/global_form.php:2179
 msgid "Tree"
 msgstr "वृक्षugiou"
 
-#: include/global_arrays.php:1550
+#: include/global_arrays.php:1551
 msgid "Horizontal Rule"
 msgstr "आड़ी पंक्ति -\\\\ hline"
 
-#: include/global_arrays.php:1554
+#: include/global_arrays.php:1555
 msgid "left"
 msgstr "बाएं"
 
-#: include/global_arrays.php:1555
+#: include/global_arrays.php:1556
 msgid "center"
 msgstr "बीच में@ title: column"
 
-#: include/global_arrays.php:1556
+#: include/global_arrays.php:1557
 msgid "right"
 msgstr "दायें"
 
-#: include/global_arrays.php:1560
+#: include/global_arrays.php:1561
 #, fuzzy
 msgid "Minute(s)"
 msgstr "मिनट (रों)"
 
-#: include/global_arrays.php:1561
+#: include/global_arrays.php:1562
 #, fuzzy
 msgid "Hour(s)"
 msgstr "घंटे)"
 
-#: include/global_arrays.php:1562
+#: include/global_arrays.php:1563
 #, fuzzy
 msgid "Day(s)"
 msgstr "दिवस (रों)"
 
-#: include/global_arrays.php:1563
+#: include/global_arrays.php:1564
 #, fuzzy
 msgid "Week(s)"
 msgstr "वीक (रों)"
 
-#: include/global_arrays.php:1564
+#: include/global_arrays.php:1565
 #, fuzzy
 msgid "Month(s), Day of Month"
 msgstr "महीने (एस), महीने का दिन"
 
-#: include/global_arrays.php:1565
+#: include/global_arrays.php:1566
 #, fuzzy
 msgid "Month(s), Day of Week"
 msgstr "महीने (दिन), सप्ताह का दिन"
 
-#: include/global_arrays.php:1566
+#: include/global_arrays.php:1567
 #, fuzzy
 msgid "Year(s)"
 msgstr "वर्षों)"
 
-#: include/global_arrays.php:1570
+#: include/global_arrays.php:1571
 #, fuzzy
 msgid "Keep Graph Types"
 msgstr "ग्राफ प्रकार रखें"
 
-#: include/global_arrays.php:1571
+#: include/global_arrays.php:1572
 #, fuzzy
 msgid "Keep Type and STACK"
 msgstr "टाइप और STACK रखें"
 
-#: include/global_arrays.php:1572
+#: include/global_arrays.php:1573
 #, fuzzy
 msgid "Convert to AREA/STACK Graph"
 msgstr "क्षेत्र / बैक ग्राफ़ में परिवर्तित करें"
 
-#: include/global_arrays.php:1573
+#: include/global_arrays.php:1574
 #, fuzzy
 msgid "Convert to LINE1 Graph"
 msgstr "LINE1 ग्राफ़ में कनवर्ट करें"
 
-#: include/global_arrays.php:1574
+#: include/global_arrays.php:1575
 #, fuzzy
 msgid "Convert to LINE2 Graph"
 msgstr "LINE2 ग्राफ़ में कनवर्ट करें"
 
-#: include/global_arrays.php:1575
+#: include/global_arrays.php:1576
 #, fuzzy
 msgid "Convert to LINE3 Graph"
 msgstr "LINE3 ग्राफ़ में कनवर्ट करें"
 
-#: include/global_arrays.php:1576
+#: include/global_arrays.php:1577
 #, fuzzy
 msgid "Convert to LINE1/STACK Graph"
 msgstr "LINE1 ग्राफ़ में कनवर्ट करें"
 
-#: include/global_arrays.php:1577
+#: include/global_arrays.php:1578
 #, fuzzy
 msgid "Convert to LINE2/STACK Graph"
 msgstr "LINE2 ग्राफ़ में कनवर्ट करें"
 
-#: include/global_arrays.php:1578
+#: include/global_arrays.php:1579
 #, fuzzy
 msgid "Convert to LINE3/STACK Graph"
 msgstr "LINE3 ग्राफ़ में कनवर्ट करें"
 
-#: include/global_arrays.php:1582
+#: include/global_arrays.php:1583
 #, fuzzy
 msgid "No Totals"
 msgstr "नो टोटल"
 
-#: include/global_arrays.php:1583
+#: include/global_arrays.php:1584
 #, fuzzy
 msgid "Print All Legend Items"
 msgstr "सभी लीजेंड आइटम प्रिंट करें"
 
-#: include/global_arrays.php:1584
+#: include/global_arrays.php:1585
 #, fuzzy
 msgid "Print Totaling Legend Items Only"
 msgstr "केवल कुल किंवदंती आइटम प्रिंट करें"
 
-#: include/global_arrays.php:1588
+#: include/global_arrays.php:1589
 #, fuzzy
 msgid "Total Similar Data Sources"
 msgstr "कुल समान डेटा स्रोत"
 
-#: include/global_arrays.php:1589
+#: include/global_arrays.php:1590
 #, fuzzy
 msgid "Total All Data Sources"
 msgstr "कुल डेटा स्रोत"
 
-#: include/global_arrays.php:1593
+#: include/global_arrays.php:1594
 #, fuzzy
 msgid "No Reordering"
 msgstr "कोई पुन: व्यवस्थित नहीं"
 
-#: include/global_arrays.php:1594
+#: include/global_arrays.php:1595
 #, fuzzy
 msgid "Data Source, Graph"
 msgstr "डेटा स्रोत, ग्राफ़"
 
-#: include/global_arrays.php:1595
+#: include/global_arrays.php:1596
 #, fuzzy
 msgid "Graph, Data Source"
 msgstr "ग्राफ, डेटा स्रोत"
 
-#: include/global_arrays.php:1596
+#: include/global_arrays.php:1597
 #, fuzzy
 msgid "Base Graph Order"
 msgstr "रेखांकन है"
 
-#: include/global_arrays.php:1603
+#: include/global_arrays.php:1604
 msgid "contains"
 msgstr "रखता है"
 
-#: include/global_arrays.php:1604
+#: include/global_arrays.php:1605
 msgid "does not contain"
 msgstr "नहीं रखता है"
 
-#: include/global_arrays.php:1605
+#: include/global_arrays.php:1606
 #, fuzzy
 msgid "begins with"
 msgstr "साथ शुरू होता है"
 
-#: include/global_arrays.php:1606
+#: include/global_arrays.php:1607
 #, fuzzy
 msgid "does not begin with"
 msgstr "से शुरू नहीं होता है"
 
-#: include/global_arrays.php:1607
+#: include/global_arrays.php:1608
 msgid "ends with"
 msgstr "इससे समाप्त होता है"
 
-#: include/global_arrays.php:1608
+#: include/global_arrays.php:1609
 msgid "does not end with"
 msgstr "इससे समाप्त नहीं होता है"
 
-#: include/global_arrays.php:1609
+#: include/global_arrays.php:1610
 #, fuzzy
 msgid "matches"
 msgstr "माचिस"
 
-#: include/global_arrays.php:1610
+#: include/global_arrays.php:1611
 msgid "is not equal to"
 msgstr "से समान नहीं है"
 
-#: include/global_arrays.php:1611
+#: include/global_arrays.php:1612
 msgid "is less than"
 msgstr "इससे छोटा है"
 
-#: include/global_arrays.php:1612
+#: include/global_arrays.php:1613
 #, fuzzy
 msgid "is less than or equal"
 msgstr "से कम या बराबर है"
 
-#: include/global_arrays.php:1613
+#: include/global_arrays.php:1614
 msgid "is greater than"
 msgstr "इससे बड़ा है"
 
-#: include/global_arrays.php:1614
+#: include/global_arrays.php:1615
 #, fuzzy
 msgid "is greater than or equal"
 msgstr "से अधिक या बराबर है"
 
-#: include/global_arrays.php:1615
+#: include/global_arrays.php:1616
 #, fuzzy
 msgid "is unknown"
 msgstr "अज्ञात"
 
-#: include/global_arrays.php:1616
+#: include/global_arrays.php:1617
 #, fuzzy
 msgid "is not unknown"
 msgstr "अज्ञात नहीं है"
 
-#: include/global_arrays.php:1617
+#: include/global_arrays.php:1618
 #, fuzzy
 msgid "is empty"
 msgstr "खाली है"
 
-#: include/global_arrays.php:1618
+#: include/global_arrays.php:1619
 #, fuzzy
 msgid "is not empty"
 msgstr "खाली नहीं है"
 
-#: include/global_arrays.php:1619
+#: include/global_arrays.php:1620
 #, fuzzy
 msgid "matches regular expression"
 msgstr "नियमित अभिव्यक्ति से मेल खाता है"
 
-#: include/global_arrays.php:1620
+#: include/global_arrays.php:1621
 #, fuzzy
 msgid "does not match regular expression"
 msgstr "नियमित अभिव्यक्ति से मेल नहीं खाता"
 
-#: include/global_arrays.php:1722
+#: include/global_arrays.php:1723
 #, fuzzy
 msgid "Fixed String"
 msgstr "फिक्स्ड स्ट्रिंग"
 
-#: include/global_arrays.php:1727
+#: include/global_arrays.php:1728
 #, fuzzy
 msgid "Every 1 Hour"
 msgstr "हर 1 घंटे में"
 
-#: include/global_arrays.php:1733
+#: include/global_arrays.php:1734
 #, fuzzy
 msgid "Every Day"
 msgstr "हर रोज"
 
-#: include/global_arrays.php:1734
+#: include/global_arrays.php:1735
 #, fuzzy
 msgid "Every Week"
 msgstr "प्रति सप्ताह"
 
-#: include/global_arrays.php:1735 include/global_arrays.php:1736
+#: include/global_arrays.php:1736 include/global_arrays.php:1737
 #, fuzzy, php-format
 msgid "Every %d Weeks"
 msgstr "हर% d वीक"
 
-#: include/global_arrays.php:1767
+#: include/global_arrays.php:1768
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr "जनवरी"
 
-#: include/global_arrays.php:1768
+#: include/global_arrays.php:1769
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr "फरवरी"
 
-#: include/global_arrays.php:1769
+#: include/global_arrays.php:1770
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "मार्च"
 
-#: include/global_arrays.php:1770
+#: include/global_arrays.php:1771
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "अप्रैल"
 
-#: include/global_arrays.php:1771
+#: include/global_arrays.php:1772
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "मई"
 
-#: include/global_arrays.php:1772
+#: include/global_arrays.php:1773
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "जून"
 
-#: include/global_arrays.php:1773
+#: include/global_arrays.php:1774
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "जुलाई"
 
-#: include/global_arrays.php:1774
+#: include/global_arrays.php:1775
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr "अगस्त"
 
-#: include/global_arrays.php:1775
+#: include/global_arrays.php:1776
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr "सितं"
 
-#: include/global_arrays.php:1776
+#: include/global_arrays.php:1777
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr "अक्टूबर"
 
-#: include/global_arrays.php:1777
+#: include/global_arrays.php:1778
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr "नवम्बर"
 
-#: include/global_arrays.php:1778
+#: include/global_arrays.php:1779
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr "दिसम्बर"
 
-#: include/global_arrays.php:1792
+#: include/global_arrays.php:1793
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "रवि"
 
-#: include/global_arrays.php:1793
+#: include/global_arrays.php:1794
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "सोम"
 
-#: include/global_arrays.php:1794
+#: include/global_arrays.php:1795
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "मंगल"
 
-#: include/global_arrays.php:1795
+#: include/global_arrays.php:1796
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr "बुध"
 
-#: include/global_arrays.php:1796
+#: include/global_arrays.php:1797
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "गुरु"
 
-#: include/global_arrays.php:1797
+#: include/global_arrays.php:1798
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "शुक्र"
 
-#: include/global_arrays.php:1798
+#: include/global_arrays.php:1799
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr "शनि"
 
-#: include/global_arrays.php:1802
+#: include/global_arrays.php:1803
 msgid "Arabic"
 msgstr "अरबी"
 
-#: include/global_arrays.php:1803
+#: include/global_arrays.php:1804
 msgid "Bulgarian"
 msgstr "बल्गेरियन"
 
-#: include/global_arrays.php:1804
+#: include/global_arrays.php:1805
 #, fuzzy
 msgid "Chinese (China)"
 msgstr "चीनी (चीन)"
 
-#: include/global_arrays.php:1805
+#: include/global_arrays.php:1806
 msgid "Chinese (Taiwan)"
 msgstr "चीनी (ताईवान)"
 
-#: include/global_arrays.php:1806
+#: include/global_arrays.php:1807
 msgid "Dutch"
 msgstr "डच"
 
-#: include/global_arrays.php:1807
+#: include/global_arrays.php:1808
 msgid "English"
 msgstr "English"
 
-#: include/global_arrays.php:1808
+#: include/global_arrays.php:1809
 msgid "French"
 msgstr "फ्रेंच"
 
-#: include/global_arrays.php:1809
+#: include/global_arrays.php:1810
 msgid "German"
 msgstr "जर्मन"
 
-#: include/global_arrays.php:1810
+#: include/global_arrays.php:1811
 msgid "Greek"
 msgstr "ग्रीक"
 
-#: include/global_arrays.php:1811
+#: include/global_arrays.php:1812
 msgid "Hebrew"
 msgstr "यहूदी"
 
-#: include/global_arrays.php:1812
+#: include/global_arrays.php:1813
 msgid "Hindi"
 msgstr "हिंदी"
 
-#: include/global_arrays.php:1813
+#: include/global_arrays.php:1814
 msgid "Italian"
 msgstr "इतालवी"
 
-#: include/global_arrays.php:1814
+#: include/global_arrays.php:1815
 msgid "Japanese"
 msgstr "जापानी"
 
-#: include/global_arrays.php:1815
+#: include/global_arrays.php:1816
 msgid "Korean"
 msgstr "कोरियाई"
 
-#: include/global_arrays.php:1816
+#: include/global_arrays.php:1817
 msgid "Polish"
 msgstr "पोलिश"
 
-#: include/global_arrays.php:1817
+#: include/global_arrays.php:1818
 msgid "Portuguese"
 msgstr "पुर्तगाली"
 
-#: include/global_arrays.php:1818
+#: include/global_arrays.php:1819
 msgid "Portuguese (Brazil)"
 msgstr "पुर्तगाली (ब्राजील)"
 
-#: include/global_arrays.php:1819
+#: include/global_arrays.php:1820
 msgid "Russian"
 msgstr "रूसी"
 
-#: include/global_arrays.php:1820
+#: include/global_arrays.php:1821
 msgid "Spanish"
 msgstr "स्पैनिश"
 
-#: include/global_arrays.php:1821
+#: include/global_arrays.php:1822
 msgid "Swedish"
 msgstr "स्वीडिश"
 
-#: include/global_arrays.php:1822
+#: include/global_arrays.php:1823
 msgid "Turkish"
 msgstr "तुर्की"
 
-#: include/global_arrays.php:1823
+#: include/global_arrays.php:1824
 msgid "Vietnamese"
 msgstr "विएतनामी"
 
-#: include/global_arrays.php:1827
+#: include/global_arrays.php:1828
 msgid "Classic"
 msgstr "प्रतिष्टित"
 
-#: include/global_arrays.php:1828
+#: include/global_arrays.php:1829
 msgid "Modern"
 msgstr "आधुनिक"
 
-#: include/global_arrays.php:1829
+#: include/global_arrays.php:1830
 msgid "Dark"
 msgstr "गहरा"
 
-#: include/global_arrays.php:1830
+#: include/global_arrays.php:1831
 #, fuzzy
 msgid "Paper-plane"
 msgstr "कागज़ का हवाई जहाज"
 
-#: include/global_arrays.php:1831
+#: include/global_arrays.php:1832
 #, fuzzy
 msgid "Paw"
 msgstr "पंजा"
 
-#: include/global_arrays.php:1832
+#: include/global_arrays.php:1833
 msgid "Sunrise"
 msgstr "सनराइज"
 
-#: include/global_arrays.php:1836
+#: include/global_arrays.php:1837
 #, fuzzy
 msgid "[Fail]"
 msgstr "असफल"
 
-#: include/global_arrays.php:1837
+#: include/global_arrays.php:1838
 #, fuzzy
 msgid "[Warning]"
 msgstr "चेतावनी:"
 
-#: include/global_arrays.php:1838
+#: include/global_arrays.php:1839
 #, fuzzy
 msgid "[Success]"
 msgstr "सफ़ल!"
 
-#: include/global_arrays.php:1839
+#: include/global_arrays.php:1840
 #, fuzzy
 msgid "[Skipped]"
 msgstr "[छोड़ा गया]"
 
-#: include/global_arrays.php:1863 include/global_arrays.php:1869
+#: include/global_arrays.php:1864 include/global_arrays.php:1870
 #, fuzzy
 msgid "User Profile (Edit)"
 msgstr "उपयोगकर्ता प्रोफ़ाइल (संपादित करें)"
 
-#: include/global_arrays.php:1881 include/global_arrays.php:1887
+#: include/global_arrays.php:1882 include/global_arrays.php:1888
 #, fuzzy
 msgid "Tree Mode"
 msgstr "ट्री मोड"
 
-#: include/global_arrays.php:1893
+#: include/global_arrays.php:1894
 msgid "List Mode"
 msgstr "सूची मोड"
 
-#: include/global_arrays.php:1925 include/global_arrays.php:1931
-#: lib/functions.php:2616 lib/html.php:1632 lib/html.php:1709 links.php:344
+#: include/global_arrays.php:1926 include/global_arrays.php:1932
+#: lib/functions.php:2618 lib/html.php:1635 lib/html.php:1712 links.php:344
 #: user_admin.php:1704 user_group_admin.php:1380
 msgid "Console"
 msgstr "कंसोल"
 
-#: include/global_arrays.php:1937
+#: include/global_arrays.php:1938
 #, fuzzy
 msgid "Graph Management"
 msgstr "ग्राफ प्रबंधन"
 
-#: include/global_arrays.php:1943 include/global_arrays.php:1985
-#: include/global_arrays.php:2003 include/global_arrays.php:2057
-#: include/global_arrays.php:2069 include/global_arrays.php:2081
-#: include/global_arrays.php:2117 include/global_arrays.php:2135
-#: include/global_arrays.php:2153 include/global_arrays.php:2171
-#: include/global_arrays.php:2189 include/global_arrays.php:2213
-#: include/global_arrays.php:2249 include/global_arrays.php:2369
-#: include/global_arrays.php:2393 include/global_arrays.php:2417
-#: include/global_arrays.php:2435 include/global_arrays.php:2447
-#: include/global_arrays.php:2549 include/global_arrays.php:2573
-#: include/global_arrays.php:2591 include/global_arrays.php:2609
-#: include/global_arrays.php:2627 include/global_arrays.php:2651
+#: include/global_arrays.php:1944 include/global_arrays.php:1986
+#: include/global_arrays.php:2004 include/global_arrays.php:2058
+#: include/global_arrays.php:2070 include/global_arrays.php:2082
+#: include/global_arrays.php:2118 include/global_arrays.php:2136
+#: include/global_arrays.php:2154 include/global_arrays.php:2172
+#: include/global_arrays.php:2190 include/global_arrays.php:2214
+#: include/global_arrays.php:2250 include/global_arrays.php:2370
+#: include/global_arrays.php:2394 include/global_arrays.php:2418
+#: include/global_arrays.php:2436 include/global_arrays.php:2448
+#: include/global_arrays.php:2550 include/global_arrays.php:2574
+#: include/global_arrays.php:2592 include/global_arrays.php:2610
+#: include/global_arrays.php:2628 include/global_arrays.php:2652
 #, fuzzy
 msgid "(Edit)"
 msgstr "संपादित करें"
 
-#: include/global_arrays.php:1961 lib/api_aggregate.php:1704
+#: include/global_arrays.php:1962 lib/api_aggregate.php:1704
 #, fuzzy
 msgid "Graph Items"
 msgstr "ग्राफ़ आइटम"
 
-#: include/global_arrays.php:1967
+#: include/global_arrays.php:1968
 #, fuzzy
 msgid "Create New Graphs"
 msgstr "नए रेखांकन बनाएँ"
 
-#: include/global_arrays.php:1973
+#: include/global_arrays.php:1974
 #, fuzzy
 msgid "Create Graphs from Data Query"
 msgstr "डेटा क्वेरी से ग्राफ़ बनाएँ"
 
-#: include/global_arrays.php:1991 include/global_arrays.php:2009
-#: include/global_arrays.php:2105 include/global_arrays.php:2195
-#: include/global_arrays.php:2219 include/global_arrays.php:2375
+#: include/global_arrays.php:1992 include/global_arrays.php:2010
+#: include/global_arrays.php:2106 include/global_arrays.php:2196
+#: include/global_arrays.php:2220 include/global_arrays.php:2376
 #, fuzzy
 msgid "(Remove)"
 msgstr "हटाना"
 
-#: include/global_arrays.php:2027 include/global_arrays.php:2033
-#: include/global_arrays.php:2039 include/global_arrays.php:2045
-#: include/global_arrays.php:2309
+#: include/global_arrays.php:2028 include/global_arrays.php:2034
+#: include/global_arrays.php:2040 include/global_arrays.php:2046
+#: include/global_arrays.php:2310
 msgid "View Log"
 msgstr "लॉग देखिए"
 
-#: include/global_arrays.php:2051
+#: include/global_arrays.php:2052
 #, fuzzy
 msgid "Graph Trees"
 msgstr "ग्राफ पेड़"
 
-#: include/global_arrays.php:2093 lib/api_aggregate.php:1704
+#: include/global_arrays.php:2094 lib/api_aggregate.php:1704
 #, fuzzy
 msgid "Graph Template Items"
 msgstr "ग्राफ टेम्पलेट आइटम"
 
-#: include/global_arrays.php:2183
+#: include/global_arrays.php:2184
 #, fuzzy
 msgid "Round Robin Archives"
 msgstr "राउंड रॉबिन अभिलेखागार"
 
-#: include/global_arrays.php:2225
+#: include/global_arrays.php:2226
 #, fuzzy
 msgid "Data Input Fields"
 msgstr "डेटा इनपुट फ़ील्ड"
 
-#: include/global_arrays.php:2231 include/global_arrays.php:2261
+#: include/global_arrays.php:2232 include/global_arrays.php:2262
 #, fuzzy
 msgid "(Remove Item)"
 msgstr "(वस्तु निकालो)"
 
-#: include/global_arrays.php:2267 include/global_settings.php:241
+#: include/global_arrays.php:2268 include/global_settings.php:241
 #: rrdcleaner.php:294
 #, fuzzy
 msgid "RRD Cleaner"
 msgstr "आरआरडी क्लीनर"
 
-#: include/global_arrays.php:2279
+#: include/global_arrays.php:2280
 #, fuzzy
 msgid "List unused Files"
 msgstr "अप्रयुक्त फ़ाइलों की सूची बनाएं"
 
-#: include/global_arrays.php:2291 include/global_arrays.php:2303
+#: include/global_arrays.php:2292 include/global_arrays.php:2304
 #: utilities.php:2018
 #, fuzzy
 msgid "View Poller Cache"
 msgstr "देखें पोलर कैश"
 
-#: include/global_arrays.php:2297 utilities.php:2022
+#: include/global_arrays.php:2298 utilities.php:2022
 #, fuzzy
 msgid "View Data Query Cache"
 msgstr "डेटा क्वेरी कैश देखें"
 
-#: include/global_arrays.php:2315
+#: include/global_arrays.php:2316
 msgid "Clear Log"
 msgstr "अभिलेख साफ करो"
 
-#: include/global_arrays.php:2321 utilities.php:2011
+#: include/global_arrays.php:2322 utilities.php:2011
 #, fuzzy
 msgid "View User Log"
 msgstr "उपयोगकर्ता लॉग देखें"
 
-#: include/global_arrays.php:2327
+#: include/global_arrays.php:2328
 #, fuzzy
 msgid "Clear User Log"
 msgstr "उपयोगकर्ता लॉग साफ़ करें"
 
-#: include/global_arrays.php:2333 utilities.php:2002 utilities.php:2003
+#: include/global_arrays.php:2334 utilities.php:2002 utilities.php:2003
 #, fuzzy
 msgid "Technical Support"
 msgstr "तकनीकी सहायता"
 
-#: include/global_arrays.php:2339 utilities.php:2144
+#: include/global_arrays.php:2340 utilities.php:2144
 #, fuzzy
 msgid "Boost Status"
 msgstr "बूस्ट स्टेटस"
 
-#: include/global_arrays.php:2345 utilities.php:2059
+#: include/global_arrays.php:2346 utilities.php:2059
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "एसएनएमपी एजेंट कैश देखें"
 
-#: include/global_arrays.php:2351 utilities.php:2067
+#: include/global_arrays.php:2352 utilities.php:2067
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "एसएनएमपी एजेंट अधिसूचना लॉग देखें"
 
-#: include/global_arrays.php:2381 vdef.php:575
+#: include/global_arrays.php:2382 vdef.php:575
 #, fuzzy
 msgid "VDEF Items"
 msgstr "VDEF आइटम"
 
-#: include/global_arrays.php:2387
+#: include/global_arrays.php:2388
 #, fuzzy
 msgid "View SNMP Notification Receivers"
 msgstr "एसएनएमपी अधिसूचना प्राप्तियां देखें"
 
-#: include/global_arrays.php:2399
+#: include/global_arrays.php:2400
 #, fuzzy
 msgid "Cacti Settings"
 msgstr "कैक्टि सेटिंग्स"
 
-#: include/global_arrays.php:2405
+#: include/global_arrays.php:2406
 #, fuzzy
 msgid "External Link"
 msgstr "बाहरी लिंक"
 
-#: include/global_arrays.php:2423 include/global_arrays.php:2453
+#: include/global_arrays.php:2424 include/global_arrays.php:2454
 #, fuzzy
 msgid "(Action)"
 msgstr "कार्रवाई"
 
-#: include/global_arrays.php:2471
+#: include/global_arrays.php:2472
 msgid "Export Results"
 msgstr "परिणामों को एचटीएमएल के रूप में निर्यात करें"
 
-#: include/global_arrays.php:2483 include/global_arrays.php:2513
-#: lib/html.php:1653 lib/html.php:1655 lib/html.php:1734
+#: include/global_arrays.php:2484 include/global_arrays.php:2514
+#: lib/html.php:1656 lib/html.php:1658 lib/html.php:1737
 msgid "Reporting"
 msgstr "रिपोर्टिंग"
 
-#: include/global_arrays.php:2489 include/global_arrays.php:2519
+#: include/global_arrays.php:2490 include/global_arrays.php:2520
 #, fuzzy
 msgid "Report Add"
 msgstr "रिपोर्ट जोड़ें"
 
-#: include/global_arrays.php:2495 include/global_arrays.php:2525
+#: include/global_arrays.php:2496 include/global_arrays.php:2526
 #, fuzzy
 msgid "Report Delete"
 msgstr "रिपोर्ट हटाएं"
 
-#: include/global_arrays.php:2501 include/global_arrays.php:2531
+#: include/global_arrays.php:2502 include/global_arrays.php:2532
 #, fuzzy
 msgid "Report Edit"
 msgstr "रिपोर्ट संपादित करें"
 
-#: include/global_arrays.php:2507 include/global_arrays.php:2537
+#: include/global_arrays.php:2508 include/global_arrays.php:2538
 #, fuzzy
 msgid "Report Edit Item"
 msgstr "रिपोर्ट संपादित करें आइटम"
 
-#: include/global_arrays.php:2561
+#: include/global_arrays.php:2562
 #, fuzzy
 msgid "Color Template Items"
 msgstr "रंग टेम्पलेट आइटम"
 
-#: include/global_arrays.php:2603
+#: include/global_arrays.php:2604
 #, fuzzy
 msgid "Aggregate Items"
 msgstr "अलग-अलग आइटम"
 
-#: include/global_arrays.php:2639
+#: include/global_arrays.php:2640
 #, fuzzy
 msgid "Graph Rule Items"
 msgstr "ग्राफ नियम आइटम"
 
-#: include/global_arrays.php:2663
+#: include/global_arrays.php:2664
 #, fuzzy
 msgid "Tree Rule Items"
 msgstr "ट्री नियम आइटम"
 
-#: include/global_arrays.php:2694 include/global_arrays.php:2710
+#: include/global_arrays.php:2695 include/global_arrays.php:2711
 #: lib/api_device.php:1154
 msgid "days"
 msgstr "दिन"
 
-#: include/global_arrays.php:2695
+#: include/global_arrays.php:2696
 #, fuzzy
 msgid "hrs"
 msgstr "घंटे"
 
-#: include/global_arrays.php:2696
+#: include/global_arrays.php:2697
 msgid "mins"
 msgstr "मिंट"
 
-#: include/global_arrays.php:2697
+#: include/global_arrays.php:2698
 msgid "secs"
 msgstr "सकिंट"
 
-#: include/global_arrays.php:2711 lib/api_device.php:1154
+#: include/global_arrays.php:2712 lib/api_device.php:1154
 msgid "hours"
 msgstr "घंटे"
 
-#: include/global_arrays.php:2712 lib/api_device.php:1154
+#: include/global_arrays.php:2713 lib/api_device.php:1154
 msgid "minutes"
 msgstr "मिनट"
 
-#: include/global_arrays.php:2713
+#: include/global_arrays.php:2714
 msgid "seconds"
 msgstr "सेकंड"
 
@@ -9501,7 +9505,7 @@ msgstr "किंवदंती दिशा (- परिशिष्ट-दि
 msgid "Place the legend items in the given vertical order."
 msgstr "दिए गए ऊर्ध्वाधर क्रम में पौराणिक वस्तुओं को रखें।"
 
-#: include/global_form.php:919 lib/api_aggregate.php:1710 lib/html.php:1097
+#: include/global_form.php:919 lib/api_aggregate.php:1710 lib/html.php:1100
 #, fuzzy
 msgid "Graph Item Type"
 msgstr "ग्राफ आइटम प्रकार"
@@ -10351,7 +10355,7 @@ msgstr "डाटा"
 msgid "Visual"
 msgstr "विज़ुअल"
 
-#: include/global_settings.php:44 lib/functions.php:3946 lib/functions.php:3951
+#: include/global_settings.php:44 lib/functions.php:3948 lib/functions.php:3953
 msgid "Authentication"
 msgstr "प्रमाणीकरण"
 
@@ -10393,11 +10397,11 @@ msgstr "ग्राफ फ़ॉन्ट्स"
 msgid "PHP Mail() Function"
 msgstr "PHP मेल () फ़ंक्शन"
 
-#: include/global_settings.php:93 lib/functions.php:3929
+#: include/global_settings.php:93 lib/functions.php:3931
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:94 lib/functions.php:3934
+#: include/global_settings.php:94 lib/functions.php:3936
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10795,7 +10799,7 @@ msgstr "यदि सरल, रेखांकन और डेटा स्र
 msgid "Simple"
 msgstr "सरल"
 
-#: include/global_settings.php:421 lib/html.php:2464
+#: include/global_settings.php:421 lib/html.php:2467
 msgid "Advanced"
 msgstr "उन्नत"
 
@@ -11678,162 +11682,161 @@ msgstr "कितने स्निपबुलवॉक अनुरोध क
 
 #: include/global_settings.php:1165
 #, fuzzy
+msgid "SNMP Get OID Limit"
+msgstr "SNMP मिलता है"
+
+#: include/global_settings.php:1166
+msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
+msgstr ""
+
+#: include/global_settings.php:1173
+#, fuzzy
 msgid "Disable Resource Cache Replication"
 msgstr "संसाधन कैश का पुनर्निर्माण करें"
 
-#: include/global_settings.php:1166
+#: include/global_settings.php:1174
 #, fuzzy
 msgid "By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themeselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting."
 msgstr "डिफ़ॉल्ट रूप से, मुख्य कैक्टि डेटा कलेक्टर पूरी वेब साइट और प्लगइन्स को एक संसाधन कैश में कैश करेगा। फिर, समय-समय पर दूरस्थ डेटा कलेक्टर मुख्य कैक्टि डेटा कलेक्टर से किसी भी अपडेट के साथ थीम को अपडेट करेंगे। यह संसाधन कैश अनिवार्य रूप से दूरस्थ डेटा संग्राहक को आत्म उन्नयन के लिए अनुमति देता है। यदि आप इस विकल्प का उपयोग नहीं करना चाहते हैं, तो आप इस सेटिंग का उपयोग करके इसे अक्षम कर सकते हैं।"
 
-#: include/global_settings.php:1171
+#: include/global_settings.php:1179
 #, fuzzy
 msgid "Background Timeout Settings"
 msgstr "किंवदंती फ़ॉन्ट सेटिंग"
 
-#: include/global_settings.php:1176
+#: include/global_settings.php:1184
 #, fuzzy
 msgid "Report Generation Timeout"
 msgstr "रिमोट एजेंट टाइमआउट"
 
-#: include/global_settings.php:1177
+#: include/global_settings.php:1185
 #, fuzzy
 msgid "The maximum amount of time Cacti's Reports Generation script can run without generating a timeout error and being killed."
 msgstr "Cacti की रिपोर्ट जनरेशन स्क्रिप्ट में अधिकतम समय बिना टाइमआउट त्रुटि उत्पन्न किए और चलाया जा सकता है।"
 
-#: include/global_settings.php:1181 include/global_settings.php:1194
-#: include/global_settings.php:1207 include/global_settings.php:1220
-#: include/global_settings.php:1234
+#: include/global_settings.php:1189 include/global_settings.php:1202
+#: include/global_settings.php:1215 include/global_settings.php:1228
+#: include/global_settings.php:1242
 #, fuzzy, php-format
 msgid "%s Minute"
 msgstr "%s मिनट"
 
-#: include/global_settings.php:1189
+#: include/global_settings.php:1197
 #, fuzzy
 msgid "Data Source Statistics Timeout"
 msgstr "डेटा स्रोत सांख्यिकी"
 
-#: include/global_settings.php:1190
+#: include/global_settings.php:1198
 #, fuzzy
 msgid "The maximum amount of time Cacti's Data Source Statistics script can run without generating a timeout error and being killed."
 msgstr "Cacti के डेटा स्रोत सांख्यिकी स्क्रिप्ट का अधिकतम समय एक टाइमआउट त्रुटि उत्पन्न करने और मारे जाने के बिना चल सकता है।"
 
-#: include/global_settings.php:1202
+#: include/global_settings.php:1210
 #, fuzzy
 msgid "Background Commands Timeout"
 msgstr "बैकग्राउंड कमांड्स टाइमआउट"
 
-#: include/global_settings.php:1203
+#: include/global_settings.php:1211
 #, fuzzy
 msgid "The maximum amount of time Cacti's Background Commands script can run without generating a timeout error and being killed."
 msgstr "Cacti का बैकग्राउंड कमांड स्क्रिप्ट अधिकतम समय बिना टाइमआउट एरर बनाए और मारी जा सकती है।"
 
-#: include/global_settings.php:1215
+#: include/global_settings.php:1223
 #, fuzzy
 msgid "Maintenance Background Generation Timeout"
 msgstr "रखरखाव पृष्ठभूमि पीढ़ी का समय"
 
-#: include/global_settings.php:1216
+#: include/global_settings.php:1224
 #, fuzzy
 msgid "The maximum amount of time a Cacti's Maintenance script can run without generating a timeout error and being killed."
 msgstr "समय की त्रुटि उत्पन्न करने और मारे जाने के बिना एक कैक्टि के रखरखाव स्क्रिप्ट की अधिकतम राशि चल सकती है।"
 
-#: include/global_settings.php:1225 include/global_settings.php:1239
+#: include/global_settings.php:1233 include/global_settings.php:1247
 #, fuzzy, php-format
 msgid "%s Hour"
 msgstr "%s घंटे"
 
-#: include/global_settings.php:1229
+#: include/global_settings.php:1237
 #, fuzzy
 msgid "Spikekill Background Generation Timeout"
 msgstr "स्पाइककिल बैकग्राउंड जनरेशन टाइमआउट"
 
-#: include/global_settings.php:1230
+#: include/global_settings.php:1238
 #, fuzzy
 msgid "The maximum amount of time a Cacti's Spikekill script can run without generating a timeout error and being killed."
 msgstr "Cacti की स्पाइककिल स्क्रिप्ट की अधिकतम राशि बिना टाइमआउट त्रुटि उत्पन्न किए और मारे जाने के बिना चल सकती है।"
 
-#: include/global_settings.php:1246
+#: include/global_settings.php:1254
 #, fuzzy
 msgid "Data Collector Defaults"
 msgstr "डेटा संग्राहक"
 
-#: include/global_settings.php:1247
+#: include/global_settings.php:1255
 msgid "These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector."
 msgstr ""
 
-#: include/global_settings.php:1252
+#: include/global_settings.php:1260
 #, fuzzy
 msgid "Data Collector Processes"
 msgstr "डिफ़ॉल्ट डेटा संग्राहक प्रक्रियाएँ"
 
-#: include/global_settings.php:1253
+#: include/global_settings.php:1261
 #, fuzzy
 msgid "The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores."
 msgstr "डेटा कलेक्टर प्रति निष्पादित करने के लिए समवर्ती प्रक्रियाओं की डिफ़ॉल्ट संख्या। नोट: Cacti 1.2 से शुरू, यह सेटिंग डेटा कलेक्टर में बनाए रखी जाती है। आगे बढ़ते हुए, यह मान डेटा कलेक्टर के लिए केवल एक पूर्व निर्धारित है। Cmd.php का उपयोग करते समय अधिक संख्या का उपयोग करने से प्रदर्शन में सुधार होगा। थ्रेड पैरामीटर के साथ स्पाइन में प्रदर्शन सुधार सबसे अच्छा हल किया जाता है। स्पाइन का उपयोग करते समय, हम इसके बजाय कम संख्या और लीवरेजिंग थ्रेड की सलाह देते हैं। Cmd.php का उपयोग करते समय, CPU कोर की संख्या 2x से अधिक का उपयोग न करें।"
 
-#: include/global_settings.php:1260
+#: include/global_settings.php:1268
 #, fuzzy
 msgid "Threads per Process"
 msgstr "डिफ़ॉल्ट प्रक्रिया प्रति सूत्र"
 
-#: include/global_settings.php:1261
+#: include/global_settings.php:1269
 #, fuzzy
 msgid "The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well."
 msgstr "डिफ़ॉल्ट थ्रेड प्रति प्रक्रिया की अनुमति है। नोट: Cacti 1.2+ से शुरू होकर, यह सेटिंग डेटा कलेक्टर में बनाए रखी जाती है, और यह केवल प्रीसेट है। स्पाइन का उपयोग करते समय अधिक संख्या का उपयोग करने से प्रदर्शन में सुधार होगा। हालाँकि, सुनिश्चित करें कि आपके पास निम्न समीकरण का समर्थन करने के लिए पर्याप्त MySQL / MariaDB कनेक्शन हैं: कनेक्शन = डेटा संग्राहक * प्रक्रिया * (थ्रेड्स + स्क्रिप्ट कोड)। आपको यह भी सुनिश्चित करना होगा कि आपके पास उपयोगकर्ता लॉगिन कनेक्शन के लिए पर्याप्त अतिरिक्त कनेक्शन हैं।"
 
-#: include/global_settings.php:1268
+#: include/global_settings.php:1276
 #, fuzzy
 msgid "Additional Spine Parameters"
 msgstr "अतिरिक्त विकल्प"
 
-#: include/global_settings.php:1273
+#: include/global_settings.php:1281
 #, fuzzy
 msgid "Invalid Data Logging"
 msgstr "अमान्य डेटा लॉगिंग"
 
-#: include/global_settings.php:1274
+#: include/global_settings.php:1282
 #, fuzzy
 msgid "How would you like Spine output errors logged?  The options are: 'Detailed' which is similar to cmd.php logging; 'Summary' which provides the number of output errors per Device; and 'None', which does not provide error counts."
 msgstr "आप स्पाइन आउटपुट त्रुटियों को कैसे स्वीकार करेंगे? विकल्प हैं: &#39;विस्तृत&#39; जो cmd.php लॉगिंग के समान है; &#39;सारांश&#39; जो प्रति उपकरण आउटपुट त्रुटियों की संख्या प्रदान करता है; और &#39;कोई नहीं&#39;, जो त्रुटि गणना प्रदान नहीं करता है।"
 
-#: include/global_settings.php:1279 utilities.php:150
+#: include/global_settings.php:1287 utilities.php:150
 msgid "Summary"
 msgstr "सारांश"
 
-#: include/global_settings.php:1280
+#: include/global_settings.php:1288
 msgid "Detailed"
 msgstr "विस्तृत"
 
-#: include/global_settings.php:1284
+#: include/global_settings.php:1292
 #, fuzzy
 msgid "Number of PHP Script Servers"
 msgstr "PHP स्क्रिप्ट सर्वर की संख्या"
 
-#: include/global_settings.php:1285
+#: include/global_settings.php:1293
 #, fuzzy
 msgid "The number of concurrent script server processes to run per Spine process.  Settings between 1 and 10 are accepted.  This parameter will help if you are running several threads and script server scripts."
 msgstr "रीढ़ की प्रक्रिया के अनुसार समवर्ती स्क्रिप्ट सर्वर प्रक्रियाओं की संख्या। 1 और 10 के बीच सेटिंग स्वीकार की जाती है। यदि आप कई थ्रेड और स्क्रिप्ट सर्वर स्क्रिप्ट चला रहे हैं तो यह पैरामीटर मदद करेगा।"
 
-#: include/global_settings.php:1292
+#: include/global_settings.php:1300
 #, fuzzy
 msgid "Script and Script Server Timeout Value"
 msgstr "स्क्रिप्ट और स्क्रिप्ट सर्वर टाइमआउट मान"
 
-#: include/global_settings.php:1293
+#: include/global_settings.php:1301
 #, fuzzy
 msgid "The maximum time that Cacti will wait on a script to complete.  This timeout value is in seconds"
 msgstr "कैक्टि एक स्क्रिप्ट पर पूरा होने के लिए इंतजार करेगा। यह टाइमआउट मान सेकंड में है"
-
-#: include/global_settings.php:1300
-#, fuzzy
-msgid "The Maximum SNMP OIDs Per SNMP Get Request"
-msgstr "अधिकतम SNMP OIDs प्रति SNMP अनुरोध प्राप्त करें"
-
-#: include/global_settings.php:1301
-#, fuzzy
-msgid "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk"
-msgstr "एसएनएमपी की अधिकतम संख्या प्रति स्निपबुलवॉक अनुरोध जारी करने के लिए ओआईडी प्राप्त करती है। इस मूल्य में वृद्धि धीमी गति से अधिक पराग प्रदर्शन को गति देती है। अधिकतम मूल्य 100 ओआईडी है। इस मान को 0 या 1 पर कम करने से snmpbulkwalk अक्षम हो जाएगा"
 
 #: include/global_settings.php:1315
 msgid "Authentication Method"
@@ -12335,7 +12338,7 @@ msgstr "यह है कि ईमेल में एक पंक्ति �
 msgid "Sendmail Options"
 msgstr "Sendmail विकल्प"
 
-#: include/global_settings.php:1701 lib/functions.php:3929
+#: include/global_settings.php:1701 lib/functions.php:3931
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "सेंडमेल पथ"
@@ -12808,7 +12811,7 @@ msgstr "मानक विचलन"
 msgid "Variance Based w/Outliers Removed"
 msgstr "वर्जन आधारित डब्ल्यू / आउटलेर्स को हटा दिया गया"
 
-#: include/global_settings.php:2071 lib/html.php:2157
+#: include/global_settings.php:2071 lib/html.php:2160
 #, fuzzy
 msgid "Replacement Method"
 msgstr "प्रतिस्थापन विधि"
@@ -12818,16 +12821,16 @@ msgstr "प्रतिस्थापन विधि"
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "तीन प्रतिस्थापन तरीके हैं। पहली विधि स्पाइक को प्रश्न में डेटा स्रोत के औसत से बदल देती है। दूसरी विधि स्पाइक को &#39;NaN&#39; से बदल देती है। अंतिम स्पाइक को अंतिम ज्ञात अच्छे मान के साथ बदलता है।"
 
-#: include/global_settings.php:2076 lib/html.php:2153
+#: include/global_settings.php:2076 lib/html.php:2156
 msgid "Average"
 msgstr "औसत"
 
-#: include/global_settings.php:2077 lib/html.php:2154
+#: include/global_settings.php:2077 lib/html.php:2157
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN के"
 
-#: include/global_settings.php:2078 lib/html.php:2155
+#: include/global_settings.php:2078 lib/html.php:2158
 #, fuzzy
 msgid "Last Known Good"
 msgstr "आखिरी ज्ञात अच्छाई"
@@ -12853,7 +12856,7 @@ msgstr "किसी भी मूल्य जो औसत से ऊपर �
 msgid "%d Standard Deviations"
 msgstr "% d मानक विचलन"
 
-#: include/global_settings.php:2103 lib/html.php:2169
+#: include/global_settings.php:2103 lib/html.php:2172
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "भिन्नता का प्रतिशत"
@@ -13420,17 +13423,17 @@ msgstr "अलग-अलग रेखांकन चुनने के लि�
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
 msgstr "एग्रीगेट ग्राफ़ के लिए चुने गए ग्राफ़ ग्राफ़ टेम्प्लेट का उपयोग नहीं करते हैं। एग्रीगेट गैर-अस्थायी ग्राफ़ से एग्रीगेट ग्राफ़ बनाने का समर्थन नहीं करता है।"
 
-#: lib/api_aggregate.php:1708 lib/html.php:1095
+#: lib/api_aggregate.php:1708 lib/html.php:1098
 #, fuzzy
 msgid "Graph Item"
 msgstr "ग्राफ़ आइटम"
 
-#: lib/api_aggregate.php:1711 lib/html.php:1098
+#: lib/api_aggregate.php:1711 lib/html.php:1101
 #, fuzzy
 msgid "CF Type"
 msgstr "सीएफ प्रकार"
 
-#: lib/api_aggregate.php:1712 lib/html.php:1100
+#: lib/api_aggregate.php:1712 lib/html.php:1103
 #, fuzzy
 msgid "Item Color"
 msgstr "आइटम रंग"
@@ -13670,8 +13673,8 @@ msgstr "स्थान:"
 msgid "Contact:"
 msgstr "संपर्क:"
 
-#: lib/api_device.php:1188 lib/functions.php:3960 lib/functions.php:3962
-#: lib/functions.php:3966
+#: lib/api_device.php:1188 lib/functions.php:3962 lib/functions.php:3964
+#: lib/functions.php:3968
 #, fuzzy
 msgid "Ping Results"
 msgstr "पिंग परिणाम"
@@ -14320,12 +14323,12 @@ msgstr "नियमित उपयोगकर्ता के रूप म�
 msgid "guest"
 msgstr "अतिथि"
 
-#: lib/functions.php:2396 lib/functions.php:2413 lib/html.php:2414
+#: lib/functions.php:2396 lib/functions.php:2414 lib/html.php:2417
 #, fuzzy
 msgid "User Community"
 msgstr "उपयोगकर्ता समुदाय"
 
-#: lib/functions.php:2397 lib/functions.php:2414 lib/html.php:2415
+#: lib/functions.php:2397 lib/functions.php:2415 lib/html.php:2418
 #: lib/utility.php:1129
 msgid "Documentation"
 msgstr "प्रलेखन"
@@ -14339,143 +14342,143 @@ msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> के रूप में
 msgid "Edit Profile"
 msgstr "संपादित करें"
 
-#: lib/functions.php:2416
+#: lib/functions.php:2418
 msgid "Logout"
 msgstr "लॉगआउट"
 
-#: lib/functions.php:2564
+#: lib/functions.php:2566
 msgid "Leaf"
 msgstr "पत्ती"
 
-#: lib/functions.php:2584 lib/html_tree.php:713 lib/html_tree.php:749
+#: lib/functions.php:2586 lib/html_tree.php:713 lib/html_tree.php:749
 #: lib/html_tree.php:978 lib/html_tree.php:986 lib/html_tree.php:1559
 #, fuzzy
 msgid "Non Query Based"
 msgstr "गैर क्वेरी आधारित"
 
-#: lib/functions.php:2617
+#: lib/functions.php:2619
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "लिंक %s"
 
-#: lib/functions.php:3561
+#: lib/functions.php:3563
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "मेलर त्रुटि: कोई सेट <b>को</b> संबोधित <b>करने के</b> !! <br> यदि <i>टेस्ट मेल</i> लिंक का उपयोग कर रहे हैं, तो कृपया <b>अलर्ट ई-मेल</b> सेटिंग सेट करें।"
 
-#: lib/functions.php:3893
+#: lib/functions.php:3895
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "प्रमाणीकरण विफल: %s"
 
-#: lib/functions.php:3897
+#: lib/functions.php:3899
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "हेलो विफल: %s"
 
-#: lib/functions.php:3900
+#: lib/functions.php:3902
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "कनेक्ट विफल: %s"
 
-#: lib/functions.php:3903
+#: lib/functions.php:3905
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP त्रुटि:"
 
-#: lib/functions.php:3916
+#: lib/functions.php:3918
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "यह कैक्टि से उत्पन्न एक परीक्षण संदेश है। यह संदेश आपके मेल सेटिंग्स के कॉन्फ़िगरेशन का परीक्षण करने के लिए भेजा गया था।"
 
-#: lib/functions.php:3917
+#: lib/functions.php:3919
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "आपकी ईमेल सेटिंग्स वर्तमान में इस प्रकार सेट की गई हैं"
 
-#: lib/functions.php:3918
+#: lib/functions.php:3920
 msgid "Method"
 msgstr "तरीका"
 
-#: lib/functions.php:3920
+#: lib/functions.php:3922
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "कॉन्फ़िगरेशन की जाँच कर रहा है ... <br>"
 
-#: lib/functions.php:3927
+#: lib/functions.php:3929
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP का मेलर क्लास"
 
-#: lib/functions.php:3933
+#: lib/functions.php:3935
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "विधि: SMTP"
 
-#: lib/functions.php:3948
+#: lib/functions.php:3950
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "सुरक्षा कारणों से नहीं दिखाया गया"
 
-#: lib/functions.php:3949
+#: lib/functions.php:3951
 msgid "Security"
 msgstr "सुरक्षा"
 
-#: lib/functions.php:3957
+#: lib/functions.php:3959
 #, fuzzy
 msgid "Ping Results:"
 msgstr "पिंग परिणाम:"
 
-#: lib/functions.php:3966
+#: lib/functions.php:3968
 msgid "Bypassed"
 msgstr "बाईपास कीता"
 
-#: lib/functions.php:3974
+#: lib/functions.php:3976
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "संदेश पाठ बना रहा है ..."
 
-#: lib/functions.php:3977
+#: lib/functions.php:3979
 #, fuzzy
 msgid "Sending Message..."
 msgstr "संदेश भेजना..."
 
-#: lib/functions.php:3981
+#: lib/functions.php:3983
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "कैक्टि टेस्ट संदेश"
 
-#: lib/functions.php:3983
+#: lib/functions.php:3985
 msgid "Success!"
 msgstr "सफ़ल!"
 
-#: lib/functions.php:3986
+#: lib/functions.php:3988
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "पिंग विफलता के कारण संदेश नहीं भेजा गया।"
 
-#: lib/functions.php:4580 lib/functions.php:4643 poller.php:356 poller.php:477
+#: lib/functions.php:4582 lib/functions.php:4645 poller.php:356 poller.php:477
 #: poller.php:539 poller.php:562 poller.php:702
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "कैक्टि सिस्टम वार्निंग"
 
-#: lib/functions.php:4580 lib/functions.php:4643
+#: lib/functions.php:4582 lib/functions.php:4645
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "निम्न त्रुटि के कारण कैक्टि अक्षम प्लगइन %s: %s! अधिक जानकारी के लिए कैक्टि logfile देखें।"
 
-#: lib/functions.php:5021 lib/functions.php:5023
+#: lib/functions.php:5023 lib/functions.php:5025
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- बीटा %s"
 
-#: lib/functions.php:5021
+#: lib/functions.php:5023
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "संस्करण %s %s"
 
-#: lib/functions.php:5023
+#: lib/functions.php:5025
 #, php-format
 msgid "%s %s"
 msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> <ph id=\"mtc_2\" equiv-text=\"base64:JXM=\"/>"
@@ -14514,7 +14517,7 @@ msgstr "डेटा क्वेरी:"
 msgid "CSV Export of Graph Data"
 msgstr "ग्राफ डेटा का CSV निर्यात"
 
-#: lib/html.php:437 lib/html.php:2403
+#: lib/html.php:437 lib/html.php:2406
 #, fuzzy
 msgid "Time Graph View"
 msgstr "समय ग्राफ़ देखें"
@@ -14557,360 +14560,360 @@ msgstr "वर्तमान मूल्य"
 msgid "No %s Found"
 msgstr "कोई %s मिला"
 
-#: lib/html.php:1099
+#: lib/html.php:1102
 #, fuzzy
 msgid "Alpha %"
 msgstr "अल्फा"
 
-#: lib/html.php:1141
+#: lib/html.php:1144
 #, fuzzy
 msgid "No Source"
 msgstr "डाटा स्रोत"
 
-#: lib/html.php:1470
+#: lib/html.php:1473
 #, fuzzy
 msgid "Choose an action"
 msgstr "एक क्रिया चुनें"
 
-#: lib/html.php:1480
+#: lib/html.php:1483
 #, fuzzy
 msgid "Execute Action"
 msgstr "कार्रवाई निष्पादित करें"
 
-#: lib/html.php:1662 lib/html.php:1664 lib/html.php:1744 managers.php:41
+#: lib/html.php:1665 lib/html.php:1667 lib/html.php:1747 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "लॉग्स"
 
-#: lib/html.php:2163
+#: lib/html.php:2166
 #, fuzzy
 msgid "Standard Deviations"
 msgstr "मानक विचलन"
 
-#: lib/html.php:2175
+#: lib/html.php:2178
 #, fuzzy
 msgid "Variance Outliers"
 msgstr "वैरिएंट आउटलेर"
 
-#: lib/html.php:2181
+#: lib/html.php:2184
 #, fuzzy
 msgid "Kills Per RRA"
 msgstr "प्रति आरआरए को मारता है"
 
-#: lib/html.php:2187
+#: lib/html.php:2190
 #, fuzzy
 msgid "Remove StdDev"
 msgstr "StdDev निकालें"
 
-#: lib/html.php:2188
+#: lib/html.php:2191
 #, fuzzy
 msgid "Remove Variance"
 msgstr "दूर करो"
 
-#: lib/html.php:2189
+#: lib/html.php:2192
 #, fuzzy
 msgid "Gap Fill Range"
 msgstr "गैप भराव रेंज"
 
-#: lib/html.php:2190
+#: lib/html.php:2193
 #, fuzzy
 msgid "Float Range"
 msgstr "फ्लोट रेंज"
 
-#: lib/html.php:2192
+#: lib/html.php:2195
 #, fuzzy
 msgid "Dry Run StdDev"
 msgstr "सूखा रन StdDev"
 
-#: lib/html.php:2193
+#: lib/html.php:2196
 #, fuzzy
 msgid "Dry Run Variance"
 msgstr "ड्राई रन वैरिएस"
 
-#: lib/html.php:2194
+#: lib/html.php:2197
 #, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "ड्राई रन गैप फिल रेंज"
 
-#: lib/html.php:2195
+#: lib/html.php:2198
 #, fuzzy
 msgid "Dry Run Float Range"
 msgstr "ड्राई रन फ्लोट रेंज"
 
-#: lib/html.php:2399
+#: lib/html.php:2402
 #, fuzzy
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
 msgstr "वर्तमान विंडो सीमाओं से परे विस्तार करने के लिए टेबल कॉलम को अनुमति दें या सीमित करें।"
 
-#: lib/html.php:2400 lib/html_filter.php:65
+#: lib/html.php:2403 lib/html_filter.php:65
 #, fuzzy
 msgid "Enter a search term"
 msgstr "एक खोज शब्द दर्ज करें"
 
-#: lib/html.php:2401
+#: lib/html.php:2404
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "एक नियमित अभिव्यक्ति दर्ज करें"
 
-#: lib/html.php:2402
+#: lib/html.php:2405
 msgid "No file selected"
 msgstr "कोई फ़ाइल चयनित नहीं"
 
-#: lib/html.php:2405 lib/html.php:2418
+#: lib/html.php:2408 lib/html.php:2421
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "SpikeKill परिणाम"
 
-#: lib/html.php:2407
+#: lib/html.php:2410
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "रियलटाइम में बस इस ग्राफ को देखने के लिए क्लिक करें"
 
-#: lib/html.php:2408
+#: lib/html.php:2411
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "रीयलटाइम के इस ग्राफ को बाहर निकालने के लिए फिर से क्लिक करें"
 
-#: lib/html.php:2412
+#: lib/html.php:2415
 #, fuzzy
 msgid "Cacti Home"
 msgstr "कैक्टि होम"
 
-#: lib/html.php:2413
+#: lib/html.php:2416
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "कैक्टि प्रोजेक्ट पेज"
 
-#: lib/html.php:2416
+#: lib/html.php:2419
 msgid "Report a bug"
 msgstr "किसी बग की रिपोर्ट करें"
 
-#: lib/html.php:2419
+#: lib/html.php:2422
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "फ़िल्टर दिखाने / छिपाने के लिए क्लिक करें"
 
-#: lib/html.php:2420
+#: lib/html.php:2423
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "वर्तमान फ़िल्टर साफ़ करें"
 
-#: lib/html.php:2421
+#: lib/html.php:2424
 msgid "Clipboard"
 msgstr "क्लिपबोर्ड से... (C)"
 
-#: lib/html.php:2422
+#: lib/html.php:2425
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "क्लिपबोर्ड आईडी"
 
-#: lib/html.php:2423
+#: lib/html.php:2426
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "इस समय प्रतिलिपि संचालन अनुपलब्ध है"
 
-#: lib/html.php:2424
+#: lib/html.php:2427
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "कॉपी करने के लिए डेटा खोजने में विफल!"
 
-#: lib/html.php:2425
+#: lib/html.php:2428
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "क्लिपबोर्ड को अपडेट कर दिया गया है"
 
-#: lib/html.php:2426
+#: lib/html.php:2429
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "क्षमा करें, इस समय आपका क्लिपबोर्ड अपडेट नहीं किया जा सका"
 
-#: lib/html.php:2430
+#: lib/html.php:2433
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "पासफ़्रेज़ की लंबाई न्यूनतम 8 वर्णों से मिलती है"
 
-#: lib/html.php:2431
+#: lib/html.php:2434
 #, fuzzy
 msgid "Passphrase too short"
 msgstr "पासफ़्रेज़ बहुत छोटा है"
 
-#: lib/html.php:2432
+#: lib/html.php:2435
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "पासफ़्रेज़ मैच करता है लेकिन बहुत कम"
 
-#: lib/html.php:2433
+#: lib/html.php:2436
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "पासफ़्रेज़ बहुत छोटा और मेल नहीं खाता"
 
-#: lib/html.php:2434
+#: lib/html.php:2437
 #, fuzzy
 msgid "Passphrases match"
 msgstr "पासफ़्रेज़ मेल खाते हैं"
 
-#: lib/html.php:2435
+#: lib/html.php:2438
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "पासफ़्रेज़ मेल नहीं खाते हैं"
 
-#: lib/html.php:2436
+#: lib/html.php:2439
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "क्षमा करें, हम आपकी अंतिम क्रिया को संसाधित नहीं कर सके।"
 
-#: lib/html.php:2437
+#: lib/html.php:2440
 msgid "Error:"
 msgstr "त्रुटी:"
 
-#: lib/html.php:2438
+#: lib/html.php:2441
 msgid "Reason:"
 msgstr "कारण:"
 
-#: lib/html.php:2439
+#: lib/html.php:2442
 #, fuzzy
 msgid "Action failed"
 msgstr "क्रिया: विफल रही है"
 
-#: lib/html.php:2440 pollers.php:773
+#: lib/html.php:2443 pollers.php:773
 #, fuzzy
 msgid "Connection Successful"
 msgstr "ऑपरेशन सफल रहा"
 
-#: lib/html.php:2441 pollers.php:775
+#: lib/html.php:2444 pollers.php:775
 msgid "Connection Failed"
 msgstr "कनेक्शन असफल"
 
-#: lib/html.php:2442
+#: lib/html.php:2445
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "अंतिम क्रिया की प्रतिक्रिया अप्रत्याशित थी।"
 
-#: lib/html.php:2443
+#: lib/html.php:2446
 msgid "Some Actions failed"
 msgstr "कुछ क्रियाएं विफल रहीं"
 
-#: lib/html.php:2444
+#: lib/html.php:2447
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "ध्यान दें, हम आपके सभी कार्यों को संसाधित नहीं कर सके। विवरण नीचे हैं।"
 
-#: lib/html.php:2445
+#: lib/html.php:2448
 #, fuzzy
 msgid "Operation successful"
 msgstr "ऑपरेशन सफल रहा"
 
-#: lib/html.php:2446
+#: lib/html.php:2449
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "ऑपरेशन सफल रहा। विवरण नीचे हैं।"
 
-#: lib/html.php:2448
+#: lib/html.php:2451
 msgid "Pause"
 msgstr "पॉज़"
 
-#: lib/html.php:2451
+#: lib/html.php:2454
 msgid "Zoom In"
 msgstr "ज़ूम इन करो"
 
-#: lib/html.php:2452
+#: lib/html.php:2455
 msgid "Zoom Out"
 msgstr "ज़ूम आउट करो"
 
-#: lib/html.php:2453
+#: lib/html.php:2456
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "जूम आउट फैक्टर"
 
-#: lib/html.php:2454
+#: lib/html.php:2457
 #, fuzzy
 msgid "Timestamps"
 msgstr "मुहर"
 
-#: lib/html.php:2455
+#: lib/html.php:2458
 #, fuzzy
 msgid "2x"
 msgstr "2x"
 
-#: lib/html.php:2456
+#: lib/html.php:2459
 #, fuzzy
 msgid "4x"
 msgstr "4x"
 
-#: lib/html.php:2457
+#: lib/html.php:2460
 #, fuzzy
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2458
+#: lib/html.php:2461
 #, fuzzy
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2459
+#: lib/html.php:2462
 #, fuzzy
 msgid "32x"
 msgstr "32x"
 
-#: lib/html.php:2460
+#: lib/html.php:2463
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "ज़ूम आउट पोजिशनिंग"
 
-#: lib/html.php:2461
+#: lib/html.php:2464
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "ज़ूम मोड"
 
-#: lib/html.php:2463
+#: lib/html.php:2466
 msgid "Quick"
 msgstr "तेज"
 
-#: lib/html.php:2465
+#: lib/html.php:2468
 msgid "Open in new tab"
 msgstr "नए टैब में खोलें"
 
-#: lib/html.php:2466
+#: lib/html.php:2469
 #, fuzzy
 msgid "Save graph"
 msgstr "ग्राफ को बचाएं"
 
-#: lib/html.php:2467
+#: lib/html.php:2470
 #, fuzzy
 msgid "Copy graph"
 msgstr "ग्राफ की प्रतिलिपि बनाएँ"
 
-#: lib/html.php:2468
+#: lib/html.php:2471
 #, fuzzy
 msgid "Copy graph link"
 msgstr "ग्राफ लिंक कॉपी करें"
 
-#: lib/html.php:2469
+#: lib/html.php:2472
 msgid "Always On"
 msgstr "हमेशा चालू"
 
-#: lib/html.php:2470
+#: lib/html.php:2473
 msgid "Auto"
 msgstr "आपही"
 
-#: lib/html.php:2471
+#: lib/html.php:2474
 msgid "Always Off"
 msgstr "हमेशा बंद"
 
-#: lib/html.php:2472
+#: lib/html.php:2475
 #, fuzzy
 msgid "Begin with"
 msgstr "से शुरू"
 
-#: lib/html.php:2474
+#: lib/html.php:2477
 #, fuzzy
 msgid "End with"
 msgstr "अंतिम दिनांक"
 
-#: lib/html.php:2476 lib/html_form.php:1303
+#: lib/html.php:2479 lib/html_form.php:1303
 msgid "Close"
 msgstr "बंद"
 
-#: lib/html.php:2478
+#: lib/html.php:2481
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "3 माउस बटन"
@@ -21277,6 +21280,14 @@ msgstr "इस VDEF का उपयोग करके ग्राफ टे�
 #, fuzzy
 msgid "No VDEFs"
 msgstr "कोई VDEFs नहीं"
+
+#, fuzzy
+#~ msgid "The Maximum SNMP OIDs Per SNMP Get Request"
+#~ msgstr "अधिकतम SNMP OIDs प्रति SNMP अनुरोध प्राप्त करें"
+
+#, fuzzy
+#~ msgid "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk"
+#~ msgstr "एसएनएमपी की अधिकतम संख्या प्रति स्निपबुलवॉक अनुरोध जारी करने के लिए ओआईडी प्राप्त करती है। इस मूल्य में वृद्धि धीमी गति से अधिक पराग प्रदर्शन को गति देती है। अधिकतम मूल्य 100 ओआईडी है। इस मान को 0 या 1 पर कम करने से snmpbulkwalk अक्षम हो जाएगा"
 
 #, fuzzy
 #~ msgid "Other Defaults"
