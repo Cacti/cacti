@@ -841,7 +841,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 		// check for an over running poller
 		$now = microtime(true);
 		if ($now - $start > $polling_interval) {
-			cacti_log('WARNING: cmd.php poller over ran its polling intervale and therefore ending');
+			cacti_log('WARNING: cmd.php poller has run over its polling interval and therefore is ending');
 			break;
 		}
 	}
