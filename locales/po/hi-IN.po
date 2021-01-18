@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-17 18:24+0000\n"
+"POT-Creation-Date: 2021-01-18 11:11-0500\n"
 "PO-Revision-Date: 2020-09-13 18:33-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -3597,7 +3597,7 @@ msgstr "रेरन विश्लेषण"
 msgid "Check"
 msgstr "जाँच करें"
 
-#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2914
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2911
 #: utilities.php:571 utilities.php:588 utilities.php:2611
 msgid "Value"
 msgstr "मूल्य"
@@ -4214,7 +4214,7 @@ msgstr "चरण"
 
 #: data_source_profiles.php:613 graphs_new.php:416 include/global_form.php:254
 #: lib/html.php:493 lib/html_filter.php:72 lib/installer.php:2524
-#: lib/rrd.php:2968 utilities.php:639 utilities.php:1552
+#: lib/rrd.php:2965 utilities.php:639 utilities.php:1552
 msgid "Rows"
 msgstr "पंक्तियाँ"
 
@@ -6144,7 +6144,7 @@ msgstr "पुन: प्राप्त करना"
 
 #: host.php:1633 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:951 lib/plugins.php:1096 lib/plugins.php:1097
-#: lib/rrd.php:2939 lib/rrd.php:2951 user_admin.php:820 utilities.php:216
+#: lib/rrd.php:2936 lib/rrd.php:2948 user_admin.php:820 utilities.php:216
 #: utilities.php:217 utilities.php:2280
 msgid "Unknown"
 msgstr "अज्ञात"
@@ -7244,7 +7244,7 @@ msgstr "प्राकृतिक आदेश"
 msgid "Numeric Ordering"
 msgstr "न्यूमेरिक ऑर्डरिंग"
 
-#: include/global_arrays.php:857 lib/rrd.php:2880
+#: include/global_arrays.php:857 lib/rrd.php:2877
 msgid "Header"
 msgstr "हेडर"
 
@@ -8853,7 +8853,7 @@ msgstr "वह आवृत्ति जो डेटा डेटा स्र�
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "RRDtool अज्ञात डेटा रिकॉर्ड करने से पहले कितनी देर तक डेटा गायब हो सकता है। यदि आपका डेटा स्रोत अस्थिर है और आप अपने ग्राफ़ में अंतराल दिखाने के बजाय पुराने डेटा को ले जाना चाहते हैं, तो यह मान बढ़ाएँ वास्तविक समय की वास्तविक मात्रा निर्धारित करने के लिए यह मान X-Files फैक्टर से गुणा किया जाता है।"
 
-#: include/global_form.php:196 lib/rrd.php:2971
+#: include/global_form.php:196 lib/rrd.php:2968
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "एक्स-फाइल्स फैक्टर"
@@ -9535,7 +9535,7 @@ msgstr "अपारदर्शिता / अल्फा चैनल"
 msgid "The opacity/alpha channel of the color."
 msgstr "रंग की अस्पष्टता / अल्फा चैनल।"
 
-#: include/global_form.php:955 lib/rrd.php:2967
+#: include/global_form.php:955 lib/rrd.php:2964
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "समेकन समारोह"
@@ -13464,7 +13464,7 @@ msgstr "मिलान उपकरण"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:532 lib/html_reports.php:578 lib/html_reports.php:1326
-#: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2909
+#: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2906
 #: utilities.php:361 utilities.php:1215 utilities.php:2611
 msgid "Type"
 msgstr "प्रकार"
@@ -17278,188 +17278,188 @@ msgstr "रिपोर्ट ग्राफ़ आइटम &#39; <i> %s</i> &
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "छोड़ी गई रिपोर्ट ग्राफ की वस्तु &#39; <i> %s</i> &#39; पहले से ही मौजूद है"
 
-#: lib/rrd.php:2679
+#: lib/rrd.php:2676
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "आवश्यक RRD चरण का आकार &#39; %s&#39; है"
 
-#: lib/rrd.php:2708
+#: lib/rrd.php:2705
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "डेटा स्रोत &#39; %s&#39; के लिए टाइप &#39; %s&#39; होना चाहिए"
 
-#: lib/rrd.php:2713
+#: lib/rrd.php:2710
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "डेटा स्रोत &#39; %s&#39; के लिए दिल की धड़कन &#39; %s&#39; होनी चाहिए"
 
-#: lib/rrd.php:2725
+#: lib/rrd.php:2722
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "डेटा स्रोत &#39; %s&#39; के लिए RRD न्यूनतम &#39; %s&#39; होना चाहिए"
 
-#: lib/rrd.php:2745
+#: lib/rrd.php:2742
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "डेटा स्रोत &#39; %s&#39; के लिए RRD अधिकतम &#39; %s&#39; होना चाहिए"
 
-#: lib/rrd.php:2755
+#: lib/rrd.php:2752
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "RRDfile में डीएस &#39; %s&#39; गायब है"
 
-#: lib/rrd.php:2764
+#: lib/rrd.php:2761
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "Cacti की परिभाषा में डीएस &#39; %s&#39; गायब है"
 
-#: lib/rrd.php:2781 lib/rrd.php:2782
+#: lib/rrd.php:2778 lib/rrd.php:2779
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA &#39; %s&#39; में &#39; %s&#39; के समान CF / चरण ( %s, %s) हैं"
 
-#: lib/rrd.php:2796 lib/rrd.php:2797
+#: lib/rrd.php:2793 lib/rrd.php:2794
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "फ़ाइल RRA &#39; %s&#39; में &#39; %s&#39; के समान CF / चरण ( %s, %s) है"
 
-#: lib/rrd.php:2828
+#: lib/rrd.php:2825
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "Cacti RRA आईडी &#39; %s&#39; के लिए XFF &#39; %s&#39; होना चाहिए"
 
-#: lib/rrd.php:2832
+#: lib/rrd.php:2829
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "Cacti RRA आईडी &#39; %s&#39; के लिए पंक्तियों की संख्या &#39; %s&#39; होनी चाहिए"
 
-#: lib/rrd.php:2848
+#: lib/rrd.php:2845
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "आरआरडीएफाइल में आरआरए &#39; %s&#39; गायब है"
 
-#: lib/rrd.php:2857
+#: lib/rrd.php:2854
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "Ract &#39; %s&#39; कैक्टि परिभाषा में गायब है"
 
-#: lib/rrd.php:2876
+#: lib/rrd.php:2873
 #, fuzzy
 msgid "RRD File Information"
 msgstr "आरआरडी फ़ाइल जानकारी"
 
-#: lib/rrd.php:2908
+#: lib/rrd.php:2905
 #, fuzzy
 msgid "Data Source Items"
 msgstr "डेटा स्रोत आइटम"
 
-#: lib/rrd.php:2910
+#: lib/rrd.php:2907
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "मिनिमल हार्टबीट"
 
-#: lib/rrd.php:2911
+#: lib/rrd.php:2908
 msgid "Min"
 msgstr "कम से कम"
 
-#: lib/rrd.php:2912
+#: lib/rrd.php:2909
 msgid "Max"
 msgstr "अधिकतम"
 
-#: lib/rrd.php:2913
+#: lib/rrd.php:2910
 #, fuzzy
 msgid "Last DS"
 msgstr "अंतिम डी.एस."
 
-#: lib/rrd.php:2915
+#: lib/rrd.php:2912
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "अज्ञात सेक"
 
-#: lib/rrd.php:2966
+#: lib/rrd.php:2963
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "राउंड रॉबिन आर्काइव"
 
-#: lib/rrd.php:2969
+#: lib/rrd.php:2966
 #, fuzzy
 msgid "Cur Row"
 msgstr "कर रो"
 
-#: lib/rrd.php:2970
+#: lib/rrd.php:2967
 #, fuzzy
 msgid "PDP per Row"
 msgstr "प्रति पंक्ति पीडीपी"
 
-#: lib/rrd.php:2972
+#: lib/rrd.php:2969
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "सीडीपी तैयारी मूल्य (0)"
 
-#: lib/rrd.php:2973
+#: lib/rrd.php:2970
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "सीडीपी अज्ञात डेटा अंक (0)"
 
-#: lib/rrd.php:3050
+#: lib/rrd.php:3047
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "%s का नाम बदलकर %s करें"
 
-#: lib/rrd.php:3100
+#: lib/rrd.php:3097
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "Rrdtool डंप के XML को पार्स करते समय त्रुटि"
 
-#: lib/rrd.php:3132 lib/rrd.php:3187 lib/rrd.php:3243
+#: lib/rrd.php:3129 lib/rrd.php:3184 lib/rrd.php:3240
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "XML फ़ाइल लिखते समय ERROR: %s"
 
-#: lib/rrd.php:3143 lib/rrd.php:3198 lib/rrd.php:3254
+#: lib/rrd.php:3140 lib/rrd.php:3195 lib/rrd.php:3251
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "त्रुटि: RRDfile% लेखन योग्य नहीं है"
 
-#: lib/rrd.php:3170 lib/rrd.php:3226
+#: lib/rrd.php:3167 lib/rrd.php:3223
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "RRDtool डंप के XML को पार्स करते समय त्रुटि"
 
-#: lib/rrd.php:3459
+#: lib/rrd.php:3456
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr "आरआरडी फ़ाइल से हटाए गए RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f)"
 
-#: lib/rrd.php:3493
+#: lib/rrd.php:3490
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD फाइल में जोड़"
 
-#: lib/rrd.php:3523 lib/rrd.php:3537
+#: lib/rrd.php:3520 lib/rrd.php:3534
 #, fuzzy, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "वेबसाइट में %s तक लिखने की सुविधा नहीं है, RRDs बनाने / अपडेट करने में असमर्थ हो सकता है"
 
-#: lib/rrd.php:3533
+#: lib/rrd.php:3530
 msgid "(Custom)"
 msgstr "(अनुकूलित)"
 
-#: lib/rrd.php:3539
+#: lib/rrd.php:3536
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "डेटा फ़ाइल खोलने में विफल, पराग अभी तक नहीं चला है"
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3539
 #, fuzzy
 msgid "RRA Folder"
 msgstr "आरआरए फोल्डर"
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3539
 msgid "Root"
 msgstr "जड़"
 
-#: lib/rrd.php:3645
+#: lib/rrd.php:3642
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "अज्ञात RRDtool त्रुटि"
@@ -19928,7 +19928,7 @@ msgstr "उपकरण अनुमति %s"
 #: user_admin.php:3080 user_group_admin.php:2200 user_group_admin.php:2304
 #: user_group_admin.php:2389 user_group_admin.php:2474
 #, fuzzy
-msgid "Show Exceptions"
+msgid "Only Show Exceptions"
 msgstr "अपवाद दिखाएं"
 
 #: user_admin.php:2878 user_group_admin.php:2357
