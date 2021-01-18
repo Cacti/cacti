@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-18 11:11-0500\n"
-"PO-Revision-Date: 2020-09-13 19:21-0400\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: pt_PT\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2021-01-18 11:11-0500\nPO-Revision-Date: 2021-01-18 18:18+0000\nLast-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\nLanguage-Team: Portuguese (Portugal) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_PT/>\nLanguage: pt-PT\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\nX-Generator: Weblate 4.3.2\n"
 
 #: about.php:29 include/global_arrays.php:2460 lib/html.php:2420
 #, fuzzy
@@ -699,7 +687,7 @@ msgstr "Nenhum gráfico encontrado"
 #: aggregate_graphs.php:1543
 #, fuzzy
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "Lista de Gráficos Personalizados Aplicada - Filtro FROM List"
+msgstr " [ Lista de Gráficos Personalizados Aplicada ]"
 
 #: aggregate_graphs.php:1543 aggregate_graphs.php:1651
 #: include/global_arrays.php:2586
@@ -1231,14 +1219,14 @@ msgid "Added manually through device automation interface."
 msgstr "Adicionado manualmente através da interface de automação de dispositivos."
 
 #: automation_devices.php:123
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Added to Cacti"
-msgstr "Adicionado ao Cacti"
+msgstr "Dispositivo %s Adicionado ao Cacti"
 
 #: automation_devices.php:125
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Not Added to Cacti"
-msgstr "Não adicionado ao Cacti"
+msgstr "Dispositivo %s não adicionado ao Cacti"
 
 #: automation_devices.php:135
 msgid "Devices Removed from Cacti Automation database"
@@ -1275,9 +1263,8 @@ msgid "Click 'Continue' to Delete the following Discovered device(s)."
 msgstr "Clique em 'Continuar' para adicionar o(s) seguinte(s) dispositivo(s) Descoberto(s)."
 
 #: automation_devices.php:227 host.php:473
-#, fuzzy
 msgid "Delete Device(s)"
-msgstr "Eliminar dispositivo(s)"
+msgstr "Eliminar Dispositivo(s)"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1516
 #: host.php:1637 host.php:1741 include/global_arrays.php:895
@@ -1323,7 +1310,7 @@ msgstr "Descrição"
 
 #: automation_devices.php:283 automation_devices.php:525
 msgid "OS"
-msgstr "SO&#x0D;"
+msgstr "SO"
 
 #: automation_devices.php:284 host.php:1705 include/global_arrays.php:469
 msgid "Uptime"
@@ -1347,9 +1334,8 @@ msgid "Status"
 msgstr "Estado"
 
 #: automation_devices.php:287
-#, fuzzy
 msgid "Last Check"
-msgstr "Último cheque"
+msgstr "Última Verificação"
 
 #: automation_devices.php:306 automation_devices.php:640
 msgid "Not Detected"
@@ -1366,12 +1352,11 @@ msgstr "Filtros de Descoberta"
 
 #: automation_devices.php:480
 msgid "Network"
-msgstr "Configuração de rede"
+msgstr "Rede"
 
 #: automation_devices.php:496
-#, fuzzy
 msgid "Reset fields to defaults"
-msgstr "Redefinir campos para valores propostos"
+msgstr "Restaurar campos para os valores padrão"
 
 #: automation_devices.php:501 color.php:570 host.php:1608
 #: lib/html_form.php:1307
@@ -1385,12 +1370,11 @@ msgstr "Exportar para um ficheiro"
 #: automation_devices.php:502 data_debug.php:983 lib/clog_webapi.php:212
 #: lib/clog_webapi.php:524 managers.php:747
 msgid "Purge"
-msgstr "Purga"
+msgstr "Limpar"
 
 #: automation_devices.php:502
-#, fuzzy
 msgid "Purge Discovered Devices"
-msgstr "Purgar Dispositivos Descobertos"
+msgstr "Limpar Dispositivos Encontrados"
 
 #: automation_devices.php:670 automation_networks.php:1152
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
@@ -2542,7 +2526,7 @@ msgstr "Item#%d"
 
 #: automation_snmp.php:558
 msgid "none"
-msgstr "nenhum"
+msgstr "Nenhum"
 
 #: automation_snmp.php:573 automation_templates.php:524 cdef.php:621
 #: color_templates.php:111 data_queries.php:789 data_queries.php:889
@@ -19744,9 +19728,8 @@ msgstr "Dispositivos Permissão %s"
 #: user_admin.php:2825 user_admin.php:2910 user_admin.php:2995
 #: user_admin.php:3080 user_group_admin.php:2200 user_group_admin.php:2304
 #: user_group_admin.php:2389 user_group_admin.php:2474
-#, fuzzy
 msgid "Only Show Exceptions"
-msgstr "Mostrar exceções"
+msgstr "Mostrar apenas exceções"
 
 #: user_admin.php:2878 user_group_admin.php:2357
 #, fuzzy, php-format
