@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.17\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-17 18:24+0000\n"
+"POT-Creation-Date: 2021-01-18 11:11-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3163,7 +3163,7 @@ msgstr ""
 msgid "Check"
 msgstr ""
 
-#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2914
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2911
 #: utilities.php:571 utilities.php:588 utilities.php:2611
 msgid "Value"
 msgstr ""
@@ -3688,7 +3688,7 @@ msgstr ""
 
 #: data_source_profiles.php:613 graphs_new.php:416 include/global_form.php:254
 #: lib/html.php:493 lib/html_filter.php:72 lib/installer.php:2524
-#: lib/rrd.php:2968 utilities.php:639 utilities.php:1552
+#: lib/rrd.php:2965 utilities.php:639 utilities.php:1552
 msgid "Rows"
 msgstr ""
 
@@ -5320,7 +5320,7 @@ msgstr ""
 
 #: host.php:1633 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:951 lib/plugins.php:1096 lib/plugins.php:1097
-#: lib/rrd.php:2939 lib/rrd.php:2951 user_admin.php:820 utilities.php:216
+#: lib/rrd.php:2936 lib/rrd.php:2948 user_admin.php:820 utilities.php:216
 #: utilities.php:217 utilities.php:2280
 msgid "Unknown"
 msgstr ""
@@ -6237,7 +6237,7 @@ msgstr ""
 msgid "Numeric Ordering"
 msgstr ""
 
-#: include/global_arrays.php:857 lib/rrd.php:2880
+#: include/global_arrays.php:857 lib/rrd.php:2877
 msgid "Header"
 msgstr ""
 
@@ -7636,7 +7636,7 @@ msgstr ""
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr ""
 
-#: include/global_form.php:196 lib/rrd.php:2971
+#: include/global_form.php:196 lib/rrd.php:2968
 msgid "X-Files Factor"
 msgstr ""
 
@@ -8189,7 +8189,7 @@ msgstr ""
 msgid "The opacity/alpha channel of the color."
 msgstr ""
 
-#: include/global_form.php:955 lib/rrd.php:2967
+#: include/global_form.php:955 lib/rrd.php:2964
 msgid "Consolidation Function"
 msgstr ""
 
@@ -11417,7 +11417,7 @@ msgstr ""
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:532 lib/html_reports.php:578 lib/html_reports.php:1326
-#: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2909
+#: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2906
 #: utilities.php:361 utilities.php:1215 utilities.php:2611
 msgid "Type"
 msgstr ""
@@ -14727,174 +14727,174 @@ msgstr ""
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr ""
 
-#: lib/rrd.php:2679
+#: lib/rrd.php:2676
 #, php-format
 msgid "Required RRD step size is '%s'"
 msgstr ""
 
-#: lib/rrd.php:2708
+#: lib/rrd.php:2705
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr ""
 
-#: lib/rrd.php:2713
+#: lib/rrd.php:2710
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr ""
 
-#: lib/rrd.php:2725
+#: lib/rrd.php:2722
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr ""
 
-#: lib/rrd.php:2745
+#: lib/rrd.php:2742
 #, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr ""
 
-#: lib/rrd.php:2755
+#: lib/rrd.php:2752
 #, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr ""
 
-#: lib/rrd.php:2764
+#: lib/rrd.php:2761
 #, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr ""
 
-#: lib/rrd.php:2781 lib/rrd.php:2782
+#: lib/rrd.php:2778 lib/rrd.php:2779
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr ""
 
-#: lib/rrd.php:2796 lib/rrd.php:2797
+#: lib/rrd.php:2793 lib/rrd.php:2794
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr ""
 
-#: lib/rrd.php:2828
+#: lib/rrd.php:2825
 #, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr ""
 
-#: lib/rrd.php:2832
+#: lib/rrd.php:2829
 #, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr ""
 
-#: lib/rrd.php:2848
+#: lib/rrd.php:2845
 #, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr ""
 
-#: lib/rrd.php:2857
+#: lib/rrd.php:2854
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr ""
 
-#: lib/rrd.php:2876
+#: lib/rrd.php:2873
 msgid "RRD File Information"
 msgstr ""
 
-#: lib/rrd.php:2908
+#: lib/rrd.php:2905
 msgid "Data Source Items"
 msgstr ""
 
-#: lib/rrd.php:2910
+#: lib/rrd.php:2907
 msgid "Minimal Heartbeat"
 msgstr ""
 
-#: lib/rrd.php:2911
+#: lib/rrd.php:2908
 msgid "Min"
 msgstr ""
 
-#: lib/rrd.php:2912
+#: lib/rrd.php:2909
 msgid "Max"
 msgstr ""
 
-#: lib/rrd.php:2913
+#: lib/rrd.php:2910
 msgid "Last DS"
 msgstr ""
 
-#: lib/rrd.php:2915
+#: lib/rrd.php:2912
 msgid "Unknown Sec"
 msgstr ""
 
-#: lib/rrd.php:2966
+#: lib/rrd.php:2963
 msgid "Round Robin Archive"
 msgstr ""
 
-#: lib/rrd.php:2969
+#: lib/rrd.php:2966
 msgid "Cur Row"
 msgstr ""
 
-#: lib/rrd.php:2970
+#: lib/rrd.php:2967
 msgid "PDP per Row"
 msgstr ""
 
-#: lib/rrd.php:2972
+#: lib/rrd.php:2969
 msgid "CDP Prep Value (0)"
 msgstr ""
 
-#: lib/rrd.php:2973
+#: lib/rrd.php:2970
 msgid "CDP Unknown Data points (0)"
 msgstr ""
 
-#: lib/rrd.php:3050
+#: lib/rrd.php:3047
 #, php-format
 msgid "rename %s to %s"
 msgstr ""
 
-#: lib/rrd.php:3100
+#: lib/rrd.php:3097
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr ""
 
-#: lib/rrd.php:3132 lib/rrd.php:3187 lib/rrd.php:3243
+#: lib/rrd.php:3129 lib/rrd.php:3184 lib/rrd.php:3240
 #, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr ""
 
-#: lib/rrd.php:3143 lib/rrd.php:3198 lib/rrd.php:3254
+#: lib/rrd.php:3140 lib/rrd.php:3195 lib/rrd.php:3251
 #, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr ""
 
-#: lib/rrd.php:3170 lib/rrd.php:3226
+#: lib/rrd.php:3167 lib/rrd.php:3223
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr ""
 
-#: lib/rrd.php:3459
+#: lib/rrd.php:3456
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr ""
 
-#: lib/rrd.php:3493
+#: lib/rrd.php:3490
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr ""
 
-#: lib/rrd.php:3523 lib/rrd.php:3537
+#: lib/rrd.php:3520 lib/rrd.php:3534
 #, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr ""
 
-#: lib/rrd.php:3533
+#: lib/rrd.php:3530
 msgid "(Custom)"
 msgstr ""
 
-#: lib/rrd.php:3539
+#: lib/rrd.php:3536
 msgid "Failed to open data file, poller may not have run yet"
 msgstr ""
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3539
 msgid "RRA Folder"
 msgstr ""
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3539
 msgid "Root"
 msgstr ""
 
-#: lib/rrd.php:3645
+#: lib/rrd.php:3642
 msgid "Unknown RRDtool Error"
 msgstr ""
 
@@ -16987,7 +16987,7 @@ msgstr ""
 #: user_admin.php:2825 user_admin.php:2910 user_admin.php:2995
 #: user_admin.php:3080 user_group_admin.php:2200 user_group_admin.php:2304
 #: user_group_admin.php:2389 user_group_admin.php:2474
-msgid "Show Exceptions"
+msgid "Only Show Exceptions"
 msgstr ""
 
 #: user_admin.php:2878 user_group_admin.php:2357
