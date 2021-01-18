@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-18 11:11-0500\n"
-"PO-Revision-Date: 2020-11-04 16:05+0000\n"
-"Last-Translator: Jimmy Conner <jimmy.conner@gmail.com>\n"
-"Language-Team: French <http://translate.cacti.net/projects/cacti-12x/core-12x/fr-FR/>\n"
-"Language: fr-FR\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2021-01-18 11:11-0500\nPO-Revision-Date: 2021-01-18 18:18+0000\nLast-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\nLanguage-Team: French <http://translate.cacti.net/projects/cacti/core-v1-2-x/fr/>\nLanguage: fr-FR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 4.3.2\n"
 
 #: about.php:29 include/global_arrays.php:2460 lib/html.php:2420
 msgid "About Cacti"
@@ -18733,9 +18721,8 @@ msgstr "Appareils Permission %s"
 #: user_admin.php:2825 user_admin.php:2910 user_admin.php:2995
 #: user_admin.php:3080 user_group_admin.php:2200 user_group_admin.php:2304
 #: user_group_admin.php:2389 user_group_admin.php:2474
-#, fuzzy
 msgid "Only Show Exceptions"
-msgstr "Afficher les exceptions"
+msgstr "Afficher uniquement les exceptions"
 
 #: user_admin.php:2878 user_group_admin.php:2357
 #, fuzzy, php-format
