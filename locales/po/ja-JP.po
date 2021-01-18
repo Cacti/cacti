@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-17 18:24+0000\n"
+"POT-Creation-Date: 2021-01-18 11:11-0500\n"
 "PO-Revision-Date: 2020-09-13 18:45-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -3540,7 +3540,7 @@ msgstr "再解析"
 msgid "Check"
 msgstr "チェック"
 
-#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2914
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2911
 #: utilities.php:571 utilities.php:588 utilities.php:2611
 msgid "Value"
 msgstr "値"
@@ -4135,7 +4135,7 @@ msgstr "ステップ"
 
 #: data_source_profiles.php:613 graphs_new.php:416 include/global_form.php:254
 #: lib/html.php:493 lib/html_filter.php:72 lib/installer.php:2524
-#: lib/rrd.php:2968 utilities.php:639 utilities.php:1552
+#: lib/rrd.php:2965 utilities.php:639 utilities.php:1552
 msgid "Rows"
 msgstr "行"
 
@@ -6031,7 +6031,7 @@ msgstr "復元中"
 
 #: host.php:1633 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:951 lib/plugins.php:1096 lib/plugins.php:1097
-#: lib/rrd.php:2939 lib/rrd.php:2951 user_admin.php:820 utilities.php:216
+#: lib/rrd.php:2936 lib/rrd.php:2948 user_admin.php:820 utilities.php:216
 #: utilities.php:217 utilities.php:2280
 msgid "Unknown"
 msgstr "不明"
@@ -7103,7 +7103,7 @@ msgstr "ナチュラルオーダー"
 msgid "Numeric Ordering"
 msgstr "数字順"
 
-#: include/global_arrays.php:857 lib/rrd.php:2880
+#: include/global_arrays.php:857 lib/rrd.php:2877
 msgid "Header"
 msgstr "ヘッダー"
 
@@ -8659,7 +8659,7 @@ msgstr "データがデータソースから収集される頻度は？"
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "RRDtoolが未知のデータを記録するまでにデータが失われる可能性がある期間。データソースが不安定で、グラフにギャップを表示せずに古いデータを繰り越したい場合は、この値を大きくします。この値にXファイル係数を掛けて、実際の時間を決定します。"
 
-#: include/global_form.php:196 lib/rrd.php:2971
+#: include/global_form.php:196 lib/rrd.php:2968
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "Xファイル係数"
@@ -9330,7 +9330,7 @@ msgstr "不透明度/アルファチャンネル"
 msgid "The opacity/alpha channel of the color."
 msgstr "色の不透明度/アルファチャンネル。"
 
-#: include/global_form.php:955 lib/rrd.php:2967
+#: include/global_form.php:955 lib/rrd.php:2964
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "連結機能"
@@ -13186,7 +13186,7 @@ msgstr "マッチング装置"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:532 lib/html_reports.php:578 lib/html_reports.php:1326
-#: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2909
+#: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2906
 #: utilities.php:361 utilities.php:1215 utilities.php:2611
 msgid "Type"
 msgstr "タイプ"
@@ -16958,188 +16958,188 @@ msgstr "レポートグラフアイテム &#39; <i>％s</i> &#39;の追加に失
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "スキップされたレポートグラフアイテム &#39; <i>％s</i> &#39;は既に存在します"
 
-#: lib/rrd.php:2679
+#: lib/rrd.php:2676
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "必要なRRDステップサイズは &#39;％s&#39;です"
 
-#: lib/rrd.php:2708
+#: lib/rrd.php:2705
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "データソース &#39;％1！&#39;の型は &#39;％2！&#39;にする必要があります"
 
-#: lib/rrd.php:2713
+#: lib/rrd.php:2710
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "データソース &#39;％1！&#39;のハートビートは &#39;％2！&#39;にする必要があります"
 
-#: lib/rrd.php:2725
+#: lib/rrd.php:2722
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "データソース &#39;％1！&#39;のRRD最小値は &#39;％2！&#39;にする必要があります"
 
-#: lib/rrd.php:2745
+#: lib/rrd.php:2742
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "データソース &#39;％1！&#39;のRRD最大値は &#39;％2！&#39;にする必要があります"
 
-#: lib/rrd.php:2755
+#: lib/rrd.php:2752
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "RRDfileにDS &#39;％s&#39;がありません"
 
-#: lib/rrd.php:2764
+#: lib/rrd.php:2761
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "サボテンの定義にDS &#39;％s&#39;がありません"
 
-#: lib/rrd.php:2781 lib/rrd.php:2782
+#: lib/rrd.php:2778 lib/rrd.php:2779
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "サボテンRRA &#39;％s&#39;は &#39;％s&#39;と同じCF /ステップ（％s、％s）を持っています"
 
-#: lib/rrd.php:2796 lib/rrd.php:2797
+#: lib/rrd.php:2793 lib/rrd.php:2794
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "ファイルRRA &#39;％s&#39;の &#39;CF&#39; /ステップ（％s、％s）は &#39;％s&#39;と同じです"
 
-#: lib/rrd.php:2828
+#: lib/rrd.php:2825
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "サボテンRRA ID &#39;％s&#39;のXFFは &#39;％s&#39;でなければなりません"
 
-#: lib/rrd.php:2832
+#: lib/rrd.php:2829
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "Cacti RRA ID &#39;％s&#39;の行数は &#39;％s&#39;であるべきです"
 
-#: lib/rrd.php:2848
+#: lib/rrd.php:2845
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRDファイルにRRA &#39;％s&#39;がありません"
 
-#: lib/rrd.php:2857
+#: lib/rrd.php:2854
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "サボテンの定義にRRA &#39;％s&#39;がありません"
 
-#: lib/rrd.php:2876
+#: lib/rrd.php:2873
 #, fuzzy
 msgid "RRD File Information"
 msgstr "RRDファイル情報"
 
-#: lib/rrd.php:2908
+#: lib/rrd.php:2905
 #, fuzzy
 msgid "Data Source Items"
 msgstr "データソース項目"
 
-#: lib/rrd.php:2910
+#: lib/rrd.php:2907
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "最小ハートビート"
 
-#: lib/rrd.php:2911
+#: lib/rrd.php:2908
 msgid "Min"
 msgstr "最小"
 
-#: lib/rrd.php:2912
+#: lib/rrd.php:2909
 msgid "Max"
 msgstr "最大"
 
-#: lib/rrd.php:2913
+#: lib/rrd.php:2910
 #, fuzzy
 msgid "Last DS"
 msgstr "最後のDS"
 
-#: lib/rrd.php:2915
+#: lib/rrd.php:2912
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "不明な秒"
 
-#: lib/rrd.php:2966
+#: lib/rrd.php:2963
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "ラウンドロビンアーカイブ"
 
-#: lib/rrd.php:2969
+#: lib/rrd.php:2966
 #, fuzzy
 msgid "Cur Row"
 msgstr "Cur Row"
 
-#: lib/rrd.php:2970
+#: lib/rrd.php:2967
 #, fuzzy
 msgid "PDP per Row"
 msgstr "1行あたりのPDP"
 
-#: lib/rrd.php:2972
+#: lib/rrd.php:2969
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "CDP準備値（0）"
 
-#: lib/rrd.php:2973
+#: lib/rrd.php:2970
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP不明データポイント（0）"
 
-#: lib/rrd.php:3050
+#: lib/rrd.php:3047
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "％sを％sに名前変更"
 
-#: lib/rrd.php:3100
+#: lib/rrd.php:3097
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "rrdtool dumpのXMLの構文解析中にエラーが発生しました"
 
-#: lib/rrd.php:3132 lib/rrd.php:3187 lib/rrd.php:3243
+#: lib/rrd.php:3129 lib/rrd.php:3184 lib/rrd.php:3240
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "XMLファイルの書き込み中にエラーが発生しました：％s"
 
-#: lib/rrd.php:3143 lib/rrd.php:3198 lib/rrd.php:3254
+#: lib/rrd.php:3140 lib/rrd.php:3195 lib/rrd.php:3251
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "エラー：RRDfile％sは書き込みできません"
 
-#: lib/rrd.php:3170 lib/rrd.php:3226
+#: lib/rrd.php:3167 lib/rrd.php:3223
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "RRDtoolダンプのXMLの構文解析中にエラーが発生しました"
 
-#: lib/rrd.php:3459
+#: lib/rrd.php:3456
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr "RRDファイルからRRA（CF =％s、行=％d、PDP_PER_ROW =％d、XFF =％1.2f）が削除されました"
 
-#: lib/rrd.php:3493
+#: lib/rrd.php:3490
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr "RRDファイルにRRA（CF =％s、行=％d、PDP_PER_ROW =％d、XFF =％1.2f）を追加"
 
-#: lib/rrd.php:3523 lib/rrd.php:3537
+#: lib/rrd.php:3520 lib/rrd.php:3534
 #, fuzzy, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "ウェブサイトは％sへの書き込み権限を持っていません。RRDを作成/更新できない可能性があります"
 
-#: lib/rrd.php:3533
+#: lib/rrd.php:3530
 msgid "(Custom)"
 msgstr "(自定义)"
 
-#: lib/rrd.php:3539
+#: lib/rrd.php:3536
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "データファイルを開けませんでした。ポーラーはまだ実行されていない可能性があります"
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3539
 #, fuzzy
 msgid "RRA Folder"
 msgstr "RRAフォルダ"
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3539
 msgid "Root"
 msgstr "ルート"
 
-#: lib/rrd.php:3645
+#: lib/rrd.php:3642
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "不明なRRDtoolエラー"
@@ -19545,7 +19545,7 @@ msgstr "デバイス許可％s"
 #: user_admin.php:3080 user_group_admin.php:2200 user_group_admin.php:2304
 #: user_group_admin.php:2389 user_group_admin.php:2474
 #, fuzzy
-msgid "Show Exceptions"
+msgid "Only Show Exceptions"
 msgstr "例外を表示"
 
 #: user_admin.php:2878 user_group_admin.php:2357
