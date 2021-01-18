@@ -32,9 +32,11 @@ Cacti CHANGELOG
 -issue#4042: Clicking save in performance tab turns off rrd_update_enable on remote pollers
 -issue#4049: Only show sensitive graph information to Template Editors in the List View screen
 -issue#4050: Missing slash in absolute path to cli/convert_tables.php shown during upgrade
+-issue#4061: Fix dateformat in graph - user defined date separator was never used
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
+
 
 1.2.16
 -issue#3704: When generating a report, the Cascade to Branches function does not as expected

@@ -2353,11 +2353,8 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 
 	$graph_legend = '';
 	/* setup date format */
-	$date_fmt = read_user_setting('default_date_format');
-	$dateCharSetting = read_config_option('default_datechar');
-	if ($dateCharSetting == '') {
-		$dateCharSetting = GDC_SLASH;
-	}
+	$date_fmt = read_user_setting('default_date_format',read_config_option('default_date_format'));
+	$dateCharSetting = read_user_setting('default_datechar',read_config_option('default_datechar'));
 	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {
