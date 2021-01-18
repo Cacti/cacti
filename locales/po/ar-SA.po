@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-17 18:24+0000\n"
+"POT-Creation-Date: 2021-01-18 11:11-0500\n"
 "PO-Revision-Date: 2020-09-13 17:53-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -3630,7 +3630,7 @@ msgstr "إعادة تشغيل التحليل"
 msgid "Check"
 msgstr "التحقق من"
 
-#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2914
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2911
 #: utilities.php:571 utilities.php:588 utilities.php:2611
 msgid "Value"
 msgstr "القيمة"
@@ -4275,7 +4275,7 @@ msgstr "خطوات"
 
 #: data_source_profiles.php:613 graphs_new.php:416 include/global_form.php:254
 #: lib/html.php:493 lib/html_filter.php:72 lib/installer.php:2524
-#: lib/rrd.php:2968 utilities.php:639 utilities.php:1552
+#: lib/rrd.php:2965 utilities.php:639 utilities.php:1552
 msgid "Rows"
 msgstr "الصفوف"
 
@@ -6250,7 +6250,7 @@ msgstr "يستردّ"
 
 #: host.php:1633 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:951 lib/plugins.php:1096 lib/plugins.php:1097
-#: lib/rrd.php:2939 lib/rrd.php:2951 user_admin.php:820 utilities.php:216
+#: lib/rrd.php:2936 lib/rrd.php:2948 user_admin.php:820 utilities.php:216
 #: utilities.php:217 utilities.php:2280
 msgid "Unknown"
 msgstr "غير معروف"
@@ -7344,7 +7344,7 @@ msgstr "الترتيب الطبيعي"
 msgid "Numeric Ordering"
 msgstr "طلب رقمي"
 
-#: include/global_arrays.php:857 lib/rrd.php:2880
+#: include/global_arrays.php:857 lib/rrd.php:2877
 msgid "Header"
 msgstr "رأس"
 
@@ -8922,7 +8922,7 @@ msgstr "معدل تكرار جمع البيانات من مصدر البيانا
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "كم من الوقت يمكن أن تكون البيانات مفقودة قبل أن يسجل RRDtool بيانات غير معروفة. قم بزيادة هذه القيمة إذا كان مصدر البيانات غير مستقر وترغب في ترحيل البيانات القديمة بدلاً من إظهار الفجوات في الرسومات البيانية. يتم ضرب هذه القيمة بواسطة X-Files Factor لتحديد مقدار الوقت الفعلي."
 
-#: include/global_form.php:196 lib/rrd.php:2971
+#: include/global_form.php:196 lib/rrd.php:2968
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "X-Files Factor"
@@ -9605,7 +9605,7 @@ msgstr "تعتيم / قناة ألفا"
 msgid "The opacity/alpha channel of the color."
 msgstr "قناة التعتيم / ألفا للون."
 
-#: include/global_form.php:955 lib/rrd.php:2967
+#: include/global_form.php:955 lib/rrd.php:2964
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "وظيفة توحيد"
@@ -13513,7 +13513,7 @@ msgstr "أجهزة المطابقة"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:532 lib/html_reports.php:578 lib/html_reports.php:1326
-#: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2909
+#: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2906
 #: utilities.php:361 utilities.php:1215 utilities.php:2611
 msgid "Type"
 msgstr "النوع"
@@ -17295,189 +17295,189 @@ msgstr "أخفق إضافة عنصر رسومي تقرير &#39; <i>٪ s</i> &#3
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "تم تخطي عنصر Graph Report &#39; <i>٪ s</i> &#39; بالفعل"
 
-#: lib/rrd.php:2679
+#: lib/rrd.php:2676
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "حجم خطوة RRD المطلوب هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2708
+#: lib/rrd.php:2705
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون نوع مصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2713
+#: lib/rrd.php:2710
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون نبض القلب لمصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2725
+#: lib/rrd.php:2722
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون الحد الأدنى لتقليل وقت الاستجابة (RRD) لمصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2745
+#: lib/rrd.php:2742
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون الحد الأقصى RRD لمصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2755
+#: lib/rrd.php:2752
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "DS &#39;٪ s&#39; مفقودة في RRDfile"
 
-#: lib/rrd.php:2764
+#: lib/rrd.php:2761
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS &#39;٪ s&#39; مفقود في تعريف Cacti"
 
-#: lib/rrd.php:2781 lib/rrd.php:2782
+#: lib/rrd.php:2778 lib/rrd.php:2779
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA &#39;٪ s&#39; له نفس CF / steps (٪ s،٪ s) كـ &#39;٪ s&#39;"
 
-#: lib/rrd.php:2796 lib/rrd.php:2797
+#: lib/rrd.php:2793 lib/rrd.php:2794
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "الملف RRA &#39;٪ s&#39; له نفس CF / steps (٪ s،٪ s) كـ &#39;٪ s&#39;"
 
-#: lib/rrd.php:2828
+#: lib/rrd.php:2825
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "يجب أن يكون XFF لمعرف cacti RRA &#39;٪ s&#39; &#39;٪ s&#39;"
 
-#: lib/rrd.php:2832
+#: lib/rrd.php:2829
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "يجب أن يكون عدد الصفوف لمعرف Cacti RRA &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2848
+#: lib/rrd.php:2845
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRA &#39;٪ s&#39; مفقودة في RRDfile"
 
-#: lib/rrd.php:2857
+#: lib/rrd.php:2854
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "RRA &#39;٪ s&#39; مفقودة في تعريف Cacti"
 
-#: lib/rrd.php:2876
+#: lib/rrd.php:2873
 #, fuzzy
 msgid "RRD File Information"
 msgstr "RRD ملف المعلومات"
 
-#: lib/rrd.php:2908
+#: lib/rrd.php:2905
 #, fuzzy
 msgid "Data Source Items"
 msgstr "عناصر مصدر البيانات"
 
-#: lib/rrd.php:2910
+#: lib/rrd.php:2907
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "أدنى ضربات القلب"
 
-#: lib/rrd.php:2911
+#: lib/rrd.php:2908
 msgid "Min"
 msgstr "بحد أدنى"
 
-#: lib/rrd.php:2912
+#: lib/rrd.php:2909
 msgid "Max"
 msgstr "الحد الأعلى"
 
-#: lib/rrd.php:2913
+#: lib/rrd.php:2910
 #, fuzzy
 msgid "Last DS"
 msgstr "آخر DS"
 
-#: lib/rrd.php:2915
+#: lib/rrd.php:2912
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "غير معروف"
 
-#: lib/rrd.php:2966
+#: lib/rrd.php:2963
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "جولة روبن الأرشيف"
 
-#: lib/rrd.php:2969
+#: lib/rrd.php:2966
 #, fuzzy
 msgid "Cur Row"
 msgstr "صف كو"
 
-#: lib/rrd.php:2970
+#: lib/rrd.php:2967
 #, fuzzy
 msgid "PDP per Row"
 msgstr "PDP لكل صف"
 
-#: lib/rrd.php:2972
+#: lib/rrd.php:2969
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "قيمة الإعداد المسبق لـ CDP (0)"
 
-#: lib/rrd.php:2973
+#: lib/rrd.php:2970
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP نقاط بيانات غير معروفة (0)"
 
-#: lib/rrd.php:3050
+#: lib/rrd.php:3047
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "إعادة تسمية٪ s إلى٪ s"
 
-#: lib/rrd.php:3100
+#: lib/rrd.php:3097
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "خطأ أثناء تحليل XML من تفريغ rrdtool"
 
-#: lib/rrd.php:3132 lib/rrd.php:3187 lib/rrd.php:3243
+#: lib/rrd.php:3129 lib/rrd.php:3184 lib/rrd.php:3240
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "خطأ أثناء كتابة ملف XML:٪ s"
 
-#: lib/rrd.php:3143 lib/rrd.php:3198 lib/rrd.php:3254
+#: lib/rrd.php:3140 lib/rrd.php:3195 lib/rrd.php:3251
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "خطأ: RRDfile٪ s غير قابل للكتابة"
 
-#: lib/rrd.php:3170 lib/rrd.php:3226
+#: lib/rrd.php:3167 lib/rrd.php:3223
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "خطأ أثناء تحليل XML تفريغ RRDtool"
 
-#: lib/rrd.php:3459
+#: lib/rrd.php:3456
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr "RRA (CF =٪ s، ROWS =٪ d، PDP_PER_ROW =٪ d، XFF =٪ 1.2f) تمت إزالتها من ملف RRD"
 
-#: lib/rrd.php:3493
+#: lib/rrd.php:3490
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr "RRA (CF =٪ s، ROWS =٪ d، PDP_PER_ROW =٪ d، XFF =٪ 1.2f) إضافة إلى ملف RRD"
 
-#: lib/rrd.php:3523 lib/rrd.php:3537
+#: lib/rrd.php:3520 lib/rrd.php:3534
 #, fuzzy, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "لا يمتلك موقع الويب حق الوصول للكتابة إلى٪ s ، وقد يتعذر إنشاء / تحديث ملفات RRD"
 
-#: lib/rrd.php:3533
+#: lib/rrd.php:3530
 #, fuzzy
 msgid "(Custom)"
 msgstr "مخصص"
 
-#: lib/rrd.php:3539
+#: lib/rrd.php:3536
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "فشل في فتح ملف البيانات ، ربما لم يتم تشغيل برنامج التلقيم حتى الآن"
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3539
 #, fuzzy
 msgid "RRA Folder"
 msgstr "مجلد RRA"
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3539
 msgid "Root"
 msgstr "الجذر"
 
-#: lib/rrd.php:3645
+#: lib/rrd.php:3642
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "خطأ RRDtool غير معروف"
@@ -20009,7 +20009,7 @@ msgstr "إذن الأجهزة٪ s"
 #: user_admin.php:3080 user_group_admin.php:2200 user_group_admin.php:2304
 #: user_group_admin.php:2389 user_group_admin.php:2474
 #, fuzzy
-msgid "Show Exceptions"
+msgid "Only Show Exceptions"
 msgstr "إظهار الاستثناءات"
 
 #: user_admin.php:2878 user_group_admin.php:2357
