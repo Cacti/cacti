@@ -37,7 +37,6 @@
 		var clientTime = new Date();
 		var clientTimeOffset = clientTime.getTimezoneOffset()*60*(-1);			//requires -1, because PHP return the opposite
 		var timeOffset = 0;
-		var activeElement = '';
 		var mouseDown = false;
 
 		// default values of the different options being offered
@@ -66,7 +65,7 @@
 			// 'options' contains the start input parameters
 			options: $.extend(defaults, options),
 			// 'attributes' holds all values that will describe the selected area
-			attr: { activeElement:'', start:'none', end:'none', action:'left2right', location: window.location.href.split('?'), urlPath: ((typeof urlPath == 'undefined') ? '' : urlPath), origin: ((typeof location.origin == 'undefined') ? location.protocol + '//' + location.host : location.origin)}
+			attr: { start:'none', end:'none', action:'left2right', location: window.location.href.split('?'), urlPath: ((typeof urlPath == 'undefined') ? '' : urlPath), origin: ((typeof location.origin == 'undefined') ? location.protocol + '//' + location.host : location.origin)}
 		};
 
 		// support jQuery's concatenation
@@ -149,16 +148,15 @@
 		/* init zoom */
 		function zoom_init(image) {
 			var $this = image;
-
-			if ($('#zoom-container').hasClass('zoom_active_' + zoomGetImageId($this))) {
-			    zoomElements_remove();
-				zoomFunction_init($this);
-			}
+			var activeElement = '';
 
 			$this.parent().disableSelection();
 			$this.off().mouseover(
 				function(){
-					if (!mouseDown && !zoom.marker[1].placed) {
+					if($('#zoom-container').length != 0) {
+						activeElement = $('#zoom-container').attr('data-active-element');
+					}
+					if (!activeElement || activeElement !== zoomGetImageId($this)){
 						zoomElements_remove();
 						zoomFunction_init($this);
 					}
@@ -255,12 +253,14 @@
 			// and reposition these elements.
 
 			// add the container for all elements Zoom requires
-			if ($('#zoom-container').length == 0) {
+			if ($('#zoom-container').length === 0) {
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
-				$('<div id="zoom-container"></div>').appendTo('body').delay(1000);
-				$('#zoom-container').css({ position: 'absolute', 'pointer-events': 'none' }).removeClass().addClass('zoom_active_' + zoomGetId(zoom));
-			}
+				$('<div id="zoom-container" data-active-element=""></div>').appendTo('body').delay(1000);
+				$('#zoom-container').css({ position: 'absolute', 'pointer-events': 'none' });
+			}else {
+                $('#zoom-container').attr('data-active-element', '');
+            }
 
 			// add a hidden anchor to use for downloads
 			if ($('#zoom-image').length == 0) {
@@ -440,7 +440,8 @@
 		* registers all the different mouse click event handler
 		*/
 		function zoomAction_init(image) {
-			if (zoom.custom.zoomMode == 'quick') {
+
+			if (zoom.custom.zoomMode === 'quick') {
 				zoom.box.width = zoom.graph.width;
 				$('#zoom-box').css({ width:zoom.box.width + 'px' });
 				$('#zoom-area').resizable({ containment: '#zoom-box', handles: 'e, w' });
@@ -448,6 +449,9 @@
 					switch(e.which) {
 						/* clicking the left mouse button will initiates a zoom-in */
 						case 1:
+							// remember active element
+							$('#zoom-container').attr('data-active-element', zoomGetImageId(image));
+							// ensure menu is closed
 							zoomContextMenu_hide();
 							// reset the zoom area
 							zoom.attr.start = e.pageX;
@@ -509,7 +513,9 @@
 				$('#zoom-box').off('mousedown').on('mousedown', function(e) {
 					switch(e.which) {
 						case 1:
-							/* hide context menu if open */
+							// remember active element
+							$('#zoom-container').attr('data-active-element', zoomGetImageId(image));
+							// ensure menu is closed
 							zoomContextMenu_hide();
 
 							/* find out which marker has to be added */
