@@ -1002,7 +1002,7 @@
 							zoom.custom.zoomMode			= 'advanced';
 							storage.set(zoom.options.cookieName, serialize(zoom.custom));
 						}
-
+						zoomContextMenu_hide();
 						zoomElements_reset();
 						zoomAction_init(zoom.initiator);
 
