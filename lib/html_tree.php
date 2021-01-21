@@ -1611,8 +1611,8 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 								'sort_field_value' => $sort_field_value,
 								'local_graph_id'   => $local_graph_id,
 								'title_cache'      => $graph_title,
-								'height'           => $graphs_height[$graph['local_graph_id']],
-								'width'            => $graphs_width[$graph['local_graph_id']]
+								'height'           => $graphs_height[$local_graph_id],
+								'width'            => $graphs_width[$local_graph_id]
 							));
 						}
 					}
