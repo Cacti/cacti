@@ -1497,7 +1497,7 @@ $settings = array(
 		),
 		'ldap_port' => array(
 			'friendly_name' => __('Port Standard'),
-			'description' => __('TCP/UDP port for Non-SSL communications.'),
+			'description' => __('TCP port for Non-SSL communications including LDAP + TLS.  Default is 389.'),
 			'method' => 'textbox',
 			'max_length' => '5',
 			'default' => '389',
@@ -1505,7 +1505,7 @@ $settings = array(
 		),
 		'ldap_port_ssl' => array(
 			'friendly_name' => __('Port SSL'),
-			'description' => __('TCP/UDP port for SSL communications.'),
+			'description' => __('TCP port for LDAPS for SSL communications.  Default is 636.'),
 			'method' => 'textbox',
 			'max_length' => '5',
 			'default' => '636',
@@ -1513,17 +1513,24 @@ $settings = array(
 		),
 		'ldap_version' => array(
 			'friendly_name' => __('Protocol Version'),
-			'description' => __('Protocol Version that the server supports.'),
+			'description' => __('Protocol Version to connect to the server with.'),
 			'method' => 'drop_array',
 			'default' => '3',
 			'array' => $ldap_versions
 		),
 		'ldap_encryption' => array(
 			'friendly_name' => __('Encryption'),
-			'description' => __('Encryption that the server supports. TLS is only supported by Protocol Version 3.'),
+			'description' => __('Encryption that the server supports. NOTE: When using LDAP + TLS you must use version 3.'),
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => $ldap_encryption
+		),
+		'ldap_tls_certificate' => array(
+			'friendly_name' => __('TLS Certificate Requirements'),
+			'description' => __('Should LDAP verify TLS Certificates when received by the Client.'),
+			'method' => 'drop_array',
+			'default' => LDAP_OPT_X_TLS_NEVER,
+			'array' => $ldap_tls_cert_req
 		),
 		'ldap_referrals' => array(
 			'friendly_name' => __('Referrals'),
@@ -1537,7 +1544,7 @@ $settings = array(
 		),
 		'ldap_mode' => array(
 			'friendly_name' => __('Mode'),
-		'description' => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user\'s Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user\'s Distinguished Name (DN).'),
+			'description' => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user\'s Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user\'s Distinguished Name (DN).'),
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => $ldap_modes
@@ -2094,9 +2101,9 @@ $settings = array(
 				10 => __('%d Standard Deviations', 10),
 				15 => __('%d Standard Deviations', 15),
 				20 => __('%d Standard Deviations', 20),
-                                50 => __('%d Standard Deviations', 50),
-                                100 => __('%d Standard Deviations', 100),
-                                200 => __('%d Standard Deviations', 200),
+				50 => __('%d Standard Deviations', 50),
+				100 => __('%d Standard Deviations', 100),
+				200 => __('%d Standard Deviations', 200),
 			)
 		),
 		'spikekill_percent' => array(
@@ -2117,10 +2124,10 @@ $settings = array(
 				1000 => '1000 %',
 				2000 => '2000 %',
 				3000 => '3000 %',
-                                10000 => '10000 %',
-                                50000 => '50000 %',
-                                100000 => '100000 %',
-                                500000 => '500000 %',
+				10000 => '10000 %',
+				50000 => '50000 %',
+				100000 => '100000 %',
+				500000 => '500000 %',
 			)
 		),
 		'spikekill_outliers' => array(
@@ -2137,11 +2144,11 @@ $settings = array(
 				8  => __('%d High/Low Samples', 8),
 				9  => __('%d High/Low Samples', 9),
 				10 => __('%d High/Low Samples', 10),
-                                20 => __('%d High/Low Samples', 20),
-                                50 => __('%d High/Low Samples', 50),
-                                100 => __('%d High/Low Samples', 100),
-                                500 => __('%d High/Low Samples', 500),
-                                1000 => __('%d High/Low Samples', 1000),
+				20 => __('%d High/Low Samples', 20),
+				50 => __('%d High/Low Samples', 50),
+				100 => __('%d High/Low Samples', 100),
+				500 => __('%d High/Low Samples', 500),
+				1000 => __('%d High/Low Samples', 1000),
 			)
 		),
 		'spikekill_number' => array(
@@ -2150,18 +2157,18 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '5',
 			'array' => array(
-                                1  => __('%d Spikes', 1),
-                                2  => __('%d Spikes', 2),
-                                3  => __('%d Spikes', 3),
-                                4  => __('%d Spikes', 4),
-                                5  => __('%d Spikes', 5),
-                                6  => __('%d Spikes', 6),
-                                7  => __('%d Spikes', 7),
-                                8  => __('%d Spikes', 8),
-                                9  => __('%d Spikes', 9),
-                                10 => __('%d Spikes', 10),
-                                50 => __('%d Spikes', 50),
-                                100 => __('%d Spikes', 100),
+				1  => __('%d Spikes', 1),
+				2  => __('%d Spikes', 2),
+				3  => __('%d Spikes', 3),
+				4  => __('%d Spikes', 4),
+				5  => __('%d Spikes', 5),
+				6  => __('%d Spikes', 6),
+				7  => __('%d Spikes', 7),
+				8  => __('%d Spikes', 8),
+				9  => __('%d Spikes', 9),
+				10 => __('%d Spikes', 10),
+				50 => __('%d Spikes', 50),
+				100 => __('%d Spikes', 100),
 			)
 		),
 		'spikekill_backupdir' => array(

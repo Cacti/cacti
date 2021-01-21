@@ -866,20 +866,12 @@ function cacti_log_file() {
 	return $logfile;
 }
 
-/* cacti_log - logs a string to Cacti's log file or optionally to the browser
-   @arg $string - the string to append to the log file
-   @arg $output - (bool) whether to output the log line to the browser using print() or not
-   @arg $environ - (string) tells from where the script was called from
-   @arg $level - (int) only log if above the specified log level */
-function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
-	global $config, $database_log;
+function get_selective_log_level() {
+	static $force_level = null;
 
-	if (!isset($database_log)) {
-		$database_log = false;
+	if ($force_level !== null) {
+		return $force_level;
 	}
-
-	$last_log = $database_log;
-	$database_log = false;
 
 	if (isset($_SERVER['PHP_SELF'])) {
 		$current_file = basename($_SERVER['PHP_SELF']);
@@ -918,6 +910,25 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 			}
 		}
 	}
+
+	return $force_level;
+}
+
+/* cacti_log - logs a string to Cacti's log file or optionally to the browser
+   @arg $string - the string to append to the log file
+   @arg $output - (bool) whether to output the log line to the browser using print() or not
+   @arg $environ - (string) tells from where the script was called from
+   @arg $level - (int) only log if above the specified log level */
+function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
+	global $config, $database_log;
+
+	if (!isset($database_log)) {
+		$database_log = false;
+	}
+
+	$last_log     = $database_log;
+	$database_log = false;
+	$force_level  = get_selective_log_level();
 
 	/* only log if the specific level is reached, developer debug is special low + specific devdbg calls */
 	if ($force_level == '') {

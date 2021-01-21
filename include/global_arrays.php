@@ -796,8 +796,16 @@ $ldap_versions = array(
 
 $ldap_encryption = array(
 	0 => __('None'),
-	1 => __('SSL'),
-	2 => __('TLS')
+	1 => __('LDAPS'),
+	2 => __('LDAP + TLS')
+);
+
+$ldap_tls_cert_req = array(
+	LDAP_OPT_X_TLS_NEVER  => __('Never'),
+	LDAP_OPT_X_TLS_HARD   => __('Hard'),
+	LDAP_OPT_X_TLS_DEMAND => __('Demand'),
+	LDAP_OPT_X_TLS_ALLOW  => __('Allow'),
+	LDAP_OPT_X_TLS_TRY    => __('Try')
 );
 
 $ldap_modes = array(
