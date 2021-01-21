@@ -438,7 +438,7 @@ function report_audit_results($output = true) {
 
 			$status  = db_fetch_row('SHOW TABLE STATUS LIKE "' . $table_name . '"');
 
-			if ($status['Collation'] == 'utf8mb4_unicode_ci' || $status['Collation'] == 'utf8_general_ci') {
+			if ($status['Collation'] == 'utf8mb4_unicode_ci' || $status['Collation'] == 'utf8_general_ci' || $status['Collation'] == 'utf8mb4_general_ci') {
 				$text = 'mediumtext';
 			} else {
 				$text = 'text';
