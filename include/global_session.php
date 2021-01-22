@@ -67,11 +67,7 @@ if ($script == 'graph_view.php' || $script == 'graph.php') {
 	}
 }
 
-if (read_user_setting('user_auto_logout_time')) {
-	$myrefresh['seconds'] = read_user_setting('user_auto_logout_time');
-	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
-	$refreshIsLogout      = 'true';
-} elseif (isset($_SESSION['refresh'])) {
+if (isset($_SESSION['refresh'])) {
 	if (isset($_SESSION['refresh']['seconds'])) {
 		$myrefresh['seconds'] = $_SESSION['refresh']['seconds'];
 	} else {

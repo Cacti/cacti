@@ -738,7 +738,7 @@
 						graph_start = newGraphStartTime;
 						graph_end = newGraphEndTime;
 
-						initializeGraphs();
+						initializeGraphs(true);
 					}else{
 						$('#graph_start').val(newGraphStartTime);
 						$('#graph_end').val(newGraphEndTime);
@@ -754,7 +754,7 @@
 				return false;
 			} else {
 				/* graph view is already in zoom status */
-				open(zoom.attr.location[0] + '?action=' + zoom.graph.action + '&local_graph_id=' + zoom.graph.local_graph_id + '&rra_id=' + zoom.graph.rra_id + '&view_type=' + zoom.graph.view_type + '&graph_start=' + newGraphStartTime + '&graph_end=' + newGraphEndTime + '&graph_height=' + zoom.graph.height + '&graph_width=' + zoom.graph.width + '&title_font_size=' + zoom.graph.title_font_size, '_self');
+				open(zoom.attr.location[0] + '?action=' + zoom.graph.action + '&local_graph_id=' + zoom.graph.local_graph_id + '&rra_id=' + zoom.graph.rra_id + '&view_type=' + zoom.graph.view_type + '&graph_start=' + newGraphStartTime + '&graph_end=' + newGraphEndTime + '&graph_height=' + zoom.graph.height + '&graph_width=' + zoom.graph.width + '&title_font_size=' + zoom.graph.title_font_size + '&disable_cache=true', '_self');
 			}
 
 			zoom.attr.start = 'none';
@@ -864,7 +864,7 @@
 						graph_start = newGraphStartTime;
 						graph_end = newGraphEndTime;
 
-						initializeGraphs();
+						initializeGraphs(true);
 					}else{
 						$('#graph_start').val(newGraphStartTime);
 						$('#graph_end').val(newGraphEndTime);
@@ -877,7 +877,7 @@
 
 				zoomAction_update_session(newGraphStartTime, newGraphEndTime);
 			} else {
-				open(zoom.attr.location[0] + '?action=' + zoom.graph.action + '&local_graph_id=' + zoom.graph.local_graph_id + '&rra_id=' + zoom.graph.rra_id + '&view_type=' + zoom.graph.view_type + '&graph_start=' + newGraphStartTime + '&graph_end=' + newGraphEndTime + '&graph_height=' + zoom.graph.height + '&graph_width=' + zoom.graph.width + '&title_font_size=' + zoom.graph.title_font_size, '_self');
+				open(zoom.attr.location[0] + '?action=' + zoom.graph.action + '&local_graph_id=' + zoom.graph.local_graph_id + '&rra_id=' + zoom.graph.rra_id + '&view_type=' + zoom.graph.view_type + '&graph_start=' + newGraphStartTime + '&graph_end=' + newGraphEndTime + '&graph_height=' + zoom.graph.height + '&graph_width=' + zoom.graph.width + '&title_font_size=' + zoom.graph.title_font_size + '&disable_cache=true', '_self');
 			}
 		}
 
@@ -1113,12 +1113,12 @@
 					if (zoom.image.rra_id > 0) {
 						url += '&rra_id='+zoom.image.rra_id;
 					}
-					url += '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
+					url += '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' ) + '&disable_cache=true';
 					$('#zoom-image').removeAttr('download').attr({ 'href':url, 'target': '_bank' }).get(0).click();
 
 					break;
 				case 'link':
-					var url = zoom.attr.origin + ((zoom.attr.urlPath == '') ? '/' : zoom.attr.urlPath) + 'graph_image.php?local_graph_id=' + zoom.image.id + '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
+					var url = zoom.attr.origin + ((zoom.attr.urlPath == '') ? '/' : zoom.attr.urlPath) + 'graph_image.php?local_graph_id=' + zoom.image.id + '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' ) + '&disable_cache=true';
 					$('#zoom-textarea').html(url).select();
 					try {
 						var successful = document.execCommand('copy');

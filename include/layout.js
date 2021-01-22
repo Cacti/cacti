@@ -3511,7 +3511,7 @@ function redrawGraph(graph_id) {
 	);
 }
 
-function initializeGraphs() {
+function initializeGraphs(disable_cache = false) {
 	$.ajaxQ.abortAll();
 
 	$('a[id$="_mrtg"]').each(function() {
@@ -3609,6 +3609,7 @@ function initializeGraphs() {
 			'&graph_end='+graph_end+
 			'&graph_height='+graph_height+
 			'&graph_width='+graph_width+
+			(disable_cache ? '&disable_cache=true':'')+
 			(isThumb ? '&graph_nolegend=true':''))
 			.done(function(data) {
 				if (myWidth < data.image_width) {
