@@ -35,12 +35,12 @@ Cacti CHANGELOG
 -issue#4056: "Show Exceptions" checkbox appears to behave as if it were "Only Show Exceptions"
 -issue#4061: Fix dateformat in graph - user defined date separator was never used
 -issue#4067: Zoom does not initiate to bypass BOOST image cache
+-issue#4068: Fix actual graph size where graphs with multiple sizes are shown in the same page
 -issue#4073: Individual graphs are loosing Zoom functionality in adv. mode after their selected chart area has lost focus.
 -issue#4075: LDAP Settings lead to confusion when setting up LDAP authentication
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
-
 
 1.2.16
 -issue#3704: When generating a report, the Cascade to Branches function does not as expected
