@@ -215,7 +215,7 @@ function utilities_view_tech() {
 		/* Get RRDtool version */
 		$rrdtool_version = __('Unknown');
 		$rrdtool_release = __('Unknown');
-		$storage_location = read_config_option('$storage_location');
+		$storage_location = read_config_option('storage_location');
 
 		$out_array = array();
 
@@ -225,7 +225,7 @@ function utilities_view_tech() {
 			}
 		}else {
 			$rrdtool_pipe = rrd_init();
-			$out_array = rrdtool_execute('info', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'WEBLOG');
+			$out_array[] = rrdtool_execute('info', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'WEBLOG');
 			rrd_close($rrdtool_pipe);
 		}
 

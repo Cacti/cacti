@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue#4073: Individual graphs are loosing Zoom functionality in adv. mode after their selected chart area has lost focus.
 -issue#4075: LDAP Settings lead to confusion when setting up LDAP authentication
 -issue#4076: System utilities Mariadb tuning doc points to a dead URL
+-issue#4082: RRDtool version detection not working for RRDproxy setup
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
