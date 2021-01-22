@@ -24,6 +24,7 @@
 
 include_once ('./include/auth.php');
 include_once ($config['library_path'] . '/functions.php');
+include_once ($config['library_path'] . '/rrd.php');
 
 $ds_actions = array (
 	1 => __x('dropdown action', 'Delete'),
@@ -185,7 +186,7 @@ function get_files() {
 	/* install the rrdclean error handler */
 	set_error_handler('rrdclean_error_handler');
 
-	$files_unused = array ();
+	$files_unused = array();
 	$arc_path = read_config_option('rrd_archive');
 	if (substr_count($arc_path, $rra_path)) {
 		$archive = true;
@@ -203,24 +204,54 @@ function get_files() {
 		WHERE local_data_id>0
 		ON DUPLICATE KEY UPDATE local_data_id=VALUES(local_data_id)");
 
-	$dir_iterator = new RecursiveDirectoryIterator($rra_path);
-	$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
-
 	$size = 0;
 	$sql  = array();
-	foreach ($iterator as $file) {
-		if (substr($file->getPathname(),-3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
-			$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
-			$size++;
 
-			if ($size == 400) {
-				db_execute('INSERT INTO data_source_purge_temp
+	if(read_config_option('storage_location')) {
+
+		$rrdtool_pipe = rrd_init();
+		rrdtool_execute('setcnn timeout off', false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe, $logopt = 'POLLER');
+		$scan = rrdtool_execute('rrd-list', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, $logopt = 'POLLER');
+		rrd_close($rrdtool_pipe);
+
+		if($scan){
+			$files = explode("\r\n", $scan);
+			foreach($files as $file) {
+				list($pathname, $size, $mtime) = explode(',', $file);
+				$sql[] = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', $mtime) . "',0)";
+				$size++;
+
+				if ($size == 400) {
+					db_execute('INSERT INTO data_source_purge_temp
 					(name, size, last_mod, in_cacti)
 					VALUES ' . implode(',', $sql) . '
 					ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
 
-				$size = 0;
-				$sql  = array();
+					$size = 0;
+					$sql = array();
+				}
+			}
+		}
+
+	}else {
+
+		$dir_iterator = new RecursiveDirectoryIterator($rra_path);
+		$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
+
+		foreach ($iterator as $file) {
+			if (substr($file->getPathname(), -3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
+				$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
+				$size++;
+
+				if ($size == 400) {
+					db_execute('INSERT INTO data_source_purge_temp
+					(name, size, last_mod, in_cacti)
+					VALUES ' . implode(',', $sql) . '
+					ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
+
+					$size = 0;
+					$sql = array();
+				}
 			}
 		}
 	}
