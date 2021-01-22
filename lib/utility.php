@@ -1125,8 +1125,14 @@ function utilities_get_mysql_recommendations() {
 		$location = '/etc/my.cnf';
 	}
 
+	if ($database == 'MariaDB') {
+		$variables_url = 'https://mariadb.com/kb/en/server-system-variables/';
+	} else {
+		$variables_url = html_escape('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html');
+	}
+
 	print '<tr class="tableHeader tableFixed">';
-	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" href="' . html_escape('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html') . '">' .  __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
+	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" target="_blank" href="' . $variables_url . '">' .  __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
 	print '</tr>';
 
 	form_alternate_row();
