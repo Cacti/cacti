@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue#4073: Individual graphs are loosing Zoom functionality in adv. mode after their selected chart area has lost focus.
 -issue#4075: LDAP Settings lead to confusion when setting up LDAP authentication
 -issue#4076: System utilities Mariadb tuning doc points to a dead URL
+-issue#4077: If user has no permissions assigned and tries to login a redirect loop occours
 -issue#4079: audit_database.php compatibility enhance for current_timestamp() and CURRENT_TIMESTAMP
 -issue#4080: Cacti regular expression searching does not quote expressions
 -issue#4082: RRDtool version detection not working for RRDproxy setup

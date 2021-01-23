@@ -362,6 +362,14 @@ if (get_nfilter_request_var('action') == 'login') {
 			exit;
 		}
 
+		if (!auth_user_has_access($user)) {
+			/* error */
+			display_custom_error_message(__('You do not have access to any area of Cacti.  Contact your administrator.'));
+			cacti_log(sprintf("LOGIN: User %s with id %s does not have access to any area of Cacti", $user['username'], $user['id']), false, 'AUTH');
+			header('Location: index.php?header=false');
+			exit;
+		}
+
 		/* remember this user */
 		if (isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
 			set_auth_cookie($user);
@@ -397,7 +405,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	} elseif (!$guest_user && $user_auth) {
 		/* No guest account defined */
 		display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
-		cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
+		cacti_log('LOGIN: Access Denied, Either Guest account is not enabled or there is no User Template defined to copy', false, 'AUTH');
 		header('Location: index.php');
 		exit;
 	} else {
@@ -421,6 +429,55 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		cacti_log('LOGIN: ' . ($realm == 0 ? 'Local':'LDAP') . " Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.", false, 'AUTH');
 	}
+}
+
+function auth_user_has_access($user) {
+	$access = false;
+
+	// See if they have access to any realms
+	$realms = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM user_auth_realm
+		WHERE user_id = ?',
+		array($user['id']));
+
+	if ($realms > 0) {
+		return true;
+	}
+
+	// See if they have general graph access as a guest account
+	if (read_config_option('guest_user') > 0) {
+		if ($user['show_tree'] == 'on' || $user['show_list'] == 'on' || $user['show_preview'] == 'on') {
+			return true;
+		}
+	}
+
+	// See if they have access to any group realms
+	$user_groups = db_fetch_assoc_prepared('SELECT *
+		FROM user_auth_group_members
+		WHERE user_id = ?',
+		array($user['id']));
+
+	if (cacti_sizeof($user_groups)) {
+		foreach($user_groups as $g) {
+			$realms = db_fetch_cell_prepared('SELECT COUNT(*)
+				FROM user_auth_group_realm
+				WHERE group_id = ?',
+				array($g['group_id']));
+
+			if ($realms > 0) {
+				return true;
+			}
+
+			// See if they have general graph access as a guest account
+			if (read_config_option('guest_user') > 0) {
+				if ($g['show_tree'] == 'on' || $g['show_list'] == 'on' || $g['show_preview'] == 'on') {
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 /* auth_display_custom_error_message - displays a custom error message to the browser that looks like
