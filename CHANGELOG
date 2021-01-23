@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#4061: Fix dateformat in graph - user defined date separator was never used
 -issue#4067: Zoom does not initiate to bypass BOOST image cache
 -issue#4068: Fix actual graph size where graphs with multiple sizes are shown in the same page
+-issue#4070: Graph Variable summation fails in some cases when the RRDfile lacks the Data Source
 -issue#4073: Individual graphs are loosing Zoom functionality in adv. mode after their selected chart area has lost focus.
 -issue#4075: LDAP Settings lead to confusion when setting up LDAP authentication
 -issue#4076: System utilities Mariadb tuning doc points to a dead URL

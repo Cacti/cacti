@@ -649,6 +649,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 			foreach ($graph_items as $graph_element) {
 				if (!empty($graph_element['data_template_rrd_id']) &&
 					!empty($graph_element['local_data_id']) &&
+					isset($summation_cache[$graph_element['local_data_id']][$graph_element['data_source_name']]) &&
 					is_graphable_item($graph_item_types[$graph_element['graph_type_id']])) {
 					$summation += $summation_cache[$graph_element['local_data_id']][$graph_element['data_source_name']];
 				}
