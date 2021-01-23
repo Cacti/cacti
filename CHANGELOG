@@ -34,6 +34,7 @@ Cacti CHANGELOG
 -issue#4050: Missing slash in absolute path to cli/convert_tables.php shown during upgrade
 -issue#4056: "Show Exceptions" checkbox appears to behave as if it were "Only Show Exceptions"
 -issue#4061: Fix dateformat in graph - user defined date separator was never used
+-issue#4066: Boost - Number of Boost Processes without function
 -issue#4067: Zoom does not initiate to bypass BOOST image cache
 -issue#4068: Fix actual graph size where graphs with multiple sizes are shown in the same page
 -issue#4070: Graph Variable summation fails in some cases when the RRDfile lacks the Data Source
