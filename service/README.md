@@ -46,7 +46,7 @@ There are only a few steps.  For this service here they are.
 1. Copy the cactid.service file to /usr/lib/systemd/system
 2. Modify the file to point to the real path of the cactid.php file located
    in the cacti base directory by default
-3. Modify cactid.service line  ```EnvironmentFile=/etc/sysconfig/cactid``` to ```/etc/cactid```
+3. Modify cactid.service line  ```EnvironmentFile=/etc/sysconfig/cactid``` to ```EnvironmentFile=/etc/cactid```
 3. Modify the file to use the user and group that your Cacti is installed
    with, on RedHat variants, it usually: apache:apache, for Debian variants,
    its generally www-run:www
