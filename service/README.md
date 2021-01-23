@@ -21,7 +21,7 @@ it's stability and reliability.
 However, to more easily support keepalived, we need to move away from the 
 crontab based setup Cacti has used for nearly 20 years.  Long live Crontab!
 
-### Installing on Linux (systemd based systems)
+### Installing on Linux (systemd based systems) (Centos/RHEL)
 
 Just about all Linux variants that are out there today use systemd.  The
 systemd model makes creating and installing a service very convenient.
@@ -34,6 +34,23 @@ There are only a few steps.  For this service here they are.
    with, on RedHat variants, it usually: apache:apache, for Debian variants,
    its generally www-run:www
 4. Create the file /etc/sysconfig/cactid, even though it's not used today,
+   we'll keep it there for as a future path to over write certain settings
+5. Install the service using 'systemctl enable cactid'
+6. Reload systemd using 'systemctl daemon-reload'
+7. Comment out the cacti crontab file or simply remove the /etc/cron.d/cacti
+   file in place today
+8. Start the service using 'systemctl start cactid'
+
+### Installing on Linux (systemd based systems) (Debian/Ubuntu)
+
+1. Copy the cactid.service file to /usr/lib/systemd/system
+2. Modify the file to point to the real path of the cactid.php file located
+   in the cacti base directory by default
+3. Modify cactid.service line  ```EnvironmentFile=/etc/sysconfig/cactid``` to ```/etc/cactid```
+3. Modify the file to use the user and group that your Cacti is installed
+   with, on RedHat variants, it usually: apache:apache, for Debian variants,
+   its generally www-run:www
+4. Create the file /etc/cactid, even though it's not used today,
    we'll keep it there for as a future path to over write certain settings
 5. Install the service using 'systemctl enable cactid'
 6. Reload systemd using 'systemctl daemon-reload'
