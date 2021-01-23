@@ -419,6 +419,30 @@ default:
 		}
 	}
 
+	// Cache this setting as on large systems
+	// this query runs long
+	if ($current_tab == 'spikes') {
+		if (!isset($_SESSION['sk_templates'])) {
+			$spikekill_templates = array_rekey(
+				db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
+					FROM graph_templates AS gt
+					INNER JOIN graph_templates_item AS gti
+					ON gt.id=gti.graph_template_id
+					INNER JOIN data_template_rrd AS dtr
+					ON gti.task_item_id=dtr.id
+					WHERE gti.local_graph_id=0 AND data_source_type_id IN (3,2)
+					ORDER BY name'),
+				'id', 'name'
+			);
+
+			$_SESSION['sk_templates'] = $spikekill_templates;
+		} else {
+			$spikekill_templates = $_SESSION['sk_templates'];
+		}
+
+		$form_array['spikekill_templates']['array'] = $spikekill_templates;
+	}
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),

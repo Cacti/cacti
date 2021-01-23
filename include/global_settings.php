@@ -55,15 +55,6 @@ $tabs_graphs = array(
 	'fonts'     => __('Graph Fonts')
 );
 
-$spikekill_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
-	FROM graph_templates AS gt
-	INNER JOIN graph_templates_item AS gti
-	ON gt.id=gti.graph_template_id
-	INNER JOIN data_template_rrd AS dtr
-	ON gti.task_item_id=dtr.id
-	WHERE gti.local_graph_id=0 AND data_source_type_id IN (3,2)
-	ORDER BY name'), 'id', 'name');
-
 if (db_table_exists('plugin_config')) {
 	$logplugins = array_rekey(db_fetch_assoc('SELECT directory AS id, name
 		FROM plugin_config
@@ -2209,7 +2200,7 @@ $settings = array(
 			'friendly_name' => __('Graph Templates to Spike Kill'),
 			'method' => 'drop_multi',
 			'description' => __('When performing batch spike removal, only the templates selected below will be acted on.'),
-			'array' => $spikekill_templates,
+			'array' => array()
 		),
 		'spikekill_purge' => array(
 			'friendly_name' => __('Backup Retention'),

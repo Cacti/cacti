@@ -41,6 +41,7 @@ Cacti CHANGELOG
 -issue#4076: System utilities Mariadb tuning doc points to a dead URL
 -issue#4082: RRDtool version detection not working for RRDproxy setup
 -issue#4083: RRDCleaner does not support RRDproxy
+-issue#4086: Large system performance negatively impacted due to $spikekill_templates behavior
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
