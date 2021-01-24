@@ -2397,7 +2397,11 @@ function boost_display_run_status() {
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Detailed Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
 
-	$runtimes = db_fetch_assoc('SELECT * FROM settings WHERE name LIKE "stats_boost_%" ORDER BY name');
+	$runtimes = db_fetch_assoc('SELECT name, value, CAST(replace(name, "stats_boost_", "") AS signed) AS ome
+		FROM settings
+		WHERE name LIKE "stats_boost_%"
+		ORDER BY ome');
+
 	if (cacti_sizeof($runtimes)) {
 		foreach($runtimes as $r) {
 			$process = str_replace('stats_boost_', '', $r['name']);
