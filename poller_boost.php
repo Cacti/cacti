@@ -915,7 +915,7 @@ function boost_log_statistics($rrd_updates) {
 	$cacti_stats = sprintf(
 		'Time:%01.4f ' .
 		'RRDUpdates:%s',
-		round($end-$start,2),
+		round($end-$start, 2),
 		$rrd_updates);
 
 	/* log to the database */
@@ -935,6 +935,11 @@ function boost_log_statistics($rrd_updates) {
 		'rrdupdate',
 		'delete'
 	);
+
+	$processes = read_config_option('boost_parallel');
+	if (empty($processes)) {
+		$processes = 1;
+	}
 
 	$stats = db_fetch_assoc('SELECT value
 		FROM settings
@@ -956,7 +961,13 @@ function boost_log_statistics($rrd_updates) {
 		$outstr = '';
 
 		foreach($order as $key) {
-			$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($output[$key], 0);
+			if ($key == 'TotalTime') {
+				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($end-$start, 2);
+			} elseif ($key == 'RRDUpdates') {
+				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($output[$key], 0);
+			} else {
+				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($output[$key]/$processes, 0);
+			}
 		}
 
 		/* log to the database */
@@ -994,7 +1005,7 @@ function boost_log_child_statistics($rrd_updates, $child) {
 		'Time:%01.4f ' .
 		'ProcessNumber:%s ' .
 		'RRDUpdates:%s',
-		round($end-$start,2),
+		round($end-$start, 2),
 		$child,
 		$rrd_updates);
 
