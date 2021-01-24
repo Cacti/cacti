@@ -1016,6 +1016,10 @@ legend {
 	white-space: nowrap;
 }
 
+.piinstall, .pienable, .pidisable, .piuninstall, .pierror {
+	padding: 0px 3px !important;
+}
+
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
 	color: blue;
 	text-decoration: none;

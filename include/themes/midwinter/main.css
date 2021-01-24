@@ -32,9 +32,14 @@ body {
     color: #7e818f;
     overflow: hidden;
 }
+
 /* elements */
 img {
     border: none;
+}
+
+i {
+	padding-right: 3px;
 }
 
 fieldset {
@@ -1232,6 +1237,10 @@ legend {
 	padding-bottom: 2px;
 }
 
+.piinstall, .pienable, .pidisable, .piuninstall, .pierror {
+	padding: 0px 3px !important;
+}
+
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
 	color: #57a9da;
 	text-decoration: none;
@@ -1658,7 +1667,6 @@ table.cactiTable {
 .tableHeader th {
 	font-weight: 600;
 	vertical-align: middle;
-	text-align: left;
 	font-size: 11px;
 	text-transform: none;
 	border: 1px solid #3d3d3d;
