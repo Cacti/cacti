@@ -2389,16 +2389,31 @@ function boost_display_run_status() {
 	print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '' && is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
 
 	form_alternate_row();
-	print '<td class="utilityPick">' . __('Detailed Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
+	print '<td class="utilityPick">' . __('Max Poller Memory Allowed:') . '</td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' ' . __('MBytes') : __('N/A')) . '</td>';
+
+	/* boost last runtime display */
+	html_section_header(__('Detailed Runtime Statistics'), 2);
 
 	form_alternate_row();
-	print '<td class="utilityPick">' . __('Max Poller Memory Allowed:') . '</td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' ' . __('MBytes') : __('N/A')) . '</td>';
+	print '<td class="utilityPick">' . __('Detailed Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
+
+	$runtimes = db_fetch_assoc('SELECT * FROM settings WHERE name LIKE "stats_boost_%" ORDER BY name');
+	if (cacti_sizeof($runtimes)) {
+		foreach($runtimes as $r) {
+			$process = str_replace('stats_boost_', '', $r['name']);
+			form_alternate_row();
+			print '<td class="utilityPick">' . __esc('Process %d Runtime:', $process) . '</td><td>' . html_escape($r['value']) . '</td>';
+		}
+	}
 
 	/* boost runtime display */
 	html_section_header(__('Run Time Configuration'), 2);
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Update Frequency:') . '</td><td>' . ($rrd_updates == '' ? __('N/A') : $boost_refresh_interval[$update_interval]) . '</td>';
+
+	form_alternate_row();
+	print '<td class="utilityPick">' . __('Concurrent Processes:') . '</td><td>' . read_config_option('boost_parallel') . '</td>';
 
 	form_alternate_row();
 	print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s', $next_run_time):$next_run_time) . '</td>';

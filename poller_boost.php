@@ -925,6 +925,16 @@ function boost_log_statistics($rrd_updates) {
 	cacti_log('BOOST STATS: ' . $cacti_stats , true, 'SYSTEM');
 
 	$output = array();
+	$order  = array(
+		'RRDUpdates',
+		'TotalTime',
+		'get_records',
+		'results_cycle',
+		'rrd_filename_and_template',
+		'rrd_lastupdate',
+		'rrdupdate',
+		'delete'
+	);
 
 	$stats = db_fetch_assoc('SELECT value
 		FROM settings
@@ -945,8 +955,8 @@ function boost_log_statistics($rrd_updates) {
 
 		$outstr = '';
 
-		foreach($output as $key => $value) {
-			$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($value, 0);
+		foreach($order as $key) {
+			$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($output[$key], 0);
 		}
 
 		/* log to the database */
@@ -958,6 +968,19 @@ function boost_log_statistics($rrd_updates) {
 		}
 	}
 
+	/* prune old process statistics if the number has changed */
+	$processes = read_config_option('boost_parallel');
+	$stats     = db_fetch_assoc('SELECT * FROM settings WHERE name LIKE "stats_boost_%"');
+	if (cacti_sizeof($stats)) {
+		foreach($stats as $stat) {
+			$process = str_replace('stats_boost_', '', $stat['name']);
+			if ($process > $processes) {
+				db_execute_prepared('DELETE FROM settings WHERE name = ?', array('stats_boost_' . $process));
+			}
+		}
+	}
+
+	/* prune all detailed stats */
 	db_execute('DELETE FROM settings WHERE name LIKE "stats_detail_boost_%"');
 }
 
