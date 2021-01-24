@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-23 17:16-0500\n"
+"POT-Creation-Date: 2021-01-23 21:38-0500\n"
 "PO-Revision-Date: 2020-09-13 18:10-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -501,8 +501,8 @@ msgstr "Ταίριασμα των γραφημάτων"
 #: user_domains.php:653 user_group_admin.php:1833 user_group_admin.php:2155
 #: user_group_admin.php:2263 user_group_admin.php:2366
 #: user_group_admin.php:2451 user_group_admin.php:2536 utilities.php:860
-#: utilities.php:1253 utilities.php:1546 utilities.php:1827 utilities.php:2529
-#: utilities.php:2781 vdef.php:700
+#: utilities.php:1253 utilities.php:1546 utilities.php:1827 utilities.php:2544
+#: utilities.php:2796 vdef.php:700
 msgid "Search"
 msgstr "Αναζήτηση"
 
@@ -541,7 +541,7 @@ msgstr "Γραφήματα"
 #: user_group_admin.php:1843 user_group_admin.php:2187
 #: user_group_admin.php:2291 user_group_admin.php:2376
 #: user_group_admin.php:2461 user_group_admin.php:2546 utilities.php:838
-#: utilities.php:1556 utilities.php:1848 utilities.php:2554 utilities.php:2817
+#: utilities.php:1556 utilities.php:1848 utilities.php:2569 utilities.php:2832
 #: vdef.php:710
 msgid "Default"
 msgstr "Προεπιλογή"
@@ -587,7 +587,7 @@ msgstr "Πήγαινε"
 #: user_group_admin.php:2205 user_group_admin.php:2309
 #: user_group_admin.php:2394 user_group_admin.php:2479
 #: user_group_admin.php:2564 utilities.php:850 utilities.php:1205
-#: utilities.php:1537 utilities.php:1818 utilities.php:2566 utilities.php:2829
+#: utilities.php:1537 utilities.php:1818 utilities.php:2581 utilities.php:2844
 #, fuzzy
 msgid "Set/Refresh Filters"
 msgstr "Ρύθμιση / Ανανέωση φίλτρων"
@@ -627,8 +627,8 @@ msgstr "Καθαρισμός"
 #: user_group_admin.php:1856 user_group_admin.php:2206
 #: user_group_admin.php:2310 user_group_admin.php:2395
 #: user_group_admin.php:2480 user_group_admin.php:2565 utilities.php:851
-#: utilities.php:1206 utilities.php:1538 utilities.php:1819 utilities.php:2567
-#: utilities.php:2830
+#: utilities.php:1206 utilities.php:1538 utilities.php:1819 utilities.php:2582
+#: utilities.php:2845
 msgid "Clear Filters"
 msgstr "Καθαρισμός Φίλτρων"
 
@@ -728,8 +728,8 @@ msgstr "Πρότυπο"
 #: lib/html_reports.php:1511 managers.php:482 managers.php:735
 #: user_admin.php:2601 user_admin.php:2794 user_group_admin.php:2165
 #: user_group_admin.php:2273 utilities.php:826 utilities.php:1507
-#: utilities.php:1792 utilities.php:1837 utilities.php:2539 utilities.php:2791
-#: utilities.php:2804
+#: utilities.php:1792 utilities.php:1837 utilities.php:2554 utilities.php:2806
+#: utilities.php:2819
 msgid "Any"
 msgstr "Οποιοδήποτε"
 
@@ -1407,7 +1407,7 @@ msgstr "Κατεβάστε τις ανακαλυφθείσες συσκευές"
 #: lib/functions.php:4331 lib/functions.php:4335 lib/html.php:1182
 #: pollers.php:1009 user_admin.php:2342 utilities.php:511 utilities.php:953
 #: utilities.php:2284 utilities.php:2381 utilities.php:2389 utilities.php:2392
-#: utilities.php:2395 utilities.php:2401 utilities.php:2631
+#: utilities.php:2398 utilities.php:2413 utilities.php:2646
 msgid "N/A"
 msgstr "Μη Διαθέσιμο"
 
@@ -1554,7 +1554,7 @@ msgstr "Ερώτημα δεδομένων"
 #: managers.php:598 user_admin.php:1152 user_admin.php:1164 user_admin.php:2329
 #: user_domains.php:350 user_domains.php:751 user_group_admin.php:87
 #: user_group_admin.php:682 user_group_admin.php:697 user_group_admin.php:1915
-#: utilities.php:2416
+#: utilities.php:2431
 msgid "Enabled"
 msgstr "Ενεργοποιημένο"
 
@@ -1571,7 +1571,7 @@ msgstr "Ενεργοποιημένο"
 #: lib/html_reports.php:1513 lib/html_reports.php:1651 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1164 user_domains.php:411 user_group_admin.php:697
-#: utilities.php:2416
+#: utilities.php:2431
 msgid "Disabled"
 msgstr "Απενεργοποιημένο"
 
@@ -1730,7 +1730,7 @@ msgstr "Γενικές Ρυθμίσεις"
 #: lib/installer.php:1865 lib/installer.php:2445 lib/installer.php:2524
 #: lib/vdef.php:74 managers.php:562 pollers.php:61 sites.php:41
 #: user_admin.php:1152 user_domains.php:326 utilities.php:637
-#: utilities.php:2611
+#: utilities.php:2626
 msgid "Name"
 msgstr "Όνομα"
 
@@ -3584,7 +3584,7 @@ msgid "Check"
 msgstr "Ελεγχος"
 
 #: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2911
-#: utilities.php:571 utilities.php:588 utilities.php:2611
+#: utilities.php:571 utilities.php:588 utilities.php:2626
 msgid "Value"
 msgstr "Αξία"
 
@@ -4955,42 +4955,42 @@ msgstr "Δεδομένα γραφήματος"
 msgid "RRDtool Graph Syntax"
 msgstr "RRDtool Σύνταξη γραφήματος"
 
-#: graph_image.php:154 graph_json.php:229 graph_realtime.php:203
+#: graph_image.php:154 graph_json.php:229 graph_realtime.php:237
 #, fuzzy
 msgid "The Cacti Poller has not run yet."
 msgstr "Ο Cacti Poller δεν έχει τρέξει ακόμα."
 
-#: graph_realtime.php:303
+#: graph_realtime.php:337
 #, fuzzy
 msgid "Real-time has been disabled by your administrator."
 msgstr "Ο πραγματικός χρόνος έχει απενεργοποιηθεί από το διαχειριστή σας."
 
-#: graph_realtime.php:310
+#: graph_realtime.php:344
 #, fuzzy
 msgid "The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph."
 msgstr "Ο κατάλογος της προσωρινής μνήμης εικόνας δεν υπάρχει. Αρχικά, δημιουργήστε το και ορίστε δικαιώματα και στη συνέχεια επιχειρήστε να ανοίξετε ένα άλλο γράφημα πραγματικού χρόνου."
 
-#: graph_realtime.php:317
+#: graph_realtime.php:351
 #, fuzzy
 msgid "The Image Cache Directory is not writable.  Please set permissions and then attempt to open another Real-time graph."
 msgstr "Ο κατάλογος της προσωρινής μνήμης εικόνας δεν είναι εγγράψιμος. Ρυθμίστε τα δικαιώματα και, στη συνέχεια, επιχειρήστε να ανοίξετε ένα άλλο γράφημα πραγματικού χρόνου."
 
-#: graph_realtime.php:338
+#: graph_realtime.php:372
 #, fuzzy
 msgid "Cacti Real-time Graphing"
 msgstr "Cacti Graphing σε πραγματικό χρόνο"
 
-#: graph_realtime.php:372 lib/html_graph.php:238 lib/html_reports.php:1009
+#: graph_realtime.php:407 lib/html_graph.php:238 lib/html_reports.php:1009
 #: lib/html_tree.php:1116
 msgid "Thumbnails"
 msgstr "Μικρογραφίες"
 
-#: graph_realtime.php:377
+#: graph_realtime.php:411
 #, fuzzy, php-format
 msgid "%d seconds left."
 msgstr "% d δευτερόλεπτα αριστερά."
 
-#: graph_realtime.php:393
+#: graph_realtime.php:427
 #, fuzzy
 msgid " seconds left."
 msgstr "δευτερόλεπτα."
@@ -12578,7 +12578,7 @@ msgstr "Ενεργοποιήστε το αρχείο εντοπισμού σφα
 msgid "If this field is non-blank, Boost will log RRDupdate output from the boost\tpoller process."
 msgstr "Εάν αυτό το πεδίο δεν είναι κενό, το Boost θα καταγράψει την έξοδο RRDupdate από τη διαδικασία του poller boost."
 
-#: include/global_settings.php:1913 utilities.php:2413
+#: include/global_settings.php:1913 utilities.php:2428
 #, fuzzy
 msgid "Image Caching"
 msgstr "Image Caching"
@@ -13419,7 +13419,7 @@ msgstr "Συσκευές αντιστοίχισης"
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:532 lib/html_reports.php:578 lib/html_reports.php:1326
 #: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2906
-#: utilities.php:361 utilities.php:1215 utilities.php:2611
+#: utilities.php:361 utilities.php:1215 utilities.php:2626
 msgid "Type"
 msgstr "Τύπος"
 
@@ -13746,7 +13746,7 @@ msgid "Log [Total Lines: %d %s - Unfiltered]"
 msgstr "Αρχειοθέτηση [Συνολικές γραμμές:% d %s - Μη φιλτραρισμένες]"
 
 #: lib/clog_webapi.php:285 utilities.php:1291 utilities.php:1637
-#: utilities.php:1844 utilities.php:1924 utilities.php:2605 utilities.php:2813
+#: utilities.php:1844 utilities.php:1924 utilities.php:2620 utilities.php:2828
 msgid "Entries"
 msgstr "Εγγραφές"
 
@@ -17856,12 +17856,12 @@ msgstr "Δέκτης ειδοποιήσεων SNMP [επεξεργασία: %s]"
 msgid "SNMP Notification Receiver [new]"
 msgstr "Δέκτης ειδοποιήσεων SNMP [νέος]"
 
-#: managers.php:478 managers.php:564 utilities.php:2535 utilities.php:2611
+#: managers.php:478 managers.php:564 utilities.php:2550 utilities.php:2626
 #, fuzzy
 msgid "MIB"
 msgstr "MIB"
 
-#: managers.php:563 utilities.php:1643 utilities.php:2611
+#: managers.php:563 utilities.php:1643 utilities.php:2626
 #, fuzzy
 msgid "OID"
 msgstr "OID"
@@ -17870,7 +17870,7 @@ msgstr "OID"
 msgid "Kind"
 msgstr "Είδος"
 
-#: managers.php:566 utilities.php:2611
+#: managers.php:566 utilities.php:2626
 #, fuzzy
 msgid "Max-Access"
 msgstr "Max-Access"
@@ -17885,24 +17885,24 @@ msgstr "Παρακολούθησα"
 msgid "No SNMP Notifications"
 msgstr "Δεν υπάρχουν ειδοποιήσεις SNMP"
 
-#: managers.php:731 utilities.php:2787
+#: managers.php:731 utilities.php:2802
 msgid "Severity"
 msgstr "Σοβαρότητα"
 
-#: managers.php:747 utilities.php:2831
+#: managers.php:747 utilities.php:2846
 #, fuzzy
 msgid "Purge Notification Log"
 msgstr "Έγγραφο ειδοποίησης καθαρισμού"
 
-#: managers.php:794 utilities.php:2887
+#: managers.php:794 utilities.php:2902
 msgid "Time"
 msgstr "Ώρα"
 
-#: managers.php:795 utilities.php:2887
+#: managers.php:795 utilities.php:2902
 msgid "Notification"
 msgstr "Ειδοποίηση"
 
-#: managers.php:796 utilities.php:2887
+#: managers.php:796 utilities.php:2902
 #, fuzzy
 msgid "Varbinds"
 msgstr "Varbinds"
@@ -17912,7 +17912,7 @@ msgstr "Varbinds"
 msgid "Severity Level"
 msgstr "Επίπεδο σοβαρότητας"
 
-#: managers.php:830 utilities.php:2909
+#: managers.php:830 utilities.php:2924
 #, fuzzy
 msgid "No SNMP Notification Log Entries"
 msgstr "Δεν υπάρχουν καταχωρήσεις καταγραφής ειδοποιήσεων SNMP"
@@ -20552,18 +20552,18 @@ msgid "Attempts"
 msgstr "Προσπάθειες"
 
 #: utilities.php:850 utilities.php:1205 utilities.php:1537 utilities.php:1818
-#: utilities.php:2566 utilities.php:2829 vdef.php:728
+#: utilities.php:2581 utilities.php:2844 vdef.php:728
 msgctxt "Button: use filter settings"
 msgid "Go"
 msgstr "Πήγαινε"
 
 #: utilities.php:851 utilities.php:1206 utilities.php:1538 utilities.php:1819
-#: utilities.php:2567 utilities.php:2830 vdef.php:729
+#: utilities.php:2582 utilities.php:2845 vdef.php:729
 msgctxt "Button: reset filter settings"
 msgid "Clear"
 msgstr "Καθαρισμός"
 
-#: utilities.php:852 utilities.php:1207 utilities.php:2831
+#: utilities.php:852 utilities.php:1207 utilities.php:2846
 msgctxt "Button: delete all table entries"
 msgid "Purge"
 msgstr "Διαγραφή"
@@ -20957,7 +20957,7 @@ msgstr "% 0.2f τοις εκατό της συχνότητας ενημέρωσ�
 msgid "RRD Updates:"
 msgstr "Ενημερώσεις RRD:"
 
-#: utilities.php:2389 utilities.php:2395
+#: utilities.php:2389 utilities.php:2392
 msgid "MBytes"
 msgstr "MBytes"
 
@@ -20968,98 +20968,113 @@ msgstr "Peak Poller Memory:"
 
 #: utilities.php:2392
 #, fuzzy
-msgid "Detailed Runtime Timers:"
-msgstr "Λεπτομερείς χρονομετρητές χρόνου εκτέλεσης:"
-
-#: utilities.php:2395
-#, fuzzy
 msgid "Max Poller Memory Allowed:"
 msgstr "Μέγιστη χωρητικότητα μνήμης:"
 
+#: utilities.php:2395
+#, fuzzy
+msgid "Detailed Runtime Statistics"
+msgstr "Στατιστικά χρόνου εκτέλεσης"
+
 #: utilities.php:2398
+#, fuzzy
+msgid "Detailed Runtime Timers:"
+msgstr "Λεπτομερείς χρονομετρητές χρόνου εκτέλεσης:"
+
+#: utilities.php:2405
+#, php-format
+msgid "Process %d Runtime:"
+msgstr ""
+
+#: utilities.php:2410
 #, fuzzy
 msgid "Run Time Configuration"
 msgstr "Εκτέλεση ρύθμισης ώρας"
 
-#: utilities.php:2401
+#: utilities.php:2413
 #, fuzzy
 msgid "Update Frequency:"
 msgstr "Συχνότητα ενημέρωσης:"
 
-#: utilities.php:2404
+#: utilities.php:2416
+#, fuzzy
+msgid "Concurrent Processes:"
+msgstr "Συγχρόνες διαδικασίες"
+
+#: utilities.php:2419
 #, fuzzy
 msgid "Next Start Time:"
 msgstr "Επόμενη ώρα έναρξης:"
 
-#: utilities.php:2407
+#: utilities.php:2422
 #, fuzzy
 msgid "Maximum Records:"
 msgstr "Μέγιστες εγγραφές:"
 
-#: utilities.php:2407
+#: utilities.php:2422
 msgid "Records"
 msgstr "Μητρώα"
 
-#: utilities.php:2410
+#: utilities.php:2425
 #, fuzzy
 msgid "Maximum Allowed Runtime:"
 msgstr "Μέγιστος επιτρεπόμενος χρόνος εκτέλεσης:"
 
-#: utilities.php:2416
+#: utilities.php:2431
 #, fuzzy
 msgid "Image Caching Status:"
 msgstr "Κατάσταση προσωρινής αποθήκευσης εικόνων:"
 
-#: utilities.php:2419
+#: utilities.php:2434
 #, fuzzy
 msgid "Cache Directory:"
 msgstr "Κατάλογος Cache:"
 
-#: utilities.php:2422
+#: utilities.php:2437
 #, fuzzy
 msgid "Cached Files:"
 msgstr "Αποθηκευμένα αρχεία:"
 
-#: utilities.php:2425
+#: utilities.php:2440
 #, fuzzy
 msgid "Cached Files Size:"
 msgstr "Cached αρχεία Μέγεθος:"
 
-#: utilities.php:2520
+#: utilities.php:2535
 #, fuzzy
 msgid "SNMP Agent Cache"
 msgstr "SNMPAgent Cache"
 
-#: utilities.php:2550
+#: utilities.php:2565
 #, fuzzy
 msgid "OIDs"
 msgstr "OIDs"
 
-#: utilities.php:2631
+#: utilities.php:2646
 #, fuzzy
 msgid "Column Data"
 msgstr "Στοιχεία στήλης"
 
-#: utilities.php:2631
+#: utilities.php:2646
 #, fuzzy
 msgid "Scalar"
 msgstr "Βαθμωτό μέγεθος"
 
-#: utilities.php:2772
+#: utilities.php:2787
 #, fuzzy
 msgid "SNMP Agent Notification Log"
 msgstr "Μητρώο ειδοποιήσεων SNMPAgent"
 
-#: utilities.php:2800 utilities.php:2887
+#: utilities.php:2815 utilities.php:2902
 msgid "Receiver"
 msgstr "Παραλήπτης"
 
-#: utilities.php:2879
+#: utilities.php:2894
 #, fuzzy
 msgid "Log Entries"
 msgstr "Καταχωρίσεις καταγραφών"
 
-#: utilities.php:2894
+#: utilities.php:2909
 #, fuzzy, php-format
 msgid "Severity Level: %s"
 msgstr "Επίπεδο σοβαρότητας: %s"
