@@ -913,7 +913,7 @@ function boost_log_statistics($rrd_updates) {
 	$end = microtime(true);
 
 	$cacti_stats = sprintf(
-		'Time:%01.4f ' .
+		'Time:%01.2f ' .
 		'RRDUpdates:%s',
 		round($end-$start, 2),
 		$rrd_updates);
@@ -1002,7 +1002,7 @@ function boost_log_child_statistics($rrd_updates, $child) {
 	$end = microtime(true);
 
 	$cacti_stats = sprintf(
-		'Time:%01.4f ' .
+		'Time:%01.2f ' .
 		'ProcessNumber:%s ' .
 		'RRDUpdates:%s',
 		round($end-$start, 2),
