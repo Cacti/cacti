@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-23 17:16-0500\n"
+"POT-Creation-Date: 2021-01-23 21:38-0500\n"
 "PO-Revision-Date: 2020-09-13 19:38-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: \n"
@@ -495,8 +495,8 @@ msgstr "Matchande grafer"
 #: user_domains.php:653 user_group_admin.php:1833 user_group_admin.php:2155
 #: user_group_admin.php:2263 user_group_admin.php:2366
 #: user_group_admin.php:2451 user_group_admin.php:2536 utilities.php:860
-#: utilities.php:1253 utilities.php:1546 utilities.php:1827 utilities.php:2529
-#: utilities.php:2781 vdef.php:700
+#: utilities.php:1253 utilities.php:1546 utilities.php:1827 utilities.php:2544
+#: utilities.php:2796 vdef.php:700
 msgid "Search"
 msgstr "Sök"
 
@@ -535,7 +535,7 @@ msgstr "Grafer"
 #: user_group_admin.php:1843 user_group_admin.php:2187
 #: user_group_admin.php:2291 user_group_admin.php:2376
 #: user_group_admin.php:2461 user_group_admin.php:2546 utilities.php:838
-#: utilities.php:1556 utilities.php:1848 utilities.php:2554 utilities.php:2817
+#: utilities.php:1556 utilities.php:1848 utilities.php:2569 utilities.php:2832
 #: vdef.php:710
 msgid "Default"
 msgstr "Standard"
@@ -581,7 +581,7 @@ msgstr "Utför"
 #: user_group_admin.php:2205 user_group_admin.php:2309
 #: user_group_admin.php:2394 user_group_admin.php:2479
 #: user_group_admin.php:2564 utilities.php:850 utilities.php:1205
-#: utilities.php:1537 utilities.php:1818 utilities.php:2566 utilities.php:2829
+#: utilities.php:1537 utilities.php:1818 utilities.php:2581 utilities.php:2844
 #, fuzzy
 msgid "Set/Refresh Filters"
 msgstr "Ange / Uppdatera filter"
@@ -621,8 +621,8 @@ msgstr "Rensa"
 #: user_group_admin.php:1856 user_group_admin.php:2206
 #: user_group_admin.php:2310 user_group_admin.php:2395
 #: user_group_admin.php:2480 user_group_admin.php:2565 utilities.php:851
-#: utilities.php:1206 utilities.php:1538 utilities.php:1819 utilities.php:2567
-#: utilities.php:2830
+#: utilities.php:1206 utilities.php:1538 utilities.php:1819 utilities.php:2582
+#: utilities.php:2845
 msgid "Clear Filters"
 msgstr "Rensa filter"
 
@@ -720,8 +720,8 @@ msgstr "Mall"
 #: lib/html_reports.php:1511 managers.php:482 managers.php:735
 #: user_admin.php:2601 user_admin.php:2794 user_group_admin.php:2165
 #: user_group_admin.php:2273 utilities.php:826 utilities.php:1507
-#: utilities.php:1792 utilities.php:1837 utilities.php:2539 utilities.php:2791
-#: utilities.php:2804
+#: utilities.php:1792 utilities.php:1837 utilities.php:2554 utilities.php:2806
+#: utilities.php:2819
 msgid "Any"
 msgstr "Vilken som helst"
 
@@ -1391,7 +1391,7 @@ msgstr "Rensa Upptäckta enheter"
 #: lib/functions.php:4331 lib/functions.php:4335 lib/html.php:1182
 #: pollers.php:1009 user_admin.php:2342 utilities.php:511 utilities.php:953
 #: utilities.php:2284 utilities.php:2381 utilities.php:2389 utilities.php:2392
-#: utilities.php:2395 utilities.php:2401 utilities.php:2631
+#: utilities.php:2398 utilities.php:2413 utilities.php:2646
 msgid "N/A"
 msgstr "N/A"
 
@@ -1535,7 +1535,7 @@ msgstr "Dataförfrågning"
 #: managers.php:598 user_admin.php:1152 user_admin.php:1164 user_admin.php:2329
 #: user_domains.php:350 user_domains.php:751 user_group_admin.php:87
 #: user_group_admin.php:682 user_group_admin.php:697 user_group_admin.php:1915
-#: utilities.php:2416
+#: utilities.php:2431
 msgid "Enabled"
 msgstr "Aktiverad"
 
@@ -1552,7 +1552,7 @@ msgstr "Aktiverad"
 #: lib/html_reports.php:1513 lib/html_reports.php:1651 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1164 user_domains.php:411 user_group_admin.php:697
-#: utilities.php:2416
+#: utilities.php:2431
 msgid "Disabled"
 msgstr "Inaktiverad"
 
@@ -1710,7 +1710,7 @@ msgstr "Allmänna inställningar"
 #: lib/installer.php:1865 lib/installer.php:2445 lib/installer.php:2524
 #: lib/vdef.php:74 managers.php:562 pollers.php:61 sites.php:41
 #: user_admin.php:1152 user_domains.php:326 utilities.php:637
-#: utilities.php:2611
+#: utilities.php:2626
 msgid "Name"
 msgstr "Namn"
 
@@ -3560,7 +3560,7 @@ msgid "Check"
 msgstr "Kontrollera"
 
 #: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2911
-#: utilities.php:571 utilities.php:588 utilities.php:2611
+#: utilities.php:571 utilities.php:588 utilities.php:2626
 msgid "Value"
 msgstr "Värde"
 
@@ -4929,42 +4929,42 @@ msgstr "Grafdata"
 msgid "RRDtool Graph Syntax"
 msgstr "RRDtool Graph Syntax"
 
-#: graph_image.php:154 graph_json.php:229 graph_realtime.php:203
+#: graph_image.php:154 graph_json.php:229 graph_realtime.php:237
 #, fuzzy
 msgid "The Cacti Poller has not run yet."
 msgstr "Cacti Poller har inte kört än."
 
-#: graph_realtime.php:303
+#: graph_realtime.php:337
 #, fuzzy
 msgid "Real-time has been disabled by your administrator."
 msgstr "Realtid har inaktiverats av din administratör."
 
-#: graph_realtime.php:310
+#: graph_realtime.php:344
 #, fuzzy
 msgid "The Image Cache Directory does not exist.  Please first create it and set permissions and then attempt to open another Real-time graph."
 msgstr "Bildcache-katalogen existerar inte. Skapa det först och ange behörigheter och försök sedan öppna en annan realtidsdiagram."
 
-#: graph_realtime.php:317
+#: graph_realtime.php:351
 #, fuzzy
 msgid "The Image Cache Directory is not writable.  Please set permissions and then attempt to open another Real-time graph."
 msgstr "Bildcache-katalogen är inte skrivbar. Ange behörigheter och försök sedan öppna en annan realtidsdiagram."
 
-#: graph_realtime.php:338
+#: graph_realtime.php:372
 #, fuzzy
 msgid "Cacti Real-time Graphing"
 msgstr "Kaktusgrafik i realtid"
 
-#: graph_realtime.php:372 lib/html_graph.php:238 lib/html_reports.php:1009
+#: graph_realtime.php:407 lib/html_graph.php:238 lib/html_reports.php:1009
 #: lib/html_tree.php:1116
 msgid "Thumbnails"
 msgstr "Miniatyrer"
 
-#: graph_realtime.php:377
+#: graph_realtime.php:411
 #, fuzzy, php-format
 msgid "%d seconds left."
 msgstr "% d sekunder kvar."
 
-#: graph_realtime.php:393
+#: graph_realtime.php:427
 #, fuzzy
 msgid " seconds left."
 msgstr "sekunder kvar."
@@ -12514,7 +12514,7 @@ msgstr "Boost Debug Log"
 msgid "If this field is non-blank, Boost will log RRDupdate output from the boost\tpoller process."
 msgstr "Om det här fältet inte är tomt kommer Boost att logga RRDupdate-utmatning från boost poller-processen."
 
-#: include/global_settings.php:1913 utilities.php:2413
+#: include/global_settings.php:1913 utilities.php:2428
 #, fuzzy
 msgid "Image Caching"
 msgstr "Bildhantering"
@@ -13353,7 +13353,7 @@ msgstr "Matchande enheter"
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:532 lib/html_reports.php:578 lib/html_reports.php:1326
 #: lib/html_reports.php:1603 lib/html_reports.php:1614 lib/rrd.php:2906
-#: utilities.php:361 utilities.php:1215 utilities.php:2611
+#: utilities.php:361 utilities.php:1215 utilities.php:2626
 msgid "Type"
 msgstr "Typ"
 
@@ -13680,7 +13680,7 @@ msgid "Log [Total Lines: %d %s - Unfiltered]"
 msgstr "Log [Totalt antal linjer:% d %s - Ej filtrerat]"
 
 #: lib/clog_webapi.php:285 utilities.php:1291 utilities.php:1637
-#: utilities.php:1844 utilities.php:1924 utilities.php:2605 utilities.php:2813
+#: utilities.php:1844 utilities.php:1924 utilities.php:2620 utilities.php:2828
 msgid "Entries"
 msgstr "Poster"
 
@@ -17769,11 +17769,11 @@ msgstr "SNMP-meddelandemottagare [redigera: %s]"
 msgid "SNMP Notification Receiver [new]"
 msgstr "SNMP Notifieringsmottagare [ny]"
 
-#: managers.php:478 managers.php:564 utilities.php:2535 utilities.php:2611
+#: managers.php:478 managers.php:564 utilities.php:2550 utilities.php:2626
 msgid "MIB"
 msgstr "MIB"
 
-#: managers.php:563 utilities.php:1643 utilities.php:2611
+#: managers.php:563 utilities.php:1643 utilities.php:2626
 msgid "OID"
 msgstr "objekt-ID, OID"
 
@@ -17781,7 +17781,7 @@ msgstr "objekt-ID, OID"
 msgid "Kind"
 msgstr "art"
 
-#: managers.php:566 utilities.php:2611
+#: managers.php:566 utilities.php:2626
 #, fuzzy
 msgid "Max-Access"
 msgstr "Max-Access"
@@ -17796,24 +17796,24 @@ msgstr "övervakad"
 msgid "No SNMP Notifications"
 msgstr "Inga SNMP-meddelanden"
 
-#: managers.php:731 utilities.php:2787
+#: managers.php:731 utilities.php:2802
 msgid "Severity"
 msgstr "Allvarlighetsgrad"
 
-#: managers.php:747 utilities.php:2831
+#: managers.php:747 utilities.php:2846
 #, fuzzy
 msgid "Purge Notification Log"
 msgstr "Rengöringslogg"
 
-#: managers.php:794 utilities.php:2887
+#: managers.php:794 utilities.php:2902
 msgid "Time"
 msgstr "Tid"
 
-#: managers.php:795 utilities.php:2887
+#: managers.php:795 utilities.php:2902
 msgid "Notification"
 msgstr "Notifikation"
 
-#: managers.php:796 utilities.php:2887
+#: managers.php:796 utilities.php:2902
 #, fuzzy
 msgid "Varbinds"
 msgstr "Varbinds"
@@ -17823,7 +17823,7 @@ msgstr "Varbinds"
 msgid "Severity Level"
 msgstr "Allvarlighetsgrad"
 
-#: managers.php:830 utilities.php:2909
+#: managers.php:830 utilities.php:2924
 #, fuzzy
 msgid "No SNMP Notification Log Entries"
 msgstr "Inga SNMP-anmälningslogguppgifter"
@@ -20440,18 +20440,18 @@ msgid "Attempts"
 msgstr "Försök"
 
 #: utilities.php:850 utilities.php:1205 utilities.php:1537 utilities.php:1818
-#: utilities.php:2566 utilities.php:2829 vdef.php:728
+#: utilities.php:2581 utilities.php:2844 vdef.php:728
 msgctxt "Button: use filter settings"
 msgid "Go"
 msgstr "Start"
 
 #: utilities.php:851 utilities.php:1206 utilities.php:1538 utilities.php:1819
-#: utilities.php:2567 utilities.php:2830 vdef.php:729
+#: utilities.php:2582 utilities.php:2845 vdef.php:729
 msgctxt "Button: reset filter settings"
 msgid "Clear"
 msgstr "Rensa"
 
-#: utilities.php:852 utilities.php:1207 utilities.php:2831
+#: utilities.php:852 utilities.php:1207 utilities.php:2846
 msgctxt "Button: delete all table entries"
 msgid "Purge"
 msgstr "Rensa"
@@ -20846,7 +20846,7 @@ msgstr "% 0,2f procent av uppdateringsfrekvensen)"
 msgid "RRD Updates:"
 msgstr "RRD-uppdateringar:"
 
-#: utilities.php:2389 utilities.php:2395
+#: utilities.php:2389 utilities.php:2392
 #, fuzzy
 msgid "MBytes"
 msgstr "MB"
@@ -20858,97 +20858,112 @@ msgstr "Peak Poller Memory:"
 
 #: utilities.php:2392
 #, fuzzy
-msgid "Detailed Runtime Timers:"
-msgstr "Detaljerad Runtime Timers:"
-
-#: utilities.php:2395
-#, fuzzy
 msgid "Max Poller Memory Allowed:"
 msgstr "Max Poller minne tillåtet:"
 
+#: utilities.php:2395
+#, fuzzy
+msgid "Detailed Runtime Statistics"
+msgstr "Runtime Statistik"
+
 #: utilities.php:2398
+#, fuzzy
+msgid "Detailed Runtime Timers:"
+msgstr "Detaljerad Runtime Timers:"
+
+#: utilities.php:2405
+#, php-format
+msgid "Process %d Runtime:"
+msgstr ""
+
+#: utilities.php:2410
 #, fuzzy
 msgid "Run Time Configuration"
 msgstr "Körtidskonfiguration"
 
-#: utilities.php:2401
+#: utilities.php:2413
 #, fuzzy
 msgid "Update Frequency:"
 msgstr "Uppdateringsfrekvens:"
 
-#: utilities.php:2404
+#: utilities.php:2416
+#, fuzzy
+msgid "Concurrent Processes:"
+msgstr "Samtidiga processer"
+
+#: utilities.php:2419
 #, fuzzy
 msgid "Next Start Time:"
 msgstr "Nästa Starttid:"
 
-#: utilities.php:2407
+#: utilities.php:2422
 #, fuzzy
 msgid "Maximum Records:"
 msgstr "Maximala poster:"
 
-#: utilities.php:2407
+#: utilities.php:2422
 msgid "Records"
 msgstr "Poster"
 
-#: utilities.php:2410
+#: utilities.php:2425
 #, fuzzy
 msgid "Maximum Allowed Runtime:"
 msgstr "Max tillåten körtid:"
 
-#: utilities.php:2416
+#: utilities.php:2431
 #, fuzzy
 msgid "Image Caching Status:"
 msgstr "Bild Caching Status:"
 
-#: utilities.php:2419
+#: utilities.php:2434
 #, fuzzy
 msgid "Cache Directory:"
 msgstr "Cache Directory:"
 
-#: utilities.php:2422
+#: utilities.php:2437
 #, fuzzy
 msgid "Cached Files:"
 msgstr "Cachade filer:"
 
-#: utilities.php:2425
+#: utilities.php:2440
 #, fuzzy
 msgid "Cached Files Size:"
 msgstr "Cachade filer Storlek:"
 
-#: utilities.php:2520
+#: utilities.php:2535
 #, fuzzy
 msgid "SNMP Agent Cache"
 msgstr "SNMPAgent Cache"
 
-#: utilities.php:2550
+#: utilities.php:2565
 #, fuzzy
 msgid "OIDs"
 msgstr "OID"
 
-#: utilities.php:2631
+#: utilities.php:2646
 #, fuzzy
 msgid "Column Data"
 msgstr "Kolumndata"
 
-#: utilities.php:2631
+#: utilities.php:2646
 #, fuzzy
 msgid "Scalar"
 msgstr "Skalär"
 
-#: utilities.php:2772
+#: utilities.php:2787
 #, fuzzy
 msgid "SNMP Agent Notification Log"
 msgstr "SNMPAgent Notifieringslogg"
 
-#: utilities.php:2800 utilities.php:2887
+#: utilities.php:2815 utilities.php:2902
 msgid "Receiver"
 msgstr "Mottagare"
 
-#: utilities.php:2879
+#: utilities.php:2894
 msgid "Log Entries"
 msgstr "App loggnoteringar"
 
-#: utilities.php:2894
+#: utilities.php:2909
 #, fuzzy, php-format
 msgid "Severity Level: %s"
 msgstr "Allvarighetsnivå: %s"
