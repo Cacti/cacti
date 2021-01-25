@@ -1,4 +1,4 @@
-!#/usr/bin/env php
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -23,7 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include('../../include/cli_check.php');
+include('../include/cli_check.php');
 
 ini_set('max_execution_time', '0');
 
@@ -63,13 +63,19 @@ if (cacti_sizeof($parms)) {
 				exit(1);
 		}
 	}
-} else {
-	print 'ERROR: You must supply input parameters' . PHP_EOL . PHP_EOL;
-	display_help();
-	exit(1);
 }
 
+print "Fixing Column widths" . PHP_EOL;
+
+$total = database_fix_mediumint_columns();
+
+print "Column widths adjusted on $total Tables!" . PHP_EOL;
+
 function database_fix_mediumint_columns() {
+	global $database_default;
+
+	$total = 0;
+
 	// Known Tables
 	$tables = array(
 		'data_input_data' => 'data_template_data_id',
@@ -148,6 +154,7 @@ function database_fix_mediumint_columns() {
 		if ($i > 0) {
 			debug("Updating Table $table.");
 			db_execute($sql);
+			$total++;
 		}
 	}
 
@@ -185,12 +192,14 @@ function database_fix_mediumint_columns() {
 					}
 
 					debug("Updating Table $table.");
-
 					db_execute($sql);
+					$total++;
 				}
 			}
 		}
 	}
+
+	return $total;
 }
 
 function database_get_column_attribs($table, $column) {
