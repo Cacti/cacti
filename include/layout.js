@@ -3511,7 +3511,10 @@ function redrawGraph(graph_id) {
 	);
 }
 
-function initializeGraphs(disable_cache = false) {
+function initializeGraphs(disable_cache) {
+	
+	disable_cache = (disable_cache === 'undefined') ? false : true;
+	
 	$.ajaxQ.abortAll();
 
 	$('a[id$="_mrtg"]').each(function() {
