@@ -209,7 +209,9 @@ function database_get_column_attribs($table, $column) {
 function debug($string) {
 	global $debug;
 
-	print 'DEBUG: ' . trim($string) . PHP_EOL;
+	if ($debug) {
+		print 'DEBUG: ' . trim($string) . PHP_EOL;
+	}
 }
 
 function display_version() {
