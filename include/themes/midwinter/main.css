@@ -77,7 +77,6 @@ fieldset {
     margin-top: 10px;
     margin-bottom: 10px;
     width: 100%;
-    overflow: auto;
 }
 
 /* icons fontawesome */
@@ -1197,7 +1196,7 @@ legend {
 	color: #7e818f;
 }
 
-.cactiGraphContentAreaPreview .cactitable {
+.cactiGraphContentAreaPreview .cactiTable {
 	background: none !important;
 }
 
@@ -1367,7 +1366,7 @@ legend {
 	margin-left: auto;
 	margin-right: auto;
 	border-color: rgba(255,255,255,0.2);
-	padding-bottom: 10px;
+	padding: 0.5em 0;
 }
 
 table.cactiTable {
@@ -1762,10 +1761,7 @@ table.cactiTable {
 	color: #7e818f;
 	width: 100%;
 	text-align: center;
-	line-height: 20px;
-	height: 25px;
-	margin-left: auto;
-	margin-right: auto;
+	display: table;
 }
 
 .navBarNavigation a {
@@ -1780,24 +1776,18 @@ table.cactiTable {
 	text-align: left;
 	cursor: pointer;
 	font-weight: bold;
-	float: left;
 	white-space: nowrap;
 	display: block;
 	width: 10%;
-	height: 20px;
 	vertical-align: middle;
-	border-top: 1px solid rgba(25,255,255,0.1);
 }
 
 .navBarNavigationCenter {
 	text-align: center;
-	display: block;
-	float: left;
+	display: table-cell;
 	white-space: nowrap;
 	width: 80%;
-	height: 20px;
 	margin-top: auto;
-	border-top: 1px solid rgba(25,255,255,0.1);
 }
 
 .navBarNavigationCenter span {
@@ -1808,14 +1798,11 @@ table.cactiTable {
 	text-align: right;
 	cursor: pointer;
 	font-weight: bold;
-	float: right;
 	white-space: nowrap;
-	display: block;
+	display: table-cell;
 	width: 10%;
-	#padding: 2px 0;
 	height: 20px;
 	vertical-align: middle;
-	border-top: 1px solid rgba(25,255,255,0.1);
 }
 
 .navBarNavigationNone {
@@ -1978,6 +1965,7 @@ td.tab {
 
 td.nowrap {
     border-left: 1px solid #3d3d3d;
+    padding: 0 0.5em;
 }
 
 .cactiGraphHeaderBackground {
@@ -2180,7 +2168,19 @@ tr.selectable {
 
 }
 
-tr.selectable:hover:not(.selected) {;
+tr.selectable td:first-child {
+    border-left: 1px solid #3d3d3d;
+}
+
+tr.selectable td:last-child {
+    border-right: 1px solid #3d3d3d;
+}
+
+tr.selectable:last-child td {
+    border-bottom: 1px solid #3d3d3d;
+}
+
+tr.selectable:hover:not(.selected) {
     box-shadow: 0 0 0 1px #333543;
     background-color: #151725;
 }
