@@ -132,18 +132,28 @@ a:hover {
 
 /* input fields & elements */
 input[type="checkbox"]:not([name^="multiselect"]), input[type="radio"]:not([name^="reindex"]) {
-    display: none;
+	opacity: 0;
+	top: -50px;
+	position: fixed;
+}
+
+input[type="checkbox"]:focus + label:before {
+	outline: -webkit-focus-ring-color auto 1px !important;
+	outline-color: -webkit-focus-ring-color;
+	outline-style: auto;
+	outline-width: 1px;
+	display: none;
 }
 
 input[type="checkbox"] + label:before {
-    border: 1px solid #5d5d5d;
-    content: "\00a0";
-    display: inline-block;
-    font: 12px/1em sans-serif;
-    height: 1em;
-    margin: 0.25em 0.45em;
-    width: 1em;
-    background: transparent;
+	border: 1px solid #5d5d5d;
+	content: "\00a0";
+	display: inline-block;
+	font: 12px/1em sans-serif;
+	height: 1em;
+	margin: 0.25em 0.45em;
+	width: 1em;
+	background: transparent;
 }
 
 input[type="checkbox"]:checked + label:before {
