@@ -2081,7 +2081,7 @@ function graph_management() {
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(gtg.id)
 		FROM graph_local AS gl
-		LEFT JOIN graph_templates_graph AS gtg
+		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
 		LEFT JOIN graph_templates AS gt
 		ON gl.graph_template_id=gt.id
@@ -2100,7 +2100,7 @@ function graph_management() {
 		gtg.height, gtg.width, gtg.title_cache, gt.name, gl.host_id,
 		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source
 		FROM graph_local AS gl
-		LEFT JOIN graph_templates_graph AS gtg
+		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
 		LEFT JOIN graph_templates AS gt
 		ON gl.graph_template_id=gt.id
