@@ -97,6 +97,7 @@ if (function_exists('pcntl_signal')) {
 
 /* take time and log performance data */
 $start = microtime(true);
+$start_time = time();
 $rrd_updates = -1;
 
 /* let's give this script lot of time to run for ever */
@@ -257,7 +258,7 @@ function boost_processes_running() {
 }
 
 function boost_prepare_process_table() {
-	global $start, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
+	global $start_time, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 
 	boost_debug('Parallel Process Setup Begins.');
 
