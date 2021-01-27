@@ -1168,7 +1168,7 @@ INSERT INTO `table_indexes` VALUES ('data_template',0,'PRIMARY',1,'id','A',0,NUL
 INSERT INTO `table_indexes` VALUES ('data_template_data',1,'data_input_id',1,'data_input_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_template_data',1,'data_template_id',1,'data_template_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_template_data',1,'local_data_id',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_data',1,'name_cache',1,'name_cache','A',0,'191',NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_data',1,'name_cache',1,'name_cache','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_template_data',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'data_template_id',1,'data_template_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
@@ -1197,7 +1197,7 @@ INSERT INTO `table_indexes` VALUES ('graph_templates_gprint',0,'PRIMARY',1,'id',
 INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'graph_template_id',1,'graph_template_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'local_graph_id',1,'local_graph_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates_graph',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'title_cache',1,'title_cache','A',0,'191',NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'title_cache',1,'title_cache','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'graph_template_id',1,'graph_template_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'lgi_gti',1,'local_graph_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'lgi_gti',2,'graph_template_id','A',0,NULL,NULL,'','BTREE','');

@@ -1573,7 +1573,7 @@ CREATE TABLE data_template_data (
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
   KEY data_input_id (data_input_id),
-  KEY name_cache (name_cache(191))
+  KEY name_cache (name_cache)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
@@ -1795,7 +1795,7 @@ CREATE TABLE graph_templates_graph (
   PRIMARY KEY (id),
   KEY local_graph_id (local_graph_id),
   KEY graph_template_id (graph_template_id),
-  KEY title_cache (title_cache(191))
+  KEY title_cache (title_cache)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores the actual graph data.';
 
 --
