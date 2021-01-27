@@ -5179,7 +5179,13 @@ function get_nonsystem_data_input($data_input_id) {
 }
 
 function get_rrdtool_version() {
-	return str_replace('rrd-', '', str_replace('.x', '.0', read_config_option('rrdtool_version', true)));
+	static $version = '';
+
+	if ($version == '') {
+		$version = str_replace('rrd-', '', str_replace('.x', '.0', read_config_option('rrdtool_version', true)));
+	}
+
+	return $version;
 }
 
 function get_installed_rrdtool_version() {
