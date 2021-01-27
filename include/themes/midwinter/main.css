@@ -132,7 +132,16 @@ a:hover {
 
 /* input fields & elements */
 input[type="checkbox"]:not([name^="multiselect"]), input[type="radio"]:not([name^="reindex"]) {
-    display: none;
+    opacity: 0;
+    top: -50px;
+    position: fixed;
+}
+
+input[type="checkbox"]:focus + label:before {
+    outline: -webkit-focus-ring-color auto 1px !important;
+    outline-color: -webkit-focus-ring-color;
+    outline-style: auto;
+    outline-width: 1px;
 }
 
 input[type="checkbox"] + label:before {

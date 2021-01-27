@@ -44,8 +44,6 @@ function api_user_realm_auth($filename = '') {
 function api_plugin_hook($name) {
 	global $config, $plugin_hooks, $plugins_integrated;
 
-	static $hook_cache = array();
-
 	$args = func_get_args();
 	$ret = '';
 
@@ -53,23 +51,17 @@ function api_plugin_hook($name) {
 		return $args;
 	}
 
-	if (!isset($hook_cache[$name])) {
-		/* order the plugins by order */
-		$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
-			FROM plugin_hooks AS ph
-			LEFT JOIN plugin_config AS pc
-			ON pc.directory = ph.name
-			WHERE ph.status = 1
-			AND hook = ?
-			ORDER BY pc.id ASC',
-			array($name),
-			true
-		);
-
-		$hook_cache[$name] = $result;
-	} else {
-		$result = $hook_cache[$name];
-	}
+	/* order the plugins by order */
+	$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
+		FROM plugin_hooks AS ph
+		LEFT JOIN plugin_config AS pc
+		ON pc.directory = ph.name
+		WHERE ph.status = 1
+		AND hook = ?
+		ORDER BY pc.id ASC',
+		array($name),
+		true
+	);
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
@@ -93,30 +85,22 @@ function api_plugin_hook($name) {
 function api_plugin_hook_function($name, $parm = NULL) {
 	global $config, $plugin_hooks, $plugins_integrated;
 
-	static $hook_cache = array();
-
 	$ret = $parm;
 	if (defined('IN_CACTI_INSTALL') || !db_table_exists('plugin_hooks')) {
 		return $ret;
 	}
 
-	if (!isset($hook_cache[$name])) {
-		/* order the plugins by order */
-		$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
-			FROM plugin_hooks AS ph
-			LEFT JOIN plugin_config AS pc
-			ON pc.directory = ph.name
-			WHERE ph.status = 1
-			AND hook = ?
-			ORDER BY pc.id ASC',
-			array($name),
-			true
-		);
-
-		$hook_cache[$name] = $result;
-	} else {
-		$result = $hook_cache[$name];
-	}
+	/* order the plugins by order */
+	$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
+		FROM plugin_hooks AS ph
+		LEFT JOIN plugin_config AS pc
+		ON pc.directory = ph.name
+		WHERE ph.status = 1
+		AND hook = ?
+		ORDER BY pc.id ASC',
+		array($name),
+		true
+	);
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
