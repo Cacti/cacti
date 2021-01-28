@@ -427,7 +427,7 @@ function read_config_option($config_name, $force = false) {
 	// Do we have a value already stored in the array, or
 	// do we want to make sure we have the latest value
 	// from the database?
-	if (!array_key_exists($config_name, $config_array) || ($force)) {
+	if (!isset($config_array[$config_name]) || ($force)) {
 		// We need to check against the DB, but lets assume default value
 		// unless we can actually read the DB
 		$value = read_default_config_option($config_name);
