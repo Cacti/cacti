@@ -9,7 +9,7 @@
 
 /* main styles */
 ::-webkit-scrollbar {
-    width: 1em;
+    width: 12px;
 }
 
 /* Track */
@@ -53,15 +53,6 @@ fieldset {
     border-bottom: 1px solid #323339;
 }
 
-.cactiPageHeadlogo {
-    top: 0;
-    left: 0;
-    width: 200px;
-    float: left;
-    background: transparent url(./images/cacti_logo.svg) no-repeat right 100% / 230px auto;
-    background-position: right 85px top -75px;
-}
-
 .cactiPageHead div {
     height: 100%;
 }
@@ -96,7 +87,7 @@ fieldset {
 ul#nav {
     list-style: none;
     padding: 0;
-    margin: 2em 0 0;
+    margin: 0;
 }
 
 /* hyperlinks */
@@ -142,7 +133,6 @@ input[type="checkbox"]:focus + label:before {
 	outline-color: -webkit-focus-ring-color;
 	outline-style: auto;
 	outline-width: 1px;
-	display: none;
 }
 
 input[type="checkbox"] + label:before {
@@ -200,93 +190,20 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
 }
 
 .cactiConsoleNavigationArea {
-    width: 200px;
+    width: 180px;
     float: left;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.cactiConsoleNavigationArea.sidebar-collapse {
+    -webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0);
+    width: 50px !important;
+}
 
 
 /* links */
-
-
-
 th .fa {
 	margin-top: -5px;
 	position: absolute;
@@ -314,6 +231,7 @@ label {
 
 .glyph_tab-console:before {
 	content: "\f0c9";
+    margin-left: 1.5em;
 }
 
 .text_tab-console {
@@ -411,6 +329,7 @@ label.ui-state-hover > span {
 }
 
 .disabled_row span, .disabled_row td, .disabled_row a {
+    background-color: #181a28;
 	color: grey;
 }
 
@@ -663,6 +582,7 @@ label.ui-state-hover > span {
     margin: 0;
     padding: 10px 0 10px 0;
     font-size: 1.5em;
+    z-index: 850;
 }
 
 .menuoptions li a, .submenuoptions li a {
@@ -693,6 +613,7 @@ label.ui-state-hover > span {
 	margin: 0;
 	padding: 10px 0 10px 0;
     font-size: 1.5em;
+    z-index: 850;
 }
 
 .import_label {
@@ -2027,12 +1948,12 @@ div#gtabs {
 	#padding: 5px 6px;
 }
 
-.maintabs a:hover {
+.maintabs a:hover, .maintabs a:hover span {
 	color: #f2f2f3;
 	background: none;
 }
 
-.maintabs a.selected {
+.maintabs a.selected:not(#tab-console) {
 	color: #f2f2f3;
     background: #1c1e2d none;
 }
@@ -2044,6 +1965,15 @@ div#gtabs {
 .maintabs li {
 	bottom: -1px;
 	float: left;
+}
+
+.maintabs:not(.usertabs) li:first-child {
+    width: 50px;
+}
+
+.maintabs:not(.usertabs) li:first-child a:first-child{
+    width: 100%;
+    padding: 0.5em 0;
 }
 
 
@@ -2142,7 +2072,7 @@ div.submenu span {
 
 #nav li a {
 	display: block;
-	padding: 2px 4px 2px 9px;
+	padding: 2px 4px 2px 0.75em;
 	color: #7e818f;
 	text-decoration: none;
 }
@@ -2157,6 +2087,10 @@ div.submenu span {
 
 #nav li a.active, #nav li a.active:hover {
 	color: #f2f2f3 !important;
+}
+
+#nav li span {
+    margin-left: 1em;
 }
 
 tr.selected {
@@ -2219,7 +2153,7 @@ td:last-child.checkbox {
 }
 
 #nav li ul li a {
-	padding: 2px 4px 2px 35px;
+	padding: 2px 4px 2px 3.5em;
 	outline-style: none;
 }
 
@@ -2400,11 +2334,10 @@ tr#realtime td:first-child {
 
 .menuitem {
 	white-space: nowrap;
-    padding: 0.5em 0.5em 0.5em 0;
+    padding: 0.7em 0.5em;
 }
 
 .menu_glyph {
-	font-size: 1.15em;
 	width: 20px;
 	vertical-align: 30%;
 }
@@ -2805,7 +2738,7 @@ td.center > table {
         font-size: 1em;
     }
     .menuoptions, .submenuoptions {
-        height: auto;
+        height: auto !important;
         top: 3em;
         font-size: 1em;
     }
@@ -2817,18 +2750,23 @@ td.center > table {
     }
 }
 
-@media only screen and (max-width: 768px) {
-    .cactiConsoleNavigationArea, .cactiPageHeadlogo {
+@media only screen and (max-width: 735px) {
+    .cactiConsoleNavigationArea {
         position: absolute;
-        -webkit-transform: translate(-200px, 0);
-        -ms-transform: translate(-200px, 0);
-        -o-transform: translate(-200px, 0);
-        transform: translate(-200px, 0);
+        top: 3em;
+        background: #141621;
+        border-top: 1px solid #494949;
+        width: 100%;
+        height: 100%;
+        list-style: none;
+        text-align: left;
+        margin: 0;
+        padding: 10px 0 10px 0;
+        font-size: 1.5em;
+        overflow-y: auto;
+        z-index: 850;
     }
 
-    .cactiPageHead {
-        padding-left: 0;
-    }
 }
 
 
@@ -2841,11 +2779,6 @@ td.center > table {
 
     .cactiPageHead > div {
         height: 3em;
-    }
-
-    .cactiPageHeadlogo {
-        height: 5em;
-        border: none;
     }
 
     .breadCrumbBar {
@@ -2872,7 +2805,7 @@ td.center > table {
 
     #navigation_right {
         overflow-y: auto !important;
-        padding: 0 15px 0 15px;
+        padding: 0 15px 0 25px;
         background-color: #1c1e2d;
     }
 }

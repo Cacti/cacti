@@ -38,11 +38,6 @@ function themeReady() {
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
-	/* add a Cacti logo on top of the side navigation */
-    if ($('.cactiPageHeadlogo').length === 0) {
-        $('.cactiPageHead').prepend('<a href="index.php" class="console"><div class="cactiPageHeadlogo"></div></a>');
-    }
-
 	/* add a cacti footer section */
 	if ($('#cactiPageBottom').length === 0) {
 		$('<div id="cactiPageBottom" class="cactiPageBottom"><span class="cactiVersion">Cacti v'+ cactiVersion +'</span></div>').insertAfter('#cactiContent');
@@ -301,7 +296,7 @@ function menuHide(store) {
         }
     }
 
-    $('#navigation_right, .cactiPageHeadlogo').animate({'margin-left': '0px'}, 20);
+    $('#navigation_right').animate({'margin-left': '0px'}, 20);
 
     if (myClass != '') {
         $(myClass).hide('slide', {direction: 'left'}, 20, function() {
@@ -309,7 +304,7 @@ function menuHide(store) {
         });
     }
 
-    $('#navigation, .cactiPageHeadlogo').hide();
+    $('#navigation').hide();
 
     if (myClass == '.cactiTreeNavigationArea' || page == 'graph_view') {
         responsiveResizeGraphs();
