@@ -195,20 +195,6 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
     outline-style: none;
 }
 
-.cactiConsoleNavigationArea {
-    width: 180px;
-    float: left;
-}
-
-.cactiConsoleNavigationArea.sidebar-collapse {
-    -webkit-transform: translate(0, 0);
-    -ms-transform: translate(0, 0);
-    -o-transform: translate(0, 0);
-    transform: translate(0, 0);
-    width: 50px !important;
-}
-
-
 /* links */
 th .fa {
 	margin-top: -5px;
@@ -2731,6 +2717,23 @@ td.center > table {
     #padding-top: 260px;
 }
 
+@media only screen and (max-width: 600px) {
+    .cactiConsoleNavigationArea {
+        position: absolute;
+        top: 3em;
+        background: #141621;
+        border-top: 1px solid #494949;
+        width: 100%;
+        height: 100%;
+        list-style: none;
+        text-align: left;
+        margin: 0;
+        padding: 10px 0 10px 0;
+        font-size: 1.5em;
+        overflow-y: auto;
+        z-index: 850;
+    }
+}
 
 @media only screen and (min-width: 600px) {
     /* For tablets: */
@@ -2749,26 +2752,22 @@ td.center > table {
         padding: 4px 15px;
         text-align: unset;
     }
-}
 
-@media only screen and (max-width: 735px) {
     .cactiConsoleNavigationArea {
-        position: absolute;
-        top: 3em;
-        background: #141621;
-        border-top: 1px solid #494949;
-        width: 100%;
-        height: 100%;
-        list-style: none;
-        text-align: left;
-        margin: 0;
-        padding: 10px 0 10px 0;
-        font-size: 1.5em;
-        overflow-y: auto;
-        z-index: 850;
+        width: 180px;
+        float: left;
     }
 
+    .cactiConsoleNavigationArea.sidebar-collapse {
+        -webkit-transform: translate(0, 0);
+        -ms-transform: translate(0, 0);
+        -o-transform: translate(0, 0);
+        transform: translate(0, 0);
+        width: 50px !important;
+    }
 }
+
+
 
 
 
