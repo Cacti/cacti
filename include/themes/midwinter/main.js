@@ -10,16 +10,16 @@ function themeReady() {
 	// Setup the navigation menu
 	setMenuVisibility();
 
-    $('#navigation_right').unbind().scroll(function (event) {
-        var header = $( ".filterTable:first" ).closest('div');
-        var sticky = header.position().top;
-        var scroll_position_y = $('#navigation_right').scrollTop();
-        if ( scroll_position_y > sticky) {
-            header.addClass('sticky');
-        }else {
-            header.removeClass('sticky');
-        }
-    });
+    // ensure that filter table and 1st navBar will stay on top
+	if($('#filterTableOnTop').length !== 0 ) $('#filterTableOnTop').remove();
+
+	if($(".filterTable").length !== 0) {
+        $('<div id="filterTableOnTop">').prependTo('#navigation_right');
+	    $(".filterTable:first").closest('div').detach().prependTo('#filterTableOnTop');
+	    $(".break:first").detach().appendTo('#filterTableOnTop');
+	    $(".navBarNavigation:first").detach().appendTo('#filterTableOnTop');
+        $( "#filterTableOnTop").addClass('sticky');
+    }
 
 	// Add nice search filter to filters
 	if ($('input[id="filter"]').length > 0 && $('input[id="filter"] > i[class="fa fa-search filter"]').length < 1) {

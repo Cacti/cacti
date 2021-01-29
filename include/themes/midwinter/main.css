@@ -68,6 +68,7 @@ fieldset {
     margin-top: 10px;
     margin-bottom: 10px;
     width: 100%;
+    overflow-y: hidden !important;
 }
 
 /* icons fontawesome */
@@ -122,6 +123,11 @@ a:hover {
 }
 
 /* input fields & elements */
+input[type="text"] {
+    padding: 0.2em;
+    box-sizing: border-box;
+    width: 100%;
+}
 input[type="checkbox"]:not([name^="multiselect"]), input[type="radio"]:not([name^="reindex"]) {
 	opacity: 0;
 	top: -50px;
@@ -2714,16 +2720,11 @@ td.center > table {
 
 
 .sticky {
-    #position: sticky;
-    #top: 0;
-    #left: 0;
-    #height: calc(100% - 1px);
-    #width: calc(100% - 1px);
-    #float: left;
-    #margin-right: -100%;
-    #z-index: 400;
-    #padding-top: 8px;
-    #background-color: #1c1e2d;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #1c1e2d;
+    min-height: 40px;
 }
 
 .sticky + .cactiFormStart {
@@ -2786,7 +2787,7 @@ td.center > table {
 
     .cactiPageBottom {
         display: block;
-        height: 2em;
+        height: 24px;
         bottom: 0;
         border-top: 1px solid #323339;
     }
