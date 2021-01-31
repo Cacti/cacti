@@ -1052,8 +1052,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		}
 	}
 
-	/* if realtime, the image format id is always png */
-	if (isset($graph_data_array['export_realtime']) || (isset($graph_data_array['image_format']) && $graph_data_array['image_format'] == 'png')) {
+	if (isset($graph_data_array['image_format']) && $graph_data_array['image_format'] == 'png') {
 		$graph['image_format_id'] = 1;
 	}
 

@@ -279,7 +279,8 @@ case 'countdown':
 		'graph_start'    => (isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
 		'size'           => (isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size']:read_user_setting('realtime_size', 100)),
 		'thumbnails'     => (isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend']:'false'),
-		'data'           => (isset($data) ? $data:'')
+		'data'           => (isset($data) ? $data:''),
+		'image_format'   => $graph_data_array['image_format']
 	);
 
 	print json_encode($return_array);
