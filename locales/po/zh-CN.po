@@ -4,20 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Chinese Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-01-23 21:38-0500\n"
-"PO-Revision-Date: 2020-09-13 19:52-0400\n"
-"Last-Translator: tomcat <luis_126@126.com>\n"
-"Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
-"cacti/core/zh-CN/>\n"
-"Language: zh_CN\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.4.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2021-01-23 21:38-0500\nPO-Revision-Date: 2021-02-01 03:35+0000\nLast-Translator: Aiolos <ip6tables@qq.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.3.2\n"
 
 #: about.php:29 include/global_arrays.php:2468 lib/html.php:2420
 msgid "About Cacti"
@@ -120,9 +107,8 @@ msgid "Delete"
 msgstr "删除"
 
 #: aggregate_graphs.php:43
-#, fuzzy
 msgid "Convert to Normal Graph"
-msgstr "转换为LINE1图形"
+msgstr "转换为一般图形"
 
 #: aggregate_graphs.php:44 graphs.php:58
 #, fuzzy
@@ -13831,7 +13817,7 @@ msgstr "退出"
 
 #: lib/functions.php:2577
 msgid "Leaf"
-msgstr "Leaf"
+msgstr "叶子"
 
 #: lib/functions.php:2597 lib/html_tree.php:713 lib/html_tree.php:749
 #: lib/html_tree.php:978 lib/html_tree.php:986 lib/html_tree.php:1559
@@ -15005,7 +14991,7 @@ msgstr "站点:"
 
 #: lib/html_tree.php:1003 lib/reports.php:998
 msgid "Leaf:"
-msgstr "剩下:"
+msgstr "叶子:"
 
 #: lib/html_tree.php:1009
 msgid "Device Template:"
