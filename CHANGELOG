@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -issue#4095: Minor icon alignment issue on Plugins page
 -issue#4098: Graphs and Data Sources page almost unusable on very large systems
 -issue#4100: Absence of 'num_rows_table' leads to Division by zero error in user_admin.php page
+-issue#4109: Data loss caused by Realtime graphing
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection

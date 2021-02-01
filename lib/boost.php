@@ -317,6 +317,14 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 		return false;
 	}
 
+	/* This is a realtime graph */
+	if (isset($graph_data_array['export_realtime'])) {
+		/* restore original error handler */
+		restore_error_handler();
+
+		return false;
+	}
+
 	/* if we are just printing the rrd command return */
 	if (isset($graph_data_array['print_source'])) {
 		/* restore original error handler */
