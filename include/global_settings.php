@@ -2533,5 +2533,27 @@ if (is_realm_allowed(25)) {
 	);
 }
 
+if (is_realm_allowed(1)) {
+	$settings_user['general']['user_auto_logout_time'] = array(
+		'friendly_name' => __('Auto Log Out Time'),
+		'description' => __('How long this user can stay logged in before being automatically logged out.'),
+		'method' => 'drop_array',
+		'default' => '',
+		'array' => array(
+			''        => __('Never'),
+			'900'     => __('%d Minutes', 15),
+			'1200'    => __('%d Minutes', 20),
+			'1800'    => __('%d Minutes', 30),
+			'3600'    => __('1 Hour'),
+			'21600'   => __('%d Hours', 6),
+			'43200'   => __('%d Hours', 12),
+			'86400'   => __('1 Day'),
+			'604800'  => __('1 Week'),
+			'1209600' => __('%d Weeks', 2),
+			'2678400' => __('1 Month')
+		)
+	);
+}
+
 api_plugin_hook('config_settings');
 
