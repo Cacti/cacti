@@ -57,6 +57,7 @@ Cacti CHANGELOG
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
+-feature#4113: Add ability to set how long a user can stay logged in before being automatically logged out
 
 1.2.16
 -issue#3704: When generating a report, the Cascade to Branches function does not as expected
