@@ -223,7 +223,7 @@ label {
 
 .glyph_tab-console:before {
 	content: "\f0c9";
-    margin-left: 1.5em;
+    margin-left: 1.75em;
 }
 
 .text_tab-console {
@@ -2327,6 +2327,10 @@ tr#realtime td:first-child {
 .menuitem {
 	white-space: nowrap;
     padding: 0.7em 0.5em;
+}
+
+.menuitem a {
+    white-space: normal;
 }
 
 .menu_glyph {
