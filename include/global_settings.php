@@ -2540,7 +2540,7 @@ if (is_realm_allowed(1)) {
 		'method' => 'drop_array',
 		'default' => '',
 		'array' => array(
-			''        => __('Never'),
+			''        => __('Default'),
 			'900'     => __('%d Minutes', 15),
 			'1200'    => __('%d Minutes', 20),
 			'1800'    => __('%d Minutes', 30),
