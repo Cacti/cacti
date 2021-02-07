@@ -172,9 +172,11 @@ while (1) {
 		$input_string = trim($input_string);
 
 		if (substr($input_string,0,4) == 'quit') {
-			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
-			fflush(STDOUT);
-			cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			if (!$called_by_script_server) {
+				fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
+				fflush(STDOUT);
+				cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			}
 			db_close();
 			exit(0);
 		}
@@ -321,7 +323,9 @@ function parseArgs($string, &$str_list, $debug = false) {
 
 			break;
 		case '\\':
-			if ($escaping) {
+			if ($indelim) {
+				$curstr  .= $char;
+			} elseif ($escaping) {
 				$curstr  .= $char;
 				$escaping = false;
 			} else {
