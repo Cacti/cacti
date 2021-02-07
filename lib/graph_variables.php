@@ -110,7 +110,13 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			foreach ($fetch_array_avg[$ldi]['data_source_names'] as $index => $name) {
 				/* clean up DS items that aren't defined on the graph */
 				if (!in_array($name, $local_data_ids[$ldi])) {
-					unset($fetch_array_avg[$ldi]['data_source_names'][$index], $fetch_array_avg[$ldi]['values'][$index]);
+					if (isset($fetch_array_avg[$ldi]['data_source_names'][$index])) {
+						unset($fetch_array_avg[$ldi]['data_source_names'][$index]);
+					}
+
+					if (isset($fetch_array_avg[$ldi]['values'][$index])) {
+						unset($fetch_array_avg[$ldi]['values'][$index]);
+					}
 				}
 			}
 		}
@@ -129,7 +135,13 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			foreach ($fetch_array_max[$ldi]['data_source_names'] as $index => $name) {
 				/* clean up DS items that aren't defined on the graph */
 				if (!in_array($name, $local_data_ids[$ldi])) {
-					unset($fetch_array_max[$ldi]['data_source_names'][$index], $fetch_array_max[$ldi]['values'][$index]);
+					if (isset($fetch_array_max[$ldi]['data_source_names'][$index])) {
+						unset($fetch_array_max[$ldi]['data_source_names'][$index]);
+					}
+
+					if (isset($fetch_array_max[$ldi]['values'][$index])) {
+						unset($fetch_array_max[$ldi]['values'][$index]);
+					}
 				}
 			}
 		}
