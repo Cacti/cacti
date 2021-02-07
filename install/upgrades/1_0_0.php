@@ -436,6 +436,8 @@ function upgrade_to_1_0_0() {
 	db_install_add_column('user_auth', array('name' => 'failed_attempts', 'type' => 'int(5)', 'NULL' => false, 'default' => '0'));
 	db_install_add_column('user_auth', array('name' => 'lastfail', 'type' => 'int(12)', 'NULL' => false, 'default' => '0'));
 
+	$pos_array = array();
+
 	// Convert all trees to new format, but never run more than once
 	if (db_column_exists('graph_tree_items', 'order_key', false)) {
 		$trees_result = db_install_fetch_assoc('SELECT id FROM graph_tree ORDER BY id');
@@ -445,13 +447,16 @@ function upgrade_to_1_0_0() {
 			foreach($trees as $t) {
 				$tree_items_result = db_install_fetch_assoc("SELECT *
 					FROM graph_tree_items
-					WHERE graph_tree_id=?
+					WHERE graph_tree_id = ?
 					AND order_key NOT LIKE '___000%'
 					ORDER BY order_key", array($t['id']), false);
 				$tree_items = $tree_items_result['data'];
 
 				/* reset the position variable in case we run more than once */
-				db_install_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=?", array($t['id']), false);
+				db_install_execute('UPDATE graph_tree_items
+					SET position=0
+					WHERE graph_tree_id = ?',
+					array($t['id']), false);
 
 				$prev_parent = 0;
 				$prev_id     = 0;
@@ -459,18 +464,22 @@ function upgrade_to_1_0_0() {
 
 				if (cacti_sizeof($tree_items)) {
 					foreach($tree_items AS $item) {
-						$translated_key = rtrim($item["order_key"], "0\r\n");
+						$translated_key = rtrim($item['order_key'], "0\r\n");
 						$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
+
 						if ($missing_len > 0) {
-							$translated_key .= substr("000", 0, $missing_len);
+							$translated_key .= substr('000', 0, $missing_len);
 						}
+
 						$parent_key_len   = strlen($translated_key) - CHARS_PER_TIER;
 						$parent_key       = substr($translated_key, 0, $parent_key_len);
+
 						$parent_id_result = db_install_fetch_cell('SELECT id
 							FROM graph_tree_items
 							WHERE graph_tree_id = ?
 							AND order_key LIKE ?',
-							array($item["graph_tree_id"],'\'' . $parent_key . '\'000%'), false);
+							array($item['graph_tree_id'],'\'' . $parent_key . '\'000%'), false);
+
 						$parent_id = $parent_id_result['data'];
 
 						if (empty($parent_id)) {
@@ -482,17 +491,26 @@ function upgrade_to_1_0_0() {
 							$position = 0;
 						}
 
-						$position_result = db_install_fetch_cell('SELECT MAX(position)
-							FROM graph_tree_items
-							WHERE graph_tree_id = ?
-							AND parent =  ?',
-							array($item['graph_tree_id'], $parent_id), false);
+						if (!isset($pos_array[$parent_id])) {
+							$position_result = db_install_fetch_cell('SELECT MAX(position)
+								FROM graph_tree_items
+								WHERE graph_tree_id = ?
+								AND parent = ?',
+								array($item['graph_tree_id'], $parent_id), false);
+
+							$position = $position_result['data'] + 1;
+						} else {
+							$position = $pos_array[$parent_id] + 1;
+						}
+
+						$pos_array[$parent_id] = $position;
+
 						$postion = $position_result['data'] + 1;
 
 						db_install_execute('UPDATE graph_tree_items
-							SET parent = ?, position=?
-							WHERE id=?',
-							array($parent_id, $position,  $item["id"]), false);
+							SET parent = ?, position = ?
+							WHERE id = ?',
+							array($parent_id, $position,  $item['id']), false);
 
 						$prev_parent = $parent_id;
 					}
@@ -501,7 +519,7 @@ function upgrade_to_1_0_0() {
 				/* get base tree items and set position */
 				$tree_items_result = db_install_fetch_assoc('SELECT *
 					FROM graph_tree_items
-					WHERE graph_tree_id=?
+					WHERE graph_tree_id = ?
 					AND order_key LIKE "___000%"
 					ORDER BY order_key',
 					array($t['id']), false);
@@ -512,9 +530,9 @@ function upgrade_to_1_0_0() {
 				if (cacti_sizeof($tree_items)) {
 					foreach($tree_items as $item) {
 						db_install_execute('UPDATE graph_tree_items
-							SET parent = ?, position=?
-							WHERE id=?',
-							array($parent_id, $position,  $item["id"]), false);
+							SET parent = ?, position = ?
+							WHERE id = ?',
+							array($parent_id, $position,  $item['id']), false);
 
 						$position++;
 					}
@@ -642,21 +660,21 @@ function upgrade_to_1_0_0() {
 					FROM graph_local
 					LEFT JOIN host
 					ON (graph_local.host_id=host.id)
-					WHERE graph_local.id=?',
+					WHERE graph_local.id = ?',
 					array($row['local_graph_id']), false);
 				$host = $host_results['data'];
 
 				if (cacti_sizeof($host)) {
 					$graph_template = db_install_fetch_cell('SELECT graph_template_id
 						FROM graph_local
-						WHERE id=?',
+						WHERE id = ?',
 						array($row['local_graph_id']), false);
 
 					db_install_execute('UPDATE reports_items SET
-						host_id=?,
-						host_template_id=?,
-						graph_template_id=?
-						WHERE id=?',
+						host_id = ?,
+						host_template_id = ?,
+						graph_template_id = ?
+						WHERE id = ?',
 						array($host['id'],$host['host_template_id'],$graph_template,$row['id']), false);
 				}
 			}
@@ -1993,10 +2011,10 @@ function upgrade_realms() {
 
 	foreach($remove_plugins as $p) {
 		/* remove plugin */
-		db_install_execute("DELETE FROM plugin_config WHERE directory=?", array($p));
-		db_install_execute("DELETE FROM plugin_realms WHERE plugin=?", array($p));
-		db_install_execute("DELETE FROM plugin_db_changes WHERE plugin=?", array($p));
-		db_install_execute("DELETE FROM plugin_hooks WHERE name=?", array($p));
+		db_install_execute("DELETE FROM plugin_config WHERE directory = ?", array($p));
+		db_install_execute("DELETE FROM plugin_realms WHERE plugin = ?", array($p));
+		db_install_execute("DELETE FROM plugin_db_changes WHERE plugin = ?", array($p));
+		db_install_execute("DELETE FROM plugin_hooks WHERE name = ?", array($p));
 	}
 }
 
