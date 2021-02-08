@@ -71,6 +71,9 @@ if (php_sapi_name() != 'cli') {
 	define('STDOUT', fopen('php://stdout', 'w'));
 }
 
+/* make sure data is flushed immediately */
+ob_implicit_flush();
+
 /* signal for realtime */
 global $environ, $poller_id;
 
