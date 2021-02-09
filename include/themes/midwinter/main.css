@@ -85,7 +85,7 @@ fieldset {
     vertical-align: middle;
 }
 
-ul#nav {
+ul#nav, ul.nav {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -223,7 +223,8 @@ label {
 
 .glyph_tab-console:before {
 	content: "\f0c9";
-    margin-left: 1.75em;
+    margin-left: 1.5em;
+    font-size: 1.1em;
 }
 
 .text_tab-console {
@@ -431,7 +432,7 @@ label.ui-state-hover > span {
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%:;
+	width: 100%;
 }
 
 .deviceUp {
@@ -1917,6 +1918,10 @@ div#gtabs {
     padding-right: 0.5em;
 }
 
+.usertabs ul {
+    float: right;
+}
+
 .maintabs {
 	float: left;
 	overflow: hidden;
@@ -2062,26 +2067,26 @@ div.submenu span {
 /* Navigation Area */
 
 
-#nav li a {
+#nav li a, .nav li a {
 	display: block;
 	padding: 2px 4px 2px 0.75em;
 	color: #7e818f;
 	text-decoration: none;
 }
 
-#nav li a.active {
+#nav li a.active, .nav li a.active {
 
 }
 
-#nav li a.active:not(.selected) {
+#nav li a.active:not(.selected), .nav li a.active:not(.selected) {
 	color: #7e818f!important;
 }
 
-#nav li a.active, #nav li a.active:hover {
+#nav li a.active, #nav li a.active:hover, .nav li a.active, .nav li a.active:hover {
 	color: #f2f2f3 !important;
 }
 
-#nav li span {
+#nav li span, .nav li span {
     margin-left: 1em;
 }
 
@@ -2134,26 +2139,26 @@ td:last-child.checkbox {
     border-right: 1px solid #3d3d3d;
 }
 
-#nav li ul li a.selected {
+#nav li ul li a.selected, .nav li ul li a.selected {
 	color: #f2f2f3;
 }
 
-#nav li ul {
+#nav li ul, .nav li ul {
 	display: none;
 	padding: 0;
 	border-left: 2px solid #151725;
 }
 
-#nav li ul li a {
+#nav li ul li a, .nav li ul li a {
 	padding: 2px 4px 2px 3.5em;
 	outline-style: none;
 }
 
-#nav li ul li a:hover {
+#nav li ul li a:hover, .nav li ul li a:hover {
 	color: #f2f2f3;
 }
 
-#nav li ul li {
+#nav li ul li, .nav li ul li {
 	list-style: none;
 	padding: 0;
 }
@@ -2721,6 +2726,10 @@ td.center > table {
     #padding-top: 260px;
 }
 
+.next_gen {
+    display: none;
+}
+
 @media only screen and (max-width: 600px) {
     .cactiConsoleNavigationArea {
         position: absolute;
@@ -2757,17 +2766,103 @@ td.center > table {
         text-align: unset;
     }
 
+    #next_gen_tab_menu {
+        width: 100%;
+        padding: 2em 0;
+    }
+
+    #next_gen_user_menu {
+        width: 100%;
+        position: absolute;
+        bottom: 2em;
+        padding-top: 2em;
+    }
+
+    #next_gen_user_menu .menuitem ul {
+        top: auto !important;
+        bottom: 36px !important;
+    }
+
     .cactiConsoleNavigationArea {
         width: 180px;
         float: left;
     }
 
     .cactiConsoleNavigationArea.sidebar-collapse {
-        -webkit-transform: translate(0, 0);
-        -ms-transform: translate(0, 0);
-        -o-transform: translate(0, 0);
-        transform: translate(0, 0);
-        width: 50px !important;
+        overflow-y: visible !important;
+        width: 60px !important;
+        position: relative;
+        box-shadow: 5px 0 10px -5px #0d0e15;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse .next_gen{
+        display: block;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse #nav li ul li a,
+    .cactiConsoleNavigationArea.sidebar-collapse .nav li ul li a {
+        padding: 2px 4px 2px 2em;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse #menu {
+        margin-bottom: 40px;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse .menu_glyph {
+        color: #7e818f;
+        font-size: 1.2em;
+        padding-left: 8px;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse .menu_parent:not(.active) {
+        color: #3d3d3d;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse .menuitem {
+        position: relative;
+        overflow: hidden;
+        z-index: 850;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse .menuitem:hover {
+        overflow: visible;
+        z-index: 900;
+        background-color: #0d0e15;
+        box-shadow: inset 5px 0 0 0 #3c8a3c;
+        width: 230px;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse .menuitem span{
+        display: none !important;
+        width: 155px;
+        left: 50px;
+        background-color: #0d0e15;
+        position: absolute;
+        margin-left: 3em !important;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse .menuitem:hover span {
+        display: inline-block !important;
+        animation: dropdown-anim .15s ease-in-out .1s forwards;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse .menuitem ul {
+        display: none !important;
+        width: 180px;
+        left: 62px;
+        background-color: #141621;
+        position: absolute;
+        border-left: none !important;
+        top: 36px;
+        animation: dropdown-anim .15s ease-in-out .1s forwards;
+    }
+
+    .cactiConsoleNavigationArea.sidebar-collapse .menuitem:hover ul {
+        display: inline-block !important;
+    }
+
+    .cactiConsoleContentArea.sidebar-collapse #filterTableOnTop {
+        padding-top: 2em;
     }
 }
 
