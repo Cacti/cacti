@@ -7,6 +7,34 @@
     default_hyperlinks: #57a9da
  */
 
+html {
+    --hue: 233;
+    --accent-hue: 240;
+    --special-hue: 233;
+    --text-color-normal: hsl(var(--hue), 7%, 53%);
+    --text-color-light: hsl(var(--hue), 15%, 35%);
+    --text-color-richer: hsl(var(--hue), 50%, 72%);
+    --text-color-highlight: hsl(var(--accent-hue), 4%, 95%);
+    --background: hsl(var(--hue), 19%, 17%);
+    --background-content: hsl(var(--hue), 23%, 14%);
+    --background-hightlight: hsl(var(--hue), 19%, 17%);
+}
+html[data-theme-color='light'] {
+    --hue: 231;
+    --special-hue: 208;
+    --background: hsl(var(--special-hue), 19%, 17%);
+    --background-content: hsl(var(--hue), 0%, 96%);
+    --background-hightlight: hsl(var(--special-hue), 84%, 40%);
+}
+
+html.color-theme-in-transition,
+html.color-theme-in-transition *,
+html.color-theme-in-transition *:before,
+html.color-theme-in-transition *:after {
+    transition: all 750ms !important;
+    transition-delay: 0 !important;
+}
+
 /* main styles */
 ::-webkit-scrollbar {
     width: 12px;
@@ -28,7 +56,7 @@ body {
     font-family: Roboto,Helvetica Neue,Arial,sans-serif;
     font-size: 0.75em;
     margin: 0;
-    background-color: #242635;
+    background-color: var(--background);
     color: #7e818f;
     overflow: hidden;
 }
@@ -51,6 +79,7 @@ fieldset {
     height: 3em;
     font-size: 1.5em;
     border-bottom: 1px solid #323339;
+    background-color: var(--background-hightlight);
 }
 
 .cactiPageHead div {
@@ -182,7 +211,7 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
 #navigation_right {
     overflow-y: auto !important;
     padding: 0 5px 0 5px;
-    background-color: #1c1e2d;
+    background-color: var(--background-content);
 }
 
 /* Cacti Table */
@@ -2786,45 +2815,51 @@ td.center > table {
     .cactiConsoleNavigationArea {
         width: 180px;
         float: left;
+        background-color: var(--background);
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse {
+    html[data-theme-mode='next_gen'] .cactiPageHead,
+    html[data-theme-mode='next_gen'] .cactiPageBottom {
+        display: none;
+    }
+
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea {
         overflow-y: visible !important;
         width: 60px !important;
         position: relative;
         box-shadow: 5px 0 10px -5px #0d0e15;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse .next_gen{
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .next_gen{
         display: block;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse #nav li ul li a,
-    .cactiConsoleNavigationArea.sidebar-collapse .nav li ul li a {
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea #nav li ul li a,
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .nav li ul li a {
         padding: 2px 4px 2px 2em;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse #menu {
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea #menu {
         margin-bottom: 40px;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse .menu_glyph {
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menu_glyph {
         color: #7e818f;
         font-size: 1.2em;
         padding-left: 8px;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse .menu_parent:not(.active) {
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menu_parent:not(.active) {
         color: #3d3d3d;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse .menuitem {
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem {
         position: relative;
         overflow: hidden;
         z-index: 850;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse .menuitem:hover {
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem:hover {
         overflow: visible;
         z-index: 900;
         background-color: #0d0e15;
@@ -2832,7 +2867,7 @@ td.center > table {
         width: 230px;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse .menuitem span{
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem span{
         display: none !important;
         width: 155px;
         left: 50px;
@@ -2841,12 +2876,12 @@ td.center > table {
         margin-left: 3em !important;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse .menuitem:hover span {
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem:hover span {
         display: inline-block !important;
         animation: dropdown-anim .15s ease-in-out .1s forwards;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse .menuitem ul {
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem ul {
         display: none !important;
         width: 180px;
         left: 62px;
@@ -2857,11 +2892,11 @@ td.center > table {
         animation: dropdown-anim .15s ease-in-out .1s forwards;
     }
 
-    .cactiConsoleNavigationArea.sidebar-collapse .menuitem:hover ul {
+    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem:hover ul {
         display: inline-block !important;
     }
 
-    .cactiConsoleContentArea.sidebar-collapse #filterTableOnTop {
+    html[data-theme-mode='next_gen'] .cactiConsoleContentArea #filterTableOnTop {
         padding-top: 2em;
     }
 }
@@ -2905,7 +2940,6 @@ td.center > table {
     #navigation_right {
         overflow-y: auto !important;
         padding: 0 15px 0 25px;
-        background-color: #1c1e2d;
     }
 }
 

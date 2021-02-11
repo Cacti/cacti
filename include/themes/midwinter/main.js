@@ -6,6 +6,8 @@ function themeReady() {
     let midWinter_GUI_Mode = initStorageItem('midWinter_GUI_Mode', 'legacy');
     let midWinter_Color_Mode = initStorageItem('midWinter_Color_Mode', 'light');
 
+    setDocumentAttribute('theme-mode', midWinter_GUI_Mode);
+    setDocumentAttribute('theme-color', midWinter_Color_Mode);
     setupTheme();
 
     setMenuVisibility();
@@ -53,7 +55,7 @@ function setupTheme() {
             +'<li><a href="https://github.com/Cacti/cacti/issues/new" target="_blank" rel="noopener">'+reportABug+'</a></li>'
             +'<li><a href="'+urlPath+'about.php">'+aboutCacti+'</a></li>';
 
-        $('<div class="dropdownMenu legacy">'
+        $('<div class="dropdownMenu">'
             +   '<ul id="submenu-user-help" class="submenuoptions right" style="display:none;">'
             +       submenu_user_help_content
             +   '</ul>'
@@ -63,7 +65,7 @@ function setupTheme() {
         let theme_switches =
             '<li><hr class="menu"></li>'
             +'<li><a href="#" class="toggleGuiMode">'+newInterface+'</a></li>'
-            +'<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? lightColorMode : darkColorMode)+'</a></li>'
+            +'<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
             +'<li><hr class="menu"></li>';
         $('.menuoptions').find('li').eq(2).after(theme_switches);
 
@@ -92,17 +94,17 @@ function setupTheme() {
                 +   '<li><a id="tab-graphs-list-view" href="'+urlPath+'graph_view.php?action=list"><span>'+listView+'</span></a></li>'
                 +   '<li><a id="tab-graphs-pre-view" href="'+urlPath+'graph_view.php?action=preview"><span>'+previewView+'</span></a></li>'
                 +'</ul>';
-            $('<div class="dropdownMenu legacy">'+ submenu_tab_graphs_content +'</div>').appendTo('body');
+            $('<div class="dropdownMenu">'+ submenu_tab_graphs_content +'</div>').appendTo('body');
 
             next_gen_tab_menu_content +=
                 '<li><hr class="menu"></li>'
-                +'<li><a id="tab-graphs-tree-view" href="'+urlPath+'graph_view.php?action=tree">'+treeView+'</a></li>'
-                +'<li><a id="tab-graphs-list-view" href="'+urlPath+'graph_view.php?action=list">'+listView+'</a></li>'
-                +'<li><a id="tab-graphs-pre-view" href="'+urlPath+'graph_view.php?action=preview">'+previewView+'</a></li>'
+                +'<li><a class="hyperLink" id="tab-graphs-tree-view" href="'+urlPath+'graph_view.php?action=tree">'+treeView+'</a></li>'
+                +'<li><a class="hyperLink" id="tab-graphs-list-view" href="'+urlPath+'graph_view.php?action=list">'+listView+'</a></li>'
+                +'<li><a class="hyperLink" id="tab-graphs-pre-view" href="'+urlPath+'graph_view.php?action=preview">'+previewView+'</a></li>'
                 +'<li><hr class="menu"></li>';
 
         }else {
-            next_gen_tab_menu_content += '<li><a href="'+ $(this).attr('href') +'">'+ $('.text_'+id).text() +'</a></li>';
+            next_gen_tab_menu_content += '<li><a class="hyperLink" href="'+ $(this).attr('href') +'">'+ $('.text_'+id).text() +'</a></li>';
         }
     });
     next_gen_tab_menu_content += '</ul></li></ul>';
@@ -154,10 +156,10 @@ function setupTheme() {
                 +           '<li><a href="/cacti/cacti/logout.php">'+logout+'</a></li>'
                 +           '<li><hr class="menu"></li>'
                 +           '<li><a href="#" class="toggleGuiMode">'+legacyInterface+'</a></li>'
-                +           '<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? lightColorMode : darkColorMode)+'</a></li>'
+                +           '<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
                 +           '<li><hr class="menu"></li>'
                 +           '<li><a href="/cacti/cacti/auth_changepassword.php" style="">'+changePassword+'</a></li>'
-                +           '<li><a href="/cacti/cacti/auth_profile.php?action=edit">'+editProfile+'</a></li>'
+                +           '<li><a class="hyperLink" href="/cacti/cacti/auth_profile.php?action=edit">'+editProfile+'</a></li>'
                 +       '</ul>'
                 +   '</li>'
                 +'</ul>';
@@ -194,8 +196,8 @@ function setupTheme() {
 
 
 
-    /* Footer */
     $('.toggleGuiMode').unbind().click(toggleGuiMode);
+    $('.toggleColorMode').unbind().click(toggleColorMode);
 return;
 }
 
@@ -396,32 +398,34 @@ function initStorageItem(name, default_value) {
     return storage.get(name);
 }
 
+function setDocumentAttribute(name, value) {
+    document.documentElement.setAttribute('data-'+name, value);
+}
+
 function toggleGuiMode() {
     let storage = Storages.localStorage;
     let midWinter_GUI_Mode = storage.get('midWinter_GUI_Mode');
 
-    if( midWinter_GUI_Mode === 'legacy') {
-        storage.set('midWinter_GUI_Mode', 'next_gen');
-    }else {
-        storage.set('midWinter_GUI_Mode', 'legacy');
-    }
-    $('.cactiConsoleNavigationArea, .cactiConsoleContentArea').toggleClass("sidebar-collapse");
-    $('.cactiPageHead, .cactiPageBottom').toggle(0);
-    $(window).trigger('resize');
+    midWinter_GUI_Mode = ( midWinter_GUI_Mode === 'legacy' ? 'next_gen' : 'legacy');
+    storage.set('midWinter_GUI_Mode', midWinter_GUI_Mode);
 
-    console.log('toggling to GUI mode: ' + storage.get('midWinter_GUI_Mode'));
+    setDocumentAttribute('theme-mode', midWinter_GUI_Mode);
+    $(window).trigger('resize');
 }
 
 function toggleColorMode() {
     let storage = Storages.localStorage;
     let midWinter_Color_Mode = storage.get('midWinter_Color_Mode');
-    if( midWinter_GUI_Mode === 'legacy') {
-        storage.set('midWinter_GUI_Mode', 'next_gen');
-    }else {
-        storage.set('midWinter_GUI_Mode', 'legacy');
-    }
 
-    console.log('toggling to Color mode: ' + storage.get('midWinter_Color_Mode'));
+    midWinter_Color_Mode = ( midWinter_Color_Mode === 'dark' ? 'light' : 'dark');
+    storage.set('midWinter_Color_Mode', midWinter_Color_Mode);
+    $('.toggleColorMode').text( midWinter_Color_Mode === 'dark' ? lightColorMode : darkColorMode );
+
+    document.documentElement.classList.add('color-theme-in-transition')
+    setDocumentAttribute('theme-color', midWinter_Color_Mode)
+    window.setTimeout(function() {
+        document.documentElement.classList.remove('color-theme-in-transition')
+    }, 1000)
 }
 
 
