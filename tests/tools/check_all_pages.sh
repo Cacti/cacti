@@ -12,7 +12,7 @@
 
 interactive="yes"
 
-if [[ $interactive = "no" ]]
+if [[ $interactive = "yes" ]]
 then
 
 echo "Enter Database username"
@@ -33,6 +33,8 @@ database_pw="cactiuser"
 login_pw="admin"
 
 fi
+
+echo $interactive
 
 
 
