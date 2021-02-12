@@ -2828,7 +2828,7 @@ CREATE TABLE `user_domains_ldap` (
   `group_attrib` varchar(128) NOT NULL,
   `group_member_type` tinyint(3) unsigned NOT NULL,
   `search_base` varchar(128) NOT NULL,
-  `search_filter` varchar(128) NOT NULL,
+  `search_filter` varchar(512) NOT NULL,
   `specific_dn` varchar(128) NOT NULL,
   `specific_password` varchar(128) NOT NULL,
   `cn_full_name` varchar(50) NULL DEFAULT '',

@@ -1012,7 +1012,7 @@ INSERT INTO `table_columns` VALUES ('user_domains_ldap',11,'group_dn','varchar(1
 INSERT INTO `table_columns` VALUES ('user_domains_ldap',12,'group_attrib','varchar(128)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('user_domains_ldap',13,'group_member_type','tinyint(3) unsigned','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('user_domains_ldap',14,'search_base','varchar(128)','NO','',NULL,'');
-INSERT INTO `table_columns` VALUES ('user_domains_ldap',15,'search_filter','varchar(128)','NO','',NULL,'');
+INSERT INTO `table_columns` VALUES ('user_domains_ldap',15,'search_filter','varchar(512)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('user_domains_ldap',16,'specific_dn','varchar(128)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('user_domains_ldap',17,'specific_password','varchar(128)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('user_domains_ldap',18,'cn_full_name','varchar(50)','YES','','','');

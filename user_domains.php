@@ -471,7 +471,7 @@ function domain_edit() {
 			'description' => __('Search filter to use to locate the user in the LDAP directory, such as for windows: <i>"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))"</i> or for OpenLDAP: <i>"(&(objectClass=account)(uid=&lt;username&gt))"</i>.  "&lt;username&gt" is replaced with the username that was supplied at the login prompt.'),
 			'method' => 'textbox',
 			'value' => '|arg1:search_filter|',
-			'max_length' => '255'
+			'max_length' => '512'
 			),
 		'specific_dn' => array(
 			'friendly_name' => __('Search Distinguished Name (DN)'),
