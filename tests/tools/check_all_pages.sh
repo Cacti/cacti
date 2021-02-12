@@ -3,6 +3,40 @@
 # each link is tried. I mean to add checks for new CVE's (at least those that I
 # can trigger with wget) as well.
 
+
+
+# ------------------------------------------------------------------------------
+# Get inputs from user (Interactive mode)
+# ------------------------------------------------------------------------------
+
+
+interactive="yes"
+
+if [[ $interactive = "no" ]]
+then
+
+echo "Enter Database username"
+read -r database_user
+echo "Enter Database Password"
+read -r database_pw
+echo "Enter Cacti Admin password"
+read -r login_pw
+
+else
+
+
+echo "Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
+sleep 2 #Give user a chance to see the prompt
+
+database_user="cactiuser"
+database_pw="cactiuser"
+login_pw="admin"
+
+fi
+
+
+
+
 # ------------------------------------------------------------------------------
 # Debugging
 # ------------------------------------------------------------------------------
@@ -137,13 +171,6 @@ echo "My current directory is `pwd`"
 /bin/chown $WEBUSER:$WEBUSER $CACTI_LOG
 /bin/chown $WEBUSER:$WEBUSER $CACTI_ERRLOG
 
-# ------------------------------------------------------------------------------
-# Get the current database password, which by default is also used for the
-# admin.
-# ------------------------------------------------------------------------------
-database_user="cactiuser"
-database_pw="cactiuser"
-login_pw="admin"
 
 # ------------------------------------------------------------------------------
 # Make a backup copy of the Cacti settings table and enable log validation
