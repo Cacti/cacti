@@ -2206,10 +2206,19 @@ function boost_display_run_status() {
 		$max_data_length = $table['MAX_DATA_LENGTH'];
 	}
 
-	$total_records  = $pending_records + $arch_records;
-	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
+	$pending_ds   = db_fetch_cell('SELECT COUNT(local_data_id)
+		FROM poller_output_boost_local_data_ids');
 
-	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
+	$poller_items = db_fetch_cell('SELECT COUNT(local_data_id)
+		FROM poller_item');
+
+	$data_sources = db_fetch_cell('SELECT COUNT(id)
+		FROM data_local');
+
+	$pi_ds          = $poller_items / $data_sources;
+	$remaining      = $arch_records * (($pending_ds * $pi_ds) / $data_sources);
+	$total_records  = $pending_records + $remaining;
+	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
 
 	$boost_status = read_config_option('boost_poller_status', true);
 	if ($boost_status != '') {
@@ -2293,14 +2302,22 @@ function boost_display_run_status() {
 	print '<td>' . __('Boost On-demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
 
 	form_alternate_row();
-	print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($total_data_sources, -1) . '</td>';
+	print '<td>' . __('Total Poller Items:') . '</td><td>' . number_format_i18n($poller_items, -1) . '</td>';
+
+	$premaining = round(($pending_ds / $data_sources) * 100, 1);
 
 	if ($total_records) {
 		form_alternate_row();
-		print '<td>' . __('Pending Boost Records:') . '</td><td>' . number_format_i18n($pending_records, -1) . '</td>';
+		print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($data_sources, -1) . '</td>';
 
 		form_alternate_row();
-		print '<td>' . __('Archived Boost Records:') . '</td><td>' . number_format_i18n($arch_records, -1) . '</td>';
+		print '<td>' . __('Remaining Data Sources:') . '</td><td>' . ($pending_ds > 0 ? number_format_i18n($pending_ds, -1) . " ($premaining %)":__('TBD')) . '</td>';
+
+		form_alternate_row();
+		print '<td>' . __('Queued Boost Records:') . '</td><td>' . number_format_i18n($pending_records, -1) . '</td>';
+
+		form_alternate_row();
+		print '<td>' . __('Approximate in Process:') . '</td><td>' . number_format_i18n($remaining, -1) . '</td>';
 
 		form_alternate_row();
 		print '<td>' . __('Total Boost Records:') . '</td><td>' . number_format_i18n($total_records, -1) . '</td>';
