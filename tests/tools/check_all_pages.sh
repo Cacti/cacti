@@ -1,48 +1,41 @@
 #!/bin/bash
+# ------------------------------------------------------------------------------
 # This script is supposed to test cacti a little bit. At least each page and
 # each link is tried. I mean to add checks for new CVE's (at least those that I
 # can trigger with wget) as well.
+# ------------------------------------------------------------------------------
 
-
+mode=$1
 
 # ------------------------------------------------------------------------------
 # Get inputs from user (Interactive mode)
 # ------------------------------------------------------------------------------
-
-
-interactive="yes"
-
-if [[ $interactive = "yes" ]]
-then
-
-echo "Enter Database username"
-read -r database_user
-echo "Enter Database Password"
-read -r database_pw
-echo "Enter Cacti Admin password"
-read -r login_pw
-
+if [ "$mode" = "--interactive" ]; then
+	echo "Enter Database username"
+	read -r database_user
+	echo "Enter Database Password"
+	read -r database_pw
+	echo "Enter Cacti Admin password"
+	read -r login_pw
+elif [ "$mode" = "--help" ]; then
+	echo "Checks all Cacti pages using wget options"
+	echo "Original script by team Debian."
+	echo ""
+	echo "usage: check_all_pages.sh [--interactive]"
+	echo ""
 else
+	echo "Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
+	sleep 2 #Give user a chance to see the prompt
 
-
-echo "Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
-sleep 2 #Give user a chance to see the prompt
-
-database_user="cactiuser"
-database_pw="cactiuser"
-login_pw="admin"
-
+	database_user="cactiuser"
+	database_pw="cactiuser"
+	login_pw="admin"
 fi
-
-echo $interactive
-
-
-
 
 # ------------------------------------------------------------------------------
 # Debugging
 # ------------------------------------------------------------------------------
-set -xv
+#set -xv
 
 exec 2>&1
 
