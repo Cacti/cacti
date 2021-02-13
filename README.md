@@ -200,6 +200,13 @@ Get involved in creating and editing Cacti Documentation!  Fork, change and
 submit a pull request to help improve the documentation on
 [GitHub](https://github.com/cacti/documentation).
 
+
+### Check out the Cacti Group's Official YouTube channel 
+
+If you would have any ideas for videos or would like to contibute let us know !
+
+[Cacti Official Youtube Channel](https://www.youtube.com/channel/UC6ROmUGuuLa9BdHWzvGSY1w)
+
 ### GitHub Development
 
 Get involved in development of Cacti! Join the developers and community on
