@@ -122,6 +122,9 @@ function api_graph_remove_bad_graphs(&$local_graph_ids = array()) {
 		if ($bad_graph !== false) {
 			unset($local_graph_ids[$bad_graph]);
 
+			db_execute('DELETE FROM graph_local
+				WHERE id = 0');
+
 			db_execute('DELETE FROM graph_templates_graph
 				WHERE local_graph_id = 0
 				AND graph_template_id = 0');
