@@ -1793,6 +1793,17 @@ function get_color($color_id) {
 	return db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_id));
 }
 
+/* get_graph_title_cache - returns the title of the graph using the title cache
+ * @param $local_graph_id - (int) the ID of the graph to get the title for
+ * @returns - the graph title
+ */
+function get_graph_title_cache($local_graph_id) {
+	return db_fetch_cell_prepared('SELECT title_cache
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
+}
+
 /* get_graph_title - returns the title of a graph without using the title cache
    @arg $local_graph_id - (int) the ID of the graph to get a title for
    @returns - the graph title */

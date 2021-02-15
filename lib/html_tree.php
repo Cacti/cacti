@@ -509,7 +509,7 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 			} elseif ($leaf['site_id'] > 0) {
 				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tsite:" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'>" . html_escape($leaf['sitename']) . "</a></li>\n";
 			} elseif ($leaf['local_graph_id'] > 0) {
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . html_escape(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . html_escape(get_graph_title_cache($leaf['local_graph_id'])) . "</a></li>\n";
 			} else {
 				$dhtml_tree[] = "\t\t\t\t<li class='jstree-closed' id='tbranch:" . $leaf['id'] . "'>" . html_escape($leaf['title']) . "</li>\n";
 			}
