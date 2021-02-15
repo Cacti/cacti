@@ -59,6 +59,7 @@ Cacti CHANGELOG
 -issue#4117: Script server throws errors if a command line argument includes a backslash
 -issue#4119: On certain OS's implicit flushing is not enabled resulting in Script Server result issues
 -issue#4121: Too short search filter for Ldap - Cacti 1.2.2
+-issue#4126: It is possible to delete all templates by deleting a damaged graph with a local_graph_id of 0
 -issue#4127: Tree Editing used get_graph_title() function which results in unexpected behavior
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url

@@ -23,6 +23,9 @@
 */
 
 function api_delete_graphs(&$local_graph_ids, $delete_type) {
+	/* check for a bad local_graph_id = 0, and remove graphs */
+	api_graph_remove_bad_graphs($local_graph_ids);
+
 	if (!cacti_sizeof($local_graph_ids)) {
 		return;
 	}
@@ -97,6 +100,7 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 
 function api_graph_remove($local_graph_id) {
 	if (empty($local_graph_id)) {
+		api_graph_remove_bad_graphs();
 		return;
 	}
 
@@ -109,6 +113,18 @@ function api_graph_remove($local_graph_id) {
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM reports_items WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM graph_local WHERE id = ?', array($local_graph_id));
+}
+
+function api_graph_remove_bad_graphs(&$local_graph_ids = array()) {
+	if (cacti_sizeof($local_graph_ids)) {
+		$bad_graph = array_search(0, $local_graph_ids);
+		if ($bad_graph !== false) {
+			unset($local_graph_ids[$bad_graph]);
+		}
+	}
+
+	db_execute('DELETE FROM graph_templates_graph WHERE local_graph_id = 0 AND graph_template_id = 0');
+	db_execute('DELETE FROM graph_templates_item WHERE hash = "" AND local_graph_id = 0');
 }
 
 function api_graph_remove_aggregate_items($local_graph_ids) {
@@ -134,6 +150,9 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
 }
 
 function api_graph_remove_multi($local_graph_ids) {
+	/* check for a bad local_graph_id = 0, and remove graphs */
+	api_graph_remove_bad_graphs($local_graph_ids);
+
 	if (!cacti_sizeof($local_graph_ids)) {
 		return;
 	}
