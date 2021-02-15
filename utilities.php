@@ -2206,17 +2206,17 @@ function boost_display_run_status() {
 		$max_data_length = $table['MAX_DATA_LENGTH'];
 	}
 
-	$pending_ds   = db_fetch_cell('SELECT COUNT(local_data_id)
-		FROM poller_output_boost_local_data_ids');
+	$pending_ds   = db_fetch_cell('SELECT COUNT(local_data_id) FROM poller_output_boost_local_data_ids');
+	$poller_items = db_fetch_cell('SELECT COUNT(local_data_id) FROM poller_item');
+	$data_sources = db_fetch_cell('SELECT COUNT(DISTINCT local_data_id) FROM poller_item');
+	$pi_ds        = $poller_items / $data_sources;
 
-	$poller_items = db_fetch_cell('SELECT COUNT(local_data_id)
-		FROM poller_item');
+	if ($pending_ds == 0) {
+		$remaining = $arch_records;
+	} else {
+		$remaining = $arch_records * (($pending_ds * $pi_ds) / $data_sources);
+	}
 
-	$data_sources = db_fetch_cell('SELECT COUNT(id)
-		FROM data_local');
-
-	$pi_ds          = $poller_items / $data_sources;
-	$remaining      = $arch_records * (($pending_ds * $pi_ds) / $data_sources);
 	$total_records  = $pending_records + $remaining;
 	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
 
