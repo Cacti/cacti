@@ -28,7 +28,7 @@ function upgrade_to_1_2_17() {
 	db_install_execute("ALTER TABLE data_template_data DROP INDEX name_cache, ADD INDEX name_cache(name_cache)");
 
 	// LDAP Search filter widening
-	db_install_execute('ALTER TABE user_domains_ldap MODIFY COLUMN search_filter VARCHAR(512) NOT NULL default ""');
+	db_install_execute('ALTER TABLE user_domains_ldap MODIFY COLUMN search_filter VARCHAR(512) NOT NULL default ""');
 
 	database_fix_mediumint_columns();
 }
