@@ -863,7 +863,7 @@ function display_new_graphs($rule, $url) {
 
 			$sql_query = $rows_query . ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-			$snmp_query_indexes = db_fetch_assoc($sql_query);
+			$snmp_query_indexes = db_fetch_assoc($sql_query, false);
 		} else {
 			$total_rows = 0;
 			$snmp_query_indexes = array();
