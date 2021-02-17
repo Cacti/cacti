@@ -129,21 +129,30 @@ function getInputFields($templateId) {
 	$tmpArray = db_fetch_assoc_prepared("SELECT DISTINCT dif.data_name AS `name`, dif.name AS `description`,
 		did.value AS `default`, dtd.data_template_id, dif.id AS `data_input_field_id`
 		FROM data_input_fields AS dif
-		INNER JOIN data_input_data AS did
+		INNER JOIN (
+			SELECT data_input_field_id, data_template_data_id, value
+			FROM data_input_data
+			WHERE t_value = 'on'
+		) AS did
 		ON did.data_input_field_id = dif.id
-		INNER JOIN data_template_data AS dtd
+		INNER JOIN (
+			SELECT id, data_input_id, data_template_id
+			FROM data_template_data
+			WHERE local_data_id = 0
+		) AS dtd
 		ON did.data_template_data_id = dtd.id
 		AND dtd.data_input_id = dif.data_input_id
-		INNER JOIN data_template_rrd AS dtr
+		INNER JOIN (
+			SELECT data_template_id, id
+			FROM data_template_rrd
+			WHERE local_data_id = 0 AND hash != ''
+		) AS dtr
 		ON dtr.data_template_id = dtd.data_template_id
 		INNER JOIN graph_templates_item AS gti
 		ON dtr.id = gti.task_item_id
 		INNER JOIN graph_templates AS gt
 		ON gt.id = gti.graph_template_id
 		WHERE gt.id = ?
-		AND dtr.local_data_id = 0
-		AND dtd.local_data_id = 0
-		AND did.t_value = 'on'
 		AND dif.input_output IN ('in', 'inout')",
 		array($templateId));
 
@@ -234,10 +243,10 @@ function getSNMPQueries() {
 function getSNMPQueryTypes($snmpQueryId) {
 	$types    = array();
 
-	$tmpArray = db_fetch_assoc_prepared('SELECT id, name 
-		FROM snmp_query_graph 
-		WHERE snmp_query_id = ? 
-		ORDER BY id', 
+	$tmpArray = db_fetch_assoc_prepared('SELECT id, name
+		FROM snmp_query_graph
+		WHERE snmp_query_id = ?
+		ORDER BY id',
 		array($snmpQueryId));
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
@@ -337,8 +346,8 @@ function displayCommunities($quietMode = false) {
 		print 'Known SNMP Communities: (community)' . PHP_EOL;
 	}
 
-	$communities = db_fetch_assoc('SELECT DISTINCT snmp_community 
-		FROM host 
+	$communities = db_fetch_assoc('SELECT DISTINCT snmp_community
+		FROM host
 		ORDER BY snmp_community');
 
 	if ($communities !== false &&cacti_sizeof($communities)) {
@@ -471,8 +480,8 @@ function displayTrees($quietMode = false) {
 		print 'Known Trees: (id, sort method, name)' . PHP_EOL;
 	}
 
-	$trees = db_fetch_assoc('SELECT id, sort_type, name 
-		FROM graph_tree 
+	$trees = db_fetch_assoc('SELECT id, sort_type, name
+		FROM graph_tree
 		ORDER BY id');
 
 	if (cacti_sizeof($trees)) {
@@ -607,14 +616,15 @@ function displayHostGraphs($host_id, $quietMode = false) {
 	}
 
 	$graphs = db_fetch_assoc_prepared('SELECT
-			graph_templates_graph.local_graph_id AS id,
-			graph_templates_graph.title_cache AS name,
-			graph_templates.name AS template_name
-			FROM (graph_local, graph_templates_graph)
-			LEFT JOIN graph_templates ON (graph_local.graph_template_id = graph_templates.id)
-			WHERE graph_local.id = graph_templates_graph.local_graph_id
-			AND graph_local.host_id = ?
-			ORDER BY graph_templates_graph.local_graph_id', array($host_id));
+		graph_templates_graph.local_graph_id AS id,
+		graph_templates_graph.title_cache AS name,
+		graph_templates.name AS template_name
+		FROM (graph_local, graph_templates_graph)
+		LEFT JOIN graph_templates ON (graph_local.graph_template_id = graph_templates.id)
+		WHERE graph_local.id = graph_templates_graph.local_graph_id
+		AND graph_local.host_id = ?
+		ORDER BY graph_templates_graph.local_graph_id',
+		array($host_id));
 
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
@@ -635,8 +645,8 @@ function displayUsers($quietMode = false) {
 		print 'Known Users: (id, username, full_name)'. PHP_EOL;
 	}
 
-	$groups = db_fetch_assoc('SELECT id, username, full_name 
-		FROM user_auth 
+	$groups = db_fetch_assoc('SELECT id, username, full_name
+		FROM user_auth
 		ORDER BY id');
 
 	if (cacti_sizeof($groups)) {
