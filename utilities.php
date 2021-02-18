@@ -2293,6 +2293,8 @@ function boost_display_run_status() {
 		$cache_files    = '<strong>' . __('WARNING:') . '</strong> ' . __('N/A');
 	}
 
+	$running = db_fetch_cell('SELECT COUNT(*) FROM processes WHERE tasktype="boost" AND taskname="child"');
+
 	$i = 0;
 
 	/* boost status display */
@@ -2300,6 +2302,11 @@ function boost_display_run_status() {
 
 	form_alternate_row();
 	print '<td>' . __('Boost On-demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
+
+	if ($running > 0) {
+		form_alternate_row();
+		print '<td>' . __('Running Processes:') . '</td><td>' . ($running) . '</td>';
+	}
 
 	form_alternate_row();
 	print '<td>' . __('Total Poller Items:') . '</td><td>' . number_format_i18n($poller_items, -1) . '</td>';
