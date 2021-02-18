@@ -855,7 +855,7 @@ function display_new_graphs($rule, $url) {
 
 			/* now we build up a new query for counting the rows */
 			$rows_query = "SELECT * FROM ($sql_query) AS a " . ($sql_filter != '' ? "WHERE ($sql_filter)":'') . $sql_having;
-			$total_rows = cacti_sizeof(db_fetch_assoc($rows_query));
+			$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
 			if ($total_rows < (get_request_var('rows')*(get_request_var('page')-1))+1) {
 				set_request_var('page', '1');
