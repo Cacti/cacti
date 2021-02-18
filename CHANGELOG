@@ -65,6 +65,7 @@ Cacti CHANGELOG
 -issue#4127: Tree Editing used get_graph_title() function which results in unexpected behavior
 -issue#4130: Sub-optimal queries slow Graph creation
 -issue#4131: A design flaw makes importing new Graph Template slow on large systems
+-issue#4134: Mib caching has a code defect that breaks processing
 -issue#4135: On large Cacti installs, editing Data Templates is slow
 -issue#4136: The Cacti repair_database.php script has no option to skip table checks and force Data Source repair
 -feature: Add Theme 'Midwinter'
