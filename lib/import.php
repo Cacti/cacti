@@ -134,7 +134,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 		$hash_cache_sql_union_selects[] = "SELECT '$hash_type' AS type, $db_id_field AS id, $db_hash_field AS hash
 			FROM `$db_table`
-			WHERE hash != ''";
+			WHERE $db_hash_field != ''";
 	}
 
 	$hash_cache_sql = implode(' UNION ALL ', $hash_cache_sql_union_selects);
