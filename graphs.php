@@ -2007,9 +2007,14 @@ function graph_management() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = '';
+	$sql_where  = '';
+	$sql_where2 = '';
 	if (get_request_var('rfilter') != '') {
 		$sql_where = " WHERE (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR gl.id = '" . get_request_var('rfilter') . "')";
+
+		$sql_where2 = " AND (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR gl.id = '" . get_request_var('rfilter') . "')";
 	}
@@ -2017,71 +2022,70 @@ function graph_management() {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('host_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
+		$sql_where2 .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
+		$sql_where2 .= ' AND gl.host_id=0';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
+		$sql_where2 .= ' AND gl.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('site_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('site_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=0';
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=0';
+		$sql_where2 .= ' AND h.site_id=0';
 	} elseif (!isempty_request_var('site_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=' . get_request_var('site_id');
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=' . get_request_var('site_id');
+		$sql_where2 .= ' AND h.site_id=' . get_request_var('site_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id = 0';
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id = 0';
+		$sql_where2 .= ' AND gtg.graph_template_id = 0';
 	} elseif (!isempty_request_var('template_id')) {
 		$parts = explode('_', get_request_var('template_id'));
 		if ($parts[0] == 'cg') {
 			input_validate_input_number($parts[1]);
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id = ' . $parts[1];
+			$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id = ' . $parts[1];
+			$sql_where2 .= ' AND gl.graph_template_id = ' . $parts[1];
 		} else {
 			input_validate_input_number($parts[1]);
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id = ' . $parts[1];
+			$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id = ' . $parts[1];
+			$sql_where2 .= ' AND gl.snmp_query_graph_id = ' . $parts[1];
 		}
 	}
 
 	if (get_request_var('local_graph_ids') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.id IN(' . get_request_var('local_graph_ids') . ')';
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.id IN(' . get_request_var('local_graph_ids') . ')';
+		$sql_where2 .= ' AND gl.id IN(' . get_request_var('local_graph_ids') . ')';
 	}
 
 	if (get_request_var('orphans') == 'true') {
-		$orphan_where = ' AND graph_type_id IN (' .
-			GRAPH_ITEM_TYPE_LINE1     . ', ' .
-			GRAPH_ITEM_TYPE_LINE2     . ', '.
-			GRAPH_ITEM_TYPE_LINE3     . ', ' .
-			GRAPH_ITEM_TYPE_LINESTACK . ', ' .
-			GRAPH_ITEM_TYPE_AREA      . ', ' .
-			GRAPH_ITEM_TYPE_STACK     . ')';
-
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
-			(gl.snmp_index = "" AND gl.snmp_query_id > 0) OR
-			gl.id IN (
-				SELECT DISTINCT gl.id
-				FROM graph_local AS gl
-				INNER JOIN (
-					SELECT DISTINCT local_graph_id, task_item_id
-					FROM graph_templates_item AS gti
-					WHERE local_graph_id > 0
-					AND graph_type_id IN (4,5,6,7,8,20)
-					AND cdef_id NOT IN (
-						SELECT c.id
-						FROM cdef AS c
-						INNER JOIN cdef_items AS ci
-						ON c.id = ci.cdef_id
-						WHERE (ci.type = 4 OR (ci.type = 6 AND value LIKE "%DATA_SOURCE%"))
-					)
-				) AS gti
-				ON gl.id = gti.local_graph_id
-				LEFT JOIN data_template_rrd AS dtr
-				ON gti.task_item_id = dtr.id
-				WHERE dtr.id IS NULL
+		$orphan_join = "INNER JOIN (
+			SELECT DISTINCT gti.local_graph_id, dtr.local_data_id
+			FROM graph_templates_item AS gti
+			INNER JOIN graph_local AS gl
+			ON gl.id = gti.local_graph_id
+			LEFT JOIN data_template_rrd AS dtr
+			ON dtr.id = gti.task_item_id
+			LEFT JOIN host AS h
+			ON h.id = gl.host_id
+			WHERE graph_type_id IN (4,5,6,7,8,20)
+			AND cdef_id NOT IN (
+				SELECT c.id
+				FROM cdef AS c
+				INNER JOIN cdef_items AS ci
+				ON c.id = ci.cdef_id
+				WHERE (ci.type = 4 OR (ci.type = 6 AND value LIKE '%DATA_SOURCE%'))
 			)
-		)';
+			AND (dtr.id IS NULL OR (gl.snmp_query_id > 0 AND gl.snmp_index = ''))
+			$sql_where2
+		) AS dtr
+		ON gl.id = dtr.local_graph_id";
+	} else {
+		$orphan_join = '';
 	}
 
 	/* don't allow aggregates to be view here */
@@ -2103,6 +2107,7 @@ function graph_management() {
 		ON h.id=gl.host_id
 		LEFT JOIN sites AS s
 		ON h.site_id=s.id
+		$orphan_join
 		$sql_where");
 
 	$sql_order = get_order_string();
@@ -2122,6 +2127,7 @@ function graph_management() {
 		ON h.id=gl.host_id
 		LEFT JOIN sites AS s
 		ON h.site_id=s.id
+		$orphan_join
 		$sql_where
 		$sql_order
 		$sql_limit");
