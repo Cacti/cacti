@@ -1952,7 +1952,7 @@ function graph_management() {
 								$templates = get_allowed_graph_templates_normalized('', 'name', '', $total_rows);
 							}
 
-							if (cacti_sizeof($templates) > 0) {
+							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
 									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . "</option>\n";
 								}
@@ -1963,7 +1963,7 @@ function graph_management() {
 					<td>
 						<span>
 							<input type='checkbox' id='orphans' onChange='applyFilter()' <?php print (get_request_var('orphans') == 'true' || get_request_var('orphans') == 'on' ? 'checked':'');?>>
-   	                    	<label for='orphans'><?php print __('Orphaned');?></label>
+   	                    	<label for='orphans' title='<?php print __esc('Note that this query may take some time to run.');?>'><?php print __('Orphaned');?></label>
 						</span>
 					</td>
 					<td>
@@ -2059,17 +2059,29 @@ function graph_management() {
 			GRAPH_ITEM_TYPE_STACK     . ')';
 
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
-			gl.snmp_index = "" AND gl.snmp_query_id > 0 OR
+			(gl.snmp_index = "" AND gl.snmp_query_id > 0) OR
 			gl.id IN (
-				SELECT gti.local_graph_id
-				FROM graph_templates_item AS gti
+				SELECT DISTINCT gl.id
+				FROM graph_local AS gl
+				INNER JOIN (
+					SELECT DISTINCT local_graph_id, task_item_id
+					FROM graph_templates_item AS gti
+					WHERE local_graph_id > 0
+					AND graph_type_id IN (4,5,6,7,8,20)
+					AND cdef_id NOT IN (
+						SELECT c.id
+						FROM cdef AS c
+						INNER JOIN cdef_items AS ci
+						ON c.id = ci.cdef_id
+						WHERE (ci.type = 4 OR (ci.type = 6 AND value LIKE "%DATA_SOURCE%"))
+					)
+				) AS gti
+				ON gl.id = gti.local_graph_id
 				LEFT JOIN data_template_rrd AS dtr
-				ON gti.task_item_id=dtr.id
-				INNER JOIN data_local AS dl
-				ON dl.id = dtr.local_data_id
-				WHERE gti.task_item_id > 0 AND
-				((dtr.local_data_id IS NULL OR dl.orphan = 1)' . $orphan_where . ')
-			))';
+				ON gti.task_item_id = dtr.id
+				WHERE dtr.id IS NULL
+			)
+		)';
 	}
 
 	/* don't allow aggregates to be view here */
