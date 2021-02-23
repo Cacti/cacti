@@ -2226,11 +2226,17 @@ function boost_display_run_status() {
 
 		$boost_status_date  = $boost_status_array[1];
 
-		if (substr_count($boost_status_array[0], 'complete'))    $boost_status_text = __('Idle');
-		elseif (substr_count($boost_status_array[0], 'running')) $boost_status_text = __('Running');
-		elseif (substr_count($boost_status_array[0], 'overrun')) $boost_status_text = __('Overrun Warning');
-		elseif (substr_count($boost_status_array[0], 'timeout')) $boost_status_text = __('Timed Out');
-		else   $boost_status_text = __('Other');
+		if (substr_count($boost_status_array[0], 'complete')) {
+			$boost_status_text = __('Idle');
+		} elseif (substr_count($boost_status_array[0], 'running')) {
+			$boost_status_text = __('Running');
+		} elseif (substr_count($boost_status_array[0], 'overrun')) {
+			$boost_status_text = __('Overrun Warning');
+		} elseif (substr_count($boost_status_array[0], 'timeout')) {
+			$boost_status_text = __('Timed Out');
+		} else {
+			$boost_status_text = __('Other');
+		}
 	} else {
 		$boost_status_text = __('Never Run');
 		$boost_status_date = '';
