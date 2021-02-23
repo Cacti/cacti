@@ -53,7 +53,7 @@ function imageOptionsChanged(action) {
 	}
 
 	if (action == 'countdown') {
-		url = 'graph_realtime.php?action=countdown&top=0&left=0&local_graph_id='+local_graph_id;
+		url = 'graph_realtime.php?action=countdown&top=0&left=0&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size+'&graph_nolegend='+isThumb;
 	} else if (action == 'initial') {
 		url = 'graph_realtime.php?action=initial&top=0&left=0&local_graph_id='+local_graph_id+'&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&ds_step='+ds_step+'&count='+count+'&size='+size;
 	} else {
@@ -64,10 +64,11 @@ function imageOptionsChanged(action) {
 
 	$.getJSON(url)
 		.done(function(data) {
+			image_format = (data.image_format == 'svg+xml') ? 'svg+xml' : 'png';
 			if ($('#rimage').length) {
-				$('#rimage').attr('src', 'data:image/png;base64,'+data.data);
+				$('#rimage').attr('src', 'data:image/'+image_format+';base64,'+data.data);
 			} else {
-				$('#image').html('<img id="rimage" class="realtimeimage" src="data:image/png;base64,'+data.data+'"/>');
+				$('#image').html('<img id="rimage" class="realtimeimage" src="data:image/'+image_format+';base64,'+data.data+'"/>');
 			}
 
 			realtimePopout = $('#rtfilter').outerHeight() + 60 + $('#rimage').outerHeight() + 30 > window.innerHeight || $('#rimage').outerWidth() + 40 > window.innerWidth ? true : false;
@@ -251,7 +252,8 @@ function realtimeGrapher() {
 							results = $.parseJSON(data);
 
 							if (realtimeArray[results.local_graph_id] == true) {
-								$('#graph_'+results.local_graph_id).attr('src', 'data:image/png;base64,'+results.data).change();
+								var image_format = (results.image_format == 'svg+xml') ? 'svg+xml' : 'png';
+								$('#graph_'+results.local_graph_id).attr('src', 'data:image/'+image_format+';base64,'+results.data).change();
 
 								if (isThumb) {
 									$('#graph_'+results.local_graph_id).width(rtWidth).height(rtHeight);
