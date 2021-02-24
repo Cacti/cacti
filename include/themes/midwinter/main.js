@@ -2,36 +2,23 @@
 var pageName = basename($(location).attr('pathname'));
 
 function themeReady() {
+    /* load default values */
+    initStorageItem('midWinter_GUI_Mode', 'legacy');
+    initStorageItem('midWinter_Color_Mode', 'light');
+    initStorageItem('midWinter_Color_Mode_Auto', 'on');
 
-    let midWinter_GUI_Mode = initStorageItem('midWinter_GUI_Mode', 'legacy');
-    let midWinter_Color_Mode = initStorageItem('midWinter_Color_Mode', 'light');
-
-    setDocumentAttribute('theme-mode', midWinter_GUI_Mode);
-    setDocumentAttribute('theme-color', midWinter_Color_Mode);
     setupTheme();
-
-    setMenuVisibility();
     setupDefaultElements();
+    setThemeColor();
+    setMenuVisibility();
     ajaxAnchors();
 }
 
 function setupTheme() {
 
     let storage = Storages.localStorage;
-    let midWinter_GUI_Mode = storage.get('midWinter_GUI_Mode');
     let midWinter_Color_Mode = storage.get('midWinter_Color_Mode');
-
-    // -- legacy mode -- add a cacti page footer
-    if($('.cactiPageBottom').length === 0) {
-        $(' <div id="cactiPageBottom" class="cactiPageBottom">'
-            +'<span class="cactiVersion">Cacti v'+ cactiVersion +'</span>'
-            //+'<span>'
-            //+   '<a class="" href="#"><i class="fas fa-adjust"></i></a>'
-            //+   '<a class="toggleGuiMode" href="#"><i class="fas fa-magic"></i></a>'
-            //+'</span>'
-            +'</div>'
-        ).insertAfter('#cactiContent');
-    }
+    let midWinter_Color_Mode_Auto = storage.get('midWinter_Color_Mode_Auto');
 
     // -- legacy mode -- add user tabs to CactiPageHeader
     if ($('.usertabs').length === 0) {
@@ -66,6 +53,7 @@ function setupTheme() {
             '<li><hr class="menu"></li>'
             +'<li><a href="#" class="toggleGuiMode">'+newInterface+'</a></li>'
             +'<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
+            +'<li><a href="#" class="toggleColorModeAuto">'+(midWinter_Color_Mode_Auto === 'on' ? ignorePreferredColorTheme : usePreferredColorTheme)+'</a></li>'
             +'<li><hr class="menu"></li>';
         $('.menuoptions').find('li').eq(2).after(theme_switches);
 
@@ -137,7 +125,7 @@ function setupTheme() {
                 +           '<span>'+help+'</span>'
                 +       '</a>'
                 +       '<ul>'
-                +           '<li><a href="'+urlPath+'about.php">'+aboutCacti+'</a></li>'
+                +           '<li><a class="hyperLink" href="'+urlPath+'about.php">'+aboutCacti+'</a></li>'
                 +           '<li><a href="https://github.com/Cacti/cacti/issues/new" target="_blank" rel="noopener">'+reportABug+'</a></li>'
                 +           '<li><hr class="menu"></li>'
                 +           '<li><a href="https://github.com/Cacti/documentation/blob/develop/README.md" target="_blank" rel="noopener">'+cactiDocumentation+'</a></li>'
@@ -157,6 +145,7 @@ function setupTheme() {
                 +           '<li><hr class="menu"></li>'
                 +           '<li><a href="#" class="toggleGuiMode">'+legacyInterface+'</a></li>'
                 +           '<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
+                +           '<li><a href="#" class="toggleColorModeAuto">'+(midWinter_Color_Mode_Auto === 'on' ? ignorePreferredColorTheme : usePreferredColorTheme)+'</a></li>'
                 +           '<li><hr class="menu"></li>'
                 +           '<li><a href="/cacti/cacti/auth_changepassword.php" style="">'+changePassword+'</a></li>'
                 +           '<li><a class="hyperLink" href="/cacti/cacti/auth_profile.php?action=edit">'+editProfile+'</a></li>'
@@ -166,9 +155,6 @@ function setupTheme() {
             $(next_gen_user_menu_content).appendTo('#next_gen_user_menu');
         }
     }
-
-
-
 
 
     /* User Menu */
@@ -194,11 +180,9 @@ function setupTheme() {
         }
     })
 
-
-
     $('.toggleGuiMode').unbind().click(toggleGuiMode);
     $('.toggleColorMode').unbind().click(toggleColorMode);
-return;
+    $('.toggleColorModeAuto').unbind().click(toggleColorModeAuto);
 }
 
 function setupDefaultElements() {
@@ -406,7 +390,7 @@ function toggleGuiMode() {
     let storage = Storages.localStorage;
     let midWinter_GUI_Mode = storage.get('midWinter_GUI_Mode');
 
-    midWinter_GUI_Mode = ( midWinter_GUI_Mode === 'legacy' ? 'next_gen' : 'legacy');
+    midWinter_GUI_Mode = (midWinter_GUI_Mode === 'legacy') ? 'next_gen' : 'legacy';
     storage.set('midWinter_GUI_Mode', midWinter_GUI_Mode);
 
     setDocumentAttribute('theme-mode', midWinter_GUI_Mode);
@@ -416,18 +400,77 @@ function toggleGuiMode() {
 function toggleColorMode() {
     let storage = Storages.localStorage;
     let midWinter_Color_Mode = storage.get('midWinter_Color_Mode');
+    let midWinter_Color_Mode_Auto = storage.get('midWinter_Color_Mode_Auto');
 
-    midWinter_Color_Mode = ( midWinter_Color_Mode === 'dark' ? 'light' : 'dark');
-    storage.set('midWinter_Color_Mode', midWinter_Color_Mode);
-    $('.toggleColorMode').text( midWinter_Color_Mode === 'dark' ? lightColorMode : darkColorMode );
+    if(midWinter_Color_Mode_Auto !== 'on') {
+        midWinter_Color_Mode = (midWinter_Color_Mode === 'dark') ? 'light' : 'dark';
+        storage.set('midWinter_Color_Mode', midWinter_Color_Mode);
+        $('.toggleColorMode').text(midWinter_Color_Mode === 'dark' ? lightColorMode : darkColorMode);
 
-    document.documentElement.classList.add('color-theme-in-transition')
-    setDocumentAttribute('theme-color', midWinter_Color_Mode)
-    window.setTimeout(function() {
-        document.documentElement.classList.remove('color-theme-in-transition')
-    }, 1000)
+        document.documentElement.classList.add('color-theme-in-transition')
+        setDocumentAttribute('theme-color', midWinter_Color_Mode)
+        window.setTimeout(function () {
+            document.documentElement.classList.remove('color-theme-in-transition')
+        }, 1000)
+    }
 }
 
+function toggleColorModeAuto() {
+    let storage = Storages.localStorage;
+    let midWinter_Color_Mode = storage.get('midWinter_Color_Mode');
+    let midWinter_Color_Mode_Auto = storage.get('midWinter_Color_Mode_Auto');
+
+    midWinter_Color_Mode_Auto = (midWinter_Color_Mode_Auto === 'on') ? 'off' : 'on';
+    storage.set('midWinter_Color_Mode_Auto', midWinter_Color_Mode_Auto);
+    $('.toggleColorModeAuto').text( midWinter_Color_Mode_Auto === 'on' ? ignorePreferredColorTheme : usePreferredColorTheme );
+
+    setThemeColor();
+}
+
+function setThemeColor() {
+    let storage = Storages.localStorage;
+
+    if(storage.get('midWinter_Color_Mode_Auto') === 'on') {
+        $('.toggleColorMode').hide(0);
+        detectSystemColorSetup();
+    }else {
+        $('.toggleColorMode').show(0);
+        setDocumentAttribute('theme-color', storage.get('midWinter_Color_Mode'));
+    }
+    setDocumentAttribute('theme-mode', storage.get('midWinter_GUI_Mode'));
+}
+
+function detectSystemColorSetup() {
+    const systemColorMode = window.matchMedia("(prefers-color-scheme: dark)");
+
+    try {
+        systemColorMode.addEventListener('change', (e) => {
+            checkThemeColorSetup((e.matches) ? 'dark' : 'light')
+        });
+    } catch (e1) {
+        try {
+            systemColorMode.addListener((e) => {
+                checkThemeColorSetup((e.matches) ? 'dark' : 'light')
+            });
+        } catch (e2) {
+            console.error(e2);
+        }
+    }
+    checkThemeColorSetup(systemColorMode.matches === true ? 'dark' : 'light');
+}
+
+function checkThemeColorSetup(color_mode) {
+    let document_color_mode = document.documentElement.getAttribute('data-theme-color');
+
+    console.log('document: ' + document_color_mode + ', requested: ' + color_mode);
+    if (document_color_mode !== color_mode) {
+        document.documentElement.classList.add('color-theme-in-transition')
+        setDocumentAttribute('theme-color', color_mode)
+        window.setTimeout(function() {
+            document.documentElement.classList.remove('color-theme-in-transition')
+        }, 1000)
+    }
+}
 
 function setMenuVisibility() {
     storage=Storages.localStorage;

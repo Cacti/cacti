@@ -1,39 +1,4 @@
-/* color table
-    lines:              #323339
-    default_color:      #7e818f
-    highlight_color:    #f2f2f3
-    default_background: #242635
-    content_background: #1c1e2d
-    default_hyperlinks: #57a9da
- */
-
-html {
-    --hue: 233;
-    --accent-hue: 240;
-    --special-hue: 233;
-    --text-color-normal: hsl(var(--hue), 7%, 53%);
-    --text-color-light: hsl(var(--hue), 15%, 35%);
-    --text-color-richer: hsl(var(--hue), 50%, 72%);
-    --text-color-highlight: hsl(var(--accent-hue), 4%, 95%);
-    --background: hsl(var(--hue), 19%, 17%);
-    --background-content: hsl(var(--hue), 23%, 14%);
-    --background-hightlight: hsl(var(--hue), 19%, 17%);
-}
-html[data-theme-color='light'] {
-    --hue: 231;
-    --special-hue: 208;
-    --background: hsl(var(--special-hue), 19%, 17%);
-    --background-content: hsl(var(--hue), 0%, 96%);
-    --background-hightlight: hsl(var(--special-hue), 84%, 40%);
-}
-
-html.color-theme-in-transition,
-html.color-theme-in-transition *,
-html.color-theme-in-transition *:before,
-html.color-theme-in-transition *:after {
-    transition: all 750ms !important;
-    transition-delay: 0 !important;
-}
+@import "colors.css";
 
 /* main styles */
 ::-webkit-scrollbar {
@@ -42,13 +7,13 @@ html.color-theme-in-transition *:after {
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: #1c1e2d;
+    background: var(--background-content);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #7e818f;
-    border: 4px solid #1c1e2d;
+    background: var(--text-color-normal);
+    border: 4px solid var(--background-content);
     border-radius: 8px;
 }
 
@@ -57,7 +22,7 @@ body {
     font-size: 0.75em;
     margin: 0;
     background-color: var(--background);
-    color: #7e818f;
+    color: var(--text-color-normal);
     overflow: hidden;
 }
 
@@ -79,7 +44,7 @@ fieldset {
     height: 3em;
     font-size: 1.5em;
     border-bottom: 1px solid #323339;
-    background-color: var(--background-hightlight);
+    background-color: var(--background-highlight);
 }
 
 .cactiPageHead div {
@@ -2747,7 +2712,7 @@ td.center > table {
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: #1c1e2d;
+    background-color: var(--background-content);
     min-height: 40px;
 }
 
