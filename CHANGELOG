@@ -70,7 +70,8 @@ Cacti CHANGELOG
 -issue#4136: The Cacti repair_database.php script has no option to skip table checks and force Data Source repair
 -issue#4141: Unusually long comments do not wrap when viewing graphs
 -issue#4143: Cacti's Graph Orhan detection is too aggressive leading to false positives
--issue#4149: poller_items gets re-calculated with every poll when 1-minute and 5-minute data sources are mixed
+-issue#4147: poller_items gets re-calculated with every poll when 1-minute and 5-minute data sources are mixed
+-issue#4148: The Cacti Log page does not refresh consistently
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection

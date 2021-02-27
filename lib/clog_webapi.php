@@ -505,7 +505,7 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('Tail Lines');?>
 					</td>
 					<td>
-						<select id='tail_lines' name='tail_lines'>
+						<select id='tail_lines'>
 							<?php
 							foreach($log_tail_lines AS $tail_lines => $display_text) {
 								print "<option value='" . $tail_lines . "'";
@@ -519,9 +519,9 @@ function filter($clogAdmin, $selectedFile) {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='go' name='go' value='<?php print __esc('Go');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' name='clear' value='<?php print __esc('Clear');?>'>
-						<?php if ($clogAdmin) {?><input type='button' class='ui-button ui-corner-all ui-widget' id='purge' name='purge' value='<?php print __esc('Purge');?>'><?php }?>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
+						<?php if ($clogAdmin) {?><input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc('Purge');?>'><?php }?>
 						</span>
 					</td>
 				</tr>
@@ -532,7 +532,7 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('Type');?>
 					</td>
 					<td>
-						<select id='message_type' name='message_type'>
+						<select id='message_type'>
 							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
 							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
@@ -545,7 +545,7 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('Display Order');?>
 					</td>
 					<td>
-						<select id='reverse' name='reverse'>
+						<select id='reverse'>
 							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
 							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
@@ -554,14 +554,14 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='refresh' name='refresh'>
+						<select id='refresh'>
 							<?php
 							foreach($page_refresh_interval AS $seconds => $display_text) {
 								print "<option value='" . $seconds . "'";
 								if (get_request_var('refresh') == $seconds) {
 									print ' selected';
 								}
-								print '>' . $display_text . "</option>\n";
+								print '>' . $display_text . '</option>';
 							}
 							?>
 						</select>
@@ -581,46 +581,28 @@ function filter($clogAdmin, $selectedFile) {
 		</form>
 		<script type='text/javascript'>
 
-		$('#rfilter').change(function() {
-			refreshFilter();
-		});
+		$(function() {
+			$('#rfilter, #reverse, #refresh, #message_type, #filename, #tail_lines').unbind().change(function() {
+				applyFilter();
+			});
 
-		$('#reverse').change(function() {
-			refreshFilter();
-		});
+			$('#go').click(function() {
+				applyFilter();
+			});
 
-		$('#refresh').change(function() {
-			refreshFilter();
-		});
+			$('#clear').click(function() {
+				clearFilter();
+			});
 
-		$('#message_type').change(function() {
-			refreshFilter();
-		});
+			$('#purge').click(function() {
+				strURL = basename(location.pathname) + '?purge=1&header=false&filename=' + $('#filename').val();
+				loadPageNoHeader(strURL);
+			});
 
-		$('#filename').change(function() {
-			refreshFilter();
-		});
-
-		$('#tail_lines').change(function() {
-			refreshFilter();
-		});
-
-		$('#go').click(function() {
-			refreshFilter();
-		});
-
-		$('#clear').click(function() {
-			clearFilter();
-		});
-
-		$('#purge').click(function() {
-			strURL = basename(location.pathname) + '?purge=1&header=false&filename=' + $('#filename').val();
-			loadPageNoHeader(strURL);
-		});
-
-		$('#logfile').submit(function(event) {
-			event.preventDefault();
-			refreshFilter();
+			$('#logfile').submit(function(event) {
+				event.preventDefault();
+				applyFilter();
+			});
 		});
 
 		function clearFilter() {
@@ -628,7 +610,7 @@ function filter($clogAdmin, $selectedFile) {
 			loadPageNoHeader(strURL);
 		}
 
-		function refreshFilter() {
+		function applyFilter() {
 			refreshMSeconds=$('#refresh').val()*1000;
 
 			strURL = basename(location.pathname)+
