@@ -293,8 +293,6 @@ if (!empty($poller_interval)) {
 $num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 	FROM poller_item ' . $sql_where);
 
-cacti_log('SELECT ' . SQL_NO_CACHE . ' COUNT(*) FROM poller_item ' . $sql_where);
-
 if (isset($concurrent_processes) && $concurrent_processes > 1) {
 	$items_perhost = array_rekey(db_fetch_assoc("SELECT " . SQL_NO_CACHE . " host_id,
 		COUNT(local_data_id) AS data_sources
