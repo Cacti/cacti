@@ -280,11 +280,11 @@ if (cacti_sizeof($ds_needing_fixes)) {
 // assume a scheduled task of either 60 or 300 seconds
 if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
-	$sql_where   = 'WHERE rrd_next_step<=0 AND poller_id = ' . $poller_id;
+	$sql_where   = "WHERE rrd_next_step - $poller_interval <= 0 AND poller_id = $poller_id";
 
 	define('MAX_POLLER_RUNTIME', $poller_runs * $poller_interval - 2);
 } else {
-	$sql_where       = 'WHERE poller_id = ' . $poller_id;
+	$sql_where       = "WHERE poller_id = $poller_id";
 	$poller_runs     = 1;
 	$poller_interval = 300;
 	define('MAX_POLLER_RUNTIME', 298);
@@ -293,9 +293,11 @@ if (!empty($poller_interval)) {
 $num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 	FROM poller_item ' . $sql_where);
 
+cacti_log('SELECT ' . SQL_NO_CACHE . ' COUNT(*) FROM poller_item ' . $sql_where);
+
 if (isset($concurrent_processes) && $concurrent_processes > 1) {
 	$items_perhost = array_rekey(db_fetch_assoc("SELECT " . SQL_NO_CACHE . " host_id,
-		COUNT(*) AS data_sources
+		COUNT(local_data_id) AS data_sources
 		FROM poller_item
 		$sql_where
 		GROUP BY host_id
@@ -371,6 +373,9 @@ while ($poller_runs_completed < $poller_runs) {
 	// record the start time for this loop
 	$loop_start = microtime(true);
 
+	$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
+		FROM poller_item ' . $sql_where);
+
 	if ($poller_id == '1') {
 		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM host
@@ -400,7 +405,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	$script = $server = $snmp = 0;
 
-	$totals = db_fetch_assoc_prepared('SELECT action, count(*) AS totals
+	$totals = db_fetch_assoc_prepared('SELECT action, COUNT(*) AS totals
 		FROM poller_item
 		WHERE poller_id = ?
 		GROUP BY action',

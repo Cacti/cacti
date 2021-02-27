@@ -353,15 +353,9 @@ if ($allhost) {
 	// setup next polling interval
 	if (isset($polling_interval)) {
 		db_execute_prepared('UPDATE poller_item
-			SET rrd_next_step = rrd_next_step - ?
+			SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
 			WHERE poller_id = ?',
-			array($polling_interval, $poller_id));
-
-		db_execute_prepared('UPDATE poller_item
-			SET rrd_next_step = rrd_step - ?
-			WHERE poller_id = ?
-			AND rrd_next_step < 0',
-			array($polling_interval, $poller_id));
+			array($poller_interval, $polling_interval, $polling_interval, $poller_id));
 	}
 } else {
 	if ($debug) {
@@ -414,19 +408,11 @@ if ($allhost) {
 
 			// setup next polling interval
 			db_execute_prepared('UPDATE poller_item
-				SET rrd_next_step = rrd_next_step - ?
+				SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
 				WHERE poller_id = ?
 				AND host_id >= ?
 				AND host_id <= ?',
-				array($polling_interval, $poller_id, $first, $last));
-
-			db_execute_prepared('UPDATE poller_item
-				SET rrd_next_step = rrd_step - ?
-				WHERE poller_id = ?
-				AND rrd_next_step < 0
-				AND host_id >= ?
-				AND host_id <= ?',
-				array($polling_interval, $poller_id, $first, $last));
+				array($polling_interval, $polling_interval, $polling_interval, $poller_id, $first, $last));
 		} else {
 			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 				FROM poller_item AS pi
@@ -434,7 +420,8 @@ if ($allhost) {
 				ON h.id = pi.host_id
 				WHERE pi.poller_id = ?
 				AND (h.disabled = "" OR h.disabled IS NULL)
-				AND pi.host_id >= ? AND pi.host_id <= ?
+				AND pi.host_id >= ?
+				AND pi.host_id <= ?
 				ORDER BY pi.host_id',
 				array($poller_id, $first, $last));
 
