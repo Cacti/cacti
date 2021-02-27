@@ -17,6 +17,11 @@
     border-radius: 8px;
 }
 
+* {
+    scrollbar-color: auto !important;
+    scrollbar-width: thin !important;
+}
+
 body {
     font-family: Roboto,Helvetica Neue,Arial,sans-serif;
     font-size: 0.75em;
