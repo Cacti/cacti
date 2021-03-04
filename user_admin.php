@@ -1684,7 +1684,7 @@ function user_realms_edit($header_label) {
 					$old_value = '';
 				}
 
-				$display = str_replace(array('Plugin ->', 'Plugin ', 'Configure '), '', $user_auth_realms[$realm]);
+				$display = trim(str_replace(array('Plugin ->', 'Plugin ', 'Configure '), '', $user_auth_realms[$realm]));
 
 				unset($all_realms[$realm]);
 
