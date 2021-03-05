@@ -2509,6 +2509,10 @@ hr.menu {
 	color: #f2f2f3;
 }
 
+.ui-widget-content a, .ui-widget-content i {
+	color: #57a9da;
+}
+
 .ui-widget.ui-widget-content {
 	border: 1px solid rgba(255,255,255,0.2);
 }
