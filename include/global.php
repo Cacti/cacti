@@ -69,6 +69,7 @@ $database_ssl      = false;
 $database_ssl_key  = '';
 $database_ssl_cert = '';
 $database_ssl_ca   = '';
+$database_persist  = true;
 
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = 'Cacti';

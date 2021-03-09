@@ -37,8 +37,8 @@
    @param $db_ssl_ca - the ssl ca
    @returns - (bool) '1' for success, '0' for error */
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
-	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '') {
-	global $database_sessions, $database_total_queries, $config;
+	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '', $persist = false) {
+	global $database_sessions, $database_total_queries, $database_persist, $config;
 	$database_total_queries = 0;
 
 	$i = 0;
@@ -64,7 +64,10 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			return false;
 		}
 
-		$flags[PDO::ATTR_PERSISTENT] = true;
+		if (isset($database_persist) && $database_persist == true || $persist) {
+			$flags[PDO::ATTR_PERSISTENT] = true;
+		}
+
 		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
 		if ($db_ssl) {
 			if ($db_ssl_key != '' && $db_ssl_cert != '' && $db_ssl_ca != '') {

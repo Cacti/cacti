@@ -37,6 +37,7 @@ $database_ssl      = false;
 $database_ssl_key  = '';
 $database_ssl_cert = '';
 $database_ssl_ca   = '';
+$database_persist  = false;
 
 /*
  * When the cacti server is a remote poller, then these entries point to
@@ -126,7 +127,7 @@ $disable_log_rotation = false;
 
 /*
  * Optional parameter to define the path of the csrf_secret.php path.  This
- * variable is for packagers who wish to specify an alternate location of 
+ * variable is for packagers who wish to specify an alternate location of
  * the CRSF secret file.
  */
 
