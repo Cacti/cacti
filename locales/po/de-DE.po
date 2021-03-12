@@ -9,22 +9,7 @@
 # Wolfgang Stöggl <c72578@yahoo.de>, 2017.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti German Language File\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-11 19:14-0500\n"
-"PO-Revision-Date: 2020-11-13 08:42+0000\n"
-"Last-Translator: Ronny Preiss <ronny.preiss@gmail.com>\n"
-"Language-Team: German <http://translate.cacti.net/projects/cacti-12x/"
-"core-12x/de-DE/>\n"
-"Language: de-DE\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-KeywordsList: __;__date\n"
+msgstr "Project-Id-Version: Cacti German Language File\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2021-02-11 19:14-0500\nPO-Revision-Date: 2021-03-12 14:32+0000\nLast-Translator: Ronny Preiss <ronny.preiss@gmail.com>\nLanguage-Team: German <http://translate.cacti.net/projects/cacti/core-v1-2-x/de/>\nLanguage: de-DE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.3.2\nX-Poedit-Basepath: .\nX-Poedit-KeywordsList: __;__date\n"
 
 #: about.php:29 include/global_arrays.php:2468 lib/html.php:2428
 msgid "About Cacti"
@@ -157,7 +142,7 @@ msgstr "Mit Aggregat assoziieren"
 
 #: aggregate_graphs.php:51
 msgid "Disassociate with Aggregate"
-msgstr "Mit Aggregat dissoziieren"
+msgstr "Von Gruppe trennen"
 
 #: aggregate_graphs.php:84 graphs.php:197 host.php:212
 #, php-format
@@ -166,8 +151,7 @@ msgstr "Auf einem Baum platzieren (%s)"
 
 #: aggregate_graphs.php:352
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr ""
-"Klicken Sie auf 'Weiter', um die folgende(n) Aggregatgrafik(en) zu löschen."
+msgstr "Klicken Sie auf \"Weiter\", um die folgende(n) Aggregat-Graph(en) zu löschen."
 
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: aggregate_graphs.php:484 aggregate_graphs.php:497 aggregate_graphs.php:506
