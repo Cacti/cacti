@@ -2849,6 +2849,9 @@ CREATE TABLE `sessions` (
   `remote_addr` varchar(25) NOT NULL DEFAULT '',
   `access` int(10) unsigned DEFAULT NULL,
   `data` mediumblob,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `start_time` timestamp NOT NULL DEFAULT current_timestamp,
+  `transactions` int(10) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Used for Database based Session Storage';
 
