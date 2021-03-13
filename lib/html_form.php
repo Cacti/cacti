@@ -877,7 +877,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 				<?php print $form_name;?>Open = false;
 				clearTimeout(<?php print $form_name;?>Timer);
 				clearTimeout(<?php print $form_name;?>ClickTimer);
-				$('#<?php print $form_name;?>_input').autocomplete('close');
+				$('#<?php print $form_name;?>_input').autocomplete('close').select();
 			}).on('click', function() {
 				if (<?php print $form_name;?>Open) {
 					$('#<?php print $form_name;?>_input').autocomplete('close');
@@ -890,6 +890,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 						<?php print $form_name;?>Open = true;
 					}, 200);
 				}
+				$('#<?php print $form_name;?>_input').select();
 			}).on('mouseleave', function() {
 				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_name;?>_input').autocomplete('close'); }, 800);
 			});
