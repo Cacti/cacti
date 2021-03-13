@@ -69,6 +69,10 @@ function cacti_db_session_write($id, $data) {
 	// re-encode the session for storage
 	$_SESSION = $temp;
 
+	if ($user_id == 0) {
+		return false;
+	}
+
 	return db_execute_prepared('INSERT INTO sessions
 		(id, remote_addr, access, data, user_id)
 		VALUES (?, ?, ?, ?, ?)
