@@ -586,16 +586,13 @@ function filter($clogAdmin, $selectedFile) {
 				applyFilter();
 			});
 
-			$('#go').click(function() {
-				applyFilter();
+			$('#clear').unbind().click(function() {
+				strURL = basename(location.pathname) + '?clear=true&header=false';
+				loadPageNoHeader(strURL);
 			});
 
-			$('#clear').click(function() {
-				clearFilter();
-			});
-
-			$('#purge').click(function() {
-				strURL = basename(location.pathname) + '?purge=1&header=false&filename=' + $('#filename').val();
+			$('#purge').unbind().click(function() {
+				strURL = basename(location.pathname) + '?purge=true&header=false&filename=' + $('#filename').val();
 				loadPageNoHeader(strURL);
 			});
 
@@ -604,11 +601,6 @@ function filter($clogAdmin, $selectedFile) {
 				applyFilter();
 			});
 		});
-
-		function clearFilter() {
-			strURL = basename(location.pathname) + '?clear=1&header=false&nostate=true';
-			loadPageNoHeader(strURL);
-		}
 
 		function applyFilter() {
 			refreshMSeconds=$('#refresh').val()*1000;
