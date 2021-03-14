@@ -19,7 +19,7 @@ function cacti_db_session_check() {
 	}
 }
 
-function cacti_db_session_open() {
+function cacti_db_session_open($savePath = '', $sessionName = '') {
 	// Cacti database is already active
 	cacti_db_session_check();
 
@@ -55,10 +55,9 @@ function cacti_db_session_write($id, $data) {
 
 	cacti_db_session_check();
 
-	// decode the session to get the user id
-	$temp = $_SESSION;
-
-	session_decode($data);
+	if (!isset($_SESSION['sess_user_id'])) {
+		session_decode($data);
+	}
 
 	if (isset($_SESSION['sess_user_id'])) {
 		$user_id = $_SESSION['sess_user_id'];
@@ -66,34 +65,47 @@ function cacti_db_session_write($id, $data) {
 		$user_id = 0;
 	}
 
-	// re-encode the session for storage
-	$_SESSION = $temp;
+	$client_addr = get_client_addr();
 
-	if ($user_id == 0) {
-		return false;
+	if ($user_id > 0) {
+		db_execute_prepared('INSERT INTO sessions
+			(id, remote_addr, access, data, user_id)
+			VALUES (?, ?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE
+				data = VALUES(data),
+				access = VALUES(access),
+				transactions = transactions + 1',
+			array($id, $client_addr, $access, $data, $user_id));
+	} elseif (strpos($data, 'ses_user_id') !== false) {
+		db_execute_prepared('INSERT INTO sessions
+			(id, remote_addr, access, data)
+			VALUES (?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE
+				data = VALUES(data),
+				access = VALUES(access),
+				transactions = transactions + 1',
+			array($id, $client_addr, $access, $data));
 	}
 
-	return db_execute_prepared('INSERT INTO sessions
-		(id, remote_addr, access, data, user_id)
-		VALUES (?, ?, ?, ?, ?)
-		ON DUPLICATE KEY UPDATE
-			access = VALUES(access),
-			transactions = transactions + 1',
-		array($id, $_SERVER['REMOTE_ADDR'], $access, $data, $user_id));
+	return true;
 }
 
 function cacti_db_session_destroy($id) {
-	return db_execute_prepared('DELETE FROM sessions
+	db_execute_prepared('DELETE FROM sessions
 		WHERE id = ?',
 		array($id));
+
+	return true;
 }
 
 function cacti_db_session_clean($max) {
 	$old = time() - $max;
 
-	return db_execute_prepared('DELETE FROM sessions
+	db_execute_prepared('DELETE FROM sessions
 		WHERE access < ?',
 		array($old));
+
+	return true;
 }
 
 // register database session handling
