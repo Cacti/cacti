@@ -31,10 +31,12 @@ function upgrade_to_1_2_17() {
 	db_install_execute('ALTER TABLE user_domains_ldap MODIFY COLUMN search_filter VARCHAR(512) NOT NULL default ""');
 
 	// Track users and transactions in database session
-	db_install_execute('ALTER TABLE sessions
-		ADD COLUMN user_id int unsigned NOT NULL default "0",
-		ADD COLUMN start_time timestamp NOT NULL default current_timestamp,
-		ADD COLUMN transactions int unsigned NOT NULL default "1"');
+	if (!db_column_exists('sessions', 'user_id')) {
+		db_install_execute('ALTER TABLE sessions
+			ADD COLUMN user_id int unsigned NOT NULL default "0",
+			ADD COLUMN start_time timestamp NOT NULL default current_timestamp,
+			ADD COLUMN transactions int unsigned NOT NULL default "1"');
+	}
 
 	database_fix_mediumint_columns();
 }
