@@ -1615,7 +1615,7 @@ function determine_display_log_entry($message_type, $line, $filter) {
  * @param $host_id - (int) the host ID for the results
  * @param $ping - (class array) results of the ping command.
  */
-function update_host_status($status, $host_id, &$ping, $ping_availability, $print_data_to_stdout) {
+function update_host_status(int $status, int $host_id, array &$hosts, Net_Ping &$ping, int $ping_availability, bool $print_data_to_stdout) {
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option('ping_failure_count');
 	$ping_recovery_count = read_config_option('ping_recovery_count');
