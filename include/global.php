@@ -518,7 +518,7 @@ if ($config['is_web']) {
 		$newtheme=get_nfilter_request_var('newtheme');
 		$newtheme_css=__DIR__ . "/themes/$newtheme/main.css";
 
-		if (is_valid_theme($theme)) {
+		if (is_valid_theme($newtheme)) {
 			set_config_option('selected_theme', $newtheme);
 			$_SESSION['selected_theme'] = $newtheme;
 		} else {
