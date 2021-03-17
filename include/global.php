@@ -511,7 +511,15 @@ include_once($config['include_path'] . '/csrf.php');
 
 if ($config['is_web']) {
 	if (isset_request_var('newtheme')) {
-		unset($_SESSION['selected_theme']);
+		$newtheme=get_nfilter_request_var('newtheme');
+		$newtheme_css=__DIR__ . "/themes/$newtheme/main.css";
+
+		if (is_valid_theme($newtheme)) {
+			set_config_option('selected_theme', $newtheme);
+			$_SESSION['selected_theme'] = $newtheme;
+		} else {
+			unset($_SESSION['selected_theme']);
+		}
 	}
 
 	if (isset_request_var('csrf_timeout')) {

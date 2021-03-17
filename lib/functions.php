@@ -808,10 +808,46 @@ function get_selected_theme() {
 		}
 	}
 
-	// update session
-	$_SESSION['selected_theme'] = $theme;
-
+	if (is_valid_theme($theme, true)) {
+		// update session
+		$_SESSION['selected_theme'] = $theme;
+	}
 	return $theme;
+}
+
+/**
+ * Returns true if a theme is valid
+ *
+ * @param  string|null $theme
+ * @param  integer     $set_user
+ *
+ * @return boolean
+ */
+function is_valid_theme(?string &$theme, int $set_user = 0) {
+	global $themes, $config;
+	$valid = true;
+	if ($theme == null || !file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
+		$valid = false;
+		$user_table = db_table_exists('settings_user');
+		foreach($themes as $t => $name) {
+			if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
+				$theme = $t;
+				$valid = true;
+
+				if ($user_table && $set_user && isset($_SESSION['sess_user_id'])) {
+					db_execute_prepared('UPDATE settings_user
+						SET value = ?
+						WHERE user_id = ?
+						AND name="selected_theme"',
+						array($theme, $_SESSION['sess_user_id']));
+				}
+				break;
+			}
+		}
+	}
+
+	// update session
+	return $valid;
 }
 
 /**
