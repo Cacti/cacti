@@ -3369,7 +3369,7 @@ function admin_email(string $subject, string $message): void {
 						$to = $admin_details['email_address'];
 					}
 
-					send_mail($to, $from, $subject, $message, '', '', true);
+					send_mail($to, $from, $subject, $message, null, null, true);
 				} else {
 					cacti_log('WARNING: Primary Admin account does not have an email address!  Unable to send administrative Email.', false, 'SYSTEM');
 				}
@@ -3384,7 +3384,7 @@ function admin_email(string $subject, string $message): void {
 	}
 }
 
-function send_mail($to, $from, string $subject, string $body, array $attachments = array(), array $headers = array(), bool $html = false): string {
+function send_mail($to, $from, string $subject, string $body, ?array $attachments = array(), ?array $headers = array(), bool $html = false): string {
 	$fromname = '';
 	if (is_array($from)) {
 		$fromname = $from[1];
@@ -3408,7 +3408,7 @@ function send_mail($to, $from, string $subject, string $body, array $attachments
 	}
 
 	$from = array(0 => $from, 1 => $fromname);
-	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
+	return mailer($from, $to, null, null, null, $subject, $body, null, $attachments, $headers, $html);
 }
 
 /** mailer - function to send mails to users
@@ -3447,7 +3447,7 @@ function send_mail($to, $from, string $subject, string $body, array $attachments
  *  inline      : Whether to attach 'inline' (default for graph mode) or as 'attachment' (default for all others)
  *  encoding    : Encoding type, normally base64
  */
-function mailer($from, $to, $cc, $bcc, $replyto, string $subject, string $body, string $body_text = '', array $attachments = array(), array $headers = array(), bool $html = true): string {
+function mailer($from, $to, $cc, $bcc, $replyto, string $subject, string $body, ?string $body_text = null, ?array $attachments = array(), ?array $headers = array(), bool $html = true): string {
 	global $config, $cacti_locale, $mail_methods;
 
 	require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
@@ -3557,6 +3557,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, string $subject, string $body, 
 		return 'Bad email address format. Invalid from email address ' . $from['email'];
 	}
 
+	$result    = false;
 	$fromText  = add_email_details(array($from), $result, array($mail, 'setFrom'));
 
 	if ($result == false) {
@@ -3773,7 +3774,7 @@ function record_mailer_error(string $retError, string $mailError) : string {
 	return $errorInfo;
 }
 
-function add_email_details(array $emails, array &$result, callable $addFunc): string {
+function add_email_details(array $emails, bool &$result, callable $addFunc): string {
 	$arrText = array();
 
 	foreach ($emails as $e) {
@@ -3798,7 +3799,7 @@ function add_email_details(array $emails, array &$result, callable $addFunc): st
 	return $text;
 }
 
-function parse_email_details(array $emails, int $max_records = 0, array $details = array()): array {
+function parse_email_details($emails, int $max_records = 0, array $details = array()): array {
 	if (!is_array($emails)) {
 		$emails = array($emails);
 	}
