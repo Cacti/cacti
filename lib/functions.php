@@ -1170,7 +1170,7 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
  *  @arg $hosts - (array) a memory resident host table for speed
  *  @arg $ping - (class array) results of the ping command.
  */
-function update_host_status(int $status, int $host_id, array &$hosts, array &$ping, int $ping_availability, bool $print_data_to_stdout) {
+function update_host_status(int $status, int $host_id, array &$hosts, Net_Ping &$ping, int $ping_availability, bool $print_data_to_stdout) {
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option('ping_failure_count');
 	$ping_recovery_count = read_config_option('ping_recovery_count');
