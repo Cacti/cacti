@@ -529,10 +529,10 @@ function get_selected_theme(string $theme = 'cacti'): string {
 	return $theme;
 }
 
-function is_valid_theme(string &$theme, int $set_user = 0) {
+function is_valid_theme(?string &$theme, int $set_user = 0) {
 	global $themes, $config;
 	$valid = true;
-	if (!file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
+	if ($theme == null || !file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
 		$valid = false;
 		$user_table = db_table_exists('settings_user');
 		foreach($themes as $t => $name) {
