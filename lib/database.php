@@ -200,6 +200,15 @@ function db_binlog_enabled() {
 	return false;
 }
 
+function db_get_active_replicas() {
+	return array_rekey(
+		db_fetch_assoc("SELECT SUBSTRING_INDEX(HOST, ':', 1) AS host
+			FROM information_schema.processlist
+			WHERE command = 'Binlog Dump'"),
+		'host', 'host'
+	);
+}
+
 /* db_close - closes the open connection
    @returns - the result of the close command */
 function db_close($db_conn = false) {

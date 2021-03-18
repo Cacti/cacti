@@ -79,11 +79,12 @@ Cacti CHANGELOG
 -issue#4173: small visual bug - fontawesome icons without fa-fw class
 -issue#4174: Cacti's analyze_database.php script should skip binary logging if replication is being used
 -issue#4175: Syncing Templates can results in False 'Damaged Graph' notification on Graph Management page
+-feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
--feature: Update phpseclib to version 2.0.30
+-feature#4176: Cacti is does not know what replica servers are replicating from it
 
 1.2.16
 -issue#3704: When generating a report, the Cascade to Branches function does not as expected
