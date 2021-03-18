@@ -46,7 +46,7 @@ $graph_actions = array(
 	1  => __('Delete'),
 );
 
-if (get_nfilter_request_var('template_id') != '' && get_nfilter_request_var('template_id') != '-1' && get_nfilter_request_var('template_id') != '0') {
+if ((get_nfilter_request_var('template_id') != '' && get_nfilter_request_var('template_id') != '-1' && get_nfilter_request_var('template_id') != '0') || get_nfilter_request_var('drp_action') == 2) {
 	$graph_actions += array(
 		2  => __('Change Graph Template'),
 	);
@@ -2014,9 +2014,7 @@ function graph_management() {
 			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR gl.id = '" . get_request_var('rfilter') . "')";
 
-		$sql_where2 = " AND (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR gl.id = '" . get_request_var('rfilter') . "')";
+		$sql_where2 = " AND (gl.id = '" . get_request_var('rfilter') . "')";
 	}
 
 	if (get_request_var('host_id') == '-1') {

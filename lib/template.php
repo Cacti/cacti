@@ -551,7 +551,7 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 			AND data_input_field_id = ?',
 			array($data['id'], $output_type_field_id));
 
-		if ($snmp_query_graph_id != $output_type_id) {
+		if ($snmp_query_graph_id != $output_type_id && $output_type_id > 0) {
 			db_execute_prepared('UPDATE data_input_data
 				SET value = ?
 				WHERE data_template_data_id = ?
