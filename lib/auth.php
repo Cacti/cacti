@@ -1102,7 +1102,9 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method != 0) {
+	$simple_perms = get_simple_graph_perms($user);
+
+	if ($auth_method != 0 && !$simple_perms) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
@@ -1253,7 +1255,9 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method != 0) {
+	$simple_perms = get_simple_graph_perms($user);
+
+	if ($auth_method != 0 && !$simple_perms) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
@@ -1462,6 +1466,44 @@ function clear_cached_allowed_types() {
 	set_config_option('sess_allowed_templates_lastchange', time());
 }
 
+function get_simple_graph_perms($user) {
+	$policy_graphs = db_fetch_cell_prepared('SELECT policy_graphs
+		FROM user_auth
+		WHERE id = ?',
+		array($user));
+
+	$perm_count = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM user_auth_perms
+		WHERE user_id = ?
+		AND type = 1',
+		array($user));
+
+	if ($policy_graphs == 1 && $perm_count == 0) {
+		return true;
+	} else {
+		$policies = db_fetch_assoc('SELECT policy_graphs, COUNT(*) AS exceptions
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_perms AS uagp
+			ON uag.id = uagp.group_id
+			INNER JOIN user_auth_group_members AS uagm
+			ON uagm.group_id = uag.id
+			WHERE uagp.type = 1
+			AND uagm.user_id = ?
+			GROUP BY uag.id',
+			array($user));
+
+		if (cacti_sizeof($policies)) {
+			foreach($policies as $p) {
+				if ($p['policy_graphs'] == 1 && $p['exceptions'] == 0) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+}
+
 function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	$hash      = get_allowed_type_hash('graph_templates', $sql_where, $order_by, $limit, $graph_template_id, $user);
 	$init_rows = $total_rows;
@@ -1498,7 +1540,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method != 0) {
+	$simple_perms = get_simple_graph_perms($user);
+
+	if ($auth_method != 0 && !$simple_perms) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];

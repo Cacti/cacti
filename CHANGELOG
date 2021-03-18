@@ -79,6 +79,7 @@ Cacti CHANGELOG
 -issue#4173: small visual bug - fontawesome icons without fa-fw class
 -issue#4174: Cacti's analyze_database.php script should skip binary logging if replication is being used
 -issue#4175: Syncing Templates can results in False 'Damaged Graph' notification on Graph Management page
+-issue#4177: On large sites, getting authorized graphs and graph templates is slow
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
