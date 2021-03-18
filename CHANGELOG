@@ -76,6 +76,7 @@ Cacti CHANGELOG
 -issue#4164: Unable to easily track Cacti login sessions when using database sessions
 -issue#4166: Cacti autocomplete is difficult to use
 -issue#4169: Go and Clear buttons on Cacti Log page don't behave as expected
+-issue#4174: Cacti's analyze_database.php script should skip binary logging if replication is being used
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection

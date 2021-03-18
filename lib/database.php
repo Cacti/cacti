@@ -188,6 +188,18 @@ function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 	throw new Exception($errstr, $errno);
 }
 
+function db_binlog_enabled() {
+	$enabled = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "log_bin"');
+
+	if (cacti_sizeof($enabled)) {
+		if (strtolower($enabled['Value']) == 'on' || $enabled['Value'] == 1) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /* db_close - closes the open connection
    @returns - the result of the close command */
 function db_close($db_conn = false) {
