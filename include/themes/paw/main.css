@@ -2138,8 +2138,9 @@ tr#realtime td:first-child {
 
 .menu_glyph {
 	font-size: 12px;
-	width: 20px;
 	vertical-align: middle;
+	text-align: left;
+	width: 20px;
 }
 
 .menuitem span {

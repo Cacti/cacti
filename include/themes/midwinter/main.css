@@ -2338,8 +2338,9 @@ tr#realtime td:first-child {
 }
 
 .menu_glyph {
-	width: 20px;
 	vertical-align: 30%;
+	text-align: left;
+	width: 20px;
 }
 
 .submenu_glyph {
