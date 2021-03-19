@@ -1481,7 +1481,7 @@ function get_simple_graph_perms($user) {
 	if ($policy_graphs == 1 && $perm_count == 0) {
 		return true;
 	} else {
-		$policies = db_fetch_assoc('SELECT policy_graphs, COUNT(*) AS exceptions
+		$policies = db_fetch_assoc_prepared('SELECT policy_graphs, COUNT(*) AS exceptions
 			FROM user_auth_group AS uag
 			INNER JOIN user_auth_group_perms AS uagp
 			ON uag.id = uagp.group_id
