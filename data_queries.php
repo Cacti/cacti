@@ -851,6 +851,13 @@ function data_query_item_edit() {
 					AND data_template_id = ?
 					ORDER BY field_name, sequence', array(get_request_var('id'), $data_template['id']));
 
+				$name = db_fetch_cell_prepared('SELECT name
+					FROM data_template
+					WHERE id = ?',
+					array($data_template['id']));
+
+				print "<tr class='tableHeader'><td colspan='4'>" . html_escape($name) . '</td></tr><tr>';
+
 				html_header(array(
 					array('display' => __('Name'), 'align' => 'left'),
 					array('display' => __('Order'), 'align' => 'center'),
