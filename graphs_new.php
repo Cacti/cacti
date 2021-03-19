@@ -421,7 +421,7 @@ function graphs() {
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 									}
 								}
 								?>
@@ -488,8 +488,8 @@ function graphs() {
 
 		print "<tr class='tableHeader'>
 				<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
-				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='selectAll(\"sg\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_cg'></label></th>\n
-			</tr>\n";
+				<th class='tableSubHeaderCheckbox'><input class='checkbox' type='checkbox' id='all_cg' title='" . __esc('Select All') . "' onClick='selectAll(\"sg\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_cg'></label></th>
+			</tr>";
 
 		if (get_request_var('filter') != '') {
 			$sql_where = 'AND gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
@@ -557,18 +557,17 @@ function graphs() {
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
-		$available_graph_templates = db_fetch_assoc_prepared('
-			(
-				SELECT graph_templates.id, graph_templates.name
-				FROM graph_templates
-				LEFT JOIN snmp_query_graph
-				ON snmp_query_graph.graph_template_id = graph_templates.id
-				WHERE snmp_query_graph.name IS NULL
-				AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
-				AND graph_templates.multiple = ""
-			) UNION (
-				SELECT id, name FROM graph_templates WHERE multiple = "on"
-			)
+		$available_graph_templates = db_fetch_assoc_prepared('SELECT graph_templates.id, graph_templates.name
+			FROM graph_templates
+			LEFT JOIN snmp_query_graph
+			ON snmp_query_graph.graph_template_id = graph_templates.id
+			WHERE snmp_query_graph.name IS NULL
+			AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
+			AND graph_templates.multiple = ""
+			UNION
+			SELECT id, name
+			FROM graph_templates
+			WHERE multiple = "on"
 			ORDER BY name',
 			array(get_request_var('host_id'))
 		);
@@ -636,7 +635,8 @@ function graphs() {
 					snmp_query_graph.id,snmp_query_graph.name
 					FROM snmp_query_graph
 					WHERE snmp_query_graph.snmp_query_id = ?
-					ORDER BY snmp_query_graph.name', array($snmp_query['id']));
+					ORDER BY snmp_query_graph.name',
+					array($snmp_query['id']));
 
 				if (cacti_sizeof($snmp_query_graphs)) {
 					foreach ($snmp_query_graphs as $snmp_query_graph) {
@@ -661,7 +661,7 @@ function graphs() {
 					}
 				}
 
-				print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __esc('Data Query [%s]', $snmp_query['name']) . "</span></div><div class='cactiTableButton'><span class='reloadquery fa fa-sync' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span></div></div></div>\n";
+				print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __esc('Data Query [%s]', $snmp_query['name']) . "</span></div><div class='cactiTableButton'><span class='reloadquery fa fa-sync' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span></div></div></div>";
 
 				if ($xml_array != false) {
 					$html_dq_header = '';
@@ -770,7 +770,7 @@ function graphs() {
 							if (($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && cacti_sizeof($field_names)) {
 								foreach($field_names as $row) {
 									if ($row['field_name'] == $field_name) {
-										$html_dq_header .= "<th class='tableSubHeaderColumn'>" . $field_array['name'] . "</th>\n";
+										$html_dq_header .= "<th class='tableSubHeaderColumn'>" . $field_array['name'] . '</th>';
 										break;
 									}
 								}
@@ -778,12 +778,12 @@ function graphs() {
 						}
 
 						if (!cacti_sizeof($snmp_query_indexes)) {
-							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . html_escape('host.php?action=query_verbose&header=true&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . "</td></tr>\n";
+							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . html_escape('host.php?action=query_verbose&header=true&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . '</td></tr>';
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
-									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='selectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_" . $snmp_query['id'] . "'></label></th>\n
-								</tr>\n";
+									<th class='tableSubHeaderCheckbox'><input class='checkbox' id='all_" . $snmp_query['id'] . "' type='checkbox' name='all_" . $snmp_query['id'] . "' title='" . __esc('Select All') . "' onClick='selectAll(\"sg_" . $snmp_query['id'] . "\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows'). "' for='all_" . $snmp_query['id'] . "'></label></th>
+								</tr>";
 						}
 
 						$row_counter    = 0;
@@ -800,7 +800,7 @@ function graphs() {
 									if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 										if (in_array($field_name, $fields)) {
 											if (isset($row[$field_name])) {
-												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], get_request_var('filter')) . '</span></td>';
+												print "<td title='" . html_escape($row[$field_name]) . "'><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], get_request_var('filter')) . '</span></td>';
 											} else {
 												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'></span></td>";
 											}
@@ -813,7 +813,7 @@ function graphs() {
 								print "<td style='width:1%;' class='checkbox'>";
 								print "<input class='checkbox' type='checkbox' name='sg_$query_row' id='sg_$query_row'><label class='formCheckboxLabel' for='sg_$query_row'></label>";
 								print '</td>';
-								print "</tr>\n";
+								print '</tr>';
 
 								$row_counter++;
 							}
@@ -821,12 +821,12 @@ function graphs() {
 					} else {
 						html_start_box('', '100%', '', '3', 'center', '');
 
-						print "<tr class='odd'><td class='textError'>" . __('Search Returned no Rows.') . "</td></tr>\n";
+						print "<tr class='odd'><td class='textError'>" . __('Search Returned no Rows.') . '</td></tr>';
 					}
 				} else {
 					html_start_box('', '100%', '', '3', 'center', '');
 
-					print "<tr class='odd'><td class='textError'>" . __('Error in data query.') . "</td></tr>\n";
+					print "<tr class='odd'><td class='textError'>" . __('Error in data query.') . '</td></tr>';
 				}
 
 				html_end_box(false);
@@ -839,9 +839,9 @@ function graphs() {
 					ORDER BY snmp_query_graph.name', array($snmp_query['id']));
 
 				if (cacti_sizeof($data_query_graphs) == 1) {
-					echo "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>\n";
+					echo "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>";
 				} elseif (cacti_sizeof($data_query_graphs) > 1) {
-					print "<div class='break'></div>\n";
+					print "<div class='break'></div>";
 
 					html_start_box('', '100%', '', '3', 'center', '');
 
@@ -862,7 +862,7 @@ function graphs() {
 								"; html_create_list($data_query_graphs, 'name', 'id', $selected); print "
 							</select>
 						</td>
-					</tr>\n";
+					</tr>";
 
 					html_end_box(false);
 				}
@@ -873,7 +873,7 @@ function graphs() {
 	}
 
 	if ($script != '') {
-		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });});</script>\n";
+		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });});</script>";
 		print $script;
 	}
 
