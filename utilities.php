@@ -1997,7 +1997,7 @@ function utilities_view_poller_cache() {
 }
 
 function utilities() {
-	global $utilities;
+	global $config, $utilities;
 
 	$utilities[__('Technical Support')] = array(
 		__('Technical Support') => array(
@@ -2025,10 +2025,12 @@ function utilities() {
 		),
 		__('Rebuild Poller Cache') => array(
 			'link'  => 'utilities.php?action=clear_poller_cache',
+			'mode'  => 'online',
 			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class="deviceDown">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run \'php -q cli/rebuild_poller_cache.php --help\' at the command line for more information.</i>')
 		),
 		__('Rebuild Resource Cache') => array(
 			'link'  => 'utilities.php?action=rebuild_resource_cache',
+			'mode'  => 'online',
 			'description' => __('When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency.')
 		),
 	);
@@ -2043,6 +2045,7 @@ function utilities() {
 	$utilities[__('Data Source Statistics Utilities')] = array(
 		__('Purge Data Source Statistics') => array(
 			'link'  => 'utilities.php?action=purge_data_source_statistics',
+			'mode'  => 'online',
 			'description' => __('This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass.')
 		),
 	);
@@ -2050,6 +2053,7 @@ function utilities() {
 	$utilities[__('RRD Utilities')] = array(
 		__('RRDfile Cleaner') => array(
 			'link'  => 'rrdcleaner.php',
+			'mode'  => 'online',
 			'description' => __('When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.')
 		),
 	);
@@ -2058,18 +2062,22 @@ function utilities() {
 		$utilities[__('SNMP Agent Utilities')] = array(
 			__('View SNMP Agent Cache') => array(
 				'link'  => 'utilities.php?action=view_snmpagent_cache',
+				'mode'  => 'online',
 				'description' => __('This shows all objects being handled by the SNMP Agent.')
 			),
 			__('Rebuild SNMP Agent Cache') => array(
 				'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
+				'mode'  => 'online',
 				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
 			),
 			__('View SNMP Agent Notification Log') => array(
 				'link'  => 'utilities.php?action=view_snmpagent_events',
+				'mode'  => 'online',
 				'description' => __('This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers.')
 			),
 			__('SNMP Notification Receivers') => array(
 				'link'  => 'managers.php',
+				'mode'  => 'online',
 				'description' => __('Allows Administrators to maintain SNMP notification receivers.')
 			),
 		);
@@ -2080,16 +2088,25 @@ function utilities() {
 	html_start_box(__('Cacti System Utilities'), '100%', '', '3', 'center', '');
 
 	foreach($utilities as $header => $content) {
-		html_section_header($header, 2);
+		$i = 0;
+
 		foreach($content as $title => $details) {
-			form_alternate_row();
-			print "<td class='nowrap' style='vertical-align:top;'>";
-			print "<a class='hyperLink' href='" . html_escape($details['link']) . "'>" . $title . '</a>';
-			print '</td>';
-			print '<td>';
-			print $details['description'];
-			print '</td>';
-			form_end_row();
+			if ((isset($details['mode']) && $details['mode'] == 'online' && $config['connection'] == 'online') || !isset($details['mode'])) {
+				if ($i == 0) {
+					html_section_header($header, 2);
+				}
+
+				form_alternate_row();
+				print "<td class='nowrap' style='vertical-align:top;'>";
+				print "<a class='hyperLink' href='" . html_escape($details['link']) . "'>" . $title . '</a>';
+				print '</td>';
+				print '<td>';
+				print $details['description'];
+				print '</td>';
+				form_end_row();
+
+				$i++;
+			}
 		}
 	}
 
@@ -2206,7 +2223,12 @@ function boost_display_run_status() {
 		$max_data_length = $table['MAX_DATA_LENGTH'];
 	}
 
-	$pending_ds   = db_fetch_cell('SELECT COUNT(local_data_id) FROM poller_output_boost_local_data_ids');
+	if ($config['connection'] == 'online') {
+		$pending_ds = db_fetch_cell('SELECT COUNT(local_data_id) FROM poller_output_boost_local_data_ids');
+	} else {
+		$pending_ds = 0;
+	}
+
 	$poller_items = db_fetch_cell('SELECT COUNT(local_data_id) FROM poller_item');
 	$data_sources = db_fetch_cell('SELECT COUNT(DISTINCT local_data_id) FROM poller_item');
 	$pi_ds        = $poller_items / $data_sources;
@@ -2306,12 +2328,14 @@ function boost_display_run_status() {
 	/* boost status display */
 	html_section_header(__('Current Boost Status'), 2);
 
-	form_alternate_row();
-	print '<td>' . __('Boost On-demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
-
-	if ($running > 0) {
+	if ($config['connection'] == 'online') {
 		form_alternate_row();
-		print '<td>' . __('Running Processes:') . '</td><td>' . ($running) . '</td>';
+		print '<td>' . __('Boost On-demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
+
+		if ($running > 0) {
+			form_alternate_row();
+			print '<td>' . __('Running Processes:') . '</td><td>' . ($running) . '</td>';
+		}
 	}
 
 	form_alternate_row();
@@ -2323,17 +2347,21 @@ function boost_display_run_status() {
 		form_alternate_row();
 		print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($data_sources, -1) . '</td>';
 
-		form_alternate_row();
-		print '<td>' . __('Remaining Data Sources:') . '</td><td>' . ($pending_ds > 0 ? number_format_i18n($pending_ds, -1) . " ($premaining %)":__('TBD')) . '</td>';
+		if ($config['connection'] == 'online') {
+			form_alternate_row();
+			print '<td>' . __('Remaining Data Sources:') . '</td><td>' . ($pending_ds > 0 ? number_format_i18n($pending_ds, -1) . " ($premaining %)":__('TBD')) . '</td>';
+		}
 
 		form_alternate_row();
 		print '<td>' . __('Queued Boost Records:') . '</td><td>' . number_format_i18n($pending_records, -1) . '</td>';
 
-		form_alternate_row();
-		print '<td>' . __('Approximate in Process:') . '</td><td>' . number_format_i18n($remaining, -1) . '</td>';
+		if ($config['connection'] == 'online') {
+			form_alternate_row();
+			print '<td>' . __('Approximate in Process:') . '</td><td>' . number_format_i18n($remaining, -1) . '</td>';
 
-		form_alternate_row();
-		print '<td>' . __('Total Boost Records:') . '</td><td>' . number_format_i18n($total_records, -1) . '</td>';
+			form_alternate_row();
+			print '<td>' . __('Total Boost Records:') . '</td><td>' . number_format_i18n($total_records, -1) . '</td>';
+		}
 	}
 
 	/* boost status display */
@@ -2395,88 +2423,90 @@ function boost_display_run_status() {
 	form_alternate_row();
 	print '<td>' . __('Estimated Maximum Records:') . '</td><td>' . $max_table_records . ' Records</td>';
 
-	/* boost last runtime display */
-	html_section_header(__('Runtime Statistics'), 2);
+	if ($config['connection'] == 'online') {
+		/* boost last runtime display */
+		html_section_header(__('Runtime Statistics'), 2);
 
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . (is_numeric($last_run_time) ? date('Y-m-d H:i:s', $last_run_time):$last_run_time) . '</td>';
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . (is_numeric($last_run_time) ? date('Y-m-d H:i:s', $last_run_time):$last_run_time) . '</td>';
 
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
 
-	if (is_numeric($boost_last_run_duration)) {
-		print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) . ', ': '') . __('%d seconds', $boost_last_run_duration%60);
+		if (is_numeric($boost_last_run_duration)) {
+			print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) . ', ': '') . __('%d seconds', $boost_last_run_duration%60);
 
-		if ($rrd_updates != ''){
-			print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));
+			if ($rrd_updates != ''){
+				print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));
+			}
+		} else {
+			print __('N/A');
 		}
-	} else {
-		print __('N/A');
-	}
-	print '</td>';
+		print '</td>';
 
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . ($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated, -1):'-') . '</td>';
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . ($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated, -1):'-') . '</td>';
 
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '' && is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '' && is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
 
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Max Poller Memory Allowed:') . '</td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' ' . __('MBytes') : __('N/A')) . '</td>';
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Max Poller Memory Allowed:') . '</td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' ' . __('MBytes') : __('N/A')) . '</td>';
 
-	/* boost last runtime display */
-	html_section_header(__('Detailed Runtime Statistics'), 2);
+		/* boost last runtime display */
+		html_section_header(__('Detailed Runtime Statistics'), 2);
 
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Detailed Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Detailed Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
 
-	$runtimes = db_fetch_assoc('SELECT name, value, CAST(replace(name, "stats_boost_", "") AS signed) AS ome
-		FROM settings
-		WHERE name LIKE "stats_boost_%"
-		ORDER BY ome');
+		$runtimes = db_fetch_assoc('SELECT name, value, CAST(replace(name, "stats_boost_", "") AS signed) AS ome
+			FROM settings
+			WHERE name LIKE "stats_boost_%"
+			ORDER BY ome');
 
-	if (cacti_sizeof($runtimes)) {
-		foreach($runtimes as $r) {
-			$process = str_replace('stats_boost_', '', $r['name']);
-			form_alternate_row();
-			print '<td class="utilityPick">' . __esc('Process %d Runtime:', $process) . '</td><td>' . html_escape($r['value']) . '</td>';
+		if (cacti_sizeof($runtimes)) {
+			foreach($runtimes as $r) {
+				$process = str_replace('stats_boost_', '', $r['name']);
+				form_alternate_row();
+				print '<td class="utilityPick">' . __esc('Process %d Runtime:', $process) . '</td><td>' . html_escape($r['value']) . '</td>';
+			}
 		}
+
+		/* boost runtime display */
+		html_section_header(__('Run Time Configuration'), 2);
+
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Update Frequency:') . '</td><td>' . ($rrd_updates == '' ? __('N/A') : $boost_refresh_interval[$update_interval]) . '</td>';
+
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Concurrent Processes:') . '</td><td>' . read_config_option('boost_parallel') . '</td>';
+
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s', $next_run_time):$next_run_time) . '</td>';
+
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . number_format_i18n($max_records, -1) . ' ' . __('Records') . '</td>';
+
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Maximum Allowed Runtime:') . '</td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
+
+		/* boost caching */
+		html_section_header(__('Image Caching'), 2);
+
+		form_alternate_row();
+		print '<td>' . __('Image Caching Status:') . '</td><td>' . ($boost_cache == '' ? __('Disabled') : __('Enabled')) . '</td>';
+
+		form_alternate_row();
+		print '<td>' . __('Cache Directory:') . '</td><td>' . $cache_directory . '</td>';
+
+		form_alternate_row();
+		print '<td>' . __('Cached Files:') . '</td><td>' . $cache_files . '</td>';
+
+		form_alternate_row();
+		print '<td>' . __('Cached Files Size:') . '</td><td>' . $directory_size . '</td>';
+
+		html_end_box(true);
 	}
-
-	/* boost runtime display */
-	html_section_header(__('Run Time Configuration'), 2);
-
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Update Frequency:') . '</td><td>' . ($rrd_updates == '' ? __('N/A') : $boost_refresh_interval[$update_interval]) . '</td>';
-
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Concurrent Processes:') . '</td><td>' . read_config_option('boost_parallel') . '</td>';
-
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s', $next_run_time):$next_run_time) . '</td>';
-
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . number_format_i18n($max_records, -1) . ' ' . __('Records') . '</td>';
-
-	form_alternate_row();
-	print '<td class="utilityPick">' . __('Maximum Allowed Runtime:') . '</td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
-
-	/* boost caching */
-	html_section_header(__('Image Caching'), 2);
-
-	form_alternate_row();
-	print '<td>' . __('Image Caching Status:') . '</td><td>' . ($boost_cache == '' ? __('Disabled') : __('Enabled')) . '</td>';
-
-	form_alternate_row();
-	print '<td>' . __('Cache Directory:') . '</td><td>' . $cache_directory . '</td>';
-
-	form_alternate_row();
-	print '<td>' . __('Cached Files:') . '</td><td>' . $cache_files . '</td>';
-
-	form_alternate_row();
-	print '<td>' . __('Cached Files Size:') . '</td><td>' . $directory_size . '</td>';
-
-	html_end_box(true);
 }
 
 /**

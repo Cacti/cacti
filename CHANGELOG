@@ -72,6 +72,7 @@ Cacti CHANGELOG
 -issue#4143: Cacti's Graph Orhan detection is too aggressive leading to false positives
 -issue#4147: poller_items gets re-calculated with every poll when 1-minute and 5-minute data sources are mixed
 -issue#4148: The Cacti Log page does not refresh consistently
+-issue#4149: Cacti utilities page does not properly comprehend offline mode
 -issue#4161: Data source template names should be shown in the respective "suggested values" sections
 -issue#4162: Cacti has weakness when running in fault tolerant environments
 -issue#4164: Unable to easily track Cacti login sessions when using database sessions
