@@ -1932,7 +1932,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
-	} elseif (strtotime($r['started']) + $r['timeout'] < time()) {
+	} elseif (strtotime($r['started']) + $r['timeout'] > time()) {
 		if ($r['pid'] > 0) {
 			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
 
