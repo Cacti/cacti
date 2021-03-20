@@ -85,6 +85,7 @@ Cacti CHANGELOG
 -issue#4177: On large sites, getting authorized graphs and graph templates is slow
 -issue#4179: Cacti adding classes to iconLinks which creates display issues
 -issue#4180: When using 'basic' authentication, there should be no logoff link as it's not possible
+-issue#4181: Cacti over editing Realm names removing critical wording
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url

@@ -1684,7 +1684,12 @@ function user_realms_edit($header_label) {
 					$old_value = '';
 				}
 
-				$display = trim(str_replace(array('Plugin ->', 'Plugin ', 'Configure '), '', $user_auth_realms[$realm]));
+				if ($realm != 101) {
+					$display = trim(str_replace(array('Plugin ->', 'Plugin ', 'Configure '), '', $user_auth_realms[$realm]));
+				} else {
+					$display = trim($user_auth_realms[$realm]);
+				}
+				$display = trim(str_replace(array('View ', 'Management'), array('', 'Administration'), $display));
 
 				unset($all_realms[$realm]);
 

@@ -1101,7 +1101,7 @@ $user_auth_realms = array(
 	20   => __('Update Profile'),
 	24   => __('External Links'),
 
-	1    => __('User Management'),
+	1    => __('Users/Groups'),
 	15   => __('Settings/Utilities'),
 	23   => __('Automation'),
 	26   => __('Installation/Upgrades'),
@@ -1112,7 +1112,7 @@ $user_auth_realms = array(
 	3    => __('Sites/Devices/Data'),
 	5    => __('Graphs'),
 	4    => __('Trees'),
-	1043 => __('Spike Management'),
+	1043 => __('Spike Handling'),
 
 	9    => __('Data Source Profiles'),
 	14   => __('Presets'),
@@ -1124,13 +1124,14 @@ $user_auth_realms = array(
 	16   => __('Export Templates'),
 	17   => __('Import Templates'),
 
-	18   => __('Log Management'),
+	18   => __('Log Administration'),
 	19   => __('Log Viewing'),
 
-	21   => __('Reports Management'),
+	21   => __('Reports Administration'),
 	22   => __('Reports Creation'),
 	27   => __('Show Graph Action Icons'),
-	28   => __('Show User Help Links')
+	28   => __('Show User Help Links'),
+	101  => __('Plugin Administration')
 );
 
 $user_auth_roles = array(
