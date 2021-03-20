@@ -23,8 +23,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* tick use required as of PHP 4.3.0 to accomodate signal handling */
-declare(ticks = 1);
+if (function_exists('pcntl_async_signals')) {
+	pcntl_async_signals(true);
+} else {
+	declare(ticks = 100);
+}
+
+ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/include/cli_check.php');
 require_once($config['base_path'] . '/lib/poller.php');

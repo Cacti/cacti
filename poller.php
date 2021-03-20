@@ -23,8 +23,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* tick use required as of PHP 4.3.0 to accomodate signal handling */
-declare(ticks = 1);
+if (function_exists('pcntl_async_signals')) {
+	pcntl_async_signals(true);
+} else {
+	declare(ticks = 100);
+}
+
+ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/include/cli_check.php');
 require_once($config['base_path'] . '/lib/poller.php');
@@ -539,6 +544,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		cacti_log("WARNING: Poller Output Table not Empty.  Issues: $count, $issue_list", true, 'POLLER');
+
 		admin_email(__('Cacti System Warning'), __('WARNING: Poller Output Table not empty for poller id %d.  Issues: %d, %s.', $poller_id, $count, $issue_list));
 
 		db_execute_prepared('DELETE po

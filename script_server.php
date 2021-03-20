@@ -22,9 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
-require(__DIR__ . '/include/cli_check.php');
+if (function_exists('pcntl_async_signals')) {
+	pcntl_async_signals(true);
+} else {
+	declare(ticks = 100);
+}
 
-declare(ticks = 1);
+ini_set('output_buffering', 'Off');
+
+require(__DIR__ . '/include/cli_check.php');
 
 /* need to capture signals from users */
 function sig_handler($signo) {
