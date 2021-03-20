@@ -2060,15 +2060,20 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 	}
 
 	if (!empty($rule_item_id)) {
-		$automation_item = db_fetch_row("SELECT *
+		$automation_item = db_fetch_row_prepared("SELECT *
 			FROM $item_table
-			WHERE id=$rule_item_id
-			$sql_and");
+			WHERE id = ?
+			$sql_and",
+			array($rule_item_id));
 
 		if (cacti_sizeof($automation_item)) {
 			$missing_key = $automation_item['field'];
-			if (!array_key_exists($missing_key, $_fields_rule_item_edit['field']['array'])) {
+
+			if (empty($missing_key)) {
+				// Fixed String
+			} elseif (!array_key_exists($missing_key, $_fields_rule_item_edit['field']['array'])) {
 				$missing_array = explode('.',$missing_key);
+
 				if (cacti_sizeof($missing_array) > 1) {
 					$missing_table = strtoupper($missing_array[0]);
 					$missing_value = strtolower($missing_array[1]);
@@ -2079,7 +2084,8 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 
 				$_fields_rule_item_edit['field']['array'] = array_merge(
 					array($automation_item['field'] => 'Unknown: ' . $missing_table . ': ' . $missing_value),
-					$_fields_rule_item_edit['field']['array']);
+					$_fields_rule_item_edit['field']['array']
+				);
 			}
 		}
 		$header_label = __esc('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
