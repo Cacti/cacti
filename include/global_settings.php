@@ -1166,6 +1166,38 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 		),
+		'data_collector1_header' => array(
+			'friendly_name' => __('Additional Data Collector Settings'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+		),
+		'spine_log_level' => array(
+			'friendly_name' => __('Invalid Data Logging'),
+			'description' => __('How would you like the Data Collector output errors logged?  Options include: \'Detailed\' which details every error, \'Summary\' which provides the number of output errors per Device, and \'None\', which does not provide error counts.'),
+			'method' => 'drop_array',
+			'default' => '0',
+			'array' => array(
+				'0'  => __('None'),
+				'1'  => __('Summary'),
+				'2'  => __('Detailed')
+			)
+		),
+		'php_servers' => array(
+			'friendly_name' => __('Number of PHP Script Servers'),
+			'description' => __('The number of concurrent script server processes to run per spine process.  Settings between 1 and 15 are accepted.  This parameter will help if you are running several threads and script server scripts and is only valid for the spine Data Collector.'),
+			'method' => 'textbox',
+			'default' => '1',
+			'max_length' => '10',
+			'size' => '5'
+		),
+		'script_timeout' => array(
+			'friendly_name' => __('Script and Script Server Timeout Value'),
+			'description' => __('The maximum time that spine will wait on a script to complete.  This timeout value is in seconds and is only valid for the spine Data Collector.'),
+			'method' => 'textbox',
+			'default' => '25',
+			'max_length' => '10',
+			'size' => '5'
+		),
 		'timeouts_header' => array(
 			'friendly_name' => __('Background Timeout Settings'),
 			'collapsible' => 'true',
@@ -1260,38 +1292,6 @@ $settings = array(
 			'description' => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
 			'method' => 'textbox',
 			'default' => '1',
-			'max_length' => '10',
-			'size' => '5'
-		),
-		'spine_header' => array(
-			'friendly_name' => __('Additional Spine Parameters'),
-			'collapsible' => 'true',
-			'method' => 'spacer',
-		),
-		'spine_log_level' => array(
-			'friendly_name' => __('Invalid Data Logging'),
-			'description' => __('How would you like Spine output errors logged?  The options are: \'Detailed\' which is similar to cmd.php logging; \'Summary\' which provides the number of output errors per Device; and \'None\', which does not provide error counts.'),
-			'method' => 'drop_array',
-			'default' => '0',
-			'array' => array(
-				'0'  => __('None'),
-				'1'  => __('Summary'),
-				'2'  => __('Detailed')
-			)
-		),
-		'php_servers' => array(
-			'friendly_name' => __('Number of PHP Script Servers'),
-			'description' => __('The number of concurrent script server processes to run per Spine process.  Settings between 1 and 10 are accepted.  This parameter will help if you are running several threads and script server scripts.'),
-			'method' => 'textbox',
-			'default' => '1',
-			'max_length' => '10',
-			'size' => '5'
-		),
-		'script_timeout' => array(
-			'friendly_name' => __('Script and Script Server Timeout Value'),
-			'description' => __('The maximum time that Cacti will wait on a script to complete.  This timeout value is in seconds'),
-			'method' => 'textbox',
-			'default' => '25',
 			'max_length' => '10',
 			'size' => '5'
 		),

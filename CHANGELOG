@@ -87,6 +87,7 @@ Cacti CHANGELOG
 -issue#4180: When using 'basic' authentication, there should be no logoff link as it's not possible
 -issue#4181: Cacti over editing Realm names removing critical wording
 -issue#4183: Process control timing out processes pre-maturely
+-issue#4184: cmd.php error response logging is not properly following the detailed/summary logging setting
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
