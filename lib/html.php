@@ -2633,7 +2633,6 @@ function html_help_page($page) {
 
 	if (isset($help[$page])) {
 		if (file_exists($config['base_path'] . '/docs/' . $help[$page])) {
-			cacti_log('Found: ' . $config['base_path'] . '/docs/' . $help[$page]);
 			return $config['url_path'] . 'docs/' . $help[$page];
 		}
 	}
