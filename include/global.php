@@ -69,6 +69,7 @@ $database_ssl      = false;
 $database_ssl_key  = '';
 $database_ssl_cert = '';
 $database_ssl_ca   = '';
+$database_persist  = true;
 
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = 'Cacti';
@@ -314,16 +315,18 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_ssl_ca    = $rdatabase_ssl_ca;
 	}
 
-	if ($remote_db_cnn_id && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install') {
-		$config['connection'] = 'online';
-	} else {
-		$config['connection'] = 'offline';
+	if ($config['connection'] != 'recovery') {
+		if ($remote_db_cnn_id && $config['cacti_db_version'] != 'new_install') {
+			$config['connection'] = 'online';
+		} else {
+			$config['connection'] = 'offline';
+		}
 	}
 } else {
-	if (!isset($database_ssl)) $database_ssl = false;
-	if (!isset($database_ssl_key)) $database_ssl_key = false;
+	if (!isset($database_ssl))      $database_ssl = false;
+	if (!isset($database_ssl_key))  $database_ssl_key = false;
 	if (!isset($database_ssl_cert)) $database_ssl_cert = false;
-	if (!isset($database_ssl_ca)) $database_ssl_ca = false;
+	if (!isset($database_ssl_ca))   $database_ssl_ca = false;
 
 	if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
 		$ps = $config['is_web'] ? '<p>' : '';

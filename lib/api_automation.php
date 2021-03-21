@@ -855,7 +855,7 @@ function display_new_graphs($rule, $url) {
 
 			/* now we build up a new query for counting the rows */
 			$rows_query = "SELECT * FROM ($sql_query) AS a " . ($sql_filter != '' ? "WHERE ($sql_filter)":'') . $sql_having;
-			$total_rows = cacti_sizeof(db_fetch_assoc($rows_query));
+			$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
 			if ($total_rows < (get_request_var('rows')*(get_request_var('page')-1))+1) {
 				set_request_var('page', '1');
@@ -863,7 +863,7 @@ function display_new_graphs($rule, $url) {
 
 			$sql_query = $rows_query . ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-			$snmp_query_indexes = db_fetch_assoc($sql_query);
+			$snmp_query_indexes = db_fetch_assoc($sql_query, false);
 		} else {
 			$total_rows = 0;
 			$snmp_query_indexes = array();
@@ -2060,15 +2060,20 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 	}
 
 	if (!empty($rule_item_id)) {
-		$automation_item = db_fetch_row("SELECT *
+		$automation_item = db_fetch_row_prepared("SELECT *
 			FROM $item_table
-			WHERE id=$rule_item_id
-			$sql_and");
+			WHERE id = ?
+			$sql_and",
+			array($rule_item_id));
 
 		if (cacti_sizeof($automation_item)) {
 			$missing_key = $automation_item['field'];
-			if (!array_key_exists($missing_key, $_fields_rule_item_edit['field']['array'])) {
+
+			if (empty($missing_key)) {
+				// Fixed String
+			} elseif (!array_key_exists($missing_key, $_fields_rule_item_edit['field']['array'])) {
 				$missing_array = explode('.',$missing_key);
+
 				if (cacti_sizeof($missing_array) > 1) {
 					$missing_table = strtoupper($missing_array[0]);
 					$missing_value = strtolower($missing_array[1]);
@@ -2079,7 +2084,8 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 
 				$_fields_rule_item_edit['field']['array'] = array_merge(
 					array($automation_item['field'] => 'Unknown: ' . $missing_table . ': ' . $missing_value),
-					$_fields_rule_item_edit['field']['array']);
+					$_fields_rule_item_edit['field']['array']
+				);
 			}
 		}
 		$header_label = __esc('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
@@ -2203,6 +2209,98 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 }
 
 /**
+ * automation_graph_automation_eligible
+ *
+ * This function determines if a Graph Template is eligible for
+ * automation.  If there are any of the following that have
+ * designated allowing for an over-ride, but to not have a default
+ * value, then the Graph Template is not eligible for automatic
+ * automation.
+ *
+ * Data Input Fields
+ * Data Template Data Fields
+ * Graph Template Fields
+ *
+ * @param $graph_template_id
+ *
+ * @return boolean eligibility
+ */
+function automation_graph_automation_eligible($graph_template_id) {
+	$graph_template = db_fetch_row_prepared('SELECT *
+		FROM graph_templates_graph
+		WHERE graph_template_id = ?
+		AND local_graph_id = 0',
+		array($graph_template_id));
+
+	// Check the Graph Template first for adherence
+	if (cacti_sizeof($graph_template)) {
+		foreach($graph_template as $field => $value) {
+			if (substr($field, 0, 2) == 't_') {
+				$parent = substr($field, 2);
+
+ 				if (isset($graph_template[$parent])) {
+					if ($value == 'on' && $graph_template[$parent] == '') {
+						return false;
+					}
+				}
+			}
+		}
+	}
+
+	// Next let's check it's source Data Templates
+	$data_templates = db_fetch_assoc_prepared('SELECT DISTINCT dtd.*
+		FROM data_template_data AS dtd
+		INNER JOIN data_template_rrd AS dtr
+		ON dtd.data_template_id = dtr.data_template_id
+		INNER JOIN graph_templates_item AS gti
+		ON dtr.id = gti.task_item_id
+		WHERE gti.graph_template_id = ?
+		AND dtd.local_data_id = 0
+		AND dtr.local_data_id = 0
+		AND gti.hash != ""',
+		array($graph_template_id));
+
+	if (cacti_sizeof($data_templates)) {
+		foreach($data_templates as $dtd) {
+			foreach($dtd as $field => $value) {
+				if (substr($field, 0, 2) == 't_') {
+					$parent = substr($field, 2);
+
+	 				if (isset($dtd[$parent])) {
+						if ($value == 'on' && $dtd[$parent] == '') {
+							return false;
+						}
+					}
+				}
+			}
+
+			// Lastly check the data input fields
+			$input_fields = db_fetch_assoc_prepared('SELECT dif.data_input_id, did.t_value, did.value, dtd.name
+				FROM data_template_data AS dtd
+				INNER JOIN data_template AS dt
+				ON dt.id = dtd.data_template_id
+				INNER JOIN data_input_data AS did
+				ON did.data_template_data_id = dtd.id
+				INNER JOIN data_input_fields AS dif
+				ON dif.id = did.data_input_field_id
+				WHERE dt.hash != ""
+				AND dtd.id = ?
+				AND dtd.local_data_id = 0
+				AND dif.input_output = "in"
+				AND did.t_value = "on"
+				AND did.value = ""',
+				array($dtd['id']));
+
+			if (cacti_sizeof($input_fields)) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+/**
  * run rules for a graph template
  * @param $data - data passed from hook
  */
@@ -2239,7 +2337,7 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 		AND host_id = ?',
 		array($graph_template_id, $host_id));
 
-	if ((isset($existsAlready)) && ($existsAlready > 0)) {
+	if ($existsAlready > 0) {
 		$dataSourceId  = db_fetch_cell_prepared('SELECT
 			data_template_rrd.local_data_id
 			FROM graph_templates_item, data_template_rrd
@@ -2249,7 +2347,7 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 
 		cacti_log('NOTE: ' . $function . ' Device[' . $host_id . "] Graph Creation Skipped - Already Exists - Graph[$existsAlready] - DS[$dataSourceId]", false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 		return;
-	} else {
+	} elseif (automation_graph_automation_eligible($graph_template_id)) {
 		$returnArray  = create_complete_graph_from_template($graph_template_id, $host_id, array(), $suggested_values);
 
 		$dataSourceId = '';
@@ -2275,6 +2373,8 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 		} else {
 			cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to whitelist check failure.', false, 'AUTOM8');
 		}
+	} else {
+		cacti_log('NOTE: Device[' . $host_id . '] Graph Template[' . $graph_template_id . '] not added due to no default value for overridable field..', false, 'AUTOM8');
 	}
 }
 
@@ -2542,23 +2642,25 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	}
 }
 
-/* create_all_header_nodes - walk across all tree rule items
- * 					- get all related rule items
- * 					- take header type into account
- * 					- create (multiple) header nodes
+/**
+ * create_all_header_nodes - walk across all tree rule items
+ *   - get all related rule items
+ *   - take header type into account
+ *   - create (multiple) header nodes
  *
  * @arg $item_id	id of the host/graph we're working on
  * @arg $rule		the rule we're working on
  * returns			the last tree item that was hooked into the tree
  */
-function create_all_header_nodes ($item_id, $rule) {
+function create_all_header_nodes($item_id, $rule) {
 	global $config, $automation_tree_header_types;
 
 	# get all related rules that are enabled
 	$tree_items = db_fetch_assoc_prepared('SELECT *
         FROM automation_tree_rule_items AS atri
         WHERE atri.rule_id = ?
-        ORDER BY sequence', array($rule['id']));
+        ORDER BY sequence',
+		array($rule['id']));
 
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . " called: Item $item_id matches: " . cacti_sizeof($tree_items) . ' items', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2623,15 +2725,18 @@ function create_all_header_nodes ($item_id, $rule) {
 	return $parent_tree_item_id;
 }
 
-/* create_multi_header_node - work on a single header item
- * 							- evaluate replacement rule
- * 							- this may return an array of new header items
- * 							- walk that array to create all header items for this single rule item
- * @arg $target		string (name) of the object; e.g. ht.name
- * @arg $rule		rule
- * @arg $tree_item	rule item; replacement_pattern may result in multi-line replacement
- * @arg $parent_tree_item_id	parent tree item id
- * returns 			id of the header that was hooked in
+/**
+ * create_multi_header_node - work on a single header item
+ *   - evaluate replacement rule
+ *   - this may return an array of new header items
+ *   - walk that array to create all header items for this single rule item
+ *
+ * @arg $target     string (name) of the object; e.g. ht.name
+ * @arg $rule       rule
+ * @arg $tree_item  rule item; replacement_pattern may result in multi-line replacement
+ * @arg $parent_tree_item_id  parent tree item id
+ *
+ * *return          id of the header that was hooked in
  */
 function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_id){
 	global $config;
@@ -2659,10 +2764,12 @@ function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_
 
 /**
  * create a single tree header node
+ *
  * @param string $title				- graph title
  * @param array $rule				- rule
  * @param array $item				- item
  * @param int $parent_tree_item_id	- parent item id
+ *
  * @return int						- id of new item
  */
 function create_header_node($title, $rule, $item, $parent_tree_item_id) {

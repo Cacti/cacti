@@ -2270,9 +2270,10 @@ tr#realtime td:first-child {
 .menu_glyph {
 	font-size: 18px !important;
 	line-height: 18px;
-	padding-right: 5px;
 	float: middle;
 	vertical-align: middle;
+	text-align: left;
+	width: 24px;
 }
 
 .graphWrapper {

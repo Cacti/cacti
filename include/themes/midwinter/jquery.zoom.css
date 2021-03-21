@@ -1,3 +1,5 @@
+@import "colors.css";
+
 #zoom-container {
 	position:absolute;
 	z-index:auto;

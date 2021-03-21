@@ -2412,9 +2412,9 @@ tr#realtime td:first-child {
 
 .menu_glyph {
 	font-size: 18px;
-	padding-right: 5px;
-	vertical-align: 10%;
-	float: middle;
+	vertical-align: middle;
+	text-align: left;
+	width: 20px;
 }
 
 .menuitem span {

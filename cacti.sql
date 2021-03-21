@@ -2828,7 +2828,7 @@ CREATE TABLE `user_domains_ldap` (
   `group_attrib` varchar(128) NOT NULL,
   `group_member_type` tinyint(3) unsigned NOT NULL,
   `search_base` varchar(128) NOT NULL,
-  `search_filter` varchar(128) NOT NULL,
+  `search_filter` varchar(512) NOT NULL,
   `specific_dn` varchar(128) NOT NULL,
   `specific_password` varchar(128) NOT NULL,
   `cn_full_name` varchar(50) NULL DEFAULT '',
@@ -2849,6 +2849,9 @@ CREATE TABLE `sessions` (
   `remote_addr` varchar(25) NOT NULL DEFAULT '',
   `access` int(10) unsigned DEFAULT NULL,
   `data` mediumblob,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `start_time` timestamp NOT NULL DEFAULT current_timestamp,
+  `transactions` int(10) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Used for Database based Session Storage';
 

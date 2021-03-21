@@ -675,9 +675,10 @@ function template_edit() {
 	}
 
 	if (get_request_var('id') > 0) {
-		$readOnly = db_fetch_cell_prepared('SELECT *
+		$readOnly = db_fetch_cell_prepared('SELECT id
 			FROM data_local
-			WHERE data_template_id = ?',
+			WHERE data_template_id = ?
+			LIMIT 1',
 			array(get_request_var('id')));
 	} else {
 		$readOnly = false;

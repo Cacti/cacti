@@ -446,8 +446,6 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 					$output_started = true;
 
 					top_header();
-
-					form_start($page);
 				}
 
 				ob_end_flush();
@@ -491,6 +489,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 	/* ==================================================== */
 
 	$num_output_fields = array();
+	$display = false;
 
 	if ($form_type == 'cg') {
 		$graph_template_id   = $form_id1;
@@ -499,7 +498,10 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 			WHERE id = ?',
 			array($graph_template_id));
 
-		html_start_box(__('Create Graph from %s', html_escape($graph_template_name)), '100%', '', '3', 'center', '');
+		if (graph_template_has_override($graph_template_id)) {
+			$display = true;
+			$header  = __('Create Graph from %s', html_escape($graph_template_name));
+		}
 	} elseif ($form_type == 'sg') {
 		foreach ($form_array2 as $form_id2 => $form_array3) {
 			/* ================= input validation ================= */
@@ -522,13 +524,20 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 				array($snmp_query_graph_id));
 		}
 
-		if ($num_graphs > 1) {
-			$header = __('Create %s Graphs from %s', $num_graphs, html_escape($snmp_query));
-		} else {
-			$header = __('Create Graph from %s', html_escape($snmp_query));
-		}
+		if (graph_template_has_override($graph_template_id)) {
+			$display = true;
 
-		/* DRAW: Data Query */
+			if ($num_graphs > 1) {
+				$header = __('Create %s Graphs from %s', $num_graphs, html_escape($snmp_query));
+			} else {
+				$header = __('Create Graph from %s', html_escape($snmp_query));
+			}
+		}
+	}
+
+	if ($display) {
+		form_start('graphs_new.php', 'new_graphs');
+
 		html_start_box($header, '100%', '', '3', 'center', '');
 	}
 

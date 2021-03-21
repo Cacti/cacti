@@ -1684,7 +1684,12 @@ function user_realms_edit($header_label) {
 					$old_value = '';
 				}
 
-				$display = str_replace(array('Plugin ->', 'Plugin ', 'Configure '), '', $user_auth_realms[$realm]);
+				if ($realm != 101) {
+					$display = trim(str_replace(array('Plugin ->', 'Plugin ', 'Configure '), '', $user_auth_realms[$realm]));
+				} else {
+					$display = trim($user_auth_realms[$realm]);
+				}
+				$display = trim(str_replace(array('View ', 'Management'), array('', 'Administration'), $display));
 
 				unset($all_realms[$realm]);
 
@@ -1871,7 +1876,7 @@ function settings_edit($header_label) {
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
 
-        print "<div class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</div></div>";
+        print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":"") . "</div></div>";
 
 		$form_array = array();
 

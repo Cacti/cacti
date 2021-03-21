@@ -824,6 +824,12 @@ function ds_edit() {
 	top_header();
 
 	if (!isempty_request_var('id')) {
+		$local_graph_ids = db_fetch_assoc_prepared('SELECT DISTINCT local_graph_id
+			FROM graph_templates_item AS gti
+			INNER JOIN data_template_rrd AS dtr
+			ON dtr.id = gti.task_item_id
+			WHERE local_data_id = ?',
+			array(get_request_var('id')));
 		?>
 		<table style='width:100%'>
 			<tr>
@@ -834,6 +840,16 @@ function ds_edit() {
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['ds_debug_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_debug_mode']) ? __('Turn Off Data Source Debug Mode.') : __('Turn On Data Source Debug Mode.'));?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&info=' . (isset($_SESSION['ds_info_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_info_mode']) ? __('Turn Off Data Source Info Mode.') : __('Turn On Data Source Info Mode.'));?></a><br>
 					<?php
+						if (cacti_sizeof($local_graph_ids)) {
+							foreach($local_graph_ids as $id) {
+								$name = db_fetch_cell_prepared('SELECT title_cache
+									FROM graph_templates_graph
+									WHERE local_graph_id = ?',
+									array($id['local_graph_id']));
+
+								?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs.php?action=graph_edit&id=' . $id['local_graph_id']);?>'><?php print __('Edit Graph: \'%s\'.', $name);?></a><br><?php
+							}
+						}
 						if (!empty($data_local['host_id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . $data_local['host_id']);?>'><?php print __('Edit Device.');?></a><br><?php
 						}
@@ -841,7 +857,7 @@ function ds_edit() {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
 						}
 						if (isset_request_var('id') && get_request_var('id') > 0) {
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . get_request_var('id')) ?>'><?php print ($data['active'] == 'on' ? __('Disable Data Source') : __('Enable Data Source'));?></a><br>
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . get_request_var('id')) ?>'><?php print ($data['active'] == 'on' ? __('Disable Data Source.') : __('Enable Data Source.'));?></a><br>
 					<?php
 						}
 					?>
@@ -1240,9 +1256,10 @@ function validate_data_source_vars() {
 			'default' => '-1'
 			),
 		'orphans' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
-			'default' => '-1'
+			'default' => '',
+			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
 
@@ -1278,7 +1295,7 @@ function ds() {
 			'&rows=' + $('#rows').val() +
 			'&status=' + $('#status').val() +
 			'&profile=' + $('#profile').val() +
-			'&orphans=' + $('#orphans').val() +
+			'&orphans=' + $('#orphans').is(':checked') +
 			'&template_id=' + $('#template_id').val() +
 			'&header=false';
 		loadPageNoHeader(strURL);
@@ -1407,13 +1424,10 @@ function ds() {
 						</select>
 					</td>
 					<td>
-						<?php print __('Orphaned');?>
-					</td>
-					<td>
-						<select id='orphans' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('orphans') == '-1' ? ' selected>':'>') . __('All');?></option>
-							<option value='1'<?php print (get_request_var('orphans') == '1' ? ' selected>':'>') . __('Orphaned');?></option>
-						</select>
+						<span>
+							<input type='checkbox' id='orphans' onChange='applyFilter()' <?php print (get_request_var('orphans') == 'true' || get_request_var('orphans') == 'on' ? 'checked':'');?>>
+   	                    	<label for='orphans' title='<?php print __esc('Note that this query may take some time to run.');?>'><?php print __('Orphaned');?></label>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -1458,21 +1472,26 @@ function ds() {
 	} else {
 		$sql_where1 = '';
 	}
+	$sql_where2 = '';
 
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('host_id')) {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dl.host_id=0 OR dl.host_id IS NULL)';
+		$sql_where2 .= ' AND (gl.host_id=0 OR gl.host_id IS NULL)';
 	} elseif (!isempty_request_var('host_id')) {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.host_id=' . get_request_var('host_id');
+		$sql_where2 .= ' AND gl.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('site_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('site_id')) {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (h.site_id=0 OR h.site_id IS NULL)';
+		$sql_where2 .= ' AND (h.site_id=0 OR h.site_id IS NULL)';
 	} elseif (!isempty_request_var('site_id')) {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' h.site_id=' . get_request_var('site_id');
+		$sql_where2 .= ' AND h.site_id=' . get_request_var('site_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
@@ -1499,63 +1518,56 @@ function ds() {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dl.snmp_index = "" AND dl.snmp_query_id > 0)';
 	}
 
-	if (get_request_var('orphans') >= '0') {
-		$orphan_where = 'WHERE graph_type_id IN (' .
-			GRAPH_ITEM_TYPE_LINE1     . ', ' .
-			GRAPH_ITEM_TYPE_LINE2     . ', '.
-			GRAPH_ITEM_TYPE_LINE3     . ', ' .
-			GRAPH_ITEM_TYPE_LINESTACK . ', ' .
-			GRAPH_ITEM_TYPE_AREA      . ', ' .
-			GRAPH_ITEM_TYPE_STACK     . ')';
-
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dtr.local_graph_id IS NULL || dl.orphan = 1)';
-	} else {
-		$orphan_where = '';
-	}
-
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	if ($orphan_where != '') {
+	if (get_request_var('orphans') == 'true') {
+		$sql_where1 .= ($sql_where1 != '' ? ' AND ':'WHERE ') . '((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR dtr.local_graph_id IS NULL)';
+
+		$orphan_join = "INNER JOIN (
+			SELECT DISTINCT dtr.local_data_id, task_item_id, local_graph_id
+			FROM graph_templates_item AS gti
+			INNER JOIN graph_local AS gl
+			ON gl.id = gti.local_graph_id
+			LEFT JOIN data_template_rrd AS dtr
+			ON dtr.id = gti.task_item_id
+			LEFT JOIN host AS h
+			ON h.id = gl.host_id
+			WHERE graph_type_id IN (4,5,6,7,8,20)
+			AND task_item_id IS NULL
+			AND cdef_id NOT IN (
+				SELECT c.id
+				FROM cdef AS c
+				INNER JOIN cdef_items AS ci
+				ON c.id = ci.cdef_id
+				WHERE (ci.type = 4 OR (ci.type = 6 AND value LIKE '%DATA_SOURCE%'))
+			)
+			$sql_where2
+		) AS dtr
+		ON dl.id = dtr.local_data_id";
+
 		$total_rows = db_fetch_cell("SELECT COUNT(*)
 			FROM data_local AS dl
 			INNER JOIN data_template_data AS dtd
-			ON dl.id=dtd.local_data_id
-			LEFT JOIN (
-				SELECT DISTINCT dtr.local_data_id, gl.id AS local_graph_id
-				FROM data_template_rrd AS dtr
-				LEFT JOIN graph_templates_item AS gti
-				ON gti.task_item_id = dtr.id
-				LEFT JOIN graph_local AS gl
-				ON gti.local_graph_id = gl.id
-				$orphan_where
-			) AS dtr
-			ON dtr.local_data_id=dl.id
-			LEFT JOIN data_template AS dt
-			ON dt.id=dl.data_template_id
+			ON dl.id = dtd.local_data_id
+			INNER JOIN data_template AS dt
+			ON dt.id = dl.data_template_id
 			LEFT JOIN host AS h
 			ON h.id = dl.host_id
+			$orphan_join
 			$sql_where1");
 
-		$data_sources = db_fetch_assoc("SELECT dtr.local_graph_id, dtd.local_data_id, dtd.name_cache, dtd.active,
-			dtd.rrd_step, dt.name AS data_template_name, dl.host_id, dtd.data_source_profile_id
+		$data_sources = db_fetch_assoc("SELECT dtr.local_graph_id, dtd.local_data_id,
+			dtd.name_cache, dtd.active, dtd.rrd_step, dt.name AS data_template_name,
+			dl.host_id, dtd.data_source_profile_id
 			FROM data_local AS dl
 			INNER JOIN data_template_data AS dtd
-			ON dl.id=dtd.local_data_id
-			LEFT JOIN (
-				SELECT DISTINCT dtr.local_data_id, gl.id AS local_graph_id
-				FROM data_template_rrd AS dtr
-				LEFT JOIN graph_templates_item AS gti
-				ON gti.task_item_id = dtr.id
-				LEFT JOIN graph_local AS gl
-				ON gti.local_graph_id = gl.id
-				$orphan_where
-			) AS dtr
-			ON dtr.local_data_id=dl.id
-			LEFT JOIN data_template AS dt
-			ON dt.id=dl.data_template_id
+			ON dl.id = dtd.local_data_id
+			INNER JOIN data_template AS dt
+			ON dt.id = dl.data_template_id
 			LEFT JOIN host AS h
 			ON h.id = dl.host_id
+			$orphan_join
 			$sql_where1
 			$sql_order
 			$sql_limit");

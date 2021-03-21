@@ -23,8 +23,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* tick use required as of PHP 4.3.0 to accomodate signal handling */
-declare(ticks = 1);
+if (function_exists('pcntl_async_signals')) {
+	pcntl_async_signals(true);
+} else {
+	declare(ticks = 100);
+}
+
+ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/include/cli_check.php');
 require_once($config['base_path'] . '/lib/poller.php');
@@ -175,8 +180,7 @@ if ($child == false) {
 			$tables = db_fetch_assoc("SELECT table_name AS name
 				FROM information_schema.tables
 				WHERE TABLE_SCHEMA = SCHEMA()
-				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'
-				AND TABLE_ROWS = 0");
+				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'");
 
 			if (cacti_sizeof($tables)) {
 				foreach($tables as $table) {
@@ -334,11 +338,11 @@ function boost_prepare_process_table() {
 
 	db_execute('TRUNCATE poller_output_boost_local_data_ids');
 
-	foreach ($arch_tables as $table) {
+	foreach($arch_tables as $table) {
 		db_execute("INSERT IGNORE INTO poller_output_boost_local_data_ids
 			(local_data_id)
 			SELECT DISTINCT local_data_id
-			FROM " . $table);
+			FROM $table");
 	}
 
 	$data_ids = db_fetch_cell("SELECT
@@ -547,9 +551,9 @@ function boost_output_rrd_data($child) {
 
 	$passes       = ceil($total_rows / $max_per_select);
 	$ids_per_pass = ceil($data_ids / $passes);
-	$curpass      = 0;
+	$curpass      = 1;
 
-	while ($curpass <= $passes) {
+	while ($data_ids > 0) {
 		boost_debug("Processing $curpass of $passes for Boost Process $child");
 
 		$last_id = db_fetch_cell_prepared("SELECT MAX(local_data_id)
@@ -557,8 +561,8 @@ function boost_output_rrd_data($child) {
 				SELECT local_data_id
 				FROM poller_output_boost_local_data_ids
 				WHERE process_handler = ?
-				ORDER BY local_data_id
-				LIMIT " . (($curpass * $ids_per_pass) + 1) . ", $ids_per_pass
+				ORDER BY local_data_id ASC
+				LIMIT $ids_per_pass
 			) AS result",
 			array($child));
 
@@ -570,13 +574,18 @@ function boost_output_rrd_data($child) {
 
 		$curpass++;
 
+		$data_ids = db_fetch_cell_prepared('SELECT *
+			FROM poller_output_boost_local_data_ids
+			WHERE process_handler = ?',
+			array($child));
+
 		if (((time()-$start) > $max_run_duration) && (!$runtime_exceeded)) {
 			cacti_log('WARNING: RRD On Demand Updater Exceeded Runtime Limits. Continuing to Process!!!', false, 'BOOST');
 			$runtime_exceeded = true;
 		}
 	}
 
-	boost_debug("Processing Complete for Boost Process $child");
+	boost_debug("Processing Complete for Boost Process $child.  It took $curpass passed to complete.");
 
 	/* log memory usage */
 	if (function_exists('memory_get_peak_usage')) {
@@ -864,15 +873,10 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		/* remove the entries from the table */
 		boost_timer('delete', BOOST_TIMER_START);
 
-		foreach ($archive_tables as $archive_table) {
-			db_execute_prepared("DELETE at
-				FROM $archive_table AS at
-				INNER JOIN poller_output_boost_local_data_ids AS bpt
-				ON at.local_data_id = bpt.local_data_id
-				WHERE bpt.local_data_id <= ?
-				AND bpt.process_handler = ?",
-				array($last_id, $child));
-		}
+		db_execute_prepared("DELETE FROM poller_output_boost_local_data_ids
+			WHERE local_data_id <= ?
+			AND process_handler = ?",
+			array($last_id, $child));
 
 		boost_timer('delete', BOOST_TIMER_END);
 	}

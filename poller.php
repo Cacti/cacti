@@ -23,8 +23,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* tick use required as of PHP 4.3.0 to accomodate signal handling */
-declare(ticks = 1);
+if (function_exists('pcntl_async_signals')) {
+	pcntl_async_signals(true);
+} else {
+	declare(ticks = 100);
+}
+
+ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/include/cli_check.php');
 require_once($config['base_path'] . '/lib/poller.php');
@@ -280,11 +285,11 @@ if (cacti_sizeof($ds_needing_fixes)) {
 // assume a scheduled task of either 60 or 300 seconds
 if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
-	$sql_where   = 'WHERE rrd_next_step<=0 AND poller_id = ' . $poller_id;
+	$sql_where   = "WHERE rrd_next_step - $poller_interval <= 0 AND poller_id = $poller_id";
 
 	define('MAX_POLLER_RUNTIME', $poller_runs * $poller_interval - 2);
 } else {
-	$sql_where       = 'WHERE poller_id = ' . $poller_id;
+	$sql_where       = "WHERE poller_id = $poller_id";
 	$poller_runs     = 1;
 	$poller_interval = 300;
 	define('MAX_POLLER_RUNTIME', 298);
@@ -295,7 +300,7 @@ $num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 
 if (isset($concurrent_processes) && $concurrent_processes > 1) {
 	$items_perhost = array_rekey(db_fetch_assoc("SELECT " . SQL_NO_CACHE . " host_id,
-		COUNT(*) AS data_sources
+		COUNT(local_data_id) AS data_sources
 		FROM poller_item
 		$sql_where
 		GROUP BY host_id
@@ -371,6 +376,9 @@ while ($poller_runs_completed < $poller_runs) {
 	// record the start time for this loop
 	$loop_start = microtime(true);
 
+	$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
+		FROM poller_item ' . $sql_where);
+
 	if ($poller_id == '1') {
 		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM host
@@ -400,7 +408,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	$script = $server = $snmp = 0;
 
-	$totals = db_fetch_assoc_prepared('SELECT action, count(*) AS totals
+	$totals = db_fetch_assoc_prepared('SELECT action, COUNT(*) AS totals
 		FROM poller_item
 		WHERE poller_id = ?
 		GROUP BY action',
@@ -536,6 +544,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		cacti_log("WARNING: Poller Output Table not Empty.  Issues: $count, $issue_list", true, 'POLLER');
+
 		admin_email(__('Cacti System Warning'), __('WARNING: Poller Output Table not empty for poller id %d.  Issues: %d, %s.', $poller_id, $count, $issue_list));
 
 		db_execute_prepared('DELETE po

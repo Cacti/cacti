@@ -73,8 +73,13 @@ $tables = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
 
 if (cacti_sizeof($tables)) {
 	foreach($tables AS $table) {
-		print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
-		$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
+		if (db_binlog_enabled()) {
+			print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "' without writing to the binlog";
+			$status = db_execute('ANALYZE TABLE NO_WRITE_TO_BINLOG ' . $table['Tables_in_' . $database_default] . $form);
+		} else {
+			print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
+			$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
+		}
 		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
 	}
 

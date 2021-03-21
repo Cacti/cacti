@@ -34,6 +34,7 @@ global $debug;
 $debug   = false;
 $form    = '';
 $force   = false;
+$rtables = false;
 $dynamic = false;
 
 if (cacti_sizeof($parms)) {
@@ -49,6 +50,9 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+				break;
+			case '--tables':
+				$rtables = true;
 				break;
 			case '--force':
 				$force = true;
@@ -83,16 +87,18 @@ db_execute('UNLOCK TABLES');
 
 $tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
 
-if (cacti_sizeof($tables)) {
-	foreach($tables AS $table) {
-		print "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
-		$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . $form);
-		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
-
-		if ($dynamic) {
-			print "Changing Table Row Format to Dynamic -> '" . $table['Tables_in_' . $database_default] . "'";
-			$status = db_execute('ALTER TABLE ' . $table['Tables_in_' . $database_default] . ' ROW_FORMAT=DYNAMIC');
+if ($rtables) {
+	if (cacti_sizeof($tables)) {
+		foreach($tables AS $table) {
+			print "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
+			$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . $form);
 			print ($status == 0 ? ' Failed' : ' Successful') . "\n";
+
+			if ($dynamic) {
+				print "Changing Table Row Format to Dynamic -> '" . $table['Tables_in_' . $database_default] . "'";
+				$status = db_execute('ALTER TABLE ' . $table['Tables_in_' . $database_default] . ' ROW_FORMAT=DYNAMIC');
+				print ($status == 0 ? ' Failed' : ' Successful') . "\n";
+			}
 		}
 	}
 }
@@ -268,6 +274,7 @@ function display_help () {
 	print "Optional:\n";
 	print "    --dynamic - Convert a table to Dynamic row format if available\n";
 	print "    --form    - Force rebuilding the indexes from the database creation syntax.\n";
+	print "    --tables  - Repair Tables as well as possible database corruptions.\n";
 	print "    --force   - Remove Invalid Template records from the database.\n";
 	print "    --debug   - Display verbose output during execution.\n\n";
 }

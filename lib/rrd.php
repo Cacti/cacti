@@ -2071,17 +2071,29 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				switch($graph_item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_COMMENT:
 					if (!isset($graph_data_array['graph_nolegend'])) {
-						# perform variable substitution first (in case this will yield an empty results or brings command injection problems)
+						$comments = array();
+
 						$comment_arg = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
-						# next, compute the argument of the COMMENT statement and perform injection counter measures
-						if (trim($comment_arg) == '') { # an empty COMMENT must be treated with care
-							$comment_arg = cacti_escapeshellarg(' ' . $hardreturn[$graph_item_id]);
-						} else {
-							$comment_arg = cacti_escapeshellarg(rrdtool_escape_string(html_escape($comment_arg)) . $hardreturn[$graph_item_id]);
+
+						// Check for a wrapping comment
+						$max = read_config_option('max_title_length') - 20;
+						if (strlen($comment_arg) > $max) {
+							$comments = explode("\n", wordwrap($comment_arg, $max));
+						}else{
+							$comments[] = $comment_arg;
 						}
 
-						# create rrdtool specific command line
-						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $comment_arg . ' ';
+						foreach($comments as $comment) {
+							# next, compute the argument of the COMMENT statement and perform injection counter measures
+							if (trim($comment) == '') { # an empty COMMENT must be treated with care
+								$comment = cacti_escapeshellarg(' ' . $hardreturn[$graph_item_id]);
+							} else {
+								$comment = cacti_escapeshellarg(rrdtool_escape_string(html_escape($comment)) . $hardreturn[$graph_item_id]);
+							}
+
+							# create rrdtool specific command line
+							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $comment . ' ';
+						}
 					}
 
 					break;
