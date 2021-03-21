@@ -569,6 +569,87 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 	}
 }
 
+/**
+ * graph_template_has_override
+ *
+ * This function determines if a Graph Template has fields that
+ * allow changing of their values at create time.  Data that
+ * is considered for override includes data in:
+ *
+ * Data Input Fields
+ * Data Template Data Fields
+ * Graph Template Fields
+ *
+ * @param $graph_template_id
+ *
+ * @return boolean override allowed
+ */
+function graph_template_has_override($graph_template_id) {
+	$graph_template = db_fetch_row_prepared('SELECT *
+		FROM graph_templates_graph
+		WHERE graph_template_id = ?
+		AND local_graph_id = 0',
+		array($graph_template_id));
+
+	// Check the Graph Template first for adherence
+	if (cacti_sizeof($graph_template)) {
+		foreach($graph_template as $field => $value) {
+			if (substr($field, 0, 2) == 't_') {
+				if ($value == 'on') {
+					return true;
+				}
+			}
+		}
+	}
+
+	// Next let's check it's source Data Templates
+	$data_templates = db_fetch_assoc_prepared('SELECT DISTINCT dtd.*
+		FROM data_template_data AS dtd
+		INNER JOIN data_template_rrd AS dtr
+		ON dtd.data_template_id = dtr.data_template_id
+		INNER JOIN graph_templates_item AS gti
+		ON dtr.id = gti.task_item_id
+		WHERE gti.graph_template_id = ?
+		AND dtd.local_data_id = 0
+		AND dtr.local_data_id = 0
+		AND gti.hash != ""',
+		array($graph_template_id));
+
+	if (cacti_sizeof($data_templates)) {
+		foreach($data_templates as $dtd) {
+			foreach($dtd as $field => $value) {
+				if (substr($field, 0, 2) == 't_') {
+					if ($value == 'on') {
+						return true;
+					}
+				}
+			}
+
+			// Lastly check the data input fields
+			$input_fields = db_fetch_assoc_prepared('SELECT dif.data_input_id, did.t_value, did.value, dtd.name
+				FROM data_template_data AS dtd
+				INNER JOIN data_template AS dt
+				ON dt.id = dtd.data_template_id
+				INNER JOIN data_input_data AS did
+				ON did.data_template_data_id = dtd.id
+				INNER JOIN data_input_fields AS dif
+				ON dif.id = did.data_input_field_id
+				WHERE dt.hash != ""
+				AND dtd.id = ?
+				AND dtd.local_data_id = 0
+				AND dif.input_output = "in"
+				AND did.t_value = "on"',
+				array($dtd['id']));
+
+			if (cacti_sizeof($input_fields)) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 function parse_graph_template_id($value) {
 	if (strpos($value, '_') !== false) {
 		$template_parts = explode('_', $value);

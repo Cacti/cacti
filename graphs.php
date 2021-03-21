@@ -1477,6 +1477,13 @@ function graph_edit() {
 			$message = __('Turn On Graph Debug Mode.');
 		}
 
+		$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT local_data_id
+			FROM graph_templates_item AS gti
+			INNER JOIN data_template_rrd AS dtr
+			ON dtr.id = gti.task_item_id
+			WHERE local_graph_id = ?',
+			array(get_request_var('id')));
+
 		?>
 		<table style='width:100%;'>
 			<tr>
@@ -1488,6 +1495,16 @@ function graph_edit() {
 					<?php
 						if (!empty($graph['graph_template_id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graph_templates.php?action=template_edit&id=' . (isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'));?>'><?php print __('Edit Graph Template.');?></a><br><?php
+						}
+						if (cacti_sizeof($data_sources)) {
+							foreach($data_sources as $ds) {
+								$name = db_fetch_cell_prepared('SELECT name_cache
+									FROM data_template_data
+									WHERE local_data_id = ?',
+									array($ds['local_data_id']));
+
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . $ds['local_data_id']);?>'><?php print __('Edit Data Source: \'%s\'.', $name);?></a><br><?php
+							}
 						}
 						if (!isempty_request_var('host_id') || !empty($host_id)) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a><br><?php
@@ -1765,6 +1782,9 @@ function graph_edit() {
 
 			$('.cactiGraphImage').show();
 		}).trigger('resize');
+
+		$('.ui-selectmenu-button').css('width', '360px');
+		$('.ui-autocomplete-input').css('width', '340px');
 	});
 
 	if (locked) {
