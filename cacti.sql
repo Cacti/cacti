@@ -450,7 +450,7 @@ CREATE TABLE `automation_snmp_items` (
 -- Dumping data for table `automation_snmp_items`
 --
 
-INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','','');
+INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,-1,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,-1,'admin','baseball','MD5','','DES','','');
 
 --
 -- Table structure for table `automation_templates`
