@@ -93,6 +93,7 @@ Cacti CHANGELOG
 -issue#4185: Cacti signal handling is not following best practices in PHP 7
 -issue#4186: When editing a Fixed String on Tree Rule it is improperly displayed as "Unknown"
 -issue#4187: Navigating from Graph to Data Source combersome
+-issue#4188: For Aggregate Graphs and Templates the replacement value available are difficult to find
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url

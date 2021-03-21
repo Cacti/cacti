@@ -24,6 +24,7 @@
 
 include_once('./include/auth.php');
 include_once('./lib/api_aggregate.php');
+include_once('./lib/data_query.php');
 
 $aggregate_actions = array(
 	1 => __('Delete')
@@ -369,6 +370,32 @@ function aggregate_template_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
+	$helper_string = '|host_description|';
+
+	if (isset($template)) {
+		$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
+			FROM snmp_query_graph
+			WHERE graph_template_id = ?',
+			array($template['graph_template_id']));
+
+		if ($data_query > 0) {
+			$data_query_info = get_data_query_array($data_query);
+			foreach($data_query_info['fields'] as $field_name => $field_array) {
+				if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
+					$helper_string .= ($helper_string != '' ? ', ':'') . '|query_' . $field_name . '|';
+				}
+			}
+		}
+	}
+
+	// Append the helper string
+	$struct_aggregate_template['suggestions'] = array(
+		'method' => 'other',
+		'friendly_name' => __('Prefix Replacement Values'),
+		'description' => __('You may use these replacement values for the Prefix in the Aggregate Graph'),
+		'value' => $helper_string
+	);
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
@@ -391,6 +418,7 @@ function aggregate_template_edit() {
 
 	?>
 	<script type='text/javascript'>
+
 	$(function() {
 		if ($('#id').val() == 0) {
 			$('[id^="agg_total_"]').prop('checked', true);
