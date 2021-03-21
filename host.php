@@ -267,7 +267,7 @@ function form_save() {
 				get_nfilter_request_var('snmp_engine_id'), get_nfilter_request_var('max_oids'),
 				get_nfilter_request_var('device_threads'), get_nfilter_request_var('poller_id'),
 				get_nfilter_request_var('site_id'), get_nfilter_request_var('external_id'),
-				get_nfilter_request_var('location'));
+				get_nfilter_request_var('location'), get_nfilter_request_var('bulk_walk_size'));
 
 			if ($host_id !== false) {
 				api_plugin_hook_function('host_save', array('host_id' => $host_id));

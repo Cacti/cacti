@@ -80,11 +80,11 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		return false;
 	}
 
-	query_debug_timer_start();
-
 	include_once($config['library_path'] . '/poller.php');
 	include_once($config['library_path'] . '/api_data_source.php');
 	include_once($config['library_path'] . '/utility.php');
+
+	query_debug_timer_start();
 
 	// Load the XML structure for custom settings detection
 	$query_array = get_data_query_array($snmp_query_id);
@@ -758,7 +758,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$host = db_fetch_row_prepared('SELECT hostname, snmp_community, snmp_version,
 		snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase,
 		snmp_priv_protocol, snmp_context, snmp_engine_id, snmp_port, snmp_timeout,
-		ping_retries, max_oids
+		ping_retries, max_oids, bulk_walk_size
 		FROM host
 		WHERE id = ?',
 		array($host_id));
@@ -788,16 +788,73 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		return false;
 	}
 
-	$session = cacti_snmp_session($host['hostname'], $host['snmp_community'],
-		$host['snmp_version'], $host['snmp_username'], $host['snmp_password'],
-		$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
-		$host['snmp_context'], $host['snmp_engine_id'],  $host['snmp_port'],
-		$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
+	if ($host['bulk_walk_size'] <= 0) {
+		$walk_sizes = array(1, 5, 10, 15, 20, 25, 30, 40, 50, 60);
+		$low_total  = 999;
+		$selected   = -1;
 
-	if ($session === false) {
-		debug_log_insert('data_query', __('Failed to load SNMP session.'));
+		query_debug_timer_offset('data_query', __('Auto Bulk Walk Size Selected.'));
 
-		return false;
+		foreach($walk_sizes as $size) {
+			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'],
+				$host['snmp_version'], $host['snmp_username'], $host['snmp_password'],
+				$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+				$host['snmp_context'], $host['snmp_engine_id'],  $host['snmp_port'],
+				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids'], $size);
+
+			if ($session === false) {
+				debug_log_insert('data_query', __('Failed to load SNMP session.'));
+
+				return false;
+			}
+
+			/* fetch specified index at specified OID, measuring time */
+			$start = microtime(true);
+			$snmp_indexes = cacti_snmp_session_walk($session, $snmp_queries['oid_index']);
+			$end   = microtime(true);
+
+			query_debug_timer_offset('data_query', __('Tested Bulk Walk Size %d with a response of %2.4f.', $size, $end - $start));
+
+			$total = $end - $start;
+			if ($total > $low_total) {
+				break;
+			} else {
+				$walk_size = $size;
+				$low_total = $total;
+			}
+		}
+
+		query_debug_timer_offset('data_query', __('Bulk Walk Size selected was %d.', $walk_size));
+
+		if ($host['bulk_walk_size'] == 0) {
+			query_debug_timer_offset('data_query', __('Saving Bulk Walk Size to Device.'));
+
+			$host['bulk_walk_size'] = $size;
+
+			db_execute_prepared('UPDATE host
+				SET bulk_walk_size = ?
+				WHERE id = ?',
+				array($size, $host_id));
+		}
+	} else {
+		$walk_size = $host['bulk_walk_size'];
+
+		query_debug_timer_offset('data_query', __('Bulk Walk Size is fixed at %d.', $walk_size));
+
+		$session = cacti_snmp_session($host['hostname'], $host['snmp_community'],
+			$host['snmp_version'], $host['snmp_username'], $host['snmp_password'],
+			$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
+			$host['snmp_context'], $host['snmp_engine_id'],  $host['snmp_port'],
+			$host['snmp_timeout'], $host['ping_retries'], $host['max_oids'], $walk_size);
+
+		if ($session === false) {
+			debug_log_insert('data_query', __('Failed to load SNMP session.'));
+
+			return false;
+		}
+
+		/* fetch specified index at specified OID */
+		$snmp_indexes = cacti_snmp_session_walk($session, $snmp_queries['oid_index']);
 	}
 
 	/* provide data for oid_num_indexes, if given */
@@ -808,9 +865,6 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	} else {
 		query_debug_timer_offset('data_query', __('&lt;oid_num_indexes&gt; missing in XML file, \'Index Count Changed\' emulated by counting oid_index entries'));
 	}
-
-	/* fetch specified index at specified OID */
-	$snmp_indexes = cacti_snmp_session_walk($session, $snmp_queries['oid_index']);
 
 	query_debug_timer_offset('data_query', __('Executing SNMP walk for list of indexes @ \'%s\' Index Count: %s', $snmp_queries['oid_index'] , cacti_sizeof($snmp_indexes)));
 

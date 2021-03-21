@@ -140,17 +140,61 @@ $fields_snmp_item = array(
 		'size' => '12'
 		),
 	);
+
 $fields_snmp_item_with_oids = $fields_snmp_item + array(
 	'max_oids' => array(
-		'method' => 'textbox',
-		'friendly_name' => __("Maximum OIDs Per Get Request"),
-		'description' => __('Specified the number of OIDs that can be obtained in a single SNMP Get request.'),
+		'method' => 'drop_array',
+		'friendly_name' => __('Maximum OIDs Per Get Request'),
+		'description' => __('The number of SNMP OIDs that can be obtained in a single SNMP Get request.'),
 		'value' => '|arg1:max_oids|',
-		'max_length' => '8',
 		'default' => read_config_option('max_get_size'),
-		'size' => '12'
-		),
-	);
+		'array' => array(
+			1  => __('%d OID', 1),
+			2  => __('%d OID\'s', 2),
+			3  => __('%d OID\'s', 3),
+			4  => __('%d OID\'s', 4),
+			5  => __('%d OID\'s', 5),
+			10 => __('%d OID\'s', 10),
+			15 => __('%d OID\'s', 15),
+			20 => __('%d OID\'s', 20),
+			25 => __('%d OID\'s', 25),
+			30 => __('%d OID\'s', 30),
+			35 => __('%d OID\'s', 35),
+			40 => __('%d OID\'s', 40),
+			45 => __('%d OID\'s', 45),
+			50 => __('%d OID\'s', 50),
+			55 => __('%d OID\'s', 55),
+			60 => __('%d OID\'s', 60)
+		)
+	),
+	'bulk_walk_size' => array(
+		'method'        => 'drop_array',
+		'friendly_name' => __('Bulk Walk Maximum Repititions'),
+		'description'   => __('For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk chunk size.  For very large switches, or for high latency WAN connections, increasing this value to lead to more repid Data Query Re-Index operations.  However, some devices to not operate well to large Bulk Walk sizes.  Cacti can \'auto tune\' this value upon request.'),
+		'value'         => '|arg1:bulk_walk_size|',
+		'default'       => '-1',
+		'array' => array(
+			-1 => __('Auto Detect on Re-Index'),
+			0  => __('Auto Detect/Set on first Re-Index'),
+			1  => __('%d Repitition', 1),
+			2  => __('%d Repitition\'s', 2),
+			3  => __('%d Repitition\'s', 3),
+			4  => __('%d Repitition\'s', 4),
+			5  => __('%d Repitition\'s', 5),
+			10 => __('%d Repitition\'s', 10),
+			15 => __('%d Repitition\'s', 15),
+			20 => __('%d Repitition\'s', 20),
+			25 => __('%d Repitition\'s', 25),
+			30 => __('%d Repitition\'s', 30),
+			35 => __('%d Repitition\'s', 35),
+			40 => __('%d Repitition\'s', 40),
+			45 => __('%d Repitition\'s', 45),
+			50 => __('%d Repitition\'s', 50),
+			55 => __('%d Repitition\'s', 55),
+			60 => __('%d Repitition\'s', 60)
+		)
+	)
+);
 
 $fields_snmp_item_with_retry = $fields_snmp_item_with_oids + array(
 	'snmp_retries' => array(
