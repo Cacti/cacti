@@ -86,6 +86,7 @@ Cacti CHANGELOG
 -issue#4179: Cacti adding classes to iconLinks which creates display issues
 -issue#4180: When using 'basic' authentication, there should be no logoff link as it's not possible
 -issue#4181: Cacti over editing Realm names removing critical wording
+-issue#4182: Automatic Graph Creation - Data Templates with Overriden Values
 -issue#4183: Process control timing out processes pre-maturely
 -issue#4184: cmd.php error response logging is not properly following the detailed/summary logging setting
 -issue#4185: Cacti signal handling is not following best practices in PHP 7
