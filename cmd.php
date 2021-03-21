@@ -339,10 +339,10 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 			if ($set_spike_kill && !substr_count($output, ':')) {
 				// insert a U in place of the actual value if the snmp agent restarts
-				$output_array[] = sprintf('(%d, %s, FROM_UNIXTIME(UNIX_TIMESTAMP()), "U")', $item['local_data_id'], db_qstr($item['rrd_name']));
+				$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), "U")', $item['local_data_id'], db_qstr($item['rrd_name']));
 			} else {
 				// otherwise, just insert the value received from the poller
-				$output_array[] = sprintf('(%d, %s, FROM_UNIXTIME(UNIX_TIMESTAMP()), %s)', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($output));
+				$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($output));
 			}
 
 			if ($output_count > 1000) {
