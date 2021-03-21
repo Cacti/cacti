@@ -667,6 +667,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 		}
 
+		if (strpos(implode(' ', $temp_array), '(tooBig)') !== false) {
+			cacti_log("WARNING: SNMP Error:'Error in packet.  Response message would have been too large.', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
+		}
+
 		/* check for bad entries */
 		if (is_array($temp_array) && cacti_sizeof($temp_array)) {
 			foreach($temp_array as $key => $value) {
