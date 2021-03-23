@@ -2546,7 +2546,7 @@ if (is_realm_allowed(1)) {
 		'86400'   => __('1 Day'),
 		'604800'  => __('1 Week'),
 		'1209600' => __('%d Weeks', 2),
-		'2678400' => __('1 Month')
+		'2419200' => __('%d Weeks', 4)
 	);
 	
 	foreach($auto_array as $key => $value) {
