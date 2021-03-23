@@ -2534,8 +2534,12 @@ if (is_realm_allowed(25)) {
 }
 
 if (is_realm_allowed(1)) {
-	$max_life = ini_get('session.gc_maxlifetime');
-	
+	if (ini_get('session.gc_maxlifetime') > '2147483') {
+		$max_life = '2147483';
+	} else {
+		$max_life = ini_get('session.gc_maxlifetime');
+	}
+
 	$auto_array = array(
 		'900'     => __('%d Minutes', 15),
 		'1200'    => __('%d Minutes', 20),
@@ -2546,14 +2550,13 @@ if (is_realm_allowed(1)) {
 		'86400'   => __('1 Day'),
 		'604800'  => __('1 Week'),
 		'1209600' => __('%d Weeks', 2),
-		'2419200' => __('%d Weeks', 4)
+		'1814400' => __('%d Weeks', 3),
+		$max_life => __('Maximum')
 	);
-	
+
 	foreach($auto_array as $key => $value) {
 		if ($key > $max_life) {
 			unset($auto_array[$key]);
-		} else {
-			$default = $key;
 		}
 	}
 
@@ -2561,7 +2564,7 @@ if (is_realm_allowed(1)) {
 		'friendly_name' => __('Auto Log Out Time'),
 		'description' => __('How long this user can stay logged in before being automatically logged out.'),
 		'method' => 'drop_array',
-		'default' => $default,
+		'default' => $max_life,
 		'array' => $auto_array
 	);
 }
