@@ -131,6 +131,7 @@ function database_fix_mediumint_columns() {
 		}
 
 		if ($i > 0) {
+			cacti_log("Updating Table $table using SQL $sql");
 			db_install_execute($sql);
 			$total++;
 		}
@@ -142,14 +143,14 @@ function database_fix_mediumint_columns() {
 		$table   = $t['Tables_in_' . $database_default];
 		$columns = array();
 
-		if (!array_key_exists($table, $tables)) {
+		if (!array_key_exists($table, $tables, true)) {
 			$columns = array_rekey(
 				db_fetch_assoc("SHOW COLUMNS FROM " . $table),
 					'Field', array('Type', 'Null', 'Key', 'Default', 'Extra')
 			);
 
 			foreach($columns as $field => $attribs) {
-				if (array_key_exists($field, $known_columns)) {
+				if (array_key_exists($field, $known_columns, true)) {
 					if (strpos($attribs['Type'], 'mediumint') === false) {
 						if (strpos($attribs['Type'], 'int(10) unsigned') !== false) {
 							continue;
@@ -165,6 +166,8 @@ function database_fix_mediumint_columns() {
 							$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned DEFAULT NULL';
 						}
 					}
+
+					cacti_log("Updating Table $table using SQL $sql");
 
 					db_install_execute($sql);
 					$total++;
