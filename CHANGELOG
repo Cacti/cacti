@@ -98,6 +98,7 @@ Cacti CHANGELOG
 -issue#4190: Augmenting roles can incorrectly map realms to roles in select cases
 -issue#4192: Cacti->Management->Devices search return black screen if device name contain # character
 -issue#4193: Script poller_reindex_hosts.php | Try to Reindex disabled devices
+-issue#4195: filter_value() function does not work as expected when search includes # character
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
