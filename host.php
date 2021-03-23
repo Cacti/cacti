@@ -1312,6 +1312,7 @@ function host_validate_vars() {
 			),
 		'location' => array(
 			'filter' => FILTER_CALLBACK,
+			'pageset' => true,
 			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			),
@@ -1354,6 +1355,8 @@ function host_validate_vars() {
 }
 
 function get_device_records(&$total_rows, $rows) {
+	$sql_where = '';
+
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (deleted = "" AND (
@@ -1454,59 +1457,6 @@ function host() {
 		$rows = get_request_var('rows');
 	}
 
-	?>
-	<script type='text/javascript'>
-
-	function applyFilter() {
-		strURL  = 'host.php';
-		strURL += '?host_status=' + $('#host_status').val();
-		strURL += '&host_template_id=' + $('#host_template_id').val();
-		strURL += '&site_id=' + $('#site_id').val();
-		strURL += '&poller_id=' + $('#poller_id').val();
-		strURL += '&location=' + $('#location').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
-		strURL += '&header=false';
-		loadPageNoHeader(strURL);
-	}
-
-	function clearFilter() {
-		strURL = 'host.php?clear=1&header=false';
-		loadPageNoHeader(strURL);
-	}
-
-	function exportRecords() {
-		strURL = 'host.php?action=export';
-		document.location = strURL;
-		Pace.stop();
-	}
-
-	$(function() {
-		$('#rows, #site_id, #poller_id, #location, #host_template_id, #host_status').change(function() {
-			applyFilter();
-		});
-
-		$('#refresh').click(function() {
-			applyFilter();
-		});
-
-		$('#clear').click(function() {
-			clearFilter();
-		});
-
-		$('#export').click(function() {
-			exportRecords();
-		});
-
-		$('#form_devices').submit(function(event) {
-			event.preventDefault();
-			applyFilter();
-		});
-	});
-
-	</script>
-	<?php
-
 	if (get_request_var('host_template_id') > 0) {
 		$url = 'host.php?action=edit&host_template_id=' . get_request_var('host_template_id');
 	} else {
@@ -1534,7 +1484,7 @@ function host() {
 
 							if (cacti_sizeof($sites)) {
 								foreach ($sites as $site) {
-									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>";
+									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . '</option>';
 								}
 							}
 							?>
@@ -1551,7 +1501,7 @@ function host() {
 
 							if (cacti_sizeof($pollers)) {
 								foreach ($pollers as $poller) {
-									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . html_escape($poller['name']) . "</option>";
+									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . html_escape($poller['name']) . '</option>';
 								}
 							}
 							?>
@@ -1569,7 +1519,7 @@ function host() {
 
 							if (cacti_sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>";
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . '</option>';
 								}
 							}
 							?>
@@ -1595,7 +1545,7 @@ function host() {
 
 							if (cacti_sizeof($locations)) {
 								foreach ($locations as $l) {
-									print "<option value='" . $l['location'] . "'"; if (get_request_var('location') == $l['location']) { print ' selected'; } print '>' . html_escape($l['location']) . "</option>";
+									print "<option value='" . $l['location'] . "'"; if (get_request_var('location') == $l['location']) { print ' selected'; } print '>' . html_escape($l['location']) . '</option>';
 								}
 							}
 							?>
@@ -1603,7 +1553,7 @@ function host() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='export' value='<?php print __('Export');?>' title='<?php print __esc('Export Devices');?>'>
 						</span>
@@ -1642,7 +1592,7 @@ function host() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -1652,6 +1602,52 @@ function host() {
 				</tr>
 			</table>
 		</form>
+		<script type='text/javascript'>
+
+		function applyFilter() {
+			strURL  = 'host.php';
+			strURL += '?host_status=' + $('#host_status').val();
+			strURL += '&host_template_id=' + $('#host_template_id').val();
+			strURL += '&site_id=' + $('#site_id').val();
+			strURL += '&poller_id=' + $('#poller_id').val();
+			strURL += '&location=' + $('#location').val();
+			strURL += '&rows=' + $('#rows').val();
+			strURL += '&filter=' + escape($('#filter').val());
+			strURL += '&header=false';
+			loadPageNoHeader(strURL);
+		}
+
+		function clearFilter() {
+			strURL = 'host.php?clear=1&header=false';
+			loadPageNoHeader(strURL);
+		}
+
+		function exportRecords() {
+			strURL = 'host.php?action=export';
+			document.location = strURL;
+			Pace.stop();
+		}
+
+		$(function() {
+			$('#rows, #site_id, #poller_id, #location, #host_template_id, #host_status').change(function() {
+				applyFilter();
+			});
+
+			$('#clear').click(function() {
+				clearFilter();
+			});
+
+			$('#export').click(function() {
+				exportRecords();
+			});
+
+			$('#form_devices').submit(function(event) {
+				event.preventDefault();
+				applyFilter();
+			});
+		});
+
+		</script>
 		</td>
 	</tr>
 	<?php
