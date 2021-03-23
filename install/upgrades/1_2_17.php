@@ -38,6 +38,18 @@ function upgrade_to_1_2_17() {
 			ADD COLUMN transactions int unsigned NOT NULL default "1"');
 	}
 
+	if (!db_column_exists('host', 'bulk_walk_size')) {
+		db_install_execute('ALTER TABLE host
+			ADD COLUMN bulk_walk_size INT(11) DEFAULT "-1"
+			AFTER max_oids');
+	}
+
+	if (!db_column_exists('automation_snmp_items', 'bulk_walk_size')) {
+		db_install_execute('ALTER TABLE automation_snmp_items
+			ADD COLUMN bulk_walk_size INT(11) DEFAULT "-1"
+			AFTER max_oids');
+	}
+
 	database_fix_mediumint_columns();
 }
 

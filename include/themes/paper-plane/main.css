@@ -593,6 +593,7 @@ label {
 .tableRowGraph td {
 	padding: 3px;
 	vertical-align: top;
+	background: none repeat scroll 0 0 #FFFFFF;
 }
 
 .even {

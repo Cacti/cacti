@@ -472,15 +472,24 @@ function auth_augment_roles($role_name, $files) {
 	global $user_auth_roles, $user_auth_realm_filenames;
 
 	foreach($files as $file) {
-		if (array_search($file, $user_auth_realm_filenames) !== false) {
-			if (array_search($user_auth_realm_filenames[$file], $user_auth_roles[$role_name]) === false) {
+		if (array_search($file, $user_auth_realm_filenames, true) !== false) {
+			if (array_search($user_auth_realm_filenames[$file], $user_auth_roles[$role_name], true) === false) {
 				$user_auth_roles[$role_name][] = $user_auth_realm_filenames[$file];
 			}
 		} else {
 			$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
 				FROM plugin_realms
-				WHERE file LIKE ?',
-				array('%' . $file . '%'));
+				WHERE file = ?
+				OR file LIKE ?
+				OR file LIKE ?
+				OR file LIKE ?',
+				array(
+					$file,
+					$file . ',%',
+					'%,' . $file . ',%',
+					'%,' . $file
+				)
+			);
 
 			if (!empty($realm_id)) {
 				if (!isset($user_auth_roles[$role_name])) {

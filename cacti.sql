@@ -433,8 +433,9 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_community` varchar(100) NOT NULL,
   `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_timeout` int(10) unsigned NOT NULL DEFAULT '500',
-  `snmp_retries` tinyint(11) unsigned NOT NULL DEFAULT '3',
+  `snmp_retries` tinyint(1) unsigned NOT NULL DEFAULT '3',
   `max_oids` int(12) unsigned DEFAULT '10',
+  `bulk_walk_size` int(11) DEFAULT '-1',
   `snmp_username` varchar(50) DEFAULT NULL,
   `snmp_password` varchar(50) DEFAULT NULL,
   `snmp_auth_protocol` char(6) DEFAULT '',
@@ -449,7 +450,7 @@ CREATE TABLE `automation_snmp_items` (
 -- Dumping data for table `automation_snmp_items`
 --
 
-INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','','');
+INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,-1,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,-1,'admin','baseball','MD5','','DES','','');
 
 --
 -- Table structure for table `automation_templates`
@@ -1932,6 +1933,7 @@ CREATE TABLE host (
   ping_timeout int(12) unsigned default '500',
   ping_retries int(12) unsigned default '2',
   max_oids int(12) unsigned default '10',
+  bulk_walk_size int(11) DEFAULT '-1',
   device_threads tinyint(2) unsigned NOT NULL DEFAULT '1',
   deleted char(2) default '',
   disabled char(2) default NULL,

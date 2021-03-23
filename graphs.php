@@ -994,7 +994,7 @@ function form_actions() {
 
 			if (aggregate_get_data_sources($graph_array, $data_sources, $graph_template)) {
 				# provide a new prefix for GPRINT lines
-				$gprint_prefix = '|host_hostname|';
+				$gprint_prefix = '|host_description|';
 
 				/* list affected graphs */
 				print '<tr>';
@@ -1026,6 +1026,32 @@ function form_actions() {
 					'title_format'      => auto_title($ttitle),
 					'graph_template_id' => $graph_template,
 					'gprint_prefix'     => $gprint_prefix
+				);
+
+				$helper_string = '|host_description|';
+
+				if ($graph_template > 0) {
+					$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
+						FROM snmp_query_graph
+						WHERE graph_template_id = ?',
+						array($graph_template));
+
+					if ($data_query > 0) {
+						$data_query_info = get_data_query_array($data_query);
+						foreach($data_query_info['fields'] as $field_name => $field_array) {
+							if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
+								$helper_string .= ($helper_string != '' ? ', ':'') . '|query_' . $field_name . '|';
+							}
+						}
+					}
+				}
+
+				// Append the helper string
+				$struct_aggregate['suggestions'] = array(
+					'method' => 'other',
+					'friendly_name' => __('Prefix Replacement Values'),
+					'description' => __('You may use these replacement values for the Prefix in the Aggregate Graph'),
+					'value' => $helper_string
 				);
 
 				draw_edit_form(

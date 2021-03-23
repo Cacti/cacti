@@ -556,6 +556,8 @@ function discoverDevices($network_id, $thread) {
 					$device['os']                   = '';
 					$device['snmp_priv_passphrase'] = '';
 					$device['snmp_priv_protocol']   = '';
+					$device['max_oids']             = '10';
+					$device['bulk_walk_size']       = '-1';
 
 					/* create new ping socket for host pinging */
 					$ping = new Net_Ping;

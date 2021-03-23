@@ -2964,8 +2964,11 @@ function automation_add_device($device, $web = false) {
 	$snmp_priv_protocol   = $device['snmp_priv_protocol'];
 	$snmp_context	      = $device['snmp_context'];
 	$snmp_engine_id       = $device['snmp_engine_id'];
-	$device_threads       = isset($device['device_threads']) ? $device['device_threads']:1;
 	$max_oids             = isset($device['max_oids']) ? $device['max_oids']:10;
+	$device_threads       = isset($device['device_threads']) ? $device['device_threads']:1;
+	$external_id          = isset($device['external_id']) ? $device['external_id']:'';
+	$location             = isset($device['location']) ? $device['location']:'';
+	$bulk_walk_size       = isset($device['bulk_walk_size']) ? $device['bulk_walk_size']:-1;
 
 	automation_debug(' - Adding Device');
 
@@ -2974,7 +2977,8 @@ function automation_add_device($device, $web = false) {
 		$snmp_port, $snmp_timeout, $disable, $availability_method,
 		$ping_method, $ping_port, $ping_timeout, $ping_retries,
 		$notes, $snmp_auth_protocol, $snmp_priv_passphrase,
-		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id, $site_id);
+		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids,
+		$device_threads, $poller_id, $site_id, $external_id, $locaiton, $bulk_walk_size);
 
 	if ($host_id) {
 		automation_debug(" - Success\n");
@@ -3371,6 +3375,7 @@ function automation_valid_snmp_device(&$device) {
 			$device['snmp_context']         = $item['snmp_context'];
 			$device['snmp_engine_id']       = $item['snmp_engine_id'];
 			$device['max_oids']             = $item['max_oids'];
+			$device['bulk_walk_size']       = $item['bulk_walk_size'];
 
 			$session = cacti_snmp_session($device['ip_address'], $device['snmp_community'], $device['snmp_version'],
 				$device['snmp_username'], $device['snmp_password'], $device['snmp_auth_protocol'], $device['snmp_priv_passphrase'],

@@ -57,6 +57,7 @@
  */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
 	static $table_suffix = 1;
+	static $help_count   = 0;
 
 	if ($add_label === false) {
 		$add_label = __('Add');
@@ -81,6 +82,29 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print '<div>';
 		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
 		print "<div class='cactiTableButton'>";
+
+		$page      = get_current_page();
+		$help_file = html_help_page($page);
+
+		if ($help_file === false) {
+			if (isset_request_var('tab')) {
+				$tpage     = $page . ':' . get_nfilter_request_var('tab');
+				$help_file = html_help_page($tpage);
+			}
+		}
+
+		if ($help_file === false) {
+			if (isset_request_var('action')) {
+				$tpage     = $page . ':' . get_nfilter_request_var('action');
+				$help_file = html_help_page($tpage);
+			}
+		}
+
+		if ($help_file !== false && $help_count == 0 && is_realm_allowed(28)) {
+			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark' target='_blank' href='" . html_escape($help_file) . "'><i class='far fa-question-circle'></i></a></span>";
+			$help_count++;
+		}
+
 		if ($add_text != '' && !is_array($add_text)) {
 			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
@@ -2548,4 +2572,70 @@ function html_common_header($title, $selectedTheme = '') {
 		print get_md5_include_css('include/themes/custom.css');
 	}
 	api_plugin_hook('page_head');
+}
+
+function html_help_page($page) {
+	global $config;
+
+	$help = array(
+		'aggregates.php'              => 'Aggregates.html',
+		'aggregate_templates.php'     => 'Aggregate-Templates.html',
+		'automation_networks.php'     => 'Automation-Networks.php',
+		'cdef.php'                    => 'CDEFs.html',
+		'color_templates.php'         => 'Color-Templates.html',
+		'color.php'                   => 'Colors.html',
+		'pollers.php'                 => 'Data-Collectors.html',
+		'data_debug.php'              => 'Data-Debug.html',
+		'data_input.php'              => 'Data-Input-Methods.html',
+		'data_source_profiles.php'    => 'Data-Profiles.html',
+		'data_queries.php'            => 'Data-Queries.html',
+		'data_templates.php'          => 'Data-Source-Templates.html',
+		'data_sources.php'            => 'Data-Sources.html',
+		'host.php'                    => 'Devices.html',
+		'automation_templates.php'    => 'Device-Rules.html',
+		'host_templates.php'          => 'Device-Templates.html',
+		'automation_devices.php'      => 'Discovered-Devices.html',
+		'templates_export.php'        => 'Export-Template.html',
+		'links.php'                   => 'External-Links.html',
+		'gprint_presets.php'          => 'GPRINTs.html',
+		'graph_view.php'              => 'Graph-Overview.html',
+		'automation_graph_rules.php'  => 'Graph-Rules.html',
+		'graph_templates.php'         => 'Graph-Templates.html',
+		'graphs.php'                  => 'Graphs.html',
+		'templates_import.php'        => 'Import-Template.html',
+		'plugins.php'                 => 'Plugins.html',
+		'automation_snmp.php'         => 'SNMP-Options.html',
+		'settings.php:authentication' => 'Settings-Auth.html',
+		'settings.php:data'           => 'Settings-Data.html',
+		'settings.php:snmp'           => 'Settings-Device-Defaults.html',
+		'settings.php:general'        => 'Settings-General.html',
+		'settings.php:mail'           => 'Settings-Mail-Reporting-DNS.html',
+		'settings.php:path'           => 'Settings-Paths.html',
+		'settings.php:boost'          => 'Settings-Performance.html',
+		'settings.php:poller'         => 'Settings-Poller.html',
+		'settings.php:spikes'         => 'Settings-Spikes.html',
+		'settings.php:visual'         => 'Settings-Visual.html',
+		'sites.php'                   => 'Sites.html',
+		'automation_tree_rules.php'   => 'Tree-Rules.html',
+		'tree.php'                    => 'Trees.html',
+		'user_domains.php'            => 'User-Domains.html',
+		'user_group_admin.php'        => 'User-Group-Management.html',
+		'user_admin.php'              => 'User-Management.html',
+		'vdef.php'                    => 'VDEFs.html',
+	);
+
+	$help = api_plugin_hook_function('help_page', $help);
+
+	$parts = explode(':', $page);
+
+	$page = $parts[0];
+	$tab  = isset($parts[1]) ? $parts[1]:'';
+
+	if (isset($help[$page])) {
+		if (file_exists($config['base_path'] . '/docs/' . $help[$page])) {
+			return $config['url_path'] . 'docs/' . $help[$page];
+		}
+	}
+
+	return false;
 }
