@@ -96,6 +96,7 @@ Cacti CHANGELOG
 -issue#4188: For Aggregate Graphs and Templates the replacement value available are difficult to find
 -issue#4189: Cacti has no way to link users to page specific documentation
 -issue#4190: Augmenting roles can incorrectly map realms to roles in select cases
+-issue#4193: Script poller_reindex_hosts.php | Try to Reindex disabled devices
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
