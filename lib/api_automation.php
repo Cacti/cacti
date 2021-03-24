@@ -2348,33 +2348,39 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 		cacti_log('NOTE: ' . $function . ' Device[' . $host_id . "] Graph Creation Skipped - Already Exists - Graph[$existsAlready] - DS[$dataSourceId]", false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 		return;
 	} elseif (automation_graph_automation_eligible($graph_template_id)) {
-		$returnArray  = create_complete_graph_from_template($graph_template_id, $host_id, array(), $suggested_values);
+		if (test_data_sources($graph_template_id, $host_id)) {
+			cacti_log('NOTE: Data Check Succeeded for - Device[' . $host_id . '], GT[' . $graph_template_id . ']', false, 'AUTOM8');
 
-		$dataSourceId = '';
+			$returnArray  = create_complete_graph_from_template($graph_template_id, $host_id, array(), $suggested_values);
 
-		if ($returnArray !== false) {
-			if (cacti_sizeof($returnArray)) {
-				if (isset($returnArray['local_data_id'])) {
-					foreach($returnArray['local_data_id'] as $item) {
-						push_out_host($host_id, $item);
+			$dataSourceId = '';
 
-						if ($dataSourceId != '') {
-							$dataSourceId .= ', ' . $item;
-						} else {
-							$dataSourceId = $item;
+			if ($returnArray !== false) {
+				if (cacti_sizeof($returnArray)) {
+					if (isset($returnArray['local_data_id'])) {
+						foreach($returnArray['local_data_id'] as $item) {
+							push_out_host($host_id, $item);
+
+							if ($dataSourceId != '') {
+								$dataSourceId .= ', ' . $item;
+							} else {
+								$dataSourceId = $item;
+							}
 						}
-					}
 
-					cacti_log('NOTE: Graph Added - Device[' . $host_id . '], Graph[' . $returnArray['local_graph_id'] . "], DS[$dataSourceId]", false, 'AUTOM8');
+						cacti_log('NOTE: Graph Added - Device[' . $host_id . '], Graph[' . $returnArray['local_graph_id'] . "], DS[$dataSourceId]", false, 'AUTOM8');
+					}
+				} else {
+					cacti_log('ERROR: Device[' . $host_id . '], GT[' . $graph_template_id . '] Graph not added due to missing data sources.', false, 'AUTOM8');
 				}
 			} else {
-				cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to missing data sources.', false, 'AUTOM8');
+				cacti_log('ERROR: Device[' . $host_id . '], GT[' . $graph_template_id . '] Graph not added due to whitelist check failure.', false, 'AUTOM8');
 			}
 		} else {
-			cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to whitelist check failure.', false, 'AUTOM8');
+			cacti_log('NOTE: Device[' . $host_id . '], GT[' . $graph_template_id . '] Graph not added due to invalid data source output.', false, 'AUTOM8');
 		}
 	} else {
-		cacti_log('NOTE: Device[' . $host_id . '] Graph Template[' . $graph_template_id . '] not added due to no default value for overridable field..', false, 'AUTOM8');
+		cacti_log('NOTE: Device[' . $host_id . '], GT[' . $graph_template_id . '] Graph not added due to no default value for overridable field.', false, 'AUTOM8');
 	}
 }
 
@@ -2609,34 +2615,38 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 			}
 
 			$suggested_values = array();
-			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_values);
+			if (test_data_sources($graph_template_id, $host_id, $rule['snmp_query_id'], $snmp_query_array['snmp_index'])) {
+				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_values);
 
-			if ($return_array !== false) {
-				if (cacti_sizeof($return_array) && array_key_exists('local_graph_id', $return_array) && array_key_exists('local_data_id', $return_array)) {
-					$data_source_id = db_fetch_cell_prepared('SELECT
-						data_template_rrd.local_data_id
-						FROM graph_templates_item, data_template_rrd
-						WHERE graph_templates_item.local_graph_id = ?
-						AND graph_templates_item.task_item_id = data_template_rrd.id
-						LIMIT 1',
-						array($return_array['local_graph_id']));
+				if ($return_array !== false) {
+					if (cacti_sizeof($return_array) && array_key_exists('local_graph_id', $return_array) && array_key_exists('local_data_id', $return_array)) {
+						$data_source_id = db_fetch_cell_prepared('SELECT
+							data_template_rrd.local_data_id
+							FROM graph_templates_item, data_template_rrd
+							WHERE graph_templates_item.local_graph_id = ?
+							AND graph_templates_item.task_item_id = data_template_rrd.id
+							LIMIT 1',
+							array($return_array['local_graph_id']));
 
-					foreach($return_array['local_data_id'] as $item) {
-						push_out_host($host_id, $item);
+						foreach($return_array['local_data_id'] as $item) {
+							push_out_host($host_id, $item);
 
-						if ($data_source_id != '') {
-							$data_source_id .= ', ' . $item;
-						} else {
-							$data_source_id = $item;
+							if ($data_source_id != '') {
+								$data_source_id .= ', ' . $item;
+							} else {
+								$data_source_id = $item;
+							}
 						}
-					}
 
-					cacti_log('NOTE: Graph Added - Device[' . $host_id . '], Graph[' . $return_array['local_graph_id'] . "], DS[$data_source_id], Rule[" . $rule['id'] . ']', false, 'AUTOM8');
+						cacti_log('NOTE: Graph Added - Device[' . $host_id . '], Graph[' . $return_array['local_graph_id'] . "], DS[$data_source_id], Rule[" . $rule['id'] . ']', false, 'AUTOM8');
+					} else {
+						cacti_log('ERROR: Device[' . $host_id . '], GT[' . $graph_template_id . '], DQ[' . $rule['snmp_query_id'] . '], Index[' . $snmp_query_array['snmp_index'] . '], Rule[' . $rule['id'] . '] Graph not added due to missing data sources.', false, 'AUTOM8');
+					}
 				} else {
-					cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to missing data sources.', false, 'AUTOM8');
+					cacti_log('ERROR: Device[' . $host_id . '], GT[' . $graph_template_id . '], DQ[' . $rule['snmp_query_id'] . '], Index[' . $snmp_query_array['snmp_index'] . '], Rule[' . $rule['id'] . '] Graph not added due to whitelist failure.', false, 'AUTOM8');
 				}
 			} else {
-				cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to whitelist failure.', false, 'AUTOM8');
+				cacti_log('NOTE: Device[' . $host_id . '], GT[' . $graph_template_id . '], DQ[' . $rule['snmp_query_id'] . '], Index[' . $snmp_query_array['snmp_index'] . '], Rule[' . $rule['id'] . '] Graph not added due to invalid data returned.', false, 'AUTOM8');
 			}
 		}
 	}

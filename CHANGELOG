@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.2.17
--issue#4060: When calling get_client_addr REMOTE_ADDR is always returned
 -security#4019: In a recent audit of core Cacti code, there were a few stored XSS issues that can be exposed
 -security#4022: SQL Injection in data_debug.php (CVE-2020-35701)
 -security#4035: XSS security issue from WebScan report
@@ -34,6 +33,7 @@ Cacti CHANGELOG
 -issue#4049: Only show sensitive graph information to Template Editors in the List View screen
 -issue#4050: Missing slash in absolute path to cli/convert_tables.php shown during upgrade
 -issue#4056: "Show Exceptions" checkbox appears to behave as if it were "Only Show Exceptions"
+-issue#4060: When calling get_client_addr REMOTE_ADDR is always returned
 -issue#4061: Fix dateformat in graph - user defined date separator was never used
 -issue#4066: Boost - Number of Boost Processes without function
 -issue#4067: Zoom does not initiate to bypass BOOST image cache
@@ -101,7 +101,9 @@ Cacti CHANGELOG
 -issue#4195: filter_value() function does not work as expected when search includes # character
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
+-feature#645: Modify automation to test for data before creating graphs
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
+-feature#3572: Automatic Graph Creation on New Device does not ask for Custom Data Override Entry
 -feature#4012: Provide CLI script to renew the CSRF security key for CSRF protection
 -feature#4013: Remote Poller - reset avg/max polling time
 -feature#4176: Cacti is does not know what replica servers are replicating from it

@@ -1563,6 +1563,390 @@ function is_valid_pathname($path) {
 	}
 }
 
+/**
+ * test_data_sources
+ *
+ * Tests all data sources to confirm that it returns valid data.  This
+ * function is used by automation to prevent the creation of graphs
+ * that will never generate data.
+ *
+ * @param $graph_template_id - The Graph Template to test
+ * @param $host_id - The Host to test
+ *
+ * @returns boolean true or false
+ */
+function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $snmp_index = '') {
+	$data_template_ids = array_rekey(
+		db_fetch_assoc_prepared('SELECT DISTINCT data_template_id
+			FROM graph_templates_item AS gti
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id = dtr.id
+			WHERE gti.hash != ""
+			AND gti.local_graph_id = 0
+			AND dtr.local_data_id = 0
+			AND gti.graph_template_id = ?',
+			array($graph_template_id)),
+		'data_template_id', 'data_template_id'
+	);
+
+	if (cacti_sizeof($data_template_ids)) {
+		foreach($data_template_ids as $dt) {
+			if (!test_data_source($dt, $host_id)) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+/**
+ * test_data_source
+ *
+ * Tests a single data source to confirm that it returns valid data.  This
+ * function is used by automation to prevent the creation of graphs
+ * that will never generate data.
+ *
+ * @param $graph_template_id - The Graph Template to test
+ * @param $host_id - The Host to test
+ *
+ * @returns boolean true or false
+ */
+function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp_index = '') {
+	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
+		di.id, di.type_id, dtd.id AS data_template_data_id,
+		dtd.data_template_id, dtd.active, dtd.rrd_step
+		FROM data_template_data AS dtd
+		INNER JOIN data_input AS di
+		ON dtd.data_input_id=di.id
+		WHERE dtd.local_data_id = 0
+		AND dtd.data_template_id = ?',
+		array($data_template_id));
+
+	$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
+		FROM host
+		WHERE id = ?',
+		array($host_id));
+
+	if (cacti_sizeof($data_input)) {
+		if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT) ||
+			($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER)) {
+			if ($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) {
+				$action = POLLER_ACTION_SCRIPT_PHP;
+				$script_path = get_full_test_script_path($data_template_id, $host_id);
+			} else {
+				$action = POLLER_ACTION_SCRIPT;
+				$script_path = get_full_test_script_path($data_template_id, $host_id);
+			}
+
+			$num_output_fields = cacti_sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+				FROM data_input_fields
+				WHERE data_input_id = ?
+				AND input_output = "out"
+				AND update_rra="on"',
+				array($data_input['id'])));
+
+			if ($num_output_fields == 1) {
+				$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
+					FROM data_template_rrd
+					WHERE local_data_id = 0
+					AND hash != ""
+					AND data_template_id = ?',
+					array($data_template_id));
+
+				$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
+			} else {
+				$data_source_item_name = '';
+			}
+
+			if ($action == POLLER_ACTION_SCRIPT_PHP) {
+				$output = shell_exec($script_path);
+			} else {
+				$parts = explode(' ', $script_path);
+				if (file_exists($parts[0])) {
+					include_once($parts[0]);
+					array_shift($parts);
+					$function = $parts[0];
+					array_shift($parts);
+					if (function_exists($function)) {
+						$output = call_user_func_array($function, $parts);
+					} else {
+						$output = 'false';
+					}
+				} else {
+					$output = 'false';
+				}
+			}
+
+			if (!is_numeric($output)) {
+				if (prepare_validate_result($output) === false) {
+					return false;
+				}
+			}
+
+			return true;
+		} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
+			/* get host fields first */
+			$host_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname","host_id"))
+					AND did.data_template_data_id = ?
+					AND did.value != ""',
+					array($data_input['data_template_data_id'])),
+				'type_code', 'value'
+			);
+
+			$data_template_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id = did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND data_template_data_id = ?
+					AND did.value != ""',
+					array($data_template_id, $data_template_id)),
+				'type_code', 'value'
+			);
+
+			if (cacti_sizeof($host_fields)) {
+				if (cacti_sizeof($data_template_fields)) {
+					foreach($data_template_fields as $key => $value) {
+						if (!isset($host_fields[$key])) {
+							$host_fields[$key] = $value;
+						}
+					}
+				}
+			} elseif (cacti_sizeof($data_template_fields)) {
+				$host_fields = $data_template_fields;
+			}
+
+			$host = array_merge($host, $host_fields);
+
+			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
+				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
+				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
+
+			$output = cacti_snmp_session_get($session, $host['snmp_oid']);
+
+			if (!is_numeric($output)) {
+				if (prepare_validate_result($output) === false) {
+					return false;
+				}
+			}
+
+			return true;
+		} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
+			$snmp_queries = get_data_query_array($snmp_query_id);
+
+			/* get host fields first */
+			$host_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_input['data_template_data_id'])),
+				'type_code', 'value'
+			);
+
+			$data_template_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND data_template_data_id = ?
+					AND did.value != ""', array($data_template_id, $data_template_id)),
+				'type_code', 'value'
+			);
+
+			if (cacti_sizeof($host_fields)) {
+				if (cacti_sizeof($data_template_fields)) {
+					foreach ($data_template_fields as $key => $value) {
+						if (!isset($host_fields[$key])) {
+							$host_fields[$key] = $value;
+						}
+					}
+				}
+			} elseif (cacti_sizeof($data_template_fields)) {
+				$host_fields = $data_template_fields;
+			}
+
+			$host = array_merge($host, $host_fields);
+
+			if (cacti_sizeof($outputs) && cacti_sizeof($snmp_queries)) {
+				foreach ($outputs as $output) {
+					if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
+						$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $snmp_index;
+
+						if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid_suffix'])) {
+							$oid .= '.' . $snmp_queries['fields'][$output['snmp_field_name']]['oid_suffix'];
+						}
+					}
+
+					if (!empty($oid)) {
+						$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+							$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
+							$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
+							$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
+
+						$output = cacti_snmp_session_get($session, $oid);
+
+						if (!is_numeric($output)) {
+							if (prepare_validate_result($output) === false) {
+								return false;
+							}
+						}
+
+						return true;
+					}
+				}
+			}
+		} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
+			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
+			$script_queries = get_data_query_array($snmp_query_id);
+
+			/* get host fields first */
+			$host_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_input['data_template_data_id'])),
+				'type_code', 'value'
+			);
+
+			$data_template_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND data_template_data_id = ?
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_template_id, $data_template_id)),
+				'type_code', 'value'
+			);
+
+			if (cacti_sizeof($host_fields)) {
+				if (cacti_sizeof($data_template_fields)) {
+					foreach ($data_template_fields as $key => $value) {
+						if (!isset($host_fields[$key])) {
+							$host_fields[$key] = $value;
+						}
+					}
+				}
+			} elseif (cacti_sizeof($data_template_fields)) {
+				$host_fields = $data_template_fields;
+			}
+
+			$host = array_merge($host, $host_fields);
+
+			if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
+				foreach ($outputs as $output) {
+					if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
+						$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
+
+						if ($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
+							$action = POLLER_ACTION_SCRIPT;
+
+							$prepend = '';
+							if (isset($script_queries['arg_prepend']) && $script_queries['arg_prepend'] != '') {
+								$prepend = $script_queries['arg_prepend'];
+							}
+
+							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $snmp_index), $script_queries['script_path'], $host_id);
+						} else {
+							$action = POLLER_ACTION_SCRIPT;
+							$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $snmp_index), $script_queries['script_path'], $host_id);
+						}
+					}
+
+					if (isset($script_path)) {
+						$output = shell_exec($script_path);
+
+						if (!is_numeric($output)) {
+							if (prepare_validate_result($output) === false) {
+								return false;
+							}
+						}
+
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+/** get_full_test_script_path - gets the full path to the script to execute to obtain data for a
+ *    given data template for testing. this function does not work on SNMP actions, only
+ *    script-based actions
+ *  @arg $data_template_id - (int) the ID of the data template
+ *  @returns - the full script path or (bool) false for an error
+*/
+function get_full_test_script_path($data_template_id, $host_id) {
+	global $config;
+
+	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
+		dtd.id,
+		dtd.data_input_id,
+		di.type_id,
+		di.input_string
+		FROM data_template_data AS dtd
+		INNER JOIN data_input AS di
+		ON dtd.data_input_id = di.id
+		WHERE dtd.local_data_id = 0
+		AND dtd.data_template_id = ?',
+		array($data_template_id));
+
+	$data = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " dif.data_name, did.value
+		FROM data_input_fields AS dif
+		LEFT JOIN data_input_data AS did
+		ON dif.id = did.data_input_field_id
+		WHERE dif.data_input_id  = ?
+		AND did.data_template_data_id = ?
+		AND dif.input_output = 'in'",
+		array($data_source['data_input_id'], $data_source['id']));
+
+	$full_path = $data_source['input_string'];
+
+	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+
+	if (cacti_sizeof($data)) {
+		foreach ($data as $item) {
+			if (isset($host[$item['data_name']])) {
+				$value = cacti_escapeshellarg($host[$item['data_name']]);
+			} else {
+				$value = "''";
+			}
+
+			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
+		}
+	}
+
+	$search    = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
+	$replace   = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
+	$full_path = str_replace($search, $replace, $full_path);
+
+	/**
+	 * sometimes a certain input value will not have anything entered... null out these fields
+	 * in the input string so we don't mess up the script
+	 */
+	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path);
+}
+
 /** get_full_script_path - gets the full path to the script to execute to obtain data for a
  *    given data source. this function does not work on SNMP actions, only script-based actions
  *  @arg $local_data_id - (int) the ID of the data source
@@ -1571,14 +1955,12 @@ function is_valid_pathname($path) {
 function get_full_script_path($local_data_id) {
 	global $config;
 
-	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
-		data_template_data.id,
-		data_template_data.data_input_id,
-		data_input.type_id,
-		data_input.input_string
-		FROM (data_template_data, data_input)
-		WHERE data_template_data.data_input_id = data_input.id
-		AND data_template_data.local_data_id = ?',
+	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' dtd.id, dtd.data_input_id,
+		di.type_id, di.input_string
+		FROM data_template_data AS dtd
+		INNER JOIN data_input AS di
+		ON dtd.data_input_id = di.id
+		WHERE dtd.local_data_id = ?',
 		array($local_data_id));
 
 	/* snmp-actions don't have paths */
@@ -1586,15 +1968,13 @@ function get_full_script_path($local_data_id) {
 		return false;
 	}
 
-	$data = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . "
-		data_input_fields.data_name,
-		data_input_data.value
-		FROM data_input_fields
-		LEFT JOIN data_input_data
-		ON (data_input_fields.id = data_input_data.data_input_field_id)
-		WHERE data_input_fields.data_input_id  = ?
-		AND data_input_data.data_template_data_id = ?
-		AND data_input_fields.input_output = 'in'",
+	$data = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " dif.data_name, did.value
+		FROM data_input_fields AS dif
+		LEFT JOIN data_input_data AS did
+		ON dif.id = did.data_input_field_id
+		WHERE dif.data_input_id = ?
+		AND did.data_template_data_id = ?
+		AND dif.input_output = 'in'",
 		array($data_source['data_input_id'], $data_source['id']));
 
 	$full_path = $data_source['input_string'];
