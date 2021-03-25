@@ -1644,7 +1644,6 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 			}
 
 			$params[] = $data_input['data_template_id'];
-			$params[] = $data_source['id'];
 
 			$outputs = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
 				sqgr.snmp_field_name, dtr.id as data_template_rrd_id
@@ -1652,7 +1651,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				INNER JOIN data_template_rrd AS dtr FORCE INDEX (local_data_id)
 				ON sqgr.data_template_rrd_id = dtr.local_data_template_rrd_id
 				WHERE sqgr.data_template_id = ?
-				AND dtr.local_data_id = ?
+				AND dtr.local_data_id = 0
 				$output_type_sql
 				ORDER BY dtr.id", $params);
 		}
