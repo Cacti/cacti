@@ -1157,17 +1157,17 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 
 	/* initialize fail and recovery dates correctly */
 	if ($host['status_fail_date'] == '') {
-		$host['status_fail_date'] = '0000-00-00 00:00:00';
+		$host['status_fail_date'] = strtotime('0000-00-00 00:00:00');
 	}
 
 	if ($host['status_rec_date'] == '') {
-		$host['status_rec_date'] = '0000-00-00 00:00:00';
+		$host['status_rec_date'] = strtotime('0000-00-00 00:00:00');
 	}
 
 	if ($status == HOST_DOWN) {
 		/* Set initial date down. BUGFIX */
 		if (empty($host['status_fail_date'])) {
-			$host['status_fail_date'] = date('Y-m-d H:i:s');
+			$host['status_fail_date'] = time();
 		}
 
 		/* update total polls, failed polls and availability */
@@ -1208,13 +1208,13 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 
 				/* update the failure date only if the failure count is 1 */
 				if ($host['status_event_count'] == $ping_failure_count) {
-					$host['status_fail_date'] = date('Y-m-d H:i:s');
+					$host['status_fail_date'] = time();
 				}
 			/* host is down, but not ready to issue log message */
 			} else {
 				/* host down for the first time, set event date */
 				if ($host['status_event_count'] == $ping_failure_count) {
-					$host['status_fail_date'] = date('Y-m-d H:i:s');
+					$host['status_fail_date'] = time();
 				}
 			}
 		/* host is recovering, put back in failed state */
@@ -1308,7 +1308,7 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 
 				/* update the recovery date only if the recovery count is 1 */
 				if ($host['status_event_count'] == $ping_recovery_count) {
-					$host['status_rec_date'] = date('Y-m-d H:i:s');
+					$host['status_rec_date'] = time();
 				}
 
 				/* reset the event counter */
@@ -1317,7 +1317,7 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 			} else {
 				/* host recovering for the first time, set event date */
 				if ($host['status_event_count'] == $ping_recovery_count) {
-					$host['status_rec_date'] = date('Y-m-d H:i:s');
+					$host['status_rec_date'] = time();
 				}
 			}
 		} else {
@@ -1364,8 +1364,8 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 	db_execute_prepared('UPDATE host SET
 		status = ?,
 		status_event_count = ?,
-		status_fail_date = ?,
-		status_rec_date = ?,
+		status_fail_date = FROM_UNIXTIME(?),
+		status_rec_date = FROM_UNIXTIME(?),
 		status_last_error = ?,
 		min_time = ?,
 		max_time = ?,
@@ -4686,6 +4686,10 @@ function get_timeinstate($host) {
 	} elseif ($host['snmp_sysUpTimeInstance'] > 0) {
 		$time = $host['snmp_sysUpTimeInstance']/100;
 	} else {
+		$time = 0;
+	}
+
+	if ($time > 2E13) {
 		$time = 0;
 	}
 
