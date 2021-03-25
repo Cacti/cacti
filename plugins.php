@@ -508,7 +508,7 @@ function update_show_current () {
 	var url = '';
 
 	$(function() {
-		$('.uninstall').click(function(event) {
+		$('.piuninstall').click(function(event) {
 			event.preventDefault();
 			url = $(this).attr('href');
 
