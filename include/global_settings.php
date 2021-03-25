@@ -2550,8 +2550,7 @@ if (is_realm_allowed(1)) {
 		'86400'   => __('1 Day'),
 		'604800'  => __('1 Week'),
 		'1209600' => __('%d Weeks', 2),
-		'1814400' => __('%d Weeks', 3),
-		$max_life => __('Maximum')
+		'1814400' => __('%d Weeks', 3)
 	);
 
 	foreach($auto_array as $key => $value) {
