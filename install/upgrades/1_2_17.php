@@ -122,7 +122,7 @@ function database_fix_mediumint_columns() {
 					if ($attribs['Default'] != '') {
 						$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL default "' . $attribs['Default'] . '"';
 					} elseif ($attribs['Null'] == 'NO') {
-						$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $field . ' int(10) unsigned NOT NULL';
+						$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned NOT NULL';
 					} else {
 						$sql .= ($i == 0 ? '':', ') . ' MODIFY COLUMN ' . $c . ' int(10) unsigned DEFAULT NULL';
 					}
