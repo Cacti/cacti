@@ -99,6 +99,7 @@ Cacti CHANGELOG
 -issue#4192: Cacti->Management->Devices search return black screen if device name contain # character
 -issue#4193: Script poller_reindex_hosts.php | Try to Reindex disabled devices
 -issue#4195: filter_value() function does not work as expected when search includes # character
+-issue#4197: When attempting to do a rollback on versions, the installer will not restart
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
 -feature#645: Modify automation to test for data before creating graphs
