@@ -2105,7 +2105,7 @@ tr:not(.selectable) a.linkEditMain:hover {
 
 tr.selectable {
 	border-left: 3px solid white;
-
+	line-height: 22px;
 }
 
 tr.selectable td:first-child {
