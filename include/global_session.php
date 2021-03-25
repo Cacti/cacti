@@ -67,7 +67,7 @@ if ($script == 'graph_view.php' || $script == 'graph.php') {
 	}
 }
 
-if (read_user_setting('user_auto_logout_time')) {
+if (read_user_setting('user_auto_logout_time') && is_realm_allowed(8)) {
 	$myrefresh['seconds'] = read_user_setting('user_auto_logout_time');
 	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
 	$refreshIsLogout      = 'true';
