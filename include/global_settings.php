@@ -2561,7 +2561,7 @@ if (is_realm_allowed(1)) {
 
 	$settings_user['general']['user_auto_logout_time'] = array(
 		'friendly_name' => __('Auto Log Out Time'),
-		'description' => __('How long this user can stay logged in before being automatically logged out.'),
+		'description' => __('For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.'),
 		'method' => 'drop_array',
 		'default' => $max_life,
 		'array' => $auto_array
