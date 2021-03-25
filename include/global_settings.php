@@ -2533,5 +2533,40 @@ if (is_realm_allowed(25)) {
 	);
 }
 
+if (is_realm_allowed(8)) {
+	if (ini_get('session.gc_maxlifetime') > '2147483') {
+		$max_life = '2147483';
+	} else {
+		$max_life = ini_get('session.gc_maxlifetime');
+	}
+
+	$auto_array = array(
+		'900'     => __('%d Minutes', 15),
+		'1200'    => __('%d Minutes', 20),
+		'1800'    => __('%d Minutes', 30),
+		'3600'    => __('1 Hour'),
+		'21600'   => __('%d Hours', 6),
+		'43200'   => __('%d Hours', 12),
+		'86400'   => __('1 Day'),
+		'604800'  => __('1 Week'),
+		'1209600' => __('%d Weeks', 2),
+		'1814400' => __('%d Weeks', 3)
+	);
+
+	foreach($auto_array as $key => $value) {
+		if ($key > $max_life) {
+			unset($auto_array[$key]);
+		}
+	}
+
+	$settings_user['general']['user_auto_logout_time'] = array(
+		'friendly_name' => __('Auto Log Out Time'),
+		'description' => __('For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled.'),
+		'method' => 'drop_array',
+		'default' => $max_life,
+		'array' => $auto_array
+	);
+}
+
 api_plugin_hook('config_settings');
 
