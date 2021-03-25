@@ -2533,7 +2533,7 @@ if (is_realm_allowed(25)) {
 	);
 }
 
-if (is_realm_allowed(1)) {
+if (is_realm_allowed(8)) {
 	if (ini_get('session.gc_maxlifetime') > '2147483') {
 		$max_life = '2147483';
 	} else {
