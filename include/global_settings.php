@@ -944,8 +944,8 @@ $settings = array(
 			'array' => $realtime_window,
 		),
 		'realtime_interval' => array(
-			'friendly_name' => __('Refresh Interval'),
-			'description' => __('This is the time between graph updates.'),
+			'friendly_name' => __('Minimum Refresh Interval'),
+			'description' => __('This is the minimal supported time between Graph updates.  This value is also used to set certain RRDfile attributes.  If you have a Device that caches data and does not provide realtime updates, you may have to increase the default Minimum Refresh Interval to prevent creating Graphs with gaps.'),
 			'method' => 'drop_array',
 			'default' => 10,
 			'array' => $realtime_refresh,

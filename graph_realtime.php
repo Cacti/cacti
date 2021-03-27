@@ -388,10 +388,13 @@ $sizes = array(
 				</select>
 				<select id='ds_step' onChange='imageOptionsChanged("interval")'>
 					<?php
+					$min_refresh = read_config_option('realtime_interval');
 					foreach ($realtime_refresh as $interval => $text) {
-						printf('<option value="%d"%s>%s</option>',
-							$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
-						);
+						if ($interval >= $min_refresh) {
+							printf('<option value="%d"%s>%s</option>',
+								$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
+							);
+						}
 					}
 				?>
 				</select>
