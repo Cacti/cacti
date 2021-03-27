@@ -34,6 +34,7 @@ function upgrade_to_1_2_17() {
 	if (!db_column_exists('sessions', 'user_id')) {
 		db_install_execute('ALTER TABLE sessions
 			ADD COLUMN user_id int unsigned NOT NULL default "0",
+			ADD COLUMN user_agent varchar(128) NOT NULL default "",
 			ADD COLUMN start_time timestamp NOT NULL default current_timestamp,
 			ADD COLUMN transactions int unsigned NOT NULL default "1"');
 	}

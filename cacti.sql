@@ -2852,6 +2852,7 @@ CREATE TABLE `sessions` (
   `access` int(10) unsigned DEFAULT NULL,
   `data` mediumblob,
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_agent` varchar(128) NOT NULL DEFAULT '',
   `start_time` timestamp NOT NULL DEFAULT current_timestamp,
   `transactions` int(10) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)

@@ -17,6 +17,11 @@ function cacti_db_session_check() {
 			ADD COLUMN start_time timestamp NOT NULL default current_timestamp,
 			ADD COLUMN transactions int unsigned NOT NULL default "1"');
 	}
+
+	if (!db_column_exists('sessions', 'user_agent')) {
+		db_execute('ALTER TABLE sessions
+			ADD COLUMN user_agent VARCHAR(128) NOT NULL default "" AFTER user_id');
+	}
 }
 
 function cacti_db_session_open($savePath = '', $sessionName = '') {
@@ -66,25 +71,28 @@ function cacti_db_session_write($id, $data) {
 	}
 
 	$client_addr = get_client_addr();
+	$user_agent  = $_SERVER['HTTP_USER_AGENT'];
 
 	if ($user_id > 0) {
 		db_execute_prepared('INSERT INTO sessions
-			(id, remote_addr, access, data, user_id)
+			(id, remote_addr, access, data, user_id, user_agent)
+			VALUES (?, ?, ?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE
+				data = VALUES(data),
+				access = VALUES(access),
+				user_agent = VALUES(user_agent),
+				transactions = transactions + 1',
+			array($id, $client_addr, $access, $data, $user_id, $user_agent));
+	} elseif (strpos($data, 'ses_user_id') !== false) {
+		db_execute_prepared('INSERT INTO sessions
+			(id, remote_addr, access, data, user_agent)
 			VALUES (?, ?, ?, ?, ?)
 			ON DUPLICATE KEY UPDATE
 				data = VALUES(data),
 				access = VALUES(access),
+				user_agent = VALUES(user_agent),
 				transactions = transactions + 1',
-			array($id, $client_addr, $access, $data, $user_id));
-	} elseif (strpos($data, 'ses_user_id') !== false) {
-		db_execute_prepared('INSERT INTO sessions
-			(id, remote_addr, access, data)
-			VALUES (?, ?, ?, ?)
-			ON DUPLICATE KEY UPDATE
-				data = VALUES(data),
-				access = VALUES(access),
-				transactions = transactions + 1',
-			array($id, $client_addr, $access, $data));
+			array($id, $client_addr, $access, $data, $user_agent));
 	}
 
 	return true;
