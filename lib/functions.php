@@ -1591,7 +1591,7 @@ function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $sn
 
 	if (cacti_sizeof($data_template_ids)) {
 		foreach($data_template_ids as $dt) {
-			if (!test_data_source($dt, $host_id)) {
+			if (!test_data_source($dt, $host_id, $snmp_query_id, $snmp_index)) {
 				return false;
 			}
 		}
@@ -1635,7 +1635,9 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
 			$field = data_query_field_list($data_input['data_template_data_id']);
 
-			$params = array();
+			$params   = array();
+			$params[] = $data_input['data_template_id'];
+
 			if ($field['output_type'] != '') {
 				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ?';
 				$params[] = $field['output_type'];
@@ -1643,13 +1645,11 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				$output_type_sql = '';
 			}
 
-			$params[] = $data_input['data_template_id'];
-
 			$outputs = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
 				sqgr.snmp_field_name, dtr.id as data_template_rrd_id
 				FROM snmp_query_graph_rrd AS sqgr
 				INNER JOIN data_template_rrd AS dtr FORCE INDEX (local_data_id)
-				ON sqgr.data_template_rrd_id = dtr.local_data_template_rrd_id
+				ON sqgr.data_template_rrd_id = dtr.id
 				WHERE sqgr.data_template_id = ?
 				AND dtr.local_data_id = 0
 				$output_type_sql
