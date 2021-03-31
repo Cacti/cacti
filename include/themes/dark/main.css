@@ -1281,9 +1281,11 @@ legend {
 .cactiTableTitleRow {
 	float: left;
 	text-align: left;
-	padding: 5px 0px;
-	display: table-column;
+	padding-left: 5px;
+	display: block;
 	width: 100%;
+	height: 22px;
+	line-height: 22px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1304,9 +1306,11 @@ legend {
 .cactiTableTitle {
 	float: left;
 	text-align: left;
-	padding: 5px 0px;
-	display: table-column;
+	padding-left: 5px;
+	display: block;
 	width: 70%;
+	height: 22px;
+	line-height: 22px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1317,11 +1321,12 @@ legend {
 
 .cactiTableButton {
 	float: right;
-	padding: 5px 0px;
-	display: table-column;
+	padding: 0px;
+	display: block;
 	text-align: right;
-	width: 30%;
-	height: 14px;
+	width: calc(30% - 5px);
+	height: 22px;
+	line-height: 22px;
 	white-space: nowrap;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1349,8 +1354,8 @@ legend {
 	padding: 0px 8px;
 }
 
-.cactiTableButton span:last-child, .cactiTableTitle span:last-child {
-	padding: 0px 5px;
+.cactiTableButton span:last-child i, .cactiTableTitle span:last-child i {
+	padding: 0px 8px !important;
 }
 
 .cactiDebugTable {
@@ -1466,7 +1471,7 @@ legend {
 
 .formHeaderAnchor {
 	float: right;
-	padding-right: 4px;
+	padding-right: 8px;
 }
 
 .hostInfoHeader {
@@ -2533,34 +2538,34 @@ td.center > table {
 	white-space: nowrap;
 }
 
-.c3-chart {
+.bb-chart {
 }
 
-.c3-chart-arc path {
+.bb-chart-arc path {
 	fill: #A8A8A8;
 }
 
-.c3-tooltip {
+.bb-tooltip {
 }
 
-.c3-legend-item {
+.bb-legend-item {
 	fill: #A8A8A8;
 }
 
-.c3-grid {
+.bb-grid {
 	fill: #A8A8A8;
 }
 
-.c3-axis {
+.bb-axis {
 	fill: #A8A8A8;
 }
 
 /*-- Tooltip --*/
-.c3-tooltip-container {
+.bb-tooltip-container {
   z-index: 10;
 }
 
-.c3-tooltip {
+.bb-tooltip {
   border-collapse: collapse;
   border-spacing: 0;
   background-color: #161616;
@@ -2571,11 +2576,11 @@ td.center > table {
   opacity: 0.9;
 }
 
-.c3-tooltip tr {
+.bb-tooltip tr {
   border: 1px solid #050505;
 }
 
-.c3-tooltip th {
+.bb-tooltip th {
   background-color: #161616;
   font-size: 14px;
   padding: 2px 5px;
@@ -2583,138 +2588,138 @@ td.center > table {
   color: #FFFFFF;
 }
 
-.c3-tooltip td {
+.bb-tooltip td {
   font-size: 13px;
   padding: 3px 6px;
   background-color: #050505;
   border-left: 1px dotted #999;
 }
 
-.c3-tooltip td > span {
+.bb-tooltip td > span {
   display: inline-block;
   width: 10px;
   height: 10px;
   margin-right: 6px;
 }
 
-.c3-tooltip td.value {
+.bb-tooltip td.value {
   text-align: right;
 }
 
 /*-- Chart --*/
-.c3 svg {
+.bb svg {
   font: 10px sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
-.c3 path, .c3 line {
+.bb path, .bb line {
   fill: none;
   stroke: #E0E0E0;
 }
 
-.c3 text {
+.bb text {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
 
-.c3-legend-item-tile,
-.c3-xgrid-focus,
-.c3-ygrid,
-.c3-event-rect,
-.c3-bars path {
+.bb-legend-item-tile,
+.bb-xgrid-focus,
+.bb-ygrid,
+.bb-event-rect,
+.bb-bars path {
   shape-rendering: crispEdges;
 }
 
-.c3-chart-arc path {
+.bb-chart-arc path {
   stroke: #fff;
 }
 
-.c3-chart-arc text {
+.bb-chart-arc text {
   fill: #fff;
   font-size: 13px;
 }
 
 /*-- Axis --*/
 /*-- Grid --*/
-.c3-grid line {
+.bb-grid line {
   stroke: #aaa;
 }
 
-.c3-grid text {
+.bb-grid text {
   fill: #aaa;
 }
 
-.c3-xgrid, .c3-ygrid {
+.bb-xgrid, .bb-ygrid {
   stroke-dasharray: 3 3;
 }
 
 /*-- Text on Chart --*/
-.c3-text.c3-empty {
+.bb-text.bb-empty {
   fill: #808080;
   font-size: 2em;
 }
 
 /*-- Line --*/
-.c3-line {
+.bb-line {
   stroke-width: 1px;
 }
 
 /*-- Point --*/
-.c3-circle._expanded_ {
+.bb-circle._expanded_ {
   stroke-width: 1px;
   stroke: white;
 }
 
-.c3-selected-circle {
+.bb-selected-circle {
   fill: white;
   stroke-width: 2px;
 }
 
 /*-- Bar --*/
-.c3-bar {
+.bb-bar {
   stroke-width: 0;
 }
 
-.c3-bar._expanded_ {
+.bb-bar._expanded_ {
   fill-opacity: 0.75;
 }
 
 /*-- Focus --*/
-.c3-target.c3-focused {
+.bb-target.bb-focused {
   opacity: 1;
 }
 
-.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {
+.bb-target.bb-focused path.bb-line, .bb-target.bb-focused path.bb-step {
   stroke-width: 2px;
 }
 
-.c3-target.c3-defocused {
+.bb-target.bb-defocused {
   opacity: 0.3 !important;
 }
 
 /*-- Region --*/
-.c3-region {
+.bb-region {
   fill: steelblue;
   fill-opacity: .1;
 }
 
 /*-- Brush --*/
-.c3-brush .extent {
+.bb-brush .extent {
   fill-opacity: .1;
 }
 
 /*-- Select - Drag --*/
 /*-- Legend --*/
-.c3-legend-item {
+.bb-legend-item {
   font-size: 12px;
 }
 
-.c3-legend-item-hidden {
+.bb-legend-item-hidden {
   opacity: 0.15;
 }
 
-.c3-legend-background {
+.bb-legend-background {
   opacity: 0.75;
   fill: white;
   stroke: lightgray;
@@ -2722,41 +2727,41 @@ td.center > table {
 }
 
 /*-- Title --*/
-.c3-title {
+.bb-title {
   font: 14px sans-serif;
 }
 
 /*-- Area --*/
-.c3-area {
+.bb-area {
   stroke-width: 0;
   opacity: 0.2;
 }
 
 /*-- Arc --*/
-.c3-chart-arcs-title {
+.bb-chart-arcs-title {
   dominant-baseline: middle;
   font-size: 1.3em;
 }
 
-.c3-chart-arcs .c3-chart-arcs-background {
+.bb-chart-arcs .bb-chart-arcs-background {
   fill: #E0E0E0;
   stroke: none;
 }
 
-.c3-chart-arcs .c3-chart-arcs-gauge-unit {
+.bb-chart-arcs .bb-chart-arcs-gauge-unit {
   fill: #000;
   font-size: 16px;
 }
 
-.c3-chart-arcs .c3-chart-arcs-gauge-max {
+.bb-chart-arcs .bb-chart-arcs-gauge-max {
   fill: #777;
 }
 
-.c3-chart-arcs .c3-chart-arcs-gauge-min {
+.bb-chart-arcs .bb-chart-arcs-gauge-min {
   fill: #777;
 }
 
-.c3-chart-arc .c3-gauge-value {
+.bb-chart-arc .bb-gauge-value {
   fill: #000;
   /*  font-size: 28px !important;*/
 }

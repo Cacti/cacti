@@ -633,7 +633,7 @@ function plugin_required_installed($plugin, $table) {
 function plugin_actions($plugin, $table) {
 	global $config, $pluginslist, $plugins_integrated;
 
-	$link = '<td>';
+	$link = '<td class="nowrap">';
 	switch ($plugin['status']) {
 		case '0': // Not Installed
 			$not_installed = plugin_required_installed($plugin, $table);

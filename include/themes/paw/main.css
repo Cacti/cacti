@@ -1124,11 +1124,12 @@ legend {
 .cactiTableTitleRow {
 	color: white;
 	float: left;
+	padding-left: 3px;
 	text-align: left;
-	line-height: 22px;
-	height: 22px;
-	display: table-column;
+	display: block;
 	width: 100%;
+	height: 28px;
+	line-height: 28px;
 	font-size: 1em;
 	font-weight: 700;
 	background: rgba(0,0,0,0.9);
@@ -1137,11 +1138,12 @@ legend {
 .cactiTableTitle {
 	color: white;
 	float: left;
+	padding-left: 3px;
 	text-align: left;
-	line-height: 22px;
-	height: 22px;
-	display: table-column;
+	display: block;
 	width: 70%;
+	height: 28px;
+	line-height: 28px;
 	font-size: 1em;
 	font-weight: 700;
 	background: rgba(0,0,0,0.9);
@@ -1149,11 +1151,12 @@ legend {
 
 .cactiTableButton {
 	float: right;
-	line-height: 22px;
-	height: 22px;
-	display: table-column;
+	padding: 0px;
+	display: block;
 	text-align: right;
-	width: 30%;
+	width: calc(30% - 3px);
+	height: 28px;
+	line-height: 28px;
 	background: rgba(0,0,0,0.9);
 	white-space: nowrap;
 }
@@ -1177,8 +1180,8 @@ legend {
 	padding: 0px 8px;
 }
 
-.cactiTableButton span:last-child, .cactiTableTitle span:last-child {
-	padding: 0px 5px;
+.cactiTableButton span:last-child i, .cactiTableTitle span:last-child i {
+	padding: 0px 8px !important;
 }
 
 .cactiDebugTable {
@@ -1294,7 +1297,7 @@ legend {
 
 .formHeaderAnchor {
 	float: right;
-	padding-right: 4px;
+	padding-right: 8px;
 }
 
 .hostInfoHeader {
@@ -1406,7 +1409,9 @@ th.sortable {
 	text-align: left;
 	font-size: 11px;
 	font-weight: bold;
-	padding: 2px;
+	padding: 0px 2px;
+	height: 28px;
+	line-height: 28px;
 }
 
 .tableHeader th.sortable {

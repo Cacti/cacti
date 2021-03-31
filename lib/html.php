@@ -2524,7 +2524,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.filter.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/billboard.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
 	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
@@ -2549,8 +2549,8 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.sparkline.js', true);
 	print get_md5_include_js('include/js/Chart.js', true);
 	print get_md5_include_js('include/js/dygraph-combined.js', true);
-	print get_md5_include_js('include/js/d3.js', true);
-	print get_md5_include_js('include/js/c3.js', true);
+	print get_md5_include_js('include/js/d3.js');
+	print get_md5_include_js('include/js/billboard.js');
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/realtime.js', true);
@@ -2598,9 +2598,12 @@ function html_help_page($page) {
 		'templates_export.php'        => 'Export-Template.html',
 		'links.php'                   => 'External-Links.html',
 		'gprint_presets.php'          => 'GPRINTs.html',
+		'graphs_new.php'              => 'Graph-a-Single-SNMP-OID.html',
 		'graph_view.php'              => 'Graph-Overview.html',
 		'automation_graph_rules.php'  => 'Graph-Rules.html',
 		'graph_templates.php'         => 'Graph-Templates.html',
+		'graph_templates_items.php'   => 'Graph-Templates.html',
+		'graph_templates_inputs.php'  => 'Graph-Templates.html',
 		'graphs.php'                  => 'Graphs.html',
 		'templates_import.php'        => 'Import-Template.html',
 		'plugins.php'                 => 'Plugins.html',
@@ -2625,11 +2628,6 @@ function html_help_page($page) {
 	);
 
 	$help = api_plugin_hook_function('help_page', $help);
-
-	$parts = explode(':', $page);
-
-	$page = $parts[0];
-	$tab  = isset($parts[1]) ? $parts[1]:'';
 
 	if (isset($help[$page])) {
 		if (file_exists($config['base_path'] . '/docs/' . $help[$page])) {

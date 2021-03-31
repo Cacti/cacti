@@ -103,6 +103,7 @@ Cacti CHANGELOG
 -issue#4199: Allow Cacti administrator to define a min refresh interval to prevent graph gaps
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
+-feature: Remove c3 Charting and replace with Billboard Charting library
 -feature#645: Modify automation to test for data before creating graphs
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#3572: Automatic Graph Creation on New Device does not ask for Custom Data Override Entry

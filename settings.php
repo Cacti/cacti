@@ -316,6 +316,8 @@ default:
 
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
+	set_request_var('tab', $current_tab);
+
 	$data_collectors = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""');
 
 	if ($data_collectors > 1) {
@@ -361,7 +363,7 @@ default:
 		$suffix = '';
 	}
 
-	html_start_box( __('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, '3', 'center', '');
+	html_start_box(__('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
