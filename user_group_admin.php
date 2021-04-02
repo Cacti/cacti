@@ -393,6 +393,8 @@ function form_actions() {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					user_group_remove($selected_items[$i]);
+
+					api_plugin_hook_function('user_group_remove', $selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* copy */
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
@@ -540,6 +542,7 @@ function form_save() {
 		$save['graph_settings'] = form_input_validate(get_nfilter_request_var('graph_settings', ''), 'graph_settings', '', true, 3);
 		$save['login_opts']     = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
 		$save['enabled']        = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
+
 		$save = api_plugin_hook_function('user_group_admin_setup_sql_save', $save);
 
 		if (!is_error_message()) {
@@ -1671,7 +1674,6 @@ function group_edit() {
 		'settings' => __('User Settings')
 	);
 
-	$tabs = api_plugin_hook_function('ugroup_tabs', $tabs);
 	if (!isempty_request_var('id')) {
 		$group = db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE id = ?', array(get_request_var('id')));
 		$header_label = __esc('User Group Management [edit: %s]', $group['name']);
@@ -1694,6 +1696,8 @@ function group_edit() {
 				'&tab=' . $tab_short_name) .
 				"'>" . $tabs[$tab_short_name] . "</a></li>";
 		}
+
+		api_plugin_hook('user_group_admin_tab');
 
 		print "</ul></nav></div>";
 	}
@@ -1750,6 +1754,11 @@ function group_edit() {
 
 		user_group_members_edit($header_label);
 
+		break;
+	default:
+		if (api_plugin_hook_function('user_group_admin_run_action', get_request_var('tab'))) {
+			user_group_realms_edit($header_label);
+		}
 		break;
 	}
 }
