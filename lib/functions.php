@@ -1613,6 +1613,10 @@ function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $sn
  * @returns boolean true or false
  */
 function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp_index = '') {
+	global $called_by_script_server;
+
+	$called_by_script_server = true;
+
 	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		di.id, di.type_id, dtd.id AS data_template_data_id,
 		dtd.data_template_id, dtd.active, dtd.rrd_step
@@ -1686,27 +1690,38 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				$data_source_item_name = '';
 			}
 
-			if ($action == POLLER_ACTION_SCRIPT_PHP) {
+			if ($action == POLLER_ACTION_SCRIPT) {
 				$output = shell_exec($script_path);
 			} else {
+				// Script server is a bit more complicated
 				$parts = explode(' ', $script_path);
+
 				if (file_exists($parts[0])) {
 					include_once($parts[0]);
+
 					array_shift($parts);
 					$function = $parts[0];
 					array_shift($parts);
+
 					if (function_exists($function)) {
-						$output = call_user_func_array($function, $parts);
+						// Trim off escape characters
+						foreach($parts as $p) {
+							$np[] = trim($p, "'");
+						}
+
+						$output = call_user_func_array($function, $np);
 					} else {
-						$output = 'false';
+						$output = 'U';
 					}
 				} else {
-					$output = 'false';
+					$output = 'U';
 				}
 			}
 
 			if (!is_numeric($output)) {
-				if (prepare_validate_result($output) === false) {
+				if ($output == 'U') {
+					return false;
+				} elseif (prepare_validate_result($output) === false) {
 					return false;
 				}
 			}
@@ -1955,8 +1970,10 @@ function get_full_test_script_path($data_template_id, $host_id) {
 		foreach ($data as $item) {
 			if (isset($host[$item['data_name']])) {
 				$value = cacti_escapeshellarg($host[$item['data_name']]);
+			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
+				$value = cacti_escapeshellarg($host['id']);
 			} else {
-				$value = "''";
+				$value = "'" . $item['value'] . "'";
 			}
 
 			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);

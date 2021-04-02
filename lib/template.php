@@ -1719,27 +1719,8 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 	if ($form_type == 'cg') {
 		$snmp_query_array = array();
 
-		$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
-
-		if ($return_array !== false) {
-			debug_log_insert('new_graphs', __esc('Created: %s', get_graph_title($return_array['local_graph_id'])));
-
-			/* lastly push host-specific information to our data sources */
-			if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-				foreach($return_array['local_data_id'] as $item) {
-					push_out_host($host_id, $item);
-				}
-			} else {
-				debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
-			}
-		} else {
-			debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
-		}
-	} elseif ($form_type == 'sg') {
-		foreach ($snmp_index_array as $snmp_index => $true) {
-			$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
-
-			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
+		if (test_data_sources($graph_template_id, $host_id)) {
+			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
 
 			if ($return_array !== false) {
 				debug_log_insert('new_graphs', __esc('Created: %s', get_graph_title($return_array['local_graph_id'])));
@@ -1754,6 +1735,43 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 				}
 			} else {
 				debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+			}
+		} else {
+			$name = db_fetch_cell_prepared('SELECT name
+				FROM graph_templates
+				WHERE id = ?',
+				array($graph_template_id));
+
+			debug_log_insert('new_graphs', __('NOTE: Graph Not created for Graph Template ' . $name . ' due to Data Source verification failure.'));
+		}
+	} elseif ($form_type == 'sg') {
+		foreach ($snmp_index_array as $snmp_index => $true) {
+			$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
+
+			if (test_data_sources($graph_template_id, $host_id, $snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'])) {
+				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
+
+				if ($return_array !== false) {
+					debug_log_insert('new_graphs', __esc('Created: %s', get_graph_title($return_array['local_graph_id'])));
+
+					/* lastly push host-specific information to our data sources */
+					if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+						foreach($return_array['local_data_id'] as $item) {
+							push_out_host($host_id, $item);
+						}
+					} else {
+						debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+					}
+				} else {
+					debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+				}
+			} else {
+				$name = db_fetch_cell_prepared('SELECT name
+					FROM snmp_query
+					WHERE id = ?',
+					array($snmp_query_array['snmp_query_id']));
+
+				debug_log_insert('new_graphs', __('NOTE: Graph not for Data Query ' . $name . ' and index ' .  $snmp_query_array['snmp_index'] . ' due to Data Source verification failure.'));
 			}
 		}
 	}
