@@ -102,6 +102,7 @@ Cacti CHANGELOG
 -issue#4197: When attempting to do a rollback on versions, the installer will not restart
 -issue#4199: Allow Cacti administrator to define a min refresh interval to prevent graph gaps
 -issue#4205: When removing Data-query Associated Graph Templates it deletes the graphs Templates from bottom to top
+-issue#4206: Configured report's time changes when a report was delayed
 -issue: Normalize plugin hooks between user_admin.php and user_group_admin.php
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
