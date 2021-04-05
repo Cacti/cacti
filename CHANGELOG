@@ -106,7 +106,6 @@ Cacti CHANGELOG
 -issue: Normalize plugin hooks between user_admin.php and user_group_admin.php
 -feature: Update phpseclib to version 2.0.30
 -feature: Add Theme 'Midwinter'
--feature: Remove c3 Charting and replace with Billboard Charting library
 -feature#645: Modify automation to test for data before creating graphs
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#3572: Automatic Graph Creation on New Device does not ask for Custom Data Override Entry
@@ -114,6 +113,7 @@ Cacti CHANGELOG
 -feature#4013: Remote Poller - reset avg/max polling time
 -feature#4113: Add ability to set how long a user can stay logged in before being automatically logged out
 -feature#4176: Cacti is does not know what replica servers are replicating from it
+-feature#4210: Replace c3.js with billboard.js
 
 1.2.16
 -issue#3704: When generating a report, the Cascade to Branches function does not as expected
