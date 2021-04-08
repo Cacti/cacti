@@ -176,7 +176,9 @@ if (!empty($recovery_pid)) {
 if ($run) {
 	$my_pid = getmypid();
 	cacti_log('No pid exists, starting recovery process (PID=' . $my_pid . ')!');
-	db_execute_prepared('INSERT INTO settings (name, value) VALUES ("recovery_pid", ?)',
+
+	db_execute_prepared('INSERT INTO settings (name, value) VALUES ("recovery_pid", ?)
+		ON DUPLICATE KEY UPDATE value=VALUES(value)',
 		array($my_pid), true, $local_db_cnn_id);
 
 	$end_count = 0;
