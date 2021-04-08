@@ -158,6 +158,8 @@ debug('About to start recovery processing');
 if (!empty($recovery_pid)) {
 	$pid = posix_kill($recovery_pid, 0);
 	if ($pid === false) {
+		/* we found a stale PID, so we delete it from the table */
+		db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
 		$run = true;
 	} else {
 		$run = false;
@@ -167,9 +169,10 @@ if (!empty($recovery_pid)) {
 }
 
 if ($run) {
-	debug('No pid exists, starting recovery process!');
-
-	db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+	$my_pid = getmypid();
+	cacti_log('No pid exists, starting recovery process (PID=' . $my_pid . ')!');
+	db_execute_prepared('INSERT INTO settings (name, value) VALUES ("recovery_pid", ?)',
+		array($my_pid), true, $local_db_cnn_id);
 
 	$end_count = 0;
 
