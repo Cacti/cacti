@@ -154,7 +154,7 @@ if (function_exists('pcntl_signal')) {
 /* take time and log performance data */
 $start = microtime(true);
 
-$record_limit = 10000;
+$record_limit = 150000;
 $inserted     = 0;
 $sleep_time   = 1;
 
@@ -165,6 +165,7 @@ if (!empty($recovery_pid)) {
 	if ($pid === false) {
 		/* we found a stale PID, so we delete it from the table */
 		db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+
 		$run = true;
 	} else {
 		$run = false;
@@ -178,8 +179,8 @@ if ($run) {
 
 	cacti_log('No pid exists, starting recovery process (PID=' . $my_pid . ')!');
 
-	db_execute_prepared('REPLACE INTO settings 
-		(name, value) 
+	db_execute_prepared('REPLACE INTO settings
+		(name, value)
 		VALUES ("recovery_pid", ?)',
 		array($my_pid), true, $local_db_cnn_id);
 
@@ -187,8 +188,9 @@ if ($run) {
 
 	/* let the console know you are in recovery mode */
 	db_execute_prepared('UPDATE poller
-		SET status="5"
-		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
+		SET status = "5"
+		WHERE id = ?',
+		array($poller_id), true, $remote_db_cnn_id);
 
 	poller_push_reindex_data_to_poller(0, 0, true);
 

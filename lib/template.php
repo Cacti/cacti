@@ -1742,7 +1742,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 				WHERE id = ?',
 				array($graph_template_id));
 
-			debug_log_insert('new_graphs', __('NOTE: Graph Not created for Graph Template ' . $name . ' due to Data Source verification failure.'));
+			debug_log_insert('new_graphs', __('Graph Not created for ' . $name . ' due to bad data'));
 		}
 	} elseif ($form_type == 'sg') {
 		foreach ($snmp_index_array as $snmp_index => $true) {

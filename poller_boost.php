@@ -110,11 +110,6 @@ ini_set('max_execution_time', '0');
 boost_memory_limit();
 
 if ($child == false) {
-	/* we will warn if the process is taking extra long */
-	if (!register_process_start('boost', 'master', $config['poller_id'], read_config_option('boost_rrd_update_max_runtime') * 3)) {
-		exit(0);
-	}
-
 	$current_time  = time();
 
 	/* find out if it's time to collect device information
@@ -137,7 +132,15 @@ if ($child == false) {
 	$run_now = boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_time);
 
 	if ($run_now) {
+		/* we will warn if the process is taking extra long */
+		if (!register_process_start('boost', 'master', $config['poller_id'], read_config_option('boost_rrd_update_max_runtime') * 3)) {
+			exit(0);
+		}
+
 		boost_debug('Time to Run Boost, Force Run is ' . ($forcerun ? 'true!':'false.'));
+
+		/* Check if processes are running and kill them */
+		boost_kill_running_processes();
 
 		/* Truncate the rrd_update_counter table */
 		db_execute('TRUNCATE TABLE poller_output_boost_processes');
@@ -176,7 +179,7 @@ if ($child == false) {
 				set_config_option('boost_last_run_time', $last_run_time);
 			}
 
-			/* cleanup  - remove empty arch tables*/
+			/* cleanup - remove empty arch tables*/
 			$tables = db_fetch_assoc("SELECT table_name AS name
 				FROM information_schema.tables
 				WHERE TABLE_SCHEMA = SCHEMA()
@@ -194,6 +197,8 @@ if ($child == false) {
 				api_plugin_hook('boost_poller_bottom');
 			}
 		}
+
+		unregister_process('boost', 'master', $config['poller_id']);
 	}
 
 	/* store the next run time so that people understand */
@@ -202,8 +207,6 @@ if ($child == false) {
 	}
 
 	boost_purge_cached_png_files($forcerun);
-
-	unregister_process('boost', 'master', $config['poller_id']);
 
 	exit(0);
 } else {
@@ -251,8 +254,28 @@ function sig_handler($signo) {
 
 }
 
+function boost_kill_running_processes() {
+	$processes = db_fetch_assoc_prepared('SELECT *
+		FROM processes
+		WHERE tasktype = "boost"
+		AND pid != ?',
+		array(getmypid()));
+
+	if (cacti_sizeof($processes)) {
+		foreach($processes as $p) {
+			cacti_log(sprintf('WARNING: Killing Boost %s PID %d due to it exceeding 3x its maximum allowed runtime', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
+			posix_kill($p['pid'], SIGTERM);
+
+			unregister_process($p['tasktype'], $p['taskname'], $p['taskid']);
+		}
+	}
+}
+
 function boost_processes_running() {
-	$finished = db_fetch_cell('SELECT COUNT(*) FROM processes WHERE tasktype = "boost" AND taskname = "child"');
+	$finished = db_fetch_cell('SELECT COUNT(*)
+		FROM processes
+		WHERE tasktype = "boost"
+		AND taskname = "child"');
 
 	if ($finished == 0) {
 		return false;
