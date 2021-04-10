@@ -1671,6 +1671,8 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 }
 
 function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
+	$max_packet  = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'max_allowed_packet'", true, $conn);
+
 	if (cacti_sizeof($data)) {
 		$prefix    = "INSERT INTO $table (";
 		$suffix    = ' ON DUPLICATE KEY UPDATE ';
@@ -1705,6 +1707,9 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 		$prefix .= ') VALUES ';
 
 		$rowcnt = 0;
+		$ohead  = strlen($prefix) + strlen($suffix);
+		$sqllen = $ohead;
+
 		foreach($data as $row) {
 			$colcnt  = 0;
 			$sql_row = '(';
@@ -1718,12 +1723,14 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 			$sql     .= ($rowcnt > 0 ? ', ':'') . $sql_row;
 
 			$rowcnt++;
+			$sqllen += strlen($sql_row);
 
-			if ($rowcnt > 1000) {
+			if ($rowcnt > 150000 || ($sqllen + 1000 > $max_packet)) {
 				db_execute($prefix . $sql . $suffix, true, $conn);
 				$rows_done += db_affected_rows($conn);
 				$sql = '';
 				$rowcnt = 0;
+				$sqllen = $ohead;
 			}
 		}
 
