@@ -82,7 +82,7 @@ function debug($string) {
 
 global $local_db_cnn_id, $remote_db_cnn_id;
 
-$recovery_pid = db_fetch_cell("SELECT value FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
+$recovery_pid = db_fetch_cell("SELECT value FROM settings WHERE name='recovery_pid'", '', true, $local_db_cnn_id);
 $packet_data  = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'max_allowed_packet'", true, $remote_db_cnn_id);
 
 if (isset($packet_data['Value'])) {

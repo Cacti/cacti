@@ -1320,7 +1320,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id, false, array('last_updated'));
 
 		// Remove anything not updated recently
-		$time = db_fetch_cell('SELECT MAX(UNIX_TIMESTAMP(last_updated)) FROM poller_item', false, $rcnn_id);
+		$time = db_fetch_cell('SELECT MAX(UNIX_TIMESTAMP(last_updated)) FROM poller_item', '', false, $rcnn_id);
 
 		if (!empty($time)) {
 			// You must update the last_updated locally
@@ -1682,7 +1682,7 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 		$columns   = array_keys($data[0]);
 		$skipcols  = array();
 
-		$remote_rows    = db_fetch_cell('SELECT COUNT(*) FROM ' . $table, '', true, $conn);
+		$remote_rows = db_fetch_cell("SELECT COUNT(*) FROM $table", '', true, $conn);
 
 		if ($exclude !== false && !is_array($exclude)) {
 			$exclude = array($exclude);
