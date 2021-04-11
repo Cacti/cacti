@@ -212,27 +212,27 @@ if ($run) {
 				array($max_time));
 
 			if (cacti_sizeof($rows)) {
-				$count     = 0;
+				$packet_size = 0;
 				$sql_array = array();
 
 				foreach($rows as $r) {
 					$sql = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
-					$count += strlen($sql);
+					$packet_size += strlen($sql);
 
-					if ($count >= $max_allowed_packet) {
+					if ($packet_size >= $max_allowed_packet) {
 						db_execute('INSERT IGNORE INTO poller_output_boost
 							(local_data_id, rrd_name, time, output)
 							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
 						$inserted += cacti_sizeof($sql_array);
 						$sql_array = array();
-						$count = 0;
+						$packet_size = 0;
 					}
 
 					$sql_array[] = $sql;
 				}
 
-				if ($count > 0) {
+				if ($packet_size > 0) {
 					db_execute("INSERT IGNORE INTO poller_output_boost
 						(local_data_id, rrd_name, time, output)
 						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
