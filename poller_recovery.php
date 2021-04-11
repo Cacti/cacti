@@ -155,7 +155,7 @@ if (function_exists('pcntl_signal')) {
 $start = microtime(true);
 
 $record_limit = 150000;
-$inserted     = 0;
+$records_inserted = 0;
 $sleep_time   = 1;
 
 debug('About to start recovery processing');
@@ -224,7 +224,7 @@ if ($run) {
 							(local_data_id, rrd_name, time, output)
 							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
-						$inserted += cacti_sizeof($sql_array);
+						$records_inserted += cacti_sizeof($sql_array);
 						$sql_array = array();
 						$packet_size = 0;
 					}
@@ -236,7 +236,7 @@ if ($run) {
 					db_execute("INSERT IGNORE INTO poller_output_boost
 						(local_data_id, rrd_name, time, output)
 						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
-					$inserted += cacti_sizeof($rows);
+					$records_inserted += cacti_sizeof($rows);
 				}
 
 				/* remove the recovery records */
@@ -263,6 +263,6 @@ if ($run) {
 
 $end = microtime(true);
 
-cacti_log('RECOVERY STATS: Time:' . round($end - $start, 2) . ' Records:' . $inserted, false, 'SYSTEM');
+cacti_log('RECOVERY STATS: Time:' . round($end - $start, 2) . ' Records:' . $records_inserted, false, 'SYSTEM');
 
 exit(0);
