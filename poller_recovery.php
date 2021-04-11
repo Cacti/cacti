@@ -196,6 +196,8 @@ if ($run) {
 	poller_push_reindex_data_to_poller(0, 0, true);
 
 	while (true) {
+		cacti_log('INFO: Poller recovery getting max_time for '. $record_limit . ' records.', false);
+
 		$max_time = db_fetch_cell("SELECT MAX(time)
 			FROM (
 				SELECT time
@@ -204,10 +206,11 @@ if ($run) {
 				LIMIT $record_limit
 			) AS rs", '', true, $local_db_cnn_id);
 
-
 		if (empty($max_time)) {
 			break;
 		} else {
+			cacti_log('INFO: Poller recovery fetching records till time: ' . $max_time . ' from poller DB', false);
+
 			$rows = db_fetch_assoc_prepared('SELECT *
 				FROM poller_output_boost
 				WHERE time <= ?
