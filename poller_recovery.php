@@ -184,8 +184,6 @@ if ($run) {
 		VALUES ("recovery_pid", ?)',
 		array($my_pid), true, $local_db_cnn_id);
 
-	$end_count = 0;
-
 	/* let the console know you are in recovery mode */
 	db_execute_prepared('UPDATE poller
 		SET status = "5"
