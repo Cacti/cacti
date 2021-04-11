@@ -223,26 +223,38 @@ if ($run) {
 
 				foreach($rows as $r) {
 					$sql = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
-					$packet_size += strlen($sql);
+					$sql_size = strlen($sql);
 
-					if ($packet_size >= $max_allowed_packet) {
+					/* if adding a new row would exceed max_allowed_packet, send the current frame to the main poller and start a new frame */
+					if (($packet_size + $sql_size) >= $max_allowed_packet) {
+						$record_count = cacti_sizeof($sql_array);
+
+						cacti_log('INFO: Poller recovery writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (partial).', false);
+
 						db_execute('INSERT IGNORE INTO poller_output_boost
 							(local_data_id, rrd_name, time, output)
 							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
-						$records_inserted += cacti_sizeof($sql_array);
+						$records_inserted += $record_count;
 						$sql_array = array();
 						$packet_size = 0;
 					}
 
 					$sql_array[] = $sql;
+					$packet_size += $sql_size;
 				}
 
+				/* if there is data in the last frame, send it to main poller as well and finalize */
 				if ($packet_size > 0) {
+					$record_count = cacti_sizeof($sql_array);
+
+					cacti_log('INFO: Poller recovery writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (last slice).', false);
+
 					db_execute("INSERT IGNORE INTO poller_output_boost
 						(local_data_id, rrd_name, time, output)
 						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
-					$records_inserted += cacti_sizeof($rows);
+
+					$records_inserted += $record_count;
 				}
 
 				/* remove the recovery records */
