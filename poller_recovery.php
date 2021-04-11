@@ -154,9 +154,12 @@ if (function_exists('pcntl_signal')) {
 /* take time and log performance data */
 $start = microtime(true);
 
+/* configuration variables */
 $record_limit = 150000;
-$records_inserted = 0;
 $sleep_time   = 1;
+
+/* global counter variables */
+$records_inserted = 0;
 
 debug('About to start recovery processing');
 
@@ -213,7 +216,7 @@ if ($run) {
 
 			if (cacti_sizeof($rows)) {
 				$packet_size = 0;
-				$sql_array = array();
+				$sql_array   = array();
 
 				foreach($rows as $r) {
 					$sql = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
