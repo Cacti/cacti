@@ -63,7 +63,7 @@ $database_hostname = 'localhost';
 $database_username = 'cactiuser';
 $database_password = 'cactiuser';
 $database_port     = '3306';
-$database_retries  = 5;
+$database_retries  = 2;
 
 $database_ssl      = false;
 $database_ssl_key  = '';
@@ -277,11 +277,11 @@ $config['connection'] = 'online';
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
-	if (!isset($rdatabase_retries))  $rdatabase_retries = 5;
-	if (!isset($rdatabase_ssl))      $rdatabase_ssl = false;
-	if (!isset($rdatabase_ssl_key))  $rdatabase_ssl_key = false;
+	if (!isset($rdatabase_retries))  $rdatabase_retries  = 2;
+	if (!isset($rdatabase_ssl))      $rdatabase_ssl      = false;
+	if (!isset($rdatabase_ssl_key))  $rdatabase_ssl_key  = false;
 	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
-	if (!isset($rdatabase_ssl_ca))   $rdatabase_ssl_ca = false;
+	if (!isset($rdatabase_ssl_ca))   $rdatabase_ssl_ca   = false;
 
 	// Check for recovery
 	if (is_object($local_db_cnn_id)) {
@@ -299,7 +299,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	// We are a remote poller also try to connect to the remote database
 	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
 
-	if ($config['is_web'] && $remote_db_cnn_id &&
+	if ($config['is_web'] && is_object($remote_db_cnn_id) &&
 		$config['connection'] != 'recovery' &&
 		$config['cacti_db_version'] != 'new_install') {
 
@@ -316,17 +316,17 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	}
 
 	if ($config['connection'] != 'recovery') {
-		if ($remote_db_cnn_id && $config['cacti_db_version'] != 'new_install') {
+		if (is_object($remote_db_cnn_id) && $config['cacti_db_version'] != 'new_install') {
 			$config['connection'] = 'online';
 		} else {
 			$config['connection'] = 'offline';
 		}
 	}
 } else {
-	if (!isset($database_ssl))      $database_ssl = false;
-	if (!isset($database_ssl_key))  $database_ssl_key = false;
+	if (!isset($database_ssl))      $database_ssl      = false;
+	if (!isset($database_ssl_key))  $database_ssl_key  = false;
 	if (!isset($database_ssl_cert)) $database_ssl_cert = false;
-	if (!isset($database_ssl_ca))   $database_ssl_ca = false;
+	if (!isset($database_ssl_ca))   $database_ssl_ca   = false;
 
 	if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
 		$ps = $config['is_web'] ? '<p>' : '';

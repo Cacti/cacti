@@ -698,7 +698,7 @@ function update_resource_cache($poller_id = 1) {
 				}
 			}
 		}
-	} elseif ($poller_id > 1) {
+	} elseif ($poller_id > 1 && $config['connection'] == 'online') {
 		if (read_config_option('disable_cache_replication') == 'on') {
 			cacti_log('NOTE: Resource Cache Replication is currently Disabled!  Skipping Replication.', true, 'REPLICATE');
 			return false;

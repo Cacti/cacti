@@ -202,7 +202,9 @@ if (!db_table_exists('poller_output_boost')) {
 api_plugin_hook('poller_top');
 
 // prime the poller_resource_cache for multiple pollers
-update_resource_cache($poller_id);
+if ($config['connection'] == 'online') {
+	update_resource_cache($poller_id);
+}
 
 // get number of polling items from the database
 $poller_interval = read_config_option('poller_interval');
@@ -814,7 +816,10 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 
 	// flush the boost table if in recovery mode
-	poller_recovery_flush_boost($poller_id);
+	if ($poller_id > 1 && $config['connection'] == 'recovery') {
+		cacti_log('NOTE: Remote Data Collection to force processing of boost records.', true, 'POLLER');
+		poller_recovery_flush_boost($poller_id);
+	}
 }
 
 /* start post data processing */

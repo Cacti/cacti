@@ -49,7 +49,7 @@ if ($config['poller_id'] > 1) {
 	if ($config['connection'] == 'online') {
 		db_force_remote_cnn();
 	} else {
-		cacti_log('WARNING: Main Cacti database offline.  Can not run automation', false, 'AUTOM8');
+		cacti_log('WARNING: Main Cacti database offline or in recovery.  Can not run automation', false, 'AUTOM8');
 		exit(1);
 	}
 }
