@@ -2988,7 +2988,7 @@ function automation_add_device($device, $web = false) {
 		$ping_method, $ping_port, $ping_timeout, $ping_retries,
 		$notes, $snmp_auth_protocol, $snmp_priv_passphrase,
 		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids,
-		$device_threads, $poller_id, $site_id, $external_id, $locaiton, $bulk_walk_size);
+		$device_threads, $poller_id, $site_id, $external_id, $location, $bulk_walk_size);
 
 	if ($host_id) {
 		automation_debug(" - Success\n");
