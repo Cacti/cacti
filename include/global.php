@@ -109,7 +109,7 @@ $db_var_defaults = array(
 	'database_username' => NULL,
 	'database_password' => NULL,
 	'database_port'     => '3306',
-	'database_retries'  => 5,
+	'database_retries'  => 2,
 	'database_ssl'      => false,
 	'database_ssl_key'  => '',
 	'database_ssl_cert' => '',
@@ -313,14 +313,12 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_ssl_key   = $rdatabase_ssl_key;
 		$database_ssl_cert  = $rdatabase_ssl_cert;
 		$database_ssl_ca    = $rdatabase_ssl_ca;
-	}
-
-	if ($config['connection'] != 'recovery') {
-		if (is_object($remote_db_cnn_id) && $config['cacti_db_version'] != 'new_install') {
+	} elseif (is_object($remote_db_cnn_id)) {
+		if ($config['connection'] != 'recovery') {
 			$config['connection'] = 'online';
-		} else {
-			$config['connection'] = 'offline';
 		}
+	} else {
+		$config['connection'] = 'offline';
 	}
 } else {
 	if (!isset($database_ssl))      $database_ssl      = false;
