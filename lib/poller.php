@@ -1991,18 +1991,28 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
  * @param string $tasktype  - Mandatory task type
  * @param string $taskname  - Mandatory task name
  * @param int $taskid       - Optional task id
+ * @param int $pid          - Optional task pid
  * @return null             - No data is returned
  */
-function unregister_process($tasktype, $taskname, $taskid = 0) {
+function unregister_process($tasktype, $taskname, $taskid = 0, $pid = -1) {
 	if (!db_table_exists('processes')) {
 		return true;
 	}
 
-	db_execute_prepared('DELETE FROM processes
-		WHERE tasktype = ?
-		AND taskname = ?
-		AND taskid = ?',
-		array($tasktype, $taskname, $taskid));
+	if ($pid == -1) {
+		db_execute_prepared('DELETE FROM processes
+			WHERE tasktype = ?
+			AND taskname = ?
+			AND taskid = ?',
+			array($tasktype, $taskname, $taskid));
+	} else {
+		db_execute_prepared('DELETE FROM processes
+			WHERE tasktype = ?
+			AND taskname = ?
+			AND taskid = ?
+			AND pid = ?',
+			array($tasktype, $taskname, $taskid, $pid));
+	}
 }
 
 /** heartbeat_process - update the process table last_update timestamp

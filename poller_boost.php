@@ -198,7 +198,7 @@ if ($child == false) {
 			}
 		}
 
-		unregister_process('boost', 'master', $config['poller_id']);
+		unregister_process('boost', 'master', $config['poller_id'], getmypid());
 	}
 
 	/* store the next run time so that people understand */
@@ -241,9 +241,9 @@ function sig_handler($signo) {
 			set_config_option('boost_poller_status', 'terminated - end time:' . date('Y-m-d H:i:s'));
 
 			if ($child) {
-				unregister_process('boost', 'child', $child);
+				unregister_process('boost', 'child', $child, getmypid());
 			} else {
-				unregister_process('boost', 'master', $config['poller_id']);
+				unregister_process('boost', 'master', $config['poller_id'], getmypid());
 			}
 
 			exit;
@@ -263,10 +263,10 @@ function boost_kill_running_processes() {
 
 	if (cacti_sizeof($processes)) {
 		foreach($processes as $p) {
-			cacti_log(sprintf('WARNING: Killing Boost %s PID %d due to it exceeding 3x its maximum allowed runtime', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
+			cacti_log(sprintf('WARNING: Killing Boost %s PID %d due to another boost process starting.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
 			posix_kill($p['pid'], SIGTERM);
 
-			unregister_process($p['tasktype'], $p['taskname'], $p['taskid']);
+			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
 		}
 	}
 }
