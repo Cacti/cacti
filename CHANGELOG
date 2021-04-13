@@ -106,6 +106,7 @@ Cacti CHANGELOG
 -issue#4206: Configured report's time changes when a report was delayed
 -issue#4215: Poller recovery starts multiple processes and fails to recover properly
 -issue#4223: Parallel boost restart due to timeout can result in errors
+-issue#4227: When remote poller is in offline mode data is written to poller_output as well as poller_output_boost
 -issue: Normalize plugin hooks between user_admin.php and user_group_admin.php
 -issue: CLI scripts should not have a max allowed runtime
 -feature: Update phpseclib to version 2.0.30

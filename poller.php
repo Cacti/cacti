@@ -690,6 +690,9 @@ while ($poller_runs_completed < $poller_runs) {
 
 					if ($poller_id == 1) {
 						$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, true);
+					} elseif ($config['connection'] != 'online') {
+						/* truncate until formal remote management is supported */
+						db_execute('TRUNCATE poller_output');
 					}
 
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
@@ -705,6 +708,9 @@ while ($poller_runs_completed < $poller_runs) {
 
 					if ($poller_id == 1) {
 						$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
+					} elseif ($config['connection'] != 'online') {
+						/* truncate until formal remote management is supported */
+						db_execute('TRUNCATE poller_output');
 					}
 
 					// end the process if the runtime exceeds MAX_POLLER_RUNTIME
@@ -814,12 +820,6 @@ while ($poller_runs_completed < $poller_runs) {
 		log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
 			($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
 	}
-
-	// flush the boost table if in recovery mode
-	if ($poller_id > 1 && $config['connection'] == 'recovery') {
-		cacti_log('NOTE: Remote Data Collection to force processing of boost records.', true, 'POLLER');
-		poller_recovery_flush_boost($poller_id);
-	}
 }
 
 /* start post data processing */
@@ -837,6 +837,12 @@ if ($poller_id == 1) {
 	api_plugin_hook('poller_bottom');
 	bad_index_check($mibs);
 } else {
+	// flush the boost table if in recovery mode
+	if ($poller_id > 1 && $config['connection'] == 'recovery') {
+		cacti_log('NOTE: Remote Data Collection to force processing of boost records.', true, 'POLLER');
+		poller_recovery_flush_boost($poller_id);
+	}
+
 	automation_poller_bottom();
 	poller_maintenance();
 }
