@@ -59,7 +59,7 @@ function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
-			cacti_log('WARNING: Recovery Poller terminated by user', false, 'RECOVERY');
+			cacti_log('RECOVERY WARNING: Recovery Poller terminated by user', false, 'POLLER');
 
 			/* tell the main poller that we are done */
 			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') ."')");
@@ -180,7 +180,7 @@ if (!empty($recovery_pid)) {
 if ($run) {
 	$my_pid = getmypid();
 
-	cacti_log('No pid exists, starting recovery process (PID=' . $my_pid . ')!', false, 'RECOVERY');
+	cacti_log('RECOVERY: No pid exists, starting recovery process (PID=' . $my_pid . ')!', false, 'POLLER');
 
 	db_execute_prepared('REPLACE INTO settings
 		(name, value)
@@ -196,7 +196,7 @@ if ($run) {
 	poller_push_reindex_data_to_poller(0, 0, true);
 
 	while (true) {
-		cacti_log('INFO: Poller recovery getting max_time for '. $record_limit . ' records.', false, 'RECOVERY');
+		cacti_log('RECOVERY: Getting max_time for '. $record_limit . ' records.', false, 'POLLER');
 
 		$max_time = db_fetch_cell("SELECT MAX(time)
 			FROM (
@@ -211,7 +211,7 @@ if ($run) {
 
 			break;
 		} else {
-			cacti_log('INFO: Poller recovery fetching records till time: ' . $max_time . ' from poller DB', false, 'RECOVERY');
+			cacti_log('RECOVERY: Fetching records till time: ' . $max_time . ' from poller DB', false, 'POLLER');
 
 			$rows = db_fetch_assoc_prepared('SELECT *
 				FROM poller_output_boost
@@ -231,7 +231,7 @@ if ($run) {
 					if (($packet_size + $sql_size) >= $max_allowed_packet) {
 						$record_count = cacti_sizeof($sql_array);
 
-						cacti_log('INFO: Poller recovery writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (partial).', false, 'RECOVERY');
+						cacti_log('RECOVERY: Writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (partial).', false, 'POLLER');
 
 						db_execute('INSERT IGNORE INTO poller_output_boost
 							(local_data_id, rrd_name, time, output)
@@ -250,7 +250,7 @@ if ($run) {
 				if ($packet_size > 0) {
 					$record_count = cacti_sizeof($sql_array);
 
-					cacti_log('INFO: Poller recovery writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (last slice).', false, 'RECOVERY');
+					cacti_log('RECOVERY: Writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (last slice).', false, 'POLLER');
 
 					db_execute("INSERT IGNORE INTO poller_output_boost
 						(local_data_id, rrd_name, time, output)
@@ -277,7 +277,7 @@ if ($run) {
 		WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
 } else {
 	debug('Recovery process still running, exiting');
-	cacti_log('Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid, false, 'RECOVERY');
+	cacti_log('RECOVERY: Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid, false, 'POLLER');
 	exit(1);
 }
 
