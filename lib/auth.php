@@ -2900,6 +2900,9 @@ function auth_login_redirect($login_opts = '') {
 
 			$referer .= ($newtheme ? (strpos($referer, '?') === false ? '?':'&') . 'newtheme=1':'');
 
+			/* Strip out the login from the referer if present */
+			$referer  = str_replace('?action=login', '', $referer);
+
 			if (api_user_realm_auth(auth_basename($referer))) {
 				header('Location: ' . $referer);
 			} elseif (!is_realm_allowed(8)) {
