@@ -222,6 +222,11 @@ if ($master) {
 	$launched = 0;
 	if (cacti_sizeof($networks)) {
 		foreach($networks as $network) {
+			if ($network['snmp_id'] == 0) {
+				cacti_log("ERROR: Automation can not run for Network '" . $network['name'] . "' since the SNMP ID is not set.", false, 'AUTOM8');
+				continue;
+			}
+
 			if (api_automation_is_time_to_start($network['id']) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));

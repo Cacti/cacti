@@ -714,7 +714,6 @@ function network_edit() {
 		'friendly_name' => __('SNMP Options'),
 		'description' => __('Select the SNMP Options to use for discovery of this Network Range.'),
 		'value' => '|arg1:snmp_id|',
-		'none_value' => __('None'),
 		'sql' => 'SELECT id, name FROM automation_snmp ORDER BY name'
 		),
 	'ping_method' => array(
