@@ -67,12 +67,13 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		$flags[PDO::ATTR_PERSISTENT] = true;
 		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
 		if ($db_ssl) {
-			if ($db_ssl_key != '' && $db_ssl_cert != '' && $db_ssl_ca != '') {
-				if (file_exists($db_ssl_key) && file_exists($db_ssl_cert) && file_exists($db_ssl_ca)) {
-					$flags[PDO::MYSQL_ATTR_SSL_KEY]  = $db_ssl_key;
-					$flags[PDO::MYSQL_ATTR_SSL_CERT] = $db_ssl_cert;
-					$flags[PDO::MYSQL_ATTR_SSL_CA]   = $db_ssl_ca;
-				} elseif (file_exists($db_ssl_key) && file_exists($db_ssl_cert)) {
+			if ($db_ssl_ca != '') {
+				if (file_exists($db_ssl_ca)) {
+					$flags[PDO::MYSQL_ATTR_SSL_CA] = $db_ssl_ca;
+				}
+			}
+			if ($db_ssl_key != '' && $db_ssl_cert != '') {
+				if (file_exists($db_ssl_key) && file_exists($db_ssl_cert)) {
 					$flags[PDO::MYSQL_ATTR_SSL_KEY]  = $db_ssl_key;
 					$flags[PDO::MYSQL_ATTR_SSL_CERT] = $db_ssl_cert;
 				}
