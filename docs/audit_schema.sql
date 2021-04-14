@@ -820,8 +820,9 @@ INSERT INTO `table_columns` VALUES ('sessions',2,'remote_addr','varchar(25)','NO
 INSERT INTO `table_columns` VALUES ('sessions',3,'access','int(10) unsigned','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('sessions',4,'data','mediumblob','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('sessions',5,'user_id','int(10) unsigned','YES','','0','');
-INSERT INTO `table_columns` VALUES ('sessions',6,'start_time','timestamp','NO','','CURRENT_TIMESTAMP','');
-INSERT INTO `table_columns` VALUES ('sessions',7,'transactions','int(10) unsigned','YES','','1','');
+INSERT INTO `table_columns` VALUES ('sessions',6,'user_agent','varchar(128)','NO','','','');
+INSERT INTO `table_columns` VALUES ('sessions',7,'start_time','timestamp','NO','','CURRENT_TIMESTAMP','');
+INSERT INTO `table_columns` VALUES ('sessions',8,'transactions','int(10) unsigned','YES','','1','');
 INSERT INTO `table_columns` VALUES ('settings',1,'name','varchar(50)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('settings',2,'value','varchar(2048)','NO','','','');
 INSERT INTO `table_columns` VALUES ('settings_tree',1,'user_id','mediumint(8) unsigned','NO','PRI','0','');
