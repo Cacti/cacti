@@ -109,6 +109,8 @@ Cacti CHANGELOG
 -issue#4227: When remote poller is in offline mode data is written to poller_output as well as poller_output_boost
 -issue#4228: Redirection issues after login under specific circumstances
 -issue#4229: Errors running autom8 without snmp option set
+-issue#4232: Database TLS configuration requires client certificates as well
+-issue#4233: Potential typos and incomplete parameter lists for database connection variables
 -issue: Normalize plugin hooks between user_admin.php and user_group_admin.php
 -issue: CLI scripts should not have a max allowed runtime
 -feature: Update phpseclib to version 2.0.30
