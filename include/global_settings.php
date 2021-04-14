@@ -1855,7 +1855,17 @@ $settings = array(
 				7  => __('%d Processes', 7),
 				8  => __('%d Processes', 8),
 				9  => __('%d Processes', 9),
-				10 => __('%d Processes', 10)
+				10 => __('%d Processes', 10),
+				11 => __('%d Processes', 11),
+				12 => __('%d Processes', 12),
+				13 => __('%d Processes', 13),
+				14 => __('%d Processes', 14),
+				15 => __('%d Processes', 15),
+				16 => __('%d Processes', 16),
+				17 => __('%d Processes', 17),
+				18 => __('%d Processes', 18),
+				19 => __('%d Processes', 19),
+				20 => __('%d Processes', 20)
 			)
 		),
 		'boost_rrd_update_max_records' => array(
