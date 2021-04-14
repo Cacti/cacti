@@ -1939,7 +1939,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
-	} elseif (strtotime($r['started']) + $r['timeout'] > time()) {
+	} elseif (strtotime($r['started']) + $r['timeout'] < time()) {
 		if ($r['pid'] > 0) {
 			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
 
@@ -2040,42 +2040,53 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
  *
  * @param string $tasktype  - Optional task type
  * @param string $taskname  - Optional task name
+ * @param string $taskid    - Optional task id
+ * @param string $pid       - Optional pid
  * @return null             - No data is returned
  */
-function timeout_kill_registered_processes($tasktype = '', $taskname = '') {
+function timeout_kill_registered_processes($tasktype = '', $taskname = '', $taskid = 0, $pid = -1) {
 	if (!db_table_exists('processes')) {
 		return true;
 	}
 
+	$sql_where = '';
+	$params    = array();
+
 	if ($tasktype != '') {
-		$processes = db_fetch_assoc('SELECT *
-			FROM processes
-			WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout');
-	} elseif ($taskname == '') {
-		$processes = db_fetch_assoc_prepared('SELECT *
-			FROM processes
-			WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
-			AND tasktype = ?',
-			array($tasktype));
-	} else {
-		$processes = db_fetch_assoc_prepared('SELECT *
-			FROM processes
-			WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
-			AND tasktype = ?
-			AND taskname = ?',
-			array($tasktype, $taskname));
+		$sql_where .= ' AND tasktype = ?';
+		$params[] = $tasktype;
 	}
+
+	if ($taskname != '') {
+		$sql_where .= ' AND taskname = ?';
+		$params[] = $taskname;
+	}
+
+	if ($taskid != '') {
+		$sql_where .= ' AND taskid = ?';
+		$params[] = $taskid;
+	}
+
+	if ($pid != '') {
+		$sql_where .= ' AND pid = ?';
+		$params[] = $pid;
+	}
+
+	$processes = db_fetch_assoc_prepared("SELECT *
+		FROM processes
+		WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
+		$sql_where", $params);
 
 	if (cacti_sizeof($processes)) {
 		foreach($processes as $r) {
-			if ($r['pid'] > 0 && posix_kill($r['pid'])) {
+			if ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
 				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 				posix_kill($r['pid'], SIGTERM);
 			} else {
 				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 			}
 
-			unregister_process($r['tasktype'], $r['taskname'], $r['taskid']);
+			unregister_process($r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']);
 		}
 	}
 }
