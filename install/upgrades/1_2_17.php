@@ -52,6 +52,34 @@ function upgrade_to_1_2_17() {
 	}
 
 	database_fix_mediumint_columns();
+
+    // Fix any 'Damaged Graph' instances
+    db_install_execute("UPDATE graph_local AS gl
+        INNER JOIN (
+            SELECT DISTINCT local_graph_id, task_item_id
+            FROM graph_templates_item
+        ) AS gti
+        ON gl.id = gti.local_graph_id
+        INNER JOIN data_template_rrd AS dtr
+        ON gti.task_item_id = dtr.id
+        INNER JOIN data_template_data AS dtd
+        ON dtr.local_data_id = dtd.local_data_id
+        INNER JOIN data_input_fields AS dif
+        ON dif.data_input_id = dtd.data_input_id
+        INNER JOIN (
+			SELECT *
+			FROM data_input_data
+			WHERE value RLIKE '^([0-9]+)$'
+		) AS did
+        ON did.data_template_data_id = dtd.id
+        AND did.data_input_field_id = dif.id
+        INNER JOIN snmp_query_graph_rrd AS sqgr
+        ON sqgr.snmp_query_graph_id = did.value
+        SET gl.snmp_query_graph_id = did.value
+        WHERE input_output = 'in'
+        AND type_code = 'output_type'
+        AND gl.snmp_query_id > 0
+		AND gl.snmp_query_graph_id = 0");
 }
 
 function database_fix_mediumint_columns() {
