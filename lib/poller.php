@@ -1982,8 +1982,8 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
 	}
 
 	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, last_update)
-		VALUES (?, ?, ?, ?, ?, ?)',
-		array($tasktype, $taskname, $taskid, $pid, $timeout, date('Y-m-d H:i:s')));
+		VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP())',
+		array($tasktype, $taskname, $taskid, $pid, $timeout));
 }
 
 /** unregister_process - remove a process from Cacti's process table
