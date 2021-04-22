@@ -874,7 +874,51 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 		WHERE parent = ?
 		AND graph_tree_id = ?
 		AND local_graph_id = 0
-		AND host_id = 0 ' . $order_by, array($parent, $tree_id)), 'id', 'title');
+		AND host_id = 0
+		AND site_id = 0 ' . $order_by, array($parent, $tree_id)), 'id', 'title');
+
+	if (cacti_sizeof($sort_array)) {
+		if ($sort_style == TREE_ORDERING_NUMERIC) {
+			asort($sort_array, SORT_NUMERIC);
+		} elseif ($sort_style == TREE_ORDERING_ALPHABETIC) {
+			// Let's let the database do it!
+		} elseif ($sort_style == TREE_ORDERING_NATURAL) {
+			if (defined('SORT_FLAG_CASE')) {
+				asort($sort_array, SORT_NATURAL | SORT_FLAG_CASE);
+			} else {
+				natcasesort($sort_array);
+			}
+		}
+
+		foreach($sort_array as $id => $element) {
+			$sort = db_fetch_cell_prepared('SELECT sort_children_type FROM graph_tree_items WHERE id = ?', array($id));
+			if ($sort == TREE_ORDERING_INHERIT) {
+				$first_child = db_fetch_cell_prepared('SELECT id FROM graph_tree_items WHERE parent = ? ORDER BY position LIMIT 1', array($id));
+				if (!empty($first_child)) {
+					$level++;
+					api_tree_sort_branch($first_child, $tree_id, false);
+				}
+			}
+
+			db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($sequence, $id));
+			$sequence++;
+		}
+	}
+
+	if ($sort_style == TREE_ORDERING_ALPHABETIC) {
+		$order_by = 'ORDER BY s.name';
+	} else {
+		$order_by = 'ORDER BY position';
+	}
+
+	$sort_array = array_rekey(db_fetch_assoc_prepared('SELECT s.name, gti.id
+            FROM graph_tree_items AS gti
+            INNER JOIN sites AS s
+            ON s.id = gti.site_id
+            WHERE parent = ?
+            AND graph_tree_id = ?
+            AND local_graph_id = 0
+            AND site_id > 0 ' . $order_by, array($parent, $tree_id)), 'id', 'name');
 
 	if (cacti_sizeof($sort_array)) {
 		if ($sort_style == TREE_ORDERING_NUMERIC) {
