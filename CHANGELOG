@@ -26,7 +26,7 @@ Cacti CHANGELOG
 -issue#4005: When viewing Realtime Graphs, validation errors may be seen for Size parameter
 -issue#4008: Massive decrease in poller performance due to unset variable
 -issue#4009: Ensure number format functions are consistent for i18n usage
--issue#4021: Change Device Threads, Revert read_config_option() (#4008, #3555)
+-issue#4021: Increase maximum number of device threads
 -issue#4031: Secondary filters on Data Collectors and Data Profiles do not work as expected
 -issue#4033: Action Icons changed to be consistent with admin UI
 -issue#4036: During discovery, Automation can throw unexpected errors due to null values
