@@ -4,45 +4,28 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2020-12-28 13:54-0500\n"
-"PO-Revision-Date: 2020-09-13 19:56-0400\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: zh_TW\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.4.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2020-12-28 13:54-0500\nPO-Revision-Date: 2021-05-04 08:47+0000\nLast-Translator: Linya Huang <linya0405@gmail.com>\nLanguage-Team: Chinese (Traditional) <http://translate.cacti.net/projects/cacti/core/zh_Hant/>\nLanguage: zh-TW\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.3.2\n"
 
 #: about.php:29 include/global_arrays.php:2469 lib/html.php:2462
-#, fuzzy
 msgid "About Cacti"
 msgstr "關於仙人掌"
 
 #: about.php:42
-#, fuzzy
 msgid ""
 "Cacti is designed to be a complete graphing solution based on the RRDtool's "
 "framework. Its goal is to make a network administrator's job easier by "
 "taking care of all the necessary details necessary to create meaningful "
 "graphs."
-msgstr ""
-"Cacti旨在成為基於RRDtool框架的完整圖形解決方案。其目標是通過處理創建有意義的"
-"圖形所需的所有必要細節，使網絡管理員的工作更輕鬆。"
+msgstr "Cacti旨在成為基於RRDtool框架的完整圖形解決方案。其目標是通過處理創建有意義的圖形所需的所有必要細節，使網絡管理員的工作更輕鬆。"
 
 #: about.php:44
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Please see the official %sCacti website%s for information, support, and "
 "updates."
 msgstr "有關信息，支持和更新，請參閱官方％sCacti網站％s。"
 
 #: about.php:46
-#, fuzzy
 msgid "Cacti Developers"
 msgstr "仙人掌開發人員"
 
@@ -650,7 +633,6 @@ msgstr "送出"
 #: user_group_admin.php:2386 user_group_admin.php:2469
 #: user_group_admin.php:2552 utilities.php:289 utilities.php:642
 #: utilities.php:973 utilities.php:1253 utilities.php:2000 utilities.php:2262
-#, fuzzy
 msgid "Set/Refresh Filters"
 msgstr "設置/刷新過濾器"
 
@@ -4487,7 +4469,7 @@ msgstr "每個數據源的％s KBytes"
 #: include/global_arrays.php:727 include/global_arrays.php:728
 #: include/global_arrays.php:729 include/global_arrays.php:730
 #: include/global_arrays.php:1350 include/global_settings.php:1493
-#, fuzzy, php-format
+#, php-format
 msgid "%d Years"
 msgstr "％d年"
 
@@ -4497,7 +4479,7 @@ msgstr "1 年"
 
 #: data_source_profiles.php:815 include/global_arrays.php:716
 #: include/global_arrays.php:1344 rrdcleaner.php:490
-#, fuzzy, php-format
+#, php-format
 msgid "%d Month"
 msgstr "％d月"
 
@@ -4507,7 +4489,7 @@ msgstr "％d月"
 #: include/global_arrays.php:1346 include/global_arrays.php:1347
 #: include/global_arrays.php:1348 rrdcleaner.php:491 rrdcleaner.php:492
 #: rrdcleaner.php:493
-#, fuzzy, php-format
+#, php-format
 msgid "%d Months"
 msgstr "％d個月"
 
@@ -4521,7 +4503,7 @@ msgstr "％d週"
 #: data_source_profiles.php:824 include/global_arrays.php:714
 #: include/global_arrays.php:715 include/global_arrays.php:1343
 #: rrdcleaner.php:488 rrdcleaner.php:489
-#, fuzzy, php-format
+#, php-format
 msgid "%d Weeks"
 msgstr "％d週"
 
@@ -7585,7 +7567,7 @@ msgstr "每％1天"
 
 #: include/global_arrays.php:721 include/global_arrays.php:1349
 #: include/global_settings.php:1492 rrdcleaner.php:494
-#, fuzzy, php-format
+#, php-format
 msgid "%d Year"
 msgstr "％d年"
 
@@ -8024,7 +8006,6 @@ msgid "General Administration"
 msgstr "總務局"
 
 #: include/global_arrays.php:1139
-#, fuzzy
 msgid "System Administration"
 msgstr "系統管理"
 
