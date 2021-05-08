@@ -332,12 +332,12 @@ if ($debug) {
 	$level = POLLER_VERBOSITY_MEDIUM;
 }
 
-$poller_seconds_sincerun = 'never';
+$poller_seconds_sincerun = 'Never';
 if (isset($poller_lastrun)) {
-	$poller_seconds_sincerun = $poller_start - $poller_lastrun;
+	$poller_seconds_sincerun = round($poller_start - $poller_lastrun, 2);
 }
 
-cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '" . round($poller_seconds_sincerun,2) . "', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", true, 'POLLER', $level);
+cacti_log("NOTE: Poller Int: '$poller_interval', $task_type Int: '$cron_interval', Time Since Last: '$poller_seconds_sincerun', Max Runtime '" . MAX_POLLER_RUNTIME. "', Poller Runs: '$poller_runs'", true, 'POLLER', $level);
 
 // our cron can run at either 1 or 5 minute intervals
 if ($poller_interval <= 60) {

@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.18
+-issue#4254: When poller first runs, time since last run produces an error
+
 1.2.17
 -security#4019: Incorrect handling of fields led to potential XSS issues
 -security#4022: SQL Injection was possible due to incorrect validation order (CVE-2020-35701)
