@@ -117,6 +117,7 @@ Cacti CHANGELOG
 -issue#4232: Database TLS configuration requires client certificates as well
 -issue#4233: Potential typos and incomplete parameter lists for database connection variables
 -issue#4241: Tree sort mechanism does not take sites into account
+-issue#4251: Caching of Graph Titles can be incorrect
 -feature: Add Theme 'Midwinter'
 -feature: Update phpseclib to version 2.0.30
 -feature#645: Modify automation to test for data before creating graphs
