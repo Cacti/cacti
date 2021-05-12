@@ -91,7 +91,7 @@ function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids 
 /* update_data_source_title_cache - updates the title cache for a single data source
    @arg $local_data_id - (int) the ID of the data source to update the title cache for */
 function update_data_source_title_cache($local_data_id) {
-	$old_title = db_fetch_cell_prepared('SELECT title_cache
+	$old_title = db_fetch_cell_prepared('SELECT name_cache
 		FROM data_template_data
 		WHERE local_data_id = ?',
 		array($local_data_id));
