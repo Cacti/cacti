@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.18
 -issue#4254: When poller first runs, time since last run produces an error
+-issue#4259: A typo in variables.php leads to SQL error
 -feature#4258: Update phpseclib to version 2.0.31
 
 1.2.17
