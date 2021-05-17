@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.18
+-security#4261: Lack of escaping on file input fields can lead to XSS exposure under midwinter theme
 -issue#4254: When poller first runs, time since last run produces an error
 
 1.2.17
