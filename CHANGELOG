@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -security#4261: Lack of escaping on file input fields can lead to XSS exposure under midwinter theme
 -issue#4254: When poller first runs, time since last run produces an error
 -issue#4259: A typo in variables.php leads to SQL error
+-issue#4266: Incomplete Poller items from a previous run may be updated twice
 -feature#4258: Update phpseclib to version 2.0.31
 
 1.2.17

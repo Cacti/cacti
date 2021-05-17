@@ -264,26 +264,6 @@ if (cacti_sizeof($ds_needing_fixes)) {
 	}
 }
 
-// correct for possible poller output not empty occurances
-$ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id,
-	MIN(rrd_next_step) AS next_step,
-	COUNT(DISTINCT rrd_next_step) AS instances
-	FROM poller_item
-	WHERE poller_id = ?
-	AND rrd_num > 1
-	GROUP BY local_data_id
-	HAVING instances > 1',
-	array($poller_id));
-
-if (cacti_sizeof($ds_needing_fixes)) {
-	foreach($ds_needing_fixes as $ds) {
-		db_execute_prepared('UPDATE poller_item
-			SET rrd_next_step = ?
-			WHERE local_data_id = ?',
-			array($ds['next_step'], $ds['local_data_id']));
-	}
-}
-
 // assume a scheduled task of either 60 or 300 seconds
 if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
