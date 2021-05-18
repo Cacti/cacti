@@ -182,8 +182,6 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 							$asum_array[$ds_name][$timestamp]  = $data;
 						}
 					}
-				} else {
-					return false;
 				}
 			}
 		}
