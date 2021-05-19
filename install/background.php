@@ -35,6 +35,7 @@ include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/import.php');
 include_once($config['base_path'] . '/lib/installer.php');
 include_once($config['base_path'] . '/lib/poller.php');
+include_once($config['base_path'] . '/lib/snmp.php');
 include_once($config['base_path'] . '/lib/utility.php');
 
 cacti_log('Checking arguments', false, 'INSTALL:');
