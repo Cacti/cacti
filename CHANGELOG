@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#4259: A typo in variables.php leads to SQL error
 -issue#4263: Percentile not showing on partial data after fix for #3340
 -issue#4266: Incomplete Poller items from a previous run may be updated twice
+-issue#4267: SNMP library can display extra warning messages when host does not resolve
 -issue#4269: Installation Wizard - Uncaught Error: Call to undefined function cacti_snmp_session()
 -issue#4271: Continued timeout of registered processes
 -issue#4272:  dns_get_record(): A temporary server error occurred

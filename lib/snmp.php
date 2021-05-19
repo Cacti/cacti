@@ -72,7 +72,7 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 	$timeout_us = (int) ($timeout_ms * 1000);
 
 	try {
-		$session = new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
+		$session = @new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
 	} catch (Exception $e) {
 		return false;
 	}
