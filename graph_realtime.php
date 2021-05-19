@@ -275,10 +275,10 @@ case 'countdown':
 		'local_graph_id' => get_request_var('local_graph_id'),
 		'top'            => get_request_var('top'),
 		'left'           => get_request_var('left'),
-		'ds_step'        => (isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
-		'graph_start'    => (isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
-		'size'           => (isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size']:read_user_setting('realtime_size', 100)),
-		'thumbnails'     => (isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend']:'false'),
+		'ds_step'        => html_escape(isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
+		'graph_start'    => html_escape(isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
+		'size'           => html_escape(isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size']:read_user_setting('realtime_size', 100)),
+		'thumbnails'     => html_escape(isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend']:'false'),
 		'data'           => (isset($data) ? $data:''),
 		'image_format'   => $graph_data_array['image_format']
 	);
