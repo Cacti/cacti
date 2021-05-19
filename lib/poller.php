@@ -1928,7 +1928,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		return true;
 	}
 
-	$r = db_fetch_row_prepared('SELECT *
+	$r = db_fetch_row_prepared('SELECT *, IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), 1, 0) AS timeout_exceeded
 		FROM processes
 		WHERE tasktype = ?
 		AND taskname = ?
@@ -1939,7 +1939,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
-	} elseif (strtotime($r['started']) + $r['timeout'] < time()) {
+	} elseif ($r['timeout_exceeded']) {
 		if ($r['pid'] > 0) {
 			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
 
