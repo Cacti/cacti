@@ -1928,7 +1928,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		return true;
 	}
 
-	$r = db_fetch_row_prepared('SELECT *, IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), 1, 0) AS timeout_exceeded
+	$r = db_fetch_row_prepared('SELECT *, IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded, UNIX_TIMESTAMP() AS current_timestamp
 		FROM processes
 		WHERE tasktype = ?
 		AND taskname = ?
@@ -1941,7 +1941,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 	} elseif ($r['timeout_exceeded']) {
 		if ($r['pid'] > 0) {
-			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
+			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceed'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
 			posix_kill($r['pid'], SIGTERM);
 
@@ -1981,8 +1981,8 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
 		return true;
 	}
 
-	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, last_update)
-		VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP())',
+	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
+		VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())',
 		array($tasktype, $taskname, $taskid, $pid, $timeout));
 }
 
