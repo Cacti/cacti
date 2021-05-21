@@ -1928,7 +1928,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		return true;
 	}
 
-	$r = db_fetch_row_prepared('SELECT *, IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded, UNIX_TIMESTAMP() AS current_timestamp
+	$r = db_fetch_row_prepared('SELECT *, IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded, UNIX_TIMESTAMP() AS `current_timestamp`
 		FROM processes
 		WHERE tasktype = ?
 		AND taskname = ?
@@ -1982,7 +1982,7 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
 	}
 
 	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
-		VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())',
+		VALUES (?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())',
 		array($tasktype, $taskname, $taskid, $pid, $timeout));
 }
 
