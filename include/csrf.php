@@ -21,6 +21,8 @@ function csrf_startup() {
 }
 
 function csrf_error_callback() {
+	//Resolve session fixation for PHP 5.4
+	session_regenerate_id();
 	raise_message('csrf_timeout');
 	ob_end_clean();
 	header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
