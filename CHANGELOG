@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.18
 -security#4261: Lack of escaping on file input fields can lead to XSS exposure under midwinter theme
 -security#4276: Lack of escaping on parameter graph_nolegend can lead to XSS exposure in graph_realtime.php
+-security#4282: Regenerate session id to avoid session fixation issue
 -issue#4254: When poller first runs, time since last run produces an error
 -issue#4259: A typo in variables.php leads to SQL error
 -issue#4263: Percentile not showing on partial data after fix for #3340
