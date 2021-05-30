@@ -139,6 +139,7 @@ Cacti CHANGELOG
 -feature#4113: Allow user to be automatically logged out after admin defined period by datatecuk
 -feature#4176: When replicating, ensure Cacti can detect and verify replica servers
 -feature#4210: Replace c3.js with billboard.js
+-issue#4284: Database upgrade can fail - Uncaught argument count error
 
 1.2.16
 -issue#3704: When generating a report, the Cascade to Branches function does not as expected
