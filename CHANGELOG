@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#4269: Installation Wizard - Uncaught Error: Call to undefined function cacti_snmp_session()
 -issue#4271: Continued timeout of registered processes
 -issue#4272:  dns_get_record(): A temporary server error occurred
+-issue#4250: Unable to create graphs due to Data Source verification failure
 -feature#4258: Update phpseclib to version 2.0.31
 
 1.2.17
