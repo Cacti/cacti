@@ -1750,7 +1750,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					AND did.data_template_data_id = ?
 					AND data_template_data_id = ?
 					AND did.value != ""',
-					array($data_template_id, $data_template_id)),
+					array($data_input['data_template_data_id'], $data_input['data_template_data_id'])),
 				'type_code', 'value'
 			);
 
