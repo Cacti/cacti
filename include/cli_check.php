@@ -30,7 +30,7 @@ $no_http_headers = true;
 
 /* Make sure CLI's are have minimum settings */
 $default_limit  = -1;
-$default_time   = 300;
+$default_time   = -1;
 $memory_limit   = ini_get('memory_limit');
 $execution_time = ini_get('max_execution_time');
 

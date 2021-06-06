@@ -488,6 +488,10 @@ function report_audit_results($output = true) {
 									}
 								}
 
+								/* work around MariaDB compatibility issue */
+								$c[$col]     = str_replace($c[$col], 'current_timestamp()', 'CURRENT_TIMESTAMP');
+								$dbc[$dbcol] = str_replace($dbc[$dbcol], 'current_timestamp()', 'CURRENT_TIMESTAMP');
+
 								if ($c[$col] != $dbc[$dbcol] && $text != 'mediumtext') {
 									if ($output) {
 										if ($col != 'Key') {
@@ -1018,9 +1022,13 @@ function load_audit_database() {
 	if (is_dir($config['base_path'] . '/docs')) {
 		print PHP_EOL . 'Exporting Table Audit Table Creation Logic to ' . $config['base_path'] . '/docs/audit_schema.sql' . PHP_EOL;
 
-		exec('mysqldump -u' . $database_username . ' -p' . $database_password . ' ' . $database_default . ' table_columns table_indexes --extended-insert=FALSE > ' . $config['base_path'] . '/docs/audit_schema.sql');
+		$retval = db_dump_data($database_default, 'table_columns table_indexes', array(), $config['base_path'] . '/docs/audit_schema.sql');
+		if ($retval) {
+			print 'Finished Creating Audit Schema with ERROR' . PHP_EOL . PHP_EOL;
+		} else {
+			print 'Finished Creating Audit Schema' . PHP_EOL . PHP_EOL;
+		}
 
-		print 'Finished Creating Audit Schema' . PHP_EOL . PHP_EOL;
 	} else {
 		print PHP_EOL . 'FATAL: Docs directory does not exist!' . PHP_EOL . PHP_EOL;
 	}

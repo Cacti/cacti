@@ -698,7 +698,7 @@ function update_resource_cache($poller_id = 1) {
 				}
 			}
 		}
-	} elseif ($poller_id > 1) {
+	} elseif ($poller_id > 1 && $config['connection'] == 'online') {
 		if (read_config_option('disable_cache_replication') == 'on') {
 			cacti_log('NOTE: Resource Cache Replication is currently Disabled!  Skipping Replication.', true, 'REPLICATE');
 			return false;
@@ -1320,7 +1320,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id, false, array('last_updated'));
 
 		// Remove anything not updated recently
-		$time = db_fetch_cell('SELECT MAX(UNIX_TIMESTAMP(last_updated)) FROM poller_item', false, $rcnn_id);
+		$time = db_fetch_cell('SELECT MAX(UNIX_TIMESTAMP(last_updated)) FROM poller_item', '', false, $rcnn_id);
 
 		if (!empty($time)) {
 			// You must update the last_updated locally
@@ -1671,6 +1671,8 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 }
 
 function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
+	$max_packet  = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'max_allowed_packet'", true, $conn);
+
 	if (cacti_sizeof($data)) {
 		$prefix    = "INSERT INTO $table (";
 		$suffix    = ' ON DUPLICATE KEY UPDATE ';
@@ -1680,7 +1682,7 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 		$columns   = array_keys($data[0]);
 		$skipcols  = array();
 
-		$remote_rows    = db_fetch_cell('SELECT COUNT(*) FROM ' . $table, '', true, $conn);
+		$remote_rows = db_fetch_cell("SELECT COUNT(*) FROM $table", '', true, $conn);
 
 		if ($exclude !== false && !is_array($exclude)) {
 			$exclude = array($exclude);
@@ -1705,6 +1707,9 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 		$prefix .= ') VALUES ';
 
 		$rowcnt = 0;
+		$ohead  = strlen($prefix) + strlen($suffix);
+		$sqllen = $ohead;
+
 		foreach($data as $row) {
 			$colcnt  = 0;
 			$sql_row = '(';
@@ -1718,12 +1723,14 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 			$sql     .= ($rowcnt > 0 ? ', ':'') . $sql_row;
 
 			$rowcnt++;
+			$sqllen += strlen($sql_row);
 
-			if ($rowcnt > 1000) {
+			if ($rowcnt > 150000 || ($sqllen + 1000 > $max_packet)) {
 				db_execute($prefix . $sql . $suffix, true, $conn);
 				$rows_done += db_affected_rows($conn);
 				$sql = '';
 				$rowcnt = 0;
+				$sqllen = $ohead;
 			}
 		}
 
@@ -1921,7 +1928,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		return true;
 	}
 
-	$r = db_fetch_row_prepared('SELECT *
+	$r = db_fetch_row_prepared('SELECT *, IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded, UNIX_TIMESTAMP() AS `current_timestamp`
 		FROM processes
 		WHERE tasktype = ?
 		AND taskname = ?
@@ -1932,9 +1939,9 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
 
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
-	} elseif (strtotime($r['started']) + $r['timeout'] < time()) {
+	} elseif ($r['timeout_exceeded']) {
 		if ($r['pid'] > 0) {
-			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
+			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceed'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
 			posix_kill($r['pid'], SIGTERM);
 
@@ -1974,9 +1981,9 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
 		return true;
 	}
 
-	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, last_update)
-		VALUES (?, ?, ?, ?, ?, ?)',
-		array($tasktype, $taskname, $taskid, $pid, $timeout, date('Y-m-d H:i:s')));
+	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
+		VALUES (?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())',
+		array($tasktype, $taskname, $taskid, $pid, $timeout));
 }
 
 /** unregister_process - remove a process from Cacti's process table
@@ -1984,18 +1991,28 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
  * @param string $tasktype  - Mandatory task type
  * @param string $taskname  - Mandatory task name
  * @param int $taskid       - Optional task id
+ * @param int $pid          - Optional task pid
  * @return null             - No data is returned
  */
-function unregister_process($tasktype, $taskname, $taskid = 0) {
+function unregister_process($tasktype, $taskname, $taskid = 0, $pid = -1) {
 	if (!db_table_exists('processes')) {
 		return true;
 	}
 
-	db_execute_prepared('DELETE FROM processes
-		WHERE tasktype = ?
-		AND taskname = ?
-		AND taskid = ?',
-		array($tasktype, $taskname, $taskid));
+	if ($pid == -1) {
+		db_execute_prepared('DELETE FROM processes
+			WHERE tasktype = ?
+			AND taskname = ?
+			AND taskid = ?',
+			array($tasktype, $taskname, $taskid));
+	} else {
+		db_execute_prepared('DELETE FROM processes
+			WHERE tasktype = ?
+			AND taskname = ?
+			AND taskid = ?
+			AND pid = ?',
+			array($tasktype, $taskname, $taskid, $pid));
+	}
 }
 
 /** heartbeat_process - update the process table last_update timestamp
@@ -2023,42 +2040,53 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
  *
  * @param string $tasktype  - Optional task type
  * @param string $taskname  - Optional task name
+ * @param string $taskid    - Optional task id
+ * @param string $pid       - Optional pid
  * @return null             - No data is returned
  */
-function timeout_kill_registered_processes($tasktype = '', $taskname = '') {
+function timeout_kill_registered_processes($tasktype = '', $taskname = '', $taskid = 0, $pid = -1) {
 	if (!db_table_exists('processes')) {
 		return true;
 	}
 
+	$sql_where = '';
+	$params    = array();
+
 	if ($tasktype != '') {
-		$processes = db_fetch_assoc('SELECT *
-			FROM processes
-			WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout');
-	} elseif ($taskname == '') {
-		$processes = db_fetch_assoc_prepared('SELECT *
-			FROM processes
-			WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
-			AND tasktype = ?',
-			array($tasktype));
-	} else {
-		$processes = db_fetch_assoc_prepared('SELECT *
-			FROM processes
-			WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
-			AND tasktype = ?
-			AND taskname = ?',
-			array($tasktype, $taskname));
+		$sql_where .= ' AND tasktype = ?';
+		$params[] = $tasktype;
 	}
+
+	if ($taskname != '') {
+		$sql_where .= ' AND taskname = ?';
+		$params[] = $taskname;
+	}
+
+	if ($taskid != '') {
+		$sql_where .= ' AND taskid = ?';
+		$params[] = $taskid;
+	}
+
+	if ($pid != '') {
+		$sql_where .= ' AND pid = ?';
+		$params[] = $pid;
+	}
+
+	$processes = db_fetch_assoc_prepared("SELECT *
+		FROM processes
+		WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
+		$sql_where", $params);
 
 	if (cacti_sizeof($processes)) {
 		foreach($processes as $r) {
-			if ($r['pid'] > 0 && posix_kill($r['pid'])) {
+			if ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
 				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 				posix_kill($r['pid'], SIGTERM);
 			} else {
 				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 			}
 
-			unregister_process($r['tasktype'], $r['taskname'], $r['taskid']);
+			unregister_process($r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']);
 		}
 	}
 }

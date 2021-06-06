@@ -36,14 +36,15 @@ function graph_template_to_xml($graph_template_id) {
 	$graph_template_graph = db_fetch_row_prepared('SELECT *
 		FROM graph_templates_graph
 		WHERE graph_template_id = ?
-		AND local_graph_id=0
+		AND local_graph_id = 0
 		ORDER BY id',
 		array($graph_template_id));
 
 	$graph_template_items = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
 		WHERE graph_template_id = ?
-		AND local_graph_id=0
+		AND local_graph_id = 0
+		AND hash != ""
 		ORDER BY sequence',
 		array($graph_template_id));
 
@@ -189,7 +190,8 @@ function data_template_to_xml($data_template_id) {
 	$data_template_rrd = db_fetch_assoc_prepared('SELECT *
 		FROM data_template_rrd
 		WHERE data_template_id = ?
-		AND local_data_id=0
+		AND local_data_id = 0
+		AND hash != ""
 		ORDER BY id',
 		array($data_template_id));
 
@@ -875,9 +877,9 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$graph_template_items = db_fetch_assoc_prepared('SELECT
 			data_template_rrd.data_template_id
 			FROM (graph_templates_item,data_template_rrd)
-			WHERE graph_templates_item.task_item_id=data_template_rrd.id
+			WHERE graph_templates_item.task_item_id = data_template_rrd.id
 			AND graph_templates_item.graph_template_id = ?
-			AND graph_templates_item.local_graph_id=0
+			AND graph_templates_item.local_graph_id = 0
 			AND graph_templates_item.task_item_id > 0
 			GROUP BY data_template_rrd.data_template_id', array($id));
 
@@ -893,7 +895,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$cdef_items = db_fetch_assoc_prepared('SELECT cdef_id
 			FROM graph_templates_item
 			WHERE graph_template_id = ?
-			AND local_graph_id=0
+			AND local_graph_id = 0
 			AND cdef_id > 0
 			GROUP BY cdef_id', array($id));
 
@@ -941,7 +943,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$vdef_items = db_fetch_assoc_prepared('SELECT vdef_id
 			FROM graph_templates_item
 			WHERE graph_template_id = ?
-			AND local_graph_id=0
+			AND local_graph_id = 0
 			AND vdef_id > 0
 			GROUP BY vdef_id',
 			array($id));
@@ -958,7 +960,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$graph_template_items = db_fetch_assoc_prepared('SELECT gprint_id
 			FROM graph_templates_item
 			WHERE graph_template_id = ?
-			AND local_graph_id=0
+			AND local_graph_id = 0
 			AND gprint_id > 0
 			GROUP BY gprint_id',
 			array($id));
@@ -977,7 +979,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$item = db_fetch_row_prepared('SELECT data_input_id
 			FROM data_template_data
 			WHERE data_template_id = ?
-			AND local_data_id=0
+			AND local_data_id = 0
 			AND data_input_id > 0',
 			array($id));
 
@@ -989,7 +991,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$profiles = db_fetch_assoc_prepared('SELECT DISTINCT data_source_profile_id
 			FROM data_template_data
 			WHERE data_template_id = ?
-			AND local_data_id=0',
+			AND local_data_id = 0',
 			array($id));
 
 		if (cacti_sizeof($profiles)) {

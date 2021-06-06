@@ -22,9 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
-require(__DIR__ . '/include/cli_check.php');
+if (function_exists('pcntl_async_signals')) {
+	pcntl_async_signals(true);
+} else {
+	declare(ticks = 100);
+}
 
-declare(ticks = 1);
+ini_set('output_buffering', 'Off');
+
+require(__DIR__ . '/include/cli_check.php');
 
 /* need to capture signals from users */
 function sig_handler($signo) {
@@ -70,6 +76,9 @@ if (php_sapi_name() != 'cli') {
 	define('STDIN', fopen('php://stdin', 'r'));
 	define('STDOUT', fopen('php://stdout', 'w'));
 }
+
+/* make sure data is flushed immediately */
+ob_implicit_flush();
 
 /* signal for realtime */
 global $environ, $poller_id;
@@ -134,9 +143,6 @@ cacti_log('PHP Script Server has Started - Parent is ' . $environ, false, 'PHPSV
 fputs(STDOUT, 'PHP Script Server has Started - Parent is ' . $environ . "\n");
 fflush(STDOUT);
 
-$log_file = '/usr/share/cacti/site/log/script_server_' . getmypid() . '.out';
-$log_keep = false;
-
 /* process waits for input and then calls functions as required */
 while (1) {
 	$result = '';
@@ -169,19 +175,16 @@ while (1) {
 			cacti_log('WARNING: Parent (' . $parent_pid . ') of Script Server (' . getmypid() . ') has been lost, forcing exit', false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
 			$input_string = 'quit';
 		}
-
-		$log_keep = true;
 	}
 
 	if (!empty($input_string)) {
 		$input_string = trim($input_string);
 
 		if (substr($input_string,0,4) == 'quit') {
-			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
-			fflush(STDOUT);
-			cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
-			if (!$log_keep && file_exists($log_file)) {
-				unlink($log_file);
+			if (!$called_by_script_server) {
+				fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
+				fflush(STDOUT);
+				cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 			}
 			db_close();
 			exit(0);
@@ -329,7 +332,9 @@ function parseArgs($string, &$str_list, $debug = false) {
 
 			break;
 		case '\\':
-			if ($escaping) {
+			if ($indelim) {
+				$curstr  .= $char;
+			} elseif ($escaping) {
 				$curstr  .= $char;
 				$escaping = false;
 			} else {

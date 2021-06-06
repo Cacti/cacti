@@ -433,8 +433,9 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_community` varchar(100) NOT NULL,
   `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_timeout` int(10) unsigned NOT NULL DEFAULT '500',
-  `snmp_retries` tinyint(11) unsigned NOT NULL DEFAULT '3',
+  `snmp_retries` tinyint(1) unsigned NOT NULL DEFAULT '3',
   `max_oids` int(12) unsigned DEFAULT '10',
+  `bulk_walk_size` int(11) DEFAULT '-1',
   `snmp_username` varchar(50) DEFAULT NULL,
   `snmp_password` varchar(50) DEFAULT NULL,
   `snmp_auth_protocol` char(6) DEFAULT '',
@@ -449,7 +450,7 @@ CREATE TABLE `automation_snmp_items` (
 -- Dumping data for table `automation_snmp_items`
 --
 
-INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,'admin','baseball','MD5','','DES','','');
+INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,-1,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,-1,'admin','baseball','MD5','','DES','','');
 
 --
 -- Table structure for table `automation_templates`
@@ -1145,7 +1146,7 @@ INSERT INTO data_input VALUES (12,'332111d8b54ac8ce939af87a7eac0c06','Get Script
 
 CREATE TABLE data_input_data (
   data_input_field_id mediumint(8) unsigned NOT NULL default '0',
-  data_template_data_id mediumint(8) unsigned NOT NULL default '0',
+  data_template_data_id int(10) unsigned NOT NULL default '0',
   t_value char(2) default NULL,
   value text,
   PRIMARY KEY (data_input_field_id,data_template_data_id),
@@ -1417,7 +1418,7 @@ INSERT INTO `data_source_profiles_rra` VALUES (12,3,'Yearly (12 Hour Average)',7
 CREATE TABLE `data_source_purge_action` (
   `id` integer UNSIGNED auto_increment,
   `name` varchar(128) NOT NULL default '',
-  `local_data_id` mediumint(8) unsigned NOT NULL default '0',
+  `local_data_id` int(10) unsigned NOT NULL default '0',
   `action` tinyint(2) NOT NULL default 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY name (`name`))
@@ -1432,7 +1433,7 @@ CREATE TABLE `data_source_purge_action` (
 CREATE TABLE `data_source_purge_temp` (
   `id` integer UNSIGNED auto_increment,
   `name_cache` varchar(255) NOT NULL default '',
-  `local_data_id` mediumint(8) unsigned NOT NULL default '0',
+  `local_data_id` int(10) unsigned NOT NULL default '0',
   `name` varchar(128) NOT NULL default '',
   `size` integer UNSIGNED NOT NULL default '0',
   `last_mod` TIMESTAMP NOT NULL default '0000-00-00 00:00:00',
@@ -1453,7 +1454,7 @@ CREATE TABLE `data_source_purge_temp` (
 --
 	
 CREATE TABLE `data_source_stats_daily` (
-  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
@@ -1465,7 +1466,7 @@ CREATE TABLE `data_source_stats_daily` (
 --
 
 CREATE TABLE `data_source_stats_hourly` (
-  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
@@ -1477,7 +1478,7 @@ CREATE TABLE `data_source_stats_hourly` (
 --
 
 CREATE TABLE `data_source_stats_hourly_cache` (
-  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `value` DOUBLE DEFAULT NULL,
@@ -1490,7 +1491,7 @@ CREATE TABLE `data_source_stats_hourly_cache` (
 --
 
 CREATE TABLE `data_source_stats_hourly_last` (
-  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `value` DOUBLE DEFAULT NULL,
   `calculated` DOUBLE DEFAULT NULL,
@@ -1502,7 +1503,7 @@ CREATE TABLE `data_source_stats_hourly_last` (
 --
 
 CREATE TABLE `data_source_stats_monthly` (
-  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
@@ -1514,7 +1515,7 @@ CREATE TABLE `data_source_stats_monthly` (
 --
 
 CREATE TABLE `data_source_stats_weekly` (
-  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
@@ -1526,7 +1527,7 @@ CREATE TABLE `data_source_stats_weekly` (
 --
 
 CREATE TABLE `data_source_stats_yearly` (
-  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
   `average` DOUBLE DEFAULT NULL,
   `peak` DOUBLE DEFAULT NULL,
@@ -1554,9 +1555,9 @@ CREATE TABLE data_template (
 --
 
 CREATE TABLE data_template_data (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  local_data_template_data_id mediumint(8) unsigned NOT NULL default '0',
-  local_data_id mediumint(8) unsigned NOT NULL default '0',
+  id int(10) unsigned NOT NULL auto_increment,
+  local_data_template_data_id int(10) unsigned NOT NULL default '0',
+  local_data_id int(10) unsigned NOT NULL default '0',
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   data_input_id mediumint(8) unsigned NOT NULL default '0',
   t_name char(2) default NULL,
@@ -1573,7 +1574,7 @@ CREATE TABLE data_template_data (
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
   KEY data_input_id (data_input_id),
-  KEY name_cache (name_cache(191))
+  KEY name_cache (name_cache)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
@@ -1585,10 +1586,10 @@ CREATE TABLE data_template_data (
 --
 
 CREATE TABLE data_template_rrd (
-  id mediumint(8) unsigned NOT NULL auto_increment,
+  id int(10) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  local_data_template_rrd_id mediumint(8) unsigned NOT NULL default '0',
-  local_data_id mediumint(8) unsigned NOT NULL default '0',
+  local_data_template_rrd_id int(10) unsigned NOT NULL default '0',
+  local_data_id int(10) unsigned NOT NULL default '0',
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   t_rrd_maximum char(2) default NULL,
   rrd_maximum varchar(20) NOT NULL default '0',
@@ -1630,7 +1631,7 @@ CREATE TABLE external_links (
 --
 
 CREATE TABLE graph_local (
-  id mediumint(8) unsigned NOT NULL auto_increment,
+  id int(10) unsigned NOT NULL auto_increment,
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
@@ -1671,7 +1672,7 @@ CREATE TABLE graph_template_input (
 --
 
 CREATE TABLE graph_template_input_defs (
-  graph_template_input_id mediumint(8) unsigned NOT NULL default '0',
+  graph_template_input_id int(10) unsigned NOT NULL default '0',
   graph_template_item_id int(12) unsigned NOT NULL default '0',
   PRIMARY KEY (graph_template_input_id,graph_template_item_id),
   KEY graph_template_input_id (graph_template_input_id)
@@ -1725,9 +1726,9 @@ INSERT INTO graph_templates_gprint VALUES (4,'304a778405392f878a6db435afffc1e9',
 --
 
 CREATE TABLE graph_templates_graph (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  local_graph_template_graph_id mediumint(8) unsigned NOT NULL default '0',
-  local_graph_id mediumint(8) unsigned NOT NULL default '0',
+  id int(10) unsigned NOT NULL auto_increment,
+  local_graph_template_graph_id int(10) unsigned NOT NULL default '0',
+  local_graph_id int(10) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   t_image_format_id char(2) default '',
   image_format_id tinyint(1) NOT NULL default '0',
@@ -1795,7 +1796,7 @@ CREATE TABLE graph_templates_graph (
   PRIMARY KEY (id),
   KEY local_graph_id (local_graph_id),
   KEY graph_template_id (graph_template_id),
-  KEY title_cache (title_cache(191))
+  KEY title_cache (title_cache)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores the actual graph data.';
 
 --
@@ -1807,12 +1808,12 @@ CREATE TABLE graph_templates_graph (
 --
 
 CREATE TABLE graph_templates_item (
-  id int(12) unsigned NOT NULL auto_increment,
+  id int(10) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
-  local_graph_template_item_id int(12) unsigned NOT NULL default '0',
-  local_graph_id mediumint(8) unsigned NOT NULL default '0',
+  local_graph_template_item_id int(10) unsigned NOT NULL default '0',
+  local_graph_id int(10) unsigned NOT NULL default '0',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  task_item_id mediumint(8) unsigned NOT NULL default '0',
+  task_item_id int(10) unsigned NOT NULL default '0',
   color_id mediumint(8) unsigned NOT NULL default '0',
   alpha char(2) default 'FF',
   graph_type_id tinyint(3) NOT NULL default '0',
@@ -1875,7 +1876,7 @@ CREATE TABLE graph_tree_items (
   parent bigint(20) unsigned DEFAULT NULL,
   position int(10) unsigned DEFAULT NULL,
   graph_tree_id smallint(5) unsigned NOT NULL DEFAULT '0',
-  local_graph_id mediumint(8) unsigned NOT NULL DEFAULT '0',
+  local_graph_id int(10) unsigned NOT NULL DEFAULT '0',
   title varchar(255) DEFAULT NULL,
   host_id mediumint(8) unsigned NOT NULL DEFAULT '0',
   site_id int unsigned DEFAULT '0',
@@ -1932,6 +1933,7 @@ CREATE TABLE host (
   ping_timeout int(12) unsigned default '500',
   ping_retries int(12) unsigned default '2',
   max_oids int(12) unsigned default '10',
+  bulk_walk_size int(11) DEFAULT '-1',
   device_threads tinyint(2) unsigned NOT NULL DEFAULT '1',
   deleted char(2) default '',
   disabled char(2) default NULL,
@@ -2209,7 +2211,7 @@ CREATE TABLE `poller_data_template_field_mappings` (
 --
 
 CREATE TABLE poller_item (
-  `local_data_id` mediumint(8) unsigned NOT NULL default '0',
+  `local_data_id` int(10) unsigned NOT NULL default '0',
   `poller_id` int(10) unsigned NOT NULL default '1',
   `host_id` mediumint(8) unsigned NOT NULL default '0',
   `action` tinyint(2) unsigned NOT NULL default '1',
@@ -2250,7 +2252,7 @@ CREATE TABLE poller_item (
 --
 
 CREATE TABLE poller_output (
-  local_data_id mediumint(8) unsigned NOT NULL default '0',
+  local_data_id int(10) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
   time timestamp NOT NULL default '0000-00-00 00:00:00',
   output varchar(512) NOT NULL default '',
@@ -2262,7 +2264,7 @@ CREATE TABLE poller_output (
 --
 
 CREATE TABLE  `poller_output_boost` (
-  `local_data_id` mediumint(8) unsigned NOT NULL default '0',
+  `local_data_id` int(10) unsigned NOT NULL default '0',
   `rrd_name` varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `output` varchar(512) NOT NULL,
@@ -2284,7 +2286,7 @@ CREATE TABLE  `poller_output_boost_processes` (
 --
 
 CREATE TABLE poller_output_realtime (
-  local_data_id mediumint(8) unsigned NOT NULL default '0',
+  local_data_id int(10) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   output text NOT NULL,
@@ -2483,7 +2485,7 @@ CREATE TABLE settings_user_group (
 
 CREATE TABLE settings_tree (
   user_id mediumint(8) unsigned NOT NULL default '0',
-  graph_tree_item_id mediumint(8) unsigned NOT NULL default '0',
+  graph_tree_item_id int(10) unsigned NOT NULL default '0',
   status tinyint(1) NOT NULL default '0',
   PRIMARY KEY (user_id, graph_tree_item_id)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -2539,7 +2541,7 @@ CREATE TABLE snmp_query_graph (
 CREATE TABLE snmp_query_graph_rrd (
   snmp_query_graph_id mediumint(8) unsigned NOT NULL default '0',
   data_template_id mediumint(8) unsigned NOT NULL default '0',
-  data_template_rrd_id mediumint(8) unsigned NOT NULL default '0',
+  data_template_rrd_id int(10) unsigned NOT NULL default '0',
   snmp_field_name varchar(50) NOT NULL default '0',
   PRIMARY KEY (snmp_query_graph_id,data_template_id,data_template_rrd_id),
   KEY data_template_rrd_id (data_template_rrd_id),
@@ -2843,7 +2845,7 @@ CREATE TABLE `user_domains_ldap` (
   `group_attrib` varchar(128) NOT NULL,
   `group_member_type` tinyint(3) unsigned NOT NULL,
   `search_base` varchar(128) NOT NULL,
-  `search_filter` varchar(128) NOT NULL,
+  `search_filter` varchar(512) NOT NULL,
   `specific_dn` varchar(128) NOT NULL,
   `specific_password` varchar(128) NOT NULL,
   `cn_full_name` varchar(50) NULL DEFAULT '',
@@ -2864,6 +2866,10 @@ CREATE TABLE `sessions` (
   `remote_addr` varchar(25) NOT NULL DEFAULT '',
   `access` int(10) unsigned DEFAULT NULL,
   `data` mediumblob,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_agent` varchar(128) NOT NULL DEFAULT '',
+  `start_time` timestamp NOT NULL DEFAULT current_timestamp,
+  `transactions` int(10) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Used for Database based Session Storage';
 

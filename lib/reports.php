@@ -22,9 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-/** duplicate_reports  duplicates a report and all items
- * @param int $_id			- id of the report
- * @param string $_title	- title of the new report
+/**
+ * duplicate_reports - duplicates a report and all items
+ *
+ * @param int $_id       - id of the report
+ * @param string $_title - title of the new report
  */
 function duplicate_reports($_id, $_title) {
 	global $fields_reports_edit;
@@ -131,8 +133,10 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 	}
 }
 
-/** reports_date_time_format		fetches the date/time formatting information for current user
- * @return string	- string defining the datetime format specific to this user
+/**
+ * reports_date_time_format - fetches the date/time formatting information for current user
+ *
+ * @return string - string defining the datetime format specific to this user
  */
 function reports_date_time_format() {
 	$datechar = array(
@@ -175,15 +179,19 @@ function reports_date_time_format() {
 	}
 
 	reports_log(__FUNCTION__ . ', datefmt: ' . $graph_date, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+
 	return $graph_date;
 }
 
-/** reports_interval_start	computes the next start time for the given set of parameters
- * @param int $interval		- given interval
- * @param int $count		- given repeat count
- * @param int $offset		- offset in seconds to be added to the new start time
- * @param int $timestamp	- current start time for report
- * @return					- new timestamp
+/**
+ * reports_interval_start - computes the next start time for the given set of parameters
+ *
+ * @param int $interval  - given interval
+ * @param int $count     - given repeat count
+ * @param int $offset    - offset in seconds to be added to the new start time
+ * @param int $timestamp - current start time for report
+ *
+ * @return - new timestamp
  */
 function reports_interval_start($interval, $count, $offset, $timestamp) {
 	global $reports_interval;
@@ -192,23 +200,23 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 	switch ($interval) {
 		case REPORTS_SCHED_INTVL_MINUTE:
 			# add $count minutes to current mailtime
-			$ts = utime_add($timestamp,0,0,0,0,$count,$offset);
+			$ts = utime_add($timestamp, 0, 0, 0, 0, $count, $offset);
 			break;
 		case REPORTS_SCHED_INTVL_HOUR:
 			# add $count hours to current mailtime
-			$ts = utime_add($timestamp,0,0,0,$count,0,$offset);
+			$ts = utime_add($timestamp, 0, 0, 0, $count, 0, $offset);
 			break;
 		case REPORTS_SCHED_INTVL_DAY:
 			# add $count days to current mailtime
-			$ts = utime_add($timestamp,0,0,$count,0,0,$offset);
+			$ts = utime_add($timestamp, 0, 0, $count, 0, 0, $offset);
 			break;
 		case REPORTS_SCHED_INTVL_WEEK:
 			# add $count weeks = 7*$count days to current mailtime
-			$ts = utime_add($timestamp,0,0,7*$count,0,0,$offset);
+			$ts = utime_add($timestamp, 0, 0, 7*$count, 0, 0, $offset);
 			break;
 		case REPORTS_SCHED_INTVL_MONTH_DAY:
 			# add $count months to current mailtime
-			$ts = utime_add($timestamp,0,$count,0,0,0,$offset);
+			$ts = utime_add($timestamp, 0, $count, 0, 0, 0, $offset);
 			break;
 		case REPORTS_SCHED_INTVL_MONTH_WEEKDAY:
 			# add $count months to current mailtime, but if this is the nth weekday, it must be the same nth weekday in the new month
@@ -216,19 +224,19 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 			# ist must be the 3rd Monday of the new month as well
 			$weekday      = date('l', $timestamp);
 			$day_of_month = date('j', $timestamp);
-			$nth_weekday  = ceil($day_of_month/7);
+			$nth_weekday  = ceil($day_of_month / 7);
 
 			$date_str     = '+' . $count . ' months';
 			$month_base   = strtotime($date_str, $timestamp);
 			$new_month    = mktime(date('H', $month_base), date('i', $month_base), date('s', $month_base), date('m', $month_base), 1, date('Y', $month_base));
 
-			$date_str     = '+' . ($nth_weekday -1) . ' week ' . $weekday;
+			$date_str     = '+' . ($nth_weekday - 1) . ' week ' . $weekday;
 			$base         = strtotime($date_str, $new_month);
 			$ts           = mktime(date('H', $month_base), date('i', $month_base), date('s', $month_base), date('m', $base), date('d', $base), date('Y', $base));
 			break;
 		case REPORTS_SCHED_INTVL_YEAR:
 			# add $count years to current mailtime
-			$ts = utime_add($timestamp,$count,0,0,0,0,$offset);
+			$ts = utime_add($timestamp, $count, 0, 0, 0, 0, $offset);
 			break;
 		default:
 			$ts = 0;
@@ -243,7 +251,9 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 	return $ts;
 }
 
-/** utime_add			add offsets to given timestamp
+/**
+ * utime_add - add offsets to given timestamp
+ *
  * @param int $timestamp- base timestamp
  * @param int $yr		- offset in years
  * @param int $mon		- offset in months
@@ -251,20 +261,31 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
  * @param int $hr		- offset in hours
  * @param int $min		- offset in minutes
  * @param int $sec		- offset in seconds
+ *
  * @return				- unix time
  */
-function utime_add($timestamp, $yr=0, $mon=0, $day=0, $hr=0, $min=0, $sec=0) {
+function utime_add($timestamp, $yr = 0, $mon = 0, $day = 0, $hr = 0, $min = 0, $sec = 0) {
 	$dt = localtime($timestamp, true);
+
 	$unixnewtime = mktime(
-	$dt['tm_hour']+$hr, $dt['tm_min']+$min, $dt['tm_sec']+$sec,
-	$dt['tm_mon']+1+$mon, $dt['tm_mday']+$day, $dt['tm_year']+1900+$yr);
+		$dt['tm_hour'] + $hr,
+		$dt['tm_min']  + $min,
+		$dt['tm_sec']  + $sec,
+		$dt['tm_mon']  + 1 + $mon,
+		$dt['tm_mday'] + $day,
+		$dt['tm_year'] + 1900 + $yr
+	);
+
 	return $unixnewtime;
 }
 
-/** reports_log - logs a string to Cacti's log file or optionally to the browser
- @param string $string 	- the string to append to the log file
- @param bool $output 	- whether to output the log line to the browser using pring() or not
- @param string $environ - tell's from where the script was called from */
+/**
+ * reports_log - logs a string to Cacti's log file or optionally to the browser
+ *
+ * @param string $string  - the string to append to the log file
+ * @param bool $output    - whether to output the log line to the browser using pring() or not
+ * @param string $environ - tell's from where the script was called from
+ */
 function reports_log($string, $output = false, $environ = 'REPORTS', $level = POLLER_VERBOSITY_NONE) {
 	# Define REPORTS_DEBUG if not already set
 	if (!defined('REPORTS_DEBUG')) {
@@ -283,9 +304,11 @@ function reports_log($string, $output = false, $environ = 'REPORTS', $level = PO
 	}
 }
 
-/** generate_report		create the complete mail for a single report and send it
- * @param array $report	- complete row of reports table for the report to work upon
- * @param bool $force	- when forced, lastsent time will not be entered (e.g. Send Now)
+/**
+ * generate_report - create the complete mail for a single report and send it
+ *
+ * @param array $report - complete row of reports table for the report to work upon
+ * @param bool $force   - when forced, lastsent time will not be entered (e.g. Send Now)
  */
 function generate_report($report, $force = false) {
 	global $config, $alignment;
@@ -495,7 +518,6 @@ function generate_report($report, $force = false) {
 
 		if (!$force) {
 			$next = reports_interval_start($report['intrvl'], $report['count'], $report['offset'], $report['mailtime']);
-			$next = floor($next / $int) * $int;
 
 			db_execute_prepared("UPDATE reports
 				SET mailtime = ?, lastsent = ?

@@ -1,12 +1,41 @@
 #!/bin/bash
+# ------------------------------------------------------------------------------
 # This script is supposed to test cacti a little bit. At least each page and
 # each link is tried. I mean to add checks for new CVE's (at least those that I
 # can trigger with wget) as well.
+# ------------------------------------------------------------------------------
+
+mode=$1
+
+# ------------------------------------------------------------------------------
+# Get inputs from user (Interactive mode)
+# ------------------------------------------------------------------------------
+if [ "$mode" = "--interactive" ]; then
+	echo "Enter Database username"
+	read -r database_user
+	echo "Enter Database Password"
+	read -r database_pw
+	echo "Enter Cacti Admin password"
+	read -r login_pw
+elif [ "$mode" = "--help" ]; then
+	echo "Checks all Cacti pages using wget options"
+	echo "Original script by team Debian."
+	echo ""
+	echo "usage: check_all_pages.sh [--interactive]"
+	echo ""
+else
+	echo "Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
+	sleep 2 #Give user a chance to see the prompt
+
+	database_user="cactiuser"
+	database_pw="cactiuser"
+	login_pw="admin"
+fi
 
 # ------------------------------------------------------------------------------
 # Debugging
 # ------------------------------------------------------------------------------
-set -xv
+#set -xv
 
 exec 2>&1
 
@@ -137,13 +166,6 @@ echo "My current directory is `pwd`"
 /bin/chown $WEBUSER:$WEBUSER $CACTI_LOG
 /bin/chown $WEBUSER:$WEBUSER $CACTI_ERRLOG
 
-# ------------------------------------------------------------------------------
-# Get the current database password, which by default is also used for the
-# admin.
-# ------------------------------------------------------------------------------
-database_user="cactiuser"
-database_pw="cactiuser"
-login_pw="admin"
 
 # ------------------------------------------------------------------------------
 # Make a backup copy of the Cacti settings table and enable log validation

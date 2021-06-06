@@ -1034,8 +1034,8 @@ $settings = array(
 			'array'         => $realtime_window,
 			),
 		'realtime_interval' => array(
-			'friendly_name' => __('Refresh Interval'),
-			'description'   => __('This is the time between graph updates.'),
+			'friendly_name' => __('Minimum Refresh Interval'),
+			'description'   => __('This is the minimal supported time between Graph updates.  This value is also used to set certain RRDfile attributes.  If you have a Device that caches data and does not provide realtime updates, you may have to increase the default Minimum Refresh Interval to prevent creating Graphs with gaps.'),
 			'method'        => 'drop_array',
 			'default'       => 10,
 			'array'         => $realtime_refresh,
@@ -1631,6 +1631,13 @@ $settings = array(
 			'default'       => '0',
 			'array'         => $ldap_encryption
 			),
+		'ldap_tls_certificate' => array(
+			'friendly_name' => __('TLS Certificate Requirements'),
+			'description'   => __('Should LDAP verify TLS Certificates when received by the Client.'),
+			'method'        => 'drop_array',
+			'default'       => LDAP_OPT_X_TLS_NEVER,
+			'array'         => $ldap_tls_cert_req
+		),
 		'ldap_referrals' => array(
 			'friendly_name' => __('Referrals'),
 			'description'   => __('Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches.'),
@@ -1996,7 +2003,18 @@ $settings = array(
 				7  => __('%d Processes', 7),
 				8  => __('%d Processes', 8),
 				9  => __('%d Processes', 9),
-				10 => __('%d Processes', 10))
+				10 => __('%d Processes', 10),
+				11 => __('%d Processes', 11),
+				12 => __('%d Processes', 12),
+				13 => __('%d Processes', 13),
+				14 => __('%d Processes', 14),
+				15 => __('%d Processes', 15),
+				16 => __('%d Processes', 16),
+				17 => __('%d Processes', 17),
+				18 => __('%d Processes', 18),
+				19 => __('%d Processes', 19),
+				20 => __('%d Processes', 20),
+				),
 			),
 		'boost_rrd_update_max_records' => array(
 			'friendly_name' => __('Maximum Records'),

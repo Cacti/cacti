@@ -607,7 +607,7 @@ function data_edit() {
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SCRIPT_QUERY] = __('Script Query');
 			break;
 		case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
-			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER] = __('Script Query - Script Server');
+			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER] = __('Script Server Query');
 			break;
 		}
 

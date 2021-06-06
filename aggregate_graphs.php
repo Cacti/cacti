@@ -613,9 +613,9 @@ function graph_edit() {
 	if (isset_request_var('reset')) {
 		$_SESSION['aggregate_referer'] = 'aggregate_graphs.php';
 	} elseif (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'aggregate_graphs.php')) {
-		$_SESSION['aggregate_referer'] = sanitize_uri($_SERVER['HTTP_REFERER']);
+		$_SESSION['aggregate_referer'] = $_SERVER['HTTP_REFERER'];
 	} elseif (isset($_SERVER['HTTP_REFERER']) && !isset($_SESSION['aggregate_referer'])) {
-		$_SESSION['aggregate_referer'] = sanitize_uri($_SERVER['HTTP_REFERER']);
+		$_SESSION['aggregate_referer'] = $_SERVER['HTTP_REFERER'];
 	}
 
 	$referer = isset($_SESSION['aggregate_referer']) ? $_SESSION['aggregate_referer'] : 'aggregate_graphs.php';
@@ -670,7 +670,7 @@ function graph_edit() {
 		raise_message('missing_aggregate', __('Aggregate Graphs Accessed does not Exist'), MESSAGE_LEVEL_ERROR);
 
 		if (isset($_SERVER['HTTP_REFERER'])) {
-			$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+			$referer = $_SERVER['HTTP_REFERER'];
 			header('Location: ' . $referer);
 		} else {
 			header('Location: aggregate_graphs.php');
@@ -812,6 +812,32 @@ function graph_edit() {
 
 			html_start_box(__('Aggregate Graph %s', $header_label), '100%', true, '3', 'center', '');
 
+			$helper_string = '|host_description|';
+
+			if (isset($template)) {
+				$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
+					FROM snmp_query_graph
+					WHERE graph_template_id = ?',
+					array($template['graph_template_id']));
+
+				if ($data_query > 0) {
+					$data_query_info = get_data_query_array($data_query);
+					foreach($data_query_info['fields'] as $field_name => $field_array) {
+						if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
+							$helper_string .= ($helper_string != '' ? ', ':'') . '|query_' . $field_name . '|';
+						}
+					}
+				}
+			}
+
+			// Append the helper string
+			$struct_aggregate_graph['suggestions'] = array(
+				'method' => 'other',
+				'friendly_name' => __('Prefix Replacement Values'),
+				'description' => __('You may use these replacement values for the Prefix in the Aggregate Graph'),
+				'value' => $helper_string
+			);
+
 			/* add template propagation to the structure */
 			draw_edit_form(
 				array(
@@ -823,7 +849,6 @@ function graph_edit() {
 			html_end_box(true, true);
 
 			if (isset($template)) {
-
 				draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
 			}
 

@@ -56,7 +56,7 @@ function filter_value(string $value, string $filter, string $href = ''): string 
 	$value =  htmlspecialchars($value, ENT_QUOTES, $charset, false);
 
 	if ($filter != '') {
-		$value = preg_replace('#(' . $filter . ')#i', "<span class='filteredValue'>\\1</span>", $value);
+		$value = preg_replace('#(' . preg_quote($filter) . ')#i', "<span class='filteredValue'>\\1</span>", $value);
 	}
 
 	if ($href != '') {
@@ -391,23 +391,19 @@ function config_value_exists($config_name): bool {
 function read_default_config_option(string $config_name) {
 	global $config, $settings;
 
-	if (isset($settings)) {
-		if (is_array($settings)) {
-			foreach ($settings as $tab_array) {
-				if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
-					return $tab_array[$config_name]['default'];
-				} else {
-					foreach ($tab_array as $field_array) {
-						if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
-							return $field_array['items'][$config_name]['default'];
-						}
+	if (isset($settings) && is_array($settings)) {
+		foreach ($settings as $tab_array) {
+			if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
+				return $tab_array[$config_name]['default'];
+			} else {
+				foreach ($tab_array as $field_array) {
+					if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
+						return $field_array['items'][$config_name]['default'];
 					}
 				}
 			}
 		}
 	}
-
-	return null;
 }
 
 /* read_config_option - finds the current value of a Cacti configuration setting
@@ -431,7 +427,7 @@ function read_config_option(string $config_name, bool $force = false) {
 	// Do we have a value already stored in the array, or
 	// do we want to make sure we have the latest value
 	// from the database?
-	if (!array_key_exists($config_name, $config_array) || ($force)) {
+	if (!isset($config_array[$config_name]) || ($force)) {
 		// We need to check against the DB, but lets assume default value
 		// unless we can actually read the DB
 		$value = read_default_config_option($config_name);
@@ -879,20 +875,12 @@ function cacti_log_file(): string {
 	return $logfile;
 }
 
-/* cacti_log - logs a string to Cacti's log file or optionally to the browser
-   @arg $string - the string to append to the log file
-   @arg $output - (bool) whether to output the log line to the browser using print() or not
-   @arg $environ - (string) tells from where the script was called from
-   @arg $level - (int) only log if above the specified log level */
-function cacti_log(string $string, bool $output = false, string $environ = 'CMDPHP', int $level = 0): void {
-	global $config, $database_log;
+function get_selective_log_level() {
+	static $force_level = null;
 
-	if (!isset($database_log)) {
-		$database_log = false;
+	if ($force_level !== null) {
+		return $force_level;
 	}
-
-	$last_log = $database_log;
-	$database_log = false;
 
 	if (isset($_SERVER['PHP_SELF'])) {
 		$current_file = basename($_SERVER['PHP_SELF']);
@@ -932,6 +920,25 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 		}
 	}
 
+	return $force_level;
+}
+
+/* cacti_log - logs a string to Cacti's log file or optionally to the browser
+   @arg $string - the string to append to the log file
+   @arg $output - (bool) whether to output the log line to the browser using print() or not
+   @arg $environ - (string) tells from where the script was called from
+   @arg $level - (int) only log if above the specified log level */
+function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
+	global $config, $database_log;
+
+	if (!isset($database_log)) {
+		$database_log = false;
+	}
+
+	$last_log     = $database_log;
+	$database_log = false;
+	$force_level  = get_selective_log_level();
+
 	/* only log if the specific level is reached, developer debug is special low + specific devdbg calls */
 	if ($force_level == '') {
 		if ($level != '') {
@@ -963,7 +970,7 @@ function cacti_log(string $string, bool $output = false, string $environ = 'CMDP
 
 	/* format the message */
 	if ($environ == 'POLLER') {
-		$prefix = "$date - " . $environ . ': Poller[' . $config['poller_id'] . '] ';
+		$prefix = "$date - " . $environ . ': Poller[' . $config['poller_id'] . '] PID[' . getmypid() . '] ';
 	} else {
 		$prefix = "$date - " . $environ . ' ';
 	}
@@ -1167,92 +1174,94 @@ function determine_display_log_entry(int $message_type, string $line, string $fi
  *
  *  @arg $status - (int constant) the status of the host (Up/Down)
  *  @arg $host_id - (int) the host ID for the results
- *  @arg $hosts - (array) a memory resident host table for speed
  *  @arg $ping - (class array) results of the ping command.
  */
-function update_host_status(int $status, int $host_id, array &$hosts, Net_Ping &$ping, int $ping_availability, bool $print_data_to_stdout) {
+function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $ping_availability, bool $print_data_to_stdout) {
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option('ping_failure_count');
 	$ping_recovery_count = read_config_option('ping_recovery_count');
+
+	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+
 	/* initialize fail and recovery dates correctly */
-	if ($hosts[$host_id]['status_fail_date'] == '') {
-		$hosts[$host_id]['status_fail_date'] = '0000-00-00 00:00:00';
+	if ($host['status_fail_date'] == '') {
+		$host['status_fail_date'] = strtotime('0000-00-00 00:00:00');
 	}
 
-	if ($hosts[$host_id]['status_rec_date'] == '') {
-		$hosts[$host_id]['status_rec_date'] = '0000-00-00 00:00:00';
+	if ($host['status_rec_date'] == '') {
+		$host['status_rec_date'] = strtotime('0000-00-00 00:00:00');
 	}
 
 	if ($status == HOST_DOWN) {
 		/* Set initial date down. BUGFIX */
-		if (empty($hosts[$host_id]['status_fail_date'])) {
-			$hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
+		if (empty($host['status_fail_date'])) {
+			$host['status_fail_date'] = time();
 		}
 
 		/* update total polls, failed polls and availability */
-		$hosts[$host_id]['failed_polls']++;
-		$hosts[$host_id]['total_polls']++;
-		$hosts[$host_id]['availability'] = 100 * ($hosts[$host_id]['total_polls'] - $hosts[$host_id]['failed_polls']) / $hosts[$host_id]['total_polls'];
+		$host['failed_polls']++;
+		$host['total_polls']++;
+		$host['availability'] = 100 * ($host['total_polls'] - $host['failed_polls']) / $host['total_polls'];
 
 		/* determine the error message to display */
 		if (($ping_availability == AVAIL_SNMP_AND_PING) || ($ping_availability == AVAIL_SNMP_OR_PING)) {
-			if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
+			if (($host['snmp_community'] == '') && ($host['snmp_version'] != 3)) {
 				/* snmp version 1/2 without community string assume SNMP test to be successful
 				   due to backward compatibility issues */
-				$hosts[$host_id]['status_last_error'] = $ping->ping_response;
+				$host['status_last_error'] = $ping->ping_response;
 			} else {
-				$hosts[$host_id]['status_last_error'] = $ping->snmp_response . ', ' . $ping->ping_response;
+				$host['status_last_error'] = $ping->snmp_response . ', ' . $ping->ping_response;
 			}
 		} elseif ($ping_availability == AVAIL_SNMP) {
-			if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
-				$hosts[$host_id]['status_last_error'] = 'Device does not require SNMP';
+			if (($host['snmp_community'] == '') && ($host['snmp_version'] != 3)) {
+				$host['status_last_error'] = 'Device does not require SNMP';
 			} else {
-				$hosts[$host_id]['status_last_error'] = $ping->snmp_response;
+				$host['status_last_error'] = $ping->snmp_response;
 			}
 		} else {
-			$hosts[$host_id]['status_last_error'] = $ping->ping_response;
+			$host['status_last_error'] = $ping->ping_response;
 		}
 
 		/* determine if to send an alert and update remainder of statistics */
-		if ($hosts[$host_id]['status'] == HOST_UP) {
+		if ($host['status'] == HOST_UP) {
 			/* increment the event failure count */
-			$hosts[$host_id]['status_event_count']++;
+			$host['status_event_count']++;
 
 			/* if it's time to issue an error message, indicate so */
-			if ($hosts[$host_id]['status_event_count'] >= $ping_failure_count) {
+			if ($host['status_event_count'] >= $ping_failure_count) {
 				/* host is now down, flag it that way */
-				$hosts[$host_id]['status'] = HOST_DOWN;
+				$host['status'] = HOST_DOWN;
 
 				$issue_log_message = true;
 
 				/* update the failure date only if the failure count is 1 */
-				if ($hosts[$host_id]['status_event_count'] == $ping_failure_count) {
-					$hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
+				if ($host['status_event_count'] == $ping_failure_count) {
+					$host['status_fail_date'] = time();
 				}
 			/* host is down, but not ready to issue log message */
 			} else {
 				/* host down for the first time, set event date */
-				if ($hosts[$host_id]['status_event_count'] == $ping_failure_count) {
-					$hosts[$host_id]['status_fail_date'] = date('Y-m-d H:i:s');
+				if ($host['status_event_count'] == $ping_failure_count) {
+					$host['status_fail_date'] = time();
 				}
 			}
 		/* host is recovering, put back in failed state */
-		} elseif ($hosts[$host_id]['status'] == HOST_RECOVERING) {
-			$hosts[$host_id]['status_event_count'] = 1;
-			$hosts[$host_id]['status'] = HOST_DOWN;
+		} elseif ($host['status'] == HOST_RECOVERING) {
+			$host['status_event_count'] = 1;
+			$host['status'] = HOST_DOWN;
 
 		/* host was unknown and now is down */
-		} elseif ($hosts[$host_id]['status'] == HOST_UNKNOWN) {
-			$hosts[$host_id]['status'] = HOST_DOWN;
-			$hosts[$host_id]['status_event_count'] = 0;
+		} elseif ($host['status'] == HOST_UNKNOWN) {
+			$host['status'] = HOST_DOWN;
+			$host['status_event_count'] = 0;
 		} else {
-			$hosts[$host_id]['status_event_count']++;
+			$host['status_event_count']++;
 		}
 	/* host is up!! */
 	} else {
 		/* update total polls and availability */
-		$hosts[$host_id]['total_polls']++;
-		$hosts[$host_id]['availability'] = 100 * ($hosts[$host_id]['total_polls'] - $hosts[$host_id]['failed_polls']) / $hosts[$host_id]['total_polls'];
+		$host['total_polls']++;
+		$host['availability'] = 100 * ($host['total_polls'] - $host['failed_polls']) / $host['total_polls'];
 
 		if ((($ping_availability == AVAIL_SNMP_AND_PING) ||
 			($ping_availability == AVAIL_SNMP_OR_PING) ||
@@ -1271,14 +1280,14 @@ function update_host_status(int $status, int $host_id, array &$hosts, Net_Ping &
 		/* determine the ping statistic to set and do so */
 		if (($ping_availability == AVAIL_SNMP_AND_PING) ||
 			($ping_availability == AVAIL_SNMP_OR_PING)) {
-			if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
+			if (($host['snmp_community'] == '') && ($host['snmp_version'] != 3)) {
 				$ping_time = 0.000;
 			} else {
 				/* calculate the average of the two times */
 				$ping_time = ($ping->snmp_status + $ping->ping_status) / 2;
 			}
 		} elseif ($ping_availability == AVAIL_SNMP) {
-			if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
+			if (($host['snmp_community'] == '') && ($host['snmp_version'] != 3)) {
 				$ping_time = 0.000;
 			} else {
 				$ping_time = $ping->snmp_status;
@@ -1291,68 +1300,68 @@ function update_host_status(int $status, int $host_id, array &$hosts, Net_Ping &
 
 		/* update times as required */
 		if (is_numeric($ping_time)) {
-			$hosts[$host_id]['cur_time'] = $ping_time;
+			$host['cur_time'] = $ping_time;
 
 			/* maximum time */
-			if ($ping_time > $hosts[$host_id]['max_time']) {
-				$hosts[$host_id]['max_time'] = $ping_time;
+			if ($ping_time > $host['max_time']) {
+				$host['max_time'] = $ping_time;
 			}
 
 			/* minimum time */
-			if ($ping_time < $hosts[$host_id]['min_time']) {
-				$hosts[$host_id]['min_time'] = $ping_time;
+			if ($ping_time < $host['min_time']) {
+				$host['min_time'] = $ping_time;
 			}
 
 			/* average time */
-			$hosts[$host_id]['avg_time'] = (($hosts[$host_id]['total_polls']-1-$hosts[$host_id]['failed_polls'])
-				* $hosts[$host_id]['avg_time'] + $ping_time) / ($hosts[$host_id]['total_polls']-$hosts[$host_id]['failed_polls']);
+			$host['avg_time'] = (($host['total_polls'] - 1 - $host['failed_polls'])
+				* $host['avg_time'] + $ping_time) / ($host['total_polls'] - $host['failed_polls']);
 		}
 
 		/* the host was down, now it's recovering */
-		if (($hosts[$host_id]['status'] == HOST_DOWN) || ($hosts[$host_id]['status'] == HOST_RECOVERING )) {
+		if (($host['status'] == HOST_DOWN) || ($host['status'] == HOST_RECOVERING )) {
 			/* just up, change to recovering */
-			if ($hosts[$host_id]['status'] == HOST_DOWN) {
-				$hosts[$host_id]['status'] = HOST_RECOVERING;
-				$hosts[$host_id]['status_event_count'] = 1;
+			if ($host['status'] == HOST_DOWN) {
+				$host['status'] = HOST_RECOVERING;
+				$host['status_event_count'] = 1;
 			} else {
-				$hosts[$host_id]['status_event_count']++;
+				$host['status_event_count']++;
 			}
 
 			/* if it's time to issue a recovery message, indicate so */
-			if ($hosts[$host_id]['status_event_count'] >= $ping_recovery_count) {
+			if ($host['status_event_count'] >= $ping_recovery_count) {
 				/* host is up, flag it that way */
-				$hosts[$host_id]['status'] = HOST_UP;
+				$host['status'] = HOST_UP;
 
 				$issue_log_message = true;
 
 				/* update the recovery date only if the recovery count is 1 */
-				if ($hosts[$host_id]['status_event_count'] == $ping_recovery_count) {
-					$hosts[$host_id]['status_rec_date'] = date('Y-m-d H:i:s');
+				if ($host['status_event_count'] == $ping_recovery_count) {
+					$host['status_rec_date'] = time();
 				}
 
 				/* reset the event counter */
-				$hosts[$host_id]['status_event_count'] = 0;
-			/* host is recovering, but not ready to issue log message */
+				$host['status_event_count'] = 0;
+				/* host is recovering, but not ready to issue log message */
 			} else {
 				/* host recovering for the first time, set event date */
-				if ($hosts[$host_id]['status_event_count'] == $ping_recovery_count) {
-					$hosts[$host_id]['status_rec_date'] = date('Y-m-d H:i:s');
+				if ($host['status_event_count'] == $ping_recovery_count) {
+					$host['status_rec_date'] = time();
 				}
 			}
 		} else {
 		/* host was unknown and now is up */
-			$hosts[$host_id]['status'] = HOST_UP;
-			$hosts[$host_id]['status_event_count'] = 0;
+			$host['status'] = HOST_UP;
+			$host['status_event_count'] = 0;
 		}
 	}
 	/* if the user wants a flood of information then flood them */
-	if (($hosts[$host_id]['status'] == HOST_UP) || ($hosts[$host_id]['status'] == HOST_RECOVERING)) {
+	if (($host['status'] == HOST_UP) || ($host['status'] == HOST_RECOVERING)) {
 		/* log ping result if we are to use a ping for reachability testing */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
 			cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 			cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 		} elseif ($ping_availability == AVAIL_SNMP) {
-			if (($hosts[$host_id]['snmp_community'] == '') && ($hosts[$host_id]['snmp_version'] != 3)) {
+			if (($host['snmp_community'] == '') && ($host['snmp_version'] != 3)) {
 				cacti_log("Device[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 			} else {
 				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
@@ -1373,8 +1382,8 @@ function update_host_status(int $status, int $host_id, array &$hosts, Net_Ping &
 
 	/* if there is supposed to be an event generated, do it */
 	if ($issue_log_message) {
-		if ($hosts[$host_id]['status'] == HOST_DOWN) {
-			cacti_log("Device[$host_id] ERROR: HOST EVENT: Device is DOWN Message: " . $hosts[$host_id]['status_last_error'], $print_data_to_stdout);
+		if ($host['status'] == HOST_DOWN) {
+			cacti_log("Device[$host_id] ERROR: HOST EVENT: Device is DOWN Message: " . $host['status_last_error'], $print_data_to_stdout);
 		} else {
 			cacti_log("Device[$host_id] NOTICE: HOST EVENT: Device Returned FROM DOWN State: ", $print_data_to_stdout);
 		}
@@ -1383,8 +1392,8 @@ function update_host_status(int $status, int $host_id, array &$hosts, Net_Ping &
 	db_execute_prepared('UPDATE host SET
 		status = ?,
 		status_event_count = ?,
-		status_fail_date = ?,
-		status_rec_date = ?,
+		status_fail_date = FROM_UNIXTIME(?),
+		status_rec_date = FROM_UNIXTIME(?),
 		status_last_error = ?,
 		min_time = ?,
 		max_time = ?,
@@ -1396,19 +1405,19 @@ function update_host_status(int $status, int $host_id, array &$hosts, Net_Ping &
 		WHERE hostname = ?
 		AND deleted = ""',
 		array(
-			$hosts[$host_id]['status'],
-			$hosts[$host_id]['status_event_count'],
-			$hosts[$host_id]['status_fail_date'],
-			$hosts[$host_id]['status_rec_date'],
-			$hosts[$host_id]['status_last_error'],
-			$hosts[$host_id]['min_time'],
-			$hosts[$host_id]['max_time'],
-			$hosts[$host_id]['cur_time'],
-			$hosts[$host_id]['avg_time'],
-			$hosts[$host_id]['total_polls'],
-			$hosts[$host_id]['failed_polls'],
-			$hosts[$host_id]['availability'],
-			$hosts[$host_id]['hostname']
+			$host['status'],
+			$host['status_event_count'],
+			$host['status_fail_date'],
+			$host['status_rec_date'],
+			$host['status_last_error'],
+			$host['min_time'],
+			$host['max_time'],
+			$host['cur_time'],
+			$host['avg_time'],
+			$host['total_polls'],
+			$host['failed_polls'],
+			$host['availability'],
+			$host['hostname']
 		)
 
 	);
@@ -1582,6 +1591,434 @@ function is_valid_pathname(string $path): bool {
 	}
 }
 
+/**
+ * test_data_sources
+ *
+ * Tests all data sources to confirm that it returns valid data.  This
+ * function is used by automation to prevent the creation of graphs
+ * that will never generate data.
+ *
+ * @param $graph_template_id - The Graph Template to test
+ * @param $host_id - The Host to test
+ *
+ * @returns boolean true or false
+ */
+function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $snmp_index = '') {
+	$data_template_ids = array_rekey(
+		db_fetch_assoc_prepared('SELECT DISTINCT data_template_id
+			FROM graph_templates_item AS gti
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id = dtr.id
+			WHERE gti.hash != ""
+			AND gti.local_graph_id = 0
+			AND dtr.local_data_id = 0
+			AND gti.graph_template_id = ?',
+			array($graph_template_id)),
+		'data_template_id', 'data_template_id'
+	);
+
+	if (cacti_sizeof($data_template_ids)) {
+		foreach($data_template_ids as $dt) {
+			if (!test_data_source($dt, $host_id, $snmp_query_id, $snmp_index)) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+/**
+ * test_data_source
+ *
+ * Tests a single data source to confirm that it returns valid data.  This
+ * function is used by automation to prevent the creation of graphs
+ * that will never generate data.
+ *
+ * @param $graph_template_id - The Graph Template to test
+ * @param $host_id - The Host to test
+ *
+ * @returns boolean true or false
+ */
+function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp_index = '') {
+	global $called_by_script_server;
+
+	$called_by_script_server = true;
+
+	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
+		di.id, di.type_id, dtd.id AS data_template_data_id,
+		dtd.data_template_id, dtd.active, dtd.rrd_step
+		FROM data_template_data AS dtd
+		INNER JOIN data_input AS di
+		ON dtd.data_input_id=di.id
+		WHERE dtd.local_data_id = 0
+		AND dtd.data_template_id = ?',
+		array($data_template_id));
+
+	$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
+		FROM host
+		WHERE id = ?',
+		array($host_id));
+
+	if (cacti_sizeof($data_input) && $data_input['active'] == 'on') {
+		/* we have to perform some additional sql queries if this is a 'query' */
+		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
+			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
+			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
+			$field = data_query_field_list($data_input['data_template_data_id']);
+
+			$params   = array();
+			$params[] = $data_input['data_template_id'];
+
+			if ($field['output_type'] != '') {
+				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ?';
+				$params[] = $field['output_type'];
+			} else {
+				$output_type_sql = '';
+			}
+
+			$outputs = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
+				sqgr.snmp_field_name, dtr.id as data_template_rrd_id
+				FROM snmp_query_graph_rrd AS sqgr
+				INNER JOIN data_template_rrd AS dtr FORCE INDEX (local_data_id)
+				ON sqgr.data_template_rrd_id = dtr.id
+				WHERE sqgr.data_template_id = ?
+				AND dtr.local_data_id = 0
+				$output_type_sql
+				ORDER BY dtr.id", $params);
+		}
+
+		if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT) ||
+			($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER)) {
+			if ($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) {
+				$action = POLLER_ACTION_SCRIPT_PHP;
+				$script_path = get_full_test_script_path($data_template_id, $host_id);
+			} else {
+				$action = POLLER_ACTION_SCRIPT;
+				$script_path = get_full_test_script_path($data_template_id, $host_id);
+			}
+
+			$num_output_fields = cacti_sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+				FROM data_input_fields
+				WHERE data_input_id = ?
+				AND input_output = "out"
+				AND update_rra="on"',
+				array($data_input['id'])));
+
+			if ($num_output_fields == 1) {
+				$data_template_rrd_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
+					FROM data_template_rrd
+					WHERE local_data_id = 0
+					AND hash != ""
+					AND data_template_id = ?',
+					array($data_template_id));
+
+				$data_source_item_name = get_data_source_item_name($data_template_rrd_id);
+			} else {
+				$data_source_item_name = '';
+			}
+
+			if ($action == POLLER_ACTION_SCRIPT) {
+				$output = shell_exec($script_path);
+			} else {
+				// Script server is a bit more complicated
+				$parts = explode(' ', $script_path);
+
+				if (file_exists($parts[0])) {
+					include_once($parts[0]);
+
+					array_shift($parts);
+					$function = $parts[0];
+					array_shift($parts);
+
+					if (function_exists($function)) {
+						// Trim off escape characters
+						foreach($parts as $p) {
+							$np[] = trim($p, "'");
+						}
+
+						$output = call_user_func_array($function, $np);
+					} else {
+						$output = 'U';
+					}
+				} else {
+					$output = 'U';
+				}
+			}
+
+			if (!is_numeric($output)) {
+				if ($output == 'U') {
+					return false;
+				} elseif (prepare_validate_result($output) === false) {
+					return false;
+				}
+			}
+
+			return true;
+		} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
+			/* get host fields first */
+			$host_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname","host_id"))
+					AND did.data_template_data_id = ?
+					AND did.value != ""',
+					array($data_input['data_template_data_id'])),
+				'type_code', 'value'
+			);
+
+			$data_template_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id = did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND data_template_data_id = ?
+					AND did.value != ""',
+					array($data_input['data_template_data_id'], $data_input['data_template_data_id'])),
+				'type_code', 'value'
+			);
+
+			if (cacti_sizeof($host_fields)) {
+				if (cacti_sizeof($data_template_fields)) {
+					foreach($data_template_fields as $key => $value) {
+						if (!isset($host_fields[$key])) {
+							$host_fields[$key] = $value;
+						}
+					}
+				}
+			} elseif (cacti_sizeof($data_template_fields)) {
+				$host_fields = $data_template_fields;
+			}
+
+			$host = array_merge($host, $host_fields);
+
+			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
+				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
+				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
+
+			$output = cacti_snmp_session_get($session, $host['snmp_oid']);
+
+			if (!is_numeric($output)) {
+				if (prepare_validate_result($output) === false) {
+					return false;
+				}
+			}
+
+			return true;
+		} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
+			$snmp_queries = get_data_query_array($snmp_query_id);
+
+			/* get host fields first */
+			$host_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_input['data_template_data_id'])),
+				'type_code', 'value'
+			);
+
+			$data_template_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND data_template_data_id = ?
+					AND did.value != ""', array($data_template_id, $data_template_id)),
+				'type_code', 'value'
+			);
+
+			if (cacti_sizeof($host_fields)) {
+				if (cacti_sizeof($data_template_fields)) {
+					foreach ($data_template_fields as $key => $value) {
+						if (!isset($host_fields[$key])) {
+							$host_fields[$key] = $value;
+						}
+					}
+				}
+			} elseif (cacti_sizeof($data_template_fields)) {
+				$host_fields = $data_template_fields;
+			}
+
+			$host = array_merge($host, $host_fields);
+
+			if (cacti_sizeof($outputs) && cacti_sizeof($snmp_queries)) {
+				foreach ($outputs as $output) {
+					if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
+						$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $snmp_index;
+
+						if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid_suffix'])) {
+							$oid .= '.' . $snmp_queries['fields'][$output['snmp_field_name']]['oid_suffix'];
+						}
+					}
+
+					if (!empty($oid)) {
+						$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
+							$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
+							$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
+							$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
+
+						$output = cacti_snmp_session_get($session, $oid);
+
+						if (!is_numeric($output)) {
+							if (prepare_validate_result($output) === false) {
+								return false;
+							}
+						}
+
+						return true;
+					}
+				}
+			}
+		} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
+			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
+			$script_queries = get_data_query_array($snmp_query_id);
+
+			/* get host fields first */
+			$host_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_input['data_template_data_id'])),
+				'type_code', 'value'
+			);
+
+			$data_template_fields = array_rekey(
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+					FROM data_input_fields AS dif
+					LEFT JOIN data_input_data AS did
+					ON dif.id=did.data_input_field_id
+					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
+					AND data_template_data_id = ?
+					AND did.data_template_data_id = ?
+					AND did.value != ""', array($data_template_id, $data_template_id)),
+				'type_code', 'value'
+			);
+
+			if (cacti_sizeof($host_fields)) {
+				if (cacti_sizeof($data_template_fields)) {
+					foreach ($data_template_fields as $key => $value) {
+						if (!isset($host_fields[$key])) {
+							$host_fields[$key] = $value;
+						}
+					}
+				}
+			} elseif (cacti_sizeof($data_template_fields)) {
+				$host_fields = $data_template_fields;
+			}
+
+			$host = array_merge($host, $host_fields);
+
+			if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
+				foreach ($outputs as $output) {
+					if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
+						$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
+
+						if ($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
+							$action = POLLER_ACTION_SCRIPT;
+
+							$prepend = '';
+							if (isset($script_queries['arg_prepend']) && $script_queries['arg_prepend'] != '') {
+								$prepend = $script_queries['arg_prepend'];
+							}
+
+							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $snmp_index), $script_queries['script_path'], $host_id);
+						} else {
+							$action = POLLER_ACTION_SCRIPT;
+							$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $snmp_index), $script_queries['script_path'], $host_id);
+						}
+					}
+
+					if (isset($script_path)) {
+						$output = shell_exec($script_path);
+
+						if (!is_numeric($output)) {
+							if (prepare_validate_result($output) === false) {
+								return false;
+							}
+						}
+
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+/** get_full_test_script_path - gets the full path to the script to execute to obtain data for a
+ *    given data template for testing. this function does not work on SNMP actions, only
+ *    script-based actions
+ *  @arg $data_template_id - (int) the ID of the data template
+ *  @returns - the full script path or (bool) false for an error
+*/
+function get_full_test_script_path($data_template_id, $host_id) {
+	global $config;
+
+	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
+		dtd.id,
+		dtd.data_input_id,
+		di.type_id,
+		di.input_string
+		FROM data_template_data AS dtd
+		INNER JOIN data_input AS di
+		ON dtd.data_input_id = di.id
+		WHERE dtd.local_data_id = 0
+		AND dtd.data_template_id = ?',
+		array($data_template_id));
+
+	$data = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " dif.data_name, did.value
+		FROM data_input_fields AS dif
+		LEFT JOIN data_input_data AS did
+		ON dif.id = did.data_input_field_id
+		WHERE dif.data_input_id  = ?
+		AND did.data_template_data_id = ?
+		AND dif.input_output = 'in'",
+		array($data_source['data_input_id'], $data_source['id']));
+
+	$full_path = $data_source['input_string'];
+
+	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+
+	if (cacti_sizeof($data)) {
+		foreach ($data as $item) {
+			if (isset($host[$item['data_name']])) {
+				$value = cacti_escapeshellarg($host[$item['data_name']]);
+			} elseif ($item['data_name'] == 'host_id' || $item['data_name'] == 'hostid') {
+				$value = cacti_escapeshellarg($host['id']);
+			} else {
+				$value = "'" . $item['value'] . "'";
+			}
+
+			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
+		}
+	}
+
+	$search    = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
+	$replace   = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
+	$full_path = str_replace($search, $replace, $full_path);
+
+	/**
+	 * sometimes a certain input value will not have anything entered... null out these fields
+	 * in the input string so we don't mess up the script
+	 */
+	return preg_replace('/(<[A-Za-z0-9_]+>)+/', '', $full_path);
+}
+
 /** get_full_script_path - gets the full path to the script to execute to obtain data for a
  *    given data source. this function does not work on SNMP actions, only script-based actions
  *  @arg $local_data_id - (int) the ID of the data source
@@ -1591,13 +2028,12 @@ function get_full_script_path(int $local_data_id): string {
 	global $config;
 
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
-		data_template_data.id,
-		data_template_data.data_input_id,
-		data_input.type_id,
-		data_input.input_string
-		FROM (data_template_data, data_input)
-		WHERE data_template_data.data_input_id = data_input.id
-		AND data_template_data.local_data_id = ?',
+	     dtd.id, dtd.data_input_id,
+		di.type_id, di.input_string
+		FROM data_template_data AS dtd
+		INNER JOIN data_input AS di
+		ON dtd.data_input_id = di.id
+		WHERE dtd.local_data_id = ?',
 		array($local_data_id));
 
 	/* snmp-actions don't have paths */
@@ -1605,15 +2041,13 @@ function get_full_script_path(int $local_data_id): string {
 		return false;
 	}
 
-	$data = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . "
-		data_input_fields.data_name,
-		data_input_data.value
-		FROM data_input_fields
-		LEFT JOIN data_input_data
-		ON (data_input_fields.id = data_input_data.data_input_field_id)
-		WHERE data_input_fields.data_input_id  = ?
-		AND data_input_data.data_template_data_id = ?
-		AND data_input_fields.input_output = 'in'",
+	$data = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " dif.data_name, did.value
+		FROM data_input_fields AS dif
+		LEFT JOIN data_input_data AS did
+		ON dif.id = did.data_input_field_id
+		WHERE dif.data_input_id = ?
+		AND did.data_template_data_id = ?
+		AND dif.input_output = 'in'",
 		array($data_source['data_input_id'], $data_source['id']));
 
 	$full_path = $data_source['input_string'];
@@ -1821,6 +2255,17 @@ function get_device_name(int $host_id): string {
    @returns - the hex color value */
 function get_color(int $color_id): string {
 	return db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_id));
+}
+
+/* get_graph_title_cache - returns the title of the graph using the title cache
+ * @param $local_graph_id - (int) the ID of the graph to get the title for
+ * @returns - the graph title
+ */
+function get_graph_title_cache($local_graph_id) {
+	return db_fetch_cell_prepared('SELECT title_cache
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
 }
 
 /* get_graph_title - returns the title of a graph without using the title cache
@@ -2454,11 +2899,13 @@ function draw_login_status(bool $using_guest_account = false): void {
 
 		print (is_realm_allowed(20) ? "<li><a href='" . html_escape($config['url_path'] . 'auth_profile.php?action=edit') . "'>" . __('Edit Profile') . '</a></li>':'');
 		print ($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . html_escape($config['url_path'] . 'auth_changepassword.php') . "'>" . __('Change Password') . '</a></li>':'');
-		print "<li class='menuHr'><hr class='menu'></li>";
-		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . '</a></li>';
-		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank' rel='noopener'>" . __('Documentation') . '</a></li>';
-		print "<li class='menuHr'><hr class='menu'></li>";
-		print ($auth_method > 0 ? "<li><a href='" . html_escape($config['url_path'] . 'logout.php') . "'>" . __('Logout') . '</a></li>':'');
+		print ((is_realm_allowed(20) || ($user['password_change'] == 'on' && $user['realm'] == 0)) ? "<li class='menuHr'><hr class='menu'></li>":'');
+		if (is_realm_allowed(28)) {
+			print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . '</a></li>';
+			print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank' rel='noopener'>" . __('Documentation') . '</a></li>';
+			print "<li class='menuHr'><hr class='menu'></li>";
+		}
+		print ($auth_method > 0 && $auth_method != 2 ? "<li><a href='" . html_escape($config['url_path'] . 'logout.php') . "'>" . __('Logout') . '</a></li>':'');
 		print '</ul>';
 
 		api_plugin_hook('nav_login_after');
@@ -3143,7 +3590,7 @@ function sanitize_uri(string $uri): string {
 
 	if (strpos($uri, 'graph_view.php')) {
 		if (!strpos($uri, 'action=')) {
-			$uri = $uri . (strpos($uri, '?') ? '&':'?') . 'action=' . get_request_var('action');
+			$uri = $uri . (strpos($uri, '?') ? '&':'?') . 'action=' . get_nfilter_request_var('action');
 		}
 	}
 
@@ -4347,6 +4794,10 @@ function get_timeinstate(array $host): string {
 	} elseif ($host['snmp_sysUpTimeInstance'] > 0) {
 		$time = $host['snmp_sysUpTimeInstance']/100;
 	} else {
+		$time = 0;
+	}
+
+	if ($time > 2E13) {
 		$time = 0;
 	}
 
@@ -5641,7 +6092,7 @@ function get_client_addr(): string {
 					} else {
 						$client_addr = $header_ip;
 						cacti_log('DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-						break;
+						break 2;
 					}
 				}
 			}

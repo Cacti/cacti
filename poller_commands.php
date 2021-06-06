@@ -137,7 +137,7 @@ if (cacti_sizeof($poller_commands)) {
 			}
 
 			if ($first_host) {
-				cacti_log("Device[$device_id] WARNING: Recache Event Detected for Device", true, 'PCOMMAND');
+				cacti_log("Device[$device_id] NOTE: Recache Event Detected for Device", true, 'PCOMMAND');
 			}
 
 			cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recache for Device started.", true, 'PCOMMAND', $verbosity);

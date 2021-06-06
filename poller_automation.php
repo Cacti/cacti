@@ -23,8 +23,11 @@
  +-------------------------------------------------------------------------+
 */
 
-/* tick use required as of PHP 4.3.0 to accomodate signal handling */
-declare(ticks = 1);
+if (function_exists('pcntl_async_signals')) {
+	pcntl_async_signals(true);
+} else {
+	declare(ticks = 100);
+}
 
 ini_set('output_buffering', 'Off');
 
@@ -46,7 +49,7 @@ if ($config['poller_id'] > 1) {
 	if ($config['connection'] == 'online') {
 		db_force_remote_cnn();
 	} else {
-		cacti_log('WARNING: Main Cacti database offline.  Can not run automation', false, 'AUTOM8');
+		cacti_log('WARNING: Main Cacti database offline or in recovery.  Can not run automation', false, 'AUTOM8');
 		exit(1);
 	}
 }
@@ -219,6 +222,11 @@ if ($master) {
 	$launched = 0;
 	if (cacti_sizeof($networks)) {
 		foreach($networks as $network) {
+			if ($network['snmp_id'] == 0) {
+				cacti_log("ERROR: Automation can not run for Network '" . $network['name'] . "' since the SNMP ID is not set.", false, 'AUTOM8');
+				continue;
+			}
+
 			if (api_automation_is_time_to_start($network['id']) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
@@ -553,6 +561,8 @@ function discoverDevices($network_id, $thread) {
 					$device['os']                   = '';
 					$device['snmp_priv_passphrase'] = '';
 					$device['snmp_priv_protocol']   = '';
+					$device['max_oids']             = '10';
+					$device['bulk_walk_size']       = '-1';
 
 					/* create new ping socket for host pinging */
 					$ping = new Net_Ping;

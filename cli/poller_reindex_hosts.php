@@ -89,24 +89,28 @@ if (cacti_sizeof($parms)) {
 				display_help();
 				exit(0);
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 				exit(1);
 		}
 	}
 } else {
-	print "ERROR: You must supply input parameters\n\n";
+	print 'ERROR: You must supply input parameters' . PHP_EOL . PHP_EOL;
 	display_help();
 	exit(1);
 }
 
 /* determine the hosts to reindex */
+$params = array();
+
 if (strtolower($host_id) == 'all') {
 	$sql_where = '';
-}else if (is_numeric($host_id) && $host_id > 0) {
-	$sql_where = 'WHERE host_id = ' . $host_id;
+} elseif (is_numeric($host_id) && $host_id > 0) {
+	$sql_where = 'WHERE host_id = ?';
+	$params[] = $host_id;
 } else {
-	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
+	print 'ERROR: You must specify either a host_id or \'all\' to proceed.' . PHP_EOL;
+
 	display_help();
 	exit;
 }
@@ -114,61 +118,101 @@ if (strtolower($host_id) == 'all') {
 /* determine data queries to rerun */
 if (strtolower($query_id) == 'all') {
 	/* do nothing */
-}else if (is_numeric($query_id) && $query_id > 0) {
-	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' snmp_query_id=' . $query_id;
+} elseif (is_numeric($query_id) && $query_id > 0) {
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' snmp_query_id = ?';
+	$params[] = $query_id;
 } else {
-	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
+	print 'ERROR: You must specify either a query_id or \'all\' to proceed.' . PHP_EOL;
+
 	display_help();
 	exit;
 }
 
 /* allow for additional filtering on host description */
-if ($host_descr != '') {
-	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . " host.description LIKE '%" . $host_descr . "%' AND host.id=host_snmp_query.host_id";
+$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' disabled = ""';
 
-	$data_queries = db_fetch_assoc('SELECT host_id, snmp_query_id
-		FROM host_snmp_query, host ' . $sql_where);
-} else {
-	$data_queries = db_fetch_assoc('SELECT host_id, snmp_query_id
-		FROM host_snmp_query ' . $sql_where);
+if ($host_descr != '') {
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' description LIKE ?';
+	$params[] = '%' . $host_descr . '%';
 }
 
+$data_queries = db_fetch_assoc_prepared("SELECT description, hostname, host_id, snmp_query_id
+	FROM host_snmp_query
+	INNER JOIN host
+	ON host.id = host_snmp_query.host_id
+	$sql_where",
+	$params);
+
 /* issue warnings and start message if applicable */
-print "WARNING: Do not interrupt this script.  Reindexing can take quite some time\n";
+print 'WARNING: Do not interrupt this script.  Reindexing can take quite some time' . PHP_EOL;
 debug("There are '" . cacti_sizeof($data_queries) . "' data queries to run");
 
 $i = 1;
+$total_start = microtime(true);
 if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
-		if (!$debug) print '.';
-		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' starting");
+		if (!$debug) {
+			print '.';
+		}
+
+		$start = microtime(true);
+
 		run_data_query($data_query['host_id'], $data_query['snmp_query_id'], false, $force);
-		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' ending");
+
+		$items = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM host_snmp_cache
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			array($data_query['host_id'], $data_query['snmp_query_id']));
+
+		$orphans = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM graph_local
+			WHERE host_id = ?
+			AND snmp_query_id = ?
+			AND snmp_index = ""',
+			array($data_query['host_id'], $data_query['snmp_query_id']));
+
+		$end = microtime(true);
+
+		$message = sprintf(
+			'Re-Index Complete: Number[%d], TotalTime[%4.2f], QueryTime[%3.2f], Device[%d], Description[%s], DQ[%d], Items[%d], Orphans[%d]',
+			$i,
+			$end - $total_start,
+			$end - $start,
+			$data_query['host_id'],
+			$data_query['description'],
+			$data_query['snmp_query_id'],
+			$items,
+			$orphans
+		);
+
+		debug($message);
+
 		$i++;
 	}
 }
 
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
-	print "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]\n";
-	print "   [--host-descr=[description]] [--debug]\n\n";
-	print "--id=host_id             - The host_id to have data queries reindexed or 'all' to reindex all hosts\n";
-	print "--qid=query_id           - Only index on a specific data query id; defaults to 'all'\n";
-	print "--host-descr=description - The host description to filter by (SQL filters acknowledged)\n";
-	print "--force                  - Force Graph and Data Source Suggested Name Re-mapping for all items\n";
-	print "--debug                  - Display verbose output during execution\n";
+	print 'usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]' . PHP_EOL;
+	print '   [--host-descr=[description]] [--debug]' . PHP_EOL . PHP_EOL;
+	print '--id=host_id             - The host_id to have data queries reindexed or \'all\' to reindex all hosts\n' . PHP_EOL;
+	print '--qid=query_id           - Only index on a specific data query id; defaults to \'all\'' . PHP_EOL;
+	print '--host-descr=description - The host description to filter by (SQL filters acknowledged)' . PHP_EOL;
+	print '--force                  - Force Graph and Data Source Suggested Name Re-mapping for all items' . PHP_EOL;
+	print '--debug                  - Display verbose output during execution' . PHP_EOL;
 }
 
 function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print('DEBUG: ' . $message . "\n");
+		print 'DEBUG: ' . $message . PHP_EOL;
 	}
 }

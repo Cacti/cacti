@@ -100,6 +100,10 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
 	$refreshIsLogout      = 'false';
+} elseif (read_user_setting('user_auto_logout_time') > 0 && is_realm_allowed(8)) {
+	$myrefresh['seconds'] = read_user_setting('user_auto_logout_time');
+	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
+	$refreshIsLogout      = 'true';
 } elseif (read_config_option('auth_method') == 2) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';

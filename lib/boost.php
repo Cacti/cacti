@@ -317,6 +317,14 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 		return false;
 	}
 
+	/* This is a realtime graph */
+	if (isset($graph_data_array['export_realtime'])) {
+		/* restore original error handler */
+		restore_error_handler();
+
+		return false;
+	}
+
 	/* if we are just printing the rrd command return */
 	if (isset($graph_data_array['print_source'])) {
 		/* restore original error handler */
@@ -584,21 +592,22 @@ function boost_timer_get_overhead() {
 	return (microtime(true) - $start);
 }
 
-/* boost_get_arch_table_name - returns current archive boost table or false if no arch table is present currently */
-function boost_get_arch_table_name() {
-	$tables = db_fetch_assoc("SELECT table_name AS name
-		FROM information_schema.tables
-		WHERE table_schema = SCHEMA()
-		AND table_name LIKE 'poller_output_boost_arch_%'");
+/* boost_get_arch_table_names - returns current archive boost tables or false if no arch table is present currently */
+function boost_get_arch_table_names() {
+	$tableNames = array_rekey(
+		db_fetch_assoc("SELECT TABLE_NAME AS name
+			FROM information_schema.TABLES
+			WHERE TABLE_SCHEMA = SCHEMA()
+			AND TABLE_NAME LIKE 'poller_output_boost_arch_%'
+			AND TABLE_ROWS > 0"),
+		'name', 'name'
+	);
 
-	foreach($tables as $table) {
-		$rows = db_fetch_cell('SELECT COUNT(local_data_id) FROM ' . $table['name']);
-		if (is_numeric($rows) && intval($rows) > 0) {
-			return $table['name'];
-		}
+	if (!cacti_sizeof($tableNames)) {
+		return false;
+	} else {
+		return $tableNames;
 	}
-
-	return false;
 }
 
 /* boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*

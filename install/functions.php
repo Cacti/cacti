@@ -85,10 +85,10 @@ function install_create_csrf_secret($file) {
 function install_test_local_database_connection() {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
-	if (!isset($database_ssl)) $rdatabase_ssl = false;
-	if (!isset($database_ssl_key)) $rdatabase_ssl_key = false;
-	if (!isset($database_ssl_cert)) $rdatabase_ssl_cert = false;
-	if (!isset($database_ssl_ca)) $rdatabase_ssl_ca = false;
+	if (!isset($database_ssl)) $database_ssl = false;
+	if (!isset($database_ssl_key)) $database_ssl_key = false;
+	if (!isset($database_ssl_cert)) $database_ssl_cert = false;
+	if (!isset($database_ssl_ca)) $database_ssl_ca = false;
 
 	$connection = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
@@ -750,16 +750,18 @@ function install_file_paths() {
 
 function remote_update_config_file() {
 	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
-		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl;
+		$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port,
+		$rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
 	global $database_type, $database_hostname, $database_username,
-		$database_password, $database_default, $database_type, $database_port, $database_ssl;
+		$database_password, $database_default, $database_type, $database_port,
+		$database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
 	$failure     = '';
 	$newfile     = array();
 	$config_file = $config['base_path'] . '/include/config.php';
 
-	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
+	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
 
 	if (is_object($connection)) {
 		if (function_exists('gethostname')) {
@@ -783,6 +785,9 @@ function remote_update_config_file() {
 			$save['dbpass']    = $database_password;
 			$save['dbport']    = $database_port;
 			$save['dbssl']     = $database_ssl ? 'on' : '';
+			$save['dbsslkey']  = $database_ssl_key;
+			$save['dbsslcert'] = $database_ssl_cert;
+			$save['dbsslca']   = $database_ssl_ca;
 
 			$poller_id = sql_save($save, 'poller', 'id', true, $connection);
 		}

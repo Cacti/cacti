@@ -312,6 +312,8 @@ default:
 
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
+	set_request_var('tab', $current_tab);
+
 	$data_collectors = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""');
 
 	if ($data_collectors > 1) {
@@ -357,7 +359,7 @@ default:
 		$suffix = '';
 	}
 
-	html_start_box( __('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, '3', 'center', '');
+	html_start_box(__('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
@@ -415,6 +417,30 @@ default:
 		}
 	}
 
+	// Cache this setting as on large systems
+	// this query runs long
+	if ($current_tab == 'spikes') {
+		if (!isset($_SESSION['sk_templates'])) {
+			$spikekill_templates = array_rekey(
+				db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
+					FROM graph_templates AS gt
+					INNER JOIN graph_templates_item AS gti
+					ON gt.id=gti.graph_template_id
+					INNER JOIN data_template_rrd AS dtr
+					ON gti.task_item_id=dtr.id
+					WHERE gti.local_graph_id=0 AND data_source_type_id IN (3,2)
+					ORDER BY name'),
+				'id', 'name'
+			);
+
+			$_SESSION['sk_templates'] = $spikekill_templates;
+		} else {
+			$spikekill_templates = $_SESSION['sk_templates'];
+		}
+
+		$form_array['spikekill_templates']['array'] = $spikekill_templates;
+	}
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
@@ -446,7 +472,7 @@ default:
 			loadUrl({url:strURL, scroll:true});
 		});
 
-		$('input[value="<?php print __esc('Save');?>"]').click(function(event) {
+		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
 			event.preventDefault();
 
 			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {

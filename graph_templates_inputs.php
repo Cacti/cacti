@@ -220,7 +220,7 @@ function input_edit() {
 			$name = $start_bold . __('Item #%s', $i+1) . ': ' . $graph_item_types[$item['graph_type_id']] . ' (' . $consolidation_functions[$item['consolidation_function_id']] . ')' . $end_bold;
 
 			form_checkbox('i_' . $item['graph_templates_item_id'], $old_value, '', '', '', get_request_var('graph_template_id'));
-			print "<label for='i_" . $item['graph_templates_item_id'] . "'>" . $name . '</label>';
+			print "<label for='i_" . $item['graph_templates_item_id'] . "'>" . html_escape($name) . '</label>';
 
 			print '</td>';
 

@@ -482,3 +482,11 @@ define('CACTI_LANGUAGE_HANDLER_MOTRANSLATOR', 3);
 define('PLUGIN_DEPENDENCY_OK', 0);
 define('PLUGIN_DEPENDENCY_MISSING', 1);
 define('PLUGIN_DEPENDENCY_VERSION', 2);
+
+if (!defined('LDAP_OPT_X_TLS_NEVER')) {
+	define('LDAP_OPT_X_TLS_NEVER', 0);
+	define('LDAP_OPT_X_TLS_HARD', 1);
+	define('LDAP_OPT_X_TLS_DEMAND', 2);
+	define('LDAP_OPT_X_TLS_ALLOW', 3);
+	define('LDAP_OPT_X_TLS_TRY', 4);
+}

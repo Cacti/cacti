@@ -1052,8 +1052,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		}
 	}
 
-	/* if realtime, the image format id is always png */
-	if (isset($graph_data_array['export_realtime']) || (isset($graph_data_array['image_format']) && $graph_data_array['image_format'] == 'png')) {
+	if (isset($graph_data_array['image_format']) && $graph_data_array['image_format'] == 'png') {
 		$graph['image_format_id'] = 1;
 	}
 
@@ -1064,6 +1063,10 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		'--end=' . cacti_escapeshellarg($graph_end) . RRD_NL;
 
 	$graph_opts .= '--pango-markup ' . RRD_NL;
+
+	if (read_config_option('rrdtool_watermark') == 'on') {
+		$graph_opts .= '--disable-rrdtool-tag ' . RRD_NL;
+	}
 
 	foreach($graph as $key => $value) {
 		switch($key) {
@@ -2073,17 +2076,29 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				switch($graph_item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_COMMENT:
 					if (!isset($graph_data_array['graph_nolegend'])) {
-						# perform variable substitution first (in case this will yield an empty results or brings command injection problems)
+						$comments = array();
+
 						$comment_arg = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
-						# next, compute the argument of the COMMENT statement and perform injection counter measures
-						if (trim($comment_arg) == '') { # an empty COMMENT must be treated with care
-							$comment_arg = cacti_escapeshellarg(' ' . $hardreturn[$graph_item_id]);
-						} else {
-							$comment_arg = cacti_escapeshellarg(rrdtool_escape_string(html_escape($comment_arg)) . $hardreturn[$graph_item_id]);
+
+						// Check for a wrapping comment
+						$max = read_config_option('max_title_length') - 20;
+						if (strlen($comment_arg) > $max) {
+							$comments = explode("\n", wordwrap($comment_arg, $max));
+						}else{
+							$comments[] = $comment_arg;
 						}
 
-						# create rrdtool specific command line
-						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $comment_arg . ' ';
+						foreach($comments as $comment) {
+							# next, compute the argument of the COMMENT statement and perform injection counter measures
+							if (trim($comment) == '') { # an empty COMMENT must be treated with care
+								$comment = cacti_escapeshellarg(' ' . $hardreturn[$graph_item_id]);
+							} else {
+								$comment = cacti_escapeshellarg(rrdtool_escape_string(html_escape($comment)) . $hardreturn[$graph_item_id]);
+							}
+
+							# create rrdtool specific command line
+							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $comment . ' ';
+						}
 					}
 
 					break;
@@ -2354,11 +2369,8 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 
 	$graph_legend = '';
 	/* setup date format */
-	$date_fmt = read_user_setting('default_date_format');
-	$dateCharSetting = read_config_option('default_datechar');
-	if ($dateCharSetting == '') {
-		$dateCharSetting = GDC_SLASH;
-	}
+	$date_fmt = read_user_setting('default_date_format',read_config_option('default_date_format'));
+	$dateCharSetting = read_user_setting('default_datechar',read_config_option('default_datechar'));
 	$datecharacter = $datechar[$dateCharSetting];
 
 	switch ($date_fmt) {

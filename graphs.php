@@ -46,7 +46,7 @@ $graph_actions = array(
 	1  => __('Delete'),
 );
 
-if (get_nfilter_request_var('template_id') != '' && get_nfilter_request_var('template_id') != '-1' && get_nfilter_request_var('template_id') != '0') {
+if ((get_nfilter_request_var('template_id') != '' && get_nfilter_request_var('template_id') != '-1' && get_nfilter_request_var('template_id') != '0') || get_nfilter_request_var('drp_action') == 2) {
 	$graph_actions += array(
 		2  => __('Change Graph Template'),
 	);
@@ -994,7 +994,7 @@ function form_actions() {
 
 			if (aggregate_get_data_sources($graph_array, $data_sources, $graph_template)) {
 				# provide a new prefix for GPRINT lines
-				$gprint_prefix = '|host_hostname|';
+				$gprint_prefix = '|host_description|';
 
 				/* list affected graphs */
 				print '<tr>';
@@ -1026,6 +1026,32 @@ function form_actions() {
 					'title_format'      => auto_title($ttitle),
 					'graph_template_id' => $graph_template,
 					'gprint_prefix'     => $gprint_prefix
+				);
+
+				$helper_string = '|host_description|';
+
+				if ($graph_template > 0) {
+					$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
+						FROM snmp_query_graph
+						WHERE graph_template_id = ?',
+						array($graph_template));
+
+					if ($data_query > 0) {
+						$data_query_info = get_data_query_array($data_query);
+						foreach($data_query_info['fields'] as $field_name => $field_array) {
+							if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
+								$helper_string .= ($helper_string != '' ? ', ':'') . '|query_' . $field_name . '|';
+							}
+						}
+					}
+				}
+
+				// Append the helper string
+				$struct_aggregate['suggestions'] = array(
+					'method' => 'other',
+					'friendly_name' => __('Prefix Replacement Values'),
+					'description' => __('You may use these replacement values for the Prefix in the Aggregate Graph'),
+					'value' => $helper_string
 				);
 
 				draw_edit_form(
@@ -1363,6 +1389,19 @@ function item() {
     graph - Graphs
    ------------------------------------ */
 
+function is_multi_device_graph($local_graph_id) {
+	$devices = db_fetch_cell_prepared('SELECT COUNT(DISTINCT host_id)
+		FROM data_template_rrd AS dtr
+		INNER JOIN graph_templates_item AS gti
+		ON gti.task_item_id = dtr.id
+		INNER JOIN data_local AS dl
+		ON dl.id = dtr.local_data_id
+		WHERE gti.local_graph_id = ?',
+		array($local_graph_id));
+
+	return $devices > 1 ? true : false;
+}
+
 function graph_edit() {
 	global $config, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -1464,6 +1503,13 @@ function graph_edit() {
 			$message = __('Turn On Graph Debug Mode.');
 		}
 
+		$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT local_data_id
+			FROM graph_templates_item AS gti
+			INNER JOIN data_template_rrd AS dtr
+			ON dtr.id = gti.task_item_id
+			WHERE local_graph_id = ?',
+			array(get_request_var('id')));
+
 		?>
 		<table style='width:100%;'>
 			<tr>
@@ -1475,6 +1521,16 @@ function graph_edit() {
 					<?php
 						if (!empty($graph['graph_template_id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graph_templates.php?action=template_edit&id=' . (isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'));?>'><?php print __('Edit Graph Template.');?></a><br><?php
+						}
+						if (cacti_sizeof($data_sources)) {
+							foreach($data_sources as $ds) {
+								$name = db_fetch_cell_prepared('SELECT name_cache
+									FROM data_template_data
+									WHERE local_data_id = ?',
+									array($ds['local_data_id']));
+
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . $ds['local_data_id']);?>'><?php print __('Edit Data Source: \'%s\'.', $name);?></a><br><?php
+							}
 						}
 						if (!isempty_request_var('host_id') || !empty($host_id)) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a><br><?php
@@ -1497,9 +1553,11 @@ function graph_edit() {
 
 	if (!empty($graph['local_graph_id'])) {
 		$graph_template_id = get_current_graph_template($graph['local_graph_id']);
+
 		$gtsql = get_common_graph_templates($graph);
 	} else {
 		$graph_template_id = 0;
+
 		$gtsql = 'SELECT gt.id, gt.name
 			FROM graph_templates AS gt
 			WHERE id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
@@ -1555,6 +1613,10 @@ function graph_edit() {
 
 		if ($graph['graph_template_id'] > 0 && $host_id > 0) {
 			$form_array['graph_template_id']['method'] = 'hidden';
+			$form_array['host_id']['method'] = 'hidden';
+		}
+
+		if (is_multi_device_graph($graph['local_graph_id'])) {
 			$form_array['host_id']['method'] = 'hidden';
 		}
 	}
@@ -1746,6 +1808,9 @@ function graph_edit() {
 
 			$('.cactiGraphImage').show();
 		}).trigger('resize');
+
+		$('.ui-selectmenu-button').css('width', '360px');
+		$('.ui-autocomplete-input').css('width', '340px');
 	});
 
 	if (locked) {
@@ -1932,7 +1997,7 @@ function graph_management() {
 								$templates = get_allowed_graph_templates_normalized('', 'name', '', $total_rows);
 							}
 
-							if (cacti_sizeof($templates) > 0) {
+							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
 									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . "</option>\n";
 								}
@@ -1943,7 +2008,7 @@ function graph_management() {
 					<td>
 						<span>
 							<input type='checkbox' id='orphans' onChange='applyFilter()' <?php print (get_request_var('orphans') == 'true' || get_request_var('orphans') == 'on' ? 'checked':'');?>>
-   	                    	<label for='orphans'><?php print __('Orphaned');?></label>
+							<label for='orphans' title='<?php print __esc('Note that this query may take some time to run.');?>'><?php print __('Orphaned');?></label>
 						</span>
 					</td>
 					<td>
@@ -1987,69 +2052,83 @@ function graph_management() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = '';
+	$sql_where  = '';
+	$sql_where2 = '';
 	if (get_request_var('rfilter') != '') {
 		$sql_where = " WHERE (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR gl.id = '" . get_request_var('rfilter') . "')";
+
+		$sql_where2 = " AND (gl.id = '" . get_request_var('rfilter') . "')";
 	}
 
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('host_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
+		$sql_where2 .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
+		$sql_where2 .= ' AND gl.host_id=0';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
+		$sql_where2 .= ' AND gl.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('site_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('site_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=0';
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=0';
+		$sql_where2 .= ' AND h.site_id=0';
 	} elseif (!isempty_request_var('site_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=' . get_request_var('site_id');
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=' . get_request_var('site_id');
+		$sql_where2 .= ' AND h.site_id=' . get_request_var('site_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id = 0';
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id = 0';
+		$sql_where2 .= ' AND gtg.graph_template_id = 0';
 	} elseif (!isempty_request_var('template_id')) {
 		$parts = explode('_', get_request_var('template_id'));
 		if ($parts[0] == 'cg') {
 			input_validate_input_number($parts[1]);
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id = ' . $parts[1];
+			$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id = ' . $parts[1];
+			$sql_where2 .= ' AND gl.graph_template_id = ' . $parts[1];
 		} else {
 			input_validate_input_number($parts[1]);
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id = ' . $parts[1];
+			$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id = ' . $parts[1];
+			$sql_where2 .= ' AND gl.snmp_query_graph_id = ' . $parts[1];
 		}
 	}
 
 	if (get_request_var('local_graph_ids') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.id IN(' . get_request_var('local_graph_ids') . ')';
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.id IN(' . get_request_var('local_graph_ids') . ')';
+		$sql_where2 .= ' AND gl.id IN(' . get_request_var('local_graph_ids') . ')';
 	}
 
 	if (get_request_var('orphans') == 'true') {
-		$orphan_where = ' AND graph_type_id IN (' .
-			GRAPH_ITEM_TYPE_LINE1     . ', ' .
-			GRAPH_ITEM_TYPE_LINE2     . ', '.
-			GRAPH_ITEM_TYPE_LINE3     . ', ' .
-			GRAPH_ITEM_TYPE_LINESTACK . ', ' .
-			GRAPH_ITEM_TYPE_AREA      . ', ' .
-			GRAPH_ITEM_TYPE_STACK     . ')';
-
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
-			gl.snmp_index = "" AND gl.snmp_query_id > 0 OR
-			gl.id IN (
-				SELECT gti.local_graph_id
-				FROM graph_templates_item AS gti
-				LEFT JOIN data_template_rrd AS dtr
-				ON gti.task_item_id=dtr.id
-				INNER JOIN data_local AS dl
-				ON dl.id = dtr.local_data_id
-				WHERE gti.task_item_id > 0 AND
-				((dtr.local_data_id IS NULL OR dl.orphan = 1)' . $orphan_where . ')
-			))';
+		$orphan_join = "INNER JOIN (
+			SELECT DISTINCT gti.local_graph_id, dtr.local_data_id
+			FROM graph_templates_item AS gti
+			INNER JOIN graph_local AS gl
+			ON gl.id = gti.local_graph_id
+			LEFT JOIN data_template_rrd AS dtr
+			ON dtr.id = gti.task_item_id
+			LEFT JOIN host AS h
+			ON h.id = gl.host_id
+			WHERE graph_type_id IN (4,5,6,7,8,20)
+			AND cdef_id NOT IN (
+				SELECT c.id
+				FROM cdef AS c
+				INNER JOIN cdef_items AS ci
+				ON c.id = ci.cdef_id
+				WHERE (ci.type = 4 OR (ci.type = 6 AND value LIKE '%DATA_SOURCE%'))
+			)
+			AND (dtr.id IS NULL OR (gl.snmp_query_id > 0 AND gl.snmp_index = ''))
+			$sql_where2
+		) AS dtr
+		ON gl.id = dtr.local_graph_id";
+	} else {
+		$orphan_join = '';
 	}
 
 	/* don't allow aggregates to be view here */
@@ -2061,7 +2140,7 @@ function graph_management() {
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(gtg.id)
 		FROM graph_local AS gl
-		LEFT JOIN graph_templates_graph AS gtg
+		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
 		LEFT JOIN graph_templates AS gt
 		ON gl.graph_template_id=gt.id
@@ -2071,6 +2150,7 @@ function graph_management() {
 		ON h.id=gl.host_id
 		LEFT JOIN sites AS s
 		ON h.site_id=s.id
+		$orphan_join
 		$sql_where");
 
 	$sql_order = get_order_string();
@@ -2080,7 +2160,7 @@ function graph_management() {
 		gtg.height, gtg.width, gtg.title_cache, gt.name, gl.host_id,
 		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source
 		FROM graph_local AS gl
-		LEFT JOIN graph_templates_graph AS gtg
+		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
 		LEFT JOIN graph_templates AS gt
 		ON gl.graph_template_id=gt.id
@@ -2090,6 +2170,7 @@ function graph_management() {
 		ON h.id=gl.host_id
 		LEFT JOIN sites AS s
 		ON h.site_id=s.id
+		$orphan_join
 		$sql_where
 		$sql_order
 		$sql_limit");

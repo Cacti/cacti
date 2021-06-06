@@ -217,14 +217,11 @@ function update_poller_cache($data_source, $commit = false) {
 		}
 
 		if ($data_input['active'] == 'on') {
-			if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT) || ($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER)) { /* script */
-				/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
-				if (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (function_exists('proc_open'))) {
+			if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT) ||
+				($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER)) {
+				if ($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) {
 					$action = POLLER_ACTION_SCRIPT_PHP;
 					$script_path = get_full_script_path($data_source['id']);
-				} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
-					$action = POLLER_ACTION_SCRIPT;
-					$script_path = read_config_option('path_php_binary') . ' -q ' . get_full_script_path($data_source['id']);
 				} else {
 					$action = POLLER_ACTION_SCRIPT;
 					$script_path = get_full_script_path($data_source['id']);
@@ -249,7 +246,7 @@ function update_poller_cache($data_source, $commit = false) {
 				}
 
 				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], array(), $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
-			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) { /* snmp */
+			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
 				/* get the host override fields */
 				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 					FROM data_template_data
@@ -298,7 +295,7 @@ function update_poller_cache($data_source, $commit = false) {
 					array($data_source['id']));
 
 				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields['snmp_oid']) ? $host_fields['snmp_oid'] : ''));
-			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
+			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
 				$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
 				/* get the host override fields */
@@ -358,7 +355,8 @@ function update_poller_cache($data_source, $commit = false) {
 						}
 					}
 				}
-			} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) || ($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) { /* script query */
+			} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
+				($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) {
 				$script_queries = get_data_query_array($data_source['snmp_query_id']);
 
 				/* get the host override fields */
@@ -408,8 +406,7 @@ function update_poller_cache($data_source, $commit = false) {
 						if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 							$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
 
-							/* fall back to non-script server actions if the user is running a version of php older than 4.3 */
-							if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (function_exists('proc_open'))) {
+							if ($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) {
 								$action = POLLER_ACTION_SCRIPT_PHP;
 
 								$prepend = '';
@@ -418,15 +415,6 @@ function update_poller_cache($data_source, $commit = false) {
 								}
 
 								$script_path = get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
-							} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
-								$action = POLLER_ACTION_SCRIPT;
-
-								$prepend = '';
-								if (isset($script_queries['arg_prepend']) && $script_queries['arg_prepend'] != '') {
-									$prepend = $script_queries['arg_prepend'];
-								}
-
-								$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
 							} else {
 								$action = POLLER_ACTION_SCRIPT;
 								$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'], $data_source['host_id']);
@@ -1125,8 +1113,14 @@ function utilities_get_mysql_recommendations() {
 		$location = '/etc/my.cnf';
 	}
 
+	if ($database == 'MariaDB') {
+		$variables_url = 'https://mariadb.com/kb/en/server-system-variables/';
+	} else {
+		$variables_url = html_escape('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html');
+	}
+
 	print '<tr class="tableHeader tableFixed">';
-	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" href="' . html_escape('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html') . '">' .  __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
+	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" target="_blank" href="' . $variables_url . '">' .  __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
 	print '</tr>';
 
 	form_alternate_row();

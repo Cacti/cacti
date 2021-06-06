@@ -55,7 +55,7 @@ use phpsnmp\SNMP;
 
 function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '', $engineid = '',
-	$port = 161, $timeout_ms = 500, $retries = 0, $max_oids = 10) {
+	$port = 161, $timeout_ms = 500, $retries = 0, $max_oids = 10, $bulk_walk_size = 10) {
 
 	switch ($version) {
 		case '1':
@@ -72,7 +72,7 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 	$timeout_us = (int) ($timeout_ms * 1000);
 
 	try {
-		$session = new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
+		$session = @new SNMP($version, $hostname . ':' . $port, ($version == 3 ? $auth_user : $community), $timeout_us, $retries);
 	} catch (Exception $e) {
 		return false;
 	}
@@ -84,6 +84,7 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 
 	$session->quick_print = false;
 	$session->max_oids = $max_oids;
+	$session->bulk_walk_size = $bulk_walk_size;
 
 	if (read_config_option('oid_increasing_check_disable') == 'on') {
 		$session->oid_increasing_check = false;
@@ -438,13 +439,17 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 
 	$session->value_output_format = $value_output_format;
 
-	if ($non_repeaters === NULL)
+	if ($non_repeaters === NULL) {
 		$non_repeaters = 0;
-	if ($max_repetitions === NULL)
-		$max_repetitions = $session->max_oids;
+	}
 
-	if ($max_repetitions <= 0)
+	if ($max_repetitions === NULL) {
+		$max_repetitions = $session->bulk_walk_size;
+	}
+
+	if ($max_repetitions <= 0) {
 		$max_repetitions = 10;
+	}
 
 	try {
 		$out = @$session->walk($oid, false, $max_repetitions, $non_repeaters);
@@ -547,7 +552,7 @@ function cacti_snmp_session_getnext($session, $oid) {
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
-	$port = 161, $timeout_ms = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER,
+	$port = 161, $timeout_ms = 500, $retries = 0, $bulk_walk_size = 10, $environ = SNMP_POLLER,
 	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
 	global $config, $banned_snmp_strings, $snmp_error;
@@ -558,7 +563,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 	$snmp_array        = array();
 	$temp_array        = array();
 
-	if (!cacti_snmp_options_sanitize($version, $community, $port, $timeout_ms, $retries, $max_oids)) {
+	if (!cacti_snmp_options_sanitize($version, $community, $port, $timeout_ms, $retries, $bulk_walk_size)) {
 		return array();
 	}
 
@@ -637,15 +642,13 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 			$oidCheck = '';
 		}
 
-		$max_oids = read_config_option('snmp_bulk_walk_size');
-
-		if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($max_oids > 1)) {
+		if (file_exists($path_snmpbulkwalk) && ($version > 1) && ($bulk_walk_size > 1)) {
 			$temp_array = exec_into_array(cacti_escapeshellcmd($path_snmpbulkwalk) .
 				' -O QnU'  . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
 				' -v '     . $version .
 				' -t '     . $timeout_s .
 				' -r '     . $retries .
-				' -Cr'     . $max_oids .
+				' -Cr'     . $bulk_walk_size .
 				' '        . $oidCheck . ' ' .
 				cacti_escapeshellarg($hostname) . ':' . $port . ' ' .
 				cacti_escapeshellarg($oid));
@@ -662,6 +665,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 
 		if (strpos(implode(' ', $temp_array), 'Timeout') !== false) {
 			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
+		}
+
+		if (strpos(implode(' ', $temp_array), '(tooBig)') !== false) {
+			cacti_log("WARNING: SNMP Error:'Error in packet.  Response message would have been too large.', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 		}
 
 		/* check for bad entries */
@@ -928,16 +935,21 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 
 function cacti_snmp_options_sanitize($version, $community, &$port, &$timeout, &$retries, &$max_oids) {
 	/* determine default retries */
-	if (($retries == 0) || (!is_numeric($retries))) {
+	if ($retries == 0 || !is_numeric($retries)) {
 		$retries = read_config_option('snmp_retries');
-		if ($retries == '') $retries = 3;
+
+		if ($retries == '') {
+			$retries = 3;
+		}
 	}
 
 	/* determine default max_oids */
-	if (($max_oids == 0) || (!is_numeric($max_oids))) {
+	if ($max_oids == 0 || !is_numeric($max_oids)) {
 		$max_oids = read_config_option('max_get_size');
 
-		if ($max_oids == '') $max_oids = 10;
+		if ($max_oids == '') {
+			$max_oids = 10;
+		}
 	}
 
 	/* determine default port */

@@ -2672,6 +2672,14 @@ function clearAllTimeouts() {
 	}
 }
 
+function setZoneInfo() {
+	var dt = new Date();
+	var tz = -dt.getTimezoneOffset();
+
+	$.cookie('CactiDateTime', dt.toString(), { expires: 365, path: urlPath, secure: true });
+	$.cookie('CactiTimeZone', tz.toString(), { expires: 365, path: urlPath, secure: true });
+}
+
 $(function() {
 	statePushed = false;
 	popFired    = false;
@@ -2685,6 +2693,8 @@ $(function() {
 			handlePopState();
 		}
 	});
+
+	setZoneInfo();
 
 	setTitleAndHref();
 
@@ -3459,13 +3469,16 @@ function redrawGraph(graph_id) {
 	);
 }
 
-function initializeGraphs() {
+function initializeGraphs(disable_cache) {
+
+	disable_cache = (disable_cache === 'undefined') ? false : true;
+
 	$.ajaxQ.abortAll();
 
 	$('a[id$="_mrtg"]').each(function() {
 		var graph_id = $(this).attr('id').replace('graph_','').replace('_mrtg','');
 
-		$(this).attr('href', urlPath+'graph.php?local_graph_id='+graph_id).addClass('linkEditMain');;
+		$(this).attr('href', urlPath+'graph.php?local_graph_id='+graph_id);
 
 		$(this).off('click').on('click', function(event) {
 			if (!shouldCaptureClick(event))
@@ -3495,7 +3508,7 @@ function initializeGraphs() {
 		$(this).attr('href',urlPath+
 			'graph_xport.php?local_graph_id='+graph_id+
 			'&rra_id=0&view_type=tree&graph_start='+timestampDate1+
-			'&graph_end='+timestampDate2).addClass('linkEditMain');
+			'&graph_end='+timestampDate2);
 
 		$(this).off('click').on('click', function(event) {
 			if (!shouldCaptureClick(event))
@@ -3546,6 +3559,7 @@ function initializeGraphs() {
 			'&graph_end='+graph_end+
 			'&graph_height='+graph_height+
 			'&graph_width='+graph_width+
+			(disable_cache ? '&disable_cache=true':'')+
 			(isThumb ? '&graph_nolegend=true':''))
 			.done(function(data) {
 				if (myWidth < data.image_width) {
@@ -3624,7 +3638,7 @@ function initializeGraphs() {
 		$(this).attr('href',urlPath+
 			'graph.php?action=zoom&local_graph_id='+graph_id+
 			'&rra_id=0&graph_start='+timestampDate1+
-			'&graph_end='+timestampDate2).addClass('linkEditMain');
+			'&graph_end='+timestampDate2);
 
 		$(this).off('click').on('click', function(event) {
 			if (!shouldCaptureClick(event))

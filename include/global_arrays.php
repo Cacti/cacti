@@ -129,6 +129,7 @@ $cacti_version_codes = array(
 	'1.2.14' => '0102',
 	'1.2.15' => '0102',
 	'1.2.16' => '0102',
+	'1.2.17' => '0102',
 	'1.3.0'  => '0102',
 );
 
@@ -456,7 +457,7 @@ $input_types = array(
 	DATA_INPUT_TYPE_SCRIPT              => __('Script/Command'),  // Action 1:
 	DATA_INPUT_TYPE_SCRIPT_QUERY        => __('Script Query'), // Action 1:
 	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
-	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => __('Script Query - Script Server')
+	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => __('Script Server Query')
 );
 
 $input_types_script = array(
@@ -802,8 +803,16 @@ $ldap_versions = array(
 
 $ldap_encryption = array(
 	0 => __('None'),
-	1 => __('SSL'),
-	2 => __('TLS')
+	1 => __('LDAPS'),
+	2 => __('LDAP + TLS')
+);
+
+$ldap_tls_cert_req = array(
+	LDAP_OPT_X_TLS_NEVER  => __('Never'),
+	LDAP_OPT_X_TLS_HARD   => __('Hard'),
+	LDAP_OPT_X_TLS_DEMAND => __('Demand'),
+	LDAP_OPT_X_TLS_ALLOW  => __('Allow'),
+	LDAP_OPT_X_TLS_TRY    => __('Try')
 );
 
 $ldap_modes = array(
@@ -1101,7 +1110,7 @@ $user_auth_realms = array(
 	20   => __('Update Profile'),
 	24   => __('External Links'),
 
-	1    => __('User Management'),
+	1    => __('Users/Groups'),
 	15   => __('Settings/Utilities'),
 	23   => __('Automation'),
 	26   => __('Installation/Upgrades'),
@@ -1112,7 +1121,7 @@ $user_auth_realms = array(
 	3    => __('Sites/Devices/Data'),
 	5    => __('Graphs'),
 	4    => __('Trees'),
-	1043 => __('Spike Management'),
+	1043 => __('Spike Handling'),
 
 	9    => __('Data Source Profiles'),
 	14   => __('Presets'),
@@ -1124,16 +1133,18 @@ $user_auth_realms = array(
 	16   => __('Export Templates'),
 	17   => __('Import Templates'),
 
-	18   => __('Log Management'),
+	18   => __('Log Administration'),
 	19   => __('Log Viewing'),
 
-	21   => __('Reports Management'),
+	21   => __('Reports Administration'),
 	22   => __('Reports Creation'),
-	27   => __('Hide Graph Drilldowns')
+	27   => __('Show Graph Action Icons'),
+	28   => __('Show User Help Links'),
+	101  => __('Plugin Administration')
 );
 
 $user_auth_roles = array(
-	__('Normal User')            => array(7, 19, 20, 22, 24, 25, 27),
+	__('Normal User')            => array(7, 19, 20, 22, 24, 25, 27, 28),
 	__('Template Editor')        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
 	__('General Administration') => array(8, 3, 4, 5, 23, 1043),
 	__('System Administration')  => array(8, 15, 26, 1, 18, 21, 101)
@@ -1275,8 +1286,11 @@ $host_struc = array(
 	'snmp_port',
 	'snmp_timeout',
 	'max_oids',
+	'bulk_walk_size',
 	'device_threads',
 	'availability_method',
+	'location',
+	'external_id',
 	'ping_method',
 	'ping_port',
 	'ping_timeout',

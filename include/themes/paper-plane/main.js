@@ -188,7 +188,7 @@ function themeReady() {
 		hostOpen = false;
 		clearTimeout(hostTimer);
 		clearTimeout(clickTimeout);
-		$('#host').autocomplete('close');
+		$('#host').autocomplete('close').select();
 	}).click(function() {
 		if (hostOpen) {
 			$('#host').autocomplete('close');
@@ -201,6 +201,7 @@ function themeReady() {
 				hostOpen = true;
 			}, 200);
 		}
+		$('#host').select();
 	}).on('mouseenter', function() {
 		$(this).addClass('ui-state-hover');
 		$('input#host').addClass('ui-state-hover');

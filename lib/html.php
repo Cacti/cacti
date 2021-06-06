@@ -57,6 +57,7 @@
  */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
 	static $table_suffix = 1;
+	static $help_count   = 0;
 
 	if ($add_label === false) {
 		$add_label = __('Add');
@@ -81,6 +82,29 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print '<div>';
 		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
 		print "<div class='cactiTableButton'>";
+
+		$page      = get_current_page();
+		$help_file = html_help_page($page);
+
+		if ($help_file === false) {
+			if (isset_request_var('tab')) {
+				$tpage     = $page . ':' . get_nfilter_request_var('tab');
+				$help_file = html_help_page($tpage);
+			}
+		}
+
+		if ($help_file === false) {
+			if (isset_request_var('action')) {
+				$tpage     = $page . ':' . get_nfilter_request_var('action');
+				$help_file = html_help_page($tpage);
+			}
+		}
+
+		if ($help_file !== false && $help_count == 0 && is_realm_allowed(28)) {
+			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark' target='_blank' href='" . html_escape($help_file) . "'><i class='far fa-question-circle'></i></a></span>";
+			$help_count++;
+		}
+
 		if ($add_text != '' && !is_array($add_text)) {
 			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
@@ -273,7 +297,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -391,7 +415,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
 							<?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
 						</td>
-						<?php if(!is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
 							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
 						</td><?php } ?>
 					</tr>
@@ -1013,7 +1037,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 					print ' selected';
 				}
 
-				print '>' . title_trim(null_out_substitutions(html_escape($form_data[$id])), 75) . '</option>';
+				print '>' . html_escape(null_out_substitutions($form_data[$id])) . '</option>';
 			}
 		}
 	} else {
@@ -1026,9 +1050,9 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 				}
 
 				if (isset($row['host_id'])) {
-					print '>' . title_trim(html_escape($row[$column_display]), 75) . '</option>';
+					print '>' . html_escape($row[$column_display]) . '</option>';
 				} else {
-					print '>' . title_trim(null_out_substitutions(html_escape($row[$column_display])), 75) . '</option>';
+					print '>' . html_escape(null_out_substitutions($row[$column_display])) . '</option>';
 				}
 			}
 		}
@@ -1056,7 +1080,10 @@ function html_escape($string) {
 		$charset = 'UTF-8';
 	}
 
-	return htmlspecialchars($string, ENT_QUOTES, $charset, false);
+	// Grave Accent character can lead to xss
+	$string = str_replace('`', '&#96;', $string);
+
+	return htmlspecialchars($string, ENT_QUOTES|ENT_HTML5, $charset, false);
 }
 
 /* html_split_string - takes a string and breaks it into a number of <br> separated segments
@@ -2030,7 +2057,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				if (cacti_sizeof($devices)) {
 					foreach ($devices as $device) {
-						print "<option value='" . $device['id'] . "'"; if ($host_id == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape(strip_domain($device['description'])), 40) . '</option>';
+						print "<option value='" . $device['id'] . "'"; if ($host_id == $device['id']) { print ' selected'; } print '>' . html_escape(strip_domain($device['description'])) . '</option>';
 					}
 				}
 				?>
@@ -2427,17 +2454,20 @@ function html_common_header($title, $selectedTheme = '') {
 	}
 
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy != '0' && $script_policy != '') {
+	if ($script_policy == 'unsafe-eval') {
 		$script_policy = "'$script_policy'";
+	} else {
+		$script_policy = '';
 	}
-	$alternates = read_config_option('content_security_alternate_sources');
+	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
 
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print $script_policy;?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self'">
+	<meta name="theme-color" content="#161616"/>
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print html_escape($script_policy);?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self'">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -2458,6 +2488,16 @@ function html_common_header($title, $selectedTheme = '') {
 		var treeView='<?php print __esc('Tree View');?>';
 		var listView='<?php print __esc('List View');?>';
 		var previewView='<?php print __esc('Preview View');?>';
+		var editProfile='<?php print __esc('Edit Profile');?>';
+		var changePassword='<?php print __esc('Change Password');?>';
+		var logout='<?php print __esc('Logout');?>';
+		var legacyInterface='<?php print __esc('Use Legacy UI');?>';
+		var newInterface='<?php print __esc('Use New UI');?>';
+		var darkColorMode='<?php print __esc('Dark Color Mode');?>';
+		var lightColorMode='<?php print __esc('Light Color Mode');?>';
+		var usePreferredColorTheme='<?php print __esc('Use System Color');?>';
+		var ignorePreferredColorTheme='<?php print __esc('Ignore System Color');?>';
+		var help='<?php print __esc('Help');?>';
 		var cactiHome='<?php print __esc('Cacti Home');?>';
 		var cactiProjectPage='<?php print __esc('Cacti Project Page');?>';
 		var cactiCommunityForum='<?php print __esc('User Community');?>';
@@ -2536,7 +2576,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.filter.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/billboard.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
 	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
@@ -2545,7 +2585,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.js');
 	print get_md5_include_js('include/js/jquery-ui.js');
 	print get_md5_include_js('include/js/jquery.ui.touch.punch.js', true);
-	print get_md5_include_js('include/js/jquery.cookie.js', true);
+	print get_md5_include_js('include/js/jquery.cookie.js');
 	print get_md5_include_js('include/js/js.storage.js');
 	print get_md5_include_js('include/js/jstree.js');
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
@@ -2561,8 +2601,8 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.sparkline.js', true);
 	print get_md5_include_js('include/js/Chart.js', true);
 	print get_md5_include_js('include/js/dygraph-combined.js', true);
-	print get_md5_include_js('include/js/d3.js', true);
-	print get_md5_include_js('include/js/c3.js', true);
+	print get_md5_include_js('include/js/d3.js');
+	print get_md5_include_js('include/js/billboard.js');
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/realtime.js', true);
@@ -2610,7 +2650,7 @@ function html_auth_header($section, $browser_title, $legend, $title, $hook_args 
 function html_auth_footer($section, $error = '', $html = '') {
 	global $twig, $twig_vars;
 
-	$hook_section_after = html_hook_buffer("${section}_after");
+	$hook_section_after = twig_hook_buffer("${section}_after");
 	$version = __('Version %1$s | %2$s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT);
 
 	ob_start();
@@ -3219,4 +3259,68 @@ function twig_hook_buffer($hook_name, $hook_args = array()) {
 	$hook_buffer = ob_get_contents();
 	ob_end_clean();
 	return $hook_buffer;
+}
+
+function html_help_page($page) {
+	global $config;
+
+	$help = array(
+		'aggregates.php'              => 'Aggregates.html',
+		'aggregate_templates.php'     => 'Aggregate-Templates.html',
+		'automation_networks.php'     => 'Automation-Networks.php',
+		'cdef.php'                    => 'CDEFs.html',
+		'color_templates.php'         => 'Color-Templates.html',
+		'color.php'                   => 'Colors.html',
+		'pollers.php'                 => 'Data-Collectors.html',
+		'data_debug.php'              => 'Data-Debug.html',
+		'data_input.php'              => 'Data-Input-Methods.html',
+		'data_source_profiles.php'    => 'Data-Profiles.html',
+		'data_queries.php'            => 'Data-Queries.html',
+		'data_templates.php'          => 'Data-Source-Templates.html',
+		'data_sources.php'            => 'Data-Sources.html',
+		'host.php'                    => 'Devices.html',
+		'automation_templates.php'    => 'Device-Rules.html',
+		'host_templates.php'          => 'Device-Templates.html',
+		'automation_devices.php'      => 'Discovered-Devices.html',
+		'templates_export.php'        => 'Export-Template.html',
+		'links.php'                   => 'External-Links.html',
+		'gprint_presets.php'          => 'GPRINTs.html',
+		'graphs_new.php'              => 'Graph-a-Single-SNMP-OID.html',
+		'graph_view.php'              => 'Graph-Overview.html',
+		'automation_graph_rules.php'  => 'Graph-Rules.html',
+		'graph_templates.php'         => 'Graph-Templates.html',
+		'graph_templates_items.php'   => 'Graph-Templates.html',
+		'graph_templates_inputs.php'  => 'Graph-Templates.html',
+		'graphs.php'                  => 'Graphs.html',
+		'templates_import.php'        => 'Import-Template.html',
+		'plugins.php'                 => 'Plugins.html',
+		'automation_snmp.php'         => 'SNMP-Options.html',
+		'settings.php:authentication' => 'Settings-Auth.html',
+		'settings.php:data'           => 'Settings-Data.html',
+		'settings.php:snmp'           => 'Settings-Device-Defaults.html',
+		'settings.php:general'        => 'Settings-General.html',
+		'settings.php:mail'           => 'Settings-Mail-Reporting-DNS.html',
+		'settings.php:path'           => 'Settings-Paths.html',
+		'settings.php:boost'          => 'Settings-Performance.html',
+		'settings.php:poller'         => 'Settings-Poller.html',
+		'settings.php:spikes'         => 'Settings-Spikes.html',
+		'settings.php:visual'         => 'Settings-Visual.html',
+		'sites.php'                   => 'Sites.html',
+		'automation_tree_rules.php'   => 'Tree-Rules.html',
+		'tree.php'                    => 'Trees.html',
+		'user_domains.php'            => 'User-Domains.html',
+		'user_group_admin.php'        => 'User-Group-Management.html',
+		'user_admin.php'              => 'User-Management.html',
+		'vdef.php'                    => 'VDEFs.html',
+	);
+
+	$help = api_plugin_hook_function('help_page', $help);
+
+	if (isset($help[$page])) {
+		if (file_exists($config['base_path'] . '/docs/' . $help[$page])) {
+			return $config['url_path'] . 'docs/' . $help[$page];
+		}
+	}
+
+	return false;
 }

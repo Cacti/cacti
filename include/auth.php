@@ -105,7 +105,7 @@ if (read_config_option('auth_method') == 0) {
 
 	$_SESSION['sess_user_id'] = $admin_id;
 	$_SESSION['sess_change_password'] = true;
-	header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
+	header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 	exit;
 }
 

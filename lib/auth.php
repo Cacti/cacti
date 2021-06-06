@@ -477,15 +477,24 @@ function auth_augment_roles($role_name, $files) {
 	global $user_auth_roles, $user_auth_realm_filenames;
 
 	foreach($files as $file) {
-		if (array_search($file, $user_auth_realm_filenames) !== false) {
-			if (array_search($user_auth_realm_filenames[$file], $user_auth_roles[$role_name]) === false) {
+		if (array_search($file, $user_auth_realm_filenames, true) !== false) {
+			if (array_search($user_auth_realm_filenames[$file], $user_auth_roles[$role_name], true) === false) {
 				$user_auth_roles[$role_name][] = $user_auth_realm_filenames[$file];
 			}
 		} else {
 			$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
 				FROM plugin_realms
-				WHERE file LIKE ?',
-				array('%' . $file . '%'));
+				WHERE file = ?
+				OR file LIKE ?
+				OR file LIKE ?
+				OR file LIKE ?',
+				array(
+					$file,
+					$file . ',%',
+					'%,' . $file . ',%',
+					'%,' . $file
+				)
+			);
 
 			if (!empty($realm_id)) {
 				if (!isset($user_auth_roles[$role_name])) {
@@ -494,6 +503,23 @@ function auth_augment_roles($role_name, $files) {
 					$user_auth_roles[$role_name][] = $realm_id;
 				}
 			}
+		}
+	}
+}
+
+function auth_augment_roles_byname($role_name, $auth_name) {
+	global $user_auth_roles, $user_auth_realm_filenames;
+
+	$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
+		FROM plugin_realms
+		WHERE display = ?',
+		array($auth_name));
+
+	if (!empty($realm_id)) {
+		if (!isset($user_auth_roles[$role_name])) {
+			$user_auth_roles[$role_name][] = $realm_id;
+		} elseif (array_search($realm_id, $user_auth_roles[$role_name]) === false) {
+			$user_auth_roles[$role_name][] = $realm_id;
 		}
 	}
 }
@@ -1107,7 +1133,9 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method != 0) {
+	$simple_perms = get_simple_graph_perms($user);
+
+	if ($auth_method != 0 && !$simple_perms) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
@@ -1258,7 +1286,9 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method != 0) {
+	$simple_perms = get_simple_graph_perms($user);
+
+	if ($auth_method != 0 && !$simple_perms) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
@@ -1467,6 +1497,82 @@ function clear_cached_allowed_types() {
 	set_config_option('sess_allowed_templates_lastchange', time());
 }
 
+function get_simple_device_perms($user) {
+	$policy_hosts = db_fetch_cell_prepared('SELECT policy_hosts
+		FROM user_auth
+		WHERE id = ?',
+		array($user));
+
+	$perm_count = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM user_auth_perms
+		WHERE user_id = ?
+		AND type = 2',
+		array($user));
+
+	if ($policy_hosts == 1 && $perm_count == 0) {
+		return true;
+	} else {
+		$policies = db_fetch_assoc_prepared('SELECT policy_hosts, COUNT(*) AS exceptions
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_perms AS uagp
+			ON uag.id = uagp.group_id
+			INNER JOIN user_auth_group_members AS uagm
+			ON uagm.group_id = uag.id
+			WHERE uagp.type = 2
+			AND uagm.user_id = ?
+			GROUP BY uag.id',
+			array($user));
+
+		if (cacti_sizeof($policies)) {
+			foreach($policies as $p) {
+				if ($p['policy_hosts'] == 1 && $p['exceptions'] == 0) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+}
+
+function get_simple_graph_perms($user) {
+	$policy_graphs = db_fetch_cell_prepared('SELECT policy_graphs
+		FROM user_auth
+		WHERE id = ?',
+		array($user));
+
+	$perm_count = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM user_auth_perms
+		WHERE user_id = ?
+		AND type = 1',
+		array($user));
+
+	if ($policy_graphs == 1 && $perm_count == 0) {
+		return true;
+	} else {
+		$policies = db_fetch_assoc_prepared('SELECT policy_graphs, COUNT(*) AS exceptions
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_perms AS uagp
+			ON uag.id = uagp.group_id
+			INNER JOIN user_auth_group_members AS uagm
+			ON uagm.group_id = uag.id
+			WHERE uagp.type = 1
+			AND uagm.user_id = ?
+			GROUP BY uag.id',
+			array($user));
+
+		if (cacti_sizeof($policies)) {
+			foreach($policies as $p) {
+				if ($p['policy_graphs'] == 1 && $p['exceptions'] == 0) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+}
+
 function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	$hash      = get_allowed_type_hash('graph_templates', $sql_where, $order_by, $limit, $graph_template_id, $user);
 	$init_rows = $total_rows;
@@ -1503,7 +1609,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method != 0) {
+	$simple_perms = get_simple_graph_perms($user);
+
+	if ($auth_method != 0 && !$simple_perms) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
@@ -1849,15 +1957,22 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 }
 
 function get_allowed_devices($sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0, $host_id = 0) {
-	$hash      = get_allowed_type_hash('devices', '', '', '', 0, $user);
+	$simple_perms = get_simple_device_perms($user);
+
+	if (!$simple_perms) {
+		$hash      = get_allowed_type_hash('devices', '', '', '', 0, $user);
+	}
+
 	$init_rows = $total_rows;
 	$cached    = array();
 
 	if ($limit != -1) {
-		prime_devices_type_cache($hash, $user);
+		if (!$simple_perms) {
+			prime_devices_type_cache($hash, $user);
 
-		if ($hash !== false) {
-			$cached = get_cached_allowed_type($hash, $init_rows);
+			if ($hash !== false) {
+				$cached = get_cached_allowed_type($hash, $init_rows);
+			}
 		}
 	} else {
 		$limit  = '';
@@ -1885,15 +2000,13 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 
 	if ($host_id > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id=$host_id";
-	} else {
-		if (cacti_sizeof($cached)) {
-			return db_fetch_assoc("SELECT *
-				FROM host AS h
-				$sql_where" .
-				($sql_where != '' ? ' AND ':' WHERE ') . ' id IN (' . implode(', ', $cached) . ")
-				$order_by
-				$limit");
-		}
+	} elseif (cacti_sizeof($cached)) {
+		return db_fetch_assoc("SELECT *
+			FROM host AS h
+			$sql_where" .
+			($sql_where != '' ? ' AND ':' WHERE ') . ' id IN (' . implode(', ', $cached) . ")
+			$order_by
+			$limit");
 	}
 
 	if ($user == -1) {
@@ -1902,7 +2015,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method != 0) {
+	if ($auth_method != 0 && !$simple_perms) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
@@ -2955,7 +3068,7 @@ function auth_post_login_redirect($user) {
 					$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'];
 				}
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
-				$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+				$referer = $_SERVER['HTTP_REFERER'];
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';
@@ -2971,6 +3084,9 @@ function auth_post_login_redirect($user) {
 			}
 
 			$referer .= ($newtheme ? (strpos($referer, '?') === false ? '?':'&') . 'newtheme=1':'');
+
+			/* Strip out the login from the referer if present */
+			$referer  = str_replace('?action=login', '', $referer);
 
 			if (api_user_realm_auth(auth_basename($referer))) {
 				header('Location: ' . $referer);

@@ -535,6 +535,7 @@ function data_query_item_remove_confirm() {
 		<td class='right'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Query Graph Template');?>'>
+			<input type='hidden' id='snmp_query_graph_id' value='<?php print get_request_var('id');?>'>
 		</td>
 	</tr>
 	<?php
@@ -815,6 +816,13 @@ function data_query_item_edit() {
 					WHERE snmp_query_graph_id = ?
 					AND data_template_id = ?
 					ORDER BY field_name, sequence', array(get_request_var('id'), $data_template['id']));
+
+				$name = db_fetch_cell_prepared('SELECT name
+					FROM data_template
+					WHERE id = ?',
+					array($data_template['id']));
+
+				print "<tr class='tableHeader'><td colspan='4'>" . html_escape($name) . '</td></tr><tr>';
 
 				html_header(array(
 					array('display' => __('Name'), 'align' => 'left'),

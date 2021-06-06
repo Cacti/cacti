@@ -171,8 +171,42 @@ case 'countdown':
 		$graph_data_array['ds_step'] = read_user_setting('realtime_interval', 10);
 	}
 
+	// Determine the graph type of the output
+	if (!isset_request_var('image_format')) {
+		$type   = db_fetch_cell_prepared('SELECT image_format_id
+			FROM graph_templates_graph
+			WHERE local_graph_id = ?',
+			array(get_request_var('local_graph_id')));
+
+		switch($type) {
+		case '1':
+			$gtype = 'png';
+			break;
+		case '3':
+			$gtype = 'svg+xml';
+			break;
+		default:
+			$gtype = 'png';
+			break;
+		}
+	} else {
+		switch(strtolower(get_nfilter_request_var('image_format'))) {
+		case 'png':
+			$graph_data_array['image_format'] = 'png';
+			break;
+		case 'svg':
+			$gtype = 'svg+xml';
+			break;
+		default:
+			$gtype = 'png';
+			break;
+		}
+	}
+
+	$graph_data_array['image_format'] = $gtype;
+
 	/* call poller */
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
+	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256', session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
 	$command   = read_config_option('path_php_binary');
 	$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . hash('sha256',session_id()), get_request_var('local_graph_id'), $graph_data_array['ds_step']);
 
@@ -243,11 +277,12 @@ case 'countdown':
 		'local_graph_id' => get_request_var('local_graph_id'),
 		'top'            => get_request_var('top'),
 		'left'           => get_request_var('left'),
-		'ds_step'        => (isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
-		'graph_start'    => (isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
-		'size'           => (isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size']:read_user_setting('realtime_size', 100)),
-		'thumbnails'     => (isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend']:'false'),
-		'data'           => (isset($data) ? $data:'')
+		'ds_step'        => html_escape(isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
+		'graph_start'    => html_escape(isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
+		'size'           => html_escape(isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size']:read_user_setting('realtime_size', 100)),
+		'thumbnails'     => html_escape(isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend']:'false'),
+		'data'           => (isset($data) ? $data:''),
+		'image_format'   => $graph_data_array['image_format']
 	);
 
 	print json_encode($return_array);
@@ -355,10 +390,13 @@ $sizes = array(
 				</select>
 				<select id='ds_step' onChange='imageOptionsChanged("interval")'>
 					<?php
+					$min_refresh = read_config_option('realtime_interval');
 					foreach ($realtime_refresh as $interval => $text) {
-						printf('<option value="%d"%s>%s</option>',
-							$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
-						);
+						if ($interval >= $min_refresh) {
+							printf('<option value="%d"%s>%s</option>',
+								$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
+							);
+						}
 					}
 				?>
 				</select>
@@ -371,8 +409,8 @@ $sizes = array(
 					}
 					?>
 				</select>
-				<label for='thumbnails'><?php print __('Thumbnails');?></label>
 				<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print get_request_var('graph_nolegend') == 'true' ? 'checked':'';?>>
+				<label for='thumbnails'><?php print __('Thumbnails');?></label>
 			</div>
 		</div>
 		<div class='cactiTable center'>
@@ -389,7 +427,7 @@ $sizes = array(
 		var count   = 0;
 		var realtimePopout = true;
 		var refreshIsLogout= false;
-		var refreshPage=urlPath+'/graph_realtime.php?action=countdown';
+		var refreshPage=urlPath+'/graph_realtime.php?action=countdown&size='+$('#size').val();
 		var refreshMSeconds=999999999;
 		var myCountdown = {};
 		var secondsLeft = '<?php print __(' seconds left.');?>';

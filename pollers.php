@@ -329,7 +329,7 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	$ip_hostnames  = array();
 
 	if (is_ipaddress($hostname)) {
-		$address = gethostbyaddr($hostname);
+		$address = @gethostbyaddr($hostname);
 
 		if ($address != $hostname) {
 			$ip_hostnames[$address] = $address;
@@ -338,9 +338,9 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 		}
 
 		$ip_addresses[$hostname] = $hostname;
-	} else {
-		$addresses = dns_get_record($hostname);
-		$ip        = gethostbyname($hostname);
+	} elseif (strpos($hostname, '.') !== false) {
+		$addresses = @dns_get_record($hostname);
+		$ip        = @gethostbyname($hostname);
 
 		if ($ip != $hostname) {
 			$ip_addresses[$ip] = $ip;
@@ -362,6 +362,14 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 					$ip_addresses[$address['ip']] = $address['ip'];
 				}
 			}
+		}
+	} else {
+		$ip_hostname[$hostname] = $hostname;
+
+		$address = @gethostbyname($hostname);
+
+		if ($address != $hostname) {
+			$ip_addresses[$address] = $address;
 		}
 	}
 
@@ -913,7 +921,7 @@ function pollers() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
@@ -936,10 +944,6 @@ function pollers() {
 			}
 
 			$(function() {
-				$('#refresh').click(function() {
-					applyFilter();
-				});
-
 				$('#clear').click(function() {
 					clearFilter();
 				});

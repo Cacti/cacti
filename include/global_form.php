@@ -140,17 +140,61 @@ $fields_snmp_item = array(
 		'size' => '12'
 		),
 	);
+
 $fields_snmp_item_with_oids = $fields_snmp_item + array(
 	'max_oids' => array(
-		'method' => 'textbox',
-		'friendly_name' => __("Maximum OIDs Per Get Request"),
-		'description' => __('Specified the number of OIDs that can be obtained in a single SNMP Get request.'),
+		'method' => 'drop_array',
+		'friendly_name' => __('Maximum OIDs Per Get Request'),
+		'description' => __('The number of SNMP OIDs that can be obtained in a single SNMP Get request.'),
 		'value' => '|arg1:max_oids|',
-		'max_length' => '8',
 		'default' => read_config_option('max_get_size'),
-		'size' => '12'
-		),
-	);
+		'array' => array(
+			1  => __('%d OID', 1),
+			2  => __('%d OID\'s', 2),
+			3  => __('%d OID\'s', 3),
+			4  => __('%d OID\'s', 4),
+			5  => __('%d OID\'s', 5),
+			10 => __('%d OID\'s', 10),
+			15 => __('%d OID\'s', 15),
+			20 => __('%d OID\'s', 20),
+			25 => __('%d OID\'s', 25),
+			30 => __('%d OID\'s', 30),
+			35 => __('%d OID\'s', 35),
+			40 => __('%d OID\'s', 40),
+			45 => __('%d OID\'s', 45),
+			50 => __('%d OID\'s', 50),
+			55 => __('%d OID\'s', 55),
+			60 => __('%d OID\'s', 60)
+		)
+	),
+	'bulk_walk_size' => array(
+		'method'        => 'drop_array',
+		'friendly_name' => __('Bulk Walk Maximum Repititions'),
+		'description'   => __('For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk max-repetitions size. The default is to \'Auto Detect on Re-Index\'. For very large switches, high performance servers, Jumbo Frame Networks or for high latency WAN connections, increasing this value may increase poller performance. More data is packed into a single SNMP packet which can reduce data query run time. However, some devices may completely refuse to respond to packets with a max-repetition size which is set too large. This can be especially true for lower-powered IoT type devices or smaller embedded IT appliances. Special attention to the overall network path MTU should also be considered since setting a value which is too high could lead to packet fragmentation.'),
+		'value'         => '|arg1:bulk_walk_size|',
+		'default'       => '-1',
+		'array' => array(
+			-1 => __('Auto Detect on Re-Index'),
+			0  => __('Auto Detect/Set on first Re-Index'),
+			1  => __('%d Repitition', 1),
+			2  => __('%d Repititions', 2),
+			3  => __('%d Repititions', 3),
+			4  => __('%d Repititions', 4),
+			5  => __('%d Repititions', 5),
+			10 => __('%d Repititions', 10),
+			15 => __('%d Repititions', 15),
+			20 => __('%d Repititions', 20),
+			25 => __('%d Repititions', 25),
+			30 => __('%d Repititions', 30),
+			35 => __('%d Repititions', 35),
+			40 => __('%d Repititions', 40),
+			45 => __('%d Repititions', 45),
+			50 => __('%d Repititions', 50),
+			55 => __('%d Repititions', 55),
+			60 => __('%d Repititions', 60)
+		)
+	)
+);
 
 $fields_snmp_item_with_retry = $fields_snmp_item_with_oids + array(
 	'snmp_retries' => array(

@@ -511,7 +511,7 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 			} elseif ($leaf['site_id'] > 0) {
 				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tsite:" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'>" . html_escape($leaf['sitename']) . "</a></li>\n";
 			} elseif ($leaf['local_graph_id'] > 0) {
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . html_escape(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . html_escape(get_graph_title_cache($leaf['local_graph_id'])) . "</a></li>\n";
 			} else {
 				$dhtml_tree[] = "\t\t\t\t<li class='jstree-closed' id='tbranch:" . $leaf['id'] . "'>" . html_escape($leaf['title']) . "</li>\n";
 			}
@@ -1140,7 +1140,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 							if (cacti_sizeof($graph_timespans)) {
 								foreach($graph_timespans as $value => $text) {
-									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . '</option>';
+									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . html_escape($text) . '</option>';
 								}
 							}
 							?>
@@ -1173,7 +1173,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 								$end_val = cacti_sizeof($graph_timeshifts)+1;
 								if (cacti_sizeof($graph_timeshifts)) {
 									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . '</option>';
+										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
 									}
 								}
 								?>
@@ -1334,7 +1334,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	if (($leaf_type == 'header') || (empty($leaf_id))) {
 		$sql_where = '';
 		if (get_request_var('rfilter') != '') {
-			$sql_where .= " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "' OR gtg.title RLIKE '" . get_request_var('rfilter') . "')";
+			$sql_where .= ' (gtg.title_cache RLIKE ' . db_qstr(preg_quote(get_request_var('rfilter'))) . ' OR gtg.title RLIKE ' . db_qstr(preg_quote(get_request_var('rfilter'))) . ')';
 		}
 
 		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') >= 0) {
@@ -1385,7 +1385,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		}
 
 		if (get_request_var('rfilter') != '') {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . "(gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . '(gtg.title_cache RLIKE ' . db_qstr(preg_quote(get_request_var('rfilter'))) . ')';
 		}
 
 		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') >= 0) {
@@ -1501,7 +1501,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 		if (cacti_sizeof($final_templates)) {
 			$sql_where = '';
 			if (get_request_var('rfilter') != '') {
-				$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
+				$sql_where = ' (gtg.title_cache RLIKE ' . db_qstr(preg_quote(get_request_var('rfilter'))) . ')';
 			}
 
 			if ($host_id > 0) {
@@ -1571,7 +1571,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				$sfd = get_formatted_data_query_indexes($host_id, $data_query['id']);
 
 				if (get_request_var('rfilter') != '') {
-					$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
+					$sql_where = ' (gtg.title_cache RLIKE ' . db_qstr(preg_quote(get_request_var('rfilter'))) . ')';
 				}
 
 				/* grab a list of all graphs for this host/data query combination */
@@ -1613,8 +1613,8 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 								'sort_field_value' => $sort_field_value,
 								'local_graph_id'   => $local_graph_id,
 								'title_cache'      => $graph_title,
-								'height'           => $graphs_height[$graph['local_graph_id']],
-								'width'            => $graphs_width[$graph['local_graph_id']]
+								'height'           => $graphs_height[$local_graph_id],
+								'width'            => $graphs_width[$local_graph_id]
 							));
 						}
 					}

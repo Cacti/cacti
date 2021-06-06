@@ -110,7 +110,13 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			foreach ($fetch_array_avg[$ldi]['data_source_names'] as $index => $name) {
 				/* clean up DS items that aren't defined on the graph */
 				if (!in_array($name, $local_data_ids[$ldi])) {
-					unset($fetch_array_avg[$ldi]['data_source_names'][$index], $fetch_array_avg[$ldi]['values'][$index]);
+					if (isset($fetch_array_avg[$ldi]['data_source_names'][$index])) {
+						unset($fetch_array_avg[$ldi]['data_source_names'][$index]);
+					}
+
+					if (isset($fetch_array_avg[$ldi]['values'][$index])) {
+						unset($fetch_array_avg[$ldi]['values'][$index]);
+					}
 				}
 			}
 		}
@@ -129,7 +135,13 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			foreach ($fetch_array_max[$ldi]['data_source_names'] as $index => $name) {
 				/* clean up DS items that aren't defined on the graph */
 				if (!in_array($name, $local_data_ids[$ldi])) {
-					unset($fetch_array_max[$ldi]['data_source_names'][$index], $fetch_array_max[$ldi]['values'][$index]);
+					if (isset($fetch_array_max[$ldi]['data_source_names'][$index])) {
+						unset($fetch_array_max[$ldi]['data_source_names'][$index]);
+					}
+
+					if (isset($fetch_array_max[$ldi]['values'][$index])) {
+						unset($fetch_array_max[$ldi]['values'][$index]);
+					}
 				}
 			}
 		}
@@ -170,8 +182,6 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 							$asum_array[$ds_name][$timestamp]  = $data;
 						}
 					}
-				} else {
-					return false;
 				}
 			}
 		}
@@ -649,6 +659,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 			foreach ($graph_items as $graph_element) {
 				if (!empty($graph_element['data_template_rrd_id']) &&
 					!empty($graph_element['local_data_id']) &&
+					isset($summation_cache[$graph_element['local_data_id']][$graph_element['data_source_name']]) &&
 					is_graphable_item($graph_item_types[$graph_element['graph_type_id']])) {
 					$summation += $summation_cache[$graph_element['local_data_id']][$graph_element['data_source_name']];
 				}

@@ -1108,6 +1108,10 @@ legend {
 	white-space: nowrap;
 }
 
+.piinstall, .pienable, .pidisable, .piuninstall, .pierror {
+	padding: 0px 3px !important;
+}
+
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
 	color: rgba(148, 179, 107, 0.8);
 	text-decoration: none;
@@ -1271,9 +1275,11 @@ legend {
 .cactiTableTitleRow {
 	float: left;
 	text-align: left;
-	padding: 5px 0px;
-	display: table-column;
+	padding-left: 5px;
+	display: block;
 	width: 100%;
+	height: 22px;
+	line-height: 22px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1294,9 +1300,11 @@ legend {
 .cactiTableTitle {
 	float: left;
 	text-align: left;
-	padding: 5px 0px;
-	display: table-column;
+	padding-left: 5px;
+	display: block;
 	width: 70%;
+	height: 22px;
+	line-height: 22px;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
 	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1307,11 +1315,12 @@ legend {
 
 .cactiTableButton {
 	float: right;
-	padding: 5px 0px;
-	display: table-column;
+	padding: 0px;
+	display: block;
 	text-align: right;
-	width: 30%;
-	height: 14px;
+	width: calc(30% - 5px);
+	height: 22px;
+	line-height: 22px;
 	white-space: nowrap;
 	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
 	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
@@ -1339,8 +1348,8 @@ legend {
 	padding: 0px 8px;
 }
 
-.cactiTableButton span:last-child, .cactiTableTitle span:last-child {
-	padding: 0px 5px;
+.cactiTableButton span:last-child i, .cactiTableTitle span:last-child i {
+	padding: 0px 8px !important;
 }
 
 .cactiDebugTable {
@@ -1456,7 +1465,7 @@ legend {
 
 .formHeaderAnchor {
 	float: right;
-	padding-right: 4px;
+	padding-right: 8px;
 }
 
 .hostInfoHeader {
@@ -2260,9 +2269,10 @@ tr#realtime td:first-child {
 .menu_glyph {
 	font-size: 18px !important;
 	line-height: 18px;
-	padding-right: 5px;
 	float: middle;
 	vertical-align: middle;
+	text-align: left;
+	width: 24px;
 }
 
 .graphWrapper {
@@ -2520,5 +2530,239 @@ td.center > table {
 
 .ui-menu-item-wrapper {
 	white-space: nowrap;
+}
+
+.bb-chart {
+}
+
+.bb-chart-arc path {
+	fill: #A8A8A8;
+}
+
+.bb-tooltip {
+}
+
+.bb-legend-item {
+	fill: #A8A8A8;
+}
+
+.bb-grid {
+	fill: #A8A8A8;
+}
+
+.bb-axis {
+	fill: #A8A8A8;
+}
+
+/*-- Tooltip --*/
+.bb-tooltip-container {
+  z-index: 10;
+}
+
+.bb-tooltip {
+  border-collapse: collapse;
+  border-spacing: 0;
+  background-color: #161616;
+  empty-cells: show;
+  -webkit-box-shadow: 7px 7px 12px -9px #777777;
+  -moz-box-shadow: 7px 7px 12px -9px #777777;
+  box-shadow: 7px 7px 12px -9px #777777;
+  opacity: 0.9;
+}
+
+.bb-tooltip tr {
+  border: 1px solid #050505;
+}
+
+.bb-tooltip th {
+  background-color: #161616;
+  font-size: 14px;
+  padding: 2px 5px;
+  text-align: left;
+  color: #FFFFFF;
+}
+
+.bb-tooltip td {
+  font-size: 13px;
+  padding: 3px 6px;
+  background-color: #050505;
+  border-left: 1px dotted #999;
+}
+
+.bb-tooltip td > span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+}
+
+.bb-tooltip td.value {
+  text-align: right;
+}
+
+/*-- Chart --*/
+.bb svg {
+  font: 10px sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bb path, .bb line {
+  fill: none;
+  stroke: #E0E0E0;
+}
+
+.bb text {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.bb-legend-item-tile,
+.bb-xgrid-focus,
+.bb-ygrid,
+.bb-event-rect,
+.bb-bars path {
+  shape-rendering: crispEdges;
+}
+
+.bb-chart-arc path {
+  stroke: #fff;
+}
+
+.bb-chart-arc text {
+  fill: #fff;
+  font-size: 13px;
+}
+
+/*-- Axis --*/
+/*-- Grid --*/
+.bb-grid line {
+  stroke: #aaa;
+}
+
+.bb-grid text {
+  fill: #aaa;
+}
+
+.bb-xgrid, .bb-ygrid {
+  stroke-dasharray: 3 3;
+}
+
+/*-- Text on Chart --*/
+.bb-text.bb-empty {
+  fill: #808080;
+  font-size: 2em;
+}
+
+/*-- Line --*/
+.bb-line {
+  stroke-width: 1px;
+}
+
+/*-- Point --*/
+.bb-circle._expanded_ {
+  stroke-width: 1px;
+  stroke: white;
+}
+
+.bb-selected-circle {
+  fill: white;
+  stroke-width: 2px;
+}
+
+/*-- Bar --*/
+.bb-bar {
+  stroke-width: 0;
+}
+
+.bb-bar._expanded_ {
+  fill-opacity: 0.75;
+}
+
+/*-- Focus --*/
+.bb-target.bb-focused {
+  opacity: 1;
+}
+
+.bb-target.bb-focused path.bb-line, .bb-target.bb-focused path.bb-step {
+  stroke-width: 2px;
+}
+
+.bb-target.bb-defocused {
+  opacity: 0.3 !important;
+}
+
+/*-- Region --*/
+.bb-region {
+  fill: steelblue;
+  fill-opacity: .1;
+}
+
+/*-- Brush --*/
+.bb-brush .extent {
+  fill-opacity: .1;
+}
+
+/*-- Select - Drag --*/
+/*-- Legend --*/
+.bb-legend-item {
+  font-size: 12px;
+}
+
+.bb-legend-item-hidden {
+  opacity: 0.15;
+}
+
+.bb-legend-background {
+  opacity: 0.75;
+  fill: white;
+  stroke: lightgray;
+  stroke-width: 1;
+}
+
+/*-- Title --*/
+.bb-title {
+  font: 14px sans-serif;
+}
+
+/*-- Area --*/
+.bb-area {
+  stroke-width: 0;
+  opacity: 0.2;
+}
+
+/*-- Arc --*/
+.bb-chart-arcs-title {
+  dominant-baseline: middle;
+  font-size: 1.3em;
+}
+
+.bb-chart-arcs .bb-chart-arcs-background {
+  fill: #E0E0E0;
+  stroke: none;
+}
+
+.bb-chart-arcs .bb-chart-arcs-gauge-unit {
+  fill: #000;
+  font-size: 16px;
+}
+
+.bb-chart-arcs .bb-chart-arcs-gauge-max {
+  fill: #777;
+}
+
+.bb-chart-arcs .bb-chart-arcs-gauge-min {
+  fill: #777;
+}
+
+.bb-chart-arc .bb-gauge-value {
+  fill: #000;
+  /*  font-size: 28px !important;*/
+}
+
+circle {
+	stroke: #7e818f;
+	stroke-width: 1px;
+	fill: transparent !important;
 }
 

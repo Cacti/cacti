@@ -120,12 +120,13 @@ $database_hostname = 'localhost';
 $database_username = 'cactiuser';
 $database_password = 'cactiuser';
 $database_port     = '3306';
-$database_retries  = 5;
+$database_retries  = 2;
 
 $database_ssl      = false;
 $database_ssl_key  = '';
 $database_ssl_cert = '';
 $database_ssl_ca   = '';
+$database_persist  = true;
 
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = 'Cacti';
@@ -163,7 +164,7 @@ $db_var_defaults = array(
 	'database_username' => NULL,
 	'database_password' => NULL,
 	'database_port'     => '3306',
-	'database_retries'  => 5,
+	'database_retries'  => 2,
 	'database_ssl'      => false,
 	'database_ssl_key'  => '',
 	'database_ssl_cert' => '',
@@ -252,6 +253,10 @@ $filename = get_current_page();
 $config['is_web'] = !defined('CACTI_CLI_ONLY');
 if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
+} else {
+	include_once($config['library_path'] . '/html.php');
+	include_once($config['library_path'] . '/html_utility.php');
+	include_once($config['library_path'] . '/html_validate.php');
 }
 
 /* set poller mode */
@@ -262,11 +267,11 @@ $config['connection'] = 'online';
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
-	if (!isset($rdatabase_retries))  $rdatabase_retries = 5;
-	if (!isset($rdatabase_ssl))      $rdatabase_ssl = false;
-	if (!isset($rdatabase_ssl_key))  $rdatabase_ssl_key = false;
+	if (!isset($rdatabase_retries))  $rdatabase_retries  = 2;
+	if (!isset($rdatabase_ssl))      $rdatabase_ssl      = false;
+	if (!isset($rdatabase_ssl_key))  $rdatabase_ssl_key  = false;
 	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
-	if (!isset($rdatabase_ssl_ca))   $rdatabase_ssl_ca = false;
+	if (!isset($rdatabase_ssl_ca))   $rdatabase_ssl_ca   = false;
 
 	// Check for recovery
 	if (is_object($local_db_cnn_id)) {
@@ -284,7 +289,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	// We are a remote poller also try to connect to the remote database
 	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
 
-	if ($config['is_web'] && $remote_db_cnn_id &&
+	if ($config['is_web'] && is_object($remote_db_cnn_id) &&
 		$config['connection'] != 'recovery' &&
 		$config['cacti_db_version'] != 'new_install') {
 
@@ -298,18 +303,18 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_ssl_key   = $rdatabase_ssl_key;
 		$database_ssl_cert  = $rdatabase_ssl_cert;
 		$database_ssl_ca    = $rdatabase_ssl_ca;
-	}
-
-	if ($remote_db_cnn_id && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install') {
-		$config['connection'] = 'online';
+	} elseif (is_object($remote_db_cnn_id)) {
+		if ($config['connection'] != 'recovery') {
+			$config['connection'] = 'online';
+		}
 	} else {
 		$config['connection'] = 'offline';
 	}
 } else {
-	if (!isset($database_ssl)) $database_ssl = false;
-	if (!isset($database_ssl_key)) $database_ssl_key = false;
+	if (!isset($database_ssl))      $database_ssl      = false;
+	if (!isset($database_ssl_key))  $database_ssl_key  = false;
 	if (!isset($database_ssl_cert)) $database_ssl_cert = false;
-	if (!isset($database_ssl_ca)) $database_ssl_ca = false;
+	if (!isset($database_ssl_ca))   $database_ssl_ca   = false;
 
 	if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
 		$ps = $config['is_web'] ? '<p>' : '';
@@ -415,10 +420,12 @@ if ($config['is_web']) {
 
 	/* increased web hardening */
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy != '0' && $script_policy != '') {
+	if ($script_policy == 'unsafe-eval') {
 		$script_policy = "'$script_policy'";
+	} else {
+		$script_policy = '';
 	}
-	$alternates = read_config_option('content_security_alternate_sources');
+	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
 
 	header("Content-Security-Policy: default-src *; img-src 'self' $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self'; worker-src 'self'");
 
@@ -455,6 +462,11 @@ if ($config['is_web']) {
 		if ($_SESSION['cacti_cwd'] != $config['base_path']) {
 			cacti_session_destroy();
 		}
+	}
+
+	/* Sanitize the http referer */
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		$_SERVER['HTTP_REFERER'] = sanitize_uri($_SERVER['HTTP_REFERER']);
 	}
 }
 
@@ -497,12 +509,9 @@ define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true,CACTI_VERSION_FULL))
 include_once($config['library_path'] . '/auth.php');
 include_once($config['library_path'] . '/plugins.php');
 include_once($config['include_path'] . '/plugins.php');
-include_once($config['library_path'] . '/html_validate.php');
-include_once($config['library_path'] . '/html_utility.php');
 include_once($config['include_path'] . '/global_arrays.php');
 include_once($config['include_path'] . '/global_settings.php');
 include_once($config['include_path'] . '/global_form.php');
-include_once($config['library_path'] . '/html.php');
 include_once($config['library_path'] . '/html_form.php');
 include_once($config['library_path'] . '/html_filter.php');
 include_once($config['library_path'] . '/variables.php');
@@ -546,6 +555,14 @@ if ($config['is_web']) {
 				exit;
 			}
 		}
+	}
+
+	if (isset($_COOKIE['CactiTimeZone'])) {
+		$minutes = $_COOKIE['CactiTimeZone'];
+		$hours   = $minutes / 60;
+
+		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+		ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
 	}
 }
 
