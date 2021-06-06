@@ -40,7 +40,7 @@ install:
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   - sudo cp /home/travis/build/Cacti/cacti/tests/build/www-fpm.conf ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/;
   - sudo sed -i -e 's,nobody,www-data,g' ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
-  - sudo grep nobody ~/.phpenv/versons/$(phpenv version-name)/etc/ -R
+  - sudo grep nobody ~/.phpenv/versions/$(phpenv version-name)/etc/ -R
   # restart apache
   - sudo service apache2 restart
   # start php-fpm
