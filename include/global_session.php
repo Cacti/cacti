@@ -132,5 +132,7 @@ if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == read_config
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
 	var sessionMessage=<?php print display_output_messages(false);?>;
+<?php if (function_exists('csrf_get_tokens')) { ?>
 	var csrfMagicToken='<?php print csrf_get_tokens();?>';
+<?php } ?>
 </script>

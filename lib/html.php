@@ -2143,7 +2143,6 @@ function html_spikekill_actions() {
 function html_spikekill_setting($name) {
 	return read_user_setting($name, read_config_option($name), true);
 }
-
 function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $data_graph = '', $subitem = '') {
 	$output = '<li ';
 
@@ -2410,7 +2409,7 @@ function html_spikekill_js() {
 	<?php
 }
 
-/* dhtml_common_header - prints a common set of header, css and javascript links
+/* html_common_header - prints a common set of header, css and javascript links
    @arg title - the title of the page to place in the browser
    @arg selectedTheme - optionally sets a specific theme over the current one
 */
@@ -2588,54 +2587,636 @@ function html_common_header($title, $selectedTheme = '') {
 }
 
 function html_auth_header($section, $browser_title, $legend, $title, $hook_args = array()) {
-	global $themes;
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<!-- <?php print "${section}_title"; ?> -->
-	<?php html_common_header(api_plugin_hook_function("${section}_title", $browser_title));?>
-</head>
-<body>
-<div class='cactiAuthBody'>
-	<div class='cactiAuthCenter'>
-		<div class='cactiAuthArea'>
-			<legend><?php print $legend;?></legend><hr />
-			<form name='auth' method='post' action='<?php print get_current_page();?>'>
-				<input type='hidden' name='action' value='<?php print $section; ?>'>
-				<?php api_plugin_hook_function("${section}_before", $hook_args);	?>
-				<div class='cactiAuthTitle'>
-					<table class='cactiAuthTable'>
-						<tr><td><?php print $title; ?></td></tr>
-					</table>
-				</div>
-				<div class='cactiAuth'>
-					<table class='cactiAuthTable'>
-<?php
+	global $themes, $twig, $twig_vars;
+
+	$hook_section_title = twig_hook_buffer("${section}_title", $browser_title);
+	$hook_section_before = twig_hook_buffer("${section}_before", $hook_args);
+
+	echo $twig->render('auth/header.html.twig',
+		array_merge($twig_vars,
+			array(
+				'themes'              => $themes,
+				'section'             => $section,
+				'browser_title'       => $browser_title,
+				'legend'              => $legend,
+				'title'               => $title,
+				'hook_section_title'  => $hook_section_title,
+				'hook_section_before' => $hook_section_before
+			)
+		)
+	);
 }
 
 function html_auth_footer($section, $error = '', $html = '') {
-?>
-					</table>
-				</div>
-				<?php api_plugin_hook("${section}_after"); ?>
-			</form>
-			<hr />
-			<div class='cactiAuthErrors'>
-				<?php print $error; ?>
-			</div>
-			<div class='versionInfo'>
-				<?php print __('Version %1$s | %2$s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT);?>
-			</div>
-		</div>
-	</div>
-	<div class='cactiAuthLogo'></div>
-<?php
-	print $html;
+	global $twig, $twig_vars;
+
+	$hook_section_after = html_hook_buffer("${section}_after");
+	$version = __('Version %1$s | %2$s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT);
+
+	ob_start();
 	include_once(dirname(__FILE__) . '/../include/global_session.php');
-?>
-</div>
-</body>
-</html>
-<?php
+	$global_session = ob_get_contents();
+	ob_end_clean();
+
+	echo $twig->render('auth/footer.html.twig',
+		array_merge($twig_vars,
+			array(
+				'section'            => $section,
+				'error'              => $error,
+				'html'               => $html,
+				'hook_section_after' => $hook_section_after,
+				'version'            => $version,
+				'global_session'     => $global_session
+			)
+		)
+	);
+
+}
+
+/* twig_menu - gets an array for twig that draws the cacti menu for display in the console */
+function twig_menu($user_menu = '') {
+	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
+
+	$twig_menu = [
+		'show_header' => false,
+		'menu_items'  => [],
+	];
+
+	if (!is_array($user_menu)) {
+		$user_menu = $menu;
+	}
+
+	/* loop through each header */
+	$i = 0;
+	$headers = array();
+	foreach ($user_menu as $header_name => $header_array) {
+		/* pass 1: see if we are allowed to view any children */
+		$twig_menu['show_header'] = false;
+		foreach ($header_array as $item_url => $item_title) {
+			if (preg_match('#link.php\?id=(\d+)#', $item_url, $matches)) {
+				if (is_realm_allowed($matches[1]+10000)) {
+					$twig_menu['show_header'] = true;
+				} else {
+					$twig_menu['show_header'] = false;
+				}
+			} else {
+				$current_realm_id = (isset($user_auth_realm_filenames[basename($item_url)]) ? $user_auth_realm_filenames[basename($item_url)] : 0);
+
+				if (is_realm_allowed($current_realm_id)) {
+					$twig_menu['show_header'] = true;
+				} elseif (api_user_realm_auth(strtok($item_url, '?'))) {
+					$twig_menu['show_header'] = true;
+				}
+			}
+		}
+
+		$twig_menu['show_header'] = $twig_menu['show_header'];
+
+		if ($twig_menu['show_header'] == true) {
+			// Let's give our menu li's a unique id
+			$id = 'menu_' . strtolower(clean_up_name($header_name));
+			if (isset($headers[$id])) {
+				$id .= '_' . $i++;
+			}
+			$headers[$id] = true;
+
+			$glyph = 'fa fa-folder';
+			if (isset($menu_glyphs[$header_name])) {
+				$glyph = $menu_glyphs[$header_name];
+			}
+
+			$menu_item = [ 'id' => $id, 'glyph' => $glyph, 'header_name' => $header_name, 'items' => [] ];
+
+			/* pass 2: loop through each top level item and render it */
+			foreach ($header_array as $item_url => $item_title) {
+				$basename = explode('?', basename($item_url));
+				$basename = $basename[0];
+				$current_realm_id = (isset($user_auth_realm_filenames[$basename]) ? $user_auth_realm_filenames[$basename] : 0);
+
+				/* don't show the menu pick if the file does not exist */
+				if (!file_exists($config['base_path'] . '/' . $basename)) {
+					continue;
+				}
+
+				/* if this item is an array, then it contains sub-items. if not, is just
+				the title string and needs to be displayed */
+				if (is_array($item_title)) {
+					$i = 0;
+
+					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
+						/* if the current page exists in the sub-items array, draw each sub-item */
+						if (array_key_exists(get_current_page(), $item_title) == true) {
+							$draw_sub_items = true;
+						} else {
+							$draw_sub_items = false;
+						}
+
+						foreach ($item_title as $item_sub_url => $item_sub_title) {
+							if (substr($item_sub_url, 0, 10) == 'EXTERNAL::') {
+								$item_sub_external = true;
+								$item_sub_url = substr($item_sub_url, 10);
+							} else {
+								$item_sub_external = false;
+								$item_sub_url = $config['url_path'] . $item_sub_url;
+							}
+
+							/* always draw the first item (parent), only draw the children if we are viewing a page
+							that is contained in the sub-items array */
+							if (($i == 0) || ($draw_sub_items)) {
+								$menu_item['items'][] = [
+									'active' => is_menu_pick_active($item_sub_url),
+									'url' => $item_sub_url,
+									'external' => $item_sub_external,
+									'title' => $item_title,
+								];
+							}
+
+							$i++;
+						}
+					}
+				} else {
+					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
+						/* draw normal (non sub-item) menu item */
+						if (substr($item_url, 0, 10) == 'EXTERNAL::') {
+							$item_external = true;
+							$item_url = substr($item_url, 10);
+						} else {
+							$item_external = false;
+							$item_url = $config['url_path'] . $item_url;
+						}
+						$menu_item['items'][] = [
+							'active' => is_menu_pick_active($item_url),
+							'url' => $item_url,
+							'external' => $item_external,
+							'title' => $item_title,
+						];
+					}
+				}
+			}
+
+			$twig_menu['menu_items'][] = $menu_item;
+		}
+	}
+	return $twig_menu;
+}
+
+function twig_graph_tabs_right() {
+	global $config, $tabs_right;
+
+	$theme = get_selected_theme();
+	$tabs  = [
+		'show_tree'    => is_view_allowed('show_tree'),
+		'show_list'    => is_view_allowed('show_list'),
+		'show_preview' => is_view_allowed('show_preview'),
+		'items'        => [],
+	];
+
+	if ($theme == 'classic') {
+		if (is_view_allowed('show_tree')) {
+			$active = (isset_request_var('action') && get_nfilter_request_var('action') == 'tree');
+			$tabs['items'][] = [
+				'class' => 'righttab',
+				'id'    => 'treeview',
+				'href'  => $config['url_path'] . 'graph_view.php?action=tree',
+				'image' => $config['url_path'] . 'images/tab_mode_tree' . ($active?'_down':'') . '.gif',
+				'title' => __esc('Tree View'),
+				'alt'   => '',
+			];
+		}
+
+		if (is_view_allowed('show_list')) {
+			$active = (isset_request_var('action') && get_nfilter_request_var('action') == 'list');
+			$tabs['items'][] = [
+				'class' => 'righttab',
+				'id'    => 'listview',
+				'href'  => $config['url_path'] . 'graph_view.php?action=list',
+				'image' => $config['url_path'] . 'images/tab_mode_list' . ($active?'_down':'') . '.gif',
+				'title' => __esc('List View'),
+				'alt'   => '',
+			];
+		}
+
+		if (is_view_allowed('show_preview')) {
+			$active = (isset_request_var('action') && get_nfilter_request_var('action') == 'preview');
+			$tabs['items'][] = [
+				'class' => 'righttab',
+				'id'    => 'preview',
+				'href'  => $config['url_path'] . 'graph_view.php?action=preview',
+				'image' => $config['url_path'] . 'images/tab_mode_preview' . ($active?'_down':'') . '.gif',
+				'title' => __esc('Preview View'),
+				'alt'   => '',
+			];
+		}
+	} else {
+		if (is_view_allowed('show_tree')) {
+			$tabs['items'][] = array(
+				'title' => __('Tree View'),
+				'image' => 'include/themes/' . $theme . '/images/tab_tree.gif',
+				'id'    => 'tree',
+				'href'  => 'graph_view.php?action=tree',
+			);
+		}
+
+		if (is_view_allowed('show_list')) {
+			$tabs['items'][] = array(
+				'title' => __('List View'),
+				'image' => 'include/themes/' . $theme . '/images/tab_list.gif',
+				'id'    => 'list',
+				'href'  => 'graph_view.php?action=list',
+			);
+		}
+
+		if (is_view_allowed('show_preview')) {
+			$tabs['items'][] = array(
+				'title' => __('Preview'),
+				'image' => 'include/themes/' . $theme . '/images/tab_preview.gif',
+				'id'    => 'preview',
+				'href'  => 'graph_view.php?action=preview',
+			);
+		}
+	}
+	return $tabs;
+}
+
+function twig_tabs_left() {
+	global $config;
+
+	$realm_allowed     = array();
+	$realm_allowed[7]  = is_realm_allowed(7);
+	$realm_allowed[8]  = is_realm_allowed(8);
+	$realm_allowed[18] = is_realm_allowed(18);
+	$realm_allowed[19] = is_realm_allowed(19);
+	$realm_allowed[21] = is_realm_allowed(21);
+	$realm_allowed[22] = is_realm_allowed(22);
+
+	$tabs = [
+		'is_classic'   => (get_selected_theme() == 'classic'),
+		'show_console' => false,
+		'items' => [],
+	];
+
+	if ($realm_allowed[8]) {
+		$tabs['show_console'] = true;
+	}
+
+	if ($tabs['show_console'] == true) {
+		$tabs['items'][] = [
+			'id'     => 'tab-console',
+			'title'  => __('Console'),
+			'active' => is_console_page(get_current_page()),
+			'href'   => $config['url_path'] . 'index.php',
+			'img'    => $config['url_path'] . 'images/tab_console' . (is_console_page(get_current_page()) ? '_down':'') . '.gif',
+		];
+	}
+
+	if ($config['poller_id'] == 1 && $config['connection'] == 'online' && $realm_allowed[7]) {
+		$file = get_current_page();
+		$active = ($file == 'graph_view.php' || $file == 'graph.php');
+		$tabs['items'][] = [
+			'id'     => 'tab-graphs',
+			'title'  => __('Graphs'),
+			'active' => $active,
+			'href'   => $config['url_path'] . 'graph_view.php',
+			'img'    => $config['url_path'] . 'images/tab_graphs' . ($active ? '_down':'') . '.gif',
+		];
+	}
+
+	// Don't show reports tab if not poller 1 or no access
+	if ($config['poller_id'] == 1 && ($realm_allowed[21] || $realm_allowed[22])) {
+		$active = (substr_count($_SERVER['REQUEST_URI'], 'reports_'));
+		$tabs['items'][] = [
+			'id'     => 'tab-reports',
+			'title'  => __('Reporting'),
+			'active' => $active,
+			'href'   => $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php'),
+			'img'    => $config['url_path'] . 'images/tab_nectar' . ($active ? '_down':'') . '.gif',
+		];
+	}
+
+	if ($realm_allowed[18] || $realm_allowed[19]) {
+		$active = (substr_count($_SERVER['REQUEST_URI'], 'clog'));
+		$tabs['items'][] = [
+			'id'     => 'tab-logs',
+			'title'  => __('Logs'),
+			'active' => $active,
+			'href'   => $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
+			'img'    => $config['url_path'] . 'images/tab_clog' . ($active ? '_down':'') . '.gif',
+		];
+	}
+
+	$tabs['header_tabs'] = twig_hook_buffer('top_graph_header_tabs');
+
+	if ($config['poller_id'] == 1 && $config['connection'] == 'online') {
+		$external_links = db_fetch_assoc('SELECT id, title
+			FROM external_links
+			WHERE style="TAB"
+			AND enabled="on"
+			ORDER BY sortorder');
+			if (cacti_sizeof($external_links)) {
+			foreach($external_links as $tab) {
+				if (is_realm_allowed($tab['id']+10000)) {
+					$parsed_url = parse_url($_SERVER['REQUEST_URI']);
+					$down = false;
+						if (basename($parsed_url['path']) == 'link.php') {
+						if (isset($parsed_url['query'])) {
+							$queries = explode('&', $parsed_url['query']);
+							foreach($queries as $q) {
+								list($var, $value) = explode('=', $q);
+								if ($var == 'id') {
+									if ($value == $tab['id']) {
+										$down = true;
+										break;
+									}
+								}
+							}
+						}
+					}
+
+					$tabs['items'][] = [
+						'id'     => 'tab-link' . $tab['id'],
+						'active' => $down,
+						'title'  => $tab['title'],
+						'href'   => $config['url_path'] . 'link.php?id=' . $tab['id'],
+						'img'    => get_classic_tabimage($tab['title'], $down),
+					];
+				}
+			}
+		}
+
+		$tab_text = trim(ob_get_clean());
+		$tab_text = str_replace('<a', '', $tab_text);
+		$tab_text = str_replace('</a>', '|', $tab_text);
+		$tab_text = str_replace('<img', '', $tab_text);
+		$tab_text = str_replace('<', '', $tab_text);
+		$tab_text = str_replace('"', "'", $tab_text);
+		$tab_text = str_replace('>', '', $tab_text);
+		$elements = explode('|', $tab_text);
+		$count    = 0;
+
+		foreach($elements as $p) {
+			$p = trim($p);
+
+			if ($p == '') {
+				continue;
+			}
+
+			$altpos  = strpos($p, 'alt=');
+			$hrefpos = strpos($p, 'href=');
+			$idpos   = strpos($p, 'id=');
+
+			if ($altpos !== false) {
+				$alt = substr($p, $altpos+4);
+				$parts = explode("'", $alt);
+				if ($parts[0] == '') {
+					$alt = $parts[1];
+				} else {
+					$alt = $parts[0];
+				}
+			} else {
+				$alt = __('Title');
+			}
+
+			if ($hrefpos !== false) {
+				$href = substr($p, $hrefpos+5);
+				$parts = explode("'", $href);
+				if ($parts[0] == '') {
+					$href = $parts[1];
+				} else {
+					$href = $parts[0];
+				}
+			} else {
+				$href = 'unknown';
+			}
+
+			if ($idpos !== false) {
+				$id = substr($p, $idpos+3);
+				$parts = explode("'", $id);
+				if ($parts[0] == '') {
+					$id = $parts[1];
+				} else {
+					$id = $parts[0];
+				}
+			} else {
+				$id = 'unknown' . $count;
+				$count++;
+			}
+
+			$tabs['items'][] = [
+				'id'     => 'tab-'.$id,
+				'title'  => ucwords($alt),
+				'active' => false,
+				'href'   => $href,
+			];
+		}
+
+		$i = 0;
+		$me_base = get_current_page();
+		foreach($tabs['items'] as &$tab) {
+			$tab_base = basename($tab['href']);
+
+			if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
+				$tab['active'] = true;
+			} elseif (isset_request_var('id') && ($tab_base == 'link.php?id=' . get_nfilter_request_var('id')) && $me_base == 'link.php') {
+				$tab['active'] = true;
+			} elseif ($tab_base == 'index.php' && is_console_page($me_base)) {
+				$tab['active'] = true;
+			} elseif ($tab_base == $me_base) {
+				$tab['active'] = true;
+			}
+
+			$i++;
+		}
+	}
+	return $tabs;
+}
+
+/* twig_common_header - prints a common set of header, css and javascript links
+   @arg title - the title of the page to place in the browser
+   @arg selectedTheme - optionally sets a specific theme over the current one
+*/
+function twig_common_header($title, $selectedTheme = '') {
+	global $config, $path2calendar, $path2timepicker, $path2colorpicker;
+
+	if ($selectedTheme == '') {
+		$selectedTheme = get_selected_theme();
+	}
+
+	$script_policy = read_config_option('content_security_policy_script');
+	if ($script_policy == '0') {
+		$script_policy = "";
+	}
+
+	$alternates = read_config_option('content_security_alternate_sources');
+
+	$header = [
+		'theme'         => $selectedTheme,
+		'initial-scale' => $selectedTheme == 'classic' ? '0.5' : '1.0',
+		'minimum-scale' => $selectedTheme == 'classic' ? '0.2' : '1.0',
+		'maximum-scale' => '5',
+		'script_policy' => $script_policy,
+		'alternates'    => $alternates,
+		'variables'     => [
+			'theme'                          => "'" .$selectedTheme . "'",
+			'hScroll'                        => (read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false'),
+			'userSettings'                   => (is_view_allowed('graph_settings') ? 'true':'false'),
+			'tableConstraints'               => "'" .__('Allow or limit the table columns to extend beyond the current windows limits.') . "'",
+			'searchFilter'                   => "'" .__esc('Enter a search term') . "'",
+			'searchRFilter'                  => "'" .__esc('Enter a regular expression') . "'",
+			'noFileSelected'                 => "'" .__esc('No file selected') . "'",
+			'timeGraphView'                  => "'" .__esc('Time Graph View') . "'",
+			'filterSettingsSaved'            => "'" .__esc('Filter Settings Saved') . "'",
+			'spikeKillResuls'                => "'" .__esc('SpikeKill Results') . "'",
+			'utilityView'                    => "'" .__esc('Utility View') . "'",
+			'realtimeClickOn'                => "'" .__esc('Click to view just this Graph in Realtime') . "'",
+			'realtimeClickOff'               => "'" .__esc('Click again to take this Graph out of Realtime') . "'",
+			'treeView'                       => "'" .__esc('Tree View') . "'",
+			'listView'                       => "'" .__esc('List View') . "'",
+			'previewView'                    => "'" .__esc('Preview View') . "'",
+			'cactiHome'                      => "'" .__esc('Cacti Home') . "'",
+			'cactiProjectPage'               => "'" .__esc('Cacti Project Page') . "'",
+			'cactiCommunityForum'            => "'" .__esc('User Community') . "'",
+			'cactiDocumentation'             => "'" .__esc('Documentation') . "'",
+			'reportABug'                     => "'" .__esc('Report a bug') . "'",
+			'aboutCacti'                     => "'" .__esc('About Cacti') . "'",
+			'spikeKillResults'               => "'" .__esc('SpikeKill Results') . "'",
+			'showHideFilter'                 => "'" .__esc('Click to Show/Hide Filter') . "'",
+			'clearFilterTitle'               => "'" .__esc('Clear Current Filter') . "'",
+			'clipboard'                      => "'" .__esc('Clipboard') . "'",
+			'clipboardID'                    => "'" .__esc('Clipboard ID') . "'",
+			'clipboardNotAvailable'          => "'" .__esc('Copy operation is unavailable at this time') . "'",
+			'clipboardCopyFailed'            => "'" .__esc('Failed to find data to copy!') . "'",
+			'clipboardUpdated'               => "'" .__esc('Clipboard has been updated') . "'",
+			'clipboardNotUpdated'            => "'" .__esc('Sorry, your clipboard could not be updated at this time') . "'",
+			'defaultSNMPSecurityLevel'       => "'" .read_config_option('snmp_security_level') . "'",
+			'defaultSNMPAuthProtocol'        => "'" .read_config_option('snmp_auth_protocol') . "'",
+			'defaultSNMPPrivProtocol'        => "'" .read_config_option('snmp_priv_protocol') . "'",
+			'passwordPass'                   => "'" .__esc('Passphrase length meets 8 character minimum') . "'",
+			'passwordTooShort'               => "'" .__esc('Passphrase too short') . "'",
+			'passwordMatchTooShort'          => "'" .__esc('Passphrase matches but too short') . "'",
+			'passwordNotMatchTooShort'       => "'" .__esc('Passphrase too short and not matching') . "'",
+			'passwordMatch'                  => "'" .__esc('Passphrases match') . "'",
+			'passwordNotMatch'               => "'" .__esc('Passphrases do not match') . "'",
+			'errorOnPage'                    => "'" .__esc('Sorry, we could not process your last action.') . "'",
+			'errorNumberPrefix'              => "'" .__esc('Error:') . "'",
+			'errorReasonPrefix'              => "'" .__esc('Reason:') . "'",
+			'errorReasonTitle'               => "'" .__esc('Action failed') . "'",
+			'testSuccessful'                 => "'" .__esc('Connection Successful') . "'",
+			'testFailed'                     => "'" .__esc('Connection Failed') . "'",
+			'errorReasonUnexpected'          => "'" .__esc('The response to the last action was unexpected.') . "'",
+			'mixedReasonTitle'               => "'" .__esc('Some Actions failed') . "'",
+			'mixedOnPage'                    => "'" .__esc('Note, we could not process all your actions.  Details are below.') . "'",
+			'sessionMessageTitle'            => "'" .__esc('Operation successful') . "'",
+			'sessionMessageSave'             => "'" .__esc('The Operation was successful.  Details are below.') . "'",
+			'sessionMessageOk'               => "'" .__esc('Ok') . "'",
+			'sessionMessagePause'            => "'" .__esc('Pause') . "'",
+			'sessionMessageContinue'         => "'" .__esc('Continue') . "'",
+			'sessionMessageCancel'           => "'" .__esc('Cancel') . "'",
+			'zoom_i18n_zoom_in'              => "'" .__esc('Zoom In') . "'",
+			'zoom_i18n_zoom_out'             => "'" .__esc('Zoom Out') . "'",
+			'zoom_i18n_zoom_out_factor'      => "'" .__esc('Zoom Out Factor') . "'",
+			'zoom_i18n_timestamps'           => "'" .__esc('Timestamps') . "'",
+			'zoom_i18n_zoom_2'               => "'" .__esc('2x') . "'",
+			'zoom_i18n_zoom_4'               => "'" .__esc('4x') . "'",
+			'zoom_i18n_zoom_8'               => "'" .__esc('8x') . "'",
+			'zoom_i18n_zoom_16'              => "'" .__esc('16x') . "'",
+			'zoom_i18n_zoom_32'              => "'" .__esc('32x') . "'",
+			'zoom_i18n_zoom_out_positioning' => "'" .__esc('Zoom Out Positioning') . "'",
+			'zoom_i18n_mode'                 => "'" .__esc('Zoom Mode') . "'",
+			'zoom_i18n_graph'                => "'" .__esc('Graph') . "'",
+			'zoom_i18n_quick'                => "'" .__esc('Quick') . "'",
+			'zoom_i18n_advanced'             => "'" .__esc('Advanced') . "'",
+			'zoom_i18n_newTab'               => "'" .__esc('Open in new tab') . "'",
+			'zoom_i18n_save_graph'           => "'" .__esc('Save graph') . "'",
+			'zoom_i18n_copy_graph'           => "'" .__esc('Copy graph') . "'",
+			'zoom_i18n_copy_graph_link'      => "'" .__esc('Copy graph link') . "'",
+			'zoom_i18n_on'                   => "'" .__esc('Always On') . "'",
+			'zoom_i18n_auto'                 => "'" .__esc('Auto') . "'",
+			'zoom_i18n_off'                  => "'" .__esc('Always Off') . "'",
+			'zoom_i18n_begin'                => "'" .__esc('Begin with') . "'",
+			'zoom_i18n_center'               => "'" .__esc('Center') . "'",
+			'zoom_i18n_end'                  => "'" .__esc('End with') . "'",
+			'zoom_i18n_disabled'             => "'" .__esc('Disabled') . "'",
+			'zoom_i18n_close'                => "'" .__esc('Close') . "'",
+			'zoom_i18n_settings'             => "'" .__esc('Settings') . "'",
+			'zoom_i18n_3rd_button'           => "'" .__esc('3rd Mouse Button') . "'",
+		],
+		'links' => [
+			[
+				'rel' => 'shortcut icon',
+				'url' => $config['url_path'] . 'include/themes/' . $selectedTheme . '/images/favicon.ico',
+			],
+			[
+				'rel'   => 'icon',
+				'url'   => $config['url_path'] . 'include/themes/' . $selectedTheme . '/images/cacti_logo.gif',
+				'sizes' => '96x96',
+			],
+		],
+		'includes' => [
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.filter.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/c3.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/pace.css'),
+			twig_md5_include_css('include/fa/css/all.css'),
+			twig_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/main.css'),
+			twig_md5_include_js('include/js/screenfull.js', true),
+			twig_md5_include_js('include/js/jquery.js'),
+			twig_md5_include_js('include/js/jquery-ui.js'),
+			twig_md5_include_js('include/js/jquery.ui.touch.punch.js', true),
+			twig_md5_include_js('include/js/jquery.cookie.js', true),
+			twig_md5_include_js('include/js/js.storage.js'),
+			twig_md5_include_js('include/js/jstree.js'),
+			twig_md5_include_js('include/js/jquery.hotkeys.js', true),
+			twig_md5_include_js('include/js/jquery.tablednd.js', true),
+			twig_md5_include_js('include/js/jquery.zoom.js', true),
+			twig_md5_include_js('include/js/jquery.multiselect.js'),
+			twig_md5_include_js('include/js/jquery.multiselect.filter.js'),
+			twig_md5_include_js('include/js/jquery.timepicker.js'),
+			twig_md5_include_js('include/js/jquery.colorpicker.js', true),
+			twig_md5_include_js('include/js/jquery.tablesorter.js'),
+			twig_md5_include_js('include/js/jquery.tablesorter.widgets.js', true),
+			twig_md5_include_js('include/js/jquery.tablesorter.pager.js', true),
+			twig_md5_include_js('include/js/jquery.sparkline.js', true),
+			twig_md5_include_js('include/js/Chart.js', true),
+			twig_md5_include_js('include/js/dygraph-combined.js', true),
+			twig_md5_include_js('include/js/d3.js', true),
+			twig_md5_include_js('include/js/c3.js', true),
+			twig_md5_include_js('include/layout.js'),
+			twig_md5_include_js('include/js/pace.js'),
+			twig_md5_include_js('include/realtime.js', true),
+			twig_md5_include_js('include/themes/' . $selectedTheme .'/main.js'),
+//			twig_md5_include_js('include/vendor/csrf/csrf-magic.js'),
+		],
+	];
+
+	if (isset($path2calendar) && file_exists($path2calendar)) {
+		$header['includes'][] = twig_md5_include_js($path2calendar);
+	}
+
+	if (isset($path2timepicker) && file_exists($path2timepicker)) {
+		$header['includes'][] = twig_md5_include_js($path2timepicker);
+	}
+
+	if (isset($path2colorpicker) && file_exists($path2colorpicker)) {
+		$header['includes'][] = twig_md5_include_js($path2colorpicker);
+	}
+
+	if (file_exists('include/themes/custom.css')) {
+		$header['includes'][] = twig_md5_include_css('include/themes/custom.css');
+	}
+	$header['page_head'] = twig_hook_buffer('page_head');
+	return $header;
+}
+
+function twig_hook_buffer($hook_name, $hook_args = array()) {
+	ob_start();
+	api_plugin_hook_function($hook_name, $hook_args);
+	$hook_buffer = ob_get_contents();
+	ob_end_clean();
+	return $hook_buffer;
 }

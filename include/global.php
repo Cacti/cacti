@@ -512,6 +512,10 @@ include_once($config['library_path'] . '/snmpagent.php');
 include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
 include_once($config['include_path'] . '/csrf.php');
+if (!defined('CACTI_CLI_ONLY')) {
+	include_once($config['include_path'] . '/twig.php');
+}
+
 
 if ($config['is_web']) {
 	if (isset_request_var('newtheme')) {

@@ -681,7 +681,8 @@ function applySkin() {
 
 	setupPageTimeout();
 
-	CsrfMagic.end();
+	if (typeof CsrfMagic != 'undefined')
+		CsrfMagic.end();
 
 	setupSpecialKeys();
 

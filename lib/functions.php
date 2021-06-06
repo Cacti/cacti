@@ -5884,3 +5884,295 @@ function cacti_cookie_session_logout(): void {
 
 	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
 }
+
+/*
+ * twig_navigation_text - determines the top header navigation text for the current page and displays it to
+ *
+ * @arg $type - (string) Either 'url' or 'title'
+ * @return (string) Either the navigation text or title
+ */
+function twig_navigation_text(): array {
+	global $config, $navigation;
+
+	$nav_level_cache = (isset($_SESSION['sess_nav_level_cache']) ? $_SESSION['sess_nav_level_cache'] : array());
+	$navigation      = api_plugin_hook_function('draw_navigation_text', $navigation);
+	$current_page    = get_current_page();
+
+	// Do an error check here for bad plugins manipulating the cache
+	if (!is_array($nav_level_cache)) {
+		$nav_level_cache = array();
+	}
+
+	if (!isempty_request_var('action')) {
+		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
+	}
+
+	$current_action = (isset_request_var('action') ? get_request_var('action') : '');
+
+	// find the current page in the big array
+	if (isset($navigation[$current_page . ':' . $current_action])) {
+		$current_array = $navigation[$current_page . ':' . $current_action];
+	} else {
+		$current_array = array(
+			'mapping' => 'index.php:',
+			'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))),
+			'level' => 1
+		);
+	}
+
+	if (isset($current_array['mapping'])) {
+		$current_mappings = explode(',', $current_array['mapping']);
+	} else {
+		$current_mappings = array();
+	}
+
+	$current_nav = [];
+	$title       = '';
+	$nav_count   = 0;
+
+	// resolve all mappings to build the navigation string
+	for ($i=0; ($i < cacti_count($current_mappings)); $i++) {
+		if (empty($current_mappings[$i])) {
+			continue;
+		}
+
+		if  ($i == 0) {
+			// always use the default for level == 0
+			$url = $navigation[basename($current_mappings[$i])]['url'];
+
+			if (basename($url) == 'graph_view.php') continue;
+		} elseif (isset($nav_level_cache[$i]) && !empty($nav_level_cache[$i]['url'])) {
+			// found a match in the url cache for this level
+			$url = $nav_level_cache[$i]['url'];
+		} elseif (isset($current_array['url'])) {
+			// found a default url in the above array
+			$url = $current_array['url'];
+		} else {
+			// default to no url
+			$url = '';
+		}
+
+		if ($current_mappings[$i] == '?') {
+			// '?' tells us to pull title from the cache at this level
+			if (isset($nav_level_cache[$i])) {
+				$current_nav[] = [
+					'id'    => 'nav_'. $i,
+					'plain' => empty($url),
+					'href'  => $url,
+					'title' => resolve_navigation_variables($navigation[$nav_level_cache[$i]['id']]['title']),
+				];
+			}
+		} else {
+			// there is no '?' - pull from the above array
+			$current_nav[] = [
+				'id'    => 'nav_'. $i,
+				'plain' => empty($url),
+				'href'  => $url,
+				'title' => resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title']),
+			];
+		}
+
+		$nav_count++;
+	}
+
+	if ($nav_count) {
+		if (isset($current_array['title'])) {
+			$current_nav[] = [
+				'id'    => 'nav_' . $i,
+				'plain' => false,
+				'href'  => '#',
+				'title' => resolve_navigation_variables($current_array['title']),
+			];
+		}
+	} else {
+		$current_array = $navigation[$current_page . ':' . $current_action];
+		$url           = (isset($current_array['url']) ? $current_array['url']:'');
+
+		if (isset($current_array['title'])) {
+			$current_nav[] = [
+				'id'    => 'nav_' . $i,
+				'plain' => false,
+				'href'  => $url,
+				'title' => resolve_navigation_variables($current_array['title']),
+			];
+		}
+	}
+
+	if (isset_request_var('action') || get_nfilter_request_var('action') == 'tree_content') {
+		$tree_id = 0;
+		$leaf_id = 0;
+
+		if (isset_request_var('node')) {
+			$parts = explode('-', get_request_var('node'));
+
+			// Check for tree anchor
+			if (strpos(get_request_var('node'), 'tree_anchor') !== false) {
+				$tree_id = $parts[1];
+				$leaf_id = 0;
+			} elseif (strpos(get_request_var('node'), 'tbranch') !== false) {
+				// Check for branch
+				$leaf_id = $parts[1];
+				$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+					FROM graph_tree_items
+					WHERE id = ?',
+					array($leaf_id));
+			}
+		}
+
+		if ($leaf_id > 0) {
+			$leaf = db_fetch_row_prepared('SELECT host_id, title, graph_tree_id
+				FROM graph_tree_items
+				WHERE id = ?',
+				array($leaf_id));
+
+			if (cacti_sizeof($leaf)) {
+				if ($leaf['host_id'] > 0) {
+					$leaf_name = db_fetch_cell_prepared('SELECT description
+						FROM host
+						WHERE id = ?',
+						array($leaf['host_id']));
+				} else {
+					$leaf_name = $leaf['title'];
+				}
+
+				$tree_name = db_fetch_cell_prepared('SELECT name
+					FROM graph_tree
+					WHERE id = ?',
+					array($leaf['graph_tree_id']));
+			} else {
+				$leaf_name = __('Leaf');
+				$tree_name = '';
+			}
+
+			if (isset_request_var('hgd') && get_nfilter_request_var('hgd') != '') {
+				$parts = explode(':', get_nfilter_request_var('hgd'));
+				input_validate_input_number($parts[1]);
+
+				if ($parts[0] == 'gt') {
+					$leaf_sub = db_fetch_cell_prepared('SELECT name
+						FROM graph_templates
+						WHERE id = ?',
+						array($parts[1]));
+				} else {
+					if ($parts[1] > 0) {
+						$leaf_sub = db_fetch_cell_prepared('SELECT name
+							FROM snmp_query
+							WHERE id = ?',
+							array($parts[1]));
+					} else {
+						$leaf_sub = __('Non Query Based');
+					}
+				}
+			} else {
+				$leaf_sub = '';
+			}
+		} else {
+			$leaf_name = '';
+			$leaf_sub  = '';
+
+			if ($tree_id > 0) {
+				$tree_name = db_fetch_cell_prepared('SELECT name
+					FROM graph_tree
+					WHERE id = ?',
+					array($tree_id));
+			} else {
+				$tree_name = '';
+			}
+		}
+
+		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . trim($leaf_name):'') . ($leaf_sub != '' ? ':' . trim($leaf_sub) . ')':($leaf_name != '' ? ')':''));
+
+		if ($tree_title != '') {
+			$current_nav[] = [
+				'id'    => 'nav_title',
+				'plain' => false,
+				'href'  => '#',
+				'title' => $tree_title,
+			];
+		}
+	} elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
+		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', array($matches[1]));
+		$title = $externalLinks['title'];
+		$style = $externalLinks['style'];
+
+		if ($style == 'CONSOLE') {
+			$current_nav[] = [
+				'id'    => 'nav_1',
+				'plain' => false,
+				'href'  => '#',
+				'title' => __('Link %s', html_escape($title)),
+			];
+		} else {
+			$current_nav[] = [
+				'id'    => 'nav_0',
+				'plain' => false,
+				'href'  => '#',
+				'title' => $title,
+			];
+		}
+		$tree_title = '';
+	} else {
+		$tree_title = '';
+	}
+
+	if (isset($current_array['title'])) {
+		$title .= html_escape(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
+	}
+
+	// keep a cache for each level we encounter
+	$hasNavError = false;
+	if (is_array($current_page)) {
+		cacti_log('WARNING: Navigation item suppressed - current page is not a string: ' . var_export($current_page,true));
+		$hasNavError = true;
+	}
+
+	if (is_array($current_action)) {
+		cacti_log('WARNING: Navigation item suppressed - current action is not a string: '. var_export($current_action,true));
+		$hasNavError = true;
+	}
+
+	if (is_array($current_array['level'])) {
+		cacti_log('WARNING: Navigation item suppressed - current level is not a string: ' . var_export($current_array['level'],true));
+		$hasNavError = true;
+	}
+
+	if (!$hasNavError) {
+		$nav_level_cache[$current_array['level']] = array(
+			'id' => $current_page . ':' . $current_action,
+			'url' => get_browser_query_string()
+		);
+	}
+
+	$_SESSION['sess_nav_level_cache'] = $nav_level_cache;
+
+	return $current_nav;
+}
+
+function twig_md5_include_js(string $path, bool $async = false): array {
+	global $config;
+
+	if (file_exists($path)) {
+		$npath = str_replace($config['base_path'] . '/', '', $path);
+	} else {
+		$npath = $path;
+	}
+
+	return [
+		'mode'  => 'js',
+		'src'   => $config['url_path'] . $npath . '?' . get_md5_hash($path),
+		'type' => 'text/javascript',
+		'async' => $async,
+	];
+}
+
+function twig_md5_include_css(string $path): array {
+	global $config;
+
+	return [
+		'mode' => 'css',
+		'href' => $config['url_path'] . $path . '?' . get_md5_hash($path),
+		'type' => 'text/css',
+		'rel'  => 'stylesheet',
+	];
+}
+

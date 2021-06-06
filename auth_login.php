@@ -636,77 +636,41 @@ html_auth_header('login', __('Login to Cacti'), __('User Login'), __('Enter your
 		'ldap_error_message' => $ldap_error_message,
 		'username' => $username,
 		'user_enabled' => $user_enabled,
-		'action' => get_nfilter_request_var('action')));
-?>
-		<tr>
-			<td>
-				<label for='login_username'><?php print __('Username');?></label>
-			</td>
-			<td>
-				<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for='login_password'><?php print __('Password');?></label>
-			</td>
-			<td>
-				<input type='password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
-			</td>
-		</tr>
-<?php
-if (read_config_option('auth_method') == '3' || read_config_option('auth_method') == '4') {
-	if (read_config_option('auth_method') == '3') {
-		$realms = api_plugin_hook_function('login_realms',
-			array(
-				'1' => array('name' => __('Local'), 'selected' => false),
-				'2' => array('name' => __('LDAP'),  'selected' => true)
-			)
-		);
-	} else {
-		$realms = get_auth_realms(true);
-	}
+		'action' => get_nfilter_request_var('action')
+	));
 
-	// try and remember previously selected realm
-	if ($frv_realm && array_key_exists($frv_realm, $realms)) {
-		foreach ($realms as $key => $realm) {
-			$realms[$key]['selected'] = ($frv_realm == $key);
-		}
+
+$auth_method = read_config_option('auth_method');
+$auth_cache_enabled = read_config_option('auth_cache_enabled');
+$checked = (isset($_COOKIE['cacti_remembers']) || !isempty_request_var('remember_me'));
+
+if (read_config_option('auth_method') == '3') {
+	$realms = api_plugin_hook_function('login_realms',
+		array(
+			'1' => array('name' => __('Local'), 'selected' => false),
+			'2' => array('name' => __('LDAP'),  'selected' => true)
+		)
+	);
+} else {
+	$realms = get_auth_realms(true);
+}
+
+// try and remember previously selected realm
+if ($frv_realm && array_key_exists($frv_realm, $realms)) {
+	foreach ($realms as $key => $realm) {
+		$realms[$key]['selected'] = ($frv_realm == $key);
 	}
-?>
-		<tr>
-			<td>
-				<label for='realm'><?php print __('Realm');?></label>
-			</td>
-			<td>
-				<select id='realm' name='realm'><?php
-		if (cacti_sizeof($realms)) {
-			foreach($realms as $index => $realm) {
-				print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . "</option>\n";
-			}
-		}
-?>
-				</select>
-			</td>
-		</tr>
-<?php
-} if (read_config_option('auth_cache_enabled') == 'on') { ?>
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) || !isempty_request_var('remember_me') ? 'checked':'');?>>
-				<label for='remember_me'><?php print __('Keep me signed in');?></label>
-			</td>
-		</tr>
-<?php
-} ?>
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Login');?>'>
-			</td>
-		</tr>
-<?php
+}
+
+echo $twig->render('auth/login.html.twig', array_merge($twig_vars,
+	array(
+		'auth_method'        => $auth_method,
+		'username'           => $username,
+		'auth_cache_enabled' => $auth_cache_enabled,
+		'checked'            => $checked
+	)
+));
+
 $error_message = "";
 if ($ldap_error) {
 	$error_message = $ldap_error;

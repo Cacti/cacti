@@ -22,44 +22,45 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $menu, $is_request_ajax;
+global $config, $menu, $is_request_ajax, $twig, $twig_vars, $twig_common, $twig_options;
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 $using_guest_account = false;
 
-if (!$is_request_ajax) {?>
-<!DOCTYPE html>
-<html lang='<?php print CACTI_LOCALE;?>'>
-<head>
-	<?php html_common_header($page_title);?>
-</head>
-<body>
-	<a class='skip-link' href='#main' style='display:none'>Skip to main</a>
-	<div id='cactiPageHead' class='cactiPageHead' role='banner'>
-		<div id='tabs'><?php html_show_tabs_left();?></div>
-		<div class='cactiGraphHeaderBackground' style='display:none'><div id='gtabs'><?php print html_graph_tabs_right();?></div></div>
-		<div class='cactiConsolePageHeadBackdrop'></div>
-	</div>
-	<div id='breadCrumbBar' class='breadCrumbBar'>
-		<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
-		<div class='scrollBar'></div>
-		<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
-	</div>
-	<div class='cactiShadow'></div>
-<?php } else {?>
-	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
-	<title><?php print $page_title;?></title>
-<?php } ?>
-	<div id='cactiContent' class='cactiContent'>
-		<div class='cactiConsoleNavigationArea' style='display:none;' id='navigation'>
-			<table style='width:100%;'>
-				<?php draw_menu();?>
-				<tr>
-					<td style='text-align:center;'>
-						<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div id='navigation_right' class='cactiConsoleContentArea'>
-			<main style='position:relative;display:none;' id='main'>
+$twig_common = [
+	'locale'     => CACTI_LOCALE,
+	'is_ajax'    => $is_request_ajax,
+	'is_guest'   => $using_guest_account,
+	'is_classic' => get_selected_theme() == 'classic',
+];
+
+$user = db_fetch_row_prepared('SELECT
+	username, password_change, realm
+	FROM user_auth WHERE id = ?',
+	array($_SESSION['sess_user_id']));
+
+$twig_options = [
+	'auth_method' => read_config_option('auth_method'),
+];
+
+$twig_menu       = twig_menu();
+$twig_header     = twig_common_header($page_title);
+$twig_tabs_left  = twig_tabs_left();
+$twig_tabs_right = twig_graph_tabs_right();
+$twig_nav        = twig_navigation_text();
+
+echo $twig->render('common/header.html.twig',
+	array_merge($twig_vars,
+		array(
+			'common'     => $twig_common,
+			'options'    => $twig_options,
+			'menu'       => $twig_menu,
+			'header'     => $twig_header,
+			'nav_items'  => $twig_nav,
+			'tabs_left'  => $twig_tabs_left,
+			'tabs_right' => $twig_tabs_right,
+			'page_title' => $page_title,
+			'user'       => $user,
+		)
+	)
+);
