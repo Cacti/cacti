@@ -4627,8 +4627,6 @@ function clog_authorized(): bool {
 }
 
 function update_system_mibs(int $host_id): void {
-	global $sessions;
-
 	$system_mibs = array(
 		'snmp_sysDescr'          => '.1.3.6.1.2.1.1.1.0',
 		'snmp_sysObjectID'       => '.1.3.6.1.2.1.1.2.0',
@@ -4641,11 +4639,11 @@ function update_system_mibs(int $host_id): void {
 	$h = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 
 	if (cacti_sizeof($h)) {
-		open_snmp_session($host_id, $h);
+		$session = open_snmp_session($host_id, $h);
 
-		if (isset($sessions[$host_id . '_' . $h['snmp_version'] . '_' . $h['snmp_port']])) {
+		if ($session !== false) {
 			foreach($system_mibs as $name => $oid) {
-				$value = cacti_snmp_session_get($sessions[$host_id . '_' . $h['snmp_version'] . '_' . $h['snmp_port']], $oid);
+				$value = cacti_snmp_session_get($session, $oid);
 
 				if (!empty($value)) {
 					db_execute_prepared("UPDATE host SET $name = ? WHERE deleted = '' AND id = ?",
