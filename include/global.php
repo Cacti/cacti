@@ -253,11 +253,10 @@ $filename = get_current_page();
 $config['is_web'] = !defined('CACTI_CLI_ONLY');
 if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
-} else {
-	include_once($config['library_path'] . '/html.php');
-	include_once($config['library_path'] . '/html_utility.php');
-	include_once($config['library_path'] . '/html_validate.php');
 }
+include_once($config['library_path'] . '/html.php');
+include_once($config['library_path'] . '/html_utility.php');
+include_once($config['library_path'] . '/html_validate.php');
 
 /* set poller mode */
 global $local_db_cnn_id, $remote_db_cnn_id;
