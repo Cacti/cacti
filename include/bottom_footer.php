@@ -26,14 +26,4 @@ global $config, $menu, $is_request_ajax, $twig_common, $twig_options, $twig_vars
 
 $page_bottom = twig_hook_buffer('page_bottom');
 
-echo $twig->render('common/footer.html.twig',
-	array_merge($twig_vars,
-		array(
-			'common'      => $twig_common,
-			'options'     => $twig_options,
-			'config'      => $config,
-			'menu'        => $menu,
-			'hook_bottom' => $page_bottom,
-		)
-	)
-);
+echo $twig->render('common/footer.html.twig', array_merge($twig_vars));

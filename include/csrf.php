@@ -18,9 +18,12 @@ function csrf_startup() {
 	} else {
 		csrf_conf('disable',true);
 	}
+	csrf_conf('auto-session', false);
+	csrf_conf('log_file', __DIR__ . '/../log/csrf.log');
 }
 
 function csrf_error_callback() {
+	cacti_debug_backtrace('csrf_error_callback');
 	//Resolve session fixation for PHP 5.4
 	session_regenerate_id();
 	raise_message('csrf_timeout');

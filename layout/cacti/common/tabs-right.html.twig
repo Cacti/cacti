@@ -1,0 +1,35 @@
+<!-- DUMP OF TABS RIGHT
+{{ dump(tabs_right)|raw }}
+     DUMP OF TABS RIGHT -->
+
+{% if view.is_classic %}
+	{% for tab in tabs_right.items %}
+		<a id='{{ tab.id }}' class='righttab{% if tab.active %} selected{% endif %}'
+			href='{{ tab.href }}'>
+			<img src='{{ tab.image }}' title='{{ tab.title }}' alt='{{ tab.title }}'>
+		</a>
+	{% endfor %}
+	{{ tabs_right.header_tabs|raw }}
+{% else %}
+	<div class='tabs' style='float:right;'>
+		<nav>
+			<ul role='tablist'>
+				{% for tab in tabs_right.items %}
+				<li>
+					<a id='{{ tab.id }}' name='{{ tab.id }}'
+						role='tab' title='{{ tab.title }}'
+						class='righttab{% if tab.active %} selected{% endif %}'
+						aria-selected='{% if tab.active %}true{% else %}false{% endif %}'
+						href='{{ tab.href }}'>
+						{% if tab.image is empty %}
+						{{ tab.title }}
+						{% else %}
+						<img src='{{ config.url_path }}{{ tab.image }}' alt='{{ table.title }}' style='vertical-align:bottom;'>
+						{% endif %}
+					</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</nav>
+	</div>
+{% endif %}

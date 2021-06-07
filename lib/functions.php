@@ -3773,8 +3773,10 @@ function bottom_footer(): void {
 	db_close();
 }
 
-function top_header(): void {
+function top_header($hideMain = false): void {
 	global $config;
+
+	$config['hide_main'] = $hideMain;
 
 	include_once($config['base_path'] . '/include/top_header.php');
 }

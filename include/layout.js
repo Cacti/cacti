@@ -1817,19 +1817,21 @@ function loadTopTabEnd(options) {
 		}
 	}
 
-	var tabElementId = '#'+options.tabId;
-	var tabElement = $(tabElementId);
-	if (tabElement.hasClass('lefttab')) {
-		$('.lefttab').removeClass('selected');
-		$('.submenuoptions').find('.selected').removeClass('selected');
-		tabElement.addClass('selected');
-		var hideTabId = tabElementId.substring(0, tabElementId.length-9);
-		if (hideTabId) {
-			$(hideTabId).addClass('selected');
+	if (options.tabId) {
+		var tabElementId = '#'+options.tabId;
+		var tabElement = $(tabElementId);
+		if (tabElement.hasClass('lefttab')) {
+			$('.lefttab').removeClass('selected');
+			$('.submenuoptions').find('.selected').removeClass('selected');
+			tabElement.addClass('selected');
+			var hideTabId = tabElementId.substring(0, tabElementId.length-9);
+			if (hideTabId) {
+				$(hideTabId).addClass('selected');
+			}
+		} else if (tabElementId.parents('.submenuoptions').length > 0) {
+			tabElementId.parents('.submenuoptions').find('.selected').removeClass('selected');
+			tabElementId.addClass('selected');
 		}
-	} else if (tabElementId.parents('.submenuoptions').length > 0) {
-		tabElementId.parents('.submenuoptions').find('.selected').removeClass('selected');
-		tabElementId.addClass('selected');
 	}
 }
 

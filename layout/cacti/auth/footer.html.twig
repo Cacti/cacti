@@ -1,7 +1,7 @@
 
 					</table>
 				</div>
-				{{ hook_section_after }}
+				{{ hook.login_after|raw }}
 			</form>
 			<hr />
 			<div class='cactiAuthErrors'>
@@ -13,8 +13,4 @@
 		</div>
 	</div>
 	<div class='cactiAuthLogo'></div>
-	{{ html | raw }}
-	{{ global_session | raw }}
 </div>
-</body>
-</html>

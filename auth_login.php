@@ -687,16 +687,6 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 
 $selectedTheme = get_selected_theme();
 
-html_auth_header('login', __('Login to Cacti'), __('User Login'), __('Enter your Username and Password below'),
-	array(
-		'ldap_error' => $ldap_error,
-		'ldap_error_message' => $ldap_error_message,
-		'username' => $username,
-		'user_enabled' => $user_enabled,
-		'action' => get_nfilter_request_var('action')
-	));
-
-
 $auth_method = read_config_option('auth_method');
 $auth_cache_enabled = read_config_option('auth_cache_enabled');
 $checked = (isset($_COOKIE['cacti_remembers']) || !isempty_request_var('remember_me'));
@@ -719,15 +709,7 @@ if ($frv_realm && array_key_exists($frv_realm, $realms)) {
 	}
 }
 
-echo $twig->render('auth/login.html.twig', array_merge($twig_vars,
-	array(
-		'auth_method'        => $auth_method,
-		'username'           => $username,
-		'auth_cache_enabled' => $auth_cache_enabled,
-		'checked'            => $checked
-	)
-));
-
+$focus_control = (empty($username)) ? 'username' : 'password';
 $error_message = "";
 if ($ldap_error) {
 	$error_message = $ldap_error;
@@ -740,7 +722,32 @@ if ($ldap_error) {
 	}
 }
 
-$focus_control = (empty($username)) ? 'username' : 'password';
+global $twig_vars;
+$twig_auth = empty($twig_vars['auth']) ? [] : $twig_vars['auth'];
+$twig_auth = array_merge($twig_auth, [
+	'action'      => 'login',
+	'page'        => get_current_page(),
+	'cache'       => $auth_cache_enabled,
+	'remember'    => $checked,
+	'realms'      => $realms,
+	'focus'       => $focus_control,
+	'error'       => $error_message,
+	'legend'      => __('User Login'),
+	'title'       => __('Enter your Username and Password below'),
+]);
+
+$twig_vars['auth'] = $twig_auth;
+
+html_auth_header('login', __('Login to Cacti'), __('User Login'), __('Enter your Username and Password below'),
+	array(
+		'ldap_error' => $ldap_error,
+		'ldap_error_message' => $ldap_error_message,
+		'user_enabled' => $user_enabled,
+		'action' => get_nfilter_request_var('action')
+	));
+
+echo $twig->render('auth/login.html.twig', $twig_vars);
+
 html_auth_footer('login', $error_message, "
 	<script>
 		$(function() {

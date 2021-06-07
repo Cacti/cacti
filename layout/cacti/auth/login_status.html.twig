@@ -5,8 +5,8 @@
 <span id='user' class='user usermenuup'>
 	{% if common.is_guest %}
 		{{ __('guest') }}
-	{% elseif user.name is defined %}
-		{{ user.name }}
+	{% elseif user.username is defined %}
+		{{ user.username }}
 	{% endif %}
 </span>
 </div>
@@ -25,6 +25,8 @@
 		{{ __('Error') }}
 	</li>
 	{% endif %}
+
+	<li class='menuHr'><hr class='menu'></li>
 
 	{% if user.username is defined %}
 		{% if is_realm_allowed(20) %}
@@ -47,6 +49,11 @@
 			{{ __('Documentation') }}
 		</a>
 	</li>
+	{% if user.username is defined %}
+	<li id='userLogout'>
+		<a href='{{ config.url_path }}logout.php'>{{ __('Logout') }}</a>
+	</li>
+	{% endif %}
 </ul>
 {% if hook.nav_login_after is defined %}
 	{{ hook.nav_login_after }}

@@ -156,3 +156,8 @@ $GLOBALS['csrf']['startup_func'] = '';
  * Hashing function to use, defaults to sha1
  */
 $GLOBALS['csrf']['hash'] = '';
+
+/**
+ * Path to base website
+ */
+$GLOBALS['csrf']['url_path'] = '';

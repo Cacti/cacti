@@ -2,14 +2,18 @@
 <!DOCTYPE html>
 <html lang='{{ common.locale }}'>
 <head>
-	<meta content='width=device-width, initial-scale={{ initial-scale }}, minimum-scale={{ minium-scale }}, maximum-scale={{ maximum-scale }}' name='viewport'>
+	<meta content='width=device-width, initial-scale={{ header.initialScale }}, minimum-scale={{ header.minimumScale }}, maximum-scale={{ header.maximumScale }}' name='viewport'>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' {{ header.alternates|raw }} data: blob:; style-src 'self' 'unsafe-inline' {{ header.alternates }}; script-src 'self' {{ header.script_policy }} 'unsafe-inline' {{ header.alternates }}; worker-src 'self'">
+	<meta name='theme-name' content='{{ header.theme }}'>
+	<meta name='theme-color' content='{{ header.themeColor }}'>
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' {{ header.alternates|raw }} data: blob:; style-src 'self' 'unsafe-inline' {{ header.alternates|raw }}; script-src 'self' {{ header.scriptPolicy|raw }} 'unsafe-inline' {{ header.alternates|raw }}; worker-src 'self'">
 	<meta name='robots' content='noindex,nofollow'>
+{% endif %}
 	<title>{{ page_title }}</title>
+{% if not common.is_ajax %}
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<script type='text/javascript'>
 		{% for name,value in header.variables %}
@@ -28,22 +32,31 @@
 	{% endfor %}
 </head>
 <body>
-	<a class='skip-link' href='#main' style='display:none'>Skip to main</a>
+	<!-- DUMP view
+	{{ dump(view)|raw }}
+	     DUMP view -->
+
+	{% if view.is_main %}
+	<a class='skip-link' href='#main' style='display:none;'>Skip to main</a>
 	<div id='cactiPageHead' class='cactiPageHead' role='banner'>
 		<div id='tabs'>
 			{{ include('common/tabs-left.html.twig') }}
 		</div>
-		<div class='cactiGraphHeaderBackground' style='display:none'>
+		<div class='cactiGraphHeaderBackground'{% if not view.is_graph %} style='display:none;'{% endif %}>
 			<div id='gtabs'>
-				<?php print html_graph_tabs_right();?>
+				{# <?php print html_graph_tabs_right();?> #}
+				{{ include('common/tabs-right.html.twig') }}
 			</div>
 		</div>
-		<div class='cactiConsolePageHeadBackdrop'></div>
+		<div class='cactiConsolePageHeadBackdrop'{% if view.is_graph %} style='display:none;'{% endif %}></div>
 	</div>
 	<div id='breadCrumbBar' class='breadCrumbBar'>
+	{% endif %}
+{% endif %}
+{% if view.is_main %}
 		{% include 'common/navbar.html.twig' %}
 		<div class='scrollBar'></div>
-
+	{% if not common.is_ajax %}
 		{% if options.auth_method != 0 %}
 		<div class='infoBar'>
 			{# <?php echo draw_login_status($using_guest_account);?> #}
@@ -51,13 +64,15 @@
 		</div>
 		{% endif %}
 	</div>
-
 	<div class='cactiShadow'></div>
-{% else %}
-	{% include 'common/navbar.html.twig' %}
-	<title>{{ common.page_title }}</title>
-{% endif %}
+	{% endif %}
 	<div id='cactiContent' class='cactiContent'>
+		{% if view.is_graph %}
+		<div style='display:none;' id='navigation' class='cactiTreeNavigationArea'>
+			{# <?php grow_dhtml_trees();?> #}
+			{{ include('graph/tree.html.twig') }}
+		</div>
+		{% else %}
 		<div class='cactiConsoleNavigationArea' style='display:none;' id='navigation'>
 			<table style='width:100%;'>
 				{# <?php draw_menu();?> #}
@@ -69,5 +84,7 @@
 				</tr>
 			</table>
 		</div>
-		<div id='navigation_right' class='cactiConsoleContentArea'>
+		{% endif %}
+		<div id='navigation_right' class='cacti{% if view.is_graph %}Graph{% else %}Console{% endif %}ContentArea'>
 			<main style='position:relative;display:none;' id='main'>
+{% endif %}

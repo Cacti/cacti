@@ -2629,48 +2629,50 @@ function html_common_header($title, $selectedTheme = '') {
 function html_auth_header($section, $browser_title, $legend, $title, $hook_args = array()) {
 	global $themes, $twig, $twig_vars;
 
+	top_header(true);
+
 	$hook_section_title = twig_hook_buffer("${section}_title", $browser_title);
 	$hook_section_before = twig_hook_buffer("${section}_before", $hook_args);
+
+	if (!empty($hook_section_title)) {
+		$twig_vars['auth']["title"]  = $hook_section_title;
+	}
+
+	$twig_auth['auth']["before"] = $hook_section_before;
 
 	echo $twig->render('auth/header.html.twig',
 		array_merge($twig_vars,
 			array(
-				'themes'              => $themes,
-				'section'             => $section,
-				'browser_title'       => $browser_title,
-				'legend'              => $legend,
-				'title'               => $title,
-				'hook_section_title'  => $hook_section_title,
-				'hook_section_before' => $hook_section_before
+				'themes'     => $themes,
+				'section'    => $section,
+				'page_title' => $browser_title,
+				'legend'     => $legend,
+				'title'      => $title,
 			)
 		)
 	);
 }
 
-function html_auth_footer($section, $error = '', $html = '') {
+function html_auth_footer($section, $error = '') {
 	global $twig, $twig_vars;
 
 	$hook_section_after = twig_hook_buffer("${section}_after");
+
 	$version = __('Version %1$s | %2$s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT);
 
-	ob_start();
-	include_once(dirname(__FILE__) . '/../include/global_session.php');
-	$global_session = ob_get_contents();
-	ob_end_clean();
+	$twig_vars['auth']["after"] = $hook_section_after;
 
 	echo $twig->render('auth/footer.html.twig',
 		array_merge($twig_vars,
 			array(
 				'section'            => $section,
 				'error'              => $error,
-				'html'               => $html,
-				'hook_section_after' => $hook_section_after,
 				'version'            => $version,
-				'global_session'     => $global_session
 			)
 		)
 	);
 
+	bottom_footer(false);
 }
 
 /* twig_menu - gets an array for twig that draws the cacti menu for display in the console */
@@ -2815,65 +2817,80 @@ function twig_graph_tabs_right() {
 		if (is_view_allowed('show_tree')) {
 			$active = (isset_request_var('action') && get_nfilter_request_var('action') == 'tree');
 			$tabs['items'][] = [
-				'class' => 'righttab',
-				'id'    => 'treeview',
-				'href'  => $config['url_path'] . 'graph_view.php?action=tree',
-				'image' => $config['url_path'] . 'images/tab_mode_tree' . ($active?'_down':'') . '.gif',
-				'title' => __esc('Tree View'),
-				'alt'   => '',
+				'class'  => 'righttab',
+				'id'     => 'treeview',
+				'action' => 'tree',
+				'href'   => $config['url_path'] . 'graph_view.php?action=tree',
+				'image'  => $config['url_path'] . 'images/tab_mode_tree' . ($active?'_down':'') . '.gif',
+				'title'  => __esc('Tree View'),
+				'alt'    => '',
 			];
 		}
 
 		if (is_view_allowed('show_list')) {
 			$active = (isset_request_var('action') && get_nfilter_request_var('action') == 'list');
 			$tabs['items'][] = [
-				'class' => 'righttab',
-				'id'    => 'listview',
-				'href'  => $config['url_path'] . 'graph_view.php?action=list',
-				'image' => $config['url_path'] . 'images/tab_mode_list' . ($active?'_down':'') . '.gif',
-				'title' => __esc('List View'),
-				'alt'   => '',
+				'class'  => 'righttab',
+				'id'     => 'listview',
+				'action' => 'list',
+				'href'   => $config['url_path'] . 'graph_view.php?action=list',
+				'image'  => $config['url_path'] . 'images/tab_mode_list' . ($active?'_down':'') . '.gif',
+				'title'  => __esc('List View'),
+				'alt'    => '',
 			];
 		}
 
 		if (is_view_allowed('show_preview')) {
 			$active = (isset_request_var('action') && get_nfilter_request_var('action') == 'preview');
 			$tabs['items'][] = [
-				'class' => 'righttab',
-				'id'    => 'preview',
-				'href'  => $config['url_path'] . 'graph_view.php?action=preview',
-				'image' => $config['url_path'] . 'images/tab_mode_preview' . ($active?'_down':'') . '.gif',
-				'title' => __esc('Preview View'),
-				'alt'   => '',
+				'class'  => 'righttab',
+				'id'     => 'preview',
+				'action' => 'preview',
+				'href'   => $config['url_path'] . 'graph_view.php?action=preview',
+				'image'  => $config['url_path'] . 'images/tab_mode_preview' . ($active?'_down':'') . '.gif',
+				'title'  => __esc('Preview View'),
+				'alt'    => '',
 			];
 		}
 	} else {
 		if (is_view_allowed('show_tree')) {
 			$tabs['items'][] = array(
-				'title' => __('Tree View'),
-				'image' => 'include/themes/' . $theme . '/images/tab_tree.gif',
-				'id'    => 'tree',
-				'href'  => 'graph_view.php?action=tree',
+				'title'  => __('Tree View'),
+				'image'  => 'include/themes/' . $theme . '/images/tab_tree.gif',
+				'id'     => 'treeview',
+				'action' => 'tree',
+				'href'   => 'graph_view.php?action=tree',
 			);
 		}
 
 		if (is_view_allowed('show_list')) {
 			$tabs['items'][] = array(
-				'title' => __('List View'),
-				'image' => 'include/themes/' . $theme . '/images/tab_list.gif',
-				'id'    => 'list',
-				'href'  => 'graph_view.php?action=list',
+				'title'  => __('List View'),
+				'image'  => 'include/themes/' . $theme . '/images/tab_list.gif',
+				'id'     => 'listview',
+				'action' => 'list',
+				'href'   => 'graph_view.php?action=list',
 			);
 		}
 
 		if (is_view_allowed('show_preview')) {
 			$tabs['items'][] = array(
-				'title' => __('Preview'),
-				'image' => 'include/themes/' . $theme . '/images/tab_preview.gif',
-				'id'    => 'preview',
-				'href'  => 'graph_view.php?action=preview',
+				'title'  => __('Preview'),
+				'image'  => 'include/themes/' . $theme . '/images/tab_preview.gif',
+				'id'     => 'preview',
+				'action' => 'preview',
+				'href'   => 'graph_view.php?action=preview',
 			);
 		}
+
+		foreach($tabs['items'] as &$tab) {
+			if (in_array($tab['action'],['tree','list','preview'])) {
+				$tab['active'] = (isset_request_var('action') && get_nfilter_request_var('action') == $tab['action']);
+			} elseif (strstr(get_current_page(false), $tab['href'])) {
+				$tab['active'] = true;
+			}
+		}
+
 	}
 	return $tabs;
 }
@@ -3082,7 +3099,7 @@ function twig_common_header($title, $selectedTheme = '') {
 	}
 
 	$script_policy = read_config_option('content_security_policy_script');
-	if ($script_policy == '0') {
+	if (empty($script_policy)) {
 		$script_policy = "";
 	}
 
@@ -3090,95 +3107,106 @@ function twig_common_header($title, $selectedTheme = '') {
 
 	$header = [
 		'theme'         => $selectedTheme,
-		'initial-scale' => $selectedTheme == 'classic' ? '0.5' : '1.0',
-		'minimum-scale' => $selectedTheme == 'classic' ? '0.2' : '1.0',
-		'maximum-scale' => '5',
-		'script_policy' => $script_policy,
+		'themeColor'   => '#161616',
+		'initialScale' => $selectedTheme == 'classic' ? '0.5' : '1.0',
+		'minimumScale' => $selectedTheme == 'classic' ? '0.2' : '1.0',
+		'maximumScale' => '5',
+		'scriptPolicy' => $script_policy,
 		'alternates'    => $alternates,
 		'variables'     => [
 			'theme'                          => "'" .$selectedTheme . "'",
 			'hScroll'                        => (read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false'),
 			'userSettings'                   => (is_view_allowed('graph_settings') ? 'true':'false'),
-			'tableConstraints'               => "'" .__('Allow or limit the table columns to extend beyond the current windows limits.') . "'",
-			'searchFilter'                   => "'" .__esc('Enter a search term') . "'",
-			'searchRFilter'                  => "'" .__esc('Enter a regular expression') . "'",
-			'noFileSelected'                 => "'" .__esc('No file selected') . "'",
-			'timeGraphView'                  => "'" .__esc('Time Graph View') . "'",
-			'filterSettingsSaved'            => "'" .__esc('Filter Settings Saved') . "'",
-			'spikeKillResuls'                => "'" .__esc('SpikeKill Results') . "'",
-			'utilityView'                    => "'" .__esc('Utility View') . "'",
-			'realtimeClickOn'                => "'" .__esc('Click to view just this Graph in Realtime') . "'",
-			'realtimeClickOff'               => "'" .__esc('Click again to take this Graph out of Realtime') . "'",
-			'treeView'                       => "'" .__esc('Tree View') . "'",
-			'listView'                       => "'" .__esc('List View') . "'",
-			'previewView'                    => "'" .__esc('Preview View') . "'",
-			'cactiHome'                      => "'" .__esc('Cacti Home') . "'",
-			'cactiProjectPage'               => "'" .__esc('Cacti Project Page') . "'",
-			'cactiCommunityForum'            => "'" .__esc('User Community') . "'",
-			'cactiDocumentation'             => "'" .__esc('Documentation') . "'",
-			'reportABug'                     => "'" .__esc('Report a bug') . "'",
-			'aboutCacti'                     => "'" .__esc('About Cacti') . "'",
-			'spikeKillResults'               => "'" .__esc('SpikeKill Results') . "'",
-			'showHideFilter'                 => "'" .__esc('Click to Show/Hide Filter') . "'",
-			'clearFilterTitle'               => "'" .__esc('Clear Current Filter') . "'",
-			'clipboard'                      => "'" .__esc('Clipboard') . "'",
-			'clipboardID'                    => "'" .__esc('Clipboard ID') . "'",
-			'clipboardNotAvailable'          => "'" .__esc('Copy operation is unavailable at this time') . "'",
-			'clipboardCopyFailed'            => "'" .__esc('Failed to find data to copy!') . "'",
-			'clipboardUpdated'               => "'" .__esc('Clipboard has been updated') . "'",
-			'clipboardNotUpdated'            => "'" .__esc('Sorry, your clipboard could not be updated at this time') . "'",
-			'defaultSNMPSecurityLevel'       => "'" .read_config_option('snmp_security_level') . "'",
-			'defaultSNMPAuthProtocol'        => "'" .read_config_option('snmp_auth_protocol') . "'",
-			'defaultSNMPPrivProtocol'        => "'" .read_config_option('snmp_priv_protocol') . "'",
-			'passwordPass'                   => "'" .__esc('Passphrase length meets 8 character minimum') . "'",
-			'passwordTooShort'               => "'" .__esc('Passphrase too short') . "'",
-			'passwordMatchTooShort'          => "'" .__esc('Passphrase matches but too short') . "'",
-			'passwordNotMatchTooShort'       => "'" .__esc('Passphrase too short and not matching') . "'",
-			'passwordMatch'                  => "'" .__esc('Passphrases match') . "'",
-			'passwordNotMatch'               => "'" .__esc('Passphrases do not match') . "'",
-			'errorOnPage'                    => "'" .__esc('Sorry, we could not process your last action.') . "'",
-			'errorNumberPrefix'              => "'" .__esc('Error:') . "'",
-			'errorReasonPrefix'              => "'" .__esc('Reason:') . "'",
-			'errorReasonTitle'               => "'" .__esc('Action failed') . "'",
-			'testSuccessful'                 => "'" .__esc('Connection Successful') . "'",
-			'testFailed'                     => "'" .__esc('Connection Failed') . "'",
-			'errorReasonUnexpected'          => "'" .__esc('The response to the last action was unexpected.') . "'",
-			'mixedReasonTitle'               => "'" .__esc('Some Actions failed') . "'",
-			'mixedOnPage'                    => "'" .__esc('Note, we could not process all your actions.  Details are below.') . "'",
-			'sessionMessageTitle'            => "'" .__esc('Operation successful') . "'",
-			'sessionMessageSave'             => "'" .__esc('The Operation was successful.  Details are below.') . "'",
-			'sessionMessageOk'               => "'" .__esc('Ok') . "'",
-			'sessionMessagePause'            => "'" .__esc('Pause') . "'",
-			'sessionMessageContinue'         => "'" .__esc('Continue') . "'",
-			'sessionMessageCancel'           => "'" .__esc('Cancel') . "'",
-			'zoom_i18n_zoom_in'              => "'" .__esc('Zoom In') . "'",
-			'zoom_i18n_zoom_out'             => "'" .__esc('Zoom Out') . "'",
-			'zoom_i18n_zoom_out_factor'      => "'" .__esc('Zoom Out Factor') . "'",
-			'zoom_i18n_timestamps'           => "'" .__esc('Timestamps') . "'",
-			'zoom_i18n_zoom_2'               => "'" .__esc('2x') . "'",
-			'zoom_i18n_zoom_4'               => "'" .__esc('4x') . "'",
-			'zoom_i18n_zoom_8'               => "'" .__esc('8x') . "'",
-			'zoom_i18n_zoom_16'              => "'" .__esc('16x') . "'",
-			'zoom_i18n_zoom_32'              => "'" .__esc('32x') . "'",
-			'zoom_i18n_zoom_out_positioning' => "'" .__esc('Zoom Out Positioning') . "'",
-			'zoom_i18n_mode'                 => "'" .__esc('Zoom Mode') . "'",
-			'zoom_i18n_graph'                => "'" .__esc('Graph') . "'",
-			'zoom_i18n_quick'                => "'" .__esc('Quick') . "'",
-			'zoom_i18n_advanced'             => "'" .__esc('Advanced') . "'",
-			'zoom_i18n_newTab'               => "'" .__esc('Open in new tab') . "'",
-			'zoom_i18n_save_graph'           => "'" .__esc('Save graph') . "'",
-			'zoom_i18n_copy_graph'           => "'" .__esc('Copy graph') . "'",
-			'zoom_i18n_copy_graph_link'      => "'" .__esc('Copy graph link') . "'",
-			'zoom_i18n_on'                   => "'" .__esc('Always On') . "'",
-			'zoom_i18n_auto'                 => "'" .__esc('Auto') . "'",
-			'zoom_i18n_off'                  => "'" .__esc('Always Off') . "'",
-			'zoom_i18n_begin'                => "'" .__esc('Begin with') . "'",
-			'zoom_i18n_center'               => "'" .__esc('Center') . "'",
-			'zoom_i18n_end'                  => "'" .__esc('End with') . "'",
-			'zoom_i18n_disabled'             => "'" .__esc('Disabled') . "'",
-			'zoom_i18n_close'                => "'" .__esc('Close') . "'",
-			'zoom_i18n_settings'             => "'" .__esc('Settings') . "'",
-			'zoom_i18n_3rd_button'           => "'" .__esc('3rd Mouse Button') . "'",
+			'tableConstraints'               => "'" . __('Allow or limit the table columns to extend beyond the current windows limits.') . "'",
+			'searchFilter'                   => "'" . __esc('Enter a search term') . "'",
+			'searchRFilter'                  => "'" . __esc('Enter a regular expression') . "'",
+			'noFileSelected'                 => "'" . __esc('No file selected') . "'",
+			'timeGraphView'                  => "'" . __esc('Time Graph View') . "'",
+			'filterSettingsSaved'            => "'" . __esc('Filter Settings Saved') . "'",
+			'spikeKillResuls'                => "'" . __esc('SpikeKill Results') . "'",
+			'utilityView'                    => "'" . __esc('Utility View') . "'",
+			'realtimeClickOn'                => "'" . __esc('Click to view just this Graph in Realtime') . "'",
+			'realtimeClickOff'               => "'" . __esc('Click again to take this Graph out of Realtime') . "'",
+			'treeView'                       => "'" . __esc('Tree View') . "'",
+			'listView'                       => "'" . __esc('List View') . "'",
+			'previewView'                    => "'" . __esc('Preview View') . "'",
+			'editProfile'                    => "'" . __esc('Edit Profile') . "'",
+			'changePassword'                 => "'" . __esc('Change Password') . "'",
+			'logout'                         => "'" . __esc('Logout') . "'",
+			'legacyInterface'                => "'" . __esc('Use Legacy UI') . "'",
+			'newInterface'                   => "'" . __esc('Use New UI') . "'",
+			'darkColorMode'                  => "'" . __esc('Dark Color Mode') . "'",
+			'lightColorMode'                 => "'" . __esc('Light Color Mode') . "'",
+			'usePreferredColorTheme'         => "'" . __esc('Use System Color') . "'",
+			'ignorePreferredColorTheme'      => "'" . __esc('Ignore System Color') . "'",
+			'help'                           => "'" . __esc('Help') . "'",
+			'cactiHome'                      => "'" . __esc('Cacti Home') . "'",
+			'cactiProjectPage'               => "'" . __esc('Cacti Project Page') . "'",
+			'cactiCommunityForum'            => "'" . __esc('User Community') . "'",
+			'cactiDocumentation'             => "'" . __esc('Documentation') . "'",
+			'reportABug'                     => "'" . __esc('Report a bug') . "'",
+			'aboutCacti'                     => "'" . __esc('About Cacti') . "'",
+			'spikeKillResults'               => "'" . __esc('SpikeKill Results') . "'",
+			'showHideFilter'                 => "'" . __esc('Click to Show/Hide Filter') . "'",
+			'clearFilterTitle'               => "'" . __esc('Clear Current Filter') . "'",
+			'clipboard'                      => "'" . __esc('Clipboard') . "'",
+			'clipboardID'                    => "'" . __esc('Clipboard ID') . "'",
+			'clipboardNotAvailable'          => "'" . __esc('Copy operation is unavailable at this time') . "'",
+			'clipboardCopyFailed'            => "'" . __esc('Failed to find data to copy!') . "'",
+			'clipboardUpdated'               => "'" . __esc('Clipboard has been updated') . "'",
+			'clipboardNotUpdated'            => "'" . __esc('Sorry, your clipboard could not be updated at this time') . "'",
+			'defaultSNMPSecurityLevel'       => "'" . read_config_option('snmp_security_level') . "'",
+			'defaultSNMPAuthProtocol'        => "'" . read_config_option('snmp_auth_protocol') . "'",
+			'defaultSNMPPrivProtocol'        => "'" . read_config_option('snmp_priv_protocol') . "'",
+			'passwordPass'                   => "'" . __esc('Passphrase length meets 8 character minimum') . "'",
+			'passwordTooShort'               => "'" . __esc('Passphrase too short') . "'",
+			'passwordMatchTooShort'          => "'" . __esc('Passphrase matches but too short') . "'",
+			'passwordNotMatchTooShort'       => "'" . __esc('Passphrase too short and not matching') . "'",
+			'passwordMatch'                  => "'" . __esc('Passphrases match') . "'",
+			'passwordNotMatch'               => "'" . __esc('Passphrases do not match') . "'",
+			'errorOnPage'                    => "'" . __esc('Sorry, we could not process your last action.') . "'",
+			'errorNumberPrefix'              => "'" . __esc('Error:') . "'",
+			'errorReasonPrefix'              => "'" . __esc('Reason:') . "'",
+			'errorReasonTitle'               => "'" . __esc('Action failed') . "'",
+			'testSuccessful'                 => "'" . __esc('Connection Successful') . "'",
+			'testFailed'                     => "'" . __esc('Connection Failed') . "'",
+			'errorReasonUnexpected'          => "'" . __esc('The response to the last action was unexpected.') . "'",
+			'mixedReasonTitle'               => "'" . __esc('Some Actions failed') . "'",
+			'mixedOnPage'                    => "'" . __esc('Note, we could not process all your actions.  Details are below.') . "'",
+			'sessionMessageTitle'            => "'" . __esc('Operation successful') . "'",
+			'sessionMessageSave'             => "'" . __esc('The Operation was successful.  Details are below.') . "'",
+			'sessionMessageOk'               => "'" . __esc('Ok') . "'",
+			'sessionMessagePause'            => "'" . __esc('Pause') . "'",
+			'sessionMessageContinue'         => "'" . __esc('Continue') . "'",
+			'sessionMessageCancel'           => "'" . __esc('Cancel') . "'",
+			'zoom_i18n_zoom_in'              => "'" . __esc('Zoom In') . "'",
+			'zoom_i18n_zoom_out'             => "'" . __esc('Zoom Out') . "'",
+			'zoom_i18n_zoom_out_factor'      => "'" . __esc('Zoom Out Factor') . "'",
+			'zoom_i18n_timestamps'           => "'" . __esc('Timestamps') . "'",
+			'zoom_i18n_zoom_2'               => "'" . __esc('2x') . "'",
+			'zoom_i18n_zoom_4'               => "'" . __esc('4x') . "'",
+			'zoom_i18n_zoom_8'               => "'" . __esc('8x') . "'",
+			'zoom_i18n_zoom_16'              => "'" . __esc('16x') . "'",
+			'zoom_i18n_zoom_32'              => "'" . __esc('32x') . "'",
+			'zoom_i18n_zoom_out_positioning' => "'" . __esc('Zoom Out Positioning') . "'",
+			'zoom_i18n_mode'                 => "'" . __esc('Zoom Mode') . "'",
+			'zoom_i18n_graph'                => "'" . __esc('Graph') . "'",
+			'zoom_i18n_quick'                => "'" . __esc('Quick') . "'",
+			'zoom_i18n_advanced'             => "'" . __esc('Advanced') . "'",
+			'zoom_i18n_newTab'               => "'" . __esc('Open in new tab') . "'",
+			'zoom_i18n_save_graph'           => "'" . __esc('Save graph') . "'",
+			'zoom_i18n_copy_graph'           => "'" . __esc('Copy graph') . "'",
+			'zoom_i18n_copy_graph_link'      => "'" . __esc('Copy graph link') . "'",
+			'zoom_i18n_on'                   => "'" . __esc('Always On') . "'",
+			'zoom_i18n_auto'                 => "'" . __esc('Auto') . "'",
+			'zoom_i18n_off'                  => "'" . __esc('Always Off') . "'",
+			'zoom_i18n_begin'                => "'" . __esc('Begin with') . "'",
+			'zoom_i18n_center'               => "'" . __esc('Center') . "'",
+			'zoom_i18n_end'                  => "'" . __esc('End with') . "'",
+			'zoom_i18n_disabled'             => "'" . __esc('Disabled') . "'",
+			'zoom_i18n_close'                => "'" . __esc('Close') . "'",
+			'zoom_i18n_settings'             => "'" . __esc('Settings') . "'",
+			'zoom_i18n_3rd_button'           => "'" . __esc('3rd Mouse Button') . "'",
 		],
 		'links' => [
 			[
@@ -3208,7 +3236,7 @@ function twig_common_header($title, $selectedTheme = '') {
 			twig_md5_include_js('include/js/jquery.js'),
 			twig_md5_include_js('include/js/jquery-ui.js'),
 			twig_md5_include_js('include/js/jquery.ui.touch.punch.js', true),
-			twig_md5_include_js('include/js/jquery.cookie.js', true),
+			twig_md5_include_js('include/js/jquery.cookie.js'),
 			twig_md5_include_js('include/js/js.storage.js'),
 			twig_md5_include_js('include/js/jstree.js'),
 			twig_md5_include_js('include/js/jquery.hotkeys.js', true),
@@ -3224,13 +3252,13 @@ function twig_common_header($title, $selectedTheme = '') {
 			twig_md5_include_js('include/js/jquery.sparkline.js', true),
 			twig_md5_include_js('include/js/Chart.js', true),
 			twig_md5_include_js('include/js/dygraph-combined.js', true),
-			twig_md5_include_js('include/js/d3.js', true),
-			twig_md5_include_js('include/js/billboard.js', true),
+			twig_md5_include_js('include/js/d3.js'),
+			twig_md5_include_js('include/js/billboard.js'),
 			twig_md5_include_js('include/layout.js'),
 			twig_md5_include_js('include/js/pace.js'),
 			twig_md5_include_js('include/realtime.js', true),
 			twig_md5_include_js('include/themes/' . $selectedTheme .'/main.js'),
-//			twig_md5_include_js('include/vendor/csrf/csrf-magic.js'),
+			twig_md5_include_js('include/vendor/csrf/csrf-magic.js'),
 		],
 	];
 

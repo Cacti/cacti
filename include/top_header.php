@@ -28,19 +28,30 @@ $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title
 $using_guest_account = false;
 
 $twig_common = [
-	'locale'     => CACTI_LOCALE,
-	'is_ajax'    => $is_request_ajax,
-	'is_guest'   => $using_guest_account,
-	'is_classic' => get_selected_theme() == 'classic',
+	'locale'        => CACTI_LOCALE,
+	'is_ajax'       => $is_request_ajax,
+	'is_guest'      => $using_guest_account,
 ];
 
-$user = db_fetch_row_prepared('SELECT
-	username, password_change, realm
-	FROM user_auth WHERE id = ?',
-	array($_SESSION['sess_user_id']));
+$twig_view = [
+	'is_classic' => get_selected_theme() == 'classic',
+	'is_graph'   => (get_current_page() == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))),
+	'is_main'    => empty($config['hide_main']),
+	'tree'       => function_exists('twig_dhtml_trees') ? twig_dhtml_trees() : '',
+	'tree_path'  => function_exists('twig_tree_path') ? twig_tree_path() : '[]',
+];
 
-$twig_options = [
-	'auth_method' => read_config_option('auth_method'),
+if (empty($_SESSION['sess_user_id'])) {
+	$user = false;
+} else {
+	$user = db_fetch_row_prepared('SELECT
+		username, password_change, realm
+		FROM user_auth WHERE id = ?',
+		array($_SESSION['sess_user_id']));
+}
+
+$twig_auth = [
+	'method' => read_config_option('auth_method'),
 ];
 
 $twig_menu       = twig_menu();
@@ -49,12 +60,23 @@ $twig_tabs_left  = twig_tabs_left();
 $twig_tabs_right = twig_graph_tabs_right();
 $twig_nav        = twig_navigation_text();
 
-echo $twig->render('common/header.html.twig',
+$twig_hook = [
+	'nav_login_before'          => '',
+	'nav_login_after'           => '',
+	'top_graph_jquery_function' => '',
+];
+
+foreach ($twig_hook as $hook => &$value) {
+	$value = twig_hook_buffer($hook);
+}
+
+$output = $twig->render('common/header.html.twig',
 	array_merge($twig_vars,
 		array(
 			'common'     => $twig_common,
-			'options'    => $twig_options,
+			'auth'       => $twig_auth,
 			'menu'       => $twig_menu,
+			'view'       => $twig_view,
 			'header'     => $twig_header,
 			'nav_items'  => $twig_nav,
 			'tabs_left'  => $twig_tabs_left,
@@ -64,3 +86,9 @@ echo $twig->render('common/header.html.twig',
 		)
 	)
 );
+
+if ($GLOBALS['csrf']['rewrite']) {
+	$output = csrf_ob_handler($output, false);
+}
+
+echo $output;

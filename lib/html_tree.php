@@ -1625,3 +1625,51 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 
 	return $graph_list;
 }
+
+function twig_dhtml_trees() {
+	global $config;
+
+	include_once($config['library_path'] . '/data_query.php');
+
+	html_validate_tree_vars();
+
+	$default_tree_id = read_user_setting('default_tree_id');
+
+	if (empty($default_tree_id)) {
+		$user = db_fetch_row_prepared('SELECT policy_trees
+			FROM user_auth
+			WHERE id = ?',
+			array($_SESSION['sess_user_id']));
+
+		if ($user['policy_trees'] == 1) {
+			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
+				FROM graph_tree
+				LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+				AND user_auth_perms.type = 2
+				AND user_auth_perms.user_id = ?
+				WHERE user_auth_perms.item_id IS NULL
+				AND graph_tree.enabled = "on"
+				ORDER BY graph_tree.id
+				LIMIT 1',
+				array($_SESSION['sess_user_id']));
+		} else {
+			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
+				FROM graph_tree
+				INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+				AND user_auth_perms.type = 2
+				AND user_auth_perms.user_id = ?
+				WHERE graph_tree.enabled = "on"
+				ORDER BY graph_tree.id
+				LIMIT 1',
+				array($_SESSION['sess_user_id']));
+		}
+	} else {
+		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');
+	}
+
+	return create_dhtml_tree();
+}
+
+function twig_tree_path() {
+	return json_encode(get_tree_path());
+}
