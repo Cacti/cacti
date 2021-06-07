@@ -19,7 +19,7 @@ function csrf_startup() {
 		csrf_conf('disable',true);
 	}
 	csrf_conf('auto-session', false);
-	csrf_conf('log_file', __DIR__ . '/../log/csrf.log');
+//	csrf_conf('log_file', __DIR__ . '/../log/csrf.log');
 }
 
 function csrf_error_callback() {

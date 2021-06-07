@@ -75,7 +75,7 @@ switch (get_request_var('action')) {
 	default:
 		// We must exempt ourselves from the page refresh, or else the settings page could update while the user is making changes
 		$_SESSION['custom'] = 1;
-		general_header();
+		top_header(true);
 
 		unset($_SESSION['custom']);
 

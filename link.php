@@ -64,7 +64,7 @@ if (!cacti_sizeof($page)) {
 		if ($page['style'] == 'TAB') {
 			$link_nav['link.php:']['title']   = $page['title'];
 			$link_nav['link.php:']['mapping'] = '';
-			general_header();
+			top_header(true);
 		} else {
 			$link_nav['link.php:']['title']   = $page['title'];
 			$link_nav['link.php:']['mapping'] = 'index.php:';

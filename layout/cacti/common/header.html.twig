@@ -42,13 +42,13 @@
 		<div id='tabs'>
 			{{ include('common/tabs-left.html.twig') }}
 		</div>
-		<div class='cactiGraphHeaderBackground'{% if not view.is_graph %} style='display:none;'{% endif %}>
+		<div class='cactiGraphHeaderBackground'{% if not (view.is_graph or view.is_menu) %} style='display:none;'{% endif %}>
 			<div id='gtabs'>
 				{# <?php print html_graph_tabs_right();?> #}
 				{{ include('common/tabs-right.html.twig') }}
 			</div>
 		</div>
-		<div class='cactiConsolePageHeadBackdrop'{% if view.is_graph %} style='display:none;'{% endif %}></div>
+		<div class='cactiConsolePageHeadBackdrop'{% if view.is_graph or (not view.is_menu) %} style='display:none;'{% endif %}></div>
 	</div>
 	<div id='breadCrumbBar' class='breadCrumbBar'>
 	{% endif %}
@@ -72,7 +72,7 @@
 			{# <?php grow_dhtml_trees();?> #}
 			{{ include('graph/tree.html.twig') }}
 		</div>
-		{% else %}
+		{% elseif view.is_menu %}
 		<div class='cactiConsoleNavigationArea' style='display:none;' id='navigation'>
 			<table style='width:100%;'>
 				{# <?php draw_menu();?> #}

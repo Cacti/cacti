@@ -37,6 +37,7 @@ $twig_view = [
 	'is_classic' => get_selected_theme() == 'classic',
 	'is_graph'   => (get_current_page() == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))),
 	'is_main'    => empty($config['hide_main']),
+	'is_menu'    => empty($config['hide_console']),
 	'tree'       => function_exists('twig_dhtml_trees') ? twig_dhtml_trees() : '',
 	'tree_path'  => function_exists('twig_tree_path') ? twig_tree_path() : '[]',
 ];

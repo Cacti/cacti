@@ -22,4 +22,5 @@
  +-------------------------------------------------------------------------+
 */
 
+cacti_depreciated('top_graph_header()');
 include(__DIR__ . '/top_header.php');

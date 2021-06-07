@@ -3773,24 +3773,25 @@ function bottom_footer(): void {
 	db_close();
 }
 
-function top_header($hideMain = false): void {
+function top_header($hideConsole = false, $hideMain = false): void {
 	global $config;
 
 	$config['hide_main'] = $hideMain;
+	$config['hide_console'] = $hideConsole;
 
 	include_once($config['base_path'] . '/include/top_header.php');
 }
 
 function top_graph_header(): void {
-	global $config;
+	cacti_depreciated('top_graph_header()');
 
-	include_once($config['base_path'] . '/include/top_graph_header.php');
+	top_header(true);
 }
 
 function general_header(): void {
-	global $config;
+	cacti_depreciated('general_header()');
 
-	include_once($config['base_path'] . '/include/top_general_header.php');
+	top_header(true);
 }
 
 function admin_email(string $subject, string $message): void {
@@ -4701,7 +4702,7 @@ function cacti_debug_backtrace(string $entry = '', bool $html = false, bool $rec
 			print "<table style='width:100%;text-align:center;'><tr><td>xxx$s</td></tr></table>\n";
 		}
 
-		cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false);
+		cacti_log(trim("Backtrace: " . clean_up_lines($s)), false, $entry);
 	} else {
 		if (!empty($entry)) {
 			return trim("$entry Backtrace: " . clean_up_lines($s));
@@ -6625,5 +6626,9 @@ function twig_md5_include_css(string $path): array {
 		'type' => 'text/css',
 		'rel'  => 'stylesheet',
 	];
+}
+
+function cacti_depreciated($text) {
+	cacti_debug_backtrace('WARN Depreciated use of ' . $text . ' at ');
 }
 

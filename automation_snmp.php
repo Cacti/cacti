@@ -207,7 +207,7 @@ function form_automation_snmp_actions() {
 		}
 	}
 
-	general_header();
+	top_header(true);
 
 	?>
 	<script type='text/javascript'>

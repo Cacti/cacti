@@ -2629,7 +2629,7 @@ function html_common_header($title, $selectedTheme = '') {
 function html_auth_header($section, $browser_title, $legend, $title, $hook_args = array()) {
 	global $themes, $twig, $twig_vars;
 
-	top_header(true);
+	top_header(false,true);
 
 	$hook_section_title = twig_hook_buffer("${section}_title", $browser_title);
 	$hook_section_before = twig_hook_buffer("${section}_before", $hook_args);

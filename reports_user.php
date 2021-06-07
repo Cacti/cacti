@@ -78,17 +78,17 @@ switch (get_request_var('action')) {
 		header('Location: reports_user.php?action=edit&tab=items&id=' . get_request_var('id'));
 		break;
 	case 'item_edit':
-		general_header();
+		top_header(true);
 		reports_item_edit();
 		bottom_footer();
 		break;
 	case 'edit':
-		general_header();
+		top_header(true);
 		reports_edit();
 		bottom_footer();
 		break;
 	default:
-		general_header();
+		top_header(true);
 		reports();
 		bottom_footer();
 		break;
