@@ -151,7 +151,7 @@ system with the following requirements:
 
 - PHP 7.4+
 
-- MySQL 5.1+
+- MySQL 5.6+
 
 - RRDtool 1.3+, 1.5+ recommended
 
