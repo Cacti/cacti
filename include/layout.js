@@ -1498,57 +1498,47 @@ function tuneTable(object, width) {
 		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
 	}
 
-	if (tableWidth > width) {
-		var column = totalCols;
-		var hasCheckbox = $(object).find('th.tableSubHeaderCheckbox').length;
+	var calculatedColumns = [];
+	var calculatedWidth   = 0;
+	var calculatedPadding = 15;
 
-		if (hasCheckbox) {
-			var minColumns = 2;
-		} else {
-			var minColumns = 2;
+	var tableHeaders = $(object).find('th');
+	var tableCheckBox = $(tableHeaders).each(function() {
+		if ($(this).index() == tableHeaders.length) {
+			calculatedColumns.addClass('noHide');
 		}
+	});
 
-		$($(object).find('th').not('.noHide').get().reverse()).each(function() {
-			if (!$(this).hasClass('tableSubHeaderCheckbox') && $(this).is(':visible')) {
-				reducedWidth += $(this).width();
-				$('#'+id+' th:nth-child('+column+')').hide();
-				$('#'+id+' td:nth-child('+column+')').hide();
-				columnsHidden++;
+	$($(object).find('th').get()).each(function() {
+		var isLastCheckBox = $(this).hasClass('tableSubHeaderCheckbox') && $(this).index() == tableHeaders.length - 1;
+
+		if ($(this).hasClass('noHide') || isLastCheckBox) {
+			var columnWidth = $.textMetrics(this).width;
+
+			calculatedColumns.push($(this).index());
+			calculatedWidth += columnWidth + calculatedPadding;
+		}
+	});
+
+	$($(object).find('th').get()).each(function() {
+		if (!calculatedColumns.includes($(this).index())) {
+			var columnWidth = $.textMetrics(this).width;
+			if (width < calculatedWidth) {
+				$(this).hide();
+			} else {
+				calculatedColumns.push($(this).index());
+				calculatedWidth += columnWidth + calculatedPadding;
 			}
 
-			visibleColumns = totalCols - columnsHidden;
+			console.log($(this).parent().id + ' - ' + $(this).index() + ' - ' + width);
+		}
+	});
 
-			if (tableWidth-reducedWidth < width || visibleColumns <= minColumns) {
-				lastColumnsHidden[id] = columnsHidden;
-				lastWidth[id] = $(object).width();
-				return false;
-			}
-
-			column--;
-		});
-
-		lastWidth[id] = $(object).width();
-	} else if ($(object).width() > lastWidth[id]+40 && columnsHidden > 0) {
-		var column = 1;
-		var id     = $(object).attr('id');
-
-		$($(object).find('th').get()).each(function() {
-			if (!$(this).hasClass('tableSubHeaderCheckbox') && $(this).is(':hidden')) {
-				if (lastWidth[id]+$(this).width() < width) {
-					$('#'+id+' td:nth-child('+column+')').show();
-					$('#'+id+' th:nth-child('+column+')').show();
-				}
-			}
-
-			if ($(object).width() >= width) {
-				lastColumnsHidden[id] = columnsHidden = $(object).find('th:hidden').length;
-			}
-
-			column++;
-		});
-
-		lastWidth[id] = $(object).width();
-	}
+	$($(object).find('td').each(function() {
+		if (!calculatedColumns.includes($(this).index())) {
+			$(this).hide();
+		}
+	}));
 }
 
 function tuneFilter(object, width) {
@@ -4362,3 +4352,39 @@ function checkSNMPPassphraseConfirm(type) {
 }
 
 
+(function($) {
+
+ $.textMetrics = function(el) {
+
+  var h = 0, w = 0;
+
+  var div = document.createElement('div');
+  document.body.appendChild(div);
+  $(div).css({
+   position: 'absolute',
+   left: -1000,
+   top: -1000,
+   display: 'none'
+  });
+
+  $(div).html($(el).html());
+  var styles = ['font-size','font-style', 'font-weight', 'font-family','line-height', 'text-transform', 'letter-spacing'];
+  $(styles).each(function() {
+   var s = this.toString();
+   $(div).css(s, $(el).css(s));
+  });
+
+  h = $(div).outerHeight();
+  w = $(div).outerWidth();
+
+  $(div).remove();
+
+  var ret = {
+   height: h,
+   width: w
+  };
+
+  return ret;
+ }
+
+})(jQuery);

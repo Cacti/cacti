@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#4271: Continued timeout of registered processes
 -issue#4272:  dns_get_record(): A temporary server error occurred
 -issue#4284: Database upgrade can fail - Uncaught argument count error
+-issue#4295: If a page contains multiple tables, a larger table can cause smaller ones to lose columns.
 -feature#4258: Update phpseclib to version 2.0.31
 
 1.2.17
