@@ -202,9 +202,13 @@ function database_fix_mediumint_columns() {
 						}
 					}
 
-					db_install_execute($sql);
-					$total++;
+					$i++;
 				}
+			}
+
+			if ($i > 0) {
+				db_install_execute($sql);
+				$total++;
 			}
 		}
 	}
