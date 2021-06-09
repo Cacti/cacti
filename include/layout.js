@@ -1498,47 +1498,49 @@ function tuneTable(object, width) {
 		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
 	}
 
-	var calculatedColumns = [];
-	var calculatedWidth   = 0;
-	var calculatedPadding = 15;
+	if (width < tableWidth) {
+		var calculatedColumns = [];
+		var calculatedWidth   = 0;
+		var calculatedPadding = 15;
 
-	var tableHeaders = $(object).find('th');
-	var tableCheckBox = $(tableHeaders).each(function() {
-		if ($(this).index() == tableHeaders.length) {
-			calculatedColumns.addClass('noHide');
-		}
-	});
+		var tableHeaders = $(object).find('th');
+		var tableCheckBox = $(tableHeaders).each(function() {
+			if ($(this).index() == tableHeaders.length) {
+				calculatedColumns.addClass('noHide');
+			}
+		});
 
-	$($(object).find('th').get()).each(function() {
-		var isLastCheckBox = $(this).hasClass('tableSubHeaderCheckbox') && $(this).index() == tableHeaders.length - 1;
+		$($(object).find('th').get()).each(function() {
+			var isLastCheckBox = $(this).hasClass('tableSubHeaderCheckbox') && $(this).index() == tableHeaders.length - 1;
 
-		if ($(this).hasClass('noHide') || isLastCheckBox) {
-			var columnWidth = $.textMetrics(this).width;
+			if ($(this).hasClass('noHide') || isLastCheckBox) {
+				var columnWidth = $.textMetrics(this).width;
 
-			calculatedColumns.push($(this).index());
-			calculatedWidth += columnWidth + calculatedPadding;
-		}
-	});
-
-	$($(object).find('th').get()).each(function() {
-		if (!calculatedColumns.includes($(this).index())) {
-			var columnWidth = $.textMetrics(this).width;
-			if (width < calculatedWidth) {
-				$(this).hide();
-			} else {
 				calculatedColumns.push($(this).index());
 				calculatedWidth += columnWidth + calculatedPadding;
 			}
+		});
 
-			console.log($(this).parent().id + ' - ' + $(this).index() + ' - ' + width);
-		}
-	});
+		$($(object).find('th').get()).each(function() {
+			if (!calculatedColumns.includes($(this).index())) {
+				var columnWidth = $.textMetrics(this).width;
+				if (width < calculatedWidth) {
+					$(this).hide();
+				} else {
+					calculatedColumns.push($(this).index());
+					calculatedWidth += columnWidth + calculatedPadding;
+				}
 
-	$($(object).find('td').each(function() {
-		if (!calculatedColumns.includes($(this).index())) {
-			$(this).hide();
-		}
-	}));
+				console.log($(this).parent().id + ' - ' + $(this).index() + ' - ' + width);
+			}
+		});
+
+		$($(object).find('td').each(function() {
+			if (!calculatedColumns.includes($(this).index())) {
+				$(this).hide();
+			}
+		}));
+	}
 }
 
 function tuneFilter(object, width) {
