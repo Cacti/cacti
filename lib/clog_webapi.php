@@ -211,7 +211,7 @@ function clog_view_logfile() {
 
 	set_page_refresh($refresh);
 
-	general_header();
+	top_header(true);
 
 	if ($clogAdmin && isset_request_var('purge')) {
 		form_start('clog.php');

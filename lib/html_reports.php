@@ -484,7 +484,7 @@ function reports_form_actions() {
 		}
 	}
 
-	general_header();
+	top_header(true);
 
 	form_start(get_reports_page(), 'report');
 
