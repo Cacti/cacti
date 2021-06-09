@@ -149,9 +149,9 @@ Enterprise Networks and Data Centers.
 Cacti should be able to run on any Linux, UNIX, or Windows based operating
 system with the following requirements:
 
-- PHP 5.4+
+- PHP 7.2.5+
 
-- MySQL 5.1+
+- MySQL 5.6+
 
 - RRDtool 1.3+, 1.5+ recommended
 
