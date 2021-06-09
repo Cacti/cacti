@@ -2014,8 +2014,8 @@ $settings = array(
 				18 => __('%d Processes', 18),
 				19 => __('%d Processes', 19),
 				20 => __('%d Processes', 20),
-				),
-			),
+			)
+		),
 		'boost_rrd_update_max_records' => array(
 			'friendly_name' => __('Maximum Records'),
 			'description'   => __('If the boost output table exceeds this size, in records, an update will take place.'),
