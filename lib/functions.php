@@ -1647,7 +1647,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		di.id, di.type_id, dtd.id AS data_template_data_id,
-		dtd.data_template_id, dtd.active, dtd.rrd_step
+		dtd.data_template_id, dtd.active, dtd.rrd_step, di.name
 		FROM data_template_data AS dtd
 		INNER JOIN data_input AS di
 		ON dtd.data_input_id=di.id
@@ -1660,12 +1660,14 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 		WHERE id = ?',
 		array($host_id));
 
+	$data_template_data_id = 0;
 	if (cacti_sizeof($data_input) && $data_input['active'] == 'on') {
+		$data_template_data_id = $data_input['data_template_data_id'];
 		/* we have to perform some additional sql queries if this is a 'query' */
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)){
-			$field = data_query_field_list($data_input['data_template_data_id']);
+			$field = data_query_field_list($data_template_data_id);
 
 			$params   = array();
 			$params[] = $data_input['data_template_id'];
@@ -1765,7 +1767,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					WHERE (type_code LIKE "snmp_%" OR type_code IN("hostname","host_id"))
 					AND did.data_template_data_id = ?
 					AND did.value != ""',
-					array($data_input['data_template_data_id'])),
+					array($data_template_data_id)),
 				'type_code', 'value'
 			);
 
@@ -1776,9 +1778,8 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					ON dif.id = did.data_input_field_id
 					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
 					AND did.data_template_data_id = ?
-					AND data_template_data_id = ?
 					AND did.value != ""',
-					array($data_input['data_template_data_id'], $data_input['data_template_data_id'])),
+					array($data_template_data_id)),
 				'type_code', 'value'
 			);
 
@@ -1821,7 +1822,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					ON dif.id=did.data_input_field_id
 					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
 					AND did.data_template_data_id = ?
-					AND did.value != ""', array($data_input['data_template_data_id'])),
+					AND did.value != ""', array($data_template_data_id)),
 				'type_code', 'value'
 			);
 
@@ -1832,8 +1833,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					ON dif.id=did.data_input_field_id
 					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
 					AND did.data_template_data_id = ?
-					AND data_template_data_id = ?
-					AND did.value != ""', array($data_template_id, $data_template_id)),
+					AND did.value != ""', array($data_template_data_id)),
 				'type_code', 'value'
 			);
 
@@ -1891,7 +1891,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					ON dif.id=did.data_input_field_id
 					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
 					AND did.data_template_data_id = ?
-					AND did.value != ""', array($data_input['data_template_data_id'])),
+					AND did.value != ""', array($data_template_data_id)),
 				'type_code', 'value'
 			);
 
@@ -1901,9 +1901,8 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					LEFT JOIN data_input_data AS did
 					ON dif.id=did.data_input_field_id
 					WHERE (type_code LIKE "snmp_%" OR type_code="hostname")
-					AND data_template_data_id = ?
 					AND did.data_template_data_id = ?
-					AND did.value != ""', array($data_template_id, $data_template_id)),
+					AND did.value != ""', array($data_template_data_id)),
 				'type_code', 'value'
 			);
 

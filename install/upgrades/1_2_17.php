@@ -174,6 +174,9 @@ function database_fix_mediumint_columns() {
 		$columns = array();
 
 		if (!array_key_exists($table, $tables)) {
+			$i   = 0;
+			$sql = 'ALTER TABLE ' . $table;
+
 			$columns = array_rekey(
 				db_fetch_assoc("SHOW COLUMNS FROM " . $table),
 					'Field', array('Type', 'Null', 'Key', 'Default', 'Extra')
@@ -199,9 +202,13 @@ function database_fix_mediumint_columns() {
 						}
 					}
 
-					db_install_execute($sql);
-					$total++;
+					$i++;
 				}
+			}
+
+			if ($i > 0) {
+				db_install_execute($sql);
+				$total++;
 			}
 		}
 	}
