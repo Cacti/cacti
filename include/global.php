@@ -31,7 +31,7 @@
 */
 
 function die_global($message) {
-	if (!defined(CACTI_CLI_ONLY)) {
+	if (!defined('CACTI_CLI_ONLY')) {
 		$html_file = __DIR__.'/../layout/die.html.twig';
 		if (file_exists($html_file)) {
 			$html = file_get_contents($html_file);
@@ -40,12 +40,12 @@ function die_global($message) {
 		}
 		$message = str_replace("{{ message }}", htmlspecialchars($message), $html);
 	} else {
-		$message = "ERROR - Failed to start cacti: " . preg_replace('/[^a-zA-Z0-9\s]/', '', strip_tags(html_entity_decode($message)));
+		$message = "ERROR - Failed to start cacti:\n\n" . preg_replace('/[^a-zA-Z0-9\s]/', '', strip_tags(html_entity_decode($message))) . PHP_EOL;
 	}
 	die($message);
 }
 
-if (version_compare(PHP_VERSION, '7.2.5', '<')) {
+if (version_compare(PHP_VERSION, '8.2.5', '<')) {
 	die_global ('ERROR: PHP Version must be at least 7.2.5');
 }
 
