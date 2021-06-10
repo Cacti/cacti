@@ -30,6 +30,25 @@
 
 */
 
+function die_global($message) {
+	if (!defined(CACTI_CLI_ONLY)) {
+		$html_file = __DIR__.'/../layout/die.html.twig';
+		if (file_exists($html_file)) {
+			$html = file_get_contents($html_file);
+		} else {
+			$html = "<html><head><title>Error starting Cacti</title></head><body><h1>The Cacti Group</h1><p>We are sorry, but we are unable to start your instance of Cacti due to the following:</p><ul><li>{{ message }}</li></ul></body></html>";
+		}
+		$message = str_replace("{{ message }}", htmlspecialchars($message), $html);
+	} else {
+		$message = "ERROR - Failed to start cacti: " . preg_replace('/[^a-zA-Z0-9\s]/', '', strip_tags(html_entity_decode($message)));
+	}
+	die($message);
+}
+
+if (version_compare(PHP_VERSION, '7.2.5', '<')) {
+	die_global ('ERROR: PHP Version must be at least 7.2.5');
+}
+
 $config = array();
 
 /* this should be auto-detected, set it manually if needed */
@@ -71,12 +90,12 @@ if (!isset($resource_path)) {
 $cacti_version_file = dirname(__FILE__) . '/cacti_version';
 
 if (!file_exists($cacti_version_file)) {
-	die ('ERROR: failed to find cacti version file');
+	die_global ('ERROR: failed to find cacti version file');
 }
 
 $cacti_version = file_get_contents($cacti_version_file, false);
 if ($cacti_version === false) {
-	die ('ERROR: failed to load cacti version file');
+	die_global ('ERROR: failed to load cacti version file');
 }
 $cacti_version = trim($cacti_version);
 
@@ -89,7 +108,7 @@ define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_
 /* define if cacti is in CLI mode */
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
 if (defined('CACTI_CLI_ONLY') && !CACTI_CLI) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
+	die_global('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 // define documentation table of contents
@@ -140,13 +159,13 @@ $disable_log_rotation = false;
 /* Include configuration, or use the defaults */
 if (file_exists(dirname(__FILE__) . '/config.php')) {
 	if (!is_readable(dirname(__FILE__) . '/config.php')) {
-		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
+		die_global('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
 	}
 	include(dirname(__FILE__) . '/config.php');
 }
 
 if (isset($config['cacti_version'])) {
-	die('Invalid include/config.php file detected.' . PHP_EOL);
+	die_global('Invalid include/config.php file detected.' . PHP_EOL);
 	exit;
 }
 
@@ -191,7 +210,7 @@ foreach ($db_var_prefixes as $db_var_prefix) {
 }
 
 if (!empty($db_missing_vars)) {
-	die("config.php is $db_missing_vars" . PHP_EOL);
+	die_global("config.php is $db_missing_vars" . PHP_EOL);
 }
 
 if (empty($url_path)) {
@@ -344,7 +363,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 /* check cacti log is available */
 $log_filename = cacti_log_file();
 if (!is_resource_writable($log_filename)) {
-	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
+	die_global('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
 }
 
 if ($config['poller_id'] > 1) {
@@ -434,25 +453,6 @@ if ($config['is_web']) {
 	header('Cache-Control: max-age=31536000');
 
 	cacti_session_start();
-
-	/* we never run with magic quotes on */
-	if (version_compare(PHP_VERSION, '5.4', '<=')) {
-		if (get_magic_quotes_gpc()) {
-			$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-			foreach ($process as $key => $val) {
-				foreach ($val as $k => $v) {
-					unset($process[$key][$k]);
-					if (is_array($v)) {
-						$process[$key][stripslashes($k)] = $v;
-						$process[] = &$process[$key][stripslashes($k)];
-					} else {
-						$process[$key][stripslashes($k)] = stripslashes($v);
-					}
-				}
-			}
-			unset($process);
-		}
-	}
 
 	/* make sure to start only only Cacti session at a time */
 	if (!isset($_SESSION['cacti_cwd'])) {
