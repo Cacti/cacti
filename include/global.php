@@ -45,7 +45,7 @@ function die_global($message) {
 	die($message);
 }
 
-if (version_compare(PHP_VERSION, '8.2.5', '<')) {
+if (version_compare(PHP_VERSION, '7.2.5', '<')) {
 	die_global ('ERROR: PHP Version must be at least 7.2.5');
 }
 
