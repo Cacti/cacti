@@ -1691,6 +1691,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 }
 
 function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values) {
+
 	/* ================= input validation ================= */
 	input_validate_input_number($form_id1);
 	/* ==================================================== */
@@ -1719,7 +1720,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 	if ($form_type == 'cg') {
 		$snmp_query_array = array();
 
-		if (test_data_sources($graph_template_id, $host_id)) {
+		if (test_data_sources($graph_template_id, $host_id, 0, '', $values['cg'][$graph_template_id])) {
 			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
 
 			if ($return_array !== false) {

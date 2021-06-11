@@ -1790,9 +1790,9 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	}
 
 	/* in case no unique index is available, fallback to first field in XML */
-	if ($sort_cache['sort_field'] == '') {
+	if (empty($sort_cache['sort_field'])) {
 		$snmp_queries = get_data_query_array($data_query_id);
-
+		$sort_cache = array('sort_field' => '', 'title_format' => '');
 		if (cacti_sizeof($snmp_queries) && isset($snmp_queries['index_order'])) {
 			$i = explode(':', $snmp_queries['index_order']);
 			if (cacti_sizeof($i) > 0) {
