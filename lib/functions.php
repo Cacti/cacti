@@ -3513,7 +3513,7 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
  *
  * @return mixed (int) the next available sequence id
  */
-function get_sequence($id, $field, $table_name, $group_query) {
+function get_sequence(?int $id, string $field, string $table_name, string $group_query): int {
 	if (empty($id)) {
 		$data = db_fetch_row("SELECT max($field)+1 AS seq
 			FROM $table_name
@@ -4500,7 +4500,7 @@ function sanitize_cdef($cdef) {
  *
  * @return array      - the sanitized selected items array
  */
-function sanitize_unserialize_selected_items($items) {
+function sanitize_unserialize_selected_items(?string $items): array {
 	$return_items = false;
 	if (!empty($items) && is_string($items)) {
 		$unstripped = stripslashes($items);

@@ -230,8 +230,11 @@ if ($active_profiles != 1) {
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND (h.disabled = '' OR h.disabled IS NULL)
+		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		$sql_where1
 		AND pi.rrd_next_step <= 0
 		ORDER by pi.host_id",
@@ -241,8 +244,11 @@ if ($active_profiles != 1) {
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND (h.disabled = '' OR h.disabled IS NULL)
+		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		AND pi.action IN(?, ?)
 		$sql_where2
 		AND pi.rrd_next_step <= 0",
@@ -259,8 +265,11 @@ if ($active_profiles != 1) {
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND (h.disabled = '' OR h.disabled IS NULL)
+		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		$sql_where1
 		ORDER by pi.host_id",
 		$params1);
@@ -269,8 +278,11 @@ if ($active_profiles != 1) {
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND (h.disabled = '' OR h.disabled IS NULL)
+		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		AND pi.action IN(?, ?)
 		$sql_where2",
 		$params2);

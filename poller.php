@@ -390,14 +390,18 @@ while ($poller_runs_completed < $poller_runs) {
 		ON h.id = pi.host_id ' . $sql_where);
 
 	if ($poller_id == '1') {
-		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
-			FROM host
+		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' h.id
+			FROM host h
+			LEFT JOIN sites s
+			ON s.id = h.site_id
 			WHERE poller_id = ?
-			AND disabled = ""
-			AND deleted = ""
+			AND h.deleted=""
+			AND IFNULL(h.disabled,"") != "on"
+			AND IFNULL(s.disabled,"") != "on"
 			ORDER BY id',
 			array($poller_id));
 
+	if ($poller_id == '1') {
 		if (cacti_sizeof($polling_hosts)) {
 			$polling_hosts = array_merge(array(0 => array('id' => '0')), $polling_hosts);
 		} else {
@@ -406,9 +410,12 @@ while ($poller_runs_completed < $poller_runs) {
 	} else {
 		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM host
+			LEFT JOIN sites s
+			ON s.id = h.site_id
 			WHERE poller_id = ?
-			AND disabled = ""
-			AND deleted = ""
+			AND h.deleted=""
+			AND IFNULL(h.disabled,"") != "on"
+			AND IFNULL(s.disabled,"") != "on"
 			ORDER BY id',
 			array($poller_id));
 	}
@@ -422,8 +429,12 @@ while ($poller_runs_completed < $poller_runs) {
 		FROM poller_item AS pi
 		INNER JOIN host AS h
 		ON h.id = pi.host_id
-		WHERE pi.poller_id = ?
-		AND disabled = ""
+		LEFT JOIN sites s
+		ON s.id = h.site_id
+		WHERE poller_id = ?
+		AND h.deleted=""
+		AND IFNULL(h.disabled,"") != "on"
+		AND IFNULL(s.disabled,"") != "on"
 		GROUP BY action',
 		array($poller_id));
 

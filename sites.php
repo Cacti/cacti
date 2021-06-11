@@ -45,6 +45,14 @@ $fields_site_edit = array(
 		'default' => __('New Site'),
 		'max_length' => '100'
 	),
+	'disabled' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Disable Site'),
+		'description' => __('Check this box to disable all checks for hosts in this site.'),
+		'value' => '|arg1:disabled|',
+		'default' => '',
+		'form_id' => false
+		),
 	'spacer1' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Address Information'),
@@ -230,6 +238,7 @@ function form_save() {
 	if (isset_request_var('save_component_site')) {
 		$save['id']           = get_filter_request_var('id');
 		$save['name']         = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['disabled']     = form_input_validate(get_nfilter_request_var('disabled'), 'disabled', '(^on$)', false, 3);
 		$save['address1']     = form_input_validate(get_nfilter_request_var('address1'), 'address1', '', true, 3);
 		$save['address2']     = form_input_validate(get_nfilter_request_var('address2'), 'address2', '', true, 3);
 		$save['city']         = form_input_validate(get_nfilter_request_var('city'), 'city', '', true, 3);
@@ -593,12 +602,13 @@ function sites() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'    => array('display' => __('Site Name'), 'align' => 'left',  'sort' => 'ASC', 'tip' => __('The name of this Site.')),
-		'id'      => array('display' => __('ID'),        'align' => 'right', 'sort' => 'ASC', 'tip' => __('The unique id associated with this Site.')),
-		'hosts'   => array('display' => __('Devices'),   'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Devices associated with this Site.')),
-		'city'    => array('display' => __('City'),      'align' => 'left',  'sort' => 'DESC', 'tip' => __('The City associated with this Site.')),
-		'state'   => array('display' => __('State'),     'align' => 'left',  'sort' => 'DESC', 'tip' => __('The State associated with this Site.')),
-		'country' => array('display' => __('Country'),   'align' => 'left',  'sort' => 'DESC', 'tip' => __('The Country associated with this Site.')));
+		'name'     => array('display' => __('Site Name'), 'align' => 'left',   'sort' => 'ASC', 'tip' => __('The name of this Site.')),
+		'id'       => array('display' => __('ID'),        'align' => 'right',  'sort' => 'ASC', 'tip' => __('The unique id associated with this Site.')),
+		'disabled' => array('display' => __('Disabled'),  'align' => 'center', 'sort' => 'DESC', 'tip' => __('The state of this Site.')),
+		'hosts'    => array('display' => __('Devices'),   'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of Devices associated with this Site.')),
+		'city'     => array('display' => __('City'),      'align' => 'left',   'sort' => 'DESC', 'tip' => __('The City associated with this Site.')),
+		'state'    => array('display' => __('State'),     'align' => 'left',   'sort' => 'DESC', 'tip' => __('The State associated with this Site.')),
+		'country'  => array('display' => __('Country'),   'align' => 'left',   'sort' => 'DESC', 'tip' => __('The Country associated with this Site.')));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -609,6 +619,7 @@ function sites() {
 			form_alternate_row('line' . $site['id'], true);
 			form_selectable_cell(filter_value($site['name'], get_request_var('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
+			form_checkbox_cell("Site " . ($site['disabled'] == 'on' ? 'dis':'en') . "abled", $site['id'], false, $site['disabled'] == 'on');
 			form_selectable_cell('<a class="linkEditMain" href="' . $devices_url . '">' . number_format_i18n($site['hosts'], '-1') . '</a>', $site['id'], '', 'right');
 			form_selectable_ecell($site['city'], $site['id'], '', 'left');
 			form_selectable_ecell($site['state'], $site['id'], '', 'left');

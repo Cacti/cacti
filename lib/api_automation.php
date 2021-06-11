@@ -214,44 +214,45 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		$sql_where = "WHERE h.deleted = ''";
 	}
 
-	if (get_request_var('host_status') == '-1') {
+	$host_where_disabled = "(IFNULL(TRIM(s.disabled),'') == 'on' OR IFNULL(TRIM(h.disabled),'') == 'on')";
+	$host_where_status   = get_request_var('host_status');
+	if ($host_where_status == '-1') {
 		/* Show all items */
-	} elseif (get_request_var('host_status') == '-2') {
-		$sql_where .= ($sql_where != '' ? " AND h.disabled='on'" : "WHERE h.disabled='on'");
-	} elseif (get_request_var('host_status') == '-3') {
-		$sql_where .= ($sql_where != '' ? " AND h.disabled=''" : "WHERE h.disabled=''");
-	} elseif (get_request_var('host_status') == '-4') {
-		$sql_where .= ($sql_where != '' ? " AND (h.status!='3' or h.disabled='on')" : "WHERE (h.status!='3' or h.disabled='on')");
+	} elseif ($host_where_status == '-2') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . "($host_where_disabled)";
+	} elseif ($host_where_status == '-3') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . "NOT ($host_where_disabled)";
+	} elseif ($host_where_status == '-4') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . "(h.status!='3' OR $host_where_disabled)";
 	}else {
-		$sql_where .= ($sql_where != '' ? ' AND (h.status=' . get_request_var('host_status') . " AND h.disabled = '')" : "WHERE (h.status=" . get_request_var('host_status') . " AND h.disabled = '')");
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . "(h.status=$host_where_status AND NOT ($host_where_disabled))";
 	}
 
 	if (get_request_var('host_template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND h.host_template_id=0' : 'WHERE h.host_template_id=0');
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=0';
 	} elseif (!isempty_request_var('host_template_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND h.host_template_id=' . get_request_var('host_template_id') : 'WHERE h.host_template_id=' . get_request_var('host_template_id'));
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=' . get_request_var('host_template_id');
 	}
 
 	$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
 	$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
-	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description, h.disabled,
+	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description,
+		h.disabled AS disabled, s.disabled as site_disabled,
 		h.status, ht.name AS host_template_name
 		FROM host AS h
+		LEFT JOIN sites s
+		ON s.id = h.site_id
 		LEFT JOIN host_template AS ht
 		ON (h.host_template_id=ht.id) ';
 
 	$hosts = db_fetch_assoc($sql_query . 'WHERE h.deleted = ""');
 
 	/* get the WHERE clause for matching hosts */
-	if ($sql_where != '') {
-		$sql_filter = ' AND (' . build_matching_objects_filter($rule['id'], $rule_type) . ')';
-	} else {
-		$sql_filter = ' WHERE (' . build_matching_objects_filter($rule['id'], $rule_type) .')';
-	}
+	$sql_filter = ($sql_where != '' ? ' AND (' : ' WHERE (') . build_matching_objects_filter($rule['id'], $rule_type) . ')';
 
 	/* now we build up a new query for counting the rows */
 	$rows_query = $sql_query . $sql_where . $sql_filter;
@@ -296,7 +297,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 			form_alternate_row('line' . $host['host_id'], true);
 			form_selectable_cell(filter_value($host['description'], get_request_var('filterd'), 'host.php?action=edit&id=' . $host['host_id']), $host['host_id']);
 			form_selectable_cell(filter_value($host['hostname'], get_request_var('filterd')), $host['host_id']);
-			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['host_id']);
+			form_selectable_cell(get_colored_device_status((($host['disabled'] == 'on' || $host['site_disabled'] == 'on') ? true : false), $host['status']), $host['host_id']);
 			form_selectable_cell(filter_value($host['host_template_name'], get_request_var('filterd')), $host['host_id']);
 			form_selectable_cell(round(($host['host_id']), 2), $host['host_id']);
 			form_selectable_cell((isset($host_graphs[$host['host_id']]) ? $host_graphs[$host['host_id']] : 0), $host['host_id']);
@@ -511,21 +512,21 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE ') . ' gl.host_id=0';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE ') . ' gl.host_id=' . get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE ') . ' gtg.graph_template_id=0';
 	} elseif (!isempty_request_var('template_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') .' gtg.graph_template_id=' . get_request_var('template_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE ') .' gtg.graph_template_id=' . get_request_var('template_id');
 	}
 
 	/* get the WHERE clause for matching graphs */
-	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . build_matching_objects_filter($rule['id'], $rule_type);
+	$sql_where .= ($sql_where != '' ? ' AND ':' WHERE ') . build_matching_objects_filter($rule['id'], $rule_type);
 
 	$total_rows = db_fetch_cell("SELECT COUNT(gtg.id)
 		FROM graph_local AS gl
@@ -540,7 +541,8 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		$sql_where", '', false);
 
 	$sql = "SELECT h.id AS host_id, h.hostname, h.description,
-		h.disabled, h.status, ht.name AS host_template_name,
+		h.disabled AS disabled, s.disabled AS site_disabled,
+		h.status, ht.name AS host_template_name,
 		gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
 		gtg.title_cache, gt.name
 		FROM graph_local AS gl
@@ -550,6 +552,8 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		ON gl.graph_template_id=gt.id
 		LEFT JOIN host AS h
 		ON gl.host_id=h.id
+		LEFT JOIN sites AS s
+		ON h.site_id = s.id
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id=ht.id
 		$sql_where
@@ -589,7 +593,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 			form_selectable_cell(filter_value($graph['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $graph['host_id']), $graph['local_graph_id']);
 			form_selectable_cell(filter_value($graph['hostname'], get_request_var('filter')), $graph['local_graph_id']);
 			form_selectable_cell(filter_value($graph['host_template_name'], get_request_var('filter')), $graph['local_graph_id']);
-			form_selectable_cell(get_colored_device_status(($graph['disabled'] == 'on' ? true : false), $graph['status']), $graph['local_graph_id']);
+			form_selectable_cell(get_colored_device_status((($graph['disabled'] == 'on' || $graph['site_disabled'] == 'on') ? true : false), $graph['status']), $graph['local_graph_id']);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id']);
 			form_selectable_cell(filter_value($template_name, get_request_var('filter')), $graph['local_graph_id']);
@@ -1131,12 +1135,16 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	$leaf_type = db_fetch_cell('SELECT leaf_type FROM automation_tree_rules WHERE id=' . $rule_id);
 	if ($leaf_type == TREE_ITEM_TYPE_HOST) {
 		$sql_tables = 'FROM host AS h
+			LEFT JOIN sites s
+			ON h.site_id = s.id
 			LEFT JOIN host_template AS ht
 			ON (h.host_template_id=ht.id)';
 
 		$sql_where = 'WHERE h.deleted = ""';
 	} elseif ($leaf_type == TREE_ITEM_TYPE_GRAPH) {
 		$sql_tables = 'FROM host AS h
+			LEFT JOIN sites s
+			ON h.site_id = s.id
 			LEFT JOIN host_template AS ht
 			ON h.host_template_id=ht.id
 			LEFT JOIN graph_local AS gl
@@ -1157,16 +1165,18 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			OR ht.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
-	if (get_request_var('host_status') == '-1') {
+	$host_where_disabled = "(IFNULL(TRIM(s.disabled),'') == 'on' || IFNULL(TRIM(h.disabled),'') == 'on')";
+	$host_where_status = get_request_var('host_status');
+	if ($host_where_status == '-1') {
 		/* Show all items */
-	} elseif (get_request_var('host_status') == '-2') {
-		$sql_where .= " AND h.disabled='on'";
-	} elseif (get_request_var('host_status') == '-3') {
-		$sql_where .= " AND h.disabled=''";
-	} elseif (get_request_var('host_status') == '-4') {
-		$sql_where .= " AND (h.status!='3' or h.disabled='on')";
+	} elseif ($host_where_status == '-2') {
+		$sql_where .= " AND $host_where_disabled";
+	} elseif ($host_where_status == '-3') {
+		$sql_where .= " AND NOT $host_where_disabled";
+	} elseif ($host_where_status == '-4') {
+		$sql_where .= " AND (h.status!='3' OR $host_where_disabled";
 	}else {
-		$sql_where .= ' AND (h.status=' . get_request_var('host_status') . " AND h.disabled = '')";
+		$sql_where .= " AND (h.status=$host_where_status AND NOT $host_where_disabled)";
 	}
 
 	if (get_request_var('host_template_id') == '-1') {
@@ -1185,7 +1195,8 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	/* now we build up a new query for counting the rows */
 	$rows_query = "SELECT h.id AS host_id, h.hostname, h.description,
-		h.disabled, h.status, ht.name AS host_template_name, $sql_field
+		h.disabled AS disabled, s.disabled AS site_disabled,
+		h.status, ht.name AS host_template_name, $sql_field
 		$sql_tables
 		$sql_where AND ($sql_filter)";
 
@@ -1578,7 +1589,9 @@ function build_data_query_sql($rule) {
 	cacti_log($function . ' called: ' . json_encode($rule), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	$field_names = get_field_names($rule['snmp_query_id']);
-	$sql_query = 'SELECT h.hostname AS automation_host, host_id, h.disabled, h.status, snmp_query_id, snmp_index ';
+	$sql_query = "SELECT h.hostname AS automation_host, host_id,
+		h.disabled AS disabled, s.disabled AS site_disabled,
+		h.status, snmp_query_id, snmp_index ";
 	$i = 0;
 
 	if (cacti_sizeof($field_names) > 0) {
@@ -1596,6 +1609,8 @@ function build_data_query_sql($rule) {
 	$sql_query .= ' FROM host_snmp_cache AS hsc
 		LEFT JOIN host AS h
 		ON (hsc.host_id=h.id)
+		LEFT JOIN sites as s
+		ON (s.id = h.site_id)
 		LEFT JOIN host_template AS ht
 		ON (h.host_template_id=ht.id)
 		WHERE snmp_query_id=' . $rule['snmp_query_id'] . "
@@ -1734,8 +1749,11 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
 	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description,
-		h.disabled, h.status, ht.name AS host_template_name
+		h.disabled AS disabled, s.disabled AS site_disabled,
+		h.status, ht.name AS host_template_name
 		FROM host AS h
+		LEFT JOIN sites AS s
+		ON (h.site_id = s.id)
 		LEFT JOIN host_template AS ht
 		ON (h.host_template_id=ht.id) ';
 
@@ -1764,7 +1782,8 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description, h.disabled,
+	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description,
+		h.disabled, s.disabled AS site_disabled,
 		h.status, ht.name AS host_template_name, gtg.id,
 		gtg.local_graph_id, gtg.height, gtg.width, gtg.title_cache, gt.name
 		FROM graph_local AS gl
@@ -1773,6 +1792,8 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 		ON (gl.graph_template_id=gt.id)
 		LEFT JOIN host AS h
 		ON (gl.host_id=h.id)
+		LEFT JOIN sites AS s
+		ON (h.site_id = s.id)
 		LEFT JOIN host_template AS ht
 		ON (h.host_template_id=ht.id)';
 
@@ -2118,7 +2139,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 		$header_label = __esc('Rule Item [new rule item for %s: %s]', $title, $automation_rule['name']);
 
 		$automation_item = array();
-		$automation_item['sequence'] = get_sequence('', 'sequence', $item_table, 'rule_id=' . $rule_id . $sql_and);
+		$automation_item['sequence'] = get_sequence(0, 'sequence', $item_table, 'rule_id=' . $rule_id . $sql_and);
 	}
 
 	form_start($module, 'form_automation_global_item_edit');

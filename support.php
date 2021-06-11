@@ -62,7 +62,7 @@ function support_view_tech() {
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
 	$current_tab = get_nfilter_request_var('tab');
 
-	$page = 'utilities.php?action=view_tech&header=false&tab=' . $current_tab;
+	$page = 'support.php?tab=' . $current_tab;
 
 	$refresh = array(
 		'seconds' => 999999,
@@ -85,8 +85,8 @@ function support_view_tech() {
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab pic " . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 				" href='" . html_escape($config['url_path'] .
-				'utilities.php?action=view_tech' .
-				'&tab=' . $tab_short_name) .
+				'support.php?' .
+				'tab=' . $tab_short_name) .
 				"'>" . $tabs[$tab_short_name] . "</a></li>";
 
 			$i++;
@@ -835,11 +835,14 @@ function support_view_tech() {
 
 		form_end_row();
 	} elseif (get_request_var('tab') == 'poller') {
-		$problematic = db_fetch_assoc('SELECT id, description, polling_time, avg_time
-			FROM host
-			WHERE disabled = ""
-			ORDER BY polling_time
-			DESC LIMIT 20');
+		$problematic = db_fetch_assoc('SELECT h.id, h.description, h.polling_time, h.avg_time
+			FROM host h
+			LEFT JOIN sites s
+			ON s.id = h.site_id
+			WHERE IFNULL(h.disabled,"") != "on"
+			AND IFNULL(s.disabled,"") != "on"
+			ORDER BY polling_time DESC
+			LIMIT 20');
 
 		html_section_header(__('Worst 20 polling time hosts'), 2);
 
@@ -876,9 +879,12 @@ function support_view_tech() {
 
 		form_end_row();
 
-		$problematic = db_fetch_assoc('SELECT id, description, failed_polls/total_polls AS ratio
-			FROM host
-			WHERE disabled = ""
+		$problematic = db_fetch_assoc('SELECT h.id, h.description, h.failed_polls/h.total_polls AS ratio
+			FROM host h
+			LEFT JOIN sites s
+			ON h.site_id = s.id
+			WHERE IFNULL(h.disabled,"") != "on"
+			AND IFNULL(s.disabled,"") != "on"
 			ORDER BY ratio DESC
 			LIMIT 20');
 

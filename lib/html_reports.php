@@ -1002,7 +1002,17 @@ function reports_item_edit() {
 			'description' => __('Select a Device Template to use to filter for Devices or Graphs.'),
 			'value' => '|arg1:host_template_id|',
 			'on_change' => 'changeDeviceTemplate()',
-			'sql' => "SELECT -1 AS id, '" . __('Any') . "' AS name UNION SELECT 0 AS id, '" . __('None') . "' AS name UNION (SELECT DISTINCT ht.id, ht.name FROM host_template AS ht INNER JOIN host AS h ON h.host_template_id=ht.id WHERE h.deleted = '' AND h.disabled = '' ORDER BY name)"
+			'sql' => "SELECT -1 AS id, '" . __('Any') . "' AS name UNION SELECT 0 AS id, '" . __('None') . "' AS name UNION (
+			'	SELECT DISTINCT ht.id, ht.name
+				FROM host_template AS ht
+				INNER JOIN host AS h
+				ON h.host_template_id=ht.id
+				LEFT JOIN sites AS s
+				ON h.site_id = s.id
+				WHERE h.deleted = ''
+				AND IFNULL(TRIM(s.disabled),'') != 'on'
+				AND IFNULL(TRIM(h.disabled),'') != 'on'
+				ORDER BY name)",
 		),
 		'host_id' => array(
 			'friendly_name' => __('Device'),

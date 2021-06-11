@@ -1432,16 +1432,18 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
 	}
 
-	if (get_request_var('host_status') == '-1') {
+	$host_where_disabled = "(IFNULL(TRIM(s.disabled), '') = 'on' OR IFNULL(TRIM(host.disabled),'') = 'on')";
+	$host_where_status   = get_request_var('host_status');
+	if ($host_where_status == '-1') {
 		/* Show all items */
-	} elseif (get_request_var('host_status') == '-2') {
-		$sql_where .= ($sql_where != '' ? " AND host.disabled='on'" : " WHERE host.disabled='on'");
-	} elseif (get_request_var('host_status') == '-3') {
-		$sql_where .= ($sql_where != '' ? " AND host.disabled=''" : " WHERE host.disabled=''");
-	} elseif (get_request_var('host_status') == '-4') {
-		$sql_where .= ($sql_where != '' ? " AND (host.status!='3' OR host.disabled='on')" : " WHERE (host.status!='3' OR host.disabled='on')");
+	} elseif ($host_where_status == '-2') {
+		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "$host_where_disabled";
+	} elseif ($host_where_status == '-3') {
+		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "NOT $host_where_disabled";
+	} elseif ($host_where_status == '-4') {
+		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "(host.status!='3' OR $host_where_disabled)";
 	} else {
-		$sql_where .= ($sql_where != '' ? ' AND (host.status=' . get_request_var('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var('host_status') . " AND host.disabled = '')");
+		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "(host.status=$host_where_status AND NOT $host_where_disabled)";
 	}
 
 	if (get_request_var('host_template_id') == '-1') {
@@ -1468,7 +1470,12 @@ function get_device_records(&$total_rows, $rows) {
 
 	$sql_where = api_plugin_hook_function('device_sql_where', $sql_where);
 
-	$sql = "SELECT COUNT(host.id) FROM host $sql_where";
+	$sql = "SELECT
+		COUNT(host.id)
+		FROM host
+		LEFT JOIN sites s
+		ON s.id = host.site_id
+		$sql_where";
 
 	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'device');
 
@@ -1485,6 +1492,8 @@ function get_device_records(&$total_rows, $rows) {
 			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance/100, UNIX_TIMESTAMP()
 		))))) AS unsigned) AS instate
 		FROM host
+		LEFT JOIN sites AS s
+		ON host.site_id = s.id
 		LEFT JOIN (SELECT host_id, COUNT(*) AS graphs FROM graph_local GROUP BY host_id) AS gl
 		ON host.id=gl.host_id
 		LEFT JOIN (SELECT host_id, COUNT(*) AS data_sources FROM data_local GROUP BY host_id) AS dl

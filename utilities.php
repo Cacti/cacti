@@ -1462,15 +1462,15 @@ function utilities() {
 
 	$utilities[__('Technical Support')] = array(
 		__('Technical Support') => array(
-			'link'  => 'support.php',
+			'link'        => 'support.php?tab=summary',
 			'description' => __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.')
 		),
 		__('Log Administration') => array(
-			'link'  => 'utilities.php?action=view_logfile',
+			'link      '  => 'utilities.php?action=view_logfile',
 			'description' => __('The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.')
 		),
 		__('View User Log') => array(
-			'link'  => 'utilities.php?action=view_user_log',
+			'link'        => 'utilities.php?action=view_user_log',
 			'description' => __('Allows Administrators to browse the user log.  Administrators can filter and export the log as well.')
 		)
 	);

@@ -124,7 +124,7 @@ if (strtolower($host_id) == 'all') {
 if (strtolower($query_id) == 'all') {
 	/* do nothing */
 } elseif (is_numeric($query_id) && $query_id > 0) {
-	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' snmp_query_id = ?';
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' hsq.snmp_query_id = ?';
 	$params[] = $query_id;
 } else {
 	print 'ERROR: You must specify either a query_id or \'all\' to proceed.' . PHP_EOL;
@@ -134,17 +134,19 @@ if (strtolower($query_id) == 'all') {
 }
 
 /* allow for additional filtering on host description */
-$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' disabled = ""';
+$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
 
 if ($host_descr != '') {
-	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' description LIKE ?';
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' h.description LIKE ?';
 	$params[] = '%' . $host_descr . '%';
 }
 
-$data_queries = db_fetch_assoc_prepared("SELECT description, hostname, host_id, snmp_query_id
-	FROM host_snmp_query
-	INNER JOIN host
-	ON host.id = host_snmp_query.host_id
+$data_queries = db_fetch_assoc_prepared("SELECT h.description, h.hostname, h.host_id, hsq.snmp_query_id
+	FROM host_snmp_query hsq
+	INNER JOIN host h
+	ON h.id = hsq.host_id
+	LEFT JOIN sites s
+	ON s.id = h.site_id
 	$sql_where",
 	$params);
 

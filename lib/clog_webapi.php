@@ -305,9 +305,12 @@ function clog_view_logfile() {
 
 	$linecolor = false;
 
-	$hosts = db_fetch_assoc('SELECT id, description
-		FROM host
-		WHERE disabled = ""
+	$hosts = db_fetch_assoc('SELECT h.id, h.description
+		FROM host h
+		LEFT JOIN sites s
+		ON s.id = h.site_id
+		WHERE IFNULL(TRIM(s.disabled),"") != "on"
+		AND IFNULL(TRIM(h.disabled),"") != "on"
 		AND deleted = ""');
 
 	$hostDescriptions = array();
