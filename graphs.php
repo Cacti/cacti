@@ -1547,9 +1547,12 @@ function graph_edit() {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a><br><?php
 						}
 						if ($locked) {
-							?><span class='linkMarker'>*</span><a href='#' class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></a><?php
+							?><span class='linkMarker'>*</span><a href='#' class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></a><br/><?php
 						} else {
-							?><span class='linkMarker'>*</span><a href='#' class='hyperLink' id='lockid'><?php print __('Lock Graph.');?></a><?php
+							?><span class='linkMarker'>*</span><a href='#' class='hyperLink' id='lockid'><?php print __('Lock Graph.');?></a><br/><?php
+						}
+						if (!isempty_request_var('id')) {
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graph.php?rra_id=0&local_graph_id=' . get_request_var('id'));?>'><?php print __('View Timespans.');?></a><?php
 						}
 					?>
 				</td>
