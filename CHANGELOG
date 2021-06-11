@@ -34,6 +34,7 @@ Cacti CHANGELOG
 -feature#3845: Allow non-standard Remote Agent port to be used
 -feature#3943: Add hooks for plugins to show customize graph source and customize template url (List View)
 -feature#4296: Add hyperlink from graph edit page to graph-view
+-feature#4300: Allow GPrint/CDef/VDef to be visibile in graph template item lists
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder

@@ -1641,7 +1641,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 	/* fetch graph items */
 	if ($_graph_id == 0) {
-		$item_list_where = "gti.local_graph_id=0 AND graph_template_id=$_graph_template_id ";
+		$item_list_where = "gti.local_graph_id=0 AND gti.graph_template_id=$_graph_template_id ";
 	}
 
 	if ($_graph_template_id == 0) {
@@ -1650,10 +1650,17 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 	$item_list = db_fetch_assoc("SELECT
 		gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id,
-		gti.consolidation_function_id, cdef.name as cdef_name, colors.hex
+		gti.consolidation_function_id, cdef.name as cdef_name, colors.hex,
+		vdef.name AS vdef_name, gtgp.name AS gprint_name
 		FROM graph_templates_item AS gti
-		LEFT JOIN cdef ON (gti.cdef_id=cdef.id)
-		LEFT JOIN colors ON (gti.color_id=colors.id)
+		LEFT JOIN graph_templates_gprint AS gtgp
+		ON gti.gprint_id=gtgp.id
+		LEFT JOIN cdef
+		ON gti.cdef_id=cdef.id
+		LEFT JOIN vdef
+		ON gti.vdef_id=vdef.id
+		LEFT JOIN colors
+		ON gti.color_id=colors.id
 		WHERE $item_list_where
 		ORDER BY gti.sequence");
 
@@ -1712,6 +1719,9 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	DrawMatrixHeaderItem(__('Data Source'), '',1);
 	DrawMatrixHeaderItem(__('Graph Item Type'), '', 1);
 	DrawMatrixHeaderItem(__('CF Type'), '', 1);
+	DrawMatrixHeaderItem(__('GPrint'), '', 1);
+	DrawMatrixHeaderItem(__('CDEF'), '', 1);
+	DrawMatrixHeaderItem(__('VDEF'), '', 1);
 	DrawMatrixHeaderItem(__('Item Color'), '', 2);
 	DrawMatrixHeaderItem(__('Color Template'), '', 1);
 	DrawMatrixHeaderItem(__('Skip'), '', 1);
@@ -1818,6 +1828,15 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 			/* column 'CF Type' */
 			print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . "</td>";
+
+			/* column 'GPrint' */
+			print "<td style='$this_row_style'>" . $item['gprint_name'] . "</td>";
+
+			/* column 'CDEF' */
+			print "<td style='$this_row_style'>" . $item['cdef_name'] . "</td>";
+
+			/* column 'CDEF' */
+			print "<td style='$this_row_style'>" . $item['vdef_name'] . "</td>";
 
 			/* column 'Item Color' */
 			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . ">&nbsp;</td>";
