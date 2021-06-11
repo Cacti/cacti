@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1523: Value above RRD maximum value
 -feature#2437: Create system-wide Proxy settings for plugins
+-feature#2439: Allow CDEF to be used as a filter for Graph/Graph Templates
 -feature#2474: Enable better version reporting for GitHub/Source/Package editions
 -feature#2550: Enable use of authenticator codes for Two-Factor Authentication
 -feature#2607: Allow adding sites from command line
