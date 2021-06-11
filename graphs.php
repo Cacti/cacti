@@ -2122,7 +2122,7 @@ function graph_management() {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('host_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ISNULL(gl.host_id,0)=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' IFNULL(gl.host_id,0)=0';
 		$sql_where2 .= ' AND gl.host_id=0';
 	} elseif (!isempty_request_var('host_id')) {
 		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
@@ -2132,7 +2132,7 @@ function graph_management() {
 	if (get_request_var('vdef_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('vdef_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ISNULL(gti.vdef_id,0)=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' IFNULL(gti.vdef_id,0)=0';
 		$sql_where2 .= ' AND gti.vdef_id=0';
 	} elseif (!isempty_request_var('vdef_id')) {
 		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gti.vdef_id=' . get_request_var('vdef_id');
@@ -2142,7 +2142,7 @@ function graph_management() {
 	if (get_request_var('cdef_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('cdef_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ISNULL(gti.cdef_id,0)=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' IFNULL(gti.cdef_id,0)=0';
 		$sql_where2 .= ' AND gti.cdef_id=0';
 	} elseif (!isempty_request_var('cdef_id')) {
 		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gti.cdef_id=' . get_request_var('cdef_id');
@@ -2152,7 +2152,7 @@ function graph_management() {
 	if (get_request_var('site_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('site_id')) {
-		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ISNULL(h.site_id,0)=0';
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' IFNULL(h.site_id,0)=0';
 		$sql_where2 .= ' AND h.site_id=0';
 	} elseif (!isempty_request_var('site_id')) {
 		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.site_id=' . get_request_var('site_id');
@@ -2162,7 +2162,7 @@ function graph_management() {
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ISNULL(gtg.graph_template_id,0) = 0';
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' IFNULL(gtg.graph_template_id,0) = 0';
 		$sql_where2 .= ' AND gtg.graph_template_id = 0';
 	} elseif (!isempty_request_var('template_id')) {
 		$parts = explode('_', get_request_var('template_id'));
