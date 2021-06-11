@@ -42,7 +42,7 @@ function title_trim(string $text, int $max_length): string {
    @arg $filter - the search term to filter for
    @arg $href - the href if you wish to have an anchor returned
    @returns - the filtered string */
-function filter_value(string $value, string $filter, string $href = ''): string {
+function filter_value(?string $value, string $filter, string $href = ''): string {
 	static $charset;
 
 	if ($charset == '') {
@@ -53,7 +53,7 @@ function filter_value(string $value, string $filter, string $href = ''): string 
 		$charset = 'UTF-8';
 	}
 
-	$value =  htmlspecialchars($value, ENT_QUOTES, $charset, false);
+	$value = ($value == null ? '' : htmlspecialchars($value, ENT_QUOTES, $charset, false));
 
 	if ($filter != '') {
 		$value = preg_replace('#(' . preg_quote($filter) . ')#i', "<span class='filteredValue'>\\1</span>", $value);
