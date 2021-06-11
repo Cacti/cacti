@@ -1,3 +1,4 @@
+
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -567,13 +568,23 @@ function item() {
 		$template_item_list = db_fetch_assoc_prepared('SELECT
 			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id,
 			gti.consolidation_function_id, dtr.data_source_name, gti.alpha,
-			cdef.name AS cdef_name, colors.hex
+			cdef.name AS cdef_name, vdef.name AS vdef_name, colors.hex,
+			gtgp.name AS gprint_name
 			FROM graph_templates_item AS gti
-			LEFT JOIN data_template_rrd AS dtr ON (gti.task_item_id=dtr.id)
-			LEFT JOIN data_local AS dl ON (dtr.local_data_id=dl.id)
-			LEFT JOIN data_template_data AS dtd ON (dl.id=dtd.local_data_id)
-			LEFT JOIN cdef ON (gti.cdef_id=cdef.id)
-			LEFT JOIN colors ON (gti.color_id=colors.id)
+			LEFT JOIN data_template_rrd AS dtr
+			ON gti.task_item_id=dtr.id
+			LEFT JOIN data_local AS dl
+			ON dtr.local_data_id=dl.id
+			LEFT JOIN data_template_data AS dtd
+			ON dl.id=dtd.local_data_id
+			LEFT JOIN cdef
+			ON gti.cdef_id=cdef.id
+			LEFT JOIN vdef
+			ON gti.vdef_id=vdef.id
+			LEFT JOIN graph_templates_gprint gtgp
+			ON gti.gprint_id=gtgp.id
+			LEFT JOIN colors
+			ON gti.color_id=colors.id
 			WHERE gti.local_graph_id = ?
 			ORDER BY gti.sequence',
 			array(get_request_var('id')));
