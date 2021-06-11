@@ -2748,7 +2748,7 @@ function get_item(string $tblname, string $field, int $startid, string$lmt_query
    @arg $table_name - the table name that contains the target id
    @arg $group_query - an SQL "where" clause to limit the query
    @returns - (int) the next available sequence id */
-function get_sequence(int $id, string $field, string $table_name, string $group_query): int {
+function get_sequence(?int $id, string $field, string $table_name, string $group_query): int {
 	if (empty($id)) {
 		$data = db_fetch_row("SELECT max($field)+1 AS seq
 			FROM $table_name
@@ -3636,7 +3636,7 @@ function sanitize_cdef(string $cdef): string {
  * @arg array $items   - an array of serialized items from a post
  * @returns array      - the sanitized selected items array
  */
-function sanitize_unserialize_selected_items(array $items): array {
+function sanitize_unserialize_selected_items(?string $items): array {
 	$return_items = false;
 	if (!empty($items) && is_string($items)) {
 		$unstripped = stripslashes($items);

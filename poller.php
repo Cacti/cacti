@@ -361,28 +361,23 @@ while ($poller_runs_completed < $poller_runs) {
 	$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 		FROM poller_item ' . $sql_where);
 
-	if ($poller_id == '1') {
-		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
-			FROM host
-			WHERE poller_id = ?
-			AND disabled=""
-			AND deleted=""
-			ORDER BY id',
-			array($poller_id));
+	$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' h.id
+		FROM host h
+		LEFT JOIN sites s
+		ON s.id = h.site_id
+		WHERE poller_id = ?
+		AND h.deleted=""
+		AND IFNULL(h.disabled,"") != "on"
+		AND IFNULL(s.disabled,"") != "on"
+		ORDER BY id',
+		array($poller_id));
 
+	if ($poller_id == '1') {
 		if (cacti_sizeof($polling_hosts)) {
 			$polling_hosts = array_merge(array(0 => array('id' => '0')), $polling_hosts);
 		} else {
 			$polling_hosts = array(0 => array('id' => '0'));
 		}
-	} else {
-		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
-			FROM host
-			WHERE poller_id = ?
-			AND disabled=""
-			AND deleted=""
-			ORDER BY id',
-			array($poller_id));
 	}
 
 	$hosts_per_process = 0;

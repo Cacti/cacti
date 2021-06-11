@@ -34,7 +34,7 @@ function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_d
 
 /* api_device_remove - removes a device
    @arg $device_id - the id of the device to remove */
-function api_device_remove($device_id) {
+function api_device_remove(int $device_id) {
 	global $config;
 
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
@@ -896,7 +896,7 @@ function api_device_quick_save(&$save) {
 /* api_device_update_host_template - changes the host template of a host
    @arg $host_id - the id of the device which contains the mapping
    @arg $host_template_id - the id of the host template alter the device to */
-function api_device_update_host_template($host_id, $host_template_id) {
+function api_device_update_host_template(int $host_id, int $host_template_id) {
 	global $config;
 
 	db_execute_prepared('UPDATE host

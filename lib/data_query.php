@@ -35,14 +35,17 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 	}
 
 	/* don't run/rerun the query if the host is down, or disabled */
-	$status = db_fetch_row_prepared('SELECT status, disabled, poller_id
-		FROM host
-		WHERE id = ?',
+	$status = db_fetch_row_prepared('SELECT h.status, h.poller_id,
+		h.disabled, s.disabled AS site_disabled
+		FROM host h
+		LEFT JOIN sites s
+		ON h.site_id = s.id
+		WHERE h.id = ?',
 		array($host_id));
 
 	if (!cacti_sizeof($status)) {
 		return false;
-	} elseif ($status['status'] == HOST_DOWN || $status['disabled'] == 'on') {
+	} elseif ($status['status'] == HOST_DOWN || $status['disabled'] == 'on' || $status['site_disabled'] == 'on') {
 		return true;
 	}
 

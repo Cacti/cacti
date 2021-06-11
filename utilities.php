@@ -1436,7 +1436,7 @@ function utilities() {
 
 	$utilities[__('Technical Support')] = array(
 		__('Technical Support') => array(
-			'link'        => 'utilities.php?action=view_tech&tab=summary',
+			'link'        => 'support.php?tab=summary',
 			'description' => __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.')
 		),
 		__('Log Administration') => array(
