@@ -484,8 +484,8 @@ function report_audit_results($output = true) {
 								}
 
 								/* work around MariaDB compatibility issue */
-								$c[$col]     = str_replace($c[$col], 'current_timestamp()', 'CURRENT_TIMESTAMP');
-								$dbc[$dbcol] = str_replace($dbc[$dbcol], 'current_timestamp()', 'CURRENT_TIMESTAMP');
+								$c[$col]     = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $c[$col]);
+								$dbc[$dbcol] = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP',$dbc[$dbcol]);
 
 								if ($c[$col] != $dbc[$dbcol] && $text != 'mediumtext') {
 									if ($output) {
