@@ -68,23 +68,8 @@ Error codes:
 function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port = '', $port_ssl = '', $version = '',
 	$encryption = '', $referrals = '', $group_require = '', $group_dn = '', $group_attrib = '', $group_member_type = '') {
 
-	$ldap = new Ldap;
-
-	if (!empty($username))          $ldap->username          = $username;
-	if (!empty($password))          $ldap->password          = $password;
-	if (!empty($dn))                $ldap->dn                = $dn;
-	if (!empty($host))              $ldap->host              = $host;
-	if (!empty($port))              $ldap->port              = $port;
-	if (!empty($port_ssl))          $ldap->port_ssl          = $port_ssl;
-	if (!empty($version))           $ldap->version           = $version;
-	if (!empty($encryption))        $ldap->encryption        = $encryption;
-	if (!empty($referrals))         $ldap->referrals         = $referrals;
-	if (!empty($group_require))     $ldap->group_require     = $group_require;
-	if (!empty($group_dn))          $ldap->group_dn          = $group_dn;
-	if (!empty($group_attrib))      $ldap->group_attrib      = $group_attrib;
-	if (!empty($group_member_type)) $ldap->group_member_type = $group_member_type;
-
-	return $ldap->Authenticate();
+	return Ldap::Auth($username, $password, $dn, $host, $port, $port_ssl, $version,
+		$encryption, $referrals, $group_require, $group_dn, $group_attrib, $group_member_type);
 }
 
 /* cacti_ldap_search_dn
@@ -133,23 +118,8 @@ Error codes:
 function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
 
-	$ldap = new Ldap;
-
-	if (!empty($username))          $ldap->username          = $username;
-	if (!empty($dn))                $ldap->dn                = $dn;
-	if (!empty($host))              $ldap->host              = $host;
-	if (!empty($port))              $ldap->port              = $port;
-	if (!empty($port_ssl))          $ldap->port_ssl          = $port_ssl;
-	if (!empty($version))           $ldap->version           = $version;
-	if (!empty($encryption))        $ldap->encryption        = $encryption;
-	if (!empty($referrals))         $ldap->referrals         = $referrals;
-	if (!empty($mode))              $ldap->mode              = $mode;
-	if (!empty($search_base))       $ldap->search_base       = $search_base;
-	if (!empty($search_filter))     $ldap->search_filter     = $search_filter;
-	if (!empty($specific_dn))       $ldap->specific_dn       = $specific_dn;
-	if (!empty($specific_password)) $ldap->specific_password = $specific_password;
-
-	return $ldap->Search();
+	return Ldap::SearchDN($username, $dn, $host, $port, $port_ssl, $version, $encryption,
+		$referrals, $mode, $search_base, $search_filter, $specific_dn, $specific_password);
 }
 
 /* cacti_ldap_search_cn
@@ -196,24 +166,8 @@ Error codes:
 function cacti_ldap_search_cn($username, $cn = array(), $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
 
-	$ldap = new Ldap;
-
-	if (!empty($username))          $ldap->username          = $username;
-	if (!empty($cn))                $ldap->cn                = $cn;
-	if (!empty($dn))                $ldap->dn                = $dn;
-	if (!empty($host))              $ldap->host              = $host;
-	if (!empty($port))              $ldap->port              = $port;
-	if (!empty($port_ssl))          $ldap->port_ssl          = $port_ssl;
-	if (!empty($version))           $ldap->version           = $version;
-	if (!empty($encryption))        $ldap->encryption        = $encryption;
-	if (!empty($referrals))         $ldap->referrals         = $referrals;
-	if (!empty($mode))              $ldap->mode              = $mode;
-	if (!empty($search_base))       $ldap->search_base       = $search_base;
-	if (!empty($search_filter))     $ldap->search_filter     = $search_filter;
-	if (!empty($specific_dn))       $ldap->specific_dn       = $specific_dn;
-	if (!empty($specific_password)) $ldap->specific_password = $specific_password;
-
-	return $ldap->Getcn();
+	return Ldap::SearchDN($username, $cn, $dn, $host, $port, $port_ssl, $version, $encryption,
+		$referrals, $mode, $search_base, $search_filter, $specific_dn, $specific_password);
 }
 
 abstract class LdapError {
@@ -335,33 +289,53 @@ abstract class LdapError {
 }
 
 class Ldap {
-	function __construct() {
-		/* Initialize LDAP parameters for Authenticate */
-		$this->dn         = read_config_option('ldap_dn');
-		$this->host       = read_config_option('ldap_server');
-		$this->port       = read_config_option('ldap_port');
-		$this->port_ssl   = read_config_option('ldap_port_ssl');
-		$this->version    = read_config_option('ldap_version');
-		$this->encryption = read_config_option('ldap_encryption');
-		$this->referrals  = read_config_option('ldap_referrals');
+	private $username;
+	private $password;
+	private $dn;
+	private $encryption;
+	private $group_attrib;
+	private $group_dn;
+	private $group_member_type;
+	private $mode;
+	private $port;
+	private $port_ssl;
+	private $proto_version;
+	private $referrals;
+	private $search_base;
+	private $search_filter;
+	private $server;
+	private $specific_dn;
+	private $specific_password;
 
-		if (read_config_option('ldap_group_require') == 'on') {
-			$this->group_require = true;
-		} else {
-			$this->group_require = false;
+	function __construct($ld = []) {
+		if (cacti_sizeof($ld)) {
+			if (!empty($ld['username']))          $ldap->uesrname          = $ld['username'];
+			if (!empty($ld['password']))          $ldap->password          = $ld['password'];
+
+			if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
+			if (!empty($ld['server']))            $ldap->host              = $ld['server'];
+			if (!empty($ld['port']))              $ldap->port              = $ld['port'];
+			if (!empty($ld['port_ssl']))          $ldap->port_ssl          = $ld['port_ssl'];
+			if (!empty($ld['proto_version']))     $ldap->version           = $ld['proto_version'];
+			if (!empty($ld['encryption']))        $ldap->encryption        = $ld['encryption'];
+			if (!empty($ld['referrals']))         $ldap->referrals         = $ld['referrals'];
+
+			if (!empty($ld['mode']))              $ldap->mode              = $ld['mode'];
+			if (!empty($ld['search_base']))       $ldap->search_base       = $ld['search_base'];
+			if (!empty($ld['search_filter']))     $ldap->search_filter     = $ld['search_filter'];
+			if (!empty($ld['specific_dn']))       $ldap->specific_dn       = $ld['specific_dn'];
+			if (!empty($ld['specific_password'])) $ldap->specific_password = $ld['specific_password'];
+
+			if ($ld['group_require'] == 'on') {
+				$ldap->group_require = true;
+			} else {
+				$ldap->group_require = false;
+			}
+
+			if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
+			if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
+			if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
 		}
-
-		$this->group_dn          = read_config_option('ldap_group_dn');
-		$this->group_attrib      = read_config_option('ldap_group_attrib');
-		$this->group_member_type = read_config_option('ldap_group_member_type');
-
-		/* Initialize LDAP parameters for Search */
-		$this->mode              = read_config_option('ldap_mode');
-		$this->search_base       = read_config_option('ldap_search_base');
-		$this->search_filter     = read_config_option('ldap_search_filter');
-		$this->specific_dn       = read_config_option('ldap_specific_dn');
-		$this->specific_password = read_config_option('ldap_specific_password');
-
 		return true;
 	}
 
@@ -450,8 +424,8 @@ class Ldap {
 		}
 
 		if ($this->encryption >= 1) {
-			$cert = read_config_option('ldap_tls_certificate');
-			if ($cert == '') {
+			$cert = $this->tls_certificate;
+			if (empty($cert)) {
 				$cert = LDAP_OPT_X_TLS_NEVER;
 			}
 
@@ -884,6 +858,73 @@ class Ldap {
 
 		// user should only be returned once IF they're a member of the group
 		return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true:false;
+	}
+
+	public static function Auth($username, $password = '', $dn = '', $host = '', $port = '', $port_ssl = '', $version = '',
+		$encryption = '', $referrals = '', $group_require = '', $group_dn = '', $group_attrib = '', $group_member_type = '') {
+
+		$ldap = new Ldap;
+
+		if (!empty($username))          $ldap->username          = $username;
+		if (!empty($password))          $ldap->password          = $password;
+		if (!empty($dn))                $ldap->dn                = $dn;
+		if (!empty($host))              $ldap->host              = $host;
+		if (!empty($port))              $ldap->port              = $port;
+		if (!empty($port_ssl))          $ldap->port_ssl          = $port_ssl;
+		if (!empty($version))           $ldap->version           = $version;
+		if (!empty($encryption))        $ldap->encryption        = $encryption;
+		if (!empty($referrals))         $ldap->referrals         = $referrals;
+		if (!empty($group_require))     $ldap->group_require     = $group_require;
+		if (!empty($group_dn))          $ldap->group_dn          = $group_dn;
+		if (!empty($group_attrib))      $ldap->group_attrib      = $group_attrib;
+		if (!empty($group_member_type)) $ldap->group_member_type = $group_member_type;
+
+		return $ldap->Authenticate();
+	}
+
+	public static function SearchDN($username, $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
+		$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
+
+		$ldap = new Ldap;
+
+		if (!empty($username))          $ldap->username          = $username;
+		if (!empty($dn))                $ldap->dn                = $dn;
+		if (!empty($host))              $ldap->host              = $host;
+		if (!empty($port))              $ldap->port              = $port;
+		if (!empty($port_ssl))          $ldap->port_ssl          = $port_ssl;
+		if (!empty($version))           $ldap->version           = $version;
+		if (!empty($encryption))        $ldap->encryption        = $encryption;
+		if (!empty($referrals))         $ldap->referrals         = $referrals;
+		if (!empty($mode))              $ldap->mode              = $mode;
+		if (!empty($search_base))       $ldap->search_base       = $search_base;
+		if (!empty($search_filter))     $ldap->search_filter     = $search_filter;
+		if (!empty($specific_dn))       $ldap->specific_dn       = $specific_dn;
+		if (!empty($specific_password)) $ldap->specific_password = $specific_password;
+
+		return $ldap->Search();
+	}
+
+	public static function SearchCN($username, $cn = array(), $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
+		$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
+
+		$ldap = new Ldap;
+
+		if (!empty($username))          $ldap->username          = $username;
+		if (!empty($cn))                $ldap->cn                = $cn;
+		if (!empty($dn))                $ldap->dn                = $dn;
+		if (!empty($host))              $ldap->host              = $host;
+		if (!empty($port))              $ldap->port              = $port;
+		if (!empty($port_ssl))          $ldap->port_ssl          = $port_ssl;
+		if (!empty($version))           $ldap->version           = $version;
+		if (!empty($encryption))        $ldap->encryption        = $encryption;
+		if (!empty($referrals))         $ldap->referrals         = $referrals;
+		if (!empty($mode))              $ldap->mode              = $mode;
+		if (!empty($search_base))       $ldap->search_base       = $search_base;
+		if (!empty($search_filter))     $ldap->search_filter     = $search_filter;
+		if (!empty($specific_dn))       $ldap->specific_dn       = $specific_dn;
+		if (!empty($specific_password)) $ldap->specific_password = $specific_password;
+
+		return $ldap->Getcn();
 	}
 }
 

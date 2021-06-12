@@ -123,10 +123,10 @@ function form_save() {
 				$save['group_attrib']      = form_input_validate(get_nfilter_request_var('group_attrib'),      'group_attrib',    '', true, 3);
 				$save['search_base']       = form_input_validate(get_nfilter_request_var('search_base'),       'search_base',     '', true, 3);
 				$save['search_filter']     = form_input_validate(get_nfilter_request_var('search_filter'),     'search_filter',   '', true, 3);
-				$save['specific_dn']         = form_input_validate(get_nfilter_request_var('specific_dn'),         'specific_dn',       '', true, 3);
-				$save['specific_password']   = form_input_validate(get_nfilter_request_var('specific_password'),   'specific_password', '', true, 3);
-                                $save['cn_full_name']        = get_nfilter_request_var('cn_full_name');
-                                $save['cn_email']            = get_nfilter_request_var('cn_email');
+				$save['specific_dn']       = form_input_validate(get_nfilter_request_var('specific_dn'),         'specific_dn',       '', true, 3);
+				$save['specific_password'] = form_input_validate(get_nfilter_request_var('specific_password'),   'specific_password', '', true, 3);
+				$save['cn_full_name']      = get_nfilter_request_var('cn_full_name');
+				$save['cn_email']          = get_nfilter_request_var('cn_email');
 
 				if (!is_error_message()) {
 					$insert_id = sql_save($save, 'user_domains_ldap', 'domain_id', false);
@@ -368,7 +368,7 @@ function domain_edit() {
 			'description' => __('The dns hostname or ip address of the server.'),
 			'method' => 'textbox',
 			'value' => '|arg1:server|',
-			'default' => read_config_option('ldap_server'),
+			'default' => '',
 			'max_length' => '255'
 			),
 		'port' => array(
@@ -377,7 +377,7 @@ function domain_edit() {
 			'method' => 'textbox',
 			'max_length' => '5',
 			'value' => '|arg1:port|',
-			'default' => read_config_option('ldap_port'),
+			'default' => 389,
 			'size' => '5'
 			),
 		'port_ssl' => array(
@@ -386,7 +386,7 @@ function domain_edit() {
 			'method' => 'textbox',
 			'max_length' => '5',
 			'value' => '|arg1:port_ssl|',
-			'default' => read_config_option('ldap_port_ssl'),
+			'default' => 686,
 			'size' => '5'
 			),
 		'proto_version' => array(
