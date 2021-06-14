@@ -1622,7 +1622,6 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 	$called_by_script_server = true;
 
-	cacti_debug_backtrace('DSV');
 	dsv_log('test_data_source', [ 'data_template_id' => $data_template_id, 'host_id' => $host_id, 'snmp_query_id' => $snmp_query_id, 'snmp_index' => $snmp_index, 'suggested_vals' => $suggested_vals]);
 	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		di.id, di.type_id, dtd.id AS data_template_data_id,
