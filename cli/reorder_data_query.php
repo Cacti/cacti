@@ -35,7 +35,7 @@ array_shift($parms);
 
 $debug		= false;
 $host_id	= 'all';
-$query_id	= 'all';
+$query_id	= '';
 $host_descr	= '';
 
 if (cacti_sizeof($parms)) {
@@ -159,9 +159,9 @@ function display_help () {
 	print "\nusage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]\n\n";
 	print "A utility to Re-order Cacti Data Queries for a Device or system in batch mode.\n\n";
 	print "Required:\n";
-	print "    --host-id=N    - The Device id to be reindexed; defaults to 'all' to reindex all Devices.\n\n";
+	print "    --qid=query_id - Only index on a specific data query id; or 'all' to reindex all data query id\n";
 	print "Optional:\n";
-	print "    --qid=query_id - Only index on a specific data query id; defaults is 'all' to reindex all data query id\n";
+	print "    --host-id=N    - The Device id to be reindexed; defaults to 'all' to reindex all Devices.\n\n";
 	print "    --debug | -d   - Display verbose output during execution\n\n";
 }
 
