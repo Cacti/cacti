@@ -61,6 +61,7 @@ Cacti CHANGELOG
 -issue#4294: Tables outside of pre-built list that need fixing, cause bad unknown column errors
 -issue#4295: If a page contains multiple tables, a larger table can cause smaller ones to lose columns.
 -feature#4258: Update phpseclib to version 2.0.31
+-feature#4306: Allow indexing of all query id in cli reorder_data_query.php
 
 1.2.17
 -security#4019: Incorrect handling of fields led to potential XSS issues
