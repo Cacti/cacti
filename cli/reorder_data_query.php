@@ -40,6 +40,7 @@ array_shift($parms);
 
 $debug		= false;
 $host_id	= 'all';
+$query_id	= '';
 $host_descr	= '';
 
 if (cacti_sizeof($parms)) {
@@ -102,7 +103,9 @@ if (strtolower($host_id) == 'all') {
 }
 
 /* determine data queries to rerun */
-if (is_numeric($query_id)) {
+if (strtolower($query_id) == 'all') {
+	/* do nothing */
+}else if (is_numeric($query_id)) {
 	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ' ) . 'data_local.snmp_query_id= ' . $query_id;
 } else {
 	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
@@ -161,9 +164,9 @@ function display_help () {
 	print "\nusage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]\n\n";
 	print "A utility to Re-order Cacti Data Queries for a Device or system in batch mode.\n\n";
 	print "Required:\n";
-	print "    --host-id=N    - The Device id to be reindexed; defaults to 'all' to reindex all Devices.\n\n";
+	print "    --qid=query_id - Only index on a specific data query id; or 'all' to reindex all data query id\n";
 	print "Optional:\n";
-	print "    --qid=query_id - Only index on a specific data query id\n";
+	print "    --host-id=N    - The Device id to be reindexed; defaults to 'all' to reindex all Devices.\n\n";
 	print "    --debug | -d   - Display verbose output during execution\n\n";
 }
 
