@@ -1757,7 +1757,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 			return true;
 		} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) {
 			/* get host fields first */
-			$host_fields_sql = 'SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+			$host_fields_sql = 'SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value
 					FROM data_input_fields AS dif
 					LEFT JOIN data_input_data AS did
 					ON dif.id=did.data_input_field_id
@@ -1828,7 +1828,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 			/* get host fields first */
 			$host_fields = array_rekey(
-				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value
 					FROM data_input_fields AS dif
 					LEFT JOIN data_input_data AS did
 					ON dif.id=did.data_input_field_id
@@ -1840,7 +1840,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 			dsv_log('SNMP_QUERY host_fields', $host_fields);
 
-			$data_template_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+			$data_template_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value
 				FROM data_input_fields AS dif
 				LEFT JOIN data_input_data AS did
 				ON dif.id=did.data_input_field_id
@@ -1908,7 +1908,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 			/* get host fields first */
 			$host_fields = array_rekey(
-				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value
 					FROM data_input_fields AS dif
 					LEFT JOIN data_input_data AS did
 					ON dif.id=did.data_input_field_id
@@ -1921,7 +1921,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 			dsv_log('SCRIPT host_fields', $host_fields);
 
 			$data_template_fields = array_rekey(
-				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+				db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value
 					FROM data_input_fields AS dif
 					LEFT JOIN data_input_data AS did
 					ON dif.id=did.data_input_field_id
@@ -1931,7 +1931,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				'type_code', 'value'
 			);
 
-			$data_template_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.type_code, did.value
+			$data_template_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dif.id, dif.type_code, did.value
 				FROM data_input_fields AS dif
 				LEFT JOIN data_input_data AS did
 				ON dif.id=did.data_input_field_id
