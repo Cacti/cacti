@@ -602,10 +602,7 @@ function snmpagent_cache_install() {
 	}
 
 	/* drop everything */
-	db_execute('TRUNCATE `snmpagent_cache`');
-	db_execute('TRUNCATE `snmpagent_mibs`;');
-	db_execute('TRUNCATE `snmpagent_cache_notifications`;');
-	db_execute('TRUNCATE `snmpagent_cache_textual_conventions`;');
+	snmpagent_cache_uninstall();
 
 	$mc = new MibCache();
 	$mc->install($config['base_path'] . '/mibs/CACTI-MIB');
@@ -618,11 +615,21 @@ function snmpagent_cache_install() {
 }
 
 function snmpagent_cache_uninstall() {
-	/* drop everything */
-	db_execute('TRUNCATE `snmpagent_cache`');
-	db_execute('TRUNCATE `snmpagent_mibs`;');
-	db_execute('TRUNCATE `snmpagent_cache_notifications`;');
-	db_execute('TRUNCATE `snmpagent_cache_textual_conventions`;');
+	/* drop everything if not empty */
+
+	$tables = array(
+		'snmpagent_cache',
+		'snmpagent_mibs',
+		'snmpagent_cache_notifications',
+		'snmpagent_cache_textual_conventions'
+	);
+
+	foreach($tables as $table) {
+		$rows = db_fetch_cell("SELECT COUNT(*) FROM $table");
+		if ($rows > 0) {
+			db_execute("TRUNCATE $table");
+		}
+	}
 }
 
 function snmpagent_cache_initialized() {

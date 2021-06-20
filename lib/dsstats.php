@@ -63,12 +63,12 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 	$system_time = 0;
 	$real_time   = 0;
 
-	$use_proxy = (read_config_option('storage_location') ? true:false);
+	$use_proxy = (read_config_option('storage_location') ? true : false);
 
 	/* open a pipe to rrdtool for writing and reading */
 	if ($use_proxy) {
 		$rrdtool_pipe = rrd_init(false);
-	}else {
+	} else {
 		$process_pipes = dsstats_rrdtool_init();
 		$process = $process_pipes[0];
 		$pipes   = $process_pipes[1];
@@ -172,14 +172,14 @@ function dsstats_write_buffer(&$stats_array, $interval) {
      components and then calculates the AVERAGE and MAX values from that data and returns an array to the calling
      function for storage into the respective database table.
    @returns - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name */
-function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes) {
+function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes) {
 	global $config, $user_time, $system_time, $real_time;
 
-	$use_proxy = (read_config_option('storage_location') ? true:false);
+	$use_proxy = (read_config_option('storage_location') ? true : false);
 
 	if ($use_proxy) {
 		$file_exists = rrdtool_execute("file_exists $rrdfile", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'DSSTATS');
-	}else {
+	} else {
 		clearstatcache();
 		$file_exists = file_exists($rrdfile);
 	}
@@ -830,7 +830,9 @@ function dsstats_rrdtool_init() {
    @arg $command - (string) The rrdtool command to execute
    @arg $pipes - (array) An array of stdin and stdout pipes to read and write data from
    @returns - (string) The output from RRDtool */
-function dsstats_rrdtool_execute($command, $pipes) {
+function dsstats_rrdtool_execute($command, &$pipes) {
+	static $broken = false;
+
 	$stdout = '';
 
 	if ($command == '') return;
@@ -838,16 +840,21 @@ function dsstats_rrdtool_execute($command, $pipes) {
 	$command .= "\r\n";
 	$return_code = fwrite($pipes[0], $command);
 
-	while (!feof($pipes[1])) {
-		$stdout .= fgets($pipes[1], 4096);
+	if (is_resource($pipes[1])) {
+		while (!feof($pipes[1])) {
+			$stdout .= fgets($pipes[1], 4096);
 
-		if (substr_count($stdout, 'OK')) {
-			break;
-		}
+			if (substr_count($stdout, 'OK')) {
+				break;
+			}
 
-		if (substr_count($stdout, 'ERROR')) {
-			break;
+			if (substr_count($stdout, 'ERROR')) {
+				break;
+			}
 		}
+	} elseif (!$broken) {
+		cacti_log("ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.", false, 'POLLER');
+		$broken = true;
 	}
 
 	if (strlen($stdout)) return $stdout;
