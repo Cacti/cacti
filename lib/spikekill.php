@@ -249,11 +249,11 @@ class spikekill {
 
 		if ($this->method == 'float' || $this->method == 'fill') {
 			if (!is_numeric($this->out_start)) {
-				$this->out_start == strtotime($this->out_start);
+				$this->out_start = strtotime($this->out_start);
 			}
 
 			if (!is_numeric($this->out_end)) {
-				$this->out_end == strtotime($this->out_end);
+				$this->out_end = strtotime($this->out_end);
 			}
 
 			if ($this->out_start === false || $this->out_end === false) {
