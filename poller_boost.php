@@ -49,7 +49,10 @@ $forcerun = false;
 $verbose  = false;
 $child    = false;
 
-global $child, $next_run_time;
+/* for releasing lock on SIGNAL */
+$current_lock = false;
+
+global $child, $next_run_time, $current_lock;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -230,7 +233,7 @@ if ($child == false) {
 }
 
 function sig_handler($signo) {
-	global $child, $config;
+	global $child, $config, $current_lock;
 
 	switch ($signo) {
 		case SIGTERM:
@@ -252,6 +255,9 @@ function sig_handler($signo) {
 			/* ignore all other signals */
 	}
 
+	if ($current_lock !== false) {
+		db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
+	}
 }
 
 function boost_kill_running_processes() {
@@ -628,7 +634,7 @@ function boost_output_rrd_data($child) {
    @arg $child - the current process
    @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation */
 function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
-	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
+	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
 
 	/* cache this call as it takes time */
 	static $archive_tables   = false;
@@ -711,6 +717,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		$time           = -1;
 		$buflen         = 0;
 		$outarray       = array();
+		$locked         = false;
 		$last_update    = -1;
 		$last_item	= array('local_data_id' => -1, 'timestamp' => -1, 'rrd_name' => '');
 
@@ -723,10 +730,33 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		foreach ($results as $item) {
 			$item['timestamp'] = trim($item['timestamp']);
 
+			if (!$locked) {
+				/* aquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
+				while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
+					usleep(50000);
+				}
+
+				$current_lock = $item['local_data_id'];
+
+				$locked = true;
+			}
+
 			/* if the local_data_id changes, we need to flush the buffer
 			 * and discover the template for the next RRDfile.
 			 */
 			if ($local_data_id != $item['local_data_id']) {
+				/* release the previous lock */
+				db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+
+				$current_lock = false;
+
+				/* aquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
+				while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
+					usleep(50000);
+				}
+
+				$current_lock = $item['local_data_id'];
+
 				/* update the rrd for the previous local_data_id */
 				if ($vals_in_buffer) {
 					/* place the latest update at the end of the output array */
@@ -891,6 +921,11 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe);
 		}
 
+		/* release the last lock */
+		db_execute("SELECT RELEASE_LOCK('boost.single_ds." . $item['local_data_id'] . "')");
+
+		$current_lock = false;
+
 		boost_timer('results_cycle', BOOST_TIMER_END);
 
 		/* remove the entries from the table */
@@ -923,6 +958,7 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 	if (trim(read_config_option('path_boost_log')) != '') {
 		print "DEBUG: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf . PHP_EOL;
 	}
+
 
 	boost_timer('rrdupdate', BOOST_TIMER_START);
 	$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $outbuf, $rrdtool_pipe);

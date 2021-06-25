@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#4314: When disabling the snmpagent, you can introduce significant delay to data collection
 -issue#4315: If Cacti runs out of resources (file descriptions via a ulimit) and DSStats is running, don't flood the Cacti log with errors
 -issue#4316: Remove Spikes CLI interface is unable to provide localized spike, gap fill or float operations 
+-issue#4321: RRDtool Updates might cause gaps due to lock of locking during RRDTOOL updates when using RRDtool 1.4 or Less
 -feature#4258: Update phpseclib to version 2.0.31
 -feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel
 
