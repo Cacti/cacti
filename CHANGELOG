@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#4269: Installation Wizard - Uncaught Error: Call to undefined function cacti_snmp_session()
 -issue#4271: Continued timeout of registered processes
 -issue#4272: dns_get_record(): A temporary server error occurred
+-issue#4273: 1.2.17 add_device.php snmpget erros when template id is given
 -issue#4274: When you start to zoom a graph, the auto graph refresh should be disabled
 -issue#4279: Default Setting "Device Threads" will not be saved correctly
 -issue#4284: Database upgrade can fail - Uncaught argument count error
