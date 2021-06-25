@@ -64,7 +64,7 @@ function imageOptionsChanged(action) {
 
 	$.getJSON(url)
 		.done(function(data) {
-			image_format = (data.image_format == 'svg+xml') ? 'svg+xml' : 'png';
+			var image_format = (data.image_format == 'svg+xml') ? 'svg+xml' : 'png';
 			if ($('#rimage').length) {
 				$('#rimage').attr('src', 'data:image/'+image_format+';base64,'+data.data);
 			} else {
@@ -144,7 +144,7 @@ function stopRealtime() {
 	var graph;
 
 	for (key in realtimeArray) {
-		graph_id = key;
+		var graph_id = key;
 
 		$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
 		$('#graph_'+graph_id+'_realtime').html("<img class='drillDown' alt='' title='"+realtimeClickOn+"' src='"+urlPath+"images/chart_curve_go.png'>").find('img').tooltip();
