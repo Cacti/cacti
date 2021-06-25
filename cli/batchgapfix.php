@@ -373,9 +373,9 @@ if ($child == 0) {
 			array($rrdfile['id']));
 
 		// Run the command
-		print "NOTE: Running command: $command" . PHP_EOL;
+		debug("NOTE: Running command: $command");
 
-		//exec($command, $output, $return_var);
+		exec($command, $output, $return_var);
 
 		db_execute_prepared('UPDATE graph_local_spikekill
 			SET ended = NOW(), exit_code = ?
@@ -383,10 +383,10 @@ if ($child == 0) {
 			array($return_var, $rrdfile['id']));
 
 		if ($return_var == 0) {
-			print "SUCCESS: Gap Fills for RRDfile:" . $rrdfile['data_source_path'] . PHP_EOL;
+			printf("SUCCESS: Gap Fills for RRDfile:%s" . PHP_EOL, $rrdfile['data_source_path']);
 			$succeeded++;
 		} else {
-			print "FAILED:  Gap Fills faild for RRDfile:" . $graph['data_source_path'] . PHP_EOL;
+			printf("FAILED:  Gap Fills faild for RRDfile:%s" . PHP_EOL, $graph['data_source_path']);
 			$failed++;
 		}
 	}
@@ -421,6 +421,14 @@ function sig_handler($signo) {
 			break;
 		default:
 			/* ignore all other signals */
+	}
+}
+
+function debug($string) {
+	global $debug;
+
+	if ($debug) {
+		print 'DEBUG: ' . trim($string) . PHP_EOL;
 	}
 }
 
