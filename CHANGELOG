@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#4284: Database upgrade can fail - Uncaught argument count error
 -issue#4294: Tables outside of pre-built list that need fixing, cause bad unknown column errors
 -issue#4295: If a page contains multiple tables, a larger table can cause smaller ones to lose columns.
+-issue#4312: ERROR PHP NOTICE: Undefined variable: cactiphp in file: /usr/share/cacti/cmd.php on line: 735
 -issue#4314: When disabling the snmpagent, you can introduce significant delay to data collection
 -issue#4315: If Cacti runs out of resources (file descriptions via a ulimit) and DSStats is running, don't flood the Cacti log with errors
 -issue#4316: Remove Spikes CLI interface is unable to provide localized spike, gap fill or float operations 

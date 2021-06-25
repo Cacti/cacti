@@ -131,7 +131,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-global $poller_db_cnn_id, $remote_db_cnn_id;
+global $poller_db_cnn_id, $remote_db_cnn_id, $cactiphp, $using_proc_function;
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
@@ -278,6 +278,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 		$using_proc_function = true;
 	} else {
 		$using_proc_function = false;
+		$cactiphp = false;
 	}
 
 	foreach ($poller_items as $item) {
@@ -655,7 +656,7 @@ function collect_device_data(&$item, &$error_ds) {
 }
 
 function ping_and_reindex_check(&$item, $mibs) {
-	global $print_data_to_stdout, $sessions, $set_spike_kill, $poller_db_cnn_id;;
+	global $print_data_to_stdout, $sessions, $set_spike_kill, $poller_db_cnn_id, $cactiphp, $using_proc_function;
 
 	$ping    = new Net_Ping;
 	$host_id = $item['host_id'];
