@@ -12,7 +12,7 @@ Cacti CHANGELOG
 -issue#4267: SNMP library can display extra warning messages when host does not resolve
 -issue#4269: Installation Wizard - Uncaught Error: Call to undefined function cacti_snmp_session()
 -issue#4271: Continued timeout of registered processes
--issue#4272:  dns_get_record(): A temporary server error occurred
+-issue#4272: dns_get_record(): A temporary server error occurred
 -issue#4284: Database upgrade can fail - Uncaught argument count error
 -issue#4294: Tables outside of pre-built list that need fixing, cause bad unknown column errors
 -issue#4295: If a page contains multiple tables, a larger table can cause smaller ones to lose columns.
@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#4316: Remove Spikes CLI interface is unable to provide localized spike, gap fill or float operations 
 -issue#4321: RRDtool Updates might cause gaps due to lock of locking during RRDTOOL updates when using RRDtool 1.4 or Less
 -feature#4258: Update phpseclib to version 2.0.31
+-feature#4283: Cacti Plugin Authors need to extend $alternates support to include 'worker-src' for services like Google Map API on newer browsers
 -feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel
 
 1.2.17
