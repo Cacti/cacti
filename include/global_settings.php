@@ -580,7 +580,18 @@ $settings = array(
 			'description' => __('The default number of Device Threads.  This is only applicable when using the Spine Data Collector.'),
 			'method' => 'drop_array',
 			'default' => '1',
-			'array' => array(1, 2, 3, 4, 5, 6)
+			'array' => array(
+				1  => __('%s Thread', 1),
+				2  => __('%s Threads', 2),
+				3  => __('%s Threads', 3),
+				4  => __('%s Threads', 4),
+				5  => __('%s Threads', 5),
+				6  => __('%s Threads', 6),
+				7  => __('%s Threads', 7),
+				8  => __('%s Threads', 8),
+				9  => __('%s Threads', 9),
+				10 => __('%s Threads', 10)
+			)
 		),
 		'reindex_method' => array(
 			'friendly_name' => __('Re-index Method for Data Queries'),
