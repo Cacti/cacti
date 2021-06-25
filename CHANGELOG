@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -feature#4258: Update phpseclib to version 2.0.31
 -feature#4283: Cacti Plugin Authors need to extend $alternates support to include 'worker-src' for services like Google Map API on newer browsers
 -feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel
+-feature#4322: Update pace.js to version 1.2.4
 
 1.2.17
 -security#4019: Incorrect handling of fields led to potential XSS issues
