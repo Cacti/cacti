@@ -982,6 +982,14 @@ $settings = array(
 			'max_length' => '80',
 			'size' => '60'
 		),
+		'graph_dateformat' => array(
+			'friendly_name' => __('Custom Date Format'),
+			'description' => __('To be used when formatting |date_time| on a graph'),
+			'method' => 'textbox',
+			'default' => 'D d M H:i:s T Y',
+			'max_length' => '80',
+			'size' => '60'
+		),
 		'rrdtool_watermark' => array(
 			'friendly_name' => __('Disable RRDtool Watermark'),
 			'description' => __('Provided your RRDtool version supports it, you may disable RRDtool advertisement on your Graphs by checking this option.'),

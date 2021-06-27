@@ -1120,9 +1120,13 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem(__('Graph Item'),'',1);
+		DrawMatrixHeaderItem(__('#'), '', 1);
 		DrawMatrixHeaderItem(__('Data Source'),'',1);
 		DrawMatrixHeaderItem(__('Graph Item Type'),'',1);
 		DrawMatrixHeaderItem(__('CF Type'),'',1);
+		DrawMatrixHeaderItem(__('GPrint'),'',1);
+		DrawMatrixHeaderItem(__('CDEF'),'',1);
+		DrawMatrixHeaderItem(__('VDEF'),'',1);
 		DrawMatrixHeaderItem(__('Alpha %'),'',1);
 		DrawMatrixHeaderItem(__('Item Color'),'',4);
 	print '</tr>';
@@ -1163,6 +1167,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			print __('Item # %d', ($i+1));
 			if ($disable_controls == false) { print '</a>'; }
 			print '</td>';
+			print '<td>' . $item['sequence'] . '</td>';
 
 			if (empty($item['data_source_name'])) {
 				$item['data_source_name'] = __('No Source');
@@ -1205,6 +1210,16 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			} else {
 				print '<td>' . __('N/A') . '</td>';
 			}
+
+			print "<td style='$this_row_style'>";
+			print $item['gprint_name'];
+			print "</td>";
+			print "<td style='$this_row_style'>";
+			print $item['cdef_name'];
+			print "</td>";
+			print "<td style='$this_row_style'>";
+			print $item['vdef_name'];
+			print "</td>";
 
 			/* alpha type */
 			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {

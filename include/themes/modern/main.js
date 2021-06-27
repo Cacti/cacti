@@ -57,6 +57,10 @@ function themeReady() {
 				id = $(this).attr('id');
 
 				$(this).selectmenu({
+					open: function(event, ui) {
+						var instance = $(this).selectmenu('instance');
+						instance.menuInstance.focus(null, instance._getSelectedItem());
+					},
 					change: function(event, ui) {
 						$(this).val(ui.item.value).change();
 					},

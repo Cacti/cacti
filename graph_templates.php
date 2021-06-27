@@ -418,10 +418,10 @@ function item() {
 
 		$header_label = 'Graph Template Items [new]';
 	} else {
-		$template_item_list = db_fetch_assoc_prepared("SELECT gti.id, gti.text_format, gti.alpha,
+		$template_item_list = db_fetch_assoc_prepared("SELECT gti.id, gti.sequence, gti.text_format, gti.alpha,
 			gti.value, gti.hard_return, gti.graph_type_id, gti.consolidation_function_id, gti.textalign,
 			CONCAT(IFNULL(dt.name, ''), ' (', dtr.data_source_name, ')') AS data_source_name,
-			cdef.name AS cdef_name, colors.hex
+			cdef.name AS cdef_name, vdef.name as vdef_name, colors.hex, gtgp.name as gprint_name
 			FROM graph_templates_item AS gti
 			LEFT JOIN data_template_rrd AS dtr
 			ON gti.task_item_id=dtr.id
@@ -431,6 +431,8 @@ function item() {
 			ON dt.id=dtr.data_template_id
 			LEFT JOIN data_template_data AS dtd
 			ON dl.id=dtd.local_data_id
+			LEFT JOIN graph_templates_gprint as gtgp
+			ON gtgp.id=gti.gprint_id
 			LEFT JOIN cdef
 			ON cdef_id=cdef.id
 			LEFT JOIN vdef

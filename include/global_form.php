@@ -1087,7 +1087,11 @@ $struct_graph_item = array(
 		),
 	'sequence' => array(
 		'friendly_name' => __('Sequence'),
-		'method' => 'view'
+		'method' => 'textbox',
+		'max_length' => '4',
+		'default' => '',
+		'size' => '4',
+		'description' => __('The dash-offset parameter specifies an offset into the pattern at which the stroke begins.'),
 		)
 	);
 

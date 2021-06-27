@@ -25,6 +25,9 @@ Cacti CHANGELOG
 -issue#4315: If Cacti runs out of resources (file descriptions via a ulimit) and DSStats is running, don't flood the Cacti log with errors
 -issue#4316: Remove Spikes CLI interface is unable to provide localized spike, gap fill or float operations 
 -issue#4321: RRDtool Updates might cause gaps due to lock of locking during RRDTOOL updates when using RRDtool 1.4 or Less
+-issue#4324: Date/Time format of replacement fild on graph cannot be changed
+-issue#4325: Make identifying rows when editing graph items easier
+-issue#4326: When using large lists, selection is visible in dropdown menus
 -feature#4258: Update phpseclib to version 2.0.31
 -feature#4283: Cacti Plugin Authors need to extend $alternates support to include 'worker-src' for services like Google Map API on newer browsers
 -feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel

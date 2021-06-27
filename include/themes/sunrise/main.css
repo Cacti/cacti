@@ -2975,3 +2975,12 @@ circle {
 	fill: transparent !important;
 }
 
+.tableRowGraph:hover {
+     background-color: rgba(200, 100, 0, .3) !important;
+     border-left: 2px solid yellow !important;
+     border-right: 2px solid yellow !important;
+}
+
+.tableRowGraph {
+     border: 2px solid rgba(0,0,0,0);
+}

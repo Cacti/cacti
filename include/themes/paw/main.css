@@ -2383,4 +2383,12 @@ td.center > table {
 	color: #FFFFFF !important;
 }
 
+.tableRowGraph:hover {
+     background-color: rgba(0, 0, 255, .3) !important;
+     border-left: 2px solid yellow !important;
+     border-right: 2px solid yellow !important;
+}
 
+.tableRowGraph {
+     border: 2px solid rgba(0,0,0,0);
+}

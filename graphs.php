@@ -1335,7 +1335,8 @@ function item() {
 			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id, gti.alpha, gti.textalign,
 			gti.consolidation_function_id,
 			CONCAT(dtd.name_cache, ' (',  dtr.data_source_name, ')') AS data_source_name,
-			cd.name AS cdef_name, c.hex
+			cd.name AS cdef_name, c.hex,
+			vd.name AS vdef_name, gtgp.name AS gprint_name
 			FROM graph_templates_item AS gti
 			LEFT JOIN data_template_rrd AS dtr
 			ON (gti.task_item_id = dtr.id)
@@ -1343,8 +1344,12 @@ function item() {
 			ON (dtr.local_data_id = dl.id)
 			LEFT JOIN data_template_data AS dtd
 			ON (dl.id = dtd.local_data_id)
+			LEFT JOIN graph_templates_gprint AS gtgp
+			ON (gprint_id = gtgp.id)
 			LEFT JOIN cdef AS cd
 			ON (cdef_id = cd.id)
+			LEFT JOIN vdef AS vd
+			ON (vdef_id = vd.id)
 			LEFT JOIN colors AS c
 			ON (color_id = c.id)
 			WHERE gti.local_graph_id = ?
