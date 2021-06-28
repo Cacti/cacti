@@ -1418,7 +1418,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	$realtimeCachePath = read_config_option('realtime_cache_path');
 	$dateTimeFormat = read_config_option('graph_dateformat');
-	$dateTime = date($datTimeFormat, strtotime(read_config_option('date')));
+	$dateTime = date($dateTimeFormat, strtotime(read_config_option('date')));
 
 	/* the following fields will be searched for graph variables */
 	$variable_fields = array(
