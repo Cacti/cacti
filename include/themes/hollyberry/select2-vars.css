@@ -1,0 +1,9 @@
+:root {
+	--select2-border: 1px solid #000;
+	--select2-border-radius: 0px;
+	--select2-background-dropdown: #eee;
+	--select2-background-item: transparent;
+	--select2-background-highlight: linear-gradient(to bottom, rgba(255,4,0,0.9) 0%,rgba(3,159,11,0.9) 99%,rgba(0,161,11,0.9) 100%);
+	--select2-color-item: #000;
+	--select2-color-highlight: #fff;
+}

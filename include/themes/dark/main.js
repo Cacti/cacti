@@ -60,27 +60,7 @@ function themeReady() {
 	$('select.colordropdown').dropcolor();
 
 	$('select').not('.colordropdown').each(function() {
-		if ($(this).prop('multiple') != true) {
-			$(this).each(function() {
-				id = $(this).attr('id');
-
-				$(this).selectmenu({
-					change: function(event, ui) {
-						$(this).val(ui.item.value).change();
-					},
-					position: {
-						my: "left top",
-						at: "left bottom",
-						collision: "flip"
-					},
-					width: 'auto'
-				});
-
-				$('#'+id+'-menu').css('max-height', '250px');
-			});
-		} else {
-			$(this).addClass('ui-state-default ui-corner-all');
-		}
+		$(this).select2();
 	});
 
 	$('#drp_action').change(function() {

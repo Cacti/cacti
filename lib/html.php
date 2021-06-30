@@ -3246,7 +3246,10 @@ function twig_common_header($title, $selectedTheme = '') {
 			twig_md5_include_css('include/themes/' . $selectedTheme .'/pace.css'),
 			twig_md5_include_css('include/fa/css/all.css'),
 			twig_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css'),
+			twig_md5_include_css('include/vendor/select2/css/select2.css'),
 			twig_md5_include_css('include/themes/' . $selectedTheme .'/main.css'),
+			twig_md5_include_css('include/themes/' . $selectedTheme .'/select2-vars.css'),
+			twig_md5_include_css('include/themes/select2-common.css'),
 			twig_md5_include_js('include/js/screenfull.js', true),
 			twig_md5_include_js('include/js/jquery.js'),
 			twig_md5_include_js('include/js/jquery-ui.js'),
@@ -3274,6 +3277,7 @@ function twig_common_header($title, $selectedTheme = '') {
 			twig_md5_include_js('include/realtime.js', true),
 			twig_md5_include_js('include/themes/' . $selectedTheme .'/main.js'),
 			twig_md5_include_js('include/vendor/csrf/csrf-magic.js'),
+			twig_md5_include_js('include/vendor/select2/js/select2.full.js'),
 		],
 	];
 

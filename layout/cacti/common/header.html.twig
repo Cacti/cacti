@@ -57,7 +57,7 @@
 		{% include 'common/navbar.html.twig' %}
 		<div class='scrollBar'></div>
 	{% if not common.is_ajax %}
-		{% if options.auth_method != 0 %}
+		{% if auth.method != 0 %}
 		<div class='infoBar'>
 			{# <?php echo draw_login_status($using_guest_account);?> #}
 			{{ include('auth/login_status.html.twig') }}
