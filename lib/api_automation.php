@@ -3850,7 +3850,7 @@ function calculateNextStart($net) {
 		$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime($net['start_at']));
 		$ntime = strtotime($ndate);
 
-		debug('Start At: ' . $net['start_at'] . ', Possible Next Start: ' . $ndate . ' with Timestamp: ' . $ntime);
+		automation_debug('Start At: ' . $net['start_at'] . ', Possible Next Start: ' . $ndate . ' with Timestamp: ' . $ntime);
 
 		if ($ntime > $now) {
 			return $ntime;
