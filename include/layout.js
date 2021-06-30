@@ -4019,9 +4019,9 @@ function setSNMPSecurity() {
 				$('#snmp_security_level').val('authPriv');
 			}
 
-			var selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
+			var selectmenu = ($('#snmp_security_level').hasClass("select2-hidden-accessible"));
 			if (selectmenu) {
-				$('#snmp_security_level').selectmenu('refresh');
+				$('#snmp_security_level').select2();
 			}
 
 			$('#snmp_password').keyup(function() {
@@ -4218,11 +4218,11 @@ function setSNMP() {
 				$('#snmp_priv_passphrase_confirm').val('');
 			}
 
-			selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
+			selectmenu = ($('#snmp_security_level').hasClass("select2-hidden-accessible"));
 			if (selectmenu) {
-				$('#snmp_security_level').selectmenu('refresh');
-				$('#snmp_auth_protocol').selectmenu('refresh');
-				$('#snmp_priv_protocol').selectmenu('refresh');
+				$('#snmp_security_level').select2();
+				$('#snmp_auth_protocol').select2();
+				$('#snmp_priv_protocol').select2();
 			}
 
 			break;

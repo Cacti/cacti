@@ -18,7 +18,7 @@
 	</li>
 	{% elseif user.username is defined %}
 	<li>
-		<a href='#' class='loggedInAs' style='display:none;'>{{ __esc('Logged in as %s', user.username) }}</a>
+		<a href='#' class='loggedInAs'>{{ __esc('Logged in as %s', user.username) }}</a>
 	</li>
 	{% else %}
 	<li>
