@@ -2375,6 +2375,10 @@ function sanitizeAjaxOptions(check) {
         options.handle = check.handle;
     }
 
+    if (typeof check.force == 'boolean') {
+        options.force = check.force;
+    }
+
     if (options.elementId.trim() == '') {
         options.elementId = 'main';
     }
