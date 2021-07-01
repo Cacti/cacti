@@ -1331,8 +1331,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	if (($leaf_type == 'header') || (empty($leaf_id))) {
 		$sql_where = '';
+
 		if (get_request_var('rfilter') != '') {
-			$sql_where .= ' (gtg.title_cache RLIKE ' . db_qstr(preg_quote(get_request_var('rfilter'))) . ' OR gtg.title RLIKE ' . db_qstr(preg_quote(get_request_var('rfilter'))) . ')';
+			$sql_where .= ' (gtg.title_cache RLIKE ' . db_qstr(get_request_var('rfilter')) . ' OR gtg.title RLIKE ' . db_qstr(get_request_var('rfilter')) . ')';
 		}
 
 		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') >= 0) {
