@@ -55,13 +55,17 @@ function get_matching_nodes() {
 			FROM graph_tree_items AS gti
 			LEFT JOIN host AS h
 			ON h.id=gti.host_id
+			RIGHT JOIN host AS h2
+			ON h2.site_id=gti.site_id
 			LEFT JOIN graph_templates_graph AS gtg
 			ON gtg.local_graph_id=gti.local_graph_id AND gtg.local_graph_id>0
 			WHERE gtg.title_cache LIKE ?
 			OR h.description LIKE ?
+			OR h2.description LIKE ?
 			OR h.hostname LIKE ?
+			OR h2.hostname LIKE ?
 			OR gti.title LIKE ?",
-			array($filter, $filter, $filter, $filter));
+			array($filter, $filter, $filter, $filter, $filter, $filter));
 	} else {
 		$matching = db_fetch_assoc("SELECT parent, graph_tree_id FROM graph_tree_items");
 	}
