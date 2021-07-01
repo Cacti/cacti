@@ -117,7 +117,12 @@ function themeReady() {
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
-	$('select.colordropdown').dropcolor();
+	$('select.colordropdown').each(function() {
+		$(this).select2({
+			templateResult: formatColorItem,
+			templateSelection: formatColorSelection
+		});
+	});
 
 	$('select').not('.colordropdown').each(function() {
 		$(this).select2();

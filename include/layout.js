@@ -770,11 +770,10 @@ function applySkin() {
 }
 
 function renderLanguages() {
-	if ($('select#user_language').selectmenu('instance') !== undefined) {
-		$('select#user_language').selectmenu('destroy');
-
-		$('select#user_language').languageselect({
-			width: '220',
+	if ($('select#user_language').hasClass("select2-hidden-accessible")) {
+		$('select#user_language').select2('destroy');
+		$('select#user_language').select2({
+			templateResult: formatLanguageSelect,
 			change: function() {
 				var name  = $(this).attr('id');
 				var value = $(this).val();
@@ -791,15 +790,15 @@ function renderLanguages() {
 					});
 				}
 			}
-		}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
+		});
 	}
 
-	if ($('select#i18n_default_language').selectmenu('instance') !== undefined) {
-		$('select#i18n_default_language').selectmenu('destroy');
-
-		$('select#i18n_default_language').languageselect({
+	if ($('select#i18n_default_language').hasClass("select2-hidden-accessible")) {
+		$('select#i18n_default_language').select2('destroy');
+		$('select#i18n_default_language').select2({
+			templateResult: formatLanguageSelect,
 			width: '220'
-		}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
+		});
 	}
 
 	$('#user_language-menu').css('max-height', '200px');
@@ -3077,12 +3076,14 @@ function pushState(myTitle, options) {
 function handlePopState(e) {
 	var href = document.location.href;
 
-	if (typeof e.state.Options != 'undefined') {
-		loadUrl(e.state.Options);
-		return false;
-	} else if (typeof e.state.Url != 'undefined') {
-		loadUrl({url:href});
-		return false;
+	if (typeof e.state != 'undefined' && e.state != null) {
+		if (typeof e.state.Options != 'undefined' && e.state.Options != null) {
+			loadUrl(e.state.Options);
+			return false;
+		} else if (typeof e.state.Url != 'undefined' && e.state.Url != null) {
+			loadUrl({url:href});
+			return false;
+		}
 	}
 	return true;
 }
@@ -3687,187 +3688,43 @@ function initializeGraphs(disable_cache) {
 	});
 }
 
-$.widget('custom.languageselect', $.ui.selectmenu, {
-	_renderItem: function(ul, item) {
-		var li = $('<li>');
-		var wrapper = $('<div>', { text: item.label });
-		if (item.disabled) {
-			li.addClass( 'ui-state-disabled' );
-		}
-
-		$('<span>', {
-			style: item.element.attr('data-style') + ';float:right',
-			'class': 'right flag-icon flag-icon-squared ' + item.element.attr('data-class')
-		}).appendTo(wrapper);
-
-		return li.append(wrapper).appendTo(ul);
+function formatLanguageSelect(state) {
+	if (!state.id) {
+		return state.text;
 	}
-});
 
-// combobox example borrowed from jqueryui
-$.widget('custom.dropcolor', {
-	_create: function() {
-		$('body').append('<div id="cwrap" class="ui-selectmenu-menu ui-front">');
+	var li = $('<li>');
+	var wrapper = $('<div>', { text: state.text });
 
-		this.wrapper = $('<span><span class="ui-select-text"><div id="bgc" class="ui-icon color-icon" style="margin-left:2px;margin-right:3px;"></div></span></span>')
-		.addClass('class="ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget"')
-		.insertAfter(this.element);
+	$('<span>', {
+		style: $(state.element).data('style') + ';float:right',
+		'class': 'right flag-icon flag-icon-squared ' + $(state.element).data('class')
+	}).appendTo(wrapper);
 
-		this.element.hide();
-		this._createAutocomplete();
-		this._createShowAllButton();
-	},
+	return li.append(wrapper);
+}
 
-	_createAutocomplete: function() {
-		var selected = this.element.children(':selected');
-		var value  = selected.val() ? selected.text() : '';
-		var regExp = /\(([^)]+)\)/;
-		var hex    = regExp.exec(value);
+function formatColorItem(state) {
+	return formatColorSelect2(state, $('<li>'));
+}
 
-		if (hex != null) {
-			this.wrapper.find('#bgc').css('background-color', '#'+hex[1]);
-		}
-		this.input = $('<input class="ui-autocomplete-input ui-state-default ui-selectmenut-text" style="background:transparent;border:0px;margin-left:-22px;padding:0px 3px 0px 22px;" value="'+value+'">')
-		.appendTo(this.wrapper)
-		.on('click', function() {
-			$(this).autocomplete('search', '');
-		})
-		.autocomplete({
-			delay: 0,
-			minLength: 0,
-			source: $.proxy(this, '_source'),
-			select: $.proxy(this, '_select'),
-			search: function() {
-				$(this).data('ui-autocomplete').menu.bindings = $();
-			},
-			close: function() {
-				$(this).data('ui-autocomplete').menu.bindings = $();
-			},
-			create: function() {
-				$(this).data('ui-autocomplete')._renderItem = function(ul, item) {
-					var regExp = /\(([^)]+)\)/;
-					var hex   = regExp.exec(item.label);
-					var mylabel = $($.parseHTML(item.label));
-					var label = mylabel.text();
+function formatColorSelection(state) {
+	return formatColorSelect2(state, $('<div>'));
+}
 
-					if (hex !== null) {
-						color = hex[1];
-						return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
-					} else {
-						return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>' + label + '</div>').appendTo(ul);
-					}
-				}
+function formatColorSelect2(state, li) {
+	var label   = state.text;
+	var regExp  = /\(([^)]+)\)/;
+	var hex     = regExp.exec(label);
+	var mylabel = $($.parseHTML(label));
 
-				$(this).data('ui-autocomplete')._resizeMenu = function () {
-					var ul = this.menu.element;
-					ul.outerWidth('220px');
-				}
-			}
-		});
-
-		this._on(this.input, {
-			autocompleteselect: function(event, ui) {
-				ui.item.option.selected = true;
-				this._trigger('select', event, {
-					item: ui.item.option
-				});
-			},
-
-			autocompletechange: '_removeIfInvalid'
-		});
-	},
-
-	_select: function(event, ui) {
-		var regExp = /\(([^)]+)\)/;
-		var hex    = regExp.exec(ui.item.label);
-		var id     = $(ui.item.option).attr('value');
-
-		if (hex !== null) {
-			color = hex[1];
-			this.wrapper.find('#bgc').css('background-color', '#'+color);
-			this.wrapper.find('input').val(ui.item.value);
-		} else {
-			this.wrapper.find('#bgc').css('background-color', '');
-			this.wrapper.find('input').val(ui.item.value);
-		}
-	},
-
-	_createShowAllButton: function() {
-		var input = this.input;
-		var wasOpen = false;
-
-		$('<span>')
-		.attr('tabIndex', -1)
-		.appendTo(this.wrapper)
-		.addClass('ui-icon ui-icon-triangle-1-s')
-		.on('mousedown', function() {
-			wasOpen = input.autocomplete('widget').is(':visible');
-		})
-		.on('click', function() {
-			input.trigger('focus');
-
-			// Close if already visible
-			if (wasOpen) {
-				return;
-			}
-
-			input.autocomplete('search', '');
-		});
-	},
-
-	_source: function(request, response) {
-		var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), 'i');
-		results = this.element.children('option').map(function() {
-			var text = $(this).text();
-			if (this.value && (!request.term || matcher.test(text))) {
-				return {
-					label: text,
-					value: text,
-					option: this
-				};
-			}
-		});
-
-		response(results);
-	},
-
-	_removeIfInvalid: function(event, ui) {
-		// Selected an item, nothing to do
-		if (ui.item) {
-			return;
-		}
-
-		// Search for a match (case-insensitive)
-		var value = this.input.val();
-		var valueLowerCase = value.toLowerCase();
-		var valid = false;
-
-		this.element.children('option').each(function() {
-			if ($(this).text().toLowerCase() === valueLowerCase) {
-				this.selected = valid = true;
-				return false;
-			}
-		});
-
-		// Found a match, nothing to do
-		if (valid) {
-			return;
-		}
-
-		// Remove invalid value
-		this.input.val('');
-		this.element.val('');
-		this._delay(function() {
-			this.input.tooltip('close').attr('title', '');
-		}, 2500 );
-		this.input.autocomplete('instance').term = '';
-	},
-
-	_destroy: function() {
-		this.wrapper.remove();
-		this.element.show();
+	if (hex !== null) {
+		color = hex[1];
+		return li.data('value', state.value).html('<div class="select2-color-item"><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>' + label + '</div>');
+	} else {
+		return li.data('value', state.value).html('<div><span class="ui-icon color-icon"></span>' + label + '</div>');
 	}
-});
+}
 
 function expandClipboardSection(section) {
 	var isVisible = section.is(':visible');

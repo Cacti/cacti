@@ -57,7 +57,12 @@ function themeReady() {
 
 	maxWidth = 300;
 
-	$('select.colordropdown').dropcolor();
+	$('select.colordropdown').each(function() {
+		$(this).select2({
+			templateResult: formatColorItem,
+			templateSelection: formatColorSelection
+		});
+	});
 
 	$('select').not('.colordropdown').each(function() {
 		$(this).select2();
