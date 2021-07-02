@@ -1,3 +1,4 @@
+B
 Cacti CHANGELOG
 
 1.2.18
@@ -30,6 +31,7 @@ Cacti CHANGELOG
 -issue#4325: Make identifying rows when editing graph items easier
 -issue#4326: When using large lists, selection is visible in dropdown menus
 -issue#4330: Automation attempts to call undefined debug function
+-issue#4333: Fix IPv6 ping
 -feature#4258: Update phpseclib to version 2.0.31
 -feature#4283: Cacti Plugin Authors need to extend $alternates support to include 'worker-src' for services like Google Map API on newer browsers
 -feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel
