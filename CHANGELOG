@@ -2,38 +2,39 @@ B
 Cacti CHANGELOG
 
 1.2.18
--security#4261: Lack of escaping on file input fields can lead to XSS exposure under midwinter theme
--security#4276: Lack of escaping on parameter graph_nolegend can lead to XSS exposure in graph_realtime.php
--security#4282: Regenerate session id to avoid session fixation issue
+-security#4261: Lack of escaping on template import can lead to XSS exposure under 'midwinter' theme (CVE-2020-14424) by ddb4github
+-security#4276: Real time graphs can expose XSS issue by ddb4github
+-security#4282: Session IDs are not always recreated when logging out under PHP 5 by ddb4github
 -issue#4250: Unable to create graphs due to Data Source verification failure
 -issue#4254: When poller first runs, time since last run produces an error
--issue#4259: A typo in variables.php leads to SQL error
--issue#4263: Percentile not showing on partial data after fix for #3340
--issue#4266: Incomplete Poller items from a previous run may be updated twice
--issue#4267: SNMP library can display extra warning messages when host does not resolve
--issue#4269: Installation Wizard - Uncaught Error: Call to undefined function cacti_snmp_session()
+-issue#4259: Data Template caching does not update and causes errors
+-issue#4263: Graphs with multiple data sources can no longer display percenticles
+-issue#4266: Incomplete items from a previous polling session may be updated twice
+-issue#4267: Unnecessary warnings appear when host name is not resolved
+-issue#4269: Installation Wizard can become stuck when creating graphs for default device
 -issue#4271: Continued timeout of registered processes
--issue#4272: dns_get_record(): A temporary server error occurred
--issue#4273: 1.2.17 add_device.php snmpget erros when template id is given
+-issue#4272: Unexpected errors may appear when using hostnames without a DNS domain
+-issue#4273: When adding a device from command line, testing of data sources can cause errors to be recorded
 -issue#4274: When you start to zoom a graph, the auto graph refresh should be disabled
 -issue#4279: Default Setting "Device Threads" will not be saved correctly
 -issue#4284: Database upgrade can fail - Uncaught argument count error
 -issue#4293: Tree search does not take hosts belonging to a site into account
+-issue#4284: Whilst upgrading, errors in upgrade scripts prevent properly execution
 -issue#4294: Tables outside of pre-built list that need fixing, cause bad unknown column errors
--issue#4295: If a page contains multiple tables, a larger table can cause smaller ones to lose columns.
--issue#4297: RegEx not working in Graph Filters
--issue#4312: ERROR PHP NOTICE: Undefined variable: cactiphp in file: /usr/share/cacti/cmd.php on line: 735
+-issue#4295: If a page contains multiple tables, a larger table can cause small ones to lose columns
+-issue#4297: Unable to search using regular expressions when trying to filter graphs
+-issue#4312: When using CMD.PHP as the poller, warnings can appear if you only use a subset of data input types
 -issue#4314: When disabling the snmpagent, you can introduce significant delay to data collection
--issue#4315: If Cacti runs out of resources (file descriptions via a ulimit) and DSStats is running, don't flood the Cacti log with errors
+-issue#4315: Reduce repeatative warnings when resources are exhausted
 -issue#4316: Remove Spikes CLI interface is unable to provide localized spike, gap fill or float operations
--issue#4321: RRDtool Updates might cause gaps due to lock of locking during RRDTOOL updates when using RRDtool 1.4 or Less
--issue#4324: Date/Time format of replacement fild on graph cannot be changed
--issue#4325: Make identifying rows when editing graph items easier
--issue#4326: When using large lists, selection is visible in dropdown menus
+-issue#4321: Earlier versions of RRDTool do not correctly ignore previous updates
+-issue#4324: Date/Time format of replacement field on graph cannot be changed
+-issue#4325: When editing graph items, make identifying rows easier
+-issue#4326: When using large lists, ensure selection is visible in dropdown menus
 -issue#4330: Automation attempts to call undefined debug function
--issue#4333: Fix IPv6 ping
--feature#4258: Update phpseclib to version 2.0.31
--feature#4283: Cacti Plugin Authors need to extend $alternates support to include 'worker-src' for services like Google Map API on newer browsers
+-issue#4333: Under FreeBSD, allow ping to work properly for IPv6
+-feature#4258: Update phpseclib to 2.0.31 by DavidLiedke
+-feature#4283: Content Security Policy may block Plugin functionality
 -feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel
 -feature#4322: Update pace.js to version 1.2.4
 
