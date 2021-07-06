@@ -1397,7 +1397,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
  * @param $page_nr      - (int) the page we want to show rows for
  * @param $total_rows   - (int) the total number of rows in the logfile
  */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows = 0, $field_map = null) {
+function tail_file(string $file_name, int $number_of_lines, ?int $message_type = -1, ?string $filter = '', ?int &$page_nr = 1, ?int &$total_rows = 0, ?array $field_map = array()): array {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
