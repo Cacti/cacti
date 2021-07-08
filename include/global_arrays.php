@@ -666,6 +666,7 @@ $sampling_intervals = array(
 	60    => __('Every Minute'),
 	300   => __('Every %d Minutes', 5),
 	600   => __('Every %d Minutes', 10),
+	900   => __('Every %d Minutes', 15),
 	1200  => __('Every %d Minutes', 20),
 	1800  => __('Every %d Minutes', 30),
 	3600  => __('Every Hour'),
