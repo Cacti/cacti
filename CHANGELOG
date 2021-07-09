@@ -3,6 +3,7 @@ Cacti CHANGELOG
 
 1.2.19
 -issue#4342: Tree Graph shows same highlighting as graph edit screen
+-issue#4343: Undefined variable realtimeArray in JavaScript
 
 1.2.18
 -security#4261: Lack of escaping on template import can lead to XSS exposure under 'midwinter' theme (CVE-2020-14424) by ddb4github

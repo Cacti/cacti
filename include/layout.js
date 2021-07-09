@@ -3637,7 +3637,9 @@ function initializeGraphs(disable_cache) {
 					serverTimeOffset : timeOffset
 				});
 
-				realtimeArray[data.local_graph_id] = false;
+				if (typeof(realtimeArray) != 'undefined') {
+					realtimeArray[data.local_graph_id] = false;
+				}
 
 				if (!--numGraphs) {
 					responsiveResizeGraphs();
