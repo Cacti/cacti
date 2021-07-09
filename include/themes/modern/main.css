@@ -2670,7 +2670,7 @@ td.center > table {
 	z-index: 99;
 }
 
-.tableRowGraph:hover {
+[id*='_edit'] .tableRowGraph:hover {
      background-color: rgba(0, 200, 0, .1) !important;
      border-left: 2px solid yellow !important;
      border-right: 2px solid yellow !important;
