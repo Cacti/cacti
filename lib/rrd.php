@@ -315,7 +315,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			if (!is_resource($process)) {
 				unset($process);
 			} else {
-				fwrite($pipes[0], escape_command($command_line));
+				fwrite($pipes[0], escape_command($command_line) . "\r\nquit\r\n");
 				fclose($pipes[0]);
 				$fp = $pipes[1];
 			}
