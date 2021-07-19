@@ -1,19 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Russian Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-04-10 10:57-0400\n"
-"PO-Revision-Date: 2020-12-31 16:24+0000\n"
-"Last-Translator: Susanin <rusadmin@gmail.com>\n"
-"Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-"
-"x/ru/>\n"
-"Language: ru-RU\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.3.2\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2021-04-10 10:57-0400\nPO-Revision-Date: 2021-07-19 20:34+0000\nLast-Translator: Sergey <sbolshagin@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.3.2\n"
 
 #: about.php:29 include/global_arrays.php:2472 lib/html.php:2454
 msgid "About Cacti"
@@ -8163,7 +8149,7 @@ msgstr "Коллекции Данных"
 
 #: include/global_arrays.php:911 include/global_arrays.php:961 pollers.php:829
 msgid "Data Collectors"
-msgstr "Системы &Сбора Данных"
+msgstr "Системы Сбора Данных"
 
 #: include/global_arrays.php:919 include/global_arrays.php:2745
 msgid "Aggregate"
@@ -15248,7 +15234,7 @@ msgstr "1 колонка"
 #: lib/html_tree.php:1110
 #, php-format
 msgid "%d Columns"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/> Колонки"
+msgstr "%d шт."
 
 #: include/global_settings.php:2381
 #, fuzzy
@@ -21734,7 +21720,7 @@ msgstr "Коллектор"
 
 #: pollers.php:953
 msgid "Collector Name"
-msgstr "Имя сборщика налогов"
+msgstr "Имя сборщика данных"
 
 #: pollers.php:953
 #, fuzzy
