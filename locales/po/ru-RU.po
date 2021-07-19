@@ -1,18 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Russian Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2020-12-28 13:54-0500\n"
-"PO-Revision-Date: 2020-09-13 19:27-0400\n"
-"Last-Translator: Patrick Rademaker\n"
-"Language-Team: KPbIC <Cacti>\n"
-"Language: ru\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 2.4.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2020-12-28 13:54-0500\nPO-Revision-Date: 2021-07-19 20:34+0000\nLast-Translator: Sergey <sbolshagin@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.3.2\n"
 
 #: about.php:29 include/global_arrays.php:2469 lib/html.php:2462
 msgid "About Cacti"
@@ -958,14 +945,12 @@ msgid "Failed to verify token"
 msgstr ""
 
 #: auth_2fa.php:115
-#, fuzzy
 msgid "2FA Verification"
-msgstr "Проверка удаления"
+msgstr "Проверка 2х факторной аутентификации"
 
 #: auth_2fa.php:115
-#, fuzzy
 msgid "2nd Factor Authentication"
-msgstr "Базовая аутентификация через Интернет"
+msgstr "Двухфакторная аутентификация"
 
 #: auth_2fa.php:115
 #, fuzzy
@@ -8200,7 +8185,7 @@ msgstr "Коллекции Данных"
 
 #: include/global_arrays.php:909 include/global_arrays.php:961 pollers.php:862
 msgid "Data Collectors"
-msgstr "Системы &Сбора Данных"
+msgstr "Системы Сбора Данных"
 
 #: include/global_arrays.php:917 include/global_arrays.php:2748
 msgid "Aggregate"
@@ -15434,7 +15419,7 @@ msgstr "1 колонка"
 #: lib/html_tree.php:1112
 #, php-format
 msgid "%d Columns"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/> Колонки"
+msgstr "%d шт."
 
 #: include/global_settings.php:2538
 #, fuzzy
@@ -21928,7 +21913,7 @@ msgstr "Коллектор"
 
 #: pollers.php:990
 msgid "Collector Name"
-msgstr "Имя сборщика налогов"
+msgstr "Имя сборщика данных"
 
 #: pollers.php:990
 #, fuzzy
