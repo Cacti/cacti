@@ -366,9 +366,9 @@ if (!$quietMode) {
 	print "Changing device-id: $device_id to ${host['description']} (${host['hostname']}) as \"${host_templates[$host['host_template_id']]}\" using SNMP v${host['snmp_version']} with community \"${host['snmp_community']}\"\n";
 }
 
-$host_id = api_device_save($device_id, $host['host_template_id'], $host['description'], $host['hostname'],
+$host_id = api_device_save($device_id, $host['host_template_id'], $host['description'], $host['ip'],
 	$host['snmp_community'], $host['snmp_version'], $host['snmp_username'], $host['snmp_password'],
-	$host['snmp_port'], $host['snmp_timeout'], $disable, $host['availability_method'], $host['ping_method'],
+	$host['snmp_port'], $host['snmp_timeout'], $host['disabled'], $host['availability_method'], $host['ping_method'],
 	$host['ping_port'], $host['ping_timeout'], $host['ping_retries'], $host['notes'],
 	$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 	$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['max_oids'], $host['device_threads'],
