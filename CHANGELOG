@@ -1,6 +1,9 @@
 B
 Cacti CHANGELOG
 
+1.2.19
+-feature#4344: Add a 15 minute poller interval to global_arrays.php
+
 1.2.18
 -security#4261: Lack of escaping on template import can lead to XSS exposure under 'midwinter' theme (CVE-2020-14424) by ddb4github
 -security#4276: Real time graphs can expose XSS issue by ddb4github
