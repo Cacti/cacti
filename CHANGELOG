@@ -33,6 +33,7 @@ Cacti CHANGELOG
 -issue#4326: When using large lists, ensure selection is visible in dropdown menus
 -issue#4330: Automation attempts to call undefined debug function
 -issue#4333: Under FreeBSD, allow ping to work properly for IPv6
+-issue#4353: Report duplicity now working properly 
 -feature#4258: Update phpseclib to 2.0.31 by DavidLiedke
 -feature#4283: Content Security Policy may block Plugin functionality
 -feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel
