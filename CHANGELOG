@@ -44,6 +44,7 @@ Cacti CHANGELOG
 -feature#4291: When creating data query associations, auto select matching source
 -feature#4296: Add hyperlink from graph edit page to graph-view
 -feature#4300: Allow GPrint/CDef/VDef to be visibile in graph template item lists
+-issue#4362:   Fix variable in change_device.php
 
 1.2.18
 -security#4261: Lack of escaping on file input fields can lead to XSS exposure under midwinter theme
