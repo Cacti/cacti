@@ -102,8 +102,14 @@ debug("There are '" . cacti_sizeof($poller_data) . "' data source elements to up
 
 /* start rebuilding the poller cache */
 if (cacti_sizeof($poller_data)) {
+	$tcount = 0;
 	foreach ($poller_data as $data) {
-		if (!$debug) print '.';
+		if (!$debug) {
+			$tcount++;
+			print '\n';
+			print "\33[2K\r$tcount / " . count($poller_data) . ' (' .
+				round($tcount/count($poller_data)*100,1) .  '%)';
+		}
 		$local_data_ids[] = $data['id'];
 		$poller_items = array_merge($poller_items, update_poller_cache($data));
 
