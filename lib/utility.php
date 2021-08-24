@@ -639,38 +639,8 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	$local_data_ids  = array();
 	$hosts           = array();
 	$template_fields = array();
-	$sql_where       = '';
 
-	/* setup the sql where, and if using a host, get it's host information */
-	if ($host_id != 0) {
-		/* get all information about this host so we can write it to the data source */
-		$hosts[$host_id] = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' id AS host_id, host.*
-			FROM host WHERE id = ?',
-			array($host_id));
-
-		$sql_where .= ' AND dl.host_id=' . $host_id;
-	}
-
-	/* sql WHERE for local_data_id */
-	if ($local_data_id != 0) {
-		$sql_where .= ' AND dl.id=' . $local_data_id;
-	}
-
-	/* sql WHERE for data_template_id */
-	if ($data_template_id != 0) {
-		$sql_where .= ' AND dtd.data_template_id=' . $data_template_id;
-	}
-
-	$data_sources = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dtd.id,
-		dtd.data_input_id, dtd.local_data_id,
-		dtd.local_data_template_data_id, dl.host_id,
-		dl.snmp_query_id, dl.snmp_index
-		FROM data_local AS dl
-		INNER JOIN data_template_data AS dtd
-		ON dl.id=dtd.local_data_id
-		WHERE dtd.data_input_id>0
-		AND (dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != ''))
-		$sql_where");
+	$data_sources = get_data_sources($host_id, $local_data_id, $data_template_id);
 
 	/* loop through each matching data source */
 	if (cacti_sizeof($data_sources)) {
@@ -751,6 +721,50 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	}
 
 	api_data_source_cache_crc_update($poller_id);
+}
+
+/** get data sources and information about corresponding data templates.
+ * by default, this returns all available sources, but this can be filtered down by
+ * providing a host id and/or data source id, and/or a data template id, and any
+ * combination thereof.
+ * @param int $host_id - id of host, if any
+ * @param int $local_data_id - id of a single data source, if any
+ * @param int $data_template_id - id of data template
+ */
+function get_data_sources($host_id = 0 , $local_data_id = 0, $data_template_id = 0) {
+	$sql_where       = '';
+	/* setup the sql where, and if using a host, get it's host information */
+	if ($host_id != 0) {
+		/* get all information about this host so we can write it to the data source */
+		$hosts[$host_id] = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' id AS host_id, host.*
+			FROM host WHERE id = ?',
+			array($host_id));
+
+		$sql_where .= ' AND dl.host_id=' . $host_id;
+	}
+
+	/* sql WHERE for local_data_id */
+	if ($local_data_id != 0) {
+		$sql_where .= ' AND dl.id=' . $local_data_id;
+	}
+
+	/* sql WHERE for data_template_id */
+	if ($data_template_id != 0) {
+		$sql_where .= ' AND dtd.data_template_id=' . $data_template_id;
+	}
+
+	$data_sources = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dtd.id,
+		dtd.data_input_id, dtd.local_data_id,
+		dtd.local_data_template_data_id, dl.host_id,
+		dl.snmp_query_id, dl.snmp_index
+		FROM data_local AS dl
+		INNER JOIN data_template_data AS dtd
+		ON dl.id=dtd.local_data_id
+		WHERE dtd.data_input_id>0
+		AND (dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != ''))
+		$sql_where");
+
+	return $data_sources;
 }
 
 function data_input_whitelist_check($data_input_id) {
