@@ -246,7 +246,7 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
  * @param int $linenum		- line of error
  * @param array $vars		- additional variables
  */
-function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
+function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	$errno = $errno & error_reporting();
 
 	# return if error handling disabled by @
