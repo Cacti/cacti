@@ -419,7 +419,7 @@ function log_dsstats_statistics($type) {
    @arg $linenum - (int) The line number where the error occurred
    @arg $vars - (mixed) The current state of PHP variables.
    @returns - (bool) always returns true for some reason */
-function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
+function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */
 		$errortype = array(

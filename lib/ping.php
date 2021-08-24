@@ -73,7 +73,7 @@ class Net_Ping
 		$this->request_len = strlen($this->request);
 	}
 
-	function ping_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
+	function ping_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 		return true;
 	}
 
