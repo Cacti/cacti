@@ -192,6 +192,7 @@ if (function_exists('pcntl_signal')) {
 // record the start time
 $poller_start    = microtime(true);
 $overhead_time   = 0;
+$current_time    = time();
 
 // catch the unlikely event that the poller_output_boost is missing
 if (!db_table_exists('poller_output_boost')) {
@@ -213,7 +214,7 @@ $poller_interval = read_config_option('poller_interval');
 $poller_lastrun  = read_config_option('poller_lastrun_' . $poller_id);
 
 // collect the system mibs every 4 hours
-if ($poller_lastrun % 14440 < time() % 14440 || empty($poller_lastrun)) {
+if ($poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
 	$mibs = true;
 }
 
@@ -480,23 +481,24 @@ while ($poller_runs_completed < $poller_runs) {
 		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name
 			FROM poller_output AS po
 			LEFT JOIN data_local AS dl
-			ON po.local_data_id=dl.id
+			ON po.local_data_id = dl.id
 			LEFT JOIN host AS h
-			ON dl.host_id=h.id
-			WHERE h.poller_id = ? OR h.id IS NULL
+			ON dl.host_id = h.id
+			WHERE time < FROM_UNIXTIME(? - 600)
 			LIMIT ' . $issues_limit,
-			array($poller_id));
+			array($current_time));
 	} elseif ($config['connection'] == 'online') {
 		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name
 			FROM poller_output AS po
 			LEFT JOIN data_local AS dl
-			ON po.local_data_id=dl.id
+			ON po.local_data_id = dl.id
 			LEFT JOIN host AS h
-			ON dl.host_id=h.id
-			WHERE (h.poller_id = ? OR h.id IS NULL)
-			AND time < FROM_UNIXTIME(UNIX_TIMESTAMP()-600)
+			ON dl.host_id = h.id
+			WHERE h.poller_id = ?
+			OR h.id IS NULL
+			AND time < FROM_UNIXTIME(? - 600)
 			LIMIT ' . $issues_limit,
-			array($poller_id));
+			array($poller_id, $current_time));
 	} else{
 		$issues = array();
 	}
@@ -505,11 +507,12 @@ while ($poller_runs_completed < $poller_runs) {
 		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 			FROM poller_output AS po
 			LEFT JOIN data_local AS dl
-			ON po.local_data_id=dl.id
+			ON po.local_data_id = dl.id
 			LEFT JOIN host AS h
-			ON dl.host_id=h.id
-			WHERE h.poller_id = ? OR h.id IS NULL',
-			array($poller_id));
+			ON dl.host_id = h.id
+			WHERE (h.poller_id = ? OR h.id IS NULL)
+			AND time < FROM_UNIXTIME(? - 600)',
+			array($poller_id, $current_time));
 
 		if (cacti_sizeof($issues)) {
 			$issue_list =  'DS[';
@@ -535,9 +538,9 @@ while ($poller_runs_completed < $poller_runs) {
 			ON po.local_data_id = dl.id
 			LEFT JOIN host AS h
 			ON dl.host_id = h.id
-			WHERE h.poller_id = ?
-			OR h.id IS NULL',
-			array($poller_id));
+			WHERE (h.poller_id = ? OR h.id IS NULL)
+			AND time < FROM_UNIXTIME(? - 600)',
+			array($poller_id, $current_time));
 	}
 
 	// mainline
