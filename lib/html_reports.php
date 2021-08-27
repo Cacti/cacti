@@ -1572,7 +1572,7 @@ function reports() {
 		$sql_where");
 
 	$reports_list = db_fetch_assoc("SELECT
-		user_auth.full_name,
+		user_auth.full_name, user_auth.username,
 		reports.*,
 		CONCAT_WS('', intrvl, ' ', count, ' ', offset, '') AS cint
 		FROM reports
@@ -1634,7 +1634,7 @@ function reports() {
 
 			if (is_reports_admin()) {
 				if (reports_html_account_exists($report['user_id'])) {
-					form_selectable_ecell($report['full_name'], $report['id']);
+					form_selectable_ecell($report['full_name'] ? $report['full_name'] : $report['username'], $report['id']);
 				} else {
 					form_selectable_cell(__('Report Disabled - No Owner'), $report['id']);
 				}

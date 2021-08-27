@@ -33,6 +33,7 @@ Cacti CHANGELOG
 -issue#4326: When using large lists, ensure selection is visible in dropdown menus
 -issue#4330: Automation attempts to call undefined debug function
 -issue#4333: Under FreeBSD, allow ping to work properly for IPv6
+-issue#4367: Report owner - show at least the username when the full name is empty 
 -issue#4353: Report duplicity now working properly 
 -feature#4258: Update phpseclib to 2.0.31 by DavidLiedke
 -feature#4283: Content Security Policy may block Plugin functionality
