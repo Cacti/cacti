@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#3636: Spikekill method variable is misinterpreted when calculating overall statistics
 -issue#3675: Spikekill fills in NaN values outside specified time range
 -issue#3793: Calling function read_config_option in plugin's setup.php leads to error
+-issue#4376: Fixes error callbacks for php 8.0+
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1523: Value above RRD maximum value
 -feature#2437: Create system-wide Proxy settings for plugins
