@@ -1,10 +1,10 @@
-B
 Cacti CHANGELOG
 
 1.2.19
--feature#4344: Add a 15 minute poller interval to global_arrays.php
+-issue#4341: Missing sequence field leads to errors in system logs
 -issue#4375: When poller_output table is filling over time on the main poller, it can wind up into a critical situation blocking boost.
 -issue#4381: Fatal Errors can occur if you are not in a transaction and you attempt to commit one
+-feature#4344: Add a 15 minute poller interval to global_arrays.php
 
 1.2.18
 -security#4261: Lack of escaping on template import can lead to XSS exposure under 'midwinter' theme (CVE-2020-14424) by ddb4github
@@ -38,8 +38,8 @@ Cacti CHANGELOG
 -issue#4326: When using large lists, ensure selection is visible in dropdown menus
 -issue#4330: Automation attempts to call undefined debug function
 -issue#4333: Under FreeBSD, allow ping to work properly for IPv6
--issue#4367: Report owner - show at least the username when the full name is empty 
--issue#4353: Report duplicity now working properly 
+-issue#4367: Report owner - show at least the username when the full name is empty
+-issue#4353: Report duplicity now working properly
 -feature#4258: Update phpseclib to 2.0.31 by DavidLiedke
 -feature#4283: Content Security Policy may block Plugin functionality
 -feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel
