@@ -1290,7 +1290,9 @@ function db_commit_transaction($db_conn = false) {
 		}
 	}
 
-	return $db_conn->commit();
+	if (db_fetch_cell('SELECT @@in_transaction') > 0) {
+		return $db_conn->commit();
+	}
 }
 
 /* db_rollback_transaction - rollback a transaction

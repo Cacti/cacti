@@ -1928,7 +1928,9 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		return true;
 	}
 
-	$r = db_fetch_row_prepared('SELECT *, IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded, UNIX_TIMESTAMP() AS `current_timestamp`
+	$r = db_fetch_row_prepared('SELECT *,
+		IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded,
+		UNIX_TIMESTAMP() AS `current_timestamp`
 		FROM processes
 		WHERE tasktype = ?
 		AND taskname = ?
@@ -1982,7 +1984,7 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
 	}
 
 	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
-		VALUES (?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())',
+		VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
 		array($tasktype, $taskname, $taskid, $pid, $timeout));
 }
 
@@ -2028,11 +2030,11 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
 	}
 
 	db_execute_prepared('UPDATE processes
-		SET last_update = ?
+		SET last_update = NOW()
 		WHERE tasktype = ?
 		AND taskname = ?
 		AND taskid = ?',
-		array(date('Y-m-d H:i:s'), $tasktype, $taskname, $taskid));
+		array($tasktype, $taskname, $taskid));
 }
 
 /** timeout_kill_registered_processes - allow a Cacti plugin or scheduled task to
