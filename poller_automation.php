@@ -50,9 +50,12 @@ if ($config['poller_id'] > 1) {
 		db_force_remote_cnn();
 	} else {
 		cacti_log('WARNING: Main Cacti database offline or in recovery.  Can not run automation', false, 'AUTOM8');
+                admin_email(__('Cacti System Warning'), __('WARNING: Main Cacti database offline or in recovery'));
+	}
+
 		exit(1);
 	}
-}
+#}
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
  * @arg $signo  - (int) the signal that was thrown by the interface.
@@ -844,7 +847,7 @@ function discoverDevices($network_id, $thread) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_TEXT_CLI;
+	$version = get_cacti_version();
     print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
@@ -1054,7 +1057,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 				$table_new .= '<tr><td colspan="5"</td>&nbsp;</td></tr>';
 			}
 
-			$v = CACTI_VERSION;
+			$v = get_cacti_version();
 			$headers['User-Agent'] = 'Cacti-Automation-v' . $v;
 
 			$status = ($count_new + $count_exist) . ' devices discovered';
