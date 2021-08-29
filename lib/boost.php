@@ -51,7 +51,7 @@ function boost_get_total_rows() {
 		OR table_name LIKE 'poller_output_boost')");
 }
 
-function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
+function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */
 		$errortype = array(
