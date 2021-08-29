@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#4381: Fatal Errors can occur if you are not in a transaction and you attempt to commit one
 -issue#4383: Fixes error callbacks for php 8.0+
 -feature#4344: Add a 15 minute poller interval to global_arrays.php
+-feature#4385 Add additional admin email notifications
 
 1.2.18
 -security#4261: Lack of escaping on template import can lead to XSS exposure under 'midwinter' theme (CVE-2020-14424) by ddb4github
