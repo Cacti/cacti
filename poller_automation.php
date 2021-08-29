@@ -50,9 +50,12 @@ if ($config['poller_id'] > 1) {
 		db_force_remote_cnn();
 	} else {
 		cacti_log('WARNING: Main Cacti database offline or in recovery.  Can not run automation', false, 'AUTOM8');
+                admin_email(__('Cacti System Warning'), __('WARNING: Main Cacti database offline or in recovery'));
+	}
+
 		exit(1);
 	}
-}
+#}
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
  * @arg $signo  - (int) the signal that was thrown by the interface.
