@@ -41,6 +41,7 @@ function sig_handler($signo) {
 	case SIGTERM:
 	case SIGINT:
 		cacti_log('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID');
+                admin_email(__('Cacti System Warning'), __('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID'));
 		exit(1);
 		break;
 	default:
