@@ -296,6 +296,9 @@ function snmpagent_poller_exiting($poller_index = 1){
 	try
 	{
 		$poller = $mc->table('cactiApplPollerTable')->row($poller_index)->select();
+		if ($poller == false) {
+			throw new Exception('Unable to find a poller');
+		}
 
 		$varbinds = array(
 			'cactiApplPollerIndex'     => $poller_index,

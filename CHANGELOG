@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#4343: Undefined variable realtimeArray in JavaScript
 -issue#4375: When poller_output table is filling over time on the main poller, it can wind up into a critical situation blocking boost.
 -issue#4381: Fatal Errors can occur if you are not in a transaction and you attempt to commit one
+-issue#4382: SNMP Agent may not find a cache item
 -issue#4383: Fixes error callbacks for php 8.0+
 -feature#4344: Add a 15 minute poller interval to global_arrays.php
 
