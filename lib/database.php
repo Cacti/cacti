@@ -185,7 +185,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
-function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext) {
+function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext = []) {
 	throw new Exception($errstr, $errno);
 }
 

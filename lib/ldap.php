@@ -369,7 +369,7 @@ class Ldap {
 		return true;
 	}
 
-	function ErrorHandler($level, $message, $file, $line, $context) {
+	function ErrorHandler($level, $message, $file, $line, $context = []) {
 		return true;
 	}
 
