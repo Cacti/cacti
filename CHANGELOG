@@ -284,7 +284,7 @@ Cacti CHANGELOG
 
 1.2.13
 -security#3544: jQuery XSS vulnerabilities require vendor package update (CVE-2020-11022 / CVE-2020-11023)
--security#3549: Lack of escaping on some pages can lead to XSS exposure
+-security#3549: Lack of escaping on some pages can lead to XSS exposure (CVE-2020-23226)
 -security#3582: Update PHPMailer to 6.1.6 (CVE-2020-13625)
 -security#3622: SQL Injection vulnerability due to input validation failure when editing colors (CVE-2020-14295)
 -security#3628: Lack of escaping on template import can lead to XSS exposure
