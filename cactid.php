@@ -41,6 +41,7 @@ function sig_handler($signo) {
 	case SIGTERM:
 	case SIGINT:
 		cacti_log('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID');
+		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID'));
 		exit(1);
 		break;
 	default:
@@ -127,6 +128,7 @@ if (!$foreground) {
 			// We are the child
 		} else {
 			cacti_log('NOTE: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']');
+			admin_email(__('Cacti System Notice'), __('Notice: Cacti Daemon PID[' . getmypid() . '] Started on Device[' . gethostname() . ']', true, 'CACTID'));
 
 			print '[OK]' . PHP_EOL;
 
