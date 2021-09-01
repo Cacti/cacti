@@ -307,7 +307,7 @@ function boost_prepare_process_table() {
 			/* if the runtime was exceeded, allow the next process to run */
 			if ($previous_start_time + $max_run_duration < $start_time) {
 				cacti_log('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', false, 'BOOST SVR');
-                                admin_email(__('Cacti System Warning'), __('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', 'BOOST SVR'  ));
+				admin_email(__('Cacti System Warning'), __('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', 'BOOST SVR'  ));
 
 			}
 		}
