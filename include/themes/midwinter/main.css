@@ -2730,7 +2730,7 @@ td.center > table {
     #padding-top: 260px;
 }
 
-.next_gen {
+.compact {
     display: none;
 }
 
@@ -2770,19 +2770,19 @@ td.center > table {
         text-align: unset;
     }
 
-    #next_gen_tab_menu {
+    #compact_tab_menu {
         width: 100%;
         padding: 2em 0;
     }
 
-    #next_gen_user_menu {
+    #compact_user_menu {
         width: 100%;
         position: absolute;
         bottom: 2em;
         padding-top: 2em;
     }
 
-    #next_gen_user_menu .menuitem ul {
+    #compact_user_menu .menuitem ul {
         top: auto !important;
         bottom: 36px !important;
     }
@@ -2793,48 +2793,48 @@ td.center > table {
         background-color: var(--background);
     }
 
-    html[data-theme-mode='next_gen'] .cactiPageHead,
-    html[data-theme-mode='next_gen'] .cactiPageBottom {
+    html[data-theme-mode='compact'] .cactiPageHead,
+    html[data-theme-mode='compact'] .cactiPageBottom {
         display: none;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea {
         overflow-y: visible !important;
         width: 60px !important;
         position: relative;
         box-shadow: 5px 0 10px -5px #0d0e15;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .next_gen{
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact{
         display: block;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea #nav li ul li a,
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .nav li ul li a {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea #nav li ul li a,
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .nav li ul li a {
         padding: 2px 4px 2px 2em;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea #menu {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea #menu {
         margin-bottom: 40px;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menu_glyph {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_glyph {
         color: #7e818f;
         font-size: 1.2em;
         padding-left: 8px;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menu_parent:not(.active) {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_parent:not(.active) {
         color: #3d3d3d;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem {
         position: relative;
         overflow: hidden;
         z-index: 850;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem:hover {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover {
         overflow: visible;
         z-index: 900;
         background-color: #0d0e15;
@@ -2842,7 +2842,7 @@ td.center > table {
         width: 230px;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem span{
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem span{
         display: none !important;
         width: 155px;
         left: 50px;
@@ -2851,12 +2851,12 @@ td.center > table {
         margin-left: 3em !important;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem:hover span {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover span {
         display: inline-block !important;
         animation: dropdown-anim .15s ease-in-out .1s forwards;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem ul {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem ul {
         display: none !important;
         width: 180px;
         left: 62px;
@@ -2867,11 +2867,11 @@ td.center > table {
         animation: dropdown-anim .15s ease-in-out .1s forwards;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem:hover ul {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover ul {
         display: inline-block !important;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleContentArea #filterTableOnTop {
+    html[data-theme-mode='compact'] .cactiConsoleContentArea #filterTableOnTop {
         padding-top: 2em;
     }
 }

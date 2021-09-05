@@ -3,7 +3,7 @@ var pageName = basename($(location).attr('pathname'));
 
 function themeReady() {
     /* load default values */
-    initStorageItem('midWinter_GUI_Mode', 'legacy');
+    initStorageItem('midWinter_GUI_Mode', 'standard');
     initStorageItem('midWinter_Color_Mode', 'light');
     initStorageItem('midWinter_Color_Mode_Auto', 'on');
 
@@ -20,7 +20,7 @@ function setupTheme() {
     let midWinter_Color_Mode = storage.get('midWinter_Color_Mode');
     let midWinter_Color_Mode_Auto = storage.get('midWinter_Color_Mode_Auto');
 
-    // -- legacy mode -- add user tabs to CactiPageHeader
+    // -- standard mode -- add user tabs to CactiPageHeader
     if ($('.usertabs').length === 0) {
         $('.infoBar, .menuHr, #userDocumentation, #userCommunity').remove();
         $('.loggedInAs').show();
@@ -51,7 +51,7 @@ function setupTheme() {
 
         let theme_switches =
             '<li><hr class="menu"></li>'
-            +'<li><a href="#" class="toggleGuiMode">'+newInterface+'</a></li>'
+            +'<li><a href="#" class="toggleGuiMode">'+compactGraphicalUserInterface+'</a></li>'
             +'<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
             +'<li><a href="#" class="toggleColorModeAuto">'+(midWinter_Color_Mode_Auto === 'on' ? ignorePreferredColorTheme : usePreferredColorTheme)+'</a></li>'
             +'<li><hr class="menu"></li>';
@@ -59,8 +59,8 @@ function setupTheme() {
 
     }
 
-    // -- legacy & new mode -- redesign navigation tabs
-    let next_gen_tab_menu_content =
+    // -- standard & new mode -- redesign navigation tabs
+    let compact_tab_menu_content =
         '<ul class="nav">'
         +   '<li class="menuitem" id="menu_tab_dashboard">'
         +       '<a class="menu_parent active" href="#">'
@@ -84,7 +84,7 @@ function setupTheme() {
                 +'</ul>';
             $('<div class="dropdownMenu">'+ submenu_tab_graphs_content +'</div>').appendTo('body');
 
-            next_gen_tab_menu_content +=
+            compact_tab_menu_content +=
                 '<li><hr class="menu"></li>'
                 +'<li><a class="hyperLink" id="tab-graphs-tree-view" href="'+urlPath+'graph_view.php?action=tree">'+treeView+'</a></li>'
                 +'<li><a class="hyperLink" id="tab-graphs-list-view" href="'+urlPath+'graph_view.php?action=list">'+listView+'</a></li>'
@@ -92,32 +92,32 @@ function setupTheme() {
                 +'<li><hr class="menu"></li>';
 
         }else {
-            next_gen_tab_menu_content += '<li><a class="hyperLink" href="'+ $(this).attr('href') +'">'+ $('.text_'+id).text() +'</a></li>';
+            compact_tab_menu_content += '<li><a class="hyperLink" href="'+ $(this).attr('href') +'">'+ $('.text_'+id).text() +'</a></li>';
         }
     });
-    next_gen_tab_menu_content += '</ul></li></ul>';
+    compact_tab_menu_content += '</ul></li></ul>';
 
-    // -- nextgen mode -- redesign console navigation area
+    // -- compact mode -- redesign console navigation area
     if($('.cactiConsoleNavigationArea').length !== 0) {
 
-        if($('#next_gen_tab_menu').length === 0 && $('#next_gen_user_menu').length === 0) {
+        if($('#compact_tab_menu').length === 0 && $('#compact_user_menu').length === 0) {
 
             // -- split the navigation area into 3 parts to separate tabs, settings and user menus
             let menu = $('#menu').detach();
             $('.cactiConsoleNavigationArea').empty().prepend(
-                '<div class="next_gen" id="next_gen_tab_menu"></div>'
-                +'<div class="next_gen" id="next_gen_user_menu"></div>'
+                '<div class="compact" id="compact_tab_menu"></div>'
+                +'<div class="compact" id="compact_user_menu"></div>'
             );
-            $(menu).insertAfter('#next_gen_tab_menu');
+            $(menu).insertAfter('#compact_tab_menu');
 
-            // -- duplicate the console tab items and add them to the console navigation area for next_gen mode
-            if ($.trim($('next_gen_tab_menu').html()) === '') {
-                $(next_gen_tab_menu_content).appendTo('#next_gen_tab_menu');
+            // -- duplicate the console tab items and add them to the console navigation area for compact mode
+            if ($.trim($('compact_tab_menu').html()) === '') {
+                $(compact_tab_menu_content).appendTo('#compact_tab_menu');
             }
 
-            // -- nextgen mode --
+            // -- compact mode --
             /* user menus are close to the button, so we have write the items the other way around */
-            let next_gen_user_menu_content =
+            let compact_user_menu_content =
                 '<ul class="nav">'
                 +   '<li class="menuitem" id="menu_user_help">'
                 +       '<a class="menu_parent active" href="#">'
@@ -143,7 +143,7 @@ function setupTheme() {
                 +       '<ul>'
                 +           '<li><a href="/cacti/cacti/logout.php">'+logout+'</a></li>'
                 +           '<li><hr class="menu"></li>'
-                +           '<li><a href="#" class="toggleGuiMode">'+legacyInterface+'</a></li>'
+                +           '<li><a href="#" class="toggleGuiMode">'+standardGraphicalUserInterface+'</a></li>'
                 +           '<li><a href="#" class="toggleColorMode">'+(midWinter_Color_Mode === 'light' ? darkColorMode : lightColorMode)+'</a></li>'
                 +           '<li><a href="#" class="toggleColorModeAuto">'+(midWinter_Color_Mode_Auto === 'on' ? ignorePreferredColorTheme : usePreferredColorTheme)+'</a></li>'
                 +           '<li><hr class="menu"></li>'
@@ -152,7 +152,7 @@ function setupTheme() {
                 +       '</ul>'
                 +   '</li>'
                 +'</ul>';
-            $(next_gen_user_menu_content).appendTo('#next_gen_user_menu');
+            $(compact_user_menu_content).appendTo('#compact_user_menu');
         }
     }
 
@@ -395,7 +395,7 @@ function toggleGuiMode() {
     let storage = Storages.localStorage;
     let midWinter_GUI_Mode = storage.get('midWinter_GUI_Mode');
 
-    midWinter_GUI_Mode = (midWinter_GUI_Mode === 'legacy') ? 'next_gen' : 'legacy';
+    midWinter_GUI_Mode = (midWinter_GUI_Mode === 'standard') ? 'compact' : 'standard';
     storage.set('midWinter_GUI_Mode', midWinter_GUI_Mode);
 
     setDocumentAttribute('theme-mode', midWinter_GUI_Mode);
