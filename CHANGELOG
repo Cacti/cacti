@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#4342: Tree Graph shows same highlighting as graph edit screen
 -issue#4343: Undefined variable realtimeArray in JavaScript
 -issue#4347: race with proc_open leads to blocked rrdtool processes
+-issue#4353: Report duplicity now working properly
 -issue#4375: When poller_output table is filling over time on the main poller, it can wind up into a critical situation blocking boost.
 -issue#4381: Fatal Errors can occur if you are not in a transaction and you attempt to commit one
 -issue#4382: SNMP Agent may not find a cache item
@@ -45,7 +46,6 @@ Cacti CHANGELOG
 -issue#4330: Automation attempts to call undefined debug function
 -issue#4333: Under FreeBSD, allow ping to work properly for IPv6
 -issue#4367: Report owner - show at least the username when the full name is empty
--issue#4353: Report duplicity now working properly
 -feature#4258: Update phpseclib to 2.0.31 by DavidLiedke
 -feature#4283: Content Security Policy may block Plugin functionality
 -feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel
