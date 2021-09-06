@@ -486,6 +486,80 @@ if (!defined('LDAP_OPT_X_TLS_NEVER')) {
 	define('LDAP_OPT_X_TLS_TRY', 4);
 }
 
-
 define('CACTI_VERSION_FORMAT_SHORT', 0);
 define('CACTI_VERSION_FORMAT_FULL', 1);
+
+/* constants primarily of use in the CLI. */
+if (defined('CACTI_CLI_ONLY')) {
+	define('CLI_BEL',                        0x7);   # bell: beep and/or flash
+	define('CLI_TAB',                        0x9);   # tab (also available as \t)
+	define('CLI_CR',                         0xD);   # carriage return (also available as \r)
+	define('CLI_ESC',                        0x1B);  # yes, your escape button sends this
+
+	# control characters primarily of use for TUI's. Search the net for a
+	# comprehensive reference on these, in here we need to be brief. basically
+	# you'll begin with a CSI, followed by parameters, and end with a particular
+	# "command" (which essientially dictates what the preceeding parameters do).
+	define('CLI_CSI',              CLI_ESC . 0x9B);  # begin a control sequence
+
+	# these are shorthands and conclude a sequence directly
+	define('CLI_EL_WHOLE',                   '2K');  # clear whole line
+
+	# SGR sequences can be combined by delimiting them with semicolons.
+	define('CLI_SGR_END',                     'm');  # concludes an SGR sequence
+	define('CLI_SGR_RESET',                     0);  # reset all SGR attrs
+	define('CLI_SGR_BOLD',                      1);  # bold
+	define('CLI_SGR_BOLD',                      2);  # dim
+	define('CLI_SGR_BLINK',                     5);  # slow blink
+	define('CLI_SGR_BLINK_FAST',	            6);  # rapid blink
+
+	# color. these are SGR sequences, so as noted above, those need to
+	# be concluded with CLI_SGR_END. ommitted 'SGR' from constant name to keep at
+	# least some semblance of brevity.
+	# basic 8 foreground colors
+	define('CLI_FG_BLACK',                     30);
+	define('CLI_FG_RED',                       31);
+	define('CLI_FG_GREEN',                     32);
+	define('CLI_FG_YELLOW',                    33);
+	define('CLI_FG_BLUE',                      34);
+	define('CLI_FG_MAGENTA',                   35);
+	define('CLI_FG_CYAN',                      36);
+	define('CLI_FG_WHITE',                     37);
+
+	# basic 8 foreground colors, bright
+	define('CLI_FG_BRIGHT_BLACK',              90);
+	define('CLI_FG_BRIGHT_RED',                91);
+	define('CLI_FG_BRIGHT_GREEN',              92);
+	define('CLI_FG_BRIGHT_YELLOW',             93);
+	define('CLI_FG_BRIGHT_BLUE',               94);
+	define('CLI_FG_BRIGHT_MAGENTA',            95);
+	define('CLI_FG_BRIGHT_CYAN',               96);
+	define('CLI_FG_BRIGHT_WHITE',              97);
+
+	# basic 8 background colors
+	define('CLI_BG_BLACK',                     40);
+	define('CLI_BG_RED',                       41);
+	define('CLI_BG_GREEN',                     42);
+	define('CLI_BG_YELLOW',                    43);
+	define('CLI_BG_BLUE',                      44);
+	define('CLI_BG_MAGENTA',                   45);
+	define('CLI_BG_CYAN',                      46);
+	define('CLI_BG_WHITE',                     47);
+
+	# basic 8 background colors, bright
+	define('CLI_BG_BRIGHT_BLACK',             100);
+	define('CLI_BG_BRIGHT_RED',               101);
+	define('CLI_BG_BRIGHT_GREEN',             102);
+	define('CLI_BG_BRIGHT_YELLOW',            103);
+	define('CLI_BG_BRIGHT_BLUE',              104);
+	define('CLI_BG_BRIGHT_MAGENTA',           105);
+	define('CLI_BG_BRIGHT_CYAN',              105);
+	define('CLI_BG_BRIGHT_WHITE',             107);
+
+	# 256 color sequence. these need to be followed by a colour number,
+	# and finished just like above with CLI_SGR_END.
+	# available colors are documented widely in the web.
+	define('CLI_CSI_FG_256COL', CLI_CSI . '38;5;'); # foreground
+	define('CLI_CSI_BG_256COL', CLI_CSI . '48;5;'); # background
+
+}

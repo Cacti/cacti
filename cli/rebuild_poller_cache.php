@@ -131,8 +131,16 @@ debug("There are '" . cacti_sizeof($poller_data) . "' data source elements to up
 
 /* start rebuilding the poller cache */
 if (cacti_sizeof($poller_data)) {
+	if (!$debug) {
+		$tcount = 0;
+		print '\n';
+	}
 	foreach ($poller_data as $data) {
-		if (!$debug) print '.';
+		if (!$debug) {
+			$tcount++;
+			print CLI_CSI . CLI_EL_WHOLE . CLI_CR . "$tcount / " . count($poller_data) .
+			' (' . round($tcount/count($poller_data)*100,1) .  '%)';
+		}
 		$local_data_ids[] = $data['id'];
 		$poller_items = array_merge($poller_items, update_poller_cache($data));
 

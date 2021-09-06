@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -feature#3943: Add hooks for plugins to show customize graph source and customize template url (List View)
 -feature#4296: Add hyperlink from graph edit page to graph-view
 -feature#4300: Allow GPrint/CDef/VDef to be visibile in graph template item lists
+-feature#4339: Change CLI progress output for rebuilding poller cache
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
