@@ -496,12 +496,12 @@ if (defined('CACTI_CLI_ONLY')) {
 	define('CLI_BEL',							0x7);   # bell: beep and/or flash
 	define('CLI_TAB',							0x9);   # tab (also available as \t)
 	define('CLI_CR',							0xD);   # carriage return (also available as \r)
+	define('CLI_ESC',							0x1B);  # yes, your escape button sends this
 
 	# control characters primarily of use for TUI's. Search the net for a
 	# comprehensive reference on these, in here we need to be brief. basically
 	# you'll begin with a CSI, followed by parameters, and end with a particular
 	# "command" (which essientially dictates what the preceeding parameters do).
-	define('CLI_ESC',							0x1B);
 	define('CLI_CSI',							CLI_ESC . 0x9B); # begin a control sequence
 
 	# these are shorthands and conclude a sequence directly
