@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#3636: Spikekill method variable is misinterpreted when calculating overall statistics
 -issue#3675: Spikekill fills in NaN values outside specified time range
 -issue#3793: Calling function read_config_option in plugin's setup.php leads to error
+-issue#4362: Fix variable in change_device.php
 -issue#4347: race with proc_open leads to blocked rrdtool processes
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1523: Value above RRD maximum value
@@ -45,7 +46,7 @@ Cacti CHANGELOG
 -feature#4291: When creating data query associations, auto select matching source
 -feature#4296: Add hyperlink from graph edit page to graph-view
 -feature#4300: Allow GPrint/CDef/VDef to be visibile in graph template item lists
--issue#4362:   Fix variable in change_device.php
+-feature#4339: Change CLI progress output for rebuilding poller cache
 
 1.2.18
 -security#4261: Lack of escaping on file input fields can lead to XSS exposure under midwinter theme
