@@ -493,16 +493,16 @@ if (!defined('LDAP_OPT_X_TLS_NEVER')) {
 
 /* constants primarily of use in the CLI. */
 if (defined('CACTI_CLI_ONLY')) {
-	define('CLI_BEL',							0x7);   # bell: beep and/or flash
-	define('CLI_TAB',							0x9);   # tab (also available as \t)
-	define('CLI_CR',							0xD);   # carriage return (also available as \r)
-	define('CLI_ESC',							0x1B);  # yes, your escape button sends this
+	define('CLI_BEL',							"\x7");   # bell: beep and/or flash
+	define('CLI_TAB',							"\x9");   # tab (also available as \t)
+	define('CLI_CR',							"\xD");   # carriage return (also available as \r)
+	define('CLI_ESC',							"\x1B");  # yes, your escape button sends this
 
 	# control characters primarily of use for TUI's. Search the net for a
 	# comprehensive reference on these, in here we need to be brief. basically
 	# you'll begin with a CSI, followed by parameters, and end with a particular
 	# "command" (which essientially dictates what the preceeding parameters do).
-	define('CLI_CSI',							CLI_ESC . 0x9B); # begin a control sequence
+	define('CLI_CSI',							CLI_ESC . "\x5B"); # begin a control sequence
 
 	# these are shorthands and conclude a sequence directly
 	define('CLI_EL_WHOLE',				'2K'); 	# clear whole line
@@ -511,7 +511,7 @@ if (defined('CACTI_CLI_ONLY')) {
 	define('CLI_SGR_END',					'm');   # concludes an SGR sequence
 	define('CLI_SGR_RESET',				0); 		# reset all SGR attrs
 	define('CLI_SGR_BOLD',				1); 		# bold
-	define('CLI_SGR_BOLD',				2); 		# dim
+	define('CLI_SGR_DIM',					2); 		# dim
 	define('CLI_SGR_BLINK',				5); 		# slow blink
 	define('CLI_SGR_BLINK_FAST',	6); 		# rapid blink
 
