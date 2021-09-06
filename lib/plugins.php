@@ -127,7 +127,18 @@ function api_plugin_hook_function($name, $parm = NULL) {
 				}
 				$function = $hdata['function'];
 				if (function_exists($function)) {
+					if (is_array($ret)) {
+						$is_array = true;
+					} else {
+						$is_array = false;
+					}
 					$ret = api_plugin_run_plugin_hook_function($name, $hdata['name'], $function, $ret);
+
+					if (($is_array && !is_array($ret)) || $ret == null) {
+						if (cacti_sizeof($result) > 1) {
+							cacti_log(sprintf("WARNING: Plugin hook '%s' from Plugin '%s' must return the calling array or variable, and it is not doing so.  Please report this to the Plugin author.", $function, $hdata['name']), false);
+						}
+					}
 				}
 			}
 		}
