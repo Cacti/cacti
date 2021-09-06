@@ -558,9 +558,10 @@ if (defined('CACTI_CLI_ONLY')) {
 	define('CLI_BG_BRIGHT_CYAN',			105);
 	define('CLI_BG_BRIGHT_WHITE',			107);
 
-	# 256 color sequence.
-	# available colors are documented widely in the web
+	# 256 color sequence. these need to be followed by a colour number,
+	# and finished just like above with CLI_SGR_END.
+	# available colors are documented widely in the web.
 	define('CLI_CSI_FG_256COL', 			CLI_CSI . '38;5;'); # foreground
-	define('CLI_CSI_BG_256COL', 			CLI_CSI . '38;5;'); # background
+	define('CLI_CSI_BG_256COL', 			CLI_CSI . '48;5;'); # background
 
 }
