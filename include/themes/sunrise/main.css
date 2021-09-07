@@ -233,6 +233,10 @@ label.ui-state-hover > span {
 	white-space: nowrap;
 }
 
+.wrap {
+	white-space: normal !important;
+}
+
 .top {
 	vertical-align: top;
 }
