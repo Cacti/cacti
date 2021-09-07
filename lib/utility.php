@@ -660,24 +660,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 					get_template_fields(array($data_source));
 			}
 
-			/* loop through each field contained in the data template and push out a host value if:
-			 - the field is a valid "host field"
-			 - the value of the field is empty
-			 - the field is set to 'templated' */
+			/* push out host value if necessary */
 			if (cacti_sizeof($template_fields[$data_source['local_data_template_data_id']])) {
-				foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
-					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == '') {
-						// handle special case type_code
-						if ($template_field['type_code'] == 'host_id') {
-							$template_field['type_code'] = 'id';
-						}
-
-						db_execute_prepared('REPLACE INTO data_input_data
-							(data_input_field_id, data_template_data_id, value)
-							VALUES (?, ?, ?)',
-							array($template_field['id'], $data_source['id'], $host[$template_field['type_code']]));
-					}
-				}
+				push_out_data_input_data($data_template_fields, $data_source, $host);
 			}
 
 			/* flag an update to the poller cache as well */
