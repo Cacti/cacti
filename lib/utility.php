@@ -767,6 +767,31 @@ function get_data_sources($host_id = 0 , $local_data_id = 0, $data_template_id =
 	return $data_sources;
 }
 
+/** get template fields&values for given data source(s).
+ * to increase performance, data_sources is expected to be a reference to an
+ * array, not an array directly.
+ *
+ * @param   array &$data_sources - one or more data sources.
+ * @return  array - array, indexed by local_data_template_data_id
+*/
+function get_template_fields(&$data_sources) {
+	$template_fields = array();
+	foreach ($data_sources as $data_source) {
+		if (isset($template_fields[$data_source['local_data_template_data_id']])) continue;
+		$template_fields[$data_source['local_data_template_data_id']] = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
+			did.value, did.t_value, dif.id, dif.type_code
+			FROM data_input_fields AS dif
+			LEFT JOIN data_input_data AS did
+			ON dif.id=did.data_input_field_id
+			WHERE dif.data_input_id = ?
+			AND did.data_template_data_id = ?
+			AND (did.t_value="" OR did.t_value is null)
+			AND dif.input_output = "in"',
+			array($data_source['data_input_id'], $data_source['local_data_template_data_id']));
+	}
+	return $template_fields;
+}
+
 function data_input_whitelist_check($data_input_id) {
 	global $config;
 
