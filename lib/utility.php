@@ -784,6 +784,38 @@ function get_template_fields(&$data_sources) {
 	return $template_fields;
 }
 
+/** this...replaces values in data_input_data. yes, the naming is very opaque,
+ * and so to be honest, i have no idea what exactly this does in terms of cacti's logic.
+ * The code was extracted verbatim from push_out_host().
+ *
+ * This is needed to do a proper flush of the poller cache.
+ *
+ * original description:
+ * loop through each field contained in the data template and push out a host value if:
+ *   - the field is a valid "host field"
+ *   - the value of the field is empty
+ *   - the field is set to 'templated'
+ *
+ * @param array &$data_template_fields - template fields with their values, indexed by
+ * @param array &data_source - a single data source
+ * @param array &$host - a single host data structure
+ */
+function push_out_data_input_data(&$template_fields, &$data_source, &$host) {
+	foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
+		if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == '') {
+			// handle special case type_code
+			if ($template_field['type_code'] == 'host_id') {
+				$template_field['type_code'] = 'id';
+			}
+
+			db_execute_prepared('REPLACE INTO data_input_data
+				(data_input_field_id, data_template_data_id, value)
+				VALUES (?, ?, ?)',
+				array($template_field['id'], $data_source['id'], $host[$template_field['type_code']]));
+		}
+	}
+}
+
 function data_input_whitelist_check($data_input_id) {
 	global $config;
 
