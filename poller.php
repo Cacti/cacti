@@ -890,18 +890,24 @@ function poller_replicate_check() {
 function poller_enabled_check($poller_id) {
 	global $poller_db_cnn_id;
 
-	$disabled = db_fetch_cell_prepared('SELECT disabled
+	$poller_disabled = db_fetch_cell_prepared('SELECT disabled
 		FROM poller
 		WHERE id = ?',
 		array($poller_id), '', true, $poller_db_cnn_id);
 
-	if ($disabled == 'on') {
+	$system_enabled = read_config_option('poller_enabled');
+
+	if ($system_enabled == '') {
+		cacti_log('WARNING: System Polling is Disabled!  Therefore, data collection from the poller will be suspended till re-enabled.', true, 'SYSTEM');
+
+		exit(1);
+	} elseif ($poller_disabled == 'on') {
 		db_execute_prepared('UPDATE poller
 			SET last_status=NOW()
 			WHERE id = ?',
 			array($poller_id), true, $poller_db_cnn_id);
 
-		cacti_log('WARNING: Poller ' . $poller_id . ' is Disabled, graphing or other activities are running', true, 'SYSTEM');
+		cacti_log('WARNING: Poller ' . $poller_id . ' is Disabled.  Therefore, data collection for this Poller will be suspended till it\'s re-enabled.', true, 'SYSTEM');
 
 		exit(1);
 	}

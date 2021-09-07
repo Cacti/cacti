@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#4381: Fatal Errors can occur if you are not in a transaction and you attempt to commit one
 -issue#4382: SNMP Agent may not find a cache item
 -issue#4383: Fixes error callbacks for php 8.0+
+-issue#4391: When system level polling is disabled Boost shows poller crashed errors and creates many arch tables
 -feature: Add a normal/wrap class for general use
 -feature#4344: Add a 15 minute poller interval to global_arrays.php
 -feature#4385: Add additional admin email notifications
