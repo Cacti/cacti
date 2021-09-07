@@ -656,16 +656,8 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 
 			/* get field information FROM the data template */
 			if (!isset($template_fields[$data_source['local_data_template_data_id']])) {
-				$template_fields[$data_source['local_data_template_data_id']] = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-					did.value, did.t_value, dif.id, dif.type_code
-					FROM data_input_fields AS dif
-					LEFT JOIN data_input_data AS did
-					ON dif.id=did.data_input_field_id
-					WHERE dif.data_input_id = ?
-					AND did.data_template_data_id = ?
-					AND (did.t_value="" OR did.t_value is null)
-					AND dif.input_output = "in"',
-					array($data_source['data_input_id'], $data_source['local_data_template_data_id']));
+				$data_template_fields[$data_source['local_data_template_data_id']] =
+					get_template_fields(array($data_source));
 			}
 
 			/* loop through each field contained in the data template and push out a host value if:
