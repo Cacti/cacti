@@ -586,13 +586,19 @@ $snmp_versions = array(0 =>
 $snmp_auth_protocols = array(
 	'[None]' => __('[None]'),
 	'MD5'    => __('MD5'),
-	'SHA'    => __('SHA')
+	'SHA'    => __('SHA'),
+	'SHA224' => __('SHA-224'),
+	'SHA256' => __('SHA-256'),
+	'SHA392' => __('SHA-392'),
+	'SHA512' => __('SHA-512'),
 );
 
 $snmp_priv_protocols = array(
 	'[None]' => __('[None]'),
 	'DES'    => __('DES'),
-	'AES128' => __('AES')
+	'AES128' => __('AES-128'),
+	'AES192' => __('AES-192'),
+	'AES256' => __('AES-256')
 );
 
 $banned_snmp_strings = array(
