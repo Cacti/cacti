@@ -96,6 +96,7 @@ function api_plugin_hook_function($name, $parm = NULL) {
 	static $hook_cache = array();
 
 	$ret = $parm;
+
 	if (defined('IN_CACTI_INSTALL') || !db_table_exists('plugin_hooks')) {
 		return $ret;
 	}
@@ -118,23 +119,33 @@ function api_plugin_hook_function($name, $parm = NULL) {
 		$result = $hook_cache[$name];
 	}
 
+	if (empty($ret)) {
+		$null_ret = true;
+	} else {
+		$null_ret = false;
+	}
+
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated)) {
 				$p[] = $hdata['name'];
+
 				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
 				}
+
 				$function = $hdata['function'];
+
 				if (function_exists($function)) {
 					if (is_array($ret)) {
 						$is_array = true;
 					} else {
 						$is_array = false;
 					}
+
 					$ret = api_plugin_run_plugin_hook_function($name, $hdata['name'], $function, $ret);
 
-					if (($is_array && !is_array($ret)) || $ret == null) {
+					if (($is_array && !is_array($ret)) || ($ret == null && $null_ret === false)) {
 						if (cacti_sizeof($result) > 1) {
 							cacti_log(sprintf("WARNING: Plugin hook '%s' from Plugin '%s' must return the calling array or variable, and it is not doing so.  Please report this to the Plugin author.", $function, $hdata['name']), false);
 						}
