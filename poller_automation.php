@@ -53,8 +53,7 @@ if ($config['poller_id'] > 1) {
 		admin_email(__('Cacti System Warning'), __('WARNING: Main Cacti database offline or in recovery'));
 	}
 
-		exit(1);
-	}
+	exit(1);
 }
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
