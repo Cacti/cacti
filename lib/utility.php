@@ -638,7 +638,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	$poller_items    = array();
 	$local_data_ids  = array();
 	$hosts           = array();
-	$template_fields = array();
+	$data_template_fields = array();
 
 	$data_sources = get_data_sources($host_id, $local_data_id, $data_template_id);
 
@@ -655,15 +655,15 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			$host = $hosts[$data_source['host_id']];
 
 			/* get field information FROM the data template */
-			if (!isset($template_fields[$data_source['local_data_template_data_id']])) {
-				# we must briefly construct an array out of $data_source for get_template_fields()
+			if (!isset($data_template_fields[$data_source['local_data_template_data_id']])) {
+				# we must briefly construct an array out of $data_source for get_data_template_fields()
 				$data_source_arr = array($data_source);
 				$data_template_fields[$data_source['local_data_template_data_id']] =
-					get_template_fields($data_source_arr);
+					get_data_template_fields($data_source_arr);
 			}
 
 			/* push out host value if necessary */
-			if (cacti_sizeof($template_fields[$data_source['local_data_template_data_id']])) {
+			if (cacti_sizeof($data_template_fields[$data_source['local_data_template_data_id']])) {
 				push_out_data_input_data($data_template_fields, $data_source, $host);
 			}
 
@@ -753,7 +753,7 @@ function get_data_sources($host_id = 0 , $local_data_id = 0, $data_template_id =
  * @param   array &$data_sources - one or more data sources.
  * @return  array - array, indexed by local_data_template_data_id
 */
-function get_template_fields(&$data_sources) {
+function get_data_template_fields(&$data_sources) {
 	$template_fields = array();
 	foreach ($data_sources as $data_source) {
 		if (isset($template_fields[$data_source['local_data_template_data_id']])) continue;
@@ -787,8 +787,8 @@ function get_template_fields(&$data_sources) {
  * @param array &data_source - a single data source
  * @param array &$host - a single host data structure
  */
-function push_out_data_input_data(&$template_fields, &$data_source, &$host) {
-	foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
+function push_out_data_input_data(&$data_template_fields, &$data_source, &$host) {
+	foreach ($data_template_fields[$data_source['local_data_template_data_id']] as $template_field) {
 		if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == '') {
 			// handle special case type_code
 			if ($template_field['type_code'] == 'host_id') {
