@@ -656,8 +656,10 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 
 			/* get field information FROM the data template */
 			if (!isset($template_fields[$data_source['local_data_template_data_id']])) {
+				# we must briefly construct an array out of $data_source for get_template_fields()
+				$data_source_arr = array($data_source);
 				$data_template_fields[$data_source['local_data_template_data_id']] =
-					get_template_fields(array($data_source));
+					get_template_fields($data_source_arr);
 			}
 
 			/* push out host value if necessary */
