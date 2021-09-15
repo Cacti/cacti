@@ -1761,16 +1761,17 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 		AND dtd.data_template_id = ?',
 		array($data_template_id));
 
-	dsv_log('data_input',$data_input);
+	dsv_log('data_input', $data_input);
 
 	$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
 		FROM host
 		WHERE id = ?',
 		array($host_id));
 
-	dsv_log('host',$host);
+	dsv_log('host', $host);
 
 	$data_template_data_id = 0;
+
 	if (cacti_sizeof($data_input) && $data_input['active'] == 'on') {
 		$data_template_data_id = $data_input['data_template_data_id'];
 		/* we have to perform some additional sql queries if this is a 'query' */
