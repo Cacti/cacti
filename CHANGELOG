@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#4342: Tree Graph shows same highlighting as graph edit screen
 -issue#4343: Undefined variable realtimeArray in JavaScript
 -issue#4347: race with proc_open leads to blocked rrdtool processes
+-issue#4352: Undefined indexes experienced when attempting to create graph from template
 -issue#4353: Report duplicity now working properly
 -issue#4375: When poller_output table is filling over time on the main poller, it can wind up into a critical situation blocking boost.
 -issue#4381: Fatal Errors can occur if you are not in a transaction and you attempt to commit one
