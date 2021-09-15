@@ -194,35 +194,7 @@ $poller_start    = microtime(true);
 $overhead_time   = 0;
 $current_time    = time();
 
-// catch the unlikely event that the poller_output_boost is missing
-if (!db_table_exists('poller_output_boost')) {
-	db_execute('CREATE TABLE poller_output_boost LIKE poller_output');
-	db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
-}
-
-// catch the unlikely event that the poller_output_boost_processes is missing
-if (!db_table_exists('poller_output_boost_processes')) {
-	db_execute('CREATE TABLE  `poller_output_boost_processes` (
-		`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
-		`status` varchar(255) default NULL,
-		PRIMARY KEY (`sock_int_value`)) 
-		ENGINE=MEMORY');
-}
-
-// catch the unlikely event that the poller_output_realtime is missing
-if (!db_table_exists('poller_output_realtime')) {
-	db_execute('CREATE TABLE poller_output_realtime (
-		local_data_id mediumint(8) unsigned NOT NULL default '0',
-		rrd_name varchar(19) NOT NULL default '',
-		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
-		output text NOT NULL,
-		poller_id varchar(256) NOT NULL default '1',
-		PRIMARY KEY (local_data_id, rrd_name, time, poller_id),
-		KEY poller_id (poller_id(191)),
-		KEY `time` (`time`)) 
-		ENGINE=InnoDB 
-		ROW_FORMAT=Dynamic');
-}
+poller_table_maintenance();
 
 api_plugin_hook('poller_top');
 
@@ -880,6 +852,38 @@ function bad_index_check($mibs) {
 
 			cacti_log('WARNING: You have ' . cacti_sizeof($devices) . ' Devices with bad SNMP Indexes.  Devices: ' . $device_str . ' totalling ' . $bad_indexes . ' Data Sources.  Please Either Re-Index, Delete or Disable these Data Sources.', false, 'POLLER');
 		}
+	}
+}
+
+function poller_table_maintenance() {
+	// catch the unlikely event that the poller_output_boost is missing
+	if (!db_table_exists('poller_output_boost')) {
+		db_execute('CREATE TABLE poller_output_boost LIKE poller_output');
+		db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
+	}
+
+	// catch the unlikely event that the poller_output_boost_processes is missing
+	if (!db_table_exists('poller_output_boost_processes')) {
+		db_execute('CREATE TABLE  `poller_output_boost_processes` (
+			`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
+			`status` varchar(255) default NULL,
+			PRIMARY KEY (`sock_int_value`))
+			ENGINE=MEMORY');
+	}
+
+	// catch the unlikely event that the poller_output_realtime is missing
+	if (!db_table_exists('poller_output_realtime')) {
+		db_execute('CREATE TABLE poller_output_realtime (
+			local_data_id int(10) unsigned NOT NULL default "0",
+			rrd_name varchar(19) NOT NULL default "",
+			`time` timestamp NOT NULL default "0000-00-00 00:00:00",
+			output text NOT NULL,
+			poller_id varchar(256) NOT NULL default "1",
+			PRIMARY KEY (local_data_id, rrd_name, time, poller_id),
+			KEY poller_id (poller_id),
+			KEY `time` (`time`))
+			ENGINE=InnoDB
+			ROW_FORMAT=Dynamic');
 	}
 }
 
