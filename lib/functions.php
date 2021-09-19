@@ -6515,3 +6515,70 @@ function cacti_cookie_session_logout() {
 	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
 }
 
+/**
+ * cacti_time_zone_set - Givin an offset in minutes, attempt
+ * to set a PHP date.timezone.  There are some oddballs that
+ * we have to accomodate.
+ *
+ * @return - null
+ */
+function cacti_time_zone_set($gmt_offset) {
+	$hours     = floor($gmt_offset / 60);
+	$remaining = $gmt_offset % 60;
+
+	if ($remaining == 0) {
+		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+		ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+	} else {
+		$time = ($hours > 0 ? '-':'+') . abs($hours) . ':' . substr('00' . $remaining, -2);
+		$zone = '';
+
+		switch($time) {
+			case '+3:30':
+				$zone = 'IRST';
+				break;
+			case '+4:30':
+				$zone = 'IRDT';
+				break;
+			case '+5:30':
+				$zone = 'IST';
+				break;
+			case '+5:45':
+				$zone = 'NPT';
+				break;
+			case '+6:30':
+				$zone = 'CCT';
+				break;
+			case '+9:30':
+				$zone = 'ACST';
+				break;
+			case '+10:30':
+				$zone = 'ACDT';
+				break;
+			case '+8:45':
+				$zone = 'ACWST';
+				break;
+			case '+12:45':
+				$zone = 'CHAST';
+				break;
+			case '+13:45':
+				$zone = 'CHADT';
+				break;
+			case '-3:30':
+				$zone = 'NST';
+				break;
+			case '-2:30':
+				$zone = 'NDT';
+				break;
+			case '-9:30':
+				$zone = 'MART';
+				break;
+		}
+
+		putenv('TZ=GMT' . $time);
+
+		if ($zone != '') {
+			ini_set('date.timezone', $zone);
+		}
+	}
+}

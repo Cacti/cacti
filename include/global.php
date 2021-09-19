@@ -548,15 +548,9 @@ if ($config['is_web']) {
 	}
 
 	if (isset($_COOKIE['CactiTimeZone'])) {
-		$minutes   = $_COOKIE['CactiTimeZone'];
-		$hours     = floor($minutes / 60);
-		$remaining = $hours % 60;
+		$gmt_offset = $_COOKIE['CactiTimeZone'];
 
-		// Have to get smarter about special zones
-		if ($remaining == 0) {
-			putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
-			ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
-		}
+		cacti_time_zone_set($gmt_offset);
 	}
 }
 
