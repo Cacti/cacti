@@ -548,11 +548,15 @@ if ($config['is_web']) {
 	}
 
 	if (isset($_COOKIE['CactiTimeZone'])) {
-		$minutes = $_COOKIE['CactiTimeZone'];
-		$hours   = $minutes / 60;
+		$minutes   = $_COOKIE['CactiTimeZone'];
+		$hours     = floor($minutes / 60);
+		$remaining = $hours % 60;
 
-		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
-		ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+		// Have to get smarter about special zones
+		if ($remaining == 0) {
+			putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+			ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+		}
 	}
 }
 

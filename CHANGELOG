@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#4383: Fixes error callbacks for php 8.0+
 -issue#4391: When system level polling is disabled Boost shows poller crashed errors and creates many arch tables
 -issue#4396: Two tables 'poller_output_boost_processes' and 'poller_output_realtime' are missing
+-issue#4403: Cacti having issues detecting client timezones
 -feature: Add a normal/wrap class for general use
 -feature#4344: Add a 15 minute poller interval to global_arrays.php
 -feature#4385: Add additional admin email notifications
