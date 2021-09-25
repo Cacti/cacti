@@ -1619,7 +1619,8 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
-	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1, $preview_only, $import_debug_info;
+	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1;
+	global $preview_only, $import_debug_info, $ignorable_type_code_hashes;
 
 	/* track changes */
 	$status = 0;
@@ -1631,8 +1632,22 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 		'332111d8b54ac8ce939af87a7eac0c06', // Get Script Server Data (Indexed)
 	);
 
+	$valid_snmp_port_hashes = array(
+		'c1f36ee60c3dc98945556d57f26e475b',
+		'fc64b99742ec417cc424dbf8c7692d36'
+	);
+
 	// Leave system data input methods alone
 	if (array_search($hash, $system_hashes) !== false) {
+		foreach($xml_array['fields'] as $input_hash => $field) {
+			if ($field['type_code'] == 'snmp_port') {
+				$trimmed_hash = substr($input_hash, 11);
+				if (array_search($trimmed_hash, $valid_snmp_port_hashes) === false) {
+					$ignorable_type_code_hashes[$input_hash] = $input_hash;
+				}
+			}
+		}
+
 		return $hash_cache;
 	}
 
@@ -2077,7 +2092,7 @@ function xml_character_decode($text) {
 }
 
 function import_display_results($import_debug_info, $filestatus, $web = false, $preview = false) {
-	global $hash_type_names;
+	global $hash_type_names, $ignorable_type_code_hashes;
 
 	// Capture to a buffer
 	ob_start();
@@ -2087,52 +2102,52 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 
 		if (cacti_sizeof($filestatus)) {
 			if ($preview) {
-				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Package was imported:') . "</p>\n";
+				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Package was imported:') . '</p>';
 			} else {
-				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items for the Package:') . "</p>\n";
+				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items for the Package:') . '</p>';
 			}
 
-			print "<p><strong>" . __('Package Files') . "</strong></p>\n";
+			print "<p><strong>" . __('Package Files') . "</strong></p>";
 
-			print "<ul>";
+			print '<ul>';
 			foreach($filestatus as $filename => $status) {
-				print "<li>" . ($preview ? __("[preview] "):"") . html_escape($filename) . " [" . $status . "]</li>\n";
+				print '<li>' . ($preview ? __("[preview] "):"") . html_escape($filename) . ' [' . $status . ']</li>';
 			}
-			print "</ul>";
+			print '</ul>';
 		} else {
 			if ($preview) {
-				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Template was imported:') . "</p>\n";
+				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Template was imported:') . '</p>';
 			} else {
-				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items for the Template:') . "</p>\n";
+				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items for the Template:') . '</p>';
 			}
 		}
 
 		foreach ($import_debug_info as $type => $type_array) {
-			print "<p><strong>" . $hash_type_names[$type] . "</strong></p>\n";
+			print "<p><strong>" . $hash_type_names[$type] . "</strong></p>";
 
 			foreach ($type_array as $index => $vals) {
 				if ($vals['result'] == 'success') {
-					$result_text = "<span class='success'>" . __('[success]') . "</span>";
+					$result_text = "<span class='success'>" . __('[success]') . '</span>';
 				} elseif ($vals['result'] == 'fail') {
-					$result_text = "<span class='failed'>" . __('[fail]') . "</span>";
+					$result_text = "<span class='failed'>" . __('[fail]') . '</span>';
 				} else {
-					$result_text = "<span class='success'>" . __('[preview]') . "</span>";
+					$result_text = "<span class='success'>" . __('[preview]') . '</span>';
 				}
 
 				if ($vals['type'] == 'updated') {
-					$type_text = "<span class='updateObject'>" . __('[updated]') . "</span>\n";
+					$type_text = "<span class='updateObject'>" . __('[updated]') . '</span>';
 				} elseif ($vals['type'] == 'new') {
-					$type_text = "<span class='newObject'>" . __('[new]') . "</span>\n";
+					$type_text = "<span class='newObject'>" . __('[new]') . '</span>';
 				} else {
-					$type_text = "<span class='deviceUp'>" . __('[unchanged]') . "</span>\n";
+					$type_text = "<span class='deviceUp'>" . __('[unchanged]') . '</span>';
 				}
 
-				print "<span class='monoSpace'>$result_text " . html_escape($vals['title']) . " $type_text</span><br>\n";
+				print "<span class='monoSpace'>$result_text " . html_escape($vals['title']) . " $type_text</span><br>";
 
 				if (isset($vals['orphans'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['orphans'] as $orphan) {
-						print "<li>" . html_escape($orphan) . "</li>\n";
+						print '<li>' . html_escape($orphan) . '</li>';
 					}
 					print '</ul>';
 				}
@@ -2140,7 +2155,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['new_items'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['new_items'] as $item) {
-						print "<li>" . html_escape($item) . "</li>\n";
+						print '<li>' . html_escape($item) . '</li>';
 					}
 					print '</ul>';
 				}
@@ -2148,7 +2163,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['differences'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['differences'] as $diff) {
-						print "<li>" . html_escape($diff) . "</li>\n";
+						print '<li>' . html_escape($diff) . '</li>';
 					}
 					print '</ul>';
 				}
@@ -2160,13 +2175,13 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 					if ((isset($vals['dep'])) && (cacti_sizeof($vals['dep']) > 0)) {
 						foreach ($vals['dep'] as $dep_hash => $dep_status) {
 							if ($dep_status == 'met') {
-								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . "</span>";
-							} else {
-								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . "</span>";
+								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . '</span>';
+							} else if (array_search($ignorable_type_code_hashes, $dep_hash) === false) {
+								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . '</span>';
 								$dep_errors = true;
 							}
 
-							$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>\n";
+							$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>";
 						}
 					}
 
