@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.19
+-security#4356: Potential fix for grave/backtick XSS usage (#4356)
 -issue#3787: Add SHA256 and AES256 for snmp polling
 -issue#4341: Missing sequence field leads to errors in system logs
 -issue#4342: Tree Graph shows same highlighting as graph edit screen
