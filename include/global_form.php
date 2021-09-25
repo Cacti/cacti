@@ -1666,6 +1666,7 @@ $fields_template_import = array(
 	'import_file' => array(
 		'friendly_name' => __('Import Template from Local File'),
 		'description' => __('If the XML file containing template data is located on your local machine, select it here.'),
+		'accept' => '.xml',
 		'method' => 'file'
 		),
 	'import_text' => array(

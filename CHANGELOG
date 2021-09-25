@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#4400: Remove redundant code for RRD Cleaner
 -issue#4403: Cacti having issues detecting client timezones
 -feature: Add a normal/wrap class for general use
+-feature: Limit File Types available for Template Import operations
 -feature#4344: Add a 15 minute poller interval to global_arrays.php
 -feature#4385: Add additional admin email notifications
 -feature#4390: The plugin API should detect when plugins are not behaving properly with return variables required for chaining
