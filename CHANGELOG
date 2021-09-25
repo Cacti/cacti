@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#4396: Two tables 'poller_output_boost_processes' and 'poller_output_realtime' are missing
 -issue#4400: Remove redundant code for RRD Cleaner
 -issue#4403: Cacti having issues detecting client timezones
+-issue#4404: Feasibility study of Monitoring IPv6 KPI though Cacti
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#4344: Add a 15 minute poller interval to global_arrays.php

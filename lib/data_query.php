@@ -1007,6 +1007,27 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$value = null;
 					if (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
 						$value = preg_replace('/' . str_replace('OID/REGEXP:', '', $field_array['source']) . '/', "\\1", $oid);
+					} elseif (substr($field_array['source'], 0, 15) == 'OID2HEX/REGEXP:') {
+						$value = preg_replace('/' . str_replace('OID2HEX/REGEXP:', '', $field_array['source']) . '/', "\\1", $oid);
+
+						$parts    = explode('.', $value);
+						$ip_value = '';
+
+						foreach($parts as $idx => $part) {
+							$parts[$idx] = substr(strtoupper('00' . dechex($part)), -2);
+
+							if ($idx % 2 == 0 && $idx > 0) {
+								$ip_value .= ':' . $parts[$idx];
+							} else {
+								$ip_value .= $parts[$idx];
+							}
+						}
+						$value    = implode(':', $parts);
+
+						// Check for ip address and shorten
+						if (is_ipaddress($ip_value)) {
+							$value = inet_ntop(inet_pton($ip_value));
+						}
 					}
 
 					$values[] = array('value' => $value, 'index' => $index, 'oid' => $oid);
@@ -1238,6 +1259,43 @@ function query_snmp_host($host_id, $snmp_query_id) {
 									$parse_value = $decoded;
 								}
 							}
+						}
+
+						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid parse]', $field_name, $parse_value, $snmp_index));
+
+						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
+					}
+				}
+			} elseif (substr($field_array['source'], 0, 15) == 'OID2HEX/REGEXP:') {
+				if (cacti_sizeof($snmp_data)) {
+					foreach ($snmp_data as $oid => $value) {
+						$parse_value = preg_replace('/' . str_replace('OID2HEX/REGEXP:', '', $field_array['source']) . '/', "\\1", $oid);
+
+						if (isset($snmp_queries['oid_index_parse'])) {
+							$snmp_index = preg_replace($index_parse_regexp, "\\1", $oid);
+						} elseif ((isset($value)) && ($value != '')) {
+							$snmp_index = $value;
+						}
+
+						$oid      = $field_array['oid'] .  '.' . $parse_value;
+						$ip_value = '';
+
+						// Check for an IPv6 Address or Hex String
+						$parts = explode('.', $parse_value);
+						foreach($parts as $idx => $part) {
+							$parts[$idx] = substr(strtoupper('00' . dechex($part)), -2);
+
+							if ($idx % 2 == 0 && $idx > 0) {
+								$ip_value .= ':' . $parts[$idx];
+							} else {
+								$ip_value .= $parts[$idx];
+							}
+						}
+						$parse_value = implode(':', $parts);
+
+						// Check for ip address and shorten
+						if (is_ipaddress($ip_value)) {
+							$parse_value = inet_ntop(inet_pton($ip_value));
 						}
 
 						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid parse]', $field_name, $parse_value, $snmp_index));
