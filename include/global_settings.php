@@ -521,6 +521,12 @@ $settings = array(
 			'collapsible' => 'true',
 			'method' => 'spacer',
 		),
+		'default_test_source' => array(
+			'method' => 'checkbox',
+			'friendly_name' => __('Graph Template Test Data Source'),
+			'description' => __('Check this checkbox if you wish to test the Data Sources prior to their creation for new and newly imported Graph Templates.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased.'),
+			'default' => '',
+			),
 		'default_image_format' => array(
 			'friendly_name' => __('Graph Template Image Format'),
 			'description' => __('The default Image Format to be used for all new Graph Templates.'),

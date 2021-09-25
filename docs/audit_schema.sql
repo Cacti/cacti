@@ -458,6 +458,7 @@ INSERT INTO `table_columns` VALUES ('graph_templates',1,'id','mediumint(8) unsig
 INSERT INTO `table_columns` VALUES ('graph_templates',2,'hash','char(32)','NO','','','');
 INSERT INTO `table_columns` VALUES ('graph_templates',3,'name','char(255)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('graph_templates',4,'multiple','char(2)','NO','MUL','','');
+INSERT INTO `table_columns` VALUES ('graph_templates',5,'test_source','char(2)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('graph_templates_gprint',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('graph_templates_gprint',2,'hash','varchar(32)','NO','','','');
 INSERT INTO `table_columns` VALUES ('graph_templates_gprint',3,'name','varchar(100)','NO','MUL','','');
@@ -1195,8 +1196,8 @@ INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',1,'graph_templat
 INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',0,'PRIMARY',1,'graph_template_input_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',0,'PRIMARY',2,'graph_template_item_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates',1,'multiple_name',1,'multiple','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates',1,'multiple_name',2,'name','A',0,'171',NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates',1,'name',1,'name','A',0,'171',NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates',1,'multiple_name',2,'name','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates',1,'name',1,'name','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates_gprint',1,'name',1,'name','A',3,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates_gprint',0,'PRIMARY',1,'id','A',3,NULL,NULL,'','BTREE','');

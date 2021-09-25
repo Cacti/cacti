@@ -419,6 +419,12 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 		$save['multiple'] = $xml_array['multiple'];
 	}
 
+	if (isset($xml_array['test_source'])) {
+		$save['test_source'] = $xml_array['test_source'];
+	} else {
+		$save['test_source'] = read_config_option('default_test_source');
+	}
+
 	/* check for status changes */
 	$status += compare_data($save, $previous_data, 'graph_templates');
 

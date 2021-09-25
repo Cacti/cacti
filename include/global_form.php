@@ -1113,6 +1113,14 @@ $fields_graph_template_template_edit = array(
 		'default' => '',
 		'form_id' => false
 		),
+	'test_source' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Test Data Sources'),
+		'description' => __('Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased.'),
+		'value' => '|arg1:test_source|',
+		'default' => '',
+		'form_id' => false
+		),
 	'graph_template_id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg2:graph_template_id|'
