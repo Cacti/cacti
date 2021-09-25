@@ -67,11 +67,6 @@ switch (get_request_var('action')) {
 		clog_purge_logfile();
 		utilities_view_logfile();
 		break;
-	case 'view_cleaner':
-		top_header();
-		utilities_view_cleaner();
-		bottom_footer();
-		break;
 	case 'view_user_log':
 		top_header();
 		utilities_view_user_log();
