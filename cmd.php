@@ -181,6 +181,7 @@ if (function_exists('pcntl_signal')) {
 // record the start time
 $start = microtime(true);
 $poller_interval = read_config_option('poller_interval');
+$active_profiles = read_config_option('active_profiles');
 
 // check arguments
 if ($allhost) {
@@ -220,34 +221,56 @@ if ($debug) {
 input_validate_input_number($first);
 input_validate_input_number($last);
 
-$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
-	FROM poller_item AS pi
-	LEFT JOIN host AS h
-	ON h.id = pi.host_id
-	WHERE pi.poller_id = ?
-	AND (h.disabled = '' OR h.disabled IS NULL)
-	$sql_where1
-	AND pi.rrd_next_step <= 0
-	ORDER by pi.host_id",
-	$params1);
+if ($active_profiles != 1) {
+	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
+		FROM poller_item AS pi
+		LEFT JOIN host AS h
+		ON h.id = pi.host_id
+		WHERE pi.poller_id = ?
+		AND (h.disabled = '' OR h.disabled IS NULL)
+		$sql_where1
+		AND pi.rrd_next_step <= 0
+		ORDER by pi.host_id",
+		$params1);
 
-$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
-	FROM poller_item AS pi
-	LEFT JOIN host AS h
-	ON h.id = pi.host_id
-	WHERE pi.poller_id = ?
-	AND (h.disabled = '' OR h.disabled IS NULL)
-	AND pi.action IN(?, ?)
-	$sql_where2
-	AND pi.rrd_next_step <= 0",
-	$params2);
+	$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
+		FROM poller_item AS pi
+		LEFT JOIN host AS h
+		ON h.id = pi.host_id
+		WHERE pi.poller_id = ?
+		AND (h.disabled = '' OR h.disabled IS NULL)
+		AND pi.action IN(?, ?)
+		$sql_where2
+		AND pi.rrd_next_step <= 0",
+		$params2);
 
-// setup next polling interval
-db_execute_prepared("UPDATE poller_item AS pi
-	SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
-	WHERE poller_id = ?
-	$sql_where3",
-	$params3);
+	// setup next polling interval
+	db_execute_prepared("UPDATE poller_item AS pi
+		SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
+		WHERE poller_id = ?
+		$sql_where3",
+		$params3);
+} else {
+	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
+		FROM poller_item AS pi
+		LEFT JOIN host AS h
+		ON h.id = pi.host_id
+		WHERE pi.poller_id = ?
+		AND (h.disabled = '' OR h.disabled IS NULL)
+		$sql_where1
+		ORDER by pi.host_id",
+		$params1);
+
+	$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
+		FROM poller_item AS pi
+		LEFT JOIN host AS h
+		ON h.id = pi.host_id
+		WHERE pi.poller_id = ?
+		AND (h.disabled = '' OR h.disabled IS NULL)
+		AND pi.action IN(?, ?)
+		$sql_where2",
+		$params2);
+}
 
 if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on') {
 	$host_down    = false;

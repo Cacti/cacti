@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -feature#4409: When creating a Graph, make testing the Data Sources optional by Template
 -feature#4412: Update phpseclib to 2.0.33
 -feature#4413: Update jstree.js to 3.3.12
+-feature#4414: Improve performance of Cacti poller on heavily loaded systems
 
 1.2.18
 -security#4261: Lack of escaping on template import can lead to XSS exposure under 'midwinter' theme (CVE-2020-14424) by ddb4github

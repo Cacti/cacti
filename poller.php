@@ -261,10 +261,23 @@ if (cacti_sizeof($ds_needing_fixes)) {
 	}
 }
 
-// assume a scheduled task of either 60 or 300 seconds
+/* determine the number of active profiles to improve poller performance
+ * under some circumstances.  Save this data for spine and cmd.php.
+ */
+$active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT data_source_profile_id)
+	FROM data_template_data
+	WHERE local_data_id > 0');
+set_config_option('active_profiles', $active_profiles);
+
+/* assume a scheduled task of either 60 or 300 seconds */
 if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
-	$sql_where   = "WHERE rrd_next_step - $poller_interval <= 0 AND poller_id = $poller_id";
+
+	if ($active_profiles != 1) {
+		$sql_where   = "WHERE rrd_next_step - $poller_interval <= 0 AND poller_id = $poller_id";
+	} else {
+		$sql_where   = "WHERE poller_id = $poller_id";
+	}
 
 	define('MAX_POLLER_RUNTIME', $poller_runs * $poller_interval - 2);
 } else {
