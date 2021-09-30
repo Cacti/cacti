@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#4400: Remove redundant code for RRD Cleaner
 -issue#4403: Cacti having issues detecting client timezones
 -issue#4404: Feasibility study of Monitoring IPv6 KPI though Cacti
+-feature#4412: Update phpseclib to 2.0.33
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#4344: Add a 15 minute poller interval to global_arrays.php
