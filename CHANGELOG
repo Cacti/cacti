@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#4403: Cacti having issues detecting client timezones
 -issue#4404: Feasibility study of Monitoring IPv6 KPI though Cacti
 -issue#4410: Bad check in graph_variables.php causes warnings before RRDfile is created
+-issue: Over aggressive escaping causes menu visibility issues on Create Device page
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#4344: Add a 15 minute poller interval to global_arrays.php

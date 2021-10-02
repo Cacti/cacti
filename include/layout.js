@@ -404,11 +404,10 @@ function escapeString(string) {
 		'>': '&gt;',
 		'"': '&quot;',
 		"'": '&#39;',
-		'/': '&#x2F;',
 		'`': '&#x60;'
 	};
 
-	return String(string).replace(/[<>"'`\/]/g, function fromEntityMap (s) {
+	return String(string).replace(/[<>"'`]/g, function fromEntityMap (s) {
 		return entityMap[s];
 	});
 }
