@@ -97,7 +97,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 		}
 
 		/* clean up unwanted data source items from the AVERAGE cf data */
-		if (cacti_sizeof($fetch_array_avg[$ldi])) {
+		if (isset($fetch_array_avg[$ldi]) && cacti_sizeof($fetch_array_avg[$ldi])) {
 			if (isset($fetch_array_avg[$ldi]['data_source_names'])) {
 				$good_data = true;
 			} else {
@@ -122,7 +122,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 		}
 
 		/* clean up unwanted data source items from the MAX cf data */
-		if (cacti_sizeof($fetch_array_max[$ldi])) {
+		if (isset($fetch_array_max[$ldi]) && cacti_sizeof($fetch_array_max[$ldi])) {
 			if (isset($fetch_array_max[$ldi]['data_source_names'])) {
 				$good_data = true;
 			} else {
