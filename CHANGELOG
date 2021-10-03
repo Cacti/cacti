@@ -1,34 +1,34 @@
 Cacti CHANGELOG
 
 1.2.19
--security#4356: Potential fix for grave/backtick XSS usage (#4356)
--issue#3787: Add SHA256 and AES256 for snmp polling
--issue#4341: Missing sequence field leads to errors in system logs
--issue#4342: Tree Graph shows same highlighting as graph edit screen
--issue#4343: Undefined variable realtimeArray in JavaScript
--issue#4347: race with proc_open leads to blocked rrdtool processes
--issue#4352: Undefined indexes experienced when attempting to create graph from template
--issue#4353: Report duplicity now working properly
--issue#4375: When poller_output table is filling over time on the main poller, it can wind up into a critical situation blocking boost.
--issue#4378: Legacy Template importation with invalid 'snmp_port' hashes lead to unmet dependency warnings
--issue#4381: Fatal Errors can occur if you are not in a transaction and you attempt to commit one
--issue#4382: SNMP Agent may not find a cache item
--issue#4383: Fixes error callbacks for php 8.0+
--issue#4391: When system level polling is disabled Boost shows poller crashed errors and creates many arch tables
--issue#4396: Two tables 'poller_output_boost_processes' and 'poller_output_realtime' are missing
--issue#4400: Remove redundant code for RRD Cleaner
--issue#4403: Cacti having issues detecting client timezones
--issue#4404: Feasibility study of Monitoring IPv6 KPI though Cacti
--issue#4410: Bad check in graph_variables.php causes warnings before RRDfile is created
+-security#4356: Further fixes for grave character security protection
 -issue: Over aggressive escaping causes menu visibility issues on Create Device page
+-issue#3787: Add SHA256 and AES256 security levels for SNMP polling
+-issue#4341: Editing graphs can cause errors due to missing sequence
+-issue#4342: When hovering over a Tree Graph, row shows same highlighting as Graph Edit screen
+-issue#4343: When RealTime is not active, console errors may appear
+-issue#4347: Race conditions may occur when multiple RRDtool processes are running
+-issue#4352: Creating graphs from templates may sometimes result in errors
+-issue#4353: When duplicating reports, errors may occur
+-issue#4375: Boost may be blocked by overflowing poller_output table
+-issue#4378: Template import may be blocked due to unmet dependency warnings with snmp ports
+-issue#4381: Newer MySQL versions may error if committing a transaction when not in one
+-issue#4382: SNMP Agent may not find a cache item
+-issue#4383: Correct issues running under PHP 8.x by GregOriol
+-issue#4391: When polling is disabled, boost may crash and creates many arch tables
+-issue#4396: When poller runs, memory tables may not always be present
+-issue#4400: Removal of redunant code by rb83
+-issue#4403: Timezones may sometimes be incorrectly calculated
+-issue#4404: Allow monitoring IPv6 with interface graphs
+-issue#4410: When RRDfile is not yet created, errors may appear when displaying the graph
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
--feature#4344: Add a 15 minute poller interval to global_arrays.php
--feature#4385: Add additional admin email notifications
--feature#4390: The plugin API should detect when plugins are not behaving properly with return variables required for chaining
+-feature#4344: Add a 15 minute polling/sampling interval by eriksejr
+-feature#4385: Provide additional admin email notifications by bmfmancini
+-feature#4390: Add warnings for undesired changes to plugin hook return values
 -feature#4409: When creating a Graph, make testing the Data Sources optional by Template
--feature#4412: Update phpseclib to 2.0.33
--feature#4413: Update jstree.js to 3.3.12
+-feature#4412: Update phpseclib to 2.0.33 by DavidLiedke
+-feature#4413: Update jstree.js to 3.3.12 by DavidLiedke
 -feature#4414: Improve performance of Cacti poller on heavily loaded systems
 
 1.2.18
