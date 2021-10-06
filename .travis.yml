@@ -11,24 +11,31 @@ matrix:
       dist: bionic
     - php: 7.4
       dist: bionic
+    - php: 8.0
+      dist: bionic
     - php: nightly
       dist: bionic
   fast_finish: true
   allow_failures:
     - php: 7.4
+    - php: 8.0
     - php: nightly
 
 before_install:
+  # run syntax check
+  - if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
+  # get latest updates
   - sudo apt-get update > /dev/null
 
 install:
+  # setup link for php legacy
+  - sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
+  # install apache web server
   - sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp rrdtool snmp
   - sudo a2enmod proxy_fcgi setenvif actions alias
   - sudo find /etc/apache2
   # configure apache virtual hosts
   - sudo cp -f tests/tools/cacti.conf /etc/apache2/sites-available/000-default.conf
-  # setup link for php legacy
-  - sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
   # set some required variables
   - echo 'cgi.fix_pathinfo = 1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
@@ -44,8 +51,6 @@ install:
   - sudo service apache2 restart
   # start php-fpm
   - sudo ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
-  # run syntax check
-  - if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
 before_script:
   - mysql -e 'CREATE DATABASE cacti;'
