@@ -556,6 +556,9 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 							$color_id = db_fetch_insert_id();
 						}
+						if (empty($color_id) && $preview_only) {
+							$color_id = $item_array[$field_name];
+						}
 
 						$save[$field_name] = $color_id;
 					} else {
@@ -1841,8 +1844,26 @@ function compare_data($save, $previous_data, $table) {
 					continue;
 				}
 
+				if($column == 'color_id') {
+					$oldvalue = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($previous_data[$column]));
+					$oldvalue = html_escape($oldvalue);
+					$oldvalue = '<span style="background-color:#' . $oldvalue . '">' . $oldvalue . '</span>';
+
+					$newvalue = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($value));
+					if (empty($newvalue) && $preview_only) {
+						$newvalue = html_escape($value);
+					} else {
+						$newvalue = html_escape($newvalue);
+					}
+					$newvalue = '<span style="background-color:#' . $newvalue . '">' . $newvalue . '</span>';
+				} else {
+					$oldvalue = html_escape($previous_data[$column]);
+					$newvalue = html_escape($value);
+				}
+
+
 				$different++;
-				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: ' . html_escape($value) . ', Old Value: ' . html_escape($previous_data[$column]);
+				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: ' . $newvalue . ', Old Value: ' . $oldvalue;
 			}
 		}
 
@@ -2169,7 +2190,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['differences'])) {
 					print '<ul class="monoSpace">';
 					foreach($vals['differences'] as $diff) {
-						print '<li>' . html_escape($diff) . '</li>';
+						print '<li>' . $diff . '</li>';
 					}
 					print '</ul>';
 				}
