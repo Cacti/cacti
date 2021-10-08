@@ -102,25 +102,9 @@ verbose('Querying for data sources...');
 $data_sources = get_data_sources($host_id, $local_data_id, $data_template_id);
 verbose("There are " . cacti_sizeof($data_sources) . " data source elements to update.");
 
-
-/* get the data_local Id's for the poller cache */
-if ($host_id > 0) {
-	$poller_data  = db_fetch_assoc('SELECT * FROM data_local WHERE host_id=' . $host_id);
-} else {
-	$poller_data  = db_fetch_assoc('SELECT * FROM data_local');
-}
-
 /* initialize some variables */
 $current_ds = 1;
-$total_ds = cacti_sizeof($poller_data);
-
-/* setting local_data_ids to an empty array saves time during updates */
-$local_data_ids = array();
-$poller_items   = array();
-
-/* issue warnings and start message if applicable */
-print "WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
-debug("There are '" . cacti_sizeof($poller_data) . "' data source elements to update.");
+$total_ds = cacti_sizeof($data_sources);
 
 /* start rebuilding the poller cache */
 if (cacti_sizeof($poller_data)) {
