@@ -32,6 +32,7 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 $debug = false;
+$verbose = false;
 $host_id = 0;
 
 if (cacti_sizeof($parms)) {
@@ -47,6 +48,7 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+				$verbose = true;
 				break;
 			case '--host-id':
 				$host_id = trim($value);
@@ -67,6 +69,9 @@ if (cacti_sizeof($parms)) {
 			case '-h':
 				display_help();
 				exit(0);
+			case '--verbose':
+				$verbose = true;
+				break;
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
@@ -151,5 +156,12 @@ function debug($message) {
 
 	if ($debug) {
 		print 'DEBUG: ' . trim($message) . "\n";
+	}
+}
+
+function verbose($message) {
+	global $verbose;
+	if ($verbose) {
+		print 'INFO: ' . trim($message) . "\n";
 	}
 }
