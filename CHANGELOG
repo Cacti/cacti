@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -security#4356: Further fixes for grave character security protection
 -issue: Over aggressive escaping causes menu visibility issues on Create Device page
 -issue#3787: Add SHA256 and AES256 security levels for SNMP polling
+-issue#4289: Import graph template(Preview Only) show color_id new value as a blank area
 -issue#4341: Editing graphs can cause errors due to missing sequence
 -issue#4342: When hovering over a Tree Graph, row shows same highlighting as Graph Edit screen
 -issue#4343: When RealTime is not active, console errors may appear
