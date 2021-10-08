@@ -1845,23 +1845,24 @@ function compare_data($save, $previous_data, $table) {
 					continue;
 				}
 
-				if($column == 'color_id') {
+				if ($column == 'color_id') {
 					$oldvalue = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($previous_data[$column]));
 					$oldvalue = html_escape($oldvalue);
 					$oldvalue = '<span style="background-color:#' . $oldvalue . '">' . $oldvalue . '</span>';
 
 					$newvalue = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($value));
+
 					if (empty($newvalue) && $preview_only) {
 						$newvalue = html_escape($value);
 					} else {
 						$newvalue = html_escape($newvalue);
 					}
+
 					$newvalue = '<span style="background-color:#' . $newvalue . '">' . $newvalue . '</span>';
 				} else {
 					$oldvalue = html_escape($previous_data[$column]);
 					$newvalue = html_escape($value);
 				}
-
 
 				$different++;
 				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: ' . $newvalue . ', Old Value: ' . $oldvalue;
