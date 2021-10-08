@@ -86,6 +86,23 @@ $max_execution = ini_get('max_execution_time');
 /* set new timeout */
 ini_set('max_execution_time', '0');
 
+/* prepare some variables that we're going to use. */
+$poller_items    = array();
+$local_data_ids  = array();
+$hosts           = array();
+$data_template_fields = array();
+
+print CLI_CSI . CLI_FG_RED . 'WARNING' . CLI_SGR_END .
+	": Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
+
+verbose('Querying for data sources...');
+/* first of all, get all data sources and their corresponding information.
+	any param of get_data_sources() set to zero means as 'all'
+*/
+$data_sources = get_data_sources($host_id, $local_data_id, $data_template_id);
+verbose("There are " . cacti_sizeof($data_sources) . " data source elements to update.");
+
+
 /* get the data_local Id's for the poller cache */
 if ($host_id > 0) {
 	$poller_data  = db_fetch_assoc('SELECT * FROM data_local WHERE host_id=' . $host_id);
