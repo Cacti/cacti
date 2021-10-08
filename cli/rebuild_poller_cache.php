@@ -107,19 +107,19 @@ $current_ds = 1;
 $total_ds = cacti_sizeof($data_sources);
 
 /* start rebuilding the poller cache */
-if (cacti_sizeof($poller_data)) {
+if (cacti_sizeof($data_sources)) {
 	if (!$debug) {
 		$tcount = 0;
 		print '\n';
 	}
-	foreach ($poller_data as $data) {
+	foreach ($data_sources as $data_source) {
 		if (!$debug) {
 			$tcount++;
 			print CLI_CSI . CLI_EL_WHOLE . CLI_CR . "$tcount / " . count($poller_data) .
 			' (' . round($tcount/count($poller_data)*100,1) .  '%)';
 		}
-		$local_data_ids[] = $data['id'];
-		$poller_items = array_merge($poller_items, update_poller_cache($data));
+		$local_data_ids[] = $data_source['id'];
+		$poller_items = array_merge($poller_items, update_poller_cache($data_source));
 
 		debug("Data Source Item '$current_ds' of '$total_ds' updated");
 		$current_ds++;
