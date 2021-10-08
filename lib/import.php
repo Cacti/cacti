@@ -556,6 +556,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 							$color_id = db_fetch_insert_id();
 						}
+
 						if (empty($color_id) && $preview_only) {
 							$color_id = $item_array[$field_name];
 						}
