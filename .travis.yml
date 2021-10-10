@@ -62,9 +62,9 @@ before_script:
   - sudo cp -p include/config.php.dist /var/www/html/cacti/include/config.php
 
 script:
-  - cd /var/www/html/cacti && php tests/tools/check_install_code.php
-  - cd /var/www/html/cacti && bash tests/tools/check_cli_version.sh
-  - cd /var/www/html/cacti && php cli/install_cacti.php --accept-eula --install --force
+  - cd /var/www/html/cacti && sudo php tests/tools/check_install_code.php
+  - cd /var/www/html/cacti && sudo bash tests/tools/check_cli_version.sh
+  - cd /var/www/html/cacti && sudo php cli/install_cacti.php --accept-eula --install --force
   - cd /var/www/html/cacti && sudo bash tests/tools/check_all_pages.sh
   - cd /var/www/html/cacti && sudo cat /var/www/html/cacti/log/cacti.log
 
