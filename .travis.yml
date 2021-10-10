@@ -14,9 +14,6 @@ matrix:
     - php: 8.0
       dist: bionic
   fast_finish: true
-  allow_failures:
-    - php: 7.4
-    - php: 8.0
 
 before_install:
   # run syntax check
@@ -30,7 +27,7 @@ install:
   # setup link for php legacy
   - sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
   # install apache web server
-  - sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp rrdtool snmp
+  - sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp rrdtool snmp libapache2-mod-php
   - sudo a2enmod proxy_fcgi setenvif actions alias
   - sudo find /etc/apache2
   # configure apache virtual hosts
