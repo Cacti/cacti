@@ -36,9 +36,10 @@ install:
   - echo 'cgi.fix_pathinfo = 1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # copy the Cacti website to the correct direcotry
-  - sudo ln -s /home/travis/build/Cacti/cacti /var/www/html/
+  - sudo cp -rp /home/travis/build/Cacti/cacti /var/www/html/
   # change ownership on the Cacti directory
   - sudo chown -R www-data:www-data /home/travis/build/Cacti/cacti
+  - sudo chown -R www-data:www-data /var/www/html/cacti
   # make the directory more open for our tests
   - sudo chmod -R 777 /home/travis/build/Cacti/cacti
   # enable php-fpm
@@ -58,11 +59,12 @@ before_script:
   - mysql cacti < cacti.sql
   - mysql -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
   - sudo cp -p include/config.php.dist include/config.php
+  - sudo cp -p include/config.php.dist /var/www/html/cacti/include/config.php
 
 script:
   - php tests/tools/check_install_code.php
   - bash tests/tools/check_cli_version.sh
-  - php cli/install_cacti.php --accept-eula --install --force
+  - cd /var/www/html/cacti && php cli/install_cacti.php --accept-eula --install --force
   - sudo bash tests/tools/check_all_pages.sh
 
 notifications:
