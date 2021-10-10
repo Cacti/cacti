@@ -39,8 +39,8 @@ install:
   - sudo ln -s /home/travis/build/Cacti/cacti /var/www/html/
   # change ownership on the Cacti directory
   - sudo chown -R www-data:www-data /home/travis/build/Cacti/cacti
-  # make the log directory more open
-  - sudo chmod -R 777 /home/travis/build/Cacti/cacti/log
+  # make the directory more open for our tests
+  - sudo chmod -R 777 /home/travis/build/Cacti/cacti
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   - sudo sed -i -e 's,nobody,www-data,g' ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/*.conf
