@@ -28,9 +28,11 @@ before_install:
   # run syntax check
   - if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
   # obtain keys for Ubuntu
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 78BD65473CB3BD13
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 78BD65473CB3BD13 6B05F25D762E3157
+  # fix mongodb key
+  - sudo wget -qO - https://www.mongodb.org/static/pgp/server-3.4.asc | sudo apt-key add - &> /dev/null
   # get latest updates
-  - sudo apt-get update > /dev/null
+  # - sudo apt-get update > /dev/null
 
 install:
   # setup link for php legacy
