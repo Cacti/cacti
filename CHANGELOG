@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#4404: Allow monitoring IPv6 with interface graphs
 -issue#4410: When RRDfile is not yet created, errors may appear when displaying the graph
 -issue#4419: Cacti missing key indexes that result in Preset pages slowdowns
+-issue#4420: Data Sources page shows no name when Data Source has no name cache
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#4344: Add a 15 minute polling/sampling interval by eriksejr

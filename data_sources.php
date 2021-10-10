@@ -1685,8 +1685,14 @@ function ds() {
 
 			$graphs_aggregates_url = get_graphs_aggregates_url($data_source['local_data_id']);
 
+			if ($data_source['name_cache'] == '') {
+				$name = __('Damaged Data Source Name');
+			} else {
+				$name = $data_source['name_cache'];
+			}
+
 			form_alternate_row('line' . $data_source['local_data_id'], true, $disabled);
-			form_selectable_cell(filter_value(title_trim($data_source['name_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
+			form_selectable_cell(filter_value(title_trim($name, read_config_option('max_title_length')), get_request_var('rfilter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'right');
 
 			// Show link to Graphs and Aggregates
@@ -1696,7 +1702,7 @@ function ds() {
 			form_selectable_cell(api_data_source_deletable($data_source['local_data_id']) ? __('Yes') : __('No'), $data_source['local_data_id']);
 			form_selectable_cell(($data_source['active'] == 'on' ? __('Yes'):__('No')), $data_source['local_data_id']);
 			form_selectable_cell($data_template_name, $data_source['local_data_id']);
-			form_checkbox_cell($data_source['name_cache'], $data_source['local_data_id'], $disabled);
+			form_checkbox_cell($name, $data_source['local_data_id'], $disabled);
 			form_end_row();
 		}
 	} else {
