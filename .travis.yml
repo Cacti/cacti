@@ -36,9 +36,11 @@ install:
   - echo 'cgi.fix_pathinfo = 1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # copy the Cacti website to the correct direcotry
-  - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
+  - sudo ln -s /home/travis/build/Cacti/cacti /var/www/html/
   # change ownership on the Cacti directory
-  - sudo chown -R www-data:www-data /var/www/html/cacti
+  - sudo chown -R www-data:www-data /home/travis/build/Cacti/cacti
+  # make the log directory more open
+  - sudo chmod -R 777 /home/travis/build/Cacti/cacti/log
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   - sudo sed -i -e 's,nobody,www-data,g' ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/*.conf
