@@ -27,7 +27,7 @@ install:
   # setup link for php legacy
   - sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
   # install apache web server
-  - sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp rrdtool snmp libapache2-mod-php
+  - sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp php-xml php-mbstring rrdtool snmp libapache2-mod-php
   - sudo a2enmod proxy_fcgi setenvif actions alias
   - sudo find /etc/apache2
   # configure apache virtual hosts
