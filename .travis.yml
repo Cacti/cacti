@@ -28,7 +28,7 @@ before_install:
   # run syntax check
   - if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
   # obtain keys for Ubuntu
-  - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 78BD65473CB3BD13
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 78BD65473CB3BD13
   # get latest updates
   - sudo apt-get update > /dev/null
 
