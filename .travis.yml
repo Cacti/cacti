@@ -66,6 +66,7 @@ script:
   - bash tests/tools/check_cli_version.sh
   - cd /var/www/html/cacti && php cli/install_cacti.php --accept-eula --install --force
   - sudo bash tests/tools/check_all_pages.sh
+  - sudo cat /var/www/html/cacti/log/cacti.log
 
 notifications:
   email:
