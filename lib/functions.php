@@ -2886,7 +2886,7 @@ function get_graph_group($graph_template_item_id) {
 	/* put the parent item in the array as well */
 	$graph_item_children_array[$graph_template_item_id] = $graph_template_item_id;
 
-	$graph_items = db_fetch_assoc_prapared("SELECT id, graph_type_id, text_format, hard_return
+	$graph_items = db_fetch_assoc_prepared("SELECT id, graph_type_id, text_format, hard_return
 		FROM graph_templates_item
 		WHERE sequence > ?
 		AND $sql_where
