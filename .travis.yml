@@ -31,7 +31,7 @@ install:
   - sudo a2enmod proxy_fcgi setenvif actions alias
   - sudo find /etc/apache2
   # configure apache virtual hosts
-  - sudo cp -f tests/tools/cacti.conf /etc/apache2/sites-available/000-default.conf
+  # - sudo cp -f tests/tools/cacti.conf /etc/apache2/sites-available/000-default.conf
   # set some required variables
   - echo 'cgi.fix_pathinfo = 1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
@@ -40,7 +40,7 @@ install:
   # change ownership on the Cacti directory
   - sudo chown -R www-data:www-data /var/www/html/cacti
   # enable php-fpm
-  - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+  # - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   - sudo sed -i -e 's,nobody,www-data,g' ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/*.conf
   - sudo grep nobody ~/.phpenv/versions/$(phpenv version-name)/etc/ -R
   # restart apache
