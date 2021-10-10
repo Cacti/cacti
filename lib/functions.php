@@ -2866,10 +2866,14 @@ function get_graph_group($graph_template_item_id) {
 		WHERE id = ?',
 		array($graph_template_item_id));
 
+	$params[] = $graph_item['sequence'];
+
 	if (empty($graph_item['local_graph_id'])) {
-		$sql_where = 'graph_template_id = ' . $graph_item['graph_template_id'] . ' AND local_graph_id = 0';
+		$params[] = $graph_item['graph_template_id'];
+		$sql_where = 'graph_template_id = ? AND local_graph_id = 0';
 	} else {
-		$sql_where = 'local_graph_id = ' . $graph_item['local_graph_id'];
+		$params[] = $graph_item['sequence'];
+		$sql_where = 'local_graph_id = ?';
 	}
 
 	/* parents are LINE%, AREA%, and STACK%. If not return */
@@ -2882,11 +2886,12 @@ function get_graph_group($graph_template_item_id) {
 	/* put the parent item in the array as well */
 	$graph_item_children_array[$graph_template_item_id] = $graph_template_item_id;
 
-	$graph_items = db_fetch_assoc("SELECT id, graph_type_id, text_format, hard_return
+	$graph_items = db_fetch_assoc_prapared("SELECT id, graph_type_id, text_format, hard_return
 		FROM graph_templates_item
-		WHERE sequence > " . $graph_item['sequence'] . "
+		WHERE sequence > ?
 		AND $sql_where
-		ORDER BY sequence");
+		ORDER BY sequence",
+		$params);
 
 	$is_hard = false;
 
