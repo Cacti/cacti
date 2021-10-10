@@ -1212,6 +1212,11 @@ INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'local_graph_id_seq
 INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'local_graph_id_sequence',2,'sequence','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates_item',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'task_item_id',1,'task_item_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'cdef_id',1,'cdef_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'vdef_id',1,'vdef_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'color_id',1,'color_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'gprint_id',1,'gprint_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'local_graph_template_item_id',1,'local_graph_template_item_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_tree',1,'name',1,'name','A',1,'171',NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_tree',0,'PRIMARY',1,'id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_tree',1,'sequence',1,'sequence','A',1,NULL,NULL,'YES','BTREE','');

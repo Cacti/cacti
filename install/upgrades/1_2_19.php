@@ -38,4 +38,19 @@ function upgrade_to_1_2_19() {
 		DROP INDEX name,
 		ADD INDEX multiple_name(multiple, name),
 		ADD INDEX name(name)');
+
+	// Add missing indexes to graph_templates_item table
+	$alter   = '';
+	$indexes = array('cdef_id', 'vdef_id', 'color_id', 'gprint_id', 'local_graph_template_item_id');
+	foreach($indexes as $i) {
+		if (!db_index_exists('graph_templates_item', $i, false)) {
+			$alter .= ($alter != '' ? ', ':'') . " ADD INDEX $i($i)";
+		}
+	}
+
+	if ($alter != '') {
+		db_install_execute('ALTER table graph_templates_item' . $alter);
+	}
+
+
 }

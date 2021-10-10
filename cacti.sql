@@ -1287,7 +1287,7 @@ INSERT INTO `data_input_fields` VALUES (46,'3a33d4fc65b8329ab2ac46a36da26b72',2,
 --
 
 CREATE TABLE data_local (
-  id mediumint(8) unsigned NOT NULL auto_increment,
+  id int(10) unsigned NOT NULL auto_increment,
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
@@ -1834,7 +1834,12 @@ CREATE TABLE graph_templates_item (
   PRIMARY KEY (id),
   KEY graph_template_id (graph_template_id),
   KEY local_graph_id_sequence (local_graph_id, sequence),
+  KEY local_graph_template_item_id (local_graph_template_item_id),
   KEY task_item_id (task_item_id),
+  KEY cdef_id (cdef_id),
+  KEY vdef_id (vdef_id),
+  KEY color_id (color_id),
+  KEY gprint_id (gprint_id),
   KEY `lgi_gti` (`local_graph_id`,`graph_template_id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores the actual graph item data.';
 
