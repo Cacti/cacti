@@ -112,22 +112,58 @@ if (cacti_sizeof($data_sources)) {
 		$tcount = 0;
 		print '\n';
 	}
+	verbose("Combing through all Data Sources, preparing data");
 	foreach ($data_sources as $data_source) {
 		if (!$debug) {
 			$tcount++;
 			print CLI_CSI . CLI_EL_WHOLE . CLI_CR . "$tcount / " . count($poller_data) .
 			' (' . round($tcount/count($poller_data)*100,1) .  '%)';
 		}
-		$local_data_ids[] = $data_source['id'];
-		$poller_items = array_merge($poller_items, update_poller_cache($data_source));
 
-		debug("Data Source Item '$current_ds' of '$total_ds' updated");
+		/* fill in hosts array, if not already present */
+		if (!isset($hosts[$data_source['host_id']])) {
+			$hosts[$data_source['host_id']] = db_fetch_row_prepared('SELECT *
+				FROM host
+				WHERE id = ?',
+				array($data_source['host_id']));
+		}
+
+		/* get field information FROM the data template */
+		if (!isset($data_template_fields[$data_source['local_data_template_data_id']])) {
+			# we must briefly construct an array out of $data_source for get_data_template_fields()
+			$data_source_arr = array($data_source);
+			$data_template_fields[$data_source['local_data_template_data_id']] =
+				get_data_template_fields($data_source_arr)[$data_source['local_data_template_data_id']];
+		}
+
+		/* push out host value if necessary */
+		if (cacti_sizeof($data_template_fields[$data_source['local_data_template_data_id']])) {
+			push_out_data_input_data($data_template_fields, $data_source, $host);
+		}
+
+		/* note this source's id for later */
+		$local_data_ids[] = $data_source['id'];
+
+		/* create a compatible structure for update_poller_cache().
+		   also call update_poller_cache without commit (note: currently the default),
+		   so it just returs the massaged poller_items, and so that we can do the update
+		   in a huge chunk by ourselves. */
+		$data = $data_source;
+		$data['id'] = $data['local_data_id'];
+		$poller_items = array_merge($poller_items, update_poller_cache($data));
+
+		debug("Data Source Item '$current_ds' of '$total_ds' processed");
 		$current_ds++;
 	}
-
+	verbose('Preparation done');
+	verbose("Updating poller cache for ". count($local_data_ids) . " ID's / " .
+		count($poller_items) . " items." );
 	if (cacti_sizeof($local_data_ids)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
+
+	verbose("Updating API data source cache to inform remote pollers");
+	api_data_source_cache_crc_update($poller_id);
 }
 if (!$debug) print "\n";
 
