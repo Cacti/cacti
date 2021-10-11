@@ -2277,6 +2277,17 @@ CREATE TABLE  `poller_output_boost` (
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
+-- Table structure for table `poller_output_boost_local_data_ids`
+--
+
+CREATE TABLE `poller_output_boost_local_data_ids` (
+  `local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `process_handler` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`local_data_id`),
+  KEY `process_handler` (`process_handler`)
+) ENGINE=MEMORY;
+
+--
 -- Table structure for table `poller_output_boost_processes`
 --
 
