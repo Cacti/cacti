@@ -209,9 +209,12 @@ if [ $error -eq 8 ]; then
 	echo "WARNING: $errors pages not found.  This is not necessarily a bug"
 fi
 
-cat $logFile1
-cat $APACHE_ERROR
-cat $APACHE_ACCESS
+# ------------------------------------------------------------------------------
+# Uncomment for debugging.
+# ------------------------------------------------------------------------------
+#cat $logFile1
+#cat $APACHE_ERROR
+#cat $APACHE_ACCESS
 
 checks=`grep "HTTP" $logFile1 | wc -l`
 echo "NOTE: There were $checks pages checked through recursion"
