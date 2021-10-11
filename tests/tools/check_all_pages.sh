@@ -51,7 +51,7 @@ APACHE_ERROR="/var/log/apache2/error.log"
 APACHE_ACCESS="/var/log/apache2/access.log"
 POLLER="$BASE_PATH/poller.php"
 WEBUSER="www-data"
-DEBUG=1
+DEBUG=0
 
 # ------------------------------------------------------------------------------
 # Ensure that the artifact directory is created.  No need for a mess
