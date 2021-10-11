@@ -91,7 +91,7 @@ $local_data_ids  = array();
 $hosts           = array();
 $data_template_fields = array();
 
-print CLI_CSI . CLI_FG_RED . 'WARNING' . CLI_SGR_END .
+print CLI_CSI . CLI_FG_RED . CLI_SGR_END . 'WARNING' . CLI_CSI . CLI_SGR_RESET . CLI_SGR_END .
 	": Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
 
 verbose('Querying for data sources...');
