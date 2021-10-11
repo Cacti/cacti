@@ -110,7 +110,7 @@ $total_ds = cacti_sizeof($data_sources);
 if (cacti_sizeof($data_sources)) {
 	if (!$debug) {
 		$tcount = 0;
-		print '\n';
+		print "\n";
 	}
 	verbose("Combing through all Data Sources, preparing data");
 	foreach ($data_sources as $data_source) {
@@ -155,6 +155,7 @@ if (cacti_sizeof($data_sources)) {
 		debug("Data Source Item '$current_ds' of '$total_ds' processed");
 		$current_ds++;
 	}
+	print "\n";
 	verbose('Preparation done');
 	verbose("Updating poller cache for ". count($local_data_ids) . " ID's / " .
 		count($poller_items) . " items." );
