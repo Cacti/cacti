@@ -22,7 +22,6 @@
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
 */
-
 require(__DIR__ . '/../include/cli_check.php');
 require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/utility.php');
@@ -116,8 +115,8 @@ if (cacti_sizeof($data_sources)) {
 	foreach ($data_sources as $data_source) {
 		if (!$debug) {
 			$tcount++;
-			print CLI_CSI . CLI_EL_WHOLE . CLI_CR . "$tcount / " . count($poller_data) .
-			' (' . round($tcount/count($poller_data)*100,1) .  '%)';
+			print CLI_CSI . CLI_EL_WHOLE . CLI_CR . "$tcount / " . count($data_sources) .
+			' (' . round($tcount/count($data_sources)*100,1) .  '%)';
 		}
 
 		/* fill in hosts array, if not already present */
