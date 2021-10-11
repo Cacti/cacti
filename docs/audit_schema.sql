@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.12-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: cacti
 -- ------------------------------------------------------
--- Server version	5.7.26-0ubuntu0.18.10.1
+-- Server version	10.5.12-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,16 +23,16 @@ DROP TABLE IF EXISTS `table_columns`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `table_columns` (
-  `table_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `table_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `table_sequence` int(10) unsigned NOT NULL,
-  `table_field` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `table_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `table_null` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `table_key` varchar(4) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `table_default` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `table_extra` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `table_field` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `table_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `table_null` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `table_key` varchar(4) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `table_default` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `table_extra` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`table_name`,`table_sequence`,`table_field`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Holds Default Cacti Table Definitions';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Holds Default Cacti Table Definitions';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,7 +259,7 @@ INSERT INTO `table_columns` VALUES ('automation_snmp_items',6,'snmp_port','mediu
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',7,'snmp_timeout','int(10) unsigned','NO','','500','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',8,'snmp_retries','tinyint(1) unsigned','NO','','3','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',9,'max_oids','int(12) unsigned','YES','','10','');
-INSERT INTO `table_columns` VALUES ('automation_snmp_items',10,'bulk_walk_size','int(11) ','NO','','-1','');
+INSERT INTO `table_columns` VALUES ('automation_snmp_items',10,'bulk_walk_size','int(11)','YES','','-1','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',11,'snmp_username','varchar(50)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',12,'snmp_password','varchar(50)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',13,'snmp_auth_protocol','char(6)','YES','','','');
@@ -314,7 +314,7 @@ INSERT INTO `table_columns` VALUES ('data_debug',2,'started','int(11)','NO','MUL
 INSERT INTO `table_columns` VALUES ('data_debug',3,'done','int(11)','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('data_debug',4,'user','int(11)','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('data_debug',5,'datasource','int(11)','NO','MUL','0','');
-INSERT INTO `table_columns` VALUES ('data_debug',6,'info','text','NO','',NULL,'');
+INSERT INTO `table_columns` VALUES ('data_debug',6,'info','text','NO','','','');
 INSERT INTO `table_columns` VALUES ('data_debug',7,'issue','text','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_input',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('data_input',2,'hash','varchar(32)','NO','','','');
@@ -341,7 +341,7 @@ INSERT INTO `table_columns` VALUES ('data_local',2,'data_template_id','mediumint
 INSERT INTO `table_columns` VALUES ('data_local',3,'host_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('data_local',4,'snmp_query_id','mediumint(8)','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('data_local',5,'snmp_index','varchar(255)','NO','MUL','','');
-INSERT INTO `table_columns` VALUES ('data_local',5,'orphan','tinyint(1) unsigned','NO','','0','');
+INSERT INTO `table_columns` VALUES ('data_local',6,'orphan','tinyint(1) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('data_source_profiles',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('data_source_profiles',2,'hash','varchar(32)','NO','','','');
 INSERT INTO `table_columns` VALUES ('data_source_profiles',3,'name','varchar(255)','NO','MUL','','');
@@ -452,13 +452,13 @@ INSERT INTO `table_columns` VALUES ('graph_template_input',3,'graph_template_id'
 INSERT INTO `table_columns` VALUES ('graph_template_input',4,'name','varchar(255)','NO','','','');
 INSERT INTO `table_columns` VALUES ('graph_template_input',5,'description','text','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('graph_template_input',6,'column_name','varchar(50)','NO','','','');
-INSERT INTO `table_columns` VALUES ('graph_template_input_defs',1,'graph_template_input_id','mediumint(8) unsigned','NO','PRI','0','');
-INSERT INTO `table_columns` VALUES ('graph_template_input_defs',2,'graph_template_item_id','int(10) unsigned','NO','PRI','0','');
+INSERT INTO `table_columns` VALUES ('graph_template_input_defs',1,'graph_template_input_id','int(10) unsigned','NO','PRI','0','');
+INSERT INTO `table_columns` VALUES ('graph_template_input_defs',2,'graph_template_item_id','int(12) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('graph_templates',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('graph_templates',2,'hash','char(32)','NO','','','');
 INSERT INTO `table_columns` VALUES ('graph_templates',3,'name','char(255)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('graph_templates',4,'multiple','char(2)','NO','MUL','','');
-INSERT INTO `table_columns` VALUES ('graph_templates',5,'test_source','char(2)','NO','MUL','','');
+INSERT INTO `table_columns` VALUES ('graph_templates',5,'test_source','char(2)','NO','','','');
 INSERT INTO `table_columns` VALUES ('graph_templates_gprint',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('graph_templates_gprint',2,'hash','varchar(32)','NO','','','');
 INSERT INTO `table_columns` VALUES ('graph_templates_gprint',3,'name','varchar(100)','NO','MUL','','');
@@ -530,27 +530,27 @@ INSERT INTO `table_columns` VALUES ('graph_templates_graph',64,'t_legend_positio
 INSERT INTO `table_columns` VALUES ('graph_templates_graph',65,'legend_position','varchar(10)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('graph_templates_graph',66,'t_legend_direction','char(2)','YES','','','');
 INSERT INTO `table_columns` VALUES ('graph_templates_graph',67,'legend_direction','varchar(10)','YES','',NULL,'');
-INSERT INTO `table_columns` VALUES ('graph_templates_item',1,'id','int(12) unsigned','NO','PRI',NULL,'auto_increment');
+INSERT INTO `table_columns` VALUES ('graph_templates_item',1,'id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',2,'hash','varchar(32)','NO','','','');
-INSERT INTO `table_columns` VALUES ('graph_templates_item',3,'local_graph_template_item_id','int(12) unsigned','NO','','0','');
+INSERT INTO `table_columns` VALUES ('graph_templates_item',3,'local_graph_template_item_id','int(10) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',4,'local_graph_id','int(10) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',5,'graph_template_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',6,'task_item_id','int(10) unsigned','NO','MUL','0','');
-INSERT INTO `table_columns` VALUES ('graph_templates_item',7,'color_id','mediumint(8) unsigned','NO','','0','');
+INSERT INTO `table_columns` VALUES ('graph_templates_item',7,'color_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',8,'alpha','char(2)','YES','','FF','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',9,'graph_type_id','tinyint(3)','NO','','0','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',10,'line_width','decimal(4,2)','YES','','0.00','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',11,'dashes','varchar(20)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',12,'dash_offset','mediumint(4)','YES','',NULL,'');
-INSERT INTO `table_columns` VALUES ('graph_templates_item',13,'cdef_id','mediumint(8) unsigned','NO','','0','');
-INSERT INTO `table_columns` VALUES ('graph_templates_item',14,'vdef_id','mediumint(8) unsigned','NO','','0','');
+INSERT INTO `table_columns` VALUES ('graph_templates_item',13,'cdef_id','mediumint(8) unsigned','NO','MUL','0','');
+INSERT INTO `table_columns` VALUES ('graph_templates_item',14,'vdef_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',15,'shift','char(2)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',16,'consolidation_function_id','tinyint(2)','NO','','0','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',17,'textalign','varchar(10)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',18,'text_format','varchar(255)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',19,'value','varchar(255)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',20,'hard_return','char(2)','YES','',NULL,'');
-INSERT INTO `table_columns` VALUES ('graph_templates_item',21,'gprint_id','mediumint(8) unsigned','NO','','0','');
+INSERT INTO `table_columns` VALUES ('graph_templates_item',21,'gprint_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('graph_templates_item',22,'sequence','mediumint(8) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('graph_tree',1,'id','smallint(5) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('graph_tree',2,'enabled','char(2)','YES','','on','');
@@ -606,7 +606,7 @@ INSERT INTO `table_columns` VALUES ('host',29,'ping_port','int(12) unsigned','YE
 INSERT INTO `table_columns` VALUES ('host',30,'ping_timeout','int(12) unsigned','YES','','500','');
 INSERT INTO `table_columns` VALUES ('host',31,'ping_retries','int(12) unsigned','YES','','2','');
 INSERT INTO `table_columns` VALUES ('host',32,'max_oids','int(12) unsigned','YES','','10','');
-INSERT INTO `table_columns` VALUES ('host',33,'bulk_walk_size','int(11) ','NO','','-1','');
+INSERT INTO `table_columns` VALUES ('host',33,'bulk_walk_size','int(11)','YES','','-1','');
 INSERT INTO `table_columns` VALUES ('host',34,'device_threads','tinyint(2) unsigned','NO','','1','');
 INSERT INTO `table_columns` VALUES ('host',35,'deleted','char(2)','YES','','','');
 INSERT INTO `table_columns` VALUES ('host',36,'disabled','char(2)','YES','MUL',NULL,'');
@@ -652,7 +652,7 @@ INSERT INTO `table_columns` VALUES ('plugin_config',3,'name','varchar(64)','NO',
 INSERT INTO `table_columns` VALUES ('plugin_config',4,'status','tinyint(2)','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('plugin_config',5,'author','varchar(64)','NO','','','');
 INSERT INTO `table_columns` VALUES ('plugin_config',6,'webpage','varchar(255)','NO','','','');
-INSERT INTO `table_columns` VALUES ('plugin_config',7,'version','varchar(8)','NO','','','');
+INSERT INTO `table_columns` VALUES ('plugin_config',7,'version','varchar(10)','NO','','','');
 INSERT INTO `table_columns` VALUES ('plugin_db_changes',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('plugin_db_changes',2,'plugin','varchar(16)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('plugin_db_changes',3,'table','varchar(64)','NO','','','');
@@ -742,6 +742,8 @@ INSERT INTO `table_columns` VALUES ('poller_output_boost',1,'local_data_id','int
 INSERT INTO `table_columns` VALUES ('poller_output_boost',2,'rrd_name','varchar(19)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('poller_output_boost',3,'time','timestamp','NO','PRI','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('poller_output_boost',4,'output','varchar(512)','NO','',NULL,'');
+INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',1,'local_data_id','int(10) unsigned','NO','PRI','0','');
+INSERT INTO `table_columns` VALUES ('poller_output_boost_local_data_ids',2,'process_handler','int(10) unsigned','YES','MUL','0','');
 INSERT INTO `table_columns` VALUES ('poller_output_boost_processes',1,'sock_int_value','bigint(20) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('poller_output_boost_processes',2,'status','varchar(255)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('poller_output_realtime',1,'local_data_id','int(10) unsigned','NO','PRI','0','');
@@ -820,10 +822,10 @@ INSERT INTO `table_columns` VALUES ('sessions',1,'id','varchar(32)','NO','PRI',N
 INSERT INTO `table_columns` VALUES ('sessions',2,'remote_addr','varchar(25)','NO','','','');
 INSERT INTO `table_columns` VALUES ('sessions',3,'access','int(10) unsigned','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('sessions',4,'data','mediumblob','YES','',NULL,'');
-INSERT INTO `table_columns` VALUES ('sessions',5,'user_id','int(10) unsigned','YES','','0','');
+INSERT INTO `table_columns` VALUES ('sessions',5,'user_id','int(10) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('sessions',6,'user_agent','varchar(128)','NO','','','');
 INSERT INTO `table_columns` VALUES ('sessions',7,'start_time','timestamp','NO','','CURRENT_TIMESTAMP','');
-INSERT INTO `table_columns` VALUES ('sessions',8,'transactions','int(10) unsigned','YES','','1','');
+INSERT INTO `table_columns` VALUES ('sessions',8,'transactions','int(10) unsigned','NO','','1','');
 INSERT INTO `table_columns` VALUES ('settings',1,'name','varchar(50)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('settings',2,'value','varchar(2048)','NO','','','');
 INSERT INTO `table_columns` VALUES ('settings_tree',1,'user_id','mediumint(8) unsigned','NO','PRI','0','');
@@ -1050,20 +1052,20 @@ DROP TABLE IF EXISTS `table_indexes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `table_indexes` (
-  `idx_table_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `idx_table_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `idx_non_unique` int(10) unsigned DEFAULT NULL,
-  `idx_key_name` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `idx_key_name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
   `idx_seq_in_index` int(10) unsigned NOT NULL,
-  `idx_column_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `idx_collation` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `idx_column_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idx_collation` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `idx_cardinality` int(10) unsigned DEFAULT NULL,
-  `idx_sub_part` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `idx_packed` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `idx_null` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `idx_index_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `idx_comment` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `idx_sub_part` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `idx_packed` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `idx_null` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `idx_index_type` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `idx_comment` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`idx_table_name`,`idx_key_name`,`idx_seq_in_index`,`idx_column_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Holds Default Cacti Index Definitions';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Holds Default Cacti Index Definitions';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1103,49 +1105,49 @@ INSERT INTO `table_indexes` VALUES ('automation_processes',0,'PRIMARY',2,'networ
 INSERT INTO `table_indexes` VALUES ('automation_snmp',0,'PRIMARY',1,'id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('automation_snmp_items',0,'PRIMARY',1,'id','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('automation_snmp_items',0,'PRIMARY',2,'snmp_id','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('automation_templates',0,'PRIMARY',1,'id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('automation_templates',0,'PRIMARY',1,'id','A',5,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('automation_tree_rule_items',0,'PRIMARY',1,'id','A',4,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('automation_tree_rules',1,'name',1,'name','A',2,'171',NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('automation_tree_rules',0,'PRIMARY',1,'id','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('cdef',1,'hash',1,'hash','A',6,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('cdef',1,'name',1,'name','A',6,'171',NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('cdef',0,'PRIMARY',1,'id','A',6,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('cdef_items',1,'cdef_id_sequence',1,'cdef_id','A',6,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('cdef_items',1,'cdef_id_sequence',2,'sequence','A',16,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('cdef_items',0,'PRIMARY',1,'id','A',16,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('cdef',1,'hash',1,'hash','A',10,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('cdef',1,'name',1,'name','A',10,'171',NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('cdef',0,'PRIMARY',1,'id','A',10,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('cdef_items',1,'cdef_id_sequence',1,'cdef_id','A',27,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('cdef_items',1,'cdef_id_sequence',2,'sequence','A',27,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('cdef_items',0,'PRIMARY',1,'id','A',27,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('color_template_items',0,'PRIMARY',1,'color_template_item_id','A',44,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('color_templates',0,'PRIMARY',1,'color_template_id','A',4,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('colors',0,'hex',1,'hex','A',436,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('colors',0,'PRIMARY',1,'id','A',436,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('colors',0,'hex',1,'hex','A',505,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('colors',0,'PRIMARY',1,'id','A',505,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_debug',1,'datasource',1,'datasource','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_debug',1,'done',1,'done','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_debug',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_debug',1,'started',1,'started','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_debug',1,'user',1,'user','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input',1,'name_type_id',1,'name','A',12,'171',NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input',1,'name_type_id',2,'type_id','A',12,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input',0,'PRIMARY',1,'id','A',12,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input_data',1,'data_template_data_id',1,'data_template_data_id','A',19,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input_data',0,'PRIMARY',1,'data_input_field_id','A',3,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input_data',0,'PRIMARY',2,'data_template_data_id','A',50,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input_data',1,'t_value',1,'t_value','A',1,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input_fields',1,'data_input_id',1,'data_input_id','A',12,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input_fields',1,'input_output',1,'input_output','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input_fields',0,'PRIMARY',1,'id','A',46,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input_fields',1,'type_code_data_input_id',1,'type_code','A',14,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_input_fields',1,'type_code_data_input_id',2,'data_input_id','A',39,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_local',1,'data_template_id',1,'data_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_local',1,'host_id_snmp_query_id',1,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_local',1,'host_id_snmp_query_id',2,'snmp_query_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_local',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_local',1,'snmp_index',1,'snmp_index','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_local',1,'snmp_query_id',1,'snmp_query_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input',1,'name_type_id',1,'name','A',31,'171',NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input',1,'name_type_id',2,'type_id','A',31,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input',0,'PRIMARY',1,'id','A',31,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input_data',1,'data_template_data_id',1,'data_template_data_id','A',106,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input_data',0,'PRIMARY',1,'data_input_field_id','A',80,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input_data',0,'PRIMARY',2,'data_template_data_id','A',320,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input_data',1,'t_value',1,'t_value','A',4,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input_fields',1,'data_input_id',1,'data_input_id','A',98,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input_fields',1,'input_output',1,'input_output','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input_fields',0,'PRIMARY',1,'id','A',98,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input_fields',1,'type_code_data_input_id',1,'type_code','A',32,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_input_fields',1,'type_code_data_input_id',2,'data_input_id','A',98,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_local',1,'data_template_id',1,'data_template_id','A',5,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_local',1,'host_id_snmp_query_id',1,'host_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_local',1,'host_id_snmp_query_id',2,'snmp_query_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_local',0,'PRIMARY',1,'id','A',5,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_local',1,'snmp_index',1,'snmp_index','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_local',1,'snmp_query_id',1,'snmp_query_id','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_profiles',1,'name',1,'name','A',3,'171',NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_profiles',0,'PRIMARY',1,'id','A',3,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_source_profiles_cf',1,'data_source_profile_id',1,'data_source_profile_id','A',3,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_source_profiles_cf',0,'PRIMARY',1,'data_source_profile_id','A',3,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_source_profiles_cf',1,'data_source_profile_id',1,'data_source_profile_id','A',6,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_source_profiles_cf',0,'PRIMARY',1,'data_source_profile_id','A',6,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_profiles_cf',0,'PRIMARY',2,'consolidation_function_id','A',12,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_source_profiles_rra',1,'data_source_profile_id',1,'data_source_profile_id','A',3,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_source_profiles_rra',1,'data_source_profile_id',1,'data_source_profile_id','A',6,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_profiles_rra',0,'PRIMARY',1,'id','A',12,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_purge_action',0,'name',1,'name','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_purge_action',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
@@ -1170,100 +1172,100 @@ INSERT INTO `table_indexes` VALUES ('data_source_stats_weekly',0,'PRIMARY',1,'lo
 INSERT INTO `table_indexes` VALUES ('data_source_stats_weekly',0,'PRIMARY',2,'rrd_name','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_stats_yearly',0,'PRIMARY',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_stats_yearly',0,'PRIMARY',2,'rrd_name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template',1,'name',1,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_data',1,'data_input_id',1,'data_input_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_data',1,'data_template_id',1,'data_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_data',1,'local_data_id',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_data',1,'name_cache',1,'name_cache','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_data',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'data_template_id',1,'data_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',2,'data_source_name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',3,'data_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'local_data_id',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'local_data_template_rrd_id',1,'local_data_template_rrd_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template',1,'name',1,'name','A',61,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template',0,'PRIMARY',1,'id','A',61,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_data',1,'data_input_id',1,'data_input_id','A',66,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_data',1,'data_template_id',1,'data_template_id','A',66,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_data',1,'local_data_id',1,'local_data_id','A',13,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_data',1,'name_cache',1,'name_cache','A',13,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_data',0,'PRIMARY',1,'id','A',66,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'data_template_id',1,'data_template_id','A',123,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',1,'local_data_id','A',12,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',2,'data_source_name','A',123,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',3,'data_template_id','A',123,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'local_data_id',1,'local_data_id','A',12,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'local_data_template_rrd_id',1,'local_data_template_rrd_id','A',17,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'PRIMARY',1,'id','A',123,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('external_links',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_local',1,'graph_template_id',1,'graph_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_local',1,'host_id',1,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_local',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_local',1,'snmp_index',1,'snmp_index','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_local',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_local',1,'snmp_query_id',1,'snmp_query_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_template_input',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',1,'graph_template_input_id',1,'graph_template_input_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',0,'PRIMARY',1,'graph_template_input_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',0,'PRIMARY',2,'graph_template_item_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates',1,'multiple_name',1,'multiple','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates',1,'multiple_name',2,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates',1,'name',1,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_gprint',1,'name',1,'name','A',3,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_gprint',0,'PRIMARY',1,'id','A',3,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'graph_template_id',1,'graph_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'local_graph_id',1,'local_graph_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_graph',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'title_cache',1,'title_cache','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'graph_template_id',1,'graph_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'lgi_gti',1,'local_graph_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'lgi_gti',2,'graph_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'local_graph_id_sequence',1,'local_graph_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'local_graph_id_sequence',2,'sequence','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'task_item_id',1,'task_item_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'cdef_id',1,'cdef_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'vdef_id',1,'vdef_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'color_id',1,'color_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'gprint_id',1,'gprint_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'local_graph_template_item_id',1,'local_graph_template_item_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_local',1,'graph_template_id',1,'graph_template_id','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_local',1,'host_id',1,'host_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_local',0,'PRIMARY',1,'id','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_local',1,'snmp_index',1,'snmp_index','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_local',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_local',1,'snmp_query_id',1,'snmp_query_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_template_input',0,'PRIMARY',1,'id','A',139,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',1,'graph_template_input_id',1,'graph_template_input_id','A',316,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',0,'PRIMARY',1,'graph_template_input_id','A',316,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',0,'PRIMARY',2,'graph_template_item_id','A',633,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates',1,'multiple_name',1,'multiple','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates',1,'multiple_name',2,'name','A',61,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates',1,'name',1,'name','A',61,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates',0,'PRIMARY',1,'id','A',61,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_gprint',1,'name',1,'name','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_gprint',0,'PRIMARY',1,'id','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'graph_template_id',1,'graph_template_id','A',69,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'local_graph_id',1,'local_graph_id','A',11,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_graph',0,'PRIMARY',1,'id','A',69,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_graph',1,'title_cache',1,'title_cache','A',11,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'cdef_id',1,'cdef_id','A',18,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'color_id',1,'color_id','A',147,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'gprint_id',1,'gprint_id','A',8,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'graph_template_id',1,'graph_template_id','A',147,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'lgi_gti',1,'local_graph_id','A',10,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'lgi_gti',2,'graph_template_id','A',147,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'local_graph_id_sequence',1,'local_graph_id','A',10,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'local_graph_id_sequence',2,'sequence','A',122,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'local_graph_template_item_id',1,'local_graph_template_item_id','A',73,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',0,'PRIMARY',1,'id','A',735,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'task_item_id',1,'task_item_id','A',367,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_templates_item',1,'vdef_id',1,'vdef_id','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_tree',1,'name',1,'name','A',1,'171',NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_tree',0,'PRIMARY',1,'id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_tree',1,'sequence',1,'sequence','A',1,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'graph_tree_id',1,'graph_tree_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'host_id',1,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'local_graph_id',1,'local_graph_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'parent_position',1,'parent','A',0,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'parent_position',2,'position','A',0,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_tree_items',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'site_id',1,'site_id','A',0,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'disabled',1,'disabled','A',0,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'external_id',1,'external_id','A',0,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'hostname',1,'hostname','A',0,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_disabled',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_disabled',2,'disabled','A',0,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_last_updated',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_last_updated',2,'last_updated','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'site_id',1,'site_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'site_id_location',1,'site_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'site_id_location',2,'location','A',0,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'status',1,'status','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_graph',0,'PRIMARY',1,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_graph',0,'PRIMARY',2,'graph_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'field_name',1,'field_name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'field_value',1,'field_value','A',0,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'host_id',1,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'host_id',2,'field_name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'last_updated',1,'last_updated','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'present',1,'present','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',1,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',2,'snmp_query_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',3,'field_name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',4,'snmp_index','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'snmp_index',1,'snmp_index','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'snmp_query_id',1,'snmp_query_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_query',1,'host_id',1,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_query',0,'PRIMARY',1,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_query',0,'PRIMARY',2,'snmp_query_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template',1,'name',1,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template_graph',1,'host_template_id',1,'host_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template_graph',0,'PRIMARY',1,'host_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template_graph',0,'PRIMARY',2,'graph_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',1,'host_template_id',1,'host_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',0,'PRIMARY',1,'host_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',0,'PRIMARY',2,'snmp_query_id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'graph_tree_id',1,'graph_tree_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'host_id',1,'host_id','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'local_graph_id',1,'local_graph_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'parent_position',1,'parent','A',4,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'parent_position',2,'position','A',4,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_tree_items',0,'PRIMARY',1,'id','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('graph_tree_items',1,'site_id',1,'site_id','A',2,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'disabled',1,'disabled','A',1,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'external_id',1,'external_id','A',1,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'hostname',1,'hostname','A',1,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_disabled',1,'poller_id','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_disabled',2,'disabled','A',1,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_last_updated',1,'poller_id','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_last_updated',2,'last_updated','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',0,'PRIMARY',1,'id','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'site_id',1,'site_id','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'site_id_location',1,'site_id','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'site_id_location',2,'location','A',1,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host',1,'status',1,'status','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_graph',0,'PRIMARY',1,'host_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_graph',0,'PRIMARY',2,'graph_template_id','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'field_name',1,'field_name','A',6,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'field_value',1,'field_value','A',6,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'host_id',1,'host_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'host_id',2,'field_name','A',6,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'last_updated',1,'last_updated','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'present',1,'present','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',1,'host_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',2,'snmp_query_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',3,'field_name','A',6,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',4,'snmp_index','A',6,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'snmp_index',1,'snmp_index','A',6,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'snmp_query_id',1,'snmp_query_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_query',1,'host_id',1,'host_id','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_query',0,'PRIMARY',1,'host_id','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_snmp_query',0,'PRIMARY',2,'snmp_query_id','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_template',1,'name',1,'name','A',6,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_template',0,'PRIMARY',1,'id','A',6,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_template_graph',1,'host_template_id',1,'host_template_id','A',12,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_template_graph',0,'PRIMARY',1,'host_template_id','A',12,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_template_graph',0,'PRIMARY',2,'graph_template_id','A',48,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',1,'host_template_id',1,'host_template_id','A',14,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',0,'PRIMARY',1,'host_template_id','A',14,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',0,'PRIMARY',2,'snmp_query_id','A',14,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_config',1,'directory',1,'directory','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_config',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_config',1,'status',1,'status','A',0,NULL,NULL,'','BTREE','');
@@ -1272,7 +1274,7 @@ INSERT INTO `table_indexes` VALUES ('plugin_db_changes',1,'plugin',1,'plugin','A
 INSERT INTO `table_indexes` VALUES ('plugin_db_changes',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_hooks',1,'hook',1,'hook','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_hooks',0,'PRIMARY',1,'id','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('plugin_hooks',1,'status',1,'status','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('plugin_hooks',1,'status',1,'status','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_realms',1,'plugin',1,'plugin','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_realms',0,'PRIMARY',1,'id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller',1,'disabled',1,'disabled','A',1,NULL,NULL,'YES','BTREE','');
@@ -1283,28 +1285,30 @@ INSERT INTO `table_indexes` VALUES ('poller_command',1,'poller_id_last_updated',
 INSERT INTO `table_indexes` VALUES ('poller_command',0,'PRIMARY',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_command',0,'PRIMARY',2,'action','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_command',0,'PRIMARY',3,'command','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_data_template_field_mappings',0,'PRIMARY',1,'data_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_data_template_field_mappings',0,'PRIMARY',2,'data_name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_data_template_field_mappings',0,'PRIMARY',3,'data_source_names','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'action',1,'action','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'host_id',1,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_action',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_action',2,'action','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_host_id',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_host_id',2,'host_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_last_updated',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_last_updated',2,'last_updated','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_rrd_next_step',1,'poller_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_rrd_next_step',2,'rrd_next_step','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',1,'present',1,'present','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',0,'PRIMARY',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('poller_item',0,'PRIMARY',2,'rrd_name','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_data_template_field_mappings',0,'PRIMARY',1,'data_template_id','A',57,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_data_template_field_mappings',0,'PRIMARY',2,'data_name','A',57,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_data_template_field_mappings',0,'PRIMARY',3,'data_source_names','A',57,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'action',1,'action','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'host_id',1,'host_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_action',1,'poller_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_action',2,'action','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_host_id',1,'poller_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_host_id',2,'host_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_last_updated',1,'poller_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_last_updated',2,'last_updated','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_rrd_next_step',1,'poller_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'poller_id_rrd_next_step',2,'rrd_next_step','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',1,'present',1,'present','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',0,'PRIMARY',1,'local_data_id','A',5,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_item',0,'PRIMARY',2,'rrd_name','A',5,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output',0,'PRIMARY',1,'local_data_id','A',NULL,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output',0,'PRIMARY',2,'rrd_name','A',NULL,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output',0,'PRIMARY',3,'time','A',NULL,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',2,'time','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost',0,'PRIMARY',3,'rrd_name','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('poller_output_boost_local_data_ids',0,'PRIMARY',1,'local_data_id',NULL,0,NULL,NULL,'','HASH','');
+INSERT INTO `table_indexes` VALUES ('poller_output_boost_local_data_ids',1,'process_handler',1,'process_handler',NULL,0,NULL,NULL,'YES','HASH','');
 INSERT INTO `table_indexes` VALUES ('poller_output_boost_processes',0,'PRIMARY',1,'sock_int_value',NULL,0,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('poller_output_realtime',1,'poller_id',1,'poller_id','A',0,'191',NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_output_realtime',0,'PRIMARY',1,'local_data_id','A',0,NULL,NULL,'','BTREE','');
@@ -1333,51 +1337,51 @@ INSERT INTO `table_indexes` VALUES ('reports',0,'PRIMARY',1,'id','A',0,NULL,NULL
 INSERT INTO `table_indexes` VALUES ('reports_items',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('reports_items',1,'report_id',1,'report_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('sessions',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('settings',0,'PRIMARY',1,'name','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('settings',0,'PRIMARY',1,'name','A',49,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('settings_tree',0,'PRIMARY',1,'user_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('settings_tree',0,'PRIMARY',2,'graph_tree_item_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('settings_user',0,'PRIMARY',1,'user_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('settings_user',0,'PRIMARY',2,'name','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('settings_user_group',0,'PRIMARY',1,'group_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('settings_user_group',0,'PRIMARY',2,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('sites',1,'alternate_id',1,'alternate_id','A',1,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('sites',1,'city',1,'city','A',1,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('sites',1,'country',1,'country','A',1,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('sites',1,'alternate_id',1,'alternate_id','A',2,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('sites',1,'city',1,'city','A',2,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('sites',1,'country',1,'country','A',2,NULL,NULL,'YES','BTREE','');
 INSERT INTO `table_indexes` VALUES ('sites',1,'name',1,'name','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('sites',1,'postal_code',1,'postal_code','A',1,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('sites',1,'postal_code',1,'postal_code','A',2,NULL,NULL,'YES','BTREE','');
 INSERT INTO `table_indexes` VALUES ('sites',0,'PRIMARY',1,'id','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('sites',1,'state',1,'state','A',1,NULL,NULL,'YES','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query',1,'name',1,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph',1,'graph_template_id_name',1,'graph_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph',1,'graph_template_id_name',2,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph',1,'snmp_query_id_name',1,'snmp_query_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph',1,'snmp_query_id_name',2,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',1,'data_template_rrd_id',1,'data_template_rrd_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',0,'PRIMARY',1,'snmp_query_graph_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',0,'PRIMARY',2,'data_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',0,'PRIMARY',3,'data_template_rrd_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd_sv',1,'data_template_id',1,'data_template_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd_sv',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd_sv',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_sv',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_sv',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache',1,'mib_name',1,'mib','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache',1,'mib_name',2,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache',1,'name',1,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache',0,'PRIMARY',1,'oid','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',1,'name',1,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',1,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',2,'mib','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',3,'attribute','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',4,'sequence_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',1,'mib',1,'mib','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',1,'name',1,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',0,'PRIMARY',1,'name','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',0,'PRIMARY',2,'mib','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',0,'PRIMARY',3,'type','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('sites',1,'state',1,'state','A',2,NULL,NULL,'YES','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query',1,'name',1,'name','A',9,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query',0,'PRIMARY',1,'id','A',9,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph',1,'graph_template_id_name',1,'graph_template_id','A',32,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph',1,'graph_template_id_name',2,'name','A',32,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph',0,'PRIMARY',1,'id','A',32,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph',1,'snmp_query_id_name',1,'snmp_query_id','A',32,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph',1,'snmp_query_id_name',2,'name','A',32,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',1,'data_template_rrd_id',1,'data_template_rrd_id','A',66,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',0,'PRIMARY',1,'snmp_query_graph_id','A',66,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',0,'PRIMARY',2,'data_template_id','A',66,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',0,'PRIMARY',3,'data_template_rrd_id','A',66,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',66,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd_sv',1,'data_template_id',1,'data_template_id','A',18,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd_sv',0,'PRIMARY',1,'id','A',75,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd_sv',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',75,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_sv',0,'PRIMARY',1,'id','A',64,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmp_query_graph_sv',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',64,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache',1,'mib_name',1,'mib','A',6,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache',1,'mib_name',2,'name','A',137,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache',1,'name',1,'name','A',137,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache',0,'PRIMARY',1,'oid','A',137,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',1,'name',1,'name','A',17,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',1,'name','A',17,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',2,'mib','A',17,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',3,'attribute','A',17,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',4,'sequence_id','A',17,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',1,'mib',1,'mib','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',1,'name',1,'name','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',0,'PRIMARY',1,'name','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',0,'PRIMARY',2,'mib','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',0,'PRIMARY',3,'type','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers',1,'hostname',1,'hostname','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',1,'manager_id_notification',1,'manager_id','A',0,NULL,NULL,'','BTREE','');
@@ -1386,22 +1390,22 @@ INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',1,'mib',1
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',0,'PRIMARY',1,'manager_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',0,'PRIMARY',2,'notification','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',0,'PRIMARY',3,'mib','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_mibs',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('snmpagent_mibs',0,'PRIMARY',1,'id','A',3,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_notifications_log',1,'manager_id_notification',1,'manager_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_notifications_log',1,'manager_id_notification',2,'notification','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_notifications_log',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_notifications_log',1,'severity',1,'severity','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_notifications_log',1,'time',1,'time','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',1,'table_name','A',98,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',2,'table_sequence','A',867,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',3,'table_field','A',867,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',1,'idx_table_name','A',97,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',2,'idx_key_name','A',232,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',3,'idx_seq_in_index','A',310,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',4,'idx_column_name','A',310,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',1,'table_name','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',2,'table_sequence','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_columns',0,'PRIMARY',3,'table_field','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',1,'idx_table_name','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',2,'idx_key_name','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',3,'idx_seq_in_index','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('table_indexes',0,'PRIMARY',4,'idx_column_name','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth',1,'enabled',1,'enabled','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth',0,'PRIMARY',1,'id','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('user_auth',1,'realm',1,'realm','A',1,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('user_auth',1,'realm',1,'realm','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth',1,'username',1,'username','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth_cache',1,'hostname',1,'hostname','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth_cache',1,'last_update',1,'last_update','A',0,NULL,NULL,'','BTREE','');
@@ -1425,9 +1429,9 @@ INSERT INTO `table_indexes` VALUES ('user_auth_perms',0,'PRIMARY',2,'item_id','A
 INSERT INTO `table_indexes` VALUES ('user_auth_perms',0,'PRIMARY',3,'type','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth_perms',1,'user_id',1,'user_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth_perms',1,'user_id',2,'type','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('user_auth_realm',0,'PRIMARY',1,'realm_id','A',27,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('user_auth_realm',0,'PRIMARY',1,'realm_id','A',28,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth_realm',0,'PRIMARY',2,'user_id','A',28,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('user_auth_realm',1,'user_id',1,'user_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('user_auth_realm',1,'user_id',1,'user_id','A',4,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_domains',0,'PRIMARY',1,'domain_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_domains_ldap',0,'PRIMARY',1,'domain_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_log',0,'PRIMARY',1,'username','A',0,NULL,NULL,'','BTREE','');
@@ -1438,7 +1442,7 @@ INSERT INTO `table_indexes` VALUES ('vdef',1,'hash',1,'hash','A',7,NULL,NULL,'',
 INSERT INTO `table_indexes` VALUES ('vdef',1,'name',1,'name','A',7,'171',NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('vdef',0,'PRIMARY',1,'id','A',7,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('vdef_items',0,'PRIMARY',1,'id','A',15,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('vdef_items',1,'vdef_id_sequence',1,'vdef_id','A',7,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('vdef_items',1,'vdef_id_sequence',1,'vdef_id','A',15,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('vdef_items',1,'vdef_id_sequence',2,'sequence','A',15,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('version',0,'PRIMARY',1,'cacti','A',1,NULL,NULL,'','BTREE','');
 /*!40000 ALTER TABLE `table_indexes` ENABLE KEYS */;
@@ -1453,4 +1457,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-12-17 13:52:16
+-- Dump completed on 2021-10-10 20:21:01
