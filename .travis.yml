@@ -12,18 +12,16 @@ matrix:
     - php: 7.4
       dist: bionic
     - php: 8.0
-      dist: bionic
+      dist: focal
     - php: nightly
-      dist: bionic
+      dist: focal
   fast_finish: true
-  allow_failures:
-    - php: 7.4
-    - php: 8.0
-    - php: nightly
 
 before_install:
   # run syntax check
   - if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
+  # obtain keys for Ubuntu
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 78BD65473CB3BD13 6B05F25D762E3157
   # get latest updates
   - sudo apt-get update > /dev/null
 
@@ -31,18 +29,21 @@ install:
   # setup link for php legacy
   - sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
   # install apache web server
-  - sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp rrdtool snmp
+  - sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp php-xml php-mbstring rrdtool snmp libapache2-mod-php
   - sudo a2enmod proxy_fcgi setenvif actions alias
-  - sudo find /etc/apache2
   # configure apache virtual hosts
   - sudo cp -f tests/tools/cacti.conf /etc/apache2/sites-available/000-default.conf
   # set some required variables
   - echo 'cgi.fix_pathinfo = 1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # copy the Cacti website to the correct direcotry
-  - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
+  # sudo cp -rp /home/travis/build/Cacti/cacti /var/www/html/
+  # link the Cacti website to the correct directory
+  - sudo ln -s /home/travis/build/Cacti/cacti /var/www/html/cacti
   # change ownership on the Cacti directory
-  - sudo chown -R www-data:www-data /var/www/html/cacti
+  - sudo chown -R www-data:www-data /home/travis/build/Cacti/cacti
+  # make the directory more open for our tests
+  - sudo chmod -R 777 /home/travis/build/Cacti/cacti
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   - sudo sed -i -e 's,nobody,www-data,g' ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/*.conf
@@ -59,13 +60,15 @@ before_script:
   - mysql -e "FLUSH PRIVILEGES;"
   - mysql cacti < cacti.sql
   - mysql -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
-  - mv include/config.php.dist include/config.php
+  - sudo cp -p include/config.php.dist include/config.php
+  - sudo cp -p include/config.php.dist /var/www/html/cacti/include/config.php
 
 script:
-  - php tests/tools/check_install_code.php
-  - bash tests/tools/check_cli_version.sh
-  - php cli/install_cacti.php --accept-eula --install --force
-  - sudo bash tests/tools/check_all_pages.sh
+  - cd /var/www/html/cacti && sudo php tests/tools/check_install_code.php
+  - cd /var/www/html/cacti && sudo bash tests/tools/check_cli_version.sh
+  - cd /var/www/html/cacti && sudo php cli/install_cacti.php --accept-eula --install --force
+  - cd /var/www/html/cacti && sudo bash tests/tools/check_all_pages.sh
+  - cd /var/www/html/cacti && sudo cat /var/www/html/cacti/log/cacti.log
 
 notifications:
   email:
