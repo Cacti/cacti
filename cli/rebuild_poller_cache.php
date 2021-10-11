@@ -98,7 +98,7 @@ verbose('Querying for data sources...');
 /* first of all, get all data sources and their corresponding information.
 	any param of get_data_sources() set to zero means as 'all'
 */
-$data_sources = get_data_sources($host_id, $local_data_id, $data_template_id);
+$data_sources = get_data_sources($host_id);
 verbose("There are " . cacti_sizeof($data_sources) . " data source elements to update.");
 
 /* initialize some variables */
