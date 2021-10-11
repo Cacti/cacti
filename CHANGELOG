@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#3793: Calling function read_config_option in plugin's setup.php leads to error
 -issue#4362: Fix variable in change_device.php
 -issue#4347: race with proc_open leads to blocked rrdtool processes
+-issue#4373: fix Poller cache cannot be rebuilt from CLI, must use Web GUI
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1523: Value above RRD maximum value
 -feature#2437: Create system-wide Proxy settings for plugins
