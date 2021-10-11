@@ -712,6 +712,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
  */
 function get_data_sources($host_id = 0 , $local_data_id = 0, $data_template_id = 0) {
 	$sql_where       = '';
+	$sql_args        = [];
 	/* setup the sql where, and if using a host, get it's host information */
 	if ($host_id != 0) {
 		/* get all information about this host so we can write it to the data source */
@@ -719,20 +720,23 @@ function get_data_sources($host_id = 0 , $local_data_id = 0, $data_template_id =
 			FROM host WHERE id = ?',
 			array($host_id));
 
-		$sql_where .= ' AND dl.host_id=' . $host_id;
+		$sql_where .= ' AND dl.host_id = ?';
+		$sql_args[] = $host_id;
 	}
 
 	/* sql WHERE for local_data_id */
 	if ($local_data_id != 0) {
-		$sql_where .= ' AND dl.id=' . $local_data_id;
+		$sql_where .= ' AND dl.id = ?';
+		$sql_args[] = $local_data_id;
 	}
 
 	/* sql WHERE for data_template_id */
 	if ($data_template_id != 0) {
-		$sql_where .= ' AND dtd.data_template_id=' . $data_template_id;
+		$sql_where .= ' AND dtd.data_template_id = ?';
+		$sql_args[] = $data_template_id;
 	}
 
-	$data_sources = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dtd.id,
+	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " dtd.id,
 		dtd.data_input_id, dtd.local_data_id,
 		dtd.local_data_template_data_id, dl.host_id,
 		dl.snmp_query_id, dl.snmp_index
@@ -741,7 +745,7 @@ function get_data_sources($host_id = 0 , $local_data_id = 0, $data_template_id =
 		ON dl.id=dtd.local_data_id
 		WHERE dtd.data_input_id>0
 		AND (dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != ''))
-		$sql_where");
+		$sql_where", $sql_args);
 
 	return $data_sources;
 }
