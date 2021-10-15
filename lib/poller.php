@@ -391,7 +391,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 
 	if ($remainder) {
 		/* check if too many rows pending */
-		$rows = db_fetch_cell('SELECT COUNT(*) FROM poller_output');
+		$rows = db_fetch_cell('SELECT COUNT(local_data_id)
+			FROM poller_output');
+
 		if ($rows > $max_rows && $have_deleted_rows === true) {
 			$limit = ' LIMIT ' . $max_rows;
 		} else {
@@ -551,7 +553,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 		$rrd_update_array = NULL;
 
 		/* to much records in poller_output, process in chunks */
-		if ($remainder && $limit != '') {
+		$rows = db_fetch_cell('SELECT COUNT(local_data_id)
+			FROM poller_output');
+
+		/* to much records in poller_output, process in chunks */
+		if ($rows && $remainder) {
 			$rrds_processed += process_poller_output($rrdtool_pipe, $remainder);
 		}
 	}
