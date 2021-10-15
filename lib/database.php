@@ -907,7 +907,15 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			// Check that column is correct and fix it
 			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
+
+			if (strpos(strtolower($arr['Type']), ' unsigned') !== false) {
+				$arr['Type'] = str_ireplace(' unsigned', '', $arr['Type']);
+				$arr['unsigned'] = true;
+			}
+
 			if ($column['type'] != $arr['Type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != $arr['Null'])
+				|| (((!isset($column['unsigned']) || !$column['unsigned']) && isset($arr['unsigned'])) 
+					|| (isset($column['unsigned']) && $column['unsigned'] && !isset($arr['unsigned'])))
 			    || (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
 				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['name'] . '` `' . $column['name'] . '`';
 				if (isset($column['type'])) {
