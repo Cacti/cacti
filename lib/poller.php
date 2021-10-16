@@ -394,7 +394,6 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 		$rows = db_fetch_cell('SELECT COUNT(local_data_id)
 			FROM poller_output');
 
-		$rows = db_fetch_cell('SELECT COUNT(*) FROM poller_output');
 		if ($rows > $max_rows && $have_deleted_rows === true) {
 			$limit = ' LIMIT ' . $max_rows;
 		} else {
@@ -559,7 +558,6 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 
 		/* to much records in poller_output, process in chunks */
 		if ($rows && $remainder) {
-		if ($remainder && $limit != '') {
 			$rrds_processed += process_poller_output($rrdtool_pipe, $remainder);
 		}
 	}

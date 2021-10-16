@@ -52,7 +52,7 @@ function upgrade_to_1_2_19() {
 		db_install_execute('ALTER table graph_templates_item' . $alter);
 	}
 
-	if (!db_column_exists('dbretries', 'poller')) {
+	if (!db_column_exists('poller', 'dbretries')) {
 		db_install_execute('ALTER TABLE poller
 			ADD COLUMN dbretries int unsigned NOT NULL default "2" AFTER dbport');
 	}
