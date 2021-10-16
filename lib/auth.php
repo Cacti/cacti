@@ -773,6 +773,7 @@ function is_realm_allowed($realm) {
 					kill_session_var('sess_config_array');
 					kill_session_var('sess_tree_perms');
 					kill_session_var('sess_simple_perms');
+					kill_session_var('sess_simple_template_perms');
 
 					print '<span style="display:none;">cactiLoginSuspend</span>';
 					exit;
@@ -783,6 +784,7 @@ function is_realm_allowed($realm) {
 				kill_session_var('sess_config_array');
 				kill_session_var('sess_tree_perms');
 				kill_session_var('sess_simple_perms');
+				kill_session_var('sess_simple_template_perms');
 			}
 		}
 
@@ -1599,6 +1601,54 @@ function get_simple_graph_perms($user) {
 	}
 }
 
+function get_simple_graph_template_perms($user) {
+	if (isset($_SESSION['sess_simple_template_perms'])) {
+		return $_SESSION['sess_simple_template_perms'];
+	}
+
+	$policy_graph_templates = db_fetch_cell_prepared('SELECT policy_graph_templates
+		FROM user_auth
+		WHERE id = ?',
+		array($user));
+
+	$perm_count = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM user_auth_perms
+		WHERE user_id = ?
+		AND type = 4',
+		array($user));
+
+	if ($policy_graphs == 1 && $perm_count == 0) {
+		$_SESSION['sess_simple_template_perms'] = true;
+
+		return true;
+	} else {
+		$policies = db_fetch_assoc_prepared('SELECT policy_graph_templates, COUNT(*) AS exceptions
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_perms AS uagp
+			ON uag.id = uagp.group_id
+			INNER JOIN user_auth_group_members AS uagm
+			ON uagm.group_id = uag.id
+			WHERE uagp.type = 4
+			AND uagm.user_id = ?
+			GROUP BY uag.id',
+			array($user));
+
+		if (cacti_sizeof($policies)) {
+			foreach($policies as $p) {
+				if ($p['policy_graph_templates'] == 1 && $p['exceptions'] == 0) {
+					$_SESSION['sess_simple_template_perms'] = true;
+
+					return true;
+				}
+			}
+		}
+
+		$_SESSION['sess_simple_template_perms'] = false;
+
+		return false;
+	}
+}
+
 function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	$hash      = get_allowed_type_hash('graph_templates', $sql_where, $order_by, $limit, $graph_template_id, $user);
 	$init_rows = $total_rows;
@@ -1635,7 +1685,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		$auth_method = read_config_option('auth_method');
 	}
 
-	$simple_perms = get_simple_graph_perms($user);
+	$simple_perms = get_simple_graph_template_perms($user);
 
 	if ($auth_method != 0 && !$simple_perms) {
 		if ($user == 0) {
@@ -1732,9 +1782,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		if ($total_rows != -2) {
 			$templates = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name
 				FROM graph_local AS gl
-				LEFT JOIN graph_templates AS gt
+				INNER JOIN graph_templates AS gt
 				ON gt.id=gl.graph_template_id
-				LEFT JOIN host AS h
+				INNER JOIN host AS h
 				ON h.id=gl.host_id
 				$sql_where
 				$order_by
@@ -1744,9 +1794,9 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		if ($total_rows >= 0 || $total_rows == -2) {
 			$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.graph_template_id) AS id
 				FROM graph_local AS gl
-				LEFT JOIN graph_templates AS gt
+				INNER JOIN graph_templates AS gt
 				ON gt.id=gl.graph_template_id
-				LEFT JOIN host AS h
+				INNER JOIN host AS h
 				ON h.id=gl.host_id
 				$sql_where");
 		}
