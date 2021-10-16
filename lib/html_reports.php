@@ -1574,7 +1574,7 @@ function reports() {
 	$reports_list = db_fetch_assoc("SELECT
 		user_auth.full_name, user_auth.username,
 		reports.*,
-		CONCAT_WS('', intrvl, ' ', count, ' ', offset, '') AS cint
+		CONCAT_WS('', intrvl, ' ', count, ' ', `offset`, '') AS cint
 		FROM reports
 		$sql_join
 		$sql_where

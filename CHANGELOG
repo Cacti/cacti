@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue#4419: Cacti missing key indexes that result in Preset pages slowdowns
 -issue#4420: Data Sources page shows no name when Data Source has no name cache
 -issue#4421: db_update_table function can not alter table from signed to unsigned
+-issue#4424: Offset is a reserved word in MariaDB 10.6 affecting Report
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#4344: Add a 15 minute polling/sampling interval
