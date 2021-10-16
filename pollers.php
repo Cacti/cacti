@@ -170,6 +170,15 @@ $fields_poller_edit = array(
 		'default' => $database_port,
 		'max_length' => '5'
 	),
+	'dbretries' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Remote Database Port'),
+		'description' => __('The TCP port to use to connect to the remote database.'),
+		'value' => '|arg1:dbretries|',
+		'size' => '5',
+		'default' => $database_retries,
+		'max_length' => '5'
+	),
 	'dbssl' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Remote Database SSL'),
@@ -635,6 +644,7 @@ function poller_edit() {
 			unset($fields_poller_edit['dbuser']);
 			unset($fields_poller_edit['dbpass']);
 			unset($fields_poller_edit['dbport']);
+			unset($fields_poller_edit['dbretries']);
 			unset($fields_poller_edit['dbssl']);
 			unset($fields_poller_edit['dbsslkey']);
 			unset($fields_poller_edit['dbsslcert']);
@@ -770,6 +780,7 @@ function test_database_connection($poller = array()) {
 		$poller['dbdefault'],
 		$poller['dbtype'],
 		$poller['dbport'],
+		$poller['dbretries'],
 		$poller['dbssl'],
 		$poller['dbsslkey'],
 		$poller['dbsslcert'],

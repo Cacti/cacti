@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue#4419: Cacti missing key indexes that result in Preset pages slowdowns
 -issue#4420: Data Sources page shows no name when Data Source has no name cache
 -issue#4421: db_update_table function can not alter table from signed to unsigned
+-issue#4423: Parameter list for lib/database.php:db_connect_real() is not correct in 3 places
 -issue#4424: Offset is a reserved word in MariaDB 10.6 affecting Report
 -issue#4425: Rendering large trees slowed due to lack of permission caching
 -feature: Add a normal/wrap class for general use

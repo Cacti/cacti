@@ -2159,6 +2159,7 @@ CREATE TABLE `poller` (
   `dbuser` varchar(20) NOT NULL DEFAULT '',
   `dbpass` varchar(64) NOT NULL DEFAULT '',
   `dbport` int(10) unsigned DEFAULT '3306',
+  `dbretries` int(10) unsigned DEFAULT '2',
   `dbssl` char(3) DEFAULT '',
   `dbsslkey` varchar(255) DEFAULT NULL,
   `dbsslcert` varchar(255) DEFAULT NULL,
@@ -2268,7 +2269,7 @@ CREATE TABLE poller_output (
 -- Table structure for table `poller_output_boost`
 --
 
-CREATE TABLE  `poller_output_boost` (
+CREATE TABLE `poller_output_boost` (
   `local_data_id` int(10) unsigned NOT NULL default '0',
   `rrd_name` varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -2291,7 +2292,7 @@ CREATE TABLE `poller_output_boost_local_data_ids` (
 -- Table structure for table `poller_output_boost_processes`
 --
 
-CREATE TABLE  `poller_output_boost_processes` (
+CREATE TABLE `poller_output_boost_processes` (
   `sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
   `status` varchar(255) default NULL,
   PRIMARY KEY (`sock_int_value`)
