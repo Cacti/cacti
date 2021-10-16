@@ -1119,7 +1119,7 @@ function utilities_get_mysql_recommendations() {
 			'value'   => 'ON',
 			'measure' => 'equalint',
 			'class' => 'error',
-			'comment' => __('When using MariaDB 10.2.4 and above, you can use atomice writes over the doublewrite buffer to increase performance.')
+			'comment' => __('When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance.')
 		);
 	}
 
