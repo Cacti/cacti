@@ -527,12 +527,18 @@ function is_tree_allowed($tree_id, $user = 0) {
 		return true;
 	}
 
+	if (isset($_SESSION['sess_tree_perms'][$tree_id])) {
+		return $_SESSION['sess_tree_perms'][$tree_id];
+	}
+
 	if (read_config_option('auth_method') != 0) {
 		if ($user == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user = $_SESSION['sess_user_id'];
 			} else {
-				return array();
+				$_SESSION['sess_tree_perms'][$tree_id] = false;
+
+				return false;
 			}
 		}
 
@@ -549,6 +555,8 @@ function is_tree_allowed($tree_id, $user = 0) {
 			array($user, $tree_id));
 
 		if (auth_check_perms($trees, $policy)) {
+			$_SESSION['sess_tree_perms'][$tree_id] = true;
+
 			return true;
 		}
 
@@ -562,11 +570,15 @@ function is_tree_allowed($tree_id, $user = 0) {
 			array($user));
 
 		if (!cacti_sizeof($groups)) {
+			$_SESSION['sess_tree_perms'][$tree_id] = false;
+
 			return false;
 		}
 
 		foreach ($groups as $g) {
 			if (auth_check_perms($trees, $g['policy_trees'])) {
+				$_SESSION['sess_tree_perms'][$tree_id] = true;
+
 				return true;
 			}
 		}
@@ -585,12 +597,17 @@ function is_tree_allowed($tree_id, $user = 0) {
 
 		foreach ($groups as $g) {
 			if (auth_check_perms($gtrees, $g['policy_trees'])) {
+				$_SESSION['sess_tree_perms'][$tree_id] = true;
 				return true;
 			}
 		}
 
+		$_SESSION['sess_tree_perms'][$tree_id] = false;
+
 		return false;
 	} else {
+		$_SESSION['sess_tree_perms'][$tree_id] = true;
+
 		return true;
 	}
 }
@@ -754,6 +771,8 @@ function is_realm_allowed($realm) {
 					kill_session_var('sess_user_realms');
 					kill_session_var('sess_user_config_array');
 					kill_session_var('sess_config_array');
+					kill_session_var('sess_tree_perms');
+					kill_session_var('sess_simple_perms');
 
 					print '<span style="display:none;">cactiLoginSuspend</span>';
 					exit;
@@ -762,6 +781,8 @@ function is_realm_allowed($realm) {
 				kill_session_var('sess_user_realms');
 				kill_session_var('sess_user_config_array');
 				kill_session_var('sess_config_array');
+				kill_session_var('sess_tree_perms');
+				kill_session_var('sess_simple_perms');
 			}
 		}
 
@@ -1531,6 +1552,10 @@ function get_simple_device_perms($user) {
 }
 
 function get_simple_graph_perms($user) {
+	if (isset($_SESSION['sess_simple_perms'])) {
+		return $_SESSION['sess_simple_perms'];
+	}
+
 	$policy_graphs = db_fetch_cell_prepared('SELECT policy_graphs
 		FROM user_auth
 		WHERE id = ?',
@@ -1543,6 +1568,8 @@ function get_simple_graph_perms($user) {
 		array($user));
 
 	if ($policy_graphs == 1 && $perm_count == 0) {
+		$_SESSION['sess_simple_perms'] = true;
+
 		return true;
 	} else {
 		$policies = db_fetch_assoc_prepared('SELECT policy_graphs, COUNT(*) AS exceptions
@@ -1559,10 +1586,14 @@ function get_simple_graph_perms($user) {
 		if (cacti_sizeof($policies)) {
 			foreach($policies as $p) {
 				if ($p['policy_graphs'] == 1 && $p['exceptions'] == 0) {
+					$_SESSION['sess_simple_perms'] = true;
+
 					return true;
 				}
 			}
 		}
+
+		$_SESSION['sess_simple_perms'] = false;
 
 		return false;
 	}
