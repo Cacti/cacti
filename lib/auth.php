@@ -682,7 +682,9 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 		), 'local_graph_id', 'local_graph_id'
 	);
 
-	if (cacti_sizeof($graphs) && cacti_sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')')) > 0) {
+	$simple_perms = get_simple_graph_perms($_SESSION['sess_user_id']);
+
+	if (cacti_sizeof($graphs) && ($simple_perms || cacti_sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')'))) > 0) {
 		return false;
 	}
 
@@ -1617,7 +1619,7 @@ function get_simple_graph_template_perms($user) {
 		AND type = 4',
 		array($user));
 
-	if ($policy_graphs == 1 && $perm_count == 0) {
+	if ($policy_graph_templates == 1 && $perm_count == 0) {
 		$_SESSION['sess_simple_template_perms'] = true;
 
 		return true;
@@ -1683,6 +1685,10 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
+	}
+
+	if (isset($_SESSION['sess_user_id']) && $user == 0) {
+		$user = $_SESSION['sess_user_id'];
 	}
 
 	$simple_perms = get_simple_graph_template_perms($user);
@@ -1756,7 +1762,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		}
 
 		if ($total_rows != -2) {
-			$templates = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name
+			$templates = db_fetch_assoc("SELECT gt.id, gt.name, COUNT(*) AS graphs
 				FROM graph_local AS gl
 				LEFT JOIN graph_templates AS gt
 				ON gt.id = gl.graph_template_id
@@ -1764,6 +1770,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 				ON h.id=gl.host_id
 				$sql_join
 				$sql_where
+				GROUP BY gl.graph_template_id
 				$order_by
 				$limit");
 		}
@@ -1779,14 +1786,17 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 				$sql_where") + 3;
 		}
 	} else {
+		$start = microtime(true);
+
 		if ($total_rows != -2) {
-			$templates = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name
+			$templates = db_fetch_assoc("SELECT gt.id, gt.name, COUNT(*) AS graphs
 				FROM graph_local AS gl
-				INNER JOIN graph_templates AS gt
-				ON gt.id=gl.graph_template_id
-				INNER JOIN host AS h
-				ON h.id=gl.host_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id = gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id = gl.host_id
 				$sql_where
+				GROUP BY gl.graph_template_id
 				$order_by
 				$limit");
 		}
@@ -1794,12 +1804,16 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		if ($total_rows >= 0 || $total_rows == -2) {
 			$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.graph_template_id) AS id
 				FROM graph_local AS gl
-				INNER JOIN graph_templates AS gt
-				ON gt.id=gl.graph_template_id
-				INNER JOIN host AS h
-				ON h.id=gl.host_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id = gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id = gl.host_id
 				$sql_where");
 		}
+
+		$end = microtime(true);
+
+		cacti_log(sprintf('The Get Templates Simple total time was %4.2f', $end - $start), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 	}
 
 	if ($templates === false) {
