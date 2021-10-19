@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-10-18 21:01-0400\n"
+"POT-Creation-Date: 2021-10-19 19:05-0400\n"
 "PO-Revision-Date: 2021-10-18 22:08-0400\n"
 "Last-Translator: Aiolos <ip6tables@qq.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
@@ -7710,7 +7710,7 @@ msgid "Tree Rule Items"
 msgstr "树规则项目"
 
 #: include/global_arrays.php:2716 include/global_arrays.php:2732
-#: lib/api_device.php:1155
+#: lib/api_device.php:1162
 msgid "days"
 msgstr "天"
 
@@ -7726,11 +7726,11 @@ msgstr "分"
 msgid "secs"
 msgstr "秒"
 
-#: include/global_arrays.php:2733 lib/api_device.php:1155
+#: include/global_arrays.php:2733 lib/api_device.php:1162
 msgid "hours"
 msgstr "小时"
 
-#: include/global_arrays.php:2734 lib/api_device.php:1155
+#: include/global_arrays.php:2734 lib/api_device.php:1162
 msgid "minutes"
 msgstr "分钟"
 
@@ -12090,32 +12090,32 @@ msgstr "会话"
 msgid "Host"
 msgstr "主机"
 
-#: lib/api_device.php:1147
+#: lib/api_device.php:1154
 msgid "System:"
 msgstr "系统:"
 
-#: lib/api_device.php:1154
+#: lib/api_device.php:1161
 msgid "Uptime:"
 msgstr "Uptime:"
 
-#: lib/api_device.php:1156
+#: lib/api_device.php:1163
 msgid "Hostname:"
 msgstr "主机名:"
 
-#: lib/api_device.php:1157
+#: lib/api_device.php:1164
 msgid "Location:"
 msgstr "位置:"
 
-#: lib/api_device.php:1158
+#: lib/api_device.php:1165
 msgid "Contact:"
 msgstr "联系人:"
 
-#: lib/api_device.php:1189 lib/functions.php:4828 lib/functions.php:4830
+#: lib/api_device.php:1196 lib/functions.php:4828 lib/functions.php:4830
 #: lib/functions.php:4834
 msgid "Ping Results"
 msgstr "Ping 结果"
 
-#: lib/api_device.php:1194
+#: lib/api_device.php:1201
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "没有使用Ping 或SNMP 可用性检查"
 
@@ -15555,13 +15555,15 @@ msgid "Error while parsing the XML of RRDtool dump"
 msgstr "解析RRDtool 转储的XML 时出错"
 
 #: lib/rrd.php:3468
-#, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+#, fuzzy, php-format
+#| msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 从RRD 文件中删除\n"
 
 #: lib/rrd.php:3502
-#, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+#, fuzzy, php-format
+#| msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f)添加到RRD 文件\n"
 
 #: lib/rrd.php:3532 lib/rrd.php:3546
@@ -17046,12 +17048,15 @@ msgid "No Sites Found"
 msgstr "未找到站点"
 
 #: spikekill.php:38
-#, php-format
-msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+#, fuzzy, php-format
+#| msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+msgid "FATAL: Spike Kill method '%s' is Invalid"
 msgstr "FATAL: 尖峰消除方法 '%s' 无效\n"
 
 #: spikekill.php:112
-msgid "FATAL: Spike Kill Not Allowed\n"
+#, fuzzy
+#| msgid "FATAL: Spike Kill Not Allowed\n"
+msgid "FATAL: Spike Kill Not Allowed"
 msgstr "FATAL: 不允许尖峰消除\n"
 
 #: templates_export.php:68
