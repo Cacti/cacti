@@ -3465,7 +3465,7 @@ function rrd_delete_rra($dom, $rra_parm) {
 			$pdp_per_row 	== $rra_parm['pdp_per_row'] &&
 			$xff 			== $rra_parm['xff'] &&
 			$rows 			== $rra_parm['rows']) {
-			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n", $cf, $rows, $pdp_per_row, $xff));
+			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file", $cf, $rows, $pdp_per_row, $xff)) . PHP_EOL;
 			/* we need the parentNode for removal operation */
 			$parent = $rra->parentNode;
 			$parent->removeChild($rra);
@@ -3499,7 +3499,7 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 			$_pdp_per_row 	== $rra_parm['pdp_per_row'] &&
 			$_xff 			== $rra_parm['xff'] &&
 			$_rows 			== $rra_parm['rows']) {
-			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n", $cf, $_rows, $_pdp_per_row, $_xff));
+			print(__("RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file", $cf, $_rows, $_pdp_per_row, $_xff)) . PHP_EOL;
 			/* we need the parentNode for append operation */
 			$parent = $rra->parentNode;
 
