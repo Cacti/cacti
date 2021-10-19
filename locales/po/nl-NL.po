@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-10-18 21:01-0400\n"
+"POT-Creation-Date: 2021-10-19 19:05-0400\n"
 "PO-Revision-Date: 2021-10-18 22:01-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
@@ -7819,7 +7819,7 @@ msgid "Tree Rule Items"
 msgstr "Boomregelpunten"
 
 #: include/global_arrays.php:2716 include/global_arrays.php:2732
-#: lib/api_device.php:1155
+#: lib/api_device.php:1162
 msgid "days"
 msgstr "dagen"
 
@@ -7835,11 +7835,11 @@ msgstr "minuten"
 msgid "secs"
 msgstr "seconden"
 
-#: include/global_arrays.php:2733 lib/api_device.php:1155
+#: include/global_arrays.php:2733 lib/api_device.php:1162
 msgid "hours"
 msgstr "uren"
 
-#: include/global_arrays.php:2734 lib/api_device.php:1155
+#: include/global_arrays.php:2734 lib/api_device.php:1162
 msgid "minutes"
 msgstr "minuten"
 
@@ -12570,32 +12570,32 @@ msgstr "Sessie"
 msgid "Host"
 msgstr "Host"
 
-#: lib/api_device.php:1147
+#: lib/api_device.php:1154
 msgid "System:"
 msgstr "Systeem:"
 
-#: lib/api_device.php:1154
+#: lib/api_device.php:1161
 msgid "Uptime:"
 msgstr "Uptime:"
 
-#: lib/api_device.php:1156
+#: lib/api_device.php:1163
 msgid "Hostname:"
 msgstr "Hostname:"
 
-#: lib/api_device.php:1157
+#: lib/api_device.php:1164
 msgid "Location:"
 msgstr "Locatie:"
 
-#: lib/api_device.php:1158
+#: lib/api_device.php:1165
 msgid "Contact:"
 msgstr "Contactpersoon:"
 
-#: lib/api_device.php:1189 lib/functions.php:4828 lib/functions.php:4830
+#: lib/api_device.php:1196 lib/functions.php:4828 lib/functions.php:4830
 #: lib/functions.php:4834
 msgid "Ping Results"
 msgstr "Ping resultaten"
 
-#: lib/api_device.php:1194
+#: lib/api_device.php:1201
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "Geen ping of SNMP beschikbaarheidscontrole in gebruik"
 
@@ -16178,13 +16178,15 @@ msgid "Error while parsing the XML of RRDtool dump"
 msgstr "Fout tijdens het parsen van de RRDtool dump XML"
 
 #: lib/rrd.php:3468
-#, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+#, fuzzy, php-format
+#| msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF=%s, RIJEN=%d, PDP_PER_RIJ=%d, XFF=%1.2f) verwijderd van RRD bestand\n"
 
 #: lib/rrd.php:3502
-#, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+#, fuzzy, php-format
+#| msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF=%s, RIJEN=%d, PDP_PER_RIJ=%d, XFF=%1.2f) toegevoegd aan RRD bestand\n"
 
 #: lib/rrd.php:3532 lib/rrd.php:3546
@@ -17783,12 +17785,12 @@ msgstr "Geen locaties gevonden"
 
 #: spikekill.php:38
 #, fuzzy, php-format
-msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+msgid "FATAL: Spike Kill method '%s' is Invalid"
 msgstr "FATAL: Spike Kill methode '%s' is ongeldig\n"
 
 #: spikekill.php:112
 #, fuzzy
-msgid "FATAL: Spike Kill Not Allowed\n"
+msgid "FATAL: Spike Kill Not Allowed"
 msgstr "FATAL: Spike Kill Niet toegestaan\n"
 
 #: templates_export.php:68
