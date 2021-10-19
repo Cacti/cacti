@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-10-18 21:01-0400\n"
-"PO-Revision-Date: 2020-09-13 18:33-0400\n"
+"PO-Revision-Date: 2021-10-18 21:57-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi_IN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 3.0\n"
 
 #: about.php:29 include/global_arrays.php:2481 lib/html.php:2469
 #, fuzzy
@@ -455,8 +455,9 @@ msgid "Prefix Replacement Values"
 msgstr "प्रतिस्थापन पैटर्न"
 
 #: aggregate_graphs.php:848 aggregate_templates.php:395 graphs.php:1053
+#, fuzzy
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
-msgstr ""
+msgstr "आप समग्र ग्राफ़ में उपसर्ग के लिए इन प्रतिस्थापन मानों का उपयोग कर सकते हैं"
 
 #: aggregate_graphs.php:1015 aggregate_templates.php:522 graphs.php:1135
 #: lib/api_aggregate.php:1715
@@ -1263,8 +1264,9 @@ msgid "Device %s Not Added to Cacti"
 msgstr "कैक्टि में नहीं जोड़ा गया"
 
 #: automation_devices.php:135
+#, fuzzy
 msgid "Devices Removed from Cacti Automation database"
-msgstr ""
+msgstr "कैक्टि ऑटोमेशन डेटाबेस से हटाए गए उपकरण"
 
 #: automation_devices.php:196
 #, fuzzy
@@ -2870,8 +2872,9 @@ msgid "Cacti System Warning"
 msgstr "कैक्टि सिस्टम वार्निंग"
 
 #: cactid.php:44
+#, fuzzy
 msgid "WARNING: Cacti Daemon PID["
-msgstr ""
+msgstr "चेतावनी: कैक्टि डेमन पीआईडी["
 
 #: cactid.php:131
 #, fuzzy
@@ -2879,8 +2882,9 @@ msgid "Cacti System Notice"
 msgstr "कैक्टि सिस्टम यूटिलिटीज"
 
 #: cactid.php:131
+#, fuzzy
 msgid "Notice: Cacti Daemon PID["
-msgstr ""
+msgstr "सूचना: कैक्टि डेमन पीआईडी["
 
 #: cdef.php:277
 #, fuzzy
@@ -4701,8 +4705,9 @@ msgid "Bad Indexes"
 msgstr "सूची"
 
 #: data_sources.php:1429 graphs.php:2017
+#, fuzzy
 msgid "Note that this query may take some time to run."
-msgstr ""
+msgstr "ध्यान दें कि इस क्वेरी को चलने में कुछ समय लग सकता है।"
 
 #: data_sources.php:1429 graphs.php:2017
 #, fuzzy
@@ -4779,9 +4784,9 @@ msgid "Change Profile"
 msgstr "प्रोफ़ाइल बदलें"
 
 #: data_templates.php:245
-#, php-format
+#, fuzzy, php-format
 msgid "Field \"%s\" is missing an Output Field"
-msgstr ""
+msgstr "फ़ील्ड \"%s\" में एक आउटपुट फ़ील्ड गुम है"
 
 #: data_templates.php:402
 #, fuzzy
@@ -4998,8 +5003,9 @@ msgid "No GPRINT Presets"
 msgstr "कोई GPRINT प्रीसेट नहीं"
 
 #: graph.php:67
+#, fuzzy
 msgid "GRAPH DOES NOT EXIST"
-msgstr ""
+msgstr "ग्राफ मौजूद नहीं है"
 
 #: graph.php:100
 #, fuzzy
@@ -5881,12 +5887,14 @@ msgid "Data Query Re-indexed."
 msgstr "डेटा क्वेरी इंडेक्स"
 
 #: host.php:125
+#, fuzzy
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
-msgstr ""
+msgstr "डिवाइस डेटा क्वेरी को फिर से अनुक्रमित किया गया। वर्बोज़ आउटपुट प्रदर्शित किया गया।"
 
 #: host.php:144
+#, fuzzy
 msgid "Device Debugging Enabled for Device."
-msgstr ""
+msgstr "डिवाइस के लिए डिवाइस डिबगिंग सक्षम है।"
 
 #: host.php:151
 #, fuzzy
@@ -5894,8 +5902,9 @@ msgid "Device Debugging Disabled for Device."
 msgstr "डिवाइस अक्षम है"
 
 #: host.php:159
+#, fuzzy
 msgid "Poller Cache for Device Refreshed."
-msgstr ""
+msgstr "डिवाइस के लिए पोलर कैश रीफ़्रेश किया गया।"
 
 #: host.php:161
 #, fuzzy
@@ -6458,7 +6467,7 @@ msgstr "कोई उपकरण टेम्पलेट नहीं मि�
 #: include/auth.php:170
 #, fuzzy
 msgid "Not Logged In"
-msgstr "लोग इन नहीं है"
+msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> के रूप में दाखिल"
 
 #: include/auth.php:171
 #, fuzzy
@@ -7087,20 +7096,24 @@ msgid "SHA"
 msgstr "एसएचए"
 
 #: include/global_arrays.php:591
+#, fuzzy
 msgid "SHA-224"
-msgstr ""
+msgstr "एसएचए-224"
 
 #: include/global_arrays.php:592
+#, fuzzy
 msgid "SHA-256"
-msgstr ""
+msgstr "एसएचए-256"
 
 #: include/global_arrays.php:593
+#, fuzzy
 msgid "SHA-392"
-msgstr ""
+msgstr "SHA-392"
 
 #: include/global_arrays.php:594
+#, fuzzy
 msgid "SHA-512"
-msgstr ""
+msgstr "एसएचए-512"
 
 #: include/global_arrays.php:599
 #, fuzzy
@@ -7108,16 +7121,19 @@ msgid "DES"
 msgstr "डेस"
 
 #: include/global_arrays.php:600
+#, fuzzy
 msgid "AES-128"
-msgstr ""
+msgstr "एईएस 128"
 
 #: include/global_arrays.php:601
+#, fuzzy
 msgid "AES-192"
-msgstr ""
+msgstr "एईएस 192"
 
 #: include/global_arrays.php:602
+#, fuzzy
 msgid "AES-256"
-msgstr ""
+msgstr "एईएस 256"
 
 #: include/global_arrays.php:611
 #, fuzzy
@@ -7282,25 +7298,27 @@ msgid "LDAPS"
 msgstr "एलडीएपी"
 
 #: include/global_arrays.php:809
+#, fuzzy
 msgid "LDAP + TLS"
-msgstr ""
+msgstr "एलडीएपी + टीएलएस"
 
 #: include/global_arrays.php:814
+#, fuzzy
 msgid "Hard"
-msgstr ""
+msgstr "मुश्किल"
 
 #: include/global_arrays.php:815
-#, fuzzy
 msgid "Demand"
-msgstr "निर्देश"
+msgstr "माँग"
 
 #: include/global_arrays.php:816 user_admin.php:837 user_group_admin.php:738
 msgid "Allow"
 msgstr "अनुमति दें"
 
 #: include/global_arrays.php:817
+#, fuzzy
 msgid "Try"
-msgstr ""
+msgstr "प्रयत्न"
 
 #: include/global_arrays.php:821
 #, fuzzy
@@ -7674,8 +7692,9 @@ msgid "Show Graph Action Icons"
 msgstr "ग्राफ का शीर्षक दिखाएं"
 
 #: include/global_arrays.php:1142
+#, fuzzy
 msgid "Show User Help Links"
-msgstr ""
+msgstr "उपयोगकर्ता सहायता लिंक दिखाएं"
 
 #: include/global_arrays.php:1143
 #, fuzzy
@@ -8952,25 +8971,29 @@ msgstr "मैक्स ओआईडी"
 #: include/global_form.php:163 include/global_form.php:164
 #: include/global_form.php:165 include/global_form.php:166
 #: include/global_form.php:167
-#, php-format
+#, fuzzy, php-format
 msgid "%d OID's"
-msgstr ""
+msgstr "%d OID's"
 
 #: include/global_form.php:172
+#, fuzzy
 msgid "Bulk Walk Maximum Repititions"
-msgstr ""
+msgstr "बल्क वॉक अधिकतम दोहराव"
 
 #: include/global_form.php:173
+#, fuzzy
 msgid "For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk max-repetitions size. The default is to 'Auto Detect on Re-Index'. For very large switches, high performance servers, Jumbo Frame Networks or for high latency WAN connections, increasing this value may increase poller performance. More data is packed into a single SNMP packet which can reduce data query run time. However, some devices may completely refuse to respond to packets with a max-repetition size which is set too large. This can be especially true for lower-powered IoT type devices or smaller embedded IT appliances. Special attention to the overall network path MTU should also be considered since setting a value which is too high could lead to packet fragmentation."
-msgstr ""
+msgstr "SNMPv2 और SNMPv3 उपकरणों के लिए, SNMP बल्क वॉक अधिकतम-पुनरावृत्ति आकार। डिफ़ॉल्ट 'री-इंडेक्स पर ऑटो डिटेक्ट' है। बहुत बड़े स्विच, उच्च प्रदर्शन सर्वर, जंबो फ़्रेम नेटवर्क या उच्च विलंबता WAN कनेक्शन के लिए, इस मान को बढ़ाने से पोलर प्रदर्शन में वृद्धि हो सकती है। अधिक डेटा एक एसएनएमपी पैकेट में पैक किया जाता है जो डेटा क्वेरी रन टाइम को कम कर सकता है। हालांकि, कुछ डिवाइस अधिकतम-पुनरावृत्ति आकार वाले पैकेट का जवाब देने से पूरी तरह मना कर सकते हैं जो बहुत बड़ा सेट है। यह कम-शक्ति वाले IoT प्रकार के उपकरणों या छोटे एम्बेडेड आईटी उपकरणों के लिए विशेष रूप से सच हो सकता है। समग्र नेटवर्क पथ पर विशेष ध्यान देने पर एमटीयू पर भी विचार किया जाना चाहिए क्योंकि बहुत अधिक मान सेट करने से पैकेट विखंडन हो सकता है।"
 
 #: include/global_form.php:177
+#, fuzzy
 msgid "Auto Detect on Re-Index"
-msgstr ""
+msgstr "री-इंडेक्स पर ऑटो डिटेक्ट"
 
 #: include/global_form.php:178
+#, fuzzy
 msgid "Auto Detect/Set on first Re-Index"
-msgstr ""
+msgstr "ऑटो डिटेक्ट/पहले री-इंडेक्स पर सेट करें"
 
 #: include/global_form.php:179
 #, fuzzy, php-format
@@ -9839,8 +9862,9 @@ msgid "Test Data Sources"
 msgstr "डेटा स्रोत है"
 
 #: include/global_form.php:1119
+#, fuzzy
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
-msgstr ""
+msgstr "यदि आप डेटा स्रोतों के निर्माण से पहले उनका परीक्षण करना चाहते हैं तो इस चेकबॉक्स को चेक करें। परीक्षण डेटा स्रोत सक्षम होने पर, यदि डेटा स्रोत मान्य डेटा नहीं लौटाता है, तो ग्राफ़ नहीं बनाया जाएगा। यह सेटिंग महत्वपूर्ण है यदि आप अधिक सामान्य डिवाइस टेम्प्लेट चाहते हैं जिसमें अधिक ग्राफ़ टेम्प्लेट शामिल हो सकते हैं जिन्हें डिवाइस की विशेषताओं के आधार पर चुनिंदा रूप से लागू किया जा सकता है। नोट: यदि आपके पास डेटा स्रोत के रूप में लंबे समय तक चलने वाली स्क्रिप्ट है, तो ग्राफ़ बनाने का समय बढ़ जाएगा।"
 
 #: include/global_form.php:1143
 #, fuzzy
@@ -10869,8 +10893,9 @@ msgid "Errors"
 msgstr "गल्तियां"
 
 #: include/global_settings.php:335
+#, fuzzy
 msgid "Internationalization (i18n)"
-msgstr ""
+msgstr "अंतर्राष्ट्रीयकरण (i18n)"
 
 #: include/global_settings.php:340
 msgid "Language Support"
@@ -11068,12 +11093,14 @@ msgid "Certain Cacti plugins require the use of unsafe JavaScript eval() calls. 
 msgstr "कुछ Cacti प्लगइन्स को असुरक्षित JavaScript eval () कॉल के उपयोग की आवश्यकता होती है। यदि आप इस विकल्प का चयन करते हैं, तो उन्हें कैक्टि में अनुमति दी जाएगी।"
 
 #: include/global_settings.php:473
+#, fuzzy
 msgid "Content-Security Alternate Sources"
-msgstr ""
+msgstr "सामग्री-सुरक्षा वैकल्पिक स्रोत"
 
 #: include/global_settings.php:474
+#, fuzzy
 msgid "Space delmited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only."
-msgstr ""
+msgstr "अंतरिक्ष सीमांकित डोमेन नाम जिन्हें वेब सर्वर के बाहर ही एक्सेस करने की अनुमति होगी। सीडीएन, या होस्टिंग साइट का उपयोग करने वाले उपयोगकर्ताओं के लिए यह महत्वपूर्ण है। उदाहरण के लिए स्रोतों में वाइल्डकार्ड शामिल हो सकते हैं: *.mydomain.com, या प्रोटोकॉल, उदाहरण के लिए: https://*.example.com। इन वैकल्पिक स्रोतों में केवल छवि, सीएसएस और जावास्क्रिप्ट प्रकार शामिल हैं।"
 
 #: include/global_settings.php:487
 #, fuzzy
@@ -11136,8 +11163,9 @@ msgid "Graph Template Test Data Source"
 msgstr "ग्राफ, डेटा स्रोत"
 
 #: include/global_settings.php:527
+#, fuzzy
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation for new and newly imported Graph Templates.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
-msgstr ""
+msgstr "यदि आप नए और नए आयातित ग्राफ़ टेम्प्लेट के लिए डेटा स्रोतों के निर्माण से पहले उनका परीक्षण करना चाहते हैं, तो इस चेकबॉक्स को चेक करें। परीक्षण डेटा स्रोत सक्षम होने पर, यदि डेटा स्रोत मान्य डेटा नहीं लौटाता है, तो ग्राफ़ नहीं बनाया जाएगा। यह सेटिंग महत्वपूर्ण है यदि आप अधिक सामान्य डिवाइस टेम्प्लेट चाहते हैं जिसमें अधिक ग्राफ़ टेम्प्लेट शामिल हो सकते हैं जिन्हें डिवाइस की विशेषताओं के आधार पर चुनिंदा रूप से लागू किया जा सकता है। नोट: यदि आपके पास डेटा स्रोत के रूप में लंबे समय तक चलने वाली स्क्रिप्ट है, तो ग्राफ़ बनाने का समय बढ़ जाएगा।"
 
 #: include/global_settings.php:531
 #, fuzzy
@@ -11636,8 +11664,9 @@ msgid "Minimum Refresh Interval"
 msgstr "अंतराल ताज़ा करें"
 
 #: include/global_settings.php:965
+#, fuzzy
 msgid "This is the minimal supported time between Graph updates.  This value is also used to set certain RRDfile attributes.  If you have a Device that caches data and does not provide realtime updates, you may have to increase the default Minimum Refresh Interval to prevent creating Graphs with gaps."
-msgstr ""
+msgstr "ग्राफ़ अपडेट के बीच यह न्यूनतम समर्थित समय है। इस मान का उपयोग कुछ RRDfile विशेषताओं को सेट करने के लिए भी किया जाता है। यदि आपके पास ऐसा उपकरण है जो डेटा को कैश करता है और रीयलटाइम अपडेट प्रदान नहीं करता है, तो आपको अंतराल वाले ग्राफ़ बनाने से रोकने के लिए डिफ़ॉल्ट न्यूनतम रीफ्रेश अंतराल बढ़ाना पड़ सकता है।"
 
 #: include/global_settings.php:971
 #, fuzzy
@@ -11670,8 +11699,9 @@ msgid "Custom Date Format"
 msgstr "रंगों को नियत करें"
 
 #: include/global_settings.php:993
+#, fuzzy
 msgid "To be used when formatting |date_time| on a graph"
-msgstr ""
+msgstr "फ़ॉर्मेटिंग करते समय उपयोग किया जाने वाला |date_time| एक ग्राफ पर"
 
 #: include/global_settings.php:1000
 #, fuzzy
@@ -11679,8 +11709,9 @@ msgid "Disable RRDtool Watermark"
 msgstr "RRDtool ग्राफ़ वॉटरमार्क"
 
 #: include/global_settings.php:1001
+#, fuzzy
 msgid "Provided your RRDtool version supports it, you may disable RRDtool advertisement on your Graphs by checking this option."
-msgstr ""
+msgstr "बशर्ते आपका RRDtool संस्करण इसका समर्थन करता हो, आप इस विकल्प को चेक करके अपने ग्राफ़ पर RRDtool विज्ञापन को अक्षम कर सकते हैं।"
 
 #: include/global_settings.php:1006
 #, fuzzy
@@ -11843,8 +11874,9 @@ msgid "Cron/Daemon Interval"
 msgstr "क्रोन अंतराल"
 
 #: include/global_settings.php:1126
+#, fuzzy
 msgid "The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory."
-msgstr ""
+msgstr "आवृत्ति है कि कैक्टि डेटा कलेक्टर शुरू किया जाएगा। कैक्टि डेटा कलेक्टर को लॉन्च करने को नियंत्रित करने के लिए आप या तो क्रॉस्टैब, एक निर्धारित कार्य (विंडोज़ के लिए), या कैक्टिड सिस्टमड सेवा का उपयोग कर सकते हैं। कैक्टिड डेमॉन का उपयोग करने के निर्देशों के लिए, सेवा निर्देशिका में README.md फ़ाइल की समीक्षा करें।"
 
 #: include/global_settings.php:1132
 #, fuzzy
@@ -11902,8 +11934,9 @@ msgid "SNMP Get OID Limit"
 msgstr "SNMP मिलता है"
 
 #: include/global_settings.php:1182
+#, fuzzy
 msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
-msgstr ""
+msgstr "SNMP की डिफ़ॉल्ट अधिकतम संख्या प्रति snmpget अनुरोध जारी करने के लिए OIDs प्राप्त करें। उपकरणों के लिए, यह सेटिंग डिवाइस स्तर पर नियंत्रित होती है। आपको इस सेटिंग का उपयोग केवल तभी करना चाहिए जब आप अपनी स्क्रिप्ट या प्लगइन्स में कैक्टि के एसएनएमपी एपीआई का मूल रूप से उपयोग कर रहे हों।"
 
 #: include/global_settings.php:1189
 #, fuzzy
@@ -12031,8 +12064,9 @@ msgid "Data Collector Defaults"
 msgstr "डेटा संग्राहक"
 
 #: include/global_settings.php:1303
+#, fuzzy
 msgid "These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector."
-msgstr ""
+msgstr "इन सेटिंग्स को डेटा कलेक्टर स्तर पर बनाए रखा जाता है। यहां मान केवल डिफ़ॉल्ट हैं जिनका उपयोग पहली बार डेटा संग्राहक बनाते समय किया जाता है।"
 
 #: include/global_settings.php:1308
 #, fuzzy
@@ -12277,8 +12311,9 @@ msgid "Server(s)"
 msgstr "सर्वर"
 
 #: include/global_settings.php:1510 user_domains.php:368
+#, fuzzy
 msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
-msgstr ""
+msgstr "वैध एलडीएपी सर्वरों के लिए डीएनएस होस्टनाम या आईपी पते की एक स्पेस सीमांकित सूची। उपयोगकर्ता को प्रमाणित करने के लिए कैक्टि बाएं से दाएं एलडीएपी सर्वर का उपयोग करने का प्रयास करेगा।"
 
 #: include/global_settings.php:1516 user_domains.php:376
 #, fuzzy
@@ -12320,12 +12355,14 @@ msgid "Encryption that the server supports. NOTE: When using LDAP + TLS you must
 msgstr "एन्क्रिप्शन जो सर्वर का समर्थन करता है। TLS केवल प्रोटोकॉल संस्करण 3 द्वारा समर्थित है।"
 
 #: include/global_settings.php:1546
+#, fuzzy
 msgid "TLS Certificate Requirements"
-msgstr ""
+msgstr "टीएलएस प्रमाणपत्र आवश्यकताएँ"
 
 #: include/global_settings.php:1547
+#, fuzzy
 msgid "Should LDAP verify TLS Certificates when received by the Client."
-msgstr ""
+msgstr "क्लाइंट द्वारा प्राप्त किए जाने पर LDAP को TLS प्रमाणपत्रों को सत्यापित करना चाहिए।"
 
 #: include/global_settings.php:1553 user_domains.php:408
 #, fuzzy
@@ -13551,8 +13588,9 @@ msgid "Auto Log Out Time"
 msgstr "स्वचालित लॉगआउट"
 
 #: include/global_settings.php:2603
+#, fuzzy
 msgid "For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled."
-msgstr ""
+msgstr "केवल कंसोल एक्सेस वाले उपयोगकर्ताओं के लिए, स्वचालित रूप से लॉग आउट होने से पहले यह उपयोगकर्ता कितने समय तक लॉग इन रह सकता है। ध्यान दें कि यदि आप एक घंटे से अधिक समय से सक्रिय नहीं हैं, तो आपको अपना ब्राउज़र रीफ़्रेश करना पड़ सकता है। यह भी ध्यान दें कि प्रमाणीकरण कुकीज़ सक्षम होने पर इस सेटिंग का कोई प्रभाव नहीं पड़ता है।"
 
 #: index.php:68
 #, fuzzy, php-format
@@ -13863,8 +13901,9 @@ msgid "Added by Cacti Automation"
 msgstr "Cacti स्वचालन द्वारा जोड़ा गया"
 
 #: lib/api_automation.php:3213
+#, fuzzy
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
-msgstr ""
+msgstr "त्रुटि: श्रेणी1-श्रेणी2 के रूप में IP श्रेणियां अब समर्थित नहीं हैं।"
 
 #: lib/api_device.php:1051
 #, fuzzy
@@ -14337,8 +14376,9 @@ msgid "Invalid host_id: %s"
 msgstr "अमान्य host_id: %s"
 
 #: lib/data_query.php:796
+#, fuzzy
 msgid "Auto Bulk Walk Size Selected."
-msgstr ""
+msgstr "ऑटो बल्क वॉक साइज़ चयनित।"
 
 #: lib/data_query.php:806 lib/data_query.php:851
 #, fuzzy
@@ -14346,23 +14386,24 @@ msgid "Failed to load SNMP session."
 msgstr "SNMP सत्र लोड करने में विफल।"
 
 #: lib/data_query.php:816
-#, php-format
+#, fuzzy, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr ""
+msgstr "बल्क वॉक साइज़ %d का परीक्षण %2.4f की प्रतिक्रिया के साथ किया गया।"
 
 #: lib/data_query.php:827
-#, php-format
+#, fuzzy, php-format
 msgid "Bulk Walk Size selected was %d."
-msgstr ""
+msgstr "बल्क वॉक साइज़ चुना गया %d था।"
 
 #: lib/data_query.php:830
+#, fuzzy
 msgid "Saving Bulk Walk Size to Device."
-msgstr ""
+msgstr "डिवाइस पर बल्क वॉक साइज़ सहेजा जा रहा है।"
 
 #: lib/data_query.php:842
-#, php-format
+#, fuzzy, php-format
 msgid "Bulk Walk Size is fixed at %d."
-msgstr ""
+msgstr "बल्क वॉक साइज़ %d पर नियत है।"
 
 #: lib/data_query.php:864
 #, fuzzy, php-format
@@ -14597,7 +14638,7 @@ msgstr "त्रुटि %s पठनीय नहीं है"
 #: lib/functions.php:3162 lib/functions.php:3173
 #, fuzzy
 msgid "Logged in as"
-msgstr "के रूप में लॉग इन किया"
+msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> के रूप में दाखिल"
 
 #: lib/functions.php:3162
 #, fuzzy
@@ -14845,12 +14886,14 @@ msgid "No %s Found"
 msgstr "कोई %s मिला"
 
 #: lib/html.php:1123
+#, fuzzy
 msgid "#"
-msgstr ""
+msgstr "#"
 
 #: lib/html.php:1127
+#, fuzzy
 msgid "GPrint"
-msgstr ""
+msgstr "जीप्रिंट"
 
 #: lib/html.php:1130
 #, fuzzy
@@ -14997,9 +15040,8 @@ msgid "Ignore System Color"
 msgstr "आइटम रंग"
 
 #: lib/html.php:2463
-#, fuzzy
 msgid "Help"
-msgstr "मदद लें"
+msgstr "मदद"
 
 #: lib/html.php:2464
 #, fuzzy
@@ -15234,7 +15276,7 @@ msgstr "से शुरू"
 #: lib/html.php:2526
 #, fuzzy
 msgid "End with"
-msgstr "अंतिम दिनांक"
+msgstr "अंतिम समय"
 
 #: lib/html.php:2528 lib/html_form.php:1307
 msgid "Close"
@@ -16135,7 +16177,7 @@ msgstr "पूर्वावलोकन"
 #: lib/import.php:2167
 #, fuzzy
 msgid "[updated]"
-msgstr "[अद्यतन]"
+msgstr "अंतिम अपडेट"
 
 #: lib/import.php:2171
 #, fuzzy
@@ -16910,8 +16952,9 @@ msgid "Please select the Device Templates that you wish to update during the Upg
 msgstr "उस टेम्पलेट प्रकार का चयन करें जिसे आप Cacti से निर्यात करना चाहते हैं।"
 
 #: lib/installer.php:2437
+#, fuzzy
 msgid "Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to 'Sync Graphs' to from the Templates after update."
-msgstr ""
+msgstr "उन टेम्प्लेट को अपडेट करना जिनमें आपने पहले ही संशोधन कर लिया है, उचित नहीं है। टेम्प्लेट का अपग्रेड ग्राफ़ और डेटा टेम्प्लेट में संशोधन को नहीं हटाएगा, और इससे अप्रत्याशित व्यवहार हो सकता है। हालाँकि, यदि आपने किसी ग्राफ़, डेटा क्वेरी या डेटा टेम्प्लेट में परिवर्तन नहीं किया है, तो पैकेज को फिर से आयात करने से कोई प्रभाव नहीं पड़ेगा। उस स्थिति में, आपको अपडेट के बाद टेम्प्लेट से 'सिंक ग्राफ़' करना होगा।"
 
 #: lib/installer.php:2439
 #, fuzzy
@@ -17312,12 +17355,12 @@ msgstr "दोनों"
 #: lib/installer.php:3426
 #, fuzzy, php-format
 msgid "No - %s"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> <ph id=\"mtc_2\" equiv-text=\"base64:JXM=\"/>"
+msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> के रूप में दाखिल"
 
 #: lib/installer.php:3428 lib/installer.php:3430
 #, fuzzy, php-format
 msgid "%s - No"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> <ph id=\"mtc_2\" equiv-text=\"base64:JXM=\"/>"
+msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> के रूप में दाखिल"
 
 #: lib/installer.php:3428
 msgid "Web"
@@ -17973,12 +18016,14 @@ msgid "With modern SSD type storage, having multiple write io threads is advanta
 msgstr "आधुनिक SSD प्रकार के भंडारण के साथ, कई io सूत्र होने से उच्च io विशेषताओं वाले अनुप्रयोगों के लिए फायदेमंद है।"
 
 #: lib/utility.php:1115
+#, fuzzy
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
-msgstr ""
+msgstr "मारियाडीबी 10.2.4 और इसके बाद के संस्करण का उपयोग करते समय, परमाणु लेखन सक्षम होने पर यह सेटिंग बंद होनी चाहिए। इसलिए, कृपया डबल राइट बफर के बजाय एटॉमिक राइट्स को सक्षम करें क्योंकि यह प्रदर्शन को बढ़ाएगा।"
 
 #: lib/utility.php:1122
+#, fuzzy
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
-msgstr ""
+msgstr "मारियाडीबी 10.2.4 और इसके बाद के संस्करण का उपयोग करते समय, आप प्रदर्शन को बढ़ाने के लिए डबलराइट बफर पर परमाणु लेखन का उपयोग कर सकते हैं।"
 
 #: lib/utility.php:1139
 #, fuzzy, php-format
@@ -18617,8 +18662,9 @@ msgid "Maximum runtime of %d seconds exceeded for poller id %d. Exiting."
 msgstr "% D सेकंड का अधिकतम क्रम पार हो गया। बाहर निकल रहा है।"
 
 #: poller.php:809
+#, fuzzy
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr ""
+msgstr "चेतावनी: कैक्टि पोलिंग साइकिल पोलर इंटरवल को पार कर गया"
 
 #: poller.php:1038
 #, fuzzy
@@ -18631,8 +18677,9 @@ msgid "NOTE: A second Cacti data collector has been added.  Therfore, enabling b
 msgstr "नोट: एक दूसरा कैक्टि डेटा कलेक्टर जोड़ा गया है। आगे, स्वचालित रूप से बढ़ावा देने में सक्षम!"
 
 #: poller_automation.php:53
+#, fuzzy
 msgid "WARNING: Main Cacti database offline or in recovery"
-msgstr ""
+msgstr "चेतावनी: मुख्य कैक्टि डेटाबेस ऑफ़लाइन या पुनर्प्राप्ति में है"
 
 #: poller_automation.php:955 poller_automation.php:1006
 #, fuzzy
@@ -18645,8 +18692,9 @@ msgid "Cacti Automation Report requires an html based Email client"
 msgstr "Cacti स्वचालन रिपोर्ट के लिए HTML आधारित ईमेल क्लाइंट की आवश्यकता होती है"
 
 #: poller_boost.php:310
+#, fuzzy
 msgid "WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash"
-msgstr ""
+msgstr "चेतावनी: पता चला पोलर बूस्ट ओवररन, संभावित बूस्ट पोलर क्रैश"
 
 #: pollers.php:40
 #, fuzzy
@@ -20856,9 +20904,9 @@ msgid "PHP Servers"
 msgstr "PHP सर्वर"
 
 #: utilities.php:422 utilities.php:424
-#, php-format
+#, fuzzy, php-format
 msgid "Current: %s, Min Required: %s"
-msgstr ""
+msgstr "वर्तमान: %s, न्यूनतम आवश्यक: %s"
 
 #: utilities.php:428
 #, fuzzy
@@ -20866,16 +20914,19 @@ msgid "Minimum Connections:"
 msgstr "कनेक्शन जांचें"
 
 #: utilities.php:430
+#, fuzzy
 msgid "Assumes 100 spare connections for Web page users and other various connections."
-msgstr ""
+msgstr "वेब पेज उपयोगकर्ताओं और अन्य विभिन्न कनेक्शनों के लिए 100 अतिरिक्त कनेक्शन मानता है।"
 
 #: utilities.php:431
+#, fuzzy
 msgid "The minimum required can vary greatly if there is heavy user Graph viewing activity."
-msgstr ""
+msgstr "भारी उपयोगकर्ता ग्राफ़ देखने की गतिविधि होने पर न्यूनतम आवश्यक बहुत भिन्न हो सकता है।"
 
 #: utilities.php:432
+#, fuzzy
 msgid "Each browser tab can use upto 10 connections depending on the browser."
-msgstr ""
+msgstr "प्रत्येक ब्राउज़र टैब ब्राउज़र के आधार पर अधिकतम 10 कनेक्शन का उपयोग कर सकता है।"
 
 #: utilities.php:436
 #, fuzzy
@@ -21349,8 +21400,9 @@ msgid "Remaining Data Sources:"
 msgstr "डेटा स्रोत डीबगिंग"
 
 #: utilities.php:2347
+#, fuzzy
 msgid "TBD"
-msgstr ""
+msgstr "टीबीडी"
 
 #: utilities.php:2351
 #, fuzzy
@@ -21358,8 +21410,9 @@ msgid "Queued Boost Records:"
 msgstr "लंबित बूस्ट रिकॉर्ड:"
 
 #: utilities.php:2355
+#, fuzzy
 msgid "Approximate in Process:"
-msgstr ""
+msgstr "प्रक्रिया में अनुमानित:"
 
 #: utilities.php:2358
 #, fuzzy
@@ -21471,9 +21524,9 @@ msgid "Detailed Runtime Timers:"
 msgstr "विस्तृत रनटाइम टाइमर:"
 
 #: utilities.php:2466
-#, php-format
+#, fuzzy, php-format
 msgid "Process %d Runtime:"
-msgstr ""
+msgstr "प्रक्रिया %d रनटाइम:"
 
 #: utilities.php:2471
 #, fuzzy

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-10-18 21:01-0400\n"
-"PO-Revision-Date: 2020-09-13 19:50-0400\n"
+"PO-Revision-Date: 2021-10-18 22:07-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: vi_VN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 3.0\n"
 
 #: about.php:29 include/global_arrays.php:2481 lib/html.php:2469
 #, fuzzy
@@ -456,8 +456,9 @@ msgid "Prefix Replacement Values"
 msgstr "Mẫu thay thế"
 
 #: aggregate_graphs.php:848 aggregate_templates.php:395 graphs.php:1053
+#, fuzzy
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
-msgstr ""
+msgstr "Bạn có thể sử dụng các giá trị thay thế này cho Tiền tố trong Đồ thị tổng hợp"
 
 #: aggregate_graphs.php:1015 aggregate_templates.php:522 graphs.php:1135
 #: lib/api_aggregate.php:1715
@@ -1261,8 +1262,9 @@ msgid "Device %s Not Added to Cacti"
 msgstr "Chưa được thêm vào Cacti"
 
 #: automation_devices.php:135
+#, fuzzy
 msgid "Devices Removed from Cacti Automation database"
-msgstr ""
+msgstr "Đã xóa thiết bị khỏi cơ sở dữ liệu Tự động hóa Cacti"
 
 #: automation_devices.php:196
 #, fuzzy
@@ -1896,7 +1898,7 @@ msgstr "%d phút"
 #: include/global_arrays.php:708 include/global_arrays.php:1345
 #, fuzzy, php-format
 msgid "%d Hour"
-msgstr "% d giờ"
+msgstr "%d giờ"
 
 #: automation_networks.php:529 automation_networks.php:530
 #: automation_networks.php:531 data_source_profiles.php:829
@@ -1919,7 +1921,7 @@ msgstr "% d giờ"
 #: include/global_settings.php:2587
 #, fuzzy, php-format
 msgid "%d Hours"
-msgstr "% d giờ"
+msgstr "%d giờ"
 
 #: automation_networks.php:538
 #, fuzzy
@@ -2860,8 +2862,9 @@ msgid "Cacti System Warning"
 msgstr "Cảnh báo hệ thống Cacti"
 
 #: cactid.php:44
+#, fuzzy
 msgid "WARNING: Cacti Daemon PID["
-msgstr ""
+msgstr "CẢNH BÁO: Cacti Daemon PID ["
 
 #: cactid.php:131
 #, fuzzy
@@ -2869,8 +2872,9 @@ msgid "Cacti System Notice"
 msgstr "Tiện ích hệ thống Cacti"
 
 #: cactid.php:131
+#, fuzzy
 msgid "Notice: Cacti Daemon PID["
-msgstr ""
+msgstr "Thông báo: Cacti Daemon PID ["
 
 #: cdef.php:277
 #, fuzzy
@@ -3140,9 +3144,8 @@ msgid "The Hex Value for this Color."
 msgstr "Giá trị Hex cho màu này."
 
 #: color.php:700
-#, fuzzy
 msgid "Color Name"
-msgstr "Tên màu"
+msgstr "Màu của Tên"
 
 #: color.php:700
 #, fuzzy
@@ -3490,7 +3493,7 @@ msgstr "Không gỡ lỗi"
 #: data_debug.php:573
 #, fuzzy
 msgid "No Checks"
-msgstr "Không kiểm tra"
+msgstr "Kiểm tra"
 
 #: data_debug.php:616 lib/api_automation.php:761 lib/graphs.php:79
 #: lib/graphs.php:103
@@ -3623,7 +3626,7 @@ msgstr "Kết quả"
 #: data_debug.php:768
 #, fuzzy
 msgid "<not set>"
-msgstr "Thiết lập mặc định"
+msgstr "Chưa thiết lập"
 
 #: data_debug.php:803 data_debug.php:854
 #, fuzzy
@@ -4654,8 +4657,9 @@ msgid "Bad Indexes"
 msgstr "Lập chỉ mục"
 
 #: data_sources.php:1429 graphs.php:2017
+#, fuzzy
 msgid "Note that this query may take some time to run."
-msgstr ""
+msgstr "Lưu ý rằng truy vấn này có thể mất một chút thời gian để chạy."
 
 #: data_sources.php:1429 graphs.php:2017
 #, fuzzy
@@ -4732,9 +4736,9 @@ msgid "Change Profile"
 msgstr "Thay đổi hồ sơ"
 
 #: data_templates.php:245
-#, php-format
+#, fuzzy, php-format
 msgid "Field \"%s\" is missing an Output Field"
-msgstr ""
+msgstr "Trường \"%s\" thiếu Trường đầu ra"
 
 #: data_templates.php:402
 #, fuzzy
@@ -4951,8 +4955,9 @@ msgid "No GPRINT Presets"
 msgstr "Không có cài đặt trước GPRINT"
 
 #: graph.php:67
+#, fuzzy
 msgid "GRAPH DOES NOT EXIST"
-msgstr ""
+msgstr "HÌNH ẢNH KHÔNG TỒN TẠI"
 
 #: graph.php:100
 #, fuzzy
@@ -5830,12 +5835,14 @@ msgid "Data Query Re-indexed."
 msgstr "Chỉ mục truy vấn dữ liệu"
 
 #: host.php:125
+#, fuzzy
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
-msgstr ""
+msgstr "Đã lập chỉ mục lại truy vấn dữ liệu thiết bị. Hiển thị đầu ra dài dòng."
 
 #: host.php:144
+#, fuzzy
 msgid "Device Debugging Enabled for Device."
-msgstr ""
+msgstr "Đã bật gỡ lỗi thiết bị cho thiết bị."
 
 #: host.php:151
 #, fuzzy
@@ -5843,8 +5850,9 @@ msgid "Device Debugging Disabled for Device."
 msgstr "Thiết bị bị vô hiệu hóa"
 
 #: host.php:159
+#, fuzzy
 msgid "Poller Cache for Device Refreshed."
-msgstr ""
+msgstr "Poller Cache để làm mới thiết bị."
 
 #: host.php:161
 #, fuzzy
@@ -7032,20 +7040,24 @@ msgid "SHA"
 msgstr "SHA"
 
 #: include/global_arrays.php:591
+#, fuzzy
 msgid "SHA-224"
-msgstr ""
+msgstr "SHA-224"
 
 #: include/global_arrays.php:592
+#, fuzzy
 msgid "SHA-256"
-msgstr ""
+msgstr "SHA-256"
 
 #: include/global_arrays.php:593
+#, fuzzy
 msgid "SHA-392"
-msgstr ""
+msgstr "SHA-392"
 
 #: include/global_arrays.php:594
+#, fuzzy
 msgid "SHA-512"
-msgstr ""
+msgstr "SHA-512"
 
 #: include/global_arrays.php:599
 #, fuzzy
@@ -7053,16 +7065,19 @@ msgid "DES"
 msgstr "MÔ TẢ"
 
 #: include/global_arrays.php:600
+#, fuzzy
 msgid "AES-128"
-msgstr ""
+msgstr "AES-128"
 
 #: include/global_arrays.php:601
+#, fuzzy
 msgid "AES-192"
-msgstr ""
+msgstr "AES-192"
 
 #: include/global_arrays.php:602
+#, fuzzy
 msgid "AES-256"
-msgstr ""
+msgstr "AES-256"
 
 #: include/global_arrays.php:611
 #, fuzzy
@@ -7228,17 +7243,17 @@ msgid "LDAPS"
 msgstr "LDAP"
 
 #: include/global_arrays.php:809
+#, fuzzy
 msgid "LDAP + TLS"
-msgstr ""
+msgstr "LDAP + TLS"
 
 #: include/global_arrays.php:814
 msgid "Hard"
-msgstr ""
+msgstr "Khó"
 
 #: include/global_arrays.php:815
-#, fuzzy
 msgid "Demand"
-msgstr "Command"
+msgstr "Yêu cầu"
 
 #: include/global_arrays.php:816 user_admin.php:837 user_group_admin.php:738
 msgid "Allow"
@@ -7246,7 +7261,7 @@ msgstr "Cho phép"
 
 #: include/global_arrays.php:817
 msgid "Try"
-msgstr ""
+msgstr "Thử"
 
 #: include/global_arrays.php:821
 #, fuzzy
@@ -7614,8 +7629,9 @@ msgid "Show Graph Action Icons"
 msgstr "Hiển thị tiêu đề đồ thị"
 
 #: include/global_arrays.php:1142
+#, fuzzy
 msgid "Show User Help Links"
-msgstr ""
+msgstr "Hiển thị Liên kết Trợ giúp Người dùng"
 
 #: include/global_arrays.php:1143
 #, fuzzy
@@ -7777,9 +7793,8 @@ msgid "Previous Week"
 msgstr "Tuần trước"
 
 #: include/global_arrays.php:1338
-#, fuzzy
 msgid "Previous Month"
-msgstr "Tháng trước"
+msgstr "Tháng Trước"
 
 #: include/global_arrays.php:1339
 #, fuzzy
@@ -8241,9 +8256,8 @@ msgid "Every 1 Hour"
 msgstr "Cứ sau 1 giờ"
 
 #: include/global_arrays.php:1755
-#, fuzzy
 msgid "Every Day"
-msgstr "Hàng ngày"
+msgstr "Hàng Ngày"
 
 #: include/global_arrays.php:1756
 #, fuzzy
@@ -8656,7 +8670,7 @@ msgstr "Liên kết bên ngoài"
 #: include/global_arrays.php:2445 include/global_arrays.php:2475
 #, fuzzy
 msgid "(Action)"
-msgstr "Hành động"
+msgstr "Hành động:"
 
 #: include/global_arrays.php:2493
 msgid "Export Results"
@@ -8880,25 +8894,29 @@ msgstr "OID tối đa"
 #: include/global_form.php:163 include/global_form.php:164
 #: include/global_form.php:165 include/global_form.php:166
 #: include/global_form.php:167
-#, php-format
+#, fuzzy, php-format
 msgid "%d OID's"
-msgstr ""
+msgstr "%d OID của"
 
 #: include/global_form.php:172
+#, fuzzy
 msgid "Bulk Walk Maximum Repititions"
-msgstr ""
+msgstr "Thay đổi Tối đa Đi bộ Hàng loạt"
 
 #: include/global_form.php:173
+#, fuzzy
 msgid "For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk max-repetitions size. The default is to 'Auto Detect on Re-Index'. For very large switches, high performance servers, Jumbo Frame Networks or for high latency WAN connections, increasing this value may increase poller performance. More data is packed into a single SNMP packet which can reduce data query run time. However, some devices may completely refuse to respond to packets with a max-repetition size which is set too large. This can be especially true for lower-powered IoT type devices or smaller embedded IT appliances. Special attention to the overall network path MTU should also be considered since setting a value which is too high could lead to packet fragmentation."
-msgstr ""
+msgstr "Đối với Thiết bị SNMPv2 và SNMPv3, kích thước số lần lặp lại tối đa của SNMP Bulk Walk. Mặc định là 'Tự động phát hiện khi lập chỉ mục lại'. Đối với các thiết bị chuyển mạch rất lớn, máy chủ hiệu suất cao, Mạng khung Jumbo hoặc các kết nối WAN có độ trễ cao, việc tăng giá trị này có thể làm tăng hiệu suất của bộ thăm dò. Nhiều dữ liệu hơn được đóng gói thành một gói SNMP duy nhất có thể giảm thời gian chạy truy vấn dữ liệu. Tuy nhiên, một số thiết bị có thể hoàn toàn từ chối phản hồi các gói có kích thước lặp lại tối đa được đặt quá lớn. Điều này có thể đặc biệt đúng đối với các thiết bị loại IoT công suất thấp hơn hoặc các thiết bị CNTT nhúng nhỏ hơn. Đặc biệt chú ý đến đường dẫn mạng tổng thể MTU cũng nên được xem xét vì việc đặt giá trị quá cao có thể dẫn đến phân mảnh gói."
 
 #: include/global_form.php:177
+#, fuzzy
 msgid "Auto Detect on Re-Index"
-msgstr ""
+msgstr "Tự động phát hiện khi lập chỉ mục lại"
 
 #: include/global_form.php:178
+#, fuzzy
 msgid "Auto Detect/Set on first Re-Index"
-msgstr ""
+msgstr "Tự động phát hiện / Đặt vào chỉ mục lại đầu tiên"
 
 #: include/global_form.php:179
 #, fuzzy, php-format
@@ -9767,8 +9785,9 @@ msgid "Test Data Sources"
 msgstr "Có nguồn dữ liệu"
 
 #: include/global_form.php:1119
+#, fuzzy
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
-msgstr ""
+msgstr "Chọn hộp kiểm này nếu bạn muốn kiểm tra các Nguồn dữ liệu trước khi tạo. Khi Nguồn dữ liệu thử nghiệm được bật, nếu Nguồn dữ liệu không trả về dữ liệu hợp lệ, Biểu đồ sẽ không được tạo. Cài đặt này rất quan trọng nếu bạn muốn có Mẫu thiết bị chung chung hơn có thể bao gồm nhiều Mẫu biểu đồ hơn có thể được áp dụng một cách chọn lọc tùy thuộc vào đặc điểm của chính Thiết bị. Lưu ý: Nếu bạn có một tập lệnh đang chạy dài làm Nguồn dữ liệu, thì thời gian tạo Đồ thị sẽ tăng lên."
 
 #: include/global_form.php:1143
 #, fuzzy
@@ -10794,8 +10813,9 @@ msgid "Errors"
 msgstr "Lỗi"
 
 #: include/global_settings.php:335
+#, fuzzy
 msgid "Internationalization (i18n)"
-msgstr ""
+msgstr "Quốc tế hóa (i18n)"
 
 #: include/global_settings.php:340
 #, fuzzy
@@ -10994,12 +11014,14 @@ msgid "Certain Cacti plugins require the use of unsafe JavaScript eval() calls. 
 msgstr "Một số plugin Cacti yêu cầu sử dụng các lệnh gọi eval () JavaScript không an toàn. Nếu bạn chọn tùy chọn này, chúng sẽ được cho phép trong Cacti."
 
 #: include/global_settings.php:473
+#, fuzzy
 msgid "Content-Security Alternate Sources"
-msgstr ""
+msgstr "Nguồn thay thế bảo mật nội dung"
 
 #: include/global_settings.php:474
+#, fuzzy
 msgid "Space delmited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only."
-msgstr ""
+msgstr "Không gian giới hạn tên miền sẽ được phép truy cập bên ngoài Máy chủ Web. Điều này quan trọng đối với người dùng chọn sử dụng CDN hoặc trang web lưu trữ. Các nguồn có thể bao gồm các ký tự đại diện, ví dụ: * .mydomain.com hoặc một giao thức, ví dụ: https: //*.example.com. Các Nguồn Thay thế này chỉ bao gồm các loại Hình ảnh, CSS và JavaScript."
 
 #: include/global_settings.php:487
 #, fuzzy
@@ -11062,8 +11084,9 @@ msgid "Graph Template Test Data Source"
 msgstr "Biểu đồ, nguồn dữ liệu"
 
 #: include/global_settings.php:527
+#, fuzzy
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation for new and newly imported Graph Templates.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
-msgstr ""
+msgstr "Chọn hộp kiểm này nếu bạn muốn kiểm tra các Nguồn dữ liệu trước khi tạo các Nguồn dữ liệu cho các Mẫu biểu đồ mới và mới được nhập. Khi Nguồn dữ liệu thử nghiệm được bật, nếu Nguồn dữ liệu không trả về dữ liệu hợp lệ, Biểu đồ sẽ không được tạo. Cài đặt này rất quan trọng nếu bạn muốn có Mẫu thiết bị chung chung hơn có thể bao gồm nhiều Mẫu biểu đồ hơn có thể được áp dụng một cách chọn lọc tùy thuộc vào đặc điểm của chính Thiết bị. Lưu ý: Nếu bạn có một tập lệnh đang chạy dài làm Nguồn dữ liệu, thì thời gian tạo Đồ thị sẽ tăng lên."
 
 #: include/global_settings.php:531
 #, fuzzy
@@ -11559,8 +11582,9 @@ msgid "Minimum Refresh Interval"
 msgstr "Thời gian cập nhật"
 
 #: include/global_settings.php:965
+#, fuzzy
 msgid "This is the minimal supported time between Graph updates.  This value is also used to set certain RRDfile attributes.  If you have a Device that caches data and does not provide realtime updates, you may have to increase the default Minimum Refresh Interval to prevent creating Graphs with gaps."
-msgstr ""
+msgstr "Đây là thời gian được hỗ trợ tối thiểu giữa các lần cập nhật Đồ thị. Giá trị này cũng được sử dụng để thiết lập các thuộc tính RRDfile nhất định. Nếu bạn có Thiết bị lưu trữ dữ liệu và không cung cấp các bản cập nhật theo thời gian thực, bạn có thể phải tăng Khoảng thời gian làm mới tối thiểu mặc định để ngăn việc tạo Đồ thị có khoảng trống."
 
 #: include/global_settings.php:971
 #, fuzzy
@@ -11588,13 +11612,13 @@ msgid "Text placed at the bottom center of every Graph."
 msgstr "Văn bản được đặt ở trung tâm dưới cùng của mỗi đồ thị."
 
 #: include/global_settings.php:992
-#, fuzzy
 msgid "Custom Date Format"
-msgstr "Dữ liệu Tuỳ chỉnh"
+msgstr "Định dạng Ngày Tùy chỉnh"
 
 #: include/global_settings.php:993
+#, fuzzy
 msgid "To be used when formatting |date_time| on a graph"
-msgstr ""
+msgstr "Được sử dụng khi định dạng | date_time | trên một đồ thị"
 
 #: include/global_settings.php:1000
 #, fuzzy
@@ -11602,8 +11626,9 @@ msgid "Disable RRDtool Watermark"
 msgstr "Hình mờ đồ thị RRDtool"
 
 #: include/global_settings.php:1001
+#, fuzzy
 msgid "Provided your RRDtool version supports it, you may disable RRDtool advertisement on your Graphs by checking this option."
-msgstr ""
+msgstr "Miễn là phiên bản RRDtool của bạn hỗ trợ nó, bạn có thể tắt quảng cáo RRDtool trên Đồ thị của mình bằng cách chọn tùy chọn này."
 
 #: include/global_settings.php:1006
 #, fuzzy
@@ -11765,8 +11790,9 @@ msgid "Cron/Daemon Interval"
 msgstr "Khoảng thời gian"
 
 #: include/global_settings.php:1126
+#, fuzzy
 msgid "The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory."
-msgstr ""
+msgstr "Tần suất mà bộ thu thập dữ liệu Cacti sẽ được bắt đầu. Bạn có thể sử dụng crontab, một tác vụ đã lên lịch (dành cho windows) hoặc dịch vụ cactid systemd để kiểm soát việc khởi chạy bộ thu thập dữ liệu Cacti. Để biết hướng dẫn về cách sử dụng daemon cactid, hãy xem lại tệp README.md trong thư mục dịch vụ."
 
 #: include/global_settings.php:1132
 #, fuzzy
@@ -11824,8 +11850,9 @@ msgid "SNMP Get OID Limit"
 msgstr "Nhận SNMP"
 
 #: include/global_settings.php:1182
+#, fuzzy
 msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
-msgstr ""
+msgstr "Số SNMP tối đa mặc định Nhận OID để phát hành cho mỗi yêu cầu snmpget. Đối với Thiết bị, cài đặt này được kiểm soát ở cấp Thiết bị. Bạn chỉ nên sử dụng cài đặt này khi sử dụng API SNMP của Cacti nguyên bản trong các tập lệnh hoặc plugin của bạn."
 
 #: include/global_settings.php:1189
 #, fuzzy
@@ -11953,8 +11980,9 @@ msgid "Data Collector Defaults"
 msgstr "Người thu thập dữ liệu"
 
 #: include/global_settings.php:1303
+#, fuzzy
 msgid "These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector."
-msgstr ""
+msgstr "Các cài đặt này được duy trì ở cấp Bộ thu thập dữ liệu. Các giá trị ở đây chỉ là giá trị mặc định được sử dụng khi lần đầu tiên tạo Bộ thu thập dữ liệu."
 
 #: include/global_settings.php:1308
 #, fuzzy
@@ -12198,8 +12226,9 @@ msgid "Server(s)"
 msgstr "May chu"
 
 #: include/global_settings.php:1510 user_domains.php:368
+#, fuzzy
 msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
-msgstr ""
+msgstr "Danh sách tên máy chủ DNS hoặc địa chỉ IP được phân tách bằng dấu cách cho các máy chủ LDAP hợp lệ. Cacti sẽ cố gắng sử dụng các máy chủ LDAP từ trái sang phải để xác thực người dùng."
 
 #: include/global_settings.php:1516 user_domains.php:376
 #, fuzzy
@@ -12241,12 +12270,14 @@ msgid "Encryption that the server supports. NOTE: When using LDAP + TLS you must
 msgstr "Mã hóa mà máy chủ hỗ trợ. TLS chỉ được hỗ trợ bởi Giao thức Phiên bản 3."
 
 #: include/global_settings.php:1546
+#, fuzzy
 msgid "TLS Certificate Requirements"
-msgstr ""
+msgstr "Yêu cầu chứng chỉ TLS"
 
 #: include/global_settings.php:1547
+#, fuzzy
 msgid "Should LDAP verify TLS Certificates when received by the Client."
-msgstr ""
+msgstr "LDAP có nên xác minh Chứng chỉ TLS khi Khách hàng nhận được không."
 
 #: include/global_settings.php:1553 user_domains.php:408
 msgid "Referrals"
@@ -13449,9 +13480,8 @@ msgid "System Setting"
 msgstr "Thiết lập người dùng"
 
 #: include/global_settings.php:2589
-#, fuzzy
 msgid "1 Week"
-msgstr "% d tuần"
+msgstr "1 Tuần"
 
 #: include/global_settings.php:2602
 #, fuzzy
@@ -13459,8 +13489,9 @@ msgid "Auto Log Out Time"
 msgstr "Đăng xuất tự động"
 
 #: include/global_settings.php:2603
+#, fuzzy
 msgid "For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled."
-msgstr ""
+msgstr "Đối với người dùng chỉ có quyền truy cập Bảng điều khiển, người dùng này có thể đăng nhập trong bao lâu trước khi được tự động đăng xuất. Lưu ý rằng nếu bạn không hoạt động trong hơn một giờ, bạn có thể phải làm mới trình duyệt của mình. Cũng lưu ý rằng cài đặt này không ảnh hưởng khi bật Cookie xác thực."
 
 #: index.php:68
 #, fuzzy, php-format
@@ -13773,8 +13804,9 @@ msgid "Added by Cacti Automation"
 msgstr "Được thêm bởi Cacti Tự động hóa"
 
 #: lib/api_automation.php:3213
+#, fuzzy
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
-msgstr ""
+msgstr "LỖI: Dải IP ở dạng dải1-dải2 không còn được hỗ trợ."
 
 #: lib/api_device.php:1051
 #, fuzzy
@@ -14244,8 +14276,9 @@ msgid "Invalid host_id: %s"
 msgstr "Host_id không hợp lệ: %s"
 
 #: lib/data_query.php:796
+#, fuzzy
 msgid "Auto Bulk Walk Size Selected."
-msgstr ""
+msgstr "Đã chọn Kích thước Đi bộ Hàng loạt Tự động."
 
 #: lib/data_query.php:806 lib/data_query.php:851
 #, fuzzy
@@ -14253,23 +14286,24 @@ msgid "Failed to load SNMP session."
 msgstr "Không thể tải phiên SNMP."
 
 #: lib/data_query.php:816
-#, php-format
+#, fuzzy, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr ""
+msgstr "Đã kiểm tra Kích thước Đi bộ Hàng loạt %d với phản hồi là %2.4f."
 
 #: lib/data_query.php:827
-#, php-format
+#, fuzzy, php-format
 msgid "Bulk Walk Size selected was %d."
-msgstr ""
+msgstr "Kích thước Đi bộ Hàng loạt được chọn là %d."
 
 #: lib/data_query.php:830
+#, fuzzy
 msgid "Saving Bulk Walk Size to Device."
-msgstr ""
+msgstr "Lưu kích thước đi bộ hàng loạt vào thiết bị."
 
 #: lib/data_query.php:842
-#, php-format
+#, fuzzy, php-format
 msgid "Bulk Walk Size is fixed at %d."
-msgstr ""
+msgstr "Kích thước Đi bộ Hàng loạt được cố định tại %d."
 
 #: lib/data_query.php:864
 #, fuzzy, php-format
@@ -14744,17 +14778,18 @@ msgid "Current Page: %s"
 msgstr "Giá trị hiện tại"
 
 #: lib/html.php:578
-#, fuzzy, php-format
+#, php-format
 msgid "No %s Found"
-msgstr "Không tìm thấy %s"
+msgstr "Không %s Tìm thấy"
 
 #: lib/html.php:1123
 msgid "#"
-msgstr ""
+msgstr "#"
 
 #: lib/html.php:1127
+#, fuzzy
 msgid "GPrint"
-msgstr ""
+msgstr "GPrint"
 
 #: lib/html.php:1130
 #, fuzzy
@@ -14768,7 +14803,7 @@ msgstr "Không có nguồn"
 #: lib/html.php:1512
 #, fuzzy
 msgid "Choose an action"
-msgstr "Chọn một hành động"
+msgstr "Chọn hành động:"
 
 #: lib/html.php:1522
 #, fuzzy
@@ -14900,9 +14935,8 @@ msgid "Ignore System Color"
 msgstr "Màu mục"
 
 #: lib/html.php:2463
-#, fuzzy
 msgid "Help"
-msgstr "Hỗ trợ"
+msgstr "Trợ giúp"
 
 #: lib/html.php:2464
 #, fuzzy
@@ -16808,8 +16842,9 @@ msgid "Please select the Device Templates that you wish to update during the Upg
 msgstr "Chọn loại Mẫu mà bạn muốn xuất từ Cacti."
 
 #: lib/installer.php:2437
+#, fuzzy
 msgid "Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to 'Sync Graphs' to from the Templates after update."
-msgstr ""
+msgstr "Không nên cập nhật các Mẫu mà bạn đã thực hiện sửa đổi. Việc Nâng cấp Mẫu sẽ KHÔNG xóa các sửa đổi đối với Mẫu Đồ thị và Dữ liệu, đồng thời có thể dẫn đến hành vi không mong muốn. Tuy nhiên, nếu bạn chưa thực hiện thay đổi đối với bất kỳ Biểu đồ, Truy vấn Dữ liệu hoặc Mẫu Dữ liệu nào, việc nhập lại Gói sẽ không có bất kỳ ảnh hưởng nào. Trong trường hợp đó, bạn sẽ phải 'Đồng bộ hóa Đồ thị' từ Mẫu sau khi cập nhật."
 
 #: lib/installer.php:2439
 #, fuzzy
@@ -17209,12 +17244,12 @@ msgstr "Cả hai"
 #: lib/installer.php:3426
 #, fuzzy, php-format
 msgid "No - %s"
-msgstr "Lỗi: %s"
+msgstr "%s %s"
 
 #: lib/installer.php:3428 lib/installer.php:3430
 #, fuzzy, php-format
 msgid "%s - No"
-msgstr "Lỗi: %s"
+msgstr "%s %s"
 
 #: lib/installer.php:3428
 msgid "Web"
@@ -17868,12 +17903,14 @@ msgid "With modern SSD type storage, having multiple write io threads is advanta
 msgstr "Với lưu trữ loại SSD hiện đại, việc có nhiều luồng io ghi là lợi thế cho các ứng dụng có đặc tính io cao."
 
 #: lib/utility.php:1115
+#, fuzzy
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
-msgstr ""
+msgstr "Khi sử dụng MariaDB 10.2.4 trở lên, cài đặt này sẽ bị tắt nếu tính năng ghi nguyên tử được bật. Do đó, hãy bật tính năng ghi nguyên tử thay vì bộ đệm ghi kép vì nó sẽ tăng hiệu suất."
 
 #: lib/utility.php:1122
+#, fuzzy
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
-msgstr ""
+msgstr "Khi sử dụng MariaDB 10.2.4 trở lên, bạn có thể sử dụng ghi nguyên tử trên bộ đệm viết đôi để tăng hiệu suất."
 
 #: lib/utility.php:1139
 #, fuzzy, php-format
@@ -18503,8 +18540,9 @@ msgid "Maximum runtime of %d seconds exceeded for poller id %d. Exiting."
 msgstr "Thời gian chạy tối đa% d giây vượt quá. Thoát hiểm."
 
 #: poller.php:809
+#, fuzzy
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr ""
+msgstr "CẢNH BÁO: Chu kỳ thăm dò của xương rồng đã vượt quá khoảng thời gian thăm dò của xương rồng bởi"
 
 #: poller.php:1038
 #, fuzzy
@@ -18517,8 +18555,9 @@ msgid "NOTE: A second Cacti data collector has been added.  Therfore, enabling b
 msgstr "LƯU Ý: Một bộ thu thập dữ liệu Cacti thứ hai đã được thêm vào. Do đó, cho phép tăng tự động!"
 
 #: poller_automation.php:53
+#, fuzzy
 msgid "WARNING: Main Cacti database offline or in recovery"
-msgstr ""
+msgstr "CẢNH BÁO: Cơ sở dữ liệu chính của Cacti ngoại tuyến hoặc đang trong quá trình phục hồi"
 
 #: poller_automation.php:955 poller_automation.php:1006
 #, fuzzy
@@ -18531,8 +18570,9 @@ msgid "Cacti Automation Report requires an html based Email client"
 msgstr "Báo cáo tự động hóa Cacti yêu cầu ứng dụng Email dựa trên html"
 
 #: poller_boost.php:310
+#, fuzzy
 msgid "WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash"
-msgstr ""
+msgstr "CẢNH BÁO: Đã phát hiện thấy Poller Boost Overrun, Có thể xảy ra sự cố Poller Boost"
 
 #: pollers.php:40
 #, fuzzy
@@ -20302,9 +20342,8 @@ msgid "Domains"
 msgstr "Miền"
 
 #: user_domains.php:746
-#, fuzzy
 msgid "Domain Name"
-msgstr "Tên miền"
+msgstr "Tên miền Domain"
 
 #: user_domains.php:747
 #, fuzzy
@@ -20665,9 +20704,8 @@ msgid "No items to poll"
 msgstr "Không có mục để thăm dò ý kiến"
 
 #: utilities.php:378 utilities.php:385
-#, fuzzy
 msgid "Name: "
-msgstr "Tên"
+msgstr "Tên:"
 
 #: utilities.php:378
 #, fuzzy
@@ -20695,9 +20733,9 @@ msgid "PHP Servers"
 msgstr "Máy chủ PHP"
 
 #: utilities.php:422 utilities.php:424
-#, php-format
+#, fuzzy, php-format
 msgid "Current: %s, Min Required: %s"
-msgstr ""
+msgstr "Hiện tại: %s, Yêu cầu Tối thiểu: %s"
 
 #: utilities.php:428
 #, fuzzy
@@ -20705,16 +20743,19 @@ msgid "Minimum Connections:"
 msgstr "Kiểm tra kết nối"
 
 #: utilities.php:430
+#, fuzzy
 msgid "Assumes 100 spare connections for Web page users and other various connections."
-msgstr ""
+msgstr "Giả sử 100 kết nối dự phòng cho người dùng trang Web và các kết nối khác nhau."
 
 #: utilities.php:431
+#, fuzzy
 msgid "The minimum required can vary greatly if there is heavy user Graph viewing activity."
-msgstr ""
+msgstr "Yêu cầu tối thiểu có thể thay đổi rất nhiều nếu có nhiều hoạt động xem Biểu đồ của người dùng."
 
 #: utilities.php:432
+#, fuzzy
 msgid "Each browser tab can use upto 10 connections depending on the browser."
-msgstr ""
+msgstr "Mỗi tab trình duyệt có thể sử dụng tối đa 10 kết nối tùy thuộc vào trình duyệt."
 
 #: utilities.php:436
 #, fuzzy
@@ -21186,8 +21227,9 @@ msgid "Remaining Data Sources:"
 msgstr "Gỡ lỗi nguồn dữ liệu"
 
 #: utilities.php:2347
+#, fuzzy
 msgid "TBD"
-msgstr ""
+msgstr "TBD"
 
 #: utilities.php:2351
 #, fuzzy
@@ -21195,8 +21237,9 @@ msgid "Queued Boost Records:"
 msgstr "Hồ sơ Boost đang chờ xử lý:"
 
 #: utilities.php:2355
+#, fuzzy
 msgid "Approximate in Process:"
-msgstr ""
+msgstr "Khoảng trong quá trình:"
 
 #: utilities.php:2358
 #, fuzzy
@@ -21308,9 +21351,9 @@ msgid "Detailed Runtime Timers:"
 msgstr "Bộ đếm thời gian chạy chi tiết:"
 
 #: utilities.php:2466
-#, php-format
+#, fuzzy, php-format
 msgid "Process %d Runtime:"
-msgstr ""
+msgstr "Xử lý %d thời gian chạy:"
 
 #: utilities.php:2471
 #, fuzzy
@@ -21335,7 +21378,7 @@ msgstr "Thời gian bắt đầu tiếp theo:"
 #: utilities.php:2483
 #, fuzzy
 msgid "Maximum Records:"
-msgstr "Hồ sơ tối đa:"
+msgstr "Bản ghi tối đa"
 
 #: utilities.php:2483
 msgid "Records"

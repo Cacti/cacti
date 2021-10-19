@@ -13,15 +13,15 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-10-18 21:01-0400\n"
-"PO-Revision-Date: 2021-03-12 14:32+0000\n"
+"PO-Revision-Date: 2021-10-18 21:52-0400\n"
 "Last-Translator: Ronny Preiss <ronny.preiss@gmail.com>\n"
 "Language-Team: German <http://translate.cacti.net/projects/cacti/core-v1-2-x/de/>\n"
-"Language: de-DE\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3.2\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-KeywordsList: __;__date\n"
 
@@ -432,8 +432,9 @@ msgid "Prefix Replacement Values"
 msgstr "Ersatzmuster"
 
 #: aggregate_graphs.php:848 aggregate_templates.php:395 graphs.php:1053
+#, fuzzy
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
-msgstr ""
+msgstr "Sie können diese Ersatzwerte für das Präfix im Aggregatdiagramm verwenden"
 
 #: aggregate_graphs.php:1015 aggregate_templates.php:522 graphs.php:1135
 #: lib/api_aggregate.php:1715
@@ -574,7 +575,6 @@ msgstr "Los"
 #: user_group_admin.php:2408 user_group_admin.php:2493
 #: user_group_admin.php:2578 utilities.php:845 utilities.php:1200
 #: utilities.php:1532 utilities.php:1813 utilities.php:2643 utilities.php:2906
-#, fuzzy
 msgid "Set/Refresh Filters"
 msgstr "Filter setzen/auffrischen"
 
@@ -1175,9 +1175,8 @@ msgid "Add Device"
 msgstr "Gerät hinzufügen"
 
 #: automation_devices.php:46
-#, fuzzy
 msgid "Delete Device"
-msgstr "Gerät(e) löschen"
+msgstr "Gerät löschen"
 
 #: automation_devices.php:54 automation_devices.php:300
 #: automation_devices.php:409 automation_devices.php:419
@@ -1211,8 +1210,9 @@ msgid "Device %s Not Added to Cacti"
 msgstr "Nicht zu Kakteen hinzugefügt"
 
 #: automation_devices.php:135
+#, fuzzy
 msgid "Devices Removed from Cacti Automation database"
-msgstr ""
+msgstr "Geräte aus der Cacti Automation-Datenbank entfernt"
 
 #: automation_devices.php:196
 #, fuzzy
@@ -1315,9 +1315,8 @@ msgid "Status"
 msgstr "Status"
 
 #: automation_devices.php:287
-#, fuzzy
 msgid "Last Check"
-msgstr "Letzte Überprüfung"
+msgstr "Letzte Prüfung"
 
 #: automation_devices.php:306 automation_devices.php:640
 #, fuzzy
@@ -1530,7 +1529,6 @@ msgstr "Aktiviert"
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1164 user_domains.php:412 user_group_admin.php:700
 #: utilities.php:2492
-#, fuzzy
 msgid "Disabled"
 msgstr "Deaktiviert"
 
@@ -2791,8 +2789,9 @@ msgid "Cacti System Warning"
 msgstr "Warnung vor dem Kaktus-System"
 
 #: cactid.php:44
+#, fuzzy
 msgid "WARNING: Cacti Daemon PID["
-msgstr ""
+msgstr "WARNUNG: Kakteen-Daemon-PID["
 
 #: cactid.php:131
 #, fuzzy
@@ -2800,8 +2799,9 @@ msgid "Cacti System Notice"
 msgstr "Systemwerkzeuge"
 
 #: cactid.php:131
+#, fuzzy
 msgid "Notice: Cacti Daemon PID["
-msgstr ""
+msgstr "Hinweis: Kakteen-Daemon-PID["
 
 #: cdef.php:277
 #, fuzzy
@@ -3418,7 +3418,7 @@ msgstr "Prüfend"
 #: data_debug.php:573
 #, fuzzy
 msgid "No Checks"
-msgstr "Keine Prüfungen"
+msgstr "Checks"
 
 #: data_debug.php:616 lib/api_automation.php:761 lib/graphs.php:79
 #: lib/graphs.php:103
@@ -3550,7 +3550,7 @@ msgstr "Ergebnisse"
 #: data_debug.php:768
 #, fuzzy
 msgid "<not set>"
-msgstr "Als Standard"
+msgstr "Nicht gesetzt"
 
 #: data_debug.php:803 data_debug.php:854
 #, fuzzy
@@ -4571,8 +4571,9 @@ msgid "Bad Indexes"
 msgstr "Index"
 
 #: data_sources.php:1429 graphs.php:2017
+#, fuzzy
 msgid "Note that this query may take some time to run."
-msgstr ""
+msgstr "Beachten Sie, dass die Ausführung dieser Abfrage einige Zeit in Anspruch nehmen kann."
 
 #: data_sources.php:1429 graphs.php:2017
 msgid "Orphaned"
@@ -4646,9 +4647,9 @@ msgid "Change Profile"
 msgstr "Profil anpassen"
 
 #: data_templates.php:245
-#, php-format
+#, fuzzy, php-format
 msgid "Field \"%s\" is missing an Output Field"
-msgstr ""
+msgstr "Im Feld \"%s\" fehlt ein Ausgabefeld"
 
 #: data_templates.php:402
 #, fuzzy
@@ -4863,8 +4864,9 @@ msgid "No GPRINT Presets"
 msgstr "Vordefinierte GPRINT"
 
 #: graph.php:67
+#, fuzzy
 msgid "GRAPH DOES NOT EXIST"
-msgstr ""
+msgstr "GRAFIK EXISTIERT NICHT"
 
 #: graph.php:100
 msgid "Viewing Graph"
@@ -5096,9 +5098,9 @@ msgid "Associated Graph Items"
 msgstr "Zugeordnete Diagramm Elemente"
 
 #: graph_templates_inputs.php:220
-#, fuzzy, php-format
+#, php-format
 msgid "Item #%s"
-msgstr "Artikel #%s"
+msgstr "Element #%s"
 
 #: graph_templates_items.php:101 graph_templates_items.php:127
 #: graphs_items.php:141
@@ -5710,12 +5712,14 @@ msgid "Data Query Re-indexed."
 msgstr "Index der Datenabfrage"
 
 #: host.php:125
+#, fuzzy
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
-msgstr ""
+msgstr "Gerätedatenabfrage neu indiziert. Ausführliche Ausgabe angezeigt."
 
 #: host.php:144
+#, fuzzy
 msgid "Device Debugging Enabled for Device."
-msgstr ""
+msgstr "Geräte-Debugging für Gerät aktiviert."
 
 #: host.php:151
 #, fuzzy
@@ -5723,8 +5727,9 @@ msgid "Device Debugging Disabled for Device."
 msgstr "Gerät ist deaktiviert"
 
 #: host.php:159
+#, fuzzy
 msgid "Poller Cache for Device Refreshed."
-msgstr ""
+msgstr "Poller-Cache für Gerät aktualisiert."
 
 #: host.php:161
 #, fuzzy
@@ -6870,36 +6875,43 @@ msgid "SHA"
 msgstr "SHA"
 
 #: include/global_arrays.php:591
+#, fuzzy
 msgid "SHA-224"
-msgstr ""
+msgstr "SHA-224"
 
 #: include/global_arrays.php:592
+#, fuzzy
 msgid "SHA-256"
-msgstr ""
+msgstr "SHA-256"
 
 #: include/global_arrays.php:593
+#, fuzzy
 msgid "SHA-392"
-msgstr ""
+msgstr "SHA-392"
 
 #: include/global_arrays.php:594
+#, fuzzy
 msgid "SHA-512"
-msgstr ""
+msgstr "SHA-512"
 
 #: include/global_arrays.php:599
 msgid "DES"
 msgstr "DES"
 
 #: include/global_arrays.php:600
+#, fuzzy
 msgid "AES-128"
-msgstr ""
+msgstr "AES-128"
 
 #: include/global_arrays.php:601
+#, fuzzy
 msgid "AES-192"
-msgstr ""
+msgstr "AES-192"
 
 #: include/global_arrays.php:602
+#, fuzzy
 msgid "AES-256"
-msgstr ""
+msgstr "AES-256"
 
 #: include/global_arrays.php:611
 msgid "Logfile Only"
@@ -7047,17 +7059,17 @@ msgid "LDAPS"
 msgstr "LDAP"
 
 #: include/global_arrays.php:809
+#, fuzzy
 msgid "LDAP + TLS"
-msgstr ""
+msgstr "LDAP + TLS"
 
 #: include/global_arrays.php:814
 msgid "Hard"
-msgstr ""
+msgstr "Schwer"
 
 #: include/global_arrays.php:815
-#, fuzzy
 msgid "Demand"
-msgstr "Befehl"
+msgstr "Nachfrage"
 
 #: include/global_arrays.php:816 user_admin.php:837 user_group_admin.php:738
 msgid "Allow"
@@ -7065,7 +7077,7 @@ msgstr "Zulassen"
 
 #: include/global_arrays.php:817
 msgid "Try"
-msgstr ""
+msgstr "Versuche"
 
 #: include/global_arrays.php:821
 msgid "No Searching"
@@ -7401,8 +7413,9 @@ msgid "Show Graph Action Icons"
 msgstr "Zeige Graph Namen"
 
 #: include/global_arrays.php:1142
+#, fuzzy
 msgid "Show User Help Links"
-msgstr ""
+msgstr "Benutzerhilfe-Links anzeigen"
 
 #: include/global_arrays.php:1143
 #, fuzzy
@@ -7882,7 +7895,7 @@ msgstr "Konvertieren in LINE3-Diagramm"
 #: include/global_arrays.php:1604
 #, fuzzy
 msgid "No Totals"
-msgstr "Keine Summen"
+msgstr "Gesamtbetrag anzeigen"
 
 #: include/global_arrays.php:1605
 #, fuzzy
@@ -8609,25 +8622,29 @@ msgstr "Maximale OID Anzahl"
 #: include/global_form.php:163 include/global_form.php:164
 #: include/global_form.php:165 include/global_form.php:166
 #: include/global_form.php:167
-#, php-format
+#, fuzzy, php-format
 msgid "%d OID's"
-msgstr ""
+msgstr "%d OIDs"
 
 #: include/global_form.php:172
+#, fuzzy
 msgid "Bulk Walk Maximum Repititions"
-msgstr ""
+msgstr "Bulk Walk Maximale Wiederholungen"
 
 #: include/global_form.php:173
+#, fuzzy
 msgid "For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk max-repetitions size. The default is to 'Auto Detect on Re-Index'. For very large switches, high performance servers, Jumbo Frame Networks or for high latency WAN connections, increasing this value may increase poller performance. More data is packed into a single SNMP packet which can reduce data query run time. However, some devices may completely refuse to respond to packets with a max-repetition size which is set too large. This can be especially true for lower-powered IoT type devices or smaller embedded IT appliances. Special attention to the overall network path MTU should also be considered since setting a value which is too high could lead to packet fragmentation."
-msgstr ""
+msgstr "Für SNMPv2- und SNMPv3-Geräte die maximale Größe der SNMP Bulk Walk-Wiederholungen. Die Standardeinstellung ist 'Auto Detect on Re-Index'. Bei sehr großen Switches, Hochleistungsservern, Jumbo-Frame-Netzwerken oder bei WAN-Verbindungen mit hoher Latenz kann die Erhöhung dieses Wertes die Pollerleistung erhöhen. Mehr Daten werden in ein einzelnes SNMP-Paket gepackt, wodurch die Laufzeit der Datenabfrage verkürzt werden kann. Einige Geräte verweigern jedoch möglicherweise die Antwort auf Pakete mit einer zu groß eingestellten maximalen Wiederholungsgröße. Dies gilt insbesondere für IoT-Geräte mit geringerer Leistung oder kleinere eingebettete IT-Appliances. Besonderes Augenmerk sollte auch auf die MTU des gesamten Netzwerkpfads gelegt werden, da ein zu hoher Wert zu einer Paketfragmentierung führen kann."
 
 #: include/global_form.php:177
+#, fuzzy
 msgid "Auto Detect on Re-Index"
-msgstr ""
+msgstr "Automatische Erkennung bei Neuindexierung"
 
 #: include/global_form.php:178
+#, fuzzy
 msgid "Auto Detect/Set on first Re-Index"
-msgstr ""
+msgstr "Automatische Erkennung/Einstellung beim ersten Neuindex"
 
 #: include/global_form.php:179
 #, fuzzy, php-format
@@ -9467,8 +9484,9 @@ msgid "Test Data Sources"
 msgstr "Hat Datenquellen"
 
 #: include/global_form.php:1119
+#, fuzzy
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
-msgstr ""
+msgstr "Aktivieren Sie dieses Kontrollkästchen, wenn Sie die Datenquellen vor ihrer Erstellung testen möchten. Wenn Datenquellen testen aktiviert ist und die Datenquelle keine gültigen Daten zurückgibt, wird das Diagramm nicht erstellt. Diese Einstellung ist wichtig, wenn Sie eine allgemeinere Gerätevorlage haben möchten, die mehr Diagrammvorlagen enthalten kann, die je nach den Eigenschaften des Geräts selbst selektiv angewendet werden können. Hinweis: Wenn Sie ein lang laufendes Skript als Datenquelle verwenden, verlängert sich die Zeit zum Erstellen von Diagrammen."
 
 #: include/global_form.php:1143
 #, fuzzy
@@ -10297,7 +10315,7 @@ msgstr "Mit welcher Frequenz möchten Sie Ihre Logs drehen?"
 #: include/global_settings.php:203
 #, fuzzy
 msgid "Log Retention"
-msgstr "Protokollaufbewahrung"
+msgstr "Audit Protokoll Speicherung"
 
 #: include/global_settings.php:204
 #, fuzzy
@@ -10457,8 +10475,9 @@ msgid "Errors"
 msgstr "Fehler"
 
 #: include/global_settings.php:335
+#, fuzzy
 msgid "Internationalization (i18n)"
-msgstr ""
+msgstr "Internationalisierung (i18n)"
 
 #: include/global_settings.php:340
 msgid "Language Support"
@@ -10626,9 +10645,8 @@ msgid "Some of Cacti's interfaces support Drag-N-Drop.  If checked this option w
 msgstr "Einige der Schnittstellen von Cacti unterstützen Drag-N-Drop.  Wenn diese Option aktiviert ist, wird sie aktiviert.  Hinweis: Für sehbehinderte Benutzer kann diese Option deaktiviert sein."
 
 #: include/global_settings.php:452
-#, fuzzy
 msgid "Site Security"
-msgstr "SMTP Sicherheit"
+msgstr "Site-Security"
 
 #: include/global_settings.php:457
 #, fuzzy
@@ -10651,12 +10669,14 @@ msgid "Certain Cacti plugins require the use of unsafe JavaScript eval() calls. 
 msgstr "Bestimmte Cacti-Plugins erfordern die Verwendung unsicherer JavaScript eval () -Aufrufe. Wenn Sie diese Option auswählen, werden sie in Kakteen zugelassen."
 
 #: include/global_settings.php:473
+#, fuzzy
 msgid "Content-Security Alternate Sources"
-msgstr ""
+msgstr "Alternative Quellen für Inhaltssicherheit"
 
 #: include/global_settings.php:474
+#, fuzzy
 msgid "Space delmited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only."
-msgstr ""
+msgstr "Durch Leerzeichen getrennte Domänennamen, auf die außerhalb des Webservers selbst zugegriffen werden darf. Dies ist wichtig für Benutzer, die sich für die Verwendung eines CDN oder einer Hosting-Site entscheiden. Quellen können Platzhalter enthalten, zum Beispiel: *.mydomain.com, oder ein Protokoll, zum Beispiel: https://*.example.com. Diese alternativen Quellen umfassen nur Bild-, CSS- und JavaScript-Typen."
 
 #: include/global_settings.php:487
 #, fuzzy
@@ -10719,8 +10739,9 @@ msgid "Graph Template Test Data Source"
 msgstr "Grafik, Datenquelle"
 
 #: include/global_settings.php:527
+#, fuzzy
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation for new and newly imported Graph Templates.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
-msgstr ""
+msgstr "Aktivieren Sie dieses Kontrollkästchen, wenn Sie die Datenquellen vor ihrer Erstellung auf neue und neu importierte Diagrammvorlagen testen möchten. Wenn Datenquellen testen aktiviert ist und die Datenquelle keine gültigen Daten zurückgibt, wird das Diagramm nicht erstellt. Diese Einstellung ist wichtig, wenn Sie eine allgemeinere Gerätevorlage haben möchten, die mehr Diagrammvorlagen enthalten kann, die je nach den Eigenschaften des Geräts selbst selektiv angewendet werden können. Hinweis: Wenn Sie ein lang laufendes Skript als Datenquelle verwenden, verlängert sich die Zeit zum Erstellen von Diagrammen."
 
 #: include/global_settings.php:531
 #, fuzzy
@@ -11210,8 +11231,9 @@ msgid "Minimum Refresh Interval"
 msgstr "Zeit zwischen Aktualisierungen"
 
 #: include/global_settings.php:965
+#, fuzzy
 msgid "This is the minimal supported time between Graph updates.  This value is also used to set certain RRDfile attributes.  If you have a Device that caches data and does not provide realtime updates, you may have to increase the default Minimum Refresh Interval to prevent creating Graphs with gaps."
-msgstr ""
+msgstr "Dies ist die minimal unterstützte Zeit zwischen Graph-Updates. Dieser Wert wird auch verwendet, um bestimmte RRDfile-Attribute festzulegen. Wenn Sie ein Gerät haben, das Daten zwischenspeichert und keine Echtzeitaktualisierungen bereitstellt, müssen Sie möglicherweise das standardmäßige Mindestaktualisierungsintervall erhöhen, um zu verhindern, dass Diagramme mit Lücken erstellt werden."
 
 #: include/global_settings.php:971
 #, fuzzy
@@ -11239,13 +11261,13 @@ msgid "Text placed at the bottom center of every Graph."
 msgstr "Text, der sich in der unteren Mitte jedes Diagramms befindet."
 
 #: include/global_settings.php:992
-#, fuzzy
 msgid "Custom Date Format"
-msgstr "Zusätzliche Daten"
+msgstr "Benutzerdefiniertes Datumsformat"
 
 #: include/global_settings.php:993
+#, fuzzy
 msgid "To be used when formatting |date_time| on a graph"
-msgstr ""
+msgstr "Zu verwenden beim Formatieren von |date_time| auf einer Grafik"
 
 #: include/global_settings.php:1000
 #, fuzzy
@@ -11253,8 +11275,9 @@ msgid "Disable RRDtool Watermark"
 msgstr "RRDtool Graph Wasserzeichen"
 
 #: include/global_settings.php:1001
+#, fuzzy
 msgid "Provided your RRDtool version supports it, you may disable RRDtool advertisement on your Graphs by checking this option."
-msgstr ""
+msgstr "Sofern Ihre RRDtool-Version dies unterstützt, können Sie die RRDtool-Werbung in Ihren Diagrammen deaktivieren, indem Sie diese Option aktivieren."
 
 #: include/global_settings.php:1006
 #, fuzzy
@@ -11408,8 +11431,9 @@ msgid "Cron/Daemon Interval"
 msgstr "Cron-Intervall"
 
 #: include/global_settings.php:1126
+#, fuzzy
 msgid "The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory."
-msgstr ""
+msgstr "Die Häufigkeit, mit der der Cacti-Datenkollektor gestartet wird. Sie können entweder crontab, eine geplante Aufgabe (für Windows) oder den cactid systemd-Dienst verwenden, um den Start des Cacti-Datenkollektors zu steuern. Anweisungen zur Verwendung des cactid-Daemons finden Sie in der Datei README.md im Serviceverzeichnis."
 
 #: include/global_settings.php:1132
 msgid "Balance Process Load"
@@ -11465,8 +11489,9 @@ msgid "SNMP Get OID Limit"
 msgstr "SNMP Get"
 
 #: include/global_settings.php:1182
+#, fuzzy
 msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
-msgstr ""
+msgstr "Die standardmäßige maximale Anzahl von SNMP-Get-OIDs, die pro SNMPget-Anforderung ausgegeben werden. Bei Geräten wird diese Einstellung auf Geräteebene gesteuert. Sie sollten diese Einstellung nur verwenden, wenn Sie die SNMP-API von Cacti nativ in Ihren Skripten oder Plugins verwenden."
 
 #: include/global_settings.php:1189
 #, fuzzy
@@ -11537,9 +11562,9 @@ msgstr "Die maximale Zeitdauer, die das Skriptgenerierungsskript von Cacti ausge
 #: include/global_settings.php:1237 include/global_settings.php:1250
 #: include/global_settings.php:1263 include/global_settings.php:1276
 #: include/global_settings.php:1290
-#, fuzzy, php-format
+#, php-format
 msgid "%s Minute"
-msgstr "%s Minuten"
+msgstr "%s Minute"
 
 #: include/global_settings.php:1245
 #, fuzzy
@@ -11592,8 +11617,9 @@ msgid "Data Collector Defaults"
 msgstr "Datenkollektoren"
 
 #: include/global_settings.php:1303
+#, fuzzy
 msgid "These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector."
-msgstr ""
+msgstr "Diese Einstellungen werden auf Datenkollektorebene verwaltet. Die Werte hier sind nur Standardwerte, die beim ersten Erstellen eines Datenkollektors verwendet werden."
 
 #: include/global_settings.php:1308
 #, fuzzy
@@ -11830,8 +11856,9 @@ msgid "Server(s)"
 msgstr "Server"
 
 #: include/global_settings.php:1510 user_domains.php:368
+#, fuzzy
 msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
-msgstr ""
+msgstr "Eine durch Leerzeichen getrennte Liste von DNS-Hostnamen oder IP-Adressen für gültige LDAP-Server. Cacti versucht, die LDAP-Server von links nach rechts zu verwenden, um einen Benutzer zu authentifizieren."
 
 #: include/global_settings.php:1516 user_domains.php:376
 msgid "Port Standard"
@@ -11870,12 +11897,14 @@ msgid "Encryption that the server supports. NOTE: When using LDAP + TLS you must
 msgstr "Verschlüsselung, die der Server unterstützt. TLS wird nur von der Protokollversion 3 unterstützt."
 
 #: include/global_settings.php:1546
+#, fuzzy
 msgid "TLS Certificate Requirements"
-msgstr ""
+msgstr "Anforderungen an das TLS-Zertifikat"
 
 #: include/global_settings.php:1547
+#, fuzzy
 msgid "Should LDAP verify TLS Certificates when received by the Client."
-msgstr ""
+msgstr "Sollte LDAP TLS-Zertifikate verifizieren, wenn sie vom Client empfangen werden."
 
 #: include/global_settings.php:1553 user_domains.php:408
 msgid "Referrals"
@@ -13046,8 +13075,9 @@ msgid "Auto Log Out Time"
 msgstr "Automatische Abmeldung"
 
 #: include/global_settings.php:2603
+#, fuzzy
 msgid "For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled."
-msgstr ""
+msgstr "Nur für Benutzer mit Konsolenzugriff, wie lange dieser Benutzer angemeldet bleiben kann, bevor er automatisch abgemeldet wird. Beachten Sie, dass Sie Ihren Browser möglicherweise aktualisieren müssen, wenn Sie länger als eine Stunde nicht aktiv waren. Beachten Sie auch, dass diese Einstellung keine Auswirkungen hat, wenn Authentifizierungs-Cookies aktiviert sind."
 
 #: index.php:68
 #, fuzzy, php-format
@@ -13122,9 +13152,8 @@ msgid "Cacti Server v%s - Installation Wizard"
 msgstr "Kakteen-Server v%s - Installationsassistent"
 
 #: install/install.php:73
-#, fuzzy
 msgid "Refresh current page"
-msgstr "Zeit zwischen Aktualisierungen"
+msgstr "Aktuelle Seite neu laden"
 
 #: install/install.php:79
 msgid "Initializing"
@@ -13353,8 +13382,9 @@ msgid "Added by Cacti Automation"
 msgstr "Hinzugefügt von Cacti Automation"
 
 #: lib/api_automation.php:3213
+#, fuzzy
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
-msgstr ""
+msgstr "FEHLER: IP-Bereiche in Form von range1-range2 werden nicht mehr unterstützt."
 
 #: lib/api_device.php:1051
 #, fuzzy
@@ -13816,8 +13846,9 @@ msgid "Invalid host_id: %s"
 msgstr "Ungültige host_id: %s"
 
 #: lib/data_query.php:796
+#, fuzzy
 msgid "Auto Bulk Walk Size Selected."
-msgstr ""
+msgstr "Auto-Bulk-Walk-Größe ausgewählt."
 
 #: lib/data_query.php:806 lib/data_query.php:851
 #, fuzzy
@@ -13825,23 +13856,24 @@ msgid "Failed to load SNMP session."
 msgstr "SNMP-Sitzung konnte nicht geladen werden."
 
 #: lib/data_query.php:816
-#, php-format
+#, fuzzy, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
-msgstr ""
+msgstr "Getestete Bulk-Walk-Größe %d mit einer Antwort von %2.4f."
 
 #: lib/data_query.php:827
-#, php-format
+#, fuzzy, php-format
 msgid "Bulk Walk Size selected was %d."
-msgstr ""
+msgstr "Die ausgewählte Bulk-Walk-Größe war %d."
 
 #: lib/data_query.php:830
+#, fuzzy
 msgid "Saving Bulk Walk Size to Device."
-msgstr ""
+msgstr "Speichern der Bulk-Walk-Größe auf dem Gerät."
 
 #: lib/data_query.php:842
-#, php-format
+#, fuzzy, php-format
 msgid "Bulk Walk Size is fixed at %d."
-msgstr ""
+msgstr "Die Bulk-Walk-Größe ist auf %d festgelegt."
 
 #: lib/data_query.php:864
 #, fuzzy, php-format
@@ -14057,7 +14089,6 @@ msgid "Data Source was not polled"
 msgstr "Datenquelle wurde nicht abgefragt"
 
 #: lib/dsdebug.php:305
-#, fuzzy
 msgid "No issues found"
 msgstr "Keine Probleme gefunden"
 
@@ -14319,8 +14350,9 @@ msgid "#"
 msgstr "#"
 
 #: lib/html.php:1127
+#, fuzzy
 msgid "GPrint"
-msgstr ""
+msgstr "GDrucken"
 
 #: lib/html.php:1130
 #, fuzzy
@@ -14434,10 +14466,8 @@ msgid "Click again to take this Graph out of Realtime"
 msgstr "Klicken Sie erneut, um dieses Diagramm aus der Echtzeit zu entfernen."
 
 #: lib/html.php:2457
-#, fuzzy
-#| msgid "Scan Mode"
 msgid "Standard Mode"
-msgstr "Scan-Modus"
+msgstr "Standardmodus"
 
 #: lib/html.php:2458
 #, fuzzy
@@ -14466,9 +14496,8 @@ msgid "Ignore System Color"
 msgstr "Farbe"
 
 #: lib/html.php:2463
-#, fuzzy
 msgid "Help"
-msgstr "Hilfe erhalten"
+msgstr "Hilfe"
 
 #: lib/html.php:2464
 #, fuzzy
@@ -14635,7 +14664,6 @@ msgid "8x"
 msgstr "8x"
 
 #: lib/html.php:2510
-#, fuzzy
 msgid "16x"
 msgstr "16x"
 
@@ -15587,7 +15615,7 @@ msgstr "Ungelöste Abhängigkeit gefunden:"
 #: lib/installer.php:505 lib/installer.php:536
 #, fuzzy
 msgid "Path was not writable"
-msgstr "Pfad war nicht beschreibbar"
+msgstr "Yükleme dizini salt okunur. Lütfen desteğe başvurun"
 
 #: lib/installer.php:514
 msgid "Path is not writable"
@@ -16316,8 +16344,9 @@ msgid "Please select the Device Templates that you wish to update during the Upg
 msgstr "Wählen Sie den Vorlagentyp aus, den Sie aus Kakteen exportieren möchten."
 
 #: lib/installer.php:2437
+#, fuzzy
 msgid "Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to 'Sync Graphs' to from the Templates after update."
-msgstr ""
+msgstr "Es ist nicht ratsam, Vorlagen zu aktualisieren, an denen Sie bereits Änderungen vorgenommen haben. Das Upgrade der Vorlagen entfernt KEINE Änderungen an Diagramm- und Datenvorlagen und kann zu unerwartetem Verhalten führen. Wenn Sie jedoch keine Änderungen an einem Diagramm, einer Datenabfrage oder einer Datenvorlage vorgenommen haben, sollte das erneute Importieren des Pakets keine Auswirkungen haben. In diesem Fall müssten Sie nach dem Update die Grafiken mit den Vorlagen synchronisieren."
 
 #: lib/installer.php:2439
 #, fuzzy
@@ -16358,9 +16387,8 @@ msgid "Under the [mysqld] section, locate the entries named 'character-set-serve
 msgstr "Suchen Sie im Abschnitt [mysqld] die Einträge mit den Namen'character&#8209;set&#8209;server' und'collation&#8209;server' und setzen Sie sie wie folgt:"
 
 #: lib/installer.php:2489
-#, fuzzy
 msgid "Database Collation"
-msgstr "Datenbank-Sammlung"
+msgstr "Datenbank Collation"
 
 #: lib/installer.php:2494
 #, fuzzy
@@ -16728,7 +16756,7 @@ msgstr "Web"
 #: lib/installer.php:3430
 #, fuzzy
 msgid "Cli"
-msgstr "Klassisch"
+msgstr "cli"
 
 #: lib/installer.php:3435
 #, fuzzy, php-format
@@ -17363,12 +17391,14 @@ msgid "With modern SSD type storage, having multiple write io threads is advanta
 msgstr "Mit modernem SSD-Speicher ist die Verwendung mehrerer Schreib-io-Threads für Anwendungen mit hohen io-Eigenschaften von Vorteil."
 
 #: lib/utility.php:1115
+#, fuzzy
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
-msgstr ""
+msgstr "Bei Verwendung von MariaDB 10.2.4 und höher sollte diese Einstellung deaktiviert sein, wenn atomare Schreibvorgänge aktiviert sind. Bitte aktivieren Sie daher atomare Schreibvorgänge anstelle des doppelten Schreibpuffers, da dies die Leistung erhöht."
 
 #: lib/utility.php:1122
+#, fuzzy
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
-msgstr ""
+msgstr "Wenn Sie MariaDB 10.2.4 und höher verwenden, können Sie atomare Schreibvorgänge über den Doublewrite-Puffer verwenden, um die Leistung zu erhöhen."
 
 #: lib/utility.php:1139
 #, fuzzy, php-format
@@ -17774,7 +17804,7 @@ msgstr "Deinstallieren"
 #: plugins.php:35
 #, fuzzy
 msgid "Not Compatible"
-msgstr "Nicht kompatibel"
+msgstr "Kompatibel"
 
 #: plugins.php:36 plugins.php:363 utilities.php:517
 msgid "Not Installed"
@@ -17826,7 +17856,6 @@ msgid "A description that the Plugins author has given to the Plugin."
 msgstr "Eine Beschreibung, die der Autor des Plugins dem Plugin gegeben hat."
 
 #: plugins.php:458
-#, fuzzy
 msgid "Plugin Description"
 msgstr "Plugin-Beschreibung"
 
@@ -17985,8 +18014,9 @@ msgid "Maximum runtime of %d seconds exceeded for poller id %d. Exiting."
 msgstr "Maximale Laufzeit von %d Sekunden überschritten. Aufregend."
 
 #: poller.php:809
+#, fuzzy
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr ""
+msgstr "WARNUNG: Polling-Zyklus für Kakteen hat das Poller-Intervall um . überschritten"
 
 #: poller.php:1038
 #, fuzzy
@@ -17999,8 +18029,9 @@ msgid "NOTE: A second Cacti data collector has been added.  Therfore, enabling b
 msgstr "HINWEIS: Ein zweiter Cacti-Datenkollektor wurde hinzugefügt. Aktivieren Sie daher automatisch den Boost!"
 
 #: poller_automation.php:53
+#, fuzzy
 msgid "WARNING: Main Cacti database offline or in recovery"
-msgstr ""
+msgstr "WARNUNG: Hauptdatenbank von Cacti offline oder in Wiederherstellung"
 
 #: poller_automation.php:955 poller_automation.php:1006
 #, fuzzy
@@ -18013,8 +18044,9 @@ msgid "Cacti Automation Report requires an html based Email client"
 msgstr "Der Cacti Automation Report benötigt einen html-basierten E-Mail-Client."
 
 #: poller_boost.php:310
+#, fuzzy
 msgid "WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash"
-msgstr ""
+msgstr "WARNUNG: Poller-Boost-Überlauf erkannt, möglicher Boost-Poller-Absturz"
 
 #: pollers.php:40
 #, fuzzy
@@ -20094,9 +20126,8 @@ msgid "No items to poll"
 msgstr "Keine Elemente zum Abfragen"
 
 #: utilities.php:378 utilities.php:385
-#, fuzzy
 msgid "Name: "
-msgstr "Name"
+msgstr "Name: "
 
 #: utilities.php:378
 #, fuzzy
@@ -20121,9 +20152,9 @@ msgid "PHP Servers"
 msgstr "PHP Server Anzahl"
 
 #: utilities.php:422 utilities.php:424
-#, php-format
+#, fuzzy, php-format
 msgid "Current: %s, Min Required: %s"
-msgstr ""
+msgstr "Aktuell: %s, Mindestanforderung: %s"
 
 #: utilities.php:428
 #, fuzzy
@@ -20131,16 +20162,19 @@ msgid "Minimum Connections:"
 msgstr "Verbindung prüfen"
 
 #: utilities.php:430
+#, fuzzy
 msgid "Assumes 100 spare connections for Web page users and other various connections."
-msgstr ""
+msgstr "Nimmt 100 Ersatzverbindungen für Webseitenbenutzer und andere verschiedene Verbindungen an."
 
 #: utilities.php:431
+#, fuzzy
 msgid "The minimum required can vary greatly if there is heavy user Graph viewing activity."
-msgstr ""
+msgstr "Die erforderliche Mindestanzahl kann stark variieren, wenn die Benutzeraktivität für das Anzeigen von Grafiken stark ist."
 
 #: utilities.php:432
+#, fuzzy
 msgid "Each browser tab can use upto 10 connections depending on the browser."
-msgstr ""
+msgstr "Jeder Browser-Tab kann je nach Browser bis zu 10 Verbindungen verwenden."
 
 #: utilities.php:436
 msgid "Script Timeout"
@@ -20561,7 +20595,7 @@ msgstr "Boost Aktualisierung nach Bedarf:"
 #: utilities.php:2332
 #, fuzzy
 msgid "Running Processes:"
-msgstr "Gleichzeitige Prozesse"
+msgstr "Laufende Prozesse"
 
 #: utilities.php:2337
 #, fuzzy
@@ -20579,7 +20613,7 @@ msgstr "Debuggen der Datenquelle"
 
 #: utilities.php:2347
 msgid "TBD"
-msgstr ""
+msgstr "TBD"
 
 #: utilities.php:2351
 #, fuzzy
@@ -20587,8 +20621,9 @@ msgid "Queued Boost Records:"
 msgstr "Ausstehende Boost Datensätze:"
 
 #: utilities.php:2355
+#, fuzzy
 msgid "Approximate in Process:"
-msgstr ""
+msgstr "Ungefähr in Bearbeitung:"
 
 #: utilities.php:2358
 msgid "Total Boost Records:"
@@ -20684,9 +20719,9 @@ msgid "Detailed Runtime Timers:"
 msgstr "Detaillierte Laufzeitwerte:"
 
 #: utilities.php:2466
-#, php-format
+#, fuzzy, php-format
 msgid "Process %d Runtime:"
-msgstr ""
+msgstr "Laufzeit %d verarbeiten:"
 
 #: utilities.php:2471
 msgid "Run Time Configuration"
