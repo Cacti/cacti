@@ -482,12 +482,20 @@ class Ldap {
 			ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, $cert);
 		}
 
-		if ($this->encryption == '1') {
-			cacti_log('LDAP: Connect using ldaps://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
-			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
-		} else {
-			cacti_log('LDAP: Connect using ldap://'. $this->host . ':' . $this->port, false, 'AUTH', POLLER_VERBOSITY_HIGH);
-			$ldap_conn = ldap_connect($this->host, $this->port);
+		// Walk through ldap servers for a valid connections
+		$ldap_servers = explode(' ', $this->host);
+		foreach($ldap_servers as $host) {
+			if ($this->encryption == '1') {
+				cacti_log('LDAP: Connect using ldaps://' . $host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
+				$ldap_conn = ldap_connect('ldaps://' . $host . ':' . $this->port_ssl);
+			} else {
+				cacti_log('LDAP: Connect using ldap://'. $host . ':' . $this->port, false, 'AUTH', POLLER_VERBOSITY_HIGH);
+				$ldap_conn = ldap_connect($host, $this->port);
+			}
+
+			if ($ldap_conn) {
+				break;
+			}
 		}
 
 		if ($ldap_conn) {

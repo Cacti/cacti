@@ -33,6 +33,7 @@ Cacti CHANGELOG
 -issue#4428: Error on interpretation of snmpUtime, when to big
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
+-feature#4299: Allow Cacti to use multiple possible LDAP servers
 -feature#4344: Add a 15 minute polling/sampling interval
 -feature#4385: Provide additional admin email notifications
 -feature#4390: Add warnings for undesired changes to plugin hook return values

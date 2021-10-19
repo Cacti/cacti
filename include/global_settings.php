@@ -1506,9 +1506,10 @@ $settings = array(
 			'method' => 'spacer'
 		),
 		'ldap_server' => array(
-			'friendly_name' => __('Server'),
-			'description' => __('The DNS hostname or IP address of the server.'),
+			'friendly_name' => __('Server(s)'),
+			'description' => __('A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.'),
 			'method' => 'textbox',
+			'size' => '80',
 			'max_length' => '255'
 		),
 		'ldap_port' => array(
