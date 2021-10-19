@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-10-18 21:01-0400\n"
+"POT-Creation-Date: 2021-10-19 19:05-0400\n"
 "PO-Revision-Date: 2021-10-18 21:51-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -8739,7 +8739,7 @@ msgid "Tree Rule Items"
 msgstr "Елементи от дърво правило"
 
 #: include/global_arrays.php:2716 include/global_arrays.php:2732
-#: lib/api_device.php:1155
+#: lib/api_device.php:1162
 msgid "days"
 msgstr "дни"
 
@@ -8755,11 +8755,11 @@ msgstr "мин"
 msgid "secs"
 msgstr "сек"
 
-#: include/global_arrays.php:2733 lib/api_device.php:1155
+#: include/global_arrays.php:2733 lib/api_device.php:1162
 msgid "hours"
 msgstr "часове"
 
-#: include/global_arrays.php:2734 lib/api_device.php:1155
+#: include/global_arrays.php:2734 lib/api_device.php:1162
 msgid "minutes"
 msgstr "минути"
 
@@ -13867,33 +13867,33 @@ msgstr "Сесия"
 msgid "Host"
 msgstr "Хост"
 
-#: lib/api_device.php:1147
+#: lib/api_device.php:1154
 msgid "System:"
 msgstr "Система:"
 
-#: lib/api_device.php:1154
+#: lib/api_device.php:1161
 msgid "Uptime:"
 msgstr "Продължителност:"
 
-#: lib/api_device.php:1156
+#: lib/api_device.php:1163
 msgid "Hostname:"
 msgstr "Име на хост:"
 
-#: lib/api_device.php:1157
+#: lib/api_device.php:1164
 msgid "Location:"
 msgstr "Място:"
 
-#: lib/api_device.php:1158
+#: lib/api_device.php:1165
 msgid "Contact:"
 msgstr "Контакт:"
 
-#: lib/api_device.php:1189 lib/functions.php:4828 lib/functions.php:4830
+#: lib/api_device.php:1196 lib/functions.php:4828 lib/functions.php:4830
 #: lib/functions.php:4834
 #, fuzzy
 msgid "Ping Results"
 msgstr "Резултати от Ping"
 
-#: lib/api_device.php:1194
+#: lib/api_device.php:1201
 #, fuzzy
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "Не се използва Ping или SNMP"
@@ -17703,12 +17703,12 @@ msgstr "Грешка при анализиране на XML на RRDtool"
 
 #: lib/rrd.php:3468
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) са премахнати от RRD файла"
 
 #: lib/rrd.php:3502
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) добавяне към RRD файла"
 
 #: lib/rrd.php:3532 lib/rrd.php:3546
@@ -19422,12 +19422,12 @@ msgstr "Няма намерени сайтове"
 
 #: spikekill.php:38
 #, fuzzy, php-format
-msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+msgid "FATAL: Spike Kill method '%s' is Invalid"
 msgstr "FATAL: Методът &#39; %s&#39; е невалиден"
 
 #: spikekill.php:112
 #, fuzzy
-msgid "FATAL: Spike Kill Not Allowed\n"
+msgid "FATAL: Spike Kill Not Allowed"
 msgstr "ФАТАЛНО: Спайк Убие Не е позволено"
 
 #: templates_export.php:68
