@@ -1112,7 +1112,7 @@ function utilities_get_mysql_recommendations() {
 			'value'   => 'OFF',
 			'measure' => 'equalint',
 			'class' => 'error',
-			'comment' => __('When using MariaDB 10.2.4 and above, use atomic writes instead of the double write buffer as it will increase performance.')
+			'comment' => __('When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance.')
 		);
 
 		$recommendations['innodb_use_atomic_writes'] = array(

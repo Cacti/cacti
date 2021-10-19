@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.19\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-10-18 20:42-0400\n"
+"POT-Creation-Date: 2021-10-18 21:01-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,7 +76,7 @@ msgstr ""
 #: data_input.php:685 data_input.php:727 data_queries.php:31
 #: data_queries.php:804 data_queries.php:911 data_queries.php:1161
 #: data_source_profiles.php:30 data_source_profiles.php:644 data_sources.php:37
-#: data_sources.php:1070 data_templates.php:34 data_templates.php:664
+#: data_sources.php:1070 data_templates.php:34 data_templates.php:688
 #: gprint_presets.php:28 graph_templates.php:35 graph_templates.php:475
 #: graphs.php:46 host.php:40 host_templates.php:35 host_templates.php:505
 #: host_templates.php:562 include/global_arrays.php:1536
@@ -136,7 +136,7 @@ msgstr ""
 #: data_source_profiles.php:294 data_source_profiles.php:402
 #: data_sources.php:519 data_sources.php:529 data_sources.php:538
 #: data_sources.php:547 data_sources.php:556 data_sources.php:562
-#: data_templates.php:383 data_templates.php:393 data_templates.php:409
+#: data_templates.php:407 data_templates.php:417 data_templates.php:433
 #: gprint_presets.php:153 graph_templates.php:345 graph_templates.php:355
 #: graph_templates.php:377 graph_templates.php:386 graph_view.php:949
 #: graphs.php:910 graphs.php:926 graphs.php:937 graphs.php:948 graphs.php:963
@@ -173,7 +173,7 @@ msgstr ""
 #: data_source_profiles.php:294 data_source_profiles.php:403
 #: data_sources.php:519 data_sources.php:529 data_sources.php:538
 #: data_sources.php:547 data_sources.php:556 data_sources.php:562
-#: data_templates.php:383 data_templates.php:393 data_templates.php:409
+#: data_templates.php:407 data_templates.php:417 data_templates.php:433
 #: gprint_presets.php:153 graph_templates.php:345 graph_templates.php:355
 #: graph_templates.php:377 graph_templates.php:386 graphs.php:910
 #: graphs.php:926 graphs.php:937 graphs.php:948 graphs.php:963 graphs.php:977
@@ -442,7 +442,7 @@ msgstr ""
 #: automation_templates.php:393 automation_tree_rules.php:810 cdef.php:756
 #: color.php:529 color_templates.php:530 data_debug.php:1052 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:891 data_sources.php:1437
-#: data_templates.php:914 gprint_presets.php:262 graph_templates.php:663
+#: data_templates.php:938 gprint_presets.php:262 graph_templates.php:663
 #: graph_view.php:604 graphs.php:2031 graphs_new.php:411 host.php:1566
 #: host_templates.php:719 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
@@ -454,7 +454,7 @@ msgstr ""
 #: tree.php:818 tree.php:853 tree.php:888 tree.php:1925 user_admin.php:2261
 #: user_admin.php:2596 user_admin.php:2703 user_admin.php:2789
 #: user_admin.php:2892 user_admin.php:2977 user_admin.php:3062
-#: user_domains.php:653 user_group_admin.php:1847 user_group_admin.php:2169
+#: user_domains.php:654 user_group_admin.php:1847 user_group_admin.php:2169
 #: user_group_admin.php:2277 user_group_admin.php:2380
 #: user_group_admin.php:2465 user_group_admin.php:2550 utilities.php:855
 #: utilities.php:1248 utilities.php:1541 utilities.php:1822 utilities.php:2606
@@ -483,7 +483,7 @@ msgstr ""
 #: automation_tree_rules.php:830 cdef.php:766 color.php:539
 #: color_templates.php:545 data_debug.php:1062 data_input.php:836
 #: data_queries.php:1289 data_source_profiles.php:901
-#: data_source_profiles.php:1020 data_sources.php:1447 data_templates.php:940
+#: data_source_profiles.php:1020 data_sources.php:1447 data_templates.php:964
 #: gprint_presets.php:272 graph_templates.php:673 graph_view.php:667
 #: graphs.php:2041 graphs_new.php:421 host.php:1591 host_templates.php:729
 #: include/global_form.php:256 lib/api_automation.php:183
@@ -493,7 +493,7 @@ msgstr ""
 #: rrdcleaner.php:533 sites.php:486 tree.php:1935 user_admin.php:2271
 #: user_admin.php:2628 user_admin.php:2713 user_admin.php:2817
 #: user_admin.php:2902 user_admin.php:2987 user_admin.php:3072
-#: user_domains.php:33 user_domains.php:663 user_domains.php:747
+#: user_domains.php:33 user_domains.php:664 user_domains.php:748
 #: user_group_admin.php:1857 user_group_admin.php:2201
 #: user_group_admin.php:2305 user_group_admin.php:2390
 #: user_group_admin.php:2475 user_group_admin.php:2560 utilities.php:833
@@ -513,7 +513,7 @@ msgstr ""
 #: automation_tree_rules.php:842 cdef.php:784 color.php:563
 #: color_templates.php:567 data_debug.php:981 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:919 data_sources.php:1390
-#: data_templates.php:958 gprint_presets.php:290 graph_templates.php:691
+#: data_templates.php:982 gprint_presets.php:290 graph_templates.php:691
 #: graph_view.php:612 graphs.php:2022 graphs_new.php:400 host.php:1556
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
@@ -531,14 +531,14 @@ msgstr ""
 #: automation_devices.php:495 automation_snmp.php:717
 #: automation_templates.php:415 cdef.php:784 color.php:563 data_debug.php:981
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:919
-#: data_sources.php:1390 data_templates.php:958 gprint_presets.php:290
+#: data_sources.php:1390 data_templates.php:982 gprint_presets.php:290
 #: graph_templates.php:691 graph_view.php:612 graphs.php:2022
 #: graphs_new.php:400 host.php:1556 host_templates.php:747
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:903 sites.php:498 tree.php:1947
 #: user_admin.php:2283 user_admin.php:2646 user_admin.php:2731
 #: user_admin.php:2835 user_admin.php:2920 user_admin.php:3005
-#: user_admin.php:3090 user_domains.php:675 user_group_admin.php:1869
+#: user_admin.php:3090 user_domains.php:676 user_group_admin.php:1869
 #: user_group_admin.php:2219 user_group_admin.php:2323
 #: user_group_admin.php:2408 user_group_admin.php:2493
 #: user_group_admin.php:2578 utilities.php:845 utilities.php:1200
@@ -553,7 +553,7 @@ msgstr ""
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
 #: color_templates.php:568 data_debug.php:982 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:920 data_sources.php:1391
-#: data_templates.php:959 gprint_presets.php:291 graph_templates.php:692
+#: data_templates.php:983 gprint_presets.php:291 graph_templates.php:692
 #: graph_view.php:613 graphs.php:2023 graphs_new.php:401 host.php:1557
 #: host_templates.php:748 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
@@ -563,21 +563,21 @@ msgstr ""
 #: managers.php:746 plugins.php:384 pollers.php:904 sites.php:499 tree.php:1948
 #: user_admin.php:2284 user_admin.php:2647 user_admin.php:2732
 #: user_admin.php:2836 user_admin.php:2921 user_admin.php:3006
-#: user_admin.php:3091 user_domains.php:676
+#: user_admin.php:3091 user_domains.php:677
 msgid "Clear"
 msgstr ""
 
 #: aggregate_graphs.php:1335 aggregate_graphs.php:1633 automation_snmp.php:718
 #: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:982
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:920
-#: data_sources.php:1391 data_templates.php:959 gprint_presets.php:291
+#: data_sources.php:1391 data_templates.php:983 gprint_presets.php:291
 #: graph_templates.php:692 graph_view.php:613 graphs.php:2023
 #: graphs_new.php:401 host.php:1557 host_templates.php:748
 #: lib/html_graph.php:191 lib/html_tree.php:1075 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:384 pollers.php:904
 #: sites.php:499 tree.php:1948 user_admin.php:2284 user_admin.php:2647
 #: user_admin.php:2732 user_admin.php:2836 user_admin.php:2921
-#: user_admin.php:3006 user_admin.php:3091 user_domains.php:676
+#: user_admin.php:3006 user_admin.php:3091 user_domains.php:677
 #: user_group_admin.php:1870 user_group_admin.php:2220
 #: user_group_admin.php:2324 user_group_admin.php:2409
 #: user_group_admin.php:2494 user_group_admin.php:2579 utilities.php:846
@@ -594,7 +594,7 @@ msgstr ""
 #: aggregate_graphs.php:1361 aggregate_graphs.php:1697
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
 #: data_debug.php:345 data_input.php:931 data_queries.php:1383
-#: data_sources.php:1615 data_templates.php:1067 graph_templates.php:797
+#: data_sources.php:1615 data_templates.php:1091 graph_templates.php:797
 #: graphs.php:2200 host.php:1671 host_templates.php:834
 #: lib/api_automation.php:282 pollers.php:974 sites.php:572 tree.php:2009
 #: user_admin.php:1038 user_admin.php:1152 user_admin.php:1299
@@ -617,11 +617,11 @@ msgstr ""
 #: automation_tree_rules.php:689 cdef.php:911 color.php:726 color.php:728
 #: color_templates.php:659 data_input.php:975 data_queries.php:1435
 #: data_source_profiles.php:1100 data_source_profiles.php:1101
-#: data_sources.php:1702 data_sources.php:1703 data_templates.php:1128
+#: data_sources.php:1702 data_sources.php:1703 data_templates.php:1152
 #: gprint_presets.php:437 graph_templates.php:854 host_templates.php:875
 #: include/global_settings.php:468 include/global_settings.php:827
 #: include/global_settings.php:1696 lib/api_automation.php:1438 links.php:404
-#: tree.php:2102 tree.php:2103 user_admin.php:2354 user_domains.php:766
+#: tree.php:2102 tree.php:2103 user_admin.php:2354 user_domains.php:767
 #: user_group_admin.php:1939 vdef.php:905
 msgid "No"
 msgstr ""
@@ -632,12 +632,12 @@ msgstr ""
 #: data_debug.php:639 data_input.php:975 data_queries.php:1435
 #: data_source_profiles.php:1099 data_source_profiles.php:1100
 #: data_source_profiles.php:1101 data_sources.php:1702 data_sources.php:1703
-#: data_templates.php:1128 gprint_presets.php:437 graph_templates.php:854
+#: data_templates.php:1152 gprint_presets.php:437 graph_templates.php:854
 #: host_templates.php:875 include/global_settings.php:469
 #: include/global_settings.php:826 include/global_settings.php:1695
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
 #: lib/installer.php:3424 links.php:404 tree.php:2102 tree.php:2103
-#: user_admin.php:2352 user_domains.php:762 user_domains.php:766
+#: user_admin.php:2352 user_domains.php:763 user_domains.php:767
 #: user_group_admin.php:1937 vdef.php:905
 msgid "Yes"
 msgstr ""
@@ -686,7 +686,7 @@ msgstr ""
 #: automation_graph_rules.php:906 automation_graph_rules.php:907
 #: automation_networks.php:462 automation_tree_rules.php:948 data_debug.php:960
 #: data_sources.php:934 data_sources.php:1369 data_sources.php:1676
-#: data_templates.php:1130 graphs.php:1578 graphs.php:1587 graphs.php:1992
+#: data_templates.php:1154 graphs.php:1578 graphs.php:1587 graphs.php:1992
 #: graphs_items.php:355 graphs_items.php:467 host.php:1103 host.php:1114
 #: host.php:1481 host.php:1516 include/global_arrays.php:470
 #: include/global_arrays.php:528 include/global_arrays.php:617
@@ -785,7 +785,7 @@ msgstr ""
 
 #: aggregate_templates.php:694 cdef.php:894 color.php:703
 #: color_templates.php:641 data_input.php:937 data_queries.php:1389
-#: data_source_profiles.php:1025 data_sources.php:1633 data_templates.php:1073
+#: data_source_profiles.php:1025 data_sources.php:1633 data_templates.php:1097
 #: gprint_presets.php:397 graph_templates.php:803 host_templates.php:840
 #: vdef.php:887
 msgid "Deletable"
@@ -1035,7 +1035,7 @@ msgid "The login name for this user."
 msgstr ""
 
 #: auth_profile.php:325 include/global_form.php:1510
-#: include/global_settings.php:1640 user_admin.php:2333 user_domains.php:495
+#: include/global_settings.php:1640 user_admin.php:2333 user_domains.php:496
 #: user_group_admin.php:685 utilities.php:919
 msgid "Full Name"
 msgstr ""
@@ -1227,7 +1227,7 @@ msgstr ""
 #: automation_devices.php:286 automation_devices.php:510
 #: automation_graph_rules.php:771 automation_networks.php:1077
 #: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1007
-#: data_sources.php:1416 data_templates.php:1096 host.php:712 host.php:837
+#: data_sources.php:1416 data_templates.php:1120 host.php:712 host.php:837
 #: host.php:1572 host.php:1689 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
@@ -1302,7 +1302,7 @@ msgstr ""
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:41
 #: include/global_arrays.php:1534 include/global_settings.php:1559 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
-#: user_admin.php:30 user_domains.php:32 user_domains.php:411
+#: user_admin.php:30 user_domains.php:32 user_domains.php:412
 #: user_group_admin.php:32
 msgid "Enable"
 msgstr ""
@@ -1414,7 +1414,7 @@ msgstr ""
 #: lib/html_reports.php:1604 lib/html_reports.php:1615
 #: lib/html_reports.php:1651 links.php:383 links.php:561 managers.php:243
 #: managers.php:598 user_admin.php:1152 user_admin.php:1164 user_admin.php:2334
-#: user_domains.php:350 user_domains.php:751 user_group_admin.php:87
+#: user_domains.php:350 user_domains.php:752 user_group_admin.php:87
 #: user_group_admin.php:685 user_group_admin.php:700 user_group_admin.php:1929
 #: utilities.php:2492
 msgid "Enabled"
@@ -1423,7 +1423,7 @@ msgstr ""
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1014 data_sources.php:1422
-#: data_templates.php:1132 host.php:1578 include/global_arrays.php:838
+#: data_templates.php:1156 host.php:1578 include/global_arrays.php:838
 #: include/global_arrays.php:1457 include/global_arrays.php:1748
 #: include/global_settings.php:359 include/global_settings.php:1424
 #: include/global_settings.php:1438 include/global_settings.php:1451
@@ -1432,7 +1432,7 @@ msgstr ""
 #: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2527
 #: lib/html_reports.php:1513 lib/html_reports.php:1651 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
-#: user_admin.php:1164 user_domains.php:411 user_group_admin.php:700
+#: user_admin.php:1164 user_domains.php:412 user_group_admin.php:700
 #: utilities.php:2492
 msgid "Disabled"
 msgstr ""
@@ -2579,7 +2579,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: cdef.php:288 color_templates.php:249 data_source_profiles.php:290
-#: data_templates.php:389 graph_templates.php:351 host_templates.php:276
+#: data_templates.php:413 graph_templates.php:351 host_templates.php:276
 #: vdef.php:276
 msgid "Title Format:"
 msgstr ""
@@ -2990,7 +2990,7 @@ msgid "Data Source repair received an invalid Data Source ID."
 msgstr ""
 
 #: data_debug.php:329 data_debug.php:807 data_queries.php:713
-#: data_sources.php:995 data_templates.php:596 graphs_items.php:463
+#: data_sources.php:995 data_templates.php:620 graphs_items.php:463
 #: include/global_arrays.php:927 include/global_form.php:970
 #: lib/api_aggregate.php:1709 lib/html.php:1124
 msgid "Data Source"
@@ -3040,7 +3040,7 @@ msgstr ""
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr ""
 
-#: data_debug.php:369 data_sources.php:1639 data_templates.php:1132
+#: data_debug.php:369 data_sources.php:1639 data_templates.php:1156
 #: plugins.php:37 plugins.php:359
 msgid "Active"
 msgstr ""
@@ -3261,12 +3261,12 @@ msgstr ""
 msgid "Delete All Checks"
 msgstr ""
 
-#: data_debug.php:991 data_sources.php:1399 data_templates.php:920
+#: data_debug.php:991 data_sources.php:1399 data_templates.php:944
 msgid "Profile"
 msgstr ""
 
 #: data_debug.php:995 data_debug.php:1011 data_debug.php:1022
-#: data_sources.php:1403 data_sources.php:1420 data_templates.php:924
+#: data_sources.php:1403 data_sources.php:1420 data_templates.php:948
 #: graphs_new.php:378 host.php:1533 lib/clog_webapi.php:536 lib/html.php:203
 #: lib/html_reports.php:799 plugins.php:357 settings.php:509 settings.php:528
 #: settings.php:554 tree.php:794 utilities.php:803 utilities.php:1214
@@ -3439,7 +3439,7 @@ msgstr ""
 msgid "Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template."
 msgstr ""
 
-#: data_input.php:942 data_source_profiles.php:1047 data_templates.php:1078
+#: data_input.php:942 data_source_profiles.php:1047 data_templates.php:1102
 msgid "Data Sources Using"
 msgstr ""
 
@@ -3823,7 +3823,7 @@ msgstr ""
 msgid "Profiles"
 msgstr ""
 
-#: data_source_profiles.php:914 data_templates.php:953
+#: data_source_profiles.php:914 data_templates.php:977
 msgid "Has Data Sources"
 msgstr ""
 
@@ -3967,7 +3967,7 @@ msgid_plural "Reapply Suggested Naming to Data Sources"
 msgstr[0] ""
 msgstr[1] ""
 
-#: data_sources.php:634 data_templates.php:750
+#: data_sources.php:634 data_templates.php:774
 #, php-format
 msgid "Custom Data [data input: %s]"
 msgstr ""
@@ -3985,7 +3985,7 @@ msgstr ""
 msgid "Nothing Entered"
 msgstr ""
 
-#: data_sources.php:686 data_templates.php:807
+#: data_sources.php:686 data_templates.php:831
 msgid "No Input Fields for the Selected Data Input Source"
 msgstr ""
 
@@ -4076,7 +4076,7 @@ msgstr ""
 msgid "Data Source Item %s"
 msgstr ""
 
-#: data_sources.php:1088 data_templates.php:688
+#: data_sources.php:1088 data_templates.php:712
 msgid "New"
 msgstr ""
 
@@ -4088,7 +4088,7 @@ msgstr ""
 msgid "RRDtool Tune Info"
 msgstr ""
 
-#: data_sources.php:1195 data_templates.php:1131 include/global_form.php:596
+#: data_sources.php:1195 data_templates.php:1155 include/global_form.php:596
 msgid "External"
 msgstr ""
 
@@ -4180,122 +4180,127 @@ msgstr ""
 msgid "Change Profile"
 msgstr ""
 
-#: data_templates.php:378
+#: data_templates.php:245
+#, php-format
+msgid "Field \"%s\" is missing an Output Field"
+msgstr ""
+
+#: data_templates.php:402
 msgid "Click 'Continue' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed."
 msgstr ""
 
-#: data_templates.php:383
+#: data_templates.php:407
 msgid "Delete Data Template(s)"
 msgstr ""
 
-#: data_templates.php:387
+#: data_templates.php:411
 msgid "Click 'Continue' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s)."
 msgstr ""
 
-#: data_templates.php:389
+#: data_templates.php:413
 msgid "template_title"
 msgstr ""
 
-#: data_templates.php:393
+#: data_templates.php:417
 msgid "Duplicate Data Template(s)"
 msgstr ""
 
-#: data_templates.php:397
+#: data_templates.php:421
 msgid "Click 'Continue' to change the default Data Source Profile for the following Data Template(s)."
 msgstr ""
 
-#: data_templates.php:399
+#: data_templates.php:423
 msgid "New Data Source Profile"
 msgstr ""
 
-#: data_templates.php:405
+#: data_templates.php:429
 msgid "NOTE: This change only will affect future Data Sources and does not alter existing Data Sources."
 msgstr ""
 
-#: data_templates.php:409
+#: data_templates.php:433
 msgid "Change Data Source Profile"
 msgstr ""
 
-#: data_templates.php:553
+#: data_templates.php:577
 #, php-format
 msgid "Data Templates [edit: %s]"
 msgstr ""
 
-#: data_templates.php:572
+#: data_templates.php:596
 msgid "Edit Data Input Method."
 msgstr ""
 
-#: data_templates.php:581
+#: data_templates.php:605
 msgid "Data Templates [new]"
 msgstr ""
 
-#: data_templates.php:613
+#: data_templates.php:637
 msgid "This field is always templated."
 msgstr ""
 
-#: data_templates.php:617 data_templates.php:717 data_templates.php:795
+#: data_templates.php:641 data_templates.php:741 data_templates.php:819
 msgid "Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation."
 msgstr ""
 
-#: data_templates.php:664
+#: data_templates.php:688
 msgid "Data Templates in use can not be modified"
 msgstr ""
 
-#: data_templates.php:688 data_templates.php:690
+#: data_templates.php:712 data_templates.php:714
 #, php-format
 msgid "Data Source Item [%s]"
 msgstr ""
 
-#: data_templates.php:788
+#: data_templates.php:812
 msgid "Value will be derived from the device if this field is left empty."
 msgstr ""
 
-#: data_templates.php:905 data_templates.php:936 data_templates.php:1103
+#: data_templates.php:929 data_templates.php:960 data_templates.php:1127
 #: include/global_arrays.php:1130 include/global_arrays.php:2151
 msgid "Data Templates"
 msgstr ""
 
-#: data_templates.php:1061
+#: data_templates.php:1085
 msgid "Data Template Name"
 msgstr ""
 
-#: data_templates.php:1064
+#: data_templates.php:1088
 msgid "The name of this Data Template."
 msgstr ""
 
-#: data_templates.php:1070
+#: data_templates.php:1094
 msgid "The internal database ID for this Data Template.  Useful when performing automation or debugging."
 msgstr ""
 
-#: data_templates.php:1075
+#: data_templates.php:1099
 msgid "Data Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Data Source."
 msgstr ""
 
-#: data_templates.php:1081
+#: data_templates.php:1105
 msgid "The number of Data Sources using this Data Template."
 msgstr ""
 
-#: data_templates.php:1084
+#: data_templates.php:1108
 msgid "Input Method"
 msgstr ""
 
-#: data_templates.php:1087
+#: data_templates.php:1111
 msgid "The method that is used to place Data into the Data Source RRDfile."
 msgstr ""
 
-#: data_templates.php:1090
+#: data_templates.php:1114
 msgid "Profile Name"
 msgstr ""
 
-#: data_templates.php:1093
+#: data_templates.php:1117
 msgid "The default Data Source Profile for this Data Template."
 msgstr ""
 
-#: data_templates.php:1099
+#: data_templates.php:1123
 msgid "Data Sources based on Inactive Data Templates will not be updated when the poller runs."
 msgstr ""
 
-#: data_templates.php:1137
+#: data_templates.php:1161
 msgid "No Data Templates Found"
 msgstr ""
 
@@ -6513,7 +6518,7 @@ msgid "User Groups"
 msgstr ""
 
 #: include/global_arrays.php:954 include/global_arrays.php:2451
-#: user_domains.php:644 user_domains.php:736
+#: user_domains.php:645 user_domains.php:737
 msgid "User Domains"
 msgstr ""
 
@@ -10460,7 +10465,7 @@ msgstr ""
 msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 msgstr ""
 
-#: include/global_settings.php:1516 user_domains.php:375
+#: include/global_settings.php:1516 user_domains.php:376
 msgid "Port Standard"
 msgstr ""
 
@@ -10468,7 +10473,7 @@ msgstr ""
 msgid "TCP port for Non-SSL communications including LDAP + TLS.  Default is 389."
 msgstr ""
 
-#: include/global_settings.php:1524 user_domains.php:384
+#: include/global_settings.php:1524 user_domains.php:385
 msgid "Port SSL"
 msgstr ""
 
@@ -10476,7 +10481,7 @@ msgstr ""
 msgid "TCP port for LDAPS for SSL communications.  Default is 636."
 msgstr ""
 
-#: include/global_settings.php:1532 user_domains.php:393
+#: include/global_settings.php:1532 user_domains.php:394
 msgid "Protocol Version"
 msgstr ""
 
@@ -10484,7 +10489,7 @@ msgstr ""
 msgid "Protocol Version to connect to the server with."
 msgstr ""
 
-#: include/global_settings.php:1539 user_domains.php:400
+#: include/global_settings.php:1539 user_domains.php:401
 msgid "Encryption"
 msgstr ""
 
@@ -10500,15 +10505,15 @@ msgstr ""
 msgid "Should LDAP verify TLS Certificates when received by the Client."
 msgstr ""
 
-#: include/global_settings.php:1553 user_domains.php:407
+#: include/global_settings.php:1553 user_domains.php:408
 msgid "Referrals"
 msgstr ""
 
-#: include/global_settings.php:1554 user_domains.php:408
+#: include/global_settings.php:1554 user_domains.php:409
 msgid "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches."
 msgstr ""
 
-#: include/global_settings.php:1563 user_domains.php:414
+#: include/global_settings.php:1563 user_domains.php:415
 msgid "Mode"
 msgstr ""
 
@@ -10516,47 +10521,47 @@ msgstr ""
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgstr ""
 
-#: include/global_settings.php:1570 user_domains.php:421
+#: include/global_settings.php:1570 user_domains.php:422
 msgid "Distinguished Name (DN)"
 msgstr ""
 
-#: include/global_settings.php:1571 user_domains.php:422
+#: include/global_settings.php:1571 user_domains.php:423
 msgid "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt.  This is only used when in \"No Searching\" mode."
 msgstr ""
 
-#: include/global_settings.php:1576 user_domains.php:428
+#: include/global_settings.php:1576 user_domains.php:429
 msgid "Require Group Membership"
 msgstr ""
 
-#: include/global_settings.php:1577 user_domains.php:429
+#: include/global_settings.php:1577 user_domains.php:430
 msgid "Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure."
 msgstr ""
 
-#: include/global_settings.php:1582 user_domains.php:434
+#: include/global_settings.php:1582 user_domains.php:435
 msgid "LDAP Group Settings"
 msgstr ""
 
-#: include/global_settings.php:1586 user_domains.php:438
+#: include/global_settings.php:1586 user_domains.php:439
 msgid "Group Distinguished Name (DN)"
 msgstr ""
 
-#: include/global_settings.php:1587 user_domains.php:439
+#: include/global_settings.php:1587 user_domains.php:440
 msgid "Distinguished Name of the group that user must have membership."
 msgstr ""
 
-#: include/global_settings.php:1592 user_domains.php:445
+#: include/global_settings.php:1592 user_domains.php:446
 msgid "Group Member Attribute"
 msgstr ""
 
-#: include/global_settings.php:1593 user_domains.php:446
+#: include/global_settings.php:1593 user_domains.php:447
 msgid "Name of the attribute that contains the usernames of the members."
 msgstr ""
 
-#: include/global_settings.php:1598 user_domains.php:452
+#: include/global_settings.php:1598 user_domains.php:453
 msgid "Group Member Type"
 msgstr ""
 
-#: include/global_settings.php:1599 user_domains.php:453
+#: include/global_settings.php:1599 user_domains.php:454
 msgid "Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute."
 msgstr ""
 
@@ -10564,11 +10569,11 @@ msgstr ""
 msgid "Distinguished Name"
 msgstr ""
 
-#: include/global_settings.php:1608 user_domains.php:459
+#: include/global_settings.php:1608 user_domains.php:460
 msgid "LDAP Specific Search Settings"
 msgstr ""
 
-#: include/global_settings.php:1612 user_domains.php:463
+#: include/global_settings.php:1612 user_domains.php:464
 msgid "Search Base"
 msgstr ""
 
@@ -10576,7 +10581,7 @@ msgstr ""
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
 msgstr ""
 
-#: include/global_settings.php:1618 user_domains.php:470
+#: include/global_settings.php:1618 user_domains.php:471
 msgid "Search Filter"
 msgstr ""
 
@@ -10584,27 +10589,27 @@ msgstr ""
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
 msgstr ""
 
-#: include/global_settings.php:1624 user_domains.php:477
+#: include/global_settings.php:1624 user_domains.php:478
 msgid "Search Distinguished Name (DN)"
 msgstr ""
 
-#: include/global_settings.php:1625 user_domains.php:478
+#: include/global_settings.php:1625 user_domains.php:479
 msgid "Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr ""
 
-#: include/global_settings.php:1630 user_domains.php:484
+#: include/global_settings.php:1630 user_domains.php:485
 msgid "Search Password"
 msgstr ""
 
-#: include/global_settings.php:1631 user_domains.php:485
+#: include/global_settings.php:1631 user_domains.php:486
 msgid "Password for Specific Searching binding to the LDAP directory."
 msgstr ""
 
-#: include/global_settings.php:1636 user_domains.php:491
+#: include/global_settings.php:1636 user_domains.php:492
 msgid "LDAP CN Settings"
 msgstr ""
 
-#: include/global_settings.php:1641 user_domains.php:496
+#: include/global_settings.php:1641 user_domains.php:497
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr ""
 
@@ -12369,11 +12374,11 @@ msgstr ""
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr ""
 
-#: lib/database.php:1567
+#: lib/database.php:1575
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr ""
 
-#: lib/database.php:1573
+#: lib/database.php:1581
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr ""
 
@@ -13474,7 +13479,7 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
-#: lib/html_reports.php:1158 lib/import.php:2146 user_admin.php:2006
+#: lib/html_reports.php:1158 lib/import.php:2169 user_admin.php:2006
 msgid "[new]"
 msgstr ""
 
@@ -13696,72 +13701,72 @@ msgstr ""
 msgid "writable"
 msgstr ""
 
-#: lib/import.php:984
+#: lib/import.php:988
 #, php-format
 msgid "Resource File: '%s' is missing or not readable.  Make sure you install it before using Data Query: '%s'"
 msgstr ""
 
-#: lib/import.php:1861
+#: lib/import.php:1884
 msgid "Unknown Field"
 msgstr ""
 
-#: lib/import.php:2107
+#: lib/import.php:2130
 msgid "Import Preview Results"
 msgstr ""
 
-#: lib/import.php:2107
+#: lib/import.php:2130
 msgid "Import Results"
 msgstr ""
 
-#: lib/import.php:2111
+#: lib/import.php:2134
 msgid "Cacti would make the following changes if the Package was imported:"
 msgstr ""
 
-#: lib/import.php:2113
+#: lib/import.php:2136
 msgid "Cacti has imported the following items for the Package:"
 msgstr ""
 
-#: lib/import.php:2116
+#: lib/import.php:2139
 msgid "Package Files"
 msgstr ""
 
-#: lib/import.php:2120
+#: lib/import.php:2143
 msgid "[preview] "
 msgstr ""
 
-#: lib/import.php:2125
+#: lib/import.php:2148
 msgid "Cacti would make the following changes if the Template was imported:"
 msgstr ""
 
-#: lib/import.php:2127
+#: lib/import.php:2150
 msgid "Cacti has imported the following items for the Template:"
 msgstr ""
 
-#: lib/import.php:2136
+#: lib/import.php:2159
 msgid "[success]"
 msgstr ""
 
-#: lib/import.php:2138
+#: lib/import.php:2161
 msgid "[fail]"
 msgstr ""
 
-#: lib/import.php:2140
+#: lib/import.php:2163
 msgid "[preview]"
 msgstr ""
 
-#: lib/import.php:2144
+#: lib/import.php:2167
 msgid "[updated]"
 msgstr ""
 
-#: lib/import.php:2148
+#: lib/import.php:2171
 msgid "[unchanged]"
 msgstr ""
 
-#: lib/import.php:2184
+#: lib/import.php:2207
 msgid "Found Dependency:"
 msgstr ""
 
-#: lib/import.php:2186
+#: lib/import.php:2209
 msgid "Unmet Dependency:"
 msgstr ""
 
@@ -15353,7 +15358,7 @@ msgid "With modern SSD type storage, having multiple write io threads is advanta
 msgstr ""
 
 #: lib/utility.php:1115
-msgid "When using MariaDB 10.2.4 and above, use atomic writes instead of the double write buffer as it will increase performance."
+msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
 msgstr ""
 
 #: lib/utility.php:1122
@@ -16316,7 +16321,7 @@ msgstr ""
 msgid "RRDfiles"
 msgstr ""
 
-#: rrdcleaner.php:545 user_domains.php:675 user_group_admin.php:1869
+#: rrdcleaner.php:545 user_domains.php:676 user_group_admin.php:1869
 #: user_group_admin.php:2219 user_group_admin.php:2323
 #: user_group_admin.php:2408 user_group_admin.php:2493
 #: user_group_admin.php:2578
@@ -17408,75 +17413,75 @@ msgstr ""
 msgid "If this checkbox is checked, users will be able to login using this domain."
 msgstr ""
 
-#: user_domains.php:376
+#: user_domains.php:377
 msgid "TCP/UDP port for Non SSL communications."
 msgstr ""
 
-#: user_domains.php:385
+#: user_domains.php:386
 msgid "TCP/UDP port for SSL communications."
 msgstr ""
 
-#: user_domains.php:394
+#: user_domains.php:395
 msgid "Protocol Version that the server supports."
 msgstr ""
 
-#: user_domains.php:401
+#: user_domains.php:402
 msgid "Encryption that the server supports. TLS is only supported by Protocol Version 3."
 msgstr ""
 
-#: user_domains.php:415
+#: user_domains.php:416
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN)."
 msgstr ""
 
-#: user_domains.php:464
+#: user_domains.php:465
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
 msgstr ""
 
-#: user_domains.php:471
+#: user_domains.php:472
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\"</i> or for OpenLDAP: <i>\"(&(objectClass=account)(uid=&lt;username&gt))\"</i>.  \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt."
 msgstr ""
 
-#: user_domains.php:502
+#: user_domains.php:503
 msgid "eMail"
 msgstr ""
 
-#: user_domains.php:503
+#: user_domains.php:504
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
 msgstr ""
 
-#: user_domains.php:528
+#: user_domains.php:529
 msgid "Domain Properties"
 msgstr ""
 
-#: user_domains.php:659
+#: user_domains.php:660
 msgid "Domains"
 msgstr ""
 
-#: user_domains.php:745
+#: user_domains.php:746
 msgid "Domain Name"
 msgstr ""
 
-#: user_domains.php:746
+#: user_domains.php:747
 msgid "Domain Type"
 msgstr ""
 
-#: user_domains.php:748
+#: user_domains.php:749
 msgid "Effective User"
 msgstr ""
 
-#: user_domains.php:749
+#: user_domains.php:750
 msgid "CN FullName"
 msgstr ""
 
-#: user_domains.php:750
+#: user_domains.php:751
 msgid "CN eMail"
 msgstr ""
 
-#: user_domains.php:763
+#: user_domains.php:764
 msgid "None Selected"
 msgstr ""
 
-#: user_domains.php:771
+#: user_domains.php:772
 msgid "No User Domains Found"
 msgstr ""
 
