@@ -56,4 +56,10 @@ function upgrade_to_1_2_19() {
 		db_install_execute('ALTER TABLE poller
 			ADD COLUMN dbretries int unsigned NOT NULL default "2" AFTER dbport');
 	}
+
+	db_install_execute('ALTER TABLE host
+		MODIFY COLUMN snmp_sysUpTimeInstance bigint(20) unsigned not null default "0"');
+
+	db_install_execute('ALTER TABLE automation_devices
+		MODIFY COLUMN sysUpTime bigint(20) unsigned not null default "0"');
 }

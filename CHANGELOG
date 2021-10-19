@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#4423: Parameter list for lib/database.php:db_connect_real() is not correct in 3 places
 -issue#4424: Offset is a reserved word in MariaDB 10.6 affecting Report
 -issue#4425: Rendering large trees slowed due to lack of permission caching
+-issue#4428: Error on interpretation of snmpUtime, when to big
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#4344: Add a 15 minute polling/sampling interval

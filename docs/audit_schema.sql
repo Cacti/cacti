@@ -170,7 +170,7 @@ INSERT INTO `table_columns` VALUES ('automation_devices',15,'sysName','varchar(1
 INSERT INTO `table_columns` VALUES ('automation_devices',16,'sysLocation','varchar(255)','NO','','','');
 INSERT INTO `table_columns` VALUES ('automation_devices',17,'sysContact','varchar(255)','NO','','','');
 INSERT INTO `table_columns` VALUES ('automation_devices',18,'sysDescr','varchar(255)','NO','','','');
-INSERT INTO `table_columns` VALUES ('automation_devices',19,'sysUptime','int(32)','NO','','0','');
+INSERT INTO `table_columns` VALUES ('automation_devices',19,'sysUptime','bigint(20) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('automation_devices',20,'os','varchar(64)','NO','','','');
 INSERT INTO `table_columns` VALUES ('automation_devices',21,'snmp','tinyint(4)','NO','','0','');
 INSERT INTO `table_columns` VALUES ('automation_devices',22,'known','tinyint(4)','NO','','0','');
@@ -596,7 +596,7 @@ INSERT INTO `table_columns` VALUES ('host',19,'snmp_port','mediumint(5) unsigned
 INSERT INTO `table_columns` VALUES ('host',20,'snmp_timeout','mediumint(8) unsigned','NO','','500','');
 INSERT INTO `table_columns` VALUES ('host',21,'snmp_sysDescr','varchar(300)','NO','','','');
 INSERT INTO `table_columns` VALUES ('host',22,'snmp_sysObjectID','varchar(128)','NO','','','');
-INSERT INTO `table_columns` VALUES ('host',23,'snmp_sysUpTimeInstance','int(10) unsigned','NO','','0','');
+INSERT INTO `table_columns` VALUES ('host',23,'snmp_sysUpTimeInstance','bigint(20) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('host',24,'snmp_sysContact','varchar(300)','NO','','','');
 INSERT INTO `table_columns` VALUES ('host',25,'snmp_sysName','varchar(300)','NO','','','');
 INSERT INTO `table_columns` VALUES ('host',26,'snmp_sysLocation','varchar(300)','NO','','','');
