@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-10-18 21:01-0400\n"
+"POT-Creation-Date: 2021-10-19 19:05-0400\n"
 "PO-Revision-Date: 2021-10-18 22:06-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -8708,7 +8708,7 @@ msgid "Tree Rule Items"
 msgstr "Ağaç Kuralı Öğeleri"
 
 #: include/global_arrays.php:2716 include/global_arrays.php:2732
-#: lib/api_device.php:1155
+#: lib/api_device.php:1162
 msgid "days"
 msgstr "gün"
 
@@ -8724,11 +8724,11 @@ msgstr "dk"
 msgid "secs"
 msgstr "sn"
 
-#: include/global_arrays.php:2733 lib/api_device.php:1155
+#: include/global_arrays.php:2733 lib/api_device.php:1162
 msgid "hours"
 msgstr "saat"
 
-#: include/global_arrays.php:2734 lib/api_device.php:1155
+#: include/global_arrays.php:2734 lib/api_device.php:1162
 msgid "minutes"
 msgstr "dakika"
 
@@ -13820,33 +13820,33 @@ msgstr "Oturum"
 msgid "Host"
 msgstr "Host"
 
-#: lib/api_device.php:1147
+#: lib/api_device.php:1154
 msgid "System:"
 msgstr "Sistem:"
 
-#: lib/api_device.php:1154
+#: lib/api_device.php:1161
 msgid "Uptime:"
 msgstr "ÃalÄ±Åma SÃ¼resi:"
 
-#: lib/api_device.php:1156
+#: lib/api_device.php:1163
 msgid "Hostname:"
 msgstr "Makine adı:"
 
-#: lib/api_device.php:1157
+#: lib/api_device.php:1164
 msgid "Location:"
 msgstr "Konum:"
 
-#: lib/api_device.php:1158
+#: lib/api_device.php:1165
 msgid "Contact:"
 msgstr "İletişim:"
 
-#: lib/api_device.php:1189 lib/functions.php:4828 lib/functions.php:4830
+#: lib/api_device.php:1196 lib/functions.php:4828 lib/functions.php:4830
 #: lib/functions.php:4834
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping Sonuçları"
 
-#: lib/api_device.php:1194
+#: lib/api_device.php:1201
 #, fuzzy
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "Ping veya SNMP Kullanılabilirliği Yok Giriş Yapın"
@@ -17628,12 +17628,12 @@ msgstr "RRDtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
 
 #: lib/rrd.php:3468
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD dosyasından kaldırıldı"
 
 #: lib/rrd.php:3502
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD dosyasına eklendi"
 
 #: lib/rrd.php:3532 lib/rrd.php:3546
@@ -19330,12 +19330,12 @@ msgstr "Site Bulunamadı"
 
 #: spikekill.php:38
 #, fuzzy, php-format
-msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+msgid "FATAL: Spike Kill method '%s' is Invalid"
 msgstr "FATAL: Spike Kill yöntemi &#39; %s&#39; geçersiz"
 
 #: spikekill.php:112
 #, fuzzy
-msgid "FATAL: Spike Kill Not Allowed\n"
+msgid "FATAL: Spike Kill Not Allowed"
 msgstr "FATAL: Spike Kill İzin verilmez"
 
 #: templates_export.php:68
