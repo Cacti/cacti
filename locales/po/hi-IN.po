@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-10-18 21:01-0400\n"
+"POT-Creation-Date: 2021-10-19 19:05-0400\n"
 "PO-Revision-Date: 2021-10-18 21:57-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -8799,7 +8799,7 @@ msgid "Tree Rule Items"
 msgstr "ट्री नियम आइटम"
 
 #: include/global_arrays.php:2716 include/global_arrays.php:2732
-#: lib/api_device.php:1155
+#: lib/api_device.php:1162
 msgid "days"
 msgstr "दिन"
 
@@ -8816,11 +8816,11 @@ msgstr "मिंट"
 msgid "secs"
 msgstr "सकिंट"
 
-#: include/global_arrays.php:2733 lib/api_device.php:1155
+#: include/global_arrays.php:2733 lib/api_device.php:1162
 msgid "hours"
 msgstr "घंटे"
 
-#: include/global_arrays.php:2734 lib/api_device.php:1155
+#: include/global_arrays.php:2734 lib/api_device.php:1162
 msgid "minutes"
 msgstr "मिनट"
 
@@ -13953,34 +13953,34 @@ msgstr "सैशन"
 msgid "Host"
 msgstr "होस्ट"
 
-#: lib/api_device.php:1147
+#: lib/api_device.php:1154
 msgid "System:"
 msgstr "तंत्रः"
 
-#: lib/api_device.php:1154
+#: lib/api_device.php:1161
 #, fuzzy
 msgid "Uptime:"
 msgstr "चालू रहने का समय"
 
-#: lib/api_device.php:1156
+#: lib/api_device.php:1163
 msgid "Hostname:"
 msgstr "#-#-#-#-# balsa.HEAD.hi.po (Balsa 2.x) #-#-#-#-# उपयोगकर्ता का नाम #-#-#-#-# eel.HEAD.hi.po (eel VERSION) #-#-#-#-# उपयोगकर्ता का नाम: (_U)"
 
-#: lib/api_device.php:1157
+#: lib/api_device.php:1164
 msgid "Location:"
 msgstr "स्थान:"
 
-#: lib/api_device.php:1158
+#: lib/api_device.php:1165
 msgid "Contact:"
 msgstr "संपर्क:"
 
-#: lib/api_device.php:1189 lib/functions.php:4828 lib/functions.php:4830
+#: lib/api_device.php:1196 lib/functions.php:4828 lib/functions.php:4830
 #: lib/functions.php:4834
 #, fuzzy
 msgid "Ping Results"
 msgstr "पिंग परिणाम"
 
-#: lib/api_device.php:1194
+#: lib/api_device.php:1201
 #, fuzzy
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "कोई पिंग या SNMP उपलब्धता उपयोग में जाँच करें"
@@ -17798,12 +17798,12 @@ msgstr "RRDtool डंप के XML को पार्स करते सम�
 
 #: lib/rrd.php:3468
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "आरआरडी फ़ाइल से हटाए गए RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f)"
 
 #: lib/rrd.php:3502
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD फाइल में जोड़"
 
 #: lib/rrd.php:3532 lib/rrd.php:3546
@@ -19527,12 +19527,12 @@ msgstr "कोई साइट नहीं मिली"
 
 #: spikekill.php:38
 #, fuzzy, php-format
-msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+msgid "FATAL: Spike Kill method '%s' is Invalid"
 msgstr "FATAL: स्पाइक किल विधि &#39; %s&#39; अमान्य है"
 
 #: spikekill.php:112
 #, fuzzy
-msgid "FATAL: Spike Kill Not Allowed\n"
+msgid "FATAL: Spike Kill Not Allowed"
 msgstr "FATAL: स्पाइक किल नॉट अलाइड"
 
 #: templates_export.php:68
