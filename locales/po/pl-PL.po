@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-10-18 21:01-0400\n"
+"POT-Creation-Date: 2021-10-19 19:05-0400\n"
 "PO-Revision-Date: 2021-10-18 22:02-0400\n"
 "Last-Translator: Jaroslaw Kłopotek <jkl@interduo.pl>\n"
 "Language-Team: Polish <http://translate.cacti.net/projects/cacti/core/pl-PL/>\n"
@@ -8661,7 +8661,7 @@ msgid "Tree Rule Items"
 msgstr "Punkty Regulaminu Drzewa"
 
 #: include/global_arrays.php:2716 include/global_arrays.php:2732
-#: lib/api_device.php:1155
+#: lib/api_device.php:1162
 msgid "days"
 msgstr "dni"
 
@@ -8677,11 +8677,11 @@ msgstr "minut"
 msgid "secs"
 msgstr "sek"
 
-#: include/global_arrays.php:2733 lib/api_device.php:1155
+#: include/global_arrays.php:2733 lib/api_device.php:1162
 msgid "hours"
 msgstr "godzin"
 
-#: include/global_arrays.php:2734 lib/api_device.php:1155
+#: include/global_arrays.php:2734 lib/api_device.php:1162
 msgid "minutes"
 msgstr "minut"
 
@@ -13770,33 +13770,33 @@ msgstr "Sesja"
 msgid "Host"
 msgstr "Host"
 
-#: lib/api_device.php:1147
+#: lib/api_device.php:1154
 msgid "System:"
 msgstr "System:"
 
-#: lib/api_device.php:1154
+#: lib/api_device.php:1161
 msgid "Uptime:"
 msgstr "Czas działania:"
 
-#: lib/api_device.php:1156
+#: lib/api_device.php:1163
 msgid "Hostname:"
 msgstr "Nazwa hosta:"
 
-#: lib/api_device.php:1157
+#: lib/api_device.php:1164
 msgid "Location:"
 msgstr "Lokalizacja:"
 
-#: lib/api_device.php:1158
+#: lib/api_device.php:1165
 msgid "Contact:"
 msgstr "Kontakt:"
 
-#: lib/api_device.php:1189 lib/functions.php:4828 lib/functions.php:4830
+#: lib/api_device.php:1196 lib/functions.php:4828 lib/functions.php:4830
 #: lib/functions.php:4834
 #, fuzzy
 msgid "Ping Results"
 msgstr "Wyniki Pingu"
 
-#: lib/api_device.php:1194
+#: lib/api_device.php:1201
 #, fuzzy
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "Brak kontroli dostępności Ping lub SNMP w użytkowaniu"
@@ -17576,12 +17576,12 @@ msgstr "Błąd podczas przetwarzania XML zrzutu RRDtool"
 
 #: lib/rrd.php:3468
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) usunięte z pliku RRD\n"
 
 #: lib/rrd.php:3502
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) dodając do pliku RRD\n"
 
 #: lib/rrd.php:3532 lib/rrd.php:3546
@@ -19294,12 +19294,12 @@ msgstr "Nie znaleziono żadnych miejsc"
 
 #: spikekill.php:38
 #, fuzzy, php-format
-msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+msgid "FATAL: Spike Kill method '%s' is Invalid"
 msgstr "FATAL: Metoda usuwania kolców \"%s\" jest nieważna\n"
 
 #: spikekill.php:112
 #, fuzzy
-msgid "FATAL: Spike Kill Not Allowed\n"
+msgid "FATAL: Spike Kill Not Allowed"
 msgstr "FATAL: Nie wolno zabijać szpiku\n"
 
 #: templates_export.php:68
