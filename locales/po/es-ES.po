@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-10-18 21:01-0400\n"
+"POT-Creation-Date: 2021-10-19 19:05-0400\n"
 "PO-Revision-Date: 2021-10-18 21:53-0400\n"
 "Last-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\n"
 "Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\n"
@@ -7679,7 +7679,7 @@ msgid "Tree Rule Items"
 msgstr "Items de regla de árbol"
 
 #: include/global_arrays.php:2716 include/global_arrays.php:2732
-#: lib/api_device.php:1155
+#: lib/api_device.php:1162
 msgid "days"
 msgstr "días"
 
@@ -7695,11 +7695,11 @@ msgstr "minutos"
 msgid "secs"
 msgstr "segundos"
 
-#: include/global_arrays.php:2733 lib/api_device.php:1155
+#: include/global_arrays.php:2733 lib/api_device.php:1162
 msgid "hours"
 msgstr "horas"
 
-#: include/global_arrays.php:2734 lib/api_device.php:1155
+#: include/global_arrays.php:2734 lib/api_device.php:1162
 msgid "minutes"
 msgstr "minutos"
 
@@ -12026,32 +12026,32 @@ msgstr "Sesión"
 msgid "Host"
 msgstr "Equipo"
 
-#: lib/api_device.php:1147
+#: lib/api_device.php:1154
 msgid "System:"
 msgstr "Sistema:"
 
-#: lib/api_device.php:1154
+#: lib/api_device.php:1161
 msgid "Uptime:"
 msgstr "Tiempo de Funcionamiento:"
 
-#: lib/api_device.php:1156
+#: lib/api_device.php:1163
 msgid "Hostname:"
 msgstr "Nombre de equipo:"
 
-#: lib/api_device.php:1157
+#: lib/api_device.php:1164
 msgid "Location:"
 msgstr "Ubicación:"
 
-#: lib/api_device.php:1158
+#: lib/api_device.php:1165
 msgid "Contact:"
 msgstr "Contacto:"
 
-#: lib/api_device.php:1189 lib/functions.php:4828 lib/functions.php:4830
+#: lib/api_device.php:1196 lib/functions.php:4828 lib/functions.php:4830
 #: lib/functions.php:4834
 msgid "Ping Results"
 msgstr "Resultados de ping"
 
-#: lib/api_device.php:1194
+#: lib/api_device.php:1201
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "Ningún método de comprobación disponibilidad seleccionado"
 
@@ -15442,13 +15442,15 @@ msgid "Error while parsing the XML of RRDtool dump"
 msgstr "Error mientras se analizaba el XML volcado de rrdtool"
 
 #: lib/rrd.php:3468
-#, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+#, fuzzy, php-format
+#| msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) eliminados de archivo RRD\n"
 
 #: lib/rrd.php:3502
-#, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+#, fuzzy, php-format
+#| msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) agregando a archivo RRD\n"
 
 #: lib/rrd.php:3532 lib/rrd.php:3546
@@ -16934,12 +16936,15 @@ msgid "No Sites Found"
 msgstr "Ningún sitio encontrado"
 
 #: spikekill.php:38
-#, php-format
-msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+#, fuzzy, php-format
+#| msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+msgid "FATAL: Spike Kill method '%s' is Invalid"
 msgstr "FATAL: método de eliminación de picos '%s' es inválido\n"
 
 #: spikekill.php:112
-msgid "FATAL: Spike Kill Not Allowed\n"
+#, fuzzy
+#| msgid "FATAL: Spike Kill Not Allowed\n"
+msgid "FATAL: Spike Kill Not Allowed"
 msgstr "FATAL: eliminación de pico no permitida\n"
 
 #: templates_export.php:68
