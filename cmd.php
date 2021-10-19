@@ -544,27 +544,44 @@ function snmp_mark_host_down($host_id, &$item) {
 
 function update_system_mibs($host_id) {
 	$system_mibs = array(
-		'snmp_sysDescr'          => '.1.3.6.1.2.1.1.1.0',
-		'snmp_sysObjectID'       => '.1.3.6.1.2.1.1.2.0',
-		'snmp_sysUpTimeInstance' => '.1.3.6.1.2.1.1.3.0',
-		'snmp_sysContact'        => '.1.3.6.1.2.1.1.4.0',
-		'snmp_sysName'           => '.1.3.6.1.2.1.1.5.0',
-		'snmp_sysLocation'       => '.1.3.6.1.2.1.1.6.0'
+		'snmp_sysDescr'             => '.1.3.6.1.2.1.1.1.0',
+		'snmp_sysObjectID'          => '.1.3.6.1.2.1.1.2.0',
+		'snmp_sysUpTimeInstanceAlt' => '.1.3.6.1.6.3.10.2.1.3.0',
+		'snmp_sysUpTimeInstance'    => '.1.3.6.1.2.1.1.3.0',
+		'snmp_sysContact'           => '.1.3.6.1.2.1.1.4.0',
+		'snmp_sysName'              => '.1.3.6.1.2.1.1.5.0',
+		'snmp_sysLocation'          => '.1.3.6.1.2.1.1.6.0'
 	);
 
 	$h = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 
 	if (cacti_sizeof($h)) {
 		$session = open_snmp_session($host_id, $h);
+		$uptimeAltFound = false;
+		$uptime = false;
 
 		if ($session !== false) {
 			foreach($system_mibs as $name => $oid) {
 				$value = cacti_snmp_session_get($session, $oid);
 
-				if (!empty($value)) {
-					db_execute_prepared("UPDATE host SET $name = ? WHERE deleted = '' AND id = ?",
+				if ($name == 'snmp_sysUpTimeInstanceAlt' && $value > 0) {
+					$uptime = $value * 100;
+					$uptimeAltFound = true;
+				} elseif ($name == 'snmp_sysUpTimeInstance' && !$uptimeAltFound) {
+					$uptime = $value;
+				} elseif (!empty($value)) {
+					db_execute_prepared("UPDATE host SET $name = ?
+						WHERE deleted = ''
+						AND id = ?",
 						array($value, $host_id));
 				}
+			}
+
+			if ($uptime !== false) {
+				db_execute_prepared("UPDATE host SET snmp_sysUpTimeInstance = ?
+					WHERE deleted = ''
+					AND id = ?",
+					array($uptime, $host_id));
 			}
 		} else {
 			cacti_log("WARNING: Unable to open session for System Mib collection for Device[$host_id]", false, 'POLLER');
@@ -729,7 +746,17 @@ function ping_and_reindex_check(&$item, $mibs) {
 						$session = open_snmp_session($host_id, $item);
 
 						if ($session !== false) {
-							$output = cacti_snmp_session_get($session, $index_item['arg1']);
+							if (trim($index_item['arg1']) == '.1.3.6.1.2.1.1.3.0') {
+								$output = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+
+								if ($output > 0) {
+									$output *= 100;
+								} else {
+									$output = cacti_snmp_session_get($session, $index_item['arg1']);
+								}
+							} else {
+								$output = cacti_snmp_session_get($session, $index_item['arg1']);
+							}
 						} else {
 							$output = 'U';
 						}
