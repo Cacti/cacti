@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-10-18 21:01-0400\n"
+"POT-Creation-Date: 2021-10-19 19:05-0400\n"
 "PO-Revision-Date: 2021-10-18 22:00-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -8707,7 +8707,7 @@ msgid "Tree Rule Items"
 msgstr "트리 규칙 항목"
 
 #: include/global_arrays.php:2716 include/global_arrays.php:2732
-#: lib/api_device.php:1155
+#: lib/api_device.php:1162
 msgid "days"
 msgstr "일"
 
@@ -8724,11 +8724,11 @@ msgstr "분"
 msgid "secs"
 msgstr "초second"
 
-#: include/global_arrays.php:2733 lib/api_device.php:1155
+#: include/global_arrays.php:2733 lib/api_device.php:1162
 msgid "hours"
 msgstr "시간"
 
-#: include/global_arrays.php:2734 lib/api_device.php:1155
+#: include/global_arrays.php:2734 lib/api_device.php:1162
 msgid "minutes"
 msgstr "분"
 
@@ -13835,35 +13835,35 @@ msgstr "세션"
 msgid "Host"
 msgstr "호스트"
 
-#: lib/api_device.php:1147
+#: lib/api_device.php:1154
 #, fuzzy
 msgid "System:"
 msgstr "시스템"
 
-#: lib/api_device.php:1154
+#: lib/api_device.php:1161
 #, fuzzy
 msgid "Uptime:"
 msgstr "운영 시간"
 
-#: lib/api_device.php:1156
+#: lib/api_device.php:1163
 msgid "Hostname:"
 msgstr "호스트이름:"
 
-#: lib/api_device.php:1157
+#: lib/api_device.php:1164
 msgid "Location:"
 msgstr "위치:"
 
-#: lib/api_device.php:1158
+#: lib/api_device.php:1165
 msgid "Contact:"
 msgstr "연락처:"
 
-#: lib/api_device.php:1189 lib/functions.php:4828 lib/functions.php:4830
+#: lib/api_device.php:1196 lib/functions.php:4828 lib/functions.php:4830
 #: lib/functions.php:4834
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping 결과"
 
-#: lib/api_device.php:1194
+#: lib/api_device.php:1201
 #, fuzzy
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "사용중인 Ping 또는 SNMP 가용성 검사 없음"
@@ -17655,12 +17655,12 @@ msgstr "RRDtool 덤프의 XML을 구문 분석하는 동안 오류가 발생했�
 
 #: lib/rrd.php:3468
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF =  %s, ROWS = % d, PDP_PER_ROW = % d, XFF = % 1.2f)가 RRD 파일에서 제거되었습니다."
 
 #: lib/rrd.php:3502
 #, fuzzy, php-format
-msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
+msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF =  %s, ROWS = % d, PDP_PER_ROW = % d, XFF = % 1.2f) RRD 파일에 추가"
 
 #: lib/rrd.php:3532 lib/rrd.php:3546
@@ -19350,12 +19350,12 @@ msgstr "찾을 수있는 사이트가 없습니다."
 
 #: spikekill.php:38
 #, fuzzy, php-format
-msgid "FATAL: Spike Kill method '%s' is Invalid\n"
+msgid "FATAL: Spike Kill method '%s' is Invalid"
 msgstr "치명적 : 스파이크 킬 방법 &#39; %s&#39;이 (가) 유효하지 않습니다."
 
 #: spikekill.php:112
 #, fuzzy
-msgid "FATAL: Spike Kill Not Allowed\n"
+msgid "FATAL: Spike Kill Not Allowed"
 msgstr "치명적 : 스파이크 킬 금지"
 
 #: templates_export.php:68
