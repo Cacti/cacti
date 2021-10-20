@@ -3,31 +3,30 @@ msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-12-28 13:54-0500\n"
-"PO-Revision-Date: 2020-09-13 18:45-0400\n"
-"Last-Translator: Patrick Rademaker\n"
-"Language-Team: Japanese <ja@li.org>\n"
-"Language: ja\n"
+"PO-Revision-Date: 2021-10-20 15:01+0000\n"
+"Last-Translator: Seita Kawamot <seita_sk@yahoo.co.jp>\n"
+"Language-Team: Japanese <http://translate.cacti.net/projects/cacti/core/ja/>"
+"\n"
+"Language: ja-JP\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2469 lib/html.php:2462
 msgid "About Cacti"
 msgstr "Cacti について"
 
 #: about.php:42
-#, fuzzy
 msgid ""
 "Cacti is designed to be a complete graphing solution based on the RRDtool's "
 "framework. Its goal is to make a network administrator's job easier by "
 "taking care of all the necessary details necessary to create meaningful "
 "graphs."
 msgstr ""
-"CactiはRRDtoolのフレームワークに基づいた完全なグラフソリューションとして設計"
-"されています。その目的は、意味のあるグラフを作成するために必要なすべての詳細"
-"事項を処理することによって、ネットワーク管理者の仕事を容易にすることです。"
+"CactiはRRDtoolのフレームワークに基づいた完全なグラフソリューションとして設計されています。その目的は、意味のあるグラフを作成するために必要な、"
+"すべての詳細な事項を処理することによって、ネットワーク管理者の仕事を容易にすることです。"
 
 #: about.php:44
 #, fuzzy, php-format
@@ -39,13 +38,12 @@ msgstr ""
 "照してください。"
 
 #: about.php:46
-#, fuzzy
 msgid "Cacti Developers"
-msgstr "サボテン開発者"
+msgstr "Cacti開発者"
 
 #: about.php:59
 msgid "Thanks"
-msgstr "ありがとう"
+msgstr "謝辞"
 
 #: about.php:62
 #, fuzzy, php-format
@@ -57,19 +55,15 @@ msgstr ""
 "おかげです。"
 
 #: about.php:65
-#, fuzzy
 msgid "The users of Cacti"
 msgstr "Cactiのユーザー"
 
 #: about.php:66
-#, fuzzy
 msgid ""
 "Especially anyone who has taken the time to create an issue report, or "
 "otherwise help fix a Cacti related problems. Also to anyone who has "
 "contributed to supporting Cacti."
-msgstr ""
-"特に、問題報告を作成したり、その他の方法でCacti関連の問題を解決するのを手伝っ"
-"てくれる人は誰でもいます。サボテンの支援に貢献した人にも。"
+msgstr "とりわけ、問題報告を作成したり、その他の方法でCacti関連の問題解決を手助けしてくれた方々。またCactiの支援に貢献していただいた方々。"
 
 #: about.php:71
 msgid "License"
