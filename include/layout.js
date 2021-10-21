@@ -3026,18 +3026,17 @@ function closeDateFilters() {
 }
 
 function saveGraphFilter(section) {
-	var href = graphPage+'?action=save'+
-		'&columns='+$('#columns').val()+
-		'&graphs='+$('#graphs').val()+
-		'&graph_template_id='+$('#graph_template_id').val()+
-		'&predefined_timespan='+$('#predefined_timespan').val()+
-		'&predefined_timeshift='+$('#predefined_timeshift').val()+
-		'&thumbnails='+$('#thumbnails').is(':checked');
-
 	closeDateFilters();
 
-	$.get(href+'&header=false&section='+section)
-		.done(function(data) {
+	$.post(graphPage+'?action=save', {
+		columns: $('#columns').val(),
+		graphs: $('#graphs').val(),
+		graph_template_id: $('#graph_template_id').val(),
+		predefined_timespan: $('#predefined_timespan').val(),
+		predefined_timeshift: $('#predefined_timeshift').val(),
+		thumbnails: $('#thumbnails').is(':checked'),
+		__csrf_magic: csrfMagicToken
+		}).done(function(data) {
 			checkForLogout(data);
 
 			$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
