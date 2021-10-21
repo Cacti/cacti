@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-10-19 19:05-0400\n"
-"PO-Revision-Date: 2021-10-18 21:58-0400\n"
+"PO-Revision-Date: 2021-10-21 08:50-0400\n"
 "Last-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\n"
 "Language-Team: Italian <http://translate.cacti.net/projects/cacti/core-v1-2-x/it/>\n"
 "Language: it_IT\n"
@@ -1872,7 +1872,7 @@ msgstr "%d Minuto"
 #: pollers.php:891 pollers.php:892
 #, php-format
 msgid "%d Minutes"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/> minuti"
+msgstr "%d Minuti"
 
 #: automation_networks.php:528 include/global_arrays.php:698
 #: include/global_arrays.php:708 include/global_arrays.php:1345
@@ -2372,7 +2372,7 @@ msgstr "Aggiorna"
 #: pollers.php:889
 #, php-format
 msgid "%d Seconds"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/> secondi"
+msgstr "%d Secondi"
 
 #: automation_networks.php:1227
 #, fuzzy
@@ -6991,7 +6991,7 @@ msgstr "Non in uso"
 #: include/global_arrays.php:803
 #, php-format
 msgid "Version %d"
-msgstr "Versione <ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/>"
+msgstr "Versione %d"
 
 #: include/global_arrays.php:588 include/global_arrays.php:598
 msgid "[None]"
@@ -7683,7 +7683,7 @@ msgstr "Ultimo giorno"
 #: include/global_arrays.php:1321
 #, php-format
 msgid "Last %d Days"
-msgstr "Ultimi <ph id=\"mtc_1\" equiv-text=\"base64:JWQ=\"/> giorni"
+msgstr "Ultimi %d Giorni"
 
 #: include/global_arrays.php:1322
 msgid "Last Week"
@@ -21405,324 +21405,3 @@ msgstr "Il numero di modelli di grafici che utilizzano questo VDEF."
 msgid "No VDEFs"
 msgstr "Nessun VDEF"
 
-#~ msgid "Server"
-#~ msgstr "Server"
-
-#, fuzzy
-#~ msgid "The DNS hostname or IP address of the server."
-#~ msgstr "Il nome host DNS o l'indirizzo IP del server."
-
-#, fuzzy
-#~ msgid "The dns hostname or ip address of the server."
-#~ msgstr "Il nome host dns o l'indirizzo ip del server."
-
-#~ msgid "AES"
-#~ msgstr "AES"
-
-#, fuzzy
-#~ msgid "This is the time between graph updates."
-#~ msgstr "Questo è il tempo che intercorre tra un aggiornamento del grafico."
-
-#, fuzzy
-#~ msgid "Script Query - Script Server"
-#~ msgstr "Interrogazione degli script - Server Script"
-
-#, fuzzy
-#~ msgid "Spike Management"
-#~ msgstr "Gestione dei picchi"
-
-#, fuzzy
-#~ msgid "Reports Management"
-#~ msgstr "Gestione dei rapporti"
-
-#, fuzzy
-#~ msgid "Additional Spine Parameters"
-#~ msgstr "Opzioni Aggiuntive"
-
-#, fuzzy
-#~ msgid "Archived Boost Records:"
-#~ msgstr "Archiviato Boost Records:"
-
-#, fuzzy
-#~ msgid "The Maximum SNMP OIDs Per SNMP Get Request"
-#~ msgstr "Il numero massimo di OID SNMP per richiesta di prelievo SNMP"
-
-#, fuzzy
-#~ msgid "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk"
-#~ msgstr "Il numero massimo di SNMP ottiene OIDs da emettere per ogni richiesta di snmpbulkwalk.  L'aumento di questo valore accelera le prestazioni del poller rispetto ai collegamenti lenti.  Il valore massimo è 100 OID.  Diminuendo questo valore a 0 o 1 si disabilita snmpbulkwalk."
-
-#, fuzzy
-#~ msgid "Other Defaults"
-#~ msgstr "Altre impostazioni predefinite"
-
-#, fuzzy
-#~ msgid "Hide Graph Drilldowns"
-#~ msgstr "Visualizzazione grafica del tempo"
-
-#~ msgid "Watermark Text"
-#~ msgstr "Testo errore termini"
-
-#, fuzzy
-#~ msgid "RRDtool Graph Font Control"
-#~ msgstr "RRDDtool Graph Graph Font Control"
-
-#, fuzzy
-#~ msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-#~ msgstr "Quando si utilizza Cacti con lingue diverse dall'inglese, è importante utilizzare il tipo di ordinamento utf8_general_general_ci, poiché alcuni caratteri richiedono più di un singolo byte.  Se state installando Cacti per la prima volta, fermatevi, apportate le modifiche e ricominciate da capo.  Se il vostro Cacti è stato in esecuzione ed è in produzione, consultate Internet per le istruzioni sulla conversione dei vostri database e tabelle se avete intenzione di supportare altre lingue."
-
-#, fuzzy
-#~ msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-#~ msgstr "Quando si utilizza Cacti con lingue diverse dall'inglese, è importante utilizzare il set di caratteri utf8, poiché alcuni caratteri richiedono più di un singolo byte. Se state installando Cacti per la prima volta, fermatevi, apportate le modifiche e ricominciate da capo. Se il vostro Cacti è stato in esecuzione ed è in produzione, consultate Internet per le istruzioni sulla conversione dei vostri database e tabelle se avete intenzione di supportare altre lingue."
-
-#, fuzzy
-#~ msgid "%d Samples"
-#~ msgstr "%d Campioni"
-
-#~ msgid "No Task"
-#~ msgstr "Nessun compito"
-
-#, fuzzy
-#~ msgid "%s Standard Deviations"
-#~ msgstr "%s Deviazioni standard"
-
-#, fuzzy
-#~ msgid "%d Outliers"
-#~ msgstr "%d Valori anomali"
-
-#, fuzzy
-#~ msgid "The file holding the SSL Certificate Authority to use to connect to the remote database."
-#~ msgstr "Il file contenente l'Autorità di Certificazione SSL da utilizzare per connettersi al database remoto."
-
-#, fuzzy
-#~ msgid "Template Not Found"
-#~ msgstr "Modello non trovato"
-
-#, fuzzy
-#~ msgid "Non Templated"
-#~ msgstr "Non Templated"
-
-#, fuzzy
-#~ msgid "The default timeshift you wish to be displayed when you display graphs"
-#~ msgstr "Il Timeshift predefinito che si desidera visualizzare quando si visualizzano i grafici."
-
-#, fuzzy
-#~ msgid "Default Graph View Timeshift"
-#~ msgstr "Timeshift della visualizzazione grafica predefinita"
-
-#, fuzzy
-#~ msgid "The default timespan you wish to be displayed when you display graphs"
-#~ msgstr "Il pannello dei tempi predefiniti che si desidera visualizzare quando si visualizzano i grafici"
-
-#, fuzzy
-#~ msgid "Default Graph View Timespan"
-#~ msgstr "Grafico predefinito Vista Grafico Durata del tempo"
-
-#, fuzzy
-#~ msgid "Template [new]"
-#~ msgstr "Template [nuovo]"
-
-#, fuzzy
-#~ msgid "Template [edit: %s]"
-#~ msgstr "Modello [modifica: %s]."
-
-#, fuzzy
-#~ msgid "Provide the Maintenance Schedule a meaningful name"
-#~ msgstr "Fornire al programma di manutenzione un nome significativo"
-
-#~ msgid "New Check"
-#~ msgstr "Nuova Verifica"
-
-#, fuzzy
-#~ msgid "Click to show Data Query output for sfield '%s'"
-#~ msgstr "Fare clic per visualizzare l'output di Data Query per il campo '%s'."
-
-#, fuzzy
-#~ msgid "Data Debug"
-#~ msgstr "Debug dei dati"
-
-#, fuzzy
-#~ msgid "Data Source Debugger [%s]"
-#~ msgstr "Debugger della fonte dati"
-
-#, fuzzy
-#~ msgid "Data Source Debugger"
-#~ msgstr "Debugger della fonte dati"
-
-#, fuzzy
-#~ msgid "Your Web Servers PHP is properly setup with a Timezone."
-#~ msgstr "I vostri Web Server PHP è correttamente configurato con un fuso orario."
-
-#, fuzzy
-#~ msgid "Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the 'date.timezone' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti."
-#~ msgstr "Le impostazioni del fuso orario PHP dei server Web non sono state impostate.  Si prega di modificare php.ini e decommentare l'impostazione 'date.timezone' e impostarla sul fuso orario dei server web secondo le istruzioni di installazione di PHP prima di installare Cacti."
-
-#, fuzzy
-#~ msgid "PHP - Timezone Support"
-#~ msgstr "PHP - Supporto fuso orario"
-
-#, fuzzy
-#~ msgid " Poller RunAs: "
-#~ msgstr " Poller RunAs:"
-
-#, fuzzy
-#~ msgid "Data Source Troubleshooter"
-#~ msgstr "Risoluzione dei problemi relativi alla fonte dei dati"
-
-#, fuzzy
-#~ msgid "Does the RRA Profile match the RRDfile structure?"
-#~ msgstr "Il profilo RRA corrisponde alla struttura del file RRD?"
-
-#, fuzzy
-#~ msgid "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert Email</b> setting."
-#~ msgstr "Errore di Mailer: No <b>TO</b>indirizzo impostato! <br>Se si utilizza il link <i>Test Mail</i>, impostare l'impostazione <b>Avviso e-mail</b>."
-
-#, fuzzy
-#~ msgid "Created Threshold: %s<br>"
-#~ msgstr "Grafico creato: %s"
-
-#, fuzzy
-#~ msgid "No Threshold(s) Created.  They either already exist, or there were not matching combinations found."
-#~ msgstr "No Threshold(s) Created.  O esistono già, o non sono state trovate combinazioni corrispondenti."
-
-#, fuzzy
-#~ msgid "No Thresholds Templates associated with the Device's Template."
-#~ msgstr "Lo Stato associato a questo sito."
-
-#, fuzzy
-#~ msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
-#~ msgstr "%s' deve essere impostato su valore intero positivo <br>RECORD NON AGGIORNATO!"
-
-#, fuzzy
-#~ msgid "Created threshold: %s"
-#~ msgstr "Grafico creato: %s"
-
-#, fuzzy
-#~ msgid " What? Permission Denied"
-#~ msgstr "Permesso Negato"
-
-#, fuzzy
-#~ msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
-#~ msgstr "Non è riuscito a trovare la voce collegata del modello di grafico '%d' sulla soglia '%d'."
-
-#, fuzzy
-#~ msgid "You must specify either 'Baseline Deviation UP' or 'Baseline Deviation DOWN' or both!<br>RECORD NOT UPDATED!"
-#~ msgstr "È necessario specificare 'Deviazione linea di base UP' o 'Deviazione linea di base DOWN' o entrambi <br>RECORDO NON AGGIORNATO!"
-
-#, fuzzy
-#~ msgid "With baseline thresholds enabled."
-#~ msgstr "Con le soglie di base abilitate."
-
-#, fuzzy
-#~ msgid "Impossible thresholds: 'High Warning Threshold' smaller than or equal to 'Low Warning Threshold'<br>RECORD NOT UPDATED!"
-#~ msgstr "Soglie impossibili: 'High Warning Threshold' inferiore o uguale a 'Low Warning Threshold'<br>RECORD NOT UPDATED!"
-
-#, fuzzy
-#~ msgid "Impossible thresholds: 'High Threshold' smaller than or equal to 'Low Threshold'<br>RECORD NOT UPDATED!"
-#~ msgstr "Soglie impossibili: 'High Threshold' inferiore o uguale a 'Low Threshold'<br>RECORD NOT UPDATED!"
-
-#, fuzzy
-#~ msgid "You must specify either 'High Alert Threshold' or 'Low Alert Threshold' or both!<br>RECORD NOT UPDATED!"
-#~ msgstr "È necessario specificare 'High Alert Threshold' o 'Low Alert Threshold' o entrambe le opzioni <br>RECORD NOT UPDATED!"
-
-#, fuzzy
-#~ msgid "Record Updated"
-#~ msgstr "RRD aggiornato"
-
-#, fuzzy
-#~ msgid "Threshold was Autocreated due to Device Template mapping"
-#~ msgstr "Aggiunta di query di dati al modello del dispositivo"
-
-#, fuzzy
-#~ msgid "The Graph Creation failed for Threshold Template"
-#~ msgstr "Il grafico da utilizzare per questa voce di report."
-
-#, fuzzy
-#~ msgid "The Threshold Template ID was not set while trying to create Graph and Threshold"
-#~ msgstr "L'ID del modello di soglia non è stato impostato mentre si tentava di creare il grafico e la soglia."
-
-#, fuzzy
-#~ msgid "The Device ID was not set while trying to create Graph and Threshold"
-#~ msgstr "L'ID dispositivo non è stato impostato mentre si tentava di creare il grafico e la soglia."
-
-#, fuzzy
-#~ msgid "<html><body>A warning has been issued that requires your attention.<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: <URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
-#~ msgstr "<html><body>È stato emesso un avviso che richiede la vostra attenzione.<br><br><b><b>Dispositivo</b>: <DESCRIZIONE> (<NAME>)<br><b>URL</b>: <URL><br><b>Messaggio</b>: <Soggetto><br><br><br><GRAPH></body></html>"
-
-#, fuzzy
-#~ msgid "<html><body>An alert has been issued that requires your attention.<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: <URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
-#~ msgstr "<html><body><body>È stato emesso un avviso che richiede la vostra attenzione.<br><br><b>Dispositivo</b>: <DESCRIZIONE> (<NAME>)<br><b>URL</b>: <URL><br><b>Messaggio</b>: <Soggetto><br><br><br><GRAPH></body></html>"
-
-#, fuzzy
-#~ msgid "Link to Graph in Cacti"
-#~ msgstr "Accedi a Cacti"
-
-#, fuzzy
-#~ msgid "Pages:"
-#~ msgstr "Pagine:"
-
-#, fuzzy
-#~ msgid "Swaps:"
-#~ msgstr "Scambi:"
-
-#, fuzzy
-#~ msgid "Time:"
-#~ msgstr "Orario"
-
-#, fuzzy
-#~ msgid "Log"
-#~ msgstr "Registro"
-
-#, fuzzy
-#~ msgid "Thresholds"
-#~ msgstr "Discussioni"
-
-#, fuzzy
-#~ msgid "Non-Device"
-#~ msgstr "Non-Dispositivo"
-
-#, fuzzy
-#~ msgid "Graph Size"
-#~ msgstr "Dimensione del grafico"
-
-#, fuzzy
-#~ msgid "The cron interval in use.  You need to set this setting to the interval that your cron or scheduled task is currently running."
-#~ msgstr "L'intervallo di cron in uso.  È necessario impostare questa impostazione sull'intervallo di tempo in cui il cron o l'attività pianificata è attualmente in esecuzione."
-
-#, fuzzy
-#~ msgid "Spine Specific Execution Parameters"
-#~ msgstr "Parametri di esecuzione specifici della colonna vertebrale"
-
-#, fuzzy
-#~ msgid "Create Aggregate"
-#~ msgstr "Creare Aggregato"
-
-#, fuzzy
-#~ msgid "Resize Selected Graph(s)"
-#~ msgstr "Ridimensionare i grafici selezionati"
-
-#, fuzzy
-#~ msgid "The following data sources are in use by these graphs:"
-#~ msgstr "Le seguenti fonti di dati sono utilizzate da questi grafici:"
-
-#~ msgid "Resize"
-#~ msgstr "Ridimensiona"
-
-#, fuzzy
-#~ msgid "Legacy 1.x Plugins"
-#~ msgstr "Eredità 1.x Plugins"
-
-#, fuzzy
-#~ msgid "View SNMPAgent Notification Log"
-#~ msgstr "Visualizza il registro delle notifiche SNMPAgent"
-
-#, fuzzy
-#~ msgid "View SNMPAgent Cache"
-#~ msgstr "Visualizza la cache di SNMPAgent Cache"
-
-#, fuzzy
-#~ msgid "Sort field returned no data.  Can not continue Re-Index for GET data.."
-#~ msgstr "Ordina campo restituito nessun dato.  Non è possibile continuare Re-Index per i dati GET...."
-
-#, fuzzy
-#~ msgid "With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50%% overhead on all write operations."
-#~ msgstr "Con il moderno storage di tipo SSD, questa operazione degrada il disco più rapidamente e aggiunge il 50% di overhead su tutte le operazioni di scrittura."

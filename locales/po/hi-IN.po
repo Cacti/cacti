@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-10-19 19:05-0400\n"
-"PO-Revision-Date: 2021-10-18 21:57-0400\n"
+"PO-Revision-Date: 2021-10-21 08:55-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi_IN\n"
@@ -14662,7 +14662,7 @@ msgstr "प्रलेखन"
 #: lib/functions.php:3176
 #, php-format
 msgid "Logged in as %s"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> के रूप में दाखिल"
+msgstr "के रूप में दाखिल%s"
 
 #: lib/functions.php:3178 lib/html.php:2454
 msgid "Edit Profile"
@@ -14801,7 +14801,7 @@ msgstr "संस्करण %s %s"
 #: lib/functions.php:5879
 #, php-format
 msgid "%s %s"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> <ph id=\"mtc_2\" equiv-text=\"base64:JXM=\"/>"
+msgstr "%s %s"
 
 #: lib/graphs.php:51
 #, fuzzy
@@ -15276,7 +15276,7 @@ msgstr "से शुरू"
 #: lib/html.php:2526
 #, fuzzy
 msgid "End with"
-msgstr "अंतिम समय"
+msgstr "अंतिम दिनांक"
 
 #: lib/html.php:2528 lib/html_form.php:1307
 msgid "Close"
@@ -17355,12 +17355,12 @@ msgstr "दोनों"
 #: lib/installer.php:3426
 #, fuzzy, php-format
 msgid "No - %s"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> के रूप में दाखिल"
+msgstr "संस्करण %s"
 
 #: lib/installer.php:3428 lib/installer.php:3430
 #, fuzzy, php-format
 msgid "%s - No"
-msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> के रूप में दाखिल"
+msgstr "संस्करण %s"
 
 #: lib/installer.php:3428
 msgid "Web"
@@ -21745,328 +21745,3 @@ msgstr "इस VDEF का उपयोग करके ग्राफ टे�
 msgid "No VDEFs"
 msgstr "कोई VDEFs नहीं"
 
-#~ msgid "Server"
-#~ msgstr "सर्वर"
-
-#, fuzzy
-#~ msgid "The DNS hostname or IP address of the server."
-#~ msgstr "DNS होस्टनाम या सर्वर का IP पता।"
-
-#, fuzzy
-#~ msgid "The dns hostname or ip address of the server."
-#~ msgstr "सर्वर का होस्टनाम या आईपी पता।"
-
-#, fuzzy
-#~ msgid "AES"
-#~ msgstr "एईएस"
-
-#, fuzzy
-#~ msgid "This is the time between graph updates."
-#~ msgstr "यह ग्राफ अपडेट के बीच का समय है।"
-
-#, fuzzy
-#~ msgid "Script Query - Script Server"
-#~ msgstr "स्क्रिप्ट क्वेरी - स्क्रिप्ट सर्वर"
-
-#, fuzzy
-#~ msgid "Spike Management"
-#~ msgstr "स्पाइक प्रबंधन"
-
-#, fuzzy
-#~ msgid "Reports Management"
-#~ msgstr "रिपोर्ट प्रबंधन"
-
-#, fuzzy
-#~ msgid "Additional Spine Parameters"
-#~ msgstr "अतिरिक्त विकल्प"
-
-#, fuzzy
-#~ msgid "Archived Boost Records:"
-#~ msgstr "संग्रहित बूस्ट रिकॉर्ड:"
-
-#, fuzzy
-#~ msgid "The Maximum SNMP OIDs Per SNMP Get Request"
-#~ msgstr "अधिकतम SNMP OIDs प्रति SNMP अनुरोध प्राप्त करें"
-
-#, fuzzy
-#~ msgid "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds poller performance over slow links.  The maximum value is 100 OIDs.  Decreasing this value to 0 or 1 will disable snmpbulkwalk"
-#~ msgstr "एसएनएमपी की अधिकतम संख्या प्रति स्निपबुलवॉक अनुरोध जारी करने के लिए ओआईडी प्राप्त करती है। इस मूल्य में वृद्धि धीमी गति से अधिक पराग प्रदर्शन को गति देती है। अधिकतम मूल्य 100 ओआईडी है। इस मान को 0 या 1 पर कम करने से snmpbulkwalk अक्षम हो जाएगा"
-
-#, fuzzy
-#~ msgid "Other Defaults"
-#~ msgstr "अन्य चूक"
-
-#, fuzzy
-#~ msgid "Hide Graph Drilldowns"
-#~ msgstr "समय ग्राफ़ देखें"
-
-#~ msgid "Watermark Text"
-#~ msgstr "वाटरमार्क पाठ"
-
-#, fuzzy
-#~ msgid "RRDtool Graph Font Control"
-#~ msgstr "RRDtool Graph फ़ॉन्ट नियंत्रण"
-
-#, fuzzy
-#~ msgid "When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-#~ msgstr "अंग्रेजी के अलावा अन्य भाषाओं के साथ Cacti का उपयोग करते समय, utf8_general_ci collation प्रकार का उपयोग करना महत्वपूर्ण है क्योंकि कुछ वर्ण एक से अधिक बाइट लेते हैं। यदि आप पहले सिर्फ कैक्टि स्थापित कर रहे हैं, तो रोकें, बदलाव करें और फिर से शुरू करें। यदि आपकी Cacti चल रही है और उत्पादन में है, तो अपने डेटाबेस और तालिकाओं को परिवर्तित करने के निर्देशों के लिए इंटरनेट देखें यदि आप अन्य भाषाओं का समर्थन करते हैं।"
-
-#, fuzzy
-#~ msgid "When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages."
-#~ msgstr "अंग्रेजी के अलावा अन्य भाषाओं के साथ Cacti का उपयोग करते समय, utf8 वर्ण सेट का उपयोग करना महत्वपूर्ण है क्योंकि कुछ वर्ण एक से अधिक बाइट लेते हैं। यदि आप पहले सिर्फ कैक्टि स्थापित कर रहे हैं, तो रोकें, बदलाव करें और फिर से शुरू करें। यदि आपकी Cacti चल रही है और उत्पादन में है, तो अपने डेटाबेस और तालिकाओं को परिवर्तित करने के निर्देशों के लिए इंटरनेट देखें यदि आप अन्य भाषाओं का समर्थन करते हैं।"
-
-#, fuzzy
-#~ msgid "%d Samples"
-#~ msgstr "% d नमूने"
-
-#, fuzzy
-#~ msgid "No Task"
-#~ msgstr "न पूछें"
-
-#, fuzzy
-#~ msgid "%s Standard Deviations"
-#~ msgstr "%s मानक विचलन"
-
-#, fuzzy
-#~ msgid "%d Outliers"
-#~ msgstr "% d आउटलेर"
-
-#, fuzzy
-#~ msgid "The file holding the SSL Certificate Authority to use to connect to the remote database."
-#~ msgstr "दूरस्थ सर्टिफिकेट से कनेक्ट करने के लिए एसएसएल सर्टिफिकेट अथॉरिटी को रखने वाली फाइल।"
-
-#, fuzzy
-#~ msgid "Template Not Found"
-#~ msgstr "टेम्पलेट नहीं मिला"
-
-#, fuzzy
-#~ msgid "Non Templated"
-#~ msgstr "गैर टेम्पलेटेड"
-
-#, fuzzy
-#~ msgid "The default timeshift you wish to be displayed when you display graphs"
-#~ msgstr "जब आप ग्राफ़ प्रदर्शित करते हैं तो डिफ़ॉल्ट टाइमफिफ़्ट प्रदर्शित करना चाहते हैं"
-
-#, fuzzy
-#~ msgid "Default Graph View Timeshift"
-#~ msgstr "डिफ़ॉल्ट ग्राफ व्यू Timeshift"
-
-#, fuzzy
-#~ msgid "The default timespan you wish to be displayed when you display graphs"
-#~ msgstr "जब आप ग्राफ़ प्रदर्शित करते हैं तो डिफ़ॉल्ट टाइमपैन प्रदर्शित करना चाहते हैं"
-
-#, fuzzy
-#~ msgid "Default Graph View Timespan"
-#~ msgstr "डिफ़ॉल्ट ग्राफ व्यू Timespan"
-
-#, fuzzy
-#~ msgid "Template [new]"
-#~ msgstr "खाका [नया]"
-
-#, fuzzy
-#~ msgid "Template [edit: %s]"
-#~ msgstr "खाका [संपादित करें: %s]"
-
-#, fuzzy
-#~ msgid "Provide the Maintenance Schedule a meaningful name"
-#~ msgstr "रखरखाव अनुसूची को एक सार्थक नाम प्रदान करें"
-
-#, fuzzy
-#~ msgid "New Check"
-#~ msgstr "नई जांच"
-
-#, fuzzy
-#~ msgid "Click to show Data Query output for sfield '%s'"
-#~ msgstr "Sfield &#39; %s&#39; के लिए डेटा क्वेरी आउटपुट दिखाने के लिए क्लिक करें"
-
-#, fuzzy
-#~ msgid "Data Debug"
-#~ msgstr "डेटा डीबग"
-
-#, fuzzy
-#~ msgid "Data Source Debugger [%s]"
-#~ msgstr "डेटा स्रोत डीबगर"
-
-#, fuzzy
-#~ msgid "Data Source Debugger"
-#~ msgstr "डेटा स्रोत डीबगर"
-
-#, fuzzy
-#~ msgid "Your Web Servers PHP is properly setup with a Timezone."
-#~ msgstr "आपका वेब सर्वर PHP ठीक से टाइमज़ोन के साथ सेटअप है।"
-
-#, fuzzy
-#~ msgid "Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the 'date.timezone' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti."
-#~ msgstr "आपकी वेब सर्वर PHP Timezone सेटिंग्स सेट नहीं की गई हैं। कृपया php.ini को संपादित करें और &#39;date.timezone&#39; सेटिंग को अनइंस्टॉल करें और इसे Cacti स्थापित करने से पहले PHP संस्थापन निर्देशों के अनुसार वेब सर्वर टाइमज़ोन पर सेट करें।"
-
-#, fuzzy
-#~ msgid "PHP - Timezone Support"
-#~ msgstr "PHP - टाइमज़ोन समर्थन"
-
-#, fuzzy
-#~ msgid " Poller RunAs: "
-#~ msgstr "पोलर रनर्स:"
-
-#, fuzzy
-#~ msgid "Data Source Troubleshooter"
-#~ msgstr "डेटा स्रोत समस्या निवारक"
-
-#, fuzzy
-#~ msgid "Does the RRA Profile match the RRDfile structure?"
-#~ msgstr "क्या आरआरए प्रोफाइल आरआरडीफाइल संरचना से मेल खाता है?"
-
-#, fuzzy
-#~ msgid "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert Email</b> setting."
-#~ msgstr "मेलर त्रुटि: कोई सेट <b>को</b> संबोधित <b>करने के</b> !! <br> यदि <i>टेस्ट मेल</i> लिंक का उपयोग कर रहे हैं, तो कृपया <b>अलर्ट ई-मेल</b> सेटिंग सेट करें।"
-
-#, fuzzy
-#~ msgid "Created Threshold: %s<br>"
-#~ msgstr "बनाया गया ग्राफ़: %s"
-
-#, fuzzy
-#~ msgid "No Threshold(s) Created.  They either already exist, or there were not matching combinations found."
-#~ msgstr "नो थ्रेशोल्ड (ओं) को बनाया गया। वे या तो पहले से ही मौजूद थे, या वहाँ मेल मिलाप नहीं मिला।"
-
-#, fuzzy
-#~ msgid "No Thresholds Templates associated with the Device's Template."
-#~ msgstr "इस साइट से संबद्ध राज्य।"
-
-#, fuzzy
-#~ msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
-#~ msgstr "' %s' को धनात्मक पूर्णांक मान पर सेट किया जाना चाहिए! <br> अद्यतन नहीं किया गया!"
-
-#, fuzzy
-#~ msgid "Created threshold: %s"
-#~ msgstr "बनाया गया ग्राफ़: %s"
-
-#, fuzzy
-#~ msgid " What? Permission Denied"
-#~ msgstr "अनुमति नहीं मिली"
-
-#, fuzzy
-#~ msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
-#~ msgstr "लिंक किए गए ग्राफ़ टेम्प्लेट आइटम '% d' को थ्रेशोल्ड '% d' पर खोजने में विफल"
-
-#, fuzzy
-#~ msgid "You must specify either 'Baseline Deviation UP' or 'Baseline Deviation DOWN' or both!<br>RECORD NOT UPDATED!"
-#~ msgstr "आपको 'आधारभूत विचलन उत्तर प्रदेश' या 'आधारभूत विचलन डाउनलोड' या दोनों निर्दिष्ट करना होगा! <br> अद्यतन नहीं किया गया!"
-
-#, fuzzy
-#~ msgid "With baseline thresholds enabled."
-#~ msgstr "बेसलाइन थ्रेसहोल्ड सक्षम होने के साथ।"
-
-#, fuzzy
-#~ msgid "Impossible thresholds: 'High Warning Threshold' smaller than or equal to 'Low Warning Threshold'<br>RECORD NOT UPDATED!"
-#~ msgstr "असंभव थ्रेसहोल्ड: 'हाई वार्निंग थ्रेशोल्ड' 'लो वार्निंग थ्रेसहोल्ड' की तुलना में छोटा या बराबर <br> अद्यतन नहीं किया गया!"
-
-#, fuzzy
-#~ msgid "Impossible thresholds: 'High Threshold' smaller than or equal to 'Low Threshold'<br>RECORD NOT UPDATED!"
-#~ msgstr "असंभव थ्रेसहोल्ड: 'हाई थ्रेशोल्ड' 'लो थ्रेशोल्ड' की तुलना में छोटा या बराबर <br> अद्यतन नहीं किया गया!"
-
-#, fuzzy
-#~ msgid "You must specify either 'High Alert Threshold' or 'Low Alert Threshold' or both!<br>RECORD NOT UPDATED!"
-#~ msgstr "आपको या तो 'हाई अलर्ट थ्रेशोल्ड' या 'लो अलर्ट थ्रेशोल्ड' या दोनों को निर्दिष्ट करना होगा! <br> अद्यतन नहीं किया गया!"
-
-#, fuzzy
-#~ msgid "Record Updated"
-#~ msgstr "आरआरडी अपडेट किया गया"
-
-#, fuzzy
-#~ msgid "Threshold was Autocreated due to Device Template mapping"
-#~ msgstr "डिवाइस टेम्पलेट में डेटा क्वेरी जोड़ें"
-
-#, fuzzy
-#~ msgid "The Graph Creation failed for Threshold Template"
-#~ msgstr "इस रिपोर्ट आइटम के लिए उपयोग होने वाला ग्राफ़।"
-
-#, fuzzy
-#~ msgid "The Threshold Template ID was not set while trying to create Graph and Threshold"
-#~ msgstr "ग्राफ़ और थ्रेशोल्ड बनाने के लिए थ्रेशोल्ड टेम्प्लेट आईडी सेट नहीं की गई थी"
-
-#, fuzzy
-#~ msgid "The Device ID was not set while trying to create Graph and Threshold"
-#~ msgstr "ग्राफ़ और थ्रेशोल्ड बनाने का प्रयास करते समय डिवाइस आईडी सेट नहीं की गई थी"
-
-#, fuzzy
-#~ msgid "<html><body>A warning has been issued that requires your attention.<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: <URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
-#~ msgstr "<html><body> एक चेतावनी जारी की गई है जिसे आपके ध्यान की आवश्यकता है। <br><br> <b>डिवाइस</b> : <DESCRIPTION> ( <HOSTNAME> ) <br> <b>URL</b> : <URL><br> <b>संदेश</b> : <SUBJECT><br><br><GRAPH></body></html>"
-
-#, fuzzy
-#~ msgid "<html><body>An alert has been issued that requires your attention.<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: <URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
-#~ msgstr "<html><body> एक चेतावनी जारी की गई है जिसे आपके ध्यान की आवश्यकता है। <br><br> <b>डिवाइस</b> : <DESCRIPTION> ( <HOSTNAME> ) <br> <b>URL</b> : <URL><br> <b>संदेश</b> : <SUBJECT><br><br><GRAPH></body></html>"
-
-#, fuzzy
-#~ msgid "Link to Graph in Cacti"
-#~ msgstr "Cacti में लॉगिन करें"
-
-#, fuzzy
-#~ msgid "Pages:"
-#~ msgstr "页面"
-
-#, fuzzy
-#~ msgid "Swaps:"
-#~ msgstr "स्वैप:"
-
-#, fuzzy
-#~ msgid "Time:"
-#~ msgstr "पहर"
-
-#, fuzzy
-#~ msgid "Log"
-#~ msgstr "लॉग्स"
-
-#, fuzzy
-#~ msgid "Thresholds"
-#~ msgstr "धागे"
-
-#, fuzzy
-#~ msgid "Non-Device"
-#~ msgstr "गैर-डिवाइस"
-
-#, fuzzy
-#~ msgid "Graph Size"
-#~ msgstr "ग्राफ का आकार"
-
-#, fuzzy
-#~ msgid "The cron interval in use.  You need to set this setting to the interval that your cron or scheduled task is currently running."
-#~ msgstr "उपयोग में क्रोन अंतराल। आपको यह सेटिंग उस अंतराल पर सेट करने की आवश्यकता है जो आपका क्रोन या शेड्यूल किया गया कार्य वर्तमान में चल रहा है।"
-
-#, fuzzy
-#~ msgid "Spine Specific Execution Parameters"
-#~ msgstr "स्पाइन स्पेसिफिक एक्ज़ीक्यूशन पैरामीटर"
-
-#, fuzzy
-#~ msgid "Create Aggregate"
-#~ msgstr "एग्रीगेट बनाएं"
-
-#, fuzzy
-#~ msgid "Resize Selected Graph(s)"
-#~ msgstr "चयनित ग्राफ़ का आकार बदलें"
-
-#, fuzzy
-#~ msgid "The following data sources are in use by these graphs:"
-#~ msgstr "निम्नलिखित डेटा स्रोत इन ग्राफों के उपयोग में हैं:"
-
-#, fuzzy
-#~ msgid "Resize"
-#~ msgstr "आकार बदलें"
-
-#, fuzzy
-#~ msgid "Legacy 1.x Plugins"
-#~ msgstr "विरासत 1.x प्लगइन्स"
-
-#, fuzzy
-#~ msgid "View SNMPAgent Notification Log"
-#~ msgstr "SNMPAgent अधिसूचना लॉग देखें"
-
-#, fuzzy
-#~ msgid "View SNMPAgent Cache"
-#~ msgstr "SNMPAgent कैश देखें"
-
-#, fuzzy
-#~ msgid "Sort field returned no data.  Can not continue Re-Index for GET data.."
-#~ msgstr "सॉर्ट फ़ील्ड ने कोई डेटा नहीं दिया। GET डेटा के लिए पुन: अनुक्रमणिका जारी नहीं रख सकता है।"
-
-#, fuzzy
-#~ msgid "With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50%% overhead on all write operations."
-#~ msgstr "आधुनिक एसएसडी प्रकार के भंडारण के साथ, यह ऑपरेशन वास्तव में डिस्क को अधिक तेजी से नीचा दिखाता है और सभी लेखन कार्यों पर 50% प्रति ओवरहेड जोड़ता है।"
