@@ -1378,7 +1378,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs_sql = "SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
+		$graphs_sql = "SELECT gtg.local_graph_id, '' AS description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, '' AS snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg
@@ -1400,6 +1400,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 			ON h.id=gl.host_id
 			$sql_join
 			$sql_where
+			GROUP BY gtg.local_graph_id
 			$sql_having";
 
 		$graphs = db_fetch_assoc("$graphs_sql
@@ -1411,7 +1412,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 				$graphs_sql
 			) AS rower");
 	} else {
-		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
+		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, '' AS description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id
 			FROM graph_templates_graph AS gtg
 			INNER JOIN (
@@ -1429,6 +1430,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 			LEFT JOIN host AS h
 			ON h.id=gl.host_id
 			$sql_where
+			GROUP BY gtg.local_graph_id
 			$order_by
 			$limit");
 
@@ -2050,7 +2052,7 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	$simple_perms = get_simple_device_perms($user);
 
 	if (!$simple_perms) {
-		$hash      = get_allowed_type_hash('devices', '', '', '', 0, $user);
+		$hash = get_allowed_type_hash('devices', '', '', '', 0, $user);
 	}
 
 	$init_rows = $total_rows;
@@ -2179,7 +2181,8 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 			$host_list = db_fetch_assoc("SELECT h1.*
 				FROM host AS h1
 				INNER JOIN (
-					SELECT DISTINCT id FROM (
+					SELECT DISTINCT id
+					FROM (
 						SELECT h.id, $sql_select
 						FROM host AS h
 						LEFT JOIN graph_local AS gl
@@ -2219,7 +2222,8 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 			$host_list = db_fetch_assoc("SELECT h1.*
 				FROM host AS h1
 				INNER JOIN (
-					SELECT DISTINCT id FROM (
+					SELECT DISTINCT id
+					FROM (
 						SELECT h.id
 						FROM host AS h
 						LEFT JOIN graph_local AS gl
@@ -2286,11 +2290,12 @@ function get_allowed_sites($sql_where = '', $order_by = 'name', $limit = '', &$t
 		}
 	}
 
-	$sites = db_fetch_assoc("SELECT DISTINCT s.id, s.name
+	$sites = db_fetch_assoc("SELECT s.id, s.name
 		FROM sites AS s
 		INNER JOIN host AS h
 		ON s.id=h.site_id
 		$sql_where
+		GROUP BY s.id
 		$order_by
 		$limit");
 
@@ -2407,8 +2412,9 @@ function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'descri
 			LEFT JOIN host_template AS ht
 			ON h1.host_template_id=ht.id
 			INNER JOIN (
-				SELECT DISTINCT id FROM (
-					SELECT h.*, $sql_select
+				SELECT DISTINCT id
+				FROM (
+					SELECT h.id, $sql_select
 					FROM host AS h
 					LEFT JOIN graph_local AS gl
 					ON h.id=gl.host_id
@@ -2449,8 +2455,9 @@ function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'descri
 			LEFT JOIN host_template AS ht
 			ON h1.host_template_id=ht.id
 			INNER JOIN (
-				SELECT DISTINCT id FROM (
-					SELECT h.*
+				SELECT DISTINCT id
+				FROM (
+					SELECT h.id
 					FROM host AS h
 					LEFT JOIN graph_local AS gl
 					ON h.id=gl.host_id
@@ -2507,7 +2514,7 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 
 	$sql_order = 'ORDER BY ' . $order_by;
 
-	$templates = db_fetch_assoc("SELECT DISTINCT
+	$templates = db_fetch_assoc("SELECT
 		IF(snmp_query_graph_id=0, CONCAT('cg_',gl.graph_template_id), CONCAT('dq_', gl.snmp_query_graph_id)) AS id,
 		IF(snmp_query_graph_id=0, gt.name, CONCAT(gt.name, ' [', sqg.name, ']')) AS name
 		FROM graph_local AS gl
@@ -2517,6 +2524,7 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 		ON gl.snmp_query_graph_id=sqg.id
 		AND gl.graph_template_id=sqg.graph_template_id
 		$sql_where
+		GROUP BY id, name
 		$sql_order
 		$sql_limit");
 
