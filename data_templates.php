@@ -229,14 +229,14 @@ function form_save() {
 					dt.id, dt.name, dtd.name, di.hash, di.name, di.type_id,
 					dtr.id dtr_id, dtr.data_source_name, dif.id dif_id, dif.name, dif.data_name,
 					dif.input_output, dif.update_rra
-				FROM cacti_site.data_template dt
-				INNER JOIN cacti_site.data_template_data dtd
+				FROM data_template dt
+				INNER JOIN data_template_data dtd
 				ON dt.id = dtd.data_template_id
-				INNER JOIN cacti_site.data_input di
+				INNER JOIN data_input di
 				ON dtd.data_input_id = di.id
-				INNER JOIN cacti_site.data_template_rrd dtr
+				INNER JOIN data_template_rrd dtr
 				ON dt.id = dtr.data_template_id
-				LEFT OUTER JOIN cacti_site.data_input_fields dif
+				LEFT OUTER JOIN data_input_fields dif
 				ON dtr.data_input_field_id = dif.id
 				WHERE di.type_id in (1,5) AND dt.id = ? AND dif.id IS NULL',
 				array($data_template_id));
