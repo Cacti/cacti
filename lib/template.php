@@ -1442,8 +1442,6 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		api_plugin_hook_function('create_complete_graph_from_template', $save);
 	}
 
-	set_config_option('sess_allowed_templates_lastchange', time());
-
 	return $cache_array;
 }
 

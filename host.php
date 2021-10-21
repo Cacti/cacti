@@ -1225,7 +1225,13 @@ function device_javascript() {
 
 		$('#add_dq').click(function() {
 			scrollTop = $(window).scrollTop();
-			$.post('host.php?action=query_add', { host_id: $('#id').val(), snmp_query_id: $('#snmp_query_id').val(), reindex_method: $('#reindex_method').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
+			Pace.start();
+			$.post('host.php?action=query_add', {
+				host_id: $('#id').val(),
+				snmp_query_id: $('#snmp_query_id').val(),
+				reindex_method: $('#reindex_method').val(),
+				__csrf_magic: csrfMagicToken }).done(function(data) {
+				Pace.stop();
 				$('#main').html(data);
 				applySkin();
 				$(window).scrollTop(scrollTop);
@@ -1234,7 +1240,10 @@ function device_javascript() {
 
 		$('#add_gt').click(function() {
 			scrollTop = $(window).scrollTop();
-			$.post('host.php?action=gt_add', { host_id: $('#id').val(), graph_template_id: $('#graph_template_id').val(), __csrf_magic: csrfMagicToken }).done(function(data) {
+			$.post('host.php?action=gt_add', {
+				host_id: $('#id').val(),
+				graph_template_id: $('#graph_template_id').val(),
+				__csrf_magic: csrfMagicToken }).done(function(data) {
 				$('#main').html(data);
 				applySkin();
 				$(window).scrollTop(scrollTop);

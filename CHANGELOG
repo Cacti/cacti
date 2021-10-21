@@ -33,6 +33,8 @@ Cacti CHANGELOG
 -issue#4428: Error on interpretation of snmpUtime, when to big
 -issue#4431: Applying right axis formatting creates an error-image
 -issue#4435: Unable to Save Graph Settings from the Graphs pages
+-issue#4437: Graph Template Cache is nullified too often when Graph Automation is running
+-issue#4438: When Adding a Data Query to a Device, no Progress Spinner is shown
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#4299: Allow Cacti to use multiple possible LDAP servers
