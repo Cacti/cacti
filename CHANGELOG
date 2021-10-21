@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -issue#4424: Offset is a reserved word in MariaDB 10.6 affecting Report
 -issue#4425: Rendering large trees slowed due to lack of permission caching
 -issue#4428: Error on interpretation of snmpUtime, when to big
+-issue#4431: Applying right axis formatting creates an error-image
 -issue#4435: Unable to Save Graph Settings from the Graphs pages
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations

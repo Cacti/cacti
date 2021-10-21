@@ -1139,7 +1139,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		case 'right_axis_format':
 			if (!empty($value)) {
 				$format = db_fetch_cell_prepared('SELECT gprint_text from graph_templates_gprint WHERE id = ?', array($value));
-				$graph_opts .= '--right-axis-format ' . cacti_escapeshellarg($format) . RRD_NL;
+				$graph_opts .= '--right-axis-format ' . cacti_escapeshellarg(trim(str_replace('%s', '', $format))) . RRD_NL;
 			}
 			break;
 		case 'no_gridfit':
