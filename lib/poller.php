@@ -1950,7 +1950,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 	} elseif ($r['timeout_exceeded']) {
 		if ($r['pid'] > 0) {
-			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceed'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
+			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
 			posix_kill($r['pid'], SIGTERM);
 

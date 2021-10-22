@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#4437: Graph Template Cache is nullified too often when Graph Automation is running
 -issue#4438: When Adding a Data Query to a Device, no Progress Spinner is shown
 -issue#4439: New Browser Breaks Plugins that depend on non UTC date time data
+-issue#4440: Undefined index: timeout_exceed /lib/poller.php on line: 1953
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#4299: Allow Cacti to use multiple possible LDAP servers
