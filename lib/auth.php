@@ -1483,7 +1483,6 @@ function get_cached_allowed_type($hash, $init_rows) {
 		if ($user_change < $last_change || empty($user_change)) {
 			cacti_log('Detected need for forced template cache refresh:', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 			clear_cached_allowed_types();
-			set_user_setting('sess_allowed_templates_lastchange', time());
 
 			return array();
 		}
