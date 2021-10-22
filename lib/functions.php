@@ -6528,6 +6528,34 @@ function cacti_cookie_session_logout() {
 }
 
 /**
+ * cacti_browser_zone_set - Set the PHP timezone to the
+ * browsers timezone.
+ *
+ * @return - null
+ */
+function cacti_browser_zone_set() {
+	if (isset($_SESSION['sess_browser_php_tz'])) {
+cacti_log('going there');
+		ini_set('date.timezone', $_SESSION['sess_browser_php_tz']);
+		putenv('TZ=' . $_SESSION['sess_browser_system_tz']);
+	}
+}
+
+/**
+ * cacti_system_zone_set - Set the PHP timezone to the
+ * systems timezone.
+ *
+ * @return - null
+ */
+function cacti_system_zone_set() {
+	if (isset($_SESSION['sess_php_tz'])) {
+cacti_log('and back again there');
+		ini_set('date.timezone', $_SESSION['sess_php_tz']);
+		putenv('TZ=' . $_SESSION['sess_system_tz']);
+	}
+}
+
+/**
  * cacti_time_zone_set - Givin an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
  * we have to accomodate.
@@ -6538,9 +6566,21 @@ function cacti_time_zone_set($gmt_offset) {
 	$hours     = floor($gmt_offset / 60);
 	$remaining = $gmt_offset % 60;
 
+	if (!isset($_SESSION['sess_php_tz'])) {
+		$_SESSION['sess_php_tz']    = ini_get('date.timezone');
+		$_SESSION['sess_system_tz'] = getenv('TZ');
+	}
+
 	if ($remaining == 0) {
 		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+
+		$php_offset = 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours);
+		$sys_offset = 'GMT' . ($hours > 0 ? '-':'+') . abs($hours);
+
 		ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+
+		$_SESSION['sess_browser_system_tz'] = $sys_offset;
+		$_SESSION['sess_browser_php_tz'] = $php_offset;
 	} else {
 		$time = ($hours > 0 ? '-':'+') . abs($hours) . ':' . substr('00' . $remaining, -2);
 		$zone = '';
@@ -6587,10 +6627,17 @@ function cacti_time_zone_set($gmt_offset) {
 				break;
 		}
 
+		$php_offset = $zone;
+		$sys_offset = 'GMT' . $time;
+
 		putenv('TZ=GMT' . $time);
 
 		if ($zone != '') {
 			ini_set('date.timezone', $zone);
 		}
+
+		$_SESSION['sess_browser_system_tz'] = $sys_offset;
+		$_SESSION['sess_browser_php_tz']    = $php_offset;
 	}
 }
+
