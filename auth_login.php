@@ -662,11 +662,27 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 		} else {
 			$ldap->group_require = false;
 		}
+
 		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
 		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
 		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
 
-		return $ldap->Authenticate();
+		/* If the server list is a space delimited set of servers
+		 * process each server until you get a bind, or fail
+		 */
+		$ldap_servers = preg_split('/\s+/', $ldap->host);
+
+		foreach($ldap_servers as $ldap_server) {
+			$ldap->host = $ldap_server;
+
+			$response = $ldap->Authenticate();
+
+			if ($response['error_num'] == 0) {
+				return $response;
+			}
+		}
+
+		return $response;
 	} else {
 		return false;
 	}
@@ -707,7 +723,22 @@ function domains_ldap_search_dn($username, $realm) {
 		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
 		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];
 
-		return $ldap->Search();
+		/* If the server list is a space delimited set of servers
+		 * process each server until you get a bind, or fail
+		 */
+		$ldap_servers = preg_split('/\s+/', $ldap->host);
+
+		foreach($ldap_servers as $ldap_server) {
+			$ldap->host = $ldap_server;
+
+			$response = $ldap->Search();
+
+			if ($response['error_num'] == 0) {
+				return $response;
+			}
+		}
+
+		return $response;
 	} else {
 		return false;
 	}
