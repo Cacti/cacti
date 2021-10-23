@@ -224,7 +224,6 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
 					$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
-
 				if ($session !== false) {
 					if ($oid_uptime == '.1.3.6.1.2.1.1.3.0') {
 						$checks = array(
@@ -236,6 +235,10 @@ function update_reindex_cache($host_id, $data_query_id) {
 							$assert_value = cacti_snmp_session_get($session, $oid_uptime);
 
 							if (is_numeric($assert_value)) {
+								if ($oid_uptime == '.1.3.6.1.6.3.10.2.1.3.0') {
+									$assert_value *= 100;
+								}
+
 								break;
 							}
 						}
