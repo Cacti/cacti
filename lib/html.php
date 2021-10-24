@@ -1135,6 +1135,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem(__('Graph Item'),'',1);
+		DrawMatrixHeaderItem(__('#'), '', 1);
 		DrawMatrixHeaderItem(__('Data Source'),'',1);
 		DrawMatrixHeaderItem(__('Graph Item Type'),'',1);
 		DrawMatrixHeaderItem(__('CF Type'),'',1);
@@ -1181,6 +1182,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			print __('Item # %d', ($i+1));
 			if ($disable_controls == false) { print '</a>'; }
 			print '</td>';
+			print '<td>' . $item['sequence'] . '</td>';
 
 			if (empty($item['data_source_name'])) {
 				$item['data_source_name'] = __('No Source');
@@ -2482,7 +2484,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta name='description' content='Monitoring tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name="theme-color" content="#161616"/>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print html_escape($script_policy);?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self'">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print html_escape($script_policy);?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self' <?php print $alternates;?>;">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -2506,8 +2508,8 @@ function html_common_header($title, $selectedTheme = '') {
 		var editProfile='<?php print __esc('Edit Profile');?>';
 		var changePassword='<?php print __esc('Change Password');?>';
 		var logout='<?php print __esc('Logout');?>';
-		var legacyInterface='<?php print __esc('Use Legacy UI');?>';
-		var newInterface='<?php print __esc('Use New UI');?>';
+		var standardGraphicalUserInterface='<?php print __esc('Standard Mode');?>';
+		var compactGraphicalUserInterface='<?php print __esc('Compact Mode');?>';
 		var darkColorMode='<?php print __esc('Dark Color Mode');?>';
 		var lightColorMode='<?php print __esc('Light Color Mode');?>';
 		var usePreferredColorTheme='<?php print __esc('Use System Color');?>';

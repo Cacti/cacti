@@ -135,7 +135,7 @@ function rrdclean_truncate_tables() {
 /*
  * PHP Error Handler
  */
-function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
+function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	global $debug;
 	if ($debug) {
 		/* define all error types */

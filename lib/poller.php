@@ -225,7 +225,28 @@ function update_reindex_cache($host_id, $data_query_id) {
 					$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
 				if ($session !== false) {
-					$assert_value = cacti_snmp_session_get($session, $oid_uptime);
+					if ($oid_uptime == '.1.3.6.1.2.1.1.3.0') {
+						$checks = array(
+							'.1.3.6.1.6.3.10.2.1.3.0',
+							'.1.3.6.1.2.1.1.3.0'
+						);
+
+						foreach($checks as $oid_uptime) {
+							$assert_value = cacti_snmp_session_get($session, $oid_uptime);
+
+							if (is_numeric($assert_value)) {
+								if ($oid_uptime == '.1.3.6.1.6.3.10.2.1.3.0') {
+									$assert_value *= 100;
+								}
+
+								break;
+							}
+						}
+
+						$oid_uptime = '.1.3.6.1.2.1.1.3.0';
+					} else {
+						$assert_value = cacti_snmp_session_get($session, $oid_uptime);
+					}
 				}
 
 				$session->close();
@@ -391,7 +412,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 
 	if ($remainder) {
 		/* check if too many rows pending */
-		$rows = db_fetch_cell('SELECT COUNT(*) FROM poller_output');
+		$rows = db_fetch_cell('SELECT COUNT(local_data_id)
+			FROM poller_output');
+
 		if ($rows > $max_rows && $have_deleted_rows === true) {
 			$limit = ' LIMIT ' . $max_rows;
 		} else {
@@ -551,7 +574,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 		$rrd_update_array = NULL;
 
 		/* to much records in poller_output, process in chunks */
-		if ($remainder && $limit != '') {
+		$rows = db_fetch_cell('SELECT COUNT(local_data_id)
+			FROM poller_output');
+
+		/* to much records in poller_output, process in chunks */
+		if ($rows && $remainder) {
 			$rrds_processed += process_poller_output($rrdtool_pipe, $remainder);
 		}
 	}
@@ -1136,6 +1163,7 @@ function poller_connect_to_remote($poller_id) {
 			$cinfo['dbdefault'],
 			'mysql',
 			$cinfo['dbport'],
+			$cinfo['dbretries'],
 			$cinfo['dbssl'],
 			$cinfo['dbsslkey'],
 			$cinfo['dbsslcert'],
@@ -1928,7 +1956,9 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		return true;
 	}
 
-	$r = db_fetch_row_prepared('SELECT *, IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded, UNIX_TIMESTAMP() AS `current_timestamp`
+	$r = db_fetch_row_prepared('SELECT *,
+		IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded,
+		UNIX_TIMESTAMP() AS `current_timestamp`
 		FROM processes
 		WHERE tasktype = ?
 		AND taskname = ?
@@ -1941,7 +1971,7 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
 	} elseif ($r['timeout_exceeded']) {
 		if ($r['pid'] > 0) {
-			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceed'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
+			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
 			posix_kill($r['pid'], SIGTERM);
 
@@ -1982,7 +2012,7 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
 	}
 
 	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, started, last_update)
-		VALUES (?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())',
+		VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
 		array($tasktype, $taskname, $taskid, $pid, $timeout));
 }
 
@@ -2028,11 +2058,11 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
 	}
 
 	db_execute_prepared('UPDATE processes
-		SET last_update = ?
+		SET last_update = NOW()
 		WHERE tasktype = ?
 		AND taskname = ?
 		AND taskid = ?',
-		array(date('Y-m-d H:i:s'), $tasktype, $taskname, $taskid));
+		array($tasktype, $taskname, $taskid));
 }
 
 /** timeout_kill_registered_processes - allow a Cacti plugin or scheduled task to

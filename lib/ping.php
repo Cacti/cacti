@@ -73,7 +73,7 @@ class Net_Ping
 		$this->request_len = strlen($this->request);
 	}
 
-	function ping_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
+	function ping_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 		return true;
 	}
 
@@ -184,7 +184,7 @@ class Net_Ping
 				 * ping: cap_set_proc: Permission denied
 				 * as it now tries to open an ICMP socket and fails
 				 * $result will be empty, then. */
-				if (strpos($this->host['hostname'], ':') !== false) {
+				if (strpos($host_ip, ':') !== false) {
 					$result = shell_exec('ping6 -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
 				} else {
 					$result = shell_exec('ping -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
@@ -422,10 +422,10 @@ class Net_Ping
 
 						/* get the end time after the packet was received */
 						$this->time = $this->get_time($this->precision);
-							
+
 						$errno = socket_last_error($this->socket);
 						socket_clear_error($this->socket);
-						if (($code == -1 || empty($code)) && 
+						if (($code == -1 || empty($code)) &&
 							($errno == EHOSTUNREACH || $errno == ECONNRESET || $errno == ECONNREFUSED)) {
 
 							/* set the return message */
@@ -750,4 +750,3 @@ class Net_Ping
 		return $ip_address;
 	}
 }
-

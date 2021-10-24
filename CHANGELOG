@@ -48,24 +48,92 @@ Cacti CHANGELOG
 -feature#4300: Allow GPrint/CDef/VDef to be visibile in graph template item lists
 -feature#4339: Change CLI progress output for rebuilding poller cache
 
+1.2.19
+-security#4356: Further fixes for grave character security protection
+-issue: Over aggressive escaping causes menu visibility issues on Create Device page
+-issue#3787: Add SHA256 and AES256 security levels for SNMP polling
+-issue#4289: Import graph template(Preview Only) show color_id new value as a blank area
+-issue#4341: Editing graphs can cause errors due to missing sequence
+-issue#4342: When hovering over a Tree Graph, row shows same highlighting as Graph Edit screen
+-issue#4343: When RealTime is not active, console errors may appear
+-issue#4347: Race conditions may occur when multiple RRDtool processes are running
+-issue#4352: Creating graphs from templates may sometimes result in errors
+-issue#4353: When duplicating reports, errors may occur
+-issue#4375: Boost may be blocked by overflowing poller_output table
+-issue#4378: Template import may be blocked due to unmet dependency warnings with snmp ports
+-issue#4381: Newer MySQL versions may error if committing a transaction when not in one
+-issue#4382: SNMP Agent may not find a cache item
+-issue#4383: Correct issues running under PHP 8.x
+-issue#4391: When polling is disabled, boost may crash and creates many arch tables
+-issue#4396: When poller runs, memory tables may not always be present
+-issue#4400: Removal of redunant code
+-issue#4403: Timezones may sometimes be incorrectly calculated
+-issue#4404: Allow monitoring IPv6 with interface graphs
+-issue#4408: When a data source uses a Data Input Method, those without a mapping should be flagged
+-issue#4410: When RRDfile is not yet created, errors may appear when displaying the graph
+-issue#4419: Cacti missing key indexes that result in Preset pages slowdowns
+-issue#4420: Data Sources page shows no name when Data Source has no name cache
+-issue#4421: db_update_table function can not alter table from signed to unsigned
+-issue#4422: data remains in poller_output table even if it's flushed to rrd files
+-issue#4423: Parameter list for lib/database.php:db_connect_real() is not correct in 3 places
+-issue#4424: Offset is a reserved word in MariaDB 10.6 affecting Report
+-issue#4425: Rendering large trees slowed due to lack of permission caching
+-issue#4428: Error on interpretation of snmpUtime, when to big
+-issue#4431: Applying right axis formatting creates an error-image
+-issue#4435: Unable to Save Graph Settings from the Graphs pages
+-issue#4437: Graph Template Cache is nullified too often when Graph Automation is running
+-issue#4438: When Adding a Data Query to a Device, no Progress Spinner is shown
+-issue#4439: New Browser Breaks Plugins that depend on non UTC date time data
+-issue#4440: Undefined index: timeout_exceed /lib/poller.php on line: 1953
+-feature: Add a normal/wrap class for general use
+-feature: Limit File Types available for Template Import operations
+-feature#4299: Allow Cacti to use multiple possible LDAP servers
+-feature#4344: Add a 15 minute polling/sampling interval
+-feature#4385: Provide additional admin email notifications
+-feature#4390: Add warnings for undesired changes to plugin hook return values
+-feature#4409: When creating a Graph, make testing the Data Sources optional by Template
+-feature#4412: Update phpseclib to 2.0.33
+-feature#4413: Update jstree.js to 3.3.12
+-feature#4414: Improve performance of Cacti poller on heavily loaded systems
+-feature#4426: MariaDB recommendations need some tuning for recent updates
+
 1.2.18
--security#4261: Lack of escaping on file input fields can lead to XSS exposure under midwinter theme
--security#4276: Lack of escaping on parameter graph_nolegend can lead to XSS exposure in graph_realtime.php
--security#4282: Regenerate session id to avoid session fixation issue
+-security#4261: Lack of escaping on template import can lead to XSS exposure under 'midwinter' theme (CVE-2020-14424)
+-security#4276: Real time graphs can expose XSS issue
+-security#4282: Session IDs are not always recreated when logging out under PHP 5
 -issue#4250: Unable to create graphs due to Data Source verification failure
 -issue#4254: When poller first runs, time since last run produces an error
--issue#4259: A typo in variables.php leads to SQL error
--issue#4263: Percentile not showing on partial data after fix for #3340
--issue#4266: Incomplete Poller items from a previous run may be updated twice
--issue#4267: SNMP library can display extra warning messages when host does not resolve
--issue#4269: Installation Wizard - Uncaught Error: Call to undefined function cacti_snmp_session()
+-issue#4259: Data Template caching does not update and causes errors
+-issue#4263: Graphs with multiple data sources can no longer display percenticles
+-issue#4266: Incomplete items from a previous polling session may be updated twice
+-issue#4267: Unnecessary warnings appear when host name is not resolved
+-issue#4269: Installation Wizard can become stuck when creating graphs for default device
 -issue#4271: Continued timeout of registered processes
--issue#4272:  dns_get_record(): A temporary server error occurred
+-issue#4272: Unexpected errors may appear when using hostnames without a DNS domain
+-issue#4273: When adding a device from command line, testing of data sources can cause errors to be recorded
+-issue#4274: When you start to zoom a graph, the auto graph refresh should be disabled
+-issue#4279: Default Setting "Device Threads" will not be saved correctly
 -issue#4284: Database upgrade can fail - Uncaught argument count error
+-issue#4293: Tree search does not take hosts belonging to a site into account
+-issue#4284: Whilst upgrading, errors in upgrade scripts prevent properly execution
 -issue#4294: Tables outside of pre-built list that need fixing, cause bad unknown column errors
--issue#4295: If a page contains multiple tables, a larger table can cause smaller ones to lose columns.
--feature#4258: Update phpseclib to version 2.0.31
--feature#4306: Allow indexing of all query id in cli reorder_data_query.php
+-issue#4295: If a page contains multiple tables, a larger table can cause small ones to lose columns
+-issue#4297: Unable to search using regular expressions when trying to filter graphs
+-issue#4312: When using CMD.PHP as the poller, warnings can appear if you only use a subset of data input types
+-issue#4314: When disabling the snmpagent, you can introduce significant delay to data collection
+-issue#4315: Reduce repeatative warnings when resources are exhausted
+-issue#4316: Remove Spikes CLI interface is unable to provide localized spike, gap fill or float operations
+-issue#4321: Earlier versions of RRDTool do not correctly ignore previous updates
+-issue#4324: Date/Time format of replacement field on graph cannot be changed
+-issue#4325: When editing graph items, make identifying rows easier
+-issue#4326: When using large lists, ensure selection is visible in dropdown menus
+-issue#4330: Automation attempts to call undefined debug function
+-issue#4333: Under FreeBSD, allow ping to work properly for IPv6
+-issue#4367: Report owner - show at least the username when the full name is empty
+-feature#4258: Update phpseclib to 2.0.31
+-feature#4283: Content Security Policy may block Plugin functionality
+-feature#4317: Allow the Cacti administrator to perform bulk gap filling and floating in parallel
+-feature#4322: Update pace.js to version 1.2.4
 
 1.2.17
 -security#4019: Incorrect handling of fields led to potential XSS issues
@@ -80,7 +148,7 @@ Cacti CHANGELOG
 -issue#3936: Editing a graph created from Aggregate Graph can fail
 -issue#3945: CSV export can show NaN for date if TimeZone does not match system
 -issue#3969: SNMPv3 Password field does not correctly limit to size of database field
--issue#3976: Font colors are being overridden leading to display issues by ddb4github
+-issue#3976: Font colors are being overridden leading to display issues
 -issue#3977: Database upgrade may fail when using upgrade_database.php
 -issue#3978: Input Validation was not handled correctly when displaying graph trees
 -issue#3981: Missing API include leads to runtime errors in Automation
@@ -100,11 +168,11 @@ Cacti CHANGELOG
 -issue#4038: When creating new graphs, a second click is required even if not needed
 -issue#4042: RRD Updates can become disabled when saving performance options
 -issue#4043: Boost can become unresponsive when large number of archive tables exist
--issue#4049: Enable sensitive graph information to be hidden from standard users by datatecuk
+-issue#4049: Enable sensitive graph information to be hidden from standard users
 -issue#4050: When showing table conversion script, the example path can be displayed incorrectly
 -issue#4056: Rename "Show Exceptions" checkbox to "Only Show Exceptions" which more actually reflects its function
--issue#4060: When attempting to get client address, incorrect information may be returned by stevenseeley
--issue#4061: When getting date format, default options are not always honored by xmacan
+-issue#4060: When attempting to get client address, incorrect information may be returned
+-issue#4061: When getting date format, default options are not always honored
 -issue#4066: Enable Boost to utilize multiple processes
 -issue#4067: Disable BOOST image caching when using Graph Zoom features
 -issue#4068: When viewing graphs, individual graph sizes can be ignored in favour of global default
@@ -136,7 +204,7 @@ Cacti CHANGELOG
 -issue#4127: When updating Trees, graph titles are calculated too often leading to unresponsiveness
 -issue#4130: On large systens, Graph creation can become unresponsive due to large number of data sources
 -issue#4131: A design flaw makes importing new Graph Template slow on large systems
--issue#4134: MIB Caching does not always work as expected by Kveri
+-issue#4134: MIB Caching does not always work as expected
 -issue#4135: On large Cacti installs, editing Data Templates is slow
 -issue#4136: When repairing database at command line, no option exists to skip table checks and force Data Source repair
 -issue#4141: Unusually long comments do not wrap when viewing graphs, and haven't in this CHANGELOG entry either
@@ -189,7 +257,7 @@ Cacti CHANGELOG
 -feature#3572: Missing prompts during automation's device creation leads to blank data
 -feature#4012: Allow CSRF security key to be refreshed at command line
 -feature#4013: Allow remote pollers statistics to be cleared
--feature#4113: Allow user to be automatically logged out after admin defined period by datatecuk
+-feature#4113: Allow user to be automatically logged out after admin defined period
 -feature#4176: When replicating, ensure Cacti can detect and verify replica servers
 -feature#4210: Replace c3.js with billboard.js
 
@@ -203,12 +271,12 @@ Cacti CHANGELOG
 -issue#3915: When enabling many devices, a threshold can be reached causing a slowdown in the process
 -issue#3916: When performing actions against Devices, replicated device information could sometimes be lost
 -issue#3917: When using API to rename a tree node, backtrace may be incorrectly shown
--issue#3919: When searching, valid pages can sometimes be shown as empty by ddb4github
+-issue#3919: When searching, valid pages can sometimes be shown as empty
 -issue#3920: When exporting data from graphs, not all data was properly included
--issue#3924: Graph Templates filter is not updated after new graph created by ddb4github
+-issue#3924: Graph Templates filter is not updated after new graph created
 -issue#3926: Username and password on the login page is not visible in Classic theme
 -issue#3929: Improve wording of concurrent process and thread settings
--issue#3930: Location filter should remove blank entries by ddb4github
+-issue#3930: Location filter should remove blank entries
 -issue#3931: When syncing data collectors, a reindex event may be triggered unnecessarily
 -issue#3932: Automation Networks allows discovery of invalid IP addresses
 -issue#3933: When changing permissions of the current user, they don't take effect immediately
@@ -217,7 +285,7 @@ Cacti CHANGELOG
 -issue#3948: Spine 1.2.15 - Spine Encountered An Unhandled Exception Signal Number: '6' [11, Resource temporarily unavailable] (Spine thread)
 -issue#3949: Log page should not be empty if no log info exists
 -issue#3953: During upgrade, there are times when realms can be duplicated leading to SQL errors
--issue#3957: When using ping.php, UDP response times are not interpreted properly by hypnotoad
+-issue#3957: When using ping.php, UDP response times are not interpreted properly
 -issue#3960: Improve warning you get when attempting to view a log file you don't have access to
 -issue#3962: When replicating files, scripts are not marked as executable
 -issue#3963: When creating plugin tables, collation is not set properly
@@ -227,7 +295,7 @@ Cacti CHANGELOG
 -feature: Update PHPMailer to version 6.1.8
 -feature: Use LSB shebang notation for cli scripts
 -feature: Add support for cactid daemon based launcher
--feature#3923: Add ability to hide the Graph Drilldown icons by datatecuk
+-feature#3923: Add ability to hide the Graph Drilldown icons
 -feature#3943: Add hooks for plugins to show custom Graph Source and custom Template URL (List View)
 
 1.2.15
@@ -285,7 +353,7 @@ Cacti CHANGELOG
 -issue#3881: Correct issue when file is unreadable reporting no file was specified
 -issue#3883: Orphaned Plugins have no option to be removed
 -issue#3884: Update MySQL recommendations for Character Set and Colation
--issue#3888: Correct sorting of IP addresses to be numeric not alpha by JamesTilt
+-issue#3888: Correct sorting of IP addresses to be numeric not alpha
 -issue#3890: Saving a device should not always repopulate the poller cache
 -feature: Update FontAwesome to Version 5.14
 
@@ -302,7 +370,7 @@ Cacti CHANGELOG
 
 1.2.13
 -security#3544: jQuery XSS vulnerabilities require vendor package update (CVE-2020-11022 / CVE-2020-11023)
--security#3549: Lack of escaping on some pages can lead to XSS exposure
+-security#3549: Lack of escaping on some pages can lead to XSS exposure (CVE-2020-23226)
 -security#3582: Update PHPMailer to 6.1.6 (CVE-2020-13625)
 -security#3622: SQL Injection vulnerability due to input validation failure when editing colors (CVE-2020-14295)
 -security#3628: Lack of escaping on template import can lead to XSS exposure
@@ -675,7 +743,7 @@ Cacti CHANGELOG
 -issue#2877: When attempting to send report, undefined function 'get_tinespan' messages appear
 -issue#2878: Function get_magic_quotes_gpc() is now deprecated in PHP 7.4
 -issue#2879: Switching from authPriv to authNoPriv produces error when saving
--issue#2884: Replication continues to occur when poller has been disabled by sysres-dev
+-issue#2884: Replication continues to occur when poller has been disabled
 -issue#2891: Script server script ss_fping.php generates error when not called by script server
 -issue#2901: Poller overrun warning message is badly worded
 -issue#2902: Mailer incorrectly reports it is sending to noone
@@ -706,13 +774,13 @@ Cacti CHANGELOG
 -issue#2723: When replicating to remote pollers, Undefined Variable errors may be seen
 -issue#2724: When graphing HRULE items, 'Only Variables should be passed by reference' error may be seen
 -issue#2725: When viewing logs in utilities, filenames should be limited the same as clog
--issue#2726: During Automation logging, include the Rule ID that triggers the creation of an item by xmacan
+-issue#2726: During Automation logging, include the Rule ID that triggers the creation of an item
 -issue#2732: When using basic authentication, automatically strip any @domain information
 -issue#2734: Allow non-english labels to be used on Graph Templates
 -issue#2727: When using Polling Hosts Template, warnings can be issued when CMD.PHP is the poller
 -issue#2733: When processing SNMP data, space delimited hex strings do not always convert into MAC addresses
 -issue#2735: Mouse cursor should show as default pointer if column is not sortable
--issue#2736: When using MySQL 8 or above, 'function' is considered a reserved word unless quoted by xmacan
+-issue#2736: When using MySQL 8 or above, 'function' is considered a reserved word unless quoted
 -issue#2741: Various errors can occur due to undefined or incorrect variable names
 -issue#2742: Various errors can occur due to undefined or incorrect variable names
 -issue#2743: Attempts to close a tooltip when no tooltip has been set may cause errors
@@ -751,9 +819,9 @@ Cacti CHANGELOG
 -issue#2818: Automation can sometimes incorrectly add duplicate devices with the same sysname
 -issue#2820: When path is blank, is_resource_writable() will generate 'Uninitialized string offset: -1'
 -issue#2821: When the desired locale can not be located, a number format issue may occur
--feature#2728: Update phpseclib to 2.0.17 by DavidLiedke
--feature#2809: Update c3.js & d3.js by DavidLiedke
--feature#2730: Update jstree.js to 3.3.8 by DavidLiedke
+-feature#2728: Update phpseclib to 2.0.17
+-feature#2809: Update c3.js & d3.js
+-feature#2730: Update jstree.js to 3.3.8
 -feature#2754: Allow Devices, Graphs and Data Sources to be searched by ID
 -feature#2765: When editing a tree, allow cascading selection of available graphics
 -feature#2805: Merged plugins are not always upgraded correctly
@@ -782,7 +850,7 @@ Cacti CHANGELOG
 -issue#2629: When upgrading, ldap library is not loaded properly due to incorrect paths
 -issue#2632: Automated Networks are not being properly replicated to additional pollers
 -issue#2635: When running automation scans, database connection should be forced to central database
--issue#2638: Support disabling PHP SNMP extension by mhoran
+-issue#2638: Support disabling PHP SNMP extension
 -issue#2645: Some URLs are incorrectly calculated
 -issue#2649: Automation not creating graphs when there are custom items
 -issue#2650: Several undefined variables are generating warnings
@@ -807,7 +875,7 @@ Cacti CHANGELOG
 -feature#2538: Allow users to change default method of removing data sources when deleting graphs
 -feature#2539: Allow users to set the default graph lock status
 -feature#2540: Allow users to enable/disable graph tree history
--feature#2646: Allow application of automation rules on CLI by rb83
+-feature#2646: Allow application of automation rules on CLI
 -feature#2654: New hook to notify plugins of user profile changes ('auth_profile_update_data')
 -feature#2664: Add option to purge spikekill backups
 -feature#2701: Provide option to continue graphing objects that loose their index
@@ -853,10 +921,10 @@ Cacti CHANGELOG
 -issue#2513: When a plugin INFO file is malformed or missing elements, plugin_load_info_file() should fill missing elements with defaults
 -issue#2519: When editing a data query, graph template picker shows poor performance
 -issue#2518: Unexpected errors when filtering Data Sources with invalid 'rows' value
--issue#2522: When upgrading from pre-1.0.0, colors were not upgraded properly by Givo29
+-issue#2522: When upgrading from pre-1.0.0, colors were not upgraded properly
 -issue#2525: Tree branches that includes sites which have valid devices do not appear on Graph Tree
 -issue#2527: When importing a package, if Cacti version is below the version which that exported, a clear message should be shown
--issue#2531: When updating color template items, the table name used is incorrect by Givo29
+-issue#2531: When updating color template items, the table name used is incorrect
 -issue#2532: Ensure Graph ListView table is displayed in line with Management -> Graphs
 -issue#2535: Ensure Graph ListView uses same UI logic as Graph Management -> Graphs
 -issue#2537: Incorrect title showing when changes are made to Tree

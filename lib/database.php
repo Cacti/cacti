@@ -181,7 +181,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
-function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext) {
+function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext = []) {
 	throw new Exception($errstr, $errno);
 }
 
@@ -968,7 +968,15 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			// Check that column is correct and fix it
 			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
+
+			if (strpos(strtolower($arr['Type']), ' unsigned') !== false) {
+				$arr['Type'] = str_ireplace(' unsigned', '', $arr['Type']);
+				$arr['unsigned'] = true;
+			}
+
 			if ($column['type'] != $arr['Type'] || (isset($column['NULL']) && ($column['NULL'] ? 'YES' : 'NO') != $arr['Null'])
+				|| (((!isset($column['unsigned']) || !$column['unsigned']) && isset($arr['unsigned'])) 
+					|| (isset($column['unsigned']) && $column['unsigned'] && !isset($arr['unsigned'])))
 			    || (isset($column['auto_increment']) && ($column['auto_increment'] ? 'auto_increment' : '') != $arr['Extra'])) {
 				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['name'] . '` `' . $column['name'] . '`';
 				if (isset($column['type'])) {
@@ -1351,7 +1359,9 @@ function db_commit_transaction($db_conn = false) {
 		}
 	}
 
-	return $db_conn->commit();
+	if (db_fetch_cell('SELECT @@in_transaction') > 0) {
+		return $db_conn->commit();
+	}
 }
 
 /* db_rollback_transaction - rollback a transaction

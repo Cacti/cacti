@@ -97,10 +97,11 @@ function form_save() {
 		get_filter_request_var('graph_template_graph_id');
 		/* ==================================================== */
 
-		$save1['id']       = $graph_template_id;
-		$save1['hash']     = get_hash_graph_template($graph_template_id);
-		$save1['name']     = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save1['multiple'] = isset_request_var('multiple') ? 'on':'';
+		$save1['id']          = $graph_template_id;
+		$save1['hash']        = get_hash_graph_template($graph_template_id);
+		$save1['name']        = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save1['multiple']    = isset_request_var('multiple') ? 'on':'';
+		$save1['test_source'] = isset_request_var('test_source') ? 'on':'';
 
 		$save2['id']                     = get_nfilter_request_var('graph_template_graph_id');
 		$save2['local_graph_template_graph_id'] = 0;
@@ -418,7 +419,7 @@ function item() {
 
 		$header_label = 'Graph Template Items [new]';
 	} else {
-		$template_item_list = db_fetch_assoc_prepared("SELECT gti.id, gti.text_format, gti.alpha,
+		$template_item_list = db_fetch_assoc_prepared("SELECT gti.id, gti.sequence, gti.text_format, gti.alpha,
 			gti.value, gti.hard_return, gti.graph_type_id, gti.consolidation_function_id, gti.textalign,
 			CONCAT(IFNULL(dt.name, ''), ' (', dtr.data_source_name, ')') AS data_source_name,
 			cdef.name AS cdef_name, vdef.name as vdef_name, colors.hex, gtgp.name as gprint_name

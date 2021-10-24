@@ -84,7 +84,22 @@ function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port 
 	if (!empty($group_attrib))      $ldap->group_attrib      = $group_attrib;
 	if (!empty($group_member_type)) $ldap->group_member_type = $group_member_type;
 
-	return $ldap->Authenticate();
+	/* If the server list is a space delimited set of servers
+	 * process each server until you get a bind, or fail
+	 */
+	$ldap_servers = preg_split('/\s+/', $ldap->host);
+
+	foreach($ldap_servers as $ldap_server) {
+		$ldap->host = $ldap_server;
+
+		$response = $ldap->Authenticate();
+
+		if ($response['error_num'] == 0) {
+			return $response;
+		}
+	}
+
+	return $response;
 }
 
 /* cacti_ldap_search_dn
@@ -149,7 +164,22 @@ function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port
 	if (!empty($specific_dn))       $ldap->specific_dn       = $specific_dn;
 	if (!empty($specific_password)) $ldap->specific_password = $specific_password;
 
-	return $ldap->Search();
+	/* If the server list is a space delimited set of servers
+	 * process each server until you get a bind, or fail
+	 */
+	$ldap_servers = preg_split('/\s+/', $ldap->host);
+
+	foreach($ldap_servers as $ldap_server) {
+		$ldap->host = $ldap_server;
+
+		$response = $ldap->Search();
+
+		if ($response['error_num'] == 0) {
+			return $response;
+		}
+	}
+
+	return $response;
 }
 
 /* cacti_ldap_search_cn
@@ -369,7 +399,7 @@ class Ldap {
 		return true;
 	}
 
-	function ErrorHandler($level, $message, $file, $line, $context) {
+	function ErrorHandler($level, $message, $file, $line, $context = []) {
 		return true;
 	}
 
@@ -482,6 +512,7 @@ class Ldap {
 			ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, $cert);
 		}
 
+		// Walk through ldap servers for a valid connections
 		if ($this->encryption == '1') {
 			cacti_log('LDAP: Connect using ldaps://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);

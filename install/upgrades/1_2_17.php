@@ -24,8 +24,8 @@
 
 function upgrade_to_1_2_17() {
 	// Correct max values in templates and data sources: GAUGE/ABSOLUTE (1,4)
-	db_install_execute("ALTER TABLE graph_templates_graph DROP INDEX title_cache, ADD INDEX title_cache(title_cache)");
-	db_install_execute("ALTER TABLE data_template_data DROP INDEX name_cache, ADD INDEX name_cache(name_cache)");
+	db_install_execute("ALTER TABLE graph_templates_graph ROW_FORMAT=Dynamic, DROP INDEX title_cache, ADD INDEX title_cache(title_cache)");
+	db_install_execute("ALTER TABLE data_template_data ROW_FORMAT=Dynamic, DROP INDEX name_cache, ADD INDEX name_cache(name_cache)");
 
 	// LDAP Search filter widening
 	db_install_execute('ALTER TABLE user_domains_ldap MODIFY COLUMN search_filter VARCHAR(512) NOT NULL default ""');

@@ -64,11 +64,11 @@ function imageOptionsChanged(action) {
 
 	$.getJSON(url)
 		.done(function(data) {
-			image_format = (data.image_format == 'svg+xml') ? 'svg+xml' : 'png';
+			var image_format = (data.image_format == 'svg+xml') ? 'svg+xml' : 'png';
 			if ($('#rimage').length) {
-				$('#rimage').attr('src', 'data:image/'+image_format+';base64,'+data.data);
+				$('#rimage').empty().attr('src', 'data:image/'+image_format+';base64,'+data.data);
 			} else {
-				$('#image').html('<img id="rimage" class="realtimeimage" src="data:image/'+image_format+';base64,'+data.data+'"/>');
+				$('#image').empty().html('<img id="rimage" class="realtimeimage" src="data:image/'+image_format+';base64,'+data.data+'"/>');
 			}
 
 			realtimePopout = $('#rtfilter').outerHeight() + 60 + $('#rimage').outerHeight() + 30 > window.innerHeight || $('#rimage').outerWidth() + 40 > window.innerWidth ? true : false;
@@ -144,10 +144,10 @@ function stopRealtime() {
 	var graph;
 
 	for (key in realtimeArray) {
-		graph_id = key;
+		var graph_id = key;
 
 		$('#wrapper_'+graph_id).html(keepRealtime[graph_id]).change();
-		$('#graph_'+graph_id+'_realtime').html("<img class='drillDown' alt='' title='"+realtimeClickOn+"' src='"+urlPath+"images/chart_curve_go.png'>").find('img').tooltip();
+		$('#graph_'+graph_id+'_realtime').empty().html("<img class='drillDown' alt='' title='"+realtimeClickOn+"' src='"+urlPath+"images/chart_curve_go.png'>").find('img').tooltip();
 
 		// Disable right click
 		$(this).children().bind('contextmenu', function(event) {
@@ -249,7 +249,7 @@ function realtimeGrapher() {
 
 					$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
 						.done(function(data) {
-							results = $.parseJSON(data);
+							var results = $.parseJSON(data);
 
 							if (realtimeArray[results.local_graph_id] == true) {
 								var image_format = (results.image_format == 'svg+xml') ? 'svg+xml' : 'png';

@@ -889,7 +889,7 @@ $struct_graph = array(
 	'right_axis_format' => array(
 		'friendly_name' => __('Right Axis Format (--right-axis-format &lt;format&gt;)'),
 		'method' => 'drop_sql',
-		'sql' => 'SELECT id, name FROM graph_templates_gprint ORDER BY name',
+		'sql' => 'SELECT id, name FROM graph_templates_gprint WHERE gprint_text NOT LIKE "%\%s%" ORDER BY name',
 		'default' => '',
 		'none_value' => __('None'),
 		'description' => __('By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
@@ -1087,7 +1087,11 @@ $struct_graph_item = array(
 		),
 	'sequence' => array(
 		'friendly_name' => __('Sequence'),
-		'method' => 'view'
+		'method' => 'textbox',
+		'max_length' => '4',
+		'default' => '',
+		'size' => '4',
+		'description' => __('The dash-offset parameter specifies an offset into the pattern at which the stroke begins.'),
 		)
 	);
 
@@ -1106,6 +1110,14 @@ $fields_graph_template_template_edit = array(
 		'friendly_name' => __('Multiple Instances'),
 		'description' => __('Check this checkbox if there can be more than one Graph of this type per Device.'),
 		'value' => '|arg1:multiple|',
+		'default' => '',
+		'form_id' => false
+		),
+	'test_source' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Test Data Sources'),
+		'description' => __('Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased.'),
+		'value' => '|arg1:test_source|',
 		'default' => '',
 		'form_id' => false
 		),
@@ -1669,6 +1681,7 @@ $fields_template_import = array(
 	'import_file' => array(
 		'friendly_name' => __('Import Template from Local File'),
 		'description' => __('If the XML file containing template data is located on your local machine, select it here.'),
+		'accept' => '.xml',
 		'method' => 'file'
 		),
 	'import_text' => array(

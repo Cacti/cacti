@@ -613,11 +613,36 @@ $settings = array(
 			),
 		'automation_fromemail' => array(
 			'friendly_name' => __('Automation Notification From Email'),
-			'description'   => __('The Email Address to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Email Address.'),
-			'method'        => 'textbox',
-			'default'       => '',
-			'max_length'    => '100',
+			'description' => __('The Email Address to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Email Address.'),
+			'method' => 'textbox',
+			'default' => '',
+			'max_length' => '100',
+		),
+		'other_header' => array(
+			'friendly_name' => __('Graph Template Defaults'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+		),
+		'default_test_source' => array(
+			'method' => 'checkbox',
+			'friendly_name' => __('Graph Template Test Data Source'),
+			'description' => __('Check this checkbox if you wish to test the Data Sources prior to their creation for new and newly imported Graph Templates.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased.'),
+			'default' => '',
 			),
+		'default_image_format' => array(
+			'friendly_name' => __('Graph Template Image Format'),
+			'description' => __('The default Image Format to be used for all new Graph Templates.'),
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => $image_types,
+		),
+		'default_graph_height' => array(
+			'friendly_name' => __('Graph Template Height'),
+			'description' => __('The default Graph Width to be used for all new Graph Templates.'),
+			'method' => 'textbox',
+			'default' => '150',
+			'size' => '5',
+			'max_length' => '5'
 		),
 	'snmp' => array(
 		'general_header' => array(
@@ -651,11 +676,22 @@ $settings = array(
 			),
 		'device_threads' => array(
 			'friendly_name' => __('Device Threads'),
-			'description'   => __('The default number of Device Threads.  This is only applicable when using the Spine Data Collector.'),
-			'method'        => 'drop_array',
-			'default'       => '1',
-			'array'         => array(1, 2, 3, 4, 5, 6)
-			),
+			'description' => __('The default number of Device Threads.  This is only applicable when using the Spine Data Collector.'),
+			'method' => 'drop_array',
+			'default' => '1',
+			'array' => array(
+				1  => __('%s Thread', 1),
+				2  => __('%s Threads', 2),
+				3  => __('%s Threads', 3),
+				4  => __('%s Threads', 4),
+				5  => __('%s Threads', 5),
+				6  => __('%s Threads', 6),
+				7  => __('%s Threads', 7),
+				8  => __('%s Threads', 8),
+				9  => __('%s Threads', 9),
+				10 => __('%s Threads', 10)
+			)
+		),
 		'reindex_method' => array(
 			'friendly_name' => __('Re-index Method for Data Queries'),
 			'description'   => __('The default Re-index Method to use for all Data Queries.'),
@@ -996,11 +1032,11 @@ $settings = array(
 			'max_length'    => '80',
 			'size'          => '60'
 			),
-		'graph_watermark_rrd' => array(
-			'friendly_name' => __('Hide Tobi'),
-			'description'   => __('Hide the default RRDtool text placed by Tobi'),
-			'method'        => 'checkbox',
-			'default'       => 'on'
+		'rrdtool_watermark' => array(
+			'friendly_name' => __('Disable RRDtool Watermark'),
+			'description' => __('Provided your RRDtool version supports it, you may disable RRDtool advertisement on your Graphs by checking this option.'),
+			'method' => 'checkbox',
+			'default' => '',
 			),
 		'clog_header' => array(
 			'friendly_name' => __('Log Viewer Settings'),
@@ -1596,11 +1632,12 @@ $settings = array(
 			'method'        => 'spacer'
 			),
 		'ldap_server' => array(
-			'friendly_name' => __('Server'),
-			'description'   => __('The DNS hostname or IP address of the server.'),
-			'method'        => 'textbox',
-			'max_length'    => '255'
-			),
+			'friendly_name' => __('Server(s)'),
+			'description' => __('A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.'),
+			'method' => 'textbox',
+			'size' => '80',
+			'max_length' => '255'
+		),
 		'ldap_port' => array(
 			'friendly_name' => __('Port Standard'),
 			'description'   => __('TCP/UDP port for Non-SSL communications.'),

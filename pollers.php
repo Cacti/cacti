@@ -170,6 +170,15 @@ $fields_poller_edit = array(
 		'default' => $database_port,
 		'max_length' => '5'
 	),
+	'dbretries' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Remote Database Port'),
+		'description' => __('The TCP port to use to connect to the remote database.'),
+		'value' => '|arg1:dbretries|',
+		'size' => '5',
+		'default' => $database_retries,
+		'max_length' => '5'
+	),
 	'dbssl' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Remote Database SSL'),
@@ -285,7 +294,8 @@ function form_save() {
 			$save['dbhost']        = form_input_validate(get_nfilter_request_var('dbhost'),    'dbhost',    '', true, 3);
 			$save['dbuser']        = form_input_validate(get_nfilter_request_var('dbuser'),    'dbuser',    '', true, 3);
 			$save['dbpass']        = form_input_validate(get_nfilter_request_var('dbpass'),    'dbpass',    '', true, 3);
-			$save['dbport']        = form_input_validate(get_nfilter_request_var('dbport'),    'dbport',    '', true, 3);
+			$save['dbport']        = form_input_validate(get_nfilter_request_var('dbport'),    'dbport',    '^[0-9]+$', true, 3);
+			$save['dbretries']     = form_input_validate(get_nfilter_request_var('dbretries'), 'dbretries', '^[0-9]+$', true, 3);
 			$save['dbssl']         = isset_request_var('dbssl') ? 'on':'';
 			$save['dbsslkey']      = form_input_validate(get_nfilter_request_var('dbsslkey'),  'dbsslkey',  '', true, 3);
 			$save['dbsslcert']     = form_input_validate(get_nfilter_request_var('dbsslcert'), 'dbsslcert', '', true, 3);
@@ -635,6 +645,7 @@ function poller_edit() {
 			unset($fields_poller_edit['dbuser']);
 			unset($fields_poller_edit['dbpass']);
 			unset($fields_poller_edit['dbport']);
+			unset($fields_poller_edit['dbretries']);
 			unset($fields_poller_edit['dbssl']);
 			unset($fields_poller_edit['dbsslkey']);
 			unset($fields_poller_edit['dbsslcert']);
@@ -803,6 +814,7 @@ function test_database_connection($poller = array()) {
 		$poller['dbdefault'],
 		$poller['dbtype'],
 		$poller['dbport'],
+		$poller['dbretries'],
 		$poller['dbssl'],
 		$poller['dbsslkey'],
 		$poller['dbsslcert'],

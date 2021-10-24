@@ -436,7 +436,8 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'file':
 		form_file($field_name,
-			((isset($field_array['size'])) ? $field_array['size'] : '40'));
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
+			((isset($field_array['accept'])) ? $field_array['accept'] : ''));
 
 		break;
 	case 'button':
@@ -500,8 +501,10 @@ function form_submit($form_name, $value, $title = '', $action = '') {
 
 /* form_file - draws a standard html file input element
    @arg $form_name - the name of this form element
-   @arg $form_size - the size (width) of the textbox */
-function form_file($form_name, $form_size = 30) {
+   @arg $form_size - the size (width) of the textbox
+   @arg $form_accept - the file types permitted
+ */
+function form_file($form_name, $form_size = 30, $form_accept = '') {
 	print "<div>\n";
 	print "<label class='import_label' for='$form_name'>" . __('Select a File'). "</label>\n";
 	print "<input type='file'";
@@ -513,7 +516,7 @@ function form_file($form_name, $form_size = 30) {
 		print " class='import_button ui-state-default ui-corner-all'";
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'>\n";
+	print " id='$form_name' name='$form_name' size='$form_size'" . ($form_accept != '' ? " accept='$form_accept'":'') . ">\n";
 	print "<span class='import_text'></span>\n";
 	print "</div>\n";
 }

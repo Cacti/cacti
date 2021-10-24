@@ -492,6 +492,7 @@
 				/* capture mouse up/down events for zoom */
 				$(document).off('mousedown').on('mousedown', function() {
 					mouseDown = true;
+					clearTimeout(myRefresh);
 				}).off('mouseup').on('mouseup', function() {
 					if (mouseDown) {
 						if (zoom.attr.start != 'none') {

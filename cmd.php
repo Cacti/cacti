@@ -131,7 +131,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-global $poller_db_cnn_id, $remote_db_cnn_id;
+global $poller_db_cnn_id, $remote_db_cnn_id, $cactiphp, $using_proc_function;
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
@@ -181,6 +181,7 @@ if (function_exists('pcntl_signal')) {
 // record the start time
 $start = microtime(true);
 $poller_interval = read_config_option('poller_interval');
+$active_profiles = read_config_option('active_profiles');
 
 // check arguments
 if ($allhost) {
@@ -220,40 +221,69 @@ if ($debug) {
 input_validate_input_number($first);
 input_validate_input_number($last);
 
-$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
-	FROM poller_item AS pi
-	LEFT JOIN host AS h
-	ON h.id = pi.host_id
-	LEFT JOIN sites AS s
-	ON s.id = h.site_id
-	WHERE pi.poller_id = ?
-	AND IFNULL(TRIM(s.disabled),'') != 'on'
-	AND IFNULL(TRIM(h.disabled),'') != 'on'
-	$sql_where1
-	AND pi.rrd_next_step <= 0
-	ORDER by pi.host_id",
-	$params1);
+if ($active_profiles > 1) {
+	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
+		FROM poller_item AS pi
+		LEFT JOIN host AS h
+		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
+		WHERE pi.poller_id = ?
+		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
+		$sql_where1
+		AND pi.rrd_next_step <= 0
+		ORDER by pi.host_id",
+		$params1);
 
-$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
-	FROM poller_item AS pi
-	LEFT JOIN host AS h
-	ON h.id = pi.host_id
-	LEFT JOIN sites AS s
-	ON s.id = h.site_id
-	WHERE pi.poller_id = ?
-	AND IFNULL(TRIM(s.disabled),'') != 'on'
-	AND IFNULL(TRIM(h.disabled),'') != 'on'
-	AND pi.action IN(?, ?)
-	$sql_where2
-	AND pi.rrd_next_step <= 0",
-	$params2);
+	$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
+		FROM poller_item AS pi
+		LEFT JOIN host AS h
+		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
+		WHERE pi.poller_id = ?
+		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
+		AND pi.action IN(?, ?)
+		$sql_where2
+		AND pi.rrd_next_step <= 0",
+		$params2);
 
-// setup next polling interval
-db_execute_prepared("UPDATE poller_item AS pi
-	SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
-	WHERE poller_id = ?
-	$sql_where3",
-	$params3);
+	// setup next polling interval
+	db_execute_prepared("UPDATE poller_item AS pi
+		SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
+		WHERE poller_id = ?
+		$sql_where3",
+		$params3);
+} else {
+	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
+		FROM poller_item AS pi
+		LEFT JOIN host AS h
+		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
+		WHERE pi.poller_id = ?
+		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
+		$sql_where1
+		ORDER by pi.host_id",
+		$params1);
+
+	$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
+		FROM poller_item AS pi
+		LEFT JOIN host AS h
+		ON h.id = pi.host_id
+		LEFT JOIN sites AS s
+		ON s.id = h.site_id
+		WHERE pi.poller_id = ?
+		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		AND IFNULL(TRIM(h.disabled),'') != 'on'
+		AND pi.action IN(?, ?)
+		$sql_where2",
+		$params2);
+
+}
 
 if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on') {
 	$host_down    = false;
@@ -284,6 +314,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 		$using_proc_function = true;
 	} else {
 		$using_proc_function = false;
+		$cactiphp = false;
 	}
 
 	foreach ($poller_items as $item) {
@@ -631,7 +662,7 @@ function collect_device_data(&$item, &$error_ds) {
 }
 
 function ping_and_reindex_check(&$item, $mibs) {
-	global $print_data_to_stdout, $sessions, $set_spike_kill, $poller_db_cnn_id;;
+	global $print_data_to_stdout, $sessions, $set_spike_kill, $poller_db_cnn_id, $cactiphp, $using_proc_function;
 
 	$ping    = new Net_Ping;
 	$host_id = $item['host_id'];
@@ -681,7 +712,17 @@ function ping_and_reindex_check(&$item, $mibs) {
 						$session = open_snmp_session($host_id, $item);
 
 						if ($session !== false) {
-							$output = cacti_snmp_session_get($session, $index_item['arg1']);
+							if (trim($index_item['arg1']) == '.1.3.6.1.2.1.1.3.0') {
+								$output = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+
+								if ($output > 0) {
+									$output *= 100;
+								} else {
+									$output = cacti_snmp_session_get($session, $index_item['arg1']);
+								}
+							} else {
+								$output = cacti_snmp_session_get($session, $index_item['arg1']);
+							}
 						} else {
 							$output = 'U';
 						}
@@ -861,4 +902,3 @@ function display_help () {
 	print "    --mibs   - Refresh all system mibs from hosts supporting snmp.\n";
 	print "    --debug  - Display verbose output during execution.\n\n";
 }
-

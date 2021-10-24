@@ -200,7 +200,8 @@ function host_new_graphs_save($host_id) {
 			$item_list = db_fetch_assoc_prepared('SELECT
 				graph_template_item_id
 				FROM graph_template_input_defs
-				WHERE graph_template_input_id = ?', array($matches[3]));
+				WHERE graph_template_input_id = ?',
+				array($matches[3]));
 
 			/* loop through each item affected and update column data */
 			if (cacti_sizeof($item_list)) {
@@ -377,13 +378,12 @@ function graphs() {
 								<option value='-1'<?php if (get_request_var('graph_type') == '-1') {?> selected<?php }?>><?php print __('Graph Template Based');?></option>
 								<?php
 
-								$snmp_queries = db_fetch_assoc_prepared('SELECT
-									snmp_query.id,
-									snmp_query.name
-									FROM (snmp_query, host_snmp_query)
-									WHERE host_snmp_query.snmp_query_id = snmp_query.id
-									AND host_snmp_query.host_id = ?
-									ORDER BY snmp_query.name',
+								$snmp_queries = db_fetch_assoc_prepared('SELECT sq.id, sq.name
+									FROM snmp_query AS sq
+									INNER JOIN host_snmp_query AS hsq
+									ON hsq.snmp_query_id = sq.id
+									WHERE hsq.host_id = ?
+									ORDER BY sq.name',
 									array($host['id']));
 
 								if (cacti_sizeof($snmp_queries) > 0) {
@@ -506,7 +506,8 @@ function graphs() {
 				WHERE gl.host_id = ?
 				AND gt.multiple = ""
 				AND gl.snmp_query_id = 0
-				GROUP BY gl.graph_template_id', array($host['id']));
+				GROUP BY gl.graph_template_id',
+				array($host['id']));
 
 			if (cacti_sizeof($template_graphs)) {
 				$script .= 'var gt_created_graphs = new Array(';
@@ -557,16 +558,16 @@ function graphs() {
 
 		html_start_box('', '100%', '', '3', 'center', '');
 
-		$available_graph_templates = db_fetch_assoc_prepared('SELECT graph_templates.id, graph_templates.name
-			FROM graph_templates
-			LEFT JOIN snmp_query_graph
-			ON snmp_query_graph.graph_template_id = graph_templates.id
-			WHERE snmp_query_graph.name IS NULL
-			AND graph_templates.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
-			AND graph_templates.multiple = ""
+		$available_graph_templates = db_fetch_assoc_prepared('SELECT gt.id, gt.name
+			FROM graph_templates AS gt
+			LEFT JOIN snmp_query_graph AS sqg
+			ON sqg.graph_template_id = gt.id
+			WHERE sqg.name IS NULL
+			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
+			AND gt.multiple = ""
 			UNION
 			SELECT id, name
-			FROM graph_templates
+			FROM graph_templates AS gt
 			WHERE multiple = "on"
 			ORDER BY name',
 			array(get_request_var('host_id'))
@@ -585,14 +586,23 @@ function graphs() {
 	}
 
 	if (get_request_var('graph_type') != -1 && !isempty_request_var('host_id')) {
-		$snmp_queries = db_fetch_assoc('SELECT
-			snmp_query.id,
-			snmp_query.name
-			FROM (snmp_query,host_snmp_query)
-			WHERE host_snmp_query.snmp_query_id=snmp_query.id
-			AND host_snmp_query.host_id=' . $host['id'] .
-			(get_request_var('graph_type') != -2 ? ' AND snmp_query.id=' . get_request_var('graph_type') : '') . '
-			ORDER BY snmp_query.name');
+		$params   = array();
+		$params[] = $host['id'];
+		if (get_request_var('graph_type') != -2) {
+			$params[] = get_request_var('graph_type');
+			$sql = ' AND sq.id = ?';
+		} else {
+			$sql = '';
+		}
+
+		$snmp_queries = db_fetch_assoc_prepared("SELECT sq.id, sq.name
+			FROM snmp_query AS sq
+			INNER JOIN host_snmp_query AS hsq
+			ON hsq.snmp_query_id = sq.id
+			WHERE hsq.host_id = ?
+			$sql
+			ORDER BY sq.name",
+			$params);
 
 		if (cacti_sizeof($snmp_queries)) {
 			foreach ($snmp_queries as $snmp_query) {
@@ -631,20 +641,18 @@ function graphs() {
 					$total_rows = 0;
 				}
 
-				$snmp_query_graphs = db_fetch_assoc_prepared('SELECT
-					snmp_query_graph.id,snmp_query_graph.name
+				$snmp_query_graphs = db_fetch_assoc_prepared('SELECT id, name
 					FROM snmp_query_graph
-					WHERE snmp_query_graph.snmp_query_id = ?
-					ORDER BY snmp_query_graph.name',
+					WHERE snmp_query_id = ?
+					ORDER BY name',
 					array($snmp_query['id']));
 
 				if (cacti_sizeof($snmp_query_graphs)) {
 					foreach ($snmp_query_graphs as $snmp_query_graph) {
-						$created_graphs = db_fetch_assoc_prepared('SELECT DISTINCT
-							gl.snmp_index
-							FROM graph_local AS gl
-							WHERE gl.snmp_query_graph_id = ?
-							AND gl.host_id = ?',
+						$created_graphs = db_fetch_assoc_prepared('SELECT DISTINCT snmp_index
+							FROM graph_local
+							WHERE snmp_query_graph_id = ?
+							AND host_id = ?',
 							array($snmp_query_graph['id'], $host['id']));
 
 						$script .= 'created_graphs[' . $snmp_query_graph['id'] . '] = new Array(';
@@ -832,14 +840,14 @@ function graphs() {
 				html_end_box(false);
 
 				/* draw the graph template drop down here */
-				$data_query_graphs = db_fetch_assoc_prepared('SELECT
-					snmp_query_graph.id, snmp_query_graph.name
+				$data_query_graphs = db_fetch_assoc_prepared('SELECT id, name
 					FROM snmp_query_graph
-					WHERE snmp_query_graph.snmp_query_id = ?
-					ORDER BY snmp_query_graph.name', array($snmp_query['id']));
+					WHERE snmp_query_id = ?
+					ORDER BY name',
+					array($snmp_query['id']));
 
 				if (cacti_sizeof($data_query_graphs) == 1) {
-					echo "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>";
+					print "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>";
 				} elseif (cacti_sizeof($data_query_graphs) > 1) {
 					print "<div class='break'></div>";
 

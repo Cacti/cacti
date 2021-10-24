@@ -50,8 +50,8 @@ CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
 APACHE_ERROR="/var/log/apache2/error.log"
 APACHE_ACCESS="/var/log/apache2/access.log"
 POLLER="$BASE_PATH/poller.php"
-WEBUSER="travis"
-DEBUG=1
+WEBUSER="www-data"
+DEBUG=0
 
 # ------------------------------------------------------------------------------
 # Ensure that the artifact directory is created.  No need for a mess
@@ -106,7 +106,8 @@ save_log_files() {
 # Some functions to handle settings consitently
 # ------------------------------------------------------------------------------
 set_cacti_admin_password() {
-	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password=MD5('$login_pw'), must_change_password='', password_change='' WHERE id = 1" cacti 2>/dev/null
+	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password=MD5('$login_pw') WHERE id = 1" cacti 2>/dev/null
+	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1" cacti 2>/dev/null
 }
 
 enable_log_validation() {
@@ -208,9 +209,12 @@ if [ $error -eq 8 ]; then
 	echo "WARNING: $errors pages not found.  This is not necessarily a bug"
 fi
 
-cat $logFile1
-cat $APACHE_ERROR
-cat $APACHE_ACCESS
+# ------------------------------------------------------------------------------
+# Uncomment for debugging.
+# ------------------------------------------------------------------------------
+#cat $logFile1
+#cat $APACHE_ERROR
+#cat $APACHE_ACCESS
 
 checks=`grep "HTTP" $logFile1 | wc -l`
 echo "NOTE: There were $checks pages checked through recursion"

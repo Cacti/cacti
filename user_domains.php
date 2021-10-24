@@ -364,11 +364,12 @@ function domain_edit() {
 
 	$fields_domain_ldap_edit = array(
 		'server' => array(
-			'friendly_name' => __('Server'),
-			'description' => __('The dns hostname or ip address of the server.'),
+			'friendly_name' => __('Server(s)'),
+			'description' => __('A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.'),
 			'method' => 'textbox',
 			'value' => '|arg1:server|',
 			'default' => read_config_option('ldap_server'),
+			'size' => 80,
 			'max_length' => '255'
 			),
 		'port' => array(

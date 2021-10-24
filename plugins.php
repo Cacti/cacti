@@ -669,7 +669,7 @@ function plugin_actions($plugin, $table) {
 			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			break;
 		case '-2': // Naming issues
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', $plugin['infoname'], $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', strtolower($plugin['infoname']), $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 
 			break;
 		default: // Old PIA

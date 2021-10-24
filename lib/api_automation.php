@@ -3466,7 +3466,12 @@ function automation_valid_snmp_device(&$device) {
 			}
 
 			/* get system uptime */
-			$snmp_sysUptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+			$snmp_sysUptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
+			if (!empty($snmp_sysUptime)) {
+				$snmp_sysUptime *= 100;
+			} else {
+				$snmp_sysUptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+			}
 
 			if ($snmp_sysUptime != '') {
 				$snmp_sysUptime = trim(strtr($snmp_sysUptime,'"',' '));
@@ -3858,7 +3863,7 @@ function calculateNextStart($net) {
 		$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime($net['start_at']));
 		$ntime = strtotime($ndate);
 
-		debug('Start At: ' . $net['start_at'] . ', Possible Next Start: ' . $ndate . ' with Timestamp: ' . $ntime);
+		automation_debug('Start At: ' . $net['start_at'] . ', Possible Next Start: ' . $ndate . ' with Timestamp: ' . $ntime);
 
 		if ($ntime > $now) {
 			return $ntime;

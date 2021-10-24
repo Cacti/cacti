@@ -12,13 +12,13 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: var(--text-color-normal);
+    background: var(--scrollbar-thumb);
     border: 4px solid var(--background-content);
     border-radius: 8px;
 }
 
 * {
-    scrollbar-color: auto !important;
+    scrollbar-color: var(--scrollbar-thumb) var(--background-content);
     scrollbar-width: thin !important;
 }
 
@@ -104,6 +104,10 @@ a:hover {
 /* pseudo classes */
 .nowrap {
     white-space: nowrap;
+}
+
+.wrap {
+	white-space: normal !important;
 }
 
 .top {
@@ -883,7 +887,7 @@ ul#breadcrumbs {
 	clear: both;
 	width: 100%;
 	vertical-align: top;
-	background-color: #242635;
+	background: var(--background-navigation);
 }
 
 .cactiTreeNavigationArea {
@@ -1396,7 +1400,7 @@ table.cactiTable {
 	display: table-column;
 	width: 55%;
 	text-align: left;
-    background-color: #242635;
+    background-color: var(--background);
 	margin-bottom: -32768px;
 }
 
@@ -1406,7 +1410,7 @@ table.cactiTable {
 	display: table-column;
 	width: 45%;
 	text-align: left;
-    background-color: #242635;
+    background-color: var(--background);
 	margin-bottom: -32768px;
 }
 
@@ -1451,7 +1455,7 @@ table.cactiTable {
 	text-align: left;
 	line-height: 25px;
 	text-transform: none;
-	color: #7e818f;
+	color: var(--text-color-normal);
 	font-size: 13px;
     padding-left: 5px;
     margin-top: 10px;
@@ -1927,7 +1931,7 @@ div#gtabs {
 }
 
 .maintabs a {
-	color: #7e818f;
+	color: var(--text-color-normal);
 	float: left !important;
     padding: 0.5em 0.5em;
 	text-decoration: none;
@@ -1935,13 +1939,14 @@ div#gtabs {
     line-height: 2em;
 }
 
+html[data-theme-color='light'] .maintabs a {
+	color: var(--text-color-lighter);
+}
+
+
 .usertabs nav ul {
 	float: right;
 	padding-right: 5px;
-}
-
-.usertabs a {
-	#padding: 5px 6px;
 }
 
 .maintabs a:hover, .maintabs a:hover span {
@@ -1951,7 +1956,7 @@ div#gtabs {
 
 .maintabs a.selected:not(#tab-console) {
 	color: #f2f2f3;
-    background: #1c1e2d none;
+    background: rgba(0,0,0,0.25);
 }
 
 .maintabs nav {
@@ -2358,9 +2363,9 @@ hr.menu {
 
 
 .hostInfoHeader {
-	background: #242635;
+	background-color: var(--background);
 	padding: 8px;
-	border: 1px solid #262628;
+	box-shadow: 0 1px 3px 0 rgba(0,0,0,.25);
 	border-radius: 3px;
 	margin: 15px 0 15px 0;
 }
@@ -2446,14 +2451,14 @@ hr.menu {
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
-	border: 1px solid rgba(255,255,255,0.2);
+	border: 1px solid var(--border-color);
 	background: transparent;
 	font-weight: normal;
 	color: #555555;
 }
 
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus, .ui-button:hover, .ui-button:focus {
-	border: 1px solid rgba(255,255,255,0.2);
+	border: 1px solid var(--border-color);
 	background: transparent;
 	font-weight: normal;
 	color: #57a9da;
@@ -2498,7 +2503,7 @@ hr.menu {
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-	border: 1px solid rgba(255,255,255,0.2);
+	border: 1px solid var(--border-color);
 	background: transparent;
 	font-weight: normal;
 	color: #969BA3;
@@ -2722,15 +2727,21 @@ td.center > table {
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: var(--background-content);
+    background-color: var(--background-filter);
     min-height: 40px;
+	margin: 0 -3em;
+	padding: 0 3em;
 }
 
 .sticky + .cactiFormStart {
     #padding-top: 260px;
 }
 
-.next_gen {
+.cactiFormStart {
+	box-shadow: 0 1px 3px 0 rgba(0,0,0,.25);
+}
+
+.compact {
     display: none;
 }
 
@@ -2770,19 +2781,20 @@ td.center > table {
         text-align: unset;
     }
 
-    #next_gen_tab_menu {
+    #compact_tab_menu {
         width: 100%;
-        padding: 2em 0;
-    }
+        padding: 0.75em 0;
+		background: var(--background-highlight);
+	}
 
-    #next_gen_user_menu {
+    #compact_user_menu {
         width: 100%;
         position: absolute;
         bottom: 2em;
         padding-top: 2em;
     }
 
-    #next_gen_user_menu .menuitem ul {
+    #compact_user_menu .menuitem ul {
         top: auto !important;
         bottom: 36px !important;
     }
@@ -2790,59 +2802,58 @@ td.center > table {
     .cactiConsoleNavigationArea {
         width: 180px;
         float: left;
-        background-color: var(--background);
+        background-color: var(--background-navigation);
     }
 
-    html[data-theme-mode='next_gen'] .cactiPageHead,
-    html[data-theme-mode='next_gen'] .cactiPageBottom {
+    html[data-theme-mode='compact'] .cactiPageHead,
+    html[data-theme-mode='compact'] .cactiPageBottom {
         display: none;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea {
         overflow-y: visible !important;
         width: 60px !important;
         position: relative;
-        box-shadow: 5px 0 10px -5px #0d0e15;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .next_gen{
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact{
         display: block;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea #nav li ul li a,
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .nav li ul li a {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea #nav li ul li a,
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .nav li ul li a {
         padding: 2px 4px 2px 2em;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea #menu {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea #menu {
         margin-bottom: 40px;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menu_glyph {
-        color: #7e818f;
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_glyph {
+        color: var(--text-color-lighter);
         font-size: 1.2em;
         padding-left: 8px;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menu_parent:not(.active) {
-        color: #3d3d3d;
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_parent:not(.active) {
+        #color: #3d3d3d;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem {
         position: relative;
         overflow: hidden;
         z-index: 850;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem:hover {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover {
         overflow: visible;
         z-index: 900;
         background-color: #0d0e15;
-        box-shadow: inset 5px 0 0 0 #3c8a3c;
+        box-shadow: inset 5px 0 0 0 var(--background-highlight);
         width: 230px;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem span{
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem span{
         display: none !important;
         width: 155px;
         left: 50px;
@@ -2851,12 +2862,12 @@ td.center > table {
         margin-left: 3em !important;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem:hover span {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover span {
         display: inline-block !important;
         animation: dropdown-anim .15s ease-in-out .1s forwards;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem ul {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem ul {
         display: none !important;
         width: 180px;
         left: 62px;
@@ -2867,17 +2878,14 @@ td.center > table {
         animation: dropdown-anim .15s ease-in-out .1s forwards;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleNavigationArea .menuitem:hover ul {
+    html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover ul {
         display: inline-block !important;
     }
 
-    html[data-theme-mode='next_gen'] .cactiConsoleContentArea #filterTableOnTop {
-        padding-top: 2em;
+    html[data-theme-mode='compact'] .cactiConsoleContentArea #filterTableOnTop {
+        padding-top: 0.6em;
     }
 }
-
-
-
 
 
 @media only screen and (min-width: 1280px) {
@@ -3162,3 +3170,12 @@ circle {
 	fill: transparent !important;
 }
 
+[id*='_edit'] .tableRowGraph:hover {
+	background-color: rgba(200, 0, 200, .1) !important;
+	border-left: 2px solid yellow !important;
+	border-right: 2px solid yellow !important;
+}
+
+.tableRowGraph {
+	border: 2px solid rgba(0,0,0,0);
+}

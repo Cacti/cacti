@@ -22,6 +22,205 @@
  +-------------------------------------------------------------------------+
 */
 
+/* get the format files */
+$formats = reports_get_format_files();
+
+$fields_reports_edit = array(
+	'genhead' => array(
+		'friendly_name' => __('General Settings'),
+		'method' => 'spacer',
+		'collapsible' => 'true'
+		),
+	'name' => array(
+		'friendly_name' => __('Report Name'),
+		'method' => 'textbox',
+		'default' => __('New Report'),
+		'description' => __('Give this Report a descriptive Name'),
+		'max_length' => 99,
+		'value' => '|arg1:name|'
+		),
+	'enabled' => array(
+		'friendly_name' => __('Enable Report'),
+		'method' => 'checkbox',
+		'default' => '',
+		'description' => __('Check this box to enable this Report.'),
+		'value' => '|arg1:enabled|',
+		'form_id' => false
+		),
+	'formathead' => array(
+		'friendly_name' => __('Output Formatting'),
+		'method' => 'spacer',
+		'collapsible' => 'true'
+		),
+	'cformat' => array(
+		'friendly_name' => __('Use Custom Format HTML'),
+		'method' => 'checkbox',
+		'default' => '',
+		'description' => __('Check this box if you want to use custom html and CSS for the report.'),
+		'value' => '|arg1:cformat|',
+		'form_id' => false
+		),
+	'format_file' => array(
+		'friendly_name' => __('Format File to Use'),
+		'method' => 'drop_array',
+		'default' => 'default.format',
+		'description' => __('Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the \'formats\' directory.'),
+		'value' => '|arg1:format_file|',
+		'array' => $formats
+		),
+	'font_size' => array(
+		'friendly_name' => __('Default Text Font Size'),
+		'description' => __('Defines the default font size for all text in the report including the Report Title.'),
+		'default' => 16,
+		'method' => 'drop_array',
+		'array' => array(7 => 7, 8 => 8, 10 => 10, 12 => 12, 14 => 14, 16 => 16, 18 => 18, 20 => 20, 24 => 24, 28 => 28, 32 => 32),
+		'value' => '|arg1:font_size|'
+		),
+	'alignment' => array(
+		'friendly_name' => __('Default Object Alignment'),
+		'description' => __('Defines the default Alignment for Text and Graphs.'),
+		'default' => 0,
+		'method' => 'drop_array',
+		'array' => $alignment,
+		'value' => '|arg1:alignment|'
+		),
+	'graph_linked' => array(
+		'friendly_name' => __('Graph Linked'),
+		'method' => 'checkbox',
+		'default' => '',
+		'description' => __('Should the Graphs be linked back to the Cacti site?'),
+		'value' => '|arg1:graph_linked|'
+		),
+	'graphhead' => array(
+		'friendly_name' => __('Graph Settings'),
+		'method' => 'spacer',
+		'collapsible' => 'true'
+		),
+	'graph_columns' => array(
+		'friendly_name' => __('Graph Columns'),
+		'method' => 'drop_array',
+		'default' => '1',
+		'array' => array(1 => 1, 2, 3, 4, 5),
+		'description' => __('The number of Graph columns.'),
+		'value' => '|arg1:graph_columns|'
+		),
+	'graph_width' => array(
+		'friendly_name' => __('Graph Width'),
+		'method' => 'drop_array',
+		'default' => '300',
+		'array' => array(100 => 100, 150 => 150, 200 => 200, 250 => 250, 300 => 300, 350 => 350, 400 => 400, 500 => 500, 600 => 600, 700 => 700, 800 => 800, 900 => 900, 1000 => 1000),
+		'description' => __('The Graph width in pixels.'),
+		'value' => '|arg1:graph_width|'
+		),
+	'graph_height' => array(
+		'friendly_name' => __('Graph Height'),
+		'method' => 'drop_array',
+		'default' => '125',
+		'array' => array(75 => 75, 100 => 100, 125 => 125, 150 => 150, 175 => 175, 200 => 200, 250 => 250, 300 => 300),
+		'description' => __('The Graph height in pixels.'),
+		'value' => '|arg1:graph_height|'
+		),
+	'thumbnails' => array(
+		'friendly_name' => __('Thumbnails'),
+		'method' => 'checkbox',
+		'default' => '',
+		'description' => __('Should the Graphs be rendered as Thumbnails?'),
+		'value' => '|arg1:thumbnails|'
+		),
+	'freqhead' => array(
+		'friendly_name' => __('Email Frequency'),
+		'method' => 'spacer',
+		'collapsible' => 'true'
+		),
+	'mailtime' => array(
+		'friendly_name' => __('Next Timestamp for Sending Mail Report'),
+		'description' => __('Start time for [first|next] mail to take place. All future mailing times will be based upon this start time. A good example would be 2:00am. The time must be in the future.  If a fractional time is used, say 2:00am, it is assumed to be in the future.'),
+		'default' => 0,
+		'method' => 'textbox',
+		'size' => 20,
+		'max_length' => 20,
+		'value' => '|arg1:mailtime|'
+		),
+	'intrvl' => array(
+		'friendly_name' => __('Report Interval'),
+		'description' => __('Defines a Report Frequency relative to the given Mailtime above.') . '<br>' .
+			__('e.g. \'Week(s)\' represents a weekly Reporting Interval.'),
+		'default' => REPORTS_SCHED_INTVL_DAY,
+		'method' => 'drop_array',
+		'array' => $reports_interval,
+		'value' => '|arg1:intrvl|'
+		),
+	'count' => array(
+		'friendly_name' => __('Interval Frequency'),
+		'description' => __('Based upon the Timespan of the Report Interval above, defines the Frequency within that Interval.') . '<br>' .
+			__('e.g. If the Report Interval is \'Month(s)\', then \'2\' indicates Every \'2 Month(s) from the next Mailtime.\' Lastly, if using the Month(s) Report Intervals, the \'Day of Week\' and the \'Day of Month\' are both calculated based upon the Mailtime you specify above.'),
+		'default' => REPORTS_SCHED_COUNT,
+		'method' => 'textbox',
+		'size' => 10,
+		'max_length' => 10,
+		'value' => '|arg1:count|'
+		),
+	'emailhead' => array(
+		'friendly_name' => __('Email Sender/Receiver Details'),
+		'method' => 'spacer',
+		'collapsible' => 'true'
+		),
+	'subject' => array(
+		'friendly_name' => __('Subject'),
+		'method' => 'textbox',
+		'default' => __('Cacti Report'),
+		'description' => __('This value will be used as the default Email subject.  The report name will be used if left blank.'),
+		'max_length' => 255,
+		'value' => '|arg1:subject|'
+		),
+	'from_name' => array(
+		'friendly_name' => __('From Name'),
+		'method' => 'textbox',
+		'default' => read_config_option('settings_from_name'),
+		'description' => __('This Name will be used as the default E-mail Sender'),
+		'max_length' => 255,
+		'value' => '|arg1:from_name|'
+		),
+	'from_email' => array(
+		'friendly_name' => __('From Email Address'),
+		'method' => 'textbox',
+		'default' => read_config_option('settings_from_email'),
+		'description' => __('This Address will be used as the E-mail Senders address'),
+		'max_length' => 255,
+		'value' => '|arg1:from_email|'
+		),
+	'email' => array(
+		'friendly_name' => __('To Email Address(es)'),
+		'method' => 'textarea',
+		'textarea_rows' => '5',
+		'textarea_cols' => '60',
+		'class' => 'textAreaNotes',
+		'default' => '',
+		'description' => __('Please separate multiple addresses by comma (,)'),
+		'max_length' => 255,
+		'value' => '|arg1:email|'
+		),
+	'bcc' => array(
+		'friendly_name' => __('BCC Address(es)'),
+		'method' => 'textarea',
+		'textarea_rows' => '5',
+		'textarea_cols' => '60',
+		'class' => 'textAreaNotes',
+		'default' => '',
+		'description' => __('Blind carbon copy. Please separate multiple addresses by comma (,)'),
+		'max_length' => 255,
+		'value' => '|arg1:bcc|'
+		),
+	'attachment_type' => array(
+		'friendly_name' => __('Image attach type'),
+		'method' => 'drop_array',
+		'default' => read_config_option('reports_default_image_format'),
+		'description' => __('Select one of the given Types for the Image Attachments'),
+		'value' => '|arg1:attachment_type|',
+		'array' => $attach_types
+		),
+);
+
 function reports_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -914,206 +1113,7 @@ function reports_item_edit() {
  --------------------- */
 
 function reports_edit() {
-	global $config, $attach_types, $alignment, $reports_interval;
-
-	/* get the format files */
-	$formats = reports_get_format_files();
-
-	$fields_reports_edit = array(
-		'genhead' => array(
-			'friendly_name' => __('General Settings'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
-			),
-		'name' => array(
-			'friendly_name' => __('Report Name'),
-			'method' => 'textbox',
-			'default' => __('New Report'),
-			'description' => __('Give this Report a descriptive Name'),
-			'max_length' => 99,
-			'value' => '|arg1:name|'
-			),
-		'enabled' => array(
-			'friendly_name' => __('Enable Report'),
-			'method' => 'checkbox',
-			'default' => '',
-			'description' => __('Check this box to enable this Report.'),
-			'value' => '|arg1:enabled|',
-			'form_id' => false
-			),
-		'formathead' => array(
-			'friendly_name' => __('Output Formatting'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
-			),
-		'cformat' => array(
-			'friendly_name' => __('Use Custom Format HTML'),
-			'method' => 'checkbox',
-			'default' => '',
-			'description' => __('Check this box if you want to use custom html and CSS for the report.'),
-			'value' => '|arg1:cformat|',
-			'form_id' => false
-			),
-		'format_file' => array(
-			'friendly_name' => __('Format File to Use'),
-			'method' => 'drop_array',
-			'default' => 'default.format',
-			'description' => __('Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the \'formats\' directory.'),
-			'value' => '|arg1:format_file|',
-			'array' => $formats
-			),
-		'font_size' => array(
-			'friendly_name' => __('Default Text Font Size'),
-			'description' => __('Defines the default font size for all text in the report including the Report Title.'),
-			'default' => 16,
-			'method' => 'drop_array',
-			'array' => array(7 => 7, 8 => 8, 10 => 10, 12 => 12, 14 => 14, 16 => 16, 18 => 18, 20 => 20, 24 => 24, 28 => 28, 32 => 32),
-			'value' => '|arg1:font_size|'
-			),
-		'alignment' => array(
-			'friendly_name' => __('Default Object Alignment'),
-			'description' => __('Defines the default Alignment for Text and Graphs.'),
-			'default' => 0,
-			'method' => 'drop_array',
-			'array' => $alignment,
-			'value' => '|arg1:alignment|'
-			),
-		'graph_linked' => array(
-			'friendly_name' => __('Graph Linked'),
-			'method' => 'checkbox',
-			'default' => '',
-			'description' => __('Should the Graphs be linked back to the Cacti site?'),
-			'value' => '|arg1:graph_linked|'
-			),
-		'graphhead' => array(
-			'friendly_name' => __('Graph Settings'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
-			),
-		'graph_columns' => array(
-			'friendly_name' => __('Graph Columns'),
-			'method' => 'drop_array',
-			'default' => '1',
-			'array' => array(1 => 1, 2, 3, 4, 5),
-			'description' => __('The number of Graph columns.'),
-			'value' => '|arg1:graph_columns|'
-			),
-		'graph_width' => array(
-			'friendly_name' => __('Graph Width'),
-			'method' => 'drop_array',
-			'default' => '300',
-			'array' => array(100 => 100, 150 => 150, 200 => 200, 250 => 250, 300 => 300, 350 => 350, 400 => 400, 500 => 500, 600 => 600, 700 => 700, 800 => 800, 900 => 900, 1000 => 1000),
-			'description' => __('The Graph width in pixels.'),
-			'value' => '|arg1:graph_width|'
-			),
-		'graph_height' => array(
-			'friendly_name' => __('Graph Height'),
-			'method' => 'drop_array',
-			'default' => '125',
-			'array' => array(75 => 75, 100 => 100, 125 => 125, 150 => 150, 175 => 175, 200 => 200, 250 => 250, 300 => 300),
-			'description' => __('The Graph height in pixels.'),
-			'value' => '|arg1:graph_height|'
-			),
-		'thumbnails' => array(
-			'friendly_name' => __('Thumbnails'),
-			'method' => 'checkbox',
-			'default' => '',
-			'description' => __('Should the Graphs be rendered as Thumbnails?'),
-			'value' => '|arg1:thumbnails|'
-			),
-		'freqhead' => array(
-			'friendly_name' => __('Email Frequency'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
-			),
-		'mailtime' => array(
-			'friendly_name' => __('Next Timestamp for Sending Mail Report'),
-			'description' => __('Start time for [first|next] mail to take place. All future mailing times will be based upon this start time. A good example would be 2:00am. The time must be in the future.  If a fractional time is used, say 2:00am, it is assumed to be in the future.'),
-			'default' => 0,
-			'method' => 'textbox',
-			'size' => 20,
-			'max_length' => 20,
-			'value' => '|arg1:mailtime|'
-			),
-		'intrvl' => array(
-			'friendly_name' => __('Report Interval'),
-			'description' => __('Defines a Report Frequency relative to the given Mailtime above.') . '<br>' .
-				__('e.g. \'Week(s)\' represents a weekly Reporting Interval.'),
-			'default' => REPORTS_SCHED_INTVL_DAY,
-			'method' => 'drop_array',
-			'array' => $reports_interval,
-			'value' => '|arg1:intrvl|'
-			),
-		'count' => array(
-			'friendly_name' => __('Interval Frequency'),
-			'description' => __('Based upon the Timespan of the Report Interval above, defines the Frequency within that Interval.') . '<br>' .
-				__('e.g. If the Report Interval is \'Month(s)\', then \'2\' indicates Every \'2 Month(s) from the next Mailtime.\' Lastly, if using the Month(s) Report Intervals, the \'Day of Week\' and the \'Day of Month\' are both calculated based upon the Mailtime you specify above.'),
-			'default' => REPORTS_SCHED_COUNT,
-			'method' => 'textbox',
-			'size' => 10,
-			'max_length' => 10,
-			'value' => '|arg1:count|'
-			),
-		'emailhead' => array(
-			'friendly_name' => __('Email Sender/Receiver Details'),
-			'method' => 'spacer',
-			'collapsible' => 'true'
-			),
-		'subject' => array(
-			'friendly_name' => __('Subject'),
-			'method' => 'textbox',
-			'default' => __('Cacti Report'),
-			'description' => __('This value will be used as the default Email subject.  The report name will be used if left blank.'),
-			'max_length' => 255,
-			'value' => '|arg1:subject|'
-			),
-		'from_name' => array(
-			'friendly_name' => __('From Name'),
-			'method' => 'textbox',
-			'default' => read_config_option('settings_from_name'),
-			'description' => __('This Name will be used as the default E-mail Sender'),
-			'max_length' => 255,
-			'value' => '|arg1:from_name|'
-			),
-		'from_email' => array(
-			'friendly_name' => __('From Email Address'),
-			'method' => 'textbox',
-			'default' => read_config_option('settings_from_email'),
-			'description' => __('This Address will be used as the E-mail Senders address'),
-			'max_length' => 255,
-			'value' => '|arg1:from_email|'
-			),
-		'email' => array(
-			'friendly_name' => __('To Email Address(es)'),
-			'method' => 'textarea',
-			'textarea_rows' => '5',
-			'textarea_cols' => '60',
-			'class' => 'textAreaNotes',
-			'default' => '',
-			'description' => __('Please separate multiple addresses by comma (,)'),
-			'max_length' => 255,
-			'value' => '|arg1:email|'
-			),
-		'bcc' => array(
-			'friendly_name' => __('BCC Address(es)'),
-			'method' => 'textarea',
-			'textarea_rows' => '5',
-			'textarea_cols' => '60',
-			'class' => 'textAreaNotes',
-			'default' => '',
-			'description' => __('Blind carbon copy. Please separate multiple addresses by comma (,)'),
-			'max_length' => 255,
-			'value' => '|arg1:bcc|'
-			),
-		'attachment_type' => array(
-			'friendly_name' => __('Image attach type'),
-			'method' => 'drop_array',
-			'default' => read_config_option('reports_default_image_format'),
-			'description' => __('Select one of the given Types for the Image Attachments'),
-			'value' => '|arg1:attachment_type|',
-			'array' => $attach_types
-			),
-	);
+	global $config, $attach_types, $alignment, $reports_interval, $fields_reports_edit;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1581,9 +1581,9 @@ function reports() {
 		$sql_where");
 
 	$reports_list = db_fetch_assoc("SELECT
-		user_auth.full_name,
+		user_auth.full_name, user_auth.username,
 		reports.*,
-		CONCAT_WS('', intrvl, ' ', count, ' ', offset, '') AS cint
+		CONCAT_WS('', intrvl, ' ', count, ' ', `offset`, '') AS cint
 		FROM reports
 		$sql_join
 		$sql_where
@@ -1643,7 +1643,7 @@ function reports() {
 
 			if (is_reports_admin()) {
 				if (reports_html_account_exists($report['user_id'])) {
-					form_selectable_ecell($report['full_name'], $report['id']);
+					form_selectable_ecell($report['full_name'] ? $report['full_name'] : $report['username'], $report['id']);
 				} else {
 					form_selectable_cell(__('Report Disabled - No Owner'), $report['id']);
 				}

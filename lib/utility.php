@@ -1034,18 +1034,18 @@ function utilities_get_mysql_recommendations() {
 				'innodb_read_io_threads' => array(
 					'value'   => '32',
 					'measure' => 'ge',
-					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.')
+					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server.')
 					),
 				'innodb_write_io_threads' => array(
 					'value'   => '16',
 					'measure' => 'ge',
-					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
+					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server.')
 					),
 				'innodb_buffer_pool_instances' => array(
 					'value' => '16',
 					'measure' => 'pinst',
 					'class' => 'warning',
-					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
+					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
 					),
 				'innodb_io_capacity' => array(
 					'value' => '5000',
@@ -1105,6 +1105,22 @@ function utilities_get_mysql_recommendations() {
 
 			unset($recommendations['innodb_additional_mem_pool_size']);
 		}
+	}
+
+	if ($database == 'MariaDB' && version_compare($version, '10.2.4', '>')) {
+		$recommendations['innodb_doublewrite'] = array(
+			'value'   => 'OFF',
+			'measure' => 'equalint',
+			'class' => 'error',
+			'comment' => __('When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance.')
+		);
+
+		$recommendations['innodb_use_atomic_writes'] = array(
+			'value'   => 'ON',
+			'measure' => 'equalint',
+			'class' => 'error',
+			'comment' => __('When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance.')
+		);
 	}
 
 	if (file_exists('/etc/my.cnf.d/server.cnf')) {

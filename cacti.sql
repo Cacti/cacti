@@ -247,7 +247,7 @@ CREATE TABLE `automation_devices` (
   `sysLocation` varchar(255) NOT NULL DEFAULT '',
   `sysContact` varchar(255) NOT NULL DEFAULT '',
   `sysDescr` varchar(255) NOT NULL DEFAULT '',
-  `sysUptime` int(32) NOT NULL DEFAULT '0',
+  `sysUptime` bigint(20) unsigned NOT NULL DEFAULT '0',
   `os` varchar(64) NOT NULL DEFAULT '',
   `snmp` tinyint(4) NOT NULL DEFAULT '0',
   `known` tinyint(4) NOT NULL DEFAULT '0',
@@ -1275,10 +1275,10 @@ INSERT INTO `data_input_fields` VALUES (37,'31112c85ae4ff821d3b288336288818c',12
 INSERT INTO `data_input_fields` VALUES (38,'5be8fa85472d89c621790b43510b5043',12,'Output Value','output','out','on',0,'','','');
 INSERT INTO `data_input_fields` VALUES (39,'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');
 INSERT INTO `data_input_fields` VALUES (40,'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');
-INSERT INTO `data_input_fields` VALUES (41,'20832ce12f099c8e54140793a091af90',1,'SNMP Authenticaion Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','','');
+INSERT INTO `data_input_fields` VALUES (41,'20832ce12f099c8e54140793a091af90',1,'SNMP Authentication Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','','');
 INSERT INTO `data_input_fields` VALUES (42,'c60c9aac1e1b3555ea0620b8bbfd82cb',1,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','','');
 INSERT INTO `data_input_fields` VALUES (43,'feda162701240101bc74148415ef415a',1,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','','');
-INSERT INTO `data_input_fields` VALUES (44,'2cf7129ad3ff819a7a7ac189bee48ce8',2,'SNMP Authenticaion Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','','');
+INSERT INTO `data_input_fields` VALUES (44,'2cf7129ad3ff819a7a7ac189bee48ce8',2,'SNMP Authentication Protocol (v3)','snmp_auth_protocol','in','',0,'snmp_auth_protocol','','');
 INSERT INTO `data_input_fields` VALUES (45,'6b13ac0a0194e171d241d4b06f913158',2,'SNMP Privacy Passphrase (v3)','snmp_priv_passphrase','in','',0,'snmp_priv_passphrase','','');
 INSERT INTO `data_input_fields` VALUES (46,'3a33d4fc65b8329ab2ac46a36da26b72',2,'SNMP Privacy Protocol (v3)','snmp_priv_protocol','in','',0,'snmp_priv_protocol','','');
 
@@ -1287,7 +1287,7 @@ INSERT INTO `data_input_fields` VALUES (46,'3a33d4fc65b8329ab2ac46a36da26b72',2,
 --
 
 CREATE TABLE data_local (
-  id mediumint(8) unsigned NOT NULL auto_increment,
+  id int(10) unsigned NOT NULL auto_increment,
   data_template_id mediumint(8) unsigned NOT NULL default '0',
   host_id mediumint(8) unsigned NOT NULL default '0',
   snmp_query_id mediumint(8) NOT NULL default '0',
@@ -1691,9 +1691,10 @@ CREATE TABLE graph_templates (
   `hash` char(32) NOT NULL default '',
   `name` char(255) NOT NULL default '',
   `multiple` char(2) NOT NULL default '',
+  `test_source` char(2) NOT NULL default '',
   PRIMARY KEY (`id`),
-  KEY `multiple_name` (`multiple`, `name`(171)),
-  KEY `name` (`name`(171))
+  KEY `multiple_name` (`multiple`, `name`),
+  KEY `name` (`name`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Contains each graph template name.';
 
 --
@@ -1833,7 +1834,12 @@ CREATE TABLE graph_templates_item (
   PRIMARY KEY (id),
   KEY graph_template_id (graph_template_id),
   KEY local_graph_id_sequence (local_graph_id, sequence),
+  KEY local_graph_template_item_id (local_graph_template_item_id),
   KEY task_item_id (task_item_id),
+  KEY cdef_id (cdef_id),
+  KEY vdef_id (vdef_id),
+  KEY color_id (color_id),
+  KEY gprint_id (gprint_id),
   KEY `lgi_gti` (`local_graph_id`,`graph_template_id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores the actual graph item data.';
 
@@ -1923,7 +1929,7 @@ CREATE TABLE host (
   snmp_timeout mediumint(8) unsigned NOT NULL default '500',
   snmp_sysDescr varchar(300) NOT NULL default '',
   snmp_sysObjectID varchar(128) NOT NULL default '',
-  snmp_sysUpTimeInstance int unsigned NOT NULL default '0',
+  snmp_sysUpTimeInstance bigint(20) unsigned NOT NULL default '0',
   snmp_sysContact varchar(300) NOT NULL default '',
   snmp_sysName varchar(300) NOT NULL default '',
   snmp_sysLocation varchar(300) NOT NULL default '',
@@ -2154,6 +2160,7 @@ CREATE TABLE `poller` (
   `dbuser` varchar(20) NOT NULL DEFAULT '',
   `dbpass` varchar(64) NOT NULL DEFAULT '',
   `dbport` int(10) unsigned DEFAULT '3306',
+  `dbretries` int(10) unsigned DEFAULT '2',
   `dbssl` char(3) DEFAULT '',
   `dbsslkey` varchar(255) DEFAULT NULL,
   `dbsslcert` varchar(255) DEFAULT NULL,
@@ -2263,7 +2270,7 @@ CREATE TABLE poller_output (
 -- Table structure for table `poller_output_boost`
 --
 
-CREATE TABLE  `poller_output_boost` (
+CREATE TABLE `poller_output_boost` (
   `local_data_id` int(10) unsigned NOT NULL default '0',
   `rrd_name` varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -2272,10 +2279,21 @@ CREATE TABLE  `poller_output_boost` (
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
+-- Table structure for table `poller_output_boost_local_data_ids`
+--
+
+CREATE TABLE `poller_output_boost_local_data_ids` (
+  `local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `process_handler` int(10) unsigned DEFAULT 0,
+  PRIMARY KEY (`local_data_id`),
+  KEY `process_handler` (`process_handler`)
+) ENGINE=MEMORY;
+
+--
 -- Table structure for table `poller_output_boost_processes`
 --
 
-CREATE TABLE  `poller_output_boost_processes` (
+CREATE TABLE `poller_output_boost_processes` (
   `sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
   `status` varchar(255) default NULL,
   PRIMARY KEY (`sock_int_value`)
