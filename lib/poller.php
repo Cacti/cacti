@@ -242,6 +242,8 @@ function update_reindex_cache($host_id, $data_query_id) {
 								break;
 							}
 						}
+
+						$oid_uptime = '.1.3.6.1.2.1.1.3.0';
 					} else {
 						$assert_value = cacti_snmp_session_get($session, $oid_uptime);
 					}
