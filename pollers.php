@@ -392,15 +392,24 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	if (cacti_sizeof($ip_hostnames)) {
 		foreach($ip_hostnames as $host) {
 			$parts = explode('.', $host);
-			$sql_where2 .= ($sql_where2 != '' ? ' OR ' : ($sql_where1 != '' ? ' OR ' : '') . ' (') . "($column = '$parts[0]' OR $column LIKE '$parts[0].%' OR $column = '$host')";
+			$sql_where2 .= ($sql_where2 != '' ? ' OR ':' (') .
+				"($column = " . db_qstr($parts[0]) .
+				" OR $column LIKE " . db_qstr($parts[0] . '%') .
+				" OR $column = " . db_qstr($host) . ")";
 		}
 		$sql_where2 .= ')';
+	}
+
+	if ($sql_where1 != '' || $sql_where2 != '') {
+		$sql_where = ' AND ' . $sql_where1 . ($sql_where1 != '' && $sql_where2 != '' ? ' OR ':'') . $sql_where2;
+	} else {
+		$sql_where = '';
 	}
 
 	$duplicate = db_fetch_cell_prepared("SELECT id
 		FROM poller
 		WHERE id != ?
-		AND ($sql_where1 $sql_where2)",
+		$sql_where",
 		array($poller_id));
 
 	if (empty($duplicate)) {
