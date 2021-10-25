@@ -766,7 +766,20 @@ function test_database_connection($poller = array()) {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
 
-		$fields = array('dbhost', 'dbuser', 'dbpass', 'dbdefault', 'dbport', 'dbssl', 'dbsslkey', 'dbsslcert', 'dbsslca');
+		$fields = array(
+			'dbhost',
+			'dbuser',
+			'dbpass',
+			'dbdefault',
+			'dbtype',
+			'dbport',
+			'dbretries',
+			'dbssl',
+			'dbsslkey',
+			'dbsslcert',
+			'dbsslca'
+		);
+
 		foreach ($fields as $field) {
 			if ($field == 'dbssl') {
 				if (isset_request_var('dbssl') && get_nfilter_request_var('dbssl') == 'on') {
