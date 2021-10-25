@@ -6829,48 +6829,56 @@ function cacti_time_zone_set($gmt_offset) {
 		$_SESSION['sess_browser_php_tz'] = $php_offset;
 	} else {
 		$time = ($hours > 0 ? '-':'+') . abs($hours) . ':' . substr('00' . $remaining, -2);
-		$zone = '';
 
-		switch($time) {
-			case '+3:30':
-				$zone = 'IRST';
-				break;
-			case '+4:30':
-				$zone = 'IRDT';
-				break;
-			case '+5:30':
-				$zone = 'IST';
-				break;
-			case '+5:45':
-				$zone = 'NPT';
-				break;
-			case '+6:30':
-				$zone = 'CCT';
-				break;
-			case '+9:30':
-				$zone = 'ACST';
-				break;
-			case '+10:30':
-				$zone = 'ACDT';
-				break;
-			case '+8:45':
-				$zone = 'ACWST';
-				break;
-			case '+12:45':
-				$zone = 'CHAST';
-				break;
-			case '+13:45':
-				$zone = 'CHADT';
-				break;
-			case '-3:30':
-				$zone = 'NST';
-				break;
-			case '-2:30':
-				$zone = 'NDT';
-				break;
-			case '-9:30':
-				$zone = 'MART';
-				break;
+		// Attempt to get the zone via the php function
+		$zone = timezone_name_from_abbr('', $time);
+
+		if ($zone === false) {
+			switch($time) {
+				case '+3:30':
+					$zone = 'IRST';
+					break;
+				case '+4:30':
+					$zone = 'IRDT';
+					break;
+				case '+5:30':
+					$zone = 'IST';
+					break;
+				case '+5:45':
+					$zone = 'NPT';
+					break;
+				case '+6:30':
+					$zone = 'CCT';
+					break;
+				case '+9:30':
+					$zone = 'ACST';
+					break;
+				case '+10:30':
+					$zone = 'ACDT';
+					break;
+				case '+8:45':
+					$zone = 'ACWST';
+					break;
+				case '+12:45':
+					$zone = 'CHAST';
+					break;
+				case '+13:45':
+					$zone = 'CHADT';
+					break;
+				case '-3:30':
+					$zone = 'NST';
+					break;
+				case '-2:30':
+					$zone = 'NDT';
+					break;
+				case '-9:30':
+					$zone = 'MART';
+					break;
+			}
+
+			if ($zone !== false) {
+				$zone = timezone_name_from_abbr($zone);
+			}
 		}
 
 		$php_offset = $zone;
