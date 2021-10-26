@@ -267,7 +267,7 @@ abstract class LdapError {
 	const UndefinedDnOrPassword = 16;
 	const Disabled              = 99;
 
-	public static function GetErrorDetails($returnError, $ldapConn = null, $ldapError = 0) {
+	public static function GetErrorDetails($returnError, $ldapConn = null, $ldapServer = '', $ldapError = 0) {
 		$error_num  = $returnError;
 		$error_text = '';
 
@@ -294,39 +294,39 @@ abstract class LdapError {
 				break;
 
 			case LdapError::ProtocolErrorVersion:
-				$error_text = __('Protocol Error, Unable to set version (%s)', $ldapError);
+				$error_text = __('Protocol Error, Unable to set version (%s) on Server (%s)', $ldapError, $ldapServer);
 				break;
 
 			case LdapError::ProtocolErrorReferral:
-				$error_text = __('Protocol Error, Unable to set referrals option (%s)', $ldapError);
+				$error_text = __('Protocol Error, Unable to set referrals option (%s) on Server (%s)', $ldapError, $ldapServer);
 				break;
 
 			case LdapError::ProtocolErrorTls:
-				$error_text = __('Protocol Error, unable to start TLS communications (%s)', $ldapError);
+				$error_text = __('Protocol Error, unable to start TLS communications (%s) on Server (%s)', $ldapError, $ldapServer);
 				break;
 
 			case LdapError::ProtocolErrorGeneral:
-				$error_text = __('Protocol Error, General failure (%s)', $ldapError);
+				$error_text = __('Protocol Error, General failure (%s)', $ldapError, $ldapServer);
 				break;
 
 			case LdapError::ProtocolErrorBind:
-				$error_text = __('Protocol Error, Unable to bind, LDAP result: (%s)', $ldapError);
+				$error_text = __('Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)', $ldapError, $ldapServer);
 				break;
 
 			case LdapError::ConnectionUnavailable:
-				$error_text = __('Unable to Connect to Server');
+				$error_text = __('Unable to Connect to Server (%s)', $ldapServer);
 				break;
 
 			case LdapError::ConnectionTimeout:
-				$error_text =  __('Connection Timeout');
+				$error_text =  __('Connection Timeout to Server (%s)', $ldapServer);
 				break;
 
 			case LdapError::InsufficientAccess:
-				$error_text = __('Insufficient Access');
+				$error_text = __('Insufficient Access to Server (%s)', $ldapServer);
 				break;
 
 			case LdapError::SearchFoundNoGroup:
-				$error_text = __('Group DN could not be found to compare');
+				$error_text = __('Group DN could not be found to compare on Server (%s)', $ldapServer);
 				break;
 
 			case LdapError::SearchFoundMultiUser:
@@ -342,7 +342,7 @@ abstract class LdapError {
 				break;
 
 			case LdapError::MissingLdapObject:
-				$error_text = __('Unable to create LDAP connection object');
+				$error_text = __('Unable to create LDAP connection object to Server (%s)', $ldapServer);
 				break;
 
 			case LdapError::UndefinedDnOrPassword:
@@ -350,7 +350,7 @@ abstract class LdapError {
 				break;
 
 			default:
-				$error_text = __('Unexpected error %s (Ldap Error: %s)', $returnError, $ldapError);
+				$error_text = __('Unexpected error %s (Ldap Error: %s) on Server (%s)', $returnError, $ldapError, $ldapServer);
 				break;
 		}
 
@@ -526,7 +526,7 @@ class Ldap {
 			cacti_log('LDAP: Setting protocol version to ' . $this->version, false, 'AUTH', POLLER_VERBOSITY_MEDIUM);
 
 			if (!ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $this->version)) {
-				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorVersion, $ldap_conn);
+				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorVersion, $ldap_conn, $this->host);
 				Ldap::RecordError($output);
 				ldap_close($ldap_conn);
 
@@ -552,7 +552,7 @@ class Ldap {
 			/* set referrals */
 			if ($this->referrals == '0') {
 				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
-					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferral, $ldap_conn);
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferral, $ldap_conn, $this->host);
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
 
@@ -566,7 +566,7 @@ class Ldap {
 			/* start TLS if requested */
 			if ($this->encryption == '2') {
 				if (!ldap_start_tls($ldap_conn)) {
-					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorTls, $ldap_conn);
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorTls, $ldap_conn, $this->host);
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
 
@@ -594,7 +594,7 @@ class Ldap {
 			return $connection['output'];
 		} elseif ($connection['ldap_conn'] === false) {
 			$this->RestoreCactiHandler();
-			return LdapError::GetErrorDetails(LdapError::MissingLdapObject);
+			return LdapError::GetErrorDetails(LdapError::MissingLdapObject, false, $this->host);
 		}
 
 		$ldap_conn = $connection['ldap_conn'];
@@ -641,13 +641,13 @@ class Ldap {
 					/* Auth ok */
 					$output = LdapError::GetErrorDetails(LdapError::Success);
 				} elseif ($ldap_group_response === false) {
-					$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess);
+					$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
 					$this->RestoreCactiHandler();
 					return $output;
 				} else {
-					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoGroup);
+					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoGroup, $ldap_conn, $this->host);
 					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
 					$this->RestoreCactiHandler();
@@ -662,22 +662,22 @@ class Ldap {
 			$ldap_error = ldap_errno($ldap_conn);
 			if ($ldap_error == 0x02) {
 				/* protocol error */
-				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, $ldap_conn);
+				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x31) {
 				/* invalid credentials */
-				$output = LdapError::GetErrorDetails(LdapError::Failure);
+				$output = LdapError::GetErrorDetails(LdapError::Failure, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x32) {
 				/* insuffient access */
-				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess);
+				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
-				$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable);
+				$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x55) {
 				/* timeout */
-				$output = LdapError::GetErrorDetails(LdapError::ConnectionTimeout);
+				$output = LdapError::GetErrorDetails(LdapError::ConnectionTimeout, $ldap_conn, $this->host);
 			} else {
 				/* general bind error */
-				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorBind, $ldap_conn);
+				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorBind, $ldap_conn, $this->host);
 			}
 		}
 
@@ -714,7 +714,7 @@ class Ldap {
 			return $output;
 		} elseif ($connection['ldap_conn'] === false) {
 			$this->RestoreCactiHandler();
-			return LdapError::GetErrorDetails(LdapError::MissingLdapObject);
+			return LdapError::GetErrorDetails(LdapError::MissingLdapObject, false, $this->host);
 		}
 
 		$ldap_conn = $connection['ldap_conn'];
@@ -779,22 +779,22 @@ class Ldap {
 			$ldap_error = ldap_errno($ldap_conn);
 			if ($ldap_error == 0x02) {
 				/* protocol error */
-				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, $ldap_conn);
+				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x31) {
 				/* invalid credentials */
-				$output = LdapError::GetErrorDetails(LdapError::Failure);
+				$output = LdapError::GetErrorDetails(LdapError::Failure, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x32) {
 				/* insuffient access */
-				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess);
+				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
-				$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable);
+				$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x55) {
 				/* timeout */
-				$output = LdapError::GetErrorDetails(LdapError::ConnectionTimeout);
+				$output = LdapError::GetErrorDetails(LdapError::ConnectionTimeout, $ldap_conn, $this->host);
 			} else {
 				/* general bind error */
-				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorBind, $ldap_conn);
+				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorBind, $ldap_conn, $this->host);
 			}
 		}
 
@@ -822,7 +822,7 @@ class Ldap {
 			return $output;
 		} elseif ($connection['ldap_conn'] === false) {
 			$this->RestoreCactiHandler();
-			return LdapError::GetErrorDetails(LdapError::MissingLdapObject);
+			return LdapError::GetErrorDetails(LdapError::MissingLdapObject, false, $this->host);
 		}
 
 		$ldap_conn = $connection['ldap_conn'];
@@ -891,22 +891,22 @@ class Ldap {
 			$ldap_error = ldap_errno($ldap_conn);
 			if ($ldap_error == 0x02) {
 				/* protocol error */
-				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, $ldap_conn);
+				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x31) {
 				/* invalid credentials */
-				$output = LdapError::GetErrorDetails(LdapError::Failure);
+				$output = LdapError::GetErrorDetails(LdapError::Failure, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x32) {
 				/* insuffient access */
-				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess);
+				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
-				$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable);
+				$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x55) {
 				/* timeout */
-				$output = LdapError::GetErrorDetails(LdapError::ConnectionTimeout);
+				$output = LdapError::GetErrorDetails(LdapError::ConnectionTimeout, $ldap_conn, $this->host);
 			} else {
 				/* general bind error */
-				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorBind, $ldap_conn);
+				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorBind, $ldap_conn, $this->host);
 			}
 		}
 
