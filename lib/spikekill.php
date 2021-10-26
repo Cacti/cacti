@@ -368,7 +368,7 @@ class spikekill {
 				break;
 			case SPIKE_METHOD_VARIANCE:
 				$mm  = 'Variance';
-				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers, Percent:$this->percent";
+				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers, Percent:" . round($this->percent*100,2) . "%";
 				break;
 			case SPIKE_METHOD_FLOAT:
 				$mm  = 'RangeFloat';
@@ -466,13 +466,16 @@ class spikekill {
 
 		$this->ds_name = array();
 
-		/* perform a first pass on the array and do the following:
-		   1) Get the number of good samples per ds
-		   2) Get the sum of the samples per ds
-		   3) Get the max and min values for all samples
-		   4) Build both the rra and sample arrays
-		   5) Get each ds' min and max values
-		*/
+		/**
+		 * perform a first pass on the array and do the following:
+		 *
+		 * 1) Get the number of good samples per ds
+		 * 2) Get the sum of the samples per ds
+		 * 3) Get the max and min values for all samples
+		 * 4) Build both the rra and sample arrays
+		 * 5) Get each ds' min and max values
+		 *
+		 */
 		if (cacti_sizeof($output)) {
 			foreach($output as $line) {
 				if (substr_count($line, '<v>')) {
@@ -577,13 +580,15 @@ class spikekill {
 		/* For all the samples determine the average with the outliers removed */
 		$this->calculateVarianceAverages($rra, $samples);
 
-		/* Now scan the rra array and the samples array and calculate the following
-		   1) The standard deviation of all samples
-		   2) The average of all samples per ds
-		   3) The max and min cutoffs of all samples
-		   4) The number of kills in each ds based upon the thresholds
-		*/
-
+		/**
+		 * Now scan the rra array and the samples array and calculate the following
+		 *
+		 * 1) The standard deviation of all samples
+		 * 2) The average of all samples per ds
+		 * 3) The max and min cutoffs of all samples
+		 * 4) The number of kills in each ds based upon the thresholds
+		 *
+		 */
 		if (empty($this->out_start)) {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
 				"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($this->html ? "</p>\n":"\n");
@@ -608,6 +613,8 @@ class spikekill {
 			}
 		}
 
+		$new_output = '';
+
 		/* create an output array */
 		if ($this->method == SPIKE_METHOD_STDDEV) {
 			/* standard deviation subroutine */
@@ -620,10 +627,10 @@ class spikekill {
 				}
 			} elseif (!empty($this->out_start)) {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: NO Window Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+					"NOTE: No Window Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
 			} else {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: NO Standard Deviation found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+					"NOTE: No Standard Deviation Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
 			}
 		} else {
 			/* variance subroutine */
@@ -636,16 +643,16 @@ class spikekill {
 				}
 			} elseif (!empty($this->out_start)) {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: NO Window Fills found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+					"NOTE: No Window Fills found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
 			} else {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: NO Variance Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
+					"NOTE: No Variance Spikes found in '$this->rrdfile'" . ($this->html ? "</p>\n":"\n");
 			}
 		}
 
 		/* finally update the file XML file and Reprocess the RRDfile */
 		if (!$this->dryrun) {
-			if ($output === true) {
+			if ($output == true && $new_output != '') {
 				if ($this->writeXMLFile($new_output, $xmlfile)) {
 					if ($this->backupRRDFile($this->rrdfile)) {
 						$this->createRRDFileFromXML($xmlfile, $this->rrdfile);
@@ -661,7 +668,7 @@ class spikekill {
 				}
 			} else {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: No Spikes Found.  No remediation performed." . ($this->html ? "</p>\n":"\n");
+					"NOTE: No Spikes Found." . ($this->html ? "</p>\n":"\n");
 			}
 		} else {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -832,7 +839,7 @@ class spikekill {
 										}
 									} elseif (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) ||
 										($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
-										if ($this->method == 2) { // there's a problem here because the conditional looks for value of 2 but the code references stddev
+										if ($this->method == SPIKE_METHOD_STDDEV) {
 											$this->debug(sprintf("StdDev Kill: Value '%.4e', StandardDev '%.4e', StdDevLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['standard_deviation'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1+$this->percent))));
 
 											$rra[$rra_num][$ds_num]['stddev_killed']++;
@@ -848,7 +855,7 @@ class spikekill {
 									} elseif ($rra[$rra_num][$ds_num]['variance_avg'] == 'NAN') {
 										/* not enought samples to calculate */
 									} elseif ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))) {
-										if ($this->method == 1) { // there's a problem here because the conditional looks for value of 1 but the code references variance
+										if ($this->method == SPIKE_METHOD_VARIANCE) {
 											/* kill based upon variance */
 											$this->debug(sprintf("Var Kill: Value '%.4e', VarianceDev '%.4e', VarianceLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))));
 
@@ -975,7 +982,6 @@ class spikekill {
 		/* variance subroutine */
 		$rra_num   = 0;
 		$ds_num    = 0;
-		$kills     = 0; // used to count the kills per RRA (to make sure we don't go over $this->numspike
 		$last_num  = array();
 		$new_array = array();
 
@@ -998,8 +1004,9 @@ class spikekill {
 					array_shift($linearray);
 
 					/* initialize variables */
-					$ds_num    = 0;
-					$out_row   = '<row>';
+					$ds_num         = 0;
+					$out_row        = '<row>';
+					$kills          = 0;
 
 					foreach($linearray as $dsvalue) {
 						/* peel off garbage */
@@ -1035,9 +1042,7 @@ class spikekill {
 										$this->total_kills++;
 									}
 								}
-							}
-						} elseif(strtolower($dsvalue) == 'nan' && isset($last_num[$ds_num])) {
-							if ($this->method == SPIKE_METHOD_VARIANCE) {
+							} elseif ($this->method == SPIKE_METHOD_VARIANCE) {
 								if ($kills < $this->numspike) {
 									if ($this->avgnan == 'avg') {
 										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1054,7 +1059,7 @@ class spikekill {
 										$dsvalue = 'NaN';
 									}
 								}
-							} elseif ($last_num[$ds_num] != 0) {
+							} elseif ($this->method == SPIKE_METHOD_STDDEV) {
 								if ($kills < $this->numspike) {
 									if ($this->avgnan == 'avg') {
 										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with average {$rra[$rra_num][$ds_num]['average']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1071,9 +1076,18 @@ class spikekill {
 										$dsvalue = 'NaN';
 									}
 								}
+							}
+						} elseif(strtolower($dsvalue) == 'nan' && isset($last_num[$ds_num])) {
+							/**
+							 * We need to ignore this case as it's only a gap file when
+							 * There is a time range
+							 */
+							if ($this->method == SPIKE_METHOD_VARIANCE) {
+								cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as NaN values are left along when using the Variance Method!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
+							} elseif ($this->method == SPIKE_METHOD_STDDEV) {
+								cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as NaN values are left alone when using the Standard Deviation Method!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 							} else {
-								cacti_log("DEBUG: replacing dsvalue {$dsvalue} with NaN", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
-								$dsvalue = 'NaN';
+								cacti_log("DEBUG: ignoring dsvalue {$dsvalue} as we are outside of the time range!", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 							}
 						} else {
 							if ($this->method == SPIKE_METHOD_VARIANCE) {
@@ -1130,14 +1144,16 @@ class spikekill {
 
 					$new_array[] = $out_row;
 				} else {
-					if (substr_count($line, "</rra>\n")) {
+					if (substr_count($line, '</rra>')) {
 						$ds_minmax = array();
 						$rra_num++;
-						$kills = 0;
+
+						$kills    = 0;
 						$last_num = array();
-					} elseif (substr_count($line, "</database>\n")) {
+					} elseif (substr_count($line, '</database>')) {
 						$ds_num++;
-						$kills = 0;
+
+						$kills    = 0;
 						$last_num = array();
 					}
 

@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue#4440: Undefined index: timeout_exceed /lib/poller.php on line: 1953
 -issue#4442: When testing remote poller connectivity Errors occour
 -issue#4443: When renaming poller errors occour
+-issue#4444: Removing spikes by Variance does not appear to be working beyond the first RRA
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#4299: Allow Cacti to use multiple possible LDAP servers
