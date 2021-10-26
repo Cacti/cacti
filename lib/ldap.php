@@ -536,6 +536,19 @@ class Ldap {
 				);
 			}
 
+			/* set reasonable timeouts */
+			$network_timeout = read_config_option('ldap_network_timeout');
+			if (defined('LDAP_OPT_NETWORK_TIMEOUT')) {
+				cacti_log("NOTE: Setting Network Timeout to $network_timeout seconds", false, 'AUTH', POLLER_VERBOSITY_HIGH);
+				ldap_set_option($ldap_conn, LDAP_OPT_NETWORK_TIMEOUT, $network_timeout);
+			}
+
+			$bind_timeout = read_config_option('ldap_bind_timeout');
+			if (defined('LDAP_OPT_TIMELIMIT')) {
+				cacti_log("NOTE: Setting Bind Timeout to $bind_timeout seconds", false, 'AUTH', POLLER_VERBOSITY_HIGH);
+				ldap_set_option($ldap_conn, LDAP_OPT_TIMEOUT, $bind_timeout);
+			}
+
 			/* set referrals */
 			if ($this->referrals == '0') {
 				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
