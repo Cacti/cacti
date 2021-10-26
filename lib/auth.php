@@ -2048,6 +2048,14 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 }
 
 function get_allowed_devices($sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0, $host_id = 0) {
+	if ($user == 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
 	$simple_perms = get_simple_device_perms($user);
 
 	if (!$simple_perms) {
@@ -2107,14 +2115,6 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	}
 
 	if ($auth_method != 0 && !$simple_perms) {
-		if ($user == 0) {
-			if (isset($_SESSION['sess_user_id'])) {
-				$user = $_SESSION['sess_user_id'];
-			} else {
-				return array();
-			}
-		}
-
 		if (read_config_option('graph_auth_method') == 1) {
 			$sql_operator = 'OR';
 		} else {
@@ -2308,6 +2308,16 @@ function get_allowed_sites($sql_where = '', $order_by = 'name', $limit = '', &$t
 }
 
 function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0) {
+	if ($user == 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
+	$simple_perms = get_simple_device_perms($user);
+
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -2336,15 +2346,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'descri
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method != 0) {
-		if ($user == 0) {
-			if (isset($_SESSION['sess_user_id'])) {
-				$user = $_SESSION['sess_user_id'];
-			} else {
-				return array();
-			}
-		}
-
+	if ($auth_method != 0 && !$simple_perms) {
 		if (read_config_option('graph_auth_method') == 1) {
 			$sql_operator = 'OR';
 		} else {
