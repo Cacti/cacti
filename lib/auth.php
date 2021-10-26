@@ -1509,6 +1509,8 @@ function set_cached_allowed_type($type, &$items, $hash, $init_rows) {
 		} else {
 			$_SESSION['sess_allowed_templates'][$hash] = $items;
 		}
+
+		set_user_setting('sess_allowed_templates_lastchange', time());
 	}
 }
 
@@ -1653,6 +1655,14 @@ function get_simple_graph_template_perms($user) {
 }
 
 function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
+	if ($user == 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
 	$hash      = get_allowed_type_hash('graph_templates', $sql_where, $order_by, $limit, $graph_template_id, $user);
 	$init_rows = $total_rows;
 
