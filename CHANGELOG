@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -issue#4445: LDAP API lacks timeout options leading to bad login experiences
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
+-feature#1573: Cacti does not provide an option of providing a client side certificate for LDAP/AD authentication
 -feature#3113: Support Stronger Encryption Available Starting in Net-SNMP v5.8
 -feature#4299: Allow Cacti to use multiple possible LDAP servers
 -feature#4344: Add a 15 minute polling/sampling interval
