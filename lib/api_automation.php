@@ -1978,102 +1978,124 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 	global $automation_op_array;
 
 	switch ($rule_type) {
-	case AUTOMATION_RULE_TYPE_GRAPH_MATCH:
-		$title = __('Device Match Rule');
-		$item_table = 'automation_match_rule_items';
-		$sql_and = ' AND rule_type=' . $rule_type;
-		$tables = array ('host', 'host_templates');
-		$automation_rule = db_fetch_row_prepared('SELECT * FROM automation_graph_rules WHERE id = ?', array($rule_id));
+		case AUTOMATION_RULE_TYPE_GRAPH_MATCH: // Graph Rules - Device Selection Criteria > Edit
+			$title      = __('Device Match Rule');
+			$item_table = 'automation_match_rule_items';
+			$sql_and    = ' AND rule_type=' . $rule_type;
+			$tables     = array ('host', 'host_templates');
 
-		$_fields_rule_item_edit = $fields_automation_match_rule_item_edit;
-		$query_fields  = get_query_fields('host_template', array('id', 'hash'));
-		$query_fields += get_query_fields('host', array('id', 'host_template_id'));
+			$automation_rule = db_fetch_row_prepared('SELECT *
+				FROM automation_graph_rules
+				WHERE id = ?',
+				array($rule_id));
 
-		$_fields_rule_item_edit['field']['array'] = $query_fields;
-		$module = 'automation_graph_rules.php';
+			$_fields_rule_item_edit = $fields_automation_match_rule_item_edit;
 
-		break;
-	case AUTOMATION_RULE_TYPE_GRAPH_ACTION:
-		$title      = __('Create Graph Rule');
-		$tables     = array(AUTOMATION_RULE_TABLE_XML);
-		$item_table = 'automation_graph_rule_items';
-		$sql_and    = '';
+			$query_fields  = get_query_fields('host_template', array('id', 'hash'));
+			$query_fields += get_query_fields('host', array('id', 'host_template_id'));
 
-		$automation_rule = db_fetch_row_prepared('SELECT *
-			FROM automation_graph_rules
-			WHERE id = ?',
-			array($rule_id));
+			$_fields_rule_item_edit['field']['array'] = $query_fields;
 
-		$_fields_rule_item_edit = $fields_automation_graph_rule_item_edit;
-		$xml_array = get_data_query_array($automation_rule['snmp_query_id']);
-		$fields = array();
+			$module = 'automation_graph_rules.php';
 
-		if (cacti_sizeof($xml_array) && cacti_sizeof($xml_array['fields'])) {
-			foreach($xml_array['fields'] as $key => $value) {
-				# ... work on all input fields
-				if (isset($value['direction']) && ($value['direction'] == 'input' || $value['direction'] == 'input-output')) {
-					$fields[$key] = $key . ' - ' . $value['name'];
+			break;
+		case AUTOMATION_RULE_TYPE_GRAPH_ACTION: // Graph Rules - Graph Creation Criterial > Edit
+			$title      = __('Create Graph Rule');
+			$tables     = array(AUTOMATION_RULE_TABLE_XML);
+			$item_table = 'automation_graph_rule_items';
+			$sql_and    = '';
+
+			$automation_rule = db_fetch_row_prepared('SELECT *
+				FROM automation_graph_rules
+				WHERE id = ?',
+				array($rule_id));
+
+			$_fields_rule_item_edit = $fields_automation_graph_rule_item_edit;
+
+			$xml_array = get_data_query_array($automation_rule['snmp_query_id']);
+			$fields    = array();
+
+			if (cacti_sizeof($xml_array) && cacti_sizeof($xml_array['fields'])) {
+				foreach($xml_array['fields'] as $key => $value) {
+					# ... work on all input fields
+					if (isset($value['direction']) && ($value['direction'] == 'input' || $value['direction'] == 'input-output')) {
+						$fields[$key] = $key . ' - ' . $value['name'];
+					}
 				}
+
+				$_fields_rule_item_edit['field']['array'] = $fields;
 			}
-			$_fields_rule_item_edit['field']['array'] = $fields;
-		}
-		$module = 'automation_graph_rules.php';
 
-		break;
-	case AUTOMATION_RULE_TYPE_TREE_MATCH:
-		$item_table = 'automation_match_rule_items';
-		$sql_and = ' AND rule_type=' . $rule_type;
-		$automation_rule = db_fetch_row_prepared('SELECT * FROM automation_tree_rules WHERE id = ?', array($rule_id));
-		$_fields_rule_item_edit = $fields_automation_match_rule_item_edit;
-		$query_fields  = get_query_fields('host_template', array('id', 'hash'));
-		$query_fields += get_query_fields('host', array('id', 'host_template_id'));
+			$module = 'automation_graph_rules.php';
 
-		if ($automation_rule['leaf_type'] == TREE_ITEM_TYPE_HOST) {
-			$title = __('Device Match Rule');
-			$tables = array ('host', 'host_templates');
-			#print '<pre>'; print_r($query_fields); print '</pre>';
-		} elseif ($automation_rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
-			$title = __('Graph Match Rule');
-			$tables = array ('host', 'host_templates');
-			# add some more filter columns for a GRAPH match
-			$query_fields += get_query_fields('graph_templates', array('id', 'hash'));
-			$query_fields += array('gtg.title' => 'GTG: title - varchar(255)');
-			$query_fields += array('gtg.title_cache' => 'GTG: title_cache - varchar(255)');
-			#print '<pre>'; print_r($query_fields); print '</pre>';
-		}
-		$_fields_rule_item_edit['field']['array'] = $query_fields;
-		$module = 'automation_tree_rules.php';
+			break;
+		case AUTOMATION_RULE_TYPE_TREE_MATCH: // Tree Rules - Object Selection > Edit
+			$item_table = 'automation_match_rule_items';
+			$sql_and    = ' AND rule_type=' . $rule_type;
 
-		break;
-	case AUTOMATION_RULE_TYPE_TREE_ACTION:
-		$item_table = 'automation_tree_rule_items';
-		$sql_and = '';
-		$automation_rule = db_fetch_row_prepared('SELECT * FROM automation_tree_rules WHERE id = ?', array($rule_id));
+			$automation_rule = db_fetch_row_prepared('SELECT *
+				FROM automation_tree_rules
+				WHERE id = ?',
+				array($rule_id));
 
-		$_fields_rule_item_edit = $fields_automation_tree_rule_item_edit;
-		$query_fields  = get_query_fields('host_template', array('id', 'hash'));
-		$query_fields += get_query_fields('host', array('id', 'host_template_id'));
+			$_fields_rule_item_edit = $fields_automation_match_rule_item_edit;
 
-		/* list of allowed header types depends on rule leaf_type
-		 * e.g. for a Device Rule, only Device-related header types make sense
-		 */
-		if ($automation_rule['leaf_type'] == TREE_ITEM_TYPE_HOST) {
-			$title = __('Create Tree Rule (Device)');
-			$tables = array ('host', 'host_templates');
-			#print '<pre>'; print_r($query_fields); print '</pre>';
-		} elseif ($automation_rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
-			$title = __('Create Tree Rule (Graph)');
-			$tables = array ('host', 'host_templates');
-			# add some more filter columns for a GRAPH match
-			$query_fields += get_query_fields('graph_templates', array('id', 'hash'));
-			$query_fields += array('gtg.title' => 'GTG: title - varchar(255)');
-			$query_fields += array('gtg.title_cache' => 'GTG: title_cache - varchar(255)');
-			#print '<pre>'; print_r($query_fields); print '</pre>';
-		}
-		$_fields_rule_item_edit['field']['array'] = $query_fields;
-		$module = 'automation_tree_rules.php';
+			$query_fields  = get_query_fields('host_template', array('id', 'hash'));
+			$query_fields += get_query_fields('host', array('id', 'host_template_id'));
 
-		break;
+			if ($automation_rule['leaf_type'] == TREE_ITEM_TYPE_HOST) {
+				$title  = __('Device Match Rule');
+				$tables = array ('host', 'host_templates');
+			} elseif ($automation_rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
+				$title  = __('Graph Match Rule');
+				$tables = array ('host', 'host_templates');
+
+				# add some more filter columns for a GRAPH match
+				$query_fields += get_query_fields('graph_templates', array('id', 'hash'));
+				$query_fields += array('gtg.title' => 'GTG: title - varchar(255)');
+				$query_fields += array('gtg.title_cache' => 'GTG: title_cache - varchar(255)');
+			}
+
+			$_fields_rule_item_edit['field']['array'] = $query_fields;
+
+			$module = 'automation_tree_rules.php';
+
+			break;
+		case AUTOMATION_RULE_TYPE_TREE_ACTION: // Tree Rules - Tree Creation Criteria > Edit
+			$item_table = 'automation_tree_rule_items';
+			$sql_and    = '';
+
+			$automation_rule = db_fetch_row_prepared('SELECT *
+				FROM automation_tree_rules
+				WHERE id = ?',
+				array($rule_id));
+
+			$_fields_rule_item_edit = $fields_automation_tree_rule_item_edit;
+
+			$query_fields  = get_query_fields('host_template', array('id', 'hash'));
+			$query_fields += get_query_fields('host', array('id', 'host_template_id'));
+
+			/* list of allowed header types depends on rule leaf_type
+			 * e.g. for a Device Rule, only Device-related header types make sense
+			 */
+			if ($automation_rule['leaf_type'] == TREE_ITEM_TYPE_HOST) {
+				$title  = __('Create Tree Rule (Device)');
+				$tables = array ('host', 'host_templates');
+			} elseif ($automation_rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
+				$title  = __('Create Tree Rule (Graph)');
+				$tables = array ('host', 'host_templates');
+
+				# add some more filter columns for a GRAPH match
+				$query_fields += get_query_fields('graph_templates', array('id', 'hash'));
+				$query_fields += array('gtg.title' => 'GTG: title - varchar(255)');
+				$query_fields += array('gtg.title_cache' => 'GTG: title_cache - varchar(255)');
+			}
+
+			$_fields_rule_item_edit['field']['array'] = $query_fields;
+
+			$module = 'automation_tree_rules.php';
+
+			break;
 	}
 
 	if (!empty($rule_item_id)) {
@@ -2105,9 +2127,11 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 				);
 			}
 		}
+
 		$header_label = __esc('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
 	} else {
 		$header_label = __esc('Rule Item [new rule item for %s: %s]', $title, $automation_rule['name']);
+
 		$automation_item = array();
 		$automation_item['sequence'] = get_sequence(0, 'sequence', $item_table, 'rule_id=' . $rule_id . $sql_and);
 	}

@@ -412,7 +412,7 @@ class spikekill {
 				break;
 			case SPIKE_METHOD_VARIANCE:
 				$mm  = 'Variance';
-				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers, Percent:" . number_format($this->percent * 100);
+				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers, Percent:" . round($this->percent*100,2) . "%";
 				break;
 			case SPIKE_METHOD_FLOAT:
 				$mm  = 'RangeFloat';
@@ -514,13 +514,16 @@ class spikekill {
 
 		$this->ds_name = array();
 
-		/* perform a first pass on the array and do the following:
-		   1) Get the number of good samples per ds
-		   2) Get the sum of the samples per ds
-		   3) Get the max and min values for all samples
-		   4) Build both the rra and sample arrays
-		   5) Get each ds' min and max values
-		*/
+		/**
+		 * perform a first pass on the array and do the following:
+		 *
+		 * 1) Get the number of good samples per ds
+		 * 2) Get the sum of the samples per ds
+		 * 3) Get the max and min values for all samples
+		 * 4) Build both the rra and sample arrays
+		 * 5) Get each ds' min and max values
+		 *
+		 */
 		if (cacti_sizeof($output)) {
 			foreach($output as $line) {
 				if (substr_count($line, '<v>')) {
@@ -640,13 +643,15 @@ class spikekill {
 		/* For all the samples determine the average with the outliers removed */
 		$this->calculateVarianceAverages($rra, $samples);
 
-		/* Now scan the rra array and the samples array and calculate the following
-		   1) The standard deviation of all samples
-		   2) The average of all samples per ds
-		   3) The max and min cutoffs of all samples
-		   4) The number of kills in each ds based upon the thresholds
-		*/
-
+		/**
+		 * Now scan the rra array and the samples array and calculate the following
+		 *
+		 * 1) The standard deviation of all samples
+		 * 2) The average of all samples per ds
+		 * 3) The max and min cutoffs of all samples
+		 * 4) The number of kills in each ds based upon the thresholds
+		 *
+		 */
 		if (empty($this->out_start)) {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
 				"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($this->html ? "</p>\n":"\n");
@@ -773,7 +778,7 @@ class spikekill {
 				}
 			} else {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: No Spikes Found.  No remediation performed." . ($this->html ? "</p>\n":"\n");
+					"NOTE: No Spikes Found." . ($this->html ? "</p>\n":"\n");
 			}
 		} else {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -1200,8 +1205,9 @@ class spikekill {
 					array_shift($linearray);
 
 					/* initialize variables */
-					$ds_num    = 0;
-					$out_row   = '<row>';
+					$ds_num         = 0;
+					$out_row        = '<row>';
+					$kills          = 0;
 
 					foreach($linearray as $dsvalue) {
 						/* peel off garbage */
@@ -1256,7 +1262,7 @@ class spikekill {
 						$rra_num++;
 						//$kills = 0;
 						$last_num = array();
-					} elseif (substr_count($line, "</database>\n")) {
+					} elseif (substr_count($line, '</database>')) {
 						$ds_num++;
 						//$kills = 0;
 						$last_num = array();

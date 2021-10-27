@@ -87,8 +87,12 @@ Cacti CHANGELOG
 -issue#4440: Undefined index: timeout_exceed /lib/poller.php on line: 1953
 -issue#4442: When testing remote poller connectivity Errors occour
 -issue#4443: When renaming poller errors occour
+-issue#4444: Removing spikes by Variance does not appear to be working beyond the first RRA
+-issue#4445: LDAP API lacks timeout options leading to bad login experiences
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
+-feature#1573: Cacti does not provide an option of providing a client side certificate for LDAP/AD authentication
+-feature#3113: Support Stronger Encryption Available Starting in Net-SNMP v5.8
 -feature#4299: Allow Cacti to use multiple possible LDAP servers
 -feature#4344: Add a 15 minute polling/sampling interval
 -feature#4385: Provide additional admin email notifications

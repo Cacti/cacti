@@ -1656,11 +1656,27 @@ $settings = array(
 			),
 		'ldap_version' => array(
 			'friendly_name' => __('Protocol Version'),
-			'description'   => __('Protocol Version that the server supports.'),
-			'method'        => 'drop_array',
-			'default'       => '3',
-			'array'         => $ldap_versions
-			),
+			'description' => __('Protocol Version to connect to the server with.'),
+			'method' => 'drop_array',
+			'default' => '3',
+			'array' => $ldap_versions
+		),
+		'ldap_network_timeout' => array(
+			'friendly_name' => __('Connect Timeout'),
+			'description' => __('The Network Connect Timeout in seconds.'),
+			'method' => 'textbox',
+			'max_length' => '5',
+			'default' => '2',
+			'size' => '5'
+		),
+		'ldap_bind_timeout' => array(
+			'friendly_name' => __('Bind Timeout'),
+			'description' => __('The Bind Timeout in seconds.'),
+			'method' => 'textbox',
+			'max_length' => '5',
+			'default' => '5',
+			'size' => '5'
+		),
 		'ldap_encryption' => array(
 			'friendly_name' => __('Encryption'),
 			'description'   => __('Encryption that the server supports. TLS is only supported by Protocol Version 3.'),

@@ -3194,6 +3194,9 @@ function removeSpikesStdDev(local_graph_id) {
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
@@ -3212,6 +3215,9 @@ function removeSpikesVariance(local_graph_id) {
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
@@ -3230,6 +3236,9 @@ function removeSpikesInRange(local_graph_id) {
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
@@ -3248,6 +3257,9 @@ function removeRangeFill(local_graph_id) {
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
+			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
+			$('#spikeresults').html(data.results);
+			$('#spikeresults').dialog({ width:1100, maxHeight: 600 });
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
