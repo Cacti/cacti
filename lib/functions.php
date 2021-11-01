@@ -1618,14 +1618,18 @@ function prepare_validate_result(&$result) {
 
 	/* clean off ugly non-numeric data */
 	if (is_numeric($result)) {
+		dsv_log('prepare_validate_result','data is numeric');
 		return true;
 	} elseif ($result == 'U') {
+		dsv_log('prepare_validate_result', 'data is U');
 		return true;
 	} elseif (is_hexadecimal($result)) {
+		dsv_log('prepare_validate_result', 'data is hex');
 		return hexdec($result);
 	} elseif (substr_count($result, ':') || substr_count($result, '!')) {
 		/* looking for name value pairs */
 		if (substr_count($result, ' ') == 0) {
+			dsv_log('prepare_validate_result', 'data has no spaces');
 			return true;
 		} else {
 			$delim_cnt = 0;
@@ -1635,7 +1639,8 @@ function prepare_validate_result(&$result) {
 				$delim_cnt = substr_count($result, '!');
 			}
 
-			$space_cnt = substr_count($result, ' ');
+			$space_cnt = substr_count(trim($result), ' ');
+			dsv_log('prepare_validate_result', "data has $space_cnt spaces and $delim_cnt fields which is " . (($space_cnt+1 == $delim_cnt) ? 'NOT ' : '') . ' okay');
 
 			return ($space_cnt+1 == $delim_cnt);
 		}
@@ -1731,6 +1736,7 @@ function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $sn
 
 	if (cacti_sizeof($data_template_ids) && $test_source == 'on') {
 		foreach($data_template_ids as $dt) {
+			dsv_log("test_data_source($dt, $host_id, $snmp_query_id, $snmp_index, " . json_encode($values) . ")");
 			if (!test_data_source($dt, $host_id, $snmp_query_id, $snmp_index, $values)) {
 				return false;
 			}
