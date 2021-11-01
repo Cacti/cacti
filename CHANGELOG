@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.20
+-issue#4449: Script Server can crash if an OID is missing from device
+
 1.2.19
 -security#4356: Further fixes for grave character security protection
 -issue: Over aggressive escaping causes menu visibility issues on Create Device page
