@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#4449: Script Server can crash if an OID is missing from device
 -issue#4451: Remote pollers may not get settings when system-wide polling is turn off
 -issue#4455: When updating poller name, matches may be too wide in scope
+-issue#4458: MIB Cache column check causes poller crash under PHP 8.x
 
 1.2.19
 -security#4356: Further fixes for grave character security protection

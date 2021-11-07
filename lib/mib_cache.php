@@ -356,7 +356,7 @@ class MibCache{
 		$oid_entry = $this->exists();
 		if ($oid_entry !== false) {
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
-			if ($columns & cacti_sizeof($columns)>0) {
+			if (cacti_sizeof($columns)>0) {
 				$sql = array();
 
 				foreach($columns as $column_params) {
