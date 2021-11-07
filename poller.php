@@ -938,17 +938,22 @@ function poller_enabled_check($poller_id) {
 
 	$system_enabled = read_config_option('poller_enabled');
 
+	$should_exit = false;
 	if ($system_enabled == '') {
 		cacti_log('WARNING: System Polling is Disabled!  Therefore, data collection from the poller will be suspended till re-enabled.', true, 'SYSTEM');
+		$should_exit = true;
+	}
 
-		exit(1);
-	} elseif ($poller_disabled == 'on') {
+	if ($poller_disabled == 'on') {
+		cacti_log('WARNING: Poller ' . $poller_id . ' is Disabled.  Therefore, data collection for this Poller will be suspended till it\'s re-enabled.', true, 'SYSTEM');
+		$should_exit = true;
+	}
+
+	if ($should_exit) {
 		db_execute_prepared('UPDATE poller
 			SET last_status=NOW()
 			WHERE id = ?',
 			array($poller_id), true, $poller_db_cnn_id);
-
-		cacti_log('WARNING: Poller ' . $poller_id . ' is Disabled.  Therefore, data collection for this Poller will be suspended till it\'s re-enabled.', true, 'SYSTEM');
 
 		exit(1);
 	}

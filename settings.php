@@ -237,13 +237,13 @@ case 'save':
 	$gone_time = read_config_option('poller_interval') * 2;
 
 	$pollers = array_rekey(
-		db_fetch_assoc_prepared('SELECT id
+		db_fetch_assoc('SELECT
+			id,
+			UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS last_polled
 			FROM poller
 			WHERE id > 1
-			AND disabled=""
-			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) <= ?',
-			array($gone_time)),
-		'id', 'id'
+			AND disabled=""'),
+		'id', 'last_polled'
 	);
 
 	if (get_request_var('tab') == 'path' && $config['poller_id'] > 1) {
@@ -257,11 +257,20 @@ case 'save':
 				VALUES ' . implode(', ', $inserts) . '
 				ON DUPLICATE KEY UPDATE value=VALUES(value)';
 
-			foreach($pollers as $p) {
-				$rcnn_id = poller_connect_to_remote($p);
+			foreach($pollers as $p => $t) {
+				if ($t > $gone_time) {
+					raise_message('poller_' . $p, __('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
+				} else {
+					$rcnn_id = poller_connect_to_remote($p);
 
-				if ($rcnn_id) {
-					if (db_execute($sql, false, $rcnn_id) === false) {
+					if ($rcnn_id) {
+						if (db_execute($sql, false, $rcnn_id) === false) {
+							$rcnn_id = false;
+						}
+					}
+
+					// check if we still have rcnn_id, if it's now become false, we had a problem
+					if (!$rcnn_id) {
 						raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
 					}
 				}
