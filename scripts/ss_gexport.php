@@ -33,7 +33,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_gexport', $_SERVER['argv']);
 }
 
-function ss_gexport($cmd, $arg1 = '', $arg2 = '') {
+function ss_gexport($cmd = 'index', $arg1 = '', $arg2 = '') {
 	if ($cmd == 'index') {
 		if (db_table_exists('graph_exports')) {
 			$exports = db_fetch_assoc('SELECT id FROM graph_exports ORDER BY id');
@@ -95,4 +95,3 @@ function ss_gexport($cmd, $arg1 = '', $arg2 = '') {
 		return ($value == '' ? '0' : $value);
 	}
 }
-

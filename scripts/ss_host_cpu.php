@@ -36,7 +36,7 @@ if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
-function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = '') {
+function ss_host_cpu($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'index', $arg1 = '', $arg2 = '') {
 	$snmp = explode(':', $snmp_auth);
 	$snmp_version = $snmp[0];
 	$snmp_port    = $snmp[1];
@@ -194,4 +194,3 @@ function ss_host_cpu_reindex($arr) {
 
 	return $return_arr;
 }
-
