@@ -1736,7 +1736,7 @@ function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $sn
 
 	if (cacti_sizeof($data_template_ids) && $test_source == 'on') {
 		foreach($data_template_ids as $dt) {
-			dsv_log("test_data_source($dt, $host_id, $snmp_query_id, $snmp_index, " . json_encode($values) . ")");
+			dsv_log("test_data_source", [ 'dt' => $dt, 'host_id' => $host_id, 'snmp_query_id' => $snmp_query_id, 'snmp_index' => $snmp_index, 'values' => $values]);
 			if (!test_data_source($dt, $host_id, $snmp_query_id, $snmp_index, $values)) {
 				return false;
 			}
