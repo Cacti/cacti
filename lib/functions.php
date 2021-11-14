@@ -2433,23 +2433,33 @@ function clean_up_path($path) {
  * @return - the data source title
  */
 function get_data_source_title($local_data_id) {
-	$data = db_fetch_row_prepared('SELECT dl.host_id, dl.snmp_query_id, dl.snmp_index, dtd.name
+	$data = db_fetch_row_prepared('SELECT
+		dl.host_id, dl.snmp_query_id, dl.snmp_index, dl.data_template_id,
+		dtd.name, dtd.id as template_id
 		FROM data_local AS dl
-		INNER JOIN data_template_data AS dtd
+		LEFT JOIN data_template_data AS dtd
 		ON dtd.local_data_id = dl.id
 		WHERE dl.id = ?',
 		array($local_data_id));
 
+	$title = 'Missing Datasource ' . $local_data_id;
 	if (cacti_sizeof($data)) {
 		if (strstr($data['name'], '|') !== false && $data['host_id'] > 0) {
 			$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
-			return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
+			$title = expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
 		} else {
-			return $data['name'];
+			$title = $data['name'];
 		}
-	} else {
-		return 'Missing Datasource ' . $local_data_id;
+
+		// Is the data source linked to a template?  If so, make sure we have a template on the
+		// LEFT JOIN since it may not find one.  Also, we can't check that they are the same ID
+		// ID yet because there are two, one with a 0 local_data_id (base template) and one with
+		// this source's id (instance of template).
+		if ($data['data_template_id'] && !$data['template_id']) {
+			$title .= ' (Bad template "' . $data['data_template_id'] . '")';
+		}
 	}
+	return $title;
 }
 
 /**
