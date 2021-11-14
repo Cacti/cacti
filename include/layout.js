@@ -3029,6 +3029,7 @@ function saveGraphFilter(section) {
 	closeDateFilters();
 
 	$.post(graphPage+'?action=save', {
+		section: section,
 		columns: $('#columns').val(),
 		graphs: $('#graphs').val(),
 		graph_template_id: $('#graph_template_id').val(),

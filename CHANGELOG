@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.20
+-issue#4435: Unable to Save Graph Settings from the Graphs pages
 -issue#4449: Script Server can crash if an OID is missing from device
 -issue#4451: Remote pollers may not get settings when system-wide polling is turn off
 -issue#4455: When updating poller name, matches may be too wide in scope
