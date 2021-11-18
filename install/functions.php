@@ -1100,7 +1100,7 @@ function install_full_sync() {
 			}
 		}
 	}
-	log_install_debug('sync', "Success: $success, Failed: $failed, Skipped: $skipped, Total: " . cacti_sizeof($pollers));
+	log_install_debug('sync', 'Success: ' . cacti_sizeof($success) . ', Failed: ' . cacti_sizeof($failed) . ', Skipped: ' . cacti_sizeof($skipped) . ', Total: ' . cacti_sizeof($pollers));
 
 	return array(
 		'success' => $success,
