@@ -398,10 +398,9 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
      results to RRDtool for processing
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
   @arg $remainder - don't use LIMIT if true */
-function process_poller_output(&$rrdtool_pipe, $remainder = false) {
+function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 	global $config, $debug;
 
-	static $have_deleted_rows = true;
 	static $rrd_field_names = array();
 
 	include_once($config['library_path'] . '/rrd.php');
@@ -410,21 +409,13 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 	$rrds_processed = 0;
 	$max_rows = 40000;
 
-	if ($remainder) {
-		/* check if too many rows pending */
-		$rows = db_fetch_cell('SELECT COUNT(local_data_id)
-			FROM poller_output');
-
-		if ($rows > $max_rows && $have_deleted_rows === true) {
-			$limit = ' LIMIT ' . $max_rows;
-		} else {
-			$limit = '';
-		}
-	} else {
-		$limit = 'LIMIT ' . $max_rows;
+	if ($remainder == 0) {
+		$remainder = $max_rows;
 	}
 
-	$have_deleted_rows = false;
+	cacti_log("Processing Poller Output with $remainder maximum items to be processed", false, 'POLLER', POLLER_VERBOSITY_HIGH);
+
+	$limit = 'LIMIT ' . $max_rows;
 
 	/* create/update the rrd files */
 	$results = db_fetch_assoc("SELECT po.output, po.time,
@@ -545,7 +536,6 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 					$k++;
 					if ($k % 10000 == 0) {
 						db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
-						$have_deleted_rows = true;
 						$data_ids = array();
 						$k = 0;
 					}
@@ -557,7 +547,6 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 
 		if ($k > 0) {
 			db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $data_ids) . ')');
-			$have_deleted_rows = true;
 		}
 
 		/* process dsstats information */
@@ -578,8 +567,8 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 			FROM poller_output');
 
 		/* to much records in poller_output, process in chunks */
-		if ($rows && $remainder) {
-			$rrds_processed += process_poller_output($rrdtool_pipe, $remainder);
+		if ($rows && $remainder == $max_rows) {
+			$rrds_processed += process_poller_output($rrdtool_pipe, $rows < $max_rows ? $rows : $max_rows);
 		}
 	}
 
