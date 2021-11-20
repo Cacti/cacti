@@ -510,9 +510,9 @@ while ($poller_runs_completed < $poller_runs) {
 			COUNT(*)' . $issues_sql,
 			$issues_param);
 
-		$issue_list = [];
+		$issues_list = [];
 		foreach($issues as $issue) {
-			$issue_list []= $issue['local_data_id'];
+			$issues_list []= $issue['local_data_id'];
 		}
 		$issue_list = 'DS[' . implode(', ', $issues_list) . ']';
 
