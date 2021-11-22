@@ -2226,7 +2226,7 @@ function boost_display_run_status() {
 
 	$poller_items = db_fetch_cell('SELECT COUNT(local_data_id) FROM poller_item');
 	$data_sources = db_fetch_cell('SELECT COUNT(DISTINCT local_data_id) FROM poller_item');
-	$pi_ds        = $poller_items / $data_sources;
+	$pi_ds        = ($data_sources ? ($poller_items / $data_sources) : 0);
 
 	if ($pending_ds == 0) {
 		$remaining = $arch_records;
@@ -2336,7 +2336,7 @@ function boost_display_run_status() {
 	form_alternate_row();
 	print '<td>' . __('Total Poller Items:') . '</td><td>' . number_format_i18n($poller_items, -1) . '</td>';
 
-	$premaining = round(($pending_ds / $data_sources) * 100, 1);
+	$premaining = ($data_sources ? (round(($pending_ds / $data_sources) * 100, 1)) : 0);
 
 	if ($total_records) {
 		form_alternate_row();
