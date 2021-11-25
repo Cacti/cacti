@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#4457: Titles may show "Missing Datasource" incorectly
 -issue#4460: Polling does not complete as expected on larger systems
 -issue#4472: Utilities view has calculation errors when there are no data sources
+-issue#4477: Remote pollers do not force connection when online
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
