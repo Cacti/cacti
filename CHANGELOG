@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#4460: Polling does not complete as expected on larger systems
 -issue#4472: Utilities view has calculation errors when there are no data sources
 -issue#4477: Remote pollers do not force connection when online
+-issue#4479: As a repair tool, the rebuild poller cache scripts lacks critical options to reduce runtimes
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
