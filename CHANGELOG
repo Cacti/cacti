@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#4479: As a repair tool, the rebuild poller cache scripts lacks critical options to reduce runtimes
 -issue#4480: Saving a Data Template can damage Data Sources if the Data Template is not constructed properly
 -issue#4481: When using a Cacti Format File for a Report, the Reports still use Legacy Font Size and Alignment Attributes
+-issue#4482: Graph Automation slowed by in-efficient index selection when creating Graphs
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
