@@ -253,7 +253,7 @@ function data_input_field_always_checked($data_input_field_id = 0, $return_ids =
 			db_fetch_assoc_prepared('SELECT id
 				FROM data_input_fields
 				WHERE hash IN (?, ?, ?, ?, ?, ?, ?, ?, ?)
-				OR type_code != ""',
+				OR (type_code IN("host_id"))',
 				$always_checked_hashes),
 			'id', 'id'
 		);
