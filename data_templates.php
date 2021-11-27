@@ -784,12 +784,31 @@ function template_edit() {
 					AND data_input_field_id = ?',
 					array($template_data['id'], $field['id']));
 
-				if (cacti_sizeof($data_input_data)) {
-					$old_value  = $data_input_data['value'];
-					$old_tvalue = $data_input_data['t_value'];
+				// Data Query Key fields
+				if (data_input_field_always_checked($field['id'])) {
+					$message = __esc('This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations.');
+
+					if (cacti_sizeof($data_input_data)) {
+						$old_value  = $data_input_data['value'];
+						$old_tvalue = 'on';
+						$disable    = 'disable';
+					} else {
+						$old_value  = '';
+						$old_tvalue = 'on';
+						$disable    = 'disable';
+					}
 				} else {
-					$old_value  = '';
-					$old_tvalue = '';
+					$message = __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.');
+
+					if (cacti_sizeof($data_input_data)) {
+						$old_value  = $data_input_data['value'];
+						$old_tvalue = $data_input_data['t_value'];
+						$disable    = '';
+					} else {
+						$old_value  = '';
+						$old_tvalue = 'on';
+						$disable    = '';
+					}
 				}
 
 				if ($field['data_name'] == 'management_ip') {
@@ -809,17 +828,17 @@ function template_edit() {
 				}
 
 				if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']) && $old_tvalue  == '') {
-					$title = __esc('Value will be derived from the device if this field is left empty.');
+					$title = __esc('Value will be derived from the Device if this field is left empty.');
 				} else {
 					$title = '';
 				}
 
 				?>
 				<div class='formColumnLeft'>
-					<div class='formFieldName'><?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, '', '', '', get_request_var('id'), '', __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.'));?><?php print html_escape($field['name']);?><div class='formTooltip'><?php print display_tooltip($help);?></div>
+					<div class='formFieldName customDataCheckbox <?php print $disable;?>'><?php form_checkbox('t_value_' . $field['data_name'], $old_tvalue, '', '', '', get_request_var('id'), '', $message);?><?php print html_escape($field['name']);?><div class='formTooltip'><?php print display_tooltip($help);?></div>
 					</div>
 				</div>
-				<div class='formColumnRight'>
+				<div class='formColumnRight <?php print $disable;?>'>
 					<?php form_text_box('value_' . $field['data_name'], $old_value, '', '', 30, 'text', 0, '', $title);?>
 				</div>
 				<?php
@@ -869,6 +888,24 @@ function template_edit() {
 				$('#data_source_type_id').selectmenu('disable');
 			}
 		}
+
+		// Disable Data Query Input Field Changes
+		$('.disable').find('input').each(function() {
+			$(this).prop('disabled', true).addClass('ui-stat-disabled');
+		});
+
+		$('.customDataCheckbox').find('input').on('change', function() {
+			if ($(this).prop('checked') == false) {
+				mixedReasonTitle = '<?php print __('Custom Data Warning Message');?>';
+				mixedOnPage      = '<?php print __esc('WARNING: Data Loss can Occur');?>';
+				sessionMessage   = {
+					message: '<?php print __esc('After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will loose their Custom Data.  This can result in broken Data Collection and Graphs');?>',
+					level: MESSAGE_LEVEL_MIXED
+				};
+
+				displayMessages();
+			}
+		});
 	});
 
 	</script>

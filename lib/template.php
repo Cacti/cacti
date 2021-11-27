@@ -36,59 +36,74 @@ function push_out_data_source_custom_data($data_template_id) {
 	$data_template_data = db_fetch_row_prepared('SELECT id, data_input_id
 		FROM data_template_data
 		WHERE data_template_id = ?
-		AND local_data_id=0', array($data_template_id));
+		AND local_data_id = 0',
+		array($data_template_id));
 
 	/* must be a data template */
-	if (empty($data_template_data['data_input_id'])) { return 0; }
+	if (empty($data_template_data['data_input_id'])) {
+		return 0;
+	}
 
 	/* get a list of data sources using this template */
 	$data_sources = db_fetch_assoc_prepared('SELECT data_template_data.id
 		FROM data_template_data
 		WHERE data_template_id = ?
-		AND local_data_id>0', array($data_template_id));
+		AND local_data_id > 0', array($data_template_id));
 
-	/* pull out all custom templated 'input' values from the template itself
-	 * templated items are selected by querying t_value = '' OR t_value = NULL */
-	$template_input_fields = array_rekey(db_fetch_assoc_prepared('SELECT data_input_fields.id,
-		data_input_fields.type_code, data_input_data.value, data_input_data.t_value
-		FROM data_input_fields
-		INNER JOIN data_input_data
-		ON data_input_fields.id = data_input_data.data_input_field_id
-		INNER JOIN data_template_data
-		ON data_template_data.id = data_input_data.data_template_data_id
-		WHERE (data_input_fields.input_output = "in")
-		AND (data_input_data.t_value="" OR data_input_data.t_value IS NULL)
-		AND (data_input_data.data_template_data_id = ?)
-		AND (data_template_data.local_data_template_data_id=0)',
-		array($data_template_data['id'])), 'id', array('type_code', 'value', 't_value'));
-
-	/* which data_input_fields are templated? */
-	$dif_ct = 0;
-	$dif_in_str = '';
-	if (cacti_sizeof($template_input_fields)) {
-		$dif_in_str .= 'AND data_input_fields.id IN (';
-		foreach ($template_input_fields as $key => $value) {
-			$dif_in_str .= ($dif_ct == 0 ? '':',') . $key;
-			$dif_ct++;
-		}
-		$dif_in_str .= ') ';
+	/* get data query custom index fields to ignore */
+	$data_query_field_index_ids = data_input_field_always_checked(0, true);
+	if (cacti_sizeof($data_query_field_index_ids)) {
+		$exclude_sql_where = ' AND did.data_input_field_ids NOT IN (' . implode(',', $data_query_field_index_ids) . ')';
+	} else {
+		$exclude_sql_where = '';
 	}
 
-	/* pull out all templated 'input' values from all related data sources
+	/**
+	 * pull out all custom templated 'input' values from the template itself
+	 * templated items are selected by querying t_value = '' OR t_value = NULL
+	 * or that are not Data Query related index values
+	 */
+	$template_input_fields = array_rekey(
+		db_fetch_assoc_prepared("SELECT dif.id,
+			dif.type_code, did.value, did.t_value
+			FROM data_input_fields AS dif
+			INNER JOIN data_input_data AS did
+			ON dif.id = did.data_input_field_id
+			INNER JOIN data_template_data AS dtd
+			ON dtd.id = did.data_template_data_id
+			WHERE (dif.input_output = 'in')
+			AND (did.t_value = '' OR did.t_value IS NULL)
+			$exclude_sql_where
+			AND (did.data_template_data_id = ?)
+			AND (dtd.local_data_template_data_id = 0)",
+			array($data_template_data['id'])),
+		'id', array('type_code', 'value', 't_value')
+	);
+
+	/* which data_input_fields are templated? */
+	if (cacti_sizeof($template_input_fields)) {
+		$dif_in_str = ' AND dif.id IN (' . implode(', ', array_keys($template_input_fields)) . ')';
+	}
+
+	/**
+	 * pull out all templated 'input' values from all related data sources
 	 * unfortunately, you can't simply provide the same test as above
 	 * all input fields not related to a template ALWAYS are marked with t_value = NULL
-	 * so we will verify against the list of data_input_field id's taken from above */
-	$input_fields = db_fetch_assoc("SELECT data_template_data.id AS data_template_data_id,
-		data_input_fields.id, data_input_fields.type_code, data_input_data.value, data_input_data.t_value
-		FROM data_input_fields
-		INNER JOIN data_input_data
-		ON data_input_fields.id = data_input_data.data_input_field_id
-		INNER JOIN data_template_data
-		ON data_template_data.id = data_input_data.data_template_data_id
-		WHERE (data_input_fields.input_output = 'in')
+	 * so we will verify against the list of data_input_field id's taken from above
+	 */
+	$input_fields = db_fetch_assoc_prepared("SELECT dtd.id AS data_template_data_id,
+		dif.id, dif.type_code, did.value, did.t_value
+		FROM data_input_fields AS dif
+		INNER JOIN data_input_data AS did
+		ON dif.id = did.data_input_field_id
+		INNER JOIN data_template_data AS dtd
+		ON dtd.id = did.data_template_data_id
+		WHERE (dif.input_output = 'in')
 		$dif_in_str
-		AND (data_input_data.t_value='' OR data_input_data.t_value IS NULL)
-		AND (data_template_data.local_data_template_data_id=" . $data_template_data['id'] . ')');
+		$exclude_sql_where
+		AND (did.t_value='' OR did.t_value IS NULL)
+		AND (dtd.local_data_template_data_id = ?)",
+		array($data_template_data['id']));
 
 	$ds_cnt    = 0;
 	$did_cnt   = 0;
@@ -100,12 +115,16 @@ function push_out_data_source_custom_data($data_template_id) {
 				foreach ($input_fields as $input_field) {
 					if ($data_source['id'] == $input_field['data_template_data_id'] &&
 						isset($template_input_fields[$input_field['id']])) {
-						/* do not push out 'host fields' */
+						/**
+						 * do not push out 'host fields'.  This list should never match as we have already
+						 * excluded these special types codes.  However, we will maintain for reference.
+						 */
 						if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field['type_code'])) {
 							/* this is not a 'host field', so we should either push out the value if it is templated */
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
-						} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) { # templated input field deviates from currenmt data source, so update required
+						} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) {
+							/* templated input field deviates from currenmt data source, so update required */
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
 						}
@@ -143,7 +162,7 @@ function push_out_data_source_templates($did_vals, $ds_in_str) {
 	/* update all templated input fields */
 	if ($did_vals != '') {
 		db_execute("INSERT INTO data_input_data
-			(data_input_field_id,data_template_data_id,value)
+			(data_input_field_id, data_template_data_id, value)
 			VALUES $did_vals
 			ON DUPLICATE KEY UPDATE value=VALUES(value)");
 	}
@@ -200,6 +219,52 @@ function push_out_data_source($data_template_data_id) {
 				update_data_source_title_cache_from_template($data_template_data['data_template_id']);
 			}
 		}
+	}
+}
+
+/**
+ * data_input_field_always_checked - check for data query custom fields
+ *
+ * This function will tell cacti which data input fields must always
+ * carry the data source information since it's key to linking
+ * data query information into the data source
+ *
+ * @param data_input_field_id - The data input field
+ * @param return_ids - Return an array of special ids
+ * @return boolean - true or false
+ */
+function data_input_field_always_checked($data_input_field_id = 0, $return_ids = false) {
+	static $always_checked = array();
+
+	$always_checked_hashes = array(
+		'6027a919c7c7731fbe095b6f53ab127b', // SNMP Query - Index Type
+		'cbbe5c1ddfb264a6e5d509ce1c78c95f', // SNMP Query - Index Value
+		'e6deda7be0f391399c5130e7c4a48b28', // SNMP Query - Output Type ID
+		'172b4b0eacee4948c6479f587b62e512', // Script Server Data Query - Index Type
+		'30fb5d5bcf3d66bb5abe88596f357c26', // Script Server Data Query - Index Value
+		'31112c85ae4ff821d3b288336288818c', // Script Server Data Query - Output Type ID
+		'd39556ecad6166701bfb0e28c5a11108', // Script Query - Index Type
+		'3b7caa46eb809fc238de6ef18b6e10d5', // Script Query - Indev Value
+		'74af2e42dc12956c4817c2ef5d9983f9', // Script Query - Output Type ID
+	);
+
+	if (!cacti_sizeof($always_checked)) {
+		$always_checked = array_rekey(
+			db_fetch_assoc_prepared('SELECT id
+				FROM data_input_fields
+				WHERE hash IN (?, ?, ?, ?, ?, ?, ?, ?, ?)
+				OR type_code != ""',
+				$always_checked_hashes),
+			'id', 'id'
+		);
+	}
+
+	if ($return_ids) {
+		return $always_checked;
+	} elseif (isset($always_checked[$data_input_field_id])) {
+		return true;
+	} else {
+		return false;
 	}
 }
 
@@ -307,8 +372,11 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	the status of the 'local_data_template_data_id' column */
 	if (cacti_sizeof($data_input_data)) {
 		foreach ($data_input_data as $item) {
-			/* always propagate on a new save, only propagate templated fields thereafter */
-			if (($new_save == true) || (empty($item['t_value']))) {
+			/**
+			 * always propagate on a new save, only propagate templated fields thereafter
+			 * noting that always checked should not be propogated after the initial save.
+			 */
+			if ($new_save == true || (empty($item['t_value']) && !data_input_field_always_checked($item['data_input_field_id']))) {
 				db_execute_prepared('REPLACE INTO data_input_data
 					(data_input_field_id, data_template_data_id, t_value, value)
 					VALUES (?, ?, ?, ?)',
@@ -955,9 +1023,11 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 		}
 	}
 
-	/* if there are more graph items than there are items in the template, delete the difference */
-	/* we have probably modified 'graph_templates_item' so we need to recalculate the number of
-	   items before checking them */
+	/**
+	 * if there are more graph items than there are items in the template, delete the difference
+	 * we have probably modified 'graph_templates_item' so we need to recalculate the number of
+	 * items before checking them
+	 */
 	$graph_items_list = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
 		WHERE local_graph_id = ?
@@ -1290,12 +1360,12 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					$data_input_field = array_rekey(db_fetch_assoc_prepared('SELECT dif.id, dif.type_code
 						FROM snmp_query AS sq
 						INNER JOIN data_input AS di
-						ON sq.data_input_id=di.id
+						ON sq.data_input_id = di.id
 						INNER JOIN data_input_fields AS dif
-						ON di.id=dif.data_input_id
-						WHERE (dif.type_code="index_type"
-						OR dif.type_code="index_value"
-						OR dif.type_code="output_type")
+						ON di.id = dif.data_input_id
+						WHERE (dif.type_code = "index_type"
+						OR dif.type_code = "index_value"
+						OR dif.type_code = "output_type")
 						AND sq.id = ?',
 						array($snmp_query_array['snmp_query_id'])), 'type_code', 'id');
 
@@ -1308,23 +1378,25 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						array($host_id, $snmp_query_array['snmp_query_id'],
 							$snmp_query_array['snmp_index_on'], $snmp_query_array['snmp_index']));
 
+					$checked = data_input_field_always_checked($data_input_field['id']) ? 'on':'';
+
 					/* save the value to index on (ie. ifindex, ifip, etc) */
 					db_execute_prepared('REPLACE INTO data_input_data
 						(data_input_field_id, data_template_data_id, t_value, value)
-						VALUES (?, ?, "", ?)',
-						array($data_input_field['index_type'], $data_template_data_id, $snmp_query_array['snmp_index_on']));
+						VALUES (?, ?, ?, ?)',
+						array($data_input_field['index_type'], $data_template_data_id, $checked, $snmp_query_array['snmp_index_on']));
 
 					/* save the actual value (ie. 3, 192.168.1.101, etc) */
 					db_execute_prepared('REPLACE INTO data_input_data
-						(data_input_field_id,data_template_data_id,t_value,value)
-						VALUES (?, ?, "", ?)',
-						array($data_input_field['index_value'], $data_template_data_id, $snmp_cache_value));
+						(data_input_field_id, data_template_data_id, t_value, value)
+						VALUES (?, ?, ?, ?)',
+						array($data_input_field['index_value'], $data_template_data_id, $checked, $snmp_cache_value));
 
 					/* set the expected output type (ie. bytes, errors, packets) */
 					db_execute_prepared('REPLACE INTO data_input_data
-						(data_input_field_id,data_template_data_id,t_value,value)
-						VALUES (?, ?, "", ?)',
-						array($data_input_field['output_type'], $data_template_data_id, $snmp_query_array['snmp_query_graph_id']));
+						(data_input_field_id, data_template_data_id, t_value, value)
+						VALUES (?, ?, ?, ?)',
+						array($data_input_field['output_type'], $data_template_data_id, $checked, $snmp_query_array['snmp_query_graph_id']));
 
 					api_reapply_suggested_data_source_data($cache_array['local_data_id'][$data_template['id']]);
 
