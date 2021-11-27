@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#4477: Remote pollers do not force connection when online
 -issue#4479: As a repair tool, the rebuild poller cache scripts lacks critical options to reduce runtimes
 -issue#4480: Saving a Data Template can damage Data Sources if the Data Template is not constructed properly
+-issue#4481: When using a Cacti Format File for a Report, the Reports still use Legacy Font Size and Alignment Attributes
 
 1.2.19
 -security#4356: Further fixes for grave character security protection

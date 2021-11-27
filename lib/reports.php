@@ -548,7 +548,8 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 	if (file_exists($config['base_path'] . '/formats/' . $format_file)) {
 		$contents = file($config['base_path'] . '/formats/' . $format_file);
 	}
-	$output   = '';
+
+	$output = '';
 	$report_tag_included = false;
 
 	if (cacti_sizeof($contents)) {
@@ -720,8 +721,9 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 		}
 
 		$outstr .= "\t\t<tr class='title_row'>" . PHP_EOL;
+
 		if ($format_ok) {
-			$outstr .= "\t\t\t<td class='title' style='text-align:" . $alignment[$report['alignment']] . ";'>" . PHP_EOL;
+			$outstr .= "\t\t\t<td class='title'>" . PHP_EOL;
 		} else {
 			$outstr .= "\t\t\t<td class='title' style='text-align:" . $alignment[$report['alignment']] . ";font-size:" . $report['font_size'] . "pt;'>" . PHP_EOL;
 		}
@@ -751,7 +753,11 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 
 					if ($column == 0) {
 						$outstr .= "\t\t<tr class='image_row'>" . PHP_EOL;
-						$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
+						if ($format_ok) {
+							$outstr .= "\t\t\t<td>" . PHP_EOL;
+						} else {
+							$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
+						}
 
 						if ($format_ok) {
 							$outstr .= "\t\t\t\t<table class='image_table'>" . PHP_EOL;
@@ -763,7 +769,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 					}
 
 					if ($format_ok) {
-						$outstr .= "\t\t\t\t\t\t<td class='image_column' style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
+						$outstr .= "\t\t\t\t\t\t<td class='image_column'>" . PHP_EOL;
 					} else {
 						$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
 					}
@@ -784,11 +790,13 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 				}
 			} elseif ($item['item_type'] == REPORTS_ITEM_TEXT) {
 				$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+
 				if ($format_ok) {
-					$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";' class='text'>" . PHP_EOL;
+					$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 				} else {
 					$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;' class='text'>" . PHP_EOL;
 				}
+
 				$outstr .= "\t\t\t\t" . html_escape($item['item_text']) . PHP_EOL;
 				$outstr .= "\t\t\t</td>" . PHP_EOL;
 				$outstr .= "\t\t</tr>" . PHP_EOL;
@@ -1062,7 +1070,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 					if ($title != '') {
 						$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
 						if ($format_ok) {
-							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . "'>" . PHP_EOL;
+							$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 						} else {
 							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . PHP_EOL;
 						}
@@ -1103,7 +1111,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 					if ($title != '') {
 						$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
 						if ($format_ok) {
-							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
+							$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 						} else {
 							$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . PHP_EOL;
 						}
@@ -1183,7 +1191,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 									$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
 
 									if ($format_ok) {
-										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . "';>" . PHP_EOL;
+										$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 									} else {
 										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . PHP_EOL;
 									}
@@ -1249,7 +1257,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 										if ($title != '') {
 											$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
 											if ($format_ok) {
-												$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
+												$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 											} else {
 												$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . PHP_EOL;
 											}
@@ -1262,7 +1270,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 
 									$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
 									if ($format_ok) {
-										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'><strong>" . __('Data Query:') . "</strong> " . $data_query['name'] . PHP_EOL;
+										$outstr .= "\t\t\t<td class='text'><strong>" . __('Data Query:') . "</strong> " . $data_query['name'] . PHP_EOL;
 										$outstr .= "\t\t\t</td>" . PHP_EOL;
 										$outstr .= "\t\t</tr>" . PHP_EOL;
 									} else {
@@ -1320,7 +1328,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 						if ($title != '') {
 							$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
 							if ($format_ok) {
-								$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
+								$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 							} else {
 								$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . PHP_EOL;
 							}
@@ -1340,7 +1348,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			if ($title != '') {
 				$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
 				if ($format_ok) {
-					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . "'>" . PHP_EOL;
+					$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
 				} else {
 					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . PHP_EOL;
 				}
@@ -1390,13 +1398,20 @@ function reports_graph_area($graphs, &$report, $item, $timespan, $output, $forma
 
 			if ($column == 0) {
 				$outstr .= "\t\t<tr class='image_row'>" . PHP_EOL;
-				$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
-				$outstr .= "\t\t\t\t<table style='width:100%;'>" . PHP_EOL;
+
+				if ($format_ok) {
+					$outstr .= "\t\t\t<td>" . PHP_EOL;
+					$outstr .= "\t\t\t\t<table>". PHP_EOL;
+				} else {
+					$outstr .= "\t\t\t<td style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
+					$outstr .= "\t\t\t\t<table style='width:100%;'>" . PHP_EOL;
+				}
+
 				$outstr .= "\t\t\t\t\t<tr>" . PHP_EOL;
 			}
 
 			if ($format_ok) {
-				$outstr .= "\t\t\t\t\t\t<td class='image_column' style='text-align:" . $alignment[$item['align']] . ";'>" . PHP_EOL;
+				$outstr .= "\t\t\t\t\t\t<td class='image_column'>" . PHP_EOL;
 			} else {
 				$outstr .= "\t\t\t\t\t\t<td style='padding:5px;text-align='" . $alignment[$item['align']] . ";'>" . PHP_EOL;
 			}
