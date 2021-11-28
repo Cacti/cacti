@@ -302,6 +302,17 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '4') { // retemplate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					retemplate_graphs($selected_items[$i]);
+
+					$graph_template_name = db_fetch_cell_prepared('SELECT name
+						FROM graph_templates
+						WHERE id = ?',
+						array($selected_items[$i]));
+
+					if ($_SESSION['sess_gt_repairs'] > 0) {
+						raise_message('gt_repair' . $selected_items[$i], __('Sync of Graph Template \'%s\' Resulted in %s Repairs!', $graph_template_name, $_SESSION['sess_gt_rapairs']), MESSAGE_LEVEL_WARN);
+					} else {
+						raise_message('gt_repair' . $selected_items[$i], __('Sync of Graph Template \'%s\' Resulted in no Repairs.', $graph_template_name), MESSAGE_LEVEL_INFO);
+					}
 				}
 			}
 		}

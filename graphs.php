@@ -347,7 +347,7 @@ function form_save() {
 			);
 
 			if ($lg_template_id > 0) {
-				change_graph_template($local_graph_id, $gt_id_unparsed);
+				change_graph_template($local_graph_id, $gt_id_unparsed, true);
 
 				$lg_dq_id = db_fetch_cell_prepared('SELECT snmp_query_id
 					FROM graph_local
