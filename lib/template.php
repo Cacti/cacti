@@ -1402,7 +1402,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 				// Set suggested names and custom data
 				if (cacti_sizeof($snmp_query_array)) {
-					$data_input_field = array_rekey(db_fetch_assoc_prepared('SELECT dif.id, dif.type_code
+					$data_input_fields = array_rekey(db_fetch_assoc_prepared('SELECT dif.id, dif.type_code
 						FROM snmp_query AS sq
 						INNER JOIN data_input AS di
 						ON sq.data_input_id = di.id
@@ -1423,25 +1423,37 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						array($host_id, $snmp_query_array['snmp_query_id'],
 							$snmp_query_array['snmp_index_on'], $snmp_query_array['snmp_index']));
 
-					$checked = data_input_field_always_checked($data_input_field['id']) ? 'on':'';
+					if (cacti_sizeof($data_input_fields)) {
+						foreach($data_input_fields as $type_code => $id) {
+							$checked = data_input_field_always_checked($id) ? 'on':'';
 
-					/* save the value to index on (ie. ifindex, ifip, etc) */
-					db_execute_prepared('REPLACE INTO data_input_data
-						(data_input_field_id, data_template_data_id, t_value, value)
-						VALUES (?, ?, ?, ?)',
-						array($data_input_field['index_type'], $data_template_data_id, $checked, $snmp_query_array['snmp_index_on']));
+							switch($type_code) {
+								case 'index_type':
+									/* save the value to index on (ie. ifindex, ifip, etc) */
+									db_execute_prepared('REPLACE INTO data_input_data
+										(data_input_field_id, data_template_data_id, t_value, value)
+										VALUES (?, ?, ?, ?)',
+										array($id, $data_template_data_id, $checked, $snmp_query_array['snmp_index_on']));
 
-					/* save the actual value (ie. 3, 192.168.1.101, etc) */
-					db_execute_prepared('REPLACE INTO data_input_data
-						(data_input_field_id, data_template_data_id, t_value, value)
-						VALUES (?, ?, ?, ?)',
-						array($data_input_field['index_value'], $data_template_data_id, $checked, $snmp_cache_value));
+									break;
+								case 'index_value':
+									/* save the actual value (ie. 3, 192.168.1.101, etc) */
+									db_execute_prepared('REPLACE INTO data_input_data
+										(data_input_field_id, data_template_data_id, t_value, value)
+										VALUES (?, ?, ?, ?)',
+										array($id, $data_template_data_id, $checked, $snmp_cache_value));
 
-					/* set the expected output type (ie. bytes, errors, packets) */
-					db_execute_prepared('REPLACE INTO data_input_data
-						(data_input_field_id, data_template_data_id, t_value, value)
-						VALUES (?, ?, ?, ?)',
-						array($data_input_field['output_type'], $data_template_data_id, $checked, $snmp_query_array['snmp_query_graph_id']));
+									break;
+								case 'output_type':
+									/* set the expected output type (ie. bytes, errors, packets) */
+									db_execute_prepared('REPLACE INTO data_input_data
+										(data_input_field_id, data_template_data_id, t_value, value)
+										VALUES (?, ?, ?, ?)',
+										array($id, $data_template_data_id, $checked, $snmp_query_array['snmp_query_graph_id']));
+									break;
+							}
+						}
+					}
 
 					api_reapply_suggested_data_source_data($cache_array['local_data_id'][$data_template['id']]);
 
@@ -1806,7 +1818,6 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 }
 
 function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values) {
-
 	/* ================= input validation ================= */
 	input_validate_input_number($form_id1);
 	/* ==================================================== */
