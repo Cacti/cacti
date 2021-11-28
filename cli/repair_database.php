@@ -75,37 +75,48 @@ if (cacti_sizeof($parms)) {
 				display_help();
 				exit(0);
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 				exit(1);
 		}
 	}
 }
-print "Repairing All Cacti Database Tables\n";
 
-db_execute('UNLOCK TABLES');
+print '------------------------------------------------------------------------' . PHP_EOL;
 
 $tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
 
 if ($rtables) {
+	printf('NOTE: Repairing All %s Cacti Database Tables' . PHP_EOL, cacti_sizeof($tables));
+
+	db_execute('UNLOCK TABLES');
+
+	$tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
+
 	if (cacti_sizeof($tables)) {
 		foreach($tables AS $table) {
-			print "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
-			$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . $form);
-			print ($status == 0 ? ' Failed' : ' Successful') . "\n";
+			print "Repairing Table '" . $table['Tables_in_' . $database_default] . "'";
+			$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . ' QUICK' . $form);
+			print ($status == 0 ? ' Failed' : ' Successful') . PHP_EOL;
 
 			if ($dynamic) {
-				print "Changing Table Row Format to Dynamic -> '" . $table['Tables_in_' . $database_default] . "'";
+				print "Changing Table Row Format to Dynamic '" . $table['Tables_in_' . $database_default] . "'";
 				$status = db_execute('ALTER TABLE ' . $table['Tables_in_' . $database_default] . ' ROW_FORMAT=DYNAMIC');
-				print ($status == 0 ? ' Failed' : ' Successful') . "\n";
+				print ($status == 0 ? ' Failed' : ' Successful') . PHP_EOL;
 			}
 		}
 	}
+} else {
+	print 'NOTE: Skipping Data Table Physical Repair' . PHP_EOL;
+	printf('NOTE: %s Cacti Tables would be checked/repaired if using --tables option.' . PHP_EOL, cacti_sizeof($tables));
 }
 
-print "\nNOTE: Running some Data Query repair scripts\n";
+print PHP_EOL . '------------------------------------------------------------------------' . PHP_EOL;
+print 'Simple Checks.  Automatically repair if Found' . PHP_EOL . PHP_EOL;
 
-db_execute("UPDATE graph_local AS gl
+print 'NOTE: Repairing some possibly corrupted Data Query IDs and Indexes.' . PHP_EOL;
+
+db_execute('UPDATE graph_local AS gl
 	INNER JOIN graph_templates_item AS gti
 	ON gti.local_graph_id = gl.id
 	INNER JOIN data_template_rrd AS dtr
@@ -114,7 +125,17 @@ db_execute("UPDATE graph_local AS gl
 	ON dl.id = dtr.local_data_id
 	SET gl.snmp_query_id = dl.snmp_query_id, gl.snmp_index = dl.snmp_index
 	WHERE gl.graph_template_id IN (SELECT graph_template_id FROM snmp_query_graph)
-	AND gl.snmp_query_id = 0");
+	AND (gl.snmp_query_id != dl.snmp_query_id OR gl.snmp_index != dl.snmp_index)
+	AND gl.snmp_query_id = 0');
+
+$fixes = db_affected_rows();
+if ($fixes) {
+	printf('NOTE: Found and Repaired %s Problems with Data Query IDs and Indexes' . PHP_EOL, $fixes);
+} else {
+	print 'NOTE: Found No Problems with Data Query Indexes or IDs' . PHP_EOL;
+}
+
+print 'NOTE: Repairing Incorrectly Set Data Query Graph IDs' . PHP_EOL;
 
 db_execute("UPDATE graph_local AS gl
 	INNER JOIN (
@@ -136,15 +157,101 @@ db_execute("UPDATE graph_local AS gl
 	SET gl.snmp_query_graph_id = did.value
 	WHERE input_output = 'in'
 	AND type_code = 'output_type'
-	AND gl.graph_template_id IN (SELECT graph_template_id FROM snmp_query_graph)");
+	AND gl.graph_template_id IN (SELECT graph_template_id FROM snmp_query_graph)
+	AND gl.snmp_query_graph_id != CAST(did.value AS signed)");
 
-print "NOTE: Checking for Invalid Cacti Templates\n";
+$fixes = db_affected_rows();
+if ($fixes) {
+	printf('NOTE: Found and Repaired %s Problems with Data Query Graph IDs' . PHP_EOL, $fixes);
+} else {
+	print 'NOTE: Found No Problems with Data Query Graph IDs' . PHP_EOL;
+}
+
+print 'NOTE: Repairing Data Input Data hostname or host_id Type Code issues' . PHP_EOL;
+
+// Correct bad hostnames and host_id's in the data_input_data table
+$entries = db_fetch_assoc("SELECT did.*, dif.type_code
+	FROM data_input_data AS did
+	INNER JOIN data_input_fields AS dif
+	ON did.data_input_field_id = dif.id
+	WHERE data_input_field_id in (
+		SELECT id
+		FROM data_input_fields
+		WHERE type_code != ''
+	)
+	AND data_template_data_id IN (
+		SELECT id
+		FROM data_template_data
+		WHERE local_data_id > 0
+		AND data_template_id > 0
+	)
+	AND type_code in ('host_id', 'hostname')
+	AND value = ''");
+
+$fixes = 0;
+
+if (cacti_sizeof($entries)) {
+	foreach($entries as $e) {
+		$data_template_data = db_fetch_row_prepared('SELECT *
+			FROM data_template_data
+			WHERE id = ?',
+			array($e['data_template_data_id']));
+
+		if (cacti_sizeof($data_template_data)) {
+			$local_data = db_fetch_row_prepared('SELECT *
+				FROM data_local
+				WHERE id = ?',
+				array($data_template_data['local_data_id']));
+
+			if (cacti_sizeof($local_data)) {
+				switch($e['type_code']) {
+					case 'hostname':
+						$hostname = db_fetch_cell_prepared('SELECT hostname
+							FROM host
+							WHERE id = ?',
+							array($local_data['host_id']));
+
+						db_execute_prepared('UPDATE data_input_data
+							SET value = ?
+							WHERE data_input_field_id = ?
+							AND data_template_data_id = ?',
+							array($hostname, $e['data_input_field_id'], $e['data_template_data_id']));
+
+						$fixes++;
+
+						break;
+					case 'host_id':
+						db_execute_prepared('UPDATE data_input_data
+							SET value = ?
+							WHERE data_input_field_id = ?
+							AND data_template_data_id = ?',
+							array($local_data['host_id'], $e['data_input_field_id'], $e['data_template_data_id']));
+
+						$fixes++;
+
+						break;
+				}
+			}
+		}
+	}
+}
+
+if ($fixes) {
+	print "NOTE: Found and Repaired $fixes invalid Data Input hostname or host_id Type Code issues" . PHP_EOL;
+} else {
+	print 'NOTE: Found No Data Input Data hostname or host_id Type Code issues' . PHP_EOL;
+}
+
+print PHP_EOL . '------------------------------------------------------------------------' . PHP_EOL;
+print 'Detailed Checks.  Use --force to repair if found.' . PHP_EOL . PHP_EOL;
+
+print 'NOTE: Searching for Invalid Cacti GPRINT Presets' . PHP_EOL;
 
 /* keep track of total rows */
 $total_rows = 0;
 
 /* remove invalid GPrint Presets from the Database, validated */
-$rows = db_fetch_cell('SELECT count(*)
+$rows = db_fetch_cell('SELECT COUNT(*)
 	FROM graph_templates_item
 	LEFT JOIN graph_templates_gprint
 	ON graph_templates_item.gprint_id = graph_templates_gprint.id
@@ -159,15 +266,19 @@ if ($rows > 0) {
 			AND gprint_id>0');
 	}
 
-	print "NOTE: $rows Invalid GPrint Preset Rows " . ($force ? 'removed from':'found in') . " Graph Templates\n";
+	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid GPrint Preset Rows in Graph Templates" . PHP_EOL;
+} else {
+	print 'NOTE: Found No Invalid Cacti GPRINT Presets' . PHP_EOL;
 }
 
+print 'NOTE: Searching for Invalid Cacti CDEFs Presets' . PHP_EOL;
+
 /* remove invalid CDEF Items from the Database, validated */
-$rows = db_fetch_cell("SELECT count(*)
+$rows = db_fetch_cell('SELECT COUNT(*)
 	FROM cdef_items
 	LEFT JOIN cdef
 	ON cdef_items.cdef_id=cdef.id
-	WHERE cdef.id IS NULL");
+	WHERE cdef.id IS NULL');
 
 $total_rows += $rows;
 if ($rows > 0) {
@@ -176,11 +287,15 @@ if ($rows > 0) {
 			WHERE cdef_id NOT IN (SELECT id FROM cdef)');
 	}
 
-	print "NOTE: $rows Invalid CDEF Item Rows " . ($force ? 'removed from':'found in') . " Graph Templates\n";
+	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid CDEF Rows in Graph Templates" . PHP_EOL;
+} else {
+	print 'NOTE: Found No Invalid Cacti CDEFs' . PHP_EOL;
 }
 
+print 'NOTE: Searching for Invalid Cacti Data Inputs' . PHP_EOL;
+
 /* remove invalid Data Templates from the Database, validated */
-$rows = db_fetch_cell('SELECT count(*)
+$rows = db_fetch_cell('SELECT COUNT(*)
 	FROM data_template_data
 	LEFT JOIN data_input
 	ON data_template_data.data_input_id=data_input.id
@@ -193,11 +308,15 @@ if ($rows > 0) {
 			WHERE data_input_id NOT IN (SELECT id FROM data_input)');
 	}
 
-	print "NOTE: $rows Invalid Data Input Rows " . ($force ? 'removed from':'found in') . " Data Templates\n";
+	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid Data Input Rows in Data Templates" . PHP_EOL;
+} else {
+	print 'NOTE: Found No Invalid Cacti Data Inputs' . PHP_EOL;
 }
 
+print 'NOTE: Searching for Invalid Cacti Data Input Fields' . PHP_EOL;
+
 /* remove invalid Data Input Fields from the Database, validated */
-$rows = db_fetch_cell('SELECT count(*)
+$rows = db_fetch_cell('SELECT COUNT(*)
 	FROM data_input_fields
 	LEFT JOIN data_input
 	ON data_input_fields.data_input_id=data_input.id
@@ -212,13 +331,17 @@ if ($rows > 0) {
 		update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 	}
 
-	print "NOTE: $rows Invalid Data Input Field Rows " . ($force ? 'removed from':'found in') . " Data Templates\n";
+	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid Data Input Field Rows in Data Templates" . PHP_EOL;
+} else {
+	print 'NOTE: Found No Invalid Cacti Data Input Fields' . PHP_EOL;
 }
 
 /* --------------------------------------------------------------------*/
 
+print 'NOTE: Searching for Invalid Cacti Data Input Data Rows (Pass 1)' . PHP_EOL;
+
 /* remove invalid Data Input Data Rows from the Database in two passes */
-$rows = db_fetch_cell('SELECT count(*)
+$rows = db_fetch_cell('SELECT COUNT(*)
 	FROM data_input_data
 	LEFT JOIN data_template_data
 	ON data_input_data.data_template_data_id=data_template_data.id
@@ -231,10 +354,14 @@ if ($rows > 0) {
 			WHERE data_input_data.data_template_data_id NOT IN (SELECT id FROM data_template_data)');
 	}
 
-	print "NOTE: $rows Invalid Data Input Data Rows based upon template mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
+	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid Data Input Data Rows in Data Templates" . PHP_EOL;
+} else {
+	print 'NOTE: Found No Invalid Cacti Data Input Data Rows (Pass 1)' . PHP_EOL;
 }
 
-$rows = db_fetch_cell('SELECT count(*)
+print 'NOTE: Searching for Invalid Cacti Data Input Data Rows (Pass 2)' . PHP_EOL;
+
+$rows = db_fetch_cell('SELECT COUNT(*)
 	FROM data_input_data
 	LEFT JOIN data_input_fields
 	ON data_input_fields.id=data_input_data.data_input_field_id
@@ -247,34 +374,38 @@ if ($rows > 0) {
 			WHERE data_input_data.data_input_field_id NOT IN (SELECT id FROM data_input_fields)');
 	}
 
-	print "NOTE: $rows Invalid Data Input Data rows based upon field mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
+	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid Data Input Data Rows based upon field mappings in Data Templates" . PHP_EOL;
+} else {
+	print 'NOTE: Found No Invalid Cacti Data Input Data Rows (Pass 2)' . PHP_EOL;
 }
 
+print PHP_EOL . '------------------------------------------------------------------------' . PHP_EOL;
+
 if ($total_rows > 0 && !$force) {
-	print "\nWARNING: Cacti Template Problems found in your Database.  Using the '--force' option will remove\n";
-	print "the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you \n";
-	print "should contact your support organization prior to proceeding with that repair.\n\n";
+	print 'WARNING: Cacti Template Problems found in your Database.  Using the \'--force\' option will remove' . PHP_EOL;
+	print 'the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you' . PHP_EOL;
+	print 'should contact your support organization prior to proceeding with that repair.' . PHP_EOL . PHP_EOL;
 } elseif ($total_rows == 0) {
-	print "NOTE: No Invalid Cacti Template Records found in your Database\n\n";
+	print 'NOTE: No Invalid Cacti Template Records found in your Database' . PHP_EOL . PHP_EOL;
 }
 
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Database Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Database Repair Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	print "\nusage: repair_database.php [--dynamic] [--debug] [--force] [--form]\n\n";
-	print "A utility designed to repair the Cacti database if damaged, and optionally repair any\n";
-	print "corruption found in the Cacti databases various Templates.\n\n";
-	print "Optional:\n";
-	print "    --dynamic - Convert a table to Dynamic row format if available\n";
-	print "    --form    - Force rebuilding the indexes from the database creation syntax.\n";
-	print "    --tables  - Repair Tables as well as possible database corruptions.\n";
-	print "    --force   - Remove Invalid Template records from the database.\n";
-	print "    --debug   - Display verbose output during execution.\n\n";
+	print PHP_EOL . 'usage: repair_database.php [--dynamic] [--debug] [--force] [--form]' . PHP_EOL . PHP_EOL;
+	print 'A utility designed to repair the Cacti database if damaged, and optionally repair any' . PHP_EOL;
+	print 'corruption found in the Cacti databases various Templates.' . PHP_EOL . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
+	print '    --dynamic - Convert a table to Dynamic row format if available' . PHP_EOL;
+	print '    --form    - Force rebuilding the indexes from the database creation syntax.' . PHP_EOL;
+	print '    --tables  - Repair Tables as well as possible database corruptions.' . PHP_EOL;
+	print '    --force   - Remove Invalid Template records from the database.' . PHP_EOL;
+	print '    --debug   - Display verbose output during execution.' . PHP_EOL . PHP_EOL;
 }

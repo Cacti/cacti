@@ -27,6 +27,67 @@ function upgrade_to_1_2_20() {
 
 	include_once($config['base_path'] . '/lib/data_query.php');
 
+	// Correct bad hostnames and host_id's in the data_input_data table
+	$entries = db_fetch_assoc("SELECT did.*, dif.type_code
+		FROM data_input_data AS did
+		INNER JOIN data_input_fields AS dif
+		ON did.data_input_field_id = dif.id
+		WHERE data_input_field_id in (
+			SELECT id
+			FROM data_input_fields
+			WHERE type_code != ''
+		)
+		AND data_template_data_id IN (
+			SELECT id
+			FROM data_template_data
+			WHERE local_data_id > 0
+			AND data_template_id > 0
+		)
+		AND type_code in ('host_id', 'hostname')
+		AND value = ''");
+
+	if (cacti_sizeof($entries)) {
+		foreach($entries as $e) {
+			$data_template_data = db_fetch_row_prepared('SELECT *
+				FROM data_template_data
+				WHERE id = ?',
+				array($e['data_template_data_id']));
+
+			if (cacti_sizeof($data_template_data)) {
+				$local_data = db_fetch_row_prepared('SELECT *
+					FROM data_local
+					WHERE id = ?',
+					array($data_template_data['local_data_id']));
+
+				if (cacti_sizeof($local_data)) {
+					switch($e['type_code']) {
+						case 'hostname':
+							$hostname = db_fetch_cell_prepared('SELECT hostname
+								FROM host
+								WHERE id = ?',
+								array($local_data['host_id']));
+
+							db_execute_prepared('UPDATE data_input_data
+								SET value = ?
+								WHERE data_input_field_id = ?
+								AND data_template_data_id = ?',
+								array($hostname, $e['data_input_field_id'], $e['data_template_data_id']));
+
+							break;
+						case 'host_id':
+							db_execute_prepared('UPDATE data_input_data
+								SET value = ?
+								WHERE data_input_field_id = ?
+								AND data_template_data_id = ?',
+								array($local_data['host_id'], $e['data_input_field_id'], $e['data_template_data_id']));
+
+							break;
+					}
+				}
+			}
+		}
+	}
+
 	// Correct issues with Cacti Data Template input's
 	db_execute("UPDATE data_input_data
 		SET t_value = 'on'
