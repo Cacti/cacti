@@ -39,7 +39,6 @@ function upgrade_to_1_2_20() {
 			SELECT id
 			FROM data_template_data
 			WHERE data_template_id > 0
-			AND local_data_id = 0
 		)");
 
 	$broken_data_sources = db_fetch_assoc("SELECT did.*
