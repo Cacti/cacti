@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.2.20
--security:   Resolve issues with SQL injections in user_admin.php
+-security:   Resolve issues with SQL injections in user_admin and user_group_admin.  Thanks @enesdex 
 -issue#4363: Duplicate entries in graph_templates_item - mabye an aftermath of the template edit bug
 -issue#4435: Unable to Save Graph Settings from the Graphs pages
 -issue#4449: Script Server can crash if an OID is missing from device
