@@ -250,16 +250,16 @@ function user_group_copy($id, $prefix = 'New Group') {
 function update_policies() {
 	$set = '';
 
-	$set .= isset_request_var('policy_graphs') ? 'policy_graphs=' . get_nfilter_request_var('policy_graphs'):'';
-	$set .= isset_request_var('policy_trees') ? ($set != '' ? ',':'') . 'policy_trees=' . get_nfilter_request_var('policy_trees'):'';
-	$set .= isset_request_var('policy_hosts') ? ($set != '' ? ',':'') . 'policy_hosts=' . get_nfilter_request_var('policy_hosts'):'';
-	$set .= isset_request_var('policy_graph_templates') ? ($set != '' ? ',':'') . 'policy_graph_templates=' . get_nfilter_request_var('policy_graph_templates'):'';
+	$set .= isset_request_var('policy_graphs') ? 'policy_graphs=' . get_filter_request_var('policy_graphs'):'';
+	$set .= isset_request_var('policy_trees') ? ($set != '' ? ',':'') . 'policy_trees=' . get_filter_request_var('policy_trees'):'';
+	$set .= isset_request_var('policy_hosts') ? ($set != '' ? ',':'') . 'policy_hosts=' . get_filter_request_var('policy_hosts'):'';
+	$set .= isset_request_var('policy_graph_templates') ? ($set != '' ? ',':'') . 'policy_graph_templates=' . get_filter_request_var('policy_graph_templates'):'';
 
 	if ($set != '') {
-		db_execute_prepared("UPDATE user_auth_group SET $set WHERE id = ?", array(get_nfilter_request_var('id')));
+		db_execute_prepared("UPDATE user_auth_group SET $set WHERE id = ?", array(get_filter_request_var('id')));
 	}
 
-	header('Location: user_group_admin.php?action=edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
+	header('Location: user_group_admin.php?action=edit&header=false&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_filter_request_var('id'));
 	exit;
 }
 
