@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once(__DIR__ . '/../lib/template.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -266,7 +267,7 @@ if ($rows > 0) {
 			AND gprint_id>0');
 	}
 
-	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid GPrint Preset Rows in Graph Templates" . PHP_EOL;
+	print 'NOTE: Found ' . ($force ? 'and Fixed ':'') . "$rows Invalid GPrint Preset Rows in Graph Templates" . PHP_EOL;
 } else {
 	print 'NOTE: Found No Invalid Cacti GPRINT Presets' . PHP_EOL;
 }
@@ -287,7 +288,7 @@ if ($rows > 0) {
 			WHERE cdef_id NOT IN (SELECT id FROM cdef)');
 	}
 
-	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid CDEF Rows in Graph Templates" . PHP_EOL;
+	print 'NOTE: Found ' . ($force ? 'and Fixed ':'') . "$rows Invalid CDEF Rows in Graph Templates" . PHP_EOL;
 } else {
 	print 'NOTE: Found No Invalid Cacti CDEFs' . PHP_EOL;
 }
@@ -308,9 +309,53 @@ if ($rows > 0) {
 			WHERE data_input_id NOT IN (SELECT id FROM data_input)');
 	}
 
-	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid Data Input Rows in Data Templates" . PHP_EOL;
+	print 'NOTE: Found ' . ($force ? 'and Fixed ':'') . "$rows Invalid Data Input Rows in Data Templates" . PHP_EOL;
 } else {
 	print 'NOTE: Found No Invalid Cacti Data Inputs' . PHP_EOL;
+}
+
+print 'NOTE: Searching for Graph Templates whose Graphs have invalid item counts' . PHP_EOL;
+
+$rows = db_fetch_assoc('SELECT gt.graph_template_id, gt.items, gt1.graph_items, gt1.graphs
+	FROM (
+		SELECT graph_template_id, COUNT(*) AS items
+		FROM graph_templates_item
+		WHERE local_graph_id=0
+		GROUP BY graph_template_id
+	) AS gt
+	INNER JOIN (
+		SELECT graph_template_id, MAX(items) AS graph_items, COUNT(*) AS graphs
+		FROM (
+			SELECT graph_template_id, COUNT(*) AS items
+			FROM graph_templates_item
+			WHERE local_graph_id > 0
+			AND graph_template_id > 0
+			GROUP BY local_graph_id
+		) AS rs
+		GROUP BY graph_template_id
+	) AS gt1
+	ON gt.graph_template_id = gt1.graph_template_id
+	HAVING graph_items != items');
+
+$total_rows += cacti_sizeof($rows);
+
+if (cacti_sizeof($rows)) {
+	$total_graphs = 0;
+
+	if ($force) {
+		foreach($rows as $row) {
+			retemplate_graphs($row['graph_template_id'], 0, true);
+			$total_graphs += $row['graphs'];
+		}
+	} else {
+		foreach($rows as $row) {
+			$total_graphs += $row['graphs'];
+		}
+	}
+
+	print 'NOTE: Found ' . ($force ? 'and Fixed ':'') . cacti_sizeof($rows) . ' Graph Templates with ' . $total_graphs . ' Graphs whose item counts that were incorrect' . PHP_EOL;
+} else {
+	print 'NOTE: Found No Graph Templates whose Graphs had incorrect item counts' . PHP_EOL;
 }
 
 print 'NOTE: Searching for Invalid Cacti Data Input Fields' . PHP_EOL;
@@ -331,7 +376,7 @@ if ($rows > 0) {
 		update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 	}
 
-	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid Data Input Field Rows in Data Templates" . PHP_EOL;
+	print 'NOTE: Found ' . ($force ? 'and Fixed ':'') . "$rows Invalid Data Input Field Rows in Data Templates" . PHP_EOL;
 } else {
 	print 'NOTE: Found No Invalid Cacti Data Input Fields' . PHP_EOL;
 }
@@ -354,7 +399,7 @@ if ($rows > 0) {
 			WHERE data_input_data.data_template_data_id NOT IN (SELECT id FROM data_template_data)');
 	}
 
-	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid Data Input Data Rows in Data Templates" . PHP_EOL;
+	print 'NOTE: Found ' . ($force ? 'and Fixed ':'') . "$rows Invalid Data Input Data Rows in Data Templates" . PHP_EOL;
 } else {
 	print 'NOTE: Found No Invalid Cacti Data Input Data Rows (Pass 1)' . PHP_EOL;
 }
@@ -374,7 +419,7 @@ if ($rows > 0) {
 			WHERE data_input_data.data_input_field_id NOT IN (SELECT id FROM data_input_fields)');
 	}
 
-	print 'NOTE: Found ' . ($force ? 'and Fixed':'') . "$rows Invalid Data Input Data Rows based upon field mappings in Data Templates" . PHP_EOL;
+	print 'NOTE: Found ' . ($force ? 'and Fixed ':'') . "$rows Invalid Data Input Data Rows based upon field mappings in Data Templates" . PHP_EOL;
 } else {
 	print 'NOTE: Found No Invalid Cacti Data Input Data Rows (Pass 2)' . PHP_EOL;
 }

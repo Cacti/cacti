@@ -739,6 +739,9 @@ function parse_graph_template_id($value) {
 }
 
 function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = false) {
+	static $repairs = 0;
+	static $template_item_ids = array();
+
 	$template_items = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
 		WHERE graph_template_id = ?
@@ -746,60 +749,81 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 		ORDER BY id',
 		array($graph_template_id));
 
-	$repairs = 0;
+	$local_graphs = array();
 
 	// If force is enabled, we are also doing a repair
-	if ($local_graph_id > 0 && $force) {
-		$graph_items = db_fetch_assoc_prepared('SELECT *
-			FROM graph_templates_item
-			WHERE local_graph_id = ?
-			ORDER BY id',
-			array($local_graph_id));
+	if ($local_graph_id > 0) {
+		$local_graphs[$local_graph_id] = $local_graph_id;
+	} elseif ($local_graph_id == 0) {
+		$local_graphs = array_rekey(
+			db_fetch_assoc('SELECT id
+				FROM graph_local
+				WHERE graph_template_id = ?',
+				array($graph_template_id)),
+			'id', 'id'
+		);
+	}
 
-		$deletes = array();
-
-		if (cacti_sizeof($graph_items) != cacti_sizeof($template_items)) {
-			cacti_log(sprintf('WARNING: Graph Item Issue for Graph: %s, Template: %s, Items: %s/%s', $local_graph_id, $graph_template_id, cacti_sizeof($graph_items), cacti_sizeof($template_items)), false);
-
-			// First search the graph_items list for items that don't exist in the template
-			foreach($graph_items as $gitem) {
-				$found = false;
-
-				foreach($template_items as $item) {
-					if ($item['id'] == $gitem['local_graph_template_item_id']) {
-						$found = true;
-					}
-				}
-
-				if (!$found) {
-					$deletes[] = $gitem['id'];
-					$repairs++;
-				}
-			}
-
-			// Next search for duplicated local_graph_template_item_id's and remove the most
-			// recent one basically repairing the graph
+	if (cacti_sizeof($local_graphs)) {
+		// Put all the template item ids into an array
+		if (!isset($template_item_ids[$graph_template_id])) {
 			foreach($template_items as $item) {
-				$found  = false;
-				$search = $item['id'];
+				$template_item_ids[$graph_template_id][] = $item['id'];
+			}
+		}
 
-				// If we find a duplicate of any local_graph_template_item_id delete
-				// the most recent
-				foreach($graph_items as $gitem) {
-					if ($gitem['local_graph_template_item_id'] == $search) {
-						if ($found) {
+		foreach($local_graphs as $local_graph_id) {
+			if ($local_graph_id > 0 && $force) {
+				$graph_items = db_fetch_assoc_prepared('SELECT *
+					FROM graph_templates_item
+					WHERE local_graph_id = ?
+					ORDER BY sequence, id',
+					array($local_graph_id));
+
+				$deletes = array();
+
+				if (cacti_sizeof($graph_items) != cacti_sizeof($template_items)) {
+					cacti_log(sprintf('WARNING: Graph Item Issue for Graph: %s, Template: %s, Items: %s/%s', $local_graph_id, $graph_template_id, cacti_sizeof($graph_items), cacti_sizeof($template_items)), false);
+
+					// First search the graph_items list for items that don't exist in the template
+					foreach($graph_items as $gitem) {
+						$found = false;
+
+						if (!in_array($gitem['local_graph_template_item_id'], $template_item_ids[$graph_template_id], true)) {
 							$deletes[] = $gitem['id'];
 							$repairs++;
 						}
 					}
-				}
-			}
 
-			if (cacti_sizeof($deletes)) {
-				db_execute_prepared('DELETE FROM graph_templates_item
-					WHERE id IN (' . implode(',', $deletes) . ')
-					AND local_graph_id = ?',
-					array($local_graph_id));
+					// Next search for duplicated local_graph_template_item_id's and remove the most
+					// recent one basically repairing the graph
+					foreach($template_items as $item) {
+						$found  = false;
+						$search = $item['id'];
+
+						// If we find a duplicate of any local_graph_template_item_id delete
+						// the most recent
+						foreach($graph_items as $gitem) {
+							// If we have a match, mark 'found'.  If we have a second or more
+							// matches, then remove that one
+							if ($gitem['local_graph_template_item_id'] == $search) {
+								if ($found) {
+									$deletes[] = $gitem['id'];
+									$repairs++;
+								}
+
+								$found = true;
+							}
+						}
+					}
+
+					if (cacti_sizeof($deletes)) {
+						db_execute_prepared('DELETE FROM graph_templates_item
+							WHERE id IN (' . implode(',', $deletes) . ')
+							AND local_graph_id = ?',
+							array($local_graph_id));
+					}
+				}
 			}
 		}
 	}
@@ -838,28 +862,57 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 	return true;
 }
 
-/* retemplate_graphs - reapply the graph template as it currently exists to all
-    graphs using that template.  This is important when you have graphs that
-    have multiple versions of a template.
-   @arg $graph_template_id - the graph template id to retemplate
-   @arg $local_graph_id - optional local graph id */
-function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
-	if ($local_graph_id == 0) {
-		$graphs = db_fetch_assoc_prepared('SELECT id
-			FROM graph_local
-			WHERE graph_template_id = ?',
-			array($graph_template_id));
-	} else {
-		$graphs = db_fetch_assoc_prepared('SELECT id
-			FROM graph_local
-			WHERE graph_template_id = ?
-			AND id = ?',
-			array($graph_template_id, $local_graph_id));
-	}
+/**
+ * retemplate_graphs - reapply the graph template as it currently exists to all
+ *   graphs using that template.  This is important when you have graphs that
+ *   have multiple versions of a template.
+ *
+ * @param $graph_template_id - the graph template id to retemplate
+ * @param $local_graph_id    - optional local graph id
+ * @param $sequence_only     - optional only perform a resequence on graphs that have a mismatch on graph items
+ */
+function retemplate_graphs($graph_template_id, $local_graph_id = 0, $sequence_only = false) {
+	if (!$sequence_only || $local_graph_id > 0) {
+		if ($local_graph_id == 0) {
+			$graphs = db_fetch_assoc_prepared('SELECT id
+				FROM graph_local
+				WHERE graph_template_id = ?',
+				array($graph_template_id));
+		} else {
+			$graphs = db_fetch_assoc_prepared('SELECT id
+				FROM graph_local
+				WHERE graph_template_id = ?
+				AND id = ?',
+				array($graph_template_id, $local_graph_id));
+		}
 
-	if (cacti_sizeof($graphs)) {
-		foreach($graphs as $graph) {
-			change_graph_template($graph['id'], $graph_template_id, true);
+		if (cacti_sizeof($graphs)) {
+			foreach($graphs as $graph) {
+				change_graph_template($graph['id'], $graph_template_id, true);
+			}
+		}
+	} else {
+		$items = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM graph_templates_item
+			WHERE local_graph_id = 0
+			AND graph_template_id = ?',
+			array($graph_template_id));
+
+		$graphs = array_rekey(
+			db_fetch_assoc_prepared('SELECT local_graph_id, COUNT(*) AS items
+				FROM graph_templates_item
+				WHERE graph_template_id = ?
+				AND local_graph_id > 0
+				GROUP BY local_graph_id
+				HAVING items != ?',
+				array($graph_template_id, $items)),
+			'local_graph_id', 'local_graph_id'
+		);
+
+		if (cacti_sizeof($graphs)) {
+			foreach($graphs as $graph) {
+				resequence_graphs($graph_template_id, $graph, true);
+			}
 		}
 	}
 }
@@ -877,6 +930,8 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
  */
 function change_graph_template($local_graph_id, $graph_template_id, $force = false) {
 	global $struct_graph, $struct_graph_item;
+
+	static $cols = array();
 
 	$template_data     = parse_graph_template_id($graph_template_id);
 	$graph_template_id = $template_data['graph_template_id'];
@@ -974,7 +1029,9 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 			array($graph_template_id));
 	}
 
-	$cols = db_get_table_column_types('graph_templates_item');
+	if (!cacti_sizeof($cols)) {
+		$cols = db_get_table_column_types('graph_templates_item');
+	}
 
 	if (cacti_sizeof($template_items_list)) {
 		foreach ($template_items_list as $template_item) {
@@ -2111,4 +2168,3 @@ function graph_template_whitelist_check($graph_template_id) {
 
 	return $valid;
 }
-
