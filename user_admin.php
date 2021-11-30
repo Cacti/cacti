@@ -2309,7 +2309,7 @@ function user() {
 
 	$user_list = db_fetch_assoc("SELECT id, user_auth.username, full_name,
 		realm, enabled, policy_graphs, policy_hosts, policy_graph_templates,
-		time, max(time) as dtime
+		time, max(UNIX_TIMESTAMP(time)) as dtime
 		FROM user_auth
 		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
 		$sql_where
@@ -2340,11 +2340,12 @@ function user() {
 
 	if (cacti_sizeof($user_list)) {
 		foreach ($user_list as $user) {
-			if (empty($user['dtime']) || ($user['dtime'] == '12/31/1969')) {
+			if (empty($user['dtime']) || $user['dtime'] <= 10000) {
 				$last_login = __('N/A');
 			} else {
-				$last_login = strftime('%A, %B %d, %Y %H:%M:%S ', strtotime($user['dtime']));;
+				$last_login = date('l, F d, Y H:i:s ', $user['dtime']);
 			}
+
 			if ($user['enabled'] == 'on') {
 				$enabled = __('Yes');
 			} else {

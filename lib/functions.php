@@ -5422,7 +5422,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 
 	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
 
-	$plugin = (isset($output_array[1]) ? $output_array[1] : '');
+	$plugin = (is_array($output_array) && isset($output_array[1]) ? $output_array[1] : '');
 	$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
 
 	switch ($level) {
