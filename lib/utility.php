@@ -775,10 +775,8 @@ function get_data_template_fields(&$data_sources) {
 	return $template_fields;
 }
 
-/** this...replaces values in data_input_data. yes, the naming is very opaque,
- * and so to be honest, i have no idea what exactly this does in terms of cacti's logic.
+/**
  * The code was extracted verbatim from push_out_host().
- *
  * This is needed to do a proper flush of the poller cache.
  *
  * original description:
