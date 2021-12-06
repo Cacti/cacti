@@ -1023,7 +1023,7 @@ function pollers() {
 				$poller['status'] = 6;
 			}
 
-			$mma = round($poller['avg_time'], 2) . '/' .  round($poller['max_time'], 2);
+			$mma = round($poller['avg_time']??0, 2) . '/' .  round(max($poller['max_time']??1,1), 2);
 
 			if (empty($poller['name'])) {
 				$poller['name'] = '&lt;no name&gt;';

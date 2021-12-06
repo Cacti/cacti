@@ -69,7 +69,7 @@ if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGSEGV, 'sig_handler');
 }
 
-error_reporting(0);
+error_reporting(E_ALL);
 
 /* define STDOUT/STDIN file descriptors if not running under CLI */
 if (php_sapi_name() != 'cli') {
@@ -106,8 +106,13 @@ ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
 
 /* Record the calling environment */
 if ($_SERVER['argc'] >= 2) {
-	if ($_SERVER['argv'][1] == 'spine')
+	if (substr( $_SERVER['argv'][1], 0, 5) == 'spine')
+		global $force_level;
 		$environ = 'spine';
+		if (strlen($_SERVER['argv'][1]) > 5) {
+			$force_level = intval(substr($_SERVER['argv'][1], 5));
+			cacti_log('INFO: Forcing log level to: ' . $force_level, false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
+		}
 	else
 		if (($_SERVER['argv'][1] == 'cmd.php') || ($_SERVER['argv'][1] == 'cmd'))
 			$environ = 'cmd';
