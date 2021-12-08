@@ -756,7 +756,7 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 		$local_graphs[$local_graph_id] = $local_graph_id;
 	} elseif ($local_graph_id == 0) {
 		$local_graphs = array_rekey(
-			db_fetch_assoc('SELECT id
+			db_fetch_assoc_prepared('SELECT id
 				FROM graph_local
 				WHERE graph_template_id = ?',
 				array($graph_template_id)),
