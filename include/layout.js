@@ -254,7 +254,7 @@ $.fn.textWidth = function(text){
  *  without any wrapping. */
 $.fn.textBoxWidth = function() {
 	var org = $(this);
-	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.text() + '</span>');
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (org.val() || org.text()) + '</span>');
 	html.css('font-family', org.css('font-family'));
 	html.css('font-weight', org.css('font-weight'));
 	html.css('font-size',   org.css('font-size'));
