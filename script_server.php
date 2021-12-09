@@ -89,6 +89,7 @@ $start = microtime(true);
 /* some debugging */
 $pid = getmypid();
 $ctr = 0;
+$called_by_script_server = false;
 
 /* if multiple polling intervals are defined, compensate for them */
 $polling_interval = read_config_option('poller_interval');
@@ -233,8 +234,8 @@ while (1) {
 			}
 
 			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
-			        "' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
-			        "'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+				"' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
+				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
 			/* validate the existance of the function, and include if applicable */
 			if (!function_exists($function)) {
