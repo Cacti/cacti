@@ -83,6 +83,8 @@ function push_out_data_source_custom_data($data_template_id) {
 	/* which data_input_fields are templated? */
 	if (cacti_sizeof($template_input_fields)) {
 		$dif_in_str = ' AND dif.id IN (' . implode(', ', array_keys($template_input_fields)) . ')';
+	} else {
+		$dif_in_str = '';
 	}
 
 	/**
