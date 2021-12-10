@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#4480: Saving a Data Template can damage Data Sources if the Data Template is not constructed properly
 -issue#4481: When using a Cacti Format File for a Report, the Reports still use Legacy Font Size and Alignment Attributes
 -issue#4482: Graph Automation slowed by in-efficient index selection when creating Graphs
+-issue#4491: Rebuild poller cache problem after change snmp version via DB query
 -issue#4498: Layout function textBoxWidth() does not work on input type form elements
 
 1.2.19
