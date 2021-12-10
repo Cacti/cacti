@@ -53,7 +53,7 @@ function push_out_data_source_custom_data($data_template_id) {
 	/* get data query custom index fields to ignore */
 	$data_query_field_index_ids = data_input_field_always_checked(0, true);
 	if (cacti_sizeof($data_query_field_index_ids)) {
-		$exclude_sql_where = ' AND did.data_input_field_ids NOT IN (' . implode(',', $data_query_field_index_ids) . ')';
+		$exclude_sql_where = ' AND did.data_input_field_id NOT IN (' . implode(',', $data_query_field_index_ids) . ')';
 	} else {
 		$exclude_sql_where = '';
 	}
