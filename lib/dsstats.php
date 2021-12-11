@@ -306,18 +306,21 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 			if (cacti_sizeof($info_array)) {
 				foreach ($info_array as $line) {
 					if (substr_count($line, 'ds[')) {
-						$parts = explode(']', $line);
+						$parts  = explode(']', $line);
 						$parts2 = explode('[', $parts[0]);
+
 						$dsnames[trim($parts2[1])] = 1;
-					} else if (substr_count($line, '.cf')) {
+					} elseif (substr_count($line, '.cf')) {
 						$parts = explode('=', $line);
+
 						if (substr_count($parts[1], 'AVERAGE')) {
 							$average = true;
 						} elseif (substr_count($parts[1], 'MAX')) {
 							$max = true;
 						}
-					} else if (substr_count($line, 'step')) {
+					} elseif (substr_count($line, 'step')) {
 						$parts = explode('=', $line);
+
 						$poller_interval = trim($parts[1]);
 					}
 				}
@@ -391,8 +394,8 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 
 			/* initialize the array of return values */
 			foreach($dsnames as $dsname => $present) {
-				$dsvalues[$dsname]['AVG']    = 0;
-				$dsvalues[$dsname]['MAX']    = 0;
+				$dsvalues[$dsname]['AVG'] = 0;
+				$dsvalues[$dsname]['MAX'] = 0;
 
 				if ($average) {
 					$position[] = array($dsname => 'AVG');
@@ -410,7 +413,9 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 
 				if (cacti_sizeof($xport_array)) {
 					foreach($xport_array as $index => $line) {
-						if ($line == '') continue;
+						if ($line == '') {
+							continue;
+						}
 
 						if ($index > 0) {
 							// Catch the last line
@@ -421,6 +426,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 
 								foreach($parts as $line) {
 									$sparts = explode(':', $line);
+
 									switch($sparts[0]) {
 										case 'u':
 											$user_time = $sparts[1];
