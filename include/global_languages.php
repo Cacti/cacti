@@ -330,19 +330,23 @@ function repair_locale($language) {
 	global $lang2locale;
 
 	/* Repair legacy language support */
-	$found_locale = '';
-	$locale = str_replace('_','-', $language);
-	if (array_key_exists($locale, $lang2locale)) {
-		$language = $locale;
-	} else {
-		$wanted_locale = substr($language, 0, 2);
-		$language = '';
-		foreach ($lang2locale as $locale => $data) {
-			if (substr($locale, 0, 2) == $wanted_locale) {
-				$language = $locale;
-				break;
+	if ($language != '' && $language != null) {
+		$found_locale = '';
+		$locale = str_replace('_','-', $language);
+		if (array_key_exists($locale, $lang2locale)) {
+			$language = $locale;
+		} else {
+			$wanted_locale = substr($language, 0, 2);
+			$language = '';
+			foreach ($lang2locale as $locale => $data) {
+				if (substr($locale, 0, 2) == $wanted_locale) {
+					$language = $locale;
+					break;
+				}
 			}
 		}
+	} else {
+		$language = 'en-US';
 	}
 
 	return $language;
@@ -713,10 +717,12 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 		$locale['thousands_sep'] = ',';
 	}
 
-	if ($decimals == -1 || $decimals == null) {
-		$number =  number_format($number, null, $locale['decimal_point'], $locale['thousands_sep']);
+	if ($number == null) {
+		$number = '';
+	} elseif ($decimals == -1 || $decimals == null) {
+		$number = number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
 	} elseif ($number>=pow($baseu, 4)) {
-		$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
+		$number = number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
 	} elseif ($number>=pow($baseu, 3)) {
 		$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
 	} elseif ($number>=pow($baseu, 2)) {

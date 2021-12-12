@@ -1284,8 +1284,11 @@ $settings = array(
 				'120'  => __('%s Minutes', 2),
 				'300'  => __('%s Minutes', 5),
 				'600'  => __('%s Minutes', 10),
-				'1200' => __('%s Minutes', 20))
-			),
+				'1200' => __('%s Minutes', 20),
+				'1800' => __('%s Minutes', 30),
+				'3600' => __('1 Hour')
+			)
+		),
 		'commands_timeout' => array(
 			'friendly_name' => __('Background Commands Timeout'),
 			'description'   => __('The maximum amount of time Cacti\'s Background Commands script can run without generating a timeout error and being killed.'),
@@ -2147,10 +2150,38 @@ $settings = array(
 			),
 		'dsstats_enable' => array(
 			'friendly_name' => __('Enable Data Source Statistics Collection'),
-			'description'   => __('Should Data Source Statistics be collected for this Cacti system?'),
-			'method'        => 'checkbox',
-			'default'       => ''
-			),
+			'description' => __('Should Data Source Statistics be collected for this Cacti system?'),
+			'method' => 'checkbox',
+			'default' => ''
+		),
+		'dsstats_parallel' => array(
+			'friendly_name' => __('Number of DSStats Processes'),
+			'description' => __('The number of concurrent DSStats processes to use to use to process all of the Data Sources.'),
+			'default' => '1',
+			'method' => 'drop_array',
+			'array' => array(
+				1  => __('1 Process'),
+				2  => __('%d Processes', 2),
+				3  => __('%d Processes', 3),
+				4  => __('%d Processes', 4),
+				5  => __('%d Processes', 5),
+				6  => __('%d Processes', 6),
+				7  => __('%d Processes', 7),
+				8  => __('%d Processes', 8),
+				9  => __('%d Processes', 9),
+				10 => __('%d Processes', 10),
+				11 => __('%d Processes', 11),
+				12 => __('%d Processes', 12),
+				13 => __('%d Processes', 13),
+				14 => __('%d Processes', 14),
+				15 => __('%d Processes', 15),
+				16 => __('%d Processes', 16),
+				17 => __('%d Processes', 17),
+				18 => __('%d Processes', 18),
+				19 => __('%d Processes', 19),
+				20 => __('%d Processes', 20),
+			)
+		),
 		'dsstats_daily_interval' => array(
 			'friendly_name' => __('Daily Update Frequency'),
 			'description'   => __('How frequent should Daily Stats be updated?'),

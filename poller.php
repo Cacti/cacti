@@ -479,54 +479,37 @@ while ($poller_runs_completed < $poller_runs) {
 	/* only report issues for the main poller or from bad local
 	 * data ids, other pollers may insert somewhat asynchornously
 	 */
+	$issues = [];
 	$issues_limit = 20;
+	$issues_check = ( $poller_id == 1 || $config['connection'] == 'online');
+	$issues_param = [ $current_time, $poller_id, $poller_id ];
 
-	if ($poller_id == 1) {
-		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name
+	$issues_sql = '
 			FROM poller_output AS po
 			LEFT JOIN data_local AS dl
 			ON po.local_data_id = dl.id
 			LEFT JOIN host AS h
 			ON dl.host_id = h.id
 			WHERE time < FROM_UNIXTIME(? - 600)
+			AND (h.poller_id = ? OR h.id IS NULL or ? = 1)';
+
+	if ($issues_check) {
+		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
+			local_data_id, rrd_name' . $issues_sql . '
 			LIMIT ' . $issues_limit,
-			array($current_time));
-	} elseif ($config['connection'] == 'online') {
-		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name
-			FROM poller_output AS po
-			LEFT JOIN data_local AS dl
-			ON po.local_data_id = dl.id
-			LEFT JOIN host AS h
-			ON dl.host_id = h.id
-			WHERE h.poller_id = ?
-			OR h.id IS NULL
-			AND time < FROM_UNIXTIME(? - 600)
-			LIMIT ' . $issues_limit,
-			array($poller_id, $current_time));
-	} else{
-		$issues = array();
+			$issues_param);
 	}
 
 	if (cacti_sizeof($issues)) {
-		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
-			FROM poller_output AS po
-			LEFT JOIN data_local AS dl
-			ON po.local_data_id = dl.id
-			LEFT JOIN host AS h
-			ON dl.host_id = h.id
-			WHERE (h.poller_id = ? OR h.id IS NULL)
-			AND time < FROM_UNIXTIME(? - 600)',
-			array($poller_id, $current_time));
+		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . '
+			COUNT(*)' . $issues_sql,
+			$issues_param);
 
-		if (cacti_sizeof($issues)) {
-			$issue_list =  'DS[';
-			$i = 0;
-			foreach($issues as $issue) {
-				$issue_list .= ($i > 0 ? ', ' : '') . $issue['local_data_id'];
-				$i++;
-			}
-			$issue_list .= ']';
+		$issues_list = [];
+		foreach($issues as $issue) {
+			$issues_list []= $issue['local_data_id'];
 		}
+		$issue_list = 'DS[' . implode(', ', $issues_list) . ']';
 
 		if ($count > $issues_limit) {
 			$issue_list .= ", Additional Issues Remain.  Only showing first $issues_limit";
@@ -536,16 +519,9 @@ while ($poller_runs_completed < $poller_runs) {
 
 		admin_email(__('Cacti System Warning'), __('WARNING: Poller Output Table not empty for poller id %d.  Issues: %d, %s.', $poller_id, $count, $issue_list));
 
-		db_execute_prepared('DELETE po
-			FROM poller_output AS po
-			LEFT JOIN data_local AS dl
-			ON po.local_data_id = dl.id
-			LEFT JOIN host AS h
-			ON dl.host_id = h.id
-			WHERE (h.poller_id = ? OR h.id IS NULL)
-			AND time < FROM_UNIXTIME(? - 600)',
-			array($poller_id, $current_time));
+		db_execute_prepared('DELETE po ' . $issues_sql, $issues_param);
 	}
+
 
 	// mainline
 	if (read_config_option('poller_enabled') == 'on') {
@@ -936,17 +912,22 @@ function poller_enabled_check($poller_id) {
 
 	$system_enabled = read_config_option('poller_enabled');
 
+	$should_exit = false;
 	if ($system_enabled == '') {
 		cacti_log('WARNING: System Polling is Disabled!  Therefore, data collection from the poller will be suspended till re-enabled.', true, 'SYSTEM');
+		$should_exit = true;
+	}
 
-		exit(1);
-	} elseif ($poller_disabled == 'on') {
+	if ($poller_disabled == 'on') {
+		cacti_log('WARNING: Poller ' . $poller_id . ' is Disabled.  Therefore, data collection for this Poller will be suspended till it\'s re-enabled.', true, 'SYSTEM');
+		$should_exit = true;
+	}
+
+	if ($should_exit) {
 		db_execute_prepared('UPDATE poller
 			SET last_status=NOW()
 			WHERE id = ?',
 			array($poller_id), true, $poller_db_cnn_id);
-
-		cacti_log('WARNING: Poller ' . $poller_id . ' is Disabled.  Therefore, data collection for this Poller will be suspended till it\'s re-enabled.', true, 'SYSTEM');
 
 		exit(1);
 	}
@@ -1121,5 +1102,3 @@ function display_help() {
 	print "    --force        Override poller overrun detection and force a poller run.\n";
 	print "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
-
-

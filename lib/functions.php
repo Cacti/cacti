@@ -1646,14 +1646,18 @@ function prepare_validate_result(string &$result): bool {
 
 	/* clean off ugly non-numeric data */
 	if (is_numeric($result)) {
+		dsv_log('prepare_validate_result','data is numeric');
 		return true;
 	} elseif ($result == 'U') {
+		dsv_log('prepare_validate_result', 'data is U');
 		return true;
 	} elseif (is_hexadecimal($result)) {
+		dsv_log('prepare_validate_result', 'data is hex');
 		return hexdec($result);
 	} elseif (substr_count($result, ':') || substr_count($result, '!')) {
 		/* looking for name value pairs */
 		if (substr_count($result, ' ') == 0) {
+			dsv_log('prepare_validate_result', 'data has no spaces');
 			return true;
 		} else {
 			$delim_cnt = 0;
@@ -1663,7 +1667,8 @@ function prepare_validate_result(string &$result): bool {
 				$delim_cnt = substr_count($result, '!');
 			}
 
-			$space_cnt = substr_count($result, ' ');
+			$space_cnt = substr_count(trim($result), ' ');
+			dsv_log('prepare_validate_result', "data has $space_cnt spaces and $delim_cnt fields which is " . (($space_cnt+1 == $delim_cnt) ? 'NOT ' : '') . ' okay');
 
 			return ($space_cnt+1 == $delim_cnt);
 		}
@@ -1759,6 +1764,7 @@ function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $sn
 
 	if (cacti_sizeof($data_template_ids) && $test_source == 'on') {
 		foreach($data_template_ids as $dt) {
+			dsv_log("test_data_source", [ 'dt' => $dt, 'host_id' => $host_id, 'snmp_query_id' => $snmp_query_id, 'snmp_index' => $snmp_index, 'values' => $values]);
 			if (!test_data_source($dt, $host_id, $snmp_query_id, $snmp_index, $values)) {
 				return false;
 			}
@@ -2457,24 +2463,34 @@ function clean_up_path(?string $path): ?string {
  *
  * @return - the data source title
  */
-function get_data_source_title(int $local_data_id): string {
-	$data = db_fetch_row_prepared('SELECT dl.host_id, dl.snmp_query_id, dl.snmp_index, dtd.name
+function get_data_source_title($local_data_id) {
+	$data = db_fetch_row_prepared('SELECT
+		dl.host_id, dl.snmp_query_id, dl.snmp_index, dl.data_template_id,
+		dtd.name, dtd.id as template_id
 		FROM data_local AS dl
-		INNER JOIN data_template_data AS dtd
+		LEFT JOIN data_template_data AS dtd
 		ON dtd.local_data_id = dl.id
 		WHERE dl.id = ?',
 		array($local_data_id));
 
+	$title = 'Missing Datasource ' . $local_data_id;
 	if (cacti_sizeof($data)) {
 		if (strstr($data['name'], '|') !== false && $data['host_id'] > 0) {
 			$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
-			return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
+			$title = expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
 		} else {
-			return $data['name'];
+			$title = $data['name'];
 		}
-	} else {
-		return 'Missing Datasource ' . $local_data_id;
+
+		// Is the data source linked to a template?  If so, make sure we have a template on the
+		// LEFT JOIN since it may not find one.  Also, we can't check that they are the same ID
+		// ID yet because there are two, one with a 0 local_data_id (base template) and one with
+		// this source's id (instance of template).
+		if ($data['data_template_id'] && !$data['template_id']) {
+			$title .= ' (Bad template "' . $data['data_template_id'] . '")';
+		}
 	}
+	return $title;
 }
 
 /**
@@ -5461,7 +5477,7 @@ function CactiErrorHandler(int $level, string $message, string $file, int $line,
 
 	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
 
-	$plugin = (isset($output_array[1]) ? $output_array[1] : '');
+	$plugin = (is_array($output_array) && isset($output_array[1]) ? $output_array[1] : '');
 	$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
 
 	switch ($level) {

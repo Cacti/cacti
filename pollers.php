@@ -394,14 +394,13 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 			$parts = explode('.', $host);
 			$sql_where2 .= ($sql_where2 != '' ? ' OR ':' (') .
 				"($column = " . db_qstr($parts[0]) .
-				" OR $column LIKE " . db_qstr($parts[0] . '%') .
 				" OR $column = " . db_qstr($host) . ")";
 		}
 		$sql_where2 .= ')';
 	}
 
 	if ($sql_where1 != '' || $sql_where2 != '') {
-		$sql_where = ' AND ' . $sql_where1 . ($sql_where1 != '' && $sql_where2 != '' ? ' OR ':'') . $sql_where2;
+		$sql_where = ' AND (' . $sql_where1 . ($sql_where1 != '' && $sql_where2 != '' ? ' OR ':'') . $sql_where2 . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -1057,7 +1056,7 @@ function pollers() {
 				$poller['status'] = 6;
 			}
 
-			$mma = round($poller['avg_time'], 2) . '/' .  round($poller['max_time'], 2);
+			$mma = round($poller['avg_time']??0, 2) . '/' .  round(max($poller['max_time']??1,1), 2);
 
 			if (empty($poller['name'])) {
 				$poller['name'] = '&lt;no name&gt;';

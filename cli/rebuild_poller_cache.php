@@ -33,6 +33,7 @@ array_shift($parms);
 
 $debug = false;
 $host_id = 0;
+$host_template_id = 0;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -52,7 +53,16 @@ if (cacti_sizeof($parms)) {
 				$host_id = trim($value);
 
 				if (!is_numeric($host_id)) {
-					print "ERROR: You must supply a valid device id to run this script!\n";
+					print 'ERROR: You must supply a valid device id to run this script!' . PHP_EOL;
+					exit(1);
+				}
+
+				break;
+			case '--host-template-id':
+				$host_template_id = trim($value);
+
+				if (!is_numeric($host_id)) {
+					print 'ERROR: You must supply a valid device template id to run this script!' . PHP_EOL;
 					exit(1);
 				}
 
@@ -68,7 +78,7 @@ if (cacti_sizeof($parms)) {
 				display_help();
 				exit(0);
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 				exit(1);
 		}
@@ -81,12 +91,26 @@ $max_execution = ini_get('max_execution_time');
 /* set new timeout */
 ini_set('max_execution_time', '0');
 
-/* get the data_local Id's for the poller cache */
+$sql_where = '';
+$params    = array();
+
 if ($host_id > 0) {
-	$poller_data  = db_fetch_assoc('SELECT * FROM data_local WHERE host_id=' . $host_id);
-} else {
-	$poller_data  = db_fetch_assoc('SELECT * FROM data_local');
+	$sql_where = 'WHERE dl.host_id = ?';
+	$params[] = $host_id;
 }
+
+if ($host_template_id > 0) {
+	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' h.host_template_id = ?';
+	$params[] = $host_template_id;
+}
+
+/* get the data_local Id's for the poller cache */
+$poller_data  = db_fetch_assoc_prepared("SELECT dl.*
+	FROM data_local AS dl
+	INNER JOIN host AS h
+	ON dl.host_id = h.id
+	$sql_where",
+	$params);
 
 /* initialize some variables */
 $current_ds = 1;
@@ -97,7 +121,7 @@ $local_data_ids = array();
 $poller_items   = array();
 
 /* issue warnings and start message if applicable */
-print "WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
+print 'WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time' . PHP_EOL;
 debug("There are '" . cacti_sizeof($poller_data) . "' data source elements to update.");
 
 /* start rebuilding the poller cache */
@@ -123,7 +147,9 @@ if (cacti_sizeof($poller_data)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
 }
-if (!$debug) print "\n";
+if (!$debug) {
+	print PHP_EOL;
+}
 
 /* poller cache rebuilt, restore runtime parameters */
 ini_set('max_execution_time', $max_execution);
@@ -131,19 +157,22 @@ ini_set('max_execution_time', $max_execution);
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Rebuild Poller Cache Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Rebuild Poller Cache Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	print "\nusage: rebuild_poller_cache.php [--host-id=ID] [--debug]\n\n";
-	print "A utility to repopulate Cacti's poller cache for a host or a system.  Note: That when performing\n";
-	print "for an entire Cacti system, expecially a large one, this may take some time.\n\n";
-	print "Optional:\n";
-	print "    --host-id=ID - Limit the repopulation to a single Cacti Device\n";
-	print "    --debug      - Display verbose output during execution\n\n";
+	print PHP_EOL . 'usage: rebuild_poller_cache.php [--host-id=ID] [--debug]' . PHP_EOL . PHP_EOL;
+
+	print 'A utility to repopulate Cacti\'s poller cache for a host or a system.  Note: That when performing' . PHP_EOL;
+	print 'for an entire Cacti system, expecially a large one, this may take some time.' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '    --host-id=ID          - Limit the repopulation to a single Device' . PHP_EOL;
+	print '    --host-template-id=ID - Limit the repopulation to a single Device Template' . PHP_EOL;
+	print '    --debug               - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 }
 
 function debug($message) {

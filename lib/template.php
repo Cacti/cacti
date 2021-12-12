@@ -36,59 +36,76 @@ function push_out_data_source_custom_data($data_template_id) {
 	$data_template_data = db_fetch_row_prepared('SELECT id, data_input_id
 		FROM data_template_data
 		WHERE data_template_id = ?
-		AND local_data_id=0', array($data_template_id));
+		AND local_data_id = 0',
+		array($data_template_id));
 
 	/* must be a data template */
-	if (empty($data_template_data['data_input_id'])) { return 0; }
+	if (empty($data_template_data['data_input_id'])) {
+		return 0;
+	}
 
 	/* get a list of data sources using this template */
 	$data_sources = db_fetch_assoc_prepared('SELECT data_template_data.id
 		FROM data_template_data
 		WHERE data_template_id = ?
-		AND local_data_id>0', array($data_template_id));
+		AND local_data_id > 0', array($data_template_id));
 
-	/* pull out all custom templated 'input' values from the template itself
-	 * templated items are selected by querying t_value = '' OR t_value = NULL */
-	$template_input_fields = array_rekey(db_fetch_assoc_prepared('SELECT data_input_fields.id,
-		data_input_fields.type_code, data_input_data.value, data_input_data.t_value
-		FROM data_input_fields
-		INNER JOIN data_input_data
-		ON data_input_fields.id = data_input_data.data_input_field_id
-		INNER JOIN data_template_data
-		ON data_template_data.id = data_input_data.data_template_data_id
-		WHERE (data_input_fields.input_output = "in")
-		AND (data_input_data.t_value="" OR data_input_data.t_value IS NULL)
-		AND (data_input_data.data_template_data_id = ?)
-		AND (data_template_data.local_data_template_data_id=0)',
-		array($data_template_data['id'])), 'id', array('type_code', 'value', 't_value'));
-
-	/* which data_input_fields are templated? */
-	$dif_ct = 0;
-	$dif_in_str = '';
-	if (cacti_sizeof($template_input_fields)) {
-		$dif_in_str .= 'AND data_input_fields.id IN (';
-		foreach ($template_input_fields as $key => $value) {
-			$dif_in_str .= ($dif_ct == 0 ? '':',') . $key;
-			$dif_ct++;
-		}
-		$dif_in_str .= ') ';
+	/* get data query custom index fields to ignore */
+	$data_query_field_index_ids = data_input_field_always_checked(0, true);
+	if (cacti_sizeof($data_query_field_index_ids)) {
+		$exclude_sql_where = ' AND did.data_input_field_id NOT IN (' . implode(',', $data_query_field_index_ids) . ')';
+	} else {
+		$exclude_sql_where = '';
 	}
 
-	/* pull out all templated 'input' values from all related data sources
+	/**
+	 * pull out all custom templated 'input' values from the template itself
+	 * templated items are selected by querying t_value = '' OR t_value = NULL
+	 * or that are not Data Query related index values
+	 */
+	$template_input_fields = array_rekey(
+		db_fetch_assoc_prepared("SELECT dif.id,
+			dif.type_code, did.value, did.t_value
+			FROM data_input_fields AS dif
+			INNER JOIN data_input_data AS did
+			ON dif.id = did.data_input_field_id
+			INNER JOIN data_template_data AS dtd
+			ON dtd.id = did.data_template_data_id
+			WHERE (dif.input_output = 'in')
+			AND (did.t_value = '' OR did.t_value IS NULL)
+			$exclude_sql_where
+			AND (did.data_template_data_id = ?)
+			AND (dtd.local_data_template_data_id = 0)",
+			array($data_template_data['id'])),
+		'id', array('type_code', 'value', 't_value')
+	);
+
+	/* which data_input_fields are templated? */
+	if (cacti_sizeof($template_input_fields)) {
+		$dif_in_str = ' AND dif.id IN (' . implode(', ', array_keys($template_input_fields)) . ')';
+	} else {
+		$dif_in_str = '';
+	}
+
+	/**
+	 * pull out all templated 'input' values from all related data sources
 	 * unfortunately, you can't simply provide the same test as above
 	 * all input fields not related to a template ALWAYS are marked with t_value = NULL
-	 * so we will verify against the list of data_input_field id's taken from above */
-	$input_fields = db_fetch_assoc("SELECT data_template_data.id AS data_template_data_id,
-		data_input_fields.id, data_input_fields.type_code, data_input_data.value, data_input_data.t_value
-		FROM data_input_fields
-		INNER JOIN data_input_data
-		ON data_input_fields.id = data_input_data.data_input_field_id
-		INNER JOIN data_template_data
-		ON data_template_data.id = data_input_data.data_template_data_id
-		WHERE (data_input_fields.input_output = 'in')
+	 * so we will verify against the list of data_input_field id's taken from above
+	 */
+	$input_fields = db_fetch_assoc_prepared("SELECT dtd.id AS data_template_data_id,
+		dif.id, dif.type_code, did.value, did.t_value
+		FROM data_input_fields AS dif
+		INNER JOIN data_input_data AS did
+		ON dif.id = did.data_input_field_id
+		INNER JOIN data_template_data AS dtd
+		ON dtd.id = did.data_template_data_id
+		WHERE (dif.input_output = 'in')
 		$dif_in_str
-		AND (data_input_data.t_value='' OR data_input_data.t_value IS NULL)
-		AND (data_template_data.local_data_template_data_id=" . $data_template_data['id'] . ')');
+		$exclude_sql_where
+		AND (did.t_value='' OR did.t_value IS NULL)
+		AND (dtd.local_data_template_data_id = ?)",
+		array($data_template_data['id']));
 
 	$ds_cnt    = 0;
 	$did_cnt   = 0;
@@ -100,12 +117,16 @@ function push_out_data_source_custom_data($data_template_id) {
 				foreach ($input_fields as $input_field) {
 					if ($data_source['id'] == $input_field['data_template_data_id'] &&
 						isset($template_input_fields[$input_field['id']])) {
-						/* do not push out 'host fields' */
+						/**
+						 * do not push out 'host fields'.  This list should never match as we have already
+						 * excluded these special types codes.  However, we will maintain for reference.
+						 */
 						if (!preg_match('/^' . VALID_HOST_FIELDS . '$/i', $input_field['type_code'])) {
 							/* this is not a 'host field', so we should either push out the value if it is templated */
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
-						} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) { # templated input field deviates from currenmt data source, so update required
+						} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) {
+							/* templated input field deviates from currenmt data source, so update required */
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
 						}
@@ -143,7 +164,7 @@ function push_out_data_source_templates($did_vals, $ds_in_str) {
 	/* update all templated input fields */
 	if ($did_vals != '') {
 		db_execute("INSERT INTO data_input_data
-			(data_input_field_id,data_template_data_id,value)
+			(data_input_field_id, data_template_data_id, value)
 			VALUES $did_vals
 			ON DUPLICATE KEY UPDATE value=VALUES(value)");
 	}
@@ -200,6 +221,52 @@ function push_out_data_source($data_template_data_id) {
 				update_data_source_title_cache_from_template($data_template_data['data_template_id']);
 			}
 		}
+	}
+}
+
+/**
+ * data_input_field_always_checked - check for data query custom fields
+ *
+ * This function will tell cacti which data input fields must always
+ * carry the data source information since it's key to linking
+ * data query information into the data source
+ *
+ * @param data_input_field_id - The data input field
+ * @param return_ids - Return an array of special ids
+ * @return boolean - true or false
+ */
+function data_input_field_always_checked($data_input_field_id = 0, $return_ids = false) {
+	static $always_checked = array();
+
+	$always_checked_hashes = array(
+		'6027a919c7c7731fbe095b6f53ab127b', // SNMP Query - Index Type
+		'cbbe5c1ddfb264a6e5d509ce1c78c95f', // SNMP Query - Index Value
+		'e6deda7be0f391399c5130e7c4a48b28', // SNMP Query - Output Type ID
+		'172b4b0eacee4948c6479f587b62e512', // Script Server Data Query - Index Type
+		'30fb5d5bcf3d66bb5abe88596f357c26', // Script Server Data Query - Index Value
+		'31112c85ae4ff821d3b288336288818c', // Script Server Data Query - Output Type ID
+		'd39556ecad6166701bfb0e28c5a11108', // Script Query - Index Type
+		'3b7caa46eb809fc238de6ef18b6e10d5', // Script Query - Indev Value
+		'74af2e42dc12956c4817c2ef5d9983f9', // Script Query - Output Type ID
+	);
+
+	if (!cacti_sizeof($always_checked)) {
+		$always_checked = array_rekey(
+			db_fetch_assoc_prepared('SELECT id
+				FROM data_input_fields
+				WHERE hash IN (?, ?, ?, ?, ?, ?, ?, ?, ?)
+				OR (type_code IN("index_type", "index_value", "output_type", "host_id"))',
+				$always_checked_hashes),
+			'id', 'id'
+		);
+	}
+
+	if ($return_ids) {
+		return $always_checked;
+	} elseif (isset($always_checked[$data_input_field_id])) {
+		return true;
+	} else {
+		return false;
 	}
 }
 
@@ -307,8 +374,11 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	the status of the 'local_data_template_data_id' column */
 	if (cacti_sizeof($data_input_data)) {
 		foreach ($data_input_data as $item) {
-			/* always propagate on a new save, only propagate templated fields thereafter */
-			if (($new_save == true) || (empty($item['t_value']))) {
+			/**
+			 * always propagate on a new save, only propagate templated fields thereafter
+			 * noting that always checked should not be propogated after the initial save.
+			 */
+			if ($new_save == true || (empty($item['t_value']) && !data_input_field_always_checked($item['data_input_field_id']))) {
 				db_execute_prepared('REPLACE INTO data_input_data
 					(data_input_field_id, data_template_data_id, t_value, value)
 					VALUES (?, ?, ?, ?)',
@@ -428,17 +498,22 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 	}
 }
 
-/* push_out_graph_item - pushes out templated graph template item fields to all matching
-	children. if the graph template item is part of a graph input, the field will not be
-	pushed out
-   @arg $graph_template_item_id - the id of the graph template item to push out values for */
+/**
+ * push_out_graph_item - pushes out templated graph template item fields to all matching
+ *   children. if the graph template item is part of a graph input, the field will not be
+ *   pushed out
+ *
+ * @param $graph_template_item_id - the id of the graph template item to push out values for
+ * @param $local_graph_id - The id of a specific graph
+ */
 function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	global $struct_graph_item;
 
 	/* get information about this graph template */
 	$graph_template_item = db_fetch_row_prepared('SELECT *
 		FROM graph_templates_item
-		WHERE id = ?', array($graph_template_item_id));
+		WHERE id = ?',
+		array($graph_template_item_id));
 
 	/* must be a graph template */
 	if ($graph_template_item['graph_template_id'] == 0) {
@@ -466,28 +541,31 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 		$attached_graphs = db_fetch_assoc_prepared('SELECT local_graph_id
 			FROM graph_templates_graph
 			WHERE graph_template_id = ?
-			AND local_graph_id>0',
+			AND local_graph_id > 0',
 			array($graph_template_item['graph_template_id']));
 
 		if (cacti_sizeof($attached_graphs)) {
 			foreach ($attached_graphs as $item) {
-				change_graph_template($item['local_graph_id'], $graph_template_item['graph_template_id'], true);
+				change_graph_template($item['local_graph_id'], $graph_template_item['graph_template_id']);
 			}
 		}
 	}
 
-	/* this is trickier with graph_items than with the actual graph... we have to make sure not to
-	overwrite any items covered in the 'graph item inputs'. the same thing applies to graphs, but
-	is easier to detect there (t_* columns). */
-	$graph_item_inputs = db_fetch_assoc_prepared('SELECT graph_template_input.column_name,
-		graph_template_input_defs.graph_template_item_id
-		FROM (graph_template_input, graph_template_input_defs)
-		WHERE graph_template_input.graph_template_id = ?
-		AND graph_template_input.id=graph_template_input_defs.graph_template_input_id
-		AND graph_template_input_defs.graph_template_item_id = ?',
-		array($graph_template_item['graph_template_id'], $graph_template_item_id));
-
-	$graph_item_inputs = array_rekey($graph_item_inputs, 'column_name', 'graph_template_item_id');
+	/**
+	 * this is trickier with graph_items than with the actual graph... we have to make sure not to
+	 * overwrite any items covered in the 'graph item inputs'. the same thing applies to graphs, but
+	 * is easier to detect there (t_* columns).
+	 */
+	$graph_item_inputs = array_rekey(
+		db_fetch_assoc_prepared('SELECT gtin.column_name, gtid.graph_template_item_id
+			FROM graph_template_input AS gtin
+			INNER JOIN graph_template_input_defs AS gtid
+			ON gtin.id = gtid.graph_template_input_id
+			WHERE gtin.graph_template_id = ?
+			AND gtid.graph_template_item_id = ?',
+			array($graph_template_item['graph_template_id'], $graph_template_item_id)),
+		'column_name', 'graph_template_item_id'
+	);
 
 	/* loop through each graph item column name (from the above array) */
 	foreach ($struct_graph_item as $field_name => $field_array) {
@@ -499,14 +577,12 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 					WHERE local_graph_template_item_id = ?",
 					array($graph_template_item[$field_name], $graph_template_item['id']));
 			}
-		} else {
-			if (!isset($graph_item_inputs[$field_name])) {
-				db_execute_prepared("UPDATE graph_templates_item
-					SET $field_name = ?
-					WHERE local_graph_template_item_id = ?
-					AND local_graph_id = ?",
-					array($graph_template_item[$field_name], $graph_template_item['id'], $local_graph_id));
-			}
+		} elseif (!isset($graph_item_inputs[$field_name])) {
+			db_execute_prepared("UPDATE graph_templates_item
+				SET $field_name = ?
+				WHERE local_graph_template_item_id = ?
+				AND local_graph_id = ?",
+				array($graph_template_item[$field_name], $graph_template_item['id'], $local_graph_id));
 		}
 	}
 }
@@ -664,23 +740,107 @@ function parse_graph_template_id($value) {
 	}
 }
 
-function resequence_graphs($graph_template_id, $local_graph_id = 0) {
+function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = false) {
+	static $repairs = 0;
+	static $template_item_ids = array();
+
 	$template_items = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
 		WHERE graph_template_id = ?
 		AND local_graph_id = 0
-		ORDER BY sequence',
+		ORDER BY id',
 		array($graph_template_id));
+
+	$local_graphs = array();
+
+	// If force is enabled, we are also doing a repair
+	if ($local_graph_id > 0) {
+		$local_graphs[$local_graph_id] = $local_graph_id;
+	} elseif ($local_graph_id == 0) {
+		$local_graphs = array_rekey(
+			db_fetch_assoc_prepared('SELECT id
+				FROM graph_local
+				WHERE graph_template_id = ?',
+				array($graph_template_id)),
+			'id', 'id'
+		);
+	}
+
+	if (cacti_sizeof($local_graphs)) {
+		// Put all the template item ids into an array
+		if (!isset($template_item_ids[$graph_template_id])) {
+			foreach($template_items as $item) {
+				$template_item_ids[$graph_template_id][] = $item['id'];
+			}
+		}
+
+		foreach($local_graphs as $local_graph_id) {
+			if ($local_graph_id > 0 && $force) {
+				$graph_items = db_fetch_assoc_prepared('SELECT *
+					FROM graph_templates_item
+					WHERE local_graph_id = ?
+					ORDER BY sequence, id',
+					array($local_graph_id));
+
+				$deletes = array();
+
+				if (cacti_sizeof($graph_items) != cacti_sizeof($template_items)) {
+					cacti_log(sprintf('WARNING: Graph Item Issue for Graph: %s, Template: %s, Items: %s/%s', $local_graph_id, $graph_template_id, cacti_sizeof($graph_items), cacti_sizeof($template_items)), false);
+
+					// First search the graph_items list for items that don't exist in the template
+					foreach($graph_items as $gitem) {
+						$found = false;
+
+						if (!in_array($gitem['local_graph_template_item_id'], $template_item_ids[$graph_template_id], true)) {
+							$deletes[] = $gitem['id'];
+							$repairs++;
+						}
+					}
+
+					// Next search for duplicated local_graph_template_item_id's and remove the most
+					// recent one basically repairing the graph
+					foreach($template_items as $item) {
+						$found  = false;
+						$search = $item['id'];
+
+						// If we find a duplicate of any local_graph_template_item_id delete
+						// the most recent
+						foreach($graph_items as $gitem) {
+							// If we have a match, mark 'found'.  If we have a second or more
+							// matches, then remove that one
+							if ($gitem['local_graph_template_item_id'] == $search) {
+								if ($found) {
+									$deletes[] = $gitem['id'];
+									$repairs++;
+								}
+
+								$found = true;
+							}
+						}
+					}
+
+					if (cacti_sizeof($deletes)) {
+						db_execute_prepared('DELETE FROM graph_templates_item
+							WHERE id IN (' . implode(',', $deletes) . ')
+							AND local_graph_id = ?',
+							array($local_graph_id));
+					}
+				}
+			}
+		}
+	}
 
 	if (cacti_sizeof($template_items)) {
 		foreach($template_items as $item) {
 			if ($local_graph_id == -1) {
+				// Everything including the template
 				db_execute_prepared('UPDATE graph_templates_item
 					SET sequence = ?
 					WHERE graph_template_id = ?
 					AND local_graph_template_item_id = ?',
 					array($item['sequence'], $graph_template_id, $item['id']));
 			} elseif ($local_graph_id == 0) {
+				// Everything except the template
 				db_execute_prepared('UPDATE graph_templates_item
 					SET sequence = ?
 					WHERE graph_template_id = ?
@@ -688,6 +848,7 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 					AND local_graph_template_item_id = ?',
 					array($item['sequence'], $graph_template_id, $item['id']));
 			} else {
+				// Just the graph itself
 				db_execute_prepared('UPDATE graph_templates_item
 					SET sequence = ?
 					WHERE graph_template_id = ?
@@ -697,44 +858,82 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 			}
 		}
 	}
+
+	$_SESSION['sess_gt_repairs'] = $repairs;
+
+	return true;
 }
 
-/* retemplate_graphs - reapply the graph template as it currently exists to all
-    graphs using that template.  This is important when you have graphs that
-    have multiple versions of a template.
-   @arg $graph_template_id - the graph template id to retemplate
-   @arg $local_graph_id - optional local graph id */
-function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
-	if ($local_graph_id == 0) {
-		$graphs = db_fetch_assoc_prepared('SELECT id
-			FROM graph_local
-			WHERE graph_template_id = ?',
-			array($graph_template_id));
-	} else {
-		$graphs = db_fetch_assoc_prepared('SELECT id
-			FROM graph_local
-			WHERE graph_template_id = ?
-			AND id = ?',
-			array($graph_template_id, $local_graph_id));
-	}
+/**
+ * retemplate_graphs - reapply the graph template as it currently exists to all
+ *   graphs using that template.  This is important when you have graphs that
+ *   have multiple versions of a template.
+ *
+ * @param $graph_template_id - the graph template id to retemplate
+ * @param $local_graph_id    - optional local graph id
+ * @param $sequence_only     - optional only perform a resequence on graphs that have a mismatch on graph items
+ */
+function retemplate_graphs($graph_template_id, $local_graph_id = 0, $sequence_only = false) {
+	if (!$sequence_only || $local_graph_id > 0) {
+		if ($local_graph_id == 0) {
+			$graphs = db_fetch_assoc_prepared('SELECT id
+				FROM graph_local
+				WHERE graph_template_id = ?',
+				array($graph_template_id));
+		} else {
+			$graphs = db_fetch_assoc_prepared('SELECT id
+				FROM graph_local
+				WHERE graph_template_id = ?
+				AND id = ?',
+				array($graph_template_id, $local_graph_id));
+		}
 
-	if (cacti_sizeof($graphs)) {
-		foreach($graphs as $graph) {
-			change_graph_template($graph['id'], $graph_template_id, true);
+		if (cacti_sizeof($graphs)) {
+			foreach($graphs as $graph) {
+				change_graph_template($graph['id'], $graph_template_id, true);
+			}
+		}
+	} else {
+		$items = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM graph_templates_item
+			WHERE local_graph_id = 0
+			AND graph_template_id = ?',
+			array($graph_template_id));
+
+		$graphs = array_rekey(
+			db_fetch_assoc_prepared('SELECT local_graph_id, COUNT(*) AS items
+				FROM graph_templates_item
+				WHERE graph_template_id = ?
+				AND local_graph_id > 0
+				GROUP BY local_graph_id
+				HAVING items != ?',
+				array($graph_template_id, $items)),
+			'local_graph_id', 'local_graph_id'
+		);
+
+		if (cacti_sizeof($graphs)) {
+			foreach($graphs as $graph) {
+				resequence_graphs($graph_template_id, $graph, true);
+			}
 		}
 	}
 }
 
-/* change_graph_template - changes the graph template for a particular graph to
-	$graph_template_id
-   @arg $local_graph_id - the id of the graph to change the graph template for
-   @arg $graph_template_id - id the of the graph template to change to. specify '0' for no
-	graph template
-   @arg $force - (true) if the target graph template has more or less graph items than
-	the current graph, remove or add the items from the current graph to make them equal.
-	(false) leave the graph item count alone */
-function change_graph_template($local_graph_id, $graph_template_id, $force = true) {
+/**
+ * change_graph_template - generic routine that changes the graph template for a particular
+ *   graph to a specific graph_template_id which can be considered a generic
+ *   re-templating function.
+ *
+ * @param $local_graph_id    - the id of the graph to change the graph template for
+ * @param $graph_template_id - the id the of the graph template to change to. specify
+ *   '0' for no graph template
+ * @param $force - if true and the target graph template has more or less graph items than
+ *   the current graph, perform a deeper re-template activity, or a full repair
+ */
+function change_graph_template($local_graph_id, $graph_template_id, $force = false) {
 	global $struct_graph, $struct_graph_item;
+
+	static $cols = array();
 
 	$template_data     = parse_graph_template_id($graph_template_id);
 	$graph_template_id = $template_data['graph_template_id'];
@@ -818,7 +1017,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 	$graph_items_list = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
 		WHERE local_graph_id = ?
-		ORDER BY sequence',
+		ORDER BY id',
 		array($local_graph_id));
 
 	if ($graph_template_id == 0) {
@@ -826,23 +1025,16 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 	} else {
 		$template_items_list = db_fetch_assoc_prepared('SELECT *
 			FROM graph_templates_item
-			WHERE local_graph_id=0
+			WHERE local_graph_id = 0
 			AND graph_template_id = ?
-			ORDER BY sequence',
+			ORDER BY id',
 			array($graph_template_id));
 	}
 
-	$graph_template_inputs = db_fetch_assoc_prepared('SELECT
-		gti.column_name, gtid.graph_template_item_id
-		FROM graph_template_input AS gti
-		INNER JOIN graph_template_input_defs AS gtid
-		ON gti.id=gtid.graph_template_input_id
-		AND gti.graph_template_id = ?',
-		array($graph_template_id));
+	if (!cacti_sizeof($cols)) {
+		$cols = db_get_table_column_types('graph_templates_item');
+	}
 
-	$cols = db_get_table_column_types('graph_templates_item');
-
-	$k=0;
 	if (cacti_sizeof($template_items_list)) {
 		foreach ($template_items_list as $template_item) {
 			unset($save);
@@ -886,6 +1078,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 						} else {
 							$save[$column] = $value;
 						}
+
 						break;
 					}
 				}
@@ -955,27 +1148,8 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = tru
 		}
 	}
 
-	/* if there are more graph items than there are items in the template, delete the difference */
-	/* we have probably modified 'graph_templates_item' so we need to recalculate the number of
-	   items before checking them */
-	$graph_items_list = db_fetch_assoc_prepared('SELECT *
-		FROM graph_templates_item
-		WHERE local_graph_id = ?
-		ORDER BY sequence',
-		array($local_graph_id));
-
-	if ($new_save == false && cacti_sizeof($graph_items_list) > cacti_sizeof($template_items_list)) {
-		foreach($template_items_list as $item) {
-			$ids[] = $item['id'];
-		}
-
-		db_execute('DELETE FROM graph_templates_item
-			WHERE local_graph_template_item_id NOT IN (' . implode(',', $ids) . ')
-			AND local_graph_id = ' . $local_graph_id);
-	}
-
-	if ($new_save == false) {
-		resequence_graphs($graph_template_id, $local_graph_id);
+	if ($new_save == false && $force) {
+		resequence_graphs($graph_template_id, $local_graph_id, $force);
 	}
 
 	/* handle changes in data template if there are any */
@@ -1169,9 +1343,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	/* suggested values: graph, passed from parent */
 	if (isset($suggested_vals[$graph_template_id]['graph_template'])) {
 		foreach ($suggested_vals[$graph_template_id]['graph_template'] as $field_name => $field_value) {
-			db_execute_prepared('UPDATE graph_templates_graph
-				SET ' . $field_name . ' = ?
-				WHERE local_graph_id= ?',
+			db_execute_prepared("UPDATE graph_templates_graph
+				SET $field_name = ?
+				WHERE local_graph_id = ?",
 				array($field_value, $cache_array['local_graph_id']));
 		}
 	}
@@ -1186,9 +1360,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					AND local_graph_id = ?',
 					array($graph_template_item_id, $cache_array['local_graph_id']));
 
-				db_execute_prepared('UPDATE graph_templates_item
-					SET ' . $field_name . ' = ?
-					WHERE id = ?',
+				db_execute_prepared("UPDATE graph_templates_item
+					SET $field_name = ?
+					WHERE id = ?",
 					array($field_value, $graph_item_id));
 			}
 		}
@@ -1203,8 +1377,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		ON dtr.data_template_id=dt.id
 		INNER JOIN graph_templates_item AS gti
 		ON gti.task_item_id=dtr.id
-		WHERE dtr.local_data_id=0
-		AND gti.local_graph_id=0
+		WHERE dtr.local_data_id = 0
+		AND gti.local_graph_id = 0
 		AND gti.graph_template_id = ?
 		GROUP BY dt.id
 		ORDER BY dt.name',
@@ -1287,15 +1461,15 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 				// Set suggested names and custom data
 				if (cacti_sizeof($snmp_query_array)) {
-					$data_input_field = array_rekey(db_fetch_assoc_prepared('SELECT dif.id, dif.type_code
+					$data_input_fields = array_rekey(db_fetch_assoc_prepared('SELECT dif.id, dif.type_code
 						FROM snmp_query AS sq
 						INNER JOIN data_input AS di
-						ON sq.data_input_id=di.id
+						ON sq.data_input_id = di.id
 						INNER JOIN data_input_fields AS dif
-						ON di.id=dif.data_input_id
-						WHERE (dif.type_code="index_type"
-						OR dif.type_code="index_value"
-						OR dif.type_code="output_type")
+						ON di.id = dif.data_input_id
+						WHERE (dif.type_code = "index_type"
+						OR dif.type_code = "index_value"
+						OR dif.type_code = "output_type")
 						AND sq.id = ?',
 						array($snmp_query_array['snmp_query_id'])), 'type_code', 'id');
 
@@ -1308,23 +1482,37 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						array($host_id, $snmp_query_array['snmp_query_id'],
 							$snmp_query_array['snmp_index_on'], $snmp_query_array['snmp_index']));
 
-					/* save the value to index on (ie. ifindex, ifip, etc) */
-					db_execute_prepared('REPLACE INTO data_input_data
-						(data_input_field_id, data_template_data_id, t_value, value)
-						VALUES (?, ?, "", ?)',
-						array($data_input_field['index_type'], $data_template_data_id, $snmp_query_array['snmp_index_on']));
+					if (cacti_sizeof($data_input_fields)) {
+						foreach($data_input_fields as $type_code => $id) {
+							$checked = data_input_field_always_checked($id) ? 'on':'';
 
-					/* save the actual value (ie. 3, 192.168.1.101, etc) */
-					db_execute_prepared('REPLACE INTO data_input_data
-						(data_input_field_id,data_template_data_id,t_value,value)
-						VALUES (?, ?, "", ?)',
-						array($data_input_field['index_value'], $data_template_data_id, $snmp_cache_value));
+							switch($type_code) {
+								case 'index_type':
+									/* save the value to index on (ie. ifindex, ifip, etc) */
+									db_execute_prepared('REPLACE INTO data_input_data
+										(data_input_field_id, data_template_data_id, t_value, value)
+										VALUES (?, ?, ?, ?)',
+										array($id, $data_template_data_id, $checked, $snmp_query_array['snmp_index_on']));
 
-					/* set the expected output type (ie. bytes, errors, packets) */
-					db_execute_prepared('REPLACE INTO data_input_data
-						(data_input_field_id,data_template_data_id,t_value,value)
-						VALUES (?, ?, "", ?)',
-						array($data_input_field['output_type'], $data_template_data_id, $snmp_query_array['snmp_query_graph_id']));
+									break;
+								case 'index_value':
+									/* save the actual value (ie. 3, 192.168.1.101, etc) */
+									db_execute_prepared('REPLACE INTO data_input_data
+										(data_input_field_id, data_template_data_id, t_value, value)
+										VALUES (?, ?, ?, ?)',
+										array($id, $data_template_data_id, $checked, $snmp_cache_value));
+
+									break;
+								case 'output_type':
+									/* set the expected output type (ie. bytes, errors, packets) */
+									db_execute_prepared('REPLACE INTO data_input_data
+										(data_input_field_id, data_template_data_id, t_value, value)
+										VALUES (?, ?, ?, ?)',
+										array($id, $data_template_data_id, $checked, $snmp_query_array['snmp_query_graph_id']));
+									break;
+							}
+						}
+					}
 
 					api_reapply_suggested_data_source_data($cache_array['local_data_id'][$data_template['id']]);
 
@@ -1689,7 +1877,6 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 }
 
 function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values) {
-
 	/* ================= input validation ================= */
 	input_validate_input_number($form_id1);
 	/* ==================================================== */
@@ -1983,4 +2170,3 @@ function graph_template_whitelist_check($graph_template_id) {
 
 	return $valid;
 }
-

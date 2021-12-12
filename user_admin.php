@@ -82,15 +82,12 @@ if (isset_request_var('update_policy')) {
    -------------------------- */
 
 function update_policies() {
-	$set = '';
+	$policies = array('policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates');
 
-	$set .= isset_request_var('policy_graphs') ? 'policy_graphs=' . get_nfilter_request_var('policy_graphs'):'';
-	$set .= isset_request_var('policy_trees') ? ($set != '' ? ',':'') . 'policy_trees=' . get_nfilter_request_var('policy_trees'):'';
-	$set .= isset_request_var('policy_hosts') ? ($set != '' ? ',':'') . 'policy_hosts=' . get_nfilter_request_var('policy_hosts'):'';
-	$set .= isset_request_var('policy_graph_templates') ? ($set != '' ? ',':'') . 'policy_graph_templates=' . get_nfilter_request_var('policy_graph_templates'):'';
-
-	if ($set != '') {
-		db_execute_prepared("UPDATE user_auth SET $set WHERE id = ?", array(get_nfilter_request_var('id')));
+	foreach ($policies as $p) {
+		if (isset_request_var($p)) {
+			db_execute_prepared("UPDATE `user_auth` SET `$p` = ? WHERE `id` = ?", array(get_filter_request_var($p), get_filter_request_var('id')));
+		}
 	}
 
 	header('Location: user_admin.php?action=user_edit&tab=' .  get_nfilter_request_var('tab') . '&id=' . get_nfilter_request_var('id'));
@@ -2326,7 +2323,7 @@ function user() {
 
 	$user_list = db_fetch_assoc("SELECT id, user_auth.username, full_name,
 		realm, enabled, policy_graphs, policy_hosts, policy_graph_templates,
-		time, max(time) as dtime
+		time, max(UNIX_TIMESTAMP(time)) as dtime
 		FROM user_auth
 		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
 		$sql_where
@@ -2357,11 +2354,12 @@ function user() {
 
 	if (cacti_sizeof($user_list)) {
 		foreach ($user_list as $user) {
-			if (empty($user['dtime']) || ($user['dtime'] == '12/31/1969')) {
+			if (empty($user['dtime']) || $user['dtime'] <= 10000) {
 				$last_login = __('N/A');
 			} else {
-				$last_login = strftime('%A, %B %d, %Y %H:%M:%S ', strtotime($user['dtime']));;
+				$last_login = date('l, F d, Y H:i:s ', $user['dtime']);
 			}
+
 			if ($user['enabled'] == 'on') {
 				$enabled = __('Yes');
 			} else {
@@ -3105,4 +3103,3 @@ function member_filter($header_label) {
 
 	html_end_box();
 }
-

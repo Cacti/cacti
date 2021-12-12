@@ -137,7 +137,7 @@ function getInputFields($templateId) {
 		ON did.data_input_field_id = dif.id
 		INNER JOIN (
 			SELECT id, data_input_id, data_template_id
-			FROM data_template_data
+			FROM data_template_data FORCE INDEX (local_data_id)
 			WHERE local_data_id = 0
 		) AS dtd
 		ON did.data_template_data_id = dtd.id

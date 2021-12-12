@@ -73,7 +73,7 @@ function upgrade_to_0_8_4() {
 
 	if ($users !== false && cacti_sizeof($users) > 0) {
 		foreach ($users as $user) {
-			$realms_results = db_isntall_fetch_assoc("SELECT realm_id FROM user_auth_realm WHERE user_id=?", array($user["id"]), false);
+			$realms_results = db_install_fetch_assoc("SELECT realm_id FROM user_auth_realm WHERE user_id=?", array($user["id"]), false);
 			if ($realms !== false && cacti_sizeof($realms) == 13) {
 				db_install_execute("INSERT INTO user_auth_realm (user_id,realm_id) VALUES (?,4)", array($user["id"]));
 				db_install_execute("INSERT INTO user_auth_realm (user_id,realm_id) VALUES (?,16)", array($user["id"]));

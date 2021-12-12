@@ -1223,9 +1223,11 @@ function reports_edit() {
 		function changeFormat() {
 			if (cformat && cformat.checked) {
 				$('#row_font_size').hide();
+				$('#row_alignment').hide();
 				$('#row_format_file').show();
 			} else {
 				$('#row_font_size').show();
+				$('#row_alignment').show();
 				$('#row_format_file').hide();
 			}
 		}
@@ -1346,15 +1348,30 @@ function display_reports_items($report_id) {
 			switch ($item['item_type']) {
 			case REPORTS_ITEM_GRAPH:
 				$item_details = get_graph_title($item['local_graph_id']);
-				$align = ($item['align'] > 0 ? $alignment[$item['align']] : '');
-				$size = '';
+
+				if ($css == 'on') {
+					$align = __('Using CSS');
+				} else {
+					$align = ($item['align'] > 0 ? $alignment[$item['align']] : '');
+				}
+
+				$size     = __('N/A');
 				$timespan = ($item['timespan'] > 0 ? $graph_timespans[$item['timespan']] : '');
+
 				break;
 			case REPORTS_ITEM_TEXT:
 				$item_details = $item['item_text'];
-				$align = ($item['align'] > 0 ? $alignment[$item['align']] : '');
-				$size = ($item['font_size'] > 0 ? $item['font_size'] : '');
+
+				if ($css == 'on') {
+					$align = __('Using CSS');
+					$size  = __('Using CSS');
+				} else {
+					$align = ($item['align'] > 0 ? $alignment[$item['align']] : '');
+					$size  = ($item['font_size'] > 0 ? $item['font_size'] : '');
+				}
+
 				$timespan = '';
+
 				break;
 			case REPORTS_ITEM_TREE:
 				if ($item['branch_id'] > 0) {
@@ -1391,19 +1408,23 @@ function display_reports_items($report_id) {
 					}
 				}
 
-				$align    = ($item['align']     > 0 ? $alignment[$item['align']] : '');
-				$size     = ($item['font_size'] > 0 ? $item['font_size'] : '');
+				if ($css == 'on') {
+					$align    = __('Using CSS');
+					$size     = __('Using CSS');
+				} else {
+					$align    = ($item['align']     > 0 ? $alignment[$item['align']] : '');
+					$size     = ($item['font_size'] > 0 ? $item['font_size'] : '');
+				}
+
 				$timespan = ($item['timespan']  > 0 ? $graph_timespans[$item['timespan']] : '');
+
 				break;
 			default:
 				$item_details = '';
-				$align = '';
-				$size = '';
-				$timespan = '';
-			}
 
-			if ($css == 'on') {
-				$size = '';
+				$align    = __('N/A');
+				$size     = __('N/A');
+				$timespan = __('N/A');
 			}
 
 			form_alternate_row('line' . $item['id'], false);
@@ -1416,14 +1437,15 @@ function display_reports_items($report_id) {
 			$form_data .= '<td>' . $size . '</td>';
 
 			if ($i == 1) {
-				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span class="moveArrowNone"</span></td>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span style="padding:5ps" class="moveArrowNone"></span>';
 			} elseif ($i > 1 && $i < cacti_sizeof($items)) {
-				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
+				$form_data .= '<td class="right nowrap"><a class="pic remover fa fa-caret-down moveArrow" style="padding:3px" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
 			} else {
-				$form_data .= '<td class="right nowrap"><span class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
+				$form_data .= '<td class="right nowrap"><span style="padding:3px" class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" style="padding:3px" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>';
 			}
 
-			$form_data .= '<td class="right"><a class="pic deleteMarker fa fa-times" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
+			$form_data .= '<a class="pic deleteMarker fa fa-times" style="padding:3px" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
+
 			print $form_data;
 
 			$i++;

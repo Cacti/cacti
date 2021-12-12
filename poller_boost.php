@@ -156,8 +156,8 @@ if ($child == false) {
 			boost_launch_children();
 
 			/* Wait for all processes to continue */
-			while (boost_processes_running()) {
-				boost_debug('Sleeping for 2 seconds.');
+			while ($running = boost_processes_running()) {
+				boost_debug(sprintf('%s Processes Runnning, Sleeping for 2 seconds.', $running));
 				sleep(2);
 			}
 
@@ -278,16 +278,12 @@ function boost_kill_running_processes() {
 }
 
 function boost_processes_running() {
-	$finished = db_fetch_cell('SELECT COUNT(*)
+	$running = db_fetch_cell('SELECT COUNT(*)
 		FROM processes
 		WHERE tasktype = "boost"
 		AND taskname = "child"');
 
-	if ($finished == 0) {
-		return false;
-	}
-
-	return true;
+	return $running;
 }
 
 function boost_prepare_process_table() {
@@ -460,8 +456,8 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 
 	if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 		/* turn on the system level updates as that is what dictates "on/off" */
-		if ((!$forcerun) && (read_config_option('boost_rrd_update_system_enable') != 'on')) {
-			set_config_option('boost_rrd_update_system_enable','on');
+		if (!$forcerun && read_config_option('boost_rrd_update_system_enable') != 'on') {
+			set_config_option('boost_rrd_update_system_enable', 'on');
 		}
 
 		$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;

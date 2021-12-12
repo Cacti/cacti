@@ -1097,14 +1097,18 @@ function install_full_sync() {
 		WHERE id > 1
 		AND disabled = ""');
 
+	log_install_always('sync', 'Found ' . cacti_sizeof($pollers) . ' poller(s) to sync');
 	if (cacti_sizeof($pollers)) {
 		foreach($pollers as $poller) {
+			log_install_debug('sync', 'Poller ' . $poller['id'] . ' has a status of ' . $poller['status'] . ' with gap ' . $poller['gap']);
 			if (($poller['status'] == POLLER_STATUS_NEW) ||
 				($poller['status'] == POLLER_STATUS_DOWN) ||
 				($poller['status'] == POLLER_STATUS_DISABLED)) {
 				$skipped[] = $poller['id'];
-			} elseif ($gap < $gap_time) {
+			} elseif ($poller['gap'] < $gap_time) {
+				log_install_medium('sync', 'Replicating to Poller ' . $poller['id']);
 				if (replicate_out($poller['id'])) {
+					log_install_debug('sync', 'Completed replication to Poller ' . $poller['id']);
 					$success[] = $poller['id'];
 
 					db_execute_prepared('UPDATE poller
@@ -1112,6 +1116,7 @@ function install_full_sync() {
 						WHERE id = ?',
 						array($id));
 				} else {
+					log_install_debug('sync', 'Failed replication to Poller ' . $poller['id']);
 					$failed[] = $poller['id'];
 				}
 			} else {
@@ -1119,6 +1124,7 @@ function install_full_sync() {
 			}
 		}
 	}
+	log_install_debug('sync', 'Success: ' . cacti_sizeof($success) . ', Failed: ' . cacti_sizeof($failed) . ', Skipped: ' . cacti_sizeof($skipped) . ', Total: ' . cacti_sizeof($pollers));
 
 	return array(
 		'success' => $success,

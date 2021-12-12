@@ -69,7 +69,7 @@ if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGSEGV, 'sig_handler');
 }
 
-error_reporting(0);
+error_reporting(E_ALL);
 
 /* define STDOUT/STDIN file descriptors if not running under CLI */
 if (php_sapi_name() != 'cli') {
@@ -89,6 +89,7 @@ $start = microtime(true);
 /* some debugging */
 $pid = getmypid();
 $ctr = 0;
+$called_by_script_server = false;
 
 /* if multiple polling intervals are defined, compensate for them */
 $polling_interval = read_config_option('poller_interval');
@@ -106,8 +107,13 @@ ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
 
 /* Record the calling environment */
 if ($_SERVER['argc'] >= 2) {
-	if ($_SERVER['argv'][1] == 'spine')
+	if (substr( $_SERVER['argv'][1], 0, 5) == 'spine')
+		global $force_level;
 		$environ = 'spine';
+		if (strlen($_SERVER['argv'][1]) > 5) {
+			$force_level = intval(substr($_SERVER['argv'][1], 5));
+			cacti_log('INFO: Forcing log level to: ' . $force_level, false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
+		}
 	else
 		if (($_SERVER['argv'][1] == 'cmd.php') || ($_SERVER['argv'][1] == 'cmd'))
 			$environ = 'cmd';
@@ -228,8 +234,8 @@ while (1) {
 			}
 
 			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
-			        "' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
-			        "'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+				"' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
+				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
 			/* validate the existance of the function, and include if applicable */
 			if (!function_exists($function)) {
