@@ -3227,14 +3227,14 @@ class Installer implements JsonSerializable {
 				$i++;
 				$name = $table['value'];
 				if (!empty($name)) {
-					log_install_always('', __('Converting Table #%s \'%s\'', $i, $name));
+					log_install_always('', __('Converting Table #%s \'%s\'', $i, $name), true);
 					$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 						cacti_escapeshellarg($config['base_path'] . '/cli/convert_tables.php') .
 						' --table=' . cacti_escapeshellarg($name) .
 						' --utf8 --innodb --dynamic');
 
 					set_config_option('install_updated', microtime(true));
-					log_install_debug('convert', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results));
+					log_install_debug('convert', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results), true);
 					if ((stripos($results, 'Converting table') !== false && stripos($results, 'Successful') !== false) ||
 					    stripos($results, 'Skipped table') !== false) {
 						set_config_option($key, '');

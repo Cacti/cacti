@@ -1175,9 +1175,12 @@ function poller_connect_to_remote($poller_id) {
 function replicate_out($remote_poller_id = 1, $class = 'all') {
 	global $config;
 
+	replicate_log('Attempting to replicate to Poller ' . $remote_poller_id);
+
 	$rcnn_id = poller_connect_to_remote($remote_poller_id);
 
 	if ($rcnn_id === false) {
+		replicate_log('Failed to connect to Poller ' . $remote_poller_id . ' Database');
 		return false;
 	}
 
@@ -1435,6 +1438,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			array($stats['snmp'], $stats['script'], $stats['server'], $remote_poller_id));
 	}
 
+	replicate_out('Synchronization of Poller ' . $remote_poller_id . ' completed');
 	raise_message('poller_sync');
 
 	return true;
@@ -1500,10 +1504,10 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 		}
 
 		if (cacti_sizeof($local_columns) != cacti_sizeof($remote_columns)) {
-			cacti_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table, false, 'REPLICATE');
+			replicate_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table);
 			$create = db_fetch_row('SHOW CREATE TABLE ' . $table);
 			if (isset($create['Create Table'])) {
-				cacti_log('NOTE: Replication Recreating Remote Table Structure for ' . $table, false, 'REPLICATE');
+				replicate_log('NOTE: Replication Recreating Remote Table Structure for ' . $table);
 				db_execute('DROP TABLE IF EXISTS ' . $table, true, $conn);
 				db_execute($create['Create Table'], true, $conn);
 			}
@@ -1568,7 +1572,13 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 
 			if ($rowcnt > 1000) {
 				db_execute($prefix . $sql . $suffix, true, $conn);
-				$rows_done += db_affected_rows($conn);
+				$rows_affected = db_affected_rows($conn);
+				$rows_log      = ((($rows_done % 100000) + $rows_affected) > 100000);
+				$rows_done    += $rows_affected;
+
+				if ($rows_log) {
+					replicate_log('NOTE: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
+				}
 				$sql = '';
 				$rowcnt = 0;
 			}
@@ -1579,11 +1589,19 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 			$rows_done += db_affected_rows($conn);
 		}
 
-		cacti_log('NOTE: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated', false, 'REPLICATE');
+		replicate_log('INFO: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
 	} else {
 		db_execute("TRUNCATE TABLE $table", true, $conn);
 
-		cacti_log('NOTE: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found', false, 'REPLICATE');
+		replicate_log('INFO: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found');
+	}
+}
+
+function replicate_log($text, $level = POLLER_VERBOSITY_NONE) {
+	if (defined('IN_CACTI_INSTALL')) {
+		log_install_and_file($level, $text, 'REPLICATE', true);
+	} else {
+		cacti_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table, false, 'REPLICATE', $level);
 	}
 }
 
