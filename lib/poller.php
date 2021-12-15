@@ -1601,7 +1601,7 @@ function replicate_log($text, $level = POLLER_VERBOSITY_NONE) {
 	if (defined('IN_CACTI_INSTALL')) {
 		log_install_and_file($level, $text, 'REPLICATE', true);
 	} else {
-		cacti_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table, false, 'REPLICATE', $level);
+		cacti_log($text, false, 'REPLICATE', $level);
 	}
 }
 
