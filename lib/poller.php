@@ -1438,7 +1438,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			array($stats['snmp'], $stats['script'], $stats['server'], $remote_poller_id));
 	}
 
-	replicate_out('Synchronization of Poller ' . $remote_poller_id . ' completed');
+	replicate_log('Synchronization of Poller ' . $remote_poller_id . ' completed');
 	raise_message('poller_sync');
 
 	return true;
