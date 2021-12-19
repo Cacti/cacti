@@ -255,7 +255,7 @@ function data_input_field_always_checked($data_input_field_id = 0, $return_ids =
 			db_fetch_assoc_prepared('SELECT id
 				FROM data_input_fields
 				WHERE hash IN (?, ?, ?, ?, ?, ?, ?, ?, ?)
-				OR (type_code IN("index_type", "index_value", "output_type", "host_id"))',
+				OR (type_code IN("index_type", "index_value", "output_type"))',
 				$always_checked_hashes),
 			'id', 'id'
 		);
@@ -290,7 +290,15 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 		WHERE local_data_id = ?' ,
 		array($local_data_id));
 
-	$template_data = (($data_template_id == '0') ? $data : db_fetch_row_prepared('SELECT * FROM data_template_data WHERE local_data_id=0 AND data_template_id = ?', array($data_template_id)));
+	if ($data_template_id == 0) {
+		$template_data = $data;
+	} else {
+		$template_data = db_fetch_row_prepared('SELECT *
+			FROM data_template_data
+			WHERE local_data_id = 0
+			AND data_template_id = ?',
+			array($data_template_id));
+	}
 
 	/* determine if we are here for the first time, or coming back */
 	$exists = db_fetch_cell_prepared('SELECT local_data_template_data_id
@@ -334,7 +342,15 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 		WHERE local_data_id = ?',
 		array($local_data_id));
 
-	$template_rrds_list = (($data_template_id == '0') ? $data_rrds_list : db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id=0 AND data_template_id = ?', array($data_template_id)));
+	if ($data_template_id == 0) {
+		$template_rrds_list = $data_rrds_list;
+	} else {
+		$template_rrds_list = db_fetch_assoc_prepared('SELECT *
+			FROM data_template_rrd
+			WHERE local_data_id = 0
+			AND data_template_id = ?',
+			array($data_template_id));
+	}
 
 	if (cacti_sizeof($data_rrds_list)) {
 		/* this data source already has 'child' items */
