@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-12-10 13:26-0500\n"
+"POT-Creation-Date: 2021-12-19 17:59-0500\n"
 "PO-Revision-Date: 2021-10-21 08:40-0400\n"
 "Last-Translator: Sergey <sbolshagin@gmail.com>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\n"
@@ -474,7 +474,7 @@ msgstr "Сопоставление графиков"
 #: automation_templates.php:393 automation_tree_rules.php:810 cdef.php:756
 #: color.php:529 color_templates.php:530 data_debug.php:1052 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:891 data_sources.php:1437
-#: data_templates.php:975 gprint_presets.php:262 graph_templates.php:701
+#: data_templates.php:981 gprint_presets.php:262 graph_templates.php:701
 #: graph_view.php:604 graphs.php:2031 graphs_new.php:411 host.php:1575
 #: host_templates.php:719 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
@@ -515,7 +515,7 @@ msgstr "Графики"
 #: automation_tree_rules.php:830 cdef.php:766 color.php:539
 #: color_templates.php:545 data_debug.php:1062 data_input.php:836
 #: data_queries.php:1289 data_source_profiles.php:901
-#: data_source_profiles.php:1020 data_sources.php:1447 data_templates.php:1001
+#: data_source_profiles.php:1020 data_sources.php:1447 data_templates.php:1007
 #: gprint_presets.php:272 graph_templates.php:711 graph_view.php:667
 #: graphs.php:2041 graphs_new.php:421 host.php:1600 host_templates.php:729
 #: include/global_form.php:256 lib/api_automation.php:183
@@ -545,7 +545,7 @@ msgstr "Часть совокупности"
 #: automation_tree_rules.php:842 cdef.php:784 color.php:563
 #: color_templates.php:567 data_debug.php:981 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:919 data_sources.php:1390
-#: data_templates.php:1019 gprint_presets.php:290 graph_templates.php:729
+#: data_templates.php:1025 gprint_presets.php:290 graph_templates.php:729
 #: graph_view.php:612 graphs.php:2022 graphs_new.php:400 host.php:1565
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
@@ -563,7 +563,7 @@ msgstr "Выполнить"
 #: automation_devices.php:495 automation_snmp.php:717
 #: automation_templates.php:415 cdef.php:784 color.php:563 data_debug.php:981
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:919
-#: data_sources.php:1390 data_templates.php:1019 gprint_presets.php:290
+#: data_sources.php:1390 data_templates.php:1025 gprint_presets.php:290
 #: graph_templates.php:729 graph_view.php:612 graphs.php:2022
 #: graphs_new.php:400 host.php:1565 host_templates.php:747
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
@@ -585,7 +585,7 @@ msgstr "Установить/Обновить фильтры"
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
 #: color_templates.php:568 data_debug.php:982 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:920 data_sources.php:1391
-#: data_templates.php:1020 gprint_presets.php:291 graph_templates.php:730
+#: data_templates.php:1026 gprint_presets.php:291 graph_templates.php:730
 #: graph_view.php:613 graphs.php:2023 graphs_new.php:401 host.php:1566
 #: host_templates.php:748 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
@@ -602,7 +602,7 @@ msgstr "Очистить"
 #: aggregate_graphs.php:1335 aggregate_graphs.php:1633 automation_snmp.php:718
 #: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:982
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:920
-#: data_sources.php:1391 data_templates.php:1020 gprint_presets.php:291
+#: data_sources.php:1391 data_templates.php:1026 gprint_presets.php:291
 #: graph_templates.php:730 graph_view.php:613 graphs.php:2023
 #: graphs_new.php:401 host.php:1566 host_templates.php:748
 #: lib/html_graph.php:191 lib/html_tree.php:1075 managers.php:172
@@ -626,7 +626,7 @@ msgstr "Название Графика"
 #: aggregate_graphs.php:1361 aggregate_graphs.php:1697
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
 #: data_debug.php:345 data_input.php:931 data_queries.php:1383
-#: data_sources.php:1615 data_templates.php:1128 graph_templates.php:835
+#: data_sources.php:1615 data_templates.php:1134 graph_templates.php:835
 #: graphs.php:2200 host.php:1680 host_templates.php:834
 #: lib/api_automation.php:282 pollers.php:995 sites.php:572 tree.php:2009
 #: user_admin.php:1035 user_admin.php:1149 user_admin.php:1296
@@ -650,7 +650,7 @@ msgstr "Размер"
 #: automation_tree_rules.php:689 cdef.php:911 color.php:726 color.php:728
 #: color_templates.php:659 data_input.php:975 data_queries.php:1435
 #: data_source_profiles.php:1100 data_source_profiles.php:1101
-#: data_sources.php:1702 data_sources.php:1703 data_templates.php:1189
+#: data_sources.php:1702 data_sources.php:1703 data_templates.php:1195
 #: gprint_presets.php:437 graph_templates.php:892 host_templates.php:875
 #: include/global_settings.php:468 include/global_settings.php:827
 #: include/global_settings.php:1714 lib/api_automation.php:1438 links.php:404
@@ -665,7 +665,7 @@ msgstr "Нет"
 #: data_debug.php:639 data_input.php:975 data_queries.php:1435
 #: data_source_profiles.php:1099 data_source_profiles.php:1100
 #: data_source_profiles.php:1101 data_sources.php:1702 data_sources.php:1703
-#: data_templates.php:1189 gprint_presets.php:437 graph_templates.php:892
+#: data_templates.php:1195 gprint_presets.php:437 graph_templates.php:892
 #: host_templates.php:875 include/global_settings.php:469
 #: include/global_settings.php:826 include/global_settings.php:1713
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
@@ -721,7 +721,7 @@ msgstr "Любой"
 #: automation_graph_rules.php:906 automation_graph_rules.php:907
 #: automation_networks.php:462 automation_tree_rules.php:948 data_debug.php:960
 #: data_sources.php:934 data_sources.php:1369 data_sources.php:1676
-#: data_templates.php:1191 graphs.php:1578 graphs.php:1587 graphs.php:1992
+#: data_templates.php:1197 graphs.php:1578 graphs.php:1587 graphs.php:1992
 #: graphs_items.php:355 graphs_items.php:467 host.php:1103 host.php:1114
 #: host.php:1490 host.php:1525 include/global_arrays.php:471
 #: include/global_arrays.php:529 include/global_arrays.php:618
@@ -833,7 +833,7 @@ msgstr "Используемые агрегированные шаблоны н�
 
 #: aggregate_templates.php:694 cdef.php:894 color.php:703
 #: color_templates.php:641 data_input.php:937 data_queries.php:1389
-#: data_source_profiles.php:1025 data_sources.php:1633 data_templates.php:1134
+#: data_source_profiles.php:1025 data_sources.php:1633 data_templates.php:1140
 #: gprint_presets.php:397 graph_templates.php:841 host_templates.php:840
 #: vdef.php:887
 msgid "Deletable"
@@ -1320,7 +1320,7 @@ msgstr "SNMP"
 #: automation_devices.php:286 automation_devices.php:510
 #: automation_graph_rules.php:771 automation_networks.php:1077
 #: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1007
-#: data_sources.php:1416 data_templates.php:1157 host.php:712 host.php:837
+#: data_sources.php:1416 data_templates.php:1163 host.php:712 host.php:837
 #: host.php:1581 host.php:1698 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
@@ -1534,7 +1534,7 @@ msgstr "Включено"
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1014 data_sources.php:1422
-#: data_templates.php:1193 host.php:1587 include/global_arrays.php:839
+#: data_templates.php:1199 host.php:1587 include/global_arrays.php:839
 #: include/global_arrays.php:1458 include/global_arrays.php:1749
 #: include/global_settings.php:359 include/global_settings.php:1426
 #: include/global_settings.php:1440 include/global_settings.php:1453
@@ -3399,7 +3399,7 @@ msgstr "Существует"
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "Определяет, находится ли Источник данных в кэше Poller Cache."
 
-#: data_debug.php:369 data_sources.php:1639 data_templates.php:1193
+#: data_debug.php:369 data_sources.php:1639 data_templates.php:1199
 #: plugins.php:37 plugins.php:359
 msgid "Active"
 msgstr "Активный"
@@ -3655,12 +3655,12 @@ msgstr "Нет устройства"
 msgid "Delete All Checks"
 msgstr "Убрать проверку"
 
-#: data_debug.php:991 data_sources.php:1399 data_templates.php:981
+#: data_debug.php:991 data_sources.php:1399 data_templates.php:987
 msgid "Profile"
 msgstr "Профиль"
 
 #: data_debug.php:995 data_debug.php:1011 data_debug.php:1022
-#: data_sources.php:1403 data_sources.php:1420 data_templates.php:985
+#: data_sources.php:1403 data_sources.php:1420 data_templates.php:991
 #: graphs_new.php:378 host.php:1542 lib/clog_webapi.php:536 lib/html.php:203
 #: lib/html_reports.php:799 plugins.php:357 settings.php:518 settings.php:537
 #: settings.php:563 tree.php:794 utilities.php:803 utilities.php:1214
@@ -3862,7 +3862,7 @@ msgstr "Идентификатор внутренней базы данных д
 msgid "Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template."
 msgstr "Используемые входы данных не могут быть удалены. Под используемыми понимается ссылка либо на источник данных, либо на шаблон данных."
 
-#: data_input.php:942 data_source_profiles.php:1047 data_templates.php:1139
+#: data_input.php:942 data_source_profiles.php:1047 data_templates.php:1145
 #, fuzzy
 msgid "Data Sources Using"
 msgstr "Источники данных Использование"
@@ -4304,7 +4304,7 @@ msgstr "Профили источников данных"
 msgid "Profiles"
 msgstr "Профили"
 
-#: data_source_profiles.php:914 data_templates.php:1014
+#: data_source_profiles.php:914 data_templates.php:1020
 #, fuzzy
 msgid "Has Data Sources"
 msgstr "Имеет ли источник данных"
@@ -4506,7 +4506,7 @@ msgstr "(Из шаблона данных)"
 msgid "Nothing Entered"
 msgstr "Ничто не вошло"
 
-#: data_sources.php:686 data_templates.php:850
+#: data_sources.php:686 data_templates.php:856
 #, fuzzy
 msgid "No Input Fields for the Selected Data Input Source"
 msgstr "Отсутствие полей ввода для выбранного источника входных данных"
@@ -4627,7 +4627,7 @@ msgstr "Отладка источника данных"
 msgid "RRDtool Tune Info"
 msgstr "Информация о настройке RRDtool Tune Info"
 
-#: data_sources.php:1195 data_templates.php:1192 include/global_form.php:596
+#: data_sources.php:1195 data_templates.php:1198 include/global_form.php:596
 msgid "External"
 msgstr "Внешний"
 
@@ -4805,7 +4805,7 @@ msgstr "Шаблоны данных [новые]"
 msgid "This field is always templated."
 msgstr "Это поле всегда является шаблонированным."
 
-#: data_templates.php:641 data_templates.php:741 data_templates.php:801
+#: data_templates.php:641 data_templates.php:741 data_templates.php:807
 #, fuzzy
 msgid "Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation."
 msgstr "Отметьте этот флажок, если вы хотите разрешить пользователю переопределять значение справа во время создания Источника данных."
@@ -4824,79 +4824,83 @@ msgstr "Источник данных Пункт [%s]"
 msgid "This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations."
 msgstr ""
 
-#: data_templates.php:831
+#: data_templates.php:801
+msgid "This value is disabled due to it being derived from the Device and read only."
+msgstr ""
+
+#: data_templates.php:837
 #, fuzzy
 msgid "Value will be derived from the Device if this field is left empty."
 msgstr "Если оставить это поле пустым, то значение будет выведено из устройства."
 
-#: data_templates.php:899
+#: data_templates.php:905
 #, fuzzy
 msgid "Custom Data Warning Message"
 msgstr "Пользовательские данные [Ввод данных: %s]"
 
-#: data_templates.php:900
+#: data_templates.php:906
 msgid "WARNING: Data Loss can Occur"
 msgstr ""
 
-#: data_templates.php:902
+#: data_templates.php:908
 msgid "After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will loose their Custom Data.  This can result in broken Data Collection and Graphs"
 msgstr ""
 
-#: data_templates.php:966 data_templates.php:997 data_templates.php:1164
+#: data_templates.php:972 data_templates.php:1003 data_templates.php:1170
 #: include/global_arrays.php:1131 include/global_arrays.php:2152
 #, fuzzy
 msgid "Data Templates"
 msgstr "Шаблоны данных"
 
-#: data_templates.php:1122
+#: data_templates.php:1128
 #, fuzzy
 msgid "Data Template Name"
 msgstr "Имя шаблона данных Название шаблона"
 
-#: data_templates.php:1125
+#: data_templates.php:1131
 #, fuzzy
 msgid "The name of this Data Template."
 msgstr "Название данного Шаблона данных."
 
-#: data_templates.php:1131
+#: data_templates.php:1137
 #, fuzzy
 msgid "The internal database ID for this Data Template.  Useful when performing automation or debugging."
 msgstr "Идентификатор внутренней базы данных для данного Шаблона данных.  Полезно при выполнении автоматизации или отладки."
 
-#: data_templates.php:1136
+#: data_templates.php:1142
 #, fuzzy
 msgid "Data Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Data Source."
 msgstr "Используемые шаблоны данных удалить нельзя.  Под используемыми понимается ссылка на источник данных."
 
-#: data_templates.php:1142
+#: data_templates.php:1148
 #, fuzzy
 msgid "The number of Data Sources using this Data Template."
 msgstr "Количество источников данных, использующих данный шаблон данных."
 
-#: data_templates.php:1145
+#: data_templates.php:1151
 msgid "Input Method"
 msgstr "Метод ввода"
 
-#: data_templates.php:1148
+#: data_templates.php:1154
 #, fuzzy
 msgid "The method that is used to place Data into the Data Source RRDfile."
 msgstr "Метод, используемый для помещения данных в файл источника данных RRD."
 
-#: data_templates.php:1151
+#: data_templates.php:1157
 msgid "Profile Name"
 msgstr "Имя профиля"
 
-#: data_templates.php:1154
+#: data_templates.php:1160
 #, fuzzy
 msgid "The default Data Source Profile for this Data Template."
 msgstr "Профиль источника данных по умолчанию для данного Шаблона данных."
 
-#: data_templates.php:1160
+#: data_templates.php:1166
 #, fuzzy
 msgid "Data Sources based on Inactive Data Templates will not be updated when the poller runs."
 msgstr "Источники данных, основанные на неактивных шаблонах данных, не будут обновляться при запуске опроса."
 
-#: data_templates.php:1198
+#: data_templates.php:1204
 #, fuzzy
 msgid "No Data Templates Found"
 msgstr "Шаблоны данных не найдены"
@@ -5466,7 +5470,7 @@ msgstr "Устройство"
 msgid "Created graph: %s"
 msgstr "Созданный график: %s"
 
-#: graphs.php:260 lib/template.php:1931 lib/template.php:1960
+#: graphs.php:260 lib/template.php:1947 lib/template.php:1976
 #, fuzzy
 msgid "ERROR: No Data Source associated. Check Template"
 msgstr "Источник данных не указан. Проверить шаблон"
@@ -17669,32 +17673,32 @@ msgstr "Корень"
 msgid "Unknown RRDtool Error"
 msgstr "Неизвестная ошибка RRDtool Ошибка"
 
-#: lib/template.php:1292
+#: lib/template.php:1308
 #, fuzzy
 msgid "Attempting to Create Graph from Non-Template"
 msgstr "Создать агрегированные данные из шаблона"
 
-#: lib/template.php:1304
+#: lib/template.php:1320
 #, fuzzy
 msgid "Attempting to Create Graph from Removed Graph Template"
 msgstr "Попытка создать график из удаленного шаблона графика"
 
-#: lib/template.php:1923 lib/template.php:1952
+#: lib/template.php:1939 lib/template.php:1968
 #, fuzzy, php-format
 msgid "Created: %s"
 msgstr "Создано: %s"
 
-#: lib/template.php:1934 lib/template.php:1963
+#: lib/template.php:1950 lib/template.php:1979
 #, fuzzy
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "Ошибка с проверкой белого списка. Проверить метод ввода данных"
 
-#: lib/template.php:1942
+#: lib/template.php:1958
 #, fuzzy
 msgid "Graph Not created for "
 msgstr "Создание графиков"
 
-#: lib/template.php:1971
+#: lib/template.php:1987
 #, fuzzy
 msgid "NOTE: Graph not added for Data Query "
 msgstr "Создание графиков на основе запроса данных"
