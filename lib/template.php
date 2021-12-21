@@ -1191,6 +1191,7 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 						case 'shift':
 						case 'consolidation_function_id':
 						case 'textalign':
+						case 'text_format':
 						case 'value':
 						case 'hard_return':
 						case 'gprint_id':
