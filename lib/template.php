@@ -925,17 +925,32 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 	$template_data     = parse_graph_template_id($graph_template_id);
 	$graph_template_id = $template_data['graph_template_id'];
 
-	if (isset($template_data['output_type_id'])) {
-		$output_type_id = $template_data['output_type_id'];
-	} else {
-		$output_type_id = 0;
-	}
-
 	/* get information about both the graph and the graph template we're using */
 	$graph_list = db_fetch_row_prepared('SELECT *
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
 		array($local_graph_id));
+
+	if ($graph_template_id == 0) {
+		$template_graph_list = $graph_list;
+	} else {
+		$template_graph_list = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_graph
+			WHERE local_graph_id = 0
+			AND graph_template_id = ?',
+			array($graph_template_id));
+	}
+
+	if (!cacti_sizeof($template_graph_list)) {
+		cacti_log(sprintf('WARNING: Graph Template with ID %s Does not have any Graph Items', $graph_template_id), false, 'AUTOM8');
+		return false;
+	}
+
+	if (isset($template_data['output_type_id'])) {
+		$output_type_id = $template_data['output_type_id'];
+	} else {
+		$output_type_id = 0;
+	}
 
 	$snmp_query_id = db_fetch_cell_prepared('SELECT snmp_query_id
 		FROM graph_local
@@ -956,16 +971,6 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 		$changed = false;
 	} else {
 		$changed = true;
-	}
-
-	if ($graph_template_id == 0) {
-		$template_graph_list = $graph_list;
-	} else {
-		$template_graph_list = db_fetch_row_prepared('SELECT *
-			FROM graph_templates_graph
-			WHERE local_graph_id = 0
-			AND graph_template_id = ?',
-			array($graph_template_id));
 	}
 
 	/* determine if we are here for the first time, or coming back */
