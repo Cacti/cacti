@@ -20,7 +20,10 @@ Cacti CHANGELOG
 -issue#4481: When using a Cacti Format File for a Report, the Reports still use Legacy Font Size and Alignment Attributes
 -issue#4482: Graph Automation slowed by in-efficient index selection when creating Graphs
 -issue#4491: Rebuild poller cache problem after change snmp version via DB query
+-issue#4495: DSSTATS will get invalid data for some devices after reboot requiring purging of stats
 -issue#4498: Layout function textBoxWidth() does not work on input type form elements
+-issue#4500: DSStats Does not Scale on Large Systems
+-issue#4509: Updating Graph Template Items for a Template is Slow on Large Systems
 
 1.2.19
 -security#4356: Further fixes for grave character security protection

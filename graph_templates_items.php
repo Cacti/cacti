@@ -159,6 +159,18 @@ function form_save() {
 				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0');
 			}
 
+			$task_item_changed = true;;
+			if (get_request_var('graph_template_item_id') > 0) {
+				$task_item_id = db_fetch_cell_prepared('SELECT task_item_id
+					FROM graph_templates_item
+					WHERE id = ?',
+					array(get_request_var('graph_template_item_id')));
+
+				if ($task_item_id == get_request_var('task_item_id')) {
+					$task_item_changed = false;
+				}
+			}
+
 			$save['id']                = get_request_var('graph_template_item_id');
 			$save['hash']              = get_hash_graph_template(get_request_var('graph_template_item_id'), 'graph_template_item');
 			$save['graph_template_id'] = get_request_var('graph_template_id');
@@ -273,7 +285,7 @@ function form_save() {
 						}
 					}
 
-					push_out_graph_item($graph_template_item_id);
+					push_out_graph_item($graph_template_item_id, $task_item_changed);
 
 					if (isset($orig_data_source_to_input[get_nfilter_request_var('task_item_id')])) {
 						/* make sure all current graphs using this graph input are aware of this change */
@@ -329,7 +341,7 @@ function item_movedown() {
 	}
 
 	if (!isempty_request_var('graph_template_id')) {
-		resequence_graphs(get_request_var('graph_template_id'), -1);
+		resequence_graphs_simple(get_request_var('graph_template_id'));
 	}
 }
 
@@ -361,7 +373,7 @@ function item_moveup() {
 	}
 
 	if (!isempty_request_var('graph_template_id')) {
-		resequence_graphs(get_request_var('graph_template_id'), -1);
+		resequence_graphs_simple(get_request_var('graph_template_id'));
 	}
 }
 

@@ -100,6 +100,19 @@ function form_save() {
 		get_filter_request_var('graph_template_graph_id');
 		/* ==================================================== */
 
+		$push_title = true;
+		if ($graph_template_id > 0) {
+			$prev_title = db_fetch_cell_prepared('SELECT title
+				FROM graph_templates_graph
+				WHERE graph_template_id = ?
+				AND local_graph_id = 0',
+				array($graph_template_id));
+
+			if ($prev_title == get_nfilter_request_var('title')) {
+				$push_title = false;
+			}
+		}
+
 		$save1['id']          = $graph_template_id;
 		$save1['hash']        = get_hash_graph_template($graph_template_id);
 		$save1['name']        = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
@@ -192,14 +205,10 @@ function form_save() {
 			if ($graph_template_graph_id) {
 				raise_message(1);
 
-				push_out_graph($graph_template_graph_id);
+				push_out_graph($graph_template_graph_id, $push_title);
 			} else {
 				raise_message(2);
 			}
-		}
-
-		if (!empty($graph_template_id)) {
-			resequence_graphs($graph_template_id);
 		}
 	}
 
