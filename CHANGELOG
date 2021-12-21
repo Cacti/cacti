@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#4498: Layout function textBoxWidth() does not work on input type form elements
 -issue#4500: DSStats Does not Scale on Large Systems
 -issue#4509: Updating Graph Template Items for a Template is Slow on Large Systems
+-issue#4511: When viewing SVG Graphs the Graphs do not size properly when using the Time View UI
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
