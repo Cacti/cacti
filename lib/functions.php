@@ -4284,7 +4284,7 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
  *
  * @return mixed a 24-bit hexadecimal hash (8-bits for type, 16-bits for version)
  */
-function get_hash_version($type) {
+function get_hash_version(string $type): string {
 	global $hash_type_codes, $cacti_version_codes, $config;
 
 	return $hash_type_codes[$type] . $cacti_version_codes[CACTI_VERSION];
