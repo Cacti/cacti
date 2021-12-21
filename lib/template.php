@@ -1237,7 +1237,7 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 
 						/* go through the existing graph_items and look for the matching local_graph_template_item_id */
 						$found = false;
-						if (cacti_sizeof($graph_items_list) && $new_save == false) {
+						if (cacti_sizeof($graph_items_list)) {
 							foreach($graph_items_list as $item) {
 								if ($item['local_graph_template_item_id'] == $template_item['id']) {
 									$found_item = $item;
