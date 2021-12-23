@@ -1432,7 +1432,7 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
 	}
 
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$host_where_disabled = "(IFNULL(TRIM(s.disabled), '') = 'on' OR IFNULL(TRIM(host.disabled),'') = 'on')";
 	) else {
 		$host_where_disabled = "(IFNULL(TRIM(host.disabled), '') = 'on')";

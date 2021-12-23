@@ -214,7 +214,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		$sql_where = "WHERE h.deleted = ''";
 	}
 
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$host_where_disabled = "(IFNULL(TRIM(s.disabled),'') == 'on' OR IFNULL(TRIM(h.disabled),'') == 'on')";
 	} else {
 		$host_where_disabled = "(IFNULL(TRIM(h.disabled),'') == 'on')";
@@ -245,7 +245,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sdisabled = "s.disabled AS site_disabled,";
 	} else {
 		$sdisabled = "'' AS site_disabled,";
@@ -551,7 +551,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		ON h.host_template_id=ht.id
 		$sql_where", '', false);
 
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sdisabled = "s.disabled AS site_disabled,";
 	} else {
 		$sdisabled = "'' AS site_disabled,";
@@ -1182,7 +1182,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			OR ht.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$host_where_disabled = "(IFNULL(TRIM(s.disabled),'') == 'on' || IFNULL(TRIM(h.disabled),'') == 'on')";
 	} else {
 		$host_where_disabled = "(IFNULL(TRIM(h.disabled),'') == 'on')";
@@ -1216,7 +1216,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	$sql_field = $item['field'] . ' AS source ';
 
 	/* now we build up a new query for counting the rows */
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sdisabled = "s.disabled AS site_disabled,";
 	} else {
 		$sdisabled = "'' AS site_disabled,";
@@ -1618,7 +1618,7 @@ function build_data_query_sql($rule) {
 
 	$field_names = get_field_names($rule['snmp_query_id']);
 
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sdisabled = "s.disabled AS site_disabled,";
 	} else {
 		$sdisabled = "'' AS site_disabled,";
@@ -1783,7 +1783,7 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sdisabled = "s.disabled AS site_disabled,";
 	} else {
 		$sdisabled = "'' AS site_disabled,";
@@ -1823,7 +1823,7 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sdisabled = "s.disabled AS site_disabled,";
 	} else {
 		$sdisabled = "'' AS site_disabled,";

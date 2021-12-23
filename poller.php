@@ -389,9 +389,9 @@ while ($poller_runs_completed < $poller_runs) {
 		INNER JOIN host AS h
 		ON h.id = pi.host_id ' . $sql_where);
 
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
-	) else {
+	} else {
 		$sql_where = '';
 	}
 

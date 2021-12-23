@@ -229,7 +229,7 @@ input_validate_input_number($first, 'first');
 input_validate_input_number($last, 'last');
 
 if ($active_profiles != 1) {
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
 	} else {
 		$sql_where = '';
