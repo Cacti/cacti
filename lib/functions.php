@@ -3933,18 +3933,16 @@ function draw_navigation_text($type = 'url') {
  * @return mixed the original navigation text with all substitutions made
  */
 function resolve_navigation_variables(string $text): string {
-	if (isset_request_var('local_graph_id')) {
-		$graphTitle = get_graph_title(get_filter_request_var('local_graph_id'));
-	} else {
-		$graphTitle = '';
-	}
+	if (isset_request_var('local_graph_id') && get_filter_request_var('local_graph_id') > 0) {
+		$graphTitle = get_graph_title(get_request_var('local_graph_id'));
 
-	if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
-		foreach($matches[1] as $i => $match) {
-			switch ($match) {
-				case 'current_graph_title':
-					$text = str_replace('|' . $match . '|', $graphTitle, $text);
-					break;
+		if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
+			for ($i=0; $i<cacti_count($matches[1]); $i++) {
+				switch ($matches[1][$i]) {
+					case 'current_graph_title':
+						$text = str_replace('|' . $matches[1][$i] . '|', $graphTitle, $text);
+						break;
+				}
 			}
 		}
 	}
