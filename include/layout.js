@@ -1765,7 +1765,7 @@ function loadTopTabStart(options) {
 	$('.submenuoptions').slideUp(120);
 	$('.menuoptions').slideUp(120);
 
-	if (href.indexOf('graph_view.php') >= 0) {
+	if (options.url.indexOf('graph_view.php') >= 0) {
 		$('.cactiGraphHeaderBackground').show();
 		$('.cactiConsolePageHeadBackdrop').hide();
 	} else {
@@ -1776,9 +1776,9 @@ function loadTopTabStart(options) {
 
 function loadTopTabEnd(options) {
 	if (options.pageName != '') {
-		if ($('#menu').find("a[href^='"+escapeString(href)+"']").length > 0) {
+		if ($('#menu').find("a[href^='"+escapeString(options.url)+"']").length > 0) {
 			$('#menu').find('.pic').removeClass('selected');
-			$('#menu').find("a[href^='"+escapeString(href)+"']").addClass('selected');
+			$('#menu').find("a[href^='"+escapeString(options.url)+"']").addClass('selected');
 		} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 			$('#menu').find('.pic').removeClass('selected');
 			$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
