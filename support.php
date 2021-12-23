@@ -835,14 +835,20 @@ function support_view_tech() {
 
 		form_end_row();
 	} elseif (get_request_var('tab') == 'poller') {
-		$problematic = db_fetch_assoc('SELECT h.id, h.description, h.polling_time, h.avg_time
+		if (db_column_exists('disabled', 'sites')) {
+			$sql_where = 'AND IFNULL(s.disabled, "") != "on"';
+		) else {
+			$sql_where = '';
+		}
+
+		$problematic = db_fetch_assoc("SELECT h.id, h.description, h.polling_time, h.avg_time
 			FROM host h
 			LEFT JOIN sites s
 			ON s.id = h.site_id
-			WHERE IFNULL(h.disabled,"") != "on"
-			AND IFNULL(s.disabled,"") != "on"
+			WHERE IFNULL(h.disabled, '') != 'on'
+			$sql_where
 			ORDER BY polling_time DESC
-			LIMIT 20');
+			LIMIT 20");
 
 		html_section_header(__('Worst 20 polling time hosts'), 2);
 

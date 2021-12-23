@@ -214,7 +214,12 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		$sql_where = "WHERE h.deleted = ''";
 	}
 
-	$host_where_disabled = "(IFNULL(TRIM(s.disabled),'') == 'on' OR IFNULL(TRIM(h.disabled),'') == 'on')";
+	if (db_column_exists('disabled', 'sites')) {
+		$host_where_disabled = "(IFNULL(TRIM(s.disabled),'') == 'on' OR IFNULL(TRIM(h.disabled),'') == 'on')";
+	} else {
+		$host_where_disabled = "(IFNULL(TRIM(h.disabled),'') == 'on')";
+	}
+
 	$host_where_status   = get_request_var('host_status');
 	if ($host_where_status == '-1') {
 		/* Show all items */
@@ -240,14 +245,20 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
-	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description,
-		h.disabled AS disabled, s.disabled as site_disabled,
+	if (db_column_exists('disabled', 'sites')) {
+		$sdisabled = "s.disabled AS site_disabled,";
+	} else {
+		$sdisabled = "'' AS site_disabled,";
+	}
+
+	$sql_query = "SELECT h.id AS host_id, h.hostname, h.description,
+		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name
 		FROM host AS h
 		LEFT JOIN sites s
 		ON s.id = h.site_id
 		LEFT JOIN host_template AS ht
-		ON (h.host_template_id=ht.id) ';
+		ON h.host_template_id = ht.id ";
 
 	$hosts = db_fetch_assoc($sql_query . 'WHERE h.deleted = ""');
 
@@ -540,8 +551,14 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		ON h.host_template_id=ht.id
 		$sql_where", '', false);
 
+	if (db_column_exists('disabled', 'sites')) {
+		$sdisabled = "s.disabled AS site_disabled,";
+	} else {
+		$sdisabled = "'' AS site_disabled,";
+	}
+
 	$sql = "SELECT h.id AS host_id, h.hostname, h.description,
-		h.disabled AS disabled, s.disabled AS site_disabled,
+		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name,
 		gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
 		gtg.title_cache, gt.name
@@ -1165,7 +1182,12 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			OR ht.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
-	$host_where_disabled = "(IFNULL(TRIM(s.disabled),'') == 'on' || IFNULL(TRIM(h.disabled),'') == 'on')";
+	if (db_column_exists('disabled', 'sites')) {
+		$host_where_disabled = "(IFNULL(TRIM(s.disabled),'') == 'on' || IFNULL(TRIM(h.disabled),'') == 'on')";
+	} else {
+		$host_where_disabled = "(IFNULL(TRIM(h.disabled),'') == 'on')";
+	}
+
 	$host_where_status = get_request_var('host_status');
 	if ($host_where_status == '-1') {
 		/* Show all items */
@@ -1194,8 +1216,14 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 	$sql_field = $item['field'] . ' AS source ';
 
 	/* now we build up a new query for counting the rows */
+	if (db_column_exists('disabled', 'sites')) {
+		$sdisabled = "s.disabled AS site_disabled,";
+	} else {
+		$sdisabled = "'' AS site_disabled,";
+	}
+
 	$rows_query = "SELECT h.id AS host_id, h.hostname, h.description,
-		h.disabled AS disabled, s.disabled AS site_disabled,
+		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name, $sql_field
 		$sql_tables
 		$sql_where AND ($sql_filter)";
@@ -1589,8 +1617,15 @@ function build_data_query_sql($rule) {
 	cacti_log($function . ' called: ' . json_encode($rule), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	$field_names = get_field_names($rule['snmp_query_id']);
+
+	if (db_column_exists('disabled', 'sites')) {
+		$sdisabled = "s.disabled AS site_disabled,";
+	} else {
+		$sdisabled = "'' AS site_disabled,";
+	}
+
 	$sql_query = "SELECT h.hostname AS automation_host, host_id,
-		h.disabled AS disabled, s.disabled AS site_disabled,
+		h.disabled AS disabled, $sdisabled
 		h.status, snmp_query_id, snmp_index ";
 	$i = 0;
 
@@ -1748,14 +1783,20 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
-	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description,
-		h.disabled AS disabled, s.disabled AS site_disabled,
+	if (db_column_exists('disabled', 'sites')) {
+		$sdisabled = "s.disabled AS site_disabled,";
+	} else {
+		$sdisabled = "'' AS site_disabled,";
+	}
+
+	$sql_query = "SELECT h.id AS host_id, h.hostname, h.description,
+		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name
 		FROM host AS h
 		LEFT JOIN sites AS s
-		ON (h.site_id = s.id)
+		ON h.site_id = s.id
 		LEFT JOIN host_template AS ht
-		ON (h.host_template_id=ht.id) ';
+		ON h.host_template_id = ht.id ";
 
 	/* get the WHERE clause for matching hosts */
 	$sql_filter = ' WHERE h.deleted = "" AND (' . build_matching_objects_filter($rule['id'], $rule_type) .')';
@@ -1782,20 +1823,26 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description,
-		h.disabled, s.disabled AS site_disabled,
+	if (db_column_exists('disabled', 'sites')) {
+		$sdisabled = "s.disabled AS site_disabled,";
+	} else {
+		$sdisabled = "'' AS site_disabled,";
+	}
+
+	$sql_query = "SELECT h.id AS host_id, h.hostname, h.description,
+		h.disabled, $sdisabled
 		h.status, ht.name AS host_template_name, gtg.id,
 		gtg.local_graph_id, gtg.height, gtg.width, gtg.title_cache, gt.name
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_graph AS gtg
 		LEFT JOIN graph_templates AS gt
-		ON (gl.graph_template_id=gt.id)
+		ON gl.graph_template_id = gt.id
 		LEFT JOIN host AS h
-		ON (gl.host_id=h.id)
+		ON gl.host_id = h.id
 		LEFT JOIN sites AS s
-		ON (h.site_id = s.id)
+		ON h.site_id = s.id
 		LEFT JOIN host_template AS ht
-		ON (h.host_template_id=ht.id)';
+		ON h.host_template_id = ht.id";
 
 	/* get the WHERE clause for matching graphs */
 	$sql_filter = 'WHERE gl.id=gtg.local_graph_id AND ' . build_matching_objects_filter($rule['id'], $rule_type);

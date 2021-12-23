@@ -1432,7 +1432,12 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
 	}
 
-	$host_where_disabled = "(IFNULL(TRIM(s.disabled), '') = 'on' OR IFNULL(TRIM(host.disabled),'') = 'on')";
+	if (db_column_exists('disabled', 'sites')) {
+		$host_where_disabled = "(IFNULL(TRIM(s.disabled), '') = 'on' OR IFNULL(TRIM(host.disabled),'') = 'on')";
+	) else {
+		$host_where_disabled = "(IFNULL(TRIM(host.disabled), '') = 'on')";
+	}
+
 	$host_where_status   = get_request_var('host_status');
 	if ($host_where_status == '-1') {
 		/* Show all items */
