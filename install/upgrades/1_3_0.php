@@ -34,8 +34,8 @@ function upgrade_to_1_3_0() {
 		LEFT JOIN sites s
 		ON s.id = h.site_id
 		SET status = 0
-		WHERE IFNULL(h.disabled,"") == "on"
-		OR IFNULL(s.disabled, "") == "on"
+		WHERE IFNULL(h.disabled,"") = "on"
+		OR IFNULL(s.disabled, "") = "on"
 	');
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS poller_time_stats (
