@@ -1438,7 +1438,6 @@ function get_device_records(&$total_rows, $rows) {
 		ON s.id = host.site_id
 		$sql_where");
 
-	cacti_log('HOST QUERY: total rows = SELECT COUNT(host.id) FROM host LEFT JOIN sites s ON s.id = host.site_id ' . $sql_where);
 	$poller_interval = read_config_option('poller_interval');
 
 	$sql_order = get_order_string();
@@ -1463,7 +1462,6 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_order
 		$sql_limit";
 
-	cacti_log('HOST QUERY: hosts = ' . $sql_query);
 	return db_fetch_assoc($sql_query);
 }
 
