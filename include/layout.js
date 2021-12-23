@@ -2028,30 +2028,45 @@ function loadTopTab(href, id, force) {
     });
 }
 
+function loadTopTabStart(options) {
+    $('.submenuoptions').slideUp(120);
+    $('.menuoptions').slideUp(120);
+
+    if (options.url.indexOf('graph_view.php') >= 0) {
+        $('.cactiGraphHeaderBackground').show();
+        $('.cactiConsolePageHeadBackdrop').hide();
+    } else {
+        $('.cactiGraphHeaderBackground').hide();
+        $('.cactiConsolePageHeadBackdrop').show();
+    }
+}
+
 function loadTopTabEnd(options) {
     if (options.pageName != '') {
-        if ($('#menu').find("a[href^='" + escapeString(href) + "']").length > 0) {
+        if ($('#menu').find("a[href^='" + escapeString(options.url) + "']").length > 0) {
             $('#menu').find('.pic').removeClass('selected');
-            $('#menu').find("a[href^='" + escapeString(href) + "']").addClass('selected');
+            $('#menu').find("a[href^='" + escapeString(options.url) + "']").addClass('selected');
         } else if ($('#menu').find("a[href*='/" + pageName + "']").length > 0) {
             $('#menu').find('.pic').removeClass('selected');
             $('#menu').find("a[href*='/" + pageName + "']").addClass('selected');
         }
     }
 
-    var tabElementId = '#' + options.tabId;
-    var tabElement = $(tabElementId);
-    if (tabElement.hasClass('lefttab')) {
-        $('.lefttab').removeClass('selected');
-        $('.submenuoptions').find('.selected').removeClass('selected');
-        tabElement.addClass('selected');
-        var hideTabId = tabElementId.substring(0, tabElementId.length - 9);
-        if (hideTabId) {
-            $(hideTabId).addClass('selected');
+    if (options.tabId) {
+        var tabElementId = '#' + options.tabId;
+        var tabElement = $(tabElementId);
+        if (tabElement.hasClass('lefttab')) {
+            $('.lefttab').removeClass('selected');
+            $('.submenuoptions').find('.selected').removeClass('selected');
+            tabElement.addClass('selected');
+            var hideTabId = tabElementId.substring(0, tabElementId.length - 9);
+            if (hideTabId) {
+                $(hideTabId).addClass('selected');
+            }
+        } else if (tabElementId.parents('.submenuoptions').length > 0) {
+            tabElementId.parents('.submenuoptions').find('.selected').removeClass('selected');
+            tabElementId.addClass('selected');
         }
-    } else if (tabElementId.parents('.submenuoptions').length > 0) {
-        tabElementId.parents('.submenuoptions').find('.selected').removeClass('selected');
-        tabElementId.addClass('selected');
     }
 }
 
