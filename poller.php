@@ -371,7 +371,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 		FROM poller_item ' . $sql_where);
 
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
 	} else {
 		$sql_where = '';

@@ -298,7 +298,7 @@ function clog_view_logfile() {
 
 	$linecolor = false;
 
-	if (db_column_exists('disabled', 'sites')) {
+	if (db_column_exists('sites', 'disabled')) {
 		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
 	} else {
 		$sql_where = '';
