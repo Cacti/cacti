@@ -129,7 +129,11 @@ if (strtolower($query_id) == 'all') {
 }
 
 /* allow for additional filtering on host description */
-$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
+if (db_column_exists('disabled', 'sites')) {
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
+} else {
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' IFNULL(TRIM(h.disabled),"") != "on"';
+}
 
 if ($host_descr != '') {
 	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' h.description LIKE ?';

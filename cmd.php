@@ -223,7 +223,7 @@ input_validate_input_number($last);
 
 if (db_column_exists('disabled', 'sites')) {
 	$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
-) else {
+} else {
 	$sql_where = '';
 }
 

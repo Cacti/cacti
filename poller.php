@@ -373,7 +373,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	if (db_column_exists('disabled', 'sites')) {
 		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
-	) else {
+	} else {
 		$sql_where = '';
 	}
 
