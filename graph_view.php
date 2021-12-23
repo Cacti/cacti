@@ -222,7 +222,7 @@ case 'tree':
 		$_SESSION['sess_tree_id'] = get_filter_request_var('tree_id');
 	}
 
-	top_graph_header();
+	top_header();
 
 	?>
 	<script type='text/javascript'>
@@ -290,7 +290,7 @@ case 'get_node':
 case 'tree_content':
 	html_validate_tree_vars();
 
-	top_graph_header();
+	top_header();
 
 	if (!is_view_allowed('show_tree')) {
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . '</font>';
@@ -388,7 +388,7 @@ case 'preview':
 
 	html_graph_validate_preview_request_vars();
 
-	top_graph_header();
+	top_header();
 
 	/* include graph view filter selector */
 	html_start_box(__('Graph Preview Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):''), '100%', '', '3', 'center', '');
@@ -396,7 +396,7 @@ case 'preview':
 	html_graph_preview_filter('graph_view.php', 'preview');
 
 	html_end_box();
-		
+
 	api_plugin_hook_function('graph_tree_page_buttons',
 	  array(
 	     'mode'      => 'preview',
@@ -597,7 +597,7 @@ case 'list':
 		WHERE user_id = ?',
 		array($_SESSION['sess_user_id']));
 
-	top_graph_header();
+	top_header();
 
 	form_start('graph_view.php', 'chk');
 
