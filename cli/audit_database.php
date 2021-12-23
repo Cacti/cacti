@@ -101,8 +101,8 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	$db_version = db_fetch_cell('SELECT cacti FROM version');
-	if ($db_version != CACTI_VERSION && !$upgrade) {
+	$db_version = substring_index(db_fetch_cell('SELECT cacti FROM version'), '.', 3);
+	if ($db_version != CACTI_VERSION && !isset($options['upgrade'])) {
 		$upgrade_required = true;
 	} else {
 		$upgrade_required = false;

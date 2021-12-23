@@ -7532,3 +7532,14 @@ function cacti_unique_ids(string|array $ids, bool $shouldExplode = true) {
 	return $ids;
 }
 
+function cacti_depreciated($text) {
+	cacti_debug_backtrace('WARN Depreciated use of ' . $text . ' at ');
+}
+
+function substring_index($subject, $delim, $count) {
+	if ($count < 0) {
+		return implode($delim, array_slice(explode($delim, $subject), $count));
+	} else {
+		return implode($delim, array_slice(explode($delim, $subject), 0, $count));
+	}
+}
