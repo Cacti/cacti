@@ -305,13 +305,19 @@ function clog_view_logfile() {
 
 	$linecolor = false;
 
-	$hosts = db_fetch_assoc('SELECT h.id, h.description
+	if (db_column_exists('disabled', 'sites')) {
+		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
+	) else {
+		$sql_where = '';
+	}
+
+	$hosts = db_fetch_assoc("SELECT h.id, h.description
 		FROM host h
 		LEFT JOIN sites s
 		ON s.id = h.site_id
-		WHERE IFNULL(TRIM(s.disabled),"") != "on"
-		AND IFNULL(TRIM(h.disabled),"") != "on"
-		AND deleted = ""');
+		WHERE IFNULL(TRIM(h.disabled), '') != 'on'
+		$sql_where
+		AND deleted = ''");
 
 	$hostDescriptions = array();
 	foreach ($hosts as $host) {

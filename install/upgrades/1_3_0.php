@@ -28,6 +28,15 @@ function upgrade_to_1_3_0() {
 	db_install_add_column('user_auth', array('name' => 'tfa_secret', 'type' => 'char(50)', 'null' => false, 'default' => ''));
 	db_install_add_column('poller', array('name' => 'log_level', 'type' => 'int', 'null' => false, 'default' => '-1'));
 	db_install_add_column('host', array('name' => 'created', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP'));
+	db_install_add_column('sites', array('name' => 'disabled', 'type' => 'char(2)', 'null' => false, 'default' => ''));
+
+	db_install_execute('UPDATE host h
+		LEFT JOIN sites s
+		ON s.id = h.site_id
+		SET status = 0
+		WHERE IFNULL(h.disabled,"") == "on"
+		OR IFNULL(s.disabled, "") == "on"
+	');
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS poller_time_stats (
 		id bigint(20) unsigned NOT NULL auto_increment,

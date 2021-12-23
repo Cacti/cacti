@@ -2914,6 +2914,7 @@ CREATE TABLE `sessions` (
 CREATE TABLE `sites` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
+  `disabled` char(2) NOT NULL default '',
   `address1` varchar(100) DEFAULT '',
   `address2` varchar(100) DEFAULT '',
   `city` varchar(50) DEFAULT '',
@@ -2939,8 +2940,8 @@ CREATE TABLE `sites` (
 -- Dumping data for table `sites`
 --
 
-INSERT INTO `sites` VALUES (1,'Edge','','','','','','','',0.0000000000,0.0000000000,'','','');
-INSERT INTO `sites` VALUES (2,'Core','','','','','','','',0.0000000000,0.0000000000,'','','');
+INSERT INTO `sites` VALUES (1,'Edge','','','','','','','','',0.0000000000,0.0000000000,'','','');
+INSERT INTO `sites` VALUES (2,'Core','','','','','','','','',0.0000000000,0.0000000000,'','','');
 
 --
 -- Table structure for table `snmpagent_cache`
