@@ -176,7 +176,7 @@ if (empty($_SESSION['sess_user_id'])) {
 }
 
 if (empty($_SESSION['sess_user_2fa'])) {
-	if (db_column_exists('tfa_enabled', 'user_auth')) {
+	if (db_column_exists('user_auth', 'tfa_enabled')) {
 		$user_2fa = db_fetch_cell_prepared('SELECT tfa_enabled
 			FROM user_auth
 			WHERE id = ?',
