@@ -3273,8 +3273,8 @@ class Installer implements JsonSerializable {
 		$database_upgrade_status = array('file' => $cacheFile);
 		log_install_always('', __('NOTE: Using temporary file for db cache: %s',$cacheFile));
 
-		$prev_cacti_version = format_cacti_version($this->old_cacti_version,CACTI_FORMAT_VERSION_SHORT);
-		$orig_cacti_version = format_cacti_version(get_cacti_db_version(),CACTI_FORMAT_VERSION_SHORT);
+		$prev_cacti_version = format_cacti_version($this->old_cacti_version, CACTI_VERSION_FORMAT_SHORT);
+		$orig_cacti_version = format_cacti_version(get_cacti_db_version(), CACTI_VERSION_FORMAT_SHORT);
 
 		// loop through versions from old version to the current, performing updates for each version in the chain
 		foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
