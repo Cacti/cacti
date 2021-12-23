@@ -389,17 +389,22 @@ while ($poller_runs_completed < $poller_runs) {
 		INNER JOIN host AS h
 		ON h.id = pi.host_id ' . $sql_where);
 
-	if ($poller_id == '1') {
-		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' h.id
-			FROM host h
-			LEFT JOIN sites s
-			ON s.id = h.site_id
-			WHERE poller_id = ?
-			AND h.deleted=""
-			AND IFNULL(h.disabled,"") != "on"
-			AND IFNULL(s.disabled,"") != "on"
-			ORDER BY id',
-			array($poller_id));
+	if (db_column_exists('disabled', 'sites')) {
+		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
+	) else {
+		$sql_where = '';
+	}
+
+	$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " h.id
+		FROM host h
+		LEFT JOIN sites s
+		ON s.id = h.site_id
+		WHERE poller_id = ?
+		AND h.deleted = ''
+		AND IFNULL(h.disabled,'') != 'on'
+		$sql_where
+		ORDER BY id",
+		array($poller_id));
 
 	if ($poller_id == '1') {
 		if (cacti_sizeof($polling_hosts)) {

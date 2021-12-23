@@ -26,7 +26,8 @@
 if (function_exists('pcntl_async_signals')) {
 	pcntl_async_signals(true);
 } else {
-	declare(ticks = 100);
+
+	declare(ticks=100);
 }
 
 ini_set('max_execution_time', '0');
@@ -52,7 +53,7 @@ $help       = false;
 $version    = false;
 
 if (sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
@@ -61,55 +62,55 @@ if (sizeof($parms)) {
 		}
 
 		switch ($arg) {
-		case '--version':
-		case '-V':
-		case '-v':
-			$version = true;
+			case '--version':
+			case '-V':
+			case '-v':
+				$version = true;
 
-			break;
-		case '--help':
-		case '-H':
-		case '-h':
-			$help = true;
+				break;
+			case '--help':
+			case '-H':
+			case '-h':
+				$help = true;
 
-			break;
-		case '--poller':
-		case '-p':
-			$pmessage = true;
-			$poller_id = $value;
+				break;
+			case '--poller':
+			case '-p':
+				$pmessage = true;
+				$poller_id = $value;
 
-			break;
-		case '--first':
-		case '-f':
-			$first   = $value;
-			$allhost = false;
+				break;
+			case '--first':
+			case '-f':
+				$first   = $value;
+				$allhost = false;
 
-			break;
-		case '--last':
-		case '-l':
-			$last    = $value;
-			$allhost = false;
+				break;
+			case '--last':
+			case '-l':
+				$last    = $value;
+				$allhost = false;
 
-			break;
-		case '--mibs':
-		case '-m':
-			$mibs = true;
+				break;
+			case '--mibs':
+			case '-m':
+				$mibs = true;
 
-			break;
-		case '--mode':
-		case '-N':
-			$mode = $value;
+				break;
+			case '--mode':
+			case '-N':
+				$mode = $value;
 
-			break;
-		case '--debug':
-		case '-d':
-			$debug = true;
+				break;
+			case '--debug':
+			case '-d':
+				$debug = true;
 
-			break;
-		default:
-			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
-			display_help();
-			exit(1);
+				break;
+			default:
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
+				display_help();
+				exit(1);
 		}
 	}
 }
@@ -165,10 +166,12 @@ if (!is_numeric($poller_id) || $poller_id < 1) {
 // notify cacti processes that a poller is running
 record_cmdphp_started();
 
-$exists = db_fetch_cell_prepared('SELECT COUNT(*)
+$exists = db_fetch_cell_prepared(
+	'SELECT COUNT(*)
 	FROM host
 	WHERE poller_id = ?',
-	array($poller_id));
+	array($poller_id)
+);
 
 if ($exists == 0 && $poller_id > 1) {
 	record_cmdphp_done();
@@ -226,66 +229,84 @@ input_validate_input_number($first, 'first');
 input_validate_input_number($last, 'last');
 
 if ($active_profiles != 1) {
-	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
+	if (db_column_exists('disabled', 'sites')) {
+		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
+	} else {
+		$sql_where = '';
+	}
+
+	if ($active_profiles > 1) {
+		$poller_items = db_fetch_assoc_prepared(
+			"SELECT " . SQL_NO_CACHE . " *
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			LEFT JOIN sites AS s
+			ON s.id = h.site_id
+			WHERE pi.poller_id = ?
+			$sql_where
+			AND IFNULL(TRIM(h.disabled),'') != 'on'
+			$sql_where1
+			AND pi.rrd_next_step <= 0
+			ORDER by pi.host_id",
+			$params1
+		);
+
+		$script_server_calls = db_fetch_cell_prepared(
+			"SELECT " . SQL_NO_CACHE . " COUNT(*)
+			FROM poller_item AS pi
+			LEFT JOIN host AS h
+			ON h.id = pi.host_id
+			LEFT JOIN sites AS s
+			ON s.id = h.site_id
+			WHERE pi.poller_id = ?
+			$sql_where
+			AND IFNULL(TRIM(h.disabled),'') != 'on'
+			AND pi.action IN(?, ?)
+			$sql_where2
+			AND pi.rrd_next_step <= 0",
+			$params2
+		);
+
+		// setup next polling interval
+		db_execute_prepared(
+			"UPDATE poller_item AS pi
+			SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
+			WHERE poller_id = ?
+			$sql_where3",
+			$params3
+		);
+	} else {
+		$poller_items = db_fetch_assoc_prepared(
+			"SELECT " . SQL_NO_CACHE . " *
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
 		LEFT JOIN sites AS s
 		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		$sql_where
 		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		$sql_where1
-		AND pi.rrd_next_step <= 0
 		ORDER by pi.host_id",
-		$params1);
+			$params1
+		);
 
-	$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
+		$script_server_calls = db_fetch_cell_prepared(
+			"SELECT " . SQL_NO_CACHE . " COUNT(*)
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
 		LEFT JOIN sites AS s
 		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND IFNULL(TRIM(s.disabled),'') != 'on'
-		AND IFNULL(TRIM(h.disabled),'') != 'on'
-		AND pi.action IN(?, ?)
-		$sql_where2
-		AND pi.rrd_next_step <= 0",
-		$params2);
-
-	// setup next polling interval
-	db_execute_prepared("UPDATE poller_item AS pi
-		SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
-		WHERE poller_id = ?
-		$sql_where3",
-		$params3);
-} else {
-	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
-		FROM poller_item AS pi
-		LEFT JOIN host AS h
-		ON h.id = pi.host_id
-		LEFT JOIN sites AS s
-		ON s.id = h.site_id
-		WHERE pi.poller_id = ?
-		AND IFNULL(TRIM(s.disabled),'') != 'on'
-		AND IFNULL(TRIM(h.disabled),'') != 'on'
-		$sql_where1
-		ORDER by pi.host_id",
-		$params1);
-
-	$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
-		FROM poller_item AS pi
-		LEFT JOIN host AS h
-		ON h.id = pi.host_id
-		LEFT JOIN sites AS s
-		ON s.id = h.site_id
-		WHERE pi.poller_id = ?
-		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		$sql_where
 		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		AND pi.action IN(?, ?)
 		$sql_where2",
-		$params2);
+			$params2
+		);
+	}
 }
 
 if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on') {
@@ -358,11 +379,13 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 					$output_count = 0;
 				}
 
-				db_execute_prepared('UPDATE host
+				db_execute_prepared(
+					'UPDATE host
 					SET polling_time = ?
 					WHERE id = ?
 					AND deleted = ""',
-					array(($host_end - $host_start), $last_host));
+					array(($host_end - $host_start), $last_host)
+				);
 
 				$errors = cacti_sizeof($error_ds);
 
@@ -455,11 +478,13 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 		}
 	}
 
-	db_execute_prepared('UPDATE host
+	db_execute_prepared(
+		'UPDATE host
 		SET polling_time = ?
 		WHERE id = ?
 		AND deleted = ""',
-		array(($host_end - $host_start), $host_id));
+		array(($host_end - $host_start), $host_id)
+	);
 
 	$errors = cacti_sizeof($error_ds);
 
@@ -492,16 +517,17 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 	cacti_log(sprintf(
 		'Time: %01.4f s, ' .
-		'Poller: %s, '     .
-		'Threads: N/A, '   .
-		'Devices: %d, '    .
-		'Items: %d, '      .
-		'Errors: %d',
-		round($end-$start,4),
+			'Poller: %s, '     .
+			'Threads: N/A, '   .
+			'Devices: %d, '    .
+			'Items: %d, '      .
+			'Errors: %d',
+		round($end - $start, 4),
 		$poller_id,
 		$host_count,
 		cacti_sizeof($poller_items),
-		$tot_errors), $print_data_to_stdout, 'POLLER', $medium);
+		$tot_errors
+	), $print_data_to_stdout, 'POLLER', $medium);
 } else {
 	cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER', $medium);
 }
@@ -539,21 +565,29 @@ function record_cmdphp_done($pid = '') {
 
 	if ($pid == '') $pid = getmypid();
 
-	db_execute_prepared('UPDATE poller_time
+	db_execute_prepared(
+		'UPDATE poller_time
 		SET end_time=NOW()
 		WHERE poller_id = ?
 		AND pid = ?',
-		array($poller_id, $pid), true, $poller_db_cnn_id);
+		array($poller_id, $pid),
+		true,
+		$poller_db_cnn_id
+	);
 }
 
 // let cacti processes know that a poller has started
 function record_cmdphp_started() {
 	global $poller_id, $poller_db_cnn_id;
 
-	db_execute_prepared("INSERT INTO poller_time
+	db_execute_prepared(
+		"INSERT INTO poller_time
 		(poller_id, pid, start_time, end_time)
 		VALUES (?, ?, NOW(), '0000-00-00 00:00:00')",
-		array($poller_id, getmypid()), true, $poller_db_cnn_id);
+		array($poller_id, getmypid()),
+		true,
+		$poller_db_cnn_id
+	);
 }
 
 function open_snmp_session($host_id, &$item) {
@@ -564,10 +598,22 @@ function open_snmp_session($host_id, &$item) {
 	}
 
 	if (!isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]) && !isset($downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
-		$sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
-			$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
-			$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
-			$item['snmp_timeout'], read_config_option('snmp_retries'), $item['max_oids']);
+		$sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = cacti_snmp_session(
+			$item['hostname'],
+			$item['snmp_community'],
+			$item['snmp_version'],
+			$item['snmp_username'],
+			$item['snmp_password'],
+			$item['snmp_auth_protocol'],
+			$item['snmp_priv_passphrase'],
+			$item['snmp_priv_protocol'],
+			$item['snmp_context'],
+			$item['snmp_engine_id'],
+			$item['snmp_port'],
+			$item['snmp_timeout'],
+			read_config_option('snmp_retries'),
+			$item['max_oids']
+		);
 
 		if ($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] === false) {
 			unset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]);
@@ -606,7 +652,7 @@ function update_system_mibs($host_id) {
 		$uptime = false;
 
 		if ($session !== false) {
-			foreach($system_mibs as $name => $oid) {
+			foreach ($system_mibs as $name => $oid) {
 				$value = cacti_snmp_session_get($session, $oid);
 
 				if ($name == 'snmp_sysUpTimeInstanceAlt' && $value > 0) {
@@ -615,18 +661,22 @@ function update_system_mibs($host_id) {
 				} elseif ($name == 'snmp_sysUpTimeInstance' && !$uptimeAltFound) {
 					$uptime = $value;
 				} elseif ($name != 'snmp_sysUpTimeInstanceAlt' && !empty($value)) {
-					db_execute_prepared("UPDATE host SET $name = ?
+					db_execute_prepared(
+						"UPDATE host SET $name = ?
 						WHERE deleted = ''
 						AND id = ?",
-						array($value, $host_id));
+						array($value, $host_id)
+					);
 				}
 			}
 
 			if ($uptime !== false) {
-				db_execute_prepared("UPDATE host SET snmp_sysUpTimeInstance = ?
+				db_execute_prepared(
+					"UPDATE host SET snmp_sysUpTimeInstance = ?
 					WHERE deleted = ''
 					AND id = ?",
-					array($uptime, $host_id));
+					array($uptime, $host_id)
+				);
 			}
 		} else {
 			cacti_log("WARNING: Unable to open session for System Mib collection for Device[$host_id]", false, 'POLLER');
@@ -658,7 +708,7 @@ function collect_device_data(&$item, &$error_ds) {
 							$error_ds[$ds] = $ds;
 
 							if (read_config_option('spine_log_level') == 2) {
-								cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] OID:". $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER');
+								cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] OID:" . $item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER');
 							}
 
 							$output = 'U';
@@ -672,10 +722,9 @@ function collect_device_data(&$item, &$error_ds) {
 					$error_ds[$ds] = $ds;
 
 					if (read_config_option('spine_log_level') == 2) {
-						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] OID:" . $item['arg1']. ", output: U", $print_data_to_stdout, 'POLLER');
+						cacti_log("WARNING: Invalid Response, Device[$host_id] DS[$ds] OID:" . $item['arg1'] . ", output: U", $print_data_to_stdout, 'POLLER');
 					}
 				}
-
 			}
 
 			$total_time = (microtime(true) - $thread_start) * 1000;
@@ -746,10 +795,12 @@ function ping_and_reindex_check(&$item, $mibs) {
 	$ping    = new Net_Ping;
 	$host_id = $item['host_id'];
 
-	$host = db_fetch_row_prepared('SELECT hostname, ping_port, ping_method, ping_retries, ping_timeout, availability_method
+	$host = db_fetch_row_prepared(
+		'SELECT hostname, ping_port, ping_method, ping_retries, ping_timeout, availability_method
 		FROM host
 		WHERE id = ?',
-		array($host_id));
+		array($host_id)
+	);
 
 	$ping->host = $item;
 	$ping->port = $host['ping_port'];
@@ -774,11 +825,13 @@ function ping_and_reindex_check(&$item, $mibs) {
 
 	if (!$host_down) {
 		// do the reindex check for this host
-		$reindex = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' pr.data_query_id, pr.action,
+		$reindex = db_fetch_assoc_prepared(
+			'SELECT ' . SQL_NO_CACHE . ' pr.data_query_id, pr.action,
 			pr.op, pr.assert_value, pr.arg1
 			FROM poller_reindex AS pr
 			WHERE pr.host_id=?',
-			array($item['host_id']));
+			array($item['host_id'])
+		);
 
 		if (cacti_sizeof($reindex)) {
 			cacti_log("Device[$host_id] RECACHE: Processing " . cacti_sizeof($reindex) . " items in the auto reindex cache for '" . $item['hostname'] . "'.", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_DEBUG));
@@ -883,28 +936,40 @@ function ping_and_reindex_check(&$item, $mibs) {
 				if (($index_item['op'] == '=') && ($index_item['assert_value'] != trim($output))) {
 					cacti_log("Device[$host_id] HT[1] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '=' . trim($output), $print_data_to_stdout, 'POLLER');
 
-					db_execute_prepared('REPLACE INTO poller_command
+					db_execute_prepared(
+						'REPLACE INTO poller_command
 						(poller_id, time, action, command)
 						VALUES (?, NOW(), ?, ?)',
-						array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']), true, $poller_db_cnn_id);
+						array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']),
+						true,
+						$poller_db_cnn_id
+					);
 
 					$assert_fail = true;
 				} elseif (($index_item['op'] == '>') && ($index_item['assert_value'] < trim($output))) {
 					cacti_log("Device[$host_id] HT[1] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '>' . trim($output), $print_data_to_stdout, 'POLLER');
 
-					db_execute_prepared('REPLACE INTO poller_command
+					db_execute_prepared(
+						'REPLACE INTO poller_command
 						(poller_id, time, action, command)
 						VALUES (?, NOW(), ?, ?)',
-						array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']), true, $poller_db_cnn_id);
+						array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']),
+						true,
+						$poller_db_cnn_id
+					);
 
 					$assert_fail = true;
 				} elseif (($index_item['op'] == '<') && ($index_item['assert_value'] > trim($output))) {
 					cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '<' . trim($output), $print_data_to_stdout, 'POLLER');
 
-					db_execute_prepared('REPLACE INTO poller_command
+					db_execute_prepared(
+						'REPLACE INTO poller_command
 						(poller_id, time, action, command)
 						VALUES (?, NOW(), ?, ?)',
-						array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']), true, $poller_db_cnn_id);
+						array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']),
+						true,
+						$poller_db_cnn_id
+					);
 
 					$assert_fail = true;
 				}
@@ -914,16 +979,19 @@ function ping_and_reindex_check(&$item, $mibs) {
 				 * 2) the OP code is > or < meaning the current value could have changed without causing
 				 *     the assert to fail */
 				if (($assert_fail == true) || ($index_item['op'] == '>') || ($index_item['op'] == '<')) {
-					db_execute_prepared('UPDATE poller_reindex
+					db_execute_prepared(
+						'UPDATE poller_reindex
 						SET assert_value = ?
 						WHERE host_id = ?
 						AND data_query_id = ?
 						AND arg1 = ?',
-						array($output, $host_id, $index_item['data_query_id'], $index_item['arg1']));
+						array($output, $host_id, $index_item['data_query_id'], $index_item['arg1'])
+					);
 
 					// spike kill logic
 					if (($assert_fail) &&
-						(($index_item['op'] == '<') || ($index_item['arg1'] == '.1.3.6.1.2.1.1.3.0'))) {
+						(($index_item['op'] == '<') || ($index_item['arg1'] == '.1.3.6.1.2.1.1.3.0'))
+					) {
 						// don't spike kill unless we are certain
 						if (!empty($output)) {
 							$set_spike_kill = true;
@@ -985,7 +1053,7 @@ function display_version() {
  *
  * @return (void)
  */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL;
@@ -1006,4 +1074,3 @@ function display_help () {
 	print '    --mibs   - Refresh all system mibs from hosts supporting snmp.' . PHP_EOL;
 	print '    --debug  - Display verbose output during execution.' . PHP_EOL . PHP_EOL;
 }
-
