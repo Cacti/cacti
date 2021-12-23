@@ -176,16 +176,18 @@ if (empty($_SESSION['sess_user_id'])) {
 }
 
 if (empty($_SESSION['sess_user_2fa'])) {
-	$user_2fa = db_fetch_cell_prepared('SELECT tfa_enabled
-		FROM user_auth
-		WHERE id = ?',
-		array($_SESSION['sess_user_id']));
+	if (db_column_exists('tfa_enabled', 'user_auth')) {
+		$user_2fa = db_fetch_cell_prepared('SELECT tfa_enabled
+			FROM user_auth
+			WHERE id = ?',
+			array($_SESSION['sess_user_id']));
 
-	if (!empty($user_2fa)) {
-		header('Location: ' . $config['url_path'] . 'auth_2fa.php');
-		exit;
-	} else {
-		$_SESSION['sess_user_2fa'] = true;
+		if (!empty($user_2fa)) {
+			header('Location: ' . $config['url_path'] . 'auth_2fa.php');
+			exit;
+		} else {
+			$_SESSION['sess_user_2fa'] = true;
+		}
 	}
 }
 

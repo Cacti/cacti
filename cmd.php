@@ -221,6 +221,12 @@ if ($debug) {
 input_validate_input_number($first);
 input_validate_input_number($last);
 
+if (db_column_exists('disabled', 'sites')) {
+	$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
+) else {
+	$sql_where = '';
+}
+
 if ($active_profiles > 1) {
 	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
 		FROM poller_item AS pi
@@ -229,7 +235,7 @@ if ($active_profiles > 1) {
 		LEFT JOIN sites AS s
 		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		$sql_where
 		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		$sql_where1
 		AND pi.rrd_next_step <= 0
@@ -243,7 +249,7 @@ if ($active_profiles > 1) {
 		LEFT JOIN sites AS s
 		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		$sql_where
 		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		AND pi.action IN(?, ?)
 		$sql_where2
@@ -264,7 +270,7 @@ if ($active_profiles > 1) {
 		LEFT JOIN sites AS s
 		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		$sql_where
 		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		$sql_where1
 		ORDER by pi.host_id",
@@ -277,7 +283,7 @@ if ($active_profiles > 1) {
 		LEFT JOIN sites AS s
 		ON s.id = h.site_id
 		WHERE pi.poller_id = ?
-		AND IFNULL(TRIM(s.disabled),'') != 'on'
+		$sql_where
 		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		AND pi.action IN(?, ?)
 		$sql_where2",
