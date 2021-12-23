@@ -653,12 +653,12 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 
 	/* sql WHERE for local_data_id */
 	if ($local_data_id != 0) {
-		$sql_where .= ' AND dl.id=' . $local_data_id;
+		$sql_where .= ' AND dl.id = ' . $local_data_id;
 	}
 
 	/* sql WHERE for data_template_id */
 	if ($data_template_id != 0) {
-		$sql_where .= ' AND dtd.data_template_id=' . $data_template_id;
+		$sql_where .= ' AND dtd.data_template_id = ' . $data_template_id;
 	}
 
 	$data_sources = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dtd.id,
@@ -667,8 +667,8 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		dl.snmp_query_id, dl.snmp_index
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
-		ON dl.id=dtd.local_data_id
-		WHERE dtd.data_input_id>0
+		ON dl.id = dtd.local_data_id
+		WHERE dtd.data_input_id > 0
 		AND (dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != ''))
 		$sql_where");
 
@@ -684,27 +684,32 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			}
 			$host = $hosts[$data_source['host_id']];
 
-			/* get field information FROM the data template */
+			/**
+			 * get field information FROM the data template
+			 */
 			if (!isset($template_fields[$data_source['local_data_template_data_id']])) {
 				$template_fields[$data_source['local_data_template_data_id']] = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 					did.value, did.t_value, dif.id, dif.type_code
 					FROM data_input_fields AS dif
 					LEFT JOIN data_input_data AS did
-					ON dif.id=did.data_input_field_id
+					ON dif.id = did.data_input_field_id
 					WHERE dif.data_input_id = ?
 					AND did.data_template_data_id = ?
-					AND (did.t_value="" OR did.t_value is null)
+					AND ((did.t_value = "" OR did.t_value IS NULL) OR (did.t_value = "on" AND did.value = ""))
 					AND dif.input_output = "in"',
 					array($data_source['data_input_id'], $data_source['local_data_template_data_id']));
 			}
 
-			/* loop through each field contained in the data template and push out a host value if:
-			 - the field is a valid "host field"
-			 - the value of the field is empty
-			 - the field is set to 'templated' */
+			/**
+			 * loop through each field contained in the data template and push out a host value if:
+			 * - the field is a valid "host field"
+			 * - the value of the field is empty
+			 * - the field is set to 'templated'
+			 * - or the type code is the host id
+			 */
 			if (cacti_sizeof($template_fields[$data_source['local_data_template_data_id']])) {
 				foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
-					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == '') {
+					if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == 'on') || $template_field['type_code'] == 'host_id') {
 						// handle special case type_code
 						if ($template_field['type_code'] == 'host_id') {
 							$template_field['type_code'] = 'id';
@@ -718,7 +723,9 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 				}
 			}
 
-			/* flag an update to the poller cache as well */
+			/**
+			 * flag an update to the poller cache as well
+			 */
 			$local_data_ids[] = $data_source['local_data_id'];
 
 			/* create a new compatible structure */

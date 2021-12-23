@@ -40,6 +40,7 @@ $rebuild     = false;
 $dynamic     = false;
 $table_name  = '';
 $skip_tables = array();
+$installer   = false;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -86,6 +87,10 @@ if (cacti_sizeof($parms)) {
 			case '--utf8':
 				$utf8 = true;
 				break;
+			case '--installer':
+				$installer = true;
+				require_once(__DIR__ . '../install/functions.php');
+				break;
 			case '--version':
 			case '-V':
 			case '-v':
@@ -105,13 +110,13 @@ if (cacti_sizeof($parms)) {
 }
 
 if (cacti_sizeof($skip_tables) && $table_name != '') {
-	print "ERROR: You can not specify a single table and skip tables at the same time.\n\n";
+	print_or_log($installer,  "ERROR: You can not specify a single table and skip tables at the same time.\n\n");
 	display_help();
 	exit;
 }
 
 if (!($innodb || $utf8)) {
-	print "ERROR: Must select either UTF8 or InnoDB conversion.\n\n";
+	print_or_log($installer,  "ERROR: Must select either UTF8 or InnoDB conversion.\n\n");
 	display_help();
 	exit;
 }
@@ -119,7 +124,7 @@ if (!($innodb || $utf8)) {
 if (cacti_sizeof($skip_tables)) {
 	foreach($skip_tables as $table) {
 		if (!db_table_exists($table)) {
-			print "ERROR: Skip Table $table does not Exist.  Can not continue.\n\n";
+			print_or_log($installer,  "ERROR: Skip Table $table does not Exist.  Can not continue.\n\n");
 			display_help();
 			exit;
 		}
@@ -131,14 +136,14 @@ if ($utf8) {
 	$convert .= (strlen($convert) ? ' and ' : '') . ' utf8';
 }
 
-print "Converting Database Tables to $convert with less than '$size' Records\n";
+print_or_log($installer,  "Converting Database Tables to $convert with less than '$size' Records\n");
 
 if ($innodb) {
 	$engines = db_fetch_assoc('SHOW ENGINES');
 
 	foreach($engines as $engine) {
 		if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support'] == 'off')) {
-			print "InnoDB Engine is not enabled\n";
+			print_or_log($installer,  "InnoDB Engine is not enabled\n");
 			exit;
 		}
 	}
@@ -146,7 +151,7 @@ if ($innodb) {
 	$file_per_table = db_fetch_row("show global variables like 'innodb_file_per_table'");
 
 	if (strtolower($file_per_table['Value']) != 'on') {
-		print 'innodb_file_per_table not enabled';
+		print_or_log($installer,  'innodb_file_per_table not enabled');
 		exit;
 	}
 }
@@ -180,7 +185,7 @@ if (cacti_sizeof($tables)) {
 
 		if ($canConvert) {
 			if ($table['Rows'] < $size || $force) {
-				print "Converting Table -> '" . $table['Name'] . "'";
+				print_or_log($installer,  "Converting Table -> '" . $table['Name'] . "'");
 
 				$sql = '';
 				if ($utf8) {
@@ -194,18 +199,34 @@ if (cacti_sizeof($tables)) {
 				$status = db_execute('ALTER TABLE `' . $table['Name'] . '`' . ($dynamic ? ' ROW_FORMAT=Dynamic, ':'') . $sql);
 
 				if ($status === false) {
-					print ' Failed' . PHP_EOL;
+					print_or_log($installer,  ' Failed' . PHP_EOL);
 
-					cacti_log("FATAL: Conversion of Table '" . $table['Name'] . "' Failed.  Command: 'ALTER TABLE `" . $table['Name'] . "` $sql'", false, 'CONVERT');
+					record_log($installer, "FATAL: Conversion of Table '" . $table['Name'] . "' Failed.  Command: 'ALTER TABLE `" . $table['Name'] . "` $sql'");
 				} else {
-					print ' Successful' . PHP_EOL;
+					print_or_log($installer,  ' Successful' . PHP_EOL);
 				}
 			} else {
-				print "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'" . PHP_EOL;
+				print_or_log($installer,  "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'" . PHP_EOL);
 			}
 		} else {
-			print "Skipping Table -> '" . $table['Name'] . "'" . PHP_EOL;
+			print_or_log($installer,  "Skipping Table -> '" . $table['Name'] . "'" . PHP_EOL);
 		}
+	}
+}
+
+function print_or_log($installer, $text) {
+	if ($installer) {
+		log_install_and_file(POLLER_VERBOSITY_MEDIUM, rtrim($text), 'CONVERT', true);
+	} else {
+		print $text;
+	}
+}
+
+function record_log($installer, $text) {
+	if ($installer) {
+		log_install_and_file(POLLER_VERBOSITY_MEDIUM, rtrim($text), 'CONVERT', true);
+	} else {
+		cacti_log($text, false, 'CONVERT');
 	}
 }
 

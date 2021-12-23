@@ -544,8 +544,8 @@
 							$('#zoom-marker-tooltip-value-' + marker).html(
 								unixTime2Date(zoom.marker[marker].unixtime).replace(' ', '<br>')
 							);
-							zoom.marker[marker].width = $('#zoom-marker-tooltip-' + marker).width();
-							zoom.marker[marker].height = $('#zoom-marker-tooltip-' + marker).height();
+							zoom.marker[marker].width = Math.ceil($('#zoom-marker-tooltip-' + marker).width());
+							zoom.marker[marker].height = Math.ceil($('#zoom-marker-tooltip-' + marker).height());
 
 							$('#zoom-marker-tooltip-' + marker).css({
 								width: zoom.marker[marker].width +'px',

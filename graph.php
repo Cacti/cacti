@@ -188,6 +188,7 @@ case 'view':
 						"<img class='graphimage' id='graph_"+data.local_graph_id+
 						"' src='data:image/"+data.type+";base64,"+data.image+
 						"' rra_id='"+data.rra_id+
+						"' graph_type='"+data.type+
 						"' graph_id='"+data.local_graph_id+
 						"' graph_start='"+data.graph_start+
 						"' graph_end='"+data.graph_end+
@@ -471,6 +472,7 @@ case 'zoom':
 						"<img class='graphimage' id='graph_"+data.local_graph_id+
 						"' src='data:image/"+data.type+";base64,"+data.image+
 						"' rra_id='"+data.rra_id+
+						"' graph_type='"+data.type+
 						"' graph_id='"+data.local_graph_id+
 						"' graph_start='"+data.graph_start+
 						"' graph_end='"+data.graph_end+

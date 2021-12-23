@@ -6847,7 +6847,7 @@ function cacti_time_zone_set($gmt_offset) {
 		$time = ($hours > 0 ? '-':'+') . abs($hours) . ':' . substr('00' . $remaining, -2);
 
 		// Attempt to get the zone via the php function
-		$zone = timezone_name_from_abbr('', $time);
+		$zone = timezone_name_from_abbr('', $gmt_offset);
 
 		if ($zone === false) {
 			switch($time) {

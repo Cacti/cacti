@@ -94,7 +94,21 @@ function upgrade_to_1_2_20() {
 		WHERE data_input_field_id IN (
 			SELECT id
 			FROM data_input_fields
-			WHERE type_code IN ('host_id', 'output_type', 'index_type', 'index_value')
+			WHERE type_code IN ('output_type', 'index_type', 'index_value')
+		)
+		AND data_template_data_id IN (
+			SELECT id
+			FROM data_template_data
+			WHERE data_template_id > 0
+		)");
+
+	// Host ID should not be checked, but should not be 'on' either
+	db_execute("UPDATE data_input_data
+		SET t_value = ''
+		WHERE data_input_field_id IN (
+			SELECT id
+			FROM data_input_fields
+			WHERE type_code IN ('host_id')
 		)
 		AND data_template_data_id IN (
 			SELECT id
@@ -193,3 +207,4 @@ function upgrade_to_1_2_20() {
 		}
 	}
 }
+

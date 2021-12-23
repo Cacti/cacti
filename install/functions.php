@@ -894,34 +894,37 @@ function import_colors() {
 	return true;
 }
 
-function log_install_debug($section, $string) {
-	log_install_and_file(POLLER_VERBOSITY_DEBUG, $string, $section);
+function log_install_debug($section, $text, $background = false) {
+	log_install_and_file(POLLER_VERBOSITY_DEBUG, $text, $section, $background);
 }
 
-function log_install_low($section, $string) {
-	log_install_and_file(POLLER_VERBOSITY_LOW, $string, $section);
+function log_install_low($section, $text, $background = false) {
+	log_install_and_file(POLLER_VERBOSITY_LOW, $text, $section, $background);
 }
 
-function log_install_medium($section, $string) {
-	log_install_and_file(POLLER_VERBOSITY_MEDIUM, $string, $section);
+function log_install_medium($section, $text, $background = false) {
+	log_install_and_file(POLLER_VERBOSITY_MEDIUM, $text, $section, $background);
 }
 
-function log_install_high($section, $string) {
-	log_install_and_file(POLLER_VERBOSITY_HIGH, $string, $section);
+function log_install_high($section, $text, $background = false) {
+	log_install_and_file(POLLER_VERBOSITY_HIGH, $text, $section, $background);
 }
 
-function log_install_always($section, $string) {
-	log_install_and_file(POLLER_VERBOSITY_NONE, $string, $section);
+function log_install_always($section, $text, $background = false) {
+	log_install_and_file(POLLER_VERBOSITY_NONE, $text, $section, $background);
 }
 
-function log_install_and_file($level, $string, $section = '') {
+function log_install_and_file($level, $text, $section = '', $background = false) {
 	$level = log_install_level_sanitize($level);
 	$name = 'INSTALL:';
 	if (!empty($section)) {
 		$name = 'INSTALL-' . strtoupper($section) . ':';
 	}
-	cacti_log(log_install_level_name($level) . ': ' . $string, false, $name, $level);
-	log_install_to_file($section, $string, FILE_APPEND, $level);
+	cacti_log(log_install_level_name($level) . ': ' . $text, false, $name, $level);
+	log_install_to_file($section, $text, FILE_APPEND, $level);
+	if ($background) {
+		set_config_option('install_updated', microtime(true));
+	}
 }
 
 function log_install_section_level($section) {

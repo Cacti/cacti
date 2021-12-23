@@ -88,6 +88,8 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 			if (cacti_sizeof($data_sources)) {
 				api_data_source_remove_multi($data_sources);
 			}
+		} else {
+			api_graph_remove_multi($local_graph_ids);
 		}
 
 		break;
