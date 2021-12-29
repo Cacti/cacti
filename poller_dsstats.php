@@ -213,6 +213,8 @@ function dsstats_insert_hourly_data_into_cache() {
 }
 
 function dsstats_master_handler($forcerun) {
+	global $type;
+
 	/* read some important settings relative to timing from the database */
 	$major_time     = date('H:i:s', strtotime(read_config_option('dsstats_major_update_time')));
 	$daily_interval = read_config_option('dsstats_daily_interval');
