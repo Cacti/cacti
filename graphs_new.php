@@ -617,7 +617,7 @@ function graphs() {
 
 				$xml_array = get_data_query_array($snmp_query['id']);
 
-				$num_input_fields = 0;
+				$num_input_fields   = 0;
 				$num_visible_fields = 0;
 
 				if (cacti_sizeof($xml_array)) {
@@ -672,7 +672,7 @@ function graphs() {
 
 				print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __esc('Data Query [%s]', $snmp_query['name']) . "</span></div><div class='cactiTableButton'><span class='reloadquery fa fa-sync' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span></div></div></div>";
 
-				if ($xml_array != false) {
+				if (cacti_sizeof($xml_array)) {
 					$html_dq_header = '';
 
 					/* if there is a where clause, get the matching snmp_indexes */

@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue#4509: Updating Graph Template Items for a Template is Slow on Large Systems
 -issue#4511: When viewing SVG Graphs the Graphs do not size properly when using the Time View UI
 -issue#4512: The Cacti API can not remove a Graph that has no Data Sources
+-issue#4516: Unable to create Graphs due to one of the following Data Query Issues: permissions, incorrectly formatted, or missing XML file
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
