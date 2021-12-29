@@ -835,7 +835,7 @@ function graphs() {
 				} else {
 					html_start_box('', '100%', '', '3', 'center', '');
 
-					print "<tr class='odd'><td class='textError'>" . __('Error in data query.') . '</td></tr>';
+					print "<tr class='odd'><td class='textError'>" . __('Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file.') . '</td></tr>';
 				}
 
 				html_end_box(false);
