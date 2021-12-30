@@ -622,19 +622,23 @@ function graphs() {
 
 				if (cacti_sizeof($xml_array)) {
 					/* loop through once so we can find out how many input fields there are */
-					foreach ($xml_array['fields'] as $field_name => $field_array) {
-						if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
-							$num_input_fields++;
+					if (isset($xml_array['fields'])) {
+						foreach ($xml_array['fields'] as $field_name => $field_array) {
+							if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
+								$num_input_fields++;
 
-							if (!isset($total_rows)) {
-								$total_rows = db_fetch_cell_prepared('SELECT count(*)
-									FROM host_snmp_cache
-									WHERE host_id = ?
-									AND snmp_query_id = ?
-									AND field_name = ?',
-									array($host['id'], $snmp_query['id'], $field_name));
+								if (!isset($total_rows)) {
+									$total_rows = db_fetch_cell_prepared('SELECT count(*)
+										FROM host_snmp_cache
+										WHERE host_id = ?
+										AND snmp_query_id = ?
+										AND field_name = ?',
+										array($host['id'], $snmp_query['id'], $field_name));
+								}
 							}
 						}
+					} else {
+						raise_message('xmlerror', __('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'', $snmp_query['name'], $snmp_query['id']), MESSAGE_LEVEL_ERROR);
 					}
 				}
 
