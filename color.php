@@ -85,10 +85,10 @@ function form_save() {
 		$save['id']        = get_nfilter_request_var('id');
 
 		if (get_nfilter_request_var('read_only') == '') {
-			$save['name']      = get_nfilter_request_var('name');
+			$save['name']      = get_filter_request_var('name', FILTER_SANITIZE_SPECIAL_CHARS);
 			$save['hex']       = form_input_validate(get_nfilter_request_var('hex'),  'hex',  '^[a-fA-F0-9]+$' , false, 3);
 		} else {
-			$save['name']      = get_nfilter_request_var('hidden_name');
+			$save['name']      = get_filter_request_var('hidden_name', FILTER_SANITIZE_SPECIAL_CHARS);
 			$save['read_only'] = 'on';
 		}
 
