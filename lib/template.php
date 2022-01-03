@@ -692,6 +692,16 @@ function graph_template_has_override($graph_template_id) {
 		}
 	}
 
+	$graph_template_inputs = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM graph_template_input
+		WHERE graph_template_id = ?
+		AND column_name != "task_item_id"',
+		array($graph_template_id));
+
+	if ($graph_template_inputs > 0) {
+		return true;
+	}
+
 	return false;
 }
 

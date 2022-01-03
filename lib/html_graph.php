@@ -473,9 +473,10 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	form_hidden_box('save_component_new_graphs', '1', '');
 	form_hidden_box('selected_graphs_array', serialize($selected_graphs_array), '');
 
-	if (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
+	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'graphs_new') === false) {
 		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
 	}
+
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
 
 	form_save_button(get_nfilter_request_var('returnto'));
@@ -570,6 +571,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 		array($graph_template_id));
 
 	array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', html_escape($graph_template['graph_template_name'])), true, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+
 	array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', html_escape($graph_template['graph_template_name'])), true));
 
 	/* DRAW: Data Sources */
@@ -589,7 +591,9 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 		}
 	}
 
-	html_end_box(false);
+	if ($display) {
+		html_end_box(false);
+	}
 
 	return $num_output_fields;
 }

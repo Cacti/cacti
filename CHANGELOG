@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -issue#4512: The Cacti API can not remove a Graph that has no Data Sources
 -issue#4516: Unable to create Graphs due to one of the following Data Query Issues: permissions, incorrectly formatted, or missing XML file
 -issue#4519: Tracebacks and errors when remote host poll fails
+-issue#4522: When Creating New Graphs some visible 'Custom Input' values lack a table header
 
 1.2.19
 -security#4356: Further fixes for grave character security protection

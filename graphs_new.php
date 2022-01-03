@@ -814,6 +814,7 @@ function graphs() {
 						$row_counter    = 0;
 						$column_counter = 0;
 						$fields         = array_rekey($field_names, 'field_name', 'field_name');
+
 						if (cacti_sizeof($snmp_query_indexes)) {
 							foreach($snmp_query_indexes as $row) {
 								$query_row = $snmp_query['id'] . '_' . encode_data_query_index($row['snmp_index']);
@@ -918,12 +919,13 @@ function graphs() {
 		form_hidden_box('host_template_id', $host['host_template_id'], '0');
 	}
 
-	if (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
+	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'graphs_new') === false) {
 		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
 	}
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
-	if (substr_count(get_nfilter_request_var('returnto'), 'host.php') == 0) {
+
+	if (strpos(get_nfilter_request_var('returnto'), 'host.php') === false) {
 		set_request_var('returnto', '');
 	}
 
