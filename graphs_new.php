@@ -628,7 +628,7 @@ function graphs() {
 								$num_input_fields++;
 
 								if (!isset($total_rows)) {
-									$total_rows = db_fetch_cell_prepared('SELECT count(*)
+									$total_rows = db_fetch_cell_prepared('SELECT COUNT(*)
 										FROM host_snmp_cache
 										WHERE host_id = ?
 										AND snmp_query_id = ?
@@ -799,6 +799,18 @@ function graphs() {
 								</tr>";
 						}
 
+						/* disable graph creation if there are no associated Graph Templates */
+						$enabled = db_fetch_cell_prepared('SELECT COUNT(*)
+							FROM snmp_query_graph
+							WHERE snmp_query_id = ?',
+							array($snmp_query['id']));
+
+						if (!$enabled) {
+							$disabled_text = __esc('The index is disabled due to the Data Query having no associated Graph Templates.');
+						} else {
+							$disabled_text = '';
+						}
+
 						$row_counter    = 0;
 						$column_counter = 0;
 						$fields         = array_rekey($field_names, 'field_name', 'field_name');
@@ -806,14 +818,18 @@ function graphs() {
 							foreach($snmp_query_indexes as $row) {
 								$query_row = $snmp_query['id'] . '_' . encode_data_query_index($row['snmp_index']);
 
-								print "<tr id='dqline$query_row' class='selectable " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>"; $i++;
+								if ($enabled) {
+									print "<tr id='dqline$query_row' class='selectable " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>"; $i++;
+								} else {
+									print "<tr id='nodqline$query_row' title='$disabled_text' class='selectable notemplate " . (($row_counter % 2 == 0) ? 'odd' : 'even') . "'>"; $i++;
+								}
 
 								$column_counter = 0;
 								foreach ($xml_array['fields'] as $field_name => $field_array) {
 									if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 										if (in_array($field_name, $fields)) {
 											if (isset($row[$field_name])) {
-												print "<td title='" . html_escape($row[$field_name]) . "'><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], get_request_var('filter')) . '</span></td>';
+												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], get_request_var('filter')) . '</span></td>';
 											} else {
 												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'></span></td>";
 											}
@@ -824,7 +840,12 @@ function graphs() {
 								}
 
 								print "<td style='width:1%;' class='checkbox'>";
-								print "<input class='checkbox' type='checkbox' name='sg_$query_row' id='sg_$query_row'><label class='formCheckboxLabel' for='sg_$query_row'></label>";
+
+								if ($enabled) {
+									print "<input class='checkbox' type='checkbox' name='sg_$query_row' id='sg_$query_row'><label class='formCheckboxLabel' for='sg_$query_row'></label>";
+								} else {
+									print "<input class='checkbox' type='checkbox' disabled name='sg_$query_row' id='sg_$query_row'><label class='formCheckboxLabel' for='sg_$query_row'></label>";
+								}
 								print '</td>';
 								print '</tr>';
 
@@ -886,7 +907,7 @@ function graphs() {
 	}
 
 	if ($script != '') {
-		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });});</script>";
+		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });}); $('tr.notemplate').tooltip();</script>";
 		print $script;
 	}
 
