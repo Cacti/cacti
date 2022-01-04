@@ -515,14 +515,14 @@ function dsstats_log_statistics($type) {
 
 		$processes  = read_config_option('dsstats_parallel');
 
-		$cacti_stats = sprintf('Time:%01.2f Threads:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $end - $start, $processes, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
+		$cacti_stats = sprintf('Time:%01.2f Type:%s Threads:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $end - $start, $type, $processes, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
 
 		db_execute("DELETE FROM settings
 			WHERE name LIKE 'dsstats_rrd_%$sub_type%'
 			OR name LIKE 'dsstats_total_rrds_%$sub_type%'
 			OR name LIKE 'dsstats_total_dsses_%$sub_type%'");
 	} else {
-		$cacti_stats = sprintf('Time:%01.2f', $end-$start);
+		$cacti_stats = sprintf('Time:%01.2f Type:%s', $end-$start, $type);
 	}
 
 	/* take time and log performance data */
@@ -532,7 +532,7 @@ function dsstats_log_statistics($type) {
 	set_config_option('stats_dsstats_' . $type, $cacti_stats);
 
 	/* log to the logfile */
-	cacti_log('DSSTATS STATS: Type:' . $type . ', ' . $cacti_stats , true, 'SYSTEM');
+	cacti_log('DSSTATS STATS: ' . $cacti_stats , true, 'SYSTEM');
 }
 
 /**
@@ -570,9 +570,9 @@ function dsstats_log_child_stats($type, $thread_id, $total_time) {
 		WHERE name LIKE ?",
 		array('dsstats_total_dsses_%' . $type . '_' . $thread_id . '%'));
 
-	$cacti_stats = sprintf('Time:%01.2f ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
+	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
 
-	cacti_log('DSSTATS CHILD STATS: Type:' . strtoupper($type) . ', ' . $cacti_stats , true, 'SYSTEM');
+	cacti_log('DSSTATS CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
 }
 
 /**
