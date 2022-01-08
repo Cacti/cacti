@@ -1,216 +1,473 @@
 <?php
-declare(strict_types = 1);
 
 namespace Gettext;
 
-use ArrayIterator;
-use Countable;
 use Gettext\Languages\Language;
+use BadMethodCallException;
 use InvalidArgumentException;
-use IteratorAggregate;
-use ReturnTypeWillChange;
+use ArrayObject;
 
 /**
- * Class to manage a collection of translations under the same domain.
+ * Class to manage a collection of translations.
+ *
+ * @method static $this fromBladeFile(string $filename, array $options = [])
+ * @method static $this fromBladeString(string $string, array $options = [])
+ * @method $this addFromBladeFile(string $filename, array $options = [])
+ * @method $this addFromBladeString(string $string, array $options = [])
+ * @method static $this fromCsvFile(string $filename, array $options = [])
+ * @method static $this fromCsvString(string $string, array $options = [])
+ * @method $this addFromCsvFile(string $filename, array $options = [])
+ * @method $this addFromCsvString(string $string, array $options = [])
+ * @method bool toCsvFile(string $filename, array $options = [])
+ * @method string toCsvString(array $options = [])
+ * @method static $this fromCsvDictionaryFile(string $filename, array $options = [])
+ * @method static $this fromCsvDictionaryString(string $string, array $options = [])
+ * @method $this addFromCsvDictionaryFile(string $filename, array $options = [])
+ * @method $this addFromCsvDictionaryString(string $string, array $options = [])
+ * @method bool toCsvDictionaryFile(string $filename, array $options = [])
+ * @method string toCsvDictionaryString(array $options = [])
+ * @method static $this fromJedFile(string $filename, array $options = [])
+ * @method static $this fromJedString(string $string, array $options = [])
+ * @method $this addFromJedFile(string $filename, array $options = [])
+ * @method $this addFromJedString(string $string, array $options = [])
+ * @method bool toJedFile(string $filename, array $options = [])
+ * @method string toJedString(array $options = [])
+ * @method static $this fromJsCodeFile(string $filename, array $options = [])
+ * @method static $this fromJsCodeString(string $string, array $options = [])
+ * @method $this addFromJsCodeFile(string $filename, array $options = [])
+ * @method $this addFromJsCodeString(string $string, array $options = [])
+ * @method static $this fromJsonFile(string $filename, array $options = [])
+ * @method static $this fromJsonString(string $string, array $options = [])
+ * @method $this addFromJsonFile(string $filename, array $options = [])
+ * @method $this addFromJsonString(string $string, array $options = [])
+ * @method bool toJsonFile(string $filename, array $options = [])
+ * @method string toJsonString(array $options = [])
+ * @method static $this fromJsonDictionaryFile(string $filename, array $options = [])
+ * @method static $this fromJsonDictionaryString(string $string, array $options = [])
+ * @method $this addFromJsonDictionaryFile(string $filename, array $options = [])
+ * @method $this addFromJsonDictionaryString(string $string, array $options = [])
+ * @method bool toJsonDictionaryFile(string $filename, array $options = [])
+ * @method string toJsonDictionaryString(array $options = [])
+ * @method static $this fromMoFile(string $filename, array $options = [])
+ * @method static $this fromMoString(string $string, array $options = [])
+ * @method $this addFromMoFile(string $filename, array $options = [])
+ * @method $this addFromMoString(string $string, array $options = [])
+ * @method bool toMoFile(string $filename, array $options = [])
+ * @method string toMoString(array $options = [])
+ * @method static $this fromPhpArrayFile(string $filename, array $options = [])
+ * @method static $this fromPhpArrayString(string $string, array $options = [])
+ * @method $this addFromPhpArrayFile(string $filename, array $options = [])
+ * @method $this addFromPhpArrayString(string $string, array $options = [])
+ * @method bool toPhpArrayFile(string $filename, array $options = [])
+ * @method string toPhpArrayString(array $options = [])
+ * @method static $this fromPhpCodeFile(string $filename, array $options = [])
+ * @method static $this fromPhpCodeString(string $string, array $options = [])
+ * @method $this addFromPhpCodeFile(string $filename, array $options = [])
+ * @method $this addFromPhpCodeString(string $string, array $options = [])
+ * @method static $this fromPoFile(string $filename, array $options = [])
+ * @method static $this fromPoString(string $string, array $options = [])
+ * @method $this addFromPoFile(string $filename, array $options = [])
+ * @method $this addFromPoString(string $string, array $options = [])
+ * @method bool toPoFile(string $filename, array $options = [])
+ * @method string toPoString(array $options = [])
+ * @method static $this fromTwigFile(string $filename, array $options = [])
+ * @method static $this fromTwigString(string $string, array $options = [])
+ * @method $this addFromTwigFile(string $filename, array $options = [])
+ * @method $this addFromTwigString(string $string, array $options = [])
+ * @method static $this fromVueJsFile(string $filename, array $options = [])
+ * @method static $this fromVueJsString(string $filename, array $options = [])
+ * @method $this addFromVueJsFile(string $filename, array $options = [])
+ * @method $this addFromVueJsString(string $filename, array $options = [])
+ * @method static $this fromXliffFile(string $filename, array $options = [])
+ * @method static $this fromXliffString(string $string, array $options = [])
+ * @method $this addFromXliffFile(string $filename, array $options = [])
+ * @method $this addFromXliffString(string $string, array $options = [])
+ * @method bool toXliffFile(string $filename, array $options = [])
+ * @method string toXliffString(array $options = [])
+ * @method static $this fromYamlFile(string $filename, array $options = [])
+ * @method static $this fromYamlString(string $string, array $options = [])
+ * @method $this addFromYamlFile(string $filename, array $options = [])
+ * @method $this addFromYamlString(string $string, array $options = [])
+ * @method bool toYamlFile(string $filename, array $options = [])
+ * @method string toYamlString(array $options = [])
+ * @method static $this fromYamlDictionaryFile(string $filename, array $options = [])
+ * @method static $this fromYamlDictionaryString(string $string, array $options = [])
+ * @method $this addFromYamlDictionaryFile(string $filename, array $options = [])
+ * @method $this addFromYamlDictionaryString(string $string, array $options = [])
+ * @method bool toYamlDictionaryFile(string $filename, array $options = [])
+ * @method string toYamlDictionaryString(array $options = [])
  */
-class Translations implements Countable, IteratorAggregate
+class Translations extends ArrayObject
 {
-    protected $description;
-    protected $translations = [];
-    protected $headers;
-    protected $flags;
+    const HEADER_LANGUAGE = 'Language';
+    const HEADER_PLURAL = 'Plural-Forms';
+    const HEADER_DOMAIN = 'X-Domain';
 
-    public static function create(string $domain = null, string $language = null): Translations
+    public static $options = [
+        'defaultHeaders' => [
+            'Project-Id-Version' => '',
+            'Report-Msgid-Bugs-To' => '',
+            'Last-Translator' => '',
+            'Language-Team' => '',
+            'MIME-Version' => '1.0',
+            'Content-Type' => 'text/plain; charset=UTF-8',
+            'Content-Transfer-Encoding' => '8bit',
+        ],
+        'headersSorting' => false,
+        'defaultDateHeaders' => [
+            'POT-Creation-Date',
+            'PO-Revision-Date',
+        ],
+    ];
+
+    private $headers;
+
+    /**
+     * @see ArrayObject::__construct()
+     */
+    public function __construct($input = [], $flags = 0, $iterator_class = 'ArrayIterator')
     {
-        $translations = new static();
+        $this->headers = static::$options['defaultHeaders'];
 
-        if (isset($domain)) {
-            $translations->setDomain($domain);
+        foreach (static::$options['defaultDateHeaders'] as $header) {
+            $this->headers[$header] = date('c');
         }
 
-        if (isset($language)) {
-            $translations->setLanguage($language);
+        $this->headers[self::HEADER_LANGUAGE] = '';
+
+        parent::__construct($input, $flags, $iterator_class);
+    }
+
+    /**
+     * Magic method to create new instances using extractors
+     * For example: Translations::fromMoFile($filename, $options);.
+     *
+     * @return Translations
+     */
+    public static function __callStatic($name, $arguments)
+    {
+        if (!preg_match('/^from(\w+)(File|String)$/i', $name, $matches)) {
+            throw new BadMethodCallException("The method $name does not exists");
         }
 
-        return $translations;
+        return call_user_func_array([new static(), 'add'.ucfirst($name)], $arguments);
     }
 
-    protected function __construct()
+    /**
+     * Magic method to import/export the translations to a specific format
+     * For example: $translations->toMoFile($filename, $options);
+     * For example: $translations->addFromMoFile($filename, $options);.
+     *
+     * @return self|bool
+     */
+    public function __call($name, $arguments)
     {
-        $this->headers = new Headers();
-        $this->flags = new Flags();
+        if (!preg_match('/^(addFrom|to)(\w+)(File|String)$/i', $name, $matches)) {
+            throw new BadMethodCallException("The method $name does not exists");
+        }
+
+        if ($matches[1] === 'addFrom') {
+            $extractor = 'Gettext\\Extractors\\'.$matches[2].'::from'.$matches[3];
+            $source = array_shift($arguments);
+            $options = array_shift($arguments) ?: [];
+
+            call_user_func($extractor, $source, $this, $options);
+
+            return $this;
+        }
+
+        $generator = 'Gettext\\Generators\\'.$matches[2].'::to'.$matches[3];
+
+        array_unshift($arguments, $this);
+
+        return call_user_func_array($generator, $arguments);
     }
 
+    /**
+     * Magic method to clone each translation on clone the translations object.
+     */
     public function __clone()
     {
-        foreach ($this->translations as $id => $translation) {
-            $this->translations[$id] = clone $translation;
+        $array = [];
+
+        foreach ($this as $key => $translation) {
+            $array[$key] = clone $translation;
         }
 
-        $this->headers = clone $this->headers;
+        $this->exchangeArray($array);
     }
 
-    public function setDescription(?string $description): self
+    /**
+     * Control the new translations added.
+     *
+     * @param mixed       $index
+     * @param Translation $value
+     *
+     * @throws InvalidArgumentException If the value is not an instance of Gettext\Translation
+     *
+     * @return Translation
+     */
+    public function offsetSet($index, $value)
     {
-        $this->description = $description;
+        if (!($value instanceof Translation)) {
+            throw new InvalidArgumentException(
+                'Only instances of Gettext\\Translation must be added to a Gettext\\Translations'
+            );
+        }
+
+        $id = $value->getId();
+
+        if ($this->offsetExists($id)) {
+            $this[$id]->mergeWith($value);
+
+            return $this[$id];
+        }
+
+        parent::offsetSet($id, $value);
+
+        return $value;
+    }
+
+    /**
+     * Set the plural definition.
+     *
+     * @param int    $count
+     * @param string $rule
+     *
+     * @return self
+     */
+    public function setPluralForms($count, $rule)
+    {
+        if (preg_match('/[a-z]/i', str_replace('n', '', $rule))) {
+            throw new \InvalidArgumentException('Invalid Plural form: ' . $rule);
+        }
+        $this->setHeader(self::HEADER_PLURAL, "nplurals={$count}; plural={$rule};");
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    /**
+     * Returns the parsed plural definition.
+     *
+     * @param null|array [count, rule]
+     */
+    public function getPluralForms()
     {
-        return $this->description;
+        $header = $this->getHeader(self::HEADER_PLURAL);
+
+        if (!empty($header)
+            && preg_match('/^nplurals\s*=\s*(\d+)\s*;\s*plural\s*=\s*([^;]+)\s*;$/', $header, $matches)
+        ) {
+            return [intval($matches[1]), $matches[2]];
+        }
     }
 
-    public function getFlags(): Flags
+    /**
+     * Set a new header.
+     *
+     * @param string $name
+     * @param string $value
+     *
+     * @return self
+     */
+    public function setHeader($name, $value)
     {
-        return $this->flags;
+        $name = trim($name);
+        $this->headers[$name] = trim($value);
+
+        return $this;
     }
 
-    public function toArray(): array
+    /**
+     * Returns a header value.
+     *
+     * @param string $name
+     *
+     * @return null|string
+     */
+    public function getHeader($name)
     {
-        return [
-            'description' => $this->description,
-            'headers' => $this->headers->toArray(),
-            'flags' => $this->flags->toArray(),
-            'translations' => array_map(
-                function ($translation) {
-                    return $translation->toArray();
-                },
-                array_values($this->translations)
-            ),
-        ];
+        return isset($this->headers[$name]) ? $this->headers[$name] : null;
     }
 
-    #[ReturnTypeWillChange]
-    public function getIterator()
+    /**
+     * Returns all header for this translations (in alphabetic order).
+     *
+     * @return array
+     */
+    public function getHeaders()
     {
-        return new ArrayIterator($this->translations);
-    }
+        if (static::$options['headersSorting']) {
+            ksort($this->headers);
+        }
 
-    public function getTranslations(): array
-    {
-        return $this->translations;
-    }
-
-    public function count(): int
-    {
-        return count($this->translations);
-    }
-
-    public function getHeaders(): Headers
-    {
         return $this->headers;
     }
 
-    public function add(Translation $translation): self
+    /**
+     * Removes all headers.
+     *
+     * @return self
+     */
+    public function deleteHeaders()
     {
-        $id = $translation->getId();
-
-        $this->translations[$id] = $translation;
+        $this->headers = [];
 
         return $this;
     }
 
-    public function addOrMerge(Translation $translation, int $mergeStrategy = 0): Translation
+    /**
+     * Removes one header.
+     *
+     * @param string $name
+     *
+     * @return self
+     */
+    public function deleteHeader($name)
     {
-        $id = $translation->getId();
-
-        if (isset($this->translations[$id])) {
-            return $this->translations[$id] = $this->translations[$id]->mergeWith($translation, $mergeStrategy);
-        }
-
-        return $this->translations[$id] = $translation;
-    }
-
-    public function remove(Translation $translation): self
-    {
-        $key = array_search($translation, $this->translations);
-
-        if ($key !== false) {
-            unset($this->translations[$key]);
-        }
+        unset($this->headers[$name]);
 
         return $this;
     }
 
-    public function setDomain(string $domain): self
+    /**
+     * Returns the language value.
+     *
+     * @return string $language
+     */
+    public function getLanguage()
     {
-        $this->getHeaders()->setDomain($domain);
+        return $this->getHeader(self::HEADER_LANGUAGE);
+    }
+
+    /**
+     * Sets the language and the plural forms.
+     *
+     * @param string $language
+     *
+     * @throws InvalidArgumentException if the language hasn't been recognized
+     *
+     * @return self
+     */
+    public function setLanguage($language)
+    {
+        $this->setHeader(self::HEADER_LANGUAGE, trim($language));
+
+        if (($info = Language::getById($language))) {
+            return $this->setPluralForms(count($info->categories), $info->formula);
+        }
+
+        throw new InvalidArgumentException(sprintf('The language "%s" is not valid', $language));
+    }
+
+    /**
+     * Checks whether the language is empty or not.
+     *
+     * @return bool
+     */
+    public function hasLanguage()
+    {
+        $language = $this->getLanguage();
+
+        return (is_string($language) && ($language !== '')) ? true : false;
+    }
+
+    /**
+     * Set a new domain for this translations.
+     *
+     * @param string $domain
+     *
+     * @return self
+     */
+    public function setDomain($domain)
+    {
+        $this->setHeader(self::HEADER_DOMAIN, trim($domain));
 
         return $this;
     }
 
-    public function getDomain(): ?string
+    /**
+     * Returns the domain.
+     *
+     * @return string
+     */
+    public function getDomain()
     {
-        return $this->getHeaders()->getDomain();
+        return $this->getHeader(self::HEADER_DOMAIN);
     }
 
-    public function setLanguage(string $language): self
+    /**
+     * Checks whether the domain is empty or not.
+     *
+     * @return bool
+     */
+    public function hasDomain()
     {
-        $info = Language::getById($language);
+        $domain = $this->getDomain();
 
-        if (empty($info)) {
-            throw new InvalidArgumentException(sprintf('The language "%s" is not valid', $language));
+        return (is_string($domain) && ($domain !== '')) ? true : false;
+    }
+
+    /**
+     * Search for a specific translation.
+     *
+     * @param string|Translation $context  The context of the translation or a translation instance
+     * @param string             $original The original string
+     *
+     * @return Translation|false
+     */
+    public function find($context, $original = '')
+    {
+        if ($context instanceof Translation) {
+            $id = $context->getId();
+        } else {
+            $id = Translation::generateId($context, $original);
         }
 
-        $this->getHeaders()
-            ->setLanguage($language)
-            ->setPluralForm(count($info->categories), $info->formula);
+        return $this->offsetExists($id) ? $this[$id] : false;
+    }
+
+    /**
+     * Count all elements translated
+     *
+     * @return integer
+     */
+    public function countTranslated()
+    {
+        $callback = function (Translation $v) {
+            return ($v->hasTranslation()) ? $v->getTranslation() : null;
+        };
+
+        return count(array_filter(get_object_vars($this), $callback));
+    }
+
+    /**
+     * Creates and insert/merges a new translation.
+     *
+     * @param string $context  The translation context
+     * @param string $original The translation original string
+     * @param string $plural   The translation original plural string
+     *
+     * @return Translation The translation created
+     */
+    public function insert($context, $original, $plural = '')
+    {
+        return $this->offsetSet(null, new Translation($context, $original, $plural));
+    }
+
+    /**
+     * Merges this translations with other translations.
+     *
+     * @param Translations $translations The translations instance to merge with
+     * @param int          $options
+     *
+     * @return self
+     */
+    public function mergeWith(Translations $translations, $options = Merge::DEFAULTS)
+    {
+        Merge::mergeHeaders($translations, $this, $options);
+        Merge::mergeTranslations($translations, $this, $options);
 
         return $this;
-    }
-
-    public function getLanguage(): ?string
-    {
-        return $this->getHeaders()->getLanguage();
-    }
-
-    public function find(?string $context, string $original): ?Translation
-    {
-        foreach ($this->translations as $translation) {
-            if ($translation->getContext() === $context && $translation->getOriginal() === $original) {
-                return $translation;
-            }
-        }
-
-        return null;
-    }
-
-    public function mergeWith(Translations $translations, int $strategy = 0): Translations
-    {
-        $merged = clone $this;
-
-        if ($strategy & Merge::HEADERS_THEIRS) {
-            $merged->headers = clone $translations->headers;
-        } elseif (!($strategy & Merge::HEADERS_OURS)) {
-            $merged->headers = $merged->headers->mergeWith($translations->headers);
-        }
-
-        if ($strategy & Merge::FLAGS_THEIRS) {
-            $merged->flags = clone $translations->flags;
-        } elseif (!($strategy & Merge::FLAGS_OURS)) {
-            $merged->flags = $merged->flags->mergeWith($translations->flags);
-        }
-
-        if (!$merged->description) {
-            $merged->description = $translations->description;
-        }
-
-        foreach ($translations as $id => $translation) {
-            if (isset($merged->translations[$id])) {
-                $translation = $merged->translations[$id]->mergeWith($translation, $strategy);
-            }
-
-            $merged->add($translation);
-        }
-
-        if ($strategy & Merge::TRANSLATIONS_THEIRS) {
-            $merged->translations = array_intersect_key($merged->translations, $translations->translations);
-        } elseif ($strategy & Merge::TRANSLATIONS_OURS) {
-            $merged->translations = array_intersect_key($merged->translations, $this->translations);
-        }
-
-        return $merged;
     }
 }
