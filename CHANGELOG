@@ -72,6 +72,7 @@ Cacti CHANGELOG
 -issue#4443: When renaming poller errors occour
 -issue#4444: Removing spikes by Variance does not appear to be working beyond the first RRA
 -issue#4445: LDAP API lacks timeout options leading to bad login experiences
+-issue#4525: When using CMD for polling, pipes are not properly referenced for PHP scripts
 -feature: Add a normal/wrap class for general use
 -feature: Limit File Types available for Template Import operations
 -feature#1573: Cacti does not provide an option of providing a client side certificate for LDAP/AD authentication

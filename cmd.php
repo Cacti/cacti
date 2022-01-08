@@ -696,7 +696,7 @@ function collect_device_data(&$item, &$error_ds) {
 }
 
 function ping_and_reindex_check(&$item, $mibs) {
-	global $poller_id, $print_data_to_stdout, $sessions, $set_spike_kill, $poller_db_cnn_id, $cactiphp, $using_proc_function;
+	global $poller_id, $print_data_to_stdout, $sessions, $set_spike_kill, $poller_db_cnn_id, $pipes, $cactiphp, $using_proc_function;
 
 	$ping    = new Net_Ping;
 	$host_id = $item['host_id'];
