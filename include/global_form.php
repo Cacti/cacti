@@ -1237,7 +1237,7 @@ $fields_host_edit = array(
 		'friendly_name' => __('Number of Collection Threads'),
 		'description' => __('The number of concurrent threads to use for polling this device.  This applies to the Spine poller only.'),
 		'value' => '|arg1:device_threads|',
-		'default' => '1',
+		'default' => read_config_option('device_threads'),
 		'array' => $device_threads
 		),
 	'disabled' => array(

@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.2.20
--security:   Resolve issues with SQL injections in user_admin and user_group_admin.  Thanks @enesdex 
+-security:   Resolve issues with SQL injections in user_admin and user_group_admin.  Thanks @enesdex
 -security:   Resolve issues with XSS issues in color_template.  Thanks @M0rphling
 -issue#3816: Installation can sometimes appear stuck during replication or table conversion
 -issue#4363: Duplicate entries in graph_templates_item - mabye an aftermath of the template edit bug
@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#4516: Unable to create Graphs due to one of the following Data Query Issues: permissions, incorrectly formatted, or missing XML file
 -issue#4519: Tracebacks and errors when remote host poll fails
 -issue#4522: When Creating New Graphs some visible 'Custom Input' values lack a table header
+-issue#4528: Default Setting "Device Threads" is ignored in device creation form
 
 1.2.19
 -security#4356: Further fixes for grave character security protection

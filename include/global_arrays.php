@@ -755,7 +755,7 @@ $poller_sync_intervals = array(
 );
 
 $device_threads = array(
-	1 => __('1 Thread (default)'),
+	1 => __('1 Thread'),
 	2 => __('%d Threads', 2),
 	3 => __('%d Threads', 3),
 	4 => __('%d Threads', 4),
