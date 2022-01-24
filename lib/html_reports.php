@@ -350,11 +350,22 @@ function reports_form_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
+		unset($_SESSION['sess_error_fields']);
+
 		$save = array();
 
 		$save['id']                = get_nfilter_request_var('id');
 		$save['report_id']         = form_input_validate(get_nfilter_request_var('report_id'), 'report_id', '^[0-9]+$', false, 3);
-		$save['sequence']          = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
+
+		if (isempty_request_var('id')) {
+			$save['sequence'] = db_fetch_cell_prepared('SELECT MAX(sequence)+1
+				FROM reports_items
+				WHERE report_id = ?',
+				array(get_request_var('report_id')));
+		} else {
+			$save['sequence'] = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
+		}
+
 		$save['item_type']         = form_input_validate(get_nfilter_request_var('item_type'), 'item_type', '^[-0-9]+$', false, 3);
 		$save['tree_id']           = (isset_request_var('tree_id') ? form_input_validate(get_nfilter_request_var('tree_id'), 'tree_id', '^[-0-9]+$', true, 3) : 0);
 		$save['branch_id']         = (isset_request_var('branch_id') ? form_input_validate(get_nfilter_request_var('branch_id'), 'branch_id', '^[-0-9]+$', true, 3) : 0);
@@ -839,11 +850,21 @@ function reports_item_edit() {
 	$report_item['host_template_id']  = -1;
 	$report_item['graph_template_id'] = -1;
 	$report_item['host_id']           = -1;
+	$report_item['tree_id']           = -1;
 
 	if (isset_request_var('item_id') && get_filter_request_var('item_id') > 0) {
 		$report_item = db_fetch_row_prepared('SELECT *
 			FROM reports_items WHERE id = ?',
 			array(get_request_var('item_id')));
+	} else {
+		$report_item['report_id']      = get_request_var('id');
+		$report_item['local_graph_id'] = -1;
+
+		unset($_SESSION['sess_report_item_host_id']);
+		unset($_SESSION['sess_report_item_host_template_id']);
+		unset($_SESSION['sess_report_item_site_id']);
+		unset($_SESSION['sess_report_item_graph_template_id']);
+		unset($_SESSION['sess_report_item_local_graph_id']);
 	}
 
 	// Initialize for AutoComplete Values from existing Report Item
