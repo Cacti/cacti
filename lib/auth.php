@@ -2557,11 +2557,14 @@ function get_host_array() {
 }
 
 function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_where = '') {
-	$return    = array();
+	$return = array();
 
 	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 	if ($term != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . "hostname LIKE '%$term%' OR description LIKE '%$term%' OR notes LIKE '%$term%'";
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') .
+			'hostname LIKE ' . db_qstr("%$term%") .
+			' OR description LIKE ' . db_qstr("%$term%") .
+			' OR notes LIKE ' . db_qstr("%$term%");
 	}
 
 	if (get_request_var('term') == '') {
@@ -2585,12 +2588,43 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	print json_encode($return);
 }
 
+function get_allowed_ajax_graph_templates($include_any = true, $include_none = true, $sql_where = '') {
+	$return = array();
+
+	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+	if ($term != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'name LIKE ' . db_qstr("%$term%");
+	}
+
+	if (get_request_var('term') == '') {
+		if ($include_any) {
+			$return[] = array('label' => __('Any'), 'value' => __('Any'), 'id' => '-1');
+		}
+		if ($include_none) {
+			$return[] = array('label' => __('None'), 'value' => __('None'), 'id' => '0');
+		}
+	}
+
+	$total_rows = -1;
+
+	$templates = get_allowed_graph_templates($sql_where, 'gt.name', read_config_option('autocomplete_rows'), $total_rows);
+	if (cacti_sizeof($templates)) {
+		foreach($templates as $template) {
+			$return[] = array('label' => $template['name'], 'value' => $template['name'], 'id' => $template['id']);
+		}
+	}
+
+	print json_encode($return);
+}
+
 function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 	$return    = array();
 
 	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 	if ($term != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : '') . "name_cache LIKE '%$term%' OR data_source_name LIKE '%$term%'";
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') .
+			'name_cache LIKE ' . db_qstr("%$term%") .
+			' OR data_source_name LIKE ' . db_qstr("%$term%");
 	}
 
 	if (get_request_var('term') == '') {
@@ -2603,6 +2637,26 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 	if (cacti_sizeof($graph_items)) {
 		foreach($graph_items as $gi) {
 			$return[] = array('label' => $gi['name'], 'value' => $gi['name'], 'id' => $gi['id']);
+		}
+	}
+
+	print json_encode($return);
+}
+
+function get_allowed_ajax_graphs($sql_where = '') {
+	$return = array();
+
+	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+	if ($term != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ' : '') . 'title_cache LIKE ' . db_qstr("%$term%");
+	}
+
+	$total_rows = -1;
+
+	$graphs = get_allowed_graphs($sql_where, 'gtg.title_cache', read_config_option('autocomplete_rows'), $total_rows);
+	if (cacti_sizeof($graphs)) {
+		foreach($graphs as $graph) {
+			$return[] = array('label' => $graph['title_cache'], 'value' => $graph['title_cache'], 'id' => $graph['local_graph_id']);
 		}
 	}
 

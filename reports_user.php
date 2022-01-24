@@ -53,6 +53,73 @@ switch (get_request_var('action')) {
 
 		header('Location: reports_admin.php?action=edit&header=false&tab=items&id=' . get_request_var('id'));
 		break;
+	case 'setvar':
+		$changed = reports_item_validate();
+
+		print $changed;
+
+		break;
+	case 'ajax_get_branches':
+		print reports_get_branch_select(get_request_var('tree_id'));
+
+		break;
+	case 'ajax_hosts':
+		reports_item_validate();
+
+		$sql_where = '';
+		if (get_request_var('site_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_request_var('site_id');
+		}
+
+		if (get_request_var('host_template_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.host_template_id = ' . get_request_var('host_template_id');
+		}
+
+		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
+
+        break;
+	case 'ajax_graphs':
+		reports_item_validate();
+
+		$sql_where = '';
+		if (get_request_var('site_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_request_var('site_id');
+		}
+
+		if (get_request_var('host_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id = ' . get_request_var('host_id');
+		}
+
+		if (get_request_var('graph_template_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id = ' . get_request_var('graph_template_id');
+		}
+
+		if (get_request_var('host_template_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.host_template_id = ' . get_request_var('host_template_id');
+		}
+
+		get_allowed_ajax_graphs($sql_where);
+
+        break;
+	case 'ajax_graph_template':
+		reports_item_validate();
+
+		$sql_where = '';
+		if (get_request_var('site_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_request_var('site_id');
+		}
+
+		if (get_request_var('host_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.id = ' . get_request_var('host_id');
+		}
+
+		if (get_request_var('host_template_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.host_template_id = ' . get_request_var('host_template_id');
+		}
+
+		get_allowed_ajax_graph_templates(true, true, $sql_where);
+
+        break;
 	case 'actions':
 		reports_form_actions();
 		break;

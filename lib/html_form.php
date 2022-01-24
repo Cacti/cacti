@@ -814,12 +814,6 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		}
 	}
 
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$previous_value = $_SESSION['sess_field_values'][$form_name];
-		}
-	}
-
 	if ($class != '') {
 		$class = " class='$class' ";
 	}

@@ -206,5 +206,21 @@ function upgrade_to_1_2_20() {
 			}
 		}
 	}
+
+	// Fix the Report Item Columns
+	db_execute('ALTER TABLE reports_items
+		MODIFY COLUMN host_template_id int default "-1",
+		MODIFY COLUMN host_id int default "-1",
+		MODIFY COLUMN graph_template_id int default "-1",
+		ADD COLUMN site_id int default "-1" AFTER graph_name_regexp');
+
+	db_execute('UPDATE reports_items
+		SET host_template_id = -1 WHERE host_template_id = 0');
+
+	db_execute('UPDATE reports_items
+		SET host_id = -1 WHERE host_id = 0');
+
+	db_execute('UPDATE reports_items
+		SET graph_template_id = -1 WHERE graph_template_id = 0');
 }
 
