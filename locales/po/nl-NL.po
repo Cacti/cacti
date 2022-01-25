@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-01-24 20:03-0500\n"
+"POT-Creation-Date: 2022-01-25 08:30-0500\n"
 "PO-Revision-Date: 2021-10-21 08:44-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
@@ -78,7 +78,7 @@ msgstr "Dit programma is gedistribueerd in de hoop dat het zinnig zal zijn, maar
 #: data_source_profiles.php:30 data_source_profiles.php:644 data_sources.php:37
 #: data_sources.php:1070 data_templates.php:34 data_templates.php:688
 #: gprint_presets.php:28 graph_templates.php:37 graph_templates.php:522
-#: graphs.php:46 host.php:40 host_templates.php:35 host_templates.php:505
+#: graphs.php:46 host.php:41 host_templates.php:35 host_templates.php:505
 #: host_templates.php:562 include/global_arrays.php:1537
 #: include/global_settings.php:247 lib/api_automation.php:1327
 #: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1258
@@ -115,7 +115,7 @@ msgstr "Associeer met aggregaat"
 msgid "Disassociate with Aggregate"
 msgstr "Dissocieer van geaggregeerde"
 
-#: aggregate_graphs.php:85 graphs.php:197 host.php:212
+#: aggregate_graphs.php:85 graphs.php:197 host.php:214
 #, php-format
 msgid "Place on a Tree (%s)"
 msgstr "Plaats in een menu (%s)"
@@ -144,17 +144,17 @@ msgstr "Klik op 'Volgende' om de volgende geaggregeerde grafiek te verwijderen."
 #: graph_view.php:949 graphs.php:910 graphs.php:926 graphs.php:937
 #: graphs.php:948 graphs.php:963 graphs.php:977 graphs.php:986 graphs.php:1186
 #: graphs.php:1229 graphs.php:1251 graphs.php:1280 graphs.php:1292
-#: graphs.php:1822 host.php:377 host.php:386 host.php:441 host.php:450
-#: host.php:459 host.php:473 host.php:487 host.php:496 host.php:504
-#: host_templates.php:270 host_templates.php:284 host_templates.php:295
-#: host_templates.php:344 host_templates.php:407 lib/clog_webapi.php:221
-#: lib/html.php:2502 lib/html_form.php:1270 lib/html_form.php:1282
-#: lib/html_form.php:1293 lib/html_utility.php:274 links.php:197 links.php:206
-#: links.php:215 managers.php:1004 managers.php:1062 plugins.php:517
-#: pollers.php:559 pollers.php:568 pollers.php:577 pollers.php:586
-#: pollers.php:595 sites.php:359 sites.php:369 tree.php:654 tree.php:663
-#: tree.php:672 tree.php:681 user_admin.php:337 user_admin.php:377
-#: user_admin.php:388 user_admin.php:399 user_admin.php:422
+#: graphs.php:1822 host.php:388 host.php:397 host.php:452 host.php:461
+#: host.php:470 host.php:484 host.php:498 host.php:507 host.php:536
+#: host.php:548 host_templates.php:270 host_templates.php:284
+#: host_templates.php:295 host_templates.php:344 host_templates.php:407
+#: lib/clog_webapi.php:221 lib/html.php:2502 lib/html_form.php:1270
+#: lib/html_form.php:1282 lib/html_form.php:1293 lib/html_utility.php:274
+#: links.php:197 links.php:206 links.php:215 managers.php:1004
+#: managers.php:1062 plugins.php:517 pollers.php:559 pollers.php:568
+#: pollers.php:577 pollers.php:586 pollers.php:595 sites.php:359 sites.php:369
+#: tree.php:654 tree.php:663 tree.php:672 tree.php:681 user_admin.php:337
+#: user_admin.php:377 user_admin.php:388 user_admin.php:399 user_admin.php:422
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:449 user_group_admin.php:468
 #: user_group_admin.php:479 user_group_admin.php:490 vdef.php:270 vdef.php:280
@@ -181,16 +181,17 @@ msgstr "Annuleer"
 #: graph_templates.php:415 graph_templates.php:424 graph_templates.php:433
 #: graphs.php:910 graphs.php:926 graphs.php:937 graphs.php:948 graphs.php:963
 #: graphs.php:977 graphs.php:986 graphs.php:1186 graphs.php:1229
-#: graphs.php:1251 graphs.php:1280 graphs.php:1292 host.php:377 host.php:386
-#: host.php:441 host.php:450 host.php:459 host.php:473 host.php:487
-#: host.php:496 host.php:504 host_templates.php:270 host_templates.php:284
-#: host_templates.php:295 host_templates.php:345 host_templates.php:408
-#: lib/clog_webapi.php:222 lib/html.php:2501 lib/html_reports.php:499
-#: lib/html_utility.php:274 links.php:197 links.php:206 links.php:215
-#: managers.php:1004 managers.php:1062 pollers.php:559 pollers.php:568
-#: pollers.php:577 pollers.php:586 pollers.php:595 sites.php:359 sites.php:369
-#: tree.php:654 tree.php:663 tree.php:672 tree.php:681 user_admin.php:337
-#: user_admin.php:377 user_admin.php:388 user_admin.php:399 user_admin.php:422
+#: graphs.php:1251 graphs.php:1280 graphs.php:1292 host.php:388 host.php:397
+#: host.php:452 host.php:461 host.php:470 host.php:484 host.php:498
+#: host.php:507 host.php:536 host.php:548 host_templates.php:270
+#: host_templates.php:284 host_templates.php:295 host_templates.php:345
+#: host_templates.php:408 lib/clog_webapi.php:222 lib/html.php:2501
+#: lib/html_reports.php:499 lib/html_utility.php:274 links.php:197
+#: links.php:206 links.php:215 managers.php:1004 managers.php:1062
+#: pollers.php:559 pollers.php:568 pollers.php:577 pollers.php:586
+#: pollers.php:595 sites.php:359 sites.php:369 tree.php:654 tree.php:663
+#: tree.php:672 tree.php:681 user_admin.php:337 user_admin.php:377
+#: user_admin.php:388 user_admin.php:399 user_admin.php:422
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:449 user_group_admin.php:468
 #: user_group_admin.php:479 user_group_admin.php:490 vdef.php:270 vdef.php:280
@@ -214,7 +215,7 @@ msgstr "Voordat u deze geaggregeerde grafiek kunt migreren naar een template geb
 #: aggregate_graphs.php:394 aggregate_graphs.php:442 aggregate_graphs.php:488
 #: auth_changepassword.php:359 auth_profile.php:443 automation_networks.php:398
 #: automation_snmp.php:254 graphs.php:1188 graphs.php:1238 graphs.php:1241
-#: graphs.php:1283 include/auth.php:287 lib/api_aggregate.php:1589
+#: graphs.php:1283 host.php:539 include/auth.php:287 lib/api_aggregate.php:1589
 #: lib/api_aggregate.php:1604 lib/html_form.php:1291 lib/html_utility.php:272
 #: managers.php:1065 permission_denied.php:30 permission_denied.php:32
 msgid "Return"
@@ -263,22 +264,22 @@ msgstr "Naam van aggregatie:"
 msgid "New Aggregate"
 msgstr "Nieuwe aggregatie"
 
-#: aggregate_graphs.php:469 graphs.php:1264
+#: aggregate_graphs.php:469 graphs.php:1264 host.php:520
 #, fuzzy
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "Klik op 'Doorgaan' om de geselecteerde grafieken toe te voegen aan het onderstaande rapport."
 
-#: aggregate_graphs.php:473 graph_view.php:810 graphs.php:1268
+#: aggregate_graphs.php:473 graph_view.php:810 graphs.php:1268 host.php:524
 #: lib/html_reports.php:35 lib/html_reports.php:1932
 msgid "Report Name"
 msgstr "Rapportagenaam"
 
-#: aggregate_graphs.php:477 graph_view.php:817 graphs.php:1272
+#: aggregate_graphs.php:477 graph_view.php:817 graphs.php:1272 host.php:528
 #: lib/html_reports.php:1614
 msgid "Timespan"
 msgstr "Tijdspanne"
 
-#: aggregate_graphs.php:481 graph_view.php:824 graphs.php:1276
+#: aggregate_graphs.php:481 graph_view.php:824 graphs.php:1276 host.php:532
 msgid "Align"
 msgstr "Uitlijnen"
 
@@ -322,7 +323,7 @@ msgstr "Dissocieer grafiek(en)"
 msgid "Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch."
 msgstr "Klik op 'Volgende' om de volgende geaggregeerde grafiek onder de boomstructuur te plaatsen."
 
-#: aggregate_graphs.php:522 host.php:479
+#: aggregate_graphs.php:522 host.php:490
 msgid "Destination Branch:"
 msgstr "Bestemming structuur:"
 
@@ -459,7 +460,7 @@ msgstr "Overeenkomende grafieken"
 #: color.php:529 color_templates.php:530 data_debug.php:1052 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:891 data_sources.php:1437
 #: data_templates.php:981 gprint_presets.php:262 graph_templates.php:710
-#: graph_view.php:604 graphs.php:2031 graphs_new.php:411 host.php:1575
+#: graph_view.php:604 graphs.php:2031 graphs_new.php:411 host.php:1619
 #: host_templates.php:719 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
 #: lib/clog_webapi.php:574 lib/html.php:244 lib/html_filter.php:63
@@ -481,7 +482,7 @@ msgstr "Zoeken"
 #: aggregate_graphs.php:1312 aggregate_graphs.php:1355
 #: aggregate_graphs.php:1616 color_templates.php:642 data_sources.php:1621
 #: data_sources.php:1755 graph_view.php:468 graph_view.php:663
-#: graph_view.php:712 graphs.php:2037 graphs.php:2184 host.php:1686
+#: graph_view.php:712 graphs.php:2037 graphs.php:2184 host.php:1730
 #: include/global_arrays.php:916 include/global_arrays.php:1123
 #: include/global_arrays.php:1899 lib/api_automation.php:283 lib/html.php:1683
 #: lib/html.php:1685 lib/html.php:1763 lib/html_graph.php:209
@@ -501,7 +502,7 @@ msgstr "Grafieken"
 #: data_queries.php:1289 data_source_profiles.php:901
 #: data_source_profiles.php:1020 data_sources.php:1447 data_templates.php:1007
 #: gprint_presets.php:272 graph_templates.php:720 graph_view.php:667
-#: graphs.php:2041 graphs_new.php:421 host.php:1600 host_templates.php:729
+#: graphs.php:2041 graphs_new.php:421 host.php:1644 host_templates.php:729
 #: include/global_form.php:256 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
 #: lib/api_automation.php:1109 lib/html_reports.php:1857 links.php:320
@@ -530,7 +531,7 @@ msgstr "Onderdeel van aggregatie"
 #: color_templates.php:567 data_debug.php:981 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:919 data_sources.php:1390
 #: data_templates.php:1025 gprint_presets.php:290 graph_templates.php:738
-#: graph_view.php:612 graphs.php:2022 graphs_new.php:400 host.php:1565
+#: graph_view.php:612 graphs.php:2022 graphs_new.php:400 host.php:1609
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
 #: lib/clog_webapi.php:522 lib/html.php:1522 lib/html_filter.php:80
@@ -549,7 +550,7 @@ msgstr "Ga"
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:919
 #: data_sources.php:1390 data_templates.php:1025 gprint_presets.php:290
 #: graph_templates.php:738 graph_view.php:612 graphs.php:2022
-#: graphs_new.php:400 host.php:1565 host_templates.php:747
+#: graphs_new.php:400 host.php:1609 host_templates.php:747
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:924 sites.php:498 tree.php:1947
 #: user_admin.php:2280 user_admin.php:2644 user_admin.php:2729
@@ -570,7 +571,7 @@ msgstr "Stel in/vernieuw filters"
 #: color_templates.php:568 data_debug.php:982 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:920 data_sources.php:1391
 #: data_templates.php:1026 gprint_presets.php:291 graph_templates.php:739
-#: graph_view.php:613 graphs.php:2023 graphs_new.php:401 host.php:1566
+#: graph_view.php:613 graphs.php:2023 graphs_new.php:401 host.php:1610
 #: host_templates.php:748 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
 #: lib/clog_webapi.php:523 lib/html_filter.php:85 lib/html_graph.php:191
@@ -588,7 +589,7 @@ msgstr "Herstel"
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:920
 #: data_sources.php:1391 data_templates.php:1026 gprint_presets.php:291
 #: graph_templates.php:739 graph_view.php:613 graphs.php:2023
-#: graphs_new.php:401 host.php:1566 host_templates.php:748
+#: graphs_new.php:401 host.php:1610 host_templates.php:748
 #: lib/html_graph.php:191 lib/html_tree.php:1075 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:384 pollers.php:925
 #: sites.php:499 tree.php:1948 user_admin.php:2281 user_admin.php:2645
@@ -611,7 +612,7 @@ msgstr "Grafiektitel"
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
 #: data_debug.php:345 data_input.php:931 data_queries.php:1383
 #: data_sources.php:1615 data_templates.php:1134 graph_templates.php:844
-#: graphs.php:2200 host.php:1680 host_templates.php:834
+#: graphs.php:2200 host.php:1724 host_templates.php:834
 #: lib/api_automation.php:282 pollers.php:995 sites.php:572 tree.php:2009
 #: user_admin.php:1035 user_admin.php:1149 user_admin.php:1296
 #: user_admin.php:1444 user_admin.php:1585 user_group_admin.php:682
@@ -673,7 +674,7 @@ msgid "Aggregate Graphs"
 msgstr "Geaggregeerde grafieken"
 
 #: aggregate_graphs.php:1594 data_debug.php:955 data_sources.php:1364
-#: graph_view.php:625 graphs.php:1987 host.php:1520
+#: graph_view.php:625 graphs.php:1987 host.php:1564
 #: include/global_arrays.php:2755 include/global_settings.php:561
 #: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:1038
 #: rrdcleaner.php:383 user_admin.php:2600 user_admin.php:2793
@@ -686,7 +687,7 @@ msgstr "Template"
 #: automation_devices.php:544 automation_graph_rules.php:753
 #: automation_graph_rules.php:775 automation_tree_rules.php:820
 #: data_debug.php:959 data_sources.php:1368 graphs.php:1991
-#: graphs_items.php:354 host.php:1489 host.php:1507 host.php:1524 host.php:1585
+#: graphs_items.php:354 host.php:1533 host.php:1551 host.php:1568 host.php:1629
 #: lib/api_automation.php:150 lib/api_automation.php:168
 #: lib/api_automation.php:429 lib/api_automation.php:446
 #: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2572
@@ -705,8 +706,8 @@ msgstr "Alle"
 #: automation_networks.php:462 automation_tree_rules.php:948 data_debug.php:960
 #: data_sources.php:934 data_sources.php:1369 data_sources.php:1676
 #: data_templates.php:1197 graphs.php:1578 graphs.php:1587 graphs.php:1992
-#: graphs_items.php:355 graphs_items.php:467 host.php:1103 host.php:1114
-#: host.php:1490 host.php:1525 include/global_arrays.php:471
+#: graphs_items.php:355 graphs_items.php:467 host.php:1147 host.php:1158
+#: host.php:1534 host.php:1569 include/global_arrays.php:471
 #: include/global_arrays.php:529 include/global_arrays.php:618
 #: include/global_arrays.php:808 include/global_arrays.php:1626
 #: include/global_form.php:588 include/global_form.php:894
@@ -1136,7 +1137,7 @@ msgstr "Verwijder appara(a)t(en)"
 
 #: automation_devices.php:54 automation_devices.php:300
 #: automation_devices.php:409 automation_devices.php:419
-#: automation_devices.php:648 automation_devices.php:649 host.php:1590
+#: automation_devices.php:648 automation_devices.php:649 host.php:1634
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:939 pollers.php:47
 msgid "Down"
@@ -1144,7 +1145,7 @@ msgstr "Offline"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
-#: automation_devices.php:648 automation_devices.php:649 host.php:1589
+#: automation_devices.php:648 automation_devices.php:649 host.php:1633
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:945
 msgid "Up"
@@ -1195,12 +1196,12 @@ msgstr "Appara(a)t(en) toevoegen"
 msgid "Click 'Continue' to Delete the following Discovered device(s)."
 msgstr "Klik op 'Volgende' om de volgende gedetecteerde appara(a)t(en) toe te voegen."
 
-#: automation_devices.php:227 host.php:473
+#: automation_devices.php:227 host.php:484
 msgid "Delete Device(s)"
 msgstr "Verwijder appara(a)t(en)"
 
-#: automation_devices.php:268 automation_devices.php:555 host.php:1475
-#: host.php:1596 host.php:1746 include/global_arrays.php:913
+#: automation_devices.php:268 automation_devices.php:555 host.php:1519
+#: host.php:1640 host.php:1790 include/global_arrays.php:913
 #: include/global_arrays.php:968 include/global_arrays.php:2189
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
@@ -1222,7 +1223,7 @@ msgstr "IP"
 msgid "SNMP Name"
 msgstr "SNMP naam"
 
-#: automation_devices.php:280 host.php:1538 include/global_form.php:1201
+#: automation_devices.php:280 host.php:1582 include/global_form.php:1201
 #: include/global_settings.php:2060
 msgid "Location"
 msgstr "Locatie"
@@ -1244,7 +1245,7 @@ msgstr "Omschrijving"
 msgid "OS"
 msgstr "OS"
 
-#: automation_devices.php:284 host.php:1710 include/global_arrays.php:472
+#: automation_devices.php:284 host.php:1754 include/global_arrays.php:472
 msgid "Uptime"
 msgstr "Uptime"
 
@@ -1255,8 +1256,8 @@ msgstr "SNMP"
 #: automation_devices.php:286 automation_devices.php:510
 #: automation_graph_rules.php:771 automation_networks.php:1077
 #: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1007
-#: data_sources.php:1416 data_templates.php:1163 host.php:712 host.php:837
-#: host.php:1581 host.php:1698 lib/api_automation.php:164
+#: data_sources.php:1416 data_templates.php:1163 host.php:756 host.php:881
+#: host.php:1625 host.php:1742 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
 #: lib/html_reports.php:1843 lib/installer.php:1769 managers.php:218
@@ -1273,7 +1274,7 @@ msgstr "Laatst gecontroleerd"
 msgid "Not Detected"
 msgstr "Niet gedetecteerd"
 
-#: automation_devices.php:324 host.php:1788
+#: automation_devices.php:324 host.php:1832
 msgid "No Devices Found"
 msgstr "Geen apparaat gevonden"
 
@@ -1290,7 +1291,7 @@ msgstr "Netwerk"
 msgid "Reset fields to defaults"
 msgstr "Stel velden opnieuw in"
 
-#: automation_devices.php:501 color.php:570 host.php:1567
+#: automation_devices.php:501 color.php:570 host.php:1611
 #: lib/html_form.php:1305
 msgid "Export"
 msgstr "Exporteer"
@@ -1311,7 +1312,7 @@ msgstr "Ontdekte apparaten verwijderen"
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
-#: data_debug.php:554 data_source_profiles.php:72 host.php:1765
+#: data_debug.php:554 data_source_profiles.php:72 host.php:1809
 #: lib/functions.php:5177 lib/functions.php:5181 lib/html.php:1211
 #: lib/html_reports.php:1633 lib/html_reports.php:1659
 #: lib/html_reports.php:1730 lib/html_reports.php:1731
@@ -1331,7 +1332,7 @@ msgid "Duplicate"
 msgstr "Dupliceer"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
-#: automation_tree_rules.php:30 data_sources.php:40 host.php:41
+#: automation_tree_rules.php:30 data_sources.php:40 host.php:42
 #: include/global_arrays.php:1535 include/global_settings.php:1577 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:412
@@ -1340,7 +1341,7 @@ msgid "Enable"
 msgstr "Inschakelen"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
-#: automation_tree_rules.php:31 data_sources.php:41 host.php:42
+#: automation_tree_rules.php:31 data_sources.php:41 host.php:43
 #: include/global_arrays.php:1536 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
@@ -1440,7 +1441,7 @@ msgstr "Data query"
 #: automation_graph_rules.php:915 automation_networks.php:537
 #: automation_tree_rules.php:821 automation_tree_rules.php:941
 #: automation_tree_rules.php:959 data_debug.php:1013 data_sources.php:1421
-#: host.php:1586 include/global_arrays.php:840 include/global_form.php:1534
+#: host.php:1630 include/global_arrays.php:840 include/global_form.php:1534
 #: include/global_settings.php:360 lib/api_automation.php:169
 #: lib/api_automation.php:1095 lib/html_reports.php:1848
 #: lib/html_reports.php:1940 lib/html_reports.php:1951
@@ -1455,7 +1456,7 @@ msgstr "Ingeschakeld"
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1014 data_sources.php:1422
-#: data_templates.php:1199 host.php:1587 include/global_arrays.php:839
+#: data_templates.php:1199 host.php:1631 include/global_arrays.php:839
 #: include/global_arrays.php:1458 include/global_arrays.php:1750
 #: include/global_settings.php:359 include/global_settings.php:1426
 #: include/global_settings.php:1440 include/global_settings.php:1453
@@ -1623,7 +1624,7 @@ msgstr "Geef dit netwerk een naam."
 msgid "New Network Discovery Range"
 msgstr "Nieuwe netwerk zoek bereik"
 
-#: automation_networks.php:449 automation_networks.php:1074 host.php:1503
+#: automation_networks.php:449 automation_networks.php:1074 host.php:1547
 msgid "Data Collector"
 msgstr "Data Collector"
 
@@ -3160,7 +3161,7 @@ msgid "Summary of issues found for the Data Source."
 msgstr "Eventuele samenvattende problemen die voor de gegevensbron zijn gevonden."
 
 #: data_debug.php:511 data_debug.php:1058 data_sources.php:1443
-#: data_sources.php:1599 host.php:1692 include/global_arrays.php:917
+#: data_sources.php:1599 host.php:1736 include/global_arrays.php:917
 #: include/global_arrays.php:962 include/global_arrays.php:2171
 #: lib/api_automation.php:284 user_admin.php:1296 user_group_admin.php:980
 #: utilities.php:325
@@ -3372,7 +3373,7 @@ msgstr "Profiel"
 
 #: data_debug.php:995 data_debug.php:1011 data_debug.php:1022
 #: data_sources.php:1403 data_sources.php:1420 data_templates.php:991
-#: graphs_new.php:378 host.php:1542 lib/clog_webapi.php:536 lib/html.php:203
+#: graphs_new.php:378 host.php:1586 lib/clog_webapi.php:536 lib/html.php:203
 #: lib/html_reports.php:973 lib/html_reports.php:2074 plugins.php:357
 #: settings.php:518 settings.php:537 settings.php:563 tree.php:794
 #: utilities.php:803 utilities.php:1214
@@ -3651,7 +3652,7 @@ msgstr "Veldnaam"
 msgid "Suggested Value"
 msgstr "Voorgestelde waarde"
 
-#: data_queries.php:834 data_queries.php:942 host.php:795 host.php:938
+#: data_queries.php:834 data_queries.php:942 host.php:839 host.php:982
 #: host_templates.php:535 host_templates.php:589 lib/html.php:63
 #: lib/html_filter.php:55
 msgid "Add"
@@ -3686,13 +3687,13 @@ msgstr "XML bestand gevonden"
 msgid "Could not locate XML file."
 msgstr "XML bestand niet gevonden."
 
-#: data_queries.php:1117 host.php:707 host_templates.php:486
+#: data_queries.php:1117 host.php:751 host_templates.php:486
 #: include/global_arrays.php:2279
 msgid "Associated Graph Templates"
 msgstr "Gekoppelde grafiektemplates"
 
 #: data_queries.php:1121 graph_templates.php:838 graphs_new.php:491
-#: host.php:711 lib/api_automation.php:576
+#: host.php:755 lib/api_automation.php:576
 msgid "Graph Template Name"
 msgstr "Naam grafiektemplate"
 
@@ -3723,7 +3724,7 @@ msgstr "Verwijder gekoppelde grafiek"
 msgid "Data Queries"
 msgstr "Data queries"
 
-#: data_queries.php:1377 host.php:835 utilities.php:1638
+#: data_queries.php:1377 host.php:879 utilities.php:1638
 msgid "Data Query Name"
 msgstr "Data query naam"
 
@@ -4959,7 +4960,7 @@ msgstr "Maak geaggregeerde grafiek"
 msgid "Create Aggregate from Template"
 msgstr "Maak geaggregeerde grafiek vanaf template"
 
-#: graphs.php:61 graphs.php:1251 host.php:45
+#: graphs.php:61 graphs.php:1251 host.php:46
 msgid "Apply Automation Rules"
 msgstr "Automatiseringsregels toepassen"
 
@@ -5232,7 +5233,7 @@ msgstr "Filters opslaan"
 msgid "Edit this Device"
 msgstr "Wijzig dit apparaat"
 
-#: graphs_new.php:436 host.php:667
+#: graphs_new.php:436 host.php:711
 msgid "Create New Device"
 msgstr "Maak nieuw apparaat"
 
@@ -5301,219 +5302,242 @@ msgstr "Maak standaardselectie"
 msgid "Set Default"
 msgstr "Stel in als standaard"
 
-#: host.php:43
+#: host.php:44
 msgid "Change Device Settings"
 msgstr "Wijzig apparaat instellingen"
 
-#: host.php:44 pollers.php:36
+#: host.php:45 pollers.php:36
 msgid "Clear Statistics"
 msgstr "Statistieken opschonen"
 
-#: host.php:46
+#: host.php:47
 msgid "Sync to Device Template"
 msgstr "Synchroniseer naar apparaat template"
 
-#: host.php:117
+#: host.php:48
+#, fuzzy
+#| msgid "Place Device(s) on Tree"
+msgid "Place Device on Report"
+msgstr "Plaats appara(a)t(en) in de boomstructuur"
+
+#: host.php:119
 #, fuzzy
 msgid "Data Query Re-indexed."
 msgstr "Data query index"
 
-#: host.php:125
+#: host.php:127
 #, fuzzy
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
 msgstr "Apparaatgegevensquery opnieuw geïndexeerd. Uitgebreide uitvoer weergegeven."
 
-#: host.php:144
+#: host.php:146
 #, fuzzy
 msgid "Device Debugging Enabled for Device."
 msgstr "Apparaatfoutopsporing ingeschakeld voor apparaat."
 
-#: host.php:151
+#: host.php:153
 #, fuzzy
 msgid "Device Debugging Disabled for Device."
 msgstr "Apparaat is uitgeschakeld"
 
-#: host.php:159
+#: host.php:161
 #, fuzzy
 msgid "Poller Cache for Device Refreshed."
 msgstr "Poller-cache voor apparaat vernieuwd."
 
-#: host.php:161
+#: host.php:163
 #, fuzzy
 msgid "ERROR: Invalid Device ID."
 msgstr "ERROR: Apparaat["
 
-#: host.php:201
+#: host.php:203
 #, fuzzy, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
 msgstr "Apparaat opnieuw indexeren voltooid in% 0.2f seconden. Er zijn% d items geüpdatet."
 
-#: host.php:372
+#: host.php:316
+#, fuzzy, php-format
+#| msgid "Unable to Connect to Server"
+msgid "Unable to add some Devices to Report '%s'"
+msgstr "Verbinding met de server mislukt"
+
+#: host.php:383
 msgid "Click 'Continue' to enable the following Device(s)."
 msgstr "Klik op 'Volgende' om de volgende appara(a)t(en) in te schakelen."
 
-#: host.php:377
+#: host.php:388
 msgid "Enable Device(s)"
 msgstr "Appara(a)t(en) inschakelen"
 
-#: host.php:381
+#: host.php:392
 msgid "Click 'Continue' to disable the following Device(s)."
 msgstr "Klik op 'Volgende' om de volgende appara(a)t(en) uit te schakelen."
 
-#: host.php:386
+#: host.php:397
 msgid "Disable Device(s)"
 msgstr "Appara(a)t(en) uitschakelen"
 
-#: host.php:390
+#: host.php:401
 msgid "Click 'Continue' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value."
 msgstr "Klik op 'Volgende' om de hieronder vermelde apparaat opties voor een of meerdere apparaten aan te passen. Selecteer het selectievak naast de velden die u wilt bijwerken en vul de nieuwe waarde in."
 
-#: host.php:418
+#: host.php:429
 msgid "Update this Field"
 msgstr "Dit veld bijwerken"
 
-#: host.php:441
+#: host.php:452
 msgid "Change Device(s) SNMP Options"
 msgstr "Wijzig de SNMP opties voor dit/deze appara(a)t(en)"
 
-#: host.php:445
+#: host.php:456
 msgid "Click 'Continue' to clear the counters for the following Device(s)."
 msgstr "Klik op 'Volgende' om de tellers voor de volgende appara(a)t(en) te resetten."
 
-#: host.php:450
+#: host.php:461
 msgid "Clear Statistics on Device(s)"
 msgstr "Reset de statistieken van appara(a)t(en)"
 
-#: host.php:454
+#: host.php:465
 msgid "Click 'Continue' to Synchronize the following Device(s) to their Device Template."
 msgstr "Klik op 'Volgende' om de volgende appara(a)t(en) te synchroniseren naar zijn apparaat template."
 
-#: host.php:459
+#: host.php:470
 msgid "Synchronize Device(s)"
 msgstr "Synchroniseer appara(a)t(en)"
 
-#: host.php:463
+#: host.php:474
 msgid "Click 'Continue' to delete the following Device(s)."
 msgstr "Klik op 'Volgende' om de volgende appara(a)t(en) te verwijderen."
 
-#: host.php:466
+#: host.php:477
 msgid "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."
 msgstr "Laat alle grafieken en data bronnen ongemoeid. Data bronnen zullen alleen worden uitgeschakeld."
 
-#: host.php:467
+#: host.php:478
 msgid "Delete all associated Graph(s) and Data Source(s)."
 msgstr "Verwijder de gekoppelde grafiek(en) en data bron(nen)."
 
-#: host.php:477
+#: host.php:488
 msgid "Click 'Continue' to place the following Device(s) under the branch selected below."
 msgstr "Klik op 'Volgende' om de volgende apparaten om de hieronder geselecteerde tak te plaatsen."
 
-#: host.php:487
+#: host.php:498
 msgid "Place Device(s) on Tree"
 msgstr "Plaats appara(a)t(en) in de boomstructuur"
 
-#: host.php:491
+#: host.php:502
 msgid "Click 'Continue' to apply Automation Rules to the following Devices(s)."
 msgstr "Klik op 'Volgende' om de automatiseringsregels toe te passen voor de volgende appara(a)t(en)."
 
-#: host.php:496
+#: host.php:507
 #, fuzzy
 msgid "Run Automation on Device(s)"
 msgstr "Automatisering op apparaat(en) uitvoeren"
 
-#: host.php:634
+#: host.php:536
+#, fuzzy
+#| msgid "Add to Report"
+msgid "Add Devices to Report"
+msgstr "Toevoegen aan rapport"
+
+#: host.php:538
+#, fuzzy
+msgid "You currently have no Reports defined."
+msgstr "U heeft momenteel geen rapporten gedefinieerd."
+
+#: host.php:678
 msgid "Device [new]"
 msgstr "Apparaat [nieuw]"
 
-#: host.php:646
+#: host.php:690
 #, php-format
 msgid "Device [edit: %s]"
 msgstr "Apparaat [wijzig: %s]"
 
-#: host.php:648
+#: host.php:692
 msgid "Disable Device Debug"
 msgstr "Apparaat debug uitschakelen"
 
-#: host.php:650
+#: host.php:694
 msgid "Enable Device Debug"
 msgstr "Apparaat debug inschakelen"
 
-#: host.php:653
+#: host.php:697
 #, fuzzy
 msgid "Repopulate Poller Cache"
 msgstr "Poller cache opnieuw opbouwen"
 
-#: host.php:668
+#: host.php:712
 msgid "Create Graphs for this Device"
 msgstr "Maak grafieken voor dit apparaat"
 
-#: host.php:669
+#: host.php:713
 #, fuzzy
 msgid "Re-Index Device"
 msgstr "Herindexeringsmethode"
 
-#: host.php:672
+#: host.php:716
 msgid "Data Source List"
 msgstr "Lijst met data bronnen"
 
-#: host.php:673
+#: host.php:717
 msgid "Graph List"
 msgstr "Lijst met grafieken"
 
-#: host.php:679
+#: host.php:723
 msgid "Contacting Device"
 msgstr "Proberen apparaat te bereiken"
 
-#: host.php:770 tree.php:1495 tree.php:1569 tree.php:1677
+#: host.php:814 tree.php:1495 tree.php:1569 tree.php:1677
 msgid "Edit"
 msgstr "Wijzig"
 
-#: host.php:770
+#: host.php:814
 msgid "Is Being Graphed"
 msgstr "Wordt gepresenteerd"
 
-#: host.php:770
+#: host.php:814
 msgid "Not Being Graphed"
 msgstr "Wordt niet gepresenteerd"
 
-#: host.php:773
+#: host.php:817
 msgid "Delete Graph Template Association"
 msgstr "Verwijder grafiektemplate koppeling"
 
-#: host.php:780 host_templates.php:513
+#: host.php:824 host_templates.php:513
 msgid "No associated graph templates."
 msgstr "Geen gekoppelde grafiektemplates."
 
-#: host.php:789 host_templates.php:522
+#: host.php:833 host_templates.php:522
 msgid "Add Graph Template"
 msgstr "Grafiektemplate toevoegen"
 
-#: host.php:795
+#: host.php:839
 msgid "Add Graph Template to Device"
 msgstr "Grafiektemplate toevoegen aan apparaat"
 
-#: host.php:811
+#: host.php:855
 msgid "Data Query Debug Information"
 msgstr "Data query debug informatie"
 
-#: host.php:815 lib/functions.php:3832 tree.php:1517 tree.php:1591
+#: host.php:859 lib/functions.php:3832 tree.php:1517 tree.php:1591
 #: tree.php:1699 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Kopiëren"
 
-#: host.php:816 templates_import.php:158
+#: host.php:860 templates_import.php:158
 msgid "Hide"
 msgstr "Verbergen"
 
-#: host.php:831 host_templates.php:545
+#: host.php:875 host_templates.php:545
 msgid "Associated Data Queries"
 msgstr "Gekoppelde data queries"
 
-#: host.php:836 host.php:932
+#: host.php:880 host.php:976
 msgid "Re-Index Method"
 msgstr "Herindexeringsmethode"
 
-#: host.php:838 include/global_arrays.php:1979 include/global_arrays.php:2045
+#: host.php:882 include/global_arrays.php:1979 include/global_arrays.php:2045
 #: include/global_arrays.php:2111 include/global_arrays.php:2147
 #: include/global_arrays.php:2165 include/global_arrays.php:2183
 #: include/global_arrays.php:2201 include/global_arrays.php:2231
@@ -5527,172 +5551,172 @@ msgstr "Herindexeringsmethode"
 msgid "Actions"
 msgstr "Acties"
 
-#: host.php:899
+#: host.php:943
 #, php-format
 msgid " [%d Items, %d Rows]"
 msgstr " [%d items, %d rijen]"
 
-#: host.php:899
+#: host.php:943
 msgid "Fail"
 msgstr "Mislukt"
 
-#: host.php:899 lib/functions.php:4841 lib/functions.php:4846
+#: host.php:943 lib/functions.php:4841 lib/functions.php:4846
 msgid "Success"
 msgstr "Gelukt"
 
-#: host.php:902
+#: host.php:946
 msgid "Reload Query"
 msgstr "Query herladen"
 
-#: host.php:903
+#: host.php:947
 msgid "Verbose Query"
 msgstr "Query uitschrijven"
 
-#: host.php:904
+#: host.php:948
 msgid "Remove Query"
 msgstr "Verwijder query"
 
-#: host.php:910
+#: host.php:954
 msgid "No Associated Data Queries."
 msgstr "Geen gekoppelde data queries."
 
-#: host.php:926 host_templates.php:579
+#: host.php:970 host_templates.php:579
 msgid "Add Data Query"
 msgstr "Data query toevoegen"
 
-#: host.php:938
+#: host.php:982
 msgid "Add Data Query to Device"
 msgstr "Data query toevoegen aan apparaat"
 
-#: host.php:1104 host.php:1117 include/global_arrays.php:624
+#: host.php:1148 host.php:1161 include/global_arrays.php:624
 msgid "Ping"
 msgstr "Ping"
 
-#: host.php:1115 include/global_arrays.php:619
+#: host.php:1159 include/global_arrays.php:619
 msgid "Ping and SNMP Uptime"
 msgstr "Ping en SNMP uptime"
 
-#: host.php:1116 include/global_arrays.php:621
+#: host.php:1160 include/global_arrays.php:621
 msgid "SNMP Uptime"
 msgstr "SNMP uptime"
 
-#: host.php:1118 include/global_arrays.php:620
+#: host.php:1162 include/global_arrays.php:620
 msgid "Ping or SNMP Uptime"
 msgstr "Ping of SNMP uptime"
 
-#: host.php:1119 include/global_arrays.php:622
+#: host.php:1163 include/global_arrays.php:622
 msgid "SNMP Desc"
 msgstr "SNMP Desc"
 
-#: host.php:1120
+#: host.php:1164
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1379 host.php:1550
+#: host.php:1423 host.php:1594
 msgid "Undefined"
 msgstr "Niet gedefinieerd"
 
-#: host.php:1485 include/global_settings.php:569 lib/html.php:2104
+#: host.php:1529 include/global_settings.php:569 lib/html.php:2104
 #: lib/html_reports.php:986
 msgid "Site"
 msgstr "Website"
 
-#: host.php:1567
+#: host.php:1611
 msgid "Export Devices"
 msgstr "Apparaten exporteren"
 
-#: host.php:1588 lib/api_automation.php:171 lib/api_automation.php:1097
+#: host.php:1632 lib/api_automation.php:171 lib/api_automation.php:1097
 msgid "Not Up"
 msgstr "Niet online"
 
-#: host.php:1591 lib/api_automation.php:174 lib/api_automation.php:1100
+#: host.php:1635 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html_utility.php:942 pollers.php:49
 msgid "Recovering"
 msgstr "Herstellende"
 
-#: host.php:1592 lib/api_automation.php:175 lib/api_automation.php:1101
+#: host.php:1636 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:951 lib/plugins.php:1134 lib/plugins.php:1135
 #: lib/rrd.php:2948 lib/rrd.php:2960 user_admin.php:817 utilities.php:211
 #: utilities.php:212 utilities.php:2312
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: host.php:1668 lib/api_automation.php:570 tree.php:867 utilities.php:1927
+#: host.php:1712 lib/api_automation.php:570 tree.php:867 utilities.php:1927
 msgid "Device Description"
 msgstr "Apparaatbeschrijving"
 
-#: host.php:1671
+#: host.php:1715
 msgid "The name by which this Device will be referred to."
 msgstr "De naam waarnaar dit apparaat zal refereren."
 
-#: host.php:1674 include/global_form.php:1193 include/global_form.php:1731
+#: host.php:1718 include/global_form.php:1193 include/global_form.php:1731
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
 #: pollers.php:130 pollers.php:996 user_admin.php:1296 user_group_admin.php:980
 msgid "Hostname"
 msgstr "Hostname"
 
-#: host.php:1677
+#: host.php:1721
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
 msgstr "Dit is een IP adres of hostname. Als het een hostname is, moet het te herleiden zijn door DNS of vanuit uw hosts bestand."
 
-#: host.php:1683
+#: host.php:1727
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
 msgstr "De interne database ID voor dit apparaat. Handig voor automatisering of debugging."
 
-#: host.php:1689
+#: host.php:1733
 msgid "The total number of Graphs generated from this Device."
 msgstr "Het totaal aantal grafieken gegenereerd vanaf dit apparaat."
 
-#: host.php:1695
+#: host.php:1739
 msgid "The total number of Data Sources generated from this Device."
 msgstr "Het totaal aantal data bronnen gegenereerd vanaf dit apparaat."
 
-#: host.php:1701
+#: host.php:1745
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
 msgstr "De monitoringstatus van het apparaat gebaseerd op ping resultaten. Als dit apparaat een speciaal type apparaat is, bijvoorbeeld door het gebruik van hostname 'localhost', of als de controle op beschikbaarheid is uitgeschakeld, zal altijd online worden weergegeven. Indien gebruik wordt gemaakt van cmd.php en het apparaat heeft geen grafieken, zal het apparaat niet worden gepinged en altijd in de status 'onbekend' worden weergegeven."
 
-#: host.php:1704
+#: host.php:1748
 msgid "In State"
 msgstr "In staat"
 
-#: host.php:1707
+#: host.php:1751
 msgid "The amount of time that this Device has been in its current state."
 msgstr "De tijd dat dit apparaat in de huidige staat is."
 
-#: host.php:1713
+#: host.php:1757
 msgid "The current amount of time that the host has been up."
 msgstr "De tijd dat dit apparaat online is."
 
-#: host.php:1716
+#: host.php:1760
 msgid "Poll Time"
 msgstr "Poll tijd"
 
-#: host.php:1719
+#: host.php:1763
 msgid "The amount of time it takes to collect data from this Device."
 msgstr "De tijd die het kost om de data op te halen van dit apparaat."
 
-#: host.php:1722
+#: host.php:1766
 msgid "Current (ms)"
 msgstr "Huidig (ms)"
 
-#: host.php:1725
+#: host.php:1769
 msgid "The current ping time in milliseconds to reach the Device."
 msgstr "De huidige ping tijd in milliseconden om dit apparaat te bereiken."
 
-#: host.php:1728
+#: host.php:1772
 msgid "Average (ms)"
 msgstr "Gemiddeld (ms)"
 
-#: host.php:1731
+#: host.php:1775
 msgid "The average ping time in milliseconds to reach the Device since the counters were cleared for this Device."
 msgstr "De gemiddelde ping tijd in milliseconden om dit apparaat te bereiken, sinds de tellers voor dit apparaat zijn gereset."
 
-#: host.php:1734
+#: host.php:1778
 msgid "Availability"
 msgstr "Beschikbaarheid"
 
-#: host.php:1737
+#: host.php:1781
 msgid "The availability percentage based upon ping results since the counters were cleared for this Device."
 msgstr "Het beschikbaarheidspercentage gebaseerd op ping resultaten sinds de tellers voor dit apparaat zijn gereset."
 
@@ -12722,12 +12746,12 @@ msgstr "Nieuwe vestiging"
 msgid "Web Basic"
 msgstr "Web Basis"
 
-#: lib/auth.php:2001 lib/auth.php:2033 lib/reports.php:1179
+#: lib/auth.php:2001 lib/auth.php:2033 lib/reports.php:1267
 msgid "Branch:"
 msgstr "Tak:"
 
 #: lib/auth.php:2010 lib/auth.php:2041 lib/html_tree.php:1014
-#: lib/reports.php:954 lib/reports.php:1184
+#: lib/reports.php:1042 lib/reports.php:1272
 msgid "Device:"
 msgstr "Apparaat:"
 
@@ -13531,7 +13555,7 @@ msgstr "Templates geselecteerd"
 msgid "Enter keyword"
 msgstr "Voer sleutelwoord in"
 
-#: lib/html.php:399 lib/reports.php:1424 lib/reports.php:1428
+#: lib/html.php:399 lib/reports.php:1512 lib/reports.php:1516
 msgid "Data Query:"
 msgstr "Data query:"
 
@@ -14627,7 +14651,7 @@ msgstr "Grafiektemplate:"
 msgid "Template Based"
 msgstr "Grafiektemplate gebaseerd"
 
-#: lib/html_tree.php:992 lib/reports.php:1174
+#: lib/html_tree.php:992 lib/reports.php:1262
 msgid "Tree:"
 msgstr "Menu:"
 
@@ -16131,62 +16155,77 @@ msgstr "Oude plugin(s)"
 msgid "Not Stated"
 msgstr "Niet vermeld"
 
-#: lib/reports.php:508
+#: lib/reports.php:143
+#, php-format
+msgid "Device '%s' sucessfully added to Report."
+msgstr ""
+
+#: lib/reports.php:146
+#, fuzzy
+msgid "Device not found! Unable to add to Report"
+msgstr "Grafiek werd niet gevonden in een poging om toe te voegen aan het rapport"
+
+#: lib/reports.php:150
+#, php-format
+msgid "Device '%s' not added to Report as it already exists on report."
+msgstr ""
+
+#: lib/reports.php:596
 #, fuzzy, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
 msgstr "Problemen bij het verzenden van rapport '%s' Probleem met e-mail Subsysteemfout is '%s'"
 
-#: lib/reports.php:515
+#: lib/reports.php:603
 #, fuzzy, php-format
 msgid "Report '%s' Sent Successfully"
 msgstr "Rapport met succes verzonden"
 
-#: lib/reports.php:977 lib/reports.php:1309
+#: lib/reports.php:1065 lib/reports.php:1397
 msgid "(No Graph Template)"
 msgstr "(Geen grafiektemplate)"
 
-#: lib/reports.php:1189
+#: lib/reports.php:1277
 msgid "Graph:"
 msgstr "Grafiek:"
 
-#: lib/reports.php:1374
+#: lib/reports.php:1462
 #, fuzzy
 msgid "(Non Query Based)"
 msgstr "Niet query gebaseerd"
 
-#: lib/reports.php:1741
+#: lib/reports.php:1829
 msgid "Add to Report"
 msgstr "Toevoegen aan rapport"
 
-#: lib/reports.php:1758
+#: lib/reports.php:1846
 #, fuzzy
 msgid "Choose the Report to associate these graphs with.  The defaults for alignment will be used for each graph in the list below."
 msgstr "Kies het rapport om deze grafieken aan te koppelen.  De standaardwaarden voor uitlijning worden gebruikt voor elke grafiek in de onderstaande lijst."
 
-#: lib/reports.php:1760
+#: lib/reports.php:1848
 msgid "Report:"
 msgstr "Rapportage:"
 
-#: lib/reports.php:1768
+#: lib/reports.php:1856
 #, fuzzy
 msgid "Graph Timespan:"
 msgstr "Grafiek tijdspanne"
 
-#: lib/reports.php:1771
+#: lib/reports.php:1859
 msgid "Graph Alignment:"
 msgstr "Grafiek uitlijning:"
 
-#: lib/reports.php:1859
+#: lib/reports.php:1947
 #, fuzzy, php-format
 msgid "Created Report Graph Item '<i>%s</i>'"
 msgstr "Rapportagegrafiek item '<i>%s</i>'"
 
-#: lib/reports.php:1861
+#: lib/reports.php:1949
 #, fuzzy, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Mislukt Rapportgrafiekitem '<i>%s</i>' Bestaat al"
 
-#: lib/reports.php:1864
+#: lib/reports.php:1952
 #, fuzzy, php-format
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Overgeslagen Rapport Grafiek Item '<i>%s</i>' Bestaat al"
