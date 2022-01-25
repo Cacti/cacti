@@ -32,6 +32,7 @@ include_once('./lib/data_query.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/ping.php');
 include_once('./lib/poller.php');
+include_once('./lib/reports.php');
 include_once('./lib/snmp.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
@@ -43,7 +44,8 @@ $device_actions = array(
 	4 => __('Change Device Settings'),
 	5 => __('Clear Statistics'),
 	6 => __('Apply Automation Rules'),
-	7 => __('Sync to Device Template')
+	7 => __('Sync to Device Template'),
+	8 => __('Place Device on Report')
 );
 
 $device_actions = api_plugin_hook_function('device_action_array', $device_actions);
@@ -304,6 +306,15 @@ function form_actions() {
 				api_device_clear_statistics($selected_items);
 			} elseif (get_request_var('drp_action') == '7') { // sync to device template
 				api_device_sync_device_templates($selected_items);
+			} elseif (get_request_var('drp_action') == '8') { // place device on report
+				if (!reports_add_devices(get_filter_request_var('report_id'), $selected_items, get_filter_request_var('timespan'), get_filter_request_var('align'))) {
+					$name = db_fetch_cell_prepared('SELECT name
+						FROM reports
+						WHERE id = ?',
+						array(get_request_var('report_id')));
+
+					raise_message('reports_add_error', __('Unable to add some Devices to Report \'%s\'', $name), MESSAGE_LEVEL_WARN);
+				}
 			} elseif (get_request_var('drp_action') == '1') { // delete
 				if (!isset_request_var('delete_type')) {
 					set_request_var('delete_type', 2);
@@ -494,6 +505,39 @@ function form_actions() {
 			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Run Automation on Device(s)') . "'>";
+        } elseif (get_request_var('drp_action') == '8') {
+			global $alignment, $graph_timespans;
+
+			$reports = db_fetch_assoc_prepared('SELECT id, name
+				FROM reports
+				WHERE user_id = ?
+				ORDER BY name',
+				array($_SESSION['sess_user_id']));
+
+			if (cacti_sizeof($reports)) {
+				print "<tr>
+					<td class='textArea'>
+						<p>" . __('Click \'Continue\' to add the selected Graphs to the Report below.') . "</p>
+						<div class='itemlist'><ul>$host_list</ul></div>
+					</td>
+				</tr>
+				<tr><td>" . __('Report Name') . '<br>';
+				form_dropdown('report_id', $reports, 'name', 'id', '', '', '0');
+				print '</td></tr>';
+
+				print '<tr><td>' . __('Timespan') . '<br>';
+				form_dropdown('timespan', $graph_timespans, '', '', '', '', read_user_setting('default_timespan'));
+				print '</td></tr>';
+
+				print '<tr><td>' . __('Align') . '<br>';
+				form_dropdown('align', $alignment, '', '', '', '', REPORTS_ALIGN_CENTER);
+				print "</td></tr>\n";
+
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Devices to Report') . "'>";
+            } else {
+                print "<tr><td class='even'><span class='textError'>" . __('You currently have no Reports defined.') . "</span></td></tr>\n";
+                $save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+            }
 		} else {
 			$save['drp_action'] = get_request_var('drp_action');
 			$save['host_list']  = $host_list;

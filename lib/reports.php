@@ -71,6 +71,94 @@ function duplicate_reports($_id, $_title) {
 	}
 }
 
+function reports_add_devices($report_id, $device_ids, $timespan, $align) {
+	$report_user = db_fetch_cell_prepared('SELECT user_id
+		FROM reports
+		WHERE id = ?',
+		array($report_id));
+
+	if ($report_user != $_SESSION['sess_user_id']) {
+		raise_message('reports_not_owner');
+
+		return false;
+	} else {
+		$errors = 0;
+
+		foreach($device_ids as $device_id) {
+			$sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
+				FROM reports_items
+				WHERE report_id = ?',
+				array($report_id)) + 1;
+
+			$exists = db_fetch_cell_prepared('SELECT id
+				FROM reports_items
+				WHERE host_id = ?
+				AND item_type = 5
+				AND report_id = ?
+				AND timespan = ?',
+				array($device_id, $report_id, $timespan));
+
+			$device_exists = db_fetch_cell_prepared('SELECT id
+				FROM host
+				WHERE id = ?',
+				array($device_id));
+
+			$description = db_fetch_cell_prepared('SELECT description
+				FROM host
+				WHERE id = ?',
+				array($device_id));
+
+			if (!$exists) {
+				if ($device_exists > 0) {
+					$host_template_id = db_fetch_cell_prepared('SELECT host_template_id
+						FROM host
+						WHERE id = ?',
+						array($device_id));
+
+					$site_id = db_fetch_cell_prepared('SELECT site_id
+						FROM host
+						WHERE id = ?',
+						array($device_id));
+
+					// Setup defaults
+					$graph_template_id = -1;
+					$local_graph_id    = 0;
+
+					db_execute_prepared('INSERT INTO reports_items
+						(report_id, item_type, host_template_id, site_id, host_id, graph_template_id, local_graph_id, timespan, align, sequence)
+						VALUES (?, 5, ?, ?, ?, ?, ?, ?, ?, ?)',
+						array(
+							$report_id,
+							$host_template_id,
+							$site_id,
+							$device_id,
+							$graph_template_id,
+							$local_graph_id,
+							$timespan,
+							$align,
+							$sequence
+						)
+					);
+
+					raise_message('reports_add_device_' . $device_id, __('Device \'%s\' sucessfully added to Report.', $description), MESSAGE_LEVEL_INFO);
+				} else {
+					$errors++;
+					raise_message('reports_device_not_found', __('Device not found! Unable to add to Report'), MESSAGE_LEVEL_ERROR);
+				}
+			} else {
+				$errors++;
+				raise_message('reports_no_add_device_' . $device_id, __('Device \'%s\' not added to Report as it already exists on report.', $description), MESSAGE_LEVEL_WARN);
+			}
+		}
+
+		if ($errors) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+}
+
 function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 	$report_user = db_fetch_cell_prepared('SELECT user_id
 		FROM reports
@@ -87,14 +175,14 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 			WHERE report_id = ?',
 			array($report_id)) + 1;
 
-		$existing = db_fetch_cell_prepared('SELECT id
+		$exists = db_fetch_cell_prepared('SELECT id
 			FROM reports_items
 			WHERE local_graph_id = ?
 			AND report_id = ?
 			AND timespan = ?',
 			array($local_graph_id, $report_id, $timespan));
 
-		if (!$existing) {
+		if (!$exists) {
 			$gd = db_fetch_row_prepared('SELECT *
 				FROM graph_local
 				WHERE id = ?',
@@ -1808,14 +1896,14 @@ function reports_graphs_action_execute($action) {
 
 				foreach($selected_items as $local_graph_id) {
 					/* see if the graph is already added */
-					$existing = db_fetch_cell_prepared('SELECT id
+					$exists = db_fetch_cell_prepared('SELECT id
 						FROM reports_items
 						WHERE local_graph_id = ?
 						AND report_id = ?
 						AND timespan = ?',
 						array($local_graph_id, $reports_id, get_nfilter_request_var('timespan')));
 
-					if (!$existing) {
+					if (!$exists) {
 						$sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
 							FROM reports_items
 							WHERE report_id = ?',
