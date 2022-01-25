@@ -285,9 +285,10 @@ define('REPORTS_TYPE_INLINE_JPG_LN', 92);
 define('REPORTS_TYPE_INLINE_GIF_LN', 93);
 
 define('REPORTS_ITEM_GRAPH', 1);
-define('REPORTS_ITEM_TEXT', 2);
-define('REPORTS_ITEM_TREE', 3);
-define('REPORTS_ITEM_HR', 4);
+define('REPORTS_ITEM_TEXT',  2);
+define('REPORTS_ITEM_TREE',  3);
+define('REPORTS_ITEM_HR',    4);
+define('REPORTS_ITEM_HOST',  5);
 
 define('REPORTS_ALIGN_LEFT', 1);
 define('REPORTS_ALIGN_CENTER', 2);

@@ -803,6 +803,10 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 
 				/* start a new section */
 				$column = 0;
+			} elseif ($item['item_type'] == REPORTS_ITEM_HOST) {
+				if (is_tree_allowed($item['host_id'], $report['user_id'])) {
+					$outstr .= reports_expand_device($report, $item, $item['host_id'], $output, $format_ok, $theme);
+				}
 			} elseif ($item['item_type'] == REPORTS_ITEM_TREE) {
 				if (is_tree_allowed($item['tree_id'], $report['user_id'])) {
 					if ($item['tree_cascade'] == 'on') {
@@ -817,6 +821,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 		}
 
 		$outstr .= "\t</table>" . PHP_EOL;
+
 		if ($output == REPORTS_OUTPUT_EMAIL && $include_body) {
 			$outstr .= '</body>';
 		}
@@ -901,14 +906,160 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	return $out . PHP_EOL;
 }
 
+/**
+ * expand a device for including into report
+ *
+ * @param array $report		- parameters for this report mail report
+ * @param int $item			- current graph item
+ * @param int $device_id    - the id of the host to include
+ * @param int $output		- type of output
+ * @param bool $format_ok	- use css styling
+ *
+ * @return string			- html
+ */
+function reports_expand_device(&$report, $item, $device_id, $output, $format_ok, $theme = 'classic') {
+	global $config, $alignment;
+
+	include($config['include_path'] . '/global_arrays.php');
+	include_once($config['library_path'] . '/data_query.php');
+	include_once($config['library_path'] . '/html_tree.php');
+	include_once($config['library_path'] . '/html_utility.php');
+
+	$time = time();
+
+	# get config option for first-day-of-the-week
+	$first_weekdayid = read_user_setting('first_weekdayid');
+
+	$user = $report['user_id'];
+
+	$timespan = array();
+
+	# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
+	get_timespan($timespan, $time, $item['timespan'], $first_weekdayid);
+
+	$outstr = '';
+
+	$graphs = array();
+
+	$sql_where       = '';
+	$title_delimeter = '';
+	$search_key      = '';
+
+	$description = db_fetch_cell_prepared('SELECT h.description
+		FROM host AS h
+		WHERE h.id = ?',
+		array($device_id));
+
+	if ($description != '') {
+		$title .= $title_delimeter . '<strong>' . __('Device:') . "</strong> $description";
+		$title_delimeter = '-> ';
+	}
+
+	if ($item['graph_template_id'] == -1) {
+		$graph_templates = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT
+				gt.id, gt.name
+				FROM graph_local AS gl
+				INNER JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
+				INNER JOIN graph_templates_graph AS gtg
+				ON gtg.local_graph_id=gl.id
+				WHERE gl.host_id = ?
+				ORDER BY gt.name',
+				array($device_id)),
+			'id', 'name'
+		);
+
+		/* for graphs without a template */
+		array_push($graph_templates,
+			array(
+				'id' => '0',
+				'name' => __('(No Graph Template)')
+			)
+		);
+	} else {
+		$graph_templates = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT
+				gt.id, gt.name
+				FROM graph_templates AS gt
+				WHERE id = ?
+				ORDER BY gt.name',
+				array($item['graph_template_id'])),
+			'id', 'name'
+		);
+	}
+
+	if (cacti_sizeof($graph_templates)) {
+		foreach($graph_templates AS $id => $name) {
+			if (!is_graph_template_allowed($id, $user)) {
+				unset($graph_templates[$id]);
+			}
+		}
+	}
+
+	$outgraphs = array();
+	if (cacti_sizeof($graph_templates)) {
+		foreach ($graph_templates as $id => $name) {
+			if ($item['graph_name_regexp'] != '') {
+				$sql_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
+			}
+
+			$graphs = db_fetch_assoc_prepared("SELECT
+				gtg.local_graph_id, gtg.title_cache
+				FROM graph_local AS gl
+				INNER JOIN graph_templates_graph AS gtg
+				ON gtg.local_graph_id=gl.id
+				WHERE gl.graph_template_id = ?
+				AND gl.host_id = ?
+				$sql_where
+				ORDER BY gtg.title_cache",
+				array($id, $device_id));
+
+			if (cacti_sizeof($graphs)) {
+				foreach($graphs as $key => $graph) {
+					if (!is_graph_allowed($graph['local_graph_id'], $user)) {
+						unset($graphs[$key]);
+					}
+				}
+			}
+			$outgraphs = array_merge($outgraphs, $graphs);
+		}
+
+		if (cacti_sizeof($outgraphs)) {
+			/* let's sort the graphs naturally */
+			usort($outgraphs, 'necturally_sort_graphs');
+
+			/* start graph display */
+			if ($title != '') {
+				$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
+
+				if ($format_ok) {
+					$outstr .= "\t\t\t<td class='text'>" . PHP_EOL;
+				} else {
+					$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . PHP_EOL;
+				}
+
+				$outstr .= "\t\t\t\t$title" . PHP_EOL;
+				$outstr .= "\t\t\t</td>" . PHP_EOL;
+				$outstr .= "\t\t</tr>" . PHP_EOL;
+			}
+
+			$outstr .= reports_graph_area($outgraphs, $report, $item, $timespan, $output, $format_ok, $theme);
+		}
+	}
+
+	return $outstr;
+}
 
 /**
  * expand a tree for including into report
+ *
  * @param array $report		- parameters for this report mail report
  * @param int $item			- current graph item
  * @param int $output		- type of output
  * @param bool $format_ok	- use css styling
  * @param bool $nested		- nested tree?
+ *
  * @return string			- html
  */
 function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $theme = 'classic', $nested = false) {
@@ -1025,12 +1176,12 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			}
 
 			if (!empty($leaf_name)) {
-				$title .= $title_delimeter . '<strong>' . __('Leaf:') . "</strong> $leaf_name";
+				$title .= $title_delimeter . '<strong>' . __('Branch:') . "</strong> $leaf_name";
 				$title_delimeter = '-> ';
 			}
 
 			if (!empty($host_name)) {
-				$title .= $title_delimeter . '<strong>' . __('Host:') . "</strong> $host_name";
+				$title .= $title_delimeter . '<strong>' . __('Device:') . "</strong> $host_name";
 				$title_delimeter = '-> ';
 			}
 
@@ -1363,7 +1514,6 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 
 	return $outstr;
 }
-
 
 /**
  * natural sort function

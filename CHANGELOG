@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.20
 -security:   Resolve issues with SQL injections in user_admin and user_group_admin.  Thanks @enesdex
 -security:   Resolve issues with XSS issues in color_template.  Thanks @M0rphling
+-issue: Reports Drag and Drop not functioning
 -issue#3816: Installation can sometimes appear stuck during replication or table conversion
 -issue#4363: Duplicate entries in graph_templates_item - mabye an aftermath of the template edit bug
 -issue#4435: Unable to Save Graph Settings from the Graphs pages
@@ -32,6 +33,7 @@ Cacti CHANGELOG
 -issue#4522: When Creating New Graphs some visible 'Custom Input' values lack a table header
 -issue#4528: Default Setting "Device Threads" is ignored in device creation form
 -issue#4530: Cacti's Reporting Interface is NOT Usable on Large Systems
+-feature: Allow a Device to be a part of a Report outside of a Tree
 
 1.2.19
 -security#4356: Further fixes for grave character security protection

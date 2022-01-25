@@ -1570,6 +1570,7 @@ $item_types = array(
 	REPORTS_ITEM_TEXT  => __('Text'),
 	REPORTS_ITEM_TREE  => __('Tree'),
 	REPORTS_ITEM_GRAPH => __('Graph'),
+	REPORTS_ITEM_HOST  => __('Device'),
 	REPORTS_ITEM_HR    => __('Horizontal Rule')
 );
 

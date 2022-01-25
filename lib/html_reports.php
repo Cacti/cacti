@@ -858,7 +858,7 @@ function reports_item_edit() {
 			array(get_request_var('item_id')));
 	} else {
 		$report_item['report_id']      = get_request_var('id');
-		$report_item['local_graph_id'] = -1;
+		$report_item['local_graph_id'] = 0;
 
 		unset($_SESSION['sess_report_item_host_id']);
 		unset($_SESSION['sess_report_item_host_template_id']);
@@ -971,7 +971,7 @@ function reports_item_edit() {
 			'method' => 'drop_array',
 			'default' => REPORTS_TREE_NONE,
 			'none_value' => __('All'),
-			'description' => __('Select a Tree Branch to use.'),
+			'description' => __('Select a Tree Branch to use for Graphs and Devices.  Devices will be considered as Branches.'),
 			'value' => '|arg1:branch_id|',
 			'array' => $branches
 		),
@@ -979,23 +979,14 @@ function reports_item_edit() {
 			'friendly_name' => __('Cascade to Branches'),
 			'method' => 'checkbox',
 			'default' => '',
-			'description' => __('Should all children branch Graphs be rendered?'),
+			'description' => __('Should all Branch Graphs be rendered?'),
 			'value' => '|arg1:tree_cascade|'
-		),
-		'graph_name_regexp' => array(
-			'friendly_name' => __('Graph Name Regular Expression'),
-			'method' => 'textbox',
-			'default' => '',
-			'description' => __('A Perl compatible regular expression (REGEXP) used to select graphs to include from the tree.'),
-			'max_length' => 255,
-			'size' => 80,
-			'value' => '|arg1:graph_name_regexp|'
 		),
 		'site_id' => array(
 			'friendly_name' => __('Site'),
 			'method' => 'drop_sql',
 			'default' => 0,
-			'description' => __('Select a Site to pick the Device.'),
+			'description' => __('Select a Site to filter for Devices and Graphs.'),
 			'value' => '|arg1:site_id|',
 			'on_change' => 'changeSite()',
 			'sql' => 'SELECT -1 AS id, "' . __('Any') . '" AS name UNION SELECT 0 AS id, "' . __('None') . '" AS name UNION (SELECT id, name FROM sites ORDER BY name)'
@@ -1005,7 +996,7 @@ function reports_item_edit() {
 			'method' => 'drop_sql',
 			'default' => REPORTS_HOST_NONE,
 			'none_value' => __('None'),
-			'description' => __('Select a Device Template to use.'),
+			'description' => __('Select a Device Template to use to filter for Devices or Graphs.'),
 			'value' => '|arg1:host_template_id|',
 			'on_change' => 'changeDeviceTemplate()',
 			'sql' => "SELECT -1 AS id, '" . __('Any') . "' AS name UNION SELECT 0 AS id, '" . __('None') . "' AS name UNION (SELECT DISTINCT ht.id, ht.name FROM host_template AS ht INNER JOIN host AS h ON h.host_template_id=ht.id WHERE h.deleted = '' AND h.disabled = '' ORDER BY name)"
@@ -1013,7 +1004,7 @@ function reports_item_edit() {
 		'host_id' => array(
 			'friendly_name' => __('Device'),
 			'method' => 'drop_callback',
-			'description' => __('Select a Device to specify a Graph'),
+			'description' => __('Select a Device to be used to filter for of select for Graphs in the case of a Device Type.'),
 			'sql' => 'SELECT id, description as name FROM host ORDER BY name',
 			'action' => 'ajax_hosts',
 			'none_value' => __('None'),
@@ -1024,13 +1015,22 @@ function reports_item_edit() {
 		'graph_template_id' => array(
 			'friendly_name' => __('Graph Template'),
 			'method' => 'drop_callback',
-			'description' => __('Select a Graph Template for the host'),
+			'description' => __('Select a Graph Template for the Device to be used to filter for or select Graphs in the case of a Device Type.'),
 			'sql' => 'SELECT id, name FROM graph_templates ORDER BY name',
 			'action' => 'ajax_graph_template',
 			'none_value' => __('None'),
 			'on_change' => 'changeGraphTemplate()',
 			'id' => $report_item['graph_template_id'],
 			'value' => $graph_template_description
+		),
+		'graph_name_regexp' => array(
+			'friendly_name' => __('Graph Name Regular Expression'),
+			'method' => 'textbox',
+			'default' => '',
+			'description' => __('A Perl compatible regular expression (REGEXP) used to select Graphs to include from the Tree or Device.'),
+			'max_length' => 255,
+			'size' => 80,
+			'value' => '|arg1:graph_name_regexp|'
 		),
 		'local_graph_id' => array(
 			'friendly_name' => __('Graph Name'),
@@ -1162,6 +1162,21 @@ function reports_item_edit() {
 			$('#row_host_id').show();
 			$('#row_graph_template_id').show();
 			$('#row_local_graph_id').show();
+			$('#row_timespan').show();
+			$('#item_text').val('');
+			$('#row_item_text').hide();
+			$('#row_font_size').hide();
+		} else if ($('#item_type').val() == '<?php print REPORTS_ITEM_HOST;?>') {
+			$('#row_align').show();
+			$('#row_tree_id').hide();
+			$('#row_branch_id').hide();
+			$('#row_tree_cascade').hide();
+			$('#row_graph_name_regexp').show();
+			$('#row_site_id').show();
+			$('#row_host_template_id').show();
+			$('#row_host_id').show();
+			$('#row_graph_template_id').show();
+			$('#row_local_graph_id').hide();
 			$('#row_timespan').show();
 			$('#item_text').val('');
 			$('#row_item_text').hide();
@@ -1607,7 +1622,33 @@ function display_reports_items($report_id) {
 		foreach ($items as $item) {
 			switch ($item['item_type']) {
 			case REPORTS_ITEM_GRAPH:
-				$item_details = get_graph_title($item['local_graph_id']);
+				$item_details = __('Graph: %s', get_graph_title($item['local_graph_id']));
+
+				if ($css == 'on') {
+					$align = __('Using CSS');
+				} else {
+					$align = ($item['align'] > 0 ? $alignment[$item['align']] : '');
+				}
+
+				$size     = __('N/A');
+				$timespan = ($item['timespan'] > 0 ? $graph_timespans[$item['timespan']] : '');
+
+				break;
+			case REPORTS_ITEM_HOST:
+				$item_details = __('Device: %s', db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($item['host_id'])));
+
+				if ($item['graph_template_id'] == -1) {
+					$item_details .= __(', Graph Template: All Templates');
+				} else {
+					$item_details .= __(', Graph Template: %s', db_fetch_cell_prepared('SELECT name
+						FROM graph_templates
+						WHERE id = ?',
+						array($item['graph_template_id'])));
+				}
+
+				if ($item['graph_name_regexp'] != '') {
+					$item_details .= __(', Using RegEx: "%s"', $item['graph_name_regexp']);
+				}
 
 				if ($css == 'on') {
 					$align = __('Using CSS');
@@ -1666,6 +1707,10 @@ function display_reports_items($report_id) {
 							$item_details .= ' ' . __('(Current Branch)');
 						}
 					}
+				}
+
+				if ($item['graph_name_regexp'] != '') {
+					$item_details .= __(', Using RegEx: "%s"', $item['graph_name_regexp']);
 				}
 
 				if ($css == 'on') {
