@@ -360,6 +360,13 @@ $settings = array(
 				'1' => __('Enabled')
 			)
 		),
+		'i18n_language_handler' => array(
+			'friendly_name' => __('Preferred Language Processor'),
+			'description' => __('Cacti includes support for multiple alternate Language Translation Processors.  It will be default use the PHP built in support, but not all Linux variants includes built in Language Support.  If not selected, Cacti will choose the first one found.'),
+			'method' => 'drop_array',
+			'default' => CACTI_LANGUAGE_HANDLER_NONE,
+			'array' => $i18n_supported_languages
+		),
 		'default_date_format' => array(
 			'friendly_name' => __('Date Display Format'),
 			'description' => __('The System default date format to use in Cacti.'),

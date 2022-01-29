@@ -1802,6 +1802,22 @@ $i18n_months_short = array(
 	'Dec'	=> __x('A short textual representation of a month, three letters', 'Dec'),
 );
 
+$i18n_supported_languages = array(
+	CACTI_LANGUAGE_HANDLER_NONE         => __('Use the Built In Translator'),
+);
+
+if (is_dir($config['base_path'] . '/include/vendor/phpgettext')) {
+	$i18n_supported_languages[CACTI_LANGUAGE_HANDLER_PHPGETTEXT]  = __('Use the PHP GetText Handler');
+}
+
+if (is_dir($config['base_path'] . '/include/vendor/gettext')) {
+	$i18n_supported_languages[CACTI_LANGUAGE_HANDLER_OSCAROTERO]  = __('Use the Oscarotero GetText Handler');
+}
+
+if (is_dir($config['base_path'] . '/include/vendor/monotranslator')) {
+	$i18n_supported_languages[CACTI_LANGUAGE_HANDLER_MOTRANSLATOR]  = __('Use the MonoTranslator GetText Handler');
+}
+
 $i18n_weekdays = array(
 	'Sunday'	=> __('Sunday'),
 	'Monday'	=> __('Monday'),
