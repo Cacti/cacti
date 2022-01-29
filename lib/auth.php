@@ -2699,6 +2699,8 @@ function get_allowed_graph_items($sql_where, $sort = 'name' , $limit = 20, $user
 }
 
 function secpass_login_process($username) {
+	global $error, $error_msg;
+
 	// Mark failed login attempts
 	$secPassLockFailed = read_config_option('secpass_lockfailed');
 	if ($secPassLockFailed > 0) {
@@ -2736,11 +2738,13 @@ function secpass_login_process($username) {
 				}
 
 				$valid_pass = compat_password_verify($p, $user['password']);
+
 				cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 				if (!$valid_pass) {
 					$failed = intval($user['failed_attempts']) + 1;
-					cacti_log('LOGIN: WARNING: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')', false, 'AUTH', POLLER_VERBOSITY_LOW);
+
+					cacti_log('LOGIN FAILED : WARNING: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')', false, 'AUTH', POLLER_VERBOSITY_LOW);
 
 					if ($failed >= $max) {
 						db_execute_prepared("UPDATE user_auth
@@ -2768,21 +2772,21 @@ function secpass_login_process($username) {
 						VALUES (?, ?, 0, ?, NOW())',
 						array($username, isset($user['id']) ? $user['id']:0, get_client_addr('')));
 
-					cacti_log("LOGIN: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.", false, 'AUTH');
+					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.  Account is locked out.", false, 'AUTH');
 
 					if ($user['locked'] != '') {
-						display_custom_error_message(__('This account has been locked.'));
-						header('Location: index.php?header=false');
-						exit;
+						$error     = true;
+						$error_msg = __('Your account has been locked.  Please contact your Administrator.');
 					}
 
 					return false;
 				}
 
 				if ($user['locked'] != '') {
-					display_custom_error_message(__('This account has been locked.'));
-					header('Location: index.php?header=false');
-					exit;
+					$error     = true;
+					$error_msg = __('Your account has been locked.  Please contact your Administrator.');
+
+					return false;
 				}
 			}
 		}
@@ -2801,9 +2805,11 @@ function secpass_login_process($username) {
 				AND enabled = 'on'",
 				array($username));
 
-			$message = __('Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now.');
+			$error_msg = __('Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now.');
 
-			display_custom_error_message($message);
+			raise_message('forced_password', $error_msg, MESSAGE_LEVEL_INFO);
+			header('Location: auth_changepassword.php?header=false');
+			exit;
 		}
 	}
 

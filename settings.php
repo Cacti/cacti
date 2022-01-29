@@ -991,6 +991,12 @@ default:
 			$('#row_secpass_lock_header').hide();
 			$('#row_secpass_lockfailed').hide();
 			$('#row_secpass_unlocktime').hide();
+			$('#row_basic_header').hide();
+			$('#row_basic_auth_fail_message').hide();
+			$('#row_path_basic_mapfile').hide();
+			$('#row_ldap_network_timeout').hide();
+			$('#row_ldap_bind_timeout').hide();
+			$('#row_ldap_tls_certificate').hide();
 			break;
 		case '1': // Builtin
 			$('#row_path_basic_mapfile').hide();
@@ -1034,6 +1040,12 @@ default:
 			$('#row_secpass_lock_header').show();
 			$('#row_secpass_lockfailed').show();
 			$('#row_secpass_unlocktime').show();
+			$('#row_basic_header').hide();
+			$('#row_basic_auth_fail_message').hide();
+			$('#row_path_basic_mapfile').hide();
+			$('#row_ldap_network_timeout').hide();
+			$('#row_ldap_bind_timeout').hide();
+			$('#row_ldap_tls_certificate').hide();
 			break;
 		case '2': // Web Basic
 			$('#row_path_basic_mapfile').show();
@@ -1077,6 +1089,12 @@ default:
 			$('#row_secpass_lock_header').hide();
 			$('#row_secpass_lockfailed').hide();
 			$('#row_secpass_unlocktime').hide();
+			$('#row_basic_header').show();
+			$('#row_basic_auth_fail_message').show();
+			$('#row_path_basic_mapfile').show();
+			$('#row_ldap_network_timeout').hide();
+			$('#row_ldap_bind_timeout').hide();
+			$('#row_ldap_tls_certificate').hide();
 			break;
 		case '4': // Multiple Domains
 			$('#row_path_basic_mapfile').hide();
@@ -1120,6 +1138,12 @@ default:
 			$('#row_secpass_lock_header').show();
 			$('#row_secpass_lockfailed').show();
 			$('#row_secpass_unlocktime').show();
+			$('#row_basic_header').hide();
+			$('#row_basic_auth_fail_message').hide();
+			$('#row_path_basic_mapfile').hide();
+			$('#row_ldap_network_timeout').show();
+			$('#row_ldap_bind_timeout').show();
+			$('#row_ldap_tls_certificate').show();
 			break;
 		case '3': // Single Domain
 			$('#row_special_users_header').show();
@@ -1162,6 +1186,12 @@ default:
 			$('#row_secpass_lock_header').show();
 			$('#row_secpass_lockfailed').show();
 			$('#row_secpass_unlocktime').show();
+			$('#row_basic_header').hide();
+			$('#row_basic_auth_fail_message').hide();
+			$('#row_path_basic_mapfile').hide();
+			$('#row_ldap_network_timeout').show();
+			$('#row_ldap_bind_timeout').show();
+			$('#row_ldap_tls_certificate').show();
 			initSearch();
 			initGroupMember();
 			break;
@@ -1206,6 +1236,12 @@ default:
 			$('#row_secpass_lock_header').show();
 			$('#row_secpass_lockfailed').show();
 			$('#row_secpass_unlocktime').show();
+			$('#row_basic_header').hide();
+			$('#row_basic_auth_fail_message').hide();
+			$('#row_path_basic_mapfile').hide();
+			$('#row_ldap_network_timeout').hide();
+			$('#row_ldap_bind_timeout').hide();
+			$('#row_ldap_tls_certificate').hide();
 			break;
 		}
 	}

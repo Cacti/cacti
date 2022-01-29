@@ -938,8 +938,8 @@ $settings = array(
 			'friendly_name' => __('Exclusion Regex'),
 			'description' => __('Any strings that match this regex will be excluded from the user display.  <strong>For example, if you want to exclude all log lines that include the words \'Admin\' or \'Login\' you would type \'(Admin || Login)\'</strong>'),
 			'method' => 'textarea',
-			'textarea_rows' => '5',
-			'textarea_cols' => '45',
+			'textarea_rows' => '4',
+			'textarea_cols' => '80',
 			'max_length' => 512
 		),
 		'realtime_header' => array(
@@ -1370,6 +1370,19 @@ $settings = array(
 			'none_value' => __('No User'),
 			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 AND id NOT IN (' . $admin_account . ') ORDER BY username',
 			'default' => '0'
+		),
+		'basic_header' => array(
+			'friendly_name' => __('Basic Authentication Settings'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+		),
+		'basic_auth_fail_message' => array(
+			'friendly_name' => __('Basic Auth Login Failure Message'),
+			'description' => __('When using basic authentication, if there are issues mapping the username to a valid Cacti account, the message included here will be displayed to users.  It can include both text and HTML.'),
+			'method' => 'textarea',
+			'textarea_rows' => '4',
+			'textarea_cols' => '80',
+			'max_length' => 512
 		),
 		'path_basic_mapfile' => array(
 			'friendly_name' => __('Basic Auth Mapfile'),
