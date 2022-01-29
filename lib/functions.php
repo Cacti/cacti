@@ -4195,8 +4195,8 @@ function appendHeaderSuppression($url) {
 }
 
 function admin_email($subject, $message) {
-	if (read_config_option('admin_user')) {
-		if (read_config_option('notify_admin')) {
+	if (read_config_option('admin_user') > 0) {
+		if (read_config_option('notify_admin') == 'on') {
 			$admin_details = db_fetch_row_prepared('SELECT full_name, email_address
 				FROM user_auth
 				WHERE id = ?',
