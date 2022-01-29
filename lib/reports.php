@@ -399,7 +399,7 @@ function reports_log($string, $output = false, $environ = 'REPORTS', $level = PO
  * @param bool $force   - when forced, lastsent time will not be entered (e.g. Send Now)
  */
 function generate_report($report, $force = false) {
-	global $config, $alignment;
+	global $config, $alignment, $reports_interval, $attach_types;
 
 	include_once($config['base_path'] . '/lib/time.php');
 	include_once($config['base_path'] . '/lib/rrd.php');
