@@ -1039,7 +1039,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 		array($device_id));
 
 	if ($description != '') {
-		$title .= $title_delimeter . '<strong>' . __('Device:') . "</strong> $description";
+		$title = $title_delimeter . '<strong>' . __('Device:') . "</strong> $description";
 		$title_delimeter = '-> ';
 	}
 
