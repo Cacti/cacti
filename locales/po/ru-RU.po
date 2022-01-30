@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-01-29 16:45-0500\n"
+"POT-Creation-Date: 2022-01-30 12:00-0500\n"
 "PO-Revision-Date: 2021-10-21 08:40-0400\n"
 "Last-Translator: Sergey <sbolshagin@gmail.com>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\n"
@@ -153,8 +153,8 @@ msgstr "Нажмите кнопку \"Продолжить\", чтобы уда�
 #: links.php:197 links.php:206 links.php:215 managers.php:1004
 #: managers.php:1062 plugins.php:517 pollers.php:559 pollers.php:568
 #: pollers.php:577 pollers.php:586 pollers.php:595 sites.php:359 sites.php:369
-#: tree.php:654 tree.php:663 tree.php:672 tree.php:681 user_admin.php:337
-#: user_admin.php:377 user_admin.php:388 user_admin.php:399 user_admin.php:422
+#: tree.php:654 tree.php:663 tree.php:672 tree.php:681 user_admin.php:335
+#: user_admin.php:375 user_admin.php:386 user_admin.php:397 user_admin.php:420
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:449 user_group_admin.php:468
 #: user_group_admin.php:479 user_group_admin.php:490 vdef.php:270 vdef.php:280
@@ -190,8 +190,8 @@ msgstr "Отмена"
 #: links.php:206 links.php:215 managers.php:1004 managers.php:1062
 #: pollers.php:559 pollers.php:568 pollers.php:577 pollers.php:586
 #: pollers.php:595 sites.php:359 sites.php:369 tree.php:654 tree.php:663
-#: tree.php:672 tree.php:681 user_admin.php:337 user_admin.php:377
-#: user_admin.php:388 user_admin.php:399 user_admin.php:422
+#: tree.php:672 tree.php:681 user_admin.php:335 user_admin.php:375
+#: user_admin.php:386 user_admin.php:397 user_admin.php:420
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:449 user_group_admin.php:468
 #: user_group_admin.php:479 user_group_admin.php:490 vdef.php:270 vdef.php:280
@@ -355,7 +355,7 @@ msgid "Graph Items [edit: %s]"
 msgstr "Графики [редактировать %s]"
 
 #: aggregate_graphs.php:653 data_sources.php:1056 lib/html_reports.php:1463
-#: user_admin.php:2001
+#: user_admin.php:1999
 #, php-format
 msgid "[edit: %s]"
 msgstr "[редакция: %s"
@@ -484,9 +484,9 @@ msgstr "Сопоставление графиков"
 #: lib/html_tree.php:1032 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:347 pollers.php:879 rrdcleaner.php:507
 #: settings.php:526 settings.php:545 settings.php:594 sites.php:476
-#: tree.php:818 tree.php:853 tree.php:888 tree.php:1925 user_admin.php:2258
-#: user_admin.php:2594 user_admin.php:2701 user_admin.php:2787
-#: user_admin.php:2890 user_admin.php:2975 user_admin.php:3060
+#: tree.php:818 tree.php:853 tree.php:888 tree.php:1925 user_admin.php:2262
+#: user_admin.php:2624 user_admin.php:2731 user_admin.php:2817
+#: user_admin.php:2920 user_admin.php:3005 user_admin.php:3090
 #: user_domains.php:654 user_group_admin.php:1844 user_group_admin.php:2166
 #: user_group_admin.php:2274 user_group_admin.php:2377
 #: user_group_admin.php:2462 user_group_admin.php:2547 utilities.php:855
@@ -503,7 +503,7 @@ msgstr "Найти"
 #: include/global_arrays.php:1915 lib/api_automation.php:283 lib/html.php:1683
 #: lib/html.php:1685 lib/html.php:1763 lib/html_graph.php:209
 #: lib/html_tree.php:1087 lib/html_tree.php:1416 tree.php:797 tree.php:2069
-#: user_admin.php:1027 user_admin.php:1296 user_admin.php:2622
+#: user_admin.php:1025 user_admin.php:1294 user_admin.php:2652
 #: user_group_admin.php:825 user_group_admin.php:980 user_group_admin.php:2194
 #: utilities.php:320
 msgid "Graphs"
@@ -523,9 +523,9 @@ msgstr "Графики"
 #: lib/api_automation.php:483 lib/api_automation.php:717
 #: lib/api_automation.php:1109 lib/html_reports.php:1857 links.php:320
 #: managers.php:159 managers.php:503 plugins.php:371 pollers.php:889
-#: rrdcleaner.php:533 sites.php:486 tree.php:1935 user_admin.php:2268
-#: user_admin.php:2626 user_admin.php:2711 user_admin.php:2815
-#: user_admin.php:2900 user_admin.php:2985 user_admin.php:3070
+#: rrdcleaner.php:533 sites.php:486 tree.php:1935 user_admin.php:2284
+#: user_admin.php:2656 user_admin.php:2741 user_admin.php:2845
+#: user_admin.php:2930 user_admin.php:3015 user_admin.php:3100
 #: user_domains.php:33 user_domains.php:664 user_domains.php:748
 #: user_group_admin.php:1854 user_group_admin.php:2198
 #: user_group_admin.php:2302 user_group_admin.php:2387
@@ -554,9 +554,9 @@ msgstr "Часть совокупности"
 #: lib/html_graph.php:190 lib/html_reports.php:1868 lib/html_tree.php:1074
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:924 sites.php:498 tree.php:1947
-#: user_admin.php:2280 user_admin.php:2644 user_admin.php:2729
-#: user_admin.php:2833 user_admin.php:2918 user_admin.php:3003
-#: user_admin.php:3088
+#: user_admin.php:2296 user_admin.php:2674 user_admin.php:2759
+#: user_admin.php:2863 user_admin.php:2948 user_admin.php:3033
+#: user_admin.php:3118
 msgid "Go"
 msgstr "Выполнить"
 
@@ -569,9 +569,9 @@ msgstr "Выполнить"
 #: graphs_new.php:400 host.php:1609 host_templates.php:747
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:924 sites.php:498 tree.php:1947
-#: user_admin.php:2280 user_admin.php:2644 user_admin.php:2729
-#: user_admin.php:2833 user_admin.php:2918 user_admin.php:3003
-#: user_admin.php:3088 user_domains.php:676 user_group_admin.php:1866
+#: user_admin.php:2296 user_admin.php:2674 user_admin.php:2759
+#: user_admin.php:2863 user_admin.php:2948 user_admin.php:3033
+#: user_admin.php:3118 user_domains.php:676 user_group_admin.php:1866
 #: user_group_admin.php:2216 user_group_admin.php:2320
 #: user_group_admin.php:2405 user_group_admin.php:2490
 #: user_group_admin.php:2575 utilities.php:845 utilities.php:1200
@@ -594,9 +594,9 @@ msgstr "Установить/Обновить фильтры"
 #: lib/html_graph.php:307 lib/html_reports.php:1869 lib/html_tree.php:1075
 #: lib/html_tree.php:1185 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:384 pollers.php:925 sites.php:499 tree.php:1948
-#: user_admin.php:2281 user_admin.php:2645 user_admin.php:2730
-#: user_admin.php:2834 user_admin.php:2919 user_admin.php:3004
-#: user_admin.php:3089 user_domains.php:677
+#: user_admin.php:2297 user_admin.php:2675 user_admin.php:2760
+#: user_admin.php:2864 user_admin.php:2949 user_admin.php:3034
+#: user_admin.php:3119 user_domains.php:677
 msgid "Clear"
 msgstr "Очистить"
 
@@ -608,9 +608,9 @@ msgstr "Очистить"
 #: graphs_new.php:401 host.php:1610 host_templates.php:748
 #: lib/html_graph.php:191 lib/html_tree.php:1075 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:384 pollers.php:925
-#: sites.php:499 tree.php:1948 user_admin.php:2281 user_admin.php:2645
-#: user_admin.php:2730 user_admin.php:2834 user_admin.php:2919
-#: user_admin.php:3004 user_admin.php:3089 user_domains.php:677
+#: sites.php:499 tree.php:1948 user_admin.php:2297 user_admin.php:2675
+#: user_admin.php:2760 user_admin.php:2864 user_admin.php:2949
+#: user_admin.php:3034 user_admin.php:3119 user_domains.php:677
 #: user_group_admin.php:1867 user_group_admin.php:2217
 #: user_group_admin.php:2321 user_group_admin.php:2406
 #: user_group_admin.php:2491 user_group_admin.php:2576 utilities.php:846
@@ -620,7 +620,7 @@ msgid "Clear Filters"
 msgstr "Очистить фильтры"
 
 #: aggregate_graphs.php:1360 aggregate_graphs.php:1696 graphs.php:1215
-#: lib/api_automation.php:574 user_admin.php:1035 user_group_admin.php:833
+#: lib/api_automation.php:574 user_admin.php:1033 user_group_admin.php:833
 msgid "Graph Title"
 msgstr "Название Графика"
 
@@ -630,8 +630,8 @@ msgstr "Название Графика"
 #: data_sources.php:1615 data_templates.php:1134 graph_templates.php:844
 #: graphs.php:2200 host.php:1724 host_templates.php:834
 #: lib/api_automation.php:282 pollers.php:995 sites.php:572 tree.php:2009
-#: user_admin.php:1035 user_admin.php:1149 user_admin.php:1296
-#: user_admin.php:1444 user_admin.php:1585 user_group_admin.php:682
+#: user_admin.php:1033 user_admin.php:1147 user_admin.php:1294
+#: user_admin.php:1442 user_admin.php:1583 user_group_admin.php:682
 #: user_group_admin.php:833 user_group_admin.php:980 user_group_admin.php:1123
 #: user_group_admin.php:1257
 msgid "ID"
@@ -655,7 +655,7 @@ msgstr "Размер"
 #: gprint_presets.php:437 graph_templates.php:901 host_templates.php:875
 #: include/global_settings.php:475 include/global_settings.php:834
 #: include/global_settings.php:1734 lib/api_automation.php:1438 links.php:404
-#: tree.php:2102 tree.php:2103 user_admin.php:2352 user_domains.php:767
+#: tree.php:2102 tree.php:2103 user_admin.php:2377 user_domains.php:767
 #: user_group_admin.php:1936 vdef.php:905
 msgid "No"
 msgstr "Нет"
@@ -671,7 +671,7 @@ msgstr "Нет"
 #: include/global_settings.php:833 include/global_settings.php:1733
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
 #: lib/installer.php:3424 links.php:404 tree.php:2102 tree.php:2103
-#: user_admin.php:2350 user_domains.php:763 user_domains.php:767
+#: user_admin.php:2375 user_domains.php:763 user_domains.php:767
 #: user_group_admin.php:1934 vdef.php:905
 msgid "Yes"
 msgstr "Да"
@@ -695,7 +695,7 @@ msgstr "Агрегированные графики"
 #: graph_view.php:625 graphs.php:1987 host.php:1564
 #: include/global_arrays.php:2771 include/global_settings.php:568
 #: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:1038
-#: rrdcleaner.php:383 user_admin.php:2600 user_admin.php:2793
+#: rrdcleaner.php:383 user_admin.php:2630 user_admin.php:2823
 #: user_group_admin.php:2172 user_group_admin.php:2280 utilities.php:1783
 msgid "Template"
 msgstr "Шаблон"
@@ -708,11 +708,11 @@ msgstr "Шаблон"
 #: graphs_items.php:354 host.php:1533 host.php:1551 host.php:1568 host.php:1629
 #: lib/api_automation.php:150 lib/api_automation.php:168
 #: lib/api_automation.php:429 lib/api_automation.php:446
-#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2572
-#: lib/auth.php:2601 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
+#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2685
+#: lib/auth.php:2714 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
 #: lib/html_reports.php:877 lib/html_reports.php:881 lib/html_reports.php:992
 #: lib/html_reports.php:1002 lib/html_reports.php:1847 managers.php:482
-#: managers.php:735 user_admin.php:2604 user_admin.php:2797
+#: managers.php:735 user_admin.php:2634 user_admin.php:2827
 #: user_group_admin.php:2176 user_group_admin.php:2284 utilities.php:821
 #: utilities.php:1502 utilities.php:1787 utilities.php:1832 utilities.php:2616
 #: utilities.php:2868 utilities.php:2881
@@ -739,15 +739,15 @@ msgstr "Любой"
 #: include/global_settings.php:588 include/global_settings.php:1212
 #: include/global_settings.php:1808 lib/api_automation.php:151
 #: lib/api_automation.php:430 lib/api_automation.php:447
-#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2575
-#: lib/auth.php:2604 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
+#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2688
+#: lib/auth.php:2717 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
 #: lib/html.php:2109 lib/html_form.php:331 lib/html_reports.php:888
 #: lib/html_reports.php:892 lib/html_reports.php:922 lib/html_reports.php:992
 #: lib/html_reports.php:998 lib/html_reports.php:1002 lib/html_reports.php:1010
 #: lib/html_reports.php:1021 lib/html_reports.php:1041
 #: lib/html_reports.php:1295 lib/html_reports.php:1300
 #: lib/html_reports.php:1305 settings.php:519 settings.php:538 settings.php:564
-#: user_admin.php:2605 user_admin.php:2798 user_group_admin.php:2177
+#: user_admin.php:2635 user_admin.php:2828 user_group_admin.php:2177
 #: user_group_admin.php:2285 utilities.php:1788
 msgid "None"
 msgstr "Нет"
@@ -816,7 +816,7 @@ msgstr "Агрегированные шаблоны"
 #: aggregate_templates.php:598 automation_templates.php:399
 #: automation_templates.php:482 color_templates.php:643
 #: include/global_arrays.php:925 include/global_arrays.php:987
-#: lib/installer.php:2444 user_admin.php:2896 user_group_admin.php:2383
+#: lib/installer.php:2444 user_admin.php:2926 user_group_admin.php:2383
 msgid "Templates"
 msgstr "Шаблоны"
 
@@ -917,7 +917,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "Невозможно повторно использовать для смены %d пароля."
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1559 lib/functions.php:3195 lib/html.php:2455
+#: include/global_form.php:1559 lib/functions.php:3181 lib/html.php:2455
 msgid "Change Password"
 msgstr "Изменить пароль"
 
@@ -932,7 +932,7 @@ msgid "Please enter your new Cacti password."
 msgstr "Пожайлуста введите Ваши логин и пароль:"
 
 #: auth_changepassword.php:342 auth_login.php:831 auth_login.php:834
-#: include/global_settings.php:1642 lib/functions.php:4831
+#: include/global_settings.php:1642 lib/functions.php:4817
 msgid "Username"
 msgstr "Имя Пользователя"
 
@@ -959,22 +959,22 @@ msgstr " Сохранить "
 msgid "Version %1$s | %2$s"
 msgstr "Версия %1$s | %2$s"
 
-#: auth_changepassword.php:380 user_admin.php:2065
+#: auth_changepassword.php:380 user_admin.php:2063
 #, fuzzy
 msgid "Password Too Short"
 msgstr "Слишком короткий пароль"
 
-#: auth_changepassword.php:386 user_admin.php:2070
+#: auth_changepassword.php:386 user_admin.php:2068
 #, fuzzy
 msgid "Password Validation Passes"
 msgstr "Подтверждение пароля Пассы проверки пароля"
 
-#: auth_changepassword.php:402 user_admin.php:2084
+#: auth_changepassword.php:402 user_admin.php:2082
 #, fuzzy
 msgid "Passwords do Not Match"
 msgstr "Пароли не совпадают"
 
-#: auth_changepassword.php:406 user_admin.php:2087
+#: auth_changepassword.php:406 user_admin.php:2085
 #, fuzzy
 msgid "Passwords Match"
 msgstr "Соответствие паролей"
@@ -1054,20 +1054,21 @@ msgstr "Аутентификация"
 msgid "Enter your Username and Password below"
 msgstr "Введите имя пользователя и пароль ниже"
 
-#: auth_login.php:839 include/global_form.php:1526 lib/functions.php:4832
+#: auth_login.php:839 include/global_form.php:1526 lib/functions.php:4818
 msgid "Password"
 msgstr "Пароль"
 
-#: auth_login.php:851 include/global_settings.php:2085 lib/auth.php:350
-#: lib/auth.php:372 lib/auth.php:383
+#: auth_login.php:851 include/global_settings.php:2085 lib/auth.php:463
+#: lib/auth.php:485 lib/auth.php:496 user_admin.php:2273
 msgid "Local"
 msgstr "Локальный"
 
-#: auth_login.php:855 include/global_arrays.php:796 lib/auth.php:384
+#: auth_login.php:855 include/global_arrays.php:796 lib/auth.php:497
 msgid "LDAP"
 msgstr "LDAP"
 
-#: auth_login.php:873 user_admin.php:2332 user_group_admin.php:682
+#: auth_login.php:873 user_admin.php:2268 user_admin.php:2357
+#: user_group_admin.php:682
 msgid "Realm"
 msgstr "Царство"
 
@@ -1085,7 +1086,7 @@ msgstr "Не верный логин или пароль, попробуйте �
 
 #: auth_profile.php:76 include/global_settings.php:38
 #: include/global_settings.php:1092 include/global_settings.php:1335
-#: managers.php:39 user_admin.php:1985 user_group_admin.php:1664
+#: managers.php:39 user_admin.php:1983 user_group_admin.php:1664
 msgid "General"
 msgstr "Общие"
 
@@ -1110,7 +1111,7 @@ msgstr "Список"
 msgid "Preview View"
 msgstr "Предварительный просмотр Представления Toolset"
 
-#: auth_profile.php:317 include/global_form.php:1502 user_admin.php:2329
+#: auth_profile.php:317 include/global_form.php:1502 user_admin.php:2353
 msgid "User Name"
 msgstr "Имя Пользователя"
 
@@ -1120,7 +1121,7 @@ msgid "The login name for this user."
 msgstr "Имя пользователя для входа в систему."
 
 #: auth_profile.php:325 include/global_form.php:1510
-#: include/global_settings.php:1678 user_admin.php:2330 user_domains.php:496
+#: include/global_settings.php:1678 user_admin.php:2355 user_domains.php:496
 #: user_group_admin.php:682 utilities.php:919
 msgid "Full Name"
 msgstr "Полное Имя"
@@ -1168,7 +1169,7 @@ msgstr "Выход из системы Повсюду"
 msgid "Clear all your Login Session Tokens."
 msgstr "Очистите все свои жетоны сеанса входа в систему."
 
-#: auth_profile.php:381 user_admin.php:1992 user_group_admin.php:1671
+#: auth_profile.php:381 user_admin.php:1990 user_group_admin.php:1671
 msgid "User Settings"
 msgstr "Настройки"
 
@@ -1281,7 +1282,7 @@ msgstr "Удалить устройство(ы)"
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
 #: lib/api_automation.php:1211 pollers.php:1001 sites.php:573 tree.php:796
-#: tree.php:2063 user_admin.php:1288 user_admin.php:2811
+#: tree.php:2063 user_admin.php:1286 user_admin.php:2841
 #: user_group_admin.php:972 user_group_admin.php:2298 utilities.php:315
 msgid "Devices"
 msgstr "Устройства"
@@ -1312,7 +1313,7 @@ msgstr "Контакт"
 #: include/global_form.php:1186 include/global_form.php:1371
 #: include/global_form.php:1723 lib/api_automation.php:278
 #: lib/api_automation.php:1218 lib/installer.php:1769 lib/installer.php:2445
-#: managers.php:216 user_admin.php:1149 user_admin.php:1296
+#: managers.php:216 user_admin.php:1147 user_admin.php:1294
 #: user_group_admin.php:980 user_group_admin.php:1922
 msgid "Description"
 msgstr "Описание"
@@ -1337,7 +1338,7 @@ msgstr "SNMP"
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
 #: lib/html_reports.php:1843 lib/installer.php:1769 managers.php:218
-#: plugins.php:353 plugins.php:459 pollers.php:997 user_admin.php:1296
+#: plugins.php:353 plugins.php:459 pollers.php:997 user_admin.php:1294
 #: user_group_admin.php:980
 msgid "Status"
 msgstr "Статус"
@@ -1390,10 +1391,10 @@ msgstr "Очистка Открытые устройства"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1809
-#: lib/functions.php:5177 lib/functions.php:5181 lib/html.php:1211
+#: lib/functions.php:5163 lib/functions.php:5167 lib/html.php:1211
 #: lib/html_reports.php:1633 lib/html_reports.php:1659
 #: lib/html_reports.php:1730 lib/html_reports.php:1731
-#: lib/html_reports.php:1732 pollers.php:1050 user_admin.php:2344
+#: lib/html_reports.php:1732 pollers.php:1050 user_admin.php:2369
 #: utilities.php:506 utilities.php:948 utilities.php:2316 utilities.php:2438
 #: utilities.php:2446 utilities.php:2449 utilities.php:2455 utilities.php:2474
 #: utilities.php:2708
@@ -1537,7 +1538,7 @@ msgstr "Запрос данных"
 #: lib/api_automation.php:1095 lib/html_reports.php:1848
 #: lib/html_reports.php:1940 lib/html_reports.php:1951
 #: lib/html_reports.php:1987 links.php:383 links.php:561 managers.php:243
-#: managers.php:598 user_admin.php:1149 user_admin.php:1161 user_admin.php:2331
+#: managers.php:598 user_admin.php:1147 user_admin.php:1159 user_admin.php:2356
 #: user_domains.php:350 user_domains.php:752 user_group_admin.php:87
 #: user_group_admin.php:682 user_group_admin.php:697 user_group_admin.php:1926
 #: utilities.php:2492
@@ -1556,7 +1557,7 @@ msgstr "Включено"
 #: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2527
 #: lib/html_reports.php:1849 lib/html_reports.php:1987 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
-#: user_admin.php:1161 user_domains.php:412 user_group_admin.php:697
+#: user_admin.php:1159 user_domains.php:412 user_group_admin.php:697
 #: utilities.php:2492
 msgid "Disabled"
 msgstr "Выключен"
@@ -1714,7 +1715,7 @@ msgstr "Основые Настройки"
 #: include/global_form.php:2228 lib/installer.php:1769 lib/installer.php:1835
 #: lib/installer.php:1865 lib/installer.php:2445 lib/installer.php:2524
 #: lib/vdef.php:74 managers.php:562 pollers.php:61 sites.php:41
-#: user_admin.php:1149 user_domains.php:326 utilities.php:632
+#: user_admin.php:1147 user_domains.php:326 utilities.php:632
 #: utilities.php:2688
 msgid "Name"
 msgstr "Имя"
@@ -2479,7 +2480,7 @@ msgstr "Версия"
 msgid "Community"
 msgstr "Сообщество"
 
-#: automation_snmp.php:536 lib/functions.php:4827
+#: automation_snmp.php:536 lib/functions.php:4813
 msgid "Port"
 msgstr "Порт"
 
@@ -2687,7 +2688,7 @@ msgstr "Шаблоны автоматизации [новые]"
 msgid "Device Automation Templates"
 msgstr "Шаблоны автоматизации устройства"
 
-#: automation_templates.php:491 data_sources.php:1645 user_admin.php:1444
+#: automation_templates.php:491 data_sources.php:1645 user_admin.php:1442
 #: user_group_admin.php:1123
 msgid "Template Name"
 msgstr "Имя Шаблона"
@@ -2818,7 +2819,7 @@ msgstr "ROOT - объектно-ориентированный набор биб
 msgid "No Tree Rules Found"
 msgstr "Правила для деревьев не найдены"
 
-#: cactid.php:44 lib/functions.php:5438 lib/functions.php:5501 poller.php:353
+#: cactid.php:44 lib/functions.php:5424 lib/functions.php:5487 poller.php:353
 #: poller.php:477 poller.php:525 poller.php:541 poller.php:687 poller.php:785
 #: poller_automation.php:53 poller_boost.php:306
 #, fuzzy
@@ -3464,7 +3465,7 @@ msgstr "Любые краткие вопросы, выявленные в отн
 #: data_debug.php:511 data_debug.php:1058 data_sources.php:1443
 #: data_sources.php:1599 host.php:1736 include/global_arrays.php:917
 #: include/global_arrays.php:962 include/global_arrays.php:2187
-#: lib/api_automation.php:284 user_admin.php:1296 user_group_admin.php:980
+#: lib/api_automation.php:284 user_admin.php:1294 user_group_admin.php:980
 #: utilities.php:325
 msgid "Data Sources"
 msgstr "Источники Данных"
@@ -3677,7 +3678,7 @@ msgstr "Профиль"
 #: graphs_new.php:378 host.php:1586 lib/clog_webapi.php:536 lib/html.php:203
 #: lib/html_reports.php:973 lib/html_reports.php:2074 plugins.php:357
 #: settings.php:518 settings.php:537 settings.php:563 tree.php:794
-#: utilities.php:803 utilities.php:1214
+#: user_admin.php:2272 utilities.php:803 utilities.php:1214
 msgid "All"
 msgstr "Все"
 
@@ -4593,7 +4594,7 @@ msgstr "Название, данное данному шаблону данны�
 #: data_sources.php:932 graph_view.php:726 graphs.php:1583
 #: include/global_arrays.php:877 include/global_arrays.php:926
 #: include/global_arrays.php:1573 include/global_arrays.php:1742
-#: lib/api_automation.php:425 lib/functions.php:4826 lib/html.php:2043
+#: lib/api_automation.php:425 lib/functions.php:4812 lib/html.php:2043
 #: lib/html.php:2075 lib/html_reports.php:1005 utilities.php:1638
 msgid "Device"
 msgstr "Устройство"
@@ -5192,7 +5193,7 @@ msgstr "Установите этот флажок, если вы хотите 
 
 #: graph_templates.php:701 graph_templates.php:716 graph_templates.php:880
 #: graphs_new.php:486 include/global_arrays.php:1130
-#: include/global_arrays.php:2115 lib/html_tree.php:606 user_admin.php:1436
+#: include/global_arrays.php:2115 lib/html_tree.php:606 user_admin.php:1434
 #: user_group_admin.php:1115
 msgid "Graph Templates"
 msgstr "Шаблоны Графиков"
@@ -5788,7 +5789,7 @@ msgstr "Редактировать устройство"
 msgid "Create New Device"
 msgstr "Создать новое устройство"
 
-#: graphs_new.php:492 graphs_new.php:798 lib/html.php:999 user_admin.php:1657
+#: graphs_new.php:492 graphs_new.php:798 lib/html.php:999 user_admin.php:1655
 #: user_group_admin.php:1334
 msgid "Select All"
 msgstr "Выбрать Все"
@@ -6107,7 +6108,7 @@ msgstr "Добавить шаблон графика в устройство"
 msgid "Data Query Debug Information"
 msgstr "Отладка запроса данных Информация об отладке"
 
-#: host.php:859 lib/functions.php:3832 tree.php:1517 tree.php:1591
+#: host.php:859 lib/functions.php:3818 tree.php:1517 tree.php:1591
 #: tree.php:1699 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Копировать"
@@ -6149,7 +6150,7 @@ msgstr " [%d Предметы, %d Строки]"
 msgid "Fail"
 msgstr "Неудача"
 
-#: host.php:943 lib/functions.php:4841 lib/functions.php:4846
+#: host.php:943 lib/functions.php:4827 lib/functions.php:4832
 msgid "Success"
 msgstr "Выполненно"
 
@@ -6238,7 +6239,7 @@ msgstr "Восстановление"
 
 #: host.php:1636 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:951 lib/plugins.php:1134 lib/plugins.php:1135
-#: lib/rrd.php:2948 lib/rrd.php:2960 user_admin.php:817 utilities.php:211
+#: lib/rrd.php:2948 lib/rrd.php:2960 user_admin.php:815 utilities.php:211
 #: utilities.php:212 utilities.php:2312
 msgid "Unknown"
 msgstr "Неизвестно"
@@ -6255,7 +6256,7 @@ msgstr "Имя, под которым будет обозначаться дан
 #: host.php:1718 include/global_form.php:1193 include/global_form.php:1731
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
-#: pollers.php:130 pollers.php:996 user_admin.php:1296 user_group_admin.php:980
+#: pollers.php:130 pollers.php:996 user_admin.php:1294 user_group_admin.php:980
 msgid "Hostname"
 msgstr "Имя хоста"
 
@@ -6484,17 +6485,17 @@ msgstr "Вы должны войти в систему, чтобы получи�
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "Вы должны войти в систему, чтобы получить доступ к этой области кактусов."
 
-#: include/auth.php:294 lib/functions.php:6410 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:6396 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "Доступ запрещён"
 
-#: include/auth.php:295 lib/functions.php:6411 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6397 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Если вы считаете, что это ошибка. Пожалуйста, свяжитесь с администратором Cacti."
 
-#: include/auth.php:295 lib/functions.php:6411 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6397 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Вам не разрешается доступ к этому разделу кактусов."
@@ -7301,7 +7302,7 @@ msgstr "Сложный"
 msgid "Demand"
 msgstr "Требование"
 
-#: include/global_arrays.php:817 user_admin.php:834 user_group_admin.php:735
+#: include/global_arrays.php:817 user_admin.php:832 user_group_admin.php:735
 msgid "Allow"
 msgstr "Разрешить"
 
@@ -7476,8 +7477,8 @@ msgid "Sites"
 msgstr "Узлы"
 
 #: include/global_arrays.php:915 include/global_arrays.php:1124 tree.php:1916
-#: tree.php:1931 tree.php:1993 user_admin.php:1577 user_admin.php:2981
-#: user_admin.php:3066 user_group_admin.php:1249 user_group_admin.php:2468
+#: tree.php:1931 tree.php:1993 user_admin.php:1575 user_admin.php:3011
+#: user_admin.php:3096 user_group_admin.php:1249 user_group_admin.php:2468
 msgid "Trees"
 msgstr "Деревья"
 
@@ -7551,7 +7552,7 @@ msgid "Settings"
 msgstr "Настройки"
 
 #: include/global_arrays.php:953 include/global_arrays.php:2451
-#: user_admin.php:2264 user_admin.php:2320 user_group_admin.php:674
+#: user_admin.php:2280 user_admin.php:2344 user_group_admin.php:674
 #: user_group_admin.php:2553
 msgid "Users"
 msgstr "Пользователи"
@@ -7577,7 +7578,7 @@ msgstr "Системные Утилиты"
 
 #: include/global_arrays.php:959 include/global_arrays.php:993
 #: include/global_arrays.php:1009 include/global_arrays.php:1112 links.php:91
-#: links.php:302 links.php:372 links.php:403 links.php:485 user_admin.php:1735
+#: links.php:302 links.php:372 links.php:403 links.php:485 user_admin.php:1733
 #: user_group_admin.php:1414
 msgid "External Links"
 msgstr "Внешние ссылки"
@@ -8570,8 +8571,8 @@ msgid "List Mode"
 msgstr "Режим списка"
 
 #: include/global_arrays.php:1965 include/global_arrays.php:1971
-#: lib/functions.php:3403 lib/html.php:1674 lib/html.php:1751 links.php:344
-#: user_admin.php:1706 user_group_admin.php:1385
+#: lib/functions.php:3389 lib/html.php:1674 lib/html.php:1751 links.php:344
+#: user_admin.php:1704 user_group_admin.php:1385
 msgid "Console"
 msgstr "Консоль"
 
@@ -10512,7 +10513,7 @@ msgstr "Данные"
 msgid "Visual"
 msgstr "Визуально"
 
-#: include/global_settings.php:44 lib/functions.php:4830 lib/functions.php:4835
+#: include/global_settings.php:44 lib/functions.php:4816 lib/functions.php:4821
 msgid "Authentication"
 msgstr "Аутентификация"
 
@@ -10553,11 +10554,11 @@ msgstr "Графические шрифты"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail() Функция"
 
-#: include/global_settings.php:84 lib/functions.php:4813
+#: include/global_settings.php:84 lib/functions.php:4799
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:85 lib/functions.php:4818
+#: include/global_settings.php:85 lib/functions.php:4804
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -12569,7 +12570,7 @@ msgstr "Сколько символов будет разрешено перед
 msgid "Sendmail Options"
 msgstr "Sendmail Опции"
 
-#: include/global_settings.php:1763 lib/functions.php:4813
+#: include/global_settings.php:1763 lib/functions.php:4799
 msgid "Sendmail Path"
 msgstr "Sendmail Путь"
 
@@ -13936,8 +13937,8 @@ msgstr "Местоположение:"
 msgid "Contact:"
 msgstr "Контактная информация:"
 
-#: lib/api_device.php:1196 lib/functions.php:4844 lib/functions.php:4846
-#: lib/functions.php:4850
+#: lib/api_device.php:1196 lib/functions.php:4830 lib/functions.php:4832
+#: lib/functions.php:4836
 #, fuzzy
 msgid "Ping Results"
 msgstr "Результаты тестирования"
@@ -13952,46 +13953,46 @@ msgstr "Нет Ping или SNMP Проверка доступности Испо
 msgid "New Branch"
 msgstr "Новый филиал"
 
-#: lib/auth.php:385
+#: lib/auth.php:498
 #, fuzzy
 msgid "Web Basic"
 msgstr "Web Basic"
 
-#: lib/auth.php:2001 lib/auth.php:2033 lib/reports.php:1267
+#: lib/auth.php:2114 lib/auth.php:2146 lib/reports.php:1267
 msgid "Branch:"
 msgstr "Отделение:"
 
-#: lib/auth.php:2010 lib/auth.php:2041 lib/html_tree.php:1014
+#: lib/auth.php:2123 lib/auth.php:2154 lib/html_tree.php:1014
 #: lib/reports.php:1042 lib/reports.php:1272
 msgid "Device:"
 msgstr "Устройство:"
 
-#: lib/auth.php:2779 lib/auth.php:2787
+#: lib/auth.php:2892 lib/auth.php:2900
 #, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "Доступ запрещен, пожалуйста, свяжитесь с администратором кактусов."
 
-#: lib/auth.php:2808
+#: lib/auth.php:2921
 #, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "Ваш администратор Cacti ввел сложные пароли для входа в систему, и ваш текущий пароль Cacti не соответствует новым требованиям. Поэтому вы должны изменить свой пароль сейчас."
 
-#: lib/auth.php:2832
+#: lib/auth.php:2945
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "Пароль должен содержать не менее %d символов!"
 
-#: lib/auth.php:2838
+#: lib/auth.php:2951
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "Ваш пароль должен содержать не менее 1 цифрового символа!"
 
-#: lib/auth.php:2842
+#: lib/auth.php:2955
 #, fuzzy
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "Ваш пароль должен содержать символы нижнего регистра и верхнего регистра!"
 
-#: lib/auth.php:2848
+#: lib/auth.php:2961
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "Ваш пароль должен содержать не менее 1 специального символа!"
@@ -14593,167 +14594,167 @@ msgstr "Сообщение не найдено."
 msgid "Error %s is not readable"
 msgstr "Ошибка %s не читается"
 
-#: lib/functions.php:3178 lib/functions.php:3189
+#: lib/functions.php:3164 lib/functions.php:3175
 msgid "Logged in as"
 msgstr "Вошел как"
 
-#: lib/functions.php:3178
+#: lib/functions.php:3164
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "Вход в систему как постоянный пользователь"
 
-#: lib/functions.php:3178
+#: lib/functions.php:3164
 msgid "guest"
 msgstr "гость"
 
-#: lib/functions.php:3180 lib/functions.php:3198 lib/html.php:2466
+#: lib/functions.php:3166 lib/functions.php:3184 lib/html.php:2466
 msgid "User Community"
 msgstr "Сообщество пользователей"
 
-#: lib/functions.php:3181 lib/functions.php:3199 lib/html.php:2467
+#: lib/functions.php:3167 lib/functions.php:3185 lib/html.php:2467
 #: lib/utility.php:1139
 msgid "Documentation"
 msgstr "Документация"
 
-#: lib/functions.php:3192
+#: lib/functions.php:3178
 #, php-format
 msgid "Logged in as %s"
 msgstr "Авторизован как %s"
 
-#: lib/functions.php:3194 lib/html.php:2454
+#: lib/functions.php:3180 lib/html.php:2454
 msgid "Edit Profile"
 msgstr "Редактировать профиль"
 
-#: lib/functions.php:3202 lib/html.php:2456
+#: lib/functions.php:3188 lib/html.php:2456
 msgid "Logout"
 msgstr "Выход"
 
-#: lib/functions.php:3351
+#: lib/functions.php:3337
 msgid "Leaf"
 msgstr "Лист"
 
-#: lib/functions.php:3371 lib/html_tree.php:713 lib/html_tree.php:749
+#: lib/functions.php:3357 lib/html_tree.php:713 lib/html_tree.php:749
 #: lib/html_tree.php:978 lib/html_tree.php:986 lib/html_tree.php:1560
 #, fuzzy
 msgid "Non Query Based"
 msgstr "Не основанный на запросах"
 
-#: lib/functions.php:3404
+#: lib/functions.php:3390
 #, php-format
 msgid "Link %s"
 msgstr "Ссылка %s"
 
-#: lib/functions.php:4445
+#: lib/functions.php:4431
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Почтовая ошибка: Нет <b>TO</b> Адрес установлен!!<br>Если используется ссылка <i>Test Mail</i>, пожалуйста, установите параметр <b>Alert e-mail</b>."
 
-#: lib/functions.php:4777
+#: lib/functions.php:4763
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Неудачная аутентификация: %s"
 
-#: lib/functions.php:4781
+#: lib/functions.php:4767
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO не удалось: %s"
 
-#: lib/functions.php:4784
+#: lib/functions.php:4770
 #, php-format
 msgid "Connect failed: %s"
 msgstr "Не удалось подключиться: %s"
 
-#: lib/functions.php:4787
+#: lib/functions.php:4773
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP ошибка:"
 
-#: lib/functions.php:4800
+#: lib/functions.php:4786
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Это тестовое сообщение, сгенерированное кактусами.  Это сообщение было отправлено для проверки конфигурации параметров вашей почты."
 
-#: lib/functions.php:4801
+#: lib/functions.php:4787
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "Настройки вашей электронной почты в настоящее время заданы следующим образом"
 
-#: lib/functions.php:4802
+#: lib/functions.php:4788
 msgid "Method"
 msgstr "Метод"
 
-#: lib/functions.php:4804
+#: lib/functions.php:4790
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Проверка конфигурации... <br>"
 
-#: lib/functions.php:4811
+#: lib/functions.php:4797
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP's Mailer Class"
 
-#: lib/functions.php:4817
+#: lib/functions.php:4803
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Метод: SMTP"
 
-#: lib/functions.php:4832
+#: lib/functions.php:4818
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Не показано по причинам безопасности"
 
-#: lib/functions.php:4833
+#: lib/functions.php:4819
 msgid "Security"
 msgstr "Безопасность"
 
-#: lib/functions.php:4841
+#: lib/functions.php:4827
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Результаты пинга:"
 
-#: lib/functions.php:4850
+#: lib/functions.php:4836
 msgid "Bypassed"
 msgstr "Без обработки"
 
-#: lib/functions.php:4858
+#: lib/functions.php:4844
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Создание текста сообщения...."
 
-#: lib/functions.php:4861
+#: lib/functions.php:4847
 msgid "Sending Message..."
 msgstr "Отправка сообщения..."
 
-#: lib/functions.php:4865
+#: lib/functions.php:4851
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Сообщение о тестировании кактусов"
 
-#: lib/functions.php:4867
+#: lib/functions.php:4853
 msgid "Success!"
 msgstr "Успешно!"
 
-#: lib/functions.php:4870
+#: lib/functions.php:4856
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Сообщение не отправлено в связи с ошибкой пинга."
 
-#: lib/functions.php:5438 lib/functions.php:5501
+#: lib/functions.php:5424 lib/functions.php:5487
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Какти отключил плагин %s из-за ошибки: %s!  Для получения более подробной информации см. файл журнала Cacti."
 
-#: lib/functions.php:5893 lib/functions.php:5895
+#: lib/functions.php:5879 lib/functions.php:5881
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Бета-версия"
 
-#: lib/functions.php:5893
+#: lib/functions.php:5879
 #, php-format
 msgid "Version %s %s"
 msgstr "Версия %s %s"
 
-#: lib/functions.php:5895
+#: lib/functions.php:5881
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -15803,7 +15804,7 @@ msgstr "События"
 msgid "Send Report"
 msgstr "Отправить отчёт"
 
-#: lib/html_reports.php:1466 lib/import.php:2169 user_admin.php:2003
+#: lib/html_reports.php:1466 lib/import.php:2169 user_admin.php:2001
 msgid "[new]"
 msgstr "[новый]"
 
@@ -18072,17 +18073,17 @@ msgstr "Применить фильтр"
 msgid "Reset filters"
 msgstr "Сбросить фильтры"
 
-#: links.php:345 links.php:513 user_admin.php:1707 user_group_admin.php:1386
+#: links.php:345 links.php:513 user_admin.php:1705 user_group_admin.php:1386
 #, fuzzy
 msgid "Top Tab"
 msgstr "Верхняя вкладка"
 
-#: links.php:346 user_admin.php:1708 user_group_admin.php:1387
+#: links.php:346 user_admin.php:1706 user_group_admin.php:1387
 #, fuzzy
 msgid "Bottom Console"
 msgstr "Нижняя консоль"
 
-#: links.php:347 user_admin.php:1709 user_group_admin.php:1388
+#: links.php:347 user_admin.php:1707 user_group_admin.php:1388
 #, fuzzy
 msgid "Top Console"
 msgstr "Верхняя консоль"
@@ -19793,7 +19794,7 @@ msgstr "Сортировать Возвышающиеся деревья"
 msgid "Sort Trees Descending"
 msgstr "Сортировать Спускающиеся деревья"
 
-#: tree.php:2003 user_admin.php:1585 user_group_admin.php:1257
+#: tree.php:2003 user_admin.php:1583 user_group_admin.php:1257
 #, fuzzy
 msgid "Tree Name"
 msgstr "Имя дерева"
@@ -19884,185 +19885,185 @@ msgstr "Деревья не найдены"
 msgid "Batch Copy"
 msgstr "Пакетная копия"
 
-#: user_admin.php:332
+#: user_admin.php:330
 #, fuzzy
 msgid "Click 'Continue' to delete the selected User(s)."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить выбранного пользователя (пользователей)."
 
-#: user_admin.php:337
+#: user_admin.php:335
 #, fuzzy
 msgid "Delete User(s)"
 msgstr "Удалить пользователя(ов)"
 
-#: user_admin.php:347
+#: user_admin.php:345
 #, fuzzy
 msgid "Click 'Continue' to copy the selected User to a new User below."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы скопировать выбранного пользователя новому пользователю."
 
-#: user_admin.php:352
+#: user_admin.php:350
 #, fuzzy
 msgid "Template Username:"
 msgstr "Имя пользователя шаблона:"
 
-#: user_admin.php:357
+#: user_admin.php:355
 msgid "Username:"
 msgstr "Имя Пользователя:"
 
-#: user_admin.php:364
+#: user_admin.php:362
 msgid "Full Name:"
 msgstr "Полное имя:"
 
-#: user_admin.php:371
+#: user_admin.php:369
 msgid "Realm:"
 msgstr "Область:"
 
-#: user_admin.php:377
+#: user_admin.php:375
 #, fuzzy
 msgid "Copy User"
 msgstr "Копировать пользователя"
 
-#: user_admin.php:383
+#: user_admin.php:381
 #, fuzzy
 msgid "Click 'Continue' to enable the selected User(s)."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы включить выбранного пользователя (пользователей)."
 
-#: user_admin.php:388
+#: user_admin.php:386
 #, fuzzy
 msgid "Enable User(s)"
 msgstr "Включить пользователя(ов)"
 
-#: user_admin.php:394
+#: user_admin.php:392
 #, fuzzy
 msgid "Click 'Continue' to disable the selected User(s)."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы отключить выбранного пользователя (пользователей)."
 
-#: user_admin.php:399
+#: user_admin.php:397
 #, fuzzy
 msgid "Disable User(s)"
 msgstr "Отключить пользователя(ов)"
 
-#: user_admin.php:407
+#: user_admin.php:405
 #, fuzzy
 msgid "Click 'Continue' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы перезаписать настройки пользователя (пользователей) с выбранным шаблоном Настройки пользователя и разрешения.  Первоначальные пользователи Полное Имя, Пароль, Царство и Включить будут сохранены, все остальные поля будут перезаписаны от Пользователя шаблона."
 
-#: user_admin.php:411
+#: user_admin.php:409
 #, fuzzy
 msgid "Template User:"
 msgstr "Шаблон Пользователь:"
 
-#: user_admin.php:417
+#: user_admin.php:415
 #, fuzzy
 msgid "User(s) to update:"
 msgstr "Пользователь(ы) для обновления:"
 
-#: user_admin.php:422
+#: user_admin.php:420
 #, fuzzy
 msgid "Reset User(s) Settings"
 msgstr "Сброс настроек пользователя (пользователей)"
 
-#: user_admin.php:718
+#: user_admin.php:716
 #, fuzzy
 msgid "Device:(Hide Disabled)"
 msgstr "Устройство отключено"
 
-#: user_admin.php:728 user_admin.php:730 user_admin.php:733 user_admin.php:737
+#: user_admin.php:726 user_admin.php:728 user_admin.php:731 user_admin.php:735
 #, fuzzy, php-format
 msgid "Graph:(%s%s)"
 msgstr "График"
 
-#: user_admin.php:744 user_admin.php:749 user_admin.php:753
+#: user_admin.php:742 user_admin.php:747 user_admin.php:751
 #, fuzzy, php-format
 msgid "Device:(%s%s)"
 msgstr "Устройство:"
 
-#: user_admin.php:765 user_admin.php:770 user_admin.php:774
+#: user_admin.php:763 user_admin.php:768 user_admin.php:772
 #, fuzzy, php-format
 msgid "Template:(%s%s)"
 msgstr "Шаблон:"
 
-#: user_admin.php:785 user_admin.php:787
+#: user_admin.php:783 user_admin.php:785
 #, fuzzy, php-format
 msgid "Device+Template:(%s%s)"
 msgstr "Шаблон Устройства:"
 
-#: user_admin.php:790
+#: user_admin.php:788
 #, fuzzy, php-format
 msgid "Graph+Device+Template:(%s%s)"
 msgstr "Шаблон Устройства:"
 
-#: user_admin.php:797 user_admin.php:804 user_admin.php:813
+#: user_admin.php:795 user_admin.php:802 user_admin.php:811
 #, fuzzy
 msgid "Restricted By: "
 msgstr "Ограниченный"
 
-#: user_admin.php:801
+#: user_admin.php:799
 #, fuzzy
 msgid "Granted By: "
 msgstr "Разрешаю:"
 
-#: user_admin.php:808
+#: user_admin.php:806
 msgid "Granted"
 msgstr "Награжденые"
 
-#: user_admin.php:810 user_admin.php:815
+#: user_admin.php:808 user_admin.php:813
 msgid "Restricted"
 msgstr "Ограниченный"
 
-#: user_admin.php:835 user_group_admin.php:736
+#: user_admin.php:833 user_group_admin.php:736
 msgid "Deny"
 msgstr "Отклонить"
 
-#: user_admin.php:864
+#: user_admin.php:862
 #, fuzzy
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
 msgstr "<b>Примечание:</b> Политика системных графиков является 'Разрешающей', что означает, что для получения доступа к графику Пользователь должен иметь доступ по крайней мере к одному из графиков, устройств или шаблонов графиков."
 
-#: user_admin.php:866
+#: user_admin.php:864
 #, fuzzy
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
 msgstr "<b>Примечание:</b> Политика системного графика является 'Ограничительной', что означает, что Пользователь должен иметь доступ либо к графику, либо к шаблону устройства и графика, чтобы получить доступ к графику."
 
-#: user_admin.php:870 user_group_admin.php:755
+#: user_admin.php:868 user_group_admin.php:755
 #, fuzzy
 msgid "Default Graph Policy"
 msgstr "Политика построения графиков по умолчанию"
 
-#: user_admin.php:875
+#: user_admin.php:873
 #, fuzzy
 msgid "Default Graph Policy for this User"
 msgstr "Политика построения графиков по умолчанию для данного пользователя"
 
-#: user_admin.php:880 user_admin.php:1211 user_admin.php:1378
-#: user_admin.php:1523 user_group_admin.php:765 user_group_admin.php:908
+#: user_admin.php:878 user_admin.php:1209 user_admin.php:1376
+#: user_admin.php:1521 user_group_admin.php:765 user_group_admin.php:908
 #: user_group_admin.php:1058 user_group_admin.php:1199
 msgid "Update"
 msgstr "Обновить"
 
-#: user_admin.php:1035 user_admin.php:1296 user_admin.php:1444
-#: user_admin.php:1585 user_group_admin.php:833 user_group_admin.php:980
+#: user_admin.php:1033 user_admin.php:1294 user_admin.php:1442
+#: user_admin.php:1583 user_group_admin.php:833 user_group_admin.php:980
 #: user_group_admin.php:1123 user_group_admin.php:1257
 #, fuzzy
 msgid "Effective Policy"
 msgstr "Эффективная политика"
 
-#: user_admin.php:1049 user_group_admin.php:859
+#: user_admin.php:1047 user_group_admin.php:859
 #, fuzzy
 msgid "No Matching Graphs Found"
 msgstr "Нет найденных совпадающих графиков"
 
-#: user_admin.php:1064 user_admin.php:1070 user_admin.php:1341
-#: user_admin.php:1347 user_admin.php:1486 user_admin.php:1492
-#: user_admin.php:1626 user_admin.php:1632 user_group_admin.php:874
+#: user_admin.php:1062 user_admin.php:1068 user_admin.php:1339
+#: user_admin.php:1345 user_admin.php:1484 user_admin.php:1490
+#: user_admin.php:1624 user_admin.php:1630 user_group_admin.php:874
 #: user_group_admin.php:880 user_group_admin.php:1024 user_group_admin.php:1030
 #: user_group_admin.php:1165 user_group_admin.php:1171
 #: user_group_admin.php:1297 user_group_admin.php:1303
 msgid "Revoke Access"
 msgstr "Отозвать доступ"
 
-#: user_admin.php:1065 user_admin.php:1069 user_admin.php:1342
-#: user_admin.php:1346 user_admin.php:1487 user_admin.php:1491
-#: user_admin.php:1627 user_admin.php:1631 user_group_admin.php:62
+#: user_admin.php:1063 user_admin.php:1067 user_admin.php:1340
+#: user_admin.php:1344 user_admin.php:1485 user_admin.php:1489
+#: user_admin.php:1625 user_admin.php:1629 user_group_admin.php:62
 #: user_group_admin.php:875 user_group_admin.php:879 user_group_admin.php:1025
 #: user_group_admin.php:1029 user_group_admin.php:1166
 #: user_group_admin.php:1170 user_group_admin.php:1298
@@ -20070,64 +20071,64 @@ msgstr "Отозвать доступ"
 msgid "Grant Access"
 msgstr "Предоставить доступ"
 
-#: user_admin.php:1141 user_admin.php:2707 user_group_admin.php:1850
+#: user_admin.php:1139 user_admin.php:2737 user_group_admin.php:1850
 #: user_group_admin.php:1911
 msgid "Groups"
 msgstr "Группы"
 
-#: user_admin.php:1149 user_admin.php:1158
+#: user_admin.php:1147 user_admin.php:1156
 msgid "Member"
 msgstr "Участник"
 
-#: user_admin.php:1149
+#: user_admin.php:1147
 #, fuzzy
 msgid "Policies (Graph/Device/Template)"
 msgstr "Политики (график/устройство/шаблон)"
 
-#: user_admin.php:1158 user_group_admin.php:695
+#: user_admin.php:1156 user_group_admin.php:695
 #, fuzzy
 msgid "Non Member"
 msgstr "Не являясь членом"
 
-#: user_admin.php:1160 user_admin.php:2366 user_admin.php:2367
-#: user_admin.php:2368 user_group_admin.php:1943 user_group_admin.php:1944
+#: user_admin.php:1158 user_admin.php:2395 user_admin.php:2396
+#: user_admin.php:2397 user_group_admin.php:1943 user_group_admin.php:1944
 #: user_group_admin.php:1945
 msgid "ALLOW"
 msgstr "Разрешить"
 
-#: user_admin.php:1160 user_admin.php:2366 user_admin.php:2367
-#: user_admin.php:2368 user_group_admin.php:1943 user_group_admin.php:1944
+#: user_admin.php:1158 user_admin.php:2395 user_admin.php:2396
+#: user_admin.php:2397 user_group_admin.php:1943 user_group_admin.php:1944
 #: user_group_admin.php:1945
 msgid "DENY"
 msgstr "ОТКЛОНИТЬ"
 
-#: user_admin.php:1166
+#: user_admin.php:1164
 #, fuzzy
 msgid "No Matching User Groups Found"
 msgstr "Отсутствие совпадения групп пользователей найдено"
 
-#: user_admin.php:1180
+#: user_admin.php:1178
 #, fuzzy
 msgid "Assign Membership"
 msgstr "Назначить Членство"
 
-#: user_admin.php:1181
+#: user_admin.php:1179
 #, fuzzy
 msgid "Remove Membership"
 msgstr "Удалить членство"
 
-#: user_admin.php:1201 user_group_admin.php:898
+#: user_admin.php:1199 user_group_admin.php:898
 #, fuzzy
 msgid "Default Device Policy"
 msgstr "Политика устройства по умолчанию"
 
-#: user_admin.php:1206
+#: user_admin.php:1204
 #, fuzzy
 msgid "Default Device Policy for this User"
 msgstr "Политика устройства по умолчанию для данного пользователя"
 
-#: user_admin.php:1307 user_admin.php:1315 user_admin.php:1455
-#: user_admin.php:1463 user_admin.php:1596 user_admin.php:1604
+#: user_admin.php:1305 user_admin.php:1313 user_admin.php:1453
+#: user_admin.php:1461 user_admin.php:1594 user_admin.php:1602
 #: user_group_admin.php:844 user_group_admin.php:852 user_group_admin.php:991
 #: user_group_admin.php:999 user_group_admin.php:1134 user_group_admin.php:1142
 #: user_group_admin.php:1268 user_group_admin.php:1276
@@ -20135,174 +20136,197 @@ msgstr "Политика устройства по умолчанию для д�
 msgid "Access Granted"
 msgstr "Доступ разрешен"
 
-#: user_admin.php:1309 user_admin.php:1313 user_admin.php:1457
-#: user_admin.php:1461 user_admin.php:1598 user_admin.php:1602
+#: user_admin.php:1307 user_admin.php:1311 user_admin.php:1455
+#: user_admin.php:1459 user_admin.php:1596 user_admin.php:1600
 #: user_group_admin.php:846 user_group_admin.php:850 user_group_admin.php:993
 #: user_group_admin.php:997 user_group_admin.php:1136 user_group_admin.php:1140
 #: user_group_admin.php:1270 user_group_admin.php:1274
 msgid "Access Restricted"
 msgstr "Доступ ограничен"
 
-#: user_admin.php:1326 user_group_admin.php:1010
+#: user_admin.php:1324 user_group_admin.php:1010
 #, fuzzy
 msgid "No Matching Devices Found"
 msgstr "Нет совпадающих устройств найдено"
 
-#: user_admin.php:1368 user_group_admin.php:1048
+#: user_admin.php:1366 user_group_admin.php:1048
 #, fuzzy
 msgid "Default Graph Template Policy"
 msgstr "Политика шаблона графика по умолчанию"
 
-#: user_admin.php:1373
+#: user_admin.php:1371
 #, fuzzy
 msgid "Default Graph Template Policy for this User"
 msgstr "Политика шаблона графика по умолчанию для данного пользователя"
 
-#: user_admin.php:1444 user_group_admin.php:1123
+#: user_admin.php:1442 user_group_admin.php:1123
 #, fuzzy
 msgid "Total Graphs"
 msgstr "Общие графики"
 
-#: user_admin.php:1471 user_group_admin.php:1150
+#: user_admin.php:1469 user_group_admin.php:1150
 #, fuzzy
 msgid "No Matching Graph Templates Found"
 msgstr "Отсутствие найденных шаблонов графиков соответствия"
 
-#: user_admin.php:1513 user_group_admin.php:1189
+#: user_admin.php:1511 user_group_admin.php:1189
 #, fuzzy
 msgid "Default Tree Policy"
 msgstr "Дерево политики по умолчанию"
 
-#: user_admin.php:1518
+#: user_admin.php:1516
 #, fuzzy
 msgid "Default Tree Policy for this User"
 msgstr "Политика дерева по умолчанию для данного пользователя"
 
-#: user_admin.php:1611 user_group_admin.php:1283
+#: user_admin.php:1609 user_group_admin.php:1283
 #, fuzzy
 msgid "No Matching Trees Found"
 msgstr "Не найдено подходящих деревьев"
 
-#: user_admin.php:1656 user_group_admin.php:1333
+#: user_admin.php:1654 user_group_admin.php:1333
 msgid "User Permissions"
 msgstr "Пользовательские разрешения"
 
-#: user_admin.php:1713 user_group_admin.php:1392
+#: user_admin.php:1711 user_group_admin.php:1392
 #, fuzzy
 msgid "External Link Permissions"
 msgstr "Разрешения на внешние ссылки"
 
-#: user_admin.php:1792 user_group_admin.php:1469
+#: user_admin.php:1790 user_group_admin.php:1469
 #, fuzzy
 msgid "Plugin Permissions"
 msgstr "Разрешения на установку плагина"
 
-#: user_admin.php:1809 user_group_admin.php:1486
+#: user_admin.php:1807 user_group_admin.php:1486
 #, fuzzy
 msgid "Legacy Permissions"
 msgstr "Пользовательские разрешения"
 
-#: user_admin.php:1871 user_group_admin.php:1550
+#: user_admin.php:1869 user_group_admin.php:1550
 #, fuzzy, php-format
 msgid "User Settings %s"
 msgstr "Настройки пользователя %s"
 
-#: user_admin.php:1986 user_group_admin.php:1666
+#: user_admin.php:1984 user_group_admin.php:1666
 msgid "Permissions"
 msgstr "Разрешения"
 
-#: user_admin.php:1987
+#: user_admin.php:1985
 msgid "Group Membership"
 msgstr "Членство в сообществах"
 
-#: user_admin.php:1988 user_group_admin.php:1667
+#: user_admin.php:1986 user_group_admin.php:1667
 #, fuzzy
 msgid "Graph Perms"
 msgstr "Графическая терминология"
 
-#: user_admin.php:1989 user_group_admin.php:1668
+#: user_admin.php:1987 user_group_admin.php:1668
 #, fuzzy
 msgid "Device Perms"
 msgstr "Условия устройства"
 
-#: user_admin.php:1990 user_group_admin.php:1669
+#: user_admin.php:1988 user_group_admin.php:1669
 #, fuzzy
 msgid "Template Perms"
 msgstr "Условия шаблонов"
 
-#: user_admin.php:1991 user_group_admin.php:1670
+#: user_admin.php:1989 user_group_admin.php:1670
 #, fuzzy
 msgid "Tree Perms"
 msgstr "Деревянные завивки"
 
-#: user_admin.php:2033
+#: user_admin.php:2031
 #, fuzzy, php-format
 msgid "User Management %s"
 msgstr "Управление пользователями %s"
 
-#: user_admin.php:2243
+#: user_admin.php:2247
 msgid "User Management"
 msgstr "Управление Пользователями"
 
-#: user_admin.php:2333 user_group_admin.php:1923
+#: user_admin.php:2274
+#, fuzzy
+msgid "Basic"
+msgstr "Web Basic"
+
+#: user_admin.php:2275
+#, fuzzy
+#| msgid "LDAP"
+msgid "LDAP/AD"
+msgstr "LDAP"
+
+#: user_admin.php:2276
+#, fuzzy
+#| msgid "Domains"
+msgid "Domain"
+msgstr "Домены"
+
+#: user_admin.php:2354
+#, fuzzy
+#| msgid "User"
+msgid "User ID"
+msgstr "Пользователь"
+
+#: user_admin.php:2358 user_group_admin.php:1923
 #, fuzzy
 msgid "Graph Policy"
 msgstr "Графическая политика"
 
-#: user_admin.php:2334 user_group_admin.php:1924
+#: user_admin.php:2359 user_group_admin.php:1924
 #, fuzzy
 msgid "Device Policy"
 msgstr "Политика устройства"
 
-#: user_admin.php:2335 user_group_admin.php:1925
+#: user_admin.php:2360 user_group_admin.php:1925
 #, fuzzy
 msgid "Template Policy"
 msgstr "Типовая политика"
 
-#: user_admin.php:2336
+#: user_admin.php:2361
 msgid "Last Login"
 msgstr "Последний Вход"
 
-#: user_admin.php:2358
+#: user_admin.php:2383
 msgid "Unavailable"
 msgstr "Недоступно"
 
-#: user_admin.php:2374
+#: user_admin.php:2404
 msgid "No Users Found"
 msgstr "Пользователей не найдено"
 
-#: user_admin.php:2585 user_group_admin.php:2157
+#: user_admin.php:2615 user_group_admin.php:2157
 #, fuzzy, php-format
 msgid "Graph Permissions %s"
 msgstr "График Разрешения %s"
 
-#: user_admin.php:2639 user_admin.php:2724
+#: user_admin.php:2669 user_admin.php:2754
 msgid "Show All"
 msgstr "Показать все"
 
-#: user_admin.php:2692
+#: user_admin.php:2722
 #, fuzzy, php-format
 msgid "Group Membership %s"
 msgstr "Членство в группе %s"
 
-#: user_admin.php:2778 user_group_admin.php:2265
+#: user_admin.php:2808 user_group_admin.php:2265
 #, fuzzy, php-format
 msgid "Devices Permission %s"
 msgstr "Устройства Разрешение %s"
 
-#: user_admin.php:2828 user_admin.php:2913 user_admin.php:2998
-#: user_admin.php:3083 user_group_admin.php:2211 user_group_admin.php:2315
+#: user_admin.php:2858 user_admin.php:2943 user_admin.php:3028
+#: user_admin.php:3113 user_group_admin.php:2211 user_group_admin.php:2315
 #: user_group_admin.php:2400 user_group_admin.php:2485
 #, fuzzy
 msgid "Only Show Exceptions"
 msgstr "Показать исключения"
 
-#: user_admin.php:2881 user_group_admin.php:2368
+#: user_admin.php:2911 user_group_admin.php:2368
 #, fuzzy, php-format
 msgid "Template Permission %s"
 msgstr "Шаблон Разрешение %s"
 
-#: user_admin.php:2966 user_admin.php:3051 user_group_admin.php:2453
+#: user_admin.php:2996 user_admin.php:3081 user_group_admin.php:2453
 #, fuzzy, php-format
 msgid "Tree Permission %s"
 msgstr "Разрешение деревьев %s"
