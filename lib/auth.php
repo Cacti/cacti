@@ -127,13 +127,126 @@ function check_auth_cookie() {
 	return false;
 }
 
-/* user_copy - copies user account
-   @arg $template_user - username of the user account that should be used as the template
-   @arg $new_user - new username of the account to be created/overwritten
-   @arg $new_realm - new realm of the account to be created, overwrite not affected, but is used for lookup
-   @arg $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm
-   @arg $data_override - Array of user_auth field and values to override on the new user
-   @return - the new users id, or false on no copy */
+/**
+ * is_template_account - given a username or user_id test if this is a template account
+ *   Template accounts could be accounts used for the administrative email, for both
+ *   the guest and template accounts, or a user that is specified by a plugin as a
+ *   template account.
+ *
+ * @param $user_id - either the user_id or a username
+ *
+ * @return boolean - true if template account, false otherwise
+ */
+function is_template_account($user_id) {
+	if (!is_numeric($user_id)) {
+		$user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', array($user_id));
+	}
+
+	if (empty($user_id)) {
+		return false;
+	}
+
+	if (read_config_option('admin_user') == $user_id) {
+		return true;
+	} elseif (read_config_option('guest_user') == $user_id) {
+		return true;
+	} elseif (read_config_option('user_template') == $user_id) {
+		return true;
+	} else {
+		$domain_template = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM user_domains
+			WHERE user_id = ?',
+			array($user_id));
+
+		if ($domain_template > 0) {
+			return true;
+		} else {
+			$plugin_template = get_template_account($user_id);
+
+			if ($plugin_template == $user_id) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+/**
+ * get_guest_account - return the guest account as defined in the system
+ *   if there is one, else return 0.
+ *
+ * @return int - the guest account if greater than 0
+ */
+function get_guest_account() {
+	$user = db_fetch_cell_prepared('SELECT id
+		FROM user_auth
+		WHERE username = ? OR id = ?',
+		array(read_config_option('guest_user'), read_config_option('guest_user')));
+
+	if (empty($user)) {
+		return 0;
+	} else {
+		return $user;
+	}
+}
+
+/**
+ * get_template_account - return the template account given a user.
+ *   if a user is not given, provide the 'default' template account.
+ *   This function is hookable by third party plugins.
+ *
+ * @return int - the template account if one exist for the user
+ */
+function get_template_account($user = '') {
+	if ($user == '') {
+		// no username or user_id passed, use default functionality
+		$user = db_fetch_cell_prepared('SELECT id
+			FROM user_auth
+			WHERE username = ? OR id = ?',
+			array(read_config_option('user_template'), read_config_option('user_template')));
+
+		if (empty($user)) {
+			return 0;
+		} else {
+			return $user;
+		}
+	} else {
+		$template = api_plugin_hook_function('get_template_account', $user);
+
+		if ($template == $user) {
+			// no plugin present, use default functionality
+			$user = db_fetch_cell_prepared('SELECT id
+				FROM user_auth
+				WHERE username = ? OR id = ?',
+				array(read_config_option('user_template'), read_config_option('user_template')));
+
+			if (empty($user)) {
+				return 0;
+			} else {
+				return $user;
+			}
+		} elseif ($template > 0) {
+			// plugin present and returned account
+			return $template;
+		} else {
+			// plugin present and returned no account
+			return 0;
+		}
+	}
+}
+
+/**
+ * user_copy - copies user account
+ *
+ * @param $template_user - username of the user account that should be used as the template
+ * @param $new_user - new username of the account to be created/overwritten
+ * @param $new_realm - new realm of the account to be created, overwrite not affected, but is used for lookup
+ * @param $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm
+ * @param $data_override - Array of user_auth field and values to override on the new user
+ *
+ * @return - the new users id, or false on no copy
+ */
 function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
 
 	/* ================= input validation ================= */
@@ -291,7 +404,7 @@ function user_remove($user_id) {
 		array($user_id));
 
 	if ($username != get_nfilter_request_var('username')) {
-		if ($user_id == get_template_account()) {
+		if (is_template_account($user_id)) {
 			raise_message(21);
 			return;
 		}

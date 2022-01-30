@@ -252,8 +252,6 @@ function form_actions() {
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
 						user_remove($selected_items[$i]);
-
-						api_plugin_hook_function('user_remove', $selected_items[$i]);
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
@@ -544,7 +542,7 @@ function form_save() {
 		$history  = db_fetch_cell_prepared('SELECT password_history FROM user_auth WHERE id = ?', array(get_nfilter_request_var('id')));
 
 		if ($username != '' && $username != get_nfilter_request_var('username')) {
-			if (get_filter_request_var('id') == get_template_account()) {
+			if (is_template_account(get_filter_request_var('id'))) {
 				raise_message(20);
 			}
 
@@ -2183,6 +2181,11 @@ function user() {
 			'pageset' => true,
 			'default' => '-1'
 			),
+		'realm' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
@@ -2213,6 +2216,7 @@ function user() {
 	function applyFilter() {
 		strURL  = 'user_admin.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
+		strURL += '&realm=' + $('#realm').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
 	}
@@ -2261,6 +2265,18 @@ function user() {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
+						<?php print __('Realm');?>
+					</td>
+					<td>
+						<select id='realm' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('realm') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<option value='0'<?php print (get_request_var('realm') == '0' ? ' selected>':'>') . __('Local');?></option>
+							<option value='2'<?php print (get_request_var('realm') == '2' ? ' selected>':'>') . __('Basic');?></option>
+							<option value='3'<?php print (get_request_var('realm') == '3' ? ' selected>':'>') . __('LDAP/AD');?></option>
+							<option value='4'<?php print (get_request_var('realm') == '4' ? ' selected>':'>') . __('Domain');?></option>
+						</select>
+					</td>
+					<td>
 						<?php print __('Users');?>
 					</td>
 					<td>
@@ -2269,7 +2285,7 @@ function user() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
 								}
 							}
 							?>
@@ -2297,6 +2313,14 @@ function user() {
 			OR user_auth.full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
+	}
+
+	if (get_request_var('realm') >= 0) {
+		if (get_request_var('realm') < 4) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth.realm = ' . get_request_var('realm');
+		} else {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth.realm > 3';
+		}
 	}
 
 	$total_rows = db_fetch_cell("SELECT
@@ -2327,6 +2351,7 @@ function user() {
 
 	$display_text = array(
 		'username'               => array(__('User Name'), 'ASC'),
+		'id'                     => array(__('User ID'), 'ASC'),
 		'full_name'              => array(__('Full Name'), 'ASC'),
 		'enabled'                => array(__('Enabled'), 'ASC'),
 		'realm'                  => array(__('Realm'), 'ASC'),
@@ -2358,8 +2383,12 @@ function user() {
 				$realm = __('Unavailable');
 			}
 
-			form_alternate_row('line' . $user['id'], true);
+			$disabled = is_template_account($user['id']);
+
+			form_alternate_row('line' . $user['id'], true, $disabled);
+
 			form_selectable_cell(filter_value($user['username'], get_request_var('filter'), $config['url_path'] . 'user_admin.php?action=user_edit&tab=general&id=' . $user['id']), $user['id']);
+			form_selectable_cell($user['id'], $user['id']);
 			form_selectable_cell(filter_value($user['full_name'], get_request_var('filter')), $user['id']);
 			form_selectable_cell($enabled, $user['id']);
 			form_selectable_cell($realm, $user['id']);
@@ -2367,7 +2396,8 @@ function user() {
 			form_selectable_cell(($user['policy_hosts'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
 			form_selectable_cell(($user['policy_graph_templates'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
 			form_selectable_cell($last_login, $user['id']);
-			form_checkbox_cell($user['username'], $user['id']);
+			form_checkbox_cell($user['username'], $user['id'], $disabled);
+
 			form_end_row();
 		}
 	} else {

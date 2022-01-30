@@ -140,7 +140,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			AND realm = 2',
 			array($username));
 
-		if (!$user && get_template_account() == '0' && get_guest_account() == '0') {
+		if (!$user && get_template_account($username) == 0 && get_guest_account() == 0) {
 			$error     = true;
 			$error_msg = __esc('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username);
 
@@ -259,13 +259,13 @@ if (get_nfilter_request_var('action') == 'login') {
 	}
 
 	/* Create user from template if requested */
-	if (!$error && !cacti_sizeof($user) && $copy_user && get_template_account() != '0' && $username != '') {
+	if (!$error && !cacti_sizeof($user) && $copy_user && get_template_account($username) != 0 && $username != '') {
 		cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
 		$user_template = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
-			array(get_template_account()));
+			array(get_template_account($username)));
 
 		/* check that template user exists */
 		if (!empty($user_template)) {

@@ -3150,20 +3150,6 @@ function get_web_browser() {
 	}
 }
 
-function get_guest_account() {
-	return db_fetch_cell_prepared('SELECT id
-		FROM user_auth
-		WHERE username = ? OR id = ?',
-		array(read_config_option('guest_user'), read_config_option('guest_user')));
-}
-
-function get_template_account() {
-	return db_fetch_cell_prepared('SELECT id
-		FROM user_auth
-		WHERE username = ? OR id = ?',
-		array(read_config_option('user_template'), read_config_option('user_template')));
-}
-
 /**
  * draw_login_status - provides a consistent login status page for all pages that use it
  */
