@@ -648,7 +648,7 @@ function api_plugin_install($plugin) {
 	if (!$proceed) {
 		$message .= '<br><br>' . __('Plugin cannot be installed.');
 
-		raise_message($message, MESSAGE_LEVEL_ERROR);
+		raise_message('dependency_check', $message, MESSAGE_LEVEL_ERROR);
 
 		header('Location: plugins.php?header=false');
 
