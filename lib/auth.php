@@ -248,7 +248,6 @@ function get_template_account($user = '') {
  * @return - the new users id, or false on no copy
  */
 function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
-
 	/* ================= input validation ================= */
 	input_validate_input_number($template_realm);
 	input_validate_input_number($new_realm);
@@ -261,7 +260,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		AND realm = ?',
 		array($template_user, $template_realm));
 
-	if (!isset($user_auth)) {
+	if (!cacti_sizeof($user_auth)) {
 		return false;
 	}
 
