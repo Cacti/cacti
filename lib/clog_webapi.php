@@ -533,12 +533,28 @@ function filter($clogAdmin, $selectedFile) {
 					</td>
 					<td>
 						<select id='message_type'>
-							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
-							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
-							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
-							<option value='3'<?php if (get_request_var('message_type') == '3') {?> selected<?php }?>><?php print __('Errors');?></option>
-							<option value='4'<?php if (get_request_var('message_type') == '4') {?> selected<?php }?>><?php print __('Debug');?></option>
-							<option value='5'<?php if (get_request_var('message_type') == '5') {?> selected<?php }?>><?php print __('SQL Calls');?></option>
+							<?php
+							$message_types = array(
+								'-1' => __('All'),
+								'1'  => __('Stats'),
+								'2'  => __('Warnings'),
+								'3'  => __('Warnings++'),
+								'4'  => __('Errors Only'),
+								'5'  => __('Errors++'),
+								'6'  => __('Debug'),
+								'7'  => __('SQL Calls'),
+								'8'  => __('AutoM8'),
+								'9'  => __('Non Stats')
+							);
+
+							foreach ($message_types as $index => $type) {
+								print "<option value='" . $index . "'";
+								if (get_request_var('message_type') == $index) {
+									print ' selected';
+								}
+								print '>' . $type . '</option>';
+							}
+							?>
 						</select>
 					</td>
 					<td>

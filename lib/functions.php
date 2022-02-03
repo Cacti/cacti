@@ -1212,20 +1212,61 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 function determine_display_log_entry($message_type, $line, $filter) {
 	/* determine if we are to display the line */
 	switch ($message_type) {
-		case 1: /* stats */
+		case 1: /* stats only */
 			$display = (strpos($line, 'STATS') !== false);
+
 			break;
-		case 2: /* warnings */
+		case 2: /* warnings only */
 			$display = (strpos($line, 'WARN') !== false);
+
 			break;
-		case 3: /* errors */
+		case 3: /* warnings + */
+			$display = (strpos($line, 'WARN') !== false);
+
+			if (!$display) {
+				$display = (strpos($line, 'ERROR') !== false);
+			}
+
+			if (!$display) {
+				$display = (strpos($line, 'DEBUG') !== false);
+			}
+
+			if (!$display) {
+				$display = (strpos($line, ' SQL') !== false);
+			}
+
+			break;
+		case 4: /* errors only */
 			$display = (strpos($line, 'ERROR') !== false);
+
 			break;
-		case 4: /* debug */
+		case 5: /* errors + */
+			$display = (strpos($line, 'ERROR') !== false);
+
+			if (!$display) {
+				$display = (strpos($line, 'DEBUG') !== false);
+			}
+
+			if (!$display) {
+				$display = (strpos($line, ' SQL') !== false);
+			}
+
+			break;
+		case 6: /* debug only */
 			$display = (strpos($line, 'DEBUG') !== false && strpos($line, ' SQL ') === false);
+
 			break;
-		case 5: /* sql calls */
+		case 7: /* sql calls only */
 			$display = (strpos($line, ' SQL ') !== false);
+
+			break;
+		case 8: /* AutoM8 Only */
+			$display = (strpos($line, 'AUTOM8') !== false);
+
+			break;
+		case 9: /* Non Stats */
+			$display = (strpos($line, 'STATS') === false);
+
 			break;
 		default: /* all other lines */
 		case -1: /* all */

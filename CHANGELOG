@@ -42,6 +42,7 @@ Cacti CHANGELOG
 -feature: Allow the get_template_account() function to be hookable by third party plugin
 -feature: Allow The User Management interface to be filterable by Realm
 -feature: Prevent Template User Accounts from being Removed
+-feature: Create more Filters for CLog Types
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
