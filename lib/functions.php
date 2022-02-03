@@ -1268,6 +1268,18 @@ function determine_display_log_entry($message_type, $line, $filter) {
 			$display = (strpos($line, 'STATS') === false);
 
 			break;
+                case 10: /* Boost Only*/
+                        $display = (strpos($line, 'BOOST') !== false);
+
+                        break;
+
+                case 11: /* THOLD Only*/
+                        $display = (strpos($line, 'THOLD') !== false);
+
+                        break;
+
+
+
 		default: /* all other lines */
 		case -1: /* all */
 			$display = true;
