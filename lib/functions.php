@@ -1274,7 +1274,7 @@ function determine_display_log_entry($message_type, $line, $filter) {
                         break;
 
                 case 11: /* THOLD Only*/
-                        $display = (strpos($line, 'Hostname') !== false);
+                        $display = (strpos($line, 'THOLD') !== false);
 
                         break;
 
