@@ -571,9 +571,20 @@ function form_save() {
 		$save['show_preview']         = form_input_validate(get_nfilter_request_var('show_preview', ''), 'show_preview', '', true, 3);
 		$save['graph_settings']       = form_input_validate(get_nfilter_request_var('graph_settings', ''), 'graph_settings', '', true, 3);
 		$save['login_opts']           = form_input_validate(get_nfilter_request_var('login_opts'), 'login_opts', '', true, 3);
-		$save['realm']                = get_nfilter_request_var('realm', 0);
 		$save['password_history']     = $history;
-		$save['enabled']              = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
+
+		/* force enable/disable on template accounts */
+		if (read_config_option('admin_user') == get_nfilter_request_var('id')) {
+			$save['enabled'] = 'on';
+			$save['realm']   = get_nfilter_request_var('realm', 0);
+		} elseif (is_template_account(get_nfilter_request_var('id'))) {
+			$save['enabled'] = '';
+			$save['realm']   = 0;
+		} else {
+			$save['enabled'] = form_input_validate(get_nfilter_request_var('enabled', ''), 'enabled', '', true, 3);
+			$save['realm']   = get_nfilter_request_var('realm', 0);
+		}
+
 		$save['email_address']        = form_input_validate(get_nfilter_request_var('email_address', ''), 'email_address', '', true, 3);
 		$save['locked']               = form_input_validate(get_nfilter_request_var('locked', ''), 'locked', '', true, 3);
 		$save['reset_perms']          = mt_rand();
@@ -2045,6 +2056,7 @@ function user_edit() {
 		<script type='text/javascript'>
 
 		var minChars=<?php print read_config_option('secpass_minlen');?>;
+		var templateAccount=<?php print is_template_account(get_filter_request_var('id')) ? 'true':'false';?>;
 
 		function changeRealm() {
 			if ($('#realm').val() != 0) {
@@ -2141,6 +2153,15 @@ function user_edit() {
 					}
 				}
 			});
+
+			if (templateAccount == true) {
+				$('#realm').prop('disabled', true);
+				$('#enabled').prop('disabled', true);
+
+				if ($('#realm').selectmenu('instance')) {
+					$('#realm').selectmenu('disable');
+				}
+			}
 		});
 
 		</script>
