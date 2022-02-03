@@ -546,7 +546,6 @@ function filter($clogAdmin, $selectedFile) {
 								'8'  => __('AutoM8'),
 								'9'  => __('Non Stats'),
                                                                 '10' => __('Boost'),
-                                                                '11' => __('Thold')
 							);
 
 							foreach ($message_types as $index => $type) {
