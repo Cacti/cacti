@@ -1210,6 +1210,12 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
  * @return - should the entry be displayed
  */
 function determine_display_log_entry($message_type, $line, $filter) {
+	static $thold_enabled = null;
+
+	if ($thold_enabled == null) {
+		$thold_enabled = api_plugin_is_enabled('thold');
+	}
+
 	/* determine if we are to display the line */
 	switch ($message_type) {
 		case 1: /* stats only */
@@ -1272,14 +1278,34 @@ function determine_display_log_entry($message_type, $line, $filter) {
 			$display = (strpos($line, 'BOOST') !== false);
 
 			break;
+		case 11: /* device events + */
+			$display = (strpos($line, 'HOST EVENT') !== false);
+
+			if (!$display) {
+				$display = (strpos($line, '] is recovering!') !== false);
+			}
+
+			if (!$display) {
+				$display = (strpos($line, '] is down!') !== false);
+			}
+
+			break;
+ 		case 12: /* Assertions */
+			$display = (strpos($line, 'ASSERT FAILED') !== false);
+
+			if (!$display) {
+				$display = (strpos($line, 'Recache Event') !== false);
+			}
+
+			break;
 		case -1: /* all */
 			$display = true;
 
 			break;
 		default: /* all other lines */
-			if (api_plugin_is_enabled('thold')) {
-				if ($message_type == 11) {
-					$display = (strpos($line, 'THOLD') !== false);
+			if ($thold_enabled) {
+				if ($message_type == 99) {
+					$display = (strpos($line, 'THOLD: Threshold') !== false);
 				}
 			} else {
 				$display = true;

@@ -546,10 +546,12 @@ function filter($clogAdmin, $selectedFile) {
 								'8'  => __('AutoM8'),
 								'9'  => __('Non Stats'),
 								'10' => __('Boost'),
+								'11' => __('Device Up/Down'),
+								'12' => __('Recaches'),
 							);
 
 							if (api_plugin_is_enabled('thold')) {
-								$message_types['11'] = __('Threshold');
+								$message_types['99'] = __('Threshold');
 							}
 
 							foreach ($message_types as $index => $type) {
