@@ -539,14 +539,18 @@ function filter($clogAdmin, $selectedFile) {
 								'1'  => __('Stats'),
 								'2'  => __('Warnings'),
 								'3'  => __('Warnings++'),
-								'4'  => __('Errors Only'),
+								'4'  => __('Errors'),
 								'5'  => __('Errors++'),
 								'6'  => __('Debug'),
 								'7'  => __('SQL Calls'),
 								'8'  => __('AutoM8'),
 								'9'  => __('Non Stats'),
-                                                                '10' => __('Boost'),
+								'10' => __('Boost'),
 							);
+
+							if (api_plugin_is_enabled('thold')) {
+								$message_types['11'] = __('Threshold');
+							}
 
 							foreach ($message_types as $index => $type) {
 								print "<option value='" . $index . "'";

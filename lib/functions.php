@@ -1268,18 +1268,22 @@ function determine_display_log_entry($message_type, $line, $filter) {
 			$display = (strpos($line, 'STATS') === false);
 
 			break;
-                case 10: /* Boost Only*/
-                        $display = (strpos($line, 'BOOST') !== false);
+ 		case 10: /* Boost Only*/
+			$display = (strpos($line, 'BOOST') !== false);
 
-                        break;
-
-
-
-
-		default: /* all other lines */
+			break;
 		case -1: /* all */
 			$display = true;
+
 			break;
+		default: /* all other lines */
+			if (api_plugin_is_enabled('thold')) {
+				if ($message_type == 11) {
+					$display = (strpos($line, 'THOLD') !== false);
+				}
+			} else {
+				$display = true;
+			}
 	}
 
 	/* match any lines that match the search string */
