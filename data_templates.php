@@ -779,7 +779,7 @@ function template_edit() {
 
 			foreach ($fields as $field) {
 				$data_input_data = db_fetch_row_prepared('SELECT t_value, value
-					FROM data_input_data
+					FROM data_input_data AS did
 					WHERE data_template_data_id = ?
 					AND data_input_field_id = ?',
 					array($template_data['id'], $field['id']));
@@ -797,6 +797,12 @@ function template_edit() {
 						$old_tvalue = 'on';
 						$disable    = 'disable';
 					}
+				} elseif ($field['type_code'] == 'host_id') {
+					$message = __esc('This value is disabled due to it being derived from the Device and read only.');
+
+					$old_value  = $data_input_data['value'];
+					$old_tvalue = '';
+					$disable    = 'disable';
 				} else {
 					$message = __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.');
 

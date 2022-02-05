@@ -702,23 +702,37 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 
 			/**
 			 * loop through each field contained in the data template and push out a host value if:
-			 * - the field is a valid "host field"
-			 * - the value of the field is empty
-			 * - the field is set to 'templated'
-			 * - or the type code is the host id
+			 * - the field is a valid "host field" and it's not set to be over-written
+			 * - in other words the t_value is not checked
 			 */
 			if (cacti_sizeof($template_fields[$data_source['local_data_template_data_id']])) {
 				foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
-					if ((preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == 'on') || $template_field['type_code'] == 'host_id') {
-						// handle special case type_code
-						if ($template_field['type_code'] == 'host_id') {
-							$template_field['type_code'] = 'id';
-						}
+					$update = false;
+					$field  = '';
 
-						db_execute_prepared('REPLACE INTO data_input_data
-							(data_input_field_id, data_template_data_id, value)
-							VALUES (?, ?, ?)',
-							array($template_field['id'], $data_source['id'], $host[$template_field['type_code']]));
+					// handle special case type_code
+					if ($template_field['type_code'] == 'host_id') {
+						$field = 'id';
+					}
+
+					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['t_value'] != 'on') {
+						// It's a valid host type-code
+						$update = true;
+
+						if ($template_field['type_code'] != 'host_id') {
+							$field = $template_field['type_code'];
+						}
+					}
+
+					if ($update) {
+						// Don't mess with a field that does not exist
+						// In the host table
+						if (isset($host[$field])) {
+							db_execute_prepared('REPLACE INTO data_input_data
+								(data_input_field_id, data_template_data_id, value)
+								VALUES (?, ?, ?)',
+								array($template_field['id'], $data_source['id'], $host[$field]));
+						}
 					}
 				}
 			}
