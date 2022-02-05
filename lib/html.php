@@ -2586,6 +2586,7 @@ function html_common_header($title, $selectedTheme = '') {
 	if (file_exists('include/themes/custom.css')) {
 		print get_md5_include_css('include/themes/custom.css');
 	}
+
 	api_plugin_hook('page_head');
 }
 
@@ -2640,6 +2641,16 @@ function html_help_page($page) {
 		'user_group_admin.php'        => 'User-Group-Management.html',
 		'user_admin.php'              => 'User-Management.html',
 		'vdef.php'                    => 'VDEFs.html',
+		'reports_admin.php'           => 'Reports-Admin.html',
+		'reports_admin.php:details'   => 'Reports-Admin.html',
+		'reports_admin.php:items'     => 'Reports-Items.html',
+		'reports_admin.php:preview'   => 'Reports-Preview.html',
+		'reports_admin.php:events'    => 'Reports-Events.html',
+		'reports_user.php'            => 'Reports-User.html',
+		'reports_user.php:details'    => 'Reports-User.html',
+		'reports_user.php:items'      => 'Reports-Items.html',
+		'reports_user.php:preview'    => 'Reports-Preview.html',
+		'reports_user.php:events'     => 'Reports-Events.html',
 	);
 
 	$help = api_plugin_hook_function('help_page', $help);
