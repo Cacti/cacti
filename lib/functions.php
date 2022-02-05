@@ -4728,7 +4728,7 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 
 				foreach($emails as $email) {
 					$email_array = split_emaildetail($email);
-					$details[] = $email_array;
+					$details[$email_array['email']] = $email_array;
 				}
 			} else {
 				$has_name  = array_key_exists('name', $check_email);
@@ -4742,13 +4742,14 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 					$email = array_key_exists(0, $check_email) ? $check_email[0] : '';
 				}
 
-				$details[] = array('name' => trim($name), 'email' => trim($email));
+				$details[trim(strtolower($email))] = array('name' => trim($name), 'email' => trim(strtolower($email)));
 			}
 		}
 	}
 
 	if ($max_records == 1) {
-		$results = count($details) ? $details[0] : array();
+		$detail  = reset($details);
+		$results = is_array($detail) ? $detail : array();
 	} elseif ($max_records != 0 && $max_records < count($details)) {
 		$results = array();
 		foreach ($details as $d) {
@@ -4787,7 +4788,7 @@ function split_emaildetail($email) {
 		$rname = $email[1];
 	}
 
-	return array('name' => $rname, 'email' => $rmail);
+	return array('name' => $rname, 'email' => strtolower($rmail));
 }
 
 function create_emailtext($e) {
