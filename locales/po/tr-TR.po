@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-02-03 20:27-0500\n"
+"POT-Creation-Date: 2022-02-06 12:08-0500\n"
 "PO-Revision-Date: 2022-02-03 21:02-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -680,7 +680,7 @@ msgstr "Boyut"
 #: data_sources.php:1702 data_sources.php:1703 data_templates.php:1195
 #: gprint_presets.php:437 graph_templates.php:901 host_templates.php:875
 #: include/global_settings.php:475 include/global_settings.php:834
-#: include/global_settings.php:1734 lib/api_automation.php:1438 links.php:404
+#: include/global_settings.php:1743 lib/api_automation.php:1438 links.php:404
 #: tree.php:2102 tree.php:2103 user_admin.php:2398 user_domains.php:767
 #: user_group_admin.php:1936 vdef.php:905
 msgid "No"
@@ -694,7 +694,7 @@ msgstr "Hayır"
 #: data_source_profiles.php:1101 data_sources.php:1702 data_sources.php:1703
 #: data_templates.php:1195 gprint_presets.php:437 graph_templates.php:901
 #: host_templates.php:875 include/global_settings.php:476
-#: include/global_settings.php:833 include/global_settings.php:1733
+#: include/global_settings.php:833 include/global_settings.php:1742
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
 #: lib/installer.php:3424 links.php:404 tree.php:2102 tree.php:2103
 #: user_admin.php:2396 user_domains.php:763 user_domains.php:767
@@ -735,8 +735,8 @@ msgstr "Şablon"
 #: graphs_items.php:354 host.php:1533 host.php:1551 host.php:1568 host.php:1629
 #: lib/api_automation.php:150 lib/api_automation.php:168
 #: lib/api_automation.php:429 lib/api_automation.php:446
-#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2684
-#: lib/auth.php:2713 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
+#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2692
+#: lib/auth.php:2721 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
 #: lib/html_reports.php:877 lib/html_reports.php:881 lib/html_reports.php:992
 #: lib/html_reports.php:1002 lib/html_reports.php:1847 managers.php:482
 #: managers.php:735 user_admin.php:2655 user_admin.php:2848
@@ -764,10 +764,10 @@ msgstr "Herhangi"
 #: include/global_form.php:2112 include/global_form.php:2154
 #: include/global_settings.php:572 include/global_settings.php:580
 #: include/global_settings.php:588 include/global_settings.php:1212
-#: include/global_settings.php:1808 lib/api_automation.php:151
+#: include/global_settings.php:1817 lib/api_automation.php:151
 #: lib/api_automation.php:430 lib/api_automation.php:447
-#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2687
-#: lib/auth.php:2716 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
+#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2695
+#: lib/auth.php:2724 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
 #: lib/html.php:2109 lib/html_form.php:331 lib/html_reports.php:888
 #: lib/html_reports.php:892 lib/html_reports.php:922 lib/html_reports.php:992
 #: lib/html_reports.php:998 lib/html_reports.php:1002 lib/html_reports.php:1010
@@ -961,8 +961,8 @@ msgstr "Lütfen mevcut şifrenizi ve yeni şifrenizi girin <br> Kaktüsler şifr
 msgid "Please enter your new Cacti password."
 msgstr "Lütfen mevcut şifrenizi ve yeni şifrenizi girin <br> Kaktüsler şifre."
 
-#: auth_changepassword.php:342 auth_login.php:831 auth_login.php:834
-#: include/global_settings.php:1642 lib/functions.php:4896
+#: auth_changepassword.php:342 auth_login.php:833 auth_login.php:836
+#: include/global_settings.php:1651 lib/functions.php:4897
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
@@ -984,7 +984,7 @@ msgstr "Yeni şifreyi onayla"
 msgid "Save"
 msgstr "Kaydet"
 
-#: auth_changepassword.php:367 auth_login.php:913
+#: auth_changepassword.php:367 auth_login.php:915
 #, fuzzy, php-format
 msgid "Version %1$s | %2$s"
 msgstr "Sürüm%1$s | %2$s"
@@ -1024,93 +1024,93 @@ msgstr "%s Web Sunucusu tarafından doğrulandı, ancak hem Şablon hem de Konuk
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "LDAP Arama Hatası: %s"
 
-#: auth_login.php:192 auth_login.php:667
+#: auth_login.php:194 auth_login.php:669
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP Hatası: %s"
 
-#: auth_login.php:318 auth_login.php:658
+#: auth_login.php:320 auth_login.php:660
 #, fuzzy, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "Erişim Engellendi, lütfen Cacti Yönetici ile iletişime geçin."
 
-#: auth_login.php:345
+#: auth_login.php:347
 #, fuzzy, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Adminitrator."
 msgstr "Erişim Engellendi, lütfen Cacti Yönetici ile iletişime geçin."
 
-#: auth_login.php:375
+#: auth_login.php:377
 #, fuzzy
 msgid "Access Denied!  User account disabled."
 msgstr "Erişim Reddedildi, kullanıcı hesabı devre dışı bırakıldı."
 
-#: auth_login.php:386
+#: auth_login.php:388
 #, fuzzy
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
 msgstr "Bunun bir hata olduğunu düşünüyorsanız. Lütfen Cacti Yöneticinizle görüşün."
 
-#: auth_login.php:433
+#: auth_login.php:435
 #, fuzzy
 msgid "Access Denied!  No guest account Defined.  Please contact your Administrator."
 msgstr "Erişim Engellendi, lütfen Cacti Yönetici ile iletişime geçin."
 
-#: auth_login.php:536
+#: auth_login.php:538
 #, fuzzy
 msgid "Cacti Login Failure"
 msgstr "Kaktüs Günlüğü Temizlendi"
 
-#: auth_login.php:543 include/auth.php:287 include/auth.php:289
+#: auth_login.php:545 include/auth.php:287 include/auth.php:289
 #: permission_denied.php:30 permission_denied.php:32
 #, fuzzy
 msgid "Login Again"
 msgstr "Tekrar giriş yap"
 
-#: auth_login.php:560
+#: auth_login.php:562
 #, fuzzy, php-format
 msgid "LDAP Search Error: %s"
 msgstr "LDAP Arama Hatası: %s"
 
-#: auth_login.php:804 lib/html_tree.php:218
+#: auth_login.php:806 lib/html_tree.php:218
 #, fuzzy
 msgid "Login to Cacti"
 msgstr "Cacti&#39;ye giriş yapın"
 
-#: auth_login.php:811
+#: auth_login.php:813
 msgid "User Login"
 msgstr "Kullanıcı Girişi"
 
-#: auth_login.php:825
+#: auth_login.php:827
 #, fuzzy
 msgid "Enter your Username and Password below"
 msgstr "Kullanıcı adınızı ve şifrenizi aşağıya girin"
 
-#: auth_login.php:839 include/global_form.php:1526 lib/functions.php:4897
+#: auth_login.php:841 include/global_form.php:1526 lib/functions.php:4898
 msgid "Password"
 msgstr "Şifre"
 
-#: auth_login.php:851 include/global_settings.php:2085 lib/auth.php:462
+#: auth_login.php:853 include/global_settings.php:2094 lib/auth.php:462
 #: lib/auth.php:484 lib/auth.php:495 user_admin.php:2294
 msgid "Local"
 msgstr "Yerel"
 
-#: auth_login.php:855 include/global_arrays.php:796 lib/auth.php:496
+#: auth_login.php:857 include/global_arrays.php:796 lib/auth.php:496
 msgid "LDAP"
 msgstr "LDAP"
 
-#: auth_login.php:873 user_admin.php:2289 user_admin.php:2378
+#: auth_login.php:875 user_admin.php:2289 user_admin.php:2378
 #: user_group_admin.php:682
 msgid "Realm"
 msgstr "Ülke:"
 
-#: auth_login.php:890
+#: auth_login.php:892
 msgid "Keep me signed in"
 msgstr "Oturum açık kalsın"
 
-#: auth_login.php:896
+#: auth_login.php:898
 msgid "Login"
 msgstr "Giriş"
 
-#: auth_login.php:908
+#: auth_login.php:910
 #, fuzzy
 msgid "Invalid User Name/Password Please Retype"
 msgstr "Geçersiz Kullanıcı Adı / Şifre Lütfen Yeniden Yazınız"
@@ -1127,7 +1127,7 @@ msgid "User Account Details"
 msgstr "Kullanıcı Hesap Detayları"
 
 #: auth_profile.php:296 include/global_arrays.php:780
-#: include/global_settings.php:2463 lib/html.php:1929 lib/html.php:1951
+#: include/global_settings.php:2472 lib/html.php:1929 lib/html.php:1951
 #: lib/html.php:2451
 msgid "Tree View"
 msgstr "Ağaç görünümü"
@@ -1153,7 +1153,7 @@ msgid "The login name for this user."
 msgstr "Bu kullanıcı için giriş adı."
 
 #: auth_profile.php:325 include/global_form.php:1510
-#: include/global_settings.php:1678 user_admin.php:2376 user_domains.php:496
+#: include/global_settings.php:1687 user_admin.php:2376 user_domains.php:496
 #: user_group_admin.php:682 utilities.php:919
 msgid "Full Name"
 msgstr "Ad Soyad"
@@ -1334,7 +1334,7 @@ msgid "SNMP Name"
 msgstr "SNMP Adı"
 
 #: automation_devices.php:280 host.php:1582 include/global_form.php:1201
-#: include/global_settings.php:2080
+#: include/global_settings.php:2089
 msgid "Location"
 msgstr "Konum"
 
@@ -1427,7 +1427,7 @@ msgstr "Keşfedilen Cihazları Temizle"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1809
-#: lib/functions.php:5242 lib/functions.php:5246 lib/html.php:1211
+#: lib/functions.php:5243 lib/functions.php:5247 lib/html.php:1211
 #: lib/html_reports.php:1633 lib/html_reports.php:1659
 #: lib/html_reports.php:1730 lib/html_reports.php:1731
 #: lib/html_reports.php:1732 pollers.php:1050 user_admin.php:2390
@@ -1447,7 +1447,7 @@ msgstr "Kopyala"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1535 include/global_settings.php:1597 links.php:29
+#: include/global_arrays.php:1535 include/global_settings.php:1603 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:412
 #: user_group_admin.php:32
@@ -1589,7 +1589,7 @@ msgstr "Etkin"
 #: include/global_settings.php:359 include/global_settings.php:1446
 #: include/global_settings.php:1460 include/global_settings.php:1473
 #: include/global_settings.php:1498 include/global_settings.php:1512
-#: include/global_settings.php:1596 include/global_settings.php:2286
+#: include/global_settings.php:1602 include/global_settings.php:2295
 #: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2527
 #: lib/html_reports.php:1849 lib/html_reports.php:1987 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
@@ -1892,8 +1892,8 @@ msgstr "% d dakika"
 #: include/global_arrays.php:1519 include/global_settings.php:1514
 #: include/global_settings.php:1515 include/global_settings.php:1516
 #: include/global_settings.php:1517 include/global_settings.php:1518
-#: include/global_settings.php:2389 include/global_settings.php:2648
-#: include/global_settings.php:2649 include/global_settings.php:2650
+#: include/global_settings.php:2398 include/global_settings.php:2657
+#: include/global_settings.php:2658 include/global_settings.php:2659
 #: pollers.php:912 pollers.php:913
 #, php-format
 msgid "%d Minutes"
@@ -1922,8 +1922,8 @@ msgstr "%d Saat"
 #: include/global_arrays.php:1440 include/global_arrays.php:1441
 #: include/global_arrays.php:1442 include/global_settings.php:1520
 #: include/global_settings.php:1521 include/global_settings.php:1522
-#: include/global_settings.php:1523 include/global_settings.php:2652
-#: include/global_settings.php:2653
+#: include/global_settings.php:1523 include/global_settings.php:2661
+#: include/global_settings.php:2662
 #, php-format
 msgid "%d Hours"
 msgstr "%d Saat"
@@ -2361,7 +2361,7 @@ msgid "Idle"
 msgstr "Boşta"
 
 #: automation_networks.php:1152 include/global_arrays.php:814
-#: include/global_arrays.php:1104 include/global_settings.php:2312
+#: include/global_arrays.php:1104 include/global_settings.php:2321
 #: lib/html_reports.php:1982
 msgid "Never"
 msgstr "Asla"
@@ -2392,8 +2392,8 @@ msgstr "Yenile"
 #: include/global_arrays.php:1515 include/global_arrays.php:1516
 #: include/global_arrays.php:1517 include/global_settings.php:1162
 #: include/global_settings.php:1163 include/global_settings.php:1164
-#: include/global_settings.php:1165 include/global_settings.php:2385
-#: include/global_settings.php:2386 include/global_settings.php:2387
+#: include/global_settings.php:1165 include/global_settings.php:2394
+#: include/global_settings.php:2395 include/global_settings.php:2396
 #: pollers.php:906 pollers.php:907 pollers.php:908 pollers.php:909
 #: pollers.php:910
 #, fuzzy, php-format
@@ -2516,7 +2516,7 @@ msgstr "Versiyon"
 msgid "Community"
 msgstr "Topluluk"
 
-#: automation_snmp.php:536 lib/functions.php:4892
+#: automation_snmp.php:536 lib/functions.php:4893
 msgid "Port"
 msgstr "Port"
 
@@ -2855,7 +2855,7 @@ msgstr "KÖK"
 msgid "No Tree Rules Found"
 msgstr "Ağaç Kuralı Bulunamadı"
 
-#: cactid.php:44 lib/functions.php:5503 lib/functions.php:5566 poller.php:353
+#: cactid.php:44 lib/functions.php:5504 lib/functions.php:5567 poller.php:353
 #: poller.php:477 poller.php:525 poller.php:541 poller.php:687 poller.php:785
 #: poller_automation.php:53 poller_boost.php:306
 #, fuzzy
@@ -4298,8 +4298,8 @@ msgstr "% d Hafta"
 
 #: data_source_profiles.php:812 include/global_arrays.php:718
 #: include/global_arrays.php:719 include/global_arrays.php:1356
-#: include/global_settings.php:2656 include/global_settings.php:2657
-#: include/global_settings.php:2658 rrdcleaner.php:519 rrdcleaner.php:520
+#: include/global_settings.php:2665 include/global_settings.php:2666
+#: include/global_settings.php:2667 rrdcleaner.php:519 rrdcleaner.php:520
 #, fuzzy, php-format
 msgid "%d Weeks"
 msgstr "% d Hafta"
@@ -4327,7 +4327,7 @@ msgstr "%d Gün"
 #: include/global_arrays.php:1416 include/global_arrays.php:1437
 #: include/global_arrays.php:1470 include/global_arrays.php:1479
 #: include/global_arrays.php:1507 include/global_settings.php:1263
-#: include/global_settings.php:1519 include/global_settings.php:2651
+#: include/global_settings.php:1519 include/global_settings.php:2660
 msgid "1 Hour"
 msgstr "1 Saat"
 
@@ -4604,7 +4604,7 @@ msgstr "Bu veri şablonuna verilen isim. Lütfen Grafik Şablonlarını yalnızc
 #: data_sources.php:932 graph_view.php:726 graphs.php:1583
 #: include/global_arrays.php:877 include/global_arrays.php:926
 #: include/global_arrays.php:1573 include/global_arrays.php:1742
-#: lib/api_automation.php:425 lib/functions.php:4891 lib/html.php:2043
+#: lib/api_automation.php:425 lib/functions.php:4892 lib/html.php:2043
 #: lib/html.php:2075 lib/html_reports.php:1005 utilities.php:1638
 msgid "Device"
 msgstr "Cihaz"
@@ -4659,7 +4659,7 @@ msgstr "Dış"
 #: data_sources.php:1199 include/global_arrays.php:654
 #: include/global_arrays.php:1101 include/global_arrays.php:1464
 #: include/global_arrays.php:1500 include/global_arrays.php:1518
-#: include/global_settings.php:1513 include/global_settings.php:2388
+#: include/global_settings.php:1513 include/global_settings.php:2397
 msgid "1 Minute"
 msgstr "1 dakika boyu"
 
@@ -5411,7 +5411,7 @@ msgid "Select the Report to add the selected Graphs to."
 msgstr "Seçili Grafikleri eklemek için Raporu seçin."
 
 #: graph_view.php:902 include/global_arrays.php:1939
-#: include/global_settings.php:2459
+#: include/global_settings.php:2468
 msgid "Preview Mode"
 msgstr "Önizleme modu"
 
@@ -6182,7 +6182,7 @@ msgstr "[% d Öğeler,% d Satırlar]"
 msgid "Fail"
 msgstr "Başarısız"
 
-#: host.php:943 lib/functions.php:4906 lib/functions.php:4911
+#: host.php:943 lib/functions.php:4907 lib/functions.php:4912
 msgid "Success"
 msgstr "Başarılı"
 
@@ -6509,31 +6509,31 @@ msgstr "Bu Cihaz Şablonunu kullanan Cihazların sayısı."
 msgid "No Device Templates Found"
 msgstr "Aygıt Şablonu Bulunamadı"
 
-#: include/auth.php:170
+#: include/auth.php:171
 msgid "Not Logged In"
 msgstr "Giriş yapmadınız"
 
-#: include/auth.php:171
+#: include/auth.php:172
 #, fuzzy
 msgid "You must be logged in to access this area of Cacti."
 msgstr "Bu kaktüslere erişmek için giriş yapmalısınız."
 
-#: include/auth.php:175
+#: include/auth.php:176
 #, fuzzy
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "FATAL: Bu kaktüsler alanına erişmek için giriş yapmalısınız."
 
-#: include/auth.php:294 lib/functions.php:6475 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:6476 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "Izin reddedildi"
 
-#: include/auth.php:295 lib/functions.php:6476 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Bunun bir hata olduğunu düşünüyorsanız. Lütfen Cacti Yöneticinizle görüşün."
 
-#: include/auth.php:295 lib/functions.php:6476 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Kaktüslerin bu bölümüne erişmene izin verilmiyor."
@@ -7270,8 +7270,8 @@ msgstr "Her Saat"
 #: include/global_arrays.php:752 include/global_arrays.php:753
 #: include/global_arrays.php:1752 include/global_arrays.php:1753
 #: include/global_arrays.php:1754 include/global_arrays.php:1755
-#: include/global_arrays.php:1756 include/global_settings.php:2287
-#: include/global_settings.php:2288
+#: include/global_arrays.php:1756 include/global_settings.php:2296
+#: include/global_settings.php:2297
 #, fuzzy, php-format
 msgid "Every %d Hours"
 msgstr "Her% d saatte bir"
@@ -9117,7 +9117,7 @@ msgstr "RRA şartnamesinde bir satırı doldurmadan önce gereken örnek sayıs�
 msgid "How many generations data is kept in the RRA."
 msgstr "RRA&#39;da kaç nesil veri tutulur."
 
-#: include/global_form.php:307 include/global_settings.php:2409
+#: include/global_form.php:307 include/global_settings.php:2418
 #, fuzzy
 msgid "Default Timespan"
 msgstr "Varsayılan Zaman Aralığı"
@@ -10568,7 +10568,7 @@ msgstr "Veri"
 msgid "Visual"
 msgstr "Görsel"
 
-#: include/global_settings.php:44 lib/functions.php:4895 lib/functions.php:4900
+#: include/global_settings.php:44 lib/functions.php:4896 lib/functions.php:4901
 msgid "Authentication"
 msgstr "Doğrulama"
 
@@ -10610,11 +10610,11 @@ msgstr "Grafik Yazı Tipleri"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail () İşlevi"
 
-#: include/global_settings.php:84 lib/functions.php:4878
+#: include/global_settings.php:84 lib/functions.php:4879
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:85 lib/functions.php:4883
+#: include/global_settings.php:85 lib/functions.php:4884
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10944,7 +10944,7 @@ msgstr "Tercih Edilen Dil İşlemcisi"
 msgid "Cacti includes support for multiple alternate Language Translation Processors.  It will be default use the PHP built in support, but not all Linux variants includes built in Language Support.  If not selected, Cacti will choose the first one found."
 msgstr "Kaktüsler, birden çok alternatif Dil Çeviri İşlemcisi için destek içerir. Varsayılan olarak yerleşik PHP desteği kullanılacaktır, ancak tüm Linux türevleri yerleşik Dil Desteğini içermez. Seçilmezse, Cacti ilk bulunanı seçecektir."
 
-#: include/global_settings.php:371 include/global_settings.php:2366
+#: include/global_settings.php:371 include/global_settings.php:2375
 #, fuzzy
 msgid "Date Display Format"
 msgstr "Tarih görüntüleme biçimi"
@@ -10954,7 +10954,7 @@ msgstr "Tarih görüntüleme biçimi"
 msgid "The System default date format to use in Cacti."
 msgstr "Cacti&#39;de kullanılacak Sistem varsayılan tarih formatı."
 
-#: include/global_settings.php:378 include/global_settings.php:2373
+#: include/global_settings.php:378 include/global_settings.php:2382
 msgid "Date Separator"
 msgstr "Tarih Ayırıcı"
 
@@ -11475,11 +11475,11 @@ msgid "Theme Settings"
 msgstr "Tema Ayarları"
 
 #: include/global_settings.php:809 include/global_settings.php:1019
-#: include/global_settings.php:2321
+#: include/global_settings.php:2330
 msgid "Theme"
 msgstr "Tema"
 
-#: include/global_settings.php:810 include/global_settings.php:2322
+#: include/global_settings.php:810 include/global_settings.php:2331
 #, fuzzy
 msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr "Lütfen Cacti&#39;nizi ciltlemek için mevcut Temalardan birini seçin."
@@ -11518,22 +11518,22 @@ msgstr "Otomatik Tamamlama Satırları"
 msgid "The default number of rows to return from an autocomplete based select pattern match."
 msgstr "Otomatik tamamlama tabanlı seçme desen eşleşmesinden döndürülecek varsayılan satır sayısı."
 
-#: include/global_settings.php:850 include/global_settings.php:2541
+#: include/global_settings.php:850 include/global_settings.php:2550
 #, fuzzy
 msgid "Minimum Tree Width"
 msgstr "Minimum uzunluk"
 
-#: include/global_settings.php:851 include/global_settings.php:2542
+#: include/global_settings.php:851 include/global_settings.php:2551
 #, fuzzy
 msgid "The Minimum width of the Tree to contract to."
 msgstr "Taahhüt edilecek Ağacın Minimum genişliği."
 
-#: include/global_settings.php:858 include/global_settings.php:2549
+#: include/global_settings.php:858 include/global_settings.php:2558
 #, fuzzy
 msgid "Maximum Tree Width"
 msgstr "Maksimum Başlık Uzunluğu"
 
-#: include/global_settings.php:859 include/global_settings.php:2550
+#: include/global_settings.php:859 include/global_settings.php:2559
 #, fuzzy
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
 msgstr "Genişletilecek Ağacın maksimum genişliği, bundan sonra Ağaç dalları sayfada kayar."
@@ -11754,11 +11754,11 @@ msgstr "Tema tabanlı yazı tipi kontrolü kullanılmadığında, tüm Grafikler
 msgid "Enter Valid Font Config Value"
 msgstr "Geçerli Yazı Tipi Yapılandırma Değerini Girin"
 
-#: include/global_settings.php:1030 include/global_settings.php:2566
+#: include/global_settings.php:1030 include/global_settings.php:2575
 msgid "Title Font Size"
 msgstr "Başlık Yazı Boyutu"
 
-#: include/global_settings.php:1031 include/global_settings.php:2567
+#: include/global_settings.php:1031 include/global_settings.php:2576
 #, fuzzy
 msgid "The size of the font used for Graph Titles"
 msgstr "Grafik Başlıkları için kullanılan fontun boyutu"
@@ -11773,12 +11773,12 @@ msgstr "Başlık Yazı Tipi Ayarı"
 msgid "The font to use for Graph Titles.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "Grafik Başlıkları için kullanılacak font. Geçerli bir True Type Font dosyası veya geçerli Pango font-config değeri girin."
 
-#: include/global_settings.php:1045 include/global_settings.php:2579
+#: include/global_settings.php:1045 include/global_settings.php:2588
 #, fuzzy
 msgid "Legend Font Size"
 msgstr "Legend Yazı Tipi Boyutu"
 
-#: include/global_settings.php:1046 include/global_settings.php:2580
+#: include/global_settings.php:1046 include/global_settings.php:2589
 #, fuzzy
 msgid "The size of the font used for Graph Legend items"
 msgstr "Graph Legend öğeleri için kullanılan fontun boyutu"
@@ -11793,12 +11793,12 @@ msgstr "Legend Yazı Tipi Ayarı"
 msgid "The font to use for Graph Legends.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "Grafik Efsaneleri için kullanılacak font. Geçerli bir True Type Font dosyası veya geçerli Pango font-config değeri girin."
 
-#: include/global_settings.php:1060 include/global_settings.php:2592
+#: include/global_settings.php:1060 include/global_settings.php:2601
 #, fuzzy
 msgid "Axis Font Size"
 msgstr "Eksen Yazı Tipi Boyutu"
 
-#: include/global_settings.php:1061 include/global_settings.php:2593
+#: include/global_settings.php:1061 include/global_settings.php:2602
 #, fuzzy
 msgid "The size of the font used for Graph Axis"
 msgstr "Graph Axis için kullanılan fontun boyutu"
@@ -11813,12 +11813,12 @@ msgstr "Eksen Yazı Tipi Ayarı"
 msgid "The font to use for Graph Axis items.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "Graph Axis öğeleri için kullanılacak font. Geçerli bir True Type Font dosyası veya geçerli Pango font-config değeri girin."
 
-#: include/global_settings.php:1075 include/global_settings.php:2605
+#: include/global_settings.php:1075 include/global_settings.php:2614
 #, fuzzy
 msgid "Unit Font Size"
 msgstr "Birim Yazı Tipi Boyutu"
 
-#: include/global_settings.php:1076 include/global_settings.php:2606
+#: include/global_settings.php:1076 include/global_settings.php:2615
 #, fuzzy
 msgid "The size of the font used for Graph Units"
 msgstr "Grafik Birimleri için kullanılan fontun boyutu"
@@ -12316,7 +12316,7 @@ msgstr "Otomatik kilidini"
 msgid "An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Max of 1440 minutes (1 Day)"
 msgstr "Bir kaç dakika sonra bir hesap otomatik olarak açılır. Doğru şifre girilse bile, bu süre geçinceye kadar hesap kilidini açmaz. Maksimum 1440 dakika (1 Gün)"
 
-#: include/global_settings.php:1524 include/global_settings.php:2654
+#: include/global_settings.php:1524 include/global_settings.php:2663
 msgid "1 Day"
 msgstr "1 Gün"
 
@@ -12384,1096 +12384,1104 @@ msgstr "Zaman Aşımı"
 msgid "The Bind Timeout in seconds."
 msgstr "Lütfen SMTP zaman aşımını saniye cinsinden girin."
 
-#: include/global_settings.php:1577 user_domains.php:401
+#: include/global_settings.php:1577
+msgid "LDAP Debug Mode"
+msgstr ""
+
+#: include/global_settings.php:1578
+msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
+msgstr ""
+
+#: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
 msgstr "Şifreleme"
 
-#: include/global_settings.php:1578
+#: include/global_settings.php:1584
 #, fuzzy
 msgid "Encryption that the server supports. NOTE: When using LDAP + TLS you must use version 3."
 msgstr "Sunucunun desteklediği şifreleme. TLS sadece Protokol Versiyon 3 tarafından desteklenmektedir."
 
-#: include/global_settings.php:1584
+#: include/global_settings.php:1590
 #, fuzzy
 msgid "TLS Certificate Requirements"
 msgstr "TLS Sertifika Gereksinimleri"
 
-#: include/global_settings.php:1585
+#: include/global_settings.php:1591
 #, fuzzy
 msgid "Should LDAP verify TLS Certificates when received by the Client."
 msgstr "LDAP, Müşteri tarafından alındığında TLS Sertifikalarını doğrulamalıdır."
 
-#: include/global_settings.php:1591 user_domains.php:408
+#: include/global_settings.php:1597 user_domains.php:408
 msgid "Referrals"
 msgstr "Referanslar"
 
-#: include/global_settings.php:1592 user_domains.php:409
+#: include/global_settings.php:1598 user_domains.php:409
 #, fuzzy
 msgid "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches."
 msgstr "LDAP yönlendirmelerini etkinleştirme veya devre dışı bırakma. Devre dışı bırakılırsa, aramaların hızını artırabilir."
 
-#: include/global_settings.php:1601 user_domains.php:415
+#: include/global_settings.php:1607 user_domains.php:415
 msgid "Mode"
 msgstr "Mod"
 
-#: include/global_settings.php:1602
+#: include/global_settings.php:1608
 #, fuzzy
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgstr "Kaktüslerin LDAP sunucusuna karşı kimlik doğrulaması yapmaya çalıştığı mod. <blockquote> <i>Arama</i> Yok - Ayırt Edici Ad Yok (DN) araması gerçekleşir, verilen Ayırt Edici Ad (DN) biçimiyle bağlanmaya çalışın. <br><br> <i>Anonim Arama</i> - Kullanıcının Ayırt Edici Adını (DN) bulmak için adsız bağlama yoluyla LDAP dizininde kullanıcı adı aramaya çalışır. <br><br> <i>Özel Arama</i> - Kullanıcının Ayırt Edici Adını (DN) bulmak için bağlama için Belirli Ayırt Edici Ad (DN) ve Belirli Şifre ile LDAP dizininde kullanıcı adı aramaya çalışır."
 
-#: include/global_settings.php:1608 user_domains.php:422
+#: include/global_settings.php:1614 user_domains.php:422
 #, fuzzy
 msgid "Distinguished Name (DN)"
 msgstr "Ayırt Edici Ad (DN)"
 
-#: include/global_settings.php:1609 user_domains.php:423
+#: include/global_settings.php:1615 user_domains.php:423
 #, fuzzy
 msgid "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt.  This is only used when in \"No Searching\" mode."
 msgstr "Windows için olduğu gibi Ayırt Edici Ad sözdizimi: <i>&quot;&lt;kullanıcı adı&gt; @ win2kdomain.local&quot;</i> veya OpenLDAP için: <i>&quot;uid = &lt;kullanıcı adı&gt;, ou = insanlar, dc = etki alanı, dc = yerel&quot;</i> . &quot;&lt;username&gt;&quot;, oturum açma isteminde verilen kullanıcı adıyla değiştirildi. Bu sadece &quot;Arama Yok&quot; modundayken kullanılır."
 
-#: include/global_settings.php:1614 user_domains.php:429
+#: include/global_settings.php:1621 user_domains.php:429
 #, fuzzy
 msgid "Require Group Membership"
 msgstr "Grup Üyeliği İste"
 
-#: include/global_settings.php:1615 user_domains.php:430
+#: include/global_settings.php:1622 user_domains.php:430
 #, fuzzy
 msgid "Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure."
 msgstr "Kullanıcının, kimliğini doğrulamak için gruba üye olmasını isteyin. Bunun çalışması için grup ayarlarının yapılması gerekir, uygun grup ayarlarının yapılmaması yetkilendirme başarısızlığına neden olur."
 
-#: include/global_settings.php:1620 user_domains.php:435
+#: include/global_settings.php:1627 user_domains.php:435
 #, fuzzy
 msgid "LDAP Group Settings"
 msgstr "LDAP Grubu Ayarları"
 
-#: include/global_settings.php:1624 user_domains.php:439
+#: include/global_settings.php:1631 user_domains.php:439
 #, fuzzy
 msgid "Group Distinguished Name (DN)"
 msgstr "Grup Ayırt Edici Adı (DN)"
 
-#: include/global_settings.php:1625 user_domains.php:440
+#: include/global_settings.php:1632 user_domains.php:440
 #, fuzzy
 msgid "Distinguished Name of the group that user must have membership."
 msgstr "Üyenin sahip olması gereken grubun ayırt edici adı."
 
-#: include/global_settings.php:1630 user_domains.php:446
+#: include/global_settings.php:1638 user_domains.php:446
 #, fuzzy
 msgid "Group Member Attribute"
 msgstr "Grup Üyesi Özelliği"
 
-#: include/global_settings.php:1631 user_domains.php:447
+#: include/global_settings.php:1639 user_domains.php:447
 #, fuzzy
 msgid "Name of the attribute that contains the usernames of the members."
 msgstr "Üyelerin kullanıcı adlarını içeren özniteliğin adı."
 
-#: include/global_settings.php:1636 user_domains.php:453
+#: include/global_settings.php:1645 user_domains.php:453
 #, fuzzy
 msgid "Group Member Type"
 msgstr "Grup Üyesi Türü"
 
-#: include/global_settings.php:1637 user_domains.php:454
+#: include/global_settings.php:1646 user_domains.php:454
 #, fuzzy
 msgid "Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute."
 msgstr "Kullanıcıların tanımlanmış Grup Üyesi Özniteliğinde tam Ayırt Edici Ad veya yalnızca Kullanıcı Adı kullanıp kullanmadıklarını tanımlar."
 
-#: include/global_settings.php:1641
+#: include/global_settings.php:1650
 msgid "Distinguished Name"
 msgstr "Ayırt Edici İsim"
 
-#: include/global_settings.php:1646 user_domains.php:460
+#: include/global_settings.php:1655 user_domains.php:460
 #, fuzzy
 msgid "LDAP Specific Search Settings"
 msgstr "LDAP Özel Arama Ayarları"
 
-#: include/global_settings.php:1650 user_domains.php:464
+#: include/global_settings.php:1659 user_domains.php:464
 #, fuzzy
 msgid "Search Base"
 msgstr "Arama Tabanı"
 
-#: include/global_settings.php:1651
+#: include/global_settings.php:1660
 #, fuzzy
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
 msgstr "<i>&#39;Dc = win2kdomain, dc = local&#39;</i> veya <i>&#39;ou = people, dc = domain, dc = local&#39;</i> gibi LDAP dizinini aramak için arama tabanı."
 
-#: include/global_settings.php:1656 user_domains.php:471
+#: include/global_settings.php:1665 user_domains.php:471
 msgid "Search Filter"
 msgstr "Arama Filtresi"
 
-#: include/global_settings.php:1657
+#: include/global_settings.php:1666
 #, fuzzy
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
 msgstr "Kullanıcının pencereleri LDAP dizininde bulmak için kullanacağı arama filtresi, örneğin: <i>&#39;(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;username&gt; *))&#39;</i> veya OpenLDAP: <i>&#39;(&amp; (objectClass) = hesap) (uid = &lt;kullanıcı adı&gt;)) &#39;</i> . &#39;&lt;username&gt;&#39; giriş isteminde verilen kullanıcı adı ile değiştirildi."
 
-#: include/global_settings.php:1662 user_domains.php:478
+#: include/global_settings.php:1671 user_domains.php:478
 #, fuzzy
 msgid "Search Distinguished Name (DN)"
 msgstr "Ayırt Edici Adı Ara (DN)"
 
-#: include/global_settings.php:1663 user_domains.php:479
+#: include/global_settings.php:1672 user_domains.php:479
 #, fuzzy
 msgid "Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr "LDAP dizinine bağlanan Özel Arama için Ayırt Edici Ad."
 
-#: include/global_settings.php:1668 user_domains.php:485
+#: include/global_settings.php:1677 user_domains.php:485
 msgid "Search Password"
 msgstr "Şifre Ara"
 
-#: include/global_settings.php:1669 user_domains.php:486
+#: include/global_settings.php:1678 user_domains.php:486
 #, fuzzy
 msgid "Password for Specific Searching binding to the LDAP directory."
 msgstr "LDAP dizinine Özel Arama için şifre."
 
-#: include/global_settings.php:1674 user_domains.php:492
+#: include/global_settings.php:1683 user_domains.php:492
 #, fuzzy
 msgid "LDAP CN Settings"
 msgstr "LDAP CN Ayarları"
 
-#: include/global_settings.php:1679 user_domains.php:497
+#: include/global_settings.php:1688 user_domains.php:497
 #, fuzzy
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr "LDAP&#39;den alınan, yeni bir kullanıcı oluştururken Tam Adı değiştirecek alan. (pencerelerde: görünen ad)"
 
-#: include/global_settings.php:1684
+#: include/global_settings.php:1693
 msgid "Email"
 msgstr "E-posta"
 
-#: include/global_settings.php:1685
+#: include/global_settings.php:1694
 #, fuzzy
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
 msgstr "LDAP&#39;den alınan E-postanın yerini alacak alan. (pencerelerde: posta)"
 
-#: include/global_settings.php:1692
+#: include/global_settings.php:1701
 #, fuzzy
 msgid "URL Linking"
 msgstr "URL Bağlantısı"
 
-#: include/global_settings.php:1697
+#: include/global_settings.php:1706
 #, fuzzy
 msgid "Server Base URL"
 msgstr "Sunucu Tabanı URL&#39;si"
 
-#: include/global_settings.php:1698
+#: include/global_settings.php:1707
 #, fuzzy
 msgid "This is a the server location that will be used for links to the Cacti site. This should include the subdirectory if Cacti does not run from root folder."
 msgstr "Bu, Cacti sitesine bağlantılar için kullanılacak bir sunucu konumudur."
 
-#: include/global_settings.php:1705
+#: include/global_settings.php:1714
 #, fuzzy
 msgid "Emailing Options"
 msgstr "E-posta Seçenekleri"
 
-#: include/global_settings.php:1709
+#: include/global_settings.php:1718
 #, fuzzy
 msgid "Notify Primary Admin of Issues"
 msgstr "Birincil Sorunları Yönetici Olarak Bildir"
 
-#: include/global_settings.php:1710
+#: include/global_settings.php:1719
 #, fuzzy
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
 msgstr "Cacti sunucusunun sorun yaşadığı durumlarda, Birincil Yöneticiye E-posta ile bildirilmeli mi? Birincil Yöneticinin Cacti kullanıcı hesabı, Cacti&#39;nin ayarlar sayfasındaki Kimlik Doğrulama sekmesi altında belirtilmiştir. Varsayılan olarak &#39;admin&#39; hesabına."
 
-#: include/global_settings.php:1715
+#: include/global_settings.php:1724
 msgid "Test Email"
 msgstr "Test E-postası"
 
-#: include/global_settings.php:1716
+#: include/global_settings.php:1725
 #, fuzzy
 msgid "This is a Email account used for sending a test message to ensure everything is working properly."
 msgstr "Bu, her şeyin düzgün çalıştığından emin olmak için bir test mesajı göndermek için kullanılan bir E-posta hesabıdır."
 
-#: include/global_settings.php:1721
+#: include/global_settings.php:1730
 #, fuzzy
 msgid "Mail Services"
 msgstr "Mail Servisleri"
 
-#: include/global_settings.php:1722
+#: include/global_settings.php:1731
 #, fuzzy
 msgid "Which mail service to use in order to send mail"
 msgstr "Posta göndermek için hangi posta servisini kullanmak"
 
-#: include/global_settings.php:1728
+#: include/global_settings.php:1737
 #, fuzzy
 msgid "Ping Mail Server"
 msgstr "Ping Posta Sunucusu"
 
-#: include/global_settings.php:1729
+#: include/global_settings.php:1738
 #, fuzzy
 msgid "Ping the Mail Server before sending test Email?"
 msgstr "Test E-postasını göndermeden önce Posta Sunucusuna ping atmak ister misiniz?"
 
-#: include/global_settings.php:1738 lib/html_reports.php:185
+#: include/global_settings.php:1747 lib/html_reports.php:185
 msgid "From Email Address"
 msgstr "E-posta Adresinden"
 
-#: include/global_settings.php:1739
+#: include/global_settings.php:1748
 #, fuzzy
 msgid "This is the Email address that the Email will appear from."
 msgstr "Bu, E-postanın görüneceği E-posta adresidir."
 
-#: include/global_settings.php:1744 lib/html_reports.php:177
+#: include/global_settings.php:1753 lib/html_reports.php:177
 msgid "From Name"
 msgstr "İsimden"
 
-#: include/global_settings.php:1745
+#: include/global_settings.php:1754
 #, fuzzy
 msgid "This is the actual name that the Email will appear from."
 msgstr "Bu, E-postanın görüneceği asıl addır."
 
-#: include/global_settings.php:1750
+#: include/global_settings.php:1759
 msgid "Word Wrap"
 msgstr "Sozcuk kaydir"
 
-#: include/global_settings.php:1751
+#: include/global_settings.php:1760
 #, fuzzy
 msgid "This is how many characters will be allowed before a line in the Email is automatically word wrapped. (0 = Disabled)"
 msgstr "E-postadaki bir satır otomatik olarak sözcük sarılmadan önce kaç karaktere izin verileceğidir. (0 = Devre dışı)"
 
-#: include/global_settings.php:1758
+#: include/global_settings.php:1767
 #, fuzzy
 msgid "Sendmail Options"
 msgstr "Sendmail Seçenekleri"
 
-#: include/global_settings.php:1763 lib/functions.php:4878
+#: include/global_settings.php:1772 lib/functions.php:4879
 msgid "Sendmail Path"
 msgstr "Sendmail Yolu"
 
-#: include/global_settings.php:1764
+#: include/global_settings.php:1773
 #, fuzzy
 msgid "This is the path to sendmail on your server. (Only used if Sendmail is selected as the Mail Service)"
 msgstr "Bu, sunucunuzda sendmail&#39;in yoludur. (Yalnızca Posta Hizmeti olarak Sendmail seçilmişse kullanılır)"
 
-#: include/global_settings.php:1772
+#: include/global_settings.php:1781
 msgid "SMTP Options"
 msgstr "SMTP Ayarları"
 
-#: include/global_settings.php:1777
+#: include/global_settings.php:1786
 msgid "SMTP Hostname"
 msgstr "SMTP Hostname"
 
-#: include/global_settings.php:1778
+#: include/global_settings.php:1787
 #, fuzzy
 msgid "This is the hostname/IP of the SMTP Server you will send the Email to. For failover, separate your hosts using a semi-colon."
 msgstr "Bu, E-postayı göndereceğiniz SMTP Sunucusunun ana bilgisayar adı / IP adresidir. Yük devretme için, ana bilgisayarlarınızı noktalı virgül kullanarak ayırın."
 
-#: include/global_settings.php:1784
+#: include/global_settings.php:1793
 msgid "SMTP Port"
 msgstr "SMTP Port"
 
-#: include/global_settings.php:1785
+#: include/global_settings.php:1794
 #, fuzzy
 msgid "The port on the SMTP Server to use."
 msgstr "Kullanılacak SMTP Sunucusundaki bağlantı noktası."
 
-#: include/global_settings.php:1792
+#: include/global_settings.php:1801
 msgid "SMTP Username"
 msgstr "SMTP Kullanıcı Adı"
 
-#: include/global_settings.php:1793
+#: include/global_settings.php:1802
 #, fuzzy
 msgid "The username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "SMTP ile gönderirken kimlik doğrulaması yapacak kullanıcı adı. (Kimlik doğrulaması istemiyorsanız boş bırakın.)"
 
-#: include/global_settings.php:1798
+#: include/global_settings.php:1807
 msgid "SMTP Password"
 msgstr "SMTP Şifre"
 
-#: include/global_settings.php:1799
+#: include/global_settings.php:1808
 #, fuzzy
 msgid "The password to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "SMTP ile gönderirken kimlik doğrulaması yapılacak şifre. (Kimlik doğrulaması istemiyorsanız boş bırakın.)"
 
-#: include/global_settings.php:1804
+#: include/global_settings.php:1813
 msgid "SMTP Security"
 msgstr "SMTP Güvenlik"
 
-#: include/global_settings.php:1805
+#: include/global_settings.php:1814
 #, fuzzy
 msgid "The encryption method to use for the Email."
 msgstr "E-posta için kullanılacak şifreleme yöntemi."
 
-#: include/global_settings.php:1809
+#: include/global_settings.php:1818
 msgid "SSL"
 msgstr "SSL"
 
-#: include/global_settings.php:1810
+#: include/global_settings.php:1819
 msgid "TLS"
 msgstr "TLS"
 
-#: include/global_settings.php:1815
+#: include/global_settings.php:1824
 #, fuzzy
 msgid "SMTP Timeout"
 msgstr "SMTP Zaman Aşımı"
 
-#: include/global_settings.php:1816
+#: include/global_settings.php:1825
 #, fuzzy
 msgid "Please enter the SMTP timeout in seconds."
 msgstr "Lütfen SMTP zaman aşımını saniye cinsinden girin."
 
-#: include/global_settings.php:1823
+#: include/global_settings.php:1832
 #, fuzzy
 msgid "Reporting Presets"
 msgstr "Rapor Hazır Ayarları"
 
-#: include/global_settings.php:1828
+#: include/global_settings.php:1837
 #, fuzzy
 msgid "Default Graph Image Format"
 msgstr "Varsayılan Grafik Resim Biçimi"
 
-#: include/global_settings.php:1829
+#: include/global_settings.php:1838
 #, fuzzy
 msgid "When creating a new report, what image type should be used for the inline graphs."
 msgstr "Yeni bir rapor oluştururken, satır içi grafikler için hangi resim türünün kullanılması gerektiği"
 
-#: include/global_settings.php:1835
+#: include/global_settings.php:1844
 #, fuzzy
 msgid "Maximum E-Mail Size"
 msgstr "Maksimum E-Posta Boyutu"
 
-#: include/global_settings.php:1836
+#: include/global_settings.php:1845
 #, fuzzy
 msgid "The maximum size of the E-Mail message including all attachements."
 msgstr "Tüm ekleri içeren e-posta mesajının maksimum boyutu."
 
-#: include/global_settings.php:1842
+#: include/global_settings.php:1851
 #, fuzzy
 msgid "Poller Logging Level for Cacti Reporting"
 msgstr "Kaktüs Raporlaması için Poller Günlük Seviyesi"
 
-#: include/global_settings.php:1843
+#: include/global_settings.php:1852
 #, fuzzy
 msgid "What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr "Günlük dosyasına hangi düzeyde ayrıntı gönderilmesini istiyorsunuz? UYARI: NONE veya LOW dışındaki herhangi bir durumda bırakmak, disk alanınızı hızla tüketebilir."
 
-#: include/global_settings.php:1849
+#: include/global_settings.php:1858
 #, fuzzy
 msgid "Enable Lotus Notes (R) tweak"
 msgstr "Lotus Notes (R) ayarını etkinleştirme"
 
-#: include/global_settings.php:1850
+#: include/global_settings.php:1859
 #, fuzzy
 msgid "Enable code tweak for specific handling of Lotus Notes Mail Clients."
 msgstr "Lotus Notes Posta İstemcileri&#39;nin özel kullanımı için kod ayarını etkinleştirin."
 
-#: include/global_settings.php:1855
+#: include/global_settings.php:1864
 #, fuzzy
 msgid "DNS Options"
 msgstr "DNS Seçenekleri"
 
-#: include/global_settings.php:1860
+#: include/global_settings.php:1869
 #, fuzzy
 msgid "Primary DNS IP Address"
 msgstr "Birincil DNS IP Adresi"
 
-#: include/global_settings.php:1861
+#: include/global_settings.php:1870
 #, fuzzy
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
 msgstr "Geriye doğru aramalarda kullanılacak birincil DNS IP Adresini girin."
 
-#: include/global_settings.php:1867
+#: include/global_settings.php:1876
 #, fuzzy
 msgid "Secondary DNS IP Address"
 msgstr "İkincil DNS IP Adresi"
 
-#: include/global_settings.php:1868
+#: include/global_settings.php:1877
 #, fuzzy
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
 msgstr "Geriye doğru aramalarda kullanılacak ikincil DNS IP Adresini girin."
 
-#: include/global_settings.php:1874
+#: include/global_settings.php:1883
 #, fuzzy
 msgid "DNS Timeout"
 msgstr "DNS Zaman Aşımı"
 
-#: include/global_settings.php:1875
+#: include/global_settings.php:1884
 #, fuzzy
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
 msgstr "Lütfen DNS zaman aşımını milisaniye cinsinden girin. Cacti, PHP tabanlı bir DNS çözücü kullanıyor."
 
-#: include/global_settings.php:1884
+#: include/global_settings.php:1893
 #, fuzzy
 msgid "On-demand RRD Update Settings"
 msgstr "İsteğe bağlı RRD Güncelleme Ayarları"
 
-#: include/global_settings.php:1889
+#: include/global_settings.php:1898
 #, fuzzy
 msgid "Enable On-demand RRD Updating"
 msgstr "İsteğe Bağlı RRD Güncellemesini Etkinleştir"
 
-#: include/global_settings.php:1890
+#: include/global_settings.php:1899
 #, fuzzy
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
 msgstr "Boost, talep üzerine RRD güncellemesinin Cacti&#39;de yapılmasına izin vermeli mi? Devre dışı bırakırsanız, bu değişiklik bir sonraki yoklama döngüsüne kadar geçerli olmaz. Uzak Veri Toplayıcılarınız olduğunda, bu ayarların açık olması gerekir."
 
-#: include/global_settings.php:1895
+#: include/global_settings.php:1904
 #, fuzzy
 msgid "System Level RRD Updater"
 msgstr "Sistem Seviyesi RRD Güncelleyici"
 
-#: include/global_settings.php:1896
+#: include/global_settings.php:1905
 #, fuzzy
 msgid "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
 msgstr "RRD Talep Üzerine Güncelleme Silinebilmeden Önce, bir yoklama çalıştırması daima geçmelidir"
 
-#: include/global_settings.php:1901
+#: include/global_settings.php:1910
 #, fuzzy
 msgid "How Often Should Boost Update All RRDs"
 msgstr "Tüm RRD Güncellemelerini Ne Kadar Hızlandırmalıdır?"
 
-#: include/global_settings.php:1902
+#: include/global_settings.php:1911
 #, fuzzy
 msgid "When you enable boost, your RRD files are only updated when they are requested by a user, or when this time period elapses."
 msgstr "Yükseltmeyi etkinleştirdiğinizde, RDR dosyalarınız yalnızca bir kullanıcı tarafından talep edildiğinde veya bu süre geçtiğinde güncellenir."
 
-#: include/global_settings.php:1908
+#: include/global_settings.php:1917
 #, fuzzy
 msgid "Number of Boost Processes"
 msgstr "Takviye İşlem Sayısı"
 
-#: include/global_settings.php:1909
+#: include/global_settings.php:1918
 #, fuzzy
 msgid "The number of concurrent boost processes to use to use to process all of the RRDs in the boost table."
 msgstr "Takviye tablosundaki tüm RRD&#39;leri işlemek için kullanılacak eşzamanlı artırma işlemlerinin sayısı."
 
-#: include/global_settings.php:1913 include/global_settings.php:2023
+#: include/global_settings.php:1922 include/global_settings.php:2032
 #, fuzzy
 msgid "1 Process"
 msgstr "1 İşlem"
 
-#: include/global_settings.php:1914 include/global_settings.php:1915
-#: include/global_settings.php:1916 include/global_settings.php:1917
-#: include/global_settings.php:1918 include/global_settings.php:1919
-#: include/global_settings.php:1920 include/global_settings.php:1921
-#: include/global_settings.php:1922 include/global_settings.php:1923
-#: include/global_settings.php:1924 include/global_settings.php:1925
-#: include/global_settings.php:1926 include/global_settings.php:1927
-#: include/global_settings.php:1928 include/global_settings.php:1929
-#: include/global_settings.php:1930 include/global_settings.php:1931
-#: include/global_settings.php:1932 include/global_settings.php:2024
-#: include/global_settings.php:2025 include/global_settings.php:2026
-#: include/global_settings.php:2027 include/global_settings.php:2028
-#: include/global_settings.php:2029 include/global_settings.php:2030
-#: include/global_settings.php:2031 include/global_settings.php:2032
-#: include/global_settings.php:2033 include/global_settings.php:2034
-#: include/global_settings.php:2035 include/global_settings.php:2036
-#: include/global_settings.php:2037 include/global_settings.php:2038
-#: include/global_settings.php:2039 include/global_settings.php:2040
-#: include/global_settings.php:2041 include/global_settings.php:2042
+#: include/global_settings.php:1923 include/global_settings.php:1924
+#: include/global_settings.php:1925 include/global_settings.php:1926
+#: include/global_settings.php:1927 include/global_settings.php:1928
+#: include/global_settings.php:1929 include/global_settings.php:1930
+#: include/global_settings.php:1931 include/global_settings.php:1932
+#: include/global_settings.php:1933 include/global_settings.php:1934
+#: include/global_settings.php:1935 include/global_settings.php:1936
+#: include/global_settings.php:1937 include/global_settings.php:1938
+#: include/global_settings.php:1939 include/global_settings.php:1940
+#: include/global_settings.php:1941 include/global_settings.php:2033
+#: include/global_settings.php:2034 include/global_settings.php:2035
+#: include/global_settings.php:2036 include/global_settings.php:2037
+#: include/global_settings.php:2038 include/global_settings.php:2039
+#: include/global_settings.php:2040 include/global_settings.php:2041
+#: include/global_settings.php:2042 include/global_settings.php:2043
+#: include/global_settings.php:2044 include/global_settings.php:2045
+#: include/global_settings.php:2046 include/global_settings.php:2047
+#: include/global_settings.php:2048 include/global_settings.php:2049
+#: include/global_settings.php:2050 include/global_settings.php:2051
 #, fuzzy, php-format
 msgid "%d Processes"
 msgstr "% d İşlemler"
 
-#: include/global_settings.php:1936
+#: include/global_settings.php:1945
 #, fuzzy
 msgid "Maximum Records"
 msgstr "Maksimum Kayıtlar"
 
-#: include/global_settings.php:1937
+#: include/global_settings.php:1946
 #, fuzzy
 msgid "If the boost output table exceeds this size, in records, an update will take place."
 msgstr "Takviye çıktı tablosu bu boyutu aşarsa, kayıtlarda bir güncelleme gerçekleşir."
 
-#: include/global_settings.php:1944
+#: include/global_settings.php:1953
 #, fuzzy
 msgid "Maximum Data Source Items Per Pass"
 msgstr "Geçiş Başına Maksimum Veri Kaynağı Öğesi"
 
-#: include/global_settings.php:1945
+#: include/global_settings.php:1954
 #, fuzzy
 msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
 msgstr "Performansı iyileştirmek için, artırıcı RRD güncelleyicisinin bir seferde kaç Veri Kaynağı Öğesi alınması gerektiğini bilmesi gerekir. Lütfen büyük güncellemeler sırasındaki grafik performansı tehlikeye girebileceğinden çok yüksek ayarlarda bulunmamaya dikkat edin. Güncellemeler sırasında grafik çizme veya yoklama yavaşlığıyla karşılaşırsanız, bu sayıyı azaltın. Varsayılan değer 50000&#39;dür."
 
-#: include/global_settings.php:1951
+#: include/global_settings.php:1960
 #, fuzzy
 msgid "Maximum Argument Length"
 msgstr "Maksimum Bağımsız Değişken Uzunluğu"
 
-#: include/global_settings.php:1952
+#: include/global_settings.php:1961
 #, fuzzy
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
 msgstr "Yükseltme, RRDtool&#39;a güncelleme komutları gönderdiğinde, işletim sistemleri Maksimum Bağımsız Değişken Uzunluğunu geçmemelidir. Bu işletim sistemi ve çekirdek seviyesine göre değişir. Örneğin: Windows 2000 &lt;= 2048, FreeBSD &lt;= 65535, Linux 2.6.22 - &lt;= 131072, Linux 2.6.23 ++ sınırsız"
 
-#: include/global_settings.php:1959
+#: include/global_settings.php:1968
 #, fuzzy
 msgid "Memory Limit for Boost and Poller"
 msgstr "Boost ve Poller için Bellek Sınırı"
 
-#: include/global_settings.php:1960
+#: include/global_settings.php:1969
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
 msgstr "Cacti Poller ve Boosts Poller için azami bellek miktarı"
 
-#: include/global_settings.php:1966
+#: include/global_settings.php:1975
 #, fuzzy
 msgid "Maximum RRD Update Script Run Time"
 msgstr "Maksimum RRD Güncelleme Komut Dosyası Çalışma Süresi"
 
-#: include/global_settings.php:1967
+#: include/global_settings.php:1976
 #, fuzzy
 msgid "If the boost poller excceds this runtime, a warning will be placed in the cacti log,"
 msgstr "Destekleyici yoklayıcı bu çalışma zamanını hariç tutarsa, kaktüsler günlüğüne bir uyarı verilir,"
 
-#: include/global_settings.php:1973
+#: include/global_settings.php:1982
 #, fuzzy
 msgid "Enable direct population of poller_output_boost table"
 msgstr "Poller_output_boost tablosunun doğrudan popülasyonunu etkinleştir"
 
-#: include/global_settings.php:1974
+#: include/global_settings.php:1983
 #, fuzzy
 msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
 msgstr "Her yoklama döngüsünde% 25 zaman azalmasıyla sonuçlanan yoklama çıkış artışına doğrudan kayıt eklenmesini sağlar."
 
-#: include/global_settings.php:1979
+#: include/global_settings.php:1988
 #, fuzzy
 msgid "Boost Debug Log"
 msgstr "Hata ayıklama günlüğünü artır"
 
-#: include/global_settings.php:1980
+#: include/global_settings.php:1989
 #, fuzzy
 msgid "If this field is non-blank, Boost will log RRDupdate output from the boost\tpoller process."
 msgstr "Bu alan boş değilse, Yükseltme, yükseltme yoklama işleminden RRDupdate çıktısını kaydeder."
 
-#: include/global_settings.php:1987 utilities.php:2489
+#: include/global_settings.php:1996 utilities.php:2489
 #, fuzzy
 msgid "Image Caching"
 msgstr "Görüntü Önbelleğe Alma"
 
-#: include/global_settings.php:1992
+#: include/global_settings.php:2001
 #, fuzzy
 msgid "Enable Image Caching"
 msgstr "Görüntü Önbelleğe Almayı Etkinleştir"
 
-#: include/global_settings.php:1993
+#: include/global_settings.php:2002
 #, fuzzy
 msgid "Should image caching be enabled?"
 msgstr "Görüntü önbelleğe alma etkinleştirilmeli mi?"
 
-#: include/global_settings.php:1998
+#: include/global_settings.php:2007
 #, fuzzy
 msgid "Location for Image Files"
 msgstr "Görüntü Dosyalarının Konumu"
 
-#: include/global_settings.php:1999
+#: include/global_settings.php:2008
 #, fuzzy
 msgid "Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire."
 msgstr "Boost&#39;un görüntü dosyalarınızı yerleştireceği yeri belirtin. Bu dosyalar zaman aşımına uğradığında yoklayıcı tarafından otomatik olarak temizlenir."
 
-#: include/global_settings.php:2007
+#: include/global_settings.php:2016
 #, fuzzy
 msgid "Data Sources Statistics"
 msgstr "Veri Kaynakları İstatistikleri"
 
-#: include/global_settings.php:2012
+#: include/global_settings.php:2021
 #, fuzzy
 msgid "Enable Data Source Statistics Collection"
 msgstr "Veri Kaynağı İstatistikleri Koleksiyonunu Etkinleştir"
 
-#: include/global_settings.php:2013
+#: include/global_settings.php:2022
 #, fuzzy
 msgid "Should Data Source Statistics be collected for this Cacti system?"
 msgstr "Bu Cacti sistemi için Veri Kaynağı İstatistikleri toplanmalı mı?"
 
-#: include/global_settings.php:2018
+#: include/global_settings.php:2027
 #, fuzzy
 msgid "Number of DSStats Processes"
 msgstr "Takviye İşlem Sayısı"
 
-#: include/global_settings.php:2019
+#: include/global_settings.php:2028
 #, fuzzy
 msgid "The number of concurrent DSStats processes to use to use to process all of the Data Sources."
 msgstr "Takviye tablosundaki tüm RRD&#39;leri işlemek için kullanılacak eşzamanlı artırma işlemlerinin sayısı."
 
-#: include/global_settings.php:2046
+#: include/global_settings.php:2055
 #, fuzzy
 msgid "Daily Update Frequency"
 msgstr "Günlük Güncelleme Frekansı"
 
-#: include/global_settings.php:2047
+#: include/global_settings.php:2056
 #, fuzzy
 msgid "How frequent should Daily Stats be updated?"
 msgstr "Günlük İstatistikler ne sıklıkla güncellenmelidir?"
 
-#: include/global_settings.php:2053
+#: include/global_settings.php:2062
 #, fuzzy
 msgid "Hourly Average Window"
 msgstr "Saatlik Ortalama Pencere"
 
-#: include/global_settings.php:2054
+#: include/global_settings.php:2063
 #, fuzzy
 msgid "The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables"
 msgstr "Saatlik ortalamayı temsil eden ardışık saat sayısı. Çok yüksek bir ayarın çok büyük bellek tablolarına neden olabileceğini unutmayın."
 
-#: include/global_settings.php:2060
+#: include/global_settings.php:2069
 #, fuzzy
 msgid "Maintenance Time"
 msgstr "Bakım zamanı"
 
-#: include/global_settings.php:2061
+#: include/global_settings.php:2070
 #, fuzzy
 msgid "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]"
 msgstr "Haftalık, Aylık ve Yıllık Veriler hangi saatlerde güncellenmelidir? Biçim HH: MM [am / pm]"
 
-#: include/global_settings.php:2068
+#: include/global_settings.php:2077
 #, fuzzy
 msgid "Memory Limit for Data Source Statistics Data Collector"
 msgstr "Veri Kaynağı İstatistikleri Veri Toplayıcı için Bellek Sınırı"
 
-#: include/global_settings.php:2069
+#: include/global_settings.php:2078
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr "Cacti Poller ve Data Source Statistics Poller için maksimum hafıza miktarı"
 
-#: include/global_settings.php:2075
+#: include/global_settings.php:2084
 #, fuzzy
 msgid "Data Storage Settings"
 msgstr "Veri Depolama Ayarları"
 
-#: include/global_settings.php:2081
+#: include/global_settings.php:2090
 #, fuzzy
 msgid "Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server."
 msgstr "RRD&#39;lerin yerel olarak mı depolanacağını veya harici bir RRDtool proxy sunucusu tarafından mı işleneceğini seçin."
 
-#: include/global_settings.php:2086 include/global_settings.php:2095
+#: include/global_settings.php:2095 include/global_settings.php:2104
 #, fuzzy
 msgid "RRDtool Proxy Server"
 msgstr "RRDtool Proxy Sunucusu"
 
-#: include/global_settings.php:2090
+#: include/global_settings.php:2099
 #, fuzzy
 msgid "Structured RRD Paths"
 msgstr "Yapılandırılmış RRD Yolları"
 
-#: include/global_settings.php:2091
+#: include/global_settings.php:2100
 #, fuzzy
 msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
 msgstr "Her ana bilgisayar RRD dosyaları için ayrı bir alt klasör kullanın. RRD dosyalarının isimlendirilmesi &lt;path_cacti&gt; /rra/host_id/local_data_id.rrd olacaktır."
 
-#: include/global_settings.php:2100 include/global_settings.php:2132
+#: include/global_settings.php:2109 include/global_settings.php:2141
 msgid "Proxy Server"
 msgstr "Proxy Sunucusu"
 
-#: include/global_settings.php:2101
+#: include/global_settings.php:2110
 #, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
 msgstr "RRDtool proxy sunucusunun DNS ana bilgisayar adı veya IP adresi."
 
-#: include/global_settings.php:2106 include/global_settings.php:2138
+#: include/global_settings.php:2115 include/global_settings.php:2147
 #, fuzzy
 msgid "Proxy Port Number"
 msgstr "Proxy Bağlantı Noktası Numarası"
 
-#: include/global_settings.php:2107
+#: include/global_settings.php:2116
 #, fuzzy
 msgid "TCP port for encrypted communication."
 msgstr "Şifreli iletişim için TCP portu."
 
-#: include/global_settings.php:2114 include/global_settings.php:2146
+#: include/global_settings.php:2123 include/global_settings.php:2155
 #: utilities.php:282
 #, fuzzy
 msgid "RSA Fingerprint"
 msgstr "RSA Parmak İzi"
 
-#: include/global_settings.php:2115
+#: include/global_settings.php:2124
 #, fuzzy
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
 msgstr "Proxy&#39;nin kullandığı geçerli RSA anahtarının parmak izi. Güvenilir bir bağlantı kurmak için bu gereklidir."
 
-#: include/global_settings.php:2122
+#: include/global_settings.php:2131
 #, fuzzy
 msgid "RRDtool Proxy Server - Backup"
 msgstr "RRDtool Proxy Sunucusu - Yedekleme"
 
-#: include/global_settings.php:2127
+#: include/global_settings.php:2136
 #, fuzzy
 msgid "Load Balancing"
 msgstr "Yük dengeleme"
 
-#: include/global_settings.php:2128
+#: include/global_settings.php:2137
 #, fuzzy
 msgid "If both main and backup proxy are receivable this option allows to spread all requests against RRDtool."
 msgstr "Hem ana hem de yedek proxy alınabilirse, bu seçenek tüm istekleri RRDtool&#39;a karşı yaymaya izin verir."
 
-#: include/global_settings.php:2133
+#: include/global_settings.php:2142
 #, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode."
 msgstr "Proxy MSR modunda çalışıyorsa, DNS ana bilgisayar adı veya RRDtool yedek proxy sunucusunun IP adresi."
 
-#: include/global_settings.php:2139
+#: include/global_settings.php:2148
 #, fuzzy
 msgid "TCP port for encrypted communication with the backup proxy."
 msgstr "Yedek proxy ile şifreli iletişim için TCP portu."
 
-#: include/global_settings.php:2147
+#: include/global_settings.php:2156
 #, fuzzy
 msgid "The fingerprint of the current public RSA key the backup proxy is using. This required to establish a trusted connection."
 msgstr "Yedek proxy&#39;nin kullandığı geçerli ortak RSA anahtarının parmak izi. Bu güvenilir bir bağlantı kurmak için gerekli."
 
-#: include/global_settings.php:2156
+#: include/global_settings.php:2165
 #, fuzzy
 msgid "Spike Kill Settings"
 msgstr "Spike Kill Ayarları"
 
-#: include/global_settings.php:2161
+#: include/global_settings.php:2170
 #, fuzzy
 msgid "Removal Method"
 msgstr "Kaldırma yöntemi"
 
-#: include/global_settings.php:2162
+#: include/global_settings.php:2171
 #, fuzzy
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
 msgstr "İki tane kaldırma yöntemi var. Birincisi, Standart Sapma, X sayısının standart sapma sayısı olan numuneleri, numunelerin ortalamalarından uzaklaştırır. İkinci yöntem olan Variance, Varyans ortalamasından% X daha fazla olan herhangi bir örneği kaldıracaktır. Varyans yöntemi, belirli sayıda &#39;aykırı değeri&#39; dikkate alır. Bunlar, Spike gibi, Variance Average hesaplamasından çıkarılması gereken istisnai örneklerdir."
 
-#: include/global_settings.php:2166
+#: include/global_settings.php:2175
 msgid "Standard Deviation"
 msgstr "Standart Sapma"
 
-#: include/global_settings.php:2167
+#: include/global_settings.php:2176
 #, fuzzy
 msgid "Variance Based w/Outliers Removed"
 msgstr "Varyansa Dayalı Harcamalar Kaldırıldı"
 
-#: include/global_settings.php:2171 lib/html.php:2199
+#: include/global_settings.php:2180 lib/html.php:2199
 #, fuzzy
 msgid "Replacement Method"
 msgstr "Değiştirme yöntemi"
 
-#: include/global_settings.php:2172
+#: include/global_settings.php:2181
 #, fuzzy
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "Üç tane değiştirme yöntemi vardır. İlk yöntem, ani değeri söz konusu veri kaynağının ortalaması ile değiştirir. İkinci yöntem ise sivri uçtaki &#39;NaN&#39; ile değiştirir. Sonuncusu, en son bilinen iyi değer ile başak değiştirir."
 
-#: include/global_settings.php:2176 lib/html.php:2195
+#: include/global_settings.php:2185 lib/html.php:2195
 msgid "Average"
 msgstr "Ortalama"
 
-#: include/global_settings.php:2177 lib/html.php:2196
+#: include/global_settings.php:2186 lib/html.php:2196
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN en"
 
-#: include/global_settings.php:2178 lib/html.php:2197
+#: include/global_settings.php:2187 lib/html.php:2197
 #, fuzzy
 msgid "Last Known Good"
 msgstr "Bilinen en son iyi"
 
-#: include/global_settings.php:2182
+#: include/global_settings.php:2191
 #, fuzzy
 msgid "Number of Standard Deviations"
 msgstr "Standart Sapma Sayısı"
 
-#: include/global_settings.php:2183
+#: include/global_settings.php:2192
 #, fuzzy
 msgid "Any value that is this many standard deviations above the average will be excluded.  A good number will be dependent on the type of data to be operated on.  We recommend a number no lower than 5 Standard Deviations."
 msgstr "Ortalamanın üstünde bu kadar standart sapma olan herhangi bir değer hariç tutulacaktır. İyi bir sayı, çalıştırılacak verinin türüne bağlı olacaktır. 5 Standart Sapmadan az olmayan bir sayı öneririz."
 
-#: include/global_settings.php:2187 include/global_settings.php:2188
-#: include/global_settings.php:2189 include/global_settings.php:2190
-#: include/global_settings.php:2191 include/global_settings.php:2192
-#: include/global_settings.php:2193 include/global_settings.php:2194
-#: include/global_settings.php:2195 include/global_settings.php:2196
-#: include/global_settings.php:2197 include/global_settings.php:2198
-#: include/global_settings.php:2199
+#: include/global_settings.php:2196 include/global_settings.php:2197
+#: include/global_settings.php:2198 include/global_settings.php:2199
+#: include/global_settings.php:2200 include/global_settings.php:2201
+#: include/global_settings.php:2202 include/global_settings.php:2203
+#: include/global_settings.php:2204 include/global_settings.php:2205
+#: include/global_settings.php:2206 include/global_settings.php:2207
+#: include/global_settings.php:2208
 #, fuzzy, php-format
 msgid "%d Standard Deviations"
 msgstr "% d Standart Sapmalar"
 
-#: include/global_settings.php:2203 lib/html.php:2211
+#: include/global_settings.php:2212 lib/html.php:2211
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "Varyans Yüzdesi"
 
-#: include/global_settings.php:2204
+#: include/global_settings.php:2213
 #, fuzzy, php-format
 msgid "This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph."
 msgstr "Bu değer, aykırı değerler örnekten çıkarıldıktan sonra, ayarlanan örnek ortalamasının üzerindeki yüzdesi temsil eder. Örneğin, ayarlanmış ortalama 50&#39;de% 100&#39;lük bir Varyans Yüzdesi, grafik üzerindeki 100&#39;ün üzerindeki herhangi bir örneği kaldıracaktır."
 
-#: include/global_settings.php:2227
+#: include/global_settings.php:2236
 #, fuzzy
 msgid "Variance Number of Outliers"
 msgstr "Aykırı Değerlerin Varyansı"
 
-#: include/global_settings.php:2228
+#: include/global_settings.php:2237
 #, fuzzy
 msgid "This value represents the number of high and low average samples will be removed from the sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top and bottom 5 averages are removed."
 msgstr "Bu değer, yüksek ve düşük ortalama örneklerin sayısını, Varyans Ortalamasını hesaplamadan önce örnek setten çıkarılacaktır. 5 değerinde bir outlier değeri seçerseniz, hem üst hem de alt 5 ortalamalar kaldırılır."
 
-#: include/global_settings.php:2232 include/global_settings.php:2233
-#: include/global_settings.php:2234 include/global_settings.php:2235
-#: include/global_settings.php:2236 include/global_settings.php:2237
-#: include/global_settings.php:2238 include/global_settings.php:2239
-#: include/global_settings.php:2240 include/global_settings.php:2241
-#: include/global_settings.php:2242 include/global_settings.php:2243
-#: include/global_settings.php:2244
+#: include/global_settings.php:2241 include/global_settings.php:2242
+#: include/global_settings.php:2243 include/global_settings.php:2244
+#: include/global_settings.php:2245 include/global_settings.php:2246
+#: include/global_settings.php:2247 include/global_settings.php:2248
+#: include/global_settings.php:2249 include/global_settings.php:2250
+#: include/global_settings.php:2251 include/global_settings.php:2252
+#: include/global_settings.php:2253
 #, fuzzy, php-format
 msgid "%d High/Low Samples"
 msgstr "% d Yüksek / Düşük Örnekler"
 
-#: include/global_settings.php:2248
+#: include/global_settings.php:2257
 #, fuzzy
 msgid "Max Kills Per RRA"
 msgstr "RRA Başına Max Kills"
 
-#: include/global_settings.php:2249
+#: include/global_settings.php:2258
 #, fuzzy
 msgid "This value represents the maximum number of spikes to remove from a Graph RRA."
 msgstr "Bu değer, bir Grafik RRA&#39;sından kaldırılacak maksimum çivilerin sayısını temsil eder."
 
-#: include/global_settings.php:2253 include/global_settings.php:2254
-#: include/global_settings.php:2255 include/global_settings.php:2256
-#: include/global_settings.php:2257 include/global_settings.php:2258
-#: include/global_settings.php:2259 include/global_settings.php:2260
-#: include/global_settings.php:2261 include/global_settings.php:2262
-#: include/global_settings.php:2263 include/global_settings.php:2264
+#: include/global_settings.php:2262 include/global_settings.php:2263
+#: include/global_settings.php:2264 include/global_settings.php:2265
+#: include/global_settings.php:2266 include/global_settings.php:2267
+#: include/global_settings.php:2268 include/global_settings.php:2269
+#: include/global_settings.php:2270 include/global_settings.php:2271
+#: include/global_settings.php:2272 include/global_settings.php:2273
 #, fuzzy, php-format
 msgid "%d Spikes"
 msgstr "% d Spike"
 
-#: include/global_settings.php:2268
+#: include/global_settings.php:2277
 #, fuzzy
 msgid "RRDfile Backup Directory"
 msgstr "RRDfile Yedekleme Dizini"
 
-#: include/global_settings.php:2269
+#: include/global_settings.php:2278
 #, fuzzy
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
 msgstr "Bu dizin boş değilse, orijinal RRD dosyalarınız bu konuma yedeklenecektir."
 
-#: include/global_settings.php:2276
+#: include/global_settings.php:2285
 #, fuzzy
 msgid "Batch Spike Kill Settings"
 msgstr "Toplu Spike Kill Ayarları"
 
-#: include/global_settings.php:2281
+#: include/global_settings.php:2290
 #, fuzzy
 msgid "Removal Schedule"
 msgstr "Kaldırma Programı"
 
-#: include/global_settings.php:2282
+#: include/global_settings.php:2291
 #, fuzzy
 msgid "Do you wish to periodically remove spikes from your graphs?  If so, select the frequency below."
 msgstr "Çivileri periyodik olarak grafiklerinizden çıkarmak ister misiniz? Eğer öyleyse, aşağıdaki frekansı seçin."
 
-#: include/global_settings.php:2289
+#: include/global_settings.php:2298
 msgid "Once a Day"
 msgstr "Günde bir kez"
 
-#: include/global_settings.php:2290
+#: include/global_settings.php:2299
 #, fuzzy
 msgid "Every Other Day"
 msgstr "Her Başka Gün"
 
-#: include/global_settings.php:2294
+#: include/global_settings.php:2303
 #, fuzzy
 msgid "Base Time"
 msgstr "Baz zamanı"
 
-#: include/global_settings.php:2295
+#: include/global_settings.php:2304
 #, fuzzy
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
 msgstr "Spike kaldırma için Temel Zaman oluşması. Örneğin, &#39;12: 00 &#39;kullanırsanız ve günde bir kez seçerseniz, parti kaldırma işlemi her gün yaklaşık gece yarısında başlar."
 
-#: include/global_settings.php:2302
+#: include/global_settings.php:2311
 #, fuzzy
 msgid "Graph Templates to Spike Kill"
 msgstr "Öldürmek Spike Grafik Şablonları"
 
-#: include/global_settings.php:2304
+#: include/global_settings.php:2313
 #, fuzzy
 msgid "When performing batch spike removal, only the templates selected below will be acted on."
 msgstr "Toplu başak çıkarmayı gerçekleştirirken, yalnızca aşağıda seçilen şablonlar uygulanacaktır."
 
-#: include/global_settings.php:2308
+#: include/global_settings.php:2317
 #, fuzzy
 msgid "Backup Retention"
 msgstr "Veri saklama"
 
-#: include/global_settings.php:2309
+#: include/global_settings.php:2318
 #, fuzzy
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
 msgstr "SpikeKill grafiklerdeki ani uçları öldürdüğünde RRDdosyasının bir yedeğini oluşturur. Bu yedekleme dosyaları ne kadar süreyle saklanmalıdır?"
 
-#: include/global_settings.php:2328
+#: include/global_settings.php:2337
 msgid "Default View Mode"
 msgstr "Varsayılan Modu Görüntüle"
 
-#: include/global_settings.php:2329
+#: include/global_settings.php:2338
 #, fuzzy
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
 msgstr "Grafikler sayfasını ilk ziyaret ettiğinizde varsayılan olarak hangi Grafik modunu görüntülemek istiyorsunuz?"
 
-#: include/global_settings.php:2335
+#: include/global_settings.php:2344
 #, fuzzy
 msgid "User Language"
 msgstr "Kullanıcı dili"
 
-#: include/global_settings.php:2336
+#: include/global_settings.php:2345
 #, fuzzy
 msgid "Defines the preferred GUI language."
 msgstr "Tercih edilen GUI dilini tanımlar."
 
-#: include/global_settings.php:2342
+#: include/global_settings.php:2351
 #, fuzzy
 msgid "Show Graph Title"
 msgstr "Grafik Başlığını Göster"
 
-#: include/global_settings.php:2343
+#: include/global_settings.php:2352
 #, fuzzy
 msgid "Display the graph title on the page so that it may be searched using the browser."
 msgstr "Sayfada grafik başlığını görüntüleyin, böylece tarayıcı kullanılarak aranabilir."
 
-#: include/global_settings.php:2348
+#: include/global_settings.php:2357
 #, fuzzy
 msgid "Hide Disabled"
 msgstr "Devre Dışı Bırak Gizle"
 
-#: include/global_settings.php:2349
+#: include/global_settings.php:2358
 #, fuzzy
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
 msgstr "Konsol sekmesinin dışından bakarken Engelli Aygıtları ve Grafikleri gizler."
 
-#: include/global_settings.php:2354
+#: include/global_settings.php:2363
 #, fuzzy
 msgid "Show Device Aggregates"
 msgstr "Agregalar"
 
-#: include/global_settings.php:2355
+#: include/global_settings.php:2364
 #, fuzzy
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
 msgstr "Toplam Grafikte bir Aygıt Veri Kaynağı varsa, Grafiği diğer Aygıt Grafikleri ile birlikte gösterin"
 
-#: include/global_settings.php:2360
+#: include/global_settings.php:2369
 #, fuzzy
 msgid "Enable Horizontal Scrolling"
 msgstr "Yatay Kaydırmayı Etkinleştir"
 
-#: include/global_settings.php:2361
+#: include/global_settings.php:2370
 #, fuzzy
 msgid "Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibility."
 msgstr "Duyarlı Sütun Görünürlüğünü Devre Dışı Bırakarak Tabloların Yatay Kaydırmasını Etkinleştirin."
 
-#: include/global_settings.php:2367
+#: include/global_settings.php:2376
 #, fuzzy
 msgid "The date format to use in Cacti."
 msgstr "Cacti&#39;de kullanılacak tarih formatı."
 
-#: include/global_settings.php:2374
+#: include/global_settings.php:2383
 #, fuzzy
 msgid "The date separator to be used in Cacti."
 msgstr "Cacti&#39;de kullanılacak tarih ayırıcısı."
 
-#: include/global_settings.php:2380
+#: include/global_settings.php:2389
 #, fuzzy
 msgid "Page Refresh"
 msgstr "Sayfa Yenile"
 
-#: include/global_settings.php:2381
+#: include/global_settings.php:2390
 #, fuzzy
 msgid "The number of seconds between automatic page refreshes."
 msgstr "Otomatik sayfa yenileme arasında geçen saniye sayısı."
 
-#: include/global_settings.php:2393
+#: include/global_settings.php:2402
 #, fuzzy
 msgid "Preview Graphs Per Page"
 msgstr "Sayfa Başına Grafikleri Önizleme"
 
-#: include/global_settings.php:2394 include/global_settings.php:2523
+#: include/global_settings.php:2403 include/global_settings.php:2532
 #, fuzzy
 msgid "The number of graphs to display on one page in preview mode."
 msgstr "Önizleme modunda bir sayfada gösterilecek grafik sayısı."
 
-#: include/global_settings.php:2402
+#: include/global_settings.php:2411
 #, fuzzy
 msgid "Default Time Range"
 msgstr "Varsayılan Zaman Aralığı"
 
-#: include/global_settings.php:2403
+#: include/global_settings.php:2412
 #, fuzzy
 msgid "The default RRA to use in rare occasions."
 msgstr "Nadir durumlarda kullanılacak varsayılan RRA."
 
-#: include/global_settings.php:2410
+#: include/global_settings.php:2419
 #, fuzzy
 msgid "The default Timespan displayed when viewing Graphs and other time specific data."
 msgstr "Varsayılan Zaman Aralığı, Grafikleri ve diğer zamana özgü verileri görüntülerken görüntülenir."
 
-#: include/global_settings.php:2416
+#: include/global_settings.php:2425
 #, fuzzy
 msgid "Default Timeshift"
 msgstr "Varsayılan Zaman Kaydırma"
 
-#: include/global_settings.php:2417
+#: include/global_settings.php:2426
 #, fuzzy
 msgid "The default Timeshift displayed when viewing Graphs and other time specific data."
 msgstr "Grafikler ve diğer zamana özel verileri görüntülerken varsayılan Timeshift görüntülenir."
 
-#: include/global_settings.php:2423
+#: include/global_settings.php:2432
 #, fuzzy
 msgid "Allow Graph to extend to Future"
 msgstr "Grafiğin Geleceğe Uzatmasına İzin Ver"
 
-#: include/global_settings.php:2424
+#: include/global_settings.php:2433
 #, fuzzy
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
 msgstr "Grafikleri görüntülerken, Grafik Tarihlerinin &#39;geleceğe&#39; uzanmasına izin ver"
 
-#: include/global_settings.php:2429
+#: include/global_settings.php:2438
 #, fuzzy
 msgid "First Day of the Week"
 msgstr "Haftanın ilk günü"
 
-#: include/global_settings.php:2430
+#: include/global_settings.php:2439
 #, fuzzy
 msgid "The first Day of the Week for weekly Graph Displays"
 msgstr "Haftanın ilk Haftası Günü Grafik Ekranları"
 
-#: include/global_settings.php:2436
+#: include/global_settings.php:2445
 #, fuzzy
 msgid "Start of Daily Shift"
 msgstr "Günlük Vardiya Başlangıcı"
 
-#: include/global_settings.php:2437
+#: include/global_settings.php:2446
 #, fuzzy
 msgid "Start Time of the Daily Shift."
 msgstr "Günlük Vardiya Başlangıç Saati."
 
-#: include/global_settings.php:2444
+#: include/global_settings.php:2453
 #, fuzzy
 msgid "End of Daily Shift"
 msgstr "Günlük Vardiya Sonu"
 
-#: include/global_settings.php:2445
+#: include/global_settings.php:2454
 #, fuzzy
 msgid "End Time of the Daily Shift."
 msgstr "Günlük Vardiya Sonu."
 
-#: include/global_settings.php:2454
+#: include/global_settings.php:2463
 #, fuzzy
 msgid "Thumbnail Sections"
 msgstr "Küçük Resim Bölümleri"
 
-#: include/global_settings.php:2455
+#: include/global_settings.php:2464
 #, fuzzy
 msgid "Which portions of Cacti display Thumbnails by default."
 msgstr "Cacti&#39;nin hangi bölümleri varsayılan olarak Küçük Resimler&#39;i görüntüler."
 
-#: include/global_settings.php:2469
+#: include/global_settings.php:2478
 #, fuzzy
 msgid "Preview Thumbnail Columns"
 msgstr "Küçük Resim Sütunlarını Önizle"
 
-#: include/global_settings.php:2470
+#: include/global_settings.php:2479
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Preview mode."
 msgstr "Önizleme modunda Küçük Resim grafiklerini görüntülerken kullanılacak sütun sayısı."
 
-#: include/global_settings.php:2474 include/global_settings.php:2488
+#: include/global_settings.php:2483 include/global_settings.php:2497
 msgid "1 Column"
 msgstr "1 Sütun"
 
-#: include/global_settings.php:2475 include/global_settings.php:2476
-#: include/global_settings.php:2477 include/global_settings.php:2478
-#: include/global_settings.php:2479 include/global_settings.php:2489
-#: include/global_settings.php:2490 include/global_settings.php:2491
-#: include/global_settings.php:2492 include/global_settings.php:2493
+#: include/global_settings.php:2484 include/global_settings.php:2485
+#: include/global_settings.php:2486 include/global_settings.php:2487
+#: include/global_settings.php:2488 include/global_settings.php:2498
+#: include/global_settings.php:2499 include/global_settings.php:2500
+#: include/global_settings.php:2501 include/global_settings.php:2502
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
 #: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1106
 #: lib/html_tree.php:1107 lib/html_tree.php:1108 lib/html_tree.php:1109
@@ -13482,151 +13490,151 @@ msgstr "1 Sütun"
 msgid "%d Columns"
 msgstr "yaklaşık %d gün önce"
 
-#: include/global_settings.php:2483
+#: include/global_settings.php:2492
 #, fuzzy
 msgid "Tree View Thumbnail Columns"
 msgstr "Ağaç Görünümü Küçük Sütunları"
 
-#: include/global_settings.php:2484
+#: include/global_settings.php:2493
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Tree mode."
 msgstr "Ağaç modunda Küçük Resim grafiklerini görüntülerken kullanılacak sütun sayısı."
 
-#: include/global_settings.php:2497
+#: include/global_settings.php:2506
 msgid "Thumbnail Height"
 msgstr "Küçük resim"
 
-#: include/global_settings.php:2498
+#: include/global_settings.php:2507
 #, fuzzy
 msgid "The height of Thumbnail graphs in pixels."
 msgstr "Küçük Resim grafikleri piksel cinsinden yüksekliği."
 
-#: include/global_settings.php:2505
+#: include/global_settings.php:2514
 msgid "Thumbnail Width"
 msgstr "Küçük Resim Genişliği"
 
-#: include/global_settings.php:2506
+#: include/global_settings.php:2515
 #, fuzzy
 msgid "The width of Thumbnail graphs in pixels."
 msgstr "Küçük resim grafiklerinin piksel cinsinden genişliği."
 
-#: include/global_settings.php:2515
+#: include/global_settings.php:2524
 #, fuzzy
 msgid "Default Tree"
 msgstr "Varsayılan Ağaç"
 
-#: include/global_settings.php:2516
+#: include/global_settings.php:2525
 #, fuzzy
 msgid "The default graph tree to use when displaying graphs in tree mode."
 msgstr "Ağaç modundaki grafikleri görüntülerken kullanılacak varsayılan grafik ağacı."
 
-#: include/global_settings.php:2522
+#: include/global_settings.php:2531
 #, fuzzy
 msgid "Graphs Per Page"
 msgstr "Sayfa Başına Grafik"
 
-#: include/global_settings.php:2529
+#: include/global_settings.php:2538
 #, fuzzy
 msgid "Expand Devices"
 msgstr "Aygıtları Genişlet"
 
-#: include/global_settings.php:2530
+#: include/global_settings.php:2539
 #, fuzzy
 msgid "Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree."
 msgstr "Ağaçtaki bir Aygıt tarafından kullanılan Grafik Şablonlarının ve Veri Sorgularının genişletilip genişletilmeyeceğini seçin."
 
-#: include/global_settings.php:2535
+#: include/global_settings.php:2544
 #, fuzzy
 msgid "Tree History"
 msgstr "Şifre Geçmişi"
 
-#: include/global_settings.php:2536
+#: include/global_settings.php:2545
 #, fuzzy
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
 msgstr "Etkinleştirilirse, Kaktüsler girişler arasındaki ve Grafikler sayfasına döndüğünüzde Ağaç Geçmişinizi hatırlar."
 
-#: include/global_settings.php:2559
+#: include/global_settings.php:2568
 msgid "Use Custom Fonts"
 msgstr "Özel Yazı Tiplerini Kullan"
 
-#: include/global_settings.php:2560
+#: include/global_settings.php:2569
 #, fuzzy
 msgid "Choose whether to use your own custom fonts and font sizes or utilize the system defaults."
 msgstr "Kendi özel yazı tiplerinizi ve yazı tipi boyutlarınızı mı kullanacağınızı veya sistem varsayılanlarını mı kullanacağınızı seçin."
 
-#: include/global_settings.php:2573
+#: include/global_settings.php:2582
 #, fuzzy
 msgid "Title Font File"
 msgstr "Başlık Yazı Tipi Dosyası"
 
-#: include/global_settings.php:2574
+#: include/global_settings.php:2583
 #, fuzzy
 msgid "The font file to use for Graph Titles"
 msgstr "Grafik Başlıkları için kullanılacak font dosyası"
 
-#: include/global_settings.php:2586
+#: include/global_settings.php:2595
 #, fuzzy
 msgid "Legend Font File"
 msgstr "Legend Yazı Tipi Dosyası"
 
-#: include/global_settings.php:2587
+#: include/global_settings.php:2596
 #, fuzzy
 msgid "The font file to be used for Graph Legend items"
 msgstr "Graph Legend öğeleri için kullanılacak font dosyası"
 
-#: include/global_settings.php:2599
+#: include/global_settings.php:2608
 #, fuzzy
 msgid "Axis Font File"
 msgstr "Eksen Yazı Tipi Dosyası"
 
-#: include/global_settings.php:2600
+#: include/global_settings.php:2609
 #, fuzzy
 msgid "The font file to be used for Graph Axis items"
 msgstr "Graph Axis öğeleri için kullanılacak font dosyası"
 
-#: include/global_settings.php:2612
+#: include/global_settings.php:2621
 #, fuzzy
 msgid "Unit Font File"
 msgstr "Birim Yazı Tipi Dosyası"
 
-#: include/global_settings.php:2613
+#: include/global_settings.php:2622
 #, fuzzy
 msgid "The font file to be used for Graph Unit items"
 msgstr "Graph Unit öğeleri için kullanılacak font dosyası"
 
-#: include/global_settings.php:2627
+#: include/global_settings.php:2636
 #, fuzzy
 msgid "Realtime View Mode"
 msgstr "Gerçek Zamanlı Görüntüleme Modu"
 
-#: include/global_settings.php:2628
+#: include/global_settings.php:2637
 #, fuzzy
 msgid "How do you wish to view Realtime Graphs?"
 msgstr "Realtime Graphs&#39;ı nasıl görmek istersiniz?"
 
-#: include/global_settings.php:2631
+#: include/global_settings.php:2640
 msgid "Inline"
 msgstr "Çizgide"
 
-#: include/global_settings.php:2632
+#: include/global_settings.php:2641
 msgid "New Window"
 msgstr "Yeni Pencere"
 
-#: include/global_settings.php:2647
+#: include/global_settings.php:2656
 #, fuzzy
 msgid "System Setting"
 msgstr "Kullanıcı Ayarları"
 
-#: include/global_settings.php:2655
+#: include/global_settings.php:2664
 msgid "1 Week"
 msgstr "1 Hafta"
 
-#: include/global_settings.php:2668
+#: include/global_settings.php:2677
 #, fuzzy
 msgid "Auto Log Out Time"
 msgstr "Otomatik Çıkış"
 
-#: include/global_settings.php:2669
+#: include/global_settings.php:2678
 #, fuzzy
 msgid "For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled."
 msgstr "Yalnızca Konsol erişimine sahip kullanıcılar için, bu kullanıcının otomatik olarak oturumu kapatılmadan önce ne kadar süreyle oturum açabileceği. Bir saatten uzun süredir aktif değilseniz, tarayıcınızı yenilemeniz gerekebileceğini unutmayın. Ayrıca, Kimlik Doğrulama Çerezleri etkinleştirildiğinde bu ayarın hiçbir etkisi olmadığını unutmayın."
@@ -14011,8 +14019,8 @@ msgstr "Konum:"
 msgid "Contact:"
 msgstr "İletişim:"
 
-#: lib/api_device.php:1196 lib/functions.php:4909 lib/functions.php:4911
-#: lib/functions.php:4915
+#: lib/api_device.php:1196 lib/functions.php:4910 lib/functions.php:4912
+#: lib/functions.php:4916
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping Sonuçları"
@@ -14032,41 +14040,41 @@ msgstr "Yeni dal"
 msgid "Web Basic"
 msgstr "Web Temel"
 
-#: lib/auth.php:2113 lib/auth.php:2145 lib/reports.php:1267
+#: lib/auth.php:2121 lib/auth.php:2153 lib/reports.php:1267
 msgid "Branch:"
 msgstr "Şube:"
 
-#: lib/auth.php:2122 lib/auth.php:2153 lib/html_tree.php:1014
+#: lib/auth.php:2130 lib/auth.php:2161 lib/html_tree.php:1014
 #: lib/reports.php:1042 lib/reports.php:1272
 msgid "Device:"
 msgstr "Cihaz:"
 
-#: lib/auth.php:2891 lib/auth.php:2899
+#: lib/auth.php:2899 lib/auth.php:2907
 #, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "Erişim Engellendi, lütfen Cacti Yönetici ile iletişime geçin."
 
-#: lib/auth.php:2920
+#: lib/auth.php:2928
 #, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "Kaktüs yöneticiniz girişler için karmaşık şifreleri zorladı ve mevcut Kaktüs şifreniz yeni gereksinimlere uymuyor. Bu nedenle, şimdi şifrenizi değiştirmeniz gerekir."
 
-#: lib/auth.php:2944
+#: lib/auth.php:2952
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "Şifre en az% d karakter olmalı!"
 
-#: lib/auth.php:2950
+#: lib/auth.php:2958
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "Şifreniz en az 1 sayısal karakter içermelidir!"
 
-#: lib/auth.php:2954
+#: lib/auth.php:2962
 #, fuzzy
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "Şifreniz küçük harf ve büyük harflerden oluşan bir karışım içermelidir!"
 
-#: lib/auth.php:2960
+#: lib/auth.php:2968
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "Şifreniz en az 1 özel karakter içermelidir!"
@@ -14726,7 +14734,7 @@ msgid "User Community"
 msgstr "Kullanıcı Topluluğu"
 
 #: lib/functions.php:3246 lib/functions.php:3264 lib/html.php:2467
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 msgid "Documentation"
 msgstr "Belgeler"
 
@@ -14763,113 +14771,113 @@ msgstr "Bağlantı %s"
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Mailer Hata: set adrese <b>İÇİN</b> !! <br> <i>Posta Testi</i> bağlantısını kullanıyorsanız, lütfen <b>Uyarı e-posta</b> ayarını ayarlayın."
 
-#: lib/functions.php:4842
+#: lib/functions.php:4843
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Kimlik doğrulama başarısız oldu: %s"
 
-#: lib/functions.php:4846
+#: lib/functions.php:4847
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO başarısız oldu: %s"
 
-#: lib/functions.php:4849
+#: lib/functions.php:4850
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Bağlantı kurulamadı: %s"
 
-#: lib/functions.php:4852
+#: lib/functions.php:4853
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP hatası:"
 
-#: lib/functions.php:4865
+#: lib/functions.php:4866
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Bu Cacti&#39;den üretilen bir test mesajıdır. Bu mesaj, Posta Ayarlarınızın yapılandırmasını test etmek için gönderildi."
 
-#: lib/functions.php:4866
+#: lib/functions.php:4867
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "E-posta ayarlarınız şu anda aşağıdaki gibi ayarlanmış"
 
-#: lib/functions.php:4867
+#: lib/functions.php:4868
 msgid "Method"
 msgstr "Yöntem"
 
-#: lib/functions.php:4869
+#: lib/functions.php:4870
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Yapılandırma Denetleniyor ... <br>"
 
-#: lib/functions.php:4876
+#: lib/functions.php:4877
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP&#39;nin Mailer Sınıfı"
 
-#: lib/functions.php:4882
+#: lib/functions.php:4883
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Yöntem: SMTP"
 
-#: lib/functions.php:4897
+#: lib/functions.php:4898
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Güvenlik Sebepleri Gösterilmemiştir"
 
-#: lib/functions.php:4898
+#: lib/functions.php:4899
 msgid "Security"
 msgstr "Güvenlik"
 
-#: lib/functions.php:4906
+#: lib/functions.php:4907
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Ping Sonuçları:"
 
-#: lib/functions.php:4915
+#: lib/functions.php:4916
 #, fuzzy
 msgid "Bypassed"
 msgstr "baypas"
 
-#: lib/functions.php:4923
+#: lib/functions.php:4924
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Mesaj Metni Oluşturuluyor ..."
 
-#: lib/functions.php:4926
+#: lib/functions.php:4927
 msgid "Sending Message..."
 msgstr "Mesaj Gönderiliyor..."
 
-#: lib/functions.php:4930
+#: lib/functions.php:4931
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Kaktüsler Test Mesajı"
 
-#: lib/functions.php:4932
+#: lib/functions.php:4933
 msgid "Success!"
 msgstr "Başarılı!"
 
-#: lib/functions.php:4935
+#: lib/functions.php:4936
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Ping hatası nedeniyle gönderilemedi."
 
-#: lib/functions.php:5503 lib/functions.php:5566
+#: lib/functions.php:5504 lib/functions.php:5567
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti, şu hata nedeniyle %s eklentisini devre dışı bıraktı: %s! Daha fazla ayrıntı için Cacti günlük dosyasına bakın."
 
-#: lib/functions.php:5958 lib/functions.php:5960
+#: lib/functions.php:5959 lib/functions.php:5961
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:5958
+#: lib/functions.php:5959
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "Sürüm %s %s"
 
-#: lib/functions.php:5960
+#: lib/functions.php:5961
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -17953,209 +17961,209 @@ msgstr "Grafik Oluşturma"
 msgid "NOTE: Graph not added for Data Query "
 msgstr "Veri Sorgulamadan Grafik Oluşturma"
 
-#: lib/utility.php:855
+#: lib/utility.php:876
 #, fuzzy
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgstr "MySQL 5.6+ ve MariaDB 10.0+ harika sürümler ve seçilebilecek çok iyi sürümler. En yeni sürümü çalıştırdığınızdan emin olun; bu, güvenilirliği ile ilgili birçok soruna neden olan uzun süredir devam eden düşük seviyeli ağ sorununu düzeltir."
 
-#: lib/utility.php:867
+#: lib/utility.php:888
 #, fuzzy, php-format
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "InnoDB&#39;yi 5.1&#39;den büyük herhangi bir %s sürümünde etkinleştirmeniz önerilir."
 
-#: lib/utility.php:880 lib/utility.php:915
+#: lib/utility.php:901 lib/utility.php:936
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
 msgstr "Cacti&#39;yi İngilizce dışındaki dillerle kullanırken, bazı karakterler tek bayttan daha fazla sürdüğü için utf8mb4_unicode_ci harmanlama türünü kullanmak önemlidir."
 
-#: lib/utility.php:886 lib/utility.php:892 lib/utility.php:921
-#: lib/utility.php:927
+#: lib/utility.php:907 lib/utility.php:913 lib/utility.php:942
+#: lib/utility.php:948
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
 msgstr "Cacti&#39;yi İngilizce dışındaki dillerle kullanırken, bazı karakterler tek bir bayttan daha fazla sürdüğünde utf8mb4 karakter kümesini kullanmak önemlidir."
 
-#: lib/utility.php:903
+#: lib/utility.php:924
 #, fuzzy, php-format
 msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "InnoDB&#39;yi 5.1&#39;den büyük herhangi bir %s sürümünde etkinleştirmeniz önerilir."
 
-#: lib/utility.php:936
+#: lib/utility.php:957
 #, fuzzy, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "Giriş sayısına ve omurga veri toplayıcısının kullanımına bağlı olarak, %s birçok bağlantıya ihtiyaç duyacaktır. Omurga için hesaplama: total_connections = total_processes * (total_threads + script_servers + 1), o zaman eşzamanlı oturum açma hesaplarının sayısına bağlı olarak değişecek olan kullanıcı bağlantıları için boşluk bırakmanız gerekir."
 
-#: lib/utility.php:941
+#: lib/utility.php:962
 #, fuzzy
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "Tablo önbelleğini daha büyük tutmak, innodb_file_per_table kullanılırken daha az dosya açma / kapama işlemi anlamına gelir."
 
-#: lib/utility.php:946
+#: lib/utility.php:967
 #, fuzzy
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "Uzaktan yoklama yetenekleriyle, ana sunucudan uzak yoklayıcılara büyük miktarda veri senkronize edilir. Bu nedenle, bu değeri 16M&#39;de veya üstünde tutun."
 
-#: lib/utility.php:952
+#: lib/utility.php:973
 #, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "Cacti Performance Booster kullanıyorsanız ve bir bellek depolama motoru seçiyorsanız, sistem bellek masası boşluğu dolmadan önce Performance Booster tamponunuzu yıkamak için dikkatli olmalısınız. Bu iki yolla yapılır, ilk önce çıktı sütununuzun boyutunu tam olarak doğru boyuta indirirsiniz. Bu sütun poller_output ve poller_output_boost tablolarındadır. Yapabileceğiniz ikinci şey, bellek tablolarına daha fazla bellek ayırmak. Keyfi olarak% 10&#39;luk sistem belleğinin önerilen bir değerini seçtik, ancak SSD disk sürücüleri kullanıyorsanız veya daha küçük bir sistem kullanıyorsanız, bu öneriyi göz ardı edebilir veya farklı bir depolama motoru seçebilirsiniz. Performans Yükseltici tablolarının beklenen tüketimini Konsol -&gt; Sistem Araçları -&gt; Yükseltme Durumunu Görüntüle altında görebilirsiniz."
 
-#: lib/utility.php:958
+#: lib/utility.php:979
 #, fuzzy
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "Alt sorguları yürütürken, daha büyük bir geçici tablo boyutuna sahip olan bu geçici tabloları bellekte saklar."
 
-#: lib/utility.php:964
+#: lib/utility.php:985
 #, fuzzy
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file."
 msgstr "Birleştirme işlemi gerçekleştirirken, bu boyutun altındaysa, bellekte tutulur ve asla geçici bir dosyaya yazılmaz."
 
-#: lib/utility.php:970
+#: lib/utility.php:991
 #, fuzzy, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "InnoDB depolamayı kullanırken, masa alanlarınızı ayrı tutmak önemlidir. Bu, tabloları yönetmeyi %s uzun süredir kullananlar için kolaylaştırır. Şu anda kapalı durumdayken, özelliği etkinleştirerek ve ardından tüm InnoDB tablolarında bir alter ifadesi çalıştırarak dosya başına depolamaya geçebilirsiniz."
 
-#: lib/utility.php:976
+#: lib/utility.php:997
 #, fuzzy
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "İnnodb_file_per_table kullanırken, innodb_file_format'ı Barracuda olarak ayarlamak önemlidir. Bu ayar, belirli Cacti tabloları için önemli olan daha uzun dizinlere izin verir."
 
-#: lib/utility.php:982
+#: lib/utility.php:1003
 #, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "Tablolarınız çok büyük dizinlere sahipse, Barracuda innodb_file_format ve innodb_large_prefix ile 1'e eşit çalışmanız gerekir. Bunun yapılmaması, düzgün tablo oluşturamayan eklentilerle sonuçlanabilir."
 
-#: lib/utility.php:988
+#: lib/utility.php:1009
 #, fuzzy, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "InnoDB, sistem belleğinde olabildiğince fazla tablo ve dizin tutacaktır. Bu nedenle, innodb_buffer_pool&#39;u bellekteki tablo ve dizinlerin çoğunu tutacak kadar büyük yapmalısınız. / Var / lib / mysql / cacti dizininin boyutunun kontrol edilmesi bu değerin belirlenmesinde yardımcı olacaktır. Sistemlerinizin toplam belleğinin% 25&#39;ini öneriyoruz, ancak gereksinimleriniz sisteminizin boyutuna bağlı olarak değişebilir."
 
-#: lib/utility.php:994
+#: lib/utility.php:1015
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "Cacti örnekleriniz, ani sistem çökmelerini karşılamak için dahili günlük kaydı olan ZFS veya FusionI / O üzerinde çalışmadığı sürece bu ayar AÇIK kalmalıdır. Ancak, çok iyi bir gücünüz varsa ve sistemleriniz nadiren düşerse ve yedekleriniz varsa, bu ayarı KAPALI konuma getirmek, veritabanı performansında neredeyse% 50'lik bir artış sağlayabilir."
 
-#: lib/utility.php:999
+#: lib/utility.php:1020
 #, fuzzy
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "Burası meta verilerin depolandığı yerdir. Çok fazla tablonuz varsa, bunu arttırmanız yararlı olacaktır."
 
-#: lib/utility.php:1004
+#: lib/utility.php:1025
 #, fuzzy
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "Rogue sorguları, veritabanının başkalarına çevrimdışı olması için olmamalıdır. Sisteminizi öldürmeden önce bu sorguları öldürün."
 
-#: lib/utility.php:1009
+#: lib/utility.php:1030
 #, fuzzy
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "Sayfaları temizlemek için O_DIRECT yöntemini kullandığınızda maksimum G / Ç performansı olur."
 
-#: lib/utility.php:1019
+#: lib/utility.php:1040
 #, fuzzy, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "Bu değerin 2&#39;ye ayarlanması, tüm işlemleri taahhütte bulunmak yerine her saniye sifonlayacağınız anlamına gelir. Bu, %s&#39;nin daha az yazı yazmasını sağlar."
 
-#: lib/utility.php:1024
+#: lib/utility.php:1045
 #, fuzzy
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "Modern SSD tipi depolama ile, yüksek io özelliklerine sahip uygulamalar için çok sayıda io dişe sahip olmak avantajlıdır."
 
-#: lib/utility.php:1032 lib/utility.php:1074
+#: lib/utility.php:1053 lib/utility.php:1095
 #, fuzzy, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "%s %s öğesinden, %s işleminin ne sıklıkta diske atılacağını denetleyebilirsiniz. Varsayılan değer 1 saniyedir, ancak yüksek G / Ç sistemlerinde 1&#39;den büyük bir değere ayarlanması, disk G / Ç işlemlerinin daha sıralı olmasını sağlayabilir"
 
-#: lib/utility.php:1037
+#: lib/utility.php:1058
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "Modern SSD tipi depolamayla, çoklu okuma ipliğine sahip olmak, yüksek io özelliklerine sahip uygulamalar için avantajlıdır."
 
-#: lib/utility.php:1042
+#: lib/utility.php:1063
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "Modern SSD tipi depolamayla, çoklu yazma ipliğine sahip olmak, yüksek io özelliklerine sahip uygulamalar için avantajlıdır."
 
-#: lib/utility.php:1048
+#: lib/utility.php:1069
 #, fuzzy, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64."
 msgstr "%s, performansı artırmak için innodb_buffer_pool&#39;u bellek bölgelerine bölecektir. Maksimum değer 64&#39;tür. İnnodb_buffer_pool cihazınız 1 GB&#39;den küçükse, havuz boyutunu 128 MB&#39;a bölmelisiniz. Bu denklemi maksimum 64 adede kadar kullanmaya devam edin."
 
-#: lib/utility.php:1054 lib/utility.php:1090
+#: lib/utility.php:1075 lib/utility.php:1111
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "SSD diskleriniz varsa, bu öneriyi kullanın. Fiziksel sabit sürücüleriniz varsa, dizideki 200 * etkin sürücü sayısını kullanın. NVMe veya PCIe Flash kullanıyorsanız, 100000 kadar yüksek sayılar kullanılabilir."
 
-#: lib/utility.php:1060 lib/utility.php:1096
+#: lib/utility.php:1081 lib/utility.php:1117
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "SSD diskleriniz varsa, bu öneriyi kullanın. Fiziksel sabit sürücüleriniz varsa, dizideki 2000 * etkin sürücü sayısını kullanın. NVMe veya PCIe Flash kullanıyorsanız, 200000 kadar yüksek olan daha büyük sayılar kullanılabilir."
 
-#: lib/utility.php:1066 lib/utility.php:1102
+#: lib/utility.php:1087 lib/utility.php:1123
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "SSD diskleriniz varsa, bu öneriyi kullanın. Aksi takdirde, bu ayarı yapmayın."
 
-#: lib/utility.php:1079
+#: lib/utility.php:1100
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "Modern SSD tipi depolamayla, çoklu okuma ipliğine sahip olmak, yüksek io özelliklerine sahip uygulamalar için avantajlıdır."
 
-#: lib/utility.php:1084
+#: lib/utility.php:1105
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "Modern SSD tipi depolamayla, çoklu yazma ipliğine sahip olmak, yüksek io özelliklerine sahip uygulamalar için avantajlıdır."
 
-#: lib/utility.php:1115
+#: lib/utility.php:1136
 #, fuzzy
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
 msgstr "MariaDB 10.2.4 ve üstünü kullanırken, atomik yazmalar etkinleştirilmişse bu ayar kapalı olmalıdır. Bu nedenle, performansı artıracağı için lütfen çift yazma arabelleği yerine atomik yazmaları etkinleştirin."
 
-#: lib/utility.php:1122
+#: lib/utility.php:1143
 #, fuzzy
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
 msgstr "MariaDB 10.2.4 ve üstünü kullanırken, performansı artırmak için çift yazma arabelleği üzerinde atomik yazma kullanabilirsiniz."
 
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "%s Tuning"
 
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "Not: Aşağıdaki birçok değişiklik bir veritabanının yeniden başlatılmasını gerektirir"
 
-#: lib/utility.php:1147
+#: lib/utility.php:1168
 msgid "Variable"
 msgstr "Değişken"
 
-#: lib/utility.php:1148
+#: lib/utility.php:1169
 msgid "Current Value"
 msgstr "Mevcut değer"
 
-#: lib/utility.php:1150
+#: lib/utility.php:1171
 msgid "Recommended Value"
 msgstr "Önerilen Değer"
 
-#: lib/utility.php:1151
+#: lib/utility.php:1172
 msgid "Comments"
 msgstr "Yorumlar"
 
-#: lib/utility.php:1561
+#: lib/utility.php:1582
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP %s en küçük sürümdür"
 
-#: lib/utility.php:1563
+#: lib/utility.php:1584
 #, fuzzy, php-format
 msgid "A minimum of %s memory limit"
 msgstr "Minimum %s MB hafıza sınırı"
 
-#: lib/utility.php:1565
+#: lib/utility.php:1586
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "Minimum %sm yürütme süresi"
 
-#: lib/utility.php:1567
+#: lib/utility.php:1588
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "MySQL ve sistemle eşleşen geçerli bir saat dilimi"
