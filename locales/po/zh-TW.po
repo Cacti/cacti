@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-02-03 20:27-0500\n"
+"POT-Creation-Date: 2022-02-06 12:08-0500\n"
 "PO-Revision-Date: 2022-02-03 21:04-0500\n"
 "Last-Translator: Linya Huang <linya0405@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\n"
@@ -623,7 +623,7 @@ msgstr "尺寸"
 #: data_sources.php:1702 data_sources.php:1703 data_templates.php:1195
 #: gprint_presets.php:437 graph_templates.php:901 host_templates.php:875
 #: include/global_settings.php:475 include/global_settings.php:834
-#: include/global_settings.php:1734 lib/api_automation.php:1438 links.php:404
+#: include/global_settings.php:1743 lib/api_automation.php:1438 links.php:404
 #: tree.php:2102 tree.php:2103 user_admin.php:2398 user_domains.php:767
 #: user_group_admin.php:1936 vdef.php:905
 msgid "No"
@@ -637,7 +637,7 @@ msgstr "否"
 #: data_source_profiles.php:1101 data_sources.php:1702 data_sources.php:1703
 #: data_templates.php:1195 gprint_presets.php:437 graph_templates.php:901
 #: host_templates.php:875 include/global_settings.php:476
-#: include/global_settings.php:833 include/global_settings.php:1733
+#: include/global_settings.php:833 include/global_settings.php:1742
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
 #: lib/installer.php:3424 links.php:404 tree.php:2102 tree.php:2103
 #: user_admin.php:2396 user_domains.php:763 user_domains.php:767
@@ -675,8 +675,8 @@ msgstr "模板"
 #: graphs_items.php:354 host.php:1533 host.php:1551 host.php:1568 host.php:1629
 #: lib/api_automation.php:150 lib/api_automation.php:168
 #: lib/api_automation.php:429 lib/api_automation.php:446
-#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2684
-#: lib/auth.php:2713 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
+#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2692
+#: lib/auth.php:2721 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
 #: lib/html_reports.php:877 lib/html_reports.php:881 lib/html_reports.php:992
 #: lib/html_reports.php:1002 lib/html_reports.php:1847 managers.php:482
 #: managers.php:735 user_admin.php:2655 user_admin.php:2848
@@ -704,10 +704,10 @@ msgstr "任何"
 #: include/global_form.php:2112 include/global_form.php:2154
 #: include/global_settings.php:572 include/global_settings.php:580
 #: include/global_settings.php:588 include/global_settings.php:1212
-#: include/global_settings.php:1808 lib/api_automation.php:151
+#: include/global_settings.php:1817 lib/api_automation.php:151
 #: lib/api_automation.php:430 lib/api_automation.php:447
-#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2687
-#: lib/auth.php:2716 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
+#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2695
+#: lib/auth.php:2724 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
 #: lib/html.php:2109 lib/html_form.php:331 lib/html_reports.php:888
 #: lib/html_reports.php:892 lib/html_reports.php:922 lib/html_reports.php:992
 #: lib/html_reports.php:998 lib/html_reports.php:1002 lib/html_reports.php:1010
@@ -873,8 +873,8 @@ msgstr "請輸入您當前的密碼和新密碼<br>仙人掌密碼。"
 msgid "Please enter your new Cacti password."
 msgstr "請輸入您當前的密碼和新密碼<br>仙人掌密碼。"
 
-#: auth_changepassword.php:342 auth_login.php:831 auth_login.php:834
-#: include/global_settings.php:1642 lib/functions.php:4896
+#: auth_changepassword.php:342 auth_login.php:833 auth_login.php:836
+#: include/global_settings.php:1651 lib/functions.php:4897
 msgid "Username"
 msgstr "用戶名"
 
@@ -896,7 +896,7 @@ msgstr "確認新密碼"
 msgid "Save"
 msgstr "儲存"
 
-#: auth_changepassword.php:367 auth_login.php:913
+#: auth_changepassword.php:367 auth_login.php:915
 #, php-format
 msgid "Version %1$s | %2$s"
 msgstr "版本%1$s | %2$s"
@@ -931,89 +931,89 @@ msgstr "％s由Web Server進行身份驗證，但模板和來賓用戶都未在C
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "LDAP搜索錯誤：％s"
 
-#: auth_login.php:192 auth_login.php:667
+#: auth_login.php:194 auth_login.php:669
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP錯誤：％s"
 
-#: auth_login.php:318 auth_login.php:658
+#: auth_login.php:320 auth_login.php:660
 #, fuzzy, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "訪問被拒絕，請與您聯繫Cacti管理員。"
 
-#: auth_login.php:345
+#: auth_login.php:347
 #, fuzzy, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Adminitrator."
 msgstr "訪問被拒絕，請與您聯繫Cacti管理員。"
 
-#: auth_login.php:375
+#: auth_login.php:377
 #, fuzzy
 msgid "Access Denied!  User account disabled."
 msgstr "拒絕訪問，禁用用戶帳戶。"
 
-#: auth_login.php:386
+#: auth_login.php:388
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
 msgstr "如果你覺得這是一個錯誤。請聯繫您的Cacti管理員。"
 
-#: auth_login.php:433
+#: auth_login.php:435
 #, fuzzy
 msgid "Access Denied!  No guest account Defined.  Please contact your Administrator."
 msgstr "訪問被拒絕，請與您聯繫Cacti管理員。"
 
-#: auth_login.php:536
+#: auth_login.php:538
 #, fuzzy
 msgid "Cacti Login Failure"
 msgstr "Cacti Log清除"
 
-#: auth_login.php:543 include/auth.php:287 include/auth.php:289
+#: auth_login.php:545 include/auth.php:287 include/auth.php:289
 #: permission_denied.php:30 permission_denied.php:32
 msgid "Login Again"
 msgstr "再次登錄"
 
-#: auth_login.php:560
+#: auth_login.php:562
 #, php-format
 msgid "LDAP Search Error: %s"
 msgstr "LDAP搜索錯誤：％s"
 
-#: auth_login.php:804 lib/html_tree.php:218
+#: auth_login.php:806 lib/html_tree.php:218
 msgid "Login to Cacti"
 msgstr "登錄Cacti"
 
-#: auth_login.php:811
+#: auth_login.php:813
 msgid "User Login"
 msgstr "用戶登錄"
 
-#: auth_login.php:825
+#: auth_login.php:827
 msgid "Enter your Username and Password below"
 msgstr "在下面輸入您的用戶名和密碼"
 
-#: auth_login.php:839 include/global_form.php:1526 lib/functions.php:4897
+#: auth_login.php:841 include/global_form.php:1526 lib/functions.php:4898
 msgid "Password"
 msgstr "密碼"
 
-#: auth_login.php:851 include/global_settings.php:2085 lib/auth.php:462
+#: auth_login.php:853 include/global_settings.php:2094 lib/auth.php:462
 #: lib/auth.php:484 lib/auth.php:495 user_admin.php:2294
 msgid "Local"
 msgstr "本地"
 
-#: auth_login.php:855 include/global_arrays.php:796 lib/auth.php:496
+#: auth_login.php:857 include/global_arrays.php:796 lib/auth.php:496
 msgid "LDAP"
 msgstr "LDAP"
 
-#: auth_login.php:873 user_admin.php:2289 user_admin.php:2378
+#: auth_login.php:875 user_admin.php:2289 user_admin.php:2378
 #: user_group_admin.php:682
 msgid "Realm"
 msgstr "領域"
 
-#: auth_login.php:890
+#: auth_login.php:892
 msgid "Keep me signed in"
 msgstr "保持登錄狀態"
 
-#: auth_login.php:896
+#: auth_login.php:898
 msgid "Login"
 msgstr "登入"
 
-#: auth_login.php:908
+#: auth_login.php:910
 msgid "Invalid User Name/Password Please Retype"
 msgstr "無效的用戶名/密碼請重新輸入"
 
@@ -1028,7 +1028,7 @@ msgid "User Account Details"
 msgstr "用戶帳戶明細"
 
 #: auth_profile.php:296 include/global_arrays.php:780
-#: include/global_settings.php:2463 lib/html.php:1929 lib/html.php:1951
+#: include/global_settings.php:2472 lib/html.php:1929 lib/html.php:1951
 #: lib/html.php:2451
 msgid "Tree View"
 msgstr "樹狀圖"
@@ -1052,7 +1052,7 @@ msgid "The login name for this user."
 msgstr "此用戶的登錄名。"
 
 #: auth_profile.php:325 include/global_form.php:1510
-#: include/global_settings.php:1678 user_admin.php:2376 user_domains.php:496
+#: include/global_settings.php:1687 user_admin.php:2376 user_domains.php:496
 #: user_group_admin.php:682 utilities.php:919
 msgid "Full Name"
 msgstr "全名"
@@ -1213,7 +1213,7 @@ msgid "SNMP Name"
 msgstr "SNMP名稱"
 
 #: automation_devices.php:280 host.php:1582 include/global_form.php:1201
-#: include/global_settings.php:2080
+#: include/global_settings.php:2089
 msgid "Location"
 msgstr "地點"
 
@@ -1301,7 +1301,7 @@ msgstr "清除發現的設備"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1809
-#: lib/functions.php:5242 lib/functions.php:5246 lib/html.php:1211
+#: lib/functions.php:5243 lib/functions.php:5247 lib/html.php:1211
 #: lib/html_reports.php:1633 lib/html_reports.php:1659
 #: lib/html_reports.php:1730 lib/html_reports.php:1731
 #: lib/html_reports.php:1732 pollers.php:1050 user_admin.php:2390
@@ -1321,7 +1321,7 @@ msgstr "複製"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1535 include/global_settings.php:1597 links.php:29
+#: include/global_arrays.php:1535 include/global_settings.php:1603 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:412
 #: user_group_admin.php:32
@@ -1449,7 +1449,7 @@ msgstr "啟用"
 #: include/global_settings.php:359 include/global_settings.php:1446
 #: include/global_settings.php:1460 include/global_settings.php:1473
 #: include/global_settings.php:1498 include/global_settings.php:1512
-#: include/global_settings.php:1596 include/global_settings.php:2286
+#: include/global_settings.php:1602 include/global_settings.php:2295
 #: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2527
 #: lib/html_reports.php:1849 lib/html_reports.php:1987 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
@@ -1721,8 +1721,8 @@ msgstr "%d 分鐘"
 #: include/global_arrays.php:1519 include/global_settings.php:1514
 #: include/global_settings.php:1515 include/global_settings.php:1516
 #: include/global_settings.php:1517 include/global_settings.php:1518
-#: include/global_settings.php:2389 include/global_settings.php:2648
-#: include/global_settings.php:2649 include/global_settings.php:2650
+#: include/global_settings.php:2398 include/global_settings.php:2657
+#: include/global_settings.php:2658 include/global_settings.php:2659
 #: pollers.php:912 pollers.php:913
 #, php-format
 msgid "%d Minutes"
@@ -1751,8 +1751,8 @@ msgstr "%d 小時"
 #: include/global_arrays.php:1440 include/global_arrays.php:1441
 #: include/global_arrays.php:1442 include/global_settings.php:1520
 #: include/global_settings.php:1521 include/global_settings.php:1522
-#: include/global_settings.php:1523 include/global_settings.php:2652
-#: include/global_settings.php:2653
+#: include/global_settings.php:1523 include/global_settings.php:2661
+#: include/global_settings.php:2662
 #, php-format
 msgid "%d Hours"
 msgstr "%d 小時"
@@ -2134,7 +2134,7 @@ msgid "Idle"
 msgstr "閒置"
 
 #: automation_networks.php:1152 include/global_arrays.php:814
-#: include/global_arrays.php:1104 include/global_settings.php:2312
+#: include/global_arrays.php:1104 include/global_settings.php:2321
 #: lib/html_reports.php:1982
 msgid "Never"
 msgstr "從不"
@@ -2164,8 +2164,8 @@ msgstr "重新整理"
 #: include/global_arrays.php:1515 include/global_arrays.php:1516
 #: include/global_arrays.php:1517 include/global_settings.php:1162
 #: include/global_settings.php:1163 include/global_settings.php:1164
-#: include/global_settings.php:1165 include/global_settings.php:2385
-#: include/global_settings.php:2386 include/global_settings.php:2387
+#: include/global_settings.php:1165 include/global_settings.php:2394
+#: include/global_settings.php:2395 include/global_settings.php:2396
 #: pollers.php:906 pollers.php:907 pollers.php:908 pollers.php:909
 #: pollers.php:910
 #, php-format
@@ -2275,7 +2275,7 @@ msgstr "版本"
 msgid "Community"
 msgstr "社群"
 
-#: automation_snmp.php:536 lib/functions.php:4892
+#: automation_snmp.php:536 lib/functions.php:4893
 msgid "Port"
 msgstr "端口"
 
@@ -2563,7 +2563,7 @@ msgstr "根部"
 msgid "No Tree Rules Found"
 msgstr "找不到樹規則"
 
-#: cactid.php:44 lib/functions.php:5503 lib/functions.php:5566 poller.php:353
+#: cactid.php:44 lib/functions.php:5504 lib/functions.php:5567 poller.php:353
 #: poller.php:477 poller.php:525 poller.php:541 poller.php:687 poller.php:785
 #: poller_automation.php:53 poller_boost.php:306
 msgid "Cacti System Warning"
@@ -3786,8 +3786,8 @@ msgstr "％d週"
 
 #: data_source_profiles.php:812 include/global_arrays.php:718
 #: include/global_arrays.php:719 include/global_arrays.php:1356
-#: include/global_settings.php:2656 include/global_settings.php:2657
-#: include/global_settings.php:2658 rrdcleaner.php:519 rrdcleaner.php:520
+#: include/global_settings.php:2665 include/global_settings.php:2666
+#: include/global_settings.php:2667 rrdcleaner.php:519 rrdcleaner.php:520
 #, php-format
 msgid "%d Weeks"
 msgstr "％d週"
@@ -3815,7 +3815,7 @@ msgstr "%d 天"
 #: include/global_arrays.php:1416 include/global_arrays.php:1437
 #: include/global_arrays.php:1470 include/global_arrays.php:1479
 #: include/global_arrays.php:1507 include/global_settings.php:1263
-#: include/global_settings.php:1519 include/global_settings.php:2651
+#: include/global_settings.php:1519 include/global_settings.php:2660
 msgid "1 Hour"
 msgstr "1小時"
 
@@ -4037,7 +4037,7 @@ msgstr "為此數據模板指定的名稱。請注意，您只能將圖形模板
 #: data_sources.php:932 graph_view.php:726 graphs.php:1583
 #: include/global_arrays.php:877 include/global_arrays.php:926
 #: include/global_arrays.php:1573 include/global_arrays.php:1742
-#: lib/api_automation.php:425 lib/functions.php:4891 lib/html.php:2043
+#: lib/api_automation.php:425 lib/functions.php:4892 lib/html.php:2043
 #: lib/html.php:2075 lib/html_reports.php:1005 utilities.php:1638
 msgid "Device"
 msgstr "裝置"
@@ -4086,7 +4086,7 @@ msgstr "外部"
 #: data_sources.php:1199 include/global_arrays.php:654
 #: include/global_arrays.php:1101 include/global_arrays.php:1464
 #: include/global_arrays.php:1500 include/global_arrays.php:1518
-#: include/global_settings.php:1513 include/global_settings.php:2388
+#: include/global_settings.php:1513 include/global_settings.php:2397
 msgid "1 Minute"
 msgstr "1 分鐘"
 
@@ -4728,7 +4728,7 @@ msgid "Select the Report to add the selected Graphs to."
 msgstr "選擇“報告”以將選定的圖形添加到。"
 
 #: graph_view.php:902 include/global_arrays.php:1939
-#: include/global_settings.php:2459
+#: include/global_settings.php:2468
 msgid "Preview Mode"
 msgstr "預覽模式"
 
@@ -5386,7 +5386,7 @@ msgstr "[％d項目，％d行]"
 msgid "Fail"
 msgstr "失敗"
 
-#: host.php:943 lib/functions.php:4906 lib/functions.php:4911
+#: host.php:943 lib/functions.php:4907 lib/functions.php:4912
 msgid "Success"
 msgstr "成功"
 
@@ -5659,28 +5659,28 @@ msgstr "使用此設備模板的設備數量。"
 msgid "No Device Templates Found"
 msgstr "找不到設備模板"
 
-#: include/auth.php:170
+#: include/auth.php:171
 msgid "Not Logged In"
 msgstr "未登入"
 
-#: include/auth.php:171
+#: include/auth.php:172
 msgid "You must be logged in to access this area of Cacti."
 msgstr "您必須登錄才能訪問Cacti的這個區域。"
 
-#: include/auth.php:175
+#: include/auth.php:176
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "致命：您必須登錄才能訪問Cacti的這個區域。"
 
-#: include/auth.php:294 lib/functions.php:6475 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:6476 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "存取被拒"
 
-#: include/auth.php:295 lib/functions.php:6476 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "如果你覺得這是一個錯誤。請聯繫您的Cacti管理員。"
 
-#: include/auth.php:295 lib/functions.php:6476 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
 msgid "You are not permitted to access this section of Cacti."
 msgstr "您無權訪問此Cacti部分。"
 
@@ -6302,8 +6302,8 @@ msgstr "每隔一小時"
 #: include/global_arrays.php:752 include/global_arrays.php:753
 #: include/global_arrays.php:1752 include/global_arrays.php:1753
 #: include/global_arrays.php:1754 include/global_arrays.php:1755
-#: include/global_arrays.php:1756 include/global_settings.php:2287
-#: include/global_settings.php:2288
+#: include/global_arrays.php:1756 include/global_settings.php:2296
+#: include/global_settings.php:2297
 #, php-format
 msgid "Every %d Hours"
 msgstr "每個％d小時"
@@ -7945,7 +7945,7 @@ msgstr "在RRA規範中填充行之前所需的樣本數。第一個RRA應始終
 msgid "How many generations data is kept in the RRA."
 msgstr "RRA中保留了多少代數據。"
 
-#: include/global_form.php:307 include/global_settings.php:2409
+#: include/global_form.php:307 include/global_settings.php:2418
 msgid "Default Timespan"
 msgstr "默認時間跨度"
 
@@ -9136,7 +9136,7 @@ msgstr "數據"
 msgid "Visual"
 msgstr "視覺"
 
-#: include/global_settings.php:44 lib/functions.php:4895 lib/functions.php:4900
+#: include/global_settings.php:44 lib/functions.php:4896 lib/functions.php:4901
 msgid "Authentication"
 msgstr "認證"
 
@@ -9172,11 +9172,11 @@ msgstr "圖形字體"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail（）函數"
 
-#: include/global_settings.php:84 lib/functions.php:4878
+#: include/global_settings.php:84 lib/functions.php:4879
 msgid "Sendmail"
 msgstr "發郵件"
 
-#: include/global_settings.php:85 lib/functions.php:4883
+#: include/global_settings.php:85 lib/functions.php:4884
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -9451,7 +9451,7 @@ msgstr "首選語言處理器"
 msgid "Cacti includes support for multiple alternate Language Translation Processors.  It will be default use the PHP built in support, but not all Linux variants includes built in Language Support.  If not selected, Cacti will choose the first one found."
 msgstr "Cacti 包括對多個備用語言翻譯處理器的支持。默認使用 PHP 內置支持，但並非所有 Linux 變體都包含內置語言支持。如果未選中，Cacti 將選擇找到的第一個。"
 
-#: include/global_settings.php:371 include/global_settings.php:2366
+#: include/global_settings.php:371 include/global_settings.php:2375
 msgid "Date Display Format"
 msgstr "日期顯示格式"
 
@@ -9459,7 +9459,7 @@ msgstr "日期顯示格式"
 msgid "The System default date format to use in Cacti."
 msgstr "要在Cacti中使用的系統默認日期格式。"
 
-#: include/global_settings.php:378 include/global_settings.php:2373
+#: include/global_settings.php:378 include/global_settings.php:2382
 msgid "Date Separator"
 msgstr "日期分隔符"
 
@@ -9889,11 +9889,11 @@ msgid "Theme Settings"
 msgstr "主題設定"
 
 #: include/global_settings.php:809 include/global_settings.php:1019
-#: include/global_settings.php:2321
+#: include/global_settings.php:2330
 msgid "Theme"
 msgstr "佈景主題"
 
-#: include/global_settings.php:810 include/global_settings.php:2322
+#: include/global_settings.php:810 include/global_settings.php:2331
 msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr "請選擇一個可用的主題來為您的仙人掌提供皮膚。"
 
@@ -9925,19 +9925,19 @@ msgstr "自動完成行"
 msgid "The default number of rows to return from an autocomplete based select pattern match."
 msgstr "從基於自動填充的選擇模式匹配返回的默認行數。"
 
-#: include/global_settings.php:850 include/global_settings.php:2541
+#: include/global_settings.php:850 include/global_settings.php:2550
 msgid "Minimum Tree Width"
 msgstr "最小長度"
 
-#: include/global_settings.php:851 include/global_settings.php:2542
+#: include/global_settings.php:851 include/global_settings.php:2551
 msgid "The Minimum width of the Tree to contract to."
 msgstr "要收縮的樹的最小寬度。"
 
-#: include/global_settings.php:858 include/global_settings.php:2549
+#: include/global_settings.php:858 include/global_settings.php:2558
 msgid "Maximum Tree Width"
 msgstr "最大標題長度"
 
-#: include/global_settings.php:859 include/global_settings.php:2550
+#: include/global_settings.php:859 include/global_settings.php:2559
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
 msgstr "要擴展到的最大樹的寬度，此後，樹枝將在頁面上滾動。"
 
@@ -10122,11 +10122,11 @@ msgstr "不使用基於主題的字體控件時，Pangon font-config字體名稱
 msgid "Enter Valid Font Config Value"
 msgstr "輸入有效字體配置值"
 
-#: include/global_settings.php:1030 include/global_settings.php:2566
+#: include/global_settings.php:1030 include/global_settings.php:2575
 msgid "Title Font Size"
 msgstr "標題字體大小"
 
-#: include/global_settings.php:1031 include/global_settings.php:2567
+#: include/global_settings.php:1031 include/global_settings.php:2576
 msgid "The size of the font used for Graph Titles"
 msgstr "Graph Titles使用的字體大小"
 
@@ -10138,11 +10138,11 @@ msgstr "標題字體設置"
 msgid "The font to use for Graph Titles.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "用於圖表標題的字體。輸入有效的True Type字體文件或有效的Pango font-config值。"
 
-#: include/global_settings.php:1045 include/global_settings.php:2579
+#: include/global_settings.php:1045 include/global_settings.php:2588
 msgid "Legend Font Size"
 msgstr "圖例字體大小"
 
-#: include/global_settings.php:1046 include/global_settings.php:2580
+#: include/global_settings.php:1046 include/global_settings.php:2589
 msgid "The size of the font used for Graph Legend items"
 msgstr "Graph Legend項目使用的字體大小"
 
@@ -10154,11 +10154,11 @@ msgstr "圖例字體設置"
 msgid "The font to use for Graph Legends.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "Graph Legends使用的字體。輸入有效的True Type字體文件或有效的Pango font-config值。"
 
-#: include/global_settings.php:1060 include/global_settings.php:2592
+#: include/global_settings.php:1060 include/global_settings.php:2601
 msgid "Axis Font Size"
 msgstr "軸字體大小"
 
-#: include/global_settings.php:1061 include/global_settings.php:2593
+#: include/global_settings.php:1061 include/global_settings.php:2602
 msgid "The size of the font used for Graph Axis"
 msgstr "用於Graph Axis的字體大小"
 
@@ -10170,11 +10170,11 @@ msgstr "軸字體設置"
 msgid "The font to use for Graph Axis items.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "用於Graph Axis項目的字體。輸入有效的True Type字體文件或有效的Pango font-config值。"
 
-#: include/global_settings.php:1075 include/global_settings.php:2605
+#: include/global_settings.php:1075 include/global_settings.php:2614
 msgid "Unit Font Size"
 msgstr "單位字體大小"
 
-#: include/global_settings.php:1076 include/global_settings.php:2606
+#: include/global_settings.php:1076 include/global_settings.php:2615
 msgid "The size of the font used for Graph Units"
 msgstr "圖形單位使用的字體大小"
 
@@ -10590,7 +10590,7 @@ msgstr "自動解鎖"
 msgid "An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Max of 1440 minutes (1 Day)"
 msgstr "在這麼多分鐘後，帳戶將自動解鎖。即使輸入了正確的密碼，在達到此時間限制之前，帳戶也不會解鎖。最多1440分鐘（1天）"
 
-#: include/global_settings.php:1524 include/global_settings.php:2654
+#: include/global_settings.php:1524 include/global_settings.php:2663
 msgid "1 Day"
 msgstr "1天"
 
@@ -10651,916 +10651,924 @@ msgstr "已逾時"
 msgid "The Bind Timeout in seconds."
 msgstr "請輸入SMTP超時（以秒為單位）。"
 
-#: include/global_settings.php:1577 user_domains.php:401
+#: include/global_settings.php:1577
+msgid "LDAP Debug Mode"
+msgstr ""
+
+#: include/global_settings.php:1578
+msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
+msgstr ""
+
+#: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
 msgstr "加密"
 
-#: include/global_settings.php:1578
+#: include/global_settings.php:1584
 msgid "Encryption that the server supports. NOTE: When using LDAP + TLS you must use version 3."
 msgstr "服務器支持的加密。 TLS僅受協議版本3支持。"
 
-#: include/global_settings.php:1584
+#: include/global_settings.php:1590
 #, fuzzy
 msgid "TLS Certificate Requirements"
 msgstr "TLS 證書要求"
 
-#: include/global_settings.php:1585
+#: include/global_settings.php:1591
 #, fuzzy
 msgid "Should LDAP verify TLS Certificates when received by the Client."
 msgstr "客戶端收到 LDAP 時是否應驗證 TLS 證書。"
 
-#: include/global_settings.php:1591 user_domains.php:408
+#: include/global_settings.php:1597 user_domains.php:408
 msgid "Referrals"
 msgstr "推廣引薦"
 
-#: include/global_settings.php:1592 user_domains.php:409
+#: include/global_settings.php:1598 user_domains.php:409
 msgid "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches."
 msgstr "啟用或禁用LDAP引用。如果禁用，則可能會提高搜索速度。"
 
-#: include/global_settings.php:1601 user_domains.php:415
+#: include/global_settings.php:1607 user_domains.php:415
 msgid "Mode"
 msgstr "模式"
 
-#: include/global_settings.php:1602
+#: include/global_settings.php:1608
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgstr "cacti將嘗試針對LDAP服務器進行身份驗證的模式。 <blockquote> <i>沒有搜索</i> - 沒有可分辨名稱（DN）搜索，只是嘗試使用提供的專有名稱（DN）格式進行綁定。 <br><br> <i>匿名搜索</i> - 嘗試通過匿名綁定搜索LDAP目錄的用戶名，以找到用戶的專有名稱（DN）。 <br><br> <i>特定搜索</i> - 嘗試通過特定可分辨名稱（DN）和特定密碼搜索LDAP目錄，以進行綁定以找到用戶的可分辨名稱（DN）。"
 
-#: include/global_settings.php:1608 user_domains.php:422
+#: include/global_settings.php:1614 user_domains.php:422
 msgid "Distinguished Name (DN)"
 msgstr "專有名稱（DN）"
 
-#: include/global_settings.php:1609 user_domains.php:423
+#: include/global_settings.php:1615 user_domains.php:423
 msgid "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt.  This is only used when in \"No Searching\" mode."
 msgstr "專有名稱語法，例如對於windows： <i>“&lt;username&gt; @ win2kdomain.local”</i>或對於OpenLDAP： <i>“uid = &lt;username&gt;，ou = people，dc = domain，dc = local”</i> 。 “&lt;username&gt;”將替換為登錄提示符下提供的用戶名。僅在“無搜索”模式下使用。"
 
-#: include/global_settings.php:1614 user_domains.php:429
+#: include/global_settings.php:1621 user_domains.php:429
 msgid "Require Group Membership"
 msgstr "需要組成員資格"
 
-#: include/global_settings.php:1615 user_domains.php:430
+#: include/global_settings.php:1622 user_domains.php:430
 msgid "Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure."
 msgstr "要求用戶成為組的成員進行身份驗證。必須設置組設置才能使其正常工作，如果沒有正確的組設置啟用將導致身份驗證失敗。"
 
-#: include/global_settings.php:1620 user_domains.php:435
+#: include/global_settings.php:1627 user_domains.php:435
 msgid "LDAP Group Settings"
 msgstr "LDAP組設置"
 
-#: include/global_settings.php:1624 user_domains.php:439
+#: include/global_settings.php:1631 user_domains.php:439
 msgid "Group Distinguished Name (DN)"
 msgstr "集團專有名稱（DN）"
 
-#: include/global_settings.php:1625 user_domains.php:440
+#: include/global_settings.php:1632 user_domains.php:440
 msgid "Distinguished Name of the group that user must have membership."
 msgstr "用戶必須具有成員資格的組的專有名稱。"
 
-#: include/global_settings.php:1630 user_domains.php:446
+#: include/global_settings.php:1638 user_domains.php:446
 msgid "Group Member Attribute"
 msgstr "組成員屬性"
 
-#: include/global_settings.php:1631 user_domains.php:447
+#: include/global_settings.php:1639 user_domains.php:447
 msgid "Name of the attribute that contains the usernames of the members."
 msgstr "包含成員用戶名的屬性的名稱。"
 
-#: include/global_settings.php:1636 user_domains.php:453
+#: include/global_settings.php:1645 user_domains.php:453
 msgid "Group Member Type"
 msgstr "集團成員類型"
 
-#: include/global_settings.php:1637 user_domains.php:454
+#: include/global_settings.php:1646 user_domains.php:454
 msgid "Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute."
 msgstr "定義用戶是否在定義的組成員屬性中使用完整的專有名稱或僅使用用戶名。"
 
-#: include/global_settings.php:1641
+#: include/global_settings.php:1650
 msgid "Distinguished Name"
 msgstr "專有名稱"
 
-#: include/global_settings.php:1646 user_domains.php:460
+#: include/global_settings.php:1655 user_domains.php:460
 msgid "LDAP Specific Search Settings"
 msgstr "LDAP特定搜索設置"
 
-#: include/global_settings.php:1650 user_domains.php:464
+#: include/global_settings.php:1659 user_domains.php:464
 msgid "Search Base"
 msgstr "搜尋基本點"
 
-#: include/global_settings.php:1651
+#: include/global_settings.php:1660
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
 msgstr "用於搜索LDAP目錄的搜索庫，例如<i>“dc = win2kdomain，dc = local”</i>或<i>“ou = people，dc = domain，dc = local”</i> 。"
 
-#: include/global_settings.php:1656 user_domains.php:471
+#: include/global_settings.php:1665 user_domains.php:471
 msgid "Search Filter"
 msgstr "搜索過濾器"
 
-#: include/global_settings.php:1657
+#: include/global_settings.php:1666
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
 msgstr "搜索過濾器用於在LDAP目錄中定位用戶，例如對於windows： <i>&#39;（＆（objectclass = user）（objectcategory = user）（userPrincipalName = &lt;username&gt; *））&#39;</i>或OpenLDAP： <i>&#39;（＆（objectClass） = account）（uid = &lt;username&gt;））&#39;</i> 。 &#39;&lt;username&gt;&#39;將替換為登錄提示符下提供的用戶名。"
 
-#: include/global_settings.php:1662 user_domains.php:478
+#: include/global_settings.php:1671 user_domains.php:478
 msgid "Search Distinguished Name (DN)"
 msgstr "搜索專有名稱（DN）"
 
-#: include/global_settings.php:1663 user_domains.php:479
+#: include/global_settings.php:1672 user_domains.php:479
 msgid "Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr "特定搜索綁定到LDAP目錄的專有名稱。"
 
-#: include/global_settings.php:1668 user_domains.php:485
+#: include/global_settings.php:1677 user_domains.php:485
 msgid "Search Password"
 msgstr "搜索密碼"
 
-#: include/global_settings.php:1669 user_domains.php:486
+#: include/global_settings.php:1678 user_domains.php:486
 msgid "Password for Specific Searching binding to the LDAP directory."
 msgstr "特定搜索綁定到LDAP目錄的密碼。"
 
-#: include/global_settings.php:1674 user_domains.php:492
+#: include/global_settings.php:1683 user_domains.php:492
 msgid "LDAP CN Settings"
 msgstr "LDAP CN設置"
 
-#: include/global_settings.php:1679 user_domains.php:497
+#: include/global_settings.php:1688 user_domains.php:497
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr "從LDAP獲取的創建新用戶時將替換全名的字段。 （在windows上：displayname）"
 
-#: include/global_settings.php:1684
+#: include/global_settings.php:1693
 msgid "Email"
 msgstr "電子郵件"
 
-#: include/global_settings.php:1685
+#: include/global_settings.php:1694
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
 msgstr "將替換從LDAP獲取的電子郵件的字段。 （在Windows上：郵件）"
 
-#: include/global_settings.php:1692
+#: include/global_settings.php:1701
 msgid "URL Linking"
 msgstr "URL鏈接"
 
-#: include/global_settings.php:1697
+#: include/global_settings.php:1706
 msgid "Server Base URL"
 msgstr "服務器基本URL"
 
-#: include/global_settings.php:1698
+#: include/global_settings.php:1707
 msgid "This is a the server location that will be used for links to the Cacti site. This should include the subdirectory if Cacti does not run from root folder."
 msgstr "這是將用於指向Cacti站點的鏈接的服務器位置。"
 
-#: include/global_settings.php:1705
+#: include/global_settings.php:1714
 msgid "Emailing Options"
 msgstr "電子郵件選項"
 
-#: include/global_settings.php:1709
+#: include/global_settings.php:1718
 msgid "Notify Primary Admin of Issues"
 msgstr "通知主要管理員問題"
 
-#: include/global_settings.php:1710
+#: include/global_settings.php:1719
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
 msgstr "如果Cacti服務器遇到問題，是否應通過電子郵件通知主管理員？主管理員的Cacti用戶帳戶在Cacti設置頁面的Authentication選項卡下指定。它默認為“admin”帳戶。"
 
-#: include/global_settings.php:1715
+#: include/global_settings.php:1724
 msgid "Test Email"
 msgstr "測試電子郵件"
 
-#: include/global_settings.php:1716
+#: include/global_settings.php:1725
 msgid "This is a Email account used for sending a test message to ensure everything is working properly."
 msgstr "這是一個電子郵件帳戶，用於發送測試郵件以確保一切正常。"
 
-#: include/global_settings.php:1721
+#: include/global_settings.php:1730
 msgid "Mail Services"
 msgstr "郵件服務"
 
-#: include/global_settings.php:1722
+#: include/global_settings.php:1731
 msgid "Which mail service to use in order to send mail"
 msgstr "使用哪種郵件服務才能發送郵件"
 
-#: include/global_settings.php:1728
+#: include/global_settings.php:1737
 msgid "Ping Mail Server"
 msgstr "Ping郵件服務器"
 
-#: include/global_settings.php:1729
+#: include/global_settings.php:1738
 msgid "Ping the Mail Server before sending test Email?"
 msgstr "在發送測試電子郵件之前ping郵件服務器？"
 
-#: include/global_settings.php:1738 lib/html_reports.php:185
+#: include/global_settings.php:1747 lib/html_reports.php:185
 msgid "From Email Address"
 msgstr "寄件者電子郵件"
 
-#: include/global_settings.php:1739
+#: include/global_settings.php:1748
 msgid "This is the Email address that the Email will appear from."
 msgstr "這是電子郵件將顯示的電子郵件地址。"
 
-#: include/global_settings.php:1744 lib/html_reports.php:177
+#: include/global_settings.php:1753 lib/html_reports.php:177
 msgid "From Name"
 msgstr "寄件者名稱"
 
-#: include/global_settings.php:1745
+#: include/global_settings.php:1754
 msgid "This is the actual name that the Email will appear from."
 msgstr "這是電子郵件將顯示的實際名稱。"
 
-#: include/global_settings.php:1750
+#: include/global_settings.php:1759
 msgid "Word Wrap"
 msgstr "自動換行"
 
-#: include/global_settings.php:1751
+#: include/global_settings.php:1760
 msgid "This is how many characters will be allowed before a line in the Email is automatically word wrapped. (0 = Disabled)"
 msgstr "這是在電子郵件中的一行自動換行之前允許的字符數。 （0 =已禁用）"
 
-#: include/global_settings.php:1758
+#: include/global_settings.php:1767
 msgid "Sendmail Options"
 msgstr "Sendmail選項"
 
-#: include/global_settings.php:1763 lib/functions.php:4878
+#: include/global_settings.php:1772 lib/functions.php:4879
 msgid "Sendmail Path"
 msgstr "Sendmail路徑"
 
-#: include/global_settings.php:1764
+#: include/global_settings.php:1773
 msgid "This is the path to sendmail on your server. (Only used if Sendmail is selected as the Mail Service)"
 msgstr "這是您服務器上sendmail的路徑。 （僅在選擇Sendmail作為郵件服務時使用）"
 
-#: include/global_settings.php:1772
+#: include/global_settings.php:1781
 msgid "SMTP Options"
 msgstr "SMTP 設定"
 
-#: include/global_settings.php:1777
+#: include/global_settings.php:1786
 msgid "SMTP Hostname"
 msgstr "SMTP主機名"
 
-#: include/global_settings.php:1778
+#: include/global_settings.php:1787
 msgid "This is the hostname/IP of the SMTP Server you will send the Email to. For failover, separate your hosts using a semi-colon."
 msgstr "這是您將向其發送電子郵件的SMTP服務器的主機名/ IP。對於故障轉移，請使用分號分隔主機。"
 
-#: include/global_settings.php:1784
+#: include/global_settings.php:1793
 msgid "SMTP Port"
 msgstr "SMTP 通訊埠"
 
-#: include/global_settings.php:1785
+#: include/global_settings.php:1794
 msgid "The port on the SMTP Server to use."
 msgstr "要使用的SMTP服務器上的端口。"
 
-#: include/global_settings.php:1792
+#: include/global_settings.php:1801
 msgid "SMTP Username"
 msgstr "SMTP 使用者名稱"
 
-#: include/global_settings.php:1793
+#: include/global_settings.php:1802
 msgid "The username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "通過SMTP發送時要進行身份驗證的用戶名。 （如果不需要身份驗證，請留空。）"
 
-#: include/global_settings.php:1798
+#: include/global_settings.php:1807
 msgid "SMTP Password"
 msgstr "SMTP 密碼"
 
-#: include/global_settings.php:1799
+#: include/global_settings.php:1808
 msgid "The password to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "通過SMTP發送時進行身份驗證的密碼。 （如果不需要身份驗證，請留空。）"
 
-#: include/global_settings.php:1804
+#: include/global_settings.php:1813
 msgid "SMTP Security"
 msgstr "SMTP 安全性"
 
-#: include/global_settings.php:1805
+#: include/global_settings.php:1814
 msgid "The encryption method to use for the Email."
 msgstr "用於電子郵件的加密方法。"
 
-#: include/global_settings.php:1809
+#: include/global_settings.php:1818
 msgid "SSL"
 msgstr "SSL"
 
-#: include/global_settings.php:1810
+#: include/global_settings.php:1819
 msgid "TLS"
 msgstr "TLS"
 
-#: include/global_settings.php:1815
+#: include/global_settings.php:1824
 msgid "SMTP Timeout"
 msgstr "SMTP超時"
 
-#: include/global_settings.php:1816
+#: include/global_settings.php:1825
 msgid "Please enter the SMTP timeout in seconds."
 msgstr "請輸入SMTP超時（以秒為單位）。"
 
-#: include/global_settings.php:1823
+#: include/global_settings.php:1832
 msgid "Reporting Presets"
 msgstr "報告預設"
 
-#: include/global_settings.php:1828
+#: include/global_settings.php:1837
 msgid "Default Graph Image Format"
 msgstr "默認圖形圖像格式"
 
-#: include/global_settings.php:1829
+#: include/global_settings.php:1838
 msgid "When creating a new report, what image type should be used for the inline graphs."
 msgstr "創建新報表時，應使用內嵌圖形的圖像類型。"
 
-#: include/global_settings.php:1835
+#: include/global_settings.php:1844
 msgid "Maximum E-Mail Size"
 msgstr "最大電子郵件大小"
 
-#: include/global_settings.php:1836
+#: include/global_settings.php:1845
 msgid "The maximum size of the E-Mail message including all attachements."
 msgstr "電子郵件消息的最大大小，包括所有附件。"
 
-#: include/global_settings.php:1842
+#: include/global_settings.php:1851
 msgid "Poller Logging Level for Cacti Reporting"
 msgstr "仙人掌報告的輪詢記錄水平"
 
-#: include/global_settings.php:1843
+#: include/global_settings.php:1852
 msgid "What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr "您希望將哪些詳細信息發送到日誌文件。警告：處於NONE或LOW以外的任何其他狀態可能會迅速耗盡磁盤空間。"
 
-#: include/global_settings.php:1849
+#: include/global_settings.php:1858
 msgid "Enable Lotus Notes (R) tweak"
 msgstr "啟用Lotus Notes（R）調整"
 
-#: include/global_settings.php:1850
+#: include/global_settings.php:1859
 msgid "Enable code tweak for specific handling of Lotus Notes Mail Clients."
 msgstr "為特定處理Lotus Notes郵件客戶端啟用代碼調整。"
 
-#: include/global_settings.php:1855
+#: include/global_settings.php:1864
 msgid "DNS Options"
 msgstr "DNS選項"
 
-#: include/global_settings.php:1860
+#: include/global_settings.php:1869
 msgid "Primary DNS IP Address"
 msgstr "主DNS IP地址"
 
-#: include/global_settings.php:1861
+#: include/global_settings.php:1870
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
 msgstr "輸入主DNS IP地址以用於反向查找。"
 
-#: include/global_settings.php:1867
+#: include/global_settings.php:1876
 msgid "Secondary DNS IP Address"
 msgstr "輔助DNS IP地址"
 
-#: include/global_settings.php:1868
+#: include/global_settings.php:1877
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
 msgstr "輸入用於反向查找的輔助DNS IP地址。"
 
-#: include/global_settings.php:1874
+#: include/global_settings.php:1883
 msgid "DNS Timeout"
 msgstr "DNS超時"
 
-#: include/global_settings.php:1875
+#: include/global_settings.php:1884
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
 msgstr "請輸入DNS超時（以毫秒為單位）。 Cacti使用基於PHP的DNS解析器。"
 
-#: include/global_settings.php:1884
+#: include/global_settings.php:1893
 msgid "On-demand RRD Update Settings"
 msgstr "按需RRD更新設置"
 
-#: include/global_settings.php:1889
+#: include/global_settings.php:1898
 msgid "Enable On-demand RRD Updating"
 msgstr "啟用按需RRD更新"
 
-#: include/global_settings.php:1890
+#: include/global_settings.php:1899
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
 msgstr "是否應該在Cacti中按需啟用RRD更新？如果禁用，則此更改將在下一個輪詢週期之後生效。如果您有遠程數據收集器，則需要啟用此設置。"
 
-#: include/global_settings.php:1895
+#: include/global_settings.php:1904
 msgid "System Level RRD Updater"
 msgstr "系統級RRD更新程序"
 
-#: include/global_settings.php:1896
+#: include/global_settings.php:1905
 msgid "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
 msgstr "在RRD按需更新可以清除之前，必須始終通過輪詢器運行"
 
-#: include/global_settings.php:1901
+#: include/global_settings.php:1910
 msgid "How Often Should Boost Update All RRDs"
 msgstr "應該多久促進更新所有RRD"
 
-#: include/global_settings.php:1902
+#: include/global_settings.php:1911
 msgid "When you enable boost, your RRD files are only updated when they are requested by a user, or when this time period elapses."
 msgstr "啟用boost時，RRD文件僅在用戶請求時或此時間段過後才會更新。"
 
-#: include/global_settings.php:1908
+#: include/global_settings.php:1917
 msgid "Number of Boost Processes"
 msgstr "Boost進程數"
 
-#: include/global_settings.php:1909
+#: include/global_settings.php:1918
 msgid "The number of concurrent boost processes to use to use to process all of the RRDs in the boost table."
 msgstr "用於處理boost表中所有RRD的並發boost進程數。"
 
-#: include/global_settings.php:1913 include/global_settings.php:2023
+#: include/global_settings.php:1922 include/global_settings.php:2032
 msgid "1 Process"
 msgstr "1流程"
 
-#: include/global_settings.php:1914 include/global_settings.php:1915
-#: include/global_settings.php:1916 include/global_settings.php:1917
-#: include/global_settings.php:1918 include/global_settings.php:1919
-#: include/global_settings.php:1920 include/global_settings.php:1921
-#: include/global_settings.php:1922 include/global_settings.php:1923
-#: include/global_settings.php:1924 include/global_settings.php:1925
-#: include/global_settings.php:1926 include/global_settings.php:1927
-#: include/global_settings.php:1928 include/global_settings.php:1929
-#: include/global_settings.php:1930 include/global_settings.php:1931
-#: include/global_settings.php:1932 include/global_settings.php:2024
-#: include/global_settings.php:2025 include/global_settings.php:2026
-#: include/global_settings.php:2027 include/global_settings.php:2028
-#: include/global_settings.php:2029 include/global_settings.php:2030
-#: include/global_settings.php:2031 include/global_settings.php:2032
-#: include/global_settings.php:2033 include/global_settings.php:2034
-#: include/global_settings.php:2035 include/global_settings.php:2036
-#: include/global_settings.php:2037 include/global_settings.php:2038
-#: include/global_settings.php:2039 include/global_settings.php:2040
-#: include/global_settings.php:2041 include/global_settings.php:2042
+#: include/global_settings.php:1923 include/global_settings.php:1924
+#: include/global_settings.php:1925 include/global_settings.php:1926
+#: include/global_settings.php:1927 include/global_settings.php:1928
+#: include/global_settings.php:1929 include/global_settings.php:1930
+#: include/global_settings.php:1931 include/global_settings.php:1932
+#: include/global_settings.php:1933 include/global_settings.php:1934
+#: include/global_settings.php:1935 include/global_settings.php:1936
+#: include/global_settings.php:1937 include/global_settings.php:1938
+#: include/global_settings.php:1939 include/global_settings.php:1940
+#: include/global_settings.php:1941 include/global_settings.php:2033
+#: include/global_settings.php:2034 include/global_settings.php:2035
+#: include/global_settings.php:2036 include/global_settings.php:2037
+#: include/global_settings.php:2038 include/global_settings.php:2039
+#: include/global_settings.php:2040 include/global_settings.php:2041
+#: include/global_settings.php:2042 include/global_settings.php:2043
+#: include/global_settings.php:2044 include/global_settings.php:2045
+#: include/global_settings.php:2046 include/global_settings.php:2047
+#: include/global_settings.php:2048 include/global_settings.php:2049
+#: include/global_settings.php:2050 include/global_settings.php:2051
 #, php-format
 msgid "%d Processes"
 msgstr "％d進程"
 
-#: include/global_settings.php:1936
+#: include/global_settings.php:1945
 msgid "Maximum Records"
 msgstr "最大記錄"
 
-#: include/global_settings.php:1937
+#: include/global_settings.php:1946
 msgid "If the boost output table exceeds this size, in records, an update will take place."
 msgstr "如果boost輸出表超過此大小，則在記錄中將進行更新。"
 
-#: include/global_settings.php:1944
+#: include/global_settings.php:1953
 msgid "Maximum Data Source Items Per Pass"
 msgstr "每次傳遞的最大數據源項目"
 
-#: include/global_settings.php:1945
+#: include/global_settings.php:1954
 msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
 msgstr "為了優化性能，boost RRD更新程序需要知道應該在一次傳遞中檢索多少數據源項。請注意不要設置太高，因為主要更新期間的圖形性能可能會受到影響。如果在更新期間遇到圖形或輪詢緩慢，請降低此數字。默認值為50000。"
 
-#: include/global_settings.php:1951
+#: include/global_settings.php:1960
 msgid "Maximum Argument Length"
 msgstr "最大參數長度"
 
-#: include/global_settings.php:1952
+#: include/global_settings.php:1961
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
 msgstr "當boost向RRDtool發送更新命令時，它不得超過操作系統Maximum Argument Length。這取決於操作系統和內核級別。例如：Windows 2000 &lt;= 2048，FreeBSD &lt;= 65535，Linux 2.6.22-- &lt;= 131072，Linux 2.6.23 ++無限制"
 
-#: include/global_settings.php:1959
+#: include/global_settings.php:1968
 msgid "Memory Limit for Boost and Poller"
 msgstr "Boost和Poller的內存限制"
 
-#: include/global_settings.php:1960
+#: include/global_settings.php:1969
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
 msgstr "Cacti Poller和Boosts Poller的最大內存量"
 
-#: include/global_settings.php:1966
+#: include/global_settings.php:1975
 msgid "Maximum RRD Update Script Run Time"
 msgstr "最大RRD更新腳本運行時間"
 
-#: include/global_settings.php:1967
+#: include/global_settings.php:1976
 msgid "If the boost poller excceds this runtime, a warning will be placed in the cacti log,"
 msgstr "如果boost poller刪除了此運行時，則會在cacti日誌中發出警告，"
 
-#: include/global_settings.php:1973
+#: include/global_settings.php:1982
 msgid "Enable direct population of poller_output_boost table"
 msgstr "啟用poller_output_boost表的直接填充"
 
-#: include/global_settings.php:1974
+#: include/global_settings.php:1983
 msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
 msgstr "允許將記錄直接插入到輪詢器輸出增強中，結果是每個輪詢週期減少25％的時間。"
 
-#: include/global_settings.php:1979
+#: include/global_settings.php:1988
 msgid "Boost Debug Log"
 msgstr "提升調試日誌"
 
-#: include/global_settings.php:1980
+#: include/global_settings.php:1989
 msgid "If this field is non-blank, Boost will log RRDupdate output from the boost\tpoller process."
 msgstr "如果此字段為非空白，則Boost將記錄來自boost poller進程的RRDupdate輸出。"
 
-#: include/global_settings.php:1987 utilities.php:2489
+#: include/global_settings.php:1996 utilities.php:2489
 msgid "Image Caching"
 msgstr "圖像緩存"
 
-#: include/global_settings.php:1992
+#: include/global_settings.php:2001
 msgid "Enable Image Caching"
 msgstr "啟用圖像緩存"
 
-#: include/global_settings.php:1993
+#: include/global_settings.php:2002
 msgid "Should image caching be enabled?"
 msgstr "應該啟用圖像緩存嗎？"
 
-#: include/global_settings.php:1998
+#: include/global_settings.php:2007
 msgid "Location for Image Files"
 msgstr "圖像文件的位置"
 
-#: include/global_settings.php:1999
+#: include/global_settings.php:2008
 msgid "Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire."
 msgstr "指定Boost放置圖像文件的位置。輪詢器到期時，這些文件將被輪詢器自動清除。"
 
-#: include/global_settings.php:2007
+#: include/global_settings.php:2016
 msgid "Data Sources Statistics"
 msgstr "數據來源統計"
 
-#: include/global_settings.php:2012
+#: include/global_settings.php:2021
 msgid "Enable Data Source Statistics Collection"
 msgstr "啟用數據源統計信息收集"
 
-#: include/global_settings.php:2013
+#: include/global_settings.php:2022
 msgid "Should Data Source Statistics be collected for this Cacti system?"
 msgstr "是否應該為此Cacti系統收集數據源統計信息？"
 
-#: include/global_settings.php:2018
+#: include/global_settings.php:2027
 #, fuzzy
 msgid "Number of DSStats Processes"
 msgstr "Boost進程數"
 
-#: include/global_settings.php:2019
+#: include/global_settings.php:2028
 #, fuzzy
 msgid "The number of concurrent DSStats processes to use to use to process all of the Data Sources."
 msgstr "用於處理boost表中所有RRD的並發boost進程數。"
 
-#: include/global_settings.php:2046
+#: include/global_settings.php:2055
 msgid "Daily Update Frequency"
 msgstr "每日更新頻率"
 
-#: include/global_settings.php:2047
+#: include/global_settings.php:2056
 msgid "How frequent should Daily Stats be updated?"
 msgstr "Daily Stats應該多久更新一次？"
 
-#: include/global_settings.php:2053
+#: include/global_settings.php:2062
 msgid "Hourly Average Window"
 msgstr "每小時平均窗口"
 
-#: include/global_settings.php:2054
+#: include/global_settings.php:2063
 msgid "The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables"
 msgstr "表示每小時平均值的連續小時數。請記住，設置太高會導致內存表非常大"
 
-#: include/global_settings.php:2060
+#: include/global_settings.php:2069
 msgid "Maintenance Time"
 msgstr "維護時間"
 
-#: include/global_settings.php:2061
+#: include/global_settings.php:2070
 msgid "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]"
 msgstr "什麼時候應該更新每週，每月和每年的數據？格式為HH：MM [am / pm]"
 
-#: include/global_settings.php:2068
+#: include/global_settings.php:2077
 msgid "Memory Limit for Data Source Statistics Data Collector"
 msgstr "數據源統計數據收集器的內存限制"
 
-#: include/global_settings.php:2069
+#: include/global_settings.php:2078
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr "Cacti Poller和數據源統計輪詢器的最大內存量"
 
-#: include/global_settings.php:2075
+#: include/global_settings.php:2084
 msgid "Data Storage Settings"
 msgstr "數據存儲設置"
 
-#: include/global_settings.php:2081
+#: include/global_settings.php:2090
 msgid "Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server."
 msgstr "選擇RRD是存儲在本地還是由外部RRDtool代理服務器處理。"
 
-#: include/global_settings.php:2086 include/global_settings.php:2095
+#: include/global_settings.php:2095 include/global_settings.php:2104
 msgid "RRDtool Proxy Server"
 msgstr "RRDtool代理服務器"
 
-#: include/global_settings.php:2090
+#: include/global_settings.php:2099
 msgid "Structured RRD Paths"
 msgstr "結構化RRD路徑"
 
-#: include/global_settings.php:2091
+#: include/global_settings.php:2100
 msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
 msgstr "為每個主機RRD文件使用單獨的子文件夾。 RRDfiles的命名將是&lt;path_cacti&gt; /rra/host_id/local_data_id.rrd。"
 
-#: include/global_settings.php:2100 include/global_settings.php:2132
+#: include/global_settings.php:2109 include/global_settings.php:2141
 msgid "Proxy Server"
 msgstr "代理服務器"
 
-#: include/global_settings.php:2101
+#: include/global_settings.php:2110
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
 msgstr "RRDtool代理服務器的DNS主機名或IP地址。"
 
-#: include/global_settings.php:2106 include/global_settings.php:2138
+#: include/global_settings.php:2115 include/global_settings.php:2147
 msgid "Proxy Port Number"
 msgstr "代理端口號"
 
-#: include/global_settings.php:2107
+#: include/global_settings.php:2116
 msgid "TCP port for encrypted communication."
 msgstr "用於加密通信的TCP端口。"
 
-#: include/global_settings.php:2114 include/global_settings.php:2146
+#: include/global_settings.php:2123 include/global_settings.php:2155
 #: utilities.php:282
 msgid "RSA Fingerprint"
 msgstr "RSA指紋"
 
-#: include/global_settings.php:2115
+#: include/global_settings.php:2124
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
 msgstr "代理正在使用的當前公共RSA密鑰的指紋。這是建立可信連接所必需的。"
 
-#: include/global_settings.php:2122
+#: include/global_settings.php:2131
 msgid "RRDtool Proxy Server - Backup"
 msgstr "RRDtool代理服務器 - 備份"
 
-#: include/global_settings.php:2127
+#: include/global_settings.php:2136
 msgid "Load Balancing"
 msgstr "負載均衡"
 
-#: include/global_settings.php:2128
+#: include/global_settings.php:2137
 msgid "If both main and backup proxy are receivable this option allows to spread all requests against RRDtool."
 msgstr "如果主代理和備份代理都是可接收的，則此選項允許將所有請求分散到RRDtool。"
 
-#: include/global_settings.php:2133
+#: include/global_settings.php:2142
 msgid "The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode."
 msgstr "如果代理在MSR模式下運行，則RRDtool備份代理服務器的DNS主機名或IP地址。"
 
-#: include/global_settings.php:2139
+#: include/global_settings.php:2148
 msgid "TCP port for encrypted communication with the backup proxy."
 msgstr "用於與備份代理進行加密通信的TCP端口。"
 
-#: include/global_settings.php:2147
+#: include/global_settings.php:2156
 msgid "The fingerprint of the current public RSA key the backup proxy is using. This required to establish a trusted connection."
 msgstr "備份代理正在使用的當前公共RSA密鑰的指紋。這需要建立可信連接。"
 
-#: include/global_settings.php:2156
+#: include/global_settings.php:2165
 msgid "Spike Kill Settings"
 msgstr "秒殺設置"
 
-#: include/global_settings.php:2161
+#: include/global_settings.php:2170
 msgid "Removal Method"
 msgstr "去除方法"
 
-#: include/global_settings.php:2162
+#: include/global_settings.php:2171
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
 msgstr "有兩種刪除方法。第一個標準偏差將從樣本的平均值中移除任何X個標準偏差的樣本。第二種方法Variance將刪除比方差平均值高X％的任何樣本。方差方法考慮了一定數量的“異常值”。這些是需要從方差平均值計算中排除的特殊樣本，如尖峰。"
 
-#: include/global_settings.php:2166
+#: include/global_settings.php:2175
 msgid "Standard Deviation"
 msgstr "標準偏差"
 
-#: include/global_settings.php:2167
+#: include/global_settings.php:2176
 msgid "Variance Based w/Outliers Removed"
 msgstr "基於方差的w /異常值被刪除"
 
-#: include/global_settings.php:2171 lib/html.php:2199
+#: include/global_settings.php:2180 lib/html.php:2199
 msgid "Replacement Method"
 msgstr "更換方法"
 
-#: include/global_settings.php:2172
+#: include/global_settings.php:2181
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "有三種替代方法。第一種方法用所討論的數據源的平均值替換峰值。第二種方法用&#39;NaN&#39;替換尖峰。最後一個用最後已知的良好值替換尖峰。"
 
-#: include/global_settings.php:2176 lib/html.php:2195
+#: include/global_settings.php:2185 lib/html.php:2195
 msgid "Average"
 msgstr "平均"
 
-#: include/global_settings.php:2177 lib/html.php:2196
+#: include/global_settings.php:2186 lib/html.php:2196
 msgid "NaN's"
 msgstr "NaN的"
 
-#: include/global_settings.php:2178 lib/html.php:2197
+#: include/global_settings.php:2187 lib/html.php:2197
 msgid "Last Known Good"
 msgstr "最後知道的好"
 
-#: include/global_settings.php:2182
+#: include/global_settings.php:2191
 msgid "Number of Standard Deviations"
 msgstr "標準偏差數"
 
-#: include/global_settings.php:2183
+#: include/global_settings.php:2192
 msgid "Any value that is this many standard deviations above the average will be excluded.  A good number will be dependent on the type of data to be operated on.  We recommend a number no lower than 5 Standard Deviations."
 msgstr "任何高於平均值的標準差都將被排除在外。一個好的數字將取決於要操作的數據類型。我們建議使用不低於5個標準偏差的數字。"
 
-#: include/global_settings.php:2187 include/global_settings.php:2188
-#: include/global_settings.php:2189 include/global_settings.php:2190
-#: include/global_settings.php:2191 include/global_settings.php:2192
-#: include/global_settings.php:2193 include/global_settings.php:2194
-#: include/global_settings.php:2195 include/global_settings.php:2196
-#: include/global_settings.php:2197 include/global_settings.php:2198
-#: include/global_settings.php:2199
+#: include/global_settings.php:2196 include/global_settings.php:2197
+#: include/global_settings.php:2198 include/global_settings.php:2199
+#: include/global_settings.php:2200 include/global_settings.php:2201
+#: include/global_settings.php:2202 include/global_settings.php:2203
+#: include/global_settings.php:2204 include/global_settings.php:2205
+#: include/global_settings.php:2206 include/global_settings.php:2207
+#: include/global_settings.php:2208
 #, php-format
 msgid "%d Standard Deviations"
 msgstr "％d標準偏差"
 
-#: include/global_settings.php:2203 lib/html.php:2211
+#: include/global_settings.php:2212 lib/html.php:2211
 msgid "Variance Percentage"
 msgstr "差異百分比"
 
-#: include/global_settings.php:2204
+#: include/global_settings.php:2213
 #, php-format
 msgid "This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph."
 msgstr "該值表示從樣本中移除異常值後高於調整後樣本平均值的百分比。例如，調整後的平均值為50的100 %%的方差百分比將從圖表中刪除高於100的任何樣本。"
 
-#: include/global_settings.php:2227
+#: include/global_settings.php:2236
 msgid "Variance Number of Outliers"
 msgstr "異常值的方差數"
 
-#: include/global_settings.php:2228
+#: include/global_settings.php:2237
 msgid "This value represents the number of high and low average samples will be removed from the sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top and bottom 5 averages are removed."
 msgstr "該值表示在計算方差平均值之前將從樣本集中移除的高和低平均樣本的數量。如果選擇異常值為5，則會刪除最高和最低5個平均值。"
 
-#: include/global_settings.php:2232 include/global_settings.php:2233
-#: include/global_settings.php:2234 include/global_settings.php:2235
-#: include/global_settings.php:2236 include/global_settings.php:2237
-#: include/global_settings.php:2238 include/global_settings.php:2239
-#: include/global_settings.php:2240 include/global_settings.php:2241
-#: include/global_settings.php:2242 include/global_settings.php:2243
-#: include/global_settings.php:2244
+#: include/global_settings.php:2241 include/global_settings.php:2242
+#: include/global_settings.php:2243 include/global_settings.php:2244
+#: include/global_settings.php:2245 include/global_settings.php:2246
+#: include/global_settings.php:2247 include/global_settings.php:2248
+#: include/global_settings.php:2249 include/global_settings.php:2250
+#: include/global_settings.php:2251 include/global_settings.php:2252
+#: include/global_settings.php:2253
 #, php-format
 msgid "%d High/Low Samples"
 msgstr "％d高/低樣品"
 
-#: include/global_settings.php:2248
+#: include/global_settings.php:2257
 msgid "Max Kills Per RRA"
 msgstr "最大殺死每RRA"
 
-#: include/global_settings.php:2249
+#: include/global_settings.php:2258
 msgid "This value represents the maximum number of spikes to remove from a Graph RRA."
 msgstr "此值表示要從圖形RRA中刪除的最大尖峰數。"
 
-#: include/global_settings.php:2253 include/global_settings.php:2254
-#: include/global_settings.php:2255 include/global_settings.php:2256
-#: include/global_settings.php:2257 include/global_settings.php:2258
-#: include/global_settings.php:2259 include/global_settings.php:2260
-#: include/global_settings.php:2261 include/global_settings.php:2262
-#: include/global_settings.php:2263 include/global_settings.php:2264
+#: include/global_settings.php:2262 include/global_settings.php:2263
+#: include/global_settings.php:2264 include/global_settings.php:2265
+#: include/global_settings.php:2266 include/global_settings.php:2267
+#: include/global_settings.php:2268 include/global_settings.php:2269
+#: include/global_settings.php:2270 include/global_settings.php:2271
+#: include/global_settings.php:2272 include/global_settings.php:2273
 #, php-format
 msgid "%d Spikes"
 msgstr "％d尖峰"
 
-#: include/global_settings.php:2268
+#: include/global_settings.php:2277
 msgid "RRDfile Backup Directory"
 msgstr "RRDfile備份目錄"
 
-#: include/global_settings.php:2269
+#: include/global_settings.php:2278
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
 msgstr "如果此目錄不為空，則原始RRDfiles將備份到此位置。"
 
-#: include/global_settings.php:2276
+#: include/global_settings.php:2285
 msgid "Batch Spike Kill Settings"
 msgstr "Batch Spike Kill設置"
 
-#: include/global_settings.php:2281
+#: include/global_settings.php:2290
 msgid "Removal Schedule"
 msgstr "搬遷時間表"
 
-#: include/global_settings.php:2282
+#: include/global_settings.php:2291
 msgid "Do you wish to periodically remove spikes from your graphs?  If so, select the frequency below."
 msgstr "您是否希望定期從圖表中刪除尖峰？如果是，請選擇以下頻率。"
 
-#: include/global_settings.php:2289
+#: include/global_settings.php:2298
 msgid "Once a Day"
 msgstr "一天一次"
 
-#: include/global_settings.php:2290
+#: include/global_settings.php:2299
 msgid "Every Other Day"
 msgstr "每個另一天"
 
-#: include/global_settings.php:2294
+#: include/global_settings.php:2303
 msgid "Base Time"
 msgstr "基準時間"
 
-#: include/global_settings.php:2295
+#: include/global_settings.php:2304
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
 msgstr "發生尖峰移除的基準時間。例如，如果您使用&#39;12：00am&#39;並且您每天選擇一次，則批量刪除將在每天大約午夜開始。"
 
-#: include/global_settings.php:2302
+#: include/global_settings.php:2311
 msgid "Graph Templates to Spike Kill"
 msgstr "秒殺的圖表模板"
 
-#: include/global_settings.php:2304
+#: include/global_settings.php:2313
 msgid "When performing batch spike removal, only the templates selected below will be acted on."
 msgstr "執行批量峰值刪除時，只會執行下面選擇的模板。"
 
-#: include/global_settings.php:2308
+#: include/global_settings.php:2317
 msgid "Backup Retention"
 msgstr "數據保留"
 
-#: include/global_settings.php:2309
+#: include/global_settings.php:2318
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
 msgstr "當SpikeKill消除圖形中的峰值時，它將備份RRDfile。這些備份文件應保留多長時間？"
 
-#: include/global_settings.php:2328
+#: include/global_settings.php:2337
 msgid "Default View Mode"
 msgstr "默認查看模式"
 
-#: include/global_settings.php:2329
+#: include/global_settings.php:2338
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
 msgstr "首次訪問“圖形”頁面時，默認情況下要顯示哪種圖形模式？"
 
-#: include/global_settings.php:2335
+#: include/global_settings.php:2344
 msgid "User Language"
 msgstr "用戶語言"
 
-#: include/global_settings.php:2336
+#: include/global_settings.php:2345
 msgid "Defines the preferred GUI language."
 msgstr "定義首選的GUI語言。"
 
-#: include/global_settings.php:2342
+#: include/global_settings.php:2351
 msgid "Show Graph Title"
 msgstr "顯示圖表標題"
 
-#: include/global_settings.php:2343
+#: include/global_settings.php:2352
 msgid "Display the graph title on the page so that it may be searched using the browser."
 msgstr "在頁面上顯示圖表標題，以便可以使用瀏覽器進行搜索。"
 
-#: include/global_settings.php:2348
+#: include/global_settings.php:2357
 msgid "Hide Disabled"
 msgstr "隱藏已禁用"
 
-#: include/global_settings.php:2349
+#: include/global_settings.php:2358
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
 msgstr "在“控制台”選項卡外查看時隱藏已禁用的設備和圖表。"
 
-#: include/global_settings.php:2354
+#: include/global_settings.php:2363
 msgid "Show Device Aggregates"
 msgstr "骨料"
 
-#: include/global_settings.php:2355
+#: include/global_settings.php:2364
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
 msgstr "如果設備數據源包含在聚合圖中，請將該圖與其他設備圖一起顯示"
 
-#: include/global_settings.php:2360
+#: include/global_settings.php:2369
 msgid "Enable Horizontal Scrolling"
 msgstr "啟用水平滾動"
 
-#: include/global_settings.php:2361
+#: include/global_settings.php:2370
 msgid "Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibility."
 msgstr "啟用表的水平滾動，禁用響應列的可見性。"
 
-#: include/global_settings.php:2367
+#: include/global_settings.php:2376
 msgid "The date format to use in Cacti."
 msgstr "在Cacti中使用的日期格式。"
 
-#: include/global_settings.php:2374
+#: include/global_settings.php:2383
 msgid "The date separator to be used in Cacti."
 msgstr "在Cacti中使用的日期分隔符。"
 
-#: include/global_settings.php:2380
+#: include/global_settings.php:2389
 msgid "Page Refresh"
 msgstr "頁面刷新"
 
-#: include/global_settings.php:2381
+#: include/global_settings.php:2390
 msgid "The number of seconds between automatic page refreshes."
 msgstr "自動頁面刷新之間的秒數。"
 
-#: include/global_settings.php:2393
+#: include/global_settings.php:2402
 msgid "Preview Graphs Per Page"
 msgstr "每頁預覽圖表"
 
-#: include/global_settings.php:2394 include/global_settings.php:2523
+#: include/global_settings.php:2403 include/global_settings.php:2532
 msgid "The number of graphs to display on one page in preview mode."
 msgstr "預覽模式下在一個頁面上顯示的圖形數量。"
 
-#: include/global_settings.php:2402
+#: include/global_settings.php:2411
 msgid "Default Time Range"
 msgstr "默認時間範圍"
 
-#: include/global_settings.php:2403
+#: include/global_settings.php:2412
 msgid "The default RRA to use in rare occasions."
 msgstr "在極少數情況下使用的默認RRA。"
 
-#: include/global_settings.php:2410
+#: include/global_settings.php:2419
 msgid "The default Timespan displayed when viewing Graphs and other time specific data."
 msgstr "查看圖表和其他特定時間數據時顯示的默認Timespan。"
 
-#: include/global_settings.php:2416
+#: include/global_settings.php:2425
 msgid "Default Timeshift"
 msgstr "默認時間轉換"
 
-#: include/global_settings.php:2417
+#: include/global_settings.php:2426
 msgid "The default Timeshift displayed when viewing Graphs and other time specific data."
 msgstr "查看圖表和其他特定時間數據時顯示的默認Timeshift。"
 
-#: include/global_settings.php:2423
+#: include/global_settings.php:2432
 msgid "Allow Graph to extend to Future"
 msgstr "允許圖表擴展到Future"
 
-#: include/global_settings.php:2424
+#: include/global_settings.php:2433
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
 msgstr "顯示圖表時，允許圖表日期延伸到“未來”"
 
-#: include/global_settings.php:2429
+#: include/global_settings.php:2438
 msgid "First Day of the Week"
 msgstr "本週的第一天"
 
-#: include/global_settings.php:2430
+#: include/global_settings.php:2439
 msgid "The first Day of the Week for weekly Graph Displays"
 msgstr "每週圖表顯示的第一天"
 
-#: include/global_settings.php:2436
+#: include/global_settings.php:2445
 msgid "Start of Daily Shift"
 msgstr "每日班次開始"
 
-#: include/global_settings.php:2437
+#: include/global_settings.php:2446
 msgid "Start Time of the Daily Shift."
 msgstr "每日班次的開始時間。"
 
-#: include/global_settings.php:2444
+#: include/global_settings.php:2453
 msgid "End of Daily Shift"
 msgstr "每日班次結束"
 
-#: include/global_settings.php:2445
+#: include/global_settings.php:2454
 msgid "End Time of the Daily Shift."
 msgstr "每日班次的結束時間。"
 
-#: include/global_settings.php:2454
+#: include/global_settings.php:2463
 msgid "Thumbnail Sections"
 msgstr "縮略圖部分"
 
-#: include/global_settings.php:2455
+#: include/global_settings.php:2464
 msgid "Which portions of Cacti display Thumbnails by default."
 msgstr "Cacti的哪些部分默認顯示縮略圖。"
 
-#: include/global_settings.php:2469
+#: include/global_settings.php:2478
 msgid "Preview Thumbnail Columns"
 msgstr "預覽縮略圖列"
 
-#: include/global_settings.php:2470
+#: include/global_settings.php:2479
 msgid "The number of columns to use when displaying Thumbnail graphs in Preview mode."
 msgstr "在預覽模式下顯示縮略圖時使用的列數。"
 
-#: include/global_settings.php:2474 include/global_settings.php:2488
+#: include/global_settings.php:2483 include/global_settings.php:2497
 msgid "1 Column"
 msgstr "1 欄"
 
-#: include/global_settings.php:2475 include/global_settings.php:2476
-#: include/global_settings.php:2477 include/global_settings.php:2478
-#: include/global_settings.php:2479 include/global_settings.php:2489
-#: include/global_settings.php:2490 include/global_settings.php:2491
-#: include/global_settings.php:2492 include/global_settings.php:2493
+#: include/global_settings.php:2484 include/global_settings.php:2485
+#: include/global_settings.php:2486 include/global_settings.php:2487
+#: include/global_settings.php:2488 include/global_settings.php:2498
+#: include/global_settings.php:2499 include/global_settings.php:2500
+#: include/global_settings.php:2501 include/global_settings.php:2502
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
 #: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1106
 #: lib/html_tree.php:1107 lib/html_tree.php:1108 lib/html_tree.php:1109
@@ -11569,127 +11577,127 @@ msgstr "1 欄"
 msgid "%d Columns"
 msgstr "%d 行"
 
-#: include/global_settings.php:2483
+#: include/global_settings.php:2492
 msgid "Tree View Thumbnail Columns"
 msgstr "樹視圖縮略圖列"
 
-#: include/global_settings.php:2484
+#: include/global_settings.php:2493
 msgid "The number of columns to use when displaying Thumbnail graphs in Tree mode."
 msgstr "在樹模式下顯示縮略圖時使用的列數。"
 
-#: include/global_settings.php:2497
+#: include/global_settings.php:2506
 msgid "Thumbnail Height"
 msgstr "縮圖高度"
 
-#: include/global_settings.php:2498
+#: include/global_settings.php:2507
 msgid "The height of Thumbnail graphs in pixels."
 msgstr "縮略圖的高度（以像素為單位）。"
 
-#: include/global_settings.php:2505
+#: include/global_settings.php:2514
 msgid "Thumbnail Width"
 msgstr "縮圖寬度"
 
-#: include/global_settings.php:2506
+#: include/global_settings.php:2515
 msgid "The width of Thumbnail graphs in pixels."
 msgstr "縮略圖的寬度（以像素為單位）。"
 
-#: include/global_settings.php:2515
+#: include/global_settings.php:2524
 msgid "Default Tree"
 msgstr "默認樹"
 
-#: include/global_settings.php:2516
+#: include/global_settings.php:2525
 msgid "The default graph tree to use when displaying graphs in tree mode."
 msgstr "在樹模式下顯示圖形時使用的默認圖形樹。"
 
-#: include/global_settings.php:2522
+#: include/global_settings.php:2531
 msgid "Graphs Per Page"
 msgstr "每頁圖表"
 
-#: include/global_settings.php:2529
+#: include/global_settings.php:2538
 msgid "Expand Devices"
 msgstr "展開設備"
 
-#: include/global_settings.php:2530
+#: include/global_settings.php:2539
 msgid "Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree."
 msgstr "選擇是否展開樹上設備使用的圖表模板和數據查詢。"
 
-#: include/global_settings.php:2535
+#: include/global_settings.php:2544
 msgid "Tree History"
 msgstr "密碼歷史"
 
-#: include/global_settings.php:2536
+#: include/global_settings.php:2545
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
 msgstr "如果啟用，則仙人掌將記住兩次登錄之間以及返回到“圖形”頁面時的樹歷史記錄。"
 
-#: include/global_settings.php:2559
+#: include/global_settings.php:2568
 msgid "Use Custom Fonts"
 msgstr "使用自定義字體"
 
-#: include/global_settings.php:2560
+#: include/global_settings.php:2569
 msgid "Choose whether to use your own custom fonts and font sizes or utilize the system defaults."
 msgstr "選擇是使用自己的自定義字體和字體大小還是使用系統默認值。"
 
-#: include/global_settings.php:2573
+#: include/global_settings.php:2582
 msgid "Title Font File"
 msgstr "標題字體文件"
 
-#: include/global_settings.php:2574
+#: include/global_settings.php:2583
 msgid "The font file to use for Graph Titles"
 msgstr "用於圖表標題的字體文件"
 
-#: include/global_settings.php:2586
+#: include/global_settings.php:2595
 msgid "Legend Font File"
 msgstr "圖例字體文件"
 
-#: include/global_settings.php:2587
+#: include/global_settings.php:2596
 msgid "The font file to be used for Graph Legend items"
 msgstr "用於圖例圖例項目的字體文件"
 
-#: include/global_settings.php:2599
+#: include/global_settings.php:2608
 msgid "Axis Font File"
 msgstr "軸字體文件"
 
-#: include/global_settings.php:2600
+#: include/global_settings.php:2609
 msgid "The font file to be used for Graph Axis items"
 msgstr "用於Graph Axis項的字體文件"
 
-#: include/global_settings.php:2612
+#: include/global_settings.php:2621
 msgid "Unit Font File"
 msgstr "單位字體文件"
 
-#: include/global_settings.php:2613
+#: include/global_settings.php:2622
 msgid "The font file to be used for Graph Unit items"
 msgstr "用於圖表單元項的字體文件"
 
-#: include/global_settings.php:2627
+#: include/global_settings.php:2636
 msgid "Realtime View Mode"
 msgstr "實時查看模式"
 
-#: include/global_settings.php:2628
+#: include/global_settings.php:2637
 msgid "How do you wish to view Realtime Graphs?"
 msgstr "您如何查看實時圖表？"
 
-#: include/global_settings.php:2631
+#: include/global_settings.php:2640
 msgid "Inline"
 msgstr "內嵌"
 
-#: include/global_settings.php:2632
+#: include/global_settings.php:2641
 msgid "New Window"
 msgstr "新視窗"
 
-#: include/global_settings.php:2647
+#: include/global_settings.php:2656
 msgid "System Setting"
 msgstr "使用者設定"
 
-#: include/global_settings.php:2655
+#: include/global_settings.php:2664
 msgid "1 Week"
 msgstr "1周"
 
-#: include/global_settings.php:2668
+#: include/global_settings.php:2677
 msgid "Auto Log Out Time"
 msgstr "自動註銷"
 
-#: include/global_settings.php:2669
+#: include/global_settings.php:2678
 #, fuzzy
 msgid "For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled."
 msgstr "對於僅具有控制台訪問權限的用戶，此用戶在自動註銷之前可以保持登錄狀態的時間。請注意，如果您已經超過一個小時沒有活動，則可能需要刷新瀏覽器。另請注意，此設置在啟用身份驗證 Cookie 時沒有影響。"
@@ -12026,8 +12034,8 @@ msgstr "地點:"
 msgid "Contact:"
 msgstr "聯繫方式："
 
-#: lib/api_device.php:1196 lib/functions.php:4909 lib/functions.php:4911
-#: lib/functions.php:4915
+#: lib/api_device.php:1196 lib/functions.php:4910 lib/functions.php:4912
+#: lib/functions.php:4916
 msgid "Ping Results"
 msgstr "Ping結果"
 
@@ -12043,38 +12051,38 @@ msgstr "新科"
 msgid "Web Basic"
 msgstr "Web Basic"
 
-#: lib/auth.php:2113 lib/auth.php:2145 lib/reports.php:1267
+#: lib/auth.php:2121 lib/auth.php:2153 lib/reports.php:1267
 msgid "Branch:"
 msgstr "科："
 
-#: lib/auth.php:2122 lib/auth.php:2153 lib/html_tree.php:1014
+#: lib/auth.php:2130 lib/auth.php:2161 lib/html_tree.php:1014
 #: lib/reports.php:1042 lib/reports.php:1272
 msgid "Device:"
 msgstr "裝置："
 
-#: lib/auth.php:2891 lib/auth.php:2899
+#: lib/auth.php:2899 lib/auth.php:2907
 #, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "訪問被拒絕，請與您聯繫Cacti管理員。"
 
-#: lib/auth.php:2920
+#: lib/auth.php:2928
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "您的Cacti管理員已強制使用複雜的密碼登錄，而您當前的Cacti密碼不符合新要求。因此，您必須立即更改密碼。"
 
-#: lib/auth.php:2944
+#: lib/auth.php:2952
 #, php-format
 msgid "Password must be at least %d characters!"
 msgstr "密碼必須至少為％d個字符！"
 
-#: lib/auth.php:2950
+#: lib/auth.php:2958
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "您的密碼必須至少包含1個數字字符！"
 
-#: lib/auth.php:2954
+#: lib/auth.php:2962
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "您的密碼必須包含小寫和大寫字符的混合！"
 
-#: lib/auth.php:2960
+#: lib/auth.php:2968
 msgid "Your password must contain at least 1 special character!"
 msgstr "您的密碼必須包含至少1個特殊字符！"
 
@@ -12682,7 +12690,7 @@ msgid "User Community"
 msgstr "用戶社區"
 
 #: lib/functions.php:3246 lib/functions.php:3264 lib/html.php:2467
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 msgid "Documentation"
 msgstr "文件"
 
@@ -12717,101 +12725,101 @@ msgstr "連結 %s"
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "郵件程序錯誤：沒有<b>TO</b>地址集！ <br>如果使用“ <i>測試郵件”</i>鏈接，請設置“ <b>警報電子郵件”</b>設置。"
 
-#: lib/functions.php:4842
+#: lib/functions.php:4843
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "身份驗證失敗：％s"
 
-#: lib/functions.php:4846
+#: lib/functions.php:4847
 #, php-format
 msgid "HELO failed: %s"
 msgstr "HELO失敗了：％s"
 
-#: lib/functions.php:4849
+#: lib/functions.php:4850
 #, php-format
 msgid "Connect failed: %s"
 msgstr "連接失敗：％s"
 
-#: lib/functions.php:4852
+#: lib/functions.php:4853
 msgid "SMTP error: "
 msgstr "SMTP錯誤："
 
-#: lib/functions.php:4865
+#: lib/functions.php:4866
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "這是Cacti生成的測試消息。發送此消息是為了測試郵件設置的配置。"
 
-#: lib/functions.php:4866
+#: lib/functions.php:4867
 msgid "Your email settings are currently set as follows"
 msgstr "您的電子郵件設置目前設置如下"
 
-#: lib/functions.php:4867
+#: lib/functions.php:4868
 msgid "Method"
 msgstr "方法"
 
-#: lib/functions.php:4869
+#: lib/functions.php:4870
 msgid "Checking Configuration...<br>"
 msgstr "檢查配置...... <br>"
 
-#: lib/functions.php:4876
+#: lib/functions.php:4877
 msgid "PHP's Mailer Class"
 msgstr "PHP的郵件程序類"
 
-#: lib/functions.php:4882
+#: lib/functions.php:4883
 msgid "Method: SMTP"
 msgstr "方法：SMTP"
 
-#: lib/functions.php:4897
+#: lib/functions.php:4898
 msgid "Not Shown for Security Reasons"
 msgstr "未顯示安全原因"
 
-#: lib/functions.php:4898
+#: lib/functions.php:4899
 msgid "Security"
 msgstr "安全性"
 
-#: lib/functions.php:4906
+#: lib/functions.php:4907
 msgid "Ping Results:"
 msgstr "Ping結果"
 
-#: lib/functions.php:4915
+#: lib/functions.php:4916
 msgid "Bypassed"
 msgstr "旁路"
 
-#: lib/functions.php:4923
+#: lib/functions.php:4924
 msgid "Creating Message Text..."
 msgstr "創建消息文本..."
 
-#: lib/functions.php:4926
+#: lib/functions.php:4927
 msgid "Sending Message..."
 msgstr "發送消息......"
 
-#: lib/functions.php:4930
+#: lib/functions.php:4931
 msgid "Cacti Test Message"
 msgstr "仙人掌測試消息"
 
-#: lib/functions.php:4932
+#: lib/functions.php:4933
 msgid "Success!"
 msgstr "成功！"
 
-#: lib/functions.php:4935
+#: lib/functions.php:4936
 msgid "Message Not Sent due to ping failure."
 msgstr "由於ping失敗而未發送消息。"
 
-#: lib/functions.php:5503 lib/functions.php:5566
+#: lib/functions.php:5504 lib/functions.php:5567
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "由於以下錯誤，Cacti禁用了插件％s：％s！有關更多詳細信息，請參閱Cacti日誌文件。"
 
-#: lib/functions.php:5958 lib/functions.php:5960
+#: lib/functions.php:5959 lib/functions.php:5961
 #, php-format
 msgid "- Beta %s"
 msgstr "-  Beta％s"
 
-#: lib/functions.php:5958
+#: lib/functions.php:5959
 #, php-format
 msgid "Version %s %s"
 msgstr "版本％s％s"
 
-#: lib/functions.php:5960
+#: lib/functions.php:5961
 #, php-format
 msgid "%s %s"
 msgstr "%s - %s"
@@ -15515,187 +15523,187 @@ msgstr "圖形創建"
 msgid "NOTE: Graph not added for Data Query "
 msgstr "從數據查詢創建圖表"
 
-#: lib/utility.php:855
+#: lib/utility.php:876
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgstr "MySQL 5.6+和MariaDB 10.0+是很棒的版本，是非常好的版本。確保你運行最新的版本，雖然它解決了一個長期存在的低級別網絡問題，這個問題導致脊柱出現許多可靠性問題。"
 
-#: lib/utility.php:867
+#: lib/utility.php:888
 #, php-format
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "建議您在大於5.1的任何％s版本中啟用InnoDB。"
 
-#: lib/utility.php:880 lib/utility.php:915
+#: lib/utility.php:901 lib/utility.php:936
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
 msgstr "將Cacti與英語以外的語言一起使用時，使用utf8mb4_unicode_ci校對類型非常重要，因為某些字符需要多個字節。"
 
-#: lib/utility.php:886 lib/utility.php:892 lib/utility.php:921
-#: lib/utility.php:927
+#: lib/utility.php:907 lib/utility.php:913 lib/utility.php:942
+#: lib/utility.php:948
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
 msgstr "將Cacti與英語以外的語言一起使用時，使用utf8mb4字符集非常重要，因為某些字符需要多個字節。"
 
-#: lib/utility.php:903
+#: lib/utility.php:924
 #, php-format
 msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "建議您在大於5.1的任何％s版本中啟用InnoDB。"
 
-#: lib/utility.php:936
+#: lib/utility.php:957
 #, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "根據登錄次數和使用脊椎數據收集器，％s將需要許多連接。 spine的計算是：total_connections = total_processes *（total_threads + script_servers + 1），然後您必須為用戶連接留出空間，這將根據並發登錄帳戶的數量而變化。"
 
-#: lib/utility.php:941
+#: lib/utility.php:962
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "使用innodb_file_per_table時，保持表緩存更大意味著更少的文件打開/關閉操作。"
 
-#: lib/utility.php:946
+#: lib/utility.php:967
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "使用遠程輪詢功能，大量數據將從主服務器同步到遠程輪詢器。因此，請將此值保持在16M或以上。"
 
-#: lib/utility.php:952
+#: lib/utility.php:973
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "如果使用Cacti Performance Booster並選擇內存存儲引擎，則必須小心在系統內存表空間耗盡之前刷新Performance Booster緩衝區。這有兩種方法，首先將輸出列的大小減小到恰當的大小。此列位於表poller_output和poller_output_boost中。您可以做的第二件事是為內存表分配更多內存。我們已經任意選擇了10 %%系統內存的推薦值，但如果您使用的是SSD磁盤驅動器，或者係統較小，則可以忽略此建議或選擇其他存儲引擎。您可能會在Console  - &gt; System Utilities  - &gt; View Boost Status下看到Performance Booster表的預期消耗。"
 
-#: lib/utility.php:958
+#: lib/utility.php:979
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "執行子查詢時，臨時表大小較大時，請將這些臨時表保留在內存中。"
 
-#: lib/utility.php:964
+#: lib/utility.php:985
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file."
 msgstr "執行連接時，如果它們低於此大小，它們將保留在內存中，並且永遠不會寫入臨時文件。"
 
-#: lib/utility.php:970
+#: lib/utility.php:991
 #, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "使用InnoDB存儲時，將表空間分開是很重要的。這使得對於％s的長時間用戶來說，管理表更簡單。如果您當前正在運行此服務，則可以通過啟用該功能，然後在所有InnoDB表上運行alter語句來遷移到每個文件存儲。"
 
-#: lib/utility.php:976
+#: lib/utility.php:997
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "使用innodb_file_per_table時，將innodb_file_format設置為Barracuda非常重要。此設置將允許更長的索引對某些Cacti表很重要。"
 
-#: lib/utility.php:982
+#: lib/utility.php:1003
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "如果表的索引很大，則必須使用梭子魚的innodb_file_format和innodb_large_prefix等於1的操作。否則可能導致插件無法正確創建表。"
 
-#: lib/utility.php:988
+#: lib/utility.php:1009
 #, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "InnoDB將盡可能多地保存系統內存中的表和索引。因此，你應該使innodb_buffer_pool足夠大，以便在內存中保存盡可能多的表和索引。檢查/ var / lib / mysql / cacti目錄的大小將有助於確定此值。我們建議您的系統總內存佔25 %%，但您的要求會因係統大小而異。"
 
-#: lib/utility.php:994
+#: lib/utility.php:1015
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "除非您的Cacti實例在ZFS或FusionI / O上運行，並且兩者都具有內部日記功能以適應突然的系統崩潰，否則此設置應保持為ON。但是，如果您的電源非常好，並且系統很少宕機並且有備份，那麼將此設置設置為OFF可以使數據庫性能提高近50％。"
 
-#: lib/utility.php:999
+#: lib/utility.php:1020
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "這是存儲元數據的地方。如果你有很多表，那麼增加它會很有用。"
 
-#: lib/utility.php:1004
+#: lib/utility.php:1025
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "Rogue查詢不應該讓數據庫脫機到其他人。在殺死您的系統之前殺死這些查詢。"
 
-#: lib/utility.php:1009
+#: lib/utility.php:1030
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "使用O_DIRECT方法刷新頁面時，會發生最大I / O性能。"
 
-#: lib/utility.php:1019
+#: lib/utility.php:1040
 #, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "將此值設置為2意味著您將每秒刷新所有事務而不是提交。這允許％s更少地執行寫入。"
 
-#: lib/utility.php:1024
+#: lib/utility.php:1045
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1032 lib/utility.php:1074
+#: lib/utility.php:1053 lib/utility.php:1095
 #, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "從％s％s開始，您可以控制％s將事務刷新到磁盤的頻率。默認值為1秒，但在高I / O系統中設置為大於1的值可以允許磁盤I / O更順序"
 
-#: lib/utility.php:1037
+#: lib/utility.php:1058
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "使用現代SSD類型存儲，具有多個讀取io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1042
+#: lib/utility.php:1063
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "使用現代SSD類型存儲，具有多個寫入io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1048
+#: lib/utility.php:1069
 #, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64."
 msgstr "％s會將innodb_buffer_pool劃分為內存區域以提高性能。最大值為64.當你的innodb_buffer_pool小於1GB時，你應該使用池大小除以128MB。繼續使用此公式，最大值為64。"
 
-#: lib/utility.php:1054 lib/utility.php:1090
+#: lib/utility.php:1075 lib/utility.php:1111
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "如果您有SSD磁盤，請使用此建議。如果您有物理硬盤驅動器，請使用200 *陣列中的活動驅動器數量。如果使用NVMe或PCIe閃存，可以使用高達100000的更大數字。"
 
-#: lib/utility.php:1060 lib/utility.php:1096
+#: lib/utility.php:1081 lib/utility.php:1117
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "如果您有SSD磁盤，請使用此建議。如果您有物理硬盤驅動器，請使用2000 *陣列中的活動驅動器數量。如果使用NVMe或PCIe Flash，則可以使用高達200000的更大數字。"
 
-#: lib/utility.php:1066 lib/utility.php:1102
+#: lib/utility.php:1087 lib/utility.php:1123
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "如果您有SSD磁盤，請使用此建議。否則，請勿設置此設置。"
 
-#: lib/utility.php:1079
+#: lib/utility.php:1100
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個讀取io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1084
+#: lib/utility.php:1105
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個寫入io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1115
+#: lib/utility.php:1136
 #, fuzzy
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
 msgstr "使用 MariaDB 10.2.4 及更高版本時，如果啟用了原子寫入，則應關閉此設置。因此，請啟用原子寫入而不是雙寫入緩衝區，因為它會提高性能。"
 
-#: lib/utility.php:1122
+#: lib/utility.php:1143
 #, fuzzy
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
 msgstr "使用 MariaDB 10.2.4 及更高版本時，您可以在雙寫緩衝區上使用原子寫入來提高性能。"
 
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 #, php-format
 msgid "%s Tuning"
 msgstr "％s調整"
 
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 msgid "Note: Many changes below require a database restart"
 msgstr "注意：以下許多更改都需要重新啟動數據庫"
 
-#: lib/utility.php:1147
+#: lib/utility.php:1168
 msgid "Variable"
 msgstr "变数"
 
-#: lib/utility.php:1148
+#: lib/utility.php:1169
 msgid "Current Value"
 msgstr "當前的數值"
 
-#: lib/utility.php:1150
+#: lib/utility.php:1171
 msgid "Recommended Value"
 msgstr "推薦值"
 
-#: lib/utility.php:1151
+#: lib/utility.php:1172
 msgid "Comments"
 msgstr "評論"
 
-#: lib/utility.php:1561
+#: lib/utility.php:1582
 #, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP％s是最小版本"
 
-#: lib/utility.php:1563
+#: lib/utility.php:1584
 #, php-format
 msgid "A minimum of %s memory limit"
 msgstr "至少％s MB內存限制"
 
-#: lib/utility.php:1565
+#: lib/utility.php:1586
 #, php-format
 msgid "A minimum of %s m execution time"
 msgstr "至少％sm執行時間"
 
-#: lib/utility.php:1567
+#: lib/utility.php:1588
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "與MySQL和系統匹配的有效時區"
 
