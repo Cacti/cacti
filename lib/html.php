@@ -2651,6 +2651,8 @@ function html_help_page($page) {
 		'reports_user.php:items'      => 'Reports-Items.html',
 		'reports_user.php:preview'    => 'Reports-Preview.html',
 		'reports_user.php:events'     => 'Reports-Events.html',
+		'clog.php'                    => 'Cacti-Log.html',
+		'clog_user.php'               => 'Cacti-Log.html',
 	);
 
 	$help = api_plugin_hook_function('help_page', $help);
