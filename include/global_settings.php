@@ -1608,7 +1608,8 @@ $settings = array(
 			'friendly_name' => __('Distinguished Name (DN)'),
 			'description' => __('Distinguished Name syntax, such as for windows: <i>"&lt;username&gt;@win2kdomain.local"</i> or for OpenLDAP: <i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>.   "&lt;username&gt" is replaced with the username that was supplied at the login prompt.  This is only used when in "No Searching" mode.'),
 			'method' => 'textbox',
-			'max_length' => '255'
+			'max_length' => '255',
+			'size' => '100'
 		),
 		'ldap_group_require' => array(
 			'friendly_name' => __('Require Group Membership'),
@@ -1624,13 +1625,15 @@ $settings = array(
 			'friendly_name' => __('Group Distinguished Name (DN)'),
 			'description' => __('Distinguished Name of the group that user must have membership.'),
 			'method' => 'textbox',
-			'max_length' => '255'
+			'max_length' => '255',
+			'size' => '100'
 		),
 		'ldap_group_attrib' => array(
 			'friendly_name' => __('Group Member Attribute'),
 			'description' => __('Name of the attribute that contains the usernames of the members.'),
 			'method' => 'textbox',
-			'max_length' => '255'
+			'max_length' => '255',
+			'size' => '100'
 		),
 		'ldap_group_member_type' => array(
 			'friendly_name' => __('Group Member Type'),
