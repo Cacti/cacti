@@ -1573,6 +1573,12 @@ $settings = array(
 			'default' => '5',
 			'size' => '5'
 		),
+		'ldap_debug' => array(
+			'friendly_name' => __('LDAP Debug Mode'),
+			'description' => __('If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities.'),
+			'default' => '',
+			'method' => 'checkbox'
+		),
 		'ldap_encryption' => array(
 			'friendly_name' => __('Encryption'),
 			'description' => __('Encryption that the server supports. NOTE: When using LDAP + TLS you must use version 3.'),
