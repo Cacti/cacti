@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-02-03 20:27-0500\n"
+"POT-Creation-Date: 2022-02-06 12:08-0500\n"
 "PO-Revision-Date: 2022-02-03 21:03-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -682,7 +682,7 @@ msgstr "Kích thước"
 #: data_sources.php:1702 data_sources.php:1703 data_templates.php:1195
 #: gprint_presets.php:437 graph_templates.php:901 host_templates.php:875
 #: include/global_settings.php:475 include/global_settings.php:834
-#: include/global_settings.php:1734 lib/api_automation.php:1438 links.php:404
+#: include/global_settings.php:1743 lib/api_automation.php:1438 links.php:404
 #: tree.php:2102 tree.php:2103 user_admin.php:2398 user_domains.php:767
 #: user_group_admin.php:1936 vdef.php:905
 msgid "No"
@@ -696,7 +696,7 @@ msgstr "Không"
 #: data_source_profiles.php:1101 data_sources.php:1702 data_sources.php:1703
 #: data_templates.php:1195 gprint_presets.php:437 graph_templates.php:901
 #: host_templates.php:875 include/global_settings.php:476
-#: include/global_settings.php:833 include/global_settings.php:1733
+#: include/global_settings.php:833 include/global_settings.php:1742
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
 #: lib/installer.php:3424 links.php:404 tree.php:2102 tree.php:2103
 #: user_admin.php:2396 user_domains.php:763 user_domains.php:767
@@ -737,8 +737,8 @@ msgstr "Mẫu"
 #: graphs_items.php:354 host.php:1533 host.php:1551 host.php:1568 host.php:1629
 #: lib/api_automation.php:150 lib/api_automation.php:168
 #: lib/api_automation.php:429 lib/api_automation.php:446
-#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2684
-#: lib/auth.php:2713 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
+#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2692
+#: lib/auth.php:2721 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
 #: lib/html_reports.php:877 lib/html_reports.php:881 lib/html_reports.php:992
 #: lib/html_reports.php:1002 lib/html_reports.php:1847 managers.php:482
 #: managers.php:735 user_admin.php:2655 user_admin.php:2848
@@ -766,10 +766,10 @@ msgstr "Bất kỳ"
 #: include/global_form.php:2112 include/global_form.php:2154
 #: include/global_settings.php:572 include/global_settings.php:580
 #: include/global_settings.php:588 include/global_settings.php:1212
-#: include/global_settings.php:1808 lib/api_automation.php:151
+#: include/global_settings.php:1817 lib/api_automation.php:151
 #: lib/api_automation.php:430 lib/api_automation.php:447
-#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2687
-#: lib/auth.php:2716 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
+#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2695
+#: lib/auth.php:2724 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
 #: lib/html.php:2109 lib/html_form.php:331 lib/html_reports.php:888
 #: lib/html_reports.php:892 lib/html_reports.php:922 lib/html_reports.php:992
 #: lib/html_reports.php:998 lib/html_reports.php:1002 lib/html_reports.php:1010
@@ -963,8 +963,8 @@ msgstr "Vui lòng nhập mật khẩu hiện tại của bạn và mới <br> M�
 msgid "Please enter your new Cacti password."
 msgstr "Vui lòng nhập mật khẩu hiện tại của bạn và mới <br> Mật khẩu xương rồng."
 
-#: auth_changepassword.php:342 auth_login.php:831 auth_login.php:834
-#: include/global_settings.php:1642 lib/functions.php:4896
+#: auth_changepassword.php:342 auth_login.php:833 auth_login.php:836
+#: include/global_settings.php:1651 lib/functions.php:4897
 msgid "Username"
 msgstr "Tên đăng nhập"
 
@@ -986,7 +986,7 @@ msgstr "Xác nhận mật khẩu mới"
 msgid "Save"
 msgstr "Lưu"
 
-#: auth_changepassword.php:367 auth_login.php:913
+#: auth_changepassword.php:367 auth_login.php:915
 #, fuzzy, php-format
 msgid "Version %1$s | %2$s"
 msgstr "Phiên bản%1$s | %2$s"
@@ -1026,94 +1026,94 @@ msgstr "%s được xác thực bởi Máy chủ Web, nhưng cả Người dùng
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "Lỗi tìm kiếm LDAP: %s"
 
-#: auth_login.php:192 auth_login.php:667
+#: auth_login.php:194 auth_login.php:669
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "Lỗi LDAP: %s"
 
-#: auth_login.php:318 auth_login.php:658
+#: auth_login.php:320 auth_login.php:660
 #, fuzzy, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "Truy cập bị từ chối, vui lòng liên hệ với bạn Quản trị viên Cacti."
 
-#: auth_login.php:345
+#: auth_login.php:347
 #, fuzzy, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Adminitrator."
 msgstr "Truy cập bị từ chối, vui lòng liên hệ với bạn Quản trị viên Cacti."
 
-#: auth_login.php:375
+#: auth_login.php:377
 #, fuzzy
 msgid "Access Denied!  User account disabled."
 msgstr "Truy cập bị từ chối, tài khoản người dùng bị vô hiệu hóa."
 
-#: auth_login.php:386
+#: auth_login.php:388
 #, fuzzy
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
 msgstr "Nếu bạn cảm thấy rằng đây là một lỗi. Vui lòng liên hệ với Quản trị viên Cacti của bạn."
 
-#: auth_login.php:433
+#: auth_login.php:435
 #, fuzzy
 msgid "Access Denied!  No guest account Defined.  Please contact your Administrator."
 msgstr "Truy cập bị từ chối, vui lòng liên hệ với bạn Quản trị viên Cacti."
 
-#: auth_login.php:536
+#: auth_login.php:538
 #, fuzzy
 msgid "Cacti Login Failure"
 msgstr "Nhật ký xương rồng đã bị xóa"
 
-#: auth_login.php:543 include/auth.php:287 include/auth.php:289
+#: auth_login.php:545 include/auth.php:287 include/auth.php:289
 #: permission_denied.php:30 permission_denied.php:32
 #, fuzzy
 msgid "Login Again"
 msgstr "Đăng nhập lại"
 
-#: auth_login.php:560
+#: auth_login.php:562
 #, fuzzy, php-format
 msgid "LDAP Search Error: %s"
 msgstr "Lỗi tìm kiếm LDAP: %s"
 
-#: auth_login.php:804 lib/html_tree.php:218
+#: auth_login.php:806 lib/html_tree.php:218
 #, fuzzy
 msgid "Login to Cacti"
 msgstr "Đăng nhập vào Cacti"
 
-#: auth_login.php:811
+#: auth_login.php:813
 msgid "User Login"
 msgstr "Đăng nhập"
 
-#: auth_login.php:825
+#: auth_login.php:827
 #, fuzzy
 msgid "Enter your Username and Password below"
 msgstr "Nhập tên người dùng và mật khẩu của bạn dưới đây"
 
-#: auth_login.php:839 include/global_form.php:1526 lib/functions.php:4897
+#: auth_login.php:841 include/global_form.php:1526 lib/functions.php:4898
 msgid "Password"
 msgstr "Mật khẩu"
 
-#: auth_login.php:851 include/global_settings.php:2085 lib/auth.php:462
+#: auth_login.php:853 include/global_settings.php:2094 lib/auth.php:462
 #: lib/auth.php:484 lib/auth.php:495 user_admin.php:2294
 msgid "Local"
 msgstr "Địa phương"
 
-#: auth_login.php:855 include/global_arrays.php:796 lib/auth.php:496
+#: auth_login.php:857 include/global_arrays.php:796 lib/auth.php:496
 msgid "LDAP"
 msgstr "LDAP"
 
-#: auth_login.php:873 user_admin.php:2289 user_admin.php:2378
+#: auth_login.php:875 user_admin.php:2289 user_admin.php:2378
 #: user_group_admin.php:682
 #, fuzzy
 msgid "Realm"
 msgstr "Địa hạt:"
 
-#: auth_login.php:890
+#: auth_login.php:892
 msgid "Keep me signed in"
 msgstr "Lưu đăng nhập"
 
-#: auth_login.php:896
+#: auth_login.php:898
 msgid "Login"
 msgstr "Đăng nhập"
 
-#: auth_login.php:908
+#: auth_login.php:910
 #, fuzzy
 msgid "Invalid User Name/Password Please Retype"
 msgstr "Tên người dùng / mật khẩu không hợp lệ Vui lòng nhập lại"
@@ -1130,7 +1130,7 @@ msgid "User Account Details"
 msgstr "Chi tiết tài khoản người dùng"
 
 #: auth_profile.php:296 include/global_arrays.php:780
-#: include/global_settings.php:2463 lib/html.php:1929 lib/html.php:1951
+#: include/global_settings.php:2472 lib/html.php:1929 lib/html.php:1951
 #: lib/html.php:2451
 msgid "Tree View"
 msgstr "Xem dạng sơ đồ cây"
@@ -1156,7 +1156,7 @@ msgid "The login name for this user."
 msgstr "Tên đăng nhập cho người dùng này."
 
 #: auth_profile.php:325 include/global_form.php:1510
-#: include/global_settings.php:1678 user_admin.php:2376 user_domains.php:496
+#: include/global_settings.php:1687 user_admin.php:2376 user_domains.php:496
 #: user_group_admin.php:682 utilities.php:919
 msgid "Full Name"
 msgstr "Họ và tên"
@@ -1339,7 +1339,7 @@ msgid "SNMP Name"
 msgstr "Tên SNMP"
 
 #: automation_devices.php:280 host.php:1582 include/global_form.php:1201
-#: include/global_settings.php:2080
+#: include/global_settings.php:2089
 msgid "Location"
 msgstr "Vị trí"
 
@@ -1434,7 +1434,7 @@ msgstr "Thiết bị phát hiện"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1809
-#: lib/functions.php:5242 lib/functions.php:5246 lib/html.php:1211
+#: lib/functions.php:5243 lib/functions.php:5247 lib/html.php:1211
 #: lib/html_reports.php:1633 lib/html_reports.php:1659
 #: lib/html_reports.php:1730 lib/html_reports.php:1731
 #: lib/html_reports.php:1732 pollers.php:1050 user_admin.php:2390
@@ -1454,7 +1454,7 @@ msgstr "Bản sao"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1535 include/global_settings.php:1597 links.php:29
+#: include/global_arrays.php:1535 include/global_settings.php:1603 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:412
 #: user_group_admin.php:32
@@ -1599,7 +1599,7 @@ msgstr "Bật"
 #: include/global_settings.php:359 include/global_settings.php:1446
 #: include/global_settings.php:1460 include/global_settings.php:1473
 #: include/global_settings.php:1498 include/global_settings.php:1512
-#: include/global_settings.php:1596 include/global_settings.php:2286
+#: include/global_settings.php:1602 include/global_settings.php:2295
 #: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2527
 #: lib/html_reports.php:1849 lib/html_reports.php:1987 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
@@ -1903,8 +1903,8 @@ msgstr "%d phút"
 #: include/global_arrays.php:1519 include/global_settings.php:1514
 #: include/global_settings.php:1515 include/global_settings.php:1516
 #: include/global_settings.php:1517 include/global_settings.php:1518
-#: include/global_settings.php:2389 include/global_settings.php:2648
-#: include/global_settings.php:2649 include/global_settings.php:2650
+#: include/global_settings.php:2398 include/global_settings.php:2657
+#: include/global_settings.php:2658 include/global_settings.php:2659
 #: pollers.php:912 pollers.php:913
 #, php-format
 msgid "%d Minutes"
@@ -1933,8 +1933,8 @@ msgstr "%d giờ"
 #: include/global_arrays.php:1440 include/global_arrays.php:1441
 #: include/global_arrays.php:1442 include/global_settings.php:1520
 #: include/global_settings.php:1521 include/global_settings.php:1522
-#: include/global_settings.php:1523 include/global_settings.php:2652
-#: include/global_settings.php:2653
+#: include/global_settings.php:1523 include/global_settings.php:2661
+#: include/global_settings.php:2662
 #, fuzzy, php-format
 msgid "%d Hours"
 msgstr "%d giờ"
@@ -2373,7 +2373,7 @@ msgid "Idle"
 msgstr "Rảnh rỗi"
 
 #: automation_networks.php:1152 include/global_arrays.php:814
-#: include/global_arrays.php:1104 include/global_settings.php:2312
+#: include/global_arrays.php:1104 include/global_settings.php:2321
 #: lib/html_reports.php:1982
 msgid "Never"
 msgstr "Không bao giờ"
@@ -2404,8 +2404,8 @@ msgstr "Làm mới"
 #: include/global_arrays.php:1515 include/global_arrays.php:1516
 #: include/global_arrays.php:1517 include/global_settings.php:1162
 #: include/global_settings.php:1163 include/global_settings.php:1164
-#: include/global_settings.php:1165 include/global_settings.php:2385
-#: include/global_settings.php:2386 include/global_settings.php:2387
+#: include/global_settings.php:1165 include/global_settings.php:2394
+#: include/global_settings.php:2395 include/global_settings.php:2396
 #: pollers.php:906 pollers.php:907 pollers.php:908 pollers.php:909
 #: pollers.php:910
 #, fuzzy, php-format
@@ -2529,7 +2529,7 @@ msgstr "Phiên bản"
 msgid "Community"
 msgstr "Cộng đồng"
 
-#: automation_snmp.php:536 lib/functions.php:4892
+#: automation_snmp.php:536 lib/functions.php:4893
 msgid "Port"
 msgstr "Cổng"
 
@@ -2870,7 +2870,7 @@ msgstr "Root"
 msgid "No Tree Rules Found"
 msgstr "Không tìm thấy quy tắc cây"
 
-#: cactid.php:44 lib/functions.php:5503 lib/functions.php:5566 poller.php:353
+#: cactid.php:44 lib/functions.php:5504 lib/functions.php:5567 poller.php:353
 #: poller.php:477 poller.php:525 poller.php:541 poller.php:687 poller.php:785
 #: poller_automation.php:53 poller_boost.php:306
 #, fuzzy
@@ -4300,8 +4300,8 @@ msgstr "% d Tuần"
 
 #: data_source_profiles.php:812 include/global_arrays.php:718
 #: include/global_arrays.php:719 include/global_arrays.php:1356
-#: include/global_settings.php:2656 include/global_settings.php:2657
-#: include/global_settings.php:2658 rrdcleaner.php:519 rrdcleaner.php:520
+#: include/global_settings.php:2665 include/global_settings.php:2666
+#: include/global_settings.php:2667 rrdcleaner.php:519 rrdcleaner.php:520
 #, php-format
 msgid "%d Weeks"
 msgstr "% d Tuần"
@@ -4329,7 +4329,7 @@ msgstr "%d Ngày"
 #: include/global_arrays.php:1416 include/global_arrays.php:1437
 #: include/global_arrays.php:1470 include/global_arrays.php:1479
 #: include/global_arrays.php:1507 include/global_settings.php:1263
-#: include/global_settings.php:1519 include/global_settings.php:2651
+#: include/global_settings.php:1519 include/global_settings.php:2660
 msgid "1 Hour"
 msgstr "1 Giờ"
 
@@ -4593,7 +4593,7 @@ msgstr "Tên được đặt cho mẫu dữ liệu này. Xin lưu ý rằng bạ
 #: data_sources.php:932 graph_view.php:726 graphs.php:1583
 #: include/global_arrays.php:877 include/global_arrays.php:926
 #: include/global_arrays.php:1573 include/global_arrays.php:1742
-#: lib/api_automation.php:425 lib/functions.php:4891 lib/html.php:2043
+#: lib/api_automation.php:425 lib/functions.php:4892 lib/html.php:2043
 #: lib/html.php:2075 lib/html_reports.php:1005 utilities.php:1638
 msgid "Device"
 msgstr "Thiết bị"
@@ -4648,7 +4648,7 @@ msgstr "Bên ngoài"
 #: data_sources.php:1199 include/global_arrays.php:654
 #: include/global_arrays.php:1101 include/global_arrays.php:1464
 #: include/global_arrays.php:1500 include/global_arrays.php:1518
-#: include/global_settings.php:1513 include/global_settings.php:2388
+#: include/global_settings.php:1513 include/global_settings.php:2397
 msgid "1 Minute"
 msgstr "1 Phút"
 
@@ -5403,7 +5403,7 @@ msgid "Select the Report to add the selected Graphs to."
 msgstr "Chọn Báo cáo để thêm Đồ thị đã chọn vào."
 
 #: graph_view.php:902 include/global_arrays.php:1939
-#: include/global_settings.php:2459
+#: include/global_settings.php:2468
 msgid "Preview Mode"
 msgstr "Chế độ xem trước"
 
@@ -6175,7 +6175,7 @@ msgstr "[% d Mục,% d Hàng]"
 msgid "Fail"
 msgstr "Không Đạt"
 
-#: host.php:943 lib/functions.php:4906 lib/functions.php:4911
+#: host.php:943 lib/functions.php:4907 lib/functions.php:4912
 msgid "Success"
 msgstr "Thành công"
 
@@ -6502,32 +6502,32 @@ msgstr "Số lượng thiết bị sử dụng Mẫu thiết bị này."
 msgid "No Device Templates Found"
 msgstr "Không tìm thấy mẫu thiết bị nào"
 
-#: include/auth.php:170
+#: include/auth.php:171
 msgid "Not Logged In"
 msgstr "Chưa đăng nhập"
 
-#: include/auth.php:171
+#: include/auth.php:172
 #, fuzzy
 msgid "You must be logged in to access this area of Cacti."
 msgstr "Bạn phải đăng nhập để truy cập vào khu vực này của Cacti."
 
-#: include/auth.php:175
+#: include/auth.php:176
 #, fuzzy
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "FATAL: Bạn phải đăng nhập để truy cập vào khu vực này của Cacti."
 
-#: include/auth.php:294 lib/functions.php:6475 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:6476 permission_denied.php:45
 #: permission_denied.php:52
 #, fuzzy
 msgid "Permission Denied"
 msgstr "Quyền bị từ chối"
 
-#: include/auth.php:295 lib/functions.php:6476 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Nếu bạn cảm thấy rằng đây là một lỗi. Vui lòng liên hệ với Quản trị viên Cacti của bạn."
 
-#: include/auth.php:295 lib/functions.php:6476 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Bạn không được phép truy cập vào phần này của Cacti."
@@ -7266,8 +7266,8 @@ msgstr "Mỗi tiếng"
 #: include/global_arrays.php:752 include/global_arrays.php:753
 #: include/global_arrays.php:1752 include/global_arrays.php:1753
 #: include/global_arrays.php:1754 include/global_arrays.php:1755
-#: include/global_arrays.php:1756 include/global_settings.php:2287
-#: include/global_settings.php:2288
+#: include/global_arrays.php:1756 include/global_settings.php:2296
+#: include/global_settings.php:2297
 #, fuzzy, php-format
 msgid "Every %d Hours"
 msgstr "Mỗi% d giờ"
@@ -9127,7 +9127,7 @@ msgstr "Số lượng mẫu được yêu cầu trước khi điền vào một 
 msgid "How many generations data is kept in the RRA."
 msgstr "Có bao nhiêu thế hệ dữ liệu được lưu giữ trong RRA."
 
-#: include/global_form.php:307 include/global_settings.php:2409
+#: include/global_form.php:307 include/global_settings.php:2418
 #, fuzzy
 msgid "Default Timespan"
 msgstr "Thời gian mặc định"
@@ -10580,7 +10580,7 @@ msgstr "Dữ liệu"
 msgid "Visual"
 msgstr "Hình ảnh"
 
-#: include/global_settings.php:44 lib/functions.php:4895 lib/functions.php:4900
+#: include/global_settings.php:44 lib/functions.php:4896 lib/functions.php:4901
 msgid "Authentication"
 msgstr "Xác thực"
 
@@ -10623,12 +10623,12 @@ msgstr "Phông chữ đồ thị"
 msgid "PHP Mail() Function"
 msgstr "Hàm PHP Mail ()"
 
-#: include/global_settings.php:84 lib/functions.php:4878
+#: include/global_settings.php:84 lib/functions.php:4879
 #, fuzzy
 msgid "Sendmail"
 msgstr "Gửi thư"
 
-#: include/global_settings.php:85 lib/functions.php:4883
+#: include/global_settings.php:85 lib/functions.php:4884
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10959,7 +10959,7 @@ msgstr "Bộ xử lý ngôn ngữ ưa thích"
 msgid "Cacti includes support for multiple alternate Language Translation Processors.  It will be default use the PHP built in support, but not all Linux variants includes built in Language Support.  If not selected, Cacti will choose the first one found."
 msgstr "Cacti bao gồm hỗ trợ cho nhiều Bộ xử lý dịch ngôn ngữ thay thế. Nó sẽ được mặc định sử dụng hỗ trợ tích hợp sẵn PHP, nhưng không phải tất cả các biến thể Linux đều bao gồm Hỗ trợ ngôn ngữ được tích hợp sẵn. Nếu không được chọn, Cacti sẽ chọn cái đầu tiên được tìm thấy."
 
-#: include/global_settings.php:371 include/global_settings.php:2366
+#: include/global_settings.php:371 include/global_settings.php:2375
 #, fuzzy
 msgid "Date Display Format"
 msgstr "Định dạng hiển thị ngày"
@@ -10969,7 +10969,7 @@ msgstr "Định dạng hiển thị ngày"
 msgid "The System default date format to use in Cacti."
 msgstr "Định dạng ngày mặc định của Hệ thống sẽ sử dụng trong Cacti."
 
-#: include/global_settings.php:378 include/global_settings.php:2373
+#: include/global_settings.php:378 include/global_settings.php:2382
 #, fuzzy
 msgid "Date Separator"
 msgstr "Dấu phân cách ngày"
@@ -11493,11 +11493,11 @@ msgid "Theme Settings"
 msgstr "Cài đặt chủ đề"
 
 #: include/global_settings.php:809 include/global_settings.php:1019
-#: include/global_settings.php:2321
+#: include/global_settings.php:2330
 msgid "Theme"
 msgstr "Chủ đề"
 
-#: include/global_settings.php:810 include/global_settings.php:2322
+#: include/global_settings.php:810 include/global_settings.php:2331
 #, fuzzy
 msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr "Vui lòng chọn một trong các Chủ đề có sẵn để tạo giao diện cho Cacti của bạn."
@@ -11536,22 +11536,22 @@ msgstr "Hàng tự động hoàn thành"
 msgid "The default number of rows to return from an autocomplete based select pattern match."
 msgstr "Số lượng hàng mặc định để trả về từ mẫu khớp tự động hoàn thành dựa trên chọn mẫu."
 
-#: include/global_settings.php:850 include/global_settings.php:2541
+#: include/global_settings.php:850 include/global_settings.php:2550
 #, fuzzy
 msgid "Minimum Tree Width"
 msgstr "Chiều dài Tối thiểu"
 
-#: include/global_settings.php:851 include/global_settings.php:2542
+#: include/global_settings.php:851 include/global_settings.php:2551
 #, fuzzy
 msgid "The Minimum width of the Tree to contract to."
 msgstr "Chiều rộng tối thiểu của Cây để hợp đồng."
 
-#: include/global_settings.php:858 include/global_settings.php:2549
+#: include/global_settings.php:858 include/global_settings.php:2558
 #, fuzzy
 msgid "Maximum Tree Width"
 msgstr "Độ dài tiêu đề tối đa"
 
-#: include/global_settings.php:859 include/global_settings.php:2550
+#: include/global_settings.php:859 include/global_settings.php:2559
 #, fuzzy
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
 msgstr "Chiều rộng tối đa của Cây để mở rộng, sau thời gian đó, các nhánh Cây sẽ cuộn trên trang."
@@ -11773,11 +11773,11 @@ msgstr "Khi không sử dụng điều khiển phông chữ dựa trên Chủ đ
 msgid "Enter Valid Font Config Value"
 msgstr "Nhập giá trị cấu hình phông chữ hợp lệ"
 
-#: include/global_settings.php:1030 include/global_settings.php:2566
+#: include/global_settings.php:1030 include/global_settings.php:2575
 msgid "Title Font Size"
 msgstr "Kích thước phông chữ tiêu đề"
 
-#: include/global_settings.php:1031 include/global_settings.php:2567
+#: include/global_settings.php:1031 include/global_settings.php:2576
 #, fuzzy
 msgid "The size of the font used for Graph Titles"
 msgstr "Kích thước của phông chữ được sử dụng cho Tiêu đề đồ thị"
@@ -11792,12 +11792,12 @@ msgstr "Cài đặt phông chữ"
 msgid "The font to use for Graph Titles.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "Các phông chữ để sử dụng cho tiêu đề đồ thị. Nhập tệp True Type Font hợp lệ hoặc giá trị cấu hình phông chữ Pango hợp lệ."
 
-#: include/global_settings.php:1045 include/global_settings.php:2579
+#: include/global_settings.php:1045 include/global_settings.php:2588
 #, fuzzy
 msgid "Legend Font Size"
 msgstr "Cỡ chữ huyền thoại"
 
-#: include/global_settings.php:1046 include/global_settings.php:2580
+#: include/global_settings.php:1046 include/global_settings.php:2589
 #, fuzzy
 msgid "The size of the font used for Graph Legend items"
 msgstr "Kích thước của phông chữ được sử dụng cho các mục Graph Legend"
@@ -11812,12 +11812,12 @@ msgstr "Cài đặt phông chữ huyền thoại"
 msgid "The font to use for Graph Legends.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "Phông chữ được sử dụng cho Graph Legends. Nhập tệp True Type Font hợp lệ hoặc giá trị cấu hình phông chữ Pango hợp lệ."
 
-#: include/global_settings.php:1060 include/global_settings.php:2592
+#: include/global_settings.php:1060 include/global_settings.php:2601
 #, fuzzy
 msgid "Axis Font Size"
 msgstr "Cỡ chữ"
 
-#: include/global_settings.php:1061 include/global_settings.php:2593
+#: include/global_settings.php:1061 include/global_settings.php:2602
 #, fuzzy
 msgid "The size of the font used for Graph Axis"
 msgstr "Kích thước của phông chữ được sử dụng cho Trục đồ thị"
@@ -11832,12 +11832,12 @@ msgstr "Cài đặt phông chữ trục"
 msgid "The font to use for Graph Axis items.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "Phông chữ để sử dụng cho các mục Biểu đồ trục. Nhập tệp True Type Font hợp lệ hoặc giá trị cấu hình phông chữ Pango hợp lệ."
 
-#: include/global_settings.php:1075 include/global_settings.php:2605
+#: include/global_settings.php:1075 include/global_settings.php:2614
 #, fuzzy
 msgid "Unit Font Size"
 msgstr "Cỡ chữ đơn vị"
 
-#: include/global_settings.php:1076 include/global_settings.php:2606
+#: include/global_settings.php:1076 include/global_settings.php:2615
 #, fuzzy
 msgid "The size of the font used for Graph Units"
 msgstr "Kích thước của phông chữ được sử dụng cho Đơn vị đồ thị"
@@ -12338,7 +12338,7 @@ msgstr "Tự động mở khóa"
 msgid "An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Max of 1440 minutes (1 Day)"
 msgstr "Một tài khoản sẽ tự động được mở khóa sau nhiều phút. Ngay cả khi nhập đúng mật khẩu, tài khoản sẽ không mở khóa cho đến khi đạt được giới hạn thời gian này. Tối đa 1440 phút (1 ngày)"
 
-#: include/global_settings.php:1524 include/global_settings.php:2654
+#: include/global_settings.php:1524 include/global_settings.php:2663
 msgid "1 Day"
 msgstr "1 Ngày"
 
@@ -12407,1100 +12407,1108 @@ msgstr "Hết giờ"
 msgid "The Bind Timeout in seconds."
 msgstr "Vui lòng nhập thời gian chờ SMTP trong vài giây."
 
-#: include/global_settings.php:1577 user_domains.php:401
+#: include/global_settings.php:1577
+msgid "LDAP Debug Mode"
+msgstr ""
+
+#: include/global_settings.php:1578
+msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
+msgstr ""
+
+#: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
 msgstr "Mã hóa"
 
-#: include/global_settings.php:1578
+#: include/global_settings.php:1584
 #, fuzzy
 msgid "Encryption that the server supports. NOTE: When using LDAP + TLS you must use version 3."
 msgstr "Mã hóa mà máy chủ hỗ trợ. TLS chỉ được hỗ trợ bởi Giao thức Phiên bản 3."
 
-#: include/global_settings.php:1584
+#: include/global_settings.php:1590
 #, fuzzy
 msgid "TLS Certificate Requirements"
 msgstr "Yêu cầu chứng chỉ TLS"
 
-#: include/global_settings.php:1585
+#: include/global_settings.php:1591
 #, fuzzy
 msgid "Should LDAP verify TLS Certificates when received by the Client."
 msgstr "LDAP có nên xác minh Chứng chỉ TLS khi Khách hàng nhận được không."
 
-#: include/global_settings.php:1591 user_domains.php:408
+#: include/global_settings.php:1597 user_domains.php:408
 msgid "Referrals"
 msgstr "Giới thiệu"
 
-#: include/global_settings.php:1592 user_domains.php:409
+#: include/global_settings.php:1598 user_domains.php:409
 #, fuzzy
 msgid "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches."
 msgstr "Kích hoạt hoặc vô hiệu hóa các giới thiệu LDAP. Nếu bị tắt, nó có thể tăng tốc độ tìm kiếm."
 
-#: include/global_settings.php:1601 user_domains.php:415
+#: include/global_settings.php:1607 user_domains.php:415
 msgid "Mode"
 msgstr "Chế độ"
 
-#: include/global_settings.php:1602
+#: include/global_settings.php:1608
 #, fuzzy
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgstr "Chế độ mà xương rồng sẽ cố gắng xác thực với máy chủ LDAP. <blockquote> <i>Không tìm kiếm</i> - Không xảy ra tìm kiếm Tên phân biệt (DN), chỉ cần cố gắng liên kết với định dạng Tên phân biệt (DN) được cung cấp. <br><br> <i>Tìm kiếm ẩn danh</i> - Cố gắng tìm kiếm tên người dùng đối với thư mục LDAP thông qua liên kết ẩn danh để xác định tên phân biệt (DN) của người dùng. <br><br> <i>Tìm kiếm cụ thể</i> - Cố gắng tìm kiếm tên người dùng đối với thư mục LDAP thông qua Tên phân biệt cụ thể (DN) và Mật khẩu cụ thể để liên kết để xác định tên phân biệt (DN) của người dùng."
 
-#: include/global_settings.php:1608 user_domains.php:422
+#: include/global_settings.php:1614 user_domains.php:422
 #, fuzzy
 msgid "Distinguished Name (DN)"
 msgstr "Tên phân biệt (DN)"
 
-#: include/global_settings.php:1609 user_domains.php:423
+#: include/global_settings.php:1615 user_domains.php:423
 #, fuzzy
 msgid "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt.  This is only used when in \"No Searching\" mode."
 msgstr "Cú pháp tên phân biệt, chẳng hạn như cho windows: <i>&quot;&lt;username&gt; @ win2kdomain.local&quot;</i> hoặc cho OpenLDAP: <i>&quot;uid = &lt;username&gt;, ou = people, dc = domain, dc = local&quot;</i> . &quot;&lt;tên người dùng&gt;&quot; được thay thế bằng tên người dùng được cung cấp tại dấu nhắc đăng nhập. Điều này chỉ được sử dụng khi ở chế độ &quot;Không tìm kiếm&quot;."
 
-#: include/global_settings.php:1614 user_domains.php:429
+#: include/global_settings.php:1621 user_domains.php:429
 #, fuzzy
 msgid "Require Group Membership"
 msgstr "Yêu cầu thành viên nhóm"
 
-#: include/global_settings.php:1615 user_domains.php:430
+#: include/global_settings.php:1622 user_domains.php:430
 #, fuzzy
 msgid "Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure."
 msgstr "Yêu cầu người dùng là thành viên của nhóm để xác thực. Cài đặt nhóm phải được đặt để hoạt động này, cho phép không có cài đặt nhóm thích hợp sẽ gây ra lỗi xác thực."
 
-#: include/global_settings.php:1620 user_domains.php:435
+#: include/global_settings.php:1627 user_domains.php:435
 #, fuzzy
 msgid "LDAP Group Settings"
 msgstr "Cài đặt nhóm LDAP"
 
-#: include/global_settings.php:1624 user_domains.php:439
+#: include/global_settings.php:1631 user_domains.php:439
 #, fuzzy
 msgid "Group Distinguished Name (DN)"
 msgstr "Tên phân biệt nhóm (DN)"
 
-#: include/global_settings.php:1625 user_domains.php:440
+#: include/global_settings.php:1632 user_domains.php:440
 #, fuzzy
 msgid "Distinguished Name of the group that user must have membership."
 msgstr "Tên phân biệt của nhóm mà người dùng phải có thành viên."
 
-#: include/global_settings.php:1630 user_domains.php:446
+#: include/global_settings.php:1638 user_domains.php:446
 #, fuzzy
 msgid "Group Member Attribute"
 msgstr "Thuộc tính thành viên nhóm"
 
-#: include/global_settings.php:1631 user_domains.php:447
+#: include/global_settings.php:1639 user_domains.php:447
 #, fuzzy
 msgid "Name of the attribute that contains the usernames of the members."
 msgstr "Tên của thuộc tính có chứa tên người dùng của các thành viên."
 
-#: include/global_settings.php:1636 user_domains.php:453
+#: include/global_settings.php:1645 user_domains.php:453
 #, fuzzy
 msgid "Group Member Type"
 msgstr "Loại thành viên nhóm"
 
-#: include/global_settings.php:1637 user_domains.php:454
+#: include/global_settings.php:1646 user_domains.php:454
 #, fuzzy
 msgid "Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute."
 msgstr "Xác định nếu người dùng sử dụng Tên phân biệt đầy đủ hoặc chỉ Tên người dùng trong Thuộc tính thành viên nhóm được xác định."
 
-#: include/global_settings.php:1641
+#: include/global_settings.php:1650
 msgid "Distinguished Name"
 msgstr "Tên phân biệt"
 
-#: include/global_settings.php:1646 user_domains.php:460
+#: include/global_settings.php:1655 user_domains.php:460
 #, fuzzy
 msgid "LDAP Specific Search Settings"
 msgstr "Cài đặt tìm kiếm cụ thể LDAP"
 
-#: include/global_settings.php:1650 user_domains.php:464
+#: include/global_settings.php:1659 user_domains.php:464
 #, fuzzy
 msgid "Search Base"
 msgstr "Cơ sở tìm kiếm"
 
-#: include/global_settings.php:1651
+#: include/global_settings.php:1660
 #, fuzzy
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
 msgstr "Cơ sở tìm kiếm để tìm kiếm thư mục LDAP, chẳng hạn như <i>&#39;dc = win2kdomain, dc = local&#39;</i> hoặc <i>&#39;ou = people, dc = domain, dc = local&#39;</i> ."
 
-#: include/global_settings.php:1656 user_domains.php:471
+#: include/global_settings.php:1665 user_domains.php:471
 msgid "Search Filter"
 msgstr "Tìm kiếm Bộ lọc"
 
-#: include/global_settings.php:1657
+#: include/global_settings.php:1666
 #, fuzzy
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
 msgstr "Bộ lọc tìm kiếm để sử dụng để định vị người dùng trong thư mục LDAP, chẳng hạn như cho windows: <i>&#39;(&amp; (objectgroup = user) (objectcarget = user) (userPrincipalName = &lt;username&gt; *))&#39;</i> hoặc cho OpenLDAP: <i>&#39;(&amp; (objectClass = tài khoản) (uid = &lt;tên người dùng&gt;)) &#39;</i> . &#39;&lt;tên người dùng&gt;&#39; được thay thế bằng tên người dùng được cung cấp tại dấu nhắc đăng nhập."
 
-#: include/global_settings.php:1662 user_domains.php:478
+#: include/global_settings.php:1671 user_domains.php:478
 #, fuzzy
 msgid "Search Distinguished Name (DN)"
 msgstr "Tìm kiếm Tên phân biệt (DN)"
 
-#: include/global_settings.php:1663 user_domains.php:479
+#: include/global_settings.php:1672 user_domains.php:479
 #, fuzzy
 msgid "Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr "Tên phân biệt cho Tìm kiếm cụ thể ràng buộc vào thư mục LDAP."
 
-#: include/global_settings.php:1668 user_domains.php:485
+#: include/global_settings.php:1677 user_domains.php:485
 #, fuzzy
 msgid "Search Password"
 msgstr "Tìm mật khẩu"
 
-#: include/global_settings.php:1669 user_domains.php:486
+#: include/global_settings.php:1678 user_domains.php:486
 #, fuzzy
 msgid "Password for Specific Searching binding to the LDAP directory."
 msgstr "Mật khẩu cho Tìm kiếm cụ thể ràng buộc vào thư mục LDAP."
 
-#: include/global_settings.php:1674 user_domains.php:492
+#: include/global_settings.php:1683 user_domains.php:492
 #, fuzzy
 msgid "LDAP CN Settings"
 msgstr "Cài đặt LDAP CN"
 
-#: include/global_settings.php:1679 user_domains.php:497
+#: include/global_settings.php:1688 user_domains.php:497
 #, fuzzy
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr "Trường sẽ thay thế Tên đầy đủ khi tạo người dùng mới, được lấy từ LDAP. (trên windows: displayname)"
 
-#: include/global_settings.php:1684
+#: include/global_settings.php:1693
 msgid "Email"
 msgstr "Email"
 
-#: include/global_settings.php:1685
+#: include/global_settings.php:1694
 #, fuzzy
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
 msgstr "Trường sẽ thay thế Email được lấy từ LDAP. (trên windows: mail)"
 
-#: include/global_settings.php:1692
+#: include/global_settings.php:1701
 #, fuzzy
 msgid "URL Linking"
 msgstr "Liên kết URL"
 
-#: include/global_settings.php:1697
+#: include/global_settings.php:1706
 #, fuzzy
 msgid "Server Base URL"
 msgstr "URL cơ sở máy chủ"
 
-#: include/global_settings.php:1698
+#: include/global_settings.php:1707
 #, fuzzy
 msgid "This is a the server location that will be used for links to the Cacti site. This should include the subdirectory if Cacti does not run from root folder."
 msgstr "Đây là một vị trí máy chủ sẽ được sử dụng cho các liên kết đến trang web Cacti."
 
-#: include/global_settings.php:1705
+#: include/global_settings.php:1714
 #, fuzzy
 msgid "Emailing Options"
 msgstr "Tùy chọn gửi email"
 
-#: include/global_settings.php:1709
+#: include/global_settings.php:1718
 #, fuzzy
 msgid "Notify Primary Admin of Issues"
 msgstr "Thông báo cho quản trị viên chính các vấn đề"
 
-#: include/global_settings.php:1710
+#: include/global_settings.php:1719
 #, fuzzy
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
 msgstr "Trong trường hợp máy chủ Cacti gặp sự cố, Quản trị viên chính có nên được thông báo qua Email không? Tài khoản người dùng Cacti của Quản trị viên chính được chỉ định trong tab Xác thực trên trang cài đặt của Cacti. Nó mặc định là tài khoản &#39;admin&#39;."
 
-#: include/global_settings.php:1715
+#: include/global_settings.php:1724
 msgid "Test Email"
 msgstr "Email Kiểm tra"
 
-#: include/global_settings.php:1716
+#: include/global_settings.php:1725
 #, fuzzy
 msgid "This is a Email account used for sending a test message to ensure everything is working properly."
 msgstr "Đây là tài khoản Email được sử dụng để gửi tin nhắn kiểm tra để đảm bảo mọi thứ đều hoạt động bình thường."
 
-#: include/global_settings.php:1721
+#: include/global_settings.php:1730
 #, fuzzy
 msgid "Mail Services"
 msgstr "Dịch vụ thư"
 
-#: include/global_settings.php:1722
+#: include/global_settings.php:1731
 #, fuzzy
 msgid "Which mail service to use in order to send mail"
 msgstr "Sử dụng dịch vụ thư nào để gửi thư"
 
-#: include/global_settings.php:1728
+#: include/global_settings.php:1737
 #, fuzzy
 msgid "Ping Mail Server"
 msgstr "Máy chủ thư Ping"
 
-#: include/global_settings.php:1729
+#: include/global_settings.php:1738
 #, fuzzy
 msgid "Ping the Mail Server before sending test Email?"
 msgstr "Ping máy chủ thư trước khi gửi email kiểm tra?"
 
-#: include/global_settings.php:1738 lib/html_reports.php:185
+#: include/global_settings.php:1747 lib/html_reports.php:185
 msgid "From Email Address"
 msgstr "Email người gửi"
 
-#: include/global_settings.php:1739
+#: include/global_settings.php:1748
 #, fuzzy
 msgid "This is the Email address that the Email will appear from."
 msgstr "Đây là địa chỉ Email mà Email sẽ xuất hiện."
 
-#: include/global_settings.php:1744 lib/html_reports.php:177
+#: include/global_settings.php:1753 lib/html_reports.php:177
 msgid "From Name"
 msgstr "Tên người gửi"
 
-#: include/global_settings.php:1745
+#: include/global_settings.php:1754
 #, fuzzy
 msgid "This is the actual name that the Email will appear from."
 msgstr "Đây là tên thực tế mà Email sẽ xuất hiện."
 
-#: include/global_settings.php:1750
+#: include/global_settings.php:1759
 msgid "Word Wrap"
 msgstr "Biá»u thá»©c chÃ­nh quy"
 
-#: include/global_settings.php:1751
+#: include/global_settings.php:1760
 #, fuzzy
 msgid "This is how many characters will be allowed before a line in the Email is automatically word wrapped. (0 = Disabled)"
 msgstr "Đây là số lượng ký tự sẽ được phép trước khi một dòng trong Email được tự động ngắt từ. (0 = Vô hiệu hóa)"
 
-#: include/global_settings.php:1758
+#: include/global_settings.php:1767
 #, fuzzy
 msgid "Sendmail Options"
 msgstr "Tùy chọn gửi thư"
 
-#: include/global_settings.php:1763 lib/functions.php:4878
+#: include/global_settings.php:1772 lib/functions.php:4879
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "Đường dẫn gửi thư"
 
-#: include/global_settings.php:1764
+#: include/global_settings.php:1773
 #, fuzzy
 msgid "This is the path to sendmail on your server. (Only used if Sendmail is selected as the Mail Service)"
 msgstr "Đây là đường dẫn đến sendmail trên máy chủ của bạn. (Chỉ được sử dụng nếu Sendmail được chọn làm Dịch vụ thư)"
 
-#: include/global_settings.php:1772
+#: include/global_settings.php:1781
 #, fuzzy
 msgid "SMTP Options"
 msgstr "Tùy chọn SMTP"
 
-#: include/global_settings.php:1777
+#: include/global_settings.php:1786
 #, fuzzy
 msgid "SMTP Hostname"
 msgstr "Tên máy chủ SMTP"
 
-#: include/global_settings.php:1778
+#: include/global_settings.php:1787
 #, fuzzy
 msgid "This is the hostname/IP of the SMTP Server you will send the Email to. For failover, separate your hosts using a semi-colon."
 msgstr "Đây là tên máy chủ / IP của Máy chủ SMTP bạn sẽ gửi Email đến. Để chuyển đổi dự phòng, hãy tách các máy chủ của bạn bằng cách sử dụng dấu chấm phẩy."
 
-#: include/global_settings.php:1784
+#: include/global_settings.php:1793
 msgid "SMTP Port"
 msgstr "Cổng SMTP"
 
-#: include/global_settings.php:1785
+#: include/global_settings.php:1794
 #, fuzzy
 msgid "The port on the SMTP Server to use."
 msgstr "Cổng trên Máy chủ SMTP để sử dụng."
 
-#: include/global_settings.php:1792
+#: include/global_settings.php:1801
 msgid "SMTP Username"
 msgstr "Tên đăng nhập SMTP"
 
-#: include/global_settings.php:1793
+#: include/global_settings.php:1802
 #, fuzzy
 msgid "The username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "Tên người dùng để xác thực khi gửi qua SMTP. (Để trống nếu bạn không yêu cầu xác thực.)"
 
-#: include/global_settings.php:1798
+#: include/global_settings.php:1807
 msgid "SMTP Password"
 msgstr "Mật khẩu SMTP"
 
-#: include/global_settings.php:1799
+#: include/global_settings.php:1808
 #, fuzzy
 msgid "The password to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "Mật khẩu để xác thực khi gửi qua SMTP. (Để trống nếu bạn không yêu cầu xác thực.)"
 
-#: include/global_settings.php:1804
+#: include/global_settings.php:1813
 msgid "SMTP Security"
 msgstr "SMTP Security"
 
-#: include/global_settings.php:1805
+#: include/global_settings.php:1814
 #, fuzzy
 msgid "The encryption method to use for the Email."
 msgstr "Phương pháp mã hóa để sử dụng cho Email."
 
-#: include/global_settings.php:1809
+#: include/global_settings.php:1818
 msgid "SSL"
 msgstr "SSL"
 
-#: include/global_settings.php:1810
+#: include/global_settings.php:1819
 msgid "TLS"
 msgstr "TLS"
 
-#: include/global_settings.php:1815
+#: include/global_settings.php:1824
 #, fuzzy
 msgid "SMTP Timeout"
 msgstr "Hết thời gian chờ"
 
-#: include/global_settings.php:1816
+#: include/global_settings.php:1825
 #, fuzzy
 msgid "Please enter the SMTP timeout in seconds."
 msgstr "Vui lòng nhập thời gian chờ SMTP trong vài giây."
 
-#: include/global_settings.php:1823
+#: include/global_settings.php:1832
 #, fuzzy
 msgid "Reporting Presets"
 msgstr "Báo cáo cài đặt trước"
 
-#: include/global_settings.php:1828
+#: include/global_settings.php:1837
 #, fuzzy
 msgid "Default Graph Image Format"
 msgstr "Định dạng hình ảnh đồ thị mặc định"
 
-#: include/global_settings.php:1829
+#: include/global_settings.php:1838
 #, fuzzy
 msgid "When creating a new report, what image type should be used for the inline graphs."
 msgstr "Khi tạo một báo cáo mới, loại hình ảnh nào sẽ được sử dụng cho các biểu đồ nội tuyến."
 
-#: include/global_settings.php:1835
+#: include/global_settings.php:1844
 #, fuzzy
 msgid "Maximum E-Mail Size"
 msgstr "Kích thước E-Mail tối đa"
 
-#: include/global_settings.php:1836
+#: include/global_settings.php:1845
 #, fuzzy
 msgid "The maximum size of the E-Mail message including all attachements."
 msgstr "Kích thước tối đa của thư E-Mail bao gồm tất cả các tệp đính kèm."
 
-#: include/global_settings.php:1842
+#: include/global_settings.php:1851
 #, fuzzy
 msgid "Poller Logging Level for Cacti Reporting"
 msgstr "Mức độ đăng nhập của Poller cho báo cáo Cacti"
 
-#: include/global_settings.php:1843
+#: include/global_settings.php:1852
 #, fuzzy
 msgid "What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr "Mức độ chi tiết nào bạn muốn gửi đến tệp nhật ký. CẢNH BÁO: Để ở bất kỳ trạng thái nào khác ngoài KHÔNG hoặc THẤP có thể làm cạn kiệt không gian đĩa của bạn một cách nhanh chóng."
 
-#: include/global_settings.php:1849
+#: include/global_settings.php:1858
 #, fuzzy
 msgid "Enable Lotus Notes (R) tweak"
 msgstr "Kích hoạt tinh chỉnh Lotus Notes (R)"
 
-#: include/global_settings.php:1850
+#: include/global_settings.php:1859
 #, fuzzy
 msgid "Enable code tweak for specific handling of Lotus Notes Mail Clients."
 msgstr "Cho phép chỉnh sửa mã để xử lý cụ thể các Khách hàng của Lotus Notes Mail."
 
-#: include/global_settings.php:1855
+#: include/global_settings.php:1864
 #, fuzzy
 msgid "DNS Options"
 msgstr "Tùy chọn DNS"
 
-#: include/global_settings.php:1860
+#: include/global_settings.php:1869
 #, fuzzy
 msgid "Primary DNS IP Address"
 msgstr "Địa chỉ IP DNS chính"
 
-#: include/global_settings.php:1861
+#: include/global_settings.php:1870
 #, fuzzy
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
 msgstr "Nhập Địa chỉ IP DNS chính để sử dụng cho tra cứu ngược."
 
-#: include/global_settings.php:1867
+#: include/global_settings.php:1876
 #, fuzzy
 msgid "Secondary DNS IP Address"
 msgstr "Địa chỉ IP DNS phụ"
 
-#: include/global_settings.php:1868
+#: include/global_settings.php:1877
 #, fuzzy
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
 msgstr "Nhập Địa chỉ IP DNS thứ cấp để sử dụng cho tra cứu ngược."
 
-#: include/global_settings.php:1874
+#: include/global_settings.php:1883
 #, fuzzy
 msgid "DNS Timeout"
 msgstr "Hết thời gian chờ DNS"
 
-#: include/global_settings.php:1875
+#: include/global_settings.php:1884
 #, fuzzy
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
 msgstr "Vui lòng nhập thời gian chờ DNS tính bằng mili giây. Cacti sử dụng trình phân giải DNS dựa trên PHP."
 
-#: include/global_settings.php:1884
+#: include/global_settings.php:1893
 #, fuzzy
 msgid "On-demand RRD Update Settings"
 msgstr "Cài đặt cập nhật RRD theo yêu cầu"
 
-#: include/global_settings.php:1889
+#: include/global_settings.php:1898
 #, fuzzy
 msgid "Enable On-demand RRD Updating"
 msgstr "Kích hoạt cập nhật RRD theo yêu cầu"
 
-#: include/global_settings.php:1890
+#: include/global_settings.php:1899
 #, fuzzy
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
 msgstr "Boost có nên kích hoạt RRD theo yêu cầu cập nhật trong Cacti không? Nếu bạn tắt, thay đổi này sẽ không có hiệu lực cho đến sau chu kỳ bỏ phiếu tiếp theo. Khi bạn có Bộ thu thập dữ liệu từ xa, cài đặt này được yêu cầu bật."
 
-#: include/global_settings.php:1895
+#: include/global_settings.php:1904
 #, fuzzy
 msgid "System Level RRD Updater"
 msgstr "Trình cập nhật RRD cấp hệ thống"
 
-#: include/global_settings.php:1896
+#: include/global_settings.php:1905
 #, fuzzy
 msgid "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
 msgstr "Trước khi có thể xóa thông tin cập nhật theo yêu cầu RRD, một lần chạy xe đẩy phải luôn vượt qua"
 
-#: include/global_settings.php:1901
+#: include/global_settings.php:1910
 #, fuzzy
 msgid "How Often Should Boost Update All RRDs"
 msgstr "Tần suất nên tăng cập nhật tất cả các RRD"
 
-#: include/global_settings.php:1902
+#: include/global_settings.php:1911
 #, fuzzy
 msgid "When you enable boost, your RRD files are only updated when they are requested by a user, or when this time period elapses."
 msgstr "Khi bạn bật boost, các tệp RRD của bạn chỉ được cập nhật khi người dùng yêu cầu hoặc khi khoảng thời gian này trôi qua."
 
-#: include/global_settings.php:1908
+#: include/global_settings.php:1917
 #, fuzzy
 msgid "Number of Boost Processes"
 msgstr "Số lượng quá trình tăng"
 
-#: include/global_settings.php:1909
+#: include/global_settings.php:1918
 #, fuzzy
 msgid "The number of concurrent boost processes to use to use to process all of the RRDs in the boost table."
 msgstr "Số lượng các quá trình tăng đồng thời được sử dụng để sử dụng để xử lý tất cả các RRD trong bảng tăng."
 
-#: include/global_settings.php:1913 include/global_settings.php:2023
+#: include/global_settings.php:1922 include/global_settings.php:2032
 #, fuzzy
 msgid "1 Process"
 msgstr "1 quá trình"
 
-#: include/global_settings.php:1914 include/global_settings.php:1915
-#: include/global_settings.php:1916 include/global_settings.php:1917
-#: include/global_settings.php:1918 include/global_settings.php:1919
-#: include/global_settings.php:1920 include/global_settings.php:1921
-#: include/global_settings.php:1922 include/global_settings.php:1923
-#: include/global_settings.php:1924 include/global_settings.php:1925
-#: include/global_settings.php:1926 include/global_settings.php:1927
-#: include/global_settings.php:1928 include/global_settings.php:1929
-#: include/global_settings.php:1930 include/global_settings.php:1931
-#: include/global_settings.php:1932 include/global_settings.php:2024
-#: include/global_settings.php:2025 include/global_settings.php:2026
-#: include/global_settings.php:2027 include/global_settings.php:2028
-#: include/global_settings.php:2029 include/global_settings.php:2030
-#: include/global_settings.php:2031 include/global_settings.php:2032
-#: include/global_settings.php:2033 include/global_settings.php:2034
-#: include/global_settings.php:2035 include/global_settings.php:2036
-#: include/global_settings.php:2037 include/global_settings.php:2038
-#: include/global_settings.php:2039 include/global_settings.php:2040
-#: include/global_settings.php:2041 include/global_settings.php:2042
+#: include/global_settings.php:1923 include/global_settings.php:1924
+#: include/global_settings.php:1925 include/global_settings.php:1926
+#: include/global_settings.php:1927 include/global_settings.php:1928
+#: include/global_settings.php:1929 include/global_settings.php:1930
+#: include/global_settings.php:1931 include/global_settings.php:1932
+#: include/global_settings.php:1933 include/global_settings.php:1934
+#: include/global_settings.php:1935 include/global_settings.php:1936
+#: include/global_settings.php:1937 include/global_settings.php:1938
+#: include/global_settings.php:1939 include/global_settings.php:1940
+#: include/global_settings.php:1941 include/global_settings.php:2033
+#: include/global_settings.php:2034 include/global_settings.php:2035
+#: include/global_settings.php:2036 include/global_settings.php:2037
+#: include/global_settings.php:2038 include/global_settings.php:2039
+#: include/global_settings.php:2040 include/global_settings.php:2041
+#: include/global_settings.php:2042 include/global_settings.php:2043
+#: include/global_settings.php:2044 include/global_settings.php:2045
+#: include/global_settings.php:2046 include/global_settings.php:2047
+#: include/global_settings.php:2048 include/global_settings.php:2049
+#: include/global_settings.php:2050 include/global_settings.php:2051
 #, fuzzy, php-format
 msgid "%d Processes"
 msgstr "% d Quá trình"
 
-#: include/global_settings.php:1936
+#: include/global_settings.php:1945
 msgid "Maximum Records"
 msgstr "Bản ghi tối đa"
 
-#: include/global_settings.php:1937
+#: include/global_settings.php:1946
 #, fuzzy
 msgid "If the boost output table exceeds this size, in records, an update will take place."
 msgstr "Nếu bảng đầu ra tăng vượt quá kích thước này, trong các bản ghi, một bản cập nhật sẽ diễn ra."
 
-#: include/global_settings.php:1944
+#: include/global_settings.php:1953
 #, fuzzy
 msgid "Maximum Data Source Items Per Pass"
 msgstr "Mục nguồn dữ liệu tối đa trên mỗi lượt"
 
-#: include/global_settings.php:1945
+#: include/global_settings.php:1954
 #, fuzzy
 msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
 msgstr "Để tối ưu hóa hiệu suất, trình cập nhật RRD tăng cần biết có bao nhiêu Mục nguồn dữ liệu nên được truy xuất trong một lần. Hãy cẩn thận không đặt quá cao vì hiệu suất đồ thị trong các bản cập nhật lớn có thể bị tổn hại. Nếu bạn gặp phải biểu đồ hoặc bỏ phiếu chậm trong quá trình cập nhật, hãy hạ thấp con số này. Giá trị mặc định là 50000."
 
-#: include/global_settings.php:1951
+#: include/global_settings.php:1960
 #, fuzzy
 msgid "Maximum Argument Length"
 msgstr "Độ dài đối số tối đa"
 
-#: include/global_settings.php:1952
+#: include/global_settings.php:1961
 #, fuzzy
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
 msgstr "Khi boost gửi các lệnh cập nhật tới RRDtool, nó không được vượt quá Độ dài đối số tối đa của hệ điều hành. Điều này thay đổi tùy theo hệ điều hành và cấp độ kernel. Ví dụ: Windows 2000 &lt;= 2048, FreeBSD &lt;= 65535, Linux 2.6.22-- &lt;= 131072, Linux 2.6.23 ++ không giới hạn"
 
-#: include/global_settings.php:1959
+#: include/global_settings.php:1968
 #, fuzzy
 msgid "Memory Limit for Boost and Poller"
 msgstr "Giới hạn bộ nhớ cho Boost và Poller"
 
-#: include/global_settings.php:1960
+#: include/global_settings.php:1969
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
 msgstr "Dung lượng bộ nhớ tối đa cho Cacti Poller và Boosts Poller"
 
-#: include/global_settings.php:1966
+#: include/global_settings.php:1975
 #, fuzzy
 msgid "Maximum RRD Update Script Run Time"
 msgstr "Thời gian chạy cập nhật RRD tối đa"
 
-#: include/global_settings.php:1967
+#: include/global_settings.php:1976
 #, fuzzy
 msgid "If the boost poller excceds this runtime, a warning will be placed in the cacti log,"
 msgstr "Nếu trình tăng tốc đẩy ra thời gian chạy này, một cảnh báo sẽ được đặt trong nhật ký xương rồng,"
 
-#: include/global_settings.php:1973
+#: include/global_settings.php:1982
 #, fuzzy
 msgid "Enable direct population of poller_output_boost table"
 msgstr "Cho phép dân số trực tiếp của bảng pollerDefput_boost"
 
-#: include/global_settings.php:1974
+#: include/global_settings.php:1983
 #, fuzzy
 msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
 msgstr "Cho phép chèn trực tiếp các bản ghi vào tăng đầu ra của pug với kết quả giảm 25% thời gian trong mỗi chu kỳ thăm dò ý kiến."
 
-#: include/global_settings.php:1979
+#: include/global_settings.php:1988
 #, fuzzy
 msgid "Boost Debug Log"
 msgstr "Tăng nhật ký gỡ lỗi"
 
-#: include/global_settings.php:1980
+#: include/global_settings.php:1989
 #, fuzzy
 msgid "If this field is non-blank, Boost will log RRDupdate output from the boost\tpoller process."
 msgstr "Nếu trường này không trống, Boost sẽ ghi lại đầu ra RRDupdate từ quá trình pug boost."
 
-#: include/global_settings.php:1987 utilities.php:2489
+#: include/global_settings.php:1996 utilities.php:2489
 #, fuzzy
 msgid "Image Caching"
 msgstr "Bộ nhớ đệm hình ảnh"
 
-#: include/global_settings.php:1992
+#: include/global_settings.php:2001
 #, fuzzy
 msgid "Enable Image Caching"
 msgstr "Kích hoạt bộ nhớ đệm hình ảnh"
 
-#: include/global_settings.php:1993
+#: include/global_settings.php:2002
 #, fuzzy
 msgid "Should image caching be enabled?"
 msgstr "Có nên kích hoạt bộ nhớ đệm hình ảnh?"
 
-#: include/global_settings.php:1998
+#: include/global_settings.php:2007
 #, fuzzy
 msgid "Location for Image Files"
 msgstr "Vị trí cho tập tin hình ảnh"
 
-#: include/global_settings.php:1999
+#: include/global_settings.php:2008
 #, fuzzy
 msgid "Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire."
 msgstr "Chỉ định vị trí nơi Boost sẽ đặt các tệp hình ảnh của bạn. Những tập tin này sẽ được pug tự động thanh trừng khi hết hạn."
 
-#: include/global_settings.php:2007
+#: include/global_settings.php:2016
 #, fuzzy
 msgid "Data Sources Statistics"
 msgstr "Thống kê nguồn dữ liệu"
 
-#: include/global_settings.php:2012
+#: include/global_settings.php:2021
 #, fuzzy
 msgid "Enable Data Source Statistics Collection"
 msgstr "Cho phép thu thập số liệu thống kê nguồn dữ liệu"
 
-#: include/global_settings.php:2013
+#: include/global_settings.php:2022
 #, fuzzy
 msgid "Should Data Source Statistics be collected for this Cacti system?"
 msgstr "Có nên thu thập số liệu thống kê nguồn dữ liệu cho hệ thống Cacti này không?"
 
-#: include/global_settings.php:2018
+#: include/global_settings.php:2027
 #, fuzzy
 msgid "Number of DSStats Processes"
 msgstr "Số lượng quá trình tăng"
 
-#: include/global_settings.php:2019
+#: include/global_settings.php:2028
 #, fuzzy
 msgid "The number of concurrent DSStats processes to use to use to process all of the Data Sources."
 msgstr "Số lượng các quá trình tăng đồng thời được sử dụng để sử dụng để xử lý tất cả các RRD trong bảng tăng."
 
-#: include/global_settings.php:2046
+#: include/global_settings.php:2055
 #, fuzzy
 msgid "Daily Update Frequency"
 msgstr "Tần suất cập nhật hàng ngày"
 
-#: include/global_settings.php:2047
+#: include/global_settings.php:2056
 #, fuzzy
 msgid "How frequent should Daily Stats be updated?"
 msgstr "Số liệu thống kê hàng ngày nên được cập nhật thường xuyên như thế nào?"
 
-#: include/global_settings.php:2053
+#: include/global_settings.php:2062
 #, fuzzy
 msgid "Hourly Average Window"
 msgstr "Cửa sổ trung bình hàng giờ"
 
-#: include/global_settings.php:2054
+#: include/global_settings.php:2063
 #, fuzzy
 msgid "The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables"
 msgstr "Số giờ liên tiếp đại diện cho mức trung bình hàng giờ. Hãy nhớ rằng cài đặt quá cao có thể dẫn đến các bảng bộ nhớ rất lớn"
 
-#: include/global_settings.php:2060
+#: include/global_settings.php:2069
 #, fuzzy
 msgid "Maintenance Time"
 msgstr "Thời gian bảo trì"
 
-#: include/global_settings.php:2061
+#: include/global_settings.php:2070
 #, fuzzy
 msgid "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]"
 msgstr "Dữ liệu hàng tuần, hàng tháng và hàng năm nên được cập nhật vào thời gian nào trong ngày? Định dạng là HH: MM [am / pm]"
 
-#: include/global_settings.php:2068
+#: include/global_settings.php:2077
 #, fuzzy
 msgid "Memory Limit for Data Source Statistics Data Collector"
 msgstr "Giới hạn bộ nhớ cho thống kê nguồn dữ liệu Trình thu thập dữ liệu"
 
-#: include/global_settings.php:2069
+#: include/global_settings.php:2078
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr "Dung lượng bộ nhớ tối đa cho Bộ đệm Cacti và Bộ thống kê nguồn dữ liệu"
 
-#: include/global_settings.php:2075
+#: include/global_settings.php:2084
 #, fuzzy
 msgid "Data Storage Settings"
 msgstr "Cài đặt lưu trữ dữ liệu"
 
-#: include/global_settings.php:2081
+#: include/global_settings.php:2090
 #, fuzzy
 msgid "Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server."
 msgstr "Chọn nếu RRD sẽ được lưu trữ cục bộ hoặc được xử lý bởi máy chủ proxy RRDtool bên ngoài."
 
-#: include/global_settings.php:2086 include/global_settings.php:2095
+#: include/global_settings.php:2095 include/global_settings.php:2104
 #, fuzzy
 msgid "RRDtool Proxy Server"
 msgstr "Máy chủ proxy RRDtool"
 
-#: include/global_settings.php:2090
+#: include/global_settings.php:2099
 #, fuzzy
 msgid "Structured RRD Paths"
 msgstr "Đường dẫn RRD có cấu trúc"
 
-#: include/global_settings.php:2091
+#: include/global_settings.php:2100
 #, fuzzy
 msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
 msgstr "Sử dụng một thư mục con riêng cho mỗi tệp RRD lưu trữ. Việc đặt tên của RRDfiles sẽ là &lt;path_cacti&gt; /rra/host_id/local_data_id.rrd."
 
-#: include/global_settings.php:2100 include/global_settings.php:2132
+#: include/global_settings.php:2109 include/global_settings.php:2141
 msgid "Proxy Server"
 msgstr "Proxy server"
 
-#: include/global_settings.php:2101
+#: include/global_settings.php:2110
 #, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
 msgstr "Tên máy chủ DNS hoặc địa chỉ IP của máy chủ proxy RRDtool."
 
-#: include/global_settings.php:2106 include/global_settings.php:2138
+#: include/global_settings.php:2115 include/global_settings.php:2147
 #, fuzzy
 msgid "Proxy Port Number"
 msgstr "Số cổng proxy"
 
-#: include/global_settings.php:2107
+#: include/global_settings.php:2116
 #, fuzzy
 msgid "TCP port for encrypted communication."
 msgstr "Cổng TCP để liên lạc được mã hóa."
 
-#: include/global_settings.php:2114 include/global_settings.php:2146
+#: include/global_settings.php:2123 include/global_settings.php:2155
 #: utilities.php:282
 #, fuzzy
 msgid "RSA Fingerprint"
 msgstr "Dấu vân tay RSA"
 
-#: include/global_settings.php:2115
+#: include/global_settings.php:2124
 #, fuzzy
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
 msgstr "Dấu vân tay của khóa RSA công khai hiện tại mà proxy đang sử dụng. Điều này là cần thiết để thiết lập một kết nối đáng tin cậy."
 
-#: include/global_settings.php:2122
+#: include/global_settings.php:2131
 #, fuzzy
 msgid "RRDtool Proxy Server - Backup"
 msgstr "Máy chủ proxy RRDtool - Sao lưu"
 
-#: include/global_settings.php:2127
+#: include/global_settings.php:2136
 #, fuzzy
 msgid "Load Balancing"
 msgstr "Cân bằng tải"
 
-#: include/global_settings.php:2128
+#: include/global_settings.php:2137
 #, fuzzy
 msgid "If both main and backup proxy are receivable this option allows to spread all requests against RRDtool."
 msgstr "Nếu cả proxy chính và proxy dự phòng đều phải thu, tùy chọn này cho phép trải đều tất cả các yêu cầu đối với RRDtool."
 
-#: include/global_settings.php:2133
+#: include/global_settings.php:2142
 #, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode."
 msgstr "Tên máy chủ DNS hoặc địa chỉ IP của máy chủ proxy sao lưu RRDtool nếu proxy đang chạy ở chế độ MSR."
 
-#: include/global_settings.php:2139
+#: include/global_settings.php:2148
 #, fuzzy
 msgid "TCP port for encrypted communication with the backup proxy."
 msgstr "Cổng TCP để liên lạc được mã hóa với proxy dự phòng."
 
-#: include/global_settings.php:2147
+#: include/global_settings.php:2156
 #, fuzzy
 msgid "The fingerprint of the current public RSA key the backup proxy is using. This required to establish a trusted connection."
 msgstr "Dấu vân tay của khóa RSA công khai hiện tại mà proxy dự phòng đang sử dụng. Điều này cần thiết để thiết lập một kết nối đáng tin cậy."
 
-#: include/global_settings.php:2156
+#: include/global_settings.php:2165
 #, fuzzy
 msgid "Spike Kill Settings"
 msgstr "Cài đặt Spike Kill"
 
-#: include/global_settings.php:2161
+#: include/global_settings.php:2170
 #, fuzzy
 msgid "Removal Method"
 msgstr "Phương pháp loại bỏ"
 
-#: include/global_settings.php:2162
+#: include/global_settings.php:2171
 #, fuzzy
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
 msgstr "Có hai phương pháp loại bỏ. Đầu tiên, Độ lệch chuẩn, sẽ xóa bất kỳ mẫu nào có số X độ lệch chuẩn so với mức trung bình của các mẫu. Phương pháp thứ hai, phương sai, sẽ loại bỏ bất kỳ mẫu nào nhiều hơn X %so với trung bình phương sai. Phương pháp phương sai tính đến một số lượng &#39;ngoại lệ&#39; nhất định. Đó là những mẫu đặc biệt, như mũi nhọn, cần được loại trừ khỏi phép tính Trung bình phương sai."
 
-#: include/global_settings.php:2166
+#: include/global_settings.php:2175
 msgid "Standard Deviation"
 msgstr "Độ lệch tiêu chuẩn"
 
-#: include/global_settings.php:2167
+#: include/global_settings.php:2176
 #, fuzzy
 msgid "Variance Based w/Outliers Removed"
 msgstr "Phương sai dựa trên w / Outliers bị xóa"
 
-#: include/global_settings.php:2171 lib/html.php:2199
+#: include/global_settings.php:2180 lib/html.php:2199
 #, fuzzy
 msgid "Replacement Method"
 msgstr "Phương pháp thay thế"
 
-#: include/global_settings.php:2172
+#: include/global_settings.php:2181
 #, fuzzy
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "Có ba phương pháp thay thế. Phương pháp đầu tiên thay thế mức tăng đột biến bằng mức trung bình của nguồn dữ liệu được đề cập. Phương pháp thứ hai thay thế mũi nhọn bằng &#39;NaN&#39;. Cái cuối cùng thay thế cho sự tăng đột biến với giá trị tốt được biết đến cuối cùng được tìm thấy."
 
-#: include/global_settings.php:2176 lib/html.php:2195
+#: include/global_settings.php:2185 lib/html.php:2195
 msgid "Average"
 msgstr "Trung bình"
 
-#: include/global_settings.php:2177 lib/html.php:2196
+#: include/global_settings.php:2186 lib/html.php:2196
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN"
 
-#: include/global_settings.php:2178 lib/html.php:2197
+#: include/global_settings.php:2187 lib/html.php:2197
 #, fuzzy
 msgid "Last Known Good"
 msgstr "Được biết đến tốt nhất"
 
-#: include/global_settings.php:2182
+#: include/global_settings.php:2191
 #, fuzzy
 msgid "Number of Standard Deviations"
 msgstr "Số độ lệch chuẩn"
 
-#: include/global_settings.php:2183
+#: include/global_settings.php:2192
 #, fuzzy
 msgid "Any value that is this many standard deviations above the average will be excluded.  A good number will be dependent on the type of data to be operated on.  We recommend a number no lower than 5 Standard Deviations."
 msgstr "Bất kỳ giá trị nào có nhiều độ lệch chuẩn trên trung bình sẽ bị loại trừ. Một số tốt sẽ phụ thuộc vào loại dữ liệu sẽ được vận hành trên. Chúng tôi đề xuất một số không thấp hơn 5 Độ lệch chuẩn."
 
-#: include/global_settings.php:2187 include/global_settings.php:2188
-#: include/global_settings.php:2189 include/global_settings.php:2190
-#: include/global_settings.php:2191 include/global_settings.php:2192
-#: include/global_settings.php:2193 include/global_settings.php:2194
-#: include/global_settings.php:2195 include/global_settings.php:2196
-#: include/global_settings.php:2197 include/global_settings.php:2198
-#: include/global_settings.php:2199
+#: include/global_settings.php:2196 include/global_settings.php:2197
+#: include/global_settings.php:2198 include/global_settings.php:2199
+#: include/global_settings.php:2200 include/global_settings.php:2201
+#: include/global_settings.php:2202 include/global_settings.php:2203
+#: include/global_settings.php:2204 include/global_settings.php:2205
+#: include/global_settings.php:2206 include/global_settings.php:2207
+#: include/global_settings.php:2208
 #, fuzzy, php-format
 msgid "%d Standard Deviations"
 msgstr "% d Độ lệch chuẩn"
 
-#: include/global_settings.php:2203 lib/html.php:2211
+#: include/global_settings.php:2212 lib/html.php:2211
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "Tỷ lệ phần trăm phương sai"
 
-#: include/global_settings.php:2204
+#: include/global_settings.php:2213
 #, fuzzy, php-format
 msgid "This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph."
 msgstr "Giá trị này biểu thị tỷ lệ phần trăm trên mức trung bình mẫu đã điều chỉnh một khi các ngoại lệ đã bị xóa khỏi mẫu. Ví dụ: Tỷ lệ phần trăm phương sai 100% trên trung bình đã điều chỉnh là 50 sẽ loại bỏ bất kỳ mẫu nào trên số lượng 100 khỏi biểu đồ."
 
-#: include/global_settings.php:2227
+#: include/global_settings.php:2236
 #, fuzzy
 msgid "Variance Number of Outliers"
 msgstr "Số lượng phương sai của các ngoại lệ"
 
-#: include/global_settings.php:2228
+#: include/global_settings.php:2237
 #, fuzzy
 msgid "This value represents the number of high and low average samples will be removed from the sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top and bottom 5 averages are removed."
 msgstr "Giá trị này biểu thị số lượng mẫu trung bình cao và thấp sẽ bị xóa khỏi bộ mẫu trước khi tính Trung bình phương sai. Nếu bạn chọn giá trị ngoại lệ là 5, thì cả trung bình 5 trên cùng và dưới cùng sẽ bị xóa."
 
-#: include/global_settings.php:2232 include/global_settings.php:2233
-#: include/global_settings.php:2234 include/global_settings.php:2235
-#: include/global_settings.php:2236 include/global_settings.php:2237
-#: include/global_settings.php:2238 include/global_settings.php:2239
-#: include/global_settings.php:2240 include/global_settings.php:2241
-#: include/global_settings.php:2242 include/global_settings.php:2243
-#: include/global_settings.php:2244
+#: include/global_settings.php:2241 include/global_settings.php:2242
+#: include/global_settings.php:2243 include/global_settings.php:2244
+#: include/global_settings.php:2245 include/global_settings.php:2246
+#: include/global_settings.php:2247 include/global_settings.php:2248
+#: include/global_settings.php:2249 include/global_settings.php:2250
+#: include/global_settings.php:2251 include/global_settings.php:2252
+#: include/global_settings.php:2253
 #, fuzzy, php-format
 msgid "%d High/Low Samples"
 msgstr "% d Mẫu cao / thấp"
 
-#: include/global_settings.php:2248
+#: include/global_settings.php:2257
 #, fuzzy
 msgid "Max Kills Per RRA"
 msgstr "Tối đa giết chết mỗi RRA"
 
-#: include/global_settings.php:2249
+#: include/global_settings.php:2258
 #, fuzzy
 msgid "This value represents the maximum number of spikes to remove from a Graph RRA."
 msgstr "Giá trị này biểu thị số lượng gai tối đa cần xóa khỏi Biểu đồ RRA."
 
-#: include/global_settings.php:2253 include/global_settings.php:2254
-#: include/global_settings.php:2255 include/global_settings.php:2256
-#: include/global_settings.php:2257 include/global_settings.php:2258
-#: include/global_settings.php:2259 include/global_settings.php:2260
-#: include/global_settings.php:2261 include/global_settings.php:2262
-#: include/global_settings.php:2263 include/global_settings.php:2264
+#: include/global_settings.php:2262 include/global_settings.php:2263
+#: include/global_settings.php:2264 include/global_settings.php:2265
+#: include/global_settings.php:2266 include/global_settings.php:2267
+#: include/global_settings.php:2268 include/global_settings.php:2269
+#: include/global_settings.php:2270 include/global_settings.php:2271
+#: include/global_settings.php:2272 include/global_settings.php:2273
 #, fuzzy, php-format
 msgid "%d Spikes"
 msgstr "% d gai"
 
-#: include/global_settings.php:2268
+#: include/global_settings.php:2277
 #, fuzzy
 msgid "RRDfile Backup Directory"
 msgstr "Thư mục sao lưu RRDfile"
 
-#: include/global_settings.php:2269
+#: include/global_settings.php:2278
 #, fuzzy
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
 msgstr "Nếu thư mục này không trống, thì RRDfiles ban đầu của bạn sẽ được sao lưu vào vị trí này."
 
-#: include/global_settings.php:2276
+#: include/global_settings.php:2285
 #, fuzzy
 msgid "Batch Spike Kill Settings"
 msgstr "Cài đặt hàng loạt Spike Kill"
 
-#: include/global_settings.php:2281
+#: include/global_settings.php:2290
 #, fuzzy
 msgid "Removal Schedule"
 msgstr "Lịch trình loại bỏ"
 
-#: include/global_settings.php:2282
+#: include/global_settings.php:2291
 #, fuzzy
 msgid "Do you wish to periodically remove spikes from your graphs?  If so, select the frequency below."
 msgstr "Bạn có muốn định kỳ loại bỏ gai khỏi biểu đồ của bạn? Nếu vậy, chọn tần số dưới đây."
 
-#: include/global_settings.php:2289
+#: include/global_settings.php:2298
 #, fuzzy
 msgid "Once a Day"
 msgstr "Một lần một ngày"
 
-#: include/global_settings.php:2290
+#: include/global_settings.php:2299
 #, fuzzy
 msgid "Every Other Day"
 msgstr "Mỗi ngày khác"
 
-#: include/global_settings.php:2294
+#: include/global_settings.php:2303
 #, fuzzy
 msgid "Base Time"
 msgstr "Giờ cơ sở"
 
-#: include/global_settings.php:2295
+#: include/global_settings.php:2304
 #, fuzzy
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
 msgstr "Thời gian cơ sở để loại bỏ Spike xảy ra. Ví dụ: nếu bạn sử dụng &#39;12: 00:00 và bạn chọn một lần mỗi ngày, việc xóa hàng loạt sẽ bắt đầu vào khoảng nửa đêm mỗi ngày."
 
-#: include/global_settings.php:2302
+#: include/global_settings.php:2311
 #, fuzzy
 msgid "Graph Templates to Spike Kill"
 msgstr "Mẫu biểu đồ để Spike Kill"
 
-#: include/global_settings.php:2304
+#: include/global_settings.php:2313
 #, fuzzy
 msgid "When performing batch spike removal, only the templates selected below will be acted on."
 msgstr "Khi thực hiện loại bỏ đột biến hàng loạt, chỉ các mẫu được chọn bên dưới sẽ được thực hiện."
 
-#: include/global_settings.php:2308
+#: include/global_settings.php:2317
 #, fuzzy
 msgid "Backup Retention"
 msgstr "Lưu trữ dữ liệu"
 
-#: include/global_settings.php:2309
+#: include/global_settings.php:2318
 #, fuzzy
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
 msgstr "Khi SpikeKill giết chết các biểu đồ, nó tạo ra một bản sao lưu của RRDfile. Những tập tin sao lưu này nên được giữ lại trong bao lâu?"
 
-#: include/global_settings.php:2328
+#: include/global_settings.php:2337
 #, fuzzy
 msgid "Default View Mode"
 msgstr "Chế độ xem mặc định"
 
-#: include/global_settings.php:2329
+#: include/global_settings.php:2338
 #, fuzzy
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
 msgstr "Chế độ biểu đồ nào bạn muốn hiển thị theo mặc định khi bạn truy cập trang Đồ thị lần đầu tiên?"
 
-#: include/global_settings.php:2335
+#: include/global_settings.php:2344
 msgid "User Language"
 msgstr "Ngôn ngữ người dùng"
 
-#: include/global_settings.php:2336
+#: include/global_settings.php:2345
 #, fuzzy
 msgid "Defines the preferred GUI language."
 msgstr "Xác định ngôn ngữ GUI ưa thích."
 
-#: include/global_settings.php:2342
+#: include/global_settings.php:2351
 #, fuzzy
 msgid "Show Graph Title"
 msgstr "Hiển thị tiêu đề đồ thị"
 
-#: include/global_settings.php:2343
+#: include/global_settings.php:2352
 #, fuzzy
 msgid "Display the graph title on the page so that it may be searched using the browser."
 msgstr "Hiển thị tiêu đề biểu đồ trên trang để có thể tìm kiếm bằng trình duyệt."
 
-#: include/global_settings.php:2348
+#: include/global_settings.php:2357
 #, fuzzy
 msgid "Hide Disabled"
 msgstr "Ẩn bị vô hiệu hóa"
 
-#: include/global_settings.php:2349
+#: include/global_settings.php:2358
 #, fuzzy
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
 msgstr "Ẩn các thiết bị và đồ thị bị vô hiệu hóa khi xem bên ngoài tab Console."
 
-#: include/global_settings.php:2354
+#: include/global_settings.php:2363
 #, fuzzy
 msgid "Show Device Aggregates"
 msgstr "Cốt liệu"
 
-#: include/global_settings.php:2355
+#: include/global_settings.php:2364
 #, fuzzy
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
 msgstr "Nếu Nguồn dữ liệu thiết bị được bao gồm trong biểu đồ tổng hợp, hãy hiển thị biểu đồ đó cùng với các biểu đồ thiết bị khác"
 
-#: include/global_settings.php:2360
+#: include/global_settings.php:2369
 #, fuzzy
 msgid "Enable Horizontal Scrolling"
 msgstr "Bật tính năng cuộn ngang"
 
-#: include/global_settings.php:2361
+#: include/global_settings.php:2370
 #, fuzzy
 msgid "Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibility."
 msgstr "Bật tính năng cuộn ngang bảng, tắt chế độ hiển thị cột đáp ứng."
 
-#: include/global_settings.php:2367
+#: include/global_settings.php:2376
 #, fuzzy
 msgid "The date format to use in Cacti."
 msgstr "Định dạng ngày để sử dụng trong Cacti."
 
-#: include/global_settings.php:2374
+#: include/global_settings.php:2383
 #, fuzzy
 msgid "The date separator to be used in Cacti."
 msgstr "Dấu phân cách ngày sẽ được sử dụng trong Cacti."
 
-#: include/global_settings.php:2380
+#: include/global_settings.php:2389
 #, fuzzy
 msgid "Page Refresh"
 msgstr "Làm mới trang"
 
-#: include/global_settings.php:2381
+#: include/global_settings.php:2390
 #, fuzzy
 msgid "The number of seconds between automatic page refreshes."
 msgstr "Số giây giữa các lần làm mới trang tự động."
 
-#: include/global_settings.php:2393
+#: include/global_settings.php:2402
 #, fuzzy
 msgid "Preview Graphs Per Page"
 msgstr "Xem trước đồ thị trên mỗi trang"
 
-#: include/global_settings.php:2394 include/global_settings.php:2523
+#: include/global_settings.php:2403 include/global_settings.php:2532
 #, fuzzy
 msgid "The number of graphs to display on one page in preview mode."
 msgstr "Số lượng biểu đồ sẽ hiển thị trên một trang ở chế độ xem trước."
 
-#: include/global_settings.php:2402
+#: include/global_settings.php:2411
 #, fuzzy
 msgid "Default Time Range"
 msgstr "Phạm vi thời gian mặc định"
 
-#: include/global_settings.php:2403
+#: include/global_settings.php:2412
 #, fuzzy
 msgid "The default RRA to use in rare occasions."
 msgstr "RRA mặc định để sử dụng trong những dịp hiếm hoi."
 
-#: include/global_settings.php:2410
+#: include/global_settings.php:2419
 #, fuzzy
 msgid "The default Timespan displayed when viewing Graphs and other time specific data."
 msgstr "Timespan mặc định được hiển thị khi xem Biểu đồ và dữ liệu cụ thể theo thời gian khác."
 
-#: include/global_settings.php:2416
+#: include/global_settings.php:2425
 #, fuzzy
 msgid "Default Timeshift"
 msgstr "Timeshift mặc định"
 
-#: include/global_settings.php:2417
+#: include/global_settings.php:2426
 #, fuzzy
 msgid "The default Timeshift displayed when viewing Graphs and other time specific data."
 msgstr "Timeshift mặc định được hiển thị khi xem Biểu đồ và dữ liệu cụ thể theo thời gian khác."
 
-#: include/global_settings.php:2423
+#: include/global_settings.php:2432
 #, fuzzy
 msgid "Allow Graph to extend to Future"
 msgstr "Cho phép đồ thị mở rộng đến tương lai"
 
-#: include/global_settings.php:2424
+#: include/global_settings.php:2433
 #, fuzzy
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
 msgstr "Khi hiển thị Biểu đồ, cho phép Ngày biểu đồ mở rộng &#39;đến tương lai&#39;"
 
-#: include/global_settings.php:2429
+#: include/global_settings.php:2438
 #, fuzzy
 msgid "First Day of the Week"
 msgstr "Ngày đầu tiên trong tuần"
 
-#: include/global_settings.php:2430
+#: include/global_settings.php:2439
 #, fuzzy
 msgid "The first Day of the Week for weekly Graph Displays"
 msgstr "Ngày đầu tiên trong tuần để hiển thị biểu đồ hàng tuần"
 
-#: include/global_settings.php:2436
+#: include/global_settings.php:2445
 #, fuzzy
 msgid "Start of Daily Shift"
 msgstr "Bắt đầu ca hàng ngày"
 
-#: include/global_settings.php:2437
+#: include/global_settings.php:2446
 #, fuzzy
 msgid "Start Time of the Daily Shift."
 msgstr "Thời gian bắt đầu của ca làm việc hàng ngày."
 
-#: include/global_settings.php:2444
+#: include/global_settings.php:2453
 #, fuzzy
 msgid "End of Daily Shift"
 msgstr "Kết thúc ca làm việc hàng ngày"
 
-#: include/global_settings.php:2445
+#: include/global_settings.php:2454
 #, fuzzy
 msgid "End Time of the Daily Shift."
 msgstr "Thời gian kết thúc của ca làm việc hàng ngày."
 
-#: include/global_settings.php:2454
+#: include/global_settings.php:2463
 #, fuzzy
 msgid "Thumbnail Sections"
 msgstr "Phần hình thu nhỏ"
 
-#: include/global_settings.php:2455
+#: include/global_settings.php:2464
 #, fuzzy
 msgid "Which portions of Cacti display Thumbnails by default."
 msgstr "Những phần nào của Cacti hiển thị hình thu nhỏ theo mặc định."
 
-#: include/global_settings.php:2469
+#: include/global_settings.php:2478
 #, fuzzy
 msgid "Preview Thumbnail Columns"
 msgstr "Xem trước các cột hình thu nhỏ"
 
-#: include/global_settings.php:2470
+#: include/global_settings.php:2479
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Preview mode."
 msgstr "Số lượng cột sẽ sử dụng khi hiển thị biểu đồ hình thu nhỏ trong chế độ Xem trước."
 
-#: include/global_settings.php:2474 include/global_settings.php:2488
+#: include/global_settings.php:2483 include/global_settings.php:2497
 msgid "1 Column"
 msgstr "1 cột"
 
-#: include/global_settings.php:2475 include/global_settings.php:2476
-#: include/global_settings.php:2477 include/global_settings.php:2478
-#: include/global_settings.php:2479 include/global_settings.php:2489
-#: include/global_settings.php:2490 include/global_settings.php:2491
-#: include/global_settings.php:2492 include/global_settings.php:2493
+#: include/global_settings.php:2484 include/global_settings.php:2485
+#: include/global_settings.php:2486 include/global_settings.php:2487
+#: include/global_settings.php:2488 include/global_settings.php:2498
+#: include/global_settings.php:2499 include/global_settings.php:2500
+#: include/global_settings.php:2501 include/global_settings.php:2502
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
 #: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1106
 #: lib/html_tree.php:1107 lib/html_tree.php:1108 lib/html_tree.php:1109
@@ -13509,152 +13517,152 @@ msgstr "1 cột"
 msgid "%d Columns"
 msgstr "% d Cột"
 
-#: include/global_settings.php:2483
+#: include/global_settings.php:2492
 #, fuzzy
 msgid "Tree View Thumbnail Columns"
 msgstr "Cột hình cây xem"
 
-#: include/global_settings.php:2484
+#: include/global_settings.php:2493
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Tree mode."
 msgstr "Số lượng cột sẽ sử dụng khi hiển thị biểu đồ hình thu nhỏ ở chế độ Cây."
 
-#: include/global_settings.php:2497
+#: include/global_settings.php:2506
 msgid "Thumbnail Height"
 msgstr "Chiều cao ảnh thu nhỏ"
 
-#: include/global_settings.php:2498
+#: include/global_settings.php:2507
 #, fuzzy
 msgid "The height of Thumbnail graphs in pixels."
 msgstr "Chiều cao của đồ thị hình thu nhỏ tính bằng pixel."
 
-#: include/global_settings.php:2505
+#: include/global_settings.php:2514
 msgid "Thumbnail Width"
 msgstr "Chiều rộng ảnh thu nhỏ"
 
-#: include/global_settings.php:2506
+#: include/global_settings.php:2515
 #, fuzzy
 msgid "The width of Thumbnail graphs in pixels."
 msgstr "Độ rộng của đồ thị hình thu nhỏ tính bằng pixel."
 
-#: include/global_settings.php:2515
+#: include/global_settings.php:2524
 #, fuzzy
 msgid "Default Tree"
 msgstr "Cây mặc định"
 
-#: include/global_settings.php:2516
+#: include/global_settings.php:2525
 #, fuzzy
 msgid "The default graph tree to use when displaying graphs in tree mode."
 msgstr "Cây biểu đồ mặc định sẽ sử dụng khi hiển thị biểu đồ ở chế độ cây."
 
-#: include/global_settings.php:2522
+#: include/global_settings.php:2531
 #, fuzzy
 msgid "Graphs Per Page"
 msgstr "Đồ thị trên mỗi trang"
 
-#: include/global_settings.php:2529
+#: include/global_settings.php:2538
 #, fuzzy
 msgid "Expand Devices"
 msgstr "Mở rộng thiết bị"
 
-#: include/global_settings.php:2530
+#: include/global_settings.php:2539
 #, fuzzy
 msgid "Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree."
 msgstr "Chọn xem có mở rộng Mẫu biểu đồ và Truy vấn dữ liệu được sử dụng bởi Thiết bị trên cây không."
 
-#: include/global_settings.php:2535
+#: include/global_settings.php:2544
 #, fuzzy
 msgid "Tree History"
 msgstr "Lịch sử mật khẩu"
 
-#: include/global_settings.php:2536
+#: include/global_settings.php:2545
 #, fuzzy
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
 msgstr "Nếu được bật, Cacti sẽ ghi nhớ Lịch sử cây của bạn giữa các lần đăng nhập và khi bạn quay lại trang Đồ thị."
 
-#: include/global_settings.php:2559
+#: include/global_settings.php:2568
 #, fuzzy
 msgid "Use Custom Fonts"
 msgstr "Sử dụng phông chữ tùy chỉnh"
 
-#: include/global_settings.php:2560
+#: include/global_settings.php:2569
 #, fuzzy
 msgid "Choose whether to use your own custom fonts and font sizes or utilize the system defaults."
 msgstr "Chọn sử dụng phông chữ và kích thước phông chữ tùy chỉnh của riêng bạn hoặc sử dụng mặc định của hệ thống."
 
-#: include/global_settings.php:2573
+#: include/global_settings.php:2582
 #, fuzzy
 msgid "Title Font File"
 msgstr "Tập tin phông chữ"
 
-#: include/global_settings.php:2574
+#: include/global_settings.php:2583
 #, fuzzy
 msgid "The font file to use for Graph Titles"
 msgstr "Tệp phông chữ được sử dụng cho Tiêu đề đồ thị"
 
-#: include/global_settings.php:2586
+#: include/global_settings.php:2595
 #, fuzzy
 msgid "Legend Font File"
 msgstr "Huyền thoại tập tin"
 
-#: include/global_settings.php:2587
+#: include/global_settings.php:2596
 #, fuzzy
 msgid "The font file to be used for Graph Legend items"
 msgstr "Tệp phông chữ được sử dụng cho các mục Graph Legend"
 
-#: include/global_settings.php:2599
+#: include/global_settings.php:2608
 #, fuzzy
 msgid "Axis Font File"
 msgstr "Tệp phông chữ trục"
 
-#: include/global_settings.php:2600
+#: include/global_settings.php:2609
 #, fuzzy
 msgid "The font file to be used for Graph Axis items"
 msgstr "Tệp phông chữ được sử dụng cho các mục Biểu đồ trục"
 
-#: include/global_settings.php:2612
+#: include/global_settings.php:2621
 #, fuzzy
 msgid "Unit Font File"
 msgstr "Tập tin phông chữ đơn vị"
 
-#: include/global_settings.php:2613
+#: include/global_settings.php:2622
 #, fuzzy
 msgid "The font file to be used for Graph Unit items"
 msgstr "Tệp phông chữ được sử dụng cho các mục Đơn vị đồ thị"
 
-#: include/global_settings.php:2627
+#: include/global_settings.php:2636
 #, fuzzy
 msgid "Realtime View Mode"
 msgstr "Chế độ xem thời gian thực"
 
-#: include/global_settings.php:2628
+#: include/global_settings.php:2637
 #, fuzzy
 msgid "How do you wish to view Realtime Graphs?"
 msgstr "Bạn muốn xem đồ thị thời gian thực như thế nào?"
 
-#: include/global_settings.php:2631
+#: include/global_settings.php:2640
 msgid "Inline"
 msgstr "Nội tuyến"
 
-#: include/global_settings.php:2632
+#: include/global_settings.php:2641
 msgid "New Window"
 msgstr "Cửa sổ mới"
 
-#: include/global_settings.php:2647
+#: include/global_settings.php:2656
 #, fuzzy
 msgid "System Setting"
 msgstr "Thiết lập người dùng"
 
-#: include/global_settings.php:2655
+#: include/global_settings.php:2664
 msgid "1 Week"
 msgstr "1 Tuần"
 
-#: include/global_settings.php:2668
+#: include/global_settings.php:2677
 #, fuzzy
 msgid "Auto Log Out Time"
 msgstr "Đăng xuất tự động"
 
-#: include/global_settings.php:2669
+#: include/global_settings.php:2678
 #, fuzzy
 msgid "For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled."
 msgstr "Đối với người dùng chỉ có quyền truy cập Bảng điều khiển, người dùng này có thể đăng nhập trong bao lâu trước khi được tự động đăng xuất. Lưu ý rằng nếu bạn không hoạt động trong hơn một giờ, bạn có thể phải làm mới trình duyệt của mình. Cũng lưu ý rằng cài đặt này không ảnh hưởng khi bật Cookie xác thực."
@@ -14043,8 +14051,8 @@ msgstr "Địa điểm:"
 msgid "Contact:"
 msgstr "Liên hệ:"
 
-#: lib/api_device.php:1196 lib/functions.php:4909 lib/functions.php:4911
-#: lib/functions.php:4915
+#: lib/api_device.php:1196 lib/functions.php:4910 lib/functions.php:4912
+#: lib/functions.php:4916
 #, fuzzy
 msgid "Ping Results"
 msgstr "Kết quả Ping"
@@ -14064,41 +14072,41 @@ msgstr "Chi nhánh mới"
 msgid "Web Basic"
 msgstr "Cơ bản về web"
 
-#: lib/auth.php:2113 lib/auth.php:2145 lib/reports.php:1267
+#: lib/auth.php:2121 lib/auth.php:2153 lib/reports.php:1267
 msgid "Branch:"
 msgstr "Chi nhánh:"
 
-#: lib/auth.php:2122 lib/auth.php:2153 lib/html_tree.php:1014
+#: lib/auth.php:2130 lib/auth.php:2161 lib/html_tree.php:1014
 #: lib/reports.php:1042 lib/reports.php:1272
 msgid "Device:"
 msgstr "Thiết bị:"
 
-#: lib/auth.php:2891 lib/auth.php:2899
+#: lib/auth.php:2899 lib/auth.php:2907
 #, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "Truy cập bị từ chối, vui lòng liên hệ với bạn Quản trị viên Cacti."
 
-#: lib/auth.php:2920
+#: lib/auth.php:2928
 #, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "Quản trị viên Cacti của bạn đã buộc mật khẩu phức tạp để đăng nhập và mật khẩu Cacti hiện tại của bạn không phù hợp với yêu cầu mới. Do đó, bạn phải thay đổi mật khẩu của bạn bây giờ."
 
-#: lib/auth.php:2944
+#: lib/auth.php:2952
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "Mật khẩu phải có ít nhất% d ký tự!"
 
-#: lib/auth.php:2950
+#: lib/auth.php:2958
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "Mật khẩu của bạn phải chứa ít nhất 1 ký tự số!"
 
-#: lib/auth.php:2954
+#: lib/auth.php:2962
 #, fuzzy
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "Mật khẩu của bạn phải chứa hỗn hợp các ký tự chữ thường và chữ hoa!"
 
-#: lib/auth.php:2960
+#: lib/auth.php:2968
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "Mật khẩu của bạn phải chứa ít nhất 1 ký tự đặc biệt!"
@@ -14758,7 +14766,7 @@ msgid "User Community"
 msgstr "Cộng Đồng Người Dùng"
 
 #: lib/functions.php:3246 lib/functions.php:3264 lib/html.php:2467
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 msgid "Documentation"
 msgstr "Tài liệu"
 
@@ -14795,113 +14803,113 @@ msgstr "Liên kết %s"
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Lỗi Mailer: Không có địa chỉ <b>TO</b> được đặt !! <br> Nếu sử dụng liên kết <i>Kiểm tra Thư</i> , vui lòng đặt cài đặt <b>e-mail Thông báo</b> ."
 
-#: lib/functions.php:4842
+#: lib/functions.php:4843
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Xác thực thất bại: %s"
 
-#: lib/functions.php:4846
+#: lib/functions.php:4847
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "Helo thất bại: %s"
 
-#: lib/functions.php:4849
+#: lib/functions.php:4850
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Kết nối thất bại: %s"
 
-#: lib/functions.php:4852
+#: lib/functions.php:4853
 #, fuzzy
 msgid "SMTP error: "
 msgstr "Lỗi SMTP:"
 
-#: lib/functions.php:4865
+#: lib/functions.php:4866
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Đây là một thông báo thử nghiệm được tạo ra từ Cacti. Thông báo này đã được gửi để kiểm tra cấu hình Cài đặt thư của bạn."
 
-#: lib/functions.php:4866
+#: lib/functions.php:4867
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "Cài đặt email của bạn hiện được đặt như sau"
 
-#: lib/functions.php:4867
+#: lib/functions.php:4868
 msgid "Method"
 msgstr "Phương thức"
 
-#: lib/functions.php:4869
+#: lib/functions.php:4870
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Kiểm tra cấu hình ... <br>"
 
-#: lib/functions.php:4876
+#: lib/functions.php:4877
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "Lớp thư của PHP"
 
-#: lib/functions.php:4882
+#: lib/functions.php:4883
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Phương thức: SMTP"
 
-#: lib/functions.php:4897
+#: lib/functions.php:4898
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Không hiển thị vì lý do bảo mật"
 
-#: lib/functions.php:4898
+#: lib/functions.php:4899
 msgid "Security"
 msgstr "Bảo mật"
 
-#: lib/functions.php:4906
+#: lib/functions.php:4907
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Kết quả Ping:"
 
-#: lib/functions.php:4915
+#: lib/functions.php:4916
 #, fuzzy
 msgid "Bypassed"
 msgstr "Bỏ qua"
 
-#: lib/functions.php:4923
+#: lib/functions.php:4924
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Tạo tin nhắn văn bản ..."
 
-#: lib/functions.php:4926
+#: lib/functions.php:4927
 msgid "Sending Message..."
 msgstr "Đang gửi tin nhắn…"
 
-#: lib/functions.php:4930
+#: lib/functions.php:4931
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Thông báo kiểm tra xương rồng"
 
-#: lib/functions.php:4932
+#: lib/functions.php:4933
 msgid "Success!"
 msgstr "Thành công!"
 
-#: lib/functions.php:4935
+#: lib/functions.php:4936
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Tin nhắn không được gửi do lỗi ping."
 
-#: lib/functions.php:5503 lib/functions.php:5566
+#: lib/functions.php:5504 lib/functions.php:5567
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti đã tắt plugin %s do lỗi sau: %s! Xem logfile Cacti để biết thêm chi tiết."
 
-#: lib/functions.php:5958 lib/functions.php:5960
+#: lib/functions.php:5959 lib/functions.php:5961
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:5958
+#: lib/functions.php:5959
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "Phiên bản %s %s"
 
-#: lib/functions.php:5960
+#: lib/functions.php:5961
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -18001,211 +18009,211 @@ msgstr "Tạo đồ thị"
 msgid "NOTE: Graph not added for Data Query "
 msgstr "Tạo đồ thị từ truy vấn dữ liệu"
 
-#: lib/utility.php:855
+#: lib/utility.php:876
 #, fuzzy
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgstr "MySQL 5.6+ và MariaDB 10.0+ là những bản phát hành tuyệt vời và là phiên bản rất tốt để lựa chọn. Hãy chắc chắn rằng bạn chạy bản phát hành mới nhất mặc dù đã khắc phục được sự cố mạng cấp độ thấp đã gây ra nhiều vấn đề về độ tin cậy."
 
-#: lib/utility.php:867
+#: lib/utility.php:888
 #, fuzzy, php-format
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "Bạn nên bật InnoDB ở bất kỳ phiên bản %s nào lớn hơn 5.1."
 
-#: lib/utility.php:880 lib/utility.php:915
+#: lib/utility.php:901 lib/utility.php:936
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
 msgstr "Khi sử dụng Cacti với các ngôn ngữ khác tiếng Anh, điều quan trọng là sử dụng loại đối chiếu utf8mb4_unicode_ci vì một số ký tự mất nhiều hơn một byte."
 
-#: lib/utility.php:886 lib/utility.php:892 lib/utility.php:921
-#: lib/utility.php:927
+#: lib/utility.php:907 lib/utility.php:913 lib/utility.php:942
+#: lib/utility.php:948
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
 msgstr "Khi sử dụng Cacti với các ngôn ngữ khác tiếng Anh, điều quan trọng là sử dụng bộ ký tự utf8mb4 vì một số ký tự mất nhiều hơn một byte."
 
-#: lib/utility.php:903
+#: lib/utility.php:924
 #, fuzzy, php-format
 msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "Bạn nên bật InnoDB ở bất kỳ phiên bản %s nào lớn hơn 5.1."
 
-#: lib/utility.php:936
+#: lib/utility.php:957
 #, fuzzy, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "Tùy thuộc vào số lần đăng nhập và sử dụng trình thu thập dữ liệu cột sống, %s sẽ cần nhiều kết nối. Tính toán cho cột sống là: Total_connections = total_ Processes * (total_threads + script_servers + 1), sau đó bạn phải để lại khoảng trống cho các kết nối người dùng, sẽ thay đổi tùy thuộc vào số lượng tài khoản đăng nhập đồng thời."
 
-#: lib/utility.php:941
+#: lib/utility.php:962
 #, fuzzy
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "Giữ bộ đệm của bảng lớn hơn có nghĩa là các thao tác mở / đóng tệp ít hơn khi sử dụng innodb_file_per_table."
 
-#: lib/utility.php:946
+#: lib/utility.php:967
 #, fuzzy
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "Với khả năng bỏ phiếu từ xa, một lượng lớn dữ liệu sẽ được đồng bộ hóa từ máy chủ chính đến các công cụ bỏ phiếu từ xa. Do đó, giữ giá trị này ở mức hoặc trên 16M."
 
-#: lib/utility.php:952
+#: lib/utility.php:973
 #, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "Nếu sử dụng Cacti Performance Booster và chọn công cụ lưu trữ bộ nhớ, bạn phải cẩn thận để xóa bộ đệm Performance Booster trước khi hệ thống hết dung lượng bảng nhớ. Điều này được thực hiện theo hai cách, đầu tiên là giảm kích thước cột đầu ra của bạn xuống đúng kích thước. Cột này nằm trong bảng pollerDefput và pollerDefput_boost. Điều thứ hai bạn có thể làm là phân bổ thêm bộ nhớ cho các bảng bộ nhớ. Chúng tôi đã tùy ý chọn giá trị đề xuất là 10 %% bộ nhớ hệ thống, nhưng nếu bạn đang sử dụng ổ đĩa SSD hoặc có hệ thống nhỏ hơn, bạn có thể bỏ qua đề xuất này hoặc chọn một công cụ lưu trữ khác. Bạn có thể thấy mức tiêu thụ dự kiến của các bảng Performance Booster trong Bảng điều khiển -&gt; Tiện ích hệ thống -&gt; Xem Trạng thái tăng."
 
-#: lib/utility.php:958
+#: lib/utility.php:979
 #, fuzzy
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "Khi thực hiện các truy vấn con, có kích thước bảng tạm thời lớn hơn, hãy giữ các bảng tạm thời đó trong bộ nhớ."
 
-#: lib/utility.php:964
+#: lib/utility.php:985
 #, fuzzy
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file."
 msgstr "Khi thực hiện các phép nối, nếu chúng ở dưới kích thước này, chúng sẽ được giữ trong bộ nhớ và không bao giờ được ghi vào một tệp tạm thời."
 
-#: lib/utility.php:970
+#: lib/utility.php:991
 #, fuzzy, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "Khi sử dụng bộ lưu trữ InnoDB, điều quan trọng là phải tách biệt các không gian bảng của bạn. Điều này làm cho việc quản lý các bảng đơn giản hơn đối với người dùng %s trong thời gian dài. Nếu bạn đang chạy với tính năng này hiện đang tắt, bạn có thể di chuyển đến mỗi bộ lưu trữ tệp bằng cách bật tính năng và sau đó chạy câu lệnh thay đổi trên tất cả các bảng InnoDB."
 
-#: lib/utility.php:976
+#: lib/utility.php:997
 #, fuzzy
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "Khi sử dụng innodb_file_per_table, điều quan trọng là phải đặt innodb_file_format thành Barracuda. Cài đặt này sẽ cho phép các chỉ mục dài hơn quan trọng đối với các bảng Cacti nhất định."
 
-#: lib/utility.php:982
+#: lib/utility.php:1003
 #, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "Nếu các bảng của bạn có các chỉ mục rất lớn, bạn phải hoạt động với Barracuda innodb_file_format và innodb_large_prefix bằng 1. Việc không làm điều này có thể dẫn đến các plugin không thể tạo bảng đúng cách."
 
-#: lib/utility.php:988
+#: lib/utility.php:1009
 #, fuzzy, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "InnoDB sẽ giữ càng nhiều bảng và chỉ mục trong bộ nhớ hệ thống càng tốt. Do đó, bạn nên làm cho innodb_buffer_pool đủ lớn để chứa càng nhiều bảng và chỉ mục trong bộ nhớ. Kiểm tra kích thước của thư mục / var / lib / mysql / cacti sẽ giúp xác định giá trị này. Chúng tôi khuyến nghị 25 %% tổng bộ nhớ hệ thống của bạn, nhưng yêu cầu của bạn sẽ thay đổi tùy thuộc vào kích thước hệ thống của bạn."
 
-#: lib/utility.php:994
+#: lib/utility.php:1015
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "Cài đặt này sẽ duy trì BẬT trừ khi các phiên bản Cacti của bạn đang chạy trên ZFS hoặc FusionI / O, cả hai đều có nhật ký nội bộ để khắc phục sự cố hệ thống đột ngột. Tuy nhiên, nếu bạn có sức mạnh rất tốt và hệ thống của bạn hiếm khi ngừng hoạt động và bạn có các bản sao lưu, việc chuyển cài đặt này thành TẮT có thể giúp bạn tăng hiệu suất cơ sở dữ liệu lên gần 50%."
 
-#: lib/utility.php:999
+#: lib/utility.php:1020
 #, fuzzy
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "Đây là nơi siêu dữ liệu được lưu trữ. Nếu bạn có nhiều bảng, sẽ rất hữu ích khi tăng cái này."
 
-#: lib/utility.php:1004
+#: lib/utility.php:1025
 #, fuzzy
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "Các truy vấn giả không nên để cơ sở dữ liệu ngoại tuyến với người khác. Giết các truy vấn này trước khi chúng giết hệ thống của bạn."
 
-#: lib/utility.php:1009
+#: lib/utility.php:1030
 #, fuzzy
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "Hiệu suất I / O tối đa xảy ra khi bạn sử dụng phương pháp O_DIRECT để xóa trang."
 
-#: lib/utility.php:1019
+#: lib/utility.php:1040
 #, fuzzy, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "Đặt giá trị này thành 2 có nghĩa là bạn sẽ xóa tất cả các giao dịch mỗi giây thay vì tại cam kết. Điều này cho phép %s thực hiện viết ít thường xuyên hơn."
 
-#: lib/utility.php:1024
+#: lib/utility.php:1045
 #, fuzzy
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "Với lưu trữ loại SSD hiện đại, việc có nhiều luồng io là lợi thế cho các ứng dụng có đặc tính io cao."
 
-#: lib/utility.php:1032 lib/utility.php:1074
+#: lib/utility.php:1053 lib/utility.php:1095
 #, fuzzy, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "Kể từ %s %s, bạn có thể kiểm soát tần suất %s xóa các giao dịch vào đĩa. Mặc định là 1 giây, nhưng trong các hệ thống I / O cao, cài đặt giá trị lớn hơn 1 có thể cho phép I / O của đĩa được tuần tự hơn"
 
-#: lib/utility.php:1037
+#: lib/utility.php:1058
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "Với lưu trữ loại SSD hiện đại, việc có nhiều luồng io đọc là lợi thế cho các ứng dụng có đặc tính io cao."
 
-#: lib/utility.php:1042
+#: lib/utility.php:1063
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "Với lưu trữ loại SSD hiện đại, việc có nhiều luồng io ghi là lợi thế cho các ứng dụng có đặc tính io cao."
 
-#: lib/utility.php:1048
+#: lib/utility.php:1069
 #, fuzzy, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64."
 msgstr "%s sẽ chia innodb_buffer_pool thành các vùng bộ nhớ để cải thiện hiệu suất. Giá trị tối đa là 64. Khi innodb_buffer_pool của bạn dưới 1GB, bạn nên sử dụng kích thước nhóm chia cho 128MB. Tiếp tục sử dụng phương trình này tối đa 64."
 
-#: lib/utility.php:1054 lib/utility.php:1090
+#: lib/utility.php:1075 lib/utility.php:1111
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu bạn có ổ cứng vật lý, hãy sử dụng 200 * số lượng ổ đĩa hoạt động trong mảng. Nếu sử dụng NVMe hoặc PCIe Flash, có thể sử dụng số lượng lớn hơn nhiều tới 100000."
 
-#: lib/utility.php:1060 lib/utility.php:1096
+#: lib/utility.php:1081 lib/utility.php:1117
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu bạn có ổ đĩa cứng vật lý, hãy sử dụng 2000 * số lượng ổ đĩa hoạt động trong mảng. Nếu sử dụng NVMe hoặc PCIe Flash, có thể sử dụng số lượng lớn hơn nhiều tới 200000."
 
-#: lib/utility.php:1066 lib/utility.php:1102
+#: lib/utility.php:1087 lib/utility.php:1123
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu không, không đặt cài đặt này."
 
-#: lib/utility.php:1079
+#: lib/utility.php:1100
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "Với lưu trữ loại SSD hiện đại, việc có nhiều luồng io đọc là lợi thế cho các ứng dụng có đặc tính io cao."
 
-#: lib/utility.php:1084
+#: lib/utility.php:1105
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "Với lưu trữ loại SSD hiện đại, việc có nhiều luồng io ghi là lợi thế cho các ứng dụng có đặc tính io cao."
 
-#: lib/utility.php:1115
+#: lib/utility.php:1136
 #, fuzzy
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
 msgstr "Khi sử dụng MariaDB 10.2.4 trở lên, cài đặt này sẽ bị tắt nếu tính năng ghi nguyên tử được bật. Do đó, hãy bật tính năng ghi nguyên tử thay vì bộ đệm ghi kép vì nó sẽ tăng hiệu suất."
 
-#: lib/utility.php:1122
+#: lib/utility.php:1143
 #, fuzzy
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
 msgstr "Khi sử dụng MariaDB 10.2.4 trở lên, bạn có thể sử dụng ghi nguyên tử trên bộ đệm viết đôi để tăng hiệu suất."
 
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "%s Điều chỉnh"
 
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "Lưu ý: Nhiều thay đổi dưới đây yêu cầu khởi động lại cơ sở dữ liệu"
 
-#: lib/utility.php:1147
+#: lib/utility.php:1168
 msgid "Variable"
 msgstr "Biến thể"
 
-#: lib/utility.php:1148
+#: lib/utility.php:1169
 #, fuzzy
 msgid "Current Value"
 msgstr "Giá trị hiện tại"
 
-#: lib/utility.php:1150
+#: lib/utility.php:1171
 #, fuzzy
 msgid "Recommended Value"
 msgstr "Giá trị đề xuất"
 
-#: lib/utility.php:1151
+#: lib/utility.php:1172
 msgid "Comments"
 msgstr "Bình luận"
 
-#: lib/utility.php:1561
+#: lib/utility.php:1582
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP %s là phiên bản tối thiểu"
 
-#: lib/utility.php:1563
+#: lib/utility.php:1584
 #, fuzzy, php-format
 msgid "A minimum of %s memory limit"
 msgstr "Giới hạn bộ nhớ tối thiểu %s MB"
 
-#: lib/utility.php:1565
+#: lib/utility.php:1586
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "Tối thiểu %sm thời gian thực hiện"
 
-#: lib/utility.php:1567
+#: lib/utility.php:1588
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "Một múi giờ hợp lệ phù hợp với MySQL và hệ thống"
