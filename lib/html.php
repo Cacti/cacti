@@ -1692,9 +1692,9 @@ function html_show_tabs_left() {
 				// Don't show reports tabe if not poller 1
 			} else {
 				if (substr_count($_SERVER['REQUEST_URI'], 'reports_')) {
-					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
+					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[21] === true ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
 				} else {
-					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
+					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[21] === true ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
 				}
 			}
 		}
@@ -1775,7 +1775,7 @@ function html_show_tabs_left() {
 					array(
 						'title' => __('Reporting'),
 						'id'	=> 'tab-reports',
-						'url'   => $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php'),
+						'url'   => $config['url_path'] . ($realm_allowed[21] ? 'reports_admin.php':'reports_user.php'),
 					);
 			}
 		}

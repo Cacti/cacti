@@ -1005,7 +1005,7 @@ if ((isset($_SESSION['sess_user_id']))) {
 
 		if (cacti_sizeof($consoles)) {
 			foreach ($consoles as $page) {
-				if (is_realm_allowed($page['id']+10000)) {
+				if (!$config['is_web'] || is_realm_allowed($page['id']+10000)) {
 					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? $page['extendedstyle'] : __('External Links'));
 					$menu[$menuname]['link.php?id=' . $page['id']] = $page['title'];
 				}
@@ -1202,8 +1202,8 @@ $user_auth_realm_filenames = array(
 	'logout.php' => -1,
 	'auth_profile.php' => 20,
 	'auth_changepassword.php' => -1,
-	'reports_user.php' => 21,
-	'reports_admin.php' => 22,
+	'reports_user.php' => 22,
+	'reports_admin.php' => 21,
 	'automation_graph_rules.php' => 23,
 	'automation_tree_rules.php' => 23,
 	'automation_templates.php' => 23,
@@ -1537,7 +1537,7 @@ $reports_actions = array(
 	REPORTS_DELETE    => __('Delete'),
 );
 
-if (is_realm_allowed(22)) {
+if (!$config['is_web'] || is_realm_allowed(22)) {
 	$reports_actions[REPORTS_OWN] = __('Take Ownership');
 }
 

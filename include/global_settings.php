@@ -2622,7 +2622,7 @@ if ($config['cacti_server_os'] == 'win32') {
 	unset($settings['mail']['settings_sendmail_path']);
 }
 
-if (is_realm_allowed(25)) {
+if (!$config['is_web'] || is_realm_allowed(25)) {
 	$settings_user['general']['realtime_mode'] = array(
 		'friendly_name' => __('Realtime View Mode'),
 		'description' => __('How do you wish to view Realtime Graphs?'),
@@ -2635,7 +2635,7 @@ if (is_realm_allowed(25)) {
 	);
 }
 
-if (is_realm_allowed(8)) {
+if (!$config['is_web'] || is_realm_allowed(8)) {
 	if (!(read_config_option('auth_cache_enabled') == 'on' && isset($_SESSION['cacti_remembers']) && $_SESSION['cacti_remembers'] == true)) {
 		if (ini_get('session.gc_maxlifetime') > '2147483') {
 			$max_life = '2147483';

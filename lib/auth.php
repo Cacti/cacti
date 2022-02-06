@@ -865,10 +865,12 @@ function is_realm_allowed($realm) {
 
 	/* list all realms that this user has access to */
 	if (read_config_option('auth_method') != 0) {
+		/* user is not set, no permissions */
 		if (!isset($_SESSION['sess_user_id'])) {
 			return false;
 		}
 
+		/* check to see if the admin invalidated a permission */
 		if (!is_user_perms_valid($_SESSION['sess_user_id'])) {
 			if (db_table_exists('user_auth_cache')) {
 				$enabled = db_fetch_cell_prepared('SELECT enabled
@@ -902,10 +904,15 @@ function is_realm_allowed($realm) {
 			}
 		}
 
+		/* if the permission is already valid, the session ariable will be set */
 		if (isset($_SESSION['sess_user_realms'][$realm])) {
-			return true;
+			return $_SESSION['sess_user_realms'][$realm];
 		}
 
+		/**
+		 * check the permissions from the table, should only happen once per login
+		 * of after a permission change by the administrator.
+		 */
 		if (read_config_option('auth_method') != 0) {
 			if (cacti_version_compare($config['cacti_db_version'], '1.0.0', '>=')) {
 				$user_realm = db_fetch_cell_prepared("SELECT realm_id
@@ -932,17 +939,18 @@ function is_realm_allowed($realm) {
 			}
 
 			if (!empty($user_realm)) {
-				$_SESSION['sess_user_realms'][$realm] = $realm;
-				return true;
+				$_SESSION['sess_user_realms'][$realm] = true;
 			} else {
-				return false;
+				$_SESSION['sess_user_realms'][$realm] = false;
 			}
 		} else {
-			$_SESSION['sess_user_realms'][$realm] = $realm;
+			$_SESSION['sess_user_realms'][$realm] = true;
 		}
 	} else {
-		return true;
+		$_SESSION['sess_user_realms'][$realm] = true;
 	}
+
+	return $_SESSION['sess_user_realms'][$realm];
 }
 
 function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 0) {
@@ -3061,8 +3069,8 @@ function reset_user_perms($user_id) {
 function is_user_perms_valid($user_id) {
 	global $config;
 
-	static $valid = NULL;
-	static $key = NULL;
+	static $valid = null;
+	static $key   = null;
 
 	if (isset($_SESSION['sess_user_perms_key'])) {
 		$key = $_SESSION['sess_user_perms_key'];
@@ -3070,7 +3078,7 @@ function is_user_perms_valid($user_id) {
 		$_SESSION['sess_user_perms_key'] = false;
 	}
 
-	if ($valid === NULL) {
+	if ($valid === null) {
 		if (cacti_version_compare($config['cacti_db_version'], '1.0.0', '>=')) {
 			$key = db_fetch_cell_prepared('SELECT reset_perms
 				FROM user_auth
@@ -3137,9 +3145,11 @@ function compat_password_needs_rehash($password, $algo, $options = array()) {
 	return true;
 }
 
-/* auth_login_redirect - provide default page re-direction when a user first logs in.
-   @arg $login_opts - (array) array of user details
-   @returns - null */
+/**
+ * auth_login_redirect - provide default page re-direction when a user first logs in.
+ *  @param $login_opts - (array) array of user details
+ *  @returns - null
+ */
 function auth_login_redirect($login_opts = '') {
 	global $config;
 

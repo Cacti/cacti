@@ -1761,11 +1761,11 @@ function display_reports_items($report_id) {
 }
 
 function get_reports_page() {
-	return (is_realm_allowed(22) ? 'reports_admin.php' : 'reports_user.php');
+	return (is_realm_allowed(21) ? 'reports_admin.php' : 'reports_user.php');
 }
 
 function is_reports_admin() {
-	return (is_realm_allowed(22) ? true:false);
+	return (is_realm_allowed(21) ? true:false);
 }
 
 function reports() {
