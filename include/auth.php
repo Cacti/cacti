@@ -43,6 +43,7 @@ if (read_config_option('auth_method') == 0) {
 		array(read_config_option('admin_user')));
 
 	cacti_log('Admin User (' . read_config_option('admin_user') . ' vs ' . $admin_id . ')', true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+
 	if (!$admin_id) {
 		$admin_sql_query = 'SELECT TOP 1 id FROM (
 			SELECT ua.id
@@ -257,10 +258,10 @@ if (read_config_option('auth_method') != 0) {
 					SELECT realm_id
 					FROM user_auth_group_realm AS uagr
 					INNER JOIN user_auth_group_members AS uagm
-					ON uagr.group_id=uagm.group_id
+					ON uagr.group_id = uagm.group_id
 					INNER JOIN user_auth_group AS uag
-					ON uag.id=uagr.group_id
-					WHERE uag.enabled="on"
+					ON uag.id = uagr.group_id
+					WHERE uag.enabled = "on"
 					AND uagm.user_id = ?
 					AND uagr.realm_id = ?';
 
@@ -271,10 +272,6 @@ if (read_config_option('auth_method') != 0) {
 				) AS authorized';
 
 			$authorized = db_fetch_cell_prepared($auth_sql_query, $auth_sql_params);
-
-			if (!$authorized) {
-				auth_login_redirect();
-			}
 		} else {
 			$authorized = false;
 		}
@@ -283,9 +280,12 @@ if (read_config_option('auth_method') != 0) {
 			if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 				exit;
 			}
+
+			$auth_method = read_config_option('auth_method');
+
 			if (isset($_SERVER['HTTP_REFERER'])) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
-			} else {
+			} elseif ($auth_method != 2 && $auth_method > 0) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 
