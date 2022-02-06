@@ -376,10 +376,10 @@ class Ldap {
 		$this->referrals  = read_config_option('ldap_referrals');
 		$this->debug      = read_config_option('ldap_debug');
 
-		if ($this->debug == '' || $this->debug == 0) {
-			$this->debug = POLLER_VERBOSITY_HIGH;
-		} else {
+		if ($this->debug == 'on') {
 			$this->debug = POLLER_VERBOSITY_LOW;
+		} else {
+			$this->debug = POLLER_VERBOSITY_HIGH;
 		}
 
 		if (read_config_option('ldap_group_require') == 'on') {
@@ -826,7 +826,7 @@ class Ldap {
 
 		if (cacti_sizeof($connection['output'])) {
 			$this->RestoreCactiHandler();
-			return $output;
+			return $connection['output'];
 		} elseif ($connection['ldap_conn'] === false) {
 			$this->RestoreCactiHandler();
 			return LdapError::GetErrorDetails(LdapError::MissingLdapObject, false, $this->host);
