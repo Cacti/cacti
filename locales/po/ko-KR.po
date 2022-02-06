@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-02-03 20:27-0500\n"
+"POT-Creation-Date: 2022-02-06 12:08-0500\n"
 "PO-Revision-Date: 2022-02-03 20:56-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -680,7 +680,7 @@ msgstr "크기"
 #: data_sources.php:1702 data_sources.php:1703 data_templates.php:1195
 #: gprint_presets.php:437 graph_templates.php:901 host_templates.php:875
 #: include/global_settings.php:475 include/global_settings.php:834
-#: include/global_settings.php:1734 lib/api_automation.php:1438 links.php:404
+#: include/global_settings.php:1743 lib/api_automation.php:1438 links.php:404
 #: tree.php:2102 tree.php:2103 user_admin.php:2398 user_domains.php:767
 #: user_group_admin.php:1936 vdef.php:905
 msgid "No"
@@ -694,7 +694,7 @@ msgstr "아니오"
 #: data_source_profiles.php:1101 data_sources.php:1702 data_sources.php:1703
 #: data_templates.php:1195 gprint_presets.php:437 graph_templates.php:901
 #: host_templates.php:875 include/global_settings.php:476
-#: include/global_settings.php:833 include/global_settings.php:1733
+#: include/global_settings.php:833 include/global_settings.php:1742
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
 #: lib/installer.php:3424 links.php:404 tree.php:2102 tree.php:2103
 #: user_admin.php:2396 user_domains.php:763 user_domains.php:767
@@ -735,8 +735,8 @@ msgstr "템플릿"
 #: graphs_items.php:354 host.php:1533 host.php:1551 host.php:1568 host.php:1629
 #: lib/api_automation.php:150 lib/api_automation.php:168
 #: lib/api_automation.php:429 lib/api_automation.php:446
-#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2684
-#: lib/auth.php:2713 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
+#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2692
+#: lib/auth.php:2721 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
 #: lib/html_reports.php:877 lib/html_reports.php:881 lib/html_reports.php:992
 #: lib/html_reports.php:1002 lib/html_reports.php:1847 managers.php:482
 #: managers.php:735 user_admin.php:2655 user_admin.php:2848
@@ -764,10 +764,10 @@ msgstr "일부"
 #: include/global_form.php:2112 include/global_form.php:2154
 #: include/global_settings.php:572 include/global_settings.php:580
 #: include/global_settings.php:588 include/global_settings.php:1212
-#: include/global_settings.php:1808 lib/api_automation.php:151
+#: include/global_settings.php:1817 lib/api_automation.php:151
 #: lib/api_automation.php:430 lib/api_automation.php:447
-#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2687
-#: lib/auth.php:2716 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
+#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2695
+#: lib/auth.php:2724 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
 #: lib/html.php:2109 lib/html_form.php:331 lib/html_reports.php:888
 #: lib/html_reports.php:892 lib/html_reports.php:922 lib/html_reports.php:992
 #: lib/html_reports.php:998 lib/html_reports.php:1002 lib/html_reports.php:1010
@@ -961,8 +961,8 @@ msgstr "현재 비밀번호와 새 비밀번호를 입력하십시오. <br> 선�
 msgid "Please enter your new Cacti password."
 msgstr "현재 비밀번호와 새 비밀번호를 입력하십시오. <br> 선인장 암호."
 
-#: auth_changepassword.php:342 auth_login.php:831 auth_login.php:834
-#: include/global_settings.php:1642 lib/functions.php:4896
+#: auth_changepassword.php:342 auth_login.php:833 auth_login.php:836
+#: include/global_settings.php:1651 lib/functions.php:4897
 msgid "Username"
 msgstr "아이디"
 
@@ -984,7 +984,7 @@ msgstr "새 비밀번호 확인"
 msgid "Save"
 msgstr "저장"
 
-#: auth_changepassword.php:367 auth_login.php:913
+#: auth_changepassword.php:367 auth_login.php:915
 #, fuzzy, php-format
 msgid "Version %1$s | %2$s"
 msgstr "버전 %1$s | %2$s"
@@ -1024,94 +1024,94 @@ msgstr "%s은 (는) Web Server에 의해 인증되었지만 Cacti에는 템플�
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "LDAP 검색 오류 :  %s"
 
-#: auth_login.php:192 auth_login.php:667
+#: auth_login.php:194 auth_login.php:669
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP 오류 :  %s"
 
-#: auth_login.php:318 auth_login.php:658
+#: auth_login.php:320 auth_login.php:660
 #, fuzzy, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "액세스가 거부되었습니다. Cacti 관리자에게 연락하십시오."
 
-#: auth_login.php:345
+#: auth_login.php:347
 #, fuzzy, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Adminitrator."
 msgstr "액세스가 거부되었습니다. Cacti 관리자에게 연락하십시오."
 
-#: auth_login.php:375
+#: auth_login.php:377
 #, fuzzy
 msgid "Access Denied!  User account disabled."
 msgstr "액세스가 거부되었으며 사용자 계정이 비활성화되었습니다."
 
-#: auth_login.php:386
+#: auth_login.php:388
 #, fuzzy
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
 msgstr "이것이 오류라고 생각하면. Cacti 관리자에게 문의하십시오."
 
-#: auth_login.php:433
+#: auth_login.php:435
 #, fuzzy
 msgid "Access Denied!  No guest account Defined.  Please contact your Administrator."
 msgstr "액세스가 거부되었습니다. Cacti 관리자에게 연락하십시오."
 
-#: auth_login.php:536
+#: auth_login.php:538
 #, fuzzy
 msgid "Cacti Login Failure"
 msgstr "선인장 로그 지워짐"
 
-#: auth_login.php:543 include/auth.php:287 include/auth.php:289
+#: auth_login.php:545 include/auth.php:287 include/auth.php:289
 #: permission_denied.php:30 permission_denied.php:32
 #, fuzzy
 msgid "Login Again"
 msgstr "다시 로그인"
 
-#: auth_login.php:560
+#: auth_login.php:562
 #, fuzzy, php-format
 msgid "LDAP Search Error: %s"
 msgstr "LDAP 검색 오류 :  %s"
 
-#: auth_login.php:804 lib/html_tree.php:218
+#: auth_login.php:806 lib/html_tree.php:218
 #, fuzzy
 msgid "Login to Cacti"
 msgstr "Cacti에 로그인"
 
-#: auth_login.php:811
+#: auth_login.php:813
 msgid "User Login"
 msgstr "사용자 로그인"
 
-#: auth_login.php:825
+#: auth_login.php:827
 #, fuzzy
 msgid "Enter your Username and Password below"
 msgstr "아래에 사용자 이름과 암호를 입력하십시오"
 
-#: auth_login.php:839 include/global_form.php:1526 lib/functions.php:4897
+#: auth_login.php:841 include/global_form.php:1526 lib/functions.php:4898
 msgid "Password"
 msgstr "비밀번호"
 
-#: auth_login.php:851 include/global_settings.php:2085 lib/auth.php:462
+#: auth_login.php:853 include/global_settings.php:2094 lib/auth.php:462
 #: lib/auth.php:484 lib/auth.php:495 user_admin.php:2294
 msgid "Local"
 msgstr "로컬"
 
-#: auth_login.php:855 include/global_arrays.php:796 lib/auth.php:496
+#: auth_login.php:857 include/global_arrays.php:796 lib/auth.php:496
 msgid "LDAP"
 msgstr "LDAP"
 
-#: auth_login.php:873 user_admin.php:2289 user_admin.php:2378
+#: auth_login.php:875 user_admin.php:2289 user_admin.php:2378
 #: user_group_admin.php:682
 #, fuzzy
 msgid "Realm"
 msgstr "왕국"
 
-#: auth_login.php:890
+#: auth_login.php:892
 msgid "Keep me signed in"
 msgstr "로그인 유지"
 
-#: auth_login.php:896
+#: auth_login.php:898
 msgid "Login"
 msgstr "로그인"
 
-#: auth_login.php:908
+#: auth_login.php:910
 #, fuzzy
 msgid "Invalid User Name/Password Please Retype"
 msgstr "잘못된 사용자 이름 / 암호를 다시 입력하십시오."
@@ -1128,7 +1128,7 @@ msgid "User Account Details"
 msgstr "사용자 계정 정보"
 
 #: auth_profile.php:296 include/global_arrays.php:780
-#: include/global_settings.php:2463 lib/html.php:1929 lib/html.php:1951
+#: include/global_settings.php:2472 lib/html.php:1929 lib/html.php:1951
 #: lib/html.php:2451
 msgid "Tree View"
 msgstr "트리 보기"
@@ -1154,7 +1154,7 @@ msgid "The login name for this user."
 msgstr "이 사용자의 로그인 이름입니다."
 
 #: auth_profile.php:325 include/global_form.php:1510
-#: include/global_settings.php:1678 user_admin.php:2376 user_domains.php:496
+#: include/global_settings.php:1687 user_admin.php:2376 user_domains.php:496
 #: user_group_admin.php:682 utilities.php:919
 msgid "Full Name"
 msgstr "성명"
@@ -1336,7 +1336,7 @@ msgid "SNMP Name"
 msgstr "SNMP 이름"
 
 #: automation_devices.php:280 host.php:1582 include/global_form.php:1201
-#: include/global_settings.php:2080
+#: include/global_settings.php:2089
 msgid "Location"
 msgstr "위치"
 
@@ -1430,7 +1430,7 @@ msgstr "검색된 장치 제거"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:554 data_source_profiles.php:72 host.php:1809
-#: lib/functions.php:5242 lib/functions.php:5246 lib/html.php:1211
+#: lib/functions.php:5243 lib/functions.php:5247 lib/html.php:1211
 #: lib/html_reports.php:1633 lib/html_reports.php:1659
 #: lib/html_reports.php:1730 lib/html_reports.php:1731
 #: lib/html_reports.php:1732 pollers.php:1050 user_admin.php:2390
@@ -1450,7 +1450,7 @@ msgstr "복사"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1535 include/global_settings.php:1597 links.php:29
+#: include/global_arrays.php:1535 include/global_settings.php:1603 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:412
 #: user_group_admin.php:32
@@ -1593,7 +1593,7 @@ msgstr "활성화"
 #: include/global_settings.php:359 include/global_settings.php:1446
 #: include/global_settings.php:1460 include/global_settings.php:1473
 #: include/global_settings.php:1498 include/global_settings.php:1512
-#: include/global_settings.php:1596 include/global_settings.php:2286
+#: include/global_settings.php:1602 include/global_settings.php:2295
 #: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2527
 #: lib/html_reports.php:1849 lib/html_reports.php:1987 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
@@ -1899,8 +1899,8 @@ msgstr "%d 분"
 #: include/global_arrays.php:1519 include/global_settings.php:1514
 #: include/global_settings.php:1515 include/global_settings.php:1516
 #: include/global_settings.php:1517 include/global_settings.php:1518
-#: include/global_settings.php:2389 include/global_settings.php:2648
-#: include/global_settings.php:2649 include/global_settings.php:2650
+#: include/global_settings.php:2398 include/global_settings.php:2657
+#: include/global_settings.php:2658 include/global_settings.php:2659
 #: pollers.php:912 pollers.php:913
 #, php-format
 msgid "%d Minutes"
@@ -1929,8 +1929,8 @@ msgstr "%d 시간"
 #: include/global_arrays.php:1440 include/global_arrays.php:1441
 #: include/global_arrays.php:1442 include/global_settings.php:1520
 #: include/global_settings.php:1521 include/global_settings.php:1522
-#: include/global_settings.php:1523 include/global_settings.php:2652
-#: include/global_settings.php:2653
+#: include/global_settings.php:1523 include/global_settings.php:2661
+#: include/global_settings.php:2662
 #, php-format
 msgid "%d Hours"
 msgstr "%d 시간"
@@ -2370,7 +2370,7 @@ msgid "Idle"
 msgstr "게으른"
 
 #: automation_networks.php:1152 include/global_arrays.php:814
-#: include/global_arrays.php:1104 include/global_settings.php:2312
+#: include/global_arrays.php:1104 include/global_settings.php:2321
 #: lib/html_reports.php:1982
 msgid "Never"
 msgstr "안함"
@@ -2401,8 +2401,8 @@ msgstr "새로고침"
 #: include/global_arrays.php:1515 include/global_arrays.php:1516
 #: include/global_arrays.php:1517 include/global_settings.php:1162
 #: include/global_settings.php:1163 include/global_settings.php:1164
-#: include/global_settings.php:1165 include/global_settings.php:2385
-#: include/global_settings.php:2386 include/global_settings.php:2387
+#: include/global_settings.php:1165 include/global_settings.php:2394
+#: include/global_settings.php:2395 include/global_settings.php:2396
 #: pollers.php:906 pollers.php:907 pollers.php:908 pollers.php:909
 #: pollers.php:910
 #, fuzzy, php-format
@@ -2525,7 +2525,7 @@ msgstr "버전"
 msgid "Community"
 msgstr "커뮤니티"
 
-#: automation_snmp.php:536 lib/functions.php:4892
+#: automation_snmp.php:536 lib/functions.php:4893
 msgid "Port"
 msgstr "포트"
 
@@ -2864,7 +2864,7 @@ msgstr "ROOTConstellation name (optional)"
 msgid "No Tree Rules Found"
 msgstr "트리 규칙 없음"
 
-#: cactid.php:44 lib/functions.php:5503 lib/functions.php:5566 poller.php:353
+#: cactid.php:44 lib/functions.php:5504 lib/functions.php:5567 poller.php:353
 #: poller.php:477 poller.php:525 poller.php:541 poller.php:687 poller.php:785
 #: poller_automation.php:53 poller_boost.php:306
 #, fuzzy
@@ -4293,8 +4293,8 @@ msgstr "% d주의"
 
 #: data_source_profiles.php:812 include/global_arrays.php:718
 #: include/global_arrays.php:719 include/global_arrays.php:1356
-#: include/global_settings.php:2656 include/global_settings.php:2657
-#: include/global_settings.php:2658 rrdcleaner.php:519 rrdcleaner.php:520
+#: include/global_settings.php:2665 include/global_settings.php:2666
+#: include/global_settings.php:2667 rrdcleaner.php:519 rrdcleaner.php:520
 #, fuzzy, php-format
 msgid "%d Weeks"
 msgstr "% d 주"
@@ -4322,7 +4322,7 @@ msgstr "%d일"
 #: include/global_arrays.php:1416 include/global_arrays.php:1437
 #: include/global_arrays.php:1470 include/global_arrays.php:1479
 #: include/global_arrays.php:1507 include/global_settings.php:1263
-#: include/global_settings.php:1519 include/global_settings.php:2651
+#: include/global_settings.php:1519 include/global_settings.php:2660
 msgid "1 Hour"
 msgstr "1시간"
 
@@ -4586,7 +4586,7 @@ msgstr "이 데이터 템플릿에 주어진 이름입니다. 그래프 템플�
 #: data_sources.php:932 graph_view.php:726 graphs.php:1583
 #: include/global_arrays.php:877 include/global_arrays.php:926
 #: include/global_arrays.php:1573 include/global_arrays.php:1742
-#: lib/api_automation.php:425 lib/functions.php:4891 lib/html.php:2043
+#: lib/api_automation.php:425 lib/functions.php:4892 lib/html.php:2043
 #: lib/html.php:2075 lib/html_reports.php:1005 utilities.php:1638
 msgid "Device"
 msgstr "장치"
@@ -4642,7 +4642,7 @@ msgstr "외부"
 #: data_sources.php:1199 include/global_arrays.php:654
 #: include/global_arrays.php:1101 include/global_arrays.php:1464
 #: include/global_arrays.php:1500 include/global_arrays.php:1518
-#: include/global_settings.php:1513 include/global_settings.php:2388
+#: include/global_settings.php:1513 include/global_settings.php:2397
 msgid "1 Minute"
 msgstr "1분"
 
@@ -5395,7 +5395,7 @@ msgid "Select the Report to add the selected Graphs to."
 msgstr "선택한 그래프를 추가하려면 보고서를 선택하십시오."
 
 #: graph_view.php:902 include/global_arrays.php:1939
-#: include/global_settings.php:2459
+#: include/global_settings.php:2468
 msgid "Preview Mode"
 msgstr "RTL Mode"
 
@@ -6165,7 +6165,7 @@ msgstr "[% d 개 항목, % d 개 행]"
 msgid "Fail"
 msgstr "실패"
 
-#: host.php:943 lib/functions.php:4906 lib/functions.php:4911
+#: host.php:943 lib/functions.php:4907 lib/functions.php:4912
 msgid "Success"
 msgstr "성공"
 
@@ -6493,31 +6493,31 @@ msgstr "이 장치 템플릿을 사용하는 장치 수입니다."
 msgid "No Device Templates Found"
 msgstr "장치 템플릿을 찾을 수 없음"
 
-#: include/auth.php:170
+#: include/auth.php:171
 msgid "Not Logged In"
 msgstr "로그인하지 않았습니다."
 
-#: include/auth.php:171
+#: include/auth.php:172
 #, fuzzy
 msgid "You must be logged in to access this area of Cacti."
 msgstr "Cacti의이 영역에 액세스하려면 로그인해야합니다."
 
-#: include/auth.php:175
+#: include/auth.php:176
 #, fuzzy
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "치명적 : Cacti의이 영역에 액세스하려면 로그인해야합니다."
 
-#: include/auth.php:294 lib/functions.php:6475 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:6476 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "사용 권한이 거부되었습니다."
 
-#: include/auth.php:295 lib/functions.php:6476 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "이것이 오류라고 생각하면. Cacti 관리자에게 문의하십시오."
 
-#: include/auth.php:295 lib/functions.php:6476 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Cacti의이 섹션에 액세스하는 것은 허용되지 않습니다."
@@ -7255,8 +7255,8 @@ msgstr "매시간"
 #: include/global_arrays.php:752 include/global_arrays.php:753
 #: include/global_arrays.php:1752 include/global_arrays.php:1753
 #: include/global_arrays.php:1754 include/global_arrays.php:1755
-#: include/global_arrays.php:1756 include/global_settings.php:2287
-#: include/global_settings.php:2288
+#: include/global_arrays.php:1756 include/global_settings.php:2296
+#: include/global_settings.php:2297
 #, fuzzy, php-format
 msgid "Every %d Hours"
 msgstr "% d 시간마다"
@@ -9116,7 +9116,7 @@ msgstr "RRA 사양에서 행을 채우기 전에 필요한 샘플 수입니다. 
 msgid "How many generations data is kept in the RRA."
 msgstr "얼마나 많은 세대의 데이터가 RRA에 보관됩니다."
 
-#: include/global_form.php:307 include/global_settings.php:2409
+#: include/global_form.php:307 include/global_settings.php:2418
 #, fuzzy
 msgid "Default Timespan"
 msgstr "기본 시간 간격"
@@ -10568,7 +10568,7 @@ msgstr "데이터"
 msgid "Visual"
 msgstr "시각적"
 
-#: include/global_settings.php:44 lib/functions.php:4895 lib/functions.php:4900
+#: include/global_settings.php:44 lib/functions.php:4896 lib/functions.php:4901
 msgid "Authentication"
 msgstr "인증"
 
@@ -10610,11 +10610,11 @@ msgstr "그래프 글꼴"
 msgid "PHP Mail() Function"
 msgstr "PHP 메일 () 함수"
 
-#: include/global_settings.php:84 lib/functions.php:4878
+#: include/global_settings.php:84 lib/functions.php:4879
 msgid "Sendmail"
 msgstr "@ option"
 
-#: include/global_settings.php:85 lib/functions.php:4883
+#: include/global_settings.php:85 lib/functions.php:4884
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10945,7 +10945,7 @@ msgstr "선호하는 언어 프로세서"
 msgid "Cacti includes support for multiple alternate Language Translation Processors.  It will be default use the PHP built in support, but not all Linux variants includes built in Language Support.  If not selected, Cacti will choose the first one found."
 msgstr "Cacti는 여러 대체 언어 번역 프로세서에 대한 지원을 포함합니다. 기본적으로 PHP 내장 지원을 사용하지만 모든 Linux 변형에 내장 언어 지원이 포함되는 것은 아닙니다. 선택하지 않으면 Cacti가 가장 먼저 발견된 것을 선택합니다."
 
-#: include/global_settings.php:371 include/global_settings.php:2366
+#: include/global_settings.php:371 include/global_settings.php:2375
 #, fuzzy
 msgid "Date Display Format"
 msgstr "날짜 표시 형식"
@@ -10955,7 +10955,7 @@ msgstr "날짜 표시 형식"
 msgid "The System default date format to use in Cacti."
 msgstr "Cacti에서 사용할 시스템 기본 날짜 형식."
 
-#: include/global_settings.php:378 include/global_settings.php:2373
+#: include/global_settings.php:378 include/global_settings.php:2382
 msgid "Date Separator"
 msgstr "날짜 구분"
 
@@ -11478,11 +11478,11 @@ msgid "Theme Settings"
 msgstr "테마 설정"
 
 #: include/global_settings.php:809 include/global_settings.php:1019
-#: include/global_settings.php:2321
+#: include/global_settings.php:2330
 msgid "Theme"
 msgstr "테마"
 
-#: include/global_settings.php:810 include/global_settings.php:2322
+#: include/global_settings.php:810 include/global_settings.php:2331
 #, fuzzy
 msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr "당신의 선인장을 피부로 가꿀 수있는 테마 중 하나를 선택하십시오."
@@ -11521,22 +11521,22 @@ msgstr "자동 완성 행"
 msgid "The default number of rows to return from an autocomplete based select pattern match."
 msgstr "자동 완성 기반 선택 패턴 일치에서 반환 할 기본 행 수입니다."
 
-#: include/global_settings.php:850 include/global_settings.php:2541
+#: include/global_settings.php:850 include/global_settings.php:2550
 #, fuzzy
 msgid "Minimum Tree Width"
 msgstr "최소 길이"
 
-#: include/global_settings.php:851 include/global_settings.php:2542
+#: include/global_settings.php:851 include/global_settings.php:2551
 #, fuzzy
 msgid "The Minimum width of the Tree to contract to."
 msgstr "계약 할 Tree의 최소 너비입니다."
 
-#: include/global_settings.php:858 include/global_settings.php:2549
+#: include/global_settings.php:858 include/global_settings.php:2558
 #, fuzzy
 msgid "Maximum Tree Width"
 msgstr "최대 제목 길이"
 
-#: include/global_settings.php:859 include/global_settings.php:2550
+#: include/global_settings.php:859 include/global_settings.php:2559
 #, fuzzy
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
 msgstr "확장 할 트리의 최대 너비로, 그 후 트리 분기가 페이지에서 스크롤됩니다."
@@ -11758,11 +11758,11 @@ msgstr "Theme 기반의 폰트 컨트롤을 사용하지 않을 때, Pangon font
 msgid "Enter Valid Font Config Value"
 msgstr "유효한 글꼴 구성 값을 입력하십시오."
 
-#: include/global_settings.php:1030 include/global_settings.php:2566
+#: include/global_settings.php:1030 include/global_settings.php:2575
 msgid "Title Font Size"
 msgstr "제목 글자 크기"
 
-#: include/global_settings.php:1031 include/global_settings.php:2567
+#: include/global_settings.php:1031 include/global_settings.php:2576
 #, fuzzy
 msgid "The size of the font used for Graph Titles"
 msgstr "그래프 제목에 사용 된 글꼴의 크기"
@@ -11777,12 +11777,12 @@ msgstr "제목 글꼴 설정"
 msgid "The font to use for Graph Titles.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "그래프 제목에 사용할 글꼴입니다. 유효한 트루 타입 글꼴 파일이나 유효한 Pango font-config 값을 입력하십시오."
 
-#: include/global_settings.php:1045 include/global_settings.php:2579
+#: include/global_settings.php:1045 include/global_settings.php:2588
 #, fuzzy
 msgid "Legend Font Size"
 msgstr "범례 글꼴 크기"
 
-#: include/global_settings.php:1046 include/global_settings.php:2580
+#: include/global_settings.php:1046 include/global_settings.php:2589
 #, fuzzy
 msgid "The size of the font used for Graph Legend items"
 msgstr "그래프 범례 항목에 사용 된 글꼴 크기"
@@ -11797,12 +11797,12 @@ msgstr "범례 글꼴 설정"
 msgid "The font to use for Graph Legends.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "그래프 범례에 사용할 글꼴입니다. 유효한 트루 타입 글꼴 파일이나 유효한 Pango font-config 값을 입력하십시오."
 
-#: include/global_settings.php:1060 include/global_settings.php:2592
+#: include/global_settings.php:1060 include/global_settings.php:2601
 #, fuzzy
 msgid "Axis Font Size"
 msgstr "축 글꼴 크기"
 
-#: include/global_settings.php:1061 include/global_settings.php:2593
+#: include/global_settings.php:1061 include/global_settings.php:2602
 #, fuzzy
 msgid "The size of the font used for Graph Axis"
 msgstr "그래프 축에 사용 된 글꼴 크기"
@@ -11817,12 +11817,12 @@ msgstr "축 글꼴 설정"
 msgid "The font to use for Graph Axis items.  Enter either a valid True Type Font file or valid Pango font-config value."
 msgstr "그래프 축 항목에 사용할 글꼴입니다. 유효한 트루 타입 글꼴 파일이나 유효한 Pango font-config 값을 입력하십시오."
 
-#: include/global_settings.php:1075 include/global_settings.php:2605
+#: include/global_settings.php:1075 include/global_settings.php:2614
 #, fuzzy
 msgid "Unit Font Size"
 msgstr "단위 글꼴 크기"
 
-#: include/global_settings.php:1076 include/global_settings.php:2606
+#: include/global_settings.php:1076 include/global_settings.php:2615
 #, fuzzy
 msgid "The size of the font used for Graph Units"
 msgstr "그래프 단위에 사용 된 글꼴의 크기"
@@ -12322,7 +12322,7 @@ msgstr "자동 잠금 해제"
 msgid "An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Max of 1440 minutes (1 Day)"
 msgstr "몇 분이 지나면 계정의 잠금이 자동으로 해제됩니다. 올바른 암호를 입력하더라도이 기한이 만료 될 때까지 계정은 잠금 해제되지 않습니다. 최대 1440 분 (1 일)"
 
-#: include/global_settings.php:1524 include/global_settings.php:2654
+#: include/global_settings.php:1524 include/global_settings.php:2663
 msgid "1 Day"
 msgstr "1일"
 
@@ -12390,1102 +12390,1110 @@ msgstr "타임아웃"
 msgid "The Bind Timeout in seconds."
 msgstr "SMTP 시간 초과를 초 단위로 입력하십시오."
 
-#: include/global_settings.php:1577 user_domains.php:401
+#: include/global_settings.php:1577
+msgid "LDAP Debug Mode"
+msgstr ""
+
+#: include/global_settings.php:1578
+msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
+msgstr ""
+
+#: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
 msgstr "암호화"
 
-#: include/global_settings.php:1578
+#: include/global_settings.php:1584
 #, fuzzy
 msgid "Encryption that the server supports. NOTE: When using LDAP + TLS you must use version 3."
 msgstr "서버가 지원하는 암호화. TLS는 프로토콜 버전 3에서만 지원됩니다."
 
-#: include/global_settings.php:1584
+#: include/global_settings.php:1590
 #, fuzzy
 msgid "TLS Certificate Requirements"
 msgstr "TLS 인증서 요구 사항"
 
-#: include/global_settings.php:1585
+#: include/global_settings.php:1591
 #, fuzzy
 msgid "Should LDAP verify TLS Certificates when received by the Client."
 msgstr "클라이언트가 수신할 때 LDAP가 TLS 인증서를 확인해야 합니다."
 
-#: include/global_settings.php:1591 user_domains.php:408
+#: include/global_settings.php:1597 user_domains.php:408
 msgid "Referrals"
 msgstr "수입내역"
 
-#: include/global_settings.php:1592 user_domains.php:409
+#: include/global_settings.php:1598 user_domains.php:409
 #, fuzzy
 msgid "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches."
 msgstr "LDAP 참조를 활성화 또는 비활성화합니다. 사용 중지하면 검색 속도가 빨라질 수 있습니다."
 
-#: include/global_settings.php:1601 user_domains.php:415
+#: include/global_settings.php:1607 user_domains.php:415
 msgid "Mode"
 msgstr "모드"
 
-#: include/global_settings.php:1602
+#: include/global_settings.php:1608
 #, fuzzy
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgstr "cacti가 LDAP 서버에 대해 인증을 시도하는 모드. <blockquote> <i>검색하지 않음</i> - 고유 이름 (DN) 검색이 발생하지 않고 제공된 DN (고유 이름) 형식으로 바인딩을 시도합니다. <br><br> <i>익명 검색</i> - 익명 바인딩을 통해 LDAP 디렉토리에 대한 사용자 이름을 검색하여 사용자의 고유 이름 (DN)을 찾습니다. <br><br> <i>특정 검색</i> - 사용자의 고유 이름 (DN)을 찾기 위해 특정 식별 이름 (DN) 및 특정 암호를 통해 LDAP 디렉토리에 대한 사용자 이름을 검색하려고 시도합니다."
 
-#: include/global_settings.php:1608 user_domains.php:422
+#: include/global_settings.php:1614 user_domains.php:422
 #, fuzzy
 msgid "Distinguished Name (DN)"
 msgstr "고유 이름 (DN)"
 
-#: include/global_settings.php:1609 user_domains.php:423
+#: include/global_settings.php:1615 user_domains.php:423
 #, fuzzy
 msgid "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt.  This is only used when in \"No Searching\" mode."
 msgstr "고유 이름 구문 (예 : <i>&quot;&lt;username&gt; @ win2kdomain.local&quot;</i> 또는 OpenLDAP의 경우 : <i>&quot;uid = &lt;username&gt;, ou = people, dc = domain, dc = local&quot;)</i> &quot;&lt;username&gt;&quot;은 로그인 프롬프트에서 제공된 사용자 이름으로 대체됩니다. 이것은 &quot;No Searching&quot;모드 일 때만 사용됩니다."
 
-#: include/global_settings.php:1614 user_domains.php:429
+#: include/global_settings.php:1621 user_domains.php:429
 #, fuzzy
 msgid "Require Group Membership"
 msgstr "그룹 회원 가입 필요"
 
-#: include/global_settings.php:1615 user_domains.php:430
+#: include/global_settings.php:1622 user_domains.php:430
 #, fuzzy
 msgid "Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure."
 msgstr "사용자가 인증 할 그룹의 구성원이어야합니다. 이 기능을 사용하려면 그룹 설정을해야하며, 적절한 그룹 설정을하지 않으면 인증 실패가 발생할 수 있습니다."
 
-#: include/global_settings.php:1620 user_domains.php:435
+#: include/global_settings.php:1627 user_domains.php:435
 #, fuzzy
 msgid "LDAP Group Settings"
 msgstr "LDAP 그룹 설정"
 
-#: include/global_settings.php:1624 user_domains.php:439
+#: include/global_settings.php:1631 user_domains.php:439
 #, fuzzy
 msgid "Group Distinguished Name (DN)"
 msgstr "그룹 고유 이름 (DN)"
 
-#: include/global_settings.php:1625 user_domains.php:440
+#: include/global_settings.php:1632 user_domains.php:440
 #, fuzzy
 msgid "Distinguished Name of the group that user must have membership."
 msgstr "사용자가 회원이어야하는 그룹의 고유 이름."
 
-#: include/global_settings.php:1630 user_domains.php:446
+#: include/global_settings.php:1638 user_domains.php:446
 #, fuzzy
 msgid "Group Member Attribute"
 msgstr "그룹 구성원 속성"
 
-#: include/global_settings.php:1631 user_domains.php:447
+#: include/global_settings.php:1639 user_domains.php:447
 #, fuzzy
 msgid "Name of the attribute that contains the usernames of the members."
 msgstr "멤버의 사용자 이름을 포함하는 속성의 이름입니다."
 
-#: include/global_settings.php:1636 user_domains.php:453
+#: include/global_settings.php:1645 user_domains.php:453
 #, fuzzy
 msgid "Group Member Type"
 msgstr "그룹 회원 유형"
 
-#: include/global_settings.php:1637 user_domains.php:454
+#: include/global_settings.php:1646 user_domains.php:454
 #, fuzzy
 msgid "Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute."
 msgstr "사용자가 정의 된 그룹 구성원 속성에서 전체 고유 이름 또는 사용자 이름 만 사용하는지 정의합니다."
 
-#: include/global_settings.php:1641
+#: include/global_settings.php:1650
 #, fuzzy
 msgid "Distinguished Name"
 msgstr "고유 이름"
 
-#: include/global_settings.php:1646 user_domains.php:460
+#: include/global_settings.php:1655 user_domains.php:460
 #, fuzzy
 msgid "LDAP Specific Search Settings"
 msgstr "LDAP 관련 검색 설정"
 
-#: include/global_settings.php:1650 user_domains.php:464
+#: include/global_settings.php:1659 user_domains.php:464
 #, fuzzy
 msgid "Search Base"
 msgstr "검색 기준"
 
-#: include/global_settings.php:1651
+#: include/global_settings.php:1660
 #, fuzzy
 msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
 msgstr "<i>&#39;dc = win2kdomain, dc = local&#39;</i> 또는 <i>&#39;ou = people, dc = domain, dc = local&#39;</i> 과 같은 LDAP 디렉토리 검색을위한 기본 검색."
 
-#: include/global_settings.php:1656 user_domains.php:471
+#: include/global_settings.php:1665 user_domains.php:471
 msgid "Search Filter"
 msgstr "검색 필터"
 
-#: include/global_settings.php:1657
+#: include/global_settings.php:1666
 #, fuzzy
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
 msgstr "window : <i>&#39;(&amp; (objectclass = user) (objectcategory = user) (userPrincipalName = &lt;username&gt; *))&#39;</i> 또는 OpenLDAP의 경우와 같이 LDAP 디렉토리에서 사용자를 찾는 데 사용할 검색 필터 : <i>&#39;(&amp; (objectClass = 계정) (uid = &lt;사용자 이름&gt;)) &#39;</i> . &#39;&lt;username&gt;&#39;은 로그인 프롬프트에서 제공 한 사용자 이름으로 바뀝니다."
 
-#: include/global_settings.php:1662 user_domains.php:478
+#: include/global_settings.php:1671 user_domains.php:478
 #, fuzzy
 msgid "Search Distinguished Name (DN)"
 msgstr "고유 이름 검색 (DN)"
 
-#: include/global_settings.php:1663 user_domains.php:479
+#: include/global_settings.php:1672 user_domains.php:479
 #, fuzzy
 msgid "Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr "LDAP 디렉토리에 대한 특정 검색 바인딩의 고유 이름."
 
-#: include/global_settings.php:1668 user_domains.php:485
+#: include/global_settings.php:1677 user_domains.php:485
 #, fuzzy
 msgid "Search Password"
 msgstr "비밀번호 찾기"
 
-#: include/global_settings.php:1669 user_domains.php:486
+#: include/global_settings.php:1678 user_domains.php:486
 #, fuzzy
 msgid "Password for Specific Searching binding to the LDAP directory."
 msgstr "LDAP 디렉토리에 바인딩하는 특정 검색에 대한 비밀번호."
 
-#: include/global_settings.php:1674 user_domains.php:492
+#: include/global_settings.php:1683 user_domains.php:492
 #, fuzzy
 msgid "LDAP CN Settings"
 msgstr "LDAP 설정"
 
-#: include/global_settings.php:1679 user_domains.php:497
+#: include/global_settings.php:1688 user_domains.php:497
 #, fuzzy
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr "LDAP에서 가져온 새 사용자를 만들 때 성명을 대체 할 입력란입니다. (윈도우에서 : displayname)"
 
-#: include/global_settings.php:1684
+#: include/global_settings.php:1693
 msgid "Email"
 msgstr "이메일"
 
-#: include/global_settings.php:1685
+#: include/global_settings.php:1694
 #, fuzzy
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
 msgstr "LDAP에서 가져온 전자 메일을 대체 할 필드입니다. (창문에 : 메일)"
 
-#: include/global_settings.php:1692
+#: include/global_settings.php:1701
 #, fuzzy
 msgid "URL Linking"
 msgstr "URL 연결"
 
-#: include/global_settings.php:1697
+#: include/global_settings.php:1706
 #, fuzzy
 msgid "Server Base URL"
 msgstr "서버 기본 URL"
 
-#: include/global_settings.php:1698
+#: include/global_settings.php:1707
 #, fuzzy
 msgid "This is a the server location that will be used for links to the Cacti site. This should include the subdirectory if Cacti does not run from root folder."
 msgstr "이는 Cacti 사이트에 대한 링크에 사용될 서버 위치입니다."
 
-#: include/global_settings.php:1705
+#: include/global_settings.php:1714
 #, fuzzy
 msgid "Emailing Options"
 msgstr "이메일 옵션"
 
-#: include/global_settings.php:1709
+#: include/global_settings.php:1718
 #, fuzzy
 msgid "Notify Primary Admin of Issues"
 msgstr "문제의 기본 관리자에게 알립니다."
 
-#: include/global_settings.php:1710
+#: include/global_settings.php:1719
 #, fuzzy
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
 msgstr "Cacti 서버에 문제가 발생하는 경우 주 관리자에게 전자 메일로 통지해야합니까? 기본 관리자의 Cacti 사용자 계정은 Cacti 설정 페이지의 인증 탭에 지정되어 있습니다. 기본값은 &#39;admin&#39;계정입니다."
 
-#: include/global_settings.php:1715
+#: include/global_settings.php:1724
 #, fuzzy
 msgid "Test Email"
 msgstr "전자 메일 테스트"
 
-#: include/global_settings.php:1716
+#: include/global_settings.php:1725
 #, fuzzy
 msgid "This is a Email account used for sending a test message to ensure everything is working properly."
 msgstr "이것은 모든 것이 제대로 작동하는지 테스트 메시지를 보내는 데 사용되는 전자 메일 계정입니다."
 
-#: include/global_settings.php:1721
+#: include/global_settings.php:1730
 #, fuzzy
 msgid "Mail Services"
 msgstr "메일 서비스"
 
-#: include/global_settings.php:1722
+#: include/global_settings.php:1731
 #, fuzzy
 msgid "Which mail service to use in order to send mail"
 msgstr "메일을 보내기 위해 사용할 메일 서비스"
 
-#: include/global_settings.php:1728
+#: include/global_settings.php:1737
 #, fuzzy
 msgid "Ping Mail Server"
 msgstr "핑 메일 서버"
 
-#: include/global_settings.php:1729
+#: include/global_settings.php:1738
 #, fuzzy
 msgid "Ping the Mail Server before sending test Email?"
 msgstr "테스트 이메일을 보내기 전에 메일 서버에 핑 (ping) 하시겠습니까?"
 
-#: include/global_settings.php:1738 lib/html_reports.php:185
+#: include/global_settings.php:1747 lib/html_reports.php:185
 msgid "From Email Address"
 msgstr "보낸 사람 이메일 주소"
 
-#: include/global_settings.php:1739
+#: include/global_settings.php:1748
 #, fuzzy
 msgid "This is the Email address that the Email will appear from."
 msgstr "이메일이 표시 될 이메일 주소입니다."
 
-#: include/global_settings.php:1744 lib/html_reports.php:177
+#: include/global_settings.php:1753 lib/html_reports.php:177
 msgid "From Name"
 msgstr "발신자 이름"
 
-#: include/global_settings.php:1745
+#: include/global_settings.php:1754
 #, fuzzy
 msgid "This is the actual name that the Email will appear from."
 msgstr "이메일이 표시 될 실제 이름입니다."
 
-#: include/global_settings.php:1750
+#: include/global_settings.php:1759
 msgid "Word Wrap"
 msgstr "(c) 2000- 2005 Kate ìì±ì"
 
-#: include/global_settings.php:1751
+#: include/global_settings.php:1760
 #, fuzzy
 msgid "This is how many characters will be allowed before a line in the Email is automatically word wrapped. (0 = Disabled)"
 msgstr "전자 메일의 줄이 자동으로 줄 바꿈되기 전에 허용되는 문자 수입니다. (0 = 사용 안 함)"
 
-#: include/global_settings.php:1758
+#: include/global_settings.php:1767
 #, fuzzy
 msgid "Sendmail Options"
 msgstr "센드 메일 옵션"
 
-#: include/global_settings.php:1763 lib/functions.php:4878
+#: include/global_settings.php:1772 lib/functions.php:4879
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "센드 메일 경로"
 
-#: include/global_settings.php:1764
+#: include/global_settings.php:1773
 #, fuzzy
 msgid "This is the path to sendmail on your server. (Only used if Sendmail is selected as the Mail Service)"
 msgstr "이것은 서버에서 sendmail에 대한 경로입니다. (센드 메일이 메일 서비스로 선택된 경우에만 사용됨)"
 
-#: include/global_settings.php:1772
+#: include/global_settings.php:1781
 #, fuzzy
 msgid "SMTP Options"
 msgstr "SMTP 옵션"
 
-#: include/global_settings.php:1777
+#: include/global_settings.php:1786
 msgid "SMTP Hostname"
 msgstr "SMTP 호스트 이름"
 
-#: include/global_settings.php:1778
+#: include/global_settings.php:1787
 #, fuzzy
 msgid "This is the hostname/IP of the SMTP Server you will send the Email to. For failover, separate your hosts using a semi-colon."
 msgstr "이것은 전자 메일을 보낼 SMTP 서버의 호스트 이름 / IP입니다. 페일 오버의 경우 호스트를 세미콜론으로 구분하십시오."
 
-#: include/global_settings.php:1784
+#: include/global_settings.php:1793
 msgid "SMTP Port"
 msgstr "SMTP Port"
 
-#: include/global_settings.php:1785
+#: include/global_settings.php:1794
 #, fuzzy
 msgid "The port on the SMTP Server to use."
 msgstr "사용할 SMTP 서버의 포트입니다."
 
-#: include/global_settings.php:1792
+#: include/global_settings.php:1801
 msgid "SMTP Username"
 msgstr "SMTP ID"
 
-#: include/global_settings.php:1793
+#: include/global_settings.php:1802
 #, fuzzy
 msgid "The username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "SMTP를 통해 보낼 때 인증 할 사용자 이름입니다. 인증이 필요하지 않으면 비워 둡니다."
 
-#: include/global_settings.php:1798
+#: include/global_settings.php:1807
 msgid "SMTP Password"
 msgstr "SMTP 비밀번호"
 
-#: include/global_settings.php:1799
+#: include/global_settings.php:1808
 #, fuzzy
 msgid "The password to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
 msgstr "SMTP를 통해 보낼 때 인증 할 암호입니다. 인증이 필요하지 않으면 비워 둡니다."
 
-#: include/global_settings.php:1804
+#: include/global_settings.php:1813
 #, fuzzy
 msgid "SMTP Security"
 msgstr "SMTP 보안"
 
-#: include/global_settings.php:1805
+#: include/global_settings.php:1814
 #, fuzzy
 msgid "The encryption method to use for the Email."
 msgstr "전자 메일에 사용할 암호화 방법입니다."
 
-#: include/global_settings.php:1809
+#: include/global_settings.php:1818
 msgid "SSL"
 msgstr "SSL"
 
-#: include/global_settings.php:1810
+#: include/global_settings.php:1819
 msgid "TLS"
 msgstr "Tls"
 
-#: include/global_settings.php:1815
+#: include/global_settings.php:1824
 #, fuzzy
 msgid "SMTP Timeout"
 msgstr "SMTP 시간 초과"
 
-#: include/global_settings.php:1816
+#: include/global_settings.php:1825
 #, fuzzy
 msgid "Please enter the SMTP timeout in seconds."
 msgstr "SMTP 시간 초과를 초 단위로 입력하십시오."
 
-#: include/global_settings.php:1823
+#: include/global_settings.php:1832
 #, fuzzy
 msgid "Reporting Presets"
 msgstr "프리셋보고"
 
-#: include/global_settings.php:1828
+#: include/global_settings.php:1837
 #, fuzzy
 msgid "Default Graph Image Format"
 msgstr "기본 그래프 이미지 형식"
 
-#: include/global_settings.php:1829
+#: include/global_settings.php:1838
 #, fuzzy
 msgid "When creating a new report, what image type should be used for the inline graphs."
 msgstr "새 보고서를 만들 때 어떤 이미지 유형을 인라인 그래프에 사용해야합니다."
 
-#: include/global_settings.php:1835
+#: include/global_settings.php:1844
 #, fuzzy
 msgid "Maximum E-Mail Size"
 msgstr "최대 전자 메일 크기"
 
-#: include/global_settings.php:1836
+#: include/global_settings.php:1845
 #, fuzzy
 msgid "The maximum size of the E-Mail message including all attachements."
 msgstr "모든 첨부 파일을 포함하는 전자 메일 메시지의 최대 크기입니다."
 
-#: include/global_settings.php:1842
+#: include/global_settings.php:1851
 #, fuzzy
 msgid "Poller Logging Level for Cacti Reporting"
 msgstr "Cacti보고를위한 폴러 로깅 수준"
 
-#: include/global_settings.php:1843
+#: include/global_settings.php:1852
 #, fuzzy
 msgid "What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr "로그 파일에 어떤 레벨의 상세 정보를 보내고 싶습니까? 경고 : NONE 또는 LOW 이외의 다른 상태로두면 디스크 공간이 빠르게 소모 될 수 있습니다."
 
-#: include/global_settings.php:1849
+#: include/global_settings.php:1858
 #, fuzzy
 msgid "Enable Lotus Notes (R) tweak"
 msgstr "Lotus Notes (R) 비틀기 사용 설정"
 
-#: include/global_settings.php:1850
+#: include/global_settings.php:1859
 #, fuzzy
 msgid "Enable code tweak for specific handling of Lotus Notes Mail Clients."
 msgstr "Lotus Notes 메일 클라이언트의 특정 처리를 위해 코드 비틀기를 활성화하십시오."
 
-#: include/global_settings.php:1855
+#: include/global_settings.php:1864
 #, fuzzy
 msgid "DNS Options"
 msgstr "DNS 옵션"
 
-#: include/global_settings.php:1860
+#: include/global_settings.php:1869
 #, fuzzy
 msgid "Primary DNS IP Address"
 msgstr "기본 DNS IP 주소"
 
-#: include/global_settings.php:1861
+#: include/global_settings.php:1870
 #, fuzzy
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
 msgstr "역방향 조회에 사용할 기본 DNS IP 주소를 입력하십시오."
 
-#: include/global_settings.php:1867
+#: include/global_settings.php:1876
 #, fuzzy
 msgid "Secondary DNS IP Address"
 msgstr "보조 DNS IP 주소"
 
-#: include/global_settings.php:1868
+#: include/global_settings.php:1877
 #, fuzzy
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
 msgstr "역방향 조회에 사용할 보조 DNS IP 주소를 입력하십시오."
 
-#: include/global_settings.php:1874
+#: include/global_settings.php:1883
 #, fuzzy
 msgid "DNS Timeout"
 msgstr "DNS 시간 초과"
 
-#: include/global_settings.php:1875
+#: include/global_settings.php:1884
 #, fuzzy
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
 msgstr "DNS 시간 초과를 밀리 초 단위로 입력하십시오. Cacti는 PHP 기반 DNS 분석기를 사용합니다."
 
-#: include/global_settings.php:1884
+#: include/global_settings.php:1893
 #, fuzzy
 msgid "On-demand RRD Update Settings"
 msgstr "주문형 RRD 업데이트 설정"
 
-#: include/global_settings.php:1889
+#: include/global_settings.php:1898
 #, fuzzy
 msgid "Enable On-demand RRD Updating"
 msgstr "주문형 RRD 업데이트 활성화"
 
-#: include/global_settings.php:1890
+#: include/global_settings.php:1899
 #, fuzzy
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
 msgstr "Boost가 Cacti에서 주문형 RRD 업데이트를 활성화해야합니까? 사용하지 않으면이 변경 사항은 다음 폴링주기 이후에 적용됩니다. 원격 데이터 수집기가 있으면이 설정이 켜져 있어야합니다."
 
-#: include/global_settings.php:1895
+#: include/global_settings.php:1904
 #, fuzzy
 msgid "System Level RRD Updater"
 msgstr "시스템 수준 RRD 업데이터"
 
-#: include/global_settings.php:1896
+#: include/global_settings.php:1905
 #, fuzzy
 msgid "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
 msgstr "RRD 온 디맨드 업데이트를 삭제하기 전에 폴러 실행이 항상 통과해야합니다."
 
-#: include/global_settings.php:1901
+#: include/global_settings.php:1910
 #, fuzzy
 msgid "How Often Should Boost Update All RRDs"
 msgstr "얼마나 자주 모든 RRD를 향상시켜야 하는가"
 
-#: include/global_settings.php:1902
+#: include/global_settings.php:1911
 #, fuzzy
 msgid "When you enable boost, your RRD files are only updated when they are requested by a user, or when this time period elapses."
 msgstr "부스트 기능을 활성화하면 RRD 파일은 사용자가 요청하거나이 기간이 경과 한 경우에만 업데이트됩니다."
 
-#: include/global_settings.php:1908
+#: include/global_settings.php:1917
 #, fuzzy
 msgid "Number of Boost Processes"
 msgstr "부스트 프로세스 수"
 
-#: include/global_settings.php:1909
+#: include/global_settings.php:1918
 #, fuzzy
 msgid "The number of concurrent boost processes to use to use to process all of the RRDs in the boost table."
 msgstr "부스트 테이블의 모든 RRD를 처리하는 데 사용할 동시 부스트 프로세스 수입니다."
 
-#: include/global_settings.php:1913 include/global_settings.php:2023
+#: include/global_settings.php:1922 include/global_settings.php:2032
 #, fuzzy
 msgid "1 Process"
 msgstr "1 프로세스"
 
-#: include/global_settings.php:1914 include/global_settings.php:1915
-#: include/global_settings.php:1916 include/global_settings.php:1917
-#: include/global_settings.php:1918 include/global_settings.php:1919
-#: include/global_settings.php:1920 include/global_settings.php:1921
-#: include/global_settings.php:1922 include/global_settings.php:1923
-#: include/global_settings.php:1924 include/global_settings.php:1925
-#: include/global_settings.php:1926 include/global_settings.php:1927
-#: include/global_settings.php:1928 include/global_settings.php:1929
-#: include/global_settings.php:1930 include/global_settings.php:1931
-#: include/global_settings.php:1932 include/global_settings.php:2024
-#: include/global_settings.php:2025 include/global_settings.php:2026
-#: include/global_settings.php:2027 include/global_settings.php:2028
-#: include/global_settings.php:2029 include/global_settings.php:2030
-#: include/global_settings.php:2031 include/global_settings.php:2032
-#: include/global_settings.php:2033 include/global_settings.php:2034
-#: include/global_settings.php:2035 include/global_settings.php:2036
-#: include/global_settings.php:2037 include/global_settings.php:2038
-#: include/global_settings.php:2039 include/global_settings.php:2040
-#: include/global_settings.php:2041 include/global_settings.php:2042
+#: include/global_settings.php:1923 include/global_settings.php:1924
+#: include/global_settings.php:1925 include/global_settings.php:1926
+#: include/global_settings.php:1927 include/global_settings.php:1928
+#: include/global_settings.php:1929 include/global_settings.php:1930
+#: include/global_settings.php:1931 include/global_settings.php:1932
+#: include/global_settings.php:1933 include/global_settings.php:1934
+#: include/global_settings.php:1935 include/global_settings.php:1936
+#: include/global_settings.php:1937 include/global_settings.php:1938
+#: include/global_settings.php:1939 include/global_settings.php:1940
+#: include/global_settings.php:1941 include/global_settings.php:2033
+#: include/global_settings.php:2034 include/global_settings.php:2035
+#: include/global_settings.php:2036 include/global_settings.php:2037
+#: include/global_settings.php:2038 include/global_settings.php:2039
+#: include/global_settings.php:2040 include/global_settings.php:2041
+#: include/global_settings.php:2042 include/global_settings.php:2043
+#: include/global_settings.php:2044 include/global_settings.php:2045
+#: include/global_settings.php:2046 include/global_settings.php:2047
+#: include/global_settings.php:2048 include/global_settings.php:2049
+#: include/global_settings.php:2050 include/global_settings.php:2051
 #, fuzzy, php-format
 msgid "%d Processes"
 msgstr "프로세스 % d 개"
 
-#: include/global_settings.php:1936
+#: include/global_settings.php:1945
 #, fuzzy
 msgid "Maximum Records"
 msgstr "최대 레코드"
 
-#: include/global_settings.php:1937
+#: include/global_settings.php:1946
 #, fuzzy
 msgid "If the boost output table exceeds this size, in records, an update will take place."
 msgstr "부스트 출력 테이블이이 크기를 초과하면 레코드에서 업데이트가 수행됩니다."
 
-#: include/global_settings.php:1944
+#: include/global_settings.php:1953
 #, fuzzy
 msgid "Maximum Data Source Items Per Pass"
 msgstr "합격 당 최대 데이터 소스 항목"
 
-#: include/global_settings.php:1945
+#: include/global_settings.php:1954
 #, fuzzy
 msgid "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be retrieved in one pass.  Please be careful not to set too high as graphing performance during major updates can be compromised.  If you encounter graphing or polling slowness during updates, lower this number.  The default value is 50000."
 msgstr "성능을 최적화하려면 부스트 RRD 업데이터는 한 번에 얼마나 많은 데이터 소스 항목을 검색해야 하는지를 알아야합니다. 주요 업데이트 중 그래프 성능이 저하 될 수 있으므로 너무 높게 설정하지 않도록주의하십시오. 업데이트 도중 그래프 나 폴링 속도가 느려지는 경우이 숫자를 줄입니다. 기본값은 50000입니다."
 
-#: include/global_settings.php:1951
+#: include/global_settings.php:1960
 #, fuzzy
 msgid "Maximum Argument Length"
 msgstr "최대 인수 길이"
 
-#: include/global_settings.php:1952
+#: include/global_settings.php:1961
 #, fuzzy
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
 msgstr "부스트가 RRDtool에 업데이트 명령을 보내면 운영 체제의 최대 인수 길이를 초과하지 않아야합니다. 이는 운영 체제 및 커널 수준에 따라 다릅니다. 예 : Windows 2000 &lt;= 2048, FreeBSD &lt;= 65535, Linux 2.6.22-- &lt;= 131072, Linux 2.6.23 ++ 무제한"
 
-#: include/global_settings.php:1959
+#: include/global_settings.php:1968
 #, fuzzy
 msgid "Memory Limit for Boost and Poller"
 msgstr "부스트 및 폴러에 대한 메모리 제한"
 
-#: include/global_settings.php:1960
+#: include/global_settings.php:1969
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
 msgstr "Cacti Poller 및 Boosts Poller의 최대 메모리 양"
 
-#: include/global_settings.php:1966
+#: include/global_settings.php:1975
 #, fuzzy
 msgid "Maximum RRD Update Script Run Time"
 msgstr "최대 RRD 업데이트 스크립트 실행 시간"
 
-#: include/global_settings.php:1967
+#: include/global_settings.php:1976
 #, fuzzy
 msgid "If the boost poller excceds this runtime, a warning will be placed in the cacti log,"
 msgstr "부스트 폴러가이 런타임을 실행하면 선인장 로그에 경고가 표시되고,"
 
-#: include/global_settings.php:1973
+#: include/global_settings.php:1982
 #, fuzzy
 msgid "Enable direct population of poller_output_boost table"
 msgstr "poller_output_boost 테이블의 직접 채우기 활성화"
 
-#: include/global_settings.php:1974
+#: include/global_settings.php:1983
 #, fuzzy
 msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
 msgstr "폴링 출력 향상에 레코드를 직접 삽입 할 수 있으므로 각 폴링 사이클의 시간이 25 % 단축됩니다."
 
-#: include/global_settings.php:1979
+#: include/global_settings.php:1988
 #, fuzzy
 msgid "Boost Debug Log"
 msgstr "디버그 로그 부스트"
 
-#: include/global_settings.php:1980
+#: include/global_settings.php:1989
 #, fuzzy
 msgid "If this field is non-blank, Boost will log RRDupdate output from the boost\tpoller process."
 msgstr "이 필드가 비어 있지 않으면 Boost는 부스트 폴러 프로세스의 RRDupdate 출력을 기록합니다."
 
-#: include/global_settings.php:1987 utilities.php:2489
+#: include/global_settings.php:1996 utilities.php:2489
 #, fuzzy
 msgid "Image Caching"
 msgstr "이미지 캐싱"
 
-#: include/global_settings.php:1992
+#: include/global_settings.php:2001
 #, fuzzy
 msgid "Enable Image Caching"
 msgstr "이미지 캐싱 사용"
 
-#: include/global_settings.php:1993
+#: include/global_settings.php:2002
 #, fuzzy
 msgid "Should image caching be enabled?"
 msgstr "이미지 캐싱을 사용해야합니까?"
 
-#: include/global_settings.php:1998
+#: include/global_settings.php:2007
 #, fuzzy
 msgid "Location for Image Files"
 msgstr "이미지 파일 위치"
 
-#: include/global_settings.php:1999
+#: include/global_settings.php:2008
 #, fuzzy
 msgid "Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire."
 msgstr "Boost가 이미지 파일을 저장할 위치를 지정하십시오. 이 파일은 만료 될 때 폴러가 자동으로 제거합니다."
 
-#: include/global_settings.php:2007
+#: include/global_settings.php:2016
 #, fuzzy
 msgid "Data Sources Statistics"
 msgstr "데이터 출처 통계"
 
-#: include/global_settings.php:2012
+#: include/global_settings.php:2021
 #, fuzzy
 msgid "Enable Data Source Statistics Collection"
 msgstr "데이터 원본 통계 수집 사용"
 
-#: include/global_settings.php:2013
+#: include/global_settings.php:2022
 #, fuzzy
 msgid "Should Data Source Statistics be collected for this Cacti system?"
 msgstr "이 Cacti 시스템에 대해 데이터 소스 통계를 수집해야합니까?"
 
-#: include/global_settings.php:2018
+#: include/global_settings.php:2027
 #, fuzzy
 msgid "Number of DSStats Processes"
 msgstr "부스트 프로세스 수"
 
-#: include/global_settings.php:2019
+#: include/global_settings.php:2028
 #, fuzzy
 msgid "The number of concurrent DSStats processes to use to use to process all of the Data Sources."
 msgstr "부스트 테이블의 모든 RRD를 처리하는 데 사용할 동시 부스트 프로세스 수입니다."
 
-#: include/global_settings.php:2046
+#: include/global_settings.php:2055
 #, fuzzy
 msgid "Daily Update Frequency"
 msgstr "일일 업데이트 빈도"
 
-#: include/global_settings.php:2047
+#: include/global_settings.php:2056
 #, fuzzy
 msgid "How frequent should Daily Stats be updated?"
 msgstr "Daily Stats를 얼마나 자주 업데이트해야합니까?"
 
-#: include/global_settings.php:2053
+#: include/global_settings.php:2062
 #, fuzzy
 msgid "Hourly Average Window"
 msgstr "시간당 평균 윈도우"
 
-#: include/global_settings.php:2054
+#: include/global_settings.php:2063
 #, fuzzy
 msgid "The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables"
 msgstr "시간당 평균을 나타내는 연속 시간 수입니다. 너무 높은 설정은 매우 큰 메모리 테이블을 초래할 수 있음을 명심하십시오"
 
-#: include/global_settings.php:2060
+#: include/global_settings.php:2069
 #, fuzzy
 msgid "Maintenance Time"
 msgstr "유지 보수 시간"
 
-#: include/global_settings.php:2061
+#: include/global_settings.php:2070
 #, fuzzy
 msgid "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]"
 msgstr "Weekly, Monthly, Yearly Data는 어느 시간대에 업데이트해야합니까? 형식은 HH입니다. MM [am / pm]"
 
-#: include/global_settings.php:2068
+#: include/global_settings.php:2077
 #, fuzzy
 msgid "Memory Limit for Data Source Statistics Data Collector"
 msgstr "데이터 원본 통계 데이터 수집기의 메모리 제한"
 
-#: include/global_settings.php:2069
+#: include/global_settings.php:2078
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr "Cacti Poller 및 Data Source Statistics Poller의 최대 메모리 양"
 
-#: include/global_settings.php:2075
+#: include/global_settings.php:2084
 #, fuzzy
 msgid "Data Storage Settings"
 msgstr "데이터 저장소 설정"
 
-#: include/global_settings.php:2081
+#: include/global_settings.php:2090
 #, fuzzy
 msgid "Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server."
 msgstr "RRD가 로컬에 저장되거나 외부 RRDtool 프록시 서버에 의해 처리되는 경우 선택하십시오."
 
-#: include/global_settings.php:2086 include/global_settings.php:2095
+#: include/global_settings.php:2095 include/global_settings.php:2104
 #, fuzzy
 msgid "RRDtool Proxy Server"
 msgstr "RRDtool 프록시 서버"
 
-#: include/global_settings.php:2090
+#: include/global_settings.php:2099
 #, fuzzy
 msgid "Structured RRD Paths"
 msgstr "구조화 된 RRD 경로"
 
-#: include/global_settings.php:2091
+#: include/global_settings.php:2100
 #, fuzzy
 msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
 msgstr "각 호스트 RRD 파일에 별도의 하위 폴더를 사용하십시오. RRD 파일의 이름은 &lt;path_cacti&gt; /rra/host_id/local_data_id.rrd가됩니다."
 
-#: include/global_settings.php:2100 include/global_settings.php:2132
+#: include/global_settings.php:2109 include/global_settings.php:2141
 msgid "Proxy Server"
 msgstr "프록시 서버"
 
-#: include/global_settings.php:2101
+#: include/global_settings.php:2110
 #, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
 msgstr "RRDtool 프록시 서버의 DNS 호스트 이름 또는 IP 주소입니다."
 
-#: include/global_settings.php:2106 include/global_settings.php:2138
+#: include/global_settings.php:2115 include/global_settings.php:2147
 #, fuzzy
 msgid "Proxy Port Number"
 msgstr "프록시 포트 번호"
 
-#: include/global_settings.php:2107
+#: include/global_settings.php:2116
 #, fuzzy
 msgid "TCP port for encrypted communication."
 msgstr "암호화 된 통신을위한 TCP 포트."
 
-#: include/global_settings.php:2114 include/global_settings.php:2146
+#: include/global_settings.php:2123 include/global_settings.php:2155
 #: utilities.php:282
 #, fuzzy
 msgid "RSA Fingerprint"
 msgstr "RSA 지문"
 
-#: include/global_settings.php:2115
+#: include/global_settings.php:2124
 #, fuzzy
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
 msgstr "프록시가 사용하고있는 현재 공용 RSA 키의 지문. 트러스트 된 연결을 설정하는 데 필요합니다."
 
-#: include/global_settings.php:2122
+#: include/global_settings.php:2131
 #, fuzzy
 msgid "RRDtool Proxy Server - Backup"
 msgstr "RRDtool 프록시 서버 - 백업"
 
-#: include/global_settings.php:2127
+#: include/global_settings.php:2136
 msgid "Load Balancing"
 msgstr "내결함성"
 
-#: include/global_settings.php:2128
+#: include/global_settings.php:2137
 #, fuzzy
 msgid "If both main and backup proxy are receivable this option allows to spread all requests against RRDtool."
 msgstr "주 및 백업 프록시를 모두받을 수있는 경우이 옵션을 사용하면 RRDtool에 대한 모든 요청을 분산시킬 수 있습니다."
 
-#: include/global_settings.php:2133
+#: include/global_settings.php:2142
 #, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode."
 msgstr "프록시가 MSR 모드에서 실행중인 경우 RRDtool 백업 프록시 서버의 DNS 호스트 이름 또는 IP 주소입니다."
 
-#: include/global_settings.php:2139
+#: include/global_settings.php:2148
 #, fuzzy
 msgid "TCP port for encrypted communication with the backup proxy."
 msgstr "백업 프록시와의 암호화 된 통신을위한 TCP 포트."
 
-#: include/global_settings.php:2147
+#: include/global_settings.php:2156
 #, fuzzy
 msgid "The fingerprint of the current public RSA key the backup proxy is using. This required to establish a trusted connection."
 msgstr "백업 프록시가 사용중인 현재 공용 RSA 키의 지문. 신뢰할 수있는 연결을 설정하는 데 필요합니다."
 
-#: include/global_settings.php:2156
+#: include/global_settings.php:2165
 #, fuzzy
 msgid "Spike Kill Settings"
 msgstr "스파이크 죽이기 설정"
 
-#: include/global_settings.php:2161
+#: include/global_settings.php:2170
 #, fuzzy
 msgid "Removal Method"
 msgstr "제거 방법"
 
-#: include/global_settings.php:2162
+#: include/global_settings.php:2171
 #, fuzzy
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
 msgstr "두 가지 제거 방법이 있습니다. 첫 번째 표준 편차는 샘플의 평균으로부터 X 표준 편차만큼 떨어져있는 샘플을 제거합니다. 두 번째 방법 인 분산은 분산 평균보다 X % 많은 샘플을 제거합니다. 분산 방법은 특정 수의 &#39;아웃 라이어&#39;를 고려합니다. 이들은 분산 평균 계산에서 제외해야하는 예외적 인 샘플입니다 (예 : 스파이크)."
 
-#: include/global_settings.php:2166
+#: include/global_settings.php:2175
 #, fuzzy
 msgid "Standard Deviation"
 msgstr "표준 편차"
 
-#: include/global_settings.php:2167
+#: include/global_settings.php:2176
 #, fuzzy
 msgid "Variance Based w/Outliers Removed"
 msgstr "차이가 제거 된 Outliers가 제거 된 분산"
 
-#: include/global_settings.php:2171 lib/html.php:2199
+#: include/global_settings.php:2180 lib/html.php:2199
 #, fuzzy
 msgid "Replacement Method"
 msgstr "교체 방법"
 
-#: include/global_settings.php:2172
+#: include/global_settings.php:2181
 #, fuzzy
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "세 가지 대체 방법이 있습니다. 첫 번째 방법은 스파이크를 문제의 데이터 소스 평균으로 바꿉니다. 두 번째 방법은 스파이크를 &#39;NaN&#39;으로 바꿉니다. 마지막으로 스파이크를 마지막으로 발견 된 양호한 값으로 대체합니다."
 
-#: include/global_settings.php:2176 lib/html.php:2195
+#: include/global_settings.php:2185 lib/html.php:2195
 msgid "Average"
 msgstr "평균"
 
-#: include/global_settings.php:2177 lib/html.php:2196
+#: include/global_settings.php:2186 lib/html.php:2196
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN"
 
-#: include/global_settings.php:2178 lib/html.php:2197
+#: include/global_settings.php:2187 lib/html.php:2197
 #, fuzzy
 msgid "Last Known Good"
 msgstr "마지막으로 성공한 좋은 점"
 
-#: include/global_settings.php:2182
+#: include/global_settings.php:2191
 #, fuzzy
 msgid "Number of Standard Deviations"
 msgstr "표준 편차의 수"
 
-#: include/global_settings.php:2183
+#: include/global_settings.php:2192
 #, fuzzy
 msgid "Any value that is this many standard deviations above the average will be excluded.  A good number will be dependent on the type of data to be operated on.  We recommend a number no lower than 5 Standard Deviations."
 msgstr "평균보다 많은 표준 편차 인 값은 제외됩니다. 좋은 숫자는 조작 할 데이터 유형에 따라 달라집니다. 5 표준 편차보다 낮은 숫자를 권장합니다."
 
-#: include/global_settings.php:2187 include/global_settings.php:2188
-#: include/global_settings.php:2189 include/global_settings.php:2190
-#: include/global_settings.php:2191 include/global_settings.php:2192
-#: include/global_settings.php:2193 include/global_settings.php:2194
-#: include/global_settings.php:2195 include/global_settings.php:2196
-#: include/global_settings.php:2197 include/global_settings.php:2198
-#: include/global_settings.php:2199
+#: include/global_settings.php:2196 include/global_settings.php:2197
+#: include/global_settings.php:2198 include/global_settings.php:2199
+#: include/global_settings.php:2200 include/global_settings.php:2201
+#: include/global_settings.php:2202 include/global_settings.php:2203
+#: include/global_settings.php:2204 include/global_settings.php:2205
+#: include/global_settings.php:2206 include/global_settings.php:2207
+#: include/global_settings.php:2208
 #, fuzzy, php-format
 msgid "%d Standard Deviations"
 msgstr "% d 표준 편차"
 
-#: include/global_settings.php:2203 lib/html.php:2211
+#: include/global_settings.php:2212 lib/html.php:2211
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "분산 비율"
 
-#: include/global_settings.php:2204
+#: include/global_settings.php:2213
 #, fuzzy, php-format
 msgid "This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph."
 msgstr "이 값은 샘플에서 특이 치를 제거한 후에 조정 된 샘플 평균보다 높은 백분율을 나타냅니다. 예를 들어, 조정 평균 50의 분산 백분율 100 %%는 그래프에서 100 개 이상의 모든 샘플을 제거합니다."
 
-#: include/global_settings.php:2227
+#: include/global_settings.php:2236
 #, fuzzy
 msgid "Variance Number of Outliers"
 msgstr "분산 값 아웃 라이어 수"
 
-#: include/global_settings.php:2228
+#: include/global_settings.php:2237
 #, fuzzy
 msgid "This value represents the number of high and low average samples will be removed from the sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top and bottom 5 averages are removed."
 msgstr "이 값은 분산 평균을 계산하기 전에 샘플 세트에서 고 / 저 평균 샘플 수가 제거 될 것임을 나타냅니다. 이상치 값 5를 선택하면 상단 및 하단 모두 평균값이 제거됩니다."
 
-#: include/global_settings.php:2232 include/global_settings.php:2233
-#: include/global_settings.php:2234 include/global_settings.php:2235
-#: include/global_settings.php:2236 include/global_settings.php:2237
-#: include/global_settings.php:2238 include/global_settings.php:2239
-#: include/global_settings.php:2240 include/global_settings.php:2241
-#: include/global_settings.php:2242 include/global_settings.php:2243
-#: include/global_settings.php:2244
+#: include/global_settings.php:2241 include/global_settings.php:2242
+#: include/global_settings.php:2243 include/global_settings.php:2244
+#: include/global_settings.php:2245 include/global_settings.php:2246
+#: include/global_settings.php:2247 include/global_settings.php:2248
+#: include/global_settings.php:2249 include/global_settings.php:2250
+#: include/global_settings.php:2251 include/global_settings.php:2252
+#: include/global_settings.php:2253
 #, fuzzy, php-format
 msgid "%d High/Low Samples"
 msgstr "% d 높음 / 낮음 샘플"
 
-#: include/global_settings.php:2248
+#: include/global_settings.php:2257
 #, fuzzy
 msgid "Max Kills Per RRA"
 msgstr "RRA 당 최대 사망자 수"
 
-#: include/global_settings.php:2249
+#: include/global_settings.php:2258
 #, fuzzy
 msgid "This value represents the maximum number of spikes to remove from a Graph RRA."
 msgstr "이 값은 그래프 RRA에서 제거 할 최대 스파이크 수를 나타냅니다."
 
-#: include/global_settings.php:2253 include/global_settings.php:2254
-#: include/global_settings.php:2255 include/global_settings.php:2256
-#: include/global_settings.php:2257 include/global_settings.php:2258
-#: include/global_settings.php:2259 include/global_settings.php:2260
-#: include/global_settings.php:2261 include/global_settings.php:2262
-#: include/global_settings.php:2263 include/global_settings.php:2264
+#: include/global_settings.php:2262 include/global_settings.php:2263
+#: include/global_settings.php:2264 include/global_settings.php:2265
+#: include/global_settings.php:2266 include/global_settings.php:2267
+#: include/global_settings.php:2268 include/global_settings.php:2269
+#: include/global_settings.php:2270 include/global_settings.php:2271
+#: include/global_settings.php:2272 include/global_settings.php:2273
 #, fuzzy, php-format
 msgid "%d Spikes"
 msgstr "% d 개의 스파이크"
 
-#: include/global_settings.php:2268
+#: include/global_settings.php:2277
 #, fuzzy
 msgid "RRDfile Backup Directory"
 msgstr "RRDfile 백업 디렉토리"
 
-#: include/global_settings.php:2269
+#: include/global_settings.php:2278
 #, fuzzy
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
 msgstr "이 디렉토리가 비어 있지 않으면 원래 RRD 파일이이 위치에 백업됩니다."
 
-#: include/global_settings.php:2276
+#: include/global_settings.php:2285
 #, fuzzy
 msgid "Batch Spike Kill Settings"
 msgstr "배치 스파이크 킬 설정"
 
-#: include/global_settings.php:2281
+#: include/global_settings.php:2290
 #, fuzzy
 msgid "Removal Schedule"
 msgstr "제거 일정"
 
-#: include/global_settings.php:2282
+#: include/global_settings.php:2291
 #, fuzzy
 msgid "Do you wish to periodically remove spikes from your graphs?  If so, select the frequency below."
 msgstr "그래프에서 스파이크를 주기적으로 제거 하시겠습니까? 그렇다면 아래 주파수를 선택하십시오."
 
-#: include/global_settings.php:2289
+#: include/global_settings.php:2298
 #, fuzzy
 msgid "Once a Day"
 msgstr "하루에 한 번"
 
-#: include/global_settings.php:2290
+#: include/global_settings.php:2299
 #, fuzzy
 msgid "Every Other Day"
 msgstr "하루 걸러"
 
-#: include/global_settings.php:2294
+#: include/global_settings.php:2303
 #, fuzzy
 msgid "Base Time"
 msgstr "기본 시간"
 
-#: include/global_settings.php:2295
+#: include/global_settings.php:2304
 #, fuzzy
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
 msgstr "스파이크 제거의 기본 시간. 예를 들어, &#39;12 : 00am &#39;을 사용하고 하루에 한 번 선택하면 매일 약 자정에 배치 제거가 시작됩니다."
 
-#: include/global_settings.php:2302
+#: include/global_settings.php:2311
 #, fuzzy
 msgid "Graph Templates to Spike Kill"
 msgstr "그래프 템플릿에서 스파이크 종료"
 
-#: include/global_settings.php:2304
+#: include/global_settings.php:2313
 #, fuzzy
 msgid "When performing batch spike removal, only the templates selected below will be acted on."
 msgstr "배치 스파이크 제거를 수행 할 때 아래에서 선택된 템플릿 만 작동합니다."
 
-#: include/global_settings.php:2308
+#: include/global_settings.php:2317
 #, fuzzy
 msgid "Backup Retention"
 msgstr "데이터 보존"
 
-#: include/global_settings.php:2309
+#: include/global_settings.php:2318
 #, fuzzy
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
 msgstr "SpikeKill이 그래프에서 스파이크를 종료하면 RRD 파일이 백업됩니다. 이 백업 파일은 얼마나 오래 보관해야합니까?"
 
-#: include/global_settings.php:2328
+#: include/global_settings.php:2337
 #, fuzzy
 msgid "Default View Mode"
 msgstr "기본보기 모드"
 
-#: include/global_settings.php:2329
+#: include/global_settings.php:2338
 #, fuzzy
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
 msgstr "그래프 페이지를 처음 방문했을 때 기본적으로 표시되는 그래프 모드는 무엇입니까?"
 
-#: include/global_settings.php:2335
+#: include/global_settings.php:2344
 msgid "User Language"
 msgstr "사용자 언어"
 
-#: include/global_settings.php:2336
+#: include/global_settings.php:2345
 #, fuzzy
 msgid "Defines the preferred GUI language."
 msgstr "선호하는 GUI 언어를 정의합니다."
 
-#: include/global_settings.php:2342
+#: include/global_settings.php:2351
 #, fuzzy
 msgid "Show Graph Title"
 msgstr "그래프 제목 표시"
 
-#: include/global_settings.php:2343
+#: include/global_settings.php:2352
 #, fuzzy
 msgid "Display the graph title on the page so that it may be searched using the browser."
 msgstr "브라우저에서 검색 할 수 있도록 페이지에 그래프 제목을 표시하십시오."
 
-#: include/global_settings.php:2348
+#: include/global_settings.php:2357
 msgid "Hide Disabled"
 msgstr "숨기기 비활성화"
 
-#: include/global_settings.php:2349
+#: include/global_settings.php:2358
 #, fuzzy
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
 msgstr "콘솔 탭 외부에서 볼 때 비활성화 된 장치 및 그래프를 숨 깁니다."
 
-#: include/global_settings.php:2354
+#: include/global_settings.php:2363
 #, fuzzy
 msgid "Show Device Aggregates"
 msgstr "집합"
 
-#: include/global_settings.php:2355
+#: include/global_settings.php:2364
 #, fuzzy
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
 msgstr "장치 데이터 소스가 집계 그래프에 포함 된 경우 해당 그래프를 다른 장치 그래프와 함께 표시"
 
-#: include/global_settings.php:2360
+#: include/global_settings.php:2369
 #, fuzzy
 msgid "Enable Horizontal Scrolling"
 msgstr "수평 스크롤 사용"
 
-#: include/global_settings.php:2361
+#: include/global_settings.php:2370
 #, fuzzy
 msgid "Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibility."
 msgstr "테이블의 수평 스크롤을 활성화하고 반응 형 열 가시성을 비활성화합니다."
 
-#: include/global_settings.php:2367
+#: include/global_settings.php:2376
 #, fuzzy
 msgid "The date format to use in Cacti."
 msgstr "Cacti에서 사용할 날짜 형식."
 
-#: include/global_settings.php:2374
+#: include/global_settings.php:2383
 #, fuzzy
 msgid "The date separator to be used in Cacti."
 msgstr "Cacti에서 사용할 날짜 구분 기호."
 
-#: include/global_settings.php:2380
+#: include/global_settings.php:2389
 #, fuzzy
 msgid "Page Refresh"
 msgstr "페이지 새로 고침"
 
-#: include/global_settings.php:2381
+#: include/global_settings.php:2390
 #, fuzzy
 msgid "The number of seconds between automatic page refreshes."
 msgstr "자동 페이지 새로 고침 간격 (초)입니다."
 
-#: include/global_settings.php:2393
+#: include/global_settings.php:2402
 #, fuzzy
 msgid "Preview Graphs Per Page"
 msgstr "페이지 당 미리보기 그래프"
 
-#: include/global_settings.php:2394 include/global_settings.php:2523
+#: include/global_settings.php:2403 include/global_settings.php:2532
 #, fuzzy
 msgid "The number of graphs to display on one page in preview mode."
 msgstr "미리보기 모드에서 한 페이지에 표시 할 그래프 수입니다."
 
-#: include/global_settings.php:2402
+#: include/global_settings.php:2411
 #, fuzzy
 msgid "Default Time Range"
 msgstr "기본 시간 범위"
 
-#: include/global_settings.php:2403
+#: include/global_settings.php:2412
 #, fuzzy
 msgid "The default RRA to use in rare occasions."
 msgstr "드물게 사용되는 기본 RRA입니다."
 
-#: include/global_settings.php:2410
+#: include/global_settings.php:2419
 #, fuzzy
 msgid "The default Timespan displayed when viewing Graphs and other time specific data."
 msgstr "그래프 및 기타 특정 시간 데이터를 볼 때 기본 시간 간격이 표시됩니다."
 
-#: include/global_settings.php:2416
+#: include/global_settings.php:2425
 #, fuzzy
 msgid "Default Timeshift"
 msgstr "기본 타임 쉬프트"
 
-#: include/global_settings.php:2417
+#: include/global_settings.php:2426
 #, fuzzy
 msgid "The default Timeshift displayed when viewing Graphs and other time specific data."
 msgstr "그래프 및 기타 특정 시간 데이터를 볼 때 기본 시간 이동이 표시됩니다."
 
-#: include/global_settings.php:2423
+#: include/global_settings.php:2432
 #, fuzzy
 msgid "Allow Graph to extend to Future"
 msgstr "그래프가 미래로 확장되도록 허용"
 
-#: include/global_settings.php:2424
+#: include/global_settings.php:2433
 #, fuzzy
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
 msgstr "그래프를 표시 할 때 그래프 날짜를 &#39;미래로&#39;확장 할 수 있습니다."
 
-#: include/global_settings.php:2429
+#: include/global_settings.php:2438
 #, fuzzy
 msgid "First Day of the Week"
 msgstr "첫 번째 요일"
 
-#: include/global_settings.php:2430
+#: include/global_settings.php:2439
 #, fuzzy
 msgid "The first Day of the Week for weekly Graph Displays"
 msgstr "주별 그래프 디스플레이의 첫 번째 요일"
 
-#: include/global_settings.php:2436
+#: include/global_settings.php:2445
 #, fuzzy
 msgid "Start of Daily Shift"
 msgstr "일일 시프트 시작"
 
-#: include/global_settings.php:2437
+#: include/global_settings.php:2446
 #, fuzzy
 msgid "Start Time of the Daily Shift."
 msgstr "매일 이동의 시작 시간."
 
-#: include/global_settings.php:2444
+#: include/global_settings.php:2453
 #, fuzzy
 msgid "End of Daily Shift"
 msgstr "일일 이동 종료"
 
-#: include/global_settings.php:2445
+#: include/global_settings.php:2454
 #, fuzzy
 msgid "End Time of the Daily Shift."
 msgstr "매일 이동의 종료 시간."
 
-#: include/global_settings.php:2454
+#: include/global_settings.php:2463
 #, fuzzy
 msgid "Thumbnail Sections"
 msgstr "미리보기 이미지 섹션"
 
-#: include/global_settings.php:2455
+#: include/global_settings.php:2464
 #, fuzzy
 msgid "Which portions of Cacti display Thumbnails by default."
 msgstr "Cacti의 어느 부분이 기본적으로 미리보기 이미지를 표시합니다."
 
-#: include/global_settings.php:2469
+#: include/global_settings.php:2478
 #, fuzzy
 msgid "Preview Thumbnail Columns"
 msgstr "미리보기 열 미리보기"
 
-#: include/global_settings.php:2470
+#: include/global_settings.php:2479
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Preview mode."
 msgstr "미리보기 모드에서 미리보기 그래프를 표시 할 때 사용할 열의 수입니다."
 
-#: include/global_settings.php:2474 include/global_settings.php:2488
+#: include/global_settings.php:2483 include/global_settings.php:2497
 msgid "1 Column"
 msgstr "1 열"
 
-#: include/global_settings.php:2475 include/global_settings.php:2476
-#: include/global_settings.php:2477 include/global_settings.php:2478
-#: include/global_settings.php:2479 include/global_settings.php:2489
-#: include/global_settings.php:2490 include/global_settings.php:2491
-#: include/global_settings.php:2492 include/global_settings.php:2493
+#: include/global_settings.php:2484 include/global_settings.php:2485
+#: include/global_settings.php:2486 include/global_settings.php:2487
+#: include/global_settings.php:2488 include/global_settings.php:2498
+#: include/global_settings.php:2499 include/global_settings.php:2500
+#: include/global_settings.php:2501 include/global_settings.php:2502
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
 #: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1106
 #: lib/html_tree.php:1107 lib/html_tree.php:1108 lib/html_tree.php:1109
@@ -13494,152 +13502,152 @@ msgstr "1 열"
 msgid "%d Columns"
 msgstr "%d 열"
 
-#: include/global_settings.php:2483
+#: include/global_settings.php:2492
 #, fuzzy
 msgid "Tree View Thumbnail Columns"
 msgstr "트리보기 축소판 그림 열"
 
-#: include/global_settings.php:2484
+#: include/global_settings.php:2493
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Tree mode."
 msgstr "트리 모드에서 축소판 그림을 표시 할 때 사용할 열의 수입니다."
 
-#: include/global_settings.php:2497
+#: include/global_settings.php:2506
 msgid "Thumbnail Height"
 msgstr "썸네일 높이"
 
-#: include/global_settings.php:2498
+#: include/global_settings.php:2507
 #, fuzzy
 msgid "The height of Thumbnail graphs in pixels."
 msgstr "Thumbnail 그래프의 높이 (픽셀 단위)입니다."
 
-#: include/global_settings.php:2505
+#: include/global_settings.php:2514
 msgid "Thumbnail Width"
 msgstr "썸네일 폭"
 
-#: include/global_settings.php:2506
+#: include/global_settings.php:2515
 #, fuzzy
 msgid "The width of Thumbnail graphs in pixels."
 msgstr "축소판 그림의 너비는 픽셀 단위입니다."
 
-#: include/global_settings.php:2515
+#: include/global_settings.php:2524
 #, fuzzy
 msgid "Default Tree"
 msgstr "기본 트리"
 
-#: include/global_settings.php:2516
+#: include/global_settings.php:2525
 #, fuzzy
 msgid "The default graph tree to use when displaying graphs in tree mode."
 msgstr "트리 모드에서 그래프를 표시 할 때 사용할 기본 그래프 트리입니다."
 
-#: include/global_settings.php:2522
+#: include/global_settings.php:2531
 #, fuzzy
 msgid "Graphs Per Page"
 msgstr "페이지 당 그래프"
 
-#: include/global_settings.php:2529
+#: include/global_settings.php:2538
 #, fuzzy
 msgid "Expand Devices"
 msgstr "장치 확장"
 
-#: include/global_settings.php:2530
+#: include/global_settings.php:2539
 #, fuzzy
 msgid "Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree."
 msgstr "트리에서 장치가 사용하는 그래프 템플릿 및 데이터 쿼리를 확장할지 여부를 선택합니다."
 
-#: include/global_settings.php:2535
+#: include/global_settings.php:2544
 #, fuzzy
 msgid "Tree History"
 msgstr "비밀번호 기록"
 
-#: include/global_settings.php:2536
+#: include/global_settings.php:2545
 #, fuzzy
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
 msgstr "활성화하면 Cacti는 로그인 사이와 그래프 페이지로 돌아갈 때 트리 히스토리를 기억합니다."
 
-#: include/global_settings.php:2559
+#: include/global_settings.php:2568
 #, fuzzy
 msgid "Use Custom Fonts"
 msgstr "사용자 정의 글꼴 사용"
 
-#: include/global_settings.php:2560
+#: include/global_settings.php:2569
 #, fuzzy
 msgid "Choose whether to use your own custom fonts and font sizes or utilize the system defaults."
 msgstr "사용자 정의 글꼴 및 글꼴 크기를 사용할지 또는 시스템 기본값을 사용할지 선택하십시오."
 
-#: include/global_settings.php:2573
+#: include/global_settings.php:2582
 #, fuzzy
 msgid "Title Font File"
 msgstr "제목 글꼴 파일"
 
-#: include/global_settings.php:2574
+#: include/global_settings.php:2583
 #, fuzzy
 msgid "The font file to use for Graph Titles"
 msgstr "그래프 제목에 사용할 글꼴 파일"
 
-#: include/global_settings.php:2586
+#: include/global_settings.php:2595
 #, fuzzy
 msgid "Legend Font File"
 msgstr "범례 글꼴 파일"
 
-#: include/global_settings.php:2587
+#: include/global_settings.php:2596
 #, fuzzy
 msgid "The font file to be used for Graph Legend items"
 msgstr "그래프 범례 항목에 사용할 글꼴 파일"
 
-#: include/global_settings.php:2599
+#: include/global_settings.php:2608
 #, fuzzy
 msgid "Axis Font File"
 msgstr "축 글꼴 파일"
 
-#: include/global_settings.php:2600
+#: include/global_settings.php:2609
 #, fuzzy
 msgid "The font file to be used for Graph Axis items"
 msgstr "그래프 축 항목에 사용할 글꼴 파일"
 
-#: include/global_settings.php:2612
+#: include/global_settings.php:2621
 #, fuzzy
 msgid "Unit Font File"
 msgstr "단위 글꼴 파일"
 
-#: include/global_settings.php:2613
+#: include/global_settings.php:2622
 #, fuzzy
 msgid "The font file to be used for Graph Unit items"
 msgstr "그래프 단위 항목에 사용할 글꼴 파일"
 
-#: include/global_settings.php:2627
+#: include/global_settings.php:2636
 #, fuzzy
 msgid "Realtime View Mode"
 msgstr "실시간보기 모드"
 
-#: include/global_settings.php:2628
+#: include/global_settings.php:2637
 #, fuzzy
 msgid "How do you wish to view Realtime Graphs?"
 msgstr "실시간 그래프를 어떻게보고 싶습니까?"
 
-#: include/global_settings.php:2631
+#: include/global_settings.php:2640
 msgid "Inline"
 msgstr "인라인"
 
-#: include/global_settings.php:2632
+#: include/global_settings.php:2641
 msgid "New Window"
 msgstr "새 창"
 
-#: include/global_settings.php:2647
+#: include/global_settings.php:2656
 #, fuzzy
 msgid "System Setting"
 msgstr "사용자 설정"
 
-#: include/global_settings.php:2655
+#: include/global_settings.php:2664
 msgid "1 Week"
 msgstr "1주"
 
-#: include/global_settings.php:2668
+#: include/global_settings.php:2677
 #, fuzzy
 msgid "Auto Log Out Time"
 msgstr "자동 로그 아웃"
 
-#: include/global_settings.php:2669
+#: include/global_settings.php:2678
 #, fuzzy
 msgid "For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled."
 msgstr "콘솔 액세스 권한만 있는 사용자의 경우 이 사용자가 자동으로 로그아웃되기 전에 로그인 상태를 유지할 수 있는 시간입니다. 한 시간 이상 활동하지 않으면 브라우저를 새로 고쳐야 할 수 있습니다. 또한 이 설정은 인증 쿠키가 활성화된 경우 영향을 미치지 않습니다."
@@ -14027,8 +14035,8 @@ msgstr "위치:"
 msgid "Contact:"
 msgstr "연락처:"
 
-#: lib/api_device.php:1196 lib/functions.php:4909 lib/functions.php:4911
-#: lib/functions.php:4915
+#: lib/api_device.php:1196 lib/functions.php:4910 lib/functions.php:4912
+#: lib/functions.php:4916
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping 결과"
@@ -14048,42 +14056,42 @@ msgstr "새로운 지회"
 msgid "Web Basic"
 msgstr "웹 기본"
 
-#: lib/auth.php:2113 lib/auth.php:2145 lib/reports.php:1267
+#: lib/auth.php:2121 lib/auth.php:2153 lib/reports.php:1267
 #, fuzzy
 msgid "Branch:"
 msgstr "분기:"
 
-#: lib/auth.php:2122 lib/auth.php:2153 lib/html_tree.php:1014
+#: lib/auth.php:2130 lib/auth.php:2161 lib/html_tree.php:1014
 #: lib/reports.php:1042 lib/reports.php:1272
 msgid "Device:"
 msgstr "장치:"
 
-#: lib/auth.php:2891 lib/auth.php:2899
+#: lib/auth.php:2899 lib/auth.php:2907
 #, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "액세스가 거부되었습니다. Cacti 관리자에게 연락하십시오."
 
-#: lib/auth.php:2920
+#: lib/auth.php:2928
 #, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "Cacti 관리자가 로그인을 위해 복잡한 비밀번호를 설정했으며 현재 Cacti 비밀번호가 새로운 요구 사항과 일치하지 않습니다. 따라서 지금 비밀번호를 변경해야합니다."
 
-#: lib/auth.php:2944
+#: lib/auth.php:2952
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "비밀번호는 % d 자 이상이어야합니다!"
 
-#: lib/auth.php:2950
+#: lib/auth.php:2958
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "비밀번호는 숫자가 1 자 이상이어야합니다!"
 
-#: lib/auth.php:2954
+#: lib/auth.php:2962
 #, fuzzy
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "암호에는 소문자와 대문자가 혼합되어 있어야합니다."
 
-#: lib/auth.php:2960
+#: lib/auth.php:2968
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "비밀번호는 적어도 1 개의 특수 문자를 포함해야합니다!"
@@ -14743,7 +14751,7 @@ msgid "User Community"
 msgstr "사용자 커뮤니티"
 
 #: lib/functions.php:3246 lib/functions.php:3264 lib/html.php:2467
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 msgid "Documentation"
 msgstr "문서"
 
@@ -14780,114 +14788,114 @@ msgstr "%s 링크"
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "메일러 오류 : <b>TO</b> 주소 세트가 없습니다! <br> <i>메일 테스트</i> 링크를 사용하는 경우 <b>경고 전자 메일</b> 설정을 지정하십시오."
 
-#: lib/functions.php:4842
+#: lib/functions.php:4843
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "인증 실패 :  %s"
 
-#: lib/functions.php:4846
+#: lib/functions.php:4847
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO 실패 :  %s"
 
-#: lib/functions.php:4849
+#: lib/functions.php:4850
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "연결 실패 :  %s"
 
-#: lib/functions.php:4852
+#: lib/functions.php:4853
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP 오류 :"
 
-#: lib/functions.php:4865
+#: lib/functions.php:4866
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Cacti에서 생성 된 테스트 메시지입니다. 이 메시지는 메일 설정의 구성을 테스트하기 위해 전송되었습니다."
 
-#: lib/functions.php:4866
+#: lib/functions.php:4867
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "이메일 설정은 현재 다음과 같이 설정되어 있습니다."
 
-#: lib/functions.php:4867
+#: lib/functions.php:4868
 msgid "Method"
 msgstr "방법"
 
-#: lib/functions.php:4869
+#: lib/functions.php:4870
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "구성 확인 중 ... <br>"
 
-#: lib/functions.php:4876
+#: lib/functions.php:4877
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP 메일러 클래스"
 
-#: lib/functions.php:4882
+#: lib/functions.php:4883
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "방법 : SMTP"
 
-#: lib/functions.php:4897
+#: lib/functions.php:4898
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "보안상의 이유로 표시되지 않음"
 
-#: lib/functions.php:4898
+#: lib/functions.php:4899
 msgid "Security"
 msgstr "보안"
 
-#: lib/functions.php:4906
+#: lib/functions.php:4907
 #, fuzzy
 msgid "Ping Results:"
 msgstr "핑 결과 :"
 
-#: lib/functions.php:4915
+#: lib/functions.php:4916
 #, fuzzy
 msgid "Bypassed"
 msgstr "우회"
 
-#: lib/functions.php:4923
+#: lib/functions.php:4924
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "메시지 텍스트 작성 중 ..."
 
-#: lib/functions.php:4926
+#: lib/functions.php:4927
 #, fuzzy
 msgid "Sending Message..."
 msgstr "메시지를 보내는 중 ..."
 
-#: lib/functions.php:4930
+#: lib/functions.php:4931
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "선인장 테스트 메시지"
 
-#: lib/functions.php:4932
+#: lib/functions.php:4933
 msgid "Success!"
 msgstr "성공!"
 
-#: lib/functions.php:4935
+#: lib/functions.php:4936
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "핑 실패로 인해 메시지가 전송되지 않았습니다."
 
-#: lib/functions.php:5503 lib/functions.php:5566
+#: lib/functions.php:5504 lib/functions.php:5567
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti 플러그인  %s이 (가) 다음 오류 때문에 비활성화되었습니다 :  %s! 자세한 내용은 Cacti 로그 파일을 참조하십시오."
 
-#: lib/functions.php:5958 lib/functions.php:5960
+#: lib/functions.php:5959 lib/functions.php:5961
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- 베타  %s"
 
-#: lib/functions.php:5958
+#: lib/functions.php:5959
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "버전  %s  %s"
 
-#: lib/functions.php:5960
+#: lib/functions.php:5961
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -17979,210 +17987,210 @@ msgstr "그래프 생성"
 msgid "NOTE: Graph not added for Data Query "
 msgstr "데이터 쿼리로 그래프 만들기"
 
-#: lib/utility.php:855
+#: lib/utility.php:876
 #, fuzzy
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
 msgstr "MySQL 5.6+와 MariaDB 10.0+는 훌륭한 릴리스이며 선택할 수있는 아주 좋은 버전입니다. 최신 릴리스를 실행했는지 확인하십시오. 안정성이있는 많은 문제를 야기하는 오랜 저급 네트워킹 문제가 수정되었습니다."
 
-#: lib/utility.php:867
+#: lib/utility.php:888
 #, fuzzy, php-format
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "5.1보다 큰 모든 버전에서 InnoDB를 활성화하는 것이 좋습니다."
 
-#: lib/utility.php:880 lib/utility.php:915
+#: lib/utility.php:901 lib/utility.php:936
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte."
 msgstr "영어 이외의 언어로 Cacti를 사용하는 경우 일부 문자는 1 바이트 이상을 사용하므로 utf8mb4_unicode_ci 데이터 정렬 유형을 사용하는 것이 중요합니다."
 
-#: lib/utility.php:886 lib/utility.php:892 lib/utility.php:921
-#: lib/utility.php:927
+#: lib/utility.php:907 lib/utility.php:913 lib/utility.php:942
+#: lib/utility.php:948
 #, fuzzy
 msgid "When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte."
 msgstr "영어 이외의 언어로 Cacti를 사용하는 경우 일부 문자는 1 바이트 이상을 사용하므로 utf8mb4 문자 세트를 사용하는 것이 중요합니다."
 
-#: lib/utility.php:903
+#: lib/utility.php:924
 #, fuzzy, php-format
 msgid "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "5.1보다 큰 모든 버전에서 InnoDB를 활성화하는 것이 좋습니다."
 
-#: lib/utility.php:936
+#: lib/utility.php:957
 #, fuzzy, php-format
 msgid "Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts."
 msgstr "로그인 수 및 척추 데이터 수집기 사용에 따라  %s에 많은 연결이 필요합니다. 척추에 대한 계산은 total_connections = total_processes * (total_threads + script_servers + 1)이므로 사용자 연결을위한 헤드 룸을 남겨 두어야합니다. 이는 동시 로그인 계정의 수에 따라 변경됩니다."
 
-#: lib/utility.php:941
+#: lib/utility.php:962
 #, fuzzy
 msgid "Keeping the table cache larger means less file open/close operations when using innodb_file_per_table."
 msgstr "테이블 캐쉬를 크게 유지하면 innodb_file_per_table을 사용할 때 파일 열기 / 닫기 작업이 줄어 듭니다."
 
-#: lib/utility.php:946
+#: lib/utility.php:967
 #, fuzzy
 msgid "With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M."
 msgstr "원격 폴링 기능을 사용하면 많은 양의 데이터가 주 서버에서 원격 폴러로 동기화됩니다. 따라서이 값을 16M 이상으로 유지하십시오."
 
-#: lib/utility.php:952
+#: lib/utility.php:973
 #, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "Cacti Performance Booster를 사용하고 메모리 스토리지 엔진을 선택하는 경우 시스템의 메모리 테이블 공간이 부족해지기 전에 Performance Booster 버퍼를 플러시해야합니다. 이것은 두 가지 방법으로 수행됩니다. 먼저 출력 열의 크기를 적절한 크기로 줄입니다. 이 열은 poller_output 및 poller_output_boost 테이블에 있습니다. 두 번째로 할 수있는 것은 메모리 테이블에 더 많은 메모리를 할당하는 것입니다. 우리는 임의로 시스템 메모리의 권장 값 10 %%를 선택했지만, SSD 디스크 드라이브를 사용하거나 시스템이 더 작은 경우이 권장 사항을 무시하거나 다른 스토리지 엔진을 선택할 수 있습니다. 콘솔 -&gt; 시스템 유틸리티 -&gt; 부스트 상태보기에서 성능 향상 표의 예상 소비량을 볼 수 있습니다."
 
-#: lib/utility.php:958
+#: lib/utility.php:979
 #, fuzzy
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
 msgstr "임시 테이블 크기가 더 큰 서브 쿼리를 실행할 때 임시 테이블을 메모리에 보관하십시오."
 
-#: lib/utility.php:964
+#: lib/utility.php:985
 #, fuzzy
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file."
 msgstr "조인을 수행 할 때이 크기보다 작 으면 메모리에 보관되어 임시 파일에 기록되지 않습니다."
 
-#: lib/utility.php:970
+#: lib/utility.php:991
 #, fuzzy, php-format
 msgid "When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables."
 msgstr "InnoDB 스토리지를 사용할 때 테이블 공간을 분리하여 보관하는 것이 중요합니다. 이렇게하면 오랫동안  %s 사용자에게 테이블을 더 간단하게 관리 할 수 있습니다. 현재이 기능을 사용하지 않고 실행중인 경우이 기능을 활성화 한 다음 모든 InnoDB 테이블에서 alter 문을 실행하여 파일 저장소 단위로 마이그레이션 할 수 있습니다."
 
-#: lib/utility.php:976
+#: lib/utility.php:997
 #, fuzzy
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "innodb_file_per_table을 사용할 때, innodb_file_format을 바라쿠다로 설정하는 것이 중요합니다. 이 설정을 사용하면 특정 Cacti 테이블에서 더 긴 인덱스를 사용할 수 있습니다."
 
-#: lib/utility.php:982
+#: lib/utility.php:1003
 #, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "테이블에 인덱스가 매우 큰 경우 Barracuda innodb_file_format 및 innodb_large_prefix를 1로 사용하여 작업해야합니다.이를 수행하지 않으면 테이블을 제대로 작성할 수없는 플러그인이 발생할 수 있습니다."
 
-#: lib/utility.php:988
+#: lib/utility.php:1009
 #, fuzzy, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "InnoDB는 가능한 많은 테이블과 인덱스를 시스템 메모리에 보유합니다. 그러므로, innodb_buffer_pool을 메모리에서 많은 테이블과 인덱스를 저장할만큼 충분히 크게 만들어야한다. / var / lib / mysql / cacti 디렉토리의 크기를 확인하면이 값을 결정하는 데 도움이됩니다. 시스템 총 메모리의 25 %%를 권장하지만 사용자의 요구 사항은 시스템 크기에 따라 다릅니다."
 
-#: lib/utility.php:994
+#: lib/utility.php:1015
 #, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "갑작스러운 시스템 충돌을 수용하기 위해 내부 저널링이있는 ZFS 또는 FusionI / O에서 Cacti 인스턴스를 실행하지 않는 한이 설정은 ON으로 유지되어야합니다. 그러나 전원이 매우 양호하고 시스템이 거의 다운되지 않고 백업이있는 경우이 설정을 끄면 데이터베이스 성능이 거의 50 % 향상 될 수 있습니다."
 
-#: lib/utility.php:999
+#: lib/utility.php:1020
 #, fuzzy
 msgid "This is where metadata is stored. If you had a lot of tables, it would be useful to increase this."
 msgstr "여기서 메타 데이터가 저장됩니다. 테이블이 많으면이 값을 늘리는 것이 좋습니다."
 
-#: lib/utility.php:1004
+#: lib/utility.php:1025
 #, fuzzy
 msgid "Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system."
 msgstr "사기성 쿼리는 데이터베이스가 다른 데이터베이스로 오프라인 상태가되어서는 안됩니다. 그들이 시스템을 죽이기 전에 이러한 쿼리를 종료하십시오."
 
-#: lib/utility.php:1009
+#: lib/utility.php:1030
 #, fuzzy
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "최대 I / O 성능은 O_DIRECT 메서드를 사용하여 페이지를 플러시 할 때 발생합니다."
 
-#: lib/utility.php:1019
+#: lib/utility.php:1040
 #, fuzzy, php-format
 msgid "Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often."
 msgstr "이 값을 2로 설정하면 커밋보다 매초마다 모든 트랜잭션을 플러시합니다. 이렇게하면  %s에서 글을 자주 적게 수행 할 수 있습니다."
 
-#: lib/utility.php:1024
+#: lib/utility.php:1045
 #, fuzzy
 msgid "With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics."
 msgstr "현대의 SSD 타입 스토리지에서, 다수의 IO 스레드를 갖는 것은 높은 IO 특성을 갖는 어플리케이션에 유리합니다."
 
-#: lib/utility.php:1032 lib/utility.php:1074
+#: lib/utility.php:1053 lib/utility.php:1095
 #, fuzzy, php-format
 msgid "As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential"
 msgstr "%s  %s부터는  %s에서 트랜잭션을 디스크로 플러시하는 빈도를 제어 할 수 있습니다. 기본값은 1 초이지만 높은 I / O 시스템에서 1보다 큰 값으로 설정하면 디스크 I / O가보다 순차적으로 이루어질 수 있습니다"
 
-#: lib/utility.php:1037
+#: lib/utility.php:1058
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "최신 SSD 유형 저장 장치를 사용하면 다중 읽기 스레드를 갖는 것이 io 특성이 높은 응용 프로그램에 유리합니다."
 
-#: lib/utility.php:1042
+#: lib/utility.php:1063
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "최신 SSD 유형의 저장 장치를 사용하면 쓰기 스레드가 여러 개인 경우 높은 IO 특성을 가진 응용 프로그램에 유리합니다."
 
-#: lib/utility.php:1048
+#: lib/utility.php:1069
 #, fuzzy, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64."
 msgstr "%s는 성능을 향상시키기 위해 innodb_buffer_pool을 메모리 영역으로 나눕니다. 최대 값은 64입니다. innodb_buffer_pool이 1GB보다 작 으면 풀 크기를 128MB로 나눈 값을 사용해야합니다. 이 방정식을 최대 64까지 계속 사용하십시오."
 
-#: lib/utility.php:1054 lib/utility.php:1090
+#: lib/utility.php:1075 lib/utility.php:1111
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "SSD 디스크가있는 경우이 제안을 사용하십시오. 실제 하드 드라이브가있는 경우 어레이의 활성 드라이브 수를 200 * 사용하십시오. NVMe 또는 PCIe 플래시를 사용하는 경우 100,000만큼 큰 숫자를 사용할 수 있습니다."
 
-#: lib/utility.php:1060 lib/utility.php:1096
+#: lib/utility.php:1081 lib/utility.php:1117
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "SSD 디스크가있는 경우이 제안을 사용하십시오. 물리적 하드 드라이브가있는 경우 2000 * 어레이의 활성 드라이브 수를 사용하십시오. NVMe 또는 PCIe 플래시를 사용하는 경우 200000보다 훨씬 큰 숫자를 사용할 수 있습니다."
 
-#: lib/utility.php:1066 lib/utility.php:1102
+#: lib/utility.php:1087 lib/utility.php:1123
 #, fuzzy
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "SSD 디스크가있는 경우이 제안을 사용하십시오. 그렇지 않은 경우이 설정을 지정하지 마십시오."
 
-#: lib/utility.php:1079
+#: lib/utility.php:1100
 #, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics."
 msgstr "최신 SSD 유형 저장 장치를 사용하면 다중 읽기 스레드를 갖는 것이 io 특성이 높은 응용 프로그램에 유리합니다."
 
-#: lib/utility.php:1084
+#: lib/utility.php:1105
 #, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics."
 msgstr "최신 SSD 유형의 저장 장치를 사용하면 쓰기 스레드가 여러 개인 경우 높은 IO 특성을 가진 응용 프로그램에 유리합니다."
 
-#: lib/utility.php:1115
+#: lib/utility.php:1136
 #, fuzzy
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
 msgstr "MariaDB 10.2.4 이상을 사용할 때 원자 쓰기가 활성화된 경우 이 설정을 꺼야 합니다. 따라서 성능이 향상되므로 이중 쓰기 버퍼 대신 원자 쓰기를 활성화하십시오."
 
-#: lib/utility.php:1122
+#: lib/utility.php:1143
 #, fuzzy
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
 msgstr "MariaDB 10.2.4 이상을 사용하는 경우 이중 쓰기 버퍼에 원자적 쓰기를 사용하여 성능을 높일 수 있습니다."
 
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "%s 튜닝"
 
-#: lib/utility.php:1139
+#: lib/utility.php:1160
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "참고 : 아래의 많은 변경 사항은 데이터베이스를 다시 시작해야합니다."
 
-#: lib/utility.php:1147
+#: lib/utility.php:1168
 msgid "Variable"
 msgstr "변수"
 
-#: lib/utility.php:1148
+#: lib/utility.php:1169
 msgid "Current Value"
 msgstr "현재 가치"
 
-#: lib/utility.php:1150
+#: lib/utility.php:1171
 #, fuzzy
 msgid "Recommended Value"
 msgstr "권장 값"
 
-#: lib/utility.php:1151
+#: lib/utility.php:1172
 msgid "Comments"
 msgstr "댓글"
 
-#: lib/utility.php:1561
+#: lib/utility.php:1582
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP  %s이 (는) 최소 버전입니다."
 
-#: lib/utility.php:1563
+#: lib/utility.php:1584
 #, fuzzy, php-format
 msgid "A minimum of %s memory limit"
 msgstr "최소  %s MB 메모리 제한"
 
-#: lib/utility.php:1565
+#: lib/utility.php:1586
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "최소  %sm 실행 시간"
 
-#: lib/utility.php:1567
+#: lib/utility.php:1588
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "MySQL 및 시스템과 일치하는 유효한 시간대"
