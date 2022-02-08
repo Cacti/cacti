@@ -893,7 +893,17 @@ function is_realm_allowed($realm) {
 
 					print '<span style="display:none;">cactiLoginSuspend</span>';
 					exit;
+				} else {
+					kill_session_var('sess_user_realms');
+					kill_session_var('sess_user_config_array');
+					kill_session_var('sess_config_array');
+					kill_session_var('sess_tree_perms');
+					kill_session_var('sess_simple_perms');
+					kill_session_var('sess_simple_template_perms');
 				}
+
+				print '<span style="display:none;">cactiRedirect</span>';
+				exit;
 			} else {
 				kill_session_var('sess_user_realms');
 				kill_session_var('sess_user_config_array');
@@ -3072,22 +3082,23 @@ function is_user_perms_valid($user_id) {
 	static $valid = null;
 	static $key   = null;
 
+	if ($valid === null && cacti_version_compare($config['cacti_db_version'], '1.0.0', '>=')) {
+		$key = db_fetch_cell_prepared('SELECT reset_perms
+			FROM user_auth
+			WHERE id = ?',
+			array($user_id));
+	}
+
 	if (isset($_SESSION['sess_user_perms_key'])) {
-		$key = $_SESSION['sess_user_perms_key'];
-	} else {
-		$_SESSION['sess_user_perms_key'] = false;
-	}
-
-	if ($valid === null) {
-		if (cacti_version_compare($config['cacti_db_version'], '1.0.0', '>=')) {
-			$key = db_fetch_cell_prepared('SELECT reset_perms
-				FROM user_auth
-				WHERE id = ?',
-				array($user_id));
+		if ($key != $_SESSION['sess_user_perms_key']) {
+			$valid = false;
+		} else {
+			$valid = true;
 		}
+	} else {
+		$valid = true;
 	}
 
-	$valid = ($_SESSION['sess_user_perms_key'] === $key);
 	$_SESSION['sess_user_perms_key'] = $key;
 
 	return $valid;

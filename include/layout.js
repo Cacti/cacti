@@ -1793,7 +1793,7 @@ function loadTopTab(href, id, force) {
 					var parts       = html.split('</title>');
 					var html        = parts[1];
 
-					checkForLogout(html);
+					checkForRedirects(html, href);
 
 					$('title').text(htmlTitle);
 					$('#breadcrumbs').html(breadCrumbs);
@@ -1805,7 +1805,7 @@ function loadTopTab(href, id, force) {
 
 					pushState(myTitle, href);
 				} else {
-					checkForLogout(html);
+					checkForRedirects(html, href);
 
 					$('#cactiContent').replaceWith(html);
 
@@ -1900,7 +1900,7 @@ function loadPage(href, force) {
 					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
 					var html        = htmlObject.find('#main').html();
 
-					checkForLogout(html);
+					checkForRedirects(html, href);
 
 					$('#main').empty().hide();
 					$('title').text(htmlTitle);
@@ -1913,7 +1913,7 @@ function loadPage(href, force) {
 
 					pushState(myTitle, href);
 				} else {
-					checkForLogout(html);
+					checkForRedirects(html, href);
 
 					$('#main').empty().hide();
 					$('#main').html(html);
@@ -2060,7 +2060,7 @@ function loadPageNoHeader(href, scroll, force) {
 				var matches     = html.match(/<title>(.*?)<\/title>/);
 
 				if (matches != null) {
-					checkForLogout(html);
+					checkForRedirects(html, href);
 
 					var htmlTitle   = matches[1];
 					var breadCrumbs = htmlObject.filter('#breadcrumbs').html();
@@ -2077,7 +2077,7 @@ function loadPageNoHeader(href, scroll, force) {
 
 					pushState(myTitle, href);
 				} else {
-					checkForLogout(html);
+					checkForRedirects(html, href);
 
 					$('#main').empty().hide();
 					$('div[class^="ui-"]').remove();
@@ -2411,7 +2411,7 @@ function setupSortable() {
 			$.ajaxQ.abortAll();
 			$.get(url)
 				.done(function(data) {
-					checkForLogout(data);
+					checkForRedirects(data, url);
 
 					$('#'+returnto).empty().hide();
 
@@ -2606,7 +2606,7 @@ function setupPageTimeout() {
 				$.ajaxQ.abortAll();
 				$.get(refreshPage)
 					.done(function(data) {
-						checkForLogout(data);
+						checkForRedirects(data, refreshPage);
 
 						$('#main').empty().hide();
 						$('div[class^="ui-"]').remove();
@@ -2981,13 +2981,24 @@ if (typeof urlPath == 'undefined') {
 var graphPage  = urlPath+'graph_view.php';
 var pageAction = 'preview';
 
+
 function checkForLogout(data) {
+	checkForRedirects(data, null);
+}
+
+function checkForRedirects(data, href) {
 	if (typeof data == 'undefined') {
 		return true;
 	} else if (typeof data == 'object') {
 		return true;
 	} else if (data.indexOf('cactiLoginSuspend') >= 0) {
 		document.location = urlPath + 'logout.php?action=disabled';
+	} else if (data.indexOf('cactiRedirect') >= 0) {
+		if (typeof href == 'undefined') {
+			document.location = document.location;
+		} else {
+			document.location = href;
+		}
 	} else if (data.indexOf('cactiLoginLogo') >= 0) {
 		document.location = urlPath + 'logout.php?action=timeout';
 	}
@@ -3003,7 +3014,7 @@ function clearGraphFilter() {
 	$.ajaxQ.abortAll();
 	$.get(href)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, href);
 
 			$('#main').empty().hide();
 			$('div[class^="ui-"]').remove();
@@ -3038,7 +3049,7 @@ function saveGraphFilter(section) {
 		thumbnails: $('#thumbnails').is(':checked'),
 		__csrf_magic: csrfMagicToken
 		}).done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data);
 
 			$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
 				$('#text').empty();
@@ -3064,7 +3075,7 @@ function applyGraphFilter() {
 	$.ajaxQ.abortAll();
 	$.get(href)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, href);
 
 			$('#main').hide();
 			$('div[class^="ui-"]').remove();
@@ -3133,7 +3144,7 @@ function applyGraphTimespan() {
 	$.ajaxQ.abortAll();
 	$.get(href)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, href);
 
 			$('#main').empty().hide();
 			$('div[class^="ui-"]').remove();
@@ -3164,7 +3175,7 @@ function refreshGraphTimespanFilter() {
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
-		checkForLogout(data);
+		checkForRedirects(data, href);
 
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
@@ -3190,7 +3201,7 @@ function timeshiftGraphFilterLeft() {
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
-		checkForLogout(data);
+		checkForRedirects(data, href);
 
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
@@ -3216,7 +3227,7 @@ function timeshiftGraphFilterRight() {
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
-		checkForLogout(data);
+		checkForRedirects(data, href);
 
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
@@ -3241,7 +3252,7 @@ function clearGraphTimespanFilter() {
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
-		checkForLogout(data);
+		checkForRedirects(data, href);
 
 		$('#main').empty().hide();
 		$('div[class^="ui-"]').remove();
@@ -3257,7 +3268,7 @@ function removeSpikesStdDev(local_graph_id) {
 
 	$.getJSON(strURL)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, strURL);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3278,7 +3289,7 @@ function removeSpikesVariance(local_graph_id) {
 
 	$.getJSON(strURL)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, strURL);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3299,7 +3310,7 @@ function removeSpikesInRange(local_graph_id) {
 
 	$.getJSON(strURL)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, strURL);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3320,7 +3331,7 @@ function removeRangeFill(local_graph_id) {
 
 	$.getJSON(strURL)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, strURL);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3341,7 +3352,7 @@ function dryRunStdDev(local_graph_id) {
 
 	$.getJSON(strURL)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, strURL);
 
 			$('#spikeresults').remove();
 			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
@@ -3361,7 +3372,7 @@ function dryRunVariance(local_graph_id) {
 
 	$.getJSON(strURL)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, strURL);
 
 			$('#spikeresults').remove();
 			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
@@ -3381,7 +3392,7 @@ function dryRunSpikesInRange(local_graph_id) {
 
 	$.getJSON(strURL)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, strURL);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3402,7 +3413,7 @@ function dryRunRangeFill(local_graph_id) {
 
 	$.getJSON(strURL)
 		.done(function(data) {
-			checkForLogout(data);
+			checkForRedirects(data, strURL);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3516,7 +3527,7 @@ function initializeGraphs(disable_cache) {
 			$.ajaxQ.abortAll();
 			$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false')
 				.done(function(data) {
-					checkForLogout(data);
+					checkForRedirects(data);
 
 					$('#main').empty().hide();
 					$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
@@ -3689,7 +3700,7 @@ function initializeGraphs(disable_cache) {
 			$.ajaxQ.abortAll();
 			$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()))
 				.done(function(data) {
-					checkForLogout(data);
+					checkForRedirects(data);
 
 					$('#main').empty().hide();
 					$('div[class^="ui-"]').remove();
