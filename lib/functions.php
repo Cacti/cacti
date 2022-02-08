@@ -5195,7 +5195,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	foreach($tiles as $index => $p) {
 		/* calculate offsets into the array */
 		$allindex    = ($elements - 1) * $p;
-		$intvalindex = intval($allindex);
+		$intvalindex = floor($allindex);
 		$floatval    = $allindex - $intvalindex;
 
 		if (!is_float($floatval)) {
