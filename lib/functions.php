@@ -5328,7 +5328,7 @@ function email_test() {
 
 		$global_alert_address = read_config_option('settings_test_email');
 
-		$errors = send_mail($global_alert_address, '', __('Cacti Test Message'), $message, '', '', true);
+		$errors = send_mail($global_alert_address, '', __('Cacti Test Message'), $message, null, null, true);
 		if ($errors == '') {
 			$errors = __('Success!');
 		}
@@ -6395,7 +6395,7 @@ function get_source_timestamp() {
 
 function format_cacti_version($version, $format = CACTI_VERSION_FORMAT_FULL) {
 	if ($version == 'new_install') {
-		$version = ($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
+		$version = CACTI_VERSION . ($format == CACTI_VERSION_FORMAT_FULL ? '.0.0' : ''); //($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
 	}
 
 	$parts = explode('.', $version);
@@ -6569,6 +6569,7 @@ function is_install_needed($version = NULL) {
 		}
 	}
 
+	$version = format_cacti_version($version);
 	$result = (cacti_version_compare($db, $version, $mode));
 	if (function_exists('log_install_medium')) {
 		log_install_medium('step', "$result = (cacti_version_compare($db, $version, $mode)");
@@ -6627,50 +6628,80 @@ function is_cacti_release($version = null)
 /**
  * version_to_decimal - convert version string to decimal
  */
-function version_to_decimal($version, $length = 8, $hex = true) {
+function version_to_decimal(string $version, int $length = 9, bool $hex = true): int {
 	if ($version === 'Unknown') {
 		return 0;
 	}
-
 	$newver = '';
 	$minor  = '';
 
 	$parts = explode('.', $version);
 	$section = 0;
+
+	/* Loop through each section of a version
+	 * whether that is 1.3.0 or 1.3.0.99.-1
+	 * or 1.3.0.2134234.a35dc93e
+	 */
 	while($section < $length) {
+		// Assume prefix will be 00
 		$prefix  = '00';
+
+		// Are we in a section greater than the number of
+		// parts within the version string
 		if ($section >= cacti_sizeof($parts)) {
+
+			// If in sections 3-5, assume prefix can be 99
 			if ($section >= 3 && $section < 5) {
 				$prefix = '99';
 			}
+
+			// Set the part to be the prefix value
 			$parts[$section] = $prefix;
 		}
 
+		// obtain the current part of the version string
 		$part = $parts[$section];
 		$extras = false;
 
+		// If the part is an x then assume its really a zero
 		if ($part == 'x') {
 			$part = '0';
 		} elseif (is_numeric($part)) {
+			// If the part value is over 100,000 then it's going to need
+			// to be broken up further
 			if ($part > 100000) {
+				$part = dechex($part);
+
+				// Blank the extras array
 				$extras = array();
+
+				// While we have a part, try and process it
 				while ($part > '') {
+
+					// Take the last two parts of the string
+					// Prefix it with 00 so we always have 2
+					// or more characters
 					$sub = substr('00' . $part, -2);
+
+					// Prefix the array with the extracted version
 					array_unshift($extras, $sub);
+
+					// String off 2 characters
 					$part = (strlen($part) >= 2) ? substr($part,0, strlen($part)-2) : '';
 				}
 			}
-		} elseif ($part != 'x') {
-			//printf ("sub: %s, ", $part);
-			$minor  = ord(strtoupper(substr($part, -1))) - ord('0') + 1;
-			$major  = substr($part, 0, strlen($part)-1);
+		} elseif ($part != 'x' && $section == 2) {
+			// If the part isn't numeric and we are on the 3rd
+			// section, try and break it up as it might be a hex
+			// string
+			$major  = strlen($part)>0?char_to_dec($part[0]):'0';
+			$minor  = strlen($part)>1?char_to_dec($part[1]):'0';
 			$extras = array($major,99,99,$minor);
 		}
 
 		if (is_array($extras)) {
 			$sub = 0;
 			foreach ($extras as $extra) {
-				//printf ("extra: %s, ", $extra);
 				$parts[$section+$sub] = $extra;
 				$sub++;
 			}
@@ -6678,22 +6709,23 @@ function version_to_decimal($version, $length = 8, $hex = true) {
 			$part = $parts[$section];
 		}
 
-		$part    = substr($prefix . $part, -2);
+		$keep    = ($section < 2) ? -1 : -2;
+		$part    = substr($prefix . $part, $keep);
 		$newver .= $part;
-
 		$section++;
 	}
-
-	if ($minor != '') {
-		$int = ord($minor);
-	} else {
-		$int = 0;
-	}
-
 	if (!ctype_xdigit($newver)) {
 		cacti_log('Invalid hex passed - ' . $newver . ' - ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING');
 	}
-	return $hex ? hexdec($newver) : $newver;
+	return $hex ? @hexdec($newver) : $newver;
+}
+
+function char_to_dec($part) {
+	if (strlen($part)>1) {
+		$part = substr($part, -1);
+	}
+
+	return ord(strtoupper($part)) - ord('0');
 }
 
 /**
@@ -6762,17 +6794,20 @@ function get_installed_rrdtool_version() {
 	static $version = '';
 
 	if ($version == '') {
-		if ($config['cacti_server_os'] == 'win32') {
-			$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
-		} else {
-			$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
-		}
+		$rrdtool = read_config_option('path_rrdtool');
+		if (!empty($rrdtool)) {
+			if ($config['cacti_server_os'] == 'win32') {
+				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
+			} else {
+				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
+			}
 
-		$version = false;
-		if (!empty($matches) && preg_match('/^RRDtool ([0-9.]+) /', $shell, $matches)) {
-			foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
-				if (cacti_version_compare($rrdtool_version, $matches[1], '<=')) {
-					$version = $rrdtool_version;
+			$version = false;
+			if (preg_match('/^RRDtool ([0-9.]+) /', $shell, $matches)) {
+				foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
+					if (cacti_version_compare($rrdtool_version, $matches[1], '<=')) {
+						$version = $rrdtool_version;
+					}
 				}
 			}
 		}
