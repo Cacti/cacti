@@ -5244,7 +5244,7 @@ function get_timeinstate($host) {
 }
 
 function get_uptime($host) {
-	return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime($host['snmp_sysUpTimeInstance']/100) : __('N/A');
+	return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime(floor($host['snmp_sysUpTimeInstance']/100)) : __('N/A');
 }
 
 function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT_SHORT, $all = false) {
