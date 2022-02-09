@@ -43,47 +43,44 @@ if (cacti_sizeof($parms)) {
 
 	foreach($parms as $parameter) {
 
-	        if (strpos($parameter, '=')) {
-	                list($arg, $value) = explode('=', $parameter);
-	        } else {
-	                $arg = $parameter;
-	                $value = '';
-	        }
+		if (strpos($parameter, '=')) {
+			list($arg, $value) = explode('=', $parameter);
+		} else {
+			$arg = $parameter;
+			$value = '';
+		}
 
-	        switch ($arg) {
+		switch ($arg) {
 
 			case '--dev':
-		        case '-d':
+			case '-d':
 				$dev=true;
 				break;
-		        case '--debug':
-		                display_version();
-		                $debug=true;
-		                break;
+			case '--debug':
+				display_version();
+				$debug=true;
+				break;
 
 			case '-q':
 			case '--quiet':
 				$quiet=true;
 				break;
 
-		        case '--version':
-		        case '-V':
-		        case '-v':
+			case '--version':
+			case '-V':
+			case '-v':
 				display_version();
 				fail(EXIT_NORMAL);
 
-		        case '--help':
-		        case '-H':
-		        case '-h':
+			case '--help':
+			case '-H':
+			case '-h':
 				display_help();
 				fail(EXIT_NORMAL);
 
-		        default:
-				if (strlen($md5_file)) {
-					fail(EXIT_ARGERR,$arg,true);
-				}
-				$md5_file=strlen($value)?"$arg=$value":"$arg";
-				break;
+			default:
+				display_help();
+				fail(EXIT_ARGERR, $arg);
 		}
 	}
 }
@@ -117,19 +114,20 @@ if ($debug) {
 	print PHP_EOL;
 
 	$tests  = array(
-		'1.3.0'       => '1.3.0',
-		'Develop'     => CACTI_VERSION_FULL,
-		'1.3 Dev 569' => '1.3.0.99.1553092569.fab5112a',
+		'Fresh'       => 'new_install',
+//		'1.3.0'	   => '1.3.0',
+//		'Develop'	 => CACTI_VERSION_FULL,
+//		'1.3 Dev 569' => '1.3.0.99.1553092569.fab5112a',
 		'1.3 Dev 328' => '1.3.0.99.1553092328.12f20874',
-		'1.3 Beta 2'  => '1.3.0.2',
-		'1.3 Beta 1'  => '1.3.0.1',
-		'1.2 Dev 329' => '1.2.3.99.1553092329.0d39f3ad',
-		'1.2.2'       => '1.2.2',
-		'1.2.0'       => '1.2.0',
-		'1.2 Beta 1'  => '1.2.0.1',
-		'0.8.8h'      => '0.8.8h',
-		'0.8.8b'      => '0.8.8b',
-		'0.8.8'       => '0.8.8',
+//		'1.3 Beta 2'  => '1.3.0.2',
+//		'1.3 Beta 1'  => '1.3.0.1',
+//		'1.2 Dev 329' => '1.2.3.99.1553092329.0d39f3ad',
+//		'1.2.2'	   => '1.2.2',
+//		'1.2.0'	   => '1.2.0',
+//		'1.2 Beta 1'  => '1.2.0.1',
+		'0.8.8h'	  => '0.8.8h',
+//		'0.8.8b'	  => '0.8.8b',
+//		'0.8.8'	   => '0.8.8',
 	);
 
 	$sources = $tests;
@@ -151,8 +149,8 @@ if ($debug) {
 		$key = $keys[$test];
 		$formatted = format_cacti_version($version);
 
-		printf ("%15s (Rel %1s, Dev %1s) => %s\n",
-			$test, is_cacti_release($formatted), is_cacti_develop($formatted), version_to_decimal($version, 8, false));
+		printf ("%15s (Rel %1s, Dev %1s) => %s (%s)\n",
+			$test, is_cacti_release($formatted), is_cacti_develop($formatted), $formatted, version_to_decimal($formatted, 9, false));
 
 		foreach ($sources as $name => $source) {
 			$dkey = $keys[$name];
@@ -160,7 +158,7 @@ if ($debug) {
 
 			printf ("  =>  %15s = %-15s (%20s)\n",
 				$name, cacti_version_compare($formatted, $source, '<') ? 'Upgrade' : 'Not Required',
-				version_to_decimal($source, 8, false));
+				version_to_decimal($source, 9, false));
 		}
 		print PHP_EOL;
 	}
@@ -205,9 +203,9 @@ function display_help() {
 
 	print "\nusage: version.php [option]\n";
 	print "\nOptions:\n";
-	print "     -d, --dev        show development upgrade version (generated)\n";
-	print "     -q, --quiet      no headers\n";
-	print "         --debug      show debug testing and matrix\n\n";
+	print "     -d, --dev      show development upgrade version (generated)\n";
+	print "     -q, --quiet    no headers\n";
+	print "         --debug    show debug testing and matrix\n\n";
 }
 
 function fail($exit_value,$args = array(),$display_help = 0) {
