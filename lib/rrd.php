@@ -1903,7 +1903,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 				} else {
-					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS_PI', read_config_option('poller_id'), $cdef_string);
+					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_NODUPS_PI', read_config_option('poller_interval'), $cdef_string);
 				}
 
 				if (isset($magic_item['SIMILAR_DATA_SOURCES_NODUPS'])) {

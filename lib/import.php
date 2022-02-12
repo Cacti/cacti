@@ -155,7 +155,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		if (isset($dep_hash_cache[$type])) {
 			/* yes we do. loop through each match for this type */
 			for ($i=0; $i<cacti_count($dep_hash_cache[$type]); $i++) {
-				$import_debug_info = false;
+				$import_debug_info = array();
 
 				if (!isset($cacti_version_codes[$dep_hash_cache[$type][$i]['version']])) {
 					return false;
@@ -223,7 +223,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					break;
 				}
 
-				if (!empty($import_debug_info)) {
+				if (!cacti_sizeof($import_debug_info)) {
 					$info_array[$type][isset($info_array[$type]) ? cacti_count($info_array[$type]) : 0] = $import_debug_info;
 				}
 			}
@@ -661,14 +661,17 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 	if (isset($new_items) && cacti_sizeof($new_items)) {
 		$new_text = array();
+
 		foreach($new_items as $item) {
 			$new_text[] = 'New Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
 		}
+
 		$import_debug_info['new_items'] = $new_text;
 	}
 
 	if (isset($orphaned_items) && cacti_sizeof($orphaned_items)) {
 		$orphan_text = array();
+
 		foreach($orphaned_items as $item) {
 			if ($remove_orphans) {
 				$orphan_text[] = 'Removed Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
@@ -684,6 +687,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 				$orphan_text[] = 'Found Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
 			}
 		}
+
 		$import_debug_info['orphans'] = $orphan_text;
 
 		if ($remove_orphans) {
@@ -1865,6 +1869,7 @@ function compare_data($save, $previous_data, $table) {
 				}
 
 				$different++;
+
 				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: ' . $newvalue . ', Old Value: ' . $oldvalue;
 			}
 		}
@@ -1971,6 +1976,7 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 
 	if (isset($hash_cache_array[$parsed_hash['type']][$parsed_hash['hash']])) {
 		$import_debug_info['dep'][$hash] = 'met';
+
 		return $hash_cache_array[$parsed_hash['type']][$parsed_hash['hash']];
 	} else {
 		/* bad snmp port hashes */
