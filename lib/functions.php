@@ -5250,6 +5250,11 @@ function get_uptime($host) {
 function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT_SHORT, $all = false) {
 	global $days_from_time_settings;
 
+	// Work around stricter typing in PHP 8.1.2+
+	if (is_float($time)) {
+		$time = intval(ceil($time));
+	}
+
 	// Ensure we use an existing format or we'll end up with no text at all
 	if (!isset($days_from_time_settings['text'][$format])) {
 		$format = DAYS_FORMAT_SHORT;
