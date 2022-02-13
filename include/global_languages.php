@@ -710,6 +710,11 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	if (function_exists('numfmt_create')) {
 		$fmt_key = $cacti_locale . '_'. $country;
 		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
+
+		if ($decimals == null) {
+			$decimals = 0;
+		}
+
 		if ($fmt !== false && $fmt !== null) {
 			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 

@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue:      Reports Drag and Drop not functioning
 -issue:      At 30 second data collection in PHP 8.1.2 PHP reports a loss of precision in poller.php
 -issue:      Work around stricter typing in PHP 8.1.2 when performing some date calculations
+-issue:      Correct PHP deprecation issue around number formatting associated with PHP 8.1.2
 -issue#3816: Installation can sometimes appear stuck during replication or table conversion
 -issue#4363: Duplicate entries in graph_templates_item - mabye an aftermath of the template edit bug
 -issue#4435: Unable to Save Graph Settings from the Graphs pages
