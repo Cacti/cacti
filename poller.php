@@ -775,7 +775,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 			$plugin_end = microtime(true);
 			if ($sleep_time > 0) {
-				usleep($sleep_time * 1000000);
+				usleep(intval($sleep_time * 1000000));
 			}
 
 			api_plugin_hook('poller_top');
