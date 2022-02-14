@@ -31,6 +31,9 @@
      the html form. see the arrays contained in include/global_settings.php
      for the extact syntax of this array */
 function draw_edit_form($array) {
+	// Unset the error fields if they were previously set
+	kill_session_var('sess_error_fields');
+
 	if (cacti_sizeof($array) > 0) {
 		foreach ($array as $top_branch => $top_children) {
 			if ($top_branch == 'config') {
