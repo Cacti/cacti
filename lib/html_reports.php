@@ -1536,20 +1536,16 @@ function reports_edit() {
 		if (!empty($report['id']) && read_config_option('drag_and_drop') == 'on') {
 			?>
 			<script type='text/javascript'>
-			var admin       = <?php print (is_reports_admin() ? 'true':'false');?>;
 			var reportsPage = '<?php print get_reports_page();?>';
 			var reportId    = <?php print $report['id'];?>;
 
-			if (admin) {
-				$('#reports_admin_edit1_child').attr('id', 'report_item');
-			} else {
-				$('#reports_user_edit1_child').attr('id', 'report_item');
-			}
+			// Switch the table name
+			$('#reports_admin_edit1_child, #reports_user_edit1_child').attr('id', 'report_item');
 
 			$(function() {
 				$('#report_item').tableDnD({
 					onDrop: function(table, row) {
-						loadPageNoHeader(reportsPage+'?action=ajax_dnd&id='+reportId+'&'+$.tableDnD.serialize());
+						loadPage(reportsPage+'?action=ajax_dnd&id='+reportId+'&'+$.tableDnD.serialize());
 					}
 				});
 			});
