@@ -2994,7 +2994,7 @@ function checkForRedirects(data, href) {
 	} else if (data.indexOf('cactiLoginSuspend') >= 0) {
 		document.location = urlPath + 'logout.php?action=disabled';
 	} else if (data.indexOf('cactiRedirect') >= 0) {
-		if (typeof href == 'undefined') {
+		if (typeof href == 'undefined' || href == null) {
 			document.location = document.location;
 		} else {
 			document.location = href;
