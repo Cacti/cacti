@@ -1899,9 +1899,12 @@ function loadPage(href, force) {
 					var htmlTitle   = matches[1];
 					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
 					var html        = htmlObject.find('#main').html();
+					var jstree		= htmlObject.find('.cactiTreeNavigationArea').html();
 
 					checkForRedirects(html, href);
-
+					if(jstree !== 'undefined' && $('.cactiTreeNavigationArea').length !== 0) {
+						$('.cactiTreeNavigationArea').html(jstree);
+					}
 					$('#main').empty().hide();
 					$('title').text(htmlTitle);
 					$('#breadcrumbs').html(breadCrumbs);
