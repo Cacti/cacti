@@ -4,9 +4,6 @@ let themeInitialized = false;
 let themeUserMenu
 
 function themeReady() {
-    console.log(window.location.href);
-    console.log(window.location.pathname);
-    console.log(window.location.search);
     /* load default values */
     initStorageItem('midWinter_GUI_Mode', 'compact');
     initStorageItem('midWinter_Color_Mode', 'dark');
