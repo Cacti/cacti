@@ -178,7 +178,9 @@ function setupTheme() {
                 + '</ul>';
             $('<div class="dropdownMenu">' + submenu_tab_graphs_content + '</div>').appendTo('body');
         }else {
-            compact_tab_menu_content += '<li><a class="pic" role="menuitem" href="'+ $(this).attr('href') +'">'+ $('.text_'+id).text() +'</a></li>';
+            if($(this).attr('href') !== urlPath + 'index.php') {
+                compact_tab_menu_content += '<li><a class="pic" role="menuitem" href="' + $(this).attr('href') + '">' + $('.text_' + id).text() + '</a></li>';
+            }
         }
     });
     compact_tab_menu_content += '</ul></li></ul></div>';
