@@ -1189,6 +1189,7 @@ legend {
 	color: white;
 	float: left;
 	line-height: 25px;
+	height: 25px;
 	text-align: left;
 	display: block;
 	width: 70%;
@@ -1201,6 +1202,7 @@ legend {
 	float: right;
 	display: block;
 	line-height: 25px;
+	height: 25px;
 	text-align: right;
 	width: 30%;
 	background-color: #00438C;
