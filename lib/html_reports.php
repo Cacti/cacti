@@ -1537,7 +1537,6 @@ function reports_edit() {
 			?>
 			<script type='text/javascript'>
 			var admin       = <?php print (is_reports_admin() ? 'true':'false');?>;
-			var admin = true;
 			var reportsPage = '<?php print get_reports_page();?>';
 			var reportId    = <?php print $report['id'];?>;
 
