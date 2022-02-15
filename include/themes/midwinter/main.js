@@ -815,7 +815,7 @@ function setMenuVisibility() {
 }
 
 function setHotKeys() {
-    $.cachedScript('include/themes/midwinter/vendor/hotkeys/hotkeys.min.js').done(function (script, textStatus) {
+    $.cachedScript('include/themes/midwinter/vendor/hotkeys/hotkeys.js').done(function (script, textStatus) {
         if(textStatus === 'success') {
             hotkeys('SHIFT+c,c+t,c+l,c+p,c+F1,F5,SHIFT+m+d, SHIFT+g, SHIFT+p, ESC, SHIFT+k', function (event, handler) {
                 event.preventDefault();
@@ -885,15 +885,10 @@ function kiosk_mode(state='toggle') {
 function dialog_client(event) {
     event.preventDefault();
     console.log('dialog_user');
-    $.cachedScript('include/themes/midwinter/vendor/ua-parser/ua-parser.min.js').done(function (script, textStatus) {
+    $.cachedScript('include/themes/midwinter/vendor/ua-parser/ua-parser.js').done(function (script, textStatus) {
         if (textStatus === 'success') {
             let title='Your Client';
-           /*
-            let returnStr = '<div id="dialog_container" style="display:none">' +
-                '<h4><?php print __('Unsaved Changes Detected');?></h4>' +
-            '<p style="display:table-cell;overflow:auto"><?php print __('You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form.');?></p>' +
-            '</div>';
-*/
+
             $('#dialog_container').remove();
             $('body').append('<div id="dialog_container" style="display:none"></div>');
             $('#dialog_container').dialog({
