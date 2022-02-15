@@ -1066,9 +1066,12 @@ function html_escape($string) {
 	}
 
 	// Grave Accent character can lead to xss
-	$string = str_replace('`', '&#96;', $string);
-
-	return htmlspecialchars($string, ENT_QUOTES|ENT_HTML5, $charset, false);
+	if ($string !== null) {
+		$string = str_replace('`', '&#96;', $string);
+		return htmlspecialchars($string, ENT_QUOTES|ENT_HTML5, $charset, false);
+	} else {
+		return $string;
+	}
 }
 
 /* html_split_string - takes a string and breaks it into a number of <br> separated segments
