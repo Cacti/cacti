@@ -106,16 +106,16 @@
 	display: none;
 	position: absolute;
 	z-index:auto;
-	color: #969BA3;
+	color: var(--text-color-lighter);;
 }
 
 .zoom-marker-tooltip-value{
 	white-space: pre-line;
 	font-size: 1em;
 	float: left;
-	background: #141621;
-    padding: 0.25em 0.75em;
-	border: 1px solid #494949;
+	background: var(--background-content);
+    padding: 6px
+	border: 1px solid var(--border-color);
     border-radius: 4px;
 }
 
@@ -127,7 +127,7 @@
 	margin-top: 4px;
 	border-top: 4px solid transparent;
 	border-bottom: 4px solid transparent;
-	border-right: 8px solid #494949;
+	border-right: 8px solid var(--border-color);
 }
 
 .zoom-marker-tooltip-arrow-left-inner {
@@ -138,7 +138,7 @@
 	height: 0;
 	border-top: 4px solid transparent;
 	border-bottom: 4px solid transparent;
-	border-right: 8px solid #141621;
+	border-right: 8px solid var(--background-content);;
 	z-index: auto;
 }
 
@@ -150,7 +150,7 @@
 	margin-top: 4px;
 	border-top: 4px solid transparent;
 	border-bottom: 4px solid transparent;
-	border-left: 8px solid #494949;
+	border-left: 8px solid var(--border-color);
 }
 
 .zoom-marker-tooltip-arrow-right-inner {
@@ -161,34 +161,42 @@
 	height: 0;
 	border-top: 4px solid transparent;
 	border-bottom: 4px solid transparent;
-	border-left: 8px solid #141621;
+	border-left: 8px solid var(--background-content);
 	z-index: auto;
 }
 
 
 .zoom-menu {
-	position:absolute;
-	background: #141621;
-	display:none;
-	z-index:auto;
-	border: 1px solid #494949;
+	color: var(--text-color-normal);
+	position: absolute;
+	background: var(--background-content);;
+	display: none;
+	z-index: auto;
+	border: 1px solid var(--border-color);
+	border-radius: 5px;
+	box-shadow: var(--box-shadow-color) 0 10px 20px;
+	opacity: 0.98;
 }
 
 .zoom-menu .first_li span {
-	width:150px;
-	display:block;
+	width: 150px;
+	display: block;
 	padding: 4px 15px;
-	cursor:pointer;
+	cursor: pointer;
 	text-align: left;
 }
 
 .zoom-menu .inner_li {
-	display:none;
-	margin-left:150px;
-	position:absolute;
-	margin-top:-28px;
-    background:#141621;
-    border: 1px solid #494949;
+	display: none;
+	margin-left: 150px;
+	position: absolute;
+	margin-top: -28px;
+	color: var(--text-color-normal);
+    background: var(--background-content);
+	border: 1px solid var(--border-color);
+	border-radius: 5px;
+	box-shadow: var(--box-shadow-color) 0 10px 20px;
+	opacity: 0.98;
 }
 
 .zoom-menu .sep_li {

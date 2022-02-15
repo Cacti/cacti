@@ -1,0 +1,223 @@
+.ui-widget-header {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-color-highlight-a);
+    font-weight: bold;
+}
+
+.ui-multiselect-header span {
+    color: var(--text-color-highlight-a);
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    background: transparent;
+    color: rgb(150, 155, 163);
+}
+
+.ui-widget-header .ui-icon {
+    background-image: url(images/ui-icons_888888_256x240.png);
+}
+
+.ui-icon, .ui-widget-content .ui-icon {
+    background-image: url(images/ui-icons_888888_256x240.png);
+}
+
+.ui-multiselect-filter {
+    font-weight: normal;
+}
+
+.ui-multiselect-all, .ui-multiselect-none {
+    font-weight: normal;
+}
+
+.ui-multiselect-all:hover, .ui-multiselect-none:hover {
+    text-decoration: none;
+}
+
+.ui-multiselect-header {
+    margin-bottom: 1px;
+}
+
+.ui-multiselect-header ul li {
+    padding-top: 4px;
+}
+
+.ui-multiselect-filter input {
+    border: 1px solid rgba(255,255,255,0.2);
+    padding-left: 3px;
+    margin-left: 3px;
+}
+
+.ui-multiselect-checkboxes label {
+    color: var(--text-color-highlight-a);
+}
+
+.ui-multiselect-checkboxes .ui-state-hover {
+    background: var(--background-lowlight);
+}
+
+.ui-multiselect, .ui-multiselect-button, .ui-selectmenu-button {
+    padding: 0.3em 0.5em !important;
+    text-align: left;
+    line-height: initial;
+}
+
+.ui-multiselect-header ul {
+    margin-top: 4px;
+    height: 15px;
+    float: left;
+}
+
+.ui-multiselect-filter {
+    margin-bottom: 4px;
+}
+
+.ui-multiselect-filter-label > input {
+    padding: 2px;
+    margin-left: 4px;
+    color: #969BA3;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    font-weight: normal;
+    color: #555555;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus, .ui-button:hover, .ui-button:focus {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    font-weight: normal;
+    color: var(--text-color-highlight-a);
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    background: transparent;
+    color: var(--text-color-highlight-a);
+}
+
+.ui-autocomplete {
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.ui-select-text input {
+    width: 180px;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.ui-multiselect {
+    padding: 0.4em 1em;
+    text-align: left;
+    line-height: initial;
+}
+
+.ui-multiselect .ui-icon {
+    margin-top: 0;
+}
+
+.ui-widget {
+    font-size: unset;
+    background: transparent;
+    color: #CECECE;
+}
+
+.ui-checkboxradio-icon {
+    display: none;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    font-weight: normal;
+    color: #969BA3;
+}
+
+.ui-widget-content {
+    border: 1px solid var(--border-color-superlowlight);
+    background: var(--background-content);
+    color: var(--text-color-lighter);
+}
+
+.ui-widget-content a, .ui-widget-content i {
+    color: var(--text-color-highlight-a);
+}
+
+.ui-widget.ui-widget-content {
+    border: 1px solid var(--border-color);
+    border-radius: 5px !important;
+    box-shadow: var(--box-shadow-color) 0 5px 10px;
+    background-color: var(--background-content);
+}
+
+.ui-menu .ui-state-focus, .ui-menu .ui-state-active {
+    background: var(--background-lowlight);
+    color: var(--text-color-lighter);
+    margin: -1px;
+}
+
+.ui-menu .ui-menu-item {
+    background-color: var(--background-lowlight);
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+    min-height: 0;
+    list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+    color: var(--text-color-light);
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+    border-top-right-radius: 0;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+    border-top-left-radius: 0;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    border-bottom-right-radius: 0;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+    border-bottom-left-radius: 0;
+}
+
+.ui-menu-item-wrapper {
+    white-space: nowrap;
+}
+
+.ui-tabs-active .ui-tabs-anchor {
+    color: var(--text-color-lighter) !important;
+}
+
+.ui-tooltip {
+    max-width: none !important;
+}
+
+.ui-tooltip-content div.header {
+    color: var(--text-color-highlight-a);
+}
+
+.ui-tooltip-content div.content {
+    font-size: 10px;
+    color: var(--text-color-light);
+}
+
+.ui-tooltip-content {
+    max-width: 500px !important;
+    overflow: auto !important;
+    opacity: 0.95;
+    border: transparent;
+}
+
+.ui-corner-all {
+    border-radius: 0 !important;
+    -moz-border-radius-bottomright: 0 !important;
+    -moz-border-radius-bottomleft: 0 !important;
+    -moz-border-radius-topright: 0 !important;
+    -moz-border-radius-topleft: 0 !important;
+}
