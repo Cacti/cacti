@@ -101,7 +101,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		}
 
 		if ($help_file !== false && $help_count == 0 && is_realm_allowed(28)) {
-			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark' target='_blank' href='" . html_escape($help_file) . "'><i class='far fa-question-circle'></i></a></span>";
+			print "<span class='cactiHelp' title='" . __esc('Get Page Help') . "'><a class='linkOverDark' target='_blank' onClick='event.stopPropagation()' href='" . html_escape($help_file) . "'><i class='far fa-question-circle'></i></a></span>";
 			$help_count++;
 		}
 
