@@ -3168,8 +3168,8 @@ function automation_get_valid_mask($range) {
 function automation_get_network_info($range) {
 	$network   = false;
 	$broadcast = false;
-	$mask      = false;
-	$detail    = false;
+	$mask      = array();
+	$detail    = array();
 
 	$range = trim($range);
 	if (strpos($range, '/') !== false) {
@@ -3181,8 +3181,9 @@ function automation_get_network_info($range) {
 		}
 
 		$mask = automation_get_valid_mask($range_parts[1]);
-		if ($mask !== false) {
+		if (cacti_sizeof($mask)) {
 			$network = automation_get_valid_ip($range_parts[0]);
+
 			if ($mask['cidr'] != 0) {
 				$dec = ip2long($network) & ip2long($mask['subnet']);
 				$count     = $mask['cidr'] == 32 ? 0 : $mask['count'];
