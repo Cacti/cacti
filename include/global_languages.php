@@ -261,26 +261,39 @@ function load_gettext_original($domain) {
 	global $cacti_textdomains;
 
 	i18n_debug("load_gettext_original($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
+
 	$input = new FileReader($cacti_textdomains[$domain]['path2catalogue']);
+
 	if ($input == false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
 
 	$i18n_domain = new gettext_reader($input);
+
 	if ($i18n_domain == false) {
 		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
+
 	return $i18n_domain;
 }
 
 function load_gettext_motranslator($domain) {
 	global $cacti_textdomains;
 
+	// Hide deprecation errors for PHP 8 if using this
+	// Translator
+	if (version_compare(PHP_VERSION, '8.0', '>=')) {
+		error_reporting(E_ALL ^ E_DEPRECATED);
+	}
+
 	i18n_debug("load_gettext_mostranslator($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
+
 	$input = new PhpMyAdmin\MoTranslator\Translator($cacti_textdomains[$domain]['path2catalogue']);
+
 	if ($input == false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
+
 	return $input;
 }
 
@@ -288,16 +301,20 @@ function load_gettext_oscarotero($domain) {
 	global $cacti_textdomains;
 
 	i18n_debug("load_gettext_oscarotero($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
+
 	$input = Gettext\Translations::fromMoFile($cacti_textdomains[$domain]['path2catalogue']);
+
 	if ($input == false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
 
 	$i18n_domain = new Gettext\Translator();
 	$i18n_domain->loadTranslations($input);
+
 	if ($i18n_domain == false) {
 		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
 	}
+
 	return $i18n_domain;
 }
 
@@ -322,6 +339,7 @@ function apply_locale($language) {
 
 	if (!$locale_set) {
 		$language = repair_locale(read_config_option('i18n_default_language'));
+
 		if ($language == false || $language == '') {
 			$language = repair_locale(read_default_config_option('i18n_default_language'));
 		}
@@ -330,8 +348,9 @@ function apply_locale($language) {
 	}
 
 	if ($locale_set) {
-		$cacti_locale     = $language;
-		$cacti_country    = $lang2locale[$cacti_locale]['country'];
+		$cacti_locale  = $language;
+		$cacti_country = $lang2locale[$cacti_locale]['country'];
+
 		return $cacti_locale;
 	}
 
