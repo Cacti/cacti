@@ -300,6 +300,12 @@ function load_gettext_motranslator($domain) {
 function load_gettext_oscarotero($domain) {
 	global $cacti_textdomains;
 
+	// Hide deprecation errors for PHP 8 if using this
+	// Translator
+	if (version_compare(PHP_VERSION, '8.0', '>=')) {
+		error_reporting(E_ALL ^ E_DEPRECATED);
+	}
+
 	i18n_debug("load_gettext_oscarotero($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
 
 	$input = Gettext\Translations::fromMoFile($cacti_textdomains[$domain]['path2catalogue']);
