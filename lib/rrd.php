@@ -2423,8 +2423,12 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 		include($rrdtheme);
 
 		if(isset($_COOKIE['CactiColorMode']) && in_array($_COOKIE['CactiColorMode'], array('dark', 'light', 'dark-dimmed'))) {
-			$themecolors = 'rrdcolors_' . $_COOKIE['CactiColorMode'];
-			$themeborder = 'rrdborder_' . $_COOKIE['CactiColorMode'];
+				$themecolors = 'rrdcolors_' . $_COOKIE['CactiColorMode'];
+				$themeborder = 'rrdborder_' . $_COOKIE['CactiColorMode'];
+				if (!isset($$themecolors) || !is_array($$themecolors)) {
+					$themecolors = 'rrdcolors';
+					$themeborder = 'rrdborder';
+				}
 		}
 
 		if (isset($$themecolors) && is_array($$themecolors)) {
