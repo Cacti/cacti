@@ -2704,7 +2704,7 @@ function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
 			/* workaround until we have RRA presets in 0.8.8 */
 			/* check through the cf's and get the best */
 			/* if none was found, take the first */
-			$best_cf = $avail_cf_functions[1];
+			$best_cf = reset($avail_cf_functions);
 
 			foreach($avail_cf_functions as $cf) {
 				if ($cf == $requested_cf) {
