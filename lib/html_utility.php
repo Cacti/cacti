@@ -700,7 +700,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					}
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 					$valid = true;
-					$values = preg_split('/,/', $_REQUEST[$variable], NULL, PREG_SPLIT_NO_EMPTY);
+					$values = preg_split('/,/', $_REQUEST[$variable], -1, PREG_SPLIT_NO_EMPTY);
 					foreach($values AS $number) {
 						if (!is_numeric($number)) {
 							$valid = false;
