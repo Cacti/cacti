@@ -1050,12 +1050,16 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		}
 	}
 
+	cacti_system_zone_set();
+
 	/* fill in the current date for printing in the log */
 	if (defined('CACTI_DATE_TIME_FORMAT')) {
 		$date = date(CACTI_DATE_TIME_FORMAT);
 	} else {
 		$date = date('Y-m-d H:i:s');
 	}
+
+	cacti_browser_zone_set();
 
 	/* determine how to log data */
 	$logdestination = read_config_option('log_destination');
@@ -6622,7 +6626,6 @@ function cacti_cookie_session_logout() {
  */
 function cacti_browser_zone_set() {
 	if (isset($_SESSION['sess_browser_php_tz'])) {
-cacti_log('going there');
 		ini_set('date.timezone', $_SESSION['sess_browser_php_tz']);
 		putenv('TZ=' . $_SESSION['sess_browser_system_tz']);
 	}
@@ -6636,7 +6639,6 @@ cacti_log('going there');
  */
 function cacti_system_zone_set() {
 	if (isset($_SESSION['sess_php_tz'])) {
-cacti_log('and back again there');
 		ini_set('date.timezone', $_SESSION['sess_php_tz']);
 		putenv('TZ=' . $_SESSION['sess_system_tz']);
 	}
