@@ -291,7 +291,7 @@ function manager_edit() {
 		print "<div class='tabs'><nav><ul role='tablist'>";
 
 		foreach (array_keys($tabs_manager_edit) as $tab_short_name) {
-			if (($id == 0 & $tab_short_name != 'general')){
+			if (($id == 0 && $tab_short_name != 'general')){
 				print "<li class='subTab'><a href='#' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . '</a></li>';
 			}else {
 				print "<li class='subTab'><a " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .

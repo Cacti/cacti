@@ -121,12 +121,12 @@ if ($cacti_db_session == true) {
 					}
 
 					/* determine user sessions which are sleeping */
-					if ($mtime >= ($active_interval_begin - $session_maxlifetime) & $mtime < $active_interval_begin) {
+					if ($mtime >= ($active_interval_begin - $session_maxlifetime) && $mtime < $active_interval_begin) {
 						/* increase sleeping session counter */
 						$session_counter_sleeping++;
 
 						/* count all sleeping users if they have no active sessions */
-						if (!in_array($session_user_id, $user_ids_active) & !in_array($session_user_id, $user_ids_sleeping)) {
+						if (!in_array($session_user_id, $user_ids_active) && !in_array($session_user_id, $user_ids_sleeping)) {
 							$user_ids_sleeping[] = $session_user_id;
 						}
 

@@ -352,7 +352,7 @@ case 'zoom':
 	$graph_height = $graph['height'];
 	$graph_width  = $graph['width'];
 
-	if (read_user_setting('custom_fonts') == 'on' & read_user_setting('title_size') != '') {
+	if (read_user_setting('custom_fonts') == 'on' && read_user_setting('title_size') != '') {
 		$title_font_size = read_user_setting('title_size');
 	} elseif (read_config_option('title_size') != '') {
 		$title_font_size = read_config_option('title_size');
