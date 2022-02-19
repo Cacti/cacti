@@ -68,10 +68,10 @@ function process_html_variables() {
 				if ($_SESSION['custom']) {
 					set_request_var('predefined_timespan', GT_CUSTOM);
 					$_SESSION['sess_current_timespan'] = GT_CUSTOM;
-				}else {
+				} else {
 					set_request_var('predefined_timespan', $_SESSION['sess_current_timespan']);
 				}
-			}else {
+			} else {
 				set_request_var('predefined_timespan', read_user_setting('default_timespan'));
 				$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 			}
@@ -79,7 +79,7 @@ function process_html_variables() {
 	} else {
 		if (isset($_SESSION['sess_current_timespan'])) {
 			set_request_var('predefined_timespan', $_SESSION['sess_current_timespan']);
-		}else {
+		} else {
 			set_request_var('predefined_timespan', read_user_setting('default_timespan'));
 			$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 		}
@@ -91,7 +91,7 @@ function process_html_variables() {
 		if (!is_numeric(get_filter_request_var('predefined_timeshift'))) {
 			if (isset($_SESSION['sess_current_timeshift'])) {
 				set_request_var('predefined_timeshift', $_SESSION['sess_current_timeshift']);
-			}else {
+			} else {
 				set_request_var('predefined_timeshift', read_user_setting('default_timeshift'));
 				$_SESSION['sess_current_timeshift'] = read_user_setting('default_timeshift');
 			}
@@ -99,7 +99,7 @@ function process_html_variables() {
 	} else {
 		if (isset($_SESSION['sess_current_timeshift'])) {
 			set_request_var('predefined_timeshift', $_SESSION['sess_current_timeshift']);
-		}else {
+		} else {
 			set_request_var('predefined_timeshift', read_user_setting('default_timeshift'));
 			$_SESSION['sess_current_timeshift'] = read_user_setting('default_timeshift');
 		}
@@ -110,19 +110,22 @@ function process_html_variables() {
 /* when a span time preselection has been defined update the span time fields */
 /* someone hit a button and not a dropdown */
 function process_user_input(&$timespan, $timeshift) {
-	if (isset_request_var('date1')) {
-		/* the dates have changed, therefore, I am now custom */
-		if (($_SESSION['sess_current_date1'] != get_nfilter_request_var('date1')) || ($_SESSION['sess_current_date2'] != get_nfilter_request_var('date2')) || (isset_request_var('custom'))) {
-			$timespan['current_value_date1']   = sanitize_search_string(get_nfilter_request_var('date1'));
-			$timespan['begin_now']             = strtotime($timespan['current_value_date1']);
-			$timespan['current_value_date2']   = sanitize_search_string(get_nfilter_request_var('date2'));
-			$timespan['end_now']               = strtotime($timespan['current_value_date2']);
-			$_SESSION['sess_current_timespan'] = GT_CUSTOM;
-			$_SESSION['custom'] = 1;
-			set_request_var('predefined_timespan', GT_CUSTOM);
-		}else {
-			/* the default button wasn't pushed */
-			if (!isset_request_var('button_clear')) {
+	/* catch the case where the session is not set for some reason */
+	if (isset($_SESSION['sess_current_date1']) && isset($_SESSION['sess_current_date2'])) {
+		if (isset_request_var('date1')) {
+			/* the dates have changed, therefore, I am now custom */
+			if (($_SESSION['sess_current_date1'] != get_nfilter_request_var('date1') || $_SESSION['sess_current_date2'] != get_nfilter_request_var('date2') || isset_request_var('custom'))) {
+				$timespan['current_value_date1']   = sanitize_search_string(get_nfilter_request_var('date1'));
+				$timespan['begin_now']             = strtotime($timespan['current_value_date1']);
+				$timespan['current_value_date2']   = sanitize_search_string(get_nfilter_request_var('date2'));
+				$timespan['end_now']               = strtotime($timespan['current_value_date2']);
+
+				$_SESSION['sess_current_timespan'] = GT_CUSTOM;
+				$_SESSION['custom'] = 1;
+
+				set_request_var('predefined_timespan', GT_CUSTOM);
+			} elseif (!isset_request_var('button_clear')) {
+				/* the default button wasn't pushed */
 				$timespan['current_value_date1'] = sanitize_search_string(get_nfilter_request_var('date1'));
 				$timespan['current_value_date2'] = sanitize_search_string(get_nfilter_request_var('date2'));
 				$timespan['begin_now']           = $_SESSION['sess_current_timespan_begin_now'];
@@ -132,6 +135,7 @@ function process_user_input(&$timespan, $timeshift) {
 				if (isset_request_var('move_left_x')) {
 					shift_time($timespan, '-', $timeshift);
 				}
+
 				/* time shifter: shift right                                          */
 				if (isset_request_var('move_right_x')) {
 					shift_time($timespan, '+', $timeshift);
@@ -140,64 +144,67 @@ function process_user_input(&$timespan, $timeshift) {
 				/* custom display refresh */
 				if (isset($_SESSION['custom'])) {
 					$_SESSION['sess_current_timespan'] = GT_CUSTOM;
-				/* refresh the display */
-				}else {
+				} else {
+					/* refresh the display */
 					$_SESSION['custom'] = 0;
 				}
 			} else {
-				/* first time in */
 				set_preset_timespan($timespan);
 			}
-		}
-	}else {
-		if ((isset_request_var('predefined_timespan') && (get_request_var('predefined_timespan') != GT_CUSTOM)) ||
-			(!isset($_SESSION['custom'])) ||
-			(!isset_request_var('predefined_timespan') && ($_SESSION['custom'] == 0)) ||
-			(!isset($_SESSION['sess_current_date1']))) {
+		} elseif ((isset_request_var('predefined_timespan') && get_request_var('predefined_timespan') != GT_CUSTOM) ||
+			!isset($_SESSION['custom']) ||
+			!isset_request_var('predefined_timespan') && ($_SESSION['custom'] == 0) ||
+			!isset($_SESSION['sess_current_date1'])) {
+
 			set_preset_timespan($timespan);
-		}else {
+		} else {
 			$timespan['current_value_date1'] = $_SESSION['sess_current_date1'];
 			$timespan['current_value_date2'] = $_SESSION['sess_current_date2'];
 
 			$timespan['begin_now'] = $_SESSION['sess_current_timespan_begin_now'];
 			$timespan['end_now']   = $_SESSION['sess_current_timespan_end_now'];
-				/* custom display refresh */
+
+			/* custom display refresh */
 			if ($_SESSION['custom']) {
 				$_SESSION['sess_current_timespan'] = GT_CUSTOM;
 			}
 		}
+	} else {
+		set_preset_timespan($timespan);
 	}
 }
 
 /* establish graph timespan from either a user select or the default */
 function set_preset_timespan(&$timespan) {
-	# no current timespan: get default timespan
+	/* no current timespan: get default timespan */
 	if (!isset($_SESSION['sess_current_timespan'])) {
 		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 	}
 
-	# get config option for first-day-of-the-week
+	/* get config option for first-day-of-the-week */
 	$first_weekdayid = read_user_setting('first_weekdayid');
-	# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
-	get_timespan($timespan, time(),$_SESSION['sess_current_timespan'] , $first_weekdayid);
+
+	/* get start/end time-since-epoch for actual time (now()) and given current-session-timespan */
+	get_timespan($timespan, time(), $_SESSION['sess_current_timespan'], $first_weekdayid);
 
 	$_SESSION['custom'] = 0;
 }
 
 function finalize_timespan(&$timespan) {
 	if (!isset($timespan['current_value_date1'])) {
-		/* Default end date is now default time span */
+		/* default end date is now default time span */
 		$timespan['current_value_date1'] = date('Y-m-d H:i', $timespan['begin_now']);
 	}
 
 	if (!isset($timespan['current_value_date2'])) {
-		/* Default end date is now */
+		/* default end date is now */
 		$timespan['current_value_date2'] = date('Y-m-d H:i', $timespan['end_now']);
 	}
 
 	/* correct bad dates on calendar */
 	if ($timespan['end_now'] < $timespan['begin_now']) {
 		set_preset_timespan($timespan);
+
 		$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 
 		$timespan['current_value_date1'] = date('Y-m-d H:i', $timespan['begin_now']);
@@ -217,6 +224,7 @@ function finalize_timespan(&$timespan) {
 	$_SESSION['sess_current_date2']              = $timespan['current_value_date2'];
 
 	$timespan_sel_pos = strpos(get_browser_query_string(),'&predefined_timespan');
+
 	if ($timespan_sel_pos) {
 		$_SESSION['urlval'] = substr(get_browser_query_string(),0,$timespan_sel_pos);
 	} else {
