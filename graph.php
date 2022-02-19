@@ -222,7 +222,7 @@ case 'view':
 						serverTimeOffset : <?php print date('Z');?>
 					});
 
-					responsiveResizeGraphs();
+					responsiveResizeGraphs(true);
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -270,7 +270,6 @@ case 'view':
 		}
 
 		initializeGraph();
-
 		$('#navigation').show();
 		$('#navigation_right').show();
 	});
@@ -513,7 +512,7 @@ case 'zoom':
 						graphProperties();
 					}
 
-					responsiveResizeGraphs();
+					responsiveResizeGraphs(true);
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);

@@ -1287,7 +1287,7 @@ function getMainWidth() {
 	return mainWidth;
 }
 
-function responsiveResizeGraphs() {
+function responsiveResizeGraphs(initialize) {
 	var mainWidth = getMainWidth() - 30;
 	var myColumns = $('#columns').val();
 	var isThumb   = $('#thumbnails').is(':checked');
@@ -1305,7 +1305,7 @@ function responsiveResizeGraphs() {
 	}
 
 	// Dont resize if nothing changed
-	if (previousMainWidth == null || (previousMainWidth == mainWidth && previousColumns == myColumns)) {
+	if (initialize == 'undefined' && (previousMainWidth == null || (previousMainWidth == mainWidth && previousColumns == myColumns))) {
 		previousMainWidth = mainWidth;
 		return true;
 	}
@@ -3568,7 +3568,6 @@ function redrawGraph(graph_id) {
 }
 
 function initializeGraphs(disable_cache) {
-
 	disable_cache = (disable_cache === 'undefined') ? false : true;
 
 	$.ajaxQ.abortAll();
