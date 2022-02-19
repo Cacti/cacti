@@ -520,12 +520,21 @@ function debug_wizard() {
 
 	if (cacti_sizeof($checks)) {
 		foreach ($checks as $check) {
-			$info = unserialize($check['info']);
-			$issues = explode("\n", $check['issue']);
-			$issue_line = '';
+			if (isset($check['info']) && $check['info'] != '') {
+				$info = unserialize($check['info']);
+			} else {
+				$info = '';
+			}
 
+			if (isset($check['issue']) && $check['issue'] != '') {
+				$issues = explode("\n", $check['issue']);
+			} else {
+				$issues = array();
+			}
+
+			$iline  = '';
 			if (cacti_sizeof($issues)) {
-				$issue_line = $issues[0];
+				$iline = $issues[0];
 			}
 
 			$issue_title = implode('<br/>',$issues);
@@ -538,7 +547,7 @@ function debug_wizard() {
 				form_selectable_ecell($check['username'], $check['local_data_id']);
 				form_selectable_cell(date($datefmt, $check['started']), $check['local_data_id'], '', 'right');
 				form_selectable_cell($check['local_data_id'], $check['local_data_id'], '', 'right');
-				form_selectable_cell(debug_icon(($check['done'] ? (strlen($issue_line) ? 'off' : 'on'):'')), $check['local_data_id'], '', 'center');
+				form_selectable_cell(debug_icon(($check['done'] ? ($iline != '' ? 'off' : 'on'):'')), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['rrd_writable']), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['rrd_exists']), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['active']), $check['local_data_id'], '', 'center');
@@ -551,7 +560,7 @@ function debug_wizard() {
 					form_selectable_cell(debug_icon(($info['rra_timestamp2'] != '' ? 1 : '')), $check['local_data_id'], '', 'center');
 				}
 
-				form_selectable_cell('<a class=\'linkEditMain\' href=\'#\' title="' . html_escape($issue_title) . '">' . ($issue_line != '' ? __esc('Issues') : __esc('N/A')) . '</a>', $check['local_data_id'], '', 'right');
+				form_selectable_cell('<a class=\'linkEditMain\' href=\'#\' title="' . html_escape($issue_title) . '">' . ($iline != '' ? __esc('Issues') : __esc('N/A')) . '</a>', $check['local_data_id'], '', 'right');
 			} else {
 				form_selectable_cell('-', $check['local_data_id']);
 				form_selectable_cell(__('Not Debugging'), $check['local_data_id'], '', 'right');
