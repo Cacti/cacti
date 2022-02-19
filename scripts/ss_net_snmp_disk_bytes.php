@@ -116,7 +116,7 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 		$host['snmp_engine_id']);
 
 	foreach($names as $measure) {
-		if (substr($measure['value'],0,2) == 'sd') {
+		if (substr($measure['value'],0,2) == 'sd' || substr($measure['value'],0,4) == 'nvme' || substr($measure['value'],0,2) == 'vm') {
 			if (is_numeric(substr(strrev($measure['value']),0,1))) {
 				continue;
 			}
