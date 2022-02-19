@@ -1537,7 +1537,7 @@ $reports_actions = array(
 	REPORTS_DELETE    => __('Delete'),
 );
 
-if (!$config['is_web'] || is_realm_allowed(22)) {
+if (!$config['is_web'] || is_realm_allowed(21)) {
 	$reports_actions[REPORTS_OWN] = __('Take Ownership');
 }
 
