@@ -124,6 +124,7 @@
     font-size: unset;
     background: transparent;
     color: #CECECE;
+    z-index: 100 !important;
 }
 
 .ui-checkboxradio-icon {
@@ -220,4 +221,10 @@
     -moz-border-radius-bottomleft: 0 !important;
     -moz-border-radius-topright: 0 !important;
     -moz-border-radius-topleft: 0 !important;
+}
+
+.ui-controlgroup {
+    vertical-align: middle;
+    display: inline-block;
+    font-size: var(--fs-regular);
 }

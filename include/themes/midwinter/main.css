@@ -1459,7 +1459,7 @@ table.cactiTable {
 	line-height: 25px;
 	text-transform: none;
 	color: var(--text-color-normal);
-	font-size: var(--fs-semismall);
+	font-size: var(--fs-big);
 	padding-left: 5px;
 	margin-top: 10px;
 }
