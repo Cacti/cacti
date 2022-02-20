@@ -11,7 +11,6 @@ function themeReady() {
     initStorageItem('midWinter_Font_Size', 'regular', 'zoom-level');
 
     themeInitialized = midwinterInitialized();
-    checkConsoleMenu();
     setThemeColor();
     setupTheme();
     setupTree();
@@ -24,19 +23,19 @@ function themeReady() {
     themeLoader('off');
 }
 
-
 function checkConsoleMenu() {
     if( $('#cactiContent').length !== 0 && $('#menu').length === 0  ) {
-        $('<div id="menu"></div>').appendTo('body');
-        $( "#menu" ).load( urlPath + 'about.php' + " #menu",
-            function (responseText, textStatus, XMLHttpRequest) {
-                if (textStatus == "success") {
-
-                }
-                if (textStatus == "error") {
-
-                }
-        });
+        $.ajaxQ.abortAll();
+        $.get(urlPath + 'about.php').done(function(html) {
+                let menu = $(html).find('#menu');
+                redesignConsoleMenu(menu);
+                ajaxAnchors();
+                extendAnchorActions();
+            }
+        ).fail(function(html) {
+            getPresentHTTPError(html);
+            }
+        );
     }
 }
 
@@ -192,21 +191,19 @@ function setupTheme() {
     // -- compact mode -- redesign console navigation area
     if($('.cactiConsoleNavigationArea').length !== 0) {
 
+        checkConsoleMenu();
+
         if($('#compact_tab_menu').length === 0 && $('#compact_user_menu').length === 0) {
 
             // -- split the navigation area into 3 parts to separate tabs (dashboards), settings and user menus
-            let menu = $('#menu').detach();
+             let menu = $('#menu').detach();
 
             $('.cactiConsoleNavigationArea').empty().prepend(
                 '<div class="compact" id="compact_tab_menu"></div>'
                 +'<div class="compact" id="compact_user_menu"></div>'
             );
-            $(menu).insertAfter('#compact_tab_menu');
-            $('#menu').addClass('cactiConsoleNavigationBox hide').attr('data-helper', 'settings');
-            $('<div class="header compact">Settings</div>').prependTo('#menu');
 
-            // Clean up: kick out Main Console
-            $('#menu_main_console').remove();
+            redesignConsoleMenu(menu);
 
             // -- duplicate the console tab items and add them to the console navigation area for compact mode
             if ($.trim($('compact_tab_menu').html()) === '') {
@@ -370,6 +367,18 @@ function setupTheme() {
     $('.cactiConsoleContentArea, .cactiGraphContentArea').on('mouseenter', toggleCactiNavigationBox);
 }
 
+function redesignConsoleMenu(menu) {
+
+    if(menu !== undefined ) {
+        $(menu).insertAfter('#compact_tab_menu');
+
+        $('#menu').addClass('cactiConsoleNavigationBox hide').attr('data-helper', 'settings');
+        $('<div class="header compact">Settings</div>').prependTo('#menu');
+
+        // Clean up: kick out Main Console
+        $('#menu_main_console').remove();
+    }
+}
 
 function redirect(event) {
     event.preventDefault();
