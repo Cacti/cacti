@@ -336,6 +336,11 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete
+				$data_template_data_ids = db_fetch_cell('SELECT GROUP_CONCAT(id)
+					FROM data_template_data
+					WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . '
+					AND local_data_id=0');
+
 				db_execute('DELETE FROM data_template_data WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
 				db_execute('DELETE FROM data_template_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id') . ' AND local_data_id=0');
 				db_execute('DELETE FROM snmp_query_graph_rrd WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
@@ -343,9 +348,22 @@ function form_actions() {
 				db_execute('DELETE FROM data_template WHERE ' . array_to_sql_or($selected_items, 'id'));
 
 				/* "undo" any graph that is currently using this template */
-				db_execute('UPDATE data_template_data set local_data_template_data_id=0,data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
-				db_execute('UPDATE data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
-				db_execute('UPDATE data_local set data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
+				db_execute('UPDATE data_template_data
+					SET local_data_template_data_id = 0, data_template_id = 0
+					WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
+
+				db_execute('UPDATE data_template_rrd
+					SET local_data_template_rrd_id = 0, data_template_id = 0
+					WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
+
+				db_execute('UPDATE data_local
+					SET data_template_id = 0
+					WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
+
+				/* delete data_input_data information */
+				if ($data_template_data_ids != '') {
+					db_execute('DELETE FROM data_input_data WHERE data_template_data_id IN(' . $data_template_data_ids . ')');
+				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_duplicate_data_source(0, $selected_items[$i], get_nfilter_request_var('title_format'));
@@ -812,7 +830,7 @@ function template_edit() {
 						$disable    = '';
 					} else {
 						$old_value  = '';
-						$old_tvalue = 'on';
+						$old_tvalue = '';
 						$disable    = '';
 					}
 				}
