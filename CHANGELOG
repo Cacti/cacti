@@ -61,6 +61,7 @@ Cacti CHANGELOG
 -feature: Create more Filters for CLog Types
 -feature: Add LDAP Debug Mode option for testing LDAP specific connection issues
 -feature: Adding the Advanced Ping Graph Template to available packages
+-feature: Add Synology NAS Device Package to available packages
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
