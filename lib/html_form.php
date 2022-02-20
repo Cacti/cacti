@@ -123,9 +123,6 @@ function draw_edit_form($array) {
 			$i++;
 		}
 	}
-
-	// Unset the error fields if they were previously set
-	kill_session_var('sess_error_fields');
 }
 
 /* draw_edit_control - draws a single control to be used on an html edit form

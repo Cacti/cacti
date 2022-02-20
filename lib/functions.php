@@ -878,6 +878,7 @@ function clear_messages() {
 		cacti_session_start();
 	}
 
+	kill_session_var('sess_error_fields');
 	kill_session_var('sess_messages');
 
 	if ($need_session) {
