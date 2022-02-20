@@ -335,7 +335,7 @@ function setupTheme() {
     /* User Menu */
     $('.menuoptions').parent().appendTo('body');
 
-    $('.action-icon-user').unbind().click(function(event) {
+    $('.action-icon-user').off().on('click', function(event) {
         event.preventDefault();
         if ($('.menuoptions').is(':visible') === false) {
             $('.submenuoptions').stop().slideUp(120);
@@ -361,10 +361,10 @@ function setupTheme() {
 
     $('.dialog_client').off().on('click', {id: 'dialog_client'}, dialog_client);
 
-    $('.toggleGuiMode').unbind().click(toggleGuiMode);
-    $('.toggleColorMode').unbind().click(toggleColorMode);
-    $('.toggleColorModeAuto').unbind().click(toggleColorModeAuto);
-    $('.toggleGuiFontSize').unbind().click(toggleGuiFontSize);
+    $('.toggleGuiMode').off().on('click',toggleGuiMode);
+    $('.toggleColorMode').off().on('click',toggleColorMode);
+    $('.toggleColorModeAuto').off().on('click', toggleColorModeAuto);
+    $('.toggleGuiFontSize').off().on('click',toggleGuiFontSize);
 
 
     $('.cactiConsoleContentArea, .cactiGraphContentArea').on('mouseenter', toggleCactiNavigationBox);
@@ -515,7 +515,7 @@ function setupDefaultElements() {
         }
     });
 
-    $('#host').unbind().autocomplete({
+    $('#host').off().autocomplete({
         source: pageName+'?action=ajax_hosts',
         autoFocus: true,
         minLength: 0,
@@ -537,7 +537,7 @@ function setupDefaultElements() {
     }).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
 
     $('#host_click').css('z-index', '4');
-    $('#host_wrapper').unbind().dblclick(function() {
+    $('#host_wrapper').off().dblclick(function() {
         hostOpen = false;
         clearTimeout(hostTimer);
         clearTimeout(clickTimeout);
@@ -650,6 +650,10 @@ function setCookieValue(name, value) {
     $.cookie(name, value.toString(), { expires: 365, path: urlPath + ';SameSite=Lax', secure: true });
 }
 
+function getCookieValue(name) {
+    return $.cookie(name);
+}
+
 function toggleGuiMode() {
     let storage = Storages.localStorage;
     let midWinter_GUI_Mode = storage.get('midWinter_GUI_Mode');
@@ -712,7 +716,8 @@ function setThemeColor() {
         detectSystemColorSetup();
     }else {
         $('.toggleColorMode').show(0);
-        setDocumentAttribute('theme-color', storage.get('midWinter_Color_Mode'));
+        checkThemeColorSetup(storage.get('midWinter_Color_Mode'));
+        //setDocumentAttribute('theme-color', storage.get('midWinter_Color_Mode'));
         //setCookieValue('CactiColorMode', storage.get('midWinter_Color_Mode'));
     }
     setDocumentAttribute('theme-mode', storage.get('midWinter_GUI_Mode'));
@@ -739,11 +744,11 @@ function detectSystemColorSetup() {
 
 function checkThemeColorSetup(color_mode) {
     let document_color_mode = document.documentElement.getAttribute('data-theme-color');
+    let cookie_color_mode = getCookieValue('CactiColorMode');
 
-    if (document_color_mode !== color_mode) {
+    if (document_color_mode !== color_mode || cookie_color_mode !== color_mode) {
         setDocumentAttribute('theme-color', color_mode)
         setCookieValue('CactiColorMode', color_mode);
-
         initializeGraphs(true);
     }
 }
@@ -783,7 +788,7 @@ function setMenuVisibility() {
     });
 
     // Functon to give life to the Navigation pane
-    $('#nav li:has(ul) a.active').unbind().click(function(event) {
+    $('#nav li:has(ul) a.active').off().on('click', function(event) {
         event.preventDefault();
 
         id = $(this).closest('.menuitem').attr('id');
