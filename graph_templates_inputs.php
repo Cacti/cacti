@@ -137,6 +137,9 @@ function input_remove() {
 function input_edit() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item, $fields_graph_template_input_edit;
 
+	// Remove filter item
+	unset($struct_graph_item['data_template_id']);
+
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('graph_template_id');

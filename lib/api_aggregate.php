@@ -197,6 +197,9 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 	global $struct_graph_item, $graph_item_types, $config;
 
+	// Remove filter item
+	unset($struct_graph_item['data_template_id']);
+
 	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	/* suppress warnings */

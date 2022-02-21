@@ -25,6 +25,9 @@
 function graph_template_to_xml($graph_template_id) {
 	global $struct_graph, $fields_graph_template_input_edit, $struct_graph_item, $export_errors;
 
+	// Remote caching item
+	unset($struct_graph_item['data_template_id']);
+
 	$hash['graph_template'] = get_hash_version('graph_template') . get_hash_graph_template($graph_template_id);
 	$xml_text = '';
 

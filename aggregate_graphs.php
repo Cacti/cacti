@@ -556,6 +556,9 @@ function form_actions() {
 function item() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
+	// Remove filter item
+	unset($struct_graph_item['data_template_id']);
+
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	/* ==================================================== */
@@ -613,6 +616,9 @@ function item() {
 
 function graph_edit() {
 	global $config, $struct_graph, $struct_aggregate_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
+
+	// Remove filter item
+	unset($struct_graph_item['data_template_id']);
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');

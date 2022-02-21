@@ -276,6 +276,9 @@ function item_remove() {
 function item_edit() {
 	global $config, $struct_graph_item, $graph_item_types, $consolidation_functions;
 
+	// Remove filter item
+	unset($struct_graph_item['data_template_id']);
+
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('local_graph_id');
