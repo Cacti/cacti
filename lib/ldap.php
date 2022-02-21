@@ -351,7 +351,7 @@ abstract class LdapError {
 				break;
 
 			case LdapError::EmptyPassword:
-				$error_text = __('Invalid Password provided.  Login failed.');
+				$error_text = __('Password is required.  Login failed.');
 				break;
 
 			default:
@@ -617,7 +617,7 @@ class Ldap {
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
 		$this->dn = str_replace('<username>', $this->username, $this->dn);
 
-		if (empty($this->password)) {
+		if ($this->password == '') {
 			return LdapError::GetErrorDetails(LdapError::EmptyPassword);
 		}
 
