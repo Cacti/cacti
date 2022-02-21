@@ -265,6 +265,7 @@ abstract class LdapError {
 	const SearchFoundNoUser     = 14;
 	const SearchFoundNoUserDN   = 15;
 	const UndefinedDnOrPassword = 16;
+	const EmptyPassword         = 17;
 	const Disabled              = 99;
 
 	public static function GetErrorDetails($returnError, $ldapConn = null, $ldapServer = '', $ldapError = 0) {
@@ -347,6 +348,10 @@ abstract class LdapError {
 
 			case LdapError::UndefinedDnOrPassword:
 				$error_text = __('Specific DN and Password required');
+				break;
+
+			case LdapError::EmptyPassword:
+				$error_text = __('Invalid Password provided.  Login failed.');
 				break;
 
 			default:
@@ -611,6 +616,10 @@ class Ldap {
 		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
 		$this->dn = str_replace('<username>', $this->username, $this->dn);
+
+		if (empty($this->password)) {
+			return LdapError::GetErrorDetails(LdapError::EmptyPassword);
+		}
 
 		/* Bind to the LDAP directory */
 		cacti_log('LDAP: Binding with "' . $this->dn . '"', false, 'AUTH', $this->debug);
