@@ -351,7 +351,7 @@ abstract class LdapError {
 				break;
 
 			case LdapError::EmptyPassword:
-				$error_text = __('Password is required.  Login failed.');
+				$error_text = __('Invalid Password provided.  Login failed.');
 				break;
 
 			default:
