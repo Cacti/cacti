@@ -183,7 +183,7 @@ function html_graph_template_multiselect() {
 	var msWidth = 200;
 
 	$('#graph_template_id').hide().multiselect({
-		height: 300,
+		menuHeight: $(window).height()*.7,
 		menuWidth: 'auto',
 		buttonWidth: 'auto',
 		noneSelectedText: '<?php print __('All Graphs & Templates');?>',
