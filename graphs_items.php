@@ -320,6 +320,9 @@ function item_edit() {
 	get_filter_request_var('data_template_id');
 	/* ==================================================== */
 
+	// This column is for Graph Templates
+	unset($struct_graph_item['data_template_id']);
+
 	validate_item_vars();
 
 	$id = (!isempty_request_var('id') ? '&id=' . get_request_var('id') : '');
