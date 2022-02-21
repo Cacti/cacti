@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-02-06 12:08-0500\n"
+"POT-Creation-Date: 2022-02-21 13:12-0500\n"
 "PO-Revision-Date: 2022-02-03 20:54-0500\n"
 "Last-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\n"
 "Language-Team: Italian <http://translate.cacti.net/projects/cacti/core-v1-2-x/it/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: about.php:29 include/global_arrays.php:2499 lib/html.php:2469
+#: about.php:29 include/global_arrays.php:2499 lib/html.php:2472
 #, fuzzy
 msgid "About Cacti"
 msgstr "Informazioni su Cacti"
@@ -82,13 +82,13 @@ msgstr "Emerillon è distribuito nella speranza che possa risultare utile, ma SE
 #: data_input.php:685 data_input.php:727 data_queries.php:31
 #: data_queries.php:804 data_queries.php:911 data_queries.php:1161
 #: data_source_profiles.php:30 data_source_profiles.php:644 data_sources.php:37
-#: data_sources.php:1070 data_templates.php:34 data_templates.php:688
+#: data_sources.php:1070 data_templates.php:34 data_templates.php:706
 #: gprint_presets.php:28 graph_templates.php:37 graph_templates.php:522
 #: graphs.php:46 host.php:41 host_templates.php:35 host_templates.php:505
 #: host_templates.php:562 include/global_arrays.php:1537
 #: include/global_settings.php:247 lib/api_automation.php:1327
-#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1258
-#: lib/html_form.php:1271 lib/html_reports.php:1752 links.php:28
+#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1261
+#: lib/html_form.php:1271 lib/html_reports.php:1747 links.php:28
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1401 tree.php:1554
 #: tree.php:1614 tree.php:1635 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
@@ -149,7 +149,7 @@ msgstr "Fare clic su \"Continua\" per eliminare i seguenti grafici aggregati."
 #: data_source_profiles.php:294 data_source_profiles.php:402
 #: data_sources.php:519 data_sources.php:529 data_sources.php:538
 #: data_sources.php:547 data_sources.php:556 data_sources.php:562
-#: data_templates.php:407 data_templates.php:417 data_templates.php:433
+#: data_templates.php:425 data_templates.php:435 data_templates.php:451
 #: gprint_presets.php:153 graph_templates.php:383 graph_templates.php:393
 #: graph_templates.php:415 graph_templates.php:424 graph_templates.php:433
 #: graph_view.php:949 graphs.php:910 graphs.php:926 graphs.php:937
@@ -159,7 +159,7 @@ msgstr "Fare clic su \"Continua\" per eliminare i seguenti grafici aggregati."
 #: host.php:470 host.php:484 host.php:498 host.php:507 host.php:536
 #: host.php:548 host_templates.php:270 host_templates.php:284
 #: host_templates.php:295 host_templates.php:344 host_templates.php:407
-#: lib/clog_webapi.php:221 lib/html.php:2502 lib/html_form.php:1270
+#: lib/clog_webapi.php:221 lib/html.php:2505 lib/html_form.php:1270
 #: lib/html_form.php:1282 lib/html_form.php:1293 lib/html_utility.php:274
 #: links.php:197 links.php:206 links.php:215 managers.php:1004
 #: managers.php:1062 plugins.php:517 pollers.php:559 pollers.php:568
@@ -187,7 +187,7 @@ msgstr "Annulla"
 #: data_source_profiles.php:294 data_source_profiles.php:403
 #: data_sources.php:519 data_sources.php:529 data_sources.php:538
 #: data_sources.php:547 data_sources.php:556 data_sources.php:562
-#: data_templates.php:407 data_templates.php:417 data_templates.php:433
+#: data_templates.php:425 data_templates.php:435 data_templates.php:451
 #: gprint_presets.php:153 graph_templates.php:383 graph_templates.php:393
 #: graph_templates.php:415 graph_templates.php:424 graph_templates.php:433
 #: graphs.php:910 graphs.php:926 graphs.php:937 graphs.php:948 graphs.php:963
@@ -196,7 +196,7 @@ msgstr "Annulla"
 #: host.php:452 host.php:461 host.php:470 host.php:484 host.php:498
 #: host.php:507 host.php:536 host.php:548 host_templates.php:270
 #: host_templates.php:284 host_templates.php:295 host_templates.php:345
-#: host_templates.php:408 lib/clog_webapi.php:222 lib/html.php:2501
+#: host_templates.php:408 lib/clog_webapi.php:222 lib/html.php:2504
 #: lib/html_reports.php:499 lib/html_utility.php:274 links.php:197
 #: links.php:206 links.php:215 managers.php:1004 managers.php:1062
 #: pollers.php:559 pollers.php:568 pollers.php:577 pollers.php:586
@@ -229,8 +229,8 @@ msgstr "Per poter migrare i Grafici Aggregati sottostanti in un Aggregato basato
 #: aggregate_graphs.php:394 aggregate_graphs.php:442 aggregate_graphs.php:488
 #: auth_changepassword.php:359 auth_profile.php:443 automation_networks.php:398
 #: automation_snmp.php:254 graphs.php:1188 graphs.php:1238 graphs.php:1241
-#: graphs.php:1283 host.php:539 include/auth.php:287 lib/api_aggregate.php:1589
-#: lib/api_aggregate.php:1604 lib/html_form.php:1291 lib/html_utility.php:272
+#: graphs.php:1283 host.php:539 include/auth.php:287 lib/api_aggregate.php:1592
+#: lib/api_aggregate.php:1607 lib/html_form.php:1291 lib/html_utility.php:272
 #: managers.php:1065 permission_denied.php:30 permission_denied.php:32
 msgid "Return"
 msgstr "Ritorno"
@@ -291,12 +291,12 @@ msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "Fare clic su 'Continua' per aggiungere i grafici selezionati al Report sottostante."
 
 #: aggregate_graphs.php:473 graph_view.php:810 graphs.php:1268 host.php:524
-#: lib/html_reports.php:35 lib/html_reports.php:1932
+#: lib/html_reports.php:35 lib/html_reports.php:1927
 msgid "Report Name"
 msgstr "Nome report"
 
 #: aggregate_graphs.php:477 graph_view.php:817 graphs.php:1272 host.php:528
-#: lib/html_reports.php:1614
+#: lib/html_reports.php:1609
 msgid "Timespan"
 msgstr "Tempo"
 
@@ -359,150 +359,150 @@ msgstr "Ramo di destinazione:"
 msgid "Place Graph(s) on Tree"
 msgstr "Posizionare il/i grafico/i sull'albero"
 
-#: aggregate_graphs.php:566 graphs.php:1330
+#: aggregate_graphs.php:569 graphs.php:1330
 #, fuzzy
 msgid "Graph Items [new]"
 msgstr "Elementi del grafico [nuovo]"
 
-#: aggregate_graphs.php:592 graphs.php:1370
+#: aggregate_graphs.php:595 graphs.php:1370
 #, fuzzy, php-format
 msgid "Graph Items [edit: %s]"
 msgstr "Voci del grafico [modifica: %s]."
 
-#: aggregate_graphs.php:653 data_sources.php:1056 lib/html_reports.php:1463
+#: aggregate_graphs.php:659 data_sources.php:1056 lib/html_reports.php:1463
 #: user_admin.php:2010
 #, fuzzy, php-format
 msgid "[edit: %s]"
 msgstr "[modifica: %s]"
 
-#: aggregate_graphs.php:655 aggregate_graphs.php:770
+#: aggregate_graphs.php:661 aggregate_graphs.php:776
 #, fuzzy
 msgid "Aggregate Graph does not Exist"
 msgstr "Impostazioni del grafico aggregato"
 
-#: aggregate_graphs.php:670 aggregate_graphs.php:677 lib/html_reports.php:1377
+#: aggregate_graphs.php:676 aggregate_graphs.php:683 lib/html_reports.php:1377
 #: lib/html_reports.php:1379 utilities.php:1928
 msgid "Details"
 msgstr "Dettagli"
 
-#: aggregate_graphs.php:671 graphs_new.php:776 lib/html_reports.php:1377
+#: aggregate_graphs.php:677 graphs_new.php:776 lib/html_reports.php:1377
 #: utilities.php:361
 msgid "Items"
 msgstr "Elementi"
 
-#: aggregate_graphs.php:672 aggregate_graphs.php:678 lib/html.php:1969
+#: aggregate_graphs.php:678 aggregate_graphs.php:684 lib/html.php:1972
 #: lib/html_reports.php:1377
 msgid "Preview"
 msgstr "Anteprima"
 
-#: aggregate_graphs.php:681
+#: aggregate_graphs.php:687
 #, fuzzy
 msgid "Aggregate Graphs Accessed does not Exist"
 msgstr "Impostazioni del grafico aggregato"
 
-#: aggregate_graphs.php:747
+#: aggregate_graphs.php:753
 #, fuzzy
 msgid "Turn Off Graph Debug Mode"
 msgstr "Disattivare la modalità di debug del grafico"
 
-#: aggregate_graphs.php:749
+#: aggregate_graphs.php:755
 #, fuzzy
 msgid "Turn On Graph Debug Mode"
 msgstr "Attivare la modalità di debug del grafico"
 
-#: aggregate_graphs.php:755 aggregate_graphs.php:1097
+#: aggregate_graphs.php:761 aggregate_graphs.php:1103
 #, fuzzy
 msgid "Show Item Details"
 msgstr "Mostra Dettagli"
 
-#: aggregate_graphs.php:767
+#: aggregate_graphs.php:773
 #, fuzzy
 msgid "Aggregate Preview Does Not Exist"
 msgstr "Anteprima Aggregato [%s]"
 
-#: aggregate_graphs.php:768
+#: aggregate_graphs.php:774
 #, fuzzy
 msgid "Aggreage Graph does not Exist"
 msgstr "Impostazioni del grafico aggregato"
 
-#: aggregate_graphs.php:774
+#: aggregate_graphs.php:780
 #, fuzzy, php-format
 msgid "Aggregate Preview %s"
 msgstr "Anteprima Aggregato [%s]"
 
-#: aggregate_graphs.php:792 graph.php:565 graphs.php:1674
+#: aggregate_graphs.php:798 graph.php:564 graphs.php:1674
 #, fuzzy
 msgid "RRDtool Command:"
 msgstr "Comando RRDtool:"
 
-#: aggregate_graphs.php:794 graph.php:574 graphs.php:1678
+#: aggregate_graphs.php:800 graph.php:573 graphs.php:1678
 msgid "Not Checked"
 msgstr "Non selezionato"
 
-#: aggregate_graphs.php:794 graph.php:570 graphs.php:1676
+#: aggregate_graphs.php:800 graph.php:569 graphs.php:1676
 #, fuzzy
 msgid "RRDtool Says:"
 msgstr "RRDDtool dice:"
 
-#: aggregate_graphs.php:824
+#: aggregate_graphs.php:830
 #, fuzzy, php-format
 msgid "Aggregate Graph %s"
 msgstr "Grafico aggregato %s"
 
-#: aggregate_graphs.php:847 aggregate_templates.php:394 graphs.php:1052
+#: aggregate_graphs.php:853 aggregate_templates.php:394 graphs.php:1052
 #, fuzzy
 msgid "Prefix Replacement Values"
 msgstr "Modello di sostituzione"
 
-#: aggregate_graphs.php:848 aggregate_templates.php:395 graphs.php:1053
+#: aggregate_graphs.php:854 aggregate_templates.php:395 graphs.php:1053
 #, fuzzy
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
 msgstr "Puoi utilizzare questi valori di sostituzione per il prefisso nel grafico aggregato"
 
-#: aggregate_graphs.php:1015 aggregate_templates.php:522 graphs.php:1135
-#: lib/api_aggregate.php:1715
+#: aggregate_graphs.php:1021 aggregate_templates.php:522 graphs.php:1135
+#: lib/api_aggregate.php:1718
 msgid "Total"
 msgstr "Totale"
 
-#: aggregate_graphs.php:1019 aggregate_templates.php:526 graphs.php:1137
+#: aggregate_graphs.php:1025 aggregate_templates.php:526 graphs.php:1137
 msgid "All Items"
 msgstr "Tutti gli elementi"
 
-#: aggregate_graphs.php:1042 graphs.php:1689 lib/api_aggregate.php:1872
+#: aggregate_graphs.php:1048 graphs.php:1689 lib/api_aggregate.php:1875
 #, fuzzy
 msgid "Graph Configuration"
 msgstr "Configurazione del grafico"
 
-#: aggregate_graphs.php:1092 automation_graph_rules.php:551
+#: aggregate_graphs.php:1098 automation_graph_rules.php:551
 #: automation_graph_rules.php:566 automation_graph_rules.php:582
 #: automation_tree_rules.php:394 automation_tree_rules.php:544
 msgid "Show"
 msgstr "Mostra"
 
-#: aggregate_graphs.php:1094
+#: aggregate_graphs.php:1100
 #, fuzzy
 msgid "Hide Item Details"
 msgstr "Nascondi dettagli articolo"
 
-#: aggregate_graphs.php:1297
+#: aggregate_graphs.php:1303
 #, fuzzy
 msgid "Matching Graphs"
 msgstr "Grafici corrispondenti"
 
-#: aggregate_graphs.php:1306 aggregate_graphs.php:1588
+#: aggregate_graphs.php:1312 aggregate_graphs.php:1594
 #: aggregate_templates.php:592 automation_devices.php:474
 #: automation_graph_rules.php:743 automation_networks.php:1182
 #: automation_networks.php:1226 automation_snmp.php:695
 #: automation_templates.php:393 automation_tree_rules.php:810 cdef.php:756
-#: color.php:529 color_templates.php:530 data_debug.php:1052 data_input.php:826
+#: color.php:529 color_templates.php:530 data_debug.php:1061 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:891 data_sources.php:1437
-#: data_templates.php:981 gprint_presets.php:262 graph_templates.php:710
+#: data_templates.php:999 gprint_presets.php:262 graph_templates.php:710
 #: graph_view.php:604 graphs.php:2031 graphs_new.php:411 host.php:1619
 #: host_templates.php:719 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
 #: lib/clog_webapi.php:597 lib/html.php:244 lib/html_filter.php:63
-#: lib/html_graph.php:203 lib/html_reports.php:1837 lib/html_tree.php:131
-#: lib/html_tree.php:1032 links.php:310 managers.php:149 managers.php:493
+#: lib/html_graph.php:203 lib/html_reports.php:1832 lib/html_tree.php:131
+#: lib/html_tree.php:973 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:347 pollers.php:879 rrdcleaner.php:507
 #: settings.php:526 settings.php:545 settings.php:594 sites.php:476
 #: tree.php:818 tree.php:853 tree.php:888 tree.php:1925 user_admin.php:2283
@@ -516,33 +516,33 @@ msgstr "Grafici corrispondenti"
 msgid "Search"
 msgstr "Cerca"
 
-#: aggregate_graphs.php:1312 aggregate_graphs.php:1355
-#: aggregate_graphs.php:1616 color_templates.php:642 data_sources.php:1621
+#: aggregate_graphs.php:1318 aggregate_graphs.php:1361
+#: aggregate_graphs.php:1622 color_templates.php:642 data_sources.php:1621
 #: data_sources.php:1755 graph_view.php:468 graph_view.php:663
 #: graph_view.php:712 graphs.php:2037 graphs.php:2184 host.php:1730
 #: include/global_arrays.php:916 include/global_arrays.php:1123
-#: include/global_arrays.php:1915 lib/api_automation.php:283 lib/html.php:1683
-#: lib/html.php:1685 lib/html.php:1763 lib/html_graph.php:209
-#: lib/html_tree.php:1087 lib/html_tree.php:1416 tree.php:797 tree.php:2069
+#: include/global_arrays.php:1915 lib/api_automation.php:283 lib/html.php:1686
+#: lib/html.php:1688 lib/html.php:1766 lib/html_graph.php:209
+#: lib/html_tree.php:1028 lib/html_tree.php:1357 tree.php:797 tree.php:2069
 #: user_admin.php:1036 user_admin.php:1305 user_admin.php:2673
 #: user_group_admin.php:825 user_group_admin.php:980 user_group_admin.php:2194
 #: utilities.php:320
 msgid "Graphs"
 msgstr "Grafici"
 
-#: aggregate_graphs.php:1316 aggregate_graphs.php:1620
+#: aggregate_graphs.php:1322 aggregate_graphs.php:1626
 #: aggregate_templates.php:608 automation_devices.php:559
 #: automation_graph_rules.php:785 automation_networks.php:1192
 #: automation_snmp.php:705 automation_templates.php:403
 #: automation_tree_rules.php:830 cdef.php:766 color.php:539
-#: color_templates.php:545 data_debug.php:1062 data_input.php:836
+#: color_templates.php:545 data_debug.php:1071 data_input.php:836
 #: data_queries.php:1289 data_source_profiles.php:901
-#: data_source_profiles.php:1020 data_sources.php:1447 data_templates.php:1007
+#: data_source_profiles.php:1020 data_sources.php:1447 data_templates.php:1025
 #: gprint_presets.php:272 graph_templates.php:720 graph_view.php:667
 #: graphs.php:2041 graphs_new.php:421 host.php:1644 host_templates.php:729
 #: include/global_form.php:256 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
-#: lib/api_automation.php:1109 lib/html_reports.php:1857 links.php:320
+#: lib/api_automation.php:1109 lib/html_reports.php:1852 links.php:320
 #: managers.php:159 managers.php:503 plugins.php:371 pollers.php:889
 #: rrdcleaner.php:533 sites.php:486 tree.php:1935 user_admin.php:2305
 #: user_admin.php:2677 user_admin.php:2762 user_admin.php:2866
@@ -556,24 +556,24 @@ msgstr "Grafici"
 msgid "Default"
 msgstr "Predefinito"
 
-#: aggregate_graphs.php:1329
+#: aggregate_graphs.php:1335
 #, fuzzy
 msgid "Part of Aggregate"
 msgstr "Parte di Aggregato"
 
-#: aggregate_graphs.php:1334 aggregate_graphs.php:1632
+#: aggregate_graphs.php:1340 aggregate_graphs.php:1638
 #: aggregate_templates.php:629 automation_devices.php:495
 #: automation_graph_rules.php:797 automation_networks.php:1226
 #: automation_snmp.php:717 automation_templates.php:415
 #: automation_tree_rules.php:842 cdef.php:784 color.php:563
-#: color_templates.php:567 data_debug.php:981 data_input.php:848
+#: color_templates.php:567 data_debug.php:990 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:919 data_sources.php:1390
-#: data_templates.php:1025 gprint_presets.php:290 graph_templates.php:738
+#: data_templates.php:1043 gprint_presets.php:290 graph_templates.php:738
 #: graph_view.php:612 graphs.php:2022 graphs_new.php:400 host.php:1609
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
-#: lib/clog_webapi.php:522 lib/html.php:1522 lib/html_filter.php:80
-#: lib/html_graph.php:190 lib/html_reports.php:1868 lib/html_tree.php:1074
+#: lib/clog_webapi.php:522 lib/html.php:1525 lib/html_filter.php:80
+#: lib/html_graph.php:190 lib/html_reports.php:1863 lib/html_tree.php:1015
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:924 sites.php:498 tree.php:1947
 #: user_admin.php:2317 user_admin.php:2695 user_admin.php:2780
@@ -582,11 +582,11 @@ msgstr "Parte di Aggregato"
 msgid "Go"
 msgstr "Vai"
 
-#: aggregate_graphs.php:1334 aggregate_graphs.php:1632
+#: aggregate_graphs.php:1340 aggregate_graphs.php:1638
 #: automation_devices.php:495 automation_snmp.php:717
-#: automation_templates.php:415 cdef.php:784 color.php:563 data_debug.php:981
+#: automation_templates.php:415 cdef.php:784 color.php:563 data_debug.php:990
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:919
-#: data_sources.php:1390 data_templates.php:1025 gprint_presets.php:290
+#: data_sources.php:1390 data_templates.php:1043 gprint_presets.php:290
 #: graph_templates.php:738 graph_view.php:612 graphs.php:2022
 #: graphs_new.php:400 host.php:1609 host_templates.php:747
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
@@ -602,20 +602,20 @@ msgstr "Vai"
 msgid "Set/Refresh Filters"
 msgstr "Impostazione/Rifresh Filtri"
 
-#: aggregate_graphs.php:1335 aggregate_graphs.php:1633
+#: aggregate_graphs.php:1341 aggregate_graphs.php:1639
 #: aggregate_templates.php:630 automation_devices.php:496
 #: automation_graph_rules.php:798 automation_networks.php:1227
 #: automation_snmp.php:718 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:568 data_debug.php:982 data_input.php:849
+#: color_templates.php:568 data_debug.php:991 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:920 data_sources.php:1391
-#: data_templates.php:1026 gprint_presets.php:291 graph_templates.php:739
+#: data_templates.php:1044 gprint_presets.php:291 graph_templates.php:739
 #: graph_view.php:613 graphs.php:2023 graphs_new.php:401 host.php:1610
 #: host_templates.php:748 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
 #: lib/clog_webapi.php:523 lib/html_filter.php:85 lib/html_graph.php:191
-#: lib/html_graph.php:307 lib/html_reports.php:1869 lib/html_tree.php:1075
-#: lib/html_tree.php:1185 links.php:331 managers.php:172 managers.php:516
+#: lib/html_graph.php:307 lib/html_reports.php:1864 lib/html_tree.php:1016
+#: lib/html_tree.php:1126 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:384 pollers.php:925 sites.php:499 tree.php:1948
 #: user_admin.php:2318 user_admin.php:2696 user_admin.php:2781
 #: user_admin.php:2885 user_admin.php:2970 user_admin.php:3055
@@ -623,13 +623,13 @@ msgstr "Impostazione/Rifresh Filtri"
 msgid "Clear"
 msgstr "Cancella"
 
-#: aggregate_graphs.php:1335 aggregate_graphs.php:1633 automation_snmp.php:718
-#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:982
+#: aggregate_graphs.php:1341 aggregate_graphs.php:1639 automation_snmp.php:718
+#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:991
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:920
-#: data_sources.php:1391 data_templates.php:1026 gprint_presets.php:291
+#: data_sources.php:1391 data_templates.php:1044 gprint_presets.php:291
 #: graph_templates.php:739 graph_view.php:613 graphs.php:2023
 #: graphs_new.php:401 host.php:1610 host_templates.php:748
-#: lib/html_graph.php:191 lib/html_tree.php:1075 managers.php:172
+#: lib/html_graph.php:191 lib/html_tree.php:1016 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:384 pollers.php:925
 #: sites.php:499 tree.php:1948 user_admin.php:2318 user_admin.php:2696
 #: user_admin.php:2781 user_admin.php:2885 user_admin.php:2970
@@ -642,16 +642,16 @@ msgstr "Cancella"
 msgid "Clear Filters"
 msgstr "Pulisci filtri"
 
-#: aggregate_graphs.php:1360 aggregate_graphs.php:1696 graphs.php:1215
+#: aggregate_graphs.php:1366 aggregate_graphs.php:1702 graphs.php:1215
 #: lib/api_automation.php:574 user_admin.php:1044 user_group_admin.php:833
 #, fuzzy
 msgid "Graph Title"
 msgstr "Titolo del grafico"
 
-#: aggregate_graphs.php:1361 aggregate_graphs.php:1697
+#: aggregate_graphs.php:1367 aggregate_graphs.php:1703
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
 #: data_debug.php:345 data_input.php:931 data_queries.php:1383
-#: data_sources.php:1615 data_templates.php:1134 graph_templates.php:844
+#: data_sources.php:1615 data_templates.php:1152 graph_templates.php:844
 #: graphs.php:2200 host.php:1724 host_templates.php:834
 #: lib/api_automation.php:282 pollers.php:995 sites.php:572 tree.php:2009
 #: user_admin.php:1044 user_admin.php:1158 user_admin.php:1305
@@ -661,21 +661,21 @@ msgstr "Titolo del grafico"
 msgid "ID"
 msgstr "ID"
 
-#: aggregate_graphs.php:1362
+#: aggregate_graphs.php:1368
 #, fuzzy
 msgid "Included in Aggregate"
 msgstr "Incluso in Aggregato"
 
-#: aggregate_graphs.php:1363 aggregate_graphs.php:1699 graph_templates.php:861
+#: aggregate_graphs.php:1369 aggregate_graphs.php:1705 graph_templates.php:861
 #: graph_view.php:741 graph_view.php:754 graphs.php:2218
 msgid "Size"
 msgstr "Dimensione"
 
-#: aggregate_graphs.php:1379 aggregate_templates.php:711
+#: aggregate_graphs.php:1385 aggregate_templates.php:711
 #: automation_tree_rules.php:689 cdef.php:911 color.php:726 color.php:728
 #: color_templates.php:659 data_input.php:975 data_queries.php:1435
 #: data_source_profiles.php:1100 data_source_profiles.php:1101
-#: data_sources.php:1702 data_sources.php:1703 data_templates.php:1195
+#: data_sources.php:1702 data_sources.php:1703 data_templates.php:1213
 #: gprint_presets.php:437 graph_templates.php:901 host_templates.php:875
 #: include/global_settings.php:475 include/global_settings.php:834
 #: include/global_settings.php:1743 lib/api_automation.php:1438 links.php:404
@@ -684,13 +684,13 @@ msgstr "Dimensione"
 msgid "No"
 msgstr "No"
 
-#: aggregate_graphs.php:1379 aggregate_templates.php:711
+#: aggregate_graphs.php:1385 aggregate_templates.php:711
 #: automation_tree_rules.php:682 cdef.php:911 color.php:726 color.php:728
-#: color_templates.php:659 data_debug.php:629 data_debug.php:634
-#: data_debug.php:639 data_input.php:975 data_queries.php:1435
+#: color_templates.php:659 data_debug.php:638 data_debug.php:643
+#: data_debug.php:648 data_input.php:975 data_queries.php:1435
 #: data_source_profiles.php:1099 data_source_profiles.php:1100
 #: data_source_profiles.php:1101 data_sources.php:1702 data_sources.php:1703
-#: data_templates.php:1195 gprint_presets.php:437 graph_templates.php:901
+#: data_templates.php:1213 gprint_presets.php:437 graph_templates.php:901
 #: host_templates.php:875 include/global_settings.php:476
 #: include/global_settings.php:833 include/global_settings.php:1742
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
@@ -700,43 +700,44 @@ msgstr "No"
 msgid "Yes"
 msgstr "Si"
 
-#: aggregate_graphs.php:1385 graphs.php:2260 lib/api_automation.php:601
+#: aggregate_graphs.php:1391 graphs.php:2260 lib/api_automation.php:601
 #, fuzzy
 msgid "No Graphs Found"
 msgstr "Nessun grafico trovato"
 
-#: aggregate_graphs.php:1579
+#: aggregate_graphs.php:1585
 #, fuzzy
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[ Elenco grafico personalizzato applicato - Filtro dall'elenco ]"
 
-#: aggregate_graphs.php:1579 aggregate_graphs.php:1687
+#: aggregate_graphs.php:1585 aggregate_graphs.php:1693
 #: include/global_arrays.php:2625
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "Grafici aggregati"
 
-#: aggregate_graphs.php:1594 data_debug.php:955 data_sources.php:1364
+#: aggregate_graphs.php:1600 data_debug.php:964 data_sources.php:1364
 #: graph_view.php:625 graphs.php:1987 host.php:1564
 #: include/global_arrays.php:2771 include/global_settings.php:568
-#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:1038
+#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:979
 #: rrdcleaner.php:383 user_admin.php:2651 user_admin.php:2844
 #: user_group_admin.php:2172 user_group_admin.php:2280 utilities.php:1783
 msgid "Template"
 msgstr "Modello"
 
-#: aggregate_graphs.php:1598 automation_devices.php:484
+#: aggregate_graphs.php:1604 automation_devices.php:484
 #: automation_devices.php:514 automation_devices.php:529
 #: automation_devices.php:544 automation_graph_rules.php:753
 #: automation_graph_rules.php:775 automation_tree_rules.php:820
-#: data_debug.php:959 data_sources.php:1368 graphs.php:1991
-#: graphs_items.php:354 host.php:1533 host.php:1551 host.php:1568 host.php:1629
-#: lib/api_automation.php:150 lib/api_automation.php:168
-#: lib/api_automation.php:429 lib/api_automation.php:446
-#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2692
-#: lib/auth.php:2721 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
+#: data_debug.php:968 data_sources.php:1368 graphs.php:1991
+#: graphs_items.php:357 host.php:1533 host.php:1551 host.php:1568 host.php:1629
+#: include/global_form.php:975 lib/api_automation.php:150
+#: lib/api_automation.php:168 lib/api_automation.php:429
+#: lib/api_automation.php:446 lib/api_automation.php:1076
+#: lib/api_automation.php:1094 lib/auth.php:2702 lib/auth.php:2731
+#: lib/html.php:2050 lib/html.php:2073 lib/html.php:2111
 #: lib/html_reports.php:877 lib/html_reports.php:881 lib/html_reports.php:992
-#: lib/html_reports.php:1002 lib/html_reports.php:1847 managers.php:482
+#: lib/html_reports.php:1002 lib/html_reports.php:1842 managers.php:482
 #: managers.php:735 user_admin.php:2655 user_admin.php:2848
 #: user_group_admin.php:2176 user_group_admin.php:2284 utilities.php:821
 #: utilities.php:1502 utilities.php:1787 utilities.php:1832 utilities.php:2616
@@ -744,31 +745,32 @@ msgstr "Modello"
 msgid "Any"
 msgstr "Qualsiasi"
 
-#: aggregate_graphs.php:1599 aggregate_graphs.php:1711
+#: aggregate_graphs.php:1605 aggregate_graphs.php:1717
 #: automation_graph_rules.php:906 automation_graph_rules.php:907
-#: automation_networks.php:462 automation_tree_rules.php:948 data_debug.php:960
+#: automation_networks.php:462 automation_tree_rules.php:948 data_debug.php:969
 #: data_sources.php:934 data_sources.php:1369 data_sources.php:1676
-#: data_templates.php:1197 graphs.php:1578 graphs.php:1587 graphs.php:1992
-#: graphs_items.php:355 graphs_items.php:467 host.php:1147 host.php:1158
-#: host.php:1534 host.php:1569 include/global_arrays.php:471
-#: include/global_arrays.php:529 include/global_arrays.php:618
-#: include/global_arrays.php:808 include/global_arrays.php:1626
-#: include/global_form.php:588 include/global_form.php:894
-#: include/global_form.php:902 include/global_form.php:910
-#: include/global_form.php:948 include/global_form.php:955
-#: include/global_form.php:981 include/global_form.php:1010
-#: include/global_form.php:1018 include/global_form.php:1203
-#: include/global_form.php:1222 include/global_form.php:1231
-#: include/global_form.php:2112 include/global_form.php:2154
-#: include/global_settings.php:572 include/global_settings.php:580
-#: include/global_settings.php:588 include/global_settings.php:1212
-#: include/global_settings.php:1817 lib/api_automation.php:151
-#: lib/api_automation.php:430 lib/api_automation.php:447
-#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2695
-#: lib/auth.php:2724 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
-#: lib/html.php:2109 lib/html_form.php:331 lib/html_reports.php:888
-#: lib/html_reports.php:892 lib/html_reports.php:922 lib/html_reports.php:992
-#: lib/html_reports.php:998 lib/html_reports.php:1002 lib/html_reports.php:1010
+#: data_templates.php:1215 graph_templates_items.php:66 graphs.php:1578
+#: graphs.php:1587 graphs.php:1992 graphs_items.php:358 graphs_items.php:470
+#: host.php:1147 host.php:1158 host.php:1534 host.php:1569
+#: include/global_arrays.php:471 include/global_arrays.php:529
+#: include/global_arrays.php:618 include/global_arrays.php:808
+#: include/global_arrays.php:1626 include/global_form.php:588
+#: include/global_form.php:894 include/global_form.php:902
+#: include/global_form.php:910 include/global_form.php:948
+#: include/global_form.php:955 include/global_form.php:990
+#: include/global_form.php:1019 include/global_form.php:1027
+#: include/global_form.php:1212 include/global_form.php:1231
+#: include/global_form.php:1240 include/global_form.php:2121
+#: include/global_form.php:2163 include/global_settings.php:572
+#: include/global_settings.php:580 include/global_settings.php:588
+#: include/global_settings.php:1212 include/global_settings.php:1817
+#: lib/api_automation.php:151 lib/api_automation.php:430
+#: lib/api_automation.php:447 lib/api_automation.php:589
+#: lib/api_automation.php:1077 lib/auth.php:2705 lib/auth.php:2734
+#: lib/html.php:204 lib/html.php:2051 lib/html.php:2071 lib/html.php:2112
+#: lib/html_form.php:331 lib/html_reports.php:888 lib/html_reports.php:892
+#: lib/html_reports.php:922 lib/html_reports.php:992 lib/html_reports.php:998
+#: lib/html_reports.php:1002 lib/html_reports.php:1010
 #: lib/html_reports.php:1021 lib/html_reports.php:1041
 #: lib/html_reports.php:1295 lib/html_reports.php:1300
 #: lib/html_reports.php:1305 settings.php:519 settings.php:538 settings.php:564
@@ -777,37 +779,37 @@ msgstr "Qualsiasi"
 msgid "None"
 msgstr "Nessuno"
 
-#: aggregate_graphs.php:1696
+#: aggregate_graphs.php:1702
 #, fuzzy
 msgid "The title for the Aggregate Graphs"
 msgstr "Il titolo dei Grafici Aggregati"
 
-#: aggregate_graphs.php:1697
+#: aggregate_graphs.php:1703
 #, fuzzy
 msgid "The internal database identifier for this object"
 msgstr "L'identificatore interno del database per questo oggetto"
 
-#: aggregate_graphs.php:1698 graphs.php:1219
+#: aggregate_graphs.php:1704 graphs.php:1219
 #, fuzzy
 msgid "Aggregate Template"
 msgstr "Modello Aggregato"
 
-#: aggregate_graphs.php:1698
+#: aggregate_graphs.php:1704
 #, fuzzy
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
 msgstr "Il Template Aggregato su cui si basa questo Grafici Aggregati è basato su"
 
-#: aggregate_graphs.php:1717
+#: aggregate_graphs.php:1723
 #, fuzzy
 msgid "No Aggregate Graphs Found"
 msgstr "Nessun grafico aggregato trovato"
 
-#: aggregate_items.php:347
+#: aggregate_items.php:350
 #, fuzzy
 msgid "Override Values for Graph Item"
 msgstr "Sovrascrivere i valori per l'elemento grafico"
 
-#: aggregate_items.php:358 lib/api_aggregate.php:1904
+#: aggregate_items.php:361 lib/api_aggregate.php:1907
 #, fuzzy
 msgid "Override this Value"
 msgstr "Sovrascrivi questo valore"
@@ -863,7 +865,7 @@ msgstr "I modelli aggregati che sono in uso non possono essere cancellati.  In u
 
 #: aggregate_templates.php:694 cdef.php:894 color.php:703
 #: color_templates.php:641 data_input.php:937 data_queries.php:1389
-#: data_source_profiles.php:1025 data_sources.php:1633 data_templates.php:1140
+#: data_source_profiles.php:1025 data_sources.php:1633 data_templates.php:1158
 #: gprint_presets.php:397 graph_templates.php:850 host_templates.php:840
 #: vdef.php:887
 msgid "Deletable"
@@ -877,8 +879,8 @@ msgid "Graphs Using"
 msgstr "Grafici utilizzando"
 
 #: aggregate_templates.php:696 include/global_arrays.php:881
-#: include/global_arrays.php:1253 include/global_form.php:1407
-#: include/global_form.php:1642 lib/html_reports.php:1016 tree.php:1657
+#: include/global_arrays.php:1253 include/global_form.php:1416
+#: include/global_form.php:1651 lib/html_reports.php:1016 tree.php:1657
 #, fuzzy
 msgid "Graph Template"
 msgstr "Modello grafico"
@@ -944,7 +946,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "Non può essere riutilizzato per %d modifiche della password"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1559 lib/functions.php:3260 lib/html.php:2455
+#: include/global_form.php:1568 lib/functions.php:3265 lib/html.php:2458
 msgid "Change Password"
 msgstr "Cambia Password"
 
@@ -958,8 +960,8 @@ msgstr "Inserisci la tua password attuale e la tua nuova password Cacti."
 msgid "Please enter your new Cacti password."
 msgstr "Inserisci la tua password attuale e la tua nuova password Cacti."
 
-#: auth_changepassword.php:342 auth_login.php:833 auth_login.php:836
-#: include/global_settings.php:1651 lib/functions.php:4897
+#: auth_changepassword.php:342 auth_login.php:831 auth_login.php:834
+#: include/global_settings.php:1651 lib/functions.php:4902
 msgid "Username"
 msgstr "Nome utente"
 
@@ -977,11 +979,11 @@ msgstr "Conferma nuova password"
 
 #: auth_changepassword.php:358 auth_profile.php:559 graphs_new.php:402
 #: lib/html_form.php:1288 lib/html_form.php:1297 lib/html_graph.php:193
-#: lib/html_tree.php:1077 settings.php:488
+#: lib/html_tree.php:1018 settings.php:488
 msgid "Save"
 msgstr "Salva"
 
-#: auth_changepassword.php:367 auth_login.php:915
+#: auth_changepassword.php:367 auth_login.php:913
 #, fuzzy, php-format
 msgid "Version %1$s | %2$s"
 msgstr "Versione %1$s | %2$s"
@@ -1020,92 +1022,92 @@ msgstr "%s autenticati dal Web Server, ma sia il Template che gli Utenti Ospiti 
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "Errore di ricerca LDAP: %s"
 
-#: auth_login.php:194 auth_login.php:669
+#: auth_login.php:192 auth_login.php:667
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "Errore LDAP: %s"
 
-#: auth_login.php:320 auth_login.php:660
+#: auth_login.php:318 auth_login.php:658
 #, fuzzy, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "Accesso negato, si prega di contattare l'amministratore di Cacti."
 
-#: auth_login.php:347
+#: auth_login.php:345
 #, fuzzy, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Adminitrator."
 msgstr "Accesso negato, si prega di contattare l'amministratore di Cacti."
 
-#: auth_login.php:377
+#: auth_login.php:375
 #, fuzzy
 msgid "Access Denied!  User account disabled."
 msgstr "Accesso negato, account utente disabilitato."
 
-#: auth_login.php:388
+#: auth_login.php:386
 #, fuzzy
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
 msgstr "Se ritieni che questo sia un errore. Si prega di contattare il proprio Amministratore Cacti."
 
-#: auth_login.php:435
+#: auth_login.php:433
 #, fuzzy
 msgid "Access Denied!  No guest account Defined.  Please contact your Administrator."
 msgstr "Accesso negato, si prega di contattare l'amministratore di Cacti."
 
-#: auth_login.php:538
+#: auth_login.php:536
 #, fuzzy
 msgid "Cacti Login Failure"
 msgstr "Cacti Log cancellato"
 
-#: auth_login.php:545 include/auth.php:287 include/auth.php:289
+#: auth_login.php:543 include/auth.php:287 include/auth.php:289
 #: permission_denied.php:30 permission_denied.php:32
 msgid "Login Again"
 msgstr "Accedi nuovamente"
 
-#: auth_login.php:562
+#: auth_login.php:560
 #, fuzzy, php-format
 msgid "LDAP Search Error: %s"
 msgstr "Errore di ricerca LDAP: %s"
 
-#: auth_login.php:806 lib/html_tree.php:218
+#: auth_login.php:804 lib/html_tree.php:159
 #, fuzzy
 msgid "Login to Cacti"
 msgstr "Accedi a Cacti"
 
-#: auth_login.php:813
+#: auth_login.php:811
 msgid "User Login"
 msgstr "User Login"
 
-#: auth_login.php:827
+#: auth_login.php:825
 #, fuzzy
 msgid "Enter your Username and Password below"
 msgstr "Inserisci il tuo nome utente e la tua password qui sotto"
 
-#: auth_login.php:841 include/global_form.php:1526 lib/functions.php:4898
+#: auth_login.php:839 include/global_form.php:1535 lib/functions.php:4903
 msgid "Password"
 msgstr "Password"
 
-#: auth_login.php:853 include/global_settings.php:2094 lib/auth.php:462
+#: auth_login.php:851 include/global_settings.php:2094 lib/auth.php:462
 #: lib/auth.php:484 lib/auth.php:495 user_admin.php:2294
 msgid "Local"
 msgstr "Locale"
 
-#: auth_login.php:857 include/global_arrays.php:796 lib/auth.php:496
+#: auth_login.php:855 include/global_arrays.php:796 lib/auth.php:496
 msgid "LDAP"
 msgstr "LDAP"
 
-#: auth_login.php:875 user_admin.php:2289 user_admin.php:2378
+#: auth_login.php:873 user_admin.php:2289 user_admin.php:2378
 #: user_group_admin.php:682
 msgid "Realm"
 msgstr "Regno"
 
-#: auth_login.php:892
+#: auth_login.php:890
 msgid "Keep me signed in"
 msgstr "Mantienimi collegato"
 
-#: auth_login.php:898
+#: auth_login.php:896
 msgid "Login"
 msgstr "Accedi"
 
-#: auth_login.php:910
+#: auth_login.php:908
 #, fuzzy
 msgid "Invalid User Name/Password Please Retype"
 msgstr "Nome utente/password non validi Riscrivi prego Riscrivitiamo"
@@ -1122,43 +1124,43 @@ msgid "User Account Details"
 msgstr "Dettagli dell'account utente"
 
 #: auth_profile.php:296 include/global_arrays.php:780
-#: include/global_settings.php:2472 lib/html.php:1929 lib/html.php:1951
-#: lib/html.php:2451
+#: include/global_settings.php:2472 lib/html.php:1932 lib/html.php:1954
+#: lib/html.php:2454
 msgid "Tree View"
 msgstr "Titolo campo"
 
-#: auth_profile.php:300 include/global_arrays.php:781 lib/html.php:1936
-#: lib/html.php:1960 lib/html.php:2452
+#: auth_profile.php:300 include/global_arrays.php:781 lib/html.php:1939
+#: lib/html.php:1963 lib/html.php:2455
 msgid "List View"
 msgstr "Vista elenco"
 
-#: auth_profile.php:304 include/global_arrays.php:782 lib/html.php:1943
-#: lib/html.php:2453
+#: auth_profile.php:304 include/global_arrays.php:782 lib/html.php:1946
+#: lib/html.php:2456
 #, fuzzy
 msgid "Preview View"
 msgstr "Anteprima"
 
-#: auth_profile.php:317 include/global_form.php:1502 user_admin.php:2374
+#: auth_profile.php:317 include/global_form.php:1511 user_admin.php:2374
 msgid "User Name"
 msgstr "Nome utente"
 
-#: auth_profile.php:318 include/global_form.php:1503
+#: auth_profile.php:318 include/global_form.php:1512
 #, fuzzy
 msgid "The login name for this user."
 msgstr "Il nome di login per questo utente."
 
-#: auth_profile.php:325 include/global_form.php:1510
+#: auth_profile.php:325 include/global_form.php:1519
 #: include/global_settings.php:1687 user_admin.php:2376 user_domains.php:496
 #: user_group_admin.php:682 utilities.php:919
 msgid "Full Name"
 msgstr "Nome completo"
 
-#: auth_profile.php:326 include/global_form.php:1511
+#: auth_profile.php:326 include/global_form.php:1520
 #, fuzzy
 msgid "A more descriptive name for this user, that can include spaces or special characters."
 msgstr "Un nome più descrittivo per questo utente, che può includere spazi o caratteri speciali."
 
-#: auth_profile.php:333 include/global_form.php:1518
+#: auth_profile.php:333 include/global_form.php:1527
 msgid "Email Address"
 msgstr "Indirizzo Email"
 
@@ -1328,7 +1330,7 @@ msgstr "IP"
 msgid "SNMP Name"
 msgstr "Nome SNMP"
 
-#: automation_devices.php:280 host.php:1582 include/global_form.php:1201
+#: automation_devices.php:280 host.php:1582 include/global_form.php:1210
 #: include/global_settings.php:2089
 msgid "Location"
 msgstr "Luogo"
@@ -1337,9 +1339,9 @@ msgstr "Luogo"
 msgid "Contact"
 msgstr "Contatto"
 
-#: automation_devices.php:282 include/global_form.php:1150
-#: include/global_form.php:1186 include/global_form.php:1371
-#: include/global_form.php:1723 lib/api_automation.php:278
+#: automation_devices.php:282 include/global_form.php:1159
+#: include/global_form.php:1195 include/global_form.php:1380
+#: include/global_form.php:1732 lib/api_automation.php:278
 #: lib/api_automation.php:1218 lib/installer.php:1769 lib/installer.php:2445
 #: managers.php:216 user_admin.php:1158 user_admin.php:1305
 #: user_group_admin.php:980 user_group_admin.php:1922
@@ -1360,12 +1362,12 @@ msgstr "SNMP"
 
 #: automation_devices.php:286 automation_devices.php:510
 #: automation_graph_rules.php:771 automation_networks.php:1077
-#: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1007
-#: data_sources.php:1416 data_templates.php:1163 host.php:756 host.php:881
+#: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1016
+#: data_sources.php:1416 data_templates.php:1181 host.php:756 host.php:881
 #: host.php:1625 host.php:1742 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
-#: lib/html_reports.php:1843 lib/installer.php:1769 managers.php:218
+#: lib/html_reports.php:1838 lib/installer.php:1769 managers.php:218
 #: plugins.php:353 plugins.php:459 pollers.php:997 user_admin.php:1305
 #: user_group_admin.php:980
 msgid "Status"
@@ -1406,7 +1408,7 @@ msgstr "Esporta"
 msgid "Export to a file"
 msgstr "Esporta in un file"
 
-#: automation_devices.php:502 data_debug.php:983 lib/clog_webapi.php:212
+#: automation_devices.php:502 data_debug.php:992 lib/clog_webapi.php:212
 #: lib/clog_webapi.php:524 managers.php:747
 msgid "Purge"
 msgstr "Svuota"
@@ -1419,11 +1421,11 @@ msgstr "Spurgo dei dispositivi scoperti"
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
-#: data_debug.php:554 data_source_profiles.php:72 host.php:1809
-#: lib/functions.php:5243 lib/functions.php:5247 lib/html.php:1211
-#: lib/html_reports.php:1633 lib/html_reports.php:1659
-#: lib/html_reports.php:1730 lib/html_reports.php:1731
-#: lib/html_reports.php:1732 pollers.php:1050 user_admin.php:2390
+#: data_debug.php:563 data_source_profiles.php:72 host.php:1809
+#: lib/functions.php:5248 lib/functions.php:5252 lib/html.php:1214
+#: lib/html_reports.php:1628 lib/html_reports.php:1654
+#: lib/html_reports.php:1725 lib/html_reports.php:1726
+#: lib/html_reports.php:1727 pollers.php:1050 user_admin.php:2390
 #: utilities.php:506 utilities.php:948 utilities.php:2316 utilities.php:2438
 #: utilities.php:2446 utilities.php:2449 utilities.php:2455 utilities.php:2474
 #: utilities.php:2708
@@ -1554,7 +1556,7 @@ msgstr "Regole del grafico"
 
 #: automation_graph_rules.php:749 automation_graph_rules.php:897
 #: include/global_arrays.php:1256 include/global_arrays.php:2770
-#: include/global_form.php:1652 include/global_form.php:2191
+#: include/global_form.php:1661 include/global_form.php:2200
 #, fuzzy
 msgid "Data Query"
 msgstr "Interrogazione dei dati"
@@ -1562,12 +1564,12 @@ msgstr "Interrogazione dei dati"
 #: automation_graph_rules.php:776 automation_graph_rules.php:899
 #: automation_graph_rules.php:915 automation_networks.php:537
 #: automation_tree_rules.php:821 automation_tree_rules.php:941
-#: automation_tree_rules.php:959 data_debug.php:1013 data_sources.php:1421
-#: host.php:1630 include/global_arrays.php:840 include/global_form.php:1534
+#: automation_tree_rules.php:959 data_debug.php:1022 data_sources.php:1421
+#: host.php:1630 include/global_arrays.php:840 include/global_form.php:1543
 #: include/global_settings.php:360 lib/api_automation.php:169
-#: lib/api_automation.php:1095 lib/html_reports.php:1848
-#: lib/html_reports.php:1940 lib/html_reports.php:1951
-#: lib/html_reports.php:1987 links.php:383 links.php:561 managers.php:243
+#: lib/api_automation.php:1095 lib/html_reports.php:1843
+#: lib/html_reports.php:1935 lib/html_reports.php:1946
+#: lib/html_reports.php:1982 links.php:383 links.php:561 managers.php:243
 #: managers.php:598 user_admin.php:1158 user_admin.php:1170 user_admin.php:2377
 #: user_domains.php:350 user_domains.php:752 user_group_admin.php:87
 #: user_group_admin.php:682 user_group_admin.php:697 user_group_admin.php:1926
@@ -1577,15 +1579,15 @@ msgstr "Abilitato"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
-#: automation_tree_rules.php:959 data_debug.php:1014 data_sources.php:1422
-#: data_templates.php:1199 host.php:1631 include/global_arrays.php:839
+#: automation_tree_rules.php:959 data_debug.php:1023 data_sources.php:1422
+#: data_templates.php:1217 host.php:1631 include/global_arrays.php:839
 #: include/global_arrays.php:1458 include/global_arrays.php:1750
 #: include/global_settings.php:359 include/global_settings.php:1446
 #: include/global_settings.php:1460 include/global_settings.php:1473
 #: include/global_settings.php:1498 include/global_settings.php:1512
 #: include/global_settings.php:1602 include/global_settings.php:2295
-#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2527
-#: lib/html_reports.php:1849 lib/html_reports.php:1987 lib/html_utility.php:935
+#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2530
+#: lib/html_reports.php:1844 lib/html_reports.php:1982 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1170 user_domains.php:412 user_group_admin.php:697
 #: utilities.php:2492
@@ -1606,9 +1608,9 @@ msgstr "Il nome di questa regola."
 msgid "The internal database ID for this rule.  Useful in performing debugging and automation."
 msgstr "L'ID interno del database per questa regola.  Utile per eseguire il debug e l'automazione."
 
-#: automation_graph_rules.php:898 include/global_form.php:1816
-#: include/global_form.php:1902 include/global_form.php:2007
-#: include/global_form.php:2202
+#: automation_graph_rules.php:898 include/global_form.php:1825
+#: include/global_form.php:1911 include/global_form.php:2016
+#: include/global_form.php:2211
 msgid "Graph Type"
 msgstr "Tipo di grafico"
 
@@ -1725,8 +1727,8 @@ msgstr "Intervallo di rilevamento della rete [modifica: %s]."
 msgid "Network Discovery Range [new]"
 msgstr "Gamma di scoperta della rete [nuovo]"
 
-#: automation_networks.php:436 include/global_form.php:1864
-#: include/global_form.php:1967 include/global_settings.php:51
+#: automation_networks.php:436 include/global_form.php:1873
+#: include/global_form.php:1976 include/global_settings.php:51
 #: lib/html_reports.php:30
 msgid "General Settings"
 msgstr "Impostazioni generali"
@@ -1738,11 +1740,11 @@ msgstr "Impostazioni generali"
 #: include/global_form.php:338 include/global_form.php:358
 #: include/global_form.php:399 include/global_form.php:529
 #: include/global_form.php:566 include/global_form.php:672
-#: include/global_form.php:1102 include/global_form.php:1142
-#: include/global_form.php:1343 include/global_form.php:1363
-#: include/global_form.php:1436 include/global_form.php:1464
-#: include/global_form.php:2085 include/global_form.php:2183
-#: include/global_form.php:2228 lib/installer.php:1769 lib/installer.php:1835
+#: include/global_form.php:1111 include/global_form.php:1151
+#: include/global_form.php:1352 include/global_form.php:1372
+#: include/global_form.php:1445 include/global_form.php:1473
+#: include/global_form.php:2094 include/global_form.php:2192
+#: include/global_form.php:2237 lib/installer.php:1769 lib/installer.php:1835
 #: lib/installer.php:1865 lib/installer.php:2445 lib/installer.php:2524
 #: lib/vdef.php:74 managers.php:562 pollers.php:61 sites.php:41
 #: user_admin.php:1158 user_domains.php:326 utilities.php:632
@@ -1764,7 +1766,7 @@ msgstr "Nuova gamma di scoperta della rete"
 msgid "Data Collector"
 msgstr "Collector di dati"
 
-#: automation_networks.php:450 include/global_form.php:1212
+#: automation_networks.php:450 include/global_form.php:1221
 #, fuzzy
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
 msgstr "Scegliere il Cacti Data Collector/Poller da utilizzare per raccogliere dati da questo dispositivo."
@@ -2180,7 +2182,7 @@ msgid "Reachability Settings"
 msgstr "Impostazioni di raggiungibilità"
 
 #: automation_networks.php:714 include/global_arrays.php:938
-#: include/global_form.php:1253 include/global_form.php:1755
+#: include/global_form.php:1262 include/global_form.php:1764
 #, fuzzy
 msgid "SNMP Options"
 msgstr "Opzioni SNMP"
@@ -2190,7 +2192,7 @@ msgstr "Opzioni SNMP"
 msgid "Select the SNMP Options to use for discovery of this Network Range."
 msgstr "Selezionare le opzioni SNMP da utilizzare per il rilevamento di questo intervallo di rete."
 
-#: automation_networks.php:720 include/global_form.php:1271
+#: automation_networks.php:720 include/global_form.php:1280
 #, fuzzy
 msgid "Ping Method"
 msgstr "Metodo Ping"
@@ -2200,35 +2202,35 @@ msgstr "Metodo Ping"
 msgid "The type of ping packet to send."
 msgstr "Il tipo di pacchetto ping da inviare."
 
-#: automation_networks.php:729 include/global_form.php:1281
+#: automation_networks.php:729 include/global_form.php:1290
 #: include/global_settings.php:757
 #, fuzzy
 msgid "Ping Port"
 msgstr "Porta Ping"
 
-#: automation_networks.php:731 include/global_form.php:1283
+#: automation_networks.php:731 include/global_form.php:1292
 #, fuzzy
 msgid "TCP or UDP port to attempt connection."
 msgstr "Porta TCP o UDP per tentare la connessione."
 
-#: automation_networks.php:737 include/global_form.php:1289
+#: automation_networks.php:737 include/global_form.php:1298
 #: include/global_settings.php:765
 #, fuzzy
 msgid "Ping Timeout Value"
 msgstr "Valore di timeout del Ping"
 
-#: automation_networks.php:738 include/global_form.php:1290
+#: automation_networks.php:738 include/global_form.php:1299
 #, fuzzy
 msgid "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings."
 msgstr "Il valore di timeout da utilizzare per il pinging ICMP e UDP host.  Questo valore di timeout SNMP host vale per i ping SNMP."
 
-#: automation_networks.php:746 include/global_form.php:1298
+#: automation_networks.php:746 include/global_form.php:1307
 #: include/global_settings.php:773
 #, fuzzy
 msgid "Ping Retry Count"
 msgstr "Ping Retry Count (conteggio dei tentativi di ping)"
 
-#: automation_networks.php:747 include/global_form.php:1299
+#: automation_networks.php:747 include/global_form.php:1308
 #, fuzzy
 msgid "After an initial failure, the number of ping retries Cacti will attempt before failing."
 msgstr "Dopo un guasto iniziale, il numero di tentativi di ping Cacti tenterà prima di fallire."
@@ -2354,7 +2356,7 @@ msgstr "Idle"
 
 #: automation_networks.php:1152 include/global_arrays.php:814
 #: include/global_arrays.php:1104 include/global_settings.php:2321
-#: lib/html_reports.php:1982
+#: lib/html_reports.php:1977
 msgid "Never"
 msgstr "Mai"
 
@@ -2362,8 +2364,8 @@ msgstr "Mai"
 msgid "No Networks Found"
 msgstr "Nessuna rete trovata"
 
-#: automation_networks.php:1203 data_debug.php:1028 lib/clog_webapi.php:577
-#: lib/html_graph.php:306 lib/html_tree.php:1184 lib/html_tree.php:1205
+#: automation_networks.php:1203 data_debug.php:1037 lib/clog_webapi.php:577
+#: lib/html_graph.php:306 lib/html_tree.php:1125 lib/html_tree.php:1146
 #: pollers.php:900 utilities.php:1232 utilities.php:2183
 msgid "Refresh"
 msgstr "Aggiorna"
@@ -2460,11 +2462,11 @@ msgstr "Opzioni SNMP [modifica: %s]."
 msgid "SNMP Options [new]"
 msgstr "Opzioni SNMP [nuovo]"
 
-#: automation_snmp.php:448 include/global_form.php:1089
-#: include/global_form.php:2132 include/global_form.php:2174
-#: include/global_form.php:2325 lib/api_automation.php:1288
+#: automation_snmp.php:448 include/global_form.php:1098
+#: include/global_form.php:2141 include/global_form.php:2183
+#: include/global_form.php:2334 lib/api_automation.php:1288
 #: lib/api_automation.php:1350 lib/api_automation.php:1416
-#: lib/html_reports.php:1080 lib/html_reports.php:1611
+#: lib/html_reports.php:1080 lib/html_reports.php:1606
 msgid "Sequence"
 msgstr "Sequenza"
 
@@ -2495,7 +2497,7 @@ msgstr "Opzioni SNMP di automazione"
 
 #: automation_snmp.php:533 cdef.php:594 lib/api_automation.php:1287
 #: lib/api_automation.php:1349 lib/api_automation.php:1415
-#: lib/html_reports.php:1610 vdef.php:578
+#: lib/html_reports.php:1605 vdef.php:578
 msgid "Item"
 msgstr "Elemento"
 
@@ -2508,7 +2510,7 @@ msgstr "Versione"
 msgid "Community"
 msgstr "Comunità"
 
-#: automation_snmp.php:536 lib/functions.php:4893
+#: automation_snmp.php:536 lib/functions.php:4898
 msgid "Port"
 msgstr "Porta"
 
@@ -2571,16 +2573,16 @@ msgstr "nessuno"
 #: automation_snmp.php:573 automation_templates.php:524 cdef.php:621
 #: color_templates.php:111 data_queries.php:790 data_queries.php:897
 #: lib/api_automation.php:1314 lib/api_automation.php:1376
-#: lib/api_automation.php:1444 lib/html.php:1243 lib/html_reports.php:1745
-#: lib/html_reports.php:1747 tree.php:2087 tree.php:2094 vdef.php:607
+#: lib/api_automation.php:1444 lib/html.php:1246 lib/html_reports.php:1740
+#: lib/html_reports.php:1742 tree.php:2087 tree.php:2094 vdef.php:607
 msgid "Move Down"
 msgstr "Spostare verso il basso"
 
 #: automation_snmp.php:579 automation_templates.php:530 cdef.php:627
 #: color_templates.php:117 data_queries.php:795 data_queries.php:902
 #: lib/api_automation.php:1320 lib/api_automation.php:1382
-#: lib/api_automation.php:1450 lib/html.php:1249 lib/html_reports.php:1747
-#: lib/html_reports.php:1749 tree.php:2091 tree.php:2095 vdef.php:613
+#: lib/api_automation.php:1450 lib/html.php:1252 lib/html_reports.php:1742
+#: lib/html_reports.php:1744 tree.php:2091 tree.php:2095 vdef.php:613
 msgid "Move Up"
 msgstr "Sposta Su"
 
@@ -2650,7 +2652,7 @@ msgid "Delete Automation Template(s)"
 msgstr "Eliminazione dei modelli di automazione"
 
 #: automation_templates.php:274 include/global_arrays.php:1257
-#: include/global_form.php:1228 include/global_form.php:1637
+#: include/global_form.php:1237 include/global_form.php:1646
 #: lib/html_reports.php:995
 #, fuzzy
 msgid "Device Template"
@@ -2847,7 +2849,7 @@ msgstr "ROOT"
 msgid "No Tree Rules Found"
 msgstr "Nessuna regola d'albero trovata"
 
-#: cactid.php:44 lib/functions.php:5504 lib/functions.php:5567 poller.php:353
+#: cactid.php:44 lib/functions.php:5514 lib/functions.php:5577 poller.php:353
 #: poller.php:477 poller.php:525 poller.php:541 poller.php:687 poller.php:785
 #: poller_automation.php:53 poller_boost.php:306
 #, fuzzy
@@ -2891,7 +2893,7 @@ msgstr[0] "Fare clic su \"Continua\" per duplicare il seguente CDEF. È possibil
 msgstr[1] "Fare clic su \"Continua\" per duplicare i seguenti CDEF. È possibile modificare facoltativamente il formato del titolo per i nuovi CDEF."
 
 #: cdef.php:288 color_templates.php:249 data_source_profiles.php:290
-#: data_templates.php:413 graph_templates.php:389 host_templates.php:276
+#: data_templates.php:431 graph_templates.php:389 host_templates.php:276
 #: vdef.php:276
 msgid "Title Format:"
 msgstr "Formato del titolo:"
@@ -3159,7 +3161,7 @@ msgid "Named Color"
 msgstr "Nome Colore"
 
 #: color.php:702 color_templates.php:74 include/global_arrays.php:930
-#: include/global_form.php:985 include/global_form.php:2073
+#: include/global_form.php:994 include/global_form.php:2082
 msgid "Color"
 msgstr "Colore"
 
@@ -3198,14 +3200,14 @@ msgstr "Aggregati"
 msgid "Color Item"
 msgstr "Colore"
 
-#: color_templates.php:94 lib/api_aggregate.php:1795 lib/api_aggregate.php:1798
-#: lib/api_aggregate.php:1803 lib/html.php:1167 lib/html_reports.php:1736
+#: color_templates.php:94 lib/api_aggregate.php:1798 lib/api_aggregate.php:1801
+#: lib/api_aggregate.php:1806 lib/html.php:1170 lib/html_reports.php:1731
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "Voce # %d"
 
-#: color_templates.php:133 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1855 lib/html.php:1268
+#: color_templates.php:133 graph_templates_inputs.php:235
+#: lib/api_aggregate.php:1858 lib/html.php:1271
 msgid "No Items"
 msgstr "Nessun elemento"
 
@@ -3371,10 +3373,10 @@ msgstr "Il debug automatico dell'origine dati viene eseguito nuovamente dopo la 
 msgid "Data Source repair received an invalid Data Source ID."
 msgstr "La riparazione di Data Source ha ricevuto un ID Data Source non valido."
 
-#: data_debug.php:329 data_debug.php:807 data_queries.php:713
-#: data_sources.php:995 data_templates.php:620 graphs_items.php:463
-#: include/global_arrays.php:928 include/global_form.php:970
-#: lib/api_aggregate.php:1709 lib/html.php:1124
+#: data_debug.php:329 data_debug.php:816 data_queries.php:713
+#: data_sources.php:995 data_templates.php:638 graphs_items.php:466
+#: include/global_arrays.php:928 include/global_form.php:979
+#: lib/api_aggregate.php:1712 lib/html.php:1127
 msgid "Data Source"
 msgstr "Origine Dati"
 
@@ -3429,7 +3431,7 @@ msgstr "Esiste"
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "Determina se l'origine dei dati si trova nella Poller Cache."
 
-#: data_debug.php:369 data_sources.php:1639 data_templates.php:1199
+#: data_debug.php:369 data_sources.php:1639 data_templates.php:1217
 #: plugins.php:37 plugins.php:359
 msgid "Active"
 msgstr "Attivo"
@@ -3469,7 +3471,7 @@ msgstr "RRD aggiornato"
 msgid "Determines if the RRDfile has been writted to properly."
 msgstr "Determina se il file RRDD è stato scritto correttamente."
 
-#: data_debug.php:393 data_debug.php:554 data_debug.php:737
+#: data_debug.php:393 data_debug.php:563 data_debug.php:746
 msgid "Issues"
 msgstr "Problemi"
 
@@ -3478,7 +3480,7 @@ msgstr "Problemi"
 msgid "Summary of issues found for the Data Source."
 msgstr "Eventuali problemi di sintesi riscontrati per la fonte dei dati."
 
-#: data_debug.php:511 data_debug.php:1058 data_sources.php:1443
+#: data_debug.php:511 data_debug.php:1067 data_sources.php:1443
 #: data_sources.php:1599 host.php:1736 include/global_arrays.php:917
 #: include/global_arrays.php:962 include/global_arrays.php:2187
 #: lib/api_automation.php:284 user_admin.php:1305 user_group_admin.php:980
@@ -3486,220 +3488,220 @@ msgstr "Eventuali problemi di sintesi riscontrati per la fonte dei dati."
 msgid "Data Sources"
 msgstr "Fonte Dati"
 
-#: data_debug.php:557 data_debug.php:1024
+#: data_debug.php:566 data_debug.php:1033
 #, fuzzy
 msgid "Not Debugging"
 msgstr "Debugging"
 
-#: data_debug.php:573
+#: data_debug.php:582
 #, fuzzy
 msgid "No Checks"
 msgstr "Controlli"
 
-#: data_debug.php:616 lib/api_automation.php:761 lib/graphs.php:79
+#: data_debug.php:625 lib/api_automation.php:761 lib/graphs.php:79
 #: lib/graphs.php:103
 msgid "Not Found"
 msgstr "Non trovato"
 
-#: data_debug.php:634 data_debug.php:639
+#: data_debug.php:643 data_debug.php:648
 msgid "Not Checked Yet"
 msgstr "Non ancora verificato"
 
-#: data_debug.php:657
+#: data_debug.php:666
 #, fuzzy
 msgid "Issues found!  Waiting on RRDfile update"
 msgstr "Problemi trovati!  In attesa dell'aggiornamento del file RRDD"
 
-#: data_debug.php:660
+#: data_debug.php:669
 #, fuzzy
 msgid "No Initial found!  Waiting on RRDfile update"
 msgstr "Nessuna iniziale trovata!  In attesa dell'aggiornamento del file RRDD"
 
-#: data_debug.php:664
+#: data_debug.php:673
 #, fuzzy
 msgid "Waiting on analysis and RRDfile update"
 msgstr "Il file RRD è stato aggiornato?"
 
-#: data_debug.php:671
+#: data_debug.php:680
 #, fuzzy
 msgid "RRDfile Owner"
 msgstr "Proprietario del file RRDD"
 
-#: data_debug.php:676
+#: data_debug.php:685
 #, fuzzy
 msgid "Website runs as"
 msgstr "Il sito web funziona come"
 
-#: data_debug.php:681
+#: data_debug.php:690
 #, fuzzy
 msgid "Poller runs as"
 msgstr "L'impollinatore funziona come"
 
-#: data_debug.php:686
+#: data_debug.php:695
 #, fuzzy
 msgid "Is RRA Folder writeable by poller?"
 msgstr "La cartella RRA può essere scritta da poller?"
 
-#: data_debug.php:691
+#: data_debug.php:700
 #, fuzzy
 msgid "Is RRDfile writeable by poller?"
 msgstr "Il file RRDD è scrivibile tramite poller?"
 
-#: data_debug.php:696
+#: data_debug.php:705
 #, fuzzy
 msgid "Does the RRDfile Exist?"
 msgstr "Esiste il file RRDfile?"
 
-#: data_debug.php:701
+#: data_debug.php:710
 #, fuzzy
 msgid "Is the Data Source set as Active?"
 msgstr "L'origine dati è impostata come attiva?"
 
-#: data_debug.php:706
+#: data_debug.php:715
 #, fuzzy
 msgid "Did the poller receive valid data?"
 msgstr "L'intervistatore ha ricevuto dati validi?"
 
-#: data_debug.php:711
+#: data_debug.php:720
 #, fuzzy
 msgid "Was the RRDfile updated?"
 msgstr "Il file RRD è stato aggiornato?"
 
-#: data_debug.php:717
+#: data_debug.php:726
 #, fuzzy
 msgid "First Check TimeStamp"
 msgstr "Primo controllo TimeStamp"
 
-#: data_debug.php:722
+#: data_debug.php:731
 #, fuzzy
 msgid "Second Check TimeStamp"
 msgstr "Secondo controllo TimeStamp"
 
-#: data_debug.php:727
+#: data_debug.php:736
 #, fuzzy
 msgid "Were we able to convert the title?"
 msgstr "Siamo riusciti a convertire il titolo?"
 
-#: data_debug.php:732
+#: data_debug.php:741
 #, fuzzy
 msgid "Data Source matches the RRDfile?"
 msgstr "Fonte dei dati non è stato intervistato"
 
-#: data_debug.php:746
+#: data_debug.php:755
 #, fuzzy, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till Complete ] %s"
 msgstr "Fonte dei dati Risoluzione dei problemi [%s]."
 
-#: data_debug.php:746 data_debug.php:748
+#: data_debug.php:755 data_debug.php:757
 msgid "Refresh Now"
 msgstr "Aggiorna ora"
 
-#: data_debug.php:748
+#: data_debug.php:757
 #, fuzzy, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s"
 msgstr "Fonte dei dati Risoluzione dei problemi [%s]."
 
-#: data_debug.php:750
+#: data_debug.php:759
 #, fuzzy, php-format
 msgid "Data Source Troubleshooter [ Analysis Complete! %s ]"
 msgstr "Fonte dei dati Risoluzione dei problemi [%s]."
 
-#: data_debug.php:750
+#: data_debug.php:759
 #, fuzzy
 msgid "Rerun Analysis"
 msgstr "Analisi di Rerun"
 
-#: data_debug.php:755
+#: data_debug.php:764
 msgid "Check"
 msgstr "Controllo"
 
-#: data_debug.php:756 include/global_form.php:1028 lib/rrd.php:2923
+#: data_debug.php:765 include/global_form.php:1037 lib/rrd.php:2935
 #: utilities.php:566 utilities.php:583 utilities.php:2688
 msgid "Value"
 msgstr "Valore"
 
-#: data_debug.php:757
+#: data_debug.php:766
 msgid "Results"
 msgstr "Risultati"
 
-#: data_debug.php:768
+#: data_debug.php:777
 msgid "<not set>"
 msgstr "<non impostato>"
 
-#: data_debug.php:803 data_debug.php:854
+#: data_debug.php:812 data_debug.php:863
 #, fuzzy
 msgid "Data Source Repair Recommendations"
 msgstr "Campi di origine dei dati"
 
-#: data_debug.php:808
+#: data_debug.php:817
 msgid "Issue"
 msgstr "Oggetto"
 
-#: data_debug.php:820
+#: data_debug.php:829
 #, fuzzy, php-format
 msgid "For attrbitute '%s', issue found '%s'"
 msgstr "Per l'attrito \"%s\", l'emissione ha trovato \"%s\"."
 
-#: data_debug.php:835
+#: data_debug.php:844
 #, fuzzy
 msgid "Apply Suggested Fixes"
 msgstr "Riapplicare i nomi suggeriti"
 
-#: data_debug.php:835
+#: data_debug.php:844
 #, fuzzy, php-format
 msgid "Repair Steps [ %s ]"
 msgstr "Fasi di riparazione [ %s ]."
 
-#: data_debug.php:837
+#: data_debug.php:846
 #, fuzzy
 msgid "Repair Steps [ Run Fix from Command Line ]"
 msgstr "Fasi di riparazione [ Esegui fix dalla riga di comando ]"
 
-#: data_debug.php:840
+#: data_debug.php:849
 msgid "Command"
 msgstr "Comando"
 
-#: data_debug.php:856
+#: data_debug.php:865
 #, fuzzy
 msgid "Waiting on Data Source Check to Complete"
 msgstr "In attesa del completamento del controllo della fonte dati"
 
-#: data_debug.php:944
+#: data_debug.php:953
 msgid "All Devices"
 msgstr "Dispositivi"
 
-#: data_debug.php:944
+#: data_debug.php:953
 #, fuzzy, php-format
 msgid "Data Source Troubleshooter [ %s ]"
 msgstr "Fonte dei dati Risoluzione dei problemi [%s]."
 
-#: data_debug.php:944
+#: data_debug.php:953
 msgid "No Device"
 msgstr "Nessun dispositivo"
 
-#: data_debug.php:983
+#: data_debug.php:992
 #, fuzzy
 msgid "Delete All Checks"
 msgstr "Rimuovi Verifica "
 
-#: data_debug.php:991 data_sources.php:1399 data_templates.php:987
+#: data_debug.php:1000 data_sources.php:1399 data_templates.php:1005
 msgid "Profile"
 msgstr "Profilo"
 
-#: data_debug.php:995 data_debug.php:1011 data_debug.php:1022
-#: data_sources.php:1403 data_sources.php:1420 data_templates.php:991
+#: data_debug.php:1004 data_debug.php:1020 data_debug.php:1031
+#: data_sources.php:1403 data_sources.php:1420 data_templates.php:1009
 #: graphs_new.php:378 host.php:1586 lib/clog_webapi.php:538 lib/html.php:203
-#: lib/html_reports.php:973 lib/html_reports.php:2074 plugins.php:357
+#: lib/html_reports.php:973 lib/html_reports.php:2069 plugins.php:357
 #: settings.php:518 settings.php:537 settings.php:563 tree.php:794
 #: user_admin.php:2293 utilities.php:803 utilities.php:1214
 msgid "All"
 msgstr "Tutti"
 
-#: data_debug.php:1012 utilities.php:825 utilities.php:956
+#: data_debug.php:1021 utilities.php:825 utilities.php:956
 msgid "Failed"
 msgstr "Fallito"
 
-#: data_debug.php:1018 data_debug.php:1023
+#: data_debug.php:1027 data_debug.php:1032
 msgid "Debugging"
 msgstr "Debugging"
 
@@ -3886,7 +3888,7 @@ msgstr "L'ID interno del database per questo modello di dati.  Utile quando si e
 msgid "Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template."
 msgstr "Gli ingressi dati in uso non possono essere cancellati. In uso è definito come riferimento da un'origine dati o da un modello di dati."
 
-#: data_input.php:942 data_source_profiles.php:1047 data_templates.php:1145
+#: data_input.php:942 data_source_profiles.php:1047 data_templates.php:1163
 #, fuzzy
 msgid "Data Sources Using"
 msgstr "Fonti di dati utilizzando"
@@ -3902,7 +3904,7 @@ msgid "The number of Data Templates that use this Data Input Method."
 msgstr "Il numero di modelli di dati che utilizzano questo metodo di inserimento dati."
 
 #: data_input.php:954 data_queries.php:1406 include/global_arrays.php:1249
-#: include/global_form.php:584 include/global_form.php:1388
+#: include/global_form.php:584 include/global_form.php:1397
 #, fuzzy
 msgid "Data Input Method"
 msgstr "Metodo di inserimento dati"
@@ -3985,8 +3987,8 @@ msgstr "Equazione"
 msgid "No Suggested Values Found"
 msgstr "Nessun valore suggerito trovato"
 
-#: data_queries.php:822 data_queries.php:930 include/global_form.php:2108
-#: include/global_form.php:2150 lib/api_automation.php:1417 utilities.php:1638
+#: data_queries.php:822 data_queries.php:930 include/global_form.php:2117
+#: include/global_form.php:2159 lib/api_automation.php:1417 utilities.php:1638
 msgid "Field Name"
 msgstr "Campo Nome"
 
@@ -4218,7 +4220,7 @@ msgstr "Passi"
 
 #: data_source_profiles.php:613 graphs_new.php:417 include/global_form.php:298
 #: lib/html.php:517 lib/html_filter.php:72 lib/installer.php:2524
-#: lib/rrd.php:2977 utilities.php:634 utilities.php:1547
+#: lib/rrd.php:2989 utilities.php:634 utilities.php:1547
 msgid "Rows"
 msgstr "Righe"
 
@@ -4323,7 +4325,7 @@ msgstr "Profili di origine dei dati"
 msgid "Profiles"
 msgstr "Profili"
 
-#: data_source_profiles.php:914 data_templates.php:1020
+#: data_source_profiles.php:914 data_templates.php:1038
 #, fuzzy
 msgid "Has Data Sources"
 msgstr "Ha fonti di dati"
@@ -4492,7 +4494,7 @@ msgid_plural "Reapply Suggested Naming to Data Sources"
 msgstr[0] "Riapplicare il nome suggerito alla fonte dati"
 msgstr[1] "Riapplicare nuovamente il nome suggerito alle fonti di dati"
 
-#: data_sources.php:634 data_templates.php:774
+#: data_sources.php:634 data_templates.php:792
 #, fuzzy, php-format
 msgid "Custom Data [data input: %s]"
 msgstr "Dati personalizzati [immissione dati: %s]."
@@ -4512,7 +4514,7 @@ msgstr "(Da modello dati)"
 msgid "Nothing Entered"
 msgstr "Niente inserito"
 
-#: data_sources.php:686 data_templates.php:856
+#: data_sources.php:686 data_templates.php:874
 #, fuzzy
 msgid "No Input Fields for the Selected Data Input Source"
 msgstr "Nessun campo di ingresso per l'origine di ingresso dati selezionata"
@@ -4585,8 +4587,8 @@ msgstr "Il nome dato a questo modello di dati.  Si prega di notare che è possib
 #: data_sources.php:932 graph_view.php:726 graphs.php:1583
 #: include/global_arrays.php:877 include/global_arrays.php:926
 #: include/global_arrays.php:1573 include/global_arrays.php:1742
-#: lib/api_automation.php:425 lib/functions.php:4892 lib/html.php:2043
-#: lib/html.php:2075 lib/html_reports.php:1005 utilities.php:1638
+#: lib/api_automation.php:425 lib/functions.php:4897 lib/html.php:2046
+#: lib/html.php:2078 lib/html_reports.php:1005 utilities.php:1638
 msgid "Device"
 msgstr "Dispositivo"
 
@@ -4619,7 +4621,7 @@ msgstr "Dati personalizzati"
 msgid "Data Source Item %s"
 msgstr "Fonte dei dati Voci %s"
 
-#: data_sources.php:1088 data_templates.php:712
+#: data_sources.php:1088 data_templates.php:730
 msgid "New"
 msgstr "Nuovo"
 
@@ -4633,7 +4635,7 @@ msgstr "Debug della fonte dati"
 msgid "RRDtool Tune Info"
 msgstr "RRDtool Tune Info"
 
-#: data_sources.php:1195 data_templates.php:1198 include/global_form.php:596
+#: data_sources.php:1195 data_templates.php:1216 include/global_form.php:596
 msgid "External"
 msgstr "Esterno"
 
@@ -4745,170 +4747,170 @@ msgstr "Modifica Profilo"
 msgid "Field \"%s\" is missing an Output Field"
 msgstr "Nel campo \"%s\" manca un campo di output"
 
-#: data_templates.php:402
+#: data_templates.php:420
 #, fuzzy
 msgid "Click 'Continue' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed."
 msgstr "Fare clic su \"Continua\" per eliminare i seguenti modelli di dati.  Tutte le fonti di dati collegate a questi modelli diventeranno fonti di dati individuali e tutti i vantaggi dei modelli saranno rimossi."
 
-#: data_templates.php:407
+#: data_templates.php:425
 #, fuzzy
 msgid "Delete Data Template(s)"
 msgstr "Cancellare i modelli di dati"
 
-#: data_templates.php:411
+#: data_templates.php:429
 #, fuzzy
 msgid "Click 'Continue' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s)."
 msgstr "Fare clic su \"Continua\" per duplicare i seguenti modelli di dati. È possibile modificare facoltativamente il formato del titolo per i nuovi Data Template (s)."
 
-#: data_templates.php:413
+#: data_templates.php:431
 #, fuzzy
 msgid "template_title"
 msgstr "Titolo del modello"
 
-#: data_templates.php:417
+#: data_templates.php:435
 #, fuzzy
 msgid "Duplicate Data Template(s)"
 msgstr "Duplicare il/i modello/i dei dati"
 
-#: data_templates.php:421
+#: data_templates.php:439
 #, fuzzy
 msgid "Click 'Continue' to change the default Data Source Profile for the following Data Template(s)."
 msgstr "Fare clic su 'Continua' per modificare il profilo sorgente dati predefinito per i seguenti modelli dati."
 
-#: data_templates.php:423
+#: data_templates.php:441
 #, fuzzy
 msgid "New Data Source Profile"
 msgstr "Nuovo profilo della fonte dati"
 
-#: data_templates.php:429
+#: data_templates.php:447
 #, fuzzy
 msgid "NOTE: This change only will affect future Data Sources and does not alter existing Data Sources."
 msgstr "NOTA: Questa modifica riguarda solo le fonti di dati future e non altera le fonti di dati esistenti."
 
-#: data_templates.php:433
+#: data_templates.php:451
 #, fuzzy
 msgid "Change Data Source Profile"
 msgstr "Modifica del profilo dell'origine dei dati"
 
-#: data_templates.php:577
+#: data_templates.php:595
 #, fuzzy, php-format
 msgid "Data Templates [edit: %s]"
 msgstr "Modelli dati [modifica: %s]."
 
-#: data_templates.php:596
+#: data_templates.php:614
 #, fuzzy
 msgid "Edit Data Input Method."
 msgstr "Modifica Metodo di inserimento dati."
 
-#: data_templates.php:605
+#: data_templates.php:623
 #, fuzzy
 msgid "Data Templates [new]"
 msgstr "Modelli di dati [nuovo]"
 
-#: data_templates.php:637
+#: data_templates.php:655
 #, fuzzy
 msgid "This field is always templated."
 msgstr "Questo campo è sempre modellato."
 
-#: data_templates.php:641 data_templates.php:741 data_templates.php:807
+#: data_templates.php:659 data_templates.php:759 data_templates.php:825
 #, fuzzy
 msgid "Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation."
 msgstr "Selezionare questa casella di controllo se si desidera consentire all'utente di sovrascrivere il valore a destra durante la creazione dell'origine dati."
 
-#: data_templates.php:688
+#: data_templates.php:706
 #, fuzzy
 msgid "Data Templates in use can not be modified"
 msgstr "I modelli di dati in uso non possono essere modificati."
 
-#: data_templates.php:712 data_templates.php:714
+#: data_templates.php:730 data_templates.php:732
 #, fuzzy, php-format
 msgid "Data Source Item [%s]"
 msgstr "Fonte dei dati Voce [%s]"
 
-#: data_templates.php:789
+#: data_templates.php:807
 #, fuzzy
 msgid "This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations."
 msgstr "Questo valore è disabilitato perché è un valore derivato dal dispositivo o uno speciale oggetto Data Query che tiene traccia delle associazioni di Data Query di dati critici."
 
-#: data_templates.php:801
+#: data_templates.php:819
 #, fuzzy
 msgid "This value is disabled due to it being derived from the Device and read only."
 msgstr "Questo valore è disabilitato perché derivato dal Dispositivo e di sola lettura."
 
-#: data_templates.php:837
+#: data_templates.php:855
 #, fuzzy
 msgid "Value will be derived from the Device if this field is left empty."
 msgstr "Il valore sarà derivato dal dispositivo se questo campo è lasciato vuoto."
 
-#: data_templates.php:905
+#: data_templates.php:923
 #, fuzzy
 msgid "Custom Data Warning Message"
 msgstr "Dati personalizzati [immissione dati: %s]."
 
-#: data_templates.php:906
+#: data_templates.php:924
 #, fuzzy
 msgid "WARNING: Data Loss can Occur"
 msgstr "AVVERTENZA: può verificarsi una perdita di dati"
 
-#: data_templates.php:908
+#: data_templates.php:926
 #, fuzzy
 msgid "After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will loose their Custom Data.  This can result in broken Data Collection and Graphs"
 msgstr "Dopo aver deselezionato questa casella di controllo e quindi aver salvato il modello di dati, qualsiasi origine dati esistente basata su questo modello di dati perderà i propri dati personalizzati. Ciò può comportare una raccolta dati e grafici interrotti"
 
-#: data_templates.php:972 data_templates.php:1003 data_templates.php:1170
+#: data_templates.php:990 data_templates.php:1021 data_templates.php:1188
 #: include/global_arrays.php:1131 include/global_arrays.php:2169
 msgid "Data Templates"
 msgstr "Modelli di dati"
 
-#: data_templates.php:1128
+#: data_templates.php:1146
 #, fuzzy
 msgid "Data Template Name"
 msgstr "Nome del modello di dati Nome"
 
-#: data_templates.php:1131
+#: data_templates.php:1149
 #, fuzzy
 msgid "The name of this Data Template."
 msgstr "Il nome di questo modello di dati."
 
-#: data_templates.php:1137
+#: data_templates.php:1155
 #, fuzzy
 msgid "The internal database ID for this Data Template.  Useful when performing automation or debugging."
 msgstr "L'ID interno del database per questo modello di dati.  Utile quando si esegue l'automazione o il debug."
 
-#: data_templates.php:1142
+#: data_templates.php:1160
 #, fuzzy
 msgid "Data Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Data Source."
 msgstr "I modelli di dati in uso non possono essere cancellati.  In uso è definito come riferimento da una fonte di dati."
 
-#: data_templates.php:1148
+#: data_templates.php:1166
 #, fuzzy
 msgid "The number of Data Sources using this Data Template."
 msgstr "Il numero di fonti di dati che utilizzano questo modello di dati."
 
-#: data_templates.php:1151
+#: data_templates.php:1169
 msgid "Input Method"
 msgstr "Metodo di inserimento"
 
-#: data_templates.php:1154
+#: data_templates.php:1172
 #, fuzzy
 msgid "The method that is used to place Data into the Data Source RRDfile."
 msgstr "Il metodo utilizzato per inserire i dati nel file RRDD di origine dati."
 
-#: data_templates.php:1157
+#: data_templates.php:1175
 msgid "Profile Name"
 msgstr "Nome del Profilo"
 
-#: data_templates.php:1160
+#: data_templates.php:1178
 #, fuzzy
 msgid "The default Data Source Profile for this Data Template."
 msgstr "Il profilo sorgente dati predefinito per questo modello dati."
 
-#: data_templates.php:1166
+#: data_templates.php:1184
 #, fuzzy
 msgid "Data Sources based on Inactive Data Templates will not be updated when the poller runs."
 msgstr "Le origini dati basate su modelli dati inattivi non verranno aggiornate quando viene eseguito il poller."
 
-#: data_templates.php:1204
+#: data_templates.php:1222
 #, fuzzy
 msgid "No Data Templates Found"
 msgstr "Nessun modello di dati trovato"
@@ -5006,26 +5008,26 @@ msgstr "Esportazione CSV"
 msgid "Click to view just this Graph in Real-time"
 msgstr "Fare clic per visualizzare il grafico in tempo reale."
 
-#: graph.php:247 lib/html.php:2448
+#: graph.php:247 lib/html.php:2451
 #, fuzzy
 msgid "Utility View"
 msgstr "Vista Utilità"
 
-#: graph.php:367
+#: graph.php:366
 #, fuzzy
 msgid "Graph Utility View"
 msgstr "Vista Grafico Utilità"
 
-#: graph.php:380
+#: graph.php:379
 #, fuzzy
 msgid "Graph Source/Properties"
 msgstr "Fonte grafica/Proprietà"
 
-#: graph.php:384
+#: graph.php:383
 msgid "Graph Data"
 msgstr "Dati grafico"
 
-#: graph.php:563
+#: graph.php:562
 #, fuzzy
 msgid "RRDtool Graph Syntax"
 msgstr "Sintassi del grafico RRDtool"
@@ -5056,7 +5058,7 @@ msgid "Cacti Real-time Graphing"
 msgstr "Grafica in tempo reale Cacti"
 
 #: graph_realtime.php:411 lib/html_graph.php:238 lib/html_reports.php:124
-#: lib/html_tree.php:1116
+#: lib/html_tree.php:1057
 msgid "Thumbnails"
 msgstr "Miniature"
 
@@ -5190,7 +5192,7 @@ msgstr "Selezionare questa casella di controllo se si desidera consentire all'ut
 
 #: graph_templates.php:701 graph_templates.php:716 graph_templates.php:880
 #: graphs_new.php:486 include/global_arrays.php:1130
-#: include/global_arrays.php:2115 lib/html_tree.php:606 user_admin.php:1445
+#: include/global_arrays.php:2115 lib/html_tree.php:547 user_admin.php:1445
 #: user_group_admin.php:1115
 #, fuzzy
 msgid "Graph Templates"
@@ -5235,43 +5237,43 @@ msgstr "L'etichetta verticale per i grafici risultanti."
 msgid "No Graph Templates Found"
 msgstr "Nessun modello di grafico trovato"
 
-#: graph_templates_inputs.php:145
+#: graph_templates_inputs.php:148
 #, fuzzy, php-format
 msgid "Graph Item Inputs [edit graph: %s]"
 msgstr "Grafico Voce Ingressi [modifica grafico: %s]."
 
-#: graph_templates_inputs.php:196
+#: graph_templates_inputs.php:199
 #, fuzzy
 msgid "Associated Graph Items"
 msgstr "Articoli grafici associati"
 
-#: graph_templates_inputs.php:220
+#: graph_templates_inputs.php:223
 #, fuzzy, php-format
 msgid "Item #%s"
 msgstr "Voce #%s"
 
-#: graph_templates_items.php:101 graph_templates_items.php:127
+#: graph_templates_items.php:135 graph_templates_items.php:161
 #: graphs_items.php:141
 #, fuzzy
 msgid "Cur:"
 msgstr "Cur:"
 
-#: graph_templates_items.php:108 graph_templates_items.php:134
+#: graph_templates_items.php:142 graph_templates_items.php:168
 #: graphs_items.php:148
 #, fuzzy
 msgid "Avg:"
 msgstr "Media"
 
-#: graph_templates_items.php:115 graph_templates_items.php:148
+#: graph_templates_items.php:149 graph_templates_items.php:182
 #: graphs_items.php:162
 msgid "Max:"
 msgstr "Massimo:"
 
-#: graph_templates_items.php:141 graphs_items.php:155
+#: graph_templates_items.php:175 graphs_items.php:155
 msgid "Min:"
 msgstr "Min:"
 
-#: graph_templates_items.php:419
+#: graph_templates_items.php:506
 #, fuzzy, php-format
 msgid "Graph Template Items [edit graph: %s]"
 msgstr "Elementi del modello di grafico [modifica grafico: %s]."
@@ -5330,20 +5332,20 @@ msgid "Report"
 msgstr "Segnala"
 
 #: graph_view.php:629 lib/html.php:189 lib/html.php:194 lib/html_graph.php:157
-#: lib/html_tree.php:1042
+#: lib/html_tree.php:983
 #, fuzzy
 msgid "All Graphs & Templates"
 msgstr "Tutti i grafici e i modelli"
 
 #: graph_view.php:630 include/global_arrays.php:2769 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:197 lib/html_graph.php:158
-#: lib/html_tree.php:1043
+#: lib/html_tree.php:984
 #, fuzzy
 msgid "Not Templated"
 msgstr "Non modellato"
 
 #: graph_view.php:721 graph_view.php:749 graphs.php:2194
-#: include/global_form.php:1868 lib/html_reports.php:1036 tree.php:901
+#: include/global_form.php:1877 lib/html_reports.php:1036 tree.php:901
 msgid "Graph Name"
 msgstr "Nome del grafo"
 
@@ -5395,12 +5397,12 @@ msgstr "Modalità anteprima"
 msgid "Add Selected Graphs to Report"
 msgstr "Aggiunta di grafici selezionati al report"
 
-#: graph_view.php:955 lib/html.php:2499
+#: graph_view.php:955 lib/html.php:2502
 msgid "Ok"
 msgstr "Ok"
 
-#: graph_xport.php:120 graph_xport.php:158 include/global_form.php:1793
-#: include/global_form.php:2061 lib/html.php:1826 links.php:381
+#: graph_xport.php:120 graph_xport.php:158 include/global_form.php:1802
+#: include/global_form.php:2070 lib/html.php:1829 links.php:381
 msgid "Title"
 msgstr "Titolo"
 
@@ -5486,7 +5488,7 @@ msgstr "Nessun dispositivo"
 msgid "Created graph: %s"
 msgstr "Grafico creato: %s"
 
-#: graphs.php:260 lib/template.php:2131 lib/template.php:2160
+#: graphs.php:260 lib/template.php:2140 lib/template.php:2169
 #, fuzzy
 msgid "ERROR: No Data Source associated. Check Template"
 msgstr "ERROR: nessuna fonte di dati associata. Modello di controllo"
@@ -5714,27 +5716,27 @@ msgstr "L'ID del database interno per questo grafico.  Utile quando si esegue l'
 msgid "Empty Graph"
 msgstr "Copia grafico"
 
-#: graphs_items.php:333
+#: graphs_items.php:336
 #, fuzzy
 msgid "Data Sources [No Device]"
 msgstr "Fonti dati [Nessun dispositivo]"
 
-#: graphs_items.php:335
+#: graphs_items.php:338
 #, fuzzy, php-format
 msgid "Data Sources [%s]"
 msgstr "Fonti dei dati [%s]."
 
-#: graphs_items.php:350 include/global_arrays.php:1248
-#: include/global_form.php:1647
+#: graphs_items.php:353 include/global_arrays.php:1248
+#: include/global_form.php:1656
 msgid "Data Template"
 msgstr "Modello dati"
 
-#: graphs_items.php:423
+#: graphs_items.php:426
 #, fuzzy, php-format
 msgid "Graph Items [graph: %s]"
 msgstr "Grafico Elementi [grafico: %s]"
 
-#: graphs_items.php:464
+#: graphs_items.php:467
 #, fuzzy
 msgid "Choose the Data Source to associate with this Graph Item."
 msgstr "Scegliere l'origine dati da associare a questa voce del grafico."
@@ -5759,7 +5761,7 @@ msgstr "Nuovi grafici per [ Tutti i dispositivi ]"
 msgid "New Graphs for None Host Type"
 msgstr "Nuovi grafici per None Host Type (nessuno)"
 
-#: graphs_new.php:339 lib/html.php:2446
+#: graphs_new.php:339 lib/html.php:2449
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "Impostazioni del filtro salvate"
@@ -6109,7 +6111,7 @@ msgstr "Aggiunta di un modello grafico al dispositivo"
 msgid "Data Query Debug Information"
 msgstr "Interrogazione dei dati Informazioni sul debug"
 
-#: host.php:859 lib/functions.php:3897 tree.php:1517 tree.php:1591
+#: host.php:859 lib/functions.php:3902 tree.php:1517 tree.php:1591
 #: tree.php:1699 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Copia"
@@ -6138,7 +6140,7 @@ msgstr "Metodo Re-Index"
 #: include/global_arrays.php:2655 include/global_arrays.php:2673
 #: include/global_arrays.php:2697 lib/api_automation.php:1293
 #: lib/api_automation.php:1355 lib/api_automation.php:1422
-#: lib/html_reports.php:1617 links.php:379 plugins.php:456
+#: lib/html_reports.php:1612 links.php:379 plugins.php:456
 msgid "Actions"
 msgstr "Azioni"
 
@@ -6151,7 +6153,7 @@ msgstr " [%d articoli, %d righe]"
 msgid "Fail"
 msgstr "Fallito"
 
-#: host.php:943 lib/functions.php:4907 lib/functions.php:4912
+#: host.php:943 lib/functions.php:4912 lib/functions.php:4917
 msgid "Success"
 msgstr "Successo"
 
@@ -6217,7 +6219,7 @@ msgstr "SNMP GetNext"
 msgid "Undefined"
 msgstr "Non Definito"
 
-#: host.php:1529 include/global_settings.php:576 lib/html.php:2104
+#: host.php:1529 include/global_settings.php:576 lib/html.php:2107
 #: lib/html_reports.php:986
 msgid "Site"
 msgstr "Sito"
@@ -6239,7 +6241,7 @@ msgstr "Recupero in corso"
 
 #: host.php:1636 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:951 lib/plugins.php:1134 lib/plugins.php:1135
-#: lib/rrd.php:2948 lib/rrd.php:2960 user_admin.php:826 utilities.php:211
+#: lib/rrd.php:2960 lib/rrd.php:2972 user_admin.php:826 utilities.php:211
 #: utilities.php:212 utilities.php:2312
 msgid "Unknown"
 msgstr "Sconosciuto"
@@ -6253,7 +6255,7 @@ msgstr "Descrizione del dispositivo"
 msgid "The name by which this Device will be referred to."
 msgstr "Il nome con il quale questo dispositivo verrà indicato."
 
-#: host.php:1718 include/global_form.php:1193 include/global_form.php:1731
+#: host.php:1718 include/global_form.php:1202 include/global_form.php:1740
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
 #: pollers.php:130 pollers.php:996 user_admin.php:1305 user_group_admin.php:980
@@ -6490,17 +6492,17 @@ msgstr "Devi essere loggato per accedere a quest'area di Cacti."
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "FATAL: Devi essere loggato per accedere a quest'area di Cacti."
 
-#: include/auth.php:294 lib/functions.php:6476 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:6486 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "Permesso Negato"
 
-#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6487 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Se ritieni che questo sia un errore. Si prega di contattare il proprio Amministratore Cacti."
 
-#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6487 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Non sei autorizzato ad accedere a questa sezione di Cacti."
@@ -7044,7 +7046,7 @@ msgstr "Destra"
 msgid "Justified"
 msgstr "Giustificato"
 
-#: include/global_arrays.php:533 lib/html.php:2525
+#: include/global_arrays.php:533 lib/html.php:2528
 msgid "Center"
 msgstr "Centro"
 
@@ -7332,8 +7334,8 @@ msgstr "Ricerca specifica"
 msgid "Enabled (strict mode)"
 msgstr "Abilitato (modo rigoroso)"
 
-#: include/global_arrays.php:846 include/global_form.php:2116
-#: include/global_form.php:2158 lib/api_automation.php:1291
+#: include/global_arrays.php:846 include/global_form.php:2125
+#: include/global_form.php:2167 lib/api_automation.php:1291
 #: lib/api_automation.php:1353
 msgid "Operator"
 msgstr "Operatore"
@@ -7368,13 +7370,13 @@ msgstr "Ordinazione naturale"
 msgid "Numeric Ordering"
 msgstr "Ordinazione numerica"
 
-#: include/global_arrays.php:875 lib/rrd.php:2889
+#: include/global_arrays.php:875 lib/rrd.php:2901
 msgid "Header"
 msgstr "Header"
 
 #: include/global_arrays.php:876 include/global_arrays.php:927
 #: include/global_arrays.php:1572 include/global_arrays.php:1741
-#: lib/html.php:2514
+#: lib/html.php:2517
 msgid "Graph"
 msgstr "Grafico"
 
@@ -7463,8 +7465,8 @@ msgstr "Console"
 msgid "Console Page"
 msgstr "Inizio della pagina della console"
 
-#: include/global_arrays.php:909 lib/html_form_template.php:627
-#: lib/html_form_template.php:639
+#: include/global_arrays.php:909 lib/html_form_template.php:630
+#: lib/html_form_template.php:642
 #, fuzzy
 msgid "New Graphs"
 msgstr "Nuovi grafici"
@@ -7515,7 +7517,7 @@ msgstr "Regole del dispositivo"
 
 #: include/global_arrays.php:940 include/global_arrays.php:989
 #: include/global_arrays.php:1128 lib/html_filter.php:177
-#: lib/html_graph.php:252 lib/html_tree.php:1130
+#: lib/html_graph.php:252 lib/html_tree.php:1071
 msgid "Presets"
 msgstr "Preset"
 
@@ -7550,7 +7552,7 @@ msgid "Configuration"
 msgstr "Configurazione"
 
 #: include/global_arrays.php:952 include/global_arrays.php:974
-#: lib/html.php:2239 lib/html.php:2529
+#: lib/html.php:2242 lib/html.php:2532
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -7698,7 +7700,7 @@ msgstr "Amministrazione Generale"
 msgid "System Administration"
 msgstr "Amministrazione di sistema"
 
-#: include/global_arrays.php:1245 lib/html.php:1128
+#: include/global_arrays.php:1245 lib/html.php:1131
 #, fuzzy
 msgid "CDEF"
 msgstr "CDEF"
@@ -7719,7 +7721,7 @@ msgid "Data Input Field"
 msgstr "Campo di inserimento dati"
 
 #: include/global_arrays.php:1251 include/global_form.php:593
-#: include/global_form.php:1705
+#: include/global_form.php:1714
 msgid "Data Source Profile"
 msgstr "Profilo origine dati"
 
@@ -7738,7 +7740,7 @@ msgstr "Oggetto del modello grafico"
 msgid "Graph Template Input"
 msgstr "Ingresso modello grafico"
 
-#: include/global_arrays.php:1258 lib/html.php:1129
+#: include/global_arrays.php:1258 lib/html.php:1132
 #, fuzzy
 msgid "VDEF"
 msgstr "VDEF"
@@ -8061,7 +8063,7 @@ msgstr "Immagine GIF in linea, stile LN"
 msgid "Text"
 msgstr "Testo"
 
-#: include/global_arrays.php:1571 include/global_form.php:2236
+#: include/global_arrays.php:1571 include/global_form.php:2245
 msgid "Tree"
 msgstr "Albero"
 
@@ -8561,7 +8563,7 @@ msgid "List Mode"
 msgstr "Modalità elenco"
 
 #: include/global_arrays.php:1965 include/global_arrays.php:1971
-#: lib/functions.php:3468 lib/html.php:1674 lib/html.php:1751 links.php:344
+#: lib/functions.php:3473 lib/html.php:1677 lib/html.php:1754 links.php:344
 #: user_admin.php:1715 user_group_admin.php:1385
 msgid "Console"
 msgstr "Console"
@@ -8586,7 +8588,7 @@ msgstr "Gestione dei grafici"
 msgid "(Edit)"
 msgstr "(Modifica)"
 
-#: include/global_arrays.php:2001 lib/api_aggregate.php:1704
+#: include/global_arrays.php:2001 lib/api_aggregate.php:1707
 #, fuzzy
 msgid "Graph Items"
 msgstr "Elementi del grafico"
@@ -8619,7 +8621,7 @@ msgstr "Visualizza registro"
 msgid "Graph Trees"
 msgstr "Grafico Alberi"
 
-#: include/global_arrays.php:2133 lib/api_aggregate.php:1704
+#: include/global_arrays.php:2133 lib/api_aggregate.php:1707
 #, fuzzy
 msgid "Graph Template Items"
 msgstr "Elementi del modello grafico"
@@ -8723,7 +8725,7 @@ msgid "Export Results"
 msgstr "Esporta risultati"
 
 #: include/global_arrays.php:2523 include/global_arrays.php:2553
-#: lib/html.php:1695 lib/html.php:1697 lib/html.php:1776
+#: lib/html.php:1698 lib/html.php:1700 lib/html.php:1779
 msgid "Reporting"
 msgstr "Rapporto"
 
@@ -9013,7 +9015,7 @@ msgstr "La frequenza con cui i dati saranno raccolti dalla Fonte Dati?"
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "Per quanto tempo possono mancare i dati prima che RRDDtool registri dati sconosciuti.  Aumentare questo valore se la propria origine dati è instabile e si desidera riportare i vecchi dati piuttosto che mostrare lacune nei grafici.  Questo valore viene moltiplicato per il fattore X-Files per determinare il tempo effettivo."
 
-#: include/global_form.php:240 lib/rrd.php:2980
+#: include/global_form.php:240 lib/rrd.php:2992
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "Fattore X-Files"
@@ -9231,7 +9233,7 @@ msgstr "Il percorso completo per il file RRD."
 msgid "The script/source used to gather data for this data source."
 msgstr "Lo script/sorgente utilizzato per raccogliere i dati per questa fonte di dati."
 
-#: include/global_form.php:595 include/global_form.php:1707
+#: include/global_form.php:595 include/global_form.php:1716
 #, fuzzy
 msgid "Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources."
 msgstr "Selezionare il profilo dell'origine dati.  Il Profilo dell'origine dati controlla l'intervallo di polling, l'aggregazione dei dati e la politica di conservazione delle fonti dati risultanti."
@@ -9660,7 +9662,7 @@ msgstr "Legenda Direzione (--legend-direction=&lt;direction&gt;)"
 msgid "Place the legend items in the given vertical order."
 msgstr "Posizionare gli elementi legenda nell'ordine verticale dato."
 
-#: include/global_form.php:963 lib/api_aggregate.php:1710 lib/html.php:1125
+#: include/global_form.php:963 lib/api_aggregate.php:1713 lib/html.php:1128
 #, fuzzy
 msgid "Graph Item Type"
 msgstr "Grafico Tipo di elemento"
@@ -9670,825 +9672,834 @@ msgstr "Grafico Tipo di elemento"
 msgid "How data for this item is represented visually on the graph."
 msgstr "Come i dati di questa voce sono rappresentati visivamente sul grafico."
 
-#: include/global_form.php:982
+#: include/global_form.php:970
+#, fuzzy
+msgid "Data Template Filter"
+msgstr "Voce del modello di dati"
+
+#: include/global_form.php:976
+msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
+msgstr ""
+
+#: include/global_form.php:991
 #, fuzzy
 msgid "The data source to use for this graph item."
 msgstr "L'origine dei dati da utilizzare per questa voce del grafico."
 
-#: include/global_form.php:989
+#: include/global_form.php:998
 #, fuzzy
 msgid "The color to use for the legend."
 msgstr "Il colore da usare per la leggenda."
 
-#: include/global_form.php:992
+#: include/global_form.php:1001
 #, fuzzy
 msgid "Opacity/Alpha Channel"
 msgstr "Opacità/canale alfa"
 
-#: include/global_form.php:996
+#: include/global_form.php:1005
 #, fuzzy
 msgid "The opacity/alpha channel of the color."
 msgstr "Il canale opacità/alfa del colore."
 
-#: include/global_form.php:999 lib/rrd.php:2976
+#: include/global_form.php:1008 lib/rrd.php:2988
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "Funzione di consolidamento"
 
-#: include/global_form.php:1003
+#: include/global_form.php:1012
 #, fuzzy
 msgid "How data for this item is represented statistically on the graph."
 msgstr "Come i dati di questa voce sono rappresentati statisticamente sul grafico."
 
-#: include/global_form.php:1006
+#: include/global_form.php:1015
 #, fuzzy
 msgid "CDEF Function"
 msgstr "Funzione CDEF"
 
-#: include/global_form.php:1011
+#: include/global_form.php:1020
 #, fuzzy
 msgid "A CDEF (math) function to apply to this item on the graph or legend."
 msgstr "Una funzione CDEF (matematica) da applicare a questa voce nel grafico o nella legenda."
 
-#: include/global_form.php:1014
+#: include/global_form.php:1023
 #, fuzzy
 msgid "VDEF Function"
 msgstr "Funzione VDEF"
 
-#: include/global_form.php:1019
+#: include/global_form.php:1028
 #, fuzzy
 msgid "A VDEF (math) function to apply to this item on the graph legend."
 msgstr "Una funzione VDEF (matematica) da applicare a questa voce nella legenda del grafico."
 
-#: include/global_form.php:1022
+#: include/global_form.php:1031
 #, fuzzy
 msgid "Shift Data"
 msgstr "Dati dello Shift"
 
-#: include/global_form.php:1025
+#: include/global_form.php:1034
 #, fuzzy
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
 msgstr "Offset i dati sull'asse del tempo (asse x) per la quantità specificata nel campo \"valore\"."
 
-#: include/global_form.php:1033
+#: include/global_form.php:1042
 #, fuzzy
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
 msgstr "E' STATO UN PIACERE CONOSCERTI: Il valore della voce del grafico.<br/> [TICK]: La frazione per la linea di spunta.<br/> [SHIFT]: Il tempo si sposta in secondi."
 
-#: include/global_form.php:1036
+#: include/global_form.php:1045
 #, fuzzy
 msgid "GPRINT Type"
 msgstr "Tipo GPRINT"
 
-#: include/global_form.php:1040
+#: include/global_form.php:1049
 #, fuzzy
 msgid "If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under \"GPRINT Presets\"."
 msgstr "Se questa voce del grafico è una GPRINT, si può opzionalmente scegliere qui un altro formato. È possibile definire tipi aggiuntivi in \"Preset GPRINT\"."
 
-#: include/global_form.php:1043
+#: include/global_form.php:1052
 #, fuzzy
 msgid "Text Alignment (TEXTALIGN)"
 msgstr "Allineamento del testo (TEXTALIGN)"
 
-#: include/global_form.php:1048
+#: include/global_form.php:1057
 #, fuzzy
 msgid "All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.  This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/> <strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!"
 msgstr "Tutte le linee di legenda successive saranno allineate come indicato qui.  È possibile utilizzare questo comando più volte in un singolo grafico.  Questo comando non produce layout tabulare.<br/><strong>Nota: </strong>Si può voler inserire un &lt;HR&gt; sulla voce del grafico precedente.<br/> <strong>Nota: </strong>A &lt;HR&gt; su questa linea di legenda obsoleta questa impostazione!"
 
-#: include/global_form.php:1051
+#: include/global_form.php:1060
 msgid "Text Format"
 msgstr "Formato testo"
 
-#: include/global_form.php:1056
+#: include/global_form.php:1065
 #, fuzzy
 msgid "Text that will be displayed on the legend for this graph item."
 msgstr "Testo che verrà visualizzato nella legenda di questa voce del grafico."
 
-#: include/global_form.php:1059
+#: include/global_form.php:1068
 #, fuzzy
 msgid "Insert Hard Return"
 msgstr "Inserisci ritorno duro"
 
-#: include/global_form.php:1062
+#: include/global_form.php:1071
 #, fuzzy
 msgid "Forces the legend to the next line after this item."
 msgstr "Forza la legenda alla riga successiva dopo questa voce."
 
-#: include/global_form.php:1065
+#: include/global_form.php:1074
 #, fuzzy
 msgid "Line Width (decimal)"
 msgstr "Larghezza linea (decimale)"
 
-#: include/global_form.php:1070
+#: include/global_form.php:1079
 #, fuzzy
 msgid "In case LINE was chosen, specify width of line here.  You must include a decimal precision, for example 2.00"
 msgstr "Nel caso in cui sia stata scelta LINE, specificare qui la larghezza della linea.  È necessario includere una precisione decimale, ad esempio 2,00"
 
-#: include/global_form.php:1073
+#: include/global_form.php:1082
 #, fuzzy
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 msgstr "Tratti (trattini (trattini[=on_s[,off_s[,on_s,on_s,off_s]....]]))"
 
-#: include/global_form.php:1078
+#: include/global_form.php:1087
 #, fuzzy
 msgid "The dashes modifier enables dashed line style."
 msgstr "Il modificatore dei trattini consente di abilitare lo stile della linea tratteggiata."
 
-#: include/global_form.php:1081
+#: include/global_form.php:1090
 #, fuzzy
 msgid "Dash Offset (dash-offset=offset)"
 msgstr "Dash Offset (dash-offset=offset)"
 
-#: include/global_form.php:1086 include/global_form.php:1094
+#: include/global_form.php:1095 include/global_form.php:1103
 #, fuzzy
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
 msgstr "Il parametro dash-offset specifica un offset nel modello in cui inizia la corsa."
 
-#: include/global_form.php:1103
+#: include/global_form.php:1112
 #, fuzzy
 msgid "The name given to this graph template."
 msgstr "Il nome dato a questo modello di grafico."
 
-#: include/global_form.php:1110
+#: include/global_form.php:1119
 msgid "Multiple Instances"
 msgstr "Istanze multiple"
 
-#: include/global_form.php:1111
+#: include/global_form.php:1120
 #, fuzzy
 msgid "Check this checkbox if there can be more than one Graph of this type per Device."
 msgstr "Selezionare questa casella di controllo se ci può essere più di un grafico di questo tipo per dispositivo."
 
-#: include/global_form.php:1118
+#: include/global_form.php:1127
 #, fuzzy
 msgid "Test Data Sources"
 msgstr "Ha fonti di dati"
 
-#: include/global_form.php:1119
+#: include/global_form.php:1128
 #, fuzzy
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
 msgstr "Seleziona questa casella di controllo se desideri testare le origini dati prima della loro creazione. Con le origini dati di prova abilitate, se l'origine dati non restituisce dati validi, il grafico non verrà creato. Questa impostazione è importante se si desidera avere un Device Template più generico che possa includere più Graph Templates applicabili selettivamente a seconda delle caratteristiche del Device stesso. Nota: se si dispone di uno script di lunga durata come origine dati, il tempo necessario per creare grafici aumenterà."
 
-#: include/global_form.php:1143
+#: include/global_form.php:1152
 #, fuzzy
 msgid "Enter a name for this graph item input, make sure it is something you recognize."
 msgstr "Immettere un nome per questa voce del grafico, assicurarsi che sia qualcosa che si riconosce."
 
-#: include/global_form.php:1151
+#: include/global_form.php:1160
 #, fuzzy
 msgid "Enter a description for this graph item input to describe what this input is used for."
 msgstr "Immettere una descrizione di questa voce del grafico per descrivere a cosa serve questo input."
 
-#: include/global_form.php:1158
+#: include/global_form.php:1167
 msgid "Field Type"
 msgstr "Tipo di campo"
 
-#: include/global_form.php:1159
+#: include/global_form.php:1168
 #, fuzzy
 msgid "How data is to be represented on the graph."
 msgstr "Come devono essere rappresentati i dati sul grafico."
 
-#: include/global_form.php:1182
+#: include/global_form.php:1191
 #, fuzzy
 msgid "General Device Options"
 msgstr "Opzioni generali del dispositivo"
 
-#: include/global_form.php:1187
+#: include/global_form.php:1196
 #, fuzzy
 msgid "Give this host a meaningful description."
 msgstr "Dare a questo ospite una descrizione significativa."
 
-#: include/global_form.php:1194 include/global_form.php:1732
+#: include/global_form.php:1203 include/global_form.php:1741
 #, fuzzy
 msgid "Fully qualified hostname or IP address for this device."
 msgstr "Nome host o indirizzo IP completamente qualificato per questo dispositivo."
 
-#: include/global_form.php:1202
+#: include/global_form.php:1211
 #, fuzzy
 msgid "The physical location of the Device.  This free form text can be a room, rack location, etc."
 msgstr "La posizione fisica del dispositivo.  Questo testo in forma libera può essere una stanza, una posizione rack, ecc."
 
-#: include/global_form.php:1211
+#: include/global_form.php:1220
 #, fuzzy
 msgid "Poller Association"
 msgstr "Associazione Poller"
 
-#: include/global_form.php:1219
+#: include/global_form.php:1228
 #, fuzzy
 msgid "Device Site Association"
 msgstr "Associazione del sito del dispositivo"
 
-#: include/global_form.php:1220
+#: include/global_form.php:1229
 #, fuzzy
 msgid "What Site is this Device associated with."
 msgstr "A quale sito è associato questo dispositivo."
 
-#: include/global_form.php:1229
+#: include/global_form.php:1238
 #, fuzzy
 msgid "Choose the Device Template to use to define the default Graph Templates and Data Queries associated with this Device."
 msgstr "Scegliere il modello del dispositivo da utilizzare per definire i modelli grafici e le query di dati predefiniti associati a questo dispositivo."
 
-#: include/global_form.php:1237
+#: include/global_form.php:1246
 #, fuzzy
 msgid "Number of Collection Threads"
 msgstr "Numero di fili di raccolta"
 
-#: include/global_form.php:1238
+#: include/global_form.php:1247
 #, fuzzy
 msgid "The number of concurrent threads to use for polling this device.  This applies to the Spine poller only."
 msgstr "Il numero di thread simultanei da utilizzare per il polling di questo dispositivo.  Questo vale solo per l'impianto di poller della colonna vertebrale."
 
-#: include/global_form.php:1245
+#: include/global_form.php:1254
 #, fuzzy
 msgid "Disable Device"
 msgstr "Disattivare il dispositivo"
 
-#: include/global_form.php:1246
+#: include/global_form.php:1255
 #, fuzzy
 msgid "Check this box to disable all checks for this host."
 msgstr "Spuntare questa casella per disabilitare tutti i controlli per questo host."
 
-#: include/global_form.php:1258
+#: include/global_form.php:1267
 #, fuzzy
 msgid "Availability/Reachability Options"
 msgstr "Opzioni di disponibilità/raggiungibilità"
 
-#: include/global_form.php:1262 include/global_settings.php:743
+#: include/global_form.php:1271 include/global_settings.php:743
 #, fuzzy
 msgid "Downed Device Detection"
 msgstr "Rilevamento dei dispositivi a valle"
 
-#: include/global_form.php:1263
+#: include/global_form.php:1272
 #, fuzzy
 msgid "The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
 msgstr "Il metodo che Cacti utilizzerà per determinare se un host è disponibile per i sondaggi.  <br><i>Attenzione: Si raccomanda che, come minimo, sia sempre selezionato SNMP.</i>."
 
-#: include/global_form.php:1272
+#: include/global_form.php:1281
 #, fuzzy
 msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>"
 msgstr "Il tipo di pacchetto ping da inviare.  <br><i>Nota: ICMP su Linux/UNIX richiede privilegi di root.</i>."
 
-#: include/global_form.php:1309 include/global_form.php:1769
+#: include/global_form.php:1318 include/global_form.php:1778
 msgid "Additional Options"
 msgstr "Opzioni Aggiuntive"
 
-#: include/global_form.php:1313 include/global_form.php:1774 pollers.php:88
+#: include/global_form.php:1322 include/global_form.php:1783 pollers.php:88
 #: sites.php:156
 msgid "Notes"
 msgstr "Note"
 
-#: include/global_form.php:1314 include/global_form.php:1775
+#: include/global_form.php:1323 include/global_form.php:1784
 #, fuzzy
 msgid "Enter notes to this host."
 msgstr "Inserire le note a questo host."
 
-#: include/global_form.php:1321
+#: include/global_form.php:1330
 msgid "External ID"
 msgstr "ID esterno"
 
-#: include/global_form.php:1322
+#: include/global_form.php:1331
 #, fuzzy
 msgid "External ID for linking Cacti data to external monitoring systems."
 msgstr "ID esterno per collegare i dati Cacti a sistemi di monitoraggio esterni."
 
-#: include/global_form.php:1344
+#: include/global_form.php:1353
 #, fuzzy
 msgid "A useful name for this host template."
 msgstr "Un nome utile per questo modello di host."
 
-#: include/global_form.php:1364
+#: include/global_form.php:1373
 #, fuzzy
 msgid "A name for this data query."
 msgstr "Un nome per questa query di dati."
 
-#: include/global_form.php:1372
+#: include/global_form.php:1381
 #, fuzzy
 msgid "A description for this data query."
 msgstr "Una descrizione per questa richiesta di dati."
 
-#: include/global_form.php:1379
+#: include/global_form.php:1388
 #, fuzzy
 msgid "XML Path"
 msgstr "Percorso XML"
 
-#: include/global_form.php:1380
+#: include/global_form.php:1389
 #, fuzzy
 msgid "The full path to the XML file containing definitions for this data query."
 msgstr "Il percorso completo del file XML contenente le definizioni per questa query di dati."
 
-#: include/global_form.php:1389
+#: include/global_form.php:1398
 #, fuzzy
 msgid "Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query."
 msgstr "Scegliere il metodo di immissione per questa Interrogazione dati.  Questo metodo di input definisce come vengono raccolti i dati per ogni dispositivo associato alla Data Query."
 
-#: include/global_form.php:1408
+#: include/global_form.php:1417
 #, fuzzy
 msgid "Choose the Graph Template to use for this Data Query Graph Template item."
 msgstr "Scegliere il modello di grafico da utilizzare per questa voce del modello di grafico di interrogazione dati."
 
-#: include/global_form.php:1437
+#: include/global_form.php:1446
 #, fuzzy
 msgid "A name for this associated graph."
 msgstr "Un nome per questo grafico associato."
 
-#: include/global_form.php:1465
+#: include/global_form.php:1474
 #, fuzzy
 msgid "A useful name for this graph tree."
 msgstr "Un nome utile per questo albero grafico."
 
-#: include/global_form.php:1472 include/global_form.php:2293
+#: include/global_form.php:1481 include/global_form.php:2302
 #: lib/api_automation.php:1418 tree.php:1650
 #, fuzzy
 msgid "Sorting Type"
 msgstr "Tipo di ordinamento"
 
-#: include/global_form.php:1473 include/global_form.php:2294
+#: include/global_form.php:1482 include/global_form.php:2303
 #, fuzzy
 msgid "Choose how items in this tree will be sorted."
 msgstr "Scegli come saranno ordinati gli elementi di questo albero."
 
-#: include/global_form.php:1479
+#: include/global_form.php:1488
 msgid "Publish"
 msgstr "Pubblica"
 
-#: include/global_form.php:1480
+#: include/global_form.php:1489
 #, fuzzy
 msgid "Should this Tree be published for users to access?"
 msgstr "L'albero dovrebbe essere pubblicato in modo che gli utenti possano accedervi?"
 
-#: include/global_form.php:1519
+#: include/global_form.php:1528
 #, fuzzy
 msgid "An Email Address where the User can be reached."
 msgstr "Un indirizzo e-mail dove l'utente può essere raggiunto."
 
-#: include/global_form.php:1527
+#: include/global_form.php:1536
 #, fuzzy
 msgid "Enter the password for this user twice. Remember that passwords are case sensitive!"
 msgstr "Inserire due volte la password per questo utente. Ricordate che le password sono sensibili alle maiuscole e minuscole!"
 
-#: include/global_form.php:1535 user_group_admin.php:88
+#: include/global_form.php:1544 user_group_admin.php:88
 #, fuzzy
 msgid "Determines if user is able to login."
 msgstr "Determina se l'utente è in grado di effettuare il login."
 
-#: include/global_form.php:1541 tree.php:2021
+#: include/global_form.php:1550 tree.php:2021
 msgid "Locked"
 msgstr "Bloccato"
 
-#: include/global_form.php:1542
+#: include/global_form.php:1551
 #, fuzzy
 msgid "Determines if the user account is locked."
 msgstr "Determina se l'account utente è bloccato."
 
-#: include/global_form.php:1547
+#: include/global_form.php:1556
 msgid "Account Options"
 msgstr "Opzioni account"
 
-#: include/global_form.php:1549
+#: include/global_form.php:1558
 #, fuzzy
 msgid "Set any user account specific options here."
 msgstr "Imposta qui qualsiasi opzione specifica per l'account utente."
 
-#: include/global_form.php:1553
+#: include/global_form.php:1562
 #, fuzzy
 msgid "Must Change Password at Next Login"
 msgstr "Deve cambiare la password al prossimo accesso"
 
-#: include/global_form.php:1565
+#: include/global_form.php:1574
 #, fuzzy
 msgid "Maintain Custom Graph and User Settings"
 msgstr "Mantenere il grafico personalizzato e le impostazioni utente"
 
-#: include/global_form.php:1572
+#: include/global_form.php:1581
 msgid "Graph Options"
 msgstr "Opzioni del grafico"
 
-#: include/global_form.php:1574
+#: include/global_form.php:1583
 #, fuzzy
 msgid "Set any graph specific options here."
 msgstr "Impostare qui qualsiasi opzione specifica del grafico."
 
-#: include/global_form.php:1578
+#: include/global_form.php:1587
 #, fuzzy
 msgid "User Has Rights to Tree View"
 msgstr "L'utente ha diritto alla visualizzazione ad albero"
 
-#: include/global_form.php:1584
+#: include/global_form.php:1593
 #, fuzzy
 msgid "User Has Rights to List View"
 msgstr "L'utente ha il diritto di visualizzare l'elenco"
 
-#: include/global_form.php:1590
+#: include/global_form.php:1599
 #, fuzzy
 msgid "User Has Rights to Preview View"
 msgstr "L'utente ha il diritto di visualizzare l'anteprima"
 
-#: include/global_form.php:1597 user_group_admin.php:130
+#: include/global_form.php:1606 user_group_admin.php:130
 msgid "Login Options"
 msgstr "Opzioni di accesso"
 
-#: include/global_form.php:1600
+#: include/global_form.php:1609
 #, fuzzy
 msgid "What to do when this user logs in."
 msgstr "Cosa fare quando l'utente effettua il login."
 
-#: include/global_form.php:1605
+#: include/global_form.php:1614
 #, fuzzy
 msgid "Show the page that user pointed their browser to."
 msgstr "Mostra la pagina in cui l'utente ha puntato il proprio browser."
 
-#: include/global_form.php:1609
+#: include/global_form.php:1618
 #, fuzzy
 msgid "Show the default console screen."
 msgstr "Mostra la schermata predefinita della console."
 
-#: include/global_form.php:1613
+#: include/global_form.php:1622
 #, fuzzy
 msgid "Show the default graph screen."
 msgstr "Mostra la schermata del grafico predefinito."
 
-#: include/global_form.php:1619 utilities.php:920
+#: include/global_form.php:1628 utilities.php:920
 #, fuzzy
 msgid "Authentication Realm"
 msgstr "Regno di autenticazione"
 
-#: include/global_form.php:1620
+#: include/global_form.php:1629
 #, fuzzy
 msgid "Only used if you have LDAP or Web Basic Authentication enabled.  Changing this to a non-enabled realm will effectively disable the user."
 msgstr "Utilizzato solo se è abilitata l'autenticazione LDAP o Web Basic Authentication.  Cambiare questo in un regno non abilitato disabiliterà effettivamente l'utente."
 
-#: include/global_form.php:1675
+#: include/global_form.php:1684
 #, fuzzy
 msgid "Import Template from Local File"
 msgstr "Importazione di un modello da un file locale"
 
-#: include/global_form.php:1676
+#: include/global_form.php:1685
 #, fuzzy
 msgid "If the XML file containing template data is located on your local machine, select it here."
 msgstr "Se il file XML contenente i dati del modello si trova sul computer locale, selezionarlo qui."
 
-#: include/global_form.php:1682
+#: include/global_form.php:1691
 #, fuzzy
 msgid "Import Template from Text"
 msgstr "Importa modello da testo"
 
-#: include/global_form.php:1683
+#: include/global_form.php:1692
 #, fuzzy
 msgid "If you have the XML file containing template data as text, you can paste it into this box to import it."
 msgstr "Se si dispone del file XML contenente i dati del modello come testo, è possibile incollarlo in questa casella per importarlo."
 
-#: include/global_form.php:1691
+#: include/global_form.php:1700
 #, fuzzy
 msgid "Preview Import Only"
 msgstr "Anteprima Solo importazione"
 
-#: include/global_form.php:1693
+#: include/global_form.php:1702
 #, fuzzy
 msgid "If checked, Cacti will not import the template, but rather compare the imported Template to the existing Template data.  If you are acceptable of the change, you can them import."
 msgstr "Se selezionata, Cacti non importa il modello, ma piuttosto confronta il modello importato con i dati del modello esistente.  Se si accetta il cambiamento, è possibile importarli."
 
-#: include/global_form.php:1698
+#: include/global_form.php:1707
 #, fuzzy
 msgid "Remove Orphaned Graph Items"
 msgstr "Rimuovere gli elementi del grafico orfani"
 
-#: include/global_form.php:1700
+#: include/global_form.php:1709
 #, fuzzy
 msgid "If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template."
 msgstr "Se l'opzione è selezionata, Cacti eliminerà tutti gli elementi grafici sia dal modello grafico che dai grafici associati che non sono inclusi nel modello grafico importato."
 
-#: include/global_form.php:1709
+#: include/global_form.php:1718
 #, fuzzy
 msgid "Create New from Template"
 msgstr "Crea nuovo dal modello"
 
-#: include/global_form.php:1718
+#: include/global_form.php:1727
 #, fuzzy
 msgid "General SNMP Entity Options"
 msgstr "Opzioni generali SNMP Entità SNMP"
 
-#: include/global_form.php:1724
+#: include/global_form.php:1733
 #, fuzzy
 msgid "Give this SNMP entity a meaningful description."
 msgstr "Fornire a questa entità SNMP una descrizione significativa."
 
-#: include/global_form.php:1739
+#: include/global_form.php:1748
 #, fuzzy
 msgid "Disable SNMP Notification Receiver"
 msgstr "Disattivare il ricevitore di notifica SNMP"
 
-#: include/global_form.php:1740
+#: include/global_form.php:1749
 #, fuzzy
 msgid "Check this box if you temporary do not want to send SNMP notifications to this host."
 msgstr "Selezionare questa casella se si desidera temporaneamente non inviare notifiche SNMP a questo host."
 
-#: include/global_form.php:1747
+#: include/global_form.php:1756
 #, fuzzy
 msgid "Maximum Log Size"
 msgstr "Dimensione massima del tronco"
 
-#: include/global_form.php:1748
+#: include/global_form.php:1757
 #, fuzzy
 msgid "Maximum number of day's notification log entries for this receiver need to be stored."
 msgstr "È necessario memorizzare il numero massimo di voci del registro di notifica del giorno per questo destinatario."
 
-#: include/global_form.php:1760
+#: include/global_form.php:1769
 #, fuzzy
 msgid "SNMP Message Type"
 msgstr "Tipo di messaggio SNMP"
 
-#: include/global_form.php:1761
+#: include/global_form.php:1770
 #, fuzzy
 msgid "SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called \"INFORMS\", SNMPv2 or above will be required."
 msgstr "Le trappole SNMP sono sempre non riconosciute. Per inviare notifiche SNMP riconosciute, formalmente chiamate \"INFORMAZIONI\", sarà richiesto SNMPv2 o superiore."
 
-#: include/global_form.php:1794
+#: include/global_form.php:1803
 #, fuzzy
 msgid "The new Title of the aggregated Graph."
 msgstr "Il nuovo titolo del grafico aggregato."
 
-#: include/global_form.php:1801 include/global_form.php:1887
-#: include/global_form.php:1992
+#: include/global_form.php:1810 include/global_form.php:1896
+#: include/global_form.php:2001
 msgid "Prefix"
 msgstr "Prefisso"
 
-#: include/global_form.php:1802
+#: include/global_form.php:1811
 #, fuzzy
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts."
 msgstr "Un prefisso per tutte le linee GPRINT per distinguere, ad esempio, host diversi."
 
-#: include/global_form.php:1809 include/global_form.php:1895
-#: include/global_form.php:2000
+#: include/global_form.php:1818 include/global_form.php:1904
+#: include/global_form.php:2009
 #, fuzzy
 msgid "Include Prefix Text"
 msgstr "Includi indice"
 
-#: include/global_form.php:1810 include/global_form.php:1896
-#: include/global_form.php:2001
+#: include/global_form.php:1819 include/global_form.php:1905
+#: include/global_form.php:2010
 #, fuzzy
 msgid "Include the source Graphs GPRINT Title Text with the Aggregate Graph(s)."
 msgstr "Includi i grafici di origine Testo del titolo GPRINT con i grafici aggregati."
 
-#: include/global_form.php:1817 include/global_form.php:1903
-#: include/global_form.php:2008
+#: include/global_form.php:1826 include/global_form.php:1912
+#: include/global_form.php:2017
 #, fuzzy
 msgid "Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items"
 msgstr "Usa questa opzione per creare, ad esempio, grafici in STACK.<br>AREA/STACK: il primo grafico mantiene gli elementi AREA/STACK, altri li convertono in STACK<br>LINE1: tutti gli elementi si convertono in LINEA1<br>LINE2: tutti gli elementi si convertono in elementi LINE2<br>LINE3: tutti gli elementi si convertono in elementi LINE3."
 
-#: include/global_form.php:1824 include/global_form.php:1910
-#: include/global_form.php:2015
+#: include/global_form.php:1833 include/global_form.php:1919
+#: include/global_form.php:2024
 msgid "Totaling"
 msgstr "Totale"
 
-#: include/global_form.php:1825 include/global_form.php:1911
-#: include/global_form.php:2016
+#: include/global_form.php:1834 include/global_form.php:1920
+#: include/global_form.php:2025
 #, fuzzy
 msgid "Please check those Items that shall be totaled in the \"Total\" column, when selecting any totaling option here."
 msgstr "Si prega di controllare le voci che saranno totalizzate nella colonna \"Totale\", quando si seleziona un'opzione di totalizzazione qui."
 
-#: include/global_form.php:1832 include/global_form.php:1919
-#: include/global_form.php:2024
+#: include/global_form.php:1841 include/global_form.php:1928
+#: include/global_form.php:2033
 #, fuzzy
 msgid "Total Type"
 msgstr "Totale Tipo"
 
-#: include/global_form.php:1833 include/global_form.php:1920
-#: include/global_form.php:2025
+#: include/global_form.php:1842 include/global_form.php:1929
+#: include/global_form.php:2034
 #, fuzzy
 msgid "Which type of totaling shall be performed."
 msgstr "Quale tipo di totalizzazione deve essere effettuato."
 
-#: include/global_form.php:1840 include/global_form.php:1928
-#: include/global_form.php:2033
+#: include/global_form.php:1849 include/global_form.php:1937
+#: include/global_form.php:2042
 #, fuzzy
 msgid "Prefix for GPRINT Totals"
 msgstr "Prefisso per i totali GPRINT"
 
-#: include/global_form.php:1841 include/global_form.php:1929
-#: include/global_form.php:2034
+#: include/global_form.php:1850 include/global_form.php:1938
+#: include/global_form.php:2043
 #, fuzzy
 msgid "A Prefix for all <strong>totaling</strong> GPRINT lines."
 msgstr "Un prefisso per tutte le linee di <strong>totaling</strong> GPRINT."
 
-#: include/global_form.php:1848 include/global_form.php:1936
-#: include/global_form.php:2041
+#: include/global_form.php:1857 include/global_form.php:1945
+#: include/global_form.php:2050
 #, fuzzy
 msgid "Reorder Type"
 msgstr "Tipo di riordino"
 
-#: include/global_form.php:1849 include/global_form.php:1937
-#: include/global_form.php:2042
+#: include/global_form.php:1858 include/global_form.php:1946
+#: include/global_form.php:2051
 #, fuzzy
 msgid "Reordering of Graphs."
 msgstr "Riordino dei grafici."
 
-#: include/global_form.php:1869
+#: include/global_form.php:1878
 #, fuzzy
 msgid "Please name this Aggregate Graph."
 msgstr "Si prega di nominare questo Grafico Aggregato."
 
-#: include/global_form.php:1876
+#: include/global_form.php:1885
 #, fuzzy
 msgid "Propagation Enabled"
 msgstr "Propagazione Abilitata"
 
-#: include/global_form.php:1877
+#: include/global_form.php:1886
 #, fuzzy
 msgid "Is this to carry the template?"
 msgstr "E' per portare il modello?"
 
-#: include/global_form.php:1883
+#: include/global_form.php:1892
 #, fuzzy
 msgid "Aggregate Graph Settings"
 msgstr "Impostazioni del grafico aggregato"
 
-#: include/global_form.php:1888 include/global_form.php:1993
+#: include/global_form.php:1897 include/global_form.php:2002
 #, fuzzy
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix."
 msgstr "Un prefisso per tutte le linee GPRINT per distinguere, ad esempio, host diversi.  In questo prefisso è possibile utilizzare sia le variabili di sostituzione di Host che di Data Query."
 
-#: include/global_form.php:1971
+#: include/global_form.php:1980
 #, fuzzy
 msgid "Aggregate Template Name"
 msgstr "Nome del modello aggregato"
 
-#: include/global_form.php:1972
+#: include/global_form.php:1981
 #, fuzzy
 msgid "Please name this Aggregate Template."
 msgstr "Si prega di nominare questo Template Aggregato."
 
-#: include/global_form.php:1979
+#: include/global_form.php:1988
 #, fuzzy
 msgid "Source Graph Template"
 msgstr "Template del grafico sorgente"
 
-#: include/global_form.php:1980
+#: include/global_form.php:1989
 #, fuzzy
 msgid "The Graph Template that this Aggregate Template is based upon."
 msgstr "Il Template Grafico su cui si basa questo Template Aggregato."
 
-#: include/global_form.php:1988
+#: include/global_form.php:1997
 #, fuzzy
 msgid "Aggregate Template Settings"
 msgstr "Impostazioni del modello aggregato"
 
-#: include/global_form.php:2065
+#: include/global_form.php:2074
 #, fuzzy
 msgid "The name of this Color Template."
 msgstr "Il nome di questo modello a colori."
 
-#: include/global_form.php:2076
+#: include/global_form.php:2085
 #, fuzzy
 msgid "A nice Color"
 msgstr "Un bel colore"
 
-#: include/global_form.php:2086
+#: include/global_form.php:2095
 #, fuzzy
 msgid "A useful name for this Template."
 msgstr "Un nome utile per questo Template."
 
-#: include/global_form.php:2100 include/global_form.php:2142
+#: include/global_form.php:2109 include/global_form.php:2151
 #: lib/api_automation.php:1289 lib/api_automation.php:1351
 msgid "Operation"
 msgstr "Operazione"
 
-#: include/global_form.php:2101 include/global_form.php:2143
+#: include/global_form.php:2110 include/global_form.php:2152
 #, fuzzy
 msgid "Logical operation to combine rules."
 msgstr "Funzionamento logico per combinare le regole."
 
-#: include/global_form.php:2109 include/global_form.php:2151
+#: include/global_form.php:2118 include/global_form.php:2160
 #, fuzzy
 msgid "The Field Name that shall be used for this Rule Item."
 msgstr "Il nome del campo che sarà utilizzato per questa voce della regola."
 
-#: include/global_form.php:2117 include/global_form.php:2159
+#: include/global_form.php:2126 include/global_form.php:2168
 #, fuzzy
 msgid "Operator."
 msgstr "Operatore"
 
-#: include/global_form.php:2124 include/global_form.php:2166
-#: include/global_form.php:2309
+#: include/global_form.php:2133 include/global_form.php:2175
+#: include/global_form.php:2318
 #, fuzzy
 msgid "Matching Pattern"
 msgstr "Modello corrispondente"
 
-#: include/global_form.php:2125 include/global_form.php:2167
+#: include/global_form.php:2134 include/global_form.php:2176
 #, fuzzy
 msgid "The Pattern to be matched against."
 msgstr "Il modello a cui abbinare il Pattern."
 
-#: include/global_form.php:2133 include/global_form.php:2175
-#: include/global_form.php:2326
+#: include/global_form.php:2142 include/global_form.php:2184
+#: include/global_form.php:2335
 #, fuzzy
 msgid "Sequence."
 msgstr "Sequenza"
 
-#: include/global_form.php:2184 include/global_form.php:2229
+#: include/global_form.php:2193 include/global_form.php:2238
 #, fuzzy
 msgid "A useful name for this Rule."
 msgstr "Un nome utile per questa regola."
 
-#: include/global_form.php:2192
+#: include/global_form.php:2201
 #, fuzzy
 msgid "Choose a Data Query to apply to this rule."
 msgstr "Scegliere una query dati da applicare a questa regola."
 
-#: include/global_form.php:2203
+#: include/global_form.php:2212
 #, fuzzy
 msgid "Choose any of the available Graph Types to apply to this rule."
 msgstr "Scegliere uno qualsiasi dei tipi di grafico disponibili da applicare a questa regola."
 
-#: include/global_form.php:2216 include/global_form.php:2273
+#: include/global_form.php:2225 include/global_form.php:2282
 msgid "Enable Rule"
 msgstr "Abilita regola"
 
-#: include/global_form.php:2217 include/global_form.php:2274
+#: include/global_form.php:2226 include/global_form.php:2283
 #, fuzzy
 msgid "Check this box to enable this rule."
 msgstr "Selezionare questa casella per attivare questa regola."
 
-#: include/global_form.php:2237
+#: include/global_form.php:2246
 #, fuzzy
 msgid "Choose a Tree for the new Tree Items."
 msgstr "Scegliere un albero per i nuovi elementi dell'albero."
 
-#: include/global_form.php:2244
+#: include/global_form.php:2253
 #, fuzzy
 msgid "Leaf Item Type"
 msgstr "Tipo dell'elemento della foglia"
 
-#: include/global_form.php:2245
+#: include/global_form.php:2254
 #, fuzzy
 msgid "The Item Type that shall be dynamically added to the tree."
 msgstr "Il tipo di articolo che deve essere aggiunto dinamicamente all'albero."
 
-#: include/global_form.php:2252
+#: include/global_form.php:2261
 #, fuzzy
 msgid "Graph Grouping Style"
 msgstr "Grafico Stile di raggruppamento"
 
-#: include/global_form.php:2253
+#: include/global_form.php:2262
 #, fuzzy
 msgid "Choose how graphs are grouped when drawn for this particular host on the tree."
 msgstr "Scegliere come sono raggruppati i grafici quando vengono disegnati per questo particolare host sull'albero."
 
-#: include/global_form.php:2263
+#: include/global_form.php:2272
 #, fuzzy
 msgid "Optional: Sub-Tree Item"
 msgstr "Facoltativo: Voce di sottoalbero"
 
-#: include/global_form.php:2264
+#: include/global_form.php:2273
 #, fuzzy
 msgid "Choose a Sub-Tree Item to hook in.<br>Make sure, that it is still there when this rule is executed!"
 msgstr "Scegliere un elemento dell'albero secondario da agganciare in.<br>Assicuratevi che sia ancora presente quando questa regola viene eseguita!"
 
-#: include/global_form.php:2284
+#: include/global_form.php:2293
 msgid "Header Type"
 msgstr "Tipo Header"
 
-#: include/global_form.php:2285
+#: include/global_form.php:2294
 #, fuzzy
 msgid "Choose an Object to build a new Sub-header."
 msgstr "Scegliere un Oggetto per costruire una nuova Sottotitolazione."
 
-#: include/global_form.php:2301
+#: include/global_form.php:2310
 #, fuzzy
 msgid "Propagate Changes"
 msgstr "Modifiche di propagazione"
 
-#: include/global_form.php:2302
+#: include/global_form.php:2311
 #, fuzzy
 msgid "Propagate all options on this form (except for 'Title') to all child 'Header' items."
 msgstr "Propagare tutte le opzioni di questo modulo (ad eccezione di 'Titolo') a tutti gli elementi di 'Intestazione' del bambino."
 
-#: include/global_form.php:2310
+#: include/global_form.php:2319
 #, fuzzy
 msgid "The String Pattern (Regular Expression) to match against.<br>Enclosing '/' must <strong>NOT</strong> be provided!"
 msgstr "Il modello di stringa (Regular Expression) per abbinare contro.<br>La chiusura '/' deve <strong>Niente</strong> essere fornito!"
 
-#: include/global_form.php:2317
+#: include/global_form.php:2326
 #, fuzzy
 msgid "Replacement Pattern"
 msgstr "Modello di sostituzione"
 
-#: include/global_form.php:2318
+#: include/global_form.php:2327
 #, fuzzy
 msgid "The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match by e.g. <strong>\\${1}</strong> for the first match!"
 msgstr "Il Replacement String Pattern per l'uso come Tree Header.<br>Refer to a Match by e.g. <strong>\\${1}</strong> per la prima partita!"
 
-#: include/global_languages.php:738
+#: include/global_languages.php:768
 msgid " T"
 msgstr "T"
 
-#: include/global_languages.php:740
+#: include/global_languages.php:770
 msgid " G"
 msgstr "G"
 
-#: include/global_languages.php:742
+#: include/global_languages.php:772
 msgid " M"
 msgstr "M"
 
-#: include/global_languages.php:744
+#: include/global_languages.php:774
 msgid " K"
 msgstr "K"
 
@@ -10514,7 +10525,7 @@ msgstr "Dati"
 msgid "Visual"
 msgstr "Visuale"
 
-#: include/global_settings.php:44 lib/functions.php:4896 lib/functions.php:4901
+#: include/global_settings.php:44 lib/functions.php:4901 lib/functions.php:4906
 msgid "Authentication"
 msgstr "Autenticazione"
 
@@ -10556,11 +10567,11 @@ msgstr "Caratteri del grafico"
 msgid "PHP Mail() Function"
 msgstr "Funzione PHP Mail()"
 
-#: include/global_settings.php:84 lib/functions.php:4879
+#: include/global_settings.php:84 lib/functions.php:4884
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:85 lib/functions.php:4884
+#: include/global_settings.php:85 lib/functions.php:4889
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10965,7 +10976,7 @@ msgstr "Se impostato su Semplice, i Grafici e le Sorgenti dati possono essere cr
 msgid "Simple"
 msgstr "Semplice"
 
-#: include/global_settings.php:419 lib/html.php:2516
+#: include/global_settings.php:419 lib/html.php:2519
 msgid "Advanced"
 msgstr "Avanzate"
 
@@ -12581,7 +12592,7 @@ msgstr "Questo è il numero di caratteri consentiti prima che una riga dell'e-ma
 msgid "Sendmail Options"
 msgstr "Opzioni di invio"
 
-#: include/global_settings.php:1772 lib/functions.php:4879
+#: include/global_settings.php:1772 lib/functions.php:4884
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "Percorso Sendmail"
@@ -13080,7 +13091,7 @@ msgstr "Deviazione standard"
 msgid "Variance Based w/Outliers Removed"
 msgstr "Varianza in base a c/sopravvolgitori rimossi"
 
-#: include/global_settings.php:2180 lib/html.php:2199
+#: include/global_settings.php:2180 lib/html.php:2202
 #, fuzzy
 msgid "Replacement Method"
 msgstr "Metodo di sostituzione"
@@ -13090,16 +13101,16 @@ msgstr "Metodo di sostituzione"
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "Esistono tre metodi di sostituzione.  Il primo metodo sostituisce il picco con la media della fonte di dati in questione.  Il secondo metodo sostituisce il picco con un 'NaN'.  L'ultimo sostituisce il picco con l'ultimo valore buono trovato."
 
-#: include/global_settings.php:2185 lib/html.php:2195
+#: include/global_settings.php:2185 lib/html.php:2198
 msgid "Average"
 msgstr "Media"
 
-#: include/global_settings.php:2186 lib/html.php:2196
+#: include/global_settings.php:2186 lib/html.php:2199
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN's"
 
-#: include/global_settings.php:2187 lib/html.php:2197
+#: include/global_settings.php:2187 lib/html.php:2200
 #, fuzzy
 msgid "Last Known Good"
 msgstr "Ultimo bene conosciuto"
@@ -13125,7 +13136,7 @@ msgstr "Qualsiasi valore che sia così tante deviazioni standard al di sopra del
 msgid "%d Standard Deviations"
 msgstr "%d Deviazioni standard"
 
-#: include/global_settings.php:2212 lib/html.php:2211
+#: include/global_settings.php:2212 lib/html.php:2214
 msgid "Variance Percentage"
 msgstr "Percentuale di varianza"
 
@@ -13423,9 +13434,9 @@ msgstr "1 Colonna"
 #: include/global_settings.php:2499 include/global_settings.php:2500
 #: include/global_settings.php:2501 include/global_settings.php:2502
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
-#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1106
-#: lib/html_tree.php:1107 lib/html_tree.php:1108 lib/html_tree.php:1109
-#: lib/html_tree.php:1110
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1047
+#: lib/html_tree.php:1048 lib/html_tree.php:1049 lib/html_tree.php:1050
+#: lib/html_tree.php:1051
 #, php-format
 msgid "%d Columns"
 msgstr "%d colonne"
@@ -13696,50 +13707,50 @@ msgstr "Le funzioni shell_exec() e/o exec() sono attualmente bloccate."
 msgid "Display Graphs from this Aggregate"
 msgstr "Visualizzare i grafici di questo aggregato"
 
-#: lib/api_aggregate.php:1577
+#: lib/api_aggregate.php:1580
 #, fuzzy
 msgid "The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates."
 msgstr "I Grafici scelti per il Grafico Aggregato qui sotto rappresentano Grafici da più modelli di grafici.  Aggregato non supporta la creazione di grafici aggregati da più modelli grafici."
 
-#: lib/api_aggregate.php:1578 lib/api_aggregate.php:1597
+#: lib/api_aggregate.php:1581 lib/api_aggregate.php:1600
 #, fuzzy
 msgid "Press 'Return' to return and select different Graphs"
 msgstr "Premere 'Return' per tornare indietro e selezionare diversi Grafici"
 
-#: lib/api_aggregate.php:1596
+#: lib/api_aggregate.php:1599
 #, fuzzy
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
 msgstr "I Grafici scelti per il Grafico Aggregato non utilizzano Modelli Grafici.  Aggregato non supporta la creazione di grafici aggregati da grafici non contemporanei."
 
-#: lib/api_aggregate.php:1708 lib/html.php:1122
+#: lib/api_aggregate.php:1711 lib/html.php:1125
 #, fuzzy
 msgid "Graph Item"
 msgstr "Voce del grafico"
 
-#: lib/api_aggregate.php:1711 lib/html.php:1126
+#: lib/api_aggregate.php:1714 lib/html.php:1129
 #, fuzzy
 msgid "CF Type"
 msgstr "Tipo CF"
 
-#: lib/api_aggregate.php:1712 lib/html.php:1131
+#: lib/api_aggregate.php:1715 lib/html.php:1134
 msgid "Item Color"
 msgstr "Colore dell'Elemento"
 
-#: lib/api_aggregate.php:1713
+#: lib/api_aggregate.php:1716
 #, fuzzy
 msgid "Color Template"
 msgstr "Colore Template"
 
-#: lib/api_aggregate.php:1714
+#: lib/api_aggregate.php:1717
 msgid "Skip"
 msgstr "Salta"
 
-#: lib/api_aggregate.php:1792
+#: lib/api_aggregate.php:1795
 #, fuzzy
 msgid "Aggregate Items are not modifyable"
 msgstr "Le voci aggregate non sono modificabili"
 
-#: lib/api_aggregate.php:1803
+#: lib/api_aggregate.php:1806
 #, fuzzy
 msgid "Aggregate Items are not editable"
 msgstr "Le voci aggregate non sono modificabili"
@@ -13750,8 +13761,8 @@ msgid "Matching Devices"
 msgstr "Dispositivi corrispondenti"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
-#: lib/clog_webapi.php:532 lib/html_reports.php:952 lib/html_reports.php:1612
-#: lib/html_reports.php:1939 lib/html_reports.php:1950 lib/rrd.php:2918
+#: lib/clog_webapi.php:532 lib/html_reports.php:952 lib/html_reports.php:1607
+#: lib/html_reports.php:1934 lib/html_reports.php:1945 lib/rrd.php:2930
 #: utilities.php:356 utilities.php:1210 utilities.php:2688
 msgid "Type"
 msgstr "Tipo"
@@ -13886,7 +13897,7 @@ msgstr "Voce della regola [nuova voce della regola per %s: %s]."
 msgid "Added by Cacti Automation"
 msgstr "Aggiunto da Cacti Automation"
 
-#: lib/api_automation.php:3237
+#: lib/api_automation.php:3238
 #, fuzzy
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
 msgstr "ERRORE: gli intervalli IP sotto forma di range1-range2 non sono più supportati."
@@ -13959,8 +13970,8 @@ msgstr "Località:"
 msgid "Contact:"
 msgstr "Contatto:"
 
-#: lib/api_device.php:1196 lib/functions.php:4910 lib/functions.php:4912
-#: lib/functions.php:4916
+#: lib/api_device.php:1196 lib/functions.php:4915 lib/functions.php:4917
+#: lib/functions.php:4921
 #, fuzzy
 msgid "Ping Results"
 msgstr "Risultati del Ping"
@@ -13978,41 +13989,41 @@ msgstr "Nuovo Settore"
 msgid "Web Basic"
 msgstr "Web di base"
 
-#: lib/auth.php:2121 lib/auth.php:2153 lib/reports.php:1267
+#: lib/auth.php:2131 lib/auth.php:2163 lib/reports.php:1267
 msgid "Branch:"
 msgstr "Organizzazione:"
 
-#: lib/auth.php:2130 lib/auth.php:2161 lib/html_tree.php:1014
+#: lib/auth.php:2140 lib/auth.php:2171 lib/html_tree.php:955
 #: lib/reports.php:1042 lib/reports.php:1272
 msgid "Device:"
 msgstr "Dispositivo:"
 
-#: lib/auth.php:2899 lib/auth.php:2907
+#: lib/auth.php:2909 lib/auth.php:2917
 #, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "Accesso negato, si prega di contattare l'amministratore di Cacti."
 
-#: lib/auth.php:2928
+#: lib/auth.php:2938
 #, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "L'amministratore di cactus ha imposto password complesse per gli accessi e la password di cactus corrente non corrisponde ai nuovi requisiti. Pertanto, è necessario modificare la password ora."
 
-#: lib/auth.php:2952
+#: lib/auth.php:2962
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "La password deve essere di almeno %d caratteri!"
 
-#: lib/auth.php:2958
+#: lib/auth.php:2968
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "La tua password deve contenere almeno 1 carattere numerico!"
 
-#: lib/auth.php:2962
+#: lib/auth.php:2972
 #, fuzzy
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "La tua password deve contenere una combinazione di caratteri minuscoli e maiuscoli!"
 
-#: lib/auth.php:2968
+#: lib/auth.php:2978
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "La tua password deve contenere almeno 1 carattere speciale!"
@@ -14647,173 +14658,173 @@ msgstr "Nessun problema"
 msgid "Message Not Found."
 msgstr "Messaggio non trovato."
 
-#: lib/functions.php:1144
+#: lib/functions.php:1149
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "L'errore %s non è leggibile"
 
-#: lib/functions.php:3243 lib/functions.php:3254
+#: lib/functions.php:3248 lib/functions.php:3259
 msgid "Logged in as"
 msgstr "Autenticato come"
 
-#: lib/functions.php:3243
+#: lib/functions.php:3248
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "Accedi come utente abituale"
 
-#: lib/functions.php:3243
+#: lib/functions.php:3248
 msgid "guest"
 msgstr "ospite"
 
-#: lib/functions.php:3245 lib/functions.php:3263 lib/html.php:2466
+#: lib/functions.php:3250 lib/functions.php:3268 lib/html.php:2469
 #, fuzzy
 msgid "User Community"
 msgstr "Comunità di utenti"
 
-#: lib/functions.php:3246 lib/functions.php:3264 lib/html.php:2467
+#: lib/functions.php:3251 lib/functions.php:3269 lib/html.php:2470
 #: lib/utility.php:1160
 msgid "Documentation"
 msgstr "Documentazione"
 
-#: lib/functions.php:3257
+#: lib/functions.php:3262
 #, php-format
 msgid "Logged in as %s"
 msgstr "Accesso effettuato come %s"
 
-#: lib/functions.php:3259 lib/html.php:2454
+#: lib/functions.php:3264 lib/html.php:2457
 msgid "Edit Profile"
 msgstr "Modifica Profilo"
 
-#: lib/functions.php:3267 lib/html.php:2456
+#: lib/functions.php:3272 lib/html.php:2459
 msgid "Logout"
 msgstr "Esci"
 
-#: lib/functions.php:3416
+#: lib/functions.php:3421
 msgid "Leaf"
 msgstr "Foglia"
 
-#: lib/functions.php:3436 lib/html_tree.php:713 lib/html_tree.php:749
-#: lib/html_tree.php:978 lib/html_tree.php:986 lib/html_tree.php:1560
+#: lib/functions.php:3441 lib/html_tree.php:654 lib/html_tree.php:690
+#: lib/html_tree.php:919 lib/html_tree.php:927 lib/html_tree.php:1501
 #, fuzzy
 msgid "Non Query Based"
 msgstr "Non basato su query"
 
-#: lib/functions.php:3469
+#: lib/functions.php:3474
 #, php-format
 msgid "Link %s"
 msgstr "Link %s"
 
-#: lib/functions.php:4510
+#: lib/functions.php:4515
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Errore di Mailer: No <b>TO</b>indirizzo impostato! <br>Se si utilizza il link <i>Test Mail</i>, impostare l'impostazione <b>Avviso e-mail</b>."
 
-#: lib/functions.php:4843
+#: lib/functions.php:4848
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "Autenticazione non riuscita: %s"
 
-#: lib/functions.php:4847
+#: lib/functions.php:4852
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO fallito: %s"
 
-#: lib/functions.php:4850
+#: lib/functions.php:4855
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Connessione non riuscita: %s"
 
-#: lib/functions.php:4853
+#: lib/functions.php:4858
 #, fuzzy
 msgid "SMTP error: "
 msgstr "Errore SMTP:"
 
-#: lib/functions.php:4866
+#: lib/functions.php:4871
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Questo è un messaggio di prova generato da Cacti.  Questo messaggio è stato inviato per verificare la configurazione delle impostazioni della posta."
 
-#: lib/functions.php:4867
+#: lib/functions.php:4872
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "Le impostazioni e-mail sono attualmente impostate come segue"
 
-#: lib/functions.php:4868
+#: lib/functions.php:4873
 msgid "Method"
 msgstr "Metodo"
 
-#: lib/functions.php:4870
+#: lib/functions.php:4875
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Verifica della configurazione....<br>...<br>."
 
-#: lib/functions.php:4877
+#: lib/functions.php:4882
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "Classe Mailer di PHP"
 
-#: lib/functions.php:4883
+#: lib/functions.php:4888
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Metodo: SMTP"
 
-#: lib/functions.php:4898
+#: lib/functions.php:4903
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Non indicato per motivi di sicurezza"
 
-#: lib/functions.php:4899
+#: lib/functions.php:4904
 msgid "Security"
 msgstr "Sicurezza"
 
-#: lib/functions.php:4907
+#: lib/functions.php:4912
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Risultati Ping:"
 
-#: lib/functions.php:4916
+#: lib/functions.php:4921
 msgid "Bypassed"
 msgstr "Bypass"
 
-#: lib/functions.php:4924
+#: lib/functions.php:4929
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Creazione di messaggi di testo....."
 
-#: lib/functions.php:4927
+#: lib/functions.php:4932
 msgid "Sending Message..."
 msgstr "Inviando il messaggio..."
 
-#: lib/functions.php:4931
+#: lib/functions.php:4936
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Messaggio di test dei cactus"
 
-#: lib/functions.php:4933
+#: lib/functions.php:4938
 msgid "Success!"
 msgstr "Riuscito!"
 
-#: lib/functions.php:4936
+#: lib/functions.php:4941
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Messaggio non inviato a causa di un errore di ping."
 
-#: lib/functions.php:5504 lib/functions.php:5567
+#: lib/functions.php:5514 lib/functions.php:5577
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti ha disabilitato il plugin %s a causa del seguente errore: %s!  Vedere il file di log Cacti per maggiori dettagli."
 
-#: lib/functions.php:5959 lib/functions.php:5961
+#: lib/functions.php:5969 lib/functions.php:5971
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:5959
+#: lib/functions.php:5969
 #, php-format
 msgid "Version %s %s"
 msgstr "Versione %s %s"
 
-#: lib/functions.php:5961
+#: lib/functions.php:5971
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -14856,7 +14867,7 @@ msgstr "Interrogazione dei dati:"
 msgid "CSV Export of Graph Data"
 msgstr "Esportazione CSV dei dati grafici"
 
-#: lib/html.php:461 lib/html.php:2445
+#: lib/html.php:461 lib/html.php:2448
 #, fuzzy
 msgid "Time Graph View"
 msgstr "Visualizzazione grafica del tempo"
@@ -14898,390 +14909,390 @@ msgstr "Valore Attuale"
 msgid "No %s Found"
 msgstr "Nessun %s Trovato"
 
-#: lib/html.php:1123
+#: lib/html.php:1126
 msgid "#"
 msgstr "#"
 
-#: lib/html.php:1127
+#: lib/html.php:1130
 #, fuzzy
 msgid "GPrint"
 msgstr "GPrint"
 
-#: lib/html.php:1130
+#: lib/html.php:1133
 #, fuzzy
 msgid "Alpha %"
 msgstr "Alfa"
 
-#: lib/html.php:1173
+#: lib/html.php:1176
 msgid "No Source"
 msgstr "Nessuna Fonte"
 
-#: lib/html.php:1512
+#: lib/html.php:1515
 msgid "Choose an action"
 msgstr "Scegli l'azione"
 
-#: lib/html.php:1522
+#: lib/html.php:1525
 #, fuzzy
 msgid "Execute Action"
 msgstr "Eseguire l'azione"
 
-#: lib/html.php:1704 lib/html.php:1706 lib/html.php:1786 managers.php:41
+#: lib/html.php:1707 lib/html.php:1709 lib/html.php:1789 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "Logs"
 
-#: lib/html.php:2205
+#: lib/html.php:2208
 #, fuzzy
 msgid "Standard Deviations"
 msgstr "Deviazioni standard"
 
-#: lib/html.php:2217
+#: lib/html.php:2220
 #, fuzzy
 msgid "Variance Outliers"
 msgstr "Scostamenti aberranti"
 
-#: lib/html.php:2223
+#: lib/html.php:2226
 #, fuzzy
 msgid "Kills Per RRA"
 msgstr "Uccide per RRA"
 
-#: lib/html.php:2229
+#: lib/html.php:2232
 #, fuzzy
 msgid "Remove StdDev"
 msgstr "Rimuovi StdDev"
 
-#: lib/html.php:2230
+#: lib/html.php:2233
 #, fuzzy
 msgid "Remove Variance"
 msgstr "Rimuovi Varianza"
 
-#: lib/html.php:2231
+#: lib/html.php:2234
 #, fuzzy
 msgid "Gap Fill Range"
 msgstr "Gamma Gap Fill"
 
-#: lib/html.php:2232
+#: lib/html.php:2235
 #, fuzzy
 msgid "Float Range"
 msgstr "Gamma galleggiante"
 
-#: lib/html.php:2234
+#: lib/html.php:2237
 #, fuzzy
 msgid "Dry Run StdDev"
 msgstr "Funzionamento a secco StdDev"
 
-#: lib/html.php:2235
+#: lib/html.php:2238
 #, fuzzy
 msgid "Dry Run Variance"
 msgstr "Varianza di funzionamento a secco"
 
-#: lib/html.php:2236
+#: lib/html.php:2239
 #, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "Intervallo di riempimento del gap run a secco"
 
-#: lib/html.php:2237
+#: lib/html.php:2240
 #, fuzzy
 msgid "Dry Run Float Range"
 msgstr "Gamma di galleggianti a secco"
 
-#: lib/html.php:2441
+#: lib/html.php:2444
 #, fuzzy
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
 msgstr "Consentire o limitare l'estensione delle colonne della tabella oltre i limiti di finestre correnti."
 
-#: lib/html.php:2442 lib/html_filter.php:65
+#: lib/html.php:2445 lib/html_filter.php:65
 msgid "Enter a search term"
 msgstr "Inserisci un termine da ricercare"
 
-#: lib/html.php:2443
+#: lib/html.php:2446
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "Inserire un'espressione regolare"
 
-#: lib/html.php:2444
+#: lib/html.php:2447
 msgid "No file selected"
 msgstr "Nessun file selezionato"
 
-#: lib/html.php:2447 lib/html.php:2470
+#: lib/html.php:2450 lib/html.php:2473
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "Risultati di SpikeKill"
 
-#: lib/html.php:2449
+#: lib/html.php:2452
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "Fare clic per visualizzare il grafico in tempo reale."
 
-#: lib/html.php:2450
+#: lib/html.php:2453
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "Clicca di nuovo per togliere questo grafico dal Realtime"
 
-#: lib/html.php:2457
+#: lib/html.php:2460
 #, fuzzy
 msgid "Standard Mode"
 msgstr "Modalità Scan"
 
-#: lib/html.php:2458
+#: lib/html.php:2461
 #, fuzzy
 msgid "Compact Mode"
 msgstr "Modalità zoom"
 
-#: lib/html.php:2459
+#: lib/html.php:2462
 #, fuzzy
 msgid "Dark Color Mode"
 msgstr "Nessun colore trovato"
 
-#: lib/html.php:2460
+#: lib/html.php:2463
 #, fuzzy
 msgid "Light Color Mode"
 msgstr "Modalità elenco"
 
-#: lib/html.php:2461
+#: lib/html.php:2464
 #, fuzzy
 msgid "Use System Color"
 msgstr "Colore dell'Elemento"
 
-#: lib/html.php:2462
+#: lib/html.php:2465
 #, fuzzy
 msgid "Ignore System Color"
 msgstr "Colore dell'Elemento"
 
-#: lib/html.php:2463
+#: lib/html.php:2466
 msgid "Help"
 msgstr "Aiuto"
 
-#: lib/html.php:2464
+#: lib/html.php:2467
 #, fuzzy
 msgid "Cacti Home"
 msgstr "Casa Cactus"
 
-#: lib/html.php:2465
+#: lib/html.php:2468
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "Pagina del progetto Cacti"
 
-#: lib/html.php:2468
+#: lib/html.php:2471
 msgid "Report a bug"
 msgstr "Segnala un bug"
 
-#: lib/html.php:2471
+#: lib/html.php:2474
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "Fare clic su Mostra/Nascondi filtro"
 
-#: lib/html.php:2472
+#: lib/html.php:2475
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "Cancella filtro corrente"
 
-#: lib/html.php:2473
+#: lib/html.php:2476
 msgid "Clipboard"
 msgstr "Appunti"
 
-#: lib/html.php:2474
+#: lib/html.php:2477
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "ID Appunti"
 
-#: lib/html.php:2475
+#: lib/html.php:2478
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "L'operazione di copia non è al momento disponibile"
 
-#: lib/html.php:2476
+#: lib/html.php:2479
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "Impossibile trovare i dati da copiare!"
 
-#: lib/html.php:2477
+#: lib/html.php:2480
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "Appunti è stato aggiornato"
 
-#: lib/html.php:2478
+#: lib/html.php:2481
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "Siamo spiacenti, gli appunti non possono essere aggiornati in questo momento."
 
-#: lib/html.php:2482
+#: lib/html.php:2485
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "La lunghezza della passphrase soddisfa il minimo di 8 caratteri"
 
-#: lib/html.php:2483
+#: lib/html.php:2486
 msgid "Passphrase too short"
 msgstr "Passphrase troppo breve"
 
-#: lib/html.php:2484
+#: lib/html.php:2487
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "Passphrase fiammiferi ma troppo corti"
 
-#: lib/html.php:2485
+#: lib/html.php:2488
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "Passphrase troppo breve e non corrispondente"
 
-#: lib/html.php:2486
+#: lib/html.php:2489
 #, fuzzy
 msgid "Passphrases match"
 msgstr "Passphrases corrispondono"
 
-#: lib/html.php:2487
+#: lib/html.php:2490
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "Le passphrase non corrispondono"
 
-#: lib/html.php:2488
+#: lib/html.php:2491
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "Mi dispiace, non abbiamo potuto elaborare la sua ultima azione."
 
-#: lib/html.php:2489
+#: lib/html.php:2492
 msgid "Error:"
 msgstr "Errore:"
 
-#: lib/html.php:2490
+#: lib/html.php:2493
 msgid "Reason:"
 msgstr "Motivo:"
 
-#: lib/html.php:2491
+#: lib/html.php:2494
 #, fuzzy
 msgid "Action failed"
 msgstr "Azione fallita"
 
-#: lib/html.php:2492 pollers.php:814
+#: lib/html.php:2495 pollers.php:814
 msgid "Connection Successful"
 msgstr "Connessione riuscita"
 
-#: lib/html.php:2493 pollers.php:816
+#: lib/html.php:2496 pollers.php:816
 msgid "Connection Failed"
 msgstr "Connessione fallita"
 
-#: lib/html.php:2494
+#: lib/html.php:2497
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "La risposta all'ultima azione è stata inaspettata."
 
-#: lib/html.php:2495
+#: lib/html.php:2498
 msgid "Some Actions failed"
 msgstr "Alcune azioni sono fallite"
 
-#: lib/html.php:2496
+#: lib/html.php:2499
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "Nota, non abbiamo potuto elaborare tutte le tue azioni.  I dettagli sono riportati di seguito."
 
-#: lib/html.php:2497
+#: lib/html.php:2500
 msgid "Operation successful"
 msgstr "Operazione riuscita"
 
-#: lib/html.php:2498
+#: lib/html.php:2501
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "L'operazione ha avuto successo.  I dettagli sono riportati di seguito."
 
-#: lib/html.php:2500
+#: lib/html.php:2503
 msgid "Pause"
 msgstr "Pausa"
 
-#: lib/html.php:2503
+#: lib/html.php:2506
 msgid "Zoom In"
 msgstr "Ingrandisci"
 
-#: lib/html.php:2504
+#: lib/html.php:2507
 msgid "Zoom Out"
 msgstr "Diminuisci"
 
-#: lib/html.php:2505
+#: lib/html.php:2508
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "Fattore di Zoom Out"
 
-#: lib/html.php:2506
+#: lib/html.php:2509
 msgid "Timestamps"
 msgstr "Marca temporale"
 
-#: lib/html.php:2507
+#: lib/html.php:2510
 msgid "2x"
 msgstr "2x"
 
-#: lib/html.php:2508
+#: lib/html.php:2511
 msgid "4x"
 msgstr "4x"
 
-#: lib/html.php:2509
+#: lib/html.php:2512
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2510
+#: lib/html.php:2513
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2511
+#: lib/html.php:2514
 msgid "32x"
 msgstr "32x"
 
-#: lib/html.php:2512
+#: lib/html.php:2515
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "Posizionamento Zoom Out"
 
-#: lib/html.php:2513
+#: lib/html.php:2516
 msgid "Zoom Mode"
 msgstr "Modalità zoom"
 
-#: lib/html.php:2515
+#: lib/html.php:2518
 msgid "Quick"
 msgstr "Quick"
 
-#: lib/html.php:2517
+#: lib/html.php:2520
 msgid "Open in new tab"
 msgstr "Apri in nuova finestra"
 
-#: lib/html.php:2518
+#: lib/html.php:2521
 #, fuzzy
 msgid "Save graph"
 msgstr "Salva grafico"
 
-#: lib/html.php:2519
+#: lib/html.php:2522
 #, fuzzy
 msgid "Copy graph"
 msgstr "Copia grafico"
 
-#: lib/html.php:2520
+#: lib/html.php:2523
 #, fuzzy
 msgid "Copy graph link"
 msgstr "Collegamento alla copia del grafico"
 
-#: lib/html.php:2521
+#: lib/html.php:2524
 msgid "Always On"
 msgstr "Sempre attivo"
 
-#: lib/html.php:2522
+#: lib/html.php:2525
 msgid "Auto"
 msgstr "Auto"
 
-#: lib/html.php:2523
+#: lib/html.php:2526
 msgid "Always Off"
 msgstr "Sempre spento"
 
-#: lib/html.php:2524
+#: lib/html.php:2527
 #, fuzzy
 msgid "Begin with"
 msgstr "Iniziare con"
 
-#: lib/html.php:2526
+#: lib/html.php:2529
 #, fuzzy
 msgid "End with"
 msgstr "Data Fine"
 
-#: lib/html.php:2528 lib/html_form.php:1301
+#: lib/html.php:2531 lib/html_form.php:1301
 msgid "Close"
 msgstr "Chiudi"
 
-#: lib/html.php:2530
+#: lib/html.php:2533
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "3° Pulsante del mouse"
@@ -15361,75 +15372,75 @@ msgstr "Rilevamento di modifiche non salvate"
 msgid "You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form."
 msgstr "Avete modifiche non salvate su questo modulo.  Se si preme &#39;Continua&#39; queste modifiche verranno scartate.  Premere Annulla per continuare a modificare il modulo."
 
-#: lib/html_form_template.php:627 lib/html_form_template.php:639
+#: lib/html_form_template.php:630 lib/html_form_template.php:642
 #, fuzzy, php-format
 msgid "Data Query Data Sources must be created through %s"
 msgstr "Interrogazione dati Le fonti di dati devono essere create tramite %s"
 
-#: lib/html_graph.php:193 lib/html_tree.php:1077
+#: lib/html_graph.php:193 lib/html_tree.php:1018
 #, fuzzy
 msgid "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile"
 msgstr "Salvare i grafici, le colonne, le colonne, le miniature, i preset e le preferenze di Timeshift correnti nel proprio profilo."
 
-#: lib/html_graph.php:223 lib/html_tree.php:1101
+#: lib/html_graph.php:223 lib/html_tree.php:1042
 msgid "Columns"
 msgstr "Colonne"
 
-#: lib/html_graph.php:227 lib/html_tree.php:1105
+#: lib/html_graph.php:227 lib/html_tree.php:1046
 #, php-format
 msgid "%d Column"
 msgstr "%d colonna"
 
-#: lib/html_graph.php:257 lib/html_tree.php:1135
+#: lib/html_graph.php:257 lib/html_tree.php:1076
 msgid "Custom"
 msgstr "Personalizzato"
 
-#: lib/html_graph.php:270 lib/html_reports.php:1937 lib/html_reports.php:1948
-#: lib/html_tree.php:1148
+#: lib/html_graph.php:270 lib/html_reports.php:1932 lib/html_reports.php:1943
+#: lib/html_tree.php:1089
 msgid "From"
 msgstr "Da"
 
-#: lib/html_graph.php:275 lib/html_tree.php:1153
+#: lib/html_graph.php:275 lib/html_tree.php:1094
 #, fuzzy
 msgid "Start Date Selector"
 msgstr "Selettore della data d'inizio"
 
-#: lib/html_graph.php:279 lib/html_reports.php:1938 lib/html_reports.php:1949
-#: lib/html_tree.php:1157
+#: lib/html_graph.php:279 lib/html_reports.php:1933 lib/html_reports.php:1944
+#: lib/html_tree.php:1098
 msgid "To"
 msgstr "A"
 
-#: lib/html_graph.php:284 lib/html_tree.php:1162
+#: lib/html_graph.php:284 lib/html_tree.php:1103
 #, fuzzy
 msgid "End Date Selector"
 msgstr "Selettore della data di fine"
 
-#: lib/html_graph.php:289 lib/html_tree.php:1167
+#: lib/html_graph.php:289 lib/html_tree.php:1108
 #, fuzzy
 msgid "Shift Time Backward"
 msgstr "Spostare il tempo all'indietro"
 
-#: lib/html_graph.php:290 lib/html_tree.php:1168
+#: lib/html_graph.php:290 lib/html_tree.php:1109
 #, fuzzy
 msgid "Define Shifting Interval"
 msgstr "Definire l'intervallo di cambio"
 
-#: lib/html_graph.php:301 lib/html_tree.php:1179
+#: lib/html_graph.php:301 lib/html_tree.php:1120
 #, fuzzy
 msgid "Shift Time Forward"
 msgstr "Tempo di spostamento in avanti"
 
-#: lib/html_graph.php:306 lib/html_tree.php:1184
+#: lib/html_graph.php:306 lib/html_tree.php:1125
 #, fuzzy
 msgid "Refresh selected time span"
 msgstr "Aggiorna l'intervallo di tempo selezionato"
 
-#: lib/html_graph.php:307 lib/html_tree.php:1185
+#: lib/html_graph.php:307 lib/html_tree.php:1126
 #, fuzzy
 msgid "Return to the default time span"
 msgstr "Ritorno all'intervallo di tempo predefinito"
 
-#: lib/html_graph.php:315 lib/html_tree.php:1193
+#: lib/html_graph.php:315 lib/html_tree.php:1134
 msgid "Window"
 msgstr "Finestra"
 
@@ -15437,7 +15448,7 @@ msgstr "Finestra"
 msgid "Interval"
 msgstr "Intervallo"
 
-#: lib/html_graph.php:339 lib/html_tree.php:1217
+#: lib/html_graph.php:339 lib/html_tree.php:1158
 msgid "Stop"
 msgstr "Stop"
 
@@ -15818,7 +15829,7 @@ msgstr "Il grafico da utilizzare per questa voce di report."
 msgid "The Graph End time will be set to the scheduled report send time.  So, if you wish the end time on the various Graphs to be midnight, ensure you send the report at midnight.  The Graph Start time will be the End Time minus the Graph Timespan."
 msgstr "L'ora di fine del grafico sarà impostata sull'ora di invio del rapporto pianificato.  Quindi, se si desidera che l'ora finale dei vari grafici sia mezzanotte, assicurarsi di inviare il rapporto a mezzanotte.  L'ora di inizio del grafico sarà l'ora di fine meno l'intervallo di tempo del grafico."
 
-#: lib/html_reports.php:1055 lib/html_reports.php:1615
+#: lib/html_reports.php:1055 lib/html_reports.php:1610
 msgid "Alignment"
 msgstr "Allineamento"
 
@@ -15837,7 +15848,7 @@ msgstr "Testo fisso"
 msgid "Enter descriptive Text"
 msgstr "Inserisci testo descrittivo"
 
-#: lib/html_reports.php:1071 lib/html_reports.php:1616
+#: lib/html_reports.php:1071 lib/html_reports.php:1611
 msgid "Font Size"
 msgstr "Dimensione Carattere"
 
@@ -15864,7 +15875,7 @@ msgstr "Eventi"
 msgid "Send Report"
 msgstr "Invia Report"
 
-#: lib/html_reports.php:1466 lib/import.php:2169 user_admin.php:2012
+#: lib/html_reports.php:1466 lib/import.php:2182 user_admin.php:2012
 msgid "[new]"
 msgstr "new"
 
@@ -15878,188 +15889,188 @@ msgstr "Dettagli"
 msgid "Items %s"
 msgstr "Voce #%s"
 
-#: lib/html_reports.php:1573
+#: lib/html_reports.php:1568
 #, fuzzy, php-format
 msgid "Scheduled Events %s"
 msgstr "Eventi Programmati"
 
-#: lib/html_reports.php:1584
+#: lib/html_reports.php:1579
 #, fuzzy, php-format
 msgid "Report Preview %s"
 msgstr "Anteprima del rapporto"
 
-#: lib/html_reports.php:1613
+#: lib/html_reports.php:1608
 msgid "Item Details"
 msgstr "Articolo"
 
-#: lib/html_reports.php:1625
+#: lib/html_reports.php:1620
 #, fuzzy, php-format
 msgid "Graph: %s"
 msgstr "Grafico:"
 
-#: lib/html_reports.php:1628 lib/html_reports.php:1654
-#: lib/html_reports.php:1667 lib/html_reports.php:1668
-#: lib/html_reports.php:1717 lib/html_reports.php:1718
+#: lib/html_reports.php:1623 lib/html_reports.php:1649
+#: lib/html_reports.php:1662 lib/html_reports.php:1663
+#: lib/html_reports.php:1712 lib/html_reports.php:1713
 #, fuzzy
 msgid "Using CSS"
 msgstr "Utilizzo dei CSS"
 
-#: lib/html_reports.php:1638
+#: lib/html_reports.php:1633
 #, fuzzy, php-format
 msgid "Device: %s"
 msgstr "(Dal dispositivo: %s)"
 
-#: lib/html_reports.php:1641
+#: lib/html_reports.php:1636
 #, fuzzy
 msgid ", Graph Template: All Templates"
 msgstr "Aggiunta di un modello grafico al modello del dispositivo"
 
-#: lib/html_reports.php:1643
+#: lib/html_reports.php:1638
 #, fuzzy, php-format
 msgid ", Graph Template: %s"
 msgstr "Grafico [Modello: %s]."
 
-#: lib/html_reports.php:1650 lib/html_reports.php:1713
+#: lib/html_reports.php:1645 lib/html_reports.php:1708
 #, fuzzy, php-format
 msgid ", Using RegEx: \"%s\""
 msgstr ", Usando RegEx: \"%s\""
 
-#: lib/html_reports.php:1692
+#: lib/html_reports.php:1687
 #, fuzzy, php-format
 msgid "Tree: %s"
 msgstr "Albero"
 
-#: lib/html_reports.php:1700
+#: lib/html_reports.php:1695
 #, fuzzy, php-format
 msgid ", Device: %s"
 msgstr "(Dal dispositivo: %s)"
 
-#: lib/html_reports.php:1702
+#: lib/html_reports.php:1697
 #, fuzzy, php-format
 msgid ", Branch: %s"
 msgstr "Organizzazione:"
 
-#: lib/html_reports.php:1705
+#: lib/html_reports.php:1700
 #, fuzzy
 msgid "(All Branches)"
 msgstr "(Tutti i rami)"
 
-#: lib/html_reports.php:1707
+#: lib/html_reports.php:1702
 #, fuzzy
 msgid "(Current Branch)"
 msgstr "(Ramo attuale)"
 
-#: lib/html_reports.php:1759
+#: lib/html_reports.php:1754
 #, fuzzy
 msgid "No Report Items"
 msgstr "Nessuna voce del report"
 
-#: lib/html_reports.php:1830
+#: lib/html_reports.php:1825
 #, fuzzy
 msgid "Administrator Level"
 msgstr "Livello Amministratore"
 
-#: lib/html_reports.php:1830
+#: lib/html_reports.php:1825
 #, fuzzy, php-format
 msgid "Reports [%s]"
 msgstr "Rapporti [%s]."
 
-#: lib/html_reports.php:1830
+#: lib/html_reports.php:1825
 msgid "User Level"
 msgstr "Livello Utente"
 
-#: lib/html_reports.php:1853 lib/html_reports.php:1924
+#: lib/html_reports.php:1848 lib/html_reports.php:1919
 msgid "Reports"
 msgstr "Rapporti"
 
-#: lib/html_reports.php:1933 tree.php:2027
+#: lib/html_reports.php:1928 tree.php:2027
 msgid "Owner"
 msgstr "Proprietario"
 
-#: lib/html_reports.php:1934 lib/html_reports.php:1945
+#: lib/html_reports.php:1929 lib/html_reports.php:1940
 msgid "Frequency"
 msgstr "Frequenza"
 
-#: lib/html_reports.php:1935 lib/html_reports.php:1946
+#: lib/html_reports.php:1930 lib/html_reports.php:1941
 msgid "Last Run"
 msgstr "Ultima esecuzione"
 
-#: lib/html_reports.php:1936 lib/html_reports.php:1947
+#: lib/html_reports.php:1931 lib/html_reports.php:1942
 msgid "Next Run"
 msgstr "Prossima esecuzione"
 
-#: lib/html_reports.php:1944
+#: lib/html_reports.php:1939
 msgid "Report Title"
 msgstr "Titolo del Rapporto"
 
-#: lib/html_reports.php:1975
+#: lib/html_reports.php:1970
 #, fuzzy
 msgid "Report Disabled - No Owner"
 msgstr "Segnala Disabili - Nessun Proprietario"
 
-#: lib/html_reports.php:1979
+#: lib/html_reports.php:1974
 msgid "Every"
 msgstr "Ogni"
 
-#: lib/html_reports.php:1985
+#: lib/html_reports.php:1980
 msgid "Multiple"
 msgstr "Multipla"
 
-#: lib/html_reports.php:1986
+#: lib/html_reports.php:1981
 msgid "Invalid"
 msgstr "Non valido"
 
-#: lib/html_reports.php:1993
+#: lib/html_reports.php:1988
 msgid "No Reports Found"
 msgstr "Nessun rapporto trovato"
 
-#: lib/html_tree.php:970 lib/html_tree.php:978 lib/html_tree.php:986
+#: lib/html_tree.php:911 lib/html_tree.php:919 lib/html_tree.php:927
 #, fuzzy
 msgid "Graph Template:"
 msgstr "Modello grafico:"
 
-#: lib/html_tree.php:986
+#: lib/html_tree.php:927
 #, fuzzy
 msgid "Template Based"
 msgstr "Basato su modello"
 
-#: lib/html_tree.php:992 lib/reports.php:1262
+#: lib/html_tree.php:933 lib/reports.php:1262
 #, fuzzy
 msgid "Tree:"
 msgstr "Albero"
 
-#: lib/html_tree.php:997
+#: lib/html_tree.php:938
 msgid "Site:"
 msgstr "Sito web:"
 
-#: lib/html_tree.php:1003
+#: lib/html_tree.php:944
 msgid "Leaf:"
 msgstr "Dipendente:"
 
-#: lib/html_tree.php:1009
+#: lib/html_tree.php:950
 #, fuzzy
 msgid "Device Template:"
 msgstr "Modello del dispositivo:"
 
-#: lib/html_tree.php:1023
+#: lib/html_tree.php:964
 msgid "Applied"
 msgstr "Applicato"
 
-#: lib/html_tree.php:1023
+#: lib/html_tree.php:964
 msgid "Filter"
 msgstr "Filtro"
 
-#: lib/html_tree.php:1023
+#: lib/html_tree.php:964
 #, fuzzy
 msgid "Graph Filters"
 msgstr "Filtri a Grafico"
 
-#: lib/html_tree.php:1074
+#: lib/html_tree.php:1015
 #, fuzzy
 msgid "Set/Refresh Filter"
 msgstr "Imposta/Rifresh Filter"
 
-#: lib/html_tree.php:1496
+#: lib/html_tree.php:1437
 #, fuzzy
 msgid "(Non Graph Template)"
 msgstr "(Modello non grafico)"
@@ -16111,108 +16122,108 @@ msgstr "Errore di convalida per la variabile %s con un valore di %s.  Vedi backt
 msgid "Validation Error"
 msgstr "Errore di validazione"
 
-#: lib/import.php:353
+#: lib/import.php:357
 #, fuzzy
 msgid "written"
 msgstr "in forma scritta"
 
-#: lib/import.php:355
+#: lib/import.php:359
 #, fuzzy
 msgid "could not open"
 msgstr "non poteva aprirsi"
 
-#: lib/import.php:361
+#: lib/import.php:365
 msgid "not exists"
 msgstr "non esiste"
 
-#: lib/import.php:364 lib/import.php:370
+#: lib/import.php:368 lib/import.php:374
 #, fuzzy
 msgid "not writable"
 msgstr "Non Scrivibile"
 
-#: lib/import.php:372
+#: lib/import.php:376
 #, fuzzy
 msgid "writable"
 msgstr "可写"
 
-#: lib/import.php:988
+#: lib/import.php:999
 #, fuzzy, php-format
 msgid "Resource File: '%s' is missing or not readable.  Make sure you install it before using Data Query: '%s'"
 msgstr "File di risorse: \"%s\" mancante o non leggibile. Assicurati di installarlo prima di utilizzare Data Query: '%s'"
 
-#: lib/import.php:1884
+#: lib/import.php:1896
 msgid "Unknown Field"
 msgstr "Campo sconosciuto"
 
-#: lib/import.php:2130
+#: lib/import.php:2143
 #, fuzzy
 msgid "Import Preview Results"
 msgstr "Importare i risultati dell'anteprima"
 
-#: lib/import.php:2130
+#: lib/import.php:2143
 msgid "Import Results"
 msgstr "Importa risultati"
 
-#: lib/import.php:2134
+#: lib/import.php:2147
 #, fuzzy
 msgid "Cacti would make the following changes if the Package was imported:"
 msgstr "Cacti apporterebbe le seguenti modifiche se il pacchetto fosse importato:"
 
-#: lib/import.php:2136
+#: lib/import.php:2149
 #, fuzzy
 msgid "Cacti has imported the following items for the Package:"
 msgstr "Cacti ha importato i seguenti articoli per il pacchetto:"
 
-#: lib/import.php:2139
+#: lib/import.php:2152
 msgid "Package Files"
 msgstr "Pacchetti"
 
-#: lib/import.php:2143
+#: lib/import.php:2156
 #, fuzzy
 msgid "[preview] "
 msgstr "Anteprima"
 
-#: lib/import.php:2148
+#: lib/import.php:2161
 #, fuzzy
 msgid "Cacti would make the following changes if the Template was imported:"
 msgstr "Cacti apporterebbe le seguenti modifiche se il Template fosse importato:"
 
-#: lib/import.php:2150
+#: lib/import.php:2163
 #, fuzzy
 msgid "Cacti has imported the following items for the Template:"
 msgstr "Cacti ha importato i seguenti elementi per il Template:"
 
-#: lib/import.php:2159
+#: lib/import.php:2172
 #, fuzzy
 msgid "[success]"
 msgstr "Riuscito!"
 
-#: lib/import.php:2161
+#: lib/import.php:2174
 #, fuzzy
 msgid "[fail]"
 msgstr "Fallito"
 
-#: lib/import.php:2163
+#: lib/import.php:2176
 #, fuzzy
 msgid "[preview]"
 msgstr "Anteprima"
 
-#: lib/import.php:2167
+#: lib/import.php:2180
 #, fuzzy
 msgid "[updated]"
 msgstr "Aggiornato"
 
-#: lib/import.php:2171
+#: lib/import.php:2184
 #, fuzzy
 msgid "[unchanged]"
 msgstr "Invariato"
 
-#: lib/import.php:2207
+#: lib/import.php:2220
 #, fuzzy
 msgid "Found Dependency:"
 msgstr "Trovata la dipendenza:"
 
-#: lib/import.php:2209
+#: lib/import.php:2222
 #, fuzzy
 msgid "Unmet Dependency:"
 msgstr "Dipendenza insoddisfatta:"
@@ -17393,95 +17404,99 @@ msgstr "Impossibile impostare l'opzione PHP%s, è%s (dovrebbe essere%s)"
 msgid "No Remote Data Collectors found for full syncronization"
 msgstr "Raccoglitori di dati non trovati durante il tentativo di sincronizzazione"
 
-#: lib/ldap.php:281
+#: lib/ldap.php:282
 msgid "Authentication Success"
 msgstr "Autenticazione completata"
 
-#: lib/ldap.php:285
+#: lib/ldap.php:286
 msgid "Authentication Failure"
 msgstr "Autenticazione non riuscita"
 
-#: lib/ldap.php:289
+#: lib/ldap.php:290
 #, fuzzy
 msgid "PHP LDAP not enabled"
 msgstr "PHP LDAP non abilitato"
 
-#: lib/ldap.php:293
+#: lib/ldap.php:294
 #, fuzzy
 msgid "No username defined"
 msgstr "Nessun nome utente definito"
 
-#: lib/ldap.php:297
+#: lib/ldap.php:298
 #, fuzzy, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
 msgstr "Errore di protocollo, Impossibile impostare la versione"
 
-#: lib/ldap.php:301
+#: lib/ldap.php:302
 #, fuzzy, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
 msgstr "Errore di protocollo, Impossibile impostare l'opzione dei riferimenti"
 
-#: lib/ldap.php:305
+#: lib/ldap.php:306
 #, fuzzy, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
 msgstr "Errore di protocollo, impossibilità di avviare le comunicazioni TLS"
 
-#: lib/ldap.php:309
+#: lib/ldap.php:310
 #, fuzzy, php-format
 msgid "Protocol Error, General failure (%s)"
 msgstr "Errore di protocollo, Guasto generale (%s)"
 
-#: lib/ldap.php:313
+#: lib/ldap.php:314
 #, fuzzy, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr "Errore di protocollo, Impossibile legare, risultato LDAP: %s"
 
-#: lib/ldap.php:317
+#: lib/ldap.php:318
 #, fuzzy, php-format
 msgid "Unable to Connect to Server (%s)"
 msgstr "Impossibile connettersi al server"
 
-#: lib/ldap.php:321
+#: lib/ldap.php:322
 #, fuzzy, php-format
 msgid "Connection Timeout to Server (%s)"
 msgstr "Timeout connessione"
 
-#: lib/ldap.php:325
+#: lib/ldap.php:326
 #, fuzzy, php-format
 msgid "Insufficient Access to Server (%s)"
 msgstr "Autorizzazioni di accesso insufficienti."
 
-#: lib/ldap.php:329
+#: lib/ldap.php:330
 #, fuzzy, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
 msgstr "Gruppo DN non è stato trovato per confrontare"
 
-#: lib/ldap.php:333
+#: lib/ldap.php:334
 #, fuzzy
 msgid "More than one matching user found"
 msgstr "Trovato più di un utente corrispondente"
 
-#: lib/ldap.php:337
+#: lib/ldap.php:338
 #, fuzzy
 msgid "Unable to find user from DN"
 msgstr "Impossibile trovare utenti da DN"
 
-#: lib/ldap.php:341
+#: lib/ldap.php:342
 #, fuzzy
 msgid "Unable to find users DN"
 msgstr "Impossibile trovare gli utenti DN"
 
-#: lib/ldap.php:345
+#: lib/ldap.php:346
 #, fuzzy, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
 msgstr "Impossibile creare un oggetto di connessione LDAP"
 
-#: lib/ldap.php:349
+#: lib/ldap.php:350
 #, fuzzy
 msgid "Specific DN and Password required"
 msgstr "DN e password specifici richiesti"
 
-#: lib/ldap.php:353
+#: lib/ldap.php:354
+msgid "Invalid Password provided.  Login failed."
+msgstr ""
+
+#: lib/ldap.php:358
 #, fuzzy, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
 msgstr "Errore imprevisto %s (Errore Ldap: %s)"
@@ -17661,219 +17676,219 @@ msgstr "Aggiunta fallita dell'elemento grafico del report '<i>%s</i>' Già esist
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Voce del grafico del report saltata '<i>%s</i>' Già esistente"
 
-#: lib/rrd.php:2688
+#: lib/rrd.php:2700
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "La dimensione del passo RRD richiesta è \"%s\"."
 
-#: lib/rrd.php:2717
+#: lib/rrd.php:2729
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "Tipo per la fonte dati \"%s\" dovrebbe essere \"%s\"."
 
-#: lib/rrd.php:2722
+#: lib/rrd.php:2734
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "Battito cardiaco per la fonte dati \"%s\" dovrebbe essere \"%s\"."
 
-#: lib/rrd.php:2734
+#: lib/rrd.php:2746
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "RRD minimo per la fonte dei dati \"%s\" dovrebbe essere \"%s\"."
 
-#: lib/rrd.php:2754
+#: lib/rrd.php:2766
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "RRD massimo per la fonte di dati \"%s\" dovrebbe essere \"%s\"."
 
-#: lib/rrd.php:2764
+#: lib/rrd.php:2776
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "DS \"%s\" mancanti nel file RRDD"
 
-#: lib/rrd.php:2773
+#: lib/rrd.php:2785
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS \"%s\" mancanti nella definizione di Cacti"
 
-#: lib/rrd.php:2790 lib/rrd.php:2791
+#: lib/rrd.php:2802 lib/rrd.php:2803
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA \"%s\" ha la stessa CF/passi (%s, %s) di \"%s\"."
 
-#: lib/rrd.php:2805 lib/rrd.php:2806
+#: lib/rrd.php:2817 lib/rrd.php:2818
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Il file RRA \"%s\" ha la stessa CF/passi (%s, %s) di \"%s\"."
 
-#: lib/rrd.php:2837
+#: lib/rrd.php:2849
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "XFF per i cactus RRA id \"%s\" dovrebbe essere \"%s\"."
 
-#: lib/rrd.php:2841
+#: lib/rrd.php:2853
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "Numero di righe per Cacti RRA id \"%s\" dovrebbe essere \"%s\"."
 
-#: lib/rrd.php:2857
+#: lib/rrd.php:2869
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRA \"%s\" mancanti nel file RRDD."
 
-#: lib/rrd.php:2866
+#: lib/rrd.php:2878
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "RRA \"%s\" mancanti nella definizione di Cacti"
 
-#: lib/rrd.php:2885
+#: lib/rrd.php:2897
 #, fuzzy
 msgid "RRD File Information"
 msgstr "Informazioni sul file RRD"
 
-#: lib/rrd.php:2917
+#: lib/rrd.php:2929
 #, fuzzy
 msgid "Data Source Items"
 msgstr "Voci della fonte dei dati"
 
-#: lib/rrd.php:2919
+#: lib/rrd.php:2931
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "Battito cardiaco minimo"
 
-#: lib/rrd.php:2920
+#: lib/rrd.php:2932
 msgid "Min"
 msgstr "Min"
 
-#: lib/rrd.php:2921
+#: lib/rrd.php:2933
 msgid "Max"
 msgstr "Max"
 
-#: lib/rrd.php:2922
+#: lib/rrd.php:2934
 #, fuzzy
 msgid "Last DS"
 msgstr "Ultimo DS"
 
-#: lib/rrd.php:2924
+#: lib/rrd.php:2936
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "Sezione sconosciuta"
 
-#: lib/rrd.php:2975
+#: lib/rrd.php:2987
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "Archivio Round Robin"
 
-#: lib/rrd.php:2978
+#: lib/rrd.php:2990
 #, fuzzy
 msgid "Cur Row"
 msgstr "Curva di fila"
 
-#: lib/rrd.php:2979
+#: lib/rrd.php:2991
 #, fuzzy
 msgid "PDP per Row"
 msgstr "PDP per riga"
 
-#: lib/rrd.php:2981
+#: lib/rrd.php:2993
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "Valore di preparazione del CDP (0)"
 
-#: lib/rrd.php:2982
+#: lib/rrd.php:2994
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP Sconosciuto Punti dati sconosciuti (0)"
 
-#: lib/rrd.php:3059
+#: lib/rrd.php:3071
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "Rinomina %s a %s"
 
-#: lib/rrd.php:3109
+#: lib/rrd.php:3121
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "Errore durante l'analisi dell'XML di rrdtool dump"
 
-#: lib/rrd.php:3141 lib/rrd.php:3196 lib/rrd.php:3252
+#: lib/rrd.php:3153 lib/rrd.php:3208 lib/rrd.php:3264
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "ERROR durante la scrittura di un file XML: %s"
 
-#: lib/rrd.php:3152 lib/rrd.php:3207 lib/rrd.php:3263
+#: lib/rrd.php:3164 lib/rrd.php:3219 lib/rrd.php:3275
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "ERRORE: RRDDfile %s non scrivibile"
 
-#: lib/rrd.php:3179 lib/rrd.php:3235
+#: lib/rrd.php:3191 lib/rrd.php:3247
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "Errore durante l'analisi dell'XML di RRDtool dump"
 
-#: lib/rrd.php:3468
+#: lib/rrd.php:3480
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) rimosso dal file RRD.\n"
 
-#: lib/rrd.php:3502
+#: lib/rrd.php:3514
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) aggiungendo al file RRD.\n"
 
-#: lib/rrd.php:3532 lib/rrd.php:3546
+#: lib/rrd.php:3544 lib/rrd.php:3558
 #, fuzzy, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "Sito web non ha accesso in scrittura a %s, potrebbe non essere in grado di creare/aggiornare RRDs"
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3554
 #, fuzzy
 msgid "(Custom)"
 msgstr "Personalizzato"
 
-#: lib/rrd.php:3548
+#: lib/rrd.php:3560
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "Se non è riuscito ad aprire il file di dati, è possibile che il poller non sia ancora stato eseguito."
 
-#: lib/rrd.php:3551
+#: lib/rrd.php:3563
 #, fuzzy
 msgid "RRA Folder"
 msgstr "Cartella RRA"
 
-#: lib/rrd.php:3551
+#: lib/rrd.php:3563
 msgid "Root"
 msgstr "根"
 
-#: lib/rrd.php:3654
+#: lib/rrd.php:3666
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "Errore RRDtool sconosciuto"
 
-#: lib/template.php:1492
+#: lib/template.php:1501
 #, fuzzy
 msgid "Attempting to Create Graph from Non-Template"
 msgstr "Creazione di aggregati da Template"
 
-#: lib/template.php:1504
+#: lib/template.php:1513
 #, fuzzy
 msgid "Attempting to Create Graph from Removed Graph Template"
 msgstr "Tentativo di creare un grafico dal modello grafico rimosso"
 
-#: lib/template.php:2123 lib/template.php:2152
+#: lib/template.php:2132 lib/template.php:2161
 #, php-format
 msgid "Created: %s"
 msgstr "Creato: %s"
 
-#: lib/template.php:2134 lib/template.php:2163
+#: lib/template.php:2143 lib/template.php:2172
 #, fuzzy
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "Convalida Whitelist fallita. Metodo di inserimento dei dati di controllo"
 
-#: lib/template.php:2142
+#: lib/template.php:2151
 #, fuzzy
 msgid "Graph Not created for "
 msgstr "Creazione di grafici"
 
-#: lib/template.php:2171
+#: lib/template.php:2180
 #, fuzzy
 msgid "NOTE: Graph not added for Data Query "
 msgstr "Creazione di grafici da query di dati"
