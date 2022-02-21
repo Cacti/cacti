@@ -3328,11 +3328,13 @@ function draw_navigation_text($type = 'url') {
 			continue;
 		}
 
-		if  ($i == 0) {
+		if ($i == 0) {
 			// always use the default for level == 0
 			$url = $navigation[basename($current_mappings[$i])]['url'];
 
-			if (basename($url) == 'graph_view.php') continue;
+			if (basename($url) == 'graph_view.php') {
+				continue;
+			}
 		} elseif (isset($nav_level_cache[$i]) && !empty($nav_level_cache[$i]['url'])) {
 			// found a match in the url cache for this level
 			$url = $nav_level_cache[$i]['url'];
@@ -3347,17 +3349,17 @@ function draw_navigation_text($type = 'url') {
 		if ($current_mappings[$i] == '?') {
 			// '?' tells us to pull title from the cache at this level
 			if (isset($nav_level_cache[$i])) {
-				$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . html_escape($url) . "'>");
+				$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#':html_escape($url)) . "'>";
 				$current_nav .= html_escape(resolve_navigation_variables($navigation[$nav_level_cache[$i]['id']]['title']));
-				$current_nav .= (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
-				$title .= html_escape(resolve_navigation_variables($navigation[$nav_level_cache[$i]['id']]['title'])) . ' -> ';
+				$current_nav .= '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') . '</li>';
+				$title .= html_escape(resolve_navigation_variables($navigation[$nav_level_cache[$i]['id']]['title'])) . ' > ';
 			}
 		} else {
 			// there is no '?' - pull from the above array
-			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . html_escape($url) . "'>");
+			$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#':html_escape($url)) . "'>";
 			$current_nav .= html_escape(resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title']));
-			$current_nav .= (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
-			$title .= html_escape(resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title'])) . ' -> ';
+			$current_nav .= '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') . '</li>';
+			$title .= html_escape(resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title'])) . ' > ';
 		}
 
 		$nav_count++;
@@ -3365,7 +3367,7 @@ function draw_navigation_text($type = 'url') {
 
 	if ($nav_count) {
 		if (isset($current_array['title'])) {
-			$current_nav .= "<li><a id='nav_$i' href=#>" . html_escape(resolve_navigation_variables($current_array['title'])) . '</a></li>';
+			$current_nav .= "<li><a id='nav_$i' href='#'>" . html_escape(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 		}
 	} else {
 		$current_array = $navigation[$current_page . ':' . $current_action];
@@ -3461,7 +3463,7 @@ function draw_navigation_text($type = 'url') {
 		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . trim($leaf_name):'') . ($leaf_sub != '' ? ':' . trim($leaf_sub) . ')':($leaf_name != '' ? ')':''));
 
 		if ($tree_title != '') {
-			$current_nav .= "<li><a id='nav_title' href=#>" . html_escape($tree_title) . '</a></li>';
+			$current_nav .= "<li><a id='nav_title' href='#'>" . html_escape($tree_title) . '</a></li>';
 		}
 	} elseif (preg_match('#link.php\?id=(\d+)#', $_SERVER['REQUEST_URI'], $matches)) {
 		$externalLinks = db_fetch_row_prepared('SELECT title, style FROM external_links WHERE id = ?', array($matches[1]));
@@ -3469,8 +3471,10 @@ function draw_navigation_text($type = 'url') {
 		$style = $externalLinks['style'];
 
 		if ($style == 'CONSOLE') {
-			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] .
-				"index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>';
+			$current_nav = "<ul id='breadcrumbs'>
+				<li>
+					<a id='nav_0' href='" . $config['url_path'] . "index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') .
+				'</li>';
 			$current_nav .= "<li><a id='nav_1' href='#'>" . __('Link %s', html_escape($title)) . '</a></li>';
 		} else {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . html_escape($title) . '</a></li>';
