@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-02-06 12:08-0500\n"
+"POT-Creation-Date: 2022-02-21 13:12-0500\n"
 "PO-Revision-Date: 2022-02-03 20:48-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: about.php:29 include/global_arrays.php:2499 lib/html.php:2469
+#: about.php:29 include/global_arrays.php:2499 lib/html.php:2472
 msgid "About Cacti"
 msgstr "حول الصبار"
 
@@ -76,13 +76,13 @@ msgstr "يتم توزيع هذا البرنامج على أمل أن يكون م
 #: data_input.php:685 data_input.php:727 data_queries.php:31
 #: data_queries.php:804 data_queries.php:911 data_queries.php:1161
 #: data_source_profiles.php:30 data_source_profiles.php:644 data_sources.php:37
-#: data_sources.php:1070 data_templates.php:34 data_templates.php:688
+#: data_sources.php:1070 data_templates.php:34 data_templates.php:706
 #: gprint_presets.php:28 graph_templates.php:37 graph_templates.php:522
 #: graphs.php:46 host.php:41 host_templates.php:35 host_templates.php:505
 #: host_templates.php:562 include/global_arrays.php:1537
 #: include/global_settings.php:247 lib/api_automation.php:1327
-#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1258
-#: lib/html_form.php:1271 lib/html_reports.php:1752 links.php:28
+#: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1261
+#: lib/html_form.php:1271 lib/html_reports.php:1747 links.php:28
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1401 tree.php:1554
 #: tree.php:1614 tree.php:1635 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
@@ -136,7 +136,7 @@ msgstr "انقر فوق &quot;متابعة&quot; لحذف الرسم البيا�
 #: data_source_profiles.php:294 data_source_profiles.php:402
 #: data_sources.php:519 data_sources.php:529 data_sources.php:538
 #: data_sources.php:547 data_sources.php:556 data_sources.php:562
-#: data_templates.php:407 data_templates.php:417 data_templates.php:433
+#: data_templates.php:425 data_templates.php:435 data_templates.php:451
 #: gprint_presets.php:153 graph_templates.php:383 graph_templates.php:393
 #: graph_templates.php:415 graph_templates.php:424 graph_templates.php:433
 #: graph_view.php:949 graphs.php:910 graphs.php:926 graphs.php:937
@@ -146,7 +146,7 @@ msgstr "انقر فوق &quot;متابعة&quot; لحذف الرسم البيا�
 #: host.php:470 host.php:484 host.php:498 host.php:507 host.php:536
 #: host.php:548 host_templates.php:270 host_templates.php:284
 #: host_templates.php:295 host_templates.php:344 host_templates.php:407
-#: lib/clog_webapi.php:221 lib/html.php:2502 lib/html_form.php:1270
+#: lib/clog_webapi.php:221 lib/html.php:2505 lib/html_form.php:1270
 #: lib/html_form.php:1282 lib/html_form.php:1293 lib/html_utility.php:274
 #: links.php:197 links.php:206 links.php:215 managers.php:1004
 #: managers.php:1062 plugins.php:517 pollers.php:559 pollers.php:568
@@ -174,7 +174,7 @@ msgstr "إلغاء"
 #: data_source_profiles.php:294 data_source_profiles.php:403
 #: data_sources.php:519 data_sources.php:529 data_sources.php:538
 #: data_sources.php:547 data_sources.php:556 data_sources.php:562
-#: data_templates.php:407 data_templates.php:417 data_templates.php:433
+#: data_templates.php:425 data_templates.php:435 data_templates.php:451
 #: gprint_presets.php:153 graph_templates.php:383 graph_templates.php:393
 #: graph_templates.php:415 graph_templates.php:424 graph_templates.php:433
 #: graphs.php:910 graphs.php:926 graphs.php:937 graphs.php:948 graphs.php:963
@@ -183,7 +183,7 @@ msgstr "إلغاء"
 #: host.php:452 host.php:461 host.php:470 host.php:484 host.php:498
 #: host.php:507 host.php:536 host.php:548 host_templates.php:270
 #: host_templates.php:284 host_templates.php:295 host_templates.php:345
-#: host_templates.php:408 lib/clog_webapi.php:222 lib/html.php:2501
+#: host_templates.php:408 lib/clog_webapi.php:222 lib/html.php:2504
 #: lib/html_reports.php:499 lib/html_utility.php:274 links.php:197
 #: links.php:206 links.php:215 managers.php:1004 managers.php:1062
 #: pollers.php:559 pollers.php:568 pollers.php:577 pollers.php:586
@@ -213,8 +213,8 @@ msgstr "لترحيل الرسوم البيانية الإجمالية أدناه
 #: aggregate_graphs.php:394 aggregate_graphs.php:442 aggregate_graphs.php:488
 #: auth_changepassword.php:359 auth_profile.php:443 automation_networks.php:398
 #: automation_snmp.php:254 graphs.php:1188 graphs.php:1238 graphs.php:1241
-#: graphs.php:1283 host.php:539 include/auth.php:287 lib/api_aggregate.php:1589
-#: lib/api_aggregate.php:1604 lib/html_form.php:1291 lib/html_utility.php:272
+#: graphs.php:1283 host.php:539 include/auth.php:287 lib/api_aggregate.php:1592
+#: lib/api_aggregate.php:1607 lib/html_form.php:1291 lib/html_utility.php:272
 #: managers.php:1065 permission_denied.php:30 permission_denied.php:32
 msgid "Return"
 msgstr "عودة"
@@ -265,12 +265,12 @@ msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "انقر فوق &quot;متابعة&quot; لإضافة الرسومات البيانية المحددة إلى التقرير أدناه."
 
 #: aggregate_graphs.php:473 graph_view.php:810 graphs.php:1268 host.php:524
-#: lib/html_reports.php:35 lib/html_reports.php:1932
+#: lib/html_reports.php:35 lib/html_reports.php:1927
 msgid "Report Name"
 msgstr "اسم التقرير"
 
 #: aggregate_graphs.php:477 graph_view.php:817 graphs.php:1272 host.php:528
-#: lib/html_reports.php:1614
+#: lib/html_reports.php:1609
 msgid "Timespan"
 msgstr "زمن"
 
@@ -322,135 +322,135 @@ msgstr "فرع الوجهة:"
 msgid "Place Graph(s) on Tree"
 msgstr "ضع Graph (s) في شجرة"
 
-#: aggregate_graphs.php:566 graphs.php:1330
+#: aggregate_graphs.php:569 graphs.php:1330
 msgid "Graph Items [new]"
 msgstr "عناصر الرسم البياني [جديد]"
 
-#: aggregate_graphs.php:592 graphs.php:1370
+#: aggregate_graphs.php:595 graphs.php:1370
 #, fuzzy, php-format
 msgid "Graph Items [edit: %s]"
 msgstr "عناصر الرسم البياني [تحرير:٪ s]"
 
-#: aggregate_graphs.php:653 data_sources.php:1056 lib/html_reports.php:1463
+#: aggregate_graphs.php:659 data_sources.php:1056 lib/html_reports.php:1463
 #: user_admin.php:2010
 #, fuzzy, php-format
 msgid "[edit: %s]"
 msgstr "[تحرير:٪ s]"
 
-#: aggregate_graphs.php:655 aggregate_graphs.php:770
+#: aggregate_graphs.php:661 aggregate_graphs.php:776
 msgid "Aggregate Graph does not Exist"
 msgstr "اعدادات الرسم الكلي"
 
-#: aggregate_graphs.php:670 aggregate_graphs.php:677 lib/html_reports.php:1377
+#: aggregate_graphs.php:676 aggregate_graphs.php:683 lib/html_reports.php:1377
 #: lib/html_reports.php:1379 utilities.php:1928
 msgid "Details"
 msgstr "التفاصيل"
 
-#: aggregate_graphs.php:671 graphs_new.php:776 lib/html_reports.php:1377
+#: aggregate_graphs.php:677 graphs_new.php:776 lib/html_reports.php:1377
 #: utilities.php:361
 msgid "Items"
 msgstr "الاعلانات"
 
-#: aggregate_graphs.php:672 aggregate_graphs.php:678 lib/html.php:1969
+#: aggregate_graphs.php:678 aggregate_graphs.php:684 lib/html.php:1972
 #: lib/html_reports.php:1377
 msgid "Preview"
 msgstr "معاينة"
 
-#: aggregate_graphs.php:681
+#: aggregate_graphs.php:687
 msgid "Aggregate Graphs Accessed does not Exist"
 msgstr "اعدادات الرسم الكلي"
 
-#: aggregate_graphs.php:747
+#: aggregate_graphs.php:753
 msgid "Turn Off Graph Debug Mode"
 msgstr "إيقاف وضع تصحيح الرسم البياني"
 
-#: aggregate_graphs.php:749
+#: aggregate_graphs.php:755
 msgid "Turn On Graph Debug Mode"
 msgstr "بدوره على وضع التصحيح الرسم البياني"
 
-#: aggregate_graphs.php:755 aggregate_graphs.php:1097
+#: aggregate_graphs.php:761 aggregate_graphs.php:1103
 msgid "Show Item Details"
 msgstr "اظهار تفاصيل البند"
 
-#: aggregate_graphs.php:767
+#: aggregate_graphs.php:773
 msgid "Aggregate Preview Does Not Exist"
 msgstr "معاينة التجميع [٪ s]"
 
-#: aggregate_graphs.php:768
+#: aggregate_graphs.php:774
 msgid "Aggreage Graph does not Exist"
 msgstr "اعدادات الرسم الكلي"
 
-#: aggregate_graphs.php:774
+#: aggregate_graphs.php:780
 #, fuzzy, php-format
 msgid "Aggregate Preview %s"
 msgstr "معاينة التجميع [٪ s]"
 
-#: aggregate_graphs.php:792 graph.php:565 graphs.php:1674
+#: aggregate_graphs.php:798 graph.php:564 graphs.php:1674
 msgid "RRDtool Command:"
 msgstr "الأمر RRDtool:"
 
-#: aggregate_graphs.php:794 graph.php:574 graphs.php:1678
+#: aggregate_graphs.php:800 graph.php:573 graphs.php:1678
 msgid "Not Checked"
 msgstr "لا الشيكات"
 
-#: aggregate_graphs.php:794 graph.php:570 graphs.php:1676
+#: aggregate_graphs.php:800 graph.php:569 graphs.php:1676
 msgid "RRDtool Says:"
 msgstr "RRDtool يقول:"
 
-#: aggregate_graphs.php:824
+#: aggregate_graphs.php:830
 #, fuzzy, php-format
 msgid "Aggregate Graph %s"
 msgstr "انقر فوق &quot;متابعة&quot; لدمج الرسم البياني الإجمالي (الرسوم) التجميعية في Graph Aggregate واحد."
 
-#: aggregate_graphs.php:847 aggregate_templates.php:394 graphs.php:1052
+#: aggregate_graphs.php:853 aggregate_templates.php:394 graphs.php:1052
 msgid "Prefix Replacement Values"
 msgstr "نمط الاستبدال"
 
-#: aggregate_graphs.php:848 aggregate_templates.php:395 graphs.php:1053
+#: aggregate_graphs.php:854 aggregate_templates.php:395 graphs.php:1053
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
 msgstr "يمكنك استخدام قيم الاستبدال هذه للبادئة في الرسم البياني التجميعي"
 
-#: aggregate_graphs.php:1015 aggregate_templates.php:522 graphs.php:1135
-#: lib/api_aggregate.php:1715
+#: aggregate_graphs.php:1021 aggregate_templates.php:522 graphs.php:1135
+#: lib/api_aggregate.php:1718
 msgid "Total"
 msgstr "الإجمالي"
 
-#: aggregate_graphs.php:1019 aggregate_templates.php:526 graphs.php:1137
+#: aggregate_graphs.php:1025 aggregate_templates.php:526 graphs.php:1137
 msgid "All Items"
 msgstr "كل العناصر"
 
-#: aggregate_graphs.php:1042 graphs.php:1689 lib/api_aggregate.php:1872
+#: aggregate_graphs.php:1048 graphs.php:1689 lib/api_aggregate.php:1875
 msgid "Graph Configuration"
 msgstr "تكوين الرسم البياني"
 
-#: aggregate_graphs.php:1092 automation_graph_rules.php:551
+#: aggregate_graphs.php:1098 automation_graph_rules.php:551
 #: automation_graph_rules.php:566 automation_graph_rules.php:582
 #: automation_tree_rules.php:394 automation_tree_rules.php:544
 msgid "Show"
 msgstr "عرض"
 
-#: aggregate_graphs.php:1094
+#: aggregate_graphs.php:1100
 msgid "Hide Item Details"
 msgstr "إخفاء تفاصيل البند"
 
-#: aggregate_graphs.php:1297
+#: aggregate_graphs.php:1303
 msgid "Matching Graphs"
 msgstr "مطابقة الرسوم البيانية"
 
-#: aggregate_graphs.php:1306 aggregate_graphs.php:1588
+#: aggregate_graphs.php:1312 aggregate_graphs.php:1594
 #: aggregate_templates.php:592 automation_devices.php:474
 #: automation_graph_rules.php:743 automation_networks.php:1182
 #: automation_networks.php:1226 automation_snmp.php:695
 #: automation_templates.php:393 automation_tree_rules.php:810 cdef.php:756
-#: color.php:529 color_templates.php:530 data_debug.php:1052 data_input.php:826
+#: color.php:529 color_templates.php:530 data_debug.php:1061 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:891 data_sources.php:1437
-#: data_templates.php:981 gprint_presets.php:262 graph_templates.php:710
+#: data_templates.php:999 gprint_presets.php:262 graph_templates.php:710
 #: graph_view.php:604 graphs.php:2031 graphs_new.php:411 host.php:1619
 #: host_templates.php:719 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
 #: lib/clog_webapi.php:597 lib/html.php:244 lib/html_filter.php:63
-#: lib/html_graph.php:203 lib/html_reports.php:1837 lib/html_tree.php:131
-#: lib/html_tree.php:1032 links.php:310 managers.php:149 managers.php:493
+#: lib/html_graph.php:203 lib/html_reports.php:1832 lib/html_tree.php:131
+#: lib/html_tree.php:973 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:347 pollers.php:879 rrdcleaner.php:507
 #: settings.php:526 settings.php:545 settings.php:594 sites.php:476
 #: tree.php:818 tree.php:853 tree.php:888 tree.php:1925 user_admin.php:2283
@@ -464,33 +464,33 @@ msgstr "مطابقة الرسوم البيانية"
 msgid "Search"
 msgstr "بحث"
 
-#: aggregate_graphs.php:1312 aggregate_graphs.php:1355
-#: aggregate_graphs.php:1616 color_templates.php:642 data_sources.php:1621
+#: aggregate_graphs.php:1318 aggregate_graphs.php:1361
+#: aggregate_graphs.php:1622 color_templates.php:642 data_sources.php:1621
 #: data_sources.php:1755 graph_view.php:468 graph_view.php:663
 #: graph_view.php:712 graphs.php:2037 graphs.php:2184 host.php:1730
 #: include/global_arrays.php:916 include/global_arrays.php:1123
-#: include/global_arrays.php:1915 lib/api_automation.php:283 lib/html.php:1683
-#: lib/html.php:1685 lib/html.php:1763 lib/html_graph.php:209
-#: lib/html_tree.php:1087 lib/html_tree.php:1416 tree.php:797 tree.php:2069
+#: include/global_arrays.php:1915 lib/api_automation.php:283 lib/html.php:1686
+#: lib/html.php:1688 lib/html.php:1766 lib/html_graph.php:209
+#: lib/html_tree.php:1028 lib/html_tree.php:1357 tree.php:797 tree.php:2069
 #: user_admin.php:1036 user_admin.php:1305 user_admin.php:2673
 #: user_group_admin.php:825 user_group_admin.php:980 user_group_admin.php:2194
 #: utilities.php:320
 msgid "Graphs"
 msgstr "الرسوم"
 
-#: aggregate_graphs.php:1316 aggregate_graphs.php:1620
+#: aggregate_graphs.php:1322 aggregate_graphs.php:1626
 #: aggregate_templates.php:608 automation_devices.php:559
 #: automation_graph_rules.php:785 automation_networks.php:1192
 #: automation_snmp.php:705 automation_templates.php:403
 #: automation_tree_rules.php:830 cdef.php:766 color.php:539
-#: color_templates.php:545 data_debug.php:1062 data_input.php:836
+#: color_templates.php:545 data_debug.php:1071 data_input.php:836
 #: data_queries.php:1289 data_source_profiles.php:901
-#: data_source_profiles.php:1020 data_sources.php:1447 data_templates.php:1007
+#: data_source_profiles.php:1020 data_sources.php:1447 data_templates.php:1025
 #: gprint_presets.php:272 graph_templates.php:720 graph_view.php:667
 #: graphs.php:2041 graphs_new.php:421 host.php:1644 host_templates.php:729
 #: include/global_form.php:256 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
-#: lib/api_automation.php:1109 lib/html_reports.php:1857 links.php:320
+#: lib/api_automation.php:1109 lib/html_reports.php:1852 links.php:320
 #: managers.php:159 managers.php:503 plugins.php:371 pollers.php:889
 #: rrdcleaner.php:533 sites.php:486 tree.php:1935 user_admin.php:2305
 #: user_admin.php:2677 user_admin.php:2762 user_admin.php:2866
@@ -504,23 +504,23 @@ msgstr "الرسوم"
 msgid "Default"
 msgstr "الافتراضي"
 
-#: aggregate_graphs.php:1329
+#: aggregate_graphs.php:1335
 msgid "Part of Aggregate"
 msgstr "جزء من التجميع"
 
-#: aggregate_graphs.php:1334 aggregate_graphs.php:1632
+#: aggregate_graphs.php:1340 aggregate_graphs.php:1638
 #: aggregate_templates.php:629 automation_devices.php:495
 #: automation_graph_rules.php:797 automation_networks.php:1226
 #: automation_snmp.php:717 automation_templates.php:415
 #: automation_tree_rules.php:842 cdef.php:784 color.php:563
-#: color_templates.php:567 data_debug.php:981 data_input.php:848
+#: color_templates.php:567 data_debug.php:990 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:919 data_sources.php:1390
-#: data_templates.php:1025 gprint_presets.php:290 graph_templates.php:738
+#: data_templates.php:1043 gprint_presets.php:290 graph_templates.php:738
 #: graph_view.php:612 graphs.php:2022 graphs_new.php:400 host.php:1609
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
-#: lib/clog_webapi.php:522 lib/html.php:1522 lib/html_filter.php:80
-#: lib/html_graph.php:190 lib/html_reports.php:1868 lib/html_tree.php:1074
+#: lib/clog_webapi.php:522 lib/html.php:1525 lib/html_filter.php:80
+#: lib/html_graph.php:190 lib/html_reports.php:1863 lib/html_tree.php:1015
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:924 sites.php:498 tree.php:1947
 #: user_admin.php:2317 user_admin.php:2695 user_admin.php:2780
@@ -529,11 +529,11 @@ msgstr "جزء من التجميع"
 msgid "Go"
 msgstr "أذهب"
 
-#: aggregate_graphs.php:1334 aggregate_graphs.php:1632
+#: aggregate_graphs.php:1340 aggregate_graphs.php:1638
 #: automation_devices.php:495 automation_snmp.php:717
-#: automation_templates.php:415 cdef.php:784 color.php:563 data_debug.php:981
+#: automation_templates.php:415 cdef.php:784 color.php:563 data_debug.php:990
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:919
-#: data_sources.php:1390 data_templates.php:1025 gprint_presets.php:290
+#: data_sources.php:1390 data_templates.php:1043 gprint_presets.php:290
 #: graph_templates.php:738 graph_view.php:612 graphs.php:2022
 #: graphs_new.php:400 host.php:1609 host_templates.php:747
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
@@ -548,20 +548,20 @@ msgstr "أذهب"
 msgid "Set/Refresh Filters"
 msgstr "مجموعة / تحديث الفلاتر"
 
-#: aggregate_graphs.php:1335 aggregate_graphs.php:1633
+#: aggregate_graphs.php:1341 aggregate_graphs.php:1639
 #: aggregate_templates.php:630 automation_devices.php:496
 #: automation_graph_rules.php:798 automation_networks.php:1227
 #: automation_snmp.php:718 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:568 data_debug.php:982 data_input.php:849
+#: color_templates.php:568 data_debug.php:991 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:920 data_sources.php:1391
-#: data_templates.php:1026 gprint_presets.php:291 graph_templates.php:739
+#: data_templates.php:1044 gprint_presets.php:291 graph_templates.php:739
 #: graph_view.php:613 graphs.php:2023 graphs_new.php:401 host.php:1610
 #: host_templates.php:748 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
 #: lib/clog_webapi.php:523 lib/html_filter.php:85 lib/html_graph.php:191
-#: lib/html_graph.php:307 lib/html_reports.php:1869 lib/html_tree.php:1075
-#: lib/html_tree.php:1185 links.php:331 managers.php:172 managers.php:516
+#: lib/html_graph.php:307 lib/html_reports.php:1864 lib/html_tree.php:1016
+#: lib/html_tree.php:1126 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:384 pollers.php:925 sites.php:499 tree.php:1948
 #: user_admin.php:2318 user_admin.php:2696 user_admin.php:2781
 #: user_admin.php:2885 user_admin.php:2970 user_admin.php:3055
@@ -569,13 +569,13 @@ msgstr "مجموعة / تحديث الفلاتر"
 msgid "Clear"
 msgstr "واضح"
 
-#: aggregate_graphs.php:1335 aggregate_graphs.php:1633 automation_snmp.php:718
-#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:982
+#: aggregate_graphs.php:1341 aggregate_graphs.php:1639 automation_snmp.php:718
+#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:991
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:920
-#: data_sources.php:1391 data_templates.php:1026 gprint_presets.php:291
+#: data_sources.php:1391 data_templates.php:1044 gprint_presets.php:291
 #: graph_templates.php:739 graph_view.php:613 graphs.php:2023
 #: graphs_new.php:401 host.php:1610 host_templates.php:748
-#: lib/html_graph.php:191 lib/html_tree.php:1075 managers.php:172
+#: lib/html_graph.php:191 lib/html_tree.php:1016 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:384 pollers.php:925
 #: sites.php:499 tree.php:1948 user_admin.php:2318 user_admin.php:2696
 #: user_admin.php:2781 user_admin.php:2885 user_admin.php:2970
@@ -588,15 +588,15 @@ msgstr "واضح"
 msgid "Clear Filters"
 msgstr "مسح الفلتر"
 
-#: aggregate_graphs.php:1360 aggregate_graphs.php:1696 graphs.php:1215
+#: aggregate_graphs.php:1366 aggregate_graphs.php:1702 graphs.php:1215
 #: lib/api_automation.php:574 user_admin.php:1044 user_group_admin.php:833
 msgid "Graph Title"
 msgstr "عنوان الرسم البياني"
 
-#: aggregate_graphs.php:1361 aggregate_graphs.php:1697
+#: aggregate_graphs.php:1367 aggregate_graphs.php:1703
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
 #: data_debug.php:345 data_input.php:931 data_queries.php:1383
-#: data_sources.php:1615 data_templates.php:1134 graph_templates.php:844
+#: data_sources.php:1615 data_templates.php:1152 graph_templates.php:844
 #: graphs.php:2200 host.php:1724 host_templates.php:834
 #: lib/api_automation.php:282 pollers.php:995 sites.php:572 tree.php:2009
 #: user_admin.php:1044 user_admin.php:1158 user_admin.php:1305
@@ -606,20 +606,20 @@ msgstr "عنوان الرسم البياني"
 msgid "ID"
 msgstr "المعرف"
 
-#: aggregate_graphs.php:1362
+#: aggregate_graphs.php:1368
 msgid "Included in Aggregate"
 msgstr "المدرجة في التجميع"
 
-#: aggregate_graphs.php:1363 aggregate_graphs.php:1699 graph_templates.php:861
+#: aggregate_graphs.php:1369 aggregate_graphs.php:1705 graph_templates.php:861
 #: graph_view.php:741 graph_view.php:754 graphs.php:2218
 msgid "Size"
 msgstr "مداخل خلفية الحجم"
 
-#: aggregate_graphs.php:1379 aggregate_templates.php:711
+#: aggregate_graphs.php:1385 aggregate_templates.php:711
 #: automation_tree_rules.php:689 cdef.php:911 color.php:726 color.php:728
 #: color_templates.php:659 data_input.php:975 data_queries.php:1435
 #: data_source_profiles.php:1100 data_source_profiles.php:1101
-#: data_sources.php:1702 data_sources.php:1703 data_templates.php:1195
+#: data_sources.php:1702 data_sources.php:1703 data_templates.php:1213
 #: gprint_presets.php:437 graph_templates.php:901 host_templates.php:875
 #: include/global_settings.php:475 include/global_settings.php:834
 #: include/global_settings.php:1743 lib/api_automation.php:1438 links.php:404
@@ -628,13 +628,13 @@ msgstr "مداخل خلفية الحجم"
 msgid "No"
 msgstr "لا"
 
-#: aggregate_graphs.php:1379 aggregate_templates.php:711
+#: aggregate_graphs.php:1385 aggregate_templates.php:711
 #: automation_tree_rules.php:682 cdef.php:911 color.php:726 color.php:728
-#: color_templates.php:659 data_debug.php:629 data_debug.php:634
-#: data_debug.php:639 data_input.php:975 data_queries.php:1435
+#: color_templates.php:659 data_debug.php:638 data_debug.php:643
+#: data_debug.php:648 data_input.php:975 data_queries.php:1435
 #: data_source_profiles.php:1099 data_source_profiles.php:1100
 #: data_source_profiles.php:1101 data_sources.php:1702 data_sources.php:1703
-#: data_templates.php:1195 gprint_presets.php:437 graph_templates.php:901
+#: data_templates.php:1213 gprint_presets.php:437 graph_templates.php:901
 #: host_templates.php:875 include/global_settings.php:476
 #: include/global_settings.php:833 include/global_settings.php:1742
 #: lib/api_automation.php:1438 lib/installer.php:1842 lib/installer.php:1870
@@ -644,40 +644,41 @@ msgstr "لا"
 msgid "Yes"
 msgstr "نعم"
 
-#: aggregate_graphs.php:1385 graphs.php:2260 lib/api_automation.php:601
+#: aggregate_graphs.php:1391 graphs.php:2260 lib/api_automation.php:601
 msgid "No Graphs Found"
 msgstr "لا توجد الرسوم البيانية"
 
-#: aggregate_graphs.php:1579
+#: aggregate_graphs.php:1585
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[تطبيق قائمة الرسم البياني المخصص - تصفية قائمة FROM]"
 
-#: aggregate_graphs.php:1579 aggregate_graphs.php:1687
+#: aggregate_graphs.php:1585 aggregate_graphs.php:1693
 #: include/global_arrays.php:2625
 msgid "Aggregate Graphs"
 msgstr "الرسوم البيانية الإجمالية"
 
-#: aggregate_graphs.php:1594 data_debug.php:955 data_sources.php:1364
+#: aggregate_graphs.php:1600 data_debug.php:964 data_sources.php:1364
 #: graph_view.php:625 graphs.php:1987 host.php:1564
 #: include/global_arrays.php:2771 include/global_settings.php:568
-#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:1038
+#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:979
 #: rrdcleaner.php:383 user_admin.php:2651 user_admin.php:2844
 #: user_group_admin.php:2172 user_group_admin.php:2280 utilities.php:1783
 msgid "Template"
 msgstr "قالب"
 
-#: aggregate_graphs.php:1598 automation_devices.php:484
+#: aggregate_graphs.php:1604 automation_devices.php:484
 #: automation_devices.php:514 automation_devices.php:529
 #: automation_devices.php:544 automation_graph_rules.php:753
 #: automation_graph_rules.php:775 automation_tree_rules.php:820
-#: data_debug.php:959 data_sources.php:1368 graphs.php:1991
-#: graphs_items.php:354 host.php:1533 host.php:1551 host.php:1568 host.php:1629
-#: lib/api_automation.php:150 lib/api_automation.php:168
-#: lib/api_automation.php:429 lib/api_automation.php:446
-#: lib/api_automation.php:1076 lib/api_automation.php:1094 lib/auth.php:2692
-#: lib/auth.php:2721 lib/html.php:2047 lib/html.php:2070 lib/html.php:2108
+#: data_debug.php:968 data_sources.php:1368 graphs.php:1991
+#: graphs_items.php:357 host.php:1533 host.php:1551 host.php:1568 host.php:1629
+#: include/global_form.php:975 lib/api_automation.php:150
+#: lib/api_automation.php:168 lib/api_automation.php:429
+#: lib/api_automation.php:446 lib/api_automation.php:1076
+#: lib/api_automation.php:1094 lib/auth.php:2702 lib/auth.php:2731
+#: lib/html.php:2050 lib/html.php:2073 lib/html.php:2111
 #: lib/html_reports.php:877 lib/html_reports.php:881 lib/html_reports.php:992
-#: lib/html_reports.php:1002 lib/html_reports.php:1847 managers.php:482
+#: lib/html_reports.php:1002 lib/html_reports.php:1842 managers.php:482
 #: managers.php:735 user_admin.php:2655 user_admin.php:2848
 #: user_group_admin.php:2176 user_group_admin.php:2284 utilities.php:821
 #: utilities.php:1502 utilities.php:1787 utilities.php:1832 utilities.php:2616
@@ -685,31 +686,32 @@ msgstr "قالب"
 msgid "Any"
 msgstr "الجميع"
 
-#: aggregate_graphs.php:1599 aggregate_graphs.php:1711
+#: aggregate_graphs.php:1605 aggregate_graphs.php:1717
 #: automation_graph_rules.php:906 automation_graph_rules.php:907
-#: automation_networks.php:462 automation_tree_rules.php:948 data_debug.php:960
+#: automation_networks.php:462 automation_tree_rules.php:948 data_debug.php:969
 #: data_sources.php:934 data_sources.php:1369 data_sources.php:1676
-#: data_templates.php:1197 graphs.php:1578 graphs.php:1587 graphs.php:1992
-#: graphs_items.php:355 graphs_items.php:467 host.php:1147 host.php:1158
-#: host.php:1534 host.php:1569 include/global_arrays.php:471
-#: include/global_arrays.php:529 include/global_arrays.php:618
-#: include/global_arrays.php:808 include/global_arrays.php:1626
-#: include/global_form.php:588 include/global_form.php:894
-#: include/global_form.php:902 include/global_form.php:910
-#: include/global_form.php:948 include/global_form.php:955
-#: include/global_form.php:981 include/global_form.php:1010
-#: include/global_form.php:1018 include/global_form.php:1203
-#: include/global_form.php:1222 include/global_form.php:1231
-#: include/global_form.php:2112 include/global_form.php:2154
-#: include/global_settings.php:572 include/global_settings.php:580
-#: include/global_settings.php:588 include/global_settings.php:1212
-#: include/global_settings.php:1817 lib/api_automation.php:151
-#: lib/api_automation.php:430 lib/api_automation.php:447
-#: lib/api_automation.php:589 lib/api_automation.php:1077 lib/auth.php:2695
-#: lib/auth.php:2724 lib/html.php:204 lib/html.php:2048 lib/html.php:2068
-#: lib/html.php:2109 lib/html_form.php:331 lib/html_reports.php:888
-#: lib/html_reports.php:892 lib/html_reports.php:922 lib/html_reports.php:992
-#: lib/html_reports.php:998 lib/html_reports.php:1002 lib/html_reports.php:1010
+#: data_templates.php:1215 graph_templates_items.php:66 graphs.php:1578
+#: graphs.php:1587 graphs.php:1992 graphs_items.php:358 graphs_items.php:470
+#: host.php:1147 host.php:1158 host.php:1534 host.php:1569
+#: include/global_arrays.php:471 include/global_arrays.php:529
+#: include/global_arrays.php:618 include/global_arrays.php:808
+#: include/global_arrays.php:1626 include/global_form.php:588
+#: include/global_form.php:894 include/global_form.php:902
+#: include/global_form.php:910 include/global_form.php:948
+#: include/global_form.php:955 include/global_form.php:990
+#: include/global_form.php:1019 include/global_form.php:1027
+#: include/global_form.php:1212 include/global_form.php:1231
+#: include/global_form.php:1240 include/global_form.php:2121
+#: include/global_form.php:2163 include/global_settings.php:572
+#: include/global_settings.php:580 include/global_settings.php:588
+#: include/global_settings.php:1212 include/global_settings.php:1817
+#: lib/api_automation.php:151 lib/api_automation.php:430
+#: lib/api_automation.php:447 lib/api_automation.php:589
+#: lib/api_automation.php:1077 lib/auth.php:2705 lib/auth.php:2734
+#: lib/html.php:204 lib/html.php:2051 lib/html.php:2071 lib/html.php:2112
+#: lib/html_form.php:331 lib/html_reports.php:888 lib/html_reports.php:892
+#: lib/html_reports.php:922 lib/html_reports.php:992 lib/html_reports.php:998
+#: lib/html_reports.php:1002 lib/html_reports.php:1010
 #: lib/html_reports.php:1021 lib/html_reports.php:1041
 #: lib/html_reports.php:1295 lib/html_reports.php:1300
 #: lib/html_reports.php:1305 settings.php:519 settings.php:538 settings.php:564
@@ -718,31 +720,31 @@ msgstr "الجميع"
 msgid "None"
 msgstr "لا شيء"
 
-#: aggregate_graphs.php:1696
+#: aggregate_graphs.php:1702
 msgid "The title for the Aggregate Graphs"
 msgstr "عنوان الرسوم البيانية الإجمالية"
 
-#: aggregate_graphs.php:1697
+#: aggregate_graphs.php:1703
 msgid "The internal database identifier for this object"
 msgstr "معرف قاعدة البيانات الداخلية لهذا الكائن"
 
-#: aggregate_graphs.php:1698 graphs.php:1219
+#: aggregate_graphs.php:1704 graphs.php:1219
 msgid "Aggregate Template"
 msgstr "قالب التجميع"
 
-#: aggregate_graphs.php:1698
+#: aggregate_graphs.php:1704
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
 msgstr "The Aggregate Template that that Aggregate Graphs based on"
 
-#: aggregate_graphs.php:1717
+#: aggregate_graphs.php:1723
 msgid "No Aggregate Graphs Found"
 msgstr "لا توجد رسوم بيانية مجمعة"
 
-#: aggregate_items.php:347
+#: aggregate_items.php:350
 msgid "Override Values for Graph Item"
 msgstr "تجاوز قيم عنصر الرسم البياني"
 
-#: aggregate_items.php:358 lib/api_aggregate.php:1904
+#: aggregate_items.php:361 lib/api_aggregate.php:1907
 msgid "Override this Value"
 msgstr "تجاوز هذه القيمة"
 
@@ -791,7 +793,7 @@ msgstr "لا يمكن حذف القوالب التجميعية قيد الاست
 
 #: aggregate_templates.php:694 cdef.php:894 color.php:703
 #: color_templates.php:641 data_input.php:937 data_queries.php:1389
-#: data_source_profiles.php:1025 data_sources.php:1633 data_templates.php:1140
+#: data_source_profiles.php:1025 data_sources.php:1633 data_templates.php:1158
 #: gprint_presets.php:397 graph_templates.php:850 host_templates.php:840
 #: vdef.php:887
 msgid "Deletable"
@@ -804,8 +806,8 @@ msgid "Graphs Using"
 msgstr "الرسوم البيانية عن طريق"
 
 #: aggregate_templates.php:696 include/global_arrays.php:881
-#: include/global_arrays.php:1253 include/global_form.php:1407
-#: include/global_form.php:1642 lib/html_reports.php:1016 tree.php:1657
+#: include/global_arrays.php:1253 include/global_form.php:1416
+#: include/global_form.php:1651 lib/html_reports.php:1016 tree.php:1657
 msgid "Graph Template"
 msgstr "قالب الرسم البياني"
 
@@ -860,7 +862,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "لا يمكن إعادة استخدامها لـ٪ d تغييرات كلمة المرور"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1559 lib/functions.php:3260 lib/html.php:2455
+#: include/global_form.php:1568 lib/functions.php:3265 lib/html.php:2458
 msgid "Change Password"
 msgstr "تغيير كلمة المرور"
 
@@ -872,8 +874,8 @@ msgstr "يرجى إدخال كلمة المرور الحالية والخاصة 
 msgid "Please enter your new Cacti password."
 msgstr "يرجى إدخال كلمة المرور الحالية والخاصة بك <br> كلمة السر الصبار."
 
-#: auth_changepassword.php:342 auth_login.php:833 auth_login.php:836
-#: include/global_settings.php:1651 lib/functions.php:4897
+#: auth_changepassword.php:342 auth_login.php:831 auth_login.php:834
+#: include/global_settings.php:1651 lib/functions.php:4902
 msgid "Username"
 msgstr "اسم المستخدم"
 
@@ -891,11 +893,11 @@ msgstr "تأكيد كلمة المرور الجديدة"
 
 #: auth_changepassword.php:358 auth_profile.php:559 graphs_new.php:402
 #: lib/html_form.php:1288 lib/html_form.php:1297 lib/html_graph.php:193
-#: lib/html_tree.php:1077 settings.php:488
+#: lib/html_tree.php:1018 settings.php:488
 msgid "Save"
 msgstr "حفظ"
 
-#: auth_changepassword.php:367 auth_login.php:915
+#: auth_changepassword.php:367 auth_login.php:913
 #, fuzzy, php-format
 msgid "Version %1$s | %2$s"
 msgstr "الإصدار٪ 1 $ s | ٪ 2 $ الصورة"
@@ -930,89 +932,89 @@ msgstr "٪ s تمت مصادقته بواسطة خادم الويب ، ولكن 
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "خطأ في بحث LDAP:٪ s"
 
-#: auth_login.php:194 auth_login.php:669
+#: auth_login.php:192 auth_login.php:667
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "خطأ LDAP:٪ s"
 
-#: auth_login.php:320 auth_login.php:660
+#: auth_login.php:318 auth_login.php:658
 #, fuzzy, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "رفض الوصول ، يرجى الاتصال بك Cacti Administrator."
 
-#: auth_login.php:347
+#: auth_login.php:345
 #, fuzzy, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Adminitrator."
 msgstr "رفض الوصول ، يرجى الاتصال بك Cacti Administrator."
 
-#: auth_login.php:377
+#: auth_login.php:375
 #, fuzzy
 msgid "Access Denied!  User account disabled."
 msgstr "رفض الوصول ، تعطيل حساب المستخدم."
 
-#: auth_login.php:388
+#: auth_login.php:386
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
 msgstr "إذا كنت تشعر أن هذا خطأ. يرجى الاتصال بمدير Cacti."
 
-#: auth_login.php:435
+#: auth_login.php:433
 #, fuzzy
 msgid "Access Denied!  No guest account Defined.  Please contact your Administrator."
 msgstr "رفض الوصول ، يرجى الاتصال بك Cacti Administrator."
 
-#: auth_login.php:538
+#: auth_login.php:536
 #, fuzzy
 msgid "Cacti Login Failure"
 msgstr "سجل الصبار مسح"
 
-#: auth_login.php:545 include/auth.php:287 include/auth.php:289
+#: auth_login.php:543 include/auth.php:287 include/auth.php:289
 #: permission_denied.php:30 permission_denied.php:32
 msgid "Login Again"
 msgstr "تسجيل الدخول مرة أخرى"
 
-#: auth_login.php:562
+#: auth_login.php:560
 #, fuzzy, php-format
 msgid "LDAP Search Error: %s"
 msgstr "خطأ في بحث LDAP:٪ s"
 
-#: auth_login.php:806 lib/html_tree.php:218
+#: auth_login.php:804 lib/html_tree.php:159
 msgid "Login to Cacti"
 msgstr "تسجيل الدخول إلى الصبار"
 
-#: auth_login.php:813
+#: auth_login.php:811
 msgid "User Login"
 msgstr "تسجيل دخول المستخدم"
 
-#: auth_login.php:827
+#: auth_login.php:825
 msgid "Enter your Username and Password below"
 msgstr "أدخل اسم المستخدم وكلمة المرور الخاصين بك أدناه"
 
-#: auth_login.php:841 include/global_form.php:1526 lib/functions.php:4898
+#: auth_login.php:839 include/global_form.php:1535 lib/functions.php:4903
 msgid "Password"
 msgstr "كلمة المرور"
 
-#: auth_login.php:853 include/global_settings.php:2094 lib/auth.php:462
+#: auth_login.php:851 include/global_settings.php:2094 lib/auth.php:462
 #: lib/auth.php:484 lib/auth.php:495 user_admin.php:2294
 msgid "Local"
 msgstr "محلي"
 
-#: auth_login.php:857 include/global_arrays.php:796 lib/auth.php:496
+#: auth_login.php:855 include/global_arrays.php:796 lib/auth.php:496
 msgid "LDAP"
 msgstr "LDAP"
 
-#: auth_login.php:875 user_admin.php:2289 user_admin.php:2378
+#: auth_login.php:873 user_admin.php:2289 user_admin.php:2378
 #: user_group_admin.php:682
 msgid "Realm"
 msgstr "مملكة"
 
-#: auth_login.php:892
+#: auth_login.php:890
 msgid "Keep me signed in"
 msgstr "أبقني علي تسجيل الدخول"
 
-#: auth_login.php:898
+#: auth_login.php:896
 msgid "Login"
 msgstr "تسجيل الدخول"
 
-#: auth_login.php:910
+#: auth_login.php:908
 msgid "Invalid User Name/Password Please Retype"
 msgstr "اسم المستخدم غير صحيح / كلمة المرور الرجاء إعادة الكتابة"
 
@@ -1027,40 +1029,40 @@ msgid "User Account Details"
 msgstr "تفاصيل حساب المستخدم"
 
 #: auth_profile.php:296 include/global_arrays.php:780
-#: include/global_settings.php:2472 lib/html.php:1929 lib/html.php:1951
-#: lib/html.php:2451
+#: include/global_settings.php:2472 lib/html.php:1932 lib/html.php:1954
+#: lib/html.php:2454
 msgid "Tree View"
 msgstr "عرض الشجرة"
 
-#: auth_profile.php:300 include/global_arrays.php:781 lib/html.php:1936
-#: lib/html.php:1960 lib/html.php:2452
+#: auth_profile.php:300 include/global_arrays.php:781 lib/html.php:1939
+#: lib/html.php:1963 lib/html.php:2455
 msgid "List View"
 msgstr "عرض على شكل قائمة"
 
-#: auth_profile.php:304 include/global_arrays.php:782 lib/html.php:1943
-#: lib/html.php:2453
+#: auth_profile.php:304 include/global_arrays.php:782 lib/html.php:1946
+#: lib/html.php:2456
 msgid "Preview View"
 msgstr "معاينة العرض"
 
-#: auth_profile.php:317 include/global_form.php:1502 user_admin.php:2374
+#: auth_profile.php:317 include/global_form.php:1511 user_admin.php:2374
 msgid "User Name"
 msgstr "اسم المستخدم"
 
-#: auth_profile.php:318 include/global_form.php:1503
+#: auth_profile.php:318 include/global_form.php:1512
 msgid "The login name for this user."
 msgstr "اسم تسجيل الدخول لهذا المستخدم."
 
-#: auth_profile.php:325 include/global_form.php:1510
+#: auth_profile.php:325 include/global_form.php:1519
 #: include/global_settings.php:1687 user_admin.php:2376 user_domains.php:496
 #: user_group_admin.php:682 utilities.php:919
 msgid "Full Name"
 msgstr "الاسم الكامل"
 
-#: auth_profile.php:326 include/global_form.php:1511
+#: auth_profile.php:326 include/global_form.php:1520
 msgid "A more descriptive name for this user, that can include spaces or special characters."
 msgstr "اسم وصفي أكثر لهذا المستخدم ، يمكن أن يتضمن مسافات أو أحرف خاصة."
 
-#: auth_profile.php:333 include/global_form.php:1518
+#: auth_profile.php:333 include/global_form.php:1527
 msgid "Email Address"
 msgstr "عنوان البريد الإلكتروني"
 
@@ -1210,7 +1212,7 @@ msgstr "الآيبي"
 msgid "SNMP Name"
 msgstr "اسم SNMP"
 
-#: automation_devices.php:280 host.php:1582 include/global_form.php:1201
+#: automation_devices.php:280 host.php:1582 include/global_form.php:1210
 #: include/global_settings.php:2089
 msgid "Location"
 msgstr "الموقع"
@@ -1219,9 +1221,9 @@ msgstr "الموقع"
 msgid "Contact"
 msgstr "جهة الاتصال"
 
-#: automation_devices.php:282 include/global_form.php:1150
-#: include/global_form.php:1186 include/global_form.php:1371
-#: include/global_form.php:1723 lib/api_automation.php:278
+#: automation_devices.php:282 include/global_form.php:1159
+#: include/global_form.php:1195 include/global_form.php:1380
+#: include/global_form.php:1732 lib/api_automation.php:278
 #: lib/api_automation.php:1218 lib/installer.php:1769 lib/installer.php:2445
 #: managers.php:216 user_admin.php:1158 user_admin.php:1305
 #: user_group_admin.php:980 user_group_admin.php:1922
@@ -1242,12 +1244,12 @@ msgstr "SNMP"
 
 #: automation_devices.php:286 automation_devices.php:510
 #: automation_graph_rules.php:771 automation_networks.php:1077
-#: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1007
-#: data_sources.php:1416 data_templates.php:1163 host.php:756 host.php:881
+#: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1016
+#: data_sources.php:1416 data_templates.php:1181 host.php:756 host.php:881
 #: host.php:1625 host.php:1742 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
-#: lib/html_reports.php:1843 lib/installer.php:1769 managers.php:218
+#: lib/html_reports.php:1838 lib/installer.php:1769 managers.php:218
 #: plugins.php:353 plugins.php:459 pollers.php:997 user_admin.php:1305
 #: user_group_admin.php:980
 msgid "Status"
@@ -1286,7 +1288,7 @@ msgstr "تصدير"
 msgid "Export to a file"
 msgstr "تصدير إلى ملف"
 
-#: automation_devices.php:502 data_debug.php:983 lib/clog_webapi.php:212
+#: automation_devices.php:502 data_debug.php:992 lib/clog_webapi.php:212
 #: lib/clog_webapi.php:524 managers.php:747
 msgid "Purge"
 msgstr "شربة، مسهل. يسهل"
@@ -1298,11 +1300,11 @@ msgstr "أجهزة تطهير اكتشفت"
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
-#: data_debug.php:554 data_source_profiles.php:72 host.php:1809
-#: lib/functions.php:5243 lib/functions.php:5247 lib/html.php:1211
-#: lib/html_reports.php:1633 lib/html_reports.php:1659
-#: lib/html_reports.php:1730 lib/html_reports.php:1731
-#: lib/html_reports.php:1732 pollers.php:1050 user_admin.php:2390
+#: data_debug.php:563 data_source_profiles.php:72 host.php:1809
+#: lib/functions.php:5248 lib/functions.php:5252 lib/html.php:1214
+#: lib/html_reports.php:1628 lib/html_reports.php:1654
+#: lib/html_reports.php:1725 lib/html_reports.php:1726
+#: lib/html_reports.php:1727 pollers.php:1050 user_admin.php:2390
 #: utilities.php:506 utilities.php:948 utilities.php:2316 utilities.php:2438
 #: utilities.php:2446 utilities.php:2449 utilities.php:2455 utilities.php:2474
 #: utilities.php:2708
@@ -1419,19 +1421,19 @@ msgstr "قواعد الرسم البياني"
 
 #: automation_graph_rules.php:749 automation_graph_rules.php:897
 #: include/global_arrays.php:1256 include/global_arrays.php:2770
-#: include/global_form.php:1652 include/global_form.php:2191
+#: include/global_form.php:1661 include/global_form.php:2200
 msgid "Data Query"
 msgstr "استعلام البيانات"
 
 #: automation_graph_rules.php:776 automation_graph_rules.php:899
 #: automation_graph_rules.php:915 automation_networks.php:537
 #: automation_tree_rules.php:821 automation_tree_rules.php:941
-#: automation_tree_rules.php:959 data_debug.php:1013 data_sources.php:1421
-#: host.php:1630 include/global_arrays.php:840 include/global_form.php:1534
+#: automation_tree_rules.php:959 data_debug.php:1022 data_sources.php:1421
+#: host.php:1630 include/global_arrays.php:840 include/global_form.php:1543
 #: include/global_settings.php:360 lib/api_automation.php:169
-#: lib/api_automation.php:1095 lib/html_reports.php:1848
-#: lib/html_reports.php:1940 lib/html_reports.php:1951
-#: lib/html_reports.php:1987 links.php:383 links.php:561 managers.php:243
+#: lib/api_automation.php:1095 lib/html_reports.php:1843
+#: lib/html_reports.php:1935 lib/html_reports.php:1946
+#: lib/html_reports.php:1982 links.php:383 links.php:561 managers.php:243
 #: managers.php:598 user_admin.php:1158 user_admin.php:1170 user_admin.php:2377
 #: user_domains.php:350 user_domains.php:752 user_group_admin.php:87
 #: user_group_admin.php:682 user_group_admin.php:697 user_group_admin.php:1926
@@ -1441,15 +1443,15 @@ msgstr "مفعل"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
-#: automation_tree_rules.php:959 data_debug.php:1014 data_sources.php:1422
-#: data_templates.php:1199 host.php:1631 include/global_arrays.php:839
+#: automation_tree_rules.php:959 data_debug.php:1023 data_sources.php:1422
+#: data_templates.php:1217 host.php:1631 include/global_arrays.php:839
 #: include/global_arrays.php:1458 include/global_arrays.php:1750
 #: include/global_settings.php:359 include/global_settings.php:1446
 #: include/global_settings.php:1460 include/global_settings.php:1473
 #: include/global_settings.php:1498 include/global_settings.php:1512
 #: include/global_settings.php:1602 include/global_settings.php:2295
-#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2527
-#: lib/html_reports.php:1849 lib/html_reports.php:1987 lib/html_utility.php:935
+#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2530
+#: lib/html_reports.php:1844 lib/html_reports.php:1982 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1170 user_domains.php:412 user_group_admin.php:697
 #: utilities.php:2492
@@ -1468,9 +1470,9 @@ msgstr "اسم هذه القاعدة."
 msgid "The internal database ID for this rule.  Useful in performing debugging and automation."
 msgstr "معرف قاعدة البيانات الداخلي لهذه القاعدة. مفيدة في تنفيذ التصحيح والأتمتة."
 
-#: automation_graph_rules.php:898 include/global_form.php:1816
-#: include/global_form.php:1902 include/global_form.php:2007
-#: include/global_form.php:2202
+#: automation_graph_rules.php:898 include/global_form.php:1825
+#: include/global_form.php:1911 include/global_form.php:2016
+#: include/global_form.php:2211
 msgid "Graph Type"
 msgstr "نوع الجراف"
 
@@ -1576,8 +1578,8 @@ msgstr "نطاق اكتشاف الشبكة [تحرير]:٪ s"
 msgid "Network Discovery Range [new]"
 msgstr "نطاق اكتشاف الشبكة [جديد]"
 
-#: automation_networks.php:436 include/global_form.php:1864
-#: include/global_form.php:1967 include/global_settings.php:51
+#: automation_networks.php:436 include/global_form.php:1873
+#: include/global_form.php:1976 include/global_settings.php:51
 #: lib/html_reports.php:30
 msgid "General Settings"
 msgstr "الاعدادات العامة"
@@ -1589,11 +1591,11 @@ msgstr "الاعدادات العامة"
 #: include/global_form.php:338 include/global_form.php:358
 #: include/global_form.php:399 include/global_form.php:529
 #: include/global_form.php:566 include/global_form.php:672
-#: include/global_form.php:1102 include/global_form.php:1142
-#: include/global_form.php:1343 include/global_form.php:1363
-#: include/global_form.php:1436 include/global_form.php:1464
-#: include/global_form.php:2085 include/global_form.php:2183
-#: include/global_form.php:2228 lib/installer.php:1769 lib/installer.php:1835
+#: include/global_form.php:1111 include/global_form.php:1151
+#: include/global_form.php:1352 include/global_form.php:1372
+#: include/global_form.php:1445 include/global_form.php:1473
+#: include/global_form.php:2094 include/global_form.php:2192
+#: include/global_form.php:2237 lib/installer.php:1769 lib/installer.php:1835
 #: lib/installer.php:1865 lib/installer.php:2445 lib/installer.php:2524
 #: lib/vdef.php:74 managers.php:562 pollers.php:61 sites.php:41
 #: user_admin.php:1158 user_domains.php:326 utilities.php:632
@@ -1613,7 +1615,7 @@ msgstr "نطاق اكتشاف الشبكة الجديدة"
 msgid "Data Collector"
 msgstr "جامع البيانات"
 
-#: automation_networks.php:450 include/global_form.php:1212
+#: automation_networks.php:450 include/global_form.php:1221
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
 msgstr "اختر Cacti Data Collector / Poller لاستخدامها لجمع البيانات من هذا الجهاز."
 
@@ -1987,7 +1989,7 @@ msgid "Reachability Settings"
 msgstr "إعدادات قابلية الوصول"
 
 #: automation_networks.php:714 include/global_arrays.php:938
-#: include/global_form.php:1253 include/global_form.php:1755
+#: include/global_form.php:1262 include/global_form.php:1764
 msgid "SNMP Options"
 msgstr "خيارات SNMP"
 
@@ -1995,7 +1997,7 @@ msgstr "خيارات SNMP"
 msgid "Select the SNMP Options to use for discovery of this Network Range."
 msgstr "حدد خيارات SNMP المراد استخدامها لاكتشاف نطاق الشبكة هذا."
 
-#: automation_networks.php:720 include/global_form.php:1271
+#: automation_networks.php:720 include/global_form.php:1280
 msgid "Ping Method"
 msgstr "طريقة بينغ"
 
@@ -2003,30 +2005,30 @@ msgstr "طريقة بينغ"
 msgid "The type of ping packet to send."
 msgstr "نوع حزمة ping لإرسالها."
 
-#: automation_networks.php:729 include/global_form.php:1281
+#: automation_networks.php:729 include/global_form.php:1290
 #: include/global_settings.php:757
 msgid "Ping Port"
 msgstr "ميناء بينغ"
 
-#: automation_networks.php:731 include/global_form.php:1283
+#: automation_networks.php:731 include/global_form.php:1292
 msgid "TCP or UDP port to attempt connection."
 msgstr "منفذ TCP أو UDP لمحاولة الاتصال."
 
-#: automation_networks.php:737 include/global_form.php:1289
+#: automation_networks.php:737 include/global_form.php:1298
 #: include/global_settings.php:765
 msgid "Ping Timeout Value"
 msgstr "قيمة المهلة بينغ"
 
-#: automation_networks.php:738 include/global_form.php:1290
+#: automation_networks.php:738 include/global_form.php:1299
 msgid "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings."
 msgstr "قيمة المهلة لاستخدام المضيف ICMP و poding UDP. تنطبق قيمة مهلة SNMP للمضيف على أوامر SNMP."
 
-#: automation_networks.php:746 include/global_form.php:1298
+#: automation_networks.php:746 include/global_form.php:1307
 #: include/global_settings.php:773
 msgid "Ping Retry Count"
 msgstr "بينغ إعادة المحاولة الكونت"
 
-#: automation_networks.php:747 include/global_form.php:1299
+#: automation_networks.php:747 include/global_form.php:1308
 msgid "After an initial failure, the number of ping retries Cacti will attempt before failing."
 msgstr "بعد الفشل الأولي ، سيحاول عدد مرات إعادة اختبار ping Cacti قبل الفشل."
 
@@ -2133,7 +2135,7 @@ msgstr "عاطل"
 
 #: automation_networks.php:1152 include/global_arrays.php:814
 #: include/global_arrays.php:1104 include/global_settings.php:2321
-#: lib/html_reports.php:1982
+#: lib/html_reports.php:1977
 msgid "Never"
 msgstr "أبدا"
 
@@ -2141,8 +2143,8 @@ msgstr "أبدا"
 msgid "No Networks Found"
 msgstr "لم يتم العثور على شبكات"
 
-#: automation_networks.php:1203 data_debug.php:1028 lib/clog_webapi.php:577
-#: lib/html_graph.php:306 lib/html_tree.php:1184 lib/html_tree.php:1205
+#: automation_networks.php:1203 data_debug.php:1037 lib/clog_webapi.php:577
+#: lib/html_graph.php:306 lib/html_tree.php:1125 lib/html_tree.php:1146
 #: pollers.php:900 utilities.php:1232 utilities.php:2183
 msgid "Refresh"
 msgstr "تحديث"
@@ -2229,11 +2231,11 @@ msgstr "خيارات SNMP [تحرير:٪ s]"
 msgid "SNMP Options [new]"
 msgstr "خيارات SNMP [جديد]"
 
-#: automation_snmp.php:448 include/global_form.php:1089
-#: include/global_form.php:2132 include/global_form.php:2174
-#: include/global_form.php:2325 lib/api_automation.php:1288
+#: automation_snmp.php:448 include/global_form.php:1098
+#: include/global_form.php:2141 include/global_form.php:2183
+#: include/global_form.php:2334 lib/api_automation.php:1288
 #: lib/api_automation.php:1350 lib/api_automation.php:1416
-#: lib/html_reports.php:1080 lib/html_reports.php:1611
+#: lib/html_reports.php:1080 lib/html_reports.php:1606
 msgid "Sequence"
 msgstr "تسلسل، تتابع، متوالية"
 
@@ -2260,7 +2262,7 @@ msgstr "أتمتة SNMP خيارات"
 
 #: automation_snmp.php:533 cdef.php:594 lib/api_automation.php:1287
 #: lib/api_automation.php:1349 lib/api_automation.php:1415
-#: lib/html_reports.php:1610 vdef.php:578
+#: lib/html_reports.php:1605 vdef.php:578
 msgid "Item"
 msgstr "اعلان"
 
@@ -2273,7 +2275,7 @@ msgstr "الإصدار"
 msgid "Community"
 msgstr "القرية/ الحي/ البلدة"
 
-#: automation_snmp.php:536 lib/functions.php:4893
+#: automation_snmp.php:536 lib/functions.php:4898
 msgid "Port"
 msgstr "منفذ"
 
@@ -2330,16 +2332,16 @@ msgstr "لا شيء"
 #: automation_snmp.php:573 automation_templates.php:524 cdef.php:621
 #: color_templates.php:111 data_queries.php:790 data_queries.php:897
 #: lib/api_automation.php:1314 lib/api_automation.php:1376
-#: lib/api_automation.php:1444 lib/html.php:1243 lib/html_reports.php:1745
-#: lib/html_reports.php:1747 tree.php:2087 tree.php:2094 vdef.php:607
+#: lib/api_automation.php:1444 lib/html.php:1246 lib/html_reports.php:1740
+#: lib/html_reports.php:1742 tree.php:2087 tree.php:2094 vdef.php:607
 msgid "Move Down"
 msgstr "تحريك للأسفل"
 
 #: automation_snmp.php:579 automation_templates.php:530 cdef.php:627
 #: color_templates.php:117 data_queries.php:795 data_queries.php:902
 #: lib/api_automation.php:1320 lib/api_automation.php:1382
-#: lib/api_automation.php:1450 lib/html.php:1249 lib/html_reports.php:1747
-#: lib/html_reports.php:1749 tree.php:2091 tree.php:2095 vdef.php:613
+#: lib/api_automation.php:1450 lib/html.php:1252 lib/html_reports.php:1742
+#: lib/html_reports.php:1744 tree.php:2091 tree.php:2095 vdef.php:613
 msgid "Move Up"
 msgstr "تحرك للأعلى"
 
@@ -2396,7 +2398,7 @@ msgid "Delete Automation Template(s)"
 msgstr "حذف قالب (قوالب) التنفيذ التلقائي"
 
 #: automation_templates.php:274 include/global_arrays.php:1257
-#: include/global_form.php:1228 include/global_form.php:1637
+#: include/global_form.php:1237 include/global_form.php:1646
 #: lib/html_reports.php:995
 msgid "Device Template"
 msgstr "قالب الجهاز"
@@ -2561,7 +2563,7 @@ msgstr "الجذر"
 msgid "No Tree Rules Found"
 msgstr "لم يتم العثور على قواعد شجرة"
 
-#: cactid.php:44 lib/functions.php:5504 lib/functions.php:5567 poller.php:353
+#: cactid.php:44 lib/functions.php:5514 lib/functions.php:5577 poller.php:353
 #: poller.php:477 poller.php:525 poller.php:541 poller.php:687 poller.php:785
 #: poller_automation.php:53 poller_boost.php:306
 msgid "Cacti System Warning"
@@ -2613,7 +2615,7 @@ msgstr[4] ""
 msgstr[5] ""
 
 #: cdef.php:288 color_templates.php:249 data_source_profiles.php:290
-#: data_templates.php:413 graph_templates.php:389 host_templates.php:276
+#: data_templates.php:431 graph_templates.php:389 host_templates.php:276
 #: vdef.php:276
 msgid "Title Format:"
 msgstr "شكل العنوان"
@@ -2856,7 +2858,7 @@ msgid "Named Color"
 msgstr "مسمى اللون"
 
 #: color.php:702 color_templates.php:74 include/global_arrays.php:930
-#: include/global_form.php:985 include/global_form.php:2073
+#: include/global_form.php:994 include/global_form.php:2082
 msgid "Color"
 msgstr "اللون"
 
@@ -2888,14 +2890,14 @@ msgstr "تجمعات"
 msgid "Color Item"
 msgstr "البند اللون"
 
-#: color_templates.php:94 lib/api_aggregate.php:1795 lib/api_aggregate.php:1798
-#: lib/api_aggregate.php:1803 lib/html.php:1167 lib/html_reports.php:1736
+#: color_templates.php:94 lib/api_aggregate.php:1798 lib/api_aggregate.php:1801
+#: lib/api_aggregate.php:1806 lib/html.php:1170 lib/html_reports.php:1731
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "البند #٪ د"
 
-#: color_templates.php:133 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1855 lib/html.php:1268
+#: color_templates.php:133 graph_templates_inputs.php:235
+#: lib/api_aggregate.php:1858 lib/html.php:1271
 msgid "No Items"
 msgstr "لا عناصر"
 
@@ -3066,10 +3068,10 @@ msgstr "تصحيح مصدر البيانات التلقائي يتم إعادة 
 msgid "Data Source repair received an invalid Data Source ID."
 msgstr "تلقى إصلاح مصدر البيانات معرف مصدر بيانات غير صالح."
 
-#: data_debug.php:329 data_debug.php:807 data_queries.php:713
-#: data_sources.php:995 data_templates.php:620 graphs_items.php:463
-#: include/global_arrays.php:928 include/global_form.php:970
-#: lib/api_aggregate.php:1709 lib/html.php:1124
+#: data_debug.php:329 data_debug.php:816 data_queries.php:713
+#: data_sources.php:995 data_templates.php:638 graphs_items.php:466
+#: include/global_arrays.php:928 include/global_form.php:979
+#: lib/api_aggregate.php:1712 lib/html.php:1127
 msgid "Data Source"
 msgstr "مصدر البيانات"
 
@@ -3117,7 +3119,7 @@ msgstr "وجود"
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "تحديد ما إذا كان مصدر البيانات موجودًا في مخزن Poller."
 
-#: data_debug.php:369 data_sources.php:1639 data_templates.php:1199
+#: data_debug.php:369 data_sources.php:1639 data_templates.php:1217
 #: plugins.php:37 plugins.php:359
 msgid "Active"
 msgstr "نشط"
@@ -3150,7 +3152,7 @@ msgstr "تحديث RRD"
 msgid "Determines if the RRDfile has been writted to properly."
 msgstr "تحديد ما إذا كان قد تم wrDfile RRED إلى بشكل صحيح."
 
-#: data_debug.php:393 data_debug.php:554 data_debug.php:737
+#: data_debug.php:393 data_debug.php:563 data_debug.php:746
 msgid "Issues"
 msgstr "مناقشات جدلية"
 
@@ -3158,7 +3160,7 @@ msgstr "مناقشات جدلية"
 msgid "Summary of issues found for the Data Source."
 msgstr "أي مشاكل ملخص وجدت لمصدر البيانات."
 
-#: data_debug.php:511 data_debug.php:1058 data_sources.php:1443
+#: data_debug.php:511 data_debug.php:1067 data_sources.php:1443
 #: data_sources.php:1599 host.php:1736 include/global_arrays.php:917
 #: include/global_arrays.php:962 include/global_arrays.php:2187
 #: lib/api_automation.php:284 user_admin.php:1305 user_group_admin.php:980
@@ -3166,196 +3168,196 @@ msgstr "أي مشاكل ملخص وجدت لمصدر البيانات."
 msgid "Data Sources"
 msgstr "مصادر البيانات"
 
-#: data_debug.php:557 data_debug.php:1024
+#: data_debug.php:566 data_debug.php:1033
 msgid "Not Debugging"
 msgstr "تصحيح الأخطاء"
 
-#: data_debug.php:573
+#: data_debug.php:582
 msgid "No Checks"
 msgstr "لا الشيكات"
 
-#: data_debug.php:616 lib/api_automation.php:761 lib/graphs.php:79
+#: data_debug.php:625 lib/api_automation.php:761 lib/graphs.php:79
 #: lib/graphs.php:103
 msgid "Not Found"
 msgstr "لم يتم العثور على شيء"
 
-#: data_debug.php:634 data_debug.php:639
+#: data_debug.php:643 data_debug.php:648
 msgid "Not Checked Yet"
 msgstr "لا الشيكات"
 
-#: data_debug.php:657
+#: data_debug.php:666
 msgid "Issues found!  Waiting on RRDfile update"
 msgstr "وجدت القضايا! في انتظار تحديث RRDfile"
 
-#: data_debug.php:660
+#: data_debug.php:669
 msgid "No Initial found!  Waiting on RRDfile update"
 msgstr "لا يوجد مبدئي! في انتظار تحديث RRDfile"
 
-#: data_debug.php:664
+#: data_debug.php:673
 msgid "Waiting on analysis and RRDfile update"
 msgstr "هل تم تحديث RRDfile؟"
 
-#: data_debug.php:671
+#: data_debug.php:680
 msgid "RRDfile Owner"
 msgstr "مالك RRDfile"
 
-#: data_debug.php:676
+#: data_debug.php:685
 msgid "Website runs as"
 msgstr "موقع يعمل كما"
 
-#: data_debug.php:681
+#: data_debug.php:690
 msgid "Poller runs as"
 msgstr "يعمل Poller باسم"
 
-#: data_debug.php:686
+#: data_debug.php:695
 msgid "Is RRA Folder writeable by poller?"
 msgstr "هل مجلد RRA قابل للكتابة بواسطة مُلصق؟"
 
-#: data_debug.php:691
+#: data_debug.php:700
 msgid "Is RRDfile writeable by poller?"
 msgstr "هو RRDfile للتسجيل عن طريق الملقب؟"
 
-#: data_debug.php:696
+#: data_debug.php:705
 msgid "Does the RRDfile Exist?"
 msgstr "هل RRDfile موجود؟"
 
-#: data_debug.php:701
+#: data_debug.php:710
 msgid "Is the Data Source set as Active?"
 msgstr "هل تم تعيين مصدر البيانات على أنه نشط؟"
 
-#: data_debug.php:706
+#: data_debug.php:715
 msgid "Did the poller receive valid data?"
 msgstr "هل تلقى المُلقب بيانات صالحة؟"
 
-#: data_debug.php:711
+#: data_debug.php:720
 msgid "Was the RRDfile updated?"
 msgstr "هل تم تحديث RRDfile؟"
 
-#: data_debug.php:717
+#: data_debug.php:726
 msgid "First Check TimeStamp"
 msgstr "أول تحقق من TimeStamp"
 
-#: data_debug.php:722
+#: data_debug.php:731
 msgid "Second Check TimeStamp"
 msgstr "تحقق الثانية TimeStamp"
 
-#: data_debug.php:727
+#: data_debug.php:736
 msgid "Were we able to convert the title?"
 msgstr "هل كنا قادرين على تحويل العنوان؟"
 
-#: data_debug.php:732
+#: data_debug.php:741
 msgid "Data Source matches the RRDfile?"
 msgstr "لم يتم استقصاء مصدر البيانات"
 
-#: data_debug.php:746
+#: data_debug.php:755
 #, fuzzy, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till Complete ] %s"
 msgstr "أداة حل مشكلات مصدر البيانات [٪ s]"
 
-#: data_debug.php:746 data_debug.php:748
+#: data_debug.php:755 data_debug.php:757
 msgid "Refresh Now"
 msgstr "تحديث"
 
-#: data_debug.php:748
+#: data_debug.php:757
 #, fuzzy, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s"
 msgstr "أداة حل مشكلات مصدر البيانات [٪ s]"
 
-#: data_debug.php:750
+#: data_debug.php:759
 #, fuzzy, php-format
 msgid "Data Source Troubleshooter [ Analysis Complete! %s ]"
 msgstr "أداة حل مشكلات مصدر البيانات [٪ s]"
 
-#: data_debug.php:750
+#: data_debug.php:759
 msgid "Rerun Analysis"
 msgstr "إعادة تشغيل التحليل"
 
-#: data_debug.php:755
+#: data_debug.php:764
 msgid "Check"
 msgstr "التحقق من"
 
-#: data_debug.php:756 include/global_form.php:1028 lib/rrd.php:2923
+#: data_debug.php:765 include/global_form.php:1037 lib/rrd.php:2935
 #: utilities.php:566 utilities.php:583 utilities.php:2688
 msgid "Value"
 msgstr "القيمة"
 
-#: data_debug.php:757
+#: data_debug.php:766
 msgid "Results"
 msgstr "النتائج"
 
-#: data_debug.php:768
+#: data_debug.php:777
 msgid "<not set>"
 msgstr "لم يتم التعيين"
 
-#: data_debug.php:803 data_debug.php:854
+#: data_debug.php:812 data_debug.php:863
 msgid "Data Source Repair Recommendations"
 msgstr "حقول مصدر البيانات"
 
-#: data_debug.php:808
+#: data_debug.php:817
 msgid "Issue"
 msgstr "مشكل"
 
-#: data_debug.php:820
+#: data_debug.php:829
 #, fuzzy, php-format
 msgid "For attrbitute '%s', issue found '%s'"
 msgstr "بالنسبة إلى attrbitute '٪ s' ، تم العثور على المشكلة '٪ s'"
 
-#: data_debug.php:835
+#: data_debug.php:844
 msgid "Apply Suggested Fixes"
 msgstr "إعادة تطبيق الأسماء المقترحة"
 
-#: data_debug.php:835
+#: data_debug.php:844
 #, fuzzy, php-format
 msgid "Repair Steps [ %s ]"
 msgstr "خطوات الإصلاح [٪ s]"
 
-#: data_debug.php:837
+#: data_debug.php:846
 msgid "Repair Steps [ Run Fix from Command Line ]"
 msgstr "خطوات الإصلاح [تشغيل الإصلاح من سطر الأوامر]"
 
-#: data_debug.php:840
+#: data_debug.php:849
 msgid "Command"
 msgstr "المشرف"
 
-#: data_debug.php:856
+#: data_debug.php:865
 msgid "Waiting on Data Source Check to Complete"
 msgstr "في انتظار التحقق من مصدر البيانات حتى يكتمل"
 
-#: data_debug.php:944
+#: data_debug.php:953
 msgid "All Devices"
 msgstr "جميع الاجهزة"
 
-#: data_debug.php:944
+#: data_debug.php:953
 #, fuzzy, php-format
 msgid "Data Source Troubleshooter [ %s ]"
 msgstr "أداة حل مشكلات مصدر البيانات [٪ s]"
 
-#: data_debug.php:944
+#: data_debug.php:953
 msgid "No Device"
 msgstr "الجهاز:"
 
-#: data_debug.php:983
+#: data_debug.php:992
 msgid "Delete All Checks"
 msgstr "حذف الشيك"
 
-#: data_debug.php:991 data_sources.php:1399 data_templates.php:987
+#: data_debug.php:1000 data_sources.php:1399 data_templates.php:1005
 msgid "Profile"
 msgstr "الملف الشخصي"
 
-#: data_debug.php:995 data_debug.php:1011 data_debug.php:1022
-#: data_sources.php:1403 data_sources.php:1420 data_templates.php:991
+#: data_debug.php:1004 data_debug.php:1020 data_debug.php:1031
+#: data_sources.php:1403 data_sources.php:1420 data_templates.php:1009
 #: graphs_new.php:378 host.php:1586 lib/clog_webapi.php:538 lib/html.php:203
-#: lib/html_reports.php:973 lib/html_reports.php:2074 plugins.php:357
+#: lib/html_reports.php:973 lib/html_reports.php:2069 plugins.php:357
 #: settings.php:518 settings.php:537 settings.php:563 tree.php:794
 #: user_admin.php:2293 utilities.php:803 utilities.php:1214
 msgid "All"
 msgstr "الكل"
 
-#: data_debug.php:1012 utilities.php:825 utilities.php:956
+#: data_debug.php:1021 utilities.php:825 utilities.php:956
 msgid "Failed"
 msgstr "فشل"
 
-#: data_debug.php:1018 data_debug.php:1023
+#: data_debug.php:1027 data_debug.php:1032
 msgid "Debugging"
 msgstr "تصحيح الأخطاء"
 
@@ -3527,7 +3529,7 @@ msgstr "معرف قاعدة البيانات الداخلي لهذا قالب ا
 msgid "Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template."
 msgstr "لا يمكن حذف مدخلات البيانات المستخدمة. يتم تعريف الاستخدام على أنه مرجع إما بواسطة مصدر بيانات أو قالب بيانات."
 
-#: data_input.php:942 data_source_profiles.php:1047 data_templates.php:1145
+#: data_input.php:942 data_source_profiles.php:1047 data_templates.php:1163
 msgid "Data Sources Using"
 msgstr "مصادر البيانات باستخدام"
 
@@ -3540,7 +3542,7 @@ msgid "The number of Data Templates that use this Data Input Method."
 msgstr "عدد قوالب البيانات التي تستخدم طريقة إدخال البيانات هذه."
 
 #: data_input.php:954 data_queries.php:1406 include/global_arrays.php:1249
-#: include/global_form.php:584 include/global_form.php:1388
+#: include/global_form.php:584 include/global_form.php:1397
 msgid "Data Input Method"
 msgstr "طريقة إدخال البيانات"
 
@@ -3621,8 +3623,8 @@ msgstr "معادلة"
 msgid "No Suggested Values Found"
 msgstr "لم يتم العثور على قيم مقترحة"
 
-#: data_queries.php:822 data_queries.php:930 include/global_form.php:2108
-#: include/global_form.php:2150 lib/api_automation.php:1417 utilities.php:1638
+#: data_queries.php:822 data_queries.php:930 include/global_form.php:2117
+#: include/global_form.php:2159 lib/api_automation.php:1417 utilities.php:1638
 msgid "Field Name"
 msgstr "اسم الحقل"
 
@@ -3839,7 +3841,7 @@ msgstr "خطوات"
 
 #: data_source_profiles.php:613 graphs_new.php:417 include/global_form.php:298
 #: lib/html.php:517 lib/html_filter.php:72 lib/installer.php:2524
-#: lib/rrd.php:2977 utilities.php:634 utilities.php:1547
+#: lib/rrd.php:2989 utilities.php:634 utilities.php:1547
 msgid "Rows"
 msgstr "الصفوف"
 
@@ -3941,7 +3943,7 @@ msgstr "ملفات مصدر البيانات"
 msgid "Profiles"
 msgstr "ملفات شخصية"
 
-#: data_source_profiles.php:914 data_templates.php:1020
+#: data_source_profiles.php:914 data_templates.php:1038
 msgid "Has Data Sources"
 msgstr "لديه مصادر البيانات"
 
@@ -4150,7 +4152,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:634 data_templates.php:774
+#: data_sources.php:634 data_templates.php:792
 #, fuzzy, php-format
 msgid "Custom Data [data input: %s]"
 msgstr "البيانات المخصصة [إدخال البيانات:٪ s]"
@@ -4168,7 +4170,7 @@ msgstr "(من قالب البيانات)"
 msgid "Nothing Entered"
 msgstr "لا شيء دخل"
 
-#: data_sources.php:686 data_templates.php:856
+#: data_sources.php:686 data_templates.php:874
 msgid "No Input Fields for the Selected Data Input Source"
 msgstr "لا حقول الإدخال لمصدر إدخال البيانات المحددة"
 
@@ -4229,8 +4231,8 @@ msgstr "الاسم المعطى لقالب البيانات هذا. يرجى م�
 #: data_sources.php:932 graph_view.php:726 graphs.php:1583
 #: include/global_arrays.php:877 include/global_arrays.php:926
 #: include/global_arrays.php:1573 include/global_arrays.php:1742
-#: lib/api_automation.php:425 lib/functions.php:4892 lib/html.php:2043
-#: lib/html.php:2075 lib/html_reports.php:1005 utilities.php:1638
+#: lib/api_automation.php:425 lib/functions.php:4897 lib/html.php:2046
+#: lib/html.php:2078 lib/html_reports.php:1005 utilities.php:1638
 msgid "Device"
 msgstr "جهاز"
 
@@ -4259,7 +4261,7 @@ msgstr "البيانات المخصصة"
 msgid "Data Source Item %s"
 msgstr "عنصر مصدر البيانات٪ s"
 
-#: data_sources.php:1088 data_templates.php:712
+#: data_sources.php:1088 data_templates.php:730
 msgid "New"
 msgstr "جديد"
 
@@ -4271,7 +4273,7 @@ msgstr "تصحيح مصدر البيانات"
 msgid "RRDtool Tune Info"
 msgstr "RRDtool معلومات اللحن"
 
-#: data_sources.php:1195 data_templates.php:1198 include/global_form.php:596
+#: data_sources.php:1195 data_templates.php:1216 include/global_form.php:596
 msgid "External"
 msgstr "خارجي"
 
@@ -4368,148 +4370,148 @@ msgstr "تغيير الملف الشخصي"
 msgid "Field \"%s\" is missing an Output Field"
 msgstr "يفتقد الحقل \"%s\" إلى حقل إخراج"
 
-#: data_templates.php:402
+#: data_templates.php:420
 msgid "Click 'Continue' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed."
 msgstr "انقر فوق &quot;متابعة&quot; لحذف قالب (نماذج) البيانات التالية. ستصبح أي مصادر بيانات مرفقة بهذه القوالب مصدرًا فرديًا للبيانات وستتم إزالة جميع مزايا Templating."
 
-#: data_templates.php:407
+#: data_templates.php:425
 msgid "Delete Data Template(s)"
 msgstr "حذف قالب (نماذج) البيانات"
 
-#: data_templates.php:411
+#: data_templates.php:429
 msgid "Click 'Continue' to duplicate the following Data Template(s). You can optionally change the title format for the new Data Template(s)."
 msgstr "انقر فوق &quot;متابعة&quot; لتكرار قالب (نماذج) البيانات التالية. يمكنك بشكل اختياري تغيير تنسيق العنوان الخاص بقالب (نماذج) البيانات الجديدة."
 
-#: data_templates.php:413
+#: data_templates.php:431
 msgid "template_title"
 msgstr "عنوان القالب"
 
-#: data_templates.php:417
+#: data_templates.php:435
 msgid "Duplicate Data Template(s)"
 msgstr "قالب (ملفات) بيانات مكررة"
 
-#: data_templates.php:421
+#: data_templates.php:439
 msgid "Click 'Continue' to change the default Data Source Profile for the following Data Template(s)."
 msgstr "انقر فوق &quot;متابعة&quot; لتغيير ملف تعريف مصدر البيانات الافتراضي للقالب (ق) البيانات التالية."
 
-#: data_templates.php:423
+#: data_templates.php:441
 msgid "New Data Source Profile"
 msgstr "ملف مصدر بيانات جديد"
 
-#: data_templates.php:429
+#: data_templates.php:447
 msgid "NOTE: This change only will affect future Data Sources and does not alter existing Data Sources."
 msgstr "ملاحظة: هذا التغيير سيؤثر فقط على مصادر البيانات المستقبلية ولا يغير مصادر البيانات الحالية."
 
-#: data_templates.php:433
+#: data_templates.php:451
 msgid "Change Data Source Profile"
 msgstr "تغيير ملف تعريف مصدر البيانات"
 
-#: data_templates.php:577
+#: data_templates.php:595
 #, fuzzy, php-format
 msgid "Data Templates [edit: %s]"
 msgstr "قوالب البيانات [تحرير:٪ s]"
 
-#: data_templates.php:596
+#: data_templates.php:614
 msgid "Edit Data Input Method."
 msgstr "تحرير طريقة إدخال البيانات."
 
-#: data_templates.php:605
+#: data_templates.php:623
 msgid "Data Templates [new]"
 msgstr "قوالب البيانات [جديد]"
 
-#: data_templates.php:637
+#: data_templates.php:655
 msgid "This field is always templated."
 msgstr "هذا الحقل دائمًا يتم إعداده وفقًا للنموذج."
 
-#: data_templates.php:641 data_templates.php:741 data_templates.php:807
+#: data_templates.php:659 data_templates.php:759 data_templates.php:825
 msgid "Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation."
 msgstr "حدد مربع الاختيار هذا إذا كنت ترغب في السماح للمستخدم بتجاوز القيمة على اليمين أثناء إنشاء مصدر البيانات."
 
-#: data_templates.php:688
+#: data_templates.php:706
 msgid "Data Templates in use can not be modified"
 msgstr "لا يمكن تعديل قوالب البيانات المستخدمة"
 
-#: data_templates.php:712 data_templates.php:714
+#: data_templates.php:730 data_templates.php:732
 #, fuzzy, php-format
 msgid "Data Source Item [%s]"
 msgstr "عنصر مصدر البيانات [٪ s]"
 
-#: data_templates.php:789
+#: data_templates.php:807
 #, fuzzy
 msgid "This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations."
 msgstr "تم تعطيل هذه القيمة نظرًا لأنها قيمة مشتقة من الجهاز أو كائن استعلام بيانات خاص يتتبع ارتباطات استعلام البيانات الهامة."
 
-#: data_templates.php:801
+#: data_templates.php:819
 #, fuzzy
 msgid "This value is disabled due to it being derived from the Device and read only."
 msgstr "تم تعطيل هذه القيمة لأنها مشتقة من الجهاز وقراءتها فقط."
 
-#: data_templates.php:837
+#: data_templates.php:855
 #, fuzzy
 msgid "Value will be derived from the Device if this field is left empty."
 msgstr "سيتم اشتقاق القيمة من الجهاز إذا تم ترك هذا الحقل فارغًا."
 
-#: data_templates.php:905
+#: data_templates.php:923
 #, fuzzy
 msgid "Custom Data Warning Message"
 msgstr "البيانات المخصصة [إدخال البيانات:٪ s]"
 
-#: data_templates.php:906
+#: data_templates.php:924
 #, fuzzy
 msgid "WARNING: Data Loss can Occur"
 msgstr "تحذير: يمكن أن يحدث فقد البيانات"
 
-#: data_templates.php:908
+#: data_templates.php:926
 #, fuzzy
 msgid "After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will loose their Custom Data.  This can result in broken Data Collection and Graphs"
 msgstr "بعد إلغاء تحديد مربع الاختيار هذا ثم حفظ قالب البيانات ، ستفقد أي مصادر بيانات موجودة تستند إلى قالب البيانات بياناتها المخصصة. يمكن أن يؤدي هذا إلى تعطل جمع البيانات والرسوم البيانية"
 
-#: data_templates.php:972 data_templates.php:1003 data_templates.php:1170
+#: data_templates.php:990 data_templates.php:1021 data_templates.php:1188
 #: include/global_arrays.php:1131 include/global_arrays.php:2169
 msgid "Data Templates"
 msgstr "قوالب البيانات"
 
-#: data_templates.php:1128
+#: data_templates.php:1146
 msgid "Data Template Name"
 msgstr "اسم قالب البيانات"
 
-#: data_templates.php:1131
+#: data_templates.php:1149
 msgid "The name of this Data Template."
 msgstr "اسم قالب البيانات هذا."
 
-#: data_templates.php:1137
+#: data_templates.php:1155
 msgid "The internal database ID for this Data Template.  Useful when performing automation or debugging."
 msgstr "معرف قاعدة البيانات الداخلي لهذا قالب البيانات. مفيد عند تنفيذ التشغيل الآلي أو التصحيح."
 
-#: data_templates.php:1142
+#: data_templates.php:1160
 msgid "Data Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Data Source."
 msgstr "لا يمكن حذف قوالب البيانات المستخدمة. يتم تعريف الاستخدام على أنه مرجع من قبل مصدر بيانات."
 
-#: data_templates.php:1148
+#: data_templates.php:1166
 msgid "The number of Data Sources using this Data Template."
 msgstr "عدد مصادر البيانات التي تستخدم قالب البيانات هذا."
 
-#: data_templates.php:1151
+#: data_templates.php:1169
 msgid "Input Method"
 msgstr "طريقة الادخال"
 
-#: data_templates.php:1154
+#: data_templates.php:1172
 msgid "The method that is used to place Data into the Data Source RRDfile."
 msgstr "الأسلوب المستخدم لوضع البيانات في RRDfile مصدر البيانات."
 
-#: data_templates.php:1157
+#: data_templates.php:1175
 msgid "Profile Name"
 msgstr "اسم الملف الشخصي"
 
-#: data_templates.php:1160
+#: data_templates.php:1178
 msgid "The default Data Source Profile for this Data Template."
 msgstr "ملف تعريف مصدر البيانات الافتراضي لهذا القالب البيانات."
 
-#: data_templates.php:1166
+#: data_templates.php:1184
 msgid "Data Sources based on Inactive Data Templates will not be updated when the poller runs."
 msgstr "لن يتم تحديث مصادر البيانات المستندة إلى قوالب البيانات غير النشطة عند تشغيل أداة التلقيم."
 
-#: data_templates.php:1204
+#: data_templates.php:1222
 msgid "No Data Templates Found"
 msgstr "لا توجد قوالب بيانات"
 
@@ -4590,23 +4592,23 @@ msgstr "تصديرCSV"
 msgid "Click to view just this Graph in Real-time"
 msgstr "انقر لعرض هذا الرسم البياني في الوقت الفعلي"
 
-#: graph.php:247 lib/html.php:2448
+#: graph.php:247 lib/html.php:2451
 msgid "Utility View"
 msgstr "عرض الأداة المساعدة"
 
-#: graph.php:367
+#: graph.php:366
 msgid "Graph Utility View"
 msgstr "عرض أداة الرسم البياني"
 
-#: graph.php:380
+#: graph.php:379
 msgid "Graph Source/Properties"
 msgstr "مصدر / خصائص الرسم البياني"
 
-#: graph.php:384
+#: graph.php:383
 msgid "Graph Data"
 msgstr "بيانات الرسم البياني"
 
-#: graph.php:563
+#: graph.php:562
 msgid "RRDtool Graph Syntax"
 msgstr "RRDtool الرسم البياني البناء"
 
@@ -4631,7 +4633,7 @@ msgid "Cacti Real-time Graphing"
 msgstr "الصبار في الوقت الحقيقي الرسوم البيانية"
 
 #: graph_realtime.php:411 lib/html_graph.php:238 lib/html_reports.php:124
-#: lib/html_tree.php:1116
+#: lib/html_tree.php:1057
 msgid "Thumbnails"
 msgstr "الصورة المصغرة"
 
@@ -4750,7 +4752,7 @@ msgstr "حدد مربع الاختيار هذا إذا كنت ترغب في ال
 
 #: graph_templates.php:701 graph_templates.php:716 graph_templates.php:880
 #: graphs_new.php:486 include/global_arrays.php:1130
-#: include/global_arrays.php:2115 lib/html_tree.php:606 user_admin.php:1445
+#: include/global_arrays.php:2115 lib/html_tree.php:547 user_admin.php:1445
 #: user_group_admin.php:1115
 msgid "Graph Templates"
 msgstr "قوالب الرسم البياني"
@@ -4787,40 +4789,40 @@ msgstr "العلامة الرأسية للرسم البياني الناتج."
 msgid "No Graph Templates Found"
 msgstr "لا توجد قوالب الرسم البياني"
 
-#: graph_templates_inputs.php:145
+#: graph_templates_inputs.php:148
 #, fuzzy, php-format
 msgid "Graph Item Inputs [edit graph: %s]"
 msgstr "مدخلات عناصر الرسم البياني [عدل الرسم البياني:٪ s]"
 
-#: graph_templates_inputs.php:196
+#: graph_templates_inputs.php:199
 msgid "Associated Graph Items"
 msgstr "عناصر الرسم البياني المرتبطة"
 
-#: graph_templates_inputs.php:220
+#: graph_templates_inputs.php:223
 #, fuzzy, php-format
 msgid "Item #%s"
 msgstr "العناصر"
 
-#: graph_templates_items.php:101 graph_templates_items.php:127
+#: graph_templates_items.php:135 graph_templates_items.php:161
 #: graphs_items.php:141
 msgid "Cur:"
 msgstr "لئيم:"
 
-#: graph_templates_items.php:108 graph_templates_items.php:134
+#: graph_templates_items.php:142 graph_templates_items.php:168
 #: graphs_items.php:148
 msgid "Avg:"
 msgstr "متوسط:"
 
-#: graph_templates_items.php:115 graph_templates_items.php:148
+#: graph_templates_items.php:149 graph_templates_items.php:182
 #: graphs_items.php:162
 msgid "Max:"
 msgstr "الحد الأقصى:"
 
-#: graph_templates_items.php:141 graphs_items.php:155
+#: graph_templates_items.php:175 graphs_items.php:155
 msgid "Min:"
 msgstr "الحد الأدنى:"
 
-#: graph_templates_items.php:419
+#: graph_templates_items.php:506
 #, fuzzy, php-format
 msgid "Graph Template Items [edit graph: %s]"
 msgstr "عناصر قالب الرسم البياني [عدل الرسم البياني:٪ s]"
@@ -4870,18 +4872,18 @@ msgid "Report"
 msgstr "تقرير"
 
 #: graph_view.php:629 lib/html.php:189 lib/html.php:194 lib/html_graph.php:157
-#: lib/html_tree.php:1042
+#: lib/html_tree.php:983
 msgid "All Graphs & Templates"
 msgstr "جميع الرسوم البيانية والقوالب"
 
 #: graph_view.php:630 include/global_arrays.php:2769 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:197 lib/html_graph.php:158
-#: lib/html_tree.php:1043
+#: lib/html_tree.php:984
 msgid "Not Templated"
 msgstr "غير معبد"
 
 #: graph_view.php:721 graph_view.php:749 graphs.php:2194
-#: include/global_form.php:1868 lib/html_reports.php:1036 tree.php:901
+#: include/global_form.php:1877 lib/html_reports.php:1036 tree.php:901
 msgid "Graph Name"
 msgstr "اسم الرسم البياني"
 
@@ -4926,12 +4928,12 @@ msgstr "بوضع المعاينة"
 msgid "Add Selected Graphs to Report"
 msgstr "إضافة الرسوم البيانية المحددة لتقرير"
 
-#: graph_view.php:955 lib/html.php:2499
+#: graph_view.php:955 lib/html.php:2502
 msgid "Ok"
 msgstr "أوك"
 
-#: graph_xport.php:120 graph_xport.php:158 include/global_form.php:1793
-#: include/global_form.php:2061 lib/html.php:1826 links.php:381
+#: graph_xport.php:120 graph_xport.php:158 include/global_form.php:1802
+#: include/global_form.php:2070 lib/html.php:1829 links.php:381
 msgid "Title"
 msgstr "العنوان"
 
@@ -5008,7 +5010,7 @@ msgstr "جهاز"
 msgid "Created graph: %s"
 msgstr "الرسم البياني المنشأ:٪ s"
 
-#: graphs.php:260 lib/template.php:2131 lib/template.php:2160
+#: graphs.php:260 lib/template.php:2140 lib/template.php:2169
 msgid "ERROR: No Data Source associated. Check Template"
 msgstr "خطأ: لا يوجد مصدر بيانات مقترن. تحقق من القالب"
 
@@ -5196,26 +5198,26 @@ msgstr "معرف قاعدة البيانات الداخلي لهذا الرسم 
 msgid "Empty Graph"
 msgstr "نسخ الرسم البياني"
 
-#: graphs_items.php:333
+#: graphs_items.php:336
 msgid "Data Sources [No Device]"
 msgstr "مصادر البيانات [لا يوجد جهاز]"
 
-#: graphs_items.php:335
+#: graphs_items.php:338
 #, fuzzy, php-format
 msgid "Data Sources [%s]"
 msgstr "مصادر البيانات [٪ s]"
 
-#: graphs_items.php:350 include/global_arrays.php:1248
-#: include/global_form.php:1647
+#: graphs_items.php:353 include/global_arrays.php:1248
+#: include/global_form.php:1656
 msgid "Data Template"
 msgstr "قالب البيانات"
 
-#: graphs_items.php:423
+#: graphs_items.php:426
 #, fuzzy, php-format
 msgid "Graph Items [graph: %s]"
 msgstr "عناصر الرسم البياني [الرسم البياني:٪ s]"
 
-#: graphs_items.php:464
+#: graphs_items.php:467
 msgid "Choose the Data Source to associate with this Graph Item."
 msgstr "اختر مصدر البيانات لربطه مع عنصر الرسم البياني هذا."
 
@@ -5236,7 +5238,7 @@ msgstr "رسومات بيانية جديدة لـ [جميع الأجهزة]"
 msgid "New Graphs for None Host Type"
 msgstr "رسومات بيانية جديدة لـ None Host Type"
 
-#: graphs_new.php:339 lib/html.php:2446
+#: graphs_new.php:339 lib/html.php:2449
 msgid "Filter Settings Saved"
 msgstr "تصفية الإعدادات المحفوظة"
 
@@ -5533,7 +5535,7 @@ msgstr "إضافة قالب الرسم البياني إلى الجهاز"
 msgid "Data Query Debug Information"
 msgstr "بيانات تصحيح الاستعلام عن البيانات"
 
-#: host.php:859 lib/functions.php:3897 tree.php:1517 tree.php:1591
+#: host.php:859 lib/functions.php:3902 tree.php:1517 tree.php:1591
 #: tree.php:1699 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "نسخ"
@@ -5560,7 +5562,7 @@ msgstr "طريقة إعادة الفهرسة"
 #: include/global_arrays.php:2655 include/global_arrays.php:2673
 #: include/global_arrays.php:2697 lib/api_automation.php:1293
 #: lib/api_automation.php:1355 lib/api_automation.php:1422
-#: lib/html_reports.php:1617 links.php:379 plugins.php:456
+#: lib/html_reports.php:1612 links.php:379 plugins.php:456
 msgid "Actions"
 msgstr "أفعال"
 
@@ -5573,7 +5575,7 @@ msgstr "[٪ d عناصر ،٪ d صفوف]"
 msgid "Fail"
 msgstr "فشل"
 
-#: host.php:943 lib/functions.php:4907 lib/functions.php:4912
+#: host.php:943 lib/functions.php:4912 lib/functions.php:4917
 msgid "Success"
 msgstr "نجاح"
 
@@ -5629,7 +5631,7 @@ msgstr "SNMP GetNext"
 msgid "Undefined"
 msgstr "غير مُحدد"
 
-#: host.php:1529 include/global_settings.php:576 lib/html.php:2104
+#: host.php:1529 include/global_settings.php:576 lib/html.php:2107
 #: lib/html_reports.php:986
 msgid "Site"
 msgstr "موضع، موقع، مقر"
@@ -5649,7 +5651,7 @@ msgstr "يستردّ"
 
 #: host.php:1636 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:951 lib/plugins.php:1134 lib/plugins.php:1135
-#: lib/rrd.php:2948 lib/rrd.php:2960 user_admin.php:826 utilities.php:211
+#: lib/rrd.php:2960 lib/rrd.php:2972 user_admin.php:826 utilities.php:211
 #: utilities.php:212 utilities.php:2312
 msgid "Unknown"
 msgstr "غير معروف"
@@ -5662,7 +5664,7 @@ msgstr "وصف الجهاز"
 msgid "The name by which this Device will be referred to."
 msgstr "الاسم الذي سيشار إليه بهذا الجهاز."
 
-#: host.php:1718 include/global_form.php:1193 include/global_form.php:1731
+#: host.php:1718 include/global_form.php:1202 include/global_form.php:1740
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
 #: pollers.php:130 pollers.php:996 user_admin.php:1305 user_group_admin.php:980
@@ -5858,16 +5860,16 @@ msgstr "يجب عليك تسجيل الدخول للوصول إلى هذه ال�
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "FATAL: يجب تسجيل الدخول للوصول إلى هذه المنطقة من Cacti."
 
-#: include/auth.php:294 lib/functions.php:6476 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:6486 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "تم رفض الإذن"
 
-#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6487 permission_denied.php:54
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "إذا كنت تشعر أن هذا خطأ. يرجى الاتصال بمدير Cacti."
 
-#: include/auth.php:295 lib/functions.php:6477 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6487 permission_denied.php:54
 msgid "You are not permitted to access this section of Cacti."
 msgstr "لا يسمح لك بالوصول إلى هذا القسم من Cacti."
 
@@ -6316,7 +6318,7 @@ msgstr "يمين"
 msgid "Justified"
 msgstr "ضبط"
 
-#: include/global_arrays.php:533 lib/html.php:2525
+#: include/global_arrays.php:533 lib/html.php:2528
 msgid "Center"
 msgstr "وسط"
 
@@ -6572,8 +6574,8 @@ msgstr "البحث محددة"
 msgid "Enabled (strict mode)"
 msgstr "ممكن (الوضع المقيد)"
 
-#: include/global_arrays.php:846 include/global_form.php:2116
-#: include/global_form.php:2158 lib/api_automation.php:1291
+#: include/global_arrays.php:846 include/global_form.php:2125
+#: include/global_form.php:2167 lib/api_automation.php:1291
 #: lib/api_automation.php:1353
 msgid "Operator"
 msgstr "جراح"
@@ -6602,13 +6604,13 @@ msgstr "الترتيب الطبيعي"
 msgid "Numeric Ordering"
 msgstr "طلب رقمي"
 
-#: include/global_arrays.php:875 lib/rrd.php:2889
+#: include/global_arrays.php:875 lib/rrd.php:2901
 msgid "Header"
 msgstr "رأس"
 
 #: include/global_arrays.php:876 include/global_arrays.php:927
 #: include/global_arrays.php:1572 include/global_arrays.php:1741
-#: lib/html.php:2514
+#: lib/html.php:2517
 msgid "Graph"
 msgstr "الرسم البياني"
 
@@ -6680,8 +6682,8 @@ msgstr "وحدة التحكم"
 msgid "Console Page"
 msgstr "أعلى صفحة وحدة التحكم"
 
-#: include/global_arrays.php:909 lib/html_form_template.php:627
-#: lib/html_form_template.php:639
+#: include/global_arrays.php:909 lib/html_form_template.php:630
+#: lib/html_form_template.php:642
 msgid "New Graphs"
 msgstr "الرسوم البيانية الجديدة"
 
@@ -6729,7 +6731,7 @@ msgstr "قواعد الجهاز"
 
 #: include/global_arrays.php:940 include/global_arrays.php:989
 #: include/global_arrays.php:1128 lib/html_filter.php:177
-#: lib/html_graph.php:252 lib/html_tree.php:1130
+#: lib/html_graph.php:252 lib/html_tree.php:1071
 msgid "Presets"
 msgstr "إعدادات مسبقة"
 
@@ -6762,7 +6764,7 @@ msgid "Configuration"
 msgstr "التكوين"
 
 #: include/global_arrays.php:952 include/global_arrays.php:974
-#: lib/html.php:2239 lib/html.php:2529
+#: lib/html.php:2242 lib/html.php:2532
 msgid "Settings"
 msgstr "إعدادات"
 
@@ -6895,7 +6897,7 @@ msgstr "الإدارة العامة"
 msgid "System Administration"
 msgstr "إدارة النظام"
 
-#: include/global_arrays.php:1245 lib/html.php:1128
+#: include/global_arrays.php:1245 lib/html.php:1131
 msgid "CDEF"
 msgstr "CDEF"
 
@@ -6912,7 +6914,7 @@ msgid "Data Input Field"
 msgstr "حقل إدخال البيانات"
 
 #: include/global_arrays.php:1251 include/global_form.php:593
-#: include/global_form.php:1705
+#: include/global_form.php:1714
 msgid "Data Source Profile"
 msgstr "ملف مصدر البيانات"
 
@@ -6928,7 +6930,7 @@ msgstr "البند قالب الرسم البياني"
 msgid "Graph Template Input"
 msgstr "إدخال قالب الرسم البياني"
 
-#: include/global_arrays.php:1258 lib/html.php:1129
+#: include/global_arrays.php:1258 lib/html.php:1132
 msgid "VDEF"
 msgstr "VDEF"
 
@@ -7220,7 +7222,7 @@ msgstr "Inline GIF Image، LN Style"
 msgid "Text"
 msgstr "نص"
 
-#: include/global_arrays.php:1571 include/global_form.php:2236
+#: include/global_arrays.php:1571 include/global_form.php:2245
 msgid "Tree"
 msgstr "شجرة"
 
@@ -7689,7 +7691,7 @@ msgid "List Mode"
 msgstr "وضع قائمة"
 
 #: include/global_arrays.php:1965 include/global_arrays.php:1971
-#: lib/functions.php:3468 lib/html.php:1674 lib/html.php:1751 links.php:344
+#: lib/functions.php:3473 lib/html.php:1677 lib/html.php:1754 links.php:344
 #: user_admin.php:1715 user_group_admin.php:1385
 msgid "Console"
 msgstr "وحدة التحكم"
@@ -7713,7 +7715,7 @@ msgstr "إدارة الرسم البياني"
 msgid "(Edit)"
 msgstr "(تعديل)"
 
-#: include/global_arrays.php:2001 lib/api_aggregate.php:1704
+#: include/global_arrays.php:2001 lib/api_aggregate.php:1707
 msgid "Graph Items"
 msgstr "عناصر الرسم البياني"
 
@@ -7741,7 +7743,7 @@ msgstr "سجل عرض"
 msgid "Graph Trees"
 msgstr "أشجار الرسم البياني"
 
-#: include/global_arrays.php:2133 lib/api_aggregate.php:1704
+#: include/global_arrays.php:2133 lib/api_aggregate.php:1707
 msgid "Graph Template Items"
 msgstr "عناصر قالب الرسم البياني"
 
@@ -7828,7 +7830,7 @@ msgid "Export Results"
 msgstr "تصدير النتائج"
 
 #: include/global_arrays.php:2523 include/global_arrays.php:2553
-#: lib/html.php:1695 lib/html.php:1697 lib/html.php:1776
+#: lib/html.php:1698 lib/html.php:1700 lib/html.php:1779
 msgid "Reporting"
 msgstr "التقارير"
 
@@ -8075,7 +8077,7 @@ msgstr "معدل تكرار جمع البيانات من مصدر البيانا
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "كم من الوقت يمكن أن تكون البيانات مفقودة قبل أن يسجل RRDtool بيانات غير معروفة. قم بزيادة هذه القيمة إذا كان مصدر البيانات غير مستقر وترغب في ترحيل البيانات القديمة بدلاً من إظهار الفجوات في الرسومات البيانية. يتم ضرب هذه القيمة بواسطة X-Files Factor لتحديد مقدار الوقت الفعلي."
 
-#: include/global_form.php:240 lib/rrd.php:2980
+#: include/global_form.php:240 lib/rrd.php:2992
 msgid "X-Files Factor"
 msgstr "X-Files Factor"
 
@@ -8255,7 +8257,7 @@ msgstr "المسار الكامل إلى RRDfile."
 msgid "The script/source used to gather data for this data source."
 msgstr "البرنامج النصي / المصدر المستخدم لجمع البيانات لمصدر البيانات هذا."
 
-#: include/global_form.php:595 include/global_form.php:1707
+#: include/global_form.php:595 include/global_form.php:1716
 msgid "Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources."
 msgstr "حدد ملف تعريف مصدر البيانات. يتحكم ملف تعريف مصدر البيانات في الفاصل الزمني للاستقصاء وتجميع البيانات وسياسة الاستبقاء لمصادر البيانات الناتجة."
 
@@ -8604,7 +8606,7 @@ msgstr "اتجاه الأسطورة (- -legend-direction = &lt;direction&gt;)"
 msgid "Place the legend items in the given vertical order."
 msgstr "ضع عناصر وسيلة الإيضاح في الترتيب الرأسي المحدد."
 
-#: include/global_form.php:963 lib/api_aggregate.php:1710 lib/html.php:1125
+#: include/global_form.php:963 lib/api_aggregate.php:1713 lib/html.php:1128
 msgid "Graph Item Type"
 msgstr "نوع البند البياني"
 
@@ -8612,680 +8614,690 @@ msgstr "نوع البند البياني"
 msgid "How data for this item is represented visually on the graph."
 msgstr "كيفية تمثيل بيانات هذا العنصر بشكل مرئي على الرسم البياني."
 
-#: include/global_form.php:982
+#: include/global_form.php:970
+#, fuzzy
+#| msgid "Data Template Item"
+msgid "Data Template Filter"
+msgstr "عنصر قالب البيانات"
+
+#: include/global_form.php:976
+msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
+msgstr ""
+
+#: include/global_form.php:991
 msgid "The data source to use for this graph item."
 msgstr "مصدر البيانات لاستخدامه في عنصر الرسم البياني هذا."
 
-#: include/global_form.php:989
+#: include/global_form.php:998
 msgid "The color to use for the legend."
 msgstr "اللون لاستخدامه في وسيلة الإيضاح."
 
-#: include/global_form.php:992
+#: include/global_form.php:1001
 msgid "Opacity/Alpha Channel"
 msgstr "تعتيم / قناة ألفا"
 
-#: include/global_form.php:996
+#: include/global_form.php:1005
 msgid "The opacity/alpha channel of the color."
 msgstr "قناة التعتيم / ألفا للون."
 
-#: include/global_form.php:999 lib/rrd.php:2976
+#: include/global_form.php:1008 lib/rrd.php:2988
 msgid "Consolidation Function"
 msgstr "وظيفة توحيد"
 
-#: include/global_form.php:1003
+#: include/global_form.php:1012
 msgid "How data for this item is represented statistically on the graph."
 msgstr "كيف يتم تمثيل بيانات هذا البند إحصائيا على الرسم البياني."
 
-#: include/global_form.php:1006
+#: include/global_form.php:1015
 msgid "CDEF Function"
 msgstr "وظيفة CDEF"
 
-#: include/global_form.php:1011
+#: include/global_form.php:1020
 msgid "A CDEF (math) function to apply to this item on the graph or legend."
 msgstr "دالة CDEF (رياضيات) لتطبيق هذا العنصر على الرسم البياني أو وسيلة الإيضاح."
 
-#: include/global_form.php:1014
+#: include/global_form.php:1023
 msgid "VDEF Function"
 msgstr "وظيفة VDEF"
 
-#: include/global_form.php:1019
+#: include/global_form.php:1028
 msgid "A VDEF (math) function to apply to this item on the graph legend."
 msgstr "دالة VDEF (رياضيات) لتطبيق هذا العنصر على وسيلة إيضاح الرسم البياني."
 
-#: include/global_form.php:1022
+#: include/global_form.php:1031
 msgid "Shift Data"
 msgstr "تحول البيانات"
 
-#: include/global_form.php:1025
+#: include/global_form.php:1034
 msgid "Offset your data on the time axis (x-axis) by the amount specified in the 'value' field."
 msgstr "قم بإزاحة البيانات الخاصة بك على محور الوقت (x-axis) بالمبلغ المحدد في حقل &quot;القيمة&quot;."
 
-#: include/global_form.php:1033
+#: include/global_form.php:1042
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
 msgstr "[HRULE | VRULE]: قيمة عنصر الرسم البياني. <br/> [TICK]: الكسر لخط التحديد. <br/> [SHIFT]: وقت الإزاحة بالثواني."
 
-#: include/global_form.php:1036
+#: include/global_form.php:1045
 msgid "GPRINT Type"
 msgstr "نوع GPRINT"
 
-#: include/global_form.php:1040
+#: include/global_form.php:1049
 msgid "If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under \"GPRINT Presets\"."
 msgstr "إذا كان عنصر الرسم البياني هذا هو GPRINT ، فيمكنك اختيار تنسيق آخر اختياريًا هنا. يمكنك تحديد أنواع إضافية ضمن &quot;GPRINT Presets&quot;."
 
-#: include/global_form.php:1043
+#: include/global_form.php:1052
 msgid "Text Alignment (TEXTALIGN)"
 msgstr "محاذاة النص (TEXTALIGN)"
 
-#: include/global_form.php:1048
+#: include/global_form.php:1057
 msgid "All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.  This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/> <strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!"
 msgstr "سيتم محاذاة كافة الأسطر (خطوط) الأسطورة التالية كما هو موضح هنا. يمكنك استخدام هذا الأمر عدة مرات في رسم بياني واحد. لا يعطي هذا الأمر تخطيط جدولي. <br/> <strong>ملاحظة:</strong> قد ترغب في إدراج &lt;HR&gt; في عنصر الرسم البياني السابق. <br/> <strong>ملاحظة:</strong> ستحل العلامة &lt;HR&gt; الموجودة على سطر التسمية التوضيحية هذا الإعداد!"
 
-#: include/global_form.php:1051
+#: include/global_form.php:1060
 msgid "Text Format"
 msgstr "نسق النص"
 
-#: include/global_form.php:1056
+#: include/global_form.php:1065
 msgid "Text that will be displayed on the legend for this graph item."
 msgstr "النص الذي سيتم عرضه في وسيلة الإيضاح لعنصر الرسم البياني هذا."
 
-#: include/global_form.php:1059
+#: include/global_form.php:1068
 msgid "Insert Hard Return"
 msgstr "إدراج الثابت العودة"
 
-#: include/global_form.php:1062
+#: include/global_form.php:1071
 msgid "Forces the legend to the next line after this item."
 msgstr "يفرض وسيلة الإيضاح على السطر التالي بعد هذا العنصر."
 
-#: include/global_form.php:1065
+#: include/global_form.php:1074
 msgid "Line Width (decimal)"
 msgstr "عرض الخط (عشري)"
 
-#: include/global_form.php:1070
+#: include/global_form.php:1079
 msgid "In case LINE was chosen, specify width of line here.  You must include a decimal precision, for example 2.00"
 msgstr "في حالة اختيار LINE ، حدد عرض الخط هنا. يجب عليك تضمين دقة عشرية ، على سبيل المثال 2.00"
 
-#: include/global_form.php:1073
+#: include/global_form.php:1082
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
 msgstr "الشرطات (الشرطات [= on_s [، off_s [، on_s، off_s] ...]])"
 
-#: include/global_form.php:1078
+#: include/global_form.php:1087
 msgid "The dashes modifier enables dashed line style."
 msgstr "يعمل مُعد الشرط على تمكين نمط الخط المتقطع."
 
-#: include/global_form.php:1081
+#: include/global_form.php:1090
 msgid "Dash Offset (dash-offset=offset)"
 msgstr "Dash Offset (اندفاعة - إزاحة = تخالف)"
 
-#: include/global_form.php:1086 include/global_form.php:1094
+#: include/global_form.php:1095 include/global_form.php:1103
 msgid "The dash-offset parameter specifies an offset into the pattern at which the stroke begins."
 msgstr "تحدد معلمة dash-offset إزاحة في النمط الذي تبدأ عنده الحد."
 
-#: include/global_form.php:1103
+#: include/global_form.php:1112
 msgid "The name given to this graph template."
 msgstr "الاسم المحدد في قالب الرسم البياني هذا."
 
-#: include/global_form.php:1110
+#: include/global_form.php:1119
 msgid "Multiple Instances"
 msgstr "مثيلات متعددة"
 
-#: include/global_form.php:1111
+#: include/global_form.php:1120
 msgid "Check this checkbox if there can be more than one Graph of this type per Device."
 msgstr "حدد مربع الاختيار هذا إذا كان هناك أكثر من رسم واحد من هذا النوع لكل جهاز."
 
-#: include/global_form.php:1118
+#: include/global_form.php:1127
 msgid "Test Data Sources"
 msgstr "لديه مصادر البيانات"
 
-#: include/global_form.php:1119
+#: include/global_form.php:1128
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
 msgstr "حدد مربع الاختيار هذا إذا كنت ترغب في اختبار مصادر البيانات قبل إنشائها. مع تمكين مصادر بيانات الاختبار ، إذا لم يُرجع مصدر البيانات بيانات صالحة ، فلن يتم إنشاء الرسم البياني. يعد هذا الإعداد مهمًا إذا كنت ترغب في الحصول على قالب جهاز أكثر عمومية يمكن أن يتضمن المزيد من قوالب الرسم البياني التي يمكن تطبيقها بشكل انتقائي بناءً على خصائص الجهاز نفسه. ملاحظة: إذا كان لديك برنامج نصي يعمل لفترة طويلة كمصدر بيانات ، فسيتم زيادة وقت إنشاء الرسوم البيانية."
 
-#: include/global_form.php:1143
+#: include/global_form.php:1152
 msgid "Enter a name for this graph item input, make sure it is something you recognize."
 msgstr "أدخل اسمًا لمدخلات عنصر الرسم البياني هذا ، وتأكد من أنه شيء تعرفه."
 
-#: include/global_form.php:1151
+#: include/global_form.php:1160
 msgid "Enter a description for this graph item input to describe what this input is used for."
 msgstr "أدخل وصفًا لمدخل عنصر الرسم البياني هذا لوصف ماهية هذه المدخلات المستخدمة."
 
-#: include/global_form.php:1158
+#: include/global_form.php:1167
 msgid "Field Type"
 msgstr "نوع الحقل"
 
-#: include/global_form.php:1159
+#: include/global_form.php:1168
 msgid "How data is to be represented on the graph."
 msgstr "كيف يتم تمثيل البيانات على الرسم البياني."
 
-#: include/global_form.php:1182
+#: include/global_form.php:1191
 msgid "General Device Options"
 msgstr "خيارات الجهاز العامة"
 
-#: include/global_form.php:1187
+#: include/global_form.php:1196
 msgid "Give this host a meaningful description."
 msgstr "امنح هذا المضيف وصفاً ذا معنى."
 
-#: include/global_form.php:1194 include/global_form.php:1732
+#: include/global_form.php:1203 include/global_form.php:1741
 msgid "Fully qualified hostname or IP address for this device."
 msgstr "اسم المضيف أو عنوان IP المؤهل بالكامل لهذا الجهاز."
 
-#: include/global_form.php:1202
+#: include/global_form.php:1211
 msgid "The physical location of the Device.  This free form text can be a room, rack location, etc."
 msgstr "الموقع الفعلي للجهاز. يمكن أن يكون نص النموذج المجاني هذا عبارة عن غرفة وموقع حامل وما إلى ذلك."
 
-#: include/global_form.php:1211
+#: include/global_form.php:1220
 msgid "Poller Association"
 msgstr "جمعية المستضد"
 
-#: include/global_form.php:1219
+#: include/global_form.php:1228
 msgid "Device Site Association"
 msgstr "جمعية موقع الجهاز"
 
-#: include/global_form.php:1220
+#: include/global_form.php:1229
 msgid "What Site is this Device associated with."
 msgstr "ما الموقع الذي يرتبط به هذا الجهاز."
 
-#: include/global_form.php:1229
+#: include/global_form.php:1238
 msgid "Choose the Device Template to use to define the default Graph Templates and Data Queries associated with this Device."
 msgstr "اختر قالب الجهاز المراد استخدامه لتحديد قوالب الرسومات البيانية الافتراضية واستعلامات البيانات المرتبطة بهذا الجهاز."
 
-#: include/global_form.php:1237
+#: include/global_form.php:1246
 msgid "Number of Collection Threads"
 msgstr "عدد خيوط المجموعات"
 
-#: include/global_form.php:1238
+#: include/global_form.php:1247
 msgid "The number of concurrent threads to use for polling this device.  This applies to the Spine poller only."
 msgstr "عدد مؤشرات الترابط المتزامنة لاستخدامها في اقتراع هذا الجهاز. هذا ينطبق على مستقطب العمود الفقري فقط."
 
-#: include/global_form.php:1245
+#: include/global_form.php:1254
 msgid "Disable Device"
 msgstr "تعطيل الجهاز"
 
-#: include/global_form.php:1246
+#: include/global_form.php:1255
 msgid "Check this box to disable all checks for this host."
 msgstr "حدد هذا المربع لتعطيل جميع عمليات التحقق لهذا المضيف."
 
-#: include/global_form.php:1258
+#: include/global_form.php:1267
 msgid "Availability/Reachability Options"
 msgstr "توافر / خيارات قابلية الوصول"
 
-#: include/global_form.php:1262 include/global_settings.php:743
+#: include/global_form.php:1271 include/global_settings.php:743
 msgid "Downed Device Detection"
 msgstr "كشف جهاز Downed"
 
-#: include/global_form.php:1263
+#: include/global_form.php:1272
 msgid "The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
 msgstr "ستستخدم الطريقة Cacti لتحديد ما إذا كان المضيف متاحًا للاستقصاء. <br> <i>ملاحظة: من المستحسن ، كحد أدنى ، أن يتم تحديد SNMP.</i>"
 
-#: include/global_form.php:1272
+#: include/global_form.php:1281
 msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>"
 msgstr "نوع حزمة ping لإرسالها. <br> <i>ملاحظة: يتطلب ICMP على Linux / UNIX امتيازات الجذر.</i>"
 
-#: include/global_form.php:1309 include/global_form.php:1769
+#: include/global_form.php:1318 include/global_form.php:1778
 msgid "Additional Options"
 msgstr "خيارات إضافية"
 
-#: include/global_form.php:1313 include/global_form.php:1774 pollers.php:88
+#: include/global_form.php:1322 include/global_form.php:1783 pollers.php:88
 #: sites.php:156
 msgid "Notes"
 msgstr "الملاحظات"
 
-#: include/global_form.php:1314 include/global_form.php:1775
+#: include/global_form.php:1323 include/global_form.php:1784
 msgid "Enter notes to this host."
 msgstr "أدخل ملاحظات على هذا المضيف."
 
-#: include/global_form.php:1321
+#: include/global_form.php:1330
 msgid "External ID"
 msgstr "معرف خارجي"
 
-#: include/global_form.php:1322
+#: include/global_form.php:1331
 msgid "External ID for linking Cacti data to external monitoring systems."
 msgstr "معرف خارجي لربط بيانات Cacti بأنظمة المراقبة الخارجية."
 
-#: include/global_form.php:1344
+#: include/global_form.php:1353
 msgid "A useful name for this host template."
 msgstr "اسم مفيد لهذا القالب المضيف."
 
-#: include/global_form.php:1364
+#: include/global_form.php:1373
 msgid "A name for this data query."
 msgstr "اسم لاستعلام البيانات هذا."
 
-#: include/global_form.php:1372
+#: include/global_form.php:1381
 msgid "A description for this data query."
 msgstr "وصف لاستعلام البيانات هذا."
 
-#: include/global_form.php:1379
+#: include/global_form.php:1388
 msgid "XML Path"
 msgstr "مسار XML"
 
-#: include/global_form.php:1380
+#: include/global_form.php:1389
 msgid "The full path to the XML file containing definitions for this data query."
 msgstr "المسار الكامل لملف XML الذي يحتوي على تعريفات لاستعلام البيانات هذا."
 
-#: include/global_form.php:1389
+#: include/global_form.php:1398
 msgid "Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query."
 msgstr "اختر طريقة الإدخال لاستعلام البيانات هذا. تحدد طريقة الإدخال هذه كيفية جمع البيانات لكل جهاز مرتبط بطلب البيانات."
 
-#: include/global_form.php:1408
+#: include/global_form.php:1417
 msgid "Choose the Graph Template to use for this Data Query Graph Template item."
 msgstr "اختر قالب الرسم البياني لاستخدامه في عنصر قالب الرسم البياني استعلام البيانات."
 
-#: include/global_form.php:1437
+#: include/global_form.php:1446
 msgid "A name for this associated graph."
 msgstr "اسم لهذا الرسم البياني المرتبط."
 
-#: include/global_form.php:1465
+#: include/global_form.php:1474
 msgid "A useful name for this graph tree."
 msgstr "اسم مفيد لشجرة الرسم البياني هذه."
 
-#: include/global_form.php:1472 include/global_form.php:2293
+#: include/global_form.php:1481 include/global_form.php:2302
 #: lib/api_automation.php:1418 tree.php:1650
 msgid "Sorting Type"
 msgstr "نوع الفرز"
 
-#: include/global_form.php:1473 include/global_form.php:2294
+#: include/global_form.php:1482 include/global_form.php:2303
 msgid "Choose how items in this tree will be sorted."
 msgstr "اختر كيفية فرز العناصر الموجودة في هذه الشجرة."
 
-#: include/global_form.php:1479
+#: include/global_form.php:1488
 msgid "Publish"
 msgstr "نشر"
 
-#: include/global_form.php:1480
+#: include/global_form.php:1489
 msgid "Should this Tree be published for users to access?"
 msgstr "هل يجب نشر هذه الشجرة ليتمكن المستخدمون من الوصول إليها؟"
 
-#: include/global_form.php:1519
+#: include/global_form.php:1528
 msgid "An Email Address where the User can be reached."
 msgstr "عنوان البريد الإلكتروني حيث يمكن الوصول إلى المستخدم."
 
-#: include/global_form.php:1527
+#: include/global_form.php:1536
 msgid "Enter the password for this user twice. Remember that passwords are case sensitive!"
 msgstr "أدخل كلمة المرور لهذا المستخدم مرتين. تذكر أن كلمات المرور حساسة لحالة الأحرف!"
 
-#: include/global_form.php:1535 user_group_admin.php:88
+#: include/global_form.php:1544 user_group_admin.php:88
 msgid "Determines if user is able to login."
 msgstr "يحدد ما إذا كان المستخدم قادرًا على تسجيل الدخول."
 
-#: include/global_form.php:1541 tree.php:2021
+#: include/global_form.php:1550 tree.php:2021
 msgid "Locked"
 msgstr "مغلق"
 
-#: include/global_form.php:1542
+#: include/global_form.php:1551
 msgid "Determines if the user account is locked."
 msgstr "يحدد ما إذا كان حساب المستخدم مقفلًا."
 
-#: include/global_form.php:1547
+#: include/global_form.php:1556
 msgid "Account Options"
 msgstr "خيارات الحساب"
 
-#: include/global_form.php:1549
+#: include/global_form.php:1558
 msgid "Set any user account specific options here."
 msgstr "قم بتعيين أي خيارات محددة لحساب المستخدم هنا."
 
-#: include/global_form.php:1553
+#: include/global_form.php:1562
 msgid "Must Change Password at Next Login"
 msgstr "يجب تغيير كلمة المرور عند تسجيل الدخول التالي"
 
-#: include/global_form.php:1565
+#: include/global_form.php:1574
 msgid "Maintain Custom Graph and User Settings"
 msgstr "الحفاظ على الرسم البياني المخصص وإعدادات المستخدم"
 
-#: include/global_form.php:1572
+#: include/global_form.php:1581
 msgid "Graph Options"
 msgstr "خيارات الرسم البياني"
 
-#: include/global_form.php:1574
+#: include/global_form.php:1583
 msgid "Set any graph specific options here."
 msgstr "قم بتعيين أي خيارات محددة للرسم البياني هنا."
 
-#: include/global_form.php:1578
+#: include/global_form.php:1587
 msgid "User Has Rights to Tree View"
 msgstr "المستخدم لديه حقوق في عرض الشجرة"
 
-#: include/global_form.php:1584
+#: include/global_form.php:1593
 msgid "User Has Rights to List View"
 msgstr "المستخدم لديه حقوق لعرض قائمة"
 
-#: include/global_form.php:1590
+#: include/global_form.php:1599
 msgid "User Has Rights to Preview View"
 msgstr "المستخدم لديه حقوق لمعاينة العرض"
 
-#: include/global_form.php:1597 user_group_admin.php:130
+#: include/global_form.php:1606 user_group_admin.php:130
 msgid "Login Options"
 msgstr "خيارات تسجيل الدخول"
 
-#: include/global_form.php:1600
+#: include/global_form.php:1609
 msgid "What to do when this user logs in."
 msgstr "ما يجب فعله عند تسجيل دخول هذا المستخدم."
 
-#: include/global_form.php:1605
+#: include/global_form.php:1614
 msgid "Show the page that user pointed their browser to."
 msgstr "عرض الصفحة التي أشار المستخدم إلى المتصفح بها."
 
-#: include/global_form.php:1609
+#: include/global_form.php:1618
 msgid "Show the default console screen."
 msgstr "إظهار شاشة وحدة التحكم الافتراضية."
 
-#: include/global_form.php:1613
+#: include/global_form.php:1622
 msgid "Show the default graph screen."
 msgstr "إظهار شاشة الرسم البياني الافتراضية."
 
-#: include/global_form.php:1619 utilities.php:920
+#: include/global_form.php:1628 utilities.php:920
 msgid "Authentication Realm"
 msgstr "عالم المصادقة"
 
-#: include/global_form.php:1620
+#: include/global_form.php:1629
 msgid "Only used if you have LDAP or Web Basic Authentication enabled.  Changing this to a non-enabled realm will effectively disable the user."
 msgstr "يُستخدم فقط في حالة تمكين LDAP أو مصادقة Web Basic. سيؤدي تغيير هذا إلى نطاق غير ممكن إلى تعطيل المستخدم بشكل فعال."
 
-#: include/global_form.php:1675
+#: include/global_form.php:1684
 msgid "Import Template from Local File"
 msgstr "استيراد قالب من ملف محلي"
 
-#: include/global_form.php:1676
+#: include/global_form.php:1685
 msgid "If the XML file containing template data is located on your local machine, select it here."
 msgstr "إذا كان ملف XML الذي يحتوي على بيانات القالب موجودًا على جهازك المحلي ، فحدده هنا."
 
-#: include/global_form.php:1682
+#: include/global_form.php:1691
 msgid "Import Template from Text"
 msgstr "استيراد قالب من النص"
 
-#: include/global_form.php:1683
+#: include/global_form.php:1692
 msgid "If you have the XML file containing template data as text, you can paste it into this box to import it."
 msgstr "إذا كان لديك ملف XML يحتوي على بيانات القالب كنص ، فيمكنك لصقه في هذا المربع لاستيراده."
 
-#: include/global_form.php:1691
+#: include/global_form.php:1700
 msgid "Preview Import Only"
 msgstr "معاينة الاستيراد فقط"
 
-#: include/global_form.php:1693
+#: include/global_form.php:1702
 msgid "If checked, Cacti will not import the template, but rather compare the imported Template to the existing Template data.  If you are acceptable of the change, you can them import."
 msgstr "إذا تم التحديد ، فلن تستورد Cacti القالب ، وإنما تقارن النموذج الذي تم استيراده مع بيانات القالب الحالية. إذا كنت مقبولة من التغيير ، فيمكنك استيرادها."
 
-#: include/global_form.php:1698
+#: include/global_form.php:1707
 msgid "Remove Orphaned Graph Items"
 msgstr "إزالة عناصر الرسم المعزول"
 
-#: include/global_form.php:1700
+#: include/global_form.php:1709
 msgid "If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template."
 msgstr "في حالة تحديده ، سيحذف Cacti أي عناصر Graph من كل من نموذج الرسم البياني والرسوم البيانية المرتبطة التي لا يتم تضمينها في قالب الرسم البياني المستورد."
 
-#: include/global_form.php:1709
+#: include/global_form.php:1718
 msgid "Create New from Template"
 msgstr "إنشاء جديد من القالب"
 
-#: include/global_form.php:1718
+#: include/global_form.php:1727
 msgid "General SNMP Entity Options"
 msgstr "خيارات وحدة SNMP العامة"
 
-#: include/global_form.php:1724
+#: include/global_form.php:1733
 msgid "Give this SNMP entity a meaningful description."
 msgstr "امنح كيان SNMP هذا وصفًا ذا معنى."
 
-#: include/global_form.php:1739
+#: include/global_form.php:1748
 msgid "Disable SNMP Notification Receiver"
 msgstr "تعطيل استقبال إعلام SNMP"
 
-#: include/global_form.php:1740
+#: include/global_form.php:1749
 msgid "Check this box if you temporary do not want to send SNMP notifications to this host."
 msgstr "حدد هذا المربع إذا كنت لا تريد إرسال إشعارات SNMP إلى هذا المضيف مؤقتًا."
 
-#: include/global_form.php:1747
+#: include/global_form.php:1756
 msgid "Maximum Log Size"
 msgstr "الحد الأقصى لحجم السجل"
 
-#: include/global_form.php:1748
+#: include/global_form.php:1757
 msgid "Maximum number of day's notification log entries for this receiver need to be stored."
 msgstr "يجب تخزين الحد الأقصى لعدد إدخالات سجل الإعلام لهذا المستلم."
 
-#: include/global_form.php:1760
+#: include/global_form.php:1769
 msgid "SNMP Message Type"
 msgstr "SNMP نوع الرسالة"
 
-#: include/global_form.php:1761
+#: include/global_form.php:1770
 msgid "SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called \"INFORMS\", SNMPv2 or above will be required."
 msgstr "تكون اعتراضات SNMP دائمًا غير معترف بها. لإرسال إشعارات SNMP المعترف بها ، والتي تسمى رسميًا بـ &quot;INFORMS&quot; ، سوف تكون SNMPv2 أو أعلى مطلوبة."
 
-#: include/global_form.php:1794
+#: include/global_form.php:1803
 msgid "The new Title of the aggregated Graph."
 msgstr "العنوان الجديد للرسم البياني المجمع."
 
-#: include/global_form.php:1801 include/global_form.php:1887
-#: include/global_form.php:1992
+#: include/global_form.php:1810 include/global_form.php:1896
+#: include/global_form.php:2001
 msgid "Prefix"
 msgstr "اللقب"
 
-#: include/global_form.php:1802
+#: include/global_form.php:1811
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts."
 msgstr "بادئة لجميع خطوط GPRINT للتمييز على سبيل المثال مضيفين مختلفين."
 
-#: include/global_form.php:1809 include/global_form.php:1895
-#: include/global_form.php:2000
+#: include/global_form.php:1818 include/global_form.php:1904
+#: include/global_form.php:2009
 msgid "Include Prefix Text"
 msgstr "تضمين الفهرس"
 
-#: include/global_form.php:1810 include/global_form.php:1896
-#: include/global_form.php:2001
+#: include/global_form.php:1819 include/global_form.php:1905
+#: include/global_form.php:2010
 msgid "Include the source Graphs GPRINT Title Text with the Aggregate Graph(s)."
 msgstr "قم بتضمين نص عنوان GPRINT للرسومات البيانية المصدر مع الرسوم البيانية المجمعة."
 
-#: include/global_form.php:1817 include/global_form.php:1903
-#: include/global_form.php:2008
+#: include/global_form.php:1826 include/global_form.php:1912
+#: include/global_form.php:2017
 msgid "Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items"
 msgstr "استخدم هذا الخيار لإنشاء الرسوم البيانية المكدسة على سبيل المثال. <br> AREA / STACK: يحتفظ الرسم البياني الأول بسلع AREA / STACK ، بينما يتحول الآخرون إلى STACK <br> LINE1: يتم تحويل جميع العناصر إلى عناصر LINE1 <br> LINE2: يتم تحويل جميع العناصر إلى عناصر LINE2 <br> LINE3: يتم تحويل جميع العناصر إلى عناصر LINE3"
 
-#: include/global_form.php:1824 include/global_form.php:1910
-#: include/global_form.php:2015
+#: include/global_form.php:1833 include/global_form.php:1919
+#: include/global_form.php:2024
 msgid "Totaling"
 msgstr "بلغ مجموعها"
 
-#: include/global_form.php:1825 include/global_form.php:1911
-#: include/global_form.php:2016
+#: include/global_form.php:1834 include/global_form.php:1920
+#: include/global_form.php:2025
 msgid "Please check those Items that shall be totaled in the \"Total\" column, when selecting any totaling option here."
 msgstr "يرجى التحقق من العناصر التي يجب أن يتم تجميعها في عمود &quot;الإجمالي&quot; ، عند تحديد أي خيار إجمالي هنا."
 
-#: include/global_form.php:1832 include/global_form.php:1919
-#: include/global_form.php:2024
+#: include/global_form.php:1841 include/global_form.php:1928
+#: include/global_form.php:2033
 msgid "Total Type"
 msgstr "النوع الكلي"
 
-#: include/global_form.php:1833 include/global_form.php:1920
-#: include/global_form.php:2025
+#: include/global_form.php:1842 include/global_form.php:1929
+#: include/global_form.php:2034
 msgid "Which type of totaling shall be performed."
 msgstr "أي نوع من التجميع يجب أن يتم."
 
-#: include/global_form.php:1840 include/global_form.php:1928
-#: include/global_form.php:2033
+#: include/global_form.php:1849 include/global_form.php:1937
+#: include/global_form.php:2042
 msgid "Prefix for GPRINT Totals"
 msgstr "Prefix for GPRINT Totals"
 
-#: include/global_form.php:1841 include/global_form.php:1929
-#: include/global_form.php:2034
+#: include/global_form.php:1850 include/global_form.php:1938
+#: include/global_form.php:2043
 msgid "A Prefix for all <strong>totaling</strong> GPRINT lines."
 msgstr "بادئة لجميع خطوط GPRINT <strong>مجموعها.</strong>"
 
-#: include/global_form.php:1848 include/global_form.php:1936
-#: include/global_form.php:2041
+#: include/global_form.php:1857 include/global_form.php:1945
+#: include/global_form.php:2050
 msgid "Reorder Type"
 msgstr "نوع إعادة الطلب"
 
-#: include/global_form.php:1849 include/global_form.php:1937
-#: include/global_form.php:2042
+#: include/global_form.php:1858 include/global_form.php:1946
+#: include/global_form.php:2051
 msgid "Reordering of Graphs."
 msgstr "إعادة ترتيب الرسوم البيانية."
 
-#: include/global_form.php:1869
+#: include/global_form.php:1878
 msgid "Please name this Aggregate Graph."
 msgstr "يرجى تسمية هذا الرسم البياني الكلي."
 
-#: include/global_form.php:1876
+#: include/global_form.php:1885
 msgid "Propagation Enabled"
 msgstr "نشر ممكّن"
 
-#: include/global_form.php:1877
+#: include/global_form.php:1886
 msgid "Is this to carry the template?"
 msgstr "هل هذا لتحمل القالب؟"
 
-#: include/global_form.php:1883
+#: include/global_form.php:1892
 msgid "Aggregate Graph Settings"
 msgstr "اعدادات الرسم الكلي"
 
-#: include/global_form.php:1888 include/global_form.php:1993
+#: include/global_form.php:1897 include/global_form.php:2002
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix."
 msgstr "بادئة لجميع خطوط GPRINT للتمييز على سبيل المثال مضيفين مختلفين. يمكنك استخدام كل من متغيرات الاستبدال بالإضافة إلى متغير البيانات في هذه البادئة."
 
-#: include/global_form.php:1971
+#: include/global_form.php:1980
 msgid "Aggregate Template Name"
 msgstr "اسم قالب التجميع"
 
-#: include/global_form.php:1972
+#: include/global_form.php:1981
 msgid "Please name this Aggregate Template."
 msgstr "يرجى تسمية هذا النموذج التجميعي."
 
-#: include/global_form.php:1979
+#: include/global_form.php:1988
 msgid "Source Graph Template"
 msgstr "قالب الرسم البياني المصدر"
 
-#: include/global_form.php:1980
+#: include/global_form.php:1989
 msgid "The Graph Template that this Aggregate Template is based upon."
 msgstr "قالب الرسم البياني الذي يستند إليه هذا الكود التجميعي."
 
-#: include/global_form.php:1988
+#: include/global_form.php:1997
 msgid "Aggregate Template Settings"
 msgstr "إعدادات قالب التجميع"
 
-#: include/global_form.php:2065
+#: include/global_form.php:2074
 msgid "The name of this Color Template."
 msgstr "اسم قالب اللون هذا."
 
-#: include/global_form.php:2076
+#: include/global_form.php:2085
 msgid "A nice Color"
 msgstr "لون جميل"
 
-#: include/global_form.php:2086
+#: include/global_form.php:2095
 msgid "A useful name for this Template."
 msgstr "اسم مفيد لهذا القالب."
 
-#: include/global_form.php:2100 include/global_form.php:2142
+#: include/global_form.php:2109 include/global_form.php:2151
 #: lib/api_automation.php:1289 lib/api_automation.php:1351
 msgid "Operation"
 msgstr "العملية"
 
-#: include/global_form.php:2101 include/global_form.php:2143
+#: include/global_form.php:2110 include/global_form.php:2152
 msgid "Logical operation to combine rules."
 msgstr "عملية منطقية للجمع بين القواعد."
 
-#: include/global_form.php:2109 include/global_form.php:2151
+#: include/global_form.php:2118 include/global_form.php:2160
 msgid "The Field Name that shall be used for this Rule Item."
 msgstr "اسم الحقل الذي يجب استخدامه في عنصر القاعدة هذا."
 
-#: include/global_form.php:2117 include/global_form.php:2159
+#: include/global_form.php:2126 include/global_form.php:2168
 msgid "Operator."
 msgstr "جراح"
 
-#: include/global_form.php:2124 include/global_form.php:2166
-#: include/global_form.php:2309
+#: include/global_form.php:2133 include/global_form.php:2175
+#: include/global_form.php:2318
 msgid "Matching Pattern"
 msgstr "نمط المطابقة"
 
-#: include/global_form.php:2125 include/global_form.php:2167
+#: include/global_form.php:2134 include/global_form.php:2176
 msgid "The Pattern to be matched against."
 msgstr "النمط المراد مقارنته."
 
-#: include/global_form.php:2133 include/global_form.php:2175
-#: include/global_form.php:2326
+#: include/global_form.php:2142 include/global_form.php:2184
+#: include/global_form.php:2335
 msgid "Sequence."
 msgstr "تسلسل، تتابع، متوالية"
 
-#: include/global_form.php:2184 include/global_form.php:2229
+#: include/global_form.php:2193 include/global_form.php:2238
 msgid "A useful name for this Rule."
 msgstr "اسم مفيد لهذه القاعدة."
 
-#: include/global_form.php:2192
+#: include/global_form.php:2201
 msgid "Choose a Data Query to apply to this rule."
 msgstr "اختر استعلام بيانات لتطبيقه على هذه القاعدة."
 
-#: include/global_form.php:2203
+#: include/global_form.php:2212
 msgid "Choose any of the available Graph Types to apply to this rule."
 msgstr "اختر أيًا من أنواع الرسوم البيانية المتاحة لتطبيقها على هذه القاعدة."
 
-#: include/global_form.php:2216 include/global_form.php:2273
+#: include/global_form.php:2225 include/global_form.php:2282
 msgid "Enable Rule"
 msgstr "تمكين القاعدة"
 
-#: include/global_form.php:2217 include/global_form.php:2274
+#: include/global_form.php:2226 include/global_form.php:2283
 msgid "Check this box to enable this rule."
 msgstr "حدد هذا المربع لتمكين هذه القاعدة."
 
-#: include/global_form.php:2237
+#: include/global_form.php:2246
 msgid "Choose a Tree for the new Tree Items."
 msgstr "اختر شجرة لعناصر شجرة جديدة."
 
-#: include/global_form.php:2244
+#: include/global_form.php:2253
 msgid "Leaf Item Type"
 msgstr "ورقة نوع البند"
 
-#: include/global_form.php:2245
+#: include/global_form.php:2254
 msgid "The Item Type that shall be dynamically added to the tree."
 msgstr "نوع العنصر الذي يجب إضافته ديناميكيًا إلى الشجرة."
 
-#: include/global_form.php:2252
+#: include/global_form.php:2261
 msgid "Graph Grouping Style"
 msgstr "نمط تجميع الرسم البياني"
 
-#: include/global_form.php:2253
+#: include/global_form.php:2262
 msgid "Choose how graphs are grouped when drawn for this particular host on the tree."
 msgstr "اختر كيفية تجميع الرسوم البيانية عند رسمها لهذا المضيف المعين على الشجرة."
 
-#: include/global_form.php:2263
+#: include/global_form.php:2272
 msgid "Optional: Sub-Tree Item"
 msgstr "اختياري: عنصر شجرة فرعية"
 
-#: include/global_form.php:2264
+#: include/global_form.php:2273
 msgid "Choose a Sub-Tree Item to hook in.<br>Make sure, that it is still there when this rule is executed!"
 msgstr "اختر عنصر شجرة فرعية لربط. <br> تأكد ، أنه لا يزال هناك عند تنفيذ هذه القاعدة!"
 
-#: include/global_form.php:2284
+#: include/global_form.php:2293
 msgid "Header Type"
 msgstr "نوع العنوان"
 
-#: include/global_form.php:2285
+#: include/global_form.php:2294
 msgid "Choose an Object to build a new Sub-header."
 msgstr "اختر كائنًا لإنشاء عنوان فرعي جديد."
 
-#: include/global_form.php:2301
+#: include/global_form.php:2310
 msgid "Propagate Changes"
 msgstr "نشر التغييرات"
 
-#: include/global_form.php:2302
+#: include/global_form.php:2311
 msgid "Propagate all options on this form (except for 'Title') to all child 'Header' items."
 msgstr "نشر جميع الخيارات في هذا النموذج (باستثناء &quot;العنوان&quot;) لكافة عناصر &quot;الرأس&quot; الخاصة بالطفل."
 
-#: include/global_form.php:2310
+#: include/global_form.php:2319
 msgid "The String Pattern (Regular Expression) to match against.<br>Enclosing '/' must <strong>NOT</strong> be provided!"
 msgstr "نمط السلسلة (التعبير العادي) لمطابقته. <br> يجب <strong>عدم</strong> تضمين &quot;/&quot;!"
 
-#: include/global_form.php:2317
+#: include/global_form.php:2326
 msgid "Replacement Pattern"
 msgstr "نمط الاستبدال"
 
-#: include/global_form.php:2318
+#: include/global_form.php:2327
 msgid "The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match by e.g. <strong>\\${1}</strong> for the first match!"
 msgstr "نمط سلسلة الاستبدال لاستخدامه كرأس شجرة. <br> ارجع إلى مطابقة على سبيل المثال <strong>\\ $ {1}</strong> للمباراة الأولى!"
 
-#: include/global_languages.php:738
+#: include/global_languages.php:768
 msgid " T"
 msgstr "T"
 
-#: include/global_languages.php:740
+#: include/global_languages.php:770
 msgid " G"
 msgstr "ز"
 
-#: include/global_languages.php:742
+#: include/global_languages.php:772
 msgid " M"
 msgstr "M"
 
-#: include/global_languages.php:744
+#: include/global_languages.php:774
 msgid " K"
 msgstr "ك"
 
@@ -9309,7 +9321,7 @@ msgstr "بيانات"
 msgid "Visual"
 msgstr "بصري، يتعلق بالرؤية. إبصاري – شخص بصري الفطانة"
 
-#: include/global_settings.php:44 lib/functions.php:4896 lib/functions.php:4901
+#: include/global_settings.php:44 lib/functions.php:4901 lib/functions.php:4906
 msgid "Authentication"
 msgstr "المصادقة"
 
@@ -9345,11 +9357,11 @@ msgstr "خطوط الرسم البياني"
 msgid "PHP Mail() Function"
 msgstr "وظيفة PHP Mail ()"
 
-#: include/global_settings.php:84 lib/functions.php:4879
+#: include/global_settings.php:84 lib/functions.php:4884
 msgid "Sendmail"
 msgstr "ارسل بريد"
 
-#: include/global_settings.php:85 lib/functions.php:4884
+#: include/global_settings.php:85 lib/functions.php:4889
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -9687,7 +9699,7 @@ msgstr "في حالة التعيين على Simple ، لا يمكن إنشاء �
 msgid "Simple"
 msgstr "منتج بسيط"
 
-#: include/global_settings.php:419 lib/html.php:2516
+#: include/global_settings.php:419 lib/html.php:2519
 msgid "Advanced"
 msgstr "المتقدمة"
 
@@ -11029,7 +11041,7 @@ msgstr "هذا هو عدد الأحرف المسموح بها قبل أن يتم
 msgid "Sendmail Options"
 msgstr "خيارات Sendmail"
 
-#: include/global_settings.php:1772 lib/functions.php:4879
+#: include/global_settings.php:1772 lib/functions.php:4884
 msgid "Sendmail Path"
 msgstr "مسار Sendmail"
 
@@ -11443,7 +11455,7 @@ msgstr "الانحراف المعياري"
 msgid "Variance Based w/Outliers Removed"
 msgstr "التباين القائم w / القيم المتطرفة إزالتها"
 
-#: include/global_settings.php:2180 lib/html.php:2199
+#: include/global_settings.php:2180 lib/html.php:2202
 msgid "Replacement Method"
 msgstr "طريقة الاستبدال"
 
@@ -11451,15 +11463,15 @@ msgstr "طريقة الاستبدال"
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "هناك ثلاث طرق بديلة. تحل الطريقة الأولى محل السنبلة بمتوسط مصدر البيانات المعني. الطريقة الثانية تحل محل السنبلة بـ &quot;NaN&quot;. يستبدل الأخير السنبلة بآخر قيمة جيدة معروفة تم العثور عليها."
 
-#: include/global_settings.php:2185 lib/html.php:2195
+#: include/global_settings.php:2185 lib/html.php:2198
 msgid "Average"
 msgstr "جيد"
 
-#: include/global_settings.php:2186 lib/html.php:2196
+#: include/global_settings.php:2186 lib/html.php:2199
 msgid "NaN's"
 msgstr "ونان"
 
-#: include/global_settings.php:2187 lib/html.php:2197
+#: include/global_settings.php:2187 lib/html.php:2200
 msgid "Last Known Good"
 msgstr "آخر جيد معروف"
 
@@ -11482,7 +11494,7 @@ msgstr "سيتم استبعاد أي قيمة تمثل هذه الانحرافا
 msgid "%d Standard Deviations"
 msgstr "٪ d الانحرافات المعيارية"
 
-#: include/global_settings.php:2212 lib/html.php:2211
+#: include/global_settings.php:2212 lib/html.php:2214
 msgid "Variance Percentage"
 msgstr "النسبة المئوية للتغيير"
 
@@ -11730,9 +11742,9 @@ msgstr "عمود 1"
 #: include/global_settings.php:2499 include/global_settings.php:2500
 #: include/global_settings.php:2501 include/global_settings.php:2502
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
-#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1106
-#: lib/html_tree.php:1107 lib/html_tree.php:1108 lib/html_tree.php:1109
-#: lib/html_tree.php:1110
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1047
+#: lib/html_tree.php:1048 lib/html_tree.php:1049 lib/html_tree.php:1050
+#: lib/html_tree.php:1051
 #, fuzzy, php-format
 msgid "%d Columns"
 msgstr "%d أعمدة"
@@ -11965,43 +11977,43 @@ msgstr "الدالتان shell_exec () و / أو exec () محظورة حاليً
 msgid "Display Graphs from this Aggregate"
 msgstr "عرض الرسوم البيانية من هذا التجميع"
 
-#: lib/api_aggregate.php:1577
+#: lib/api_aggregate.php:1580
 msgid "The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates."
 msgstr "الرسوم البيانية المختارة للرسم البياني الإجمالي أدناه تمثل الرسوم البيانية من قوالب الرسم البياني المتعددة. لا يدعم التجميع إنشاء الرسومات البيانية التجميعية من عدة قوالب Graph."
 
-#: lib/api_aggregate.php:1578 lib/api_aggregate.php:1597
+#: lib/api_aggregate.php:1581 lib/api_aggregate.php:1600
 msgid "Press 'Return' to return and select different Graphs"
 msgstr "اضغط على &quot;العودة&quot; للعودة واختيار الرسوم البيانية المختلفة"
 
-#: lib/api_aggregate.php:1596
+#: lib/api_aggregate.php:1599
 msgid "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs."
 msgstr "الرسوم البيانية المختارة لـ Aggregate Graph لا تستخدم قوالب Graph. لا يدعم التجميع إنشاء الرسومات البيانية للتراكيب من الرسوم البيانية غير المجدولة."
 
-#: lib/api_aggregate.php:1708 lib/html.php:1122
+#: lib/api_aggregate.php:1711 lib/html.php:1125
 msgid "Graph Item"
 msgstr "البند البياني"
 
-#: lib/api_aggregate.php:1711 lib/html.php:1126
+#: lib/api_aggregate.php:1714 lib/html.php:1129
 msgid "CF Type"
 msgstr "نوع CF"
 
-#: lib/api_aggregate.php:1712 lib/html.php:1131
+#: lib/api_aggregate.php:1715 lib/html.php:1134
 msgid "Item Color"
 msgstr "بند اللون"
 
-#: lib/api_aggregate.php:1713
+#: lib/api_aggregate.php:1716
 msgid "Color Template"
 msgstr "قالب اللون"
 
-#: lib/api_aggregate.php:1714
+#: lib/api_aggregate.php:1717
 msgid "Skip"
 msgstr "تخطي"
 
-#: lib/api_aggregate.php:1792
+#: lib/api_aggregate.php:1795
 msgid "Aggregate Items are not modifyable"
 msgstr "عناصر التجميع غير قابلة للتعديل"
 
-#: lib/api_aggregate.php:1803
+#: lib/api_aggregate.php:1806
 msgid "Aggregate Items are not editable"
 msgstr "عناصر التجميع غير قابلة للتحرير"
 
@@ -12010,8 +12022,8 @@ msgid "Matching Devices"
 msgstr "أجهزة المطابقة"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
-#: lib/clog_webapi.php:532 lib/html_reports.php:952 lib/html_reports.php:1612
-#: lib/html_reports.php:1939 lib/html_reports.php:1950 lib/rrd.php:2918
+#: lib/clog_webapi.php:532 lib/html_reports.php:952 lib/html_reports.php:1607
+#: lib/html_reports.php:1934 lib/html_reports.php:1945 lib/rrd.php:2930
 #: utilities.php:356 utilities.php:1210 utilities.php:2688
 msgid "Type"
 msgstr "النوع"
@@ -12128,7 +12140,7 @@ msgstr "عنصر القاعدة [عنصر قاعدة جديد لـ٪ s:٪ s]"
 msgid "Added by Cacti Automation"
 msgstr "أضيفت بواسطة Cacti الأتمتة"
 
-#: lib/api_automation.php:3237
+#: lib/api_automation.php:3238
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
 msgstr "خطأ: لم تعد نطاقات IP في شكل range1-range2 مدعومة."
 
@@ -12192,8 +12204,8 @@ msgstr "موقعك:"
 msgid "Contact:"
 msgstr "بيانتت اتصال"
 
-#: lib/api_device.php:1196 lib/functions.php:4910 lib/functions.php:4912
-#: lib/functions.php:4916
+#: lib/api_device.php:1196 lib/functions.php:4915 lib/functions.php:4917
+#: lib/functions.php:4921
 msgid "Ping Results"
 msgstr "نتائج بينغ"
 
@@ -12209,38 +12221,38 @@ msgstr "فرع جديد"
 msgid "Web Basic"
 msgstr "أساسيات الويب"
 
-#: lib/auth.php:2121 lib/auth.php:2153 lib/reports.php:1267
+#: lib/auth.php:2131 lib/auth.php:2163 lib/reports.php:1267
 msgid "Branch:"
 msgstr "الفرع:"
 
-#: lib/auth.php:2130 lib/auth.php:2161 lib/html_tree.php:1014
+#: lib/auth.php:2140 lib/auth.php:2171 lib/html_tree.php:955
 #: lib/reports.php:1042 lib/reports.php:1272
 msgid "Device:"
 msgstr "الجهاز:"
 
-#: lib/auth.php:2899 lib/auth.php:2907
+#: lib/auth.php:2909 lib/auth.php:2917
 #, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "رفض الوصول ، يرجى الاتصال بك Cacti Administrator."
 
-#: lib/auth.php:2928
+#: lib/auth.php:2938
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "فرض مسؤول Cacti كلمات مرور معقدة لعمليات تسجيل الدخول وكلمة مرور Cacti الحالية لا تطابق المتطلبات الجديدة. لذلك ، يجب عليك تغيير كلمة المرور الخاصة بك الآن."
 
-#: lib/auth.php:2952
+#: lib/auth.php:2962
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "يجب أن تكون كلمة المرور على الأقل٪ d حرف!"
 
-#: lib/auth.php:2958
+#: lib/auth.php:2968
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "يجب أن تحتوي كلمة المرور الخاصة بك على حرف عددي واحد على الأقل!"
 
-#: lib/auth.php:2962
+#: lib/auth.php:2972
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "يجب أن تحتوي كلمة المرور الخاصة بك على مزيج من الأحرف الصغيرة والأحرف الصغيرة!"
 
-#: lib/auth.php:2968
+#: lib/auth.php:2978
 msgid "Your password must contain at least 1 special character!"
 msgstr "يجب أن تحتوي كلمة المرور الخاصة بك على حرف خاص واحد على الأقل!"
 
@@ -12824,158 +12836,158 @@ msgstr "لم يتم العثور على اى مشكلات"
 msgid "Message Not Found."
 msgstr "الرسالة غير موجودة."
 
-#: lib/functions.php:1144
+#: lib/functions.php:1149
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "الخطأ٪ s غير قابل للقراءة"
 
-#: lib/functions.php:3243 lib/functions.php:3254
+#: lib/functions.php:3248 lib/functions.php:3259
 msgid "Logged in as"
 msgstr "مسجل الدخول بإسم"
 
-#: lib/functions.php:3243
+#: lib/functions.php:3248
 msgid "Login as Regular User"
 msgstr "تسجيل الدخول كمستخدم عادي"
 
-#: lib/functions.php:3243
+#: lib/functions.php:3248
 msgid "guest"
 msgstr "زائر"
 
-#: lib/functions.php:3245 lib/functions.php:3263 lib/html.php:2466
+#: lib/functions.php:3250 lib/functions.php:3268 lib/html.php:2469
 msgid "User Community"
 msgstr "مجتمع المستخدم"
 
-#: lib/functions.php:3246 lib/functions.php:3264 lib/html.php:2467
+#: lib/functions.php:3251 lib/functions.php:3269 lib/html.php:2470
 #: lib/utility.php:1160
 msgid "Documentation"
 msgstr "الوثائق"
 
-#: lib/functions.php:3257
+#: lib/functions.php:3262
 #, php-format
 msgid "Logged in as %s"
 msgstr "مسجل دخول كـ %s"
 
-#: lib/functions.php:3259 lib/html.php:2454
+#: lib/functions.php:3264 lib/html.php:2457
 msgid "Edit Profile"
 msgstr "تحرير الملف الشخصي"
 
-#: lib/functions.php:3267 lib/html.php:2456
+#: lib/functions.php:3272 lib/html.php:2459
 msgid "Logout"
 msgstr "تسجيل خروج"
 
-#: lib/functions.php:3416
+#: lib/functions.php:3421
 msgid "Leaf"
 msgstr "ورقة"
 
-#: lib/functions.php:3436 lib/html_tree.php:713 lib/html_tree.php:749
-#: lib/html_tree.php:978 lib/html_tree.php:986 lib/html_tree.php:1560
+#: lib/functions.php:3441 lib/html_tree.php:654 lib/html_tree.php:690
+#: lib/html_tree.php:919 lib/html_tree.php:927 lib/html_tree.php:1501
 msgid "Non Query Based"
 msgstr "غير الاستفسار القائمة"
 
-#: lib/functions.php:3469
+#: lib/functions.php:3474
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "الرابط٪ s"
 
-#: lib/functions.php:4510
+#: lib/functions.php:4515
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "ميلر خطأ: لا <b>لمعالجة</b> وضع !! <br> إذا كنت تستخدم رابط <i>اختبار البريد</i> ، فيرجى ضبط إعداد <b>البريد الإلكتروني التنبيه</b> ."
 
-#: lib/functions.php:4843
+#: lib/functions.php:4848
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "فشل المصادقة:٪ s"
 
-#: lib/functions.php:4847
+#: lib/functions.php:4852
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "فشلت HELO:٪ s"
 
-#: lib/functions.php:4850
+#: lib/functions.php:4855
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "فشل الاتصال:٪ s"
 
-#: lib/functions.php:4853
+#: lib/functions.php:4858
 msgid "SMTP error: "
 msgstr "خطأ SMTP:"
 
-#: lib/functions.php:4866
+#: lib/functions.php:4871
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "هذه رسالة اختبار تم إنشاؤها من Cacti. تم إرسال هذه الرسالة لاختبار تهيئة إعدادات البريد الخاصة بك."
 
-#: lib/functions.php:4867
+#: lib/functions.php:4872
 msgid "Your email settings are currently set as follows"
 msgstr "يتم ضبط إعدادات بريدك الإلكتروني حاليًا على النحو التالي"
 
-#: lib/functions.php:4868
+#: lib/functions.php:4873
 msgid "Method"
 msgstr "طريقة"
 
-#: lib/functions.php:4870
+#: lib/functions.php:4875
 msgid "Checking Configuration...<br>"
 msgstr "التحقق من التكوين ... <br>"
 
-#: lib/functions.php:4877
+#: lib/functions.php:4882
 msgid "PHP's Mailer Class"
 msgstr "PHP&#39;s Mailer Class"
 
-#: lib/functions.php:4883
+#: lib/functions.php:4888
 msgid "Method: SMTP"
 msgstr "الطريقة: SMTP"
 
-#: lib/functions.php:4898
+#: lib/functions.php:4903
 msgid "Not Shown for Security Reasons"
 msgstr "غير معروض لأسباب أمنية"
 
-#: lib/functions.php:4899
+#: lib/functions.php:4904
 msgid "Security"
 msgstr "الأمان"
 
-#: lib/functions.php:4907
+#: lib/functions.php:4912
 msgid "Ping Results:"
 msgstr "نتائج بينغ:"
 
-#: lib/functions.php:4916
+#: lib/functions.php:4921
 msgid "Bypassed"
 msgstr "تجاوز"
 
-#: lib/functions.php:4924
+#: lib/functions.php:4929
 msgid "Creating Message Text..."
 msgstr "إنشاء نص الرسالة ..."
 
-#: lib/functions.php:4927
+#: lib/functions.php:4932
 msgid "Sending Message..."
 msgstr "إرسال رسالة …"
 
-#: lib/functions.php:4931
+#: lib/functions.php:4936
 msgid "Cacti Test Message"
 msgstr "رسالة اختبار الصبار"
 
-#: lib/functions.php:4933
+#: lib/functions.php:4938
 msgid "Success!"
 msgstr "نجح!"
 
-#: lib/functions.php:4936
+#: lib/functions.php:4941
 msgid "Message Not Sent due to ping failure."
 msgstr "رسالة غير مرسلة بسبب فشل اختبار الاتصال."
 
-#: lib/functions.php:5504 lib/functions.php:5567
+#: lib/functions.php:5514 lib/functions.php:5577
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "تم تعطيل المكون الإضافي لـ Cacti٪ s بسبب الخطأ التالي:٪ s! انظر ملف السجل Cacti لمزيد من التفاصيل."
 
-#: lib/functions.php:5959 lib/functions.php:5961
+#: lib/functions.php:5969 lib/functions.php:5971
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "-٪ s بيتا"
 
-#: lib/functions.php:5959
+#: lib/functions.php:5969
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "الإصدار٪ s٪ s"
 
-#: lib/functions.php:5961
+#: lib/functions.php:5971
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -13012,7 +13024,7 @@ msgstr "استعلام البيانات:"
 msgid "CSV Export of Graph Data"
 msgstr "CSV تصدير بيانات الرسم البياني"
 
-#: lib/html.php:461 lib/html.php:2445
+#: lib/html.php:461 lib/html.php:2448
 msgid "Time Graph View"
 msgstr "عرض الرسم البياني الزمني"
 
@@ -13052,340 +13064,340 @@ msgstr "القيمة الحالية"
 msgid "No %s Found"
 msgstr "لم يتمّ العثور على %s"
 
-#: lib/html.php:1123
+#: lib/html.php:1126
 msgid "#"
 msgstr "#"
 
-#: lib/html.php:1127
+#: lib/html.php:1130
 msgid "GPrint"
 msgstr "GPrint"
 
-#: lib/html.php:1130
+#: lib/html.php:1133
 msgid "Alpha %"
 msgstr "ألفا( الحرف الإغريقي الأول ألفا)"
 
-#: lib/html.php:1173
+#: lib/html.php:1176
 msgid "No Source"
 msgstr "المصدر"
 
-#: lib/html.php:1512
+#: lib/html.php:1515
 msgid "Choose an action"
 msgstr "اختيار إجراء"
 
-#: lib/html.php:1522
+#: lib/html.php:1525
 msgid "Execute Action"
 msgstr "تنفيذ العمل"
 
-#: lib/html.php:1704 lib/html.php:1706 lib/html.php:1786 managers.php:41
+#: lib/html.php:1707 lib/html.php:1709 lib/html.php:1789 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "السجل"
 
-#: lib/html.php:2205
+#: lib/html.php:2208
 msgid "Standard Deviations"
 msgstr "انحرافات معيارية"
 
-#: lib/html.php:2217
+#: lib/html.php:2220
 msgid "Variance Outliers"
 msgstr "الفرق القيم المتطرفة"
 
-#: lib/html.php:2223
+#: lib/html.php:2226
 msgid "Kills Per RRA"
 msgstr "يقتل لكل RRA"
 
-#: lib/html.php:2229
+#: lib/html.php:2232
 msgid "Remove StdDev"
 msgstr "إزالة StdDev"
 
-#: lib/html.php:2230
+#: lib/html.php:2233
 msgid "Remove Variance"
 msgstr "إزالة التباين"
 
-#: lib/html.php:2231
+#: lib/html.php:2234
 msgid "Gap Fill Range"
 msgstr "الفجوة ملء المدى"
 
-#: lib/html.php:2232
+#: lib/html.php:2235
 msgid "Float Range"
 msgstr "طفو المدى"
 
-#: lib/html.php:2234
+#: lib/html.php:2237
 msgid "Dry Run StdDev"
 msgstr "جاف تشغيل StdDev"
 
-#: lib/html.php:2235
+#: lib/html.php:2238
 msgid "Dry Run Variance"
 msgstr "فارق التشغيل الجاف"
 
-#: lib/html.php:2236
+#: lib/html.php:2239
 msgid "Dry Run Gap Fill Range"
 msgstr "جاف المدى الفجوة ملء المدى"
 
-#: lib/html.php:2237
+#: lib/html.php:2240
 msgid "Dry Run Float Range"
 msgstr "المدى الجاف تعويم المدى"
 
-#: lib/html.php:2441
+#: lib/html.php:2444
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
 msgstr "السماح أو الحد من أعمدة الجدول لتتجاوز حدود النوافذ الحالية."
 
-#: lib/html.php:2442 lib/html_filter.php:65
+#: lib/html.php:2445 lib/html_filter.php:65
 msgid "Enter a search term"
 msgstr "أدخل مصطلح البحث"
 
-#: lib/html.php:2443
+#: lib/html.php:2446
 msgid "Enter a regular expression"
 msgstr "أدخل تعبيرًا عاديًا"
 
-#: lib/html.php:2444
+#: lib/html.php:2447
 msgid "No file selected"
 msgstr "لم يتم تحديد الملف"
 
-#: lib/html.php:2447 lib/html.php:2470
+#: lib/html.php:2450 lib/html.php:2473
 msgid "SpikeKill Results"
 msgstr "SpikeKill النتائج"
 
-#: lib/html.php:2449
+#: lib/html.php:2452
 msgid "Click to view just this Graph in Realtime"
 msgstr "انقر لعرض هذا الرسم البياني في الوقت الفعلي"
 
-#: lib/html.php:2450
+#: lib/html.php:2453
 msgid "Click again to take this Graph out of Realtime"
 msgstr "انقر مرة أخرى لأخراج هذا الرسم البياني من الوقت الفعلي"
 
-#: lib/html.php:2457
+#: lib/html.php:2460
 msgid "Standard Mode"
 msgstr "وضع المسح."
 
-#: lib/html.php:2458
+#: lib/html.php:2461
 msgid "Compact Mode"
 msgstr "وضع التكبير"
 
-#: lib/html.php:2459
+#: lib/html.php:2462
 msgid "Dark Color Mode"
 msgstr "لا توجد ألوان"
 
-#: lib/html.php:2460
+#: lib/html.php:2463
 msgid "Light Color Mode"
 msgstr "وضع قائمة"
 
-#: lib/html.php:2461
+#: lib/html.php:2464
 msgid "Use System Color"
 msgstr "بند اللون"
 
-#: lib/html.php:2462
+#: lib/html.php:2465
 msgid "Ignore System Color"
 msgstr "بند اللون"
 
-#: lib/html.php:2463
+#: lib/html.php:2466
 msgid "Help"
 msgstr "مساعدة"
 
-#: lib/html.php:2464
+#: lib/html.php:2467
 msgid "Cacti Home"
 msgstr "كاكتي هوم"
 
-#: lib/html.php:2465
+#: lib/html.php:2468
 msgid "Cacti Project Page"
 msgstr "صفحة مشروع الصبار"
 
-#: lib/html.php:2468
+#: lib/html.php:2471
 msgid "Report a bug"
 msgstr "الإبلاغ عن خطأ"
 
-#: lib/html.php:2471
+#: lib/html.php:2474
 msgid "Click to Show/Hide Filter"
 msgstr "انقر لعرض / إخفاء التصفية"
 
-#: lib/html.php:2472
+#: lib/html.php:2475
 msgid "Clear Current Filter"
 msgstr "مسح التصفية الحالية"
 
-#: lib/html.php:2473
+#: lib/html.php:2476
 msgid "Clipboard"
 msgstr "حافظة"
 
-#: lib/html.php:2474
+#: lib/html.php:2477
 msgid "Clipboard ID"
 msgstr "معرف الحافظة"
 
-#: lib/html.php:2475
+#: lib/html.php:2478
 msgid "Copy operation is unavailable at this time"
 msgstr "عملية النسخ غير متوفرة في هذا الوقت"
 
-#: lib/html.php:2476
+#: lib/html.php:2479
 msgid "Failed to find data to copy!"
 msgstr "تعذّر العثور على البيانات لنسخها!"
 
-#: lib/html.php:2477
+#: lib/html.php:2480
 msgid "Clipboard has been updated"
 msgstr "تم تحديث الحافظة"
 
-#: lib/html.php:2478
+#: lib/html.php:2481
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "عذرًا ، لا يمكن تحديث الحافظة الخاصة بك في هذا الوقت"
 
-#: lib/html.php:2482
+#: lib/html.php:2485
 msgid "Passphrase length meets 8 character minimum"
 msgstr "يصل طول كلمة المرور إلى 8 أحرف كحد أدنى"
 
-#: lib/html.php:2483
+#: lib/html.php:2486
 msgid "Passphrase too short"
 msgstr "عبارة المرور قصيرة جدًا"
 
-#: lib/html.php:2484
+#: lib/html.php:2487
 msgid "Passphrase matches but too short"
 msgstr "عبارة المرور تتطابق ولكنها قصيرة جدًا"
 
-#: lib/html.php:2485
+#: lib/html.php:2488
 msgid "Passphrase too short and not matching"
 msgstr "عبارة المرور قصيرة جدًا وغير متطابقة"
 
-#: lib/html.php:2486
+#: lib/html.php:2489
 msgid "Passphrases match"
 msgstr "مطابقة عبارات المرور"
 
-#: lib/html.php:2487
+#: lib/html.php:2490
 msgid "Passphrases do not match"
 msgstr "عبارات المرور غير متطابقة"
 
-#: lib/html.php:2488
+#: lib/html.php:2491
 msgid "Sorry, we could not process your last action."
 msgstr "عذرًا ، لم نتمكن من معالجة الإجراء الأخير."
 
-#: lib/html.php:2489
+#: lib/html.php:2492
 msgid "Error:"
 msgstr "خطأ:"
 
-#: lib/html.php:2490
+#: lib/html.php:2493
 msgid "Reason:"
 msgstr "السبب:"
 
-#: lib/html.php:2491
+#: lib/html.php:2494
 msgid "Action failed"
 msgstr "العمل: فشل"
 
-#: lib/html.php:2492 pollers.php:814
+#: lib/html.php:2495 pollers.php:814
 msgid "Connection Successful"
 msgstr "تمت العملية بنجاح"
 
-#: lib/html.php:2493 pollers.php:816
+#: lib/html.php:2496 pollers.php:816
 msgid "Connection Failed"
 msgstr "فشل الاتصال"
 
-#: lib/html.php:2494
+#: lib/html.php:2497
 msgid "The response to the last action was unexpected."
 msgstr "كانت الاستجابة للإجراء الأخير غير متوقعة."
 
-#: lib/html.php:2495
+#: lib/html.php:2498
 msgid "Some Actions failed"
 msgstr "فشل بعض الإجراءات"
 
-#: lib/html.php:2496
+#: lib/html.php:2499
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "لاحظ أننا لم نتمكن من معالجة جميع إجراءاتك. التفاصيل أدناه."
 
-#: lib/html.php:2497
+#: lib/html.php:2500
 msgid "Operation successful"
 msgstr "تمت العملية بنجاح"
 
-#: lib/html.php:2498
+#: lib/html.php:2501
 msgid "The Operation was successful.  Details are below."
 msgstr "كانت العملية ناجحة. التفاصيل أدناه."
 
-#: lib/html.php:2500
+#: lib/html.php:2503
 msgid "Pause"
 msgstr "توقف"
 
-#: lib/html.php:2503
+#: lib/html.php:2506
 msgid "Zoom In"
 msgstr "تصغير"
 
-#: lib/html.php:2504
+#: lib/html.php:2507
 msgid "Zoom Out"
 msgstr "تصغير"
 
-#: lib/html.php:2505
+#: lib/html.php:2508
 msgid "Zoom Out Factor"
 msgstr "Zoom Out Factor"
 
-#: lib/html.php:2506
+#: lib/html.php:2509
 msgid "Timestamps"
 msgstr "ختم زمني"
 
-#: lib/html.php:2507
+#: lib/html.php:2510
 msgid "2x"
 msgstr "2X"
 
-#: lib/html.php:2508
+#: lib/html.php:2511
 msgid "4x"
 msgstr "4X"
 
-#: lib/html.php:2509
+#: lib/html.php:2512
 msgid "8x"
 msgstr "8X"
 
-#: lib/html.php:2510
+#: lib/html.php:2513
 msgid "16x"
 msgstr "16X"
 
-#: lib/html.php:2511
+#: lib/html.php:2514
 msgid "32x"
 msgstr "32X"
 
-#: lib/html.php:2512
+#: lib/html.php:2515
 msgid "Zoom Out Positioning"
 msgstr "تكبير المواقع"
 
-#: lib/html.php:2513
+#: lib/html.php:2516
 msgid "Zoom Mode"
 msgstr "وضع التكبير"
 
-#: lib/html.php:2515
+#: lib/html.php:2518
 msgid "Quick"
 msgstr "سريع. حي. حبلى"
 
-#: lib/html.php:2517
+#: lib/html.php:2520
 msgid "Open in new tab"
 msgstr "فتح في علامة تبويب جديدة"
 
-#: lib/html.php:2518
+#: lib/html.php:2521
 msgid "Save graph"
 msgstr "حفظ الرسم البياني"
 
-#: lib/html.php:2519
+#: lib/html.php:2522
 msgid "Copy graph"
 msgstr "نسخ الرسم البياني"
 
-#: lib/html.php:2520
+#: lib/html.php:2523
 msgid "Copy graph link"
 msgstr "نسخ الرابط الرسم البياني"
 
-#: lib/html.php:2521
+#: lib/html.php:2524
 msgid "Always On"
 msgstr "يعمل دائماً"
 
-#: lib/html.php:2522
+#: lib/html.php:2525
 msgid "Auto"
 msgstr "تلقاءي"
 
-#: lib/html.php:2523
+#: lib/html.php:2526
 msgid "Always Off"
 msgstr "دائما خارج"
 
-#: lib/html.php:2524
+#: lib/html.php:2527
 msgid "Begin with"
 msgstr "إبتدئ ب"
 
-#: lib/html.php:2526
+#: lib/html.php:2529
 msgid "End with"
 msgstr "تاريخ النهاية"
 
-#: lib/html.php:2528 lib/html_form.php:1301
+#: lib/html.php:2531 lib/html_form.php:1301
 msgid "Close"
 msgstr "إغلاق"
 
-#: lib/html.php:2530
+#: lib/html.php:2533
 msgid "3rd Mouse Button"
 msgstr "زر الماوس الثالث"
 
@@ -13450,67 +13462,67 @@ msgstr "تم اكتشاف التغييرات غير المحفوظة"
 msgid "You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form."
 msgstr "لديك تغييرات غير محفوظة في هذا النموذج. إذا ضغطت على &quot;متابعة&quot; ، فسيتم تجاهل هذه التغييرات. اضغط على &quot;إلغاء&quot; لمتابعة تحرير النموذج."
 
-#: lib/html_form_template.php:627 lib/html_form_template.php:639
+#: lib/html_form_template.php:630 lib/html_form_template.php:642
 #, fuzzy, php-format
 msgid "Data Query Data Sources must be created through %s"
 msgstr "يجب إنشاء مصادر بيانات طلبات البحث عبر٪ s"
 
-#: lib/html_graph.php:193 lib/html_tree.php:1077
+#: lib/html_graph.php:193 lib/html_tree.php:1018
 msgid "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile"
 msgstr "احفظ تفضيلات الرسوم البيانية والأعمدة والصور المصغرة والإعداد المسبق وتوقيت Timeshift الحالية في ملفك الشخصي"
 
-#: lib/html_graph.php:223 lib/html_tree.php:1101
+#: lib/html_graph.php:223 lib/html_tree.php:1042
 msgid "Columns"
 msgstr "اعمدة"
 
-#: lib/html_graph.php:227 lib/html_tree.php:1105
+#: lib/html_graph.php:227 lib/html_tree.php:1046
 #, php-format
 msgid "%d Column"
 msgstr "%d عمود"
 
-#: lib/html_graph.php:257 lib/html_tree.php:1135
+#: lib/html_graph.php:257 lib/html_tree.php:1076
 msgid "Custom"
 msgstr "مخصص"
 
-#: lib/html_graph.php:270 lib/html_reports.php:1937 lib/html_reports.php:1948
-#: lib/html_tree.php:1148
+#: lib/html_graph.php:270 lib/html_reports.php:1932 lib/html_reports.php:1943
+#: lib/html_tree.php:1089
 msgid "From"
 msgstr "من"
 
-#: lib/html_graph.php:275 lib/html_tree.php:1153
+#: lib/html_graph.php:275 lib/html_tree.php:1094
 msgid "Start Date Selector"
 msgstr "محدد تاريخ البدء"
 
-#: lib/html_graph.php:279 lib/html_reports.php:1938 lib/html_reports.php:1949
-#: lib/html_tree.php:1157
+#: lib/html_graph.php:279 lib/html_reports.php:1933 lib/html_reports.php:1944
+#: lib/html_tree.php:1098
 msgid "To"
 msgstr "إلى"
 
-#: lib/html_graph.php:284 lib/html_tree.php:1162
+#: lib/html_graph.php:284 lib/html_tree.php:1103
 msgid "End Date Selector"
 msgstr "محدد تاريخ النهاية"
 
-#: lib/html_graph.php:289 lib/html_tree.php:1167
+#: lib/html_graph.php:289 lib/html_tree.php:1108
 msgid "Shift Time Backward"
 msgstr "التحول مرة الى الوراء"
 
-#: lib/html_graph.php:290 lib/html_tree.php:1168
+#: lib/html_graph.php:290 lib/html_tree.php:1109
 msgid "Define Shifting Interval"
 msgstr "تحديد الفاصل الزمني للتحويل"
 
-#: lib/html_graph.php:301 lib/html_tree.php:1179
+#: lib/html_graph.php:301 lib/html_tree.php:1120
 msgid "Shift Time Forward"
 msgstr "التحول إلى الأمام"
 
-#: lib/html_graph.php:306 lib/html_tree.php:1184
+#: lib/html_graph.php:306 lib/html_tree.php:1125
 msgid "Refresh selected time span"
 msgstr "تحديث الفترة الزمنية المحددة"
 
-#: lib/html_graph.php:307 lib/html_tree.php:1185
+#: lib/html_graph.php:307 lib/html_tree.php:1126
 msgid "Return to the default time span"
 msgstr "العودة إلى الفترة الزمنية الافتراضية"
 
-#: lib/html_graph.php:315 lib/html_tree.php:1193
+#: lib/html_graph.php:315 lib/html_tree.php:1134
 msgid "Window"
 msgstr "نافذة، كوة، شباك، نافذة"
 
@@ -13518,7 +13530,7 @@ msgstr "نافذة، كوة، شباك، نافذة"
 msgid "Interval"
 msgstr "الفترة"
 
-#: lib/html_graph.php:339 lib/html_tree.php:1217
+#: lib/html_graph.php:339 lib/html_tree.php:1158
 msgid "Stop"
 msgstr "توقف"
 
@@ -13843,7 +13855,7 @@ msgstr "الرسم البياني لاستخدامه في عنصر التقري�
 msgid "The Graph End time will be set to the scheduled report send time.  So, if you wish the end time on the various Graphs to be midnight, ensure you send the report at midnight.  The Graph Start time will be the End Time minus the Graph Timespan."
 msgstr "سيتم تعيين وقت الانتهاء من Graph إلى وقت إرسال التقرير المجدول. لذا ، إذا كنت ترغب في أن يكون وقت الانتهاء على الرسوم البيانية المختلفة في منتصف الليل ، تأكد من إرسال التقرير عند منتصف الليل. سوف يكون وقت البدء Graph وقت النهاية مطروحاً Timpran Graph."
 
-#: lib/html_reports.php:1055 lib/html_reports.php:1615
+#: lib/html_reports.php:1055 lib/html_reports.php:1610
 msgid "Alignment"
 msgstr "رصف – صف - تنضيد - تصحيح"
 
@@ -13859,7 +13871,7 @@ msgstr "نص ثابت"
 msgid "Enter descriptive Text"
 msgstr "أدخل النص الوصفي"
 
-#: lib/html_reports.php:1071 lib/html_reports.php:1616
+#: lib/html_reports.php:1071 lib/html_reports.php:1611
 msgid "Font Size"
 msgstr "حجم الخط"
 
@@ -13885,7 +13897,7 @@ msgstr "الفعاليات"
 msgid "Send Report"
 msgstr "ارسال تبليغ"
 
-#: lib/html_reports.php:1466 lib/import.php:2169 user_admin.php:2012
+#: lib/html_reports.php:1466 lib/import.php:2182 user_admin.php:2012
 msgid "[new]"
 msgstr "[الجديد]"
 
@@ -13899,177 +13911,177 @@ msgstr "التفاصيل"
 msgid "Items %s"
 msgstr "العناصر"
 
-#: lib/html_reports.php:1573
+#: lib/html_reports.php:1568
 #, fuzzy, php-format
 msgid "Scheduled Events %s"
 msgstr "مناسبات مجدولة"
 
-#: lib/html_reports.php:1584
+#: lib/html_reports.php:1579
 #, fuzzy, php-format
 msgid "Report Preview %s"
 msgstr "معاينة التقرير"
 
-#: lib/html_reports.php:1613
+#: lib/html_reports.php:1608
 msgid "Item Details"
 msgstr "تفاصيل العنصر"
 
-#: lib/html_reports.php:1625
+#: lib/html_reports.php:1620
 #, fuzzy, php-format
 msgid "Graph: %s"
 msgstr "تغيير Graph (s) جهاز مرتبط"
 
-#: lib/html_reports.php:1628 lib/html_reports.php:1654
-#: lib/html_reports.php:1667 lib/html_reports.php:1668
-#: lib/html_reports.php:1717 lib/html_reports.php:1718
+#: lib/html_reports.php:1623 lib/html_reports.php:1649
+#: lib/html_reports.php:1662 lib/html_reports.php:1663
+#: lib/html_reports.php:1712 lib/html_reports.php:1713
 #, fuzzy
 msgid "Using CSS"
 msgstr "باستخدام CSS"
 
-#: lib/html_reports.php:1638
+#: lib/html_reports.php:1633
 #, fuzzy, php-format
 msgid "Device: %s"
 msgstr "تغيير جهاز (خيارات) SNMP Options"
 
-#: lib/html_reports.php:1641
+#: lib/html_reports.php:1636
 #, fuzzy
 msgid ", Graph Template: All Templates"
 msgstr "إضافة قالب الرسم البياني إلى قالب الجهاز"
 
-#: lib/html_reports.php:1643
+#: lib/html_reports.php:1638
 #, fuzzy, php-format
 msgid ", Graph Template: %s"
 msgstr "حذف قالب (نماذج) الرسم البياني"
 
-#: lib/html_reports.php:1650 lib/html_reports.php:1713
+#: lib/html_reports.php:1645 lib/html_reports.php:1708
 #, fuzzy, php-format
 msgid ", Using RegEx: \"%s\""
 msgstr "، باستخدام RegEx: \"%s\""
 
-#: lib/html_reports.php:1692
+#: lib/html_reports.php:1687
 #, fuzzy, php-format
 msgid "Tree: %s"
 msgstr "شجرة:"
 
-#: lib/html_reports.php:1700
+#: lib/html_reports.php:1695
 #, fuzzy, php-format
 msgid ", Device: %s"
 msgstr "إضافة جهاز (أجهزة)"
 
-#: lib/html_reports.php:1702
+#: lib/html_reports.php:1697
 #, fuzzy, php-format
 msgid ", Branch: %s"
 msgstr "فرع شجرة:"
 
-#: lib/html_reports.php:1705
+#: lib/html_reports.php:1700
 msgid "(All Branches)"
 msgstr "(جميع الفروع)"
 
-#: lib/html_reports.php:1707
+#: lib/html_reports.php:1702
 msgid "(Current Branch)"
 msgstr "(الفرع الحالي)"
 
-#: lib/html_reports.php:1759
+#: lib/html_reports.php:1754
 msgid "No Report Items"
 msgstr "لا تقرير البنود"
 
-#: lib/html_reports.php:1830
+#: lib/html_reports.php:1825
 msgid "Administrator Level"
 msgstr "مستوى المسؤول"
 
-#: lib/html_reports.php:1830
+#: lib/html_reports.php:1825
 #, fuzzy, php-format
 msgid "Reports [%s]"
 msgstr "التقارير [٪ s]"
 
-#: lib/html_reports.php:1830
+#: lib/html_reports.php:1825
 msgid "User Level"
 msgstr "مستوى العضو"
 
-#: lib/html_reports.php:1853 lib/html_reports.php:1924
+#: lib/html_reports.php:1848 lib/html_reports.php:1919
 msgid "Reports"
 msgstr "التقارير"
 
-#: lib/html_reports.php:1933 tree.php:2027
+#: lib/html_reports.php:1928 tree.php:2027
 msgid "Owner"
 msgstr "المشارك"
 
-#: lib/html_reports.php:1934 lib/html_reports.php:1945
+#: lib/html_reports.php:1929 lib/html_reports.php:1940
 msgid "Frequency"
 msgstr "التكرار"
 
-#: lib/html_reports.php:1935 lib/html_reports.php:1946
+#: lib/html_reports.php:1930 lib/html_reports.php:1941
 msgid "Last Run"
 msgstr "التشغيل الماضي"
 
-#: lib/html_reports.php:1936 lib/html_reports.php:1947
+#: lib/html_reports.php:1931 lib/html_reports.php:1942
 msgid "Next Run"
 msgstr "التشغيل المقبل"
 
-#: lib/html_reports.php:1944
+#: lib/html_reports.php:1939
 msgid "Report Title"
 msgstr "عنوان التقرير"
 
-#: lib/html_reports.php:1975
+#: lib/html_reports.php:1970
 msgid "Report Disabled - No Owner"
 msgstr "تقرير معطل - لا يوجد مالك"
 
-#: lib/html_reports.php:1979
+#: lib/html_reports.php:1974
 msgid "Every"
 msgstr "كل"
 
-#: lib/html_reports.php:1985
+#: lib/html_reports.php:1980
 msgid "Multiple"
 msgstr "متعدد"
 
-#: lib/html_reports.php:1986
+#: lib/html_reports.php:1981
 msgid "Invalid"
 msgstr "عاجز، مقعد"
 
-#: lib/html_reports.php:1993
+#: lib/html_reports.php:1988
 msgid "No Reports Found"
 msgstr "لم يتم العثور على تقارير"
 
-#: lib/html_tree.php:970 lib/html_tree.php:978 lib/html_tree.php:986
+#: lib/html_tree.php:911 lib/html_tree.php:919 lib/html_tree.php:927
 msgid "Graph Template:"
 msgstr "قالب الرسم البياني:"
 
-#: lib/html_tree.php:986
+#: lib/html_tree.php:927
 msgid "Template Based"
 msgstr "على أساس قالب"
 
-#: lib/html_tree.php:992 lib/reports.php:1262
+#: lib/html_tree.php:933 lib/reports.php:1262
 msgid "Tree:"
 msgstr "شجرة"
 
-#: lib/html_tree.php:997
+#: lib/html_tree.php:938
 msgid "Site:"
 msgstr "الموقع:"
 
-#: lib/html_tree.php:1003
+#: lib/html_tree.php:944
 msgid "Leaf:"
 msgstr "ورقة"
 
-#: lib/html_tree.php:1009
+#: lib/html_tree.php:950
 msgid "Device Template:"
 msgstr "قالب الجهاز:"
 
-#: lib/html_tree.php:1023
+#: lib/html_tree.php:964
 msgid "Applied"
 msgstr "تطبيقي"
 
-#: lib/html_tree.php:1023
+#: lib/html_tree.php:964
 msgid "Filter"
 msgstr "فلتر"
 
-#: lib/html_tree.php:1023
+#: lib/html_tree.php:964
 msgid "Graph Filters"
 msgstr "مرشحات الرسم البياني"
 
-#: lib/html_tree.php:1074
+#: lib/html_tree.php:1015
 msgid "Set/Refresh Filter"
 msgstr "تعيين / تحديث فلتر"
 
-#: lib/html_tree.php:1496
+#: lib/html_tree.php:1437
 msgid "(Non Graph Template)"
 msgstr "(قالب غير الرسم البياني)"
 
@@ -14115,92 +14127,92 @@ msgstr "خطأ في التحقق من المتغير٪ s بقيمة٪ s. انظ�
 msgid "Validation Error"
 msgstr "عنوان / خطأ التحقق  مساحة الخريطة"
 
-#: lib/import.php:353
+#: lib/import.php:357
 msgid "written"
 msgstr "مكتوب"
 
-#: lib/import.php:355
+#: lib/import.php:359
 msgid "could not open"
 msgstr "لا يمكن فتحه"
 
-#: lib/import.php:361
+#: lib/import.php:365
 msgid "not exists"
 msgstr "لا يوجد"
 
-#: lib/import.php:364 lib/import.php:370
+#: lib/import.php:368 lib/import.php:374
 msgid "not writable"
 msgstr "قابل للكتابة"
 
-#: lib/import.php:372
+#: lib/import.php:376
 msgid "writable"
 msgstr "قابل للكتابة"
 
-#: lib/import.php:988
+#: lib/import.php:999
 #, fuzzy, php-format
 msgid "Resource File: '%s' is missing or not readable.  Make sure you install it before using Data Query: '%s'"
 msgstr "ملف المورد: '٪ s' مفقود أو غير قابل للقراءة. تأكد من تثبيته قبل استخدام استعلام البيانات: '٪ s'"
 
-#: lib/import.php:1884
+#: lib/import.php:1896
 msgid "Unknown Field"
 msgstr "حقل غير معروف"
 
-#: lib/import.php:2130
+#: lib/import.php:2143
 msgid "Import Preview Results"
 msgstr "استيراد نتائج المعاينة"
 
-#: lib/import.php:2130
+#: lib/import.php:2143
 msgid "Import Results"
 msgstr "نتائج الاستيراد"
 
-#: lib/import.php:2134
+#: lib/import.php:2147
 msgid "Cacti would make the following changes if the Package was imported:"
 msgstr "الصبار سيجعل التغييرات التالية إذا تم استيراد الحزمة:"
 
-#: lib/import.php:2136
+#: lib/import.php:2149
 msgid "Cacti has imported the following items for the Package:"
 msgstr "قامت Cacti باستيراد العناصر التالية للحزمة:"
 
-#: lib/import.php:2139
+#: lib/import.php:2152
 msgid "Package Files"
 msgstr "ملفات الحزمة"
 
-#: lib/import.php:2143
+#: lib/import.php:2156
 msgid "[preview] "
 msgstr "معاينة"
 
-#: lib/import.php:2148
+#: lib/import.php:2161
 msgid "Cacti would make the following changes if the Template was imported:"
 msgstr "الصبار سيجعل التغييرات التالية إذا تم استيراد القالب:"
 
-#: lib/import.php:2150
+#: lib/import.php:2163
 msgid "Cacti has imported the following items for the Template:"
 msgstr "قامت Cacti باستيراد العناصر التالية للقالب:"
 
-#: lib/import.php:2159
+#: lib/import.php:2172
 msgid "[success]"
 msgstr "نجح!"
 
-#: lib/import.php:2161
+#: lib/import.php:2174
 msgid "[fail]"
 msgstr "فشل"
 
-#: lib/import.php:2163
+#: lib/import.php:2176
 msgid "[preview]"
 msgstr "معاينة"
 
-#: lib/import.php:2167
+#: lib/import.php:2180
 msgid "[updated]"
 msgstr "[updated]"
 
-#: lib/import.php:2171
+#: lib/import.php:2184
 msgid "[unchanged]"
 msgstr "[دون تغيير]"
 
-#: lib/import.php:2207
+#: lib/import.php:2220
 msgid "Found Dependency:"
 msgstr "وجدت التبعية:"
 
-#: lib/import.php:2209
+#: lib/import.php:2222
 msgid "Unmet Dependency:"
 msgstr "الإعالة غير الملباة:"
 
@@ -15233,89 +15245,93 @@ msgstr "فشل تعيين خيار PHP٪ s ، هو٪ s (يجب أن يكون٪ s
 msgid "No Remote Data Collectors found for full syncronization"
 msgstr "لم يتم العثور على مجمّع بيانات (ق) عند محاولة المزامنة"
 
-#: lib/ldap.php:281
+#: lib/ldap.php:282
 msgid "Authentication Success"
 msgstr "نجاح التوثيق"
 
-#: lib/ldap.php:285
+#: lib/ldap.php:286
 msgid "Authentication Failure"
 msgstr "فشل التوثيق"
 
-#: lib/ldap.php:289
+#: lib/ldap.php:290
 msgid "PHP LDAP not enabled"
 msgstr "لم يتم تمكين PHP LDAP"
 
-#: lib/ldap.php:293
+#: lib/ldap.php:294
 msgid "No username defined"
 msgstr "لا يوجد اسم مستخدم محدد"
 
-#: lib/ldap.php:297
+#: lib/ldap.php:298
 #, fuzzy, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
 msgstr "خطأ في البروتوكول ، غير قادر على تعيين الإصدار"
 
-#: lib/ldap.php:301
+#: lib/ldap.php:302
 #, fuzzy, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
 msgstr "خطأ بروتوكول ، غير قادر على تعيين خيار الإحالات"
 
-#: lib/ldap.php:305
+#: lib/ldap.php:306
 #, fuzzy, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
 msgstr "خطأ في البروتوكول ، غير قادر على بدء اتصالات TLS"
 
-#: lib/ldap.php:309
+#: lib/ldap.php:310
 #, fuzzy, php-format
 msgid "Protocol Error, General failure (%s)"
 msgstr "خطأ في البروتوكول ، فشل عام (٪ s)"
 
-#: lib/ldap.php:313
+#: lib/ldap.php:314
 #, fuzzy, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr "خطأ في البروتوكول ، غير قادر على الربط ، نتيجة LDAP:٪ s"
 
-#: lib/ldap.php:317
+#: lib/ldap.php:318
 #, fuzzy, php-format
 msgid "Unable to Connect to Server (%s)"
 msgstr "غير قادر على الإتصال بالسيرفر"
 
-#: lib/ldap.php:321
+#: lib/ldap.php:322
 #, fuzzy, php-format
 msgid "Connection Timeout to Server (%s)"
 msgstr "انتهى وقت الاتصال"
 
-#: lib/ldap.php:325
+#: lib/ldap.php:326
 #, fuzzy, php-format
 msgid "Insufficient Access to Server (%s)"
 msgstr "وصول غير كافية"
 
-#: lib/ldap.php:329
+#: lib/ldap.php:330
 #, fuzzy, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
 msgstr "تعذر العثور على المجموعة DN للمقارنة"
 
-#: lib/ldap.php:333
+#: lib/ldap.php:334
 msgid "More than one matching user found"
 msgstr "تم العثور على أكثر من مستخدم مطابق"
 
-#: lib/ldap.php:337
+#: lib/ldap.php:338
 msgid "Unable to find user from DN"
 msgstr "يتعذر العثور على المستخدم من DN"
 
-#: lib/ldap.php:341
+#: lib/ldap.php:342
 msgid "Unable to find users DN"
 msgstr "يتعذر العثور على المستخدمين DN"
 
-#: lib/ldap.php:345
+#: lib/ldap.php:346
 #, fuzzy, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
 msgstr "غير قادر على إنشاء كائن اتصال LDAP"
 
-#: lib/ldap.php:349
+#: lib/ldap.php:350
 msgid "Specific DN and Password required"
 msgstr "الاسم المميز وكلمة المرور المطلوبة"
 
-#: lib/ldap.php:353
+#: lib/ldap.php:354
+msgid "Invalid Password provided.  Login failed."
+msgstr ""
+
+#: lib/ldap.php:358
 #, fuzzy, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
 msgstr "خطأ غير متوقع٪ s (خطأ في LDAP:٪ s)"
@@ -15481,199 +15497,199 @@ msgstr "أخفق إضافة عنصر رسومي تقرير &#39; <i>٪ s</i> &#3
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "تم تخطي عنصر Graph Report &#39; <i>٪ s</i> &#39; بالفعل"
 
-#: lib/rrd.php:2688
+#: lib/rrd.php:2700
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "حجم خطوة RRD المطلوب هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2717
+#: lib/rrd.php:2729
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون نوع مصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2722
+#: lib/rrd.php:2734
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون نبض القلب لمصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2734
+#: lib/rrd.php:2746
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون الحد الأدنى لتقليل وقت الاستجابة (RRD) لمصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2754
+#: lib/rrd.php:2766
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون الحد الأقصى RRD لمصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2764
+#: lib/rrd.php:2776
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "DS &#39;٪ s&#39; مفقودة في RRDfile"
 
-#: lib/rrd.php:2773
+#: lib/rrd.php:2785
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS &#39;٪ s&#39; مفقود في تعريف Cacti"
 
-#: lib/rrd.php:2790 lib/rrd.php:2791
+#: lib/rrd.php:2802 lib/rrd.php:2803
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA &#39;٪ s&#39; له نفس CF / steps (٪ s،٪ s) كـ &#39;٪ s&#39;"
 
-#: lib/rrd.php:2805 lib/rrd.php:2806
+#: lib/rrd.php:2817 lib/rrd.php:2818
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "الملف RRA &#39;٪ s&#39; له نفس CF / steps (٪ s،٪ s) كـ &#39;٪ s&#39;"
 
-#: lib/rrd.php:2837
+#: lib/rrd.php:2849
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "يجب أن يكون XFF لمعرف cacti RRA &#39;٪ s&#39; &#39;٪ s&#39;"
 
-#: lib/rrd.php:2841
+#: lib/rrd.php:2853
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "يجب أن يكون عدد الصفوف لمعرف Cacti RRA &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2857
+#: lib/rrd.php:2869
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRA &#39;٪ s&#39; مفقودة في RRDfile"
 
-#: lib/rrd.php:2866
+#: lib/rrd.php:2878
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "RRA &#39;٪ s&#39; مفقودة في تعريف Cacti"
 
-#: lib/rrd.php:2885
+#: lib/rrd.php:2897
 msgid "RRD File Information"
 msgstr "RRD ملف المعلومات"
 
-#: lib/rrd.php:2917
+#: lib/rrd.php:2929
 msgid "Data Source Items"
 msgstr "عناصر مصدر البيانات"
 
-#: lib/rrd.php:2919
+#: lib/rrd.php:2931
 msgid "Minimal Heartbeat"
 msgstr "أدنى ضربات القلب"
 
-#: lib/rrd.php:2920
+#: lib/rrd.php:2932
 msgid "Min"
 msgstr "بحد أدنى"
 
-#: lib/rrd.php:2921
+#: lib/rrd.php:2933
 msgid "Max"
 msgstr "الحد الأعلى"
 
-#: lib/rrd.php:2922
+#: lib/rrd.php:2934
 msgid "Last DS"
 msgstr "آخر DS"
 
-#: lib/rrd.php:2924
+#: lib/rrd.php:2936
 msgid "Unknown Sec"
 msgstr "غير معروف"
 
-#: lib/rrd.php:2975
+#: lib/rrd.php:2987
 msgid "Round Robin Archive"
 msgstr "جولة روبن الأرشيف"
 
-#: lib/rrd.php:2978
+#: lib/rrd.php:2990
 msgid "Cur Row"
 msgstr "صف كو"
 
-#: lib/rrd.php:2979
+#: lib/rrd.php:2991
 msgid "PDP per Row"
 msgstr "PDP لكل صف"
 
-#: lib/rrd.php:2981
+#: lib/rrd.php:2993
 msgid "CDP Prep Value (0)"
 msgstr "قيمة الإعداد المسبق لـ CDP (0)"
 
-#: lib/rrd.php:2982
+#: lib/rrd.php:2994
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP نقاط بيانات غير معروفة (0)"
 
-#: lib/rrd.php:3059
+#: lib/rrd.php:3071
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "إعادة تسمية٪ s إلى٪ s"
 
-#: lib/rrd.php:3109
+#: lib/rrd.php:3121
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "خطأ أثناء تحليل XML من تفريغ rrdtool"
 
-#: lib/rrd.php:3141 lib/rrd.php:3196 lib/rrd.php:3252
+#: lib/rrd.php:3153 lib/rrd.php:3208 lib/rrd.php:3264
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "خطأ أثناء كتابة ملف XML:٪ s"
 
-#: lib/rrd.php:3152 lib/rrd.php:3207 lib/rrd.php:3263
+#: lib/rrd.php:3164 lib/rrd.php:3219 lib/rrd.php:3275
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "خطأ: RRDfile٪ s غير قابل للكتابة"
 
-#: lib/rrd.php:3179 lib/rrd.php:3235
+#: lib/rrd.php:3191 lib/rrd.php:3247
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "خطأ أثناء تحليل XML تفريغ RRDtool"
 
-#: lib/rrd.php:3468
+#: lib/rrd.php:3480
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF =٪ s، ROWS =٪ d، PDP_PER_ROW =٪ d، XFF =٪ 1.2f) تمت إزالتها من ملف RRD"
 
-#: lib/rrd.php:3502
+#: lib/rrd.php:3514
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF =٪ s، ROWS =٪ d، PDP_PER_ROW =٪ d، XFF =٪ 1.2f) إضافة إلى ملف RRD"
 
-#: lib/rrd.php:3532 lib/rrd.php:3546
+#: lib/rrd.php:3544 lib/rrd.php:3558
 #, fuzzy, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "لا يمتلك موقع الويب حق الوصول للكتابة إلى٪ s ، وقد يتعذر إنشاء / تحديث ملفات RRD"
 
-#: lib/rrd.php:3542
+#: lib/rrd.php:3554
 msgid "(Custom)"
 msgstr "مخصص"
 
-#: lib/rrd.php:3548
+#: lib/rrd.php:3560
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "فشل في فتح ملف البيانات ، ربما لم يتم تشغيل برنامج التلقيم حتى الآن"
 
-#: lib/rrd.php:3551
+#: lib/rrd.php:3563
 msgid "RRA Folder"
 msgstr "مجلد RRA"
 
-#: lib/rrd.php:3551
+#: lib/rrd.php:3563
 msgid "Root"
 msgstr "الجذر"
 
-#: lib/rrd.php:3654
+#: lib/rrd.php:3666
 msgid "Unknown RRDtool Error"
 msgstr "خطأ RRDtool غير معروف"
 
-#: lib/template.php:1492
+#: lib/template.php:1501
 msgid "Attempting to Create Graph from Non-Template"
 msgstr "إنشاء تجميع من القالب"
 
-#: lib/template.php:1504
+#: lib/template.php:1513
 msgid "Attempting to Create Graph from Removed Graph Template"
 msgstr "محاولة تكوين رسم بياني من قالب الرسم البياني الذي تمت إزالته"
 
-#: lib/template.php:2123 lib/template.php:2152
+#: lib/template.php:2132 lib/template.php:2161
 #, fuzzy, php-format
 msgid "Created: %s"
 msgstr "تم الإنشاء:٪ s"
 
-#: lib/template.php:2134 lib/template.php:2163
+#: lib/template.php:2143 lib/template.php:2172
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "خطأ: فشل التحقق من الصحة البيضاء. تحقق من طريقة إدخال البيانات"
 
-#: lib/template.php:2142
+#: lib/template.php:2151
 msgid "Graph Not created for "
 msgstr "خلق الرسم البياني"
 
-#: lib/template.php:2171
+#: lib/template.php:2180
 msgid "NOTE: Graph not added for Data Query "
 msgstr "إنشاء الرسوم البيانية من استعلام البيانات"
 
