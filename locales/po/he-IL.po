@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 20:52-0500\n"
+"PO-Revision-Date: 2022-02-21 13:22-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he_IL\n"
@@ -3877,7 +3877,6 @@ msgid "Input String does not exist in White List.  Run CLI script input_whitelis
 msgstr "מחרוזת הקלט אינה קיימת ברשימה הלבנה. הפעל את סקריפט CLI input_whitelist.php כדי לתקן."
 
 #: data_input.php:633
-#, fuzzy
 msgid "Input Fields"
 msgstr "שדות קלט"
 
@@ -9843,8 +9842,9 @@ msgid "Data Template Filter"
 msgstr "פריט תבנית נתונים"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "מסנן זה יגביל את מקורות הנתונים הגלויים בתפריט הנפתח מקור נתונים."
 
 #: include/global_form.php:991
 #, fuzzy
@@ -12524,12 +12524,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "הזן את פסק הזמן של ה- SMTP תוך שניות."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "מצב ניפוי באגים LDAP"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "אם מסומן קקטוסים ירשמו מידע LDAP נוסף ליומן הקקטוסים במהלך פעילויות כריכה וחיפוש."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -17575,7 +17577,7 @@ msgid "No tables where found or selected for conversion"
 msgstr "אין טבלאות שנמצאו או שנבחרו להמרה"
 
 #: lib/installer.php:3256
-#, fuzzy, php-format
+#, php-format
 msgid "Switched from %s to %s"
 msgstr "עבר מ-%s ל-%s"
 
@@ -17742,8 +17744,9 @@ msgid "Specific DN and Password required"
 msgstr "נדרשת DN וסיסמא"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "סיסמה לא חוקית סופקה. ההתחברות נכשלה."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

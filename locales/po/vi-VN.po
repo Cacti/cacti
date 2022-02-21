@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 21:03-0500\n"
+"PO-Revision-Date: 2022-02-21 13:32-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: vi_VN\n"
@@ -9742,8 +9742,9 @@ msgid "Data Template Filter"
 msgstr "Mục mẫu dữ liệu"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "Bộ lọc này sẽ giới hạn Nguồn dữ liệu hiển thị trong menu thả xuống Nguồn dữ liệu."
 
 #: include/global_form.php:991
 #, fuzzy
@@ -12419,12 +12420,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "Vui lòng nhập thời gian chờ SMTP trong vài giây."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "Chế độ gỡ lỗi LDAP"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "Nếu được Kiểm tra Xương rồng sẽ ghi thông tin LDAP bổ sung vào nhật ký Xương rồng trong các hoạt động Ràng buộc và Tìm kiếm."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -17624,8 +17627,9 @@ msgid "Specific DN and Password required"
 msgstr "Yêu cầu cụ thể về DN và mật khẩu"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "Mật khẩu được cung cấp không hợp lệ. Đăng nhập thất bại."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

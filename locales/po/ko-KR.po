@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 20:56-0500\n"
+"PO-Revision-Date: 2022-02-21 13:25-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ko\n"
@@ -3639,7 +3639,7 @@ msgstr "결과"
 #: data_debug.php:777
 #, fuzzy
 msgid "<not set>"
-msgstr "(설정되지 않음)"
+msgstr "설정되지 않음"
 
 #: data_debug.php:812 data_debug.php:863
 #, fuzzy
@@ -9727,8 +9727,9 @@ msgid "Data Template Filter"
 msgstr "데이터 템플릿 항목"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "이 필터는 데이터 소스 드롭다운에 표시되는 데이터 소스를 제한합니다."
 
 #: include/global_form.php:991
 #, fuzzy
@@ -12402,12 +12403,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "SMTP 시간 초과를 초 단위로 입력하십시오."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "LDAP 디버그 모드"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "Checked Cacti는 바인딩 및 검색 활동 중에 Cacti 로그에 추가 LDAP 정보를 기록합니다."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -17601,8 +17604,9 @@ msgid "Specific DN and Password required"
 msgstr "특정 DN 및 비밀번호 필요"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "잘못된 비밀번호가 제공되었습니다. 로그인 실패."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

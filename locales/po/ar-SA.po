@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 20:48-0500\n"
+"PO-Revision-Date: 2022-02-21 13:19-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar_SA\n"
@@ -8621,8 +8621,9 @@ msgid "Data Template Filter"
 msgstr "عنصر قالب البيانات"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "سيحد هذا المرشح من مصادر البيانات المرئية في القائمة المنسدلة لمصدر البيانات."
 
 #: include/global_form.php:991
 msgid "The data source to use for this graph item."
@@ -10826,12 +10827,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "الرجاء إدخال مهلة SMTP بالثواني."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "وضع تصحيح LDAP"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "إذا تم التحقق من الصبار ، فسيسجل معلومات LDAP الإضافية في سجل Cacti أثناء أنشطة الربط والبحث."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -15328,8 +15331,9 @@ msgid "Specific DN and Password required"
 msgstr "الاسم المميز وكلمة المرور المطلوبة"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "أدخلت كلمة مرور غير صالحة. فشل عملية الدخول."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 20:51-0500\n"
+"PO-Revision-Date: 2022-02-21 13:22-0500\n"
 "Last-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\n"
 "Language-Team: French <http://translate.cacti.net/projects/cacti/core-v1-2-x/fr/>\n"
 "Language: fr_FR\n"
@@ -5244,7 +5244,7 @@ msgstr "Convertir en modèle graphique"
 #: graphs.php:151 graphs.php:166
 #, fuzzy
 msgid "No Device - "
-msgstr "Modèles d'équipement"
+msgstr "Numéro de symbole"
 
 #: graphs.php:252
 #, php-format
@@ -7823,7 +7823,7 @@ msgstr "Inconnu"
 #: include/global_arrays.php:1640
 #, fuzzy
 msgid "is not unknown"
-msgstr "n'est pas inconnu"
+msgstr "Inconnu"
 
 #: include/global_arrays.php:1641
 msgid "is empty"
@@ -9159,8 +9159,9 @@ msgid "Data Template Filter"
 msgstr "Poste de modèle de données"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "Ce filtre limitera les sources de données visibles dans la liste déroulante des sources de données."
 
 #: include/global_form.php:991
 msgid "The data source to use for this graph item."
@@ -11723,12 +11724,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "Veuillez entrer le délai d'attente SMTP en secondes."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "Mode de débogage LDAP"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "Si coché, Cacti enregistrera des informations LDAP supplémentaires dans le journal Cacti pendant les activités de liaison et de recherche."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -16741,8 +16744,9 @@ msgid "Specific DN and Password required"
 msgstr "Nom d'utilisateur et mot de passe spécifiques requis"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "Mot de passe invalide fourni. Échec de la connexion."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

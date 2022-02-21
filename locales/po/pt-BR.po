@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 20:58-0500\n"
+"PO-Revision-Date: 2022-02-21 13:27-0500\n"
 "Last-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\n"
 "Language-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -8591,7 +8591,7 @@ msgstr "AVISO:"
 #: include/global_arrays.php:1878
 #, fuzzy
 msgid "[Success]"
-msgstr "sucesso"
+msgstr "Sucesso!"
 
 #: include/global_arrays.php:1879
 #, fuzzy
@@ -9731,8 +9731,9 @@ msgid "Data Template Filter"
 msgstr "Item de modelo de dados"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "Este filtro limitará as fontes de dados visíveis na lista suspensa Fonte de dados."
 
 #: include/global_form.php:991
 #, fuzzy
@@ -12401,12 +12402,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "Introduza o tempo de espera SMTP em segundos."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "Modo de depuração LDAP"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "Se verificado, o Cacti registrará informações LDAP extras no log do Cacti durante as atividades de vinculação e pesquisa."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -16274,7 +16277,7 @@ msgstr "Cacti importou os seguintes itens para o modelo:"
 #: lib/import.php:2172
 #, fuzzy
 msgid "[success]"
-msgstr "sucesso"
+msgstr "Sucesso!"
 
 #: lib/import.php:2174
 #, fuzzy
@@ -17579,8 +17582,9 @@ msgid "Specific DN and Password required"
 msgstr "DN específico e senha necessária"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "Senha inválida fornecida. Falha na autenticação."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

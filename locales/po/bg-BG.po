@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 20:49-0500\n"
+"PO-Revision-Date: 2022-02-21 13:19-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "Language: bg\n"
@@ -9744,8 +9744,9 @@ msgid "Data Template Filter"
 msgstr "Шаблон за данни"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "Този филтър ще ограничи източниците на данни, видими в падащото меню Източник на данни."
 
 #: include/global_form.php:991
 #, fuzzy
@@ -12424,12 +12425,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "Моля, въведете времето за изчакване на SMTP в секунди."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "LDAP режим за отстраняване на грешки"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "Ако е отметнато, Cacti ще регистрира допълнителна LDAP информация в регистрационния файл на Cacti по време на дейности по свързване и търсене."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -17646,8 +17649,9 @@ msgid "Specific DN and Password required"
 msgstr "Изискват се специфични DN и парола"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "Предоставена е невалидна парола. Неуспешно влизане."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

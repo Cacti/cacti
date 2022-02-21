@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 20:57-0500\n"
+"PO-Revision-Date: 2022-02-21 13:26-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -8763,8 +8763,9 @@ msgid "Data Template Filter"
 msgstr "Data template item"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "Dit filter beperkt de gegevensbronnen die zichtbaar zijn in de vervolgkeuzelijst Gegevensbron."
 
 #: include/global_form.php:991
 #, fuzzy
@@ -11234,12 +11235,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "Voer de SMTP timeout in seconden in."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "LDAP-foutopsporingsmodus"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "If Checked Cacti logt extra LDAP-informatie in het Cacti-logboek tijdens Binding- en zoekactiviteiten."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -16151,8 +16154,9 @@ msgid "Specific DN and Password required"
 msgstr "Specifieke DN en wachtwoord vereist"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "Ongeldig wachtwoord opgegeven. Aanmelden mislukt."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

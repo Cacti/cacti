@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 21:01-0500\n"
+"PO-Revision-Date: 2022-02-21 13:30-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: \n"
 "Language: sv\n"
@@ -3628,7 +3628,7 @@ msgstr "Resultat"
 #: data_debug.php:777
 #, fuzzy
 msgid "<not set>"
-msgstr "Ange som standard"
+msgstr "Ej inställt"
 
 #: data_debug.php:812 data_debug.php:863
 #, fuzzy
@@ -7828,7 +7828,7 @@ msgstr "Dagskift"
 #: include/global_arrays.php:1333
 #, fuzzy
 msgid "This Day"
-msgstr "Varje dag"
+msgstr "dag"
 
 #: include/global_arrays.php:1334
 msgid "This Week"
@@ -9699,8 +9699,9 @@ msgid "Data Template Filter"
 msgstr "Data Template Item"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "Det här filtret begränsar de datakällor som är synliga i rullgardinsmenyn Datakälla."
 
 #: include/global_form.php:991
 #, fuzzy
@@ -12365,12 +12366,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "Vänligen ange SMTP-timeout på några sekunder."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "LDAP Debug Mode"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "Om markerad kommer Cacti att logga extra LDAP-information till Cacti-loggen under bindnings- och sökningsaktiviteter."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -17547,8 +17550,9 @@ msgid "Specific DN and Password required"
 msgstr "Specifik DN och lösenord krävs"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "Ogiltigt lösenord har angetts. Inloggningen misslyckades."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

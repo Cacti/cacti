@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 20:50-0500\n"
+"PO-Revision-Date: 2022-02-21 13:20-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: el_GR\n"
@@ -9751,8 +9751,9 @@ msgid "Data Template Filter"
 msgstr "Στοιχείο πρότυπου δεδομένων"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "Αυτό το φίλτρο θα περιορίσει τις Πηγές δεδομένων που είναι ορατές στο αναπτυσσόμενο μενού Προέλευση δεδομένων."
 
 #: include/global_form.php:991
 #, fuzzy
@@ -12427,12 +12428,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "Εισαγάγετε το χρονικό όριο SMTP σε δευτερόλεπτα."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "Λειτουργία εντοπισμού σφαλμάτων LDAP"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "Εάν οι Κάκτοι έχουν επιλεγεί, θα καταγράψουν επιπλέον πληροφορίες LDAP στο αρχείο καταγραφής των Κάκτων κατά τη διάρκεια των δραστηριοτήτων δέσμευσης και αναζήτησης."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -17629,8 +17632,9 @@ msgid "Specific DN and Password required"
 msgstr "Απαιτείται ειδική DN και κωδικός πρόσβασης"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "Παρέχεται μη έγκυρος κωδικός πρόσβασης. Η σύνδεση απέτυχε."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

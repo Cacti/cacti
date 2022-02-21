@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 21:02-0500\n"
+"PO-Revision-Date: 2022-02-21 13:31-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr_TR\n"
@@ -9729,8 +9729,9 @@ msgid "Data Template Filter"
 msgstr "Veri Şablonu Öğesi"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "Bu filtre, Veri Kaynağı açılır menüsünde görünen Veri Kaynaklarını sınırlayacaktır."
 
 #: include/global_form.php:991
 #, fuzzy
@@ -12396,12 +12397,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "Lütfen SMTP zaman aşımını saniye cinsinden girin."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "LDAP Hata Ayıklama Modu"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "Kontrol Edilirse Kaktüsler, Bağlama ve Arama faaliyetleri sırasında Kaktüsler günlüğüne fazladan LDAP bilgisi kaydeder."
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -17452,12 +17455,12 @@ msgstr "Her ikisi de"
 #: lib/installer.php:3426
 #, fuzzy, php-format
 msgid "No - %s"
-msgstr "%s %s"
+msgstr "%s saat"
 
 #: lib/installer.php:3428 lib/installer.php:3430
 #, fuzzy, php-format
 msgid "%s - No"
-msgstr "%s %s"
+msgstr "%s saat"
 
 #: lib/installer.php:3428
 msgid "Web"
@@ -17574,8 +17577,9 @@ msgid "Specific DN and Password required"
 msgstr "Spesifik DN ve Şifre gerekli"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "Geçersiz Şifre sağlandı. Giriş başarısız."
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

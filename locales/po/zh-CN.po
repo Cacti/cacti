@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 21:03-0500\n"
+"PO-Revision-Date: 2022-02-21 13:32-0500\n"
 "Last-Translator: Aiolos <ip6tables@qq.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -8587,8 +8587,9 @@ msgid "Data Template Filter"
 msgstr "数据模板项目"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "此过滤器将限制数据源下拉列表中可见的数据源。"
 
 #: include/global_form.php:991
 msgid "The data source to use for this graph item."
@@ -10896,12 +10897,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "请输入SMTP 在几秒钟内超时."
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "LDAP 调试模式"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "如果选中 Cacti 将在绑定和搜索活动期间将额外的 LDAP 信息记录到 Cacti 日志中。"
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -15543,8 +15546,9 @@ msgid "Specific DN and Password required"
 msgstr "需要特定的DN和密码"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "提供的密码无效。登录失败。"
 
 #: lib/ldap.php:358
 #, fuzzy, php-format

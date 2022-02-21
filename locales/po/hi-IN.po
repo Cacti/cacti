@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-21 13:12-0500\n"
-"PO-Revision-Date: 2022-02-03 20:53-0500\n"
+"PO-Revision-Date: 2022-02-21 13:23-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi_IN\n"
@@ -9823,8 +9823,9 @@ msgid "Data Template Filter"
 msgstr "डेटा टेम्प्लेट आइटम"
 
 #: include/global_form.php:976
+#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
-msgstr ""
+msgstr "यह फ़िल्टर डेटा स्रोत ड्रॉपडाउन में दिखाई देने वाले डेटा स्रोतों को सीमित कर देगा।"
 
 #: include/global_form.php:991
 #, fuzzy
@@ -12508,12 +12509,14 @@ msgid "The Bind Timeout in seconds."
 msgstr "कृपया सेकंड में SMTP टाइमआउट दर्ज करें।"
 
 #: include/global_settings.php:1577
+#, fuzzy
 msgid "LDAP Debug Mode"
-msgstr ""
+msgstr "एलडीएपी डीबग मोड"
 
 #: include/global_settings.php:1578
+#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
-msgstr ""
+msgstr "यदि चेक किया गया कैक्टि बाध्यकारी और खोज गतिविधियों के दौरान कैक्टि लॉग में अतिरिक्त एलडीएपी जानकारी लॉग करेगा।"
 
 #: include/global_settings.php:1583 user_domains.php:401
 msgid "Encryption"
@@ -17744,8 +17747,9 @@ msgid "Specific DN and Password required"
 msgstr "विशिष्ट डीएन और पासवर्ड की आवश्यकता है"
 
 #: lib/ldap.php:354
+#, fuzzy
 msgid "Invalid Password provided.  Login failed."
-msgstr ""
+msgstr "अमान्य पासवर्ड प्रदान किया गया। लॉगिन विफल।"
 
 #: lib/ldap.php:358
 #, fuzzy, php-format
