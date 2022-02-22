@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.2.20
--security#4562: Under certain LDAP server environments, cacti authentication can be bypassed
+-security#4562: Under certain LDAP server environments, cacti authentication can be bypassed (CVE-2022-0730)
 -security: Resolve issues with SQL injections in user_admin and user_group_admin.  Thanks @enesdex (CVE-2021-23225)
 -security: Resolve issues with XSS issues in color_template.  Thanks @M0rphling
 -issue: Reports Drag and Drop not functioning
