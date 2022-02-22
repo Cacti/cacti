@@ -61,6 +61,10 @@ function filter_value($value, $filter, $href = '') {
 		$charset = 'UTF-8';
 	}
 
+	if ($value == '') {
+		return $value;
+	}
+
 	$value =  htmlspecialchars($value, ENT_QUOTES, $charset, false);
 	// Grave Accent character can lead to xss
 	$value = str_replace('`', '&#96;', $value);
@@ -3286,14 +3290,8 @@ function draw_login_status($using_guest_account = false) {
 function draw_navigation_text($type = 'url') {
 	global $config, $navigation;
 
-	$nav_level_cache = (isset($_SESSION['sess_nav_level_cache']) ? $_SESSION['sess_nav_level_cache'] : array());
 	$navigation      = api_plugin_hook_function('draw_navigation_text', $navigation);
 	$current_page    = get_current_page();
-
-	// Do an error check here for bad plugins manipulating the cache
-	if (!is_array($nav_level_cache)) {
-		$nav_level_cache = array();
-	}
 
 	if (!isempty_request_var('action')) {
 		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
@@ -3305,13 +3303,15 @@ function draw_navigation_text($type = 'url') {
 	if (isset($navigation[$current_page . ':' . $current_action])) {
 		$current_array = $navigation[$current_page . ':' . $current_action];
 	} else {
+		// If it's not set in the array, then default to a generic title
 		$current_array = array(
 			'mapping' => 'index.php:',
-			'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))),
-			'level' => 1
+			'title'   => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))),
+			'level'   => 0
 		);
 	}
 
+	// Extract the full breadcrumb path from the current_array
 	if (isset($current_array['mapping'])) {
 		$current_mappings = explode(',', $current_array['mapping']);
 	} else {
@@ -3323,61 +3323,59 @@ function draw_navigation_text($type = 'url') {
 	$nav_count   = 0;
 
 	// resolve all mappings to build the navigation string
-	for ($i=0; ($i < cacti_count($current_mappings)); $i++) {
-		if (empty($current_mappings[$i])) {
+	// this process is more simple than you might think
+	// we don't care about history as the breadcrumb is
+	// always based upon it's parent.
+	foreach($current_mappings as $i => $breadcrumb) {
+		$url = '';
+
+		if (empty($breadcrumb)) {
 			continue;
 		}
 
 		if ($i == 0) {
-			// always use the default for level == 0
-			$url = $navigation[basename($current_mappings[$i])]['url'];
+			// Always use the default for level == 0
+			$url = $navigation[basename($breadcrumb)]['url'];
 
 			if (basename($url) == 'graph_view.php') {
 				continue;
 			}
-		} elseif (isset($nav_level_cache[$i]) && !empty($nav_level_cache[$i]['url'])) {
-			// found a match in the url cache for this level
-			$url = $nav_level_cache[$i]['url'];
-		} elseif (isset($current_array['url'])) {
-			// found a default url in the above array
+		} elseif (isset($current_array['url']) && $current_array['url'] != '') {
+			// Where the user specified a non-blank URL
 			$url = $current_array['url'];
 		} else {
-			// default to no url
-			$url = '';
+			// No 'url' was specified, so parse the breadcrumb path and use it
+			$parts = explode(':', $breadcrumb);
+			$url = $parts[0] . (isset($parts[1]) && $parts[1] != '' ? '?action=' . $parts[1]:'');
 		}
 
-		if ($current_mappings[$i] == '?') {
-			// '?' tells us to pull title from the cache at this level
-			if (isset($nav_level_cache[$i])) {
-				$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#':html_escape($url)) . "'>";
-				$current_nav .= html_escape(resolve_navigation_variables($navigation[$nav_level_cache[$i]['id']]['title']));
-				$current_nav .= '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') . '</li>';
-				$title .= html_escape(resolve_navigation_variables($navigation[$nav_level_cache[$i]['id']]['title'])) . ' > ';
-			}
-		} else {
-			// there is no '?' - pull from the above array
-			$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#':html_escape($url)) . "'>";
-			$current_nav .= html_escape(resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title']));
-			$current_nav .= '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') . '</li>';
-			$title .= html_escape(resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title'])) . ' > ';
-		}
+		// Construct the list item and anchor from the 'url' if there was one.  There should always
+		// be one.
+		$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#':html_escape($url)) . "'>";
+		$current_nav .= html_escape(resolve_navigation_variables($navigation[basename($breadcrumb)]['title']));
+		$current_nav .= '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') . '</li>';
+		$title .= html_escape(resolve_navigation_variables($navigation[basename($breadcrumb)]['title'])) . ' > ';
 
 		$nav_count++;
 	}
 
+	// Add a title for the current level
 	if ($nav_count) {
+		// We've already appended the full path, not the end bit
 		if (isset($current_array['title'])) {
 			$current_nav .= "<li><a id='nav_$i' href='#'>" . html_escape(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 		}
 	} else {
+		// No breadcrumb was found for the current path, make one up
 		$current_array = $navigation[$current_page . ':' . $current_action];
-		$url           = (isset($current_array['url']) ? $current_array['url']:'');
+		$url = (isset($current_array['url']) ? $current_array['url']:'');
 
 		if (isset($current_array['title'])) {
 			$current_nav  .= "<li><a id='nav_$i' href='$url'>" . html_escape(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 		}
 	}
 
+	// Handle Special Navigation Cases of Tree's and External Links
 	if (isset_request_var('action') || get_nfilter_request_var('action') == 'tree_content') {
 		$tree_id = 0;
 		$leaf_id = 0;
@@ -3475,45 +3473,23 @@ function draw_navigation_text($type = 'url') {
 				<li>
 					<a id='nav_0' href='" . $config['url_path'] . "index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') .
 				'</li>';
+
 			$current_nav .= "<li><a id='nav_1' href='#'>" . __('Link %s', html_escape($title)) . '</a></li>';
 		} else {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . html_escape($title) . '</a></li>';
 		}
+
 		$tree_title = '';
 	} else {
 		$tree_title = '';
 	}
 
+	// Finally create a navitagion title
 	if (isset($current_array['title'])) {
 		$title .= html_escape(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
 	}
 
-	// keep a cache for each level we encounter
-	$hasNavError = false;
-	if (is_array($current_page)) {
-		cacti_log('WARNING: Navigation item suppressed - current page is not a string: ' . var_export($current_page,true));
-		$hasNavError = true;
-	}
-
-	if (is_array($current_action)) {
-		cacti_log('WARNING: Navigation item suppressed - current action is not a string: '. var_export($current_action,true));
-		$hasNavError = true;
-	}
-
-	if (is_array($current_array['level'])) {
-		cacti_log('WARNING: Navigation item suppressed - current level is not a string: ' . var_export($current_array['level'],true));
-		$hasNavError = true;
-	}
-
-	if (!$hasNavError) {
-		$nav_level_cache[$current_array['level']] = array(
-			'id' => $current_page . ':' . $current_action,
-			'url' => get_browser_query_string()
-		);
-	}
 	$current_nav .= '</ul>';
-
-	$_SESSION['sess_nav_level_cache'] = $nav_level_cache;
 
 	if ($type == 'url') {
 		return $current_nav;
@@ -3533,10 +3509,10 @@ function resolve_navigation_variables($text) {
 	$graphTitle = get_graph_title(get_filter_request_var('local_graph_id'));
 
 	if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
-		for ($i=0; $i<cacti_count($matches[1]); $i++) {
-			switch ($matches[1][$i]) {
+		foreach($matches[1] as $i => $match) {
+			switch ($match) {
 				case 'current_graph_title':
-					$text = str_replace('|' . $matches[1][$i] . '|', $graphTitle, $text);
+					$text = str_replace('|' . $match . '|', $graphTitle, $text);
 					break;
 			}
 		}
