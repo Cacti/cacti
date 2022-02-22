@@ -941,10 +941,14 @@ function reports_item_edit() {
 		}
 	}
 
-	$branches = array_rekey(
-		get_allowed_branches($sql_where),
-		'id', 'name'
-	);
+	if ($report_item['tree_id'] > 0) {
+		$branches = array_rekey(
+			get_allowed_branches($sql_where),
+			'id', 'name'
+		);
+	} else {
+		$branches = array();
+	}
 
 	// Prepare the form with all data
 	$fields_reports_item_edit = array(

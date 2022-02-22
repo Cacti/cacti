@@ -2076,10 +2076,34 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 	// suppress total rows
 	$total_rows = -1;
 
-	$hosts = get_allowed_devices('', 'description', '', $total_rows);
+	$simple_perms = get_simple_device_perms($user);
+
 	$sql_hosts_where = '';
-	if (cacti_sizeof($hosts) > 0) {
-		$sql_hosts_where =  'AND h.id IN (' . implode(',', array_keys(array_rekey($hosts, 'id', 'description'))) . ')';
+	if (!$simple_perms) {
+		$hosts = get_allowed_devices('', 'description', '', $total_rows);
+
+		if (cacti_sizeof($hosts)) {
+			$hosts = array_rekey($hosts, 'id', 'description');
+		}
+
+		$tree_hosts = db_fetch_assoc("SELECT DISTINCT h.id, h.description
+			FROM graph_tree_items AS gti
+			INNER JOIN graph_tree AS gt
+			ON gti.graph_tree_id = gt.id
+			INNER JOIN host AS h
+			ON gti.host_id = h.id
+			WHERE gti.host_id > 0
+			AND $sql_where", false);
+
+		if (cacti_sizeof($tree_hosts)) {
+			$tree_hosts = array_rekey($tree_hosts, 'id', 'description');
+		}
+
+		$hosts = array_intersect_key($hosts, $tree_hosts);
+
+		if (cacti_sizeof($hosts) > 0) {
+			$sql_hosts_where =  'AND h.id IN (' . implode(',', array_keys($hosts)) . ')';
+		}
 	}
 
 	if ($auth_method != 0) {
