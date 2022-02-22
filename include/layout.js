@@ -1190,7 +1190,13 @@ function setupResponsiveMenuAndTabs() {
 			event.preventDefault();
 		}
 
-		if ($(this).hasClass('selected') || (pageName == page && pageName != 'graph_view.php' && pageName != 'link.php')) {
+		if ($('#navigation').length) {
+			var hasNavigation = true;
+		} else {
+			var hasNavigation = false;
+		}
+
+		if (hasNavigation && ($(this).hasClass('selected') || (pageName == page && pageName != 'graph_view.php') && pageName != 'link.php')) {
 			handleUserMenu(true);
 		} else {
 			var id   = $(this).attr('id');
