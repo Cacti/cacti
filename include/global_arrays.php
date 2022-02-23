@@ -2111,6 +2111,18 @@ $navigation = array(
 		'url' => '',
 		'level' => '2'
 	),
+	'links.php:' => array(
+		'title' => __('External Links'),
+		'mapping' => 'index.php:',
+		'url' => 'links.php',
+		'level' => '1'
+	),
+	'links.php:edit' => array(
+		'title' => __('(Edit)'),
+		'mapping' => 'index.php:,links.php:',
+		'url' => '',
+		'level' => '2'
+	),
 	'color.php:' => array(
 		'title' => __('Colors'),
 		'mapping' => 'index.php:',
