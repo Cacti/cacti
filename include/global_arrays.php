@@ -1152,7 +1152,7 @@ $user_auth_roles = array(
 );
 
 $user_auth_realm_filenames = array(
-	'about.php' => 8,
+	'about.php' => -1,
 	'cdef.php' => 14,
 	'clog.php' => 18,
 	'clog_user.php' => 19,
