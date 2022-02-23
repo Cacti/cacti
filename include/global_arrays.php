@@ -2099,6 +2099,18 @@ $navigation = array(
 		'url' => '',
 		'level' => '2'
 	),
+	'pollers.php:' => array(
+		'title' => __('Data Collectors'),
+		'mapping' => 'index.php:',
+		'url' => 'pollers.php',
+		'level' => '1'
+	),
+	'pollers.php:edit' => array(
+		'title' => __('(Edit)'),
+		'mapping' => 'index.php:,pollers.php:',
+		'url' => '',
+		'level' => '2'
+	),
 	'color.php:' => array(
 		'title' => __('Colors'),
 		'mapping' => 'index.php:',
