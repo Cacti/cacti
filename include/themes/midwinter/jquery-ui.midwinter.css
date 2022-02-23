@@ -1,3 +1,5 @@
+
+
 .ui-widget-header {
     border: 1px solid transparent;
     background: transparent;
@@ -121,6 +123,7 @@
 }
 
 .ui-widget {
+    font-family: Verdana,Arial,sans-serif;
     font-size: unset;
     background: transparent;
     color: #CECECE;

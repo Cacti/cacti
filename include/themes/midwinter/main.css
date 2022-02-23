@@ -41,7 +41,7 @@
 }
 
 html {
-	font-family: Roboto,Helvetica Neue,Arial,Fira Sans,sans-serif; /*overpass,*/
+	font-family: Roboto,Helvetica Neue,Arial,Fira Sans,sans-serif;
 	font-style: normal;
 	background-color: black;
 }
@@ -155,8 +155,8 @@ a:hover {
 input[type="text"] {
 	padding: 0.2em;
 	box-sizing: border-box;
-	width: 100%;
 }
+
 input[type="checkbox"]:not([name^="multiselect"]), input[type="radio"]:not([name^="reindex"]) {
 	opacity: 0;
 	top: -50px;
