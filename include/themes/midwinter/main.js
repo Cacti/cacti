@@ -25,8 +25,10 @@ function themeReady() {
 
 function checkConsoleMenu() {
     if( $('#cactiContent').length !== 0 && $('#menu').length === 0  ) {
-        $.ajaxQ.abortAll();
-        $.get(urlPath + 'about.php').done(function(html) {
+        $.ajax({
+            url: urlPath + 'about.php',
+            global : false
+        }).done(function(html) {
                 let menu = $(html).find('#menu');
                 redesignConsoleMenu(menu);
                 ajaxAnchors();
