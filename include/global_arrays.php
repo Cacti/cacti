@@ -2497,7 +2497,7 @@ $navigation = array(
 	),
 	'about.php:' => array(
 		'title' => __('About Cacti'),
-		'mapping' => 'index.php:',
+		'mapping' => '',
 		'url' => 'about.php',
 		'level' => '1'
 	),
