@@ -67,6 +67,8 @@ Cacti CHANGELOG
 -feature: Add Synology NAS Device Package to available packages
 -feature: Add Citrix NetScaler Community Provided Device Package to available packages
 -feature: Create Graph Template Item Data Template filter for ease of Use
+-feature: Adding Cisco ASA Security Appliance Device Package
+-feature: Enhance Cisco Router Device Package 
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
