@@ -123,11 +123,19 @@
 }
 
 .ui-widget {
-    font-family: Verdana,Arial,sans-serif;
+    font-family: Roboto,Helvetica Neue,Arial,Fira Sans,sans-serif;
     font-size: unset;
     background: transparent;
     color: #CECECE;
     z-index: 100 !important;
+}
+
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+    font-family: Roboto,Helvetica Neue,Arial,Fira Sans,sans-serif;
+    font-size: 1em;
 }
 
 .ui-checkboxradio-icon {
