@@ -394,8 +394,10 @@ if (get_nfilter_request_var('action') == 'login') {
 		}
 
 		/* remember this user */
-		if (!$error && isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
-			set_auth_cookie($user);
+		if ($auth_method != 2) {
+			if (!$error && isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
+				set_auth_cookie($user);
+			}
 		}
 
 		if (!$error) {
@@ -424,6 +426,8 @@ if (get_nfilter_request_var('action') == 'login') {
 			if (user_setting_exists('user_language', $_SESSION['sess_user_id'])) {
 				$_SESSION['sess_user_language'] = read_user_setting('user_language');
 			}
+
+			cacti_log("DEBUG: User '" . $username . "' about to re-direct to preferred login page", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 			auth_login_redirect($user['login_opts']);
 		}

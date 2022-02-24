@@ -3204,7 +3204,8 @@ function auth_login_redirect($login_opts = '') {
 	// Decide what to do with an authenticated user
 	switch ($login_opts) {
 		case '1': /* referer */
-			/* because we use plugins, we can't redirect back to graph_view.php if they don't
+			/**
+			 * because we use plugins, we can't redirect back to graph_view.php if they don't
 			 * have console access
 			 */
 			if (isset($_SERVER['REDIRECT_URL'])) {
@@ -3213,20 +3214,28 @@ function auth_login_redirect($login_opts = '') {
 				if (isset($_SERVER['REDIRECT_QUERY_STRING'])) {
 					$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'];
 				}
+
+				cacti_log(sprintf("DEBUG: Referer from REDIRECT_URL with Value: '%s', Effective: '%s'", $_SERVER['REDIRECT_URL'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			} elseif (isset($_SERVER['HTTP_REFERER'])) {
 				$referer = $_SERVER['HTTP_REFERER'];
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';
 				}
+
+				cacti_log(sprintf("DEBUG: Referer from HTTP_REFERER with Value: '%s', Effective: '%s'", $_SERVER['HTTP_REFERER'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			} elseif (isset($_SERVER['REQUEST_URI'])) {
 				$referer = sanitize_uri($_SERVER['REQUEST_URI']);
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';
 				}
+
+				cacti_log(sprintf("DEBUG: Referer from REQUEST_URI with Value: '%s', Effective: '%s'", $_SERVER['REQUEST_URI'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			} else {
 				$referer = $config['url_path'] . 'index.php';
+
+				cacti_log(sprintf("DEBUG: Referer Short Circuit to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			}
 
 			$referer .= ($newtheme ? (strpos($referer, '?') === false ? '?':'&') . 'newtheme=1':'');
@@ -3237,8 +3246,12 @@ function auth_login_redirect($login_opts = '') {
 			if (api_user_realm_auth(auth_basename($referer))) {
 				header('Location: ' . $referer);
 			} elseif (!is_realm_allowed(8)) {
+				cacti_log(sprintf("DEBUG: Referer Overriden Due to Permissions to '%s'", 'graph_view.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
 				header('Location: graph_view.php');
 			} else {
+				cacti_log(sprintf("DEBUG: Referer Overriden Due to Permissions to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
 				header('Location: index.php');
 			}
 
