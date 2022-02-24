@@ -292,18 +292,18 @@ if (get_nfilter_request_var('action') == 'login') {
 							$data_override['email_address'] = '';
 						}
 
-						user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
+						user_copy($user_template['username'], $username, $user_template['realm'], $realm, false, $data_override);
 					} else {
 						$ldap_response = (isset($ldap_cn_search_response[0]) ? $ldap_cn_search_response[0] : '(no response given)');
 						$ldap_code = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
 						cacti_log('LOGIN: Email Address and Full Name fields not found, reason: ' . $ldap_response . 'code: ' . $ldap_code, false, 'AUTH');
-						user_copy($user_template['username'], $username, 0, $realm);
+						user_copy($user_template['username'], $username, $user_template['realm'], $realm);
 					}
 				} else {
-					user_copy($user_template['username'], $username, 0, $realm);
+					user_copy($user_template['username'], $username, $user_template['realm'], $realm);
 				}
 			} else {
-				user_copy($user_template['username'], $username, 0, $realm);
+				user_copy($user_template['username'], $username, $user_template['realm'], $realm);
 			}
 
 			/* requery newly created user */

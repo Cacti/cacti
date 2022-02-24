@@ -129,6 +129,7 @@ if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == read_config
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
 	var cactiServerOS='<?php print $config['cacti_server_os'];?>';
+	var cactiAction='<?php print get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));?>';
 	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
