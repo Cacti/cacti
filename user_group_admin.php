@@ -1701,7 +1701,7 @@ function group_edit() {
 
 	switch(get_request_var('tab')) {
 	case 'general':
-		api_plugin_hook_function('user_group_admin_edit', (isset($user) ? get_request_var('id') : 0));
+		api_plugin_hook_function('user_group_admin_edit', (isset($group) ? get_request_var('id') : 0));
 
 		form_start('user_group_admin.php');
 
@@ -1715,6 +1715,23 @@ function group_edit() {
 		html_end_box(true, true);
 
 		form_save_button('user_group_admin.php', 'return');
+
+		?>
+		<script type='text/javascript'>
+		var consoleAllowed=<?php print is_user_group_realm_allowed(8, $group['id']) ? 'true':'false';?>;
+
+		$(function() {
+			if (!consoleAllowed) {
+				if ($('#login_opts_2').is(':checked')) {
+					$('#login_opts_2').prop('checked', false);
+					$('#login_opts_3').prop('checked', true);
+				}
+
+				$('#login_opts_2').prop('disabled', true);
+			}
+		});
+		</script>
+		<?php
 
 		break;
 	case 'settings':
@@ -1758,6 +1775,14 @@ function group_edit() {
 		}
 		break;
 	}
+}
+
+function is_user_group_realm_allowed($realm_id, $group_id) {
+	return db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM user_auth_group_realm
+		WHERE group_id = ?
+		AND realm_id = ?',
+		array($group_id, $realm_id));
 }
 
 function user_group() {

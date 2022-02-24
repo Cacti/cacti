@@ -2057,6 +2057,7 @@ function user_edit() {
 
 		var minChars=<?php print read_config_option('secpass_minlen');?>;
 		var templateAccount=<?php print is_template_account(get_filter_request_var('id')) ? 'true':'false';?>;
+		var consoleAllowed=<?php print is_realm_allowed(8, $user['id']) ? 'true':'false';?>;
 
 		function changeRealm() {
 			if ($('#realm').val() != 0) {
@@ -2161,6 +2162,15 @@ function user_edit() {
 				if ($('#realm').selectmenu('instance')) {
 					$('#realm').selectmenu('disable');
 				}
+			}
+
+			if (!consoleAllowed) {
+				if ($('#login_opts_2').is(':checked')) {
+					$('#login_opts_2').prop('checked', false);
+					$('#login_opts_3').prop('checked', true);
+				}
+
+				$('#login_opts_2').prop('disabled', true);
 			}
 		});
 

@@ -860,38 +860,51 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 	return true;
 }
 
-function is_realm_allowed($realm) {
+function is_realm_allowed($realm, $check_user = false) {
 	global $config;
 
 	/* list all realms that this user has access to */
 	if (read_config_option('auth_method') != 0) {
-		/* user is not set, no permissions */
-		if (!isset($_SESSION['sess_user_id'])) {
-			return false;
-		}
+		/* if we are only checking another users permission, don't check cache */
+		if ($check_user == false) {
+			/* user is not set, no permissions */
+			if (!isset($_SESSION['sess_user_id'])) {
+				return false;
+			}
 
-		/* check to see if the admin invalidated a permission */
-		if (!is_user_perms_valid($_SESSION['sess_user_id'])) {
-			if (db_table_exists('user_auth_cache')) {
-				$enabled = db_fetch_cell_prepared('SELECT enabled
-					FROM user_auth
-					WHERE id = ?',
-					array($_SESSION['sess_user_id']));
-
-				if ($enabled == '' && get_guest_account() != $_SESSION['sess_user_id']) {
-					db_execute_prepared('DELETE FROM user_auth_cache
-						WHERE user_id = ?',
+			/* check to see if the admin invalidated a permission */
+			if (!is_user_perms_valid($_SESSION['sess_user_id'])) {
+				if (db_table_exists('user_auth_cache')) {
+					$enabled = db_fetch_cell_prepared('SELECT enabled
+						FROM user_auth
+						WHERE id = ?',
 						array($_SESSION['sess_user_id']));
 
-					kill_session_var('sess_user_id');
-					kill_session_var('sess_user_realms');
-					kill_session_var('sess_user_config_array');
-					kill_session_var('sess_config_array');
-					kill_session_var('sess_tree_perms');
-					kill_session_var('sess_simple_perms');
-					kill_session_var('sess_simple_template_perms');
+					if ($enabled == '' && get_guest_account() != $_SESSION['sess_user_id']) {
+						db_execute_prepared('DELETE FROM user_auth_cache
+							WHERE user_id = ?',
+							array($_SESSION['sess_user_id']));
 
-					print '<span style="display:none;">cactiLoginSuspend</span>';
+						kill_session_var('sess_user_id');
+						kill_session_var('sess_user_realms');
+						kill_session_var('sess_user_config_array');
+						kill_session_var('sess_config_array');
+						kill_session_var('sess_tree_perms');
+						kill_session_var('sess_simple_perms');
+						kill_session_var('sess_simple_template_perms');
+
+						print '<span style="display:none;">cactiLoginSuspend</span>';
+						exit;
+					} else {
+						kill_session_var('sess_user_realms');
+						kill_session_var('sess_user_config_array');
+						kill_session_var('sess_config_array');
+						kill_session_var('sess_tree_perms');
+						kill_session_var('sess_simple_perms');
+						kill_session_var('sess_simple_template_perms');
+					}
+
+					print '<span style="display:none;">cactiRedirect</span>';
 					exit;
 				} else {
 					kill_session_var('sess_user_realms');
@@ -901,22 +914,16 @@ function is_realm_allowed($realm) {
 					kill_session_var('sess_simple_perms');
 					kill_session_var('sess_simple_template_perms');
 				}
-
-				print '<span style="display:none;">cactiRedirect</span>';
-				exit;
-			} else {
-				kill_session_var('sess_user_realms');
-				kill_session_var('sess_user_config_array');
-				kill_session_var('sess_config_array');
-				kill_session_var('sess_tree_perms');
-				kill_session_var('sess_simple_perms');
-				kill_session_var('sess_simple_template_perms');
 			}
-		}
 
-		/* if the permission is already valid, the session ariable will be set */
-		if (isset($_SESSION['sess_user_realms'][$realm])) {
-			return $_SESSION['sess_user_realms'][$realm];
+			/* if the permission is already valid, the session ariable will be set */
+			if (isset($_SESSION['sess_user_realms'][$realm])) {
+				return $_SESSION['sess_user_realms'][$realm];
+			}
+
+			$user_id = $_SESSION['sess_user_id'];
+		} else {
+			$user_id = $check_user;
 		}
 
 		/**
@@ -939,25 +946,41 @@ function is_realm_allowed($realm) {
 					WHERE uag.enabled = 'on'
 					AND uagr.realm_id = ?
 					AND uagm.user_id = ?",
-					array($_SESSION['sess_user_id'], $realm, $realm, $_SESSION['sess_user_id']));
+					array($user_id, $realm, $realm, $user_id));
 			} else {
 				$user_realm = db_fetch_cell_prepared('SELECT realm_id
 					FROM user_auth_realm
 					WHERE user_id = ?
 					AND realm_id = ?',
-					array($_SESSION['sess_user_id'], $realm));
+					array($user_id, $realm));
 			}
 
 			if (!empty($user_realm)) {
-				$_SESSION['sess_user_realms'][$realm] = true;
+				if ($check_user == false) {
+					$_SESSION['sess_user_realms'][$realm] = true;
+				} else {
+					return true;
+				}
 			} else {
-				$_SESSION['sess_user_realms'][$realm] = false;
+				if ($check_user == false) {
+					$_SESSION['sess_user_realms'][$realm] = false;
+				} else {
+					return false;
+				}
 			}
 		} else {
-			$_SESSION['sess_user_realms'][$realm] = true;
+			if ($check_user == false) {
+				$_SESSION['sess_user_realms'][$realm] = true;
+			} else {
+				return true;
+			}
 		}
 	} else {
-		$_SESSION['sess_user_realms'][$realm] = true;
+		if ($check_user == false) {
+			$_SESSION['sess_user_realms'][$realm] = true;
+		} else {
+			return true;
+		}
 	}
 
 	return $_SESSION['sess_user_realms'][$realm];
