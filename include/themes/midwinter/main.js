@@ -70,11 +70,7 @@ function updateNavigation() {
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 
 		// Append an action if the user did not provide one based upon the cactiAction variable
-		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+window.location.pathname+'?action='+cactiAction+'"').first();
-		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
-
-		// Choose what fits best in situations where users have cleared their settings
-		var menu_element = $('.cactiConsoleNavigationArea a[href^="'+window.location.pathname+'"').first();
+		var menu_element = $('.cactiConsoleNavigationArea a[href$="'+window.location.pathname+'?action='+cactiAction+'"').first();
 		if (menu_element.length !== 0) return midWinterNavigation(menu_element);
 	}
 }

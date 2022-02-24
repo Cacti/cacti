@@ -33,6 +33,8 @@
 	border: 4px solid var(--background-menu);
 }
 
+
+
 * {
 	scrollbar-color: var(--scrollbar-thumb) transparent;
 	scrollbar-width: thin !important;
@@ -88,6 +90,10 @@ fieldset {
 	z-index: 0;
 	width: 100%;
 	overflow-y: hidden !important;
+}
+
+#main > *:not(iframe) {
+	#margin: 1rem 0.5rem 1rem 1rem;
 }
 
 /* icons fontawesome */
@@ -285,6 +291,8 @@ label.ui-state-active {
 label.ui-state-hover > span {
 	color: var(--text-color-lighter);
 }
+
+
 
 .flexContainer {
 	display: flex;
