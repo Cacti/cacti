@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-02-21 13:12-0500\n"
+"POT-Creation-Date: 2022-02-23 21:39-0500\n"
 "PO-Revision-Date: 2022-02-21 13:25-0500\n"
 "Last-Translator: Seita Kawamot <seita_sk@yahoo.co.jp>\n"
 "Language-Team: Japanese <http://translate.cacti.net/projects/cacti/core-v1-2-x/ja/>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: about.php:29 include/global_arrays.php:2499 lib/html.php:2472
+#: about.php:29 include/global_arrays.php:2523 lib/html.php:2491
 msgid "About Cacti"
 msgstr "Cacti について"
 
@@ -80,7 +80,7 @@ msgstr "このプログラムは有用であることを期待して配布され
 #: host_templates.php:562 include/global_arrays.php:1537
 #: include/global_settings.php:247 lib/api_automation.php:1327
 #: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1261
-#: lib/html_form.php:1271 lib/html_reports.php:1747 links.php:28
+#: lib/html_form.php:1271 lib/html_reports.php:1751 links.php:28
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1401 tree.php:1554
 #: tree.php:1614 tree.php:1635 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
@@ -151,7 +151,7 @@ msgstr "次の集計グラフを削除するには、[続行]をクリックし�
 #: host.php:470 host.php:484 host.php:498 host.php:507 host.php:536
 #: host.php:548 host_templates.php:270 host_templates.php:284
 #: host_templates.php:295 host_templates.php:344 host_templates.php:407
-#: lib/clog_webapi.php:221 lib/html.php:2505 lib/html_form.php:1270
+#: lib/clog_webapi.php:221 lib/html.php:2525 lib/html_form.php:1270
 #: lib/html_form.php:1282 lib/html_form.php:1293 lib/html_utility.php:274
 #: links.php:197 links.php:206 links.php:215 managers.php:1004
 #: managers.php:1062 plugins.php:517 pollers.php:559 pollers.php:568
@@ -188,7 +188,7 @@ msgstr "取り消し"
 #: host.php:452 host.php:461 host.php:470 host.php:484 host.php:498
 #: host.php:507 host.php:536 host.php:548 host_templates.php:270
 #: host_templates.php:284 host_templates.php:295 host_templates.php:345
-#: host_templates.php:408 lib/clog_webapi.php:222 lib/html.php:2504
+#: host_templates.php:408 lib/clog_webapi.php:222 lib/html.php:2524
 #: lib/html_reports.php:499 lib/html_utility.php:274 links.php:197
 #: links.php:206 links.php:215 managers.php:1004 managers.php:1062
 #: pollers.php:559 pollers.php:568 pollers.php:577 pollers.php:586
@@ -283,12 +283,12 @@ msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "[続行]をクリックして、選択したグラフを下のレポートに追加します。"
 
 #: aggregate_graphs.php:473 graph_view.php:810 graphs.php:1268 host.php:524
-#: lib/html_reports.php:35 lib/html_reports.php:1927
+#: lib/html_reports.php:35 lib/html_reports.php:1931
 msgid "Report Name"
 msgstr "レポート名"
 
 #: aggregate_graphs.php:477 graph_view.php:817 graphs.php:1272 host.php:528
-#: lib/html_reports.php:1609
+#: lib/html_reports.php:1613
 msgid "Timespan"
 msgstr "スパン"
 
@@ -361,7 +361,7 @@ msgstr "グラフ項目[new]"
 msgid "Graph Items [edit: %s]"
 msgstr "グラフ項目[編集：％s]"
 
-#: aggregate_graphs.php:659 data_sources.php:1056 lib/html_reports.php:1463
+#: aggregate_graphs.php:659 data_sources.php:1056 lib/html_reports.php:1467
 #: user_admin.php:2010
 #, fuzzy, php-format
 msgid "[edit: %s]"
@@ -372,18 +372,18 @@ msgstr "[編集：％s]"
 msgid "Aggregate Graph does not Exist"
 msgstr "集約グラフ設定"
 
-#: aggregate_graphs.php:676 aggregate_graphs.php:683 lib/html_reports.php:1377
-#: lib/html_reports.php:1379 utilities.php:1928
+#: aggregate_graphs.php:676 aggregate_graphs.php:683 lib/html_reports.php:1381
+#: lib/html_reports.php:1383 utilities.php:1928
 msgid "Details"
 msgstr "詳細"
 
-#: aggregate_graphs.php:677 graphs_new.php:776 lib/html_reports.php:1377
+#: aggregate_graphs.php:677 graphs_new.php:776 lib/html_reports.php:1381
 #: utilities.php:361
 msgid "Items"
 msgstr "アイテム"
 
 #: aggregate_graphs.php:678 aggregate_graphs.php:684 lib/html.php:1972
-#: lib/html_reports.php:1377
+#: lib/html_reports.php:1381
 msgid "Preview"
 msgstr "プレビュー"
 
@@ -493,13 +493,13 @@ msgstr "マッチンググラフ"
 #: host_templates.php:719 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
 #: lib/clog_webapi.php:597 lib/html.php:244 lib/html_filter.php:63
-#: lib/html_graph.php:203 lib/html_reports.php:1832 lib/html_tree.php:131
+#: lib/html_graph.php:203 lib/html_reports.php:1836 lib/html_tree.php:131
 #: lib/html_tree.php:973 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:347 pollers.php:879 rrdcleaner.php:507
 #: settings.php:526 settings.php:545 settings.php:594 sites.php:476
 #: tree.php:818 tree.php:853 tree.php:888 tree.php:1925 user_admin.php:2283
-#: user_admin.php:2645 user_admin.php:2752 user_admin.php:2838
-#: user_admin.php:2941 user_admin.php:3026 user_admin.php:3111
+#: user_admin.php:2649 user_admin.php:2756 user_admin.php:2842
+#: user_admin.php:2945 user_admin.php:3030 user_admin.php:3115
 #: user_domains.php:654 user_group_admin.php:1844 user_group_admin.php:2166
 #: user_group_admin.php:2274 user_group_admin.php:2377
 #: user_group_admin.php:2462 user_group_admin.php:2547 utilities.php:855
@@ -516,7 +516,7 @@ msgstr "検索"
 #: include/global_arrays.php:1915 lib/api_automation.php:283 lib/html.php:1686
 #: lib/html.php:1688 lib/html.php:1766 lib/html_graph.php:209
 #: lib/html_tree.php:1028 lib/html_tree.php:1357 tree.php:797 tree.php:2069
-#: user_admin.php:1036 user_admin.php:1305 user_admin.php:2673
+#: user_admin.php:1036 user_admin.php:1305 user_admin.php:2677
 #: user_group_admin.php:825 user_group_admin.php:980 user_group_admin.php:2194
 #: utilities.php:320
 msgid "Graphs"
@@ -534,11 +534,11 @@ msgstr "グラフ"
 #: graphs.php:2041 graphs_new.php:421 host.php:1644 host_templates.php:729
 #: include/global_form.php:256 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
-#: lib/api_automation.php:1109 lib/html_reports.php:1852 links.php:320
+#: lib/api_automation.php:1109 lib/html_reports.php:1856 links.php:320
 #: managers.php:159 managers.php:503 plugins.php:371 pollers.php:889
 #: rrdcleaner.php:533 sites.php:486 tree.php:1935 user_admin.php:2305
-#: user_admin.php:2677 user_admin.php:2762 user_admin.php:2866
-#: user_admin.php:2951 user_admin.php:3036 user_admin.php:3121
+#: user_admin.php:2681 user_admin.php:2766 user_admin.php:2870
+#: user_admin.php:2955 user_admin.php:3040 user_admin.php:3125
 #: user_domains.php:33 user_domains.php:664 user_domains.php:748
 #: user_group_admin.php:1854 user_group_admin.php:2198
 #: user_group_admin.php:2302 user_group_admin.php:2387
@@ -565,12 +565,12 @@ msgstr "集計の一部"
 #: host_templates.php:747 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
 #: lib/clog_webapi.php:522 lib/html.php:1525 lib/html_filter.php:80
-#: lib/html_graph.php:190 lib/html_reports.php:1863 lib/html_tree.php:1015
+#: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1015
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:924 sites.php:498 tree.php:1947
-#: user_admin.php:2317 user_admin.php:2695 user_admin.php:2780
-#: user_admin.php:2884 user_admin.php:2969 user_admin.php:3054
-#: user_admin.php:3139
+#: user_admin.php:2317 user_admin.php:2699 user_admin.php:2784
+#: user_admin.php:2888 user_admin.php:2973 user_admin.php:3058
+#: user_admin.php:3143
 msgid "Go"
 msgstr "Go"
 
@@ -583,9 +583,9 @@ msgstr "Go"
 #: graphs_new.php:400 host.php:1609 host_templates.php:747
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:383 pollers.php:924 sites.php:498 tree.php:1947
-#: user_admin.php:2317 user_admin.php:2695 user_admin.php:2780
-#: user_admin.php:2884 user_admin.php:2969 user_admin.php:3054
-#: user_admin.php:3139 user_domains.php:676 user_group_admin.php:1866
+#: user_admin.php:2317 user_admin.php:2699 user_admin.php:2784
+#: user_admin.php:2888 user_admin.php:2973 user_admin.php:3058
+#: user_admin.php:3143 user_domains.php:676 user_group_admin.php:1866
 #: user_group_admin.php:2216 user_group_admin.php:2320
 #: user_group_admin.php:2405 user_group_admin.php:2490
 #: user_group_admin.php:2575 utilities.php:845 utilities.php:1200
@@ -606,12 +606,12 @@ msgstr "フィルタの設定/更新"
 #: host_templates.php:748 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
 #: lib/clog_webapi.php:523 lib/html_filter.php:85 lib/html_graph.php:191
-#: lib/html_graph.php:307 lib/html_reports.php:1864 lib/html_tree.php:1016
+#: lib/html_graph.php:307 lib/html_reports.php:1868 lib/html_tree.php:1016
 #: lib/html_tree.php:1126 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:384 pollers.php:925 sites.php:499 tree.php:1948
-#: user_admin.php:2318 user_admin.php:2696 user_admin.php:2781
-#: user_admin.php:2885 user_admin.php:2970 user_admin.php:3055
-#: user_admin.php:3140 user_domains.php:677
+#: user_admin.php:2318 user_admin.php:2700 user_admin.php:2785
+#: user_admin.php:2889 user_admin.php:2974 user_admin.php:3059
+#: user_admin.php:3144 user_domains.php:677
 msgid "Clear"
 msgstr "クリア"
 
@@ -623,9 +623,9 @@ msgstr "クリア"
 #: graphs_new.php:401 host.php:1610 host_templates.php:748
 #: lib/html_graph.php:191 lib/html_tree.php:1016 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:384 pollers.php:925
-#: sites.php:499 tree.php:1948 user_admin.php:2318 user_admin.php:2696
-#: user_admin.php:2781 user_admin.php:2885 user_admin.php:2970
-#: user_admin.php:3055 user_admin.php:3140 user_domains.php:677
+#: sites.php:499 tree.php:1948 user_admin.php:2318 user_admin.php:2700
+#: user_admin.php:2785 user_admin.php:2889 user_admin.php:2974
+#: user_admin.php:3059 user_admin.php:3144 user_domains.php:677
 #: user_group_admin.php:1867 user_group_admin.php:2217
 #: user_group_admin.php:2321 user_group_admin.php:2406
 #: user_group_admin.php:2491 user_group_admin.php:2576 utilities.php:846
@@ -701,16 +701,16 @@ msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[カスタムグラフリストの適用 - リストからのフィルタ]"
 
 #: aggregate_graphs.php:1585 aggregate_graphs.php:1693
-#: include/global_arrays.php:2625
+#: include/global_arrays.php:2649
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "集計グラフ"
 
 #: aggregate_graphs.php:1600 data_debug.php:964 data_sources.php:1364
 #: graph_view.php:625 graphs.php:1987 host.php:1564
-#: include/global_arrays.php:2771 include/global_settings.php:568
+#: include/global_arrays.php:2795 include/global_settings.php:568
 #: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:979
-#: rrdcleaner.php:383 user_admin.php:2651 user_admin.php:2844
+#: rrdcleaner.php:383 user_admin.php:2655 user_admin.php:2848
 #: user_group_admin.php:2172 user_group_admin.php:2280 utilities.php:1783
 msgid "Template"
 msgstr "テンプレート"
@@ -724,11 +724,11 @@ msgstr "テンプレート"
 #: include/global_form.php:975 lib/api_automation.php:150
 #: lib/api_automation.php:168 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:1076
-#: lib/api_automation.php:1094 lib/auth.php:2702 lib/auth.php:2731
+#: lib/api_automation.php:1094 lib/auth.php:2726 lib/auth.php:2755
 #: lib/html.php:2050 lib/html.php:2073 lib/html.php:2111
-#: lib/html_reports.php:877 lib/html_reports.php:881 lib/html_reports.php:992
-#: lib/html_reports.php:1002 lib/html_reports.php:1842 managers.php:482
-#: managers.php:735 user_admin.php:2655 user_admin.php:2848
+#: lib/html_reports.php:877 lib/html_reports.php:881 lib/html_reports.php:996
+#: lib/html_reports.php:1006 lib/html_reports.php:1846 managers.php:482
+#: managers.php:735 user_admin.php:2659 user_admin.php:2852
 #: user_group_admin.php:2176 user_group_admin.php:2284 utilities.php:821
 #: utilities.php:1502 utilities.php:1787 utilities.php:1832 utilities.php:2616
 #: utilities.php:2868 utilities.php:2881
@@ -756,15 +756,15 @@ msgstr "任意"
 #: include/global_settings.php:1212 include/global_settings.php:1817
 #: lib/api_automation.php:151 lib/api_automation.php:430
 #: lib/api_automation.php:447 lib/api_automation.php:589
-#: lib/api_automation.php:1077 lib/auth.php:2705 lib/auth.php:2734
+#: lib/api_automation.php:1077 lib/auth.php:2729 lib/auth.php:2758
 #: lib/html.php:204 lib/html.php:2051 lib/html.php:2071 lib/html.php:2112
 #: lib/html_form.php:331 lib/html_reports.php:888 lib/html_reports.php:892
-#: lib/html_reports.php:922 lib/html_reports.php:992 lib/html_reports.php:998
-#: lib/html_reports.php:1002 lib/html_reports.php:1010
-#: lib/html_reports.php:1021 lib/html_reports.php:1041
-#: lib/html_reports.php:1295 lib/html_reports.php:1300
-#: lib/html_reports.php:1305 settings.php:519 settings.php:538 settings.php:564
-#: user_admin.php:2656 user_admin.php:2849 user_group_admin.php:2177
+#: lib/html_reports.php:922 lib/html_reports.php:996 lib/html_reports.php:1002
+#: lib/html_reports.php:1006 lib/html_reports.php:1014
+#: lib/html_reports.php:1025 lib/html_reports.php:1045
+#: lib/html_reports.php:1299 lib/html_reports.php:1304
+#: lib/html_reports.php:1309 settings.php:519 settings.php:538 settings.php:564
+#: user_admin.php:2660 user_admin.php:2853 user_group_admin.php:2177
 #: user_group_admin.php:2285 utilities.php:1788
 msgid "None"
 msgstr "なし"
@@ -825,7 +825,7 @@ msgid "Aggregate Template [new]"
 msgstr "集約テンプレート[new]"
 
 #: aggregate_templates.php:585 aggregate_templates.php:684
-#: include/global_arrays.php:2607
+#: include/global_arrays.php:2631
 #, fuzzy
 msgid "Aggregate Templates"
 msgstr "集約テンプレート"
@@ -833,7 +833,7 @@ msgstr "集約テンプレート"
 #: aggregate_templates.php:598 automation_templates.php:399
 #: automation_templates.php:482 color_templates.php:643
 #: include/global_arrays.php:925 include/global_arrays.php:987
-#: lib/installer.php:2444 user_admin.php:2947 user_group_admin.php:2383
+#: lib/installer.php:2444 user_admin.php:2951 user_group_admin.php:2383
 msgid "Templates"
 msgstr "テンプレート"
 
@@ -870,7 +870,7 @@ msgstr "グラフ"
 
 #: aggregate_templates.php:696 include/global_arrays.php:881
 #: include/global_arrays.php:1253 include/global_form.php:1416
-#: include/global_form.php:1651 lib/html_reports.php:1016 tree.php:1657
+#: include/global_form.php:1651 lib/html_reports.php:1020 tree.php:1657
 msgid "Graph Template"
 msgstr "グラフのテンプレート"
 
@@ -935,7 +935,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "％dパスワードの変更には再利用できません"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1568 lib/functions.php:3265 lib/html.php:2458
+#: include/global_form.php:1568 lib/functions.php:3269 lib/html.php:2460
 msgid "Change Password"
 msgstr "パスワードの変更"
 
@@ -950,7 +950,7 @@ msgid "Please enter your new Cacti password."
 msgstr "現在のパスワードと新しいパスワードを入力してください<br>サボテンのパスワード。"
 
 #: auth_changepassword.php:342 auth_login.php:831 auth_login.php:834
-#: include/global_settings.php:1651 lib/functions.php:4902
+#: include/global_settings.php:1651 lib/functions.php:4882
 msgid "Username"
 msgstr "ユーザー名"
 
@@ -1072,7 +1072,7 @@ msgstr "ユーザーログイン"
 msgid "Enter your Username and Password below"
 msgstr "以下にユーザー名とパスワードを入力してください"
 
-#: auth_login.php:839 include/global_form.php:1535 lib/functions.php:4903
+#: auth_login.php:839 include/global_form.php:1535 lib/functions.php:4883
 msgid "Password"
 msgstr "パスワード"
 
@@ -1105,7 +1105,8 @@ msgstr "無効なユーザー名/パスワードを再入力してください"
 
 #: auth_profile.php:76 include/global_settings.php:38
 #: include/global_settings.php:1092 include/global_settings.php:1335
-#: managers.php:39 user_admin.php:1994 user_group_admin.php:1664
+#: lib/html.php:2473 managers.php:39 user_admin.php:1994
+#: user_group_admin.php:1664
 msgid "General"
 msgstr "一般"
 
@@ -1298,11 +1299,11 @@ msgstr "デバイスを削除"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1519
 #: host.php:1640 host.php:1790 include/global_arrays.php:913
-#: include/global_arrays.php:968 include/global_arrays.php:2205
+#: include/global_arrays.php:968 include/global_arrays.php:2229
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
 #: lib/api_automation.php:1211 pollers.php:1001 sites.php:573 tree.php:796
-#: tree.php:2063 user_admin.php:1297 user_admin.php:2862
+#: tree.php:2063 user_admin.php:1297 user_admin.php:2866
 #: user_group_admin.php:972 user_group_admin.php:2298 utilities.php:315
 msgid "Devices"
 msgstr "デバイス"
@@ -1357,7 +1358,7 @@ msgstr "SNMP"
 #: host.php:1625 host.php:1742 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
-#: lib/html_reports.php:1838 lib/installer.php:1769 managers.php:218
+#: lib/html_reports.php:1842 lib/installer.php:1769 managers.php:218
 #: plugins.php:353 plugins.php:459 pollers.php:997 user_admin.php:1305
 #: user_group_admin.php:980
 msgid "Status"
@@ -1415,10 +1416,10 @@ msgstr "検出されたデバイスの削除"
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
 #: data_debug.php:563 data_source_profiles.php:72 host.php:1809
-#: lib/functions.php:5248 lib/functions.php:5252 lib/html.php:1214
-#: lib/html_reports.php:1628 lib/html_reports.php:1654
-#: lib/html_reports.php:1725 lib/html_reports.php:1726
-#: lib/html_reports.php:1727 pollers.php:1050 user_admin.php:2390
+#: lib/functions.php:5228 lib/functions.php:5232 lib/html.php:1214
+#: lib/html_reports.php:1632 lib/html_reports.php:1658
+#: lib/html_reports.php:1729 lib/html_reports.php:1730
+#: lib/html_reports.php:1731 pollers.php:1050 user_admin.php:2390
 #: utilities.php:506 utilities.php:948 utilities.php:2316 utilities.php:2438
 #: utilities.php:2446 utilities.php:2449 utilities.php:2455 utilities.php:2474
 #: utilities.php:2708
@@ -1541,13 +1542,13 @@ msgstr "グラフ作成基準"
 
 #: automation_graph_rules.php:734 automation_graph_rules.php:781
 #: automation_graph_rules.php:886 include/global_arrays.php:936
-#: include/global_arrays.php:2661
+#: include/global_arrays.php:2685
 #, fuzzy
 msgid "Graph Rules"
 msgstr "グラフ規則"
 
 #: automation_graph_rules.php:749 automation_graph_rules.php:897
-#: include/global_arrays.php:1256 include/global_arrays.php:2770
+#: include/global_arrays.php:1256 include/global_arrays.php:2794
 #: include/global_form.php:1661 include/global_form.php:2200
 msgid "Data Query"
 msgstr "データ問合せ"
@@ -1558,9 +1559,9 @@ msgstr "データ問合せ"
 #: automation_tree_rules.php:959 data_debug.php:1022 data_sources.php:1421
 #: host.php:1630 include/global_arrays.php:840 include/global_form.php:1543
 #: include/global_settings.php:360 lib/api_automation.php:169
-#: lib/api_automation.php:1095 lib/html_reports.php:1843
-#: lib/html_reports.php:1935 lib/html_reports.php:1946
-#: lib/html_reports.php:1982 links.php:383 links.php:561 managers.php:243
+#: lib/api_automation.php:1095 lib/html_reports.php:1847
+#: lib/html_reports.php:1939 lib/html_reports.php:1950
+#: lib/html_reports.php:1986 links.php:383 links.php:561 managers.php:243
 #: managers.php:598 user_admin.php:1158 user_admin.php:1170 user_admin.php:2377
 #: user_domains.php:350 user_domains.php:752 user_group_admin.php:87
 #: user_group_admin.php:682 user_group_admin.php:697 user_group_admin.php:1926
@@ -1577,8 +1578,8 @@ msgstr "有効"
 #: include/global_settings.php:1460 include/global_settings.php:1473
 #: include/global_settings.php:1498 include/global_settings.php:1512
 #: include/global_settings.php:1602 include/global_settings.php:2295
-#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2530
-#: lib/html_reports.php:1844 lib/html_reports.php:1982 lib/html_utility.php:935
+#: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2550
+#: lib/html_reports.php:1848 lib/html_reports.php:1986 lib/html_utility.php:935
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1170 user_domains.php:412 user_group_admin.php:697
 #: utilities.php:2492
@@ -2348,7 +2349,7 @@ msgstr "待機"
 
 #: automation_networks.php:1152 include/global_arrays.php:814
 #: include/global_arrays.php:1104 include/global_settings.php:2321
-#: lib/html_reports.php:1977
+#: lib/html_reports.php:1981
 msgid "Never"
 msgstr "決して"
 
@@ -2458,11 +2459,11 @@ msgstr "SNMPオプション[new]"
 #: include/global_form.php:2141 include/global_form.php:2183
 #: include/global_form.php:2334 lib/api_automation.php:1288
 #: lib/api_automation.php:1350 lib/api_automation.php:1416
-#: lib/html_reports.php:1080 lib/html_reports.php:1606
+#: lib/html_reports.php:1084 lib/html_reports.php:1610
 msgid "Sequence"
 msgstr "配列"
 
-#: automation_snmp.php:449 lib/html_reports.php:1081
+#: automation_snmp.php:449 lib/html_reports.php:1085
 #, fuzzy
 msgid "Sequence of Item."
 msgstr "項目のシーケンス"
@@ -2489,7 +2490,7 @@ msgstr "自動化SNMPオプション"
 
 #: automation_snmp.php:533 cdef.php:594 lib/api_automation.php:1287
 #: lib/api_automation.php:1349 lib/api_automation.php:1415
-#: lib/html_reports.php:1605 vdef.php:578
+#: lib/html_reports.php:1609 vdef.php:578
 msgid "Item"
 msgstr "項目"
 
@@ -2502,7 +2503,7 @@ msgstr "バージョン"
 msgid "Community"
 msgstr "コミュニティ"
 
-#: automation_snmp.php:536 lib/functions.php:4898
+#: automation_snmp.php:536 lib/functions.php:4878
 msgid "Port"
 msgstr "ポート"
 
@@ -2565,16 +2566,16 @@ msgstr "なし"
 #: automation_snmp.php:573 automation_templates.php:524 cdef.php:621
 #: color_templates.php:111 data_queries.php:790 data_queries.php:897
 #: lib/api_automation.php:1314 lib/api_automation.php:1376
-#: lib/api_automation.php:1444 lib/html.php:1246 lib/html_reports.php:1740
-#: lib/html_reports.php:1742 tree.php:2087 tree.php:2094 vdef.php:607
+#: lib/api_automation.php:1444 lib/html.php:1246 lib/html_reports.php:1744
+#: lib/html_reports.php:1746 tree.php:2087 tree.php:2094 vdef.php:607
 msgid "Move Down"
 msgstr "下へ"
 
 #: automation_snmp.php:579 automation_templates.php:530 cdef.php:627
 #: color_templates.php:117 data_queries.php:795 data_queries.php:902
 #: lib/api_automation.php:1320 lib/api_automation.php:1382
-#: lib/api_automation.php:1450 lib/html.php:1252 lib/html_reports.php:1742
-#: lib/html_reports.php:1744 tree.php:2091 tree.php:2095 vdef.php:613
+#: lib/api_automation.php:1450 lib/html.php:1252 lib/html_reports.php:1746
+#: lib/html_reports.php:1748 tree.php:2091 tree.php:2095 vdef.php:613
 msgid "Move Up"
 msgstr "上へムーブ"
 
@@ -2645,7 +2646,7 @@ msgstr "自動化テンプレートを削除"
 
 #: automation_templates.php:274 include/global_arrays.php:1257
 #: include/global_form.php:1237 include/global_form.php:1646
-#: lib/html_reports.php:995
+#: lib/html_reports.php:999
 msgid "Device Template"
 msgstr "デバイステンプレート"
 
@@ -2805,7 +2806,7 @@ msgstr "本当に続行してもよろしいですか ?"
 
 #: automation_tree_rules.php:801 automation_tree_rules.php:826
 #: automation_tree_rules.php:926 include/global_arrays.php:937
-#: include/global_arrays.php:2685
+#: include/global_arrays.php:2709
 #, fuzzy
 msgid "Tree Rules"
 msgstr "ツリールール"
@@ -2839,7 +2840,7 @@ msgstr "根(植物)"
 msgid "No Tree Rules Found"
 msgstr "ツリールールが見つかりません"
 
-#: cactid.php:44 lib/functions.php:5514 lib/functions.php:5577 poller.php:353
+#: cactid.php:44 lib/functions.php:5494 lib/functions.php:5557 poller.php:353
 #: poller.php:477 poller.php:525 poller.php:541 poller.php:687 poller.php:785
 #: poller_automation.php:53 poller_boost.php:306
 #, fuzzy
@@ -3097,7 +3098,7 @@ msgid "Colors [new]"
 msgstr "色[新しい]"
 
 #: color.php:520 color.php:535 color.php:690 include/global_arrays.php:944
-#: include/global_arrays.php:2103
+#: include/global_arrays.php:2127
 msgid "Colors"
 msgstr "色"
 
@@ -3184,7 +3185,7 @@ msgid "Color Item"
 msgstr "カラーアイテム"
 
 #: color_templates.php:94 lib/api_aggregate.php:1798 lib/api_aggregate.php:1801
-#: lib/api_aggregate.php:1806 lib/html.php:1170 lib/html_reports.php:1731
+#: lib/api_aggregate.php:1806 lib/html.php:1170 lib/html_reports.php:1735
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "商品番号％d"
@@ -3267,7 +3268,7 @@ msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color
 msgstr "カラーテンプレート '％s'には、このカラーテンプレートを使用した集計テンプレートまたはグラフがありませんでした。"
 
 #: color_templates.php:523 color_templates.php:536 color_templates.php:631
-#: include/global_arrays.php:2583
+#: include/global_arrays.php:2607
 #, fuzzy
 msgid "Color Templates"
 msgstr "カラーテンプレート"
@@ -3364,7 +3365,7 @@ msgstr "データソース"
 msgid "The Data Source to Debug"
 msgstr "デバッグするデータソース"
 
-#: data_debug.php:334 utilities.php:799 utilities.php:918
+#: data_debug.php:334 lib/html.php:2477 utilities.php:799 utilities.php:918
 msgid "User"
 msgstr "ユーザー"
 
@@ -3461,7 +3462,7 @@ msgstr "データソースについて見つかった要約の問題。"
 
 #: data_debug.php:511 data_debug.php:1067 data_sources.php:1443
 #: data_sources.php:1599 host.php:1736 include/global_arrays.php:917
-#: include/global_arrays.php:962 include/global_arrays.php:2187
+#: include/global_arrays.php:962 include/global_arrays.php:2211
 #: lib/api_automation.php:284 user_admin.php:1305 user_group_admin.php:980
 #: utilities.php:325
 msgid "Data Sources"
@@ -3667,13 +3668,14 @@ msgid "Delete All Checks"
 msgstr "チェックを削除"
 
 #: data_debug.php:1000 data_sources.php:1399 data_templates.php:1005
+#: lib/html.php:2486
 msgid "Profile"
 msgstr "プロフィール"
 
 #: data_debug.php:1004 data_debug.php:1020 data_debug.php:1031
 #: data_sources.php:1403 data_sources.php:1420 data_templates.php:1009
 #: graphs_new.php:378 host.php:1586 lib/clog_webapi.php:538 lib/html.php:203
-#: lib/html_reports.php:973 lib/html_reports.php:2069 plugins.php:357
+#: lib/html_reports.php:977 lib/html_reports.php:2073 plugins.php:357
 #: settings.php:518 settings.php:537 settings.php:563 tree.php:794
 #: user_admin.php:2293 utilities.php:803 utilities.php:1214
 msgid "All"
@@ -3840,7 +3842,7 @@ msgid "Delete Data Input Field"
 msgstr "データ入力フィールドの削除"
 
 #: data_input.php:817 include/global_arrays.php:923
-#: include/global_arrays.php:1119 include/global_arrays.php:2241
+#: include/global_arrays.php:1119 include/global_arrays.php:2265
 msgid "Data Input Methods"
 msgstr "データの入力方法"
 
@@ -4017,7 +4019,7 @@ msgid "Could not locate XML file."
 msgstr "XMLファイルが見つかりませんでした。"
 
 #: data_queries.php:1117 host.php:751 host_templates.php:486
-#: include/global_arrays.php:2295
+#: include/global_arrays.php:2319
 msgid "Associated Graph Templates"
 msgstr "関連グラフテンプレート"
 
@@ -4053,7 +4055,7 @@ msgstr "関連付けられたグラフを削除"
 
 #: data_queries.php:1270 data_queries.php:1285 data_queries.php:1413
 #: include/global_arrays.php:922 include/global_arrays.php:1120
-#: include/global_arrays.php:2277 lib/api_automation.php:1105
+#: include/global_arrays.php:2301 lib/api_automation.php:1105
 msgid "Data Queries"
 msgstr "データ問合せ"
 
@@ -4180,7 +4182,7 @@ msgid "Data Retention"
 msgstr "データ保持"
 
 #: data_source_profiles.php:611 include/global_settings.php:964
-#: lib/html_reports.php:1047
+#: lib/html_reports.php:1051
 #, fuzzy
 msgid "Graph Timespan"
 msgstr "グラフタイムスパン"
@@ -4547,8 +4549,8 @@ msgstr "このデータテンプレートに付けられた名前。グラフテ
 #: data_sources.php:932 graph_view.php:726 graphs.php:1583
 #: include/global_arrays.php:877 include/global_arrays.php:926
 #: include/global_arrays.php:1573 include/global_arrays.php:1742
-#: lib/api_automation.php:425 lib/functions.php:4897 lib/html.php:2046
-#: lib/html.php:2078 lib/html_reports.php:1005 utilities.php:1638
+#: lib/api_automation.php:425 lib/functions.php:4877 lib/html.php:2046
+#: lib/html.php:2078 lib/html_reports.php:1009 utilities.php:1638
 msgid "Device"
 msgstr "デバイス"
 
@@ -4818,7 +4820,7 @@ msgid "After you uncheck this checkbox and then Save the Data Template, any exis
 msgstr "このチェックボックスをオフにしてからデータテンプレートを保存すると、このデータテンプレートに基づく既存のデータソースはカスタムデータを失います。これにより、データ収集とグラフが破損する可能性があります"
 
 #: data_templates.php:990 data_templates.php:1021 data_templates.php:1188
-#: include/global_arrays.php:1131 include/global_arrays.php:2169
+#: include/global_arrays.php:1131 include/global_arrays.php:2193
 #, fuzzy
 msgid "Data Templates"
 msgstr "データテンプレート"
@@ -5121,7 +5123,7 @@ msgstr "グラフを次のグラフテンプレートと同期させるには、
 msgid "Graph Template Items [edit: %s]"
 msgstr "グラフテンプレート項目[編集：％s]"
 
-#: graph_templates.php:502 include/global_arrays.php:2139
+#: graph_templates.php:502 include/global_arrays.php:2163
 #, fuzzy
 msgid "Graph Item Inputs"
 msgstr "グラフ項目の入力"
@@ -5153,7 +5155,7 @@ msgstr "グラフ作成中にユーザーが右側の値を上書きできるよ
 
 #: graph_templates.php:701 graph_templates.php:716 graph_templates.php:880
 #: graphs_new.php:486 include/global_arrays.php:1130
-#: include/global_arrays.php:2115 lib/html_tree.php:547 user_admin.php:1445
+#: include/global_arrays.php:2139 lib/html_tree.php:547 user_admin.php:1445
 #: user_group_admin.php:1115
 msgid "Graph Templates"
 msgstr "グラフテンプレート"
@@ -5296,7 +5298,7 @@ msgstr "レポート"
 msgid "All Graphs & Templates"
 msgstr "すべてのグラフとテンプレート"
 
-#: graph_view.php:630 include/global_arrays.php:2769 lib/graphs.php:58
+#: graph_view.php:630 include/global_arrays.php:2793 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:197 lib/html_graph.php:158
 #: lib/html_tree.php:984
 #, fuzzy
@@ -5304,7 +5306,7 @@ msgid "Not Templated"
 msgstr "テンプレートなし"
 
 #: graph_view.php:721 graph_view.php:749 graphs.php:2194
-#: include/global_form.php:1877 lib/html_reports.php:1036 tree.php:901
+#: include/global_form.php:1877 lib/html_reports.php:1040 tree.php:901
 #, fuzzy
 msgid "Graph Name"
 msgstr "グラフテンプレート名"
@@ -5357,7 +5359,7 @@ msgstr "プレビューモード"
 msgid "Add Selected Graphs to Report"
 msgstr "選択したグラフをレポートに追加"
 
-#: graph_view.php:955 lib/html.php:2502
+#: graph_view.php:955 lib/html.php:2522
 msgid "Ok"
 msgstr "OK"
 
@@ -5448,7 +5450,7 @@ msgstr "デバイスがありません"
 msgid "Created graph: %s"
 msgstr "作成したグラフ：％s"
 
-#: graphs.php:260 lib/template.php:2140 lib/template.php:2169
+#: graphs.php:260 lib/template.php:2131 lib/template.php:2160
 #, fuzzy
 msgid "ERROR: No Data Source associated. Check Template"
 msgstr "エラー：データソースが関連付けられていません。チェックテンプレート"
@@ -6075,7 +6077,7 @@ msgstr "グラフテンプレートをデバイスに追加"
 msgid "Data Query Debug Information"
 msgstr "データクエリのデバッグ情報"
 
-#: host.php:859 lib/functions.php:3902 tree.php:1517 tree.php:1591
+#: host.php:859 lib/functions.php:3882 tree.php:1517 tree.php:1591
 #: tree.php:1699 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "コピー"
@@ -6093,16 +6095,16 @@ msgid "Re-Index Method"
 msgstr "再索引方法"
 
 #: host.php:882 include/global_arrays.php:1995 include/global_arrays.php:2061
-#: include/global_arrays.php:2127 include/global_arrays.php:2163
-#: include/global_arrays.php:2181 include/global_arrays.php:2199
-#: include/global_arrays.php:2217 include/global_arrays.php:2247
-#: include/global_arrays.php:2283 include/global_arrays.php:2313
-#: include/global_arrays.php:2403 include/global_arrays.php:2595
-#: include/global_arrays.php:2619 include/global_arrays.php:2637
-#: include/global_arrays.php:2655 include/global_arrays.php:2673
-#: include/global_arrays.php:2697 lib/api_automation.php:1293
+#: include/global_arrays.php:2151 include/global_arrays.php:2187
+#: include/global_arrays.php:2205 include/global_arrays.php:2223
+#: include/global_arrays.php:2241 include/global_arrays.php:2271
+#: include/global_arrays.php:2307 include/global_arrays.php:2337
+#: include/global_arrays.php:2427 include/global_arrays.php:2619
+#: include/global_arrays.php:2643 include/global_arrays.php:2661
+#: include/global_arrays.php:2679 include/global_arrays.php:2697
+#: include/global_arrays.php:2721 lib/api_automation.php:1293
 #: lib/api_automation.php:1355 lib/api_automation.php:1422
-#: lib/html_reports.php:1612 links.php:379 plugins.php:456
+#: lib/html_reports.php:1616 links.php:379 plugins.php:456
 msgid "Actions"
 msgstr "操作"
 
@@ -6115,7 +6117,7 @@ msgstr "[％d項目、％d行]"
 msgid "Fail"
 msgstr "失敗"
 
-#: host.php:943 lib/functions.php:4912 lib/functions.php:4917
+#: host.php:943 lib/functions.php:4892 lib/functions.php:4897
 msgid "Success"
 msgstr "成功"
 
@@ -6183,7 +6185,7 @@ msgid "Undefined"
 msgstr "未定義"
 
 #: host.php:1529 include/global_settings.php:576 lib/html.php:2107
-#: lib/html_reports.php:986
+#: lib/html_reports.php:990
 msgid "Site"
 msgstr "サイト"
 
@@ -6393,7 +6395,7 @@ msgid "Delete Item from Device Template"
 msgstr "デバイステンプレートを削除"
 
 #: host_templates.php:710 host_templates.php:725 host_templates.php:853
-#: include/global_arrays.php:1132 include/global_arrays.php:2151
+#: include/global_arrays.php:1132 include/global_arrays.php:2175
 #, fuzzy
 msgid "Device Templates"
 msgstr "デバイステンプレート"
@@ -6439,31 +6441,31 @@ msgstr "このデバイステンプレートを使用しているデバイスの
 msgid "No Device Templates Found"
 msgstr "デバイステンプレートが見つかりません"
 
-#: include/auth.php:171
+#: include/auth.php:173
 msgid "Not Logged In"
 msgstr "ログインはありません"
 
-#: include/auth.php:172
+#: include/auth.php:174
 #, fuzzy
 msgid "You must be logged in to access this area of Cacti."
 msgstr "あなたはサボテンのこの地域にアクセスするためにログインしなければなりません。"
 
-#: include/auth.php:176
+#: include/auth.php:178
 #, fuzzy
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "致命的：あなたはサボテンのこの地域にアクセスするにはログインしなければなりません。"
 
-#: include/auth.php:294 lib/functions.php:6486 permission_denied.php:45
+#: include/auth.php:294 lib/functions.php:6466 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "権限がありません"
 
-#: include/auth.php:295 lib/functions.php:6487 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6467 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "これがエラーだと感じたらCacti管理者に連絡してください。"
 
-#: include/auth.php:295 lib/functions.php:6487 permission_denied.php:54
+#: include/auth.php:295 lib/functions.php:6467 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "あなたはサボテンのこのセクションにアクセスすることを許可されていません。"
@@ -6998,7 +7000,7 @@ msgstr "右"
 msgid "Justified"
 msgstr "均等割付"
 
-#: include/global_arrays.php:533 lib/html.php:2528
+#: include/global_arrays.php:533 lib/html.php:2548
 msgid "Center"
 msgstr "中央"
 
@@ -7323,7 +7325,7 @@ msgstr "ヘッダー"
 
 #: include/global_arrays.php:876 include/global_arrays.php:927
 #: include/global_arrays.php:1572 include/global_arrays.php:1741
-#: lib/html.php:2517
+#: lib/html.php:2537
 msgid "Graph"
 msgstr "グラフ"
 
@@ -7408,8 +7410,8 @@ msgstr "コンソール"
 msgid "Console Page"
 msgstr "コンソールページの上部"
 
-#: include/global_arrays.php:909 lib/html_form_template.php:630
-#: lib/html_form_template.php:642
+#: include/global_arrays.php:909 lib/html_form_template.php:627
+#: lib/html_form_template.php:639
 msgid "New Graphs"
 msgstr "新規グラフ"
 
@@ -7424,8 +7426,8 @@ msgid "Sites"
 msgstr "サイト"
 
 #: include/global_arrays.php:915 include/global_arrays.php:1124 tree.php:1916
-#: tree.php:1931 tree.php:1993 user_admin.php:1586 user_admin.php:3032
-#: user_admin.php:3117 user_group_admin.php:1249 user_group_admin.php:2468
+#: tree.php:1931 tree.php:1993 user_admin.php:1586 user_admin.php:3036
+#: user_admin.php:3121 user_group_admin.php:1249 user_group_admin.php:2468
 msgid "Trees"
 msgstr "木"
 
@@ -7434,12 +7436,13 @@ msgstr "木"
 msgid "Data Collection"
 msgstr "サーベイ"
 
-#: include/global_arrays.php:921 include/global_arrays.php:971 pollers.php:870
+#: include/global_arrays.php:921 include/global_arrays.php:971
+#: include/global_arrays.php:2103 pollers.php:870
 #, fuzzy
 msgid "Data Collectors"
 msgstr "データコレクタ"
 
-#: include/global_arrays.php:929 include/global_arrays.php:2772
+#: include/global_arrays.php:929 include/global_arrays.php:2796
 msgid "Aggregate"
 msgstr "総計"
 
@@ -7469,7 +7472,7 @@ msgstr "プリセット"
 msgid "Data Profiles"
 msgstr "データプロファイル"
 
-#: include/global_arrays.php:943 include/global_arrays.php:2397 vdef.php:692
+#: include/global_arrays.php:943 include/global_arrays.php:2421 vdef.php:692
 #: vdef.php:706 vdef.php:877
 #, fuzzy
 msgid "VDEFs"
@@ -7480,12 +7483,12 @@ msgid "Import/Export"
 msgstr "インポート/エクスポート"
 
 #: include/global_arrays.php:948 include/global_arrays.php:1135
-#: include/global_arrays.php:2517
+#: include/global_arrays.php:2541
 msgid "Import Templates"
 msgstr "テンプレートインポート"
 
 #: include/global_arrays.php:949 include/global_arrays.php:1134
-#: include/global_arrays.php:2505 templates_export.php:159
+#: include/global_arrays.php:2529 templates_export.php:159
 msgid "Export Templates"
 msgstr "テンプレートエクスポート"
 
@@ -7495,28 +7498,28 @@ msgid "Configuration"
 msgstr "構成"
 
 #: include/global_arrays.php:952 include/global_arrays.php:974
-#: lib/html.php:2242 lib/html.php:2532
+#: lib/html.php:2242 lib/html.php:2552
 msgid "Settings"
 msgstr "設定"
 
-#: include/global_arrays.php:953 include/global_arrays.php:2451
+#: include/global_arrays.php:953 include/global_arrays.php:2475
 #: user_admin.php:2301 user_admin.php:2365 user_group_admin.php:674
 #: user_group_admin.php:2553
 msgid "Users"
 msgstr "ユーザー"
 
-#: include/global_arrays.php:954 include/global_arrays.php:2481
+#: include/global_arrays.php:954 include/global_arrays.php:2505
 msgid "User Groups"
 msgstr "ユーザーグループ"
 
-#: include/global_arrays.php:955 include/global_arrays.php:2469
+#: include/global_arrays.php:955 include/global_arrays.php:2493
 #: user_domains.php:645 user_domains.php:737
 #, fuzzy
 msgid "User Domains"
 msgstr "ユーザードメイン"
 
 #: include/global_arrays.php:957 include/global_arrays.php:976
-#: include/global_arrays.php:992 include/global_arrays.php:2325
+#: include/global_arrays.php:992 include/global_arrays.php:2349
 msgid "Utilities"
 msgstr "ユーティリティ"
 
@@ -7525,9 +7528,9 @@ msgid "System Utilities"
 msgstr "システムユーティリティ"
 
 #: include/global_arrays.php:959 include/global_arrays.php:993
-#: include/global_arrays.php:1009 include/global_arrays.php:1112 links.php:91
-#: links.php:302 links.php:372 links.php:403 links.php:485 user_admin.php:1744
-#: user_group_admin.php:1414
+#: include/global_arrays.php:1009 include/global_arrays.php:1112
+#: include/global_arrays.php:2115 links.php:91 links.php:302 links.php:372
+#: links.php:403 links.php:485 user_admin.php:1744 user_group_admin.php:1414
 msgid "External Links"
 msgstr "外部リンク"
 
@@ -8511,8 +8514,8 @@ msgid "List Mode"
 msgstr "一覧モード"
 
 #: include/global_arrays.php:1965 include/global_arrays.php:1971
-#: lib/functions.php:3473 lib/html.php:1677 lib/html.php:1754 links.php:344
-#: user_admin.php:1715 user_group_admin.php:1385
+#: lib/functions.php:3474 lib/html.php:1677 lib/html.php:1754 lib/html.php:2470
+#: links.php:344 user_admin.php:1715 user_group_admin.php:1385
 msgid "Console"
 msgstr "コンソール"
 
@@ -8523,15 +8526,16 @@ msgstr "グラフ管理"
 #: include/global_arrays.php:1983 include/global_arrays.php:2025
 #: include/global_arrays.php:2043 include/global_arrays.php:2097
 #: include/global_arrays.php:2109 include/global_arrays.php:2121
-#: include/global_arrays.php:2157 include/global_arrays.php:2175
-#: include/global_arrays.php:2193 include/global_arrays.php:2211
-#: include/global_arrays.php:2229 include/global_arrays.php:2253
-#: include/global_arrays.php:2289 include/global_arrays.php:2409
-#: include/global_arrays.php:2433 include/global_arrays.php:2457
-#: include/global_arrays.php:2475 include/global_arrays.php:2487
-#: include/global_arrays.php:2589 include/global_arrays.php:2613
-#: include/global_arrays.php:2631 include/global_arrays.php:2649
-#: include/global_arrays.php:2667 include/global_arrays.php:2691
+#: include/global_arrays.php:2133 include/global_arrays.php:2145
+#: include/global_arrays.php:2181 include/global_arrays.php:2199
+#: include/global_arrays.php:2217 include/global_arrays.php:2235
+#: include/global_arrays.php:2253 include/global_arrays.php:2277
+#: include/global_arrays.php:2313 include/global_arrays.php:2433
+#: include/global_arrays.php:2457 include/global_arrays.php:2481
+#: include/global_arrays.php:2499 include/global_arrays.php:2511
+#: include/global_arrays.php:2613 include/global_arrays.php:2637
+#: include/global_arrays.php:2655 include/global_arrays.php:2673
+#: include/global_arrays.php:2691 include/global_arrays.php:2715
 msgid "(Edit)"
 msgstr "(編集)"
 
@@ -8549,14 +8553,14 @@ msgid "Create Graphs from Data Query"
 msgstr "データクエリからグラフを作成する"
 
 #: include/global_arrays.php:2031 include/global_arrays.php:2049
-#: include/global_arrays.php:2145 include/global_arrays.php:2235
-#: include/global_arrays.php:2259 include/global_arrays.php:2415
+#: include/global_arrays.php:2169 include/global_arrays.php:2259
+#: include/global_arrays.php:2283 include/global_arrays.php:2439
 msgid "(Remove)"
 msgstr "(削除)"
 
 #: include/global_arrays.php:2067 include/global_arrays.php:2073
 #: include/global_arrays.php:2079 include/global_arrays.php:2085
-#: include/global_arrays.php:2349
+#: include/global_arrays.php:2373
 msgid "View Log"
 msgstr "ビュー・ログ"
 
@@ -8564,177 +8568,177 @@ msgstr "ビュー・ログ"
 msgid "Graph Trees"
 msgstr "グラフツリー"
 
-#: include/global_arrays.php:2133 lib/api_aggregate.php:1707
+#: include/global_arrays.php:2157 lib/api_aggregate.php:1707
 msgid "Graph Template Items"
 msgstr "グラフテンプレートの項目"
 
-#: include/global_arrays.php:2223
+#: include/global_arrays.php:2247
 #, fuzzy
 msgid "Round Robin Archives"
 msgstr "ラウンドロビンアーカイブ"
 
-#: include/global_arrays.php:2265
+#: include/global_arrays.php:2289
 msgid "Data Input Fields"
 msgstr "データの入力項目"
 
-#: include/global_arrays.php:2271 include/global_arrays.php:2301
+#: include/global_arrays.php:2295 include/global_arrays.php:2325
 #, fuzzy
 msgid "(Remove Item)"
 msgstr "（アイテムを削除）"
 
-#: include/global_arrays.php:2307 include/global_settings.php:232
+#: include/global_arrays.php:2331 include/global_settings.php:232
 #: rrdcleaner.php:325
 #, fuzzy
 msgid "RRD Cleaner"
 msgstr "RRDクリーナー"
 
-#: include/global_arrays.php:2319
+#: include/global_arrays.php:2343
 #, fuzzy
 msgid "List unused Files"
 msgstr "未使用ファイルの一覧表示"
 
-#: include/global_arrays.php:2331 include/global_arrays.php:2343
+#: include/global_arrays.php:2355 include/global_arrays.php:2367
 #: utilities.php:2013
 #, fuzzy
 msgid "View Poller Cache"
 msgstr "ポーラーキャッシュの表示"
 
-#: include/global_arrays.php:2337 utilities.php:2017
+#: include/global_arrays.php:2361 utilities.php:2017
 #, fuzzy
 msgid "View Data Query Cache"
 msgstr "データクエリキャッシュの表示"
 
-#: include/global_arrays.php:2355
+#: include/global_arrays.php:2379
 msgid "Clear Log"
 msgstr "ログを消去する"
 
-#: include/global_arrays.php:2361 utilities.php:2006
+#: include/global_arrays.php:2385 utilities.php:2006
 #, fuzzy
 msgid "View User Log"
 msgstr "ユーザーログを表示する"
 
-#: include/global_arrays.php:2367
+#: include/global_arrays.php:2391
 #, fuzzy
 msgid "Clear User Log"
 msgstr "ユーザーログを消去する"
 
-#: include/global_arrays.php:2373 utilities.php:1997 utilities.php:1998
+#: include/global_arrays.php:2397 utilities.php:1997 utilities.php:1998
 msgid "Technical Support"
 msgstr "テクニカルサポート"
 
-#: include/global_arrays.php:2379 utilities.php:2156
+#: include/global_arrays.php:2403 utilities.php:2156
 #, fuzzy
 msgid "Boost Status"
 msgstr "ブーストステータス"
 
-#: include/global_arrays.php:2385 utilities.php:2058
+#: include/global_arrays.php:2409 utilities.php:2058
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "SNMPエージェントキャッシュの表示"
 
-#: include/global_arrays.php:2391 utilities.php:2068
+#: include/global_arrays.php:2415 utilities.php:2068
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "SNMPエージェント通知ログを表示する"
 
-#: include/global_arrays.php:2421 vdef.php:575
+#: include/global_arrays.php:2445 vdef.php:575
 #, fuzzy
 msgid "VDEF Items"
 msgstr "VDEFアイテム"
 
-#: include/global_arrays.php:2427
+#: include/global_arrays.php:2451
 #, fuzzy
 msgid "View SNMP Notification Receivers"
 msgstr "SNMP通知受信者を表示する"
 
-#: include/global_arrays.php:2439
+#: include/global_arrays.php:2463
 msgid "Cacti Settings"
 msgstr "Cacti 設定"
 
-#: include/global_arrays.php:2445
+#: include/global_arrays.php:2469
 msgid "External Link"
 msgstr "外部リンク"
 
-#: include/global_arrays.php:2463 include/global_arrays.php:2493
+#: include/global_arrays.php:2487 include/global_arrays.php:2517
 #, fuzzy
 msgid "(Action)"
 msgstr "アクション"
 
-#: include/global_arrays.php:2511
+#: include/global_arrays.php:2535
 msgid "Export Results"
 msgstr "エクスポート結果"
 
-#: include/global_arrays.php:2523 include/global_arrays.php:2553
+#: include/global_arrays.php:2547 include/global_arrays.php:2577
 #: lib/html.php:1698 lib/html.php:1700 lib/html.php:1779
 msgid "Reporting"
 msgstr "PHPレポート"
 
-#: include/global_arrays.php:2529 include/global_arrays.php:2559
+#: include/global_arrays.php:2553 include/global_arrays.php:2583
 #, fuzzy
 msgid "Report Add"
 msgstr "レポート追加"
 
-#: include/global_arrays.php:2535 include/global_arrays.php:2565
+#: include/global_arrays.php:2559 include/global_arrays.php:2589
 #, fuzzy
 msgid "Report Delete"
 msgstr "レポート削除"
 
-#: include/global_arrays.php:2541 include/global_arrays.php:2571
+#: include/global_arrays.php:2565 include/global_arrays.php:2595
 #, fuzzy
 msgid "Report Edit"
 msgstr "レポート編集"
 
-#: include/global_arrays.php:2547 include/global_arrays.php:2577
+#: include/global_arrays.php:2571 include/global_arrays.php:2601
 #, fuzzy
 msgid "Report Edit Item"
 msgstr "レポート編集項目"
 
-#: include/global_arrays.php:2601
+#: include/global_arrays.php:2625
 #, fuzzy
 msgid "Color Template Items"
 msgstr "カラーテンプレートアイテム"
 
-#: include/global_arrays.php:2643
+#: include/global_arrays.php:2667
 #, fuzzy
 msgid "Aggregate Items"
 msgstr "集計アイテム"
 
-#: include/global_arrays.php:2679
+#: include/global_arrays.php:2703
 #, fuzzy
 msgid "Graph Rule Items"
 msgstr "グラフルール項目"
 
-#: include/global_arrays.php:2703
+#: include/global_arrays.php:2727
 #, fuzzy
 msgid "Tree Rule Items"
 msgstr "ツリールール項目"
 
-#: include/global_arrays.php:2734 include/global_arrays.php:2750
+#: include/global_arrays.php:2758 include/global_arrays.php:2774
 #: lib/api_device.php:1162
 msgid "days"
 msgstr "日"
 
-#: include/global_arrays.php:2735
+#: include/global_arrays.php:2759
 msgid "hrs"
 msgstr "時間"
 
-#: include/global_arrays.php:2736
+#: include/global_arrays.php:2760
 msgid "mins"
 msgstr "分"
 
-#: include/global_arrays.php:2737
+#: include/global_arrays.php:2761
 msgid "secs"
 msgstr "秒"
 
-#: include/global_arrays.php:2751 lib/api_device.php:1162
+#: include/global_arrays.php:2775 lib/api_device.php:1162
 msgid "hours"
 msgstr "時間"
 
-#: include/global_arrays.php:2752 lib/api_device.php:1162
+#: include/global_arrays.php:2776 lib/api_device.php:1162
 msgid "minutes"
 msgstr "分"
 
-#: include/global_arrays.php:2753
+#: include/global_arrays.php:2777
 msgid "seconds"
 msgstr "秒"
 
@@ -10446,7 +10450,7 @@ msgstr "データ"
 msgid "Visual"
 msgstr "ビジュアル"
 
-#: include/global_settings.php:44 lib/functions.php:4901 lib/functions.php:4906
+#: include/global_settings.php:44 lib/functions.php:4881 lib/functions.php:4886
 msgid "Authentication"
 msgstr "認証"
 
@@ -10488,11 +10492,11 @@ msgstr "グラフフォント"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail（）関数"
 
-#: include/global_settings.php:84 lib/functions.php:4884
+#: include/global_settings.php:84 lib/functions.php:4864
 msgid "Sendmail"
 msgstr "注文確定"
 
-#: include/global_settings.php:85 lib/functions.php:4889
+#: include/global_settings.php:85 lib/functions.php:4869
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10892,7 +10896,7 @@ msgstr "Simpleに設定すると、グラフとデータソースは新規グラ
 msgid "Simple"
 msgstr "シンプル"
 
-#: include/global_settings.php:419 lib/html.php:2519
+#: include/global_settings.php:419 lib/html.php:2539
 msgid "Advanced"
 msgstr "高度な設定"
 
@@ -11345,7 +11349,7 @@ msgid "Theme Settings"
 msgstr "テーマ設定"
 
 #: include/global_settings.php:809 include/global_settings.php:1019
-#: include/global_settings.php:2330
+#: include/global_settings.php:2330 lib/html.php:2487
 msgid "Theme"
 msgstr "テーマ"
 
@@ -12503,7 +12507,7 @@ msgstr "これは、Eメール内の行が自動的にワードラップされ�
 msgid "Sendmail Options"
 msgstr "Sendmailのオプション"
 
-#: include/global_settings.php:1772 lib/functions.php:4884
+#: include/global_settings.php:1772 lib/functions.php:4864
 msgid "Sendmail Path"
 msgstr "Sendmailのパス"
 
@@ -13665,8 +13669,8 @@ msgid "Matching Devices"
 msgstr "マッチング装置"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
-#: lib/clog_webapi.php:532 lib/html_reports.php:952 lib/html_reports.php:1607
-#: lib/html_reports.php:1934 lib/html_reports.php:1945 lib/rrd.php:2930
+#: lib/clog_webapi.php:532 lib/html_reports.php:956 lib/html_reports.php:1611
+#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:2930
 #: utilities.php:356 utilities.php:1210 utilities.php:2688
 msgid "Type"
 msgstr "タイプ"
@@ -13876,8 +13880,8 @@ msgstr "位置:"
 msgid "Contact:"
 msgstr "連絡先:"
 
-#: lib/api_device.php:1196 lib/functions.php:4915 lib/functions.php:4917
-#: lib/functions.php:4921
+#: lib/api_device.php:1196 lib/functions.php:4895 lib/functions.php:4897
+#: lib/functions.php:4901
 #, fuzzy
 msgid "Ping Results"
 msgstr "pingの結果"
@@ -13897,41 +13901,41 @@ msgstr "新しい支店"
 msgid "Web Basic"
 msgstr "ウェブ Basic 認証"
 
-#: lib/auth.php:2131 lib/auth.php:2163 lib/reports.php:1267
+#: lib/auth.php:2155 lib/auth.php:2187 lib/reports.php:1267
 msgid "Branch:"
 msgstr "支店:"
 
-#: lib/auth.php:2140 lib/auth.php:2171 lib/html_tree.php:955
+#: lib/auth.php:2164 lib/auth.php:2195 lib/html_tree.php:955
 #: lib/reports.php:1042 lib/reports.php:1272
 msgid "Device:"
 msgstr "機器:"
 
-#: lib/auth.php:2909 lib/auth.php:2917
+#: lib/auth.php:2933 lib/auth.php:2941
 #, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "アクセス拒否されました。Cacti 管理者に連絡してください。"
 
-#: lib/auth.php:2938
+#: lib/auth.php:2962
 #, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "Cacti管理者がログインに複雑なパスワードを強制しているため、現在のCactiパスワードが新しい要件に一致しません。したがって、今すぐパスワードを変更する必要があります。"
 
-#: lib/auth.php:2962
+#: lib/auth.php:2986
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "パスワードは最低％d文字でなければなりません。"
 
-#: lib/auth.php:2968
+#: lib/auth.php:2992
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "あなたのパスワードは少なくとも1つの数字を含まなければなりません！"
 
-#: lib/auth.php:2972
+#: lib/auth.php:2996
 #, fuzzy
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "パスワードには、小文字と大文字が混在している必要があります。"
 
-#: lib/auth.php:2978
+#: lib/auth.php:3002
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "パスワードには少なくとも1つの特殊文字を含める必要があります。"
@@ -14561,48 +14565,48 @@ msgstr "データソースはポーリングされませんでした"
 msgid "No issues found"
 msgstr "問題は見つかりませんでした"
 
-#: lib/functions.php:713 lib/functions.php:804
+#: lib/functions.php:717 lib/functions.php:808
 #, fuzzy
 msgid "Message Not Found."
 msgstr "メッセージが見つかりません。"
 
-#: lib/functions.php:1149
+#: lib/functions.php:1153
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "エラー％sは読めません"
 
-#: lib/functions.php:3248 lib/functions.php:3259
+#: lib/functions.php:3252 lib/functions.php:3263
 msgid "Logged in as"
 msgstr "ログイン中"
 
-#: lib/functions.php:3248
+#: lib/functions.php:3252
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "一般ユーザーとしてログイン"
 
-#: lib/functions.php:3248
+#: lib/functions.php:3252
 msgid "guest"
 msgstr "人"
 
-#: lib/functions.php:3250 lib/functions.php:3268 lib/html.php:2469
+#: lib/functions.php:3254 lib/functions.php:3272 lib/html.php:2476
 msgid "User Community"
 msgstr "ユーザーコミュニティ"
 
-#: lib/functions.php:3251 lib/functions.php:3269 lib/html.php:2470
+#: lib/functions.php:3255 lib/functions.php:3273 lib/html.php:2478
 #: lib/utility.php:1160
 msgid "Documentation"
 msgstr "ドキュメント"
 
-#: lib/functions.php:3262
+#: lib/functions.php:3266
 #, php-format
 msgid "Logged in as %s"
 msgstr "%sとしてログイン中"
 
-#: lib/functions.php:3264 lib/html.php:2457
+#: lib/functions.php:3268 lib/html.php:2457
 msgid "Edit Profile"
 msgstr "プロフィールを編集"
 
-#: lib/functions.php:3272 lib/html.php:2459
+#: lib/functions.php:3276 lib/html.php:2461
 msgid "Logout"
 msgstr "ログアウト"
 
@@ -14616,122 +14620,122 @@ msgstr "葉っぱ"
 msgid "Non Query Based"
 msgstr "非クエリベース"
 
-#: lib/functions.php:3474
+#: lib/functions.php:3477
 #, php-format
 msgid "Link %s"
 msgstr "リンク%s"
 
-#: lib/functions.php:4515
+#: lib/functions.php:4495
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "メーラーのエラー：いいえ設定したアドレス<b>に</b> !! <br> [ <i>テストメール]</i>リンクを使用している場合は、[ <b>警告メール]</b>設定を設定してください。"
 
-#: lib/functions.php:4848
+#: lib/functions.php:4828
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "認証に失敗しました：%s"
 
-#: lib/functions.php:4852
+#: lib/functions.php:4832
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELOが失敗しました：％s"
 
-#: lib/functions.php:4855
+#: lib/functions.php:4835
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "接続失敗：％s"
 
-#: lib/functions.php:4858
+#: lib/functions.php:4838
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTPエラー："
 
-#: lib/functions.php:4871
+#: lib/functions.php:4851
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "これはCactiから生成されたテストメッセージです。このメッセージはメール設定の設定をテストするために送信されました。"
 
-#: lib/functions.php:4872
+#: lib/functions.php:4852
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "あなたのEメール設定は現在以下のように設定されています"
 
-#: lib/functions.php:4873
+#: lib/functions.php:4853
 msgid "Method"
 msgstr "方法"
 
-#: lib/functions.php:4875
+#: lib/functions.php:4855
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "設定を確認しています... <br>"
 
-#: lib/functions.php:4882
+#: lib/functions.php:4862
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHPのメーラクラス"
 
-#: lib/functions.php:4888
+#: lib/functions.php:4868
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "方法：SMTP"
 
-#: lib/functions.php:4903
+#: lib/functions.php:4883
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "セキュリティ上の理由から表示されていません"
 
-#: lib/functions.php:4904
+#: lib/functions.php:4884
 msgid "Security"
 msgstr "セキュリティ"
 
-#: lib/functions.php:4912
+#: lib/functions.php:4892
 #, fuzzy
 msgid "Ping Results:"
 msgstr "pingの結果："
 
-#: lib/functions.php:4921
+#: lib/functions.php:4901
 msgid "Bypassed"
 msgstr "バイパス"
 
-#: lib/functions.php:4929
+#: lib/functions.php:4909
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "メッセージテキストを作成しています..."
 
-#: lib/functions.php:4932
+#: lib/functions.php:4912
 msgid "Sending Message..."
 msgstr "メッセージを送信しています…"
 
-#: lib/functions.php:4936
+#: lib/functions.php:4916
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "サボテンテストメッセージ"
 
-#: lib/functions.php:4938
+#: lib/functions.php:4918
 msgid "Success!"
 msgstr "成功！"
 
-#: lib/functions.php:4941
+#: lib/functions.php:4921
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "pingが失敗したため、メッセージが送信されませんでした。"
 
-#: lib/functions.php:5514 lib/functions.php:5577
+#: lib/functions.php:5494 lib/functions.php:5557
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "次のエラーのため、Cactiはプラグイン％sを無効にしました：％s！詳しくはCactiのログファイルを見てください。"
 
-#: lib/functions.php:5969 lib/functions.php:5971
+#: lib/functions.php:5949 lib/functions.php:5951
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- ベータ％s"
 
-#: lib/functions.php:5969
+#: lib/functions.php:5949
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "バージョン％s％s"
 
-#: lib/functions.php:5971
+#: lib/functions.php:5951
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -14923,7 +14927,7 @@ msgstr "正規表現を入力してください"
 msgid "No file selected"
 msgstr "ファイルが選択されてません"
 
-#: lib/html.php:2450 lib/html.php:2473
+#: lib/html.php:2450 lib/html.php:2493
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "SpikeKillの結果"
@@ -14938,275 +14942,329 @@ msgstr "クリックしてこのグラフだけをリアルタイムで表示す
 msgid "Click again to take this Graph out of Realtime"
 msgstr "このグラフをリアルタイムから削除するには、もう一度クリックします"
 
-#: lib/html.php:2460
+#: lib/html.php:2462
 #, fuzzy
 msgid "Standard Mode"
 msgstr "スキャンモード"
 
-#: lib/html.php:2461
+#: lib/html.php:2463
 #, fuzzy
 msgid "Compact Mode"
 msgstr "表示倍率変更モード"
 
-#: lib/html.php:2462
+#: lib/html.php:2464
 #, fuzzy
 msgid "Dark Color Mode"
 msgstr "プレビューモード"
 
-#: lib/html.php:2463
+#: lib/html.php:2465
 #, fuzzy
 msgid "Light Color Mode"
 msgstr "一覧モード"
 
-#: lib/html.php:2464
+#: lib/html.php:2466
 #, fuzzy
 msgid "Use System Color"
 msgstr "アイテムの色"
 
-#: lib/html.php:2465
+#: lib/html.php:2467
 #, fuzzy
 msgid "Ignore System Color"
 msgstr "アイテムの色"
 
-#: lib/html.php:2466
+#: lib/html.php:2468
 msgid "Help"
 msgstr "ヘルプ"
 
-#: lib/html.php:2467
+#: lib/html.php:2469
 #, fuzzy
 msgid "Cacti Home"
 msgstr "サボテンホーム"
 
-#: lib/html.php:2468
+#: lib/html.php:2471
+msgid "Miscellaneous"
+msgstr ""
+
+#: lib/html.php:2472
+#, fuzzy
+msgid "Dashboards"
+msgstr "サボテンダッシュボードを隠す"
+
+#: lib/html.php:2474
+msgid "Charts"
+msgstr ""
+
+#: lib/html.php:2475
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "サボテンプロジェクトページ"
 
-#: lib/html.php:2471
+#: lib/html.php:2479
+msgid "Spine"
+msgstr ""
+
+#: lib/html.php:2480
+msgid "RRDProxy"
+msgstr ""
+
+#: lib/html.php:2481
+msgid "Keyboard"
+msgstr ""
+
+#: lib/html.php:2482
+msgid "Shortcuts"
+msgstr ""
+
+#: lib/html.php:2483
+#, fuzzy
+msgid "Contribute to the Cacti Project"
+msgstr "サボテンログを回転させる"
+
+#: lib/html.php:2484
+msgid "Help in Developing"
+msgstr ""
+
+#: lib/html.php:2485
+msgid "Donation & Sponsoring"
+msgstr ""
+
+#: lib/html.php:2488
+msgid "Client"
+msgstr ""
+
+#: lib/html.php:2489
+msgid "Help in Translating"
+msgstr ""
+
+#: lib/html.php:2490
 msgid "Report a bug"
 msgstr "バグを報告"
 
-#: lib/html.php:2474
+#: lib/html.php:2492
+msgid "Cacti"
+msgstr "サボテン"
+
+#: lib/html.php:2494
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "フィルタの表示/非表示をクリック"
 
-#: lib/html.php:2475
+#: lib/html.php:2495
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "電流フィルタをクリア"
 
-#: lib/html.php:2476
+#: lib/html.php:2496
 msgid "Clipboard"
 msgstr "クリップボード"
 
-#: lib/html.php:2477
+#: lib/html.php:2497
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "クリップボードID"
 
-#: lib/html.php:2478
+#: lib/html.php:2498
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "現在コピー操作はできません"
 
-#: lib/html.php:2479
+#: lib/html.php:2499
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "コピーするデータが見つかりませんでした。"
 
-#: lib/html.php:2480
+#: lib/html.php:2500
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "クリップボードが更新されました"
 
-#: lib/html.php:2481
+#: lib/html.php:2501
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "申し訳ありませんが、この時点ではクリップボードを更新できませんでした"
 
-#: lib/html.php:2485
+#: lib/html.php:2505
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "パスフレーズの長さは最小8文字です。"
 
-#: lib/html.php:2486
+#: lib/html.php:2506
 #, fuzzy
 msgid "Passphrase too short"
 msgstr "パスフレーズが短すぎます"
 
-#: lib/html.php:2487
+#: lib/html.php:2507
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "パスフレーズは一致するが短すぎる"
 
-#: lib/html.php:2488
+#: lib/html.php:2508
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "パスフレーズが短すぎて一致しません"
 
-#: lib/html.php:2489
+#: lib/html.php:2509
 #, fuzzy
 msgid "Passphrases match"
 msgstr "パスフレーズの一致"
 
-#: lib/html.php:2490
+#: lib/html.php:2510
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "パスフレーズが一致しません"
 
-#: lib/html.php:2491
+#: lib/html.php:2511
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "申し訳ありませんが、最後の操作を処理できませんでした。"
 
-#: lib/html.php:2492
+#: lib/html.php:2512
 msgid "Error:"
 msgstr "エラー:"
 
-#: lib/html.php:2493
+#: lib/html.php:2513
 msgid "Reason:"
 msgstr "報告理由:"
 
-#: lib/html.php:2494
+#: lib/html.php:2514
 #, fuzzy
 msgid "Action failed"
 msgstr "アクションが失敗しました"
 
-#: lib/html.php:2495 pollers.php:814
+#: lib/html.php:2515 pollers.php:814
 #, fuzzy
 msgid "Connection Successful"
 msgstr "操作成功"
 
-#: lib/html.php:2496 pollers.php:816
+#: lib/html.php:2516 pollers.php:816
 msgid "Connection Failed"
 msgstr "æ¥ç¶å¤±æ"
 
-#: lib/html.php:2497
+#: lib/html.php:2517
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "最後のアクションへの応答は予想外でした。"
 
-#: lib/html.php:2498
+#: lib/html.php:2518
 msgid "Some Actions failed"
 msgstr "一部のアクションが失敗しました"
 
-#: lib/html.php:2499
+#: lib/html.php:2519
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "すべての操作を処理することはできませんでした。詳細は次のとおりです。"
 
-#: lib/html.php:2500
+#: lib/html.php:2520
 #, fuzzy
 msgid "Operation successful"
 msgstr "操作成功"
 
-#: lib/html.php:2501
+#: lib/html.php:2521
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "操作は成功しました。詳細は以下の通りです。"
 
-#: lib/html.php:2503
+#: lib/html.php:2523
 msgid "Pause"
 msgstr "一時停止"
 
-#: lib/html.php:2506
+#: lib/html.php:2526
 msgid "Zoom In"
 msgstr "ズームイン"
 
-#: lib/html.php:2507
+#: lib/html.php:2527
 msgid "Zoom Out"
 msgstr "ズームアウト"
 
-#: lib/html.php:2508
+#: lib/html.php:2528
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "縮小率"
 
-#: lib/html.php:2509
+#: lib/html.php:2529
 msgid "Timestamps"
 msgstr "タイムスタンプ"
 
-#: lib/html.php:2510
+#: lib/html.php:2530
 msgid "2x"
 msgstr "2倍"
 
-#: lib/html.php:2511
+#: lib/html.php:2531
 msgid "4x"
 msgstr "4倍"
 
-#: lib/html.php:2512
+#: lib/html.php:2532
 msgid "8x"
 msgstr "8倍"
 
-#: lib/html.php:2513
+#: lib/html.php:2533
 #, fuzzy
 msgid "16x"
 msgstr "16倍"
 
-#: lib/html.php:2514
+#: lib/html.php:2534
 #, fuzzy
 msgid "32x"
 msgstr "32倍"
 
-#: lib/html.php:2515
+#: lib/html.php:2535
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "ズームアウト位置"
 
-#: lib/html.php:2516
+#: lib/html.php:2536
 msgid "Zoom Mode"
 msgstr "表示倍率変更モード"
 
-#: lib/html.php:2518
+#: lib/html.php:2538
 msgid "Quick"
 msgstr "クイック"
 
-#: lib/html.php:2520
+#: lib/html.php:2540
 msgid "Open in new tab"
 msgstr "新しいタブで開く"
 
-#: lib/html.php:2521
+#: lib/html.php:2541
 #, fuzzy
 msgid "Save graph"
 msgstr "グラフを保存"
 
-#: lib/html.php:2522
+#: lib/html.php:2542
 #, fuzzy
 msgid "Copy graph"
 msgstr "グラフをコピー"
 
-#: lib/html.php:2523
+#: lib/html.php:2543
 #, fuzzy
 msgid "Copy graph link"
 msgstr "グラフリンクのコピー"
 
-#: lib/html.php:2524
+#: lib/html.php:2544
 msgid "Always On"
 msgstr "常にオン"
 
-#: lib/html.php:2525
+#: lib/html.php:2545
 msgid "Auto"
 msgstr "自動"
 
-#: lib/html.php:2526
+#: lib/html.php:2546
 msgid "Always Off"
 msgstr "常にオフ"
 
-#: lib/html.php:2527
+#: lib/html.php:2547
 #, fuzzy
 msgid "Begin with"
 msgstr "開始"
 
-#: lib/html.php:2529
+#: lib/html.php:2549
 #, fuzzy
 msgid "End with"
 msgstr "終了日"
 
-#: lib/html.php:2531 lib/html_form.php:1301
+#: lib/html.php:2551 lib/html_form.php:1301
 msgid "Close"
 msgstr "閉じる"
 
-#: lib/html.php:2533
+#: lib/html.php:2553
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "3番目のマウスボタン"
@@ -15285,7 +15343,7 @@ msgstr "未保存の変更が検出されました"
 msgid "You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form."
 msgstr "このフォームに未保存の変更があります。 「続ける」を押すと、これらの変更は破棄されます。フォームの編集を続けるには、[キャンセル]を押します。"
 
-#: lib/html_form_template.php:630 lib/html_form_template.php:642
+#: lib/html_form_template.php:627 lib/html_form_template.php:639
 #, fuzzy, php-format
 msgid "Data Query Data Sources must be created through %s"
 msgstr "データクエリデータソースは％sを介して作成する必要があります"
@@ -15308,7 +15366,7 @@ msgstr "%d 列"
 msgid "Custom"
 msgstr "カスタム"
 
-#: lib/html_graph.php:270 lib/html_reports.php:1932 lib/html_reports.php:1943
+#: lib/html_graph.php:270 lib/html_reports.php:1936 lib/html_reports.php:1947
 #: lib/html_tree.php:1089
 msgid "From"
 msgstr "から"
@@ -15318,7 +15376,7 @@ msgstr "から"
 msgid "Start Date Selector"
 msgstr "開始日セレクタ"
 
-#: lib/html_graph.php:279 lib/html_reports.php:1933 lib/html_reports.php:1944
+#: lib/html_graph.php:279 lib/html_reports.php:1937 lib/html_reports.php:1948
 #: lib/html_tree.php:1098
 msgid "To"
 msgstr "まで"
@@ -15665,274 +15723,274 @@ msgstr "レポート &#39;％s&#39;を送信できません。名前からEメ�
 msgid "Unable to send Report '%s'.  Please set an e-mail from address"
 msgstr "レポート &#39;％s&#39;を送信できません。アドレスからEメールを設定してください"
 
-#: lib/html_reports.php:955
+#: lib/html_reports.php:959
 #, fuzzy
 msgid "Item Type to be added."
 msgstr "追加するアイテムの種類。"
 
-#: lib/html_reports.php:961
+#: lib/html_reports.php:965
 #, fuzzy
 msgid "Graph Tree"
 msgstr "このグラフツリーの名前です。"
 
-#: lib/html_reports.php:964
+#: lib/html_reports.php:968
 #, fuzzy
 msgid "Select a Tree to use."
 msgstr "使用するツリーを選択してください。"
 
-#: lib/html_reports.php:970
+#: lib/html_reports.php:974
 #, fuzzy
 msgid "Graph Tree Branch"
 msgstr "グラフ木の枝"
 
-#: lib/html_reports.php:974
+#: lib/html_reports.php:978
 #, fuzzy
 msgid "Select a Tree Branch to use for Graphs and Devices.  Devices will be considered as Branches."
 msgstr "グラフとデバイスに使用する木の枝を選択します。デバイスはブランチと見なされます。"
 
-#: lib/html_reports.php:979
+#: lib/html_reports.php:983
 #, fuzzy
 msgid "Cascade to Branches"
 msgstr "枝へのカスケード"
 
-#: lib/html_reports.php:982
+#: lib/html_reports.php:986
 #, fuzzy
 msgid "Should all Branch Graphs be rendered?"
 msgstr "すべての子がグラフを分岐させるべきですか？"
 
-#: lib/html_reports.php:989
+#: lib/html_reports.php:993
 #, fuzzy
 msgid "Select a Site to filter for Devices and Graphs."
 msgstr "グラフを指定するデバイスを選択"
 
-#: lib/html_reports.php:999
+#: lib/html_reports.php:1003
 #, fuzzy
 msgid "Select a Device Template to use to filter for Devices or Graphs."
 msgstr "使用するデバイステンプレートを選択してください。"
 
-#: lib/html_reports.php:1007
+#: lib/html_reports.php:1011
 #, fuzzy
 msgid "Select a Device to be used to filter for of select for Graphs in the case of a Device Type."
 msgstr "デバイスタイプの場合、グラフの選択のフィルタリングに使用するデバイスを選択します。"
 
-#: lib/html_reports.php:1018
+#: lib/html_reports.php:1022
 #, fuzzy
 msgid "Select a Graph Template for the Device to be used to filter for or select Graphs in the case of a Device Type."
 msgstr "フィルタリングに使用するデバイスのグラフテンプレートを選択するか、デバイスタイプの場合はグラフを選択します。"
 
-#: lib/html_reports.php:1027
+#: lib/html_reports.php:1031
 #, fuzzy
 msgid "Graph Name Regular Expression"
 msgstr "グラフ名正規表現"
 
-#: lib/html_reports.php:1030
+#: lib/html_reports.php:1034
 #, fuzzy
 msgid "A Perl compatible regular expression (REGEXP) used to select Graphs to include from the Tree or Device."
 msgstr "ツリーから含めるグラフを選択するために使用されるPerl互換の正規表現（REGEXP）。"
 
-#: lib/html_reports.php:1038
+#: lib/html_reports.php:1042
 #, fuzzy
 msgid "The Graph to use for this report item."
 msgstr "このレポートアイテムに使用するグラフ。"
 
-#: lib/html_reports.php:1050
+#: lib/html_reports.php:1054
 #, fuzzy
 msgid "The Graph End time will be set to the scheduled report send time.  So, if you wish the end time on the various Graphs to be midnight, ensure you send the report at midnight.  The Graph Start time will be the End Time minus the Graph Timespan."
 msgstr "グラフ終了時刻は、スケジュールされたレポート送信時刻に設定されます。したがって、さまざまなグラフの終了時刻を真夜中にしたい場合は、必ず真夜中にレポートを送信してください。グラフ開始時間は終了時間からグラフタイムスパンを引いたものです。"
 
-#: lib/html_reports.php:1055 lib/html_reports.php:1610
+#: lib/html_reports.php:1059 lib/html_reports.php:1614
 msgid "Alignment"
 msgstr "配置"
 
-#: lib/html_reports.php:1058
+#: lib/html_reports.php:1062
 #, fuzzy
 msgid "Alignment of the Item"
 msgstr "アイテムの配置"
 
-#: lib/html_reports.php:1063
+#: lib/html_reports.php:1067
 #, fuzzy
 msgid "Fixed Text"
 msgstr "固定テキスト"
 
-#: lib/html_reports.php:1066
+#: lib/html_reports.php:1070
 #, fuzzy
 msgid "Enter descriptive Text"
 msgstr "説明文を入力"
 
-#: lib/html_reports.php:1071 lib/html_reports.php:1611
+#: lib/html_reports.php:1075 lib/html_reports.php:1615
 msgid "Font Size"
 msgstr "フォントサイズ"
 
-#: lib/html_reports.php:1075
+#: lib/html_reports.php:1079
 #, fuzzy
 msgid "Font Size of the Item"
 msgstr "アイテムのフォントサイズ"
 
-#: lib/html_reports.php:1094
+#: lib/html_reports.php:1098
 #, fuzzy, php-format
 msgid "Report Item [edit Report: %s]"
 msgstr "レポート項目[レポート編集：％s]"
 
-#: lib/html_reports.php:1096
+#: lib/html_reports.php:1100
 #, fuzzy, php-format
 msgid "Report Item [new Report: %s]"
 msgstr "レポート項目[新しいレポート：％s]"
 
-#: lib/html_reports.php:1377
+#: lib/html_reports.php:1381
 msgid "Events"
 msgstr "イベント"
 
-#: lib/html_reports.php:1407
+#: lib/html_reports.php:1411
 msgid "Send Report"
 msgstr "レポートを送信"
 
-#: lib/html_reports.php:1466 lib/import.php:2182 user_admin.php:2012
+#: lib/html_reports.php:1470 lib/import.php:2179 user_admin.php:2012
 msgid "[new]"
 msgstr "[新規]"
 
-#: lib/html_reports.php:1478
+#: lib/html_reports.php:1482
 #, fuzzy, php-format
 msgid "Details %s"
 msgstr "詳細"
 
-#: lib/html_reports.php:1527
+#: lib/html_reports.php:1531
 #, fuzzy, php-format
 msgid "Items %s"
 msgstr "アイテム #%s"
 
-#: lib/html_reports.php:1568
+#: lib/html_reports.php:1572
 #, fuzzy, php-format
 msgid "Scheduled Events %s"
 msgstr "予定されているイベント"
 
-#: lib/html_reports.php:1579
+#: lib/html_reports.php:1583
 #, fuzzy, php-format
 msgid "Report Preview %s"
 msgstr "レポートプレビュー"
 
-#: lib/html_reports.php:1608
+#: lib/html_reports.php:1612
 msgid "Item Details"
 msgstr "アイテムの詳細"
 
-#: lib/html_reports.php:1620
+#: lib/html_reports.php:1624
 #, fuzzy, php-format
 msgid "Graph: %s"
 msgstr "グラフ："
 
-#: lib/html_reports.php:1623 lib/html_reports.php:1649
-#: lib/html_reports.php:1662 lib/html_reports.php:1663
-#: lib/html_reports.php:1712 lib/html_reports.php:1713
+#: lib/html_reports.php:1627 lib/html_reports.php:1653
+#: lib/html_reports.php:1666 lib/html_reports.php:1667
+#: lib/html_reports.php:1716 lib/html_reports.php:1717
 #, fuzzy
 msgid "Using CSS"
 msgstr "CSSの使用"
 
-#: lib/html_reports.php:1633
+#: lib/html_reports.php:1637
 #, fuzzy, php-format
 msgid "Device: %s"
 msgstr "（端末から：％s）"
 
-#: lib/html_reports.php:1636
+#: lib/html_reports.php:1640
 #, fuzzy
 msgid ", Graph Template: All Templates"
 msgstr "デバイステンプレートにグラフテンプレートを追加する"
 
-#: lib/html_reports.php:1638
+#: lib/html_reports.php:1642
 #, fuzzy, php-format
 msgid ", Graph Template: %s"
 msgstr "グラフ[テンプレート：％s]"
 
-#: lib/html_reports.php:1645 lib/html_reports.php:1708
+#: lib/html_reports.php:1649 lib/html_reports.php:1712
 #, fuzzy, php-format
 msgid ", Using RegEx: \"%s\""
 msgstr "、正規表現の使用： \"%s\""
 
-#: lib/html_reports.php:1687
+#: lib/html_reports.php:1691
 #, fuzzy, php-format
 msgid "Tree: %s"
 msgstr "木："
 
-#: lib/html_reports.php:1695
+#: lib/html_reports.php:1699
 #, fuzzy, php-format
 msgid ", Device: %s"
 msgstr "（端末から：％s）"
 
-#: lib/html_reports.php:1697
+#: lib/html_reports.php:1701
 #, fuzzy, php-format
 msgid ", Branch: %s"
 msgstr "支店:"
 
-#: lib/html_reports.php:1700
+#: lib/html_reports.php:1704
 #, fuzzy
 msgid "(All Branches)"
 msgstr "（全支店）"
 
-#: lib/html_reports.php:1702
+#: lib/html_reports.php:1706
 #, fuzzy
 msgid "(Current Branch)"
 msgstr "（現在の支店）"
 
-#: lib/html_reports.php:1754
+#: lib/html_reports.php:1758
 #, fuzzy
 msgid "No Report Items"
 msgstr "レポート項目なし"
 
-#: lib/html_reports.php:1825
+#: lib/html_reports.php:1829
 #, fuzzy
 msgid "Administrator Level"
 msgstr "管理者レベル"
 
-#: lib/html_reports.php:1825
+#: lib/html_reports.php:1829
 #, fuzzy, php-format
 msgid "Reports [%s]"
 msgstr "レポート[％s]"
 
-#: lib/html_reports.php:1825
+#: lib/html_reports.php:1829
 msgid "User Level"
 msgstr "ユーザーレベル"
 
-#: lib/html_reports.php:1848 lib/html_reports.php:1919
+#: lib/html_reports.php:1852 lib/html_reports.php:1923
 msgid "Reports"
 msgstr "レポート"
 
-#: lib/html_reports.php:1928 tree.php:2027
+#: lib/html_reports.php:1932 tree.php:2027
 msgid "Owner"
 msgstr "所有者"
 
-#: lib/html_reports.php:1929 lib/html_reports.php:1940
+#: lib/html_reports.php:1933 lib/html_reports.php:1944
 msgid "Frequency"
 msgstr "回数"
 
-#: lib/html_reports.php:1930 lib/html_reports.php:1941
+#: lib/html_reports.php:1934 lib/html_reports.php:1945
 msgid "Last Run"
 msgstr "前回の実行"
 
-#: lib/html_reports.php:1931 lib/html_reports.php:1942
+#: lib/html_reports.php:1935 lib/html_reports.php:1946
 msgid "Next Run"
 msgstr "次回の実行"
 
-#: lib/html_reports.php:1939
+#: lib/html_reports.php:1943
 #, fuzzy
 msgid "Report Title"
 msgstr "レポートのタイトル"
 
-#: lib/html_reports.php:1970
+#: lib/html_reports.php:1974
 #, fuzzy
 msgid "Report Disabled - No Owner"
 msgstr "レポート無効 - 所有者なし"
 
-#: lib/html_reports.php:1974
+#: lib/html_reports.php:1978
 msgid "Every"
 msgstr "毎"
 
-#: lib/html_reports.php:1980
+#: lib/html_reports.php:1984
 msgid "Multiple"
 msgstr "複数"
 
-#: lib/html_reports.php:1981
+#: lib/html_reports.php:1985
 msgid "Invalid"
 msgstr "無効"
 
-#: lib/html_reports.php:1988
+#: lib/html_reports.php:1992
 #, fuzzy
 msgid "No Reports Found"
 msgstr "レポートが見つかりません"
@@ -16060,84 +16118,84 @@ msgstr "書き込み可能(R)"
 msgid "writable"
 msgstr "書き込み可能"
 
-#: lib/import.php:999
+#: lib/import.php:996
 #, fuzzy, php-format
 msgid "Resource File: '%s' is missing or not readable.  Make sure you install it before using Data Query: '%s'"
 msgstr "リソースファイル： '％s'が見つからないか、読み取れません。データクエリを使用する前に必ずインストールしてください： '％s'"
 
-#: lib/import.php:1896
+#: lib/import.php:1893
 msgid "Unknown Field"
 msgstr "未知のフィールド"
 
-#: lib/import.php:2143
+#: lib/import.php:2140
 #, fuzzy
 msgid "Import Preview Results"
 msgstr "プレビュー結果をインポート"
 
-#: lib/import.php:2143
+#: lib/import.php:2140
 msgid "Import Results"
 msgstr "読み込み結果"
 
-#: lib/import.php:2147
+#: lib/import.php:2144
 #, fuzzy
 msgid "Cacti would make the following changes if the Package was imported:"
 msgstr "パッケージがインポートされた場合、Cactiは以下の変更を行います。"
 
-#: lib/import.php:2149
+#: lib/import.php:2146
 #, fuzzy
 msgid "Cacti has imported the following items for the Package:"
 msgstr "Cactiはパッケージのために以下のアイテムを輸入しました："
 
-#: lib/import.php:2152
+#: lib/import.php:2149
 msgid "Package Files"
 msgstr "パッケージファイル"
 
-#: lib/import.php:2156
+#: lib/import.php:2153
 #, fuzzy
 msgid "[preview] "
 msgstr "プレビュー"
 
-#: lib/import.php:2161
+#: lib/import.php:2158
 #, fuzzy
 msgid "Cacti would make the following changes if the Template was imported:"
 msgstr "テンプレートがインポートされた場合、Cactiは以下の変更を行います。"
 
-#: lib/import.php:2163
+#: lib/import.php:2160
 #, fuzzy
 msgid "Cacti has imported the following items for the Template:"
 msgstr "Cactiはテンプレート用に以下のアイテムをインポートしました："
 
-#: lib/import.php:2172
+#: lib/import.php:2169
 #, fuzzy
 msgid "[success]"
 msgstr "成功！"
 
-#: lib/import.php:2174
+#: lib/import.php:2171
 #, fuzzy
 msgid "[fail]"
 msgstr "失敗"
 
-#: lib/import.php:2176
+#: lib/import.php:2173
 #, fuzzy
 msgid "[preview]"
 msgstr "プレビュー"
 
-#: lib/import.php:2180
+#: lib/import.php:2177
 #, fuzzy
 msgid "[updated]"
 msgstr "更新しました"
 
-#: lib/import.php:2184
+#: lib/import.php:2181
 #, fuzzy
 msgid "[unchanged]"
 msgstr "変更しない"
 
-#: lib/import.php:2220
+#: lib/import.php:2217
 #, fuzzy
 msgid "Found Dependency:"
 msgstr "依存関係が見つかりました："
 
-#: lib/import.php:2222
+#: lib/import.php:2219
 #, fuzzy
 msgid "Unmet Dependency:"
 msgstr "満たされていない依存関係："
@@ -17785,32 +17843,32 @@ msgstr "ルート"
 msgid "Unknown RRDtool Error"
 msgstr "不明なRRDtoolエラー"
 
-#: lib/template.php:1501
+#: lib/template.php:1492
 #, fuzzy
 msgid "Attempting to Create Graph from Non-Template"
 msgstr "テンプレートから集計を作成"
 
-#: lib/template.php:1513
+#: lib/template.php:1504
 #, fuzzy
 msgid "Attempting to Create Graph from Removed Graph Template"
 msgstr "削除されたグラフテンプレートからグラフを作成しようとしています"
 
-#: lib/template.php:2132 lib/template.php:2161
+#: lib/template.php:2123 lib/template.php:2152
 #, fuzzy, php-format
 msgid "Created: %s"
 msgstr "作成：％s"
 
-#: lib/template.php:2143 lib/template.php:2172
+#: lib/template.php:2134 lib/template.php:2163
 #, fuzzy
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "エラー：ホワイトリストの検証に失敗しました。データ入力方法の確認"
 
-#: lib/template.php:2151
+#: lib/template.php:2142
 #, fuzzy
 msgid "Graph Not created for "
 msgstr "グラフ作成"
 
-#: lib/template.php:2180
+#: lib/template.php:2171
 #, fuzzy
 msgid "NOTE: Graph not added for Data Query "
 msgstr "データクエリからグラフを作成する"
@@ -20016,7 +20074,7 @@ msgstr "アクセス権を取り消す"
 msgid "Grant Access"
 msgstr "アクセス許可"
 
-#: user_admin.php:1150 user_admin.php:2758 user_group_admin.php:1850
+#: user_admin.php:1150 user_admin.php:2762 user_group_admin.php:1850
 #: user_group_admin.php:1911
 msgid "Groups"
 msgstr "グループ"
@@ -20035,15 +20093,15 @@ msgstr "ポリシー（グラフ/デバイス/テンプレート）"
 msgid "Non Member"
 msgstr "非会員"
 
-#: user_admin.php:1169 user_admin.php:2416 user_admin.php:2417
-#: user_admin.php:2418 user_group_admin.php:1943 user_group_admin.php:1944
+#: user_admin.php:1169 user_admin.php:2420 user_admin.php:2421
+#: user_admin.php:2422 user_group_admin.php:1943 user_group_admin.php:1944
 #: user_group_admin.php:1945
 #, fuzzy
 msgid "ALLOW"
 msgstr "許可"
 
-#: user_admin.php:1169 user_admin.php:2416 user_admin.php:2417
-#: user_admin.php:2418 user_group_admin.php:1943 user_group_admin.php:1944
+#: user_admin.php:1169 user_admin.php:2420 user_admin.php:2421
+#: user_admin.php:2422 user_group_admin.php:1943 user_group_admin.php:1944
 #: user_group_admin.php:1945
 msgid "DENY"
 msgstr "拒否"
@@ -20232,42 +20290,42 @@ msgstr "最終ログイン"
 msgid "Unavailable"
 msgstr "予約不可"
 
-#: user_admin.php:2425
+#: user_admin.php:2429
 msgid "No Users Found"
 msgstr "ユーザーが見つかりません"
 
-#: user_admin.php:2636 user_group_admin.php:2157
+#: user_admin.php:2640 user_group_admin.php:2157
 #, fuzzy, php-format
 msgid "Graph Permissions %s"
 msgstr "グラフ権限％s"
 
-#: user_admin.php:2690 user_admin.php:2775
+#: user_admin.php:2694 user_admin.php:2779
 msgid "Show All"
 msgstr "すべて表示"
 
-#: user_admin.php:2743
+#: user_admin.php:2747
 #, fuzzy, php-format
 msgid "Group Membership %s"
 msgstr "グループメンバーシップ％s"
 
-#: user_admin.php:2829 user_group_admin.php:2265
+#: user_admin.php:2833 user_group_admin.php:2265
 #, fuzzy, php-format
 msgid "Devices Permission %s"
 msgstr "デバイス許可％s"
 
-#: user_admin.php:2879 user_admin.php:2964 user_admin.php:3049
-#: user_admin.php:3134 user_group_admin.php:2211 user_group_admin.php:2315
+#: user_admin.php:2883 user_admin.php:2968 user_admin.php:3053
+#: user_admin.php:3138 user_group_admin.php:2211 user_group_admin.php:2315
 #: user_group_admin.php:2400 user_group_admin.php:2485
 #, fuzzy
 msgid "Only Show Exceptions"
 msgstr "例外を表示"
 
-#: user_admin.php:2932 user_group_admin.php:2368
+#: user_admin.php:2936 user_group_admin.php:2368
 #, fuzzy, php-format
 msgid "Template Permission %s"
 msgstr "テンプレート権限％s"
 
-#: user_admin.php:3017 user_admin.php:3102 user_group_admin.php:2453
+#: user_admin.php:3021 user_admin.php:3106 user_group_admin.php:2453
 #, fuzzy, php-format
 msgid "Tree Permission %s"
 msgstr "ツリー権限％s"
@@ -21645,9 +21703,6 @@ msgstr "VDEFなし"
 
 #~ msgid "User Account Disabled"
 #~ msgstr "ユーザーアカウントは無効です"
-
-#~ msgid "Cacti"
-#~ msgstr "サボテン"
 
 #, fuzzy
 #~ msgid "Guest user id %s does not exist."
