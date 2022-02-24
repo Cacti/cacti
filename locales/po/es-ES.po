@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:21-0500\n"
+"PO-Revision-Date: 2022-02-23 21:49-0500\n"
 "Last-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\n"
 "Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\n"
 "Language: es_ES\n"
@@ -13266,16 +13266,15 @@ msgstr "Inicio de Cacti"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Varios"
 
 #: lib/html.php:2472
-#, fuzzy
 msgid "Dashboards"
-msgstr "Ocultar el tablero de instrumentos de Cacti"
+msgstr "Tableros"
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "Listas"
 
 #: lib/html.php:2475
 msgid "Cacti Project Page"
@@ -13283,19 +13282,20 @@ msgstr "Página del proyecto de Cacti"
 
 #: lib/html.php:2479
 msgid "Spine"
-msgstr ""
+msgstr "Columna"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RRDProxy"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "Teclado"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "Atajos"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -13304,20 +13304,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "Rotar el Log de Cacti"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "Ayuda en el desarrollo"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "Donación y patrocinio"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "Cliente"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "Ayuda en la traducción"
 
 #: lib/html.php:2490
 msgid "Report a bug"
@@ -15379,12 +15382,12 @@ msgstr "Ambos"
 #: lib/installer.php:3426
 #, fuzzy, php-format
 msgid "No - %s"
-msgstr "RRA [editar: %s %s]"
+msgstr "Cambio de %s a %s"
 
 #: lib/installer.php:3428 lib/installer.php:3430
 #, fuzzy, php-format
 msgid "%s - No"
-msgstr "RRA [editar: %s %s]"
+msgstr "Cambio de %s a %s"
 
 #: lib/installer.php:3428
 msgid "Web"

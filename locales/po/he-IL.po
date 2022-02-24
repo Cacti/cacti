@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:22-0500\n"
+"PO-Revision-Date: 2022-02-23 21:51-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he_IL\n"
@@ -15292,16 +15292,15 @@ msgstr "בית קקט"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "שונות"
 
 #: lib/html.php:2472
-#, fuzzy
 msgid "Dashboards"
-msgstr "הסתר את לוח המחוונים של Cacti"
+msgstr "לוחות בקרה"
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "גרף"
 
 #: lib/html.php:2475
 #, fuzzy
@@ -15309,20 +15308,22 @@ msgid "Cacti Project Page"
 msgstr "דף הפרויקט של Cacti"
 
 #: lib/html.php:2479
+#, fuzzy
 msgid "Spine"
-msgstr ""
+msgstr "עַמוּד הַשִׁדרָה"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RRDProxy"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "מקלדת"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "קיצורי דרך"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -15330,20 +15331,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "סובב את יומן קקט"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "עזרה בפיתוח"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "תרומה וחסות"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "לקוח"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "עזרה בתרגום"
 
 #: lib/html.php:2490
 msgid "Report a bug"

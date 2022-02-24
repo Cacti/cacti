@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:20-0500\n"
+"PO-Revision-Date: 2022-02-23 21:48-0500\n"
 "Last-Translator: Ronny Preiss <ronny.preiss@gmail.com>\n"
 "Language-Team: German <http://translate.cacti.net/projects/cacti/core-v1-2-x/de/>\n"
 "Language: de_DE\n"
@@ -14743,16 +14743,15 @@ msgstr "Kakteen Heim"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Verschiedenes"
 
 #: lib/html.php:2472
-#, fuzzy
 msgid "Dashboards"
-msgstr "Kakteen Dashboard ausblenden"
+msgstr "Dashboards"
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "Charts"
 
 #: lib/html.php:2475
 #, fuzzy
@@ -14760,20 +14759,22 @@ msgid "Cacti Project Page"
 msgstr "Kakteen-Projekt-Seite"
 
 #: lib/html.php:2479
+#, fuzzy
 msgid "Spine"
-msgstr ""
+msgstr "Wirbelsäule"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RRDProxy"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "Tastatur"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "Shortcuts"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -14781,20 +14782,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "Drehen Sie den Kakteenstamm."
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "Hilfe beim Entwickeln"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "Spende & Sponsoring"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "Kunde"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "Hilfe beim Übersetzen"
 
 #: lib/html.php:2490
 msgid "Report a bug"

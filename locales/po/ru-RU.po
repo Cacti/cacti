@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:29-0500\n"
+"PO-Revision-Date: 2022-02-23 21:58-0500\n"
 "Last-Translator: Sergey <sbolshagin@gmail.com>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\n"
 "Language: ru_RU\n"
@@ -15072,16 +15072,15 @@ msgstr "Кактусы дома"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Разное"
 
 #: lib/html.php:2472
-#, fuzzy
 msgid "Dashboards"
-msgstr "Скрыть панель приборов Cacti Dashboard"
+msgstr "Панель управления"
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "Диаграммы"
 
 #: lib/html.php:2475
 #, fuzzy
@@ -15089,20 +15088,22 @@ msgid "Cacti Project Page"
 msgstr "Страница проекта Какти"
 
 #: lib/html.php:2479
+#, fuzzy
 msgid "Spine"
-msgstr ""
+msgstr "Позвоночник"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RRDProxy"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "Клавиатура"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "Горячие клавиши"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -15110,20 +15111,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "Поверните журнал кактусов"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "Помощь в разработке"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "Пожертвование и спонсорство"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "Клиент"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "Помощь в переводе"
 
 #: lib/html.php:2490
 msgid "Report a bug"

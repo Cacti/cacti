@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:19-0500\n"
+"PO-Revision-Date: 2022-02-23 21:46-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar_SA\n"
@@ -13206,7 +13206,7 @@ msgstr "كاكتي هوم"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "متنوع"
 
 #: lib/html.php:2472
 #, fuzzy
@@ -13215,28 +13215,32 @@ msgid "Dashboards"
 msgstr "إخفاء الصبار لوحة القيادة"
 
 #: lib/html.php:2474
+#, fuzzy
 msgid "Charts"
-msgstr ""
+msgstr "الرسوم البيانية"
 
 #: lib/html.php:2475
 msgid "Cacti Project Page"
 msgstr "صفحة مشروع الصبار"
 
 #: lib/html.php:2479
+#, fuzzy
 msgid "Spine"
-msgstr ""
+msgstr "المسار إلى ملف التكوين العمود الفقري. افتراضيًا ، في cwd of Spine أو / etc إذا لم يتم تحديدها."
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RR"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "لوحة المفاتيح"
 
 #: lib/html.php:2482
+#, fuzzy
 msgid "Shortcuts"
-msgstr ""
+msgstr "الاختصارات"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -13245,20 +13249,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "قم بتدوير سجل Cacti"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "مساعدة في تطوير"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "التبرع والرعاية"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "عميل"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "مساعدة في الترجمة"
 
 #: lib/html.php:2490
 msgid "Report a bug"

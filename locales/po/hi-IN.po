@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:23-0500\n"
+"PO-Revision-Date: 2022-02-23 21:52-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi_IN\n"
@@ -15287,7 +15287,7 @@ msgstr "कैक्टि होम"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "其他"
 
 #: lib/html.php:2472
 #, fuzzy
@@ -15295,8 +15295,9 @@ msgid "Dashboards"
 msgstr "कैक्टि डैशबोर्ड छिपाएँ"
 
 #: lib/html.php:2474
+#, fuzzy
 msgid "Charts"
-msgstr ""
+msgstr "चार्ट"
 
 #: lib/html.php:2475
 #, fuzzy
@@ -15304,20 +15305,23 @@ msgid "Cacti Project Page"
 msgstr "कैक्टि प्रोजेक्ट पेज"
 
 #: lib/html.php:2479
+#, fuzzy
 msgid "Spine"
-msgstr ""
+msgstr "रीढ़ की हड्डी"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "आरआरडीप्रॉक्सी"
 
 #: lib/html.php:2481
+#, fuzzy
 msgid "Keyboard"
-msgstr ""
+msgstr "कीबोर्ड"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "अल्प मार्ग"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -15325,20 +15329,24 @@ msgid "Contribute to the Cacti Project"
 msgstr "कैक्टि लॉग को घुमाएं"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "विकास में मदद"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "दान और प्रायोजन"
 
 #: lib/html.php:2488
+#, fuzzy
 msgid "Client"
-msgstr ""
+msgstr "ग्राहक"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "अनुवाद करने में सहायता"
 
 #: lib/html.php:2490
 msgid "Report a bug"

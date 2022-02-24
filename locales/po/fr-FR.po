@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:22-0500\n"
+"PO-Revision-Date: 2022-02-23 21:50-0500\n"
 "Last-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\n"
 "Language-Team: French <http://translate.cacti.net/projects/cacti/core-v1-2-x/fr/>\n"
 "Language: fr_FR\n"
@@ -5246,7 +5246,7 @@ msgstr "Convertir en modèle graphique"
 #: graphs.php:151 graphs.php:166
 #, fuzzy
 msgid "No Device - "
-msgstr "Numéro de symbole"
+msgstr "Modèles d'équipement"
 
 #: graphs.php:252
 #, php-format
@@ -14421,16 +14421,15 @@ msgstr "Accueil Cacti"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Divers"
 
 #: lib/html.php:2472
-#, fuzzy
 msgid "Dashboards"
-msgstr "Masquer le tableau de bord Cacti"
+msgstr "Tableaux de bord"
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "Graphiques"
 
 #: lib/html.php:2475
 #, fuzzy
@@ -14438,20 +14437,22 @@ msgid "Cacti Project Page"
 msgstr "Page du projet Cacti"
 
 #: lib/html.php:2479
+#, fuzzy
 msgid "Spine"
-msgstr ""
+msgstr "Colonne vertébrale"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "Proxy RRD"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "Clavier"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "Raccourcis"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -14459,20 +14460,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "Faire pivoter le Cacti Log"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "Aide au développement"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "Don & Parrainage"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "Client"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "Aide à la traduction"
 
 #: lib/html.php:2490
 msgid "Report a bug"

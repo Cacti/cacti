@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:33-0500\n"
+"PO-Revision-Date: 2022-02-23 22:01-0500\n"
 "Last-Translator: Linya Huang <linya0405@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -13051,17 +13051,15 @@ msgstr "仙人掌之家"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "雜項"
 
 #: lib/html.php:2472
-#, fuzzy
-#| msgid "Hide Cacti Dashboard"
 msgid "Dashboards"
-msgstr "隱藏仙人掌儀表板"
+msgstr "儀表板"
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "圖表"
 
 #: lib/html.php:2475
 msgid "Cacti Project Page"
@@ -13069,19 +13067,20 @@ msgstr "仙人掌項目"
 
 #: lib/html.php:2479
 msgid "Spine"
-msgstr ""
+msgstr "脊柱"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RRD代理"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "鍵盤"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "快捷鍵"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -13090,20 +13089,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "旋轉仙人掌日誌"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "幫助開發"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "捐贈與讚助"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "客戶"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "幫助翻譯"
 
 #: lib/html.php:2490
 msgid "Report a bug"

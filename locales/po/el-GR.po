@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:20-0500\n"
+"PO-Revision-Date: 2022-02-23 21:49-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: el_GR\n"
@@ -15185,7 +15185,7 @@ msgstr "Cacti Home"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Διάφορα"
 
 #: lib/html.php:2472
 #, fuzzy
@@ -15194,7 +15194,7 @@ msgstr "Απόκρυψη του ταμπλό του Cacti"
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "Διαγράμματα"
 
 #: lib/html.php:2475
 #, fuzzy
@@ -15202,20 +15202,22 @@ msgid "Cacti Project Page"
 msgstr "Cacti Project Page"
 
 #: lib/html.php:2479
+#, fuzzy
 msgid "Spine"
-msgstr ""
+msgstr "ΣΠΟΝΔΥΛΙΚΗ ΣΤΗΛΗ"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RRDProxy"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "Πληκτρολόγιο"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "Συντομεύσεις"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -15223,20 +15225,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "Περιστρέψτε το αρχείο καταγραφής Cacti"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "Βοήθεια στην ανάπτυξη"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "Δωρεά & Χορηγίες"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "Πελάτης"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "Βοήθεια στη μετάφραση"
 
 #: lib/html.php:2490
 msgid "Report a bug"
@@ -15889,7 +15894,7 @@ msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; γ�
 #: lib/html_reports.php:520
 #, fuzzy
 msgid "Name Format:"
-msgstr "Μορφή ονόματος:"
+msgstr "Μορφή ονόματος"
 
 #: lib/html_reports.php:530
 #, fuzzy

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:25-0500\n"
+"PO-Revision-Date: 2022-02-23 21:54-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ko\n"
@@ -3640,7 +3640,7 @@ msgstr "결과"
 #: data_debug.php:777
 #, fuzzy
 msgid "<not set>"
-msgstr "설정되지 않음"
+msgstr "기본 설정"
 
 #: data_debug.php:812 data_debug.php:863
 #, fuzzy
@@ -15162,16 +15162,15 @@ msgstr "선인장 홈"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "기타"
 
 #: lib/html.php:2472
-#, fuzzy
 msgid "Dashboards"
-msgstr "Cacti 대시 보드 숨기기"
+msgstr "Dashboards"
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "차트"
 
 #: lib/html.php:2475
 #, fuzzy
@@ -15180,19 +15179,20 @@ msgstr "선인장 프로젝트 페이지"
 
 #: lib/html.php:2479
 msgid "Spine"
-msgstr ""
+msgstr "스파인"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RRD프록시"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "키보드"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "바로가기"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -15200,20 +15200,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "Cacti 로그 회전"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "개발에 도움"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "기부 및 후원"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "고객"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "번역에 도움"
 
 #: lib/html.php:2490
 msgid "Report a bug"

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:19-0500\n"
+"PO-Revision-Date: 2022-02-23 21:47-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "Language: bg\n"
@@ -8622,7 +8622,7 @@ msgstr "Изгрев"
 #: include/global_arrays.php:1876
 #, fuzzy
 msgid "[Fail]"
-msgstr "[Fail]"
+msgstr "Скъсан"
 
 #: include/global_arrays.php:1877
 #, fuzzy
@@ -15193,7 +15193,7 @@ msgstr "Кактуси вкъщи"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Разни"
 
 #: lib/html.php:2472
 #, fuzzy
@@ -15202,7 +15202,7 @@ msgstr "Скриване на таблото за управление на Ка
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "Графики"
 
 #: lib/html.php:2475
 #, fuzzy
@@ -15211,19 +15211,20 @@ msgstr "Страница"
 
 #: lib/html.php:2479
 msgid "Spine"
-msgstr ""
+msgstr "Гръбнак"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RRDProxy"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "Клавиатура"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "Преки пътища"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -15231,20 +15232,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "Завъртете дневника Cacti"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "Помощ при разработването"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "Дарение и спонсорство"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "Клиент"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "Помощ при превода"
 
 #: lib/html.php:2490
 msgid "Report a bug"
@@ -16396,7 +16400,7 @@ msgstr "Успешно!"
 #: lib/import.php:2171
 #, fuzzy
 msgid "[fail]"
-msgstr "[Провали]"
+msgstr "Скъсан"
 
 #: lib/import.php:2173
 #, fuzzy

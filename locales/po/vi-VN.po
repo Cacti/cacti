@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-23 21:39-0500\n"
-"PO-Revision-Date: 2022-02-21 13:32-0500\n"
+"PO-Revision-Date: 2022-02-23 22:00-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: vi_VN\n"
@@ -15175,16 +15175,15 @@ msgstr "Trang chủ xương rồng"
 
 #: lib/html.php:2471
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Tạp nham"
 
 #: lib/html.php:2472
-#, fuzzy
 msgid "Dashboards"
-msgstr "Ẩn bảng điều khiển Cacti"
+msgstr "Bảng điều khiển"
 
 #: lib/html.php:2474
 msgid "Charts"
-msgstr ""
+msgstr "Biểu đồ"
 
 #: lib/html.php:2475
 #, fuzzy
@@ -15192,20 +15191,22 @@ msgid "Cacti Project Page"
 msgstr "Trang dự án xương rồng"
 
 #: lib/html.php:2479
+#, fuzzy
 msgid "Spine"
-msgstr ""
+msgstr "Xương sống"
 
 #: lib/html.php:2480
+#, fuzzy
 msgid "RRDProxy"
-msgstr ""
+msgstr "RRDProxy"
 
 #: lib/html.php:2481
 msgid "Keyboard"
-msgstr ""
+msgstr "Bàn phím"
 
 #: lib/html.php:2482
 msgid "Shortcuts"
-msgstr ""
+msgstr "Các Bố Trí Phím Tắt"
 
 #: lib/html.php:2483
 #, fuzzy
@@ -15213,20 +15214,23 @@ msgid "Contribute to the Cacti Project"
 msgstr "Xoay Nhật ký xương rồng"
 
 #: lib/html.php:2484
+#, fuzzy
 msgid "Help in Developing"
-msgstr ""
+msgstr "Giúp đỡ trong việc phát triển"
 
 #: lib/html.php:2485
+#, fuzzy
 msgid "Donation & Sponsoring"
-msgstr ""
+msgstr "Quyên góp & Tài trợ"
 
 #: lib/html.php:2488
 msgid "Client"
-msgstr ""
+msgstr "Khách hàng"
 
 #: lib/html.php:2489
+#, fuzzy
 msgid "Help in Translating"
-msgstr ""
+msgstr "Trợ giúp trong việc dịch"
 
 #: lib/html.php:2490
 msgid "Report a bug"
