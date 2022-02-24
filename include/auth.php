@@ -36,7 +36,7 @@ if (!isset($config['cacti_db_version'])) {
 }
 
 $auth_method = read_config_option('auth_method', true);
-if (read_config_option('auth_method') == 0) {
+if ($auth_method == 0) {
 	$admin_id = db_execute_prepared('SELECT id
 		FROM user_auth
 		WHERE id = ?',
@@ -99,7 +99,8 @@ if (read_config_option('auth_method') == 0) {
 		WHERE id = ?",
 		array($admin_id));
 
-	set_config_option('auth_method', 1);
+	$auth_method = 1;
+	set_config_option('auth_method', $auth_method);
 
 	$_SESSION['sess_user_id'] = $admin_id;
 	$_SESSION['sess_change_password'] = true;
@@ -116,7 +117,7 @@ if (get_current_page() == 'logout.php') {
 	return true;
 }
 
-if (read_config_option('auth_method') != 0) {
+if ($auth_method != 0) {
 	/* handle alternate authentication realms */
 	api_plugin_hook_function('auth_alternate_realms');
 
@@ -127,7 +128,7 @@ if (read_config_option('auth_method') != 0) {
 	}
 
 	/* check for remember me function ality */
-	if (!isset($_SESSION['sess_user_id'])) {
+	if (!isset($_SESSION['sess_user_id']) && $auth_method != 2) {
 		$cookie_user = check_auth_cookie();
 		if ($cookie_user !== false) {
 			$_SESSION['sess_user_id'] = $cookie_user;
@@ -137,6 +138,7 @@ if (read_config_option('auth_method') != 0) {
 	/* don't even bother with the guest code if we're already logged in */
 	if (isset($guest_account)) {
 		$guest_user_id = get_guest_account();
+
 		/* find guest user */
 		if (!empty($guest_user_id)) {
 			if (empty($_SESSION['sess_user_id'])) {
@@ -280,8 +282,6 @@ if (read_config_option('auth_method') != 0) {
 			if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
 				exit;
 			}
-
-			$auth_method = read_config_option('auth_method');
 
 			if (isset($_SERVER['HTTP_REFERER'])) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";

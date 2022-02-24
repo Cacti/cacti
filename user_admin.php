@@ -2404,7 +2404,11 @@ function user() {
 				$realm = __('Unavailable');
 			}
 
+			// Check for a disabled removal
 			$disabled = is_template_account($user['id']);
+			if ($_SESSION['sess_user_id'] == $user['id']) {
+				$disabled = true;
+			}
 
 			form_alternate_row('line' . $user['id'], true, $disabled);
 
