@@ -1545,7 +1545,7 @@ function tuneTable(object, width) {
 					calculatedWidth += columnWidth + calculatedPadding;
 				}
 
-				console.log($(this).parent().id + ' - ' + $(this).index() + ' - ' + width);
+				//console.log($(this).parent().id + ' - ' + $(this).index() + ' - ' + width);
 			}
 		});
 
