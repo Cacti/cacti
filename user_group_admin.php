@@ -648,9 +648,7 @@ function user_group_members_edit($header_label) {
 		$sql_where = '';
 	}
 
-	if (get_request_var('associated') == 'false') {
-		/* Show all items */
-	} else {
+	if (get_request_var('associated') != 'false') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_members.group_id=' . get_request_var('id', 0) . ')';
 	}
 
@@ -788,7 +786,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				gtg.title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 				AND gtg.local_graph_id > 0)';
 		} else {
-			$sql_where = 'WHERE (gtg.local_graph_id>0)';
+			$sql_where = 'WHERE (gtg.local_graph_id > 0)';
 		}
 
 		if (get_request_var('graph_template_id') == '-1') {
@@ -799,28 +797,31 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var('graph_template_id');
 		}
 
-		if (get_request_var('associated') == 'false') {
-			/* Show all items */
-		} else {
+		if (get_request_var('associated') != 'false') {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 1 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
-		$total_rows = db_fetch_cell("SELECT
+		$total_rows = db_fetch_cell_prepared("SELECT
 			COUNT(DISTINCT gtg.id)
 			FROM graph_templates_graph AS gtg
 			LEFT JOIN user_auth_group_perms
-			ON (gtg.local_graph_id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 1 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
-			$sql_where");
+			ON gtg.local_graph_id = user_auth_group_perms.item_id
+			AND user_auth_group_perms.type = 1
+			AND user_auth_group_perms.group_id = ?
+			$sql_where",
+			array(get_request_var('id')));
 
 		$sql_query = "SELECT gtg.local_graph_id, gtg.title_cache, user_auth_group_perms.group_id
 			FROM graph_templates_graph AS gtg
 			LEFT JOIN user_auth_group_perms
-			ON (gtg.local_graph_id=user_auth_group_perms.item_id AND user_auth_group_perms.type = 1 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
+			ON gtg.local_graph_id=user_auth_group_perms.item_id
+			AND user_auth_group_perms.type = 1
+			AND user_auth_group_perms.group_id = ?
 			$sql_where
 			ORDER BY title_cache
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-		$graphs = db_fetch_assoc($sql_query);
+		$graphs = db_fetch_assoc_prepared($sql_query, array(get_request_var('id')));
 
 		$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsg&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Graphs'), 'page', 'main');
 
@@ -943,9 +944,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' host.host_template_id=' . get_request_var('host_template_id');
 		}
 
-		if (get_request_var('associated') == 'false') {
-			/* Show all items */
-		} else {
+		if (get_request_var('associated') != 'false') {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth_group_perms.group_id=' . get_request_var('id', 0);
 		}
 
@@ -1083,34 +1082,36 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where = '';
 		}
 
-		if (get_request_var('associated') == 'false') {
-			/* Show all items */
-		} else {
+		if (get_request_var('associated') != 'false') {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 
-		$total_rows = db_fetch_cell("SELECT
+		$total_rows = db_fetch_cell_prepared("SELECT
 			COUNT(DISTINCT gt.id)
 			FROM graph_templates AS gt
-			INNER JOIN graph_local AS gl
+			LEFT JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
 			LEFT JOIN user_auth_group_perms
-			ON (gt.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
-			$sql_where
-			GROUP BY gl.graph_template_id");
+			ON gt.id = user_auth_group_perms.item_id
+			AND user_auth_group_perms.type = 4
+			AND user_auth_group_perms.group_id = ?
+			$sql_where",
+			array(get_request_var('id')));
 
-		$sql_query = "SELECT gt.id, gt.name, count(*) AS totals, user_auth_group_perms.group_id
+		$sql_query = "SELECT gt.id, gt.name, COUNT(DISTINCT gl.id) AS totals, user_auth_group_perms.group_id
 			FROM graph_templates AS gt
-			INNER JOIN graph_local AS gl
+			LEFT JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
 			LEFT JOIN user_auth_group_perms
-			ON (gt.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 4 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
+			ON gt.id = user_auth_group_perms.item_id
+			AND user_auth_group_perms.type = 4
+			AND user_auth_group_perms.group_id = ?
 			$sql_where
-			GROUP BY gl.graph_template_id
+			GROUP BY gt.id
 			ORDER BY name
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-		$graphs = db_fetch_assoc($sql_query);
+		$graphs = db_fetch_assoc_prepared($sql_query, array(get_request_var('id')));
 
 		$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permste&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
 
@@ -1223,9 +1224,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where = '';
 		}
 
-		if (get_request_var('associated') == 'false') {
-			/* Show all items */
-		} else {
+		if (get_request_var('associated') != 'false') {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 2 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
 		}
 

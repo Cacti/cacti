@@ -1255,9 +1255,7 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' host.host_template_id=' . get_request_var('host_template_id');
 		}
 
-		if (get_request_var('associated') == 'false') {
-			/* Show all items */
-		} else {
+		if (get_request_var('associated') != 'false') {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth_perms.user_id=' . get_request_var('id', 0);
 		}
 
@@ -1411,36 +1409,35 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where = '';
 		}
 
-		if (get_request_var('associated') == 'false') {
-			/* Show all items */
-		} else {
+		if (get_request_var('associated') != 'false') {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_perms.type=4 AND user_auth_perms.user_id=' . get_request_var('id', 0) . ')';
 		}
 
-		$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
-			FROM (SELECT
-				COUNT(DISTINCT gt.id) AS `rows`
-				FROM graph_templates AS gt
-				INNER JOIN graph_local AS gl
-				ON gt.id = gl.graph_template_id
-				LEFT JOIN user_auth_perms
-				ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4 AND user_auth_perms.user_id = " . get_request_var('id') . ")
-				$sql_where
-				GROUP BY gl.graph_template_id
-			) AS rs");
-
-		$sql_query = "SELECT gt.id, gt.name, count(*) AS totals, user_auth_perms.user_id
+		$total_rows = db_fetch_cell_prepared("SELECT COUNT(DISTINCT gt.id)
 			FROM graph_templates AS gt
-			INNER JOIN graph_local AS gl
+			LEFT JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
 			LEFT JOIN user_auth_perms
-			ON (gt.id = user_auth_perms.item_id AND user_auth_perms.type = 4 AND user_auth_perms.user_id = " . get_request_var('id') . ")
+			ON gt.id = user_auth_perms.item_id
+			AND user_auth_perms.type = 4
+			AND user_auth_perms.user_id = ?
+			$sql_where",
+			array(get_request_var('id')));
+
+		$sql_query = "SELECT gt.id, gt.name, COUNT(DISTINCT gl.id) AS totals, user_auth_perms.user_id
+			FROM graph_templates AS gt
+			LEFT JOIN graph_local AS gl
+			ON gt.id = gl.graph_template_id
+			LEFT JOIN user_auth_perms
+			ON gt.id = user_auth_perms.item_id
+			AND user_auth_perms.type = 4
+			AND user_auth_perms.user_id = ?
 			$sql_where
-			GROUP BY gl.graph_template_id
+			GROUP BY gt.id
 			ORDER BY name
 			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-		$graphs = db_fetch_assoc($sql_query);
+		$graphs = db_fetch_assoc_prepared($sql_query, array(get_request_var('id')));
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permste&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
 
@@ -1556,9 +1553,7 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where = '';
 		}
 
-		if (get_request_var('associated') == 'false') {
-			/* showing all rows */
-		} else {
+		if (get_request_var('associated') != 'false') {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_perms.type=2 AND user_auth_perms.user_id=' . get_request_var('id', 0) . ')';
 		}
 
