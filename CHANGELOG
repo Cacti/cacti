@@ -59,6 +59,7 @@ Cacti CHANGELOG
 -issue#4568: Cacti incorrectly uses the user_auth_cache from identical usernames from the wrong realm
 -issue#4569: User and Group Administration - Unused Templates are missing and row count wrong on Group page
 -issue#4571: Settings does not properly hide authentication settings when auth method are switched
+-issue#4572: When basic authentication is used, the login as regular user should not be shown
 -feature: Expose hidden Language Translation setting l10n_language_handler
 -feature: Allow a Device to be a part of a Report outside of a Tree
 -feature: Allow Basic Authentication to display customer login failed message
