@@ -1161,7 +1161,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
-		$sql_limit = ''
+		$sql_limit = '';
 	}
 
 	if (!is_numeric($tree_id)) {
@@ -1299,7 +1299,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
-		$sql_limit = ''
+		$sql_limit = '';
 	}
 
 	if ($sql_order != '') {
@@ -1375,7 +1375,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
-		$sql_limit = ''
+		$sql_limit = '';
 	}
 
 	if ($sql_order != '') {
@@ -1467,7 +1467,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
-		$sql_limit = ''
+		$sql_limit = '';
 	}
 
 	if ($sql_order != '') {
@@ -1751,7 +1751,7 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
-		$sql_limit = ''
+		$sql_limit = '';
 	}
 
 	if ($sql_order != '') {
@@ -2154,7 +2154,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
-		$sql_limit = ''
+		$sql_limit = '';
 	}
 
 	if ($sql_order != '') {
@@ -2261,6 +2261,8 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user = 0) {
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
+	} else {
+		$sql_limit = '';
 	}
 
 	if ($sql_order != '') {
@@ -2532,7 +2534,7 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
-		$sql_limit = ''
+		$sql_limit = '';
 	}
 
 	if ($sql_order != '') {
@@ -2615,7 +2617,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
-		$sql_limit = ''
+		$sql_limit = '';
 	}
 
 	if ($sql_order != '') {
@@ -2712,11 +2714,11 @@ function get_allowed_graph_templates_normalized($sql_where = '', $sql_order = 'n
 	if ($sql_limit > 0) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
-		$sql_limit = ''
+		$sql_limit = '';
 	}
 
 	if ($sql_order != '') {
-		$sql_order = "ORDER BY $sql_order"
+		$sql_order = "ORDER BY $sql_order";
 	}
 
 	$templates = db_fetch_assoc("SELECT
@@ -2935,7 +2937,7 @@ function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 2
 	}
 
 	if ($sql_order != '') {
-		$sql_order = "ORDER BY $sql_order"
+		$sql_order = "ORDER BY $sql_order";
 	}
 
 	$items = db_fetch_assoc("SELECT
