@@ -24,9 +24,7 @@
 
 global $current_user;
 
-$included_files = get_included_files();
 require_once('global.php');
-//cacti_log('After global.php (' . implode(', ', $included_files) . ')', true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 
 if (!isset($config['cacti_db_version'])) {
 	$version = get_cacti_version();
@@ -36,83 +34,27 @@ if (!isset($config['cacti_db_version'])) {
 }
 
 $auth_method = read_config_option('auth_method', true);
-if ($auth_method == 0) {
-	$admin_id = db_execute_prepared('SELECT id
-		FROM user_auth
-		WHERE id = ?',
-		array(read_config_option('admin_user')));
 
-	cacti_log('Admin User (' . read_config_option('admin_user') . ' vs ' . $admin_id . ')', true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+/**
+ * Check to see if Cacti authentication is disabled
+ * and force Local Authentication on if found
+ */
+check_reset_no_authentication($auth_method);
 
-	if (!$admin_id) {
-		$admin_sql_query = 'SELECT TOP 1 id FROM (
-			SELECT ua.id
-			FROM user_auth AS ua
-			INNER JOIN user_auth_realm AS uar
-			ON uar.user_id = ua.id
-			WHERE uar.realm_id = ?';
-
-		$admin_sql_params = array(15);
-
-		if (db_table_exists('user_auth_group_realm')) {
-			$admin_sql_query .= '
-			UNION
-			SELECT ua.id
-			FROM user_auth AS ua
-			INNER JOIN user_auth_group_members AS uagm
-			ON uagm.user_id = ua.id
-			INNER JOIN user_auth_group AS uag
-			ON uag.id = uagm.group_id
-			INNER JOIN user_auth_group_realm AS uagr
-			ON uagr.group_id=uag.group_id
-			WHERE uag.enabled="on" AND ua.enabled="on"
-			AND uagr.realm_id = ?';
-
-			$admin_sql_params[] = 15;
-		}
-
-		$admin_sql_query .= '
-			) AS id';
-
-		cacti_log('SQL query ' . $admin_sql_query, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
-		cacti_log('SQL param ' . implode(',', $admin_sql_params), true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
-		$admin_id = db_fetch_cell_prepared($admin_sql_query, $admin_sql_params);
-		cacti_log('SQL result ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
-	}
-
-	if (!$admin_id) {
-		$admin_id = db_fetch_cell('SELECT id FROM user_auth WHERE username = \'admin\'');
-		cacti_log('Final attempt ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
-	}
-
-	if (!$admin_id) {
-		die('Failed to find a valid admin account with console access');
-	}
-
-	// Authentication method is currently set to none
-	// lets switch this to basic and allow setting of
-	// a password.
-	db_execute_prepared("UPDATE user_auth SET
-		password = '',
-		must_change_password = 'on',
-		password_change = 'on'
-		WHERE id = ?",
-		array($admin_id));
-
-	$auth_method = 1;
-	set_config_option('auth_method', $auth_method);
-
-	$_SESSION['sess_user_id'] = $admin_id;
-	$_SESSION['sess_change_password'] = true;
-	header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
-	exit;
-}
-
+/**
+ * Check to see if the Database Cacti version is different
+ * from the installed Cacti version and start the install
+ * process if found to be different.
+ */
 if ($version != CACTI_VERSION && !defined('IN_CACTI_INSTALL')) {
 	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }
 
+/**
+ * The logout page does not require authentication
+ * so, short cut the process.
+ */
 if (get_current_page() == 'logout.php') {
 	return true;
 }
@@ -121,21 +63,43 @@ if ($auth_method != 0) {
 	/* handle alternate authentication realms */
 	api_plugin_hook_function('auth_alternate_realms');
 
-	/* handle change password dialog */
-	if ((isset($_SESSION['sess_change_password'])) && (read_config_option('webbasic_enabled') != 'on')) {
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
-		exit;
-	}
+	/**
+	 * handle change password dialog and auth cookie if not using basic auth
+	 */
+	if ($auth_method != 2) {
+		if (isset($_SESSION['sess_change_password'])) {
+			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+			exit;
+		}
 
-	/* check for remember me function ality */
-	if (!isset($_SESSION['sess_user_id']) && $auth_method != 2) {
-		$cookie_user = check_auth_cookie();
-		if ($cookie_user !== false) {
-			$_SESSION['sess_user_id'] = $cookie_user;
+		/* check for remember me function ality */
+		if (!isset($_SESSION['sess_user_id'])) {
+			$cookie_user = check_auth_cookie();
+			if ($cookie_user !== false) {
+				$_SESSION['sess_user_id'] = $cookie_user;
+			}
 		}
 	}
 
-	/* don't even bother with the guest code if we're already logged in */
+	/**
+	 * Check for basic auth, and if the user has been logged in via the server
+	 * but their user_id is not set, include the auth_login.php script to
+	 * process their log in.
+	 */
+	if ($auth_method == 2 && !isset($_SESSION['sess_user_id'])) {
+		$username = get_basic_auth_username();
+		if ($username !== false) {
+			require_once($config['base_path'] . '/auth_login.php');
+		}
+	}
+
+	/**
+	 * If the special boolean $guest_account is set for a page, then the guest
+	 * account can be used.  Where this may not be the case is with basic auth
+	 * where to enter the Cacti website, you must first have a valid acount.
+	 * if that is the case, then use that valid accounts permissions and not
+	 * the guest account.
+	 */
 	if (isset($guest_account)) {
 		$guest_user_id = get_guest_account();
 
@@ -154,11 +118,12 @@ if ($auth_method != 0) {
 		}
 	}
 
-	/* if we are a guest user in a non-guest area, wipe credentials */
-	if (!empty($_SESSION['sess_user_id'])) {
-		$guest_user_id = get_guest_account();
-
-		if (!isset($guest_account) && $guest_user_id == $_SESSION['sess_user_id']) {
+	/**
+	 * If we are a guest user in a non-guest area, wipe credentials
+	 * user will be redirected back to the login page.
+	 */
+	if (!isset($guest_account) && isset($_SESSION['sess_user_id'])) {
+		if (get_guest_account() == $_SESSION['sess_user_id']) {
 			kill_session_var('sess_user_id');
 			cacti_session_destroy();
 			cacti_session_start();
@@ -175,13 +140,14 @@ if ($auth_method != 0) {
 				)
 			);
 		} elseif (isset($auth_text) && $auth_text == true) {
+			/* handle graph_image.php to respond with text. */
 			print __('FATAL: You must be logged in to access this area of Cacti.');
 		} else {
 			require_once($config['base_path'] . '/auth_login.php');
 		}
 
 		exit;
-	} elseif (!empty($_SESSION['sess_user_id'])) {
+	} else {
 		$realm_id = 0;
 
 		if (isset($user_auth_realm_filenames[get_current_page()])) {

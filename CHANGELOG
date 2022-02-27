@@ -2,6 +2,8 @@ Cacti CHANGELOG
 
 1.2.20
 -security#4562: Under certain LDAP server environments, cacti authentication can be bypassed (CVE-2022-0730)
+-security#4576: Stored XSS Issue in Cacti Device, Graph, Graph Template, and Graph Items callbacks
+-security#4579: Cacti account lockout policies are not properly applied to LDAP and Domain Users
 -security: Resolve issues with SQL injections in user_admin and user_group_admin.  Thanks @enesdex (CVE-2021-23225)
 -security: Resolve issues with XSS issues in color_template.  Thanks @M0rphling
 -issue: Reports Drag and Drop not functioning
@@ -60,6 +62,11 @@ Cacti CHANGELOG
 -issue#4569: User and Group Administration - Unused Templates are missing and row count wrong on Group page
 -issue#4571: Settings does not properly hide authentication settings when auth method are switched
 -issue#4572: When basic authentication is used, the login as regular user should not be shown
+-issue#4573: The Cacti permission system does not scale to very large installations
+-issue#4575: When you delete a user, their 'remember me' cookie data is not automatically removed
+-issue#4577: Cacti allows you to disable or delete the currently logged in administrator disabling the user
+-issue#4578: The Cacti login algorithm is complicated to understand due to too much strait line code
+-issue#4580: When logging in as a basic authentication user, users are made "guest" accounts instead of the login accounts as expected
 -feature: Expose hidden Language Translation setting l10n_language_handler
 -feature: Allow a Device to be a part of a Report outside of a Tree
 -feature: Allow Basic Authentication to display customer login failed message
@@ -74,6 +81,7 @@ Cacti CHANGELOG
 -feature: Create Graph Template Item Data Template filter for ease of Use
 -feature: Adding Cisco ASA Security Appliance Device Package
 -feature: Enhance Cisco Router Device Package 
+-feature#4574: Cacti needs some additional permission methods for larger installations
 
 1.2.19
 -security#4356: Further fixes for grave character security protection

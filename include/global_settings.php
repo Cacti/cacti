@@ -401,12 +401,14 @@ $settings = array(
 		),
 		'graph_auth_method' => array(
 			'friendly_name' => __('Graph Permission Method'),
-			'description' => __('There are two methods for determining a User\'s Graph Permissions.  The first is \'Permissive\'.  Under the \'Permissive\' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under \'Restrictive\', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.'),
+			'description' => __('There are four methods for determining a User\'s Graph Permissions.  The first is \'Permissive\'.  Under the \'Permissive\' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under \'Restrictive\', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.  These first two methods have scalability problems for very large installs.  So, two additional options are available.  They are \'Device Based\', which means if you have access to the Device, you get access to it\'s Graphs.  And lastly \'Graph Template Based\', which means if you have access to the \'Graph Template\' you get access to all Device Graphs of that Template.'),
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => array(
 				'1' => __('Permissive'),
-				'2' => __('Restrictive')
+				'2' => __('Restrictive'),
+				'3' => __('Device Based'),
+				'4' => __('Graph Template Based'),
 			)
 		),
 		'grds_creation_method' => array(

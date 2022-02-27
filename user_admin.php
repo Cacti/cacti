@@ -251,7 +251,11 @@ function form_actions() {
 			if ($selected_items != false) {
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
-						user_remove($selected_items[$i]);
+						if ($_SESSION['sess_user_id'] != $selected_items[$i]) {
+							user_remove($selected_items[$i]);
+						} else {
+							raise_message('attempt current', __('You are not allowed to delete the current login account'), MESSAGE_LEVEL_ERROR);
+						}
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
@@ -259,7 +263,11 @@ function form_actions() {
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '4') { // disable
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
-						user_disable($selected_items[$i]);
+						if ($_SESSION['sess_user_id'] != $selected_items[$i]) {
+							user_disable($selected_items[$i]);
+						} else {
+							raise_message('attempt current', __('You are not allowed to disable the current login account'), MESSAGE_LEVEL_ERROR);
+						}
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '5') { // batch copy
 					/* ================= input validation ================= */
@@ -711,93 +719,202 @@ function perm_remove() {
 	header('Location: user_admin.php?action=user_edit&header=false&tab=graph_perms_edit&id=' . get_request_var('user_id'));
 }
 
+/**
+ * get_permission_string - get the effective permission string for the graph in question.  The
+ *   logic for this is somewhat complex, but understandable.  First, the $graph object will include
+ *   three columns generally userX, userX+1, and userX+2 for each of the user or groups in the collection.
+ *   The way we assign a restrictive or permissive value is based upon the graph permission setting
+ *   in Cacti, but also wether or not the default access for the object type is either 'Allow' or 'Deny'.
+ *
+ *   - If the 'default access' for the object type is 'Deny', then a numeric value in userX means
+ *     the user has permission to an object.
+ *   - If the default access for the object is 'Allow', then a numeric
+ *     value in userX means that the object is blocked.
+ *
+ *   Again, each of the userX, userX+1, and userX+2 will always come in three's.  They equate to:
+ *
+ *   - UserX   - The user does or does not have permission to the Graph at the Graph Level
+ *   - UserX+1 - The user does or does not have permission to the Graph at the Device Level
+ *   - UserX+2 - The user does or does not have permission to the Graph at the Graph Template Level
+ *
+ *   Then, the effective permission are calculated by the Graph Permission Model in Cacti.  They are
+ *
+ *   - Permissive - If the user has access to the Graph, the Device, or Graph Template, then the
+ *     user will have access to the Graph.
+ *
+ *   - Restrictive - If the user has access to the Graph, or both the Device and Graph Template,
+ *     then the user will have access to the Graph
+ *
+ *   - Device - If the user has access to the Graph, or the Device, then the user will have
+ *     access to the Graph
+ *
+ *   - Graph Template - If the user has access to the Graph, or the Graph Template, then the user
+ *     will have access to the Graph.
+ *
+ *   This function will apply this logic, and then respond to the user a 'Granted' or 'Restricted'
+ *   column value, and a Tooltip, that shows how the permissions were evaluated.  In other words
+ *   why was the user either permitted to or denied access to the Graph.
+ */
 function get_permission_string(&$graph, &$policies) {
 	$grantStr   = '';
 	$rejectStr  = '';
 	$reasonStr  = '';
 	$drejectStr = '';
 
-	if (read_config_option('graph_auth_method') == 1) {
-		$method = 'loose';
-	} else {
-		$method = 'strong';
-	}
+	// Methods:
+	// 1 - Permissive
+	// 2 - Restrictive
+	// 3 - Device
+	// 4 - Graph Template
+	$method = read_config_option('graph_auth_method');
 
 	if ($graph['disabled'] == 'on' && read_user_setting('hide_disabled', false, false, get_request_var('user_id'))) {
 		$drejectStr .= __esc('Device:(Hide Disabled)');
 	}
+
+	// Policies:
+	// 1 - Default Allow All - Numeric means blocked
+	// 2 - Default Deny All  - Numeric means allowed
 
 	$i = 1;
 	foreach($policies as $p) {
 		$allowed  = 0;
 		$rejected = 0;
 
+		// Perform the Graph Check first
+		// If a user has access at the Graph Access, they always get Access
 		if ($p['policy_graphs'] == 1) {
-			if ($graph["user$i"] == '') {
-				$grantStr .= $grantStr . ($grantStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+			// Default is to allow
+			if (empty($graph["graph$i"])) {
+				// Allow the access at the level
+				$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			} else {
-				$rejectStr .= $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				$rejectStr .= ($rejectStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				$rejected++;
 			}
-		} elseif ($graph["user$i"] != '') {
-			$grantStr .= $grantStr . ($grantStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
-		} elseif ($method == 'loose') {
-			$rejected++;
 		} else {
-			$rejectStr .= $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+			// Default is to Deny
+			if (!empty($graph["graph$i"])) {
+				$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+			} else {
+				$rejectStr .= ($rejectStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				$rejected++;
+			}
 		}
-		$i++;
 
-		if ($p['policy_hosts'] == 1) {
-			if ($graph["user$i"] == '') {
-				if ($method == 'loose') {
-					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+		/**
+		 * Now we check at the Device and Graph Template Level.  Here the permission get a bit more dicey, so we will
+		 * Use case logic to make it read more simply.
+		 */
+		switch($method) {
+			case 1: // Permissive
+				if ($p['policy_hosts'] == 1) {
+					if (empty($graph["device$i"])) {
+						$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					} else {
+						$rejected++;
+					}
 				} else {
-					$allowed++;
+					if (!empty($graph["device$i"])) {
+						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					} else {
+						$rejected++;
+					}
 				}
-			} else {
-				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
-			}
-		} elseif ($graph["user$i"] != '') {
-			if ($method == 'loose') {
-				$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
-			} else {
-				$allowed++;
-			}
-		} elseif ($method == 'loose') {
-			$rejected++;
-		}
-		$i++;
 
-		if ($p['policy_graph_templates'] == 1) {
-			if ($graph["user$i"] == '') {
-				if ($method == 'loose') {
-					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				if ($p['policy_graph_templates'] == 1) {
+					if (empty($graph["template$i"])) {
+						$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					} else {
+						$rejected++;
+					}
 				} else {
-					$allowed++;
+					if (!empty($graph["template$i"])) {
+						$grantStr .= ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					} else {
+						$rejected++;
+					}
 				}
-			} else {
-				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
-			}
-		} elseif ($graph["user$i"] != '') {
-			if ($method == 'loose') {
-				$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
-			} else {
-				$allowed++;
-			}
-		} elseif ($method == 'loose') {
-			$rejected++;
-		}
-		$i++;
 
-		if ($method != 'loose') {
-			if ($allowed == 2) {
-				$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
-			} else {
-				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
-			}
-		} elseif ($rejected == 3) {
-			$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Graph+Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				if ($rejected == 3) {
+					$rejectStr .= ($rejectStr != '' ? ', ':'') . __esc('Graph+Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				}
+
+				break;
+			case 2: // Restrictive
+				$allowed  = 0;
+				$rejected = 0;
+
+				if ($p['policy_hosts'] == 1) {
+					if (empty($graph["device$i"])) {
+						$allowed++;
+					} else {
+						$rejected++;
+					}
+				} else {
+					if (!empty($graph["device$i"])) {
+						$allowed++;
+					} else {
+						$rejected++;
+					}
+				}
+
+				if ($p['policy_graph_templates'] == 1) {
+					if (empty($graph["template$i"])) {
+						$allowed++;
+					} else {
+						$rejected++;
+					}
+				} else {
+					if (!empty($graph["template$i"])) {
+						$rejected++;
+					} else {
+						$allowed++;
+					}
+				}
+
+				if ($allowed == 2) {
+					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				} else {
+					$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+				}
+
+				break;
+			case 3: // Device
+				if ($p['policy_hosts'] == 1) {
+					if (empty($graph["device$i"])) {
+						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					} else {
+						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					}
+				} else {
+					if (!empty($graph["device$i"])) {
+						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					} else {
+						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					}
+				}
+
+				break;
+			case 4: // Graph Template
+				if ($p['policy_graph_templates'] == 1) {
+					if (empty($graph["template$i"])) {
+						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					} else {
+						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					}
+				} else {
+					if (!empty($graph["template$i"])) {
+						$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					} else {
+						$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
+					}
+				}
+
+				break;
 		}
+
+		$i++;
 	}
 
 	$permStr = '';
@@ -869,10 +986,16 @@ function graph_perms_edit($tab, $header_label) {
 
 		form_start('user_admin.php', 'policy');
 
-		if (read_config_option('graph_auth_method') == 1) {
+		$graph_auth_method = read_config_option('graph_auth_method');
+
+		if ($graph_auth_method == 1) {
 			$policy_note = __('<b>Note:</b> System Graph Policy is \'Permissive\' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph');
-		} else {
+		} elseif ($graph_auth_method == 2) {
 			$policy_note = __('<b>Note:</b> System Graph Policy is \'Restrictive\' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph');
+		} elseif ($graph_auth_method == 3) {
+			$policy_note = __('<b>Note:</b> System Graph Policy is \'Device\' meaning the User must have access to the Device to gain access to the Graph');
+		} else {
+			$policy_note = __('<b>Note:</b> System Graph Policy is \'Graph Template\' meaning the User must have access to the Graph Template to gain access to the Graph');
 		}
 
 		/* box: device permissions */
@@ -909,31 +1032,12 @@ function graph_perms_edit($tab, $header_label) {
 			$rows = get_request_var('rows');
 		}
 
-		$user_id = get_request_var('id');
+		$user_id  = get_filter_request_var('id');
+		$policies = get_policies($user_id);
 
-		if (read_config_option('graph_auth_method') == 1) {
-			$sql_operator = 'OR';
-		} else {
-			$sql_operator = 'AND';
-		}
+		$policies = array_reverse($policies);
 
-		$limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
-
-		/* get policies for all groups and user */
-		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name,
-			policy_graphs, policy_hosts, policy_graph_templates
-			FROM user_auth_group AS uag
-			INNER JOIN user_auth_group_members AS uagm
-			ON uag.id = uagm.group_id
-			WHERE uag.enabled = 'on' AND uagm.user_id = ?",
-			array($user_id));
-
-		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 'user' AS name,
-			policy_graphs, policy_hosts, policy_graph_templates
-			FROM user_auth WHERE id = ?",
-			array($user_id));
-
-		array_reverse($policies);
+		$limit    = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
@@ -952,59 +1056,27 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var('graph_template_id');
 		}
 
-		$i = 1;
-		$user_perm = '';
-		$sql_select = '';
-		foreach($policies as $policy) {
-			if ($policy['type'] == 'user' && $user_perm == '') {
-				$user_perm = $i;
-			}
-
-			if (get_request_var('associated') == 'false') {
-				if ($policy['policy_graphs'] == 1) {
-					$sql_having .= ($sql_having != '' ? ' OR ':'') . " (user$i IS NULL";
-				} else {
-					$sql_having .= ($sql_having != '' ? ' OR ':'') . " (user$i IS NOT NULL";
-				}
-			}
-
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . '_id=' . get_request_var('id') . ') ';
-			$sql_select .= ($sql_select != '' ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
-			$i++;
-
-			if (get_request_var('associated') == 'false') {
-				if ($policy['policy_hosts'] == 1) {
-					$sql_having .= " OR (user$i IS NULL";
-				} else {
-					$sql_having .= " OR (user$i IS NOT NULL";
-				}
-			}
-
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . '_id=' . get_request_var('id') . ') ';
-			$sql_select .= ($sql_select != '' ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
-			$i++;
-
-			if (get_request_var('associated') == 'false') {
-				if ($policy['policy_graph_templates'] == 1) {
-					$sql_having .= " $sql_operator user$i IS NULL))";
-				} else {
-					$sql_having .= " $sql_operator user$i IS NOT NULL))";
-				}
-			}
-
-			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . '_id=' . get_request_var('id') . ') ';
-			$sql_select .= ($sql_select != '' ? ', ':'') . "uap$i." . $policy['type'] . "_id AS user$i";
-			$i++;
+		/**
+		 * if viewing just the graphs that the user has access to
+		 * we use a custom crafted sql_where clause to calculate
+         * permissions due to the inneficient nature of the HAVING
+		 * SQL clause.
+		 */
+		if (get_request_var('associated') == 'false') {
+			$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
 		}
 
-		if ($sql_having != '') {
-			$sql_having = 'HAVING ' . $sql_having;
-		}
+		/**
+		 * get the sql join and select to display the policy information
+         * this includes the four graph permission types
+		 */
+		$details    = get_policy_join_select($policies);
+		$sql_join   = $details['sql_join'];
+		$sql_select = $details['sql_select'];
 
 		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description,
 			h.disabled, h.deleted, gt.name AS template_name,
-			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
-			$sql_select
+			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id, $sql_select
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
 			ON gl.id = gtg.local_graph_id
@@ -1014,24 +1086,18 @@ function graph_perms_edit($tab, $header_label) {
 			ON h.id = gl.host_id
 			$sql_join
 			$sql_where
-			$sql_having
 			ORDER BY gtg.title_cache
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
-			FROM (
-				SELECT $sql_select
-				FROM graph_templates_graph AS gtg
-				INNER JOIN graph_local AS gl
-				ON gl.id = gtg.local_graph_id
-				LEFT JOIN graph_templates AS gt
-				ON gt.id = gl.graph_template_id
-				LEFT JOIN host AS h
-				ON h.id = gl.host_id
-				$sql_join
-				$sql_where
-				$sql_having
-			) AS `rows`");
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id)
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id = gtg.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id = gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id = gl.host_id
+			$sql_where");
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsg&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graphs'), 'page', 'main');
 
