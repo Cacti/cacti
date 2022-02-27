@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:55-0500\n"
+"PO-Revision-Date: 2022-02-27 15:50-0500\n"
 "Last-Translator: Jaroslaw Kłopotek <jkl@interduo.pl>\n"
 "Language-Team: Polish <http://translate.cacti.net/projects/cacti/core/pl-PL/>\n"
 "Language: pl_PL\n"
@@ -1009,8 +1009,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "Odmowa dostępu, prosimy o kontakt z administratorem Cacti."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "Użytkownik został uwierzytelniony, ale konto szablonu jest wyłączone. Korzystanie z konta gościa"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -4565,7 +4566,7 @@ msgstr "Edycja szablonu wykresu."
 #: data_sources.php:854 graphs.php:1541
 #, fuzzy
 msgid "Edit Device."
-msgstr "Edycja urządzenia."
+msgstr "Edytuj urządzenie"
 
 #: data_sources.php:857
 #, fuzzy
@@ -14028,8 +14029,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "Błąd LDAP: %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "Brak dostępu! Brak hasła podanego przez użytkownika."
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -14071,8 +14073,9 @@ msgid "Cacti Login Failure"
 msgstr "Kaktusy oczyszczone z kłód"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "Uwierzytelnianie nie było wcześniej ustawione. Próbowano ustawić uwierzytelnianie lokalne, ale nie znaleziono konta administratora."
 
 #: lib/boost.php:36
 #, fuzzy, php-format

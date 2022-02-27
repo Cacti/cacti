@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:52-0500\n"
+"PO-Revision-Date: 2022-02-27 15:47-0500\n"
 "Last-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\n"
 "Language-Team: Italian <http://translate.cacti.net/projects/cacti/core-v1-2-x/it/>\n"
 "Language: it_IT\n"
@@ -1018,8 +1018,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "Accesso negato, si prega di contattare l'amministratore di Cacti."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "L'utente è stato autenticato, ma l'account modello è disabilitato. Utilizzo dell'account ospite"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -14016,8 +14017,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "Errore LDAP: %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "Accesso negato! Nessuna password fornita dall'utente."
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -14060,8 +14062,9 @@ msgid "Cacti Login Failure"
 msgstr "Cacti Log cancellato"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "L'autenticazione non era precedentemente impostata. Tentativo di impostare l'autenticazione locale, ma non è stato trovato alcun account amministrativo."
 
 #: lib/boost.php:36
 #, fuzzy, php-format

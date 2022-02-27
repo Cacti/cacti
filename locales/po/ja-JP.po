@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:53-0500\n"
+"PO-Revision-Date: 2022-02-27 15:48-0500\n"
 "Last-Translator: Seita Kawamot <seita_sk@yahoo.co.jp>\n"
 "Language-Team: Japanese <http://translate.cacti.net/projects/cacti/core-v1-2-x/ja/>\n"
 "Language: ja_JP\n"
@@ -1008,8 +1008,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "アクセス拒否されました。Cacti 管理者に連絡してください。"
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "ユーザーは認証されましたが、テンプレートアカウントは無効になっています。ゲストアカウントの使用"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -13922,8 +13923,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAPエラー：％s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "アクセスが拒否されました！ユーザーからパスワードが提供されていません。"
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -13966,8 +13968,9 @@ msgid "Cacti Login Failure"
 msgstr "サボテンログをクリアしました"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "以前は認証が設定されていませんでした。ローカル認証に設定しようとしましたが、管理者アカウントが見つかりませんでした。"
 
 #: lib/boost.php:36
 #, fuzzy, php-format
@@ -17391,12 +17394,12 @@ msgstr "両方"
 #: lib/installer.php:3426
 #, fuzzy, php-format
 msgid "No - %s"
-msgstr "%s %s"
+msgstr "分"
 
 #: lib/installer.php:3428 lib/installer.php:3430
 #, fuzzy, php-format
 msgid "%s - No"
-msgstr "%s %s"
+msgstr "分"
 
 #: lib/installer.php:3428
 msgid "Web"

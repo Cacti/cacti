@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:54-0500\n"
+"PO-Revision-Date: 2022-02-27 15:49-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ko\n"
@@ -1022,8 +1022,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "액세스가 거부되었습니다. Cacti 관리자에게 연락하십시오."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "사용자가 인증되었지만 템플릿 계정이 비활성화되었습니다. 게스트 계정 사용"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -14096,8 +14097,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP 오류 :  %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "접근 불가! 사용자가 제공한 비밀번호가 없습니다."
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -14140,8 +14142,9 @@ msgid "Cacti Login Failure"
 msgstr "선인장 로그 지워짐"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "인증이 이전에 설정되지 않았습니다. 로컬 인증으로 설정하려고 했지만 관리 계정을 찾을 수 없습니다."
 
 #: lib/boost.php:36
 #, fuzzy, php-format

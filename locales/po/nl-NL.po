@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:54-0500\n"
+"PO-Revision-Date: 2022-02-27 15:49-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -946,8 +946,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "Toegang geweigerd, neem alstublieft contact op uw Cacti beheerder."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "Gebruiker is geverifieerd, maar het sjabloonaccount is uitgeschakeld. Gastaccount gebruiken"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -12831,8 +12832,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP foutmelding: %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "Toegang geweigerd! Geen wachtwoord verstrekt door gebruiker."
 
 #: lib/auth.php:3377
 #, php-format
@@ -12872,8 +12874,9 @@ msgid "Cacti Login Failure"
 msgstr "Cacti log leeggemaakt"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "Verificatie was eerder niet ingesteld. Geprobeerd om lokale authenticatie in te stellen, maar er is geen beheerdersaccount gevonden."
 
 #: lib/boost.php:36
 #, fuzzy, php-format

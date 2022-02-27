@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:49-0500\n"
+"PO-Revision-Date: 2022-02-27 15:44-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: el_GR\n"
@@ -1020,8 +1020,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "Δεν επιτρέπεται η πρόσβαση, επικοινωνήστε με τον διαχειριστή του Cacti."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "Έγινε έλεγχος ταυτότητας χρήστη, αλλά ο λογαριασμός προτύπου είναι απενεργοποιημένος. Χρήση λογαριασμού επισκέπτη"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -14119,8 +14120,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "Σφάλμα LDAP: %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "Δεν επιτρέπεται η πρόσβαση! Δεν παρέχεται κωδικός πρόσβασης από τον χρήστη."
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -14163,8 +14165,9 @@ msgid "Cacti Login Failure"
 msgstr "Εγγραφή Cacti Clear"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "Ο έλεγχος ταυτότητας δεν είχε οριστεί προηγουμένως. Επιχειρήθηκε να οριστεί σε Τοπικό έλεγχο ταυτότητας, αλλά δεν βρέθηκε λογαριασμός διαχειριστή."
 
 #: lib/boost.php:36
 #, fuzzy, php-format

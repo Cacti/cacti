@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:47-0500\n"
+"PO-Revision-Date: 2022-02-27 15:39-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "Language: bg\n"
@@ -1017,8 +1017,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "Достъпът е отказан, моля, свържете се с администратора на Cacti."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "Потребителят е удостоверен, но шаблонният акаунт е деактивиран. Използване на акаунт за гости"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -14123,8 +14124,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "Грешка в LDAP: %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "Отказан достъп! Не е предоставена парола от потребителя."
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -14167,8 +14169,9 @@ msgid "Cacti Login Failure"
 msgstr "Изчистена регистрация на кактуси"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "Удостоверяването преди това не е било зададено. Опит за настройка на локално удостоверяване, но не беше намерен административен акаунт."
 
 #: lib/boost.php:36
 #, fuzzy, php-format

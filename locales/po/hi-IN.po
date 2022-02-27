@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:52-0500\n"
+"PO-Revision-Date: 2022-02-27 15:46-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi_IN\n"
@@ -1026,8 +1026,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "पहुँच निषेध, कृपया आप कैक्टि प्रशासक से संपर्क करें।"
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "उपयोगकर्ता को प्रमाणित किया गया था, लेकिन खाका खाता अक्षम कर दिया गया है। अतिथि खाते का उपयोग करना"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -14212,8 +14213,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP त्रुटि: %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "पहुंच अस्वीकृत! उपयोगकर्ता द्वारा प्रदान किया गया कोई पासवर्ड नहीं।"
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -14256,8 +14258,9 @@ msgid "Cacti Login Failure"
 msgstr "कैक्टि लॉग क्लीयर"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "प्रमाणीकरण पहले सेट नहीं किया गया था। स्थानीय प्रमाणीकरण पर सेट करने का प्रयास किया गया, लेकिन कोई व्यवस्थापकीय खाता नहीं मिला।"
 
 #: lib/boost.php:36
 #, fuzzy, php-format

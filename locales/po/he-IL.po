@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:51-0500\n"
+"PO-Revision-Date: 2022-02-27 15:46-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: he_IL\n"
@@ -1024,8 +1024,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "הגישה נדחתה, אנא צור קשר עם מנהל Cacti."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "המשתמש אומת, אך חשבון התבנית מושבת. שימוש בחשבון אורח"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -3861,7 +3862,7 @@ msgstr "(לא בשימוש)"
 #: data_input.php:691
 #, fuzzy
 msgid "No Input Fields"
-msgstr "אין שדות קלט"
+msgstr "שדות קלט"
 
 #: data_input.php:695
 #, fuzzy
@@ -14225,8 +14226,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "שגיאת LDAP: %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "גישה נדחתה! אין סיסמה מסופקת על ידי המשתמש."
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -14269,8 +14271,9 @@ msgid "Cacti Login Failure"
 msgstr "Cacti יומן מסומנת"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "אימות לא הוגדר בעבר. ניסיתי להגדיר לאימות מקומית, אך לא נמצא חשבון Admintrative."
 
 #: lib/boost.php:36
 #, fuzzy, php-format
@@ -17720,12 +17723,12 @@ msgstr "שניהם"
 #: lib/installer.php:3426
 #, fuzzy, php-format
 msgid "No - %s"
-msgstr "דקות"
+msgstr "עבר מ-%s ל-%s"
 
 #: lib/installer.php:3428 lib/installer.php:3430
 #, fuzzy, php-format
 msgid "%s - No"
-msgstr "דקות"
+msgstr "עבר מ-%s ל-%s"
 
 #: lib/installer.php:3428
 msgid "Web"

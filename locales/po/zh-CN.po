@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 22:00-0500\n"
+"PO-Revision-Date: 2022-02-27 15:59-0500\n"
 "Last-Translator: Aiolos <ip6tables@qq.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -945,8 +945,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "访问被拒绝,请联系Cacti 管理员."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "用户已通过身份验证，但模板帐户已禁用。使用访客帐户"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -12352,8 +12353,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP 错误: %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "拒绝访问！用户未提供密码。"
 
 #: lib/auth.php:3377
 #, php-format
@@ -12393,8 +12395,9 @@ msgid "Cacti Login Failure"
 msgstr "Cacti 日志已清除"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "之前未设置身份验证。尝试设置为本地身份验证，但未找到管理员帐户。"
 
 #: lib/boost.php:36
 #, fuzzy, php-format

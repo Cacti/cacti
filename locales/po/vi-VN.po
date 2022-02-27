@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 22:00-0500\n"
+"PO-Revision-Date: 2022-02-27 15:58-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: vi_VN\n"
@@ -1024,8 +1024,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "Truy cập bị từ chối, vui lòng liên hệ với bạn Quản trị viên Cacti."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "Người dùng đã được Xác thực, nhưng Tài khoản Mẫu bị vô hiệu hóa. Sử dụng tài khoản khách"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -14111,8 +14112,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "Lỗi LDAP: %s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "Truy cập bị Từ chối! Không có mật khẩu được cung cấp bởi người dùng."
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -14155,8 +14157,9 @@ msgid "Cacti Login Failure"
 msgstr "Nhật ký xương rồng đã bị xóa"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "Xác thực trước đó chưa được đặt. Đã cố gắng đặt thành Xác thực cục bộ, nhưng không tìm thấy tài khoản Quản trị viên nào."
 
 #: lib/boost.php:36
 #, fuzzy, php-format

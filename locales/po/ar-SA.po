@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-02-27 15:25-0500\n"
-"PO-Revision-Date: 2022-02-23 21:46-0500\n"
+"PO-Revision-Date: 2022-02-27 15:38-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar_SA\n"
@@ -929,8 +929,9 @@ msgid "Unable to determine user Login Realm or Domain. Please contact your Syste
 msgstr "رفض الوصول ، يرجى الاتصال بك Cacti Administrator."
 
 #: auth_login.php:134
+#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr ""
+msgstr "تمت مصادقة المستخدم ، ولكن تم تعطيل حساب النموذج. باستخدام حساب الضيف"
 
 #: auth_login.php:141
 #, fuzzy, php-format
@@ -12252,8 +12253,9 @@ msgid "Access Denied!  LDAP Error: %s"
 msgstr "خطأ LDAP:٪ s"
 
 #: lib/auth.php:3327 lib/auth.php:3490 lib/auth.php:3677
+#, fuzzy
 msgid "Access Denied!  No password provided by user."
-msgstr ""
+msgstr "تم الرفض! لم يتم توفير كلمة مرور من قبل المستخدم."
 
 #: lib/auth.php:3377
 #, fuzzy, php-format
@@ -12292,8 +12294,9 @@ msgid "Cacti Login Failure"
 msgstr "سجل الصبار مسح"
 
 #: lib/auth.php:4339
+#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found."
-msgstr ""
+msgstr "لم يتم تعيين المصادقة من قبل. جرت محاولة التعيين إلى \"المصادقة المحلية\" ، ولكن لم يتم العثور على حساب Admintrative."
 
 #: lib/boost.php:36
 #, fuzzy, php-format
