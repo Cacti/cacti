@@ -1318,6 +1318,14 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		$auth_method = read_config_option('auth_method');
 	}
 
+	if ($auth_method > 0 && $user == 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
 	$graph_auth_method = read_config_option('graph_auth_method');
 
 	/* get policies for all groups and user */
