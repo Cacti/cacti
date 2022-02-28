@@ -2512,6 +2512,10 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	/* replace host variables in graph elements */
 	$host_id = 0;
 
+	if (!preg_match('/(\|query_|\|host_|\|input_)/', $txt_graph_item)) {
+		return $txt_graph_item;
+	}
+
 	if (empty($graph['host_id'])) {
 		/* if graph has no associated host determine host_id from graph item data source */
 		if (isset($graph_item['local_data_id']) && !empty($graph_item['local_data_id'])) {
