@@ -745,6 +745,18 @@ function user_group_graph_perms_edit($tab, $header_label) {
 	case 'permsg':
 		process_graph_request_vars();
 
+		$graph_auth_method = read_config_option('graph_auth_method');
+
+		if ($graph_auth_method == 1) {
+			$policy_note = __('<b>Note:</b> System Graph Policy is \'Permissive\' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph');
+		} elseif ($graph_auth_method == 2) {
+			$policy_note = __('<b>Note:</b> System Graph Policy is \'Restrictive\' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph');
+		} elseif ($graph_auth_method == 3) {
+			$policy_note = __('<b>Note:</b> System Graph Policy is \'Device\' meaning the User must have access to the Graph or Device to gain access to the Graph');
+		} else {
+			$policy_note = __('<b>Note:</b> System Graph Policy is \'Graph Template\' meaning the User must have access to the Graph or Graph Template to gain access to the Graph');
+		}
+
 		graph_filter($header_label);
 
 		form_start('user_group_admin.php', 'policy');
@@ -767,6 +779,9 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			</td>
 			</tr></table></td>
 		</tr>
+		<tr class='even'>
+			<td><br><?php print $policy_note;?></td>
+		</tr>
 		<?php
 
 		html_end_box();
@@ -780,13 +795,16 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$rows = get_request_var('rows');
 		}
 
+		$sql_limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		$sql_where = '';
+
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = 'WHERE (
+			$sql_where .= 'WHERE (
 				gtg.title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 				AND gtg.local_graph_id > 0)';
 		} else {
-			$sql_where = 'WHERE (gtg.local_graph_id > 0)';
+			$sql_where .= 'WHERE (gtg.local_graph_id > 0)';
 		}
 
 		if (get_request_var('graph_template_id') == '-1') {
@@ -797,31 +815,61 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=' . get_request_var('graph_template_id');
 		}
 
-		if (get_request_var('associated') != 'false') {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_group_perms.type = 1 AND user_auth_group_perms.group_id=' . get_request_var('id', 0) . ')';
-		}
-
-		$total_rows = db_fetch_cell_prepared("SELECT
-			COUNT(DISTINCT gtg.id)
-			FROM graph_templates_graph AS gtg
-			LEFT JOIN user_auth_group_perms
-			ON gtg.local_graph_id = user_auth_group_perms.item_id
-			AND user_auth_group_perms.type = 1
-			AND user_auth_group_perms.group_id = ?
-			$sql_where",
+		$policies = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name,
+			uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates
+			FROM user_auth_group AS uag
+			WHERE uag.enabled = 'on'
+			AND uag.id = ?",
 			array(get_request_var('id')));
 
-		$sql_query = "SELECT gtg.local_graph_id, gtg.title_cache, user_auth_group_perms.group_id
-			FROM graph_templates_graph AS gtg
-			LEFT JOIN user_auth_group_perms
-			ON gtg.local_graph_id=user_auth_group_perms.item_id
-			AND user_auth_group_perms.type = 1
-			AND user_auth_group_perms.group_id = ?
-			$sql_where
-			ORDER BY title_cache
-			LIMIT " . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		/**
+		 * if viewing just the graphs that the user has access to
+		 * we use a custom crafted sql_where clause to calculate
+		 * permissions due to the inneficient nature of the HAVING
+		 * SQL clause.
+		 */
+		if (get_request_var('associated') == 'false') {
+			$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
+		}
 
-		$graphs = db_fetch_assoc_prepared($sql_query, array(get_request_var('id')));
+		/**
+		 * get the sql join and select to display the policy information
+         * this includes the four graph permission types
+		 */
+		$details = get_policy_join_select($policies);
+
+		if (cacti_sizeof($details)) {
+			$sql_select = $details['sql_select'];
+			$sql_join   = $details['sql_join'];
+		} else {
+			$sql_select = '';
+			$sql_join   = '';
+		}
+
+		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description,
+			h.disabled, h.deleted, gt.name AS template_name,
+			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id, $sql_select
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id = gtg.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id = gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id = gl.host_id
+			$sql_join
+			$sql_where
+			ORDER BY gtg.title_cache
+			$sql_limit");
+
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id)
+			FROM graph_templates_graph AS gtg
+			INNER JOIN graph_local AS gl
+			ON gl.id = gtg.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id = gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id = gl.host_id
+			$sql_where");
 
 		$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsg&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Graphs'), 'page', 'main');
 
@@ -840,19 +888,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_alternate_row('line' . $g['local_graph_id'], true);
 				form_selectable_cell(filter_value($g['title_cache'], get_request_var('filter')), $g['local_graph_id']);
 				form_selectable_cell($g['local_graph_id'], $g['local_graph_id']);
-				if (empty($g['group_id']) || $g['group_id'] == NULL) {
-					if ($policy['policy_graphs'] == 1) {
-						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['local_graph_id']);
-					} else {
-						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['local_graph_id']);
-					}
-				} else {
-					if ($policy['policy_graphs'] == 1) {
-						form_selectable_cell('<span class="accessRestricted">' . __('Access Restricted') . '</span>', $g['local_graph_id']);
-					} else {
-						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $g['local_graph_id']);
-					}
-				}
+				form_selectable_cell(get_permission_string($g, $policies), $g['local_graph_id']);
 				form_checkbox_cell($g['title_cache'], $g['local_graph_id']);
 				form_end_row();
 			}
@@ -881,6 +917,19 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				2 => __('Revoke Access')
 			);
 		}
+
+		?>
+		<script type='text/javascript'>
+		$(function() {
+			$(document).tooltip({
+				items: '[data-tooltip]',
+				content: function() {
+					return $(this).attr('data-tooltip');
+				}
+			});
+		});
+		</script>
+		<?php
 
 		/* draw the dropdown containing a list of available actions for this form */
 		draw_actions_dropdown($assoc_actions);
