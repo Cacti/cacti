@@ -1111,7 +1111,7 @@ function reports_item_edit() {
 	form_start(get_current_page(), 'chk');
 
 	# ready for displaying the fields
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
 
 	draw_edit_form(
 		array(
@@ -1528,7 +1528,7 @@ function reports_edit() {
 
 		break;
 	case 'items':
-		html_start_box(__esc('Items %s', $header_label), '100%', '', '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
+		html_start_box(__esc('Report Items %s', $header_label), '100%', '', '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
 
 		/* display the items */
 		if (!empty($report['id'])) {

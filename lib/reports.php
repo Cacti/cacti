@@ -1039,8 +1039,8 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 		array($device_id));
 
 	if ($description != '') {
-		$title = $title_delimeter . '<strong>' . __('Device:') . "</strong> $description";
-		$title_delimeter = '-> ';
+		$title = $title_delimeter . __('Device:') . " $description";
+		$title_delimeter = ' > ';
 	}
 
 	if ($item['graph_template_id'] == -1) {
@@ -1259,23 +1259,23 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			}
 
 			if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
-				$title = $title_delimeter . '<strong>' . __('Tree:') . "</strong> $tree_name";
-				$title_delimeter = '-> ';
+				$title = $title_delimeter . __('Tree:') . " $tree_name";
+				$title_delimeter = ' > ';
 			}
 
 			if (!empty($leaf_name)) {
-				$title .= $title_delimeter . '<strong>' . __('Branch:') . "</strong> $leaf_name";
-				$title_delimeter = '-> ';
+				$title .= $title_delimeter . " $leaf_name";
+				$title_delimeter = ' > ';
 			}
 
 			if (!empty($host_name)) {
-				$title .= $title_delimeter . '<strong>' . __('Device:') . "</strong> $host_name";
-				$title_delimeter = '-> ';
+				$title .= $title_delimeter . " $host_name";
+				$title_delimeter = ' > ';
 			}
 
 			if (!empty($graph_name) && !$nested) {
-				$title .= $title_delimeter . '<strong>' . __('Graph:') . "</strong> $graph_name";
-				$title_delimeter = '-> ';
+				$title .= $title_delimeter . " $graph_name";
+				$title_delimeter = ' > ';
 			}
 
 			if ($item['graph_name_regexp'] != '') {
@@ -1363,7 +1363,6 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 				$graph_list = array(array('local_graph_id' => $leaf['local_graph_id'], 'title_cache' => $graph_name));
 
 				$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok, $theme);
-			//} elseif ($leaf_type == 'host' && $nested) {
 			} elseif ($leaf_type == 'host') {
 				if ($item['tree_cascade'] == 'on') {
 					/* graph template grouping */
@@ -1509,11 +1508,11 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 
 									$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
 									if ($format_ok) {
-										$outstr .= "\t\t\t<td class='text'><strong>" . __('Data Query:') . "</strong> " . $data_query['name'] . PHP_EOL;
+										$outstr .= "\t\t\t<td class='text'>" . __('Data Query:') . ' ' . $data_query['name'] . PHP_EOL;
 										$outstr .= "\t\t\t</td>" . PHP_EOL;
 										$outstr .= "\t\t</tr>" . PHP_EOL;
 									} else {
-										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'><strong>" . __('Data Query:') . "</strong> " . $data_query['name'] . PHP_EOL;
+										$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'>" . __('Data Query:') . ' ' . $data_query['name'] . PHP_EOL;
 										$outstr .= "\t\t\t</td>" . PHP_EOL;
 										$outstr .= "\t\t</tr>" . PHP_EOL;
 									}
