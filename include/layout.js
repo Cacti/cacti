@@ -442,17 +442,57 @@ $.tablesorter.addParser({
 	});
 })(jQuery);
 
+// Helper function to get text dimensions
+(function($) {
+	$.textMetrics = function(el) {
+		var h = 0, w = 0;
+
+		var div = document.createElement('div');
+		document.body.appendChild(div);
+		$(div).css({
+			position: 'absolute',
+			left: -1000,
+			top: -1000,
+			display: 'none'
+		});
+
+		$(div).html($(el).html());
+
+		var styles = ['font-size','font-style', 'font-weight', 'font-family','line-height', 'text-transform', 'letter-spacing'];
+
+		$(styles).each(function() {
+			var s = this.toString();
+			$(div).css(s, $(el).css(s));
+		});
+
+		var h = $(div).outerHeight();
+		var w = $(div).outerWidth();
+
+		$(div).remove();
+
+		var ret = {
+			height: h,
+			width: w
+		};
+
+		return ret;
+	}
+})(jQuery);
+
 // helper function which selects row range when shift key is pressed during click
 function updateCheckboxes(checkboxes, clicked_element) {
 	var prev_checkbox = clicked_element.closest('table').find('[data-prev-check]:checkbox');
+
 	if (!prev_checkbox.length) {
 		return;
 	}
+
 	var check = prev_checkbox.attr('data-prev-check') == 'true';
 	var start = checkboxes.index(prev_checkbox);
 	var stop = checkboxes.index(clicked_element);
 	var i = Math.min(start, stop);
 	var j = Math.max(start, stop);
+
 	for (var k = i; k <= j; k++) {
 		var tr = $(checkboxes[k]).prop('checked', check).closest('tr');
 		if (check) {
@@ -4404,7 +4444,8 @@ function checkSNMPPassphraseConfirm(type) {
 	}
 
 	if ($(conf).val().length < minChars) {
-		passphrase = $(pass).val();
+		var passphrase = $(pass).val();
+
 		if (passphrase.indexOf($(conf).val()) == 0) {
 			$('#'+spanconf).remove();
 			$(conf).after('<span id="'+spanconf+'"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">'+passwordMatchTooShort+'<span></span>');
@@ -4424,40 +4465,3 @@ function checkSNMPPassphraseConfirm(type) {
 	}
 }
 
-
-(function($) {
-
- $.textMetrics = function(el) {
-
-  var h = 0, w = 0;
-
-  var div = document.createElement('div');
-  document.body.appendChild(div);
-  $(div).css({
-   position: 'absolute',
-   left: -1000,
-   top: -1000,
-   display: 'none'
-  });
-
-  $(div).html($(el).html());
-  var styles = ['font-size','font-style', 'font-weight', 'font-family','line-height', 'text-transform', 'letter-spacing'];
-  $(styles).each(function() {
-   var s = this.toString();
-   $(div).css(s, $(el).css(s));
-  });
-
-  h = $(div).outerHeight();
-  w = $(div).outerWidth();
-
-  $(div).remove();
-
-  var ret = {
-   height: h,
-   width: w
-  };
-
-  return ret;
- }
-
-})(jQuery);
