@@ -184,11 +184,6 @@ function form_save() {
 		$save2['left_axis_formatter']    = form_input_validate((isset_request_var('left_axis_formatter') ? get_nfilter_request_var('left_axis_formatter') : ''), 'left_axis_formatter', '', true, 3);
 
 		if (!is_error_message()) {
-			// Clear the Graph Template cache
-			if (empty($graph_template_id)) {
-				clear_cached_allowed_types();
-			}
-
 			$graph_template_id = sql_save($save1, 'graph_templates');
 
 			if ($graph_template_id) {
@@ -291,8 +286,6 @@ function form_actions() {
 				db_execute('UPDATE graph_local
 					SET graph_template_id=0
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
-
-				clear_cached_allowed_types();
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_duplicate_graph(0, $selected_items[$i], get_nfilter_request_var('title_format'));

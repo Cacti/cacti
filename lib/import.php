@@ -412,7 +412,6 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 			array($_graph_template_id));
 	} else {
 		$previous_data = array();
-		clear_cached_allowed_types();
 	}
 
 	$save['id']   = (empty($_graph_template_id) ? '0' : $_graph_template_id);
