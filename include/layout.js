@@ -1890,7 +1890,7 @@ function loadTopTab(href, id, force) {
 				var htmlObject  = $(html);
 				var matches     = html.match(/<title>(.*?)<\/title>/);
 
-				$('#main').hide();
+				$('#main').empty().hide();
 
 				if (matches != null) {
 					var htmlTitle   = matches[1];
@@ -3574,7 +3574,7 @@ function redrawGraph(graph_id) {
 					data.graph_left   = parseInt(data.graph_left * ratio);
 				}
 
-				$('#wrapper_'+data.local_graph_id).html(
+				$('#wrapper_'+data.local_graph_id).empty().html(
 					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
 					" src='data:image/"+data.type+";base64,"+data.image+"'"+
 					" rra_id='"+data.rra_id+"'"+
@@ -3731,7 +3731,7 @@ function initializeGraphs(disable_cache) {
 					wrapper_id += '[rra_id=\'' + data.rra_id + '\']';
 				}
 
-				$(wrapper_id).html(
+				$(wrapper_id).empty().html(
 					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
 					" src='data:image/"+data.type+";base64,"+data.image+"'"+
 					" rra_id='"+data.rra_id+"'"+
