@@ -417,8 +417,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 				 saveGraphFilter('preview');
 			});
 
-			$.when(initPage())
-			.pipe(function() {
+			$.when(initPage()).done(function() {
 				initializeGraphs();
 			});
 		});
