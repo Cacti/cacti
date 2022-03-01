@@ -471,6 +471,120 @@ function read_default_config_option($config_name) {
 	}
 }
 
+function prime_common_config_settings() {
+	//$start = microtime(true);
+
+	$common_settings = array(
+		// Common all pages
+		'force_https',
+		'content_security_policy_script',
+		'content_security_alternate_sources',
+		'auth_method',
+		'dataquery_type',
+		'path_cactilog',
+
+		// Common graphing
+		'rrdtool_version',
+		'rrdtool_watermark',
+		'realtime_cache_path',
+		'path_rrdtool',
+		'graph_watermark',
+		'graph_dateformat',
+		'font_method',
+		'date',
+		'boost_rrd_update_system_enable',
+		'boost_rrd_update_max_records_per_select',
+		'boost_rrd_update_enable',
+		'boost_png_cache_enable',
+		'default_image_format',
+		'default_graph_width',
+		'default_graph_height',
+		'remote_storage_method',
+
+		// Common polling
+		'poller_interval',
+		'snmp_version',
+		'snmp_username',
+		'snmp_timeout',
+		'snmp_security_level',
+		'snmp_priv_protocol',
+		'snmp_priv_passphrase',
+		'snmp_port',
+		'snmp_password',
+		'snmp_retries',
+		'max_get_size',
+		'availability_method',
+		'ping_method',
+		'ping_retries',
+		'ping_timeout',
+		'path_cactilog',
+
+		// Common page rendering
+		'i18n_language_support',
+		'i18n_default_language',
+		'default_datechar',
+		'default_date_format',
+		'selective_debug',
+		'selected_theme',
+		'min_tree_width',
+		'max_tree_width',
+		'log_verbosity',
+		'log_destination',
+
+		// Common API
+		'default_template',
+		'delete_verification',
+
+		// Thold
+		'alert_bl_trigger',
+		'alert_deadnotify',
+		'alert_email',
+		'alert_exempt',
+		'alert_notify_default',
+		'alert_repeat',
+		'alert_trigger',
+		'base_url',
+		'thold_alert_snmp_warning',
+		'thold_alert_snmp_normal',
+		'thold_alert_snmp',
+		'thold_daemon_debug',
+		'thold_disable_all',
+		'thold_log_debug',
+		'thold_send_text_only',
+		'thold_show_datasource',
+	);
+
+	$settings = array_rekey(
+		db_fetch_assoc_prepared('SELECT name, value
+			FROM settings
+			WHERE name IN (' . trim(str_repeat('?, ', cacti_sizeof($common_settings)),', ') . ')',
+			$common_settings),
+		'name', 'value'
+	);
+
+	if (isset($_SESSION['sess_config_array'])) {
+		$config_array = $_SESSION['sess_config_array'];
+	} elseif (isset($config['config_options_array'])) {
+		$config_array = $config['config_options_array'];
+	}
+
+	if (cacti_sizeof($settings)) {
+		foreach($settings as $name => $value) {
+			$config_array[$name] = $value;
+		}
+	}
+
+	if (isset($_SESSION)) {
+		$_SESSION['sess_config_array']  = $config_array;
+	} elseif (isset($config['config_options_array'])) {
+		$config['config_options_array'] = $config_array;
+	}
+
+	//$end = microtime(true);
+
+	//cacti_log('The Total common load time:' . round($end - $start, 4));
+}
+
 /**
  * read_config_option - finds the current value of a Cacti configuration setting
  *
@@ -6105,7 +6219,7 @@ function get_rrdtool_version() {
 	static $version = '';
 
 	if ($version == '') {
-		$version = str_replace('rrd-', '', str_replace('.x', '.0', read_config_option('rrdtool_version', true)));
+		$version = str_replace('rrd-', '', str_replace('.x', '.0', read_config_option('rrdtool_version')));
 	}
 
 	return $version;

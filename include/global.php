@@ -358,6 +358,9 @@ if (!is_resource_writable($log_filename)) {
 	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
 }
 
+/* prime the most popular config settings */
+prime_common_config_settings();
+
 if ($config['poller_id'] > 1) {
 	$timezone = db_fetch_cell_prepared('SELECT timezone
 		FROM poller
