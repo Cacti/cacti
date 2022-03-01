@@ -475,83 +475,96 @@ function prime_common_config_settings() {
 	//$start = microtime(true);
 
 	$common_settings = array(
-		// Common all pages
-		'force_https',
-		'content_security_policy_script',
-		'content_security_alternate_sources',
 		'auth_method',
-		'dataquery_type',
+		'auth_cache_enabled',
 		'path_cactilog',
-
-		// Common graphing
 		'rrdtool_version',
-		'rrdtool_watermark',
-		'realtime_cache_path',
-		'path_rrdtool',
-		'graph_watermark',
-		'graph_dateformat',
-		'font_method',
-		'date',
-		'boost_rrd_update_system_enable',
-		'boost_rrd_update_max_records_per_select',
-		'boost_rrd_update_enable',
-		'boost_png_cache_enable',
+		'log_verbosity',
+		'log_destination',
 		'default_image_format',
 		'default_graph_width',
 		'default_graph_height',
-		'remote_storage_method',
-
-		// Common polling
-		'poller_interval',
-		'snmp_version',
-		'snmp_username',
-		'snmp_timeout',
-		'snmp_security_level',
-		'snmp_priv_protocol',
-		'snmp_priv_passphrase',
-		'snmp_port',
-		'snmp_password',
-		'snmp_retries',
-		'max_get_size',
-		'availability_method',
-		'ping_method',
-		'ping_retries',
-		'ping_timeout',
-		'path_cactilog',
-
-		// Common page rendering
-		'i18n_language_support',
-		'i18n_default_language',
 		'default_datechar',
 		'default_date_format',
-		'selective_debug',
-		'selected_theme',
-		'min_tree_width',
-		'max_tree_width',
-		'log_verbosity',
-		'log_destination',
-
-		// Common API
-		'default_template',
-		'delete_verification',
-
-		// Thold
-		'alert_bl_trigger',
-		'alert_deadnotify',
-		'alert_email',
-		'alert_exempt',
-		'alert_repeat',
-		'alert_trigger',
-		'base_url',
-		'thold_alert_snmp_warning',
-		'thold_alert_snmp_normal',
-		'thold_alert_snmp',
-		'thold_daemon_debug',
-		'thold_disable_all',
-		'thold_log_debug',
-		'thold_send_text_only',
-		'thold_show_datasource',
+		'default_poller',
+		'default_site',
 	);
+
+	if ($config['is_web']) {
+		$extra_settings = array(
+			// Common all pages
+			'force_https',
+			'content_security_policy_script',
+			'content_security_alternate_sources',
+
+			// Common graphing
+			'rrdtool_watermark',
+			'realtime_cache_path',
+			'path_rrdtool',
+			'graph_watermark',
+			'graph_dateformat',
+			'font_method',
+			'date',
+			'boost_rrd_update_system_enable',
+			'boost_rrd_update_max_records_per_select',
+			'boost_rrd_update_enable',
+			'boost_png_cache_enable',
+			'remote_storage_method',
+
+			// Common page rendering
+			'i18n_language_support',
+			'i18n_default_language',
+			'selective_debug',
+			'selected_theme',
+			'min_tree_width',
+			'max_tree_width',
+		);
+	} else {
+		$extra_settings = array(
+			// Common polling
+			'poller_interval',
+			'snmp_version',
+			'snmp_username',
+			'snmp_timeout',
+			'snmp_community',
+			'snmp_auth_protocol',
+			'snmp_security_level',
+			'snmp_priv_protocol',
+			'snmp_priv_passphrase',
+			'snmp_port',
+			'snmp_password',
+			'snmp_retries',
+			'device_threads',
+			'max_get_size',
+			'availability_method',
+			'ping_method',
+			'ping_retries',
+			'ping_timeout',
+
+			// Common API
+			'default_template',
+			'delete_verification',
+
+			// Thold
+			'alert_bl_trigger',
+			'alert_deadnotify',
+			'alert_email',
+			'alert_exempt',
+			'alert_repeat',
+			'alert_trigger',
+			'base_url',
+			'thold_alert_snmp_warning',
+			'thold_alert_snmp_normal',
+			'thold_alert_snmp',
+			'thold_daemon_debug',
+			'thold_disable_all',
+			'thold_log_debug',
+			'thold_send_text_only',
+			'thold_show_datasource',
+		);
+	}
+
+	$common_settings = array_merge($common_settings, $extra_settings);
 
 	$settings = array_rekey(
 		db_fetch_assoc_prepared('SELECT name, value
@@ -562,21 +575,19 @@ function prime_common_config_settings() {
 	);
 
 	if (isset($_SESSION['sess_config_array'])) {
-		$config_array = $_SESSION['sess_config_array'];
+		$sess = true;
 	} elseif (isset($config['config_options_array'])) {
-		$config_array = $config['config_options_array'];
+		$sess = false;
 	}
 
 	if (cacti_sizeof($settings)) {
 		foreach($settings as $name => $value) {
-			$config_array[$name] = $value;
+			if ($sess) {
+				$_SESSION['sess_config_array'][$name] = $value;
+			} else {
+				$config['config_options_array'][$name] = $value;
+			}
 		}
-	}
-
-	if (isset($_SESSION)) {
-		$_SESSION['sess_config_array']  = $config_array;
-	} elseif (isset($config['config_options_array'])) {
-		$config['config_options_array'] = $config_array;
 	}
 
 	//$end = microtime(true);
@@ -595,11 +606,10 @@ function prime_common_config_settings() {
 function read_config_option($config_name, $force = false) {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
-	$config_array = array();
 	if (isset($_SESSION['sess_config_array'])) {
-		$config_array = $_SESSION['sess_config_array'];
+		$sess = true;
 	} elseif (isset($config['config_options_array'])) {
-		$config_array = $config['config_options_array'];
+		$sess = false;
 	}
 
 	if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
@@ -640,19 +650,15 @@ function read_config_option($config_name, $force = false) {
 
 			// Does the settings exist in the database?
 			if (isset($db_setting['value'])) {
-
 				// It does? lets use it
 				$value = $db_setting['value'];
 			}
 
 			// Store whatever value we have in the array
-			$config_array[$config_name] = $value;
-
-			// Store the array back for later retrieval
-			if (isset($_SESSION)) {
-				$_SESSION['sess_config_array']  = $config_array;
+			if ($sess) {
+				$_SESSION['sess_config_array'][$config_name]  = $value;
 			} else {
-				$config['config_options_array'] = $config_array;
+				$config['config_options_array'][$config_name] = $value;
 			}
 		}
 	} else {
