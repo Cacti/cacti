@@ -606,10 +606,18 @@ function prime_common_config_settings() {
 function read_config_option($config_name, $force = false) {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
+	$loaded = false;
+
 	if (isset($_SESSION['sess_config_array'])) {
 		$sess = true;
+		if (isset($_SESSION['sess_config_array'][$config_name])) {
+			$loaded = true;
+		}
 	} else {
 		$sess = false;
+		if (isset($config['sess_config_array'][$config_name])) {
+			$loaded = true;
+		}
 	}
 
 	if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
@@ -619,7 +627,7 @@ function read_config_option($config_name, $force = false) {
 	// Do we have a value already stored in the array, or
 	// do we want to make sure we have the latest value
 	// from the database?
-	if (!isset($config_array[$config_name]) || ($force)) {
+	if (!$loaded || $force) {
 		// We need to check against the DB, but lets assume default value
 		// unless we can actually read the DB
 		$value = read_default_config_option($config_name);
@@ -665,7 +673,11 @@ function read_config_option($config_name, $force = false) {
 		// We already have the value stored in the array and
 		// we don't want to force a db read, so use the cached
 		// version
-		$value = $config_array[$config_name];
+		if ($sess) {
+			$value = $_SESSION['sess_config_array'][$config_name];
+		} else {
+			$value = $config['config_options_array'][$config_name];
+		}
 	}
 
 	return $value;
