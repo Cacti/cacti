@@ -576,7 +576,7 @@ function prime_common_config_settings() {
 
 	if (isset($_SESSION['sess_config_array'])) {
 		$sess = true;
-	} elseif (isset($config['config_options_array'])) {
+	} else {
 		$sess = false;
 	}
 
@@ -608,7 +608,7 @@ function read_config_option($config_name, $force = false) {
 
 	if (isset($_SESSION['sess_config_array'])) {
 		$sess = true;
-	} elseif (isset($config['config_options_array'])) {
+	} else {
 		$sess = false;
 	}
 
