@@ -211,8 +211,12 @@ function upgrade_to_1_2_20() {
 	db_execute('ALTER TABLE reports_items
 		MODIFY COLUMN host_template_id int default "-1",
 		MODIFY COLUMN host_id int default "-1",
-		MODIFY COLUMN graph_template_id int default "-1",
-		ADD COLUMN site_id int default "-1" AFTER graph_name_regexp');
+		MODIFY COLUMN graph_template_id int default "-1"');
+
+	if (!db_column_exists('reports_items', 'site_id')) {
+		db_execute('ALTER TABLE reports_items
+			ADD COLUMN site_id int default "-1" AFTER graph_name_regexp');
+	}
 
 	db_execute('UPDATE reports_items
 		SET host_template_id = -1 WHERE host_template_id = 0');
