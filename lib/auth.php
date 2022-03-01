@@ -4360,6 +4360,12 @@ function auth_login_redirect($login_opts = '') {
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = $config['url_path'] . 'index.php';
+				} elseif (strpos($referer, $config['url_path']) === false) {
+					if (!is_realm_allowed(8)) {
+						$referer = $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':'');
+					} else {
+						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
+					}
 				}
 
 				cacti_log(sprintf("DEBUG: Referer from HTTP_REFERER with Value: '%s', Effective: '%s'", $_SERVER['HTTP_REFERER'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
