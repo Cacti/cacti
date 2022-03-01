@@ -33,7 +33,7 @@ if (!isset($config['cacti_db_version'])) {
 	$version = $config['cacti_db_version'];
 }
 
-$auth_method = read_config_option('auth_method', true);
+$auth_method = read_config_option('auth_method');
 
 /**
  * Check to see if Cacti authentication is disabled
