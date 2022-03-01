@@ -540,7 +540,6 @@ function prime_common_config_settings() {
 		'alert_deadnotify',
 		'alert_email',
 		'alert_exempt',
-		'alert_notify_default',
 		'alert_repeat',
 		'alert_trigger',
 		'base_url',
