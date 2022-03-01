@@ -401,9 +401,9 @@ function set_config_option($config_name, $value) {
 		array($config_name, $value));
 
 	$config_array = array();
-	if (isset($_SESSION)) {
+	if ($config['is_web']) {
 		$sess = true;
-	} elseif (isset($config['config_options_array'])) {
+	} else {
 		$sess = false;
 	}
 
@@ -470,6 +470,8 @@ function read_default_config_option($config_name) {
 }
 
 function prime_common_config_settings() {
+	global $config;
+
 	//$start = microtime(true);
 
 	$common_settings = array(
@@ -486,6 +488,15 @@ function prime_common_config_settings() {
 		'default_date_format',
 		'default_poller',
 		'default_site',
+		'i18n_language_support',
+		'i18n_default_language',
+		'reports_allow_ln',
+
+		// Common page rendering
+		'selective_debug',
+		'selected_theme',
+		'min_tree_width',
+		'max_tree_width',
 	);
 
 	if ($config['is_web']) {
@@ -508,14 +519,6 @@ function prime_common_config_settings() {
 			'boost_rrd_update_enable',
 			'boost_png_cache_enable',
 			'remote_storage_method',
-
-			// Common page rendering
-			'i18n_language_support',
-			'i18n_default_language',
-			'selective_debug',
-			'selected_theme',
-			'min_tree_width',
-			'max_tree_width',
 		);
 	} else {
 		$extra_settings = array(
@@ -538,6 +541,7 @@ function prime_common_config_settings() {
 			'ping_method',
 			'ping_retries',
 			'ping_timeout',
+			'path_spine',
 
 			// Common API
 			'default_template',
@@ -606,14 +610,14 @@ function read_config_option($config_name, $force = false) {
 
 	$loaded = false;
 
-	if (isset($_SESSION)) {
+	if ($config['is_web']) {
 		$sess = true;
 		if (isset($_SESSION['sess_config_array'][$config_name])) {
 			$loaded = true;
 		}
 	} else {
 		$sess = false;
-		if (isset($config['sess_config_array'][$config_name])) {
+		if (isset($config['config_options_array'][$config_name])) {
 			$loaded = true;
 		}
 	}
@@ -652,18 +656,24 @@ function read_config_option($config_name, $force = false) {
 		    isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 
 			// Get the database setting
-			$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
+			$db_result = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name));
 
-			// Does the settings exist in the database?
-			if (isset($db_setting['value'])) {
-				// It does? lets use it
-				$value = $db_setting['value'];
+			if (cacti_sizeof($db_result)) {
+				$value = $db_result['value'];
 			}
 
 			// Store whatever value we have in the array
 			if ($sess) {
-				$_SESSION['sess_config_array'][$config_name]  = $value;
+				if (!isset($_SESSION['sess_config_array']) || !is_array($_SESSION['sess_config_array'])) {
+					$_SESSION['sess_config_array'] = array();
+				}
+
+				$_SESSION['sess_config_array'][$config_name] = $value;
 			} else {
+				if (!isset($config['config_options_array']) || !is_array($config['config_options_array'])) {
+					$config['config_options_array'] = array();
+				}
+
 				$config['config_options_array'][$config_name] = $value;
 			}
 		}

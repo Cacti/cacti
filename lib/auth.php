@@ -650,19 +650,27 @@ function auth_augment_roles($role_name, $files) {
 				$user_auth_roles[$role_name][] = $user_auth_realm_filenames[$file];
 			}
 		} else {
-			$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
-				FROM plugin_realms
-				WHERE file = ?
-				OR file LIKE ?
-				OR file LIKE ?
-				OR file LIKE ?',
-				array(
-					$file,
-					$file . ',%',
-					'%,' . $file . ',%',
-					'%,' . $file
-				)
-			);
+			if (isset($_SESSION['sess_auth_names'][$auth_name])) {
+				$realm_id = $_SESSION['sess_auth_names'][$auth_name];
+			} else {
+				$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
+					FROM plugin_realms
+					WHERE file = ?
+					OR file LIKE ?
+					OR file LIKE ?
+					OR file LIKE ?',
+					array(
+						$file,
+						$file . ',%',
+						'%,' . $file . ',%',
+						'%,' . $file
+					)
+				);
+
+				if ($realm_id > 0) {
+					$_SESSION['sess_auth_names'][$auth_name] = $realm_id;
+				}
+			}
 
 			if (!empty($realm_id)) {
 				if (!isset($user_auth_roles[$role_name])) {
@@ -687,10 +695,18 @@ function auth_augment_roles($role_name, $files) {
 function auth_augment_roles_byname($role_name, $auth_name) {
 	global $user_auth_roles, $user_auth_realm_filenames;
 
-	$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
-		FROM plugin_realms
-		WHERE display = ?',
-		array($auth_name));
+	if (isset($_SESSION['sess_auth_names'][$auth_name])) {
+		$realm_id = $_SESSION['sess_auth_names'][$auth_name];
+	} else {
+		$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
+			FROM plugin_realms
+			WHERE display = ?',
+			array($auth_name));
+
+		if ($realm_id > 0) {
+			$_SESSION['sess_auth_names'][$auth_name] = $realm_id;
+		}
+	}
 
 	if (!empty($realm_id)) {
 		if (!isset($user_auth_roles[$role_name])) {
@@ -998,6 +1014,7 @@ function is_realm_allowed($realm, $check_user = false) {
 						kill_session_var('sess_user_realms');
 						kill_session_var('sess_user_config_array');
 						kill_session_var('sess_config_array');
+						kill_session_var('sess_auth_names');
 						kill_session_var('sess_tree_perms');
 						kill_session_var('sess_simple_perms');
 						kill_session_var('sess_simple_template_perms');
@@ -1008,6 +1025,7 @@ function is_realm_allowed($realm, $check_user = false) {
 						kill_session_var('sess_user_realms');
 						kill_session_var('sess_user_config_array');
 						kill_session_var('sess_config_array');
+						kill_session_var('sess_auth_names');
 						kill_session_var('sess_tree_perms');
 						kill_session_var('sess_simple_perms');
 						kill_session_var('sess_simple_template_perms');
@@ -1019,6 +1037,7 @@ function is_realm_allowed($realm, $check_user = false) {
 					kill_session_var('sess_user_realms');
 					kill_session_var('sess_user_config_array');
 					kill_session_var('sess_config_array');
+					kill_session_var('sess_auth_names');
 					kill_session_var('sess_tree_perms');
 					kill_session_var('sess_simple_perms');
 					kill_session_var('sess_simple_template_perms');
@@ -4120,6 +4139,7 @@ function reset_user_perms($user_id) {
 		kill_session_var('sess_user_realms');
 		kill_session_var('sess_user_config_array');
 		kill_session_var('sess_config_array');
+		kill_session_var('sess_auth_names');
 	}
 }
 
