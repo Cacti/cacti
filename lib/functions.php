@@ -401,19 +401,17 @@ function set_config_option($config_name, $value) {
 		array($config_name, $value));
 
 	$config_array = array();
-	if (isset($_SESSION['sess_config_array'])) {
-		$config_array = $_SESSION['sess_config_array'];
+	if (isset($_SESSION)) {
+		$sess = true;
 	} elseif (isset($config['config_options_array'])) {
-		$config_array = $config['config_options_array'];
+		$sess = false;
 	}
 
-	$config_array[$config_name] = $value;
-
 	// Store the array back for later retrieval
-	if (isset($_SESSION)) {
-		$_SESSION['sess_config_array']  = $config_array;
+	if ($sess) {
+		$_SESSION['sess_config_array']  = $value;
 	} else {
-		$config['config_options_array'] = $config_array;
+		$config['config_options_array'] = $value;
 	}
 
 	if (!empty($config['DEBUG_SET_CONFIG_OPTION'])) {
@@ -608,7 +606,7 @@ function read_config_option($config_name, $force = false) {
 
 	$loaded = false;
 
-	if (isset($_SESSION['sess_config_array'])) {
+	if (isset($_SESSION)) {
 		$sess = true;
 		if (isset($_SESSION['sess_config_array'][$config_name])) {
 			$loaded = true;
