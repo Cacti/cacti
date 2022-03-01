@@ -1256,7 +1256,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 function get_policies($user) {
 	/* get policies for all user groups */
 	$policies = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name,
-		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates
+		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates, uag.policy_trees
 		FROM user_auth_group AS uag
 		INNER JOIN user_auth_group_members AS uagm
 		ON uag.id = uagm.group_id
@@ -1266,7 +1266,7 @@ function get_policies($user) {
 
 	/* get policies for the user */
 	$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 'user' AS name,
-		policy_graphs, policy_hosts, policy_graph_templates
+		policy_graphs, policy_hosts, policy_graph_templates, policy_trees
 		FROM user_auth
 		WHERE id = ?",
 		array($user));
@@ -2574,8 +2574,8 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 		}
 
 		if ($sql_where != '') {
-			$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where . ') AND (' . $sql_where1 . ')';
-		} else {
+			$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where . ')' . ($sql_where1 != '' ? ' AND (' . $sql_where1 . ')':'');
+		} elseif ($sql_where1 != '') {
 			$sql_where = 'WHERE gt.enabled="on" AND (' . $sql_where1 . ')';
 		}
 
@@ -2602,6 +2602,7 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 			$sql_limit";
 
 		$branches   = db_fetch_assoc($sql);
+
 		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ') AS rower');
 	} else {
 		if ($sql_where != '') {
