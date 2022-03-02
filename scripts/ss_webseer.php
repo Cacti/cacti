@@ -33,7 +33,7 @@ if (!isset($called_by_script_server)) {
 	print call_user_func_array('ss_webseer', $_SERVER['argv']);
 }
 
-function ss_webseer($cmd, $arg1 = '', $arg2 = '') {
+function ss_webseer($cmd = 'index', $arg1 = '', $arg2 = '') {
 	if ($cmd == 'index') {
 		if (db_table_exists('plugin_webseer_urls')) {
 			$exports = db_fetch_assoc('SELECT id FROM plugin_webseer_urls ORDER BY id');
@@ -128,4 +128,3 @@ function ss_webseer($cmd, $arg1 = '', $arg2 = '') {
 		return (empty($value) ? '0' : $value);
 	}
 }
-
