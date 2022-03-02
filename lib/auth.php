@@ -1399,7 +1399,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
  * @return (array) Array of allowed graphs
  */
 function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
-	if ($sql_limit != '' && $sql_limit != -1) {
+	if ($sql_limit != '') {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
