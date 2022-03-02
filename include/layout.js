@@ -3185,7 +3185,7 @@ function applyGraphFilter() {
 		.done(function(data) {
 			checkForRedirects(data, href);
 
-			$('#main').hide();
+			$('#main').empty().hide();
 			$('div[class^="ui-"]').remove();
 			$('#main').html(data);
 			applySkin();
@@ -3603,6 +3603,8 @@ function redrawGraph(graph_id) {
 					inputfieldEndTime : 'date2',
 					serverTimeOffset : timeOffset
 				});
+
+				data = undefined;
 			} else {
 				getPresentHTTPError(data);
 			}
@@ -3659,7 +3661,7 @@ function initializeGraphs(disable_cache) {
 
 		// Disable context menu
 		$(this).children().contextmenu(function() {
-				return false;
+			return false;
 		});
 
 		$(this).attr('href',urlPath+
@@ -3717,7 +3719,8 @@ function initializeGraphs(disable_cache) {
 			(isThumb ? '&graph_nolegend=true':''))
 			.done(function(data) {
 				if (myWidth < data.image_width) {
-					ratio=myWidth/data.image_width;
+					ratio = myWidth/data.image_width;
+
 					data.image_width  = parseInt(data.image_width  * ratio);
 					data.image_height = parseInt(data.image_height * ratio);
 					data.graph_width  = parseInt(data.graph_width  * ratio);
@@ -3773,6 +3776,8 @@ function initializeGraphs(disable_cache) {
 				if (!--numGraphs) {
 					responsiveResizeGraphs();
 				}
+
+				data = undefined;
 			})
 			.fail(function(data) {
 				getPresentHTTPError(data);

@@ -1247,8 +1247,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			 saveGraphFilter('tree');
 		});
 
-		$.when(initPage())
-		.done(function() {
+		$.when(initPage()).done(function() {
 			initializeGraphs();
 		});
 	});
