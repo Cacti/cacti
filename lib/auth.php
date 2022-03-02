@@ -1177,7 +1177,7 @@ function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 
  * @return (array) An array of Tree branch items that a re allowed (graphs, devices)
  */
 function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_order = '', $sql_limit = '', &$total_rows = 0, $user = 0) {
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -1315,7 +1315,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		return array();
 	}
 
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -1399,7 +1399,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
  * @return (array) Array of allowed graphs
  */
 function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -1491,7 +1491,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
  * @return (array) Array of allowed graphs
  */
 function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -1775,7 +1775,7 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 
 	$templates = array();
 
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -2405,7 +2405,7 @@ function get_permission_string(&$graph, &$policies) {
  * @return (string|array)  An array of permitted Trees or the SQL to gather them
  */
 function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user = 0) {
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -2513,7 +2513,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
  * @return (array)  An array of permitted Tree branches
  */
 function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user = 0) {
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -2692,7 +2692,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 
 	$host_list = array();
 
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -2786,7 +2786,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
  * @return (array)  An array of permitted sites
  */
 function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user = 0, $site_id = 0) {
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -2869,7 +2869,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 
 	$graph_auth_method = read_config_option('graph_auth_method');
 
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -2966,7 +2966,7 @@ function get_allowed_graph_templates_normalized($sql_where = '', $sql_order = 'n
 		$sql_where = ' WHERE gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ') AND (gl.snmp_query_graph_id=0 OR sqg.name IS NOT NULL) AND (gt.name IS NOT NULL)';
 	}
 
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
 		$sql_limit = '';
@@ -3185,7 +3185,7 @@ function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 2
 		$sql_where = 'WHERE ' . $sql_where;
 	}
 
-	if ($sql_limit != '' || $sql_limit != -1) {
+	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = 'LIMIT ' . $sql_limit;
 	} else {
 		$sql_limit = '';
