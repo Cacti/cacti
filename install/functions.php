@@ -467,12 +467,16 @@ function install_setup_get_templates() {
 	@ini_set('zlib.output_compression', '0');
 
 	$templates = array(
+		'Cacti_Stats.xml.gz'
+		'Cisco_ASA_Security_Appliance.xml.gz',
 		'Cisco_Router.xml.gz',
+		'Citrix_NetScaler_VPX.xml.gz',
 		'Generic_SNMP_Device.xml.gz',
 		'Local_Linux_Machine.xml.gz',
 		'NetSNMP_Device.xml.gz',
-		'Windows_Device.xml.gz',
-		'Cacti_Stats.xml.gz'
+		'PING_Advanced_Ping.xml.gz',
+		'Synology_NAS.xml.gz',
+		'Windows_Device.xml.gz'
 	);
 
 	$path = $config['base_path'] . '/install/templates';
