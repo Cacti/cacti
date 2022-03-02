@@ -89,7 +89,19 @@ if ($auth_method != 0) {
 	if ($auth_method == 2 && !isset($_SESSION['sess_user_id'])) {
 		$username = get_basic_auth_username();
 		if ($username !== false) {
-			require_once($config['base_path'] . '/auth_login.php');
+			$current_user = db_fetch_assoc('SELECT *
+				FROM user_auth
+				WHERE realm = 2
+				AND username = ?',
+				array($username));
+
+			if (cacti_sizeof($current_user)) {
+				$_SESSION['sess_user_id'] = $current_user['id'];;
+
+				return true;
+			} else {
+				require_once($config['base_path'] . '/auth_login.php');
+			}
 		}
 	}
 
