@@ -69,6 +69,7 @@ Cacti CHANGELOG
 -issue#4580: When logging in as a basic authentication user, users are made "guest" accounts instead of the login accounts as expected
 -issue#4586: Due to inneficient checking of string values for replacement patterns, viewing graphs generates excessive database queries
 -issue#4587: Cacti could benefit from reducing turns to settings table by caching common variables ahead of time
+-issue#4588: Cannot use multibyte in host.php
 -issue#4589: db_update_table should ALTER table engine/row_format/charset before ADD/ALTER column/index
 -feature: Expose hidden Language Translation setting l10n_language_handler
 -feature: Allow a Device to be a part of a Report outside of a Tree
