@@ -505,6 +505,7 @@ function prime_common_config_settings() {
 			'force_https',
 			'content_security_policy_script',
 			'content_security_alternate_sources',
+			'deletion_verification',
 
 			// Common graphing
 			'rrdtool_watermark',
@@ -539,8 +540,12 @@ function prime_common_config_settings() {
 			'max_get_size',
 			'availability_method',
 			'ping_method',
+			'ping_port',
 			'ping_retries',
 			'ping_timeout',
+			'path_snmpbulkwalk',
+			'path_snmpwalk',
+			'path_snmpget',
 			'path_spine',
 
 			// Common API
