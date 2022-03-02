@@ -195,7 +195,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 		}
 
 		/* remember me support.  Not for guest of basic auth */
-		if ($auth_method != 2 && !$guest_user) {
+		if ($auth_method != 2 && $username != get_guest_account()) {
 			if (!$error && isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
 				set_auth_cookie($user);
 			}

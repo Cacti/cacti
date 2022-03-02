@@ -6710,7 +6710,7 @@ function cacti_cookie_logout() {
  *
  * @return - null
  */
-function cacti_cookie_session_set($user, $nssecret) {
+function cacti_cookie_session_set($user, $realm, $nssecret) {
 	global $config;
 
 	if (isset($config['cookie_options']['cookie_domain'])) {
@@ -6722,9 +6722,9 @@ function cacti_cookie_session_set($user, $nssecret) {
 	$_SESSION['cacti_remembers'] = true;
 
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		setcookie('cacti_remembers', $user . ',' . $nssecret, time()+(86400*30), $config['url_path'], $domain, true, true);
+		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, time()+(86400*30), $config['url_path'], $domain, true, true);
 	} else {
-		setcookie('cacti_remembers', $user . ',' . $nssecret, time()+(86400*30), $config['url_path'], $domain, false, true);
+		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, time()+(86400*30), $config['url_path'], $domain, false, true);
 	}
 }
 

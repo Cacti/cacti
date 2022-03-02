@@ -72,7 +72,7 @@ if ($auth_method != 0) {
 			exit;
 		}
 
-		/* check for remember me function ality */
+		/* check for remember me functionality */
 		if (!isset($_SESSION['sess_user_id'])) {
 			$cookie_user = check_auth_cookie();
 			if ($cookie_user !== false) {
