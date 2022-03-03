@@ -1074,7 +1074,7 @@ class Installer implements JsonSerializable {
 
 		foreach ($known_templates as $known) {
 			$filename    = $known['filename'];
-			$key_base    = str_replace('.', '_', $filename);
+			$key_base    = str_replace(array('.', '-'), '_', $filename);
 			$key_install = 'install_template_' . $key_base;
 			$key_check   = 'chk_template_' . $key_base;
 
