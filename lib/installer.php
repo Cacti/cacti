@@ -1074,7 +1074,7 @@ class Installer implements JsonSerializable {
 
 		foreach ($known_templates as $known) {
 			$filename    = $known['filename'];
-			$key_base    = str_replace(array('.', '-'), '_', $filename);
+			$key_base    = str_replace('.', '_', $filename);
 			$key_install = 'install_template_' . $key_base;
 			$key_check   = 'chk_template_' . $key_base;
 
@@ -1144,7 +1144,7 @@ class Installer implements JsonSerializable {
 					$this->addError(Installer::STEP_TEMPLATE_INSTALL, 'Templates', $name, __('No matching template exists'));
 				} else {
 					$set = false;
-					$key = str_replace(".", "_", $template['filename']);
+					$key = str_replace('.', '_', $template['filename']);
 					$this->setTrueFalse($enabled, $set, $key, false);
 					$use = ($set) || ($param_all);
 					$value = ($use) ? $template['filename'] : '';

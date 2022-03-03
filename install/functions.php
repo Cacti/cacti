@@ -468,7 +468,7 @@ function install_setup_get_templates() {
 
 	$templates = array(
 		'Cacti_Stats.xml.gz',
-		'Cisco_ASA_Security_Appliance.xml.gz',
+		'Cisco_ASA_Appliance.xml.gz',
 		'Cisco_Router.xml.gz',
 		'Citrix_NetScaler_VPX.xml.gz',
 		'Generic_SNMP_Device.xml.gz',
