@@ -89,7 +89,7 @@ if ($auth_method != 0) {
 	if ($auth_method == 2 && !isset($_SESSION['sess_user_id'])) {
 		$username = get_basic_auth_username();
 		if ($username !== false) {
-			$current_user = db_fetch_assoc('SELECT *
+			$current_user = db_fetch_assoc_prepared('SELECT *
 				FROM user_auth
 				WHERE realm = 2
 				AND username = ?',
