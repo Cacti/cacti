@@ -110,8 +110,7 @@ if (!cacti_sizeof($templates)) {
 if (timeToRun()) {
 	debug('Starting Spikekill Process');
 
-	list($micro,$seconds) = explode(' ', microtime());
-	$start   = $seconds + $micro;
+	$start   = microtime(true);
 
 	$graphs = kill_spikes($templates, $kills);
 
@@ -120,8 +119,7 @@ if (timeToRun()) {
 		$purges = purge_spike_backups();
 	}
 
-	list($micro,$seconds) = explode(' ', microtime());
-	$end  = $seconds + $micro;
+	$end  = microtime(true);
 
     $cacti_stats = sprintf(
         'Time:%01.4f ' .
