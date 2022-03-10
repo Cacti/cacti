@@ -77,6 +77,7 @@ function api_plugin_hook($name) {
 				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
 				}
+
 				$function = $hdata['function'];
 				if (function_exists($function)) {
 					api_plugin_run_plugin_hook($name, $hdata['name'], $function, $args);
@@ -179,12 +180,12 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 			'poller_exiting'           => array('remote_collect'), // Poller exception handling
 
 			// GUI Related
-			'page_head'                => array('online_view', 'offline_view'), // Navigation, api_plugin_hook
-			'top_header_tabs'          => array('online_view', 'offline_view'), // Top Tabs, api_plugin_hook
-			'top_graph_header_tabs'    => array('online_view', 'offline_view'), // Top Tabs, api_plugin_hook
-			'graph_buttons'            => array('online_view', 'offline_view'), // Buttons by graphs, api_plugin_hook
-			'graphs_new_top_links'     => array('online_mgmt', 'offline_mgmt'), // Buttons by graphs, api_plugin_hook
-			'page_head'                => array('online_view', 'offline_view')  // Content, api_plugin_hook
+			'page_head'                => array('online_view', 'offline_view', 'offline_mgmt'), // Navigation, api_plugin_hook
+			'top_header_tabs'          => array('online_view', 'offline_view', 'offline_mgmt'), // Top Tabs, api_plugin_hook
+			'top_graph_header_tabs'    => array('online_view', 'offline_view', 'offline_mgmt'), // Top Tabs, api_plugin_hook
+			'graph_buttons'            => array('online_view', 'offline_view', 'offline_mgmt'), // Buttons by graphs, api_plugin_hook
+			'graphs_new_top_links'     => array('online_mgmt', 'offline_view', 'offline_mgmt'), // Buttons by graphs, api_plugin_hook
+			'page_head'                => array('online_view', 'offline_view', 'offline_mgmt')  // Content, api_plugin_hook
 		);
 
 		$plugin_capabilities = api_plugin_remote_capabilities($plugin);
@@ -204,7 +205,12 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 		}
 
 		// See if we need to restore the menu to original
-		if (($hook == 'config_arrays' || 'config_insert') && $config['connection'] == 'offline') {
+		$remote_hooks = array(
+			'config_arrays',
+			'config_insert',
+		);
+
+		if (in_array($hook, $remote_hooks) && $config['connection'] == 'offline') {
 			if (!api_plugin_has_capability($plugin, 'offline_mgmt')) {
 				if ($orig_menu !== $menu) {
 					$menu = $orig_menu;
