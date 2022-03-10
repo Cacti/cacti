@@ -1252,6 +1252,15 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		$data = db_fetch_assoc('SELECT * FROM poller');
 		replicate_out_table($rcnn_id, $data, 'poller', $remote_poller_id);
 
+		$data = db_fetch_assoc('SELECT * FROM plugin_config');
+		replicate_out_table($rcnn_id, $data, 'plugin_config', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM plugin_hooks');
+		replicate_out_table($rcnn_id, $data, 'plugin_hooks', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM plugin_realms');
+		replicate_out_table($rcnn_id, $data, 'plugin_realms', $remote_poller_id);
+
 		$data = db_fetch_assoc('SELECT * FROM version');
 		replicate_out_table($rcnn_id, $data, 'version', $remote_poller_id);
 	}
