@@ -174,7 +174,7 @@ if (empty($i18n_handler) && !empty($config['i18n_language_handler'])) {
 	$i18n_handler = $config['i18n_language_handler'];
 }
 
-if (empty($i18n_handler)) {
+if ($i18n_handler == '') {
 	i18n_debug('Handler: not specified in config, autodetection is now in progress');
 	if (file_exists($config['include_path'] . '/vendor/gettext/src/Translator.php')) {
 		$i18n_handler = CACTI_LANGUAGE_HANDLER_OSCAROTERO;
@@ -195,8 +195,8 @@ switch ($i18n_handler) {
 		} else {
 			$i18n_handler = CACTI_LANGUAGE_HANDLER_NONE;
 		}
-		break;
 
+		break;
 	case CACTI_LANGUAGE_HANDLER_PHPGETTEXT:
 		if (file_exists($config['include_path'] . '/vendor/phpgettext/streams.php')) {
 			require_once($config['include_path'] . '/vendor/phpgettext/streams.php');
@@ -204,8 +204,8 @@ switch ($i18n_handler) {
 		} else {
 			$i18n_handler = CACTI_LANGUAGE_HANDLER_NONE;
 		}
-		break;
 
+		break;
 	case CACTI_LANGUAGE_HANDLER_MOTRANSLATOR:
 		if (file_exists($config['include_path'] . '/vendor/motranslator/src/Translator.php')) {
 			require_once($config['include_path'] . '/vendor/motranslator/src/Translator.php');
@@ -213,10 +213,11 @@ switch ($i18n_handler) {
 		} else {
 			$i18n_handler = CACTI_LANGUAGE_HANDLER_NONE;
 		}
-		break;
 
+		break;
 	default:
 		$i18n_handler = CACTI_LANGUAGE_HANDLER_NONE;
+
 		break;
 }
 
@@ -259,6 +260,12 @@ define('CACTI_LANGUAGE_FILE', $catalogue);
 
 function load_gettext_original($domain) {
 	global $cacti_textdomains;
+
+	// Hide deprecation errors for PHP 8 if using this
+	// Translator
+	if (version_compare(PHP_VERSION, '8.0', '>=')) {
+		error_reporting(E_ALL ^ E_DEPRECATED);
+	}
 
 	i18n_debug("load_gettext_original($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
 
