@@ -2675,7 +2675,7 @@ html[data-theme-mode='standard'] .compact {
 	}
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationBox {
-		width: 34rem !important;
+		max-width: calc(100vw - 60px) !important;
 		position: fixed !important;
 		left: 60px !important;
 		top: 60px !important;
@@ -2690,7 +2690,7 @@ html[data-theme-mode='standard'] .compact {
 	}
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox {
-		width: 34rem !important;
+		max-width: calc(100vw - 60px) !important;
         position: fixed;
         left: 60px;
         bottom: 0px;
@@ -2724,9 +2724,12 @@ html[data-theme-mode='standard'] .compact {
 	html[data-theme-mode='compact'] .cactiConsoleNavigationBox ul#nav,
 	html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox ul.nav {
 		display: flex;
-		flex-flow: column wrap;
+		flex-flow: row wrap;
+		align-content: flex-start;
+		writing-mode: vertical-lr;
 		margin-top: 1rem;
 		height: calc(100% - 5rem - 2px);
+		max-width: 100%;
 		overflow-y: auto;
 	}
 
@@ -2775,6 +2778,7 @@ html[data-theme-mode='standard'] .compact {
 		width: 16rem;
 		overflow: hidden;
 		padding: 1rem 0 1rem 1rem;
+		writing-mode: initial;
 	}
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover {
