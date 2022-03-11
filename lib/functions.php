@@ -567,6 +567,7 @@ function prime_common_config_settings() {
 			'rrdtool_watermark',
 			'realtime_cache_path',
 			'path_rrdtool',
+			'hide_disabled',
 			'graph_watermark',
 			'graph_dateformat',
 			'font_method',

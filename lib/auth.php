@@ -1280,6 +1280,10 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 
 	$sql_where = "WHERE (gti.graph_tree_id=$tree_id AND gti.parent=$leaf_id)" . $sql_where;
 
+	if (read_user_setting('hide_disabled') == 'on') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
+	}
+
 	if ($user == -1) {
 		$auth_method = 0;
 	} else {
@@ -1363,7 +1367,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
 	}
 
 	if ($sql_where != '') {
@@ -1455,7 +1459,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
 	}
 
 	if ($sql_where != '') {
@@ -2652,7 +2656,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
 	}
 
 	if ($sql_where != '') {
@@ -2829,7 +2833,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
 	}
 
 	if ($sql_where != '') {
@@ -2977,9 +2981,9 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 	if ($term != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ' : '') .
-			'hostname LIKE ' . db_qstr("%$term%") .
+			'(hostname LIKE ' . db_qstr("%$term%") .
 			' OR description LIKE ' . db_qstr("%$term%") .
-			' OR notes LIKE ' . db_qstr("%$term%");
+			' OR notes LIKE ' . db_qstr("%$term%") . ')';
 	}
 
 	if (get_request_var('term') == '') {
@@ -2994,6 +2998,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	$total_rows = -1;
 
 	$hosts = get_allowed_devices($sql_where, 'description', read_config_option('autocomplete_rows'), $total_rows);
+
 	if (cacti_sizeof($hosts)) {
 		foreach($hosts as $host) {
 			$return[] = array('label' => html_escape(strip_domain($host['description'])), 'value' => html_escape($host['description']), 'id' => $host['id']);

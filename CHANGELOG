@@ -77,6 +77,7 @@ Cacti CHANGELOG
 -issue#4603: Cacti refuses to use the php-gettext module when installed
 -issue#4607: Cacti's config.php file is improperly moved into the resource cache
 -issue#4609: In some cases Cacti cacti session renewal lacks the HTTP_USER_AGENT resulting in errors in the Cacti Log
+-issue#4610: The end user setting Hide Disabled Devices does not appear to be 100% functional
 -feature: Expose hidden Language Translation setting l10n_language_handler
 -feature: Allow a Device to be a part of a Report outside of a Tree
 -feature: Allow Basic Authentication to display customer login failed message
