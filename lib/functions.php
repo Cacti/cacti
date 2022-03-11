@@ -386,19 +386,75 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 }
 
 /**
+ * is_remote_path_setting - determines of a Cacti setting should be maintained
+ *   on the Remote Data Collector separate from the Main cacti server
+ *
+ * @param $config_name - the name of the configuration setting as specified $settings array
+ *
+ * @return (bool) - true if the setting should be saved locally
+ */
+function is_remote_path_setting($config_name) {
+	global $config;
+
+	if ($config['poller_id'] > 1 && (strpos($config_name, 'path_') !== false || strpos($config_name, '_path') !== false)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/**
  * set_config_option - sets/updates a cacti config option with the given value.
  *
  * @param $config_name - the name of the configuration setting as specified $settings array
  * @param $value       - the values to be saved
+ * @param $remote      - push the setting to the remote with the exception of path variables
  *
- * @return             - void
+ * @return (void)
  */
-function set_config_option($config_name, $value) {
+function set_config_option($config_name, $value, $remote = false) {
 	global $config;
+
+	include_once($config['base_path'] . '/lib/poller.php');
 
 	db_execute_prepared('REPLACE INTO settings
 		SET name = ?, value = ?',
 		array($config_name, $value));
+
+	if ($remote && !is_remote_path_setting($config_name)) {
+		$gone_time = read_config_option('poller_interval') * 2;
+
+		$pollers = array_rekey(
+			db_fetch_assoc('SELECT
+				id,
+				UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS last_polled
+				FROM poller
+				WHERE id > 1
+				AND disabled=""'),
+			'id', 'last_polled'
+		);
+
+		$sql = 'INSERT INTO settings (name, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value=VALUES(value)';
+
+		foreach($pollers as $p => $t) {
+			if ($t > $gone_time) {
+				raise_message('poller_' . $p, __('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
+			} else {
+				$rcnn_id = poller_connect_to_remote($p);
+
+				if ($rcnn_id) {
+					if (db_execute_prepared($sql, array($config_name, $value), false, $rcnn_id) === false) {
+						$rcnn_id = false;
+					}
+				}
+
+				// check if we still have rcnn_id, if it's now become false, we had a problem
+				if (!$rcnn_id) {
+					raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
+				}
+			}
+		}
+	}
 
 	$config_array = array();
 	if ($config['is_web']) {
@@ -5792,10 +5848,10 @@ function enable_device_debug($host_id) {
 	if ($device_debug != '') {
 		$devices = explode(',', $device_debug);
 		if (array_search($host_id, $devices) === false) {
-			set_config_option('selective_device_debug', $device_debug . ',' . $host_id);
+			set_config_option('selective_device_debug', $device_debug . ',' . $host_id, true);
 		}
 	} else {
-		set_config_option('selective_device_debug', $host_id);
+		set_config_option('selective_device_debug', $host_id, true);
 	}
 }
 
@@ -5817,7 +5873,7 @@ function disable_device_debug($host_id) {
 				break;
 			}
 		}
-		set_config_option('selective_device_debug', implode(',', $devices));
+		set_config_option('selective_device_debug', implode(',', $devices), true);
 	}
 }
 

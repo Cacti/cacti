@@ -1291,13 +1291,3 @@ default:
 	break;
 }
 
-function is_remote_path_setting($field_name) {
-	global $config;
-
-	if ($config['poller_id'] > 1 && (strpos($field_name, 'path_') !== false || strpos($field_name, '_path') !== false)) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
