@@ -2676,6 +2676,7 @@ html[data-theme-mode='standard'] .compact {
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationBox {
 		max-width: calc(100vw - 60px) !important;
+		min-width: 36rem;
 		position: fixed !important;
 		left: 60px !important;
 		top: 60px !important;
@@ -2691,6 +2692,7 @@ html[data-theme-mode='standard'] .compact {
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox {
 		max-width: calc(100vw - 60px) !important;
+		min-width: 36rem;
         position: fixed;
         left: 60px;
         bottom: 0px;
