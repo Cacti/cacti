@@ -241,6 +241,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 
 		switch($frv_realm) {
 			case '0':
+			case '1':
 				$realm_name = 'Local';
 				break;
 			case '2':
