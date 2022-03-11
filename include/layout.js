@@ -1474,8 +1474,10 @@ function resizeTreePanel() {
 	}
 
 	var navWidth = $('#navigation').width();
-	if (navWidth > 0) {
+	if (navWidth > 220) {
 		$('#searcher').css('width', navWidth-70);
+	} else {
+		$('#searcher').css('width', 150);
 	}
 }
 
@@ -2936,8 +2938,10 @@ function keepWindowSize() {
 			}
 
 			var navWidth = $('#navigation').width();
-			if (navWidth > 0) {
+			if (navWidth > 220) {
 				$('#searcher').css('width', navWidth-70);
+			} else {
+				$('#searcher').css('width', 150);
 			}
 
 			responsiveResizeGraphs();
