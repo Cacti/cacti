@@ -1934,7 +1934,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 							foreach($values as $vkey => $vvalue) {
 								if (read_config_option('data_source_trace') == 'on') {
 									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
-									cacti_log('Item Sub Element Value: "' . $vvalue . '"');
+									cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
 								}
 
 								$data_template_data_id = db_fetch_cell_prepared('SELECT id
