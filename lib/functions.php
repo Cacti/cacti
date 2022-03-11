@@ -1931,7 +1931,7 @@ function is_valid_pathname($path) {
 */
 function dsv_log($message,$data) {
 	if (read_config_option('data_source_trace') == 'on') {
-		cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : $data), false, 'DSV');
+		cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : $data), false, 'DSTRACE');
 	}
 }
 
