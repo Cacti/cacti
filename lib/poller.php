@@ -791,6 +791,7 @@ function cache_in_path($path, $type, $recursive = true) {
 			// Allow replication of plugin based config.php files
 			$exclude = false;
 		} elseif (basename($path) == 'config.php') {
+			// Don't cache Cacti's config.php
 			$exclude = true;
 		} elseif (array_search(basename($path), $excluded_dirs_files, true) !== false) {
 			$exclude = true;
@@ -834,11 +835,13 @@ function update_db_from_path($path, $type, $recursive = true) {
 		while (($entry = $pobject->read()) !== false) {
 			if (!should_ignore_from_replication($entry)) {
 				$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
+
 				if (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
 					if ($recursive) {
 						update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
 					}
-				} elseif (basename($path) == 'config.php' && strpos($path, 'plugins') === false) {
+				} elseif (basename($spath) == 'config.php' && strpos($path, 'plugins') === false) {
+					// Don't cache Cacti's config.php
 					continue;
 				} elseif (basename($path) == '.travis.yml') {
 					continue;
