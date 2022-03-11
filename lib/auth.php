@@ -4565,7 +4565,7 @@ function check_reset_no_authentication($auth_method) {
 			array($admin_id));
 
 		$auth_method = 1;
-		set_config_option('auth_method', $auth_method);
+		set_config_option('auth_method', $auth_method, true);
 
 		$_SESSION['sess_user_id'] = $admin_id;
 		$_SESSION['sess_change_password'] = true;
