@@ -22,9 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* exec_poll - executes a command and returns its output
-   @arg $command - the command to execute
-   @returns - the output of $command after execution */
+/**
+ * exec_poll - executes a command and returns its output
+ *
+ * @param  (string) $command - the command to execute
+ *
+ * @return (string) the output of $command after execution
+ */
 function exec_poll($command) {
 	global $config;
 
@@ -51,15 +55,18 @@ function exec_poll($command) {
 	return $output;
 }
 
-/* exec_poll_php - sends a command to the php script server and returns the
-     output
-   @arg $command - the command to send to the php script server
-   @arg $using_proc_function - whether or not this version of php is making use
-     of the proc_open() and proc_close() functions (php 4.3+)
-   @arg $pipes - the array of r/w pipes returned from proc_open()
-   @arg $proc_fd - the file descriptor returned from proc_open()
-   @returns - the output of $command after execution against the php script
-     server */
+/**
+ * exec_poll_php - sends a command to the php script server and returns the output
+ *
+ * @param  (string)   $command - the command to send to the php script server
+ * @param  (bool)     $using_proc_function - whether or not this version of php is making use
+ *                    of the proc_open() and proc_close() functions (php 4.3+)
+ * @param  (array)    $pipes - the array of r/w pipes returned from proc_open()
+ * @param  (resource) $proc_fd - the file descriptor returned from proc_open()
+ *
+ * @return (string) - the output of $command after execution against the php script
+ *   server
+ */
 function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 	global $config;
 
@@ -112,11 +119,16 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 	return $output;
 }
 
-/* exec_background - executes a program in the background so that php can continue
-     to execute code in the foreground
-   @arg $filename - the full pathname to the script to execute
-   @arg $args - any additional arguments that must be passed onto the executable
-   @arg $redirect_args - any additional arguments for file re-direction.  Otherwise output goes to /dev/null */
+/**
+ * exec_background - executes a program in the background so that php can continue
+ *   to execute code in the foreground.
+ *
+ * @param  (string) $filename      - the full pathname to the script to execute
+ * @param  (string) $args          - any additional arguments that must be passed onto the executable
+ * @param  (string) $redirect_args - any additional arguments for file re-direction.  Otherwise output goes to /dev/null
+ *
+ * @return (void)
+ */
 function exec_background($filename, $args = '', $redirect_args = '') {
 	global $config, $debug;
 
@@ -155,9 +167,14 @@ function file_escaped($file) {
 	return false;
 }
 
-/* file_exists_2gb - fail safe version of the file exists function to correct
-     for errors in certain versions of php.
-   @arg $filename - the name of the file to be tested. */
+/**
+ * file_exists_2gb - fail safe version of the file exists function to correct
+ *   for errors in certain versions of php.
+ *
+ * @param  (string) $filename - the name of the file to be tested.
+ *
+ * @return (int) 1 if the file exists otherwise 0
+ */
 function file_exists_2gb($filename) {
 	global $config;
 
@@ -170,10 +187,15 @@ function file_exists_2gb($filename) {
 	}
 }
 
-/* update_reindex_cache - builds a cache that is used by the poller to determine if the
-     indexes for a particular data query/host have changed
-   @arg $host_id - the id of the host to which the data query belongs
-   @arg $data_query_id - the id of the data query to rebuild the reindex cache for */
+/**
+ * update_reindex_cache - builds a cache that is used by the poller to determine if the
+ *   indexes for a particular data query/host have changed
+ *
+ * @param  (int) $host_id - the id of the host to which the data query belongs
+ * @param  (int) $data_query_id - the id of the data query to rebuild the reindex cache for
+ *
+ * @return (void)
+ */
 function update_reindex_cache($host_id, $data_query_id) {
 	global $config;
 
@@ -394,10 +416,15 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 	poller_push_reindex_only_data_to_main($host_id, $data_query_id);
 }
 
-/* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
-     results to RRDtool for processing
-  @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
-  @arg $remainder - don't use LIMIT if true */
+/**
+ * process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
+ *   results to RRDtool for processing
+ *
+ * @param  (resource) $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
+ * @param  (int)      $remainder - don't use LIMIT if true
+ *
+ * @return (int) - The number of rrdfiles processed
+ */
 function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 	global $config, $debug;
 
@@ -575,11 +602,13 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 	return $rrds_processed;
 }
 
-/** update_resource_cache - place the cacti website in the poller_resource_cache
+/**
+ * update_resource_cache - place the cacti website in the poller_resource_cache
+ *   for remote pollers to consume
  *
- *  for remote pollers to consume
- * @param int $poller_id    - The id of the poller.  1 is the main system
- * @return null             - No data is returned
+ * @param  (int) $poller_id    - The id of the poller.  1 is the main system
+ *
+ * @return (void)
  */
 function update_resource_cache($poller_id = 1) {
 	global $config, $remote_db_cnn_id;
@@ -746,13 +775,15 @@ function update_resource_cache($poller_id = 1) {
 	}
 }
 
-/** cache_in_path - check to see if the directory in question has changed.
- *  If so, send its data into the resource cache table
+/**
+ * cache_in_path - check to see if the directory in question has changed.
+ *   If so, send its data into the resource cache table
  *
- * @param string $path      - The path to look for changes
- * @param string $type      - The patch types being cached
- * @param bool   $recursive - Should the path be scanned recursively
- * @return null             - No data is returned
+ * @param  (string) $path      - The path to look for changes
+ * @param  (string) $type      - The patch types being cached
+ * @param  (bool)   $recursive - Should the path be scanned recursively
+ *
+ * @return (void)
  */
 function cache_in_path($path, $type, $recursive = true) {
 	global $config;
@@ -816,13 +847,15 @@ function cache_in_path($path, $type, $recursive = true) {
 	}
 }
 
-/** update_db_from_path - store the actual file in the databases resource cache.
- *  Skip the include/config.php if it exists
+/**
+ * update_db_from_path - store the actual file in the databases resource cache.
+ *   Skip the include/config.php if it exists
  *
- * @param string $path      - The path to look for changes
- * @param string $type      - The patch types being cached
- * @param bool   $recursive - Should the path be scanned recursively
- * @return null             - No data is returned
+ * @param  (string) $path      - The path to look for changes
+ * @param  (string) $type      - The patch types being cached
+ * @param  (bool)   $recursive - Should the path be scanned recursively
+ *
+ * @return (void)
  */
 function update_db_from_path($path, $type, $recursive = true) {
 	global $config;
@@ -917,13 +950,15 @@ function update_db_from_path($path, $type, $recursive = true) {
 	}
 }
 
-/** resource_cache_out - push the cache from the cacti database to the
- *  remote database.  Check PHP files for errors
+/**
+ * resource_cache_out - push the cache from the cacti database to the
+ *   remote database.  Check PHP files for errors before placing
+ *   them on the remote pollers file system.
  *
- * before placing them on the remote pollers file system.
- * @param string $type      - The path type being cached
- * @param string $path      - The path to store the contents
- * @return null             - No data is returned
+ * @param (string) $type      - The path type being cached
+ * @param (string) $path      - The path to store the contents
+ *
+ * @return (void)
  */
 function resource_cache_out($type, $path) {
 	global $config, $remote_db_cnn_id;
@@ -1043,11 +1078,13 @@ function resource_cache_out($type, $path) {
 	}
 }
 
-/** md5sum_path - get a recursive md5sum on an entire directory.
+/**
+ * md5sum_path - get a recursive md5sum on an entire directory.
  *
- * @param string $path      - The path to check for the md5sum
- * @param bool   $recursive - The path should be verified recursively
- * @return null             - No data is returned
+ * @param  (string) $path      - The path to check for the md5sum
+ * @param  (bool)   $recursive - The path should be verified recursively
+ *
+ * @return (void)
  */
 function md5sum_path($path, $recursive = true) {
     if (!is_dir($path)) {
@@ -1090,6 +1127,15 @@ function md5sum_path($path, $recursive = true) {
     return md5(implode('', $filemd5s));
 }
 
+/**
+ * poller_puth_to_remote_db_connect - given the device or poller_id connect
+ *   to the data collector.
+ *
+ * @param  (int)    device_or_poller - the id of the object
+ * @param  (bool)   is_poller - don't let cacti guess, the id is a poller
+ *
+ * @return (bool|resource) The connection or false when the connection fails
+ */
 function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false) {
 	global $config;
 	static $device_poller_ids = array();
@@ -1121,6 +1167,15 @@ function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false)
 	return $rcnn_id;
 }
 
+/**
+ * poller_connect_to_remote - this function connects to the remote
+ *   data collector and returns either false or the connection
+ *   resource.
+ *
+ * @param  (int)    poller_id - the remote poller id
+ *
+ * @return (bool|resource) The connection or false when the connection fails
+ */
 function poller_connect_to_remote($poller_id) {
 	global $config, $local_db_cnn_id;
 
@@ -1175,6 +1230,16 @@ function poller_connect_to_remote($poller_id) {
 	return $rcnn_id;
 }
 
+/**
+ * replicate_out - this function sends table changes from the resource
+ *   cache to the remote database.  This happens as a result of a full
+ *   sync within Cacti.
+ *
+ * @param  (int)    remote_poller_id - the poller to send data to
+ * @param  (string) class - the class of data to push to the poller
+ *
+ * @return (bool)
+ */
 function replicate_out($remote_poller_id = 1, $class = 'all') {
 	global $config;
 
@@ -1433,7 +1498,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		replicate_out_table($rcnn_id, $data, 'data_input_data', $remote_poller_id);
 	}
 
-	api_plugin_hook_function('replicate_out', $remote_poller_id);
+	api_plugin_hook_function('replicate_out', array('remote_poller_id' => $remote_poller_id, 'rcnn_id' => $rcnn_id, 'class' => $class));
 
 	$stats = db_fetch_row_prepared('SELECT
 		SUM(CASE WHEN action=0 THEN 1 ELSE 0 END) AS snmp,
@@ -1456,56 +1521,28 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 	return true;
 }
 
-function replicate_in() {
-	$replicate_inout_tables = array(
-		'host' => array(
-			'direction'   => 'inout', // Relatively small table
-			'in_freq'     => 'onchange',
-			'out_freq'    => 'onrecovery',
-			'out_columns' => 'status, status_event_count, status_fail_date, status_rec_date, status_last_errors, min_time, max_time, cur_time, avg_time, polling_time, total_polls, failed_polls, availability',
-			'in_columns'  => 'all',
-			'setting'     => 'poller_replicate_device_cache_crc_|poller_id|'
-		),
-		'host_snmp_cache' => array(
-			'direction'   => 'inout', // Potentially large table
-			'in_freq'     => 'onchange',
-			'out_freq'    => 'onrecovery',
-			'out_columns' => 'all_changed',
-			'in_columns'  => 'all',
-			'setting'     => 'poller_replicate_device_cache_crc_|poller_id|'
-		),
-		'poller_reindex' => array(
-			'direction'   => 'inout', // Small table
-			'in_freq'     => 'always',
-			'out_freq'    => 'onrecovery',
-			'out_columns' => 'assert_value',
-			'in_columns'  => 'all',
-			'setting'     => 'poller_replicate_device_cache_crc_|poller_id|'
-		)
-	);
-
-	api_plugin_hook_function('replicate_in');
-}
-
-/** replicate_out_table - replicate out an entire table to
- *  remote database.  Optionally, performs update rather
- *  than a truncate and excluding columns from the on duplicate
- *  clause. By default, the remote table will be recreated
- *  if it's table structure does not match the main table.
+/**
+ * replicate_out_table - replicate out an entire table to
+ *   remote database.  Optionally, performs update rather
+ *   than a truncate and excluding columns from the on duplicate
+ *   clause. By default, the remote table will be recreated
+ *   if it's table structure does not match the main table.
  *
- * @param object $conn          - Connection to remote database
- * @param array $data           - Associative array of the table data
- * @param string $table         - The remote table to replicate to
- * @param int $remote_poller_id - The remote data collector's id
- * @param boolean $truncate     - A flag that if true, truncates, otherwise updates
- * @param array $exclude        - An array of column names to not update on replication
+ * @param  (object) $conn             - Connection to remote database
+ * @param  (array)  $data             - Associative array of the table data
+ * @param  (string) $table            - The remote table to replicate to
+ * @param  (int)    $remote_poller_id - The remote data collector's id
+ * @param  (bool)   $truncate         - A flag that if true, truncates, otherwise updates
+ * @param  (array)  $exclude          - An array of column names to not update on replication
+ *
+ * @return (void)
  */
 function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate = true, $exclude = false) {
 	if (cacti_sizeof($data)) {
 		/* check if the table structure changed, and if so, recreate */
 		$local_columns  = db_fetch_assoc('SHOW COLUMNS FROM ' . $table);
-		$remote_columns = db_fetch_assoc('SHOW COLUMNS FROM ' . $table, true, $conn);
-		$remote_rows    = db_fetch_cell('SELECT COUNT(*) FROM ' . $table, '', true, $conn);
+		$remote_columns = db_fetch_assoc('SHOW COLUMNS FROM ' . $table, false, $conn);
+		$remote_rows    = db_fetch_cell('SELECT COUNT(*) FROM ' . $table, '', false, $conn);
 
 		if ($exclude !== false && !is_array($exclude)) {
 			$exclude = array($exclude);
@@ -1603,7 +1640,9 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 
 		replicate_log('INFO: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
 	} else {
-		db_execute("TRUNCATE TABLE $table", true, $conn);
+		if (db_table_exists($table, true, $conn)) {
+			db_execute("TRUNCATE TABLE $table", true, $conn);
+		}
 
 		replicate_log('INFO: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found');
 	}
@@ -1957,15 +1996,17 @@ function get_remote_poller_ids_from_devices(&$devices) {
 	}
 }
 
-/** register_process_start - public function to register a process
- *  in Cacti's process table
+/**
+ * register_process_start - public function to register a process
+ *   in Cacti's process table
  *
- * @param string $tasktype  - Mandatory task type
- * @param string $taskname  - Mandatory task name
- * @param int $taskid       - Optional task id
- * @param int $timeout      - Optional timeout
- * @return boolean success  - true if you can start running, else false if
- *                            another version is running and has not ended.
+ * @param  (string) $tasktype - Mandatory task type
+ * @param  (string) $taskname - Mandatory task name
+ * @param  (int)    $taskid   - Optional task id
+ * @param  (int)    $timeout  - Optional timeout
+ *
+ * @return (bool)   success   - true if you can start running, else false if
+ *                              another version is running and has not ended.
  */
 function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 300) {
 	$pid = getmypid();
@@ -2016,14 +2057,16 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 	return true;
 }
 
-/** register_process - register a process in Cacti's process table
+/**
+ * register_process - register a process in Cacti's process table
  *
- * @param string $tasktype  - Mandatory task type
- * @param string $taskname  - Mandatory task name
- * @param int $taskid       - Mandatory task id
- * @param int $pid          - Mandatory pid
- * @param int $timeout      - Mandatory timeout
- * @return null             - No data is returned
+ * @param  (string) $tasktype  - Mandatory task type
+ * @param  (string) $taskname  - Mandatory task name
+ * @param  (int)    $taskid    - Mandatory task id
+ * @param  (int)    $pid       - Mandatory pid
+ * @param  (int)    $timeout   - Mandatory timeout
+ *
+ * @return (void)
  */
 function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
 	if (!db_table_exists('processes')) {
@@ -2035,13 +2078,15 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
 		array($tasktype, $taskname, $taskid, $pid, $timeout));
 }
 
-/** unregister_process - remove a process from Cacti's process table
+/**
+ * unregister_process - remove a process from Cacti's process table
  *
- * @param string $tasktype  - Mandatory task type
- * @param string $taskname  - Mandatory task name
- * @param int $taskid       - Optional task id
- * @param int $pid          - Optional task pid
- * @return null             - No data is returned
+ * @param  (string) $tasktype  - Mandatory task type
+ * @param  (string) $taskname  - Mandatory task name
+ * @param  (int)    $taskid       - Optional task id
+ * @param  (int)    $pid          - Optional task pid
+ *
+ * @return (void)
  */
 function unregister_process($tasktype, $taskname, $taskid = 0, $pid = -1) {
 	if (!db_table_exists('processes')) {
@@ -2064,12 +2109,14 @@ function unregister_process($tasktype, $taskname, $taskid = 0, $pid = -1) {
 	}
 }
 
-/** heartbeat_process - update the process table last_update timestamp
+/**
+ * heartbeat_process - update the process table last_update timestamp
  *
- * @param string $tasktype  - Mandatory task type
- * @param string $taskname  - Mandatory task name
- * @param int $taskid       - Optional task id
- * @return null             - No data is returned
+ * @param  (string) $tasktype  - Mandatory task type
+ * @param  (string) $taskname  - Mandatory task name
+ * @param  (int)    $taskid       - Optional task id
+ *
+ * @return (void)
  */
 function heartbeat_process($tasktype, $taskname, $taskid = 0) {
 	if (!db_table_exists('processes')) {
@@ -2084,14 +2131,16 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
 		array($tasktype, $taskname, $taskid));
 }
 
-/** timeout_kill_registered_processes - allow a Cacti plugin or scheduled task to
- *  be bulk cleaned.
+/**
+ * timeout_kill_registered_processes - allow a Cacti plugin or scheduled task to
+ *   be bulk cleaned.
  *
- * @param string $tasktype  - Optional task type
- * @param string $taskname  - Optional task name
- * @param string $taskid    - Optional task id
- * @param string $pid       - Optional pid
- * @return null             - No data is returned
+ * @param  (string) $tasktype  - Optional task type
+ * @param  (string) $taskname  - Optional task name
+ * @param  (string) $taskid    - Optional task id
+ * @param  (string) $pid       - Optional pid
+ *
+ * @return (void)
  */
 function timeout_kill_registered_processes($tasktype = '', $taskname = '', $taskid = 0, $pid = -1) {
 	if (!db_table_exists('processes')) {
