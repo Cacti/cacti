@@ -5559,7 +5559,7 @@ function padleft($pad = '', $value = '', $min = 2) {
 }
 
 function get_classic_tabimage($text, $down = false) {
-	global $config;
+	global $config, $dejavu_paths;
 
 	$images = array(
 		false => 'tab_template_blue.gif',
@@ -5587,8 +5587,14 @@ function get_classic_tabimage($text, $down = false) {
 	$wrapsize = 12;
 
 	if (file_exists($config['base_path'] . '/images/' . $images[$down])) {
+		foreach ($dejavu_paths as $dejavupath) {
+			if (file_exists($dejavupath)) {
+				$font_path = $dejavupath;
+			}
+		}
+
 		$originalpath = getenv('GDFONTPATH');
-		putenv('GDFONTPATH=' . $config['base_path'] . '/include/fonts/');
+		putenv('GDFONTPATH=' . $font_path);
 
 		$template = imagecreatefromgif ($config['base_path'] . '/images/' . $images[$down]);
 

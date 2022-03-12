@@ -3577,7 +3577,7 @@ function rrdtool_parse_error($string) {
 }
 
 function rrdtool_create_error_image($string, $width = '', $height = '') {
-	global $config;
+	global $config, $dejavu_paths;
 
 	$string = rrdtool_parse_error($string);
 
@@ -3592,7 +3592,12 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	$shadeb      = '999999';
 
 	if ($config['cacti_server_os'] == 'unix') {
-		$font_file = '/usr/share/fonts/dejavu/DejaVuSans.ttf';
+		foreach ($dejavu_paths as $dejavupath) {
+			if (file_exists($dejavupath . '/DejaVuSans.ttf')) {
+				$font_file = $dejavupath . '/DejaVuSans.ttf';
+				break;
+			}
+		}
 	} else {
 		$font_file = 'C:/Windows/Fonts/Arial.ttf';
 	}

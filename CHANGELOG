@@ -72,8 +72,9 @@ Cacti CHANGELOG
 -issue#4587: Cacti could benefit from reducing turns to settings table by caching common variables ahead of time
 -issue#4588: Cannot use multibyte in host.php
 -issue#4589: db_update_table should ALTER table engine/row_format/charset before ADD/ALTER column/index
--issue#4598: Plugin tab does not stay visible when main poller is offline
+-issue#4594: Prefer to use OS supplied Devaju Fonts fiels
 -issue#4597: Selective Device Debug does not work with Remote Data Collectors
+-issue#4598: Plugin tab does not stay visible when main poller is offline
 -issue#4603: Cacti refuses to use the php-gettext module when installed
 -issue#4607: Cacti's config.php file is improperly moved into the resource cache
 -issue#4609: In some cases Cacti cacti session renewal lacks the HTTP_USER_AGENT resulting in errors in the Cacti Log

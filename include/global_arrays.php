@@ -2796,4 +2796,17 @@ $graph_sources = array(
 	3 => __('Aggregate'),
 );
 
+if ($config['cacti_server_os'] == 'unix') {
+	$dejavu_paths = array(
+		'/usr/share/fonts/dejavu/', //RHEL/CentOS
+		'/usr/share/fonts/truetype/', //SLES
+		'/usr/share/fonts/truetype/dejavu/', //Ubuntu
+		__DIR__ . '/fonts'  //Build-in
+	);
+} else {
+	$dejavu_paths = array(
+		'C:/Windows/Fonts/' //Windows
+	);
+}
+
 api_plugin_hook('config_arrays');
