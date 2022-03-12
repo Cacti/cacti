@@ -6827,8 +6827,13 @@ function cacti_cookie_logout() {
 		$domain = '';
 	}
 
-	setcookie(session_name(), '', time() - 3600, $config['url_path'], $domain);
-	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+		setcookie(session_name(), '', time() - 3600, $config['url_path'], $domain, true, true);
+		setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain, true, true);
+	} else {
+		setcookie(session_name(), '', time() - 3600, $config['url_path'], $domain, false, true);
+		setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain, false, true);
+	}
 
 	unset($_COOKIE[$config['cacti_session_name']]);
 }
@@ -6870,7 +6875,11 @@ function cacti_cookie_session_logout() {
 		$domain = '';
 	}
 
-	setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain);
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+		setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain, true, true);
+	} else {
+		setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain, false, true);
+	}
 }
 
 /**
