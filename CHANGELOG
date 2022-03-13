@@ -84,6 +84,7 @@ Cacti CHANGELOG
 -issue#4613: Cacti replication can not correct table structure changes in newer versions of MySQL/MariaDB
 -issue#4614: Cacti can not differentiate between execution remotely between the main poller loop vs. poller bottom
 -issue#4616: When performing plugin actions from the Cacti UI, replication should be forced to Remote Collectors
+-issue#4617: When uninstalling a plugin, tables that are removed from plugins should be removed from remotes if replicated
 -feature: Expose hidden Language Translation setting l10n_language_handler
 -feature: Allow a Device to be a part of a Report outside of a Tree
 -feature: Allow Basic Authentication to display customer login failed message

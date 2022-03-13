@@ -534,6 +534,12 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 	}
 }
 
+function api_plugin_drop_table($table) {
+	db_execute("DROP TABLE IF EXISTS $table");
+
+	api_plugin_drop_remote_table($table);
+}
+
 function api_plugin_db_changes_remove($plugin) {
 	$tables = db_fetch_assoc_prepared("SELECT `table`
 		FROM plugin_db_changes
@@ -545,6 +551,8 @@ function api_plugin_db_changes_remove($plugin) {
 		foreach ($tables as $table) {
 			db_execute('DROP TABLE IF EXISTS `' . $table['table'] . '`;');
 		}
+
+		api_plugin_drop_remote_table($table['table']);
 
 		db_execute_prepared("DELETE FROM plugin_db_changes
 			WHERE plugin = ?
@@ -850,6 +858,34 @@ function api_plugin_replicate_config() {
 		foreach($pollers as $poller_id => $last_polled) {
 			if ($last_polled < $gone_time) {
 				replicate_out($poller_id, 'plugins');
+			}
+		}
+	}
+}
+
+function api_plugin_drop_remote_table($table) {
+	global $config;
+
+	include_once($config['base_path'] . '/lib/poller.php');
+
+	$gone_time = read_config_option('poller_interval') * 2;
+
+	$pollers = array_rekey(
+		db_fetch_assoc('SELECT
+			id,
+			UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS last_polled
+			FROM poller
+			WHERE id > 1
+			AND disabled=""'),
+		'id', 'last_polled'
+	);
+
+	if (cacti_sizeof($pollers)) {
+		foreach($pollers as $poller_id => $last_polled) {
+			$rcnn_id = poller_connect_to_remote($poller_id);
+
+			if ($rcnn_id !== false) {
+				db_execute("DROP TABLE IF EXISTS $table", false, $rcnn_id);
 			}
 		}
 	}
