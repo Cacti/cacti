@@ -405,6 +405,15 @@ function redesignConsoleMenu(menu) {
 
 		// Clean up: kick out Main Console
 		$('#menu_main_console').remove();
+
+		/* replace default icons */
+		$('i.menu_glyph:not(.ignore).fa-home').removeClass('fa fa-home').addClass('fa fa-tools');
+		$('i.menu_glyph.fa-folder').removeClass('fa').addClass('far');
+		$('i.menu_glyph.fa-clone').removeClass('fa').addClass('far');
+		$('i.menu_glyph.fa-database').removeClass('fa fa-database').addClass('far fa-hdd');
+		$('i.menu_glyph:not(.ignore).fa-chart-area').removeClass('fa fa-chart-area').addClass('fa fa-plus');
+		$('i.menu_glyph.fa-cogs').removeClass('fa fa-cogs').addClass('fa fa-toolbox');
+		$('i.menu_glyph.fa-superpowers').removeClass('fab fa-superpowers').addClass('fas fa-network-wired');
 	}
 }
 
@@ -493,14 +502,6 @@ function setupDefaultElements() {
 		}
 	);
 
-	/* replace default icons */
-	$('i.menu_glyph:not(.ignore).fa-home').removeClass('fa fa-home').addClass('fa fa-tools');
-	$('i.menu_glyph.fa-folder').removeClass('fa').addClass('far');
-	$('i.menu_glyph.fa-clone').removeClass('fa').addClass('far');
-	$('i.menu_glyph.fa-database').removeClass('fa fa-database').addClass('far fa-hdd');
-	$('i.menu_glyph:not(.ignore).fa-chart-area').removeClass('fa fa-chart-area').addClass('fa fa-plus');
-	$('i.menu_glyph.fa-cogs').removeClass('fa fa-cogs').addClass('fa fa-toolbox');
-	$('i.menu_glyph.fa-superpowers').removeClass('fab fa-superpowers').addClass('fas fa-network-wired');
 	//$('td:nth-child(2), th:nth-child(2)').hide;
 
 	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
