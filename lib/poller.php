@@ -821,6 +821,9 @@ function cache_in_path($path, $type, $recursive = true) {
 		if (basename($path) == 'config.php' && strpos($path, 'plugins') !== false) {
 			// Allow replication of plugin based config.php files
 			$exclude = false;
+		} elseif (basename($path) == 'config_local.php') {
+			// Don't cache a plugin config_local.php
+			$exclude = true;
 		} elseif (basename($path) == 'config.php') {
 			// Don't cache Cacti's config.php
 			$exclude = true;
