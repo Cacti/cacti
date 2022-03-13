@@ -1555,10 +1555,15 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 		if (cacti_sizeof($local_columns) != cacti_sizeof($remote_columns)) {
 			replicate_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table);
 			$create = db_fetch_row('SHOW CREATE TABLE ' . $table);
-			if (isset($create['Create Table'])) {
+			if (isset($create["CREATE TABLE `$table`"]) || isset($create['Create Table'])) {
 				replicate_log('NOTE: Replication Recreating Remote Table Structure for ' . $table);
 				db_execute('DROP TABLE IF EXISTS ' . $table, true, $conn);
-				db_execute($create['Create Table'], true, $conn);
+
+				if (isset($create["CREATE TABLE `$table`"])) {
+					db_execute($create["CREATE TABLE `$table`"], true, $conn);
+				} else {
+					db_execute($create['Create Table'], true, $conn);
+				}
 			}
 		}
 
