@@ -73,7 +73,7 @@ function api_plugin_hook($name) {
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
-			if (!in_array($hdata['name'], $plugins_integrated)) {
+			if (!in_array($hdata['name'], $plugins_integrated, true)) {
 				if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
 					include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
 				}
@@ -81,6 +81,8 @@ function api_plugin_hook($name) {
 				$function = $hdata['function'];
 				if (function_exists($function)) {
 					api_plugin_run_plugin_hook($name, $hdata['name'], $function, $args);
+				} else {
+					cacti_log(sprintf('WARNING: Function does not exist %s with function %s' . PHP_EOL, $name, $hdata['function']), false, 'PLUGIN', POLLER_VERBOSITY_MEDIUM);
 				}
 			}
 		}
@@ -148,7 +150,7 @@ function api_plugin_hook_function($name, $parm = NULL) {
 
 					if (($is_array && !is_array($ret)) || ($ret == null && $null_ret === false)) {
 						if (cacti_sizeof($result) > 1) {
-							cacti_log(sprintf("WARNING: Plugin hook '%s' from Plugin '%s' must return the calling array or variable, and it is not doing so.  Please report this to the Plugin author.", $function, $hdata['name']), false);
+							cacti_log(sprintf("WARNING: Plugin hook '%s' from Plugin '%s' must return the calling array or variable, and it is not doing so.  Please report this to the Plugin author.", $function, $hdata['name']), false, 'PLUGIN');
 						}
 					}
 				}
@@ -170,14 +172,13 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 
 		$required_capabilities = array(
 			// Poller related
-			'poller_top'               => array('remote_collect'), // Poller Top
-			'poller_bottom'            => array('remote_collect'), // Poller execution, api_plugin_hook
-			'update_host_status'       => array('remote_collect'), // Processing poller output, api_plugin_hook
-			'poller_output'            => array('remote_collect'), // Poller output activities
-			'poller_command_args'      => array('remote_collect'), // Command line arguments
-			'cacti_stats_update'       => array('remote_collect'), // Updating statistics
-			'poller_finishing'         => array('remote_collect'), // Poller post processing
-			'poller_exiting'           => array('remote_collect'), // Poller exception handling
+			'poller_top'               => array('remote_collect'),              // Poller Top, api_plugin_hook
+			'poller_bottom'            => array('remote_poller'),               // Poller execution, api_plugin_hook
+			'update_host_status'       => array('remote_collect'),              // Processing poller output, api_plugin_hook
+			'poller_output'            => array('remote_collect'),              // Poller output activities
+			'poller_command_args'      => array('remote_collect'),              // Command line arguments
+			'poller_finishing'         => array('remote_collect'),              // Poller post processing, api_plugin_hook
+			'poller_exiting'           => array('remote_collect'),              // Poller exception handling, api_plugin_hook
 
 			// GUI Related
 			'page_head'                => array('online_view', 'offline_view'), // Navigation, api_plugin_hook
@@ -193,11 +194,11 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 		if ($plugin_capabilities === false) {
 			$function($args);
 		} elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
-			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+			if (api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities)) {
 				$function($args);
 			}
 		} elseif (isset($required_capabilities[$hook])) {
-			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+			if (api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities)) {
 				$function($args);
 			}
 		} else {
@@ -230,7 +231,8 @@ function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 	if ($config['poller_id'] > 1) {
 		$required_capabilities = array(
 			// Poller related
-			'poller_output'            => array('remote_collect'), // Processing poller output, api_plugin_hook_function
+			'poller_output'            => array('remote_collect'),              // Processing poller output, api_plugin_hook_function
+			'cacti_stats_update'       => array('remote_collect'),              // Updating Cacti stats
 
 			// GUI Related
 			'top_header'               => array('online_view', 'offline_view'), // Top Tabs, api_plugin_hook_function
@@ -245,17 +247,17 @@ function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 
 		$plugin_capabilities = api_plugin_remote_capabilities($plugin);
 
-		// we will run if capabilities are not set
 		if ($plugin_capabilities === false) {
+			// we will run if capabilities are not set
 			$ret = $function($ret);
-		// run if hooks is remote_collect and we support it
 		} elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
-			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+			// run if hook is remote_collect and we support it
+			if (api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities)) {
 				$ret = $function($ret);
 			}
-		// run if hooks is remote_collect and we support it
 		} elseif (isset($required_capabilities[$hook])) {
-			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities)) {
+			// run if hook is remote_collect and we support it
+			if (api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities)) {
 				$ret = $function($ret);
 			}
 		} else {
@@ -378,17 +380,28 @@ function api_plugin_has_capability($plugin, $capability) {
 	}
 }
 
-function api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities) {
+function api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities) {
 	global $config;
 
 	$status = $config['connection'];
 
+	// Don't run if not a supported hook
 	if (!isset($required_capabilities[$hook])) {
-		return true;
+		cacti_log(sprintf('WARNING: Not running hook %s for plugin %s as its not a supported Remote Hook', $hook, $plugin), false, 'PLUGIN');
+
+		return false;
 	}
 
 	foreach($required_capabilities[$hook] as $capability) {
-		if ($status == 'online' && strpos($capability, 'online') === false) {
+		if ($capability == 'remote_collect') {
+			if (strpos($plugin_capabilities, "$capability:1") !== false) {
+				return true;
+			}
+		} elseif ($capability == 'remote_poller') {
+			if (strpos($plugin_capabilities, "$capability:1") !== false) {
+				return true;
+			}
+		} elseif ($status == 'online' && strpos($capability, 'online') === false) {
 			continue;
 		} elseif (($status == 'offline' || $status == 'recovery') && strpos($capability, 'offline') === false) {
 			continue;
@@ -953,7 +966,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 		$realm_id = $realm_ids[0]['id'];
 	} elseif (cacti_sizeof($realm_ids) > 1) {
 		$realm_id = $realm_ids[0]['id'];
-		cacti_log('WARNING: Registering Realm for Plugin ' . $plugin . ' and Filenames ' . $file . ' is ambiguous.  Using first matching Realm.  Contact the plugin owner to resolve this issue.');
+		cacti_log('WARNING: Registering Realm for Plugin ' . $plugin . ' and Filenames ' . $file . ' is ambiguous.  Using first matching Realm.  Contact the plugin owner to resolve this issue.', false, 'PLUGIN');
 
 		unset($realm_ids[0]);
 

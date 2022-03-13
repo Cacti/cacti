@@ -753,8 +753,9 @@ while ($poller_runs_completed < $poller_runs) {
 				dsstats_poller_bottom();
 				dsdebug_poller_bottom();
 				boost_poller_bottom();
-				api_plugin_hook('poller_bottom');
 			}
+
+			api_plugin_hook('poller_bottom');
 
 			// record the start time for this loop
 			$loop_end      = microtime(true);
@@ -814,6 +815,7 @@ if ($poller_id == 1) {
 
 	automation_poller_bottom();
 	poller_maintenance();
+	api_plugin_hook('poller_bottom');
 }
 
 function bad_index_check($mibs) {
