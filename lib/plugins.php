@@ -176,7 +176,6 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 			'poller_bottom'            => array('remote_poller'),               // Poller execution, api_plugin_hook
 			'update_host_status'       => array('remote_collect'),              // Processing poller output, api_plugin_hook
 			'poller_output'            => array('remote_collect'),              // Poller output activities
-			'poller_command_args'      => array('remote_collect'),              // Command line arguments
 			'poller_finishing'         => array('remote_collect'),              // Poller post processing, api_plugin_hook
 			'poller_exiting'           => array('remote_collect'),              // Poller exception handling, api_plugin_hook
 
