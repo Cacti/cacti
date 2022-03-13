@@ -570,7 +570,7 @@ function api_plugin_db_changes_remove($plugin) {
 	}
 }
 
-function api_plugin_db_add_column ($plugin, $table, $column) {
+function api_plugin_db_add_column($plugin, $table, $column) {
 	global $config, $database_default;
 
 	// Example: api_plugin_db_add_column ('thold', 'plugin_config',
@@ -728,6 +728,8 @@ function api_plugin_install($plugin) {
 				array($plugin));
 		}
 	}
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_uninstall_integrated() {
@@ -766,6 +768,8 @@ function api_plugin_uninstall($plugin, $tables = true) {
 			WHERE plugin = ?',
 			array($plugin));
 	}
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_check_config($plugin) {
@@ -821,6 +825,34 @@ function api_plugin_disable($plugin) {
 		SET status = 4
 		WHERE directory = ?',
 		array($plugin));
+
+	api_plugin_replicate_config();
+}
+
+function api_plugin_replicate_config() {
+	global $config;
+
+	include_once($config['base_path'] . '/lib/poller.php');
+
+	$gone_time = read_config_option('poller_interval') * 2;
+
+	$pollers = array_rekey(
+		db_fetch_assoc('SELECT
+			id,
+			UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS last_polled
+			FROM poller
+			WHERE id > 1
+			AND disabled=""'),
+		'id', 'last_polled'
+	);
+
+	if (cacti_sizeof($pollers)) {
+		foreach($pollers as $poller_id => $last_polled) {
+			if ($last_polled < $gone_time) {
+				replicate_out($poller_id, 'plugins');
+			}
+		}
+	}
 }
 
 function api_plugin_disable_all($plugin) {
@@ -830,6 +862,8 @@ function api_plugin_disable_all($plugin) {
 		SET status = 4
 		WHERE directory = ?',
 		array($plugin));
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_moveup($plugin) {
@@ -851,6 +885,8 @@ function api_plugin_moveup($plugin) {
 		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($prior_id, $id));
 		db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
 	}
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_movedown($plugin) {
@@ -862,6 +898,8 @@ function api_plugin_movedown($plugin) {
 	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($temp_id, $next_id));
 	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($next_id, $id));
 	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = false) {
@@ -912,12 +950,16 @@ function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = fa
 			AND `hook` = ?",
 			array($function, $status, $file, $plugin, $hook));
 	}
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_remove_hooks($plugin) {
 	db_execute_prepared('DELETE FROM plugin_hooks
 		WHERE name = ?',
 		array($plugin));
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_enable_hooks($plugin) {
@@ -925,6 +967,8 @@ function api_plugin_enable_hooks($plugin) {
 		SET status = 1
 		WHERE name = ?',
 		array($plugin));
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_disable_hooks($plugin) {
@@ -935,6 +979,8 @@ function api_plugin_disable_hooks($plugin) {
 		AND hook != 'config_arrays'
 		AND hook != 'config_form'",
 		array($plugin));
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_disable_hooks_all($plugin) {
@@ -942,6 +988,8 @@ function api_plugin_disable_hooks_all($plugin) {
 		SET status = 0
 		WHERE name = ?",
 		array($plugin));
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
@@ -1043,6 +1091,8 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 			WHERE id = ?',
 			array($display, $file, $realm_id));
 	}
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_remove_realms($plugin) {
@@ -1065,6 +1115,8 @@ function api_plugin_remove_realms($plugin) {
 	db_execute_prepared('DELETE FROM plugin_realms
 		WHERE plugin = ?',
 		array($plugin));
+
+	api_plugin_replicate_config();
 }
 
 function api_plugin_load_realms() {

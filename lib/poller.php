@@ -1323,6 +1323,12 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		$data = db_fetch_assoc('SELECT * FROM poller');
 		replicate_out_table($rcnn_id, $data, 'poller', $remote_poller_id);
 
+		$data = db_fetch_assoc('SELECT * FROM version');
+		replicate_out_table($rcnn_id, $data, 'version', $remote_poller_id);
+	}
+
+	// Plugin tables
+	if ($class == 'all' || $class == 'plugins') {
 		$data = db_fetch_assoc('SELECT * FROM plugin_config');
 		replicate_out_table($rcnn_id, $data, 'plugin_config', $remote_poller_id);
 
@@ -1331,9 +1337,6 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 
 		$data = db_fetch_assoc('SELECT * FROM plugin_realms');
 		replicate_out_table($rcnn_id, $data, 'plugin_realms', $remote_poller_id);
-
-		$data = db_fetch_assoc('SELECT * FROM version');
-		replicate_out_table($rcnn_id, $data, 'version', $remote_poller_id);
 	}
 
 	// Auth tables
@@ -1501,7 +1504,9 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		replicate_out_table($rcnn_id, $data, 'data_input_data', $remote_poller_id);
 	}
 
-	api_plugin_hook_function('replicate_out', array('remote_poller_id' => $remote_poller_id, 'rcnn_id' => $rcnn_id, 'class' => $class));
+	if ($class == 'all') {
+		api_plugin_hook_function('replicate_out', array('remote_poller_id' => $remote_poller_id, 'rcnn_id' => $rcnn_id, 'class' => $class));
+	}
 
 	$stats = db_fetch_row_prepared('SELECT
 		SUM(CASE WHEN action=0 THEN 1 ELSE 0 END) AS snmp,
@@ -1518,8 +1523,10 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			array($stats['snmp'], $stats['script'], $stats['server'], $remote_poller_id));
 	}
 
-	replicate_log('Synchronization of Poller ' . $remote_poller_id . ' completed');
-	raise_message('poller_sync');
+	if ($class != 'plugins' && $config['is_web']) {
+		replicate_log('Synchronization of Poller ' . $remote_poller_id . ' completed', POLLER_VERBOSITY_LOW);
+		raise_message('poller_sync');
+	}
 
 	return true;
 }
@@ -1540,7 +1547,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
  *
  * @return (void)
  */
-function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate = true, $exclude = false) {
+function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate = true, $exclude = false, $level = POLLER_VERBOSITY_NONE) {
 	if (cacti_sizeof($data)) {
 		/* check if the table structure changed, and if so, recreate */
 		$local_columns  = db_fetch_assoc('SHOW COLUMNS FROM ' . $table);
@@ -1556,10 +1563,10 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 		}
 
 		if (cacti_sizeof($local_columns) != cacti_sizeof($remote_columns)) {
-			replicate_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table);
+			replicate_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table, $level);
 			$create = db_fetch_row('SHOW CREATE TABLE ' . $table);
 			if (isset($create["CREATE TABLE `$table`"]) || isset($create['Create Table'])) {
-				replicate_log('NOTE: Replication Recreating Remote Table Structure for ' . $table);
+				replicate_log('NOTE: Replication Recreating Remote Table Structure for ' . $table, $level);
 				db_execute('DROP TABLE IF EXISTS ' . $table, true, $conn);
 
 				if (isset($create["CREATE TABLE `$table`"])) {
@@ -1634,7 +1641,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 				$rows_done    += $rows_affected;
 
 				if ($rows_log) {
-					replicate_log('NOTE: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
+					replicate_log('NOTE: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated', $level);
 				}
 				$sql = '';
 				$rowcnt = 0;
@@ -1646,20 +1653,20 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 			$rows_done += db_affected_rows($conn);
 		}
 
-		replicate_log('INFO: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
+		replicate_log('INFO: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated', $level);
 	} else {
 		if (db_table_exists($table, true, $conn)) {
 			db_execute("TRUNCATE TABLE $table", true, $conn);
 		}
 
-		replicate_log('INFO: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found');
+		replicate_log('INFO: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found', $level);
 	}
 }
 
 function replicate_log($text, $level = POLLER_VERBOSITY_NONE) {
 	if (defined('IN_CACTI_INSTALL')) {
 		log_install_and_file($level, $text, 'REPLICATE', true);
-	} else {
+	} elseif ($level != POLLER_VERBOSITY_NONE) {
 		cacti_log($text, false, 'REPLICATE', $level);
 	}
 }
@@ -1766,6 +1773,12 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 
 function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 	$max_packet  = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'max_allowed_packet'", true, $conn);
+
+	if (cacti_sizeof($max_packet)) {
+		$max_packet = $max_packet['Value'];
+	} else {
+		$max_packet = 2500000;
+	}
 
 	if (cacti_sizeof($data)) {
 		$prefix    = "INSERT INTO $table (";
