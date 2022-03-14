@@ -5719,6 +5719,7 @@ function IgnoreErrorHandler($message) {
 		'Timeout',
 		'Unknown host',
 		'Invalid object identifier',
+		'Maximum execution time of',
 		'Name or service not known'
 	);
 
