@@ -193,11 +193,11 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 		if ($plugin_capabilities === false) {
 			$function($args);
 		} elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
-			if (api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities)) {
+			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin)) {
 				$function($args);
 			}
 		} elseif (isset($required_capabilities[$hook])) {
-			if (api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities)) {
+			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin)) {
 				$function($args);
 			}
 		} else {
@@ -251,12 +251,12 @@ function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 			$ret = $function($ret);
 		} elseif (api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities)) {
 			// run if hook is remote_collect and we support it
-			if (api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities)) {
+			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin)) {
 				$ret = $function($ret);
 			}
 		} elseif (isset($required_capabilities[$hook])) {
 			// run if hook is remote_collect and we support it
-			if (api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities)) {
+			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin)) {
 				$ret = $function($ret);
 			}
 		} else {
@@ -379,10 +379,15 @@ function api_plugin_has_capability($plugin, $capability) {
 	}
 }
 
-function api_plugin_status_run($hook, $plugin, $required_capabilities, $plugin_capabilities) {
+function api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin = '') {
 	global $config;
 
 	$status = $config['connection'];
+
+	if ($plugin == '') {
+		cacti_log('WARNING: The function \'api_plugin_status_run\' API has changed.  Please add the $plugin attribute to the last position', false, 'PLUGIN');
+		$plugin = 'Unknown';
+	}
 
 	// Don't run if not a supported hook
 	if (!isset($required_capabilities[$hook])) {
