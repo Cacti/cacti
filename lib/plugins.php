@@ -670,6 +670,7 @@ function api_plugin_install($plugin) {
 
 	if (!defined('IN_CACTI_INSTALL')) {
 		define('IN_CACTI_INSTALL', 1);
+		define('IN_PLUGIN_INSTALL', 1);
 	}
 
 	$dependencies = api_plugin_get_dependencies($plugin);

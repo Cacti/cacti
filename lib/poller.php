@@ -1664,7 +1664,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 }
 
 function replicate_log($text, $level = POLLER_VERBOSITY_NONE) {
-	if (defined('IN_CACTI_INSTALL')) {
+	if (defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
 		log_install_and_file($level, $text, 'REPLICATE', true);
 	} elseif ($level != POLLER_VERBOSITY_NONE) {
 		cacti_log($text, false, 'REPLICATE', $level);
