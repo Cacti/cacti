@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-03-14 13:33-0400\n"
-"PO-Revision-Date: 2022-02-27 15:51-0500\n"
+"PO-Revision-Date: 2022-03-14 20:56-0400\n"
 "Last-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\n"
 "Language-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -3016,10 +3016,9 @@ msgstr[0] "Clique em 'Continuar' para excluir a seguinte cor"
 msgstr[1] "Clique em 'Continuar' para apagar as seguintes cores"
 
 #: color.php:192
-#, fuzzy
 msgid "Delete Color"
 msgid_plural "Delete Colors"
-msgstr[0] "Apagar cor"
+msgstr[0] "Eliminar cor"
 msgstr[1] "Eliminar cores"
 
 #: color.php:352
@@ -4599,9 +4598,8 @@ msgid "Data Source Item Fields"
 msgstr "Campos de item de origem de dados"
 
 #: data_sources.php:987
-#, fuzzy
 msgid "Custom Data"
-msgstr "Dados personalizados"
+msgstr "Dados Personalizados"
 
 #: data_sources.php:1085
 #, fuzzy, php-format

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-03-14 13:33-0400\n"
-"PO-Revision-Date: 2022-02-27 15:56-0500\n"
+"PO-Revision-Date: 2022-03-14 21:01-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: \n"
 "Language: sv\n"
@@ -3593,7 +3593,7 @@ msgstr "Resultat"
 #: data_debug.php:777
 #, fuzzy
 msgid "<not set>"
-msgstr "Ange som standard"
+msgstr "Ej inställt"
 
 #: data_debug.php:812 data_debug.php:863
 #, fuzzy
@@ -7802,7 +7802,7 @@ msgstr "Dagskift"
 #: include/global_arrays.php:1333
 #, fuzzy
 msgid "This Day"
-msgstr "Varje dag"
+msgstr "dag"
 
 #: include/global_arrays.php:1334
 msgid "This Week"

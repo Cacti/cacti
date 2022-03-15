@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-03-14 13:33-0400\n"
-"PO-Revision-Date: 2022-02-27 15:49-0500\n"
+"PO-Revision-Date: 2022-03-14 20:54-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ko\n"
@@ -3604,7 +3604,7 @@ msgstr "결과"
 #: data_debug.php:777
 #, fuzzy
 msgid "<not set>"
-msgstr "기본 설정"
+msgstr "설정되지 않음"
 
 #: data_debug.php:812 data_debug.php:863
 #, fuzzy

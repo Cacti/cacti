@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-03-14 13:33-0400\n"
-"PO-Revision-Date: 2022-02-27 15:38-0500\n"
+"PO-Revision-Date: 2022-03-14 20:45-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar_SA\n"
@@ -400,7 +400,7 @@ msgstr "RRDtool يقول:"
 #: aggregate_graphs.php:830
 #, fuzzy, php-format
 msgid "Aggregate Graph %s"
-msgstr "انقر فوق &quot;متابعة&quot; لدمج الرسم البياني الإجمالي (الرسوم) التجميعية في Graph Aggregate واحد."
+msgstr "قم بتضمين نص عنوان GPRINT للرسومات البيانية المصدر مع الرسوم البيانية المجمعة."
 
 #: aggregate_graphs.php:853 aggregate_templates.php:394 graphs.php:1052
 msgid "Prefix Replacement Values"

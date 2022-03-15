@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-03-14 13:33-0400\n"
-"PO-Revision-Date: 2022-02-27 15:44-0500\n"
+"PO-Revision-Date: 2022-03-14 20:48-0400\n"
 "Last-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\n"
 "Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\n"
 "Language: es_ES\n"
@@ -15485,12 +15485,12 @@ msgstr "Ambos"
 #: lib/installer.php:3426
 #, fuzzy, php-format
 msgid "No - %s"
-msgstr "Cambio de %s a %s"
+msgstr "Campo '%s' %s"
 
 #: lib/installer.php:3428 lib/installer.php:3430
 #, fuzzy, php-format
 msgid "%s - No"
-msgstr "Cambio de %s a %s"
+msgstr "Campo '%s' %s"
 
 #: lib/installer.php:3428
 msgid "Web"

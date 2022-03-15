@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-03-14 13:33-0400\n"
-"PO-Revision-Date: 2022-02-27 15:59-0500\n"
+"PO-Revision-Date: 2022-03-14 21:04-0400\n"
 "Last-Translator: Aiolos <ip6tables@qq.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -6759,9 +6759,8 @@ msgid "Update Profile"
 msgstr "更新配置文件"
 
 #: include/global_arrays.php:1114
-#, fuzzy
 msgid "Users/Groups"
-msgstr "用户组"
+msgstr "用户/团体"
 
 #: include/global_arrays.php:1115
 msgid "Settings/Utilities"
