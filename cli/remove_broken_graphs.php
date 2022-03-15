@@ -27,6 +27,11 @@ include ('../include/cli_check.php');
 include_once('../lib/api_data_source.php');
 include_once('../lib/api_graph.php');
 
+/* switch to main database for cli's */
+if ($config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+}
+
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);

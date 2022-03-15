@@ -42,6 +42,7 @@ global $debug, $cli_upgrade, $database_upgrade_status, $cacti_upgrade_version;
 
 $debug       = false;
 $cli_upgrade = true;
+$local       = false;
 $session     = array();
 $forcever    = '';
 
@@ -55,6 +56,9 @@ if (cacti_sizeof($parms)) {
 		}
 
 		switch ($arg) {
+			case '--local':
+				$local = true;
+				break;
 			case '--forcever':
 				$forcever = $value;
 				break;
@@ -73,11 +77,19 @@ if (cacti_sizeof($parms)) {
 				display_help();
 				exit(0);
 			default:
-				print "ERROR: Invalid Parameter " . $parameter . PHP_EOL . PHP_EOL;
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
 				exit(1);
 		}
 	}
+}
+
+if (!$local && $config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+
+	print 'NOTE: Repairing Tables for Main Database' . PHP_EOL;
+} else {
+	print 'NOTE: Repairing Tables for Local Database' . PHP_EOL;
 }
 
 /* we need to rerun the upgrade, force the current version */
@@ -198,12 +210,13 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print PHP_EOL . "usage: upgrade_database.php [--debug] [--forcever=VERSION]" . PHP_EOL . PHP_EOL;
-	print "A command line version of the Cacti database upgrade tool.  You must execute" . PHP_EOL;
-	print "this command as a super user, or someone who can write a PHP session file." . PHP_EOL;
-	print "Typically, this user account will be apache, www-run, or root." . PHP_EOL . PHP_EOL;
-	print "If you are running a beta or alpha version of Cacti and need to rerun" . PHP_EOL;
-	print "the upgrade script, simply set the forcever to the previous release." . PHP_EOL . PHP_EOL;
-	print "--forcever - Force the starting version, say " . CACTI_VERSION . PHP_EOL;
-	print "--debug    - Display verbose output during execution" . PHP_EOL . PHP_EOL;
+	print PHP_EOL . 'usage: upgrade_database.php [--debug] [--forcever=VERSION]' . PHP_EOL . PHP_EOL;
+	print 'A command line version of the Cacti database upgrade tool.  You must execute' . PHP_EOL;
+	print 'this command as a super user, or someone who can write a PHP session file.' . PHP_EOL;
+	print 'Typically, this user account will be apache, www-run, or root.' . PHP_EOL . PHP_EOL;
+	print 'If you are running a beta or alpha version of Cacti and need to rerun' . PHP_EOL;
+	print 'the upgrade script, simply set the forcever to the previous release.' . PHP_EOL . PHP_EOL;
+	print '--forcever - Force the starting version, say ' . CACTI_VERSION . PHP_EOL;
+	print '--local    - Perform the action on the Remote Data Collector if run from there' . PHP_EOL;
+	print '--debug    - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 }

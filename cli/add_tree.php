@@ -27,6 +27,11 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once($config['base_path'] . '/lib/api_automation_tools.php');
 require_once($config['base_path'] . '/lib/api_tree.php');
 
+/* switch to main database for cli's */
+if ($config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+}
+
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);

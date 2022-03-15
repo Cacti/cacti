@@ -35,6 +35,11 @@ require_once($config['base_path'] . '/lib/snmp.php');
 require_once($config['base_path'] . '/lib/template.php');
 require_once($config['base_path'] . '/lib/utility.php');
 
+/* switch to main database for cli's */
+if ($config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+}
+
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);

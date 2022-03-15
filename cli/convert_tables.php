@@ -41,6 +41,7 @@ $dynamic     = false;
 $table_name  = '';
 $skip_tables = array();
 $installer   = false;
+$local       = false;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -62,6 +63,9 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--dynamic':
 				$dynamic = true;
+				break;
+			case '--local':
+				$local = true;
 				break;
 			case '-s':
 			case '--size':
@@ -119,6 +123,14 @@ if (!($innodb || $utf8)) {
 	print_or_log($installer,  "ERROR: Must select either UTF8 or InnoDB conversion.\n\n");
 	display_help();
 	exit;
+}
+
+if (!$local && $config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+
+	print_or_log($installer, "NOTE: Repairing Tables for Main Database\n");
+} else {
+	print_or_log($installer, "NOTE: Repairing Tables for Local Database\n");
 }
 
 if (cacti_sizeof($skip_tables)) {
@@ -252,6 +264,7 @@ function display_help () {
 	print "-s | --size=N  - The largest table size in records to convert.  Default is 1,000,000 rows.\n";
 	print "-r | --rebuild - Will compress/optimize existing InnoDB tables if found\n";
 	print "     --dynamic - Convert a table to Dynamic row format if available\n";
+	print "     --local   - Perform the action on the Remote Data Collector if run from there\n";
 	print "-f | --force   - Proceed with conversion regardless of table size\n\n";
 	print "-d | --debug   - Display verbose output during execution\n\n";
 }

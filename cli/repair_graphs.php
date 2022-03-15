@@ -30,12 +30,18 @@ require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/utility.php');
 require_once($config['base_path'] . '/lib/template.php');
 
+/* switch to main database for cli's */
+if ($config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+}
+
 /* process calling arguments */
 $parms = $_SERVER["argv"];
 array_shift($parms);
 
-$execute = FALSE;
-$show_sql = FALSE;
+$execute  = false;
+$show_sql = false;
+
 unset($host_id);
 unset($graph_template_id);
 unset($data_template_id);
@@ -50,10 +56,10 @@ foreach($parms as $parameter) {
 
 	switch ($arg) {
 		case "--execute":
-			$execute = TRUE;
+			$execute = true;
 			break;
 		case "--show-sql":
-			$show_sql = TRUE;
+			$show_sql = true;
 			break;
 		case "--host-id":
 			$host_id = trim($value);
@@ -115,10 +121,12 @@ if ($execute) {
 }
 
 // Get all graphs for supplied graph template
-$graph = db_fetch_assoc("SELECT * FROM graph_local where " . (!isset($host_id) ? '' : "host_id=".$host_id." and ") . " graph_template_id=" . $graph_template_id . "");
+$graph = db_fetch_assoc("SELECT *
+	FROM graph_local
+	WHERE " . (!isset($host_id) ? '' : "host_id=".$host_id." AND ") . " graph_template_id=" . $graph_template_id . "");
 
 if (cacti_sizeof($graph)) {
-	if(!$show_sql) {
+	if (!$show_sql) {
 		print "\nCorrupted graphs:\n";
 	}
 

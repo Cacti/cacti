@@ -32,6 +32,7 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 $debug = false;
+$local = false;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -46,6 +47,9 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+				break;
+			case '--local':
+				$local = true;
 				break;
 			case '--version':
 			case '-V':
@@ -65,11 +69,17 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-print "Fixing Column widths" . PHP_EOL;
+if (!$local && $config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+
+	print 'NOTE: Fixing MediumInt Columns for Main Database' . PHP_EOL;
+} else {
+	print 'NOTE: Fixing MediumInt Columns for Local Database' . PHP_EOL;
+}
 
 $total = database_fix_mediumint_columns();
 
-print "Column widths adjusted on $total Tables!" . PHP_EOL;
+print "NOTE: Column widths adjusted on $total Tables!" . PHP_EOL;
 
 function database_fix_mediumint_columns() {
 	global $database_default;
@@ -228,7 +238,8 @@ function display_help () {
 	display_version();
 	print 'usage: fix_mediumint.php [--debug]' . PHP_EOL . PHP_EOL;
 	print 'Options:' . PHP_EOL;
-	print '--debug - Display verbose output during execution' . PHP_EOL . PHP_EOL;
+	print '--debug    - Display verbose output during execution' . PHP_EOL;
+	print '--local    - Perform the action on the Remote Data Collector if run from there' . PHP_EOL . PHP_EOL;
 	print 'This utility is used to increase the size of key Cacti columns to accomodate' . PHP_EOL;
 	print 'systems with over a million graphs and that have been in service for years.' . PHP_EOL;
 	print 'After some long amount of time, Cacti can run out of auto_increment fields.' . PHP_EOL;

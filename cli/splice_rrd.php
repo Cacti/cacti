@@ -40,6 +40,11 @@ if (file_exists(__DIR__ . '/../include/cli_check.php')) {
 	exit(1);
 }
 
+if ($config['poller_id'] > 1) {
+	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	exit(1);
+}
+
 // For legacy Cacti behavior
 if (!function_exists('cacti_sizeof')) {
 	function cacti_sizeof($object) {

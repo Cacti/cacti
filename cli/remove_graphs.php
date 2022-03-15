@@ -34,6 +34,11 @@ require_once($config['base_path'] . '/lib/utility.php');
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
+/* switch to main database for cli's */
+if ($config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+}
+
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);

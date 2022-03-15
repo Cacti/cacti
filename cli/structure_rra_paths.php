@@ -25,6 +25,11 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
+if ($config['poller_id'] > 1) {
+	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	exit(1);
+}
+
 $hostId  = NULL;
 $proceed = false;
 

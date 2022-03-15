@@ -37,6 +37,7 @@ $form    = '';
 $force   = false;
 $rtables = false;
 $dynamic = false;
+$local   = false;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -61,6 +62,9 @@ if (cacti_sizeof($parms)) {
 			case '--dynamic':
 				$dynamic = true;
 				break;
+			case '--local':
+				$local = true;
+				break;
 			case '-form':
 			case '--form':
 				$form = ' USE_FRM';
@@ -84,6 +88,14 @@ if (cacti_sizeof($parms)) {
 }
 
 print '------------------------------------------------------------------------' . PHP_EOL;
+
+if (!$local && $config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+
+	print "NOTE: Repairing Tables for Main Database" . PHP_EOL;
+} else {
+	print "NOTE: Repairing Tables for Local Database" . PHP_EOL;
+}
 
 $tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
 
@@ -451,6 +463,7 @@ function display_help () {
 	print '    --dynamic - Convert a table to Dynamic row format if available' . PHP_EOL;
 	print '    --form    - Force rebuilding the indexes from the database creation syntax.' . PHP_EOL;
 	print '    --tables  - Repair Tables as well as possible database corruptions.' . PHP_EOL;
+	print '    --local   - Perform the action on the Remote Data Collector if run from there' . PHP_EOL;
 	print '    --force   - Remove Invalid Template records from the database.' . PHP_EOL;
 	print '    --debug   - Display verbose output during execution.' . PHP_EOL . PHP_EOL;
 }

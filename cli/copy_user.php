@@ -43,6 +43,11 @@ if (empty($_SERVER['argv'][1]) ){
 	}
 }
 
+/* switch to main database for cli's */
+if ($config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+}
+
 $template_user = $_SERVER['argv'][1];
 $new_user      = $_SERVER['argv'][2];
 

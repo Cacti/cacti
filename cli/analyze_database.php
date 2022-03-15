@@ -32,6 +32,7 @@ array_shift($parms);
 global $debug;
 
 $debug = false;
+$local = false;
 $form  = '';
 $start = time();
 
@@ -48,6 +49,9 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+				break;
+			case '--local':
+				$local = true;
 				break;
 			case '--version':
 			case '-V':
@@ -67,19 +71,28 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-print "Analyzing All Cacti Database Tables\n";
+print "NOTE: Analyzing All Cacti Database Tables\n";
+
+if (!$local && $config['poller_id'] > 1) {
+	db_switch_remote_to_main();
+
+	print "NOTE: Repairing Tables for Main Database" . PHP_EOL;
+} else {
+	print "NOTE: Repairing Tables for Local Database" . PHP_EOL;
+}
 
 $tables = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
 
 if (cacti_sizeof($tables)) {
 	foreach($tables AS $table) {
 		if (db_binlog_enabled()) {
-			print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "' without writing to the binlog";
+			print "NOTE: Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "' without writing to the binlog";
 			$status = db_execute('ANALYZE TABLE NO_WRITE_TO_BINLOG ' . $table['Tables_in_' . $database_default] . $form);
 		} else {
-			print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
+			print "NOTE: Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
 			$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
 		}
+
 		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
 	}
 
@@ -100,5 +113,6 @@ function display_help () {
 	print "A utility to recalculate the cardinality of indexes within the Cacti database.\n";
 	print "It's important to periodically run this utility expecially on larger systems.\n\n";
 	print "Optional:\n";
-	print "-d | --debug - Display verbose output during execution\n\n";
+	print "     --local   - Perform the action on the Remote Data Collector if run from there\n";
+	print "-d | --debug   - Display verbose output during execution\n\n";
 }
