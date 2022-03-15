@@ -1803,7 +1803,7 @@ $i18n_months_short = array(
 );
 
 $i18n_supported_languages = array(
-	CACTI_LANGUAGE_HANDLER_NONE         => __('Use the Built In Translator'),
+	CACTI_LANGUAGE_HANDLER_DEFAULT => __('Use the First Handler Found'),
 );
 
 if (is_dir($config['base_path'] . '/include/vendor/phpgettext')) {

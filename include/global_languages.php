@@ -174,7 +174,7 @@ if (empty($i18n_handler) && !empty($config['i18n_language_handler'])) {
 	$i18n_handler = $config['i18n_language_handler'];
 }
 
-if ($i18n_handler == '') {
+if (empty($i18n_handler)) {
 	i18n_debug('Handler: not specified in config, autodetection is now in progress');
 	if (file_exists($config['include_path'] . '/vendor/gettext/src/Translator.php')) {
 		$i18n_handler = CACTI_LANGUAGE_HANDLER_OSCAROTERO;
@@ -193,7 +193,7 @@ switch ($i18n_handler) {
 			require_once($config['include_path'] . '/vendor/gettext/src/autoloader.php');
 			require_once($config['include_path'] . '/vendor/cldr-to-gettext-plural-rules/src/autoloader.php');
 		} else {
-			$i18n_handler = CACTI_LANGUAGE_HANDLER_NONE;
+			$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
 		}
 
 		break;
@@ -202,7 +202,7 @@ switch ($i18n_handler) {
 			require_once($config['include_path'] . '/vendor/phpgettext/streams.php');
 			require_once($config['include_path'] . '/vendor/phpgettext/gettext.php');
 		} else {
-			$i18n_handler = CACTI_LANGUAGE_HANDLER_NONE;
+			$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
 		}
 
 		break;
@@ -211,12 +211,12 @@ switch ($i18n_handler) {
 			require_once($config['include_path'] . '/vendor/motranslator/src/Translator.php');
 			require_once($config['include_path'] . '/vendor/motranslator/src/StringReader.php');
 		} else {
-			$i18n_handler = CACTI_LANGUAGE_HANDLER_NONE;
+			$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
 		}
 
 		break;
 	default:
-		$i18n_handler = CACTI_LANGUAGE_HANDLER_NONE;
+		$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
 
 		break;
 }
@@ -225,7 +225,7 @@ define('CACTI_LANGUAGE_HANDLER', $i18n_handler);
 
 i18n_debug('require(2): Handler ' . CACTI_LANGUAGE_HANDLER);
 
-if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_NONE) {
+if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_DEFAULT) {
 	/* prefetch all language files to work in memory only,
 	   die if one of the language files is corrupted */
 
@@ -432,7 +432,7 @@ function load_fallback_procedure(){
 	define('CACTI_COUNTRY', 'us');
 	define('CACTI_LANGUAGE', 'English');
 	define('CACTI_LANGUAGE_FILE', 'english_usa');
-	define('CACTI_LANGUAGE_HANDLER', CACTI_LANGUAGE_HANDLER_NONE);
+	define('CACTI_LANGUAGE_HANDLER', CACTI_LANGUAGE_HANDLER_DEFAULT);
 }
 
 function __gettext($text, $domain = 'cacti') {

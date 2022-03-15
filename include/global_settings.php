@@ -362,9 +362,9 @@ $settings = array(
 		),
 		'i18n_language_handler' => array(
 			'friendly_name' => __('Preferred Language Processor'),
-			'description' => __('Cacti includes support for multiple alternate Language Translation Processors.  It will be default use the PHP built in support, but not all Linux variants includes built in Language Support.  If not selected, Cacti will choose the first one found.'),
+			'description' => __('Cacti includes support for multiple alternate Language Translation Processors.  If none is selected Cacti will attempt to use the first one found.'),
 			'method' => 'drop_array',
-			'default' => CACTI_LANGUAGE_HANDLER_NONE,
+			'default' => CACTI_LANGUAGE_HANDLER_DEFAULT,
 			'array' => $i18n_supported_languages
 		),
 		'default_date_format' => array(
