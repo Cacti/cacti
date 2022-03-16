@@ -24,6 +24,8 @@
 
 include('./include/auth.php');
 
+global $local_db_cnn_id;
+
 $actions = array(
 	'install'   => __('Install'),
 	'enable'    => __('Enable'),
@@ -52,6 +54,8 @@ $modes = array(
 	'disable',
 	'enable',
 	'check',
+	'remote_enable',
+	'remote_disable',
 	'moveup',
 	'movedown'
 );
@@ -82,9 +86,12 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			}
 			exit;
+
 			break;
 		case 'uninstall':
-			if (!in_array($id, $pluginslist)) break;
+			if (!in_array($id, $pluginslist)) {
+				break;
+			}
 
 			define('IN_PLUGIN_INSTALL', 1);
 
@@ -92,37 +99,107 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
+
 			break;
 		case 'disable':
-			if (!in_array($id, $pluginslist)) break;
+			if (!in_array($id, $pluginslist)) {
+				break;
+			}
+
 			api_plugin_disable($id);
+
 			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
+
 			break;
 		case 'enable':
-			if (!in_array($id, $pluginslist)) break;
+			if (!in_array($id, $pluginslist)) {
+				break;
+			}
+
 			if (!in_array($id, $plugins_integrated)) {
 				api_plugin_enable($id);
 			}
+
 			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
+
 			break;
 		case 'check':
-			if (!in_array($id, $pluginslist)) break;
+			if (!in_array($id, $pluginslist)) {
+				break;
+			}
+
 			break;
 		case 'moveup':
-			if (!in_array($id, $pluginslist)) break;
-			if (in_array($id, $plugins_integrated)) break;
+			if (!in_array($id, $pluginslist)) {
+				break;
+			}
+
+			if (in_array($id, $plugins_integrated)) {
+				break;
+			}
+
 			api_plugin_moveup($id);
+
 			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
+
 			break;
 		case 'movedown':
-			if (!in_array($id, $pluginslist)) break;
-			if (in_array($id, $plugins_integrated)) break;
+			if (!in_array($id, $pluginslist)) {
+				break;
+			}
+
+			if (in_array($id, $plugins_integrated)) {
+				break;
+			}
+
 			api_plugin_movedown($id);
+
 			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
 			exit;
+
+			break;
+		case 'remote_enable':
+			if (!in_array($id, $pluginslist)) {
+				break;
+			}
+
+			if (in_array($id, $plugins_integrated)) {
+				break;
+			}
+
+			if ($config['poller_id'] > 1) {
+				db_execute_prepared('UPDATE plugin_config
+					SET status = 1
+					WHERE directory = ?',
+					array($id), false, $local_db_cnn_id);
+			}
+
+			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
+			exit;
+
+			break;
+		case 'remote_disable':
+			if (!in_array($id, $pluginslist)) {
+				break;
+			}
+
+			if (in_array($id, $plugins_integrated)) {
+				break;
+			}
+
+			if ($config['poller_id'] > 1) {
+				db_execute_prepared('UPDATE plugin_config
+					SET status = 4
+					WHERE directory = ?',
+					array($id), false, $local_db_cnn_id);
+			}
+
+			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
+			exit;
+
 			break;
 	}
 }
@@ -147,7 +224,7 @@ function plugins_temp_table_exists($table) {
 }
 
 function plugins_load_temp_table() {
-	global $config, $plugins, $plugins_integrated;
+	global $config, $plugins, $plugins_integrated, $local_db_cnn_id;
 
 	$table = 'plugin_temp_table_' . rand();
 
@@ -170,8 +247,43 @@ function plugins_load_temp_table() {
 
 	if (!db_column_exists($table, 'requires')) {
 		db_execute("ALTER TABLE $table
+			ADD COLUMN remote_status tinyint(2) DEFAULT '0' AFTER status,
+			ADD COLUMN capabilities varchar(128) DEFAULT NULL,
 			ADD COLUMN requires varchar(80) DEFAULT NULL,
 			ADD COLUMN infoname varchar(20) DEFAULT NULL");
+	}
+
+	if ($config['poller_id'] > 1) {
+		$status = db_fetch_assoc('SELECT directory, status
+			FROM plugin_config', false, $local_db_cnn_id);
+
+		if (cacti_sizeof($status)) {
+			foreach($status as $r) {
+				$exists = db_fetch_cell_prepared("SELECT id
+					FROM $table
+					WHERE directory = ?",
+					array($r['directory']));
+
+				if ($exists) {
+					$capabilities = api_plugin_remote_capabilities($r['directory']);
+
+					db_execute_prepared("UPDATE $table
+						SET capabilities = ?
+						WHERE directory = ?",
+						array($capabilities, $r['directory']));
+
+					db_execute_prepared("UPDATE $table
+						SET remote_status = ?
+						WHERE directory = ?",
+						array($r['status'], $r['directory']));
+				} else {
+					db_execute_prepared("UPDATE $table
+						SET status = -2, remote_status = ?
+						WHERE directory = ?",
+						array($r['status'], $r['directory']));
+				}
+			}
+		}
 	}
 
 	$path  = $config['base_path'] . '/plugins/';
@@ -453,14 +565,54 @@ function update_show_current () {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'nosort'    => array('display' => __('Actions'), 'align' => 'left', 'sort' => '', 'tip' => __('Actions available include \'Install\', \'Activate\', \'Disable\', \'Enable\', \'Uninstall\'.')),
-		'directory' => array('display' => __('Plugin Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name for this Plugin.  The name is controlled by the directory it resides in.')),
-		'name'      => array('display' => __('Plugin Description'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A description that the Plugins author has given to the Plugin.')),
-		'status'    => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The status of this Plugin.')),
-		'author'    => array('display' => __('Author'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The author of this Plugin.')),
-		'requires'  => array('display' => __('Requires'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('This Plugin requires the following Plugins be installed first.')),
-		'version'   => array('display' => __('Version'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The version of this Plugin.')),
-		'id'        => array('display' => __('Load Order'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.'))
+		'nosort' => array(
+			'display' => __('Actions'),
+			'align' => 'left',
+			'sort' => '',
+			'tip' => __('Actions available include \'Install\', \'Activate\', \'Disable\', \'Enable\', \'Uninstall\'.')
+		),
+		'directory' => array(
+			'display' => __('Plugin Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name for this Plugin.  The name is controlled by the directory it resides in.')
+		),
+		'name' => array(
+			'display' => __('Plugin Description'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('A description that the Plugins author has given to the Plugin.')
+		),
+		'status' => array(
+			'display' => $config['poller_id'] == 1 ? __('Status'):__('Main / Remote Status'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The status of this Plugin.')
+		),
+		'author' => array(
+			'display' => __('Author'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The author of this Plugin.')
+		),
+		'requires' => array(
+			'display' => __('Requires'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('This Plugin requires the following Plugins be installed first.')
+		),
+		'version' => array(
+			'display' => __('Version'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The version of this Plugin.')
+		),
+		'id' => array(
+			'display' => __('Load Order'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.')
+		)
 	);
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1);
@@ -552,18 +704,35 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 
 	$row = plugin_actions($plugin, $table);
 
-	$row .= "<td><a href='" . html_escape($plugin['webpage']) . "' target='_blank' rel='noopener'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", $plugin['infoname']) : $plugin['infoname']) . '</a></td>';
+	$row .= "<td><a href='" . html_escape($plugin['webpage']) . "' target='_blank' rel='noopener'>" . filter_value($plugin['infoname'], get_request_var('filter')) . '</a></td>';
 
 	$row .= "<td class='nowrap'>" . filter_value($plugin['name'], get_request_var('filter')) . "</td>\n";
 
 	if ($plugin['status'] == '-1') {
 		$status = plugin_is_compatible($plugin['directory']);
-		$row .= "<td class='nowrap'>" . __('Not Compatible, %s', $status['requires']) . "</td>\n";
+		$row .= "<td class='nowrap'>" . __('Not Compatible, %s', $status['requires']);
 	} elseif ($plugin['status'] < -1) {
-		$row .= "<td class='nowrap'>" . __('Plugin Error') . "</td>\n";
+		$row .= "<td class='nowrap'>" . __('Plugin Error');
 	} else {
-		$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
+		$row .= "<td class='nowrap'>" . $status_names[$plugin['status']];
 	}
+
+	if ($config['poller_id'] > 1) {
+		if (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false) {
+			if ($plugin['remote_status'] == '-1') {
+				$status = plugin_is_compatible($plugin['directory']);
+				$row .= ' / ' . __('Not Compatible, %s', $status['requires']);
+			} elseif ($plugin['remote_status'] < -1) {
+				$row .= ' / ' . __('Plugin Error');
+			} else {
+				$row .= ' / ' . $status_names[$plugin['remote_status']];
+			}
+		} else {
+			$row .= ' / ' . __('Not Applicable');
+		}
+	}
+
+	$row .= '</td>';
 
 	if ($plugin['requires'] != '') {
 		$requires = explode(' ', $plugin['requires']);
@@ -694,6 +863,21 @@ function plugin_actions($plugin, $table) {
 
 			break;
 	}
+
+	if ($config['poller_id'] > 1) {
+		if (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false) {
+			if ($plugin['remote_status'] == 1) { // Installed and Active
+				// TO-DO: Diabling here does not make much sense as the main will be replicated
+				// with any change of any other plugin thus undoing.  Fix that moving forward
+				//$link .= "<a class='pidisable' href='" . html_escape($config['url_path'] . 'plugins.php?mode=remote_disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin Locally') . "'><img src='" . $config['url_path'] . "images/stop.png'></a>";
+			} elseif ($plugin['remote_status'] == 4) { // Installed but inactive
+				if ($plugin['status'] == 1) {
+					$link .= "<a class='pienable' href='" . html_escape($config['url_path'] . 'plugins.php?mode=remote_enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin Locally') . "'><img src='" . $config['url_path'] . "images/accept.png'></a>";
+				}
+			}
+		}
+	}
+
 	$link .= '</td>';
 
 	return $link;
