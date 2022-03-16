@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -issue#4546: Instead of receiving a permission denied message unauthenticated issues were redirected
 -issue#4547: Testing with LDAP authentication generating backtraces
 -issue#4548: CMDPHP PHP ERROR Backtrace and other errors
+-issue#4549: Invalid path for Boost logging stops Boost update process without notification
 -issue#4551: PHP DEPRECATED errors in 8.1
 -issue#4552: Form error message not cleared before rendering forms leading to false error messages
 -issue#4554: PHP 8.1 Causing Automation Deprecation Errors

@@ -411,11 +411,12 @@ function boost_launch_children() {
 
 	$php_binary    = read_config_option('path_php_binary');
 	$boost_log     = read_config_option('path_boost_log');
+	$boost_logdir  = dirname($boost_log);
 	$redirect_args = '';
 
 	if ($boost_log != '') {
-		if (!is_writable($boost_log)) {
-			boost_debug("WARNING: Boost log '$boost_log' is not writable!");
+		if (!is_writable($boost_log) || !is_dir($boost_logdir) || !is_writable($boost_logdir)) {
+			boost_debug("WARNING: Boost log '$boost_log' does not exist or is not writable!");
 
 			cacti_log("WARNING: Boost log '$boost_log' is not writable!", false, 'BOOST');
 		} else {
