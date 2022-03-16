@@ -61,6 +61,10 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 	// Compensate as the dropdown for LDAP is off by one
 	if ($frv_realm == 2) {
 		$realm = 3;
+	} elseif ($auth_method == 2) {
+		$realm = $auth_method;
+	} else {
+		$realm = $frv_realm;
 	}
 
 	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm ". $frv_realm . ", using method " . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
