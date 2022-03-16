@@ -1015,7 +1015,7 @@ function api_plugin_enable_hooks($plugin) {
 
 function api_plugin_disable_hooks($plugin) {
 	db_execute_prepared("UPDATE plugin_hooks
-		SET status = 0
+		SET status = 4
 		WHERE name = ?
 		AND hook != 'config_settings'
 		AND hook != 'config_arrays'
