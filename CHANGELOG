@@ -83,6 +83,7 @@ Cacti CHANGELOG
 -issue#4612: Cacti's cacti_remembers Cookie does not include the secure attribute required for SameSite support
 -issue#4613: Cacti replication can not correct table structure changes in newer versions of MySQL/MariaDB
 -issue#4614: Cacti can not differentiate between execution remotely between the main poller loop vs. poller bottom
+-issue#4615: Cacti can not tell if a plugin has been disabled on the Remote Data Collector
 -issue#4616: When performing plugin actions from the Cacti UI, replication should be forced to Remote Collectors
 -issue#4617: When uninstalling a plugin, tables that are removed from plugins should be removed from remotes if replicated
 -issue#4618: Plugins automatically disabled on cacti release when they exceed their maximum allowed runtime
