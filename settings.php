@@ -203,6 +203,12 @@ case 'save':
 					array($field_name, get_nfilter_request_var($field_name)));
 			}
 		}
+
+		if ($field_name == 'auth_method') {
+			if (get_nfilter_request_var($field_name) == '2') {
+				db_execute('TRUNCATE TABLE user_auth_cache');
+			}
+		}
 	}
 
 	if (isset_request_var('log_verbosity')) {
