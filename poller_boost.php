@@ -329,7 +329,7 @@ function boost_prepare_process_table() {
 
 	db_execute("CREATE TABLE $interim_table LIKE poller_output_boost");
 	db_execute("RENAME TABLE poller_output_boost TO $archive_table, $interim_table TO poller_output_boost");
-    db_execute("ANALYZE TABLE $archive_table");
+	db_execute("ANALYZE TABLE $archive_table");
 
 	$arch_tables = boost_get_arch_table_names();
 
