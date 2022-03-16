@@ -569,7 +569,7 @@ function update_system_mibs($host_id) {
 					$uptimeAltFound = true;
 				} elseif ($name == 'snmp_sysUpTimeInstance' && !$uptimeAltFound) {
 					$uptime = $value;
-				} elseif (!empty($value)) {
+				} elseif ($name != 'snmp_sysUpTimeInstanceAlt' && !empty($value)) {
 					db_execute_prepared("UPDATE host SET $name = ?
 						WHERE deleted = ''
 						AND id = ?",
