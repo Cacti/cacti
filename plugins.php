@@ -728,7 +728,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 				$row .= ' / ' . $status_names[$plugin['remote_status']];
 			}
 		} else {
-			$row .= ' / ' . __('Not Applicable');
+			$row .= ' / ' . __('N/A');
 		}
 	}
 
