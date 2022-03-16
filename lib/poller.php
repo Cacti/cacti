@@ -429,6 +429,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 	global $config, $debug;
 
 	static $rrd_field_names = array();
+	static $checked_bad     = false;
 
 	include_once($config['library_path'] . '/rrd.php');
 
@@ -596,6 +597,45 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 		/* to much records in poller_output, process in chunks */
 		if ($rows && $remainder == $max_rows) {
 			$rrds_processed += process_poller_output($rrdtool_pipe, $rows < $max_rows ? $rows : $max_rows);
+
+			$running = db_fetch_cell('SELECT COUNT(*)
+				FROM poller_time
+				WHERE end_time = "0000-00-00"');
+
+			if ($running == 0 && !$checked_bad) {
+				// Remove recently deleted items from the poller_output table
+				db_execute('DELETE FROM poller_output WHERE local_data_id NOT IN (SELECT id FROM data_local)');
+
+				// Itentify data sources that are somehow not aligned
+				$items = db_fetch_assoc('SELECT rrd_num,
+					COUNT(DISTINCT po.local_data_id, po.rrd_name) AS ids, dt.name, dl.host_id,
+					GROUP_CONCAT(DISTINCT po.local_data_id) AS local_data_ids
+					FROM poller_output AS po
+					LEFT JOIN poller_item AS pi
+					ON po.local_data_id = pi.local_data_id
+					LEFT JOIN data_local AS dl
+					ON po.local_data_id = dl.id
+					LEFT JOIN data_template AS dt
+					ON dl.data_template_id = dt.id
+					GROUP BY po.local_data_id
+					HAVING rrd_num IS NULL OR rrd_num != ids
+					ORDER BY dt.name');
+
+				if (cacti_sizeof($items)) {
+					cacti_log(sprintf('WARNING: There are %s Data Sources not returning all data leaving rows in the poller output table.  Details to follow.', cacti_sizeof($items)), false, 'POLLER');
+					$prevName = '';
+					foreach($items as $item) {
+						if ($prevName != $item['name']) {
+							cacti_log(sprintf('WARNING: Data Template \'%s\' is impacted by lack of complete information', $item['name']), false, 'POLLER');
+							$prevName = $item['name'];
+
+							db_execute('DELETE FROM poller_output WHERE local_data_id IN(' . $item['local_data_ids'] . ')');
+						}
+					}
+				}
+
+				$checked_bad = true;
+			}
 		}
 	}
 
