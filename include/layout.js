@@ -1389,6 +1389,11 @@ function responsiveResizeGraphs(initialize) {
 			ratio = original_cwidth / canvas_width;
 		}
 
+		// Dont change the size if the differential is small
+		if (ratio > .97 && ratio < 1.03) {
+			ratio = 1;
+		}
+
 		var new_image_width       = parseInt(image_width * ratio)
 		var new_image_height      = parseInt(image_height * ratio)
 		var new_canvas_width      = parseInt(canvas_width  * ratio);
@@ -3014,7 +3019,7 @@ function keepWindowSize() {
 				$('.ellipsis').show();
 			}
 		}, 50, 'resize-content');
-	}).trigger('resize')
+	}).trigger('resize');
 }
 
 function hideCurrentTab(id, shrinking) {
