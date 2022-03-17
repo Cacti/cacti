@@ -455,6 +455,7 @@ function settings_javascript() {
 	var currentTab   = '<?php print get_nfilter_request_var('tab');?>';
 	var currentTheme = '<?php print get_selected_theme();?>';
 	var currentLang  = '<?php print read_config_option('user_language');?>';
+	var authMethod   = '<?php print read_config_option('auth_method');?>';
 
 	function clearUserSettings() {
 		$.get('auth_profile.php?action=clear_user_settings', function() {
@@ -562,6 +563,10 @@ function settings_javascript() {
 				loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
 			});
 		});
+
+		if (authMethod == 2) {
+			$('#row_logout_everywhere').hide();
+		}
 
 		$('#auth_profile_edit2 .formData, #auth_profile_noreturn2 .formData').each(function() {
 			if ($(this).find('select, input[type!="button"]').length) {
