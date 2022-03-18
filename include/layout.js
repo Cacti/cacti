@@ -1982,6 +1982,18 @@ function loadTopTab(href, id, force) {
 	}
 }
 
+function loadPageUsingPost(strURL, postData, returnLocation) {
+	$.post(strURL, postData, function(data) {
+		if (returnLocation !== undefined) {
+			$('#'+returnLocation).empty().html(data);
+		} else {
+			$('#main').empty().html(data);
+		}
+
+		applySkin();
+	});
+}
+
 function loadPage(href, force) {
 	statePushed = false;
 	cont = false;

@@ -116,8 +116,13 @@ function store_get_selected_dq_index($snmp_query_id) {
 
 function form_save() {
 	if (isset_request_var('save_component_graph')) {
+		$form_data = array();
+
 		/* summarize the 'create graph from host template/snmp index' stuff into an array */
 		foreach ($_POST as $var => $val) {
+			/* save form data */
+			$form_data[$var] = $val;
+
 			if (preg_match('/^cg_(\d+)$/', $var, $matches)) {
 				$selected_graphs['cg'][$matches[1]][$matches[1]] = true;
 			} elseif (preg_match('/^cg_g$/', $var)) {
@@ -133,6 +138,12 @@ function form_save() {
 				store_get_selected_dq_index($snmp_query_id);
 			}
 		}
+
+		/* save the json_encoded form data in case of an error */
+		$form_data['header'] = false;
+
+		$_SESSION['sess_graphs_new_form'] = json_encode($form_data);
+		$_SESSION['sess_grn_returnto']    = 'graphs_new.php';
 
 		if (!isset_request_var('host_id')) {
 			$host_id = 0;
@@ -182,6 +193,7 @@ function host_new_graphs_save($host_id) {
 	$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
 
 	$values = array();
+	$form_data = array();
 
 	/* form an array that contains all of the data on the previous form */
 	foreach ($_POST as $var => $val) {
@@ -219,7 +231,21 @@ function host_new_graphs_save($host_id) {
 			} else { // this is a data query field
 				$values['sg'][$matches[1]][$matches[2]]['data_template'][$matches[3]][$matches[4]] = $val;
 			}
-		} elseif (preg_match('/^c_(\d+)_(\d+)_(\d+)_(\d+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:data_input_field_id
+		} elseif (preg_match('/^c_(\d+)_(\d+)_(\d+)_(\d+)/', $var, $matches)) {
+			/**
+			 * Custom Data.  Need to validate these against the input regular expressions
+			 *
+			 * Index offsets
+			 * 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:data_input_field_id
+			 */
+			$input_field_id = $matches[4];
+			$idata = db_fetch_row_prepared('SELECT *
+				FROM data_input_fields
+				WHERE id = ?',
+				array($input_field_id));
+
+			$val = form_input_validate($val, $var, $idata['regexp_match'], $idata['allow_nulls'], 3);
+
 			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg'][$matches[2]]['custom_data'][$matches[3]][$matches[4]] = $val;
 			} else { // this is a data query field
@@ -234,15 +260,32 @@ function host_new_graphs_save($host_id) {
 		}
 	}
 
-	debug_log_clear('new_graphs');
+	if (!is_error_message()) {
+		debug_log_clear('new_graphs');
 
-	foreach ($selected_graphs_array as $form_type => $form_array) {
-		$current_form_type = $form_type;
+		foreach ($selected_graphs_array as $form_type => $form_array) {
+			$current_form_type = $form_type;
 
-		foreach ($form_array as $form_id1 => $form_array2) {
-			/* enumerate information from the arrays stored in post variables */
-			create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values);
+			foreach ($form_array as $form_id1 => $form_array2) {
+				/* enumerate information from the arrays stored in post variables */
+				create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values);
+			}
 		}
+	} else {
+		$form_data = $_SESSION['sess_graphs_new_form'];
+		kill_session_var('sess_graphs_new_form');
+
+		?>
+		<script type='text/javascript'>
+		var formData=<?php print $form_data;?>;
+
+		$(function() {
+			loadPageUsingPost('graphs_new.php', formData);
+		});
+		</script>
+		<?php
+
+		exit;
 	}
 }
 
