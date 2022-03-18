@@ -2132,7 +2132,7 @@ function tree() {
 		?>
 		<script type='text/javascript'>
 		$(function() {
-			$('#tree2_child').attr('id', 'tree_ids');
+			$('#tree_devices2_child').attr('id', 'tree_ids');
 
 			<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 			$('#tree_ids').find('tr:first').addClass('nodrag').addClass('nodrop');
