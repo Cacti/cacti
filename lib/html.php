@@ -2407,7 +2407,7 @@ function html_spikekill_js() {
    @arg selectedTheme - optionally sets a specific theme over the current one
 */
 function html_common_header($title, $selectedTheme = '') {
-	global $config, $path2calendar, $path2timepicker, $path2colorpicker;
+	global $config, $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter;
 
 	if ($selectedTheme == '') {
 		$selectedTheme = get_selected_theme();
@@ -2604,6 +2604,14 @@ function html_common_header($title, $selectedTheme = '') {
 
 	if (isset($path2colorpicker) && file_exists($path2colorpicker)) {
 		print get_md5_include_js($path2colorpicker);
+	}
+
+	if (isset($path2ms) && file_exists($path2ms)) {
+		print get_md5_include_js($path2ms);
+	}
+
+	if (isset($path2msfilter) && file_exists($path2msfilter)) {
+		print get_md5_include_js($path2msfilter);
 	}
 
 	if (file_exists('include/themes/custom.css')) {

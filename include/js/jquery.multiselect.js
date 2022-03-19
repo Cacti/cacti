@@ -248,7 +248,7 @@
          .html(this._linkHTML('<span class="{{class}}" title="{{title}}">{{icon}}</span>', 'open'));
 
        this.$buttonlabel = $(document.createElement('span'))
-         .html(this.options.noneSelectedText || $element[0].placeholder)
+         .html(this.options.noneSelectedText || this.element[0].placeholder)
          .appendTo($button);
        return $button;
      },
@@ -277,6 +277,19 @@
            }
          }
        }
+
+       if (this.options.header.constructor == Object) {
+       var options = Object.keys(this.options.header);
+       for (var x = 0; x < options.length; x++) {
+          var displayText = options[x];
+          var linkInfoKey = this.options.header[displayText];
+          if (linkInfoKey && linkInfoKey in this.linkInfo
+              && !(this.options.maxSelected && linkInfoKey === 'checkAll')
+              && ['open', 'close', 'collapse', 'expand'].indexOf(linkInfoKey) === -1) {
+              headerLinksHTML += this._linkHTML('<li><a class="{{class}}" title="{{title}}">{{icon}}<span>'+displayText+'</span></a></li>', linkInfoKey);
+          }
+        }
+      }
        return headerLinksHTML;
      },
 
@@ -519,7 +532,7 @@
           // Build the list section for this optgroup, complete w/ option inputs...
           var $collapseButton = !!self.options.groupsCollapsable
                                  ? $( document.createElement('button') )
-                                    .attr({'title': self.linkInfo.collapse.title})
+                                    .attr({'title': self.linkInfo.collapse.title, 'type': 'button'})
                                     .addClass('ui-state-default ui-corner-all ui-multiselect-collapser')
                                     .html(self.linkInfo.collapse.icon)
                                  : null;
