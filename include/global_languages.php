@@ -190,7 +190,7 @@ if (empty($i18n_handler) && !empty($config['i18n_language_handler'])) {
 
 if (empty($i18n_handler)) {
 	i18n_debug('Handler: not specified in config, autodetection is now in progress');
-	if (file_exists($config['include_path'] . '/vendor/gettext/src/Translator.php')) {
+	if (file_exists($config['include_path'] . '/vendor/gettext/src/Translator.php') && version_compare(PHP_VERSION, '8.0', '<=')) {
 		$i18n_handler = CACTI_LANGUAGE_HANDLER_OSCAROTERO;
 	} elseif (file_exists($config['include_path'] . '/vendor/phpgettext/streams.php')) {
 		$i18n_handler = CACTI_LANGUAGE_HANDLER_PHPGETTEXT;
@@ -477,6 +477,7 @@ function __gettext($text, $domain = 'cacti') {
 
 function __n($singular, $plural, $number, $domain = 'cacti') {
 	global $i18n;
+
 	if (isset($i18n[$domain])) {
 		return __uf($i18n[$domain]->ngettext($singular, $plural, $number));
 	} else {

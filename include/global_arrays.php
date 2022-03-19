@@ -1814,7 +1814,7 @@ if (is_dir($config['base_path'] . '/include/vendor/phpgettext')) {
 	$i18n_supported_languages[CACTI_LANGUAGE_HANDLER_PHPGETTEXT]  = __('Use the PHP GetText Handler');
 }
 
-if (is_dir($config['base_path'] . '/include/vendor/gettext')) {
+if (is_dir($config['base_path'] . '/include/vendor/gettext') && version_compare(PHP_VERSION, '8.0', '<=')) {
 	$i18n_supported_languages[CACTI_LANGUAGE_HANDLER_OSCAROTERO]  = __('Use the Oscarotero GetText Handler');
 }
 
