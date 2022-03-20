@@ -58,7 +58,8 @@ $tabs_graphs = array(
 if (db_table_exists('plugin_config')) {
 	$logplugins = array_rekey(db_fetch_assoc('SELECT directory AS id, name
 		FROM plugin_config
-		WHERE status=1'), 'id', 'name');
+		WHERE status = 1
+		ORDER BY name'), 'id', 'name');
 } else {
 	$logplugins = array();
 }
