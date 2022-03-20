@@ -515,7 +515,9 @@ default:
 
 		if (currentTab == 'general') {
 			$('#selective_plugin_debug').multiselect({
-				height: 300,
+				menuHeight: $(window).height()*.7,
+				menuWidth: 'auto',
+				linkInfo: faIcons,
 				noneSelectedText: '<?php print __('Select Plugin(s)');?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
 					myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
@@ -535,6 +537,9 @@ default:
 			});
 
 			$('#selective_debug').multiselect({
+				menuHeight: $(window).height()*.7,
+				menuWidth: 'auto',
+				linkInfo: faIcons,
 				noneSelectedText: '<?php print __('Select File(s)');?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
 					myReturn = numChecked + ' <?php print __('Files Selected');?>';
@@ -542,7 +547,7 @@ default:
 				},
 				checkAllText: '<?php print __('All');?>',
 				uncheckAllText: '<?php print __('None');?>',
-				uncheckall: function() {
+				uncheckAll: function() {
 					$(this).multiselect('widget').find(':checkbox:first').each(function() {
 						$(this).prop('checked', true);
 					});
@@ -554,7 +559,9 @@ default:
 			});
 		} else if (currentTab == 'spikes') {
 			$('#spikekill_templates').multiselect({
-				height: 300,
+				menuHeight: $(window).height()*.7,
+				menuWidth: 'auto',
+				linkInfo: faIcons,
 				noneSelectedText: '<?php print __('Select Template(s)');?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
 					myReturn = numChecked + ' <?php print __('Templates Selected');?>';
@@ -568,7 +575,7 @@ default:
 				},
 				checkAllText: '<?php print __('All');?>',
 				uncheckAllText: '<?php print __('None');?>',
-				uncheckall: function() {
+				uncheckAll: function() {
 					$(this).multiselect('widget').find(':checkbox:first').each(function() {
 						$(this).prop('checked', true);
 					});

@@ -112,6 +112,7 @@ Cacti CHANGELOG
 -feature#4574: Cacti needs some additional permission methods for larger installations
 -feature#4631: Additional choices for Heartbeat when creating a Data Source Profile
 -feature#4636: jQueryMulti-select 3.0.1 includes i18n upgrade to it
+-feature#4637: Have Cacti's MultiSelect CheckAll and UnCheckAll use Font-Awesome 
 
 1.2.19
 -security#4356: Further fixes for grave character security protection

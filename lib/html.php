@@ -185,6 +185,7 @@ function html_graph_template_multiselect() {
 	$('#graph_template_id').hide().multiselect({
 		menuHeight: $(window).height()*.7,
 		menuWidth: 'auto',
+		linkInfo: faIcons,
 		buttonWidth: 'auto',
 		noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 		selectedText: function(numChecked, numTotal, checkedItems) {
@@ -202,7 +203,7 @@ function html_graph_template_multiselect() {
 		},
 		checkAllText: '<?php print __('All');?>',
 		uncheckAllText: '<?php print __('None');?>',
-		uncheckall: function() {
+		uncheckAll: function() {
 			$(this).multiselect('widget').find(':checkbox:first').each(function() {
 				$(this).prop('checked', true);
 			});

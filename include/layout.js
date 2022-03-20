@@ -63,6 +63,35 @@ var isHover = false;
 var hoverTimer = false;
 var previousMainWidth = null;
 var previousColumns   = null;
+var faIcons = {
+	open: {
+		icon: '<i class="fas fa-caret-down" aria-hidden="true"></i>'
+	},
+	close: {
+		icon: '<i class="fas fa-times-circle" aria-hidden="true"></i>'
+	},
+	checkAll: {
+		icon: '<i class="fas fa-check" aria-hidden="true"></i>'
+	},
+	uncheckAll: {
+		icon: '<i class="fas fa-ban" aria-hidden="true"></i>'
+	},
+	flipAll: {
+		icon: '<i class="fas fa-undo" aria-hidden="true"></i>'
+	},
+	collapseAll: {
+		icon: '<i class="fas fa-double-angle-down" aria-hidden="true"></i>'
+	},
+	expandAll: {
+		icon: '<i class="fas fa-double-angle-right" aria-hidden="true"></i>'
+	},
+	collapse: {
+		icon: '<i class="fas fa-chevron-down" aria-hidden="true"></i>'
+	},
+	expand: {
+		icon: '<i class="fas fa-chevron-right" aria-hidden="true"></i>'
+	}
+};
 
 window.paceOptions = {
 	ajax: true,
