@@ -5719,23 +5719,23 @@ function IgnoreErrorHandler($message) {
 		'Timeout',
 		'Unknown host',
 		'Invalid object identifier',
-		'Maximum execution time of',
 		'Name or service not known'
 	);
 
 	foreach ($snmp_ignore as $i) {
-		if (strpos($message, $i)) {
+		if (stripos($message, $i) !== false) {
 			$snmp_error = trim($message, "\\\n\t ");
 			return true;
 		}
 	}
 
-	$ignore = array(
-		'unable to read from socket'  # ping.php line 387 socket refusal
+	$general_ignore = array(
+		'unable to read from socket',  # ping.php line 387 socket refusal
+		'Maximum execution time of',
 	);
 
-	foreach ($ignore as $i) {
-		if (strpos($message, $i)) {
+	foreach ($general_ignore as $i) {
+		if (stripos($message, $i) !== false) {
 			return true;
 		}
 	}
