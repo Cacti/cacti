@@ -261,7 +261,18 @@ if (cacti_sizeof($ds_needing_fixes)) {
 	}
 }
 
-/* determine the number of active profiles to improve poller performance
+/**
+ * shortcut some expensive logic in spine if possible the
+ * order by snmp port is a rare thing to be needed and only
+ * needs to occur if your are talking to more than one snmp
+ * agent on a host.
+ */
+$total_ports = db_fetch_cell('SELECT COUNT(DISTINCT snmp_port)
+	FROM poller_item');
+set_config_option('total_snmp_ports', $total_ports);
+
+/**
+ * determine the number of active profiles to improve poller performance
  * under some circumstances.  Save this data for spine and cmd.php.
  */
 $active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT data_source_profile_id)
