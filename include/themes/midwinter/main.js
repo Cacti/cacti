@@ -33,6 +33,7 @@ function checkConsoleMenu() {
 			redesignConsoleMenu(menu);
 			ajaxAnchors();
 			extendAnchorActions();
+			searchToHighlight();
 		}).fail(function(html) {
 			getPresentHTTPError(html);
 		});
@@ -142,7 +143,9 @@ function setupTheme() {
 	// -- standard & compact mode -- redesign navigation tabs
 	let compact_tab_menu_content =
 		'<div class="cactiConsoleNavigationBox hide" data-helper="dashboards">'
-		+ '<div class="header compact">'+cactiDashboards+'</div>'
+		+ '<div class="header compact">'
+		+	'<div></div><div><span>'+cactiDashboards+'</span></div>'
+		+'</div>'
 		+ '<ul class="nav">';
 
 	if (cactiConsoleAllowed) {
@@ -266,7 +269,7 @@ function setupTheme() {
 
 			let compact_user_menu_content =
 				'<div class="cactiConsoleNavigationUserBox hide" data-helper="help">'
-				+   '<div class="header compact">'+justCacti+' &reg; v'+cactiVersion+'</div>'
+				+   '<div class="header compact"><div></div><div><span>'+justCacti+' &reg; v'+cactiVersion+'</span></div></div>'
 				+   '<ul class="nav">'
 				+   '<li class="menuitem" id="menu_user_help">'
 				+       '<a class="menu_parent active" href="#">'
@@ -316,7 +319,7 @@ function setupTheme() {
 				+   '</ul>'
 				+   '</div>'
 				+   '<div class="cactiConsoleNavigationUserBox hide" data-helper="user">'
-				+   '<div class="header compact">'+'<span>'+ $('.loggedInAs').text() +'</span>'+'</div>'
+				+   '<div class="header compact"><div></div><div><span>'+ $('.loggedInAs').text() +'</span></div></div>'
 				+   '<ul class="nav">'
 				+   '<li class="menuitem" id="menu_user_action">'
 				+       '<a class="menu_parent active" href="#">'
@@ -401,7 +404,10 @@ function redesignConsoleMenu(menu) {
 		$(menu).insertAfter('#compact_tab_menu');
 
 		$('#menu').addClass('cactiConsoleNavigationBox hide').attr('data-helper', 'settings');
-		$('<div class="header compact">'+zoom_i18n_settings+'</div>').prependTo('#menu');
+		$('<div class="header compact">'
+		+	'<div><input type="text" name="keyword" class="form-control input-sm" placeholder=""></div>'
+		+	'<div><span>'+zoom_i18n_settings+'</span></div></div>'
+		).prependTo('#menu');
 
 		// Clean up: kick out Main Console
 		$('#menu_main_console').remove();
@@ -859,6 +865,33 @@ function setMenuVisibility() {
 		});
 	});
 }
+
+function searchToHighlight() {
+	$.cachedScript('include/themes/midwinter/vendor/mark/jquery.mark.js').done(function (script, textStatus) {
+		if (textStatus === 'success') {
+			$("input[name='keyword']").on("input", highlight);
+		}
+	});
+}
+
+function highlight() {
+	// Read the keyword
+	let keyword = $("input[name='keyword']").val();
+	pattern = '.*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
+	let re = new RegExp(pattern,'gmiu');
+
+	$("a[role='menuitem']").unmark({
+		done: function() {
+			if(keyword) {
+				$("a[role='menuitem']").markRegExp(re, {
+					"accuracy": "complementary",
+					"separateWordSearch": false,
+				});
+			}
+		}
+	});
+}
+
 
 function setHotKeys() {
 	$.cachedScript('include/themes/midwinter/vendor/hotkeys/hotkeys.js').done(function (script, textStatus) {

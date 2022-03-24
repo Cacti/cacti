@@ -65,6 +65,11 @@ img {
 	border: none;
 }
 
+mark {
+	background-color: transparent;
+	color: yellow;
+}
+
 fieldset {
 	border:none;
 	font-size: var(--fs-extrasmall);
@@ -2676,7 +2681,7 @@ html[data-theme-mode='standard'] .compact {
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationBox {
 		max-width: calc(100vw - 60px) !important;
-		min-width: 36rem;
+		min-width: 34rem;
 		position: fixed !important;
 		left: 60px !important;
 		top: 60px !important;
@@ -2692,7 +2697,7 @@ html[data-theme-mode='standard'] .compact {
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox {
 		max-width: calc(100vw - 60px) !important;
-		min-width: 36rem;
+		min-width: 34rem;
         position: fixed;
         left: 60px;
         bottom: 0px;
@@ -2713,13 +2718,25 @@ html[data-theme-mode='standard'] .compact {
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header {
 		display: flex;
-		justify-content: right;
+		justify-content: space-between;
 		align-items: center;
-		padding: 0 2rem;
 		height: 4rem;
 		border-bottom: 1px solid var(--background-navigation);
 		font-size: var(--fs-big);
 		color: var(--text-color-navigation-highlight);
+	}
+
+	html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header > div {
+		width: 16rem;
+		padding-left: 1rem;
+	}
+
+	html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header > div > span {
+		margin-left: 3.5rem;
+	}
+
+	html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header > div:nth-child(2) {
+		width: 16rem;
 	}
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationBox ul.nav,
