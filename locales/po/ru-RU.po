@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Russian Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-03-14 13:33-0400\n"
-"PO-Revision-Date: 2022-03-14 21:00-0400\n"
-"Last-Translator: Sergey <sbolshagin@gmail.com>\n"
-"Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\n"
-"Language: ru_RU\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Poedit 3.0.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-03-14 13:33-0400\nPO-Revision-Date: 2022-03-25 04:14+0000\nLast-Translator: Anatoliy <hamrad99h2@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2523 lib/html.php:2491
 msgid "About Cacti"
@@ -1511,7 +1499,7 @@ msgstr "Запрос данных"
 #: user_group_admin.php:680 user_group_admin.php:695 user_group_admin.php:1999
 #: utilities.php:2492
 msgid "Enabled"
-msgstr "Включено"
+msgstr "Разрешено"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
