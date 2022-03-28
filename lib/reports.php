@@ -633,8 +633,14 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 
 	$contents = array();
 
-	if (file_exists($config['base_path'] . '/formats/' . $format_file)) {
-		$contents = file($config['base_path'] . '/formats/' . $format_file);
+	if ($format_file == '') {
+		$format_file = 'cacti_group.format';
+	}
+
+	$format_file = $config['base_path'] . '/formats/' . $format_file;
+
+	if (file_exists($format_file) && is_readable($format_file)) {
+		$contents = file($format_file);
 	}
 
 	$output = '';
@@ -1961,4 +1967,3 @@ function reports_graphs_action_execute($action) {
 		return $action;
 	}
 }
-
