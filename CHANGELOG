@@ -96,6 +96,7 @@ Cacti CHANGELOG
 -issue#4632: Input Field Checking is not enforced upon creation of Data Source
 -issue#4634: When using Basic Authentication, the Logout Everywhere button should not be shown
 -issue#4645: If you attempt to use a format file for a non-existant setting Cacti throws warnings
+-issue#4651: Device Description is not consistent in Poller Cache view
 -feature: Expose hidden Language Translation setting l10n_language_handler
 -feature: Allow a Device to be a part of a Report outside of a Tree
 -feature: Allow Basic Authentication to display customer login failed message
@@ -115,6 +116,7 @@ Cacti CHANGELOG
 -feature#4636: jQueryMulti-select 3.0.1 includes i18n upgrade to it
 -feature#4637: Have Cacti's MultiSelect CheckAll and UnCheckAll use Font-Awesome 
 -feature#4641: Improve spine performance by storing the total number of system snmp_ports in use
+
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
