@@ -118,7 +118,6 @@ Cacti CHANGELOG
 -feature#4637: Have Cacti's MultiSelect CheckAll and UnCheckAll use Font-Awesome 
 -feature#4641: Improve spine performance by storing the total number of system snmp_ports in use
 
-
 1.2.19
 -security#4356: Further fixes for grave character security protection
 -issue: Over aggressive escaping causes menu visibility issues on Create Device page
