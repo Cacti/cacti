@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-12-28 13:54-0500\n"
-"PO-Revision-Date: 2022-03-25 04:14+0000\n"
+"PO-Revision-Date: 2022-03-31 16:49+0000\n"
 "Last-Translator: Anatoliy <hamrad99h2@gmail.com>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
@@ -123,34 +123,28 @@ msgid "Delete"
 msgstr "Удалить"
 
 #: aggregate_graphs.php:43
-#, fuzzy
 msgid "Convert to Normal Graph"
-msgstr "Преобразование в LINE1 График"
+msgstr "Преобразование в Нормальный График"
 
 #: aggregate_graphs.php:44 graphs.php:58
-#, fuzzy
 msgid "Place Graphs on Report"
 msgstr "Разместить графики на отчёте"
 
 #: aggregate_graphs.php:45
-#, fuzzy
 msgid "Migrate Aggregate to use a Template"
 msgstr "Мигрировать агрегированные данные для использования Шаблона"
 
 #: aggregate_graphs.php:46
-#, fuzzy
 msgid "Create New Aggregate from Aggregates"
-msgstr "Создать новый агрегат из агрегатов"
+msgstr "Создать новую агрегацию из агрегаций"
 
 #: aggregate_graphs.php:50
-#, fuzzy
 msgid "Associate with Aggregate"
-msgstr "Ассоциировать с Aggregate"
+msgstr "Ассоциировать с агрегацией"
 
 #: aggregate_graphs.php:51
-#, fuzzy
 msgid "Disassociate with Aggregate"
-msgstr "Разошлись с Aggregate (агрегировать)"
+msgstr "Отделить от агрегации"
 
 #: aggregate_graphs.php:84 graphs.php:197 host.php:212
 #, php-format
@@ -158,11 +152,8 @@ msgid "Place on a Tree (%s)"
 msgstr "Поместить в дерево (%s)"
 
 #: aggregate_graphs.php:352
-#, fuzzy
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr ""
-"Нажмите кнопку \"Продолжить\", чтобы удалить следующие Агрегированные "
-"графики."
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующие Агрегированные графики."
 
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: aggregate_graphs.php:484 aggregate_graphs.php:497 aggregate_graphs.php:506
@@ -244,7 +235,6 @@ msgid "Delete Graph(s)"
 msgstr "Удалить график(и)"
 
 #: aggregate_graphs.php:387
-#, fuzzy
 msgid ""
 "The selected Aggregate Graphs represent elements from more than one Graph "
 "Template."
@@ -580,7 +570,7 @@ msgstr "Сопоставление графиков"
 #: utilities.php:690 utilities.php:982 utilities.php:1262 utilities.php:1963
 #: utilities.php:2214 vdef.php:708
 msgid "Search"
-msgstr "Найти"
+msgstr "Поиск"
 
 #: aggregate_graphs.php:1275 aggregate_graphs.php:1318
 #: aggregate_graphs.php:1578 color_templates.php:644 data_sources.php:1608
@@ -663,7 +653,7 @@ msgstr "Выполнить"
 #: user_group_admin.php:2552 utilities.php:289 utilities.php:642
 #: utilities.php:973 utilities.php:1253 utilities.php:2000 utilities.php:2262
 msgid "Set/Refresh Filters"
-msgstr "Установить/Обновить фильтры"
+msgstr "Выбрать/Обновить фильтры"
 
 #: aggregate_graphs.php:1298 aggregate_graphs.php:1595
 #: aggregate_templates.php:602 automation_devices.php:496
@@ -1888,7 +1878,7 @@ msgstr "Диапазон обнаружения сети [новый]"
 #: include/global_form.php:1917 include/global_settings.php:50
 #: lib/html_reports.php:915
 msgid "General Settings"
-msgstr "Основые Настройки"
+msgstr "Основные Настройки"
 
 #: automation_networks.php:446 automation_snmp.php:513 data_input.php:646
 #: data_input.php:707 data_queries.php:722 data_queries.php:820
@@ -8402,7 +8392,7 @@ msgstr "Общая администрация"
 
 #: include/global_arrays.php:1139
 msgid "System Administration"
-msgstr "Администрирование системы."
+msgstr "Администрирование системы"
 
 #: include/global_arrays.php:1235
 #, fuzzy
