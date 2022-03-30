@@ -294,7 +294,7 @@ function form_save() {
 
 				/* push out the hosts that use the data template */
 				$hosts = array_rekey(
-					db_fetch_assoc_prepared('SELECT host_id
+					db_fetch_assoc_prepared('SELECT DISTINCT host_id
 						FROM data_local
 						WHERE data_template_id = ?',
 						array($data_template_id)),
