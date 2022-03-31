@@ -29,6 +29,10 @@
 	border-radius: 8px;
 }
 
+.cactiConsoleNavigationArea::-webkit-scrollbar-thumb {
+	border: 4px solid var(--background-navigation);
+}
+
 .cactiConsoleNavigationBox ::-webkit-scrollbar-thumb {
 	border: 4px solid var(--background-menu);
 }
@@ -84,6 +88,14 @@ fieldset {
 
 .cactiPageHead div {
 	height: 100%;
+}
+
+.breadCrumbBar {
+	height: 2rem;
+}
+
+.cactiContent {
+	height: calc(100vh - 5rem) !important;
 }
 
 .cactiPageBottom {
@@ -2715,6 +2727,31 @@ html[data-theme-mode='standard'] .compact {
 	html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox .fa{
 		padding-right: 0;
 	}
+
+	html[data-theme-mode='compact'] .cactiFlexBoxContainer {
+		display: flex;
+		flex-flow: row wrap;
+		align-content: flex-start;
+	}
+
+	html[data-theme-mode='compact'] .cactiFlexBoxContentBox {
+		width: 16rem;
+		height: 16rem;
+		box-sizing: border-box;
+	}
+
+	html[data-theme-mode='compact'] .cactiFlexBoxContentBox .header {
+		font-size: var(--fs-large);
+		text-align: center;
+		padding: 0.5rem 0;
+	}
+
+	html[data-theme-mode='compact'] .cactiFlexBoxContentBox .content {
+		font-size: 4rem;
+		text-align: center;
+		padding: 0.5rem 0;
+	}
+
 
 	html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header {
 		display: flex;
