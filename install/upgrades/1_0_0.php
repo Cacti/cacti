@@ -468,7 +468,7 @@ function upgrade_to_1_0_0() {
 						$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
 
 						if ($missing_len > 0) {
-							$translated_key .= substr('000', 0, $missing_len);
+							$translated_key .= substr('000', 0, CHARS_PER_TIER - $missing_len);
 						}
 
 						$parent_key_len   = strlen($translated_key) - CHARS_PER_TIER;
@@ -478,7 +478,7 @@ function upgrade_to_1_0_0() {
 							FROM graph_tree_items
 							WHERE graph_tree_id = ?
 							AND order_key LIKE ?',
-							array($item['graph_tree_id'],'\'' . $parent_key . '\'000%'), false);
+							array($item['graph_tree_id'], $parent_key . '000%'), false);
 
 						$parent_id = $parent_id_result['data'];
 
