@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-03-14 13:33-0400\nPO-Revision-Date: 2022-03-25 04:14+0000\nLast-Translator: Anatoliy <hamrad99h2@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-03-14 13:33-0400\nPO-Revision-Date: 2022-03-31 16:49+0000\nLast-Translator: Anatoliy <hamrad99h2@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2523 lib/html.php:2491
 msgid "About Cacti"
@@ -73,34 +73,28 @@ msgid "Delete"
 msgstr "Удалить"
 
 #: aggregate_graphs.php:44
-#, fuzzy
 msgid "Convert to Normal Graph"
-msgstr "Преобразование в LINE1 График"
+msgstr "Преобразование в Нормальный График"
 
 #: aggregate_graphs.php:45 graphs.php:58
-#, fuzzy
 msgid "Place Graphs on Report"
 msgstr "Разместить графики на отчёте"
 
 #: aggregate_graphs.php:46
-#, fuzzy
 msgid "Migrate Aggregate to use a Template"
 msgstr "Мигрировать агрегированные данные для использования Шаблона"
 
 #: aggregate_graphs.php:47
-#, fuzzy
 msgid "Create New Aggregate from Aggregates"
-msgstr "Создать новый агрегат из агрегатов"
+msgstr "Создать новую агрегацию из агрегаций"
 
 #: aggregate_graphs.php:51
-#, fuzzy
 msgid "Associate with Aggregate"
-msgstr "Ассоциировать с Aggregate"
+msgstr "Ассоциировать с агрегацией"
 
 #: aggregate_graphs.php:52
-#, fuzzy
 msgid "Disassociate with Aggregate"
-msgstr "Разошлись с Aggregate (агрегировать)"
+msgstr "Отделить от агрегации"
 
 #: aggregate_graphs.php:85 graphs.php:197 host.php:214
 #, php-format
@@ -108,9 +102,8 @@ msgid "Place on a Tree (%s)"
 msgstr "Поместить в дерево (%s)"
 
 #: aggregate_graphs.php:353
-#, fuzzy
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующие Агрегированные графики."
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующие Агрегированные графики."
 
 #: aggregate_graphs.php:358 aggregate_graphs.php:431 aggregate_graphs.php:456
 #: aggregate_graphs.php:485 aggregate_graphs.php:498 aggregate_graphs.php:507
@@ -193,7 +186,6 @@ msgid "Delete Graph(s)"
 msgstr "Удалить график(и)"
 
 #: aggregate_graphs.php:388
-#, fuzzy
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
 msgstr "Выбранные Агрегированные графики представляют собой элементы из более чем одного Шаблона графика."
 
@@ -481,7 +473,7 @@ msgstr "Сопоставление графиков"
 #: utilities.php:1248 utilities.php:1541 utilities.php:1822 utilities.php:2606
 #: utilities.php:2858 vdef.php:700
 msgid "Search"
-msgstr "Найти"
+msgstr "Поиск"
 
 #: aggregate_graphs.php:1318 aggregate_graphs.php:1361
 #: aggregate_graphs.php:1622 color_templates.php:642 data_sources.php:1621
@@ -565,7 +557,7 @@ msgstr "Выполнить"
 #: user_group_admin.php:2648 utilities.php:845 utilities.php:1200
 #: utilities.php:1532 utilities.php:1813 utilities.php:2643 utilities.php:2906
 msgid "Set/Refresh Filters"
-msgstr "Установить/Обновить фильтры"
+msgstr "Выбрать/Обновить фильтры"
 
 #: aggregate_graphs.php:1341 aggregate_graphs.php:1639
 #: aggregate_templates.php:630 automation_devices.php:496
@@ -1655,7 +1647,7 @@ msgstr "Диапазон обнаружения сети [новый]"
 #: include/global_form.php:1976 include/global_settings.php:51
 #: lib/html_reports.php:30
 msgid "General Settings"
-msgstr "Основые Настройки"
+msgstr "Основные Настройки"
 
 #: automation_networks.php:441 automation_snmp.php:504 data_input.php:636
 #: data_input.php:697 data_queries.php:758 data_queries.php:863
@@ -7662,7 +7654,7 @@ msgstr "Общая администрация"
 
 #: include/global_arrays.php:1151
 msgid "System Administration"
-msgstr "Администрирование системы."
+msgstr "Администрирование системы"
 
 #: include/global_arrays.php:1245 lib/html.php:1131
 #, fuzzy
