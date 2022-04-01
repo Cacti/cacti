@@ -39,20 +39,6 @@
         box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.25);
     }
 
-    .particles {
-        z-index: -1;
-        position: absolute;
-        top: 25%;
-        width: 100%;
-        height: 50%;
-        animation: fadeInAnimation ease 20s;
-        animation-iteration-count: 1;
-        animation-fill-mode: forwards;
-    }
-    html[data-theme-color='light'] .particles {
-        display: none;
-    }
-
     html[data-theme-mode='compact'] .cactiPageHead,
     html[data-theme-mode='compact'] .cactiPageBottom {
         display: none;
