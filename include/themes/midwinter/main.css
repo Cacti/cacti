@@ -5,8 +5,11 @@
 
 /* Media Queries */
 @import url('./css/media/core.css') all;
+@import url('./css/media/print.css') print;
 @import url('./css/media/max-width-600.css') screen and (max-width: 600px);
 @import url('./css/media/min-width-600.css') screen and (min-width: 600px);
+
+
 
 /* Extensions & Addons */
 @import "billboard.midwinter.css";
@@ -24,11 +27,7 @@ html[data-theme-mode='standard'] .compact {
 
 
 
-@media print {
-	.noprint {
-		display: none;
-	}
-}
+
 
 /* kiosk mode */
 html[data-theme-mode='compact'] [class~=fullscreen],
