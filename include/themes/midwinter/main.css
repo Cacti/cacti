@@ -7,7 +7,6 @@
 @import url('./css/media/core.css') all;
 @import url('./css/media/max-width-600.css') screen and (max-width: 600px);
 @import url('./css/media/min-width-600.css') screen and (min-width: 600px);
-@import url('./css/media/min-width-600.css') screen and (min-width: 1280px);
 
 /* Extensions & Addons */
 @import "billboard.midwinter.css";
