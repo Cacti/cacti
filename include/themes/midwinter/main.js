@@ -969,15 +969,149 @@ function dialog_client(event) {
 		if (textStatus === 'success') {
 			let title='Your Client';
 
+			let uaObj = new UAParser();
+			let env = uaObj.getResult();
+console.log(env);
+			switch(env.browser.name) {
+				case 'Chrome Headless':
+				case 'Chrome WebView':
+				case 'Chrome':
+				case 'Chromium':
+					env.browser.icon = 'fab fa-chrome';
+					break;
+				case 'IE':
+				case 'IEMobile':
+					env.browser.icon = 'fab fa-internet-explorer';
+					break;
+				case 'Edge':
+					env.browser.icon = 'fab fa-edge';
+					break;
+				case 'Firefox':
+					env.browser.icon = 'fab fa-firefox-browser';
+					break;
+				case 'Opera':
+				case 'Opera Mini':
+				case 'Opera Mobi':
+				case 'Opera Tablet':
+					env.browser.icon = 'fab fa-opera';
+					break;
+				case 'Safari':
+				case 'Mobile Safari':
+					env.browser.icon = 'fab fa-safari';
+					break;
+				default:
+					env.browser.icon = 'far fa-square';
+			}
+
+			switch(env.os.name) {
+				case 'Windows':
+				case 'Windows Phone':
+				case 'Windows Mobile':
+					env.os.icon = 'fab fa-windows';
+					break;
+				case 'Chromium OS':
+					env.os.icon = 'fab fa-chrome';
+					break;
+				case 'Mac OS':
+				case 'iOS':
+					env.os.icon = 'fab fa-apple';
+					break;
+				case 'Android':
+				case 'CentOS':
+				case 'Fedora':
+				case 'FreeBSD':
+				case 'RedHat':
+				case 'SUSE':
+				case 'Ubuntu':
+					env.os.icon = 'fab fa-' + env.os.name.toLowerCase();
+					break;
+				case 'Raspbian':
+					env.os.icon = 'fab fa-raspberry-pi';
+					break;
+				case 'BlackBerry':
+					env.os.icon = 'fab fa-blackberry';
+					break;
+				case 'Arch':
+				case 'Debian':
+				case 'Gentoo':
+				case 'GNU':
+				case 'Joli':
+				case 'Linpus':
+				case 'Mageia':
+				case 'Mandriva':
+				case 'MeeGo':
+				case 'Mint':
+				case 'NetBSD':
+				case 'OpenBSD':
+				case 'PCLinuxOS':
+				case 'Slackware':
+				case 'UNIX':
+				case 'VectorLinux':
+				case 'Linux':
+					env.os.icon = 'fab fa-linux';
+					break;
+				default:
+					env.os.icon = 'far fa-square';
+			}
+
+			switch (env.device.type) {
+				case 'console':
+					env.device.icon = 'fas fa-gamepad';
+					break;
+				case 'mobile':
+					env.device.icon = 'fas fa-mobile-alt';
+					break;
+				case 'tablet':
+					env.device.icon = 'fas fa-tablet-alt';
+					break;
+				case 'smarttv':
+					env.device.icon = 'fas fa-tv';
+					break;
+				case 'embedded':
+					env.device.icon = 'fas fa-cubes';
+					break;
+				default:
+					env.device.icon = 'fas fa-desktop';
+			}
+
+			let content = '<div class="cactiFlexBoxContainer">';
+
+			content += '<div class="cactiFlexBoxContentBox">'
+				+             '<div class="header"><span>Browser</span></div>'
+				+             '<div class="content"><i class="'+env.browser.icon+'"></i></div>'
+				+             '<div class="footer"><span>'+ env.browser.name +'</span><span>'+ env.browser.version +'</span></div>'
+				+ '</div>';
+
+			content += '<div class="cactiFlexBoxContentBox">'
+				+             '<div class="header"><span>OS</span></div>'
+				+             '<div class="content"><i class="'+env.os.icon+'"></i></div>'
+				+             '<div class="footer"><span>'+ env.os.name +'</span><span>'+ env.os.version +'</span></div>'
+				+ '</div>';
+
+			content += '<div class="cactiFlexBoxContentBox">'
+				+             '<div class="header"><span>Type</span></div>'
+				+             '<div class="content"><i class="'+env.device.icon+'"></i></div>'
+				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : env.device.type) +'</span></div>'
+				+ '</div>';
+
+			content += '<div class="cactiFlexBoxContentBox">'
+				+             '<div class="header"><span>Network</span></div>'
+				+             '<div class="content"><i class="fas fa-network-wired"></i></div>'
+				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : env.device.type) +'</span></div>'
+				+ '</div>';
+
+			content += '</div>';
+
+
 			$('#dialog_container').remove();
-			$('body').append('<div id="dialog_container" style="display:none"></div>');
+			$('body').append('<div id="dialog_container" style="display:none">'+content+'</div>');
 			$('#dialog_container').dialog({
 				draggable: true,
-				resizable: false,
+				resizable: true,
 				height: 'auto',
 				minWidth: 400,
-				maxWidth: 800,
-				maxHeight: 600,
+				maxWidth: 1200,
+				maxHeight: 1200,
 				title: title
 			});
 

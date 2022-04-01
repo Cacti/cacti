@@ -32,6 +32,7 @@ html {
     --box-shadow-color: hsl(var(--hue), 7%, 10%);
     --separator: hsl(var(--hue), 7%, 55%);
 }
+
 html[data-theme-color='light'] {
     --black: 0;
     --hue: 220;
