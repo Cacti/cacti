@@ -1994,6 +1994,35 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 	return cacti_sizeof($records);
 }
 
+/**
+ * remote_poller_up - Given a remote poller id, check if it has responded
+ *   recently, and if so, return true else return false.
+ *
+ * @param   (int) The remote poller id
+ *
+ * @returns (bool) True if up else false
+ */
+function remote_poller_up($poller_id) {
+	$gone_time = read_config_option('poller_interval') * 2;
+
+	if (empty($poller_id) || $poller_id <= 1) {
+		return false;
+	}
+
+	$up_poller = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM poller
+		WHERE UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) < ?
+		AND id = ?
+		AND disabled = ""',
+		array($gone_time, $poller_id));
+
+	if ($up_poller) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function should_ignore_from_replication($path) {
 	$entry = basename($path);
 	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '');
