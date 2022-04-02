@@ -764,7 +764,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 					if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
 						$save['id'] = $host_id;
 						sql_save($save, 'host', 'id', true, $rcnn_id);
-					} elseif (!$riased) {
+					} elseif (!$raised) {
 						raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised = true;
 					}
