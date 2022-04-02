@@ -676,6 +676,8 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 			array($id));
 	}
 
+	$raised = false;
+
 	$save['id']                   = form_input_validate($id, 'id', '^[0-9]+$', false, 3);
 	$save['host_template_id']     = form_input_validate($host_template_id, 'host_template_id', '^[0-9]+$', true, 3);
 
@@ -747,15 +749,30 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 		if ($host_id) {
 			if ($poller_id != $previous_poller) {
-				api_device_purge_from_remote($host_id, $previous_poller);
-			}
-
-			if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
-				$save['id'] = $host_id;
-				sql_save($save, 'host', 'id', true, $rcnn_id);
+				if (remote_poller_up($previous_poller)) {
+					api_device_purge_from_remote($host_id, $previous_poller);
+				} else {
+					raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $previous_poller), MESSAGE_LEVEL_WARN);
+					$raised = true;
+				}
 			}
 
 			raise_message(1);
+
+			if ($poller_id > 1) {
+				if (remote_poller_up($poller_id)) {
+					if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
+						$save['id'] = $host_id;
+						sql_save($save, 'host', 'id', true, $rcnn_id);
+					} elseif (!$riased) {
+						raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						$raised = true;
+					}
+				} elseif (!$raised) {
+					raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					$raised = true;
+				}
+			}
 
 			/* clear the host session data for poller cache repopulation */
 			if (isset($_SESSION['sess_host_cache_array'][$host_id])) {
@@ -773,15 +790,23 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 					WHERE host_id = ?',
 					array($host_id));
 
-				if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
-					db_execute_prepared('UPDATE host_snmp_query
-						SET reindex_method = 0
-						WHERE host_id = ?',
-						array($host_id), true, $rcnn_id);
+				if ($poller_id > 1) {
+					if (remote_poller_up($poller_id)) {
+						if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
+							db_execute_prepared('UPDATE host_snmp_query
+								SET reindex_method = 0
+								WHERE host_id = ?',
+								array($host_id), true, $rcnn_id);
 
-					db_execute_prepared('DELETE FROM poller_reindex
-						WHERE host_id = ?',
-						array($host_id), true, $rcnn_id);
+							db_execute_prepared('DELETE FROM poller_reindex
+								WHERE host_id = ?',
+								array($host_id), true, $rcnn_id);
+						} elseif (!$raised) {
+							raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						}
+					} elseif (!$raised) {
+						raise_message('poller_down_' . $save['id'], __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					}
 				}
 			}
 

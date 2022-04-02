@@ -100,6 +100,7 @@ Cacti CHANGELOG
 -issue#4652: After repopulating graph, navigation to check cumbersome
 -issue#4654: function push_out_host() throws errors when saving a data template
 -issue#4658: Lost some graph tree node parent during upgrade from pre-1.0
+-issue#4659: Errors thrown when moving device from a offline poller to another poller
 -feature: Expose hidden Language Translation setting l10n_language_handler
 -feature: Allow a Device to be a part of a Report outside of a Tree
 -feature: Allow Basic Authentication to display customer login failed message
