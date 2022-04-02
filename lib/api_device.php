@@ -81,13 +81,13 @@ function api_device_remove($device_id) {
    @arg $device_ids - device id or an array of device_ids of a host or hosts
    @arg $poller_id  - the previous poller if it changed */
 function api_device_purge_from_remote($device_ids, $poller_id = 0) {
+	if (!is_array($device_ids)) {
+		$device_ids = array($device_ids);
+	}
+
 	if ($poller_id > 1) {
 		if (remote_poller_up($poller_id)) {
 			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-				if (!is_array($device_ids)) {
-					$device_ids = array($device_ids);
-				}
-
 				db_execute('DELETE FROM host             WHERE      id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 				db_execute('DELETE FROM host_graph       WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 				db_execute('DELETE FROM host_snmp_query  WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
@@ -622,11 +622,11 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 function api_device_replicate_out($device_id, $poller_id = 1) {
 	global $config;
 
+	$rcnn_id = false;
+
 	if ($poller_id > 1) {
 		if (remote_poller_up($poller_id)) {
 			$rcnn_id = poller_connect_to_remote($poller_id);
-		} else {
-			$rcnn_id = false;
 		}
 	}
 
