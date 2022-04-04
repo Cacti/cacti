@@ -7,7 +7,6 @@ Cacti CHANGELOG
 -security#4576: Device, Graph, Graph Template, and Graph Items may be vulnerable to XSS issues
 -security#4579: Lockout policies are not properly applied to LDAP and Domain Users
 -security#4593: When using 'remember me' option, incorrect realm may be selected
--issue: Work around stricter typing in PHP 8.1.2 when performing some date calculations
 -issue: Correct PHP deprecation issue around number formatting associated with PHP 8.1.2
 -issue: At 30 second data collection in PHP 8.1.2 PHP reports a loss of precision in poller.php
 -issue: On rare occasions such as disk full cases and viewing one of the Graph Pages backtraces can occur
@@ -101,25 +100,26 @@ Cacti CHANGELOG
 -issue#4654: When saving a data template, replication may cause errors
 -issue#4658: When upgrading from pre-1.0, tree information may not properly update by ddb4github
 -issue#4659: When moving a device between pollers, errors may occur
--feature: Create more Filters for CLog Types
--feature: Create Graph Template Item Data Template filter for ease of Use
--feature: Expose hidden Language Translation setting l10n_language_handler
+-issue#4666: Work around stricter typing in PHP 8.1.2 when performing some date calculations
 -feature: Allow Basic Authentication to display customer login failed message
 -feature: Add LDAP Debug Mode option for testing LDAP specific connection issues
 -feature: Add Citrix NetScaler Community Provided Device Package to available packages
--feature: Allow the get_template_account() function to be hookable by third party plugin
 -feature: Enhance Cisco Router Device Package
--feature: Prevent Template User Accounts from being Removed
 -feature: Adding Cisco ASA Security Appliance Device Package
 -feature: Add Synology NAS Device Package to available packages
 -feature: Allow a Device to be a part of a Report outside of a Tree
 -feature: Adding the Advanced Ping Graph Template to available packages
--feature: Allow The User Management interface to be filterable by Realm
 -feature#4574: On larger systems, permissions may need alternative methods
 -feature#4631: When creating a Data Source Profile, allow additional choices for Heartbeat
 -feature#4636: Upgrade jQueryMulti-select to 3.0.1
 -feature#4637: Change select all options to use Font Awesome icons
 -feature#4641: Improve spine performance by storing the total number of system snmp_ports in use
+-feature#4663: Prevent Template User Accounts from being Removed
+-feature#4664: Allow The User Management interface to be filterable by Realm
+-feature#4665: Allow the get_template_account() function to be hookable by third party plugin
+-feature#4667: Create more Filters for CLog Types
+-feature#4668: Create Graph Template Item Data Template filter for ease of Use
+-feature#4669: Expose hidden Language Translation setting l10n_language_handler
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
