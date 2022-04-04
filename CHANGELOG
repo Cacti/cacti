@@ -7,10 +7,7 @@ Cacti CHANGELOG
 -security#4576: Device, Graph, Graph Template, and Graph Items may be vulnerable to XSS issues
 -security#4579: Lockout policies are not properly applied to LDAP and Domain Users
 -security#4593: When using 'remember me' option, incorrect realm may be selected
--issue: Correct PHP deprecation issue around number formatting associated with PHP 8.1.2
--issue: At 30 second data collection in PHP 8.1.2 PHP reports a loss of precision in poller.php
 -issue: On rare occasions such as disk full cases and viewing one of the Graph Pages backtraces can occur
--issue: Reports Drag and Drop not functioning
 -issue#3816: When replicating data during installation/upgrade, system may appear to hang
 -issue#4363: Graph Template Items may have duplicated entries
 -issue#4435: Unable to Save Graph Settings
@@ -39,6 +36,7 @@ Cacti CHANGELOG
 -issue#4512: When using API calls, graphs without data sources may be unremovable
 -issue#4516: Add additional information to help when creating graphs from templates
 -issue#4519: When remote host poll fails, poller ID may not be found and cause errors
+-issue#4521: Backtraces Logged in Cacti 1.2.x Branch - Gettext Translation
 -issue#4522: When entering custom input, layout issues may be seen
 -issue#4528: When creating a device, default setting for Device Threads may be ignored
 -issue#4529: Primary Admin account notifications may not work in certain cases
@@ -101,6 +99,8 @@ Cacti CHANGELOG
 -issue#4658: When upgrading from pre-1.0, tree information may not properly update by ddb4github
 -issue#4659: When moving a device between pollers, errors may occur
 -issue#4666: Work around stricter typing in PHP 8.1.2 when performing some date calculations
+-issue#4671: At 30 second data collection in PHP 8.1.2 PHP reports a loss of precision in poller.php
+-issue#4672: Reports Drag and Drop not functioning
 -feature: Allow Basic Authentication to display customer login failed message
 -feature: Add LDAP Debug Mode option for testing LDAP specific connection issues
 -feature: Add Citrix NetScaler Community Provided Device Package to available packages
