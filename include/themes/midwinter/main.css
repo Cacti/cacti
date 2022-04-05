@@ -6,10 +6,15 @@
 /* Media Queries */
 @import url('./css/media/core.css') all;
 @import url('./css/media/print.css') print;
-@import url('./css/media/max-width-600.css') screen and (max-width: 600px);
 @import url('./css/media/min-width-600.css') screen and (min-width: 600px);
+@import url('./css/media/max-width-600-portrait.css') screen and (max-width: 600px) and (orientation: portrait);
+@import url('./css/media/max-height-450-landscape.css') screen and (max-height: 450px) and (orientation: landscape);
+@import url('./css/media/max-width-600-portrait.css') screen and (max-width: 600px) and (orientation: portrait);
 
-
+/* compact mode */
+@import url('./css/media/compact.css') screen;
+@import url('./css/media/compact-portrait.css') screen and (max-width: 600px) and (orientation: portrait);
+@import url('./css/media/compact-landscape.css') screen and (min-width: 600px), (orientation: landscape);
 
 /* Extensions & Addons */
 @import "billboard.midwinter.css";

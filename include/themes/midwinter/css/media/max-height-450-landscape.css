@@ -1,0 +1,3 @@
+html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox {
+    height: calc(100vh - 4rem) !important;
+}

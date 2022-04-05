@@ -55,6 +55,7 @@
 /* dropdown menus */
 .menuoptions, .submenuoptions {
         width: 100%;
+        top: 3rem !important;
         left: 0 !important;
         border-left: none !important;
         border-right: none !important;
