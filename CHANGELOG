@@ -1,17 +1,12 @@
 Cacti CHANGELOG
 
 1.2.20
--security: Resolve issues with XSS issues in color_template.  Thanks @M0rphling
--security: Resolve issues with SQL injections in user_admin and user_group_admin.  Thanks @enesdex (CVE-2021-23225)
 -security#4562: When using LDAP, authentication process may be bypassed
 -security#4576: Device, Graph, Graph Template, and Graph Items may be vulnerable to XSS issues
 -security#4579: Lockout policies are not properly applied to LDAP and Domain Users
 -security#4593: When using 'remember me' option, incorrect realm may be selected
--issue: Work around stricter typing in PHP 8.1.2 when performing some date calculations
--issue: Correct PHP deprecation issue around number formatting associated with PHP 8.1.2
--issue: At 30 second data collection in PHP 8.1.2 PHP reports a loss of precision in poller.php
--issue: On rare occasions such as disk full cases and viewing one of the Graph Pages backtraces can occur
--issue: Reports Drag and Drop not functioning
+-security#4678: SQL Injection is possible in User and User Group Administration. Thanks @enesdex (CVE-2021-23225)
+-security#4679: It is possible to have an XSS on the Color Templates page.  Thanks @M0rphling
 -issue#3816: When replicating data during installation/upgrade, system may appear to hang
 -issue#4363: Graph Template Items may have duplicated entries
 -issue#4435: Unable to Save Graph Settings
@@ -40,6 +35,7 @@ Cacti CHANGELOG
 -issue#4512: When using API calls, graphs without data sources may be unremovable
 -issue#4516: Add additional information to help when creating graphs from templates
 -issue#4519: When remote host poll fails, poller ID may not be found and cause errors
+-issue#4521: Backtraces Logged in Cacti 1.2.x Branch - Gettext Translation
 -issue#4522: When entering custom input, layout issues may be seen
 -issue#4528: When creating a device, default setting for Device Threads may be ignored
 -issue#4529: Primary Admin account notifications may not work in certain cases
@@ -101,25 +97,26 @@ Cacti CHANGELOG
 -issue#4654: When saving a data template, replication may cause errors
 -issue#4658: When upgrading from pre-1.0, tree information may not properly update by ddb4github
 -issue#4659: When moving a device between pollers, errors may occur
--feature: Create more Filters for CLog Types
--feature: Create Graph Template Item Data Template filter for ease of Use
--feature: Expose hidden Language Translation setting l10n_language_handler
--feature: Allow Basic Authentication to display customer login failed message
--feature: Add LDAP Debug Mode option for testing LDAP specific connection issues
--feature: Add Citrix NetScaler Community Provided Device Package to available packages
--feature: Allow the get_template_account() function to be hookable by third party plugin
--feature: Enhance Cisco Router Device Package
--feature: Prevent Template User Accounts from being Removed
--feature: Adding Cisco ASA Security Appliance Device Package
--feature: Add Synology NAS Device Package to available packages
--feature: Allow a Device to be a part of a Report outside of a Tree
--feature: Adding the Advanced Ping Graph Template to available packages
--feature: Allow The User Management interface to be filterable by Realm
+-issue#4666: Work around stricter typing in PHP 8.1.2 when performing some date calculations
+-issue#4671: At 30 second data collection in PHP 8.1.2 PHP reports a loss of precision in poller.php
+-issue#4672: Reports Drag and Drop not functioning
+-issue#4680: On rare occasions such as disk full cases and viewing one of the Graph Pages backtraces can occur
 -feature#4574: On larger systems, permissions may need alternative methods
 -feature#4631: When creating a Data Source Profile, allow additional choices for Heartbeat
 -feature#4636: Upgrade jQueryMulti-select to 3.0.1
 -feature#4637: Change select all options to use Font Awesome icons
 -feature#4641: Improve spine performance by storing the total number of system snmp_ports in use
+-feature#4663: Prevent Template User Accounts from being Removed
+-feature#4664: Allow The User Management interface to be filterable by Realm
+-feature#4665: Allow the get_template_account() function to be hookable by third party plugin
+-feature#4667: Create more Filters for CLog Types
+-feature#4668: Create Graph Template Item Data Template filter for ease of Use
+-feature#4669: Expose hidden Language Translation setting l10n_language_handler
+-feature#4673: Add Device Packages for Synology, Citrix NetScaler, Cisco ASA, and Improve Cisco Router Device Packages
+-feature#4674: Add the Advanced Ping Graph Template to a Graph Template Package
+-feature#4675: Add LDAP Debug Mode option for testing LDAP specific connection issues
+-feature#4676: Allow a Device to be a part of a Report outside of a Tree
+-feature#4677: Allow Basic Authentication to display customer login failed message
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
