@@ -1074,7 +1074,7 @@ function api_device_update_host_template($host_id, $host_template_id) {
 		AND deleted = ""',
 		array($host_template_id, $host_id));
 
-	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($device_id));
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($host_id));
 
 	if ($poller_id > 1) {
 		if (remote_poller_up($poller_id)) {
