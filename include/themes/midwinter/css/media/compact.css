@@ -1,0 +1,6 @@
+/* Hide Standard Mode Elements */
+html[data-theme-mode='compact'] .cactiPageHead,
+html[data-theme-mode='compact'] .cactiPageBottom,
+html[data-theme-mode='compact'] #navBar {
+    display: none;
+}

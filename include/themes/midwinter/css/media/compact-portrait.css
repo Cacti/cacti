@@ -1,10 +1,3 @@
-/* Hide Standard Mode Elements */
-html[data-theme-mode='compact'] .cactiPageHead,                      /*equal*/
-html[data-theme-mode='compact'] .cactiPageBottom,
-html[data-theme-mode='compact'] #navBar {
-    display: none;
-}
-
 /* Compact BreadCrumbBar with Cacti Logo */
 html[data-theme-mode='compact'] .breadCrumbBar {
     display: flex;
@@ -67,6 +60,7 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact {
 
 html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact#compact_user_menu {
     justify-content: flex-end;
+    margin-right: 0.5rem;
 }
 
 html[data-theme-mode='compact'] .cactiConsoleNavigationBox {
@@ -172,7 +166,8 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox ul.nav {
     margin-top: 1rem;
     height: calc(100% - 4rem - 2px);
     max-width: 100%;
-    overflow-y: auto;
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 html[data-theme-mode='compact'] .cactiConsoleNavigationArea #menu::-webkit-scrollbar {
