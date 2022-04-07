@@ -951,8 +951,8 @@ jQuery.cachedScript = function(url, options) {
 function kiosk_mode(state='toggle') {
 	if (state == 'toggle') {
 		//hide all navigation elements
-		$('.cactiConsoleNavigationArea, .breadCrumbBar').toggleClass('hide');
-		$('.cactiContent').toggleClass('fullscreen');
+		$('.cactiConsoleNavigationArea, .breadCrumbBar').addClass('hide');
+		$('.cactiContent').addClass('fullscreen');
 	} else {
 		$('.cactiConsoleNavigationArea, .breadCrumbBar').removeClass('hide');
 		$('.cactiContent').removeClass('fullscreen');
