@@ -291,7 +291,21 @@ function form_save() {
 
 				/* push out all "custom data" for this data source template */
 				push_out_data_source_custom_data($data_template_id);
-				push_out_host(0, 0, $data_template_id);
+
+				/* push out the hosts that use the data template */
+				$hosts = array_rekey(
+					db_fetch_assoc_prepared('SELECT DISTINCT host_id
+						FROM data_local
+						WHERE data_template_id = ?',
+						array($data_template_id)),
+					'host_id', 'host_id'
+				);
+
+				if (cacti_sizeof($hosts)) {
+					foreach($hosts as $host_id) {
+						push_out_host($host_id, 0, $data_template_id);
+					}
+				}
 
 				/* push out field mappings for the data collector */
 				/* its important to delete first due to the possibility that

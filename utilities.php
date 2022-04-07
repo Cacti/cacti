@@ -1902,7 +1902,7 @@ function utilities_view_poller_cache() {
 		ON pi.host_id = h.id
 		$sql_where");
 
-	$poller_sql = "SELECT pi.*, dtd.name_cache, h.description
+	$poller_sql = "SELECT pi.*, dtd.name_cache, h.description, h.id host_id
 		FROM poller_item AS pi
 		INNER JOIN data_local AS dl
 		ON dl.id=pi.local_data_id
@@ -1943,7 +1943,7 @@ function utilities_view_poller_cache() {
 					<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
 				</td>
 				<td>
-					<?php print html_escape($item['description']);?>
+					<?php print filter_value($item['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $item['host_id']); ?>
 				</td>
 
 				<td>

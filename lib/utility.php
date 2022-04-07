@@ -509,24 +509,36 @@ function push_out_data_input_method($data_input_id) {
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items, $poller_id = 1) {
 	global $config;
 
+	$ids    = '';
+	$raised = false;
+
 	/* set all fields present value to 0, to mark the outliers when we are all done */
-	$ids = '';
 	if (cacti_sizeof($local_data_ids)) {
 		$ids = implode(', ', $local_data_ids);
 
 		if ($ids != '') {
 			db_execute_prepared("UPDATE poller_item
-				SET present=0
+				SET present = 0
 				WHERE poller_id = ?
 				AND local_data_id IN ($ids)",
 				array($poller_id));
 
-			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-				db_execute_prepared("UPDATE poller_item
-					SET present=0
-					WHERE poller_id = ?
-					AND local_data_id IN ($ids)",
-					array($poller_id), true, $rcnn_id);
+			if ($poller_id > 1) {
+				if (remote_poller_up($poller_id)) {
+					if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+						db_execute_prepared("UPDATE poller_item
+							SET present = 0
+							WHERE poller_id = ?
+							AND local_data_id IN ($ids)",
+							array($poller_id), true, $rcnn_id);
+					} else {
+						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						$raised = true;
+					}
+				} else {
+					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					$raised = true;
+				}
 			}
 		}
 	} else {
@@ -579,8 +591,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 			if ($overhead + $buf_len > $max_packet - 1024) {
 				db_execute($sql_prefix . $buffer . $sql_suffix);
 
-				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-					db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
+				if ($poller_id > 1) {
+					if (remote_poller_up($poller_id)) {
+						if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+							db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
+						} elseif (!$raised) {
+							raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+							$raised = true;
+						}
+					} elseif (!$raised) {
+						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+						$raised = true;
+					}
 				}
 
 				$buffer    = '';
@@ -595,8 +617,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	if ($buf_count > 0) {
 		db_execute($sql_prefix . $buffer . $sql_suffix);
 
-		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-			db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
+		if ($poller_id > 1) {
+			if (remote_poller_up($poller_id)) {
+				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+					db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
+				} else {
+					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+					$raised = true;
+				}
+			} elseif (!$raised) {
+				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				$raised = true;
+			}
 		}
 	}
 
@@ -608,15 +640,21 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 			AND local_data_id IN ($ids)",
 			array($poller_id));
 
-		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
-			db_execute_prepared("DELETE FROM poller_item
-				WHERE present = 0
-				AND poller_id = ?
-				AND local_data_id IN ($ids)",
-				array($poller_id), true, $rcnn_id);
+		if ($poller_id > 1) {
+			if (remote_poller_up($poller_id)) {
+				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+					db_execute_prepared("DELETE FROM poller_item
+						WHERE present = 0
+						AND poller_id = ?
+						AND local_data_id IN ($ids)",
+						array($poller_id), true, $rcnn_id);
+				} elseif (!$raised) {
+					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+				}
+			} elseif (!$raised) {
+				raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
+			}
 		}
-	} else {
-		/* only handle explicitely given local_data_ids */
 	}
 }
 

@@ -1,119 +1,125 @@
 Cacti CHANGELOG
 
+1.2.21
+-issue#4683: When adding device, errors may be reported whilst updating templates
+
 1.2.20
--security#4562: Under certain LDAP server environments, cacti authentication can be bypassed (CVE-2022-0730)
--security#4576: Stored XSS Issue in Cacti Device, Graph, Graph Template, and Graph Items callbacks
--security#4579: Cacti account lockout policies are not properly applied to LDAP and Domain Users
--security#4593: Cacti 'remember-me' does not work with identical usernames from different realms
--security: Resolve issues with SQL injections in user_admin and user_group_admin.  Thanks @enesdex (CVE-2021-23225)
--security: Resolve issues with XSS issues in color_template.  Thanks @M0rphling
--issue: Reports Drag and Drop not functioning
--issue: At 30 second data collection in PHP 8.1.2 PHP reports a loss of precision in poller.php
--issue: Work around stricter typing in PHP 8.1.2 when performing some date calculations
--issue: Correct PHP deprecation issue around number formatting associated with PHP 8.1.2
--issue: On rare occasions such as disk full cases and viewing one of the Graph Pages backtraces can occur
--issue#3816: Installation can sometimes appear stuck during replication or table conversion
--issue#4363: Duplicate entries in graph_templates_item - mabye an aftermath of the template edit bug
--issue#4435: Unable to Save Graph Settings from the Graphs pages
--issue#4449: Script Server can crash if an OID is missing from device
--issue#4451: Remote pollers may not get settings when system-wide polling is turn off
--issue#4455: When updating poller name, matches may be too wide in scope
--issue#4458: MIB Cache column check causes poller crash under PHP 8.x
--issue#4461: When viewing graph data, non-numeric values may appear
+-security#4562: When using LDAP, authentication process may be bypassed
+-security#4576: Device, Graph, Graph Template, and Graph Items may be vulnerable to XSS issues
+-security#4579: Lockout policies are not properly applied to LDAP and Domain Users
+-security#4593: When using 'remember me' option, incorrect realm may be selected
+-security#4678: User and Group maintenance are vulnerable to SQL attacks
+-security#4679: Color Templates are vulnerable to XSS attack
+-issue#3816: When replicating data during installation/upgrade, system may appear to hang
+-issue#4363: Graph Template Items may have duplicated entries
+-issue#4435: Unable to Save Graph Settings
+-issue#4449: Script Server may crash if an OID is missing or unavailable
+-issue#4451: When system-wide polling is disabled, remote pollers may fail to sync changed settings
+-issue#4455: When updating poller name, duplicate name protection may be over zealous
 -issue#4457: Titles may show "Missing Datasource" incorectly
--issue#4460: Polling does not complete as expected on larger systems
+-issue#4458: Checking for MIB Cache can cause crashes
+-issue#4460: Polling cycles may not always complete as expected
+-issue#4461: When viewing graph data, non-numeric values may appear
 -issue#4472: Utilities view has calculation errors when there are no data sources
--issue#4475: Running cacti with PHP8.1 shows lots of warnings in the log
+-issue#4475: Add support for PHP 8
 -issue#4477: Remote pollers do not force connection when online
--issue#4479: As a repair tool, the rebuild poller cache scripts lacks critical options to reduce runtimes
--issue#4480: Saving a Data Template can damage Data Sources if the Data Template is not constructed properly
--issue#4481: When using a Cacti Format File for a Report, the Reports still use Legacy Font Size and Alignment Attributes
--issue#4482: Graph Automation slowed by in-efficient index selection when creating Graphs
--issue#4491: Rebuild poller cache problem after change snmp version via DB query
--issue#4492: Output = U when OID starts with space
--issue#4495: DSSTATS will get invalid data for some devices after reboot requiring purging of stats
--issue#4498: Layout function textBoxWidth() does not work on input type form elements
--issue#4500: DSStats Does not Scale on Large Systems
--issue#4508: Changing SNMP settings on a bunch of device via 'choose an action' is not applied
--issue#4509: Updating Graph Template Items for a Template is Slow on Large Systems
--issue#4511: When viewing SVG Graphs the Graphs do not size properly when using the Time View UI
--issue#4512: The Cacti API can not remove a Graph that has no Data Sources
--issue#4516: Unable to create Graphs due to one of the following Data Query Issues: permissions, incorrectly formatted, or missing XML file
--issue#4519: Tracebacks and errors when remote host poll fails
--issue#4522: When Creating New Graphs some visible 'Custom Input' values lack a table header
--issue#4528: Default Setting "Device Threads" is ignored in device creation form
--issue#4529: Primary Admin account notifications not working in some cases
--issue#4530: Cacti's Reporting Interface is NOT Usable on Large Systems
--issue#4536: After authenticating via Web Basic Authentication, user always mapped as guest.
--issue#4539: Broken handling of plugin dependencies in 1.2.19
--issue#4540: Administrators can cause issues when editing a template account
--issue#4543: Some Email systems reject sending email if emails are duplicated in a send request. Cacti should deduplicate them
+-issue#4479: Rebuild Poller Cache CLI script should have filter options
+-issue#4480: Saving a bad Data Template can damage Data Sources
+-issue#4481: Reports still use Legacy attributes, despite having a format file
+-issue#4482: Graph Automation slowed by in-efficient index selection
+-issue#4491: When rebuilding poller cache, SNMP settings do not properly update
+-issue#4492: When an OID starts with space, SNMP returns undefined data
+-issue#4495: Datasource Statistics may obtain invalid data for some rebooted devices
+-issue#4498: When attempting to calculate width, some input elements may cause console errors
+-issue#4500: Datasource Statistics may not scale properly on larger systems
+-issue#4508: Changing Multi-Device SNMP settings may not work as expected
+-issue#4509: Updating Items for a Graph Template may be slow on larger systems
+-issue#4511: When using the time-based view, SVG Graphs may not resize properly
+-issue#4512: When using API calls, graphs without data sources may be unremovable
+-issue#4516: Add additional information to help when creating graphs from templates
+-issue#4519: When remote host poll fails, poller ID may not be found and cause errors
+-issue#4521: Backtraces Logged in Cacti 1.2.x Branch - Gettext Translation
+-issue#4522: When entering custom input, layout issues may be seen
+-issue#4528: When creating a device, default setting for Device Threads may be ignored
+-issue#4529: Primary Admin account notifications may not work in certain cases
+-issue#4530: On larger systems, user interface for reporting may become unusable
+-issue#4536: When using Web Basic Authentication, user is always mapped as guest.
+-issue#4539: When handling plugin dependancies, notices may not be displayed properly
+-issue#4540: Certain account types should not allow their enabled status to be changed
+-issue#4543: Emails sent multiple times to the same address can be rejected
 -issue#4545: Reports Tab always shows 'Administration' despite a users permissions
--issue#4546: Instead of receiving a permission denied message unauthenticated issues were redirected
--issue#4547: Testing with LDAP authentication generating backtraces
--issue#4548: CMDPHP PHP ERROR Backtrace and other errors
--issue#4549: Invalid path for Boost logging stops Boost update process without notification
--issue#4551: PHP DEPRECATED errors in 8.1
--issue#4552: Form error message not cleared before rendering forms leading to false error messages
--issue#4554: PHP 8.1 Causing Automation Deprecation Errors
--issue#4557: Undefined index in graph debug mode.
--issue#4563: Cacti breadcrumbs are unreliable due to faulty navigation cache logic
--issue#4564: Cacti Top Tabs do not work when clicked for a second time
--issue#4567: Cacti should disallow deleting of the currently logged in user
--issue#4568: Cacti incorrectly uses the user_auth_cache from identical usernames from the wrong realm
--issue#4569: User and Group Administration - Unused Templates are missing and row count wrong on Group page
--issue#4571: Settings does not properly hide authentication settings when auth method are switched
--issue#4572: When basic authentication is used, the login as regular user should not be shown
--issue#4573: The Cacti permission system does not scale to very large installations
--issue#4575: When you delete a user, their 'remember me' cookie data is not automatically removed
--issue#4577: Cacti allows you to disable or delete the currently logged in administrator disabling the user
+-issue#4546: When unauthorized, user may be redirected instead of notified
+-issue#4547: Add debug options to LDAP for diagnostic purposes
+-issue#4548: Rounding causes errors with variable substitution
+-issue#4549: Boost may become disabled due to an invalid path
+-issue#4551: Add support for PHP 8
+-issue#4552: Error messages are not always cleared, resulting in duplicated messages.
+-issue#4554: Add support for Automation under PHP 8
+-issue#4557: When selecting a Consolidation Function, errors may be reported
+-issue#4563: Breadcrumbs not always display the correct path
+-issue#4564: When clicking tabs, page may not always respond
+-issue#4567: Editing current user should prevent changes of account status
+-issue#4568: Authentication cache does not always use the correct realm
+-issue#4569: When editing users or groups, template permissions may not work as intended
+-issue#4571: When changing authentication method, unneeded settings may not be hidden
+-issue#4572: When basic authentication is used, login screen should not be seen
+-issue#4573: On larger systems, permission checks may render system unusable
+-issue#4575: When you delete a user, cookie data is not automatically removed
+-issue#4577: When editing current user, last administrator may be removed
 -issue#4578: The Cacti login algorithm is complicated to understand due to too much strait line code
--issue#4580: When logging in as a basic authentication user, users are made "guest" accounts instead of the login accounts as expected
--issue#4586: Due to inneficient checking of string values for replacement patterns, viewing graphs generates excessive database queries
--issue#4587: Cacti could benefit from reducing turns to settings table by caching common variables ahead of time
--issue#4588: Cannot use multibyte in host.php
--issue#4589: db_update_table should ALTER table engine/row_format/charset before ADD/ALTER column/index
--issue#4594: Prefer to use OS supplied Devaju Fonts fiels
+-issue#4580: When using Web Basic Authentication, users may be seen as guests
+-issue#4586: When viewing graphs, excess database queries may occur
+-issue#4587: Settings may be read more often than required
+-issue#4588: Unable to save host with multi-byte characters
+-issue#4589: When updating tables, ensure engine, row_format and charset by ddb4github
+-issue#4594: When selecting font, attempt to use system-based font before internally supplied version by ddb4github
 -issue#4597: Selective Device Debug does not work with Remote Data Collectors
 -issue#4598: Plugin tab does not stay visible when main poller is offline
--issue#4603: Cacti refuses to use the php-gettext module when installed
--issue#4607: Cacti's config.php file is improperly moved into the resource cache
--issue#4609: In some cases Cacti cacti session renewal lacks the HTTP_USER_AGENT resulting in errors in the Cacti Log
--issue#4610: The end user setting Hide Disabled Devices does not appear to be 100% functional
--issue#4611: Cacti's current replicate_out hook is insufficient for plugin use
--issue#4612: Cacti's cacti_remembers Cookie does not include the secure attribute required for SameSite support
--issue#4613: Cacti replication can not correct table structure changes in newer versions of MySQL/MariaDB
--issue#4614: Cacti can not differentiate between execution remotely between the main poller loop vs. poller bottom
--issue#4615: Cacti can not tell if a plugin has been disabled on the Remote Data Collector
--issue#4616: When performing plugin actions from the Cacti UI, replication should be forced to Remote Collectors
--issue#4617: When uninstalling a plugin, tables that are removed from plugins should be removed from remotes if replicated
--issue#4618: Plugins automatically disabled on cacti release when they exceed their maximum allowed runtime
--issue#4620: Remote Data Collector CLI scripts connect to the local database instead of the main database even when online
--issue#4623: Boost creates multiple DB tables and reports its crashed but is not running
--issue#4624: Error Unknown column 'snmp_sysUpTimeInstanceAlt' in 'field list'
--issue#4629: When removing large numbers of Graphs and Data Sources you can get poller overruns
--issue#4630: Session decode errors appearing in Cacti log periodically
--issue#4632: Input Field Checking is not enforced upon creation of Data Source
+-issue#4603: When failing back to PHP GetText, module is not always selected
+-issue#4607: Configuration file may be improperly moved into the resource cache
+-issue#4609: When handling sessions, user agent may not always be present
+-issue#4610: When hiding disabled devices, some may still be shown
+-issue#4611: When replicating to remote pollers, plugins are not always properly sync'd
+-issue#4612: When using cookie authentication, Same Site support does not always work properly
+-issue#4613: Newer versions of MySQL/MariaDB may prevent structure replication changes
+-issue#4614: Add support for hooks during polling loop or at poller end
+-issue#4615: Plugin status on a Remote Data Collector may not always be detectable
+-issue#4616: When performing certain plugin actions, replication should be forced to Remote Collectors
+-issue#4617: When removing a plugin, removed tables are not removed from remote pollers
+-issue#4618: When plugin exceed runtimes, they should not be automatic disabled
+-issue#4620: When using CLI, Remote Data Collector scripts may connect to the wrong database
+-issue#4623: Boost does not operate as it should in certain situations
+-issue#4624: System uptime may be missing under certain circumstances
+-issue#4629: When removing many Graphs and Data Sources, polling cycles may overrun
+-issue#4630: Session data is not always started correctly
+-issue#4632: When creating a Datasource, Input Field Checking is not always enforced
 -issue#4634: When using Basic Authentication, the Logout Everywhere button should not be shown
--feature: Expose hidden Language Translation setting l10n_language_handler
--feature: Allow a Device to be a part of a Report outside of a Tree
--feature: Allow Basic Authentication to display customer login failed message
--feature: Allow the get_template_account() function to be hookable by third party plugin
--feature: Allow The User Management interface to be filterable by Realm
--feature: Prevent Template User Accounts from being Removed
--feature: Create more Filters for CLog Types
--feature: Add LDAP Debug Mode option for testing LDAP specific connection issues
--feature: Adding the Advanced Ping Graph Template to available packages
--feature: Add Synology NAS Device Package to available packages
--feature: Add Citrix NetScaler Community Provided Device Package to available packages
--feature: Create Graph Template Item Data Template filter for ease of Use
--feature: Adding Cisco ASA Security Appliance Device Package
--feature: Enhance Cisco Router Device Package 
--feature#4574: Cacti needs some additional permission methods for larger installations
--feature#4631: Additional choices for Heartbeat when creating a Data Source Profile
--feature#4636: jQueryMulti-select 3.0.1 includes i18n upgrade to it
--feature#4637: Have Cacti's MultiSelect CheckAll and UnCheckAll use Font-Awesome 
+-issue#4645: When format file does not exist, changing certain settings may result in errors
+-issue#4651: Device Description is not consistent in Poller Cache view
+-issue#4652: After repopulating graph, navigation to check cumbersome
+-issue#4654: When saving a data template, replication may cause errors
+-issue#4658: When upgrading from pre-1.0, tree information may not properly update by ddb4github
+-issue#4659: When moving a device between pollers, errors may occur
+-issue#4666: Add date calculation support for PHP 8
+-issue#4671: Add poller sleeping support for PHP 8
+-issue#4672: When editing Reports, drag and drop may not function as intended
+-issue#4680: When data drive is full, viewing a Graph can result in errors
+-feature#4574: On larger systems, permissions may need alternative methods
+-feature#4631: When creating a Data Source Profile, allow additional choices for Heartbeat
+-feature#4636: Upgrade jQueryMulti-select to 3.0.1
+-feature#4637: Change select all options to use Font Awesome icons
 -feature#4641: Improve spine performance by storing the total number of system snmp_ports in use
+-feature#4663: Prevent Template User Accounts from being Removed
+-feature#4664: When managing by users, allow filtering by Realm
+-feature#4665: Allow plugins to supply template account names
+-feature#4667: When viewing logs, additional message types should be filterable
+-feature#4668: When creating a Graph Template Item, allow filtering by Data Template
+-feature#4669: Allow language handler to be selected via UI
+-feature#4673: Updated Device packages for Synology, Citrix NetScaler, Cisco ASA/Cisco
+-feature#4674: Add Advanced Ping Graph Template to initial Installable templates
+-feature#4675: Add LDAP Debug Mode option
+-feature#4676: Allow Reports to include devices not on a Tree
+-feature#4677: Allow Basic Authentication to display custom failure message
 
 1.2.19
 -security#4356: Further fixes for grave character security protection
