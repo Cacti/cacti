@@ -4,3 +4,17 @@ html[data-theme-mode='compact'] .cactiPageBottom,
 html[data-theme-mode='compact'] #navBar {
     display: none;
 }
+
+/* kiosk mode */
+html[data-theme-mode='compact'] [class~=fullscreen],
+html[data-theme-mode='compact'] [class~=fullscreen] > div {
+    height: 100vh !important;
+}
+
+html[data-theme-mode='compact'] .hide {
+    display: none !important;
+}
+
+html[data-theme-mode='compact'] .show {
+    display: block;
+}

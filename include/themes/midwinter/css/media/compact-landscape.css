@@ -50,7 +50,7 @@ html[data-theme-mode='compact'] .cactiContent {
 
 /* Console Navigation Area */
 html[data-theme-mode='compact'] .cactiConsoleNavigationArea {
-    display: flex !important;
+    display: flex;
     flex-direction: column;
     overflow-y: visible !important;
     width: 5rem !important;

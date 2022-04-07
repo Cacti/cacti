@@ -2451,3 +2451,22 @@ td.center > table {
     margin: 0 -48px;
     background-color: var(--background-content);
 }
+circle {
+    stroke: var(--text-color-light);
+    stroke-width: 1px;
+    fill: transparent !important;
+}
+
+[id*='_edit'] .tableRowGraph:hover {
+    background-color: rgba(200, 0, 200, .1) !important;
+    border-left: 2px solid yellow !important;
+    border-right: 2px solid yellow !important;
+}
+
+.tableRowGraph {
+    border: 2px solid rgba(0,0,0,0);
+}
+
+.no_padding {
+    padding: 0;
+}
