@@ -50,7 +50,7 @@ html[data-theme-mode='compact'] .cactiContent {
 
 /* Console Navigation Area */
 html[data-theme-mode='compact'] .cactiConsoleNavigationArea {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     overflow-y: visible !important;
     width: 5rem !important;
@@ -269,4 +269,10 @@ html[data-theme-mode='compact'] .cactiConsoleContentArea #filterTableOnTop {
 html[data-theme-mode='compact'] .cactiShadow {
     height: 1px;
     background-color: var(--background-navigation);
+}
+
+@media screen and (max-height: 450px){
+    html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox {
+        height: calc(100vh - 4rem) !important;
+    }
 }

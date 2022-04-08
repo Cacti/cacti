@@ -27,12 +27,11 @@
     border: 4px solid var(--background-menu);
 }
 
-
-
 * {
     scrollbar-color: var(--scrollbar-thumb) transparent;
     scrollbar-width: thin !important;
 }
+
 
 html {
     font-family: Roboto,Helvetica Neue,Arial,Fira Sans,sans-serif;
@@ -68,6 +67,7 @@ fieldset {
     border:none;
     font-size: var(--fs-extrasmall);
 }
+
 
 /* main Layout */
 .cactiPageHead {
