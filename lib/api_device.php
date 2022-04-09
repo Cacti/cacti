@@ -1211,7 +1211,7 @@ function api_device_update_host_template($host_id, $host_template_id) {
 						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised[$poller_id] = true;
 					}
-				} elseif (!$isset(raised[$poller_id])) {
+				} elseif (!$isset($raised[$poller_id])) {
 					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
