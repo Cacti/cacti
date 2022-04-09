@@ -194,6 +194,7 @@ Cacti CHANGELOG
 -issue#4273: When adding a device from command line, testing of data sources can cause errors to be recorded
 -issue#4274: When you start to zoom a graph, the auto graph refresh should be disabled
 -issue#4279: Default Setting "Device Threads" will not be saved correctly
+-issue#4284: Database upgrade can fail - Uncaught argument count error
 -issue#4293: Tree search does not take hosts belonging to a site into account
 -issue#4284: Whilst upgrading, errors in upgrade scripts prevent properly execution
 -issue#4294: Tables outside of pre-built list that need fixing, cause bad unknown column errors
