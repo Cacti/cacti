@@ -3685,7 +3685,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	$ypos  = round((200 / 2) + ($texth / 2),0);
 
 	/* set the font of the image */
-	if (file_exists($font_file) && is_readable($font_file) && function_exists('imagettftext')) {
+	if (isset($font_file) && file_exists($font_file) && is_readable($font_file) && function_exists('imagettftext')) {
 		foreach($strings as $string) {
 			if (trim($string) != '') {
 				if (@imagettftext($image, $font_size, 0, $xpos, $ypos, $text_color, $font_file, $string) === false) {

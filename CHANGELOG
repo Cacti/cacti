@@ -2,6 +2,8 @@ Cacti CHANGELOG
 
 1.2.21
 -issue#4683: When adding device, errors may be reported whilst updating templates
+-issue#4684: Undefined variable warning causes error image not to be generated
+-issue#4688: Two syntax error for PHP 5.4
 -issue#4689: CMDPHP PHP ERROR NOTICE Backtrace
 
 1.2.20
