@@ -32,7 +32,7 @@ require_once($config['base_path'] . '/lib/utility.php');
 require_once($config['base_path'] . '/lib/template.php');
 
 if ($config['poller_id'] > 1) {
-	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
 	exit(1);
 }
 
@@ -94,7 +94,7 @@ if (cacti_sizeof($parms)) {
 				display_version();
 				exit(0);
 			default:
-				print "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				exit(1);
 		}
 	}
@@ -107,7 +107,7 @@ if (cacti_sizeof($parms)) {
 				print json_encode($result);
 				exit(0);
 			} else {
-				print "FATAL: Error processing package file.  Info not returned\n";
+				print 'FATAL: Error processing package file.  Info not returned' . PHP_EOL;
 				exit(1);
 			}
 		}
@@ -120,7 +120,7 @@ if (cacti_sizeof($parms)) {
 			array($profile_id));
 
 		if (empty($exists)) {
-			print "FATAL: Data Source Profile ID " . $profile_id . " does not exist!\n";
+			print 'FATAL: Data Source Profile ID ' . $profile_id . ' does not exist!' . PHP_EOL;
 			exit(1);
 		}
 	} else {
@@ -128,12 +128,13 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if ($filename != '') {
-		if (file_exists($filename) && is_readable($filename)) {
-			$fp = fopen($filename,'r');
-			$data = fread($fp,filesize($filename));
+		if (file_exists($filename) && is_readable($filename) && !is_dir($filename)) {
+			$fp   = fopen($filename, 'r');
+			$data = fread($fp, filesize($filename));
+
 			fclose($fp);
 
-			print 'Read ' . strlen($data) . " bytes of Package data\n";
+			print 'Read ' . strlen($data) . ' bytes of Package data' . PHP_EOL;
 
 			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only);
 
@@ -143,20 +144,20 @@ if (cacti_sizeof($parms)) {
 
 				import_display_results($debug_data, $filestatus, false, $preview_only);
 			} else {
-				print "ERROR: file $filename import process failed due to errors with the XML file\n\n";
+				print "ERROR: file $filename import process failed due to errors with the XML file" . PHP_EOL . PHP_EOL;
 				exit(1);
 			}
 		} else {
-			print "ERROR: file $filename is not readable, or does not exist\n\n";
+			print "ERROR: file $filename is not readable, is a directory or does not exist" . PHP_EOL . PHP_EOL;
 			exit(1);
 		}
 	} else {
-		print "ERROR: no filename specified\n\n";
+		print 'ERROR: no filename specifiedn' . PHP_EOL . PHP_EOL;
 		display_help();
 		exit(1);
 	}
 } else {
-	print "ERROR: no parameters given\n\n";
+	print 'ERROR: no parameters given' . PHP_EOL . PHP_EOL;
 	display_help();
 	exit(1);
 }
@@ -164,22 +165,22 @@ if (cacti_sizeof($parms)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 function display_help() {
 	display_version();
 
-	print "\nusage: import_package.php --filename=[filename] [--only-info] [--remove-orphans] [--with-profile] [--profile-id=N\n\n";
-	print "A utility to allow signed Cacti Packages to be imported from the command line.\n\n";
-	print "Required:\n";
-	print "    --filename              The name of the gziped package file to import\n\n";
-	print "Optional:\n";
-	print "    --only-info       Output the info section of the package, do not import\n";
-	print "    --preview         Preview the Template Import, do not import\n";
-	print "    --with-profile    Use the default system Data Source Profile\n";
-	print "    --profile-id=N    Use the specific profile id when importing\n";
-	print "    --remove-orphans  If importing a new version of the template, old\n";
-	print "                      elements will be removed, if they do not exist\n";
-	print "                      in the new version of the template.\n\n";
+	print PHP_EOL . 'usage: import_package.php --filename=[filename] [--only-info] [--remove-orphans] [--with-profile] [--profile-id=N' . PHP_EOL . PHP_EOL;
+	print 'A utility to allow signed Cacti Packages to be imported from the command line.' . PHP_EOL . PHP_EOL;
+	print 'Required:' . PHP_EOL;
+	print '    --filename              The name of the gziped package file to import' . PHP_EOL . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
+	print '    --only-info       Output the info section of the package, do not import' . PHP_EOL;
+	print '    --preview         Preview the Template Import, do not import' . PHP_EOL;
+	print '    --with-profile    Use the default system Data Source Profile' . PHP_EOL;
+	print '    --profile-id=N    Use the specific profile id when importing' . PHP_EOL;
+	print '    --remove-orphans  If importing a new version of the template, old' . PHP_EOL;
+	print '                      elements will be removed, if they do not exist' . PHP_EOL;
+	print '                      in the new version of the template.' . PHP_EOL . PHP_EOL;
 }

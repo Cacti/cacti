@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.21
 -issue#4683: When adding device, errors may be reported whilst updating templates
+-issue#4689: CMDPHP PHP ERROR NOTICE Backtrace
 
 1.2.20
 -security#4562: When using LDAP, authentication process may be bypassed
