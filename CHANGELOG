@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#4684: Undefined variable warning causes error image not to be generated
 -issue#4688: Two syntax error for PHP 5.4
 -issue#4693: Heartbeat definitions can cause issues under PHP 8
+-issue#4695: Two wrong usages about $ignorable_type_code_hashes during package importing
 
 1.2.20
 -security#4562: When using LDAP, authentication process may be bypassed
