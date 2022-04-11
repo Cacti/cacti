@@ -1642,6 +1642,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	/* track changes */
 	$status = 0;
 
+	if (!isset($ignorable_type_code_hashes)) $ignorable_type_code_hashes = array();
 	$system_hashes = array(
 		'3eb92bb845b9660a7445cf9740726522', // Get SNMP Data
 		'bf566c869ac6443b0c75d1c32b5a350e', // Get SNMP Data (Indexed)
@@ -2214,7 +2215,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 						foreach ($vals['dep'] as $dep_hash => $dep_status) {
 							if ($dep_status == 'met') {
 								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . '</span>';
-							} else if (array_search($ignorable_type_code_hashes, $dep_hash) === false) {
+							} else if (array_search($dep_hash, $ignorable_type_code_hashes) === false) {
 								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . '</span>';
 								$dep_errors = true;
 							}
