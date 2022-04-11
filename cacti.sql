@@ -2620,7 +2620,7 @@ CREATE TABLE user_auth (
   `password` varchar(256) NOT NULL default '',
   `realm` mediumint(8) NOT NULL default '0',
   `full_name` varchar(100) default '0',
-  `email_address` varchar(128) NULL,
+  `email_address` varchar(128),
   `must_change_password` char(2),
   `password_change` char(2) default 'on',
   `show_tree` char(2) default 'on',
@@ -2866,8 +2866,8 @@ CREATE TABLE `user_domains_ldap` (
   `search_filter` varchar(512) NOT NULL,
   `specific_dn` varchar(128) NOT NULL,
   `specific_password` varchar(128) NOT NULL,
-  `cn_full_name` varchar(50) NULL DEFAULT '',
-  `cn_email` varchar (50) NULL DEFAULT '',
+  `cn_full_name` varchar(50) DEFAULT '',
+  `cn_email` varchar (50) DEFAULT '',
   PRIMARY KEY (`domain_id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table to Hold Login Domains for LDAP';
 
