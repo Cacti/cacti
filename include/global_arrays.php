@@ -2805,6 +2805,7 @@ if ($config['cacti_server_os'] == 'unix') {
 		'/usr/share/fonts/dejavu/', //RHEL/CentOS
 		'/usr/share/fonts/truetype/', //SLES
 		'/usr/share/fonts/truetype/dejavu/', //Ubuntu
+		'/usr/local/share/fonts/dejavu/', //FreeBSD
 		__DIR__ . '/fonts'  //Build-in
 	);
 } else {
