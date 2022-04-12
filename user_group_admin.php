@@ -1766,7 +1766,7 @@ function group_edit() {
 
 		?>
 		<script type='text/javascript'>
-		var consoleAllowed=<?php print is_user_group_realm_allowed(8, $group['id']) ? 'true':'false';?>;
+		var consoleAllowed=<?php print is_user_group_realm_allowed(8, (isset($group) ? $group['id'] : 0)) ? 'true':'false';?>;
 
 		$(function() {
 			if (!consoleAllowed) {
