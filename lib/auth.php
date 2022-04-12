@@ -3417,6 +3417,7 @@ function basic_auth_login_process($username) {
  * @return (array)  $user - The valid user information, or empty array if user must be created
  */
 function local_auth_login_process($username) {
+
 	$user = array();
 
 	if (!api_plugin_hook_function('login_process', false)) {
@@ -3888,19 +3889,25 @@ function secpass_login_process($username) {
 			$error_msg = __('Access Denied!  No password provided by user.');
 
 			cacti_log(sprintf('LOGIN FAILED: No password provided for user %s', $username), false, 'AUTH');
+			cacti_log('DEBUG: User \'' . $username . '\' no password provided', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 			$valid_pass = false;
+
+			auth_process_lockout($username, 0);
+			return array();
+
 		} else {
 			$valid_pass = compat_password_verify($password, $user['password']);
+			cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
+			if (!$valid_pass) {
+				$error     = true;
+				$error_msg = __('Access Denied! Login failed.');
+
+				return array();
+			}
 		}
 
-		cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-
-		if (!$valid_pass) {
-			auth_process_lockout($username, 0);
-
-			return array();
-		}
 	} else {
 		/* error */
 		$error     = true;
