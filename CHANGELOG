@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#4693: Heartbeat definitions can cause issues under PHP 8
 -issue#4695: Two wrong usages about $ignorable_type_code_hashes during package importing
 -issue#4697: Incorrect and missing login message, fix realm names on login form
+-issue#4698: Incorrect message about remote poller when saving new device
 
 1.2.20
 -security#4562: When using LDAP, authentication process may be bypassed
