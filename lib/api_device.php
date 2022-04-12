@@ -896,7 +896,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		$host_id = sql_save($save, 'host');
 
 		if ($host_id) {
-			if ($poller_id != $previous_poller) {
+			if ($previous_poller > 1 && $poller_id != $previous_poller) {
 				if (remote_poller_up($previous_poller)) {
 					api_device_purge_from_remote($host_id, $previous_poller);
 				} else {
