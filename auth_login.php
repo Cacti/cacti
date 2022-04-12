@@ -42,7 +42,7 @@ $user          = array();                           // An array that will includ
 $user_enabled  = true;                              // A variable to let plugins know that the user is enabled
 $guest_user    = false;                             // Indicates the the Guest account is being used
 $realm         = 0;                                 // The compensated realm used for template and user validation
-$frv_realm     = get_nfilter_request_var('realm');  // The dropdown value for realm
+$frv_realm     = get_nfilter_request_var('realm',0);  // The dropdown value for realm
 $auth_method   = read_config_option('auth_method'); // The authentication method for Cacti
 $error         = false;                             // Global variable, will be true if any errors occur
 $error_msg     = '';                                // The errors message in case there was a login error
@@ -351,7 +351,7 @@ $selectedTheme = get_selected_theme();
 								<select id='realm' name='realm' class='ui-state-default ui-corner-all'><?php
 									if (cacti_sizeof($realms)) {
 										foreach($realms as $index => $realm) {
-											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . "</option>\n";
+											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm) . "</option>\n";
 										}
 									}
 									?>
