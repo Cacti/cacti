@@ -3893,7 +3893,7 @@ function secpass_login_process($username) {
 		} else {
 			$valid_pass = compat_password_verify($password, $user['password']);
 		}
-		
+
 		cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 		if (!$valid_pass) {
