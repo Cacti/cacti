@@ -3899,6 +3899,11 @@ function secpass_login_process($username) {
 		if (!$valid_pass) {
 			auth_process_lockout($username, 0);
 
+			if (!$error) {
+				$error     = true;
+				$error_msg = __('Access Denied! Login failed.');
+			}
+
 			return array();
 		}
 	} else {
