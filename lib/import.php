@@ -2214,7 +2214,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 						foreach ($vals['dep'] as $dep_hash => $dep_status) {
 							if ($dep_status == 'met') {
 								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . '</span>';
-							} else if (array_search($ignorable_type_code_hashes, $dep_hash) === false) {
+							} else if (array_search($dep_hash, $ignorable_type_code_hashes) === false) {
 								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . '</span>';
 								$dep_errors = true;
 							}
