@@ -1897,7 +1897,7 @@ function user_edit() {
 
 		var minChars=<?php print read_config_option('secpass_minlen');?>;
 		var templateAccount=<?php print is_template_account(get_filter_request_var('id')) ? 'true':'false';?>;
-		var consoleAllowed=<?php print (isset($user['id']) ? (is_realm_allowed(8, $user['id']) ? 'true':'false'):'false');?>;
+		var consoleAllowed=<?php print (isset($user['id']) ? (is_realm_allowed(8, (isset($user) ? $user['id'] : 0)) ? 'true':'false'):'false');?>;
 
 		function changeRealm() {
 			if ($('#realm').val() != 0) {
