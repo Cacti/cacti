@@ -224,13 +224,14 @@ echo "NOTE: There were $checks pages checked through recursion"
 # ------------------------------------------------------------------------------
 echo "NOTE: Checking Cacti Log for Errors"
 FILTERED_LOG="$(grep -v \
-	-e "AUTH LOGIN: User 'admin' Authenticated" \
+	-e "AUTH LOGIN: User 'admin' authenticated" \
 	-e "WEBUI NOTE: Poller Resource Cache scheduled for rebuild by user admin" \
 	-e "IMPORT NOTE: File is Signed Correctly" \
 	-e "MAILER INFO:" \
 	-e "STATS:" \
 	-e "IMPORT Importing XML Data for " \
 	-e "CMDPHP SQL Backtrace: " \
+	-e "CMDPHP Not Already Set" \
 	$CACTI_LOG)" || true
 
 save_log_files
