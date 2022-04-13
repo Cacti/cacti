@@ -24,7 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-include_once($config['base_path'] . '/install/functions.php');
+require_once($config['base_path'] . '/install/functions.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

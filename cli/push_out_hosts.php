@@ -23,10 +23,10 @@
  +-------------------------------------------------------------------------+
 */
 
-include(dirname(__FILE__) . '/../include/cli_check.php');
-include_once($config['base_path'] . '/lib/utility.php');
-include_once($config['base_path'] . '/lib/api_data_source.php');
-include_once($config['base_path'] . '/lib/poller.php');
+require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/utility.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/poller.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {

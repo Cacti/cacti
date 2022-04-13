@@ -28,7 +28,7 @@ chdir($dir);
 
 /* Start Initialization Section */
 require(__DIR__ . '/../include/cli_check.php');
-include_once($config['base_path'] . '/lib/spikekill.php');
+require_once($config['base_path'] . '/lib/spikekill.php');
 
 if ($config['poller_id'] > 1) {
 	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
