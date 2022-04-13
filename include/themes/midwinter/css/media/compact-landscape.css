@@ -32,13 +32,17 @@ html[data-theme-mode='compact'] #navTitle div {
     color: var(--text-color-normal);
 }
 
+html[data-theme-mode='compact'] #navTitle mark[data-markjs='true'] {
+    color: unset;
+}
+
 html[data-theme-mode='compact'] #cactiConsoleBackdrop {
     display: block;
     background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
     background-color: var(--background-navigation);
     padding-bottom: 0;
     float: left;
-    width: 5rem;
+    width: 4.5rem;
     height: 5rem;
     cursor: pointer;
 }
@@ -53,7 +57,7 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationArea {
     display: flex !important;
     flex-direction: column;
     overflow-y: visible !important;
-    width: 5rem !important;
+    width: 4.5rem !important;
     height: 100% !important;
 }
 
@@ -63,10 +67,10 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact{
 
 html[data-theme-mode='compact'] .cactiConsoleNavigationBox {
     box-sizing: border-box;
-    max-width: calc(100vw - 5rem) !important;
+    max-width: calc(100vw - 4.5rem) !important;
     min-width: 34rem;
     position: fixed !important;
-    left: 5rem !important;
+    left: 4.5rem !important;
     top: 4rem !important;
     height: calc(100vh - 4rem) !important;
     z-index: 1000 !important;
@@ -79,10 +83,10 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationBox {
 
 html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox {
     box-sizing: border-box;
-    max-width: calc(100vw - 5rem) !important;
+    max-width: calc(100vw - 4.5rem) !important;
     min-width: 34rem;
     position: fixed;
-    left: 5rem;
+    left: 4.5rem;
     bottom: 0px;
     height: 25rem;
     max-height: calc(100vh - 4rem);

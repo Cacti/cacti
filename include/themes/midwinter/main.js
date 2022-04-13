@@ -19,6 +19,7 @@ function themeReady() {
 	setHotKeys();
 	ajaxAnchors();
 	extendAnchorActions();
+	searchToHighlight();
 	updateNavigation();
 	themeLoader('off');
 }
@@ -45,7 +46,12 @@ function midwinterInitialized() {
 }
 
 function extendAnchorActions() {
-	$('a[role="menuitem"]').on('click', function() { midWinterNavigation( $(this) ); });
+	$('a[role="menuitem"]').on('click', function() {
+		/* update MidWinter's BreadCrumb Navigation */
+		midWinterNavigation( $(this) );
+		/* close the Navigation Menu Box afterwards */
+		$(this).closest('div [class^=cactiConsoleNavigation]').addClass('hide');
+	});
 }
 
 function midWinterNavigation(element) {
@@ -454,6 +460,8 @@ function setupDefaultElements() {
 
 		if (cactiConsoleAllowed) {
 			$("#cactiConsoleBackdrop").click( function() {
+				/* hide open menu boxes first */
+				$('[class^="cactiConsoleNavigation"]').addClass('hide');
 				loadPage(urlPath+'index.php');
 			});
 		} else {
@@ -880,10 +888,10 @@ function highlight() {
 	pattern = '.*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
 	let re = new RegExp(pattern,'gmiu');
 
-	$("a[role='menuitem']").unmark({
+	$("ul[role='menu'] a[role='menuitem']").unmark({
 		done: function() {
 			if(keyword) {
-				$("a[role='menuitem']").markRegExp(re, {
+				$("ul[role='menu'] a[role='menuitem']").markRegExp(re, {
 					"accuracy": "complementary",
 					"separateWordSearch": false,
 				});
