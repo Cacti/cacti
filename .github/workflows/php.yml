@@ -1,0 +1,83 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: [ 1.2.x, develop ]
+#  pull_request:
+#    branches: [ develop ]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest] #ubuntu-16.04
+        php: ['7.4'] #['5.4','7.0','7.4'] # 8.0 / 8.1 not yet fully supported
+        
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_DATABASE: cacti
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_USER: cactiuser
+          MYSQL_PASSWORD: cactiuser
+          MYSQL_ROOT_PASSWORD: cactiroot
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        
+    name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install PHP ${{ matrix.php }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: intl mysql gd ldap gmp xml mbstring #optional
+        ini-values: "post_max_size=256M" #optional
+
+    - name: Check PHP version
+      run: php -v
+      
+    - name: Check PHP syntax
+      run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
+      
+    - name: Install Apache and tools
+      run: sudo apt-get install apache2 php-fpm snmp rrdtool
+      
+    - name: Enable Proxy FCGI
+      run: sudo a2enmod proxy_fcgi setenvif actions alias
+      
+    - name: Check working directory
+      run: |
+        ls -alR ${{ github.workspace }}
+        
+    - name: Configure Apache Site
+      run: sudo cp -f ${{ github.workspace }}/tests/tools/cacti.conf /etc/apache2/sites-available/000-default.conf
+    
+#    - name: Validate composer.json and composer.lock
+#      run: composer validate --strict
+
+#    - name: Cache Composer packages
+#      id: composer-cache
+#      uses: actions/cache@v3
+#      with:
+#        path: vendor
+#        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+#        restore-keys: |
+#          ${{ runner.os }}-php-
+#
+#    - name: Install dependencies
+#      run: composer install --prefer-dist --no-progress
+
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+    # - name: Run test suite
+    #   run: composer run-script test
