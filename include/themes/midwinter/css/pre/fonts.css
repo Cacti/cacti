@@ -13,6 +13,7 @@ html {
     --fs-huge: 1.625rem;
     --fs-king: 3.875rem;
 
+    /* default font size */
     font-size: 87.5%;
 
     /* font-weight variables */
@@ -27,6 +28,7 @@ html {
     --fw-extrabold: 800;
     --fw-heavy: 900;
 
+    /* default font weight */
     font-weight: 500;
 }
 

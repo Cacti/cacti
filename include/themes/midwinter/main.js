@@ -19,6 +19,7 @@ function themeReady() {
 	setHotKeys();
 	ajaxAnchors();
 	extendAnchorActions();
+	searchToHighlight();
 	updateNavigation();
 	themeLoader('off');
 }
@@ -33,6 +34,7 @@ function checkConsoleMenu() {
 			redesignConsoleMenu(menu);
 			ajaxAnchors();
 			extendAnchorActions();
+			searchToHighlight();
 		}).fail(function(html) {
 			getPresentHTTPError(html);
 		});
@@ -44,7 +46,12 @@ function midwinterInitialized() {
 }
 
 function extendAnchorActions() {
-	$('a[role="menuitem"]').on('click', function() { midWinterNavigation( $(this) ); });
+	$('a[role="menuitem"]').on('click', function() {
+		/* update MidWinter's BreadCrumb Navigation */
+		midWinterNavigation( $(this) );
+		/* close the Navigation Menu Box afterwards */
+		$(this).closest('div [class^=cactiConsoleNavigation]').addClass('hide');
+	});
 }
 
 function midWinterNavigation(element) {
@@ -142,7 +149,9 @@ function setupTheme() {
 	// -- standard & compact mode -- redesign navigation tabs
 	let compact_tab_menu_content =
 		'<div class="cactiConsoleNavigationBox hide" data-helper="dashboards">'
-		+ '<div class="header compact">'+cactiDashboards+'</div>'
+		+ '<div class="header compact">'
+		+	'<div></div><div><span>'+cactiDashboards+'</span></div>'
+		+'</div>'
 		+ '<ul class="nav">';
 
 	if (cactiConsoleAllowed) {
@@ -266,7 +275,7 @@ function setupTheme() {
 
 			let compact_user_menu_content =
 				'<div class="cactiConsoleNavigationUserBox hide" data-helper="help">'
-				+   '<div class="header compact">'+justCacti+' &reg; v'+cactiVersion+'</div>'
+				+   '<div class="header compact"><div></div><div><span>'+justCacti+' &reg; v'+cactiVersion+'</span></div></div>'
 				+   '<ul class="nav">'
 				+   '<li class="menuitem" id="menu_user_help">'
 				+       '<a class="menu_parent active" href="#">'
@@ -316,7 +325,7 @@ function setupTheme() {
 				+   '</ul>'
 				+   '</div>'
 				+   '<div class="cactiConsoleNavigationUserBox hide" data-helper="user">'
-				+   '<div class="header compact">'+'<span>'+ $('.loggedInAs').text() +'</span>'+'</div>'
+				+   '<div class="header compact"><div></div><div><span>'+ $('.loggedInAs').text() +'</span></div></div>'
 				+   '<ul class="nav">'
 				+   '<li class="menuitem" id="menu_user_action">'
 				+       '<a class="menu_parent active" href="#">'
@@ -401,7 +410,10 @@ function redesignConsoleMenu(menu) {
 		$(menu).insertAfter('#compact_tab_menu');
 
 		$('#menu').addClass('cactiConsoleNavigationBox hide').attr('data-helper', 'settings');
-		$('<div class="header compact">'+zoom_i18n_settings+'</div>').prependTo('#menu');
+		$('<div class="header compact">'
+		+	'<div><input type="text" name="keyword" class="form-control input-sm" placeholder=""></div>'
+		+	'<div><span>'+zoom_i18n_settings+'</span></div></div>'
+		).prependTo('#menu');
 
 		// Clean up: kick out Main Console
 		$('#menu_main_console').remove();
@@ -448,6 +460,8 @@ function setupDefaultElements() {
 
 		if (cactiConsoleAllowed) {
 			$("#cactiConsoleBackdrop").click( function() {
+				/* hide open menu boxes first */
+				$('[class^="cactiConsoleNavigation"]').addClass('hide');
 				loadPage(urlPath+'index.php');
 			});
 		} else {
@@ -860,6 +874,33 @@ function setMenuVisibility() {
 	});
 }
 
+function searchToHighlight() {
+	$.cachedScript('include/themes/midwinter/vendor/mark/jquery.mark.js').done(function (script, textStatus) {
+		if (textStatus === 'success') {
+			$("input[name='keyword']").on("input", highlight);
+		}
+	});
+}
+
+function highlight() {
+	// Read the keyword
+	let keyword = $("input[name='keyword']").val();
+	pattern = '.*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
+	let re = new RegExp(pattern,'gmiu');
+
+	$("ul[role='menu'] a[role='menuitem']").unmark({
+		done: function() {
+			if(keyword) {
+				$("ul[role='menu'] a[role='menuitem']").markRegExp(re, {
+					"accuracy": "complementary",
+					"separateWordSearch": false,
+				});
+			}
+		}
+	});
+}
+
+
 function setHotKeys() {
 	$.cachedScript('include/themes/midwinter/vendor/hotkeys/hotkeys.js').done(function (script, textStatus) {
 		if (textStatus === 'success') {
@@ -918,8 +959,8 @@ jQuery.cachedScript = function(url, options) {
 function kiosk_mode(state='toggle') {
 	if (state == 'toggle') {
 		//hide all navigation elements
-		$('.cactiConsoleNavigationArea, .breadCrumbBar').toggleClass('hide');
-		$('.cactiContent').toggleClass('fullscreen');
+		$('.cactiConsoleNavigationArea, .breadCrumbBar').addClass('hide');
+		$('.cactiContent').addClass('fullscreen');
 	} else {
 		$('.cactiConsoleNavigationArea, .breadCrumbBar').removeClass('hide');
 		$('.cactiContent').removeClass('fullscreen');
@@ -936,15 +977,149 @@ function dialog_client(event) {
 		if (textStatus === 'success') {
 			let title='Your Client';
 
+			let uaObj = new UAParser();
+			let env = uaObj.getResult();
+console.log(env);
+			switch(env.browser.name) {
+				case 'Chrome Headless':
+				case 'Chrome WebView':
+				case 'Chrome':
+				case 'Chromium':
+					env.browser.icon = 'fab fa-chrome';
+					break;
+				case 'IE':
+				case 'IEMobile':
+					env.browser.icon = 'fab fa-internet-explorer';
+					break;
+				case 'Edge':
+					env.browser.icon = 'fab fa-edge';
+					break;
+				case 'Firefox':
+					env.browser.icon = 'fab fa-firefox-browser';
+					break;
+				case 'Opera':
+				case 'Opera Mini':
+				case 'Opera Mobi':
+				case 'Opera Tablet':
+					env.browser.icon = 'fab fa-opera';
+					break;
+				case 'Safari':
+				case 'Mobile Safari':
+					env.browser.icon = 'fab fa-safari';
+					break;
+				default:
+					env.browser.icon = 'far fa-square';
+			}
+
+			switch(env.os.name) {
+				case 'Windows':
+				case 'Windows Phone':
+				case 'Windows Mobile':
+					env.os.icon = 'fab fa-windows';
+					break;
+				case 'Chromium OS':
+					env.os.icon = 'fab fa-chrome';
+					break;
+				case 'Mac OS':
+				case 'iOS':
+					env.os.icon = 'fab fa-apple';
+					break;
+				case 'Android':
+				case 'CentOS':
+				case 'Fedora':
+				case 'FreeBSD':
+				case 'RedHat':
+				case 'SUSE':
+				case 'Ubuntu':
+					env.os.icon = 'fab fa-' + env.os.name.toLowerCase();
+					break;
+				case 'Raspbian':
+					env.os.icon = 'fab fa-raspberry-pi';
+					break;
+				case 'BlackBerry':
+					env.os.icon = 'fab fa-blackberry';
+					break;
+				case 'Arch':
+				case 'Debian':
+				case 'Gentoo':
+				case 'GNU':
+				case 'Joli':
+				case 'Linpus':
+				case 'Mageia':
+				case 'Mandriva':
+				case 'MeeGo':
+				case 'Mint':
+				case 'NetBSD':
+				case 'OpenBSD':
+				case 'PCLinuxOS':
+				case 'Slackware':
+				case 'UNIX':
+				case 'VectorLinux':
+				case 'Linux':
+					env.os.icon = 'fab fa-linux';
+					break;
+				default:
+					env.os.icon = 'far fa-square';
+			}
+
+			switch (env.device.type) {
+				case 'console':
+					env.device.icon = 'fas fa-gamepad';
+					break;
+				case 'mobile':
+					env.device.icon = 'fas fa-mobile-alt';
+					break;
+				case 'tablet':
+					env.device.icon = 'fas fa-tablet-alt';
+					break;
+				case 'smarttv':
+					env.device.icon = 'fas fa-tv';
+					break;
+				case 'embedded':
+					env.device.icon = 'fas fa-cubes';
+					break;
+				default:
+					env.device.icon = 'fas fa-desktop';
+			}
+
+			let content = '<div class="cactiFlexBoxContainer">';
+
+			content += '<div class="cactiFlexBoxContentBox">'
+				+             '<div class="header"><span>Browser</span></div>'
+				+             '<div class="content"><i class="'+env.browser.icon+'"></i></div>'
+				+             '<div class="footer"><span>'+ env.browser.name +'</span><span>'+ env.browser.version +'</span></div>'
+				+ '</div>';
+
+			content += '<div class="cactiFlexBoxContentBox">'
+				+             '<div class="header"><span>OS</span></div>'
+				+             '<div class="content"><i class="'+env.os.icon+'"></i></div>'
+				+             '<div class="footer"><span>'+ env.os.name +'</span><span>'+ env.os.version +'</span></div>'
+				+ '</div>';
+
+			content += '<div class="cactiFlexBoxContentBox">'
+				+             '<div class="header"><span>Type</span></div>'
+				+             '<div class="content"><i class="'+env.device.icon+'"></i></div>'
+				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : env.device.type) +'</span></div>'
+				+ '</div>';
+
+			content += '<div class="cactiFlexBoxContentBox">'
+				+             '<div class="header"><span>Network</span></div>'
+				+             '<div class="content"><i class="fas fa-network-wired"></i></div>'
+				+             '<div class="footer"><span>'+ ((env.device.type == undefined) ? '-' : env.device.type) +'</span></div>'
+				+ '</div>';
+
+			content += '</div>';
+
+
 			$('#dialog_container').remove();
-			$('body').append('<div id="dialog_container" style="display:none"></div>');
+			$('body').append('<div id="dialog_container" style="display:none">'+content+'</div>');
 			$('#dialog_container').dialog({
 				draggable: true,
-				resizable: false,
+				resizable: true,
 				height: 'auto',
 				minWidth: 400,
-				maxWidth: 800,
-				maxHeight: 600,
+				maxWidth: 1200,
+				maxHeight: 1200,
 				title: title
 			});
 
