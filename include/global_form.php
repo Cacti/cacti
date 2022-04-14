@@ -966,15 +966,6 @@ $struct_graph_item = array(
 		'default' => '4',
 		'description' => __('How data for this item is represented visually on the graph.')
 		),
-	'data_template_id' => array(
-		'friendly_name' => __('Data Template Filter'),
-		'method' => 'drop_sql',
-		'sql' => 'SELECT id, name FROM data_template ORDER BY name',
-		'default' => '0',
-		'value' => (isset_request_var('data_template_id') ? get_request_var('data_template_id'):'0'),
-		'none_value' => __('Any'),
-		'description' => __('This filter will limit the Data Sources visible in the Data Source dropdown.')
-		),
 	'task_item_id' => array(
 		'friendly_name' => __('Data Source'),
 		'method' => 'drop_sql',

@@ -494,9 +494,6 @@ function item_edit() {
 					set_request_var('data_template_id', $dt);
 					break;
 				}
-				cacti_log('Not Already Set');
-			} else {
-				cacti_log('Already Set');
 			}
 		}
 	}

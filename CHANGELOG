@@ -10,7 +10,8 @@ Cacti CHANGELOG
 -issue#4695: Two wrong usages about $ignorable_type_code_hashes during package importing
 -issue#4697: Incorrect and missing login message, fix realm names on login form
 -issue#4698: Incorrect message about remote poller when saving new device
--issue#4071: Editing a new user or user group results in Cacti error log entries
+-issue#4701: Editing a new user or user group results in Cacti error log entries
+-issue#4707: SQL Save on table 'graph_templates_item': Column 'data_template_id' does not exist
 
 1.2.20
 -security#4562: When using LDAP, authentication process may be bypassed
