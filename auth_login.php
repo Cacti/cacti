@@ -351,7 +351,7 @@ $selectedTheme = get_selected_theme();
 								<select id='realm' name='realm' class='ui-state-default ui-corner-all'><?php
 									if (cacti_sizeof($realms)) {
 										foreach($realms as $index => $realm) {
-											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm) . "</option>\n";
+											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . "</option>\n";
 										}
 									}
 									?>

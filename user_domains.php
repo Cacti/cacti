@@ -423,7 +423,8 @@ function domain_edit() {
 			'description' => __('Distinguished Name syntax, such as for windows: <i>"&lt;username&gt;@win2kdomain.local"</i> or for OpenLDAP: <i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>.   "&lt;username&gt" is replaced with the username that was supplied at the login prompt.  This is only used when in "No Searching" mode.'),
 			'method' => 'textbox',
 			'value' => '|arg1:dn|',
-			'max_length' => '255'
+			'max_length' => '255',
+			'size' => 100
 			),
 		'group_require' => array(
 			'friendly_name' => __('Require Group Membership'),
@@ -560,6 +561,7 @@ function domain_edit() {
 			$('#row_search_filter').hide();
 			$('#row_specific_dn').hide();
 			$('#row_specific_password').hide();
+			$('#row_cn_header').hide();
 			$('#row_cn_full_name').hide();
 			$('#row_cn_email').hide();
 			break;
@@ -569,6 +571,7 @@ function domain_edit() {
 			$('#row_search_filter').show();
 			$('#row_specific_dn').hide();
 			$('#row_specific_password').hide();
+			$('#row_cn_header').hide();
 			$('#row_cn_full_name').hide();
 			$('#row_cn_email').hide();
 			break;
@@ -578,6 +581,7 @@ function domain_edit() {
 			$('#row_search_filter').show();
 			$('#row_specific_dn').show();
 			$('#row_specific_password').show();
+			$('#row_cn_header').show();
 			$('#row_cn_full_name').show();
 			$('#row_cn_email').show();
 			break;
