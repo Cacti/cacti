@@ -1,4 +1,4 @@
-name: Syntax Checker
+name: PHP Composer
 
 on:
   push:
@@ -9,14 +9,24 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest] #ubuntu-16.04
         php: ['5.4','7.0','7.4'] # 8.0 / 8.1 not yet fully supported
-
+        experimental: [false]
+        include:
+          - php: 8.1
+            os: ubuntu-latest #ubuntu-16.04
+            experimental: true
+        
     services:
       mysql:
         image: mysql:latest
@@ -29,7 +39,7 @@ jobs:
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
+        
     name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
     steps:
     - name: Checkout
@@ -44,14 +54,90 @@ jobs:
 
     - name: Check PHP version
       run: php -v
-
+      
     - name: Check PHP syntax
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
+      
+    - name: Install Apache and tools
+      run: sudo apt-get install apache2 php-fpm snmp rrdtool
+      
+    - name: Enable Proxy FCGI
+      run: sudo a2enmod proxy_fcgi setenvif actions alias
+      
+    - name: Check working directory
+      run: |
+        ls -alR ${{ github.workspace }}
+        
+    - name: Configure Apache Site
+      run: |
+        cat ${{ github.workspace }}/tests/tools/cacti.conf | sed -r 's#GITHUB_WORKSPACE#${{ github.workspace }}#g' > /tmp/cacti.conf
+        sudo cp /tmp/cacti.conf /etc/apache2/sites-available/000-default.conf
 
     - name: Set open permissions for testing purposes
       run: sudo chmod -R 777 ${{ github.workspace}}
+      
+    - name: Restart Apache2
+      run: sudo systemctl restart apache2
+      
+    - name: Install Database
+      env:
+        MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
+      run: |
+        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" >> ~/.my.cnf
+        cat ~/.my.cnf
+        mysql $MYSQL_AUTH_USR -e 'CREATE DATABASE IF NOT EXISTS cacti;'
+        mysql $MYSQL_AUTH_USR -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
+        mysql $MYSQL_AUTH_USR -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
+        mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
+        mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
+        mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
+
+    - name: Prime Cacti Config
+      run: |
+        cat ${{ github.workspace }}/include/config.php.dist | sed -r "s/localhost/127.0.0.1/g" > ${{ github.workspace }}/include/config.php
+        sudo chmod 777 ${{ github.workspace }}/include/config.php
+        cat ${{ github.workspace}}/include/config.php
 
     - name: Check install code
       run: |
         cd ${{ github.workspace }}
         sudo php -q tests/tools/check_install_code.php
+
+    - name: Check CLI versioning
+      run: |
+        cd ${{ github.workspace }}
+        sudo bash tests/tools/check_cli_version.sh
+
+    - name: Check install routines
+      run: |
+        cd ${{ github.workspace }}
+        sudo php cli/install_cacti.php --accept-eula --install --force
+
+    - name: Check all pages
+      run: |
+        cd ${{ github.workspace }}
+        sudo bash tests/tools/check_all_pages.sh
+
+    - name: View contents of log
+      run: sudo cat ${{ github.workspace }}/log/cacti.log
+          
+#    - name: Validate composer.json and composer.lock
+#      run: composer validate --strict
+
+#    - name: Cache Composer packages
+#      id: composer-cache
+#      uses: actions/cache@v3
+#      with:
+#        path: vendor
+#        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+#        restore-keys: |
+#          ${{ runner.os }}-php-
+#
+#    - name: Install dependencies
+#      run: composer install --prefer-dist --no-progress
+
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+    # - name: Run test suite
+    #   run: composer run-script test
