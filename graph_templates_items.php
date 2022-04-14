@@ -533,6 +533,20 @@ function item_edit() {
 		$sql_where = '';
 	}
 
+	$data_template_helper = array(
+		'data_template_id' => array(
+			'friendly_name' => __('Data Template Filter'),
+			'method' => 'drop_sql',
+			'sql' => 'SELECT id, name FROM data_template ORDER BY name',
+			'default' => '0',
+			'value' => (isset_request_var('data_template_id') ? get_filter_request_var('data_template_id'):'0'),
+			'none_value' => __('Any'),
+			'description' => __('This filter will limit the Data Sources visible in the Data Source dropdown.')
+		)
+	);
+
+	$mystruct_graph_item = array_merge($data_template_helper, $struct_graph_item);
+
 	/* modifications to the default graph items array */
 	$struct_graph_item['task_item_id']['sql'] = "SELECT dtr.id,
 		CONCAT_WS('', dt.name,' - ',' (', dtr.data_source_name,')') AS name
@@ -545,8 +559,8 @@ function item_edit() {
 
 	$form_array = array();
 
-	foreach ($struct_graph_item as $field_name => $field_array) {
-		$form_array += array($field_name => $struct_graph_item[$field_name]);
+	foreach ($mystruct_graph_item as $field_name => $field_array) {
+		$form_array += array($field_name => $mystruct_graph_item[$field_name]);
 
 		if ($field_name != 'data_template_id') {
 			$form_array[$field_name]['value']   = (isset($template_item) ? $template_item[$field_name] : '');
