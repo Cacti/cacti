@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#4698: Incorrect message about remote poller when saving new device
 -issue#4701: Editing a new user or user group results in Cacti error log entries
 -issue#4707: SQL Save on table 'graph_templates_item': Column 'data_template_id' does not exist
+-issue#4614: Domains form shows CN header even when CN is disabled
 
 1.2.20
 -security#4562: When using LDAP, authentication process may be bypassed
