@@ -55,7 +55,7 @@ APACHE_ERROR="/var/log/apache2/error.log"
 APACHE_ACCESS="/var/log/apache2/access.log"
 POLLER="$BASE_PATH/poller.php"
 WEBUSER="www-data"
-DEBUG=1
+DEBUG=0
 
 # ------------------------------------------------------------------------------
 # Ensure that the artifact directory is created.  No need for a mess
@@ -227,11 +227,12 @@ if [ $DEBUG -eq 1 ];then
 	echo ========
 	cat $logFile1
 	echo ========
+fi
 
-	if [ $checks -eq 1 ]; then
-		cat localhost/cacti/index.php
-		echo ========
-	fi
+if [ $checks -eq 1 ]; then
+	echo ========
+	cat localhost/cacti/index.php
+	echo ========
 fi
 
 # ------------------------------------------------------------------------------

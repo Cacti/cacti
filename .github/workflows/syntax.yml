@@ -23,7 +23,10 @@ jobs:
         php: ['5.4','7.0','7.4'] # 8.0 / 8.1 not yet fully supported
         experimental: [false]
         include:
-          - php: 8.1
+          - php: 8.0
+            os: ubuntu-latest #ubuntu-16.04
+            experimental: true
+          - php: 8.0
             os: ubuntu-latest #ubuntu-16.04
             experimental: true
         
@@ -58,16 +61,29 @@ jobs:
     - name: Check PHP syntax
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
       
+     - name: Check PHP fpm
+       if: matrix.php != '8.0'
+       env:
+         version: ${{ matrix.php }}
+       run: |
+         sudo apt-get install php$version-fpm
+         sudo service php$version-fpm start
+         sudo service php$version-fpm status
+
+     - name: Test php-fpm
+       env:
+         version: ${{ matrix.php }}
+       run: |
+         # Copy php-fpm to a directory in PATH
+         sudo cp /usr/sbin/php-fpm$version /usr/bin/php-fpm
+         php-fpm -v
+
     - name: Install Apache and tools
       run: sudo apt-get install apache2 php-fpm snmp rrdtool
       
     - name: Enable Proxy FCGI
       run: sudo a2enmod proxy_fcgi setenvif actions alias
       
-    - name: Check working directory
-      run: |
-        ls -alR ${{ github.workspace }}
-        
     - name: Configure Apache Site
       run: |
         cat ${{ github.workspace }}/tests/tools/cacti.conf | sed -r 's#GITHUB_WORKSPACE#${{ github.workspace }}#g' > /tmp/cacti.conf
