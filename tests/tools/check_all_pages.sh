@@ -44,14 +44,18 @@ started=0
 # ------------------------------------------------------------------------------
 # OS Specific Paths
 # ------------------------------------------------------------------------------
-BASE_PATH="/var/www/html/cacti"
+SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+BASE_PATH=$( cd -- "${SCRIPT_PATH}/../../" &> /dev/null && pwd )
+
+echo "Using base path of ${BASE_PATH}"
+
 CACTI_LOG="$BASE_PATH/log/cacti.log"
 CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
 APACHE_ERROR="/var/log/apache2/error.log"
 APACHE_ACCESS="/var/log/apache2/access.log"
 POLLER="$BASE_PATH/poller.php"
 WEBUSER="www-data"
-DEBUG=0
+DEBUG=1
 
 # ------------------------------------------------------------------------------
 # Ensure that the artifact directory is created.  No need for a mess
@@ -218,6 +222,17 @@ fi
 
 checks=`grep "HTTP" $logFile1 | wc -l`
 echo "NOTE: There were $checks pages checked through recursion"
+
+if [ $DEBUG -eq 1 ];then
+	echo ========
+	cat $logFile1
+	echo ========
+
+	if [ $checks -eq 1 ]; then
+		cat localhost/cacti/index.php
+		echo ========
+	fi
+fi
 
 # ------------------------------------------------------------------------------
 # Finally check the cacti log for unexpected items

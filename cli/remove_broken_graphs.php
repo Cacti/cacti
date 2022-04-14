@@ -38,14 +38,19 @@ array_shift($parms);
 
 global $debug;
 
-$debug  = false;
-$report = false;
-$remove = false;
+$debug   = false;
+$report  = false;
+$remove  = false;
+$columns = 80;
 
-$columns = explode(' ', shell_exec('stty size'))[1];
+$github_actions = getenv('GITHUB_ACTIONS');
+if (empty($github_actions) && $config['cacti_server_os'] == 'unix') {
+	$stty = shell_exec('stty size');
+	$sizes = explode(' ', $stty);
 
-if (empty($columns)) {
-	$columns = 80;
+	if (!empty($sizes[1])) {
+		$columns = $sizes[1];
+	}
 }
 
 if (cacti_sizeof($parms)) {

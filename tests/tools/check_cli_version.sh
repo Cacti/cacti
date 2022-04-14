@@ -60,6 +60,9 @@ for script in $FILES1 $FILES2 $FILES3; do
 	if [[ $script_lines -ne 1 ]]; then
 		FAILED=3
 		echo "   x Failed version output test (" $script_lines ")";
+		echo "   ==============================================================================="
+		echo $script_output
+		echo "   ==============================================================================="
 	fi
 
 	script_output=`php -q $script --help`
