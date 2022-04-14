@@ -1230,6 +1230,12 @@ function get_selective_log_level() {
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config, $database_log;
 
+	static $start = null;
+
+	if ($start == null) {
+		$start = microtime(true);
+	}
+
 	if (!isset($database_log)) {
 		$database_log = false;
 	}
@@ -1237,6 +1243,8 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	$last_log     = $database_log;
 	$database_log = false;
 	$force_level  = get_selective_log_level();
+	$oprefix      = '';
+	$omessage     = '';
 
 	/* only log if the specific level is reached, developer debug is special low + specific devdbg calls */
 	if ($force_level == '') {
@@ -1274,12 +1282,25 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	/* format the message */
 	if ($environ == 'POLLER') {
 		$prefix = "$date - " . $environ . ': Poller[' . $config['poller_id'] . '] PID[' . getmypid() . '] ';
+
+		if ($output) {
+			$oprefix = sprintf('Total[%3.4f] ', microtime(true) - $start);
+		}
 	} else {
-		$prefix = "$date - " . $environ . ' ';
+		$prefix  = "$date - " . $environ . ' ';
+
+		if ($output) {
+			$oprefix = $prefix;
+		}
 	}
 
 	/* Log to Logfile */
 	$message = clean_up_lines($string) . PHP_EOL;
+
+	if ($output) {
+		$omessage = $oprefix . $message;
+	}
+
 	if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
 		/* print the data to the log (append) */
 		$fp = @fopen($logfile, 'a');
@@ -1326,7 +1347,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* print output to standard out if required */
 	if ($output == true && isset($_SERVER['argv'][0])) {
-		print $message;
+		print $omessage;
 	}
 
 	$database_log = $last_log;

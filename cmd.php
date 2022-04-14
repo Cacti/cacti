@@ -317,6 +317,23 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			if ($last_host != '') {
 				$host_end = microtime(true);
 
+				if ($output_count > 0) {
+					cacti_log("Device[$last_host] Writing $output_count items to Poller Output Table", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+
+					db_execute('INSERT IGNORE INTO poller_output
+						(local_data_id, rrd_name, time, output)
+						VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+
+					if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
+						db_execute('INSERT IGNORE INTO poller_output_boost
+							(local_data_id, rrd_name, time, output)
+							VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+					}
+
+					$output_array = array();
+					$output_count = 0;
+				}
+
 				db_execute_prepared('UPDATE host
 					SET polling_time = ?
 					WHERE id = ?
@@ -334,7 +351,6 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 					$tot_errors += $errors;
 				}
-
 			}
 
 			$error_ds    = array();
@@ -370,6 +386,8 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			}
 
 			if ($output_count > 1000) {
+				cacti_log("Device[$host_id] Writing $output_count items to Poller Output Table", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+
 				db_execute('INSERT IGNORE INTO poller_output
 					(local_data_id, rrd_name, time, output)
 					VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
@@ -398,6 +416,21 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 	// Record the last hosts polling time
 	$host_end = microtime(true);
 
+	// Flush the items to the output table
+	if ($output_count > 0) {
+		cacti_log("Device[$host_id] Writing $output_count items to Poller Output Table", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+
+		db_execute('INSERT IGNORE INTO poller_output
+			(local_data_id, rrd_name, time, output)
+			VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+
+		if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
+			db_execute('INSERT IGNORE INTO poller_output_boost
+				(local_data_id, rrd_name, time, output)
+				VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
+		}
+	}
+
 	db_execute_prepared('UPDATE host
 		SET polling_time = ?
 		WHERE id = ?
@@ -418,18 +451,6 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 	if (cacti_sizeof($width_dses)) {
 		cacti_log('WARNING: Long Responses Errors[' . cacti_sizeof($width_dses) . '] DS[' . implode(', ', $width_dses) . ']', false, 'POLLER');
-	}
-
-	if ($output_count > 0) {
-		db_execute('INSERT IGNORE INTO poller_output
-			(local_data_id, rrd_name, time, output)
-			VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
-
-		if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
-			db_execute('INSERT IGNORE INTO poller_output_boost
-				(local_data_id, rrd_name, time, output)
-				VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
-		}
 	}
 
 	if ($using_proc_function && $script_server_calls > 0) {
