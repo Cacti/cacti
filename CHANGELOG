@@ -12,9 +12,11 @@ Cacti CHANGELOG
 -issue#4697: Incorrect and missing login message, fix realm names on login form
 -issue#4698: Incorrect message about remote poller when saving new device
 -issue#4701: Editing a new user or user group results in Cacti error log entries
+-issue#4705: Remember me not working after upgrade to 1.2.20 from 1.2.19
 -issue#4707: SQL Save on table 'graph_templates_item': Column 'data_template_id' does not exist
 -issue#4614: Domains form shows CN header even when CN is disabled
 -issue#4716: Can't Edit Data Source of Graph
+-issue#4719: Browsers to begin rejecting CactiTimeZone and CactiDateTime cookies due to SameSite Requirements
 
 1.2.20
 -security#4562: When using LDAP, authentication process may be bypassed

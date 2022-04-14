@@ -2811,11 +2811,20 @@ function clearAllTimeouts() {
 }
 
 function setZoneInfo() {
-	var dt = new Date();
-	var tz = -dt.getTimezoneOffset();
+	var dt     = new Date();
+	var tz     = -dt.getTimezoneOffset();
+	var maxAge = 365*86400;
 
-	$.cookie('CactiDateTime', dt.toString(), { expires: 365, path: urlPath, secure: true });
-	$.cookie('CactiTimeZone', tz.toString(), { expires: 365, path: urlPath, secure: true });
+	var CactiDateTime = 'CactiDateTime='+dt.toString()+'; Max-Age='+maxAge+'; path='+urlPath+'; SameSite=Strict;';
+	var CactiTimeZone = 'CactiTimeZone='+tz.toString()+'; Max-Age='+maxAge+'; path='+urlPath+'; SameSite=Strict;';
+
+	if (window.location.protocol == 'https:') {
+		CactiDateTime += ' Secure;';
+		CactiTimeZone += ' Secure;';
+	}
+
+	document.cookie = CactiDateTime;
+	document.cookie = CactiTimeZone;
 }
 
 $(function() {
