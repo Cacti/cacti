@@ -32,7 +32,6 @@ jobs:
         
     services:
       mysql:
-        if: !contains(['5.4','7.0','8.0'], matrix.php)
         image: mysql:latest
         env:
           MYSQL_DATABASE: cacti
