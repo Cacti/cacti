@@ -895,9 +895,11 @@ function ds_edit() {
 			foreach($dts as $dtid) {
 				$dtids[] = $dtid['data_template_id'];
 			}
-		}
 
-		$dtsql = 'SELECT id, name FROM data_template WHERE id IN(' . implode(',', $dtids) . ') ORDER BY name';
+			$dtsql = 'SELECT id, name FROM data_template WHERE id IN(' . implode(',', $dtids) . ') ORDER BY name';
+		} else {
+			$dtsql = 'SELECT id, name FROM data_template ORDER BY name';
+		}
 	} else {
 		$dtsql = 'SELECT id, name FROM data_template ORDER BY name';
 	}
