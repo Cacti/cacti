@@ -17,18 +17,19 @@ if [ "$mode" = "--interactive" ]; then
 	read -r database_pw
 	echo "Enter Cacti Admin password"
 	read -r login_pw
+
+	export MYSQL_AUTH_USR="-ucactiuser -pcactiuser"
 elif [ "$mode" = "--help" ]; then
 	echo "Checks all Cacti pages using wget options"
 	echo "Original script by team Debian."
 	echo ""
 	echo "usage: check_all_pages.sh [--interactive]"
 	echo ""
-else
+elif [ -z "$MYSQL_AUTH_USR" ]; then
 	echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
 	sleep 2 #Give user a chance to see the prompt
 
-	database_user="cactiuser"
-	database_pw="cactiuser"
+	export MYSQL_AUTH_USR="-u\"cactiuser\" -p\"cactiuser\""
 	login_pw="admin"
 fi
 
@@ -117,24 +118,24 @@ save_log_files() {
 # Some functions to handle settings consitently
 # ------------------------------------------------------------------------------
 set_cacti_admin_password() {
-	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password=MD5('$login_pw') WHERE id = 1" cacti 2>/dev/null
-	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1" cacti 2>/dev/null
+	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=MD5('$login_pw') WHERE id = 1 ;" cacti 2>/dev/null
+	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" cacti 2>/dev/null
 }
 
 enable_log_validation() {
-	echo "UPDATE cacti.settings SET value='on' WHERE name='log_validation' ;" | mysql -u"$database_user" -p"$database_pw" cacti 2>/dev/null
+	echo "UPDATE cacti.settings SET value='on' WHERE name='log_validation' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
 set_log_level_none() {
-	echo "UPDATE cacti.settings SET value='1' WHERE name='log_verbosity' ;" | mysql -u"$database_user" -p"$database_pw" cacti 2>/dev/null
+	echo "UPDATE cacti.settings SET value='1' WHERE name='log_verbosity' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
 set_log_level_normal() {
-	echo "UPDATE cacti.settings SET value='2' WHERE name='log_verbosity' ;" | mysql -u"$database_user" -p"$database_pw" cacti 2>/dev/null
+	echo "UPDATE cacti.settings SET value='2' WHERE name='log_verbosity' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
 set_stderr_logging() {
-	echo "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '$CACTI_ERRLOG');" | mysql -u"$database_user" -p"$database_pw" cacti 2>/dev/null
+	echo "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '$CACTI_ERRLOG');" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
 catch_error() {
@@ -225,9 +226,13 @@ fi
 # ------------------------------------------------------------------------------
 if [ $DEBUG -eq 1 ]; then
   echo "---------------------------------------------------------------------"
-  echo "Output of Cacti Log file"
+  echo "Output of Wget Log file"
   echo "---------------------------------------------------------------------"
   cat $logFile1
+  echo "---------------------------------------------------------------------"
+  echo "Output of Cacti Log file"
+  echo "---------------------------------------------------------------------"
+  cat $CACTI_LOG
   echo "---------------------------------------------------------------------"
   echo "Output of Apache Error Log
   echo "---------------------------------------------------------------------"
