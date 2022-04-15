@@ -187,9 +187,8 @@ jobs:
     - name: Check all pages using recursive wget
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       env:
-        MYSQL_AUTH_USR: "~/.my.cnf"
+        MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
       run: |
-        export MYSQL_AUTH_USR=~/.my.cnf
         cd ${{ github.workspace }}
         tests/tools/check_all_pages.sh
 
