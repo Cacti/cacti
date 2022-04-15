@@ -142,6 +142,12 @@ set_log_level_normal() {
 	echo "UPDATE cacti.settings SET value='2' WHERE name='log_verbosity' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
+set_log_level_debug() {
+	echo "NOTE: Setting Cacti log verbosity to DEBUG ..."
+
+	echo "UPDATE cacti.settings SET value='5' WHERE name='log_verbosity' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
+}
+
 set_stderr_logging() {
 	echo "NOTE: Setting Cacti standard error log location ..."
 
@@ -214,7 +220,8 @@ started=1
 # ------------------------------------------------------------------------------
 # Make sure we get the magic, this is stored in the cookies for future use.
 # ------------------------------------------------------------------------------
-set_log_level_normal
+#set_log_level_normal
+set_log_level_debug
 
 echo "NOTE: Saving Cookie Data"
 wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" http://localhost/cacti/index.php
