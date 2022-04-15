@@ -1417,8 +1417,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	/* +++++++++++++++++++++++ LEGEND: MAGIC +++++++++++++++++++++++ */
 
 	$realtimeCachePath = read_config_option('realtime_cache_path');
-	$dateTimeFormat = read_config_option('graph_dateformat');
-	$dateTime = date($dateTimeFormat, strtotime(read_config_option('date')));
+	$dateTimeFormat    = read_config_option('graph_dateformat');
+	$cactiLastDate     = read_config_option('date');
+
+	if (empty($cactiLastDate)) {
+		$cactiLastDate = date('Y-m-d H:i:s');
+	}
+
+	$dateTime = date($dateTimeFormat, strtotime($cactiLastDate));
 
 	/* the following fields will be searched for graph variables */
 	$variable_fields = array(
