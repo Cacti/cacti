@@ -34,8 +34,6 @@ $allperms  = false;
 $plugins   = array();
 
 if (cacti_sizeof($parms)) {
-	print "NOTE: Checking arguments" . PHP_EOL;
-
 	$shortopts = 'VvHh';
 
 	$longopts = array(
