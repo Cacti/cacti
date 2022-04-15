@@ -2502,7 +2502,7 @@ $navigation = array(
 	'user_domains.php:edit' => array(
 		'title' => __('(Edit)'),
 		'mapping' => 'user_domains.php:,index.php:',
-		'url' => 'user_domains.php:edit',
+		'url' => 'user_domains.php',
 		'level' => '2'
 	),
 	'user_group_admin.php:' => array(
