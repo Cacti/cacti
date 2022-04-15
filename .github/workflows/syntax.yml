@@ -179,8 +179,9 @@ jobs:
         sudo php cli/install_cacti.php --accept-eula --install --force
 
     - name: Install and Enable Plugins
+      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
-        ${{ github.workspace }}
+        cd ${{ github.workspace }}
         sudo php cli/plugin_manage.php --plugin=thold --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
 
     - name: Check all pages
