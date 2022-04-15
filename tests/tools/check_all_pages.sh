@@ -118,23 +118,33 @@ save_log_files() {
 # Some functions to handle settings consitently
 # ------------------------------------------------------------------------------
 set_cacti_admin_password() {
+	echo "NOTE: Setting Cacti admin password and unsetting forced password change ..."
+
 	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=MD5('$login_pw') WHERE id = 1 ;" cacti 2>/dev/null
-	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" cacti 2>/dev/null
+	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='', secpass_forceold='' WHERE id = 1 ;" cacti 2>/dev/null
 }
 
 enable_log_validation() {
+	echo "NOTE: Setting Cacti log validation to on to validate improperly validated variables ..."
+
 	echo "UPDATE cacti.settings SET value='on' WHERE name='log_validation' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
 set_log_level_none() {
+	echo "NOTE: Setting Cacti log verbosity to none ..."
+
 	echo "UPDATE cacti.settings SET value='1' WHERE name='log_verbosity' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
 set_log_level_normal() {
+	echo "NOTE: Setting Cacti log verbosity to low ..."
+
 	echo "UPDATE cacti.settings SET value='2' WHERE name='log_verbosity' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
 set_stderr_logging() {
+	echo "NOTE: Setting Cacti standard error log location ..."
+
 	echo "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '$CACTI_ERRLOG');" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
