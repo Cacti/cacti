@@ -145,7 +145,7 @@ set_log_level_normal() {
 set_log_level_debug() {
 	echo "NOTE: Setting Cacti log verbosity to DEBUG ..."
 
-	echo "UPDATE cacti.settings SET value='5' WHERE name='log_verbosity' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
+	echo "UPDATE cacti.settings SET value='6' WHERE name='log_verbosity' ;" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
 set_stderr_logging() {
