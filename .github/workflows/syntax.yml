@@ -57,9 +57,44 @@ jobs:
         owner: 'Cacti'
         repository: 'plugin_thold'
 
-    - name: Move Thold Plguin
+    - name: Checkout Monitor Plugin
+      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      with:
+        owner: 'Cacti'
+        repository: 'plugin_monitor'
+
+    - name: Checkout MacTrack Plugin
+      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      with:
+        owner: 'Cacti'
+        repository: 'plugin_mactrack'
+
+    - name: Checkout FlowView Plugin
+      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      with:
+        owner: 'Cacti'
+        repository: 'plugin_flowview'
+
+    - name: Checkout Audit Plugin
+      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      with:
+        owner: 'Cacti'
+        repository: 'plugin_audit'
+
+    - name: Checkout Syslog Plugin
+      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      with:
+        owner: 'Cacti'
+        repository: 'plugin_syslog'
+
+    - name: Move Plugins to Plugin Directory
       run: |
         mv plugin_thold ${{ github.workspace }}/plugins/thold
+        mv plugin_monitor ${{ github.workspace }}/plugins/monitor
+        mv plugin_mactrack ${{ github.workspace }}/plugins/mactrack
+        mv plugin_audit ${{ github.workspace }}/plugins/audit
+        mv plugin_flowview ${{ github.workspace }}/plugins/flowview
+        mv plugin_syslog ${{ github.workspace }}/plugins/syslog
 
     - name: Check PHP syntax
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
@@ -142,6 +177,10 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         sudo php cli/install_cacti.php --accept-eula --install --force
+
+    - name: Install and Enable Plugins
+      run: |
+        php -q plugin_manage.php --plugin=thold --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --allperms
 
     - name: Check all pages
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
