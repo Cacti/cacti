@@ -188,6 +188,7 @@ jobs:
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" >> ~/.my.cnf
+        export MYSQL_AUTH_USR="~/.my.cnf"
         cd ${{ github.workspace }}
         sudo bash tests/tools/check_all_pages.sh
 
