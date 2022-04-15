@@ -121,7 +121,7 @@ if (cacti_sizeof($plugins)) {
 			$installed = false;
 
 			if (is_dir($config['base_path'] . '/plugins/' . $plugin)) {
-				print "NOTE: Plugin directory for Plugin $plugin" . PHP_EOL;
+				print "NOTE: Plugin directory for Plugin $plugin exists" . PHP_EOL;
 
 				if (!api_plugin_installed($plugin)) {
 					$message = '';
@@ -130,10 +130,14 @@ if (cacti_sizeof($plugins)) {
 						api_plugin_install($plugin);
 
 						if (api_plugin_installed($plugin)) {
+							print "NOTE: Plugin $plugin installed sucessfully." . PHP_EOL:
+
 							$installed = true;
 
 							if ($enable) {
 								api_plugin_enable($plugin);
+
+								print "NOTE: Plugin $plugin enabled." . PHP_EOL:
 							}
 
 						}
