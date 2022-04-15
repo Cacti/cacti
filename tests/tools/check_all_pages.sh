@@ -49,7 +49,7 @@ BASE_PATH=$( cd -- "${SCRIPT_PATH}/../../" &> /dev/null && pwd )
 
 echo "NOTE: Using base path of ${BASE_PATH}"
 
-DEBUG=0
+DEBUG=1
 CACTI_LOG="$BASE_PATH/log/cacti.log"
 CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
 POLLER="$BASE_PATH/poller.php"
@@ -223,9 +223,20 @@ fi
 # ------------------------------------------------------------------------------
 # Uncomment for debugging.
 # ------------------------------------------------------------------------------
-#cat $logFile1
-#cat $APACHE_ERROR
-#cat $APACHE_ACCESS
+if [ $DEBUG -eq 1 ]; then
+  echo "---------------------------------------------------------------------"
+  echo "Output of Cacti Log file"
+  echo "---------------------------------------------------------------------"
+  cat $logFile1
+  echo "---------------------------------------------------------------------"
+  echo "Output of Apache Error Log
+  echo "---------------------------------------------------------------------"
+  cat $APACHE_ERROR
+  echo "---------------------------------------------------------------------"
+  echo "Output of Apache Access Log
+  echo "---------------------------------------------------------------------"
+  cat $APACHE_ACCESS
+fi
 
 checks=`grep "HTTP" $logFile1 | wc -l`
 echo "NOTE: There were $checks pages checked through recursion"
