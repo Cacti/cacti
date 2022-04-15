@@ -44,7 +44,11 @@ started=0
 # ------------------------------------------------------------------------------
 # OS Specific Paths
 # ------------------------------------------------------------------------------
-BASE_PATH="/var/www/html/cacti"
+SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+BASE_PATH=$( cd -- "${SCRIPT_PATH}/../../" &> /dev/null && pwd )
+
+echo "Using base path of ${BASE_PATH}"
+
 CACTI_LOG="$BASE_PATH/log/cacti.log"
 CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
 APACHE_ERROR="/var/log/apache2/error.log"
@@ -219,18 +223,31 @@ fi
 checks=`grep "HTTP" $logFile1 | wc -l`
 echo "NOTE: There were $checks pages checked through recursion"
 
+if [ $DEBUG -eq 1 ];then
+	echo ========
+	cat $logFile1
+	echo ========
+fi
+
+if [ $checks -eq 1 ]; then
+	echo ========
+	cat localhost/cacti/index.php
+	echo ========
+fi
+
 # ------------------------------------------------------------------------------
 # Finally check the cacti log for unexpected items
 # ------------------------------------------------------------------------------
 echo "NOTE: Checking Cacti Log for Errors"
 FILTERED_LOG="$(grep -v \
-	-e "AUTH LOGIN: User 'admin' Authenticated" \
+	-e "AUTH LOGIN: User 'admin' authenticated" \
 	-e "WEBUI NOTE: Poller Resource Cache scheduled for rebuild by user admin" \
 	-e "IMPORT NOTE: File is Signed Correctly" \
 	-e "MAILER INFO:" \
 	-e "STATS:" \
 	-e "IMPORT Importing XML Data for " \
 	-e "CMDPHP SQL Backtrace: " \
+	-e "CMDPHP Not Already Set" \
 	$CACTI_LOG)" || true
 
 save_log_files
