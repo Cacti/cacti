@@ -131,7 +131,7 @@ jobs:
         cat ${{ github.workspace }}/tests/tools/cacti.conf | sed -r 's#GITHUB_WORKSPACE#${{ github.workspace }}#g' > /tmp/cacti.conf
         sudo cp /tmp/cacti.conf /etc/apache2/sites-available/000-default.conf
 
-    - name: Set open permissions for testing purposes
+    - name: Open permissions for testing purposes
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo chmod -R 777 ${{ github.workspace}}
       
@@ -186,11 +186,12 @@ jobs:
 
     - name: Check all pages using recursive wget
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
+      env:
+        MYSQL_AUTH_USR: "~/.my.cnf"
       run: |
-        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" >> ~/.my.cnf
-        export MYSQL_AUTH_USR="~/.my.cnf"
+        export MYSQL_AUTH_USR=~/.my.cnf
         cd ${{ github.workspace }}
-        sudo bash tests/tools/check_all_pages.sh
+        tests/tools/check_all_pages.sh
 
     - name: View contents of logs
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
