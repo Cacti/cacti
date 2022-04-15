@@ -1,4 +1,4 @@
-name: Syntax and Page Checker
+name: Cacti and Seelect Plugin Syntax and Page Checker
 
 on:
   push:
