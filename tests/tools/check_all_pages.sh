@@ -254,7 +254,7 @@ wget -q $loadSaveCookie --post-data="$postData" --output-document="$tmpFile2" ht
 # remove, don't uninstall, enable or disable plugins stuff.
 # ------------------------------------------------------------------------------
 echo "NOTE: Recursively Checking all Base Pages - Note this will take several minutes!!!"
-wget $loadSaveCookie --output-file="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/index.php
+#wget $loadSaveCookie --output-file="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/index.php
 error=$?
 
 if [ $error -eq 8 ]; then
@@ -273,7 +273,7 @@ for plugin in $plugins; do
 	files=$(cd $BASE_PATH;find plugins/$plugin -name "*.php" | egrep -v '(setup.php|index.php)')
 
 	for file in $files; do
-		if [ ! $(grep "cli_check.php" $file | wc -l) ]; then
+		if [ $(grep "cli_check.php" $BASE_PATH/$file | wc -l) -eq 0 ]; then
 			wget $loadSaveCookie --output-file="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/$file
 			error=$?
 
@@ -315,18 +315,12 @@ if [ $DEBUG -eq 1 ];then
 	echo "---------------------------------------------------------------------"
 fi
 
-if [ $checks -eq 1 ]; then
-	echo "---------------------------------------------------------------------"
-	cat localhost/cacti/index.php
-	echo "---------------------------------------------------------------------"
-fi
-
 echo "---------------------------------------------------------------------"
 echo "NOTE: Displaying some page view statistics for PHP pages only"
 echo "---------------------------------------------------------------------"
-echo "NOTE: Page                                    Clicks"
+echo "NOTE: Page                                                     Clicks"
 echo "---------------------------------------------------------------------"
-cat $APACHE_ACCESS | awk '{print $7}' | awk -F'?' '{print $1}' | grep -v 'index.php' | sort | uniq -c | grep php | awk '{printf("NOTE: %-40s %5d\n", $2, $1)}'
+cat $APACHE_ACCESS | awk '{print $7}' | awk -F'?' '{print $1}' | grep -v 'index.php' | sort | uniq -c | grep php | awk '{printf("NOTE: %-57s %5d\n", $2, $1)}'
 echo "---------------------------------------------------------------------"
 
 # ------------------------------------------------------------------------------
@@ -351,11 +345,11 @@ save_log_files
 # ------------------------------------------------------------------------------
 error=0
 if [ -n "${FILTERED_LOG}" ] ; then
-    echo "ERROR: Fail - Unexpected output in $CACTI_LOG:"
+    echo "ERROR: Fail Unexpected output in $CACTI_LOG:"
     echo "${FILTERED_LOG}"
 	exit 179
 else
-    echo "NOTE: Success - No unexpected output in $CACTI_LOG"
+    echo "NOTE: Success No unexpected output in $CACTI_LOG"
 	exit 0
 fi
 
