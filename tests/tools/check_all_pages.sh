@@ -55,7 +55,7 @@ BASE_PATH=$( cd -- "${SCRIPT_PATH}/../../" &> /dev/null && pwd )
 
 echo "NOTE: Using base path of ${BASE_PATH}"
 
-DEBUG=1
+DEBUG=0
 CACTI_LOG="$BASE_PATH/log/cacti.log"
 CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
 POLLER="$BASE_PATH/poller.php"
@@ -133,25 +133,25 @@ set_cacti_admin_password() {
 enable_log_validation() {
 	echo "NOTE: Setting Cacti log validation to on to validate improperly validated variables ..."
 
-	mysql $MYSQL_AUTH_USR -e "UPDATE cacti.settings SET value='on' WHERE name='log_validation' ;" cacti
+	mysql $MYSQL_AUTH_USR -e "REPLCAE INTO settings (name, value) VALUES ('log_validation','on') ;" cacti
 }
 
 set_log_level_none() {
 	echo "NOTE: Setting Cacti log verbosity to none ..."
 
-	mysql $MYSQL_AUTH_USR -e "UPDATE cacti.settings SET value='1' WHERE name='log_verbosity' ;" cacti
+	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" cacti
 }
 
 set_log_level_normal() {
 	echo "NOTE: Setting Cacti log verbosity to low ..."
 
-	mysql $MYSQL_AUTH_USR -e "UPDATE cacti.settings SET value='2' WHERE name='log_verbosity' ;" cacti
+	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" cacti
 }
 
 set_log_level_debug() {
 	echo "NOTE: Setting Cacti log verbosity to DEBUG ..."
 
-	mysql $MYSQL_AUTH_USR -e  "UPDATE cacti.settings SET value='6' WHERE name='log_verbosity' ;" cacti
+	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" cacti
 }
 
 set_stderr_logging() {
@@ -226,8 +226,11 @@ started=1
 # ------------------------------------------------------------------------------
 # Make sure we get the magic, this is stored in the cookies for future use.
 # ------------------------------------------------------------------------------
-#set_log_level_normal
-set_log_level_debug
+if [ $DEBUG -eq 1 ]; then
+    set_log_level_debug
+else
+    set_log_level_normal
+fi
 
 echo "NOTE: Saving Cookie Data"
 wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" http://localhost/cacti/index.php
