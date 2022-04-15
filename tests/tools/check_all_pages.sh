@@ -291,6 +291,9 @@ if [ $checks -eq 1 ]; then
 	echo ========
 fi
 
+echo "NOTE: Displaying some page view statistics for PHP pages only"
+cat $APACHE_ACCESS | awk '{print $7}' | awk -F'?' '{print $1}' | sort | uniq -c | grep php
+
 # ------------------------------------------------------------------------------
 # Finally check the cacti log for unexpected items
 # ------------------------------------------------------------------------------
