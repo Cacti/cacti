@@ -765,7 +765,11 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 		if ($fmt !== false && $fmt !== null) {
 			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
-			return numfmt_format($fmt, $number);
+			if ($number !== null) {
+				return numfmt_format($fmt, $number);
+			} else {
+				return $number;
+			}
 		}
 		cacti_log('DEBUG: Number format \'' . $fmt_key .'\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
 	}

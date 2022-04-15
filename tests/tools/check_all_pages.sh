@@ -133,7 +133,7 @@ set_cacti_admin_password() {
 enable_log_validation() {
 	echo "NOTE: Setting Cacti log validation to on to validate improperly validated variables ..."
 
-	mysql $MYSQL_AUTH_USR -e "REPLCAE INTO settings (name, value) VALUES ('log_validation','on') ;" cacti
+	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" cacti
 }
 
 set_log_level_none() {
