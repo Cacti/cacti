@@ -139,7 +139,7 @@ jobs:
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo systemctl restart apache2
       
-    - name: Install Database
+    - name: Create and Initialize Database
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       env:
         MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
@@ -153,26 +153,26 @@ jobs:
         mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
-    - name: Prime Cacti Config
+    - name: Prime Cacti config.php File
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cat ${{ github.workspace }}/include/config.php.dist | sed -r "s/localhost/127.0.0.1/g" > ${{ github.workspace }}/include/config.php
         sudo chmod 777 ${{ github.workspace }}/include/config.php
         cat ${{ github.workspace}}/include/config.php
 
-    - name: Check install code
+    - name: Check install code for validity
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         sudo php -q tests/tools/check_install_code.php
 
-    - name: Check CLI versioning
+    - name: Check that all CLI scripts have a valid --version flag
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         sudo bash tests/tools/check_cli_version.sh
 
-    - name: Check install routines
+    - name: Install Cacti through the CLI
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
@@ -184,15 +184,14 @@ jobs:
         cd ${{ github.workspace }}
         php cli/plugin_manage.php --plugin=thold --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
 
-    - name: Check all pages
+    - name: Check all pages using recursive wget
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
-      env:
-        MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
       run: |
+        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" >> ~/.my.cnf
         cd ${{ github.workspace }}
         sudo bash tests/tools/check_all_pages.sh
 
-    - name: View contents of log
+    - name: View contents of logs
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo cat ${{ github.workspace }}/log/cacti.log
           
