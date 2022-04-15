@@ -25,7 +25,7 @@ elif [ "$mode" = "--help" ]; then
 	echo ""
 	echo "usage: check_all_pages.sh [--interactive]"
 	echo ""
-elif [ ! -f '~/.my.cnf' ]; then
+elif [ ! -f ~/.my.cnf ]; then
 	echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
 	sleep 2 #Give user a chance to see the prompt
 
@@ -33,6 +33,8 @@ elif [ ! -f '~/.my.cnf' ]; then
 	login_pw="admin"
 else
     echo "NOTE: Using GitHub integration using ~/.my.cnf.cnf ..."
+	export MYSQL_AUTH_USR="--defaults-file=~/.my.cnf"
+
 	login_pw="admin"
 fi
 
