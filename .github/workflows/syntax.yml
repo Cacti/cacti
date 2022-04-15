@@ -2,9 +2,9 @@ name: Syntax Checker
 
 on:
   push:
-    branches: [ 1.2.x, develop ]
+    branches: [ develop ]
   pull_request:
-    branches: [ 1.2.x, develop ]
+    branches: [ develop ]
 
 permissions:
   contents: read
@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest] #ubuntu-16.04
-        php: ['5.4','7.0','7.4'] # 8.0 / 8.1 not yet fully supported
+        php: ['7.4'] # 8.0 / 8.1 not yet fully supported
         experimental: [false]
         include:
           - php: '8.0'
