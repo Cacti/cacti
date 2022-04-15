@@ -29,8 +29,10 @@ elif [ -z "$MYSQL_AUTH_USR" ]; then
 	echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
 	sleep 2 #Give user a chance to see the prompt
 
-	export MYSQL_AUTH_USR="-u\"cactiuser\" -p\"cactiuser\""
+	export MYSQL_AUTH_USR="-u\"cactiuser\" -p\"cactiuser\" -hlocalhost"
 	login_pw="admin"
+else
+    echo "NOTE: Using GitHub integration using MYSQL_AUTH_USR variable with value '$MYSQL_AUTH_USR' ..."
 fi
 
 # ------------------------------------------------------------------------------
@@ -55,7 +57,7 @@ CACTI_LOG="$BASE_PATH/log/cacti.log"
 CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
 POLLER="$BASE_PATH/poller.php"
 
-if id www-data 2>/dev/null;then
+if id www-data > /dev/null 2>&1;then
   WEBUSER="www-data"
   APACHE_ERROR="/var/log/apache2/error.log"
   APACHE_ACCESS="/var/log/apache2/access.log"
