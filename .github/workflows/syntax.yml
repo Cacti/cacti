@@ -186,6 +186,8 @@ jobs:
 
     - name: Check all pages
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
+      env:
+        MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
       run: |
         cd ${{ github.workspace }}
         sudo bash tests/tools/check_all_pages.sh
