@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#4614: Domains form shows CN header even when CN is disabled
 -issue#4716: Can't Edit Data Source of Graph
 -issue#4719: Browsers to begin rejecting CactiTimeZone and CactiDateTime cookies due to SameSite Requirements
+-feature#4720: Add a CLI script to install/enable/disable/uninstall plugins
 
 1.2.20
 -security#4562: When using LDAP, authentication process may be bypassed
