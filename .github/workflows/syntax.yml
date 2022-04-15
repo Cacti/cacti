@@ -52,7 +52,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        extensions: intl mysql gd ldap gmp xml mbstring #optional
+        extensions: intl, mysql, gd, ldap, gmp, xml, curl, fpm, json, cli, mbstring #optional
         ini-values: "post_max_size=256M" #optional
 
     - name: Check PHP version
