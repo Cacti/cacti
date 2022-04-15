@@ -52,8 +52,8 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        extensions: intl, mysql, gd, ldap, gmp, xml, curl, fpm, json, cli, mbstring #optional
-        ini-values: "post_max_size=256M" #optional
+        extensions: intl, mysql, gd, ldap, gmp, xml, curl, json, mbstring #optional
+        ini-values: "post_max_size=256M, max_execution_time=60, date.timezone=America/New_York" #optional
 
     - name: Check PHP version
       run: php -v
@@ -88,21 +88,21 @@ jobs:
       run: sudo a2enmod proxy_fcgi setenvif actions alias
       
     - name: Configure Apache Site
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # remove check for testing
       run: |
         cat ${{ github.workspace }}/tests/tools/cacti.conf | sed -r 's#GITHUB_WORKSPACE#${{ github.workspace }}#g' > /tmp/cacti.conf
         sudo cp /tmp/cacti.conf /etc/apache2/sites-available/000-default.conf
 
     - name: Set open permissions for testing purposes
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # remove check for testing
       run: sudo chmod -R 777 ${{ github.workspace}}
       
     - name: Restart Apache2
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # remove check for testing
       run: sudo systemctl restart apache2
       
     - name: Install Database
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # remove check for testing
       env:
         MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
       run: |
@@ -116,38 +116,38 @@ jobs:
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
     - name: Prime Cacti Config
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed for testing
       run: |
         cat ${{ github.workspace }}/include/config.php.dist | sed -r "s/localhost/127.0.0.1/g" > ${{ github.workspace }}/include/config.php
         sudo chmod 777 ${{ github.workspace }}/include/config.php
         cat ${{ github.workspace}}/include/config.php
 
     - name: Check install code
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed for testing
       run: |
         cd ${{ github.workspace }}
         sudo php -q tests/tools/check_install_code.php
 
     - name: Check CLI versioning
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed for testing
       run: |
         cd ${{ github.workspace }}
         sudo bash tests/tools/check_cli_version.sh
 
     - name: Check install routines
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed for testing
       run: |
         cd ${{ github.workspace }}
         sudo php cli/install_cacti.php --accept-eula --install --force
 
     - name: Check all pages
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed for testing
       run: |
         cd ${{ github.workspace }}
         sudo bash tests/tools/check_all_pages.sh
 
     - name: View contents of log
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }}
+      # if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed for testing
       run: sudo cat ${{ github.workspace }}/log/cacti.log
           
 #    - name: Validate composer.json and composer.lock
