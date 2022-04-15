@@ -24,7 +24,7 @@ elif [ "$mode" = "--help" ]; then
 	echo "usage: check_all_pages.sh [--interactive]"
 	echo ""
 else
-	echo "Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
+	echo "NOTE: Script is running in non-interactive mode ensure you fill out the DB credentials!!!"
 	sleep 2 #Give user a chance to see the prompt
 
 	database_user="cactiuser"
@@ -47,15 +47,22 @@ started=0
 SCRIPT_PATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BASE_PATH=$( cd -- "${SCRIPT_PATH}/../../" &> /dev/null && pwd )
 
-echo "Using base path of ${BASE_PATH}"
+echo "NOTE: Using base path of ${BASE_PATH}"
 
+DEBUG=0
 CACTI_LOG="$BASE_PATH/log/cacti.log"
 CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
-APACHE_ERROR="/var/log/apache2/error.log"
-APACHE_ACCESS="/var/log/apache2/access.log"
 POLLER="$BASE_PATH/poller.php"
-WEBUSER="www-data"
-DEBUG=0
+
+if id www-data 2>/dev/null;then
+  WEBUSER="www-data"
+  APACHE_ERROR="/var/log/apache2/error.log"
+  APACHE_ACCESS="/var/log/apache2/access.log"
+else
+  WEBUSER="apache"
+  APACHE_ERROR="/var/log/httpd/error_log"
+  APACHE_ACCESS="/var/log/httpd/access_log"
+fi
 
 # ------------------------------------------------------------------------------
 # Ensure that the artifact directory is created.  No need for a mess
@@ -135,7 +142,7 @@ catch_error() {
 	echo "WARNING: Process Interrupted.  Exiting ..."
 
 	# Get rid of any jobs
-	kill -SIGINT $(jobs -p)
+	kill -SIGINT $(jobs -p) 2> /dev/null
 
 	if [ -f $tmpFile1 ]; then
 		rm -f $tmpFile1
@@ -159,7 +166,7 @@ catch_error() {
 # ------------------------------------------------------------------------------
 trap 'catch_error' 1 2 3 6 9 14 15
 
-echo "My current directory is `pwd`"
+echo "NOTE: My current directory is `pwd`"
 
 # ------------------------------------------------------------------------------
 # Zero out the log files
