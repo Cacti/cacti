@@ -148,6 +148,12 @@ set_stderr_logging() {
 	echo "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '$CACTI_ERRLOG');" | mysql $MYSQL_AUTH_USR cacti 2>/dev/null
 }
 
+allow_index_following() {
+    echo "NOTE: Altering Cacti to allow following pages ..."
+
+    sed -i "s/<meta name='robots' content='noindex,nofollow'>//g" $BASE_PATH/lib/html.php
+}
+
 catch_error() {
 	echo ""
 	echo "WARNING: Process Interrupted.  Exiting ..."
@@ -196,6 +202,7 @@ echo "NOTE: My current directory is `pwd`"
 set_cacti_admin_password
 enable_log_validation
 set_stderr_logging
+allow_index_following
 
 tmpFile1=$(mktemp)
 tmpFile2=$(mktemp)
