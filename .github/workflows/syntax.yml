@@ -187,9 +187,8 @@ jobs:
     - name: Check all pages using recursive wget
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
-        sudo echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" >> ~/.my.cnf
-        export MYSQL_AUTH_USR="--defaults-file=~/.my.cnf"
         cd ${{ github.workspace }}
+        echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" > ${{ github.workspace }}/.my.cnf
         sudo tests/tools/check_all_pages.sh
 
     - name: View contents of logs
