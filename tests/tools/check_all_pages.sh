@@ -127,6 +127,7 @@ set_cacti_admin_password() {
 
 	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=MD5('$login_pw') WHERE id = 1 ;" cacti 
 	mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='', secpass_forceold='' WHERE id = 1 ;" cacti 
+	mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" cacti 
 }
 
 enable_log_validation() {
