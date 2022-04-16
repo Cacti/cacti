@@ -276,7 +276,7 @@ for plugin in $plugins; do
 	files=$(cd $BASE_PATH;find plugins/$plugin -maxdepth 1 -name "*.php" | egrep -v '(setup.php|index.php)')
 
 	for file in $files; do
-		if [ $(grep "cli_check.php" $BASE_PATH/$file | wc -l) -eq 0 ]; then
+		if [ $(grep "auth.php" $BASE_PATH/$file | wc -l) -gt 0 ]; then
 			wget $loadSaveCookie --append-output="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/$file
 		fi
 	done
