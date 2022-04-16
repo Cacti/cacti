@@ -43,7 +43,6 @@ $report  = false;
 $remove  = false;
 $columns = 80;
 
-$github_actions = getenv('GITHUB_ACTIONS');
 if (empty($github_actions) && $config['cacti_server_os'] == 'unix') {
 	$stty = shell_exec('stty size');
 	$sizes = explode(' ', $stty);
