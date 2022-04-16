@@ -240,6 +240,9 @@ else
 	set_log_level_normal
 fi
 
+echo "---------------------------------------------------------------------"
+echo "Starting Web Based Page Validation"
+echo "---------------------------------------------------------------------"
 echo "NOTE: Saving Cookie Data"
 wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" http://localhost/cacti/index.php
 
@@ -254,7 +257,7 @@ wget -q $loadSaveCookie --post-data="$postData" --output-document="$tmpFile2" ht
 # remove, don't uninstall, enable or disable plugins stuff.
 # ------------------------------------------------------------------------------
 echo "NOTE: Recursively Checking all Base Pages - Note this will take several minutes!!!"
-#wget $loadSaveCookie --output-file="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/index.php
+wget $loadSaveCookie --output-file="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/index.php
 error=$?
 
 if [ $error -eq 8 ]; then
@@ -275,11 +278,6 @@ for plugin in $plugins; do
 	for file in $files; do
 		if [ $(grep "cli_check.php" $BASE_PATH/$file | wc -l) -eq 0 ]; then
 			wget $loadSaveCookie --output-file="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/$file
-			error=$?
-
-			if [ $error -eq 8 ]; then
-				echo "WARNING: $errors pages not found for Plugin $plugin.  This is not necessarily a bug"
-			fi
 		fi
 	done
 done
