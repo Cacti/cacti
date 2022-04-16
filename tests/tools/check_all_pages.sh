@@ -266,23 +266,6 @@ if [ $error -eq 8 ]; then
 fi
 
 # ------------------------------------------------------------------------------
-# Finally check all plugin files that are not CLI scripts
-# ------------------------------------------------------------------------------
-plugins=$(cd $BASE_PATH/plugins;ls -1d */ | tr -d '/')
-
-for plugin in $plugins; do
-	echo "NOTE: Recursively Checking Plugin $plugin Directory!!!"
-
-	files=$(cd $BASE_PATH;find plugins/$plugin -maxdepth 1 -name "*.php" | egrep -v '(setup.php|index.php)')
-
-	for file in $files; do
-		if [ $(grep "auth.php" $BASE_PATH/$file | wc -l) -gt 0 ]; then
-			wget $loadSaveCookie --append-output="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/$file
-		fi
-	done
-done
-
-# ------------------------------------------------------------------------------
 # Debug Errors if required
 # ------------------------------------------------------------------------------
 if [ $DEBUG -eq 1 ]; then
