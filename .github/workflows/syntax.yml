@@ -182,7 +182,7 @@ jobs:
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
-        php cli/plugin_manage.php --plugin=thold --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
+        sudo php cli/plugin_manage.php --plugin=thold --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
 
     - name: Check all pages using recursive wget
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
