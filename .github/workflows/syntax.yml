@@ -95,6 +95,7 @@ jobs:
         mv plugin_audit ${{ github.workspace }}/plugins/audit
         mv plugin_flowview ${{ github.workspace }}/plugins/flowview
         mv plugin_syslog ${{ github.workspace }}/plugins/syslog
+        # With syslog we have to enable batch installs using the lines below
         cd ${{ github.workspace }}/plugins/syslog
         cp -p config.php.dist config.php
         sed -i 's/\/\/\$syslog_install_options/\$syslog_install_options/g' config.php
