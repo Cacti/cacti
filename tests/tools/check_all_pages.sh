@@ -273,11 +273,11 @@ plugins=$(cd $BASE_PATH/plugins;ls -1d */ | tr -d '/')
 for plugin in $plugins; do
 	echo "NOTE: Recursively Checking Plugin $plugin Directory!!!"
 
-	files=$(cd $BASE_PATH;find plugins/$plugin -name "*.php" | egrep -v '(setup.php|index.php)')
+	files=$(cd $BASE_PATH;find plugins/$plugin -maxdepth 1 -name "*.php" | egrep -v '(setup.php|index.php)')
 
 	for file in $files; do
 		if [ $(grep "cli_check.php" $BASE_PATH/$file | wc -l) -eq 0 ]; then
-			wget $loadSaveCookie --output-file="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/$file
+			wget $loadSaveCookie --append-output="$logFile1" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off http://localhost/cacti/$file
 		fi
 	done
 done
