@@ -807,32 +807,33 @@ function is_view_allowed($view = 'show_tree') {
 			return false;
 		}
 
-		$values = array_rekey(
-			db_fetch_assoc_prepared("SELECT DISTINCT $view
-				FROM user_auth_group AS uag
-				INNER JOIN user_auth_group_members AS uagm
-				ON uag.id = uagm.user_id
-				WHERE uag.enabled = 'on'
-				AND uagm.user_id = ?",
-				array($_SESSION['sess_user_id'])
-			), $view, $view
-		);
-
-		if (isset($values[3])) {
-			return false;
-		} elseif (isset($values['on'])) {
-			return true;
-		} elseif (isset($values[2])) {
-			return true;
-		} else {
-			$value = db_fetch_cell_prepared("SELECT $view
-				FROM user_auth
-				WHERE id = ?",
-				array($_SESSION['sess_user_id'])
+		if (db_table_exists('user_auth_group')) {
+			$values = array_rekey(
+				db_fetch_assoc_prepared("SELECT DISTINCT $view
+					FROM user_auth_group AS uag
+					INNER JOIN user_auth_group_members AS uagm
+					ON uag.id = uagm.user_id
+					WHERE uag.enabled = 'on'
+					AND uagm.user_id = ?",
+					array($_SESSION['sess_user_id'])
+				), $view, $view
 			);
 
-			return ($value == 'on');
+			if (isset($values[3])) {
+				return false;
+			} elseif (isset($values['on'])) {
+				return true;
+			} elseif (isset($values[2])) {
+				return true;
+			}
 		}
+		$value = db_fetch_cell_prepared("SELECT $view
+			FROM user_auth
+			WHERE id = ?",
+			array($_SESSION['sess_user_id'])
+		);
+
+		return ($value == 'on');
 	} else {
 		return true;
 	}
@@ -3874,12 +3875,21 @@ function secpass_login_process($username) {
 		return array();
 	}
 
-	$user = db_fetch_row_prepared("SELECT id, username, lastfail, failed_attempts, `locked`, password
-		FROM user_auth
-		WHERE username = ?
-		AND realm = 0
-		AND enabled = 'on'",
-		array($username));
+	if (db_column_exists('user_auth', 'lastfail')) {
+		$user = db_fetch_row_prepared("SELECT id, username, lastfail, failed_attempts, `locked`, password
+			FROM user_auth
+			WHERE username = ?
+			AND realm = 0
+			AND enabled = 'on'",
+			array($username));
+	} else {
+		$user = db_fetch_row_prepared("SELECT id, username, password
+			FROM user_auth
+			WHERE username = ?
+			AND realm = 0
+			AND enabled = 'on'",
+			array($username));
+	}
 
 	if (cacti_sizeof($user)) {
 		if (trim($password) == '') {

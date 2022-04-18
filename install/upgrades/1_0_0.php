@@ -1808,6 +1808,8 @@ function upgrade_to_1_0_0() {
 			db_install_execute('DELETE FROM settings WHERE name = "graph_wathermark"');
 		}
 	}
+
+	db_install_drop_key('data_input', 'index', 'name');
 }
 
 function upgrade_realms() {
