@@ -317,11 +317,11 @@ label.ui-state-hover > span {
 }
 
 .usermenudown {
-    background: transparent url('./../../../images/bullet_arrow_down.png') no-repeat center right;
+    background: transparent url('./../../../../../images/bullet_arrow_down.png') no-repeat center right;
 }
 
 .usermenuup {
-    background: transparent url('./../../../images/bullet_arrow_up.png') no-repeat center right;
+    background: transparent url('./../../../../../images/bullet_arrow_up.png') no-repeat center right;
 }
 
 .user {
