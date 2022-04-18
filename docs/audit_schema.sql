@@ -1146,7 +1146,6 @@ INSERT INTO `table_indexes` VALUES ('data_local',1,'snmp_index',1,'snmp_index','
 INSERT INTO `table_indexes` VALUES ('data_local',1,'snmp_query_id',1,'snmp_query_id','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_profiles',1,'name',1,'name','A',3,'171',NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_profiles',0,'PRIMARY',1,'id','A',3,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_source_profiles_cf',1,'data_source_profile_id',1,'data_source_profile_id','A',6,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_profiles_cf',0,'PRIMARY',1,'data_source_profile_id','A',6,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_profiles_cf',0,'PRIMARY',2,'consolidation_function_id','A',12,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_source_profiles_rra',1,'data_source_profile_id',1,'data_source_profile_id','A',6,NULL,NULL,'','BTREE','');
@@ -1185,7 +1184,6 @@ INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'data_template_id',1,'
 INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',1,'local_data_id','A',12,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',2,'data_source_name','A',123,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'duplicate_dsname_contraint',3,'data_template_id','A',123,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'local_data_id',1,'local_data_id','A',12,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_template_rrd',1,'local_data_template_rrd_id',1,'local_data_template_rrd_id','A',17,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('data_template_rrd',0,'PRIMARY',1,'id','A',123,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('external_links',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
@@ -1196,7 +1194,6 @@ INSERT INTO `table_indexes` VALUES ('graph_local',1,'snmp_index',1,'snmp_index',
 INSERT INTO `table_indexes` VALUES ('graph_local',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_local',1,'snmp_query_id',1,'snmp_query_id','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_template_input',0,'PRIMARY',1,'id','A',139,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',1,'graph_template_input_id',1,'graph_template_input_id','A',316,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',0,'PRIMARY',1,'graph_template_input_id','A',316,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_template_input_defs',0,'PRIMARY',2,'graph_template_item_id','A',633,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('graph_templates',1,'multiple_name',1,'multiple','A',2,NULL,NULL,'','BTREE','');
@@ -1239,7 +1236,6 @@ INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_disabled',2,'disabled','
 INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_last_updated',1,'poller_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',1,'poller_id_last_updated',2,'last_updated','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',0,'PRIMARY',1,'id','A',1,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host',1,'site_id',1,'site_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',1,'site_id_location',1,'site_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',1,'site_id_location',2,'location','A',1,NULL,NULL,'YES','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host',1,'status',1,'status','A',1,NULL,NULL,'','BTREE','');
@@ -1257,15 +1253,12 @@ INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',3,'field_name'
 INSERT INTO `table_indexes` VALUES ('host_snmp_cache',0,'PRIMARY',4,'snmp_index','A',6,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'snmp_index',1,'snmp_index','A',6,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_snmp_cache',1,'snmp_query_id',1,'snmp_query_id','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_snmp_query',1,'host_id',1,'host_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_snmp_query',0,'PRIMARY',1,'host_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_snmp_query',0,'PRIMARY',2,'snmp_query_id','A',1,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_template',1,'name',1,'name','A',6,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_template',0,'PRIMARY',1,'id','A',6,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template_graph',1,'host_template_id',1,'host_template_id','A',12,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_template_graph',0,'PRIMARY',1,'host_template_id','A',12,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_template_graph',0,'PRIMARY',2,'graph_template_id','A',48,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',1,'host_template_id',1,'host_template_id','A',14,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',0,'PRIMARY',1,'host_template_id','A',14,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',0,'PRIMARY',2,'snmp_query_id','A',14,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_config',1,'directory',1,'directory','A',0,NULL,NULL,'','BTREE','');
@@ -1328,7 +1321,6 @@ INSERT INTO `table_indexes` VALUES ('poller_time',1,'poller_id_end_time',1,'poll
 INSERT INTO `table_indexes` VALUES ('poller_time',1,'poller_id_end_time',2,'end_time','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('poller_time',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('processes',1,'id',1,'id',NULL,0,NULL,NULL,'','HASH','');
-INSERT INTO `table_indexes` VALUES ('processes',1,'pid',1,'pid',NULL,0,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('processes',0,'PRIMARY',1,'pid',NULL,NULL,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('processes',0,'PRIMARY',2,'tasktype',NULL,NULL,NULL,NULL,'','HASH','');
 INSERT INTO `table_indexes` VALUES ('processes',0,'PRIMARY',3,'taskname',NULL,NULL,NULL,NULL,'','HASH','');
@@ -1364,7 +1356,6 @@ INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',1,'data_template_rrd_
 INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',0,'PRIMARY',1,'snmp_query_graph_id','A',66,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',0,'PRIMARY',2,'data_template_id','A',66,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',0,'PRIMARY',3,'data_template_rrd_id','A',66,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',66,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd_sv',1,'data_template_id',1,'data_template_id','A',18,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd_sv',0,'PRIMARY',1,'id','A',75,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmp_query_graph_rrd_sv',1,'snmp_query_graph_id',1,'snmp_query_graph_id','A',75,NULL,NULL,'','BTREE','');
@@ -1374,20 +1365,16 @@ INSERT INTO `table_indexes` VALUES ('snmpagent_cache',1,'mib_name',1,'mib','A',6
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache',1,'mib_name',2,'name','A',137,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache',1,'name',1,'name','A',137,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache',0,'PRIMARY',1,'oid','A',137,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',1,'name',1,'name','A',17,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',1,'name','A',17,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',2,'mib','A',17,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',3,'attribute','A',17,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache_notifications',0,'PRIMARY',4,'sequence_id','A',17,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',1,'mib',1,'mib','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',1,'name',1,'name','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',0,'PRIMARY',1,'name','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',0,'PRIMARY',2,'mib','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_cache_textual_conventions',0,'PRIMARY',3,'type','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers',1,'hostname',1,'hostname','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',1,'manager_id_notification',1,'manager_id','A',0,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',1,'manager_id_notification',2,'notification','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',1,'mib',1,'mib','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',0,'PRIMARY',1,'manager_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('snmpagent_managers_notifications',0,'PRIMARY',2,'notification','A',0,NULL,NULL,'','BTREE','');
