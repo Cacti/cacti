@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#4614: Domains form shows CN header even when CN is disabled
 -issue#4716: Can't Edit Data Source of Graph
 -issue#4719: Browsers to begin rejecting CactiTimeZone and CactiDateTime cookies due to SameSite Requirements
+-issue#4722: Detect table user_auth_group and column user_auth.lastfail for Pre-1.0 upgradeing
 -feature#4720: Add a CLI script to install/enable/disable/uninstall plugins
 
 1.2.20

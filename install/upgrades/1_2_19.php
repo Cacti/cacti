@@ -34,7 +34,7 @@ function upgrade_to_1_2_19() {
 	}
 
 	db_install_execute('ALTER TABLE graph_templates
-		ROW_FORMAT=Dynamic,
+		ENGINE=InnoDB ROW_FORMAT=Dynamic,
 		DROP INDEX multiple_name,
 		DROP INDEX name,
 		ADD INDEX multiple_name(multiple, name),
