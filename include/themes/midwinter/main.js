@@ -875,7 +875,7 @@ function setMenuVisibility() {
 }
 
 function searchToHighlight() {
-	$.cachedScript('include/themes/midwinter/vendor/mark/jquery.mark.js').done(function (script, textStatus) {
+	$.cachedScript(urlPath + 'include/themes/midwinter/vendor/mark/jquery.mark.js').done(function (script, textStatus) {
 		if (textStatus === 'success') {
 			$("input[name='keyword']").on("input", highlight);
 		}
@@ -902,7 +902,7 @@ function highlight() {
 
 
 function setHotKeys() {
-	$.cachedScript('include/themes/midwinter/vendor/hotkeys/hotkeys.js').done(function (script, textStatus) {
+	$.cachedScript(urlPath + 'include/themes/midwinter/vendor/hotkeys/hotkeys.js').done(function (script, textStatus) {
 		if (textStatus === 'success') {
 			hotkeys('SHIFT+c,c+t,c+l,c+p,c+F1,F5,SHIFT+m+d, SHIFT+g, SHIFT+p, ESC, SHIFT+k', function (event, handler) {
 				event.preventDefault();
@@ -973,7 +973,7 @@ function dialog_client(event) {
 
 	console.log('dialog_user');
 
-	$.cachedScript('include/themes/midwinter/vendor/ua-parser/ua-parser.js').done(function (script, textStatus) {
+	$.cachedScript(urlPath + 'include/themes/midwinter/vendor/ua-parser/ua-parser.js').done(function (script, textStatus) {
 		if (textStatus === 'success') {
 			let title='Your Client';
 
