@@ -3,7 +3,7 @@ Cacti CHANGELOG
 1.2.21
 -issue#4683: When adding device, errors may be reported whilst updating templates
 -issue#4684: Undefined variable warning causes error image not to be generated
--issue#4688: Two syntax error for PHP 5.4
+-issue#4688: Two syntax error: typo and Null-Coalescing-Operator for PHP 5.4
 -issue#4685: Cacti Packages corrupted with release of Cacti 1.2.20
 -issue#4687: Poller output not empty all the time
 -issue#4689: Package Import generates errors when you try to import directory or non-file
@@ -209,9 +209,8 @@ Cacti CHANGELOG
 -issue#4273: When adding a device from command line, testing of data sources can cause errors to be recorded
 -issue#4274: When you start to zoom a graph, the auto graph refresh should be disabled
 -issue#4279: Default Setting "Device Threads" will not be saved correctly
--issue#4284: Database upgrade can fail - Uncaught argument count error
--issue#4293: Tree search does not take hosts belonging to a site into account
 -issue#4284: Whilst upgrading, errors in upgrade scripts prevent properly execution
+-issue#4293: Tree search does not take hosts belonging to a site into account
 -issue#4294: Tables outside of pre-built list that need fixing, cause bad unknown column errors
 -issue#4295: If a page contains multiple tables, a larger table can cause small ones to lose columns
 -issue#4297: Unable to search using regular expressions when trying to filter graphs
@@ -979,7 +978,7 @@ Cacti CHANGELOG
 
 1.2.3
 -issue#1063: Tree View does not display the last item correctly under 'Modern' theme
--issue#2282: Install Wizard does not Detect RRDtool Version on Windows
+-issue#2282: Installation Wizard does not Detect RRDtool Version on Windows
 -issue#2430: "New Device" menu item showing as selected incorrect when "Devices" clicked
 -issue#2435: Tree View becomes narrower and narrower when expanding/collapsing nodes with long names
 -issue#2449: Index incorrectly changed to 1 if the index is alphanumeric when OID/REGEXP: or OIDVALUE/REGEXP:
@@ -1198,8 +1197,7 @@ Cacti CHANGELOG
 -issue#948: Do not create a new datasource when adding a new Graph for the same device/field
 -issue#454: Cacti Re-Index does not resolve index changes properly during re-index
 -issue#983: Import Template Preview is misleading
--issue#1097: When copying template user, newly created user should always be enabled to allow logging in
--issue#1097: When copying template user, it should be disable to prevent logging in as template user directly
+-issue#1097: Template user should be disable to prevent logging in directly. And newly created user should always be enabled to allow logging in when copying template user.
 -issue#1174: When display a tree, disable drag and drop unless in edit mode
 -issue#1298: Display fatal error to prevent issues caused when system log is not writable
 -issue#1350: When switching an Automation Tree Rule's leaf type, remove invalid Automation Rule Items
@@ -2707,7 +2705,6 @@ Cacti CHANGELOG
 -feature#0001201: Reapply Suggested Names for Data Sources and cli/poller_data_sources_reapply_names.php
 -feature#0001205: Add filtering and pagination to cdef management; add "Duplicate CDEF"
 -feature#0001220: Disable snmpbulkwalk if max OIDS is less than 2
--feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
 -feature#0001233: Move $export_types variable definition from templates_export.php to include/global_form.php
 -feature#0001235: CLI script needs to activate a query: add_data_query.php
 -feature#0001250: Dispatching job in poller can lead to unbalanced threads
