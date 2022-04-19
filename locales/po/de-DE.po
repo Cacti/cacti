@@ -9,21 +9,7 @@
 # Wolfgang Stöggl <c72578@yahoo.de>, 2017.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti German Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-04-02 09:08-0400\n"
-"PO-Revision-Date: 2022-03-14 20:46-0400\n"
-"Last-Translator: Ronny Preiss <ronny.preiss@gmail.com>\n"
-"Language-Team: German <http://translate.cacti.net/projects/cacti/core-v1-2-x/de/>\n"
-"Language: de_DE\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.0.1\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-KeywordsList: __;__date\n"
+msgstr "Project-Id-Version: Cacti German Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-04-19 07:33+0000\nLast-Translator: lena <binder.lena@googlemail.com>\nLanguage-Team: German <http://translate.cacti.net/projects/cacti/core-v1-2-x/de/>\nLanguage: de-DE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\nX-Poedit-Basepath: .\nX-Poedit-KeywordsList: __;__date\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 msgid "About Cacti"
@@ -214,9 +200,8 @@ msgid "The selected Aggregate Graphs represent elements from more than one Graph
 msgstr "Die ausgewählten Aggregatdiagramme stellen Elemente aus mehr als einer Grafikvorlage dar."
 
 #: aggregate_graphs.php:389
-#, fuzzy
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
-msgstr "Um die untenstehenden Aggregatdiagramme in ein vorlagenbasiertes Aggregat zu migrieren, dürfen sie nur eine Grafikvorlage verwenden.  Bitte drücken Sie'Return' und wählen Sie dann nur Aggregatdiagramme aus, die die gleiche Diagrammvorlage verwenden."
+msgstr "Um die untenstehenden Aggregatdiagramme in ein vorlagenbasiertes Aggregat zu migrieren, dürfen sie nur eine Grafikvorlage verwenden.  Bitte drücken Sie 'Return' und wählen Sie dann nur Aggregatdiagramme aus, welche die gleiche Diagrammvorlage verwenden."
 
 #: aggregate_graphs.php:394 aggregate_graphs.php:442 aggregate_graphs.php:488
 #: auth_changepassword.php:359 auth_profile.php:443 automation_networks.php:398
@@ -249,9 +234,9 @@ msgid "There are currently no Aggregate Templates defined for the selected Legac
 msgstr "Derzeit sind für die ausgewählten Legacy-Aggregate keine Aggregatvorlagen definiert."
 
 #: aggregate_graphs.php:436
-#, fuzzy, php-format
+#, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "Um die folgenden Aggregatdiagramme in ein vorlagenbasiertes Aggregat zu migrieren, erstellen Sie zunächst eine Aggregatvorlage für die Diagrammvorlage'%s'."
+msgstr "Um die folgenden Aggregatdiagramme in ein vorlagenbasiertes Aggregat zu migrieren, erstellen Sie zunächst eine Aggregatvorlage für die Diagrammvorlage '%s'."
 
 #: aggregate_graphs.php:437
 msgid "Please press 'Return' to continue."
