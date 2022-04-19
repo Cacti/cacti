@@ -40,11 +40,12 @@ array_shift($parms);
 global $preview_only;
 
 if (cacti_sizeof($parms)) {
-	$filename       = '';
-	$with_profile   = false;
-	$remove_orphans = false;
-	$preview_only   = 0;
-	$profile_id     = '';
+	$filename        = '';
+	$with_profile    = false;
+	$remove_orphans  = false;
+	$replace_svalues = false;
+	$preview_only    = 0;
+	$profile_id      = '';
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -67,6 +68,10 @@ if (cacti_sizeof($parms)) {
 				$remove_orphans = true;
 
 				break;
+			case '--replace-svalues':
+				$replace_svalues = true;
+
+				break;
 			case '--preview':
 				$preview_only = 1;
 
@@ -86,19 +91,19 @@ if (cacti_sizeof($parms)) {
 				display_version();
 				exit(0);
 			default:
-				print "ERROR: Invalid Argument: ($arg)\n\n";
+				print 'ERROR: Invalid Argument: ($arg)' . PHP_EOL . PHP_EOL;
 				exit(1);
 		}
 	}
 
 	if($profile_id > 0) {
 		if ($with_profile) {
-			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
+			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'" . PHP_EOL;
 		} else {
 			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($profile_id));
 
 			if (empty($id)) {
-				print "WARNING: Data Source Profile ID $profile_id not found. Using System Default\n";
+				print "WARNING: Data Source Profile ID $profile_id not found. Using System Default" . PHP_EOL;
 				$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 			}
 		}
@@ -107,7 +112,7 @@ if (cacti_sizeof($parms)) {
 	}
 
 	if (empty($id)) {
-		print "FATAL: No valid Data Source Profiles found on the system.  Exiting!\n";
+		print 'FATAL: No valid Data Source Profiles found on the system.  Exiting!' . PHP_EOL;
 		exit(1);
 	}
 
@@ -117,22 +122,22 @@ if (cacti_sizeof($parms)) {
 			$xml_data = fread($fp,filesize($filename));
 			fclose($fp);
 
-			print 'Read ' . strlen($xml_data) . " bytes of XML data\n";
+			print 'Read ' . strlen($xml_data) . ' bytes of XML data' . PHP_EOL;
 
-			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans);
+			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans, $replace_svalues);
 
 			import_display_results($debug_data, array(), $preview_only);
 		} else {
-			print "ERROR: file $filename is not readable, or does not exist\n\n";
+			print "ERROR: file $filename is not readable, or does not exist" . PHP_EOL . PHP_EOL;
 			exit(1);
 		}
 	} else {
-		print "ERROR: no filename specified\n\n";
+		print 'ERROR: no filename specified' . PHP_EOL . PHP_EOL;
 		display_help();
 		exit(1);
 	}
 } else {
-	print "ERROR: no parameters given\n\n";
+	print 'ERROR: no parameters given' . PHP_EOL . PHP_EOL;
 	display_help();
 	exit(1);
 }
@@ -140,21 +145,27 @@ if (cacti_sizeof($parms)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 function display_help() {
 	display_version();
 
-	print "\nusage: import_template.php --filename=[filename] [--with-profile | --profile-id=N]\n\n";
-	print "A utility to allow Cacti Templates to be imported from the command line.\n\n";
-	print "Required:\n";
-	print "    --filename        The name of the XML file to import\n\n";
-	print "Optional:\n";
-	print "    --preview         Preview the Template Import, do not import\n";
-	print "    --with-profile    Use the default system Data Source Profile\n";
-	print "    --profile-id=N    Use the specific profile id when importing\n";
-	print "    --remove-orphans  If importing a new version of the template, old\n";
-	print "                      elements will be removed, if they do not exist\n";
-	print "                      in the new version of the template.\n\n";
+	print PHP_EOL;
+	print 'usage: import_template.php --filename=[filename] [--with-profile | --profile-id=N]' . PHP_EOL . PHP_EOL;
+	print 'A utility to allow Cacti Templates to be imported from the command line.' . PHP_EOL . PHP_EOL;
+	print 'Required:' . PHP_EOL;
+	print '    --filename        The name of the XML file to import' . PHP_EOL . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
+	print '    --preview         Preview the Template Import, do not import' . PHP_EOL;
+	print '    --with-profile    Use the default system Data Source Profile' . PHP_EOL;
+	print '    --profile-id=N    Use the specific profile id when importing' . PHP_EOL;
+	print '    --remove-orphans  If importing a new version of the template, old' . PHP_EOL;
+	print '                      elements will be removed, if they do not exist' . PHP_EOL;
+	print '                      in the new version of the template.';
+	print '    --replace-svalues If replacing an old version of either a Device' . PHP_EOL;
+	print '                      Template with Data Queries or a Data Query, when' . PHP_EOL;
+	print '                      you select this option, all Data Query Suggested' . PHP_EOL;
+	print '                      Value Patterns will be replaced with that of the' . PHP_EOL;
+	print '                      Package Data Queries.' . PHP_EOL . PHP_EOL;
 }
