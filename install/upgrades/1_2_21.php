@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -22,17 +22,20 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_26() {
-	db_install_add_key('host', 'key', 'status', array('status'));
-	db_install_add_key('user_auth_cache', 'key', 'last_update', array('last_update'));
-	db_install_add_key('poller_output_realtime', 'key', 'time', array('time'));
-	db_install_add_key('poller_time', 'key', 'poller_id_end_time', array('poller_id', 'end_time'));
+function upgrade_to_1_2_21() {
+	global $config;
 
-	if (db_column_exists('poller_item', 'rrd_next_step')) {
-		db_install_add_key('poller_item', 'key', 'poller_id_rrd_next_step', array('poller_id', 'rrd_next_step'));
-	}
-
-	if (db_column_exists('poller_item', 'rrd_next_step')) {
-		db_install_drop_key('poller_item', 'key', 'rrd_next_step');
-	}
+	db_install_drop_key('data_source_profiles_cf', 'index', 'data_source_profile_id');
+	db_install_drop_key('data_template_rrd', 'index', 'local_data_id');
+	db_install_drop_key('graph_template_input_defs', 'index', 'graph_template_input_id');
+	db_install_drop_key('host', 'index', 'site_id');
+	db_install_drop_key('host_snmp_query', 'index', 'host_id');
+	db_install_drop_key('host_template_graph', 'index', 'host_template_id');
+	db_install_drop_key('host_template_snmp_query', 'index', 'host_template_id');
+	db_install_drop_key('processes', 'index', 'pid');
+	db_install_drop_key('snmpagent_cache_notifications', 'index', 'name');
+	db_install_drop_key('snmpagent_cache_textual_conventions', 'index', 'name');
+	db_install_drop_key('snmpagent_managers_notifications', 'index', 'manager_id_notification');
+	db_install_drop_key('snmp_query_graph_rrd', 'index', 'snmp_query_graph_id');
 }
+
