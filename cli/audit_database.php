@@ -492,7 +492,7 @@ function report_audit_results($output = true) {
 								$c[$col]     = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $c[$col]);
 								$dbc[$dbcol] = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP',$dbc[$dbcol]);
 
-								if ($c[$col] != $dbc[$dbcol] && $text != 'mediumtext') {
+								if ($c[$col] != $dbc[$dbcol] && $c[$col] != 'mediumtext') {
 									if ($output) {
 										if ($col != 'Key') {
 											print PHP_EOL . 'ERROR Col: \'' . $c['Field'] . '\', Attribute \'' . $col . '\' invalid. Should be: \'' . $dbc[$dbcol] . '\', Is: \'' . $c[$col] . '\'';
