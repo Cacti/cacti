@@ -35,12 +35,12 @@ if ($config['poller_id'] > 1) {
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$upgrade = false;
-$create  = false;
-$load    = false;
-$report  = false;
-$repair  = false;
-$alters  = false;
+$upgrade    = false;
+$create     = false;
+$loadopt    = false;
+$report     = false;
+$repair     = false;
+$altersopt  = false;
 
 if (cacti_sizeof($parms)) {
 	$shortopts = 'VvHh';
@@ -65,7 +65,7 @@ if (cacti_sizeof($parms)) {
 			break;
 
 		case 'load':
-			$load = true;
+			$loadopt = true;
 
 			break;
 		case 'report':
@@ -77,7 +77,7 @@ if (cacti_sizeof($parms)) {
 
 			break;
 		case 'alters':
-			$alters = true;
+			$altersopt = true;
 
 			break;
 		case 'upgrade':
@@ -102,7 +102,7 @@ if (cacti_sizeof($parms)) {
 	}
 
 	$db_version = db_fetch_cell('SELECT cacti FROM version');
-	if ($db_version != CACTI_VERSION && !isset($options['upgrade'])) {
+	if ($db_version != CACTI_VERSION && !$upgrade) {
 		$upgrade_required = true;
 	} else {
 		$upgrade_required = false;
@@ -111,7 +111,7 @@ if (cacti_sizeof($parms)) {
 	if ($upgrade_required) {
 		print 'WARNING: Cacti must be upgraded first.  Use the --upgrade option to perform that upgrade' . PHP_EOL;
 		exit(1);
-	} elseif ($db_version != CACTI_VERSION && isset($options['upgrade'])) {
+	} elseif ($db_version != CACTI_VERSION && $$upgrade) {
 		upgrade_database();
 	}
 
@@ -121,10 +121,12 @@ if (cacti_sizeof($parms)) {
 		create_tables();
 	} elseif ($report) {
 		report_audit_results();
-	} elseif ($alters) {
+	} elseif ($altersopt) {
 		repair_database(false);
-	} elseif ($load) {
+	} elseif ($loadopt) {
 		load_audit_database();
+	} else {
+		display_help();
 	}
 
 	exit(0);
@@ -308,6 +310,8 @@ function plugin_installed($plugin) {
 }
 
 function repair_database($run = true) {
+	global $altersopt;
+
 	$alters = report_audit_results(false);
 
 	$good = 0;
@@ -345,7 +349,7 @@ function repair_database($run = true) {
 				}
 			} else {
 				print '---------------------------------------------------------------------------------------------' . PHP_EOL;
-				print 'Proposed Alter for Table : ' . $table . PHP_EOL . PHP_EOL;
+				print '-- Proposed Alter for Table : ' . $table . PHP_EOL . PHP_EOL;
 				print $sql . PHP_EOL . PHP_EOL;
 			}
 		}
@@ -353,7 +357,7 @@ function repair_database($run = true) {
 
 	print '---------------------------------------------------------------------------------------------' . PHP_EOL;
 	if ($bad == 0 && $good == 0) {
-		print 'Repair Completed!  No changes performed.' . PHP_EOL;
+		print ($altersopt ? '-- ' : '') . 'Repair Completed!  No changes performed.' . PHP_EOL;
 	} elseif ($bad) {
 		print 'Repair Completed!  ' . $good . ' Alters succeeded and ' . $bad . ' failed!' . PHP_EOL;
 	} else {
@@ -362,7 +366,8 @@ function repair_database($run = true) {
 }
 
 function report_audit_results($output = true) {
-	global $database_default;
+	global $database_default, $altersopt;
+
 	$db_name = 'Tables_in_' . $database_default;
 
 	create_tables();
@@ -405,7 +410,7 @@ function report_audit_results($output = true) {
 				print '---------------------------------------------------------------------------------------------' . PHP_EOL;
 				printf('Checking Table: %-45s', '\'' . $table_name . '\'');
 			} else {
-				printf('Scanning Table: %-45s', '\'' . $table_name . '\'');
+				printf(($altersopt ? '-- ' : '') . 'Scanning Table: %-45s', '\'' . $table_name . '\'');
 			}
 
 			$table_exists = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -859,6 +864,7 @@ function get_colunm_sequence_number($table, $index, $column) {
 
 function create_tables($load = true) {
 	global $config, $database_default, $database_username, $database_password, $database_port, $database_hostname;
+	global $altersopt;
 
 	db_execute("CREATE TABLE IF NOT EXISTS table_columns (
 		table_name varchar(50) NOT NULL,
@@ -921,7 +927,7 @@ function create_tables($load = true) {
 				' < ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $error);
 
 			if ($error == 0) {
-				print 'SUCCESS: Loaded the Audit Schema' . PHP_EOL;
+				print ($altersopt ? '-- ' : '') . 'SUCCESS: Loaded the Audit Schema' . PHP_EOL;
 			} else {
 				print 'FATAL: Failed Load the Audit Schema' . PHP_EOL;
 				print 'ERROR: ' . implode(",\n   ", $output) . PHP_EOL;
