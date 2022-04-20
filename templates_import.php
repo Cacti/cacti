@@ -93,8 +93,14 @@ function form_save() {
 			$remove_orphans = false;
 		}
 
+		if (isset_request_var('replace_svalues') && get_nfilter_request_var('replace_svalues') == 'on') {
+			$replace_svalues = true;
+		} else {
+			$replace_svalues = false;
+		}
+
 		/* obtain debug information if it's set */
-		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans);
+		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans, $replace_svalues);
 		if ($debug_data !== false && cacti_sizeof($debug_data)) {
 			$_SESSION['import_debug_info'] = $debug_data;
 		} else {

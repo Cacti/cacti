@@ -5740,7 +5740,8 @@ function IgnoreErrorHandler($message) {
 		'Timeout',
 		'Unknown host',
 		'Invalid object identifier',
-		'Name or service not known'
+		'Name or service not known',
+		'USM generic error in file',
 	);
 
 	foreach ($snmp_ignore as $i) {

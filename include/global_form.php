@@ -1676,7 +1676,7 @@ $fields_template_import = array(
 		'description' => __('If the XML file containing template data is located on your local machine, select it here.'),
 		'accept' => '.xml',
 		'method' => 'file'
-		),
+	),
 	'import_text' => array(
 		'method' => 'hidden',
 		'friendly_name' => __('Import Template from Text'),
@@ -1686,21 +1686,28 @@ $fields_template_import = array(
 		'textarea_rows' => '10',
 		'textarea_cols' => '50',
 		'class' => 'textAreaNotes'
-		),
+	),
 	'preview_only' => array(
 		'friendly_name' => __('Preview Import Only'),
 		'method' => 'checkbox',
 		'description' => __('If checked, Cacti will not import the template, but rather compare the imported Template to the existing Template data.  If you are acceptable of the change, you can them import.'),
 		'value' => '',
 		'default' => 'on'
-		),
+	),
 	'remove_orphans' => array(
 		'friendly_name' => __('Remove Orphaned Graph Items'),
 		'method' => 'checkbox',
 		'description' => __('If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template.'),
 		'value' => '',
 		'default' => ''
-		),
+	),
+	'replace_svalues' => array(
+		'friendly_name' => __('Replace Data Query Suggested Value Patterns'),
+		'method' => 'checkbox',
+		'description' => __('Replace Data Source and Graph Template Suggested Value Records for Data Queries.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process.'),
+		'value' => '',
+		'default' => ''
+	),
 	'import_data_source_profile' => array(
 		'friendly_name' => __('Data Source Profile'),
 		'method' => 'drop_sql',

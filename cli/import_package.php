@@ -43,12 +43,13 @@ array_shift($parms);
 global $preview_only;
 
 if (cacti_sizeof($parms)) {
-	$filename       = '';
-	$use_profile    = false;
-	$remove_orphans = false;
-	$preview_only   = false;
-	$info_only      = false;
-	$profile_id     = '';
+	$filename        = '';
+	$use_profile     = false;
+	$remove_orphans  = false;
+	$replace_svalues = false;
+	$preview_only    = false;
+	$info_only       = false;
+	$profile_id      = '';
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -69,6 +70,10 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--remove-orphans':
 				$remove_orphans = true;
+
+				break;
+			case '--replace-svalues':
+				$replace_svalues = true;
 
 				break;
 			case '--profile-id':
@@ -101,7 +106,7 @@ if (cacti_sizeof($parms)) {
 
 	if ($info_only) {
 		if ($filename != '' && is_readable($filename) && file_exists($filename) && !is_dir($filename)) {
-			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only, $info_only);
+			$result = import_package($filename, $profile_id, $remove_orphans, $replace_svalues, $preview_only, $info_only);
 
 			if ($result !== false && cacti_sizeof($result)) {
 				print json_encode($result);
@@ -139,7 +144,7 @@ if (cacti_sizeof($parms)) {
 
 			print 'Read ' . strlen($data) . ' bytes of Package data' . PHP_EOL;
 
-			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only);
+			$result = import_package($filename, $profile_id, $remove_orphans, $replace_svalues, $preview_only);
 
 			if ($result !== false) {
 				$debug_data = $result[0];
@@ -174,7 +179,7 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print PHP_EOL . 'usage: import_package.php --filename=[filename] [--only-info] [--remove-orphans] [--with-profile] [--profile-id=N' . PHP_EOL . PHP_EOL;
+	print PHP_EOL . 'usage: import_package.php --filename=[filename] [--only-info] [--remove-orphans] [--replace-svalues] [--with-profile] [--profile-id=N' . PHP_EOL . PHP_EOL;
 	print 'A utility to allow signed Cacti Packages to be imported from the command line.' . PHP_EOL . PHP_EOL;
 	print 'Required:' . PHP_EOL;
 	print '    --filename              The name of the gziped package file to import' . PHP_EOL . PHP_EOL;
@@ -185,5 +190,10 @@ function display_help() {
 	print '    --profile-id=N    Use the specific profile id when importing' . PHP_EOL;
 	print '    --remove-orphans  If importing a new version of the template, old' . PHP_EOL;
 	print '                      elements will be removed, if they do not exist' . PHP_EOL;
-	print '                      in the new version of the template.' . PHP_EOL . PHP_EOL;
+	print '                      in the new version of the template.' . PHP_EOL;
+	print '    --replace-svalues If replacing an old version of either a Device' . PHP_EOL;
+	print '                      Template with Data Queries or a Data Query, when' . PHP_EOL;
+	print '                      you select this option, all Data Query Suggested' . PHP_EOL;
+	print '                      Value Patterns will be replaced with that of the' . PHP_EOL;
+	print '                      Package Data Queries.' . PHP_EOL . PHP_EOL;
 }

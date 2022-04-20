@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false) {
+function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false) {
 	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $import_debug_info, $legacy_template;
 
 	include_once($config['library_path'] . '/xml.php');
@@ -191,7 +191,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					$repair++;
 					break;
 				case 'data_query':
-					$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $replace_svalues);
 					break;
 				case 'gprint_preset':
 					$hash_cache += xml_to_gprint_preset($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
@@ -252,7 +252,7 @@ EOD;
     return $public_key;
 }
 
-function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $preview = false, $info_only = false, $limitex = true) {
+function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false, $preview = false, $info_only = false, $limitex = true) {
 	global $config, $preview_only;
 
 	$preview_only = $preview;
@@ -380,7 +380,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		} else {
 			cacti_log('Importing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
-			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $preview_only);
+			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $replace_svalues);
 
 			if ($debug_data === false) {
 				return false;
@@ -950,7 +950,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	return $hash_cache;
 }
 
-function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
+function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = false) {
 	global $config, $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
 
 	static $counter = 0;
@@ -1085,6 +1085,13 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 
 			/* import into: snmp_query_graph_sv */
 			if (is_array($item_array['sv_graph'])) {
+				/* if the user choose to replace data query suggested values */
+				if ($data_query_graph_id > 0 && $replace_svalues) {
+					db_execute_prepared('DELETE FROM snmp_query_graph_sv
+						WHERE snmp_query_graph_id = ?',
+						array($data_query_graph_id));
+				}
+
 				foreach ($item_array['sv_graph'] as $sub_item_hash => $sub_item_array) {
 					/* parse information from the hash */
 					$parsed_hash = parse_xml_hash($sub_item_hash);
@@ -1130,6 +1137,13 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 
 			/* import into: snmp_query_graph_rrd_sv */
 			if (is_array($item_array['sv_data_source'])) {
+				/* if the user choose to replace data query suggested values */
+				if ($data_query_graph_id > 0 && $replace_svalues) {
+					db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv
+						WHERE snmp_query_graph_id = ?',
+						array($data_query_graph_id));
+				}
+
 				foreach ($item_array['sv_data_source'] as $sub_item_hash => $sub_item_array) {
 					/* parse information from the hash */
 					$parsed_hash = parse_xml_hash($sub_item_hash);
