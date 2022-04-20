@@ -108,7 +108,7 @@ class SNMP {
 			$this->community = $community;
 		}
 
-		$info = array (
+		$this->info = array (
 			'hostname' => $this->hostname,
 			'port'     => $this->port,
 			'timeout'  => $this->timeout,
