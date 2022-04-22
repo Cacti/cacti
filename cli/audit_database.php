@@ -319,16 +319,16 @@ function repair_database($run = true) {
 
 	if (cacti_sizeof($alters)) {
 		foreach($alters as $table => $changes) {
-			$engine = db_fetch_cell_prepared('SELECT ENGINE
+			$tblinfo = db_fetch_row_prepared('SELECT ENGINE, SUBSTRING_INDEX(TABLE_COLLATION, "_", 1) AS COLLATION
 				FROM information_schema.tables
 				WHERE TABLE_SCHEMA="cacti"
 				AND TABLE_NAME = ?',
 				array($table));
 
-			if ($engine = 'MyISAM') {
-				$suffix = ",\n   ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=utf8mb4";
+			if ($tblinfo['ENGINE'] = 'MyISAM') {
+				$suffix = ",\n   ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=" . $tblinfo['COLLATION'];
 			} else {
-				$suffix = ",\n   ROW_FORMAT=Dynamic CHARSET=utf8mb4";
+				$suffix = ",\n   ROW_FORMAT=Dynamic CHARSET=" . $tblinfo['COLLATION'];
 			}
 
 			$sql = 'ALTER TABLE `' . $table . "`\n   " . implode(",\n   ", $changes) . $suffix . ';';
