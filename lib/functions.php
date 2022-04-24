@@ -7013,21 +7013,25 @@ function cacti_time_zone_set($gmt_offset) {
 		$_SESSION['sess_system_tz'] = getenv('TZ');
 	}
 
+	$zone = timezone_name_from_abbr('', $gmt_offset);
+
 	if ($remaining == 0) {
 		putenv('TZ=GMT' . ($hours > 0 ? '-':'+') . abs($hours));
 
-		$php_offset = 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours);
 		$sys_offset = 'GMT' . ($hours > 0 ? '-':'+') . abs($hours);
 
-		ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+		if ($zone != false) {
+			$php_offset = $zone;
+			ini_set('date.timezone', $zone);
+		} else {
+			$php_offset = 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours);
+			ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+		}
 
 		$_SESSION['sess_browser_system_tz'] = $sys_offset;
-		$_SESSION['sess_browser_php_tz'] = $php_offset;
+		$_SESSION['sess_browser_php_tz']    = $php_offset;
 	} else {
 		$time = ($hours > 0 ? '-':'+') . abs($hours) . ':' . substr('00' . $remaining, -2);
-
-		// Attempt to get the zone via the php function
-		$zone = timezone_name_from_abbr('', $gmt_offset);
 
 		if ($zone === false) {
 			switch($time) {
