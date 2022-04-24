@@ -2118,7 +2118,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 			$outputs_sql = 'SELECT DISTINCT ' . SQL_NO_CACHE . "
 				sqgr.snmp_field_name, dtr.id as data_template_rrd_id
 				FROM snmp_query_graph_rrd AS sqgr
-				INNER JOIN data_template_rrd AS dtr FORCE INDEX (local_data_id)
+				INNER JOIN data_template_rrd AS dtr
 				ON sqgr.data_template_rrd_id = dtr.id
 				WHERE sqgr.data_template_id = ?
 				AND dtr.local_data_id = 0
