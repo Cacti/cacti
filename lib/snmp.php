@@ -921,17 +921,13 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 		return SNMP_METHOD_BINARY;
 	} elseif ($value_output_format == SNMP_STRING_OUTPUT_HEX) {
 		return SNMP_METHOD_BINARY;
-	} elseif ($version == 3 && $context != '') {
-		return SNMP_METHOD_BINARY;
-	} elseif ($version == 3 && $engineid != '') {
+	} elseif ($version == 3) {
 		return SNMP_METHOD_BINARY;
 	} elseif ($type == 'walk' && file_exists(read_config_option('path_snmpbulkwalk'))) {
 		return SNMP_METHOD_BINARY;
 	} elseif (function_exists('snmpget') && $version == 1) {
 		return SNMP_METHOD_PHP;
 	} elseif (function_exists('snmp2_get') && $version == 2) {
-		return SNMP_METHOD_PHP;
-	} elseif (function_exists('snmp3_get') && $version == 3) {
 		return SNMP_METHOD_PHP;
 	} else {
 		return SNMP_METHOD_BINARY;
