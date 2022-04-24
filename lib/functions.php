@@ -7020,7 +7020,7 @@ function cacti_time_zone_set($gmt_offset) {
 
 		$sys_offset = 'GMT' . ($hours > 0 ? '-':'+') . abs($hours);
 
-		if ($zone != false) {
+		if ($zone !== false) {
 			$php_offset = $zone;
 			ini_set('date.timezone', $zone);
 		} else {

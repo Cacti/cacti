@@ -1705,6 +1705,8 @@ class Installer implements JsonSerializable {
 		global $database_default, $database_username, $database_port;
 		global $rdatabase_default, $rdatabase_username, $rdatabase_port;
 
+		cacti_system_zone_set();
+
 		$enabled = array(
 			'location'          => DB_STATUS_SUCCESS,
 			'php_modules'       => DB_STATUS_SUCCESS,
@@ -1761,7 +1763,7 @@ class Installer implements JsonSerializable {
 		$recs = utility_php_recommends();
 
 		foreach ($recs as $rec_title => $recommends) {
-			$output .= Installer::sectionSubTitle(__('PHP - Recommendations (%s)', $rec_title), 'php_recommends_'.$rec_title);
+			$output .= Installer::sectionSubTitle(__('PHP - Recommendations (%s)', $rec_title), 'php_recommends_' . $rec_title);
 
 			ob_start();
 
