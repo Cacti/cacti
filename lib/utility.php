@@ -101,6 +101,8 @@ function repopulate_poller_cache() {
 		ON dtr.data_input_field_id = dif.id
 		WHERE dtr.local_data_id = 0
 		GROUP BY dtr.data_template_id, dif.data_name');
+	
+	cacti_log('NOTE: Poller Cache repopulated by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
@@ -206,9 +208,9 @@ function update_poller_cache($data_source, $commit = false) {
 			$params[] = $data_source['id'];
 
 			$outputs = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . "
-				sqgr.snmp_field_name, dtr.id AS data_template_rrd_id
+				sqgr.snmp_field_name, dtr.id as data_template_rrd_id
 				FROM snmp_query_graph_rrd AS sqgr
-				INNER JOIN data_template_rrd AS dtr
+				INNER JOIN data_template_rrd AS dtr FORCE INDEX (local_data_id)
 				ON sqgr.data_template_rrd_id = dtr.local_data_template_rrd_id
 				WHERE sqgr.data_template_id = ?
 				AND dtr.local_data_id = ?

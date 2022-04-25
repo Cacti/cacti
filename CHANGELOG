@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#4732: Miss to report text/mediumtext column due to typo
 -issue#4736: Some PHP options value incorrect in Installation Wizard --> Step 2
 -feature#4720: Add a CLI script to install/enable/disable/uninstall plugins
+-feature#4740: Add log messages for DS Stats purge and poller cache repopulate
 
 1.2.20
 -security#4562: When using LDAP, authentication process may be bypassed
