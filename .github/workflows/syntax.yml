@@ -1,4 +1,4 @@
-name: Cacti and Seelect Plugin Syntax and Page Checker
+name: Cacti Commit Audit
 
 on:
   push:
