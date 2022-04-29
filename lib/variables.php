@@ -216,7 +216,11 @@ function update_graph_title_cache($local_graph_id) {
    @arg $string - the string to clean out unsubstituted variables for
    @returns - the cleaned up string */
 function null_out_substitutions($string) {
-	return preg_replace("/\|host_" . VALID_HOST_FIELDS . "\|( - )?/i", '', $string);
+	if ($string != '') {
+		return preg_replace("/\|host_" . VALID_HOST_FIELDS . "\|( - )?/i", '', $string);
+	} else {
+		return $string;
+	}
 }
 
 /* expand_title - takes a string and substitutes all data query variables contained in it or cleans
