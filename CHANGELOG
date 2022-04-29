@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#4729: Cacti Template and Package Installs need a way to deal with conflicting Suggested Name Values/Patterns
 -issue#4732: Miss to report text/mediumtext column due to typo
 -issue#4736: Some PHP options value incorrect in Installation Wizard --> Step 2
+-issue#4744: Fix graph automation bug in api_automation.php
 -feature#4720: Add a CLI script to install/enable/disable/uninstall plugins
 
 1.2.20
