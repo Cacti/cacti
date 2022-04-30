@@ -379,10 +379,10 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 			} else {
 				cacti_log('Previewing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
-				if (!is_writable($filename)) {
-					$filestatus[$filename] = __('not writable');
-				} else {
+				if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
 					$filestatus[$filename] = __('writable');
+				} else {
+					$filestatus[$filename] = __('not writable');
 				}
 			}
 
@@ -532,7 +532,9 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 			}
 
 			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+			if ($parsed_hash == false) {
+				return false;
+			}
 
 			unset($save);
 			$_graph_template_item_id = db_fetch_cell_prepared('SELECT id
@@ -612,7 +614,9 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 			$parsed_hash = parse_xml_hash($item_hash);
 
 			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+			if ($parsed_hash == false) {
+				return false;
+			}
 
 			unset($save);
 			$_graph_template_input_id = db_fetch_cell_prepared('SELECT id
@@ -658,7 +662,9 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 						$parsed_hash = parse_xml_hash($hash_items[$i]);
 
 						/* invalid/wrong hash */
-						if ($parsed_hash == false) { return false; }
+						if ($parsed_hash == false) {
+							return false;
+						}
 
 						if (isset($hash_cache['graph_template_item'][$parsed_hash['hash']])) {
 							db_execute_prepared('REPLACE INTO graph_template_input_defs
@@ -829,7 +835,9 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			$parsed_hash = parse_xml_hash($item_hash);
 
 			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+			if ($parsed_hash == false) {
+				return false;
+			}
 
 			unset($save);
 			$_data_template_rrd_id = db_fetch_cell_prepared('SELECT id
@@ -1029,12 +1037,15 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = 
 
 	/* import into: snmp_query_graph */
 	if (is_array($xml_array['graphs'])) {
+cacti_log('doing a snmp query graph');
 		foreach ($xml_array['graphs'] as $item_hash => $item_array) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
 
 			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+			if ($parsed_hash == false) {
+				return false;
+			}
 
 			unset($save);
 			$_data_query_graph_id = db_fetch_cell_prepared('SELECT id
@@ -1112,7 +1123,9 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = 
 					$parsed_hash = parse_xml_hash($sub_item_hash);
 
 					/* invalid/wrong hash */
-					if ($parsed_hash == false) { return false; }
+					if ($parsed_hash == false) {
+						return false;
+					}
 
 					unset($save);
 					$_data_query_graph_sv_id = db_fetch_cell_prepared('SELECT id
@@ -1164,7 +1177,9 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = 
 					$parsed_hash = parse_xml_hash($sub_item_hash);
 
 					/* invalid/wrong hash */
-					if ($parsed_hash == false) { return false; }
+					if ($parsed_hash == false) {
+						return false;
+					}
 
 					unset($save);
 					$_data_query_graph_rrd_sv_id = db_fetch_cell_prepared('SELECT id
@@ -1390,7 +1405,9 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 				$parsed_hash = parse_xml_hash($hash_items[$i]);
 
 				/* invalid/wrong hash */
-				if ($parsed_hash == false) { return false; }
+				if ($parsed_hash == false) {
+					return false;
+				}
 
 				if (isset($hash_cache['graph_template'][$parsed_hash['hash']])) {
 					db_execute_prepared('REPLACE INTO host_template_graph
@@ -1410,7 +1427,9 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 				$parsed_hash = parse_xml_hash($hash_items[$i]);
 
 				/* invalid/wrong hash */
-				if ($parsed_hash == false) { return false; }
+				if ($parsed_hash == false) {
+					return false;
+				}
 
 				if (isset($hash_cache['data_query'][$parsed_hash['hash']])) {
 					db_execute_prepared('REPLACE INTO host_template_snmp_query
@@ -1489,7 +1508,9 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 			$parsed_hash = parse_xml_hash($item_hash);
 
 			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+			if ($parsed_hash == false) {
+				return false;
+			}
 
 			unset($save);
 			$_cdef_item_id = db_fetch_cell_prepared('SELECT id
@@ -1524,7 +1545,9 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 						$parsed_item_hash = parse_xml_hash($item_array['value']);
 
 						/* invalid/wrong hash */
-						if ($parsed_item_hash == false) { return false; }
+						if ($parsed_item_hash == false) {
+							return false;
+						}
 
 						$_cdef_id = db_fetch_cell_prepared('SELECT id
 							FROM cdef
@@ -1613,7 +1636,9 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 			$parsed_hash = parse_xml_hash($item_hash);
 
 			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+			if ($parsed_hash == false) {
+				return false;
+			}
 
 			unset($save);
 			$_vdef_item_id = db_fetch_cell_prepared('SELECT id
@@ -1764,7 +1789,9 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			$parsed_hash = parse_xml_hash($item_hash);
 
 			/* invalid/wrong hash */
-			if ($parsed_hash == false) { return false; }
+			if ($parsed_hash == false) {
+				return false;
+			}
 
 			/* bad snmp port hashes */
 			if ($parsed_hash['hash'] == '5240353b8f7f259acaf30e6229bc14e7') {
@@ -2004,7 +2031,9 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 	$parsed_hash = parse_xml_hash($hash);
 
 	/* invalid/wrong hash */
-	if ($parsed_hash == false) { return false; }
+	if ($parsed_hash == false) {
+		return false;
+	}
 
 	if (isset($hash_cache_array[$parsed_hash['type']][$parsed_hash['hash']])) {
 		$import_debug_info['dep'][$hash] = 'met';
