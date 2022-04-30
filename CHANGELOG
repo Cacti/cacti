@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue#4735: change my Data Source Profile 5 Minute Collection
 -issue#4736: Some PHP options value incorrect in Installation Wizard --> Step 2
 -issue#4743: fontawesome error
+-issue#4744: Fix graph automation bug in api_automation.php
 -issue#4748: Host_edit error
 -feature#4720: Add a CLI script to install/enable/disable/uninstall plugins
 
