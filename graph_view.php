@@ -114,9 +114,9 @@ function get_matching_nodes() {
 			}
 		}
 
-		if (cacti_sizeof($final_array)) {
-			$fa = array();
+		$fa = array();
 
+		if (cacti_sizeof($final_array)) {
 			foreach($final_array as $key => $matches) {
 				foreach($matches as $branch => $dnc) {
 					$fa[] = $branch;

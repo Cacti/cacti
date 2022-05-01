@@ -54,8 +54,9 @@ switch (get_request_var('action')) {
 	case 'ajax_span':
 		get_filter_request_var('profile_id');
 		get_filter_request_var('span');
+		get_filter_request_var('rows');
 
-		if (is_numeric(get_nfilter_request_var('rows'))) {
+		if (is_numeric(get_request_var('rows')) && get_request_var('rows') > 0) {
 			get_filter_request_var('rows');
 
 			$sampling_interval = db_fetch_cell_prepared('SELECT step
@@ -76,7 +77,8 @@ switch (get_request_var('action')) {
 	case 'ajax_size':
 		get_filter_request_var('id');
 		get_filter_request_var('cfs');
-		print get_size(get_request_var('id'), get_nfilter_request_var('type'), get_request_var('cfs'));
+		get_filter_request_var('rows');
+		print get_size(get_request_var('id'), get_nfilter_request_var('type'), get_request_var('cfs'), get_request_var('rows'));
 
 		break;
 	case 'item_edit':
@@ -462,14 +464,19 @@ function item_edit() {
 		$oneguy = db_fetch_cell_prepared('SELECT id
 			FROM data_source_profiles_rra
 			WHERE data_source_profile_id = ?
-			AND steps=1',
+			AND steps = 1',
 			array(get_request_var('profile_id')));
 
 		if (empty($oneguy)) {
 			$fields_profile_rra_edit['steps']['array'] = array('1' => __('Each Insert is New Row'));
 		} else {
+			$max = db_fetch_cell_prepared('SELECT MAX(steps) * ?
+				FROM data_source_profiles_rra
+				WHERE data_source_profile_id = ?',
+				array($sampling_interval, get_request_var('profile_id')));
+
 			foreach($aggregation_levels as $interval => $name) {
-				if ($interval <= $sampling_interval) {
+				if ($interval <= $max) {
 					unset($aggregation_levels[$interval]);
 				}
 			}
@@ -748,7 +755,7 @@ function profile_edit() {
 	<?php
 }
 
-function get_size($id, $type, $cfs = '') {
+function get_size($id, $type, $cfs = '', $rows = 1) {
 	// On x86_64 platform, here is the equation
 	// file_size = $header + (# data sources * 300) + (# cfs * #rows in all RRAs)
 	$header   = 284;
@@ -769,15 +776,15 @@ function get_size($id, $type, $cfs = '') {
 			array($id));
 
 		return __('%s KBytes per Data Sources and %s Bytes for the Header', number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000), $header);
-	} else {
+	} elseif ($rows > 0) {
 		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*)
 			FROM data_source_profiles_cf
 			WHERE data_source_profile_id = ?',
 			array($id));
 
-		$rows = get_filter_request_var('rows');
-
 		return __('%s KBytes per Data Source', number_format_i18n(($rows * $row * $cfs) / 1000));
+	} else {
+		return __('Enter a valid number of Rows to obtain the RRA size.');
 	}
 }
 
