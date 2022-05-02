@@ -2126,9 +2126,9 @@ function purge_data_source_statistics() {
 	}
 
 	if (isset($_SESSION['sess_user_id'])) {
-		cacti_log('NOTE: Cacti DS Stats purget by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
+		cacti_log('NOTE: Cacti DS Stats purged by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 	} else {
-		cacti_log('NOTE: Cacti DS Stats purget by cli script');
+		cacti_log('NOTE: Cacti DS Stats purged by cli script');
 	}
 }
 
