@@ -1037,7 +1037,6 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = 
 
 	/* import into: snmp_query_graph */
 	if (is_array($xml_array['graphs'])) {
-cacti_log('doing a snmp query graph');
 		foreach ($xml_array['graphs'] as $item_hash => $item_array) {
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
