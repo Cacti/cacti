@@ -46,9 +46,9 @@ switch (get_request_var('action')) {
 			INNER JOIN data_template AS dt
 			ON dtr.data_template_id = dt.id
 			WHERE dtr.local_data_id = 0
-			AND dtr.data_template_id = ?
+			AND (dtr.data_template_id = ? OR dtr.id = ?)
 			ORDER BY dt.name, dtr.data_source_name",
-			array($data_template_id));
+			array($data_template_id, $task_item_id));
 
 		$output = '';
 
@@ -459,7 +459,7 @@ function item_edit() {
 		),
 	);
 
-	validate_store_request_vars($filters, 'sess_gti');
+	validate_store_request_vars($filters, 'sess_gti_' . get_filter_request_var('graph_template_id'));
 	/* ================= input validation ================= */
 
 	if (get_request_var('graph_template_id') > 0 || isset_request_var('id')) {
@@ -545,8 +545,6 @@ function item_edit() {
 		)
 	);
 
-	$mystruct_graph_item = array_merge($data_template_helper, $struct_graph_item);
-
 	/* modifications to the default graph items array */
 	$struct_graph_item['task_item_id']['sql'] = "SELECT dtr.id,
 		CONCAT_WS('', dt.name,' - ',' (', dtr.data_source_name,')') AS name
@@ -556,6 +554,8 @@ function item_edit() {
 		WHERE dtr.local_data_id = 0
 		$sql_where
 		ORDER BY dt.name, dtr.data_source_name";
+
+	$mystruct_graph_item = array_merge($data_template_helper, $struct_graph_item);
 
 	$form_array = array();
 
