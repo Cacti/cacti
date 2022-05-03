@@ -28,6 +28,8 @@ Cacti CHANGELOG
 -issue#4743: fontawesome error
 -issue#4744: Fix graph automation bug in api_automation.php
 -issue#4748: Host_edit error
+-issue#4756: Importing very old Data Input Methods generate dependency warnings
+-issue#4757: PHP 8.1.x Warnings on Display Boost Status Page
 -feature#4720: Add a CLI script to install/enable/disable/uninstall plugins
 -feature#4740: Add log messages for DS Stats purge and poller cache repopulate
 
