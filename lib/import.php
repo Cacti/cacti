@@ -23,7 +23,7 @@
 */
 
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false) {
-	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $import_debug_info, $legacy_template;
+	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_type_code_hashes, $preview_only, $import_debug_info, $legacy_template;
 
 	include_once($config['library_path'] . '/xml.php');
 
@@ -2189,6 +2189,10 @@ function xml_character_decode($text) {
 function import_display_results($import_debug_info, $filestatus, $web = false, $preview = false) {
 	global $hash_type_names, $ignorable_type_code_hashes;
 
+	if (!cacti_sizeof($ignorable_type_code_hashes)) {
+		$ignorable_type_code_hashes = array();
+	}
+
 	// Capture to a buffer
 	ob_start();
 
@@ -2271,7 +2275,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 						foreach ($vals['dep'] as $dep_hash => $dep_status) {
 							if ($dep_status == 'met') {
 								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . '</span>';
-							} else if (array_search($dep_hash, $ignorable_type_code_hashes) === false) {
+							} elseif (array_search($dep_hash, $ignorable_type_code_hashes) === false) {
 								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . '</span>';
 								$dep_errors = true;
 							}
