@@ -23,12 +23,13 @@
 */
 
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false) {
-	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $import_debug_info, $legacy_template;
+	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only, $import_debug_info, $legacy_template;
 
 	include_once($config['library_path'] . '/xml.php');
 
-	$info_array    = array();
-	$debug_session = array();
+	$info_array       = array();
+	$debug_session    = array();
+	$ignorable_hashes = array();
 
 	$xml_array = xml2array($xml_data);
 
@@ -147,9 +148,49 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 	$repair = 0;
 
-	/* the order of the $hash_type_codes array is ordered such that the items
-	with the most dependencies are last and the items with no dependencies are first.
-	this means dependencies will just magically work themselves out :) */
+	/**
+	 * We will make two passes through the template array.
+	 *
+	 * In the first pass, we traverse the entire array
+	 * and see what Data Input Methods are present and setup
+	 * and ignore array for problems that have accumulated in
+	 * Templates throughout the years, and in the second pass,
+	 * we will process them.
+	 */
+	foreach ($hash_type_codes as $type => $code) {
+		/* do we have any matches for this type? */
+		if (isset($dep_hash_cache[$type])) {
+			/* yes we do. loop through each match for this type */
+			for ($i=0; $i<cacti_count($dep_hash_cache[$type]); $i++) {
+				if (!isset($cacti_version_codes[$dep_hash_cache[$type][$i]['version']])) {
+					return false;
+				}
+
+				if (isset($xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $cacti_version_codes[$dep_hash_cache[$type][$i]['version']] . $dep_hash_cache[$type][$i]['hash']])) {
+					$hash_array = $xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $cacti_version_codes[$dep_hash_cache[$type][$i]['version']] . $dep_hash_cache[$type][$i]['hash']];
+				} elseif (isset($xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']])) {
+					$hash_array = $xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']];
+				} else {
+					raise_message(7); /* xml parse error */
+					return false;
+				}
+
+				if ($type == 'data_input_method') {
+					if (xml_detect_ignorable_hash_cache($dep_hash_cache[$type][$i]['hash'], $hash_array)) {
+						$repair++;
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Second pass, we will actually perform the import of the entirety of the Template.
+	 *
+	 * The order of the $hash_type_codes array is ordered such that the items
+	 * with the most dependencies are last and the items with no dependencies are first.
+	 * this means dependencies will just magically work themselves out :)
+	 */
 	foreach ($hash_type_codes as $type => $code) {
 		/* do we have any matches for this type? */
 		if (isset($dep_hash_cache[$type])) {
@@ -723,7 +764,8 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 }
 
 function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
-	global $struct_data_source, $struct_data_source_item, $import_template_id, $preview_only, $import_debug_info, $legacy_template;
+	global $struct_data_source, $struct_data_source_item, $import_template_id, $preview_only;
+	global $ignorable_hashes, $import_debug_info, $legacy_template;
 
 	/* track changes */
 	$status = 0;
@@ -937,6 +979,13 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	if (!$preview_only) {
 		if (is_array($xml_array['data'])) {
 			foreach ($xml_array['data'] as $item_hash => $item_array) {
+				$data_hash = parse_xml_hash($item_array['data_input_field_id']);
+
+				// Skip bad SNMP port hashes
+				if (array_search($data_hash['hash'], $ignorable_hashes) !== false) {
+					continue;
+				}
+
 				unset($save);
 				$save['data_template_data_id'] = $data_template_data_id;
 				$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache);
@@ -1688,12 +1737,10 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 	return $hash_cache;
 }
 
-function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
-	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1;
-	global $preview_only, $import_debug_info, $ignorable_type_code_hashes;
+function xml_detect_ignorable_hash_cache($hash, &$xml_array) {
+	global $ignorable_hashes;
 
-	/* track changes */
-	$status = 0;
+	$found = false;
 
 	$system_hashes = array(
 		'3eb92bb845b9660a7445cf9740726522', // Get SNMP Data
@@ -1711,15 +1758,25 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 	if (array_search($hash, $system_hashes) !== false) {
 		foreach($xml_array['fields'] as $input_hash => $field) {
 			if ($field['type_code'] == 'snmp_port') {
-				$trimmed_hash = substr($input_hash, 11);
-				if (array_search($trimmed_hash, $valid_snmp_port_hashes) === false) {
-					$ignorable_type_code_hashes[$input_hash] = $input_hash;
+				$parsed_hash = parse_xml_hash($input_hash);
+				$hash = $parsed_hash['hash'];
+				if (array_search($hash, $valid_snmp_port_hashes) === false) {
+					$ignorable_hashes[$input_hash] = $hash;
+					$found = true;
 				}
 			}
 		}
-
-		return $hash_cache;
 	}
+
+	return $found;
+}
+
+function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
+	global $fields_data_input_edit, $fields_data_input_field_edit, $fields_data_input_field_edit_1;
+	global $preview_only, $import_debug_info, $ignorable_hashes;
+
+	/* track changes */
+	$status = 0;
 
 	/* aggregate field arrays */
 	$fields_data_input_field_edit += $fields_data_input_field_edit_1;
@@ -1828,6 +1885,9 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
+					// Correct a nasty spelling error
+					$item_array[$field_name] = str_replace('Authenticaion', 'Authentication', $item_array['field_name']);
+
 					$save[$field_name] = xml_character_decode($item_array[$field_name]);
 				}
 			}
@@ -2187,7 +2247,11 @@ function xml_character_decode($text) {
 }
 
 function import_display_results($import_debug_info, $filestatus, $web = false, $preview = false) {
-	global $hash_type_names, $ignorable_type_code_hashes;
+	global $hash_type_names, $ignorable_hashes;
+
+	if (!cacti_sizeof($ignorable_hashes)) {
+		$ignorable_hashes = array();
+	}
 
 	// Capture to a buffer
 	ob_start();
@@ -2271,7 +2335,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 						foreach ($vals['dep'] as $dep_hash => $dep_status) {
 							if ($dep_status == 'met') {
 								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . '</span>';
-							} else if (array_search($dep_hash, $ignorable_type_code_hashes) === false) {
+							} elseif (array_search($dep_hash, $ignorable_hashes) === false) {
 								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . '</span>';
 								$dep_errors = true;
 							}
