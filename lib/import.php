@@ -1886,7 +1886,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 				/* make sure this field exists in the xml array first */
 				if (isset($item_array[$field_name])) {
 					// Correct a nasty spelling error
-					$item_array[$field_name] = str_replace('Authenticaion', 'Authentication', $item_array['field_name']);
+					$item_array[$field_name] = str_replace('Authenticaion', 'Authentication', $item_array[$field_name]);
 
 					$save[$field_name] = xml_character_decode($item_array[$field_name]);
 				}

@@ -2224,7 +2224,7 @@ function boost_display_run_status() {
 		$max_data_length = $table['MAX_DATA_LENGTH'];
 	}
 
-	if ($config['connection'] == 'online') {
+	if ($config['connection'] == 'online' && db_table_exists('poller_output_boost_local_data_ids')) {
 		$pending_ds = db_fetch_cell('SELECT COUNT(local_data_id) FROM poller_output_boost_local_data_ids');
 	} else {
 		$pending_ds = 0;
@@ -2435,7 +2435,7 @@ function boost_display_run_status() {
 		print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
 
 		if (is_numeric($boost_last_run_duration)) {
-			print (($boost_last_run_duration > 60) ? __('%d minutes', (int)($boost_last_run_duration/60)) . ', ': '') . __('%d seconds', $boost_last_run_duration%60);
+			print ($boost_last_run_duration > 60 ? __('%2.0f minutes', (int)$boost_last_run_duration / 60) . ', ': '') . __('%2.0f seconds', (int) $boost_last_run_duration % 60);
 
 			if ($rrd_updates != ''){
 				print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));
