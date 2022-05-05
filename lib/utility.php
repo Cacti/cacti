@@ -203,11 +203,12 @@ function update_poller_cache($data_source, $commit = false) {
 			$field = data_query_field_list($data_input['data_template_data_id']);
 
 			$params = array();
-			if ($field['output_type'] != '') {
+			if (cacti_sizeof($field) && $field['output_type'] != '') {
 				$output_type_sql = ' AND sqgr.snmp_query_graph_id = ' . $field['output_type'];
 			} else {
 				$output_type_sql = '';
 			}
+
 			$params[] = $data_input['data_template_id'];
 			$params[] = $data_source['id'];
 
