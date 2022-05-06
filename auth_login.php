@@ -51,7 +51,7 @@ $error_msg     = '';                                  // The errors message in c
 global $error, $error_msg;
 
 if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
-	if ($auth_method >= 2 && $frv_realm == 1) {
+	if ($auth_method >= 2 && $frv_realm <= 1) {
 		// User picked 'local' from dropdown;
 		$auth_method = 1;
 	} else {
