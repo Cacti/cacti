@@ -673,8 +673,7 @@ function domain_ldap_search_cn($username, $cn = array(), $realm) {
 		if (!empty($ld['proto_version']))     { $ldap->version           = $ld['proto_version'];     }
 		if (!empty($ld['encryption']))        { $ldap->encryption        = $ld['encryption'];        }
 		if (!empty($ld['referrals']))         { $ldap->referrals         = $ld['referrals'];         }
-
-		if (!empty($ld['mode']))              { $ldap->mode              = 2;                        }
+		if (!empty($ld['mode']))              { $ldap->mode              = $ld['mode'];              }
 		if (!empty($ld['search_base']))       { $ldap->search_base       = $ld['search_base'];       }
 		if (!empty($ld['search_filter']))     { $ldap->search_filter     = $ld['search_filter'];     }
 		if (!empty($ld['specific_dn']))       { $ldap->specific_dn       = $ld['specific_dn'];       }
