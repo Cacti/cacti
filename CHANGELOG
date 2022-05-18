@@ -1,38 +1,38 @@
 Cacti CHANGELOG
 
 1.2.21
--issue#4531: Remove 12 duplicate indexes from database
--issue#4683: When adding device, errors may be reported whilst updating templates
--issue#4684: Undefined variable warning causes error image not to be generated
--issue#4688: Two syntax error: typo and Null-Coalescing-Operator for PHP 5.4
--issue#4685: Cacti Packages corrupted with release of Cacti 1.2.20
+-issue#4531: Correct duplicate keys within database
+-issue#4614: Add support for hooks during polling loop or at poller end
+-issue#4683: When adding a device, errors may be reported whilst updating templates
+-issue#4684: When creating RRD error image, font may not exist by xmacan
+-issue#4685: Correct issues with corrupted Cacti Packages
 -issue#4687: Poller output not empty all the time
+-issue#4688: When running under PHP 5.4, certain operators are not valid by ddb4github
 -issue#4689: Package Import generates errors when you try to import directory or non-file
--issue#4693: Heartbeat definitions can cause issues under PHP 8
--issue#4695: Two wrong usages about $ignorable_type_code_hashes during package importing
--issue#4697: Incorrect and missing login message, fix realm names on login form
--issue#4698: Incorrect message about remote poller when saving new device
--issue#4701: Editing a new user or user group results in Cacti error log entries
--issue#4705: Remember me not working after upgrade to 1.2.20 from 1.2.19
--issue#4707: SQL Save on table 'graph_templates_item': Column 'data_template_id' does not exist
--issue#4614: Domains form shows CN header even when CN is disabled
--issue#4716: Can't Edit Data Source of Graph
--issue#4719: Browsers to begin rejecting CactiTimeZone and CactiDateTime cookies due to SameSite Requirements
--issue#4721: Some JavaScript and image files URL are broken under midwinter theme
--issue#4722: Detect table user_auth_group and column user_auth.lastfail for Pre-1.0 upgradeing
--issue#4726: Issues gathering snmp values on Fedora 35 using snmpv3 and php-snmp
--issue#4729: Cacti Template and Package Installs need a way to deal with conflicting Suggested Name Values/Patterns
--issue#4732: Miss to report text/mediumtext column due to typo
--issue#4735: change my Data Source Profile 5 Minute Collection
--issue#4736: Some PHP options value incorrect in Installation Wizard --> Step 2
--issue#4743: fontawesome error
--issue#4744: Fix graph automation bug in api_automation.php
--issue#4748: Host_edit error
+-issue#4693: Correct issues with Heartbeat definitions under PHP 8.x
+-issue#4695: When importing packages, hash types are not properly processed by ddb4github
+-issue#4697: Login problem
+-issue#4698: When creating a device, unexpected poller down message may be shown
+-issue#4701: Editing a new user or user group may cause errors
+-issue#4705: Unable to automatically login using Remember Me option
+-issue#4707: Unable to duplicate graph templates due to missing column
+-issue#4716: Correct issues with Data Source Edit under PHP 8.x
+-issue#4719: Browsers may reject CactiTimeZone and CactiDateTime cookies due to SameSite requirements
+-issue#4721: Some JavaScript and image files URL are broken under midwinter theme by ddb4github
+-issue#4722: When upgrading from pre 1.x, various errors may be seen by ddb4github
+-issue#4726: When running under Fedora, issues may be seen with snmp values
+-issue#4729: Add ability for Template and Package Installs to update Suggested Name Values/Patterns
+-issue#4732: When using audit tool, text/mediumtext columns may not be properly processed by ddb4github
+-issue#4735: When changing data source profiles, errors may be shown
+-issue#4736: Update PHP recommendations to meet current expectations
+-issue#4743: When viewing graphs, fontawesome may not always been found
+-issue#4744: When using automation, numeric values may be treated as strings
+-issue#4748: When saving a device, errors may be generated
 -issue#4756: Importing very old Data Input Methods generate dependency warnings
--issue#4757: PHP 8.1.x Warnings on Display Boost Status Page
--issue#4763: Local Login Failed when Multiple LDAP/AD Domain Authentication Selected
+-issue#4757: Correct issues with Boost running under PHP 8.x
+-issue#4763: Unable to login locally when LDAP authentication enabled
 -feature#4720: Add a CLI script to install/enable/disable/uninstall plugins
--feature#4740: Add log messages for DS Stats purge and poller cache repopulate
+-feature#4740: Add log message when purging DS stats and poller repopulate
 
 1.2.20
 -security#4562: When using LDAP, authentication process may be bypassed
