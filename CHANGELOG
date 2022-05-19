@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.2.22
+
+-issue#4779: PHP Fatal error:  Uncaught Error: socket_clear_error(): Argument #1 ($socket) has already been closed in /var/www/cacti/lib/ping.php:552
+
 1.2.21
 -issue#4531: Correct duplicate keys within database
 -issue#4614: Add support for hooks during polling loop or at poller end

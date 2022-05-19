@@ -530,10 +530,10 @@ class Net_Ping
 					$this->ping_response = __('TCP ping: socket_connect(), reason: %s', socket_strerror($errno));
 					$this->ping_status   = 'down';
 
+					socket_clear_error($this->socket);
+
 					$this->close_socket();
 					$this->restore_cacti_error_handler();
-
-					socket_clear_error($this->socket);
 
 					return false;
 				}
