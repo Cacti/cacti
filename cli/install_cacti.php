@@ -268,7 +268,7 @@ function set_install_option(&$options, $key, $display_name, $value) {
 	log_install_high('cli',sprintf('Setting %s to \'%s\'', $display_name, $value));
 }
 
-/*  set_install_multioption - sets sub-options that have mutiple key/value combinations with optional prefix */
+/*  set_install_multioption - sets sub-options that have multiple key/value combinations with optional prefix */
 function set_install_multioption(&$options, $key, $display_name, $value, $prefix, $replace_dots = false) {
 	$option_pos = strpos($value, ':');
 	if ($option_pos !== false) {
