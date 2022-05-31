@@ -1503,7 +1503,7 @@ function draw_menu($user_menu = '') {
         on one or more data elements
    @arg $actions_array - an array that contains a list of possible actions. this array should
         be compatible with the form_dropdown() function
-   @arg $delete_action - if there is a delete action that should surpress removal of rows
+   @arg $delete_action - if there is a delete action that should suppress removal of rows
         specify it here.  If you don't want any delete actions, set to 0.*/
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	global $config;
