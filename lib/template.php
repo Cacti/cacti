@@ -126,7 +126,7 @@ function push_out_data_source_custom_data($data_template_id) {
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
 						} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) {
-							/* templated input field deviates from currenmt data source, so update required */
+							/* templated input field deviates from current data source, so update required */
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
 						}
