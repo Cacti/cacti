@@ -51,7 +51,7 @@ class spikekill {
 	var $percent   = '';
 	var $numspike  = '';
 
-	// Overrideable
+	// Overridable
 	var $html      = true;
 	var $backup    = false;
 	var $debug     = false;
