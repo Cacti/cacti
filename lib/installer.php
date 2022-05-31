@@ -604,7 +604,7 @@ class Installer implements JsonSerializable {
 		set_config_option('install_eula', $this->eula);
 	}
 
-	/* getRRDVrsion() - gets the RRDVersion from the system or if overridden
+	/* getRRDVersion() - gets the RRDVersion from the system or if overridden
 	 *                  during the installer, from the installer option */
 	private function getRRDVersion() {
 		$rrdver = read_config_option('install_rrdtool_version');
