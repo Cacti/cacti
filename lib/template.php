@@ -386,7 +386,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 		WHERE data_template_data_id = ?',
 		array($template_data['id']));
 
-	/* this section is before most everthing else so we can determine if this is a new save, by checking
+	/* this section is before most everything else so we can determine if this is a new save, by checking
 	the status of the 'local_data_template_data_id' column */
 	if (cacti_sizeof($data_input_data)) {
 		foreach ($data_input_data as $item) {
