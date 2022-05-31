@@ -121,7 +121,7 @@ if ($audit) {
 		if ($totals) {
 			print 'ERROR: ' . $totals . ' audits failed out of a total of ' . $items . ' Data Input Methods' . PHP_EOL;
 		} else {
-			print 'SUCCESS: Audits successfull for total of ' . $items . ' Data Input Methods' . PHP_EOL;
+			print 'SUCCESS: Audits successful for total of ' . $items . ' Data Input Methods' . PHP_EOL;
 		}
 	}
 } elseif ($update) {

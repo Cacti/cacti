@@ -470,7 +470,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
  * insert or update aggregate graph items in DB tables
  * @param array $items
  * @param string $table
- * @return bool ture if save was succesfull, false otherwise
+ * @return bool ture if save was successful, false otherwise
  */
 function aggregate_graph_items_save($items, $table) {
 	$defaults = array();

@@ -1925,7 +1925,7 @@ function db_force_remote_cnn() {
  * by CLI script, that by default connect to the local database, back and forth to the
  * remote or main database server.
  *
- * @returns (bool) If the switch was succefull
+ * @returns (bool) If the switch was successful
  */
 function db_switch_remote_to_main() {
     global $config, $database_sessions, $database_hostname, $database_port, $database_default;
@@ -1949,7 +1949,7 @@ function db_switch_remote_to_main() {
  * by CLI script, that by default connect to the local database, back and forth to the
  * remote or main database server.
  *
- * @returns (bool) If the switch was succefull
+ * @returns (bool) If the switch was successful
  */
 function db_switch_main_to_local() {
     global $config, $database_sessions, $database_hostname, $database_port, $database_default;
