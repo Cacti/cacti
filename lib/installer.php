@@ -3459,7 +3459,7 @@ class Installer implements JsonSerializable {
 		$status = install_full_sync();
 
 		if ($status['total'] == 0) {
-			log_install_always('sync', __('No Remote Data Collectors found for full syncronization'));
+			log_install_always('sync', __('No Remote Data Collectors found for full synchronization'));
 		} else {
 			Installer::fullSyncDataCollectorLog($status['timeout'], 'Remote Data Collector with name \'%s\' and id %d previous timed out.  Please manually Sync when once online to complete upgrade.');
 			Installer::fullSyncDataCollectorLog($status['skipped'], 'Remote Data Collector with name \'%s\' and id %d is not available to sync.  Please manually Sync when once online to complete upgrade.');
