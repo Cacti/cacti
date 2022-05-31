@@ -1530,7 +1530,7 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 }
 
 /* rewrite_snmp_enum_value - returns rewritten $value based on rewrite map
-	@arg $field_name - name of field being rewritten, used for cache purpuses
+	@arg $field_name - name of field being rewritten, used for cache purposes
 	@arg $value - value to be translated
 	@arg $map - translation map in serialize()/array form
 	@returns - rewritten value if possible, original one otherwise*/
