@@ -2317,7 +2317,7 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionNormal(__('Check the Checkbox below to acknowledge that you have read and understand this security concern'));
 
-		$output .= Installer::sectionNormal('<input type="checkbox" id="confirm" name="confirm"><label for="confirm">' . __('I have read this statement') . '</lable>');
+		$output .= Installer::sectionNormal('<input type="checkbox" id="confirm" name="confirm"><label for="confirm">' . __('I have read this statement') . '</label>');
 
 		$this->buttonNext->Enabled = false;
 		$this->buttonNext->Step = Installer::STEP_PROFILE_AND_AUTOMATION;
