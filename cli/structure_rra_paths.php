@@ -245,7 +245,7 @@ function display_help() {
 	print "  1) Enable Structured Paths in the Console (Settings->Paths)\n\n";
 	print "Then, for Each File, it will:\n";
 	print "  1) Create the Structured Path, if Necessary\n";
-	print "  2) Copy the File to the Strucured Path Using the New Name\n";
+	print "  2) Copy the File to the Structured Path Using the New Name\n";
 	print "  3) Alter the two Database Tables Required\n";
 	print "  4) Remove the Old File\n\n";
 	print "Once all Files are Complete, it will\n";
