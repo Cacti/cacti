@@ -101,7 +101,7 @@ function display_help () {
 	display_version();
 
 	print PHP_EOL . "usage: refresh_csrf.php" . PHP_EOL . PHP_EOL;
-	print "A utility to update the csrf_secret() key on a the Cacti system.  Updatingg" . PHP_EOL;
+	print "A utility to update the csrf_secret() key on a the Cacti system.  Updating" . PHP_EOL;
 	print "this key should happen periodically during non-production hours as it can" . PHP_EOL;
 	print "impact the user experience." . PHP_EOL . PHP_EOL;
 }
