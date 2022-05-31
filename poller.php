@@ -502,7 +502,7 @@ while ($poller_runs_completed < $poller_runs) {
 		array($poller_id), true, $poller_db_cnn_id);
 
 	/* only report issues for the main poller or from bad local
-	 * data ids, other pollers may insert somewhat asynchornously
+	 * data ids, other pollers may insert somewhat asynchronously
 	 */
 	$issues = [];
 	$issues_limit = 20;
