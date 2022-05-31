@@ -375,7 +375,7 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 	/* use a reasonable insert buffer, the default is 1MByte */
 	$max_packet   = 256000;
 
-	/* setup somme defaults */
+	/* setup some defaults */
 	$overhead     = strlen($sql_prefix) + strlen($sql_suffix);
 	$buf_len      = 0;
 	$buf_count    = 0;

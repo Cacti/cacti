@@ -1388,7 +1388,7 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 	/* use a reasonable insert buffer, the default is 1MByte */
 	$max_packet   = 256000;
 
-	/* setup somme defaults */
+	/* setup some defaults */
 	$overhead     = strlen($sql_prefix) + strlen($sql_suffix);
 	$buf_len      = 0;
 	$buf_count    = 0;
