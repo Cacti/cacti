@@ -23,7 +23,7 @@
 */
 
 /* push_out_data_source_custom_data - pushes out the "custom data" associated with a data
-	template to all of its children. this includes all fields inhereted from the host
+	template to all of its children. this includes all fields inherited from the host
 	and the data template
    @arg $data_template_id - the id of the data template to push out values for */
 function push_out_data_source_custom_data($data_template_id) {
