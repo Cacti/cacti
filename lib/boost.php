@@ -380,7 +380,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 	 */
 	if (boost_return_cached_image($graph_data_array)) {
 		/* if timespan is greater than 1, it is a predefined, if it does not
-		 * exist, it is the old fasioned MRTG type graph
+		 * exist, it is the old fashioned MRTG type graph
 		 */
 		$cache_directory = read_config_option('boost_png_cache_directory');
 
