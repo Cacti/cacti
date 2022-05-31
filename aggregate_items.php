@@ -185,7 +185,7 @@ function form_save_aggregate() {
 	$save['cdef_id']         = form_input_validate((($save['t_cdef_id']) ? get_filter_request_var('cdef_id') : 0), 'cdef_id', '', true, 3);
 
 	if (!is_error_message()) {
-		// sql_save will not give usefull return values when row key is
+		// sql_save will not give useful return values when row key is
 		// composed from multiple columns. need to manually build query
 		$sql_set = 'SET ';
 		foreach ($save as $key => $value) {
