@@ -763,7 +763,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$loop_time = $loop_end - $loop_start;
 
 	if ($loop_time < $poller_interval) {
-		// sleep the appripriate amount of time
+		// sleep the appropriate amount of time
 		if ($poller_runs_completed < $poller_runs) {
 			$plugin_start = microtime(true);
 
