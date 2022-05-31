@@ -1845,7 +1845,7 @@ $settings = array(
 		),
 		'reports_max_attach' => array(
 			'friendly_name' => __('Maximum E-Mail Size'),
-			'description' => __('The maximum size of the E-Mail message including all attachements.'),
+			'description' => __('The maximum size of the E-Mail message including all attachments.'),
 			'method' => 'drop_array',
 			'default' => REPORTS_DEFAULT_MAX_SIZE,
 			'array' => $attachment_sizes
