@@ -626,7 +626,7 @@ function generate_report($report, $force = false) {
  * @param string $format_file		- the file to read from the formats directory
  * @param string $output			- the html and css output from that file
  * @param bool $report_tag_included - a boolean that informs the caller if the report tag is present
- * @return bool						- wether or not the format file was processed correctly
+ * @return bool						- whether or not the format file was processed correctly
  */
 function reports_load_format_file($format_file, &$output, &$report_tag_included, &$theme) {
 	global $config;

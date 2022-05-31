@@ -794,7 +794,7 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
 }
 
 /**
- * is_view_allowed - Returns a true or false as to wether or not a specific view type is allowed
+ * is_view_allowed - Returns a true or false as to whether or not a specific view type is allowed
  *   View options include 'show_tree', 'show_list', 'show_preview', 'graph_settings'
  *
  * @param  (string) $view - the view to check for permissions on
@@ -2121,7 +2121,7 @@ function get_policy_where($graph_auth_method, $policies, $sql_where) {
  *   logic for this is somewhat complex, but understandable.  First, the $graph object will include
  *   three columns generally graphX, deviceX, and templateX for each of the user or groups in the collection.
  *   The way we assign a restrictive or permissive value is based upon the graph permission setting
- *   in Cacti, but also wether or not the default access for the object type is either 'Allow' or 'Deny'.
+ *   in Cacti, but also whether or not the default access for the object type is either 'Allow' or 'Deny'.
  *
  *   - If the 'default access' for the object type is 'Deny', then a numeric value in userX means
  *     the user has permission to an object.
