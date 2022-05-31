@@ -3031,7 +3031,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 /** rrdtool_tune			- create rrdtool tune/resize commands
  * 						  html+cli enabled
  * @param $rrd_file		- rrd file name
- * @param $diff			- array of discrepancies between cacti setttings and rrd file info
+ * @param $diff			- array of discrepancies between cacti settings and rrd file info
  * @param $show_source	- only show text+commands or execute all commands, execute is for cli mode only!
  */
 function rrdtool_tune($rrd_file, $diff, $show_source = true) {
