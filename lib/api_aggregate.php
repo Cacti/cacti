@@ -1242,7 +1242,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				}
 
 				// now skip all items, that are
-				// - explicitely marked as skipped (based on $skipped_items)
+				// - explicitly marked as skipped (based on $skipped_items)
 				// - OR NOT marked as 'totalling' items
 				for ($k=1; $k<=$item_no; $k++) {
 					cacti_log(__FUNCTION__ . ' old skip: ' . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);

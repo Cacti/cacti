@@ -74,7 +74,7 @@ if (cacti_sizeof($parms)) {
 }
 
 if ($proceed == false) {
-	print "\nFATAL: You Must Explicitally Instruct This Script to Proceed with the '--proceed' Option\n\n";
+	print "\nFATAL: You Must Explicitly Instruct This Script to Proceed with the '--proceed' Option\n\n";
 	display_help();
 	exit -1;
 }
