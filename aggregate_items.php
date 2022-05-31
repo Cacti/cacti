@@ -342,7 +342,7 @@ function item_edit() {
 	foreach (array_keys($template_item) as $field_name) {
 		if (!array_key_exists($field_name, $item_overrides))
 			continue;
-		# t_<field_name> coulmn in aggregate table must be "on" to override
+		# t_<field_name> column in aggregate table must be "on" to override
 		if (array_key_exists("t_".$field_name, $item_overrides) && $item_overrides["t_".$field_name] == "on")
 			$template_item[$field_name] = $item_overrides[$field_name];
 	}
