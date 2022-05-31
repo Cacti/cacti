@@ -1864,7 +1864,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 }
 
 /**
- * draw graph configuration form so user can override some graph template parametes
+ * draw graph configuration form so user can override some graph template parameters
  *
  * @param int $aggregate_template_id - aggregate graph template being edited
  * @param int $graph_template_id     - graph template this aggregate template is based on
