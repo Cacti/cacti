@@ -491,7 +491,7 @@ class Net_Ping
 				}
 			}
 
-			/* initilize the socket */
+			/* initialize the socket */
 			if (strpos($host_ip, ':') !== false) {
 				if (defined('AF_INET6')) {
 					if (version_compare(PHP_VERSION, '5.5.4', '<')) {

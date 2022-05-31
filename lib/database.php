@@ -976,8 +976,8 @@ function db_cacti_initialized($is_web = true) {
 		print ($is_web ? '<table style="height:40px;"><tr><td></td></tr></table>':'');
 		print ($is_web ? '<table style="margin-left:auto;margin-right:auto;width:80%;border:1px solid rgba(98,125,77,1)" class="cactiTable"><tr class="cactiTableTitle"><td style="color:snow;font-weight:bold;">Fatal Error - Cacti Database Not Initialized</td></tr>':'');
 		print ($is_web ? '<tr class="installArea"><td>':'');
-		print ($is_web ? '<p>':'') . 'The Cacti Database has not been initialized.  Please initilize it before continuing.' . ($is_web ? '</p>':"\n");
-		print ($is_web ? '<p>':'') . 'To initilize the Cacti database, issue the following commands either as root or using a valid account.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'The Cacti Database has not been initialized.  Please initialize it before continuing.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'To initialize the Cacti database, issue the following commands either as root or using a valid account.' . ($is_web ? '</p>':"\n");
 		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysqladmin -uroot -p create cacti' . ($is_web ? '</p>':"\n");
 		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p -e "grant all on cacti.* to \'someuser\'@\'localhost\' identified by \'somepassword\'"' . ($is_web ? '</p>':"\n");
 		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p -e "grant select on mysql.time_zone_name to \'someuser\'@\'localhost\' identified by \'somepassword\'"' . ($is_web ? '</p>':"\n");
