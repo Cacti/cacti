@@ -1486,7 +1486,7 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 }
 
 function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_total, $_total_type, $_total_prefix) {
-	// Handle the stcked line cases switch line widths
+	// Handle the stacked line cases switch line widths
 	$width = '0.01';
 	$special_type = '';
 	$special_line = false;
