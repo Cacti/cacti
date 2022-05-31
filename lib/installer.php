@@ -2148,7 +2148,7 @@ class Installer implements JsonSerializable {
 					break;
 			}
 
-			/*** Disable ouput of error for now, pending QA ***
+			/*** Disable output of error for now, pending QA ***
 			if (isset($this->errors['Paths'][$name])) {
 				print Installer::sectionError(__($this->errors['Paths'][$name]));
 			}

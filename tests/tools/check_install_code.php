@@ -41,7 +41,7 @@ define('CACTI_PATH', str_replace('/tests/tools', '', dirname(__FILE__)));
 global $config;
 $config = array('base_path' => CACTI_PATH);
 
-// pre-flush oubput buffer to avoid header warning
+// pre-flush output buffer to avoid header warning
 flush();
 
 /*
