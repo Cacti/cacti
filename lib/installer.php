@@ -2125,7 +2125,7 @@ class Installer implements JsonSerializable {
 			the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
 			$form_check_string = '';
 
-			/* draw the acual header and textbox on the form */
+			/* draw the actual header and textbox on the form */
 			print "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $array['friendly_name'] . "<div class='formTooltip'><div class='cactiTooltipHint fa fa-question-circle'><span style='display:none;'>" . $array['description'] . "</span></div></div></div></div>";
 
 			print "<div class='formColumnRight'><div class='formData'>";
@@ -2198,7 +2198,7 @@ class Installer implements JsonSerializable {
 			foreach($this->permissions['install'] as $path => $valid) {
 				$class = ($class == 'even' ? 'odd':'even');
 
-				/* draw the acual header and textbox on the form */
+				/* draw the actual header and textbox on the form */
 				$permissions .= "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $path . "</div></div>";
 
 				$permissions .= "<div class='formColumnRight'><div class='formData' width='100%'>";
@@ -2230,7 +2230,7 @@ class Installer implements JsonSerializable {
 		foreach($this->permissions['always'] as $path => $valid) {
 			$class = ($class == 'even' ? 'odd':'even');
 
-			/* draw the acual header and textbox on the form */
+			/* draw the actual header and textbox on the form */
 			$permissions .= "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $path . "</div></div>";
 
 			$permissions .= "<div class='formColumnRight'><div class='formData' width='100%'>";
