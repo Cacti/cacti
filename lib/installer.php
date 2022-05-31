@@ -1636,7 +1636,7 @@ class Installer implements JsonSerializable {
 		$output  = Installer::sectionTitle(__('Cacti Version') . ' ' . CACTI_VERSION . ' - ' . __('License Agreement'));
 
 		if (!array_key_exists(CACTI_VERSION, $cacti_version_codes)) {
-			$output .= Installer::sectionError(__('This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corected.  If you are seeing this error in a release, please raise a report immediately on GitHub', CACTI_VERSION));
+			$output .= Installer::sectionError(__('This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corrected.  If you are seeing this error in a release, please raise a report immediately on GitHub', CACTI_VERSION));
 		}
 
 		$output .= Installer::sectionNormal(__('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.'));
