@@ -720,7 +720,7 @@ case 'list':
 			'title_cache' => array(
 				'display' => __('Graph Name'),
 				'align'   => 'left',
-				'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+				'tip'     => __('The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
 			),
 			'local_graph_id' => array(
 				'display' => __('Device'),
@@ -748,7 +748,7 @@ case 'list':
 			'title_cache' => array(
 				'display' => __('Graph Name'),
 				'align'   => 'left',
-				'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+				'tip'     => __('The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
 			),
 			'height' => array(
 				'display' => __('Size'),

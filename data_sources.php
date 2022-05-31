@@ -1611,7 +1611,7 @@ function ds() {
 			'display' => __('Data Source Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
-			'tip'     => __('The name of this Data Source. Generally programtically generated from the Data Template definition.')
+			'tip'     => __('The name of this Data Source. Generally programmatically generated from the Data Template definition.')
 		),
 		'local_data_id' => array(
 			'display' => __('ID'),

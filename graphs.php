@@ -2194,7 +2194,7 @@ function graph_management() {
 			'display' => __('Graph Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
-			'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+			'tip'     => __('The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
 		),
 		'local_graph_id' => array(
 			'display' => __('ID'),
