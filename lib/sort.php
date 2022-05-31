@@ -32,7 +32,7 @@
      $b is equal to $b */
 function usort_data_query_index($a, $b) {
 	/* split strings to be compared into chunks
-	 * that shall be compared seperately,
+	 * that shall be compared separately,
 	 * e.g. for gi0/1, gi0/2, ... */
 	$arr_a = explode('/', $a);
 	$arr_b = explode('/', $b);
