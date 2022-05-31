@@ -799,7 +799,7 @@ class Installer implements JsonSerializable {
 
 	/* getProfile() - gets the data source profile to be used as the system
 	 *                default once installation has been completed.  It is
-	 *		  also used by the packacge installation to attribute
+	 *		  also used by the package installation to attribute
 	 *                the installed packages to this collector */
 	private function getProfile() {
 		$db_profile = read_config_option('install_profile', true);
