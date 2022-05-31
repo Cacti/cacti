@@ -361,7 +361,7 @@ function display_help () {
 	print '  -t  | --theme           - Set system theme' . PHP_EOL;
 	print '  -i  | --ini             - Load settings from ini file' . PHP_EOL;
 	print '  -j  | --json            - Load settings from json file' . PHP_EOL;
-	print PHP_EOL . 'Mutli-value optional:' . PHP_EOL;
+	print PHP_EOL . 'Multi-value optional:' . PHP_EOL;
 	print '  These options may be used more than once to apply multiple values.  All' . PHP_EOL;
 	print '  values should be in "option_key:option_value" format (see below). If an' . PHP_EOL;
 	print '  option has a prefix, this is optional and is automatically added to the' . PHP_EOL;
