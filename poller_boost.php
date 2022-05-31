@@ -157,7 +157,7 @@ if ($child == false) {
 
 			/* Wait for all processes to continue */
 			while ($running = boost_processes_running()) {
-				boost_debug(sprintf('%s Processes Runnning, Sleeping for 2 seconds.', $running));
+				boost_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 				sleep(2);
 			}
 
