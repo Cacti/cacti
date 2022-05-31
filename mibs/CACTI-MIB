@@ -1083,7 +1083,7 @@ cactiEvents OBJECT-IDENTITY
 cactiEventAttributes OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "resevered for event attributes, used as varbind for the SMNP notifications"
+        "reserved for event attributes, used as varbind for the SMNP notifications"
     ::= { cactiEvents 1 }
 
 cactiEventDescription OBJECT-TYPE
@@ -1098,7 +1098,7 @@ cactiEventDescription OBJECT-TYPE
 cactiEventNotifications OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "resevered for event notifications"
+        "reserved for event notifications"
     ::= { cactiEvents 2 }
 
 cactiNotify NOTIFICATION-TYPE
