@@ -86,7 +86,7 @@ function usort_alphabetic($a, $b) {
 	return strcmp($a, $b);
 }
 
-/* usort_natural - sorts two values naturaly (ie. ab1, ab2, ab7, ab10, ab20)
+/* usort_natural - sorts two values naturally (ie. ab1, ab2, ab7, ab10, ab20)
    @arg $a - the first string to compare
    @arg $b - the second string to compare
    @returns - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
