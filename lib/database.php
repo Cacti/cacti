@@ -633,7 +633,7 @@ function db_fetch_assoc_return($query) {
 }
 
 /**
- * db_fetch_insert_id - get the last insert_id or auto incriment
+ * db_fetch_insert_id - get the last insert_id or auto increment
  *
  * @param  (bool|resource) The connection to use or false to use the default
  *
@@ -1564,7 +1564,7 @@ function array_to_sql_or($array, $sql_column) {
  * @param $keyCols - a string or array of primary keys
  * @param $autoQuote - whether to use intelligent quoting or not
  *
- * @return - the auto incriment id column (if applicable)
+ * @return - the auto increment id column (if applicable)
  */
 function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -1651,7 +1651,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
  * @param  (string)       The name of the table to make the replacement in
  * @param  (string|array) The primary key(s) for the table
  *
- * @return (bool|int)     The auto incriment id column (if applicable)
+ * @return (bool|int)     The auto increment id column (if applicable)
  */
 function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $database_last_error;
