@@ -1044,7 +1044,7 @@ function db_get_table_column_types($table, $db_conn = false) {
 }
 
 /**
- * db_update_table - a function that will update the table strucutre based upon
+ * db_update_table - a function that will update the table structure based upon
  *   a Cacti specific array specification constructed by the sqltable_to_php.php
  *   script.  That script will construct an array from the table definition.
  *   The script is very handy for both Cacti table construction and for plugins.

@@ -3140,7 +3140,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 
 		/* now start XML processing */
 		foreach ($ds_array as $ds) {
-			/* first, append the <DS> strcuture in the rrd header */
+			/* first, append the <DS> structure in the rrd header */
 			if ($ds['type'] === $data_source_types[DATA_SOURCE_TYPE_COMPUTE]) {
 				rrd_append_compute_ds($dom, $version, $ds['name'], $ds['type'], $ds['cdef']);
 			} else {
