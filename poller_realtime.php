@@ -105,7 +105,7 @@ $poller_start         = microtime(true);
 /* get number of polling items from the database */
 $poller_interval = 1;
 
-/* retreive the last time the poller ran */
+/* retrieve the last time the poller ran */
 $poller_lastrun = read_config_option('poller_lastrun');
 
 /* get the current cron interval from the database */
