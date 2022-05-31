@@ -500,7 +500,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	}
 
 	/* check the graph cache and use it if it is valid, otherwise turn over to
-	 * cacti's graphing fucntions.
+	 * cacti's graphing functions.
 	 */
 	if ((read_config_option('boost_png_cache_enable')) && (boost_determine_caching_state())) {
 		$cache_directory = read_config_option('boost_png_cache_directory');
