@@ -860,7 +860,7 @@ function rrdtool_function_tune($rrd_tune_array) {
      $fetch_array['values'][$dsindex2][...]  = $value;
      $fetch_array['values'][$nth_index][...] = $value;
 
-     Again, the 'nth_percentile_maximum' will have the maximum value amoungst all the
+     Again, the 'nth_percentile_maximum' will have the maximum value amongst all the
      data sources for each set of data.  So, if you have traffic_in and traffic_out,
      each member element in the array will have the maximum of traffic_in and traffic_out
      in it.
