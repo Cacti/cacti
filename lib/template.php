@@ -392,7 +392,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 		foreach ($data_input_data as $item) {
 			/**
 			 * always propagate on a new save, only propagate templated fields thereafter
-			 * noting that always checked should not be propogated after the initial save.
+			 * noting that always checked should not be propagated after the initial save.
 			 */
 			if ($new_save == true || (empty($item['t_value']) && !data_input_field_always_checked($item['data_input_field_id']))) {
 				db_execute_prepared('REPLACE INTO data_input_data
