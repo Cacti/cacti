@@ -3001,7 +3001,7 @@ function keepWindowSize() {
 
 			responsiveResizeGraphs();
 
-			/* close open dropdown menues first off */
+			/* close open dropdown menus first off */
 			$('.dropdownMenu > ul').hide();
 
 			if ($('#gtabs > .tabs').is(':visible')) {
