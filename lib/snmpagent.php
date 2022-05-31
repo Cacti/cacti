@@ -875,7 +875,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 	$difference = array_diff(array_keys($registered_var_binds), array_keys($varbinds));
 
 	if (cacti_sizeof($difference) == 0) {
-		/* order the managers by message type to send out all notifications immmediately. Informs
+		/* order the managers by message type to send out all notifications immediately. Informs
 		   will take more processing time.
 		*/
 		$notification_managers = db_fetch_assoc_prepared('SELECT sm.*
