@@ -264,7 +264,7 @@ function db_close($db_conn = false) {
  *
  * @param  (string)        The SQL query to execute
  * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false for the defaul
+ * @param  (bool|resource) The connection to use or false for the default
  *
  * @return (bool) '1' for success, false on error
  */
