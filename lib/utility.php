@@ -1624,7 +1624,7 @@ function utility_php_set_recommends_text(&$recs) {
 			if (cacti_sizeof($recommends)) {
 				foreach ($recommends as $index => $recommend) {
 					if ($recommend['name'] == 'version') {
-						$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
+						$recs[$name][$index]['description'] = __('PHP %s is the minimum version', $recommend['value']);
 					} elseif ($recommend['name'] == 'memory_limit') {
 						$recs[$name][$index]['description'] = __('A minimum of %s memory limit', $recommend['value']);
 					} elseif ($recommend['name'] == 'max_execution_time') {
