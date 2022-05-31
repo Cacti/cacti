@@ -9,7 +9,7 @@ PHP 4.2 with constant memory leaks with the core PHP and the various PHP
 modules that were in use.  However, times are changing.
 
 With the advent of technologies such as MariaDB Galera, keepalived, haproxy, 
-and database session session management for fault tolerant web server and 
+and database session management for fault tolerant web server and 
 databases, and with clustered file systems like GlusterFS and CEPH for 
 RRDfile and web site content fault tolerance, the idea of a fully 
 distributed highly available Cacti is now possible.
