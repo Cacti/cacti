@@ -263,7 +263,7 @@ function form_end_row() {
 
 /* form_confirm_buttons - provides confirm buttons in the gui
    @arg $message - the value of the HTML checkbox */
-function form_confim_buttons($post_variable, $item_array, $save_message, $return = false) {
+function form_confirm_buttons($post_variable, $item_array, $save_message, $return = false) {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
