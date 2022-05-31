@@ -1532,7 +1532,7 @@ function db_rollback_transaction($db_conn = false) {
 }
 
 /**
- * array_to_sql_or - loops through a single dimentional array and converts each
+ * array_to_sql_or - loops through a single dimensional array and converts each
  *   item to a string that can be used in the OR portion of an sql query in the
  *   following form:
  *
