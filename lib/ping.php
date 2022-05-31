@@ -310,7 +310,7 @@ class Net_Ping
 
 		/* check result for uptime */
 		if ($output !== false && $output != 'U' && strlen($output)) {
-			/* calculte total time */
+			/* calculate total time */
 			$this->snmp_status   = $this->time*1000;
 			$this->snmp_response = 'Device responded to SNMP';
 
