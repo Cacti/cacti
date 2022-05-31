@@ -4380,11 +4380,11 @@ function auth_login_redirect($login_opts = '') {
 			if (api_user_realm_auth(auth_basename($referer))) {
 				header('Location: ' . $referer);
 			} elseif (!is_realm_allowed(8)) {
-				cacti_log(sprintf("DEBUG: Referer Overriden Due to Permissions to '%s'", 'graph_view.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+				cacti_log(sprintf("DEBUG: Referer Overridden Due to Permissions to '%s'", 'graph_view.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 				header('Location: graph_view.php');
 			} else {
-				cacti_log(sprintf("DEBUG: Referer Overriden Due to Permissions to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+				cacti_log(sprintf("DEBUG: Referer Overridden Due to Permissions to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 				header('Location: index.php');
 			}

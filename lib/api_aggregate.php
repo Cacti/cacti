@@ -1779,7 +1779,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 					break;
 			}
 
-			/* values can be overriden in aggregate graph/template */
+			/* values can be overridden in aggregate graph/template */
 			if ($is_edit && isset($current_vals[$item['id']]['t_graph_type_id']) && $current_vals[$item['id']]['t_graph_type_id'] == 'on') {
 				$item['graph_type_id'] = $current_vals[$item['id']]['graph_type_id'];
 			}
@@ -1922,7 +1922,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 	html_end_box(false, true);
 
-	/* some javascript do dynamically disable non-overriden fields */
+	/* some javascript do dynamically disable non-overridden fields */
 	?>
 	<script type='text/javascript'>
 
