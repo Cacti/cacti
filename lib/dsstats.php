@@ -885,7 +885,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 							$out_length += strlen($cachebuf);
 
-							/* now do the the last value, if applicable */
+							/* now do the last value, if applicable */
 							if ($lastval != '') {
 								$lastbuf .=
 									$last_delim . '(' .
