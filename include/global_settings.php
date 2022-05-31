@@ -1976,7 +1976,7 @@ $settings = array(
 		),
 		'boost_rrd_update_max_runtime' => array(
 			'friendly_name' => __('Maximum RRD Update Script Run Time'),
-			'description' => __('If the boost poller excceds this runtime, a warning will be placed in the cacti log,'),
+			'description' => __('If the boost poller exceeds this runtime, a warning will be placed in the cacti log,'),
 			'method' => 'drop_array',
 			'default' => '1200',
 			'array' => $boost_max_runtime
