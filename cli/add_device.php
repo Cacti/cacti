@@ -196,7 +196,7 @@ if (cacti_sizeof($parms)) {
 		case '--avail':
 			switch($value) {
 			case 'none':
-				$avail = '0'; /* tried to use AVAIL_NONE, but then preg_match failes on validation, sigh */
+				$avail = '0'; /* tried to use AVAIL_NONE, but then preg_match fails on validation, sigh */
 
 				break;
 			case 'ping':
