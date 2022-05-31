@@ -613,7 +613,7 @@ function snmpagent_cache_install() {
 	$mc->install($config['base_path'] . '/mibs/CACTI-BOOST-MIB');
 	snmpagent_cache_init();
 
-	/* call install routine of plugins supporting the SNMPagent */
+	/* call install routine of plugins supporting the SNMPAgent */
 	api_plugin_hook('snmpagent_cache_install');
 }
 
