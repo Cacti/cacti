@@ -2590,7 +2590,7 @@ class Installer implements JsonSerializable {
 
 		if ($this->mode == Installer::MODE_DOWNGRADE) {
 			$output = Installer::sectionTitleError(__('DOWNGRADE DETECTED'));
-			$output .= Installer::sectionCode(__('YOU MUST MANAUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU'));
+			$output .= Installer::sectionCode(__('YOU MUST MANUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU'));
 			$output .= Installer::sectionNormal(__('Downgrading should only be performed when absolutely necessary and doing so may break your installation'));
 		} else {
 			$output = Installer::sectionTitle($title);

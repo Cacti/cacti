@@ -186,7 +186,7 @@ function form_save_aggregate() {
 
 	if (!is_error_message()) {
 		// sql_save will not give usefull return values when row key is
-		// composed from multiple columns. need to manualy build query
+		// composed from multiple columns. need to manually build query
 		$sql_set = 'SET ';
 		foreach ($save as $key => $value) {
 			$sql_set .= $key . "=" . db_qstr($value) . ", ";
