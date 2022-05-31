@@ -200,7 +200,7 @@ function setMenuVisibility() {
 		}
 	});
 
-	// Functon to give life to the Navigation pane
+	// Function to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
 		event.preventDefault();
 
