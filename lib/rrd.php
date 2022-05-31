@@ -1654,7 +1654,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				/* PADDING: remember this is not perfect! its main use is for the basic graph setup of:
 				 * AREA - GPRINT-CURRENT - GPRINT-AVERAGE - GPRINT-MAXIMUM \n
 				 * of course it can be used in other situations, however may not work as intended.
-				 * If you have any additions to this small peice of code, feel free to send them to me.
+				 * If you have any additions to this small piece of code, feel free to send them to me.
 				 */
 				if ($graph['auto_padding'] == 'on') {
 					/* only applies to AREA, STACK and LINEs */
