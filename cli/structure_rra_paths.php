@@ -122,7 +122,7 @@ foreach ($data_sources as $info) {
 
 	/* create one subfolder for every host */
 	if (!is_dir($new_base_path)) {
-		/* see if we can create the dirctory for the new file */
+		/* see if we can create the directory for the new file */
 		if (mkdir($new_base_path, 0775)) {
 			print "NOTE: New Directory '$new_base_path' Created for RRD Files\n";
 			if ($config['cacti_server_os'] != 'win32') {
