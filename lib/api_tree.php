@@ -185,7 +185,7 @@ function api_tree_release_lock($lockname) {
 /* api_tree_create_node - given a tree, a desintation leaf_id, order position, and title, create a branch/leaf.
  * @arg $tree_id - The tree to remove from
  * @arg $node_id - The branch/leaf to place the new branch/leaf
- * @arg $title - The new brnach/leaf title
+ * @arg $title - The new branch/leaf title
  * @returns - json encoded new leaf information */
 function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	input_validate_input_number($tree_id);
