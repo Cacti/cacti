@@ -822,7 +822,7 @@ function graph_edit() {
 
 	form_start('aggregate_graphs.php', 'template_edit');
 
-	/* we will show the templated representation only when when there is a template and propagation is enabled */
+	/* we will show the templated representation only when there is a template and propagation is enabled */
 	if (!isempty_request_var('id') && $current_tab == 'details') {
 		if (cacti_sizeof($template)) {
 			print "<div id='templated'>";
