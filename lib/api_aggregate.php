@@ -594,7 +594,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 		}
 
 		if ($has_override) {
-			/* overwride checkbox was on */
+			/* override checkbox was on */
 			$params_new['t_' . $field] = 'on';
 		}
 
