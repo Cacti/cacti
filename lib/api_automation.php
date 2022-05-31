@@ -461,7 +461,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refres' value='<?php print __esc('Go');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
