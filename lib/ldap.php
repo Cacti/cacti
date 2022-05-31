@@ -683,7 +683,7 @@ class Ldap {
 				/* invalid credentials */
 				$output = LdapError::GetErrorDetails(LdapError::Failure, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x32) {
-				/* insuffient access */
+				/* insufficient access */
 				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
@@ -800,7 +800,7 @@ class Ldap {
 				/* invalid credentials */
 				$output = LdapError::GetErrorDetails(LdapError::Failure, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x32) {
-				/* insuffient access */
+				/* insufficient access */
 				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
@@ -912,7 +912,7 @@ class Ldap {
 				/* invalid credentials */
 				$output = LdapError::GetErrorDetails(LdapError::Failure, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x32) {
-				/* insuffient access */
+				/* insufficient access */
 				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
