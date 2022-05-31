@@ -26,7 +26,7 @@
      their actual values
    @arg $form_array - an array that contains all of the information needed to draw
      the html form. see the arrays contained in include/global_settings.php
-     for the extact syntax of this array
+     for the extract syntax of this array
    @arg $arg1 - an array that represents the |arg1:| variable (see
      include/global_form.php for more details)
    @arg $arg2 - an array that represents the |arg2:| variable (see

@@ -29,7 +29,7 @@
 /* draw_edit_form - draws an html edit form
    @arg $array - an array that contains all of the information needed to draw
      the html form. see the arrays contained in include/global_settings.php
-     for the extact syntax of this array */
+     for the extract syntax of this array */
 function draw_edit_form($array) {
 	if (cacti_sizeof($array) > 0) {
 		foreach ($array as $top_branch => $top_children) {
