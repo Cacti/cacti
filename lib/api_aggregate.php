@@ -610,7 +610,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 }
 
 /**
- * Populate grraph items array with posted values.
+ * Populate graph items array with posted values.
  * $graph_items array must be keyed on graph item id.
  * @param array $posted      - values posted from form
  * @param array $graph_items - reference to graph items array to update with form values
@@ -1072,7 +1072,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 
 	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
-	cacti_log(__FUNCTION__ . ' called. Grapg id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* suppress warnings */
 	error_reporting(E_ALL);

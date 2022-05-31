@@ -672,7 +672,7 @@ function form_actions() {
 				// 		$i++;
 				// 	}
 
-				/* save aggregate graph graph items */
+				/* save aggregate graph - graph items */
 				if (get_request_var('drp_action') == '9') {
 					/* get existing item ids and sequences from graph template */
 					$graph_templates_items = array_rekey(
