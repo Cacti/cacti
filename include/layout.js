@@ -717,7 +717,7 @@ function cactiReturnTo(href) {
 }
 
 /** applySkin - This function re-asserts all javascript behavior to a page
- *  that can't be set using a live attrbute 'on()' */
+ *  that can't be set using a live attribute 'on()' */
 function applySkin() {
 	pageName = basename($(location).attr('pathname'));
 
