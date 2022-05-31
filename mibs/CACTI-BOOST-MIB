@@ -399,7 +399,7 @@ boostStatsRrdUpdateUtilization OBJECT-TYPE
     MAX-ACCESS      read-only
     STATUS          current
     DESCRIPTION
-        "The proportion of the maximum upate frequency in percent Boost requires
+        "The proportion of the maximum update frequency in percent Boost requires
          to update all rrds."
     ::= { boostStats 6 }
 

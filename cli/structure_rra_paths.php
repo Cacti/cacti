@@ -197,7 +197,7 @@ print "NOTE: Process Complete, '$done_count' Completed, '$warn_count' Skipped\n"
 
 /* update database */
 function update_database($info) {
-	/* upate table poller_item */
+	/* update table poller_item */
 	db_execute("UPDATE poller_item
 		SET rrd_path = '" . $info['new_rrd_path'] . "'
 		WHERE local_data_id=" . $info['local_data_id']);

@@ -1989,7 +1989,7 @@ $settings = array(
 		),
 		'path_boost_log' => array(
 			'friendly_name' => __('Boost Debug Log'),
-			'description' => __('If this field is non-blank, Boost will log RRDupdate output from the boost	poller process.'),
+			'description' => __('If this field is non-blank, Boost will log RRDUpdate output from the boost	poller process.'),
 			'method' => 'filepath',
 			'file_type' => 'ascii',
 			'default' => '',
