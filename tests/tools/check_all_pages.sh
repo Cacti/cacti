@@ -128,7 +128,7 @@ save_log_files() {
 }
 
 # ------------------------------------------------------------------------------
-# Some functions to handle settings consitently
+# Some functions to handle settings consistently
 # ------------------------------------------------------------------------------
 set_cacti_admin_password() {
 	echo "NOTE: Setting Cacti admin password and unsetting forced password change"
