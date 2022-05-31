@@ -940,7 +940,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 }
 
 /**
- * dsstats_boost_bottom - this routine accomodates mass updates after the boost process
+ * dsstats_boost_bottom - this routine accommodates mass updates after the boost process
  *   has completed.  The use of boost will require boost version 2.5 or above.  The idea
  *   if that daily averages will be updated on the boost cycle.
  *
