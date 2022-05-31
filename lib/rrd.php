@@ -3113,7 +3113,7 @@ function rrd_repair($data_source_id) {
 
 /** add a (list of) datasource(s) to an (array of) rrd file(s)
  * @param array $file_array	- array of rrd files
- * @param array $ds_array	- array of datasouce parameters
+ * @param array $ds_array	- array of datasource parameters
  * @param bool $debug		- debug mode
  * @return mixed			- success (bool) or error message (array)
  */
