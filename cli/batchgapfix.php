@@ -391,7 +391,7 @@ if ($child == 0) {
 			printf("SUCCESS: Gap Fills for RRDfile:%s" . PHP_EOL, $rrdfile['data_source_path']);
 			$succeeded++;
 		} else {
-			printf("FAILED:  Gap Fills faild for RRDfile:%s" . PHP_EOL, $graph['data_source_path']);
+			printf("FAILED:  Gap Fills failed for RRDfile:%s" . PHP_EOL, $graph['data_source_path']);
 			$failed++;
 		}
 	}
