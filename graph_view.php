@@ -341,7 +341,7 @@ case 'tree_content':
 	if (isset_request_var('node')) {
 		$parts = explode('-', sanitize_search_string(get_request_var('node')));
 
-		// Check for tree anchoe
+		// Check for tree anchor
 		if (strpos(get_nfilter_request_var('node'), 'tree_anchor') !== false) {
 			$tree_id = $parts[1];
 			$node_id = 0;
