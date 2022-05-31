@@ -584,7 +584,7 @@ function rrdclean_create_path($path) {
 				$group_id      = filegroup($config['rra_path']);
 
 				// NOTE: chown/chgrp fails for non-root users, checking their
-				// result is therefore irrevelevant
+				// result is therefore irrelevant
 				@chown($path, $owner_id);
 				@chgrp($path, $group_id);
 			}
