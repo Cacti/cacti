@@ -647,7 +647,7 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
  *   that should be stored into the two tables, and then bulk inserts that information once
  *   all poller items have been processed.
  *
- *   The pupose for loading then entire structures into memory at one time is to reduce the latency
+ *   The purpose for loading then entire structures into memory at one time is to reduce the latency
  *   related to multiple database calls.  The author believed that PHP's array hashing algorithms
  *   would be as fast, if not faster, than MySQL, when considering the transaction overhead and therefore
  *   chose this method.
