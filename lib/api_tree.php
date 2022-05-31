@@ -182,7 +182,7 @@ function api_tree_release_lock($lockname) {
 	$unlocked = db_fetch_cell("SELECT RELEASE_LOCK('$lockname')");
 }
 
-/* api_tree_create_node - given a tree, a desintation leaf_id, order position, and title, create a branch/leaf.
+/* api_tree_create_node - given a tree, a destination leaf_id, order position, and title, create a branch/leaf.
  * @arg $tree_id - The tree to remove from
  * @arg $node_id - The branch/leaf to place the new branch/leaf
  * @arg $title - The new branch/leaf title
