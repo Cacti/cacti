@@ -2265,7 +2265,7 @@ class Installer implements JsonSerializable {
 			$text = __('Please make sure that your webserver has read/write access to the cacti folders that show errors below.');
 			$paths = array_merge($this->permissions['install'],$this->permissions['always']);
 			if ($config['cacti_server_os'] == 'unix') {
-				$text .= '  ' . __('If SELinux is enabled on your server, you can either permenantly disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools.');
+				$text .= '  ' . __('If SELinux is enabled on your server, you can either permanently disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools.');
 				$code = '';
 				foreach($paths as $path => $valid) {
 					if (!$valid) {
