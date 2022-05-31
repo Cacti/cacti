@@ -1792,7 +1792,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			}
 
 			/* column 'Graph Item' */
-			print '<td title="' . __esc('Aggregate Items are not modifyable') . '">';
+			print '<td title="' . __esc('Aggregate Items are not modifiable') . '">';
 			if ($is_edit == false) {
 				/* no existing aggregate graph/template */
 				print __('Item # %d', ($i+1));
