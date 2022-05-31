@@ -24,7 +24,7 @@
 
 /**
  * get_rrdfile_names - this routine returns all of the RRDfiles know to Cacti
- *   so as to be processed when performin the Daily, Weekly, Monthly and Yearly
+ *   so as to be processed when performing the Daily, Weekly, Monthly and Yearly
  *   average and peak calculations.
  *
  * @param $thread_id   - (int) The thread to process
