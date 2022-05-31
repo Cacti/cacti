@@ -302,7 +302,7 @@ function dsstats_master_handler($forcerun) {
  */
 function display_version() {
 	$version = get_cacti_version();
-	print "Cacti Data Source Staitistcs Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
+	print "Cacti Data Source Statistics Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**

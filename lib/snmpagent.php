@@ -256,7 +256,7 @@ function snmpagent_device_action_bottom($data){
 				$mc->object('cactiApplLastUpdate')->set(time());
 				break;
 			case '5':
-				/* clear device statisitics */
+				/* clear device statistics */
 				$values = array(
 					'cactiStatsDeviceMinTime'      => '9.99999',
 					'cactiStatsDeviceMaxTime'      => '0',

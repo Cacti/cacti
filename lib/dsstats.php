@@ -463,7 +463,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 
 /**
  * dsstats_log_statistics - provides generic timing message to both the Cacti log and the settings
- *   table so that the statistcs can be graphed as well.
+ *   table so that the statistics can be graphed as well.
  *
  * @param $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY', 'BOOST' or 'MAJOR'.
  *
