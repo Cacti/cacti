@@ -1008,9 +1008,9 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
         -- or --
         $array[0]["id"] = 43;
         $array[0]["name"] = "Red";
-   @arg $column_display - used to indentify the key to be used for display data. this
+   @arg $column_display - used to identify the key to be used for display data. this
         is only applicable if the array is formatted using the second method above
-   @arg $column_id - used to indentify the key to be used for id data. this
+   @arg $column_id - used to identify the key to be used for id data. this
         is only applicable if the array is formatted using the second method above
    @arg $form_previous_value - the current value of this form element */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {

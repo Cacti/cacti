@@ -606,7 +606,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 				// Remove recently deleted items from the poller_output table
 				db_execute('DELETE FROM poller_output WHERE local_data_id NOT IN (SELECT id FROM data_local)');
 
-				// Itentify data sources that are somehow not aligned
+				// Identify data sources that are somehow not aligned
 				$items = db_fetch_assoc('SELECT rrd_num,
 					COUNT(DISTINCT po.local_data_id, po.rrd_name) AS ids, dt.name, dl.host_id,
 					GROUP_CONCAT(DISTINCT po.local_data_id) AS local_data_ids

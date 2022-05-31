@@ -705,9 +705,9 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value, 
      -- or --
      $array[0]["id"] = 43;
      $array[0]["name"] = "Red";
-   @arg $column_display - used to indentify the key to be used for display data. this
+   @arg $column_display - used to identify the key to be used for display data. this
      is only applicable if the array is formatted using the second method above
-   @arg $column_id - used to indentify the key to be used for id data. this
+   @arg $column_id - used to identify the key to be used for id data. this
      is only applicable if the array is formatted using the second method above
    @arg $form_previous_value - the current value of this form element
    @arg $form_none_entry - the name to use for a default 'none' element in the dropdown
