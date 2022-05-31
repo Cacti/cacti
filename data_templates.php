@@ -574,7 +574,7 @@ function template_edit() {
 	get_filter_request_var('view_rrd');
 	/* ==================================================== */
 
-	$isSNMPget = false;
+	$isSNMPGet = false;
 
 	if (!isempty_request_var('id')) {
 		$template_data = db_fetch_row_prepared('SELECT dtd.*, data_sources
@@ -602,7 +602,7 @@ function template_edit() {
 				array($template_data['data_input_id']));
 
 			if (cacti_sizeof($snmp_data)) {
-				$isSNMPget = true;
+				$isSNMPGet = true;
 			}
 		}
 
@@ -740,7 +740,7 @@ function template_edit() {
 		$readOnly = false;
 	}
 
-	if (!$isSNMPget && !$readOnly) {
+	if (!$isSNMPGet && !$readOnly) {
 		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), __('New'));
 	} else {
 		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', '', '');
