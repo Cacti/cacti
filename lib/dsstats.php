@@ -1055,7 +1055,7 @@ function dsstats_rrdtool_init() {
 /**
  * dsstats_rrdtool_execute - this routine passes commands to RRDtool and returns the information
  *   back to DSStats.  It is important to note here that RRDtool needs to provide an either 'OK'
- *   or 'ERROR' response accross the pipe as it does not provide EOF characters to key upon.
+ *   or 'ERROR' response across the pipe as it does not provide EOF characters to key upon.
  *   This may not be the best method and may be changed after I have a conversation with a few
  *   developers.
  *
