@@ -1467,7 +1467,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	  $snmp_query_array['snmp_index_on']
 	  $snmp_query_array['snmp_query_graph_id']
 	  $snmp_query_array['snmp_index']
-   @arg $sugested_vals - any additional information to be included in the new graphs or
+   @arg $suggested_vals - any additional information to be included in the new graphs or
 	data sources must be included in the array. data is to be included in the following format:
 	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
 	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
@@ -1836,7 +1836,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 /* create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
    data source properties.  If so, then you must duplicate the Data Source and not use
    the existing one.
-   @arg $sugested_vals - any additional information to be included in the new graphs or
+   @arg $suggested_vals - any additional information to be included in the new graphs or
 	data sources must be included in the array. data is to be included in the following format:
 	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
 	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
