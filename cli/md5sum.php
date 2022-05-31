@@ -136,7 +136,7 @@ $ignore_files = array(
 	// Ignore .md5sum since it always changes
 	'/.md5sum$',
 
-	// Ignore tmporary files
+	// Ignore temporary files
 	'\.tmp$',
 	'\.swp$',
 	'\.log$',
