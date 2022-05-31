@@ -140,7 +140,7 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 						)
 					);
 
-					raise_message('reports_add_device_' . $device_id, __('Device \'%s\' sucessfully added to Report.', $description), MESSAGE_LEVEL_INFO);
+					raise_message('reports_add_device_' . $device_id, __('Device \'%s\' successfully added to Report.', $description), MESSAGE_LEVEL_INFO);
 				} else {
 					$errors++;
 					raise_message('reports_device_not_found', __('Device not found! Unable to add to Report'), MESSAGE_LEVEL_ERROR);

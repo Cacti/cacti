@@ -232,7 +232,7 @@ case 'changepassword':
 
 		raise_message('password_success');
 
-		/* ok, at the point the user has been sucessfully authenticated; so we must decide what to do next */
+		/* ok, at the point the user has been successfully authenticated; so we must decide what to do next */
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
 		$realm_id    = $user_auth_realm_filenames['index.php'];

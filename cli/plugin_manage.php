@@ -130,7 +130,7 @@ if (cacti_sizeof($plugins)) {
 						api_plugin_install($plugin);
 
 						if (api_plugin_installed($plugin)) {
-							print "NOTE: Plugin $plugin installed sucessfully." . PHP_EOL;
+							print "NOTE: Plugin $plugin installed successfully." . PHP_EOL;
 
 							$installed = true;
 
