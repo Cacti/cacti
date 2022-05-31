@@ -610,27 +610,27 @@ function api_tree_get_main($tree_id, $parent = 0) {
 
 			print "<ul><li class='jstree-closed' id='tree_anchor-$tree_id' data-jstree='{ \"type\" : \"tree\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tree_anchor-' . $tree_id). "'>" . html_escape($name) . "</a>\n";
 
-			$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
+			$hierarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
-			if (cacti_sizeof($heirarchy)) {
-				foreach($heirarchy as $h) {
+			if (cacti_sizeof($hierarchy)) {
+				foreach($hierarchy as $h) {
 					print $h;
 				}
 			}
 		} else {
-			$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
+			$hierarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
-			if (cacti_sizeof($heirarchy)) {
-				foreach($heirarchy as $h) {
+			if (cacti_sizeof($hierarchy)) {
+				foreach($hierarchy as $h) {
 					print $h;
 				}
 			}
 		}
 	} else {
-		$heirarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
+		$hierarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
-		if (cacti_sizeof($heirarchy)) {
-			foreach($heirarchy as $h) {
+		if (cacti_sizeof($hierarchy)) {
+			foreach($hierarchy as $h) {
 				print $h;
 			}
 		}
@@ -648,17 +648,17 @@ function api_tree_get_main($tree_id, $parent = 0) {
  * @returns - string of the tree items in html format */
 function api_tree_get_node($tree_id, $node_id, $editing = false) {
 	if ($node_id == '#') {
-		$heirarchy = draw_dhtml_tree_level($tree_id, 0, $editing);
+		$hierarchy = draw_dhtml_tree_level($tree_id, 0, $editing);
 	} else {
 		$data  = api_tree_parse_node_data($node_id);
 		$id    = $data['leaf_id'];
 
 		input_validate_input_number($id);
-		$heirarchy = draw_dhtml_tree_level($tree_id, $id, $editing);
+		$hierarchy = draw_dhtml_tree_level($tree_id, $id, $editing);
 	}
 
-	if (cacti_sizeof($heirarchy)) {
-		foreach($heirarchy as $h) {
+	if (cacti_sizeof($hierarchy)) {
+		foreach($hierarchy as $h) {
 			print $h;
 		}
 	}
