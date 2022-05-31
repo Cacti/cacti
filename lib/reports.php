@@ -957,7 +957,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 }
 
 /**
- * return html code for an embetted image
+ * return html code for an embedded image
  * @param array $report	- parameters for this report mail report
  * @param $item			- current graph item
  * @param $timespan		- timespan
