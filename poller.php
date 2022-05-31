@@ -241,7 +241,7 @@ if (!isset($concurrent_processes) || intval($concurrent_processes) < 1) {
 	$concurrent_processes = 1;
 }
 
-// correct for possible poller output not empty occurances
+// correct for possible poller output not empty occurrences
 $ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id,
 	MIN(rrd_next_step) AS next_step,
 	COUNT(DISTINCT rrd_next_step) AS instances
