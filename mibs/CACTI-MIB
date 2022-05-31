@@ -893,7 +893,7 @@ cactiStatsDeviceAvailability OBJECT-TYPE
     MAX-ACCESS      read-only
     STATUS          current
     DESCRIPTION
-        "Calculated availablity in percent."
+        "Calculated availability in percent."
     ::= { cactiStatsDeviceEntry 9 }
 
 --
