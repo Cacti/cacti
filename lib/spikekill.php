@@ -261,7 +261,7 @@ class spikekill {
 			}
 
 			if (!is_numeric($this->outliers) || ($this->outliers < 1)) {
-				$this->set_error("FATAL: The number of outliers to exlude must be a positive integer.");
+				$this->set_error("FATAL: The number of outliers to exclude must be a positive integer.");
 			}
 
 			$this->out_set = true;
