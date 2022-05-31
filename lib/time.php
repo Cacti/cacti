@@ -207,7 +207,7 @@ function shift_time(&$span, $direction, $shift_size) {
 	# amount to be moved is derived from $shift_size
 	# base dates are taken from array $span
 
-	# is this a month shift AND current timespane is on month boundaries?
+	# is this a month shift AND current timespan is on month boundaries?
 	if ( month_shift($shift_size) && check_month_boundaries($span) ) {
 		# shift left boundary
 		$span['begin_now'] 	= strtotime($direction . $shift_size . ' ' . $span['current_value_date1']);
