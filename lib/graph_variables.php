@@ -52,7 +52,7 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
 }
 
 /* rrdtool_function_stats - given a data source, calculate a number of statistics for an RRDfile or files
-   over a specified time time period
+   over a specified time period
    @arg $local_data_ids - the data source array to perform the Nth percentile calculation
    @arg $start_seconds - start seconds of time range
    @arg $stop_seconds - stop seconds of time range
