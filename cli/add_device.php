@@ -374,7 +374,7 @@ if (cacti_sizeof($parms)) {
 				$fail = true;
 			}
 		} elseif ($phost['snmp_version'] != $snmp_ver) {
-			// assumeing a proxy
+			// assuming a proxy
 		} elseif ($phost['snmp_version'] == '3' && $snmp_ver == '3') {
 			$changed = 0;
 			$changed += ($phost['snmp_username'] != $username ? 1:0);
