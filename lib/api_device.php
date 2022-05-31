@@ -1360,7 +1360,7 @@ function api_device_update_host_template($device_id, $device_template_id) {
 /**
  * api_device_template_sync_template - updates the device template mapping for all devices mapped to a template
  *
- * @param  (int)       The device template to syncronize
+ * @param  (int)       The device template to synchronize
  * @param  (int|array) An array of device_ids or a string with a single device_id
  * @param  (bool)      Also update mapping of down devices
  *
