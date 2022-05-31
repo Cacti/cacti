@@ -542,7 +542,7 @@ function get_nfilter_request_var($name, $default = '') {
 	}
 }
 
-/* get_request_var_post - depricated - returns the current value of a
+/* get_request_var_post - deprecated - returns the current value of a
      PHP $_POST variable, optionally returning a default value if the
      request variable does not exist.
    @arg $name - the name of the request variable. this should be a valid key in the
