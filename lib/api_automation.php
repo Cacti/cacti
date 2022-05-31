@@ -2707,7 +2707,7 @@ function create_all_header_nodes($item_id, $rule) {
 	cacti_log($function . " called: Item $item_id matches: " . cacti_sizeof($tree_items) . ' items', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	/* start at the given tree item
-	 * it may be worth verifying existance of this entry
+	 * it may be worth verifying existence of this entry
 	 * in case it was selected once but then deleted
 	 */
 	$parent_tree_item_id = $rule['tree_item_id'];
