@@ -368,7 +368,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			} /* else: no color templating defined, e.g. GPRINT entry */
 
 			# do we want to override cdef of this item
-			# certanly not if it was set to $make0_cdef above
+			# certainly not if it was set to $make0_cdef above
 			if ($_cdefs[$i] > 0 && $graph_item['cdef_id'] != $make0_cdef) {
 				$save['cdef_id'] = $_cdefs[$i];
 			}
