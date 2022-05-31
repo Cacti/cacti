@@ -2187,7 +2187,7 @@ function update_data_query_sort_cache_by_host($host_id) {
 	sort cache
    @arg $host_id - the id of the host which contains the data query
    @arg $data_query_id - the id of the data query to fetch the best data query index type for
-   @returns - a string containing containing best data query index type. this will be one of the
+   @returns - a string containing best data query index type. this will be one of the
 	valid input field names as specified in the data query xml file */
 function get_best_data_query_index_type($host_id, $data_query_id) {
 	$index_type = db_fetch_cell_prepared('SELECT sort_field
