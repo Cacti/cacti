@@ -751,7 +751,7 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 
 /* api_tree_get_item_type - gets the type of tree item
    @arg $tree_item_id - the id of the tree item to fetch the type for
-   @returns - a string reprenting the type of the tree item. valid return
+   @returns - a string representing the type of the tree item. valid return
      values are 'header', 'graph', and 'host' */
 function api_tree_get_item_type($tree_item_id) {
 	$tree_item = db_fetch_row_prepared('SELECT title, local_graph_id, site_id, host_id
