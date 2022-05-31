@@ -914,7 +914,7 @@ class Installer implements JsonSerializable {
 	}
 
 	/* getAutomationRange() - get the default network range to be used by
-	 *                        Automation for scanning the netwokr.  If no
+	 *                        Automation for scanning the network.  If no
 	 *                        previous value is found, defaults to
 	 *                        192.168.1.0/24 */
 	public function getAutomationRange() {
