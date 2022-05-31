@@ -717,7 +717,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			$item['timestamp'] = trim($item['timestamp']);
 
 			if (!$locked) {
-				/* aquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
+				/* acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
 				while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
 					usleep(50000);
 				}
@@ -736,7 +736,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 
 				$current_lock = false;
 
-				/* aquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
+				/* acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
 				while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
 					usleep(50000);
 				}
