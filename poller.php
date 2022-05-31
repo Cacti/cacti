@@ -1037,8 +1037,8 @@ function multiple_poller_boost_check() {
 	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled="" AND id > 1');
 
 	if ($pollers > 0 && read_config_option('boost_rrd_update_enable') == '') {
-		cacti_log('NOTE: A second Cacti data collector has been added.  Therfore, enabling boost automatically!', false, 'POLLER');
-		admin_email(__('Cacti System Notification'), __('NOTE: A second Cacti data collector has been added.  Therfore, enabling boost automatically!'));
+		cacti_log('NOTE: A second Cacti data collector has been added.  Therefore, enabling boost automatically!', false, 'POLLER');
+		admin_email(__('Cacti System Notification'), __('NOTE: A second Cacti data collector has been added.  Therefore, enabling boost automatically!'));
 
 		set_config_option('boost_rrd_update_enable', 'on');
 		set_config_option('boost_rrd_update_system_enable', 'on');
