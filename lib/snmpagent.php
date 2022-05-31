@@ -644,7 +644,7 @@ function snmpagent_cache_rebuilt(){
 }
 
 function snmpagent_cache_init(){
-	/* fill up the cache with a minimum of data data and ignore all values that
+	/* fill up the cache with a minimum of data and ignore all values that
 	   *  will be updated automatically at the bottom of the next poller run
 	*/
 	$mc = new MibCache();
