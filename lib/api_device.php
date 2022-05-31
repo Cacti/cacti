@@ -1088,7 +1088,7 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 
 			api_device_cache_crc_update($save['poller_id']);
 
-			/* push out relavant fields to data sources using this host */
+			/* push out relevant fields to data sources using this host */
 			if (!$quick_save) {
 				push_out_host($device_id, 0);
 			}
