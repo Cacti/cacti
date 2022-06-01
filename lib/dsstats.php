@@ -669,7 +669,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 	/* install the dsstats error handler */
 	set_error_handler('dsstats_error_handler');
 
-	/* do not make any calculations unlessed enabled */
+	/* do not make any calculations unless enabled */
 	if (read_config_option('dsstats_enable') == 'on') {
 		if (cacti_sizeof($rrd_update_array) > 0) {
 			/* we will assume a smaller than the max packet size.  This would appear to be around the sweat spot. */
