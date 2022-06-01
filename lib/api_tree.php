@@ -39,7 +39,7 @@ function api_tree_lock($tree_id, $user_id = 0, $web = true) {
 		array($user_id, $tree_id));
 }
 
-/* api_tree_unlock - unlockes a locked tree that has been locked for editing
+/* api_tree_unlock - unlocks a locked tree that has been locked for editing
  * @arg $tree_id - the tree id
  * @arg $user_id - the user id
  * @arg $web - is this a web operation
