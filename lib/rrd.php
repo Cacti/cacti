@@ -880,7 +880,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	/* initialize fetch array */
 	$fetch_array = array();
 
-	/* check if we have been passed a file instead of lodal data source to look up */
+	/* check if we have been passed a file instead of local data source to look up */
 	if (is_null($rrdtool_file)) {
 		$data_source_path = get_data_source_path($local_data_id, true);
 	} else {
