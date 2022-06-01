@@ -241,7 +241,7 @@ function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
 	global $config;
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
-		/* include poller processing routinges */
+		/* include poller processing routines */
 		include_once($config['library_path'] . '/poller.php');
 
 		/* check to see if boost can do its job */
@@ -299,7 +299,7 @@ function boost_return_cached_image(&$graph_data_array) {
 function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$graph_data_array, $return = true) {
 	global $config;
 
-	/* include poller processing routinges */
+	/* include poller processing routines */
 	include_once($config['library_path'] . '/poller.php');
 
 	/* suppressnwarnings */
