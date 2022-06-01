@@ -669,7 +669,7 @@ function api_tree_get_node($tree_id, $node_id, $editing = false) {
  * @arg $tree_id - the tree id for the object
  * @arg $type - the item type graph, host, leaf
  * @arg $parent_tree_item_id - The parent leaf for the object
- * @arg $title - The leaf title in the caseo a leaf
+ * @arg $title - The leaf title in the case of a leaf
  * @arg $local_graph_id - The graph id in the case of a graph
  * @arg $host_id - The host id in the case of a graph
  * @arg $site_id - The site id in the case of a graph
