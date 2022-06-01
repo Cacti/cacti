@@ -1083,7 +1083,7 @@ cactiEvents OBJECT-IDENTITY
 cactiEventAttributes OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "reserved for event attributes, used as varbind for the SMNP notifications"
+        "reserved for event attributes, used as varbind for the SNMP notifications"
     ::= { cactiEvents 1 }
 
 cactiEventDescription OBJECT-TYPE

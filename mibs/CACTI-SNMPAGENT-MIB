@@ -107,7 +107,7 @@ snmpagentEvents OBJECT-IDENTITY
 snmpagentEventAttributes OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "reserved for event attributes, used as varbind for the SMNP notifications"
+        "reserved for event attributes, used as varbind for the SNMP notifications"
     ::= { snmpagentEvents 1 }
 
 snmpagentEventDescription OBJECT-TYPE
