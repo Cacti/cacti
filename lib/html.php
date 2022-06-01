@@ -1619,7 +1619,7 @@ function form_area($text) { ?>
 	</tr>
 <?php }
 
-/* is_console_page - determinese if current passed url is considered to be
+/* is_console_page - determines if current passed url is considered to be
           a console page
    @arg url - url to be checked
    @returns true if console page, false if not
