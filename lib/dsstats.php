@@ -300,7 +300,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 			$max     = false;
 			$dsnames = array();
 
-			/* figure out whatis in this RRDfile.  Assume CF Uniformity as Cacti does not allow async rrdfiles.
+			/* figure out what is in this RRDfile.  Assume CF Uniformity as Cacti does not allow async rrdfiles.
 			 * also verify the consolidation functions in the RRDfile for average and max calculations.
 			 */
 			if (cacti_sizeof($info_array)) {
