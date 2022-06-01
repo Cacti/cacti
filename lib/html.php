@@ -585,7 +585,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 }
 
 /* html_header_sort - draws a header row suitable for display inside of a box element.  When
-        a user selects a column header, the collback function "filename" will be called to handle
+        a user selects a column header, the callback function "filename" will be called to handle
         the sort the column and display the altered results.
    @arg $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
@@ -743,7 +743,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 
 /* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
         suitable for display inside of a box element.  When a user selects a column header,
-        the collback function "filename" will be called to handle the sort the column and display
+        the callback function "filename" will be called to handle the sort the column and display
         the altered results.
    @arg $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
