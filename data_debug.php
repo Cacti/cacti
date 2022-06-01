@@ -387,7 +387,7 @@ function debug_wizard() {
 			'display' => __('RRD Updated'),
 			'align'   => 'center',
 			'sort'    => '',
-			'tip'     => __('Determines if the RRDfile has been writted to properly.'),
+			'tip'     => __('Determines if the RRDfile has been written to properly.'),
 		),
 		'nosort8' => array(
 			'display' => __('Issues'),
