@@ -1111,7 +1111,7 @@ function utilities_get_mysql_recommendations() {
 					'value' => '16',
 					'measure' => 'pinst',
 					'class' => 'warning',
-					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
+					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of 64.', $database)
 					),
 				'innodb_io_capacity' => array(
 					'value' => '5000',
