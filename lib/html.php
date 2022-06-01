@@ -1693,7 +1693,7 @@ function html_show_tabs_left() {
 
 		if ($realm_allowed[21] || $realm_allowed[22]) {
 			if ($config['poller_id'] > 1) {
-				// Don't show reports tabe if not poller 1
+				// Don't show reports table if not poller 1
 			} else {
 				if (substr_count($_SERVER['REQUEST_URI'], 'reports_')) {
 					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[21] === true ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
