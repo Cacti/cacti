@@ -1887,7 +1887,7 @@ function get_query_fields($table, $excluded_fields) {
 
 			# we want to know later which table was selected
 			$new_key = $table . '.' . $key;
-			# give the user a hint abou the data type of the column
+			# give the user a hint about the data type of the column
 			$new_fields[$new_key] = strtoupper($table) . ': ' . $key . ' - ' . $value;
 		}
 	}
