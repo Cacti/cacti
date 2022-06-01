@@ -662,7 +662,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	}
 
 	if ($archive_tables === false) {
-		boost_debug('Failed to determine archhive tables');
+		boost_debug('Failed to determine archive tables');
 		cacti_log('Failed to determine archive tables', false, 'BOOST');
 		return 0;
 	}
