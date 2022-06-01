@@ -154,7 +154,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 	print json_encode(array('id' => 'tbranch:' . $id));
 }
 
-/* api_tree_get_lock - given a lock name, placed a timeed lock on the database.
+/* api_tree_get_lock - given a lock name, placed a timed lock on the database.
  * This function allows simulating transactions in an MyISAM database.
  * @arg $lockname - The name of the lock to be created
  * @returns - true depending on outcome */
