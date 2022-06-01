@@ -239,7 +239,7 @@ function form_save() {
 
 		if (!is_error_message()) {
 			/* if this is a new data source and a template has been selected, skip item creation this time
-			otherwise it throws off the templatate creation because of the NULL data */
+			otherwise it throws off the template creation because of the NULL data */
 			if (!isempty_request_var('local_data_id') || isempty_request_var('data_template_id')) {
 				/* if no template was set before the save, there will be only one data source item to save;
 				otherwise there might be >1 */

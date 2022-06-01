@@ -27,7 +27,7 @@
  * Save all graph definitions, but omit graph items. Wipe out host_id and graph_template_id.
  *
  * @param int $local_graph_id        - ID of an already existing aggregate graph.
- * @param int $graph_template_id     - ID of the corresponding graph_teamplate.
+ * @param int $graph_template_id     - ID of the corresponding graph_template.
  * @param string $graph_title        - Title for new graph.
  * @param int $aggregate_template_id - ID of aggregate template (0 if no template).
  * @param array $new_data            - Key/value pairs with new graph data.
