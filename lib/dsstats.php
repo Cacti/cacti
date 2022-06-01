@@ -340,7 +340,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 				$rrdfile = str_replace(':', "\\:", $rrdfile);
 			}
 
-			/* setup the graph command by parsing throught the internal data source names */
+			/* setup the graph command by parsing through the internal data source names */
 			if (cacti_sizeof($dsnames)) {
 				foreach ($dsnames as $dsname => $present) {
 					if ($average) {
