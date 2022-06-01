@@ -875,7 +875,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 								$currentval = 'NULL';
 							}
 
-							/* setupt the output buffer for the cache first */
+							/* setup the output buffer for the cache first */
 							$cachebuf .=
 								$cache_delim . '(' .
 								$result['local_data_id'] . ", '" .
