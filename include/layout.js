@@ -317,7 +317,7 @@ $.fn.classes = function(callback) {
 };
 
 /** These three functions will set the cursor into
- *  a textbox or textara and optionally select characters */
+ *  a textbox or textarea and optionally select characters */
 $.fn.setCursorPosition = function(position) {
 	if (this.length == 0) return this;
 	return this.setSelection(position, position);
