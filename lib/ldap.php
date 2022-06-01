@@ -638,7 +638,7 @@ class Ldap {
 					/* Do a lookup to find this user's true DN. */
 					/* ldap_exop_whoami is not yet included in PHP. For reference, the
 					 * feature request: http://bugs.php.net/bug.php?id=42060
-					 * And the patch against lastest PHP release:
+					 * And the patch against latest PHP release:
 					 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
 					*/
 					$true_dn_result = ldap_search($ldap_conn, $this->search_base, 'userPrincipalName=' . $this->dn, array('dn'));
