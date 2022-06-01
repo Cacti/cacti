@@ -944,7 +944,7 @@ function html_header($header_items, $last_item_colspan = 1) {
 }
 
 /* html_section_header - draws a header row suitable for display inside of a box element
-         but for display as a secton title and not as a series of table header columns
+         but for display as a section title and not as a series of table header columns
    @arg $header_name - an array of the display name of the header for the section and
         optional alignment.
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
