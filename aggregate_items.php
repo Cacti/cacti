@@ -208,7 +208,7 @@ function form_save_aggregate() {
 			raise_message(2);
 		}
 
-		// update existing graphs with the changest to this item
+		// update existing graphs with the changes to this item
 		if ($save_to == 'aggregate_graphs_graph_item')
 			push_out_aggregates(0, get_filter_request_var('local_graph_id'));
 		elseif ($save_to == 'aggregate_graph_templates_item')
