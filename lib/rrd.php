@@ -1863,7 +1863,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					}
 				}
 
-				/* allow automatic rate calculations on raw guage data */
+				/* allow automatic rate calculations on raw gauge data */
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 				} else {
@@ -1872,7 +1872,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval((isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id]) ? $cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id] : '0'))), $cdef_string);
 
-				/* allow automatic rate calculations on raw guage data */
+				/* allow automatic rate calculations on raw gauge data */
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('ALL_DATA_SOURCES_DUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 				} else {
@@ -1884,7 +1884,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$cdef_string = str_replace('ALL_DATA_SOURCES_DUPS', $magic_item['ALL_DATA_SOURCES_DUPS'], $cdef_string);
 				}
 
-				/* allow automatic rate calculations on raw guage data */
+				/* allow automatic rate calculations on raw gauge data */
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('ALL_DATA_SOURCES_NODUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 				} else {
@@ -1895,7 +1895,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$cdef_string = str_replace('ALL_DATA_SOURCES_NODUPS', $magic_item['ALL_DATA_SOURCES_NODUPS'], $cdef_string);
 				}
 
-				/* allow automatic rate calculations on raw guage data */
+				/* allow automatic rate calculations on raw gauge data */
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_DUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 				} else {
