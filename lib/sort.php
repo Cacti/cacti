@@ -23,7 +23,7 @@
 */
 
 /* usort_data_query_index - attempts to sort a data query index either numerically
-     or alphabetically depending on which seems best. it also trys to strip out
+     or alphabetically depending on which seems best. it also tries to strip out
      extra characters before sorting to improve accuracy when sorting things like
      switch ifNames, etc
    @arg $a - the first string to compare
