@@ -1224,7 +1224,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	if ($form_previous_value == '') { # no data: defaults are used; everythings fine
+	if ($form_previous_value == '') { # no data: defaults are used; everything is fine
 		$extra_data = '';
 	} else {
 		/* verifying all possible pango font params is too complex to be tested here
