@@ -3930,7 +3930,7 @@ function secpass_login_process($username) {
 	 * password.
 	 */
 	if (read_config_option('secpass_forceold') == 'on') {
-		$message = secpass_check_pass($passowrd);
+		$message = secpass_check_pass($password);
 
 		if ($message != 'ok') {
 			db_execute_prepared("UPDATE user_auth

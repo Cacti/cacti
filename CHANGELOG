@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.22
+-issue#4802: Typo in lib/auth.php prevents users from changing their password and logging in
+
 1.2.21
 -issue#4531: Correct duplicate keys within database
 -issue#4614: Add support for hooks during polling loop or at poller end
