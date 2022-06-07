@@ -2970,7 +2970,7 @@ function get_host_array() {
  *
  * @param  (bool)   Include the 'Any' item as the first in the list
  @ @param  (bool)   Include the 'None' item as the first or second in the list
- * @param  (string) SQL Where expression to use to gather the hosts in addtion to the 'term'
+ * @param  (string) SQL Where expression to use to gather the hosts in addition to the 'term'
  *   request variable.
  *
  * @return (string) A json array of matching devices upto a limit specified in the system
@@ -3015,7 +3015,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
  *
  * @param  (bool)   Include the 'Any' item as the first in the list
  @ @param  (bool)   Include the 'None' item as the first or second in the list
- * @param  (string) SQL Where expression to use to gather the graph templates in addtion to the 'term'
+ * @param  (string) SQL Where expression to use to gather the graph templates in addition to the 'term'
  *   request variable.
  *
  * @return (string) A json array of matching graph templates upto a limit specified in the system
@@ -3055,7 +3055,7 @@ function get_allowed_ajax_graph_templates($include_any = true, $include_none = t
  *   read through a callback, in JSON.  The 'term' request variable will include an optional search term.
  *
  @ @param  (bool)   Include the 'None' item as the first item in the list
- * @param  (string) SQL Where expression to use to gather the hosts in addtion to the 'term'
+ * @param  (string) SQL Where expression to use to gather the hosts in addition to the 'term'
  *   request variable.
  *
  * @return (string) A json array of matching graph items upto a limit specified in the system
@@ -3091,7 +3091,7 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
  * get_allowed_ajax_graph - returns a list of allowed graphs in a way that can be easily
  *   read through a callback, in JSON.  The 'term' request variable will include an optional search term.
  *
- * @param  (string) SQL Where expression to use to gather the graphs in addtion to the 'term'
+ * @param  (string) SQL Where expression to use to gather the graphs in addition to the 'term'
  *   request variable.
  *
  * @return (string) A json array of matching graphs upto a limit specified in the system
