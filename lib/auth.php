@@ -2458,7 +2458,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
  *   well as to build out the tree for a user.
  *
  * @param  (bool)   Is the Tree in Edit mode or not
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of branches
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
@@ -2617,7 +2617,7 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
  *   To access.  This function is generally intended for both listbox and table displays as
  *   well as other tasks.
  *
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of devices
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
@@ -2730,7 +2730,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
  *   To access.  This function is generally intended for both listbox and table displays as
  *   well as other tasks.
  *
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of devices
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
@@ -2794,7 +2794,7 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
  *   well as other tasks.
  *
  * @param  (int)    The site id for the site
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of devices
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
@@ -2898,7 +2898,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
  *   To be able to differentiate between Graph Templates based on a non-data query data input mode
  *   and those related to data queries.
  *
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of devices
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
