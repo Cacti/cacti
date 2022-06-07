@@ -1922,7 +1922,7 @@ function db_force_remote_cnn() {
  * This function needs to be used with caution.  It is for switching a database connection
  * from the remote connection or the main Cacti poller back to the local connection
  * for all db* calls that do not require the connection to be passed.  It's to be used
- * by CLI script, that by default connecto the local database, back and forth to the
+ * by CLI script, that by default connect to the local database, back and forth to the
  * remote or main database server.
  *
  * @returns (bool) If the switch was succefull
@@ -1946,7 +1946,7 @@ function db_switch_remote_to_main() {
  * This function needs to be used with caution.  It is for switching a database connection
  * from the remote connection or the main Cacti poller back to the local connection
  * for all db* calls that do not require the connection to be passed.  It's to be used
- * by CLI script, that by default connecto the local database, back and forth to the
+ * by CLI script, that by default connect to the local database, back and forth to the
  * remote or main database server.
  *
  * @returns (bool) If the switch was succefull
