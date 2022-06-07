@@ -47,7 +47,7 @@ $auth_method   = read_config_option('auth_method');   // The authentication meth
 $error         = false;                               // Global variable, will be true if any errors occur
 $error_msg     = '';                                  // The errors message in case there was a login error
 
-/* glboal variables for exception handling */
+/* global variables for exception handling */
 global $error, $error_msg;
 
 if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
