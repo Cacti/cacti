@@ -1846,7 +1846,7 @@ function get_policy_join_select($policies) {
 
 /**
  * get_policy_where - Parse the policies in order to downselect matching graphs
- *   without the use of the SQL Having clause which is very inneficient
+ *   without the use of the SQL Having clause which is very inefficient
  *
  * @param  (int)    $graph_auth_method - The graph auth method: permissive, restrictive, device, graph_template
  * @param  (array)  $policies - The list of user and group policies.  Will be reversed to

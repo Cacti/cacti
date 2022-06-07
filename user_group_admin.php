@@ -825,7 +825,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/**
 		 * if viewing just the graphs that the user has access to
 		 * we use a custom crafted sql_where clause to calculate
-		 * permissions due to the inneficient nature of the HAVING
+		 * permissions due to the inefficient nature of the HAVING
 		 * SQL clause.
 		 */
 		if (get_request_var('associated') == 'false') {
