@@ -1171,7 +1171,7 @@ function md5sum_path($path, $recursive = true) {
 }
 
 /**
- * poller_puth_to_remote_db_connect - given the device or poller_id connect
+ * poller_push_to_remote_db_connect - given the device or poller_id connect
  *   to the data collector.
  *
  * @param  (int)    device_or_poller - the id of the object
