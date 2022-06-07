@@ -853,7 +853,7 @@ class spikekill {
 									if (!empty($this->out_start) && $timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 										/* Already calculated */
 									} elseif ($rra[$rra_num][$ds_num]['variance_avg'] == 'NAN') {
-										/* not enought samples to calculate */
+										/* not enough samples to calculate */
 									} elseif ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))) {
 										if ($this->method == SPIKE_METHOD_VARIANCE) {
 											/* kill based upon variance */
