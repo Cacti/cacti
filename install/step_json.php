@@ -25,7 +25,7 @@
 /* since we'll have additional headers, tell php when to flush them */
 ob_start();
 
-// Prevnt redirect to /install/
+// Prevent redirect to /install/
 define('IN_CACTI_INSTALL', 1);
 chdir(__DIR__ . '/../');
 
