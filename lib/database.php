@@ -1586,7 +1586,7 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
  *
  * @param  (resource)     The database connection to use
  * @param  (string)       The table name to use
- * @param  (array)        An array of fieldvalues
+ * @param  (array)        An array of field values
  * @param  (string|array) A string of a key column or an array of key columns
  *
  * @return (bool|int) Either the insert id of the replace of false on error
