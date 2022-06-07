@@ -3284,7 +3284,7 @@ function auth_process_lockout_check($username, $realm) {
 }
 
 /**
- * auth_process_lockout - called when a user login attempt fails to increment or locout the user
+ * auth_process_lockout - called when a user login attempt fails to increment or lockout the user
  *   if there is an error, the globals error and error_msg will be set to notify the caller
  *   that a lockout is present and not to proceed with login.
  *
