@@ -1051,7 +1051,7 @@ function db_get_table_column_types($table, $db_conn = false) {
  *
  * @param  (string)        The name of the table
  * @param  (array)         Table definition as a Cacti specific array
- * @param  (bool)          Remove any existing columns that are not in the speicfication
+ * @param  (bool)          Remove any existing columns that are not in the specification
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
  *
