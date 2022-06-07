@@ -3250,7 +3250,7 @@ function auth_checkclear_lockout($username, $realm) {
  *   that a lockout is present and not to proceed with login.
  *
  * @param  (string) $username - The name of the user account
- * @param  (int)    $realm - The loging realm for the user
+ * @param  (int)    $realm - The logging realm for the user
  *
  * @return (bool)   True if locked out, otherwise false
  */
@@ -3289,7 +3289,7 @@ function auth_process_lockout_check($username, $realm) {
  *   that a lockout is present and not to proceed with login.
  *
  * @param  (string) $username - The name of the user account
- * @param  (int)    $realm - The loging realm for the user
+ * @param  (int)    $realm - The logging realm for the user
  *
  * @return (void)
  */
