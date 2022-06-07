@@ -4569,7 +4569,7 @@ function check_reset_no_authentication($auth_method) {
 
 		if (!$admin_id) {
 			$error     = true;
-			$error_msg = __('Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found.');
+			$error_msg = __('Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found.');
 
 			return false;
 		}
