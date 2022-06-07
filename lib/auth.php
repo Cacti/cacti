@@ -227,7 +227,7 @@ function get_basic_auth_username() {
 		}
 
 		/* Handle mapping basic accounts to shortform accounts.
-		 * Fromat of map file is CSV: basic,shortform */
+		 * Format of map file is CSV: basic,shortform */
 		$mapfile = read_config_option('path_basic_mapfile');
 		if ($mapfile != '' && file_exists($mapfile) && is_readable($mapfile)) {
 			$records = file($mapfile);
