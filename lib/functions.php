@@ -3780,7 +3780,7 @@ function draw_navigation_text($type = 'url') {
 		$tree_title = '';
 	}
 
-	// Finally create a navitagion title
+	// Finally create a navigation title
 	if (isset($current_array['title'])) {
 		$title .= html_escape(resolve_navigation_variables($current_array['title']) . ' ' . $tree_title);
 	}
