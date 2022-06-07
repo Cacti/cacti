@@ -201,6 +201,6 @@ function display_help () {
 	print '  --install    - Install the plugin or plugins' . PHP_EOL;
 	print '  --enable     - Enable the plugin or plugins' . PHP_EOL;
 	print '  --allperms   - Enable all permission for plugin or plugins' . PHP_EOL;
-	print '  --uninstall  - Uninstall the plguin or plugins' . PHP_EOL;
+	print '  --uninstall  - Uninstall the plugin or plugins' . PHP_EOL;
 	print '  --disable    - Disable the plugin or plugins' . PHP_EOL;
 }
