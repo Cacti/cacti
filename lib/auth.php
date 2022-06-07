@@ -994,7 +994,7 @@ function is_realm_allowed($realm, $check_user = false) {
 				}
 			}
 
-			/* if the permission is already valid, the session ariable will be set */
+			/* if the permission is already valid, the session variable will be set */
 			if (isset($_SESSION['sess_user_realms'][$realm])) {
 				return $_SESSION['sess_user_realms'][$realm];
 			}
