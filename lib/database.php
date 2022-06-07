@@ -1905,7 +1905,7 @@ function db_get_default_database($db_conn = false) {
 /**
  * db_force_remote_cnn - alias for db_switch_remote_to_main()
  *
- * Swithces the local database connection to the main server
+ * Switches the local database connection to the main server
  * This is required for CLI script that wish to talk to the main
  * database server since by default they are connected to the local
  * database server.
