@@ -193,7 +193,7 @@ function display_version() {
 function display_help () {
 	print 'usage: plugin_manage.php [--plugin=S] [--install --enable --allperms] [--uninstall ] [--disable]' . PHP_EOL . PHP_EOL;
 
-	print  'A utility to install/uinstall a Cacti plugin or plugins' . PHP_EOL . PHP_EOL;
+	print  'A utility to install/uninstall a Cacti plugin or plugins' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
 	print '  --plugin=S   - The plugin to install.  Use the option multiple time for more plugins' . PHP_EOL . PHP_EOL;
