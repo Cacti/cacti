@@ -3200,7 +3200,7 @@ function auth_get_username() {
 }
 
 /**
- * auth_checkclear_lockout - checks the lockout status of a user and unlocks if neccessary
+ * auth_checkclear_lockout - checks the lockout status of a user and unlocks if necessary
  *
  * @param  (string) $username The username of the user to check
  * @param  (int)    $realm The realm of the user to check
