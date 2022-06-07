@@ -160,7 +160,7 @@ if (cacti_sizeof($parms)) {
 			exit(1);
 		}
 	} else {
-		print 'ERROR: no filename specifiedn' . PHP_EOL . PHP_EOL;
+		print 'ERROR: no filename specified' . PHP_EOL . PHP_EOL;
 		display_help();
 		exit(1);
 	}
