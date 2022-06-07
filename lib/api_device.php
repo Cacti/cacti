@@ -384,7 +384,7 @@ function api_device_enable_devices($device_ids) {
 }
 
 /**
- * api_device_change_options - Given an array of devive ids and the
+ * api_device_change_options - Given an array of device ids and the
  *   post variable, update a series of Device settings.
  *
  * @param  (array) An array of device ids
