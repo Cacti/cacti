@@ -1257,7 +1257,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 }
 
 /**
- * db_format_index_create - Converts and array of indexs to a string
+ * db_format_index_create - Converts and array of indexes to a string
  *   that is compatible with the cacti database table creation array.
  *
  * @param  (array) An array of indexes to process
