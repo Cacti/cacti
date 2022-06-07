@@ -1727,7 +1727,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 
 /**
  * db_qstr - Quote a string using the PDO function and also enclose
- *   the ramainder of the string in single quotes.
+ *   the remainder of the string in single quotes.
  *
  * @param  (string)        The SQL to be escaped
  * @param  (bool|resource) The database connection or false if to use the default
