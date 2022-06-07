@@ -3787,7 +3787,7 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
  * @param  (string) $username  - The user to process
  * @param  (int)    $realm     - The LDAP Realm number
  *
- * @return (array)  $response - The ldap responnse, or false on general error
+ * @return (array)  $response - The ldap response, or false on general error
  */
 function domains_ldap_search_dn($username, $realm) {
 	$ldap = new Ldap;
