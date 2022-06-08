@@ -1237,6 +1237,20 @@ function boost_memory_limit() {
 	ini_set('memory_limit', read_config_option('boost_poller_mem_limit') . 'M');
 }
 
+function boost_debug($string) {
+	global $debug, $child;
+
+	$string = 'DEBUG: ' . trim($string, " \n");
+
+	if ($debug) {
+		print $string . PHP_EOL;
+
+		if ($child) {
+			cacti_log($string, false, 'BOOST CHILD');
+		}
+	}
+}
+
 function boost_poller_bottom() {
 	global $config;
 

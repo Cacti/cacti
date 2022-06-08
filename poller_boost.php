@@ -437,20 +437,6 @@ function boost_launch_children() {
 	sleep(2);
 }
 
-function boost_debug($string) {
-	global $debug, $child;
-
-	$string = 'DEBUG: ' . trim($string, " \n");
-
-	if ($debug) {
-		print $string . PHP_EOL;
-
-		if ($child) {
-			cacti_log($string, false, 'BOOST CHILD');
-		}
-	}
-}
-
 function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_time) {
 	$run_now = false;
 
