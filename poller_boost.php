@@ -334,7 +334,7 @@ function boost_prepare_process_table() {
 	$arch_tables = boost_get_arch_table_names();
 
 	if (!cacti_sizeof($arch_tables)) {
-		cacti_log('ERROR: Failed to retrieve archive table name', false, 'BOOST');
+		cacti_log('ERROR: Failed to retrieve archive table name - check poller', false, 'BOOST');
 
 		return false;
 	}
