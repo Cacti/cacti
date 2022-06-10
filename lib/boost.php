@@ -757,7 +757,12 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				boost_timer('rrd_filename_and_template', BOOST_TIMER_END);
 
 				boost_timer('rrd_lastupdate', BOOST_TIMER_START);
-				$last_update = boost_rrdtool_get_last_update_time($rrd_path, $rrdtool_pipe);
+				if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+					$last_update = boost_rrdtool_get_last_update_time($rrd_path, $rrdtool_pipe);
+				} else {
+					$last_update = 0;
+				}
+
 				boost_timer('rrd_lastupdate', BOOST_TIMER_END);
 
 				$local_data_id  = $item['local_data_id'];
