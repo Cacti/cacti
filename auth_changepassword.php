@@ -93,7 +93,7 @@ if ($user['password_change'] != 'on') {
 }
 
 /* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
-if (cacti_sizeof($user) && $user['id'] == get_guest_account()) {
+if (cacti_sizeof($user) && $user['id'] === get_guest_account()) {
 	header('Location: graph_view.php');
 	exit;
 }

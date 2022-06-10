@@ -78,7 +78,7 @@ function set_auth_cookie($user) {
 			(?, ?, NOW(), ?);',
 			array($user['id'], get_client_addr(''), $secret));
 
-		cacti_cookie_session_set($user['username'], $user['realm'], $nssecret);
+		cacti_cookie_session_set($user['id'], $user['realm'], $nssecret);
 	}
 }
 
@@ -104,16 +104,16 @@ function check_auth_cookie() {
 			$token = $parts[2];
 		}
 
-		if ($user != '' && $user != get_guest_account()) {
+		if ($user != '' && $user !== get_guest_account()) {
 			if ($realm == -1) {
 				$user_info = db_fetch_row_prepared('SELECT id, realm, username
 					FROM user_auth
-					WHERE username = ?',
+					WHERE id = ?',
 					array($user));
 			} else {
 				$user_info = db_fetch_row_prepared('SELECT id, realm, username
 					FROM user_auth
-					WHERE username = ?
+					WHERE id = ?
 					AND realm = ?',
 					array($user, $realm));
 			}
@@ -140,7 +140,7 @@ function check_auth_cookie() {
 							(username, user_id, result, ip, time)
 							VALUES
 							(?, ?, 2, ?, NOW())',
-							array($user, $user_info['id'], get_client_addr(''))
+							array($user_info['username'], $user_info['id'], get_client_addr(''))
 						);
 
 						return $user_info['id'];
@@ -433,7 +433,7 @@ function user_remove($user_id) {
 			return;
 		}
 
-		if ($user_id == get_guest_account()) {
+		if ($user_id === get_guest_account()) {
 			raise_message(21);
 			return;
 		}
@@ -955,7 +955,7 @@ function is_realm_allowed($realm, $check_user = false) {
 						WHERE id = ?',
 						array($_SESSION['sess_user_id']));
 
-					if ($enabled == '' && get_guest_account() != $_SESSION['sess_user_id']) {
+					if ($enabled == '' && get_guest_account() !== $_SESSION['sess_user_id']) {
 						db_execute_prepared('DELETE FROM user_auth_cache
 							WHERE user_id = ?',
 							array($_SESSION['sess_user_id']));
@@ -3395,7 +3395,7 @@ function basic_auth_login_process($username) {
 		AND realm = 2',
 		array($username));
 
-	if (!$user && get_template_account($username) == 0 && get_guest_account() == 0) {
+	if (!$user && get_template_account($username) == 0 && get_guest_account() === 0) {
 		$error     = true;
 		$error_msg = __esc('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username);
 
