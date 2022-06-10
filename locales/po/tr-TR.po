@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-04-02 09:08-0400\n"
-"PO-Revision-Date: 2022-03-14 21:01-0400\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: tr_TR\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-10 20:33+0000\nLast-Translator: San IPE <sanipe1949@krunsea.com>\nLanguage-Team: Turkish <http://translate.cacti.net/projects/cacti/core-v1-2-x/tr/>\nLanguage: tr-TR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 #, fuzzy
@@ -24,9 +12,8 @@ msgid "About Cacti"
 msgstr "Cacti hakkında"
 
 #: about.php:42
-#, fuzzy
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs."
-msgstr "Kaktüsler, RRDtool&#39;un çerçevesine dayanan eksiksiz bir grafik çözümü olarak tasarlanmıştır. Amacı, anlamlı grafikler oluşturmak için gereken tüm gerekli ayrıntılara dikkat ederek bir ağ yöneticisinin işini kolaylaştırmaktır."
+msgstr "Cacti, RRDtool&#39;un çerçevesine dayalı eksiksiz bir grafik çözümü olacak şekilde tasarlanmıştır. Amacı, anlamlı grafikler oluşturmak için gerekli tüm gerekli ayrıntılara dikkat ederek bir ağ yöneticisinin işini kolaylaştırmaktır."
 
 #: about.php:44
 #, fuzzy, php-format
@@ -34,18 +21,17 @@ msgid "Please see the official %sCacti website%s for information, support, and u
 msgstr "Bilgi, destek ve güncellemeler için lütfen %sCacti web sitesi %s resmi sayfasına bakın."
 
 #: about.php:46
-#, fuzzy
 msgid "Cacti Developers"
-msgstr "Kaktüsler Geliştiriciler"
+msgstr "Cacti Geliştiriciler"
 
 #: about.php:59
 msgid "Thanks"
 msgstr "Teşekkürler"
 
 #: about.php:62
-#, fuzzy, php-format
+#, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
-msgstr "%sTobi Oetiker %s, %sRRDtool %s ve en popüler %sMRTG %s ürününün yaratıcısı için çok özel bir teşekkür."
+msgstr "%sRRDtool%s ve çok popüler %sMRTG%s'nin yaratıcısı %sTobi Oetiker%s'e çok özel teşekkürlerimizi sunarız."
 
 #: about.php:65
 #, fuzzy
@@ -62,19 +48,16 @@ msgid "License"
 msgstr "Lisans"
 
 #: about.php:73
-#, fuzzy
 msgid "Cacti is licensed under the GNU GPL:"
-msgstr "Kaktüsler GNU GPL lisansı altında lisanslanmıştır:"
+msgstr "Cacti GNU GPL lisansı altında lisanslanmıştır:"
 
 #: about.php:75 lib/installer.php:1657
-#, fuzzy
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "Bu program ücretsiz bir yazılımdır; Özgür Yazılım Vakfı tarafından yayınlanan GNU Genel Kamu Lisansı koşulları altında yeniden dağıtabilir ve / veya değiştirebilirsiniz; Lisansın 2. sürümü veya (isteğe bağlı olarak) daha sonraki bir sürüm."
+msgstr "Bu program, ücretsiz bir yazılımdır; Özgür Yazılım Vakfı tarafından yayınlanan GNU Genel Kamu Lisansının 2. sürümü veya (isteğe bağlı olarak) daha sonraki herhangi bir sürümü koşulları altında yeniden dağıtabilir ve/veya değiştirebilirsiniz."
 
 #: about.php:77
-#, fuzzy
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-msgstr "Bu program faydalı olacağı umuduyla dağıtılmıştır, ancak HİÇBİR GARANTİ YOKTUR; HİÇBİR AMAÇLI OLMAK İÇİN TİCARİRLİK veya FİTNESS&#39;in zımni garantisi olmadan. Daha fazla bilgi için GNU Genel Kamu Lisansına bakınız."
+msgstr "Bu program yararlı olması ümidiyle, ancak HİÇBİR GARANTİ OLMAKSIZIN; TİCARETE ELVERİŞLİLİK veya BELİRLİ BİR AMACA UYGUNLUK zımni garantisi bile olmadan dağıtılmıştır. Daha fazla ayrıntı için GNU Genel Kamu Lisansına bakınız."
 
 #: aggregate_graphs.php:43 aggregate_templates.php:30
 #: automation_graph_rules.php:32 automation_networks.php:31
@@ -98,19 +81,16 @@ msgid "Delete"
 msgstr "Sil"
 
 #: aggregate_graphs.php:44
-#, fuzzy
 msgid "Convert to Normal Graph"
-msgstr "LINE1 Grafiğine Dönüştür"
+msgstr "Normal Grafiğe Dönüştür"
 
 #: aggregate_graphs.php:45 graphs.php:58
-#, fuzzy
 msgid "Place Graphs on Report"
-msgstr "Grafikleri Rapora Yerleştirin"
+msgstr "Grafikleri Rapora Yerleştir"
 
 #: aggregate_graphs.php:46
-#, fuzzy
 msgid "Migrate Aggregate to use a Template"
-msgstr "Şablon kullanmak için Toplamı Taşıma"
+msgstr "Bir Şablonu kullanmak için Toplama Taşı"
 
 #: aggregate_graphs.php:47
 #, fuzzy
@@ -1402,7 +1382,7 @@ msgstr "Keşfedilen Cihazları Temizle"
 #: utilities.php:2438 utilities.php:2446 utilities.php:2449 utilities.php:2455
 #: utilities.php:2474 utilities.php:2708
 msgid "N/A"
-msgstr "N/A"
+msgstr "Yok"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
@@ -17638,9 +17618,8 @@ msgid "Web"
 msgstr "Web"
 
 #: lib/installer.php:3430
-#, fuzzy
 msgid "Cli"
-msgstr "Klasik"
+msgstr "komut satırı"
 
 #: lib/installer.php:3435
 #, fuzzy, php-format

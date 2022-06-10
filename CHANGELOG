@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#4810: Call to undefined function boost_debug in Cacti log
 -issue#4796: Hint at poller issues when boost fails
 -issue#4806: Search in tree view unusable on sizeable installations
+-issue#4814: When no guest template is set, login cookies are not properly set
 
 1.2.21
 -issue#4531: Correct duplicate keys within database

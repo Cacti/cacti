@@ -554,7 +554,7 @@ function form_save() {
 				raise_message(20);
 			}
 
-			if (get_filter_request_var('id') == get_guest_account()) {
+			if (get_filter_request_var('id') === get_guest_account()) {
 				raise_message(20);
 			}
 		}
