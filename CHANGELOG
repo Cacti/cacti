@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#4802: Typo in lib/auth.php prevents users from changing their password and logging in
 -issue#4810: Call to undefined function boost_debug in Cacti log
 -issue#4796: Hint at poller issues when boost fails
+-issue#4806: Search in tree view unusable on sizeable installations
 
 1.2.21
 -issue#4531: Correct duplicate keys within database
