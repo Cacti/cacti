@@ -546,8 +546,7 @@ function domains_login_process() {
 							array(get_nfilter_request_var('realm')-1000));
 
 						if ($cn_full_name != '' || $cn_email != '') {
-							$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email) );
-
+							$ldap_cn_search_response = domain_ldap_search_cn($username, array($cn_full_name,$cn_email),get_nfilter_request_var('realm')-1000);
 							if (isset($ldap_cn_search_response['cn'])) {
 								$data_override = array();
 
@@ -654,6 +653,46 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
 	} else {
 		return false;
 	}
+}
+
+function domain_ldap_search_cn($username, $cn = array(), $realm) {
+	$ldap = new Ldap;
+
+	if (!empty($username)) { $ldap->username = $username; }
+
+	$ld = db_fetch_row_prepared('SELECT *
+		FROM user_domains_ldap
+		WHERE domain_id = 1',
+		array($realm-1000));
+	
+	if (cacti_sizeof($ld)) {
+		if (!empty($ld['dn']))                { $ldap->dn                = $ld['dn'];                }
+		if (!empty($ld['server']))            { $ldap->host              = $ld['server'];            }
+		if (!empty($ld['port']))              { $ldap->port              = $ld['port'];              }
+		if (!empty($ld['port_ssl']))          { $ldap->port_ssl          = $ld['port_ssl'];          }
+		if (!empty($ld['proto_version']))     { $ldap->version           = $ld['proto_version'];     }
+		if (!empty($ld['encryption']))        { $ldap->encryption        = $ld['encryption'];        }
+		if (!empty($ld['referrals']))         { $ldap->referrals         = $ld['referrals'];         }
+		if (!empty($ld['mode']))              { $ldap->mode              = $ld['mode'];              }
+		if (!empty($ld['search_base']))       { $ldap->search_base       = $ld['search_base'];       }
+		if (!empty($ld['search_filter']))     { $ldap->search_filter     = $ld['search_filter'];     }
+		if (!empty($ld['specific_dn']))       { $ldap->specific_dn       = $ld['specific_dn'];       }
+		if (!empty($ld['specific_password'])) { $ldap->specific_password = $ld['specific_password']; }
+
+		if ($ld['group_require'] == 'on') {
+			$ldap->group_require = true;
+		} else {
+			$ldap->group_require = false;
+		}
+
+		if (!empty($ld['group_dn']))          { $ldap->group_dn          = $ld['group_dn'];          }
+		if (!empty($ld['group_attrib']))      { $ldap->group_attrib      = $ld['group_attrib'];      }
+		if (!empty($ld['group_member_type'])) { $ldap->group_member_type = $ld['group_member_type']; }
+	}
+
+	if (!empty($cn)) { $ldap->cn = $cn; }
+
+	return $ldap->Getcn();
 }
 
 function domains_ldap_search_dn($username, $realm) {
