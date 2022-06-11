@@ -56,7 +56,7 @@ function get_matching_nodes() {
 			LEFT JOIN host AS h
 			ON h.id = gti.host_id
 			LEFT JOIN graph_templates_graph AS gtg
-			ON gtg.local_graph_id = gti.local_graph_id 
+			ON gtg.local_graph_id = gti.local_graph_id
 			LEFT JOIN sites AS s
 			ON s.id = h.site_id
 			WHERE gtg.local_graph_id > 0
@@ -604,7 +604,7 @@ case 'list':
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<?php html_host_filter(get_request_var('host_id'));?>
 					<td>
