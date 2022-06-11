@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#4814: When no guest template is set, login cookies are not properly set
 -issue#4817: Boost when using RRDtool 1.5+ does not need to check last_update time
 -issue#4818: Regex widths are too narrow
+-issue#4819: Domains based LDAP and AD Fullname and Email not auto-populated
 
 1.2.21
 -issue#4531: Correct duplicate keys within database
