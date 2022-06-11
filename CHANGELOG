@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.22
+-issue#4768: Multiple AD LDAP Full Name and mail are not propagated when creating user from template
 -issue#4802: Typo in lib/auth.php prevents users from changing their password and logging in
 -issue#4808: WARNING: Poller Output Table not Empty
 -issue#4810: Call to undefined function boost_debug in Cacti log
