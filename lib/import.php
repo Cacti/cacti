@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false) {
+function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false, $import_hashes = array()) {
 	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only, $import_debug_info, $legacy_template;
 
 	include_once($config['library_path'] . '/xml.php');
@@ -47,10 +47,12 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 			return $info_array;
 		}
 
-		if (isset($dep_hash_cache[$parsed_hash['type']])) {
-			array_push($dep_hash_cache[$parsed_hash['type']], $parsed_hash);
-		} else {
-			$dep_hash_cache[$parsed_hash['type']] = array($parsed_hash);
+		if (!cacti_sizeof($import_hashes) || in_array($parsed_hash['hash'], $inport_hashes)) {
+			if (isset($dep_hash_cache[$parsed_hash['type']])) {
+				array_push($dep_hash_cache[$parsed_hash['type']], $parsed_hash);
+			} else {
+				$dep_hash_cache[$parsed_hash['type']] = array($parsed_hash);
+			}
 		}
 	}
 
@@ -293,7 +295,7 @@ EOD;
     return $public_key;
 }
 
-function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false, $preview = false, $info_only = false, $limitex = true) {
+function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false, $preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array()) {
 	global $config, $preview_only;
 
 	$preview_only = $preview;
@@ -393,30 +395,32 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 			$filename = $config['base_path'] . "/$name";
 
 			if (!$preview) {
-				cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_LOW);
+				if (!cacti_sizeof($import_files) || in_array($filename, $import_files)) {
+					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
-				if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
-					$file = fopen($filename, 'wb');
+					if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
+						$file = fopen($filename, 'wb');
 
-					if (is_resource($file)) {
-						fwrite($file , $fdata, strlen($fdata));
-						fclose($file);
-						clearstatcache();
-						$filestatus[$filename] = __('written');
+						if (is_resource($file)) {
+							fwrite($file , $fdata, strlen($fdata));
+							fclose($file);
+							clearstatcache();
+							$filestatus[$filename] = __('written');
+						} else {
+							$filestatus[$filename] = __('could not open');
+						}
+
+						if (!file_exists($filename)) {
+							cacti_log('FATAL: Unable to create directory: ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+
+							$filestatus[$filename] = __('not exists');
+						}
 					} else {
-						$filestatus[$filename] = __('could not open');
+						$filestatus[$filename] = __('not writable');
 					}
 
-					if (!file_exists($filename)) {
-						cacti_log('FATAL: Unable to create directory: ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
-
-						$filestatus[$filename] = __('not exists');
-					}
-				} else {
-					$filestatus[$filename] = __('not writable');
+					cacti_log('Write Status file: ' . $filename . ', with Status ' . $filestatus[$filename], false, 'IMPORT', POLLER_VERBOSITY_LOW);
 				}
-
-				cacti_log('Write Status file: ' . $filename . ', with Status ' . $filestatus[$filename], false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			} else {
 				cacti_log('Previewing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
@@ -434,7 +438,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 				cacti_log('Previewing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			}
 
-			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $replace_svalues);
+			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
 
 			if ($debug_data === false) {
 				return false;
@@ -721,6 +725,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 	/* status information that will be presented to the user */
 	$import_debug_info['type']   = (empty($_graph_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
 	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($graph_template_id) ? 'fail' : 'success'));
 
@@ -1016,6 +1021,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 
 	/* status information that will be presented to the user */
 	$import_debug_info['type']   = (empty($_data_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
 	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($data_template_id) ? 'fail' : 'success'));
 
@@ -1274,6 +1280,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = 
 
 	/* status information that will be presented to the user */
 	$import_debug_info['type']   = (empty($_data_query_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
 	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($data_query_id) ? 'fail' : 'success'));
 
@@ -1324,6 +1331,7 @@ function xml_to_gprint_preset($hash, &$xml_array, &$hash_cache) {
 
 	/* status information that will be presented to the user */
 	$import_debug_info['type']   = (empty($_gprint_preset_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
 	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($gprint_preset_id) ? 'fail' : 'success'));
 
@@ -1395,6 +1403,7 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 
 		/* status information that will be presented to the user */
 		$import_debug_info['type']   = 'new';
+		$import_debug_info['hash']   = $save['hash'];
 		$import_debug_info['title']  = $xml_array['name'] . ' (imported)';
 		$import_debug_info['result'] = ($preview_only ? 'preview':(empty($dsp_id) ? 'fail' : 'success'));
 
@@ -1493,6 +1502,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 
 	/* status information that will be presented to the user */
 	$import_debug_info['type']   = (empty($_host_template_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
 	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($host_template_id) ? 'fail' : 'success'));
 
@@ -1624,6 +1634,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 
 	/* status information that will be presented to the user */
 	$import_debug_info['type']   = (empty($_cdef_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
 	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($cdef_id) ? 'fail' : 'success'));
 
@@ -1731,6 +1742,7 @@ function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
 
 	/* status information that will be presented to the user */
 	$import_debug_info['type']   = (empty($_vdef_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
 	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($vdef_id) ? 'fail' : 'success'));
 
@@ -1916,6 +1928,7 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 
 	/* status information that will be presented to the user */
 	$import_debug_info['type']   = (empty($_data_input_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+	$import_debug_info['hash']   = $hash;
 	$import_debug_info['title']  = $xml_array['name'];
 	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($data_input_id) ? 'fail' : 'success'));
 

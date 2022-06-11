@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#4817: Boost when using RRDtool 1.5+ does not need to check last_update time
 -issue#4818: Regex widths are too narrow
 -issue#4819: Domains based LDAP and AD Fullname and Email not auto-populated
+-feature#4820: Make it possible to only import certain components when importing packages
 
 1.2.21
 -issue#4531: Correct duplicate keys within database
