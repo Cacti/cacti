@@ -385,7 +385,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 				$output_array[] = sprintf('(%d, %s, CURRENT_TIMESTAMP(), %s)', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($output));
 			}
 
-			if ($output_count > 1000) {
+			if ($output_count > 2000) {
 				cacti_log("Device[$host_id] Writing $output_count items to Poller Output Table", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 				db_execute('INSERT IGNORE INTO poller_output
