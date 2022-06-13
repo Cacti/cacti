@@ -443,7 +443,7 @@ case 'preview':
 	/* create filter for sql */
 	$sql_where  = '';
 	if (!isempty_request_var('rfilter')) {
-		$sql_where .= " gtg.title_cache RLIKE " . db_qstr(get_request_var('rfilter'));
+		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	}
 
 	$sql_where .= ($sql_or != '' && $sql_where != '' ? ' AND ':'') . $sql_or;
@@ -689,7 +689,7 @@ case 'list':
 	/* create filter for sql */
 	$sql_where  = '';
 	if (!isempty_request_var('rfilter')) {
-		$sql_where .= " gtg.title_cache RLIKE " . db_qstr(get_request_var('rfilter'));
+		$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	}
 
 	if (!isempty_request_var('host_id') && get_request_var('host_id') > 0) {
@@ -878,20 +878,20 @@ case 'list':
 		strURL = urlPath+'graph_view.php?action=preview';
 		$('#chk').find('select, input').each(function() {
 			switch($(this).attr('id')) {
-			case 'graph_template_id':
-				strURL += '&' + $(this).attr('id') + '=' + $(this).val();
-				break;
-			case 'host_id':
-			case 'rfilter':
-			case 'graph_add':
-			case 'graph_remove':
-			case 'graph_list':
-			case 'style':
-			case 'csrf_magic':
-				strURL += '&' + $(this).attr('id') + '=' + $(this).val();
-				break;
-			default:
-				break;
+				case 'rfilter':
+					strURL += '&' + $(this).attr('id') + '=' + base64_encode($(this).val());
+					break;
+				case 'graph_template_id':
+				case 'host_id':
+				case 'graph_add':
+				case 'graph_remove':
+				case 'graph_list':
+				case 'style':
+				case 'csrf_magic':
+					strURL += '&' + $(this).attr('id') + '=' + $(this).val();
+					break;
+				default:
+					break;
 			}
 		});
 
