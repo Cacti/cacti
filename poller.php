@@ -285,26 +285,30 @@ if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
 
 	if ($active_profiles != 1) {
-		$sql_where   = "WHERE rrd_next_step - $poller_interval <= 0 AND poller_id = $poller_id";
+		$sql_where   = "WHERE rrd_next_step - $poller_interval <= 0 AND h.disabled = '' AND pi.poller_id = $poller_id";
 	} else {
-		$sql_where   = "WHERE poller_id = $poller_id";
+		$sql_where   = "WHERE pi.poller_id = $poller_id AND h.disabled = ''";
 	}
 
 	define('MAX_POLLER_RUNTIME', $poller_runs * $poller_interval - 2);
 } else {
-	$sql_where       = "WHERE poller_id = $poller_id";
+	$sql_where       = "WHERE pi.poller_id = $poller_id AND h.disabled = ''";
 	$poller_runs     = 1;
 	$poller_interval = 300;
 	define('MAX_POLLER_RUNTIME', 298);
 }
 
 $num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
-	FROM poller_item ' . $sql_where);
+	FROM poller_item AS pi
+	INNER JOIN host AS h
+	ON h.id = pi.host_id ' . $sql_where);
 
 if (isset($concurrent_processes) && $concurrent_processes > 1) {
 	$items_perhost = array_rekey(db_fetch_assoc("SELECT " . SQL_NO_CACHE . " host_id,
 		COUNT(local_data_id) AS data_sources
-		FROM poller_item
+		FROM poller_item AS pi
+		INNER JOIN host AS h
+		ON h.id = pi.host_id
 		$sql_where
 		GROUP BY host_id
 		ORDER BY host_id"), 'host_id', 'data_sources');
@@ -380,14 +384,16 @@ while ($poller_runs_completed < $poller_runs) {
 	$loop_start = microtime(true);
 
 	$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
-		FROM poller_item ' . $sql_where);
+		FROM poller_item AS pi
+		INNER JOIN host AS h
+		ON h.id = pi.host_id ' . $sql_where);
 
 	if ($poller_id == '1') {
 		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM host
 			WHERE poller_id = ?
-			AND disabled=""
-			AND deleted=""
+			AND disabled = ""
+			AND deleted = ""
 			ORDER BY id',
 			array($poller_id));
 
@@ -400,8 +406,8 @@ while ($poller_runs_completed < $poller_runs) {
 		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM host
 			WHERE poller_id = ?
-			AND disabled=""
-			AND deleted=""
+			AND disabled = ""
+			AND deleted = ""
 			ORDER BY id',
 			array($poller_id));
 	}
@@ -412,8 +418,11 @@ while ($poller_runs_completed < $poller_runs) {
 	$script = $server = $snmp = 0;
 
 	$totals = db_fetch_assoc_prepared('SELECT action, COUNT(*) AS totals
-		FROM poller_item
-		WHERE poller_id = ?
+		FROM poller_item AS pi
+		INNER JOIN host AS h
+		ON h.id = pi.host_id
+		WHERE pi.poller_id = ?
+		AND disabled = ""
 		GROUP BY action',
 		array($poller_id));
 
@@ -501,13 +510,13 @@ while ($poller_runs_completed < $poller_runs) {
 	$issues_param = [ $current_time, $poller_id, $poller_id ];
 
 	$issues_sql = '
-			FROM poller_output AS po
-			LEFT JOIN data_local AS dl
-			ON po.local_data_id = dl.id
-			LEFT JOIN host AS h
-			ON dl.host_id = h.id
-			WHERE time < FROM_UNIXTIME(? - 600)
-			AND (h.poller_id = ? OR h.id IS NULL or ? = 1)';
+		FROM poller_output AS po
+		LEFT JOIN data_local AS dl
+		ON po.local_data_id = dl.id
+		LEFT JOIN host AS h
+		ON dl.host_id = h.id
+		WHERE time < FROM_UNIXTIME(? - 600)
+		AND (h.poller_id = ? OR h.id IS NULL or ? = 1)';
 
 	if ($issues_check) {
 		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '

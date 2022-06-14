@@ -2230,9 +2230,19 @@ function boost_display_run_status() {
 		$pending_ds = 0;
 	}
 
-	$poller_items = db_fetch_cell('SELECT COUNT(local_data_id) FROM poller_item');
-	$data_sources = db_fetch_cell('SELECT COUNT(DISTINCT local_data_id) FROM poller_item');
-	$pi_ds        = ($data_sources ? ($poller_items / $data_sources) : 0);
+	$poller_items = db_fetch_cell('SELECT COUNT(local_data_id)
+		FROM poller_item AS pi
+		INNER JOIN host AS h
+		ON h.id = poller_item.host_id
+		WHERE h.disabled = ""');
+
+	$data_sources = db_fetch_cell('SELECT COUNT(DISTINCT local_data_id)
+		FROM poller_item AS pi
+		INNER JOIN host AS h
+		ON h.id = pi.host_id
+		WHERE h.disabled = ""');
+
+	$pi_ds = ($data_sources ? ($poller_items / $data_sources) : 0);
 
 	if ($pending_ds == 0) {
 		$remaining = $arch_records;

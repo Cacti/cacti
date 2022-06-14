@@ -1513,9 +1513,9 @@ function ds() {
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('status') == '1') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active="on"';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dtd.active = "on" AND h.disabled = "")';
 	} elseif (get_request_var('status') == '2') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active=""';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dtd.active = "" OR h.disabled != "")';
 	} elseif (get_request_var('status') == '3') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dl.snmp_index = "" AND dl.snmp_query_id > 0)';
 	}
@@ -1579,7 +1579,7 @@ function ds() {
 			INNER JOIN data_template_data AS dtd
 			ON dl.id=dtd.local_data_id
 			LEFT JOIN data_template AS dt
-			ON dt.id=dl.data_template_id
+			ON dt.id = dl.data_template_id
 			LEFT JOIN host AS h
 			ON h.id = dl.host_id
 			$sql_where1");
@@ -1590,7 +1590,7 @@ function ds() {
 			INNER JOIN data_template_data AS dtd
 			ON dl.id=dtd.local_data_id
 			LEFT JOIN data_template AS dt
-			ON dt.id=dl.data_template_id
+			ON dt.id = dl.data_template_id
 			LEFT JOIN host AS h
 			ON h.id = dl.host_id
 			$sql_where1
