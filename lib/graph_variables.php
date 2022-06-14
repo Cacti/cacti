@@ -330,13 +330,6 @@ function cacti_stats_calc($array, $ptile = 95) {
    @arg $ds_steps - how many seconds each period represents
    @returns - (array) an array containing each data source item, and its sum */
 function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
-	static $vstats = array();
-
-	// Check the cache for data
-	if (isset($vstats[$local_data_id . '_' . $start_time . '_' . $end_time . '_' . $rra_steps . '_' . $ds_steps])) {
-		return $vstats[$local_data_id . '_' . $start_time . '_' . $end_time . '_' . $rra_steps . '_' . $ds_steps];
-	}
-
 	$fetch_array = @rrdtool_function_fetch($local_data_id, $start_time, $end_time, $rra_steps * $ds_steps);
 
 	if (!isset($fetch_array['data_source_names']) || cacti_count($fetch_array['data_source_names']) == 0) {
@@ -360,9 +353,6 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 			$return_array[$fetch_array['data_source_names'][$i]] = $sum;
 		}
 	}
-
-	// Cache the fetch data
-	$vstats[$local_data_id . '_' . $start_time . '_' . $end_time . '_' . $rra_steps . '_' . $ds_steps] = $return_array;
 
 	return $return_array;
 }
@@ -397,8 +387,6 @@ function is_graphable_item($item) {
    @returns - a string containing the Nth percentile suitable for placing on the graph */
 function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end) {
 	global $graph_item_types;
-
-	static $vstats = array();
 
 	$nth_cache = array();
 
@@ -451,11 +439,6 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			list($data_source_name, $local_data_id) = explode('|||', $data_source);
 			$local_data_array[$local_data_id][] = $data_source_name;
 		}
-	}
-
-	// Returned the cached value if it exists
-	if (isset($vstats[$graph_item['local_data_id'] . '_' . $percentile . '_' . $type . '_' . $graph_start . '_' . $graph_end])) {
-		$nth_cache = $vstats[$graph_item['local_data_id'] . '_' . $percentile . '_' . $type . '_' . $graph_start . '_' . $graph_end];
 	}
 
 	/* Get the Nth percentile values */
@@ -568,8 +551,6 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			break;
 	}
 
-	$vstats[$graph_item['local_data_id'] . '_' . $percentile . '_' . $type . '_' . $graph_start . '_' . $graph_end] = $nth_cache;
-
 	/* return the final result and round off to two decimal digits */
 	return round($nth, $round_to);
 }
@@ -598,8 +579,6 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
    @returns - a string containg the bandwidth summation suitable for placing on the graph */
 function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
 	global $graph_item_types;
-
-	static $vstats = array();
 
 	if (cacti_sizeof($regexp_match_array) == 0) {
 		return 0;
