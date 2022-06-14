@@ -2233,7 +2233,7 @@ function boost_display_run_status() {
 	$poller_items = db_fetch_cell('SELECT COUNT(local_data_id)
 		FROM poller_item AS pi
 		INNER JOIN host AS h
-		ON h.id = poller_item.host_id
+		ON h.id = pi.host_id
 		WHERE h.disabled = ""');
 
 	$data_sources = db_fetch_cell('SELECT COUNT(DISTINCT local_data_id)
