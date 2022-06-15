@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#4818: Regex widths are too narrow
 -issue#4819: Domains based LDAP and AD Fullname and Email not auto-populated
 -issue#4822: Cacti polling and boost report the wrong number of Data Sources when Devices are disabled
+-issue#4823: When editing Graph Template Items there are cases where VDEF's are hidden when they should be shown
 -feature#4820: Make it possible to only import certain components when importing packages
 
 1.2.21

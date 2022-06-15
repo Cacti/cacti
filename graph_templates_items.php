@@ -714,7 +714,7 @@ function item_edit() {
 			$('#row_alpha').show();
 			$('#row_consolidation_function_id').show();
 			$('#row_cdef_id').show();
-			$('#row_vdef_id').hide();
+			$('#row_vdef_id').show();
 			$('#row_value').hide();
 			$('#row_gprint_id').hide();
 			$('#row_text_format').show();
@@ -732,7 +732,7 @@ function item_edit() {
 			$('#row_alpha').show();
 			$('#row_consolidation_function_id').show();
 			$('#row_cdef_id').show();
-			$('#row_vdef_id').hide();
+			$('#row_vdef_id').show();
 			$('#row_value').hide();
 			$('#row_gprint_id').hide();
 			$('#row_text_format').show();
@@ -751,7 +751,7 @@ function item_edit() {
 			$('#row_alpha').show();
 			$('#row_consolidation_function_id').show();
 			$('#row_cdef_id').show();
-			$('#row_vdef_id').hide();
+			$('#row_vdef_id').show();
 			$('#row_value').hide();
 			$('#row_gprint_id').hide();
 			$('#row_text_format').show();
