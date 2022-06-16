@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-12-28 13:54-0500\n"
-"PO-Revision-Date: 2022-03-31 16:49+0000\n"
-"Last-Translator: Anatoliy <hamrad99h2@gmail.com>\n"
+"PO-Revision-Date: 2022-06-18 06:37+0000\n"
+"Last-Translator: Coool <coool@mail.lv>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
 "MIME-Version: 1.0\n"
@@ -993,7 +993,6 @@ msgstr ""
 "попробуйте еще раз."
 
 #: auth_changepassword.php:280
-#, fuzzy
 msgid "Forced password change"
 msgstr "Принудительная смена пароля"
 
@@ -1033,9 +1032,8 @@ msgid "Please enter your current password and your new<br>Cacti password."
 msgstr "Пожалуйста, введите ваш текущий пароль и новый <br>Cacti пароль."
 
 #: auth_changepassword.php:316
-#, fuzzy
 msgid "Please enter your new Cacti password."
-msgstr "Пожайлуста введите Ваши логин и пароль:"
+msgstr "Пожалуйста, введите новый пароль Cacti."
 
 #: auth_changepassword.php:319 include/global_form.php:1510
 #: lib/functions.php:2456
@@ -1064,10 +1062,9 @@ msgstr "Подтвердите новый пароль"
 #: lib/html_form.php:1350 lib/html_graph.php:193 lib/html_tree.php:1079
 #: settings.php:449
 msgid "Save"
-msgstr " Сохранить "
+msgstr "Сохранить"
 
 #: auth_changepassword.php:364 user_admin.php:2064
-#, fuzzy
 msgid "Password Too Short"
 msgstr "Слишком короткий пароль"
 
@@ -24776,11 +24773,10 @@ msgstr[1] "Вы уверены что хотите удалить следующ
 msgstr[2] ""
 
 #: vdef.php:270
-#, fuzzy
 msgid "Delete VDEF"
 msgid_plural "Delete VDEFs"
 msgstr[0] "Удалить VDEF"
-msgstr[1] "Удалить"
+msgstr[1] "Удалить VDEFs"
 msgstr[2] ""
 
 #: vdef.php:274
@@ -24866,17 +24862,14 @@ msgid "VDEFs [new]"
 msgstr "ДПО [новые]"
 
 #: vdef.php:618 vdef.php:676
-#, fuzzy
 msgid "Delete VDEF Item"
-msgstr "Исключить пункт ДРЭФ"
+msgstr "Удалит элемент VDEF"
 
 #: vdef.php:894
-#, fuzzy
 msgid "The name of this VDEF."
-msgstr "Название этой ВДЭФ."
+msgstr "Название этого VDEF."
 
 #: vdef.php:894
-#, fuzzy
 msgid "VDEF Name"
 msgstr "VDEF Название"
 
