@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#4822: Cacti polling and boost report the wrong number of Data Sources when Devices are disabled
 -issue#4823: When editing Graph Template Items there are cases where VDEF's are hidden when they should be shown
 -feature#4820: Make it possible to only import certain components when importing packages
+-Feature: Add update_device.php script to cli folder
 
 1.2.21
 -issue#4531: Correct duplicate keys within database
