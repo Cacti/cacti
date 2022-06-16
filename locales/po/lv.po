@@ -8,20 +8,21 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-12-23 13:29-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-06-18 00:32+0000\n"
+"Last-Translator: Coool <coool@mail.lv>\n"
+"Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= "
 "19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
+"X-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2493 lib/html.php:2523
 #: lib/html.php:3165
 msgid "About Cacti"
-msgstr ""
+msgstr "Par Cacti"
 
 #: about.php:42
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs."
@@ -31,23 +32,27 @@ msgstr ""
 #, php-format
 msgid "Please see the official %sCacti website%s for information, support, and updates."
 msgstr ""
+"Lūdzu, skatiet oficiālo %sCacti vietni%s, lai iegūtu informāciju, atbalstu "
+"un atjauninājumus."
 
 #: about.php:46
 msgid "Cacti Developers"
-msgstr ""
+msgstr "Cacti izstrādātāji"
 
 #: about.php:59
 msgid "Thanks"
-msgstr ""
+msgstr "Pateicības"
 
 #: about.php:62
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
 msgstr ""
+"Īpašs paldies %sTobi Oetiker%s, %sRRDtool%s radītājam un ļoti populārās "
+"%sMRTG%s bibliotēkas izveidotājam."
 
 #: about.php:65
 msgid "The users of Cacti"
-msgstr ""
+msgstr "Cacti lietotāji"
 
 #: about.php:66
 msgid "Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti."
@@ -55,11 +60,11 @@ msgstr ""
 
 #: about.php:71
 msgid "License"
-msgstr ""
+msgstr "Licences līgums"
 
 #: about.php:73
 msgid "Cacti is licensed under the GNU GPL:"
-msgstr ""
+msgstr "Cacti ir licencēts saskaņā ar GNU GPL:"
 
 #: about.php:75 lib/installer.php:1665
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
@@ -88,11 +93,11 @@ msgstr ""
 #: tree.php:1276 tree.php:1336 tree.php:1357 user_admin.php:28
 #: user_domains.php:30 user_group_admin.php:30 vdef.php:29
 msgid "Delete"
-msgstr ""
+msgstr "Dzēst"
 
 #: aggregate_graphs.php:44
 msgid "Convert to Normal Graph"
-msgstr ""
+msgstr "Konvertēt uz Normālu grafiku"
 
 #: aggregate_graphs.php:45 graphs.php:58
 msgid "Place Graphs on Report"
@@ -117,7 +122,7 @@ msgstr ""
 #: aggregate_graphs.php:85 graphs.php:197 host.php:212
 #, php-format
 msgid "Place on a Tree (%s)"
-msgstr ""
+msgstr "Vieta kokā (%s)"
 
 #: aggregate_graphs.php:353
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
@@ -160,7 +165,7 @@ msgstr ""
 #: user_group_admin.php:479 user_group_admin.php:490 vdef.php:270 vdef.php:280
 #: vdef.php:336
 msgid "Cancel"
-msgstr ""
+msgstr "Atcelt"
 
 #: aggregate_graphs.php:358 aggregate_graphs.php:431 aggregate_graphs.php:456
 #: aggregate_graphs.php:485 aggregate_graphs.php:498 aggregate_graphs.php:507
@@ -197,12 +202,12 @@ msgstr ""
 #: user_group_admin.php:479 user_group_admin.php:490 vdef.php:270 vdef.php:280
 #: vdef.php:337
 msgid "Continue"
-msgstr ""
+msgstr "Turpināt"
 
 #: aggregate_graphs.php:358 aggregate_graphs.php:431 aggregate_graphs.php:456
 #: graphs.php:910
 msgid "Delete Graph(s)"
-msgstr ""
+msgstr "Dzēst grafiku(s)"
 
 #: aggregate_graphs.php:388
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
@@ -220,7 +225,7 @@ msgstr ""
 #: lib/html_form.php:1348 lib/html_utility.php:272 managers.php:1063
 #: permission_denied.php:28 permission_denied.php:30 pollers.php:775
 msgid "Return"
-msgstr ""
+msgstr "Atgriezties"
 
 #: aggregate_graphs.php:398
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
@@ -465,7 +470,7 @@ msgstr ""
 #: utilities.php:685 utilities.php:977 utilities.php:1257 utilities.php:1974
 #: utilities.php:2225 vdef.php:708
 msgid "Search"
-msgstr ""
+msgstr "Meklēt"
 
 #: aggregate_graphs.php:1311 aggregate_graphs.php:1354
 #: aggregate_graphs.php:1614 color_templates.php:644 data_sources.php:1620
@@ -478,7 +483,7 @@ msgstr ""
 #: tree.php:1790 user_admin.php:1027 user_admin.php:1296 user_admin.php:2634
 #: user_group_admin.php:825 user_group_admin.php:980 user_group_admin.php:2190
 msgid "Graphs"
-msgstr ""
+msgstr "Grafiki"
 
 #: aggregate_graphs.php:1315 aggregate_graphs.php:1618
 #: aggregate_templates.php:608 automation_devices.php:559
@@ -504,7 +509,7 @@ msgstr ""
 #: utilities.php:987 utilities.php:1278 utilities.php:1999 utilities.php:2261
 #: vdef.php:718
 msgid "Default"
-msgstr ""
+msgstr "Noklusējuma"
 
 #: aggregate_graphs.php:1328
 msgid "Part of Aggregate"
@@ -529,7 +534,7 @@ msgstr ""
 #: user_admin.php:2841 user_admin.php:2924 user_admin.php:3007
 #: user_admin.php:3090
 msgid "Go"
-msgstr ""
+msgstr "Aiziet"
 
 #: aggregate_graphs.php:1333 aggregate_graphs.php:1630
 #: automation_devices.php:495 automation_snmp.php:725
@@ -548,7 +553,7 @@ msgstr ""
 #: user_group_admin.php:2563 utilities.php:284 utilities.php:637
 #: utilities.php:968 utilities.php:1248 utilities.php:2011 utilities.php:2273
 msgid "Set/Refresh Filters"
-msgstr ""
+msgstr "Atlasīt/Atjaunināt filtrus"
 
 #: aggregate_graphs.php:1334 aggregate_graphs.php:1631
 #: aggregate_templates.php:630 automation_devices.php:496
@@ -569,7 +574,7 @@ msgstr ""
 #: user_admin.php:2842 user_admin.php:2925 user_admin.php:3008
 #: user_admin.php:3091 user_domains.php:677
 msgid "Clear"
-msgstr ""
+msgstr "Notīrīt"
 
 #: aggregate_graphs.php:1334 aggregate_graphs.php:1631 automation_snmp.php:726
 #: automation_templates.php:418 cdef.php:793 color.php:564 data_debug.php:982
@@ -588,7 +593,7 @@ msgstr ""
 #: utilities.php:638 utilities.php:969 utilities.php:1249 utilities.php:2012
 #: utilities.php:2274
 msgid "Clear Filters"
-msgstr ""
+msgstr "Notīrīt filtrus"
 
 #: aggregate_graphs.php:1359 aggregate_graphs.php:1694 graphs.php:1215
 #: lib/api_automation.php:593 user_admin.php:1035 user_group_admin.php:833
@@ -606,7 +611,7 @@ msgstr ""
 #: user_group_admin.php:682 user_group_admin.php:833 user_group_admin.php:980
 #: user_group_admin.php:1123 user_group_admin.php:1257
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: aggregate_graphs.php:1361
 msgid "Included in Aggregate"
@@ -628,7 +633,7 @@ msgstr ""
 #: support.php:504 tree.php:1823 tree.php:1824 user_admin.php:2366
 #: user_domains.php:766 user_group_admin.php:1934 vdef.php:913
 msgid "No"
-msgstr ""
+msgstr "Nē"
 
 #: aggregate_graphs.php:1378 aggregate_templates.php:711
 #: automation_tree_rules.php:682 cdef.php:919 color.php:726 color.php:728
@@ -644,7 +649,7 @@ msgstr ""
 #: tree.php:1824 user_admin.php:2364 user_domains.php:762 user_domains.php:766
 #: user_group_admin.php:1932 vdef.php:913
 msgid "Yes"
-msgstr ""
+msgstr "Jā"
 
 #: aggregate_graphs.php:1384 graphs.php:2359 lib/api_automation.php:620
 msgid "No Graphs Found"
@@ -685,7 +690,7 @@ msgstr ""
 #: utilities.php:1222 utilities.php:1267 utilities.php:1984 utilities.php:2235
 #: utilities.php:2248
 msgid "Any"
-msgstr ""
+msgstr "Jebkuru"
 
 #: aggregate_graphs.php:1597 aggregate_graphs.php:1709
 #: automation_graph_rules.php:903 automation_graph_rules.php:904
@@ -716,7 +721,7 @@ msgstr ""
 #: user_admin.php:2806 user_group_admin.php:2173 user_group_admin.php:2279
 #: utilities.php:1223
 msgid "None"
-msgstr ""
+msgstr "Nevienu"
 
 #: aggregate_graphs.php:1694
 msgid "The title for the Aggregate Graphs"
@@ -918,7 +923,7 @@ msgstr ""
 #: lib/html_form.php:1354 lib/html_graph.php:193 lib/html_tree.php:1079
 #: settings.php:484
 msgid "Save"
-msgstr ""
+msgstr "Saglabāt"
 
 #: auth_changepassword.php:364 user_admin.php:2066
 msgid "Password Too Short"
@@ -1010,7 +1015,7 @@ msgstr ""
 #: include/global_settings.php:1183 include/global_settings.php:1456
 #: managers.php:39 user_admin.php:1985 user_group_admin.php:1664
 msgid "General"
-msgstr ""
+msgstr "Pamata"
 
 #: auth_profile.php:93
 msgid "2FA"
@@ -1040,7 +1045,7 @@ msgstr ""
 #: auth_profile.php:336 auth_profile.php:507 include/global_form.php:1509
 #: user_admin.php:2343
 msgid "User Name"
-msgstr ""
+msgstr "Lietotājvārds"
 
 #: auth_profile.php:337 auth_profile.php:508 include/global_form.php:1510
 msgid "The login name for this user."
@@ -1145,7 +1150,7 @@ msgstr ""
 #: user_admin.php:1161 user_domains.php:412 user_group_admin.php:697
 #: utilities.php:1862
 msgid "Disabled"
-msgstr ""
+msgstr "Atspējots"
 
 #: auth_profile.php:562 automation_graph_rules.php:774
 #: automation_graph_rules.php:896 automation_graph_rules.php:912
@@ -1162,7 +1167,7 @@ msgstr ""
 #: user_group_admin.php:682 user_group_admin.php:697 user_group_admin.php:1924
 #: utilities.php:1862
 msgid "Enabled"
-msgstr ""
+msgstr "Iespējots"
 
 #: auth_profile.php:564
 msgid "Enabling..."
@@ -1268,7 +1273,7 @@ msgstr ""
 #: tree.php:507 tree.php:1784 user_admin.php:1288 user_admin.php:2819
 #: user_group_admin.php:972 user_group_admin.php:2292
 msgid "Devices"
-msgstr ""
+msgstr "Iekārtas"
 
 #: automation_devices.php:277
 msgid "Device Name"
@@ -1298,7 +1303,7 @@ msgstr ""
 #: managers.php:215 support.php:617 support.php:660 user_admin.php:1149
 #: user_admin.php:1296 user_group_admin.php:980 user_group_admin.php:1920
 msgid "Description"
-msgstr ""
+msgstr "Apraksts"
 
 #: automation_devices.php:283 automation_devices.php:525
 msgid "OS"
@@ -1323,7 +1328,7 @@ msgstr ""
 #: plugins.php:347 plugins.php:453 pollers.php:1030 user_admin.php:1296
 #: user_group_admin.php:980
 msgid "Status"
-msgstr ""
+msgstr "Statuss"
 
 #: automation_devices.php:287
 msgid "Last Check"
@@ -1352,7 +1357,7 @@ msgstr ""
 #: automation_devices.php:501 color.php:570 host.php:1636
 #: lib/html_form.php:1311 lib/html_form.php:1362
 msgid "Export"
-msgstr ""
+msgstr "Eksportēt"
 
 #: automation_devices.php:501
 msgid "Export to a file"
@@ -1618,7 +1623,7 @@ msgstr ""
 #: include/global_form.php:1974 include/global_settings.php:52
 #: lib/html_reports.php:30
 msgid "General Settings"
-msgstr ""
+msgstr "Pamatiestatījumi"
 
 #: automation_networks.php:446 automation_snmp.php:513 data_input.php:646
 #: data_input.php:707 data_queries.php:723 data_queries.php:828
@@ -1636,7 +1641,7 @@ msgstr ""
 #: lib/vdef.php:74 managers.php:560 pollers.php:61 sites.php:41 support.php:559
 #: user_admin.php:1149 user_domains.php:326 utilities.php:2056
 msgid "Name"
-msgstr ""
+msgstr "Nosaukums"
 
 #: automation_networks.php:447
 msgid "Give this Network a meaningful name."
@@ -1692,7 +1697,7 @@ msgstr ""
 
 #: automation_networks.php:495
 msgid "Schedule Type"
-msgstr ""
+msgstr "Izpildes saraksta tips"
 
 #: automation_networks.php:496
 msgid "Define the collection frequency."
@@ -1737,7 +1742,7 @@ msgstr ""
 #: include/global_arrays.php:699 pollers.php:944
 #, php-format
 msgid "%d Minute"
-msgstr ""
+msgstr "%d minūte"
 
 #: automation_networks.php:529 automation_networks.php:530
 #: automation_networks.php:531 automation_networks.php:532
@@ -1759,13 +1764,13 @@ msgstr ""
 #: include/global_settings.php:2588 pollers.php:945 pollers.php:946
 #, php-format
 msgid "%d Minutes"
-msgstr ""
+msgstr "%d minūtes"
 
 #: automation_networks.php:533 include/global_arrays.php:706
 #: include/global_arrays.php:716 include/global_arrays.php:1357
 #, php-format
 msgid "%d Hour"
-msgstr ""
+msgstr "%d stunda"
 
 #: automation_networks.php:534 automation_networks.php:535
 #: automation_networks.php:536 data_source_profiles.php:841
@@ -1787,7 +1792,7 @@ msgstr ""
 #: include/global_settings.php:1653
 #, php-format
 msgid "%d Hours"
-msgstr ""
+msgstr "%d stundas"
 
 #: automation_networks.php:543
 msgid "Enable this Network Range."
@@ -2119,7 +2124,7 @@ msgstr ""
 
 #: automation_networks.php:1080
 msgid "Schedule"
-msgstr ""
+msgstr "Izpildes saraksts"
 
 #: automation_networks.php:1081
 msgid "Total IPs"
@@ -2179,7 +2184,7 @@ msgstr ""
 #: lib/html_graph.php:306 lib/html_tree.php:1186 lib/html_tree.php:1207
 #: pollers.php:933 utilities.php:669 utilities.php:1601
 msgid "Refresh"
-msgstr ""
+msgstr "Atsvaidzināt"
 
 #: automation_networks.php:1214 automation_networks.php:1215
 #: automation_networks.php:1216 automation_networks.php:1217
@@ -2222,7 +2227,7 @@ msgstr ""
 
 #: automation_snmp.php:243
 msgid "name"
-msgstr ""
+msgstr "Nosaukums"
 
 #: automation_snmp.php:294
 msgid "Automation SNMP Options has been Duplicated."
@@ -2360,7 +2365,7 @@ msgstr ""
 
 #: automation_snmp.php:566
 msgid "none"
-msgstr ""
+msgstr "Nevienu"
 
 #: automation_snmp.php:581 automation_templates.php:525 cdef.php:620
 #: color_templates.php:111 data_queries.php:755 data_queries.php:862
@@ -2434,7 +2439,7 @@ msgstr ""
 #: include/global_form.php:1235 include/global_form.php:1644
 #: lib/html_reports.php:822
 msgid "Device Template"
-msgstr ""
+msgstr "Ierīces veidne"
 
 #: automation_templates.php:277
 msgid "Select a Device Template that Devices will be matched to."
@@ -3087,7 +3092,7 @@ msgstr ""
 
 #: data_debug.php:334 utilities.php:238 utilities.php:357
 msgid "User"
-msgstr ""
+msgstr "Lietotājs"
 
 #: data_debug.php:336
 msgid "The User who requested the Debug."
@@ -3128,7 +3133,7 @@ msgstr ""
 #: data_debug.php:369 data_sources.php:1638 data_templates.php:1193
 #: plugins.php:37 plugins.php:353
 msgid "Active"
-msgstr ""
+msgstr "Aktīvs"
 
 #: data_debug.php:372
 msgid "Determines if the Data Source is Enabled."
@@ -3172,7 +3177,7 @@ msgstr ""
 #: lib/api_automation.php:295 support.php:233 user_admin.php:1296
 #: user_group_admin.php:980
 msgid "Data Sources"
-msgstr ""
+msgstr "Datu avoti"
 
 #: data_debug.php:557 data_debug.php:1024
 msgid "Not Debugging"
@@ -3286,7 +3291,7 @@ msgstr ""
 #: support.php:474 support.php:491 support.php:493 support.php:524
 #: utilities.php:2056
 msgid "Value"
-msgstr ""
+msgstr "Vērtība"
 
 #: data_debug.php:757
 msgid "Results"
@@ -3357,7 +3362,7 @@ msgstr ""
 #: lib/html_reports.php:799 plugins.php:351 settings.php:515 settings.php:534
 #: settings.php:560 tree.php:505 utilities.php:242 utilities.php:651
 msgid "All"
-msgstr ""
+msgstr "Visi"
 
 #: data_debug.php:1012 utilities.php:264 utilities.php:395
 msgid "Failed"
@@ -3807,7 +3812,7 @@ msgstr ""
 #: data_source_profiles.php:613 include/global_settings.php:1077
 #: lib/html_reports.php:871
 msgid "Graph Timespan"
-msgstr ""
+msgstr "Grafika laika periods"
 
 #: data_source_profiles.php:614
 msgid "Steps"
@@ -3817,7 +3822,7 @@ msgstr ""
 #: lib/html.php:517 lib/html_filter.php:55 lib/installer.php:2532
 #: lib/rrd.php:2982 support.php:561 utilities.php:983
 msgid "Rows"
-msgstr ""
+msgstr "Rindas"
 
 #: data_source_profiles.php:668
 msgid "Select Consolidation Function(s)"
@@ -3886,7 +3891,7 @@ msgstr ""
 #: include/global_arrays.php:1362
 #, php-format
 msgid "%d Day"
-msgstr ""
+msgstr "%d diena"
 
 #: data_source_profiles.php:833 include/global_arrays.php:712
 #: include/global_arrays.php:722 include/global_arrays.php:723
@@ -4601,11 +4606,11 @@ msgstr ""
 
 #: graph_templates.php:406 lib/html_reports.php:116
 msgid "Graph Height"
-msgstr ""
+msgstr "Grafika augstums"
 
 #: graph_templates.php:408 lib/html_reports.php:108
 msgid "Graph Width"
-msgstr ""
+msgstr "Grafika platums"
 
 #: graph_templates.php:410 graph_templates.php:962
 msgid "Image Format"
@@ -5570,7 +5575,7 @@ msgstr ""
 #: pollers.php:130 pollers.php:1029 user_admin.php:1296
 #: user_group_admin.php:980
 msgid "Hostname"
-msgstr ""
+msgstr "Resursdatora nosaukums"
 
 #: host.php:1746
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
@@ -6420,7 +6425,7 @@ msgstr ""
 
 #: include/global_arrays.php:761
 msgid "Every day"
-msgstr ""
+msgstr "Katru dienu"
 
 #: include/global_arrays.php:765
 msgid "1 Thread (default)"
@@ -6602,7 +6607,7 @@ msgstr ""
 #: include/global_arrays.php:919 include/global_arrays.php:976
 #: include/global_arrays.php:994
 msgid "Management"
-msgstr ""
+msgstr "Vadība"
 
 #: include/global_arrays.php:921 sites.php:476 sites.php:491 sites.php:571
 #: tree.php:506 tree.php:1772
@@ -6618,7 +6623,7 @@ msgstr ""
 #: include/global_arrays.php:927 include/global_arrays.php:979
 #: include/global_arrays.php:995
 msgid "Data Collection"
-msgstr ""
+msgstr "Datu apkopošana"
 
 #: include/global_arrays.php:928 include/global_arrays.php:980 pollers.php:903
 msgid "Data Collectors"
@@ -6698,7 +6703,7 @@ msgstr ""
 #: include/global_arrays.php:964 include/global_arrays.php:985
 #: include/global_arrays.php:1001 include/global_arrays.php:2325
 msgid "Utilities"
-msgstr ""
+msgstr "Rīki"
 
 #: include/global_arrays.php:965 include/global_arrays.php:986
 msgid "System Utilities"
@@ -6807,7 +6812,7 @@ msgstr ""
 
 #: include/global_arrays.php:1158
 msgid "Template Editor"
-msgstr ""
+msgstr "Veidņu redaktors"
 
 #: include/global_arrays.php:1159
 msgid "General Administration"
@@ -6815,7 +6820,7 @@ msgstr ""
 
 #: include/global_arrays.php:1160
 msgid "System Administration"
-msgstr ""
+msgstr "Sistēmas pārvaldīšana"
 
 #: include/global_arrays.php:1257
 msgid "CDEF Item"
@@ -7336,11 +7341,11 @@ msgstr ""
 
 #: include/global_arrays.php:1767
 msgid "Every Day"
-msgstr ""
+msgstr "Katru dienu"
 
 #: include/global_arrays.php:1768
 msgid "Every Week"
-msgstr ""
+msgstr "Katru nedēļu"
 
 #: include/global_arrays.php:1769 include/global_arrays.php:1770
 #, php-format
@@ -7576,7 +7581,7 @@ msgstr ""
 
 #: include/global_arrays.php:1915 include/global_arrays.php:1921
 msgid "Tree Mode"
-msgstr ""
+msgstr "Koka režīms"
 
 #: include/global_arrays.php:1927
 msgid "List Mode"
@@ -7605,7 +7610,7 @@ msgstr ""
 #: include/global_arrays.php:2625 include/global_arrays.php:2643
 #: include/global_arrays.php:2661 include/global_arrays.php:2685
 msgid "(Edit)"
-msgstr ""
+msgstr "(rediģēt)"
 
 #: include/global_arrays.php:1995 lib/api_aggregate.php:1711
 msgid "Graph Items"
@@ -9214,7 +9219,7 @@ msgstr ""
 
 #: include/global_settings.php:45 lib/functions.php:4854 lib/functions.php:4859
 msgid "Authentication"
-msgstr ""
+msgstr "Autentifikācija"
 
 #: include/global_settings.php:46
 msgid "Performance"
@@ -9318,7 +9323,7 @@ msgstr ""
 
 #: include/global_settings.php:218
 msgid "Logging"
-msgstr ""
+msgstr "Žurnāla reģistrēšana"
 
 #: include/global_settings.php:223
 msgid "Cacti Log Path"
@@ -11170,7 +11175,7 @@ msgstr ""
 
 #: include/global_settings.php:2081 include/global_settings.php:2191
 msgid "1 Process"
-msgstr ""
+msgstr "1 process"
 
 #: include/global_settings.php:2082 include/global_settings.php:2083
 #: include/global_settings.php:2084 include/global_settings.php:2085
@@ -11193,7 +11198,7 @@ msgstr ""
 #: include/global_settings.php:2209 include/global_settings.php:2210
 #, php-format
 msgid "%d Processes"
-msgstr ""
+msgstr "%d procesi"
 
 #: include/global_settings.php:2104
 msgid "Maximum Records"
@@ -11780,7 +11785,7 @@ msgstr ""
 #: lib/html_tree.php:1112
 #, php-format
 msgid "%d Columns"
-msgstr ""
+msgstr "%d kolonnas"
 
 #: include/global_settings.php:2682
 msgid "Tree View Thumbnail Columns"
@@ -11808,7 +11813,7 @@ msgstr ""
 
 #: include/global_settings.php:2714
 msgid "Default Tree"
-msgstr ""
+msgstr "Noklusējuma koks"
 
 #: include/global_settings.php:2715
 msgid "The default graph tree to use when displaying graphs in tree mode."
@@ -12043,7 +12048,7 @@ msgstr ""
 #: lib/html_reports.php:1634 lib/html_reports.php:1645 lib/rrd.php:2923
 #: support.php:264 utilities.php:647 utilities.php:2056
 msgid "Type"
-msgstr ""
+msgstr "Tips"
 
 #: lib/api_automation.php:319
 msgid "No Matching Devices"
@@ -13095,7 +13100,7 @@ msgstr ""
 
 #: lib/html.php:536 lib/html.php:565 lib/installer.php:1527
 msgid "Next"
-msgstr ""
+msgstr "Nākamie"
 
 #: lib/html.php:543
 #, php-format
@@ -13548,7 +13553,7 @@ msgstr ""
 #: lib/html_graph.php:227 lib/html_tree.php:1107
 #, php-format
 msgid "%d Column"
-msgstr ""
+msgstr "%d kolonna"
 
 #: lib/html_graph.php:257 lib/html_tree.php:1137
 msgid "Custom"
@@ -13598,11 +13603,11 @@ msgstr ""
 
 #: lib/html_graph.php:327 support.php:251
 msgid "Interval"
-msgstr ""
+msgstr "Intervāls"
 
 #: lib/html_graph.php:339 lib/html_tree.php:1219
 msgid "Stop"
-msgstr ""
+msgstr "Apturēt"
 
 #: lib/html_graph.php:503 lib/html_graph.php:533
 #, php-format
@@ -13950,7 +13955,7 @@ msgstr ""
 
 #: lib/html_reports.php:1165
 msgid "Events"
-msgstr ""
+msgstr "Notikumi"
 
 #: lib/html_reports.php:1167 lib/import.php:2169 user_admin.php:2003
 msgid "[new]"
@@ -15252,7 +15257,7 @@ msgstr ""
 
 #: lib/installer.php:3444
 msgid "Cli"
-msgstr ""
+msgstr "cli"
 
 #: lib/installer.php:3449
 #, php-format
@@ -15374,7 +15379,7 @@ msgstr ""
 
 #: lib/ping.php:333 lib/ping.php:470
 msgid "default"
-msgstr ""
+msgstr "Noklusējuma"
 
 #: lib/ping.php:361 lib/ping.php:370 lib/ping.php:498 lib/ping.php:507
 msgid "Please upgrade to PHP 5.5.4+ for IPv6 support!"
@@ -15942,7 +15947,7 @@ msgstr ""
 
 #: links.php:379
 msgid "Page"
-msgstr ""
+msgstr "Lapa"
 
 #: links.php:381 links.php:504 links.php:509
 msgid "Style"
@@ -16080,7 +16085,7 @@ msgstr ""
 
 #: managers.php:216
 msgid "Id"
-msgstr ""
+msgstr "ID"
 
 #: managers.php:250
 msgid "No SNMP Notification Receivers"
@@ -17021,7 +17026,7 @@ msgstr ""
 
 #: sites.php:131
 msgid "Latitude"
-msgstr ""
+msgstr "Platuma grādi"
 
 #: sites.php:132
 msgid "The Latitude for this Site."
@@ -17033,7 +17038,7 @@ msgstr ""
 
 #: sites.php:140
 msgid "Longitude"
-msgstr ""
+msgstr "Garuma grādi"
 
 #: sites.php:141
 msgid "The Longitude for this Site."
@@ -17259,7 +17264,7 @@ msgstr ""
 
 #: support.php:299
 msgid "Concurrent Processes"
-msgstr ""
+msgstr "Vienlaicīgo procesu skaits"
 
 #: support.php:304
 msgid "Max Threads"
@@ -18509,7 +18514,7 @@ msgstr ""
 
 #: utilities.php:362
 msgid "IP Address"
-msgstr ""
+msgstr "IP adrese"
 
 #: utilities.php:379
 msgid "(User Removed)"
@@ -18587,11 +18592,11 @@ msgstr ""
 
 #: utilities.php:1395
 msgid "User:"
-msgstr ""
+msgstr "Lietotājs:"
 
 #: utilities.php:1398
 msgid "Script:"
-msgstr ""
+msgstr "Skripts:"
 
 #: utilities.php:1400
 msgid "Script Server:"
@@ -18809,7 +18814,7 @@ msgstr ""
 #: utilities.php:1824
 #, php-format
 msgid "%d minutes"
-msgstr ""
+msgstr "%d minūtes"
 
 #: utilities.php:1824
 #, php-format
@@ -19003,7 +19008,7 @@ msgstr ""
 
 #: vdef.php:894
 msgid "VDEF Name"
-msgstr ""
+msgstr "VDEF nosaukums"
 
 #: vdef.php:895
 msgid "VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template."
