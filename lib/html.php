@@ -2222,7 +2222,7 @@ function html_spikekill_menu($local_graph_id) {
 
 	$rkills  = '';
 	foreach ($settings['spikes']['spikekill_number']['array'] as $key => $value) {
-		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'fa fa-check':'fa', 'skkills', 'kills_' . $key);
+		$rkills .= html_spikekill_menu_item($value,html_spikekill_setting('spikekill_number') == $key ? 'fa fa-check':'fa', 'skills', 'kills_' . $key);
 	}
 	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
 
@@ -2351,8 +2351,8 @@ function html_spikekill_js() {
 				});
 		});
 
-		$('.skkills').unbind().click(function() {
-			$('.skkills').find('i').removeClass('fa fa-check');
+		$('.skills').unbind().click(function() {
+			$('.skills').find('i').removeClass('fa fa-check');
 			$(this).find('i:first').addClass('fa fa-check');
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
