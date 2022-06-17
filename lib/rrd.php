@@ -1214,7 +1214,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 		$graph_opts .= '--slope-mode' . RRD_NL;
 	}
 
-	/* if the user desires a wartermark set it */
+	/* if the user desires a watermark set it */
 	if (read_config_option('graph_watermark') != '') {
 		$graph_opts .= '--watermark ' . cacti_escapeshellarg(read_config_option('graph_watermark')) . RRD_NL;
 	}
