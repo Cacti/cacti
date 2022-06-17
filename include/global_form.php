@@ -1769,7 +1769,7 @@ $fields_template_import = array(
 			'method' => 'drop_array',
 			'value' => '|arg1:snmp_message_type|',
 			'default' => '1',
-			'array' => array(1 => 'NOTICATIONS', 2 => 'INFORMS')
+			'array' => array(1 => 'NOTIFICATIONS', 2 => 'INFORMS')
 			),
 		'addition_header' => array(
 			'method' => 'spacer',
