@@ -142,7 +142,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 		} else {
 			/* error */
 			$error     = true;
-			$error_msg = __('Access Denied!  Guest user id %s does not exist.  Please contact your Adminitrator.', read_config_option('guest_user'));
+			$error_msg = __('Access Denied!  Guest user id %s does not exist.  Please contact your Administrator.', read_config_option('guest_user'));
 
 			cacti_log("LOGIN FAILED: Unable to locate guest user '" . read_config_option('guest_user') . "'", false, 'AUTH');
 
