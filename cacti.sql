@@ -2403,7 +2403,7 @@ CREATE TABLE `reports` (
   KEY `mailtime` (`mailtime`)) 
   ENGINE=InnoDB 
   ROW_FORMAT=Dynamic
-  COMMENT='Cacri Reporting Reports';
+  COMMENT='Cacti Reporting Reports';
 
 --
 -- Table structure for table `reports_items`
