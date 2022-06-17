@@ -396,7 +396,7 @@ function form_actions() {
 				print "<tr>
 					<td class='textArea'>
 						<p>" . __('The selected Aggregate Graphs does not appear to have any matching Aggregate Templates.') . "</p>
-						<p>" . __('In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press \'Return\' and then first create your Aggergate Template before retrying.') . "</p>
+						<p>" . __('In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press \'Return\' and then first create your Aggregate Template before retrying.') . "</p>
 						<div class='itemlist'><ul>$graph_list</ul></div>
 					</td>
 				</tr>";
@@ -771,7 +771,7 @@ function graph_edit() {
 
 		if (!cacti_sizeof($graph)) {
 			html_start_box(__('Aggregate Preview Does Not Exist'), '100%', '', '3', 'center', '');
-			print "<tr><td id='imagewindow' class='center'>" . __('Aggreage Graph does not Exist') . '</tr></tr>';
+			print "<tr><td id='imagewindow' class='center'>" . __('Aggregate Graph does not Exist') . '</tr></tr>';
 			html_end_box(false);
 			raise_message('noaggregate', __('Aggregate Graph does not Exist'), MESSAGE_LEVEL_ERROR);
 			return false;
