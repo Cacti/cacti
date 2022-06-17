@@ -194,7 +194,7 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact_nav_icon > 
 }
 
 html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_glyph {
-    color: var(--text-color-navigation-hightlight);
+    color: var(--text-color-navigation-highlight);
     font-size: var(--fs-big);
     font-weight: var(--fw-semibold);
     padding-left: 1rem;
