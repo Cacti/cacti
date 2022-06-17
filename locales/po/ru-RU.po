@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Russian Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-04-02 09:08-0400\n"
-"PO-Revision-Date: 2022-03-31 16:49+0000\n"
-"Last-Translator: Anatoliy <hamrad99h2@gmail.com>\n"
-"Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\n"
-"Language: ru-RU\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-17 00:23+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 msgid "About Cacti"
@@ -876,7 +864,6 @@ msgid "Your new password cannot be the same as the old password. Please try agai
 msgstr "Ваш новый пароль не может быть таким же, как и старый. Пожалуйста, попробуйте еще раз."
 
 #: auth_changepassword.php:280
-#, fuzzy
 msgid "Forced password change"
 msgstr "Принудительная смена пароля"
 
@@ -921,9 +908,8 @@ msgid "Please enter your current password and your new<br>Cacti password."
 msgstr "Пожалуйста, введите ваш текущий пароль и новый <br>Cacti пароль."
 
 #: auth_changepassword.php:334
-#, fuzzy
 msgid "Please enter your new Cacti password."
-msgstr "Пожайлуста введите Ваши логин и пароль:"
+msgstr "Пожалуйста, введите новый пароль Cacti."
 
 #: auth_changepassword.php:342 auth_login.php:306 auth_login.php:309
 #: include/global_settings.php:1654 lib/functions.php:5157
@@ -946,7 +932,7 @@ msgstr "Подтвердите новый пароль"
 #: lib/html_form.php:1288 lib/html_form.php:1297 lib/html_graph.php:193
 #: lib/html_tree.php:1018 settings.php:494
 msgid "Save"
-msgstr " Сохранить "
+msgstr "Сохранить"
 
 #: auth_changepassword.php:367 auth_login.php:386
 #, fuzzy, php-format
@@ -954,7 +940,6 @@ msgid "Version %1$s | %2$s"
 msgstr "Версия %1$s | %2$s"
 
 #: auth_changepassword.php:380 user_admin.php:1916
-#, fuzzy
 msgid "Password Too Short"
 msgstr "Слишком короткий пароль"
 
@@ -21788,11 +21773,10 @@ msgstr[1] "Вы уверены что хотите удалить следующ
 msgstr[2] ""
 
 #: vdef.php:270
-#, fuzzy
 msgid "Delete VDEF"
 msgid_plural "Delete VDEFs"
 msgstr[0] "Удалить VDEF"
-msgstr[1] "Удалить VDEF-ы"
+msgstr[1] "Удалить VDEFs"
 msgstr[2] ""
 
 #: vdef.php:274
@@ -21871,17 +21855,14 @@ msgid "VDEFs [new]"
 msgstr "ДПО [новые]"
 
 #: vdef.php:619 vdef.php:673
-#, fuzzy
 msgid "Delete VDEF Item"
-msgstr "Исключить пункт ДРЭФ"
+msgstr "Удалит элемент VDEF"
 
 #: vdef.php:886
-#, fuzzy
 msgid "The name of this VDEF."
-msgstr "Название этой ВДЭФ."
+msgstr "Название этого VDEF."
 
 #: vdef.php:886
-#, fuzzy
 msgid "VDEF Name"
 msgstr "VDEF Название"
 
