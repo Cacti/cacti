@@ -882,7 +882,7 @@ function create_tables($load = true) {
 	$exists_columns = db_table_exists('table_columns');
 
 	if (!$exists_columns) {
-		print "Failed to create 'table_coluns'";
+		print "Failed to create 'table_columns'";
 		exit;
 	}
 
