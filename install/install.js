@@ -30,8 +30,9 @@ const STEP_TEST_REMOTE = -4;
 
 const DB_STATUS_ERROR = 0;
 const DB_STATUS_WARNING = 1;
-const DB_STATUS_SUCCESS = 2;
-const DB_STATUS_SKIPPED = 3;
+const DB_STATUS_RESTART = 2;
+const DB_STATUS_SUCCESS = 3;
+const DB_STATUS_SKIPPED = 4;
 
 const FIELDS_WELCOME = {
 	accept:                { type: 'checkbox', name: 'Eula'               },
@@ -282,6 +283,8 @@ function collapseHeadings(headingStates) {
 				fa_icon = 'fa fa-thumbs-down cactiInstallSqlFailure';
 			} else if (enabled == DB_STATUS_WARNING) {
 				fa_icon = 'fa fa-exclamation-triangle cactiInstallSqlWarning';
+			} else if (enabled == DB_STATUS_RESTART) {
+				fa_icon = 'fa fa-exclamation-triangle cactiInstallSqlWarning';
 			} else if (enabled == DB_STATUS_SUCCESS) {
 				fa_icon = 'fa fa-thumbs-up cactiInstallSqlSuccess';
 				toggleHeader(element, false);
@@ -381,6 +384,7 @@ function processStepWelcome(StepData) {
 }
 
 function processStepCheckDependencies(StepData) {
+console.log(StepData);
 	collapseHeadings(StepData.Sections);
 }
 

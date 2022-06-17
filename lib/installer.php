@@ -153,6 +153,7 @@ class Installer implements JsonSerializable {
 		$this->iconClass = array(
 			DB_STATUS_ERROR   => 'fa fa-thumbs-down',
 			DB_STATUS_WARNING => 'fa fa-exclamation-triangle',
+			DB_STATUS_RESTART => 'fa fa-exclamation-triangle',
 			DB_STATUS_SUCCESS => 'fa fa-thumbs-up',
 			DB_STATUS_SKIPPED => 'fa fa-check-circle'
 		);
@@ -1801,6 +1802,12 @@ class Installer implements JsonSerializable {
 					if ($status > DB_STATUS_WARNING) {
 						$status = DB_STATUS_WARNING;
 					}
+				} elseif ($recommend['status'] == DB_STATUS_RESTART) {
+					$status_font = 'orange';
+					$status_text = '<span title="' . __('The specificed value appears to be different in the running config versus the INI file.') . '">' . __('Restart Required') . '</span>';
+					if ($status > DB_STATUS_RESTART) {
+						$status = DB_STATUS_RESTART;
+					}
 				} else {
 					$status_font = 'red';
 					$status_text = __('Error');
@@ -1813,7 +1820,7 @@ class Installer implements JsonSerializable {
 				form_selectable_cell($recommend['name'], '');
 				form_selectable_cell($recommend['current'], '');
 				form_selectable_cell('>= ' . $recommend['value'], '');
-				form_selectable_cell("<font color='$status_text'>$status_text</font>", '');
+				form_selectable_cell("<font color='$status_font'>$status_text</font>", '');
 				form_selectable_cell($recommend['description'], '');
 				form_end_row();
 			}

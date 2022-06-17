@@ -1587,6 +1587,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 	$memory_limit   = utility_get_formatted_bytes($memory_ini, 'M', $memory_ini, 'B');
 
 	$execute_time   = ini_get('max_execution_time');
+	$ini_values     = parse_ini_file(get_cfg_var('cfg_file_path'));
 
 	$timezone       = ini_get('date.timezone');
 
@@ -1607,19 +1608,19 @@ function utility_php_verify_recommends(&$recommends, $source) {
 			'name'        => 'memory_limit',
 			'value'       => $rec_memory_mb,
 			'current'     => $memory_ini,
-			'status'      => ($memory_limit <= 0 || $memory_limit >= $rec_memory) ? DB_STATUS_SUCCESS : DB_STATUS_WARNING,
+			'status'      => (($memory_limit <= 0 || $memory_limit >= $rec_memory) ? DB_STATUS_SUCCESS :($memory_limit != $ini_values['memory_limit'] ? DB_STATUS_RESTART :  DB_STATUS_WARNING)),
 		),
 		array(
 			'name'        => 'max_execution_time',
 			'value'       => $rec_execute,
 			'current'     => $execute_time,
-			'status'      => ($execute_time <= 0 || $execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : DB_STATUS_WARNING,
+			'status'      => (($execute_time <= 0 || $execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : ($execute_time != $ini_values['max_execution_time'] ? DB_STATUS_RESTART : DB_STATUS_WARNING)),
 		),
 		array(
 			'name'        => 'date.timezone',
 			'value'       => '<timezone>',
 			'current'     => $timezone,
-			'status'      => ($timezone ? DB_STATUS_SUCCESS : DB_STATUS_ERROR),
+			'status'      => ($timezone ? DB_STATUS_SUCCESS : ($timezone != $ini_values['date.timezone'] ? DB_STATUS_RESTART : DB_STATUS_ERROR)),
 		),
 	);
 }

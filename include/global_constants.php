@@ -431,8 +431,9 @@ define('ECANCELED',       125);
 
 define('DB_STATUS_ERROR'  , 0);
 define('DB_STATUS_WARNING', 1);
-define('DB_STATUS_SUCCESS', 2);
-define('DB_STATUS_SKIPPED', 3);
+define('DB_STATUS_RESTART', 2);
+define('DB_STATUS_SUCCESS', 3);
+define('DB_STATUS_SKIPPED', 4);
 
 define('MESSAGE_LEVEL_NONE',  0);
 define('MESSAGE_LEVEL_INFO',  1);
