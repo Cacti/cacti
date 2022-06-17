@@ -343,7 +343,7 @@ if ($skip_current) {
 							<td class='nowrap'><input type='hidden' id='current' name='current_password' autocomplete='current-password' value=''><?php print $user['username'];?></td>
 <?php } else { ?>
 							<td><?php print __('Current password');?></td>
-							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='current-passowrd' size='20' placeholder='********'></td>
+							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='current-password' size='20' placeholder='********'></td>
 <?php } ?>
 						</tr>
 						<tr>
