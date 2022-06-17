@@ -1175,7 +1175,7 @@ function device_javascript() {
 				$('#row_ping_timeout').hide();
 				$('#row_ping_port').hide();
 				$('#row_ping_timeout').hide();
-				$('#row_ping_retrie').hide();
+				$('#row_ping_retries').hide();
 
 				break;
 			case '1': // ping and snmp sysUptime
