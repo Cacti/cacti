@@ -677,7 +677,7 @@ function report_audit_results($output = true) {
 	if ($output) {
 		print '---------------------------------------------------------------------------------------------' . PHP_EOL;
 		if (cacti_sizeof($alters)) {
-			print 'ERRORS are fixable using the --repair option.  WARNINGS will not be rapaired' . PHP_EOL;
+			print 'ERRORS are fixable using the --repair option.  WARNINGS will not be repaired' . PHP_EOL;
 			print 'due to ambiguous use of the column.' . PHP_EOL;
 		} else {
 			print 'Audit was clean, no errors or warnings' . PHP_EOL;
