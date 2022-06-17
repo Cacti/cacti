@@ -1592,6 +1592,12 @@ function utility_php_verify_recommends(&$recommends, $source) {
 
 	$recommends = array(
 		array(
+			'name'        => 'location',
+			'value'       => get_cfg_var('cfg_file_path'),
+			'current'     => get_cfg_var('cfg_file_path'),
+			'status'      => 2,
+		),
+		array(
 			'name'        => 'version',
 			'value'       => $rec_version,
 			'current'     => PHP_VERSION,

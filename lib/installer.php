@@ -1767,7 +1767,7 @@ class Installer implements JsonSerializable {
 
 			ob_start();
 
-			html_start_box(__('PHP Recommendations'), '100%', false, '4', '', false);
+			html_start_box(__('PHP Recommendations' . ' (' . $recommends[0]['value'] . ')'), '100%', false, '4', '', false);
 			html_header(array(__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')));
 
 			$status = DB_STATUS_SUCCESS;
@@ -1791,6 +1791,7 @@ class Installer implements JsonSerializable {
 			}
 
 			foreach ($recommends as $recommend) {
+				if ($recommend['name'] == 'location') continue;
 				if ($recommend['status'] == DB_STATUS_SUCCESS) {
 					$status_font = 'green';
 					$status_text = __('Passed');
