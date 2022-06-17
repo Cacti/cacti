@@ -175,12 +175,12 @@ label {
 	color: gray !important;
 }
 
-.cactiInstallSqlLeft, .cactInstallSqlRight {
+.cactiInstallSqlLeft, .cactiInstallSqlRight {
 	display: table-cell;
 	width: 100%;
 }
 
-.cactiInstallSqlRow, .cactiInstallSqlLeft, .cactInstallSqlRight {
+.cactiInstallSqlRow, .cactiInstallSqlLeft, .cactiInstallSqlRight {
 	padding: 5px;
 	vertical-align: top;
 }
