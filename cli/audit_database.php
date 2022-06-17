@@ -633,7 +633,7 @@ function report_audit_results($output = true) {
 
 							$curr_seq = get_sequence_count($table_name, $i['idx_key_name']);
 
-							$curr_column_seq = get_colunm_sequence_number($table_name, $i['idx_key_name'], $i['idx_column_name']);
+							$curr_column_seq = get_column_sequence_number($table_name, $i['idx_key_name'], $i['idx_column_name']);
 
 							//print PHP_EOL . "Prop Seq:" . $prop_seq . ", Curr Seq:" . $curr_seq . PHP_EOL;
 
@@ -844,7 +844,7 @@ function get_sequence_count($table, $index) {
 	return $sequence_cnt;
 }
 
-function get_colunm_sequence_number($table, $index, $column) {
+function get_column_sequence_number($table, $index, $column) {
 	$indexes = db_fetch_assoc("SHOW INDEXES IN $table");
 
 	if (cacti_sizeof($indexes)) {
