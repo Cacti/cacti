@@ -692,7 +692,7 @@ function profile_edit() {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
-			request = 'data_source_profiles.php?action=item_remove_confirm&id='+id[1]+'&profle_id='+id[0];
+			request = 'data_source_profiles.php?action=item_remove_confirm&id='+id[1]+'&profile_id='+id[0];
 			$.get(request)
 				.done(function(data) {
 					$('#cdialog').html(data);
