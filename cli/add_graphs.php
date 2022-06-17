@@ -778,7 +778,7 @@ function display_help() {
 	print "    [--graph-title=S]       Defaults to what ever is in the Graph Template/Data Template.\n";
 	print "    [--reindex-method=N]    The reindex method to be used for that data query.\n";
 	print "                            NOTE: If Data Query is already associated, the reindex method will NOT be changed.\n\n";
-	print "    Valid --reindex-methos include\n";
+	print "    Valid --reindex-methods include\n";
 	print "        0|None   = No reindexing\n";
 	print "        1|Uptime = Uptime goes Backwards (Default)\n";
 	print "        2|Index  = Index Count Changed\n";
