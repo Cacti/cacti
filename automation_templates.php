@@ -159,7 +159,7 @@ function form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __('Click \'Continue\' to delete the folling Automation Template(s).') . "</p>
+					<p>" . __('Click \'Continue\' to delete the following Automation Template(s).') . "</p>
 					<div class='itemlist'><ul>$at_list</ul></div>
 				</td>
 			</tr>\n";

@@ -145,7 +145,7 @@ function form_actions() {
 		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __('Click \'Continue\' to delete the folling GPRINT Preset(s).') . "</p>
+					<p>" . __('Click \'Continue\' to delete the following GPRINT Preset(s).') . "</p>
 					<div class='itemlist'><ul>$gprint_list</ul></div>
 				</td>
 			</tr>\n";
