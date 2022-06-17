@@ -4,23 +4,11 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.2.20\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-04-02 09:08-0400\n"
-"PO-Revision-Date: 2022-06-16 08:51-0400\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: lv_LV\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==0 || (n%100>=11 && n%100<=19) ? 0 : n%10==1 && n%100!=11 ? 1 : 2);\n"
-"X-Generator: Poedit 3.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-17 00:23+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 msgid "About Cacti"
-msgstr "Par kaktusiem"
+msgstr "Par Cacti"
 
 #: about.php:42
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs."
@@ -33,11 +21,11 @@ msgstr "Lūdzu, skatiet oficiālo %sCacti vietni%s, lai iegūtu informāciju, at
 
 #: about.php:46
 msgid "Cacti Developers"
-msgstr "Kaktusu izstrādātāji"
+msgstr "Cacti izstrādātāji"
 
 #: about.php:59
 msgid "Thanks"
-msgstr "Paldies"
+msgstr "Pateicības"
 
 #: about.php:62
 #, php-format
@@ -46,7 +34,7 @@ msgstr "Īpašs paldies %s Tobi Oetiker %s, %s RRDtool %s un ļoti populāro %s 
 
 #: about.php:65
 msgid "The users of Cacti"
-msgstr "Kaktusu lietotāji"
+msgstr "Cacti lietotāji"
 
 #: about.php:66
 msgid "Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti."
@@ -54,7 +42,7 @@ msgstr "Īpaši ikviens, kurš ir veltījis laiku, lai izveidotu ziņojumu par p
 
 #: about.php:71
 msgid "License"
-msgstr "Licence"
+msgstr "Licences līgums"
 
 #: about.php:73
 msgid "Cacti is licensed under the GNU GPL:"
@@ -91,7 +79,7 @@ msgstr "Dzēst"
 
 #: aggregate_graphs.php:44
 msgid "Convert to Normal Graph"
-msgstr "Konvertēt uz parasto grafiku"
+msgstr "Konvertēt uz Normālu grafiku"
 
 #: aggregate_graphs.php:45 graphs.php:58
 msgid "Place Graphs on Report"
@@ -116,7 +104,7 @@ msgstr "Atdalīt ar apkopojumu"
 #: aggregate_graphs.php:85 graphs.php:197 host.php:214
 #, php-format
 msgid "Place on a Tree (%s)"
-msgstr "Vieta uz koka (%s)"
+msgstr "Vieta kokā (%s)"
 
 #: aggregate_graphs.php:353
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
@@ -502,7 +490,7 @@ msgstr "Grafiki"
 #: utilities.php:1551 utilities.php:1843 utilities.php:2631 utilities.php:2894
 #: vdef.php:710
 msgid "Default"
-msgstr "Noklusējums"
+msgstr "Noklusējuma"
 
 #: aggregate_graphs.php:1335
 msgid "Part of Aggregate"
@@ -718,7 +706,7 @@ msgstr "Katrs"
 #: settings.php:549 settings.php:577 user_admin.php:2510 user_admin.php:2703
 #: user_group_admin.php:2250 user_group_admin.php:2358 utilities.php:1788
 msgid "None"
-msgstr "Nekāds"
+msgstr "Neviens"
 
 #: aggregate_graphs.php:1702
 msgid "The title for the Aggregate Graphs"
@@ -1010,7 +998,7 @@ msgstr "Priekšskatījuma skats"
 
 #: auth_profile.php:317 include/global_form.php:1511 user_admin.php:2224
 msgid "User Name"
-msgstr "Lietotāja vārds"
+msgstr "Lietotājvārds"
 
 #: auth_profile.php:318 include/global_form.php:1512
 msgid "The login name for this user."
@@ -1546,7 +1534,7 @@ msgstr "Tīkla atklāšanas diapazons [jauns]"
 #: include/global_form.php:1976 include/global_settings.php:51
 #: lib/html_reports.php:30
 msgid "General Settings"
-msgstr "Vispārīgie iestatījumi"
+msgstr "Pamatiestatījumi"
 
 #: automation_networks.php:441 automation_snmp.php:504 data_input.php:636
 #: data_input.php:697 data_queries.php:758 data_queries.php:863
@@ -2291,7 +2279,7 @@ msgstr "Prece Nr. %d"
 
 #: automation_snmp.php:558
 msgid "none"
-msgstr "neviens/-a"
+msgstr "Neviens"
 
 #: automation_snmp.php:573 automation_templates.php:524 cdef.php:621
 #: color_templates.php:111 data_queries.php:790 data_queries.php:897
@@ -3197,7 +3185,7 @@ msgstr "Pārbaudīt"
 #: data_debug.php:765 include/global_form.php:1037 lib/rrd.php:2939
 #: utilities.php:566 utilities.php:583 utilities.php:2688
 msgid "Value"
-msgstr "Value"
+msgstr "Vērtība"
 
 #: data_debug.php:766
 msgid "Results"
@@ -7507,7 +7495,7 @@ msgstr "Lietotāja profils (rediģēt)"
 
 #: include/global_arrays.php:1925 include/global_arrays.php:1931
 msgid "Tree Mode"
-msgstr "Koka režīms"
+msgstr "Koka veids"
 
 #: include/global_arrays.php:1937
 msgid "List Mode"
@@ -9249,7 +9237,7 @@ msgstr "Ceļš uz jūsu PHP bināro failu (lai iegūtu šo failu, var būt nepie
 
 #: include/global_settings.php:166
 msgid "Logging"
-msgstr "Mežizstrāde"
+msgstr "Žurnāla reģistrēšana"
 
 #: include/global_settings.php:171
 msgid "Cacti Log Path"
@@ -12975,7 +12963,7 @@ msgstr "%d līdz %d no %s [ %s ]"
 
 #: lib/html.php:537 lib/html.php:566 lib/installer.php:1519
 msgid "Next"
-msgstr "Nākamais"
+msgstr "Nākamie"
 
 #: lib/html.php:544
 #, php-format
@@ -13512,7 +13500,7 @@ msgstr "Intervāls"
 
 #: lib/html_graph.php:339 lib/html_tree.php:1158
 msgid "Stop"
-msgstr "Pietura"
+msgstr "Stop"
 
 #: lib/html_graph.php:504 lib/html_graph.php:534
 #, php-format
@@ -13864,7 +13852,7 @@ msgstr "Pārskata vienums [jauns pārskats: %s]"
 
 #: lib/html_reports.php:1381
 msgid "Events"
-msgstr "Pasākumi"
+msgstr "Notikumi"
 
 #: lib/html_reports.php:1411
 msgid "Send Report"
@@ -15326,7 +15314,7 @@ msgstr "Galamērķa adrese nav norādīta"
 
 #: lib/ping.php:333 lib/ping.php:470
 msgid "default"
-msgstr "Standarta"
+msgstr "Noklusējuma"
 
 #: lib/ping.php:361 lib/ping.php:370 lib/ping.php:498 lib/ping.php:507
 msgid "Please upgrade to PHP 5.5.4+ for IPv6 support!"
@@ -16959,7 +16947,7 @@ msgstr "Ģeolokācijas informācija"
 
 #: sites.php:123
 msgid "Latitude"
-msgstr "Platums"
+msgstr "Platuma grādi"
 
 #: sites.php:124
 msgid "The Latitude for this Site."
@@ -16971,7 +16959,7 @@ msgstr "piemērs 38.889488"
 
 #: sites.php:132
 msgid "Longitude"
-msgstr "Garuma grāds"
+msgstr "Garuma grādi"
 
 #: sites.php:133
 msgid "The Longitude for this Site."
@@ -18431,7 +18419,7 @@ msgstr "Lietotāju pieteikšanās"
 
 #: utilities.php:923
 msgid "IP Address"
-msgstr "IP Adrese"
+msgstr "IP adrese"
 
 #: utilities.php:940
 msgid "(User Removed)"
