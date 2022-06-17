@@ -661,7 +661,7 @@ default:
 							},
 							hide: {
 								effect: 'appear',
-								duratin: 100
+								duration: 100
 							}
 						});
 					})
