@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-04-02 09:08-0400\n"
-"PO-Revision-Date: 2022-03-14 20:45-0400\n"
+"PO-Revision-Date: 2022-06-16 20:12-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar_SA\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 msgid "About Cacti"
@@ -12140,7 +12140,7 @@ msgstr "خطأ: لم تعد نطاقات IP في شكل range1-range2 مدعوم
 #: lib/utility.php:655
 #, php-format
 msgid "Remote Poller %s is Down, you will need to perform a FullSync once it is up again"
-msgstr ""
+msgstr "أداة الاقتراع عن بُعد %s معطلة ، ستحتاج إلى إجراء FullSync بمجرد تشغيله مرة أخرى"
 
 #: lib/api_device.php:1070
 msgid "ERROR: Device ID is Blank"
@@ -16428,7 +16428,7 @@ msgstr "وصف قام مؤلف المكونات الإضافية بإعطاءه 
 
 #: plugins.php:587
 msgid "Main / Remote Status"
-msgstr ""
+msgstr "رئيسي / بعيد الحالة"
 
 #: plugins.php:590
 msgid "The status of this Plugin."
