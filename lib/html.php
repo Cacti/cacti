@@ -459,7 +459,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></a><br>";
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __esc('CSV Export of Graph Data'). "'></a><br>";
-	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/timeview.png' alt='' title='" . __esc('Time Graph View'). "'></a><br>";
+	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/timeview.png' alt='' title='" . __esc('Time Graph View'). "'></a><br>";
 
 	if (is_realm_allowed(3)) {
 		$host_id = db_fetch_cell_prepared('SELECT host_id
