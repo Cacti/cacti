@@ -265,7 +265,7 @@ function upgrade_to_1_0_0() {
 		KEY `name` (`name`))
 		ENGINE=$engine
 		ROW_FORMAT=Dynamic
-		COMMENT='Notifcations and related attributes';");
+		COMMENT='Notifications and related attributes';");
 
 	if (db_table_exists('plugin_snmpagent_cache_textual_conventions', false)) {
 		db_install_rename_table('plugin_snmpagent_cache_textual_conventions', 'snmpagent_cache_textual_conventions');
