@@ -367,7 +367,7 @@ $selectedTheme = get_selected_theme();
 						</tr>
 					<?php } ?>
 						<tr>
-							<td cospan='2'>
+							<td colspan='2'>
 								<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Login');?>'>
 							</td>
 						</tr>
