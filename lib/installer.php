@@ -1603,7 +1603,7 @@ class Installer implements JsonSerializable {
 			case Installer::STEP_WELCOME:
 				return $this->processStepWelcome();
 			case Installer::STEP_CHECK_DEPENDENCIES:
-				return $this->processStepCheckDependancies();
+				return $this->processStepCheckDependencies();
 			case Installer::STEP_INSTALL_TYPE:
 				return $this->processStepMode();
 			case Installer::STEP_BINARY_LOCATIONS:
@@ -1700,7 +1700,7 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
-	public function processStepCheckDependancies() {
+	public function processStepCheckDependencies() {
 		global $config;
 		global $database_default, $database_username, $database_port;
 		global $rdatabase_default, $rdatabase_username, $rdatabase_port;
