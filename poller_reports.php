@@ -143,7 +143,7 @@ if (!db_table_exists('reports')) {
 	exit(0);
 }
 
-/* fetch all enabled reports that have a stratime in the past */
+/* fetch all enabled reports that have a start time in the past */
 if (!$force) {
 	$reports = db_fetch_assoc_prepared('SELECT * FROM reports WHERE mailtime < ? AND enabled="on"', array($t));
 } else {
