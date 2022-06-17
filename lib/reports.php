@@ -1036,7 +1036,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 	$graphs = array();
 
 	$sql_where       = '';
-	$title_delimeter = '';
+	$title_delimiter = '';
 	$search_key      = '';
 
 	$description = db_fetch_cell_prepared('SELECT h.description
@@ -1045,8 +1045,8 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 		array($device_id));
 
 	if ($description != '') {
-		$title = $title_delimeter . __('Device:') . " $description";
-		$title_delimeter = ' > ';
+		$title = $title_delimiter . __('Device:') . " $description";
+		$title_delimiter = ' > ';
 	}
 
 	if ($item['graph_template_id'] == -1) {
@@ -1214,7 +1214,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 		foreach ($leaves as $leaf) {
 			$sql_where       = '';
 			$title           = '';
-			$title_delimeter = '';
+			$title_delimiter = '';
 			$search_key      = '';
 			$host_name       = '';
 			$graph_name      = '';
@@ -1265,23 +1265,23 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			}
 
 			if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
-				$title = $title_delimeter . __('Tree:') . " $tree_name";
-				$title_delimeter = ' > ';
+				$title = $title_delimiter . __('Tree:') . " $tree_name";
+				$title_delimiter = ' > ';
 			}
 
 			if (!empty($leaf_name)) {
-				$title .= $title_delimeter . " $leaf_name";
-				$title_delimeter = ' > ';
+				$title .= $title_delimiter . " $leaf_name";
+				$title_delimiter = ' > ';
 			}
 
 			if (!empty($host_name)) {
-				$title .= $title_delimeter . " $host_name";
-				$title_delimeter = ' > ';
+				$title .= $title_delimiter . " $host_name";
+				$title_delimiter = ' > ';
 			}
 
 			if (!empty($graph_name) && !$nested) {
-				$title .= $title_delimeter . " $graph_name";
-				$title_delimeter = ' > ';
+				$title .= $title_delimiter . " $graph_name";
+				$title_delimiter = ' > ';
 			}
 
 			if ($item['graph_name_regexp'] != '') {

@@ -686,7 +686,15 @@ function query_script_host($host_id, $snmp_query_id) {
 
 				if (cacti_sizeof($script_data_array)) {
 					foreach ($script_data_array as $element) {
+						// We have two spellings for 'delimiter' so keep both for backward compatibility
 						if (preg_match("/(.*?)" . preg_quote($script_queries['output_delimeter']) . "(.*)/", $element, $matches)) {
+							$script_index = $matches[1];
+							$field_value  = $matches[2];
+
+							$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $field_value, $script_index, '');
+
+							debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s', $field_name, $field_value, $script_index));
+						} elseif (preg_match("/(.*?)" . preg_quote($script_queries['output_delimiter']) . "(.*)/", $element, $matches)) {
 							$script_index = $matches[1];
 							$field_value  = $matches[2];
 

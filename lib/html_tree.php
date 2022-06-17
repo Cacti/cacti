@@ -822,7 +822,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$host_name            = '';
 	$site_name            = '';
 	$host_template_name   = '';
-	$title_delimeter      = '';
+	$title_delimiter      = '';
 	$host_group_data_name = '';
 	$graph_template_id    = '-1';
 	$data_query_id        = '-1';
@@ -930,35 +930,35 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	if ($tree_name != '') {
-		$title .= $title_delimeter . '<strong>' . __('Tree:') . '</strong> ' . html_escape($tree_name);
-		$title_delimeter = '-> ';
+		$title .= $title_delimiter . '<strong>' . __('Tree:') . '</strong> ' . html_escape($tree_name);
+		$title_delimiter = '-> ';
 	}
 
 	if ($site_name != '') {
-		$title .= $title_delimeter . '<strong>' . __('Site:') . '</strong>&nbsp;' . html_escape($site_name);
-		$title_delimeter = '-> ';
+		$title .= $title_delimiter . '<strong>' . __('Site:') . '</strong>&nbsp;' . html_escape($site_name);
+		$title_delimiter = '-> ';
 	}
 
 	if (cacti_sizeof($leaf_names)) {
 		foreach($leaf_names as $leaf_name) {
-			$title .= $title_delimeter . '<strong>' . __('Leaf:') . '</strong> ' . html_escape($leaf_name);
-			$title_delimeter = '-> ';
+			$title .= $title_delimiter . '<strong>' . __('Leaf:') . '</strong> ' . html_escape($leaf_name);
+			$title_delimiter = '-> ';
 		}
 	}
 
 	if ($host_template_name != '') {
-		$title .= $title_delimeter . '<strong>' . __('Device Template:') . '</strong> ' . html_escape($host_template_name);
-		$title_delimeter = '-> ';
+		$title .= $title_delimiter . '<strong>' . __('Device Template:') . '</strong> ' . html_escape($host_template_name);
+		$title_delimiter = '-> ';
 	}
 
 	if ($host_name != '') {
-		$title .= $title_delimeter . '<strong>' . __('Device:') . '</strong> ' . html_escape($host_name);
-		$title_delimeter = '-> ';
+		$title .= $title_delimiter . '<strong>' . __('Device:') . '</strong> ' . html_escape($host_name);
+		$title_delimiter = '-> ';
 	}
 
 	if ($host_group_data_name != '') {
-		$title .= $title_delimeter . " $host_group_data_name";
-		$title_delimeter = '-> ';
+		$title .= $title_delimiter . " $host_group_data_name";
+		$title_delimiter = '-> ';
 	}
 
 	html_start_box(__('Graph Filters') . (get_request_var('rfilter') != '' ? " [ " . __('Filter') . " '" . html_escape_request_var('rfilter') . "' " . __('Applied') . " ]" : ''), '100%', "", '3', 'center', '');
