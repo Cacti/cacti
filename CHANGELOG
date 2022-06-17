@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#4819: Domains based LDAP and AD Fullname and Email not auto-populated
 -issue#4822: Cacti polling and boost report the wrong number of Data Sources when Devices are disabled
 -issue#4823: When editing Graph Template Items there are cases where VDEF's are hidden when they should be shown
+-issue#4831: Cactid lacks a default for $database_ssl
 -feature#4820: Make it possible to only import certain components when importing packages
 -feature#4825: Add update_device.php script to cli folder
 
