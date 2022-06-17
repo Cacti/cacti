@@ -425,7 +425,7 @@ function item_edit() {
 
 	$header_label = __esc('Graph Items [graph: %s]', $title);
 
-	form_start('graphs_items.php', 'greph_edit');
+	form_start('graphs_items.php', 'graph_edit');
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
