@@ -223,7 +223,7 @@ function form_save() {
 					if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
 						$header = '&header=false';
 					} else {
-						$header = '&header=fasle';
+						$header = '&header=false';
 					}
 				} else {
 					raise_message(2);
