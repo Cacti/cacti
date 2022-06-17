@@ -335,7 +335,7 @@ function field_remove_confirm() {
 	get_filter_request_var('data_input_id');
 	/* ==================================================== */
 
-	form_start('data_intput.php?action=edit&id' . get_request_var('data_input_id'));
+	form_start('data_input.php?action=edit&id' . get_request_var('data_input_id'));
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
