@@ -4,13 +4,14 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-18 17:20+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-18 18:40+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 msgid "About Cacti"
 msgstr "Par Cacti"
 
 #: about.php:42
+#, fuzzy
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs."
 msgstr "Cacti ir izstrādāts kā pilnīgs grafiku veidošanas risinājums, pamatojoties uz RRDtool ietvaru. Tās mērķis ir atvieglot tīkla administratora darbu, rūpējoties par visu nepieciešamo informāciju, kas nepieciešama, lai izveidotu jēgpilnus grafikus."
 
@@ -28,7 +29,7 @@ msgid "Thanks"
 msgstr "Pateicības"
 
 #: about.php:62
-#, php-format
+#, fuzzy, php-format
 msgid "A very special thanks to %s Tobi Oetiker %s, the creator of %s RRDtool %s and the very popular %s MRTG %s."
 msgstr "Īpašs paldies %s Tobi Oetiker %s, %s RRDtool %s un ļoti populāro %s MRTG %s radītājam."
 
@@ -37,6 +38,7 @@ msgid "The users of Cacti"
 msgstr "Cacti lietotāji"
 
 #: about.php:66
+#, fuzzy
 msgid "Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti."
 msgstr "Īpaši ikviens, kurš ir veltījis laiku, lai izveidotu ziņojumu par problēmu vai kā citādi palīdzētu novērst ar kaktusiem saistītas problēmas. Arī ikvienam, kurš ir devis savu ieguldījumu Kaktusi atbalstīšanā."
 
@@ -49,10 +51,12 @@ msgid "Cacti is licensed under the GNU GPL:"
 msgstr "Cacti ir licencēts saskaņā ar GNU GPL:"
 
 #: about.php:75 lib/installer.php:1657
+#, fuzzy
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr "Šī programma ir bezmaksas programmatūra; jūs varat to izplatīt un/vai modificēt saskaņā ar GNU vispārējās publiskās licences noteikumiem, ko publicējis Free Software Foundation; vai nu Licences 2. versiju, vai (pēc jūsu izvēles) jebkuru jaunāku versiju."
 
 #: about.php:77
+#, fuzzy
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
 msgstr "Šī programma tiek izplatīta cerībā, ka tā būs noderīga, bet BEZ GARANTIJAS; pat bez netiešas garantijas par TIRDZNIECĪBU vai PIEMĒROTĪBU KONKRĒTAM MĒRĶIEM. Plašāku informāciju skatiet GNU vispārējā publiskajā licencē."
 
@@ -83,21 +87,25 @@ msgstr "Konvertēt uz Normālu grafiku"
 
 #: aggregate_graphs.php:45 graphs.php:58
 msgid "Place Graphs on Report"
-msgstr "Novietojiet grafikus atskaitē"
+msgstr "Novietot grafikus Pārskatā"
 
 #: aggregate_graphs.php:46
+#, fuzzy
 msgid "Migrate Aggregate to use a Template"
 msgstr "Migrēt apkopojumu, lai izmantotu veidni"
 
 #: aggregate_graphs.php:47
+#, fuzzy
 msgid "Create New Aggregate from Aggregates"
 msgstr "Izveidojiet jaunu apkopojumu no apkopojumiem"
 
 #: aggregate_graphs.php:51
+#, fuzzy
 msgid "Associate with Aggregate"
 msgstr "Saistīt ar Agregātu"
 
 #: aggregate_graphs.php:52
+#, fuzzy
 msgid "Disassociate with Aggregate"
 msgstr "Atdalīt ar apkopojumu"
 
@@ -107,8 +115,9 @@ msgid "Place on a Tree (%s)"
 msgstr "Vieta kokā (%s)"
 
 #: aggregate_graphs.php:353
+#, fuzzy
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu(s) apkopoto(-s) grafiku(-us)."
+msgstr "Noklikšķiniet 'Turpināt', lai dzēstu šādu(s) apkopoto(-s) grafiku(-us)."
 
 #: aggregate_graphs.php:358 aggregate_graphs.php:431 aggregate_graphs.php:456
 #: aggregate_graphs.php:485 aggregate_graphs.php:498 aggregate_graphs.php:507
@@ -191,10 +200,12 @@ msgid "Delete Graph(s)"
 msgstr "Dzēst grafiku(s)"
 
 #: aggregate_graphs.php:388
+#, fuzzy
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
 msgstr "Atlasītie apkopotie grafiki attēlo elementus no vairāk nekā vienas diagrammas veidnes."
 
 #: aggregate_graphs.php:389
+#, fuzzy
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
 msgstr "Lai migrētu tālāk norādītos apkopotos grafikus uz veidnēm balstītu apkopojumu, tiem ir jāizmanto tikai viena diagrammas veidne. Lūdzu, nospiediet “Atgriezties” un pēc tam atlasiet tikai Apkopoto grafiku, kas izmanto to pašu diagrammas veidni."
 
@@ -208,27 +219,32 @@ msgid "Return"
 msgstr "Atgriezties"
 
 #: aggregate_graphs.php:398
+#, fuzzy
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
 msgstr "Šķiet, ka atlasītajiem apkopotajiem grafikiem nav nevienas atbilstošas apkopojuma veidnes."
 
 #: aggregate_graphs.php:399
+#, fuzzy
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggergate Template before retrying."
 msgstr "Lai migrētu tālāk norādītos apkopotos grafikus, izmantojiet apkopoto veidni, tai jau ir jābūt. Lūdzu, nospiediet \"Atgriezties\" un pēc tam vispirms izveidojiet savu Aggergate veidni, pirms mēģināt vēlreiz."
 
 #: aggregate_graphs.php:415
+#, fuzzy
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
 msgstr "Noklikšķiniet uz \"Turpināt\", un tālāk norādītais(-ie) apkopotais(-ie) grafiks(-i) tiks migrēts(-i), lai izmantotu apkopoto veidni, kuru izvēlaties tālāk."
 
 #: aggregate_graphs.php:421
+#, fuzzy
 msgid "Aggregate Template:"
 msgstr "Apkopotā veidne:"
 
 #: aggregate_graphs.php:435
+#, fuzzy
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
 msgstr "Pašlaik atlasītajiem mantotajiem apkopojumiem nav definēta neviena apkopojuma veidne."
 
 #: aggregate_graphs.php:436
-#, php-format
+#, fuzzy, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
 msgstr "Lai migrētu tālāk norādītos apkopotos grafikus uz veidnēm balstītu apkopojumu, vispirms izveidojiet apkopojuma veidni diagrammas veidnei “%s”."
 
@@ -237,20 +253,23 @@ msgid "Please press 'Return' to continue."
 msgstr "Lūdzu, nospiediet 'Atgriezties', lai turpinātu."
 
 #: aggregate_graphs.php:448
+#, fuzzy
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
 msgstr "Noklikšķiniet uz \"Turpināt\", lai apvienotu tālāk norādīto(-os) apkopoto(-s) grafiku(-us) vienā apkopotajā diagrammā."
 
 #: aggregate_graphs.php:453
+#, fuzzy
 msgid "Aggregate Name:"
 msgstr "Kopējais nosaukums:"
 
 #: aggregate_graphs.php:454
+#, fuzzy
 msgid "New Aggregate"
 msgstr "Jauns agregāts"
 
 #: aggregate_graphs.php:469 graphs.php:1264 host.php:520
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai pievienotu atlasītos grafikus zemāk esošajam pārskatam."
+msgstr "Noklikšķiniet 'Turpināt', lai pievienotu atlasītos grafikus zemāk esošajam pārskatam."
 
 #: aggregate_graphs.php:473 graph_view.php:810 graphs.php:1268 host.php:524
 #: lib/html_reports.php:35 lib/html_reports.php:1931
@@ -264,43 +283,47 @@ msgstr "Laika sprīdis"
 
 #: aggregate_graphs.php:481 graph_view.php:824 graphs.php:1276 host.php:532
 msgid "Align"
-msgstr "Līdzināt"
+msgstr "Izlīdzināt"
 
 #: aggregate_graphs.php:485 graphs.php:1280
 msgid "Add Graphs to Report"
-msgstr "Pievienojiet pārskatam grafikus"
+msgstr "Pievienot grafikus pārskatam"
 
 #: aggregate_graphs.php:487 graphs.php:1282
 msgid "You currently have no reports defined."
-msgstr "Pašlaik jums nav definēts neviens ziņojums."
+msgstr "Pašlaik jums nav definēta neviena pārskata."
 
 #: aggregate_graphs.php:493
+#, fuzzy
 msgid "Click 'Continue' to convert the following Aggregate Graph(s) into a normal Graph."
 msgstr "Noklikšķiniet uz 'Turpināt', lai pārvērstu tālāk norādīto(-os) apkopoto(-s) grafiku(-us) par parastu grafiku."
 
 #: aggregate_graphs.php:498
 msgid "Convert to normal Graph(s)"
-msgstr "Konvertēt uz parasto grafiku(-us)"
+msgstr "Konvertēt uz parasto(-iem) grafiku(-iem)"
 
 #: aggregate_graphs.php:502
+#, fuzzy
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
-msgstr "Noklikšķiniet uz 'Turpināt', lai saistītu šādu(s) grafiku(-us) ar apkopoto grafiku."
+msgstr "Noklikšķiniet 'Turpināt', lai saistītu šādu(s) grafiku(-us) ar apkopoto grafiku."
 
 #: aggregate_graphs.php:507
 msgid "Associate Graph(s)"
-msgstr "Asociētais(-i) grafiks(-i)"
+msgstr "Sasaistīt grafiku(s)"
 
 #: aggregate_graphs.php:511
+#, fuzzy
 msgid "Click 'Continue' to disassociate the following Graph(s) from the Aggregate."
-msgstr "Noklikšķiniet uz 'Turpināt', lai atsaistītu tālāk norādīto(-os) grafiku(-us) no apkopojuma."
+msgstr "Noklikšķiniet 'Turpināt', lai atsaistītu tālāk norādīto(-os) grafiku(-us) no apkopojuma."
 
 #: aggregate_graphs.php:516
 msgid "Dis-Associate Graph(s)"
-msgstr "Grafika(-u) atdalīšana"
+msgstr "Atsaistīt grafiku(s)"
 
 #: aggregate_graphs.php:520
+#, fuzzy
 msgid "Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai zem koka zara novietotu šādu(s) apkopoto(-s) grafiku(-us)."
+msgstr "Noklikšķiniet 'Turpināt', lai zem koka zara novietotu šādu(s) apkopoto(-s) grafiku(-us)."
 
 #: aggregate_graphs.php:522 host.php:490
 msgid "Destination Branch:"
@@ -5268,7 +5291,7 @@ msgstr "Pievienojiet ziņojumam ierīces"
 
 #: host.php:538
 msgid "You currently have no Reports defined."
-msgstr "Pašlaik jums nav definēts neviens ziņojums."
+msgstr "Pašlaik jums nav definēta neviena pārskata."
 
 #: host.php:678
 msgid "Device [new]"
