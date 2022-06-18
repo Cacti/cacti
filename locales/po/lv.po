@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-12-23 13:29-0500\n"
-"PO-Revision-Date: 2022-06-18 18:42+0000\n"
+"PO-Revision-Date: 2022-06-18 23:18+0000\n"
 "Last-Translator: Coool <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv\n"
@@ -1006,7 +1006,7 @@ msgstr ""
 
 #: auth_changepassword.php:409 user_admin.php:2103
 msgid "Passwords Match"
-msgstr ""
+msgstr "Paroles sakrīt"
 
 #: auth_login.php:53
 msgid "Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server."
@@ -1512,7 +1512,7 @@ msgstr ""
 
 #: automation_graph_rules.php:420 automation_tree_rules.php:486
 msgid "Are You Sure?"
-msgstr ""
+msgstr "Vai esiet pārliecināti?"
 
 #: automation_graph_rules.php:420
 #, php-format
@@ -1597,9 +1597,9 @@ msgid "Cancel Discovery"
 msgstr ""
 
 #: automation_networks.php:153
-#, php-format
+#, fuzzy, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr ""
+msgstr "Nevar restartēt atklāšanu tīklam '%s'."
 
 #: automation_networks.php:157
 #, php-format
@@ -1798,8 +1798,9 @@ msgid "%d Threads"
 msgstr ""
 
 #: automation_networks.php:524
+#, fuzzy
 msgid "Run Limit"
-msgstr ""
+msgstr "Run Limit"
 
 #: automation_networks.php:525
 msgid "After the selected Run Limit, the discovery process will be terminated."
@@ -1924,6 +1925,10 @@ msgstr ""
 #: automation_networks.php:594
 msgid "The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name"
 msgstr ""
+"E-pasta konta nosaukums, kas tiks izmantots kā paziņojuma e-pasta sūtītāja "
+"vārds.  Ja tiek atstāts tukšs, Cacti izmantos noklusējuma automatizācijas "
+"paziņojumu nosaukumu, ja tas ir norādīts. Pretējā gadījumā tas izmantos "
+"Cacti sistēmas noklusējuma e-pasta nosaukumu."
 
 #: automation_networks.php:602
 msgid "Notification From Email Address"
@@ -2066,7 +2071,7 @@ msgstr ""
 
 #: automation_networks.php:685
 msgid "Week(s) of Month"
-msgstr ""
+msgstr "Mēneša nedēļa(s)"
 
 #: automation_networks.php:686
 msgid "What Week(s) of the Month will this Network Range be discovered."
@@ -4068,22 +4073,26 @@ msgstr[2] ""
 msgid "Leave the <strong>Graph</strong> untouched."
 msgid_plural "Leave all <strong>Graphs</strong> untouched."
 msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[1] "Atstāt <strong>grafiku</strong> neskartu."
+msgstr[2] "Atstāt visus <strong>grafikus</strong> neskartus."
 
 #: data_sources.php:511
 msgid "Delete all <strong>Graph Items</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graph Items</strong> that reference these Data Sources."
 msgstr[0] ""
 msgstr[1] ""
+"Dzēst visus <strong>grafika vienumus</strong>, kas atsaucas uz šo datu avotu."
 msgstr[2] ""
+"Dzēst visus <strong>grafikas vienumus</strong>, kas atsaucas uz šiem datu "
+"avotiem."
 
 #: data_sources.php:512
 msgid "Delete all <strong>Graphs</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graphs</strong> that reference these Data Sources."
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Dzēst visus <strong>grafikus</strong>, kas atsaucas uz šo datu avotu."
 msgstr[2] ""
+"Dzēst visus <strong>grafikus</strong>, kas atsaucas uz šiem datu avotiem."
 
 #: data_sources.php:519
 msgid "Delete Data Source"
@@ -4377,7 +4386,7 @@ msgstr ""
 
 #: data_templates.php:413
 msgid "template_title"
-msgstr ""
+msgstr "veidnes_nosaukums"
 
 #: data_templates.php:417
 msgid "Duplicate Data Template(s)"
@@ -4430,8 +4439,11 @@ msgid "Data Source Item [%s]"
 msgstr ""
 
 #: data_templates.php:789
+#, fuzzy
 msgid "This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations."
 msgstr ""
+"Šī vērtība ir atspējota, jo tās vērtība ir iegūta no ierīces vai īpaša datu "
+"vaicājuma objekta, kas izseko kritiskās datu datu vaicājuma asociācijas."
 
 #: data_templates.php:831
 msgid "Value will be derived from the Device if this field is left empty."
@@ -5003,7 +5015,7 @@ msgstr ""
 
 #: graphs.php:151 graphs.php:166
 msgid "No Device - "
-msgstr ""
+msgstr "Nav ierīces - "
 
 #: graphs.php:252
 #, php-format
@@ -6457,7 +6469,7 @@ msgstr ""
 #: include/global_arrays.php:755 include/global_arrays.php:779
 #, php-format
 msgid "Every %d Minutes"
-msgstr ""
+msgstr "Ik pēc %d minūtēm"
 
 #: include/global_arrays.php:687 include/global_arrays.php:756
 msgid "Every Hour"
@@ -9889,39 +9901,39 @@ msgstr ""
 
 #: include/global_settings.php:716
 msgid "100 Mbps Ethernet"
-msgstr ""
+msgstr "100 Mbps tīkls"
 
 #: include/global_settings.php:717
 msgid "1 Gbps Ethernet"
-msgstr ""
+msgstr "1 Gbps tīkls"
 
 #: include/global_settings.php:718
 msgid "10 Gbps Ethernet"
-msgstr ""
+msgstr "10 Gbps tīkls"
 
 #: include/global_settings.php:719
 msgid "25 Gbps Ethernet"
-msgstr ""
+msgstr "25 Gbps tīkls"
 
 #: include/global_settings.php:720
 msgid "40 Gbps Ethernet"
-msgstr ""
+msgstr "40 Gbps tīkls"
 
 #: include/global_settings.php:721
 msgid "56 Gbps Ethernet"
-msgstr ""
+msgstr "56 Gbps tīkls"
 
 #: include/global_settings.php:722
 msgid "100 Gbps Ethernet"
-msgstr ""
+msgstr "100 Gbps tīkls"
 
 #: include/global_settings.php:726
 msgid "SNMP Defaults"
-msgstr ""
+msgstr "SNMP noklusējuma iestatījumi"
 
 #: include/global_settings.php:732
 msgid "Default SNMP version for all new Devices."
-msgstr ""
+msgstr "Noklusējuma SNMP versija visām jaunajām ierīcēm."
 
 #: include/global_settings.php:739
 msgid "Default SNMP read community for all new Devices."
@@ -10178,7 +10190,7 @@ msgstr ""
 
 #: include/global_settings.php:1027
 msgid "Log Tail Refresh"
-msgstr ""
+msgstr "Žurnāla astes atsvaidzināšana"
 
 #: include/global_settings.php:1028
 msgid "How often do you want the Cacti log display to update."
@@ -10925,8 +10937,15 @@ msgid "Search Filter"
 msgstr ""
 
 #: include/global_settings.php:1788
+#, fuzzy
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
 msgstr ""
+"Meklēšanas filtrs, ko izmantot, lai atrastu lietotāju LDAP direktorijā, "
+"piemēram, logiem: <i>&#39;(&amp;(objectclass=user)(objectcategory=user)(userP"
+"rincipalName=&lt;lietotājvārds&gt;*))&#39;</i> vai OpenLDAP: <i>&#39;(&amp;("
+"objectClass =konts)(uid=&lt;lietotājvārds&gt;))&#39;</i> . "
+"“&lt;lietotājvārds&gt;” tiek aizstāts ar lietotājvārdu, kas tika norādīts "
+"pieteikšanās uzvednē. "
 
 #: include/global_settings.php:1793 user_domains.php:478
 msgid "Search Distinguished Name (DN)"
@@ -10949,8 +10968,11 @@ msgid "LDAP CN Settings"
 msgstr ""
 
 #: include/global_settings.php:1810 user_domains.php:497
+#, fuzzy
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr ""
+"Lauks, kas aizstās pilno vārdu, veidojot jaunu lietotāju, kas ņemts no LDAP. "
+"(logos: parādāmais nosaukums) "
 
 #: include/global_settings.php:1815
 msgid "Email"
@@ -10958,7 +10980,7 @@ msgstr ""
 
 #: include/global_settings.php:1816
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
-msgstr ""
+msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts) "
 
 #: include/global_settings.php:1823
 msgid "URL Linking"
@@ -12337,7 +12359,7 @@ msgstr ""
 
 #: lib/auth.php:390
 msgid "Web Basic"
-msgstr ""
+msgstr "Vienkāršais Web"
 
 #: lib/auth.php:2006 lib/auth.php:2038
 msgid "Branch:"
@@ -12581,8 +12603,9 @@ msgid "Index Association with Local Data complete"
 msgstr ""
 
 #: lib/data_query.php:377
+#, fuzzy
 msgid "Update Re-Index Cache complete. There were "
-msgstr ""
+msgstr "Atkārtotas indeksēšanas kešatmiņas atjaunināšana ir pabeigta. Tur bija "
 
 #: lib/data_query.php:381
 msgid "Update Poller Cache for Query complete"
@@ -12913,8 +12936,9 @@ msgid "Debug not completed after 5 pollings"
 msgstr ""
 
 #: lib/dsdebug.php:252
+#, fuzzy
 msgid "Failed fields: "
-msgstr ""
+msgstr "Neizdevušies lauki: "
 
 #: lib/dsdebug.php:261
 msgid "Data Source is not set as Active"
@@ -12940,7 +12964,7 @@ msgstr ""
 
 #: lib/dsdebug.php:295
 msgid "Data Source returned Bad Results for "
-msgstr ""
+msgstr "Datu avots atgrieza sliktus vaicājuma rezultātus "
 
 #: lib/dsdebug.php:300
 msgid "Data Source was not polled"
@@ -12984,7 +13008,7 @@ msgstr ""
 #: lib/functions.php:3227
 #, php-format
 msgid "Logged in as %s"
-msgstr ""
+msgstr "Autorizējies kā %s"
 
 #: lib/functions.php:3229 lib/html.php:2508 lib/html.php:3150
 msgid "Edit Profile"
@@ -13030,7 +13054,7 @@ msgstr ""
 
 #: lib/functions.php:4811
 msgid "SMTP error: "
-msgstr ""
+msgstr "SMTP kļūda: "
 
 #: lib/functions.php:4824
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -13215,7 +13239,7 @@ msgstr ""
 
 #: lib/html.php:2241
 msgid "Variance Outliers"
-msgstr ""
+msgstr "Izkliedes novirzes"
 
 #: lib/html.php:2247
 msgid "Kills Per RRA"
@@ -14140,7 +14164,7 @@ msgstr ""
 
 #: lib/html_reports.php:1681
 msgid "Invalid"
-msgstr ""
+msgstr "Nederīgs"
 
 #: lib/html_reports.php:1688
 msgid "No Reports Found"
@@ -14283,7 +14307,7 @@ msgstr ""
 
 #: lib/import.php:2143
 msgid "[preview] "
-msgstr ""
+msgstr "[priekšskatījums] "
 
 #: lib/import.php:2148
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14303,7 +14327,7 @@ msgstr ""
 
 #: lib/import.php:2163
 msgid "[preview]"
-msgstr ""
+msgstr "[priekšskatījums] "
 
 #: lib/import.php:2167
 msgid "[updated]"
@@ -14419,6 +14443,8 @@ msgstr ""
 #: lib/installer.php:1494
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
 msgstr ""
+"Jūs esat izveidojis jaunu datu bāzi, bet vēl neesat importējis failu "
+"'cacti.sql'. Lai turpinātu, komandrindā izpildiet tālāk norādītās darbības:"
 
 #: lib/installer.php:1496
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
@@ -14482,7 +14508,7 @@ msgstr ""
 #: lib/installer.php:1654
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr ""
+msgstr "Šis process palīdzēs jums veikt versijas '%s' atjaunināšanu. "
 
 #: lib/installer.php:1655
 #, php-format
@@ -14507,7 +14533,7 @@ msgstr ""
 
 #: lib/installer.php:1703
 msgid "Select default theme: "
-msgstr ""
+msgstr "Izvēlieties noklusējuma motīvu: "
 
 #: lib/installer.php:1724
 msgid "Pre-installation Checks"
@@ -14990,6 +15016,8 @@ msgstr ""
 #: lib/installer.php:2489
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
 msgstr ""
+"Šķiet, ka jūsu servera datubāzes collation parametrs NAV pilnībā saderīgs ar "
+"UTF-8. "
 
 #: lib/installer.php:2490
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -15006,10 +15034,17 @@ msgstr ""
 #: lib/installer.php:2505
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
 msgstr ""
+"Šķiet, ka jūsu datubāzes noklusējuma collation parametrs NAV pilnībā "
+"saderīga ar UTF-8. "
 
 #: lib/installer.php:2506
+#, fuzzy
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
 msgstr ""
+"Ja salīdzinājums nav saskaņots, jebkurām spraudņu izveidotajām tabulām var "
+"būt problēmas, kas saistītas ar Cacti Core tabulām. Lūdzu, pārliecinieties, "
+"ka jūsu datu bāze ir mainīta uz “utf8mb4_unicode_ci”, izpildot tālāk "
+"norādīto. "
 
 #: lib/installer.php:2513
 msgid "Table Setup"
@@ -15043,6 +15078,9 @@ msgstr ""
 #: lib/installer.php:2564
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
 msgstr ""
+"Viena vai vairākas tabulas ir pārāk lielas, lai tās pārveidotu instalēšanas "
+"laikā.   Lai veiktu pārveidošanu, izmantojiet skriptu cli/"
+"convert_tables.php, pēc tam atsvaidziniet šo lapu. Piemēram: "
 
 #: lib/installer.php:2568
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -15075,6 +15113,8 @@ msgstr ""
 #: lib/installer.php:2599
 msgid "YOU MUST MANAUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU"
 msgstr ""
+"JUMS MANUĀLI JĀMAINA CACTI DATUBĀZE, LAI ATJAUNOTU JEBKĀDAS JAUNINĀJUMA "
+"VEIKTĀS IZMAIŅAS.<br/>UZSTĀDĪTĀJS NEVAR TO AUTOMĀTISKI IZDARĪT JŪSU VIETĀ"
 
 #: lib/installer.php:2600
 msgid "Downgrading should only be performed when absolutely necessary and doing so may break your installlation"
@@ -15488,12 +15528,12 @@ msgstr ""
 #: lib/plugins.php:660
 #, php-format
 msgid "%s Version %s or above is required for %s. "
-msgstr ""
+msgstr "Ir nepieciešama %s versija %s vai jaunāka, lai atjauninātu %s. "
 
 #: lib/plugins.php:665
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
-msgstr ""
+msgstr "%s ir nepieciešams %s, un tas nav uzstādīts. "
 
 #: lib/plugins.php:670
 #, php-format
@@ -15772,11 +15812,12 @@ msgstr ""
 
 #: lib/template.php:2132
 msgid "Graph Not created for "
-msgstr ""
+msgstr "Grafiks nav izveidots priekš "
 
 #: lib/template.php:2161
+#, fuzzy
 msgid "NOTE: Graph not added for Data Query "
-msgstr ""
+msgstr "PIEZĪME. Datu vaicājumam diagramma nav pievienota "
 
 #: lib/utility.php:862
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
@@ -15815,9 +15856,20 @@ msgid "With Remote polling capabilities, large amounts of data will be synced fr
 msgstr ""
 
 #: lib/utility.php:959
-#, php-format
+#, fuzzy, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr ""
+"Ja izmantojat Cacti Performance Booster un izvēlaties atmiņas krātuves "
+"dzinēju, jums ir jābūt uzmanīgiem, lai izskalotu Performance Booster buferi, "
+"pirms sistēmā beigsies vieta atmiņas tabulā. Tas tiek darīts divos veidos, "
+"vispirms samazinot izvades kolonnas izmēru līdz pareizajam izmēram. Šī "
+"kolonna atrodas tabulās poller_output un poller_output_boost. Otra lieta, ko "
+"varat darīt, ir piešķirt vairāk atmiņas atmiņas tabulām. Mēs esam patvaļīgi "
+"izvēlējušies ieteicamo sistēmas atmiņas vērtību — 10%%, taču, ja izmantojat "
+"SSD disku diskus vai jums ir mazāka sistēma, varat ignorēt šo ieteikumu vai "
+"izvēlēties citu krātuves programmu. Varat redzēt paredzamo Performance "
+"Booster tabulu patēriņu sadaļā Console -> System Utilities -> View Boost "
+"Status."
 
 #: lib/utility.php:965
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -16458,6 +16510,7 @@ msgstr ""
 #: poller.php:788
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
 msgstr ""
+"BRĪDINĀJUMS: Cacti apjautāšanas cikls pārsniedza apjautāšanas intervālu par "
 
 #: poller.php:1042
 #, php-format
@@ -17319,15 +17372,15 @@ msgstr ""
 
 #: support.php:286 support.php:293
 msgid "Name: "
-msgstr ""
+msgstr "Nosaukums: "
 
 #: support.php:286
 msgid "Procs: "
-msgstr ""
+msgstr "Procesi: "
 
 #: support.php:293
 msgid "Threads: "
-msgstr ""
+msgstr "Pavedieni: "
 
 #: support.php:299
 msgid "Concurrent Processes"
@@ -17864,35 +17917,35 @@ msgstr ""
 #: user_admin.php:728 user_admin.php:730 user_admin.php:733 user_admin.php:737
 #, php-format
 msgid "Graph:(%s%s)"
-msgstr ""
+msgstr "Grafiks:(%s%s)"
 
 #: user_admin.php:744 user_admin.php:749 user_admin.php:753
 #, php-format
 msgid "Device:(%s%s)"
-msgstr ""
+msgstr "Ierīce:(%s%s)"
 
 #: user_admin.php:765 user_admin.php:770 user_admin.php:774
 #, php-format
 msgid "Template:(%s%s)"
-msgstr ""
+msgstr "Veidne:(%s%s)"
 
 #: user_admin.php:785 user_admin.php:787
 #, php-format
 msgid "Device+Template:(%s%s)"
-msgstr ""
+msgstr "Ierīce+Veidne:(%s%s)"
 
 #: user_admin.php:790
 #, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr ""
+msgstr "Grafiks+Ierīce+Veidne:(%s%s)"
 
 #: user_admin.php:797 user_admin.php:804 user_admin.php:813
 msgid "Restricted By: "
-msgstr ""
+msgstr "Ierobežoja: "
 
 #: user_admin.php:801
 msgid "Granted By: "
-msgstr ""
+msgstr "Piešķīra: "
 
 #: user_admin.php:808
 msgid "Granted"
@@ -17916,27 +17969,27 @@ msgstr ""
 
 #: user_admin.php:870 user_group_admin.php:755
 msgid "Default Graph Policy"
-msgstr ""
+msgstr "Noklusējuma grafika politika"
 
 #: user_admin.php:875
 msgid "Default Graph Policy for this User"
-msgstr ""
+msgstr "Noklusējuma grafika politika šim lietotājam"
 
 #: user_admin.php:880 user_admin.php:1211 user_admin.php:1378
 #: user_admin.php:1523 user_group_admin.php:765 user_group_admin.php:908
 #: user_group_admin.php:1058 user_group_admin.php:1199
 msgid "Update"
-msgstr ""
+msgstr "Atjaunot"
 
 #: user_admin.php:1035 user_admin.php:1296 user_admin.php:1444
 #: user_admin.php:1585 user_group_admin.php:833 user_group_admin.php:980
 #: user_group_admin.php:1123 user_group_admin.php:1257
 msgid "Effective Policy"
-msgstr ""
+msgstr "Efektivitātes politika"
 
 #: user_admin.php:1049 user_group_admin.php:859
 msgid "No Matching Graphs Found"
-msgstr ""
+msgstr "Neatrada nevienu atbilstošu grafiku"
 
 #: user_admin.php:1064 user_admin.php:1070 user_admin.php:1341
 #: user_admin.php:1347 user_admin.php:1486 user_admin.php:1492
@@ -17945,7 +17998,7 @@ msgstr ""
 #: user_group_admin.php:1165 user_group_admin.php:1171
 #: user_group_admin.php:1297 user_group_admin.php:1303
 msgid "Revoke Access"
-msgstr ""
+msgstr "Atsaukt piekļuvi"
 
 #: user_admin.php:1065 user_admin.php:1069 user_admin.php:1342
 #: user_admin.php:1346 user_admin.php:1487 user_admin.php:1491
@@ -18273,7 +18326,7 @@ msgstr ""
 
 #: user_domains.php:504
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr ""
+msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts) "
 
 #: user_domains.php:529
 msgid "Domain Properties"
@@ -18457,7 +18510,7 @@ msgstr ""
 
 #: user_group_admin.php:682
 msgid "Membership"
-msgstr ""
+msgstr "Biedrība"
 
 #: user_group_admin.php:693
 msgid "Group Member"
