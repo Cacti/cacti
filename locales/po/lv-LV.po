@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-18 19:15+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-18 23:18+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 msgid "About Cacti"
@@ -10033,7 +10033,7 @@ msgstr "Lietotāja definēts rindu skaits aizsprostojumam līdz beigām, atlasot
 
 #: include/global_settings.php:936
 msgid "Log Tail Refresh"
-msgstr "Log Tail Refresh"
+msgstr "Žurnāla astes atsvaidzināšana"
 
 #: include/global_settings.php:937
 msgid "How often do you want the Cacti log display to update."
@@ -10795,7 +10795,7 @@ msgstr "E-pasts"
 
 #: include/global_settings.php:1697
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
-msgstr "Lauks, kas aizstās no LDAP ņemto e-pastu. (Windows: pasts)"
+msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts) "
 
 #: include/global_settings.php:1704
 msgid "URL Linking"
@@ -12058,7 +12058,7 @@ msgstr "Jaunā filiāle"
 
 #: lib/auth.php:539
 msgid "Web Basic"
-msgstr "Web Basic"
+msgstr "Vienkāršais Web"
 
 #: lib/auth.php:2168
 msgid "Device:(Hide Disabled)"
@@ -13044,7 +13044,7 @@ msgstr "Standarta novirzes"
 
 #: lib/html.php:2221
 msgid "Variance Outliers"
-msgstr "Variance Outliers"
+msgstr "Izkliedes novirzes"
 
 #: lib/html.php:2227
 msgid "Kills Per RRA"
@@ -14301,7 +14301,7 @@ msgstr "PIEZĪME. Jūsu esošie dati netiks mainīti, kā arī tie vai vēsture 
 
 #: lib/installer.php:1486
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
-msgstr "Jūs esat izveidojis jaunu datu bāzi, bet vēl neesat importējis failu \"cacti.sql\". Lai turpinātu, komandrindā izpildiet tālāk norādītās darbības."
+msgstr "Jūs esat izveidojis jaunu datu bāzi, bet vēl neesat importējis failu 'cacti.sql'. Lai turpinātu, komandrindā izpildiet tālāk norādītās darbības:"
 
 #: lib/installer.php:1488
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
@@ -14872,7 +14872,7 @@ msgstr "Šķiet, ka jūsu servera salīdzinājums ir saderīgs ar UTF8"
 
 #: lib/installer.php:2481
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "Šķiet, ka jūsu servera salīdzinājums NAV pilnībā saderīgs ar UTF8."
+msgstr "Šķiet, ka jūsu servera datubāzes collation parametrs NAV pilnībā saderīgs ar UTF-8. "
 
 #: lib/installer.php:2482
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -14888,11 +14888,12 @@ msgstr "Šķiet, ka jūsu datu bāzes noklusējuma salīdzināšana ir saderīga
 
 #: lib/installer.php:2497
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "Šķiet, ka jūsu datu bāzes noklusējuma salīdzināšana NAV pilnībā saderīga ar UTF8."
+msgstr "Šķiet, ka jūsu datubāzes noklusējuma collation parametrs NAV pilnībā saderīga ar UTF-8. "
 
 #: lib/installer.php:2498
+#, fuzzy
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Ja salīdzinājums nav saskaņots, jebkurām spraudņu izveidotajām tabulām var būt problēmas, kas saistītas ar Cacti Core tabulām. Lūdzu, pārliecinieties, ka jūsu datu bāze ir mainīta uz “utf8mb4_unicode_ci”, izpildot tālāk norādīto."
+msgstr "Ja salīdzinājums nav saskaņots, jebkurām spraudņu izveidotajām tabulām var būt problēmas, kas saistītas ar Cacti Core tabulām. Lūdzu, pārliecinieties, ka jūsu datu bāze ir mainīta uz “utf8mb4_unicode_ci”, izpildot tālāk norādīto. "
 
 #: lib/installer.php:2505
 msgid "Table Setup"
@@ -14925,7 +14926,7 @@ msgstr "Rindas formāts"
 
 #: lib/installer.php:2556
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "Viena vai vairākas tabulas ir pārāk lielas, lai tās pārveidotu instalēšanas laikā. Lai veiktu konvertēšanu, izmantojiet skriptu cli/convert_tables.php, pēc tam atsvaidziniet šo lapu. Piemēram:"
+msgstr "Viena vai vairākas tabulas ir pārāk lielas, lai tās pārveidotu instalēšanas laikā.   Lai veiktu pārveidošanu, izmantojiet skriptu cli/convert_tables.php, pēc tam atsvaidziniet šo lapu. Piemēram: "
 
 #: lib/installer.php:2560
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -15385,12 +15386,12 @@ msgstr "Ping netika veikts iestatījuma dēļ."
 #: lib/plugins.php:654
 #, php-format
 msgid "%s Version %s or above is required for %s. "
-msgstr "%s %s ir nepieciešama versija %s vai jaunāka."
+msgstr "Ir nepieciešama %s versija %s vai jaunāka, lai atjauninātu %s. "
 
 #: lib/plugins.php:658
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
-msgstr "%s ir nepieciešams %s, un tas nav instalēts."
+msgstr "%s ir nepieciešams %s, un tas nav uzstādīts. "
 
 #: lib/plugins.php:681
 msgid "Plugin cannot be installed."
@@ -15670,11 +15671,12 @@ msgstr "KĻŪDA: baltā saraksta validācija neizdevās. Pārbaudiet datu ievade
 
 #: lib/template.php:2150
 msgid "Graph Not created for "
-msgstr "Diagramma nav izveidota priekš"
+msgstr "Grafiks nav izveidots priekš "
 
 #: lib/template.php:2179
+#, fuzzy
 msgid "NOTE: Graph not added for Data Query "
-msgstr "PIEZĪME. Datu vaicājumam diagramma nav pievienota"
+msgstr "PIEZĪME. Datu vaicājumam diagramma nav pievienota "
 
 #: lib/utility.php:914
 msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability."
@@ -16368,7 +16370,7 @@ msgstr "Pārsniegts maksimālais izpildes laiks %d sekundes polera ID %d. Izie
 
 #: poller.php:797
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr "BRĪDINĀJUMS: kaktusu aptauju cikls pārsniedza aptauju intervālu par"
+msgstr "BRĪDINĀJUMS: Cacti apjautāšanas cikls pārsniedza apjautāšanas intervālu par "
 
 #: poller.php:1032
 msgid "Cacti System Notification"
@@ -17540,7 +17542,7 @@ msgstr "<b>Piezīme.</b> Sistēmas grafika politika ir “ierīce”, kas nozīm
 
 #: user_admin.php:771 user_group_admin.php:757
 msgid "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must have access to the Graph or Graph Template to gain access to the Graph"
-msgstr "<b>Piezīme.</b> Sistēmas grafika politika ir \"Grafa veidne\", kas nozīmē, ka lietotājam ir jābūt piekļuvei grafikam vai grafika veidnei, lai piekļūtu grafikam."
+msgstr "<b>Piezīme:</b> Sistēmas grafika politika ir \"Grafika veidne\", kas nozīmē, ka lietotājam ir jābūt piekļuvei grafikam vai grafika veidnei, lai piekļūtu grafikam"
 
 #: user_admin.php:775 user_group_admin.php:765
 msgid "Default Graph Policy"
@@ -17554,17 +17556,17 @@ msgstr "Noklusējuma grafika politika šim lietotājam"
 #: user_admin.php:1374 user_group_admin.php:775 user_group_admin.php:958
 #: user_group_admin.php:1106 user_group_admin.php:1249
 msgid "Update"
-msgstr "Atjauninājums"
+msgstr "Atjaunot"
 
 #: user_admin.php:889 user_admin.php:1148 user_admin.php:1295
 #: user_admin.php:1434 user_group_admin.php:882 user_group_admin.php:1028
 #: user_group_admin.php:1173 user_group_admin.php:1305
 msgid "Effective Policy"
-msgstr "Efektīva politika"
+msgstr "Efektivitātes politika"
 
 #: user_admin.php:903 user_group_admin.php:896
 msgid "No Matching Graphs Found"
-msgstr "Netika atrasts neviens atbilstošs grafiks"
+msgstr "Neatrada nevienu atbilstošu grafiku"
 
 #: user_admin.php:918 user_admin.php:924 user_admin.php:1193
 #: user_admin.php:1199 user_admin.php:1337 user_admin.php:1343
@@ -17573,7 +17575,7 @@ msgstr "Netika atrasts neviens atbilstošs grafiks"
 #: user_group_admin.php:1215 user_group_admin.php:1221
 #: user_group_admin.php:1345 user_group_admin.php:1351
 msgid "Revoke Access"
-msgstr "Revoke Access"
+msgstr "Atsaukt piekļuvi"
 
 #: user_admin.php:919 user_admin.php:923 user_admin.php:1194
 #: user_admin.php:1198 user_admin.php:1338 user_admin.php:1342
@@ -17921,7 +17923,7 @@ msgstr "e-pasts"
 
 #: user_domains.php:504
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "Lauks, kas aizstās e-pastu, kas ņemts no LDAP. (Windows: pasts)"
+msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts) "
 
 #: user_domains.php:529
 msgid "Domain Properties"
@@ -18105,7 +18107,7 @@ msgstr "Lietotāja vārdu"
 
 #: user_group_admin.php:680
 msgid "Membership"
-msgstr "Dalība profesionālajās korporācijās "
+msgstr "Biedrība"
 
 #: user_group_admin.php:691
 msgid "Group Member"
@@ -18261,15 +18263,15 @@ msgstr "Nav vienumu, ko aptaujāt"
 
 #: utilities.php:378 utilities.php:385
 msgid "Name: "
-msgstr "Vārds:"
+msgstr "Nosaukums: "
 
 #: utilities.php:378
 msgid "Procs: "
-msgstr "Pros:"
+msgstr "Procesi: "
 
 #: utilities.php:385
 msgid "Threads: "
-msgstr "Pavedieni:"
+msgstr "Pavedieni: "
 
 #: utilities.php:391
 msgid "Concurrent Processes"
