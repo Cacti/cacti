@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-12-23 13:29-0500\n"
-"PO-Revision-Date: 2022-06-18 23:18+0000\n"
+"PO-Revision-Date: 2022-06-19 00:34+0000\n"
 "Last-Translator: Coool <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv\n"
@@ -1450,7 +1450,7 @@ msgstr ""
 #: utilities.php:1827 utilities.php:1835 utilities.php:1838 utilities.php:1841
 #: utilities.php:1847 utilities.php:2076
 msgid "N/A"
-msgstr ""
+msgstr "Nav piemērojams"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
@@ -2279,7 +2279,7 @@ msgstr "Atsvaidzināt"
 #: pollers.php:943
 #, php-format
 msgid "%d Seconds"
-msgstr ""
+msgstr "%d sekundes"
 
 #: automation_networks.php:1232
 msgid "Clear Filtered"
@@ -5562,7 +5562,7 @@ msgstr ""
 
 #: host.php:899 lib/functions.php:4865 lib/functions.php:4870
 msgid "Success"
-msgstr ""
+msgstr "Izpildīts"
 
 #: host.php:902
 msgid "Reload Query"
@@ -12400,7 +12400,7 @@ msgstr ""
 
 #: lib/auth.php:3015 lib/auth.php:3045 lib/auth.php:3078
 msgid "Unknown error"
-msgstr ""
+msgstr "Nezināma kļūda "
 
 #: lib/auth.php:3018 lib/auth.php:3048 lib/auth.php:3081
 msgid "ERROR: Unable to find user"
@@ -18939,7 +18939,7 @@ msgstr "%d minūtes"
 #: utilities.php:1824
 #, php-format
 msgid "%d seconds"
-msgstr ""
+msgstr "%d sekundes"
 
 #: utilities.php:1825
 #, php-format
