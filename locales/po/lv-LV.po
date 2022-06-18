@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-17 00:23+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-18 06:37+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 msgid "About Cacti"
@@ -515,7 +515,7 @@ msgstr "Daļa no Agregāta"
 #: user_admin.php:2738 user_admin.php:2823 user_admin.php:2908
 #: user_admin.php:2993
 msgid "Go"
-msgstr "Go"
+msgstr "Aiziet"
 
 #: aggregate_graphs.php:1340 aggregate_graphs.php:1638
 #: automation_devices.php:495 automation_snmp.php:717
@@ -534,7 +534,7 @@ msgstr "Go"
 #: user_group_admin.php:2648 utilities.php:845 utilities.php:1200
 #: utilities.php:1532 utilities.php:1813 utilities.php:2643 utilities.php:2906
 msgid "Set/Refresh Filters"
-msgstr "Iestatīt/atsvaidzināt filtrus"
+msgstr "Atlasīt/Atjaunināt filtrus"
 
 #: aggregate_graphs.php:1341 aggregate_graphs.php:1639
 #: aggregate_templates.php:630 automation_devices.php:496
@@ -672,7 +672,7 @@ msgstr "Veidne"
 #: utilities.php:1502 utilities.php:1787 utilities.php:1832 utilities.php:2616
 #: utilities.php:2868 utilities.php:2881
 msgid "Any"
-msgstr "Katrs"
+msgstr "Jebkuru"
 
 #: aggregate_graphs.php:1605 aggregate_graphs.php:1717
 #: automation_graph_rules.php:906 automation_graph_rules.php:907
@@ -706,7 +706,7 @@ msgstr "Katrs"
 #: settings.php:549 settings.php:577 user_admin.php:2510 user_admin.php:2703
 #: user_group_admin.php:2250 user_group_admin.php:2358 utilities.php:1788
 msgid "None"
-msgstr "Neviens"
+msgstr "Nevienu"
 
 #: aggregate_graphs.php:1702
 msgid "The title for the Aggregate Graphs"
@@ -974,7 +974,7 @@ msgstr "Pieslēgties"
 #: lib/html.php:2474 managers.php:39 user_admin.php:1834
 #: user_group_admin.php:1712
 msgid "General"
-msgstr "Visp. info"
+msgstr "Pamata"
 
 #: auth_profile.php:282
 msgid "User Account Details"
@@ -1150,7 +1150,7 @@ msgstr "Dzēst ierīci(-es)"
 #: tree.php:2063 user_admin.php:1140 user_admin.php:2716
 #: user_group_admin.php:1020 user_group_admin.php:2371 utilities.php:315
 msgid "Devices"
-msgstr "Ierīces"
+msgstr "Iekārtas"
 
 #: automation_devices.php:277
 msgid "Device Name"
@@ -1391,7 +1391,7 @@ msgstr "Datu vaicājums"
 #: user_group_admin.php:680 user_group_admin.php:695 user_group_admin.php:1999
 #: utilities.php:2492
 msgid "Enabled"
-msgstr "Ieslēgts"
+msgstr "Iespējots"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
@@ -1408,7 +1408,7 @@ msgstr "Ieslēgts"
 #: user_admin.php:1015 user_domains.php:412 user_group_admin.php:695
 #: utilities.php:2492
 msgid "Disabled"
-msgstr "Atspējot"
+msgstr "Atspējots"
 
 #: automation_graph_rules.php:895 automation_tree_rules.php:935
 msgid "Rule Name"
@@ -1553,7 +1553,7 @@ msgstr "Pamatiestatījumi"
 #: user_admin.php:1003 user_domains.php:326 utilities.php:632
 #: utilities.php:2688
 msgid "Name"
-msgstr "Vārds"
+msgstr "Nosaukums"
 
 #: automation_networks.php:442
 msgid "Give this Network a meaningful name."
@@ -1609,7 +1609,7 @@ msgstr "Ievadiet DNS serveru IP vai FQDN"
 
 #: automation_networks.php:490
 msgid "Schedule Type"
-msgstr "Grafika veids"
+msgstr "Izpildes saraksta tips"
 
 #: automation_networks.php:491
 msgid "Define the collection frequency."
@@ -2038,7 +2038,7 @@ msgstr "Tīkla nosaukums"
 
 #: automation_networks.php:1075
 msgid "Schedule"
-msgstr "Grafiks"
+msgstr "Izpildes saraksts"
 
 #: automation_networks.php:1076
 msgid "Total IPs"
@@ -2142,7 +2142,7 @@ msgstr "Nosaukuma formāts"
 
 #: automation_snmp.php:243
 msgid "name"
-msgstr "nosaukums"
+msgstr "Nosaukums"
 
 #: automation_snmp.php:294
 msgid "Automation SNMP Options has been Duplicated."
@@ -2279,7 +2279,7 @@ msgstr "Prece Nr. %d"
 
 #: automation_snmp.php:558
 msgid "none"
-msgstr "Neviens"
+msgstr "Nevienu"
 
 #: automation_snmp.php:573 automation_templates.php:524 cdef.php:621
 #: color_templates.php:111 data_queries.php:790 data_queries.php:897
@@ -3708,7 +3708,7 @@ msgstr "Datu saglabāšana"
 #: data_source_profiles.php:611 include/global_settings.php:967
 #: lib/html_reports.php:1051
 msgid "Graph Timespan"
-msgstr "Grafiks Laika posma"
+msgstr "Grafika laika periods"
 
 #: data_source_profiles.php:612
 msgid "Steps"
@@ -3788,7 +3788,7 @@ msgstr "%d nedēļas"
 #: include/global_arrays.php:1355
 #, php-format
 msgid "%d Day"
-msgstr "%d diena"
+msgstr "%d diena"
 
 #: data_source_profiles.php:821 include/global_arrays.php:709
 #: include/global_arrays.php:719 include/global_arrays.php:720
@@ -5478,7 +5478,7 @@ msgstr "Nosaukums, ar kādu šī Ierīce tiks apzīmēta."
 #: pollers.php:130 pollers.php:996 user_admin.php:1148
 #: user_group_admin.php:1028
 msgid "Hostname"
-msgstr "Saimniekdatora nosaukums"
+msgstr "Resursdatora nosaukums"
 
 #: host.php:1721
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
@@ -6535,7 +6535,7 @@ msgstr "Koki"
 #: include/global_arrays.php:924 include/global_arrays.php:974
 #: include/global_arrays.php:990
 msgid "Data Collection"
-msgstr "Datu vākšana"
+msgstr "Datu apkopošana"
 
 #: include/global_arrays.php:925 include/global_arrays.php:975
 #: include/global_arrays.php:2107 pollers.php:870
@@ -6616,7 +6616,7 @@ msgstr "Lietotāju domēni"
 #: include/global_arrays.php:961 include/global_arrays.php:980
 #: include/global_arrays.php:996 include/global_arrays.php:2353
 msgid "Utilities"
-msgstr "Komunālie pakalpojumi"
+msgstr "Rīki"
 
 #: include/global_arrays.php:962 include/global_arrays.php:981
 msgid "System Utilities"
@@ -6725,7 +6725,7 @@ msgstr "Vispārējā administrācija"
 
 #: include/global_arrays.php:1155
 msgid "System Administration"
-msgstr "Sistēmas administrēšana"
+msgstr "Sistēmas pārvaldīšana"
 
 #: include/global_arrays.php:1249 lib/html.php:1132
 msgid "CDEF"
@@ -7495,7 +7495,7 @@ msgstr "Lietotāja profils (rediģēt)"
 
 #: include/global_arrays.php:1925 include/global_arrays.php:1931
 msgid "Tree Mode"
-msgstr "Koka veids"
+msgstr "Koka režīms"
 
 #: include/global_arrays.php:1937
 msgid "List Mode"
@@ -7525,7 +7525,7 @@ msgstr "Grafiku pārvaldība"
 #: include/global_arrays.php:2659 include/global_arrays.php:2677
 #: include/global_arrays.php:2695 include/global_arrays.php:2719
 msgid "(Edit)"
-msgstr "(Rediģēt)"
+msgstr "(rediģēt)"
 
 #: include/global_arrays.php:2005 lib/api_aggregate.php:1707
 msgid "Graph Items"
@@ -11016,7 +11016,7 @@ msgstr "Vienlaicīgu pastiprināšanas procesu skaits, kas jāizmanto, lai apstr
 
 #: include/global_settings.php:1925 include/global_settings.php:2035
 msgid "1 Process"
-msgstr "1 Process"
+msgstr "1 process"
 
 #: include/global_settings.php:1926 include/global_settings.php:1927
 #: include/global_settings.php:1928 include/global_settings.php:1929
@@ -13500,7 +13500,7 @@ msgstr "Intervāls"
 
 #: lib/html_graph.php:339 lib/html_tree.php:1158
 msgid "Stop"
-msgstr "Stop"
+msgstr "Apturēt"
 
 #: lib/html_graph.php:504 lib/html_graph.php:534
 #, php-format
@@ -15188,7 +15188,7 @@ msgstr "Заголовок сайта"
 
 #: lib/installer.php:3430
 msgid "Cli"
-msgstr "Cli"
+msgstr "cli"
 
 #: lib/installer.php:3435
 #, php-format
@@ -18244,7 +18244,7 @@ msgstr "Pavedieni:"
 
 #: utilities.php:391
 msgid "Concurrent Processes"
-msgstr "Vienlaicīgi procesi"
+msgstr "Vienlaicīgo procesu skaits"
 
 #: utilities.php:396
 msgid "Max Threads"
