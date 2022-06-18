@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-12-23 13:29-0500\n"
-"PO-Revision-Date: 2022-06-18 16:55+0000\n"
+"PO-Revision-Date: 2022-06-18 17:20+0000\n"
 "Last-Translator: Coool <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv\n"
@@ -343,7 +343,7 @@ msgstr ""
 #: user_admin.php:2001
 #, php-format
 msgid "[edit: %s]"
-msgstr ""
+msgstr "[labot: %s]"
 
 #: aggregate_graphs.php:655 aggregate_graphs.php:770
 msgid "Aggregate Graph does not Exist"
@@ -671,7 +671,7 @@ msgstr ""
 #: rrdcleaner.php:383 user_admin.php:2612 user_admin.php:2801
 #: user_group_admin.php:2168 user_group_admin.php:2274 utilities.php:1218
 msgid "Template"
-msgstr ""
+msgstr "Veidne"
 
 #: aggregate_graphs.php:1596 automation_devices.php:484
 #: automation_devices.php:514 automation_devices.php:529
@@ -1290,7 +1290,7 @@ msgstr ""
 #: automation_devices.php:280 host.php:1607 include/global_form.php:1208
 #: include/global_settings.php:2248
 msgid "Location"
-msgstr ""
+msgstr "Atrašanās vieta"
 
 #: automation_devices.php:281
 msgid "Contact"
@@ -1653,7 +1653,7 @@ msgstr ""
 
 #: automation_networks.php:454 automation_networks.php:1079 host.php:1572
 msgid "Data Collector"
-msgstr ""
+msgstr "Datu ievācējs"
 
 #: automation_networks.php:455 include/global_form.php:1219
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
@@ -5539,7 +5539,7 @@ msgstr ""
 
 #: host.php:1554 include/global_settings.php:670 lib/html.php:2126
 msgid "Site"
-msgstr ""
+msgstr "Vietne"
 
 #: host.php:1636
 msgid "Export Devices"
@@ -7610,7 +7610,7 @@ msgstr ""
 #: include/global_arrays.php:2625 include/global_arrays.php:2643
 #: include/global_arrays.php:2661 include/global_arrays.php:2685
 msgid "(Edit)"
-msgstr "(Rediģēt)"
+msgstr "(rediģēt)"
 
 #: include/global_arrays.php:1995 lib/api_aggregate.php:1711
 msgid "Graph Items"
@@ -13959,7 +13959,7 @@ msgstr "Notikumi"
 
 #: lib/html_reports.php:1167 lib/import.php:2169 user_admin.php:2003
 msgid "[new]"
-msgstr ""
+msgstr "[jauns]"
 
 #: lib/html_reports.php:1199
 msgid "Send Report"
