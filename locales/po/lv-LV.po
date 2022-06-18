@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-18 16:55+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-18 17:20+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 msgid "About Cacti"
@@ -323,7 +323,7 @@ msgstr "Diagrammas vienumi [rediģēt: %s]"
 #: user_admin.php:1850
 #, php-format
 msgid "[edit: %s]"
-msgstr "[rediģēt: %s]"
+msgstr "[labot: %s]"
 
 #: aggregate_graphs.php:661 aggregate_graphs.php:776
 msgid "Aggregate Graph does not Exist"
@@ -1565,7 +1565,7 @@ msgstr "Jauns tīkla atklāšanas diapazons"
 
 #: automation_networks.php:449 automation_networks.php:1074 host.php:1547
 msgid "Data Collector"
-msgstr "Datu savācējs"
+msgstr "Datu ievācējs"
 
 #: automation_networks.php:450 include/global_form.php:1221
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
@@ -5442,7 +5442,7 @@ msgstr "Nav noteikts"
 #: host.php:1529 include/global_settings.php:579 lib/html.php:2108
 #: lib/html_reports.php:990
 msgid "Site"
-msgstr "Tīmekļa vietne"
+msgstr "Vietne"
 
 #: host.php:1611
 msgid "Export Devices"
@@ -7525,7 +7525,7 @@ msgstr "Grafiku pārvaldība"
 #: include/global_arrays.php:2659 include/global_arrays.php:2677
 #: include/global_arrays.php:2695 include/global_arrays.php:2719
 msgid "(Edit)"
-msgstr "(Rediģēt)"
+msgstr "(rediģēt)"
 
 #: include/global_arrays.php:2005 lib/api_aggregate.php:1707
 msgid "Graph Items"
