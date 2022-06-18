@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2021-12-23 13:29-0500\n"
-"PO-Revision-Date: 2022-06-18 00:32+0000\n"
+"PO-Revision-Date: 2022-06-18 16:55+0000\n"
 "Last-Translator: Coool <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv\n"
@@ -784,7 +784,7 @@ msgstr ""
 #: color_templates.php:564 gprint_presets.php:285 graph_templates.php:728
 #: vdef.php:731
 msgid "Has Graphs"
-msgstr ""
+msgstr "Satur grafikus"
 
 #: aggregate_templates.php:693 color_templates.php:642
 msgid "Template Title"
@@ -904,7 +904,7 @@ msgstr ""
 #: auth_changepassword.php:330 include/global_settings.php:1773
 #: lib/functions.php:4855
 msgid "Username"
-msgstr ""
+msgstr "Lietotājvārds"
 
 #: auth_changepassword.php:333
 msgid "Current password"
@@ -1273,7 +1273,7 @@ msgstr ""
 #: tree.php:507 tree.php:1784 user_admin.php:1288 user_admin.php:2819
 #: user_group_admin.php:972 user_group_admin.php:2292
 msgid "Devices"
-msgstr "Iekārtas"
+msgstr "Ierīces"
 
 #: automation_devices.php:277
 msgid "Device Name"
@@ -3329,7 +3329,7 @@ msgstr ""
 
 #: data_debug.php:840
 msgid "Command"
-msgstr ""
+msgstr "Komanda"
 
 #: data_debug.php:856
 msgid "Waiting on Data Source Check to Complete"
@@ -3631,7 +3631,7 @@ msgstr ""
 #: host_templates.php:537 host_templates.php:591 lib/html.php:63
 #: lib/html_filter.php:58
 msgid "Add"
-msgstr ""
+msgstr "Pievienot"
 
 #: data_queries.php:799
 msgid "Add Graph Title Suggested Name"
@@ -7610,7 +7610,7 @@ msgstr ""
 #: include/global_arrays.php:2625 include/global_arrays.php:2643
 #: include/global_arrays.php:2661 include/global_arrays.php:2685
 msgid "(Edit)"
-msgstr "(rediģēt)"
+msgstr "(Rediģēt)"
 
 #: include/global_arrays.php:1995 lib/api_aggregate.php:1711
 msgid "Graph Items"
@@ -7667,7 +7667,7 @@ msgstr ""
 
 #: include/global_arrays.php:2319 utilities.php:1432 utilities.php:1433
 msgid "Technical Support"
-msgstr ""
+msgstr "Tehniskais atbalsts"
 
 #: include/global_arrays.php:2331 include/global_arrays.php:2343
 #: utilities.php:1448
@@ -8803,7 +8803,7 @@ msgstr ""
 
 #: include/global_form.php:1533 lib/functions.php:4856
 msgid "Password"
-msgstr ""
+msgstr "Parole"
 
 #: include/global_form.php:1534
 msgid "Enter the password for this user twice. Remember that passwords are case sensitive!"
@@ -12208,7 +12208,7 @@ msgstr ""
 
 #: lib/api_device.php:1143
 msgid "Host"
-msgstr ""
+msgstr "Resursdatora"
 
 #: lib/api_device.php:1161
 msgid "System:"
@@ -13252,7 +13252,7 @@ msgstr ""
 
 #: lib/html.php:2517 lib/html.php:3159
 msgid "Help"
-msgstr ""
+msgstr "Palīdzība"
 
 #: lib/html.php:2518 lib/html.php:3160
 msgid "Cacti Home"
@@ -13457,7 +13457,7 @@ msgstr ""
 #: lib/html.php:2582 lib/html.php:3224 lib/html_form.php:1307
 #: lib/html_form.php:1358
 msgid "Close"
-msgstr ""
+msgstr "Aizvērt"
 
 #: lib/html.php:2584 lib/html.php:3226
 msgid "3rd Mouse Button"
@@ -14045,7 +14045,7 @@ msgstr ""
 
 #: lib/html_reports.php:1629 lib/html_reports.php:1640
 msgid "Frequency"
-msgstr ""
+msgstr "Biežums"
 
 #: lib/html_reports.php:1630 lib/html_reports.php:1641
 msgid "Last Run"
@@ -16836,14 +16836,14 @@ msgstr ""
 #: user_group_admin.php:2563
 msgctxt "filter: use"
 msgid "Go"
-msgstr ""
+msgstr "Palaist"
 
 #: rrdcleaner.php:546 user_group_admin.php:1865 user_group_admin.php:2213
 #: user_group_admin.php:2315 user_group_admin.php:2398
 #: user_group_admin.php:2481
 msgctxt "filter: reset"
 msgid "Clear"
-msgstr ""
+msgstr "Notīrīt"
 
 #: rrdcleaner.php:547
 msgid "Rescan"
