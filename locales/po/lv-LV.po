@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-18 06:37+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-04-02 09:08-0400\nPO-Revision-Date: 2022-06-18 16:55+0000\nLast-Translator: Coool <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2527 lib/html.php:2492
 msgid "About Cacti"
@@ -769,7 +769,7 @@ msgstr "Veidnes"
 #: color_templates.php:562 gprint_presets.php:285 graph_templates.php:726
 #: vdef.php:723
 msgid "Has Graphs"
-msgstr "Ir grafiki"
+msgstr "Satur grafikus"
 
 #: aggregate_templates.php:693 color_templates.php:640
 msgid "Template Title"
@@ -1150,7 +1150,7 @@ msgstr "Dzēst ierīci(-es)"
 #: tree.php:2063 user_admin.php:1140 user_admin.php:2716
 #: user_group_admin.php:1020 user_group_admin.php:2371 utilities.php:315
 msgid "Devices"
-msgstr "Iekārtas"
+msgstr "Ierīces"
 
 #: automation_devices.php:277
 msgid "Device Name"
@@ -3223,7 +3223,7 @@ msgstr "Labošanas darbības [Palaidiet labošanu no komandrindas]"
 
 #: data_debug.php:849
 msgid "Command"
-msgstr "Komandas"
+msgstr "Komanda"
 
 #: data_debug.php:865
 msgid "Waiting on Data Source Check to Complete"
@@ -7525,7 +7525,7 @@ msgstr "Grafiku pārvaldība"
 #: include/global_arrays.php:2659 include/global_arrays.php:2677
 #: include/global_arrays.php:2695 include/global_arrays.php:2719
 msgid "(Edit)"
-msgstr "(rediģēt)"
+msgstr "(Rediģēt)"
 
 #: include/global_arrays.php:2005 lib/api_aggregate.php:1707
 msgid "Graph Items"
@@ -7603,7 +7603,7 @@ msgstr "Notīrīt lietotāja žurnālu"
 
 #: include/global_arrays.php:2401 utilities.php:1997 utilities.php:1998
 msgid "Technical Support"
-msgstr "Tehniskā palīdzība"
+msgstr "Tehniskais atbalsts"
 
 #: include/global_arrays.php:2407 utilities.php:2156
 msgid "Boost Status"
@@ -11994,7 +11994,7 @@ msgstr "Sesija"
 
 #: lib/api_device.php:1155
 msgid "Host"
-msgstr "Resurss"
+msgstr "Resursdatora"
 
 #: lib/api_device.php:1173
 msgid "System:"
@@ -16775,7 +16775,7 @@ msgstr "RRD faili"
 #: user_group_admin.php:2648
 msgctxt "filter: use"
 msgid "Go"
-msgstr "Go"
+msgstr "Palaist"
 
 #: rrdcleaner.php:546 user_group_admin.php:1940 user_group_admin.php:2290
 #: user_group_admin.php:2394 user_group_admin.php:2479
