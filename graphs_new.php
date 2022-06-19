@@ -135,6 +135,9 @@ function form_save() {
 
 			if (strpos($var, 'sgg_') !== false) {
 				$snmp_query_id = str_replace('sgg_', '', $var);
+
+				input_validate_input_number($snmp_query_id);
+
 				store_get_selected_dq_index($snmp_query_id);
 			}
 		}

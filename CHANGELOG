@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.22
+-security#4834: XSS Issue in graphs_new.php
 -issue#4768: Multiple AD LDAP Full Name and mail are not propagated when creating user from template
 -issue#4802: Typo in lib/auth.php prevents users from changing their password and logging in
 -issue#4808: WARNING: Poller Output Table not Empty
