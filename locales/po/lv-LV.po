@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-19 15:33+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-19 16:49+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2528 lib/html.php:2492
 msgid "About Cacti"
@@ -2102,11 +2102,11 @@ msgstr "Pēdējo reizi izpildīta"
 
 #: automation_networks.php:1112 pollers.php:45 utilities.php:2255
 msgid "Running"
-msgstr "Skriešana"
+msgstr "Procesā"
 
 #: automation_networks.php:1136 pollers.php:46 utilities.php:2253
 msgid "Idle"
-msgstr "Brīvs"
+msgstr "Dīkstāvē"
 
 #: automation_networks.php:1152 include/global_arrays.php:819
 #: include/global_arrays.php:1109 include/global_settings.php:2324
@@ -9926,7 +9926,7 @@ msgstr "Tēmas iestatījumi"
 #: include/global_settings.php:812 include/global_settings.php:1022
 #: include/global_settings.php:2333 lib/html.php:2488
 msgid "Theme"
-msgstr "Tēma"
+msgstr "Motīvs"
 
 #: include/global_settings.php:813 include/global_settings.php:2334
 msgid "Please select one of the available Themes to skin your Cacti with."
@@ -17208,7 +17208,7 @@ msgstr "Importēt veidni"
 
 #: templates_import.php:118
 msgid "ERROR"
-msgstr "KĻŪDA"
+msgstr "Kļūda"
 
 #: templates_import.php:118
 msgid "Failed to access temporary folder, import functionality is disabled"
