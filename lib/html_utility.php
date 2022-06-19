@@ -26,7 +26,7 @@
      their actual values
    @arg $form_array - an array that contains all of the information needed to draw
      the html form. see the arrays contained in include/global_settings.php
-     for the extact syntax of this array
+     for the exact syntax of this array
    @arg $arg1 - an array that represents the |arg1:| variable (see
      include/global_form.php for more details)
    @arg $arg2 - an array that represents the |arg2:| variable (see
@@ -51,7 +51,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check])) {
 					$count = 0;
 
-					/* loop through the $field_to_check and replace upto three times
+					/* loop through the $field_to_check and replace up to three times
 					 * for each arg1:arg2:arg3 variables.
 					 */
 					while (true) {
@@ -76,7 +76,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 								}
 							} else {
 								/* copy the value down from the array/key specified in the variable
-								 * replace upto three times for arg1:arg2:arg3 variables
+								 * replace up to three times for arg1:arg2:arg3 variables
 								 */
 								if (isset($$matches1)) {
 									if (is_array($$matches1)) {
