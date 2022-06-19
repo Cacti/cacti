@@ -826,13 +826,13 @@ function clog_regex_dataquery($matches) {
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($query_ids)) {
 		$result = '';
-		$querys = db_fetch_assoc('SELECT id, name
+		$queries = db_fetch_assoc('SELECT id, name
 			FROM snmp_query
 			WHERE id in (' . implode(',',$query_ids) . ')');
 
 		$queryDescriptions = array();
-		if (cacti_sizeof($querys)) {
-			foreach ($querys as $query) {
+		if (cacti_sizeof($queries)) {
+			foreach ($queries as $query) {
 				$queryDescriptions[$query['id']] = html_escape($query['name']);
 			}
 		}
@@ -875,7 +875,7 @@ function clog_regex_graphs($matches) {
 		$title = '';
 		$i     = 0;
 
-		$querys = db_fetch_assoc('SELECT DISTINCT
+		$queries = db_fetch_assoc('SELECT DISTINCT
 			gtg.local_graph_id AS id,
 			gtg.title_cache AS title
 			FROM graph_templates_graph AS gtg
@@ -888,8 +888,8 @@ function clog_regex_graphs($matches) {
 		$result .= $matches[1] . "<a href='";
 
 		$queryDescriptions = array();
-		if (cacti_sizeof($querys)) {
-			foreach ($querys as $query) {
+		if (cacti_sizeof($queries)) {
+			foreach ($queries as $query) {
 				$queryDescriptions[$query['id']] = html_escape($query['title']);
 			}
 		}
@@ -914,13 +914,13 @@ function clog_regex_graphtemplates($matches) {
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($query_ids)) {
 		$result = '';
-		$querys = db_fetch_assoc('SELECT id, name
+		$queries = db_fetch_assoc('SELECT id, name
 			FROM graph_templates
 			WHERE id in ('  . implode(',',$query_ids) . ')');
 
 		$queryDescriptions = array();
-		if (cacti_sizeof($querys)) {
-			foreach ($querys as $query) {
+		if (cacti_sizeof($queries)) {
+			foreach ($queries as $query) {
 				$queryDescriptions[$query['id']] = html_escape($query['name']);
 			}
 		}
@@ -942,14 +942,14 @@ function clog_regex_users($matches) {
 	if (cacti_sizeof($query_ids)) {
 		$result = '';
 
-		$querys = db_fetch_assoc('SELECT DISTINCT
+		$queries = db_fetch_assoc('SELECT DISTINCT
 			id, username
 			FROM user_auth
 			WHERE id in (' . implode(',',$query_ids) . ')');
 
 		$queryDescriptions = array();
-		if (cacti_sizeof($querys)) {
-			foreach ($querys as $query) {
+		if (cacti_sizeof($queries)) {
+			foreach ($queries as $query) {
 				$queryDescriptions[$query['id']] = html_escape($query['username']);
 			}
 		}

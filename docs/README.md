@@ -1,6 +1,6 @@
 # Cacti Documentation
 
-Documenation for the `develop` branch is accessible in the `documentation` repository.
+Documentation for the `develop` branch is accessible in the `documentation` repository.
 
 https://github.com/Cacti/documentation/blob/develop/README.md
 

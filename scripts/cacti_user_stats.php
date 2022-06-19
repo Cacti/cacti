@@ -104,7 +104,7 @@ if ($cacti_db_session == true) {
 					 * won't see real active users.
 					 */
 					if ($mtime >= $active_interval_begin) {
-						/* incease active session counter */
+						/* increase active session counter */
 						$session_counter_active++;
 
 						/* count all active users */

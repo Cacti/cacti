@@ -52,7 +52,7 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
 }
 
 /* rrdtool_function_stats - given a data source, calculate a number of statistics for an RRDfile or files
-   over a specified time time period
+   over a specified time period
    @arg $local_data_ids - the data source array to perform the Nth percentile calculation
    @arg $start_seconds - start seconds of time range
    @arg $stop_seconds - stop seconds of time range
@@ -576,7 +576,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
    @arg $rra_step - how many periods each sample in the RRA counts for, values above '1' result in an
      averaged summation
    @arg $ds_step - how many seconds each period represents
-   @returns - a string containg the bandwidth summation suitable for placing on the graph */
+   @returns - a string containing the bandwidth summation suitable for placing on the graph */
 function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
 	global $graph_item_types;
 

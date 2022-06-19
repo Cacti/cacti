@@ -747,7 +747,7 @@ function read_user_i18n_setting($config_name) {
 /**
  * number_format_i18n - local specific number format wrapper
  *
- * @return - formatted numer in the correct locale
+ * @return - formatted number in the correct locale
  */
 function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	global $cacti_locale, $cacti_country;

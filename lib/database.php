@@ -264,7 +264,7 @@ function db_close($db_conn = false) {
  *
  * @param  (string)        The SQL query to execute
  * @param  (bool)          Whether to log error messages, defaults to true
- * @param  (bool|resource) The connection to use or false for the defaul
+ * @param  (bool|resource) The connection to use or false for the default
  *
  * @return (bool) '1' for success, false on error
  */
@@ -633,7 +633,7 @@ function db_fetch_assoc_return($query) {
 }
 
 /**
- * db_fetch_insert_id - get the last insert_id or auto incriment
+ * db_fetch_insert_id - get the last insert_id or auto increment
  *
  * @param  (bool|resource) The connection to use or false to use the default
  *
@@ -976,8 +976,8 @@ function db_cacti_initialized($is_web = true) {
 		print ($is_web ? '<table style="height:40px;"><tr><td></td></tr></table>':'');
 		print ($is_web ? '<table style="margin-left:auto;margin-right:auto;width:80%;border:1px solid rgba(98,125,77,1)" class="cactiTable"><tr class="cactiTableTitle"><td style="color:snow;font-weight:bold;">Fatal Error - Cacti Database Not Initialized</td></tr>':'');
 		print ($is_web ? '<tr class="installArea"><td>':'');
-		print ($is_web ? '<p>':'') . 'The Cacti Database has not been initialized.  Please initilize it before continuing.' . ($is_web ? '</p>':"\n");
-		print ($is_web ? '<p>':'') . 'To initilize the Cacti database, issue the following commands either as root or using a valid account.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'The Cacti Database has not been initialized.  Please initialize it before continuing.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'To initialize the Cacti database, issue the following commands either as root or using a valid account.' . ($is_web ? '</p>':"\n");
 		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysqladmin -uroot -p create cacti' . ($is_web ? '</p>':"\n");
 		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p -e "grant all on cacti.* to \'someuser\'@\'localhost\' identified by \'somepassword\'"' . ($is_web ? '</p>':"\n");
 		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p -e "grant select on mysql.time_zone_name to \'someuser\'@\'localhost\' identified by \'somepassword\'"' . ($is_web ? '</p>':"\n");
@@ -1044,14 +1044,14 @@ function db_get_table_column_types($table, $db_conn = false) {
 }
 
 /**
- * db_update_table - a function that will update the table strucutre based upon
+ * db_update_table - a function that will update the table structure based upon
  *   a Cacti specific array specification constructed by the sqltable_to_php.php
  *   script.  That script will construct an array from the table definition.
  *   The script is very handy for both Cacti table construction and for plugins.
  *
  * @param  (string)        The name of the table
  * @param  (array)         Table definition as a Cacti specific array
- * @param  (bool)          Remove any existing columns that are not in the speicfication
+ * @param  (bool)          Remove any existing columns that are not in the specification
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
  *
@@ -1257,7 +1257,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 }
 
 /**
- * db_format_index_create - Converts and array of indexs to a string
+ * db_format_index_create - Converts and array of indexes to a string
  *   that is compatible with the cacti database table creation array.
  *
  * @param  (array) An array of indexes to process
@@ -1532,7 +1532,7 @@ function db_rollback_transaction($db_conn = false) {
 }
 
 /**
- * array_to_sql_or - loops through a single dimentional array and converts each
+ * array_to_sql_or - loops through a single dimensional array and converts each
  *   item to a string that can be used in the OR portion of an sql query in the
  *   following form:
  *
@@ -1564,7 +1564,7 @@ function array_to_sql_or($array, $sql_column) {
  * @param $keyCols - a string or array of primary keys
  * @param $autoQuote - whether to use intelligent quoting or not
  *
- * @return - the auto incriment id column (if applicable)
+ * @return - the auto increment id column (if applicable)
  */
 function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
@@ -1586,7 +1586,7 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
  *
  * @param  (resource)     The database connection to use
  * @param  (string)       The table name to use
- * @param  (array)        An array of fieldvalues
+ * @param  (array)        An array of field values
  * @param  (string|array) A string of a key column or an array of key columns
  *
  * @return (bool|int) Either the insert id of the replace of false on error
@@ -1651,7 +1651,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
  * @param  (string)       The name of the table to make the replacement in
  * @param  (string|array) The primary key(s) for the table
  *
- * @return (bool|int)     The auto incriment id column (if applicable)
+ * @return (bool|int)     The auto increment id column (if applicable)
  */
 function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, $db_conn = false) {
 	global $database_sessions, $database_default, $database_hostname, $database_port, $database_last_error;
@@ -1727,7 +1727,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 
 /**
  * db_qstr - Quote a string using the PDO function and also enclose
- *   the ramainder of the string in single quotes.
+ *   the remainder of the string in single quotes.
  *
  * @param  (string)        The SQL to be escaped
  * @param  (bool|resource) The database connection or false if to use the default
@@ -1905,7 +1905,7 @@ function db_get_default_database($db_conn = false) {
 /**
  * db_force_remote_cnn - alias for db_switch_remote_to_main()
  *
- * Swithces the local database connection to the main server
+ * Switches the local database connection to the main server
  * This is required for CLI script that wish to talk to the main
  * database server since by default they are connected to the local
  * database server.
@@ -1922,10 +1922,10 @@ function db_force_remote_cnn() {
  * This function needs to be used with caution.  It is for switching a database connection
  * from the remote connection or the main Cacti poller back to the local connection
  * for all db* calls that do not require the connection to be passed.  It's to be used
- * by CLI script, that by default connecto the local database, back and forth to the
+ * by CLI script, that by default connect to the local database, back and forth to the
  * remote or main database server.
  *
- * @returns (bool) If the switch was succefull
+ * @returns (bool) If the switch was successful
  */
 function db_switch_remote_to_main() {
     global $config, $database_sessions, $database_hostname, $database_port, $database_default;
@@ -1946,10 +1946,10 @@ function db_switch_remote_to_main() {
  * This function needs to be used with caution.  It is for switching a database connection
  * from the remote connection or the main Cacti poller back to the local connection
  * for all db* calls that do not require the connection to be passed.  It's to be used
- * by CLI script, that by default connecto the local database, back and forth to the
+ * by CLI script, that by default connect to the local database, back and forth to the
  * remote or main database server.
  *
- * @returns (bool) If the switch was succefull
+ * @returns (bool) If the switch was successful
  */
 function db_switch_main_to_local() {
     global $config, $database_sessions, $database_hostname, $database_port, $database_default;

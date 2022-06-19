@@ -387,7 +387,7 @@ function debug_wizard() {
 			'display' => __('RRD Updated'),
 			'align'   => 'center',
 			'sort'    => '',
-			'tip'     => __('Determines if the RRDfile has been writted to properly.'),
+			'tip'     => __('Determines if the RRDfile has been written to properly.'),
 		),
 		'nosort8' => array(
 			'display' => __('Issues'),
@@ -826,7 +826,7 @@ function debug_view() {
 
 				$output = '';
 				foreach($details as $attribute => $recommendation) {
-					$output .= __('For attrbitute \'%s\', issue found \'%s\'', $attribute, $recommendation);
+					$output .= __('For attribute \'%s\', issue found \'%s\'', $attribute, $recommendation);
 				}
 
 				form_selectable_cell($output, 'line_2' . $i);

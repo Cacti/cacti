@@ -440,11 +440,11 @@ function get_device_leaf_class($host_id) {
 function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 	$dhtml_tree = array();
 
-	$heirarchy = get_allowed_tree_level($tree_id, $parent, $editing);
+	$hierarchy = get_allowed_tree_level($tree_id, $parent, $editing);
 
-	if (cacti_sizeof($heirarchy)) {
+	if (cacti_sizeof($hierarchy)) {
 		$dhtml_tree[] = "\t\t\t<ul>\n";
-		foreach ($heirarchy as $leaf) {
+		foreach ($hierarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {
 				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . html_escape(strip_domain($leaf['hostname'])) . "</li>\n";
 			} elseif ($leaf['site_id'] > 0) {
@@ -467,15 +467,15 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 	include_once($config['base_path'] . '/lib/data_query.php');
 
-	$heirarchy = get_allowed_tree_content($tree_id, $parent);
+	$hierarchy = get_allowed_tree_content($tree_id, $parent);
 
 	$dhtml_tree = array();
 
-	if (cacti_sizeof($heirarchy)) {
+	if (cacti_sizeof($hierarchy)) {
 		if ($tree_id > 0) {
 			$dhtml_tree[] = "\t\t\t<ul>\n";
 
-			foreach ($heirarchy as $leaf) {
+			foreach ($hierarchy as $leaf) {
 				if ($leaf['site_id'] > 0) {  // It's a site
 					$dhtml_tree = array_merge($dhtml_tree, create_site_branch($leaf));
 				} elseif ($leaf['host_id'] > 0) {  // It's a host
@@ -489,7 +489,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 		} else {
 			$dhtml_tree[] = "<ul>\n";
 
-			foreach($heirarchy as $h) {
+			foreach($hierarchy as $h) {
 				$dhtml_tree[] = "<li id='tree_anchor-" . $h['tree_id'] . "' data-jstree='{ \"type\" : \"tree\" }' class='jstree-closed'><a href='" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tree_anchor-' . $h['tree_id'] . '&site_id=-1&host_id=-1&host_template_id=-1&hgd=') . "'>" . html_escape($h['title']) . "</a></li>\n";
 			}
 

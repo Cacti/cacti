@@ -487,7 +487,7 @@ function form_actions() {
 				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . "</span></td></tr>";
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			}
-		} elseif (get_request_var('drp_action') == '5') { // conver to a normal graph
+		} elseif (get_request_var('drp_action') == '5') { // convert to a normal graph
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to convert the following Aggregate Graph(s) into a normal Graph.') . "</p>
@@ -822,7 +822,7 @@ function graph_edit() {
 
 	form_start('aggregate_graphs.php', 'template_edit');
 
-	/* we will show the templated representation only when when there is a template and propagation is enabled */
+	/* we will show the templated representation only when there is a template and propagation is enabled */
 	if (!isempty_request_var('id') && $current_tab == 'details') {
 		if (cacti_sizeof($template)) {
 			print "<div id='templated'>";

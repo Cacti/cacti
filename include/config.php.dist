@@ -66,7 +66,7 @@ $poller_id = 1;
 
 /*
  * Set the $url_path to point to the default URL of your cacti install.
- * For exmaple if your cacti install as at `https://serverip/cacti/` this
+ * For example if your cacti install as at `https://serverip/cacti/` this
  * would be set to `/cacti/`.
  */
 

@@ -140,7 +140,7 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 						)
 					);
 
-					raise_message('reports_add_device_' . $device_id, __('Device \'%s\' sucessfully added to Report.', $description), MESSAGE_LEVEL_INFO);
+					raise_message('reports_add_device_' . $device_id, __('Device \'%s\' successfully added to Report.', $description), MESSAGE_LEVEL_INFO);
 				} else {
 					$errors++;
 					raise_message('reports_device_not_found', __('Device not found! Unable to add to Report'), MESSAGE_LEVEL_ERROR);
@@ -626,7 +626,7 @@ function generate_report($report, $force = false) {
  * @param string $format_file		- the file to read from the formats directory
  * @param string $output			- the html and css output from that file
  * @param bool $report_tag_included - a boolean that informs the caller if the report tag is present
- * @return bool						- wether or not the format file was processed correctly
+ * @return bool						- whether or not the format file was processed correctly
  */
 function reports_load_format_file($format_file, &$output, &$report_tag_included, &$theme) {
 	global $config;
@@ -957,7 +957,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 }
 
 /**
- * return html code for an embetted image
+ * return html code for an embedded image
  * @param array $report	- parameters for this report mail report
  * @param $item			- current graph item
  * @param $timespan		- timespan

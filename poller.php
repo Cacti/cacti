@@ -206,7 +206,7 @@ if ($config['connection'] == 'online') {
 // get number of polling items from the database
 $poller_interval = read_config_option('poller_interval');
 
-// retreive the last time the poller ran
+// retrieve the last time the poller ran
 $poller_lastrun  = read_config_option('poller_lastrun_' . $poller_id);
 
 // collect the system mibs every 4 hours
@@ -230,7 +230,7 @@ if ($cron_interval != 60) {
 // see if the user wishes to use process leveling
 $process_leveling = read_config_option('process_leveling');
 
-// retreive the number of concurrent process settings
+// retrieve the number of concurrent process settings
 if (cacti_sizeof($poller)) {
 	$concurrent_processes = $poller['processes'];
 } else {
@@ -241,7 +241,7 @@ if (!isset($concurrent_processes) || intval($concurrent_processes) < 1) {
 	$concurrent_processes = 1;
 }
 
-// correct for possible poller output not empty occurances
+// correct for possible poller output not empty occurrences
 $ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id,
 	MIN(rrd_next_step) AS next_step,
 	COUNT(DISTINCT rrd_next_step) AS instances
@@ -502,7 +502,7 @@ while ($poller_runs_completed < $poller_runs) {
 		array($poller_id), true, $poller_db_cnn_id);
 
 	/* only report issues for the main poller or from bad local
-	 * data ids, other pollers may insert somewhat asynchornously
+	 * data ids, other pollers may insert somewhat asynchronously
 	 */
 	$issues = [];
 	$issues_limit = 20;
@@ -763,7 +763,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$loop_time = $loop_end - $loop_start;
 
 	if ($loop_time < $poller_interval) {
-		// sleep the appripriate amount of time
+		// sleep the appropriate amount of time
 		if ($poller_runs_completed < $poller_runs) {
 			$plugin_start = microtime(true);
 
@@ -1037,8 +1037,8 @@ function multiple_poller_boost_check() {
 	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled="" AND id > 1');
 
 	if ($pollers > 0 && read_config_option('boost_rrd_update_enable') == '') {
-		cacti_log('NOTE: A second Cacti data collector has been added.  Therfore, enabling boost automatically!', false, 'POLLER');
-		admin_email(__('Cacti System Notification'), __('NOTE: A second Cacti data collector has been added.  Therfore, enabling boost automatically!'));
+		cacti_log('NOTE: A second Cacti data collector has been added.  Therefore, enabling boost automatically!', false, 'POLLER');
+		admin_email(__('Cacti System Notification'), __('NOTE: A second Cacti data collector has been added.  Therefore, enabling boost automatically!'));
 
 		set_config_option('boost_rrd_update_enable', 'on');
 		set_config_option('boost_rrd_update_system_enable', 'on');

@@ -256,7 +256,7 @@ function snmpagent_device_action_bottom($data){
 				$mc->object('cactiApplLastUpdate')->set(time());
 				break;
 			case '5':
-				/* clear device statisitics */
+				/* clear device statistics */
 				$values = array(
 					'cactiStatsDeviceMinTime'      => '9.99999',
 					'cactiStatsDeviceMaxTime'      => '0',
@@ -613,7 +613,7 @@ function snmpagent_cache_install() {
 	$mc->install($config['base_path'] . '/mibs/CACTI-BOOST-MIB');
 	snmpagent_cache_init();
 
-	/* call install routine of plugins supporting the SNMPagent */
+	/* call install routine of plugins supporting the SNMPAgent */
 	api_plugin_hook('snmpagent_cache_install');
 }
 
@@ -644,7 +644,7 @@ function snmpagent_cache_rebuilt(){
 }
 
 function snmpagent_cache_init(){
-	/* fill up the cache with a minimum of data data and ignore all values that
+	/* fill up the cache with a minimum of data and ignore all values that
 	   *  will be updated automatically at the bottom of the next poller run
 	*/
 	$mc = new MibCache();
@@ -875,7 +875,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 	$difference = array_diff(array_keys($registered_var_binds), array_keys($varbinds));
 
 	if (cacti_sizeof($difference) == 0) {
-		/* order the managers by message type to send out all notifications immmediately. Informs
+		/* order the managers by message type to send out all notifications immediately. Informs
 		   will take more processing time.
 		*/
 		$notification_managers = db_fetch_assoc_prepared('SELECT sm.*

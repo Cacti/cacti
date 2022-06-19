@@ -235,7 +235,7 @@ while (1) {
 				"' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
 				"'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
-			/* validate the existance of the function, and include if applicable */
+			/* validate the existence of the function, and include if applicable */
 			if (!function_exists($function)) {
 				if (file_exists($include_file)) {
 					/* quirk in php on Windows, believe it or not.... */

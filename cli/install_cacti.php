@@ -268,7 +268,7 @@ function set_install_option(&$options, $key, $display_name, $value) {
 	log_install_high('cli',sprintf('Setting %s to \'%s\'', $display_name, $value));
 }
 
-/*  set_install_multioption - sets sub-options that have mutiple key/value combinations with optional prefix */
+/*  set_install_multioption - sets sub-options that have multiple key/value combinations with optional prefix */
 function set_install_multioption(&$options, $key, $display_name, $value, $prefix, $replace_dots = false) {
 	$option_pos = strpos($value, ':');
 	if ($option_pos !== false) {
@@ -361,7 +361,7 @@ function display_help () {
 	print '  -t  | --theme           - Set system theme' . PHP_EOL;
 	print '  -i  | --ini             - Load settings from ini file' . PHP_EOL;
 	print '  -j  | --json            - Load settings from json file' . PHP_EOL;
-	print PHP_EOL . 'Mutli-value optional:' . PHP_EOL;
+	print PHP_EOL . 'Multi-value optional:' . PHP_EOL;
 	print '  These options may be used more than once to apply multiple values.  All' . PHP_EOL;
 	print '  values should be in "option_key:option_value" format (see below). If an' . PHP_EOL;
 	print '  option has a prefix, this is optional and is automatically added to the' . PHP_EOL;

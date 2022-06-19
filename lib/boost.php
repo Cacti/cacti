@@ -241,7 +241,7 @@ function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
 	global $config;
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
-		/* include poller processing routinges */
+		/* include poller processing routines */
 		include_once($config['library_path'] . '/poller.php');
 
 		/* check to see if boost can do its job */
@@ -299,7 +299,7 @@ function boost_return_cached_image(&$graph_data_array) {
 function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$graph_data_array, $return = true) {
 	global $config;
 
-	/* include poller processing routinges */
+	/* include poller processing routines */
 	include_once($config['library_path'] . '/poller.php');
 
 	/* suppressnwarnings */
@@ -380,7 +380,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 	 */
 	if (boost_return_cached_image($graph_data_array)) {
 		/* if timespan is greater than 1, it is a predefined, if it does not
-		 * exist, it is the old fasioned MRTG type graph
+		 * exist, it is the old fashioned MRTG type graph
 		 */
 		$cache_directory = read_config_option('boost_png_cache_directory');
 
@@ -500,7 +500,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	}
 
 	/* check the graph cache and use it if it is valid, otherwise turn over to
-	 * cacti's graphing fucntions.
+	 * cacti's graphing functions.
 	 */
 	if ((read_config_option('boost_png_cache_enable')) && (boost_determine_caching_state())) {
 		$cache_directory = read_config_option('boost_png_cache_directory');
@@ -631,7 +631,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	/* install the boost error handler */
 	set_error_handler('boost_error_handler');
 
-	/* aquire lock in order to prevent race conditions */
+	/* acquire lock in order to prevent race conditions */
 	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
 		usleep(50000);
 	}

@@ -235,7 +235,7 @@ function display_help() {
 	print "The plugin parameter is optional, but if you want the table(s) automatically\n";
 	print "removed from Cacti when uninstalling the plugin, specify it's name.\n\n";
 	print "Required:\n";
-	print "--table=table_name - The table that you want exportred\n\n";
+	print "--table=table_name - The table that you want exported\n\n";
 	print "Optional:\n";
 	print "--plugin=name      - The name of the plugin that will manage tables\n";
 	print "--update           - The utility provides create syntax.  If the update flag is\n";

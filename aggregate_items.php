@@ -185,8 +185,8 @@ function form_save_aggregate() {
 	$save['cdef_id']         = form_input_validate((($save['t_cdef_id']) ? get_filter_request_var('cdef_id') : 0), 'cdef_id', '', true, 3);
 
 	if (!is_error_message()) {
-		// sql_save will not give usefull return values when row key is
-		// composed from multiple columns. need to manualy build query
+		// sql_save will not give useful return values when row key is
+		// composed from multiple columns. need to manually build query
 		$sql_set = 'SET ';
 		foreach ($save as $key => $value) {
 			$sql_set .= $key . "=" . db_qstr($value) . ", ";
@@ -208,7 +208,7 @@ function form_save_aggregate() {
 			raise_message(2);
 		}
 
-		// update existing graphs with the changest to this item
+		// update existing graphs with the changes to this item
 		if ($save_to == 'aggregate_graphs_graph_item')
 			push_out_aggregates(0, get_filter_request_var('local_graph_id'));
 		elseif ($save_to == 'aggregate_graph_templates_item')
@@ -342,7 +342,7 @@ function item_edit() {
 	foreach (array_keys($template_item) as $field_name) {
 		if (!array_key_exists($field_name, $item_overrides))
 			continue;
-		# t_<field_name> coulmn in aggregate table must be "on" to override
+		# t_<field_name> column in aggregate table must be "on" to override
 		if (array_key_exists("t_".$field_name, $item_overrides) && $item_overrides["t_".$field_name] == "on")
 			$template_item[$field_name] = $item_overrides[$field_name];
 	}

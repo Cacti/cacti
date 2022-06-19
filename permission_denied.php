@@ -32,7 +32,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$goBack = "<td colspan='2' class='center'>[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 }
 
-/* allow for plugin based permissiion denied page */
+/* allow for plugin based permission denied page */
 if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) === OPER_MODE_RESKIN) {
 	exit;
 }

@@ -164,7 +164,7 @@ function display_help () {
 	print PHP_EOL . 'usage: rebuild_poller_cache.php [--host-id=ID] [--debug]' . PHP_EOL . PHP_EOL;
 
 	print 'A utility to repopulate Cacti\'s poller cache for a host or a system.  Note: That when performing' . PHP_EOL;
-	print 'for an entire Cacti system, expecially a large one, this may take some time.' . PHP_EOL . PHP_EOL;
+	print 'for an entire Cacti system, especially a large one, this may take some time.' . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
 	print '    --host-id=ID          - Limit the repopulation to a single Device' . PHP_EOL;

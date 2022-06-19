@@ -196,7 +196,7 @@ if (cacti_sizeof($parms)) {
 		case '--avail':
 			switch($value) {
 			case 'none':
-				$avail = '0'; /* tried to use AVAIL_NONE, but then preg_match failes on validation, sigh */
+				$avail = '0'; /* tried to use AVAIL_NONE, but then preg_match fails on validation, sigh */
 
 				break;
 			case 'ping':
@@ -374,7 +374,7 @@ if (cacti_sizeof($parms)) {
 				$fail = true;
 			}
 		} elseif ($phost['snmp_version'] != $snmp_ver) {
-			// assumeing a proxy
+			// assuming a proxy
 		} elseif ($phost['snmp_version'] == '3' && $snmp_ver == '3') {
 			$changed = 0;
 			$changed += ($phost['snmp_username'] != $username ? 1:0);

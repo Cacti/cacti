@@ -310,7 +310,7 @@ class Net_Ping
 
 		/* check result for uptime */
 		if ($output !== false && $output != 'U' && strlen($output)) {
-			/* calculte total time */
+			/* calculate total time */
 			$this->snmp_status   = $this->time*1000;
 			$this->snmp_response = 'Device responded to SNMP';
 
@@ -491,7 +491,7 @@ class Net_Ping
 				}
 			}
 
-			/* initilize the socket */
+			/* initialize the socket */
 			if (strpos($host_ip, ':') !== false) {
 				if (defined('AF_INET6')) {
 					if (version_compare(PHP_VERSION, '5.5.4', '<')) {

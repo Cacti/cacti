@@ -341,7 +341,7 @@ case 'tree_content':
 	if (isset_request_var('node')) {
 		$parts = explode('-', sanitize_search_string(get_request_var('node')));
 
-		// Check for tree anchoe
+		// Check for tree anchor
 		if (strpos(get_nfilter_request_var('node'), 'tree_anchor') !== false) {
 			$tree_id = $parts[1];
 			$node_id = 0;
@@ -720,7 +720,7 @@ case 'list':
 			'title_cache' => array(
 				'display' => __('Graph Name'),
 				'align'   => 'left',
-				'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+				'tip'     => __('The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
 			),
 			'local_graph_id' => array(
 				'display' => __('Device'),
@@ -748,7 +748,7 @@ case 'list':
 			'title_cache' => array(
 				'display' => __('Graph Name'),
 				'align'   => 'left',
-				'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+				'tip'     => __('The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
 			),
 			'height' => array(
 				'display' => __('Size'),

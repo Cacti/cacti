@@ -923,7 +923,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 					 * ATTENTION!
 					 * sequence of parameters matters!
 					 * we must place the newly found inherited items first
-					 * reason is, that during import, the leafes have to be tackled first,
+					 * reason is, that during import, the leaves have to be tackled first,
 					 * that is, the inherited items must be placed first so that they are "resolved" (decoded)
 					 * first during re-import */
 					$cdef_items = array_merge_recursive($inherited_cdef_items, $cdef_items);

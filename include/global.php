@@ -468,7 +468,7 @@ if ($config['is_web']) {
 		}
 	}
 
-	/* make sure to start only only Cacti session at a time */
+	/* make sure to start only Cacti session at a time */
 	if (!isset($_SESSION['cacti_cwd'])) {
 		$_SESSION['cacti_cwd'] = $config['base_path'];
 	} else {

@@ -2,7 +2,7 @@
 
 /*
  * Have Cacti use the database for PHP session storage.
- * This allows for easier distrubution of Web UI.
+ * This allows for easier distribution of Web UI.
  */
 
 // Don't run from the database if using the command line

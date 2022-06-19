@@ -384,7 +384,7 @@ function api_device_enable_devices($device_ids) {
 }
 
 /**
- * api_device_change_options - Given an array of devive ids and the
+ * api_device_change_options - Given an array of device ids and the
  *   post variable, update a series of Device settings.
  *
  * @param  (array) An array of device ids
@@ -1088,7 +1088,7 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 
 			api_device_cache_crc_update($save['poller_id']);
 
-			/* push out relavant fields to data sources using this host */
+			/* push out relevant fields to data sources using this host */
 			if (!$quick_save) {
 				push_out_host($device_id, 0);
 			}
@@ -1360,7 +1360,7 @@ function api_device_update_host_template($device_id, $device_template_id) {
 /**
  * api_device_template_sync_template - updates the device template mapping for all devices mapped to a template
  *
- * @param  (int)       The device template to syncronize
+ * @param  (int)       The device template to synchronize
  * @param  (int|array) An array of device_ids or a string with a single device_id
  * @param  (bool)      Also update mapping of down devices
  *

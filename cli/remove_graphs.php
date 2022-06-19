@@ -328,7 +328,7 @@ function display_help() {
 	print "By default, this utility will only report on the number of Graphs that will be removed.  If you" . PHP_EOL;
 	print "provide the --force option, the Graphs will actually be removed.  If you use the --list option" . PHP_EOL;
 	print "each of the Graphs to be removed, will be listed.  Options --list and --force are" . PHP_EOL;
-	print "mutulally exclusive." . PHP_EOL . PHP_EOL;
+	print "mutually exclusive." . PHP_EOL . PHP_EOL;
 
 	print "List Options:" . PHP_EOL;
 	print "    --list" . PHP_EOL;

@@ -111,7 +111,7 @@ function cacti_ldap_auth($username, $password = '', $dn = '', $host = '', $port 
   @arg $version - '2' or '3', LDAP protocol version, Default = Configured settings value
   @arg $encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
   @arg $referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
-  @arg $mode - '0' No Searching, '1' Anonymous Searching, '2' Specfic Searching, Default = Configured settings value
+  @arg $mode - '0' No Searching, '1' Anonymous Searching, '2' Specific Searching, Default = Configured settings value
   @arg $search_base - Search base DN, Default = Configured settings value
   @arg $search_filter - Filter to find the user, Default = Configured settings value
   @arg $specific_dn - DN for binding to perform user search, Default = Configured settings value
@@ -192,7 +192,7 @@ function cacti_ldap_search_dn($username, $dn = '', $host = '', $port = '', $port
   @arg $version - '2' or '3', LDAP protocol version, Default = Configured settings value
   @arg $encryption - '0' None, '1' SSL, '2' TLS, Default = Configured settings value
   @arg $referrals - '0' Referrals from server are ignored, '1' Referrals from server are processed, Default = Configured setting value
-  @arg $mode - '0' No Searching, '1' Anonymous Searching, '2' Specfic Searching, Default = Configured settings value
+  @arg $mode - '0' No Searching, '1' Anonymous Searching, '2' Specific Searching, Default = Configured settings value
   @arg $search_base - Search base DN, Default = Configured settings value
   @arg $search_filter - Filter to find the user, Default = Configured settings value
   @arg $specific_dn - DN for binding to perform user search, Default = Configured settings value
@@ -638,7 +638,7 @@ class Ldap {
 					/* Do a lookup to find this user's true DN. */
 					/* ldap_exop_whoami is not yet included in PHP. For reference, the
 					 * feature request: http://bugs.php.net/bug.php?id=42060
-					 * And the patch against lastest PHP release:
+					 * And the patch against latest PHP release:
 					 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
 					*/
 					$true_dn_result = ldap_search($ldap_conn, $this->search_base, 'userPrincipalName=' . $this->dn, array('dn'));
@@ -683,7 +683,7 @@ class Ldap {
 				/* invalid credentials */
 				$output = LdapError::GetErrorDetails(LdapError::Failure, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x32) {
-				/* insuffient access */
+				/* insufficient access */
 				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
@@ -800,7 +800,7 @@ class Ldap {
 				/* invalid credentials */
 				$output = LdapError::GetErrorDetails(LdapError::Failure, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x32) {
-				/* insuffient access */
+				/* insufficient access */
 				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */
@@ -912,7 +912,7 @@ class Ldap {
 				/* invalid credentials */
 				$output = LdapError::GetErrorDetails(LdapError::Failure, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x32) {
-				/* insuffient access */
+				/* insufficient access */
 				$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess, $ldap_conn, $this->host);
 			} elseif ($ldap_error == 0x51) {
 				/* unable to connect to server */

@@ -157,7 +157,7 @@ if ($child == false) {
 
 			/* Wait for all processes to continue */
 			while ($running = boost_processes_running()) {
-				boost_debug(sprintf('%s Processes Runnning, Sleeping for 2 seconds.', $running));
+				boost_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 				sleep(2);
 			}
 
@@ -662,7 +662,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	}
 
 	if ($archive_tables === false) {
-		boost_debug('Failed to determine archhive tables');
+		boost_debug('Failed to determine archive tables');
 		cacti_log('Failed to determine archive tables', false, 'BOOST');
 		return 0;
 	}
@@ -717,7 +717,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			$item['timestamp'] = trim($item['timestamp']);
 
 			if (!$locked) {
-				/* aquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
+				/* acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
 				while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
 					usleep(50000);
 				}
@@ -736,7 +736,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 
 				$current_lock = false;
 
-				/* aquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
+				/* acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
 				while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
 					usleep(50000);
 				}

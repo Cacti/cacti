@@ -175,7 +175,7 @@ function display_help () {
 	print PHP_EOL . 'usage: remove_broken_graphs.php [--report | --remove] [-d|--debug]' . PHP_EOL . PHP_EOL;
 	print 'A utility to remove broken graphs from Cacti.  A broken Graph is one that.' . PHP_EOL;
 	print 'lacks Data Sources.  This can happen from time to time when working with and modifying templates.' . PHP_EOL;
-	print 'It\'s important to periodically run this utility expecially on larger systems.' . PHP_EOL . PHP_EOL;
+	print 'It\'s important to periodically run this utility especially on larger systems.' . PHP_EOL . PHP_EOL;
 	print 'Optional:' . PHP_EOL;
 	print '--report  - Display the Graph Templates and Count of Broken Graphs' . PHP_EOL;
 	print '--remove  - Remove the Broken Graphs as Reported using the --report Option' . PHP_EOL;

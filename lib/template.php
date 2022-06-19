@@ -23,7 +23,7 @@
 */
 
 /* push_out_data_source_custom_data - pushes out the "custom data" associated with a data
-	template to all of its children. this includes all fields inhereted from the host
+	template to all of its children. this includes all fields inherited from the host
 	and the data template
    @arg $data_template_id - the id of the data template to push out values for */
 function push_out_data_source_custom_data($data_template_id) {
@@ -126,7 +126,7 @@ function push_out_data_source_custom_data($data_template_id) {
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
 						} elseif ($template_input_fields[$input_field['id']]['value'] != $input_field['value']) {
-							/* templated input field deviates from currenmt data source, so update required */
+							/* templated input field deviates from current data source, so update required */
 							$did_vals .= ($did_cnt == 0 ? '':',') . '(' . $input_field['id'] . ', ' . $data_source['id'] . ', ' . db_qstr($template_input_fields[$input_field['id']]['value']) . ')';
 							$did_cnt++;
 						}
@@ -386,13 +386,13 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 		WHERE data_template_data_id = ?',
 		array($template_data['id']));
 
-	/* this section is before most everthing else so we can determine if this is a new save, by checking
+	/* this section is before most everything else so we can determine if this is a new save, by checking
 	the status of the 'local_data_template_data_id' column */
 	if (cacti_sizeof($data_input_data)) {
 		foreach ($data_input_data as $item) {
 			/**
 			 * always propagate on a new save, only propagate templated fields thereafter
-			 * noting that always checked should not be propogated after the initial save.
+			 * noting that always checked should not be propagated after the initial save.
 			 */
 			if ($new_save == true || (empty($item['t_value']) && !data_input_field_always_checked($item['data_input_field_id']))) {
 				db_execute_prepared('REPLACE INTO data_input_data
@@ -1467,7 +1467,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	  $snmp_query_array['snmp_index_on']
 	  $snmp_query_array['snmp_query_graph_id']
 	  $snmp_query_array['snmp_index']
-   @arg $sugested_vals - any additional information to be included in the new graphs or
+   @arg $suggested_vals - any additional information to be included in the new graphs or
 	data sources must be included in the array. data is to be included in the following format:
 	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
 	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
@@ -1836,7 +1836,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 /* create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
    data source properties.  If so, then you must duplicate the Data Source and not use
    the existing one.
-   @arg $sugested_vals - any additional information to be included in the new graphs or
+   @arg $suggested_vals - any additional information to be included in the new graphs or
 	data sources must be included in the array. data is to be included in the following format:
 	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
 	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item

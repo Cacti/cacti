@@ -481,7 +481,7 @@ $settings = array(
 		),
 		'content_security_alternate_sources' => array(
 			'friendly_name' => __('Content-Security Alternate Sources'),
-			'description' => __('Space delmited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only.'),
+			'description' => __('Space delimited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only.'),
 			'method' => 'textbox',
 			'default' => '',
 			'size' => '100',
@@ -1197,7 +1197,7 @@ $settings = array(
 		),
 		'disable_cache_replication' => array(
 			'friendly_name' => __('Disable Resource Cache Replication'),
-			'description' => __('By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themeselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting.'),
+			'description' => __('By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting.'),
 			'method' => 'checkbox',
 			'default' => ''
 		),
@@ -1845,7 +1845,7 @@ $settings = array(
 		),
 		'reports_max_attach' => array(
 			'friendly_name' => __('Maximum E-Mail Size'),
-			'description' => __('The maximum size of the E-Mail message including all attachements.'),
+			'description' => __('The maximum size of the E-Mail message including all attachments.'),
 			'method' => 'drop_array',
 			'default' => REPORTS_DEFAULT_MAX_SIZE,
 			'array' => $attachment_sizes
@@ -1976,7 +1976,7 @@ $settings = array(
 		),
 		'boost_rrd_update_max_runtime' => array(
 			'friendly_name' => __('Maximum RRD Update Script Run Time'),
-			'description' => __('If the boost poller excceds this runtime, a warning will be placed in the cacti log,'),
+			'description' => __('If the boost poller exceeds this runtime, a warning will be placed in the cacti log,'),
 			'method' => 'drop_array',
 			'default' => '1200',
 			'array' => $boost_max_runtime
@@ -1989,7 +1989,7 @@ $settings = array(
 		),
 		'path_boost_log' => array(
 			'friendly_name' => __('Boost Debug Log'),
-			'description' => __('If this field is non-blank, Boost will log RRDupdate output from the boost	poller process.'),
+			'description' => __('If this field is non-blank, Boost will log RRDUpdate output from the boost	poller process.'),
 			'method' => 'filepath',
 			'file_type' => 'ascii',
 			'default' => '',

@@ -860,7 +860,7 @@ function rrdtool_function_tune($rrd_tune_array) {
      $fetch_array['values'][$dsindex2][...]  = $value;
      $fetch_array['values'][$nth_index][...] = $value;
 
-     Again, the 'nth_percentile_maximum' will have the maximum value amoungst all the
+     Again, the 'nth_percentile_maximum' will have the maximum value amongst all the
      data sources for each set of data.  So, if you have traffic_in and traffic_out,
      each member element in the array will have the maximum of traffic_in and traffic_out
      in it.
@@ -880,7 +880,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	/* initialize fetch array */
 	$fetch_array = array();
 
-	/* check if we have been passed a file instead of lodal data source to look up */
+	/* check if we have been passed a file instead of local data source to look up */
 	if (is_null($rrdtool_file)) {
 		$data_source_path = get_data_source_path($local_data_id, true);
 	} else {
@@ -1654,7 +1654,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				/* PADDING: remember this is not perfect! its main use is for the basic graph setup of:
 				 * AREA - GPRINT-CURRENT - GPRINT-AVERAGE - GPRINT-MAXIMUM \n
 				 * of course it can be used in other situations, however may not work as intended.
-				 * If you have any additions to this small peice of code, feel free to send them to me.
+				 * If you have any additions to this small piece of code, feel free to send them to me.
 				 */
 				if ($graph['auto_padding'] == 'on') {
 					/* only applies to AREA, STACK and LINEs */
@@ -1863,7 +1863,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					}
 				}
 
-				/* allow automatic rate calculations on raw guage data */
+				/* allow automatic rate calculations on raw gauge data */
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('CURRENT_DATA_SOURCE_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 				} else {
@@ -1872,7 +1872,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				$cdef_string = str_replace('CURRENT_DATA_SOURCE', generate_graph_def_name(strval((isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id]) ? $cf_ds_cache[$graph_item['data_template_rrd_id']][$cf_id] : '0'))), $cdef_string);
 
-				/* allow automatic rate calculations on raw guage data */
+				/* allow automatic rate calculations on raw gauge data */
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('ALL_DATA_SOURCES_DUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 				} else {
@@ -1884,7 +1884,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$cdef_string = str_replace('ALL_DATA_SOURCES_DUPS', $magic_item['ALL_DATA_SOURCES_DUPS'], $cdef_string);
 				}
 
-				/* allow automatic rate calculations on raw guage data */
+				/* allow automatic rate calculations on raw gauge data */
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('ALL_DATA_SOURCES_NODUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 				} else {
@@ -1895,7 +1895,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$cdef_string = str_replace('ALL_DATA_SOURCES_NODUPS', $magic_item['ALL_DATA_SOURCES_NODUPS'], $cdef_string);
 				}
 
-				/* allow automatic rate calculations on raw guage data */
+				/* allow automatic rate calculations on raw gauge data */
 				if (isset($graph_item['local_data_id'])) {
 					$cdef_string = str_replace('SIMILAR_DATA_SOURCES_DUPS_PI', db_fetch_cell_prepared('SELECT rrd_step FROM data_template_data WHERE local_data_id = ?', array($graph_item['local_data_id'])), $cdef_string);
 				} else {
@@ -2294,9 +2294,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$source_command_line = read_config_option('path_rrdtool') . ' graph ' . $graph_opts . $graph_defs . $txt_graph_items;
 			$source_command_line_lengths = strlen(str_replace("\\\n", ' ', $source_command_line));
 			print '<PRE>' . html_escape($source_command_line) . '</PRE>';
-			print '<span class="textInfo">' . 'RRDtool Command lengths = ' . $source_command_line_lengths . ' charaters.</span><br>';
+			print '<span class="textInfo">' . 'RRDtool Command lengths = ' . $source_command_line_lengths . ' characters.</span><br>';
 			if ( $config['cacti_server_os'] == 'win32' && $source_command_line_lengths > 8191 ) {
-				print '<PRE>' . 'Warning: The Cacti OS is Windows system, RRDtool Command lengths should not exceed 8191 charaters.' . '</PRE>';
+				print '<PRE>' . 'Warning: The Cacti OS is Windows system, RRDtool Command lengths should not exceed 8191 characters.' . '</PRE>';
 			}
 		} else {
 			if (isset($graph_data_array['graphv'])) {
@@ -3031,7 +3031,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 /** rrdtool_tune			- create rrdtool tune/resize commands
  * 						  html+cli enabled
  * @param $rrd_file		- rrd file name
- * @param $diff			- array of discrepancies between cacti setttings and rrd file info
+ * @param $diff			- array of discrepancies between cacti settings and rrd file info
  * @param $show_source	- only show text+commands or execute all commands, execute is for cli mode only!
  */
 function rrdtool_tune($rrd_file, $diff, $show_source = true) {
@@ -3113,7 +3113,7 @@ function rrd_repair($data_source_id) {
 
 /** add a (list of) datasource(s) to an (array of) rrd file(s)
  * @param array $file_array	- array of rrd files
- * @param array $ds_array	- array of datasouce parameters
+ * @param array $ds_array	- array of datasource parameters
  * @param bool $debug		- debug mode
  * @return mixed			- success (bool) or error message (array)
  */
@@ -3140,7 +3140,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 
 		/* now start XML processing */
 		foreach ($ds_array as $ds) {
-			/* first, append the <DS> strcuture in the rrd header */
+			/* first, append the <DS> structure in the rrd header */
 			if ($ds['type'] === $data_source_types[DATA_SOURCE_TYPE_COMPUTE]) {
 				rrd_append_compute_ds($dom, $version, $ds['name'], $ds['type'], $ds['cdef']);
 			} else {

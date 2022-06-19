@@ -34,7 +34,7 @@ function dsdebug_debug($message) {
 }
 
 /* log_dsstats_statistics - provides generic timing message to both the Cacti log and the settings
-     table so that the statistcs can be graphed as well.
+     table so that the statistics can be graphed as well.
    @arg $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
    @returns - null */
 function log_dsdebug_statistics($type, $checks, $issues) {

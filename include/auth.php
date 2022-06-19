@@ -108,7 +108,7 @@ if ($auth_method != 0) {
 	/**
 	 * If the special boolean $guest_account is set for a page, then the guest
 	 * account can be used.  Where this may not be the case is with basic auth
-	 * where to enter the Cacti website, you must first have a valid acount.
+	 * where to enter the Cacti website, you must first have a valid account.
 	 * if that is the case, then use that valid accounts permissions and not
 	 * the guest account.
 	 */

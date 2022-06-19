@@ -572,7 +572,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	/* use a reasonable insert buffer, the default is 1MByte */
 	$max_packet   = 256000;
 
-	/* setup somme defaults */
+	/* setup some defaults */
 	$overhead     = strlen($sql_prefix) + strlen($sql_suffix);
 	$buf_len      = 0;
 	$buf_count    = 0;
@@ -1111,7 +1111,7 @@ function utilities_get_mysql_recommendations() {
 					'value' => '16',
 					'measure' => 'pinst',
 					'class' => 'warning',
-					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
+					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of 64.', $database)
 					),
 				'innodb_io_capacity' => array(
 					'value' => '5000',
@@ -1631,7 +1631,7 @@ function utility_php_set_recommends_text(&$recs) {
 			if (cacti_sizeof($recommends)) {
 				foreach ($recommends as $index => $recommend) {
 					if ($recommend['name'] == 'version') {
-						$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
+						$recs[$name][$index]['description'] = __('PHP %s is the minimum version', $recommend['value']);
 					} elseif ($recommend['name'] == 'memory_limit') {
 						$recs[$name][$index]['description'] = __('A minimum of %s memory limit', $recommend['value']);
 					} elseif ($recommend['name'] == 'max_execution_time') {

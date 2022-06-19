@@ -74,7 +74,7 @@ if (cacti_sizeof($parms)) {
 }
 
 if ($proceed == false) {
-	print "\nFATAL: You Must Explicitally Instruct This Script to Proceed with the '--proceed' Option\n\n";
+	print "\nFATAL: You Must Explicitly Instruct This Script to Proceed with the '--proceed' Option\n\n";
 	display_help();
 	exit -1;
 }
@@ -122,7 +122,7 @@ foreach ($data_sources as $info) {
 
 	/* create one subfolder for every host */
 	if (!is_dir($new_base_path)) {
-		/* see if we can create the dirctory for the new file */
+		/* see if we can create the directory for the new file */
 		if (mkdir($new_base_path, 0775)) {
 			print "NOTE: New Directory '$new_base_path' Created for RRD Files\n";
 			if ($config['cacti_server_os'] != 'win32') {
@@ -197,7 +197,7 @@ print "NOTE: Process Complete, '$done_count' Completed, '$warn_count' Skipped\n"
 
 /* update database */
 function update_database($info) {
-	/* upate table poller_item */
+	/* update table poller_item */
 	db_execute("UPDATE poller_item
 		SET rrd_path = '" . $info['new_rrd_path'] . "'
 		WHERE local_data_id=" . $info['local_data_id']);
@@ -245,7 +245,7 @@ function display_help() {
 	print "  1) Enable Structured Paths in the Console (Settings->Paths)\n\n";
 	print "Then, for Each File, it will:\n";
 	print "  1) Create the Structured Path, if Necessary\n";
-	print "  2) Copy the File to the Strucured Path Using the New Name\n";
+	print "  2) Copy the File to the Structured Path Using the New Name\n";
 	print "  3) Alter the two Database Tables Required\n";
 	print "  4) Remove the Old File\n\n";
 	print "Once all Files are Complete, it will\n";

@@ -726,7 +726,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 		$string = trim($string);
 	}
 
-	/* remove quotes and extranious data */
+	/* remove quotes and extraneous data */
 	$string = trim($string, " \n\r\v\"'");
 
 	/* return the easiest value */

@@ -116,7 +116,7 @@ if (cacti_sizeof($parms)) {
 
 		$ids_host = preg_array_key_match("/$description/", $hosts);
 		if (cacti_sizeof($ids_host) == 0) {
-			print "ERROR: Unable to find host in the database matching desciption ($description)\n";
+			print "ERROR: Unable to find host in the database matching description ($description)\n";
 			exit(1);
 		}
 	}

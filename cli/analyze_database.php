@@ -111,7 +111,7 @@ function display_help () {
 
 	print "\nusage: analyze_database.php [-d|--debug]\n\n";
 	print "A utility to recalculate the cardinality of indexes within the Cacti database.\n";
-	print "It's important to periodically run this utility especially  on larger systems.\n\n";
+	print "It's important to periodically run this utility especially on larger systems.\n\n";
 	print "Optional:\n";
 	print "     --local   - Perform the action on the Remote Data Collector if run from there\n";
 	print "-d | --debug   - Display verbose output during execution\n\n";

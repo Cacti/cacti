@@ -130,7 +130,7 @@ if (cacti_sizeof($plugins)) {
 						api_plugin_install($plugin);
 
 						if (api_plugin_installed($plugin)) {
-							print "NOTE: Plugin $plugin installed sucessfully." . PHP_EOL;
+							print "NOTE: Plugin $plugin installed successfully." . PHP_EOL;
 
 							$installed = true;
 
@@ -193,7 +193,7 @@ function display_version() {
 function display_help () {
 	print 'usage: plugin_manage.php [--plugin=S] [--install --enable --allperms] [--uninstall ] [--disable]' . PHP_EOL . PHP_EOL;
 
-	print  'A utility to install/uinstall a Cacti plugin or plugins' . PHP_EOL . PHP_EOL;
+	print  'A utility to install/uninstall a Cacti plugin or plugins' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
 	print '  --plugin=S   - The plugin to install.  Use the option multiple time for more plugins' . PHP_EOL . PHP_EOL;
@@ -201,6 +201,6 @@ function display_help () {
 	print '  --install    - Install the plugin or plugins' . PHP_EOL;
 	print '  --enable     - Enable the plugin or plugins' . PHP_EOL;
 	print '  --allperms   - Enable all permission for plugin or plugins' . PHP_EOL;
-	print '  --uninstall  - Uninstall the plguin or plugins' . PHP_EOL;
+	print '  --uninstall  - Uninstall the plugin or plugins' . PHP_EOL;
 	print '  --disable    - Disable the plugin or plugins' . PHP_EOL;
 }

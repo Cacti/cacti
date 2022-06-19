@@ -27,7 +27,7 @@
  * Save all graph definitions, but omit graph items. Wipe out host_id and graph_template_id.
  *
  * @param int $local_graph_id        - ID of an already existing aggregate graph.
- * @param int $graph_template_id     - ID of the corresponding graph_teamplate.
+ * @param int $graph_template_id     - ID of the corresponding graph_template.
  * @param string $graph_title        - Title for new graph.
  * @param int $aggregate_template_id - ID of aggregate template (0 if no template).
  * @param array $new_data            - Key/value pairs with new graph data.
@@ -368,7 +368,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			} /* else: no color templating defined, e.g. GPRINT entry */
 
 			# do we want to override cdef of this item
-			# certanly not if it was set to $make0_cdef above
+			# certainly not if it was set to $make0_cdef above
 			if ($_cdefs[$i] > 0 && $graph_item['cdef_id'] != $make0_cdef) {
 				$save['cdef_id'] = $_cdefs[$i];
 			}
@@ -470,7 +470,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
  * insert or update aggregate graph items in DB tables
  * @param array $items
  * @param string $table
- * @return bool ture if save was succesfull, false otherwise
+ * @return bool true if save was successful, false otherwise
  */
 function aggregate_graph_items_save($items, $table) {
 	$defaults = array();
@@ -594,7 +594,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 		}
 
 		if ($has_override) {
-			/* overwride checkbox was on */
+			/* override checkbox was on */
 			$params_new['t_' . $field] = 'on';
 		}
 
@@ -610,7 +610,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 }
 
 /**
- * Populate grraph items array with posted values.
+ * Populate graph items array with posted values.
  * $graph_items array must be keyed on graph item id.
  * @param array $posted      - values posted from form
  * @param array $graph_items - reference to graph items array to update with form values
@@ -1072,7 +1072,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 
 	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
-	cacti_log(__FUNCTION__ . ' called. Grapg id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* suppress warnings */
 	error_reporting(E_ALL);
@@ -1242,7 +1242,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				}
 
 				// now skip all items, that are
-				// - explicitely marked as skipped (based on $skipped_items)
+				// - explicitly marked as skipped (based on $skipped_items)
 				// - OR NOT marked as 'totalling' items
 				for ($k=1; $k<=$item_no; $k++) {
 					cacti_log(__FUNCTION__ . ' old skip: ' . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -1486,7 +1486,7 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 }
 
 function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_total, $_total_type, $_total_prefix) {
-	// Handle the stcked line cases switch line widths
+	// Handle the stacked line cases switch line widths
 	$width = '0.01';
 	$special_type = '';
 	$special_line = false;
@@ -1779,7 +1779,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 					break;
 			}
 
-			/* values can be overriden in aggregate graph/template */
+			/* values can be overridden in aggregate graph/template */
 			if ($is_edit && isset($current_vals[$item['id']]['t_graph_type_id']) && $current_vals[$item['id']]['t_graph_type_id'] == 'on') {
 				$item['graph_type_id'] = $current_vals[$item['id']]['graph_type_id'];
 			}
@@ -1792,7 +1792,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			}
 
 			/* column 'Graph Item' */
-			print '<td title="' . __esc('Aggregate Items are not modifyable') . '">';
+			print '<td title="' . __esc('Aggregate Items are not modifiable') . '">';
 			if ($is_edit == false) {
 				/* no existing aggregate graph/template */
 				print __('Item # %d', ($i+1));
@@ -1864,9 +1864,9 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 }
 
 /**
- * draw graph configuration form so user can override some graph template parametes
+ * draw graph configuration form so user can override some graph template parameters
  *
- * @param int $aggregate_template_id - aggregate graph template beeing edited
+ * @param int $aggregate_template_id - aggregate graph template being edited
  * @param int $graph_template_id     - graph template this aggregate template is based on
  */
 function draw_aggregate_template_graph_config($aggregate_template_id, $graph_template_id) {
@@ -1922,7 +1922,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 	html_end_box(false, true);
 
-	/* some javascript do dinamically disable non-overriden fields */
+	/* some javascript do dynamically disable non-overridden fields */
 	?>
 	<script type='text/javascript'>
 

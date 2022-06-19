@@ -509,7 +509,7 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 		WHERE t.count > 1",
 		array($field_name, $snmp_query_graph_id));
 
-	// report any bad or duplicate sequencs to the log for reporting purposes
+	// report any bad or duplicate sequences to the log for reporting purposes
 	if ($bad_seq > 0) {
 		cacti_log('WARN: Found ' . $bad_seq . " Bad Sequences in $table Table", false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 	}

@@ -302,7 +302,7 @@ function form_actions() {
 				api_device_disable_devices($selected_items);
 			} elseif (get_request_var('drp_action') == '4') { // change device options
 				api_device_change_options($selected_items, $_POST);
-			} elseif (get_request_var('drp_action') == '5') { // Clear Statisitics for Selected Devices
+			} elseif (get_request_var('drp_action') == '5') { // Clear Statistics for Selected Devices
 				api_device_clear_statistics($selected_items);
 			} elseif (get_request_var('drp_action') == '7') { // sync to device template
 				api_device_sync_device_templates($selected_items);
@@ -450,7 +450,7 @@ function form_actions() {
 			device_change_javascript();
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Device(s) SNMP Options') . "'>";
-		} elseif (get_request_var('drp_action') == '5') { // Clear Statisitics for Selected Devices
+		} elseif (get_request_var('drp_action') == '5') { // Clear Statistics for Selected Devices
 			print "<tr>
 				<td colspan='2' class='textArea'>
 					<p>" . __('Click \'Continue\' to clear the counters for the following Device(s).') . "</p>

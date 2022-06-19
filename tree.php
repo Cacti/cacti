@@ -192,7 +192,7 @@ function tree_check_sequences() {
 		) AS t
 		WHERE t.count > 1');
 
-	// report any bad or duplicate sequencs to the log for reporting purposes
+	// report any bad or duplicate sequences to the log for reporting purposes
 	if ($bad_seq > 0) {
 		cacti_log('WARN: Found ' . $bad_seq . ' Sequences in graph_tree Table', false, 'TREE', POLLER_VERBOSITY_HIGH);
 	}

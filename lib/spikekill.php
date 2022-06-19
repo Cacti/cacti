@@ -51,7 +51,7 @@ class spikekill {
 	var $percent   = '';
 	var $numspike  = '';
 
-	// Overrideable
+	// Overridable
 	var $html      = true;
 	var $backup    = false;
 	var $debug     = false;
@@ -261,7 +261,7 @@ class spikekill {
 			}
 
 			if (!is_numeric($this->outliers) || ($this->outliers < 1)) {
-				$this->set_error("FATAL: The number of outliers to exlude must be a positive integer.");
+				$this->set_error("FATAL: The number of outliers to exclude must be a positive integer.");
 			}
 
 			$this->out_set = true;
@@ -853,7 +853,7 @@ class spikekill {
 									if (!empty($this->out_start) && $timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 										/* Already calculated */
 									} elseif ($rra[$rra_num][$ds_num]['variance_avg'] == 'NAN') {
-										/* not enought samples to calculate */
+										/* not enough samples to calculate */
 									} elseif ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))) {
 										if ($this->method == SPIKE_METHOD_VARIANCE) {
 											/* kill based upon variance */

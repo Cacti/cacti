@@ -176,7 +176,7 @@ function display_help() {
 	print "\nusage: poller_data_sources_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=string] [--debug]\n\n";
 	print "A utility that will recalculate Data Source names for the selected Data Templates.\n\n";
 	print "Required:\n";
-	print "    --host-id=N|all|N1,N2,... - The deivces id, 'all' or a comma delimited list of id's\n\n";
+	print "    --host-id=N|all|N1,N2,... - The devices id, 'all' or a comma delimited list of id's\n\n";
 	print "Optional:\n";
 	print "    --filter=search           - A Data Template name or Data Source Title to search for\n";
 	print "    --debug                   - Display verbose output during execution\n\n";

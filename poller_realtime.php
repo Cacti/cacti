@@ -105,7 +105,7 @@ $poller_start         = microtime(true);
 /* get number of polling items from the database */
 $poller_interval = 1;
 
-/* retreive the last time the poller ran */
+/* retrieve the last time the poller ran */
 $poller_lastrun = read_config_option('poller_lastrun');
 
 /* get the current cron interval from the database */
@@ -165,7 +165,7 @@ function display_help() {
 	display_version();
 
 	print "\nusage: poller_realtime.php --graph=ID [--interval=SEC] [--force] [--debug]\n\n";
-	print "Cacti's Realtime graphing poller.  This poller behavies very similary\n";
+	print "Cacti's Realtime graphing poller.  This poller behaves very similary\n";
 	print "to Cacti's main poller with the exception that it only polls data source\n";
 	print "that are specific to the graph being rendered in the Cacti UI.\n\n";
 	print "Required:\n";

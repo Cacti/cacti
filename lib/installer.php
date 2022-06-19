@@ -605,7 +605,7 @@ class Installer implements JsonSerializable {
 		set_config_option('install_eula', $this->eula);
 	}
 
-	/* getRRDVrsion() - gets the RRDVersion from the system or if overridden
+	/* getRRDVersion() - gets the RRDVersion from the system or if overridden
 	 *                  during the installer, from the installer option */
 	private function getRRDVersion() {
 		$rrdver = read_config_option('install_rrdtool_version');
@@ -800,7 +800,7 @@ class Installer implements JsonSerializable {
 
 	/* getProfile() - gets the data source profile to be used as the system
 	 *                default once installation has been completed.  It is
-	 *		  also used by the packacge installation to attribute
+	 *		  also used by the package installation to attribute
 	 *                the installed packages to this collector */
 	private function getProfile() {
 		$db_profile = read_config_option('install_profile', true);
@@ -915,7 +915,7 @@ class Installer implements JsonSerializable {
 	}
 
 	/* getAutomationRange() - get the default network range to be used by
-	 *                        Automation for scanning the netwokr.  If no
+	 *                        Automation for scanning the network.  If no
 	 *                        previous value is found, defaults to
 	 *                        192.168.1.0/24 */
 	public function getAutomationRange() {
@@ -1213,7 +1213,7 @@ class Installer implements JsonSerializable {
 	}
 
 	/* setTables - sets a list of tables to be converted to the latest
-	 *             default coallition
+	 *             default coalition
 	 * @param_tables - array of table names
 	 *
 	 * Errors: does not add errors as a table may not be present in the
@@ -1382,7 +1382,7 @@ class Installer implements JsonSerializable {
 		set_config_option('install_next', $this->stepNext);
 	}
 
-	/* Some utiliity functions */
+	/* Some utility functions */
 
 	public function shouldRedirectToHome() {
 		return ($this->old_cacti_version == CACTI_VERSION);
@@ -1637,7 +1637,7 @@ class Installer implements JsonSerializable {
 		$output  = Installer::sectionTitle(__('Cacti Version') . ' ' . CACTI_VERSION . ' - ' . __('License Agreement'));
 
 		if (!array_key_exists(CACTI_VERSION, $cacti_version_codes)) {
-			$output .= Installer::sectionError(__('This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corected.  If you are seeing this error in a release, please raise a report immediately on GitHub', CACTI_VERSION));
+			$output .= Installer::sectionError(__('This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corrected.  If you are seeing this error in a release, please raise a report immediately on GitHub', CACTI_VERSION));
 		}
 
 		$output .= Installer::sectionNormal(__('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.'));
@@ -2133,7 +2133,7 @@ class Installer implements JsonSerializable {
 			the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
 			$form_check_string = '';
 
-			/* draw the acual header and textbox on the form */
+			/* draw the actual header and textbox on the form */
 			print "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $array['friendly_name'] . "<div class='formTooltip'><div class='cactiTooltipHint fa fa-question-circle'><span style='display:none;'>" . $array['description'] . "</span></div></div></div></div>";
 
 			print "<div class='formColumnRight'><div class='formData'>";
@@ -2156,7 +2156,7 @@ class Installer implements JsonSerializable {
 					break;
 			}
 
-			/*** Disable ouput of error for now, pending QA ***
+			/*** Disable output of error for now, pending QA ***
 			if (isset($this->errors['Paths'][$name])) {
 				print Installer::sectionError(__($this->errors['Paths'][$name]));
 			}
@@ -2206,7 +2206,7 @@ class Installer implements JsonSerializable {
 			foreach($this->permissions['install'] as $path => $valid) {
 				$class = ($class == 'even' ? 'odd':'even');
 
-				/* draw the acual header and textbox on the form */
+				/* draw the actual header and textbox on the form */
 				$permissions .= "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $path . "</div></div>";
 
 				$permissions .= "<div class='formColumnRight'><div class='formData' width='100%'>";
@@ -2238,7 +2238,7 @@ class Installer implements JsonSerializable {
 		foreach($this->permissions['always'] as $path => $valid) {
 			$class = ($class == 'even' ? 'odd':'even');
 
-			/* draw the acual header and textbox on the form */
+			/* draw the actual header and textbox on the form */
 			$permissions .= "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $path . "</div></div>";
 
 			$permissions .= "<div class='formColumnRight'><div class='formData' width='100%'>";
@@ -2273,7 +2273,7 @@ class Installer implements JsonSerializable {
 			$text = __('Please make sure that your webserver has read/write access to the cacti folders that show errors below.');
 			$paths = array_merge($this->permissions['install'],$this->permissions['always']);
 			if ($config['cacti_server_os'] == 'unix') {
-				$text .= '  ' . __('If SELinux is enabled on your server, you can either permenantly disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools.');
+				$text .= '  ' . __('If SELinux is enabled on your server, you can either permanently disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools.');
 				$code = '';
 				foreach($paths as $path => $valid) {
 					if (!$valid) {
@@ -2309,8 +2309,8 @@ class Installer implements JsonSerializable {
 	public function processStepInputValidation() {
 		$output  = Installer::sectionTitle(__('Input Validation Whitelist Protection'));
 		$output .= Installer::sectionNormal(__('Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure.'));
-		$output .= Installer::sectionNormal(__('Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thouroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages.'));
-		$output .= Installer::sectionNormal(__('The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or aguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid.'));
+		$output .= Installer::sectionNormal(__('Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages.'));
+		$output .= Installer::sectionNormal(__('The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid.'));
 		$output .= Installer::sectionNormal(__('To make identifying Data Input Methods in this state, we have provided a validation script in Cacti\'s CLI directory that can be run with the following options:'));
 
 		$output .= Installer::sectionNormal(
@@ -2325,7 +2325,7 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionNormal(__('Check the Checkbox below to acknowledge that you have read and understand this security concern'));
 
-		$output .= Installer::sectionNormal('<input type="checkbox" id="confirm" name="confirm"><label for="confirm">' . __('I have read this statement') . '</lable>');
+		$output .= Installer::sectionNormal('<input type="checkbox" id="confirm" name="confirm"><label for="confirm">' . __('I have read this statement') . '</label>');
 
 		$this->buttonNext->Enabled = false;
 		$this->buttonNext->Step = Installer::STEP_PROFILE_AND_AUTOMATION;
@@ -2598,8 +2598,8 @@ class Installer implements JsonSerializable {
 
 		if ($this->mode == Installer::MODE_DOWNGRADE) {
 			$output = Installer::sectionTitleError(__('DOWNGRADE DETECTED'));
-			$output .= Installer::sectionCode(__('YOU MUST MANAUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU'));
-			$output .= Installer::sectionNormal(__('Downgrading should only be performed when absolutely necessary and doing so may break your installlation'));
+			$output .= Installer::sectionCode(__('YOU MUST MANUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU'));
+			$output .= Installer::sectionNormal(__('Downgrading should only be performed when absolutely necessary and doing so may break your installation'));
 		} else {
 			$output = Installer::sectionTitle($title);
 			$output .= Installer::sectionNormal(__('Your Cacti Server is almost ready.  Please check that you are happy to proceed.'));
@@ -3467,7 +3467,7 @@ class Installer implements JsonSerializable {
 		$status = install_full_sync();
 
 		if ($status['total'] == 0) {
-			log_install_always('sync', __('No Remote Data Collectors found for full syncronization'));
+			log_install_always('sync', __('No Remote Data Collectors found for full synchronization'));
 		} else {
 			Installer::fullSyncDataCollectorLog($status['timeout'], 'Remote Data Collector with name \'%s\' and id %d previous timed out.  Please manually Sync when once online to complete upgrade.');
 			Installer::fullSyncDataCollectorLog($status['skipped'], 'Remote Data Collector with name \'%s\' and id %d is not available to sync.  Please manually Sync when once online to complete upgrade.');

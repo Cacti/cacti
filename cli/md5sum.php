@@ -136,7 +136,7 @@ $ignore_files = array(
 	// Ignore .md5sum since it always changes
 	'/.md5sum$',
 
-	// Ignore tmporary files
+	// Ignore temporary files
 	'\.tmp$',
 	'\.swp$',
 	'\.log$',
@@ -298,12 +298,12 @@ function display_help() {
 	print "\nOptions:\n";
 	print "     -c          When specified used creates a file containing the md5 hash\n";
 	print "    --create     followed by the name. Otherwise, the file is verified\n\n";
-	print "     -d          logs additional ouptut to the screen to aid in dignosising\n";
+	print "     -d          logs additional output to the screen to aid in diagnosing\n";
 	print "    --debug      potential issues\n\n";
 	print "     -b          When specified, sets the base directory to search from. If\n";
 	print "    --basedir    not specified, defaults to the directory above this script\n\n";
 	print "     -q          When specified, quiet mode only returns an exit value that\n";
-	print "    --quiet      corresponds to the point of exit.  Suppresess debug option\n\n";
+	print "    --quiet      corresponds to the point of exit.  Suppresses debug option\n\n";
 	print "     -s          When specified, adds extra output to the verify mode which\n";
 	print "    --show       shows both the stored and computed hash value that failed\n";
 	print "    --show_hash  to match\n\n";

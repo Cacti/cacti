@@ -18,7 +18,7 @@ $output =~ s/[^-0-9|\|.]*//gi;
 # [7] - Gust Wind Speed (MPH)
 # [10] - Barometer (Moisture)
 # [11] - Humidity (%)
-# [12] - High Tempurature
+# [12] - High Temperature
 # [13] - Low Temperature
 # [14] - Dew Point
 # [15] - Wind Chill

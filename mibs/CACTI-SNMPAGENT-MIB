@@ -58,7 +58,7 @@ snmpagent MODULE-IDENTITY
 snmpagentAppl OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "resevered for statistics"
+        "reserved for statistics"
     ::= { snmpagent 1 }
 
 
@@ -80,7 +80,7 @@ snmpagentApplLastUpdate OBJECT-TYPE
 snmpagentStats OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "resevered for statistics"
+        "reserved for statistics"
     ::= { snmpagent 2 }
 
 --
@@ -101,13 +101,13 @@ snmpagentStatsLastUpdate OBJECT-TYPE
 snmpagentEvents OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "resevered for events"
+        "reserved for events"
     ::= { snmpagent 3 }
 
 snmpagentEventAttributes OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "resevered for event attributes, used as varbind for the SMNP notifications"
+        "reserved for event attributes, used as varbind for the SNMP notifications"
     ::= { snmpagentEvents 1 }
 
 snmpagentEventDescription OBJECT-TYPE
@@ -122,7 +122,7 @@ snmpagentEventDescription OBJECT-TYPE
 snmpagentEventNotifications OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "resevered for event notifications"
+        "reserved for event notifications"
     ::= { snmpagentEvents 2 }
 
 snmpagentNotificationTest NOTIFICATION-TYPE
@@ -141,7 +141,7 @@ snmpagentNotificationTest NOTIFICATION-TYPE
 snmpagentMibGroups OBJECT-IDENTITY
     STATUS          current
     DESCRIPTION
-        "resevered for group definitions"
+        "reserved for group definitions"
     ::= { snmpagent 4 }
 
 snmpagentEventGroup OBJECT-GROUP

@@ -317,7 +317,7 @@ $.fn.classes = function(callback) {
 };
 
 /** These three functions will set the cursor into
- *  a textbox or textara and optionally select characters */
+ *  a textbox or textarea and optionally select characters */
 $.fn.setCursorPosition = function(position) {
 	if (this.length == 0) return this;
 	return this.setSelection(position, position);
@@ -717,7 +717,7 @@ function cactiReturnTo(href) {
 }
 
 /** applySkin - This function re-asserts all javascript behavior to a page
- *  that can't be set using a live attrbute 'on()' */
+ *  that can't be set using a live attribute 'on()' */
 function applySkin() {
 	pageName = basename($(location).attr('pathname'));
 
@@ -3001,7 +3001,7 @@ function keepWindowSize() {
 
 			responsiveResizeGraphs();
 
-			/* close open dropdown menues first off */
+			/* close open dropdown menus first off */
 			$('.dropdownMenu > ul').hide();
 
 			if ($('#gtabs > .tabs').is(':visible')) {

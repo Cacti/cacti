@@ -26,7 +26,7 @@
      their actual values
    @arg $form_array - an array that contains all of the information needed to draw
      the html form. see the arrays contained in include/global_settings.php
-     for the extact syntax of this array
+     for the extract syntax of this array
    @arg $arg1 - an array that represents the |arg1:| variable (see
      include/global_form.php for more details)
    @arg $arg2 - an array that represents the |arg2:| variable (see
@@ -51,7 +51,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check])) {
 					$count = 0;
 
-					/* loop through the $field_to_check and replace upto three times
+					/* loop through the $field_to_check and replace up to three times
 					 * for each arg1:arg2:arg3 variables.
 					 */
 					while (true) {
@@ -76,7 +76,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 								}
 							} else {
 								/* copy the value down from the array/key specified in the variable
-								 * replace upto three times for arg1:arg2:arg3 variables
+								 * replace up to three times for arg1:arg2:arg3 variables
 								 */
 								if (isset($$matches1)) {
 									if (is_array($$matches1)) {
@@ -263,7 +263,7 @@ function form_end_row() {
 
 /* form_confirm_buttons - provides confirm buttons in the gui
    @arg $message - the value of the HTML checkbox */
-function form_confim_buttons($post_variable, $item_array, $save_message, $return = false) {
+function form_confirm_buttons($post_variable, $item_array, $save_message, $return = false) {
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
@@ -542,7 +542,7 @@ function get_nfilter_request_var($name, $default = '') {
 	}
 }
 
-/* get_request_var_post - depricated - returns the current value of a
+/* get_request_var_post - deprecated - returns the current value of a
      PHP $_POST variable, optionally returning a default value if the
      request variable does not exist.
    @arg $name - the name of the request variable. this should be a valid key in the

@@ -843,7 +843,7 @@ function setMenuVisibility() {
 		}
 	});
 
-	// Functon to give life to the Navigation pane
+	// Function to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').off().on('click', function(event) {
 		event.preventDefault();
 

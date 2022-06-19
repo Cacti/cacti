@@ -584,7 +584,7 @@ function rrdclean_create_path($path) {
 				$group_id      = filegroup($config['rra_path']);
 
 				// NOTE: chown/chgrp fails for non-root users, checking their
-				// result is therefore irrevelevant
+				// result is therefore irrelevant
 				@chown($path, $owner_id);
 				@chgrp($path, $group_id);
 			}
@@ -682,7 +682,7 @@ function display_help() {
 	display_version();
 
 	print "\nusage: poller_maintenance.php [--force] [--debug]\n\n";
-	print "Cacti's maintenance poller.  This poller is repsonsible for executing periodic\n";
+	print "Cacti's maintenance poller.  This poller is responsible for executing periodic\n";
 	print "maintenance activities for Cacti including log rotation, deactivating accounts, etc.\n\n";
 	print "Optional:\n";
 	print "    --force   - Force immediate execution, e.g. for testing.\n";

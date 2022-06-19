@@ -24,7 +24,7 @@
 
 /**
  * get_rrdfile_names - this routine returns all of the RRDfiles know to Cacti
- *   so as to be processed when performin the Daily, Weekly, Monthly and Yearly
+ *   so as to be processed when performing the Daily, Weekly, Monthly and Yearly
  *   average and peak calculations.
  *
  * @param $thread_id   - (int) The thread to process
@@ -300,7 +300,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 			$max     = false;
 			$dsnames = array();
 
-			/* figure out whatis in this RRDfile.  Assume CF Uniformity as Cacti does not allow async rrdfiles.
+			/* figure out what is in this RRDfile.  Assume CF Uniformity as Cacti does not allow async rrdfiles.
 			 * also verify the consolidation functions in the RRDfile for average and max calculations.
 			 */
 			if (cacti_sizeof($info_array)) {
@@ -340,7 +340,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 				$rrdfile = str_replace(':', "\\:", $rrdfile);
 			}
 
-			/* setup the graph command by parsing throught the internal data source names */
+			/* setup the graph command by parsing through the internal data source names */
 			if (cacti_sizeof($dsnames)) {
 				foreach ($dsnames as $dsname => $present) {
 					if ($average) {
@@ -463,7 +463,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 
 /**
  * dsstats_log_statistics - provides generic timing message to both the Cacti log and the settings
- *   table so that the statistcs can be graphed as well.
+ *   table so that the statistics can be graphed as well.
  *
  * @param $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY', 'BOOST' or 'MAJOR'.
  *
@@ -647,8 +647,8 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
  *   that should be stored into the two tables, and then bulk inserts that information once
  *   all poller items have been processed.
  *
- *   The pupose for loading then entire structures into memory at one time is to reduce the latency
- *   related to multiple database calls.  The author believed that PHP's array hashing algorythms
+ *   The purpose for loading then entire structures into memory at one time is to reduce the latency
+ *   related to multiple database calls.  The author believed that PHP's array hashing algorithms
  *   would be as fast, if not faster, than MySQL, when considering the transaction overhead and therefore
  *   chose this method.
  *
@@ -669,7 +669,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 	/* install the dsstats error handler */
 	set_error_handler('dsstats_error_handler');
 
-	/* do not make any calculations unlessed enabled */
+	/* do not make any calculations unless enabled */
 	if (read_config_option('dsstats_enable') == 'on') {
 		if (cacti_sizeof($rrd_update_array) > 0) {
 			/* we will assume a smaller than the max packet size.  This would appear to be around the sweat spot. */
@@ -875,7 +875,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 								$currentval = 'NULL';
 							}
 
-							/* setupt the output buffer for the cache first */
+							/* setup the output buffer for the cache first */
 							$cachebuf .=
 								$cache_delim . '(' .
 								$result['local_data_id'] . ", '" .
@@ -885,7 +885,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 							$out_length += strlen($cachebuf);
 
-							/* now do the the last value, if applicable */
+							/* now do the last value, if applicable */
 							if ($lastval != '') {
 								$lastbuf .=
 									$last_delim . '(' .
@@ -940,7 +940,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 }
 
 /**
- * dsstats_boost_bottom - this routine accomodates mass updates after the boost process
+ * dsstats_boost_bottom - this routine accommodates mass updates after the boost process
  *   has completed.  The use of boost will require boost version 2.5 or above.  The idea
  *   if that daily averages will be updated on the boost cycle.
  *
@@ -1055,7 +1055,7 @@ function dsstats_rrdtool_init() {
 /**
  * dsstats_rrdtool_execute - this routine passes commands to RRDtool and returns the information
  *   back to DSStats.  It is important to note here that RRDtool needs to provide an either 'OK'
- *   or 'ERROR' response accross the pipe as it does not provide EOF characters to key upon.
+ *   or 'ERROR' response across the pipe as it does not provide EOF characters to key upon.
  *   This may not be the best method and may be changed after I have a conversation with a few
  *   developers.
  *

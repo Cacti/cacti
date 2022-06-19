@@ -23,7 +23,7 @@
 */
 
 /* usort_data_query_index - attempts to sort a data query index either numerically
-     or alphabetically depending on which seems best. it also trys to strip out
+     or alphabetically depending on which seems best. it also tries to strip out
      extra characters before sorting to improve accuracy when sorting things like
      switch ifNames, etc
    @arg $a - the first string to compare
@@ -32,7 +32,7 @@
      $b is equal to $b */
 function usort_data_query_index($a, $b) {
 	/* split strings to be compared into chunks
-	 * that shall be compared seperately,
+	 * that shall be compared separately,
 	 * e.g. for gi0/1, gi0/2, ... */
 	$arr_a = explode('/', $a);
 	$arr_b = explode('/', $b);
@@ -86,7 +86,7 @@ function usort_alphabetic($a, $b) {
 	return strcmp($a, $b);
 }
 
-/* usort_natural - sorts two values naturaly (ie. ab1, ab2, ab7, ab10, ab20)
+/* usort_natural - sorts two values naturally (ie. ab1, ab2, ab7, ab10, ab20)
    @arg $a - the first string to compare
    @arg $b - the second string to compare
    @returns - '1' if $a is greater than $b, '-1' if $a is less than $b, or '0' if
@@ -95,7 +95,7 @@ function usort_natural($a, $b) {
 	return strnatcmp($a, $b);
 }
 
-/* sort_by_subkey - takes the list of templates and performa a final sort
+/* sort_by_subkey - takes the list of templates and perform a final sort
    @returns - (array) an array of sorted templates */
 function sort_by_subkey(&$array, $subkey, $sort = SORT_ASC) {
 	$keys = array();

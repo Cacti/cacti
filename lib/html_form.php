@@ -29,7 +29,7 @@
 /* draw_edit_form - draws an html edit form
    @arg $array - an array that contains all of the information needed to draw
      the html form. see the arrays contained in include/global_settings.php
-     for the extact syntax of this array */
+     for the extract syntax of this array */
 function draw_edit_form($array) {
 	if (cacti_sizeof($array) > 0) {
 		foreach ($array as $top_branch => $top_children) {
@@ -705,9 +705,9 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value, 
      -- or --
      $array[0]["id"] = 43;
      $array[0]["name"] = "Red";
-   @arg $column_display - used to indentify the key to be used for display data. this
+   @arg $column_display - used to identify the key to be used for display data. this
      is only applicable if the array is formatted using the second method above
-   @arg $column_id - used to indentify the key to be used for id data. this
+   @arg $column_id - used to identify the key to be used for id data. this
      is only applicable if the array is formatted using the second method above
    @arg $form_previous_value - the current value of this form element
    @arg $form_none_entry - the name to use for a default 'none' element in the dropdown
@@ -1224,7 +1224,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	if ($form_previous_value == '') { # no data: defaults are used; everythings fine
+	if ($form_previous_value == '') { # no data: defaults are used; everything is fine
 		$extra_data = '';
 	} else {
 		/* verifying all possible pango font params is too complex to be tested here

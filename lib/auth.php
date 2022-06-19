@@ -227,7 +227,7 @@ function get_basic_auth_username() {
 		}
 
 		/* Handle mapping basic accounts to shortform accounts.
-		 * Fromat of map file is CSV: basic,shortform */
+		 * Format of map file is CSV: basic,shortform */
 		$mapfile = read_config_option('path_basic_mapfile');
 		if ($mapfile != '' && file_exists($mapfile) && is_readable($mapfile)) {
 			$records = file($mapfile);
@@ -794,7 +794,7 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
 }
 
 /**
- * is_view_allowed - Returns a true or false as to wether or not a specific view type is allowed
+ * is_view_allowed - Returns a true or false as to whether or not a specific view type is allowed
  *   View options include 'show_tree', 'show_list', 'show_preview', 'graph_settings'
  *
  * @param  (string) $view - the view to check for permissions on
@@ -994,7 +994,7 @@ function is_realm_allowed($realm, $check_user = false) {
 				}
 			}
 
-			/* if the permission is already valid, the session ariable will be set */
+			/* if the permission is already valid, the session variable will be set */
 			if (isset($_SESSION['sess_user_realms'][$realm])) {
 				return $_SESSION['sess_user_realms'][$realm];
 			}
@@ -1166,7 +1166,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
 		}
 
-		$heirarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id, gti.site_id,
+		$hierarchy = db_fetch_assoc("SELECT gti.graph_tree_id AS tree_id, gti.id, gti.title, gti.host_id, gti.site_id,
 			gti.local_graph_id, gti.host_grouping_type, h.description AS hostname, s.name AS sitename
 			FROM graph_tree_items AS gti
 			INNER JOIN graph_tree AS gt
@@ -1178,7 +1178,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 			$sql_where
 			ORDER BY gti.position");
 	} elseif (cacti_sizeof($trees)) {
-		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, '0' AS site_id,
+		$hierarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, '0' AS site_id,
 			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname, '' AS sitename
 			FROM graph_tree AS gt
 			WHERE enabled='on'
@@ -1187,30 +1187,30 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 	}
 
 	if (read_config_option('auth_method') != 0) {
-		$new_heirarchy = array();
-		if (cacti_sizeof($heirarchy)) {
-			foreach($heirarchy as $h) {
+		$new_hierarchy = array();
+		if (cacti_sizeof($hierarchy)) {
+			foreach($hierarchy as $h) {
 				if ($h['host_id'] > 0) {
 					if (is_device_allowed($h['host_id'])) {
-						$new_heirarchy[] = $h;
+						$new_hierarchy[] = $h;
 					}
 				} elseif ($h['id'] == 0) {
 					if (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
 						if (is_tree_allowed($h['tree_id'])) {
-							$new_heirarchy[] = $h;
+							$new_hierarchy[] = $h;
 						}
 					}
 				} elseif ($h['site_id'] > 0) {
-					$new_heirarchy[] = $h;
+					$new_hierarchy[] = $h;
 				} elseif (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
-					$new_heirarchy[] = $h;
+					$new_hierarchy[] = $h;
 				}
 			}
 		}
 
-		return $new_heirarchy;
+		return $new_hierarchy;
 	} else {
-		return $heirarchy;
+		return $hierarchy;
 	}
 }
 
@@ -1846,7 +1846,7 @@ function get_policy_join_select($policies) {
 
 /**
  * get_policy_where - Parse the policies in order to downselect matching graphs
- *   without the use of the SQL Having clause which is very inneficient
+ *   without the use of the SQL Having clause which is very inefficient
  *
  * @param  (int)    $graph_auth_method - The graph auth method: permissive, restrictive, device, graph_template
  * @param  (array)  $policies - The list of user and group policies.  Will be reversed to
@@ -2121,7 +2121,7 @@ function get_policy_where($graph_auth_method, $policies, $sql_where) {
  *   logic for this is somewhat complex, but understandable.  First, the $graph object will include
  *   three columns generally graphX, deviceX, and templateX for each of the user or groups in the collection.
  *   The way we assign a restrictive or permissive value is based upon the graph permission setting
- *   in Cacti, but also wether or not the default access for the object type is either 'Allow' or 'Deny'.
+ *   in Cacti, but also whether or not the default access for the object type is either 'Allow' or 'Deny'.
  *
  *   - If the 'default access' for the object type is 'Deny', then a numeric value in userX means
  *     the user has permission to an object.
@@ -2458,7 +2458,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
  *   well as to build out the tree for a user.
  *
  * @param  (bool)   Is the Tree in Edit mode or not
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of branches
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
@@ -2617,7 +2617,7 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
  *   To access.  This function is generally intended for both listbox and table displays as
  *   well as other tasks.
  *
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of devices
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
@@ -2730,7 +2730,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
  *   To access.  This function is generally intended for both listbox and table displays as
  *   well as other tasks.
  *
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of devices
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
@@ -2794,7 +2794,7 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
  *   well as other tasks.
  *
  * @param  (int)    The site id for the site
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of devices
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
@@ -2898,7 +2898,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
  *   To be able to differentiate between Graph Templates based on a non-data query data input mode
  *   and those related to data queries.
  *
- * @param  (srring) The SQL Where used to get the values or the values
+ * @param  (string) The SQL Where used to get the values or the values
  * @param  (string) The SQL Order clause to use for the sorting of devices
  * @param  (int)    The limit on items to return.  If empty or -1, return all items
  * @param  (int)    The number of rows found, to be returned to the caller
@@ -2970,7 +2970,7 @@ function get_host_array() {
  *
  * @param  (bool)   Include the 'Any' item as the first in the list
  @ @param  (bool)   Include the 'None' item as the first or second in the list
- * @param  (string) SQL Where expression to use to gather the hosts in addtion to the 'term'
+ * @param  (string) SQL Where expression to use to gather the hosts in addition to the 'term'
  *   request variable.
  *
  * @return (string) A json array of matching devices upto a limit specified in the system
@@ -3015,7 +3015,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
  *
  * @param  (bool)   Include the 'Any' item as the first in the list
  @ @param  (bool)   Include the 'None' item as the first or second in the list
- * @param  (string) SQL Where expression to use to gather the graph templates in addtion to the 'term'
+ * @param  (string) SQL Where expression to use to gather the graph templates in addition to the 'term'
  *   request variable.
  *
  * @return (string) A json array of matching graph templates upto a limit specified in the system
@@ -3055,7 +3055,7 @@ function get_allowed_ajax_graph_templates($include_any = true, $include_none = t
  *   read through a callback, in JSON.  The 'term' request variable will include an optional search term.
  *
  @ @param  (bool)   Include the 'None' item as the first item in the list
- * @param  (string) SQL Where expression to use to gather the hosts in addtion to the 'term'
+ * @param  (string) SQL Where expression to use to gather the hosts in addition to the 'term'
  *   request variable.
  *
  * @return (string) A json array of matching graph items upto a limit specified in the system
@@ -3091,7 +3091,7 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
  * get_allowed_ajax_graph - returns a list of allowed graphs in a way that can be easily
  *   read through a callback, in JSON.  The 'term' request variable will include an optional search term.
  *
- * @param  (string) SQL Where expression to use to gather the graphs in addtion to the 'term'
+ * @param  (string) SQL Where expression to use to gather the graphs in addition to the 'term'
  *   request variable.
  *
  * @return (string) A json array of matching graphs upto a limit specified in the system
@@ -3200,7 +3200,7 @@ function auth_get_username() {
 }
 
 /**
- * auth_checkclear_lockout - checks the lockout status of a user and unlocks if neccessary
+ * auth_checkclear_lockout - checks the lockout status of a user and unlocks if necessary
  *
  * @param  (string) $username The username of the user to check
  * @param  (int)    $realm The realm of the user to check
@@ -3250,7 +3250,7 @@ function auth_checkclear_lockout($username, $realm) {
  *   that a lockout is present and not to proceed with login.
  *
  * @param  (string) $username - The name of the user account
- * @param  (int)    $realm - The loging realm for the user
+ * @param  (int)    $realm - The logging realm for the user
  *
  * @return (bool)   True if locked out, otherwise false
  */
@@ -3284,12 +3284,12 @@ function auth_process_lockout_check($username, $realm) {
 }
 
 /**
- * auth_process_lockout - called when a user login attempt fails to increment or locout the user
+ * auth_process_lockout - called when a user login attempt fails to increment or lockout the user
  *   if there is an error, the globals error and error_msg will be set to notify the caller
  *   that a lockout is present and not to proceed with login.
  *
  * @param  (string) $username - The name of the user account
- * @param  (int)    $realm - The loging realm for the user
+ * @param  (int)    $realm - The logging realm for the user
  *
  * @return (void)
  */
@@ -3787,7 +3787,7 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm = 0) {
  * @param  (string) $username  - The user to process
  * @param  (int)    $realm     - The LDAP Realm number
  *
- * @return (array)  $response - The ldap responnse, or false on general error
+ * @return (array)  $response - The ldap response, or false on general error
  */
 function domains_ldap_search_dn($username, $realm) {
 	$ldap = new Ldap;
@@ -4380,11 +4380,11 @@ function auth_login_redirect($login_opts = '') {
 			if (api_user_realm_auth(auth_basename($referer))) {
 				header('Location: ' . $referer);
 			} elseif (!is_realm_allowed(8)) {
-				cacti_log(sprintf("DEBUG: Referer Overriden Due to Permissions to '%s'", 'graph_view.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+				cacti_log(sprintf("DEBUG: Referer Overridden Due to Permissions to '%s'", 'graph_view.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 				header('Location: graph_view.php');
 			} else {
-				cacti_log(sprintf("DEBUG: Referer Overriden Due to Permissions to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+				cacti_log(sprintf("DEBUG: Referer Overridden Due to Permissions to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 				header('Location: index.php');
 			}
@@ -4569,7 +4569,7 @@ function check_reset_no_authentication($auth_method) {
 
 		if (!$admin_id) {
 			$error     = true;
-			$error_msg = __('Authentication was previously not set.  Attempted to set to Local Authentication, but no Admintrative account was found.');
+			$error_msg = __('Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found.');
 
 			return false;
 		}

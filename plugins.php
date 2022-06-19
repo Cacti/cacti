@@ -867,7 +867,7 @@ function plugin_actions($plugin, $table) {
 	if ($config['poller_id'] > 1) {
 		if (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false) {
 			if ($plugin['remote_status'] == 1) { // Installed and Active
-				// TO-DO: Diabling here does not make much sense as the main will be replicated
+				// TO-DO: Disabling here does not make much sense as the main will be replicated
 				// with any change of any other plugin thus undoing.  Fix that moving forward
 				//$link .= "<a class='pidisable' href='" . html_escape($config['url_path'] . 'plugins.php?mode=remote_disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin Locally') . "'><img src='" . $config['url_path'] . "images/stop.png'></a>";
 			} elseif ($plugin['remote_status'] == 4) { // Installed but inactive
