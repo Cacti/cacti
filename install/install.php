@@ -55,6 +55,45 @@ if ($hasEverything) {
 	include_once('../lib/installer.php');
 }
 
+$help = '';
+
+if ($config['cacti_server_os'] == 'unix') {
+	if ($config['cacti_db_version'] == 'new_install') {
+		if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false) {
+			$help = 'Install-Under-CentOS_LAMP.html';
+		} elseif (file_exists('/etc/redhat-release')) {
+			$help = 'Install-Under-CentOS_LAMP.html';
+		} elseif (file_exists('/etc/os-release')) {
+			$contents = file_get_contents('/etc/os-release');
+			if (stripos($contents, 'debian') !== false || stripos($contents, 'ubuntu')) {
+				$help = 'Installing-Under-Ubuntu-Debian.html';
+			}
+		}
+	} else {
+		if (isset($_SERVER['SERVER_SOFTWARE'])) {
+			$help = 'Upgrading-Cacti.html';
+		} else {
+			$help = 'Upgrading-Cacti.html';
+		}
+	}
+} else {
+	if ($config['cacti_db_version'] == 'new_install') {
+		$help = 'Installing-Under-Windows.html';
+	} else {
+		$help = 'Upgrading-Cacti-Under-Windows.html';
+	}
+}
+
+$help_anchor = '';
+if ($help != '') {
+	if (file_exists($config['base_path'] . '/docs/' . $help)) {
+		$help_anchor = '<a style="padding:2px" target="_blank" href="' . $config['url_path'] . 'docs/' . $help . '" class="far fa-question-circle" title="' . __esc('Cacti Install Help') . '"></a>';
+	} else {
+		$help = str_replace('.html', '.md', $help);
+		$help_anchor = '<a style="padding:2px" target="_blank" href="https://docs.cacti.net/' . $help . '" class="far fa-question-circle" title="' . __esc('Cacti Install Help') . '"></a>';
+	}
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -70,7 +109,7 @@ print get_md5_include_css('install/install.css');
 <body>
 	<div class='cactiInstallTable'>
 		<div class='cactiTableTitleRow cactiBorderWall'>
-			<div class='textHeaderDark'><?php print __('Cacti Server v%s - Installation Wizard', CACTI_VERSION); ?><span title="<?php print __esc('Refresh current page');?>" style="float:right"><i id="installRefresh" class="fa fa-redo"></i></span></div>
+			<div class='textHeaderDark'><?php print __esc('Cacti Server v%s - Installation Wizard', CACTI_VERSION); ?><span style="float:right"><?php print $help_anchor;?><a title="<?php print __esc('Refresh current page');?>" id="installRefresh" href="#" style="padding:2px" class="fa fa-redo"></a></span></div>
 		</div>
 		<div class='cactiInstallArea cactiBorderWall'>
 			<div class='cactiInstallAreaContent' id='installContent'>
