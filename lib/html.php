@@ -2623,7 +2623,7 @@ function html_common_header($title, $selectedTheme = '') {
 }
 
 function html_help_page($page) {
-	global $config;
+	global $config, $help;
 
 	$help = array(
 		'aggregates.php'              => 'Aggregates.html',

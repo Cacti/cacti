@@ -107,6 +107,8 @@ class Installer implements JsonSerializable {
 	 * @arg installData - array of fields to update
 	 */
 	public function __construct($install_params = array()) {
+		global $config, $help;
+
 		log_install_high('step', 'Install Parameters: ' . clean_up_lines(var_export($install_params, true)));
 
 		$this->old_cacti_version = get_cacti_version();
@@ -135,7 +137,7 @@ class Installer implements JsonSerializable {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
-			$install_version = read_config_option('install_version',true);
+			$install_version = read_config_option('install_version', true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 
 			if (!cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
@@ -144,6 +146,33 @@ class Installer implements JsonSerializable {
 				db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
 			} else {
 				$install_params = array();
+			}
+		}
+
+		if ($config['cacti_server_os'] == 'unix') {
+			if ($this->old_cacti_version == 'new_install') {
+				if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false) {
+					$help['install.php'] = 'Install-Under-CentOS_LAMP.html';
+				} elseif (file_exists('/etc/redhat-release')) {
+					$help['install.php'] = 'Install-Under-CentOS_LAMP.html';
+				} elseif (file_exists('/etc/os-release')) {
+					$contents = file_get_contents('/etc/os-release');
+					if (stripos($contents, 'debian') !== false || stripos($contents, 'ubuntu')) {
+						$help['install.php'] = 'Installing-Under-Ubuntu-Debian.html';
+					}
+				}
+			} else {
+				if (isset($_SERVER['SERVER_SOFTWARE'])) {
+					$help['install.php'] = 'Upgrading-Cacti.html';
+				} else {
+					$help['install.php'] = 'Upgrading-Cacti.html';
+				}
+			}
+		} else {
+			if ($this->old_cacti_version == 'new_install') {
+				$help['install.php'] = 'Installing-Under-Windows.html';
+			} else {
+				$help['install.php'] = 'Upgrading-Cacti-Under-Windows.html';
 			}
 		}
 
