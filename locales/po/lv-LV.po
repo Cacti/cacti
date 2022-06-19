@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-19 16:49+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-19 21:02+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2528 lib/html.php:2492
 msgid "About Cacti"
@@ -1292,7 +1292,7 @@ msgstr "Nav piemērojams"
 #: graph_templates.php:38 graphs.php:66 host_templates.php:36
 #: include/global_arrays.php:1539 sites.php:29 vdef.php:30
 msgid "Duplicate"
-msgstr "Dublikāts"
+msgstr "Dublēt"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:42
@@ -1677,7 +1677,7 @@ msgstr "Pēc atlasītā izpildes ierobežojuma noteikšanas process tiks pārtra
 #: automation_networks.php:523 automation_networks.php:1213 pollers.php:911
 #, php-format
 msgid "%d Minute"
-msgstr "%d minūte"
+msgstr "%d minūte"
 
 #: automation_networks.php:524 automation_networks.php:525
 #: automation_networks.php:526 automation_networks.php:527
@@ -1701,7 +1701,7 @@ msgstr "%d minūte"
 #: include/global_settings.php:2662 pollers.php:912 pollers.php:913
 #, php-format
 msgid "%d Minutes"
-msgstr "%d minūtes"
+msgstr "%d minūtes"
 
 #: automation_networks.php:528 include/global_arrays.php:704
 #: include/global_arrays.php:714 include/global_arrays.php:1351
@@ -2146,7 +2146,7 @@ msgstr "Atsvaidzināt"
 #: pollers.php:908 pollers.php:909 pollers.php:910
 #, php-format
 msgid "%d Seconds"
-msgstr "%d sekundes"
+msgstr "%d sekundes"
 
 #: automation_networks.php:1227
 msgid "Clear Filtered"
@@ -11610,7 +11610,7 @@ msgstr "Sīktēla augstums"
 
 #: include/global_settings.php:2510
 msgid "The height of Thumbnail graphs in pixels."
-msgstr "Sīktēlu diagrammu augstums pikseļos."
+msgstr "Grafiku sīktēla noklusējuma augstums pikseļos."
 
 #: include/global_settings.php:2517
 msgid "Thumbnail Width"
@@ -11630,7 +11630,7 @@ msgstr "Noklusējuma diagrammu koks, kas jāizmanto, attēlojot diagrammas koka 
 
 #: include/global_settings.php:2534
 msgid "Graphs Per Page"
-msgstr "Grafiki vienā lapā"
+msgstr "Grafiki lapā"
 
 #: include/global_settings.php:2541
 msgid "Expand Devices"
@@ -18798,12 +18798,12 @@ msgstr "Pēdējā palaišanas ilgums:"
 #: utilities.php:2438
 #, php-format
 msgid "%d minutes"
-msgstr "%d minūtes"
+msgstr "%d minūtes"
 
 #: utilities.php:2438
 #, php-format
 msgid "%d seconds"
-msgstr "%d sekundes"
+msgstr "%d sekundes"
 
 #: utilities.php:2441
 #, php-format
