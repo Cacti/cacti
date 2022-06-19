@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-06-19 16:49+0000\n"
+"PO-Revision-Date: 2022-06-19 19:01+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -5491,7 +5491,7 @@ msgstr ""
 #: lib/api_automation.php:1390 lib/api_automation.php:1457
 #: lib/html_reports.php:1342 links.php:378 plugins.php:450
 msgid "Actions"
-msgstr ""
+msgstr "Darbības"
 
 #: host.php:899
 #, php-format
@@ -7162,7 +7162,7 @@ msgstr ""
 
 #: include/global_arrays.php:1582 include/global_form.php:2243
 msgid "Tree"
-msgstr ""
+msgstr "Koks"
 
 #: include/global_arrays.php:1584
 msgid "Horizontal Rule"
@@ -11824,7 +11824,7 @@ msgstr ""
 
 #: include/global_settings.php:2697
 msgid "The height of Thumbnail graphs in pixels."
-msgstr ""
+msgstr "Grafiku sīktēla noklusējuma augstums pikseļos."
 
 #: include/global_settings.php:2704
 msgid "Thumbnail Width"
@@ -11844,7 +11844,7 @@ msgstr ""
 
 #: include/global_settings.php:2721
 msgid "Graphs Per Page"
-msgstr ""
+msgstr "Grafiki lapā"
 
 #: include/global_settings.php:2728
 msgid "Expand Devices"
