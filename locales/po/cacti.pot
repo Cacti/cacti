@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2021-12-23 13:29-0500\n"
+"POT-Creation-Date: 2022-06-18 20:39-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Cacti Developers <developers@cacti.net>>\n"
 "Language-Team: Cacti Developers <developers@cacti.net>\n"
@@ -950,12 +950,12 @@ msgstr ""
 msgid "LDAP Search Error: %s"
 msgstr ""
 
-#: auth_login.php:188 auth_login.php:593
+#: auth_login.php:188 auth_login.php:592
 #, php-format
 msgid "LDAP Error: %s"
 msgstr ""
 
-#: auth_login.php:304 auth_login.php:583
+#: auth_login.php:304 auth_login.php:582
 #, php-format
 msgid "Template user id %s does not exist."
 msgstr ""
@@ -977,32 +977,32 @@ msgstr ""
 msgid "Cacti"
 msgstr ""
 
-#: auth_login.php:728 include/global_settings.php:2253 lib/auth.php:355
+#: auth_login.php:767 include/global_settings.php:2253 lib/auth.php:355
 #: lib/auth.php:377 lib/auth.php:388
 msgid "Local"
 msgstr ""
 
-#: auth_login.php:729 include/global_arrays.php:803 lib/auth.php:389
+#: auth_login.php:768 include/global_arrays.php:803 lib/auth.php:389
 msgid "LDAP"
 msgstr ""
 
-#: auth_login.php:749
+#: auth_login.php:788
 msgid "Invalid User Name/Password Please Retype"
 msgstr ""
 
-#: auth_login.php:752
+#: auth_login.php:791
 msgid "User Account Disabled"
 msgstr ""
 
-#: auth_login.php:766 auth_login.php:772
+#: auth_login.php:805 auth_login.php:811
 msgid "User Login"
 msgstr ""
 
-#: auth_login.php:767 auth_login.php:772
+#: auth_login.php:806 auth_login.php:811
 msgid "Enter your Username and Password below"
 msgstr ""
 
-#: auth_login.php:772 lib/html_tree.php:218
+#: auth_login.php:811 lib/html_tree.php:218
 msgid "Login to Cacti"
 msgstr ""
 
@@ -5741,15 +5741,15 @@ msgstr ""
 msgid "Login Again"
 msgstr ""
 
-#: include/auth.php:299 lib/functions.php:6658 permission_denied.php:40
+#: include/auth.php:299 lib/functions.php:6696 permission_denied.php:40
 msgid "Permission Denied"
 msgstr ""
 
-#: include/auth.php:300 lib/functions.php:6659 permission_denied.php:43
+#: include/auth.php:300 lib/functions.php:6697 permission_denied.php:43
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr ""
 
-#: include/auth.php:300 lib/functions.php:6659 permission_denied.php:41
+#: include/auth.php:300 lib/functions.php:6697 permission_denied.php:41
 msgid "You are not permitted to access this section of Cacti."
 msgstr ""
 
@@ -12090,41 +12090,41 @@ msgstr ""
 msgid "No Tree Creation Criteria"
 msgstr ""
 
-#: lib/api_automation.php:2029 lib/api_automation.php:2094
+#: lib/api_automation.php:2034 lib/api_automation.php:2099
 msgid "Device Match Rule"
 msgstr ""
 
-#: lib/api_automation.php:2050
+#: lib/api_automation.php:2055
 msgid "Create Graph Rule"
 msgstr ""
 
-#: lib/api_automation.php:2097
+#: lib/api_automation.php:2102
 msgid "Graph Match Rule"
 msgstr ""
 
-#: lib/api_automation.php:2129
+#: lib/api_automation.php:2134
 msgid "Create Tree Rule (Device)"
 msgstr ""
 
-#: lib/api_automation.php:2132
+#: lib/api_automation.php:2137
 msgid "Create Tree Rule (Graph)"
 msgstr ""
 
-#: lib/api_automation.php:2178
+#: lib/api_automation.php:2183
 #, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
 msgstr ""
 
-#: lib/api_automation.php:2180
+#: lib/api_automation.php:2185
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
 msgstr ""
 
-#: lib/api_automation.php:3059
+#: lib/api_automation.php:3064
 msgid "Added by Cacti Automation"
 msgstr ""
 
-#: lib/api_automation.php:3292
+#: lib/api_automation.php:3297
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
 msgstr ""
 
@@ -12889,17 +12889,17 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: lib/functions.php:3386 lib/functions.php:7071
+#: lib/functions.php:3386 lib/functions.php:7109
 msgid "Leaf"
 msgstr ""
 
-#: lib/functions.php:3406 lib/functions.php:7091 lib/html_tree.php:715
+#: lib/functions.php:3406 lib/functions.php:7129 lib/html_tree.php:715
 #: lib/html_tree.php:751 lib/html_tree.php:980 lib/html_tree.php:988
 #: lib/html_tree.php:1562
 msgid "Non Query Based"
 msgstr ""
 
-#: lib/functions.php:3439 lib/functions.php:7131
+#: lib/functions.php:3439 lib/functions.php:7169
 #, php-format
 msgid "Link %s"
 msgstr ""
