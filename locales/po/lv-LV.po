@@ -8,14 +8,15 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-06-19 00:34+0000\n"
-"Last-Translator: Coool <coool@mail.lv>\n"
+"PO-Revision-Date: 2022-06-19 16:49+0000\n"
+"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
-"Language: lv\n"
+"Language: lv-LV\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= "
+"19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
 "X-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2493 lib/html.php:2523
@@ -1003,7 +1004,7 @@ msgstr ""
 #: auth_login.php:767 include/global_settings.php:2253 lib/auth.php:355
 #: lib/auth.php:377 lib/auth.php:388
 msgid "Local"
-msgstr ""
+msgstr "Vietējais"
 
 #: auth_login.php:768 include/global_arrays.php:803 lib/auth.php:389
 msgid "LDAP"
@@ -1418,7 +1419,7 @@ msgstr ""
 #: user_admin.php:30 user_domains.php:32 user_domains.php:412
 #: user_group_admin.php:32
 msgid "Enable"
-msgstr ""
+msgstr "Iespējot"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:41 host.php:42
@@ -1426,7 +1427,7 @@ msgstr ""
 #: plugins.php:30 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
-msgstr ""
+msgstr "Izslēgt"
 
 #: automation_graph_rules.php:256
 msgid "Press 'Continue' to delete the following Graph Rules."
@@ -1612,7 +1613,7 @@ msgstr ""
 #: automation_networks.php:425 automation_networks.php:1071
 #: include/global_arrays.php:1774
 msgid "Daily"
-msgstr ""
+msgstr "Katru dienu"
 
 #: automation_networks.php:426 automation_networks.php:1072
 #: include/global_arrays.php:1775
@@ -2171,29 +2172,29 @@ msgstr ""
 
 #: automation_networks.php:1086
 msgid "Last Runtime"
-msgstr ""
+msgstr "Pēdējā izpildes reize"
 
 #: automation_networks.php:1087
 msgid "Next Start"
-msgstr ""
+msgstr "Nākamā reize"
 
 #: automation_networks.php:1088
 msgid "Last Started"
-msgstr ""
+msgstr "Pēdējo reizi izpildīta"
 
 #: automation_networks.php:1117 pollers.php:45 utilities.php:1667
 msgid "Running"
-msgstr ""
+msgstr "Procesā"
 
 #: automation_networks.php:1141 pollers.php:46 utilities.php:1666
 msgid "Idle"
-msgstr ""
+msgstr "Dīkstāvē"
 
 #: automation_networks.php:1157 include/global_arrays.php:821
 #: include/global_arrays.php:1113 include/global_settings.php:2511
 #: lib/html_reports.php:1677
 msgid "Never"
-msgstr ""
+msgstr "Nekad"
 
 #: automation_networks.php:1162
 msgid "No Networks Found"
@@ -3715,7 +3716,7 @@ msgstr ""
 #: include/global_arrays.php:929 include/global_arrays.php:1129
 #: include/global_arrays.php:2271 lib/api_automation.php:1122
 msgid "Data Queries"
-msgstr ""
+msgstr "Datu vaicājumi"
 
 #: data_queries.php:1355 host.php:835 utilities.php:1074
 msgid "Data Query Name"
@@ -4687,7 +4688,7 @@ msgstr ""
 #: include/global_arrays.php:2109 lib/html_tree.php:608 user_admin.php:1436
 #: user_group_admin.php:1115
 msgid "Graph Templates"
-msgstr ""
+msgstr "Grafiku veidnes"
 
 #: graph_templates.php:757 graph_templates.php:944 graphs.php:2066
 #: graphs.php:2303 include/global_arrays.php:1256 lib/api_aggregate.php:1720
@@ -6836,7 +6837,7 @@ msgstr "Veidņu redaktors"
 
 #: include/global_arrays.php:1159
 msgid "General Administration"
-msgstr ""
+msgstr "Vispārējā administrācija"
 
 #: include/global_arrays.php:1160
 msgid "System Administration"
@@ -7630,7 +7631,7 @@ msgstr ""
 #: include/global_arrays.php:2625 include/global_arrays.php:2643
 #: include/global_arrays.php:2661 include/global_arrays.php:2685
 msgid "(Edit)"
-msgstr "(rediģēt)"
+msgstr "(Rediģēt)"
 
 #: include/global_arrays.php:1995 lib/api_aggregate.php:1711
 msgid "Graph Items"
@@ -10007,7 +10008,7 @@ msgstr ""
 #: include/global_settings.php:903 include/global_settings.php:1110
 #: include/global_settings.php:2520
 msgid "Theme"
-msgstr ""
+msgstr "Motīvs"
 
 #: include/global_settings.php:904 include/global_settings.php:2521
 msgid "Please select one of the available Themes to skin your Cacti with."
@@ -12959,7 +12960,7 @@ msgstr ""
 #: lib/html_tree.php:751 lib/html_tree.php:980 lib/html_tree.php:988
 #: lib/html_tree.php:1562
 msgid "Non Query Based"
-msgstr ""
+msgstr "Nebalstīts uz vaicājumiem"
 
 #: lib/functions.php:3439 lib/functions.php:7169
 #, php-format
@@ -13368,7 +13369,7 @@ msgstr ""
 
 #: lib/html.php:2547 lib/html.php:3189 pollers.php:849
 msgid "Connection Failed"
-msgstr ""
+msgstr "Savienojums neizdevās"
 
 #: lib/html.php:2548 lib/html.php:3190
 msgid "The response to the last action was unexpected."
@@ -14178,7 +14179,7 @@ msgstr ""
 
 #: lib/html_utility.php:948 lib/installer.php:1811 lib/installer.php:3549
 msgid "Error"
-msgstr ""
+msgstr "Kļūda"
 
 #: lib/html_validate.php:56
 #, php-format
@@ -15282,7 +15283,7 @@ msgstr ""
 
 #: lib/installer.php:3444
 msgid "Cli"
-msgstr "cli"
+msgstr "Komandrindas interfeiss"
 
 #: lib/installer.php:3449
 #, php-format
@@ -17501,7 +17502,7 @@ msgstr ""
 
 #: templates_import.php:112
 msgid "ERROR"
-msgstr ""
+msgstr "Kļūda"
 
 #: templates_import.php:112
 msgid "Failed to access temporary folder, import functionality is disabled"
@@ -18252,7 +18253,7 @@ msgstr ""
 
 #: user_domains.php:748
 msgid "Effective User"
-msgstr ""
+msgstr "Efektīvs lietotājs"
 
 #: user_domains.php:749
 msgid "CN FullName"
