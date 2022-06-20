@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-06-19 19:01+0000\n"
+"PO-Revision-Date: 2022-06-21 05:25+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -347,7 +347,7 @@ msgstr ""
 
 #: aggregate_graphs.php:527 graphs.php:963
 msgid "Place Graph(s) on Tree"
-msgstr ""
+msgstr "Novietot grafiku(s) uz koka"
 
 #: aggregate_graphs.php:566 graphs.php:1330
 msgid "Graph Items [new]"
@@ -371,17 +371,17 @@ msgstr ""
 #: aggregate_graphs.php:670 aggregate_graphs.php:677 lib/html_reports.php:1165
 #: lib/html_reports.php:1170 utilities.php:1363
 msgid "Details"
-msgstr ""
+msgstr "Detalizētāka informācija"
 
 #: aggregate_graphs.php:671 graphs_new.php:771 lib/html_reports.php:1165
 #: support.php:269
 msgid "Items"
-msgstr ""
+msgstr "Elementi"
 
 #: aggregate_graphs.php:672 aggregate_graphs.php:678 lib/html.php:1991
 #: lib/html.php:2895 lib/html_reports.php:1165
 msgid "Preview"
-msgstr ""
+msgstr "Priekšskatījums"
 
 #: aggregate_graphs.php:681
 msgid "Aggregate Graphs Accessed does not Exist"
@@ -414,7 +414,7 @@ msgstr ""
 
 #: aggregate_graphs.php:792 graph.php:564 graphs.php:1677
 msgid "RRDtool Command:"
-msgstr ""
+msgstr "RRDtool komanda:"
 
 #: aggregate_graphs.php:794 graph.php:573 graphs.php:1681
 msgid "Not Checked"
@@ -440,7 +440,7 @@ msgstr ""
 #: aggregate_graphs.php:1015 aggregate_templates.php:522 graphs.php:1135
 #: lib/api_aggregate.php:1725
 msgid "Total"
-msgstr ""
+msgstr "Kopā"
 
 #: aggregate_graphs.php:1019 aggregate_templates.php:526 graphs.php:1137
 msgid "All Items"
@@ -448,13 +448,13 @@ msgstr ""
 
 #: aggregate_graphs.php:1042 graphs.php:1692 lib/api_aggregate.php:1891
 msgid "Graph Configuration"
-msgstr ""
+msgstr "Grafika iestatījumi"
 
 #: aggregate_graphs.php:1092 automation_graph_rules.php:551
 #: automation_graph_rules.php:566 automation_graph_rules.php:582
 #: automation_tree_rules.php:394 automation_tree_rules.php:544
 msgid "Show"
-msgstr ""
+msgstr "Rādīt"
 
 #: aggregate_graphs.php:1094
 msgid "Hide Item Details"
@@ -617,7 +617,7 @@ msgstr "Notīrīt filtrus"
 #: aggregate_graphs.php:1359 aggregate_graphs.php:1694 graphs.php:1215
 #: lib/api_automation.php:593 user_admin.php:1035 user_group_admin.php:833
 msgid "Graph Title"
-msgstr ""
+msgstr "Grafika nosaukums"
 
 #: aggregate_graphs.php:1360 aggregate_graphs.php:1695
 #: automation_graph_rules.php:893 automation_tree_rules.php:935
@@ -639,7 +639,7 @@ msgstr ""
 #: aggregate_graphs.php:1362 aggregate_graphs.php:1697 graph_templates.php:956
 #: graph_view.php:750 graph_view.php:763 graphs.php:2315
 msgid "Size"
-msgstr ""
+msgstr "Izmērs"
 
 #: aggregate_graphs.php:1378 aggregate_templates.php:711
 #: automation_tree_rules.php:689 cdef.php:919 color.php:726 color.php:728
@@ -672,7 +672,7 @@ msgstr "Jā"
 
 #: aggregate_graphs.php:1384 graphs.php:2359 lib/api_automation.php:620
 msgid "No Graphs Found"
-msgstr ""
+msgstr "Nav atrasts neviens grafiks"
 
 #: aggregate_graphs.php:1577
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
@@ -740,7 +740,7 @@ msgstr "Jebkuru"
 #: user_admin.php:2806 user_group_admin.php:2173 user_group_admin.php:2279
 #: utilities.php:1223
 msgid "None"
-msgstr "Nevienu"
+msgstr "Neviens"
 
 #: aggregate_graphs.php:1694
 msgid "The title for the Aggregate Graphs"
@@ -776,7 +776,7 @@ msgstr ""
 
 #: aggregate_templates.php:315
 msgid "Delete Color Template(s)"
-msgstr ""
+msgstr "Dzēst krāsu veidni(-es)"
 
 #: aggregate_templates.php:355
 #, php-format
@@ -797,7 +797,7 @@ msgstr ""
 #: include/global_arrays.php:932 include/global_arrays.php:996
 #: lib/installer.php:2452 user_admin.php:2902 user_group_admin.php:2375
 msgid "Templates"
-msgstr ""
+msgstr "Veidnes"
 
 #: aggregate_templates.php:624 cdef.php:787 color.php:558
 #: color_templates.php:564 gprint_presets.php:285 graph_templates.php:728
@@ -807,7 +807,7 @@ msgstr "Satur grafikus"
 
 #: aggregate_templates.php:693 color_templates.php:642
 msgid "Template Title"
-msgstr ""
+msgstr "Veidnes nosaukums"
 
 #: aggregate_templates.php:694
 msgid "Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate."
@@ -819,7 +819,7 @@ msgstr ""
 #: gprint_presets.php:397 graph_templates.php:933 host_templates.php:846
 #: vdef.php:895
 msgid "Deletable"
-msgstr ""
+msgstr "Dzēšams"
 
 #: aggregate_templates.php:695 cdef.php:903 color.php:704 data_queries.php:1091
 #: data_queries.php:1372 gprint_presets.php:402 graph_templates.php:938
@@ -831,7 +831,7 @@ msgstr ""
 #: include/global_arrays.php:1264 include/global_form.php:1414
 #: include/global_form.php:1649 lib/html_reports.php:851 tree.php:1379
 msgid "Graph Template"
-msgstr ""
+msgstr "Grafika veidne"
 
 #: aggregate_templates.php:718
 msgid "No Aggregate Templates Found"
@@ -843,82 +843,84 @@ msgstr ""
 
 #: auth_2fa.php:115
 msgid "2FA Verification"
-msgstr ""
+msgstr "2 faktoru autentifikācijas pārbaude"
 
 #: auth_2fa.php:115
 msgid "2nd Factor Authentication"
-msgstr ""
+msgstr "Otrā faktora autentifikācija"
 
 #: auth_2fa.php:115
 msgid "Enter your token"
-msgstr ""
+msgstr "Ievadiet savu marķieri"
 
 #: auth_2fa.php:124 auth_2fa.php:127
 msgid "Token"
-msgstr ""
+msgstr "Marķieris"
 
 #: auth_2fa.php:139
 msgid "Verify"
-msgstr ""
+msgstr "Pārbaudīt"
 
 #: auth_changepassword.php:130
 msgid "You cannot use a previously entered password!"
-msgstr ""
+msgstr "Jūs nevarat izmantot iepriekš ievadītu paroli!"
 
 #: auth_changepassword.php:137
 msgid "Your new passwords do not match, please retype."
-msgstr ""
+msgstr "Jūsu jaunās paroles nesakrīt. Lūdzu, ievadiet vēlreiz."
 
 #: auth_changepassword.php:144
 msgid "Your current password is not correct. Please try again."
-msgstr ""
+msgstr "Jūsu pašreizējā parole nav pareiza. Lūdzu, mēģiniet vēlreiz."
 
 #: auth_changepassword.php:151
 msgid "Your new password cannot be the same as the old password. Please try again."
 msgstr ""
+"Jūsu jaunā parole nevar būt tāda pati kā vecā parole. Lūdzu, mēģiniet "
+"vēlreiz."
 
 #: auth_changepassword.php:280
 msgid "Forced password change"
-msgstr ""
+msgstr "Piespiedu paroles maiņa"
 
 #: auth_changepassword.php:284
 msgid "Password requirements include:"
-msgstr ""
+msgstr "Paroles prasībās ietilpst:"
 
 #: auth_changepassword.php:288
 #, php-format
 msgid "Must be at least %d characters in length"
-msgstr ""
+msgstr "Jābūt vismaz %d rakstzīmēm garai"
 
 #: auth_changepassword.php:292
 msgid "Must include mixed case"
-msgstr ""
+msgstr "Jāsatur jaukts reģistrs"
 
 #: auth_changepassword.php:296
 msgid "Must include at least 1 number"
-msgstr ""
+msgstr "Jāsatur vismaz 1 numurs"
 
 #: auth_changepassword.php:300
 msgid "Must include at least 1 special character"
-msgstr ""
+msgstr "Jāsatur vismaz 1 īpašā rakstzīme"
 
 #: auth_changepassword.php:304
 #, php-format
 msgid "Cannot be reused for %d password changes"
-msgstr ""
+msgstr "Nevar atkārtoti izmantot līdz %d paroles maiņām"
 
 #: auth_changepassword.php:314
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr ""
+msgstr "Lūdzu, ievadiet savu pašreizējo paroli un jauno<br>Cacti paroli."
 
 #: auth_changepassword.php:316
 msgid "Please enter your new Cacti password."
-msgstr ""
+msgstr "Lūdzu, ievadiet savu jauno Cacti paroli."
 
 #: auth_changepassword.php:319 include/global_form.php:1566
 #: lib/functions.php:3230 lib/html.php:2509 lib/html.php:3151
 msgid "Change Password"
-msgstr ""
+msgstr "Mainīt paroli"
 
 #: auth_changepassword.php:330 include/global_settings.php:1773
 #: lib/functions.php:4855
@@ -927,15 +929,15 @@ msgstr "Lietotājvārds"
 
 #: auth_changepassword.php:333
 msgid "Current password"
-msgstr ""
+msgstr "Pašreizējā parole"
 
 #: auth_changepassword.php:338
 msgid "New password"
-msgstr ""
+msgstr "Jaunā parole"
 
 #: auth_changepassword.php:342
 msgid "Confirm new password"
-msgstr ""
+msgstr "Atkārtot jauno paroli"
 
 #: auth_changepassword.php:347 auth_profile.php:747 graphs_new.php:401
 #: lib/html_form.php:1294 lib/html_form.php:1303 lib/html_form.php:1345
@@ -946,15 +948,15 @@ msgstr "Saglabāt"
 
 #: auth_changepassword.php:364 user_admin.php:2066
 msgid "Password Too Short"
-msgstr ""
+msgstr "Parole par īsu"
 
 #: auth_changepassword.php:392 user_admin.php:2087
 msgid "Password Validation Passes"
-msgstr ""
+msgstr "Paroles prasības pārbaude izturēta"
 
 #: auth_changepassword.php:405 user_admin.php:2100
 msgid "Passwords do Not Match"
-msgstr ""
+msgstr "Paroles nesakrīt"
 
 #: auth_changepassword.php:409 user_admin.php:2103
 msgid "Passwords Match"
@@ -972,12 +974,12 @@ msgstr ""
 #: auth_login.php:162 auth_login.php:488
 #, php-format
 msgid "LDAP Search Error: %s"
-msgstr ""
+msgstr "LDAP meklēšanas kļūda: %s"
 
 #: auth_login.php:188 auth_login.php:592
 #, php-format
 msgid "LDAP Error: %s"
-msgstr ""
+msgstr "LDAP kļūda: %s"
 
 #: auth_login.php:304 auth_login.php:582
 #, php-format
@@ -1351,7 +1353,7 @@ msgstr "Statuss"
 
 #: automation_devices.php:287
 msgid "Last Check"
-msgstr ""
+msgstr "Pēdējā pārbaude"
 
 #: automation_devices.php:306 automation_devices.php:640
 msgid "Not Detected"
@@ -1401,6 +1403,7 @@ msgstr ""
 #: support.php:414 user_admin.php:2358 utilities.php:387 utilities.php:1730
 #: utilities.php:1827 utilities.php:1835 utilities.php:1838 utilities.php:1841
 #: utilities.php:1847 utilities.php:2076
+#, fuzzy
 msgid "N/A"
 msgstr "Nav piemērojams"
 
@@ -1410,7 +1413,7 @@ msgstr "Nav piemērojams"
 #: graph_templates.php:38 graphs.php:66 host_templates.php:36
 #: include/global_arrays.php:1545 sites.php:29 vdef.php:30
 msgid "Duplicate"
-msgstr ""
+msgstr "Dublēt"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:41
@@ -1762,7 +1765,7 @@ msgstr ""
 #: include/global_arrays.php:699 pollers.php:944
 #, php-format
 msgid "%d Minute"
-msgstr "%d minūte"
+msgstr "%d minūte"
 
 #: automation_networks.php:529 automation_networks.php:530
 #: automation_networks.php:531 automation_networks.php:532
@@ -1784,7 +1787,7 @@ msgstr "%d minūte"
 #: include/global_settings.php:2588 pollers.php:945 pollers.php:946
 #, php-format
 msgid "%d Minutes"
-msgstr "%d minūtes"
+msgstr "%d minūtes"
 
 #: automation_networks.php:533 include/global_arrays.php:706
 #: include/global_arrays.php:716 include/global_arrays.php:1357
@@ -1852,7 +1855,7 @@ msgstr ""
 
 #: automation_networks.php:573
 msgid "Notification Settings"
-msgstr ""
+msgstr "Paziņojuma iestatījumi"
 
 #: automation_networks.php:578
 msgid "Notification Enabled"
@@ -2227,7 +2230,7 @@ msgstr "Atsvaidzināt"
 #: pollers.php:943
 #, php-format
 msgid "%d Seconds"
-msgstr "%d sekundes"
+msgstr "%d sekundes"
 
 #: automation_networks.php:1232
 msgid "Clear Filtered"
@@ -2385,7 +2388,7 @@ msgstr ""
 
 #: automation_snmp.php:566
 msgid "none"
-msgstr "Nevienu"
+msgstr "Neviens"
 
 #: automation_snmp.php:581 automation_templates.php:525 cdef.php:620
 #: color_templates.php:111 data_queries.php:755 data_queries.php:862
@@ -4925,7 +4928,7 @@ msgstr ""
 
 #: graph_xport.php:147 graph_xport.php:237 support.php:173 utilities.php:360
 msgid "Date"
-msgstr ""
+msgstr "Datums"
 
 #: graph_xport.php:156
 msgid "Summary Details"
@@ -6633,7 +6636,7 @@ msgstr "Vadība"
 #: include/global_arrays.php:921 sites.php:476 sites.php:491 sites.php:571
 #: tree.php:506 tree.php:1772
 msgid "Sites"
-msgstr ""
+msgstr "Vietnes"
 
 #: include/global_arrays.php:922 include/global_arrays.php:1133 tree.php:1637
 #: tree.php:1652 tree.php:1714 user_admin.php:1577 user_admin.php:2985
@@ -11373,7 +11376,7 @@ msgstr ""
 
 #: include/global_settings.php:2268 include/global_settings.php:2300
 msgid "Proxy Server"
-msgstr ""
+msgstr "Starpniekserveris"
 
 #: include/global_settings.php:2269
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
@@ -16761,7 +16764,7 @@ msgstr ""
 
 #: pollers.php:1037
 msgid "Servers"
-msgstr ""
+msgstr "Serveri"
 
 #: pollers.php:1037
 msgid "The number of script server calls associated with this Data Collector."
@@ -16961,7 +16964,7 @@ msgstr ""
 
 #: sites.php:50
 msgid "Disable Site"
-msgstr ""
+msgstr "Atspējot vietni"
 
 #: sites.php:51
 msgid "Check this box to disable all checks for hosts in this site."
@@ -17009,7 +17012,7 @@ msgstr ""
 
 #: sites.php:90 sites.php:585
 msgid "State"
-msgstr ""
+msgstr "Stāvoklis (Valsts, Apgabals, Novads, Reģions?)"
 
 #: sites.php:91
 msgid "The state for the Site."
@@ -18841,12 +18844,12 @@ msgstr ""
 #: utilities.php:1824
 #, php-format
 msgid "%d minutes"
-msgstr "%d minūtes"
+msgstr "%d minūtes"
 
 #: utilities.php:1824
 #, php-format
 msgid "%d seconds"
-msgstr "%d sekundes"
+msgstr "%d sekundes"
 
 #: utilities.php:1825
 #, php-format
