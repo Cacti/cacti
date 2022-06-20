@@ -706,6 +706,17 @@ function install_file_paths() {
 			'win32' => 'c:/spine/bin/spine.exe'
 		));
 
+	// Workaround to support *BSD systems
+	if ($config['cacti_server_os'] == 'unix') {
+		$paths = array('/usr/local/spine/bin/spine', '/usr/local/bin/spine');
+		foreach($paths as $path) {
+			if (file_exists($path)) {
+				$input['path_spine']['default'] = $path;
+				break;
+			}
+		}
+	}
+
 	$input['path_spine_config'] = $settings['path']['path_spine_config'];
 
 	/* log file path */
