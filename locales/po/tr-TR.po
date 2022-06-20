@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-06-11 03:50+0000\n"
+"PO-Revision-Date: 2022-06-21 05:25+0000\n"
 "Last-Translator: San IPE <sanipe1949@krunsea.com>\n"
 "Language-Team: Turkish <http://translate.cacti.net/projects/cacti/core/tr/>\n"
 "Language: tr-TR\n"
@@ -510,7 +510,7 @@ msgstr "Grafik Eşleştirme"
 #: utilities.php:685 utilities.php:977 utilities.php:1257 utilities.php:1974
 #: utilities.php:2225 vdef.php:708
 msgid "Search"
-msgstr "Arama"
+msgstr "Ara"
 
 #: aggregate_graphs.php:1311 aggregate_graphs.php:1354
 #: aggregate_graphs.php:1614 color_templates.php:644 data_sources.php:1620
@@ -593,7 +593,6 @@ msgstr "Git"
 #: user_group_admin.php:2397 user_group_admin.php:2480
 #: user_group_admin.php:2563 utilities.php:284 utilities.php:637
 #: utilities.php:968 utilities.php:1248 utilities.php:2011 utilities.php:2273
-#, fuzzy
 msgid "Set/Refresh Filters"
 msgstr "Filtreleri Ayarla / Yenile"
 
@@ -1829,9 +1828,11 @@ msgid "Subnet Range"
 msgstr "Alt ağ aralığı"
 
 #: automation_networks.php:472
-#, fuzzy
 msgid "Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*"
-msgstr "Virgülle ayrılmış geçerli Ağ Aralıklarını girin. Bir IP adresi, 192.168.1.0/24 veya 192.168.1.0/255.255.255.0 gibi bir Ağ aralığı veya 192.168. * Gibi joker karakterleri kullanabilirsiniz."
+msgstr ""
+"Virgülle ayrılmış geçerli ağ aralıkları giriniz. Bir IP adresi için 192.168.1"
+".0/24 veya 192.168.1.0/255.255.255.0 gibi bir ağ aralığı veya 192.168.*.* "
+"gibi joker karakterler kullanabilirsiniz."
 
 #: automation_networks.php:481
 #, fuzzy
@@ -2125,9 +2126,8 @@ msgid "Months of Year"
 msgstr "Yılın ayları"
 
 #: automation_networks.php:657
-#, fuzzy
 msgid "What Months(s) of the Year will this Network Range be discovered."
-msgstr "Bu Ağ Aralığının hangi Aylarda Ayları keşfedilecek?"
+msgstr "Bu ağ aralığı, yılın hangi ay(lar)ında keşfedilecek."
 
 #: automation_networks.php:659 include/global_arrays.php:1786
 msgid "January"
@@ -2182,9 +2182,8 @@ msgid "Days of Month"
 msgstr "Ayın Günleri"
 
 #: automation_networks.php:678
-#, fuzzy
 msgid "What Day(s) of the Month will this Network Range be discovered."
-msgstr "Bu Ağ Aralığı hangi Ayın Gününde Bulunacak?"
+msgstr "Bu ağ aralığı ayın hangi gününde/günlerinde keşfedilecek."
 
 #: automation_networks.php:679 automation_networks.php:691
 msgid "Last"
@@ -2316,9 +2315,8 @@ msgid "every X Days."
 msgstr "Her X günde."
 
 #: automation_networks.php:927 automation_networks.php:944
-#, fuzzy
 msgid "every X."
-msgstr "her X"
+msgstr "her X."
 
 #: automation_networks.php:944
 #, fuzzy
@@ -2460,7 +2458,7 @@ msgstr "isim"
 #: automation_snmp.php:294
 #, fuzzy
 msgid "Automation SNMP Options has been Duplicated."
-msgstr "Otomasyon SNMP Seçenekleri"
+msgstr "SNMP Otomasyon Seçenekleri Çoğaltıldı."
 
 #: automation_snmp.php:296
 #, fuzzy
@@ -3404,9 +3402,8 @@ msgid "Delete Check"
 msgstr "Kontrolü Sil"
 
 #: data_debug.php:52
-#, fuzzy
 msgid "Data Source debug started."
-msgstr "Veri Kaynağı Hata Ayıklama"
+msgstr "Veri Kaynağı hata ayıklaması başladı."
 
 #: data_debug.php:55
 #, fuzzy
@@ -4321,7 +4318,7 @@ msgstr "Veri Kaynağı Başına %s KByte"
 #: include/global_arrays.php:1374 include/global_settings.php:1560
 #, php-format
 msgid "%d Years"
-msgstr "%d Yıllar"
+msgstr "%d Yıl"
 
 #: data_source_profiles.php:806
 msgid "1 Year"
@@ -4329,9 +4326,9 @@ msgstr "1 Yıl"
 
 #: data_source_profiles.php:815 include/global_arrays.php:727
 #: include/global_arrays.php:1368 rrdcleaner.php:521
-#, fuzzy, php-format
+#, php-format
 msgid "%d Month"
-msgstr "% d Ay"
+msgstr "%d Ay"
 
 #: data_source_profiles.php:815 include/global_arrays.php:728
 #: include/global_arrays.php:729 include/global_arrays.php:730
@@ -4339,9 +4336,9 @@ msgstr "% d Ay"
 #: include/global_arrays.php:1370 include/global_arrays.php:1371
 #: include/global_arrays.php:1372 rrdcleaner.php:522 rrdcleaner.php:523
 #: rrdcleaner.php:524
-#, fuzzy, php-format
+#, php-format
 msgid "%d Months"
-msgstr "% d Ay"
+msgstr "%d Ay"
 
 #: data_source_profiles.php:824 include/global_arrays.php:673
 #: include/global_arrays.php:724 include/global_arrays.php:1366
@@ -4353,9 +4350,9 @@ msgstr "% d Hafta"
 #: data_source_profiles.php:824 include/global_arrays.php:725
 #: include/global_arrays.php:726 include/global_arrays.php:1367
 #: rrdcleaner.php:519 rrdcleaner.php:520
-#, fuzzy, php-format
+#, php-format
 msgid "%d Weeks"
-msgstr "% d Hafta"
+msgstr "%d Hafta"
 
 #: data_source_profiles.php:833 include/global_arrays.php:672
 #: include/global_arrays.php:711 include/global_arrays.php:721
@@ -4635,14 +4632,12 @@ msgid "Edit Data Template."
 msgstr "Veri Şablonunu Düzenle."
 
 #: data_sources.php:860
-#, fuzzy
 msgid "Disable Data Source."
-msgstr "Veri Kaynağını Devre Dışı Bırak"
+msgstr "Veri Kaynağını devre dışı bırak."
 
 #: data_sources.php:860
-#, fuzzy
 msgid "Enable Data Source."
-msgstr "Veri Kaynağını Etkinleştir"
+msgstr "Veri Kaynağını etkinleştir."
 
 #: data_sources.php:924
 #, fuzzy
@@ -5681,9 +5676,8 @@ msgid "Click 'Continue' to create an Aggregate Graph from the selected Graph(s).
 msgstr "Seçilen Grafiklerden bir Grafik Oluşturmak için &#39;Devam Et&#39;i tıklayın."
 
 #: graphs.php:1011
-#, fuzzy
 msgid "The following Data Sources are in use by these Graphs:"
-msgstr "Aşağıdaki Veri Kaynakları bu Grafikler tarafından kullanılıyor."
+msgstr "Aşağıdaki Veri Kaynakları bu Grafikler tarafından kullanılmaktadır:"
 
 #: graphs.php:1070
 msgid "Please confirm"
@@ -5735,9 +5729,9 @@ msgid "Edit Graph Template."
 msgstr "Grafik Şablonu Düzenle."
 
 #: graphs.php:1537
-#, fuzzy, php-format
+#, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "Veri Kaynakları [ %s]"
+msgstr "Veri Kaynağını düzenle: '%s'."
 
 #: graphs.php:1544
 #, fuzzy
@@ -5750,9 +5744,8 @@ msgid "Lock Graph."
 msgstr "Grafiği Kilitle."
 
 #: graphs.php:1549
-#, fuzzy
 msgid "View Timespans."
-msgstr "Zaman Süreci"
+msgstr "Zaman aralıklarını görüntüleyin."
 
 #: graphs.php:1578
 #, fuzzy
@@ -5970,9 +5963,8 @@ msgid "Sync to Device Template"
 msgstr "Aygıt Şablonuyla Senkronize Et"
 
 #: host.php:117
-#, fuzzy
 msgid "Data Query Re-indexed."
-msgstr "Veri Sorgu Dizini"
+msgstr "Veri Sorgusu yeniden indekslendi."
 
 #: host.php:125
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
@@ -5983,18 +5975,16 @@ msgid "Device Debugging Enabled for Device."
 msgstr ""
 
 #: host.php:151
-#, fuzzy
 msgid "Device Debugging Disabled for Device."
-msgstr "Cihaz Devre Dışı"
+msgstr "Cihaz için Cihaz Hata Ayıklama devre dışı bırakıldı."
 
 #: host.php:159
 msgid "Poller Cache for Device Refreshed."
 msgstr ""
 
 #: host.php:161
-#, fuzzy
 msgid "ERROR: Invalid Device ID."
-msgstr "HATA: Cihaz ["
+msgstr "HATA: Geçersiz Cihaz Kimliği."
 
 #: host.php:201
 #, fuzzy, php-format
@@ -6418,9 +6408,8 @@ msgid "Created"
 msgstr "Oluştur"
 
 #: host.php:1812
-#, fuzzy
 msgid "The date this device wasadded to the database"
-msgstr "Bu Ağacın en son düzenlendiği tarih."
+msgstr "Bu cihazın veritabanına eklendiği tarih"
 
 #: host_templates.php:37
 #, fuzzy
@@ -6873,9 +6862,10 @@ msgid "You are not allowed to change your password."
 msgstr "Şifrenizi değiştiremezsiniz."
 
 #: include/global_arrays.php:300
-#, fuzzy
 msgid "Unable to determine size of password field, please check permissions of db user"
-msgstr "Şifre alanının büyüklüğü belirlenemiyor, lütfen db kullanıcısının izinlerini kontrol edin."
+msgstr ""
+"Şifre alanının boyutu belirlenemiyor, lütfen db kullanıcısının izinlerini "
+"kontrol edin."
 
 #: include/global_arrays.php:303
 #, fuzzy
@@ -7333,7 +7323,7 @@ msgstr "Her% 1 günde"
 #: include/global_settings.php:1559 rrdcleaner.php:525
 #, php-format
 msgid "%d Year"
-msgstr "%d yıl"
+msgstr "%d Yıl"
 
 #: include/global_arrays.php:754
 #, fuzzy
@@ -10447,9 +10437,8 @@ msgid "The Field Name that shall be used for this Rule Item."
 msgstr "Bu Kural Öğesi için kullanılacak Alan Adı."
 
 #: include/global_form.php:2124 include/global_form.php:2166
-#, fuzzy
 msgid "Operator."
-msgstr "Operatör"
+msgstr "Operatör."
 
 #: include/global_form.php:2131 include/global_form.php:2173
 #: include/global_form.php:2316
@@ -10464,9 +10453,8 @@ msgstr "Eşleştirilecek desen."
 
 #: include/global_form.php:2140 include/global_form.php:2182
 #: include/global_form.php:2333
-#, fuzzy
 msgid "Sequence."
-msgstr "Sekans"
+msgstr "Dizi."
 
 #: include/global_form.php:2191 include/global_form.php:2236
 #, fuzzy
@@ -10834,9 +10822,9 @@ msgid "Archive directory"
 msgstr "Arşiv dizini"
 
 #: include/global_settings.php:307
-#, fuzzy
 msgid "This is the directory where RRDfiles are <strong>moved</strong> for archiving"
-msgstr "Bu, RRD dosyalarının arşivlenmek üzere <strong>taşındığı</strong> dizindir."
+msgstr ""
+"Bu, RRD dosyalarının arşivlenmek üzere <strong>taşındığı</strong> dizindir."
 
 #: include/global_settings.php:315
 msgid "Log Settings"
@@ -10848,7 +10836,6 @@ msgid "Log Destination"
 msgstr "Hedef Hedefi"
 
 #: include/global_settings.php:321
-#, fuzzy
 msgid "How will Cacti handle event logging."
 msgstr "Cacti olay günlüğünü nasıl idare edecek?"
 
@@ -11321,9 +11308,11 @@ msgid "Default Interface Speed"
 msgstr "Varsayılan Grafik Türü"
 
 #: include/global_settings.php:712
-#, fuzzy
 msgid "If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles."
-msgstr "Eğer Cacti, eğer ifSpeed veya ifHighSpeed ayarlanmamış veya sıfır olmadığından dolayı arayüz hızını belirleyemiyorsa, ortaya çıkan RRD dosyalarında ne kadar değer olmasını istiyorsunuz?"
+msgstr ""
+"Eğer Cacti, ifSpeed veya ifHighSpeed'in ayarlanmaması veya sıfır olması "
+"nedeniyle arayüz hızını belirleyemiyorsa, elde edilen RRD dosyalarında "
+"maksimum değerin ne olmasını istersiniz?"
 
 #: include/global_settings.php:716
 #, fuzzy
@@ -11425,9 +11414,8 @@ msgid "Default SNMPv3 Privacy Protocol for all new Devices."
 msgstr "Tüm yeni cihazlar için varsayılan SNMPv3 Gizlilik Protokolü."
 
 #: include/global_settings.php:783
-#, fuzzy
 msgid "Privacy Passphrase (v3)"
-msgstr "Gizlilik Şifresi (v3)."
+msgstr "Gizlilik Şifresi (v3)"
 
 #: include/global_settings.php:784
 #, fuzzy
@@ -11479,9 +11467,8 @@ msgid "Ping Type"
 msgstr "Ping Türü"
 
 #: include/global_settings.php:845
-#, fuzzy
 msgid "Default Ping type for all new Devices.</i>"
-msgstr "Tüm yeni cihazlar için varsayılan ping tipi."
+msgstr "Tüm yeni Cihazlar için varsayılan Ping türü.</i>"
 
 #: include/global_settings.php:852
 #, fuzzy
@@ -16148,7 +16135,7 @@ msgstr "Rapor Öğesi [yeni Rapor: %s]"
 
 #: lib/html_reports.php:1165
 msgid "Events"
-msgstr "Etkinlikler"
+msgstr "Olaylar"
 
 #: lib/html_reports.php:1167 lib/import.php:2169 user_admin.php:2003
 #, fuzzy
@@ -21442,7 +21429,7 @@ msgstr "Kullanıcı:"
 
 #: utilities.php:1398
 msgid "Script:"
-msgstr "Yazı:"
+msgstr "Betik:"
 
 #: utilities.php:1400
 #, fuzzy
