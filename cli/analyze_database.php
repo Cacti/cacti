@@ -98,7 +98,7 @@ function display_help () {
 
 	print "\nusage: analyze_database.php [-d|--debug]\n\n";
 	print "A utility to recalculate the cardinality of indexes within the Cacti database.\n";
-	print "It's important to periodically run this utility expecially on larger systems.\n\n";
+	print "It's important to periodically run this utility especially on larger systems.\n\n";
 	print "Optional:\n";
 	print "-d | --debug - Display verbose output during execution\n\n";
 }

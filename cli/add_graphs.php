@@ -394,7 +394,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	/* Verify the host's existance */
+	/* Verify the host's existence */
 	if (!isset($hosts[$host_id]) || $host_id == 0) {
 		print "ERROR: Unknown Host ID ($host_id)\n";
 		print "Try --list-hosts\n";
@@ -567,7 +567,7 @@ if (cacti_sizeof($parms)) {
 					$field_name       = $option_value[0];
 				}
 
-				/* check for the input fields existance */
+				/* check for the input fields existence */
 				$field_found = false;
 				if (cacti_sizeof($input_fields)) {
 					foreach ($input_fields as $key => $row) {

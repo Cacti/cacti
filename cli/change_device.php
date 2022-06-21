@@ -298,7 +298,7 @@ if (!cacti_sizeof($host)) {
 	exit(1);
 }
 
-/* merge overriden parameters onto host */
+/* merge overridden parameters onto host */
 $host    = array_merge($host, $overrides);
 
 /* process the various lists into validation arrays */
