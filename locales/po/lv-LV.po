@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-06-21 05:25+0000\n"
+"PO-Revision-Date: 2022-06-21 16:22+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -1361,7 +1361,7 @@ msgstr ""
 
 #: automation_devices.php:324 host.php:1864
 msgid "No Devices Found"
-msgstr ""
+msgstr "Netika atrasta neviena ierīce"
 
 #: automation_devices.php:465
 msgid "Discovery Filters"
@@ -4183,7 +4183,7 @@ msgstr ""
 #: lib/functions.php:4850 lib/html.php:2065 lib/html.php:2097
 #: lib/html_reports.php:841 utilities.php:1074
 msgid "Device"
-msgstr ""
+msgstr "Ierīce"
 
 #: data_sources.php:933
 msgid "Choose the Device that this Data Source belongs to."
@@ -4817,7 +4817,7 @@ msgstr ""
 
 #: graph_view.php:623 graph_view.php:847 include/global_arrays.php:1118
 msgid "View Graphs"
-msgstr ""
+msgstr "Skatīt grafikus"
 
 #: graph_view.php:625
 msgid "Add to a Report"
@@ -5576,7 +5576,7 @@ msgstr ""
 #: host.php:1660 lib/api_automation.php:173 lib/api_automation.php:1117
 #: lib/html_utility.php:942 pollers.php:49
 msgid "Recovering"
-msgstr ""
+msgstr "Atgūstas"
 
 #: host.php:1661 lib/api_automation.php:174 lib/api_automation.php:1118
 #: lib/html_utility.php:951 lib/plugins.php:1171 lib/plugins.php:1172
@@ -6713,7 +6713,7 @@ msgstr ""
 #: user_admin.php:2278 user_admin.php:2334 user_group_admin.php:674
 #: user_group_admin.php:2541
 msgid "Users"
-msgstr ""
+msgstr "Lietotāji"
 
 #: include/global_arrays.php:961 include/global_arrays.php:2475
 msgid "User Groups"
@@ -9523,7 +9523,7 @@ msgstr ""
 
 #: include/global_settings.php:389 lib/clog_webapi.php:556 utilities.php:654
 msgid "Errors"
-msgstr ""
+msgstr "Kļūdas"
 
 #: include/global_settings.php:395
 msgid "Other Defaults"
@@ -10509,7 +10509,7 @@ msgstr ""
 
 #: include/global_settings.php:1425 support.php:51
 msgid "Summary"
-msgstr ""
+msgstr "Kopsavilkums"
 
 #: include/global_settings.php:1426
 msgid "Detailed"
@@ -12428,7 +12428,7 @@ msgstr ""
 #: lib/clog_webapi.php:293 utilities.php:723 utilities.php:1068
 #: utilities.php:1274 utilities.php:1354 utilities.php:2050 utilities.php:2257
 msgid "Entries"
-msgstr ""
+msgstr "Ieraksti"
 
 #: lib/clog_webapi.php:495 utilities.php:597
 msgid "File"
@@ -13111,7 +13111,7 @@ msgstr ""
 
 #: lib/html.php:470
 msgid "Edit Device"
-msgstr ""
+msgstr "Rediģēt ierīci"
 
 #: lib/html.php:485
 msgid "Kill Spikes in Graphs"
@@ -14526,7 +14526,7 @@ msgstr ""
 
 #: lib/installer.php:1805
 msgid "Warning"
-msgstr ""
+msgstr "Brīdinājums"
 
 #: lib/installer.php:1835
 msgid "PHP - Module Support (Required)"
@@ -14546,7 +14546,7 @@ msgstr ""
 
 #: lib/installer.php:1843 lib/installer.php:1873 plugins.php:40 plugins.php:354
 msgid "Installed"
-msgstr ""
+msgstr "Uzstādīts"
 
 #: lib/installer.php:1843
 msgid "Required"
@@ -16502,7 +16502,7 @@ msgstr ""
 
 #: pollers.php:100
 msgid "Processes"
-msgstr ""
+msgstr "Procesi"
 
 #: pollers.php:101
 msgid "The number of Data Collector processes to use to spawn."
@@ -16846,7 +16846,7 @@ msgstr ""
 
 #: rrdcleaner.php:427
 msgid "Total Size [MB]:"
-msgstr ""
+msgstr "Kopējais izmērs [MB]:"
 
 #: rrdcleaner.php:429
 msgid "Last Scan:"
