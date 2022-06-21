@@ -1222,7 +1222,8 @@ $user_auth_realm_filenames = array(
 	'aggregate_graphs.php' => 5,
 	'aggregate_items.php' => 5,
 	'spikekill.php' => 1043,
-	'permission_denied.php' => -1
+	'permission_denied.php' => -1,
+	'help.php' => -1
 );
 
 $hash_type_codes = array(
@@ -2529,6 +2530,12 @@ $navigation = array(
 		'title' => __('About Cacti'),
 		'mapping' => '',
 		'url' => 'about.php',
+		'level' => '1'
+	),
+	'help.php:' => array(
+		'title' => __('Cacti Help'),
+		'mapping' => '',
+		'url' => 'help.php',
 		'level' => '1'
 	),
 	'templates_export.php:' => array(

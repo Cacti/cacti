@@ -86,12 +86,7 @@ if ($config['cacti_server_os'] == 'unix') {
 
 $help_anchor = '';
 if ($help != '') {
-	if (file_exists($config['base_path'] . '/docs/' . $help)) {
-		$help_anchor = '<a style="padding:2px" target="_blank" href="' . $config['url_path'] . 'docs/' . $help . '" class="far fa-question-circle" title="' . __esc('Cacti Install Help') . '"></a>';
-	} else {
-		$help = str_replace('.html', '.md', $help);
-		$help_anchor = '<a style="padding:2px" target="_blank" href="https://docs.cacti.net/' . $help . '" class="far fa-question-circle" title="' . __esc('Cacti Install Help') . '"></a>';
-	}
+	$help_anchor = '<a style="padding:2px" href="#" data-page="' . $help . '" title="' . __esc('Cacti Install Help') . '" class="helpPage"><i class="far fa-question-circle" title="' . __esc('Cacti Install Help') . '"></i></a>';
 }
 
 ?>

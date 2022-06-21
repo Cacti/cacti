@@ -762,6 +762,11 @@ function applySkin() {
 
 	applySelectorVisibilityAndActions();
 
+	$('.helpPage').off('click').on('click', function(event) {
+		event.stopPropagation();
+		getCactiHelp($(this).attr('data-page'));
+	});
+
 	if (typeof themeReady == 'function') {
 		themeReady();
 	}
@@ -1360,6 +1365,16 @@ function getMainWidth() {
 	}
 
 	return mainWidth;
+}
+
+function getCactiHelp(cactiPage) {
+	var url = urlPath + 'help.php?page=' + cactiPage;
+
+	$.get(url, function(data) {
+		if (data != 'Not Found') {
+			window.open(data, '_blank');
+		}
+	});
 }
 
 function responsiveResizeGraphs(initialize) {
