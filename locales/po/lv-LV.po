@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-20 14:16+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-21 05:25+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2528 lib/html.php:2492
 msgid "About Cacti"
@@ -331,7 +331,7 @@ msgstr "Galamērķa filiāle:"
 
 #: aggregate_graphs.php:527 graphs.php:963
 msgid "Place Graph(s) on Tree"
-msgstr "Novietojiet grafiku(s) uz koka"
+msgstr "Novietot grafiku(s) uz koka"
 
 #: aggregate_graphs.php:569 graphs.php:1330
 msgid "Graph Items [new]"
@@ -355,12 +355,12 @@ msgstr "Apkopotā diagramma neeksistē"
 #: aggregate_graphs.php:676 aggregate_graphs.php:683 lib/html_reports.php:1381
 #: lib/html_reports.php:1383 utilities.php:1928
 msgid "Details"
-msgstr "Detaļas"
+msgstr "Detalizētāka informācija"
 
 #: aggregate_graphs.php:677 graphs_new.php:819 lib/html_reports.php:1381
 #: utilities.php:361
 msgid "Items"
-msgstr "Preces"
+msgstr "Elementi"
 
 #: aggregate_graphs.php:678 aggregate_graphs.php:684 lib/html.php:1973
 #: lib/html_reports.php:1381
@@ -432,7 +432,7 @@ msgstr "Visi ieraksti"
 
 #: aggregate_graphs.php:1048 graphs.php:1689 lib/api_aggregate.php:1875
 msgid "Graph Configuration"
-msgstr "Grafika konfigurācija"
+msgstr "Grafika iestatījumi"
 
 #: aggregate_graphs.php:1098 automation_graph_rules.php:551
 #: automation_graph_rules.php:566 automation_graph_rules.php:582
@@ -832,15 +832,15 @@ msgstr "Jūs nevarat izmantot iepriekš ievadītu paroli!"
 
 #: auth_changepassword.php:137
 msgid "Your new passwords do not match, please retype."
-msgstr "Jūsu jaunās paroles nesakrīt. Lūdzu, ierakstiet vēlreiz."
+msgstr "Jūsu jaunās paroles nesakrīt. Lūdzu, ievadiet vēlreiz."
 
 #: auth_changepassword.php:144
 msgid "Your current password is not correct. Please try again."
-msgstr "Jūsu pašreizējā parole nav pareiza. Lūdzu mēģiniet vēlreiz."
+msgstr "Jūsu pašreizējā parole nav pareiza. Lūdzu, mēģiniet vēlreiz."
 
 #: auth_changepassword.php:151
 msgid "Your new password cannot be the same as the old password. Please try again."
-msgstr "Jūsu jaunā parole nevar būt tāda pati kā vecā parole. Lūdzu mēģiniet vēlreiz."
+msgstr "Jūsu jaunā parole nevar būt tāda pati kā vecā parole. Lūdzu, mēģiniet vēlreiz."
 
 #: auth_changepassword.php:280
 msgid "Forced password change"
@@ -853,24 +853,24 @@ msgstr "Paroles prasībās ietilpst:"
 #: auth_changepassword.php:288
 #, php-format
 msgid "Must be at least %d characters in length"
-msgstr "Jābūt vismaz %d rakstzīmēm"
+msgstr "Jābūt vismaz %d rakstzīmēm garai"
 
 #: auth_changepassword.php:292
 msgid "Must include mixed case"
-msgstr "Jāiekļauj jauktais reģistrs"
+msgstr "Jāsatur jaukts reģistrs"
 
 #: auth_changepassword.php:296
 msgid "Must include at least 1 number"
-msgstr "Jāiekļauj vismaz 1 numurs"
+msgstr "Jāsatur vismaz 1 numurs"
 
 #: auth_changepassword.php:300
 msgid "Must include at least 1 special character"
-msgstr "Jāiekļauj vismaz 1 īpašā rakstzīme"
+msgstr "Jāsatur vismaz 1 īpašā rakstzīme"
 
 #: auth_changepassword.php:304
 #, php-format
 msgid "Cannot be reused for %d password changes"
-msgstr "Nevar atkārtoti izmantot %d paroles maiņai"
+msgstr "Nevar atkārtoti izmantot līdz %d paroles maiņām"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
 #: include/global_form.php:1559 lib/functions.php:3563 lib/html.php:2461
@@ -879,7 +879,7 @@ msgstr "Mainīt paroli"
 
 #: auth_changepassword.php:332
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr "Lūdzu, ievadiet savu pašreizējo paroli un jauno<br> Kaktusu parole."
+msgstr "Lūdzu, ievadiet savu pašreizējo paroli un jauno<br>Cacti paroli."
 
 #: auth_changepassword.php:334
 msgid "Please enter your new Cacti password."
@@ -896,11 +896,11 @@ msgstr "Pašreizējā parole"
 
 #: auth_changepassword.php:350
 msgid "New password"
-msgstr "Jauna parole"
+msgstr "Jaunā parole"
 
 #: auth_changepassword.php:354
 msgid "Confirm new password"
-msgstr "Apstipriniet jauno paroli"
+msgstr "Atkārtot jauno paroli"
 
 #: auth_changepassword.php:358 auth_profile.php:560 graphs_new.php:445
 #: lib/html_form.php:1290 lib/html_form.php:1299 lib/html_graph.php:193
@@ -915,11 +915,11 @@ msgstr "Versija %1$s | %2$s"
 
 #: auth_changepassword.php:380 user_admin.php:1916
 msgid "Password Too Short"
-msgstr "Parole ir pārāk īsa"
+msgstr "Parole par īsu"
 
 #: auth_changepassword.php:386 user_admin.php:1921
 msgid "Password Validation Passes"
-msgstr "Paroles pārbaudes caurlaides"
+msgstr "Paroles prasības pārbaude izturēta"
 
 #: auth_changepassword.php:402 user_admin.php:1935
 msgid "Passwords do Not Match"
@@ -1283,6 +1283,7 @@ msgstr "Iztīriet atklātās ierīces"
 #: user_admin.php:2240 utilities.php:506 utilities.php:948 utilities.php:2322
 #: utilities.php:2444 utilities.php:2452 utilities.php:2455 utilities.php:2461
 #: utilities.php:2480 utilities.php:2714
+#, fuzzy
 msgid "N/A"
 msgstr "Nav piemērojams"
 
@@ -1770,7 +1771,7 @@ msgstr "Ja tiek atrasta ierīce, kas iepriekš pievienota Cacti, atkārtoti pala
 
 #: automation_networks.php:568
 msgid "Notification Settings"
-msgstr "Paziņojumu iestatījumi"
+msgstr "Paziņojuma iestatījumi"
 
 #: automation_networks.php:573
 msgid "Notification Enabled"
@@ -16966,7 +16967,7 @@ msgstr "Ievadiet pilsētu vai apvidu"
 
 #: sites.php:82 sites.php:575
 msgid "State"
-msgstr "Stāvoklis"
+msgstr "Stāvoklis (Valsts, Apgabals, Novads, Reģions?)"
 
 #: sites.php:83
 msgid "The state for the Site."
