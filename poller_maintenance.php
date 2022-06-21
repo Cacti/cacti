@@ -714,7 +714,7 @@ function display_help() {
 	display_version();
 
 	print "\nusage: poller_maintenance.php [--force] [--debug]\n\n";
-	print "Cacti's maintenance poller.  This poller is repsonsible for executing periodic\n";
+	print "Cacti's maintenance poller.  This poller is responsible for executing periodic\n";
 	print "maintenance activities for Cacti including log rotation, deactivating accounts, etc.\n\n";
 	print "Optional:\n";
 	print "    --force   - Force immediate execution, e.g. for testing.\n";

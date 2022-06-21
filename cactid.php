@@ -135,7 +135,7 @@ if (!$foreground) {
 			exit(0);
 		}
 	} else {
-		// On Windows we run in foregroud mode
+		// On Windows we run in foreground mode
 		print '[OK]' . PHP_EOL . '[NOTE] This system does not support forking.' . PHP_EOL;
 	}
 } else {

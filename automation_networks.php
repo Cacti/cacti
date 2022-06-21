@@ -200,7 +200,7 @@ function api_networks_save($post) {
 		$save['sched_type']    = form_input_validate($post['sched_type'], 'sched_type', '^[0-9]+$', false, 3);
 		$save['start_at']      = form_input_validate($post['start_at'], 'start_at', '', false, 3);;
 
-		// accomodate a schedule start change
+		// accommodate a schedule start change
 		if ($post['orig_start_at'] != $post['start_at']) {
 			$save['next_start'] = '0000-00-00';
 		}

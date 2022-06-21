@@ -206,7 +206,7 @@ if ($config['connection'] == 'online') {
 // get number of polling items from the database
 $poller_interval = read_config_option('poller_interval');
 
-// retreive the last time the poller ran
+// retrieve the last time the poller ran
 $poller_lastrun  = read_config_option('poller_lastrun_' . $poller_id);
 
 // collect the system mibs every 4 hours
@@ -230,7 +230,7 @@ if ($cron_interval != 60) {
 // see if the user wishes to use process leveling
 $process_leveling = read_config_option('process_leveling');
 
-// retreive the number of concurrent process settings
+// retrieve the number of concurrent process settings
 if (cacti_sizeof($poller)) {
 	$concurrent_processes = $poller['processes'];
 } else {
@@ -241,7 +241,7 @@ if (!isset($concurrent_processes) || intval($concurrent_processes) < 1) {
 	$concurrent_processes = 1;
 }
 
-// correct for possible poller output not empty occurances
+// correct for possible poller output not empty occurrences
 $ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id,
 	MIN(rrd_next_step) AS next_step,
 	COUNT(DISTINCT rrd_next_step) AS instances
