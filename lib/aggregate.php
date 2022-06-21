@@ -791,13 +791,13 @@ function auto_title($_local_graph_id) {
 
 	cacti_log('title:' . $graph_title, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-	# remove all '- |query_*|' occurences
+	# remove all '- |query_*|' occurrences
 	$pattern = '/-?\s+\|query_\w+\|/';
 	$graph_title = preg_replace($pattern, '', $graph_title);
 
 	cacti_log('title:' . $graph_title, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-	# remove all '- |host_*|' occurences
+	# remove all '- |host_*|' occurrences
 	$pattern = '/-?\s+\|host_\w+\|/';
 	$graph_title = preg_replace($pattern, '', $graph_title);
 

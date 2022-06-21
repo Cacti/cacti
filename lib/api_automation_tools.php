@@ -517,7 +517,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 
 	if (cacti_sizeof($nodes)) {
 		foreach ($nodes as $node) {
-			/* taken from tree.php, funtion item_edit() */
+			/* taken from tree.php, function item_edit() */
 			$current_type = TREE_ITEM_TYPE_HEADER;
 			if ($node['local_graph_id'] > 0) { $current_type = TREE_ITEM_TYPE_GRAPH; }
 			if ($node['host_id'] > 0) { $current_type = TREE_ITEM_TYPE_HOST; }

@@ -500,7 +500,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 	}
 
 	/* check the graph cache and use it if it is valid, otherwise turn over to
-	 * cacti's graphing fucntions.
+	 * cacti's graphing functions.
 	 */
 	if ((read_config_option('boost_png_cache_enable')) && (boost_determine_caching_state())) {
 		$cache_directory = read_config_option('boost_png_cache_directory');
@@ -631,7 +631,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	/* install the boost error handler */
 	set_error_handler('boost_error_handler');
 
-	/* aquire lock in order to prevent race conditions */
+	/* acquire lock in order to prevent race conditions */
 	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
 		usleep(50000);
 	}

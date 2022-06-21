@@ -1239,7 +1239,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				}
 
 				// now skip all items, that are
-				// - explicitely marked as skipped (based on $skipped_items)
+				// - explicitly marked as skipped (based on $skipped_items)
 				// - OR NOT marked as 'totalling' items
 				for ($k=1; $k<=$item_no; $k++) {
 					cacti_log(__FUNCTION__ . ' old skip: ' . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -1786,7 +1786,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 					break;
 			}
 
-			/* values can be overriden in aggregate graph/template */
+			/* values can be overridden in aggregate graph/template */
 			if ($is_edit && isset($current_vals[$item['id']]['t_graph_type_id']) && $current_vals[$item['id']]['t_graph_type_id'] == 'on') {
 				$item['graph_type_id'] = $current_vals[$item['id']]['graph_type_id'];
 			}
@@ -1882,7 +1882,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 /**
  * draw graph configuration form so user can override some graph template parametes
  *
- * @param int $aggregate_template_id - aggregate graph template beeing edited
+ * @param int $aggregate_template_id - aggregate graph template being edited
  * @param int $graph_template_id     - graph template this aggregate template is based on
  */
 function draw_aggregate_template_graph_config($aggregate_template_id, $graph_template_id) {
@@ -1938,7 +1938,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 	html_end_box(false, true);
 
-	/* some javascript do dinamically disable non-overriden fields */
+	/* some javascript do dynamically disable non-overridden fields */
 	?>
 	<script type='text/javascript'>
 
