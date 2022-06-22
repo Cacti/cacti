@@ -4,16 +4,15 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-21 05:25+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-22 16:24+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2528 lib/html.php:2492
 msgid "About Cacti"
 msgstr "Par Cacti"
 
 #: about.php:42
-#, fuzzy
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs."
-msgstr "Cacti ir izstrādāts kā pilnīgs grafiku veidošanas risinājums, pamatojoties uz RRDtool ietvaru. Tās mērķis ir atvieglot tīkla administratora darbu, rūpējoties par visu nepieciešamo informāciju, kas nepieciešama, lai izveidotu jēgpilnus grafikus."
+msgstr "Cacti - pilnvērtīgs grafiskais risinājums, kura pamatā ir RRDtool ietvars. Tā mērķis ir atvieglot tīkla administratora darbu, vizualizējot visu nepieciešamo informāciju ar jēgpilniem grafikiem."
 
 #: about.php:44
 #, php-format
@@ -1107,7 +1106,7 @@ msgstr "Dzēst ierīci"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:939 pollers.php:47
 msgid "Down"
-msgstr "Lejup"
+msgstr "Uz leju"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -1115,7 +1114,7 @@ msgstr "Lejup"
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:945
 msgid "Up"
-msgstr "Augšup"
+msgstr "Uz augšu"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
@@ -1283,9 +1282,8 @@ msgstr "Iztīriet atklātās ierīces"
 #: user_admin.php:2240 utilities.php:506 utilities.php:948 utilities.php:2322
 #: utilities.php:2444 utilities.php:2452 utilities.php:2455 utilities.php:2461
 #: utilities.php:2480 utilities.php:2714
-#, fuzzy
 msgid "N/A"
-msgstr "Nav piemērojams"
+msgstr "Nav atbildes"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
@@ -2258,7 +2256,7 @@ msgstr "Ports"
 
 #: automation_snmp.php:537 include/global_settings.php:725
 msgid "Timeout"
-msgstr "Pārtraukums"
+msgstr "Nesasniedzams"
 
 #: automation_snmp.php:538 include/global_settings.php:733
 msgid "Retries"
@@ -16967,7 +16965,7 @@ msgstr "Ievadiet pilsētu vai apvidu"
 
 #: sites.php:82 sites.php:575
 msgid "State"
-msgstr "Stāvoklis (Valsts, Apgabals, Novads, Reģions?)"
+msgstr "Stāvoklis"
 
 #: sites.php:83
 msgid "The state for the Site."
