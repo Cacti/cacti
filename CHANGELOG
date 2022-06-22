@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#4823: When editing Graph Template Items there are cases where VDEF's are hidden when they should be shown
 -issue#4831: Cactid lacks a default for $database_ssl
 -issue#4837: Add correct path for spine in *BSD systems
+-issue#4840: Web Basic authentication not creating template user
 -feature#4820: Make it possible to only import certain components when importing packages
 -feature#4825: Add update_device.php script to cli folder
 -feature#4827: Move all Help pages to docs.cacti.net if the page is reachable
