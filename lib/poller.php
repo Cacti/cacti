@@ -451,10 +451,10 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 		pi.rrd_path, pi.rrd_name, pi.rrd_num
 		FROM poller_output AS po
 		INNER JOIN poller_item AS pi
-		ON po.local_data_id=pi.local_data_id
-		AND po.rrd_name=pi.rrd_name
+		ON po.local_data_id = pi.local_data_id
+		AND po.rrd_name = pi.rrd_name
 		INNER JOIN data_local AS dl
-		ON dl.id=po.local_data_id
+		ON dl.id = po.local_data_id
 		ORDER BY po.local_data_id
 		$limit");
 
@@ -559,6 +559,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			$rrd_name  = $item['rrd_name'];
 
 			if (isset($rrd_update_array[$rrd_path]['times'][$unix_time])) {
+				/**
+				 * Check to see if we have partial data sources.  If so
+				 * we did not get a full update, so we should not be removing
+				 * those data sources from the $rrd_update_array yet.
+				 */
 				if ($item['rrd_num'] <= cacti_sizeof($rrd_update_array[$rrd_path]['times'][$unix_time])) {
 					$data_ids[] = $item['local_data_id'];
 					$k++;
@@ -596,11 +601,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 
 		/* to much records in poller_output, process in chunks */
 		if ($rows && $remainder == $max_rows) {
-			$rrds_processed += process_poller_output($rrdtool_pipe, $rows < $max_rows ? $rows : $max_rows);
-
 			$running = db_fetch_cell('SELECT COUNT(*)
 				FROM poller_time
 				WHERE end_time = "0000-00-00"');
+
+			$rrds_processed += process_poller_output($rrdtool_pipe, $rows < $max_rows ? $rows : $max_rows);
 
 			if ($running == 0 && !$checked_bad) {
 				// Remove recently deleted items from the poller_output table
