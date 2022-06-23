@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-22 16:24+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-23 03:51+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2528 lib/html.php:2492
 msgid "About Cacti"
@@ -372,11 +372,11 @@ msgstr "Apkopotie grafiki, kuriem piekļūts, nepastāv"
 
 #: aggregate_graphs.php:753
 msgid "Turn Off Graph Debug Mode"
-msgstr "Izslēdziet grafika atkļūdošanas režīmu"
+msgstr "Atspējot grafiku atkļūdošanas režīmu"
 
 #: aggregate_graphs.php:755
 msgid "Turn On Graph Debug Mode"
-msgstr "Ieslēdziet grafika atkļūdošanas režīmu"
+msgstr "Iespējot grafiku atkļūdošanas režīmu"
 
 #: aggregate_graphs.php:761 aggregate_graphs.php:1103
 msgid "Show Item Details"
@@ -405,7 +405,7 @@ msgstr "Nav pārbaudīts"
 
 #: aggregate_graphs.php:800 graph.php:569 graphs.php:1676
 msgid "RRDtool Says:"
-msgstr "RRDtool saka:"
+msgstr "RRDtool ziņo:"
 
 #: aggregate_graphs.php:830
 #, php-format
@@ -2268,15 +2268,15 @@ msgstr "Maksimālais OIDS"
 
 #: automation_snmp.php:540
 msgid "Auth Username"
-msgstr "Auth lietotājvārdu"
+msgstr "Autentifikācijas lietotājvārds"
 
 #: automation_snmp.php:541
 msgid "Auth Password"
-msgstr "Auth parole"
+msgstr "Autentifikācijas parole"
 
 #: automation_snmp.php:542
 msgid "Auth Protocol"
-msgstr "Auth Protocol"
+msgstr "Autentifikācijas protokols"
 
 #: automation_snmp.php:543
 msgid "Priv Passphrase"
@@ -2310,7 +2310,7 @@ msgstr "Neviens"
 #: lib/api_automation.php:1444 lib/html.php:1247 lib/html_reports.php:1744
 #: lib/html_reports.php:1746 tree.php:2087 tree.php:2094 vdef.php:607
 msgid "Move Down"
-msgstr "Pārvietot uz leju"
+msgstr "Pārvietot lejup"
 
 #: automation_snmp.php:579 automation_templates.php:530 cdef.php:627
 #: color_templates.php:117 data_queries.php:795 data_queries.php:902
@@ -2318,7 +2318,7 @@ msgstr "Pārvietot uz leju"
 #: lib/api_automation.php:1450 lib/html.php:1253 lib/html_reports.php:1746
 #: lib/html_reports.php:1748 tree.php:2091 tree.php:2095 vdef.php:613
 msgid "Move Up"
-msgstr "Pārvietot uz augšu"
+msgstr "Pārvietot augšup"
 
 #: automation_snmp.php:593
 msgid "No SNMP Items"
@@ -2450,8 +2450,9 @@ msgid "No Automation Device Templates Found"
 msgstr "Netika atrasta neviena automatizācijas ierīču veidne"
 
 #: automation_tree_rules.php:258
+#, fuzzy
 msgid "Click 'Continue' to delete the following Rule(s)."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu(s) noteikumu(-us)."
+msgstr "Noklikšķiniet 'Turpināt', lai dzēstu norādīto(s) noteikumu(s)."
 
 #: automation_tree_rules.php:265
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Rules."
@@ -2459,7 +2460,7 @@ msgstr "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu(-s) noteikumu(-us)
 
 #: automation_tree_rules.php:394
 msgid "Created Trees"
-msgstr "Izveidoti koki"
+msgstr "Izveidotie koki"
 
 #: automation_tree_rules.php:486
 #, php-format
@@ -2481,15 +2482,15 @@ msgstr "Koka noteikumu atlase [jauns]"
 
 #: automation_tree_rules.php:610
 msgid "Object Selection Criteria"
-msgstr "Objektu atlases kritēriji"
+msgstr "Objekta atlases kritērijs"
 
 #: automation_tree_rules.php:616
 msgid "Tree Creation Criteria"
-msgstr "Koka izveides kritēriji"
+msgstr "Koka izveides kritērijs"
 
 #: automation_tree_rules.php:703
 msgid "Change Leaf Type"
-msgstr "Mainiet lapu veidu"
+msgstr "Mainīt koka lapu tipu"
 
 #: automation_tree_rules.php:706 lib/installer.php:3615 utilities.php:2317
 #: utilities.php:2318 utilities.php:2321 utilities.php:2322
@@ -2516,11 +2517,11 @@ msgstr "Koku noteikumi"
 
 #: automation_tree_rules.php:937
 msgid "Hook into Tree"
-msgstr "Āķis kokā"
+msgstr "Ievietot kokā"
 
 #: automation_tree_rules.php:938
 msgid "At Subtree"
-msgstr "Pie Subtree"
+msgstr "Apakškokā"
 
 #: automation_tree_rules.php:939
 msgid "This Type"
@@ -2531,8 +2532,9 @@ msgid "Using Grouping"
 msgstr "Grupēšanas izmantošana"
 
 #: automation_tree_rules.php:949
+#, fuzzy
 msgid "ROOT"
-msgstr "SAKNE"
+msgstr "ROOT - uz objektu orientēta bibliotēku kopa mērogojamu datu analīzei"
 
 #: automation_tree_rules.php:965
 msgid "No Tree Rules Found"
@@ -2542,17 +2544,19 @@ msgstr "Koku noteikumi netika atrasti"
 #: poller.php:488 poller.php:536 poller.php:552 poller.php:698 poller.php:797
 #: poller_automation.php:53 poller_boost.php:306
 msgid "Cacti System Warning"
-msgstr "Kaktusu sistēmas brīdinājums"
+msgstr "Cacti sistēmas brīdinājums"
 
 #: cactid.php:44
+#, fuzzy
 msgid "WARNING: Cacti Daemon PID["
 msgstr "BRĪDINĀJUMS: Cacti Daemon PID["
 
 #: cactid.php:131
 msgid "Cacti System Notice"
-msgstr "Kaktusu sistēmas paziņojums"
+msgstr "Cacti sistēmas paziņojums"
 
 #: cactid.php:131
+#, fuzzy
 msgid "Notice: Cacti Daemon PID["
 msgstr "Paziņojums: Cacti Daemon PID["
 
@@ -2581,7 +2585,7 @@ msgstr[2] ""
 #: data_templates.php:445 graph_templates.php:382 host_templates.php:276
 #: vdef.php:276
 msgid "Title Format:"
-msgstr "Virsraksta formāts:"
+msgstr "Nosaukuma formāts:"
 
 #: cdef.php:293
 msgid "Duplicate CDEF"
@@ -3152,7 +3156,7 @@ msgstr "Vai RRDfile pastāv?"
 
 #: data_debug.php:710
 msgid "Is the Data Source set as Active?"
-msgstr "Vai datu avots ir iestatīts kā aktīvs?"
+msgstr "Vai datu avots ir iestatīts kā iespējots?"
 
 #: data_debug.php:715
 msgid "Did the poller receive valid data?"
@@ -5559,7 +5563,7 @@ msgstr "Aptaujas laiks"
 
 #: host.php:1764
 msgid "The amount of time it takes to collect data from this Device."
-msgstr "Laiks, kas nepieciešams datu apkopošanai no šīs ierīces."
+msgstr "Laiks, kas nepieciešams datu ievākšanai no šīs ierīces."
 
 #: host.php:1767
 msgid "Current (ms)"
@@ -5730,7 +5734,7 @@ msgstr "Jums nav atļauts piekļūt šai kaktusu sadaļai."
 
 #: include/auth.php:276
 msgid "Installation In Progress"
-msgstr "Notiek instalēšana"
+msgstr "Notiek uzstādīšana"
 
 #: include/auth.php:277
 msgid "Only Cacti Administrators with Install/Upgrade privilege may login at this time"
@@ -5866,7 +5870,7 @@ msgstr "Grafiks nav atrasts. Vai nu tas ir izdzēsts, vai arī jūsu datu bāzei
 
 #: include/global_arrays.php:234
 msgid "SNMPv3 Auth Passphrases must be 8 characters or greater."
-msgstr "SNMPv3 autentifikācijas ieejas frāzēm ir jābūt 8 vai vairāk rakstzīmēm."
+msgstr "SNMPv3 autentifikācijas piekļuves frāzēm ir jābūt 8 vai vairāk rakstzīmēm."
 
 #: include/global_arrays.php:237
 msgid "Some Graphs not updated. Unable to change device for Data Query based Graphs."
@@ -6022,7 +6026,7 @@ msgstr "Ceļa mainīgie šajā lapā tika saglabāti tikai lokāli."
 
 #: include/global_arrays.php:351
 msgid "Report Saved"
-msgstr "Pārskats saglabāts"
+msgstr "Atskaite saglabāta"
 
 #: include/global_arrays.php:354
 msgid "Report Save Failed"
@@ -6262,7 +6266,7 @@ msgstr "Logfile un Syslog/Eventlog"
 
 #: include/global_arrays.php:615
 msgid "Syslog/Eventlog Only"
-msgstr "Tikai Syslog/Eventlog"
+msgstr "Tikai sistēmas/notikumu žurnālus"
 
 #: include/global_arrays.php:624
 msgid "SNMP getNext"
@@ -7040,8 +7044,9 @@ msgid "Send Now"
 msgstr "Sūtīt tagad"
 
 #: include/global_arrays.php:1546
+#, fuzzy
 msgid "Take Ownership"
-msgstr "Pārņemt īpašumā"
+msgstr "Kļūt par īpašnieku"
 
 #: include/global_arrays.php:1550
 msgid "Inline PNG Image"
@@ -9808,7 +9813,7 @@ msgstr "Noklusējuma SNMP v3 drošības līmenis visām jaunajām ierīcēm."
 
 #: include/global_settings.php:662
 msgid "Auth Protocol (v3)"
-msgstr "Auth Protocol (v3)"
+msgstr "Autentifikācijas protokols (v3)"
 
 #: include/global_settings.php:663
 msgid "Default SNMPv3 Authorization Protocol for all new Devices."
@@ -12762,7 +12767,7 @@ msgstr "Neizdevušies lauki: "
 
 #: lib/dsdebug.php:261
 msgid "Data Source is not set as Active"
-msgstr "Datu avots nav iestatīts kā aktīvs"
+msgstr "Datu avots nav iestatīts kā iespējots"
 
 #: lib/dsdebug.php:269
 #, php-format
@@ -15426,7 +15431,7 @@ msgstr "%s ir nepieciešams %s, un tas nav uzstādīts. "
 
 #: lib/plugins.php:681
 msgid "Plugin cannot be installed."
-msgstr "Spraudni nevar instalēt."
+msgstr "Spraudni nevar uzstādīt."
 
 #: lib/plugins.php:1201 lib/plugins.php:1208 plugins.php:479 plugins.php:559
 msgid "Plugins"
@@ -15435,7 +15440,7 @@ msgstr "Spraudņi"
 #: lib/plugins.php:1220 lib/plugins.php:1226
 #, php-format
 msgid "Requires: Cacti >= %s"
-msgstr "Nepieciešams: kaktusi >= %s"
+msgstr "Nepieciešams: Cacti >= %s"
 
 #: lib/plugins.php:1223
 msgid "Legacy Plugin"
@@ -15467,7 +15472,7 @@ msgstr "Problēmas nosūtot ziņojumu “%s” Problēma ar e-pastu Apakšsistē
 #: lib/reports.php:603
 #, php-format
 msgid "Report '%s' Sent Successfully"
-msgstr "Pārskats “%s” ir veiksmīgi nosūtīts"
+msgstr "Atskaite '%s' ir veiksmīgi nosūtīta"
 
 #: lib/reports.php:1071 lib/reports.php:1402
 msgid "(No Graph Template)"
@@ -15487,7 +15492,7 @@ msgstr "Izvēlieties pārskatu, ar kuru saistīt šīs diagrammas. Izlīdzināš
 
 #: lib/reports.php:1853
 msgid "Report:"
-msgstr "Ziņot:"
+msgstr "Atskaite:"
 
 #: lib/reports.php:1861
 msgid "Graph Timespan:"
@@ -15595,7 +15600,7 @@ msgstr "Min"
 
 #: lib/rrd.php:2943
 msgid "Max"
-msgstr "Max"
+msgstr "Maks."
 
 #: lib/rrd.php:2944
 msgid "Last DS"
@@ -15676,8 +15681,9 @@ msgid "RRA Folder"
 msgstr "RRA mape"
 
 #: lib/rrd.php:3573
+#, fuzzy
 msgid "Root"
-msgstr "Sakne"
+msgstr "ROOT - uz objektu orientēta bibliotēku kopa mērogojamu datu analīzei"
 
 #: lib/rrd.php:3681
 msgid "Unknown RRDtool Error"
