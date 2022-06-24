@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#4810: Call to undefined function boost_debug in Cacti log
 -issue#4791: Nectar Aggregate 95th emailed report broken
 -issue#4796: Hint at poller issues when boost fails
+-issue#4803: Net-SNMP Memory Graph Template has Wrong GPRINT
 -issue#4806: Search in tree view unusable on sizeable installations
 -issue#4814: When no guest template is set, login cookies are not properly set
 -issue#4817: Boost when using RRDtool 1.5+ does not need to check last_update time
