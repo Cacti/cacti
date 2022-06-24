@@ -1373,6 +1373,13 @@ function getCactiHelp(cactiPage) {
 	$.get(url, function(data) {
 		if (data != 'Not Found') {
 			window.open(data, '_blank');
+		} else {
+        	sessionMessage   = {
+				message: helpNotFound,
+				level: MESSAGE_LEVEL_ERROR
+			};
+
+			displayMessages();
 		}
 	});
 }

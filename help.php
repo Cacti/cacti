@@ -37,6 +37,6 @@ if (isset_request_var('page')) {
 	} elseif (file_exists($config['base_path'] . '/docs/' . get_request_var('page'))) {
 		print $config['url_path'] . '/docs/' . get_request_var('page');
 	} else {
-		print "Not Found";
+		print 'Not Found';
 	}
 }
