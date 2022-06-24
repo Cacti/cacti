@@ -467,6 +467,7 @@ function install_setup_get_templates() {
 	@ini_set('zlib.output_compression', '0');
 
 	$templates = array(
+		'Apache_Webserver.xml.gz',
 		'Cacti_Stats.xml.gz',
 		'Cisco_Router.xml.gz',
 		'Citrix_NetScaler_VPX.xml.gz',
