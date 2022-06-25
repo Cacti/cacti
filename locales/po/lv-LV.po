@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-06-23 09:52+0000\n"
+"PO-Revision-Date: 2022-06-26 06:53+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -54,9 +54,11 @@ msgid "The users of Cacti"
 msgstr "Cacti lietotāji"
 
 #: about.php:66
-#, fuzzy
 msgid "Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti."
-msgstr "Īpaši ikviens, kurš ir veltījis laiku, lai izveidotu ziņojumu par problēmu vai kā citādi palīdzētu novērst ar kaktusiem saistītas problēmas. Arī ikvienam, kurš ir devis savu ieguldījumu Kaktusi atbalstīšanā."
+msgstr ""
+"Īpaši tiem, kuri veltīja laiku problēmas ziņojuma izveidē vai kā citādi "
+"palīdzēja novērst ar Cacti saistītas problēmas. Kā arī tiem, kas deva savu "
+"ieguldījumu Cacti atbalstīšanā."
 
 #: about.php:71
 msgid "License"
@@ -353,12 +355,12 @@ msgstr "Novietot grafiku(s) uz koka"
 
 #: aggregate_graphs.php:566 graphs.php:1330
 msgid "Graph Items [new]"
-msgstr ""
+msgstr "Grafika elementi [jauns]"
 
 #: aggregate_graphs.php:592 graphs.php:1370
 #, php-format
 msgid "Graph Items [edit: %s]"
-msgstr ""
+msgstr "Grafika elementi [labot: %s]"
 
 #: aggregate_graphs.php:653 data_sources.php:1056 lib/html_reports.php:1164
 #: user_admin.php:2001
@@ -399,7 +401,7 @@ msgstr "Iespējot grafiku atkļūdošanas režīmu"
 
 #: aggregate_graphs.php:755 aggregate_graphs.php:1097
 msgid "Show Item Details"
-msgstr ""
+msgstr "Rādīt elementa informāciju"
 
 #: aggregate_graphs.php:767
 msgid "Aggregate Preview Does Not Exist"
@@ -460,7 +462,7 @@ msgstr "Rādīt"
 
 #: aggregate_graphs.php:1094
 msgid "Hide Item Details"
-msgstr ""
+msgstr "Slēpt elementa informāciju"
 
 #: aggregate_graphs.php:1296
 msgid "Matching Graphs"
@@ -765,8 +767,9 @@ msgid "No Aggregate Graphs Found"
 msgstr ""
 
 #: aggregate_items.php:347
+#, fuzzy
 msgid "Override Values for Graph Item"
-msgstr ""
+msgstr "Ignorēt grafika elementa vērtības"
 
 #: aggregate_items.php:358 lib/api_aggregate.php:1923
 msgid "Override this Value"
@@ -1794,7 +1797,7 @@ msgstr "%d minūtes"
 #: include/global_arrays.php:716 include/global_arrays.php:1357
 #, php-format
 msgid "%d Hour"
-msgstr "%d stunda"
+msgstr "%d stunda"
 
 #: automation_networks.php:534 automation_networks.php:535
 #: automation_networks.php:536 data_source_profiles.php:841
@@ -1816,7 +1819,7 @@ msgstr "%d stunda"
 #: include/global_settings.php:1653
 #, php-format
 msgid "%d Hours"
-msgstr "%d stundas"
+msgstr "%d stundas"
 
 #: automation_networks.php:543
 msgid "Enable this Network Range."
@@ -1900,7 +1903,7 @@ msgstr ""
 
 #: automation_networks.php:616
 msgid "What time will this Network discover item start?"
-msgstr ""
+msgstr "Cikos šis tīkls atklās elementus?"
 
 #: automation_networks.php:624
 msgid "Rerun Every"
@@ -2258,12 +2261,13 @@ msgid "Automation SNMP Options has been Duplicated."
 msgstr ""
 
 #: automation_snmp.php:296
+#, fuzzy
 msgid "Automation Item does not exist.  Can not Duplicate."
-msgstr ""
+msgstr "Automatizācijas vienums neeksistē. Nevar dublēt."
 
 #: automation_snmp.php:360
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr ""
+msgstr "Noklikšķiniet 'Turpināt', lai dzēstu norādīto SNMP opcijas elementu."
 
 #: automation_snmp.php:361
 msgid "SNMP Option:"
@@ -2281,12 +2285,12 @@ msgstr ""
 
 #: automation_snmp.php:369
 msgid "Remove SNMP Item"
-msgstr ""
+msgstr "Noņemt SNMP elementu"
 
 #: automation_snmp.php:436
 #, php-format
 msgid "SNMP Options [edit: %s]"
-msgstr ""
+msgstr "SNMP opcijas [labot: %s]"
 
 #: automation_snmp.php:438
 msgid "SNMP Options [new]"
@@ -2302,7 +2306,7 @@ msgstr ""
 
 #: automation_snmp.php:458 lib/html_reports.php:905
 msgid "Sequence of Item."
-msgstr ""
+msgstr "Elementa secība."
 
 #: automation_snmp.php:500
 #, php-format
@@ -2325,7 +2329,7 @@ msgstr ""
 #: lib/api_automation.php:1384 lib/api_automation.php:1450
 #: lib/html_reports.php:1335 vdef.php:577
 msgid "Item"
-msgstr ""
+msgstr "Elements"
 
 #: automation_snmp.php:542 include/auth.php:327 include/global_settings.php:731
 #: plugins.php:456
@@ -2385,7 +2389,7 @@ msgstr "Darbība"
 #: lib/api_automation.php:1401 lib/api_automation.php:1469
 #, php-format
 msgid "Item#%d"
-msgstr ""
+msgstr "Elements#%d"
 
 #: automation_snmp.php:566
 msgid "none"
@@ -2413,7 +2417,7 @@ msgstr ""
 
 #: automation_snmp.php:640
 msgid "Delete SNMP Option Item"
-msgstr ""
+msgstr "Dzēst SNMP opcijas elementu"
 
 #: automation_snmp.php:709
 msgid "SNMP Rules"
@@ -2475,7 +2479,7 @@ msgstr ""
 
 #: automation_templates.php:291 automation_templates.php:494
 msgid "System Description Match"
-msgstr ""
+msgstr "Sistēmas apraksts sakrīt"
 
 #: automation_templates.php:292
 msgid "This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
@@ -2684,7 +2688,7 @@ msgstr[2] ""
 
 #: cdef.php:342
 msgid "Click 'Continue' to delete the following CDEF Item."
-msgstr ""
+msgstr "Noklikšķiniet 'Turpināt', lai dzēstu norādīto CDEF elementu."
 
 #: cdef.php:343
 #, php-format
@@ -2693,7 +2697,7 @@ msgstr ""
 
 #: cdef.php:350
 msgid "Remove CDEF Item"
-msgstr ""
+msgstr "Noņemt CDEF elementu"
 
 #: cdef.php:420
 msgid "CDEF Preview"
@@ -2706,19 +2710,19 @@ msgstr ""
 
 #: cdef.php:444
 msgid "CDEF Item Type"
-msgstr ""
+msgstr "CDEF elementa tips"
 
 #: cdef.php:445
 msgid "Choose what type of CDEF item this is."
-msgstr ""
+msgstr "Izvēlieties šī CDEF elementa tipu."
 
 #: cdef.php:451
 msgid "CDEF Item Value"
-msgstr ""
+msgstr "CDEF elementa vērtība"
 
 #: cdef.php:452
 msgid "Enter a value for this CDEF item."
-msgstr ""
+msgstr "Ievadiet šī CDEF elementa vērtību."
 
 #: cdef.php:567
 #, php-format
@@ -2734,17 +2738,18 @@ msgid "CDEF Items"
 msgstr ""
 
 #: cdef.php:594 vdef.php:578
+#, fuzzy
 msgid "Item Value"
-msgstr ""
+msgstr "Pozīcijas vērtība"
 
 #: cdef.php:611 vdef.php:597
 #, php-format
 msgid "Item #%d"
-msgstr ""
+msgstr "Elements #%d"
 
 #: cdef.php:689
 msgid "Delete CDEF Item"
-msgstr ""
+msgstr "Dzēst CDEF elementu"
 
 #: cdef.php:755 cdef.php:770 cdef.php:892 include/global_arrays.php:949
 #: include/global_arrays.php:2031
@@ -2822,7 +2827,7 @@ msgstr[2] ""
 
 #: color.php:352
 msgid "Cacti has imported the following items:"
-msgstr ""
+msgstr "Cacti importēja sekojošus elementus:"
 
 #: color.php:366 color.php:569
 msgid "Import Colors"
@@ -2842,7 +2847,7 @@ msgstr ""
 
 #: color.php:381
 msgid "Overwrite Existing Data?"
-msgstr ""
+msgstr "Pārrakstīt esošos datus?"
 
 #: color.php:382
 msgid "Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows."
@@ -2850,15 +2855,15 @@ msgstr ""
 
 #: color.php:385
 msgid "Allow Existing Rows to be Updated?"
-msgstr ""
+msgstr "Atļaut atjaunināt esošās rindas?"
 
 #: color.php:390
 msgid "Required File Format Notes"
-msgstr ""
+msgstr "Nepieciešamā faila formāta piezīmes"
 
 #: color.php:393
 msgid "The file must contain a header row with the following column headings."
-msgstr ""
+msgstr "Failam jāsatur galvenes rinda ar šādiem kolonnas virsrakstiem."
 
 #: color.php:395
 msgid "<strong>name</strong> - The Color Name"
@@ -2888,7 +2893,7 @@ msgstr ""
 
 #: color.php:569 lib/html_form.php:1309 lib/html_form.php:1360
 msgid "Import"
-msgstr ""
+msgstr "Importēt"
 
 #: color.php:570
 msgid "Export Colors"
@@ -2949,13 +2954,13 @@ msgstr ""
 
 #: color_templates.php:73
 msgid "Color Item"
-msgstr ""
+msgstr "Krāsu elements"
 
 #: color_templates.php:94 lib/api_aggregate.php:1805 lib/api_aggregate.php:1808
 #: lib/api_aggregate.php:1813 lib/html.php:1182 lib/html_reports.php:1431
 #, php-format
 msgid "Item # %d"
-msgstr ""
+msgstr "Elements # %d"
 
 #: color_templates.php:133 graph_templates_inputs.php:232
 #: lib/api_aggregate.php:1874 lib/html.php:1285
@@ -3015,7 +3020,7 @@ msgstr ""
 
 #: color_templates.php:356
 msgid "Delete Color Item"
-msgstr ""
+msgstr "Dzēst krāsu elementu"
 
 #: color_templates.php:389
 #, php-format
@@ -3063,17 +3068,17 @@ msgstr ""
 
 #: color_templates_items.php:276
 msgid "Remove Color Item"
-msgstr ""
+msgstr "Noņemt krāsu elementu"
 
 #: color_templates_items.php:345
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template Items [edit Report Item: %s]"
-msgstr ""
+msgstr "Krāsu veidnes elementi [labot pārskata vienumu: %s]"
 
 #: color_templates_items.php:348
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template Items [new Report Item: %s]"
-msgstr ""
+msgstr "Krāsu veidnes elementi [jauns pārskata vienums: %s]"
 
 #: data_debug.php:30
 msgid "Run Check"
@@ -3156,7 +3161,7 @@ msgstr ""
 
 #: data_debug.php:366
 msgid "Determines if the Data Source is located in the Poller Cache."
-msgstr ""
+msgstr "Nosaka, vai datu avots atrodas aptaujātaja kešatmiņā."
 
 #: data_debug.php:369 data_sources.php:1638 data_templates.php:1193
 #: plugins.php:37 plugins.php:353
@@ -3246,15 +3251,15 @@ msgstr ""
 
 #: data_debug.php:681
 msgid "Poller runs as"
-msgstr ""
+msgstr "Aptaujātajs palaists kā"
 
 #: data_debug.php:686
 msgid "Is RRA Folder writeable by poller?"
-msgstr ""
+msgstr "Vai RRA mapei ir aptaujātāja rakstīšanas tiesības?"
 
 #: data_debug.php:691
 msgid "Is RRDfile writeable by poller?"
-msgstr ""
+msgstr "Vai RRDfile ir aptaujātaja rakstīšanas tiesības?"
 
 #: data_debug.php:696
 msgid "Does the RRDfile Exist?"
@@ -3266,7 +3271,7 @@ msgstr "Vai datu avots ir iestatīts kā iespējots?"
 
 #: data_debug.php:706
 msgid "Did the poller receive valid data?"
-msgstr ""
+msgstr "Vai aptaujātajs saņēma derīgus datus?"
 
 #: data_debug.php:711
 msgid "Was the RRDfile updated?"
@@ -3858,7 +3863,7 @@ msgstr ""
 
 #: data_source_profiles.php:718
 msgid "Delete Data Source Profile Item"
-msgstr ""
+msgstr "Dzēst datu avota profila elementu"
 
 #: data_source_profiles.php:783
 #, php-format
@@ -3931,7 +3936,7 @@ msgstr "%d diena"
 #: include/global_settings.php:1573
 #, php-format
 msgid "%d Days"
-msgstr ""
+msgstr "%d dienas"
 
 #: data_source_profiles.php:841 include/global_arrays.php:666
 #: include/global_arrays.php:1427 include/global_arrays.php:1448
@@ -3976,7 +3981,7 @@ msgstr ""
 #: data_source_profiles.php:1047 data_sources.php:1626
 #: include/global_settings.php:1215
 msgid "Poller Interval"
-msgstr ""
+msgstr "Aptaujāšanas biežums"
 
 #: data_source_profiles.php:1050
 msgid "The Polling Frequency for the Profile"
@@ -4203,8 +4208,9 @@ msgid "Data Source Fields"
 msgstr ""
 
 #: data_sources.php:986
+#, fuzzy
 msgid "Data Source Item Fields"
-msgstr ""
+msgstr "Datu avota elementa lauki"
 
 #: data_sources.php:987
 msgid "Custom Data"
@@ -4213,7 +4219,7 @@ msgstr ""
 #: data_sources.php:1085
 #, php-format
 msgid "Data Source Item %s"
-msgstr ""
+msgstr "Datu avota elements %s"
 
 #: data_sources.php:1088 data_templates.php:712
 msgid "New"
@@ -4388,12 +4394,14 @@ msgstr ""
 #: data_templates.php:712 data_templates.php:714
 #, php-format
 msgid "Data Source Item [%s]"
-msgstr ""
+msgstr "Datu avota elements [%s]"
 
 #: data_templates.php:789
-#, fuzzy
 msgid "This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations."
-msgstr "Šī vērtība ir atspējota, jo tās vērtība ir iegūta no ierīces vai īpaša datu vaicājuma objekta, kas izseko kritiskās datu datu vaicājuma asociācijas."
+msgstr ""
+"Šī vērtība ir atspējota, jo tās vērtība ir iegūta no ierīces vai īpaša datu "
+"vaicājuma objekta, kas seko līdz kritiskiem datiem datu vaicājuma "
+"asociācijās."
 
 #: data_templates.php:831
 msgid "Value will be derived from the Device if this field is left empty."
@@ -4455,6 +4463,8 @@ msgstr ""
 #: data_templates.php:1160
 msgid "Data Sources based on Inactive Data Templates will not be updated when the poller runs."
 msgstr ""
+"Datu avoti, kuru pamatā ir neaktīvās datu veidnes, netiks atjaunināti "
+"aptaujāšanas laikā."
 
 #: data_templates.php:1198
 msgid "No Data Templates Found"
@@ -4559,7 +4569,7 @@ msgstr ""
 
 #: graph_image.php:157 graph_json.php:234 graph_realtime.php:239
 msgid "The Cacti Poller has not run yet."
-msgstr ""
+msgstr "Cacti aptaujātajs vēl nav bijis palaists."
 
 #: graph_realtime.php:340
 msgid "Real-time has been disabled by your administrator."
@@ -4667,8 +4677,9 @@ msgid "Graph Template Items [edit: %s]"
 msgstr ""
 
 #: graph_templates.php:502 include/global_arrays.php:2133
+#, fuzzy
 msgid "Graph Item Inputs"
-msgstr ""
+msgstr "Grafika vienumu ievades"
 
 #: graph_templates.php:528
 msgid "No Inputs"
@@ -4751,9 +4762,9 @@ msgid "No Graph Templates Found"
 msgstr ""
 
 #: graph_templates_inputs.php:145
-#, php-format
+#, fuzzy, php-format
 msgid "Graph Item Inputs [edit graph: %s]"
-msgstr ""
+msgstr "Diagrammas vienumu ievades [rediģēt diagrammu: %s]"
 
 #: graph_templates_inputs.php:196
 msgid "Associated Graph Items"
@@ -4762,7 +4773,7 @@ msgstr ""
 #: graph_templates_inputs.php:220
 #, php-format
 msgid "Item #%s"
-msgstr ""
+msgstr "Elements #%s"
 
 #: graph_templates_items.php:101 graph_templates_items.php:127
 #: graphs_items.php:141
@@ -4798,7 +4809,7 @@ msgstr ""
 
 #: graph_view.php:394
 msgid "Graph Preview Filters"
-msgstr ""
+msgstr "Grafika priekšskatījuma filtrēšana"
 
 #: graph_view.php:394
 msgid "[ Custom Graph List Applied - Filtering from List ]"
@@ -5137,7 +5148,7 @@ msgstr ""
 
 #: graphs.php:1646
 msgid "Graph Item Fields"
-msgstr ""
+msgstr "Grafika elementa lauki"
 
 #: graphs.php:1974
 msgid "Graph Management [ Custom Graphs List Applied - Clear to Reset ]"
@@ -5184,8 +5195,9 @@ msgid "Graph Items [graph: %s]"
 msgstr ""
 
 #: graphs_items.php:464
+#, fuzzy
 msgid "Choose the Data Source to associate with this Graph Item."
-msgstr ""
+msgstr "Izvēlieties datu avotu ar ko saistīt ar šo grafikas elementu."
 
 #: graphs_new.php:84
 msgid "Default Settings Saved"
@@ -5313,8 +5325,9 @@ msgid "Device Debugging Disabled for Device."
 msgstr ""
 
 #: host.php:159
+#, fuzzy
 msgid "Poller Cache for Device Refreshed."
-msgstr ""
+msgstr "Aptaujātāja kešatmiņa ierīcei ir atsvaidzināta."
 
 #: host.php:161
 msgid "ERROR: Invalid Device ID."
@@ -5416,7 +5429,7 @@ msgstr ""
 
 #: host.php:653
 msgid "Repopulate Poller Cache"
-msgstr ""
+msgstr "Atkārtoti aizpildīt aptaujātaja kešatmiņu"
 
 #: host.php:668
 msgid "Create Graphs for this Device"
@@ -5751,7 +5764,7 @@ msgstr ""
 
 #: host_templates.php:625
 msgid "Delete Item from Device Template"
-msgstr ""
+msgstr "Dzēst elementu no ierīces veidnes"
 
 #: host_templates.php:716 host_templates.php:731 host_templates.php:859
 #: include/global_arrays.php:1141 include/global_arrays.php:2145
@@ -6123,11 +6136,11 @@ msgstr ""
 
 #: include/global_arrays.php:357
 msgid "Report Item Saved"
-msgstr ""
+msgstr "Ziņojuma elements saglabāts"
 
 #: include/global_arrays.php:360
 msgid "Report Item Save Failed"
-msgstr ""
+msgstr "Ziņojuma elementa saglabāšana neizdevās"
 
 #: include/global_arrays.php:363
 msgid "Graph was not found attempting to Add to Report"
@@ -6150,8 +6163,12 @@ msgid "All Graphs have been added to the Report.  Duplicate Graphs with the same
 msgstr ""
 
 #: include/global_arrays.php:378
+#, fuzzy
 msgid "Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards."
 msgstr ""
+"Aptaujātāja resursa kešatmiņa ir iztīrīta.  Galvenais datu apkopotājs tiks "
+"pārbūvēts nākamajā aptaujāšanas sākšanas reizē, un attālie datu apkopotāji "
+"pēc tam sinhronizēs."
 
 #: include/global_arrays.php:381
 msgid "Permission Denied.  You do not have permission to the requested action."
@@ -6179,7 +6196,7 @@ msgstr ""
 
 #: include/global_arrays.php:454 include/global_arrays.php:893
 msgid "Current Graph Item Data Source"
-msgstr ""
+msgstr "Pašreizējā grafika elementa datu avots"
 
 #: include/global_arrays.php:460 include/global_arrays.php:467
 msgid "Script/Command"
@@ -6566,8 +6583,9 @@ msgid "Data Query Index"
 msgstr ""
 
 #: include/global_arrays.php:894
+#, fuzzy
 msgid "Current Graph Item Polling Interval"
-msgstr ""
+msgstr "Pašreizējā grafika elementa aptaujas intervāls"
 
 #: include/global_arrays.php:895
 msgid "All Data Sources (Do not Include Duplicates)"
@@ -6591,11 +6609,11 @@ msgstr ""
 
 #: include/global_arrays.php:900
 msgid "Current Data Source Item: Minimum Value"
-msgstr ""
+msgstr "Pašreizējais datu avota elements: Minimālā vērtība"
 
 #: include/global_arrays.php:901
 msgid "Current Data Source Item: Maximum Value"
-msgstr ""
+msgstr "Pašreizējais datu avota elements: Maksimālā vērtība"
 
 #: include/global_arrays.php:902
 msgid "Graph: Lower Limit"
@@ -6838,7 +6856,7 @@ msgstr ""
 
 #: include/global_arrays.php:1157
 msgid "Normal User"
-msgstr ""
+msgstr "Parasts lietotājs"
 
 #: include/global_arrays.php:1158
 msgid "Template Editor"
@@ -6846,7 +6864,7 @@ msgstr "Veidņu redaktors"
 
 #: include/global_arrays.php:1159
 msgid "General Administration"
-msgstr "Vispārējā administrācija"
+msgstr "Pamatadministrācija"
 
 #: include/global_arrays.php:1160
 msgid "System Administration"
@@ -6854,7 +6872,7 @@ msgstr "Sistēmas pārvaldīšana"
 
 #: include/global_arrays.php:1257
 msgid "CDEF Item"
-msgstr ""
+msgstr "CDEF elements"
 
 #: include/global_arrays.php:1258
 msgid "GPRINT Preset"
@@ -6871,11 +6889,11 @@ msgstr ""
 
 #: include/global_arrays.php:1263
 msgid "Data Template Item"
-msgstr ""
+msgstr "Datu veidnes elements"
 
 #: include/global_arrays.php:1265
 msgid "Graph Template Item"
-msgstr ""
+msgstr "Grafika veidnes elements"
 
 #: include/global_arrays.php:1266
 msgid "Graph Template Input"
@@ -6883,7 +6901,7 @@ msgstr ""
 
 #: include/global_arrays.php:1270
 msgid "VDEF Item"
-msgstr ""
+msgstr "VDEF elements"
 
 #: include/global_arrays.php:1324
 msgid "Last Half Hour"
@@ -7685,7 +7703,7 @@ msgstr ""
 
 #: include/global_arrays.php:2265 include/global_arrays.php:2295
 msgid "(Remove Item)"
-msgstr ""
+msgstr "(Noņemt elementu)"
 
 #: include/global_arrays.php:2301 include/global_settings.php:285
 #: rrdcleaner.php:325
@@ -7703,7 +7721,7 @@ msgstr "Tehniskais atbalsts"
 #: include/global_arrays.php:2331 include/global_arrays.php:2343
 #: utilities.php:1448
 msgid "View Poller Cache"
-msgstr ""
+msgstr "Skatīt aptaujātāja kešatmiņu"
 
 #: include/global_arrays.php:2337 utilities.php:1452
 msgid "View Data Query Cache"
@@ -7775,8 +7793,9 @@ msgid "Report Edit"
 msgstr ""
 
 #: include/global_arrays.php:2541 include/global_arrays.php:2571
+#, fuzzy
 msgid "Report Edit Item"
-msgstr ""
+msgstr "Ziņot par vienumu rediģēšanu"
 
 #: include/global_arrays.php:2595
 msgid "Color Template Items"
@@ -8536,15 +8555,15 @@ msgstr ""
 
 #: include/global_form.php:963 lib/api_aggregate.php:1717 lib/html.php:1140
 msgid "Graph Item Type"
-msgstr ""
+msgstr "Grafika elementa tips"
 
 #: include/global_form.php:967
 msgid "How data for this item is represented visually on the graph."
-msgstr ""
+msgstr "Kā šī elementa dati tiek vizuāli attēloti grafikā."
 
 #: include/global_form.php:982
 msgid "The data source to use for this graph item."
-msgstr ""
+msgstr "Datu avots, ko izmantot šim grafikas elementam."
 
 #: include/global_form.php:989
 msgid "The color to use for the legend."
@@ -8564,7 +8583,7 @@ msgstr ""
 
 #: include/global_form.php:1003
 msgid "How data for this item is represented statistically on the graph."
-msgstr ""
+msgstr "Kā šī elementa dati tiek statistiski attēloti grafikā."
 
 #: include/global_form.php:1006
 msgid "CDEF Function"
@@ -8573,6 +8592,7 @@ msgstr ""
 #: include/global_form.php:1011
 msgid "A CDEF (math) function to apply to this item on the graph or legend."
 msgstr ""
+"CDEF (matemātikā) funkcija, ko piemērot šim elementam grafikā vai leģendā."
 
 #: include/global_form.php:1014
 msgid "VDEF Function"
@@ -8580,7 +8600,7 @@ msgstr ""
 
 #: include/global_form.php:1019
 msgid "A VDEF (math) function to apply to this item on the graph legend."
-msgstr ""
+msgstr "VDEF (matemātikā) funkcija, ko piemērot šim elementam grafikas leģendā."
 
 #: include/global_form.php:1022
 msgid "Shift Data"
@@ -8591,24 +8611,36 @@ msgid "Offset your data on the time axis (x-axis) by the amount specified in the
 msgstr ""
 
 #: include/global_form.php:1033
+#, fuzzy
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
 msgstr ""
+"[HRULE|VRULE]: grafikas elementa vērtība.<br/> [TICK]: atzīmes līnijas daļa.<"
+"br/> [SHIFT]: laika nobīde sekundēs."
 
 #: include/global_form.php:1036
 msgid "GPRINT Type"
 msgstr ""
 
 #: include/global_form.php:1040
+#, fuzzy
 msgid "If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under \"GPRINT Presets\"."
 msgstr ""
+"Ja šis grafikas elements ir GPRINT, šeit varat izvēlēties citu formātu. "
+"Papildu veidus varat definēt sadaļā \"GPRINT iestatījumi\"."
 
 #: include/global_form.php:1043
 msgid "Text Alignment (TEXTALIGN)"
 msgstr ""
 
 #: include/global_form.php:1048
+#, fuzzy
 msgid "All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.  This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/> <strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!"
 msgstr ""
+"Visas turpmākās leģendas rindiņas tiks līdzinātas, kā norādīts šeit. Varat "
+"izmantot šo komandu vairākas reizes vienā grafikā. Šī komanda nerada tabulas "
+"izkārtojumu.<br/> <strong>Piezīme.</strong> Iespējams, vēlēsities ievietot "
+"&lt;HR&gt; iepriekšējā diagrammas vienumā.<br/> <strong>Piezīme:</strong> "
+"&lt;HR&gt; šajā leģendas rindā novecos šo iestatījumu!"
 
 #: include/global_form.php:1051
 msgid "Text Format"
@@ -8616,15 +8648,16 @@ msgstr ""
 
 #: include/global_form.php:1056
 msgid "Text that will be displayed on the legend for this graph item."
-msgstr ""
+msgstr "Teksts, kas tiks attēlots šī grafikas elementa leģendā."
 
 #: include/global_form.php:1059
 msgid "Insert Hard Return"
 msgstr ""
 
 #: include/global_form.php:1062
+#, fuzzy
 msgid "Forces the legend to the next line after this item."
-msgstr ""
+msgstr "Piespiež leģendu uz nākamo rindu pēc šī vienuma."
 
 #: include/global_form.php:1065
 msgid "Line Width (decimal)"
@@ -8671,12 +8704,18 @@ msgid "Check this checkbox if you wish to test the Data Sources prior to their c
 msgstr ""
 
 #: include/global_form.php:1143
+#, fuzzy
 msgid "Enter a name for this graph item input, make sure it is something you recognize."
 msgstr ""
+"Ievadiet šī grafikas elementa ievades nosaukumu un pārliecinieties, vai to "
+"atpazīstat."
 
 #: include/global_form.php:1151
+#, fuzzy
 msgid "Enter a description for this graph item input to describe what this input is used for."
 msgstr ""
+"Ievadiet šīs grafikas elementa ievades aprakstu, lai aprakstītu, kam šī "
+"ievade tiek izmantota."
 
 #: include/global_form.php:1158
 msgid "Field Type"
@@ -8688,7 +8727,7 @@ msgstr ""
 
 #: include/global_form.php:1182
 msgid "General Device Options"
-msgstr ""
+msgstr "Pamatierīces opcijas"
 
 #: include/global_form.php:1187
 msgid "Date/time the device was added"
@@ -8802,6 +8841,8 @@ msgstr ""
 #: include/global_form.php:1415
 msgid "Choose the Graph Template to use for this Data Query Graph Template item."
 msgstr ""
+"Izvēlieties grafikas veidni, ko izmantot šim datu vaicājuma grafikas veidnes "
+"elementam."
 
 #: include/global_form.php:1444
 msgid "A name for this associated graph."
@@ -8954,7 +8995,7 @@ msgstr ""
 
 #: include/global_form.php:1725
 msgid "General SNMP Entity Options"
-msgstr ""
+msgstr "SNMP pamatobjekta opcijas"
 
 #: include/global_form.php:1731
 msgid "Give this SNMP entity a meaningful description."
@@ -9114,8 +9155,9 @@ msgid "Logical operation to combine rules."
 msgstr ""
 
 #: include/global_form.php:2116 include/global_form.php:2158
+#, fuzzy
 msgid "The Field Name that shall be used for this Rule Item."
-msgstr ""
+msgstr "Lauka nosaukums, kas tiks izmantots šim kārtulas elementam."
 
 #: include/global_form.php:2124 include/global_form.php:2166
 msgid "Operator."
@@ -9161,11 +9203,11 @@ msgstr ""
 
 #: include/global_form.php:2251
 msgid "Leaf Item Type"
-msgstr ""
+msgstr "Lapas elementa tips"
 
 #: include/global_form.php:2252
 msgid "The Item Type that shall be dynamically added to the tree."
-msgstr ""
+msgstr "Elementa tips, kas dinamiski jāpievieno kokam."
 
 #: include/global_form.php:2259
 msgid "Graph Grouping Style"
@@ -9177,11 +9219,14 @@ msgstr ""
 
 #: include/global_form.php:2270
 msgid "Optional: Sub-Tree Item"
-msgstr ""
+msgstr "Pēc izvēles: Apakškoka elements"
 
 #: include/global_form.php:2271
+#, fuzzy
 msgid "Choose a Sub-Tree Item to hook in.<br>Make sure, that it is still there when this rule is executed!"
 msgstr ""
+"Izvēlieties apakškoka elementu, ko pievienot.<br> Pārliecinieties, vai tas "
+"joprojām ir tur, kad šis noteikums tiek izpildīts!"
 
 #: include/global_form.php:2291
 msgid "Header Type"
@@ -9238,7 +9283,7 @@ msgstr ""
 #: include/global_settings.php:42 include/global_settings.php:678
 #: support.php:57
 msgid "Poller"
-msgstr ""
+msgstr "Aptaujātajs"
 
 #: include/global_settings.php:43
 msgid "Data"
@@ -9514,7 +9559,7 @@ msgstr ""
 
 #: include/global_settings.php:375
 msgid "Syslog/Eventlog Item Selection"
-msgstr ""
+msgstr "Sistēmas/Notikumu žurnāla elementa atlase"
 
 #: include/global_settings.php:376
 msgid "When using Syslog/Eventlog for logging, the Cacti log messages that will be forwarded to the Syslog/Eventlog."
@@ -9663,7 +9708,7 @@ msgstr ""
 
 #: include/global_settings.php:506
 msgid "Prompt user before item deletion."
-msgstr ""
+msgstr "Jautāt lietotāju pirms elementa dzēšanas."
 
 #: include/global_settings.php:511
 msgid "Data Source Preservation Preset"
@@ -9755,11 +9800,16 @@ msgstr ""
 
 #: include/global_settings.php:602
 msgid "Enable Automatic Tree Item Creation"
-msgstr ""
+msgstr "Iespējot automātisko koka elementa izveidi"
 
 #: include/global_settings.php:603
+#, fuzzy
 msgid "When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when adjusting Device or Graph settings so as to avoid creating new Tree Entries each time you save an object.  Invoking Rules manually will still be possible."
 msgstr ""
+"Ja tas ir atspējots, Cacti Automation aktīvi neizveidos nevienu koka "
+"vienumu. Tas ir noderīgi, pielāgojot ierīces vai diagrammas iestatījumus, "
+"lai izvairītos no jaunu koka ierakstu izveides katru reizi, kad saglabājat "
+"objektu. Joprojām būs iespējams manuāli izsaukt noteikumus."
 
 #: include/global_settings.php:607
 msgid "Automation Notification To Email"
@@ -9799,7 +9849,7 @@ msgstr ""
 
 #: include/global_settings.php:657
 msgid "General Defaults"
-msgstr ""
+msgstr "Pamatnoklusējuma iestatījumi"
 
 #: include/global_settings.php:663
 msgid "The default Device Template used on all new Devices."
@@ -9811,7 +9861,7 @@ msgstr ""
 
 #: include/global_settings.php:679
 msgid "The default Poller for all new Devices."
-msgstr ""
+msgstr "Pamataptaujātajs visām jaunajām ierīcēm."
 
 #: include/global_settings.php:686
 msgid "Device Threads"
@@ -10324,7 +10374,7 @@ msgstr ""
 
 #: include/global_settings.php:1201
 msgid "Poller Type"
-msgstr ""
+msgstr "Aptaujātaja tips"
 
 #: include/global_settings.php:1202
 msgid "The poller type to use.  This setting will take affect at next polling interval."
@@ -10332,7 +10382,7 @@ msgstr ""
 
 #: include/global_settings.php:1208
 msgid "Poller Sync Interval"
-msgstr ""
+msgstr "Aptaujātaja sinhronizācijas intervāls"
 
 #: include/global_settings.php:1209
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
@@ -10742,7 +10792,7 @@ msgstr ""
 
 #: include/global_settings.php:1658
 msgid "LDAP General Settings"
-msgstr ""
+msgstr "LDAP pamatiestatījumi"
 
 #: include/global_settings.php:1662 user_domains.php:367
 msgid "Server(s)"
@@ -10924,7 +10974,7 @@ msgstr ""
 
 #: include/global_settings.php:1816
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
-msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts) "
+msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts)"
 
 #: include/global_settings.php:1823
 msgid "URL Linking"
@@ -11231,7 +11281,7 @@ msgstr "1 process"
 #: include/global_settings.php:2209 include/global_settings.php:2210
 #, php-format
 msgid "%d Processes"
-msgstr "%d procesi"
+msgstr "%d procesi"
 
 #: include/global_settings.php:2104
 msgid "Maximum Records"
@@ -11359,7 +11409,7 @@ msgstr ""
 
 #: include/global_settings.php:2237
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
-msgstr ""
+msgstr "Maksimālais atmiņas apjoms Cacti un Datu avota statistikas aptaujātajam"
 
 #: include/global_settings.php:2243
 msgid "Data Storage Settings"
@@ -11983,7 +12033,7 @@ msgstr ""
 
 #: install/functions.php:816
 msgid "New Poller"
-msgstr ""
+msgstr "Jauns aptaujātais"
 
 #: install/install.php:63
 #, php-format
@@ -12042,7 +12092,7 @@ msgstr ""
 
 #: lib/api_aggregate.php:1715 lib/html.php:1137
 msgid "Graph Item"
-msgstr ""
+msgstr "Grafika elements"
 
 #: lib/api_aggregate.php:1718 lib/html.php:1141
 msgid "CF Type"
@@ -12054,7 +12104,7 @@ msgstr ""
 
 #: lib/api_aggregate.php:1722 lib/html.php:1146
 msgid "Item Color"
-msgstr ""
+msgstr "Elementa krāsa"
 
 #: lib/api_aggregate.php:1723
 msgid "Color Template"
@@ -12182,14 +12232,14 @@ msgid "Create Tree Rule (Graph)"
 msgstr ""
 
 #: lib/api_automation.php:2183
-#, php-format
+#, fuzzy, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
-msgstr ""
+msgstr "Kārtulas elements [rediģēt kārtulas vienumu %s: %s]"
 
 #: lib/api_automation.php:2185
-#, php-format
+#, fuzzy, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr ""
+msgstr "Kārtulas elements [jauns kārtulas vienums priekš %s: %s]"
 
 #: lib/api_automation.php:3064
 msgid "Added by Cacti Automation"
@@ -12671,9 +12721,9 @@ msgid "Executing script query '%s'"
 msgstr ""
 
 #: lib/data_query.php:709
-#, php-format
+#, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr ""
+msgstr "Atrasts elements [%s='%s'] rādītājs: %s"
 
 #: lib/data_query.php:747 lib/data_query.php:762
 #, php-format
@@ -12826,9 +12876,9 @@ msgid "Executing SNMP walk for data @ '%s'"
 msgstr ""
 
 #: lib/data_query.php:1238
-#, php-format
+#, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
-msgstr ""
+msgstr "Atrastās elements [%s='%s'] rādītājs: %s [no %s]"
 
 #: lib/data_query.php:1272
 #, php-format
@@ -12836,14 +12886,14 @@ msgid "Found OCTET STRING '%s' decoded value: '%s'"
 msgstr ""
 
 #: lib/data_query.php:1278 lib/data_query.php:1315
-#, php-format
+#, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
-msgstr ""
+msgstr "Atrasts elements [%s='%s'] indekss: %s [no regexp oid parsēšanas]"
 
 #: lib/data_query.php:1335
-#, php-format
+#, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
-msgstr ""
+msgstr "Atrasts elements [%s='%s'] indekss: %s [no regexp oid value parse]"
 
 #: lib/data_query.php:1715
 msgid "Re-Indexing Data Query complete"
@@ -12894,11 +12944,15 @@ msgstr "Datu avots nav iestatīts kā iespējots"
 #, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
 msgstr ""
+"Aptaujātajs nevar ierakstīt RRDfile mapē (rra).  Mapes īpašnieks: %s.  "
+"Aptaujātajs palaists ar %s lietotāja tiesībām"
 
 #: lib/dsdebug.php:274
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
 msgstr ""
+"Aptaujātajs nevar ierakstīt RRDfile.  RRDfile īpašnieks: %s.  Aptaujātajs "
+"palaists ar %s lietotāja tiesībām"
 
 #: lib/dsdebug.php:283
 msgid "RRDfile does not match Data Source"
@@ -13901,8 +13955,9 @@ msgid "Unable to send Report '%s'.  Please set an e-mail from address"
 msgstr ""
 
 #: lib/html_reports.php:780
+#, fuzzy
 msgid "Item Type to be added."
-msgstr ""
+msgstr "Pievienojamā elementa tips."
 
 #: lib/html_reports.php:786
 msgid "Graph Tree"
@@ -13950,7 +14005,7 @@ msgstr ""
 
 #: lib/html_reports.php:864
 msgid "The Graph to use for this report item."
-msgstr ""
+msgstr "Grafiks, ko izmantot šim atskaites elementam."
 
 #: lib/html_reports.php:874
 msgid "The Graph End time will be set to the scheduled report send time.  So, if you wish the end time on the various Graphs to be midnight, ensure you send the report at midnight.  The Graph Start time will be the End Time minus the Graph Timespan."
@@ -13961,8 +14016,9 @@ msgid "Alignment"
 msgstr ""
 
 #: lib/html_reports.php:882
+#, fuzzy
 msgid "Alignment of the Item"
-msgstr ""
+msgstr "Elementa izlīdzināšana"
 
 #: lib/html_reports.php:887
 msgid "Fixed Text"
@@ -13978,17 +14034,17 @@ msgstr ""
 
 #: lib/html_reports.php:899
 msgid "Font Size of the Item"
-msgstr ""
+msgstr "Elementa fonta izmērs"
 
 #: lib/html_reports.php:917
 #, php-format
 msgid "Report Item [edit Report: %s]"
-msgstr ""
+msgstr "Atskaites elements [labot atskaiti: %s]"
 
 #: lib/html_reports.php:919
 #, php-format
 msgid "Report Item [new Report: %s]"
-msgstr ""
+msgstr "Atskaites elements [jauna atskaite: %s]"
 
 #: lib/html_reports.php:1165
 msgid "Events"
@@ -14024,7 +14080,7 @@ msgstr ""
 
 #: lib/html_reports.php:1338
 msgid "Item Details"
-msgstr ""
+msgstr "Elementa detalizēta informācija"
 
 #: lib/html_reports.php:1353 lib/html_reports.php:1366
 #: lib/html_reports.php:1367 lib/html_reports.php:1412
@@ -14237,7 +14293,7 @@ msgstr ""
 
 #: lib/import.php:2130
 msgid "Import Results"
-msgstr ""
+msgstr "Importēt rezultātus"
 
 #: lib/import.php:2134
 msgid "Cacti would make the following changes if the Package was imported:"
@@ -14653,7 +14709,7 @@ msgstr ""
 
 #: lib/installer.php:1973 lib/installer.php:2024
 msgid "New Remote Poller"
-msgstr ""
+msgstr "Jauns attālais aptaujātajs"
 
 #: lib/installer.php:1973
 msgid "Remote Pollers are used to access networks that are not readily accessible to the Primary site."
@@ -14706,7 +14762,7 @@ msgstr ""
 
 #: lib/installer.php:2062
 msgid "Configuration of Poller"
-msgstr ""
+msgstr "Aptaujātaja konfigurēšana"
 
 #: lib/installer.php:2063
 msgid "Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again."
@@ -14714,7 +14770,7 @@ msgstr ""
 
 #: lib/installer.php:2067
 msgid "Remote Poller Variables"
-msgstr ""
+msgstr "Attālā aptaujātaja mainīgie lielumi"
 
 #: lib/installer.php:2069
 msgid "The variables that must be set in the config.php file include the following:"
@@ -15343,9 +15399,9 @@ msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
 msgstr ""
 
 #: lib/ldap.php:309
-#, php-format
+#, fuzzy, php-format
 msgid "Protocol Error, General failure (%s)"
-msgstr ""
+msgstr "Protokola kļūda, vispārēja kļūme (%s)"
 
 #: lib/ldap.php:313
 #, php-format
@@ -15539,19 +15595,19 @@ msgid "Graph Alignment:"
 msgstr ""
 
 #: lib/reports.php:1709
-#, php-format
+#, fuzzy, php-format
 msgid "Created Report Graph Item '<i>%s</i>'"
-msgstr ""
+msgstr "Izveidots atskaites grafikas elements \" <i>%s</i> \""
 
 #: lib/reports.php:1711
-#, php-format
+#, fuzzy, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
-msgstr ""
+msgstr "Neizdevās pievienot atskaites grafikas elementu <i>%s</i> . Jau pastāv"
 
 #: lib/reports.php:1714
-#, php-format
+#, fuzzy, php-format
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
-msgstr ""
+msgstr "Izlaistā pārskata grafikas elements “ <i>%s</i> ” jau pastāv"
 
 #: lib/rrd.php:2693
 #, php-format
@@ -15710,7 +15766,7 @@ msgstr ""
 
 #: lib/rrd.php:3553
 msgid "Failed to open data file, poller may not have run yet"
-msgstr ""
+msgstr "Neizdevās atvērt datu failu, iespējams, aptaujātajs vēl nav palaists"
 
 #: lib/rrd.php:3556
 msgid "RRA Folder"
@@ -16030,8 +16086,11 @@ msgid "Console Menu Section"
 msgstr ""
 
 #: links.php:524
+#, fuzzy
 msgid "Under which Console heading should this item appear? (All External Link menus will appear between Configuration and Utilities)"
 msgstr ""
+"Kurā konsoles virsrakstā ir jāparādās šim elementam? (Visas ārējās saites "
+"izvēlnes parādīsies starp konfigurāciju un utilītprogrammām)"
 
 #: links.php:528
 msgid "New Console Section"
@@ -16887,7 +16946,7 @@ msgstr "Notīrīt"
 
 #: rrdcleaner.php:547
 msgid "Rescan"
-msgstr ""
+msgstr "Pārskenēt"
 
 #: rrdcleaner.php:552
 msgid "Delete All"
@@ -17250,7 +17309,7 @@ msgstr ""
 
 #: support.php:171
 msgid "General Information"
-msgstr ""
+msgstr "Pamatinformācija"
 
 #: support.php:185
 msgid "Cacti OS"
@@ -17274,8 +17333,9 @@ msgid "Total: %s"
 msgstr ""
 
 #: support.php:248
+#, fuzzy
 msgid "Poller Information"
-msgstr ""
+msgstr "Aptaujātaja informācija"
 
 #: support.php:256
 msgid "Different version of Cacti and Spine!"
@@ -18246,7 +18306,7 @@ msgstr ""
 
 #: user_domains.php:504
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts) "
+msgstr "Lauks, kas aizstās e-pastu iegūtu no LDAP. (Windows: pasts)"
 
 #: user_domains.php:529
 msgid "Domain Properties"
@@ -18322,7 +18382,7 @@ msgstr ""
 
 #: user_group_admin.php:93
 msgid "General Group Options"
-msgstr ""
+msgstr "Pamatgrupas opcijas"
 
 #: user_group_admin.php:95
 msgid "Set any user account-specific options here."
@@ -18612,7 +18672,7 @@ msgstr ""
 
 #: utilities.php:1208
 msgid "Poller Cache Items"
-msgstr ""
+msgstr "Aptaujātaja kešatmiņas elementi"
 
 #: utilities.php:1269
 msgid "Script"
@@ -18660,7 +18720,7 @@ msgstr ""
 
 #: utilities.php:1447
 msgid "Poller Cache Administration"
-msgstr ""
+msgstr "Aptaujātaja kešatmiņas administrēšana"
 
 #: utilities.php:1450
 msgid "This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display."
@@ -18671,8 +18731,9 @@ msgid "The Data Query Cache stores information gathered from Data Query input ty
 msgstr ""
 
 #: utilities.php:1456
+#, fuzzy
 msgid "Rebuild Poller Cache"
-msgstr ""
+msgstr "Pārbūvēt aptaujātaja kešatmiņu"
 
 #: utilities.php:1458
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class=\"deviceDown\">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information.</i>"
@@ -18876,7 +18937,7 @@ msgstr ""
 
 #: utilities.php:1835
 msgid "Peak Poller Memory:"
-msgstr ""
+msgstr "Aptaujātaja maksimālā pīķa atmiņa:"
 
 #: utilities.php:1838
 msgid "Detailed Runtime Timers:"
@@ -18884,7 +18945,7 @@ msgstr ""
 
 #: utilities.php:1841
 msgid "Max Poller Memory Allowed:"
-msgstr ""
+msgstr "Aptaujātaja maksimālā atļautā atmiņa:"
 
 #: utilities.php:1844
 msgid "Run Time Configuration"
@@ -18998,7 +19059,7 @@ msgstr ""
 
 #: vdef.php:337
 msgid "Remove VDEF Item"
-msgstr ""
+msgstr "Noņemt VDEF elementu"
 
 #: vdef.php:381
 msgid "VDEF Preview"
@@ -19015,19 +19076,20 @@ msgstr ""
 
 #: vdef.php:411
 msgid "VDEF Item Type"
-msgstr ""
+msgstr "VDEF elementa tips"
 
 #: vdef.php:412
+#, fuzzy
 msgid "Choose what type of VDEF item this is."
-msgstr ""
+msgstr "Izvēlieties, kāda veida VDEF elements ir šis."
 
 #: vdef.php:418
 msgid "VDEF Item Value"
-msgstr ""
+msgstr "VDEF elementa vērtība"
 
 #: vdef.php:419
 msgid "Enter a value for this VDEF item."
-msgstr ""
+msgstr "Ievadiet šī VDEF elementa vērtību."
 
 #: vdef.php:547
 #, php-format
@@ -19040,7 +19102,7 @@ msgstr ""
 
 #: vdef.php:618 vdef.php:676
 msgid "Delete VDEF Item"
-msgstr ""
+msgstr "Dzēst VDEF elementu"
 
 #: vdef.php:894
 msgid "The name of this VDEF."
