@@ -2467,7 +2467,6 @@ function html_common_header($title, $selectedTheme = '') {
 		var usePreferredColorTheme='<?php print __esc('Use System Color');?>';
 		var ignorePreferredColorTheme='<?php print __esc('Ignore System Color');?>';
 		var help='<?php print __esc('Help');?>';
-		var helpNotFound='<?php print __esc('The Help File was not located on the Cacti Documentation Website.') . '<br><br>' . __esc('Open a ticket at ') . '<a target="_blank" href="https://github.com/cacti/cacti/issues">' . __esc('Cacti GitHub Site') . '</a>.';?>';
 		var cactiHome='<?php print __esc('Cacti Home');?>';
 		var cactiConsole='<?php print __esc('Console');?>';
 		var cactiMisc='<?php print __esc('Miscellaneous');?>';
