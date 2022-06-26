@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.22\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-06-24 10:39-0400\n"
+"POT-Creation-Date: 2022-06-26 11:35-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5170,32 +5170,27 @@ msgstr ""
 msgid "Set Default"
 msgstr ""
 
-#: help.php:65
-msgid "Cacti GitHub Site"
+#: help.php:44
+#, php-format
+msgid "The Document page <b><i>%s</i></b> could not be reached locally.  If you have installed Cacti from GitHub directly, consider downloading the distribution release and extracting the 'docs' folder from that release to your Cacti install."
 msgstr ""
 
-#: help.php:65
+#: help.php:55
+msgid "Official Cacti GitHub Site"
+msgstr ""
+
+#: help.php:55
 msgid "Open a ticket at "
 msgstr ""
 
-#: help.php:65
+#: help.php:55
 #, php-format
-msgid "The Help File '%s' was not located on the Cacti Documentation Website."
+msgid "The Document page <b><i>%s</i></b> could not be reached on the Official Cacti Documentation website."
 msgstr ""
 
-#: help.php:74
+#: help.php:64
 #, php-format
-msgid "The Document page '%s' count not be reached.  It is possible that the Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest page help documentation and hosting the documentation locally."
-msgstr ""
-
-#: help.php:81
-#, php-format
-msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  Consider downloading an official release to obtain the latest page help documentation and hosting the documentation locally."
-msgstr ""
-
-#: help.php:98
-#, php-format
-msgid "The Document page '%s' count not be reached locally.  If you have installed from GitHub directly, consider downloading the distribution release and extracting the 'docs' folder from that release to you Cacti install."
+msgid "The Document page <b><i>%s</i></b> could not be reached.  It is possible that the Cacti Documentation site is down or not reachable by your browser.  Check your proxy settings and if that does not correct the problem, consider downloading an official release to obtain the latest page help documentation and hosting the documentation locally."
 msgstr ""
 
 #: host.php:44

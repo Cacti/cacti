@@ -26,79 +26,43 @@ $guest_account = true;
 
 include('./include/auth.php');
 
-if (isset_request_var('page')) {
-	get_filter_request_var('page', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+get_filter_request_var('page', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
-	$page = str_replace('.html', '.md', get_request_var('page'));
-
-	if (read_config_option('local_documentation') != 'on') {
-		$options = array(
-			'http' => array (
-				'method'            => 'GET'
-			),
-			'ssl' => array(
-				'verify_peer'       => false,
-				'verify_peer_name'  => false,
-				'allow_self_signed' => true,
-				'timeout'           => 2,
-			)
-		);
-
-		$context  = stream_context_create($options);
-		$url      = 'https://docs.cacti.net/' . $page;
-		$response = get_headers($url, true, $context);
-
-		if ($response !== false && $response[0] == 'HTTP/1.1 200 OK') {
-			$contents = file_get_contents($url, false, $context);
-
-			if ($contents != '' && !preg_match('/does not appear to exist/i', $contents)) {
-				print json_encode(
-					array(
-						'status'   => 'Success',
-						'location' => 'https://docs.cacti.net/' . $page
-					)
-				);
-			} elseif ($contents != '' && preg_match('/does not appear to exist/i', $contents)) {
-				print json_encode(
-					array(
-						'status'   => 'Not Found',
-						'message' => __esc('The Help File \'%s\' was not located on the Cacti Documentation Website.', $page) . '<br><br>' . __esc('Open a ticket at ') . '<a target="_blank" href="https://github.com/cacti/cacti/issues">' . __esc('Cacti GitHub Site') . '</a>.'
-					)
-				);
-			}
-		} else {
-			if (cacti_sizeof($response)) {
-				print json_encode(
-					array(
-						'status' => 'Not Reachable',
-						'message' => __('The Document page \'%s\' count not be reached.  It is possible that the Cacti Documentation site is not reachable.  The http error was \'%s\'.  Consider downloading an official release to obtain the latest page help documentation and hosting the documentation locally.', $page, $response[0])
-					)
-				);
-			} else {
-				print json_encode(
-					array(
-						'status' => 'Not Reachable',
-						'message' => __('The Document page \'%s\' count not be reached.  The Cacti Documentation site is not reachable.  Consider downloading an official release to obtain the latest page help documentation and hosting the documentation locally.', $page)
-					)
-				);
-			}
-		}
-	} else {
+if (isset_request_var('page') && !isset_request_var('error')) {
+	if (read_config_option('local_documentation') == 'on') {
 		if (file_exists($config['base_path'] . '/docs/' . $page)) {
 			print json_encode(
 				array(
-					'status'   => 'Success',
+					'status'   => 'success',
 					'location' => $config['url_path'] . '/docs/' . $page
 				)
 			);
 		} else {
 			print json_encode(
 				array(
-					'status' => 'Not Reachable',
-					'message' => __('The Document page \'%s\' count not be reached locally.  If you have installed from GitHub directly, consider downloading the distribution release and extracting the \'docs\' folder from that release to you Cacti install.', $page)
+					'status' => 'not reachable',
+					'message' => __('The Document page <b><i>%s</i></b> could not be reached locally.  If you have installed Cacti from GitHub directly, consider downloading the distribution release and extracting the \'docs\' folder from that release to your Cacti install.', $page)
 				)
 			);
 		}
 	}
+} elseif (get_request_var('error') == 'missing') {
+	$page = str_replace('.html', '.md', get_request_var('page'));
+
+	print json_encode(
+		array(
+			'status'   => 'not found',
+			'message' => __('The Document page <b><i>%s</i></b> could not be reached on the Official Cacti Documentation website.', $page) . '<br><br>' . __esc('Open a ticket at ') . '<a target="_blank" href="https://github.com/cacti/cacti/issues">' . __esc('Official Cacti GitHub Site') . '</a>.'
+		)
+	);
+} elseif (get_request_var('error') == 'unreach') {
+	$page = str_replace('.html', '.md', get_request_var('page'));
+
+	print json_encode(
+		array(
+			'status' => 'not reachable',
+			'message' => __('The Document page <b><i>%s</i></b> could not be reached.  It is possible that the Cacti Documentation site is down or not reachable by your browser.  Check your proxy settings and if that does not correct the problem, consider downloading an official release to obtain the latest page help documentation and hosting the documentation locally.', $page)
+		)
+	);
 }
 
