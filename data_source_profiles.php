@@ -104,16 +104,7 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-    Global Form Functions
-   -------------------------- */
-
-/* --------------------------
-    The Save Function
-   -------------------------- */
-
 function form_save() {
-
 	// make sure ids are numeric
 	if (isset_request_var('id') && ! is_numeric(get_filter_request_var('id'))) {
 		set_request_var('id', 0);
@@ -121,6 +112,15 @@ function form_save() {
 
 	if (isset_request_var('profile_id') && ! is_numeric(get_filter_request_var('profile_id'))) {
 		set_request_var('profile_id', 0);
+	}
+
+	if (get_request_var('id') > 0) {
+		$prev_heartbeat = db_fetch_cell_prepared('SELECT heartbeat
+			FROM data_source_profiles
+			WHERE id = ?',
+			array(get_request_var('id')));
+	} else {
+		$prev_heartbeat = get_request_var('heartbeat');
 	}
 
 	if (isset_request_var('save_component_profile')) {
@@ -137,7 +137,7 @@ function form_save() {
 
 		if (isset_request_var('default')) {
 			$save['default'] = (isset_request_var('default') ? 'on':'');
-			db_execute('UPDATE data_source_profiles SET `default`=""');
+			db_execute('UPDATE data_source_profiles SET `default` = ""');
 		}
 
 		if (!is_error_message()) {
@@ -166,6 +166,25 @@ function form_save() {
 								(data_source_profile_id, consolidation_function_id)
 								VALUES (?, ?)', array($profile_id, $cf));
 						}
+					}
+				}
+
+				if ($prev_heartbeat != get_request_var('heartbeat')) {
+					$existing = db_fetch_cell_prepared('SELECT COUNT(*)
+						FROM data_template_data
+						WHERE data_source_profile_id = ?
+						AND local_data_id > 0',
+						array(get_request_var('id')));
+
+					if ($existing) {
+						db_execute_prepared('UPDATE data_template_rrd AS dtr
+							INNER JOIN data_template_data AS dtd
+							ON dtd.local_data_id = dtr.local_data_id
+							SET dtr.rrd_heartbeat = ?
+							WHERE dtd.data_source_profile_id = ?',
+							array(get_request_var('heartbeat'), get_request_var('id')));
+
+						raise_message('heartbeat_change', __('Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool\'s \'tune\' function to make that change to your existing RRDfiles.<br>'), MESSAGE_LEVEL_WARN);
 					}
 				}
 
@@ -727,11 +746,6 @@ function profile_edit() {
 		}
 
 		$('#x_files_factor').prop('disabled', true);
-
-		$('#heartbeat').prop('disabled', true);
-		if ($('#heartbeat').selectmenu('instance')) {
-			$('#heartbeat').selectmenu('disable')
-		}
 
 		$('#consolidation_function_id').prop('disabled', true);
 		if ($('#consolidation_function_id').multiselect('instance')) {
