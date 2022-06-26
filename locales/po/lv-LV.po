@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-26 06:53+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-26 07:10+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2528 lib/html.php:2492
 msgid "About Cacti"
@@ -1590,6 +1590,7 @@ msgid "Data Collector"
 msgstr "Datu ievācējs"
 
 #: automation_networks.php:450 include/global_form.php:1212
+#, fuzzy
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
 msgstr "Izvēlieties Cacti Data Collector/Poller, kas tiks izmantots datu vākšanai no šīs ierīces."
 
@@ -1622,6 +1623,7 @@ msgid "Alternate DNS Servers"
 msgstr "Alternatīvie DNS serveri"
 
 #: automation_networks.php:483
+#, fuzzy
 msgid "A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names."
 msgstr "Alternatīvu DNS serveru saraksts ar atstarpi, ko izmantot DNS izšķiršanai. Ja lauks ir tukšs, DNS nosaukumu noteikšanai tiks izmantota aptaujas operētājsistēma."
 
@@ -10259,6 +10261,7 @@ msgid "Poller Type"
 msgstr "Aptaujātaja tips"
 
 #: include/global_settings.php:1114
+#, fuzzy
 msgid "The poller type to use.  This setting will take affect at next polling interval."
 msgstr "Izmantojamais pollera veids. Šis iestatījums stāsies spēkā nākamajā aptaujas intervālā."
 
@@ -10268,9 +10271,10 @@ msgstr "Aptaujātaja sinhronizācijas intervāls"
 
 #: include/global_settings.php:1122
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
-msgstr "Noklusējuma aptaujas sinhronizācijas intervāls, kas jāizmanto, veidojot aptauju. Šis iestatījums ietekmēs attālo aptauju pārbaudes un atjaunināšanas biežumu."
+msgstr "Aptaujātaja noklusējuma sinhronizācijas intervāls, ko izmantot, veicot aptaujāšanu.  Šis iestatījums ietekmēs attālo aptaujātāju pārbaudes un atjaunināšanas biežumu."
 
 #: include/global_settings.php:1129
+#, fuzzy
 msgid "The polling interval in use.  This setting will affect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>"
 msgstr "Izmantotais aptaujas intervāls. Šis iestatījums ietekmēs to, cik bieži RRD faili tiek pārbaudīti un atjaunināti. <strong><u>PIEZĪME. Ja maināt šo vērtību, jums ir atkārtoti jāaizpilda poller kešatmiņa. Ja tas netiek darīts, var tikt zaudēti dati.</u></strong>"
 
@@ -10287,6 +10291,7 @@ msgid "Balance Process Load"
 msgstr "Līdzsvarot procesa slodzi"
 
 #: include/global_settings.php:1143
+#, fuzzy
 msgid "If you choose this option, Cacti will attempt to balance the load of each poller process by equally distributing poller items per process."
 msgstr "Ja izvēlaties šo opciju, Cacti mēģinās līdzsvarot katra poller procesa slodzi, vienādi sadalot poller vienumus katrā procesā."
 
