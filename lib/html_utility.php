@@ -465,7 +465,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 				$valid = true;
-				$values = preg_split('/,/', $_REQUEST[$name], NULL, PREG_SPLIT_NO_EMPTY);
+				$values = preg_split('/,/', $_REQUEST[$name], -1, PREG_SPLIT_NO_EMPTY);
 				foreach($values AS $number) {
 					if (!is_numeric($number)) {
 						$valid = false;
