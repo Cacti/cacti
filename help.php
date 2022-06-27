@@ -27,6 +27,7 @@ $guest_account = true;
 include('./include/auth.php');
 
 get_filter_request_var('page', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+get_filter_request_var('error', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
 if (isset_request_var('page') && !isset_request_var('error')) {
 	if (read_config_option('local_documentation') == 'on') {
