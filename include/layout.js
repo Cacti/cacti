@@ -1378,7 +1378,7 @@ function getCactiHelp(cactiPage) {
 				window.open(publicUrl, '_blank');
 			} else {
 				$.getJSON(privateUrl + '&error=missing', function(data) {
-		        	sessionMessage   = {
+					sessionMessage   = {
 						message: data.message,
 						level: MESSAGE_LEVEL_ERROR
 					};
@@ -1389,7 +1389,7 @@ function getCactiHelp(cactiPage) {
 		})
 		.fail(function(status, xhr) {
 			$.getJSON(privateUrl + '&error=unreach', function(data) {
-	        	sessionMessage   = {
+				sessionMessage   = {
 					message: data.message,
 					level: MESSAGE_LEVEL_ERROR
 				};
