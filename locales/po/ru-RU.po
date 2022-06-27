@@ -3,14 +3,15 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-06-18 06:37+0000\n"
-"Last-Translator: Coool <coool@mail.lv>\n"
+"PO-Revision-Date: 2022-06-28 04:16+0000\n"
+"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2493 lib/html.php:2523
@@ -353,7 +354,7 @@ msgstr "Графики [редактировать %s]"
 #: user_admin.php:2001
 #, php-format
 msgid "[edit: %s]"
-msgstr "[редакция: %s"
+msgstr "[изменить: %s]"
 
 #: aggregate_graphs.php:655 aggregate_graphs.php:770
 #, fuzzy
@@ -1763,7 +1764,6 @@ msgid "New Network Discovery Range"
 msgstr "Новый диапазон обнаружения сети"
 
 #: automation_networks.php:454 automation_networks.php:1079 host.php:1572
-#, fuzzy
 msgid "Data Collector"
 msgstr "Сборщик данных"
 
