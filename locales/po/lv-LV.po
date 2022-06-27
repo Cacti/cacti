@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-06-26 07:10+0000\n"
+"PO-Revision-Date: 2022-06-28 04:16+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -47,7 +47,9 @@ msgstr "Pateicības"
 #: about.php:62
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
-msgstr "Īpašs paldies %sTobi Oetiker%s, %sRRDtool%s radītājam un ļoti populārās %sMRTG%s bibliotēkas izveidotājam."
+msgstr ""
+"Īpašs paldies %sTobi Oetiker%s, %sRRDtool%s un ļoti populārās %sMRTG%s "
+"bibliotēkas izveidotājam."
 
 #: about.php:65
 msgid "The users of Cacti"
@@ -69,14 +71,21 @@ msgid "Cacti is licensed under the GNU GPL:"
 msgstr "Cacti ir licencēts saskaņā ar GNU GPL:"
 
 #: about.php:75 lib/installer.php:1665
-#, fuzzy
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "Šī programma ir bezmaksas programmatūra; jūs varat to izplatīt un/vai modificēt saskaņā ar GNU vispārējās publiskās licences noteikumiem, ko publicējis Free Software Foundation; vai nu Licences 2. versiju, vai (pēc jūsu izvēles) jebkuru jaunāku versiju."
+msgstr ""
+"Šī ir bezmaksas programmatūra. Jūs varat to izplatīt tālāk un/vai modificēt "
+"saskaņā ar GNU vispārējās publiskās licences (GNU General Public License) "
+"noteikumiem, ko publicējusi Brīvās programmatūras fonds (Free Software "
+"Foundation). Vai nu licences 2. versija, vai nu jebkura jaunāka versija (pēc "
+"jūsu izvēles)."
 
 #: about.php:77
-#, fuzzy
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-msgstr "Šī programma tiek izplatīta cerībā, ka tā būs noderīga, bet BEZ GARANTIJAS; pat bez netiešas garantijas par TIRDZNIECĪBU vai PIEMĒROTĪBU KONKRĒTAM MĒRĶIEM. Plašāku informāciju skatiet GNU vispārējā publiskajā licencē."
+msgstr ""
+"Šī programma tiek izplatīta cerībā, ka kādam tā būs noderīga, taču BEZ "
+"GARANTIJAS; pat bez netiešas garantijas par TIRDZNIECĪBU vai PIEMĒROTĪBU "
+"KONKRĒTAM MĒRĶIEM. Lai iegūtu papildinformāciju, skatiet GNU vispārējo "
+"publisko licenci (GNU General Public License)."
 
 #: aggregate_graphs.php:43 aggregate_templates.php:30
 #: automation_graph_rules.php:32 automation_networks.php:31
@@ -1217,7 +1226,7 @@ msgstr ""
 
 #: auth_profile.php:765
 msgid "Reset"
-msgstr ""
+msgstr "Atiestatīt"
 
 #: automation_devices.php:45
 msgid "Add Device"
@@ -1233,7 +1242,7 @@ msgstr ""
 #: lib/api_automation.php:172 lib/api_automation.php:1116
 #: lib/html_utility.php:939 pollers.php:47
 msgid "Down"
-msgstr "Uz leju"
+msgstr "Neaktīva (nedarbojoša, bezsaistē)"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -1241,7 +1250,7 @@ msgstr "Uz leju"
 #: lib/api_automation.php:171 lib/api_automation.php:1115
 #: lib/html_utility.php:945
 msgid "Up"
-msgstr "Uz augšu"
+msgstr "Aktīva (darbojoša, tiešsaistē)"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
@@ -3900,7 +3909,7 @@ msgstr ""
 #: include/global_arrays.php:1368 rrdcleaner.php:521
 #, php-format
 msgid "%d Month"
-msgstr ""
+msgstr "%d mēnesis"
 
 #: data_source_profiles.php:815 include/global_arrays.php:728
 #: include/global_arrays.php:729 include/global_arrays.php:730
@@ -3910,7 +3919,7 @@ msgstr ""
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Months"
-msgstr ""
+msgstr "%d mēneši"
 
 #: data_source_profiles.php:824 include/global_arrays.php:673
 #: include/global_arrays.php:724 include/global_arrays.php:1366
@@ -4230,7 +4239,7 @@ msgstr "Datu avota elements %s"
 
 #: data_sources.php:1088 data_templates.php:712
 msgid "New"
-msgstr ""
+msgstr "Jauns"
 
 #: data_sources.php:1147
 msgid "Data Source Debug"
@@ -4835,8 +4844,9 @@ msgid "[ Custom Graph List Applied - Filter FROM List ]"
 msgstr ""
 
 #: graph_view.php:623 graph_view.php:847
+#, fuzzy
 msgid "View"
-msgstr ""
+msgstr "Skats (Skatīt?)"
 
 #: graph_view.php:623 graph_view.php:847 include/global_arrays.php:1118
 msgid "View Graphs"
@@ -5367,7 +5377,7 @@ msgstr ""
 
 #: host.php:418
 msgid "Update this Field"
-msgstr ""
+msgstr "Atsvaidzināt šo lauku"
 
 #: host.php:441
 msgid "Change Device(s) SNMP Options"
@@ -5684,7 +5694,7 @@ msgstr ""
 
 #: host.php:1803
 msgid "Availability"
-msgstr ""
+msgstr "Pieejamība"
 
 #: host.php:1806
 msgid "The availability percentage based upon ping results since the counters were cleared for this Device."
@@ -6448,7 +6458,7 @@ msgstr "Ik pēc %d minūtēm"
 
 #: include/global_arrays.php:687 include/global_arrays.php:756
 msgid "Every Hour"
-msgstr ""
+msgstr "Katru stundu"
 
 #: include/global_arrays.php:688 include/global_arrays.php:689
 #: include/global_arrays.php:690 include/global_arrays.php:691
@@ -6460,7 +6470,7 @@ msgstr ""
 #: include/global_settings.php:2487
 #, php-format
 msgid "Every %d Hours"
-msgstr ""
+msgstr "Ik pēc %d stundām"
 
 #: include/global_arrays.php:692
 #, php-format
@@ -6471,7 +6481,7 @@ msgstr ""
 #: include/global_settings.php:1559 rrdcleaner.php:525
 #, php-format
 msgid "%d Year"
-msgstr ""
+msgstr "%d gads"
 
 #: include/global_arrays.php:754
 msgid "Disabled/Manual"
@@ -8807,7 +8817,7 @@ msgstr ""
 #: include/global_form.php:1320 include/global_form.php:1781 pollers.php:88
 #: sites.php:164
 msgid "Notes"
-msgstr ""
+msgstr "Piezīmes"
 
 #: include/global_form.php:1321 include/global_form.php:1782
 msgid "Enter notes to this host."
@@ -12324,15 +12334,15 @@ msgstr ""
 
 #: lib/api_device.php:1170
 msgid "Hostname:"
-msgstr ""
+msgstr "Resursdatora nosaukums: "
 
 #: lib/api_device.php:1171
 msgid "Location:"
-msgstr ""
+msgstr "Atrašanās vieta:"
 
 #: lib/api_device.php:1172
 msgid "Contact:"
-msgstr ""
+msgstr "Kontaktinformācija:"
 
 #: lib/api_device.php:1203 lib/functions.php:4868 lib/functions.php:4870
 #: lib/functions.php:4874
@@ -12382,7 +12392,7 @@ msgstr ""
 
 #: lib/auth.php:2015 lib/auth.php:2046 lib/html_tree.php:1016
 msgid "Device:"
-msgstr ""
+msgstr "Ierīce:"
 
 #: lib/auth.php:2725 lib/auth.php:2734
 msgid "This account has been locked."
@@ -13877,7 +13887,7 @@ msgstr ""
 
 #: lib/html_reports.php:169
 msgid "Subject"
-msgstr ""
+msgstr "Temats"
 
 #: lib/html_reports.php:171
 msgid "Cacti Report"
@@ -14112,7 +14122,7 @@ msgstr ""
 #: lib/html_reports.php:1391
 #, php-format
 msgid "Tree: %s"
-msgstr ""
+msgstr "Koks: %s"
 
 #: lib/html_reports.php:1399
 #, php-format
@@ -17733,7 +17743,7 @@ msgstr ""
 
 #: tree.php:1111
 msgid "Rename"
-msgstr ""
+msgstr "Pārdēvēt"
 
 #: tree.php:1138
 msgid "Branch Sorting"
@@ -18834,7 +18844,7 @@ msgstr ""
 
 #: utilities.php:1590
 msgid "Refresh Interval"
-msgstr ""
+msgstr "Atsvaidzināšanas intervāls"
 
 #: utilities.php:1668
 msgid "Overrun Warning"
