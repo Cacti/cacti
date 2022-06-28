@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-26 07:10+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-19 09:07-0400\nPO-Revision-Date: 2022-06-28 04:15+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2528 lib/html.php:2492
 msgid "About Cacti"
@@ -28,9 +28,9 @@ msgid "Thanks"
 msgstr "Pateicības"
 
 #: about.php:62
-#, fuzzy, php-format
+#, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
-msgstr "Īpašs paldies %s Tobi Oetiker %s, %s RRDtool %s un ļoti populāro %s MRTG %s radītājam."
+msgstr "Īpašs paldies %sTobi Oetiker%s, %sRRDtool%s un ļoti populārās %sMRTG%s bibliotēkas izveidotājam."
 
 #: about.php:65
 msgid "The users of Cacti"
@@ -49,14 +49,12 @@ msgid "Cacti is licensed under the GNU GPL:"
 msgstr "Cacti ir licencēts saskaņā ar GNU GPL:"
 
 #: about.php:75 lib/installer.php:1657
-#, fuzzy
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "Šī programma ir bezmaksas programmatūra; jūs varat to izplatīt un/vai modificēt saskaņā ar GNU vispārējās publiskās licences noteikumiem, ko publicējis Free Software Foundation; vai nu Licences 2. versiju, vai (pēc jūsu izvēles) jebkuru jaunāku versiju."
+msgstr "Šī ir bezmaksas programmatūra. Jūs varat to izplatīt tālāk un/vai modificēt saskaņā ar GNU vispārējās publiskās licences (GNU General Public License) noteikumiem, ko publicējusi Brīvās programmatūras fonds (Free Software Foundation). Vai nu licences 2. versija, vai nu jebkura jaunāka versija (pēc jūsu izvēles)."
 
 #: about.php:77
-#, fuzzy
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-msgstr "Šī programma tiek izplatīta cerībā, ka tā būs noderīga, bet BEZ GARANTIJAS; pat bez netiešas garantijas par TIRDZNIECĪBU vai PIEMĒROTĪBU KONKRĒTAM MĒRĶIEM. Plašāku informāciju skatiet GNU vispārējā publiskajā licencē."
+msgstr "Šī programma tiek izplatīta cerībā, ka kādam tā būs noderīga, taču BEZ GARANTIJAS; pat bez netiešas garantijas par TIRDZNIECĪBU vai PIEMĒROTĪBU KONKRĒTAM MĒRĶIEM. Lai iegūtu papildinformāciju, skatiet GNU vispārējo publisko licenci (GNU General Public License)."
 
 #: aggregate_graphs.php:43 aggregate_templates.php:30
 #: automation_graph_rules.php:32 automation_networks.php:31
@@ -1106,7 +1104,7 @@ msgstr "Dzēst ierīci"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:939 pollers.php:47
 msgid "Down"
-msgstr "Uz leju"
+msgstr "Neaktīva (nedarbojoša, bezsaistē)"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -1114,7 +1112,7 @@ msgstr "Uz leju"
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:945
 msgid "Up"
-msgstr "Uz augšu"
+msgstr "Aktīva (darbojoša, tiešsaistē)"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
@@ -3791,7 +3789,7 @@ msgstr "1 gads"
 #: include/global_arrays.php:1362 rrdcleaner.php:521
 #, php-format
 msgid "%d Month"
-msgstr "%d mēnesis"
+msgstr "%d mēnesis"
 
 #: data_source_profiles.php:810 include/global_arrays.php:726
 #: include/global_arrays.php:727 include/global_arrays.php:728
@@ -3801,7 +3799,7 @@ msgstr "%d mēnesis"
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Months"
-msgstr "%d mēneši"
+msgstr "%d mēneši"
 
 #: data_source_profiles.php:819 include/global_arrays.php:667
 #: include/global_arrays.php:722 include/global_arrays.php:1360
@@ -4714,8 +4712,9 @@ msgid "[ Custom Graph List Applied - Filter FROM List ]"
 msgstr "[Lietots pielāgoto grafiku saraksts — filtrs no saraksta]"
 
 #: graph_view.php:614 graph_view.php:838
+#, fuzzy
 msgid "View"
-msgstr "Skatīt"
+msgstr "Skats (Skatīt?)"
 
 #: graph_view.php:614 graph_view.php:838 include/global_arrays.php:1114
 msgid "View Graphs"
@@ -5259,7 +5258,7 @@ msgstr "Noklikšķiniet uz \"Turpināt\", lai mainītu tālāk norādītās ier�
 
 #: host.php:429
 msgid "Update this Field"
-msgstr "Atjauniniet šo lauku"
+msgstr "Atsvaidzināt šo lauku"
 
 #: host.php:452
 msgid "Change Device(s) SNMP Options"
@@ -6371,7 +6370,7 @@ msgstr "%3.1f minūtes"
 #: include/global_settings.php:1454 rrdcleaner.php:525
 #, php-format
 msgid "%d Year"
-msgstr "%d gads"
+msgstr "%d gads"
 
 #: include/global_arrays.php:752
 msgid "Disabled/Manual"
@@ -12084,7 +12083,7 @@ msgstr "Darbības laiks:"
 
 #: lib/api_device.php:1525
 msgid "Hostname:"
-msgstr "Saimniekdatora nosaukums:"
+msgstr "Resursdatora nosaukums: "
 
 #: lib/api_device.php:1526
 msgid "Location:"
@@ -12092,7 +12091,7 @@ msgstr "Atrašanās vieta:"
 
 #: lib/api_device.php:1527
 msgid "Contact:"
-msgstr "Kontaktpersona:"
+msgstr "Kontaktinformācija:"
 
 #: lib/api_device.php:1558 lib/functions.php:5191 lib/functions.php:5193
 #: lib/functions.php:5197
