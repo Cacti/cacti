@@ -1150,18 +1150,18 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	   exists and if not create it.
 	 */
 	if (read_config_option('extended_paths') == 'on') {
-		if (read_config_option('storage_location')) {
+		if (read_config_option('storage_location') > 0) {
 			if (false === rrdtool_execute('is_dir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
 				if (false === rrdtool_execute('mkdir ' . dirname($data_source_path), true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST') ) {
 					cacti_log("ERROR: Unable to create directory '" . dirname($data_source_path) . "'", false);
 				}
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
-			if ($config['is_web'] == false) {
+			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
 				if (mkdir(dirname($data_source_path), 0775)) {
 					if ($config['cacti_server_os'] != 'win32') {
-						$owner_id      = fileowner($config['rra_path']);
-						$group_id      = filegroup($config['rra_path']);
+						$owner_id = fileowner($config['rra_path']);
+						$group_id = filegroup($config['rra_path']);
 
 						if ((chown(dirname($data_source_path), $owner_id)) &&
 								(chgrp(dirname($data_source_path), $group_id))) {

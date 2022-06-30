@@ -737,7 +737,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 
 		if (is_array($rrd_fields['times']) && cacti_sizeof($rrd_fields['times'])) {
 			/* create the rrd if one does not already exist */
-			if (read_config_option('storage_location')) {
+			if (read_config_option('storage_location') > 0) {
 				$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
 			} else {
 				$file_exists = file_exists($rrd_path);
@@ -3579,6 +3579,7 @@ function rrdtool_parse_error($string) {
 			}
 		}
 	}
+
 	return $string;
 }
 
