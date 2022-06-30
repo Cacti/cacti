@@ -59,12 +59,11 @@ function get_matching_nodes() {
 			ON gtg.local_graph_id = gti.local_graph_id
 			LEFT JOIN sites AS s
 			ON s.id = h.site_id
-			WHERE gtg.local_graph_id > 0
-			AND (gtg.title_cache LIKE ?
-			OR h.description LIKE ?
-			OR h.hostname LIKE ?
-			OR gti.title LIKE ?
-			OR s.name LIKE ?)",
+			WHERE (gtg.local_graph_id > 0 AND gtg.title_cache LIKE ?)
+			OR (h.description LIKE ? AND gti.host_id > 0)
+			OR (h.hostname LIKE ? AND gti.host_id > 0)
+			OR (gti.title LIKE ?)
+			OR (s.name LIKE ? AND gti.site_id > 0)",
 			array($filter, $filter, $filter, $filter, $filter));
 	} else {
 		$matching = db_fetch_assoc("SELECT parent, graph_tree_id FROM graph_tree_items");
