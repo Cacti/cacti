@@ -724,6 +724,10 @@ function clog_regex_device($matches) {
 
 	static $host_cache = null;
 
+	if (!cacti_sizeof($host_cache)) {
+		$host_cache[0] = __('System Device');
+	}
+
 	$result = $matches[0];
 
 	$dev_ids = explode(',', str_replace(' ', '', $matches[2]));
@@ -738,7 +742,11 @@ function clog_regex_device($matches) {
 					array($id));
 			}
 
-			$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $id) . '\'>' . (isset($host_cache[$id]) ? html_escape($host_cache[$id]):$id) . '</a>' . $matches[3];
+			if ($id != 0) {
+				$result .= $matches[1] . '<a href=\'' . html_escape($config['url_path'] . 'host.php?action=edit&id=' . $id) . '\'>' . (isset($host_cache[$id]) ? html_escape($host_cache[$id]):$id) . '</a>' . $matches[3];
+			} else {
+				$result .= $matches[1] . (isset($host_cache[$id]) ? html_escape($host_cache[$id]):$id) . $matches[3];
+			}
 		}
 	}
 
