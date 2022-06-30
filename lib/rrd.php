@@ -699,7 +699,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 				}
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
-			if ($config['is_web'] == false) {
+			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
 				if (mkdir(dirname($data_source_path), 0775)) {
 					if ($config['cacti_server_os'] != 'win32') {
 						$owner_id = fileowner($config['rra_path']);
