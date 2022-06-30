@@ -1368,20 +1368,36 @@ function getMainWidth() {
 }
 
 function getCactiHelp(cactiPage) {
-	var url = urlPath + 'help.php?page=' + cactiPage;
+	var privateUrl = urlPath + 'help.php?page=' + cactiPage;
+	var cactiPagePublic = cactiPage.replace('.html', '.md');
+	var publicUrl  = 'https://docs.cacti.net/' + cactiPagePublic;
 
-	$.get(url, function(data) {
-		if (data != 'Not Found') {
-			window.open(data, '_blank');
-		} else {
-        	sessionMessage   = {
-				message: helpNotFound,
-				level: MESSAGE_LEVEL_ERROR
-			};
+	$.get(publicUrl)
+		.done(function(data, status, xhr) {
+			if (status == 'success' && ! data.includes('content you requested does not appear to exist')) {
+				window.open(publicUrl, '_blank');
+			} else {
+				$.getJSON(privateUrl + '&error=missing', function(data) {
+					sessionMessage   = {
+						message: data.message,
+						level: MESSAGE_LEVEL_ERROR
+					};
 
-			displayMessages();
+					displayMessages();
+				});
+			}
+		})
+		.fail(function(status, xhr) {
+			$.getJSON(privateUrl + '&error=unreach', function(data) {
+				sessionMessage   = {
+					message: data.message,
+					level: MESSAGE_LEVEL_ERROR
+				};
+
+				displayMessages();
+			});
 		}
-	});
+	);
 }
 
 function responsiveResizeGraphs(initialize) {

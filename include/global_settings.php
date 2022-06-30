@@ -428,6 +428,12 @@ $settings = array(
 			'default' => '',
 			'method' => 'checkbox',
 		),
+		'local_documentation' => array(
+			'friendly_name' => __('Local Page Help Only'),
+			'description' => __('By default Cacti page help is located at docs.cacti.net.  However, if your system does not have access to the Internet, you may download the documentation locally in HTML format and host it in the \'docs\' location of you Cacti server.  If you choose only to leverage the local location for page help documentation, check this checkbox.'),
+			'default' => '',
+			'method' => 'checkbox',
+		),
 		'deletion_verification' => array(
 			'friendly_name' => __('Deletion Verification'),
 			'description' => __('Prompt user before item deletion.'),
