@@ -3669,7 +3669,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 
 	/* see the size of the string */
 	$string    = trim($string);
-	$maxstring = (450 - (125 + 10)) / ($font_size / 0.9);
+	$maxstring = ceil((450 - (125 + 10)) / ($font_size / 0.9));
 	$stringlen = strlen($string) * $font_size;
 	$padding   = 5;
 
