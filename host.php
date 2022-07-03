@@ -1486,7 +1486,6 @@ function get_device_records(&$total_rows, $rows) {
 		LEFT JOIN (SELECT host_id, COUNT(*) AS data_sources FROM data_local GROUP BY host_id) AS dl
 		ON host.id=dl.host_id
 		$sql_where
-		GROUP BY host.id
 		$sql_order
 		$sql_limit";
 
