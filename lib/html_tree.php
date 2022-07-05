@@ -1073,9 +1073,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<select id='predefined_timespan' onChange='applyGraphTimespan()'>
 							<?php
-							$graph_timespans[GT_CUSTOM] = __('Custom');
+							$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
+
 							$start_val = 0;
-							$end_val = cacti_sizeof($graph_timespans);
+							$end_val   = cacti_sizeof($graph_timespans);
 
 							if (cacti_sizeof($graph_timespans)) {
 								foreach($graph_timespans as $value => $text) {

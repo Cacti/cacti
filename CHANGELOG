@@ -24,12 +24,12 @@ Cacti CHANGELOG
 -issue#4850: When structured paths are setup even if the web server has write access it won't create RRDfiles
 -issue#4851: Too Many Turns on Log Parsing
 -issue#4853: Deprecation warnings when attempting real-time Graphs with PHP8.1
+-issue#4860: Custom Timespan is lost when clicking other tree branches
 -feature#4820: Make it possible to only import certain components when importing packages
 -feature#4825: Add update_device.php script to cli folder
 -feature#4827: Move all Help pages to docs.cacti.net if the page is reachable
 -feature#4832: Show PHP INI locations during install
 -feature#4833: Detect PHP INI values that are different in the INI vs running config
-
 
 1.2.21
 -issue#4531: Correct duplicate keys within database

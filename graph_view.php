@@ -171,7 +171,8 @@ case 'ajax_reports':
 
 	break;
 case 'update_timespan':
-	// we really don't need to do anything.  The session variables have already been updated
+	$_SESSION['sess_current_date1'] = get_request_var('date1');
+	$_SESSION['sess_current_date2'] = get_request_var('date2');
 
 	break;
 case 'save':
