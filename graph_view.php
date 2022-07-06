@@ -55,16 +55,33 @@ function get_matching_nodes() {
 			FROM graph_tree_items AS gti
 			LEFT JOIN host AS h
 			ON h.id = gti.host_id
-			LEFT JOIN graph_templates_graph AS gtg
+			LEFT JOIN (
+				SELECT DISTINCT site_id
+				FROM host
+				WHERE description LIKE ?
+				OR hostname LIKE ?
+			) AS h2
+			ON h2.site_id = gti.site_id
+			LEFT JOIN (
+				SELECT local_graph_id
+				FROM graph_templates_graph
+				WHERE local_graph_id > 0
+				AND title_cache LIKE ?
+			) AS gtg
 			ON gtg.local_graph_id = gti.local_graph_id
-			LEFT JOIN sites AS s
-			ON s.id = h.site_id
-			WHERE (gtg.local_graph_id > 0 AND gtg.title_cache LIKE ?)
-			OR (h.description LIKE ? AND gti.host_id > 0)
-			OR (h.hostname LIKE ? AND gti.host_id > 0)
-			OR (gti.title LIKE ?)
-			OR (s.name LIKE ? AND gti.site_id > 0)",
-			array($filter, $filter, $filter, $filter, $filter));
+			LEFT JOIN (
+				SELECT id
+				FROM sites
+				WHERE name LIKE ?
+			) AS site
+			ON site.id = gti.site_id
+			WHERE (gti.title LIKE ?)
+			OR (h.description LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
+			OR (h.hostname LIKE ? AND (gti.host_id > 0 OR gti.site_id > 0))
+			OR (h2.site_id > 0)
+			OR (gtg.local_graph_id > 0)
+			OR (site.id > 0)",
+			array($filter, $filter, $filter, $filter, $filter, $filter, $filter));
 	} else {
 		$matching = db_fetch_assoc("SELECT parent, graph_tree_id FROM graph_tree_items");
 	}

@@ -299,17 +299,19 @@ function grow_dhtml_trees() {
 					'dots' : false
 				},
 				'state' : { 'key' : 'graph_tree_history' },
-				'search' : { 'case_sensitive' : false, 'show_only_matches' : true, 'ajax' : { 'url' : urlPath+'graph_view.php?action=ajax_search'} },
+				'search' : { 'case_sensitive' : false, 'show_only_matches' : false, 'ajax' : { 'url' : urlPath+'graph_view.php?action=ajax_search'} },
 				'plugins' : [ 'types', 'state', 'wholerow', 'search' ]
 			});
 		});
 
 		$('#searcher').keyup(function() {
-			if(search_to) { clearTimeout(search_to); }
-			search_to = setTimeout(function() {
-				var v = $('#searcher').val();
-				$('#jstree').jstree('search', v, false);
-			}, 250);
+			if ($('#searcher').val().length >= 3) {
+				if(search_to) { clearTimeout(search_to); }
+				search_to = setTimeout(function() {
+					var v = $('#searcher').val();
+					$('#jstree').jstree('search', v, false);
+				}, 250);
+			}
 		});
 
 		<?php print api_plugin_hook_function('top_graph_jquery_function');?>
