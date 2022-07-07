@@ -304,14 +304,14 @@ function grow_dhtml_trees() {
 			});
 		});
 
-		$('#searcher').keyup(function() {
-			if ($('#searcher').val().length >= 3) {
-				if(search_to) { clearTimeout(search_to); }
-				search_to = setTimeout(function() {
-					var v = $('#searcher').val();
+		$('#searcher').keyup(function() {	
+			if(search_to) { clearTimeout(search_to); }
+			search_to = setTimeout(function() {
+				var v = $('#searcher').val();
+				if (v.length >= 3) {
 					$('#jstree').jstree('search', v, false);
-				}, 250);
-			}
+				}
+			}, 250);
 		});
 
 		<?php print api_plugin_hook_function('top_graph_jquery_function');?>
