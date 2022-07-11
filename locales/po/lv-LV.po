@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.2.20\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-06-26 11:35-0400\n"
-"PO-Revision-Date: 2022-06-28 04:15+0000\n"
-"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
-"Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\n"
-"Language: lv-LV\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-06-26 11:35-0400\nPO-Revision-Date: 2022-07-11 17:25+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2530 lib/html.php:2492
 msgid "About Cacti"
@@ -1320,8 +1308,9 @@ msgstr "Iztīriet atklātās ierīces"
 #: user_admin.php:2240 utilities.php:506 utilities.php:948 utilities.php:2354
 #: utilities.php:2476 utilities.php:2484 utilities.php:2487 utilities.php:2493
 #: utilities.php:2512 utilities.php:2746
+#, fuzzy
 msgid "N/A"
-msgstr "Nav atbildes"
+msgstr "Nav pieejams"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
@@ -2741,10 +2730,8 @@ msgid "Highlights"
 msgstr ""
 
 #: changelog.php:62
-#, fuzzy
-#| msgid "Full Name"
 msgid "Full"
-msgstr "Vārds, uzvārds"
+msgstr "Pilns"
 
 #: changelog.php:96
 #, fuzzy, php-format
@@ -4786,9 +4773,8 @@ msgid "[ Custom Graph List Applied - Filter FROM List ]"
 msgstr "[Lietots pielāgoto grafiku saraksts — filtrs no saraksta]"
 
 #: graph_view.php:614 graph_view.php:838
-#, fuzzy
 msgid "View"
-msgstr "Skats (Skatīt?)"
+msgstr "Skats"
 
 #: graph_view.php:614 graph_view.php:838 include/global_arrays.php:1115
 msgid "View Graphs"
@@ -5601,7 +5587,7 @@ msgstr "Eksportēt ierīces"
 
 #: host.php:1633 lib/api_automation.php:171 lib/api_automation.php:1097
 msgid "Not Up"
-msgstr "Nav augšā"
+msgstr "Nedarbojas"
 
 #: host.php:1636 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html_utility.php:927 pollers.php:49
@@ -17232,7 +17218,7 @@ msgstr "piemērs -77.0374678"
 
 #: sites.php:141
 msgid "Zoom"
-msgstr "Tālummaiņa"
+msgstr "Palielināt"
 
 #: sites.php:142
 msgid "The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15."
