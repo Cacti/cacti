@@ -105,6 +105,13 @@ function setupTheme() {
 	let midWinter_Color_Mode_Auto = storage.get('midWinter_Color_Mode_Auto');
 	let midWinter_Font_Size = storage.get('midWinter_Font_Size');
 
+	// -- login, logout -- rewrite
+	if ($('.loginArea legend').length !== 0) {
+		$('.loginArea legend').text('Cacti Monitoring');
+		$('.loginTitle p').html('v'+cactiVersion);
+		$('#login_username, #login_password').attr('placeholder', '');
+	}
+
 	// -- standard mode -- add user tabs to CactiPageHeader
 	if ($('.usertabs').length === 0) {
 		$('.infoBar, .menuHr, #userDocumentation, #userCommunity').remove();

@@ -4,7 +4,9 @@
 @import url('./css/pre/keyframes.css?6d1d6a79b3c3bf783d25ff4a0cb83d59');
 
 /* Cacti core */
-@import url('./css/media/core.css?9aadb69fc9433c9f0651e07b511dff61') all;
+@import url('./css/media/core.css?ad4ed321bb6b1a387743e4af1388207f') all;
+@import url('./css/media/core-portrait.css?1b6db673b2a1f9c4ec954843f2e76ca5') screen and (max-width: 600px);
+@import url('./css/media/core-landscape.css?e0d3497d8324f1695738d1ad40328d39') screen and (min-width: 601px);
 @import url('./css/media/print.css?f8c80271650344f45629199331592924') print;
 
 /* standard mode */
@@ -14,11 +16,11 @@
 
 /* compact mode */
 @import url('./css/media/compact.css?0bda9f47e7be64d1c2709f24cd70ba00') screen;
-@import url('./css/media/compact-portrait.css?9e14ab5e5fa525193e5cc164dc5a2e0c') screen and (max-width: 600px);
-@import url('./css/media/compact-landscape.css?3c35b3dd09c0671a596130206e72113a') screen and (min-width: 601px);
+@import url('./css/media/compact-portrait.css?675a729d0536e2b789cd45c991ad506d') screen and (max-width: 600px);
+@import url('./css/media/compact-landscape.css?ce95d6c0a3041f8db65365a6d0dad1ca') screen and (min-width: 601px);
 
 /* extensions & addons */
 @import url('billboard.midwinter.css?e442c55720734e56c33de67e26a596de');
-@import url('jquery-ui.midwinter.css?debef6327c75b81352f0efd40c83f809');
+@import url('jquery-ui.midwinter.css?7c0c69ff83d0a0d9fc7d54b737c7f9d3');
 
 /* End of file */
