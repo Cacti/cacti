@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-07-12 05:37+0000\n"
+"PO-Revision-Date: 2022-07-19 01:34+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -1417,7 +1417,6 @@ msgstr ""
 #: support.php:414 user_admin.php:2358 utilities.php:387 utilities.php:1730
 #: utilities.php:1827 utilities.php:1835 utilities.php:1838 utilities.php:1841
 #: utilities.php:1847 utilities.php:2076
-#, fuzzy
 msgid "N/A"
 msgstr "Nav pieejams"
 
@@ -12425,7 +12424,7 @@ msgstr ""
 
 #: lib/auth.php:3015 lib/auth.php:3045 lib/auth.php:3078
 msgid "Unknown error"
-msgstr "Nezināma kļūda"
+msgstr "Nezināma kļūda "
 
 #: lib/auth.php:3018 lib/auth.php:3048 lib/auth.php:3081
 msgid "ERROR: Unable to find user"
