@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#4851: Too Many Turns on Log Parsing
 -issue#4853: Deprecation warnings when attempting real-time Graphs with PHP8.1
 -issue#4860: Custom Timespan is lost when clicking other tree branches
+-issue#4865: XML Pre-processing during Graph Creation throws error when Resource XML file inproperly formatted
 -feature#4820: Make it possible to only import certain components when importing packages
 -feature#4825: Add update_device.php script to cli folder
 -feature#4827: Move all Help pages to docs.cacti.net if the page is reachable

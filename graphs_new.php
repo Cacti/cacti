@@ -665,26 +665,37 @@ function graphs() {
 
 				$num_input_fields   = 0;
 				$num_visible_fields = 0;
+				$message_raised     = false;
 
 				if (cacti_sizeof($xml_array)) {
 					/* loop through once so we can find out how many input fields there are */
 					if (isset($xml_array['fields'])) {
 						foreach ($xml_array['fields'] as $field_name => $field_array) {
-							if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
-								$num_input_fields++;
-
-								if (!isset($total_rows)) {
-									$total_rows = db_fetch_cell_prepared('SELECT COUNT(*)
-										FROM host_snmp_cache
-										WHERE host_id = ?
-										AND snmp_query_id = ?
-										AND field_name = ?',
-										array($host['id'], $snmp_query['id'], $field_name));
+							if (!is_array($field_array)) {
+								if (!$message_raised) {
+									raise_message('xmlerror', __('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id of \'%s\'', $snmp_query['id']), MESSAGE_LEVEL_ERROR);
+									$message_raised = true;
 								}
+							} elseif (isset($field_array['direction'])) {
+								if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
+									$num_input_fields++;
+
+									if (!isset($total_rows)) {
+										$total_rows = db_fetch_cell_prepared('SELECT COUNT(*)
+											FROM host_snmp_cache
+											WHERE host_id = ?
+											AND snmp_query_id = ?
+											AND field_name = ?',
+											array($host['id'], $snmp_query['id'], $field_name));
+									}
+								}
+							} else {
+								raise_message('xmlfielderr' . $field_name, __('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'.  Field Name \'%s\' missing a \'direction\' attribute', $snmp_query['name'], $snmp_query['id'], $field_name), MESSAGE_LEVEL_ERROR);
 							}
 						}
-					} else {
+					} elseif (!$message_raised) {
 						raise_message('xmlerror', __('Error Parsing Data Query Resource XML file for Data Query \'%s\' with id \'%s\'', $snmp_query['name'], $snmp_query['id']), MESSAGE_LEVEL_ERROR);
+						$message_raised = true;
 					}
 				}
 
