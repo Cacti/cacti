@@ -26,7 +26,6 @@ class Net_Ping
 {
 	var $socket;
 	var $host;
-	var $port;
 	var $ping_status;
 	var $ping_response;
 	var $snmp_status;
@@ -423,10 +422,10 @@ class Net_Ping
 
 						/* get the end time after the packet was received */
 						$this->time = $this->get_time($this->precision);
-
+							
 						$errno = socket_last_error($this->socket);
 						socket_clear_error($this->socket);
-						if (($code == -1 || empty($code)) &&
+						if (($code == -1 || empty($code)) && 
 							($errno == EHOSTUNREACH || $errno == ECONNRESET || $errno == ECONNREFUSED)) {
 
 							/* set the return message */
