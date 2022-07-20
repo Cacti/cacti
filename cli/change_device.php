@@ -339,7 +339,7 @@ if (!is_numeric($host['poller_id']) || $host['poller_id'] < 0) {
 
 /* process snmp information */
 if ($host['snmp_version'] < 0 || $host['snmp_version'] > 3) {
-	print "ERROR: Invalid snmp version (${host['snmp_version']})\n";
+	print "ERROR: Invalid snmp version ({$host['snmp_version']})\n";
 	exit(1);
 } elseif ($host['snmp_version'] > 0) {
 	if ($host['snmp_port'] <= 1 || $host['snmp_port'] > 65534) {
@@ -364,7 +364,7 @@ if ($host['snmp_version'] < 3) {
 }
 
 if (!$quietMode) {
-	print "Changing device-id: $device_id to ${host['description']} (${host['hostname']}) as \"${host_templates[$host['host_template_id']]}\" using SNMP v${host['snmp_version']} with community \"${host['snmp_community']}\"\n";
+	print "Changing device-id: $device_id to {$host['description']} ({$host['hostname']}) as \"{$host_templates[$host['host_template_id']]}\" using SNMP v{$host['snmp_version']} with community \"{$host['snmp_community']}\"\n";
 }
 
 $host_id = api_device_save($device_id, $host['host_template_id'], $host['description'], $host['ip'],

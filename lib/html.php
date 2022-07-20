@@ -570,7 +570,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 			if ($return_to != '') {//code as in get_page_list()
 				$nav .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . $base_url . "header=false&" . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
 			} else {
-				$nav .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$base_url$page_var='+pageNo+url_add }</script>";
+				$nav .= "<script type='text/javascript'>function goto{$page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$base_url$page_var='+pageNo+url_add }</script>";
 			}
 		}
 	} else {
@@ -1410,7 +1410,7 @@ function draw_menu($user_menu = '') {
 			}
 
 			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>";
-			print "<ul role='menu' id='${id}_div' style='display:block;'>";
+			print "<ul role='menu' id='{$id}_div' style='display:block;'>";
 
 			/* pass 2: loop through each top level item and render it */
 			foreach ($header_array as $item_url => $item_title) {

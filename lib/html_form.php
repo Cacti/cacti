@@ -350,9 +350,9 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'checkbox_group':
 		if (isset($field_array['type']) && $field_array['type'] == 'flex') {
-			print "</td></tr><tr><td><div id='${field_name}_group' class='checkboxgroup1 flexContainer'>" . PHP_EOL;
+			print "</td></tr><tr><td><div id='{$field_name}_group' class='checkboxgroup1 flexContainer'>" . PHP_EOL;
 		} else {
-			print "<div id='${field_name}_group' class='checkboxgroup1'>" . PHP_EOL;
+			print "<div id='{$field_name}_group' class='checkboxgroup1'>" . PHP_EOL;
 		}
 
 		foreach ($field_array['items'] as $check_name => $check_array) {

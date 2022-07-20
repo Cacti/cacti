@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue#4853: Deprecation warnings when attempting real-time Graphs with PHP8.1
 -issue#4860: Custom Timespan is lost when clicking other tree branches
 -issue#4865: XML Pre-processing during Graph Creation throws error when Resource XML file inproperly formatted
+-issue#4866: Using ${var} in strings is deprecated, use {$var} instead in file
 -issue#4867: In Graph Management, filtering for "Device: None" shows all graphs
 -feature#4820: Make it possible to only import certain components when importing packages
 -feature#4825: Add update_device.php script to cli folder
