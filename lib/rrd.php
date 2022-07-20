@@ -2172,8 +2172,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_AREA:
 					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
 
-					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
-
+                    if (read_config_option("enable_rrdtool_gradient_support") == "on") {
+                        // End color is a 40% (0.4) darkened (negative number) version of the original color
+                        $end_color       = colourBrightness( "#" . $graph_item[ "hex" ], -0.4 );
+                        $txt_graph_items .= gradient( $data_source_name, $graph_item_color_code, $end_color . $graph_item[ "alpha" ], cacti_escapeshellarg( $graph_variables[ "text_format" ][ $graph_item_id ] . $hardreturn[ $graph_item_id ] ), 20, FALSE, $graph_item[ "alpha" ] );
+                    } else {
+                        $txt_graph_items .= $graph_item_types[ $graph_item[ 'graph_type_id' ] ] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg( $text_format . $hardreturn[ $graph_item_id ] ) . ' ';
+                    }
 					if ($graph_item['shift'] == CHECKED && abs($graph_item['value']) > 0) {      # create a SHIFT statement
 						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
 					}
@@ -3715,3 +3720,109 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 
 	return $image_data;
 }
+
+    /** Add gradient support for AREA type charts. This function adds several CDEF with different shading
+     * @param boolean 	$vname		- the data source name
+     * @param string 	$start_color	- the start color for the gradient
+     * @param string 	$end_color	- the end color for the gradient
+     * @param boolean 	$label		- any label attached to it
+     * @param string	$steps		- defaults to 20
+     * @param boolean 	$lower		- defaults to faulse
+     * @param string	$alpha		- Alpha channel to be used
+     * @return string			- the additional CDEF/AREA command lines for rrdtool
+     * License:			GPLv2
+     * Original Code		https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php
+     */
+    function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $label=FALSE, $steps=20, $lower=FALSE, $alpha='FF'){
+        $label = preg_replace("/'/","",$label);
+        if(preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$start_color,$matches)){
+            $r1=hexdec($matches[1]);
+            $g1=hexdec($matches[2]);
+            $b1=hexdec($matches[3]);
+        }
+        if(preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$end_color,$matches)){
+            $r2=hexdec($matches[1]);
+            $g2=hexdec($matches[2]);
+            $b2=hexdec($matches[3]);
+        }
+        $diff_r=$r2-$r1;
+        $diff_g=$g2-$g1;
+        $diff_b=$b2-$b1;
+        $spline =  "";
+        $spline_vname = "var".substr(sha1(rand()),1,4);
+        $vnamet = $vname.substr(sha1(rand()),1,4);
+        if(preg_match('/^([0-9]{1,3})%$/', $lower, $matches)){
+            $lower   = $matches[1];
+            $spline .= sprintf("CDEF:%sminimum=%s,100,/,%d,* ".RRD_NL, $vnamet, $vname, $lower);
+        }elseif(preg_match('/^([0-9]+)$/', $lower, $matches)){
+            $lower   = $matches[1];
+            $spline .= sprintf("CDEF:%sminimum=%s,%d,- ".RRD_NL, $vnamet, $vname, $lower);
+        }else{
+            $lower   = 0;
+            $spline .= sprintf("CDEF:%sminimum=%s,%s,- ".RRD_NL, $vnamet, $vname, $vname);
+        }
+        for ($i=$steps; $i>0; $i--){
+            $spline .=  sprintf("CDEF:%s%d=%s,%sminimum,-,%d,/,%d,*,%sminimum,+ ".RRD_NL,$spline_vname,$i,$vname,$vnamet,$steps,$i,$vnamet);
+        }
+        // We don't use alpha blending for the area right now
+        $alpha = 'ff';
+        for ($i=$steps; $i>0; $i--){
+            $factor=$i / $steps;
+            $r=round($r1 + $diff_r * $factor);
+            $g=round($g1 + $diff_g * $factor);
+            $b=round($b1 + $diff_b * $factor);
+            if (($i==$steps) and ($label!=FALSE) and (strlen($label)>2) ){
+                $spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s:\"%s\" ".RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha,$label);
+            }else{
+                $spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s ".RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha);
+            }
+        }
+        $spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s ".RRD_NL, $spline_vname,$steps,$r2,$g2,$b2,'00',$label);
+        return $spline;
+    }
+
+    /** Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
+     * @param boolean 	$hex		- The hex representation of a color
+     * @param string 	$percent	- the percentage to darken the given color. decimal number ( 0.4 -> 40% )
+     * @return string			- the darker version of the given color
+     * License:			GPLv2
+     * Original Code		http://www.barelyfitz.com/projects/csscolor/
+     */
+    function colourBrightness($hex, $percent) {
+        // Work out if hash given
+        $hash = '';
+        if (stristr($hex,'#')) {
+            $hex = str_replace('#','',$hex);
+            $hash = '#';
+        }
+        /// HEX TO RGB
+        $rgb = array(hexdec(substr($hex,0,2)), hexdec(substr($hex,2,2)), hexdec(substr($hex,4,2)));
+        //// CALCULATE
+        for ($i=0; $i<3; $i++) {                 // See if brighter or darker
+            if ($percent > 0) {
+                // Lighter
+                $rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1-$percent));
+            } else {
+                // Darker
+                $positivePercent = $percent - ($percent*2);
+                $rgb[$i] = round($rgb[$i] * (1-$positivePercent)); // round($rgb[$i] * (1-$positivePercent));
+            }
+            // In case rounding up causes us to go to 256
+            if ($rgb[$i] > 255) {
+                $rgb[$i] = 255;
+            }
+        }
+        //// RBG to Hex
+        $hex = '';
+        for($i=0; $i < 3; $i++) {
+            // Convert the decimal digit to hex
+            $hexDigit = dechex($rgb[$i]);
+            // Add a leading zero if necessary
+            if(strlen($hexDigit) == 1) {
+                $hexDigit = "0" . $hexDigit;
+            }
+            // Append to the hex string
+            $hex .= $hexDigit;
+        }
+        return $hash.$hex;
+    }
