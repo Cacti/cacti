@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -24,28 +24,56 @@
 
 include('./include/global.php');
 
-// If the user is not logged in, redirect them to the login page
-if (!isset($_SESSION['sess_user_id'])) {
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	}else{
-		header('Location: index.php');
-	}
-	header('Location: index.php');
-	exit;
+set_default_action();
+
+$action = get_request_var('action');
+switch ($action) {
+	case 'checkpass':
+		$error = secpass_check_pass(get_nfilter_request_var('password'));
+
+		if ($error != '') {
+			print $error;
+		} else {
+			print 'ok';
+		}
+
+		exit;
+
+		break;
+	default:
+		// If the user is not logged in, redirect them to the login page
+		if (!isset($_SESSION['sess_user_id'])) {
+			if (isset($_SERVER['HTTP_REFERER'])) {
+				header('Location: ' . $_SERVER['HTTP_REFERER']);
+			} else {
+				header('Location: index.php');
+			}
+
+			header('Location: index.php');
+			exit;
+		}
 }
 
-$user        = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
-$version     = db_fetch_cell('SELECT cacti FROM version');
-$auth_method = read_config_option('auth_method');
+$user = db_fetch_row_prepared('SELECT *
+	FROM user_auth
+	WHERE id = ?',
+	array($_SESSION['sess_user_id']));
 
-if ($auth_method != 1 && $user['realm'] != 0) {
-	raise_message('nodomainpassword');
+$version = CACTI_VERSION;
+
+if (!cacti_sizeof($user) || $user['realm'] != 0) {
+	if (!cacti_sizeof($user)) {
+		raise_message(44);
+	} else {
+		raise_message('nodomainpassword');
+	}
+
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	}else{
+	} else {
 		header('Location: index.php');
 	}
+
 	exit;
 }
 
@@ -54,19 +82,18 @@ if ($user['password_change'] != 'on') {
 
 	/* destroy session information */
 	kill_session_var('sess_user_id');
-	unset($_COOKIE[$cacti_session_name]);
-	setcookie($cacti_session_name, null, -1, $config['url_path']);
+	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	}else{
+	} else {
 		header('Location: index.php');
 	}
 	exit;
 }
 
 /* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
-if (sizeof($user) && $user['username'] == read_config_option('guest_user')) {
+if (cacti_sizeof($user) && $user['id'] == get_guest_account()) {
 	header('Location: graph_view.php');
 	exit;
 }
@@ -75,114 +102,149 @@ if (sizeof($user) && $user['username'] == read_config_option('guest_user')) {
 $bad_password = false;
 $errorMessage = '';
 
-/* set default action */
-set_default_action();
-
-switch (get_request_var('action')) {
+switch ($action) {
 case 'changepassword':
+	// Get current user
+	$user_id = intval($_SESSION['sess_user_id']);
+
+	// Get passwords entered for change
+	$password         = get_nfilter_request_var('password');
+	$password_confirm = get_nfilter_request_var('password_confirm');
+
+	// Get current password as entered
+	$current_password = get_nfilter_request_var('current_password');
+
 	// Secpass checking
-	$error = secpass_check_pass(get_nfilter_request_var('password'));
-	
+	$error = secpass_check_pass($password);
+
+	// Check new password passes basic checks
 	if ($error != 'ok') {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>$error</span>";
+		break;
 	}
-			
-	if (!secpass_check_history($_SESSION['sess_user_id'], get_nfilter_request_var('password'))) {
+
+	// Check user password history
+	if (!secpass_check_history($user_id, $password)) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('You cannot use a previously entered password!') . "</span>";
+		break;
 	}
-
-	// Get password options for the new password
-	if (function_exists('password_hash')) {
-		$password_new = password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
-	}else{
-		$password_new = '';
-	}
-	$password_old = md5(get_nfilter_request_var('password'));
-
-	// Get old password to compare against the database 
-	if (function_exists('password_hash')) {
-		$current_password_new = password_hash(get_nfilter_request_var('current_password'), PASSWORD_DEFAULT);
-	}else{
-		$current_password_new = '';
-	}
-	$current_password_old = md5(get_nfilter_request_var('current_password'));
 
 	// Password and Confirmed password checks
-	if ($user['password'] != $current_password_new && $user['password'] != $current_password_old) {
+	if ($password !== $password_confirm) {
 		$bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
+		$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . "</span>";
+		break;
 	}
 
-	if ($user['password'] == $password_new || $user['password'] == $password_old) {
+	// Compare current password with stored password
+	if ((!empty($user['password']) || !empty($current_password)) && !compat_password_verify($current_password, $user['password'])) {
+		$bad_password = true;
+		$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
+		break;
+	}
+
+	// Check new password does not match stored password
+	if (compat_password_verify($password, $user['password'])) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . "</span>";
+		break;
 	}
-	
-	if (get_nfilter_request_var('password') !== (get_nfilter_request_var('confirm'))) {
-	    $bad_password = true;
-		$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . "</span>";
-	}
-	
-	if ($bad_password == false && get_nfilter_request_var('password') == get_nfilter_request_var('confirm') && get_nfilter_request_var('password') != '') {
-		// Password change is good to go
+
+	// If password isn't blank, password change is good to go
+	if ($password != '') {
 		if (read_config_option('secpass_expirepass') > 0) {
-			db_execute_prepared("UPDATE user_auth 
-				SET lastchange = ? 
+			db_execute_prepared("UPDATE user_auth
+				SET lastchange = ?
 				WHERE id = ?
-				AND realm = 0 
-				AND enabled = 'on'", 
-				array(time(), intval($_SESSION['sess_user_id'])));
+				AND realm = 0
+				AND enabled = 'on'",
+				array(time(), $user_id));
 		}
 
 		$history = intval(read_config_option('secpass_history'));
 		if ($history > 0) {
-				$h = db_fetch_row_prepared("SELECT password, password_history 
-					FROM user_auth 
-					WHERE id = ? 
-					AND realm = 0 
-					AND enabled = 'on'", 
-					array($_SESSION['sess_user_id']));
+			$h = db_fetch_row_prepared("SELECT password, password_history
+				FROM user_auth
+				WHERE id = ?
+				AND realm = 0
+				AND enabled = 'on'",
+				array($user_id));
 
-				$op = $h['password'];
-				$h = explode('|', $h['password_history']);
-				while (count($h) > $history - 1) {
-					array_shift($h);
-				}
-				$h[] = $op;
-				$h = implode('|', $h);
+			$op = $h['password'];
+			$h = explode('|', $h['password_history']);
 
-				db_execute_prepared("UPDATE user_auth 
-					SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'", 
-					array($h, $_SESSION['sess_user_id']));
+			while (cacti_count($h) > $history - 1) {
+				array_shift($h);
+			}
+
+			$h[] = $op;
+			$h = implode('|', $h);
+
+			db_execute_prepared("UPDATE user_auth
+				SET password_history = ?
+				WHERE id = ?
+				AND realm = 0
+				AND enabled = 'on'",
+				array($h, $user_id));
 		}
 
-		db_execute_prepared('INSERT IGNORE INTO user_log 
-			(username, result, time, ip) 
-			VALUES (?, 3, NOW(), ?)', 
-			array($user['username'], $_SERVER['REMOTE_ADDR']));
+		db_execute_prepared('INSERT IGNORE INTO user_log
+			(username, result, time, ip)
+			VALUES (?, 3, NOW(), ?)',
+			array($user['username'], get_client_addr()));
 
-		db_execute_prepared("UPDATE user_auth 
-			SET must_change_password = '', password = ? 
-			WHERE id = ?", 
-			array($password_new != '' ? $password_new:$password_old, $_SESSION['sess_user_id']));
+		db_check_password_length();
+
+		db_execute_prepared("UPDATE user_auth
+			SET must_change_password = '', password = ?
+			WHERE id = ?",
+			array(compat_password_hash($password,PASSWORD_DEFAULT), $user_id));
+
+		// Clear the auth cache for the user
+		$token = '';
+		if (isset($_SERVER['HTTP_COOKIE']) && strpos($_SERVER['HTTP_COOKIE'], 'cacti_remembers') !== false) {
+			$parts = explode(';', $_SERVER['HTTP_COOKIE']);
+			foreach($parts as $p) {
+				if (strpos($p, 'cacti_remembers') !== false) {
+					$pparts = explode('%2C', $p);
+					if (isset($pparts[1])) {
+						$token = $pparts[1];
+						break;
+					}
+				}
+			}
+		}
+
+		if ($token != '') {
+			$sql_where = 'AND token != ' . db_qstr(hash('sha512', $token, false));
+		} else {
+			$sql_where = '';
+		}
+
+		db_execute_prepared("DELETE FROM user_auth_cache
+			WHERE user_id = ?
+			$sql_where",
+			array($_SESSION['sess_user_id']));
 
 		kill_session_var('sess_change_password');
 
-		/* ok, at the point the user has been sucessfully authenticated; so we must decide what to do next */
+		raise_message('password_success');
+
+		/* ok, at the point the user has been successfully authenticated; so we must decide what to do next */
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
 		$realm_id    = $user_auth_realm_filenames['index.php'];
-		$has_console = db_fetch_cell_prepared('SELECT realm_id 
-			FROM user_auth_realm 
-			WHERE user_id = ? AND realm_id = ?', 
-			array($_SESSION['sess_user_id'], $realm_id));
+		$has_console = db_fetch_cell_prepared('SELECT realm_id
+			FROM user_auth_realm
+			WHERE user_id = ? AND realm_id = ?',
+			array($user_id, $realm_id));
 
 		if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
 			if ($has_console) {
 				set_request_var('ref', 'index.php');
-			}else{
+			} else {
 				set_request_var('ref', 'graph_view.php');
 			}
 		}
@@ -198,12 +260,12 @@ case 'changepassword':
 				default:
 					api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 			}
-		}else{
+		} else {
 			header('Location: graph_view.php');
 		}
 		exit;
 
-	}else{
+	} else {
 		$bad_password = true;
 	}
 
@@ -227,90 +289,146 @@ if (read_config_option('secpass_minlen') > 0) {
 }
 
 if (read_config_option('secpass_reqmixcase') == 'on') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Must include mixed case');
+	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include mixed case');
 }
 
 if (read_config_option('secpass_reqnum') == 'on') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Must include at least 1 number');
+	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include at least 1 number');
 }
 
 if (read_config_option('secpass_reqspec') == 'on') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Must include at least 1 special character');
+	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Must include at least 1 special character');
 }
 
 if (read_config_option('secpass_history') != '0') {
-	$secpass_body .= (strlen($secpass_body) ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history')+1);
+	$secpass_body .= ($secpass_body != '' ? '<br>':'') . __('Cannot be reused for %d password changes', read_config_option('secpass_history')+1);
 }
 
 $secpass_tooltip .= $secpass_body;
 
-print "<!DOCTYPE html>\n";
-print "<html>\n";
-print "<head>\n";
-print "\t<title>" . __('Change Password') . "</title>\n";
-print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-print "\t<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
-print "\t<link href='" . $config['url_path'] . "include/" .  "/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/favicon.ico' rel='shortcut icon'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/cacti_logo.gif' rel='icon' sizes='96x96'>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-migrate.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.js'></script>\n";
-print "<script type='text/javascript'>var theme='" . get_selected_theme() . "';</script>\n";
-print "</head>\n";
-print "<body class='loginBody'>
-	<div class='loginLeft'></div>
-	<div class='loginCenter'>
-		<div class='loginArea'>
-			<div class='cactiLogoutLogo'></div>
-			<legend>" . __('Change Password') . "</legend>
-			<form name='login' method='post' action='" . basename($_SERVER['PHP_SELF']) . "'>
-				<input type='hidden' name='action' value='changepassword'>
-				<input type='hidden' name='ref' value='" . sanitize_uri(get_request_var('ref')) . "'>
-				<input type='hidden' name='name' value='" . (isset($user['username']) ? $user['username'] : '') . "'>
-				<div class='loginTitle'>
-					<p>" . __('Please enter your current password and your new<br>Cacti password.') . "</p>
-				</div>
-				<div class='cactiLogin'>
-					<table class='cactiLoginTable'>
-						<tr>
-							<td>" . __('Current password') . "</td>
-							<td><input type='password' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
-						</tr>
-						<tr>
-							<td>" . __('New password') . "</td>
-							<td><input type='password' name='password' autocomplete='off' size='20' placeholder='********'>" . display_tooltip($secpass_tooltip) ."</td>
-						</tr>
-						<tr>
-							<td>" . __('Confirm new password') . "</td>
-							<td><input type='password' name='confirm' autocomplete='off' size='20' placeholder='********'></td>
-						</tr>
-						<tr>
-							<td class='nowrap' colspan='2'><input type='submit' value='" . __('Save') . "'>
-						" . ($user['must_change_password'] != 'on' ? "<input type='button' onClick='window.history.go(-1)' value='" . __('Return') . "'>":"") . "
-							</td>
-						</tr>
-					</table>
-				</div>
-			</form>
-			<div class='loginErrors'>" . $errorMessage . "</div>
-		</div>
-		<div class='versionInfo'>" . __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT) . "</div>
-	</div>
-	<div class='loginRight'></div>
-	<script type='text/javascript'>
+$selectedTheme = get_selected_theme();
+
+$skip_current = (empty($user['password']));
+
+if ($skip_current) {
+	$title_message = __('Please enter your current password and your new<br>Cacti password.');
+} else {
+	$title_message = __('Please enter your new Cacti password.');
+}
+
+html_auth_header('change_password', __('Change Password'), __('Change Password'), $title_message);
+?>
+	<tr style='display:none'>
+		<td>
+			<input type='hidden' name='action' value='changepassword'>
+			<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
+			<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : '';?>'>
+		</td>
+	</tr>
+	<tr>
+<?php if ($skip_current) { ?>
+		<td><?php print __('Username');?></td>
+		<td class='nowrap'><input type='hidden' id='current' name='current_password' value=''><?php print $user['username'];?></td>
+<?php } else { ?>
+		<td><?php print __('Current password');?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='current-password' size='20' placeholder='********'></td>
+<?php } ?>
+	</tr>
+	<tr>
+		<td><?php print __('New password');?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='new-password' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
+	</tr>
+	<tr>
+		<td><?php print __('Confirm new password');?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='new-password' size='20' placeholder='********'></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td class='nowrap'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
+			<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":"";?>
+		</td>
+	</tr>
+<?php
+$secpass_minlen = read_config_option('secpass_minlen');
+
+html_auth_footer('change_password', $errorMessage, "
+	<script>
+
+	var minChars=$secpass_minlen;
+
+	function checkPassword() {
+		if ($('#password').val().length == 0) {
+			$('#pass').remove();
+			$('#passconfirm').remove();
+		} else if ($('#password').val().length < minChars) {
+			checkPasswordFinalize('" . __esc('Password Too Short') . "');
+		} else {
+			var options = {
+				url: 'auth_changepassword.php?action=checkpass',
+				funcEnd: 'checkPasswordReturn',
+				handle: false
+			}
+
+			var data = {
+				password: $('#password').val(),
+				password_confim: $('#password_confirm').val(),
+				__csrf_magic: csrfMagicToken
+			}
+
+			postUrl(options, data);
+		}
+	}
+
+	function checkPasswordReturn(options, data) {
+		checkPasswordFinalize(data);
+	}
+
+	function checkPasswordFinalize(data) {
+		var className = 'badpassword';
+		var classIcon = 'times';
+		if (data == 'ok') {
+			className = 'goodpassword';
+			classIcon = 'check';
+			data = '" . __esc('Password Validation Passes') . "';
+		}
+
+		$('#pass').remove();
+		$('#password').after('<div id=\"pass\" class=\"password ' + className + ' fa fa-' + classIcon + '\" title=\"'+data+'\"></div>');
+		$('.password').tooltip();
+		checkPasswordConfirm();
+	}
+
+	function checkPasswordConfirm() {
+		if ($('#password_confirm').val().length > 0) {
+			if ($('#password').val() != $('#password_confirm').val()) {
+				$('#passconfirm').remove();
+				$('#password_confirm').after('<div id=\"passconfirm\" class=\"passconfirm badpassword fa fa-times\" title=\"". __esc('Passwords do Not Match') . "\"></div>');
+				$('.passconfirm').tooltip();
+			} else {
+				$('#passconfirm').remove();
+				$('#password_confirm').after('<div id=\"passconfirm\" class=\"passconfirm goodpassword fa fa-check\" title=\"" . __esc('Passwords Match') . "\"></div>');
+				$('.passconfirm').tooltip();
+			}
+		} else {
+			$('#passconfirm').remove();
+		}
+	}
+
+	var password_change = $('#password_change').is(':checked');
+
 	$(function() {
 		$('#current').focus();
-		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+
+		/* clear passwords */
+		$('#password').val('');
+		$('#password_confirm').val('');
+
+		$('#password').keyup(function() {
+			checkPassword();
+		});
+
+		$('#password_confirm').keyup(function() {
+			checkPasswordConfirm();
+		});
 	});
-	</script>
-	</body>
-	</html>\n";
+	</script>");

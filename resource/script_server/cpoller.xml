@@ -1,0 +1,82 @@
+<poller>
+	<name>Cacti Data Collector Settings and Stats Data Query</name>
+	<script_path>|path_cacti|/scripts/ss_cpoller.php</script_path>
+	<script_function>ss_cpoller</script_function>
+	<script_server>php</script_server>
+	<arg_prepend></arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<output_delimeter>!</output_delimeter>
+	<index_order>pollerId</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>Check#|chosen_order_field|</index_title_format>
+
+	<fields>
+		<pollerId>
+			<name>Data Collector Id</name>
+			<direction>input</direction>
+			<query_name>pollerId</query_name>
+		</pollerId>
+		<pollerName>
+			<name>Poller Name</name>
+			<direction>input</direction>
+			<query_name>pollerName</query_name>
+		</pollerName>
+		<processCount>
+			<name>Process Count</name>
+			<direction>output</direction>
+			<query_name>processCount</query_name>
+		</processCount>
+		<threadCount>
+			<name>Thread Count</name>
+			<direction>output</direction>
+			<query_name>threadCount</query_name>
+		</threadCount>
+		<pollerTime>
+			<name>Poller Time</name>
+			<direction>output</direction>
+			<query_name>pollerTime</query_name>
+		</pollerTime>
+		<maxTime>
+			<name>Maximum Poller Time</name>
+			<direction>output</direction>
+			<query_name>maxTime</query_name>
+		</maxTime>
+		<minTime>
+			<name>Minimum Poller Time</name>
+			<direction>output</direction>
+			<query_name>minTime</query_name>
+		</minTime>
+		<avgTime>
+			<name>Average Poller Time</name>
+			<direction>output</direction>
+			<query_name>avgTime</query_name>
+		</avgTime>
+		<recacheTime>
+			<name>Recache Time</name>
+			<direction>output</direction>
+			<query_name>recacheTime</query_name>
+		</recacheTime>
+		<recacheDevices>
+			<name>Recache Devices</name>
+			<direction>output</direction>
+			<query_name>recacheDevices</query_name>
+		</recacheDevices>
+		<getSNMP>
+			<name>SNMP Gets</name>
+			<direction>output</direction>
+			<query_name>getSNMP</query_name>
+		</getSNMP>
+		<getScript>
+			<name>Scripts Calls</name>
+			<direction>output</direction>
+			<query_name>getScript</query_name>
+		</getScript>
+		<getScriptServer>
+			<name>Scripts Calls</name>
+			<direction>output</direction>
+			<query_name>getScriptServer</query_name>
+		</getScriptServer>
+	</fields>
+</poller>

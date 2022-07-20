@@ -1,8 +1,8 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,27 +23,20 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
 
 ini_set('max_execution_time', '0');
-
-$no_http_headers = true;
-
-include(dirname(__FILE__) . '/../include/global.php');
-include_once($config['base_path'] . '/lib/api_graph.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug   = FALSE;
+$debug   = false;
 $host_id = '';
 $filter  = '';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -63,41 +56,41 @@ if (sizeof($parms)) {
 				break;
 			case '--debug':
 			case '-d':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
-}else{
+} else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
-	exit;
+	exit(1);
 }
 
 /* form the 'where' clause for our main sql query */
-if (strlen($filter)) {
+if ($filter != '') {
 	$sql_where = "AND (graph_templates_graph.title_cache LIKE '%" . $filter . "%'" .
 		" OR graph_templates.name LIKE '%" . $filter . "%')";
-}else{
+} else {
 	$sql_where = '';
 }
 
 if (strtolower($host_id) == 'all') {
 	/* Act on all graphs */
-}elseif (substr_count($host_id, ',')) {
+} elseif (substr_count($host_id, ',')) {
 	$hosts = explode(',', $host_id);
 	$host_str = '';
 
@@ -108,11 +101,11 @@ if (strtolower($host_id) == 'all') {
 	}
 
 	$sql_where .= " AND graph_local.host_id IN ($host_str)";
-}elseif ($host_id == '0') {
+} elseif ($host_id == '0') {
 	$sql_where .= ' AND graph_local.host_id=0';
-}elseif (!empty($host_id) && $host_id > 0) {
+} elseif (!empty($host_id) && $host_id > 0) {
 	$sql_where .= ' AND graph_local.host_id=' . $host_id;
-}else{
+} else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
 	exit;
@@ -133,7 +126,7 @@ $graph_list = db_fetch_assoc("SELECT
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Interrupting during rename can cause issues\n";
-debug("There are '" . sizeof($graph_list) . "' Graphs to rename");
+debug("There are '" . cacti_sizeof($graph_list) . "' Graphs to rename");
 
 $i = 1;
 foreach ($graph_list as $graph) {
@@ -147,21 +140,21 @@ foreach ($graph_list as $graph) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Reapply graph Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Reapply graph Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: poller_graphs_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=[string] [--debug]\n\n";
-	echo "A utility to reapply Cacti Graph naming rules to existing Graphs in bulk.\n\n";
-	echo "Required:\n";
-	echo "    --host-id=id|all|N1,N2,... - The devices id, 'all' or a comma delimited list of id's\n\n";
-	echo "Optional:\n";
-	echo "    --filter=string            - A Graph Template name or Graph Title to search for\n";
-	echo "    --debug                    - Display verbose output during execution\n\n";
+	print "\nusage: poller_graphs_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=[string] [--debug]\n\n";
+	print "A utility to reapply Cacti Graph naming rules to existing Graphs in bulk.\n\n";
+	print "Required:\n";
+	print "    --host-id=id|all|N1,N2,... - The devices id, 'all' or a comma delimited list of id's\n\n";
+	print "Optional:\n";
+	print "    --filter=string            - A Graph Template name or Graph Title to search for\n";
+	print "    --debug                    - Display verbose output during execution\n\n";
 }
 
 function debug($message) {

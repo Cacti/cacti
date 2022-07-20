@@ -1,0 +1,48 @@
+		<tr>
+			<td>
+				<label for='login_username'>{{ __('Username') }}</label>
+			</td>
+			<td>
+				<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='{{ auth.username }}' placeholder='{{ __esc('Username') }}'>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for='login_password'>{{ __('Password') }}</label>
+			</td>
+			<td>
+				<input type='password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
+			</td>
+		</tr>
+{% if auth.method == '3' or auth.method == '4' %}
+		<tr>
+			<td>
+				<label for='realm'>{{ __('Realm') }}</label>
+			</td>
+			<td>
+				<select id='realm' name='realm'>
+{% if (cacti_sizeof(auth.realms)) %}
+	{% for index, realm in realms %}
+					<option value='{{ index }}' {% if realm['selected'] %} selected="selected"{% endif %}>{{ html_escape(realm['name']) }}</option>\n
+	{% endfor %}
+{% endif %}
+				</select>
+			</td>
+		</tr>
+{% endif %}
+
+{% if auth.cache %}
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me'{% if auth.remember %} checked{% endif %}>
+				<label for='remember_me'>{{ __('Keep me signed in') }}</label>
+			</td>
+		</tr>
+{% endif %}
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type='submit' class='ui-button ui-corner-all ui-widget' value='{{ __esc('Login') }}'>
+			</td>
+		</tr>

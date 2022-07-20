@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -50,7 +50,7 @@ function get_children($vals, &$i) {
 
 	$prevtag = ''; $j = 0;
 
-	while (++$i < count($vals)) {
+	while (++$i < cacti_count($vals)) {
 		switch ($vals[$i]['type']) {
 		case 'cdata':
 			array_push($children, $vals[$i]['value']);
@@ -59,9 +59,9 @@ function get_children($vals, &$i) {
 			/* if the value is an empty string, php doesn't include the 'value' key
 			in its array, so we need to check for this first */
 			if (isset($vals[$i]['value'])) {
-				$children{($vals[$i]['tag'])} = $vals[$i]['value'];
-			}else{
-				$children{($vals[$i]['tag'])} = '';
+				$children[$vals[$i]['tag']] = $vals[$i]['value'];
+			} else {
+				$children[$vals[$i]['tag']] = '';
 			}
 
 			break;
@@ -73,7 +73,7 @@ function get_children($vals, &$i) {
 				$prevtag = $vals[$i]['tag'];
 			}
 
-			$children{($vals[$i]['tag'])} = get_children($vals,$i);
+			$children[$vals[$i]['tag']] = get_children($vals,$i);
 			break;
 		case 'close':
 			return $children;
@@ -82,14 +82,17 @@ function get_children($vals, &$i) {
 }
 
 function rrdxport2array($data) {
+	// Bug force encoding to UTF-8
+	$data = str_replace(array('US-ASCII', 'ISO-8859-1'), 'UTF-8', $data);
+
 	/* bug #1436 */
 	/* scan XML for bad data RRDtool 1.2.30 */
 	$array = explode("\n", $data);
 
-	if (sizeof($array)){
+	if (cacti_sizeof($array)){
 		if ((substr(trim($array[0]),0,1)) == '<') {
 			/* continue */
-		}else{
+		} else {
 			$new_array = array();
 			foreach($array as $element) {
 				if ((substr(trim($element),0,1)) == '<') {
@@ -106,11 +109,12 @@ function rrdxport2array($data) {
 	/* mvo voncken@mailandnews.com
 	original ripped from  on the php-manual:gdemartini@bol.com.br
 	to be used for data retrieval(result-structure is Data oriented) */
-	$p = xml_parser_create();
+	$p = xml_parser_create('UTF-8');
 	$vals = array();
 	$index = array();
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
+	xml_parser_set_option($p, XML_OPTION_TARGET_ENCODING, 'UTF-8');
 	xml_parse_into_struct($p, $data, $vals, $index);
 	xml_parser_free($p);
 
@@ -132,7 +136,7 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 
 	$prevtag = ''; $j = 0;
 
-	while (++$i < count($vals)) {
+	while (++$i < cacti_count($vals)) {
 		switch ($vals[$i]['type']) {
 		case 'cdata':
 			array_push($children, $vals[$i]['value']);
@@ -154,10 +158,10 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 						$children['col' . $column] = $vals[$i]['value'];
 						break;
 					default:
-						$children{($vals[$i]['tag'])} = $vals[$i]['value'];
+						$children[$vals[$i]['tag']] = $vals[$i]['value'];
 				}
-			}else{
-				$children{($vals[$i]['tag'])} = '';
+			} else {
+				$children[$vals[$i]['tag']] = '';
 			}
 
 			break;
@@ -173,7 +177,7 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 				case 'meta':
 				case 'xport':
 				case 'legend':
-					$children{($vals[$i]['tag'])} = get_rrd_children($vals,$i,$column,$row);
+					$children[$vals[$i]['tag']] = get_rrd_children($vals,$i,$column,$row);
 					break;
 				case 'data':
 					break;

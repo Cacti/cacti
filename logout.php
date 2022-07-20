@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -22,6 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
+define('CACTI_IN_INSTALL', 1);
 include('./include/auth.php');
 
 global $config;
@@ -31,105 +32,28 @@ set_default_action();
 api_plugin_hook('logout_pre_session_destroy');
 
 /* Clear session */
-setcookie(session_name(), '', time() - 3600, $config['url_path']);
-session_destroy();
+cacti_cookie_logout();
+cacti_session_destroy();
 
-$version = db_fetch_cell('SELECT cacti FROM version');
+$version = CACTI_VERSION;
 
 api_plugin_hook('logout_post_session_destroy');
 
+/* allow for plugin based logout page */
+if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) === OPER_MODE_RESKIN) {
+	exit;
+}
+
 /* Check to see if we are using Web Basic Auth */
 if (get_request_var('action') == 'timeout') {
-	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
-	print "<html>\n";
-	print "<head>\n";
-	print "\t<title>Logout of Cacti</title>\n";
-	print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-    print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
-	print "\t<link href='" . $config['url_path'] . "include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
-	print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
-	print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/favicon.ico' rel='shortcut icon'>\n";
-	print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/images/cacti_logo.gif' rel='icon' sizes='96x96'>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-migrate.js' language='javascript'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.js'></script>\n";
-	print "<script type='text/javascript'>var theme='" . get_selected_theme() . "';</script>\n";
-	print "</head>\n";
-	print "<body class='logoutBody'>
-	<div class='logoutLeft'></div>
-	<div class='logoutCenter'>
-		<div class='logoutArea'>
-			<div class='cactiLogoutLogo'></div>
-			<legend>" . __('Automatic Logout') . "</legend>
-			<div class='logoutTitle'>
-				<p>" . __('You have been logged out of Cacti due to a session timeout.') . "</p>
-				<p>" . __('Please close your browser or %sLogin Again%s', '</p><center>[<a href="index.php">', '</a>]</center>') . "
-			</div>
-			<div class='logoutErrors'></div>
-		</div>
-		<div class='versionInfo'>" . __('Version %s', $version) . " | " . COPYRIGHT_YEARS_SHORT . "</div>
-	</div>
-	<div class='logoutRight'></div>
-	<script type='text/javascript'>
-	$(function() {
-		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
-	});
-	</script>
-	</body>
-	</html>\n";
-}elseif (read_config_option('auth_method') == '2') {
-	clear_auth_cookie();
-
-	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
-		exit;
-	}
-
-	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
-	print "<html>\n";
-	print "<head>\n";
-	print "\t<title>Logout of Cacti</title>\n";
-	print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-	print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.css' type='text/css' rel='stylesheet'>\n";
-    print "\t<link href='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
-	print "\t<link href='" . $config['url_path'] . "images/favicon.ico' rel='shortcut icon'>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-migrate.js' language='javascript'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
-	print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . get_selected_theme() . "/main.js'></script>\n";
-	print "<script type='text/javascript'>var theme='" . get_selected_theme() . "';</script>\n";
-	print "</head>\n";
-	print "<body class='logoutBody'>
-	<div class='logoutLeft'></div>
-	<div class='logoutCenter'>
-		<div class='logoutArea'>
-			<div class='cactiLogoutLogo'></div>
-			<legend>" . __('Automatic Logout') . "</legend>
-			<div class='logoutTitle'>
-				<p>" . __('You have been logged out of Cacti due to a session timeout.') . "</p>
-				<p>" . __('Please close your browser or %sLogin Again%s', '</p><center>[<a href="index.php">', '</a>]</center>') . "
-			</div>
-			<div class='logoutErrors'></div>
-		</div>
-	</div>
-	<div class='logoutRight'></div>
-	<script type='text/javascript'>
-	$(function() {
-		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
-	});
-	</script>
-	</body>
-	</html>\n";
-}else{
+	html_auth_header('logout', __('Logout of Cacti'),  __('Automatic Logout'), __('You have been logged out of Cacti due to a session timeout.'));
+	print '<div>' . __('Please close your browser or %sLogin Again%s', '[<a href="index.php">', '</a>]') . '</div>';
+	html_auth_footer('logout');
+} elseif (get_request_var('action') == 'disabled') {
+	html_auth_header('disabled', __('Logout of Cacti'), __('Automatic Logout'), __('You have been logged out of Cacti due to an account suspension.'));
+	print '<div>' . __('Please close your browser or %sLogin Again%s', '[<a href="index.php">', '</a>]') . '</div>';
+	html_auth_footer('disabled');
+} else {
 	/* Default action */
 	clear_auth_cookie();
 

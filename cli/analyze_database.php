@@ -1,8 +1,8 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,14 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$no_http_headers = true;
-
-include(dirname(__FILE__) . '/../include/global.php');
+require(__DIR__ . '/../include/cli_check.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -38,11 +31,11 @@ array_shift($parms);
 
 global $debug;
 
-$debug = FALSE;
+$debug = false;
 $form  = '';
 $start = time();
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -54,34 +47,40 @@ if (sizeof($parms)) {
 		switch ($arg) {
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print "ERROR: Invalid Parameter " . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
 
-echo "Analyzing All Cacti Database Tables\n";
+print "Analyzing All Cacti Database Tables\n";
 
 $tables = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
 
-if (sizeof($tables)) {
+if (cacti_sizeof($tables)) {
 	foreach($tables AS $table) {
-		echo "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
-		$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
-		echo ($status == 0 ? ' Failed' : ' Successful') . "\n";
+		if (db_binlog_enabled()) {
+			print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "' without writing to the binlog";
+			$status = db_execute('ANALYZE TABLE NO_WRITE_TO_BINLOG ' . $table['Tables_in_' . $database_default] . $form);
+		} else {
+			print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
+			$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
+		}
+		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
 	}
 
 	cacti_log('ANALYSIS STATS: Analyzing Cacti Tables Complete.  Total time ' . (time() - $start) . ' seconds.', false, 'SYSTEM');
@@ -89,17 +88,17 @@ if (sizeof($tables)) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Analyze Database Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Analyze Database Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: analyze_database.php [-d|--debug]\n\n";
-	echo "A utility to recalculate the cardinality of indexes within the Cacti database.\n";
-	echo "It's important to periodically run this utility expecially on larger systems.\n\n";
-	echo "Optional:\n";
-	echo "-d | --debug - Display verbose output during execution\n\n";
+	print "\nusage: analyze_database.php [-d|--debug]\n\n";
+	print "A utility to recalculate the cardinality of indexes within the Cacti database.\n";
+	print "It's important to periodically run this utility especially on larger systems.\n\n";
+	print "Optional:\n";
+	print "-d | --debug - Display verbose output during execution\n\n";
 }

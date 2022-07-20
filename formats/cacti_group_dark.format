@@ -12,11 +12,19 @@ body {
 	color: snow;
 }
 
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	border: none;
+	text-align: center;
+	align-content: center;
+	width: 100%;
+}
+
 .report_table {
 	background-color:#161616;
-	align: center;
-	border:0;
-	width:100%;
+	border: 0;
+	width: 100%;
     border: 3px double #666666; 
     padding: 4px;
 	margin-left: auto;
@@ -31,9 +39,9 @@ body {
 
 .title {
 	background-color:#222222;
-	font-size:16pt;
-	text-align:left;
-	align:center;
+	font-size: 16pt;
+	text-align: left;
+	margin: auto;
     border: 2px double #222222; 
     padding: 3px;
 }
@@ -47,14 +55,15 @@ body {
 .image_row {
 }
 
-.image_column {	align:center;
+.image_column {	
+	margin: auto;
 }
 
 .image {
 }
 
 .text_row {
-	background-color:#222222;
+	background-color: #222222;
 }
 
 .text {
@@ -66,9 +75,9 @@ body {
 }
 
 .header_table {
-	background-color:#222222;
-	align: center;
-	width:100%;
+	background-color: #222222;
+	text-align: center;
+	width: 100%;
     border: 3px ridge #222222; 
     padding: 4px;
 	margin-left: auto;
@@ -76,35 +85,35 @@ body {
 }
 
 .header_row {
-	background-color:#222222;
+	background-color: #222222;
 }
 
 .header {
-	background-color:#222222;
-	font-size:16pt;
-	text-align:left;
-	align:center;
-	color:#FFF;
+	background-color: #222222;
+	font-size: 16pt;
+	text-align: left;
+	margin: auto;
+	color: #FFF;
 }
 
 .left {
-	text-align:left;
+	text-align: left;
 }
 
 .right {
-	text-align:right;
+	text-align: right;
 }
 
 .center {
-	text-align:center;
+	text-align: center;
 }
 
 .footer {
-	background-color:#222222;
-	font-size:10pt;
-	text-align:left;
-	align:center;
-	color:#FFF;
+	background-color: #222222;
+	font-size: 10pt;
+	text-align: left;
+	align: center;
+	color: #FFF;
 }
 </style>
 <table class='header_table'>
@@ -112,7 +121,7 @@ body {
 <tr><td>
 <REPORT>
 </td></tr>
-<tr class='header_row'><td class='footer'>Copyright &copy; 2004-2016 - The Cacti Group</td></tr>
+<tr class='header_row'><td class='footer'>Copyright &copy; 2004-2021 - <a href="http://www.cacti.net">The Cacti Group</a></td></tr>
 </table>
 </body>
 </html>

@@ -1,0 +1,17 @@
+{
+    "messages": {
+        "": {
+            "domain": "messages",
+            "lang": "en",
+            "plural-forms": "nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
+        },
+        "one file": [
+            "1 plik",
+            "2,3,4 pliki",
+            "5-21 plik\u00f3w"
+        ],
+        "single": [
+            "test"
+        ]
+    }
+}

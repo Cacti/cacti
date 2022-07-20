@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -76,16 +76,16 @@ function form_save() {
 
 			if ($gprint_preset_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		if (is_error_message()) {
-			header('Location: gprint_presets.php?header=false&action=edit&id=' . (empty($gprint_preset_id) ? get_nfilter_request_var('id') : $gprint_preset_id));
+			header('Location: gprint_presets.php?action=edit&id=' . (empty($gprint_preset_id) ? get_nfilter_request_var('id') : $gprint_preset_id));
 			exit;
-		}else{
-			header('Location: gprint_presets.php?header=false');
+		} else {
+			header('Location: gprint_presets.php');
 
 			exit;
 		}
@@ -102,7 +102,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -113,7 +113,7 @@ function form_actions() {
 			}
 		}
 
-		header('Location: gprint_presets.php?header=false');
+		header('Location: gprint_presets.php');
 
 		exit;
 	}
@@ -122,13 +122,13 @@ function form_actions() {
 	$gprint_list = ''; $i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$gprint_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
+			$gprint_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
 			$gprint_array[$i] = $matches[1];
 
 			$i++;
@@ -139,9 +139,9 @@ function form_actions() {
 
 	form_start('gprint_presets.php');
 
-	html_start_box($gprint_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($gprint_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($gprint_array) && sizeof($gprint_array)) {
+	if (isset($gprint_array) && cacti_sizeof($gprint_array)) {
 		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -150,11 +150,12 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete GPRINT Preset(s)') ."'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
 		}
-	}else{
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one GPRINT Preset.') ."</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') ."' onClick='cactiReturnTo()'>";
+	} else {
+		raise_message(40);
+		header('Location: gprint_presets.php');
+        exit;
 	}
 
 	print "<tr>
@@ -182,14 +183,14 @@ function gprint_presets_edit() {
 
 	if (!isempty_request_var('id')) {
 		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('GPRINT Presets [edit: %s]', htmlspecialchars($gprint_preset['name']));
-	}else{
+		$header_label = __esc('GPRINT Presets [edit: %s]', $gprint_preset['name']);
+	} else {
 		$header_label = __('GPRINT Presets [new]');
 	}
 
 	form_start('gprint_presets.php', 'gprint_presets');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -198,7 +199,7 @@ function gprint_presets_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('gprint_presets.php');
 }
@@ -209,32 +210,31 @@ function gprint_presets() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_graphs' => array(
-			'filter' => FILTER_VALIDATE_REGEXP, 
+			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
@@ -246,7 +246,7 @@ function gprint_presets() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -262,49 +262,51 @@ function gprint_presets() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('GPRINTs');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						<input type="checkbox" id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+						<span>
+							<input type="checkbox" id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+							<label for='has_graphs'><?php print __('Has Graphs');?></label>
+						</span>
 					</td>
 					<td>
-						<label for='has_graphs'><?php print __('Has Graphs');?></label>
-					</td>
-					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' name='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 
 			function applyFilter() {
-				strURL = 'gprint_presets.php?filter='+$('#filter').val()+'&rows='+$('#rows').val()+'&page='+$('#page').val()+'&has_graphs='+$('#has_graphs').is(':checked')+'&header=false';
-				loadPageNoHeader(strURL);
+				strURL  = 'gprint_presets.php';
+				strURL += '?filter='+$('#filter').val();
+				strURL += '&rows='+$('#rows').val();
+				strURL += '&has_graphs='+$('#has_graphs').is(':checked');
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'gprint_presets.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'gprint_presets.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {
@@ -335,21 +337,21 @@ function gprint_presets() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%')";
-	}else{
+		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
 		$sql_having = 'HAVING graphs>0';
-	}else{
+	} else {
 		$sql_having = '';
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(rows)
+		COUNT(`rows`)
 		FROM (
-			SELECT gp.id AS rows,
+			SELECT gp.id AS `rows`,
 			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
 			FROM graph_templates_gprint AS gp
 			LEFT JOIN graph_templates_item AS gti
@@ -358,7 +360,10 @@ function gprint_presets() {
 			GROUP BY gp.id
 			$sql_having
 		) AS rs");
-			
+
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
 	$gprint_list = db_fetch_assoc("SELECT rs.*,
 		SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
 		SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
@@ -372,10 +377,42 @@ function gprint_presets() {
 		$sql_where
 		GROUP BY rs.id
 		$sql_having
-		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		$sql_order
+		$sql_limit");
 
-	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('GPRINTs'), 'page', 'main');
+	$display_text = array(
+		'name' => array(
+			'display' => __('GPRINT Preset Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name of this GPRINT Preset.')
+		),
+		'gprint_text' => array(
+			'display' => __('Format'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The GPRINT format string.')
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'tip' => __('GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.')
+		),
+		'graphs' => array(
+			'display' => __('Graphs Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Graphs using this GPRINT.')
+		),
+		'templates' => array(
+			'display' => __('Templates Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Graphs Templates using this GPRINT.')
+		)
+	);
+
+	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('GPRINTs'), 'page', 'main');
 
 	form_start('gprint_presets.php', 'chk');
 
@@ -383,39 +420,33 @@ function gprint_presets() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$display_text = array(
-		'name'      => array('display' => __('GPRINT Preset Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this GPRINT Preset.')),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.')), 
-		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this GPRINT.')),
-		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this GPRINT.'))
-	);
-
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($gprint_list)) {
+	if (cacti_sizeof($gprint_list)) {
 		foreach ($gprint_list as $gp) {
 			if ($gp['graphs'] == 0 && $gp['templates'] == 0) {
 				$disabled = false;
-			}else{
+			} else {
 				$disabled = true;
 			}
 
             form_alternate_row('line' . $gp['id'], false, $disabled);
 			form_selectable_cell(filter_value($gp['name'], get_request_var('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']), $gp['id']);
-            form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($gp['graphs']), $gp['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($gp['templates']), $gp['id'], '', 'text-align:right');
+            form_selectable_ecell($gp['gprint_text'], $gp['id'], '', 'right');
+            form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'right');
+            form_selectable_cell(number_format_i18n($gp['graphs'], '-1'), $gp['id'], '', 'right');
+            form_selectable_cell(number_format_i18n($gp['templates'], '-1'), $gp['id'], '', 'right');
             form_checkbox_cell($gp['name'], $gp['id'], $disabled);
             form_end_row();
 		}
-	}else{
-		print "<tr class='tableRow'><td colspan='4'><em>" . __('No GPRINT Presets') . "</em></td></tr>\n";
+	} else {
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No GPRINT Presets') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($gprint_list)) {
+	if (cacti_sizeof($gprint_list)) {
 		print $nav;
 	}
 

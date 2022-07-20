@@ -1,0 +1,51 @@
+/* Definition of a custom color style sheet used by the other CSS' */
+
+html {
+    --hue: 233;
+    --accent-hue: 240;
+    --special-hue: 233;
+    --progress-hue: 208;
+    --text-color-normal: hsl(var(--hue), 7%, 50%);
+    --text-color-light: hsl(var(--hue), 7%, 75%);
+    --text-color-lighter: hsl(var(--hue), 7%, 95%);
+    --text-color-richer: hsl(var(--hue), 50%, 72%);
+    --text-color-highlight: hsl(var(--accent-hue), 4%, 95%);
+    --background: hsl(var(--hue), 19%, 17%);
+    --background-content: hsl(var(--hue), 23%, 14%);
+    --background-filter: hsl(var(--hue), 23%, 14%);
+    --background-navigation: hsl(var(--hue), 19%, 17%);
+    --background-highlight: hsl(var(--hue), 19%, 17%);
+    --background-progress: hsl(var(--progress-hue), 84%,40%);
+    --border-color: hsla(var(--hue), 0%, 100%, 20%);
+    --border-color-hightlight: hsl(var(--hue), 0%, 75%);
+    --scrollbar-thumb: hsl(var(--hue), 7%, 50%);
+}
+html[data-theme-color='light'] {
+    --black: 0;
+    --hue: 210;
+    --special-hue: 208;
+    --text-color-normal: hsl(var(--hue), 0%, 0%);
+    --text-color-light: hsl(var(--hue), 7%, 53%);
+    --text-color-lighter: hsl(var(--hue), 7%, 95%);
+    --background: hsl(var(--hue), 0%, 100%);
+    --background-content: hsl(var(--hue), 8%, 95%);
+    --background-filter: hsl(var(--hue), 17%, 18%);
+    --background-navigation: hsl(var(--hue), 12%, 27%);
+    --background-highlight: hsl(var(--special-hue), 84%, 40%);
+    --background-progress: hsl(var(--black), 0%, 75%);
+    --border-color: hsl(var(--hue), 0%, 75%);
+    --border-color-hightlight: hsl(var(--hue), 0%, 75%);
+}
+
+html[data-theme-color='light',data-theme-mode='legacy'] {
+    --special-hue: 208;
+    --background-navigation: hsl(var(--special-hue), 84%, 40%);
+}
+
+html.color-theme-in-transition,
+html.color-theme-in-transition *,
+html.color-theme-in-transition *:before,
+html.color-theme-in-transition *:after {
+    transition: all 750ms !important;
+    transition-delay: 0 !important;
+}

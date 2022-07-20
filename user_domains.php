@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,6 +23,7 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
 $actions = array(
@@ -84,8 +85,13 @@ function form_save() {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
 
 			if ($domain_id) {
+				// Disable template user from logging in
+				db_execute_prepared('UPDATE user_auth
+					SET enabled=""
+					WHERE id = ?', array($save['user_id']));
+
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 
@@ -119,19 +125,21 @@ function form_save() {
 				$save['search_filter']     = form_input_validate(get_nfilter_request_var('search_filter'),     'search_filter',   '', true, 3);
 				$save['specific_dn']         = form_input_validate(get_nfilter_request_var('specific_dn'),         'specific_dn',       '', true, 3);
 				$save['specific_password']   = form_input_validate(get_nfilter_request_var('specific_password'),   'specific_password', '', true, 3);
+                                $save['cn_full_name']        = get_nfilter_request_var('cn_full_name');
+                                $save['cn_email']            = get_nfilter_request_var('cn_email');
 
 				if (!is_error_message()) {
 					$insert_id = sql_save($save, 'user_domains_ldap', 'domain_id', false);
 
 					if ($insert_id) {
 						raise_message(1);
-					}else{
+					} else {
 						raise_message(2);
 					}
 				}
 			}
 		}
-	}elseif (isset_request_var('save_component_domain')) {
+	} elseif (isset_request_var('save_component_domain')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('domain_id');
 		get_filter_request_var('type');
@@ -149,13 +157,13 @@ function form_save() {
 
 			if ($domain_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 	}
 
-	header('Location: user_domains.php?header=false&action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
+	header('Location: user_domains.php?action=edit&domain_id=' . (empty($domain_id) ? get_nfilter_request_var('domain_id') : $domain_id));
 }
 
 function form_actions() {
@@ -166,44 +174,45 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-				for ($i=0;($i<count($selected_items));$i++) {
+			if (get_nfilter_request_var('drp_action') == '1') { // delete
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					domain_remove($selected_items[$i]);
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
-				for ($i=0;($i<count($selected_items));$i++) {
+			} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					domain_disable($selected_items[$i]);
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
-				for ($i=0;($i<count($selected_items));$i++) {
+			} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					domain_enable($selected_items[$i]);
 				}
-			}elseif (get_nfilter_request_var('drp_action') == '4') { /* default */
-				if (sizeof($selected_items) > 1) {
+			} elseif (get_nfilter_request_var('drp_action') == '4') { // default
+				if (cacti_sizeof($selected_items) > 1) {
 					/* error message */
-				}else{
-					for ($i=0;($i<count($selected_items));$i++) {
+				} else {
+					for ($i=0;($i<cacti_count($selected_items));$i++) {
 						domain_default($selected_items[$i]);
 					}
 				}
 			}
 		}
 
-		header('Location: user_domains.php?header=false');
+		header('Location: user_domains.php');
 		exit;
 	}
 
 	/* setup some variables */
-	$d_list = ''; $d_array = array();
+	$d_list = '';
+	$d_array = array();
 
 	/* loop through each of the data queries and process them */
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$d_list .= '<li>' . db_fetch_cell_prepared('SELECT domain_name FROM user_domains WHERE domain_id = ?', array($matches[1])) . '</li>';
+			$d_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT domain_name FROM user_domains WHERE domain_id = ?', array($matches[1]))) . '</li>';
 			$d_array[] = $matches[1];
 		}
 	}
@@ -214,35 +223,35 @@ function form_actions() {
 
 	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($d_array) && sizeof($d_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+	if (isset($d_array) && cacti_sizeof($d_array)) {
+		if (get_nfilter_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following User Domain.', 'Click \'Continue\' to delete following User Domains.', sizeof($d_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following User Domain.', 'Click \'Continue\' to delete following User Domains.', cacti_sizeof($d_array)) . "</p>
 					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', sizeof($d_array)) . "'>";
-		}else if (get_nfilter_request_var('drp_action') == '2') { /* disable */
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', cacti_sizeof($d_array)) . "'>";
+		}else if (get_nfilter_request_var('drp_action') == '2') { // disable
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to disable the following User Domain.', 'Click \'Continue\' to disable following User Domains.', sizeof($d_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to disable the following User Domain.', 'Click \'Continue\' to disable following User Domains.', cacti_sizeof($d_array)) . "</p>
 					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', sizeof($d_array)) . "'>";
-		}else if (get_nfilter_request_var('drp_action') == '3') { /* enable */
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', cacti_sizeof($d_array)) . "'>";
+		}else if (get_nfilter_request_var('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', sizeof($d_array)) . "</p>
+					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', cacti_sizeof($d_array)) . "</p>
 					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', sizeof($d_array)) . "'>";
-		}else if (get_nfilter_request_var('drp_action') == '4') { /* default */
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', cacti_sizeof($d_array)) . "'>";
+		}else if (get_nfilter_request_var('drp_action') == '4') { // default
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to make the following the following User Domain the default one.') . "</p>
@@ -250,18 +259,19 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Make Selected Domain Default') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Make Selected Domain Default') . "'>";
 		}
-	}else{
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one User Domain.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+	} else {
+		raise_message(40);
+		header('Location: user_domains.php');
+		exit;
 	}
 
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($d_array) ? serialize($d_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -304,8 +314,8 @@ function domain_edit() {
 
 	if (!isempty_request_var('domain_id')) {
 		$domain = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', array(get_request_var('domain_id')));
-		$header_label = __('User Domain [edit: %s]', $domain['domain_name']);
-	}else{
+		$header_label = __esc('User Domain [edit: %s]', $domain['domain_name']);
+	} else {
 		$header_label = __('User Domain [new]');
 	}
 
@@ -354,11 +364,12 @@ function domain_edit() {
 
 	$fields_domain_ldap_edit = array(
 		'server' => array(
-			'friendly_name' => __('Server'),
-			'description' => __('The dns hostname or ip address of the server.'),
+			'friendly_name' => __('Server(s)'),
+			'description' => __('A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.'),
 			'method' => 'textbox',
 			'value' => '|arg1:server|',
 			'default' => read_config_option('ldap_server'),
+			'size' => 80,
 			'max_length' => '255'
 			),
 		'port' => array(
@@ -461,7 +472,7 @@ function domain_edit() {
 			'description' => __('Search filter to use to locate the user in the LDAP directory, such as for windows: <i>"(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))"</i> or for OpenLDAP: <i>"(&(objectClass=account)(uid=&lt;username&gt))"</i>.  "&lt;username&gt" is replaced with the username that was supplied at the login prompt.'),
 			'method' => 'textbox',
 			'value' => '|arg1:search_filter|',
-			'max_length' => '255'
+			'max_length' => '512'
 			),
 		'specific_dn' => array(
 			'friendly_name' => __('Search Distinguished Name (DN)'),
@@ -477,6 +488,24 @@ function domain_edit() {
 			'value' => '|arg1:specific_password|',
 			'max_length' => '255'
 			),
+		'cn_header' => array(
+			'friendly_name' => __('LDAP CN Settings'),
+			'method' => 'spacer'
+			),
+		'cn_full_name' => array(
+			'friendly_name' => __('Full Name'),
+			'description' => __('Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) '),
+			'method' => 'textbox',
+			'value' => '|arg1:cn_full_name|',
+			'max_length' => '255'
+			),
+		'cn_email' => array(
+			'friendly_name' => __('eMail'),
+			'description' => __('Field that will replace the email taken from LDAP. (on windows: mail) '),
+			'method' => 'textbox',
+			'value' => '|arg1:cn_email|',
+			'max_length' => '255'
+			),
 		'save_component_domain_ldap' => array(
 			'method' => 'hidden',
 			'value' => '1'
@@ -485,26 +514,26 @@ function domain_edit() {
 
 	form_start('user_domains.php');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array(),
 		'fields' => inject_form_variables($fields_domain_edit, (isset($domain) ? $domain : array()))
 		));
 
-	html_end_box();
+	html_end_box(true, true);
 
 	if (!isempty_request_var('domain_id')) {
 		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array(get_request_var('domain_id')));
 
-		html_start_box( __('Domain Properties'), '100%', '', '3', 'center', '');
+		html_start_box( __('Domain Properties'), '100%', true, '3', 'center', '');
 
 		draw_edit_form(array(
 			'config' => array(),
 			'fields' => inject_form_variables($fields_domain_ldap_edit, (isset($domain) ? $domain : array()))
 			));
 
-		html_end_box();
+		html_end_box(true, true);
 	}
 
 	?>
@@ -515,7 +544,7 @@ function domain_edit() {
 			$('#row_group_dn').show();
 			$('#row_group_attrib').show();
 			$('#row_group_member_type').show();
-		}else{
+		} else {
 			$('#row_group_header').hide();
 			$('#row_group_dn').hide();
 			$('#row_group_attrib').hide();
@@ -525,31 +554,37 @@ function domain_edit() {
 
 	function initSearch() {
 		switch($('#mode').val()) {
-		case "0":
+		case '0':
 			$('#row_search_base_header').hide();
 			$('#row_search_base').hide();
 			$('#row_search_filter').hide();
 			$('#row_specific_dn').hide();
 			$('#row_specific_password').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			break;
-		case "1":
+		case '1':
 			$('#row_search_base_header').show();
 			$('#row_search_base').show();
 			$('#row_search_filter').show();
 			$('#row_specific_dn').hide();
 			$('#row_specific_password').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			break;
-		case "2":
+		case '2':
 			$('#row_search_base_header').show();
 			$('#row_search_base').show();
 			$('#row_search_filter').show();
 			$('#row_specific_dn').show();
 			$('#row_specific_password').show();
+			$('#row_cn_full_name').show();
+			$('#row_cn_email').show();
 			break;
 		}
 	}
 
-	$(function(data) {
+	$(function() {
 		initSearch();
 		initGroupMember();
 
@@ -573,28 +608,27 @@ function domains() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'domain_name', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'domain_name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK, 
-			'default' => 'ASC', 
+			'filter' => FILTER_CALLBACK,
+			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
@@ -604,7 +638,7 @@ function domains() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -620,48 +654,45 @@ function domains() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Domains');?>
 					</td>
 					<td>
-						<select id='rows' name="rows" onChange="applyFilter()">
+						<select id='rows' onChange="applyFilter()">
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						<input id='refresh' type='button' value='<?php print __x('filter: use', 'Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input id='clear' type='button' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __x('filter: use', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 		</form>
 		<script type='text/javascript'>
 		function applyFilter() {
 			strURL  = 'user_domains.php?rows=' + $('#rows').val();
 			strURL += '&filter=' + $('#filter').val();
-			strURL += '&page=' + $('#page').val();
-			strURL += '&header=false';
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		}
 
 		function clearFilter() {
-			strURL = 'user_domains.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'user_domains.php?clear=1';
+			loadUrl({url:strURL})
 		}
 
-		$(function(data) {
+		$(function() {
 			$('#refresh').click(function() {
 				applyFilter();
 			});
@@ -684,9 +715,10 @@ function domains() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (domain_name LIKE '%%" . get_request_var('filter') . "%%') ||
-			(type LIKE '%%" . get_request_var('filter') . "%%')";
-	}else{
+		$sql_where = 'WHERE
+			domain_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR type LIKE '     . db_qstr('%' . get_request_var('filter') . '%');
+	} else {
 		$sql_where = '';
 	}
 
@@ -701,7 +733,7 @@ function domains() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('User Domains'), 'page', 'main');
+	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('User Domains'), 'page', 'main');
 
 	form_start('user_domains.php', 'chk');
 
@@ -710,34 +742,38 @@ function domains() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'domain_name' => array( __('Domain Name'), 'ASC'),
-		'type' => array( __('Domain Type'), 'ASC'),
-		'defdomain' => array( __('Default'), 'ASC'),
-		'user_id' => array( __('Effective User'), 'ASC'),
-		'enabled' => array( __('Enabled'), 'ASC'));
+		'domain_name'  => array(__('Domain Name'), 'ASC'),
+		'type'         => array(__('Domain Type'), 'ASC'),
+		'defdomain'    => array(__('Default'), 'ASC'),
+		'user_id'      => array(__('Effective User'), 'ASC'),
+		'cn_full_name' => array(__('CN FullName'), 'ASC'),
+		'cn_email'     => array(__('CN eMail'), 'ASC'),
+		'enabled'      => array(__('Enabled'), 'ASC'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($domains)) {
+	if (cacti_sizeof($domains)) {
 		foreach ($domains as $domain) {
 			/* hide system types */
 			form_alternate_row('line' . $domain['domain_id'], true);
 			form_selectable_cell(filter_value($domain['domain_name'], get_request_var('filter'), 'user_domains.php?action=edit&domain_id=' . $domain['domain_id']), $domain['domain_id']);
-			form_selectable_cell($domain_types{$domain['type']}, $domain['domain_id']);
-			form_selectable_cell( ($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
-			form_selectable_cell( ($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
-			form_selectable_cell( ($domain['enabled'] == 'on' ? __('Yes'):__('No') ), $domain['domain_id']);
+			form_selectable_cell($domain_types[$domain['type']], $domain['domain_id']);
+			form_selectable_cell(($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
+			form_selectable_ecell(($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
+			form_selectable_ecell(db_fetch_cell_prepared('SELECT cn_full_name FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
+			form_selectable_ecell(db_fetch_cell_prepared('SELECT cn_email FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
+			form_selectable_cell($domain['enabled'] == 'on' ? __('Yes'):__('No'), $domain['domain_id']);
 			form_checkbox_cell($domain['domain_name'], $domain['domain_id']);
 			form_end_row();
 		}
-	}else{
-		print '<tr><td><em>' . __('No User Domains Found') . '</em></td></tr>';
+	} else {
+		print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No User Domains Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
 
-	if (sizeof($domains)) {
+	if (cacti_sizeof($domains)) {
 		print $nav;
 	}
 

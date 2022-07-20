@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,6 +23,7 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
 $at_actions = array(
@@ -35,36 +36,38 @@ set_default_action();
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
-
 		break;
+
 	case 'ajax_dnd':
 		automation_template_dnd();
-
 		break;
+
 	case 'actions':
 		form_actions();
-
 		break;
-    case 'movedown':
-        automation_movedown();
 
-        header('Location: automation_templates.php?header=false');
+	case 'movedown':
+		automation_movedown();
+		header('Location: automation_templates.php');
 		break;
-    case 'moveup':
-        automation_moveup();
 
-        header('Location: automation_templates.php?header=false');
-		break;
-    case 'remove':
-        automation_remove();
+	case 'moveup':
+		automation_moveup();
 
-        header('Location: automation_templates.php?header=false');
+		header('Location: automation_templates.php');
 		break;
+
+	case 'remove':
+		automation_remove();
+		header('Location: automation_templates.php');
+		break;
+
 	case 'edit':
 		top_header();
 		template_edit();
 		bottom_footer();
 		break;
+
 	default:
 		top_header();
 		template();
@@ -77,46 +80,24 @@ function automation_template_dnd() {
 	get_filter_request_var('id');
 	/* ================= Input validation ================= */
 
-	if (!isset_request_var('template_ids') || !is_array(get_nfilter_request_var('template_ids'))) exit;
+	if (isset_request_var('template_ids') && is_array(get_nfilter_request_var('template_ids'))) {
+		$aids     = get_nfilter_request_var('template_ids');
+		$sequence = 1;
 
-	/* template table contains two row defined as 'nodrag&nodrop' */
-	unset($_REQUEST['template_ids'][0]);
-	unset($_REQUEST['template_ids'][1]);
+		foreach($aids as $id) {
+			$id = str_replace('line', '', $id);
+			input_validate_input_number($id);
 
-	/* delivered template ids has to be exactly the same like we have stored */
-	$old_order = array();
+			db_execute_prepared('UPDATE automation_templates
+				SET sequence = ?
+				WHERE id = ?',
+				array($sequence, $id));
 
-	$i = 1;
-	foreach(get_nfilter_request_var('template_ids') as $sequence => $id) {
-		if (empty($id)) continue;
-		$new_order[$i] = str_replace('line', '', $id);
-		$i++;
-	}
-
-	$items = db_fetch_assoc('SELECT id, sequence FROM automation_templates ORDER BY sequence');
-
-	if (sizeof($items)) {
-		foreach($items as $item) {
-			$old_order[$item['sequence']] = $item['id'];
+			$sequence++;
 		}
-	} else {
-		exit;
 	}
 
-	if (sizeof(array_diff($new_order, $old_order))>0) exit;
-
-	/* the set of sequence numbers has to be the same too */
-	if (sizeof(array_diff_key($new_order, $old_order))>0) exit;
-	/* ==================================================== */
-
-	foreach($new_order as $sequence => $id) {
-		input_validate_input_number($sequence);
-		input_validate_input_number($id);
-
-		db_execute_prepared('UPDATE automation_templates SET sequence = ? WHERE id = ?', array($sequence, $id));
-	}
-
-	header('Location: automation_templates.php?header=false');
+	header('Location: automation_templates.php');
 	exit;
 }
 
@@ -139,7 +120,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
-	
+
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -150,20 +131,20 @@ function form_actions() {
 			}
 		}
 
-		header('Location: automation_templates.php?header=false');
+		header('Location: automation_templates.php');
 		exit;
 	}
 
 	/* setup some variables */
 	$at_list = ''; $i = 0;
 
-	while (list($var,$val) = each($_POST)) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$at_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', array($matches[1]))) . '</li>';
+			$at_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', array($matches[1]))) . '</li>';
 			$at_array[$i] = $matches[1];
 
 			$i++;
@@ -174,9 +155,9 @@ function form_actions() {
 
 	form_start('automation_templates.php');
 
-	html_start_box($at_actions{get_nfilter_request_var('drp_action')}, '60%', '', '3', 'center', '');
+	html_start_box($at_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($at_array) && sizeof($at_array)) {
+	if (isset($at_array) && cacti_sizeof($at_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -185,18 +166,19 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __('Delete Automation Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Automation Template(s)') . "'>";
 		}
-	}else{
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Automation Template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+	} else {
+		raise_message(40);
+		header('Location: automation_templates.php');
+		exit;
 	}
 
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($at_array) ? serialize($at_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -229,37 +211,37 @@ function form_save() {
 
 			if ($template_id) {
 				raise_message(1);
-			}else{
+			} else {
 				raise_message(2);
 			}
 		}
 
 		if (is_error_message() || isempty_request_var('id')) {
-			header('Location: automation_templates.php?header=false&id=' . (empty($template_id) ? get_nfilter_request_var('id') : $template_id));
-		}else{
-			header('Location: automation_templates.php?header=false');
+			header('Location: automation_templates.php?id=' . (empty($template_id) ? get_nfilter_request_var('id') : $template_id));
+		} else {
+			header('Location: automation_templates.php');
 		}
 	}
 }
 
 function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 	$items = db_fetch_assoc_prepared('SELECT id, title
-		FROM graph_tree_items 
+		FROM graph_tree_items
 		WHERE graph_tree_id = ?
 		AND host_id=0
-		AND local_graph_id=0 
+		AND local_graph_id=0
 		AND parent = ?
 		ORDER BY position', array($tree_id, $id));
 
 	$spaces .= '--';
 
-	if (sizeof($items)) {
+	if (cacti_sizeof($items)) {
 	foreach($items as $i) {
 		$headers['tr_' . $tree_id . '_bi_' . $i['id']] = $spaces . ' ' . $i['title'];
 		$headers = automation_get_child_branches($tree_id, $i['id'], $spaces, $headers);
 	}
 	}
-	
+
 	return $headers;
 }
 
@@ -279,9 +261,10 @@ function template_edit() {
 	global $availability_options;
 
 	$host_template_names = db_fetch_assoc('SELECT id, name FROM host_template');
+
 	$template_names = array();
 
-	if (sizeof($host_template_names) > 0) {
+	if (cacti_sizeof($host_template_names)) {
 		foreach ($host_template_names as $ht) {
 			$template_names[$ht['id']] = $ht['name'];
 		}
@@ -306,7 +289,7 @@ function template_edit() {
 		'sysDescr' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('System Description Match'),
-			'description' => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Discovery Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description' => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value' => '|arg1:sysDescr|',
 			'max_length' => '255',
 			),
@@ -339,16 +322,24 @@ function template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$host_template = db_fetch_row_prepared('SELECT * FROM automation_templates WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Automation Templates [edit: %s]', htmlspecialchars($template_names[$host_template['host_template']]));
-	}else{
+		$host_template = db_fetch_row_prepared('SELECT *
+			FROM automation_templates
+			WHERE id = ?',
+			array(get_request_var('id')));
+
+		if (isset($template_names[$host_template['host_template']])) {
+			$header_label = __esc('Automation Templates [edit: %s]', $template_names[$host_template['host_template']]);
+		} else {
+			$header_label = __('Automation Templates for [Deleted Template]');
+		}
+	} else {
 		$header_label = __('Automation Templates [new]');
 		set_request_var('id', 0);
 	}
 
 	form_start('automation_templates.php', 'form_network');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
 		array(
@@ -357,7 +348,7 @@ function template_edit() {
 		)
 	);
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button('automation_templates.php');
 }
@@ -368,19 +359,18 @@ function template() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT, 
+			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK, 
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '', 
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			)
 	);
 
@@ -389,7 +379,7 @@ function template() {
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
-	}else{
+	} else {
 		$rows = get_request_var('rows');
 	}
 
@@ -405,7 +395,7 @@ function template() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print htmlspecialchars(get_request_var('filter'));?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Templates');?>
@@ -414,38 +404,35 @@ function template() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __('Set/Refresh Filters');?>'>
-					</td>
-					<td>
-						<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __('Clear Filters');?>'>
+						<span>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
 					</td>
 				</tr>
 			</table>
-			<input type='hidden' id='page' value='<?php print get_request_var('page');?>'>
 			</form>
 			<script type='text/javascript'>
 			function applyFilter() {
-				strURL = 'automation_templates.php' + 
-					'?filter='     + $('#filter').val()+
-					'&rows='       + $('#rows').val()+
-					'&page='       + $('#page').val()+
-					'&has_graphs=' + $('#has_graphs').is(':checked')+
-					'&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'automation_templates.php' +
+					'?filter='     + $('#filter').val() +
+					'&rows='       + $('#rows').val() +
+					'&has_graphs=' + $('#has_graphs').is(':checked');
+				loadUrl({url:strURL})
 			}
 
 			function clearFilter() {
-				strURL = 'automation_templates.php?clear=1&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'automation_templates.php?clear=1';
+				loadUrl({url:strURL})
 			}
 
 			$(function() {
@@ -471,26 +458,26 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' OR " .
-			"sysName LIKE '%" . get_request_var('filter') . "%' OR " . 
-			"sysDescr LIKE '%" . get_request_var('filter') . "%' OR " . 
-			"sysOID LIKE '%" . get_request_var('filter') . "%')";
-	}else{
+		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
+			'sysName LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
+			'sysDescr LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
+			'sysOID LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+	} else {
 		$sql_where = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*) 
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM automation_templates AS at
 		LEFT JOIN host_template AS ht
 		ON ht.id=at.host_template
 		$sql_where");
 
-	$dts = db_fetch_assoc("SELECT at.*, '' AS sysName, ht.name
+	$dts = db_fetch_assoc("SELECT at.*, ht.name
 		FROM automation_templates AS at
 		LEFT JOIN host_template AS ht
 		ON ht.id=at.host_template
 		$sql_where
-		ORDER BY sequence " . 
+		ORDER BY sequence " .
 		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
 	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Templates'), 'page', 'main');
@@ -513,15 +500,15 @@ function template() {
 		$display_text[] = array('display' => __('Order'), 'align' => 'center');
 	}
 
-	html_header_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_checkbox($display_text, false);
 
 	$i = 1;
-	$total_items = sizeof($dts);
-	if (sizeof($dts)) {
+	$total_items = cacti_sizeof($dts);
+	if (cacti_sizeof($dts)) {
 		foreach ($dts as $dt) {
 			if ($dt['name'] == '') {
 				$name = __('Unknown Template');
-			}else{
+			} else {
 				$name = $dt['name'];
 			}
 
@@ -535,14 +522,14 @@ function template() {
 			if (read_config_option('drag_and_drop') == '') {
 				$add_text = '';
 				if ($i < $total_items && $total_items > 1) {
-					$add_text .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __('Move Down') . '"></a>';
-				}else{
+					$add_text .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
+				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
 				if ($i > 1 && $i <= $total_items) {
-					$add_text .= '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __('Move Up') . '"></a>';
-				}else{
+					$add_text .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('automation_templates.php?action=moveup&id=' . $dt['id']) . '" title="' . __esc('Move Up') . '"></a>';
+				} else {
 					$add_text .= '<span class="moveArrowNone"></span>';
 				}
 
@@ -554,13 +541,13 @@ function template() {
 
 			$i++;
 		}
-	}else{
-		print "<tr><td><em>" . __('No Automation Device Templates Found') . "</em></td></tr>\n";
+	} else {
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Automation Device Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($dts)) {
+	if (cacti_sizeof($dts)) {
 		print $nav;
 	}
 
@@ -572,23 +559,22 @@ function template() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-        $('#automation_templates2_child').attr('id', 'template_ids');
+		$('#automation_templates2_child').attr('id', 'template_ids');
 
 		$('img.action').click(function() {
 			strURL = $(this).attr('href');
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL})
 		});
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
 		$('#template_ids').find('tr:first').addClass('nodrag').addClass('nodrop');
 
-        $('#template_ids').tableDnD({
-            onDrop: function(table, row) {
-                loadPageNoHeader('automation_templates.php?action=ajax_dnd&'+$.tableDnD.serialize());
-            }
-        });
+		$('#template_ids').tableDnD({
+			onDrop: function(table, row) {
+				loadUrl({url:'automation_templates.php?action=ajax_dnd&'+$.tableDnD.serialize()})
+			}
+		});
 		<?php } ?>
-
 	});
 	</script>
 	<?php

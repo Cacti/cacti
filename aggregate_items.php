@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,8 +23,9 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/utility.php');
 include_once('./lib/api_aggregate.php');
+include_once('./lib/poller.php');
+include_once('./lib/utility.php');
 
 /* set default action */
 set_default_action();
@@ -73,7 +74,7 @@ function form_save() {
 			form_save_aggregate();
 		}
 
-		if ($graph_item_types{get_request_var('graph_type_id')} == 'LEGEND') {
+		if ($graph_item_types[get_request_var('graph_type_id')] == 'LEGEND') {
 			/* this can be a major time saver when creating lots of graphs with the typical
 			GPRINT LAST/AVERAGE/MAX legends */
 			$items = array(
@@ -132,7 +133,7 @@ function form_save() {
 
 				if ($graph_template_item_id) {
 					raise_message(1);
-				}else{
+				} else {
 					raise_message(2);
 				}
 			}
@@ -143,7 +144,7 @@ function form_save() {
 		if (is_error_message()) {
 			header('Location: ' . $config['url_path'] . 'aggregate_items.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_filter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_filter_request_var('local_graph_id'));
 			exit;
-		}else{
+		} else {
 			header('Location: ' . $config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
 			exit;
 		}
@@ -184,8 +185,8 @@ function form_save_aggregate() {
 	$save['cdef_id']         = form_input_validate((($save['t_cdef_id']) ? get_filter_request_var('cdef_id') : 0), 'cdef_id', '', true, 3);
 
 	if (!is_error_message()) {
-		// sql_save will not give usefull return values when row key is 
-		// composed from multiple columns. need to manualy build query
+		// sql_save will not give useful return values when row key is
+		// composed from multiple columns. need to manually build query
 		$sql_set = 'SET ';
 		foreach ($save as $key => $value) {
 			$sql_set .= $key . "=" . db_qstr($value) . ", ";
@@ -195,7 +196,7 @@ function form_save_aggregate() {
 		$sql_where = 'graph_templates_item_id = ' . get_filter_request_var('graph_template_item_id') . ' AND ';
 		if ($save_to == 'aggregate_graph_templates_item') {
 			$sql_where .= 'aggregate_template_id=' . get_filter_request_var('aggregate_template_id');
-		}else{
+		} else {
 			$sql_where .= 'aggregate_graph_id=' . get_filter_request_var('aggregate_graph_id');
 		}
 		$sql = "UPDATE $save_to $sql_set WHERE $sql_where LIMIT 1";
@@ -203,7 +204,7 @@ function form_save_aggregate() {
 
 		if ($success) {
 			raise_message(1);
-		}else{
+		} else {
 			raise_message(2);
 		}
 
@@ -218,7 +219,7 @@ function form_save_aggregate() {
 	if (is_error_message()) {
 		header('Location: ' . $config['url_path'] . $location_failure);
 		exit;
-	}else{
+	} else {
 		header('Location: ' . $config['url_path'] . $location_success);
 		exit;
 	}
@@ -239,9 +240,9 @@ function item_movedown() {
 	$arr = get_graph_group(get_request_var('id'));
 	$next_id = get_graph_parent(get_request_var('id'), 'next');
 
-	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
+	if ((!empty($next_id)) && (isset($arr[get_request_var('id')]))) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))])) {
 		move_item_down('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }
@@ -257,9 +258,9 @@ function item_moveup() {
 	$arr = get_graph_group(get_request_var('id'));
 	$previous_id = get_graph_parent(get_request_var('id'), 'previous');
 
-	if ((!empty($previous_id)) && (isset($arr{get_request_var('id')}))) {
+	if ((!empty($previous_id)) && (isset($arr[get_request_var('id')]))) {
 		move_graph_group(get_request_var('id'), $arr, $previous_id, 'previous');
-	}elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))])) {
 		move_item_up('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
 	}
 }
@@ -292,30 +293,30 @@ function item_edit() {
 		$id_field   = 'aggregate_graph_id';
 		$table_name = 'aggregate_graphs_graph_item';
 		$page_name  = 'aggregate_graphs.php';
-	}elseif (!isempty_request_var('aggregate_template_id')) {
+	} elseif (!isempty_request_var('aggregate_template_id')) {
 		$id_field   = 'aggregate_template_id';
 		$table_name = 'aggregate_graph_templates_item';
 		$page_name  = 'aggregate_templates.php';
 	}else {
 		/* TODO redirect somewhere and show an error message, rather than die */
-		die();
+		die("We should have redirected somewhere but we ended up here instead" . PHP_EOL);
 	}
 
 	if (!isempty_request_var('id')) {
-		$template_item = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates_item 
-			WHERE id = ?', 
+		$template_item = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE id = ?',
 			array(get_request_var('id')));
 	}
 
 	/* override some template_item values from aggregate tables */
 	$item_overrides = db_fetch_row_prepared("SELECT *
-		FROM $table_name 
+		FROM $table_name
 		WHERE $id_field = ?
-		AND graph_templates_item_id = ?", 
+		AND graph_templates_item_id = ?",
 		array(get_request_var($id_field), get_request_var("id")));
 
-	if (sizeof($item_overrides) == 0) {
+	if (cacti_sizeof($item_overrides) == 0) {
 		/* this item is not currently in aggregate tables
 		 * item editor will not work in this case, so let's
 		 * save it now
@@ -329,9 +330,9 @@ function item_edit() {
 		aggregate_graph_items_save(array($item_new), $table_name);
 
 		$item_overrides = db_fetch_row_prepared("SELECT *
-			FROM $table_name 
+			FROM $table_name
 			WHERE $id_field = ?
-			AND graph_templates_item_id = ?", 
+			AND graph_templates_item_id = ?",
 			array(get_request_var($id_field), get_request_var("id")));
 	}
 
@@ -343,20 +344,20 @@ function item_edit() {
 			$template_item[$field_name] = $item_overrides[$field_name];
 	}
 
-	html_start_box(__('Override Values for Graph Item'), '100%', '', '3', 'center', '');
+	html_start_box(__('Override Values for Graph Item'), '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
-	while (list($field_name, $field_array) = each($struct_graph_item)) {
+	foreach ($struct_graph_item as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_graph_item[$field_name]);
 
 		/* should we draw an override checkbox */
 		if (array_key_exists('t_' . $field_name, $item_overrides)) {
 			$form_array[$field_name]['sub_checkbox']  = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => __('Override this Value') . '<br>',
+				'friendly_name' => __esc('Override this Value') . '<br>',
 				'value' => ($item_overrides['t_'.$field_name] == 'on' ? 'on' : ''),
-				'on_change' => 'toggleFieldEnabled(this);'
+				'on_change' => 'toggleFieldEnabled(this.id);'
 			);
 		}
 
@@ -381,11 +382,11 @@ function item_edit() {
 	form_hidden_box('_graph_type_id', (isset($template_item) ? $template_item['graph_type_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
-	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 	form_hidden_box('aggregate_graph_id', get_request_var('aggregate_graph_id'), '0');
 	form_hidden_box('aggregate_template_id', get_request_var('aggregate_template_id'), '0');
 
-	html_end_box();
+	html_end_box(true, true);
 
 	form_save_button($config['url_path'] . "$page_name?action=edit&id=" . get_request_var('local_graph_id'));
 
@@ -411,29 +412,43 @@ function item_edit() {
 		}
 	}
 
-	// disable all items except those explicitly overriden
+	// disable all items with sub-checkboxes except
+	// where sub-checkbox checked
 	function setFieldsDisabled() {
-		$('tr[id*="row_"]').each(function() {
-			fieldName = this.id.substr(4);
-			cbName = 't_'+fieldName;
-			if ($('#'+cbName).size() > 0) {
-				$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
-			} else {
-				$('#'+fieldName).prop('disabled', true);
+		$('input[id^="t_"]').each(function() {
+			if (!$(this).is(':checked')) {
+				var fieldId = $(this).attr('id').substr(2);
+
+				$('#'+fieldId).prop('disabled', true);
+				$('#'+fieldId).addClass('ui-state-disabled');
+
+				if ($('#'+fieldId).selectmenu('instance')) {
+					$('#'+fieldId).selectmenu('disable');
+				}
 			}
 		});
 	}
 
 	// enable or disable form field based on state of corresponding checkbox
-	function toggleFieldEnabled(cb) {
-		prefix = 't_';
-		if (cb.name.substr(0,prefix.length) == prefix) {
-			fieldName = cb.name.substr(prefix.length);
-			$('#'+fieldName).prop('disabled', !cb.checked);
+	function toggleFieldEnabled(toggleFieldId) {
+		fieldId  = toggleFieldId.substr(2);
+
+		if ($('#'+fieldId).hasClass('ui-state-disabled')) {
+			$('#'+fieldId).prop('disabled', false).removeClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('enable');
+			}
+		} else {
+			$('#'+fieldId).prop('disabled', true).addClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('disable');
+			}
 		}
 	}
 
 	</script>
 	<?php
-} 
+}
 

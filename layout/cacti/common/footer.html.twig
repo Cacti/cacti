@@ -1,0 +1,10 @@
+{% if view.is_main %}
+			</main>
+		</div>
+	</div>
+{% endif %}
+{% if not common.is_ajax %}
+	{{ hook.bottom|raw }}
+	</body>
+</html>
+{% endif %}

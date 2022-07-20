@@ -1,0 +1,17 @@
+<div class='cactiAuthBody'>
+	<div class='cactiAuthCenter'>
+		<div class='cactiAuthArea'>
+			<legend>{{ auth.legend }}</legend><hr />
+			<form name='auth' method='post' action='{{ auth.page }}'>
+				<!-- DUMP OF VARS
+				{{ dump()|raw }}
+				     DUMP OF VARS -->
+				<input type='hidden' name='action' value='{{ auth.action }}'>
+				{{ hook.auth_before }}
+				<div class='cactiAuthTitle'>
+					<table class='cactiAuthTable'>
+						<tr><td>{{ auth.title }}</td></tr>
+					</table>
+				</div>
+				<div class='cactiAuth'>
+					<table class='cactiAuthTable'>

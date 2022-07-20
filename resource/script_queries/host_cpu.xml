@@ -1,5 +1,5 @@
 <interface>
-	<name>Get Host MIB CPU's</name>
+	<name>Get Host MIB CPUs</name>
 	<script_path>|path_php_binary| -q |path_cacti|/scripts/query_host_cpu.php</script_path>
 	<arg_prepend>|host_hostname| |host_id| |host_snmp_version|:|host_snmp_port|:|host_snmp_timeout|:|host_ping_retries|:|host_max_oids|:|host_snmp_community|:|host_snmp_username|:|host_snmp_password|:|host_snmp_auth_protocol|:|host_snmp_priv_passphrase|:|host_snmp_priv_protocol|:|host_snmp_context|</arg_prepend>
 	<arg_index>index</arg_index>

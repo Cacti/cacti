@@ -1,0 +1,310 @@
+input, select {
+	font-size: 12px;
+	padding: 0.4em;
+}
+
+h1 {
+	font-size: 1.4em;
+}
+
+h2 {
+	display: block /* !important; */
+	font-size: 1.3em;
+}
+
+h3 {
+	display: block /* !important; */
+	font-size: 1.2em;
+	border-bottom: 1px dashed black;
+}
+
+p {
+	margin: 5px 0px 10px 0px !important;
+}
+
+body {
+	overflow: auto;
+}
+
+label {
+	vertical-align: 10%;
+}
+
+.cactiInstallTable {
+	width: 90%;
+	min-width: 400px;
+	max-width: 900px;
+	min-height: 200px;
+	height: 90%;
+	max-height: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+}
+
+.cactiInstallTableTitleRow {
+	border-style: solid;
+	border-width: 1px;
+}
+
+.cactiInstallArea {
+	overflow-x: hidden;
+	overflow-y: auto;
+	height: 90%;
+	width: 100%;
+	padding: 0px;
+}
+
+.cactiInstallAreaContent {
+	padding: 5px;
+}
+
+.cactiInstallButtonArea {
+	min-height: 24px;
+	margin: 2px 0px;
+	width: 100%;
+	text-align: left !important;
+	padding: 1px;
+}
+
+.cactiTableTitleRow .textHeaderDark {
+	padding: 0px 5px;
+}
+
+.cactiInstallSection, .cactiInstallSectionTitle, .cactiInstallSectionNormal {
+	padding: 0px;
+}
+
+.cactiInstallSectionTitle {
+	font-weight: bold;
+	padding-bottom: 5px;
+	cursor: pointer;
+	margin: 4px 0px 4px 0px;
+}
+
+.installSubSection {
+}
+
+.cactiInstallSectionTitleError {
+	color: red;
+}
+
+.cactiInstallSectionCode, .cactiInstallSqlResults {
+	font-family: consolas,courier new;
+	border: 1px dashed #999;
+	margin: 10px;
+	padding: 5px;
+}
+
+.cactiInstallCopyrightArea {
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.cactiInstallValid {
+	float: right;
+	width: 20px;
+}
+
+.cactiInstallProgressLeft {
+	width: 10%;
+}
+
+.cactiInstallPRogressCenter {
+	width: 10%;
+}
+
+.cactiInstallProgressRight {
+	width: 80%;
+	text-align: right;
+}
+
+#cactiInstallProgressBar {
+	width: 100%;
+	height: 22px;
+	background-color: #0A5F44;
+}
+
+#cactiInstallProgressBar div {
+	height: 100%;
+	text-align: right;
+	line-height: 22px; /* same as #progressBar height if we want text middle aligned */
+	width: 0px;
+	background-color: #CBEA00;
+	box-sizing: border-box;
+}
+
+#cactiInstallProgressCountdown {
+	width: 100%;
+	height: 22px;
+	background-color: #0A5F44;
+}
+
+#cactiInstallProgressCountdown div {
+	height: 100%;
+	text-align: right;
+	line-height: 22px; /* same as #progressCountdown height if we want text middle aligned */
+	width: 0px;
+	background-color: #CBEA00;
+	box-sizing: border-box;
+}
+
+.cactiInstallSqlResults {
+	display: table;
+	width: 90%;
+	margin: 0 auto;
+}
+
+.cactiInstallSqlRow {
+}
+
+.cactiInstallSqlSuccess {
+	color: green !important;
+}
+
+.cactiInstallSqlFailure {
+	color: red !important;
+}
+
+.cactiInstallSqlWarning {
+	color: orange !important;
+}
+
+.cactiInstallSqlSkipped {
+	color: gray !important;
+}
+
+.cactiInstallSqlLeft, .cactInstallSqlRight {
+	display: table-cell;
+	width: 100%;
+}
+
+.cactiInstallSqlRow, .cactiInstallSqlLeft, .cactInstallSqlRight {
+	padding: 5px;
+	vertical-align: top;
+}
+
+.cactiInstallSqlIcon {
+	width: 50px;
+	text-align: center;
+	padding: 5px;
+}
+
+.flag-icon {
+	float: right;
+}
+
+.cactiInstallSectionNote {
+	font-family: consolas;
+	font-family: courier-new;
+	font-family: monospace;
+	font-style: italic;
+}
+
+.cactiInstallSectionNoteTitle, .cactiInstallSectionWarningTitle, .cactiInstallSectionErrorTitle {
+	display: table-cell;
+	font-weight: bold;
+}
+
+.cactiInstallSectionNoteBody, .cactiInstallSectionWarningBody, .cactiInstallSectionErrorBody {
+	padding-left: 5px;
+	display: table-cell;
+}
+
+.cactiInstallSectionNoteTitle {
+	color: #00ae42;
+}
+
+.cactiInstallSectionWarningTitle {
+	color: #ffae42;
+}
+
+.cactiInstallSectionErrorTitle {
+	color: #ff0000;
+}
+
+/* Center the loader */
+.cactiInstallLoaderSpinner {
+	position: absolute;
+	left: 50%;
+	top: 45%;
+	z-index: 1;
+	width: 150px;
+	height: 150px;
+	margin: -75px 0 0 -75px;
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid #3498db;
+	width: 120px;
+	height: 120px;
+	-webkit-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+}
+
+.cactiInstallLoaderLogo {
+	position: absolute;
+	left: 50%;
+	top: 45%;
+	height: 125px;
+	width: 100px;
+	margin: -58px 0 0 -50px;
+	z-index: 1;
+	overflow: hidden;
+}
+
+.cactiInstallLoaderBlur {
+  filter: blur(1px);
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+  from { bottom:-100px; opacity:0 }
+  to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom {
+  from{ bottom:-100px; opacity:0 }
+  to{ bottom:0; opacity:1 }
+}
+
+#installLoader {
+  display: none;
+  text-align: center;
+}
+
+.installTestLabel {
+  text-align: center;
+  vertical-align: middle;
+  margin: 5px;
+}
+
+.installErrorImage {
+  padding: 20px;
+  vertical-align: top;
+  display: table-cell;
+}
+
+.installErrorText {
+  padding: 10px;
+  vertical-align: top;
+  display: table-cell;
+}

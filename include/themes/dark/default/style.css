@@ -15,10 +15,9 @@
   display: inline-block;
   color: black;
   white-space: nowrap;
-/* padding: 0 4px 0 1px; */
-  margin: 0;
+  margin: 0px;
   vertical-align: top;
-  padding: 3px !important;
+  padding: 0px !important;
 }
 .jstree-anchor:focus {
   outline: 0;
@@ -65,6 +64,10 @@
 }
 .jstree-no-icons .jstree-themeicon,
 .jstree-anchor > .jstree-themeicon-hidden {
+  display: none;
+}
+.jstree-hidden,
+.jstree-node.jstree-hidden {
   display: none;
 }
 .jstree-rtl .jstree-anchor {
@@ -404,7 +407,7 @@
   margin-right: 24px;
 }
 .jstree-default .jstree-wholerow {
-  height: 22px;
+  height: 20px;
 }
 .jstree-default .jstree-node,
 .jstree-default .jstree-icon {
@@ -434,10 +437,10 @@
   background: transparent;
 }
 .jstree-default > .jstree-no-dots .jstree-open > .jstree-ocl {
-  background-position: -36px -4px;
+  background-position: -36px -5px;
 }
 .jstree-default > .jstree-no-dots .jstree-closed > .jstree-ocl {
-  background-position: -4px -4px;
+  background-position: -4px -5px;
 }
 .jstree-default .jstree-disabled {
   background: transparent;

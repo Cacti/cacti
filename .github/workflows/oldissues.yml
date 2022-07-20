@@ -1,0 +1,65 @@
+name: "Maintain old issues"
+
+on:
+  schedule:
+  - cron: '0 0 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  stale:
+    permissions:
+      issues: write  # for actions/stale to close stale issues
+      pull-requests: write  # for actions/stale to close stale PRs
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/stale@v5
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+        days-before-stale: 60
+        days-before-close: 7
+        remove-stale-when-updated: true
+
+        exempt-issue-labels: 'pinned, security, enhancement, future release'
+
+        stale-issue-label: 'outdated'
+        stale-issue-message: >
+          This issue has been automatically marked as stale because it has
+          not had recent activity. It will be closed if no further activity
+          occurs. Thank you for your contributions.
+
+        exempt-pr-labels: 'pinned, security, enhancement, future release'
+
+        stale-pr-label: 'outdated'
+        stale-pr-message: >
+          This pull request has been automatically marked as stale because
+          it has not had recent activity. It will be closed if no further
+          activity occurs. Thank you for your contributions.
+
+  lock:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: dessant/lock-threads@v3.0.0
+      with:
+        github-token: ${{ github.token }}
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-inactive-days: '90'
+        exclude-issue-created-before: ''
+        exclude-any-issue-labels: 'future release'
+        add-issue-labels: ''
+        pr-inactive-days: '90'
+        exclude-pr-created-before: ''
+        exclude-any-pr-labels: 'future release'
+        add-pr-labels: ''
+        # pr-comment: >
+        #   This pull request has been automatically locked since there
+        #   has not been any recent activity after it was closed. Please
+        #   open a new issue for related bugs.
+        pr-comment: ''
+        process-only: ''
+        debug-run: true

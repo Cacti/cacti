@@ -1,0 +1,242 @@
+	<div class='cactiTreeSearch' style='white-space:nowrap'>
+		<span style='padding-right:4px;'>
+			{{ __('Search') }}
+		</span>
+		<input type='text' class='ui-state-default ui-corner-all' id='searcher' style='padding:2px;font-size:12px;max-width:200px;' size='35'>
+		<hr>
+	</div>
+
+	{% if not view.tree is empty %}
+	<div id='jstree'></div>
+	{% endif %}
+
+	<script type='text/javascript'>
+		var nodes = {{ view.tree_path|raw }}
+		var search_to = false;
+	{% if view.tree_history %}
+		window.onunload = function() { localStorage.removeItem('graph_tree_history'); }
+	{% endif %}
+
+		function resizeTreePanel() {
+			if (theme != 'classic') {
+				var docHeight      = $(window).outerHeight();
+				var navWidth       = $('.cactiTreeNavigationArea').width();
+				var searchHeight   = $('.cactiTreeSearch').outerHeight();
+				var pageHeadHeight = $('.cactiPageHead').outerHeight();
+				var breadCrHeight  = $('.breadCrumbBar').outerHeight();
+				var pageBottomHeight = $('.cactiPageBottom').outerHeight();
+				//console.log('----------------------');
+
+				var jsTreeHeight  = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
+					return $(this).outerHeight();
+				}).get());
+
+				var treeAreaHeight = docHeight - pageHeadHeight - breadCrHeight - searchHeight - pageBottomHeight;
+				//console.log('docHeight:' + docHeight);
+				//console.log('searchHeight:' + searchHeight);
+				//console.log('pageHeadHeight:' + pageHeadHeight);
+				//console.log('pageBottomHeight:' + pageBottomHeight);
+				//console.log('breadCrHeight:' + breadCrHeight);
+				//console.log('jsTreeHeight:' + jsTreeHeight);
+				//console.log('treeAreaHeight:' + treeAreaHeight);
+
+				$('#jstree').height(jsTreeHeight + 30);
+				$('.cactiTreeNavigationArea').height(treeAreaHeight+searchHeight);
+
+				var visWidth = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
+					return $(this).width();
+				}).get());
+
+				if (visWidth < 0) {
+					$('.cactiTreeNavigationArea').css('width', 0);
+					$('.cactiGraphContentArea').css('margin-left', 0);
+					$('.cactiTreeNavigationArea').css('overflow-x', '');
+				} else if (visWidth < minTreeWidth) {
+					$('.cactiTreeNavigationArea').css('width', minTreeWidth);
+					$('.cactiGraphContentArea').css('margin-left', minTreeWidth+5);
+					$('.cactiTreeNavigationArea').css('overflow-x', '');
+				} else if (visWidth > maxTreeWidth) {
+					$('.cactiTreeNavigationArea').css('width', maxTreeWidth);
+					$('.cactiGraphContentArea').css('margin-left', maxTreeWidth+5);
+					$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
+				} else if (visWidth > navWidth) {
+					$('.cactiTreeNavigationArea').css('width', visWidth);
+					$('.cactiGraphContentArea').css('margin-left', visWidth+5);
+					$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
+				} else {
+					$('.cactiTreeNavigationArea').css('width', navWidth);
+					$('.cactiGraphContentArea').css('margin-left', navWidth+5);
+					$('.cactiTreeNavigationArea').css('overflow-x', '');
+				}
+			}
+
+			var navWidth = $('#navigation').width();
+			if (navWidth > 0) {
+				$('#searcher').css('width', navWidth-70);
+			}
+		}
+
+		function checkTreeForLogout() {
+			html = $('#jstree').html();
+			found = html.indexOf('{{ __('Login to Cacti') }}');
+			if (found >= 0) {
+				document.location = 'logout.php';
+			}
+		}
+
+		function openNodes() {
+			if (nodes.length > 0) {
+				var deffereds = $.Deferred(function (def) { def.resolve(); });
+				var lastNode  = nodes[nodes.length-1];
+
+				for (var j = 0; j <= nodes.length-1; j++) {
+					deffereds = (function(name, deferreds) {
+						return deferreds.pipe(function () {
+							return $.Deferred(function(def) {
+								id = $('a[id^='+name+']').first().attr('id');
+
+								if (lastNode == name) {
+									$('#jstree').jstree('select_node', id, function() {
+										def.resolve();
+									});
+								} else {
+									$('#jstree').jstree('open_node', id, function() {
+										$('.cactiConsoleNavigationArea').css('overflow-y', 'auto');
+										def.resolve();
+									});
+								}
+							});
+						});
+					})(nodes[j], deffereds);
+				}
+			}
+		}
+
+		$(function () {
+			$('#jstree').each(function(data) {
+				var id=$(this).attr('id');
+				var pageGraphFirstLoad = true;
+
+				$(this)
+				.on('init.jstree', function() {
+					if (nodes.length > 0) {
+						$('#jstree').jstree().clear_state();
+					}
+					resizeTreePanel();
+				})
+				.on('loaded.jstree', function() {
+					openNodes();
+					resizeTreePanel();
+				})
+				.on('ready.jstree', function() {
+					resizeTreePanel();
+					pageGraphFirstLoad = false;
+				})
+				.on('changed.jstree', function() {
+					resizeTreePanel();
+				})
+				.on('before_open.jstree', function() {
+					checkTreeForLogout();
+				})
+				.on('after_open.jstree', function() {
+					resizeTreePanel();
+					responsiveResizeGraphs();
+				})
+				.on('after_close.jstree', function() {
+					resizeTreePanel();
+					responsiveResizeGraphs();
+				})
+				.on('select_node.jstree', function(e, data) {
+					if (data.node.id) {
+						if (data.node.id.search('tree_anchor') >= 0) {
+							href=$('#'+data.node.id).find('a:first').attr('href');
+						} else {
+							href=$('#'+data.node.id).find('a:first').attr('href');
+						}
+
+						origHref = href;
+
+						if (typeof href !== 'undefined') {
+							href = href.replace('action=tree', 'action=tree_content');
+							href = href + '&hyper=true';
+							$('.cactiGraphContentArea').hide();
+							loadUrl({url:href,noState:pageGraphFirstLoad});
+						}
+
+						node = data.node.id;
+					}
+					resizeTreePanel();
+				})
+				.jstree({
+					'types' : {
+						'tree' : {
+							icon : urlPath+'images/tree.png',
+							max_children : 0
+						},
+						'device' : {
+							icon : urlPath+'images/server.png',
+							max_children : 0
+						},
+						'graph' : {
+							icon : urlPath+'images/server_chart_curve.png',
+							max_children : 0
+						},
+						'graph_template' : {
+							icon : urlPath+'images/server_chart.png',
+							max_children : 0
+						},
+						'data_query' : {
+							icon : urlPath+'images/server_dataquery.png',
+							max_children : 0
+						},
+						'site' : {
+							icon : urlPath+'images/site.png',
+							max_children : 0
+						},
+						'location' : {
+							icon : urlPath+'images/location.png',
+							max_children : 0
+						},
+						'host_template' : {
+							icon : urlPath+'images/server_device_template.png',
+							max_children : 0
+						},
+						'graph_templates' : {
+							icon : urlPath+'images/server_graph_template.png',
+							max_children : 0
+						}
+					},
+					'core' : {
+						'data' : {
+							'url' : urlPath+'graph_view.php?action=get_node&tree_id=0',
+							'data' : function(node) {
+								return { 'id' : node.id }
+							}
+						},
+						'animation' : 0,
+						'check_callback' : false
+					},
+					'themes' : {
+						'name' : 'default',
+						'responsive' : true,
+						'url' : true,
+						'dots' : false
+					},
+					'state' : { 'key' : 'graph_tree_history' },
+					'search' : { 'case_sensitive' : false, 'show_only_matches' : true, 'ajax' : { 'url' : urlPath+'graph_view.php?action=ajax_search'} },
+					'plugins' : [ 'types', 'state', 'wholerow', 'search' ]
+				});
+			});
+
+			$('#searcher').keyup(function() {
+				if(search_to) { clearTimeout(search_to); }
+				search_to = setTimeout(function() {
+					var v = $('#searcher').val();
+					$('#jstree').jstree('search', v, false);
+				}, 250);
+			});
+
+			{{ hook.top_graph_jquery_function|raw }}
+		});
+
+	</script>

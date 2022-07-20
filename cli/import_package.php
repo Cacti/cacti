@@ -1,8 +1,8 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,17 +23,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+ini_set('zlib.output_compression', '0');
 
-/* We are not talking to the browser */
-$no_http_headers = true;
-
-include(dirname(__FILE__).'/../include/global.php');
-include_once($config['base_path'] . '/lib/import.php');
-include_once($config['base_path'] . '/lib/utility.php');
+require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/import.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/utility.php');
+require_once($config['base_path'] . '/lib/template.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -41,11 +37,12 @@ array_shift($parms);
 
 global $preview_only;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	$filename       = '';
 	$use_profile    = false;
 	$remove_orphans = false;
 	$preview_only   = false;
+	$info_only      = false;
 	$profile_id     = '';
 
 	foreach($parms as $parameter) {
@@ -77,66 +74,107 @@ if (sizeof($parms)) {
 				$preview_only = true;
 
 				break;
+			case '--info-only':
+				$info_only = true;
+
+				break;
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				exit(1);
 		}
 	}
-	
-	if ($filename != '' && is_readable($filename)) {
-		if(file_exists($filename) && is_readable($filename)) {
+
+	if ($info_only) {
+		if ($filename != '' && is_readable($filename)) {
+			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only, $info_only);
+
+			if ($result !== false && cacti_sizeof($result)) {
+				print json_encode($result);
+				exit(0);
+			} else {
+				print "FATAL: Error processing package file.  Info not returned\n";
+				exit(1);
+			}
+		}
+	}
+
+	if ($profile_id != '') {
+		$exists = db_fetch_cell_prepared('SELECT id
+			FROM data_source_profiles
+			WHERE id = ?',
+			array($profile_id));
+
+		if (empty($exists)) {
+			print "FATAL: Data Source Profile ID " . $profile_id . " does not exist!\n";
+			exit(1);
+		}
+	} else {
+		$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+	}
+
+	if ($filename != '') {
+		if (file_exists($filename) && is_readable($filename)) {
 			$fp = fopen($filename,'r');
 			$data = fread($fp,filesize($filename));
 			fclose($fp);
 
-			echo 'Read ' . strlen($data) . " bytes of Package data\n";
+			print 'Read ' . strlen($data) . " bytes of Package data\n";
 
-			list($debug_data, $filestatus) = import_package($filename, $profile_id, $remove_orphans, $preview_only);
+			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only);
 
-			import_display_results($debug_data, $filestatus, false, $preview_only);
+			if ($result !== false) {
+				$debug_data = $result[0];
+				$filestatus = $result[1];
+
+				import_display_results($debug_data, $filestatus, false, $preview_only);
+			} else {
+				print "ERROR: file $filename import process failed due to errors with the XML file\n\n";
+				exit(1);
+			}
 		} else {
-			echo "ERROR: file $filename is not readable, or does not exist\n\n";
+			print "ERROR: file $filename is not readable, or does not exist\n\n";
 			exit(1);
 		}
 	} else {
-		echo "ERROR: no filename specified\n\n";
+		print "ERROR: no filename specified\n\n";
 		display_help();
 		exit(1);
 	}
 } else {
-	echo "ERROR: no parameters given\n\n";
+	print "ERROR: no parameters given\n\n";
 	display_help();
 	exit(1);
 }
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: import_package.php --filename=[filename] [--with-profile] [--profile-id=N\n\n";
-	echo "A utility to allow signed Cacti Packages to be imported from the command line.\n\n";
-	echo "Required:\n";
-	echo "    --filename              The name of the gziped package file to import\n\n";
-	echo "Optional:\n";
-	echo "    --preview         Preview the Template Import, do not import\n";
-	echo "    --with-profile    Use the default system Data Source Profile\n";
-	echo "    --profile-id=N    Use the specific profile id when importing\n";
-	echo "    --remove-orphans  If importing a new version of the template, old\n";
-	echo "                      elements will be removed, if they do not exist\n";
-	echo "                      in the new version of the template.\n\n";
+	print "\nusage: import_package.php --filename=[filename] [--only-info] [--remove-orphans] [--with-profile] [--profile-id=N\n\n";
+	print "A utility to allow signed Cacti Packages to be imported from the command line.\n\n";
+	print "Required:\n";
+	print "    --filename              The name of the gziped package file to import\n\n";
+	print "Optional:\n";
+	print "    --only-info       Output the info section of the package, do not import\n";
+	print "    --preview         Preview the Template Import, do not import\n";
+	print "    --with-profile    Use the default system Data Source Profile\n";
+	print "    --profile-id=N    Use the specific profile id when importing\n";
+	print "    --remove-orphans  If importing a new version of the template, old\n";
+	print "                      elements will be removed, if they do not exist\n";
+	print "                      in the new version of the template.\n\n";
 }

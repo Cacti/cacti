@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -22,93 +22,74 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $menu;
-
-$oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
-if ($oper_mode == OPER_MODE_RESKIN) {
-	return;
-}
+global $config, $menu, $is_request_ajax, $twig, $twig_vars, $twig_common, $twig_options;
 
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 $using_guest_account = false;
 
-//<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-?>
-<!DOCTYPE html>
-<html>
-<head>
-	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<meta content='width=720, initial-scale=0.8, maximum-scale=2.0, minimum-scale=0.5' name='viewport'>
-	<title><?php echo $page_title; ?></title>
-	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.zoom.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery-ui.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/default/style.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.multiselect.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.timepicker.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/jquery.colorpicker.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/c3.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/pace.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.css' type='text/css' rel='stylesheet'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/favicon.ico' rel='shortcut icon'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-migrate.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery-ui.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.ui.touch.punch.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.cookie.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.storageapi.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jstree.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.hotkeys.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablednd.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.zoom.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.multiselect.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.multiselect.filter.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.timepicker.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.colorpicker.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.tablesorter.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.metadata.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/jquery.sparkline.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/Chart.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/dygraph-combined.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/d3.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/c3.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/js/pace.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/realtime.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/layout.js'></script>
-	<script type='text/javascript' src='<?php echo $config['url_path']; ?>include/themes/<?php print get_selected_theme();?>/main.js'></script>
-	<?php api_plugin_hook('page_head'); ?>
-</head>
-<body>
-<div id='cactiPageHead' class='cactiPageHead' role='banner'>
-	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<div id='tabs'><?php html_show_tabs_left();?></div>
-	<div class='cactiConsolePageHeadBackdrop'></div>
-</div>
-<div id='breadCrumbBar' class='breadCrumbBar'>
-	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
-	<div class='scrollBar'></div>
-	<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
-</div>
-<div id='cactiContent' class='cactiContent'>
-	<div class='cactiConsoleNavigationArea' style='overflow:hidden'>
-		<div style='display:none;' id='navigation'>
-			<table style='width:100%;'>
-				<?php draw_menu();?>
-				<tr>
-					<td style='text-align:center;'>
-						<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
-					</td>
-				</tr>
-			</table>
-		</div>
-	</div>
-	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
-		<div style='position:relative;display:none;' id='main' role='main'>
-<?php }else{ ?>
-	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div class='messageContainer' id='message_container'><?php display_output_messages();?></div>
-		<div style='position:relative;display:none;' id='main' role='main'>
-<?php } ?>
+$twig_common = [
+	'locale'        => CACTI_LOCALE,
+	'is_ajax'       => $is_request_ajax,
+	'is_guest'      => $using_guest_account,
+];
+
+$twig_view = [
+	'is_classic' => get_selected_theme() == 'classic',
+	'is_graph'   => (get_current_page() == 'graph_view.php' && (get_nfilter_request_var('action') == 'tree' || (isset_request_var('view_type') && get_nfilter_request_var('view_type') == 'tree'))),
+	'is_main'    => empty($config['hide_main']),
+	'is_menu'    => empty($config['hide_console']),
+	'tree'       => function_exists('twig_dhtml_trees') ? twig_dhtml_trees() : '',
+	'tree_path'  => function_exists('twig_tree_path') ? twig_tree_path() : '[]',
+];
+
+if (empty($_SESSION['sess_user_id'])) {
+	$user = false;
+} else {
+	$user = db_fetch_row_prepared('SELECT
+		username, password_change, realm
+		FROM user_auth WHERE id = ?',
+		array($_SESSION['sess_user_id']));
+}
+
+$twig_auth = [
+	'method' => read_config_option('auth_method'),
+];
+
+$twig_menu       = twig_menu();
+$twig_header     = twig_common_header($page_title);
+$twig_tabs_left  = twig_tabs_left();
+$twig_tabs_right = twig_graph_tabs_right();
+$twig_nav        = twig_navigation_text();
+
+$twig_hook = [
+	'nav_login_before'          => '',
+	'nav_login_after'           => '',
+	'top_graph_jquery_function' => '',
+];
+
+foreach ($twig_hook as $hook => &$value) {
+	$value = twig_hook_buffer($hook);
+}
+
+$output = $twig->render('common/header.html.twig',
+	array_merge($twig_vars,
+		array(
+			'common'     => $twig_common,
+			'auth'       => $twig_auth,
+			'menu'       => $twig_menu,
+			'view'       => $twig_view,
+			'header'     => $twig_header,
+			'nav_items'  => $twig_nav,
+			'tabs_left'  => $twig_tabs_left,
+			'tabs_right' => $twig_tabs_right,
+			'page_title' => $page_title,
+			'user'       => $user,
+		)
+	)
+);
+
+if ($GLOBALS['csrf']['rewrite']) {
+	$output = csrf_ob_handler($output, false);
+}
+
+echo $output;

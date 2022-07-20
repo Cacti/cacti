@@ -1,5 +1,5 @@
 <interface>
-	<name>Get Host MIB CPU's</name>
+	<name>Get Host MIB CPUs</name>
 	<script_path>|path_cacti|/scripts/ss_host_cpu.php</script_path>
 	<script_function>ss_host_cpu</script_function>
 	<script_server>php</script_server>

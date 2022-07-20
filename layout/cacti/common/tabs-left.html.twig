@@ -1,0 +1,45 @@
+<!-- DUMP OF TABS LEFT
+{{ dump(tabs_left)|raw }}
+     DUMP OF TABS LEFT -->
+
+{% if view.is_classic %}
+	{% for tab in tabs_left.items %}
+		<a id='{{ tab.id }}' {% if tab.active %} class='selected'{% endif %}
+			href='{{ tab.href }}'>
+			<img src='{{ tab.img.src }}' alt='{{ tab.img.alt }}'>
+		</a>
+	{% endfor %}
+	{{ tabs_left.header_tabs|raw }}
+{% else %}
+<div class='maintabs'>
+	<nav>
+		<ul role='tablist'>
+			{% set anchorId = 0 %}
+			{% for tab in tabs_left.items %}
+				{% if not tab.id is defined or tab.id is empty %}
+					{% set anchorId = anchorId + 1 %}
+					{% set tabid = 'anchor' ~ anchorId %}
+				{% else %}
+					{% set tabid = tab.id %}
+				{% endif %}
+			<li>
+				<a id='{{ tab.id }}' role='tab' class='lefttab{% if tab.active %} selected{% endif %}'
+					aria-selected='{% if tab.active %}true{% else %}false{% endif %}'
+					href='{{ tab.href }}'>
+					<span class='fa glyph_{{ tab.id }}'></span>
+					<span class='text_{{ tab.id }}'>
+						{{ tab.title }}
+					</span>
+				</a>
+				<a id='menu-{{ tab.id }}' class='maintabs-submenu' href='#'><i class='fa fa-angle-down'></i></a>
+			</li>
+			{% endfor %}
+			<li class='ellipsis maintabs-submenu-ellipsis'>
+				<a id='menu-ellipsis' role='tab' aria-selected='false' class='submenu-ellipsis' href='#'>
+					<i class='fa fa-angle-down'></i>
+				</a>
+			</li>
+		</ul>
+	</nav>
+</div>
+{% endif %}

@@ -1,8 +1,8 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,25 +23,18 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$no_http_headers = true;
-
-include(dirname(__FILE__).'/../include/global.php');
-include_once($config['base_path'].'/lib/api_automation_tools.php');
+require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/api_automation_tools.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms) == 0) {
+if (cacti_sizeof($parms) == 0) {
 	display_help();
 
 	exit(1);
-}else{
+} else {
 	$userId    = 0;
 
 	/* TODO replace magic numbers by global constants, treat user_admin as well */
@@ -51,13 +44,13 @@ if (sizeof($parms) == 0) {
 	$itemId   = 0;
 	$hostId   = 0;
 
-	$quietMode				= FALSE;
-	$displayGroups			= FALSE;
-	$displayUsers			= FALSE;
-	$displayTrees			= FALSE;
-	$displayHosts			= FALSE;
-	$displayGraphs			= FALSE;
-	$displayGraphTemplates 	= FALSE;
+	$quietMode				= false;
+	$displayGroups			= false;
+	$displayUsers			= false;
+	$displayTrees			= false;
+	$displayHosts			= false;
+	$displayGraphs			= false;
+	$displayGraphTemplates 	= false;
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -76,8 +69,8 @@ if (sizeof($parms) == 0) {
 			/* TODO replace magic numbers by global constants, treat user_admin as well */
 			if ( ($value == 'graph') || ($value == 'tree') || ($value == 'host') || ($value == 'graph_template')) {
 				$itemType = $itemTypes[$value];
-			}else{
-				echo "ERROR: Invalid Item Type: ($value)\n\n";
+			} else {
+				print "ERROR: Invalid Item Type: ($value)\n\n";
 				display_help();
 				exit(1);
 			}
@@ -92,45 +85,45 @@ if (sizeof($parms) == 0) {
 
 			break;
 		case '--list-groups':
-			$displayGroups = TRUE;
+			$displayGroups = true;
 
 			break;
 		case '--list-users':
-			$displayUsers = TRUE;
+			$displayUsers = true;
 
 			break;
 		case '--list-trees':
-			$displayTrees = TRUE;
+			$displayTrees = true;
 
 			break;
 		case '--list-hosts':
-			$displayHosts = TRUE;
+			$displayHosts = true;
 
 			break;
 		case '--list-graphs':
-			$displayGraphs = TRUE;
+			$displayGraphs = true;
 
 			break;
 		case '--list-graph-templates':
-			$displayGraphTemplates = TRUE;
+			$displayGraphTemplates = true;
 
 			break;
 		case '--quiet':
-			$quietMode = TRUE;
+			$quietMode = true;
 
 			break;
 		case '--version':
 		case '-V':
 		case '-v':
 			display_version();
-			exit;
+			exit(0);
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
-			exit;
+			exit(0);
 		default:
-			echo "ERROR: Invalid Argument: ($arg)\n\n";
+			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
 			exit(1);
 		}
@@ -159,8 +152,8 @@ if (sizeof($parms) == 0) {
 
 	if ($displayGraphs) {
 		if (!isset($hostId) || ($hostId === 0) || (!db_fetch_cell("SELECT id FROM host WHERE id=$hostId"))) {
-			echo "ERROR: You must supply a valid host_id before you can list its graphs\n";
-			echo "Try --list-hosts\n";
+			print "ERROR: You must supply a valid host_id before you can list its graphs\n";
+			print "Try --list-hosts\n";
 			display_help();
 			exit(1);
 		} else {
@@ -183,7 +176,7 @@ if (sizeof($parms) == 0) {
 		if ( db_fetch_cell("SELECT id FROM user_auth WHERE id=$userId") ) {
 			array_push($userIds, $userId);
 		} else {
-			echo "ERROR: Invalid Userid: ($value)\n\n";
+			print "ERROR: Invalid Userid: ($value)\n\n";
 			display_help();
 			exit(1);
 		}
@@ -192,13 +185,13 @@ if (sizeof($parms) == 0) {
 
 	/* verify --item-id */
 	if ($itemType == 0) {
-		echo "ERROR: --item-type missing. Please specify.\n\n";
+		print "ERROR: --item-type missing. Please specify.\n\n";
 		display_help();
 		exit(1);
 	}
 
 	if ($itemId == 0) {
-		echo "ERROR: --item-id missing. Please specify.\n\n";
+		print "ERROR: --item-id missing. Please specify.\n\n";
 		display_help();
 		exit(1);
 	}
@@ -207,21 +200,21 @@ if (sizeof($parms) == 0) {
 	switch ($itemType) {
 		case 1: /* graph */
 			if (!db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=$itemId") ) {
-				echo "ERROR: Invalid Graph item id: ($itemId)\n\n";
+				print "ERROR: Invalid Graph item id: ($itemId)\n\n";
 				display_help();
 				exit(1);
 			}
 			break;
 		case 2: /* tree */
 			if (!db_fetch_cell("SELECT id FROM graph_tree WHERE id=$itemId") ) {
-				echo "ERROR: Invalid Tree item id: ($itemId)\n\n";
+				print "ERROR: Invalid Tree item id: ($itemId)\n\n";
 				display_help();
 				exit(1);
 			}
 			break;
 		case 3: /* host */
 			if (!db_fetch_cell("SELECT id FROM host WHERE id=$itemId") ) {
-				echo "ERROR: Invalid Host item id: ($itemId)\n\n";
+				print "ERROR: Invalid Host item id: ($itemId)\n\n";
 				display_help();
 				exit(1);
 			}
@@ -243,20 +236,27 @@ if (sizeof($parms) == 0) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: add_perms.php [ --user-id=[ID] ]\n";
-	echo "    --item-type=[graph|tree|host|graph_template]\n";
-	echo "    --item-id [--quiet]\n\n";
-	echo "Where item-id is the id of the object of type item-type\n\n";
-	echo "List Options:\n";
-	echo "    --list-users\n";
-	echo "    --list-trees\n";
-	echo "    --list-graph-templates\n";
-	echo "    --list-graphs --host-id=[ID]\n";
+	print "\nusage: add_perms.php [ --user-id=[ID] ]\n";
+	print "    --item-type=[graph|tree|host|graph_template]\n";
+	print "    --item-id [--quiet]\n\n";
+	print "Where item-id is the id of the object of type item-type\n\n";
+	print "List Options:\n";
+	print "    --list-users\n";
+	print "    --list-trees\n";
+	print "    --list-graph-templates\n";
+	print "    --list-graphs --host-id=[ID]\n";
+}
+
+function displayGroups() {
+    /**
+     * Todo implement
+     */
+	print 'This option has not yet been implemented';
 }

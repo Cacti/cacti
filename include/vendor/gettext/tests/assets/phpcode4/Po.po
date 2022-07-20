@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"X-Domain: domain1\n"
+
+#: ./tests/assets/phpcode4/input.php:3
+msgid "matching 1"
+msgstr ""
+
+#: ./tests/assets/phpcode4/input.php:4
+msgid "matching 2 singular"
+msgid_plural "matching 2 plural"
+msgstr[0] ""
+
+#: ./tests/assets/phpcode4/input.php:5
+msgctxt "context"
+msgid "matching 3 context singular"
+msgid_plural "matching 3 context plural"
+msgstr[0] ""
+
+#: ./tests/assets/phpcode4/input.php:6
+msgid "matching 4"
+msgstr ""

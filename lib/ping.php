@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -73,6 +73,18 @@ class Net_Ping
 		$this->request_len = strlen($this->request);
 	}
 
+	function ping_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
+		return true;
+	}
+
+	function set_ping_error_handler() {
+		set_error_handler(array($this, 'ping_error_handler'));
+	}
+
+	function restore_cacti_error_handler() {
+		restore_error_handler();
+	}
+
 	function build_icmp_packet() {
 		$seq_low   = rand(0,255);
 		$seq_high  = rand(0,255);
@@ -122,20 +134,19 @@ class Net_Ping
 			$to_usec = ($this->timeout%1000)*1000;
 
 			/* clean up hostname if specifying snmp_transport */
-			$this->host['hostname'] = str_replace('tcp:', '', strtolower($this->host['hostname']));
-			$this->host['hostname'] = str_replace('udp:', '', strtolower($this->host['hostname']));
+			$this->host['hostname'] = $this->strip_ip_address($this->host['hostname']);
 
 			/* determine the host's ip address
 			 * this prevents from command injection as well*/
 			if ($this->is_ipaddress($this->host['hostname'])) {
 				$host_ip = $this->host['hostname'];
-			}else{
+			} else {
 				/* again, as a side effect, prevention from command injection */
-				$host_ip = gethostbyname($this->host['hostname']);
+				$host_ip = cacti_gethostbyname($this->host['hostname']);
 
 				if (!$this->is_ipaddress($host_ip)) {
-					cacti_log('WARNING: ICMP Ping Error: gethostbyname failed for ' . $this->host['hostname']);
-					$this->response = 'ICMP Ping Error: gethostbyname failed for ' . $this->host['hostname'];
+					cacti_log('WARNING: ICMP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname']);
+					$this->response = 'ICMP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
 					return false;
 				}
 			}
@@ -150,28 +161,36 @@ class Net_Ping
 			 * not vulnerable for command injection */
 			if (substr_count(strtolower(PHP_OS), 'sun')) {
 				$result = shell_exec('ping ' . $this->host['hostname']);
-			}else if (substr_count(strtolower(PHP_OS), 'hpux')) {
+			} elseif (substr_count(strtolower(PHP_OS), 'hpux')) {
 				$result = shell_exec('ping -m ' . ceil($this->timeout/1000) . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
-			}else if (substr_count(strtolower(PHP_OS), 'mac')) {
+			} elseif (substr_count(strtolower(PHP_OS), 'mac')) {
 				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			}else if (substr_count(strtolower(PHP_OS), 'freebsd')) {
+			} elseif (substr_count(strtolower(PHP_OS), 'freebsd')) {
+				if (strpos($this->host['hostname'], ':') !== false) {
+					$result = shell_exec('ping6 -X ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				} else {
+					$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				}
+			} elseif (substr_count(strtolower(PHP_OS), 'darwin')) {
 				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			}else if (substr_count(strtolower(PHP_OS), 'darwin')) {
-				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			}else if (substr_count(strtolower(PHP_OS), 'bsd')) {
+			} elseif (substr_count(strtolower(PHP_OS), 'bsd')) {
 				$result = shell_exec('ping -w ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			}else if (substr_count(strtolower(PHP_OS), 'aix')) {
+			} elseif (substr_count(strtolower(PHP_OS), 'aix')) {
 				$result = shell_exec('ping -i ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			}else if (substr_count(strtolower(PHP_OS), 'winnt')) {
+			} elseif (substr_count(strtolower(PHP_OS), 'winnt')) {
 				$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
-			}else{
+			} else {
 				/* please know, that when running SELinux, httpd will throw
 				 * ping: cap_set_proc: Permission denied
-				 * as it now tries to open an ICMP socket and fails 
+				 * as it now tries to open an ICMP socket and fails
 				 * $result will be empty, then. */
-				$result = shell_exec('ping -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
-				if (substr_count($result, 'unknown host') && file_exists('/bin/ping6')) {
+				if (strpos($host_ip, ':') !== false) {
 					$result = shell_exec('ping6 -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
+				} else {
+					$result = shell_exec('ping -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
+					if ((strpos($result, 'unknown host') !== false || strpos($result, 'Address family') !== false) && file_exists('/bin/ping6')) {
+						$result = shell_exec('ping6 -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
+					}
 				}
 			}
 
@@ -187,13 +206,13 @@ class Net_Ping
 					$this->ping_response = __('ICMP Ping Success (%s ms)', $results[1]);
 
 					return true;
-				}else{
+				} else {
 					$this->status = 'down';
 					$this->ping_response = __('ICMP ping Timed out');
 
 					return false;
 				}
-			}else{
+			} else {
 				$position = strpos($result, 'Minimum');
 
 				if ($position > 0) {
@@ -205,14 +224,14 @@ class Net_Ping
 					$this->ping_response = __('ICMP Ping Success (%s ms)', $this->ping_status);
 
 					return true;
-				}else{
+				} else {
 					$this->status = 'down';
 					$this->ping_response = __('ICMP ping Timed out');
 
 					return false;
 				}
 			}
-		}else{
+		} else {
 			$this->ping_status   = 'down';
 			$this->ping_response = __('Destination address not specified');
 
@@ -256,18 +275,18 @@ class Net_Ping
 		/* by default, we look at sysUptime */
 		if ($this->avail_method == AVAIL_SNMP_GET_NEXT) {
 			$oid = '.1.3.6.1.2.1.1.3.0';
-		}else if ($this->avail_method == AVAIL_SNMP_GET_SYSDESC) {
+		} elseif ($this->avail_method == AVAIL_SNMP_GET_SYSDESC) {
 			$oid = '.1.3.6.1.2.1.1.1.0';
-		}else {
+		} else {
 			$oid = '.1.3.6.1.2.1.1.3.0';
 		}
 
-		$session = cacti_snmp_session($this->host['hostname'], $this->host['snmp_community'], 
-			$this->host['snmp_version'], $this->host['snmp_username'], 
-			$this->host['snmp_password'], $this->host['snmp_auth_protocol'], 
-			$this->host['snmp_priv_passphrase'], $this->host['snmp_priv_protocol'], 
-			$this->host['snmp_context'], $this->host['snmp_engine_id'], 
-			$this->host['snmp_port'], $this->host['snmp_timeout'], 
+		$session = cacti_snmp_session($this->host['hostname'], $this->host['snmp_community'],
+			$this->host['snmp_version'], $this->host['snmp_username'],
+			$this->host['snmp_password'], $this->host['snmp_auth_protocol'],
+			$this->host['snmp_priv_passphrase'], $this->host['snmp_priv_protocol'],
+			$this->host['snmp_context'], $this->host['snmp_engine_id'],
+			$this->host['snmp_port'], $this->host['snmp_timeout'],
 			$this->retries, read_config_option('max_get_size'));
 
 		if ($session === false) {
@@ -280,7 +299,7 @@ class Net_Ping
 		if (($this->avail_method == AVAIL_SNMP_GET_NEXT) &&
 			(version_compare('5', phpversion(), '<'))) {
 			$output = cacti_snmp_session_getnext($session, $oid);
-		}else{
+		} else {
 			$output = cacti_snmp_session_get($session, $oid);
 		}
 
@@ -296,7 +315,7 @@ class Net_Ping
 			$this->snmp_response = 'Device responded to SNMP';
 
 			return true;
-		}else{
+		} else {
 			$this->snmp_status   = 'down';
 			$this->snmp_response = 'Device did not respond to SNMP';
 
@@ -305,8 +324,10 @@ class Net_Ping
 	} /* ping_snmp */
 
 	function ping_udp() {
+		$this->set_ping_error_handler();
+
 		/* hostname must be nonblank */
-		if ($this->host['hostname']) {
+		if ($this->host['hostname'] != '') {
 			/* initialize variables */
 			$this->ping_status   = 'down';
 			$this->ping_response = __('default');
@@ -316,38 +337,49 @@ class Net_Ping
 			$to_usec = ($this->timeout%1000)*1000;
 
 			/* clean up hostname if specifying snmp_transport */
-			$this->host['hostname'] = str_replace('tcp:', '', strtolower($this->host['hostname']));
-			$this->host['hostname'] = str_replace('udp:', '', strtolower($this->host['hostname']));
+			$this->host['hostname'] = $this->strip_ip_address($this->host['hostname']);
 
 			/* determine the host's ip address */
 			if ($this->is_ipaddress($this->host['hostname'])) {
 				$host_ip = $this->host['hostname'];
-			}else{
-				$host_ip = gethostbyname($this->host['hostname']);
+			} else {
+				$host_ip = cacti_gethostbyname($this->host['hostname']);
 
 				if (!$this->is_ipaddress($host_ip)) {
-					cacti_log('WARNING: UDP Ping Error: gethostbyname failed for ' . $this->host['hostname']);
-					$this->response = 'UDP Ping Error: gethostbyname failed for ' . $this->host['hostname'];
+					cacti_log('WARNING: UDP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname']);
+					$this->response = 'UDP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
+					$this->restore_cacti_error_handler();
+
 					return false;
 				}
 			}
 
  			/* initialize the socket */
-			if (substr_count($host_ip,':') > 0) {
+			if (strpos($host_ip, ':') !== false) {
 				if (defined('AF_INET6')) {
-					$this->socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
-				}else{
-					$this->ping_response = __('PHP version does not support IPv6');
+					if (version_compare(PHP_VERSION, '5.5.4', '<')) {
+						$this->ping_response = __('Please upgrade to PHP 5.5.4+ for IPv6 support!');
+						$this->ping_status   = 'down';
+						$this->restore_cacti_error_handler();
+
+						return false;
+					} else {
+						$this->socket = socket_create(AF_INET6, SOCK_DGRAM, SOL_UDP);
+					}
+				} else {
+					$this->ping_response = __('Please upgrade to PHP 5.5.4+ for IPv6 support!');
 					$this->ping_status   = 'down';
-					cacti_log('WARNING: IPv6 host detected, PHP version does not support IPv6');
+					$this->restore_cacti_error_handler();
 
 					return false;
 				}
-			}else{
+			} else {
 				$this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 			}
 
-			socket_set_nonblock($this->socket);
+			socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $to_sec, 'usec' => $to_usec));
+			socket_set_option($this->socket, SOL_SOCKET, SO_SNDTIMEO, array('sec' => $to_sec, 'usec' => $to_usec));
+
 			socket_connect($this->socket, $host_ip, $this->port);
 
 			/* format packet */
@@ -355,11 +387,12 @@ class Net_Ping
 
 			$error = '';
 			$retry_count = 0;
-			while (1) {
+			while (true) {
 				if ($retry_count >= $this->retries) {
 					$this->status = 'down';
 					$this->ping_response = __('UDP ping error: %s', $error);
 					$this->close_socket();
+					$this->restore_cacti_error_handler();
 
 					return false;
 				}
@@ -371,30 +404,41 @@ class Net_Ping
 				socket_write($this->socket, $this->request, $this->request_len);
 
 				/* get the socket response */
-				$w = $f = array();
 				$r = array($this->socket);
+				$w = array($this->socket);
+				$f = array($this->socket);
+
 				$num_changed_sockets = socket_select($r, $w, $f, $to_sec, $to_usec);
-				if ($num_changed_sockets === false) {	
-					$error = 'socket_select() failed, reason: ' . socket_strerror(socket_last_error());
+
+				if ($num_changed_sockets === false) {
+					$error = 'UDP ping: socket_select(), reason: ' . socket_strerror(socket_last_error($this->socket));
 				} else {
 					switch($num_changed_sockets) {
 					case 2: /* response received, so host is available */
 					case 1:
-						/* get the end time */
+						/* get packet response */
+						//$code = socket_recv($this->socket, $this->reply, 256, 0);
+						$code = socket_recv($this->socket, $this->reply, 256, 0);
+
+						/* get the end time after the packet was received */
 						$this->time = $this->get_time($this->precision);
 
-						/* get packet response */
-						$code = @socket_recv($this->socket, $this->reply, 256, 0);
+						$errno = socket_last_error($this->socket);
+						socket_clear_error($this->socket);
+						if (($code == -1 || empty($code)) &&
+							($errno == EHOSTUNREACH || $errno == ECONNRESET || $errno == ECONNREFUSED)) {
 
-						/* get the error, if applicable */
-						$err = socket_last_error($this->socket);
+							/* set the return message */
+							$this->ping_status = $this->time * 1000;
+							$this->ping_response = __('UDP Ping Success (%s ms)', $this->time*1000);
 
-						/* set the return message */
-						$this->ping_status = $this->time * 1000;
-						$this->ping_response = __('UDP Ping Success (%s ms)', $this->time*1000);
+							$this->close_socket();
+							$this->restore_cacti_error_handler();
 
-						$this->close_socket();
-						return true;
+							return true;
+						} else {
+							$error = socket_strerror($errno);
+						}
 
 						break;
 					case 0:
@@ -410,14 +454,17 @@ class Net_Ping
 		} else {
 			$this->ping_response = __('Destination address not specified');
 			$this->ping_status   = 'down';
+			$this->restore_cacti_error_handler();
 
 			return false;
 		}
 	} /* end ping_udp */
 
 	function ping_tcp() {
+		$this->set_ping_error_handler();
+
 		/* hostname must be nonblank */
-		if ($this->host['hostname']) {
+		if ($this->host['hostname'] != '') {
 			/* initialize variables */
 			$this->ping_status   = 'down';
 			$this->ping_response = __('default');
@@ -427,34 +474,43 @@ class Net_Ping
 			$to_usec = ($this->timeout%1000)*1000;
 
 			/* clean up hostname if specifying snmp_transport */
-			$this->host['hostname'] = str_replace('tcp:', '', strtolower($this->host['hostname']));
-			$this->host['hostname'] = str_replace('udp:', '', strtolower($this->host['hostname']));
+			$this->host['hostname'] = $this->strip_ip_address($this->host['hostname']);
 
 			/* determine the host's ip address */
 			if ($this->is_ipaddress($this->host['hostname'])) {
 				$host_ip = $this->host['hostname'];
-			}else{
-				$host_ip = gethostbyname($this->host['hostname']);
+			} else {
+				$host_ip = cacti_gethostbyname($this->host['hostname']);
 
 				if (!$this->is_ipaddress($host_ip)) {
-					cacti_log('WARNING: TCP Ping Error: gethostbyname failed for ' . $this->host['hostname']);
-					$this->response = 'TCP Ping Error: gethostbyname failed for ' . $this->host['hostname'];
+					cacti_log('WARNING: TCP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname']);
+					$this->response = 'TCP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
+					$this->restore_cacti_error_handler();
+
 					return false;
 				}
 			}
 
 			/* initilize the socket */
-			if (substr_count($host_ip,':') > 0) {
+			if (strpos($host_ip, ':') !== false) {
 				if (defined('AF_INET6')) {
-					$this->socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP);
-				}else{
-					$this->ping_response = __('PHP binary does not support IPv6');
+					if (version_compare(PHP_VERSION, '5.5.4', '<')) {
+						$this->ping_response = __('Please upgrade to PHP 5.5.4+ for IPv6 support!');
+						$this->ping_status   = 'down';
+						$this->restore_cacti_error_handler();
+
+						return false;
+					} else {
+						$this->socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP);
+					}
+				} else {
+					$this->ping_response = __('Please upgrade to PHP 5.5.4+ for IPv6 support!');
 					$this->ping_status   = 'down';
-					cacti_log('WARNING: IPv6 host detected, PHP version does not support IPv6');
+					$this->restore_cacti_error_handler();
 
 					return false;
 				}
-			}else{
+			} else {
 				$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			}
 
@@ -462,19 +518,38 @@ class Net_Ping
 				/* set start time */
 				$this->start_time();
 
-				/* allow immediate return */
-				socket_set_nonblock($this->socket);
-				@socket_connect($this->socket, $host_ip, $this->port);
 				socket_set_block($this->socket);
+				socket_set_option($this->socket, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $to_sec, 'usec' => $to_usec));
+				socket_set_option($this->socket, SOL_SOCKET, SO_SNDTIMEO, array('sec' => $to_sec, 'usec' => $to_usec));
 
-				$w = $f = array();
+				socket_connect($this->socket, $host_ip, $this->port);
+
+				$errno = socket_last_error($this->socket);
+
+				if ($errno > 0) {
+					$this->ping_response = __('TCP ping: socket_connect(), reason: %s', socket_strerror($errno));
+					$this->ping_status   = 'down';
+
+					$this->close_socket();
+					$this->restore_cacti_error_handler();
+
+					socket_clear_error($this->socket);
+
+					return false;
+				}
+
 				$r = array($this->socket);
+				$w = array($this->socket);
+				$f = array($this->socket);
+
 				$num_changed_sockets = socket_select($r, $w, $f, $to_sec, $to_usec);
-				if ($num_changed_sockets === false) {	
+
+				if ($num_changed_sockets === false) {
 					$this->ping_response = __('TCP ping: socket_select() failed, reason: %s', socket_strerror(socket_last_error()));
 					$this->ping_status   = 'down';
 
 					$this->close_socket();
+					$this->restore_cacti_error_handler();
 
 					return false;
 				} else {
@@ -490,6 +565,7 @@ class Net_Ping
 						}
 
 						$this->close_socket();
+						$this->restore_cacti_error_handler();
 
 						return true;
 					case 0:
@@ -498,6 +574,7 @@ class Net_Ping
 						$this->ping_status   = 'down';
 
 						$this->close_socket();
+						$this->restore_cacti_error_handler();
 
 						return false;
 					}
@@ -506,12 +583,15 @@ class Net_Ping
 		} else {
 			$this->ping_response = __('Destination address not specified');
 			$this->ping_status   = 'down';
+			$this->restore_cacti_error_handler();
 
 			return false;
 		}
 	} /* end ping_tcp */
 
 	function ping($avail_method = AVAIL_SNMP_AND_PING, $ping_type = PING_ICMP, $timeout=500, $retries=3) {
+		$this->set_ping_error_handler();
+
 		/* initialize variables */
 		$ping_ping = true;
 		$ping_snmp = true;
@@ -525,6 +605,8 @@ class Net_Ping
 		/* short circuit for availability none */
 		if ($avail_method == AVAIL_NONE) {
 			$this->ping_status = '0.00';
+			$this->restore_cacti_error_handler();
+
 			return true;
 		}
 
@@ -535,13 +617,13 @@ class Net_Ping
 
 		if (($retries <= 0) || ($retries > 5)) {
 			$this->retries = 2;
-		}else{
+		} else {
 			$this->retries = $retries;
 		}
 
 		if ($timeout <= 0) {
 			$this->timeout = 500;
-		}else{
+		} else {
 			$this->timeout = $timeout;
 		}
 
@@ -558,9 +640,9 @@ class Net_Ping
 			($avail_method == AVAIL_PING)) {
 			if ($ping_type == PING_ICMP) {
 				$ping_result = $this->ping_icmp();
-			}else if ($ping_type == PING_UDP) {
+			} elseif ($ping_type == PING_UDP) {
 				$ping_result = $this->ping_udp();
-			}else if ($ping_type == PING_TCP) {
+			} elseif ($ping_type == PING_TCP) {
 				$ping_result = $this->ping_tcp();
 			}
 		}
@@ -569,44 +651,46 @@ class Net_Ping
 		if (($avail_method == AVAIL_SNMP_OR_PING) && ($ping_result == true)) {
 			$snmp_result = true;
 			$this->snmp_status = 0.000;
-		}else if (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == false)) {
+		} elseif (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == false)) {
 			$snmp_result = false;
-		}else if (($avail_method == AVAIL_SNMP) || ($avail_method == AVAIL_SNMP_AND_PING) || ($avail_method == AVAIL_SNMP_GET_SYSDESC) || ($avail_method == AVAIL_SNMP_GET_NEXT)) {
+		} elseif (($avail_method == AVAIL_SNMP) || ($avail_method == AVAIL_SNMP_AND_PING) || ($avail_method == AVAIL_SNMP_OR_PING) || ($avail_method == AVAIL_SNMP_GET_SYSDESC) || ($avail_method == AVAIL_SNMP_GET_NEXT)) {
 			if (($this->host['snmp_community'] == '') && ($this->host['snmp_version'] != 3)) {
 				/* snmp version 1/2 without community string assume SNMP test to be successful
 				   due to backward compatibility issues */
 				$snmp_result = true;
 				$this->snmp_status = 0.000;
-			}else{
+			} else {
 				$snmp_result = $this->ping_snmp();
 			}
 		}
+
+		$this->restore_cacti_error_handler();
 
 		switch ($avail_method) {
 			case AVAIL_SNMP_OR_PING:
 				if (($this->host['snmp_community'] == '') && ($this->host['snmp_version'] != 3)) {
 					if ($ping_result) {
 						return true;
-					}else{
+					} else {
 						return false;
 					}
-				}elseif ($snmp_result) {
+				} elseif ($snmp_result) {
 					return true;
-				}elseif ($ping_result) {
+				} elseif ($ping_result) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			case AVAIL_SNMP_AND_PING:
 				if (($this->host['snmp_community'] == '') && ($this->host['snmp_version'] != 3)) {
 					if ($ping_result) {
 						return true;
-					}else{
+					} else {
 						return false;
 					}
-				}elseif (($snmp_result) && ($ping_result)) {
+				} elseif (($snmp_result) && ($ping_result)) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			case AVAIL_SNMP:
@@ -614,13 +698,13 @@ class Net_Ping
 			case AVAIL_SNMP_GET_SYSDESC:
 				if ($snmp_result) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			case AVAIL_PING:
 				if ($ping_result) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			default:
@@ -633,14 +717,36 @@ class Net_Ping
 		if (function_exists('filter_var')) {
 			if (filter_var($ip_address, FILTER_VALIDATE_IP) !== false) {
 				return true;
-			}else{
+			} else {
 				return false;
 			}
-		}elseif (inet_pton($ip_address) !== false) {
+		} elseif (inet_pton($ip_address) !== false) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-}
 
+	function strip_ip_address($ip_address) {
+		/* clean up hostname if specifying snmp_transport */
+		if (strpos($ip_address, 'tcp6:') !== false) {
+			$ip_address = str_replace('tcp6:', '', strtolower($ip_address));
+			if (strpos($ip_address, '[') !== false) {
+				$parts = explode(']', $ip_address);
+				$ip_address = trim($parts[0], '[');
+			}
+		} elseif (strpos($ip_address, 'udp6:') !== false) {
+			$ip_address = str_replace('udp6:', '', strtolower($ip_address));
+			if (strpos($ip_address, '[') !== false) {
+				$parts = explode(']', $ip_address);
+				$ip_address = trim($parts[0], '[');
+			}
+		} elseif (strpos($ip_address, 'tcp:') !== false) {
+			$ip_address = str_replace('tcp:', '', strtolower($ip_address));
+		} elseif (strpos($ip_address, 'udp:') !== false) {
+			$ip_address = str_replace('udp:', '', strtolower($ip_address));
+		}
+
+		return $ip_address;
+	}
+}

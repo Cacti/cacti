@@ -1,8 +1,8 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,29 +23,33 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/api_automation_tools.php');
+require_once($config['base_path'] . '/lib/api_automation.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_device.php');
+require_once($config['base_path'] . '/lib/api_tree.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/sort.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 ini_set('max_execution_time', '0');
-
-$no_http_headers = true;
-
-include(dirname(__FILE__) . '/../include/global.php');
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/data_query.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		= FALSE;
+$debug		= false;
 $host_id	= '';
 $query_id	= 'all';		/* just to mimic the old behaviour */
 $host_descr	= '';
+$force      = false;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -63,42 +67,50 @@ if (sizeof($parms)) {
 			case '--qid':
 				$query_id = $value;
 				break;
+			case '--force':
+				$force = true;
+				break;
 			case '-host-descr':
 			case '--host-descr':
 				$host_descr = $value;
 				break;
 			case '-d':
 			case '--debug':
-				$debug = TRUE;
+				$debug = true;
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
-				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
-}else{
-	print "ERROR: You must supply input parameters\n\n";
+} else {
+	print 'ERROR: You must supply input parameters' . PHP_EOL . PHP_EOL;
 	display_help();
-	exit;
+	exit(1);
 }
 
 /* determine the hosts to reindex */
+$params = array();
+
 if (strtolower($host_id) == 'all') {
 	$sql_where = '';
-}else if (is_numeric($host_id) && $host_id > 0) {
-	$sql_where = ' WHERE host_id = ' . $host_id;
-}else{
-	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
+} elseif (is_numeric($host_id) && $host_id > 0) {
+	$sql_where = 'WHERE host_id = ?';
+	$params[] = $host_id;
+} else {
+	print 'ERROR: You must specify either a host_id or \'all\' to proceed.' . PHP_EOL;
+
 	display_help();
 	exit;
 }
@@ -106,55 +118,107 @@ if (strtolower($host_id) == 'all') {
 /* determine data queries to rerun */
 if (strtolower($query_id) == 'all') {
 	/* do nothing */
-}else if (is_numeric($query_id) && $query_id > 0) {
-	$sql_where .= (strlen($sql_where) ? ' AND snmp_query_id=' . $query_id : ' WHERE snmp_query_id=' . $query_id);
-}else{
-	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
+} elseif (is_numeric($query_id) && $query_id > 0) {
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' hsq.snmp_query_id = ?';
+	$params[] = $query_id;
+} else {
+	print 'ERROR: You must specify either a query_id or \'all\' to proceed.' . PHP_EOL;
+
 	display_help();
 	exit;
 }
 
 /* allow for additional filtering on host description */
-if (strlen($host_descr)) {
-	$sql_where .= (strlen($sql_where) ? " AND host.description like '%" . $host_descr . "%' AND host.id=host_snmp_query.host_id" : " WHERE host.description like '%" . $host_descr . "%' AND host.id=host_snmp_query.host_id");
-	$data_queries = db_fetch_assoc('SELECT host_id, snmp_query_id FROM host_snmp_query,host' . $sql_where);
+if (db_column_exists('disabled', 'sites')) {
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
 } else {
-	$data_queries = db_fetch_assoc('SELECT host_id, snmp_query_id FROM host_snmp_query' . $sql_where);
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' IFNULL(TRIM(h.disabled),"") != "on"';
 }
 
+if ($host_descr != '') {
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' h.description LIKE ?';
+	$params[] = '%' . $host_descr . '%';
+}
+
+$data_queries = db_fetch_assoc_prepared("SELECT h.description, h.hostname, h.host_id, hsq.snmp_query_id
+	FROM host_snmp_query hsq
+	INNER JOIN host h
+	ON h.id = hsq.host_id
+	LEFT JOIN sites s
+	ON s.id = h.site_id
+	$sql_where",
+	$params);
+
 /* issue warnings and start message if applicable */
-print "WARNING: Do not interrupt this script.  Reindexing can take quite some time\n";
-debug("There are '" . sizeof($data_queries) . "' data queries to run");
+print 'WARNING: Do not interrupt this script.  Reindexing can take quite some time' . PHP_EOL;
+debug("There are '" . cacti_sizeof($data_queries) . "' data queries to run");
 
 $i = 1;
-if (sizeof($data_queries)) {
+$total_start = microtime(true);
+if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
-		if (!$debug) print '.';
-		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' starting");
-		run_data_query($data_query['host_id'], $data_query['snmp_query_id']);
-		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' ending");
+		if (!$debug) {
+			print '.';
+		}
+
+		$start = microtime(true);
+
+		run_data_query($data_query['host_id'], $data_query['snmp_query_id'], false, $force);
+
+		$items = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM host_snmp_cache
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			array($data_query['host_id'], $data_query['snmp_query_id']));
+
+		$orphans = db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM graph_local
+			WHERE host_id = ?
+			AND snmp_query_id = ?
+			AND snmp_index = ""',
+			array($data_query['host_id'], $data_query['snmp_query_id']));
+
+		$end = microtime(true);
+
+		$message = sprintf(
+			'Re-Index Complete: Number[%d], TotalTime[%4.2f], QueryTime[%3.2f], Device[%d], Description[%s], DQ[%d], Items[%d], Orphans[%d]',
+			$i,
+			$end - $total_start,
+			$end - $start,
+			$data_query['host_id'],
+			$data_query['description'],
+			$data_query['snmp_query_id'],
+			$items,
+			$orphans
+		);
+
+		debug($message);
+
 		$i++;
 	}
 }
 
+function display_version() {
+	$version = get_cacti_cli_version();
+	print "Cacti Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]] [--host-descr=[description]]\n";
-	echo "                           [-d] [-h] [--help] [-v] [--version]\n\n";
-	echo "--id=host_id             - The host_id to have data queries reindexed or 'all' to reindex all hosts\n";
-	echo "--qid=query_id           - Only index on a specific data query id; defaults to 'all'\n";
-	echo "--host-descr=description - The host description to filter by (SQL filters acknowledged)\n";
-	echo "--debug                  - Display verbose output during execution\n";
-	echo "-v --version             - Display this help message\n";
-	echo "-h --help                - Display this help message\n";
+	display_version();
+	print 'usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]' . PHP_EOL;
+	print '   [--host-descr=[description]] [--debug]' . PHP_EOL . PHP_EOL;
+	print '--id=host_id             - The host_id to have data queries reindexed or \'all\' to reindex all hosts\n' . PHP_EOL;
+	print '--qid=query_id           - Only index on a specific data query id; defaults to \'all\'' . PHP_EOL;
+	print '--host-descr=description - The host description to filter by (SQL filters acknowledged)' . PHP_EOL;
+	print '--force                  - Force Graph and Data Source Suggested Name Re-mapping for all items' . PHP_EOL;
+	print '--debug                  - Display verbose output during execution' . PHP_EOL;
 }
 
 function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print('DEBUG: ' . $message . "\n");
+		print 'DEBUG: ' . $message . PHP_EOL;
 	}
 }

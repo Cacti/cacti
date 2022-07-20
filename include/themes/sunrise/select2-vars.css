@@ -1,0 +1,9 @@
+:root {
+	--select2-border: 1px solid rgba(255,255,255,0.2);
+	--select2-border-radius: 0px;
+	--select2-background-dropdown: #333;
+	--select2-background-item: transparent;
+	--select2-background-highlight: transparent;
+	--select2-color-item: #969BA3;
+	--select2-color-highlight: #93CEFF;
+}

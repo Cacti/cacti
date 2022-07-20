@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -40,16 +40,16 @@ function get_cdef_item_name($cdef_item_id) 	{
 	}
 }
 
-/* get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDTool 'graph'
+/* get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
      string. this name will be resolved recursively if necessary
    @arg $cdef_id - the id of the cdef to resolve
    @returns - a text-based representation of the cdef */
 function get_cdef($cdef_id) {
-	$cdef_items = db_fetch_assoc_prepared('SELECT * FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
+	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
 
 	$i = 0; $cdef_string = '';
 
-	if (sizeof($cdef_items) > 0) {
+	if (cacti_sizeof($cdef_items) > 0) {
 		foreach ($cdef_items as $cdef_item) {
 			if ($i > 0) {
 				$cdef_string .= ',';
@@ -57,7 +57,7 @@ function get_cdef($cdef_id) {
 			if ($cdef_item['type'] == 5) {
 				$current_cdef_id = $cdef_item['value'];
 				$cdef_string .= get_cdef($current_cdef_id);
-			}else{
+			} else {
 				$cdef_string .= get_cdef_item_name($cdef_item['id']);
 			}
 			$i++;

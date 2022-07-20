@@ -1,133 +1,89 @@
 // Host Autocomplete Magic
 var pageName = basename($(location).attr('pathname'));
 
-/* only perform the recalculation of elements at the final end of the windows resize event */
-var waitForFinalEvent = (function () {
-  var timers = {};
-  return function (callback, ms, uniqueId) {
-    if (!uniqueId) {
-      uniqueId = "Don't call this twice without a uniqueId";
-    }
-    if (timers[uniqueId]) {
-      clearTimeout (timers[uniqueId]);
-    }
-    timers[uniqueId] = setTimeout(callback, ms);
-  };
-})();
-
-$(window).resize(function () {
-	waitForFinalEvent(function(){
-		/* close open dropdown menues first off */
-		$('.dropdownMenu > ul').hide();
-		
-		heightPage = $(window).height();
-		heightPageHead = $('#cactiPageHead').outerHeight();
-		heightPageContent = heightPage -heightPageHead +1;
-		$('body').css('height', heightPage);
-		$('#cactiContent').css('height', heightPageContent);
-		
-		/* check visibility of all tabs */
-		$('#submenu-ellipsis').empty();
-		$('.maintabs nav ul li a').each(function() {
-			id = $(this).attr('id');
-			if( $(this).offset().top !== 0 ) {
-				if( $('#' + id + '-ellipsis').length == 0 ) {
-					var str = $(this).parent().html();
-					var str2 = str.replace( id , id + '-ellipsis');
-					$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
-				}
-			}else {
-				$('#' + id + '-ellipsis').parent().remove();
-			}
-		});
-
-		if($("#submenu-ellipsis li").length == 0) {
-			$(".ellipsis").hide(0);
-		}else {
-			$(".ellipsis").show(0);
-		}
-	}, 200, "resize-content");
-});
-
-$('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');
-
 function themeReady() {
 	var pageName = basename($(location).attr('pathname'));
 	var hostTimer = false;
 	var clickTimeout = false;
 	var hostOpen = false;
 
+	if ($('#cactiPageBottom').length == 0) {
+		$('<div id="cactiPageBottom" class="cactiPageBottom"></a></div>').insertAfter('#cactiContent');
+	}
+
 	// Setup the navigation menu
 	setMenuVisibility();
 
 	// Add nice search filter to filters
-	$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', 'Enter a search term').parent('td').css('white-space', 'nowrap');
+	if ($('input[id="filter"]').length > 0 && $('input[id="filter"] > i[class="fa fa-search filter"]').length < 1) {
+		$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	}
 
-	$('input#filter').addClass('ui-state-default ui-corner-all');
+	if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"] > i[class="fa fa-search filter"]').length < 1) {
+		$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+	}
+
+	if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"] > i[class="fa fa-search filter"]').length < 1) {
+		$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+	}
+
+	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
 	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-	
+
 	/* Start clean up */
 
 	//login page
 	$('.cactiLoginLogo').html("<i class='fa fa-paw'/>").css('font-size: 20px');
-	
+
 	/* clean up the navigation menu */
 	$('.cactiConsoleNavigationArea').find('#menu').appendTo($('.cactiConsoleNavigationArea').find('#navigation'));
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
 
-	/* 'ellipsis' menu in the middle */
-	if ($('.ellipsis').length == 0) {
-		$('<div class="maintabs ellipsis">'
-			+'<nav><ul>'
-				+'<li class="maintabs-submenu">'
-					+'<a class="submenu-ellipsis" href="#"><i class="fa fa-angle-down"></i></a></li>'
-			+'</ul></nav>'
-		+'</div>').insertAfter('.maintabs');	
-	}
-	$('<div class="dropdownMenu">'
-		+'<ul id="submenu-ellipsis" class="submenuoptions" style="display:none;">'
-		+'</ul>'
-	+'</div>').appendTo('body');	
-	
-	/* Hey - No footer available ? */
-	//if($('#cactiPageBottom').length == 0) {
-		//$('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');
-	//}
-	/* Console? Nope! */
-	submenu_counter = 10;
-		
-	$('.maintabs nav ul li a').each( function() {
+	$('.maintabs nav ul li a.lefttab').each( function() {
 		id = $(this).attr('id');
-		if ( id == 'maintab-anchor-console') {
-			$(this).html("<i class='fa fa-paw'/>").css({'border-right':'1px solid #aaa'});
-		}else if ( id == 'maintab-anchor-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
-			submenu_counter++;
+
+		if (id == 'tab-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
 			$(this).parent().addClass('maintabs-has-submenu');
-			$('<li class="maintabs-submenu"><a class="submenu-' + submenu_counter + '" href="#"><i class="fa fa-angle-down"></i></a></li>').insertAfter( $(this) );
 			$('<div class="dropdownMenu">'
-				+'<ul id="submenu-' + submenu_counter + '" class="submenuoptions" style="display:none;">'
-					+'<li><a href="graph_view.php?action=tree">Tree View</a></li>'
-					+'<li><a href="graph_view.php?action=list">List View</a></li>'
-					+'<li><a href="graph_view.php?action=preview">Preview View</a></li>'
+				+'<ul id="submenu-tab-graphs" class="submenuoptions" style="display:none;">'
+					+'<li><a id="tab-graphs-tree-view" href="'+urlPath+'graph_view.php?action=tree">'+treeView+'</a></li>'
+					+'<li><a id="tab-graphs-list-view" href="'+urlPath+'graph_view.php?action=list">'+listView+'</a></li>'
+					+'<li><a id="tab-graphs-pre_view" href="'+urlPath+'graph_view.php?action=preview">'+previewView+'</a></li>'
 				+'</ul>'
 			+'</div>').appendTo('body');
-		}else {
-			/* plugin stuff here ? */
-		}		
+		}
 	});
 
 	/* user menu on the right ... */
 	if ($('.usertabs').length == 0) {
+		$('.loggedInAs').show();
+		$('#userDocumentation').remove();
+		$('#userCommunity').remove();
+		$('.menuHr').remove();
 		$('<div class="maintabs usertabs">'
 			+'<nav><ul>'
+				+'<li><a id="menu-user-help" class="usertabs-submenu" href="#"><i class="fa fa-question"></i></a></li>'
 				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
 			+'</ul></nav>'
-		+'</div>').insertAfter('.ellipsis');	
+		+'</div>').insertAfter('.maintabs');
+
+		$('<div class="dropdownMenu">'
+			+'<ul id="submenu-user-help" class="submenuoptions right" style="display:none;">'
+				+'<li><a href="https://www.cacti.net" target="_blank" rel="noopener"><span>'+cactiHome+'</span></a></li>'
+				+'<li><a href="https://github.com/cacti" target="_blank rel="noopener""><span>'+cactiProjectPage+'</span></a></li>'
+				+'<li><hr class="menu"></li>'
+				+'<li><a href="https://forums.cacti.net/" target="_blank" rel="noopener"><span>'+cactiCommunityForum+'</span></a></li>'
+				+'<li><a href="https://github.com/Cacti/documentation/blob/develop/README.md" target="_blank" rel="noopener"><span>'+cactiDocumentation+'</span></a></li>'
+				+'<li><hr class="menu"></li>'
+				+'<li><a href="https://github.com/Cacti/cacti/issues/new" target="_blank" rel="noopener"><span>'+reportABug+'</span></a></li>'
+				+'<li><a href="'+urlPath+'about.php"><span>'+aboutCacti+'</span></a></li>'
+			+'</ul>'
+		+'</div>').appendTo('body');
 	}
-	
+
 	ajaxAnchors();
-	
+
 	/* User Menu */
 	$('.menuoptions').parent().appendTo('body');
 
@@ -136,119 +92,41 @@ function themeReady() {
 	$('.action-icon-user').unbind().click(function(event) {
 		event.preventDefault();
 
-		if( $('.menuoptions').is(':visible') === false ) {
+		if ($('.menuoptions').is(':visible') === false) {
 			$('.submenuoptions').slideUp(120);
 			$('.menuoptions').slideDown(120);
-		}else {
+		} else {
 			$('.menuoptions').slideUp(120);
 		}
-		return false;
-	});
 
-	$('.maintabs-submenu').unbind('click').click(function(event) {
-		event.preventDefault();
-		
-		submenu_index = $(this).children('a:first').attr('class');
-		submenu = $('#'+submenu_index);
-		
-		if( submenu.is(':visible') === false ) {
-			/* close other drop down menus first */
-			$('.submenuoptions').slideUp(120);
-			$('.menuoptions').slideUp(120);
-			/* re-position */
-			position = $(this).parent('.maintabs-has-submenu').position();
-			if(!position) {
-				position = $(this).position();
-				submenu.css({'left':position.left - parseInt(submenu.outerWidth()) + parseInt($(this).outerWidth()) }).slideDown(120);
-			}else {
-				/* move dd to the left */
-				submenu.css({'left':position.left}).slideDown(120);
-			}
-		}else {
-			submenu.slideUp(120);
-		}
-		
 		return false;
 	});
 
 	/* Highlight sortable table columns */
-	$('.tableHeader th').has('i.fa-unsorted').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort-asc').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort-desc').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-unsorted').hover(
+	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
+	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
+	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
+	$('.tableHeader th').has('i.fa-sort').hover(
 		function() {
-			$( this ).addClass("tableHeaderColumnHover" );
+			$(this).addClass('tableHeaderColumnHover');
 		}, function() {
-			$( this ).removeClass( "tableHeaderColumnHover" );
+			$(this).removeClass('tableHeaderColumnHover');
 		}
 	);
-	
-	$.ui.selectmenu.prototype._renderItem = function(ui, item) {
-		if (item.element.closest('select').hasClass('colordropdown')) {
-			if (item.label != 'None') {
-				var li = $("<li>", { text: item.label });
 
-				$('<span>', {
-					style: item.element.attr('data-style'),
-					'class': 'ui-icon color-icon'
-				}).appendTo(li);
-			}else{
-				var li = $("<li>", { text: item.label });
-			}
-		}else if (item.element.closest('select').hasClass('iconselect')) {
-			var li = $('<li>', { text: item.label });
+	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
 
-			if (item.disabled) {
-				li.addClass('ui-state-disabled');
-			}
+	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 
-			$('<span>', {
-				style: item.element.attr('data-style'),
-				'class': 'ui-icon ' + item.element.attr('data-class')
-			}).appendTo(li);
+	$('select.colordropdown').each(function() {
+		$(this).select2({
+			templateResult: formatColorItem,
+			templateSelection: formatColorSelection
+		});
+	});
 
-			return li.appendTo(ui);
-		}else{
-			var li = $("<li>");
-
-			this._setText(li, item.label);
-		}
-
-		if (item.disabled) {
-			li.addClass("ui-state-disabled");
-		}
-
-		return li.appendTo(ui);
-	}
-
-	$('select').each(function() {
-		if ($(this).prop('multiple') != true) {
-			$(this).selectmenu({
-				change: function(event, ui) {
-					$(this).val(ui.item.value).change();
-				},
-				position: {
-					my: "left top",
-					at: "left bottom",
-					collision: "flip"
-				},
-			}).each(function() {
-				id = $(this).attr('id');
-				minWidth = 0;
-				$('#'+id+' > option').each(function() {
-					width=$(this).textWidth();
-					if (width > minWidth) {
-						minWidth = width;
-					}
-				});
-
-				minWidth+=80;
-				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', '400px').css('width','');
-				$('#'+id+'-menu').css('max-height', '250px');
-			});
-		}else{
-			$(this).addClass('ui-state-default ui-corner-all');
-		}
+	$('select').not('.colordropdown').each(function() {
+		$(this).select2();
 	});
 
 	$('#host').unbind().autocomplete({
@@ -259,59 +137,104 @@ function themeReady() {
 			$('#host_id').val(ui.item.id);
 			callBack = $('#call_back').val();
 			if (callBack != 'undefined') {
-				eval(callBack);
-			}else if (typeof applyGraphFilter === 'function') {
+				if (callBack.indexOf('applyFilter') >= 0) {
+					applyFilter();
+				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
+					applyGraphFilter();
+				}
+			} else if (typeof applyGraphFilter === 'function') {
 				applyGraphFilter();
-			}else{
+			} else {
 				applyFilter();
 			}
 		}
 	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
 
-	$('#host, #host_click').click(function() {
-		if (!hostOpen) {
-			$('#host').autocomplete('option', 'minLength', 0).autocomplete('search', '');
-			hostOpen = true;
-		}else{
+	$('#host_click').css('z-index', '4');
+	$('#host_wrapper').unbind().dblclick(function() {
+		hostOpen = false;
+		clearTimeout(hostTimer);
+		clearTimeout(clickTimeout);
+		$('#host').autocomplete('close').select();
+	}).click(function() {
+		if (hostOpen) {
 			$('#host').autocomplete('close');
+			clearTimeout(hostTimer);
 			hostOpen = false;
+		} else {
+			clickTimeout = setTimeout(function() {
+				$('#host').autocomplete('search', '');
+				clearTimeout(hostTimer);
+				hostOpen = true;
+			}, 200);
 		}
+		$('#host').select();
+	}).on('mouseenter', function() {
+		$(this).addClass('ui-state-hover');
+		$('input#host').addClass('ui-state-hover');
+	}).on('mouseleave', function() {
+		$(this).removeClass('ui-state-hover');
+		$('#host').removeClass('ui-state-hover');
+		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+		hostOpen = false;
 	});
 
-/* End clean up */
+	var hostPrefix = '';
+	$('#host').autocomplete('widget').each(function() {
+		hostPrefix=$(this).attr('id');
 
-
-	/* Notification Handler */
-	if( $("#message").length ) {
-	//	alert($('#message_container').html());
-	}
+		if (hostPrefix != '') {
+			$('ul[id="'+hostPrefix+'"]').on('mouseenter', function() {
+				clearTimeout(hostTimer);
+			}).on('mouseleave', function() {
+				hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+				$(this).removeClass('ui-state-hover');
+				$('input#host').removeClass('ui-state-hover');
+			});
+		}
+	});
 
 	/* Replace icons */
 	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
 	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
 	$('.fa-remove').addClass('fa-trash-o').removeClass('fa-remove');
 
-
+	setNavigationScroll();
 }
 
 function setMenuVisibility() {
-	storage=$.localStorage;
+	storage=Storages.localStorage;
 
 	// Initialize the navigation settings
-	$('#navigation').hide();
+	// This will setup the initial visibility of the menu
 	$('li.menuitem').each(function() {
-		active = storage.get($(this).attr('id'));
-		if (active != null) {
-			if (active == 'active') {
-				$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
-				$(this).next('a').show();
-			}else{
-				$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
-				$(this).next('a').hide();
-			}
+		var id = $(this).attr('id');
+
+		if (storage.isSet(id)) {
+			var active = storage.get(id);
+		} else {
+			var active = null;
+		}
+
+		if (active != null && active == 'active') {
+			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+			$(this).next('a').show();
+		} else {
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+			$(this).next('a').hide();
+		}
+
+		if ($(this).find('a.selected').length == 0) {
+			//console.log('hiding1:'+$(this).closest('.menuitem').attr('id'));
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+			$(this).next('a').hide();
+			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+		} else {
+			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+			$(this).next('a').show();
+			storage.set($(this).closest('.menuitem').attr('id'), 'active');
 		}
 	});
-	$('#navigation').show();
 
 	// Functon to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
@@ -319,19 +242,27 @@ function setMenuVisibility() {
 
 		id = $(this).closest('.menuitem').attr('id');
 
-		if ($(this).next().is(':visible')){
+		if ($(this).next().is(':visible')) {
 			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+			storage.set(id, 'collapsed');
 		} else {
 			$(this).next('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true');
 			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 			if ($(this).next().is(':visible')) {
 				storage.set($(this).closest('.menuitem').attr('id'), 'active');
-			}else{
-				storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+			} else {
+				storage.set(id, 'collapsed');
 			}
 		}
+
+		$('li.menuitem').not('#'+id).each(function() {
+			text = $(this).attr('id');
+			id   = $(this).attr('id');
+
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
+			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );
+			storage.set($(this).attr('id'), 'collapsed');
+		});
 	});
 }
-	

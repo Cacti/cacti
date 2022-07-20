@@ -1,8 +1,8 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -14,7 +14,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,17 +23,10 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* We are not talking to the browser */
-$no_http_headers = true;
-
-include(dirname(__FILE__).'/../include/global.php');
-include_once($config['base_path'] . '/lib/import.php');
-include_once($config['base_path'] . '/lib/utility.php');
+require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/import.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -41,7 +34,7 @@ array_shift($parms);
 
 global $preview_only;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	$filename       = '';
 	$with_profile   = false;
 	$remove_orphans = false;
@@ -81,35 +74,35 @@ if (sizeof($parms)) {
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				exit(1);
 		}
 	}
-	
+
 	if($profile_id > 0) {
 		if ($with_profile) {
-			echo "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
+			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
 		} else {
 			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($profile_id));
 
 			if (empty($id)) {
-				echo "WARNING: Data Source Profile ID $profile_id not found. Using System Default\n";
+				print "WARNING: Data Source Profile ID $profile_id not found. Using System Default\n";
 				$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 			}
 		}
-	}else{
+	} else {
 		$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 	}
 
 	if (empty($id)) {
-		echo "FATAL: No valid Data Source Profiles found on the system.  Exiting!\n";
+		print "FATAL: No valid Data Source Profiles found on the system.  Exiting!\n";
 		exit(1);
 	}
 
@@ -119,44 +112,44 @@ if (sizeof($parms)) {
 			$xml_data = fread($fp,filesize($filename));
 			fclose($fp);
 
-			echo 'Read ' . strlen($xml_data) . " bytes of XML data\n";
+			print 'Read ' . strlen($xml_data) . " bytes of XML data\n";
 
 			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans);
 
-			import_display_results($debug_data, false, $preview_only);
+			import_display_results($debug_data, array(), $preview_only);
 		} else {
-			echo "ERROR: file $filename is not readable, or does not exist\n\n";
+			print "ERROR: file $filename is not readable, or does not exist\n\n";
 			exit(1);
 		}
 	} else {
-		echo "ERROR: no filename specified\n\n";
+		print "ERROR: no filename specified\n\n";
 		display_help();
 		exit(1);
 	}
 } else {
-	echo "ERROR: no parameters given\n\n";
+	print "ERROR: no parameters given\n\n";
 	display_help();
 	exit(1);
 }
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = db_fetch_cell('SELECT cacti FROM version');
-	echo "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: import_template.php --filename=[filename] [--with-profile | --profile-id=N]\n\n";
-	echo "A utility to allow Cacti Templates to be imported from the command line.\n\n";
-	echo "Required:\n";
-	echo "    --filename        The name of the XML file to import\n\n";
-	echo "Optional:\n";
-	echo "    --preview         Preview the Template Import, do not import\n";
-	echo "    --with-profile    Use the default system Data Source Profile\n";
-	echo "    --profile-id=N    Use the specific profile id when importing\n";
-	echo "    --remove-orphans  If importing a new version of the template, old\n";
-	echo "                      elements will be removed, if they do not exist\n";
-	echo "                      in the new version of the template.\n\n";
+	print "\nusage: import_template.php --filename=[filename] [--with-profile | --profile-id=N]\n\n";
+	print "A utility to allow Cacti Templates to be imported from the command line.\n\n";
+	print "Required:\n";
+	print "    --filename        The name of the XML file to import\n\n";
+	print "Optional:\n";
+	print "    --preview         Preview the Template Import, do not import\n";
+	print "    --with-profile    Use the default system Data Source Profile\n";
+	print "    --profile-id=N    Use the specific profile id when importing\n";
+	print "    --remove-orphans  If importing a new version of the template, old\n";
+	print "                      elements will be removed, if they do not exist\n";
+	print "                      in the new version of the template.\n\n";
 }

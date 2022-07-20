@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -38,7 +38,7 @@ function get_vdef_item_name($vdef_item_id) 	{
 	}
 }
 
-/* get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDTool 'graph'
+/* get_vdef - resolves an entire VDEF into its text-based representation for use in the RRDtool 'graph'
      string. this name will be resolved recursively if necessary
    @param $vdef_id - the id of the vdef to resolve
    @returns - a text-based representation of the vdef */
@@ -47,7 +47,7 @@ function get_vdef($vdef_id, $display = false) {
 
 	$i = 0; $vdef_string = '';
 
-	if (sizeof($vdef_items)) {
+	if (cacti_sizeof($vdef_items)) {
 		foreach ($vdef_items as $vdef_item) {
 			if ($i > 0) {
 				$vdef_string .= ($display ? ', ':',');
@@ -56,7 +56,7 @@ function get_vdef($vdef_id, $display = false) {
 			if ($vdef_item['type'] == 5) {
 				$current_vdef_id = $vdef_item['value'];
 				$vdef_string .= get_vdef($current_vdef_id, $display);
-			}else{
+			} else {
 				$vdef_string .= get_vdef_item_name($vdef_item['id']);
 			}
 

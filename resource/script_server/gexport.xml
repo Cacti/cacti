@@ -1,0 +1,37 @@
+<gexport>
+	<name>Graph Export Data Query</name>
+	<script_path>|path_cacti|/scripts/ss_gexport.php</script_path>
+	<script_function>ss_gexport</script_function>
+	<script_server>php</script_server>
+	<arg_prepend></arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<output_delimeter>!</output_delimeter>
+	<index_order>exportId</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>Check#|chosen_order_field|</index_title_format>
+
+	<fields>
+		<exportId>
+			<name>Graph Export Id</name>
+			<direction>input</direction>
+			<query_name>exportId</query_name>
+		</exportId>
+		<exportName>
+			<name>Graph Export Name</name>
+			<direction>input</direction>
+			<query_name>exportName</query_name>
+		</exportName>
+		<lastRuntime>
+			<name>Last Runtime</name>
+			<direction>output</direction>
+			<query_name>lastRuntime</query_name>
+		</lastRuntime>
+		<totalGraphs>
+			<name>Total Graphs Exported</name>
+			<direction>output</direction>
+			<query_name>totalGraphs</query_name>
+		</totalGraphs>
+	</fields>
+</gexport>

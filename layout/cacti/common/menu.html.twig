@@ -1,0 +1,42 @@
+{% if (not user_menu is defined) %}
+	{% set user_menu = menu %}
+{% endif %}
+
+<tr>
+	<td>
+		<table width='100%'>
+			<tr>
+				<td>
+					<div id='menu'>
+						<ul id='nav' role='menu'>
+{% if menu.show_header %}
+	{% for menu_item in menu.menu_items %}
+		<li class='menuitem' role='menuitem' aria-haspopup='true' id='{{ menu_item.id }}'>
+			<a class='menu_parent active' href='#'>
+				<i class="menu_glyph {{ menu_item.glyph }}"></i>
+				<span>{{ menu_item.header_name }}</span>
+			</a>
+
+			<ul role='menu' id='{{ menu_item.id }}_div' style='display:block;'>
+			{% for item in menu_item.items %}
+				<li>
+					<a role='menuitem' class='pic {% if item.active %}selected{% endif %}' href='{{item.url}}'
+						{% if item.external %}
+							target='_blank' rel='noopener'
+						{% endif %}
+					>
+						{{ item.title }}
+					</a>
+				</li>
+			{% endfor %}
+			</ul>
+		</li>
+	{% endfor %}
+{% endif %}
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>

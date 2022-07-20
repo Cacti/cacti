@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+
+#: ./tests/assets/phpcode2/input.php:2
+msgid "plain"
+msgstr ""
+
+#: ./tests/assets/phpcode2/input.php:3
+#: ./tests/assets/phpcode2/input.php:4
+#: ./tests/assets/phpcode2/input.php:5
+msgid "DATE \\a\\t TIME"
+msgstr ""
+
+#: ./tests/assets/phpcode2/input.php:6
+msgid "FIELD\tFIELD"
+msgstr ""
+
+#. test
+#: ./tests/assets/phpcode2/input.php:7
+msgid "text concatenated with 'comments'"
+msgstr ""
+
+#: ./tests/assets/phpcode2/input.php:14
+msgid "Stop at the variable"
+msgstr ""
+
+#: ./tests/assets/phpcode2/input.php:19
+msgid "No comments"
+msgstr ""
+
+#. All comments
+#: ./tests/assets/phpcode2/input.php:22
+msgctxt "my-context"
+msgid "All comments"
+msgstr ""
+
+#: ./tests/assets/phpcode2/input.php:26
+msgid "i18n Tagged comment"
+msgstr ""
+
+#. i18n Tagged comment inside
+#: ./tests/assets/phpcode2/input.php:28
+msgid "i18n Tagged comment inside"
+msgstr ""
+
+#: ./tests/assets/phpcode2/input.php:33
+msgid "One comment"
+msgid_plural "Many comments"
+msgstr[0] ""
+
+#. i18n Tagged comment on the line before
+#: ./tests/assets/phpcode2/input.php:36
+msgid "i18n tagged %s"
+msgstr ""
+
+#. Translators: This is a multi-line comment.
+#: ./tests/assets/phpcode2/input.php:42
+msgid "foo"
+msgstr ""
+
+#. translators: this should get extracted.
+#: ./tests/assets/phpcode2/input.php:44
+msgid "bar"
+msgstr ""
+
+#. translators: this comment is indented with a tab.
+#: ./tests/assets/phpcode2/input.php:51
+msgid "foo bar"
+msgstr ""

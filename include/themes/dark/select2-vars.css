@@ -1,0 +1,9 @@
+:root {
+	--select2-border: 1px solid #444;
+	--select2-border-radius: 6px;
+	--select2-background-dropdown: #000;
+	--select2-background-item: #222222 url("dark/images/ui-bg_highlight-soft_35_222222_1x100.png") 50% 50% repeat-x;
+	--select2-background-highlight: #155413 url("dark/images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x !important;
+	--select2-color-item: #fff;
+	--select2-color-highlight: #fff;
+}

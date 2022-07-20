@@ -1,0 +1,60 @@
+{% if hook.nav_login_before is defined %}
+	{{ hook.nav_login_before|raw }}
+{% endif %}
+{{ __('Logged in as') }}
+<span id='user' class='user usermenuup'>
+	{% if common.is_guest %}
+		{{ __('guest') }}
+	{% elseif user.username is defined %}
+		{{ user.username }}
+	{% endif %}
+</span>
+</div>
+<div>
+<ul class='menuoptions' style='display:none;'>
+	{% if common.is_guest %}
+	<li>
+		<a href='{{ config.url_path }}index.php?login=true'>{{ __('Login as Regular User') }}</a>
+	</li>
+	{% elseif user.username is defined %}
+	<li>
+		<a href='#' class='loggedInAs'>{{ __esc('Logged in as %s', user.username) }}</a>
+	</li>
+	{% else %}
+	<li>
+		{{ __('Error') }}
+	</li>
+	{% endif %}
+
+	<li class='menuHr'><hr class='menu'></li>
+
+	{% if user.username is defined %}
+		{% if is_realm_allowed(20) %}
+			<li>
+				<a href='{{ config.url_path }}auth_profile.php?action=edit'>{{ __('Edit Profile') }}</a>
+			</li>
+		{% endif %}
+		{% if user.password_change == 'on' and user.realm == 0 %}
+			<li>
+				<a href='{{ config.url_path }}auth_changepassword.php'>{{ __('Change Password') }}</a>
+			</li>
+		{% endif %}
+	{% endif %}
+	<li class='menuHr'><hr class='menu'></li>
+	<li id='userCommunity'>
+		<a href='https://forums.cacti.net' target='_blank' rel='noopener'>{{ __('User Community') }}</a>
+	</li>
+	<li id='userDocumentation'>
+		<a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank' rel='noopener'>
+			{{ __('Documentation') }}
+		</a>
+	</li>
+	{% if user.username is defined %}
+	<li id='userLogout'>
+		<a href='{{ config.url_path }}logout.php'>{{ __('Logout') }}</a>
+	</li>
+	{% endif %}
+</ul>
+{% if hook.nav_login_after is defined %}
+	{{ hook.nav_login_after }}
+{% endif %}

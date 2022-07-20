@@ -1,36 +1,80 @@
 language: php
 
-php:
-- '5.3'
-- '5.4'
-- '5.5'
-- '5.6'
-- '7.0'
+services:
+  - mysql
 
 matrix:
-  allow_failures:
-  - php: 7.0
-
-before_script:
-  - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
-
-script: true
+  include:
+    - php: 7.2
+      dist: bionic
+    - php: 7.3
+      dist: bionic
+    - php: 7.4
+      dist: bionic
+    - php: 8.0
+      dist: focal
+    - php: nightly
+      dist: focal
+  fast_finish: true
 
 before_install:
-  - mysql -e 'CREATE DATABASE cacti;'
-  - mysql cacti < cacti.sql
+  # run syntax check
+  - if find . -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
+  # obtain keys for Ubuntu
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 78BD65473CB3BD13 6B05F25D762E3157
+  # get latest updates
+  - sudo apt-get update > /dev/null
 
-install: true
+install:
+  # setup link for php legacy
+  - sudo ln -s ~/.phpenv/versions/$(phpenv version-name)/bin/php /bin/php
+  # install apache web server
+  - sudo apt-get install apache2 php-fpm php-mysql php-gd php-ldap php-gmp php-xml php-mbstring rrdtool snmp libapache2-mod-php
+  - sudo a2enmod proxy_fcgi setenvif actions alias
+  # configure apache virtual hosts
+  - sudo cp -f tests/tools/cacti.conf /etc/apache2/sites-available/000-default.conf
+  # set some required variables
+  - echo 'cgi.fix_pathinfo = 1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  # copy the Cacti website to the correct direcotry
+  # sudo cp -rp /home/travis/build/Cacti/cacti /var/www/html/
+  # move the Cacti website to the correct directory
+  - sudo mv /home/travis/build/Cacti/cacti /var/www/html/cacti
+  # change ownership on the Cacti directory
+  - sudo chown -R www-data:www-data /var/www/html/cacti
+  # make the directory more open for our tests
+  - sudo chmod -R 777 /var/www/html/cacti
+  # enable php-fpm
+  - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+  - sudo sed -i -e 's,nobody,www-data,g' ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/*.conf
+  - sudo grep nobody ~/.phpenv/versions/$(phpenv version-name)/etc/ -R
+  # restart apache
+  - sudo service apache2 restart
+  # start php-fpm
+  - sudo ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+
+before_script:
+  - mysql -e 'CREATE DATABASE cacti;'
+  - mysql -e "CREATE USER 'cactiuser'@'localhost' IDENTIFIED BY 'cactiuser';"
+  - mysql -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
+  - mysql -e "FLUSH PRIVILEGES;"
+  - mysql cacti < cacti.sql
+  - mysql -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
+  - sudo cp -p include/config.php.dist include/config.php
+  - sudo cp -p include/config.php.dist /var/www/html/cacti/include/config.php
+
+script:
+  - cd /var/www/html/cacti && sudo php tests/tools/check_install_code.php
+  - cd /var/www/html/cacti && sudo bash tests/tools/check_cli_version.sh
+  - cd /var/www/html/cacti && sudo php cli/install_cacti.php --accept-eula --install --force
+  - cd /var/www/html/cacti && sudo bash tests/tools/check_all_pages.sh
+  - cd /var/www/html/cacti && sudo cat /var/www/html/cacti/log/cacti.log
 
 notifications:
   email:
     on_success: change
     on_failure: always
     recipients:
-      - developers@cacti.net
+    - developers@cacti.net
   slack:
-    on_success: always
-    on_failure: always
-    rooms:
-      - secure: VjWdzdjUSMGwKCObjuyCOwyzCUV+LDwPsUxdmgPojTLGgZS12QOQxD0QNRUkvvtaus2SgbFP/B49NYsqOGrRCFy21aa2goNcqCXUlty8Pcs4L1NIT3L4rmC5DjwKtlL6sO9/HwbS1woFE7fhZ1KA2nIoTHYeGCZFpW1gGpm9VUEbab9m9gP3HagtULInzx02M7vVHA6WwgumWpYqX62St6Tb11YK0SjkUYRKuZN8Ezf8euChEN6OwFwmJnDbKc37kYPHy7SLCKJ3Vy9wbw8O+tYLf8sNauHu0XJGaTg1cvDMbNwLdVBcV6CeaVZTkLyPY46UJ0wprIieKu+HxCQT6CNX4UT3qd27OFtlNDnsJ1o/9f6OKjnRTqPcF6ynLZuzWVIvnPo45bsafvDl/AcfYnm0c4UG+gCZnyMfr432WJ+RJxYZvPgqCEwiweQQMvBSSD3GP2/lbYNRCgI/NU9JDEEWWrYMj/cJxDn1qvKJmdNj4W9nFnF1BqAldzVAQQgLO04K215t1skENChyvEi4+ocZ2A2EwGx582d2PrIK0CpQHcQKxAZl5TwKiuIFQlIOCqh8vt45KG1mY/t9FmVbyhxtrlMdjAAd/6Rxh7aICJQ0PQc0Lw9LX1f2a9/JBNrQ4QxRo/xco4ZI9AfonG5PbMxHEusnfeTC3ZnFU6y+P3I=
-
+    secure: ZY2XMrAUZO0UbZY0MvRd+sD60+fnvluUVm5kxXII/+waDpEutLmWnNclJo+96KI0zXZwsYcdahmHc4lnNiJhZSGcZN3QWp/bAophgT5b3ly4k2HzyMcG39pK9v1ue2tws4yB9OPDMcTyq7XPEcWxQT3q7Ca7hAYVCOZSnAt17OTe6HgasjvJtekDog+dK0iI3TB9BIrazWw4e2eoFpnVnPtTPo8qI0uh3Aihcfg12ETzssLD4hvyx6eBmaQBHn0jhvuw3AfzD82T4g5MHaLrGGz3q8tD+iZPGEIp4XBxeDtFkYx+MdY6IFWlYXa0mCVE1H7ChQjk3VMhHGxZMFzUOyxn61CGPJLGknn98qnrgj7bXRq073RlzirnyvRmxilFeJlXNM3KiVie5e3Abl7u5REQMfvs8slETLE7bQ7MJwyF6wWamaZWzoeIGS+ZEdEAdZK0LoTApHsk4rh1ciJZP6ECn6S+1bkAfRDPoyo9LOjqL32oSl6S3+/hGVHTJr1e9fEX+iwjLwA6w3JmbvhfGY/eLudRz+QqY0MlRiBp9bdnkLoneS6gmKhz5n6bzaDZxZ4xmLWY4aSX1rLbOyJZAss2m0vvaxg7QnJ6LjHDWeQUHcDLsklYBAqK8IAzBEDHzOic+9GOvtWyPWXBktR+8bNn+C0oFrHCykFo8dDv8Nc=

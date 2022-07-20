@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+
+msgid "Dielen"
+msgstr "timber piling floor"
+
+msgid "Doppelboden"
+msgstr "double floor"
+
+msgid "Estrich"
+msgstr "screed floor"
+
+msgid "Fliesen"
+msgstr "flagging"
+
+msgid "Kunststoffboden"
+msgstr "synthetic floor"
+
+# duplicate singular
+msgid "1 child"
+msgstr "1 fillo"
+
+# duplicate singular - plural
+msgid "1 comment"
+msgid_plural "%s comments"
+msgstr[0] "1 comentario"
+msgstr[1] ""
+
+# duplicate plural - singular
+msgid "1 star"
+msgid_plural "%s stars"
+msgstr[0] "1 estrela"
+msgstr[1] ""

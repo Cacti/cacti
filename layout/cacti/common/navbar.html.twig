@@ -1,0 +1,13 @@
+<div id='navBar' class='navBar'>
+	<ul id='breadcrumbs'>
+<!-- DUMP OF HEADER.NAV_ITEMS
+	{{ dump(nav_items)|raw }}
+     DUMP OF HEADER NAV ITEMS -->
+		{% for nav in nav_items %}
+		{% if not nav.plain %}<li><a id='{{ nav.id }}' href='{{ nav.href }}'>{% endif %}
+		{{ nav.title }}
+		{% if not nav.plain %}</a>{% if view.is_classic %} -> {% endif %}</li>{% endif %}
+
+		{% endfor %}
+	</ul>
+</div>

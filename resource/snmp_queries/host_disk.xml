@@ -1,5 +1,6 @@
 <interface>
 	<name>Get Host Partition Information</name>
+	<index_order>hrStorageDescr:hrStorageIndex</index_order>
 	<index_order_type>numeric</index_order_type>
 	<oid_index>.1.3.6.1.2.1.25.2.3.1.1</oid_index>
 

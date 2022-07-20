@@ -1,43 +1,36 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 /*
-   +-------------------------------------------------------------------------+
-   | Copyright (C) 2004-2017 The Cacti Group                                 |
-   |                                                                         |
-   | This program is free software; you can redistribute it and/or           |
-   | modify it under the terms of the GNU General Public License             |
-   | as published by the Free Software Foundation; either version 2          |
-   | of the License, or (at your option) any later version.                  |
-   |                                                                         |
-   | This program is snmpagent in the hope that it will be useful,           |
-   | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
-   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
-   | GNU General Public License for more details.                            |
-   +-------------------------------------------------------------------------+
-   | Cacti: The Complete RRDTool-based Graphing Solution                     |
-   +-------------------------------------------------------------------------+
-   | This code is designed, written, and maintained by the Cacti Group. See  |
-   | about.php and/or the AUTHORS file for specific developer information.   |
-   +-------------------------------------------------------------------------+
-   | http://www.cacti.net/                                                   |
-   +-------------------------------------------------------------------------+
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
 */
-
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* we are not talking to the browser */
-$no_http_headers = true;
 
 /* let's report all errors */
 error_reporting(E_ALL);
 
+require(__DIR__ . '/include/cli_check.php');
+
 /* allow the script to hang around waiting for connections. */
 set_time_limit(0);
 chdir(dirname(__FILE__));
-include_once('./include/global.php');
 
 /* translate well-known textual conventions and SNMP base types to net-snmp */
 $smi_base_datatypes = array(
@@ -81,16 +74,16 @@ $cache_last_refresh = false;
 
 
 /* start background caching process if not running */
-$php = read_config_option('path_php_binary');
-$extra_args     = '-q "./snmpagent_mibcache.php"';
+$php = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+$extra_args     = '-q ' . cacti_escapeshellarg('./snmpagent_mibcache.php');
 
 if(strstr(PHP_OS, 'WIN')) {
 	/* windows part missing */
-	pclose(popen("start \"CactiSNMPCache\" /I /B \"" . $php . "\" " . $extra_args, "r"));
-}else{
+	pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
+} else {
 	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
-	if(!sizeof($output)) {
-		exec($php . " " . $extra_args . " > /dev/null &");
+	if(!cacti_sizeof($output)) {
+		exec($php . ' ' . $extra_args . ' > /dev/null &');
 	}
 }
 
@@ -127,7 +120,7 @@ while(1) {
 				}
 			}else {
 				fwrite(STDOUT, 'NONE' . $eol);
-				
+
 			}
 			break;
 		case 'debug':
@@ -158,7 +151,7 @@ function cache_refresh() {
 	/* check temporary cache file */
 	clearstatcache();
 	$cache_refresh_time = @filemtime( $path_mibcache );
-	
+
 	if($cache_refresh_time !== false) {
 		/* initial phase */
 		if( $cache_last_refresh === false || $cache_refresh_time > $cache_last_refresh ) {

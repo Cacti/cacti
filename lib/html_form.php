@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -31,68 +31,93 @@
      the html form. see the arrays contained in include/global_settings.php
      for the extact syntax of this array */
 function draw_edit_form($array) {
-	if (sizeof($array) > 0) {
-		while (list($top_branch, $top_children) = each($array)) {
+	if (cacti_sizeof($array) > 0) {
+		foreach ($array as $top_branch => $top_children) {
 			if ($top_branch == 'config') {
 				$config_array = $top_children;
-			}elseif ($top_branch == 'fields') {
+			} elseif ($top_branch == 'fields') {
 				$fields_array = $top_children;
 			}
 		}
 	}
 
-	$i = 0;
-	if (sizeof($fields_array) > 0) {
-		while (list($field_name, $field_array) = each($fields_array)) {
-			if ($i == 0) {
-				if (!isset($config_array['no_form_tag'])) {
-					print "<tr style='display:none;'><td><form method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : basename($_SERVER['PHP_SELF'])) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . "></td></tr>\n";
-				}
-			}
+	if (cacti_sizeof($fields_array) > 0) {
+		if (!isset($config_array['no_form_tag'])) {
+			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">\n";
+		}
 
+		$i = 0;
+		$row_class = 'odd';
+
+		foreach ($fields_array as $field_name => $field_array) {
 			if ($field_array['method'] == 'hidden') {
+				print '<div class="hidden formRow">';
 				form_hidden_box($field_name, $field_array['value'], ((isset($field_array['default'])) ? $field_array['default'] : ''), true);
-			}elseif ($field_array['method'] == 'hidden_zero') {
+				print '</div>';
+			} elseif ($field_array['method'] == 'hidden_zero') {
+				print '<div class="hidden formRow">';
 				form_hidden_box($field_name, $field_array['value'], '0', true);
-			}elseif ($field_array['method'] == 'spacer') {
-				if (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true') {
-					$collapsible = true;
-				}else{
-					$collapsible = false;
-				}
+				print '</div>';
+			} elseif ($field_array['method'] == 'spacer') {
+				$collapsible = (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true');
 
-				print "<tr class='spacer tableHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><td colspan='2' style='cursor:pointer;' class='tableSubHeaderColumn'>" . $field_array['friendly_name'] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":'') . "</td></tr>\n";
-			}else{
+				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><div class='formHeaderText'>" . html_escape($field_array['friendly_name']);
+				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip($field_array['description']):'') . '</div>';
+				print ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
+			} else {
+				// Make a row using a div
 				if (isset($config_array['force_row_color'])) {
-					print "<tr class='formRow even-alternate'>";
-				}else{
-					form_alternate_row('row_' . $field_name);
+					print "<div id='row_$field_name' class='formRow even-alternate $row_class'>";
+				} else {
+					print "<div id='row_$field_name' class='formRow $row_class'>";
+					if ($row_class == 'even') {
+						$row_class = 'odd';
+					} else {
+						$row_class = 'even';
+					}
 				}
 
-				print "<td class='formRow' style='width:" . ((isset($config_array['left_column_width'])) ? $config_array['left_column_width'] . 'px;':'50%;') . "'>\n<span class='formItemName'>" . $field_array['friendly_name'] . "</span>\n";
+				// Make a form cell
+				print "<div class='formColumnLeft'>";
 
-				if (read_config_option('hide_form_description') == 'on') {
-					print '<br><span class="formItemDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "<br></span>\n";
-				}else{
-					print display_tooltip((isset($field_array['description'])) ? $field_array['description'] : '');
-				}
+				print "<div class='formFieldName'>";
 
 				if (isset($field_array['sub_checkbox'])) {
-					print "<br>\n";
 					form_checkbox($field_array['sub_checkbox']['name'],
 						$field_array['sub_checkbox']['value'],
-						$field_array['sub_checkbox']['friendly_name'],
+						'',
 						((isset($field_array['sub_checkbox']['default'])) 	? $field_array['sub_checkbox']['default'] : ''),
 						((isset($field_array['sub_checkbox']['form_id'])) 	? $field_array['sub_checkbox']['form_id'] : ''),
 						((isset($field_array['sub_checkbox']['class'])) 	? $field_array['sub_checkbox']['class'] : ''),
-						((isset($field_array['sub_checkbox']['on_change'])) ? $field_array['sub_checkbox']['on_change'] : ''));
+						((isset($field_array['sub_checkbox']['on_change'])) ? $field_array['sub_checkbox']['on_change'] : ''),
+						((isset($field_array['sub_checkbox']['friendly_name'])) ? $field_array['sub_checkbox']['friendly_name'] : ''));
 				}
 
-				print "</td>\n<td>\n";
+				print html_escape($field_array['friendly_name']);
+
+				if (read_config_option('hide_form_description') == 'on') {
+					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "</span>\n";
+				} else {
+					print '<div class="formTooltip">';
+					print display_tooltip((isset($field_array['description'])) ? $field_array['description'] : '');
+					print '</div>';
+				}
+
+				print '</div>';
+
+				// End form cell
+				print '</div>';
+
+				// New form column for content
+				print '<div class="formColumnRight"><div class="formData">';
 
 				draw_edit_control($field_name, $field_array);
 
-				print "</td>\n</tr>\n";
+				// End content column
+				print '</div></div>';
+
+				// End form row
+				print '</div>';
 			}
 
 			$i++;
@@ -108,11 +133,11 @@ function draw_edit_control($field_name, &$field_array) {
 	switch ($field_array['method']) {
 	case 'textbox':
 		form_text_box(
-			$field_name, 
+			$field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'text',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
 			((isset($field_array['placeholder'])) ? $field_array['placeholder'] : '')
@@ -120,11 +145,11 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'filepath':
-		form_filepath_box($field_name, 
+		form_filepath_box($field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'text',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : '')
 		);
@@ -132,27 +157,23 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'dirpath':
 		form_dirpath_box(
-			$field_name, 
+			$field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'text',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : '')
 		);
 
 		break;
 	case 'textbox_password':
-		// Fake out firefox so that you don't get pre-set passwords
-		print "<input type='text' name='mylogin' style='display:none;' value='' autocomplete='off' disabled='disabled'>\n";
-		print "<input type='password' name='mypassword' style='display:none;' value='' autocomplete='off' disabled='disabled'>\n";
-
 		form_text_box(
-			$field_name, 
+			$field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'password',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
 			'********'
@@ -161,11 +182,11 @@ function draw_edit_control($field_name, &$field_array) {
 		print '<br>';
 
 		form_text_box(
-			$field_name . '_confirm', 
+			$field_name . '_confirm',
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
-			((isset($field_array['size'])) ? $field_array['size'] : '40'), 
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
 			'password',
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
 			'********'
@@ -174,8 +195,8 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'textarea':
 		form_text_area(
-			$field_name, 
-			$field_array['value'], 
+			$field_name,
+			$field_array['value'],
 			$field_array['textarea_rows'],
 			$field_array['textarea_cols'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
@@ -187,10 +208,23 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'drop_array':
 		form_dropdown(
-			$field_name, 
-			$field_array['array'], 
-			'', 
-			'', 
+			$field_name,
+			$field_array['array'],
+			'',
+			'',
+			$field_array['value'],
+			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
+			((isset($field_array['default'])) ? $field_array['default'] : ''),
+			((isset($field_array['class'])) ? $field_array['class'] : ''),
+			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+		);
+
+		break;
+	case 'drop_language':
+		form_droplanguage(
+			$field_name,
+			'',
+			'',
 			$field_array['value'],
 			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
@@ -200,6 +234,8 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'drop_files':
+		$array_files = array();
+
 		if (isset($field_array['directory'])) {
 			$dir = $field_array['directory'];
 
@@ -213,7 +249,7 @@ function draw_edit_control($field_name, &$field_array) {
 					closedir($dh);
 				}
 
-				if (sizeof($files)) {
+				if (cacti_sizeof($files)) {
 				foreach($files as $file) {
 					if (is_readable($dir . '/' . $file) && $file != '.' && $file != '..') {
 						if (!in_array($file, $field_array['exclusions'])) {
@@ -226,10 +262,10 @@ function draw_edit_control($field_name, &$field_array) {
 		}
 
 		form_dropdown(
-			$field_name, 
+			$field_name,
 			$array_files,
-			'', 
-			'', 
+			'',
+			'',
 			$field_array['value'],
 			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
@@ -241,9 +277,9 @@ function draw_edit_control($field_name, &$field_array) {
 	case 'drop_sql':
 		form_dropdown(
 			$field_name,
-			db_fetch_assoc($field_array['sql']), 
-			'name', 
-			'id', 
+			db_fetch_assoc($field_array['sql']),
+			'name',
+			'id',
 			$field_array['value'],
 			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
@@ -256,11 +292,12 @@ function draw_edit_control($field_name, &$field_array) {
 		form_callback(
 			$field_name,
 			$field_array['sql'],
-			'name', 
-			'id', 
+			'name',
+			'id',
 			$field_array['action'],
 			$field_array['id'],
 			$field_array['value'],
+			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
 			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
@@ -269,9 +306,9 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'drop_multi':
 		form_multi_dropdown(
-			$field_name, 
-			$field_array['array'], 
-			(isset($field_array['sql']) ? db_fetch_assoc($field_array['sql']):$field_array['value']), 
+			$field_name,
+			$field_array['array'],
+			(isset($field_array['sql']) ? db_fetch_assoc($field_array['sql']):$field_array['value']),
 			'id',
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
 			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
@@ -280,18 +317,18 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'drop_tree':
 		grow_dropdown_tree(
-			$field_array['tree_id'], 
+			$field_array['tree_id'],
 			'0',
-			$field_name, 
+			$field_name,
 			$field_array['value']
 		);
 
 		break;
 	case 'drop_color':
 		form_color_dropdown(
-			$field_name, 
-			$field_array['value'], 
-			'None',
+			$field_name,
+			$field_array['value'],
+			__('None'),
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
 			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
@@ -306,34 +343,57 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
 			((isset($field_array['class'])) ? $field_array['class'] : ''),
-			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+			((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
+			$field_array['friendly_name']
 		);
 
 		break;
 	case 'checkbox_group':
-		print "<div id='${field_name}_group' class='checkboxgroup'>\n";
-		while (list($check_name, $check_array) = each($field_array['items'])) {
+		if (isset($field_array['type']) && $field_array['type'] == 'flex') {
+			print "</td></tr><tr><td><div id='${field_name}_group' class='checkboxgroup1 flexContainer'>" . PHP_EOL;
+		} else {
+			print "<div id='${field_name}_group' class='checkboxgroup1'>" . PHP_EOL;
+		}
+
+		foreach ($field_array['items'] as $check_name => $check_array) {
+			if (isset($field_array['type']) && $field_array['type'] == 'flex') {
+				print '<div class="flexChild">';
+			}
+
 			form_checkbox(
-				$check_name, 
-				$check_array['value'], 
+				$check_name,
+				$check_array['value'],
 				$check_array['friendly_name'],
 				((isset($check_array['default'])) ? $check_array['default'] : ''),
 				((isset($check_array['form_id'])) ? $check_array['form_id'] : ''),
 				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($check_array['on_change'])) ? $check_array['on_change'] : (((isset($field_array['on_change'])) ? $field_array['on_change'] : '')))
+				((isset($check_array['on_change'])) ? $check_array['on_change'] : (((isset($field_array['on_change'])) ? $field_array['on_change'] : ''))),
+				$field_array['friendly_name'],
+				true
 			);
 
-			print '<br>';
+			if (isset($field_array['type']) && $field_array['type'] == 'flex') {
+				print '</div>';
+			} else {
+				print '<br>';
+			}
 		}
-		print "</div>\n";
+
+		if (isset($field_array['type']) && $field_array['type'] == 'flex') {
+			print '</div>' . PHP_EOL;
+		} else {
+			print '</div>' . PHP_EOL;
+		}
 
 		break;
 	case 'radio':
-		while (list($radio_index, $radio_array) = each($field_array['items'])) {
+		print "<div style='formRadio'>" . PHP_EOL;
+
+		foreach ($field_array['items'] as $radio_index => $radio_array) {
 			form_radio_button(
-				$field_name, 
-				$field_array['value'], 
-				$radio_array['radio_value'], 
+				$field_name,
+				$field_array['value'],
+				$radio_array['radio_value'],
 				$radio_array['radio_caption'],
 				((isset($field_array['default'])) ? $field_array['default'] : ''),
 				((isset($field_array['class'])) ? $field_array['class'] : ''),
@@ -342,6 +402,8 @@ function draw_edit_control($field_name, &$field_array) {
 
 			print '<br>';
 		}
+
+		print '</div>' . PHP_EOL;
 
 		break;
 	case 'custom':
@@ -355,14 +417,14 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'template_drop_array':
-		print '<em>' . $field_array['array']{$field_array['value']} . '</em>';
+		print '<em>' . $field_array['array'][$field_array['value']] . '</em>';
 
 		form_hidden_box($field_name, $field_array['value'], '', true);
 
 		break;
 	case 'font':
 		form_font_box(
-			$field_name, 
+			$field_name,
 			$field_array['value'],
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
@@ -374,12 +436,22 @@ function draw_edit_control($field_name, &$field_array) {
 		break;
 	case 'file':
 		form_file($field_name,
-			((isset($field_array['size'])) ? $field_array['size'] : '40'));
+			((isset($field_array['size'])) ? $field_array['size'] : '40'),
+			((isset($field_array['accept'])) ? $field_array['accept'] : ''));
 
 		break;
 	case 'button':
 		form_button(
-			$field_name, 
+			$field_name,
+			((isset($field_array['value'])) ? $field_array['value'] : ''),
+			((isset($field_array['title'])) ? $field_array['title'] : ''),
+			((isset($field_array['on_click'])) ? $field_array['on_click'] : '')
+		);
+
+		break;
+	case 'submit':
+		form_submit(
+			$field_name,
 			((isset($field_array['value'])) ? $field_array['value'] : ''),
 			((isset($field_array['title'])) ? $field_array['title'] : ''),
 			((isset($field_array['on_click'])) ? $field_array['on_click'] : '')
@@ -387,9 +459,13 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	default:
-		print '<em id="' . $field_name . '">' . htmlspecialchars($field_array['value'],ENT_QUOTES) . '</em>';
+		if (isset($field_array['value'])) {
+			print '<em>' . html_escape($field_array['value']) . '</em>';
 
-		form_hidden_box($field_name, $field_array['value'], '', true);
+			form_hidden_box($field_name, $field_array['value'], '', true);
+		} else {
+			cacti_log('ERROR: Field Name: ' . $field_name . ' includes Method: ' . $field_array['method'] . ' does not include a value \'value\' element.', false);
+		}
 
 		break;
 	}
@@ -401,28 +477,46 @@ function draw_edit_control($field_name, &$field_array) {
    @arg $title - the hover title for the button
    @arg $action - the onClick action for the button */
 function form_button($form_name, $value, $title = '', $action = '') {
-	print "<input role='button' type='button' " . 
-		"id='$form_name' " . 
-		"name='$form_name' " . 
-		"value='$value' " . 
-		($action!='' ? "onClick='$action'":"") . 
-		($title!='' ? "title='$title'":"") . ">";
+	print "<input type='button' class='ui-button ui-corner-all ui-widget' " .
+		"id='$form_name' " .
+		"name='$form_name' " .
+		"value='" . html_escape($value) . "' " .
+		($action!='' ? "onClick='$action'":"") .
+		($title!='' ? "title='" . html_escape($title) . "'":"") . ">";
+}
+
+/* form_button - draws a standard button form element
+   @arg $form_name - the name of this form element
+   @arg $value - the display value for the button
+   @arg $title - the hover title for the button
+   @arg $action - the onClick action for the button */
+function form_submit($form_name, $value, $title = '', $action = '') {
+	print "<input type='submit' class='ui-button ui-corner-all ui-widget' " .
+		"id='$form_name' " .
+		"name='$form_name' " .
+		"value='" . html_escape($value) . "' " .
+		($action!='' ? "onClick='$action'":"") .
+		($title!='' ? "title='" . html_escape($title) . "'":"") . ">";
 }
 
 /* form_file - draws a standard html file input element
    @arg $form_name - the name of this form element
-   @arg $form_size - the size (width) of the textbox */
-function form_file($form_name, $form_size = 30) {
+   @arg $form_size - the size (width) of the textbox
+   @arg $form_accept - the file types permitted
+ */
+function form_file($form_name, $form_size = 30, $form_accept = '') {
 	print "<div>\n";
-	print "<label class='import_label' for='import_file'>" . __('Select a File'). "</label>\n";
-	print "<input class='import_button' type='file'";
+	print "<label class='import_label' for='$form_name'>" . __('Select a File'). "</label>\n";
+	print "<input type='file'";
 
-	if (isset($_SESSION["sess_error_fields"]) && !empty($_SESSION["sess_error_fields"][$form_name])) {
-		print "class='txtErrorTextBox'";
-		unset($_SESSION["sess_error_fields"][$form_name]);
+	if (isset($_SESSION['sess_error_fields']) && !empty($_SESSION['sess_error_fields'][$form_name])) {
+		print " class='import_button ui-state-default ui-corner-all txtErrorTextBox'";
+		unset($_SESSION['sess_error_fields'][$form_name]);
+	} else {
+		print " class='import_button ui-state-default ui-corner-all'";
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'>\n";
+	print " id='$form_name' name='$form_name' size='$form_size'" . ($form_accept != '' ? " accept='$form_accept'":'') . ">\n";
 	print "<span class='import_text'></span>\n";
 	print "</div>\n";
 }
@@ -438,38 +532,63 @@ function form_file($form_name, $form_size = 30) {
    @arg $type - the type of textbox, either 'text' or 'password'
    @arg $current_id - used to determine if a current value for this form element
      exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist */
-function form_filepath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0) {
+     a non-zero value indicates that a current value does exist
+   @arg data - array containing 'text' element for display and if 'error' element present, shows failure */
+function form_filepath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $data = false) {
 	if (($form_previous_value == '') && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
 
 	print "<input type='$type'";
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
-			unset($_SESSION['sess_error_fields'][$form_name]);
+	$extra_text = '';
+	$extra_color = '';
+	$extra_class = '';
+	$error_class = '';
+	if (is_array($data)) {
+		$extra_text = $data['text'];
+		$extra_class = (isset($data['error']) ? 'fa-times-circle' : 'fa-check-circle');
+		$extra_color = (isset($data['error']) ? 'red' : 'green');
+		$error_class = (isset($data['error']) ? 'txtErrorTextBox' : '');
+	} else {
+		if (isset($_SESSION['sess_field_values'])) {
+			if (!empty($_SESSION['sess_field_values'][$form_name])) {
+				$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+			}
+		}
+
+		if (isset($_SESSION['sess_error_fields'])) {
+			if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+				$error_class = 'txtErrorTextBox';
+				unset($_SESSION['sess_error_fields'][$form_name]);
+			}
+		}
+
+		if ($form_previous_value == '') {
+			$extra_text  = '';
+		} else if (is_file(trim($form_previous_value))) {
+			$extra_class = 'fa-check-circle';
+			$extra_color = 'green';
+			$extra_text  = __esc('File Found');
+		} else if (is_dir(trim($form_previous_value))) {
+			$extra_class = 'fa-times-circle';
+			$extra_color = 'red';
+			$extra_text  = __esc('Path is a Directory and not a File');
+		} else {
+			$extra_class = 'fa-times-circle';
+			$extra_color = 'red';
+			$extra_text  = __esc('File is Not Found');
 		}
 	}
 
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
-		}
+	$extra_data = '';
+	if ($extra_text != '') {
+		$extra_data = "<span class='cactiTooltipHint fa $extra_class' style='padding:5px;font-size:16px;color:$extra_color' title='$extra_text'></span>";
 	}
 
-	if (is_file(trim($form_previous_value))) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __('File Found') . "'></span>";
-	}else if (is_dir(trim($form_previous_value))) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Path is a Directory and not a File') . "'></span>";
-	}else if (strlen($form_previous_value) == 0) {
-		$extra_data = '';
-	}else{
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('File is Not Found'). "'></span>";
-	}
+	print " class='ui-state-default ui-corner-all$error_class'";
 
-	print " id='$form_name' placeholder='" . __('Enter a valid file path') . "' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' placeholder='" . __esc('Enter a valid file path') . "' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>" . $extra_data;
 }
 
 /* form_dirpath_box - draws a standard html textbox and provides status of a directories existence
@@ -493,8 +612,10 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
+		} else {
+			print " class='ui-state-default ui-corner-all'";
 		}
 	}
 
@@ -505,16 +626,16 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 	}
 
 	if (is_dir($form_previous_value)) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __('Directory Found') ."'></span>";
+		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __esc('Directory Found') ."'></span>";
 	}else if (is_file($form_previous_value)) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Path is a File and not a Directory'). "></span>";
-	}else if (strlen($form_previous_value) == 0) {
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('Path is a File and not a Directory'). "></span>";
+	}else if ($form_previous_value == '') {
 		$extra_data = '';
-	}else{
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __('Directory is Not found'). "'></span>";
+	} else {
+		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('Directory is Not found'). "'></span>";
 	}
 
-	print " id='$form_name' name='$form_name' placeholder='" . __('Enter a valid directory path'). "' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' name='$form_name' placeholder='" . __esc('Enter a valid directory path'). "' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>" . $extra_data;
 }
 
 /* form_text_box - draws a standard html textbox
@@ -528,19 +649,30 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
    @arg $type - the type of textbox, either 'text' or 'password'
    @arg $current_id - used to determine if a current value for this form element
      exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist */
-function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '') {
+     a non-zero value indicates that a current value does exist
+   @arg $placeholder - place a placeholder over an empty field
+   @arg $title - use a title attribute when hovering over the textbox
+ */
+function form_text_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '', $title = '') {
 	if (($form_previous_value == '') && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type'";
+	if ($type == 'password') {
+		print "<input type='text' style='display:none' value=''><input type='password' style='display:none' autocomplete='current-password' value=''>";
+	}
+
+	print "<input type='$type' " . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="current-password"':'off') . ($title != '' ? ' title="' . $title . '"':'');
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
+		} else {
+			print " class='ui-state-default ui-corner-all'";
 		}
+	} else {
+		print " class='ui-state-default ui-corner-all'";
 	}
 
 	if (isset($_SESSION['sess_field_values']) && isset($_SESSION['sess_error_fields'])) {
@@ -549,7 +681,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	print " id='$form_name' autocomplete='off' " . ($placeholder != '' ? "placeholder='$placeholder'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
+	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . html_escape($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>\n";
 }
 
 /* form_hidden_box - draws a standard html hidden element
@@ -562,9 +694,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value, 
 		$form_previous_value = $form_default_value;
 	}
 
-	print ($in_form) ? "<tr style='display:none;'><td colspan='2'>\n":'';
-	print "<input style='height:0px;' type='hidden' id='$form_name' name='$form_name' value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>\n";
-	print ($in_form) ? "</td></tr>\n":'';
+	print "<div style='display:none;'><input style='height:0px;' type='hidden' id='$form_name' name='$form_name' value='" . html_escape($form_previous_value) . "'></div>";
 }
 
 /* form_dropdown - draws a standard html dropdown box
@@ -592,7 +722,7 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			$class .= (strlen($class) ? ' ':'') . 'txtErrorTextBox';
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -603,23 +733,73 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 		}
 	}
 
-	if (strlen($class)) {
+	if ($class != '') {
 		$class = " class='$class' ";
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<select id='" . htmlspecialchars($form_name) . "' name='" . htmlspecialchars($form_name) . "'" . $class . $on_change . '>';
+	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . $on_change . '>';
 
 	if (!empty($form_none_entry)) {
 		print "<option value='0'" . (empty($form_previous_value) ? ' selected' : '') . ">$form_none_entry</option>\n";
 	}
 
-	html_create_list($form_data, $column_display, $column_id, htmlspecialchars($form_previous_value, ENT_QUOTES));
+	html_create_list($form_data, $column_display, $column_id, html_escape($form_previous_value));
 
 	print "</select>\n";
+}
+
+function form_droplanguage($form_name, $column_display, $column_id, $form_previous_value, $form_none_entry, $form_default_value, $class = '', $on_change = '') {
+	if ($form_previous_value == '') {
+		$form_previous_value = $form_default_value;
+	}
+
+	if (isset($_SESSION['sess_error_fields'])) {
+		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
+			unset($_SESSION['sess_error_fields'][$form_name]);
+		}
+	}
+
+	if (isset($_SESSION['sess_field_values'])) {
+		if (!empty($_SESSION['sess_field_values'][$form_name])) {
+			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+		}
+	}
+
+	if ($class != '') {
+		$class = " class='$class' ";
+	}
+
+	if ($on_change != '') {
+		$on_change = " onChange='$on_change' ";
+	}
+
+	$languages = get_installed_locales();
+
+	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . $on_change . '>';
+
+	foreach ($languages as $key => $value) {
+		$selected = '';
+		if ($form_previous_value == $key) {
+			$selected = ' selected';
+		}
+
+		$flags = explode('-', $key);
+
+		if (cacti_count($flags) > 1) {
+			$flagName = strtolower($flags[1]);
+		} else {
+			$flagName = strtolower($flags[0]);
+		}
+
+		print '<option value=\'' . $key . '\'' . $selected . ' data-class=\'flag-icon-' . $flagName . '\'><span class="flag-icon flag-icon-squared flag-icon-' . $flagName . '"></span>' . __($value) . '</option>';
+	}
+
+	print '</select>';
 }
 
 function form_callback($form_name, $classic_sql, $column_display, $column_id, $callback, $previous_id, $previous_value, $none_entry, $default_value, $class = '', $on_change = '') {
@@ -629,7 +809,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			$class .= (strlen($class) ? ' ':'') . 'txtErrorTextBox';
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -640,17 +820,13 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		}
 	}
 
-	if (strlen($class)) {
+	if ($class != '') {
 		$class = " class='$class' ";
 	}
 
-	if (strlen($on_change)) {
-		$on_change = " onChange='$on_change' ";
-	}
-
 	$theme = get_selected_theme();
-	if ($theme == 'classic') {
-		print "<select id='" . htmlspecialchars($form_name) . "' name='" . htmlspecialchars($form_name) . "'" . $class . $on_change . '>';
+	if ($theme == 'classic' || read_config_option('autocomplete') > 0) {
+		print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . '>';
 
 		if (!empty($none_entry)) {
 			print "<option value='0'" . (empty($previous_value) ? ' selected' : '') . ">$none_entry</option>\n";
@@ -658,17 +834,26 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 		$form_data = db_fetch_assoc($classic_sql);
 
-		html_create_list($form_data, $column_display, $column_id, htmlspecialchars($previous_id, ENT_QUOTES));
+		html_create_list($form_data, $column_display, $column_id, html_escape($previous_id));
 
 		print "</select>\n";
-	}else{
-		$form_prefix = htmlspecialchars($form_name);
+	} else {
+		if (empty($previous_id) && $previous_value == '') {
+			$previous_value = $none_entry;
+		}
 
-		print "<span id='$form_prefix" . "_wrap' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>\n";
-		print "<span id='$form_prefix" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>\n";
-		print "<input id='$form_prefix" . "_input' class='ui-selectmenu-text ui-state-default' value='" . htmlspecialchars($previous_value) . "'>\n";
-		print "</span>\n";
-		print "<input type='hidden' id='" . $form_prefix . "' name='" . $form_prefix . "' value='" . $previous_id . "'>\n";
+		print "<span id='$form_name" . "_wrap' class='autodrop ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>";
+		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
+		print "<span class='ui-select-text'>";
+		print "<input type='text' class='ui-state-default ui-corner-all' id='$form_name" . "_input' value='" . html_escape($previous_value) . "'>";
+		print "</span>";
+
+		if (!empty($none_entry) && empty($previous_value)) {
+			$previous_value = $none_entry;
+		}
+
+		print "</span>";
+		print "<input type='hidden' id='" . $form_name . "' name='" . $form_name . "' value='" . html_escape($previous_id) . "'>";
 		?>
 		<script type='text/javascript'>
 		var <?php print $form_name;?>Timer;
@@ -676,41 +861,55 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		var <?php print $form_name;?>Open = false;
 
 		$(function() {
-		    $('#<?php print $form_prefix;?>_input').autocomplete({
-		        source: '<?php print $_SERVER['PHP_SELF'];?>?action=<?php print $callback;?>',
+		    $('#<?php print $form_name;?>_input').autocomplete({
+		        source: '<?php print get_current_page();?>?action=<?php print $callback;?>',
 				autoFocus: true,
 				minLength: 0,
 				select: function(event,ui) {
-					$('#<?php print $form_prefix;?>').val(ui.item.id);
+					$('#<?php print $form_name;?>_input').val(ui.item.label);
+					if (ui.item.id) {
+						$('#<?php print $form_name;?>').val(ui.item.id);
+					} else {
+						$('#<?php print $form_name;?>').val(ui.item.value);
+					}
 					<?php print $on_change;?>;
 				}
 			}).css('border', 'none').css('background-color', 'transparent');
 
-			$('#<?php print $form_prefix;?>_wrap').dblclick(function() {
+			$('#<?php print $form_name;?>_wrap').on('dblclick', function() {
 				<?php print $form_name;?>Open = false;
 				clearTimeout(<?php print $form_name;?>Timer);
 				clearTimeout(<?php print $form_name;?>ClickTimer);
-				$('#<?php print $form_prefix;?>_input').autocomplete('close');
-			}).click(function() {
+				$('#<?php print $form_name;?>_input').autocomplete('close').select();
+			}).on('click', function() {
 				if (<?php print $form_name;?>Open) {
-					$('#<?php print $form_prefix;?>_input').autocomplete('close');
+					$('#<?php print $form_name;?>_input').autocomplete('close');
 					clearTimeout(<?php print $form_name;?>Timer);
 					<?php print $form_name;?>Open = false;
-				}else{
+				} else {
 					<?php print $form_name;?>ClickTimer = setTimeout(function() {
-						$('#<?php print $form_prefix;?>_input').autocomplete('search', $('#<?php print $form_prefix;?>_input').val());
+						$('#<?php print $form_name;?>_input').autocomplete('search', '');
 						clearTimeout(<?php print $form_name;?>Timer);
 						<?php print $form_name;?>Open = true;
 					}, 200);
 				}
+				$('#<?php print $form_name;?>_input').select();
 			}).on('mouseleave', function() {
-				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_prefix;?>_input').autocomplete('close'); }, 800);
+				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_name;?>_input').autocomplete('close'); }, 800);
 			});
+
+			width = $('#<?php print $form_name;?>_input').textBoxWidth();
+			if (width < 100) {
+				width = 100;
+			}
+
+			$('#<?php print $form_name;?>_wrap').css('width', width+20);
+			$('#<?php print $form_name;?>_input').css('width', width);
 
 			$('ul[id^="ui-id"]').on('mouseenter', function() {
 				clearTimeout(<?php print $form_name;?>Timer);
 			}).on('mouseleave', function() {
-				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_prefix;?>_input').autocomplete('close'); }, 800);
+				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_name;?>_input').autocomplete('close'); }, 800);
 			});
 
 			$('ul[id^="ui-id"] > li').each().on('mouseenter', function() {
@@ -719,12 +918,12 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 				$(this).removeClass('ui-state-hover');
 			});
 
-			$('#<?php print $form_prefix;?>_wrap').on('mouseenter', function() {
+			$('#<?php print $form_name;?>_wrap').on('mouseenter', function() {
 				$(this).addClass('ui-state-hover');
-				$('input#<?php print $form_prefix;?>_input').addClass('ui-state-hover');
+				$('input#<?php print $form_name;?>_input').addClass('ui-state-hover');
 			}).on('mouseleave', function() {
 				$(this).removeClass('ui-state-hover');
-				$('input#<?php print $form_prefix;?>_input').removeClass('ui-state-hover');
+				$('input#<?php print $form_name;?>_input').removeClass('ui-state-hover');
 			});
 		});
 		</script>
@@ -742,8 +941,11 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
      exists or not. a $current_id of '0' indicates that no current value exists,
      a non-zero value indicates that a current value does exist
    @param string $class - specify a css class
-   @param string $on_change - specify a javascript onchange action */
-function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = '', $on_change = '') {
+   @param string $on_change - specify a javascript onchange action
+   @param string $title - specify a title for the checkbox on hover
+   @param boolean $show_label - show the form caption in the checkbox
+*/
+function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = '', $on_change = '', $title = '', $show_label = false) {
 	if (($form_previous_value == '') && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
@@ -754,21 +956,29 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		}
 	}
 
-	if (strlen($class)) {
-		$class = " class='$class'";
+	if ($class != '') {
+		$class = ' ' . trim($class);
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change'";
 	}
 
 	if ($form_previous_value == 'on') {
 		$checked = " checked aria-checked='true'";
-	}else{
+	} else {
 		$checked = " aria-checked='false'";
 	}
 
-	print "<input type='checkbox' id='$form_name' name='$form_name'" . $on_change . $class . $checked . ">" . ($form_caption != '' ? " <label for='$form_name'>$form_caption</label>\n":"");
+	$labelClass = '';
+	if ($show_label) {
+		$labelClass = ' checkboxLabelWanted';
+	}
+
+	print "<span class='nowrap'>";
+	print "<label class='checkboxSwitch' " . ($title != '' ? " title='" . html_escape($title) . "'":'') . '><input ' . ($title != '' ? " title='" . html_escape($title) . "'":'') . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . "><span class='checkboxSlider checkboxRound'></span></label>";
+	print "<label class='checkboxLabel$labelClass' for='$form_name'>" . html_escape($form_caption) . '</label>';
+	print '</span>';
 }
 
 /* form_radio_button - draws a standard html radio button
@@ -789,23 +999,29 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 		}
 	}
 
-	if (strlen($class)) {
-		$class = " class='$class' ";
+	if ($class != '') {
+		$class = " $class";
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
 
 	if ($form_previous_value == $form_current_value) {
 		$checked = " checked aria-checked='true'";
-	}else{
+	} else {
 		$checked = " aria-checked='false'";
 	}
 
 	$css_id = $form_name . '_' . $form_current_value;
 
-	print "<input role='radio' type='radio' id='$css_id' name='$form_name' value='$form_current_value'" . $class . $on_change . $checked . "><label for='$css_id'>$form_caption</label>\n";
+
+	print "<span class='nowrap'>";
+	print "<label class='radioSwitch'><input value='" . html_escape($form_current_value) .
+		"' class='formCheckbox$class' type='radio' id='$css_id' name='$form_name'" .
+		$on_change . $checked . "><span class='radioSlider radioRound'></span></label>";
+	print "<label class='radioLabelWanted' for='$css_id'>" . html_escape($form_caption) . "</label>";
+	print "</span>";
 }
 
 /* form_text_area - draws a standard html text area box
@@ -822,7 +1038,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			$class .= (strlen($class) ? ' ':'') . 'txtErrorTextBox';
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -833,19 +1049,15 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		}
 	}
 
-	if (strlen($class)) {
-		$class = " class='$class' ";
-	}
-
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
 
-	if (strlen($placeholder)) {
-		$placeholder = " placeholder='$placeholder'";
+	if ($placeholder != '') {
+		$placeholder = " placeholder='" . html_escape($placeholder) . "'";
 	}
 
-	print "<textarea aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . '>' . htmlspecialchars($form_previous_value, ENT_QUOTES) . "</textarea>\n";
+	print "<textarea class='$class ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $on_change . $placeholder . '>' . html_escape($form_previous_value) . "</textarea>\n";
 }
 
 /* form_multi_dropdown - draws a standard html multiple select dropdown
@@ -864,7 +1076,7 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 		foreach($values as $value) {
 			$sql_previous_values[][$column_id] = $value;
 		}
-	}elseif ($sql_previous_values == '') {
+	} elseif ($sql_previous_values == '') {
 		$values = db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', array($form_name));
 		if ($values != '') {
 			$values = explode(',', $values);
@@ -876,17 +1088,17 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			$class .= (strlen($class) ? ' ':'') . 'txtErrorTextBox';
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
 
 	$class = 'multiselect';
-	if (strlen($class)) {
+	if ($class != '') {
 		$class .= " $class";
 	}
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
 
@@ -895,15 +1107,15 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";
 
-		if (is_array($sql_previous_values) && sizeof($sql_previous_values)) {
-			for ($i=0; ($i < count($sql_previous_values)); $i++) {
+		if (is_array($sql_previous_values) && cacti_sizeof($sql_previous_values)) {
+			for ($i=0; ($i < cacti_count($sql_previous_values)); $i++) {
 				if ($sql_previous_values[$i][$column_id] == $id) {
 					print ' selected';
 				}
 			}
 		}
 
-		print '>' . htmlspecialchars($array_display[$id],ENT_QUOTES);
+		print '>' . html_escape($array_display[$id]);
 		print "</option>\n";
 	}
 
@@ -927,46 +1139,57 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		$form_previous_value = $form_default_value;
 	}
 
-	if (strlen($class)) {
+	if ($class != '') {
 		$class = " class='colordropdown $class' ";
-	}else{
+	} else {
 		$class = " class='colordropdown'";
 	}
 
-	$current_color = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($form_previous_value));
+	$current_color = db_fetch_cell_prepared('SELECT hex
+		FROM colors
+		WHERE id = ?',
+		array($form_previous_value));
 
-	if (strlen($on_change)) {
+	if ($on_change != '') {
 		$on_change = ' ' . $on_change . ';';
 	}
 
 	$on_change = " onChange='this.style.backgroundColor=this.options[this.selectedIndex].style.backgroundColor;$on_change'";
 
-	$colors_list = db_fetch_assoc('SELECT * FROM colors ORDER BY hex DESC');
+	$colors_sql = 'SELECT *
+		FROM colors
+		ORDER BY
+			SUBSTRING(hex,0,2) ASC,
+			SUBSTRING(hex,2,2) ASC,
+			SUBSTRING(hex,4,2) ASC';
 
-	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . $on_change . ">\n";
+	$colors_list = db_fetch_assoc($colors_sql);
+
+	print "<select style='background-color: #$current_color;' id='$form_name' name='$form_name'" . $class . $on_change . ">";
 
 	if ($form_none_entry != '') {
-		print "<option value='0'>$form_none_entry</option>\n";
+		print "<option value='0'>$form_none_entry</option>";
 	}
 
-	if (sizeof($colors_list) > 0) {
+	if (cacti_sizeof($colors_list) > 0) {
 		foreach ($colors_list as $color) {
 			if ($color['name'] == '') {
-				$display = 'Cacti Color (' . $color['hex'] . ')';
-			}else{
+				$display = __('Cacti Color (%s)', $color['hex']);
+			} else {
 				$display = $color['name'] . ' (' . $color['hex'] . ')';
 			}
-			print "<option data-color='" . $color['hex'] . "' data-style='background-color: #" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
+
+			print "<option data-color='" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
 
 			if ($form_previous_value == $color['id']) {
 				print ' selected';
 			}
 
-			print '>' . $display . "</option>\n";
+			print '>' . html_escape($display) . '</option>';
 		}
 	}
 
-	print "</select>\n";
+	print '</select>';
 }
 
 /* form_font_box - draws a standard html textbox and provides status of a fonts existence
@@ -992,8 +1215,10 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
+		} else {
+			print " class='ui-state-default ui-corner-all'";
 		}
 	}
 
@@ -1003,8 +1228,8 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	if (strlen($form_previous_value) == 0) { # no data: defaults are used; everythings fine
-			$extra_data = '';
+	if ($form_previous_value == '') { # no data: defaults are used; everythings fine
+		$extra_data = '';
 	} else {
 		/* verifying all possible pango font params is too complex to be tested here
 		 * so we only escape the font
@@ -1012,7 +1237,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		$extra_data = "<span style='color:green'><br>[" . __('NO FONT VERIFICATION POSSIBLE') . ']</span>';
 	}
 
-	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . htmlspecialchars($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . htmlspecialchars($form_previous_value, ENT_QUOTES) . "'>" . $extra_data;
+	print " id='$form_name' " . ($placeholder != '' ? "placeholder='" . html_escape($placeholder) . "'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>" . $extra_data;
 }
 
 /* form_confirm - draws a table presenting the user with some choice and allowing
@@ -1047,9 +1272,9 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	global $config;
 	?>
 	<tr>
-		<td align='right'>
-			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $cancel_url;?>")' value='<?php print __('Cancel');?>'>
-			<input type='button' onClick='cactiReturnTo("<?php print $config['url_path'] . $action_url;?>&confirm=true")' value='<?php print __('Delete');?>'>
+		<td class='right'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $cancel_url);?>")' value='<?php print __esc('Cancel');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $action_url . '&confirm=true');?>")' value='<?php print __esc('Delete');?>'>
 		</td>
 	</tr>
 <?php }
@@ -1064,29 +1289,31 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 
 	if (empty($force_type) || $force_type == 'return') {
 		if (isempty_request_var($key_field)) {
-			$alt = __('Create');
-		}else{
-			$alt = __('Save');
+			$alt = __esc('Create');
+		} else {
+			$alt = __esc('Save');
 
-			if (strlen($force_type)) {
-				$calt   = __('Return');
-			}else{
-				$calt   = __('Cancel');
+			if ($force_type != '') {
+				$calt   = __esc('Return');
+			} else {
+				$calt   = __esc('Cancel');
 			}
 		}
-	}elseif ($force_type == 'save') {
-		$alt = __('Save');
-	}elseif ($force_type == 'create') {
-		$alt = __('Create');
-	}elseif ($force_type == 'import') {
-		$alt = __('Import');
-	}elseif ($force_type == 'export') {
-		$alt = __('Export');
+	} elseif ($force_type == 'save') {
+		$alt = __esc('Save');
+	} elseif ($force_type == 'create') {
+		$alt = __esc('Create');
+	} elseif ($force_type == 'close') {
+		$alt = __esc('Close');
+	} elseif ($force_type == 'import') {
+		$alt = __esc('Import');
+	} elseif ($force_type == 'export') {
+		$alt = __esc('Export');
 	}
 
-	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $cancel_url != '') {
-		$cancel_action = "<input type='button' onClick='cactiReturnTo(\"" . $cancel_url . "\")' value='" . $calt . "'>";
-	}else{
+	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
+		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $calt . "'>";
+	} else {
 		$cancel_action = '';
 	}
 
@@ -1096,7 +1323,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php print $cancel_action;?>
-				<input class='<?php print $force_type;?>' id='submit' type='submit' value='<?php print $alt;?>'>
+				<input type='submit' class='<?php print $force_type;?> ui-button ui-corner-all ui-widget' id='submit' value='<?php print $alt;?>'>
 			</td>
 		</tr>
 	</table>
@@ -1108,15 +1335,70 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 /* form_save_buttons - draws a set of buttons at the end of a form
      an html edit form
    @arg $buttons - an array of 'id', 'name' buttons */
-function form_save_buttons($buttons) {
+function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_field = 'id', $ajax = true) {
+	$calt = __('Cancel');
+
+	if (empty($force_type) || $force_type == 'return') {
+		if (isempty_request_var($key_field)) {
+			$alt = __esc('Create');
+		} else {
+			$alt = __esc('Save');
+
+			if ($force_type != '') {
+				$calt   = __esc('Return');
+			} else {
+				$calt   = __esc('Cancel');
+			}
+		}
+	} elseif ($force_type == 'save') {
+		$alt = __esc('Save');
+	} elseif ($force_type == 'create') {
+		$alt = __esc('Create');
+	} elseif ($force_type == 'close') {
+		$alt = __esc('Close');
+	} elseif ($force_type == 'import') {
+		$alt = __esc('Import');
+	} elseif ($force_type == 'export') {
+		$alt = __esc('Export');
+	}
+
+	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
+		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $calt . "'>";
+	} else {
+		$cancel_action = '';
+	}
+
 	?>
 	<table style='width:100%;text-align:center;'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php foreach($buttons as $b) {
-					print "<input type='button' id='" . $b['id'] . "' value='" . $b['value'] . "'>\n";
+					print "<input type='button' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "1' value='" . html_escape($b['value']) . "'";
+					$onclick = '';
+					if (!empty($b['method'])) {
+						$url = empty($b['url']) ? '' : html_escape($b['url'], ENT_QUOTES);
+						$data = empty($b['data']) ? '{}' : $b['data'];
+						switch ($b['method']) {
+							case 'return':
+								$onclick = "cactiReturnTo(\"" .$url . "\")";
+								break;
+							case 'post':
+								$onclick = "var pv=$data;postUrl({ url: '$url' }, pv); return false;";
+								break;
+							case 'get':
+								$onclick = "var pv=$data;loadUrl({ url: '$url' }, pv); return false;";
+								break;
+						}
+					}
+
+					if (!empty($onclick)) {
+						print " onclick='" . html_escape($onclick, ENT_QUOTES) . "'";
+					}
+					print ">\n";
 				} ?>
+				<?php print $cancel_action; ?>
+				<input type='submit' class='<?php print $force_type;?> ui-button ui-corner-all ui-widget' id='submit' value='<?php print $alt; ?>'>
 			</td>
 		</tr>
 	</table>
@@ -1126,44 +1408,107 @@ function form_save_buttons($buttons) {
 /* form_start - draws post form start. To be combined with form_end()
    @arg $action - a mandatory php file URI
    @arg $id     - an optional id, if empty, one will be generated */
-function form_start($action, $id = '') {
+function form_start($action, $id = '', $multipart = false) {
 	global $form_id, $form_action;
 	static $counter = 1;
 
 	if ($id == '') {
 		$form_id = 'form' . $counter;
 		$counter++;
-	}else{
+	} else {
 		$form_id = trim($id);
 	}
 
 	$form_action = $action;
 
-	print "<form id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'>\n";
+	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'":'') . ">\n";
 }
 
 /* form_end - draws post form end. To be combined with form_start() */
 function form_end($ajax = true) {
 	global $form_id, $form_action;
 
-	print "</form>\n";
+	print '</form>' . PHP_EOL;
 
 	if ($ajax) { ?>
 		<script type='text/javascript'>
+		var formArray = [];
+		var changed = false;
+
+		function warningMessage(href, type, scroll_or_id) {
+			title='<?php print __esc('Warning Unsaved Form Data');?>';
+			returnStr = '<div id="messageContainer" style="display:none">' +
+				'<h4><?php print __('Unsaved Changes Detected');?></h4>' +
+				'<p style="display:table-cell;overflow:auto"><?php print __('You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form.');?></p>' +
+				'</div>';
+
+			$('#messageContainer').remove();
+			$('body').append(returnStr);
+
+			var messageButtons = {
+				'Cancel': {
+					text: sessionMessageCancel,
+					id: 'messageCancel',
+					click: function() {
+						$(this).dialog('close');
+						$('#messageContainer').remove();
+					}
+				},
+				'Continue': {
+					text: sessionMessageContinue,
+					id: 'messageContinue',
+					click: function() {
+						$('#messageContainer').remove();
+
+						if (type == 'noheader') {
+							loadUrl({url:href, scroll:scroll_or_id, force:true})
+						} else if (type == 'toptab') {
+							loadUrl({url:href, scroll:scroll_or_id, force:true, loadType:'toptab'});
+						} else {
+							loadUrl({url:href, force:true});
+						}
+					}
+				}
+			};
+
+			messageWidth = $(window).width();
+			if (messageWidth > 600) {
+				messageWidth = 600;
+			} else {
+				messageWidth -= 50;
+			}
+
+			$('#messageContainer').dialog({
+				draggable: true,
+				resizable: false,
+				height: 'auto',
+				minWidth: messageWidth,
+				maxWidth: 800,
+				maxHeight: 600,
+				title: title,
+				buttons: messageButtons
+			});
+		}
+
 		$(function() {
+			formArray['<?php print $form_id;?>'] = $('#<?php print $form_id;?>').serializeForm();
+			changed = false;
+
 			$('#<?php print $form_id;?>').submit(function(event) {
 				event.preventDefault();
-				strURL = '<?php print $form_action;?>';
-				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
-				json =  $('#<?php print $form_id;?>').serializeObject();
-				$.post(strURL, json).done(function(data) {
-					$('#main').html(data);
-					applySkin();
-					window.scrollTo(0, 0);
-				});
+
+				// Enable the form if it's disabled
+				$(this).find('input, textarea, select').prop('disabled', false);
+
+				strURL  = '<?php print $form_action;?>';
+				strURL += (strURL.indexOf('?') >= 0 ? '&':'?');
+
+				json =  $(this).serializeObject();
+				postUrl({ url: strURL }, json);
 			});
 		});
 		</script>
 		<?php
 	}
 }
+

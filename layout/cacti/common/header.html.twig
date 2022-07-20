@@ -1,0 +1,90 @@
+{% if not common.is_ajax %}
+<!DOCTYPE html>
+<html lang='{{ common.locale }}'>
+<head>
+	<meta content='width=device-width, initial-scale={{ header.initialScale }}, minimum-scale={{ header.minimumScale }}, maximum-scale={{ header.maximumScale }}' name='viewport'>
+	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
+	<meta name='apple-mobile-web-app-capable' content='yes'>
+	<meta name='description' content='Monitoring tool of the Internet'>
+	<meta name='mobile-web-app-capable' content='yes'>
+	<meta name='theme-name' content='{{ header.theme }}'>
+	<meta name='theme-color' content='{{ header.themeColor }}'>
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' {{ header.alternates|raw }} data: blob:; style-src 'self' 'unsafe-inline' {{ header.alternates|raw }}; script-src 'self' {{ header.scriptPolicy|raw }} 'unsafe-inline' {{ header.alternates|raw }}; worker-src 'self'">
+	<meta name='robots' content='noindex,nofollow'>
+{% endif %}
+	<title>{{ page_title }}</title>
+{% if not common.is_ajax %}
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<script type='text/javascript'>
+		{% for name,value in header.variables %}
+		var {{ name }}={{ value|raw }};
+		{% endfor %}
+	</script>
+	{% for link in header.links %}
+	<link href='{{ link.url }}' rel='{{ link.rel }}'{% if link.sizes is defined %} sizes="{{ link.sizes}}"{% endif %}>
+	{% endfor %}
+	{% for inc in header.includes %}
+	{% if inc.mode == 'css' %}
+	<link href='{{ inc.href }}'{% if inc.type is defined %} type='{{ inc.type }}'{% endif %}{% if inc.rel is defined %} rel='{{ inc.rel }}'{% endif %}>
+	{% elseif inc.mode == 'js' %}
+	<script{% if inc.type is defined %} type='{{ inc.type }}'{% endif %}{% if inc.src is defined %} src='{{ inc.src }}'{% endif %}{% if inc.async is defined and inc.async %} async{% endif %}>{% if inc.script is defined %}inc.script|raw{% endif %}</script>
+	{% endif %}
+	{% endfor %}
+</head>
+<body>
+	<!-- DUMP view
+	{{ dump(view)|raw }}
+	     DUMP view -->
+
+	{% if view.is_main %}
+	<a class='skip-link' href='#main' style='display:none;'>Skip to main</a>
+	<div id='cactiPageHead' class='cactiPageHead' role='banner'>
+		<div id='tabs'>
+			{{ include('common/tabs-left.html.twig') }}
+		</div>
+		<div class='cactiGraphHeaderBackground'{% if not (view.is_graph or view.is_menu) %} style='display:none;'{% endif %}>
+			<div id='gtabs'>
+				{# <?php print html_graph_tabs_right();?> #}
+				{{ include('common/tabs-right.html.twig') }}
+			</div>
+		</div>
+		<div class='cactiConsolePageHeadBackdrop'{% if view.is_graph or (not view.is_menu) %} style='display:none;'{% endif %}></div>
+	</div>
+	<div id='breadCrumbBar' class='breadCrumbBar'>
+	{% endif %}
+{% endif %}
+{% if view.is_main %}
+		{% include 'common/navbar.html.twig' %}
+		<div class='scrollBar'></div>
+	{% if not common.is_ajax %}
+		{% if auth.method != 0 %}
+		<div class='infoBar'>
+			{# <?php echo draw_login_status($using_guest_account);?> #}
+			{{ include('auth/login_status.html.twig') }}
+		</div>
+		{% endif %}
+	</div>
+	<div class='cactiShadow'></div>
+	{% endif %}
+	<div id='cactiContent' class='cactiContent'>
+		{% if view.is_graph %}
+		<div style='display:none;' id='navigation' class='cactiTreeNavigationArea'>
+			{# <?php grow_dhtml_trees();?> #}
+			{{ include('graph/tree.html.twig') }}
+		</div>
+		{% elseif view.is_menu %}
+		<div class='cactiConsoleNavigationArea' style='display:none;' id='navigation'>
+			<table style='width:100%;'>
+				{# <?php draw_menu();?> #}
+				{{ include('common/menu.html.twig') }}
+				<tr>
+					<td style='text-align:center;'>
+						<div class='cactiLogo' onclick='loadPage("{{ config.url_path }}about.php")'></div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		{% endif %}
+		<div id='navigation_right' class='cacti{% if view.is_graph %}Graph{% else %}Console{% endif %}ContentArea'>
+			<main style='position:relative;display:none;' id='main'>
+{% endif %}

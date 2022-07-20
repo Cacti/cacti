@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="" trgLang="">
+  <file id=".">
+    <notes>
+      <note id="Content-Transfer-Encoding">8bit</note>
+      <note id="Content-Type">text/plain; charset=UTF-8</note>
+      <note id="Language"></note>
+      <note id="Language-Team"></note>
+      <note id="Last-Translator"></note>
+      <note id="MIME-Version">1.0</note>
+      <note id="Project-Id-Version"></note>
+      <note id="Report-Msgid-Bugs-To"></note>
+    </notes>
+    <unit id="4f1269f980e452b3ad9d13bd81276de5">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Dielen</source>
+        <target>timber piling floor</target>
+      </segment>
+    </unit>
+    <unit id="b38f3200d1252577dac97c3db5f5afb6">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Doppelboden</source>
+        <target>double floor</target>
+      </segment>
+    </unit>
+    <unit id="ddc74551ba9e1c27c4b28a41a66c6608">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Estrich</source>
+        <target>screed floor</target>
+      </segment>
+    </unit>
+    <unit id="b79df3ea2374ca9a469a164deb98554b">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Fliesen</source>
+        <target>flagging</target>
+      </segment>
+    </unit>
+    <unit id="96673e1f04e7f01dc7203df7319d89a6">
+      <notes>
+        <note category="context"></note>
+      </notes>
+      <segment>
+        <source>Kunststoffboden</source>
+        <target>synthetic floor</target>
+      </segment>
+    </unit>
+    <unit id="fb83315fbaadec9e3d9cf89f75fbe664">
+      <notes>
+        <note category="context"></note>
+        <note category="comment">duplicate singular</note>
+      </notes>
+      <segment>
+        <source>1 child</source>
+        <target>1 fillo</target>
+      </segment>
+    </unit>
+    <unit id="503aaa644e6f8a3b84aa88b44507956c">
+      <notes>
+        <note category="context"></note>
+        <note category="comment">duplicate singular - plural</note>
+      </notes>
+      <segment>
+        <source>1 comment</source>
+        <target>1 comentario</target>
+      </segment>
+    </unit>
+    <unit id="31f0d1a1c55b8fcac89fa462cca4dea9">
+      <notes>
+        <note category="context"></note>
+        <note category="comment">duplicate plural - singular</note>
+      </notes>
+      <segment>
+        <source>1 star</source>
+        <target>1 estrela</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

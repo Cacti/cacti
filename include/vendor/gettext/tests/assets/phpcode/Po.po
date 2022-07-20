@@ -1,0 +1,86 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+
+#: ./tests/assets/phpcode/input.php:2
+msgid "text 1"
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:7
+msgctxt "context"
+msgid "text 1 with context"
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:8
+msgid "text 2"
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:9
+msgid "text 3 (with parenthesis)"
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:10
+msgid "text 4 \"with double quotes\""
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:11
+msgid "text 5 'with escaped single quotes'"
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:15
+msgid "text 6"
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:16
+msgid "text 7 (with parenthesis)"
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:17
+msgid "text 8 \"with escaped double quotes\""
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:18
+msgid "text 9 'with single quotes'"
+msgstr ""
+
+#: ./tests/assets/phpcode/input.php:19
+msgid "text 10 with plural"
+msgid_plural "The plural form"
+msgstr[0] ""
+
+#: ./tests/assets/phpcode/input.php:22
+msgid ""
+"<div id=\"blog\" class=\"container\">\n"
+"    <div class=\"row\">\n"
+"        <div class=\"col-md-12\">\n"
+"            <div id=\"content\">\n"
+"                <div class=\"page_post\">\n"
+"                    <div class=\"container\">\n"
+"                        <div class=\"margin-top-40\"></div>\n"
+"                        <div class=\"col-sm-3 col-md-2 centered-xs an-number\">4</div>\n"
+"                    </div>\n"
+"                </div>\n"
+"                <div class=\"container\">\n"
+"                    <h1 class=\"text-center margin-top-10\">Sorry, but we couldn't find this page</h1>\n"
+"                    <div id=\"body-div\">\n"
+"                        <div id=\"main-div\">\n"
+"                            <div class=\"text-404\">\n"
+"                                <div>\n"
+"                                    <p>Maybe you have entered an incorrect URL of the page or page moved to another section or just page is temporarily unavailable.</p>\n"
+"                                </div>\n"
+"                            </div>\n"
+"                        </div>\n"
+"                    </div>\n"
+"                </div>\n"
+"            </div>\n"
+"        </div>\n"
+"    </div>\n"
+"</div>"
+msgstr ""

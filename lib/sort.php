@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -37,14 +37,14 @@ function usort_data_query_index($a, $b) {
 	$arr_a = explode('/', $a);
 	$arr_b = explode('/', $b);
 
-	for ($i=0; $i<min(count($arr_a), count($arr_b)); $i++) {
+	for ($i=0; $i<min(cacti_count($arr_a), cacti_count($arr_b)); $i++) {
 		if ((is_numeric($arr_a[$i])) && (is_numeric($arr_b[$i]))) {
 			if (intval($arr_a[$i]) > intval($arr_b[$i])) {
 				return 1;
-			}elseif (intval($arr_a[$i]) < intval($arr_b[$i])) {
+			} elseif (intval($arr_a[$i]) < intval($arr_b[$i])) {
 				return -1;
 			}
-		}else{
+		} else {
 			$cmp = strcmp(strval($arr_a[$i]), strval($arr_b[$i]));
 
 			if (($cmp > 0) || ($cmp < 0)) {
@@ -53,9 +53,9 @@ function usort_data_query_index($a, $b) {
 		}
 	}
 
-	if (count($arr_a) < count($arr_b)) {
+	if (cacti_count($arr_a) < cacti_count($arr_b)) {
 		return 1;
-	}elseif (count($arr_a) > count($arr_b)) {
+	} elseif (cacti_count($arr_a) > cacti_count($arr_b)) {
 		return -1;
 	}
 
@@ -70,9 +70,9 @@ function usort_data_query_index($a, $b) {
 function usort_numeric($a, $b) {
 	if (intval($a) > intval($b)) {
 		return 1;
-	}elseif (intval($a) < intval($b)) {
+	} elseif (intval($a) < intval($b)) {
 		return -1;
-	}else{
+	} else {
 		return 0;
 	}
 }
@@ -93,5 +93,17 @@ function usort_alphabetic($a, $b) {
      $b is equal to $b */
 function usort_natural($a, $b) {
 	return strnatcmp($a, $b);
+}
+
+/* sort_by_subkey - takes the list of templates and performa a final sort
+   @returns - (array) an array of sorted templates */
+function sort_by_subkey(&$array, $subkey, $sort = SORT_ASC) {
+	$keys = array();
+
+    foreach ($array as $subarray) {
+        $keys[] = $subarray[$subkey];
+    }
+
+    array_multisort($keys, $sort, $array);
 }
 

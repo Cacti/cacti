@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -227,46 +227,5 @@ function shift_time(&$span, $direction, $shift_size) {
 	$_SESSION['sess_current_timespan'] = GT_CUSTOM;
 	$_SESSION['custom'] = 1;
 	set_request_var('predefined_timespan', GT_CUSTOM);
-}
-
-/** date_time_format		create a format string for date/time
- * @param string returns	date time format
- */
-function date_time_format() {
-	global $config;
-
-	$graph_date = '';
-
-	/* setup date format */
-	$date_fmt = read_user_setting('default_date_format');
-	$datechar = read_user_setting('default_datechar');
-
-	switch ($datechar) {
-		case GDC_HYPHEN: 	$datechar = '-'; break;
-		case GDC_SLASH: 	$datechar = '/'; break;
-		case GDC_DOT:	 	$datechar = '.'; break;
-	}
-
-	switch ($date_fmt) {
-		case GD_MO_D_Y:
-			$graph_date = 'm' . $datechar . 'd' . $datechar . 'Y H:i:s';
-			break;
-		case GD_MN_D_Y:
-			$graph_date = 'M' . $datechar . 'd' . $datechar . 'Y H:i:s';
-			break;
-		case GD_D_MO_Y:
-			$graph_date = 'd' . $datechar . 'm' . $datechar . 'Y H:i:s';
-			break;
-		case GD_D_MN_Y:
-			$graph_date = 'd' . $datechar . 'M' . $datechar . 'Y H:i:s';
-			break;
-		case GD_Y_MO_D:
-			$graph_date = 'Y' . $datechar . 'm' . $datechar . 'd H:i:s';
-			break;
-		case GD_Y_MN_D:
-			$graph_date = 'Y' . $datechar . 'M' . $datechar . 'd H:i:s';
-			break;
-	}
-	return $graph_date;
 }
 

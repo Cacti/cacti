@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2017 The Cacti Group                                 |
+ | Copyright (C) 2004-2021 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDTool-based Graphing Solution                     |
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -23,10 +23,190 @@
 */
 
 if (!defined('VALID_HOST_FIELDS')) {
-	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_engine_id|snmp_version|snmp_port|snmp_timeout)');
+	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|location|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_engine_id|snmp_version|snmp_port|snmp_timeout|external_id)');
 	define('VALID_HOST_FIELDS', $string);
 }
 $valid_host_fields = VALID_HOST_FIELDS;
+
+/* If you update this, check that you have updated the installer */
+$fields_snmp_item = array(
+	'snmp_version' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Version'),
+		'description' => __('Choose the SNMP version for this host.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_version|',
+		'default' => read_config_option('snmp_version'),
+		'array' => $snmp_versions
+		),
+	'snmp_community' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Community String'),
+		'description' => __('Fill in the SNMP read community for this device.'),
+		'value' => '|arg1:snmp_community|',
+		'default' => read_config_option('snmp_community'),
+		'max_length' => '100',
+		'size' => '20'
+		),
+	'snmp_security_level' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Security Level'),
+		'description' => __('SNMP v3 Security Level to use when querying the device.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_security_level|',
+		'form_id' => '|arg1:id|',
+		'default' => read_config_option('snmp_security_level'),
+		'array' => $snmp_security_levels
+		),
+	'snmp_auth_protocol' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Auth Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 Authorization Protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_auth_protocol|',
+		'default' => read_config_option('snmp_auth_protocol'),
+		'array' => $snmp_auth_protocols,
+		),
+	'snmp_username' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Username (v3)'),
+		'description' => __('SNMP v3 username for this device.'),
+		'value' => '|arg1:snmp_username|',
+		'default' => read_config_option('snmp_username'),
+		'max_length' => '50',
+		'size' => '40'
+		),
+	'snmp_password' => array(
+		'method' => 'textbox_password',
+		'friendly_name' => __('SNMP Password (v3)'),
+		'description' => __('SNMP v3 password for this device.'),
+		'value' => '|arg1:snmp_password|',
+		'default' => read_config_option('snmp_password'),
+		'max_length' => '50',
+		'size' => '40'
+		),
+	'snmp_priv_protocol' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 Privacy Protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_priv_protocol|',
+		'default' => read_config_option('snmp_priv_protocol'),
+		'array' => $snmp_priv_protocols,
+		),
+	'snmp_priv_passphrase' => array(
+		'method' => 'textbox_password',
+		'friendly_name' => __('SNMP Privacy Passphrase (v3)'),
+		'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+		'value' => '|arg1:snmp_priv_passphrase|',
+		'default' => read_config_option('snmp_priv_passphrase'),
+		'max_length' => '200',
+		'size' => '80'
+		),
+	'snmp_context' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Context (v3)'),
+		'description' => __('Enter the SNMP Context to use for this device.'),
+		'value' => '|arg1:snmp_context|',
+		'default' => '',
+		'max_length' => '64',
+		'size' => '40'
+		),
+	'snmp_engine_id' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Engine ID (v3)'),
+		'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
+		'value' => '|arg1:snmp_engine_id|',
+		'default' => '',
+		'max_length' => '64',
+		'size' => '40'
+		),
+	'snmp_port' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Port'),
+		'description' => __('Enter the UDP port number to use for SNMP (default is 161).'),
+		'value' => '|arg1:snmp_port|',
+		'max_length' => '5',
+		'default' => read_config_option('snmp_port'),
+		'size' => '12'
+		),
+	'snmp_timeout' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Timeout'),
+		'description' => __('The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).'),
+		'value' => '|arg1:snmp_timeout|',
+		'max_length' => '8',
+		'default' => read_config_option('snmp_timeout'),
+		'size' => '12'
+		),
+	);
+
+$fields_snmp_item_with_oids = $fields_snmp_item + array(
+	'max_oids' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('Maximum OIDs Per Get Request'),
+		'description' => __('The number of SNMP OIDs that can be obtained in a single SNMP Get request.'),
+		'value' => '|arg1:max_oids|',
+		'default' => read_config_option('max_get_size'),
+		'array' => array(
+			1  => __('%d OID', 1),
+			2  => __('%d OID\'s', 2),
+			3  => __('%d OID\'s', 3),
+			4  => __('%d OID\'s', 4),
+			5  => __('%d OID\'s', 5),
+			10 => __('%d OID\'s', 10),
+			15 => __('%d OID\'s', 15),
+			20 => __('%d OID\'s', 20),
+			25 => __('%d OID\'s', 25),
+			30 => __('%d OID\'s', 30),
+			35 => __('%d OID\'s', 35),
+			40 => __('%d OID\'s', 40),
+			45 => __('%d OID\'s', 45),
+			50 => __('%d OID\'s', 50),
+			55 => __('%d OID\'s', 55),
+			60 => __('%d OID\'s', 60)
+		)
+	),
+	'bulk_walk_size' => array(
+		'method'        => 'drop_array',
+		'friendly_name' => __('Bulk Walk Maximum Repititions'),
+		'description'   => __('For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk max-repetitions size. The default is to \'Auto Detect on Re-Index\'. For very large switches, high performance servers, Jumbo Frame Networks or for high latency WAN connections, increasing this value may increase poller performance. More data is packed into a single SNMP packet which can reduce data query run time. However, some devices may completely refuse to respond to packets with a max-repetition size which is set too large. This can be especially true for lower-powered IoT type devices or smaller embedded IT appliances. Special attention to the overall network path MTU should also be considered since setting a value which is too high could lead to packet fragmentation.'),
+		'value'         => '|arg1:bulk_walk_size|',
+		'default'       => '-1',
+		'array' => array(
+			-1 => __('Auto Detect on Re-Index'),
+			0  => __('Auto Detect/Set on first Re-Index'),
+			1  => __('%d Repitition', 1),
+			2  => __('%d Repititions', 2),
+			3  => __('%d Repititions', 3),
+			4  => __('%d Repititions', 4),
+			5  => __('%d Repititions', 5),
+			10 => __('%d Repititions', 10),
+			15 => __('%d Repititions', 15),
+			20 => __('%d Repititions', 20),
+			25 => __('%d Repititions', 25),
+			30 => __('%d Repititions', 30),
+			35 => __('%d Repititions', 35),
+			40 => __('%d Repititions', 40),
+			45 => __('%d Repititions', 45),
+			50 => __('%d Repititions', 50),
+			55 => __('%d Repititions', 55),
+			60 => __('%d Repititions', 60)
+		)
+	)
+);
+
+$fields_snmp_item_with_retry = $fields_snmp_item_with_oids + array(
+	'snmp_retries' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Retries'),
+		'description' => __('The maximum number of attempts to reach a device via an SNMP readstring prior to giving up.'),
+		'value' => '|arg1:snmp_retries|',
+		'max_length' => '8',
+		'default' => read_config_option('snmp_retries'),
+		'size' => '12'
+		),
+	);
 
 /* file: profiles.php, action: edit */
 $fields_profile_edit = array(
@@ -50,10 +230,7 @@ $fields_profile_edit = array(
 	'heartbeat' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('Heartbeat'),
-		'description' => __('How long can data be missing before RRDtool records unknown data.  
-			Increase this value if your Data Source is unstable and you wish to carry forward 
-			old data rather than show gaps in your graphs.  This value is multiplied by the
-			X-Files Factor to determine the actual amount of time.'),
+		'description' => __('How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time.'),
 		'array' => $heartbeats,
 		'value' => '|arg1:heartbeat|',
 		'default' => (read_config_option('poller_interval') * 2),
@@ -126,8 +303,15 @@ $fields_profile_rra_edit = array(
 		'default' => '600'
 		),
 	'timespan' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('Default Timespan'),
+		'description' => __('When viewing a Graph based upon the RRA in question, the default Timespan to show for that Graph.'),
+		'value' => '|arg1:timespan|',
+		'array' => $timespans
+		),
+	'retention' => array(
 		'method' => 'other',
-		'friendly_name' => __('Effective Retention'),
+		'friendly_name' => __('Data Retention'),
 		'description' => __('Based upon the Aggregation Level, the Rows, and the Polling Interval the amount of data that will be retained in the RRA'),
 		'value' => ''
 		),
@@ -235,6 +419,12 @@ $fields_data_input_edit = array(
 		'class' => 'textAreaNotes',
 		'max_length' => '255',
 		),
+	'whitelist_verification' => array(
+		'method' => 'other',
+		'value' => '',
+		'friendly_name' => __('White List Check'),
+		'description' => __('The result of the Whitespace verification check for the specific Input Method.  If the Input String changes, and the Whitelist file is not update, Graphs will not be allowed to be created.')
+		),
 	'id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
@@ -270,7 +460,7 @@ $fields_data_input_field_edit_2 = array(
 
 /* file: data_input.php, action: field_edit */
 $fields_data_input_field_edit = array(
-	'name' => array(
+	'fname' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Friendly Name'),
 		'description' => __('Enter a meaningful name for this data input method.'),
@@ -361,6 +551,16 @@ $fields_data_template_template_edit = array(
 	);
 
 /* file: (data_sources.php|data_templates.php), action: (ds|template)_edit */
+
+if (db_table_exists('data_source_profiles')) {
+	$def_profile = db_fetch_cell('SELECT id
+		FROM data_source_profiles
+		ORDER BY `default`
+		DESC LIMIT 1');
+} else {
+	$def_profile = '1';
+}
+
 $struct_data_source = array(
 	'name' => array(
 		'friendly_name' => __('Name'),
@@ -368,8 +568,7 @@ $struct_data_source = array(
 		'max_length' => '250',
 		'size' => '80',
 		'default' => '',
-		'description' => __('Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.
-            For a complete list of supported replacement tags, please see the Cacti documentation.'),
+		'description' => __('Choose a name for this data source.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation.'),
 		'flags' => ''
 		),
 	'data_source_path' => array(
@@ -384,7 +583,7 @@ $struct_data_source = array(
 	'data_input_id' => array(
 		'friendly_name' => __('Data Input Method'),
 		'method' => 'drop_sql',
-		'sql' => 'SELECT id,name FROM data_input ORDER BY name',
+		'sql' => 'SELECT id, name FROM data_input ORDER BY name',
 		'default' => '',
 		'none_value' => __('None'),
 		'description' => __('The script/source used to gather data for this data source.'),
@@ -394,8 +593,8 @@ $struct_data_source = array(
 		'friendly_name' => __('Data Source Profile'),
 		'method' => 'drop_sql',
 		'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
-		'sql' => 'SELECT id, name FROM data_source_profiles ORDER BY name',
-		'none_val' => 'N/A',
+		'sql' => 'SELECT "0" AS id, "' . __('External') . '" AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name',
+		'default' => $def_profile,
 		'flags' => ''
 		),
 	'rrd_step' => array(
@@ -506,8 +705,7 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '255',
 		'default' => '',
-		'description' => __('The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.
-			For a complete list of supported replacement tags, please see the Cacti documentation.'),
+		'description' => __('The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation.'),
 		'size' => '80'
 		),
 	'vertical_label' => array(
@@ -553,8 +751,7 @@ $struct_graph = array(
 		'friendly_name' => __('Slope Mode (--slope-mode)'),
 		'method' => 'checkbox',
 		'default' => 'on',
-		'description' => __('Using Slope Mode evens out the shape of the graphs at the expense of
-			some on screen resolution.')
+		'description' => __('Using Slope Mode evens out the shape of the graphs at the expense of some on screen resolution.')
 		),
 	'scaling_header' => array(
 		'friendly_name' => __('Scaling Options'),
@@ -565,19 +762,14 @@ $struct_graph = array(
 		'friendly_name' => __('Auto Scale'),
 		'method' => 'checkbox',
 		'default' => 'on',
-		'description' => __('Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the
-			Upper and Lower limit will be ignored.'),
+		'description' => __('Auto scale the y-axis instead of defining an upper and lower limit. Note: if this is check both the Upper and Lower limit will be ignored.'),
 		'size' => '7'
 		),
 	'auto_scale_opts' => array(
 		'friendly_name' => __('Auto Scale Options'),
 		'method' => 'radio',
 		'default' => '2',
-		'description' => __('Use <br>
-			--alt-autoscale to scale to the absolute minimum and maximum <br>
-			--alt-autoscale-max to scale to the maximum value, using a given lower limit <br>
-			--alt-autoscale-min to scale to the minimum value, using a given upper limit <br>
-			--alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>'),
+		'description' => __('Use <br> --alt-autoscale to scale to the absolute minimum and maximum <br> --alt-autoscale-max to scale to the maximum value, using a given lower limit <br> --alt-autoscale-min to scale to the minimum value, using a given upper limit <br> --alt-autoscale (with limits) to scale using both lower and upper limits (RRDtool default) <br>'),
 		'items' => array(
 			0 => array(
 				'radio_value' => '1',
@@ -608,8 +800,7 @@ $struct_graph = array(
 		'friendly_name' => __('SI Units for Logarithmic Scaling (--units=si)'),
 		'method' => 'checkbox',
 		'default' => '',
-		'description' => __('Use SI Units for Logarithmic Scaling instead of using exponential notation.<br>
-			Note: Linear graphs use SI notation by default.')
+		'description' => __('Use SI Units for Logarithmic Scaling instead of using exponential notation.<br> Note: Linear graphs use SI notation by default.')
 		),
 	'auto_scale_rigid' => array(
 		'friendly_name' => __('Rigid Boundaries Mode (--rigid)'),
@@ -643,9 +834,7 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '',
-		'description' => __('Sets the exponent value on the Y-axis for numbers. Note: This option is
-			deprecated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear
-			at each grid step interval.  Labels are placed every label factor lines.'),
+		'description' => __('Sets the exponent value on the Y-axis for numbers. Note: This option is deprecated and replaced by the --y-grid option.  In this option, Y-axis grid lines appear at each grid step interval.  Labels are placed every label factor lines.'),
 		'size' => '12'
 		),
 	'unit_exponent_value' => array(
@@ -653,8 +842,7 @@ $struct_graph = array(
 		'method' => 'textbox',
 		'max_length' => '50',
 		'default' => '',
-		'description' => __('What unit cacti should use on the Y-axis. Use 3 to display everything in "k" or -6
-			to display everything in "u" (micro).'),
+		'description' => __('What unit Cacti should use on the Y-axis. Use 3 to display everything in "k" or -6 to display everything in "u" (micro).'),
 		'size' => '12'
 		),
 	'unit_length' => array(
@@ -663,24 +851,19 @@ $struct_graph = array(
 		'max_length' => '50',
 		'default' => '',
 		'size' => '30',
-		'description' => __('How many digits should RRDtool assume the y-axis labels to be? You may have to use this 
-			option to make enough space once you start fiddling with the y-axis labeling.'),
+		'description' => __('How many digits should RRDtool assume the y-axis labels to be? You may have to use this option to make enough space once you start fiddling with the y-axis labeling.'),
         ),
 	'no_gridfit' => array(
 		'friendly_name' => __('No Gridfit (--no-gridfit)'),
 		'method' => 'checkbox',
 		'default' => '',
-		'description' => __('In order to avoid anti-aliasing blurring effects RRDtool snaps points to device 
-			resolution pixels, this results in a crisper appearance. If this is not to your liking, you can 
-			use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default.'),
+		'description' => __('In order to avoid anti-aliasing blurring effects RRDtool snaps points to device resolution pixels, this results in a crisper appearance. If this is not to your liking, you can use this switch to turn this behavior off.<br><strong>Note: </strong>Gridfitting is turned off for PDF, EPS, SVG output by default.'),
 		),
 	'alt_y_grid' => array(
 		'friendly_name' => __('Alternative Y Grid (--alt-y-grid)'),
 		'method' => 'checkbox',
 		'default' => '',
-		'description' => __('The algorithm ensures that you always have a grid, that there are enough but not too many grid lines, 
-			and that the grid is metric. This parameter will also ensure that you get enough decimals displayed 
-			even if your graph goes from 69.998 to 70.001.<br><strong>Note: </strong>This parameter may interfere with --alt-autoscale options.'),
+		'description' => __('The algorithm ensures that you always have a grid, that there are enough but not too many grid lines, and that the grid is metric. This parameter will also ensure that you get enough decimals displayed even if your graph goes from 69.998 to 70.001.<br><strong>Note: </strong>This parameter may interfere with --alt-autoscale options.'),
 		),
 	'axis_header' => array(
 		'friendly_name' => __('Axis Options'),
@@ -693,8 +876,7 @@ $struct_graph = array(
 		'max_length' => '20',
 		'default' => '',
 		'size' => '20',
-		'description' => __('A second axis will be drawn to the right of the graph. It is tied to the left axis via the 
-			scale and shift parameters.'),
+		'description' => __('A second axis will be drawn to the right of the graph. It is tied to the left axis via the scale and shift parameters.'),
 		),
 	'right_axis_label' => array(
 		'friendly_name' => __('Right Axis Label (--right-axis-label &lt;string&gt;)'),
@@ -707,11 +889,10 @@ $struct_graph = array(
 	'right_axis_format' => array(
 		'friendly_name' => __('Right Axis Format (--right-axis-format &lt;format&gt;)'),
 		'method' => 'drop_sql',
-		'sql' => 'select id,name from graph_templates_gprint order by name',
+		'sql' => 'SELECT id, name FROM graph_templates_gprint WHERE gprint_text NOT LIKE "%\%s%" ORDER BY name',
 		'default' => '',
 		'none_value' => __('None'),
-		'description' => __('By default, the format of the axis labels gets determined automatically. 
-			If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
+		'description' => __('By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
 		),
 	'right_axis_formatter' => array(
 		'friendly_name' => __('Right Axis Formatter (--right-axis-formatter &lt;formatname&gt;)'),
@@ -719,10 +900,7 @@ $struct_graph = array(
 		'array' => $rrd_axis_formatters,
 		'default' => '0',
 		'none_value' => __('None'),
-		'description' => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
-			data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970)
-			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --left-axis-format.  Finally
-			"duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
+		'description' => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --right-axis-format.  Finally "duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
 		),
 	'left_axis_formatter' => array(
 		'friendly_name' => __('Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)'),
@@ -730,10 +908,7 @@ $struct_graph = array(
 		'array' => $rrd_axis_formatters,
 		'default' => '0',
 		'none_value' => __('None'),
-		'description' => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where
-			data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970)
-			and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --left-axis-format.  Finally
-			"duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
+		'description' => __('When you setup the left axis labeling, apply a rule to the data format.  Supported formats include "numeric" where data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length.  Finally "duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
 		),
 	'legend_header' => array(
 		'friendly_name' => __('Legend Options'),
@@ -744,9 +919,7 @@ $struct_graph = array(
 		'friendly_name' => __('Auto Padding'),
 		'method' => 'checkbox',
 		'default' => 'on',
-		'description' => __('Pad text so that legend and graph data always line up. Note: this could cause
-			graphs to take longer to render because of the larger overhead. Also Auto Padding may not
-			be accurate on all types of graphs, consistent labeling usually helps.')
+		'description' => __('Pad text so that legend and graph data always line up. Note: this could cause graphs to take longer to render because of the larger overhead. Also Auto Padding may not be accurate on all types of graphs, consistent labeling usually helps.')
 		),
 	'dynamic_labels' => array(
 		'friendly_name' => __('Dynamic Labels (--dynamic-labels)'),
@@ -832,7 +1005,7 @@ $struct_graph_item = array(
 	'cdef_id' => array(
 		'friendly_name' => __('CDEF Function'),
 		'method' => 'drop_sql',
-		'sql' => 'SELECT id,name FROM cdef ORDER BY name',
+		'sql' => 'SELECT id, name FROM cdef ORDER BY name',
 		'default' => '0',
 		'none_value' => __('None'),
 		'description' => __('A CDEF (math) function to apply to this item on the graph or legend.')
@@ -854,20 +1027,17 @@ $struct_graph_item = array(
 	'value' => array(
 		'friendly_name' => __('Value'),
 		'method' => 'textbox',
-		'max_length' => '50',
-		'size' => '40',
+		'max_length' => '255',
+		'size' => '80',
 		'default' => '',
-		'description' => __('[HRULE|VRULE]: The value of the graph item.<br/>
-			[TICK]: The fraction for the tick line.<br/>
-			[SHIFT]: The time offset in seconds.')
+		'description' => __('[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds.')
 		),
 	'gprint_id' => array(
 		'friendly_name' => __('GPRINT Type'),
 		'method' => 'drop_sql',
-		'sql' => 'SELECT id,name FROM graph_templates_gprint ORDER BY name',
+		'sql' => 'SELECT id, name FROM graph_templates_gprint ORDER BY name',
 		'default' => '2',
-		'description' => __('If this graph item is a GPRINT, you can optionally choose another format
-			here. You can define additional types under "GPRINT Presets".')
+		'description' => __('If this graph item is a GPRINT, you can optionally choose another format here. You can define additional types under "GPRINT Presets".')
 		),
 	'textalign' => array(
 		'friendly_name' => __('Text Alignment' . ' (TEXTALIGN)'),
@@ -875,9 +1045,7 @@ $struct_graph_item = array(
 		'value' => '|arg1:textalign|',
 		'array' => $rrd_textalign,
 		'default' => '',
-		'description' => __('All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.
-			This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/>
-			<strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!'),
+		'description' => __('All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.  This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/> <strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!'),
 		),
 	'text_format' => array(
 		'friendly_name' => __('Text Format'),
@@ -919,7 +1087,11 @@ $struct_graph_item = array(
 		),
 	'sequence' => array(
 		'friendly_name' => __('Sequence'),
-		'method' => 'view'
+		'method' => 'textbox',
+		'max_length' => '4',
+		'default' => '',
+		'size' => '4',
+		'description' => __('The dash-offset parameter specifies an offset into the pattern at which the stroke begins.'),
 		)
 	);
 
@@ -932,6 +1104,22 @@ $fields_graph_template_template_edit = array(
 		'value' => '|arg1:name|',
 		'max_length' => '150',
 		'size' => '80'
+		),
+	'multiple' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Multiple Instances'),
+		'description' => __('Check this checkbox if there can be more than one Graph of this type per Device.'),
+		'value' => '|arg1:multiple|',
+		'default' => '',
+		'form_id' => false
+		),
+	'test_source' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Test Data Sources'),
+		'description' => __('Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased.'),
+		'value' => '|arg1:test_source|',
+		'default' => '',
+		'form_id' => false
 		),
 	'graph_template_id' => array(
 		'method' => 'hidden_zero',
@@ -993,20 +1181,37 @@ $fields_host_edit = array(
 		'collapsible' => 'true',
 		'friendly_name' => __('General Device Options')
 		),
+     'created' => array(
+		'method' => 'label',
+		'friendly_name' => __('Created'),
+		'description' => __('Date/time the device was added'),
+		'value' => '|arg1:created|',
+		'max_length' => '30',
+		),
 	'description' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Description'),
 		'description' => __('Give this host a meaningful description.'),
 		'value' => '|arg1:description|',
-		'max_length' => '250',
+		'max_length' => '150',
 		),
 	'hostname' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Hostname'),
 		'description' => __('Fully qualified hostname or IP address for this device.'),
 		'value' => '|arg1:hostname|',
-		'max_length' => '250',
+		'max_length' => '100',
 		'size' => '60',
+		),
+	'location' => array(
+		'method' => 'drop_callback',
+		'friendly_name' => __('Location'),
+		'description' => __('The physical location of the Device.  This free form text can be a room, rack location, etc.'),
+		'none_value' => __('None'),
+		'sql' => 'SELECT DISTINCT location AS id, location AS name FROM host ORDER BY location',
+		'action' => 'ajax_locations',
+		'id' => '|arg1:location|',
+		'value' => '|arg1:location|',
 		),
 	'poller_id' => array(
 		'method' => 'drop_sql',
@@ -1023,7 +1228,7 @@ $fields_host_edit = array(
 		'value' => '|arg1:site_id|',
 		'none_value' => __('None'),
 		'default' => read_config_option('default_site'),
-		'sql' => 'SELECT id,name FROM sites ORDER BY name',
+		'sql' => 'SELECT id, name FROM sites ORDER BY name',
 		),
 	'host_template_id' => array(
 		'method' => 'drop_sql',
@@ -1031,7 +1236,8 @@ $fields_host_edit = array(
 		'description' => __('Choose the Device Template to use to define the default Graph Templates and Data Queries associated with this Device.'),
 		'value' => '|arg1:host_template_id|',
 		'none_value' => __('None'),
-		'sql' => 'SELECT id,name FROM host_template ORDER BY name',
+		'default' => read_config_option('default_template'),
+		'sql' => 'SELECT id, name FROM host_template ORDER BY name',
 		),
 	'device_threads' => array(
 		'method' => 'drop_array',
@@ -1052,115 +1258,8 @@ $fields_host_edit = array(
 	'host_snmp_head' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('SNMP Options'),
-		'collapsible' => 'true'
 		),
-	'snmp_version' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Version'),
-		'description' => __('Choose the SNMP version for this device.'),
-		'on_change' => 'changeHostForm()',
-		'value' => '|arg1:snmp_version|',
-		'default' => read_config_option('snmp_ver'),
-		'array' => $snmp_versions,
-		),
-	'snmp_community' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Community'),
-		'description' => __('SNMP read community for this device.'),
-		'value' => '|arg1:snmp_community|',
-		'form_id' => '|arg1:id|',
-		'default' => read_config_option('snmp_community'),
-		'max_length' => '100',
-		'size' => '20'
-		),
-	'snmp_username' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Username (v3)'),
-		'description' => __('SNMP v3 username for this device.'),
-		'value' => '|arg1:snmp_username|',
-		'default' => read_config_option('snmp_username'),
-		'max_length' => '50',
-		'size' => '20'
-		),
-	'snmp_password' => array(
-		'method' => 'textbox_password',
-		'friendly_name' => __('SNMP Password (v3)'),
-		'description' => __('SNMP v3 authentication pass phrase for this device.'),
-		'value' => '|arg1:snmp_password|',
-		'default' => read_config_option('snmp_password'),
-		'max_length' => '50',
-		'size' => '20'
-		),
-	'snmp_auth_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Auth Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 authentication protocol.'),
-		'value' => '|arg1:snmp_auth_protocol|',
-		'default' => read_config_option('snmp_auth_protocol'),
-		'array' => $snmp_auth_protocols,
-		),
-	'snmp_priv_passphrase' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Privacy Passphrase (v3)'),
-		'description' => __('Choose the SNMPv3 privacy passphrase.'),
-		'value' => '|arg1:snmp_priv_passphrase|',
-		'default' => read_config_option('snmp_priv_passphrase'),
-		'max_length' => '200',
-		'size' => '40'
-		),
-	'snmp_priv_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 privacy protocol.'),
-		'value' => '|arg1:snmp_priv_protocol|',
-		'default' => read_config_option('snmp_priv_protocol'),
-		'array' => $snmp_priv_protocols,
-		),
-	'snmp_context' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Context (v3)'),
-		'description' => __('Enter the SNMP v3 context to use for this device.'),
-		'value' => '|arg1:snmp_context|',
-		'default' => '',
-		'max_length' => '64',
-		'size' => '30'
-		),
-	'snmp_engine_id' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Engine ID (v3)'),
-		'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
-		'value' => '|arg1:snmp_engine_id|',
-		'default' => '',
-		'max_length' => '30',
-		'size' => '30'
-		),
-	'snmp_port' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Port'),
-		'description' => __('Enter the UDP port number to use for SNMP (default is 161).'),
-		'value' => '|arg1:snmp_port|',
-		'max_length' => '5',
-		'default' => read_config_option('snmp_port'),
-		'size' => '12'
-		),
-	'snmp_timeout' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Timeout'),
-		'description' => __('The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).'),
-		'value' => '|arg1:snmp_timeout|',
-		'max_length' => '8',
-		'default' => read_config_option('snmp_timeout'),
-		'size' => '12'
-		),
-	'max_oids' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('Maximum OIDs Per Get Request'),
-		'description' => __('Specified the number of OIDs that can be obtained in a single SNMP Get request.'),
-		'value' => '|arg1:max_oids|',
-		'max_length' => '8',
-		'default' => read_config_option('max_get_size'),
-		'size' => '12'
-		),
+	) + $fields_snmp_item_with_oids + array(
 	'host_avail_head' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Availability/Reachability Options'),
@@ -1225,6 +1324,15 @@ $fields_host_edit = array(
 		'textarea_rows' => '5',
 		'textarea_cols' => '50'
 		),
+	'external_id' => array(
+		'friendly_name' => __('External ID'),
+		'description' => __('External ID for linking Cacti data to external monitoring systems.'),
+		'method' => 'textbox',
+		'value' => '|arg1:external_id|',
+		'default' => '',
+		'max_length' => '40',
+		'size' => '20'
+		),
 	'id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
@@ -1287,7 +1395,7 @@ $fields_data_query_edit = array(
 		'friendly_name' => __('Data Input Method'),
 		'description' => __('Choose the input method for this Data Query.  This input method defines how data is collected for each Device associated with the Data Query.'),
 		'value' => '|arg1:data_input_id|',
-		'sql' => 'SELECT id,name FROM data_input WHERE type_id IN(3,4,6) ORDER BY name',
+		'sql' => 'SELECT id, name FROM data_input WHERE type_id IN(3,4,6) ORDER BY name',
 		),
 	'id' => array(
 		'method' => 'hidden_zero',
@@ -1308,21 +1416,27 @@ $fields_data_query_item_edit = array(
 		'value' => '|arg1:graph_template_id|',
 		'sql' => 'SELECT DISTINCT gt.id, gt.name
 			FROM graph_templates AS gt
-			INNER JOIN graph_templates_graph AS gtg
-			ON gt.id=gtg.graph_template_id
-			AND gtg.local_graph_id=0
-			INNER JOIN graph_templates_item AS gti
-			ON gtg.graph_template_id=gti.graph_template_id
-			AND gti.local_graph_id=0
-			INNER JOIN data_template_rrd AS dtr
-			ON gti.task_item_id=dtr.id
-			AND dtr.local_data_id=0
-			INNER JOIN data_template_data AS dtd
-			ON dtd.data_template_id=dtr.data_template_id
-			AND dtd.local_data_id=0
-			INNER JOIN data_input AS di
-			ON di.id=dtd.data_input_id
-			WHERE di.id in (2,11,12) ORDER BY gt.name',
+			WHERE gt.id IN(
+				SELECT DISTINCT gti.graph_template_id
+				FROM (
+					SELECT DISTINCT graph_template_id, task_item_id
+					FROM graph_templates_item
+					WHERE local_graph_id=0
+				) AS gti
+				INNER JOIN (
+					SELECT id, data_template_id
+					FROM data_template_rrd AS dtr
+					WHERE dtr.local_data_id = 0
+				) AS dtr
+				ON gti.task_item_id=dtr.id
+				INNER JOIN (
+					SELECT DISTINCT data_template_id
+					FROM data_template_data AS dtd
+					WHERE local_data_id = 0
+					AND dtd.data_input_id IN (2,11,12)
+				) AS dtd
+				ON dtd.data_template_id=dtr.data_template_id
+			) ORDER BY gt.name',
 		),
 	'name' => array(
 		'method' => 'textbox',
@@ -1359,30 +1473,34 @@ $fields_tree_edit = array(
 		'value' => '|arg1:name|',
 		'max_length' => '255',
 		'size' => '80',
-		),
+	),
 	'sort_type' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('Sorting Type'),
 		'description' => __('Choose how items in this tree will be sorted.'),
 		'value' => '|arg1:sort_type|',
 		'array' => $tree_sort_types,
-		),
+	),
 	'enabled' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Publish'),
 		'description' => __('Should this Tree be published for users to access?'),
 		'value' => '|arg1:enabled|',
 		'default' => 'on'
-		),
+	),
 	'id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'
-		),
+	),
+	'sequence' => array(
+		'method' => 'hidden',
+		'value' => '|arg1:sequence|'
+	),
 	'save_component_tree' => array(
 		'method' => 'hidden',
 		'value' => '1'
-		)
-	);
+	)
+);
 
 /* file: user_admin.php, action: user_edit (host) */
 $fields_user_user_edit_host = array(
@@ -1522,36 +1640,52 @@ $fields_user_user_edit_host = array(
 	);
 
 $export_types = array(
+	'host_template' => array(
+		'name' => __('Device Template'),
+		'title_sql' => 'SELECT name FROM host_template WHERE id=|id|',
+		'dropdown_sql' => 'SELECT id, name FROM host_template ORDER BY name'
+		),
 	'graph_template' => array(
 		'name' => __('Graph Template'),
 		'title_sql' => 'SELECT name FROM graph_templates WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id,name FROM graph_templates ORDER BY name'
+		'dropdown_sql' => 'SELECT id, name FROM graph_templates ORDER BY name'
 		),
 	'data_template' => array(
 		'name' => __('Data Template'),
 		'title_sql' => 'SELECT name FROM data_template WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id,name FROM data_template ORDER BY name'
-		),
-	'host_template' => array(
-		'name' => __('Device Template'),
-		'title_sql' => 'SELECT name FROM host_template WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id,name FROM host_template ORDER BY name'
+		'dropdown_sql' => 'SELECT id, name FROM data_template ORDER BY name'
 		),
 	'data_query' => array(
 		'name' => __('Data Query'),
 		'title_sql' => 'SELECT name FROM snmp_query WHERE id=|id|',
-		'dropdown_sql' => 'SELECT id,name FROM snmp_query ORDER BY name'
-		)
+		'dropdown_sql' => 'SELECT id, name FROM snmp_query ORDER BY name'
+		),
+//	'automation_devices' => array(
+//		'name' => __('Discovery Rules'),
+//		'title_sql' => 'SELECT CONCAT(ht.name, " (", at.sysDescr, ")") AS name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id=|id|',
+//		'dropdown_sql' => 'SELECT at.id, CONCAT(ht.name, " (", at.sysDescr, ")") AS name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template ORDER BY name'
+//		),
+//	'automation_graphs' => array(
+//		'name' => __('Graph Rules'),
+//		'title_sql' => 'SELECT name FROM automation_graph_rules WHERE id=|id|',
+//		'dropdown_sql' => 'SELECT id, name FROM automation_graph_rules ORDER BY name'
+//		),
+//	'automation_trees' => array(
+//		'name' => __('Tree Rules'),
+//		'title_sql' => 'SELECT name FROM automation_tree_rules WHERE id=|id|',
+//		'dropdown_sql' => 'SELECT id, name FROM automation_tree_rules ORDER BY name'
+//		)
 	);
 
 $fields_template_import = array(
 	'import_file' => array(
 		'friendly_name' => __('Import Template from Local File'),
 		'description' => __('If the XML file containing template data is located on your local machine, select it here.'),
+		'accept' => '.xml',
 		'method' => 'file'
 		),
 	'import_text' => array(
-		'method' => 'textarea',
+		'method' => 'hidden',
 		'friendly_name' => __('Import Template from Text'),
 		'description' => __('If you have the XML file containing template data as text, you can paste it into this box to import it.'),
 		'value' => '',
@@ -1565,20 +1699,21 @@ $fields_template_import = array(
 		'method' => 'checkbox',
 		'description' => __('If checked, Cacti will not import the template, but rather compare the imported Template to the existing Template data.  If you are acceptable of the change, you can them import.'),
 		'value' => '',
-		'default' => '0'
+		'default' => 'on'
 		),
 	'remove_orphans' => array(
 		'friendly_name' => __('Remove Orphaned Graph Items'),
 		'method' => 'checkbox',
 		'description' => __('If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template.'),
 		'value' => '',
-		'default' => 'on'
+		'default' => ''
 		),
 	'import_data_source_profile' => array(
 		'friendly_name' => __('Data Source Profile'),
 		'method' => 'drop_sql',
 		'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
-		'sql' => "SELECT * FROM (SELECT '0' AS id, 'Create New From Template' AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name) AS rs",
+		'sql' => "SELECT id, name FROM data_source_profiles ORDER BY name",
+		'none_value' => __('Create New from Template'),
 		'value' => '',
 		'default' => '1'
 		),
@@ -1627,94 +1762,7 @@ $fields_template_import = array(
 			'friendly_name' => __('SNMP Options'),
 			'collapsible' => 'true'
 			),
-		'snmp_version' => array(
-			'method' => 'drop_array',
-			'friendly_name' => __('SNMP Version'),
-			'description' => __('Choose the SNMP version for this device.'),
-			'on_change' => 'setSNMP()',
-			'value' => '|arg1:snmp_version|',
-			'default' => '1',
-			'array' => array('1'=>'Version 1', '2'=>'Version 2', '3' => 'Version 3'),
-			),
-		'snmp_community' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('SNMP Community'),
-			'description' => __('SNMP read community for this device.'),
-			'value' => '|arg1:snmp_community|',
-			'form_id' => '|arg1:id|',
-			'default' => read_config_option('snmp_community'),
-			'max_length' => '100',
-			'size' => '20'
-			),
-		'snmp_username' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('SNMP Username (v3)'),
-			'description' => __('SNMP v3 username for this device.'),
-			'value' => '|arg1:snmp_username|',
-			'default' => read_config_option('snmp_username'),
-			'max_length' => '50',
-			'size' => '20'
-			),
-		'snmp_auth_password' => array(
-			'method' => 'textbox_password',
-			'friendly_name' => __('SNMP Auth Password (v3)'),
-			'description' => __('SNMP v3 user password for this device.'),
-			'value' => '|arg1:snmp_auth_password|',
-			'default' => read_config_option('snmp_password'),
-			'max_length' => '50',
-			'size' => '20'
-			),
-		'snmp_auth_protocol' => array(
-			'method' => 'drop_array',
-			'friendly_name' => __('SNMP Auth Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Authorization Protocol.<br>Note: SHA authentication support is only available if you have OpenSSL installed.'),
-			'value' => '|arg1:snmp_auth_protocol|',
-			'default' => read_config_option('snmp_auth_protocol'),
-			'array' => $snmp_auth_protocols,
-			),
-		'snmp_priv_password' => array(
-			'method' => 'textbox_password',
-			'friendly_name' => __('SNMP Privacy Password (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
-			'value' => '|arg1:snmp_priv_password|',
-			'default' => read_config_option('snmp_priv_passphrase'),
-			'max_length' => '200',
-			'size' => '40'
-			),
-		'snmp_priv_protocol' => array(
-			'method' => 'drop_array',
-			'friendly_name' => __('SNMP Privacy Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Protocol.<br>Note: DES/AES encryption support is only available if you have OpenSSL installed.'),
-			'value' => '|arg1:snmp_priv_protocol|',
-			'default' => read_config_option('snmp_priv_protocol'),
-			'array' => $snmp_priv_protocols,
-			),	
-		'snmp_engine_id' => array(
-			'friendly_name' => __('SNMP Engine ID'),
-			'description' => __('Defines the unique SNMP Engine ID to identify this peer. Following format will be recommended:<br>FlexibleLength+Enterprise(8000) + IANA-Cacti(5d75) + MAC-Following(03) + YOUR-MAC-ADDRESS(e.g.:D89D67287B00).<br>Per default the locally administrated MAC 02-FF-FF-FF-FF-FF will be used.'),
-			'value' => '|arg1:snmp_engine_id|',
-			'method' => 'textbox',
-			'max_length' => 64,
-			'default' => '80005d750302FFFFFFFFFF',
-			),
-		'snmp_port' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('SNMP Port'),
-			'description' => __('The UDP port to be used for SNMP traps. Typically, 162.'),
-			'value' => '|arg1:snmp_port|',
-			'max_length' => '5',
-			'default' => '162',
-			'size' => '7'
-			),
-		'snmp_timeout' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('SNMP Timeout'),
-			'description' => __('The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).'),
-			'value' => '|arg1:snmp_timeout|',
-			'max_length' => '8',
-			'default' => read_config_option('snmp_timeout'),
-			'size' => '7'
-			),
+		) + $fields_snmp_item + array(
 		'snmp_message_type' => array(
 			'friendly_name' => __('SNMP Message Type'),
 			'description' => __('SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called "INFORMS", SNMPv2 or above will be required.'),
@@ -1764,13 +1812,16 @@ $struct_aggregate = array(
 		'value' => '|arg1:gprint_prefix|',
 		'size' => '40'
 	),
+	'gprint_format' => array(
+		'friendly_name' => __('Include Prefix Text'),
+		'description' => __('Include the source Graphs GPRINT Title Text with the Aggregate Graph(s).'),
+		'method' => 'checkbox',
+		'value' => '|arg1:gprint_format|',
+		'default' => ''
+	),
 	'aggregate_graph_type' => array(
 		'friendly_name' => __('Graph Type'),
-		'description' => __('Use this Option to create e.g. STACKed graphs.' . '<br>' .
-			'AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK' . '<br>' .
-			'LINE1: all items convert to LINE1 items' . '<br>' .
-			'LINE2: all items convert to LINE2 items' . '<br>' .
-			'LINE3: all items convert to LINE3 items'),
+		'description' => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
 		'method' => 'drop_array',
 		'value' => '|arg1:aggregate_graph_type|',
 		'array' => $agg_graph_types,
@@ -1847,13 +1898,16 @@ $struct_aggregate_graph = array(
 		'value' => '|arg1:gprint_prefix|',
 		'size' => '40'
 	),
+	'gprint_format' => array(
+		'friendly_name' => __('Include Prefix Text'),
+		'description' => __('Include the source Graphs GPRINT Title Text with the Aggregate Graph(s).'),
+		'method' => 'checkbox',
+		'value' => '|arg1:gprint_format|',
+		'default' => ''
+	),
 	'graph_type' => array(
 		'friendly_name' => __('Graph Type'),
-		'description' => __('Use this Option to create e.g. STACKed graphs.' . '<br>' .
-			'AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK' . '<br>' .
-			'LINE1: all items convert to LINE1 items' . '<br>' .
-			'LINE2: all items convert to LINE2 items' . '<br>' .
-			'LINE3: all items convert to LINE3 items'),
+		'description' => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
 		'method' => 'drop_array',
 		'value' => '|arg1:graph_type|',
 		'array' => $agg_graph_types,
@@ -1949,13 +2003,16 @@ $struct_aggregate_template = array(
 		'value' => '|arg1:gprint_prefix|',
 		'size' => '40'
 	),
+	'gprint_format' => array(
+		'friendly_name' => __('Include Prefix Text'),
+		'description' => __('Include the source Graphs GPRINT Title Text with the Aggregate Graph(s).'),
+		'method' => 'checkbox',
+		'value' => '|arg1:gprint_format|',
+		'default' => ''
+	),
 	'graph_type' => array(
 		'friendly_name' => __('Graph Type'),
-		'description' => __('Use this Option to create e.g. STACKed graphs.' . '<br>' .
-			'AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK' . '<br>' .
-			'LINE1: all items convert to LINE1 items' . '<br>' .
-			'LINE2: all items convert to LINE2 items' . '<br>' .
-			'LINE3: all items convert to LINE3 items'),
+		'description' => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
 		'method' => 'drop_array',
 		'value' => '|arg1:graph_type|',
 		'array' => $agg_graph_types,
@@ -2153,14 +2210,10 @@ $fields_automation_graph_rules_edit2 = array(
 		'description' => __('Choose any of the available Graph Types to apply to this rule.'),
 		'value' => '|arg1:graph_type_id|',
 		'on_change' => 'applySNMPQueryTypeChange()',
-		'sql' => 'SELECT ' .
-			'snmp_query_graph.id, ' .
-			'snmp_query_graph.name ' .
-			'FROM snmp_query_graph ' .
-			'LEFT JOIN graph_templates ' .
-			'ON (snmp_query_graph.graph_template_id=graph_templates.id) ' .
-			'WHERE snmp_query_graph.snmp_query_id=|arg1:snmp_query_id| ' .
-			'ORDER BY snmp_query_graph.name'
+		'sql' => 'SELECT snmp_query_graph.id, snmp_query_graph.name
+			FROM snmp_query_graph
+			WHERE snmp_query_graph.snmp_query_id=|arg1:snmp_query_id|
+			ORDER BY snmp_query_graph.name'
 	)
 );
 
@@ -2215,8 +2268,7 @@ $fields_automation_tree_rules_edit2 = array(
 	'tree_item_id' => array(
 		'method' => 'drop_tree',
 		'friendly_name' => __('Optional: Sub-Tree Item'),
-		'description' => __('Choose a Sub-Tree Item to hook in.' . '<br>' .
-			'Make sure, that it is still there when this rule is executed!'),
+		'description' => __('Choose a Sub-Tree Item to hook in.<br>Make sure, that it is still there when this rule is executed!'),
 		'tree_id' => '|arg1:tree_id|',
 		'value' => '|arg1:tree_item_id|',
 	)

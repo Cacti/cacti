@@ -1,0 +1,11 @@
+domain: null
+plural-forms: null
+messages:
+  '':
+    '':
+      - "Content-Transfer-Encoding: 8bit\nContent-Type: text/plain; charset=UTF-8\nLanguage: \nLanguage-Team: \nLast-Translator: \nMIME-Version: 1.0\nProject-Id-Version: \nReport-Msgid-Bugs-To: \n"
+    'some message': ''
+    '%s message': ''
+    'my translate 3': ''
+  'some context':
+    "some \"message\" in \na context": ''
