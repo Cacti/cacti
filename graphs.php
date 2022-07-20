@@ -2071,7 +2071,7 @@ function graph_management() {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('host_id')) {
-		$sql_where2 .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
 		$sql_where2 .= ' AND gl.host_id=0';
 	} elseif (!isempty_request_var('host_id')) {
 		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');
