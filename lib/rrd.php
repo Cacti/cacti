@@ -2173,15 +2173,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_AREA:
 					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
 
-                    if (read_config_option("enable_rrdtool_gradient_support") == "on") {
-                        // End color is a 40% (0.4) darkened (negative number) version of the original color
-                        $end_color       = colourBrightness( "#" . $graph_item[ "hex" ], -0.4 );
-                        $txt_graph_items .= gradient( $data_source_name, $graph_item_color_code, $end_color . $graph_item[ "alpha" ], cacti_escapeshellarg( $graph_variables[ "text_format" ][ $graph_item_id ] . $hardreturn[ $graph_item_id ] ), 20, FALSE, $graph_item[ "alpha" ] );
-                    } else {
-                        $txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
-                    }
+					if (read_config_option('enable_rrdtool_gradient_support') == 'on') {
+						/* End color is a 40% (0.4) darkened (negative number) version of the original color */
+						$end_color        = colourBrightness( "#" . $graph_item[ "hex" ], -0.4 );
+						$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]), 20, false, $graph_item[ "alpha" ]);
+					} else {
+						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
+					}
 
-					if ($graph_item['shift'] == CHECKED && abs($graph_item['value']) > 0) {      # create a SHIFT statement
+					if ($graph_item['shift'] == CHECKED && abs($graph_item['value']) > 0) {      
+						/* create a SHIFT statement */
 						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
 					}
 
@@ -2603,9 +2604,12 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 	return 0;
 }
 
-/** given a data source id, return rrdtool info array
- * @param $local_data_id - data source id
- * @return - (array) an array containing all data from rrdtool info command
+/**
+ * rrdtool_function_info - given a data source id, return rrdtool info array
+ *
+ * @param  (int)   $local_data_id - data source id
+ *
+ * @return (array) an array containing all data from rrdtool info command
  */
 function rrdtool_function_info($local_data_id) {
 	/* Get the path to rrdtool file */
@@ -2650,10 +2654,13 @@ function rrdtool_function_info($local_data_id) {
 	return $rrd_info;
 }
 
-/** rrdtool_function_contains_cf  verifies if the RRDfile contains the 'MAX' consolidation function
- * @param $local_data_id    the id of the data source
- * @param $cf               the consolidation function to search for
- * @return					boolean true or false depending on the result
+/** 
+ * rrdtool_function_contains_cf  verifies if the RRDfile contains the 'MAX' consolidation function
+ *
+ * @param  (int)  $local_data_id - the id of the data source
+ * @param  (int)  $cf - the consolidation function to search for
+ *
+ * @return (bool) true or false depending on the result
  */
 function rrdtool_function_contains_cf($local_data_id, $cf) {
 	$info = rrdtool_function_info($local_data_id);
@@ -2900,10 +2907,13 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 
 }
 
-/** take output from rrdtool info array and build html table
- * @param array $info_array - array of rrdtool info data
- * @param array $diff - array of differences between definition and current rrd file settings
- * @return string - html code
+/** 
+ * rrdtool_info2html - take output from rrdtool info array and build html table
+ *
+ * @param  (array) $info_array - array of rrdtool info data
+ * @param  (array) $diff - array of differences between definition and current rrd file settings
+ *
+ * @return (string) - html code
  */
 function rrdtool_info2html($info_array, $diff=array()) {
 	global $config;
@@ -3034,11 +3044,12 @@ function rrdtool_info2html($info_array, $diff=array()) {
 	html_end_box();
 }
 
-/** rrdtool_tune			- create rrdtool tune/resize commands
- * 						  html+cli enabled
- * @param $rrd_file		- rrd file name
- * @param $diff			- array of discrepancies between cacti settings and rrd file info
- * @param $show_source	- only show text+commands or execute all commands, execute is for cli mode only!
+/** 
+ * rrdtool_tune - create rrdtool tune/resize commands html+cli enabled
+ *
+ * @param (string) $rrd_file - rrd file name
+ * @param (array)  $diff - array of discrepancies between cacti settings and rrd file info
+ * @param (bool)   $show_source - only show text+commands or execute all commands, execute is for cli mode only!
  */
 function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 	function print_leaves($array, $nl) {
@@ -3093,9 +3104,12 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 	}
 }
 
-/** Given a data source id, check the rrdtool file to the data source definition
- * @param $data_source_id - data source id
- * @return - (array) an array containing issues with the rrdtool file definition vs data source
+/** 
+ * rrd_check - Given a data source id, check the rrdtool file to the data source definition
+ *
+ * @param  (int) $data_source_id - data source id
+ *
+ * @return (array) an array containing issues with the rrdtool file definition vs data source
  */
 function rrd_check($data_source_id) {
 	global $rrd_tune_array, $data_source_types;
@@ -3105,9 +3119,12 @@ function rrd_check($data_source_id) {
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 }
 
-/** Given a data source id, update the rrdtool file to match the data source definition
- * @param $data_source_id - data source id
- * @return - 1 success, 2 false
+/** 
+ * rrd_repair - Given a data source id, update the rrdtool file to match the data source definition
+ *
+ * @param  (int) $data_source_id - data source id
+ *
+ * @return (int) 1 success, 2 false
  */
 function rrd_repair($data_source_id) {
 	global $rrd_tune_array, $data_source_types;
@@ -3117,11 +3134,14 @@ function rrd_repair($data_source_id) {
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 }
 
-/** add a (list of) datasource(s) to an (array of) rrd file(s)
- * @param array $file_array	- array of rrd files
- * @param array $ds_array	- array of datasource parameters
- * @param bool $debug		- debug mode
- * @return mixed			- success (bool) or error message (array)
+/** 
+ * rrd_datasource_add - add a (list of) datasource(s) to an (array of) rrd file(s)
+ *
+ * @param  (array) $file_array - array of rrd files
+ * @param  (array) $ds_array   - array of datasource parameters
+ * @param  (bool) $debug       - debug mode
+ *
+ * @return (mixed) - success (bool) or error message (array)
  */
 function rrd_datasource_add($file_array, $ds_array, $debug) {
 	global $data_source_types, $consolidation_functions;
@@ -3189,11 +3209,14 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 	return true;
 }
 
-/** delete a (list of) rra(s) from an (array of) rrd file(s)
- * @param array $file_array	- array of rrd files
- * @param array $rra_array	- array of rra parameters
- * @param bool $debug		- debug mode
- * @return mixed			- success (bool) or error message (array)
+/** 
+ * rrd_rra_delete - delete a (list of) rra(s) from an (array of) rrd file(s)
+ *
+ * @param  (array) $file_array - array of rrd files
+ * @param  (array) $rra_array  - array of rra parameters
+ * @param  (bool) $debug       - debug mode
+ *
+ * @return (mixed) true for success (bool) or error message (array)
  */
 function rrd_rra_delete($file_array, $rra_array, $debug) {
 	$rrdtool_pipe = rrd_init();
@@ -3244,12 +3267,15 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 	return true;
 }
 
-/** clone a (list of) rra(s) from an (array of) rrd file(s)
- * @param array $file_array	- array of rrd files
- * @param string $cf		- new consolidation function
- * @param array $rra_array	- array of rra parameters
- * @param bool $debug		- debug mode
- * @return mixed			- success (bool) or error message (array)
+/** 
+ * rrd_rra_clone - clone a (list of) rra(s) from an (array of) rrd file(s)
+ *
+ * @param  (array)  $file_array - array of rrd files
+ * @param  (string) $cf         - new consolidation function
+ * @param  (array)  $rra_array  - array of rra parameters
+ * @param  (bool)   $debug      - debug mode
+ *
+ * @return (mixed)  success (bool) or error message (array)
  */
 function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 	$rrdtool_pipe = rrd_init();
@@ -3300,15 +3326,18 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 	return true;
 }
 
-/** appends a <DS> subtree to an RRD XML structure
- * @param object $dom	- the DOM object, where the RRD XML is stored
- * @param string $version- rrd file version
- * @param string $name	- name of the new ds
- * @param string $type	- type of the new ds
- * @param int $min_hb	- heartbeat of the new ds
- * @param string $min	- min value of the new ds or [NaN|U]
- * @param string $max	- max value of the new ds or [NaN|U]
- * @return object		- modified DOM
+/** 
+ * rrd_append_ds - appends a <DS> subtree to an RRD XML structure
+ *
+ * @param  (object) $dom     - the DOM object, where the RRD XML is stored
+ * @param  (string) $version - rrd file version
+ * @param  (string) $name    - name of the new ds
+ * @param  (string) $type    - type of the new ds
+ * @param  (int)    $min_hb  - heartbeat of the new ds
+ * @param  (string) $min     - min value of the new ds or [NaN|U]
+ * @param  (string) $max     - max value of the new ds or [NaN|U]
+ *
+ * @return (object) - modified DOM
  */
 function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
 	/* rrdtool version dependencies */
@@ -3355,13 +3384,16 @@ function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
 	$insert->parentNode->insertBefore($new_node, $insert);
 }
 
-/** COMPUTE DS: appends a <DS> subtree to an RRD XML structure
- * @param object $dom	- the DOM object, where the RRD XML is stored
- * @param string $version- rrd file version
- * @param string $name	- name of the new ds
- * @param string $type	- type of the new ds
- * @param int $cdef		- the cdef rpn used for COMPUTE
- * @return object		- modified DOM
+/** 
+ * rrd_append_compute_ds - COMPUTE DS: appends a <DS> subtree to an RRD XML structure
+ *
+ * @param  (object) $dom     - the DOM object, where the RRD XML is stored
+ * @param  (string) $version - rrd file version
+ * @param  (string) $name    - name of the new ds
+ * @param  (string) $type    - type of the new ds
+ * @param  (int)    $cdef    - the cdef rpn used for COMPUTE
+ *
+ * @return (object) - modified DOM
  */
 function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
 	/* rrdtool version dependencies */
@@ -3405,10 +3437,13 @@ function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
 	$insert->parentNode->insertBefore($new_node, $insert);
 }
 
-/** append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure
- * @param object $dom		- the DOM object, where the RRD XML is stored
- * @param string $version	- rrd file version
- * @return object			- the modified DOM object
+/** 
+ * rrd_append_cdp_prep_ds - append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure
+ *
+ * @param (object) $dom     - the DOM object, where the RRD XML is stored
+ * @param (string) $version - rrd file version
+ *
+ * @return (object) - the modified DOM object
  */
 function rrd_append_cdp_prep_ds($dom, $version) {
 	/* get all <cdp_prep><ds> entries */
@@ -3445,9 +3480,12 @@ function rrd_append_cdp_prep_ds($dom, $version) {
 	}
 }
 
-/** append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
- * @param object $dom	- the DOM object, where the RRD XML is stored
- * @return object		- the modified DOM object
+/** 
+ * rrd_append_value - append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
+ *
+ * @param  (object) $dom - the DOM object, where the RRD XML is stored
+ *
+ * @return (object) - the modified DOM object
  */
 function rrd_append_value($dom) {
 	/* get XPATH notation required for positioning */
@@ -3470,10 +3508,13 @@ function rrd_append_value($dom) {
 	}
 }
 
-/** delete an <RRA> subtree from the <RRD> XML structure
- * @param object $dom		- the DOM document, where the RRD XML is stored
- * @param array $rra_parm	- a single rra parameter set, given by the user
- * @return object			- the modified DOM object
+/** 
+ * rrd_delete_rra - delete an <RRA> subtree from the <RRD> XML structure
+ *
+ * @param  (object) $dom     - the DOM document, where the RRD XML is stored
+ * @param  (array) $rra_parm - a single rra parameter set, given by the user
+ *
+ * @return (object) - the modified DOM object
  */
 function rrd_delete_rra($dom, $rra_parm) {
 	/* find all RRA DOMNodes */
@@ -3503,11 +3544,14 @@ function rrd_delete_rra($dom, $rra_parm) {
 	return $dom;
 }
 
-/** clone an <RRA> subtree of the <RRD> XML structure, replacing cf
- * @param object $dom		- the DOM document, where the RRD XML is stored
- * @param string $cf		- new consolidation function
- * @param array $rra_parm	- a single rra parameter set, given by the user
- * @return object			- the modified DOM object
+/**
+ * rrd_copy_rra - clone an <RRA> subtree of the <RRD> XML structure, replacing cf
+ *
+ * @param  (object) $dom     - the DOM document, where the RRD XML is stored
+ * @param  (string) $cf      - new consolidation function
+ * @param  (array) $rra_parm - a single rra parameter set, given by the user
+ *
+ * @return (object) - the modified DOM object
  */
 function rrd_copy_rra($dom, $cf, $rra_parm) {
 	/* find all RRA DOMNodes */
@@ -3745,108 +3789,135 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	return $image_data;
 }
 
-    /** Add gradient support for AREA type charts. This function adds several CDEF with different shading
-     * @param boolean 	$vname		- the data source name
-     * @param string 	$start_color	- the start color for the gradient
-     * @param string 	$end_color	- the end color for the gradient
-     * @param boolean 	$label		- any label attached to it
-     * @param string	$steps		- defaults to 20
-     * @param boolean 	$lower		- defaults to faulse
-     * @param string	$alpha		- Alpha channel to be used
-     * @return string			- the additional CDEF/AREA command lines for rrdtool
-     * License:			GPLv2
-     * Original Code		https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php
-     */
-    function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $label=FALSE, $steps=20, $lower=FALSE, $alpha='FF'){
-        $label = preg_replace("/'/","",$label);
-        if(preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$start_color,$matches)){
-            $r1=hexdec($matches[1]);
-            $g1=hexdec($matches[2]);
-            $b1=hexdec($matches[3]);
-        }
-        if(preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$end_color,$matches)){
-            $r2=hexdec($matches[1]);
-            $g2=hexdec($matches[2]);
-            $b2=hexdec($matches[3]);
-        }
-        $diff_r=$r2-$r1;
-        $diff_g=$g2-$g1;
-        $diff_b=$b2-$b1;
-        $spline =  "";
-        $spline_vname = "var".substr(sha1(rand()),1,4);
-        $vnamet = $vname.substr(sha1(rand()),1,4);
-        if(preg_match('/^([0-9]{1,3})%$/', $lower, $matches)){
-            $lower   = $matches[1];
-            $spline .= sprintf("CDEF:%sminimum=%s,100,/,%d,* ".RRD_NL, $vnamet, $vname, $lower);
-        }elseif(preg_match('/^([0-9]+)$/', $lower, $matches)){
-            $lower   = $matches[1];
-            $spline .= sprintf("CDEF:%sminimum=%s,%d,- ".RRD_NL, $vnamet, $vname, $lower);
-        }else{
-            $lower   = 0;
-            $spline .= sprintf("CDEF:%sminimum=%s,%s,- ".RRD_NL, $vnamet, $vname, $vname);
-        }
-        for ($i=$steps; $i>0; $i--){
-            $spline .=  sprintf("CDEF:%s%d=%s,%sminimum,-,%d,/,%d,*,%sminimum,+ ".RRD_NL,$spline_vname,$i,$vname,$vnamet,$steps,$i,$vnamet);
-        }
-        // We don't use alpha blending for the area right now
-        $alpha = 'ff';
-        for ($i=$steps; $i>0; $i--){
-            $factor=$i / $steps;
-            $r=round($r1 + $diff_r * $factor);
-            $g=round($g1 + $diff_g * $factor);
-            $b=round($b1 + $diff_b * $factor);
-            if (($i==$steps) and ($label!=FALSE) and (strlen($label)>2) ){
-                $spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s:\"%s\" ".RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha,$label);
-            }else{
-                $spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s ".RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha);
-            }
-        }
-        $spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s ".RRD_NL, $spline_vname,$steps,$r2,$g2,$b2,'00',$label);
-        return $spline;
-    }
+/** 
+ * gradient - Add gradient support for AREA type charts. This function adds several CDEF with different shading
+ *
+ * @param  (bool)   $vname       - the data source name
+ * @param  (string) $start_color - the start color for the gradient
+ * @param  (string) $end_color   - the end color for the gradient
+ * @param  (bool)   $label       - any label attached to it
+ * @param  (string) $steps       - defaults to 20
+ * @param  (bool)   $lower       - defaults to faulse
+ * @param  (string) $alpha       - Alpha channel to be used
+ *
+ * @return (string) - the additional CDEF/AREA command lines for rrdtool
+ *
+ * License: GPLv2
+ * Original Code: https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php
+ */
+function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $label=FALSE, $steps=20, $lower=FALSE, $alpha='FF'){
+	$label = preg_replace("/'/", "", $label);
+	
+	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$start_color,$matches)) {
+		$r1=hexdec($matches[1]);
+		$g1=hexdec($matches[2]);
+		$b1=hexdec($matches[3]);
+	}
 
-    /** Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
-     * @param boolean 	$hex		- The hex representation of a color
-     * @param string 	$percent	- the percentage to darken the given color. decimal number ( 0.4 -> 40% )
-     * @return string			- the darker version of the given color
-     * License:			GPLv2
-     * Original Code		http://www.barelyfitz.com/projects/csscolor/
-     */
-    function colourBrightness($hex, $percent) {
-        // Work out if hash given
-        $hash = '';
-        if (stristr($hex,'#')) {
-            $hex = str_replace('#','',$hex);
-            $hash = '#';
-        }
-        /// HEX TO RGB
-        $rgb = array(hexdec(substr($hex,0,2)), hexdec(substr($hex,2,2)), hexdec(substr($hex,4,2)));
-        //// CALCULATE
-        for ($i=0; $i<3; $i++) {                 // See if brighter or darker
-            if ($percent > 0) {
-                // Lighter
-                $rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1-$percent));
-            } else {
-                // Darker
-                $positivePercent = $percent - ($percent*2);
-                $rgb[$i] = round($rgb[$i] * (1-$positivePercent)); // round($rgb[$i] * (1-$positivePercent));
-            }
-            // In case rounding up causes us to go to 256
-            if ($rgb[$i] > 255) {
-                $rgb[$i] = 255;
-            }
-        }
+	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$end_color,$matches)) {
+		$r2=hexdec($matches[1]);
+		$g2=hexdec($matches[2]);
+		$b2=hexdec($matches[3]);
+	}
+
+	$diff_r=$r2-$r1;
+	$diff_g=$g2-$g1;
+	$diff_b=$b2-$b1;
+	$spline =  "";
+	$spline_vname = "var".substr(sha1(rand()),1,4);
+	$vnamet = $vname.substr(sha1(rand()),1,4);
+
+	if(preg_match('/^([0-9]{1,3})%$/', $lower, $matches)) {
+		$lower   = $matches[1];
+		$spline .= sprintf("CDEF:%sminimum=%s,100,/,%d,* ".RRD_NL, $vnamet, $vname, $lower);
+	} elseif (preg_match('/^([0-9]+)$/', $lower, $matches)) {
+		$lower   = $matches[1];
+		$spline .= sprintf("CDEF:%sminimum=%s,%d,- ".RRD_NL, $vnamet, $vname, $lower);
+	} else {
+		$lower   = 0;
+		$spline .= sprintf("CDEF:%sminimum=%s,%s,- ".RRD_NL, $vnamet, $vname, $vname);
+	}
+	
+	for ($i=$steps; $i>0; $i--){
+		$spline .=  sprintf("CDEF:%s%d=%s,%sminimum,-,%d,/,%d,*,%sminimum,+ ".RRD_NL,$spline_vname,$i,$vname,$vnamet,$steps,$i,$vnamet);
+	}
+
+	// We don't use alpha blending for the area right now
+	$alpha = 'ff';
+	
+	for ($i=$steps; $i>0; $i--){
+		$factor=$i / $steps;
+		$r=round($r1 + $diff_r * $factor);
+		$g=round($g1 + $diff_g * $factor);
+		$b=round($b1 + $diff_b * $factor);
+
+		if (($i == $steps) && ($label != false) && (strlen($label) > 2)) {
+			$spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s:\"%s\" ".RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha,$label);
+		} else {
+			$spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s ".RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha);
+		}
+	}
+
+	$spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s ".RRD_NL, $spline_vname,$steps,$r2,$g2,$b2,'00',$label);
+
+	return $spline;
+}
+
+/** 
+ * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
+ *
+ * @param  (bool)   $hex     - The hex representation of a color
+ * @param  (string) $percent - the percentage to darken the given color. decimal number ( 0.4 -> 40% )
+ *
+ * @return (string) - the darker version of the given color
+ *
+ * License:			GPLv2
+ * Original Code		http://www.barelyfitz.com/projects/csscolor/
+ */
+ function colourBrightness($hex, $percent) {
+ 	// Work out if hash given
+	$hash = '';
+
+	if (stristr($hex,'#')) {
+		$hex = str_replace('#','',$hex);
+		$hash = '#';
+	}
+
+	/// HEX TO RGB
+	$rgb = array(hexdec(substr($hex,0,2)), hexdec(substr($hex,2,2)), hexdec(substr($hex,4,2)));
+
+	//// CALCULATE
+	for ($i=0; $i<3; $i++) { // See if brighter or darker
+		if ($percent > 0) {
+			// Lighter
+			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1-$percent));
+		} else {
+			// Darker
+			$positivePercent = $percent - ($percent*2);
+			$rgb[$i] = round($rgb[$i] * (1-$positivePercent)); // round($rgb[$i] * (1-$positivePercent));
+		}
+
+		// In case rounding up causes us to go to 256
+		if ($rgb[$i] > 255) {
+			$rgb[$i] = 255;
+		}
+	}
+
         //// RBG to Hex
         $hex = '';
-        for($i=0; $i < 3; $i++) {
-            // Convert the decimal digit to hex
-            $hexDigit = dechex($rgb[$i]);
-            // Add a leading zero if necessary
-            if(strlen($hexDigit) == 1) {
-                $hexDigit = "0" . $hexDigit;
-            }
-            // Append to the hex string
-            $hex .= $hexDigit;
-        }
-        return $hash.$hex;
-    }
+
+	for ($i=0; $i < 3; $i++) {
+		// Convert the decimal digit to hex
+		$hexDigit = dechex($rgb[$i]);
+
+		// Add a leading zero if necessary
+		if (strlen($hexDigit) == 1) {
+			$hexDigit = "0" . $hexDigit;
+		}
+		
+		// Append to the hex string
+		$hex .= $hexDigit;
+	}
+
+	return $hash.$hex;
+}
