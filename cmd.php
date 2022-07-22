@@ -166,7 +166,7 @@ $exists = db_fetch_cell_prepared('SELECT COUNT(*)
 	WHERE poller_id = ?',
 	array($poller_id));
 
-if (empty($exists)) {
+if ($exists == 0 && $poller_id > 1) {
 	record_cmdphp_done();
 	db_close();
 	exit(-1);
@@ -194,7 +194,7 @@ if ($allhost) {
 	$params3    = array($poller_interval, $poller_interval, $poller_interval, $poller_id);
 } else {
 	$sql_where0 = 'WHERE poller_id > ?';
-	$sql_where1 = ' AND h.id >= ? AND h.id <= ?';
+	$sql_where1 = ' AND ((h.id >= ? AND h.id <= ?) OR h.id IS NULL)';
 	$sql_where2 = ' AND pi.host_id >= ? AND pi.host_id <= ?';
 	$sql_where3 = ' AND pi.host_id >= ? AND pi.host_id <= ?';
 

@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#4851: Too Many Turns on Log Parsing
 -issue#4853: Deprecation warnings when attempting real-time Graphs with PHP8.1
 -issue#4860: Custom Timespan is lost when clicking other tree branches
+-issue#4863: Non device based Data Sources not being polled
 -issue#4865: XML Pre-processing during Graph Creation throws error when Resource XML file inproperly formatted
 -issue#4866: Using ${var} in strings is deprecated, use {$var} instead in file
 -issue#4867: In Graph Management, filtering for "Device: None" shows all graphs
