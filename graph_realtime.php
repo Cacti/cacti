@@ -452,7 +452,7 @@ $sizes = array(
 			}, 1000);
 		}
 
-		$(window).on('load', function() {
+		$(function() {
 			imageOptionsChanged('init');
 			myCountdown = setTimeout(function() {
 				countdown_update();
