@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -feature#4832: Show PHP INI locations during install
 -feature#4833: Detect PHP INI values that are different in the INI vs running config
 -feature#4870: Add gradient support for AREA charts
+-feature#4872: Add missing and more recent CDEF functions for RRDtool
 
 1.2.21
 -issue#4531: Correct duplicate keys within database
