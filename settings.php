@@ -963,9 +963,10 @@ default:
 	function initAuth() {
 		switch($('#auth_method').val()) {
 		case '0': // None
-			$('#row_path_basic_mapfile').hide();
-			$('#row_special_users_header').hide();
+			$('#row_auth_method').show();
 			$('#row_auth_cache_enabled').hide();
+			$('#row_special_users_header').hide();
+			$('#row_admin_user').hide();
 			$('#row_guest_user').hide();
 			$('#row_user_template').hide();
 			$('#row_ldap_general_header').hide();
@@ -1012,9 +1013,10 @@ default:
 			$('#row_ldap_tls_certificate').hide();
 			break;
 		case '1': // Builtin
-			$('#row_path_basic_mapfile').hide();
-			$('#row_special_users_header').show();
+			$('#row_auth_method').show();
 			$('#row_auth_cache_enabled').show();
+			$('#row_special_users_header').show();
+			$('#row_admin_user').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').hide();
@@ -1062,9 +1064,10 @@ default:
 			$('#row_ldap_debug').hide();
 			break;
 		case '2': // Web Basic
-			$('#row_path_basic_mapfile').show();
-			$('#row_special_users_header').show();
+			$('#row_auth_method').show();
 			$('#row_auth_cache_enabled').hide();
+			$('#row_special_users_header').show();
+			$('#row_admin_user').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').hide();
@@ -1112,15 +1115,16 @@ default:
 			$('#row_ldap_debug').hide();
 			break;
 		case '4': // Multiple Domains
-			$('#row_path_basic_mapfile').hide();
-			$('#row_special_users_header').show();
+			$('#row_auth_method').show();
 			$('#row_auth_cache_enabled').show();
+			$('#row_special_users_header').show();
+			$('#row_admin_user').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').hide();
-			$('#row_ldap_general_header').hide();
-			$('#row_ldap_server').hide();
-			$('#row_ldap_port').hide();
-			$('#row_ldap_port_ssl').hide();
+			$('#row_ldap_general_header').show();
+			$('#row_ldap_server').show();
+			$('#row_ldap_port').show();
+			$('#row_ldap_port_ssl').show();
 			$('#row_ldap_version').hide();
 			$('#row_ldap_encryption').hide();
 			$('#row_ldap_referrals').hide();
@@ -1162,8 +1166,10 @@ default:
 			$('#row_ldap_debug').show();
 			break;
 		case '3': // Single Domain
-			$('#row_special_users_header').show();
+			$('#row_auth_method').show();
 			$('#row_auth_cache_enabled').show();
+			$('#row_special_users_header').show();
+			$('#row_admin_user').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').show();
@@ -1213,8 +1219,10 @@ default:
 			initGroupMember();
 			break;
 		default:
-			$('#row_special_users_header').show();
+			$('#row_auth_method').show();
 			$('#row_auth_cache_enabled').show();
+			$('#row_special_users_header').show();
+			$('#row_admin_user').show();
 			$('#row_guest_user').show();
 			$('#row_user_template').show();
 			$('#row_ldap_general_header').hide();
