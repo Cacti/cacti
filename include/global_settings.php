@@ -1100,7 +1100,48 @@ $settings = array(
 			'method' => 'font',
 			'placeholder' => __('Enter Valid Font Config Value'),
 			'max_length' => '100'
-			)
+			),
+		'business_hours_header' => array(
+			'friendly_name' => __('Business Hours Settings'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'business_hours_start' => array(
+			'friendly_name' => __('Start of Business Day'),
+			'description' => __('The time your business hours start'),
+			'method' => 'textbox',
+			'default' => '08:00',
+			'max_length' => '5',
+			'size' => '60'
+			),
+		'business_hours_end' => array(
+			'friendly_name' => __('End of Business Day'),
+			'description' => __('The time your business hours end'),
+			'method' => 'textbox',
+			'default' => '18:00',
+			'max_length' => '6',
+			'size' => '60'
+			),
+		'business_hours_hideWeekends' => array(
+			'friendly_name' => __('Hide Weekends'),
+			'description' => __('Only show business hours during weekdays.'),
+			'method' => 'checkbox',
+			'default' => '',
+			),
+		'business_hours_enable' => array(
+			'friendly_name' => __('Show business hours'),
+			'description' => __('Display business hours on rrd graphs.'),
+			'method' => 'checkbox',
+			'default' => '',
+			),
+		'business_hours_color' => array(
+			'friendly_name' => __('Color to use for business hours'),
+			'description' => __('The color to be shown for business hours'),
+			'method' => 'textbox',
+			'default' => 'ccccccff',
+			'max_length' => '8',
+			'size' => '60'
+		)
 	),
 	'poller' => array(
 		'poller_header' => array(

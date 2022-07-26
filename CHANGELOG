@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -feature#4833: Detect PHP INI values that are different in the INI vs running config
 -feature#4870: Add gradient support for AREA charts
 -feature#4872: Add missing and more recent CDEF functions for RRDtool
+-feature#4874: Add support for showing business hours
 
 1.2.21
 -issue#4531: Correct duplicate keys within database
