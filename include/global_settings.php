@@ -1108,7 +1108,7 @@ $settings = array(
 			),
 		'business_hours_start' => array(
 			'friendly_name' => __('Start of Business Day'),
-			'description' => __('The time your business hours start'),
+			'description' => __('The time your business hours start. Format: hh:mm'),
 			'method' => 'textbox',
 			'default' => '08:00',
 			'max_length' => '5',
@@ -1116,7 +1116,7 @@ $settings = array(
 			),
 		'business_hours_end' => array(
 			'friendly_name' => __('End of Business Day'),
-			'description' => __('The time your business hours end'),
+			'description' => __('The time your business hours end. Format: hh:mm'),
 			'method' => 'textbox',
 			'default' => '18:00',
 			'max_length' => '6',
@@ -1141,7 +1141,16 @@ $settings = array(
 			'default' => 'ccccccff',
 			'max_length' => '8',
 			'size' => '60'
-		)
+		),
+        'business_hours_max_days' => array(
+            'friendly_name' => __('Maximum number of days to show business hours'),
+            'description' => __('After this number of days, the business hours will not be added to the graph. <br/>Recommended: 62 days'),
+            'method' => 'textbox',
+            'default' => '62',
+            'max_length' => '3',
+            'size' => '60'
+        )
+
 	),
 	'poller' => array(
 		'poller_header' => array(
