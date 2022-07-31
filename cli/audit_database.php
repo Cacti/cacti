@@ -111,7 +111,7 @@ if (cacti_sizeof($parms)) {
 	if ($upgrade_required) {
 		print 'WARNING: Cacti must be upgraded first.  Use the --upgrade option to perform that upgrade' . PHP_EOL;
 		exit(1);
-	} elseif ($db_version != CACTI_VERSION && $$upgrade) {
+	} elseif ($db_version != CACTI_VERSION && $upgrade) {
 		upgrade_database();
 	}
 
