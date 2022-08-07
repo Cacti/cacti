@@ -2115,6 +2115,16 @@ $settings = array(
 			'description' => __('Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd.'),
 			'method' => 'checkbox'
 		),
+		'extended_paths_type' => array(
+			'friendly_name' => __('Structured RRD Path Directory Pattern'),
+			'description' => __('Which Directory Pattern do you wish to use for Structured RRD Paths.  \'Device ID\' is the default.  The setting \'Device ID/Data Query ID\' should be used when you have Devices with thousands of Graphs.  After Changing the Directory Pattern, you must run the Structured Path CLI script again to modify the RRDfile paths to the new Pattern.'),
+			'method' => 'drop_array',
+			'default' => 'device',
+			'array' => array (
+				'device'    => __('Device ID'),
+				'device_dq' => __('Device ID/Data Query ID')
+			)
+		),
 		'rrdp_header' => array(
 			'friendly_name' => __('RRDtool Proxy Server'),
 			'method' => 'spacer',

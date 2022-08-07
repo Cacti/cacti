@@ -255,8 +255,10 @@ function sig_handler($signo) {
 			/* ignore all other signals */
 	}
 
-	if ($current_lock !== false) {
+	if ($current_lock !== false && $child) {
 		db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
+	} elseif (!$child) {
+		db_execute("SELECT RELEASE_ALL_LOCKS()");
 	}
 }
 
@@ -303,8 +305,7 @@ function boost_prepare_process_table() {
 			/* if the runtime was exceeded, allow the next process to run */
 			if ($previous_start_time + $max_run_duration < $start_time) {
 				cacti_log('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', false, 'BOOST SVR');
-				admin_email(__('Cacti System Warning'), __('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', 'BOOST SVR'  ));
-
+				admin_email(__('Cacti System Warning'), __('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', 'BOOST SVR'));
 			}
 		}
 	}
@@ -362,7 +363,7 @@ function boost_prepare_process_table() {
 		process_handler int unsigned default "0",
 		PRIMARY KEY (local_data_id),
 		INDEX process_handler(process_handler))
-		ENGINE=MEMORY');
+		ENGINE=InnoDB');
 
 	db_execute('TRUNCATE poller_output_boost_local_data_ids');
 
@@ -411,7 +412,7 @@ function boost_launch_children() {
 
 	$php_binary    = read_config_option('path_php_binary');
 	$boost_log     = read_config_option('path_boost_log');
-	$boost_logdir  = dirname($boost_log);
+	$boost_logdir = dirname($boost_log);
 	$redirect_args = '';
 
 	if ($boost_log != '') {
@@ -913,17 +914,17 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		$current_lock = false;
 
 		boost_timer('results_cycle', BOOST_TIMER_END);
-
-		/* remove the entries from the table */
-		boost_timer('delete', BOOST_TIMER_START);
-
-		db_execute_prepared("DELETE FROM poller_output_boost_local_data_ids
-			WHERE local_data_id <= ?
-			AND process_handler = ?",
-			array($last_id, $child));
-
-		boost_timer('delete', BOOST_TIMER_END);
 	}
+
+	/* remove the entries from the table */
+	boost_timer('delete', BOOST_TIMER_START);
+
+	db_execute_prepared("DELETE FROM poller_output_boost_local_data_ids
+		WHERE local_data_id <= ?
+		AND process_handler = ?",
+		array($last_id, $child));
+
+	boost_timer('delete', BOOST_TIMER_END);
 
 	/* restore original error handler */
 	restore_error_handler();

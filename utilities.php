@@ -1877,18 +1877,17 @@ function utilities_view_poller_cache() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = 'WHERE pi.local_data_id = dtd.local_data_id';
+	$sql_where = '';
 
 	if (get_request_var('poller_action') != '-1') {
-		$sql_where .= " AND pi.action='" . get_request_var('poller_action') . "'";
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . " pi.action='" . get_request_var('poller_action') . "'";
 	}
 
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_id') == '0') {
-		$sql_where .= ' AND pi.host_id = 0';
 	} elseif (!isempty_request_var('host_id')) {
-		$sql_where .= ' AND pi.host_id = ' . get_request_var('host_id');
+		$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' pi.host_id = ' . get_request_var('host_id');
 	}
 
 	if (get_request_var('template_id') == '-1') {
@@ -1906,12 +1905,19 @@ function utilities_view_poller_cache() {
 	}
 
 	if (get_request_var('filter') != '') {
-		$sql_where .= ' AND (
-			dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR pi.arg1 LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR pi.hostname LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		if (get_request_var('host_id') > 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' (
+				dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR pi.arg1 LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		} else {
+			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' (
+				dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR pi.arg1 LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR pi.hostname LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		}
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -1924,10 +1930,10 @@ function utilities_view_poller_cache() {
 		ON pi.host_id = h.id
 		$sql_where");
 
-	$poller_sql = "SELECT pi.*, dtd.name_cache, h.description, h.id host_id
+	$poller_sql = "SELECT pi.*, dtd.name_cache, h.description, h.id AS host_id
 		FROM poller_item AS pi
 		INNER JOIN data_local AS dl
-		ON dl.id=pi.local_data_id
+		ON dl.id = pi.local_data_id
 		INNER JOIN data_template_data AS dtd
 		ON dtd.local_data_id = pi.local_data_id
 		INNER JOIN host AS h
@@ -1965,7 +1971,7 @@ function utilities_view_poller_cache() {
 					<?php print filter_value($item['name_cache'], get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $item['local_data_id']);?>
 				</td>
 				<td>
-					<?php print filter_value($item['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $item['host_id']); ?>
+					<?php print filter_value($item['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $item['host_id']);?>
 				</td>
 
 				<td>
@@ -2118,7 +2124,7 @@ function utilities() {
 				print "<a class='hyperLink' href='" . html_escape($details['link']) . "'>" . $title . '</a>';
 				print '</td>';
 				print '<td>';
-				print $details['description'];
+				print html_escape($details['description']);
 				print '</td>';
 				form_end_row();
 
@@ -2276,24 +2282,24 @@ function boost_display_run_status() {
 	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
 
 	$boost_status = read_config_option('boost_poller_status', true);
-	if ($boost_status != '') {
+	if ($boost_status != '' && $boost_status != 'Disabled') {
 		$boost_status_array = explode(':', $boost_status);
 
 		$boost_status_date  = $boost_status_array[1];
 
 		if (substr_count($boost_status_array[0], 'complete')) {
-			$boost_status_text = __('Idle');
+			$status = '<span class="deviceRecovering">' . __('Idle') . '</span>';
 		} elseif (substr_count($boost_status_array[0], 'running')) {
-			$boost_status_text = __('Running');
+			$status = '<span class="deviceUp">' . __('Running') . '</span>';
 		} elseif (substr_count($boost_status_array[0], 'overrun')) {
-			$boost_status_text = __('Overrun Warning');
+			$status = '<span class="deviceDown">' . __('Overrun Warning') . '</span>';
 		} elseif (substr_count($boost_status_array[0], 'timeout')) {
-			$boost_status_text = __('Timed Out');
+			$status = '<span class="deviceDown">' . __('Timed Out') . '</span>';
 		} else {
-			$boost_status_text = __('Other');
+			$status = '<span class="deviceDown">' . __('Other') . '</span>';
 		}
 	} else {
-		$boost_status_text = __('Never Run');
+		$status = '<span class="deviceDisabled">' . __('Disabled') . '</span>';
 		$boost_status_date = '';
 	}
 
@@ -2363,7 +2369,7 @@ function boost_display_run_status() {
 
 	if ($config['connection'] == 'online') {
 		form_alternate_row();
-		print '<td>' . __('Boost On-demand Updating:') . '</td><td>' . ($rrd_updates == '' ? 'Disabled' : $boost_status_text) . '</td>';
+		print '<td>' . __('Boost On-demand Updating:') . '</td><td><b>' . $status . '</b></td>';
 
 		if ($running > 0) {
 			form_alternate_row();
@@ -2458,7 +2464,7 @@ function boost_display_run_status() {
 
 	if ($config['connection'] == 'online') {
 		/* boost last runtime display */
-		html_section_header(__('Runtime Statistics'), 2);
+		html_section_header(__('Previous Runtime Statistics'), 2);
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . (is_numeric($last_run_time) ? date('Y-m-d H:i:s', $last_run_time):$last_run_time) . '</td>';
@@ -2470,7 +2476,7 @@ function boost_display_run_status() {
 			print ($boost_last_run_duration > 60 ? __('%d minutes', (int)$boost_last_run_duration / 60) . ', ': '') . __('%d seconds', (int) $boost_last_run_duration % 60);
 
 			if ($rrd_updates != ''){
-				print ' (' . __('%0.2f percent of update frequency)', round(100*$boost_last_run_duration/$update_interval/60));
+				print ' (' . __('%0.2f percent of update frequency)', round(100 * $boost_last_run_duration / $update_interval / 60));
 			}
 		} else {
 			print __('N/A');
@@ -2490,7 +2496,32 @@ function boost_display_run_status() {
 		html_section_header(__('Detailed Runtime Statistics'), 2);
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Detailed Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
+
+		if ($detail_stats == '') {
+			$detail_stats = __('N/A');
+		} else {
+			$values = explode(' ', $detail_stats);
+			$rows   = explode(':', $values[0])[1];
+			$time   = explode(':', $values[1])[1];
+			$recs   = explode(':', $values[2])[1];
+			$rcycle = explode(':', $values[3])[1];
+			$fandt  = explode(':', $values[4])[1];
+			$lastu  = explode(':', $values[5])[1];
+			$update = explode(':', $values[6])[1];
+			$delete = explode(':', $values[7])[1];
+
+			$detail_stats = __('Records: %s (ds rows), Time: %s (secs), GetRows: %s (secs), ResultsCycle: %s (secs), FileAndTemplate: %s (secs), LastUpdate: %s (secs), RRDUpdate: %s (secs), Delete: %s (secs)',
+				number_format_i18n($rows),
+				number_format_i18n($time),
+				number_format_i18n($recs),
+				number_format_i18n($rcycle),
+				number_format_i18n($fandt),
+				number_format_i18n($lastu),
+				number_format_i18n($update),
+				number_format_i18n($delete));
+		}
+
+		print '<td class="utilityPick">' . __('Previous Runtime Timers:') . '</td><td>' . (($detail_stats != '') ? $detail_stats:__('N/A')) . '</td>';
 
 		$runtimes = db_fetch_assoc('SELECT name, value, CAST(replace(name, "stats_boost_", "") AS signed) AS ome
 			FROM settings
@@ -2500,8 +2531,35 @@ function boost_display_run_status() {
 		if (cacti_sizeof($runtimes)) {
 			foreach($runtimes as $r) {
 				$process = str_replace('stats_boost_', '', $r['name']);
+
+				if ($r['value'] != '') {
+					$values = explode(' ', $r['value']);
+					$time = explode(':', $values[0])[1];
+					$rrds = explode(':', $values[2])[1];
+				} else {
+					$time = 0;
+					$rrds = 0;
+				}
+
+				$rows_to_process = db_fetch_cell_prepared('SELECT COUNT(*)
+					FROM poller_output_boost_local_data_ids
+					WHERE process_handler = ?',
+					array($process));
+
+				$runtime = db_fetch_cell_prepared('SELECT UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started)
+					FROM processes
+					WHERE tasktype = "boost"
+					AND taskname = "child"
+					AND taskid = ?',
+					array($process));
+
 				form_alternate_row();
-				print '<td class="utilityPick">' . __esc('Process %d Runtime:', $process) . '</td><td>' . html_escape($r['value']) . '</td>';
+
+				if ($rows_to_process > 0) {
+					print '<td class="utilityPick">' . __esc('Process: %d', $process) . '</td><td>' . __('Status: <span class="deviceUp"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)', number_format_i18n($rows_to_process), number_format_i18n($runtime), number_format_i18n($time), number_format_i18n($rrds)) . '</td>';
+				} else {
+					print '<td class="utilityPick">' . __esc('Process: %d', $process) . '</td><td>' . __('Status: <span class="deviceRecovering"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)', number_format_i18n($time), number_format_i18n($rrds)) . '</td>';
+				}
 			}
 		}
 

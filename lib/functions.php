@@ -2623,9 +2623,12 @@ function get_data_source_path($local_data_id, $expand_paths) {
 		return $data_source_path_cache[$local_data_id];
 	}
 
-	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' name, data_source_path FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
+	$data_source = db_fetch_row_prepared('SELECT name, data_source_path
+		FROM data_template_data AS dtd
+		WHERE local_data_id = ?',
+		array($local_data_id));
 
-	if (cacti_sizeof($data_source) > 0) {
+	if (cacti_sizeof($data_source)) {
 		if (empty($data_source['data_source_path'])) {
 			/* no custom path was specified */
 			$data_source_path = generate_data_source_path($local_data_id);
@@ -2938,23 +2941,44 @@ function get_execution_user() {
 function generate_data_source_path($local_data_id) {
 	global $config;
 
-	/* try any prepend the name with the host description */
-	$host = db_fetch_row_prepared('SELECT host.id, host.description
-		FROM (host, data_local)
-		WHERE data_local.host_id = host.id
-		AND data_local.id = ?
-		LIMIT 1', array($local_data_id));
+	static $extended_paths = false;
+	static $extended_paths_type = false;
 
-	$host_name = $host['description'];
-	$host_id   = $host['id'];
+	if ($extended_paths === false) {
+		$extended_paths = read_config_option('extended_paths');
+	}
+
+	if ($extended_paths_type === false) {
+		$extended_paths_type = read_config_option('extended_paths_type');
+	}
+
+	/* try any prepend the name with the host description */
+	$data = db_fetch_row_prepared('SELECT dl.host_id, h.description, dl.snmp_query_id
+		FROM host AS h
+		INNER JOIN data_local AS dl
+		ON dl.host_id = h.id
+		AND dl.id = ?',
+		array($local_data_id));
+
+	if (cacti_sizeof($data)) {
+		$host_name     = $data['description'];
+		$host_id       = $data['id'];
+		$data_query_id = $data['snmp_query_id'];
+	} else {
+		$host_name     = 'undefinedhost';
+		$host_id       = 0;
+		$data_query_id = 0;
+	}
 
 	/* put it all together using the local_data_id at the end */
-	if (read_config_option('extended_paths') == 'on') {
-		$new_path = "<path_rra>/$host_id/$local_data_id.rrd";
-	} else {
-		if (!empty($host_name)) {
-			$host_part = strtolower(clean_up_file_name($host_name)) . '_';
+	if ($extended_paths == 'on') {
+		if ($extended_paths_type == 'device' || $extended_paths_type == '') {
+			$new_path = "<path_rra>/$host_id/$local_data_id.rrd";
+		} else {
+			$new_path = "<path_rra>/$host_id/$data_query_id/$local_data_id.rrd";
 		}
+	} else {
+		$host_part = strtolower(clean_up_file_name($host_name)) . '_';
 
 		/* then try and use the internal DS name to identify it */
 		$data_source_rrd_name = db_fetch_cell_prepared('SELECT data_source_name
