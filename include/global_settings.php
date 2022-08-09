@@ -2110,20 +2110,35 @@ $settings = array(
 				__('RRDtool Proxy Server')
 			)
 		),
+		'extended_paths_header' => array(
+			'friendly_name' => __('Structured RRDfile Paths'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+		),
 		'extended_paths' => array(
-			'friendly_name' => __('Structured RRD Paths'),
-			'description' => __('Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd.'),
+			'friendly_name' => __('Method'),
+			'description' => __('Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be one of the following:<br><ul><li>&lt;path_cacti&gt;/rra/host_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_id/data_query_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/data_query_id/local_data_id.rrd.</li></ul><br>You can make this change after install by running the CLI script <b>structure_rra_paths.php</b> after you make the change.  NOTE: If you change Max Directories value to decrease the number of directories, or if you change the Directory Pattern, empty directories will not be pruned after you rerun the <b>structure_rra_paths.php</b> script.'),
 			'method' => 'checkbox'
 		),
 		'extended_paths_type' => array(
-			'friendly_name' => __('Structured RRD Path Directory Pattern'),
+			'friendly_name' => __('Directory Pattern'),
 			'description' => __('Which Directory Pattern do you wish to use for Structured RRD Paths.  \'Device ID\' is the default.  The setting \'Device ID/Data Query ID\' should be used when you have Devices with thousands of Graphs.  After Changing the Directory Pattern, you must run the Structured Path CLI script again to modify the RRDfile paths to the new Pattern.'),
 			'method' => 'drop_array',
 			'default' => 'device',
 			'array' => array (
-				'device'    => __('Device ID'),
-				'device_dq' => __('Device ID/Data Query ID')
+				'device' => __('Device ID'),
+				'device_dq' => __('Device ID/Data Query ID'),
+				'hash_device' => __('Device Hash/Device ID'),
+				'hash_device_dq' => __('Device Hash/Device ID/Data Query ID')
 			)
+		),
+		'extended_paths_hashes' => array(
+			'friendly_name' => __('Max Device Hash Directories'),
+			'description' => __('The maximum number of Device Directories to be created based upon hashed Device ID\'s.'),
+			'method' => 'textbox',
+			'max_length' => '5',
+			'size' => '5',
+			'default' => '100'
 		),
 		'rrdp_header' => array(
 			'friendly_name' => __('RRDtool Proxy Server'),

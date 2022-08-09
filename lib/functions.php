@@ -2942,14 +2942,14 @@ function generate_data_source_path($local_data_id) {
 	global $config;
 
 	static $extended_paths = false;
-	static $extended_paths_type = false;
+	static $pattern = false;
 
 	if ($extended_paths === false) {
 		$extended_paths = read_config_option('extended_paths');
 	}
 
-	if ($extended_paths_type === false) {
-		$extended_paths_type = read_config_option('extended_paths_type');
+	if ($pattern === false) {
+		$pattern = read_config_option('extended_paths_type');
 	}
 
 	/* try any prepend the name with the host description */
@@ -2972,10 +2972,21 @@ function generate_data_source_path($local_data_id) {
 
 	/* put it all together using the local_data_id at the end */
 	if ($extended_paths == 'on') {
-		if ($extended_paths_type == 'device' || $extended_paths_type == '') {
+		$maxdirs = read_config_option('extended_paths_hashes');
+		if (empty($maxdirs) || $maxdirs < 0 || !is_numeric($maxdirs)) {
+			$maxdirs = 100;
+		}
+
+		$hash_id = $host_id % $maxdirs;
+
+		if ($pattern == 'device' || $pattern == '') {
 			$new_path = "<path_rra>/$host_id/$local_data_id.rrd";
-		} else {
+		} elseif ($pattern == 'device_dq') {
 			$new_path = "<path_rra>/$host_id/$data_query_id/$local_data_id.rrd";
+		} elseif ($pattern == 'hash_device') {
+			$new_path = "<path_rra>/$hash_id/$host_id/$local_data_id.rrd";
+		} elseif ($pattern == 'hash_device_dq') {
+			$new_path = "<path_rra>/$hash_id/$host_id/$data_query_id/$local_data_id.rrd";
 		}
 	} else {
 		$host_part = strtolower(clean_up_file_name($host_name)) . '_';

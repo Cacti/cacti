@@ -113,15 +113,27 @@ $group_id      = filegroup($base_rra_path);
 set_config_option('extended_paths', 'on');
 
 $pattern = read_config_option('extended_paths_type');
+$maxdirs = read_config_option('extended_paths_hashes');
+if (empty($maxdirs) || $maxdirs < 0 || !is_numeric($maxdirs)) {
+	$maxdirs = 100;
+}
 
 if ($pattern == '' || $pattern == 'device') {
 	$pattern1  = "CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd') AS new_data_source_path,";
-	$pattern2  = "REPLACE(CONCAT('<path_rra>/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path";
+	$pattern2  = "REPLACE(CONCAT('<path_rra>/', '/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path";
 	$sql_where = "WHERE dtd.data_source_path != CONCAT('<path_rra>/', dl.host_id, '/', dtd.local_data_id, '.rrd')";
-} else {
+} elseif ($pattern == 'device_dq') {
 	$pattern1  = "CONCAT('<path_rra>/', host_id, '/', snmp_query_id, '/', local_data_id, '.rrd') AS new_data_source_path,";
 	$pattern2  = "REPLACE(CONCAT('<path_rra>/', host_id, '/', snmp_query_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path";
 	$sql_where = "WHERE dtd.data_source_path != CONCAT('<path_rra>/', dl.host_id, '/', IF(dl.snmp_query_id > 0, CONCAT(dl.snmp_query_id, '/'), ''), dtd.local_data_id, '.rrd')";
+} elseif ($pattern == 'hash_device') {
+	$pattern1  = "CONCAT('<path_rra>/', host_id % $maxdirs, '/', host_id, '/', local_data_id, '.rrd') AS new_data_source_path,";
+	$pattern2  = "REPLACE(CONCAT('<path_rra>/', host_id % $maxdirs, '/', host_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path";
+	$sql_where = "WHERE dtd.data_source_path != CONCAT('<path_rra>/', dl.host_id % $maxdirs, '/', dl.host_id, '/', dtd.local_data_id, '.rrd')";
+} elseif ($pattern == 'hash_device_dq') {
+	$pattern1  = "CONCAT('<path_rra>/', host_id % $maxdirs, '/', host_id, '/', snmp_query_id, '/', local_data_id, '.rrd') AS new_data_source_path,";
+	$pattern2  = "REPLACE(CONCAT('<path_rra>/', host_id % $maxdirs, '/', host_id, '/', snmp_query_id, '/', local_data_id, '.rrd'), '<path_rra>', '$base_rra_path') AS new_rrd_path";
+	$sql_where = "WHERE dtd.data_source_path != CONCAT('<path_rra>/', dl.host_id % $maxdirs, '/', dl.host_id, '/', IF(dl.snmp_query_id > 0, CONCAT(dl.snmp_query_id, '/'), ''), dtd.local_data_id, '.rrd')";
 }
 
 $sql_where  = '';
@@ -138,7 +150,8 @@ if ($host_template_id > 0) {
 }
 
 /* fetch all DS having wrong path */
-$data_sources = db_fetch_assoc_prepared("SELECT dtd.local_data_id, dl.host_id, dtd.data_source_path, dl.snmp_query_id, h.description,
+$data_sources = db_fetch_assoc_prepared("SELECT dtd.local_data_id, dl.host_id % $maxdirs AS hash_id,
+	dl.host_id, dtd.data_source_path, dl.snmp_query_id, h.description,
 	$pattern1
 	REPLACE(data_source_path, '<path_rra>', '$base_rra_path') AS rrd_path,
 	$pattern2
@@ -215,8 +228,12 @@ foreach ($data_sources as $info) {
 
 		if ($pattern == '' || $pattern == 'device') {
 			$data_source_path2 = $base_path_rra . '/' . $info['host_id'] . '/' . $info['snmp_query_id'] . '/' . $local_data_id . '.rrd';
-		} else {
+		} elseif ($pattern == 'device_dq') {
 			$data_source_path2 = $base_path_rra . '/' . $info['host_id'] . '/' . $local_data_id . '.rrd';
+		} elseif ($pattern == 'hash_device') {
+			$data_source_path2 = $base_path_rra . '/' . $info['hash_id'] . '/' . $info['host_id'] . '/' . $local_data_id . '.rrd';
+		} elseif ($pattern == 'hash_device_dq') {
+			$data_source_path2 = $base_path_rra . '/' . $info['hash_id'] . '/' . $info['host_id'] . '/' . $info['snmp_query_id'] . '/' . $local_data_id . '.rrd';
 		}
 
 		if (file_exists($data_source_path1)) {
@@ -377,16 +394,23 @@ function display_help() {
 	display_version();
 
 	print PHP_EOL . 'usage: structure_rra_paths.php [--host-id=N] [--host-template-id=N] [--proceed]' . PHP_DEOL;
+
 	print 'A simple interactive command line utility that converts a Cacti system from using' . PHP_EOL;
 	print 'legacy RRA paths to using structured RRA paths with the following' . PHP_EOL;
-	print 'two naming patterns:' . PHP_DEOL;
+	print 'four naming patterns:' . PHP_DEOL;
 
-	print 'device            - <path_rra>/host_id/local_data_id.rrd' . PHP_EOL;
-	print 'device/data_query - <path_rra>/host_id/data_query_id/local_data_id.rrd' . PHP_DEOL;
+	print 'device                 - <path_rra>/host_id/local_data_id.rrd' . PHP_EOL;
+	print 'device/data_query      - <path_rra>/host_id/data_query_id/local_data_id.rrd' . PHP_EOL;
+	print 'hash/device            - <path_rra>/hash_id/host_id/data_query_id/local_data_id.rrd' . PHP_EOL;
+	print 'hash/device/data_query - <path_rra>/hash_id/host_id/data_query_id/local_data_id.rrd' . PHP_DEOL;
+
+	print 'The pattern that you choose will depend on how many Devices and Graphs per Device' . PHP_EOL;
+	print 'you have.  It\'s possible that if your site has over 100k Devices, you may want' . PHP_EOL;
+	print 'to use one of last two options.' . PHP_DEOL;
 
 	print 'Optional:' . PHP_EOL;
-	print ' --host-id=N           Specify if you wish to switch on a single device.' . PHP_EOL;
-	print ' --host-template-id=N  Specify if you wish to change for a class of devices.' . PHP_DEOL;
+	print ' --host-id=N           Specify if you wish to switch on a single Device.' . PHP_EOL;
+	print ' --host-template-id=N  Specify if you wish to change for a class of Devices.' . PHP_DEOL;
 
 	print 'This utility is designed for very large Cacti systems or file systems that have' . PHP_EOL;
 	print 'problems with very large directories.  It will run interactively, but it first' . PHP_EOL;
