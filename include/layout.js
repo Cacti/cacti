@@ -1673,9 +1673,11 @@ function tuneTable(object, width) {
 			}));
 		}
 	} else if (allSeenWidth < width) {
+		calculatedColumns = calculatedColumns.sort();
+
 		// Since we can show hidden columns now, let's go
 		// in reverse until we run out of space
-		$($(object).find('th').get().reverse()).each(function() {
+		$($(object).find('th').get()).each(function() {
 			if (!calculatedColumns.includes($(this).index())) {
 				if ($(this).is(':hidden')) {
 					var columnWidth = $.textMetrics(this).width + calculatedPadding;
