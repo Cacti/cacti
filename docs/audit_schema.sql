@@ -158,7 +158,7 @@ INSERT INTO `table_columns` VALUES ('automation_devices',3,'hostname','varchar(1
 INSERT INTO `table_columns` VALUES ('automation_devices',4,'ip','varchar(17)','NO','UNI','','');
 INSERT INTO `table_columns` VALUES ('automation_devices',5,'snmp_community','varchar(100)','NO','','','');
 INSERT INTO `table_columns` VALUES ('automation_devices',6,'snmp_version','tinyint(3) unsigned','NO','','1','');
-INSERT INTO `table_columns` VALUES ('automation_devices',7,'snmp_port','mediumint(5) unsigned','NO','','161','');
+INSERT INTO `table_columns` VALUES ('automation_devices',7,'snmp_port','mediumint(8) unsigned','NO','','161','');
 INSERT INTO `table_columns` VALUES ('automation_devices',8,'snmp_username','varchar(50)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('automation_devices',9,'snmp_password','varchar(50)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('automation_devices',10,'snmp_auth_protocol','char(6)','YES','','','');
@@ -239,7 +239,7 @@ INSERT INTO `table_columns` VALUES ('automation_networks',34,'last_runtime','dou
 INSERT INTO `table_columns` VALUES ('automation_networks',35,'last_started','timestamp','NO','','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('automation_networks',36,'last_status','varchar(128)','NO','','','');
 INSERT INTO `table_columns` VALUES ('automation_networks',37,'rerun_data_queries','char(2)','YES','',NULL,'');
-INSERT INTO `table_columns` VALUES ('automation_processes',1,'pid','int(8) unsigned','NO','PRI',NULL,'');
+INSERT INTO `table_columns` VALUES ('automation_processes',1,'pid','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('automation_processes',2,'poller_id','int(10) unsigned','YES','','1','');
 INSERT INTO `table_columns` VALUES ('automation_processes',3,'network_id','int(10) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('automation_processes',4,'task','varchar(20)','YES','','','');
@@ -255,7 +255,7 @@ INSERT INTO `table_columns` VALUES ('automation_snmp_items',2,'snmp_id','int(10)
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',3,'sequence','int(10) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',4,'snmp_version','tinyint(3) unsigned','NO','','1','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',5,'snmp_community','varchar(100)','NO','',NULL,'');
-INSERT INTO `table_columns` VALUES ('automation_snmp_items',6,'snmp_port','mediumint(5) unsigned','NO','','161','');
+INSERT INTO `table_columns` VALUES ('automation_snmp_items',6,'snmp_port','mediumint(8) unsigned','NO','','161','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',7,'snmp_timeout','int(10) unsigned','NO','','500','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',8,'snmp_retries','tinyint(3) unsigned','NO','','3','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',9,'max_oids','int(10) unsigned','YES','','10','');
@@ -267,8 +267,8 @@ INSERT INTO `table_columns` VALUES ('automation_snmp_items',14,'snmp_priv_passph
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',15,'snmp_priv_protocol','char(6)','YES','','','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',16,'snmp_context','varchar(64)','YES','','','');
 INSERT INTO `table_columns` VALUES ('automation_snmp_items',17,'snmp_engine_id','varchar(64)','YES','','','');
-INSERT INTO `table_columns` VALUES ('automation_templates',1,'id','int(8)','NO','PRI',NULL,'auto_increment');
-INSERT INTO `table_columns` VALUES ('automation_templates',2,'host_template','int(8)','NO','','0','');
+INSERT INTO `table_columns` VALUES ('automation_templates',1,'id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
+INSERT INTO `table_columns` VALUES ('automation_templates',2,'host_template','int(10) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('automation_templates',3,'availability_method','int(10) unsigned','YES','','2','');
 INSERT INTO `table_columns` VALUES ('automation_templates',4,'sysDescr','varchar(255)','YES','','','');
 INSERT INTO `table_columns` VALUES ('automation_templates',5,'sysName','varchar(255)','YES','','','');
@@ -592,7 +592,7 @@ INSERT INTO `table_columns` VALUES ('host',15,'snmp_priv_passphrase','varchar(20
 INSERT INTO `table_columns` VALUES ('host',16,'snmp_priv_protocol','char(6)','YES','','','');
 INSERT INTO `table_columns` VALUES ('host',17,'snmp_context','varchar(64)','YES','','','');
 INSERT INTO `table_columns` VALUES ('host',18,'snmp_engine_id','varchar(64)','YES','','','');
-INSERT INTO `table_columns` VALUES ('host',19,'snmp_port','mediumint(5) unsigned','NO','','161','');
+INSERT INTO `table_columns` VALUES ('host',19,'snmp_port','mediumint(8) unsigned','NO','','161','');
 INSERT INTO `table_columns` VALUES ('host',20,'snmp_timeout','mediumint(8) unsigned','NO','','500','');
 INSERT INTO `table_columns` VALUES ('host',21,'snmp_sysDescr','varchar(300)','NO','','','');
 INSERT INTO `table_columns` VALUES ('host',22,'snmp_sysObjectID','varchar(128)','NO','','','');
@@ -663,7 +663,7 @@ INSERT INTO `table_columns` VALUES ('plugin_hooks',2,'name','varchar(32)','NO','
 INSERT INTO `table_columns` VALUES ('plugin_hooks',3,'hook','varchar(64)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('plugin_hooks',4,'file','varchar(255)','NO','','','');
 INSERT INTO `table_columns` VALUES ('plugin_hooks',5,'function','varchar(128)','NO','','','');
-INSERT INTO `table_columns` VALUES ('plugin_hooks',6,'status','int(8)','NO','MUL','0','');
+INSERT INTO `table_columns` VALUES ('plugin_hooks',6,'status','int(10) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('plugin_realms',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('plugin_realms',2,'plugin','varchar(32)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('plugin_realms',3,'file','text','NO','',NULL,'');
@@ -725,7 +725,7 @@ INSERT INTO `table_columns` VALUES ('poller_item',13,'snmp_priv_passphrase','var
 INSERT INTO `table_columns` VALUES ('poller_item',14,'snmp_priv_protocol','char(6)','NO','','','');
 INSERT INTO `table_columns` VALUES ('poller_item',15,'snmp_context','varchar(64)','YES','','','');
 INSERT INTO `table_columns` VALUES ('poller_item',16,'snmp_engine_id','varchar(64)','YES','','','');
-INSERT INTO `table_columns` VALUES ('poller_item',17,'snmp_port','mediumint(5) unsigned','NO','','161','');
+INSERT INTO `table_columns` VALUES ('poller_item',17,'snmp_port','mediumint(8) unsigned','NO','','161','');
 INSERT INTO `table_columns` VALUES ('poller_item',18,'snmp_timeout','mediumint(8) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('poller_item',19,'rrd_name','varchar(19)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('poller_item',20,'rrd_path','varchar(255)','NO','','','');
@@ -899,7 +899,7 @@ INSERT INTO `table_columns` VALUES ('snmpagent_cache_textual_conventions',1,'nam
 INSERT INTO `table_columns` VALUES ('snmpagent_cache_textual_conventions',2,'mib','varchar(50)','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_cache_textual_conventions',3,'type','varchar(50)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('snmpagent_cache_textual_conventions',4,'description','varchar(5000)','NO','','','');
-INSERT INTO `table_columns` VALUES ('snmpagent_managers',1,'id','int(8)','NO','PRI',NULL,'auto_increment');
+INSERT INTO `table_columns` VALUES ('snmpagent_managers',1,'id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('snmpagent_managers',2,'hostname','varchar(100)','NO','MUL',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_managers',3,'description','varchar(255)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_managers',4,'disabled','char(2)','YES','',NULL,'');
@@ -912,19 +912,19 @@ INSERT INTO `table_columns` VALUES ('snmpagent_managers',10,'snmp_auth_protocol'
 INSERT INTO `table_columns` VALUES ('snmpagent_managers',11,'snmp_priv_passphrase','varchar(200)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_managers',12,'snmp_priv_protocol','char(6)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_managers',13,'snmp_engine_id','varchar(64)','YES','',NULL,'');
-INSERT INTO `table_columns` VALUES ('snmpagent_managers',14,'snmp_port','mediumint(5) unsigned','NO','','161','');
+INSERT INTO `table_columns` VALUES ('snmpagent_managers',14,'snmp_port','mediumint(8) unsigned','NO','','161','');
 INSERT INTO `table_columns` VALUES ('snmpagent_managers',15,'snmp_message_type','tinyint(4)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_managers',16,'notes','text','YES','',NULL,'');
-INSERT INTO `table_columns` VALUES ('snmpagent_managers_notifications',1,'manager_id','int(8)','NO','PRI',NULL,'');
+INSERT INTO `table_columns` VALUES ('snmpagent_managers_notifications',1,'manager_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_managers_notifications',2,'notification','varchar(50)','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_managers_notifications',3,'mib','varchar(50)','NO','PRI',NULL,'');
-INSERT INTO `table_columns` VALUES ('snmpagent_mibs',1,'id','int(8)','NO','PRI',NULL,'auto_increment');
+INSERT INTO `table_columns` VALUES ('snmpagent_mibs',1,'id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('snmpagent_mibs',2,'name','varchar(50)','NO','','','');
 INSERT INTO `table_columns` VALUES ('snmpagent_mibs',3,'file','varchar(255)','NO','','','');
 INSERT INTO `table_columns` VALUES ('snmpagent_notifications_log',1,'id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('snmpagent_notifications_log',2,'time','int(24)','NO','MUL',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_notifications_log',3,'severity','tinyint(4)','NO','MUL',NULL,'');
-INSERT INTO `table_columns` VALUES ('snmpagent_notifications_log',4,'manager_id','int(8)','NO','MUL',NULL,'');
+INSERT INTO `table_columns` VALUES ('snmpagent_notifications_log',4,'manager_id','int(10) unsigned','NO','MUL',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_notifications_log',5,'notification','varchar(190)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_notifications_log',6,'mib','varchar(50)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('snmpagent_notifications_log',7,'varbinds','varchar(5000)','NO','',NULL,'');

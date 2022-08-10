@@ -235,7 +235,7 @@ CREATE TABLE `automation_devices` (
   `ip` varchar(17) NOT NULL DEFAULT '',
   `snmp_community` varchar(100) NOT NULL DEFAULT '',
   `snmp_version` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
+  `snmp_port` mediumint(8) unsigned NOT NULL DEFAULT '161',
   `snmp_username` varchar(50) DEFAULT NULL,
   `snmp_password` varchar(50) DEFAULT NULL,
   `snmp_auth_protocol` char(6) DEFAULT '',
@@ -393,7 +393,7 @@ INSERT INTO `automation_networks` VALUES (1,1,0,'Test Network','192.168.1.0/24',
 --
 
 CREATE TABLE `automation_processes` (
-  `pid` int(8) unsigned NOT NULL,
+  `pid` int(10) unsigned NOT NULL,
   `poller_id` int(10) unsigned DEFAULT '1',
   `network_id` int(10) unsigned NOT NULL DEFAULT '0',
   `task` varchar(20) DEFAULT '',
@@ -431,7 +431,7 @@ CREATE TABLE `automation_snmp_items` (
   `sequence` int(10) unsigned NOT NULL DEFAULT '0',
   `snmp_version` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `snmp_community` varchar(100) NOT NULL,
-  `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
+  `snmp_port` mediumint(8) unsigned NOT NULL DEFAULT '161',
   `snmp_timeout` int(10) unsigned NOT NULL DEFAULT '500',
   `snmp_retries` tinyint(3) unsigned NOT NULL DEFAULT '3',
   `max_oids` int(10) unsigned DEFAULT '10',
@@ -457,8 +457,8 @@ INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,-1,
 --
 
 CREATE TABLE `automation_templates` (
-  `id` int(8) NOT NULL AUTO_INCREMENT,
-  `host_template` int(8) NOT NULL DEFAULT '0',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `host_template` int(10) unsigned NOT NULL DEFAULT '0',
   `availability_method` int(10) unsigned DEFAULT '2',
   `sysDescr` varchar(255) DEFAULT '',
   `sysName` varchar(255) DEFAULT '',
@@ -1922,7 +1922,7 @@ CREATE TABLE host (
   snmp_priv_protocol char(6) default '',
   snmp_context varchar(64) default '',
   snmp_engine_id varchar(64) default '',
-  snmp_port mediumint(5) unsigned NOT NULL default '161',
+  snmp_port mediumint(8) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '500',
   snmp_sysDescr varchar(300) NOT NULL default '',
   snmp_sysObjectID varchar(128) NOT NULL default '',
@@ -2097,7 +2097,7 @@ CREATE TABLE `plugin_hooks` (
   `hook` varchar(64) NOT NULL default '',
   `file` varchar(255) NOT NULL default '',
   `function` varchar(128) NOT NULL default '',
-  `status` int(8) NOT NULL default '0',
+  `status` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (`id`),
   KEY `hook` (`hook`),
   KEY `status` (`status`)
@@ -2226,7 +2226,7 @@ CREATE TABLE poller_item (
   `snmp_priv_protocol` char(6) NOT NULL default '',
   `snmp_context` varchar(64) default '',
   `snmp_engine_id` varchar(64) default '',
-  `snmp_port` mediumint(5) unsigned NOT NULL default '161',
+  `snmp_port` mediumint(8) unsigned NOT NULL default '161',
   `snmp_timeout` mediumint(8) unsigned NOT NULL default '0',
   `rrd_name` varchar(19) NOT NULL default '',
   `rrd_path` varchar(255) NOT NULL default '',
@@ -2936,7 +2936,7 @@ CREATE TABLE `snmpagent_cache` (
 -- Table structure for table `snmpagent_mibs`
 --
 CREATE TABLE `snmpagent_mibs` (
-  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL DEFAULT '',
   `file` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -2984,7 +2984,7 @@ CREATE TABLE `snmpagent_cache_textual_conventions` (
 --
 
 CREATE TABLE `snmpagent_managers` (
-  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hostname` varchar(100) NOT NULL,
   `description` varchar(255) NOT NULL,
   `disabled` char(2) DEFAULT NULL,
@@ -2997,7 +2997,7 @@ CREATE TABLE `snmpagent_managers` (
   `snmp_priv_passphrase` varchar(200) NOT NULL,
   `snmp_priv_protocol` char(6) NOT NULL,
   `snmp_engine_id` varchar(64) DEFAULT NULL,
-  `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
+  `snmp_port` mediumint(8) unsigned NOT NULL DEFAULT '161',
   `snmp_message_type` tinyint(4) NOT NULL,
   `notes` text,
   PRIMARY KEY (`id`),
@@ -3013,7 +3013,7 @@ CREATE TABLE `snmpagent_managers` (
 --
 
 CREATE TABLE `snmpagent_managers_notifications` (
-  `manager_id` int(8) NOT NULL,
+  `manager_id` int(10) unsigned NOT NULL,
   `notification` varchar(50) NOT NULL,
   `mib` varchar(50) NOT NULL,
   PRIMARY KEY(`manager_id`,`notification`,`mib`),
@@ -3032,7 +3032,7 @@ CREATE TABLE `snmpagent_notifications_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `time` int(24) NOT NULL,
   `severity` tinyint(4) NOT NULL,
-  `manager_id` int(8) NOT NULL,
+  `manager_id` int(10) unsigned NOT NULL,
   `notification` varchar(190) NOT NULL,
   `mib` varchar(50) NOT NULL,
   `varbinds` varchar(5000) NOT NULL,
