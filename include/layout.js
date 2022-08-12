@@ -1610,6 +1610,7 @@ function tuneTable(object, width) {
 	var allSeenWidth      = 0;
 	var calculatedPadding = 15;
 	var tableChanged      = false;
+	var stopExpand        = false;
 
 	var tableHeaders = $(object).find('th');
 	var tableCheckBox = $(tableHeaders).each(function() {
@@ -1675,8 +1676,6 @@ function tuneTable(object, width) {
 		}
 	} else if (allSeenWidth < width) {
 		calculatedColumns = calculatedColumns.sort();
-
-		var stopExpand = false;
 
 		// Since we can show hidden columns now, let's go
 		// in reverse until we run out of space
