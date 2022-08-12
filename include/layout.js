@@ -1358,11 +1358,11 @@ function responsiveUI(event) {
 }
 
 function getMainWidth() {
-	// Subtract 20px for the scroll bar
+	// Subtract 15px for the scroll bar
 	if ($('#navigation').length && $('#navigation').is(':visible')) {
-		var mainWidth = $('body').outerWidth() - $('#navigation').width() - 20;
+		var mainWidth = $('body').outerWidth() - $('#navigation').width() - 15;
 	} else {
-		var mainWidth = $('body').outerWidth() - 20;
+		var mainWidth = $('body').outerWidth() - 15;
 	}
 
 	return mainWidth;
@@ -1611,6 +1611,7 @@ function tuneTable(object, width) {
 	var calculatedPadding = 15;
 	var tableChanged      = false;
 	var stopExpand        = false;
+	var debug             = false;
 
 	var tableHeaders = $(object).find('th');
 	var tableCheckBox = $(tableHeaders).each(function() {
@@ -1635,12 +1636,14 @@ function tuneTable(object, width) {
 		}
 	});
 
-	//console.log(
-	//	'allSeenWidth:'     + Math.round(allSeenWidth, 1) +
-	//	', CalCWidth:'  + Math.round(calculatedWidth, 1) +
-	//	', TableWidth:' + Math.round(tableWidth, 1) +
-	//	', PageWidth:'  + Math.round(width, 1)
-	//);
+	if (debug) {
+		console.log(
+			'allSeenWidth:'     + Math.round(allSeenWidth, 1) +
+			', calulatedWidth:'  + Math.round(calculatedWidth, 1) +
+			', tableWidth:' + Math.round(tableWidth, 1) +
+			', width:'  + Math.round(width, 1)
+		);
+	}
 
 	if (width < tableWidth) {
 		$($(object).find('th').get()).each(function() {
@@ -1650,12 +1653,14 @@ function tuneTable(object, width) {
 				var columnWidth = $.textMetrics(this).width + calculatedPadding;
 				var name = $(this).find('div.sortinfo').attr('sort-column');
 
-				//console.log(
-				//	'ColIndex:' + $(this).index() +
-				//	', ColWidth:' + Math.round(columnWidth, 1) +
-				//	', TotalWidth:' + Math.round(calculatedWidth, 1) +
-				//	', PageWidth:' + Math.round(width, 1)
-				//);
+				if (debug) {
+					console.log(
+						'ColIndex:' + $(this).index() +
+						', ColWidth:' + Math.round(columnWidth, 1) +
+						', TotalWidth:' + Math.round(calculatedWidth, 1) +
+						', PageWidth:' + Math.round(width, 1)
+					);
+				}
 
 				if (width < calculatedWidth) {
 					$(this).hide();
@@ -1674,7 +1679,11 @@ function tuneTable(object, width) {
 				}
 			}));
 		}
-	} else if (allSeenWidth < width) {
+	}
+
+	tableChanged = false;
+
+	if (allSeenWidth < width) {
 		calculatedColumns = calculatedColumns.sort();
 
 		// Since we can show hidden columns now, let's go
@@ -1685,19 +1694,20 @@ function tuneTable(object, width) {
 					var columnWidth = $.textMetrics(this).width + calculatedPadding;
 					var name = $(this).find('div.sortinfo').attr('sort-column');
 
-					if (allSeenWidth + calculatedWidth < tableWidth) {
+					if (allSeenWidth + columnWidth < tableWidth) {
 						$(this).show();
 
 						var newTableWidth = $(object).width();
 
-						//console.log(
-						//	'Reverse ColIndex:' + $(this).index() +
-						//	', ColWidth:' + Math.round(columnWidth, 1) +
-						//	', TotalWidth:' + Math.round(calculatedWidth, 1) +
-						//	', AllSeenWidth:' + Math.round(allSeenWidth, 1) +
-						//	', PageWidth:' + Math.round(width, 1) +
-						//	', newPageWidth:' + Math.round(newTableWidth, 1)
-						//);
+						if (debug) {
+							console.log(
+								'Reverse ColIndex:' + $(this).index() +
+								', columnWidth:' + Math.round(columnWidth, 1) +
+								', allSeenWidth:' + Math.round(allSeenWidth, 1) +
+								', width:' + Math.round(width, 1) +
+								', newTableWidth:' + Math.round(newTableWidth, 1)
+							);
+						}
 
 						if (newTableWidth > width) {
 							$(this).hide();
