@@ -608,8 +608,8 @@ INSERT INTO `table_columns` VALUES ('host',31,'ping_retries','int(10) unsigned',
 INSERT INTO `table_columns` VALUES ('host',32,'max_oids','int(10) unsigned','YES','','10','');
 INSERT INTO `table_columns` VALUES ('host',33,'bulk_walk_size','int(11)','YES','','-1','');
 INSERT INTO `table_columns` VALUES ('host',34,'device_threads','tinyint(3) unsigned','NO','','1','');
-INSERT INTO `table_columns` VALUES ('host',35,'deleted','char(2)','YES','','','');
-INSERT INTO `table_columns` VALUES ('host',36,'disabled','char(2)','YES','MUL',NULL,'');
+INSERT INTO `table_columns` VALUES ('host',35,'deleted','char(2)','NO','','','');
+INSERT INTO `table_columns` VALUES ('host',36,'disabled','char(2)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('host',37,'status','tinyint(3) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('host',38,'status_event_count','mediumint(8) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('host',39,'status_fail_date','timestamp','NO','','0000-00-00 00:00:00','');

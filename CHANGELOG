@@ -34,6 +34,7 @@ Cacti CHANGELOG
 -issue#4880: The MySQL get_lock() function can lead to stalled boost and dsstats processes
 -issue#4882: Under rare conditions the boost process can get hung until the poller times out
 -issue#4884: Graph XPort Issues with PHP 8.x
+-issue#4887: Host table has wrong default in Cacti 1.2.21 and before for some users
 -feature#4533: Restructuring RRDfile paths takes too long on large systems and will stop polling for potentially several hours
 -feature#4820: Make it possible to only import certain components when importing packages
 -feature#4825: Add update_device.php script to cli folder
