@@ -1358,10 +1358,11 @@ function responsiveUI(event) {
 }
 
 function getMainWidth() {
+	// Subtract 20px for the scroll bar
 	if ($('#navigation').length && $('#navigation').is(':visible')) {
-		var mainWidth = $('body').innerWidth() - $('#navigation').width();
+		var mainWidth = $('body').outerWidth() - $('#navigation').width() - 20;
 	} else {
-		var mainWidth = $('body').innerWidth();
+		var mainWidth = $('body').outerWidth() - 20;
 	}
 
 	return mainWidth;
@@ -1634,7 +1635,7 @@ function tuneTable(object, width) {
 	});
 
 	//console.log(
-	//	'allWidth:'     + Math.round(allSeenWidth, 1) +
+	//	'allSeenWidth:'     + Math.round(allSeenWidth, 1) +
 	//	', CalCWidth:'  + Math.round(calculatedWidth, 1) +
 	//	', TableWidth:' + Math.round(tableWidth, 1) +
 	//	', PageWidth:'  + Math.round(width, 1)
@@ -1675,30 +1676,33 @@ function tuneTable(object, width) {
 	} else if (allSeenWidth < width) {
 		calculatedColumns = calculatedColumns.sort();
 
+		var stopExpand = false;
+
 		// Since we can show hidden columns now, let's go
 		// in reverse until we run out of space
 		$($(object).find('th').get()).each(function() {
 			if (!calculatedColumns.includes($(this).index())) {
-				if ($(this).is(':hidden')) {
+				if ($(this).is(':hidden') && stopExpand == false) {
 					var columnWidth = $.textMetrics(this).width + calculatedPadding;
 					var name = $(this).find('div.sortinfo').attr('sort-column');
 
 					if (allSeenWidth + calculatedWidth < tableWidth) {
-						//console.log(
-						//	'Reverse ColIndex:' + $(this).index() +
-						//	', AllWidth:' + Math.round(allSeenWidth, 1) +
-						//	', ColWidth:' + Math.round(columnWidth, 1) +
-						//	', TotalWidth:' + Math.round(calculatedWidth, 1) +
-						//	', PageWidth:' + Math.round(width, 1)
-						//);
-
 						$(this).show();
 
 						var newTableWidth = $(object).width();
 
+						//console.log(
+						//	'Reverse ColIndex:' + $(this).index() +
+						//	', ColWidth:' + Math.round(columnWidth, 1) +
+						//	', TotalWidth:' + Math.round(calculatedWidth, 1) +
+						//	', AllSeenWidth:' + Math.round(allSeenWidth, 1) +
+						//	', PageWidth:' + Math.round(width, 1) +
+						//	', newPageWidth:' + Math.round(newTableWidth, 1)
+						//);
+
 						if (newTableWidth > width) {
 							$(this).hide();
-							return;
+							stopExpand = true;
 						} else {
 							calculatedColumns.push($(this).index());
 							tableChanged = true;
