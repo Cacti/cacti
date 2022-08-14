@@ -1,48 +1,48 @@
 Cacti CHANGELOG
 
 1.2.22
--security#4834: XSS Issue in graphs_new.php
--issue#4768: Multiple AD LDAP Full Name and mail are not propagated when creating user from template
--issue#4802: Typo in lib/auth.php prevents users from changing their password and logging in
--issue#4808: WARNING: Poller Output Table not Empty
--issue#4810: Call to undefined function boost_debug in Cacti log
+-security#4834: When creating new graphs, cross site injection is possible
+-issue#4768: When creating user from template, multiple Domain FullName and Mail are not propagated
 -issue#4791: Nectar Aggregate 95th emailed report broken
--issue#4796: Hint at poller issues when boost fails
+-issue#4796: Boost may not find archive tables correctly
+-issue#4802: Users may be unable to change their password when forced during a login
 -issue#4803: Net-SNMP Memory Graph Template has Wrong GPRINT
--issue#4806: Search in tree view unusable on sizeable installations
+-issue#4806: Search in tree view unusable on larger installations
+-issue#4808: Increased bulk insert size to avoid partial inserts and potential data loss.
+-issue#4810: Call to undefined function boost_debug in Cacti log
 -issue#4814: When no guest template is set, login cookies are not properly set
--issue#4817: Boost when using RRDtool 1.5+ does not need to check last_update time
--issue#4818: Regex widths are too narrow
+-issue#4817: Later RRDtool releases do not need to check last_update time
+-issue#4818: Regex filters are not always long enough
 -issue#4819: Domains based LDAP and AD Fullname and Email not auto-populated
 -issue#4822: Cacti polling and boost report the wrong number of Data Sources when Devices are disabled
 -issue#4823: When editing Graph Template Items there are cases where VDEF's are hidden when they should be shown
--issue#4831: Cactid lacks a default for $database_ssl
--issue#4837: Add correct path for spine in *BSD systems
+-issue#4831: Database SSL setting lacks default value
+-issue#4837: Update default path cacti under *BSD by xmacan
 -issue#4840: Web Basic authentication not creating template user
 -issue#4846: Unable to change the Heartbeat of a Data Source Profile
--issue#4849: Tree Search does not properly search all Trees
--issue#4850: When structured paths are setup even if the web server has write access it won't create RRDfiles
--issue#4851: Too Many Turns on Log Parsing
+-issue#4849: Tree Search Does Not Properly Search All Trees
+-issue#4850: When structured paths are setup, RRDfiles may not always be created when possible
+-issue#4851: When parsing the logs, caching would help speed up processing
 -issue#4853: Deprecation warnings when attempting real-time Graphs with PHP8.1
 -issue#4860: Custom Timespan is lost when clicking other tree branches
 -issue#4863: Non device based Data Sources not being polled
--issue#4865: XML Pre-processing during Graph Creation throws error when Resource XML file inproperly formatted
--issue#4866: Using ${var} in strings is deprecated, use {$var} instead in file
+-issue#4865: When Resource XML file inproperly formatted, graph creation can fail with errors
+-issue#4866: Update code style to support PHP 8 requirements
 -issue#4867: In Graph Management, filtering for "Device: None" shows all graphs
 -issue#4871: Realtime popup window experiences issues on some browsers
--issue#4873: Correct Settings-->Authentication fields visible status
--issue#4880: The MySQL get_lock() function can lead to stalled boost and dsstats processes
--issue#4882: Under rare conditions the boost process can get hung until the poller times out
--issue#4884: Graph XPort Issues with PHP 8.x
--issue#4887: Host table has wrong default in Cacti 1.2.21 and before for some users
--feature#4533: Restructuring RRDfile paths takes too long on large systems and will stop polling for potentially several hours
--feature#4820: Make it possible to only import certain components when importing packages
--feature#4825: Add update_device.php script to cli folder
--feature#4827: Move all Help pages to docs.cacti.net if the page is reachable
--feature#4832: Show PHP INI locations during install
+-issue#4873: Auth settings do not always properly reflect the options selected by ddb4github
+-issue#4880: MySQL can cause cacti to become stalled due to locking issues
+-issue#4882: Boost process can get hung under rare conditions until the poller times out
+-issue#4884: Exporting graphs under PHP 8 can cause errors
+-issue#4887: Host table has wrong default for disabled and deleted columns
+-feature#4533: RRD storage paths do not scale properly
+-feature#4820: When importing, make it possible to only import certain components
+-feature#4825: Update change_device script to include new features by bmfmancini
+-feature#4827: Make help pages use latest online version wherever possible
+-feature#4832: Cacti should show PHP INI locations during install
 -feature#4833: Detect PHP INI values that are different in the INI vs running config
--feature#4870: Add gradient support for AREA charts
--feature#4872: Add missing and more recent CDEF functions for RRDtool
+-feature#4870: Added Gradient Color support for AREA charts by thurban
+-feature#4872: Update CDEF functions for RRDtool
 -feature#4881: When boost is running, it's not clear which processes are running and how long they have to complete
 
 1.2.21
