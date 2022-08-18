@@ -52,7 +52,7 @@ $child    = false;
 /* for releasing lock on SIGNAL */
 $current_lock = false;
 
-global $child, $next_run_time, $current_lock;
+global $child, $next_run_time, $archive_table, $current_lock;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -255,8 +255,10 @@ function sig_handler($signo) {
 			/* ignore all other signals */
 	}
 
-	if ($current_lock !== false) {
+	if ($current_lock !== false && $child) {
 		db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
+	} elseif (!$child) {
+		db_execute("SELECT RELEASE_ALL_LOCKS()");
 	}
 }
 
@@ -287,7 +289,7 @@ function boost_processes_running() {
 }
 
 function boost_prepare_process_table() {
-	global $start_time, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
+	global $start_time, $archive_table, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 
 	boost_debug('Parallel Process Setup Begins.');
 
@@ -303,8 +305,7 @@ function boost_prepare_process_table() {
 			/* if the runtime was exceeded, allow the next process to run */
 			if ($previous_start_time + $max_run_duration < $start_time) {
 				cacti_log('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', false, 'BOOST SVR');
-				admin_email(__('Cacti System Warning'), __('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', 'BOOST SVR'  ));
-
+				admin_email(__('Cacti System Warning'), __('WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash', 'BOOST SVR'));
 			}
 		}
 	}
@@ -331,7 +332,7 @@ function boost_prepare_process_table() {
 	db_execute("RENAME TABLE poller_output_boost TO $archive_table, $interim_table TO poller_output_boost");
 	db_execute("ANALYZE TABLE $archive_table");
 
-	$arch_tables = boost_get_arch_table_names();
+	$arch_tables = boost_get_arch_table_names($archive_table);
 
 	if (!cacti_sizeof($arch_tables)) {
 		cacti_log('ERROR: Failed to retrieve archive table name - check poller', false, 'BOOST');
@@ -362,7 +363,7 @@ function boost_prepare_process_table() {
 		process_handler int unsigned default "0",
 		PRIMARY KEY (local_data_id),
 		INDEX process_handler(process_handler))
-		ENGINE=MEMORY');
+		ENGINE=InnoDB');
 
 	db_execute('TRUNCATE poller_output_boost_local_data_ids');
 
@@ -411,12 +412,11 @@ function boost_launch_children() {
 
 	$php_binary    = read_config_option('path_php_binary');
 	$boost_log     = read_config_option('path_boost_log');
-	$boost_logdir  = dirname($boost_log);
 	$redirect_args = '';
 
 	if ($boost_log != '') {
-		if (!is_writable($boost_log) || !is_dir($boost_logdir) || !is_writable($boost_logdir)) {
-			boost_debug("WARNING: Boost log '$boost_log' does not exist or is not writable!");
+		if (!is_writable($boost_log)) {
+			boost_debug("WARNING: Boost log '$boost_log' is not writable!");
 
 			cacti_log("WARNING: Boost log '$boost_log' is not writable!", false, 'BOOST');
 		} else {
@@ -515,7 +515,7 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 }
 
 function boost_output_rrd_data($child) {
-	global $start, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
+	global $start, $archive_table, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 
 	$rrd_updates       = 0;
 	$rrdtool_pipe      = rrd_init();
@@ -531,7 +531,7 @@ function boost_output_rrd_data($child) {
 
 	boost_debug("Processing RRRtool Output for Boost Process $child");
 
-	$arch_tables = boost_get_arch_table_names();
+	$arch_tables = boost_get_arch_table_names($archive_table);
 
 	if (!cacti_sizeof($arch_tables)) {
 		cacti_log('ERROR: Failed to retrieve archive table name', false, 'BOOST');
@@ -620,10 +620,10 @@ function boost_output_rrd_data($child) {
    @arg $child - the current process
    @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation */
 function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
-	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
+	global $config, $archive_table, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
 
 	/* cache this call as it takes time */
-	static $archive_tables   = false;
+	static $archive_tables  = false;
 	static $rrdtool_version = '';
 
 	include_once($config['library_path'] . '/rrd.php');
@@ -658,7 +658,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	$data_ids_to_get     = read_config_option('boost_rrd_update_max_records_per_select');
 
 	if ($archive_tables === false) {
-		$archive_tables = boost_get_arch_table_names();
+		$archive_tables = boost_get_arch_table_names($archive_table);
 	}
 
 	if ($archive_tables === false) {
@@ -913,17 +913,17 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		$current_lock = false;
 
 		boost_timer('results_cycle', BOOST_TIMER_END);
-
-		/* remove the entries from the table */
-		boost_timer('delete', BOOST_TIMER_START);
-
-		db_execute_prepared("DELETE FROM poller_output_boost_local_data_ids
-			WHERE local_data_id <= ?
-			AND process_handler = ?",
-			array($last_id, $child));
-
-		boost_timer('delete', BOOST_TIMER_END);
 	}
+
+	/* remove the entries from the table */
+	boost_timer('delete', BOOST_TIMER_START);
+
+	db_execute_prepared("DELETE FROM poller_output_boost_local_data_ids
+		WHERE local_data_id <= ?
+		AND process_handler = ?",
+		array($last_id, $child));
+
+	boost_timer('delete', BOOST_TIMER_END);
 
 	/* restore original error handler */
 	restore_error_handler();

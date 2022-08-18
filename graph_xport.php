@@ -244,11 +244,14 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 	if (!$html) {
 		$j = 1;
+
 		foreach($xport_array['data'] as $row) {
 			$data = '"' . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j*$xport_array['meta']['step'])) . '"';
+
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
 				$data .= ',"' . $row['col' . $i] . '"';
 			}
+
 			$output .= $data . "\n";
 			$j++;
 		}
@@ -258,21 +261,27 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 		print $output;
 	} else {
 		$j = 1;
+
 		foreach($xport_array['data'] as $row) {
 			print "<tr><td class='left'>" . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j*$xport_array['meta']['step'])) . "</td>";
 
 			for ($i = 1; $i <= $xport_array['meta']['columns']; $i++) {
-				$row_data = floatval($row['col'.$i]);
+				$row_data = floatval($row['col'. $i]);
+
 				if ($row_data > 1) {
-					$row_data = trim(number_format_i18n(round($row_data,3),2,$graph_info['base_value']));
+					$row_data = trim(number_format_i18n(round($row_data, 3), 2, $graph_info['base_value']));
 				} elseif($row_data == 0) {
 					$row_data = '-';
+
 					if (!is_numeric($row['col'.$i])) {
-						$row_data .= '(unexpected: ' . $row['col'.$i].')';
+						$row_data .= '(unexpected: ' . $row['col' . $i] . ')';
 					}
+				} elseif (is_numeric($row_data)) {
+					$row_data = trim(number_format_i18n(round($row_data, 5), 4));
 				} else {
-					$row_data = trim(number_format_i18n(round($row_data,5),4));
+					$row_data = 'U';
 				}
+
 				print "<td class='right'>$row_data</td>";
 			}
 

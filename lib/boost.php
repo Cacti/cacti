@@ -593,7 +593,7 @@ function boost_timer_get_overhead() {
 }
 
 /* boost_get_arch_table_names - returns current archive boost tables or false if no arch table is present currently */
-function boost_get_arch_table_names() {
+function boost_get_arch_table_names($latest_table = '') {
 	$tableNames = array_rekey(
 		db_fetch_assoc("SELECT TABLE_NAME AS name
 			FROM information_schema.TABLES
@@ -604,7 +604,13 @@ function boost_get_arch_table_names() {
 	);
 
 	if (!cacti_sizeof($tableNames)) {
-		return false;
+		if ($latest_table != '' && db_table_exists($latest_table)) {
+			$tableNames[$latest_table] = $latest_table;
+
+			return $tableNames;
+		} else {
+			return false;
+		}
 	} else {
 		return $tableNames;
 	}
