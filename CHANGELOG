@@ -1,5 +1,10 @@
 Cacti CHANGELOG
 
+1.2.23
+-issue#4892: Recache Loop after many devices go offline
+-feature#3131: Button to reindex bad indexes
+-feature#4890: Add multi threading for Poller rechace script
+
 1.2.22
 -security#4834: When creating new graphs, cross site injection is possible
 -issue#4768: When creating user from template, multiple Domain FullName and Mail are not propagated
