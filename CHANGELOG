@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.23
 -issue#4892: Recache Loop after many devices go offline
 -feature#3131: Button to reindex bad indexes
+-feature#4874: Add support for showing business hours
 -feature#4890: Add multi threading for Poller rechace script
 
 1.2.22
