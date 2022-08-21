@@ -1090,7 +1090,7 @@ function utilities_get_mysql_recommendations() {
 					'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
 					)
 			);
-		} elseif (version_compare($variables['innodb_version'], '10.5', '<')) {
+		} elseif ($database == 'MariaDB' && version_compare($variables['innodb_version'], '10.5', '<') || $database == 'MySQL') {
 			$recommendations += array(
 				'innodb_flush_log_at_timeout' => array(
 					'value'   => '3',
@@ -1111,7 +1111,7 @@ function utilities_get_mysql_recommendations() {
 					'value' => '16',
 					'measure' => 'pinst',
 					'class' => 'warning',
-					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of 64.', $database)
+					'comment' => ($database == 'MySQL' ? __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64.', $database): __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64.', $database))
 					),
 				'innodb_io_capacity' => array(
 					'value' => '5000',
@@ -1282,6 +1282,16 @@ function utilities_get_mysql_recommendations() {
 
 				// Divide the buffer pool size by 128MB, and ensure 1 or more
 				$pool_instances = round(($innodb_pool_size / 1024 / 1024 / 128) + 0.5);
+
+				if ($config['cacti_server_os'] == 'win32') {
+					$nproc = getenv('NUMBER_OF_PROCESSORS');
+				} else {
+					$nproc = system('nproc');
+				}
+
+				if ($pool_instances > $nproc) {
+					$pool_instances = $nproc;
+				}
 
 				if ($pool_instances < 1) {
 					$pool_instances = 1;
