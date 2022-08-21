@@ -7,6 +7,8 @@ Cacti CHANGELOG
 -feature#3131: Button to reindex bad indexes
 -feature#4874: Add support for showing business hours
 -feature#4890: Add multi threading for Poller rechace script
+-feature#4899: Pass poller status to script_server to avoid connecting to the main database when offline or in recovery
+-feature#4901: Make the script server accept arguments in the standard way
 
 1.2.22
 -security#4834: When creating new graphs, cross site injection is possible

@@ -270,7 +270,7 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename,
 }
 
 /* set poller mode */
-global $local_db_cnn_id, $remote_db_cnn_id;
+global $local_db_cnn_id, $remote_db_cnn_id, $conn_mode;
 
 $config['connection'] = 'online';
 
@@ -296,8 +296,13 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	/* gather the existing cactidb version */
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
 
-	// We are a remote poller also try to connect to the remote database
-	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
+	/**
+	 * If we have not been forced offline by the $conn_mode global and since we are
+	 * a remote poller, let's attempt to get back online.
+	 */
+	if ($conn_mode != 'offline') {
+		$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
+	}
 
 	if ($config['is_web'] && is_object($remote_db_cnn_id) &&
 		$config['connection'] != 'recovery' &&

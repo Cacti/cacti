@@ -29,35 +29,8 @@ if (function_exists('pcntl_async_signals')) {
 	declare(ticks = 100);
 }
 
-function sig_handler($signo) {
-	switch ($signo) {
-		case SIGTERM:
-		case SIGINT:
-			cacti_log('WARNING: Cacti Poller process terminated by user', true, 'POLLER');
-
-			// record the process as having completed
-			record_cmdphp_done();
-			db_close();
-
-			exit;
-			break;
-		default:
-			// ignore all other signals
-	}
-}
-
-require_once(__DIR__ . '/include/cli_check.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/rrd.php');
-require_once($config['base_path'] . '/lib/ping.php');
-
-global $poller_id, $sessions, $downhosts, $remote_db_cnn_id, $print_data_to_stdout;
-
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
-
-$no_http_headers = true;
 
 // process calling arguments
 $parms = $_SERVER['argv'];
@@ -75,6 +48,7 @@ $host_count = 0;
 $tot_errors = 0;
 $poller_id  = $config['poller_id'];
 $maxwidth   = get_max_column_width();
+$pmessage   = false;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -98,7 +72,7 @@ if (cacti_sizeof($parms)) {
 			exit;
 		case '--poller':
 		case '-p':
-			cacti_log('Forcing poller to ' . $value, true, 'POLLER', POLLER_VERBOSITY_HIGH);
+			$pmessage = true;
 			$poller_id = $value;
 			break;
 		case '--first':
@@ -124,14 +98,25 @@ if (cacti_sizeof($parms)) {
 			$debug = true;
 			break;
 		default:
-			print "ERROR: Invalid Argument: ($arg)\n\n";
+			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 			display_help();
 			exit(1);
 		}
 	}
 }
 
+require_once(__DIR__ . '/include/cli_check.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/ping.php');
+
 global $poller_db_cnn_id, $remote_db_cnn_id, $cactiphp, $using_proc_function;
+global $poller_id, $sessions, $downhosts, $print_data_to_stdout;
+
+if ($pmessage) {
+	cacti_log('Forcing poller to ' . $value, true, 'POLLER', POLLER_VERBOSITY_HIGH);
+}
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
@@ -291,7 +276,15 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			2 => array('pipe', 'w')  // stderr is a pipe to write to
 		);
 
-		$cactiphp = proc_open(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/script_server.php cmd', $cactides, $pipes);
+		$php_path = read_config_option('path_php_binary');
+
+		$command = $php_path     . ' -q ' .
+			$config['base_path'] . '/script_server.php ' .
+			' --environ=cmd '    .
+			' --poller='         . $poller_id .
+			' --mode='           . $config['connection'];
+
+		$cactiphp = proc_open($command, $cactides, $pipes);
 		$output = fgets($pipes[1], 1024);
 
 		if (substr_count($output, 'Started') != 0) {
@@ -934,27 +927,52 @@ function get_max_column_width() {
 	return min($pmax, $bmax);
 }
 
-function display_version() {
-	$version = get_cacti_version();
-	print "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n";
+function sig_handler($signo) {
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
+			cacti_log('WARNING: Cacti Poller process terminated by user', true, 'POLLER');
+
+			// record the process as having completed
+			record_cmdphp_done();
+			db_close();
+
+			exit;
+			break;
+		default:
+			// ignore all other signals
+	}
 }
 
-//	display_help - displays the usage of the function
+function display_version() {
+	$version = get_cacti_version();
+	print "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+}
+
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return (void)
+ */
 function display_help () {
 	display_version();
 
-	print "\nusage: cmd.php --first=ID --last=ID [--poller=ID] [--mibs] [--debug]\n\n";
-	print "Cacti's legacy data collector.  This data collector is called by poller.php\n";
-	print "every poller interval to gather information from devices.  It is recommended\n";
-	print "that every system deploy spine instead of cmd.php in production due to the built\n";
-	print "in scalability limits of cmd.php.\n\n";
-	print "Required\n";
-	print "    --first  - First host id in the range to collect from.\n";
-	print "    --last   - Last host id in the range to collect from.\n\n";
-	print "Optional:\n";
-	print "    --poller - The poller to run as.  Defaults to the system poller.\n";
-	print "    --mode   - The poller mode, either online, offline, or recovery.\n";
-	print "    --mibs   - Refresh all system mibs from hosts supporting snmp.\n";
-	print "    --debug  - Display verbose output during execution.\n\n";
+	print PHP_EOL;
+	print 'usage: cmd.php --first=ID --last=ID [--poller=ID] [--mibs] [--debug]' . PHP_EOL . PHP_EOL;
+
+	print 'Cacti\'s legacy data collector.  This data collector is called by poller.php' . PHP_EOL;
+	print 'every poller interval to gather information from devices.  It is recommended' . PHP_EOL;
+	print 'that every system deploy spine instead of cmd.php in production due to the built' . PHP_EOL;
+	print 'in scalability limits of cmd.php.' . PHP_EOL . PHP_EOL;
+
+	print 'Required' . PHP_EOL;
+	print '    --first  - First host id in the range to collect from.' . PHP_EOL;
+	print '    --last   - Last host id in the range to collect from.' . PHP_EOL . PHP_EOL;
+
+	print 'Optional:' . PHP_EOL;
+	print '    --poller - The poller to run as.  Defaults to the system poller.' . PHP_EOL;
+	print '    --mode   - The poller mode, either online, offline, or recovery.' . PHP_EOL;
+	print '    --mibs   - Refresh all system mibs from hosts supporting snmp.' . PHP_EOL;
+	print '    --debug  - Display verbose output during execution.' . PHP_EOL . PHP_EOL;
 }
 
