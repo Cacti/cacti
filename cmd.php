@@ -48,6 +48,8 @@ $host_count = 0;
 $tot_errors = 0;
 $poller_id  = $config['poller_id'];
 $pmessage   = false;
+$help       = false;
+$version    = false;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -62,39 +64,47 @@ if (sizeof($parms)) {
 		case '--version':
 		case '-V':
 		case '-v':
-			display_version();
-			exit;
+			$version = true;
+
+			break;
 		case '--help':
 		case '-H':
 		case '-h':
-			display_help();
-			exit;
+			$help = true;
+
+			break;
 		case '--poller':
 		case '-p':
 			$pmessage = true;
 			$poller_id = $value;
+
 			break;
 		case '--first':
 		case '-f':
 			$first   = $value;
 			$allhost = false;
+
 			break;
 		case '--last':
 		case '-l':
 			$last    = $value;
 			$allhost = false;
+
 			break;
 		case '--mibs':
 		case '-m':
-			$mibs    = true;
+			$mibs = true;
+
 			break;
 		case '--mode':
 		case '-N':
 			$mode = $value;
+
 			break;
 		case '--debug':
 		case '-d':
 			$debug = true;
+
 			break;
 		default:
 			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
@@ -109,6 +119,14 @@ require_once($config['base_path'] . '/lib/snmp.php');
 require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 require_once($config['base_path'] . '/lib/ping.php');
+
+if ($version) {
+	display_version();
+	exit;
+} elseif ($help) {
+	display_help();
+	exit;
+}
 
 global $poller_db_cnn_id, $remote_db_cnn_id, $cactiphp, $using_proc_function;
 global $poller_id, $sessions, $downhosts, $print_data_to_stdout;
