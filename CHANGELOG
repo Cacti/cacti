@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#4889: Increase host query performance by removing check for NULL after 1.2.22
 -issue#4892: Recache Loop after many devices go offline
 -issue#4893: in cacti 1.2.22 real time counter gets stuck and does not count down
+-issue#4903: MySQL 8.x regular expressions break Cacti Automation
 -feature#3131: Button to reindex bad indexes
 -feature#4841: Move the cactid function db_check_reconnect() to lib/database.php for other service oriented scripts
 -feature#4874: Add support for showing business hours
