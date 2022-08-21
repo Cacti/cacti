@@ -79,6 +79,10 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 		WHERE id = ?',
 		array($host_id));
 
+	if (!cacti_sizeof($host)) {
+		return 'reads:0 writes:0';
+	}
+
 	$uptime  = cacti_snmp_get($host['hostname'],
 		$host['snmp_community'],
 		'.1.3.6.1.2.1.1.3.0',

@@ -1296,7 +1296,7 @@ $settings = array(
 			'size' => '5'
 		),
 		'timeouts_header' => array(
-			'friendly_name' => __('Background Timeout Settings'),
+			'friendly_name' => __('Background Timeout and Concurrent Process Settings'),
 			'collapsible' => 'true',
 			'method' => 'spacer',
 		),
@@ -1329,8 +1329,8 @@ $settings = array(
 			)
 		),
 		'commands_timeout' => array(
-			'friendly_name' => __('Background Commands Timeout'),
-			'description' => __('The maximum amount of time Cacti\'s Background Commands script can run without generating a timeout error and being killed.'),
+			'friendly_name' => __('Poller Commands Timeout'),
+			'description' => __('The maximum amount of time Cacti\'s Background Commands script can run without generating a timeout error and being killed.  This script will perform tasks such as re-indexing Devices and pruning devices from Remote Data Collectors.'),
 			'method' => 'drop_array',
 			'default' => '300',
 			'array' => array(
@@ -1339,6 +1339,34 @@ $settings = array(
 				'300'  => __('%s Minutes', 5),
 				'600'  => __('%s Minutes', 10),
 				'1200' => __('%s Minutes', 20)
+			)
+		),
+		'commands_processes' => array(
+			'friendly_name' => __('Poller Command Concurrent Processes'),
+			'description' => __('The number of concurrent Poller Command processes.  The will be at most one concurrent command per host within the Poller Command pool.'),
+			'default' => '1',
+			'method' => 'drop_array',
+			'array' => array(
+				1  => __('1 Process'),
+				2  => __('%d Processes', 2),
+				3  => __('%d Processes', 3),
+				4  => __('%d Processes', 4),
+				5  => __('%d Processes', 5),
+				6  => __('%d Processes', 6),
+				7  => __('%d Processes', 7),
+				8  => __('%d Processes', 8),
+				9  => __('%d Processes', 9),
+				10 => __('%d Processes', 10),
+				11 => __('%d Processes', 11),
+				12 => __('%d Processes', 12),
+				13 => __('%d Processes', 13),
+				14 => __('%d Processes', 14),
+				15 => __('%d Processes', 15),
+				16 => __('%d Processes', 16),
+				17 => __('%d Processes', 17),
+				18 => __('%d Processes', 18),
+				19 => __('%d Processes', 19),
+				20 => __('%d Processes', 20),
 			)
 		),
 		'maintenance_timeout' => array(
@@ -2160,10 +2188,35 @@ $settings = array(
 				__('RRDtool Proxy Server')
 			)
 		),
+		'extended_paths_header' => array(
+			'friendly_name' => __('Structured RRDfile Paths'),
+			'method' => 'spacer',
+			'collapsible' => 'true'
+		),
 		'extended_paths' => array(
-			'friendly_name' => __('Structured RRD Paths'),
-			'description' => __('Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd.'),
+			'friendly_name' => __('Method'),
+			'description' => __('Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be one of the following:<br><ul><li>&lt;path_cacti&gt;/rra/host_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_id/data_query_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/data_query_id/local_data_id.rrd.</li></ul><br>You can make this change after install by running the CLI script <b>structure_rra_paths.php</b> after you make the change.  NOTE: If you change Max Directories value to decrease the number of directories, or if you change the Directory Pattern, empty directories will not be pruned after you rerun the <b>structure_rra_paths.php</b> script.'),
 			'method' => 'checkbox'
+		),
+		'extended_paths_type' => array(
+			'friendly_name' => __('Directory Pattern'),
+			'description' => __('Which Directory Pattern do you wish to use for Structured RRD Paths.  \'Device ID\' is the default.  The setting \'Device ID/Data Query ID\' should be used when you have Devices with thousands of Graphs.  After Changing the Directory Pattern, you must run the Structured Path CLI script again to modify the RRDfile paths to the new Pattern.'),
+			'method' => 'drop_array',
+			'default' => 'device',
+			'array' => array (
+				'device' => __('Device ID'),
+				'device_dq' => __('Device ID/Data Query ID'),
+				'hash_device' => __('Device Hash/Device ID'),
+				'hash_device_dq' => __('Device Hash/Device ID/Data Query ID')
+			)
+		),
+		'extended_paths_hashes' => array(
+			'friendly_name' => __('Max Device Hash Directories'),
+			'description' => __('The maximum number of Device Directories to be created based upon hashed Device ID\'s.'),
+			'method' => 'textbox',
+			'max_length' => '5',
+			'size' => '5',
+			'default' => '100'
 		),
 		'rrdp_header' => array(
 			'friendly_name' => __('RRDtool Proxy Server'),

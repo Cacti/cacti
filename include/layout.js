@@ -1358,46 +1358,24 @@ function responsiveUI(event) {
 }
 
 function getMainWidth() {
+	// Subtract 15px for the scroll bar
 	if ($('#navigation').length && $('#navigation').is(':visible')) {
-		var mainWidth = $('body').innerWidth() - $('#navigation').width();
+		var mainWidth = $('body').outerWidth() - $('#navigation').width() - 15;
 	} else {
-		var mainWidth = $('body').innerWidth();
+		var mainWidth = $('body').outerWidth() - 15;
 	}
 
 	return mainWidth;
 }
 
 function getCactiHelp(cactiPage) {
-	var privateUrl = urlPath + 'help.php?page=' + cactiPage;
-	var cactiPagePublic = cactiPage.replace('.html', '.md');
-	var publicUrl  = 'https://docs.cacti.net/' + cactiPagePublic;
+	var url = urlPath + 'help.php?page=' + cactiPage;
 
-	$.get(publicUrl)
-		.done(function(data, status, xhr) {
-			if (status == 'success' && ! data.includes('content you requested does not appear to exist')) {
-				window.open(publicUrl, '_blank');
-			} else {
-				$.getJSON(privateUrl + '&error=missing', function(data) {
-					sessionMessage   = {
-						message: data.message,
-						level: MESSAGE_LEVEL_ERROR
-					};
-
-					displayMessages();
-				});
-			}
-		})
-		.fail(function(status, xhr) {
-			$.getJSON(privateUrl + '&error=unreach', function(data) {
-				sessionMessage   = {
-					message: data.message,
-					level: MESSAGE_LEVEL_ERROR
-				};
-
-				displayMessages();
-			});
+	$.get(url, function(data) {
+		if (data != 'Not Found') {
+			window.open(data, '_blank');
 		}
-	);
+	});
 }
 
 function responsiveResizeGraphs(initialize) {
@@ -1607,7 +1585,6 @@ function resetTable(object) {
 
 function tuneTable(object, width) {
 	var rows           = $(object).find('tr').length;
-	var width          = width;
 	var tableWidth     = $(object).width();
 	var totalCols      = $(object).find('th').length;
 	var reducedWidth   = 0;
@@ -1626,48 +1603,131 @@ function tuneTable(object, width) {
 		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
 	}
 
+	// We have to both show and hide columns that fit.
+	// So, always find the size of the page columns.
+	var calculatedColumns = [];
+	var calculatedWidth   = 0;
+	var allSeenWidth      = 0;
+	var calculatedPadding = 15;
+	var tableChanged      = false;
+	var stopExpand        = false;
+	var debug             = false;
+
+	var tableHeaders = $(object).find('th');
+	var tableCheckBox = $(tableHeaders).each(function() {
+		if ($(this).index() == tableHeaders.length) {
+			calculatedColumns.addClass('noHide');
+		}
+	});
+
+	// Traverse the table and look for columns to hide from left to right
+	$($(object).find('th').get()).each(function() {
+		var isLastCheckBox = $(this).hasClass('tableSubHeaderCheckbox') && $(this).index() == tableHeaders.length - 1;
+		var columnWidth = $.textMetrics(this).width;
+
+		// Get the width of columns that can not be hidden
+		if ($(this).hasClass('noHide') || isLastCheckBox) {
+			calculatedColumns.push($(this).index());
+			calculatedWidth += columnWidth + calculatedPadding;
+		}
+
+		if ($(this).is(':visible')) {
+			allSeenWidth += columnWidth + calculatedPadding;
+		}
+	});
+
+	if (debug) {
+		console.log(
+			'allSeenWidth:'     + Math.round(allSeenWidth, 1) +
+			', calulatedWidth:'  + Math.round(calculatedWidth, 1) +
+			', tableWidth:' + Math.round(tableWidth, 1) +
+			', width:'  + Math.round(width, 1)
+		);
+	}
+
 	if (width < tableWidth) {
-		var calculatedColumns = [];
-		var calculatedWidth   = 0;
-		var calculatedPadding = 15;
-
-		var tableHeaders = $(object).find('th');
-		var tableCheckBox = $(tableHeaders).each(function() {
-			if ($(this).index() == tableHeaders.length) {
-				calculatedColumns.addClass('noHide');
-			}
-		});
-
 		$($(object).find('th').get()).each(function() {
-			var isLastCheckBox = $(this).hasClass('tableSubHeaderCheckbox') && $(this).index() == tableHeaders.length - 1;
-
-			if ($(this).hasClass('noHide') || isLastCheckBox) {
-				var columnWidth = $.textMetrics(this).width;
-
-				calculatedColumns.push($(this).index());
-				calculatedWidth += columnWidth + calculatedPadding;
-			}
-		});
-
-		$($(object).find('th').get()).each(function() {
+			// Now traverse the available columns for hiding
+			// and See which need to be hidden
 			if (!calculatedColumns.includes($(this).index())) {
-				var columnWidth = $.textMetrics(this).width;
+				var columnWidth = $.textMetrics(this).width + calculatedPadding;
+				var name = $(this).find('div.sortinfo').attr('sort-column');
+
+				if (debug) {
+					console.log(
+						'ColIndex:' + $(this).index() +
+						', ColWidth:' + Math.round(columnWidth, 1) +
+						', TotalWidth:' + Math.round(calculatedWidth, 1) +
+						', PageWidth:' + Math.round(width, 1)
+					);
+				}
+
 				if (width < calculatedWidth) {
 					$(this).hide();
+					tableChanged = true;
 				} else {
 					calculatedColumns.push($(this).index());
 					calculatedWidth += columnWidth + calculatedPadding;
 				}
-
-				//console.log($(this).parent().id + ' - ' + $(this).index() + ' - ' + width);
 			}
 		});
 
-		$($(object).find('td').each(function() {
+		if (tableChanged) {
+			$($(object).find('td').each(function() {
+				if (!calculatedColumns.includes($(this).index())) {
+					$(this).hide();
+				}
+			}));
+		}
+	}
+
+	tableChanged = false;
+
+	if (allSeenWidth < width) {
+		calculatedColumns = calculatedColumns.sort();
+
+		// Since we can show hidden columns now, let's go
+		// in reverse until we run out of space
+		$($(object).find('th').get()).each(function() {
 			if (!calculatedColumns.includes($(this).index())) {
-				$(this).hide();
+				if ($(this).is(':hidden') && stopExpand == false) {
+					var columnWidth = $.textMetrics(this).width + calculatedPadding;
+					var name = $(this).find('div.sortinfo').attr('sort-column');
+
+					if (allSeenWidth + columnWidth < tableWidth) {
+						$(this).show();
+
+						var newTableWidth = $(object).width();
+
+						if (debug) {
+							console.log(
+								'Reverse ColIndex:' + $(this).index() +
+								', columnWidth:' + Math.round(columnWidth, 1) +
+								', allSeenWidth:' + Math.round(allSeenWidth, 1) +
+								', width:' + Math.round(width, 1) +
+								', newTableWidth:' + Math.round(newTableWidth, 1)
+							);
+						}
+
+						if (newTableWidth > width) {
+							$(this).hide();
+							stopExpand = true;
+						} else {
+							calculatedColumns.push($(this).index());
+							tableChanged = true;
+						}
+					}
+				}
 			}
-		}));
+		});
+
+		if (tableChanged) {
+			$($(object).find('td').each(function() {
+				if (calculatedColumns.includes($(this).index())) {
+					$(this).show();
+				}
+			}));
+		}
 	}
 }
 

@@ -632,6 +632,14 @@ default:
 					$('#row_rrdp_fingerprint_backup').show();
 				}
 			}).trigger('change');
+
+			$('#extended_paths').change(function() {
+				if ($(this).is(':checked')) {
+					$('#row_extended_paths_type').show();
+				} else {
+					$('#row_extended_paths_type').hide();
+				}
+			}).trigger('change');
 		} else if (currentTab == 'mail') {
 			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email');?></div>');
 
