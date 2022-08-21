@@ -47,10 +47,9 @@ $downhosts  = array();
 $host_count = 0;
 $tot_errors = 0;
 $poller_id  = $config['poller_id'];
-$maxwidth   = get_max_column_width();
 $pmessage   = false;
 
-if (cacti_sizeof($parms)) {
+if (sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -113,6 +112,8 @@ require_once($config['base_path'] . '/lib/ping.php');
 
 global $poller_db_cnn_id, $remote_db_cnn_id, $cactiphp, $using_proc_function;
 global $poller_id, $sessions, $downhosts, $print_data_to_stdout;
+
+$maxwidth   = get_max_column_width();
 
 if ($pmessage) {
 	cacti_log('Forcing poller to ' . $value, true, 'POLLER', POLLER_VERBOSITY_HIGH);
