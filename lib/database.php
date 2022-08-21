@@ -200,9 +200,9 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 }
 
 function db_check_reconnect() {
-	chdir(dirname(__FILE__));
+	global $config;
 
-	include('./include/config.php');
+	include($config['base_path'] . '/include/config.php');
 
 	if (!isset($database_ssl))      $database_ssl      = false;
 	if (!isset($database_ssl_key))  $database_ssl_key  = '';
