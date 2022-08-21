@@ -1,7 +1,9 @@
 Cacti CHANGELOG
 
 1.2.23
+-issue#4889: Increase host query performance by removing check for NULL after 1.2.22
 -issue#4892: Recache Loop after many devices go offline
+-issue#4893: in cacti 1.2.22 real time counter gets stuck and does not count down
 -feature#3131: Button to reindex bad indexes
 -feature#4874: Add support for showing business hours
 -feature#4890: Add multi threading for Poller rechace script

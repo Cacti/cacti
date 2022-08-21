@@ -2962,7 +2962,7 @@ function generate_data_source_path($local_data_id) {
 
 	if (cacti_sizeof($data)) {
 		$host_name     = $data['description'];
-		$host_id       = $data['id'];
+		$host_id       = $data['host_id'];
 		$data_query_id = $data['snmp_query_id'];
 	} else {
 		$host_name     = 'undefinedhost';

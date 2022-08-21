@@ -1282,7 +1282,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	$sql_where = "WHERE (gti.graph_tree_id=$tree_id AND gti.parent=$leaf_id)" . $sql_where;
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.disabled = ""';
 	}
 
 	if ($user == -1) {
@@ -1368,13 +1368,13 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.disabled = ""';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
+		$sql_where = "WHERE h.deleted = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
+		$sql_where = "WHERE h.deleted = ''";
 	}
 
 	if ($user == -1) {
@@ -1460,13 +1460,13 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.disabled = ""';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
+		$sql_where = "WHERE h.deleted = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
+		$sql_where = "WHERE h.deleted = ''";
 	}
 
 	if ($user == -1) {
@@ -2657,13 +2657,13 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.disabled = ""';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
+		$sql_where = "WHERE h.deleted = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
+		$sql_where = "WHERE h.deleted = ''";
 	}
 
 	if ($host_id > 0) {
@@ -2834,13 +2834,13 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"") = "")';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.disabled = ""';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
+		$sql_where = "WHERE h.deleted = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
+		$sql_where = "WHERE h.deleted = ''";
 	}
 
 	if ($site_id > 0) {
