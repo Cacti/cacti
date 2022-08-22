@@ -3809,7 +3809,8 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
  */
 function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $label=FALSE, $steps=20, $lower=FALSE, $alpha='FF'){
 	$label = preg_replace("/'/", "", $label);
-	
+	$label = preg_replace("/:/", "\:", $label);
+
 	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$start_color,$matches)) {
 		$r1=hexdec($matches[1]);
 		$g1=hexdec($matches[2]);
