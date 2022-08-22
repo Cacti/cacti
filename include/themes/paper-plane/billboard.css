@@ -133,7 +133,7 @@
 .bb-tooltip {
   border-collapse: collapse;
   border-spacing: 0;
-  background-color: #fff;
+  background-color: #161616;
   empty-cells: show;
   opacity: 0.9;
   -webkit-box-shadow: 7px 7px 12px -9px #777777;
@@ -142,7 +142,7 @@
   .bb-tooltip tr {
     border: 1px solid #CCC; }
   .bb-tooltip th {
-    background-color: #aaa;
+    background-color: #363636;
     font-size: 14px;
     padding: 2px 5px;
     text-align: left;
@@ -150,8 +150,8 @@
   .bb-tooltip td {
     font-size: 13px;
     padding: 3px 6px;
-    background-color: #fff;
-    border-left: 1px dotted #999; }
+    background-color: #161616;
+    border-left: 1px dotted #060606; }
     .bb-tooltip td > span, .bb-tooltip td > svg {
       display: inline-block;
       width: 10px;
