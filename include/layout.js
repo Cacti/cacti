@@ -4041,10 +4041,8 @@ $.widget('custom.languageselect', $.ui.selectmenu, {
 // combobox example borrowed from jqueryui
 $.widget('custom.dropcolor', {
 	_create: function() {
-		$('body').append('<div id="cwrap" class="ui-selectmenu-menu ui-front">');
-
-		this.wrapper = $('<span><span class="ui-select-text"><div id="bgc" class="ui-icon color-icon" style="margin-left:2px;margin-right:3px;"></div></span></span>')
-		.addClass('class="ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget"')
+		this.wrapper = $('<span style="display:inline-flex"><span class="ui-select-text"><div id="bgc" class="ui-icon color-icon" style="margin-left:2px;margin-right:3px;"></div></span></span>')
+		.addClass('ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget')
 		.insertAfter(this.element);
 
 		this.element.hide();
@@ -4061,7 +4059,7 @@ $.widget('custom.dropcolor', {
 		if (hex != null) {
 			this.wrapper.find('#bgc').css('background-color', '#'+hex[1]);
 		}
-		this.input = $('<input class="ui-autocomplete-input ui-state-default ui-selectmenu-text" style="background:transparent;border:0px;margin-left:-22px;padding:0px 3px 0px 22px;" value="'+value+'">')
+		this.input = $('<input class="ui-autocomplete-input ui-state-default ui-selectmenu-text" style="background:transparent;border:0px;padding:0px;padding-left:24px;margin-left:-24px" value="'+value+'">')
 		.appendTo(this.wrapper)
 		.on('click', function() {
 			$(this).autocomplete('search', '');
@@ -4133,7 +4131,7 @@ $.widget('custom.dropcolor', {
 		$('<span>')
 		.attr('tabIndex', -1)
 		.appendTo(this.wrapper)
-		.addClass('ui-icon ui-icon-triangle-1-s')
+		.addClass('ui-icon ui-icon-triangle-1-s ui-selectmenu-icon')
 		.on('mousedown', function() {
 			wasOpen = input.autocomplete('widget').is(':visible');
 		})
