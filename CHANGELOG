@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#4889: Increase host query performance by removing check for NULL after 1.2.22
 -issue#4892: Recache Loop after many devices go offline
 -issue#4893: in cacti 1.2.22 real time counter gets stuck and does not count down
+-issue#4905: Labels on AREA having a colon breaks the gradient creation with an rrdtool error
 -feature#3131: Button to reindex bad indexes
 -feature#4874: Add support for showing business hours
 -feature#4890: Add multi threading for Poller rechace script
