@@ -134,7 +134,7 @@ function rebuild_resource_cache() {
 }
 
 function utilities_view_tech() {
-	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
+	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id, $remote_db_cnn_id;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
@@ -404,11 +404,27 @@ function utilities_view_tech() {
 		print '<td>' . html_escape($script_servers) . '</td>';
 		form_end_row();
 
-		$max_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+		if ($config['poller_id'] == 1) {
+			$max_connections       = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+			$max_local_connections = array();
+		} elseif ($config['connection'] == 'online') {
+			$max_connections        = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+			$max_local_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"', false, $local_db_cnn_id);
+		} else {
+			$max_connections        = array();
+			$max_local_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+		}
+
 		if (cacti_sizeof($max_connections)) {
 			$max_connections = $max_connections['Value'];
 		} else {
 			$max_connections = 0;
+		}
+
+		if (cacti_sizeof($max_local_connections)) {
+			$max_local_connections = $max_local_connections['Value'];
+		} else {
+			$max_local_connections = 0;
 		}
 
 		$total_dc_threads = db_fetch_cell("SELECT
@@ -419,9 +435,29 @@ function utilities_view_tech() {
 		$recommend_mc = $total_dc_threads + 100;
 
 		if ($recommend_mc > $max_connections) {
-			$db_connections = '<span class="deviceDown">' . __('Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			if ($config['poller_id'] == 1) {
+				$db_connections = '<span class="deviceDown">' . __('Main Server: Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			} elseif ($config['connection'] == 'online') {
+				$db_connections = '<span class="deviceDown">' . __('Main Server: Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			} else {
+				$db_connections = '';
+			}
 		} else {
-			$db_connections = '<span class="deviceUp">' . __('Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			if ($config['poller_id'] == 1) {
+				$db_connections = '<span class="deviceUp">' . __('Main Server: Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			} elseif ($config['connection'] == 'online') {
+				$db_connections = '<span class="deviceUp">' . __('Main Server: Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			} else {
+				$db_connections = '';
+			}
+		}
+
+		if ($config['poller_id'] > 1) {
+			if ($recommend_mc > $max_local_connections) {
+				$db_connections .= '<br><span class="deviceDown">' . __('Local Server: Current: %s, Min Required: %s', $max_local_connections, $recommend_mc) . '</span>';
+			} else {
+				$db_connections .= '<br><span class="deviceUp">' . __('Local Server: Current: %s, Min Required: %s', $max_local_connections, $recommend_mc) . '</span>';
+			}
 		}
 
 		form_alternate_row();
