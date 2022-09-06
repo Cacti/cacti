@@ -43,6 +43,8 @@ before you upgrade, and a service restart is required.  Depending on your releas
 of MariaDB or MySQL, the following settings will either be required, or already
 enabled as default:
 
+If using MariaDB or MySQL prior to 8.0
+
 ```
 [mysqld]
 
@@ -56,6 +58,10 @@ max_allowed_packet = 500M
 tmp_table_size = XXX
 join_buffer_size = XXX
 sort_buffer_size = XXX
+
+# Ensure sufficient connections.  This will change depending on your
+# size.  Some sites may require as many as 1000
+max_connections = 300
 
 # important for compatibility
 sql_mode=NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER
@@ -83,10 +89,58 @@ innodb_io_capacity_max = 20000
 innodb_flush_method = O_DIRECT
 ```
 
+If using MySQL 8.x or higher
+
+```
+[mysqld]
+
+# required for multiple language support
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# required to make life easier on MySQL 8.x
+default_authentication_plugin = mysql_native_password
+
+# Memory tunables - Cacti provides recommendations at upgrade time
+max_heap_table_size = XXX
+max_allowed_packet = 500M
+tmp_table_size = XXX
+join_buffer_size = XXX
+sort_buffer_size = XXX
+
+# Ensure sufficient connections.  This will change depending on your
+# size.  Some sites may require as many as 1000
+max_connections = 300
+
+# important for compatibility
+sql_mode=NO_ENGINE_SUBSTITUTION
+
+# innodb settings - Cacti provides recommendations at upgrade time
+innodb_buffer_pool_instances = XXX
+innodb_flush_log_at_trx_commit = 2
+innodb_buffer_pool_size = XXX
+innodb_sort_buffer_size = XXX
+innodb_doublewrite = ON
+
+# required
+innodb_file_per_table = ON
+
+# not all version support
+innodb_flush_log_at_timeout = 3
+
+# for SSD's/NVMe
+innodb_read_io_threads = 32
+innodb_write_io_threads = 16
+innodb_io_capacity = 10000
+innodb_io_capacity_max = 20000
+innodb_flush_method = O_DIRECT
+```
+
 The *required* settings are very important.  Otherwise, you will encounter issues
-upgrading.  The settings with XXX, Cacti will provide a recommendation at upgrade time.
-It is not out of the ordinary to have to restart MySQL/MariaDB during the upgrade
-to tune these settings.  Please make special note of this before you begin your upgrade.
+upgrading as well as at install time.  The settings with XXX, Cacti will provide a 
+recommendation at upgrade time.  It is not out of the ordinary to have to restart 
+MySQL/MariaDB during the upgrade to tune these settings.  Please make special note 
+of this before you begin your upgrade.
 
 Before you upgrade, you should make these required changes, then restart MySQL/MariaDB.  After that, you can save yourself some time and poential errors by running the following scripts (assuming you are using bash):
 
