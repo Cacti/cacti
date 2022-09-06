@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -feature#3131: Button to reindex bad indexes
 -feature#4874: Add support for showing business hours
 -feature#4890: Add multi threading for Poller rechace script
+-feature#4920: Add .htaccess file to scripts folder
 
 1.2.22
 -security#4834: When creating new graphs, cross site injection is possible
