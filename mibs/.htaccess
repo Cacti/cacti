@@ -8,17 +8,3 @@
     Order Allow,Deny
     Deny from all
 </IfModule>
-
-#Prevent Access to the .htaccess file
-
-# Deny access to .htaccess
-<Files .htaccess>
-    Order allow,deny
-    Deny from all
-</Files>
-
-# Prevent Access to browser reading script files 
-<FilesMatch "^\.">         
-    Order allow,deny
-    Deny from all
-</FilesMatch>
