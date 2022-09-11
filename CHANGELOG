@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#4903: MySQL 8.x regular expressions break Cacti Automation
 -issue#4904: The Recommendation for innodb_buffer_pool_instances is incorrect for MySQL 8 and MariaDB < 10.5
 -issue#4905: Labels on AREA having a colon breaks the gradient creation with an rrdtool error
+-issue#4923: Graph template "duplicate" action does not working - 500 Internal Server Error
 -feature#3131: Button to reindex bad indexes
 -feature#4841: Move the cactid function db_check_reconnect() to lib/database.php for other service oriented scripts
 -feature#4874: Add support for showing business hours

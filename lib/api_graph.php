@@ -475,7 +475,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 				unset($save);
 
 				$save['id']                = 0;
-				$save['hash']              = get_hash_data_query('', 'data_query_graph');
+				$save['hash']              = get_hash_data_query(0, 'data_query_graph');
 				$save['snmp_query_id']     = $dqg['snmp_query_id'];
 				$save['name']              = $name;
 				$save['graph_template_id'] = $graph_template_id;
