@@ -5583,7 +5583,7 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 	foreach ($mods as $index => $mod) {
 		if ($mod > 0 || $secs) {
 			if ($time >= $mod) {
-				if ($mod < 1) {
+				if ($mod < 1 || !is_numeric($mod)) {
 					$mod = 1;
 				}
 				$val   = floor($time/$mod);
