@@ -295,7 +295,7 @@ EOD;
     return $public_key;
 }
 
-function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false, $preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array()) {
+function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false, $preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array(), $public_key = false) {
 	global $config, $preview_only;
 
 	$preview_only = $preview;
@@ -306,7 +306,9 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		ini_set('memory_limit', '-1');
 	}
 
-	$public_key = get_public_key();
+	if (!$public_key) {
+		$public_key = get_public_key();
+	}
 
 	$filename         = "compress.zlib://$xmlfile";
 	$binary_signature = '';
@@ -528,10 +530,18 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array['graph'][$field_name])) {
-			/* Cacti pre 0.8.5 did handle a unit_exponent=0 differently
-			 * so we need to know the version of the current hash code we're just working on */
+			/**
+			 * Cacti pre 0.8.5 did handle a unit_exponent=0 differently
+			 * so we need to know the version of the current hash code we're just working on
+			 */
 			if (($field_name == 'unit_exponent_value') && (get_version_index($hash_version) < get_version_index('0.8.5')) && ($xml_array['graph'][$field_name] == '0')) { /* backwards compatability */
 				$save[$field_name] = '';
+			} elseif ($field_name == 'graph_width' && isset_request_var('graph_width')) {
+				$save[$field_name] = get_filter_request_var('graph_width');
+			} elseif ($field_name == 'graph_height' && isset_request_var('graph_height')) {
+				$save[$field_name] = get_filter_request_var('graph_height');
+			} elseif ($field_name == 'image_format' && isset_request_var('image_format')) {
+				$save[$field_name] = get_filter_request_var('image_format');
 			} else {
 				$save[$field_name] = xml_character_decode($xml_array['graph'][$field_name]);
 			}
