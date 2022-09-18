@@ -558,7 +558,7 @@ $settings = array(
 		),
 		'default_graph_height' => array(
 			'friendly_name' => __('Graph Template Height'),
-			'description' => __('The default Graph Width to be used for all new Graph Templates.'),
+			'description' => __('The default Graph Height to be used for all new Graph Templates.'),
 			'method' => 'textbox',
 			'default' => '150',
 			'size' => '5',
