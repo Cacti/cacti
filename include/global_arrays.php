@@ -1223,6 +1223,7 @@ $user_auth_realm_filenames = array(
 	'step_json.php' => 26,
 	'managers.php' => 15,
 	'rrdcleaner.php' => 15,
+	'rrdcheck.php' => 15,
 	'settings.php' => 15,
 	'links.php' => 15,
 	'data_queries.php' => 13,
@@ -1480,6 +1481,13 @@ $dsstats_hourly_avg = array(
 	'240' => __('%d Hours', 4),
 	'300' => __('%d Hours', 5),
 	'360' => __('%d Hours', 6)
+);
+
+$rrdcheck_intervals = array(
+	'boost' => __('After Boost'),
+	'60'  => __('1 Hour'),
+	'240' => __('%d Hours', 4),
+	'1440' => __('%d Hours', 24)
 );
 
 $boost_max_rows_per_select = array(
@@ -2383,6 +2391,12 @@ $navigation = array(
 		'title' => __('List unused Files'),
 		'mapping' => 'rrdcleaner.php:',
 		'url' => 'rrdcleaner.php?action=restart',
+		'level' => '2'
+	),
+	'rrdcheck.php:' => array(
+		'title' => __('RRD Check'),
+		'mapping' => 'index.php:,utilities.php:',
+		'url' => 'rrdcheck.php',
 		'level' => '2'
 	),
 	'utilities.php:' => array(

@@ -2116,6 +2116,11 @@ function utilities() {
 			'mode'  => 'online',
 			'description' => __('When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.')
 		),
+		__('RRDfile Checker') => array(
+			'link'  => 'rrdcheck.php',
+			'mode'  => 'online',
+			'description' => __('Use this utility to display problems with missing rrd files or missing values in rrdfiles. You need enable rrdcheck in Configuration->Settings->Data')
+		),
 	);
 
 	if (snmpagent_enabled()) {
