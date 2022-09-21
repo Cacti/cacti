@@ -158,6 +158,7 @@ function do_rrdcheck($thread_id = 1) {
 				if (time() > (filemtime($file)+3600)) {
 					db_execute_prepared ('INSERT INTO rrdcheck (local_data_id,test_date,message) VALUES
 					(?,NOW(),?)', array($rrdfile['local_data_id'], "RRD file modify time older than hour - $file"));
+					$done[] = $rrdfile['local_data_id'];
 				
 				} else {
 
@@ -276,11 +277,13 @@ function do_rrdcheck($thread_id = 1) {
 						$done[] = $rrdfile['local_data_id'];
 					} else {
 						cacti_log("WARNING: RRDcheck - no rrd data returned - " .  $file  , false, 'rrdcheck');
+						$done[] = $rrdfile['local_data_id'];
 					}
 				}	// end of process the rrd file
 			} else {	// rrdfile does not exist
 				db_execute_prepared ('INSERT INTO rrdcheck (local_data_id,test_date,message) VALUES
 					(?,NOW(),?)', array($rrdfile['local_data_id'], "RRD file does not exist - $file"));
+				$done[] = $rrdfile['local_data_id'];
 			}
 		}
 	}
