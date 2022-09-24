@@ -943,10 +943,10 @@ function create_tables($load = true) {
 
 		if (file_exists($config['base_path'] . '/docs/audit_schema.sql')) {
 			exec('mysql' .
-				' -u' . $database_username .
-				' -p' . $database_password .
-				' -h' . $database_hostname .
-				' -P' . $database_port .
+				' -u' . cacti_escapeshellarg($database_username) .
+				' -p' . cacti_escapeshellarg($database_password) .
+				' -h' . cacti_escapeshellarg($database_hostname) .
+				' -P' . cacti_escapeshellarg($database_port) .
 				' ' . $database_default .
 				' < ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $error);
 
