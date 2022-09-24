@@ -820,7 +820,7 @@ function api_plugin_enable($plugin) {
 }
 
 function api_plugin_is_enabled($plugin) {
-	static $status = null;
+	static $status = array();;
 
 	if (isset($status[$plugin])) {
 		return $status[$plugin];
