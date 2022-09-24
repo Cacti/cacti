@@ -820,14 +820,24 @@ function api_plugin_enable($plugin) {
 }
 
 function api_plugin_is_enabled($plugin) {
+	static $status = null;
+
+	if (isset($status[$plugin])) {
+		return $status[$plugin];
+	}
+
 	$status = db_fetch_cell_prepared('SELECT status
 		FROM plugin_config
 		WHERE directory = ?',
 		array($plugin), false);
 
 	if ($status == '1') {
+		$status[$plugin] = true;
+
 		return true;
 	}
+
+	$status[$plugin] = false;
 
 	return false;
 }
