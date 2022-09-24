@@ -820,10 +820,10 @@ function api_plugin_enable($plugin) {
 }
 
 function api_plugin_is_enabled($plugin) {
-	static $status = array();;
+	static $pstatus = array();;
 
-	if (isset($status[$plugin])) {
-		return $status[$plugin];
+	if (isset($pstatus[$plugin])) {
+		return $pstatus[$plugin];
 	}
 
 	$status = db_fetch_cell_prepared('SELECT status
@@ -832,12 +832,12 @@ function api_plugin_is_enabled($plugin) {
 		array($plugin), false);
 
 	if ($status == '1') {
-		$status[$plugin] = true;
+		$pstatus[$plugin] = true;
 
 		return true;
 	}
 
-	$status[$plugin] = false;
+	$pstatus[$plugin] = false;
 
 	return false;
 }
