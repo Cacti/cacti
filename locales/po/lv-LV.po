@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-07-19 01:34+0000\n"
+"PO-Revision-Date: 2022-09-26 01:57+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -1242,7 +1242,7 @@ msgstr ""
 #: lib/api_automation.php:172 lib/api_automation.php:1116
 #: lib/html_utility.php:939 pollers.php:47
 msgid "Down"
-msgstr "Neaktīva (nedarbojoša, bezsaistē)"
+msgstr "Neaktīva (nedarbojoša, bezsaistē, izslēgta)"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -11064,7 +11064,7 @@ msgstr ""
 
 #: include/global_settings.php:1875 lib/html_reports.php:177
 msgid "From Name"
-msgstr ""
+msgstr "No kā (sūtītājs)"
 
 #: include/global_settings.php:1876
 msgid "This is the actual name that the Email will appear from."
@@ -13790,11 +13790,16 @@ msgstr ""
 
 #: lib/html_reports.php:64
 msgid "Format File to Use"
-msgstr ""
+msgstr "Izmantojamais faila formāts"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
 msgstr ""
+"Izvēlieties pielāgotu HTML noformējuma un CSS failu.  Šis fails satur gan "
+"HTML, gan CSS kodu, kas noformē jūsu atskaites izskatu.  Ja tas satur kaut "
+"ko vairāk par CSS kodu, tad failā jāievieto īpašs tags <REPORT>.  Šis "
+"<REPORT> tags tiks aizstāts ar atskaites saturu.   Šie faili atrodas "
+"'formats' mapē."
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
