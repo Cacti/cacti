@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.2.20\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-08-09 18:46-0400\n"
-"PO-Revision-Date: 2022-07-19 12:53+0000\n"
-"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
-"Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\n"
-"Language: lv-LV\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-08-09 18:46-0400\nPO-Revision-Date: 2022-09-26 01:57+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2562 lib/html.php:2492
 msgid "About Cacti"
@@ -1112,7 +1100,7 @@ msgstr "Dzēst ierīci"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:924 pollers.php:47
 msgid "Down"
-msgstr "Neaktīva (nedarbojoša, bezsaistē)"
+msgstr "Neaktīva (nedarbojoša, bezsaistē, izslēgta)"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -10994,7 +10982,7 @@ msgstr "Šī ir e-pasta adrese, no kuras tiks parādīts e-pasts."
 
 #: include/global_settings.php:1768 lib/html_reports.php:177
 msgid "From Name"
-msgstr "No kā"
+msgstr "No kā (sūtītājs)"
 
 #: include/global_settings.php:1769
 msgid "This is the actual name that the Email will appear from."
@@ -13810,11 +13798,11 @@ msgstr "Atzīmējiet šo izvēles rūtiņu, ja vēlaties pārskatam izmantot pie
 
 #: lib/html_reports.php:64
 msgid "Format File to Use"
-msgstr "Formatējiet izmantojamo failu"
+msgstr "Izmantojamais faila formāts"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "Izvēlieties pielāgoto html iesaiņojumu un CSS failu, ko izmantot. Šajā failā ir ietverts gan html, gan CSS, lai aptvertu jūsu pārskatu. Ja tajā ir vairāk nekā tikai CSS, jums ir jāievieto īpašs<REPORT> tagu faila iekšpusē. Šis formāta tags tiks aizstāts ar pārskata saturu. Šie faili atrodas \"formātu\" direktorijā."
+msgstr "Izvēlieties pielāgotu HTML noformējuma un CSS failu.  Šis fails satur gan HTML, gan CSS kodu, kas noformē jūsu atskaites izskatu.  Ja tas satur kaut ko vairāk par CSS kodu, tad failā jāievieto īpašs tags <REPORT>.  Šis <REPORT> tags tiks aizstāts ar atskaites saturu.   Šie faili atrodas 'formats' mapē."
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
