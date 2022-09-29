@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#4904: The Recommendation for innodb_buffer_pool_instances is incorrect for MySQL 8 and MariaDB < 10.5
 -issue#4905: Labels on AREA having a colon breaks the gradient creation with an rrdtool error
 -issue#4917: Under certain circumstances Real Time counter gets stuck and does not count down
+-issue#4921: Aggregate Graph Permissions not working as expected
 -issue#4923: Graph template "duplicate" action does not working - 500 Internal Server Error
 -issue#4927: When running audit_database.php script will fail if cacti password had a ')' in it
 -feature#3131: Button to reindex bad indexes

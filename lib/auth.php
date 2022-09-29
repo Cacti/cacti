@@ -1372,9 +1372,9 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
 	}
 
 	if ($user == -1) {
@@ -1464,9 +1464,9 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
 	}
 
 	if ($user == -1) {
@@ -2579,9 +2579,9 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ') AS rower');
 	} else {
 		if ($sql_where != '') {
-			$sql_where = "WHERE gt.enabled='on' AND h.disabled=''  AND h.deleted = '' AND $sql_where";
+			$sql_where = "WHERE gt.enabled='on' AND h.disabled='' AND ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
 		} else {
-			$sql_where = "WHERE gt.enabled='on' AND h.disabled='on' AND h.deleted = ''";
+			$sql_where = "WHERE gt.enabled='on' AND h.disabled='on' AND ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
 		}
 
 		$sql = "(
@@ -2661,9 +2661,9 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND";
 	}
 
 	if ($host_id > 0) {
@@ -2838,9 +2838,9 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND";
 	}
 
 	if ($site_id > 0) {
