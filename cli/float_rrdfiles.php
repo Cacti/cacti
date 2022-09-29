@@ -51,6 +51,8 @@ $end_time          = false;
 $host_id           = false;
 $host_template_id  = false;
 $graph_template_id = false;
+$local_graph_ids   = array();
+$step              = false;
 
 /* optional for threading and verbose display */
 $threads           = 20;
@@ -110,8 +112,16 @@ if (cacti_sizeof($parms)) {
 			$host_template_id = $value;
 
 			break;
-		case '--graph-template_id':
+		case '--graph-template-id':
 			$graph_template_id = $value;
+
+			break;
+		case '--graph-ids':
+			$local_graph_ids = explode(',', $value);
+
+			break;
+		case '--step':
+			$step = $value;
 
 			break;
 		case '--version':
@@ -198,6 +208,29 @@ if ($graph_template_id !== false && ($graph_template_id < 0 || !is_numeric($grap
 	exit(1);
 }
 
+/* perform some validation for step value */
+if ($step !== false && ($step < 0 || !is_numeric($step))) {
+	printf('ERROR: The value of %s for --step is invalid!' . PHP_EOL, $step);
+	exit(1);
+}
+
+/* perform some validation for step value */
+if (cacti_sizeof($local_graph_ids)) {
+	foreach($local_graph_ids as $index => $value) {
+		$value = trim($value);
+		$local_graph_ids[$index] = $value;
+
+		if (!is_numeric($value) || empty($value) || $value <= 0) {
+			printf('ERROR: One of the values of %s for --graph-ids is invalid!' . PHP_EOL, $value);
+			exit(1);
+		}
+	}
+
+	printf('NOTE: The value of threads is being switched from %s to 1 due to -graph-ids option' . PHP_EOL, $threads);
+
+	$threads = 1;
+}
+
 /* take time and log performance data */
 $start = microtime(true);
 
@@ -218,7 +251,7 @@ if (!$forcerun) {
 /* Collect data as determined by the type */
 switch ($type) {
 	case 'rmaster':
-		float_master_handler($forcerun, $resume, $host_id, $host_template_id, $graph_template_id, $threads, $start_time, $end_time);
+		float_master_handler($forcerun, $resume, $host_id, $host_template_id, $graph_template_id, $local_graph_ids, $threads, $step, $start_time, $end_time);
 
 		unregister_process('rfloat', 'rmaster', 0);
 
@@ -231,7 +264,11 @@ switch ($type) {
 
 		$child_start = microtime(true);
 
-		cacti_log(sprintf('Child Started Process %s with % RRDfiles', $thread_id, cacti_sizeof($rrdfiles)), true, 'RFLOAT');
+		if (cacti_sizeof($rrdfiles)) {
+			cacti_log(sprintf('Child Started Process %s with %d RRDfiles', $thread_id, cacti_sizeof($rrdfiles)), true, 'RFLOAT');
+		} else {
+			cacti_log(sprintf('Child Started Process %s with No RRDfiles', $thread_id), true, 'RFLOAT');
+		}
 
 		foreach($rrdfiles as $data) {
 			print '.';
@@ -239,7 +276,7 @@ switch ($type) {
 			/* Update the rrdfile to current */
 			rrdtool_function_fetch($data['local_data_id'], time()-120, time());
 
-			float_rrdfile($data['rrd_path'], $data['local_data_id'], $start_time, $end_time);
+			float_rrdfile($data['rrd_path'], $data['local_data_id'], $step, $start_time, $end_time);
 
 			db_execute_prepared('DELETE FROM poller_float_rrdfiles_not_done
 				WHERE local_data_id = ?',
@@ -265,13 +302,14 @@ exit(0);
  *
  * @param  (string) The RRDfile to update
  * @param  (int)    The local data id of the data source
+ * @param  (int)    Any step size smaller than this will be skipped
  * @param  (int)    The float range start time as a unix timestamp
  * @param  (int)    The float range end time as a unix timestamp
  *
  * @return (bool)   True if successful otherwise false
  */
-function float_rrdfile($rrd_path, $local_data_id, $start_time, $end_time) {
-	global $sebug;
+function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time) {
+	global $seebug;
 
 	static $rrdtool_bin = false;
 	static $tmp_dir     = false;
@@ -303,7 +341,7 @@ function float_rrdfile($rrd_path, $local_data_id, $start_time, $end_time) {
 
 			$fp = fopen($tmp_file, 'w');
 
-			if ($sebug) {
+			if ($seebug) {
 				$lf = fopen('/tmp/clearer.log', 'a');
 			}
 
@@ -311,10 +349,14 @@ function float_rrdfile($rrd_path, $local_data_id, $start_time, $end_time) {
 				$in_database = false;
 				$in_range    = false;
 				$prev_data   = '';
+				$curstep     = 0;
 
 				foreach($output as $line) {
 					if (strpos($line, '<pdp_per_row>') !== false) {
-						/* split the database record into pieces */
+						/**
+						 * <pdp_per_row>24</pdp_per_row> <!-- 7200 seconds -->
+						 * split the database record into pieces
+						 */
 						$parts = preg_split('/[\s]+/', trim($line));
 
 						/**
@@ -323,6 +365,7 @@ function float_rrdfile($rrd_path, $local_data_id, $start_time, $end_time) {
 						 */
 						$granularity = $parts[2];
 						$gdelta      = $granularity / 2;
+						$curstep     = $granularity;
 
 						$line .= PHP_EOL;
 					} elseif (strpos($line, '<database>') !== false) {
@@ -347,18 +390,39 @@ function float_rrdfile($rrd_path, $local_data_id, $start_time, $end_time) {
 							$in_range = false;
 							$line .= PHP_EOL;
 						} elseif ($prev_data != '') {
-							$in_range = true;
-
-							unset($parts[7]);
-
-							$nline = $db_prefix . implode(' ', $parts) . ' ' .  $prev_data . PHP_EOL;
-
-							if ($sebug) {
-								fwrite($lf, sprintf("CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s" . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
-								fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\nNewLine: %s\n\n", trim($prev_line), trim($line), trim($nline)));
+							if ($seebug) {
+								if ($step !== false) {
+									fwrite($lf, sprintf("In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s, Step:%s" . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time, $step));
+								} else {
+									fwrite($lf, sprintf("In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s" . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+								}
 							}
 
-							$line = $nline;
+							if ($step !== false && $step <= $curstep) {
+								$in_range = true;
+
+								unset($parts[7]);
+
+								$nline = $db_prefix . implode(' ', $parts) . ' ' .  $prev_data . PHP_EOL;
+
+								if ($seebug) {
+									fwrite($lf, sprintf("Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s" . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\nNewLine: %s\n\n", trim($prev_line), trim($line), trim($nline)));
+								}
+
+								$line = $nline;
+							} else {
+								if ($seebug) {
+									fwrite($lf, sprintf("Not Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s" . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\n\n", trim($prev_line), trim($line)));
+								}
+
+								$in_range = false;
+								$line .= PHP_EOL;
+
+								$prev_data = $parts[7];
+								$prev_line = $line;
+							}
 						} else {
 							$line .= PHP_EOL;
 						}
@@ -386,11 +450,8 @@ function float_rrdfile($rrd_path, $local_data_id, $start_time, $end_time) {
 					return false;
 				}
 
-				if (!$sebug) {
+				if (!$seebug) {}
 					unlink($tmp_file);
-				}
-
-				if ($sebug) {
 					fclose($lf);
 				}
 			} else {
@@ -407,7 +468,7 @@ function float_rrdfile($rrd_path, $local_data_id, $start_time, $end_time) {
 	}
 }
 
-function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $graph_template_id, $threads, $start_time, $end_time) {
+function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $graph_template_id, $local_graph_ids, $threads, $step, $start_time, $end_time) {
 	global $type;
 
 	/* Create table if first time use */
@@ -439,6 +500,17 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 	if ($graph_template_id !== false) {
 		$sql_where  .= ($sql_where != '' ? 'AND ':'WHERE ') . 'gti.graph_template_id = ?';
 		$sql_params[] = $graph_template_id;
+	}
+
+	if (cacti_sizeof($local_graph_ids)) {
+		$sql_where  .= ($sql_where != '' ? 'AND ':'WHERE ') . '(';
+		$inner_where = '';
+
+		foreach($local_graph_ids as $id) {
+			$inner_where .= ($inner_where != '' ? ' OR ':'') . 'gti.local_graph_id = ' . $id;
+		}
+
+		$sql_where .= $inner_where . ')';
 	}
 
 	/* Find out if there are unprocessed records */
@@ -490,7 +562,7 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 
 		float_debug("Launching Process ID $thread_id");
 
-		float_launch_child($thread_id, $start_time, $end_time);
+		float_launch_child($thread_id, $step, $start_time, $end_time);
 	}
 
 	$starting = true;
@@ -526,7 +598,7 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
  *
  * @return - NULL
  */
-function float_launch_child($thread_id, $start_time, $end_time) {
+function float_launch_child($thread_id, $step, $start_time, $end_time) {
 	global $config, $seebug;
 
 	$php_binary = read_config_option('path_php_binary');
@@ -535,7 +607,7 @@ function float_launch_child($thread_id, $start_time, $end_time) {
 
 	cacti_log(sprintf('NOTE: Launching Float Data Number %s for Type %s', $thread_id, 'child'), false, 'RFLOAT', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, $config['base_path'] . "/cli/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($seebug ? ' --debug':''));
+	exec_background($php_binary, $config['base_path'] . "/cli/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($step !== false ? ' --step=' . $step:'') . ($seebug ? ' --debug':''));
 }
 
 /**
@@ -591,18 +663,23 @@ function display_help () {
 
 	print 'Cacti\'s RRDfile Data Float Tool.  This CLI script will float a' . PHP_EOL;
 	print 'range in select Cacti Graphs using the RRDtool dump/import utility.' . PHP_EOL . PHP_EOL;
+	print 'This utility will run in parallel with the given number of threads,' . PHP_EOL;
+	print 'except in the case when you have specified specific --graph-ids as' . PHP_EOL;
+	print 'show with the optional settings below.' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
 	print '    --start=TS  - The float range start time timestamp or date.' . PHP_EOL;
 	print '    --end=TS    - The float range end time timestamp or date.' . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
-	print '    --threads           - 20, The number of threads to use to update RRDfiles' . PHP_EOL;
-	print '    --resume            - False, Resume a canceled float process' . PHP_EOL;
-	print '    --host-id           - N/A, Update a specific devices RRDfiles' . PHP_EOL;
-	print '    --host-template-id  - N/A, Update a specific Device Templates RRDfiles' . PHP_EOL;
-	print '    --graph-template-id - N/A, Update a specific Graph Template RRDfiles' . PHP_EOL;
-	print '    --debug             - Display verbose output during execution' . PHP_EOL . PHP_EOL;
+	print '    --threads             - 20, The number of threads to use to update RRDfiles' . PHP_EOL;
+	print '    --resume              - False, Resume a canceled float process' . PHP_EOL;
+	print '    --host-id=N           - N/A, Update a specific devices RRDfiles' . PHP_EOL;
+	print '    --host-template-id=N  - N/A, Update a specific Device Templates RRDfiles' . PHP_EOL;
+	print '    --graph-template-id=N - N/A, Update a specific Graph Template RRDfiles' . PHP_EOL;
+	print '    --graph-ids=N,N,...   - N/A, A comma delimited list of graph ids to fix' . PHP_EOL;
+	print '    --step=N              - N/A, Apply only to step sizes >= this value.' . PHP_EOL;
+	print '    --debug               - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 
 	print 'System Controlled:' . PHP_EOL;
 	print '    --type      - The type and subtype of the float process' . PHP_EOL;
@@ -662,4 +739,3 @@ function float_kill_running_processes() {
 		}
 	}
 }
-
