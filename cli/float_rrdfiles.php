@@ -450,7 +450,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 					return false;
 				}
 
-				if (!$seebug) {}
+				if (!$seebug) {
 					unlink($tmp_file);
 					fclose($lf);
 				}
