@@ -540,7 +540,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 				$save[$field_name] = get_filter_request_var('graph_width');
 			} elseif ($field_name == 'graph_height' && isset_request_var('graph_height')) {
 				$save[$field_name] = get_filter_request_var('graph_height');
-			} elseif ($field_name == 'image_format' && isset_request_var('image_format')) {
+			} elseif ($field_name == 'image_format_id' && isset_request_var('image_format')) {
 				$save[$field_name] = get_filter_request_var('image_format');
 			} else {
 				$save[$field_name] = xml_character_decode($xml_array['graph'][$field_name]);
