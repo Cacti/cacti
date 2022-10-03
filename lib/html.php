@@ -754,7 +754,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
         will be opposite this direction if the user selects the same named column.
    @arg $form_action - the url to post the 'select all' form to
    @arg $return_to - the id of the object to inject output into as a result of the sort action */
-function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '') {
+function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
 	static $page = 0;
 
 	/* reverse the sort direction */
@@ -898,7 +898,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
 	print '</tr>';
 
 	$page++;
@@ -965,7 +965,7 @@ function html_section_header($header_item, $last_item_colspan = 1) {
    @arg $header_items - an array containing a list of items to be included in the header
         alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $form_action - the url to post the 'select all' form to */
-function html_header_checkbox($header_items, $include_form = true, $form_action = '', $resizable = true) {
+function html_header_checkbox($header_items, $include_form = true, $form_action = '', $resizable = true, $prefix = 'chk') {
 	/* default to the 'current' file */
 	if ($form_action == '') { $form_action = get_current_page(); }
 
@@ -997,7 +997,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
 	print '</tr>';
 }
 
@@ -1583,18 +1583,6 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		$('#drp_action').change(function() {
 			setDisabled();
 		});
-
-		$('.tableSubHeaderCheckbox').find(':checkbox').off('click').on('click', function(data) {
-			if ($(this).is(':checked')) {
-				$('input[id^="chk_"]').not(':disabled').prop('checked', true).attr('data-prev-check', 'true').attr('aria-checked', 'true');
-				$('tr.selectable').addClass('selected');
-				disableSelection();
-			} else {
-				$('input[id^="chk_"]').not(':disabled').prop('checked', false).removeAttr('data-prev-check').removeAttr('aria-checked');
-				$('tr.selectable').removeClass('selected');
-				enableSelection();
-			}
-		});
 	});
 	</script>
 	<?php
@@ -1603,7 +1591,6 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 /*
  * Deprecated functions
  */
-
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
 	?>
 	<th style='height:1px;' colspan='<?php print $column_span;?>'>
