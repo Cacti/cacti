@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#4921: Aggregate Graph Permissions not working as expected
 -issue#4923: Graph template "duplicate" action does not working - 500 Internal Server Error
 -issue#4927: When running audit_database.php script will fail if cacti password had a ')' in it
+-issue#4934: Updated phpseclib to version 2.0.38 to support PHP 8.1
 -feature#3131: Button to reindex bad indexes
 -feature#4841: Move the cactid function db_check_reconnect() to lib/database.php for other service oriented scripts
 -feature#4874: Add support for showing business hours

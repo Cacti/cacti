@@ -268,7 +268,7 @@ class BigInteger
             $versions = array();
 
             // avoid generating errors (even with suppression) when phpinfo() is disabled (common in production systems)
-            if (strpos(ini_get('disable_functions'), 'phpinfo') === false) {
+            if (function_exists('phpinfo')) {
                 ob_start();
                 @phpinfo();
                 $content = ob_get_contents();
