@@ -22,6 +22,9 @@ function themeReady() {
 	searchToHighlight();
 	updateNavigation();
 	themeLoader('off');
+	document.addEventListener("dblclick", () => {
+		toggleFullscreen();
+	})
 }
 
 function checkConsoleMenu() {
@@ -192,7 +195,7 @@ function setupTheme() {
 	let showMisc = false;
 
 	$('.maintabs nav ul li a.lefttab').each(function() {
-		if ($(this).attr('id') !== 'tab-console' && $(this).attr('id') != 'tab-graphs') {
+		if ($(this).attr('id') !== 'tab-console' && $(this).attr('id') !== 'tab-graphs') {
 			showMisc = true;
 			return true;
 		}
@@ -210,7 +213,6 @@ function setupTheme() {
 
 	$('.maintabs nav ul li a.lefttab').each( function() {
 		let id = $(this).attr('id');
-		let title = id.replace('tab-', '');
 
 		if (id === 'tab-graphs' && $(this).parent().hasClass('maintabs-has-submenu') === false) {
 			$(this).parent().addClass('maintabs-has-submenu');
@@ -758,9 +760,9 @@ function toggleGuiFontSize() {
 	let storage = Storages.localStorage;
 	let midWinter_Font_Size = storage.get('midWinter_Font_Size');
 
-	if (midWinter_Font_Size == 'regular') {
+	if (midWinter_Font_Size === 'regular') {
 		midWinter_Font_Size = 'large';
-	} else if (midWinter_Font_Size == 'large') {
+	} else if (midWinter_Font_Size === 'large') {
 		midWinter_Font_Size = 'small';
 	} else {
 		midWinter_Font_Size = 'regular';
@@ -838,7 +840,7 @@ function setMenuVisibility() {
 			$(this).next('a').hide();
 		}
 
-		if ($(this).find('a.selected').length == 0) {
+		if ($(this).find('a.selected').length === 0) {
 			//console.log('hiding1:'+$(this).closest('.menuitem').attr('id'));
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
 			$(this).next('a').hide();
@@ -939,10 +941,11 @@ function setHotKeys() {
 						loadPage(urlPath+'auth_profile.php?action=edit');
 						break;
 					case 'SHIFT+k':
-						kiosk_mode();
+						//kiosk_mode('');
+						toggleFullscreen('navigation_right');
 						break;
 					case 'ESC':
-						kiosk_mode('off');
+						toggleFullscreen('');
 						break;
 					default: alert(event);
                 }
@@ -964,7 +967,7 @@ jQuery.cachedScript = function(url, options) {
 }
 
 function kiosk_mode(state='toggle') {
-	if (state == 'toggle') {
+	if (state === 'toggle') {
 		//hide all navigation elements
 		$('.cactiConsoleNavigationArea, .breadCrumbBar').addClass('hide');
 		$('.cactiContent').addClass('fullscreen');
@@ -974,11 +977,31 @@ function kiosk_mode(state='toggle') {
 	}
 }
 
+function getFullscreenElement() {
+	return document.fullscreenElement
+			|| document.webkitFullscreenElement
+			|| document.mozFullscreenElement
+			|| document.msmFullscreenElement
+}
+
+function toggleFullscreen(element = false){
+	if(getFullscreenElement()){
+		if(element === false) {
+			document.exitFullscreen();
+		}else {
+			document.documentElement.requestFullscreen().catch(console.log);
+		}
+	}else {
+		if(element === false) {
+			document.documentElement.requestFullscreen().catch(console.log);
+		}else {
+			document.getElementById(element).requestFullscreen().catch(console.log);
+		}
+	}
+}
 
 function dialog_client(event) {
 	event.preventDefault();
-
-	console.log('dialog_user');
 
 	$.cachedScript(urlPath + 'include/themes/midwinter/vendor/ua-parser/ua-parser.js').done(function (script, textStatus) {
 		if (textStatus === 'success') {
@@ -986,7 +1009,7 @@ function dialog_client(event) {
 
 			let uaObj = new UAParser();
 			let env = uaObj.getResult();
-console.log(env);
+
 			switch(env.browser.name) {
 				case 'Chrome Headless':
 				case 'Chrome WebView':
