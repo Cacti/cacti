@@ -616,9 +616,12 @@ function boost_get_arch_table_names($latest_table = '') {
 	}
 }
 
-/* boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
-     results to RRDtool for processing
-   @arg $local_data_id - if you are using boost, you need to update only an rra id at a time */
+/**
+ * boost_process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
+ *   results to RRDtool for processing
+ *
+ * @param  (int) local_data_id - if you are using boost, you need to update only an rra id at a time
+ */
 function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
@@ -650,43 +653,68 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		WHERE table_schema = SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
+	$results   = array();
+	$timestamp = time();
+
+	boost_timer('get_records', BOOST_TIMER_START);
+
 	if (cacti_count($arch_tables)) {
 		foreach($arch_tables as $table) {
-			$rows = db_fetch_cell_prepared('SELECT COUNT(local_data_id)
-				FROM ' . $table['name'] . '
-				WHERE local_data_id = ?',
-				array($local_data_id), '', false);
+			$tresults = db_fetch_assoc_prepared('SELECT local_data_id,
+				UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+				FROM ' . $table['name'] . "
+				WHERE local_data_id = ?
+				AND time < FROM_UNIXTIME(?)
+				ORDER BY time ASC, rrd_name ASC",
+				array($local_data_id, $timestamp), false);
 
-			if (db_table_exists($table['name']) && is_numeric($rows) && intval($rows) > 0) {
-				if ($query_string != '') {
-					$query_string .= ' UNION ';
-				}
-
-				$query_string .= ' (SELECT local_data_id,
-					UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
-					FROM ' . $table['name'] . "
-					WHERE local_data_id = $local_data_id) ";
+			if (cacti_sizeof($tresults)) {
+				$results = array_merge($results, $tresults);
 			}
 		}
 	}
 
-	if ($query_string != '') {
-		$query_string .= ' UNION ';
-	}
-
-	$timestamp = time();
-
-	$query_string .= " (SELECT local_data_id,
+	$tresults = db_fetch_assoc_prepared("SELECT local_data_id,
 		UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
 		FROM poller_output_boost
-		WHERE local_data_id = $local_data_id
-		AND time < FROM_UNIXTIME($timestamp))";
+		WHERE local_data_id = ?
+		AND time < FROM_UNIXTIME(?)
+		ORDER BY time, rrd_name",
+		array($local_data_id, $timestamp));
 
-	$query_string .= ' ORDER BY timestamp ASC, rrd_name ASC ';
+	if (cacti_sizeof($tresults)) {
+		$results = array_merge($results, $tresults);
+	}
 
-	boost_timer('get_records', BOOST_TIMER_START);
-	$results = db_fetch_assoc($query_string, false);
 	boost_timer('get_records', BOOST_TIMER_END);
+
+	/* sort the results */
+	$ordering = array(
+		'time' => 'asc',
+		'rrd_name' => 'asc'
+	);
+
+	usort($results, function($rowa, $rowb) use ($ordering) {
+		foreach($ordering as $key => $sortDirection) {
+			switch($sortDirection) {
+				case 'desc':
+					$direction = -1;
+					break;
+				case 'asc':
+				default:
+					$direction = 1;
+					break;
+			}
+
+			if ($rowA[$key] > $rowB[$key]) {
+				return $direction;
+			} else if ($rowA[$key] < $rowB[$key]){
+				return $direction*-1;
+			}
+		}
+
+		return 0;
+	});
 
 	/* log memory */
 	if ($get_memory) {
