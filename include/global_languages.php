@@ -260,7 +260,7 @@ if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_DEFAULT) {
 		}
 
 		if (empty($i18n[$domain])) {
-			die('Invalid language support or corrupt/missing file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
+			die('Invalid language support or corrupt/missing file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 		}
 	}
 	unset($input);
@@ -286,13 +286,13 @@ function load_gettext_original($domain) {
 	$input = new FileReader($cacti_textdomains[$domain]['path2catalogue']);
 
 	if ($input == false) {
-		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
+		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 	}
 
 	$i18n_domain = new gettext_reader($input);
 
 	if ($i18n_domain == false) {
-		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
+		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 	}
 
 	return $i18n_domain;
@@ -312,7 +312,7 @@ function load_gettext_motranslator($domain) {
 	$input = new PhpMyAdmin\MoTranslator\Translator($cacti_textdomains[$domain]['path2catalogue']);
 
 	if ($input == false) {
-		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
+		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 	}
 
 	return $input;
@@ -332,14 +332,14 @@ function load_gettext_oscarotero($domain) {
 	$input = Gettext\Translations::fromMoFile($cacti_textdomains[$domain]['path2catalogue']);
 
 	if ($input == false) {
-		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
+		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 	}
 
 	$i18n_domain = new Gettext\Translator();
 	$i18n_domain->loadTranslations($input);
 
 	if ($i18n_domain == false) {
-		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOF);
+		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . PHP_EOL);
 	}
 
 	return $i18n_domain;
@@ -504,7 +504,7 @@ function __() {
 		return __gettext($args[0]);
 
 	/* convert pure text strings by using a different textdomain */
-	} elseif ($num == 2 && isset($i18n[$args[1]]) && $args[1] != 'cacti') {
+	} elseif ($num == 2 && isset($i18n[(string) $args[1]]) && $args[1] !== 'cacti') {
 		return __gettext($args[0], $args[1]);
 
 	/* convert stings including one or more placeholders */
@@ -513,7 +513,7 @@ function __() {
 		   the use of a different textdomain */
 
 		/* get gettext string */
-		if (isset($i18n[$args[$num-1]]) && $args[$num-1] != 'cacti') {
+		if (isset($i18n[(string) $args[$num-1]]) && $args[$num-1] !== 'cacti') {
 			$args[0] = __gettext($args[0], $args[$num-1]);
 		} else {
 			$args[0] = __gettext($args[0]);
@@ -560,7 +560,7 @@ function __x() {
 			$msgstr = __gettext($args[0]);
 		} else {
 			/* get gettext string */
-			$msgstr = isset($i18n[$args[$num-1]]) && $args[$num-1] != 'cacti' ?
+			$msgstr = isset($i18n[(string) $args[$num-1]]) && $args[$num-1] != 'cacti' ?
 			__gettext($args[0], $args[$num-1]) : __gettext($args[0]);
 		}
 
