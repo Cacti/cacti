@@ -991,20 +991,91 @@ function pollers() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'        => array('display' => __('Collector Name'), 'align' => 'left',   'sort' => 'ASC',  'tip' => __('The Name of this Data Collector.')),
-		'id'          => array('display' => __('ID'),             'align' => 'right',  'sort' => 'ASC',  'tip' => __('The unique id associated with this Data Collector.')),
-		'hostname'    => array('display' => __('Hostname'),       'align' => 'right',  'sort' => 'ASC',  'tip' => __('The Hostname where the Data Collector is running.')),
-		'status'      => array('display' => __('Status'),         'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Status of this Data Collector.')),
-		'nosort0'   => array('display' => __('Proc/Threads'),      'align' => 'right',  'sort' => 'DESC', 'tip' => __('The Number of Poller Processes and Threads for this Data Collector.')),
-		'total_time'  => array('display' => __('Polling Time'),   'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last data collection time for this Data Collector.')),
-		'nosort1'     => array('display' => __('Avg/Max'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The Average and Maximum Collector timings for this Data Collector.')),
-		'hosts'       => array('display' => __('Devices'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of Devices associated with this Data Collector.')),
-		'snmp'        => array('display' => __('SNMP Gets'),      'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of SNMP gets associated with this Collector.')),
-		'script'      => array('display' => __('Scripts'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of script calls associated with this Data Collector.')),
-		'server'      => array('display' => __('Servers'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of script server calls associated with this Data Collector.')),
-		'last_update' => array('display' => __('Last Finished'),  'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last time this Data Collector completed.')),
-		'last_status' => array('display' => __('Last Update'),    'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last time this Data Collector checked in with the main Cacti site.')),
-		'last_sync' => array('display' => __('Last Sync'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last time this Data Collector was full synced with main Cacti site.')));
+		'name' => array(
+			'display' => __('Collector Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The Name of this Data Collector.')
+		),
+		'id' => array(
+			'display' => __('ID'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The unique id associated with this Data Collector.')
+		),
+		'poller.hostname'    => array(
+			'display' => __('Hostname'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The Hostname where the Data Collector is running.')
+		),
+		'status'      => array(
+			'display' => __('Status'),
+			'align' => 'center',
+			'sort' => 'DESC',
+			'tip' => __('The Status of this Data Collector.')
+		),
+		'nosort0'   => array(
+			'display' => __('Proc/Threads'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The Number of Poller Processes and Threads for this Data Collector.')
+		),
+		'total_time'  => array(
+			'display' => __('Polling Time'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The last data collection time for this Data Collector.')
+		),
+		'nosort1'     => array(
+			'display' => __('Avg/Max'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The Average and Maximum Collector timings for this Data Collector.')
+		),
+		'hosts'       => array(
+			'display' => __('Devices'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Devices associated with this Data Collector.')
+		),
+		'snmp'        => array(
+			'display' => __('SNMP Gets'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of SNMP gets associated with this Collector.')
+		),
+		'script'      => array(
+			'display' => __('Scripts'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of script calls associated with this Data Collector.')
+		),
+		'server'      => array(
+			'display' => __('Servers'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of script server calls associated with this Data Collector.')
+		),
+		'last_update' => array(
+			'display' => __('Last Finished'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The last time this Data Collector completed.')
+		),
+		'last_status' => array(
+			'display' => __('Last Update'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The last time this Data Collector checked in with the main Cacti site.')
+		),
+		'last_sync' => array(
+			'display' => __('Last Sync'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The last time this Data Collector was full synced with main Cacti site.')
+		)
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
