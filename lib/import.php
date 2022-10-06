@@ -295,11 +295,7 @@ EOD;
     return $public_key;
 }
 
-function import_read_package_data($xmlfile, &$binary_signature, $public_key = false) {
-	if (!$public_key) {
-		$public_key = get_public_key();
-	}
-
+function import_read_package_data($xmlfile, $public_key = false) {
 	$filename = "compress.zlib://$xmlfile";
 
 	$f   = fopen($filename, 'r');
@@ -332,7 +328,7 @@ function import_read_package_data($xmlfile, &$binary_signature, $public_key = fa
 	// Verify Signature
 	$ok = openssl_verify($xml, $binary_signature, $public_key);
 	if ($ok == 1) {
-		cacti_log('NOTE: File is Signed Correctly', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
+		cacti_log('NOTE: File is Signed Correctly', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 	} elseif ($ok == 0) {
 		cacti_log('FATAL: File has been Tampered with.', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 		return false;
@@ -341,7 +337,7 @@ function import_read_package_data($xmlfile, &$binary_signature, $public_key = fa
 		return false;
 	}
 
-	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
+	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 	$xmlget     = simplexml_load_string($xml);
 	$data       = xml_to_array($xmlget);
@@ -384,7 +380,9 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 
 	$preview_only = $preview;
 
-	$binary_signature = '';
+	if (!$public_key) {
+		$public_key = get_public_key();
+	}
 
 	/* set new timeout and memory settings */
 	if ($limitex) {
@@ -392,7 +390,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		ini_set('memory_limit', '-1');
 	}
 
-	$data = import_read_package_data($xmlfile, $binary_signature, $public_key);
+	$data = import_read_package_data($xmlfile, $public_key);
 
 	if (!$data) {
 		return false;
