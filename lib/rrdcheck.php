@@ -22,7 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-
 function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	static $newrows = array();
 
@@ -34,7 +33,6 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 			WHERE pi.local_data_id IS NOT NULL
 			AND data_source_path != ""
 			AND dtd.local_data_id != 0');
-
 	} elseif (sizeof($newrows)) {
 		return $newrows[$thread_id];
 	} else {
@@ -132,14 +130,12 @@ function do_rrdcheck($thread_id = 1) {
 	}
 
 	if (cacti_sizeof($rrdfiles)) {
-
 		$end = time() - $poller_interval;
 		$start = $end - 86400;
 
 		$done = array();
 
 		foreach ($rrdfiles as $rrdfile) {
-
 			if (in_array ($rrdfile['local_data_id'], $done)) {
 				continue;
 			}
@@ -159,9 +155,7 @@ function do_rrdcheck($thread_id = 1) {
 					db_execute_prepared ('INSERT INTO rrdcheck (local_data_id,test_date,message) VALUES
 					(?,NOW(),?)', array($rrdfile['local_data_id'], "RRD file modify time older than hour - $file"));
 					$done[] = $rrdfile['local_data_id'];
-				
 				} else {
-
 					$pstart = $start - $rrdfile['rrdstep'];
 					$pend = $end - $rrdfile['rrdstep'];
 					$one_hour_limit = 3600/$rrdfile['rrdstep'] * 23;
@@ -176,7 +170,6 @@ function do_rrdcheck($thread_id = 1) {
 					$info_array = explode("\n", $info);
 
 					if (cacti_sizeof($info_array)) {
-
 						$first = true;
 						$lines_24 = 0;
 						$lines_1 = 0;
@@ -200,7 +193,6 @@ function do_rrdcheck($thread_id = 1) {
 								$first = false;
 
 							} elseif ($line != '') {
-
 								// remove line - OK u:0.03 s:0.12 r:0.33
 								if (substr($line, 0, 2) == 'OK') {
 									continue;
@@ -233,7 +225,6 @@ function do_rrdcheck($thread_id = 1) {
 
 						// 24 hour statistics
 						foreach	($nan_24 as $index=>$count) {
-
 							if ($lines_24 > 0) {
 								$ratio = $count/$lines_24;
 							} else {
@@ -253,7 +244,6 @@ function do_rrdcheck($thread_id = 1) {
 
 						// 1 hour statistics
 						foreach	($nan_1 as $index=>$count) {
-
 							if ($notified) {	// 24hour notified, skipping
 								continue;
 							}
