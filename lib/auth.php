@@ -2663,7 +2663,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 	if ($sql_where != '') {
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
 	} else {
-		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) ";
 	}
 
 	if ($host_id > 0) {
@@ -2840,7 +2840,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 	if ($sql_where != '') {
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
 	} else {
-		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND";
+		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) ";
 	}
 
 	if ($site_id > 0) {
