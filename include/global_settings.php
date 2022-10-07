@@ -1328,6 +1328,21 @@ $settings = array(
 				'3600' => __('1 Hour')
 			)
 		),
+		'rrdcheck_timeout' => array(
+			'friendly_name' => __('RRD check Timeout'),
+			'description' => __('The maximum amount of time Cacti\'s RRD check script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '300',
+			'array' => array(
+				'60'   => __('%s Minute', 1),
+				'120'  => __('%s Minutes', 2),
+				'300'  => __('%s Minutes', 5),
+				'600'  => __('%s Minutes', 10),
+				'1200' => __('%s Minutes', 20),
+				'1800' => __('%s Minutes', 30),
+				'3600' => __('1 Hour')
+			)
+		),
 		'commands_timeout' => array(
 			'friendly_name' => __('Poller Commands Timeout'),
 			'description' => __('The maximum amount of time Cacti\'s Background Commands script can run without generating a timeout error and being killed.  This script will perform tasks such as re-indexing Devices and pruning devices from Remote Data Collectors.'),
@@ -2172,6 +2187,52 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '1024',
 			'array' => $dsstats_max_memory
+		),
+		'rrdcheck_hq_header' => array(
+			'friendly_name' => __('RRD check'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+		),
+		'rrdcheck_enable' => array(
+			'friendly_name' => __('Enable RRD check'),
+			'description' => __('Should RRD check be enabled for this Cacti system?'),
+			'method' => 'checkbox',
+			'default' => ''
+		),
+		'rrdcheck_parallel' => array(
+			'friendly_name' => __('Number of RRD check Processes'),
+			'description' => __('The number of concurrent RRD check processes to use to use to process all of rrd files.'),
+			'default' => '1',
+			'method' => 'drop_array',
+			'array' => array(
+				1  => __('1 Process'),
+				2  => __('%d Processes', 2),
+				3  => __('%d Processes', 3),
+				4  => __('%d Processes', 4),
+				5  => __('%d Processes', 5),
+				6  => __('%d Processes', 6),
+				7  => __('%d Processes', 7),
+				8  => __('%d Processes', 8),
+				9  => __('%d Processes', 9),
+				10 => __('%d Processes', 10),
+				11 => __('%d Processes', 11),
+				12 => __('%d Processes', 12),
+				13 => __('%d Processes', 13),
+				14 => __('%d Processes', 14),
+				15 => __('%d Processes', 15),
+				16 => __('%d Processes', 16),
+				17 => __('%d Processes', 17),
+				18 => __('%d Processes', 18),
+				19 => __('%d Processes', 19),
+				20 => __('%d Processes', 20),
+			)
+		),
+		'rrdcheck_interval' => array(
+			'friendly_name' => __('Check Frequency'),
+			'description' => __('How frequent should RRD be checked ?'),
+			'default' => '240',
+			'method' => 'drop_array',
+			'array' => $rrdcheck_intervals
 		),
 		'storage_header' => array(
 			'friendly_name' => __('Data Storage Settings'),

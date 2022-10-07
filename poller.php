@@ -39,6 +39,7 @@ require_once($config['base_path'] . '/lib/dsstats.php');
 require_once($config['base_path'] . '/lib/dsdebug.php');
 require_once($config['base_path'] . '/lib/boost.php');
 require_once($config['base_path'] . '/lib/reports.php');
+require_once($config['base_path'] . '/lib/rrdcheck.php');
 
 global $poller_db_cnn_id, $remote_db_cnn_id, $logged;
 
@@ -824,6 +825,7 @@ if ($poller_id == 1) {
 	spikekill_poller_bottom();
 	automation_poller_bottom();
 	poller_maintenance();
+	rrdcheck_poller_bottom();
 	api_plugin_hook('poller_bottom');
 	bad_index_check($mibs);
 } else {

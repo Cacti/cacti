@@ -3107,6 +3107,16 @@ INSERT INTO vdef_items VALUES(14, '11a26f18feba3919be3af426670cba95', 7, 2, 6, '
 INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '8');
 
 --
+-- Table structure for table `rrdcheck`
+--
+
+CREATE TABLE rrdcheck (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `test_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `message` varchar(250) default ''
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='rrdcheck';
+
+--
 -- Table structure for table `version`
 --
 
