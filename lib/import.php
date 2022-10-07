@@ -296,6 +296,10 @@ EOD;
 }
 
 function import_read_package_data($xmlfile, $public_key = false) {
+	if (!$public_key) {
+		$public_key = get_public_key();
+	}
+
 	$filename = "compress.zlib://$xmlfile";
 
 	$f   = fopen($filename, 'r');
@@ -326,9 +330,13 @@ function import_read_package_data($xmlfile, $public_key = false) {
 	}
 
 	// Verify Signature
-	$ok = openssl_verify($xml, $binary_signature, $public_key);
+	$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+	if ($ok != 1) {
+		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+	}
+
 	if ($ok == 1) {
-		cacti_log('NOTE: File is Signed Correctly', false, 'IMPORT', POLLER_VERBOSITY_LOW);
+		cacti_log('NOTE: File is Signed Correctly', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 	} elseif ($ok == 0) {
 		cacti_log('FATAL: File has been Tampered with.', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 		return false;
@@ -337,7 +345,7 @@ function import_read_package_data($xmlfile, $public_key = false) {
 		return false;
 	}
 
-	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_LOW);
+	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
 	$xmlget     = simplexml_load_string($xml);
 	$data       = xml_to_array($xmlget);
@@ -412,7 +420,12 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	foreach ($data['files']['file'] as $f) {
 		$binary_signature = base64_decode($f['filesignature']);
 		$fdata = base64_decode($f['data']);
-		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+
+		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+		if ($ok != 1) {
+			$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+		}
+
 		if ($ok == 1) {
 			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 		} else {
