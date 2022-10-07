@@ -675,6 +675,22 @@ function selectAll(attrib, checked) {
 				$(this).find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 			});
 		}
+	} else if (attrib.startsWith('sg_', 0)) {
+		var attribSplit = attrib.split('_');
+		var dq   = attribSplit[1];
+
+		if (checked == true) {
+			$('tr[id^="dqline'+dq+'\_"]:not(.disabled_row)').each(function(data) {
+				$(this).addClass('selected');
+				$(this).find(':checkbox').prop('checked', true).attr('aria-checked', 'true').attr('data-prev-check', 'true');
+			});
+			disableSelection();
+		} else {
+			$('tr[id^="dqline'+dq+'\_"]:not(.disabled_row)').each(function(data) {
+				$(this).removeClass('selected');
+				$(this).find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
+			});
+		}
 	} else {
 		if (checked == true) {
 			$('tr[id^="line_'+attrib+'"]:not(.disabled_row)').each(function(data) {
