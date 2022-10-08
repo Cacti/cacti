@@ -110,6 +110,10 @@ api_device_purge_deleted_devices();
 // Rotate Cacti Logs
 logrotate_check($force);
 
+if ($config['poller_id'] > 1) {
+	api_plugin_hook('poller_remote_maint');
+}
+
 unregister_process('maintenance', 'master', $config['poller_id']);
 
 exit(0);
