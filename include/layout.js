@@ -185,7 +185,7 @@ function basename(path, suffix) {
 /** getTimestampFromDate - Simple function to convert a MySQL Date
  * to a timestamp */
 function getTimestampFromDate(dateStamp) {
-	if (typeof(dateStamp) != 'undefined') {
+	if (typeof dateStamp != 'undefined') {
 		var dateParts = dateStamp.split(' ');
 		var timeParts = dateParts[1].split(':');
 
@@ -709,11 +709,12 @@ function selectAll(attrib, checked) {
 
 /* graph filtering */
 function applyTimespanFilterChange() {
-	var strURL;
+	var href;
 
-	strURL = '?header=false&predefined_timespan=' + $('#predefined_timespan').val();
-	strURL = strURL + '&predefined_timeshift=' + $('#predefined_timeshift').val();
-	loadPageNoHeader(strURL);
+	href  = '?header=false&predefined_timespan=' + $('#predefined_timespan').val();
+	href += '&predefined_timeshift=' + $('#predefined_timeshift').val();
+
+	loadPageNoHeader(href);
 }
 
 /** cactiReturnTo - This function simply returns to the previous page
@@ -1409,7 +1410,7 @@ function responsiveResizeGraphs(initialize) {
 	}
 
 	// Dont resize if nothing changed
-	if (initialize == 'undefined' && (previousMainWidth == null || (previousMainWidth == mainWidth && previousColumns == myColumns))) {
+	if (typeof initialize == 'undefined' && (previousMainWidth == null || (previousMainWidth == mainWidth && previousColumns == myColumns))) {
 		previousMainWidth = mainWidth;
 		return true;
 	}
@@ -2098,7 +2099,7 @@ function loadTopTab(href, id, force) {
 				return false;
 			})
 			.fail(function(html) {
-				getPresentHTTPError(html);
+				getPresentHTTPErrorOrRedirect(html, url);
 			}
 		);
 
@@ -2122,8 +2123,8 @@ function loadTopTab(href, id, force) {
 	}
 }
 
-function loadPageUsingPost(strURL, postData, returnLocation) {
-	$.post(strURL, postData, function(data) {
+function loadPageUsingPost(href, postData, returnLocation) {
+	$.post(href, postData, function(data) {
 		if (returnLocation !== undefined) {
 			$('#'+returnLocation).empty().html(data);
 		} else {
@@ -2166,7 +2167,7 @@ function loadPage(href, force) {
 					var jstree		= htmlObject.find('.cactiTreeNavigationArea').html();
 
 					checkForRedirects(html, href);
-					if(jstree !== 'undefined' && $('.cactiTreeNavigationArea').length !== 0) {
+					if(typeof jstree !== 'undefined' && $('.cactiTreeNavigationArea').length !== 0) {
 						$('.cactiTreeNavigationArea').html(jstree);
 					}
 					$('#main').empty().hide();
@@ -2231,7 +2232,7 @@ function loadPage(href, force) {
 				return false;
 			})
 			.fail(function(html) {
-				getPresentHTTPError(html);
+				getPresentHTTPErrorOrRedirect(html, href);
 			}
 		);
 	}
@@ -2394,7 +2395,7 @@ function loadPageNoHeader(href, scroll, force) {
 				return false;
 			})
 			.fail(function(html) {
-				getPresentHTTPError(html);
+				getPresentHTTPErrorOrRedirect(html, href);
 			}
 		);
 	}
@@ -2403,7 +2404,11 @@ function loadPageNoHeader(href, scroll, force) {
 }
 
 function getPresentHTTPError(data) {
-	if (typeof data != 'undefined') {
+	getPresentHTTPErrorOrRedirect(data);
+}
+
+function getPresentHTTPErrorOrRedirect(data, url) {
+	if (typeof data.status != 'undefined') {
 		var errorStr  = data.status;
 		var errorSub  = data.statusText;
 		var errorText = errorReasonUnexpected;
@@ -2464,6 +2469,11 @@ function getPresentHTTPError(data) {
 				}
 			});
 		}
+	}
+
+	if (typeof url != 'undefined') {
+		$.ajaxQ.abortAll();
+		document.location = stripHeaderSuppression(url);
 	}
 }
 
@@ -2653,7 +2663,7 @@ function setupSortable() {
 
 		var $target = $(e.target);
 		var sortAdd = '';
-		var url     = '';
+		var href    = '';
 
 		if (!$target.is('.ui-resizable-handle')) {
 			var page      = $(this).find('.sortinfo').attr('sort-page');
@@ -2667,7 +2677,7 @@ function setupSortable() {
 				sortAdd='&add=reset';
 			}
 
-			var url = page+(page.indexOf('?') > 0 ? '&':'?') +
+			href = page+(page.indexOf('?') > 0 ? '&':'?') +
 				'sort_column=' + column +
 				'&sort_direction=' + direction +
 				'&header=false' +
@@ -2676,9 +2686,9 @@ function setupSortable() {
 			closeDateFilters();
 
 			$.ajaxQ.abortAll();
-			$.get(url)
+			$.get(href)
 				.done(function(data) {
-					checkForRedirects(data, url);
+					checkForRedirects(data, href);
 
 					$('#'+returnto).empty().hide();
 
@@ -2691,7 +2701,7 @@ function setupSortable() {
 					applySkin();
 				})
 				.fail(function(data) {
-					getPresentHTTPError(data);
+					getPresentHTTPErrorOrRedirect(data, href);
 				}
 			);
 		}
@@ -2881,7 +2891,7 @@ function setupPageTimeout() {
 						applySkin();
 					})
 					.fail(function(data) {
-						getPresentHTTPError(data);
+						getPresentHTTPErrorOrRedirect(data, refreshPage);
 					}
 				);
 			}
@@ -2942,6 +2952,11 @@ $(function() {
 	statePushed = false;
 	popFired    = false;
 	var tapped  = false;
+
+	/**
+	 * Unbind key elements to debounce actions
+	 */
+	$('input, select, textarea, a').unbind();
 
 	// Use traditional popstate handler
 	window.onpopstate = function(event) {
@@ -3301,7 +3316,7 @@ function clearGraphFilter() {
 			applySkin();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data);
+			getPresentHTTPErrorOrRedirect(data, href);
 		}
 	);
 }
@@ -3316,6 +3331,8 @@ function closeDateFilters() {
 
 function saveGraphFilter(section) {
 	closeDateFilters();
+
+	var error_href = graphPage;
 
 	$.post(graphPage+'?action=save', {
 		section: section,
@@ -3334,7 +3351,7 @@ function saveGraphFilter(section) {
 			});
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data);
+			getPresentHTTPErrorOrRedirect(data, error_href);
 		}
 	);
 }
@@ -3342,7 +3359,7 @@ function saveGraphFilter(section) {
 function applyGraphFilter() {
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
 		'&rfilter=' + base64_encode($('#rfilter').val())+
-		(typeof($('#host_id').val()) != 'undefined' ? '&host_id='+$('#host_id').val():'')+
+		(typeof $('#host_id').val() != 'undefined' ? '&host_id='+$('#host_id').val():'')+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+
 		'&graph_template_id='+$('#graph_template_id').val()+
@@ -3363,7 +3380,7 @@ function applyGraphFilter() {
 			pushState(myTitle, myHref);
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data);
+			getPresentHTTPErrorOrRedirect(data, href);
 		}
 	);
 }
@@ -3430,7 +3447,7 @@ function applyGraphTimespan() {
 			applySkin();
 		})
 		.fail(function(data) {
-			getPresentHTTPError(data);
+			getPresentHTTPErrorOrRedirect(data, href);
 		}
 	);
 }
@@ -3540,13 +3557,13 @@ function clearGraphTimespanFilter() {
 }
 
 function removeSpikesStdDev(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
+	var href = urlPath+'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
 
 	closeDateFilters();
 
-	$.getJSON(strURL)
+	$.getJSON(href)
 		.done(function(data) {
-			checkForRedirects(data, strURL);
+			checkForRedirects(data, href);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3561,13 +3578,13 @@ function removeSpikesStdDev(local_graph_id) {
 }
 
 function removeSpikesVariance(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=variance&local_graph_id='+local_graph_id;
+	var href = urlPath+'spikekill.php?method=variance&local_graph_id='+local_graph_id;
 
 	closeDateFilters();
 
-	$.getJSON(strURL)
+	$.getJSON(href)
 		.done(function(data) {
-			checkForRedirects(data, strURL);
+			checkForRedirects(data, href);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3582,13 +3599,13 @@ function removeSpikesVariance(local_graph_id) {
 }
 
 function removeSpikesInRange(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=fill&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var href = urlPath+'spikekill.php?method=fill&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
-	$.getJSON(strURL)
+	$.getJSON(href)
 		.done(function(data) {
-			checkForRedirects(data, strURL);
+			checkForRedirects(data, href);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3603,13 +3620,13 @@ function removeSpikesInRange(local_graph_id) {
 }
 
 function removeRangeFill(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=float&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var href = urlPath+'spikekill.php?method=float&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
-	$.getJSON(strURL)
+	$.getJSON(href)
 		.done(function(data) {
-			checkForRedirects(data, strURL);
+			checkForRedirects(data, href);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3624,13 +3641,13 @@ function removeRangeFill(local_graph_id) {
 }
 
 function dryRunStdDev(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
+	var href = urlPath+'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
 
 	closeDateFilters();
 
-	$.getJSON(strURL)
+	$.getJSON(href)
 		.done(function(data) {
-			checkForRedirects(data, strURL);
+			checkForRedirects(data, href);
 
 			$('#spikeresults').remove();
 			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
@@ -3644,13 +3661,13 @@ function dryRunStdDev(local_graph_id) {
 }
 
 function dryRunVariance(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=variance&dryrun=true&local_graph_id='+local_graph_id;
+	var href = urlPath+'spikekill.php?method=variance&dryrun=true&local_graph_id='+local_graph_id;
 
 	closeDateFilters();
 
-	$.getJSON(strURL)
+	$.getJSON(href)
 		.done(function(data) {
-			checkForRedirects(data, strURL);
+			checkForRedirects(data, href);
 
 			$('#spikeresults').remove();
 			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="'+spikeKillResults+'"></div>');
@@ -3664,13 +3681,13 @@ function dryRunVariance(local_graph_id) {
 }
 
 function dryRunSpikesInRange(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=fill&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var href = urlPath+'spikekill.php?method=fill&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
-	$.getJSON(strURL)
+	$.getJSON(href)
 		.done(function(data) {
-			checkForRedirects(data, strURL);
+			checkForRedirects(data, href);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3685,13 +3702,13 @@ function dryRunSpikesInRange(local_graph_id) {
 }
 
 function dryRunRangeFill(local_graph_id) {
-	var strURL = urlPath+'spikekill.php?method=float&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var href = urlPath+'spikekill.php?method=float&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	closeDateFilters();
 
-	$.getJSON(strURL)
+	$.getJSON(href)
 		.done(function(data) {
-			checkForRedirects(data, strURL);
+			checkForRedirects(data, href);
 
 			redrawGraph(local_graph_id);
 			$('#spikeresults').remove();
@@ -3786,7 +3803,7 @@ function redrawGraph(graph_id) {
 }
 
 function initializeGraphs(disable_cache) {
-	disable_cache = (disable_cache === 'undefined') ? false : true;
+	disable_cache = (typeof disable_cache == 'undefined') ? false : true;
 
 	$.ajaxQ.abortAll();
 
@@ -3939,7 +3956,7 @@ function initializeGraphs(disable_cache) {
 					serverTimeOffset : timeOffset
 				});
 
-				if (typeof(realtimeArray) != 'undefined') {
+				if (typeof realtimeArray != 'undefined') {
 					realtimeArray[data.local_graph_id] = false;
 				}
 

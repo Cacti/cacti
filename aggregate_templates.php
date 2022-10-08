@@ -580,26 +580,25 @@ function aggregate_template() {
 		$rows = get_request_var('rows');
 	}
 
-	form_start('aggregate_templates.php', 'template');
-
 	html_start_box(__('Aggregate Templates'), '100%', '', '3', 'center', 'aggregate_templates.php?action=edit');
 
 	$filter_html = '<tr class="even">
 		<td>
-			<table class="filterTable">
-				<tr>
-					<td>
-						' . __('Search') . '
-					</td>
-					<td>
-						<input type="text" class="ui-state-default ui-corner-all" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
-					</td>
-					<td>
-						' . __('Templates') . '
-					</td>
-					<td>
-						<select id="rows" onChange="applyFilter()">
-						<option value="-1" ';
+			<form id="forms">
+				<table class="filterTable">
+					<tr>
+						<td>
+							' . __('Search') . '
+						</td>
+						<td>
+							<input type="text" class="ui-state-default ui-corner-all" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
+						</td>
+						<td>
+							' . __('Templates') . '
+						</td>
+						<td>
+							<select id="rows" onChange="applyFilter()">
+							<option value="-1" ';
 
 	if (get_request_var("rows") == "-1") {
 		$filter_html .= 'selected';
@@ -618,28 +617,27 @@ function aggregate_template() {
 
 	$filter_html .= '</select>
 					</td>
-					<td>
-						<span>
-							<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
-							<label for="has_graphs">' . __('Has Graphs') . '</label>
-						</span>
-					</td>
-					<td>
-						<span>
-							<input type="button" class="ui-button ui-corner-all ui-widget" value="' . __esc('Go') . '" id="refresh">
-							<input type="button" class="ui-button ui-corner-all ui-widget" value="' . __esc('Clear') . '" id="clear">
-						</span>
-					</td>
-				</tr>
-			</table>
+						<td>
+							<span>
+								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+								<label for="has_graphs">' . __('Has Graphs') . '</label>
+							</span>
+						</td>
+						<td>
+							<span>
+								<input type="submit" class="ui-button ui-corner-all ui-widget" value="' . __esc('Go') . '" id="go">
+								<input type="button" class="ui-button ui-corner-all ui-widget" value="' . __esc('Clear') . '" id="clear">
+							</span>
+						</td>
+					</tr>
+				</table>
+			</form>
 		</td>
 	</tr>';
 
 	print $filter_html;
 
 	html_end_box();
-
-	form_end();
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
@@ -748,19 +746,16 @@ function aggregate_template() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
-			applyFilter();
-		});
-
 		$('#clear').click(function() {
 			clearFilter();
 		});
 
-		$('#filter').change(function() {
+		$('#template').submit(function(event) {
+			event.preventDefault();
 			applyFilter();
 		});
 
-		$('#template').submit(function(event) {
+		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

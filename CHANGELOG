@@ -25,7 +25,8 @@ Cacti CHANGELOG
 -feature#4901: Make the script server accept arguments in the standard way
 -feature#4902: Updated Support for MySQL 8.x
 -feature#4907: Add lmSensors to the Net-SNMP Device Template
--feature#4943: Add RRDcheck
+-feature#4943: Add ability to periodically check RRDfiles for errors in batch
+-feature#4948: When using proxies to load balance Cacti, if the proxy cookie times out, Cacti should properly redirect
 
 1.2.22
 -security#4834: When creating new graphs, cross site injection is possible

@@ -518,26 +518,26 @@ function aggregate_color_template() {
 		$rows = get_request_var('rows');
 	}
 
-	form_start('color_templates.php', 'form_template');
-
 	html_start_box(__('Color Templates'), '100%', '', '3', 'center', 'color_templates.php?action=template_edit');
 
 	$filter_html = '<tr class="even">
 		<td>
-			<table class="filterTable">
-				<tr>
-					<td>
-						' . __('Search') . '
-					</td>
-					<td>
-						<input type="text" class="ui-state-default ui-corner-all" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
-					</td>
-					<td>
-						' . __('Color Templates') . '
-					</td>
-					<td>
-						<select id="rows" onChange="applyFilter()">
-							<option value="-1" ';
+			<form id="form_template">
+				<table class="filterTable">
+					<tr>
+						<td>
+							' . __('Search') . '
+						</td>
+						<td>
+							<input type="text" class="ui-state-default ui-corner-all" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
+						</td>
+						<td>
+							' . __('Color Templates') . '
+						</td>
+						<td>
+							<select id="rows" onChange="applyFilter()">
+								<option value="-1" ';
+
 	if (get_request_var('rows') == '-1') {
 		$filter_html .= 'selected';
 	}
@@ -555,29 +555,28 @@ function aggregate_color_template() {
 	}
 
 	$filter_html .= '			</select>
-					</td>
-					<td>
-						<span>
-							<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
-							<label for="has_graphs">' . __('Has Graphs') . '</label>
-						</span>
-					</td>
-					<td>
-						<span>
-							<input type="button" class="ui-button ui-corner-all ui-widget" id="refresh" value="' . __esc('Go') . '">
-							<input type="button" class="ui-button ui-corner-all ui-widget" id="clear" value="' . __esc('Clear') . '">
-						</span>
-					</td>
-				</tr>
-			</table>
+							</td>
+							<td>
+								<span>
+									<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+									<label for="has_graphs">' . __('Has Graphs') . '</label>
+								</span>
+							</td>
+							<td>
+								<span>
+									<input type="submit" class="ui-button ui-corner-all ui-widget" id="go" value="' . __esc('Go') . '">
+									<input type="button" class="ui-button ui-corner-all ui-widget" id="clear" value="' . __esc('Clear') . '">
+								</span>
+							</td>
+						</tr>
+					</table>
+				</form>
 			</td>
 		</tr>';
 
 	print $filter_html;
 
 	html_end_box();
-
-	form_end();
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
@@ -637,10 +636,25 @@ function aggregate_color_template() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'      => array(__('Template Title'), 'ASC'),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template.')),
-		'graphs'    => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC'),
-		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC')
+		'name' => array(
+			'display' => __('Template Title'),
+			'sort'    => 'ASC'
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'tip' => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template.')
+		),
+		'graphs'    => array(
+			'display' => __('Graphs'),
+			'align' => 'right',
+			'sort' => 'DESC'
+		),
+		'templates' => array(
+			'display' => __('Templates'),
+			'align' => 'right',
+			'sort' => 'DESC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -695,16 +709,8 @@ function aggregate_color_template() {
 	}
 
 	$(function() {
-		$('#refresh').click(function() {
-			applyFilter();
-		});
-
 		$('#clear').click(function() {
 			clearFilter();
-		});
-
-		$('#filter').change(function() {
-			applyFilter();
 		});
 
 		$('#form_template').submit(function(event) {

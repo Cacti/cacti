@@ -680,10 +680,6 @@ function form_save() {
 	header('Location: user_admin.php?action=user_edit&header=false&id=' . (empty($user_id) ? get_filter_request_var('id') : $user_id));
 }
 
-/* --------------------------
-    Graph Permissions
-   -------------------------- */
-
 function perm_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -2106,7 +2102,11 @@ function user() {
 			clearFilter();
 		});
 
-		$('#form_user_admin').submit(function(event) {
+		$('#realm, #rows').change(function() {
+			applyFilter();
+		});
+
+		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -2126,7 +2126,7 @@ function user() {
 	?>
 	<tr class='even'>
 		<td>
-		<form id='form_user_admin' action='user_admin.php'>
+		<form id='forms' action='user_admin.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
@@ -2139,7 +2139,7 @@ function user() {
 						<?php print __('Realm');?>
 					</td>
 					<td>
-						<select id='realm' onChange='applyFilter()'>
+						<select id='realm'>
 							<option value='-1'<?php print (get_request_var('realm') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<option value='0'<?php print (get_request_var('realm') == '0' ? ' selected>':'>') . __('Local');?></option>
 							<option value='2'<?php print (get_request_var('realm') == '2' ? ' selected>':'>') . __('Basic');?></option>
@@ -2151,7 +2151,7 @@ function user() {
 						<?php print __('Users');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2164,7 +2164,7 @@ function user() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
@@ -2478,6 +2478,18 @@ function graph_filter($header_label) {
 	}
 
 	$(function() {
+		$('#associated').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#rows, #graph_template_id').change(function() {
+			applyFilter();
+		})
+
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
@@ -2492,20 +2504,20 @@ function graph_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id='forms' method='post' action='user_admin.php'>
+		<form id='forms' action='user_admin.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' name='graph_template_id' onChange='applyFilter()'>
+						<select id='graph_template_id'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -2527,7 +2539,7 @@ function graph_filter($header_label) {
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2540,14 +2552,14 @@ function graph_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<input type='checkbox' id='associated' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 							<label for='associated'><?php print __('Show All');?></label>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2585,6 +2597,18 @@ function group_filter($header_label) {
 	}
 
 	$(function() {
+		$('#associated').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#rows').change(function() {
+			applyFilter();
+		});
+
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
@@ -2599,20 +2623,20 @@ function group_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id='forms' method='post' action='user_admin.php'>
+		<form id='forms' action='user_admin.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Groups');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2625,14 +2649,14 @@ function group_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<input type='checkbox' id='associated' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 							<label for='associated'><?php print __('Show All');?></label>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2671,6 +2695,18 @@ function device_filter($header_label) {
 	}
 
 	$(function() {
+		$('#associated').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#rows, #host_template_id').change(function() {
+			applyFilter();
+		});
+
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
@@ -2685,20 +2721,20 @@ function device_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id='forms' method='post' action='user_admin.php'>
+		<form id='forms' action='user_admin.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='host_template_id' onChange='applyFilter()'>
+						<select id='host_template_id'>
 							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -2716,7 +2752,7 @@ function device_filter($header_label) {
 						<?php print __('Devices');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2729,14 +2765,14 @@ function device_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<input type='checkbox' id='associated' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 							<label for='associated'><?php print __('Only Show Exceptions');?></label>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2774,6 +2810,18 @@ function template_filter($header_label) {
 	}
 
 	$(function() {
+		$('#associated').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#rows').change(function() {
+			applyFilter();
+		});
+
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
@@ -2788,20 +2836,20 @@ function template_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id='forms' method='post' action='user_admin.php'>
+		<form id='forms' action='user_admin.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Templates');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2814,14 +2862,14 @@ function template_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<input type='checkbox' id='associated' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 							<label for='associated'><?php print __('Only Show Exceptions');?></label>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2859,6 +2907,18 @@ function tree_filter($header_label) {
 	}
 
 	$(function() {
+		$('#associated').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#rows').change(function() {
+			applyFilter();
+		});
+
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
@@ -2873,20 +2933,20 @@ function tree_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id='forms' method='post' action='user_admin.php'>
+		<form id='forms' action='user_admin.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Trees');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2899,14 +2959,14 @@ function tree_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<input type='checkbox' id='associated' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 							<label for='associated'><?php print __('Only Show Exceptions');?></label>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -2944,6 +3004,18 @@ function member_filter($header_label) {
 	}
 
 	$(function() {
+		$('#associated').click(function() {
+			applyFilter();
+		});
+
+		$('#clear').click(function() {
+			clearFilter();
+		});
+
+		$('#rows').change(function() {
+			applyFilter();
+		});
+
 		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
@@ -2958,20 +3030,20 @@ function member_filter($header_label) {
 	?>
 	<tr class='even'>
 		<td>
-		<form id='forms' method='post' action='user_admin.php'>
+		<form id='forms' action='user_admin.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>' onChange='applyFilter()'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Trees');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2984,14 +3056,14 @@ function member_filter($header_label) {
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
+							<input type='checkbox' id='associated' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
 							<label for='associated'><?php print __('Only Show Exceptions');?></label>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' onClick='applyFilter()' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' onClick='clearFilter()' title='<?php print __esc('Clear Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
