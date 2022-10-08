@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#4941: Viewing graphs can break when boost is running in some rare cases
 -issue#4947: When creating a Data Template, ensure that the default max value is always 'U' and not '0'
 -feature#3131: Button to reindex bad indexes
+-feature#4638: Detect the graph with stale rrd or missing rrd
 -feature#4841: Move the cactid function db_check_reconnect() to lib/database.php for other service oriented scripts
 -feature#4874: Add support for showing business hours
 -feature#4890: Add multi threading for Poller rechace script
