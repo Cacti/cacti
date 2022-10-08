@@ -520,6 +520,11 @@ function install_setup_get_templates() {
 		}
 	}
 
+	if ($config['cacti_server_os'] != 'unix') {
+		db_execute('UPDATE graph_templates_graph SET image_format_id = 1');
+		set_config_option('default_image_format', '1');
+	}
+
 	return $info;
 }
 
