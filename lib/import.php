@@ -330,9 +330,10 @@ function import_read_package_data($xmlfile, $public_key = false) {
 	}
 
 	// Verify Signature
-	$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-	if ($ok != 1) {
+	if (strlen($public_key) < 200) {
 		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+	} else {
+		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 	}
 
 	if ($ok == 1) {
@@ -421,9 +422,10 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		$binary_signature = base64_decode($f['filesignature']);
 		$fdata = base64_decode($f['data']);
 
-		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
-		if ($ok != 1) {
-			$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+		if (strlen($public_key) < 200) {
+			$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+		} else {
+			$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
 		}
 
 		if ($ok == 1) {
