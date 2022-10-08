@@ -622,7 +622,7 @@ $struct_data_source_item = array(
 		'method' => 'textbox',
 		'max_length' => '19',
 		'size' => '30',
-		'default' => '',
+		'default' => 'ds',
 		'description' => __('Choose unique name to represent this piece of data inside of the RRDfile.')
 		),
 	'rrd_minimum' => array(
@@ -638,7 +638,7 @@ $struct_data_source_item = array(
 		'method' => 'textbox',
 		'max_length' => '30',
 		'size' => '20',
-		'default' => '0',
+		'default' => 'U',
 		'description' => __('The maximum value of data that is allowed to be collected.')
 		),
 	'data_source_type_id' => array(
