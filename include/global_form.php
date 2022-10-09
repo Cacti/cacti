@@ -1677,22 +1677,24 @@ $fields_template_import = array(
 		'accept' => '.xml',
 		'method' => 'file'
 	),
-	'import_text' => array(
-		'method' => 'hidden',
-		'friendly_name' => __('Import Template from Text'),
-		'description' => __('If you have the XML file containing template data as text, you can paste it into this box to import it.'),
-		'value' => '',
-		'default' => '',
-		'textarea_rows' => '10',
-		'textarea_cols' => '50',
-		'class' => 'textAreaNotes'
+	'data_header' => array(
+		'friendly_name' => __('Data Source Overrides', 'package'),
+		'collapsible' => 'true',
+		'method' => 'spacer',
 	),
-	'preview_only' => array(
-		'friendly_name' => __('Preview Import Only'),
-		'method' => 'checkbox',
-		'description' => __('If checked, Cacti will not import the template, but rather compare the imported Template to the existing Template data.  If you are acceptable of the change, you can them import.'),
+	'import_data_source_profile' => array(
+		'friendly_name' => __('Data Source Profile'),
+		'method' => 'drop_sql',
+		'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
+		'sql' => "SELECT id, name FROM data_source_profiles ORDER BY name",
+		'none_value' => __('Create New from Template'),
 		'value' => '',
-		'default' => 'on'
+		'default' => '1'
+	),
+	'graph_header' => array(
+		'friendly_name' => __('Graph/Data Template Overrides', 'package'),
+		'collapsible' => 'true',
+		'method' => 'spacer',
 	),
 	'remove_orphans' => array(
 		'friendly_name' => __('Remove Orphaned Graph Items'),
@@ -1708,88 +1710,102 @@ $fields_template_import = array(
 		'value' => '',
 		'default' => ''
 	),
-	'import_data_source_profile' => array(
-		'friendly_name' => __('Data Source Profile'),
-		'method' => 'drop_sql',
-		'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
-		'sql' => "SELECT id, name FROM data_source_profiles ORDER BY name",
-		'none_value' => __('Create New from Template'),
-		'value' => '',
-		'default' => '1'
-		),
-	);
+	'image_format' => array(
+		'friendly_name' => __('Graph Template Image Format', 'package'),
+		'description' => __('The Image Format to be used when importing or updating Graph Templates.', 'package'),
+		'method' => 'drop_array',
+		'default' => read_config_option('default_image_format'),
+		'array' => $image_types,
+	),
+	'graph_height' => array(
+		'friendly_name' => __('Graph Template Height', 'pagkage'),
+		'description' => __('The Height to be used when importing or updating Graph Templates.', 'package'),
+		'method' => 'textbox',
+		'default' => read_config_option('default_graph_height'),
+		'size' => '5',
+		'max_length' => '5'
+	),
+	'graph_width' => array(
+		'friendly_name' => __('Graph Template Width', 'package'),
+		'description' => __('The Width to be used when importing or updating Graph Templates.', 'package'),
+		'method' => 'textbox',
+		'default' => read_config_option('default_graph_width'),
+		'size' => '5',
+		'max_length' => '5'
+	)
+);
 
-	$fields_manager_edit = array(
-		'host_header' => array(
-			'method' => 'spacer',
-			'friendly_name' => __('General SNMP Entity Options'),
-			'collapsible' => 'true'
-			),
-		'description' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('Description'),
-			'description' => __('Give this SNMP entity a meaningful description.'),
-			'value' => '|arg1:description|',
-			'max_length' => '250',
-			'size' => 80
-			),
-		'hostname' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('Hostname'),
-			'description' => __('Fully qualified hostname or IP address for this device.'),
-			'value' => '|arg1:hostname|',
-			'max_length' => '250',
-			'size' => 80
-			),
-		'disabled' => array(
-			'method' => 'checkbox',
-			'friendly_name' => __('Disable SNMP Notification Receiver'),
-			'description' => __('Check this box if you temporary do not want to send SNMP notifications to this host.'),
-			'value' => '|arg1:disabled|',
-			'default' => '',
-			'form_id' => false
-			),
-		'max_log_size' => array(
-			'method' => 'drop_array',
-			'friendly_name' => __('Maximum Log Size'),
-			'description' => __('Maximum number of day\'s notification log entries for this receiver need to be stored.'),
-			'value' => '|arg1:max_log_size|',
-			'default' => 31,
-			'array' => array_combine( range(1,31), range(1,31) )
-			),
-		'snmp_options_header' => array(
-			'method' => 'spacer',
-			'friendly_name' => __('SNMP Options'),
-			'collapsible' => 'true'
-			),
-		) + $fields_snmp_item + array(
-		'snmp_message_type' => array(
-			'friendly_name' => __('SNMP Message Type'),
-			'description' => __('SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called "INFORMS", SNMPv2 or above will be required.'),
-			'method' => 'drop_array',
-			'value' => '|arg1:snmp_message_type|',
-			'default' => '1',
-			'array' => array(1 => 'NOTIFICATIONS', 2 => 'INFORMS')
-			),
-		'addition_header' => array(
-			'method' => 'spacer',
-			'friendly_name' => __('Additional Options'),
-			'collapsible' => 'true'
-			),
-		'notes' => array(
-			'method' => 'textarea',
-			'friendly_name' => __('Notes'),
-			'description' => __('Enter notes to this host.'),
-			'class' => 'textAreaNotes',
-			'value' => '|arg1:notes|',
-			'textarea_rows' => '5',
-			'textarea_cols' => '50'
-			),
-		'id' => array(
-			'method' => 'hidden_zero',
-			'value' => '|arg1:id|'
-			)
-	);
+$fields_manager_edit = array(
+	'host_header' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('General SNMP Entity Options'),
+		'collapsible' => 'true'
+	),
+	'description' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Description'),
+		'description' => __('Give this SNMP entity a meaningful description.'),
+		'value' => '|arg1:description|',
+		'max_length' => '250',
+		'size' => 80
+	),
+	'hostname' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Hostname'),
+		'description' => __('Fully qualified hostname or IP address for this device.'),
+		'value' => '|arg1:hostname|',
+		'max_length' => '250',
+		'size' => 80
+	),
+	'disabled' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Disable SNMP Notification Receiver'),
+		'description' => __('Check this box if you temporary do not want to send SNMP notifications to this host.'),
+		'value' => '|arg1:disabled|',
+		'default' => '',
+		'form_id' => false
+	),
+	'max_log_size' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('Maximum Log Size'),
+		'description' => __('Maximum number of day\'s notification log entries for this receiver need to be stored.'),
+		'value' => '|arg1:max_log_size|',
+		'default' => 31,
+		'array' => array_combine( range(1,31), range(1,31) )
+	),
+	'snmp_options_header' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('SNMP Options'),
+		'collapsible' => 'true'
+	)
+) + $fields_snmp_item + array(
+	'snmp_message_type' => array(
+		'friendly_name' => __('SNMP Message Type'),
+		'description' => __('SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called "INFORMS", SNMPv2 or above will be required.'),
+		'method' => 'drop_array',
+		'value' => '|arg1:snmp_message_type|',
+		'default' => '1',
+		'array' => array(1 => 'NOTIFICATIONS', 2 => 'INFORMS')
+	),
+	'addition_header' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Additional Options'),
+		'collapsible' => 'true'
+	),
+	'notes' => array(
+		'method' => 'textarea',
+		'friendly_name' => __('Notes'),
+		'description' => __('Enter notes to this host.'),
+		'class' => 'textAreaNotes',
+		'value' => '|arg1:notes|',
+		'textarea_rows' => '5',
+		'textarea_cols' => '50'
+	),
+	'id' => array(
+		'method' => 'hidden_zero',
+		'value' => '|arg1:id|'
+	)
+);
 
 # ------------------------------------------------------------
 # Main Aggregate Parameters

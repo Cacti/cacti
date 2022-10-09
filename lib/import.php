@@ -28,7 +28,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	include_once($config['library_path'] . '/xml.php');
 
 	$info_array       = array();
-	$debug_session    = array();
+	$files            = array();
 	$ignorable_hashes = array();
 
 	$xml_array = xml2array($xml_data);
@@ -47,7 +47,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 			return $info_array;
 		}
 
-		if (!cacti_sizeof($import_hashes) || in_array($parsed_hash['hash'], $inport_hashes)) {
+		if (!cacti_sizeof($import_hashes) || in_array($parsed_hash['hash'], $import_hashes)) {
 			if (isset($dep_hash_cache[$parsed_hash['type']])) {
 				array_push($dep_hash_cache[$parsed_hash['type']], $parsed_hash);
 			} else {
@@ -234,7 +234,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					$repair++;
 					break;
 				case 'data_query':
-					$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $replace_svalues);
+					$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
 					break;
 				case 'gprint_preset':
 					$hash_cache += xml_to_gprint_preset($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
@@ -277,6 +277,10 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		}
 	}
 
+	if (cacti_sizeof($files)) {
+		$info_array['files'] = $files;
+	}
+
 	if ($repair) {
 		repair_system_data_input_methods();
 	}
@@ -295,10 +299,55 @@ EOD;
     return $public_key;
 }
 
-function import_read_package_data($xmlfile, $public_key = false) {
-	if (!$public_key) {
-		$public_key = get_public_key();
+function import_package_get_public_key($xmlfile) {
+	$data = import_package_get_details($xmlfile);
+
+	if (isset($data['public_key'])) {
+		return $data['public_key'];
+	} else {
+		cacti_log('WTF!');
+		return get_public_key();
 	}
+}
+
+function import_package_get_name($xmlfile) {
+	$data = import_package_get_details($xmlfile);
+
+	if (isset($data['name'])) {
+		return $data['name'];
+	} else {
+		return __('Unknown');
+	}
+}
+
+function import_package_get_details($xmlfile) {
+	$filename = "compress.zlib://$xmlfile";
+
+	$return = array();
+	$data   = file_get_contents($filename, 'r');
+	$xmlget = simplexml_load_string($data);
+	$pkgarr = xml_to_array($xmlget);
+	$return = $pkgarr['info'];
+
+	if (isset($pkgarr['publickey'])) {
+		$return['public_key'] = base64_decode($pkgarr['publickey']);
+	} else {
+		$return['public_key'] = get_public_key();
+	}
+
+	if (isset($pkgarr['publickeyname'])) {
+		$return['public_key_name'] = base64_decode($pkgarr['publickeyname']);
+	}
+
+	if (!isset($return['name'])) {
+		$return['name'] = 'Unknown';
+	}
+
+	return $return;
+}
+
+function import_read_package_data($xmlfile, &$public_key) {
+	$public_key = import_package_get_public_key($xmlfile);
 
 	$filename = "compress.zlib://$xmlfile";
 
@@ -348,8 +397,8 @@ function import_read_package_data($xmlfile, $public_key = false) {
 
 	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
-	$xmlget     = simplexml_load_string($xml);
-	$data       = xml_to_array($xmlget);
+	$xmlget = simplexml_load_string($xml);
+	$data   = xml_to_array($xmlget);
 
 	if (cacti_sizeof($data)) {
 		return $data;
@@ -379,19 +428,15 @@ function import_read_package_data($xmlfile, $public_key = false) {
  *                       packages.
  * @param  (array)       $import_hashes - The hashes to import from the package
  * @param  (array)       $import_files - The XML resource files and script files to import from the package
- * @param  (bool|string) $public_key - The Public Key to use that signed the package.  Must be a
- *                       Trusted Public Key
+ *
  */
 function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false,
-	$preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array(), $public_key = false) {
+	$preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array()) {
 
 	global $config, $preview_only;
 
 	$preview_only = $preview;
-
-	if (!$public_key) {
-		$public_key = get_public_key();
-	}
+	$public_key   = '';
 
 	/* set new timeout and memory settings */
 	if ($limitex) {
@@ -406,7 +451,6 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	}
 
 	$filestatus = array();
-	$plugin     = $data['info']['name'];
 
 	if ($info_only) {
 		return $data['info'];
@@ -1110,10 +1154,8 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	return $hash_cache;
 }
 
-function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = false) {
+function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_svalues = false) {
 	global $config, $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
-
-	static $counter = 0;
 
 	/* track changes */
 	$status = 0;
@@ -1151,9 +1193,12 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = 
 	if (isset($save['xml_path'])) {
 		$path = str_replace('<path_cacti>', $config['base_path'], $save['xml_path']);
 
-		if (!file_exists($path) || !is_readable($path)) {
-			raise_message('resource_missing_' . $counter, __esc('Resource File: \'%s\' is missing or not readable.  Make sure you install it before using Data Query: \'%s\'', $path, $save['name']), MESSAGE_LEVEL_ERROR);
-			$counter++;
+		if (!file_exists($path)) {
+			$files[$path] = 'missing';
+		} elseif (!is_readable($path)) {
+			$files[$path] = 'notreadable';
+		} else {
+			$files[$path] = 'found';
 		}
 	}
 
