@@ -328,15 +328,29 @@ function display_template_data(&$templates) {
 
 			if (isset($detail['vals'])) {
 				$diff_details = '';
+				$diff_array   = array();
+				$ophan_array  = array();
 
-				foreach($detail['vals'] as $type => $diffs) {
-					if ($type == 'differences') {
-						$diff_details .= ($diff_details != '' ? '<br>':__('Differences:<br>')) . implode('<br>', $diffs);
+				foreach($detail['vals'] as $package => $diffs) {
+					if (isset($diffs['differences'])) {
+						foreach($diffs['differences'] as $item) {
+							$diff_array[$item] = $item;
+						}
 					}
 
-					if ($type == 'orphans') {
-						$diff_details .= ($diff_details != '' ? '<br>':__('Orphans:<br>')) . implode('<br>', $diffs);
+					if (isset($diffs['orphans'])) {
+						foreach($diffs['orphans'] as $item) {
+							$orphan_array[$item] = $item;
+						}
 					}
+				}
+
+				if (cacti_sizeof($diff_array)) {
+					$diff_details .= __('Differences', 'package') . '<br>' . implode('<br>', $diff_array);
+				}
+
+				if (cacti_sizeof($orphan_array)) {
+					$diff_details .= ($diff_details != '' ? '<br>':'') . __('Orphans', 'package') . '<br>' . implode('<br>', $orphan_array);
 				}
 
 				form_selectable_cell($diff_details, $id, '', 'white-space:pre-wrap');
