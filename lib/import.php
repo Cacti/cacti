@@ -23,7 +23,8 @@
 */
 
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false, $import_hashes = array()) {
-	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only, $import_debug_info, $legacy_template;
+	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
+	global $import_debug_info, $import_messages, $legacy_template;
 
 	include_once($config['library_path'] . '/xml.php');
 
@@ -34,7 +35,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	$xml_array = xml2array($xml_data);
 
 	if (cacti_sizeof($xml_array) == 0) {
-		raise_message(7); /* xml parse error */
+		$import_messages[] = 7; /* xml parse error */
 		return $info_array;
 	}
 
@@ -173,7 +174,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				} elseif (isset($xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']])) {
 					$hash_array = $xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']];
 				} else {
-					raise_message(7); /* xml parse error */
+					$import_messages[] = 7; /* xml parse error */
 					return false;
 				}
 
@@ -214,7 +215,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				} elseif (isset($xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']])) {
 					$hash_array = $xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']];
 				} else {
-					raise_message(7); /* xml parse error */
+					$import_messages[] = 7; /* xml parse error */
 					return false;
 				}
 
@@ -305,7 +306,6 @@ function import_package_get_public_key($xmlfile) {
 	if (isset($data['public_key'])) {
 		return $data['public_key'];
 	} else {
-		cacti_log('WTF!');
 		return get_public_key();
 	}
 }
@@ -572,7 +572,8 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 }
 
 function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, $remove_orphans = false) {
-	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $cacti_version_codes, $preview_only, $graph_item_types, $import_debug_info;
+	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $cacti_version_codes;
+	global $preview_only, $graph_item_types, $import_debug_info;
 
 	/* track changes */
 	$status = 0;
@@ -2259,7 +2260,7 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 }
 
 function parse_xml_hash($hash) {
-	global $legacy_template;
+	global $legacy_template, $import_messages;
 
 	if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $hash, $matches)) {
 		$parsed_hash['type']    = check_hash_type($matches[1]);
@@ -2268,7 +2269,7 @@ function parse_xml_hash($hash) {
 
 		/* an error has occurred */
 		if (($parsed_hash['type'] === false) || ($parsed_hash['version'] === false)) {
-			raise_message(7); /* xml parse error */
+			$import_messages[] = 7; /* xml parse error */
 
 			cacti_log(__FUNCTION__ . ' ERROR type or version not found for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			return false;
@@ -2280,7 +2281,7 @@ function parse_xml_hash($hash) {
 
 		/* an error has occurred */
 		if (($parsed_hash['type'] === false) || ($parsed_hash['version'] === false)) {
-			raise_message(7); /* xml parse error */
+			$import_messages[] = 7; /* xml parse error */
 
 			cacti_log(__FUNCTION__ . ' ERROR type or version not found for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			return false;
@@ -2293,7 +2294,7 @@ function parse_xml_hash($hash) {
 			return false;
 		}
 
-		raise_message(7); /* xml parse error */
+		$import_messages[] = 7; /* xml parse error */
 
 		cacti_log(__FUNCTION__ . ' ERROR wrong hash format for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
@@ -2308,7 +2309,7 @@ function parse_xml_hash($hash) {
 }
 
 function check_hash_type($hash_type) {
-	global $hash_type_codes;
+	global $hash_type_codes, $import_messages;
 
 	/* lets not mess up the pointer for other people */
 	$local_hash_type_codes = $hash_type_codes;
@@ -2320,7 +2321,7 @@ function check_hash_type($hash_type) {
 	}
 
 	if (!isset($current_type)) {
-		raise_message(18); /* error: cannot find type */
+		$import_messages[] = 18; /* xml parse error */
 		return false;
 	}
 
@@ -2328,7 +2329,7 @@ function check_hash_type($hash_type) {
 }
 
 function check_hash_version($hash_version) {
-	global $cacti_version_codes, $config;
+	global $cacti_version_codes, $config, $import_messages;
 
 	foreach ($cacti_version_codes as $version => $code) {
 		if ($version == CACTI_VERSION) {
@@ -2343,16 +2344,16 @@ function check_hash_version($hash_version) {
 
 	if (!isset($current_version_code)) {
 		cacti_log("ERROR: $hash_version Current Cacti Version does not exist!", false, 'IMPORT');
-		raise_message(15); /* error: current cacti version does not exist! */
+		$import_messages[] = 15; /* xml parse error */
 		return false;
 	} elseif (!isset($hash_version_code)) {
 		cacti_log("ERROR: $hash_version hash version does not exist!", false, 'IMPORT');
-		raise_message(16); /* error: hash version does not exist! */
+		$import_messages[] = 16; /* xml parse error */
 		return false;
 	} elseif ($hash_version_code > $current_version_code) {
 		cacti_log("ERROR: $hash_version_code > $current_version_code", false, 'IMPORT');
 		cacti_log("ERROR: $hash_version hash version is for a newer Cacti!", false, 'IMPORT');
-		raise_message(17); /* error: hash made with a newer version of cacti */
+		$import_messages[] = 17; /* xml parse error */
 		return false;
 	}
 

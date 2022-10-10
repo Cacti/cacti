@@ -58,9 +58,10 @@ if ($is_tmp && $is_save && $action == 'save') {
    -------------------------- */
 
 function form_save() {
-	global $preview_only;
+	global $preview_only, $messages, $import_messages;
 
 	if (isset_request_var('save_component_import')) {
+		//print '<pre>';print_r($_FILES);print '</pre>';exit;
 		if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 			/* file upload */
 			$fp = fopen($_FILES['import_file']['tmp_name'],'r');
@@ -110,6 +111,8 @@ function form_save() {
 			}
 		}
 
+		$import_messages = array();
+
 		/* obtain debug information if it's set */
 		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
 
@@ -127,11 +130,19 @@ function form_save() {
 
 			exit;
 		} else {
-			cacti_log("ERROR: Import or Preview failed!", false, 'IMPORT');
+			cacti_log(sprintf("ERROR: Import or Preview failed for XML file %s!", $_FILES['import_file']['name']), false, 'IMPORT');
 
-			raise_message('import_error', __('The Template Import Failed.  See the cacti.log for more details.', MESSAGE_LEVEL_ERROR));
+			$message_text = '';
 
-			header('Location: templates_import.php');
+			if (cacti_sizeof($import_messages)) {
+				foreach($import_messages as $message) {
+					if (isset($messages[$message])) {
+						$message_text .= ($message_text != '' ? '<br>':'') . $messages[$message]['message'];
+					}
+				}
+			}
+
+			raise_message_javascript(__('Error in Template', 'package'), __('The Template XML file "%s" validation failed', $_FILES['import_file']['name']), __('See the cacti.log for more information, and review the XML file for proper syntax.  The error details are shown below.<br><br><b>Errors:</b><br>%s', $message_text));
 		}
 	}
 }
@@ -182,7 +193,7 @@ function prepare_template_display(&$import_info) {
 				unset($vals['type']);
 
 				if (isset($vals['dep'])) {
-					unset($vals['dep']);
+					$template[$hash]['deps'] = $vals['dep'];
 				}
 
 				if (cacti_sizeof($vals)) {
@@ -239,7 +250,7 @@ function display_template_data(&$templates) {
 	}
 
 	if (cacti_sizeof($templates)) {
-		html_start_box(__('Import Templates [ Check to Import, Uncheck to Skip ]'), '100%', '', '1', 'center', '');
+		html_start_box(__('Import Templates [ None selected imports all, Check to import selectively ]'), '100%', '', '1', 'center', '');
 
 		$display_text = array(
 			array(
@@ -250,6 +261,9 @@ function display_template_data(&$templates) {
 			),
 			array(
 				'display' => __('Status')
+			),
+			array(
+				'display' => __('Dependencies')
 			),
 			array(
 				'display' => __('Changes/Diffferences')
@@ -283,6 +297,34 @@ function display_template_data(&$templates) {
 			form_selectable_cell($detail['type_name'], $id);
 			form_selectable_cell($detail['name'], $id);
 			form_selectable_cell($status, $id);
+
+			if (isset($detail['deps'])) {
+				$dep_details = array();
+				$unmet_count = 0;
+				$met_count   = 0;
+
+				foreach($detail['deps'] as $hash => $dep) {
+					if ($dep == 'met') {
+						$dep_details[$dep] = $dep;
+						$met_count++;
+					} else {
+						$dep_details[$dep] = $dep;
+						$unmet_count++;
+					}
+				}
+
+				if (isset($dep_details['met'])) {
+					$dep_details['met'] = __('Met: %d', $met_count);
+				}
+
+				if (isset($dep_details['unmet'])) {
+					$dep_details['unmet'] = __('Unmet: %d', $unmet_count);
+				}
+
+				form_selectable_cell(implode(', ', $diff_details), $id, '', 'white-space:pre-wrap');
+			} else {
+				form_selectable_cell(__('None'), $id);
+			}
 
 			if (isset($detail['vals'])) {
 				$diff_details = '';
