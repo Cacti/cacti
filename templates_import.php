@@ -329,7 +329,7 @@ function display_template_data(&$templates) {
 			if (isset($detail['vals'])) {
 				$diff_details = '';
 				$diff_array   = array();
-				$ophan_array  = array();
+				$orphan_array = array();
 
 				foreach($detail['vals'] as $package => $diffs) {
 					if (isset($diffs['differences'])) {
