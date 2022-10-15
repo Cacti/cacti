@@ -985,6 +985,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			),
 		__('Import/Export') => array(
 			'templates_import.php' => __('Import Templates'),
+			'package_import.php'   => __('Import Packages'),
 			'templates_export.php' => __('Export Templates')
 			),
 		__('Configuration')  => array(
@@ -1229,6 +1230,7 @@ $user_auth_realm_filenames = array(
 	'data_queries.php' => 13,
 	'templates_export.php' => 16,
 	'templates_import.php' => 17,
+	'package_import.php' => 17,
 	'tree.php' => 4,
 	'user_admin.php' => 1,
 	'user_domains.php' => 1,
@@ -2601,6 +2603,12 @@ $navigation = array(
 		'title' => __('Import Templates'),
 		'mapping' => 'index.php:',
 		'url' => 'templates_import.php',
+		'level' => '1'
+	),
+	'package_import.php:' => array(
+		'title' => __('Import Packages'),
+		'mapping' => 'index.php:',
+		'url' => 'package_import.php',
 		'level' => '1'
 	),
 	'reports_admin.php:' => array(
