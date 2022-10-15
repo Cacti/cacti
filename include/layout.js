@@ -2472,8 +2472,13 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 	}
 
 	if (typeof url != 'undefined') {
-		$.ajaxQ.abortAll();
-		document.location = stripHeaderSuppression(url);
+		if (data.status >= 400) {
+			// Let the HTTP Error stick
+		} else {
+			console.log(data.status);
+			$.ajaxQ.abortAll();
+			document.location = stripHeaderSuppression(url);
+		}
 	}
 }
 
