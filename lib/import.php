@@ -343,6 +343,18 @@ function import_package_get_details($xmlfile) {
 		$return['name'] = 'Unknown';
 	}
 
+	if (is_array($return['tags'])) {
+		$return['tags'] = '';
+	}
+
+	if (is_array($return['installation'])) {
+		$return['installation'] = '';
+	}
+
+	if (is_array($return['version'])) {
+		$return['version'] = 'Prior to 1.2.23';
+	}
+
 	return $return;
 }
 
