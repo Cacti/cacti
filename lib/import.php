@@ -548,7 +548,15 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 						} else {
 							$filestatus[$filename] = 'writable, differences';
 						}
-					} elseif (is_writable($filename)) {
+					} elseif (file_exists($filename) && is_writeable($filename)) {
+						$filestatus[$filename] = 'writable, new';
+					} elseif (file_exists($filename) && !is_writeable($filename)) {
+						if ($new == $existing) {
+							$filestatus[$filename] = 'not writable, identical';
+						} else {
+							$filestatus[$filename] = 'not writable, differences';
+						}
+					} else {
 						$filestatus[$filename] = 'writable, new';
 					}
 				} elseif (file_exists($filename)) {
