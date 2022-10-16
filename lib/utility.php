@@ -883,20 +883,14 @@ function data_input_whitelist_check($data_input_id) {
 	}
 }
 
-function utilities_get_mysql_recommendations() {
-	global $config, $local_db_cnn_id;
+function utilities_get_mysql_info($poller_id = 1) {
+	global $local_db_cnn_id;
 
-	// MySQL/MariaDB Important Variables
-	// Assume we are successfully, until we aren't!
-	$result = DB_STATUS_SUCCESS;
-
-	if ($config['poller_id'] == 1) {
+	if ($poller_id == 1) {
 		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
 	} else {
 		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
 	}
-
-	$memInfo = utilities_get_system_memory();
 
 	if (strpos($variables['version'], 'MariaDB') !== false) {
 		$database = 'MariaDB';
@@ -912,6 +906,30 @@ function utilities_get_mysql_recommendations() {
 		$version  = $variables['version'];
 		$link_ver = substr($variables['version'], 0, 3);
 	}
+
+	return array(
+		'database'  => $database,
+		'version'   => $version,
+		'link_ver'  => $link_ver,
+		'variables' => $variables
+	);
+}
+
+function utilities_get_mysql_recommendations() {
+	global $config, $local_db_cnn_id;
+
+	// MySQL/MariaDB Important Variables
+	// Assume we are successfully, until we aren't!
+	$result = DB_STATUS_SUCCESS;
+
+	$memInfo = utilities_get_system_memory();
+
+	$mysql_info = utilities_get_mysql_info($config['poller_id']);
+
+	$database  = $mysql_info['database'];
+	$version   = $mysql_info['version'];
+	$link_ver  = $mysql_info['link_ver'];
+	$variables = $mysql_info['variables'];
 
 	$recommendations = array(
 		'version' => array(
@@ -1300,55 +1318,107 @@ function utilities_get_mysql_recommendations() {
 
 				if ($name == 'sort_buffer_size') {
 					if ($config['poller_id'] == 1) {
-						$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-							@@GLOBAL.query_cache_size +
-							@@GLOBAL.tmp_table_size +
-							@@GLOBAL.innodb_buffer_pool_size +
-							@@GLOBAL.innodb_log_buffer_size
-							+ @@GLOBAL.max_connections * (
-								@@GLOBAL.join_buffer_size +
-								@@GLOBAL.read_buffer_size +
-								@@GLOBAL.read_rnd_buffer_size +
-								@@GLOBAL.thread_stack +
-								@@GLOBAL.binlog_cache_size)');
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.query_cache_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.join_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.join_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						}
 					} else {
-						$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-							@@GLOBAL.query_cache_size +
-							@@GLOBAL.tmp_table_size +
-							@@GLOBAL.innodb_buffer_pool_size +
-							@@GLOBAL.innodb_log_buffer_size
-							+ @@GLOBAL.max_connections * (
-								@@GLOBAL.join_buffer_size +
-								@@GLOBAL.read_buffer_size +
-								@@GLOBAL.read_rnd_buffer_size +
-								@@GLOBAL.thread_stack +
-								@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.query_cache_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.join_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.join_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						}
 					}
 				} else {
 					if ($config['poller_id'] == 1) {
-						$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-							@@GLOBAL.query_cache_size +
-							@@GLOBAL.tmp_table_size +
-							@@GLOBAL.innodb_buffer_pool_size +
-							@@GLOBAL.innodb_log_buffer_size
-							+ @@GLOBAL.max_connections * (
-								@@GLOBAL.sort_buffer_size +
-								@@GLOBAL.read_buffer_size +
-								@@GLOBAL.read_rnd_buffer_size +
-								@@GLOBAL.thread_stack +
-								@@GLOBAL.binlog_cache_size)');
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.query_cache_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						}
 					} else {
-						$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-							@@GLOBAL.query_cache_size +
-							@@GLOBAL.tmp_table_size +
-							@@GLOBAL.innodb_buffer_pool_size +
-							@@GLOBAL.innodb_log_buffer_size
-							+ @@GLOBAL.max_connections * (
-								@@GLOBAL.sort_buffer_size +
-								@@GLOBAL.read_buffer_size +
-								@@GLOBAL.read_rnd_buffer_size +
-								@@GLOBAL.thread_stack +
-								@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.query_cache_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						}
 					}
 				}
 

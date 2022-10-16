@@ -528,22 +528,58 @@ function utilities_view_tech() {
 			form_end_row();
 		}
 
+		$mysql_info = utilities_get_mysql_info($config['poller_id']);
+
+		$database  = $mysql_info['database'];
+		$version   = $mysql_info['version'];
+		$link_ver  = $mysql_info['link_ver'];
+		$variables = $mysql_info['variables'];
+
 		// Get Maximum Memory in GB for MySQL/MariaDB
 		if ($config['poller_id'] == 1) {
-			$maxPossibleMyMemory = db_fetch_cell('SELECT (
-				(@@GLOBAL.key_buffer_size
-				+ @@GLOBAL.query_cache_size
-				+ @@GLOBAL.tmp_table_size
-				+ @@GLOBAL.innodb_buffer_pool_size
-				+ @@GLOBAL.innodb_log_buffer_size
-				+ @@GLOBAL.max_connections * (
-					@@GLOBAL.sort_buffer_size
-					+ @@GLOBAL.read_buffer_size
-					+ @@GLOBAL.read_rnd_buffer_size
-					+ @@GLOBAL.join_buffer_size
-					+ @@GLOBAL.thread_stack
-					+ @@GLOBAL.binlog_cache_size)
-				) / 1024 / 1024 / 1024)');
+			if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+				$systemMemory = db_fetch_cell('SELECT
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.query_cache_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024');
+
+				$maxPossibleMyMemory = db_fetch_cell('SELECT (
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.query_cache_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size
+					+ @@GLOBAL.max_connections * (
+						@@GLOBAL.sort_buffer_size
+						+ @@GLOBAL.read_buffer_size
+						+ @@GLOBAL.read_rnd_buffer_size
+						+ @@GLOBAL.join_buffer_size
+						+ @@GLOBAL.thread_stack
+						+ @@GLOBAL.binlog_cache_size)
+					) / 1024 / 1024 / 1024)');
+			} else {
+				$systemMemory = db_fetch_cell('SELECT
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024');
+
+				$maxPossibleMyMemory = db_fetch_cell('SELECT (
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size
+					+ @@GLOBAL.max_connections * (
+						@@GLOBAL.sort_buffer_size
+						+ @@GLOBAL.read_buffer_size
+						+ @@GLOBAL.read_rnd_buffer_size
+						+ @@GLOBAL.join_buffer_size
+						+ @@GLOBAL.thread_stack
+						+ @@GLOBAL.binlog_cache_size)
+					) / 1024 / 1024 / 1024)');
+			}
 
 			$clientMemory = db_fetch_cell('SELECT @@GLOBAL.max_connections * (
 				@@GLOBAL.sort_buffer_size
@@ -552,28 +588,50 @@ function utilities_view_tech() {
 				+ @@GLOBAL.join_buffer_size
 				+ @@GLOBAL.thread_stack
 				+ @@GLOBAL.binlog_cache_size) / 1024 / 1024 / 1024');
-
-			$systemMemory = db_fetch_cell('SELECT
-				(@@GLOBAL.key_buffer_size
-				+ @@GLOBAL.query_cache_size
-				+ @@GLOBAL.tmp_table_size
-				+ @@GLOBAL.innodb_buffer_pool_size
-				+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024');
 		} else {
-			$maxPossibleMyMemory = db_fetch_cell('SELECT (
-				(@@GLOBAL.key_buffer_size
-				+ @@GLOBAL.query_cache_size
-				+ @@GLOBAL.tmp_table_size
-				+ @@GLOBAL.innodb_buffer_pool_size
-				+ @@GLOBAL.innodb_log_buffer_size
-				+ @@GLOBAL.max_connections * (
-					@@GLOBAL.sort_buffer_size
-					+ @@GLOBAL.read_buffer_size
-					+ @@GLOBAL.read_rnd_buffer_size
-					+ @@GLOBAL.join_buffer_size
-					+ @@GLOBAL.thread_stack
-					+ @@GLOBAL.binlog_cache_size)
-				) / 1024 / 1024 / 1024)', '', false, $local_db_cnn_id);
+			if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+				$maxPossibleMyMemory = db_fetch_cell('SELECT (
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.query_cache_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size
+					+ @@GLOBAL.max_connections * (
+						@@GLOBAL.sort_buffer_size
+						+ @@GLOBAL.read_buffer_size
+						+ @@GLOBAL.read_rnd_buffer_size
+						+ @@GLOBAL.join_buffer_size
+						+ @@GLOBAL.thread_stack
+						+ @@GLOBAL.binlog_cache_size)
+					) / 1024 / 1024 / 1024)', '', false, $local_db_cnn_id);
+
+				$systemMemory = db_fetch_cell('SELECT
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.query_cache_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024', '', false, $local_db_cnn_id);
+			} else {
+				$maxPossibleMyMemory = db_fetch_cell('SELECT (
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size
+					+ @@GLOBAL.max_connections * (
+						@@GLOBAL.sort_buffer_size
+						+ @@GLOBAL.read_buffer_size
+						+ @@GLOBAL.read_rnd_buffer_size
+						+ @@GLOBAL.join_buffer_size
+						+ @@GLOBAL.thread_stack
+						+ @@GLOBAL.binlog_cache_size)
+					) / 1024 / 1024 / 1024)', '', false, $local_db_cnn_id);
+
+				$systemMemory = db_fetch_cell('SELECT
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024', '', false, $local_db_cnn_id);
+			}
 
 			$clientMemory = db_fetch_cell('SELECT @@GLOBAL.max_connections * (
 				@@GLOBAL.sort_buffer_size
@@ -582,13 +640,6 @@ function utilities_view_tech() {
 				+ @@GLOBAL.join_buffer_size
 				+ @@GLOBAL.thread_stack
 				+ @@GLOBAL.binlog_cache_size) / 1024 / 1024 / 1024', '', false, $local_db_cnn_id);
-
-			$systemMemory = db_fetch_cell('SELECT
-				(@@GLOBAL.key_buffer_size
-				+ @@GLOBAL.query_cache_size
-				+ @@GLOBAL.tmp_table_size
-				+ @@GLOBAL.innodb_buffer_pool_size
-				+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024', '', false, $local_db_cnn_id);
 		}
 
 		html_section_header(__('MySQL/MariaDB Memory Statistics (Source: MySQL Tuner)'), 2);
