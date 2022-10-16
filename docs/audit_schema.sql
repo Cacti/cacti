@@ -642,6 +642,7 @@ INSERT INTO `table_columns` VALUES ('host_snmp_query',5,'reindex_method','tinyin
 INSERT INTO `table_columns` VALUES ('host_template',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('host_template',2,'hash','varchar(32)','NO','','','');
 INSERT INTO `table_columns` VALUES ('host_template',3,'name','varchar(100)','NO','MUL','','');
+INSERT INTO `table_columns` VALUES ('host_template',4,'class','varchar(40)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('host_template_graph',1,'host_template_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_template_graph',2,'graph_template_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_template_snmp_query',1,'host_template_id','mediumint(8) unsigned','NO','PRI','0','');

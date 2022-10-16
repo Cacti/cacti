@@ -27,7 +27,11 @@ function upgrade_to_1_2_23() {
 		`local_data_id` mediumint(8) unsigned NOT NULL,
 		`test_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		`message` varchar(250) default '')
-		 ENGINE=InnoDB ROW_FORMAT=Dynamic 
+		 ENGINE=InnoDB ROW_FORMAT=Dynamic
 		 COMMENT='Store result of RRDcheck'");
+
+	if (!db_column_exists('host_template', 'class')) {
+		db_install_execute('ALTER TABLE host_template ADD COLUMN class varchar(40) NOT NULL default "" AFTER name');
+	}
 }
 

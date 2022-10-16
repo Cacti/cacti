@@ -1035,6 +1035,28 @@ $menu_glyphs = array(
 	__('Troubleshooting') => 'fa fa-bug'
 );
 
+$device_classes = array(
+	'application'  => __('Application Related'),
+	'cacti'        => __('Cacti Related'),
+	'database'     => __('Database Related'),
+	'facilities'   => __('Facilities Related'),
+	'general'      => __('Generic Device'),
+	'hpc'          => __('HPC/Grid Computing'),
+	'hypervisor'   => __('Hypervisor Related'),
+	'license'      => __('Licensing Related'),
+	'linux'        => __('Linux Related'),
+	'loadbalancer' => __('Load Balancer'),
+	'switch'       => __('Network Switch'),
+	'router'       => __('Network Router'),
+	'firewall'     => __('Network Firewall'),
+	'storage'      => __('Storage Related'),
+	'telephony'    => __('Telco Related'),
+	'webserver'    => __('Web Server Related'),
+	'windows'      => __('Windows Related'),
+	'ups'          => __('UPS Related'),
+	''             => __('Unassigned')
+);
+
 if ((isset($_SESSION['sess_user_id']))) {
 	if (db_table_exists('external_links')) {
 		$consoles = db_fetch_assoc('SELECT id, title, extendedstyle

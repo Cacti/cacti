@@ -1346,6 +1346,14 @@ $fields_host_template_edit = array(
 		'max_length' => '255',
 		'size' => '80'
 		),
+	'class' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('Class'),
+		'description' => __('A suitable Class for the Device Template.'),
+		'value' => '|arg1:class|',
+		'array' => $device_classes,
+		'default' => ''
+		),
 	'id' => array(
 		'method' => 'hidden_zero',
 		'value' => '|arg1:id|'

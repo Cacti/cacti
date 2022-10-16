@@ -37,6 +37,7 @@ Cacti CHANGELOG
 -feature#4948: When using proxies to load balance Cacti, if the proxy cookie times out, Cacti should properly redirect
 -feature#4955: Provide Common Sense Memory Tuning based upon MySQL Tuner Recommendations
 -feature#4956: The function db_check_reconnect() should be able to work with any connection
+-feature#4957: Add Device Template Classes to match the Classes in Upcoming release of the Package Plugin
 
 1.2.22
 -security#4834: When creating new graphs, cross site injection is possible

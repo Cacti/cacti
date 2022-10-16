@@ -108,9 +108,10 @@ function form_save() {
 	/* ==================================================== */
 
 	if (isset_request_var('save_component_template')) {
-		$save['id']   = get_nfilter_request_var('id');
-		$save['hash'] = get_hash_host_template(get_nfilter_request_var('id'));
-		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['id']    = get_nfilter_request_var('id');
+		$save['hash']  = get_hash_host_template(get_nfilter_request_var('id'));
+		$save['name']  = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['class'] = form_input_validate(get_nfilter_request_var('class'), 'class', '', false, 3);
 
 		if (!is_error_message()) {
 			$host_template_id = sql_save($save, 'host_template');
@@ -662,7 +663,7 @@ function template_edit() {
 }
 
 function template() {
-	global $host_actions, $item_rows;
+	global $host_actions, $item_rows, $device_classes;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -679,6 +680,13 @@ function template() {
 			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
+			),
+		'class' => array(
+			'filter' => FILTER_CALLBACK,
+			'default' => '-1',
+			'pageset' => true,
+			'sort'    => 'ASC',
+			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -722,6 +730,21 @@ function template() {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
+						<?php print __('Device Class');?>
+					</td>
+					<td>
+						<select id='class' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('class') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<?php
+							if (cacti_sizeof($device_classes)) {
+								foreach ($device_classes as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('class') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<?php print __('Device Templates');?>
 					</td>
 					<td>
@@ -756,6 +779,7 @@ function template() {
 		function applyFilter() {
 			strURL  = 'host_templates.php?header=false';
 			strURL += '&filter='+$('#filter').val();
+			strURL += '&class='+$('#class').val();
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&has_hosts='+$('#has_hosts').is(':checked');
 			loadPageNoHeader(strURL);
@@ -793,6 +817,12 @@ function template() {
 		$sql_where = '';
 	}
 
+	if (get_request_var('class') != '-1') {
+		$sql_where = 'WHERE (host_template.class = ' . db_qstr(get_request_var('class')) . ')';
+	} else {
+		$sql_where = '';
+	}
+
 	if (get_request_var('has_hosts') == 'true') {
 		$sql_having = 'HAVING hosts>0';
 	} else {
@@ -814,7 +844,7 @@ function template() {
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$template_list = db_fetch_assoc("SELECT
-		host_template.id,host_template.name, COUNT(DISTINCT host.id) AS hosts
+		host_template.id, host_template.name, host_template.class, COUNT(DISTINCT host.id) AS hosts
 		FROM host_template
 		LEFT JOIN host ON host.host_template_id=host_template.id
 		$sql_where
@@ -829,6 +859,12 @@ function template() {
 			'align' => 'left',
 			'sort' => 'ASC',
 			'tip' => __('The name of this Device Template.')
+		),
+		'host_template.class' => array(
+			'display' => __('Device Class'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The Class of this Device Template.  The Class Name should be representative of it\'s function.')
 		),
 		'host_template.id' => array(
 			'display' => __('ID'),
@@ -871,6 +907,13 @@ function template() {
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'host_templates.php?action=edit&id=' . $template['id']), $template['id']);
+
+			if ($template['class'] != '') {
+				form_selectable_cell($device_classes[$template['class']], $template['id']);
+			} else {
+				form_selectable_cell(__('Unassigned'), $template['id']);
+			}
+
 			form_selectable_cell($template['id'], $template['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('host.php?reset=true&host_template_id=' . $template['id']) . '">' . number_format_i18n($template['hosts'], '-1') . '</a>', $template['id'], '', 'right');
