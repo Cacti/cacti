@@ -550,6 +550,8 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 
 		html_header_checkbox($display_text, false, '', true, 'import');
 
+		$templates = array_reverse($templates);
+
 		foreach($templates as $hash => $detail) {
 			$files = explode('<br>', $detail['package_file']);
 
