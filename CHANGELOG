@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
+-issue#4418: When using Single Signon Frameworks like SiteMinder Cacti does not properly detect ticket revocation in callbacks
 -issue#4888: Cacti audit_database.php script fails on MySQL 8.0.29 and likely will on newer versions
 -issue#4889: Increase host query performance by removing check for NULL after 1.2.22
 -issue#4892: Recache Loop after many devices go offline
