@@ -248,7 +248,11 @@ function db_check_reconnect($db_conn = false) {
 		if (!isset($database_port))     $database_port     = 3306;
 	}
 
-	$version = db_fetch_cell('SELECT cacti FROM version', 'cacti', false);
+	if ($db_conn !== false) {
+		$version = db_fetch_cell('SELECT 1', '', false, $db_conn);
+	} else {
+		$version = db_fetch_cell('SELECT 1');
+	}
 
 	if ($version === false) {
 		syslog(LOG_ALERT, 'CACTI: Database Connection went away.  Attempting to reconnect!');
