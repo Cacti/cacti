@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-09-26 01:57+0000\n"
+"PO-Revision-Date: 2022-10-17 15:50+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -853,7 +853,7 @@ msgstr ""
 
 #: auth_2fa.php:96
 msgid "Failed to verify token"
-msgstr ""
+msgstr "Neizdevās pārbaudīt atslēgu"
 
 #: auth_2fa.php:115
 msgid "2FA Verification"
@@ -869,7 +869,7 @@ msgstr "Ievadiet savu marķieri"
 
 #: auth_2fa.php:124 auth_2fa.php:127
 msgid "Token"
-msgstr "Marķieris"
+msgstr "Atslēga"
 
 #: auth_2fa.php:139
 msgid "Verify"
@@ -1054,7 +1054,7 @@ msgstr "Pamata"
 
 #: auth_profile.php:93
 msgid "2FA"
-msgstr ""
+msgstr "2FA autentifikācija"
 
 #: auth_profile.php:301
 msgid "User Account Details"
@@ -1098,27 +1098,27 @@ msgstr ""
 
 #: auth_profile.php:352 include/global_form.php:1525
 msgid "Email Address"
-msgstr ""
+msgstr "E-pasta adrese"
 
 #: auth_profile.php:353
 msgid "An Email Address you be reached at."
-msgstr ""
+msgstr "E-pasta adrese, kuru izmanto, lai sazinātos ar jums."
 
 #: auth_profile.php:360 auth_profile.php:362
 msgid "Clear User Settings"
-msgstr ""
+msgstr "Notīrīt lietotāja iestatījumus"
 
 #: auth_profile.php:361
 msgid "Return all User Settings to Default values."
-msgstr ""
+msgstr "Atgrieziet visus lietotāja iestatījumus uz noklusējuma vērtībām."
 
 #: auth_profile.php:367 auth_profile.php:369
 msgid "Clear Private Data"
-msgstr ""
+msgstr "Notīrīt privātos datus"
 
 #: auth_profile.php:368
 msgid "Clear Private Data including Column sizing."
-msgstr ""
+msgstr "Notīrīt privātos datus, tostarp kolonnu izmērus."
 
 #: auth_profile.php:378 auth_profile.php:380
 msgid "Logout Everywhere"
@@ -1146,11 +1146,13 @@ msgstr ""
 
 #: auth_profile.php:524
 msgid "2FA QA Code"
-msgstr ""
+msgstr "2FA autentifikācijas kvalitātes nodrošināšanas kods"
 
 #: auth_profile.php:525
 msgid "The 2FA QA Code to be scanned with Google Authenticator, Authy or any compatible 2FA app"
 msgstr ""
+"2FA autentifikācijas kvalitātes nodrošināšanas kods, kuru var skenēt ar "
+"Google autentifikatoru, Authy vai jebkuru citu saderīgu 2FA lietotni"
 
 #: auth_profile.php:532
 msgid "2FA App Token"
@@ -1206,7 +1208,7 @@ msgstr "Iespējots"
 
 #: auth_profile.php:564
 msgid "Enabling..."
-msgstr ""
+msgstr "Iespējo..."
 
 #: auth_profile.php:658
 msgid "Private Data Cleared"
@@ -2550,7 +2552,7 @@ msgstr "Pasūtījums"
 
 #: automation_templates.php:510
 msgid "Unknown Template"
-msgstr ""
+msgstr "Nezināma veidne"
 
 #: automation_templates.php:545
 msgid "No Automation Device Templates Found"
@@ -3899,11 +3901,11 @@ msgstr ""
 #: include/global_arrays.php:1374 include/global_settings.php:1560
 #, php-format
 msgid "%d Years"
-msgstr ""
+msgstr "%d gadi"
 
 #: data_source_profiles.php:806
 msgid "1 Year"
-msgstr ""
+msgstr "1 gads"
 
 #: data_source_profiles.php:815 include/global_arrays.php:727
 #: include/global_arrays.php:1368 rrdcleaner.php:521
@@ -5203,7 +5205,7 @@ msgstr ""
 #: graphs_items.php:350 include/global_arrays.php:1259
 #: include/global_form.php:1654
 msgid "Data Template"
-msgstr ""
+msgstr "Datu veidne"
 
 #: graphs_items.php:423
 #, php-format
