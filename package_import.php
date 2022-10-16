@@ -861,14 +861,8 @@ function get_default_profile() {
 function package_import() {
 	global $actions, $hash_type_names;
 
-	$display_hideme = false;
-
-	$default = db_fetch_cell('SELECT id
-		FROM package_repositories
-		WHERE `default` = "on"');
-
 	if (!isset_request_var('package_location')) {
-		set_request_var('package_location', $default);
+		set_request_var('package_location', '0');
 	}
 
 	set_request_var('package_class', '0');
@@ -878,16 +872,6 @@ function package_import() {
 	} else {
 		form_start('package_import.php', 'import');
 	}
-
-	$repos = array_rekey(
-		db_fetch_assoc('SELECT id, name
-			FROM package_repositories
-			WHERE enabled = "on"
-			ORDER BY name'),
-		'id', 'name'
-	);
-
-	$repos[0] = __('Local Package File');
 
 	$pform = array();
 
