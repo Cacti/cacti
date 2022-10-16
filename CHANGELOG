@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#4923: Graph template "duplicate" action does not working - 500 Internal Server Error
 -issue#4927: When running audit_database.php script will fail if cacti password had a ')' in it
 -issue#4934: Updated phpseclib to version 2.0.38 to support PHP 8.1
+-issue#4935: Net-SNMP - Device I/O template Maximum Value is zero
 -issue#4940: Error display Data Collectors when sorting by hostname
 -issue#4941: Viewing graphs can break when boost is running in some rare cases
 -issue#4944: Newer Cacti Packages should be signed with SHA256 as SHA1 is being deprecated
