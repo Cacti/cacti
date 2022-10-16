@@ -339,19 +339,19 @@ function import_package_get_details($xmlfile) {
 		$return['public_key_name'] = base64_decode($pkgarr['publickeyname']);
 	}
 
-	if (!isset($return['name'])) {
+	if (!isset($return['name']) || is_array($return['name'])) {
 		$return['name'] = 'Unknown';
 	}
 
-	if (is_array($return['tags'])) {
+	if (!isset($return['tags']) || is_array($return['tags'])) {
 		$return['tags'] = '';
 	}
 
-	if (is_array($return['installation'])) {
+	if (!isset($return['installation']) || is_array($return['installation'])) {
 		$return['installation'] = '';
 	}
 
-	if (is_array($return['version'])) {
+	if (!isset($return['version']) || is_array($return['version'])) {
 		$return['version'] = 'Prior to 1.2.23';
 	}
 
