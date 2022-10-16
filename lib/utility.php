@@ -1024,10 +1024,16 @@ function utilities_get_mysql_recommendations() {
 			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
 			),
 		'join_buffer_size' => array(
-			'value'   => '3.2',
-			'measure' => 'pmem',
+			'value'   => '80',
+			'measure' => 'cmem',
 			'class'   => 'warning',
-			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.')
+			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.')
+			),
+		'sort_buffer_size' => array(
+			'value'   => '80',
+			'measure' => 'cmem',
+			'class'   => 'warning',
+			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.')
 			),
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
@@ -1276,6 +1282,53 @@ function utilities_get_mysql_recommendations() {
 				$passed = ($variables[$name] >= ($r['value']*$totalMem/100));
 				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
 				$value_recommend = round($r['value']*$totalMem/100/1024/1024, 2) . ' M';
+				break;
+			case 'cmem':
+				if (isset($memInfo['MemTotal'])) {
+					$totalMem = $memInfo['MemTotal'];
+				} elseif (isset($memInfo['TotalVisibleMemorySize'])) {
+					$totalMem = $memInfo['TotalVisibleMemorySize'];
+				} else {
+					break;
+				}
+
+				$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections');
+
+				if ($name == 'sort_buffer_size') {
+					$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+						@@GLOBAL.query_cache_size +
+						@@GLOBAL.tmp_table_size +
+						@@GLOBAL.innodb_buffer_pool_size +
+						@@GLOBAL.innodb_log_buffer_size
+						+ @@GLOBAL.max_connections * (
+							@@GLOBAL.join_buffer_size +
+							@@GLOBAL.read_buffer_size +
+							@@GLOBAL.read_rnd_buffer_size +
+							@@GLOBAL.thread_stack +
+							@@GLOBAL.binlog_cache_size)');
+				} else {
+					$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+						@@GLOBAL.query_cache_size +
+						@@GLOBAL.tmp_table_size +
+						@@GLOBAL.innodb_buffer_pool_size +
+						@@GLOBAL.innodb_log_buffer_size
+						+ @@GLOBAL.max_connections * (
+							@@GLOBAL.sort_buffer_size +
+							@@GLOBAL.read_buffer_size +
+							@@GLOBAL.read_rnd_buffer_size +
+							@@GLOBAL.thread_stack +
+							@@GLOBAL.binlog_cache_size)');
+				}
+
+				$remainingMem = ($totalMem * 0.8) - $totalMemorySans;
+
+				$recommendation = $remainingMem / $maxConnections;
+
+				$compare = '<=';
+				$passed = ($variables[$name] >= ($recommendation/1024/1024));
+				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
+				$value_recommend = round($recommendation/1024/1024, 2) . ' M';
+
 				break;
 			case 'pinst':
 				$compare = '>=';
