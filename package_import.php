@@ -28,8 +28,8 @@ include_once('./lib/poller.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 include_once('./lib/xml.php');
-include_once('./include/vendor/Diff/Diff.php');
-include_once('./include/vendor/Diff/Renderer/Html/Inline.php');
+include_once('./include/vendor/phpdiff/Diff.php');
+include_once('./include/vendor/phpdiff/Renderer/Html/Inline.php');
 
 /* set default action */
 set_default_action();
