@@ -486,6 +486,10 @@ function utilities_view_tech() {
 		/* Get System Memory */
 		$memInfo = utilities_get_system_memory();
 
+		//print '<pre>';print_r($memInfo);print '</pre>';
+
+		$total_memory = 0;
+
 		if (cacti_sizeof($memInfo)) {
 			html_section_header(__('System Memory'), 2);
 
@@ -506,14 +510,123 @@ function utilities_view_tech() {
 					case 'Buffers':
 					case 'Active':
 					case 'Inactive':
+						// Convert to GBi
+						$value /= (1000 * 1000 * 1000);
+
 						form_alternate_row();
 						print "<td>$name</td>";
-						print '<td>' . number_format_i18n($value, 2) . '</td>';
+						print '<td>' . __('%0.2f GB', number_format_i18n($value, 2, 1000)) . '</td>';
 						form_end_row();
+
+						if ($name == 'MemTotal') {
+							$total_memory = $value;
+						}
 					}
 				}
 			}
 
+			form_end_row();
+		}
+
+		// Get Maximum Memory in GB for MySQL/MariaDB
+		$maxPossibleMyMemory = db_fetch_cell('SELECT (
+			(@@GLOBAL.key_buffer_size
+			+ @@GLOBAL.query_cache_size
+			+ @@GLOBAL.tmp_table_size
+			+ @@GLOBAL.innodb_buffer_pool_size
+			+ @@GLOBAL.innodb_log_buffer_size
+			+ @@GLOBAL.max_connections * (
+				@@GLOBAL.sort_buffer_size
+				+ @@GLOBAL.read_buffer_size
+				+ @@GLOBAL.read_rnd_buffer_size
+				+ @@GLOBAL.join_buffer_size
+				+ @@GLOBAL.thread_stack
+				+ @@GLOBAL.binlog_cache_size)
+			) / 1024 / 1024 / 1024)');
+
+		$clientMemory = db_fetch_cell('SELECT @@GLOBAL.max_connections * (
+			@@GLOBAL.sort_buffer_size
+			+ @@GLOBAL.read_buffer_size
+			+ @@GLOBAL.read_rnd_buffer_size
+			+ @@GLOBAL.join_buffer_size
+			+ @@GLOBAL.thread_stack
+			+ @@GLOBAL.binlog_cache_size) / 1024 / 1024 / 1024');
+
+		$systemMemory = db_fetch_cell('SELECT
+            (@@GLOBAL.key_buffer_size
+            + @@GLOBAL.query_cache_size
+            + @@GLOBAL.tmp_table_size
+            + @@GLOBAL.innodb_buffer_pool_size
+            + @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024');
+
+		html_section_header(__('MySQL/MariaDB Memory Statistics (Source: MySQL Tuner)'), 2);
+
+		if ($total_memory > 0) {
+			if ($maxPossibleMyMemory > ($total_memory * 0.8)) {
+				form_alternate_row();
+				print '<td>' . __('Max Total Memory Possible') . '</td>';
+				print '<td class="deviceDown">' . __('%0.2f GB', number_format_i18n($maxPossibleMyMemory, 2, 1000)) . '</td>';
+				form_end_row();
+				form_alternate_row();
+				print '<td></td>';
+				print '<td>' . __('Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method.') . '</td>';
+				form_end_row();
+			} else {
+				form_alternate_row();
+				print '<td>' . __('Max Total Memory Possible') . '</td>';
+				print '<td class="deviceUp">' . __('%0.2f GB', number_format_i18n($maxPossibleMyMemory, 2, 1000)) . '</td>';
+				form_end_row();
+			}
+		} else {
+			form_alternate_row();
+			print '<td>' . __('Max Total Memory Possible') . '</td>';
+			print '<td>' . __('%0.2f GB', number_format_i18n($maxPossibleMyMemory, 2, 1000)) . '</td>';
+			form_end_row();
+		}
+
+		if ($total_memory > 0) {
+			if ($coreMemory > ($total_memory * 0.8)) {
+				form_alternate_row();
+				print '<td>' . __('Max Core Memory Possible') . '</td>';
+				print '<td class="deviceDown">' . __('%0.2f GB', number_format_i18n($systemMemory, 2, 1000)) . '&nbsp;&nbsp;(' . __('Reduce Total Core Memory') . '</td>';
+				form_end_row();
+			} else {
+				form_alternate_row();
+				print '<td>' . __('Max Core Memory Possible') . '</td>';
+				print '<td class="deviceUp">' . __('%0.2f GB', number_format_i18n($systemMemory, 2, 1000)) . '</td>';
+				form_end_row();
+			}
+
+			form_alternate_row();
+			print '<td>' . __('Calculation Formula') . '</td>';
+			print '<td>SELECT @@GLOBAL.key_buffer_size + <br>@@GLOBAL.query_cache_size + <br>@@GLOBAL.tmp_table_size + <br>@@GLOBAL.innodb_buffer_pool_size + <br>@@GLOBAL.innodb_log_buffer_size</td>';
+			form_end_row();
+
+			if ($clientMemory > ($total_memory * 0.8)) {
+				form_alternate_row();
+				print '<td>' . __('Max Connection Memory Possible') . '</td>';
+				print '<td class="deviceDown">' . __('%0.2f GB', number_format_i18n($clientMemory, 2, 1000)) . '&nbsp;&nbsp;(' . __('Reduce Total Client Memory') . ')</td>';
+				form_end_row();
+			} else {
+				form_alternate_row();
+				print '<td>' . __('Max Connection Memory Possible') . '</td>';
+				print '<td class="deviceUp">' . __('%0.2f GB', number_format_i18n($clientMemory, 2, 1000)) . '</td>';
+				form_end_row();
+			}
+
+			form_alternate_row();
+			print '<td>' . __('Calculation Formula') . '</td>';
+			print '<td>SELECT @@GLOBAL.max_connections * (<br>@@GLOBAL.sort_buffer_size + <br>@@GLOBAL.read_buffer_size + <br>@@GLOBAL.read_rnd_buffer_size + <br>@@GLOBAL.join_buffer_size + <br>@@GLOBAL.thread_stack + <br>@@GLOBAL.binlog_cache_size)</td>';
+			form_end_row();
+		} else {
+			form_alternate_row();
+			print '<td>' . __('Max Core Memory Possible') . '</td>';
+			print '<td class="deviceUp">' . __('%0.2f GB', number_format_i18n($systemMemory, 2, 1000)) . '</td>';
+			form_end_row();
+
+			form_alternate_row();
+			print '<td>' . __('Max Connection Memory Possible') . '</td>';
+			print '<td>' . __('%0.2f GB', number_format_i18n($clientMemory, 2, 1000)) . '</td>';
 			form_end_row();
 		}
 
