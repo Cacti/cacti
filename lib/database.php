@@ -43,7 +43,8 @@
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
 	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '', $persist = false) {
 
-	global $database_sessions, $database_total_queries, $database_persist, $config;
+	global $database_sessions, $database_detail, $database_total_queries, $database_persist, $config;
+
 	$database_total_queries = 0;
 
 	$i = 0;
@@ -114,6 +115,22 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			);
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
+
+			$database_details[] = array(
+				'database_conn'     => $cnn_id,
+				'database_hostname' => $device,
+				'database_username' => $user,
+				'database_password' => $pass,
+				'database_default'  => $db_name,
+				'database_type'     => $db_type,
+				'database_port'     => $port,
+				'database_retries'  => $retries,
+				'database_ssl'      => $db_ssl,
+				'database_ssl_key'  => $db_ssl_key,
+				'database_ssl_cert' => $db_ssl_cert,
+				'database_ssl_ca'   => $db_ssl_ca,
+				'database_persist'  => $persist,
+			);
 
 			$ver = db_get_global_variable('version', $cnn_id);
 
@@ -199,22 +216,42 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
-function db_check_reconnect() {
-	global $config;
+function db_check_reconnect($db_conn = false) {
+	global $config, $database_details;
 
 	include($config['base_path'] . '/include/config.php');
 
-	if (!isset($database_ssl))      $database_ssl      = false;
-	if (!isset($database_ssl_key))  $database_ssl_key  = '';
-	if (!isset($database_ssl_cert)) $database_ssl_cert = '';
-	if (!isset($database_ssl_ca))   $database_ssl_ca   = '';
-	if (!isset($database_retries))  $database_retries  = 2;
-	if (!isset($database_port))     $database_port     = 3306;
+	if (cacti_sizeof($database_details) && $db_conn !== false) {
+		foreach($database_details as $det) {
+			if ($det['database_conn'] == $db_conn) {
+				$database_hostname = $det['database_hostname'];
+				$database_username = $det['database_username'];
+				$database_password = $det['database_password'];
+				$database_default  = $det['database_default'];
+				$database_type     = $det['database_type'];
+				$database_port     = $det['database_port'];
+				$database_retries  = $det['database_retries'];
+				$database_ssl      = $det['database_ssl'];
+				$database_ssl_key  = $det['database_ssl_key'];
+				$database_ssl_cert = $det['database_ssl_cert'];
+				$database_ssl_ca   = $det['database_ssl_ca'];
+
+				break;
+			}
+		}
+	} else {
+		if (!isset($database_ssl))      $database_ssl      = false;
+		if (!isset($database_ssl_key))  $database_ssl_key  = '';
+		if (!isset($database_ssl_cert)) $database_ssl_cert = '';
+		if (!isset($database_ssl_ca))   $database_ssl_ca   = '';
+		if (!isset($database_retries))  $database_retries  = 2;
+		if (!isset($database_port))     $database_port     = 3306;
+	}
 
 	$version = db_fetch_cell('SELECT cacti FROM version', 'cacti', false);
 
 	if ($version === false) {
-		debug('Connection went away.  Reconnecting...');
+		syslog(LOG_ALERT, 'CACTI: Database Connection went away.  Attempting to reconnect!');
 
 		db_close();
 
@@ -324,6 +361,7 @@ function db_execute($sql, $log = true, $db_conn = false) {
  */
 function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
 	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log;
+
 	$database_total_queries++;
 
 	if (!isset($database_log)) {
@@ -440,7 +478,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 						continue;
 					}
-				} else if ($en == 1153) {
+				} elseif ($en == 1153) {
 					if (strlen($sql) > 1024) {
 						$sql = substr($sql, 0, 1024) . '...';
 					}
@@ -1885,7 +1923,7 @@ function db_check_password_length() {
 
 	if ($len === false) {
 		die(__('Failed to determine password field length, can not continue as may corrupt password'));
-	} else if ($len < 80) {
+	} elseif ($len < 80) {
 		/* Ensure that the password length is increased before we start updating it */
 		db_execute("ALTER TABLE user_auth MODIFY COLUMN password varchar(256) NOT NULL default ''");
 
@@ -2024,15 +2062,15 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 			if (strstr($name, '--') !== false) {      //name like --host
 				if($name == '--password') {
 					$password = $value;
-				} else if ($name == '--user') {
+				} elseif ($name == '--user') {
 					$username = $value;
 				} else {
 					$credentials_string .= $name . '=' . $value . ' ';
 				}
-			} else if(strstr($name, '-') !== false) { //name like -h
+			} elseif(strstr($name, '-') !== false) { //name like -h
 				if($name == '-p') {
 					$password = $value;
-				} else if ($name == '-u') {
+				} elseif ($name == '-u') {
 					$username = $value;
 				} else {
 					$credentials_string .= $name . $value . ' ';
@@ -2040,7 +2078,7 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 			} else {                                  //name like host
 				if($name == 'password') {
 					$password = $value;
-				} else if ($name == 'user') {
+				} elseif ($name == 'user') {
 					$username = $value;
 				} else {
 					$credentials_string .= '--' . $name . '=' . $value . ' ';
