@@ -1292,32 +1292,64 @@ function utilities_get_mysql_recommendations() {
 					break;
 				}
 
-				$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections');
+				if ($config['poller_id'] == 1) {
+					$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections');
+				} else {
+					$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections', '', false, $local_db_cnn_id);
+				}
 
 				if ($name == 'sort_buffer_size') {
-					$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-						@@GLOBAL.query_cache_size +
-						@@GLOBAL.tmp_table_size +
-						@@GLOBAL.innodb_buffer_pool_size +
-						@@GLOBAL.innodb_log_buffer_size
-						+ @@GLOBAL.max_connections * (
-							@@GLOBAL.join_buffer_size +
-							@@GLOBAL.read_buffer_size +
-							@@GLOBAL.read_rnd_buffer_size +
-							@@GLOBAL.thread_stack +
-							@@GLOBAL.binlog_cache_size)');
+					if ($config['poller_id'] == 1) {
+						$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+							@@GLOBAL.query_cache_size +
+							@@GLOBAL.tmp_table_size +
+							@@GLOBAL.innodb_buffer_pool_size +
+							@@GLOBAL.innodb_log_buffer_size
+							+ @@GLOBAL.max_connections * (
+								@@GLOBAL.join_buffer_size +
+								@@GLOBAL.read_buffer_size +
+								@@GLOBAL.read_rnd_buffer_size +
+								@@GLOBAL.thread_stack +
+								@@GLOBAL.binlog_cache_size)');
+					} else {
+						$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+							@@GLOBAL.query_cache_size +
+							@@GLOBAL.tmp_table_size +
+							@@GLOBAL.innodb_buffer_pool_size +
+							@@GLOBAL.innodb_log_buffer_size
+							+ @@GLOBAL.max_connections * (
+								@@GLOBAL.join_buffer_size +
+								@@GLOBAL.read_buffer_size +
+								@@GLOBAL.read_rnd_buffer_size +
+								@@GLOBAL.thread_stack +
+								@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+					}
 				} else {
-					$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
-						@@GLOBAL.query_cache_size +
-						@@GLOBAL.tmp_table_size +
-						@@GLOBAL.innodb_buffer_pool_size +
-						@@GLOBAL.innodb_log_buffer_size
-						+ @@GLOBAL.max_connections * (
-							@@GLOBAL.sort_buffer_size +
-							@@GLOBAL.read_buffer_size +
-							@@GLOBAL.read_rnd_buffer_size +
-							@@GLOBAL.thread_stack +
-							@@GLOBAL.binlog_cache_size)');
+					if ($config['poller_id'] == 1) {
+						$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+							@@GLOBAL.query_cache_size +
+							@@GLOBAL.tmp_table_size +
+							@@GLOBAL.innodb_buffer_pool_size +
+							@@GLOBAL.innodb_log_buffer_size
+							+ @@GLOBAL.max_connections * (
+								@@GLOBAL.sort_buffer_size +
+								@@GLOBAL.read_buffer_size +
+								@@GLOBAL.read_rnd_buffer_size +
+								@@GLOBAL.thread_stack +
+								@@GLOBAL.binlog_cache_size)');
+					} else {
+						$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+							@@GLOBAL.query_cache_size +
+							@@GLOBAL.tmp_table_size +
+							@@GLOBAL.innodb_buffer_pool_size +
+							@@GLOBAL.innodb_log_buffer_size
+							+ @@GLOBAL.max_connections * (
+								@@GLOBAL.sort_buffer_size +
+								@@GLOBAL.read_buffer_size +
+								@@GLOBAL.read_rnd_buffer_size +
+								@@GLOBAL.thread_stack +
+								@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+					}
 				}
 
 				$remainingMem = ($totalMem * 0.8) - $totalMemorySans;
