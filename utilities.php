@@ -585,7 +585,7 @@ function utilities_view_tech() {
 		}
 
 		if ($total_memory > 0) {
-			if ($coreMemory > ($total_memory * 0.8)) {
+			if ($systemMemory > ($total_memory * 0.8)) {
 				form_alternate_row();
 				print '<td>' . __('Max Core Memory Possible') . '</td>';
 				print '<td class="deviceDown">' . __('%0.2f GB', number_format_i18n($systemMemory, 2, 1000)) . '&nbsp;&nbsp;(' . __('Reduce Total Core Memory') . '</td>';
