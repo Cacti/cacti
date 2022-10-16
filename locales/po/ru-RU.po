@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-09-19 02:40+0000\n"
+"PO-Revision-Date: 2022-10-17 15:50+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
@@ -1075,7 +1075,7 @@ msgstr "Общие"
 
 #: auth_profile.php:93
 msgid "2FA"
-msgstr ""
+msgstr "2FA"
 
 #: auth_profile.php:301
 #, fuzzy
