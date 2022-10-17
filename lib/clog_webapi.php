@@ -509,7 +509,7 @@ function filter($clogAdmin, $selectedFile) {
 						</select>
 					</td>
 					<td>
-						<?php print __('Tail Lines');?>
+						<?php print (get_request_var('reverse') == 1 ? __('Tail Lines'):__('Head Lines'));?>
 					</td>
 					<td>
 						<select id='tail_lines'>
@@ -572,7 +572,7 @@ function filter($clogAdmin, $selectedFile) {
 						</select>
 					</td>
 					<td>
-						<?php print __('Display Order');?>
+						<?php print __('Display');?>
 					</td>
 					<td>
 						<select id='reverse'>
