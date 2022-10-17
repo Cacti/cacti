@@ -22,6 +22,33 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * boost_array_orderby - performs a multicolumn sort of an
+ *   array
+ */
+function boost_array_orderby() {
+	$args = func_get_args();
+	$data = array_shift($args);
+
+	foreach ($args as $n => $field) {
+		if (is_string($field)) {
+			$tmp = array();
+
+			foreach ($data as $key => $row) {
+                $tmp[$key] = $row[$field];
+			}
+
+			$args[$n] = $tmp;
+		}
+	}
+
+	$args[] = &$data;
+
+	call_user_func_array('array_multisort', $args);
+
+	return array_pop($args);
+}
+
 function boost_file_size_display($file_size, $digits = 2) {
 	if ($file_size > 1024) {
 		$file_size = $file_size / 1024;
@@ -728,38 +755,13 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	cacti_log('Local Data ID: ' . $local_data_id . ', Archive Results: ' . $arch_results . ', Boost Results: ' . $boost_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
-	/* sort the results by time and rrd_name */
-	$ordering = array(
-		'time' => 'asc',
-		'rrd_name' => 'asc'
-	);
+	$sorted = boost_array_orderby($results, 'time', SORT_ASC, 'rrd_name', SORT_ASC);
 
-	usort($results, function($rowa, $rowb) use ($ordering) {
-		foreach($ordering as $key => $sortDirection) {
-			switch($sortDirection) {
-				case 'desc':
-					$direction = -1;
-					break;
-				case 'asc':
-				default:
-					$direction = 1;
-					break;
-			}
+	$sorted_results = cacti_sizeof($sorted);
 
-			if ($rowA[$key] > $rowB[$key]) {
-				return $direction;
-			} else if ($rowA[$key] < $rowB[$key]){
-				return $direction*-1;
-			}
-		}
-
-		return 0;
-	});
-
-	$sorted_results = cacti_sizeof($results);
+	$results = $sorted;
 
 	cacti_log('Local Data ID: ' . $local_data_id . ', Sorted Results: ' . $sorted_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
-	cacti_log('Local Data ID: ' . $local_data_id . ', Sorted Results: ' . $sorted_results, false, 'BOOST', POLLER_VERBOSITY_LOW);
 
 	/* remove the entries from the table */
 	boost_timer('delete', BOOST_TIMER_START);
@@ -1282,8 +1284,10 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 	if ($valid_entry) {
 		if ($rrd_update_template != '') {
+			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 			rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		} else {
+			cacti_log("update $rrd_path $update_options $rrd_update_values", false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 			rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		}
 		return 'OK';
@@ -1292,20 +1296,6 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 function boost_memory_limit() {
 	ini_set('memory_limit', read_config_option('boost_poller_mem_limit') . 'M');
-}
-
-function boost_debug($string) {
-	global $debug, $child;
-
-	$string = 'DEBUG: ' . trim($string, " \n");
-
-	if ($debug) {
-		print $string . PHP_EOL;
-
-		if ($child) {
-			cacti_log($string, false, 'BOOST CHILD');
-		}
-	}
 }
 
 function boost_poller_bottom() {
@@ -1411,3 +1401,18 @@ function boost_update_snmp_statistics () {
 
 	$mc->object('boostStatsLastUpdate')->set( time() );
 }
+
+function boost_debug($string) {
+	global $debug, $child;
+
+	$string = 'DEBUG: ' . trim($string, " \n");
+
+	if ($debug) {
+		print $string . PHP_EOL;
+
+		if ($child) {
+			cacti_log($string, false, 'BOOST CHILD');
+		}
+	}
+}
+
