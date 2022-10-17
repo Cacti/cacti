@@ -594,14 +594,25 @@ function boost_timer_get_overhead() {
 
 /* boost_get_arch_table_names - returns current archive boost tables or false if no arch table is present currently */
 function boost_get_arch_table_names($latest_table = '') {
-	$tableNames = array_rekey(
-		db_fetch_assoc("SELECT TABLE_NAME AS name
-			FROM information_schema.TABLES
-			WHERE TABLE_SCHEMA = SCHEMA()
-			AND TABLE_NAME LIKE 'poller_output_boost_arch_%'
-			AND TABLE_ROWS > 0"),
-		'name', 'name'
-	);
+	$tableData = db_fetch_assoc("SHOW tables LIKE 'poller_output_boost_arch%'");
+	$tableNames = array();
+	if (cacti_sizeof($tableData)) {
+		foreach($tableData as $table) {
+			$table = array_values($table);
+			$tableNames[$table[0]] = $table[0];
+		}
+	}
+
+	if (!cacti_sizeof($tableNames)) {
+		$tableNames = array_rekey(
+			db_fetch_assoc("SELECT TABLE_NAME AS name
+				FROM information_schema.TABLES
+				WHERE TABLE_SCHEMA = SCHEMA()
+				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'
+				AND TABLE_ROWS > 0"),
+			'name', 'name'
+		);
+	}
 
 	if (!cacti_sizeof($tableNames)) {
 		if ($latest_table != '' && db_table_exists($latest_table)) {
@@ -640,6 +651,8 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	static $archive_table = false;
 	static $warning_issued;
+
+	cacti_system_zone_set();
 
 	include_once($config['library_path'] . '/rrd.php');
 
@@ -746,6 +759,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	$sorted_results = cacti_sizeof($results);
 
 	cacti_log('Local Data ID: ' . $local_data_id . ', Sorted Results: ' . $sorted_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
+	cacti_log('Local Data ID: ' . $local_data_id . ', Sorted Results: ' . $sorted_results, false, 'BOOST', POLLER_VERBOSITY_LOW);
 
 	/* remove the entries from the table */
 	boost_timer('delete', BOOST_TIMER_START);
