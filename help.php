@@ -26,7 +26,16 @@ $guest_account = true;
 
 include('./include/auth.php');
 
-if (isset_request_var('page')) {
+if (isset_request_var('error')) {
+	$page  = basename(get_nfilter_request_var('page'));
+	$error = get_filter_request_var('error');
+
+	$message = sprintf('WARNING: Page:%s Generated a Fatal Error:%d', $page, $error);
+
+	cacti_log($message, false);
+
+	admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page: %s Generated a Fatal Error %d!', $page, $error));
+} elseif (isset_request_var('page')) {
 	get_filter_request_var('page', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
 	$page = str_replace('.html', '.md', get_request_var('page'));

@@ -2472,7 +2472,10 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 	}
 
 	if (typeof url != 'undefined') {
-		if (data.status >= 400) {
+		if (data.status >= 500) {
+			// Let the HTTP Error stick log an error
+			$.get(urlPath + 'help.php?page='+ escape(url) + '&error=' + data.status);
+		} else if (data.status >= 400) {
 			// Let the HTTP Error stick
 		} else {
 			console.log(data.status);
