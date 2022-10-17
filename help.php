@@ -34,7 +34,14 @@ if (isset_request_var('error')) {
 
 	cacti_log($message, false);
 
-	admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page: %s Generated a Fatal Error %d!', $page, $error));
+	/* debounce admin emails */
+	$last = read_config_option('page_error_' . $page);
+	$now  = time();
+
+	if (empty($last_error) || $time - $last > 7200) {
+		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page: %s Generated a Fatal Error %d!', $page, $error));
+		set_config_option('page_error_' . $page, $now);
+	}
 } elseif (isset_request_var('page')) {
 	get_filter_request_var('page', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
