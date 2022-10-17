@@ -452,9 +452,15 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
 	global $config;
+
 	static $rand = 0;
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
+
+	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+		FROM graph_local
+		WHERE id = ?',
+		array($local_graph_id));
 
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></a><br>";
@@ -472,6 +478,11 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 			print '<br/>';
 			$rand++;
 		}
+	}
+
+	if (is_realm_allowed(10) && $graph_template_id > 0) {
+		print "<a class='iconLink' role='link' title='" . __esc('Edit Graph Template') . "' href='" . html_escape($config['url_path'] . '/graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><img src='" . html_escape($config['url_path'] . 'images/template_edit.png') . "'></img></a>";
+		print '<br/>';
 	}
 
 	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
@@ -2553,6 +2564,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/billboard.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/Diff.css');
 	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
