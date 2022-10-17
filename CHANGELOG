@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -issue#4941: Viewing graphs can break when boost is running in some rare cases
 -issue#4944: Newer Cacti Packages should be signed with SHA256 as SHA1 is being deprecated
 -issue#4947: When creating a Data Template, ensure that the default max value is always 'U' and not '0'
+-feature#2567: For large systems, the sort buffer should be optimized for large tables
 -feature#2747: Provide better sorting in Console >Management > Graphs
 -feature#3131: Button to reindex bad indexes
 -feature#4025: When importing a Template or Package, allow the user to use the system default Height, Width, and Image format instead of the one embedded in the Template
