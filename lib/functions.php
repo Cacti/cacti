@@ -5982,16 +5982,18 @@ function get_url_type() {
  * to fulfill system setup related requirements like the usage of Web Single Login
  * cookies for example.
  *
- * @return - an array of stream context options or false
+ * @param  (int|bool) A numeric timeout value, or null if not set
+ *
+ * @return (array)    An array to a context
  */
-function get_default_contextoption($timeout = '') {
-	$fgc_contextoption = false;
+function get_default_contextoption($timeout = false) {
+	$fgc_contextoption = array();
 
-	if ($timeout == '') {
+	if ($timeout === false) {
 		$timeout = read_config_option('remote_agent_timeout');
 	}
 
-	if (!is_numeric($timeout)) {
+	if (!is_numeric($timeout) || empty($timeout) || $timeout <= 0) {
 		$timeout = 5;
 	}
 
