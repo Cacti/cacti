@@ -43,7 +43,7 @@
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
 	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '', $persist = false) {
 
-	global $database_sessions, $database_detail, $database_total_queries, $database_persist, $config;
+	global $database_sessions, $database_details, $database_total_queries, $database_persist, $config;
 
 	$database_total_queries = 0;
 
@@ -94,6 +94,10 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			}
 		}
 	}
+
+	/* set connection timout for down servers */
+	$flags[PDO::ATTR_TIMEOUT] = 2;
+	$flage[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
 	while ($i <= $retries) {
 		try {
