@@ -48,7 +48,7 @@ require_once($config['base_path'] . '/lib/utility.php');
 if ($config['poller_id'] > 1) {
 	if ($config['connection'] == 'online') {
 		db_force_remote_cnn();
-	} else {
+	} elseif (debounce_run_notification('db_offline')) {
 		cacti_log('WARNING: Main Cacti database offline or in recovery.  Can not run automation', false, 'AUTOM8');
 		admin_email(__('Cacti System Warning'), __('WARNING: Main Cacti database offline or in recovery'));
 		exit(1);

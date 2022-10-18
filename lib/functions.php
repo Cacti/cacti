@@ -7132,3 +7132,16 @@ function cacti_time_zone_set($gmt_offset) {
 	}
 }
 
+function debounce_run_notification($id, $freqnency = 1200) {
+	/* debounce admin emails */
+	$last = read_config_option('debounce_' . $id);
+	$now  = time();
+
+	if (empty($last) || $time - $last > 7200) {
+		set_config_option('debounce_' . $id, $now);
+		return true;
+	}
+
+	return false;
+}
+
