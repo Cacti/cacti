@@ -803,10 +803,12 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 		}
 
 		/* create an array keyed off of each .rrd file */
-		$time          = -1;
-		$outbuf        = '';
-		$last_update   = -1;
-		$last_item     = array(
+		$time           = -1;
+		$outbuf         = '';
+		$last_update    = -1;
+		$multi_vals_set = false;
+
+		$last_item = array(
 			'local_data_id' => -1,
 			'timestamp'     => -1,
 			'rrd_name'      => ''
@@ -1340,7 +1342,7 @@ function boost_poller_bottom() {
 	}
 }
 
-function boost_update_snmp_statistics () {
+function boost_update_snmp_statistics() {
 	global $config;
 	$mc = new MibCache('CACTI-BOOST-MIB');
 
