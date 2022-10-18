@@ -7137,7 +7137,7 @@ function debounce_run_notification($id, $freqnency = 1200) {
 	$last = read_config_option('debounce_' . $id);
 	$now  = time();
 
-	if (empty($last) || $time - $last > 7200) {
+	if (empty($last) || $now - $last > 7200) {
 		set_config_option('debounce_' . $id, $now);
 		return true;
 	}
