@@ -1045,13 +1045,13 @@ function utilities_get_mysql_recommendations() {
 			'value'   => '80',
 			'measure' => 'cmem',
 			'class'   => 'warning',
-			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.')
+			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory.')
 			),
 		'sort_buffer_size' => array(
 			'value'   => '80',
 			'measure' => 'cmem',
 			'class'   => 'warning',
-			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.')
+			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory.')
 			),
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
@@ -1427,7 +1427,7 @@ function utilities_get_mysql_recommendations() {
 				$recommendation = $remainingMem / $maxConnections;
 
 				$compare = '<=';
-				$passed = ($variables[$name] >= ($recommendation/1024/1024));
+				$passed = ($variables[$name] >= ($recommendation/1024/1024)) && $recommendation > 0;
 				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
 				$value_recommend = round($recommendation/1024/1024, 2) . ' M';
 
