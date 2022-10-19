@@ -755,7 +755,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	cacti_log('Local Data ID: ' . $local_data_id . ', Archive Results: ' . $arch_results . ', Boost Results: ' . $boost_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
-	$sorted = boost_array_orderby($results, 'time', SORT_ASC, 'rrd_name', SORT_ASC);
+	$sorted = boost_array_orderby($results, 'timestamp', SORT_ASC, 'rrd_name', SORT_ASC);
 
 	$sorted_results = cacti_sizeof($sorted);
 
