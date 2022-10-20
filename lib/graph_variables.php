@@ -290,12 +290,12 @@ function cacti_stats_calc($array, $ptile = 95) {
 		$variance += pow(abs($number - $average), 2);
 	}
 
-	$ptile_index = floor($elements * (1 - ($ptile/100)));
-	$p95n_index  = floor($elements * 0.05);
-	$p90n_index  = floor($elements * 0.1);
-	$p75n_index  = floor($elements * 0.25);
-	$p50n_index  = floor($elements * 0.50);
-	$p25n_index  = floor($elements * 0.75);
+	$ptile_index = ceil($elements * (1 - ($ptile/100)));
+	$p95n_index  = ceil($elements * 0.05);
+	$p90n_index  = ceil($elements * 0.1);
+	$p75n_index  = ceil($elements * 0.25);
+	$p50n_index  = ceil($elements * 0.50);
+	$p25n_index  = ceil($elements * 0.75);
 
 	$results = array(
 		'p95n'     => $array[$p95n_index],
