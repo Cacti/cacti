@@ -200,8 +200,10 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin)) {
 				$function($args);
 			}
-		} else {
+		} elseif ($config['connection'] == 'online' || $config['connection'] == 'offline') {
 			$function($args);
+		} else {
+			// Don't run as they are not required
 		}
 
 		// See if we need to restore the menu to original
