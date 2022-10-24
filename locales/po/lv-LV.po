@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-10-17 15:50+0000\n"
+"PO-Revision-Date: 2022-10-25 04:09+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -566,7 +566,7 @@ msgstr ""
 #: user_admin.php:2841 user_admin.php:2924 user_admin.php:3007
 #: user_admin.php:3090
 msgid "Go"
-msgstr "Aiziet"
+msgstr "Doties"
 
 #: aggregate_graphs.php:1333 aggregate_graphs.php:1630
 #: automation_devices.php:495 automation_snmp.php:725
@@ -1299,7 +1299,7 @@ msgstr ""
 
 #: automation_devices.php:227 host.php:473
 msgid "Delete Device(s)"
-msgstr ""
+msgstr "Dzēst ierīci(-es)"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1544
 #: host.php:1665 host.php:1821 include/global_arrays.php:920
@@ -14175,7 +14175,7 @@ msgstr ""
 
 #: lib/html_reports.php:1629 lib/html_reports.php:1640
 msgid "Frequency"
-msgstr "Biežums"
+msgstr "Frekvence"
 
 #: lib/html_reports.php:1630 lib/html_reports.php:1641
 msgid "Last Run"
@@ -18204,7 +18204,7 @@ msgstr ""
 
 #: user_admin.php:2388
 msgid "No Users Found"
-msgstr ""
+msgstr "Nav atrasts neviens lietotājs"
 
 #: user_admin.php:2597 user_group_admin.php:2153
 #, php-format
