@@ -1108,7 +1108,7 @@ function install_full_sync() {
 					db_execute_prepared('UPDATE poller
 						SET last_sync = NOW()
 						WHERE id = ?',
-						array($id));
+						array($poller['id']));
 				} else {
 					log_install_debug('sync', 'Failed replication to Poller ' . $poller['id']);
 					$failed[] = $poller['id'];

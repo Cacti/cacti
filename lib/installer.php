@@ -1134,7 +1134,7 @@ class Installer implements JsonSerializable {
 				log_install_high('templates','setTemplates(): ' . $name . ' => ' . ($enabled ? 'true' : 'false'));
 				foreach ($known_templates as $known) {
 					$filename = $known['filename'];
-					$key = 'chk_template_' . str_replace(".", "_", $filename);
+					$key = 'chk_template_' . str_replace('.', '_', $filename);
 					if ($name == $key || $name == $filename) {
 						$template = $known;
 						break;
@@ -1152,7 +1152,7 @@ class Installer implements JsonSerializable {
 					log_install_high('templates',"setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_template_$key = " . $value);
 
 					// Don't default install templates if upgrade
-					if ($this->getMode() == Installer::MODE_UPGRADE || $this->getMode() == Installer::MODE_DOWNGRADE) {
+					if ($this->getMode() == Installer::MODE_DOWNGRADE) {
 						$value = '';
 						$use   = false;
 					}
@@ -2970,6 +2970,12 @@ class Installer implements JsonSerializable {
 					log_install_always('', __('Import of Package #%s \'%s\' under Profile \'%s\' failed', $i, $package, $this->profile));
 					$this->addError(Installer::STEP_ERROR, 'Package:'.$package, 'FAIL: XML version code error');
 				}
+			}
+
+			// If we are Windows, switch everything to PNG
+			if ($config['cacti_server_os'] != 'unix') {
+				db_execute('UPDATE graph_templates_graph SET image_format_id = 1');
+				set_config_option('default_image_format', '1');
 			}
 
 			// Repair automation rules if broken

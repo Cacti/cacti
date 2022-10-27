@@ -497,7 +497,27 @@ function report_audit_results($output = true) {
 								$c[$col]     = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $c[$col]);
 								$dbc[$dbcol] = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP',$dbc[$dbcol]);
 
-								if ($c[$col] != $dbc[$dbcol] && $c[$col] != 'mediumtext') {
+								/* work around MySQL 8.x simplified int columns */
+								if (strpos($dbc[$dbcol], 'int(') !== false) {
+									// Get the integer first
+									$parts = explode('(', $dbc[$dbcol]);
+									$adbccol = $parts[0];
+
+									// Get attributes next
+									$parts = explode(' ', $parts[1], 2);
+									if (isset($parts[1])) {
+										$adbccol .= ' ' . $parts[1];
+									}
+
+									$adbccol = trim($adbccol);
+								} else {
+									$adbccol = $dbc[$dbcol];
+								}
+
+								/* Work Around for MySQL 8 */
+								$c[$col] = trim(str_replace('DEFAULT_GENERATED', '', $c[$col]));
+
+								if (($c[$col] != $dbc[$dbcol] && $c[$col] != $adbccol) && $c[$col] != 'mediumtext') {
 									if ($output) {
 										if ($col != 'Key') {
 											print PHP_EOL . 'ERROR Col: \'' . $c['Field'] . '\', Attribute \'' . $col . '\' invalid. Should be: \'' . $dbc[$dbcol] . '\', Is: \'' . $c[$col] . '\'';
@@ -690,6 +710,10 @@ function report_audit_results($output = true) {
 
 function make_column_props(&$dbc) {
 	$alter_cmd = '';
+
+	$dbc['table_default'] = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $dbc['table_default']);
+	$dbc['table_extra']   = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $dbc['table_extra']);
+	$dbc['table_extra']   = trim(str_replace('DEFAULT_GENERATED', '', $dbc['table_extra']));
 
 	if ($dbc['table_null'] == 'YES') {
 		if ($dbc['table_default'] == 'NULL') {
@@ -919,10 +943,10 @@ function create_tables($load = true) {
 
 		if (file_exists($config['base_path'] . '/docs/audit_schema.sql')) {
 			exec('mysql' .
-				' -u' . $database_username .
-				' -p' . $database_password .
-				' -h' . $database_hostname .
-				' -P' . $database_port .
+				' -u' . cacti_escapeshellarg($database_username) .
+				' -p' . cacti_escapeshellarg($database_password) .
+				' -h' . cacti_escapeshellarg($database_hostname) .
+				' -P' . cacti_escapeshellarg($database_port) .
 				' ' . $database_default .
 				' < ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $error);
 

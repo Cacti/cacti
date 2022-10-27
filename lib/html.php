@@ -452,9 +452,15 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
 	global $config;
+
 	static $rand = 0;
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
+
+	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+		FROM graph_local
+		WHERE id = ?',
+		array($local_graph_id));
 
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></a><br>";
@@ -472,6 +478,11 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 			print '<br/>';
 			$rand++;
 		}
+	}
+
+	if (is_realm_allowed(10) && $graph_template_id > 0) {
+		print "<a class='iconLink' role='link' title='" . __esc('Edit Graph Template') . "' href='" . html_escape($config['url_path'] . '/graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><img src='" . html_escape($config['url_path'] . 'images/template_edit.png') . "'></img></a>";
+		print '<br/>';
 	}
 
 	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
@@ -754,7 +765,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
         will be opposite this direction if the user selects the same named column.
    @arg $form_action - the url to post the 'select all' form to
    @arg $return_to - the id of the object to inject output into as a result of the sort action */
-function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '') {
+function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
 	static $page = 0;
 
 	/* reverse the sort direction */
@@ -898,7 +909,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
 	print '</tr>';
 
 	$page++;
@@ -965,7 +976,7 @@ function html_section_header($header_item, $last_item_colspan = 1) {
    @arg $header_items - an array containing a list of items to be included in the header
         alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $form_action - the url to post the 'select all' form to */
-function html_header_checkbox($header_items, $include_form = true, $form_action = '', $resizable = true) {
+function html_header_checkbox($header_items, $include_form = true, $form_action = '', $resizable = true, $prefix = 'chk') {
 	/* default to the 'current' file */
 	if ($form_action == '') { $form_action = get_current_page(); }
 
@@ -997,7 +1008,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
 	print '</tr>';
 }
 
@@ -1147,6 +1158,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
 				$this_row_style = 'font-weight: bold;';
 				$use_custom_class = true;
+				$item['gprint_name'] = __('N/A');
 
 				if ($group_counter % 2 == 0) {
 					$customClass = 'graphItem';
@@ -1582,18 +1594,6 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		$('#drp_action').change(function() {
 			setDisabled();
 		});
-
-		$('.tableSubHeaderCheckbox').find(':checkbox').off('click').on('click', function(data) {
-			if ($(this).is(':checked')) {
-				$('input[id^="chk_"]').not(':disabled').prop('checked', true).attr('data-prev-check', 'true').attr('aria-checked', 'true');
-				$('tr.selectable').addClass('selected');
-				disableSelection();
-			} else {
-				$('input[id^="chk_"]').not(':disabled').prop('checked', false).removeAttr('data-prev-check').removeAttr('aria-checked');
-				$('tr.selectable').removeClass('selected');
-				enableSelection();
-			}
-		});
 	});
 	</script>
 	<?php
@@ -1602,7 +1602,6 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 /*
  * Deprecated functions
  */
-
 function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1) {
 	?>
 	<th style='height:1px;' colspan='<?php print $column_span;?>'>
@@ -2565,6 +2564,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/billboard.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/Diff.css');
 	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
@@ -2592,7 +2592,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/billboard.js');
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
-	print get_md5_include_js('include/realtime.js', true);
+	print get_md5_include_js('include/realtime.js');
 	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
 
 	if (isset($path2calendar) && file_exists($path2calendar)) {

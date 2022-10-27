@@ -1280,10 +1280,6 @@ function aggregate_items() {
 			$('#agg_preview').show();
 		}
 
-		$('#refresh').click(function() {
-			applyFilter();
-		});
-
 		$('#clear').click(function() {
 			clearFilter();
 		});
@@ -1292,7 +1288,7 @@ function aggregate_items() {
 			applyFilter();
 		});
 
-		$('#form_graphs').submit(function(event) {
+		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1305,7 +1301,7 @@ function aggregate_items() {
 	?>
 	<tr class='even'>
 		<td>
-			<form id='form_graphs' action='aggregate_graphs.php'>
+			<form id='forms' action='aggregate_graphs.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
@@ -1337,7 +1333,7 @@ function aggregate_items() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' onClick='clearFilter()' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
@@ -1561,19 +1557,11 @@ function aggregate_graph() {
 			$('#agg_preview').show();
 		}
 
-		$('#refresh').click(function() {
-			applyFilter();
-		});
-
 		$('#clear').click(function() {
 			clearFilter();
 		});
 
-		$('#filter').change(function() {
-			applyFilter();
-		});
-
-		$('#form_graphs').submit(function(event) {
+		$('#forms').submit(function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
@@ -1587,7 +1575,7 @@ function aggregate_graph() {
 	?>
 	<tr class='even'>
 		<td>
-			<form id='form_graphs' action='aggregate_graphs.php'>
+			<form id='forms' action='aggregate_graphs.php'>
 			<table class='filterTable'>
 				<tr>
 					<td>
@@ -1635,7 +1623,7 @@ function aggregate_graph() {
 					</td>
 					<td>
 						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>

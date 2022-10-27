@@ -247,42 +247,6 @@ function get_options() {
 	return $options;
 }
 
-function db_check_reconnect() {
-	chdir(dirname(__FILE__));
-
-	include('./include/config.php');
-
-	if (!isset($database_ssl))      $database_ssl      = false;
-	if (!isset($database_ssl_key))  $database_ssl_key  = '';
-	if (!isset($database_ssl_cert)) $database_ssl_cert = '';
-	if (!isset($database_ssl_ca))   $database_ssl_ca   = '';
-	if (!isset($database_retries))  $database_retries  = 2;
-	if (!isset($database_port))     $database_port     = 3306;
-
-	$version = db_fetch_cell('SELECT cacti FROM version', 'cacti', false);
-
-	if ($version === false) {
-		debug('Connection went away.  Reconnecting...');
-
-		db_close();
-
-		// Connect to the database server
-		db_connect_real(
-			$database_hostname,
-			$database_username,
-			$database_password,
-			$database_default,
-			$database_type,
-			$database_port,
-			$database_retries,
-			$database_ssl,
-			$database_ssl_key,
-			$database_ssl_cert,
-			$database_ssl_ca
-		);
-	}
-}
-
 function debug($string) {
 	global $debug;
 

@@ -960,10 +960,6 @@ function profile() {
 			}
 
 			$(function() {
-				$('#go').click(function() {
-					applyFilter();
-				});
-
 				$('#has_data').click(function() {
 					applyFilter();
 				});

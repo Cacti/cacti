@@ -134,7 +134,7 @@ function rebuild_resource_cache() {
 }
 
 function utilities_view_tech() {
-	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
+	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id, $remote_db_cnn_id;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
@@ -404,11 +404,27 @@ function utilities_view_tech() {
 		print '<td>' . html_escape($script_servers) . '</td>';
 		form_end_row();
 
-		$max_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+		if ($config['poller_id'] == 1) {
+			$max_connections       = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+			$max_local_connections = array();
+		} elseif ($config['connection'] == 'online') {
+			$max_connections        = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+			$max_local_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"', false, $local_db_cnn_id);
+		} else {
+			$max_connections        = array();
+			$max_local_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
+		}
+
 		if (cacti_sizeof($max_connections)) {
 			$max_connections = $max_connections['Value'];
 		} else {
 			$max_connections = 0;
+		}
+
+		if (cacti_sizeof($max_local_connections)) {
+			$max_local_connections = $max_local_connections['Value'];
+		} else {
+			$max_local_connections = 0;
 		}
 
 		$total_dc_threads = db_fetch_cell("SELECT
@@ -419,9 +435,29 @@ function utilities_view_tech() {
 		$recommend_mc = $total_dc_threads + 100;
 
 		if ($recommend_mc > $max_connections) {
-			$db_connections = '<span class="deviceDown">' . __('Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			if ($config['poller_id'] == 1) {
+				$db_connections = '<span class="deviceDown">' . __('Main Server: Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			} elseif ($config['connection'] == 'online') {
+				$db_connections = '<span class="deviceDown">' . __('Main Server: Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			} else {
+				$db_connections = '';
+			}
 		} else {
-			$db_connections = '<span class="deviceUp">' . __('Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			if ($config['poller_id'] == 1) {
+				$db_connections = '<span class="deviceUp">' . __('Main Server: Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			} elseif ($config['connection'] == 'online') {
+				$db_connections = '<span class="deviceUp">' . __('Main Server: Current: %s, Min Required: %s', $max_connections, $recommend_mc) . '</span>';
+			} else {
+				$db_connections = '';
+			}
+		}
+
+		if ($config['poller_id'] > 1) {
+			if ($recommend_mc > $max_local_connections) {
+				$db_connections .= '<br><span class="deviceDown">' . __('Local Server: Current: %s, Min Required: %s', $max_local_connections, $recommend_mc) . '</span>';
+			} else {
+				$db_connections .= '<br><span class="deviceUp">' . __('Local Server: Current: %s, Min Required: %s', $max_local_connections, $recommend_mc) . '</span>';
+			}
 		}
 
 		form_alternate_row();
@@ -450,6 +486,10 @@ function utilities_view_tech() {
 		/* Get System Memory */
 		$memInfo = utilities_get_system_memory();
 
+		//print '<pre>';print_r($memInfo);print '</pre>';
+
+		$total_memory = 0;
+
 		if (cacti_sizeof($memInfo)) {
 			html_section_header(__('System Memory'), 2);
 
@@ -470,14 +510,206 @@ function utilities_view_tech() {
 					case 'Buffers':
 					case 'Active':
 					case 'Inactive':
+						// Convert to GBi
+						$value /= (1000 * 1000 * 1000);
+
 						form_alternate_row();
 						print "<td>$name</td>";
-						print '<td>' . number_format_i18n($value, 2) . '</td>';
+						print '<td>' . __('%0.2f GB', number_format_i18n($value, 2, 1000)) . '</td>';
 						form_end_row();
+
+						if ($name == 'MemTotal') {
+							$total_memory = $value;
+						}
 					}
 				}
 			}
 
+			form_end_row();
+		}
+
+		$mysql_info = utilities_get_mysql_info($config['poller_id']);
+
+		$database  = $mysql_info['database'];
+		$version   = $mysql_info['version'];
+		$link_ver  = $mysql_info['link_ver'];
+		$variables = $mysql_info['variables'];
+
+		// Get Maximum Memory in GB for MySQL/MariaDB
+		if ($config['poller_id'] == 1) {
+			if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+				$systemMemory = db_fetch_cell('SELECT
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.query_cache_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024');
+
+				$maxPossibleMyMemory = db_fetch_cell('SELECT (
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.query_cache_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size
+					+ @@GLOBAL.max_connections * (
+						@@GLOBAL.sort_buffer_size
+						+ @@GLOBAL.read_buffer_size
+						+ @@GLOBAL.read_rnd_buffer_size
+						+ @@GLOBAL.join_buffer_size
+						+ @@GLOBAL.thread_stack
+						+ @@GLOBAL.binlog_cache_size)
+					) / 1024 / 1024 / 1024)');
+			} else {
+				$systemMemory = db_fetch_cell('SELECT
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024');
+
+				$maxPossibleMyMemory = db_fetch_cell('SELECT (
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size
+					+ @@GLOBAL.max_connections * (
+						@@GLOBAL.sort_buffer_size
+						+ @@GLOBAL.read_buffer_size
+						+ @@GLOBAL.read_rnd_buffer_size
+						+ @@GLOBAL.join_buffer_size
+						+ @@GLOBAL.thread_stack
+						+ @@GLOBAL.binlog_cache_size)
+					) / 1024 / 1024 / 1024)');
+			}
+
+			$clientMemory = db_fetch_cell('SELECT @@GLOBAL.max_connections * (
+				@@GLOBAL.sort_buffer_size
+				+ @@GLOBAL.read_buffer_size
+				+ @@GLOBAL.read_rnd_buffer_size
+				+ @@GLOBAL.join_buffer_size
+				+ @@GLOBAL.thread_stack
+				+ @@GLOBAL.binlog_cache_size) / 1024 / 1024 / 1024');
+		} else {
+			if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+				$maxPossibleMyMemory = db_fetch_cell('SELECT (
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.query_cache_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size
+					+ @@GLOBAL.max_connections * (
+						@@GLOBAL.sort_buffer_size
+						+ @@GLOBAL.read_buffer_size
+						+ @@GLOBAL.read_rnd_buffer_size
+						+ @@GLOBAL.join_buffer_size
+						+ @@GLOBAL.thread_stack
+						+ @@GLOBAL.binlog_cache_size)
+					) / 1024 / 1024 / 1024)', '', false, $local_db_cnn_id);
+
+				$systemMemory = db_fetch_cell('SELECT
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.query_cache_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024', '', false, $local_db_cnn_id);
+			} else {
+				$maxPossibleMyMemory = db_fetch_cell('SELECT (
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size
+					+ @@GLOBAL.max_connections * (
+						@@GLOBAL.sort_buffer_size
+						+ @@GLOBAL.read_buffer_size
+						+ @@GLOBAL.read_rnd_buffer_size
+						+ @@GLOBAL.join_buffer_size
+						+ @@GLOBAL.thread_stack
+						+ @@GLOBAL.binlog_cache_size)
+					) / 1024 / 1024 / 1024)', '', false, $local_db_cnn_id);
+
+				$systemMemory = db_fetch_cell('SELECT
+					(@@GLOBAL.key_buffer_size
+					+ @@GLOBAL.tmp_table_size
+					+ @@GLOBAL.innodb_buffer_pool_size
+					+ @@GLOBAL.innodb_log_buffer_size) / 1024 / 1024 / 1024', '', false, $local_db_cnn_id);
+			}
+
+			$clientMemory = db_fetch_cell('SELECT @@GLOBAL.max_connections * (
+				@@GLOBAL.sort_buffer_size
+				+ @@GLOBAL.read_buffer_size
+				+ @@GLOBAL.read_rnd_buffer_size
+				+ @@GLOBAL.join_buffer_size
+				+ @@GLOBAL.thread_stack
+				+ @@GLOBAL.binlog_cache_size) / 1024 / 1024 / 1024', '', false, $local_db_cnn_id);
+		}
+
+		html_section_header(__('MySQL/MariaDB Memory Statistics (Source: MySQL Tuner)'), 2);
+
+		if ($total_memory > 0) {
+			if ($maxPossibleMyMemory > ($total_memory * 0.8)) {
+				form_alternate_row();
+				print '<td>' . __('Max Total Memory Possible') . '</td>';
+				print '<td class="deviceDown">' . __('%0.2f GB', number_format_i18n($maxPossibleMyMemory, 2, 1000)) . '</td>';
+				form_end_row();
+				form_alternate_row();
+				print '<td></td>';
+				print '<td>' . __('Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method.') . '</td>';
+				form_end_row();
+			} else {
+				form_alternate_row();
+				print '<td>' . __('Max Total Memory Possible') . '</td>';
+				print '<td class="deviceUp">' . __('%0.2f GB', number_format_i18n($maxPossibleMyMemory, 2, 1000)) . '</td>';
+				form_end_row();
+			}
+		} else {
+			form_alternate_row();
+			print '<td>' . __('Max Total Memory Possible') . '</td>';
+			print '<td>' . __('%0.2f GB', number_format_i18n($maxPossibleMyMemory, 2, 1000)) . '</td>';
+			form_end_row();
+		}
+
+		if ($total_memory > 0) {
+			if ($systemMemory > ($total_memory * 0.8)) {
+				form_alternate_row();
+				print '<td>' . __('Max Core Memory Possible') . '</td>';
+				print '<td class="deviceDown">' . __('%0.2f GB', number_format_i18n($systemMemory, 2, 1000)) . '&nbsp;&nbsp;(' . __('Reduce Total Core Memory') . '</td>';
+				form_end_row();
+			} else {
+				form_alternate_row();
+				print '<td>' . __('Max Core Memory Possible') . '</td>';
+				print '<td class="deviceUp">' . __('%0.2f GB', number_format_i18n($systemMemory, 2, 1000)) . '</td>';
+				form_end_row();
+			}
+
+			form_alternate_row();
+			print '<td>' . __('Calculation Formula') . '</td>';
+			print '<td>SELECT @@GLOBAL.key_buffer_size + <br>@@GLOBAL.query_cache_size + <br>@@GLOBAL.tmp_table_size + <br>@@GLOBAL.innodb_buffer_pool_size + <br>@@GLOBAL.innodb_log_buffer_size</td>';
+			form_end_row();
+
+			if ($clientMemory > ($total_memory * 0.8)) {
+				form_alternate_row();
+				print '<td>' . __('Max Connection Memory Possible') . '</td>';
+				print '<td class="deviceDown">' . __('%0.2f GB', number_format_i18n($clientMemory, 2, 1000)) . '&nbsp;&nbsp;(' . __('Reduce Total Client Memory') . ')</td>';
+				form_end_row();
+			} else {
+				form_alternate_row();
+				print '<td>' . __('Max Connection Memory Possible') . '</td>';
+				print '<td class="deviceUp">' . __('%0.2f GB', number_format_i18n($clientMemory, 2, 1000)) . '</td>';
+				form_end_row();
+			}
+
+			form_alternate_row();
+			print '<td>' . __('Calculation Formula') . '</td>';
+			print '<td>SELECT @@GLOBAL.max_connections * (<br>@@GLOBAL.sort_buffer_size + <br>@@GLOBAL.read_buffer_size + <br>@@GLOBAL.read_rnd_buffer_size + <br>@@GLOBAL.join_buffer_size + <br>@@GLOBAL.thread_stack + <br>@@GLOBAL.binlog_cache_size)</td>';
+			form_end_row();
+		} else {
+			form_alternate_row();
+			print '<td>' . __('Max Core Memory Possible') . '</td>';
+			print '<td class="deviceUp">' . __('%0.2f GB', number_format_i18n($systemMemory, 2, 1000)) . '</td>';
+			form_end_row();
+
+			form_alternate_row();
+			print '<td>' . __('Max Connection Memory Possible') . '</td>';
+			print '<td>' . __('%0.2f GB', number_format_i18n($clientMemory, 2, 1000)) . '</td>';
 			form_end_row();
 		}
 
@@ -2079,6 +2311,11 @@ function utilities() {
 			'link'  => 'rrdcleaner.php',
 			'mode'  => 'online',
 			'description' => __('When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files.')
+		),
+		__('RRDfile Checker') => array(
+			'link'  => 'rrdcheck.php',
+			'mode'  => 'online',
+			'description' => __('Use this utility to display problems with missing rrd files or missing values in rrdfiles. You need enable rrdcheck in Configuration->Settings->Data')
 		),
 	);
 

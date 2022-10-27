@@ -5583,7 +5583,7 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 	foreach ($mods as $index => $mod) {
 		if ($mod > 0 || $secs) {
 			if ($time >= $mod) {
-				if ($mod < 1) {
+				if ($mod < 1 || !is_numeric($mod)) {
 					$mod = 1;
 				}
 				$val   = floor($time/$mod);
@@ -5982,16 +5982,18 @@ function get_url_type() {
  * to fulfill system setup related requirements like the usage of Web Single Login
  * cookies for example.
  *
- * @return - an array of stream context options or false
+ * @param  (int|bool) A numeric timeout value, or null if not set
+ *
+ * @return (array)    An array to a context
  */
-function get_default_contextoption($timeout = '') {
-	$fgc_contextoption = false;
+function get_default_contextoption($timeout = false) {
+	$fgc_contextoption = array();
 
-	if ($timeout == '') {
+	if ($timeout === false) {
 		$timeout = read_config_option('remote_agent_timeout');
 	}
 
-	if (!is_numeric($timeout)) {
+	if (!is_numeric($timeout) || empty($timeout) || $timeout <= 0) {
 		$timeout = 5;
 	}
 
@@ -7128,5 +7130,18 @@ function cacti_time_zone_set($gmt_offset) {
 		$_SESSION['sess_browser_system_tz'] = $sys_offset;
 		$_SESSION['sess_browser_php_tz']    = $php_offset;
 	}
+}
+
+function debounce_run_notification($id, $freqnency = 1200) {
+	/* debounce admin emails */
+	$last = read_config_option('debounce_' . $id);
+	$now  = time();
+
+	if (empty($last) || $now - $last > 7200) {
+		set_config_option('debounce_' . $id, $now);
+		return true;
+	}
+
+	return false;
 }
 

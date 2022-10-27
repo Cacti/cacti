@@ -23,18 +23,19 @@
 */
 
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false, $import_hashes = array()) {
-	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only, $import_debug_info, $legacy_template;
+	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
+	global $import_debug_info, $import_messages, $legacy_template;
 
 	include_once($config['library_path'] . '/xml.php');
 
 	$info_array       = array();
-	$debug_session    = array();
+	$files            = array();
 	$ignorable_hashes = array();
 
 	$xml_array = xml2array($xml_data);
 
 	if (cacti_sizeof($xml_array) == 0) {
-		raise_message(7); /* xml parse error */
+		$import_messages[] = 7; /* xml parse error */
 		return $info_array;
 	}
 
@@ -47,7 +48,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 			return $info_array;
 		}
 
-		if (!cacti_sizeof($import_hashes) || in_array($parsed_hash['hash'], $inport_hashes)) {
+		if (!cacti_sizeof($import_hashes) || in_array($parsed_hash['hash'], $import_hashes)) {
 			if (isset($dep_hash_cache[$parsed_hash['type']])) {
 				array_push($dep_hash_cache[$parsed_hash['type']], $parsed_hash);
 			} else {
@@ -173,7 +174,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				} elseif (isset($xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']])) {
 					$hash_array = $xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']];
 				} else {
-					raise_message(7); /* xml parse error */
+					$import_messages[] = 7; /* xml parse error */
 					return false;
 				}
 
@@ -214,7 +215,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				} elseif (isset($xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']])) {
 					$hash_array = $xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']];
 				} else {
-					raise_message(7); /* xml parse error */
+					$import_messages[] = 7; /* xml parse error */
 					return false;
 				}
 
@@ -234,7 +235,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					$repair++;
 					break;
 				case 'data_query':
-					$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $replace_svalues);
+					$hash_cache += xml_to_data_query($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $files, $replace_svalues);
 					break;
 				case 'gprint_preset':
 					$hash_cache += xml_to_gprint_preset($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
@@ -277,6 +278,10 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		}
 	}
 
+	if (cacti_sizeof($files)) {
+		$info_array['files'] = $files;
+	}
+
 	if ($repair) {
 		repair_system_data_input_methods();
 	}
@@ -295,22 +300,68 @@ EOD;
     return $public_key;
 }
 
-function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false, $preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array()) {
-	global $config, $preview_only;
+function import_package_get_public_key($xmlfile) {
+	$data = import_package_get_details($xmlfile);
 
-	$preview_only = $preview;
+	if (isset($data['public_key'])) {
+		return $data['public_key'];
+	} else {
+		return get_public_key();
+	}
+}
 
-	/* set new timeout and memory settings */
-	if ($limitex) {
-		ini_set('max_execution_time', '50');
-		ini_set('memory_limit', '-1');
+function import_package_get_name($xmlfile) {
+	$data = import_package_get_details($xmlfile);
+
+	if (isset($data['name'])) {
+		return $data['name'];
+	} else {
+		return __('Unknown');
+	}
+}
+
+function import_package_get_details($xmlfile) {
+	$filename = "compress.zlib://$xmlfile";
+
+	$return = array();
+	$data   = file_get_contents($filename, 'r');
+	$xmlget = simplexml_load_string($data);
+	$pkgarr = xml_to_array($xmlget);
+	$return = $pkgarr['info'];
+
+	if (isset($pkgarr['publickey'])) {
+		$return['public_key'] = base64_decode($pkgarr['publickey']);
+	} else {
+		$return['public_key'] = get_public_key();
 	}
 
-	$public_key = get_public_key();
+	if (isset($pkgarr['publickeyname'])) {
+		$return['public_key_name'] = base64_decode($pkgarr['publickeyname']);
+	}
 
-	$filename         = "compress.zlib://$xmlfile";
-	$binary_signature = '';
-	$debug_data       = array();
+	if (!isset($return['name']) || is_array($return['name'])) {
+		$return['name'] = 'Unknown';
+	}
+
+	if (!isset($return['tags']) || is_array($return['tags'])) {
+		$return['tags'] = '';
+	}
+
+	if (!isset($return['installation']) || is_array($return['installation'])) {
+		$return['installation'] = '';
+	}
+
+	if (!isset($return['version']) || is_array($return['version'])) {
+		$return['version'] = 'Prior to 1.2.23';
+	}
+
+	return $return;
+}
+
+function import_read_package_data($xmlfile, &$public_key) {
+	$public_key = import_package_get_public_key($xmlfile);
+
+	$filename = "compress.zlib://$xmlfile";
 
 	$f   = fopen($filename, 'r');
 	$xml = '';
@@ -327,7 +378,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
 				$x = "   <signature></signature>\n";
 
-				cacti_log('NOTE: Got Package Signature', false, 'IMPORT', POLLER_VERBOSITY_LOW);
+				cacti_log('NOTE: Got Package Signature', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 			}
 
 			$xml .= "$x";
@@ -340,9 +391,14 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	}
 
 	// Verify Signature
-	$ok = openssl_verify($xml, $binary_signature, $public_key);
+	if (strlen($public_key) < 200) {
+		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+	} else {
+		$ok = openssl_verify($xml, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+	}
+
 	if ($ok == 1) {
-		cacti_log('NOTE: File is Signed Correctly', false, 'IMPORT', POLLER_VERBOSITY_LOW);
+		cacti_log('NOTE: File is Signed Correctly', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 	} elseif ($ok == 0) {
 		cacti_log('FATAL: File has been Tampered with.', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 		return false;
@@ -351,19 +407,68 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		return false;
 	}
 
-	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_LOW);
+	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
-	$xmlget     = simplexml_load_string($xml);
-	$data       = xml_to_array($xmlget);
+	$xmlget = simplexml_load_string($xml);
+	$data   = xml_to_array($xmlget);
+
+	if (cacti_sizeof($data)) {
+		return $data;
+	} else {
+		return false;
+	}
+}
+
+/**
+ * import_package - This function will selectively import some or all of the
+ *   components of a Cacti, Provide a preview of the import, or provide information
+ *   about the Package depending upon the settings provided below.
+ *
+ * This function can also read from the $_REQUEST environment certain overrides for
+ * Graph Size, and Image format when importing through the GUI.
+ *
+ * @param  (string)      $xmlfile - The XML file to process
+ * @param  (int)         $profile_id - The Data Source Profile to use for the packages
+ * @param  (bool)        $remove_orphans - Boolean true to remove Graph Template orphans after import
+ * @param  (bool)        $replace_svalues - Boolean that if true, all suggested values for Graph Templates
+ *                       and Data Templates will be replaced with the values in the
+ *                       package.
+ * @param  (bool)        $preview - If true, only generate a preview of what will be imported
+ *                       and the corresponding changes.
+ * @param  (bool)        $info_only - Return only the information about the package, not details
+ * @param  (bool)        $limitex - Limit the execution time to 50 seconds to process for larger
+ *                       packages.
+ * @param  (array)       $import_hashes - The hashes to import from the package
+ * @param  (array)       $import_files - The XML resource files and script files to import from the package
+ *
+ */
+function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false,
+	$preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array()) {
+
+	global $config, $preview_only;
+
+	$preview_only = $preview;
+	$public_key   = '';
+
+	/* set new timeout and memory settings */
+	if ($limitex) {
+		ini_set('max_execution_time', '50');
+		ini_set('memory_limit', '-1');
+	}
+
+	$data = import_read_package_data($xmlfile, $public_key);
+
+	if (!$data) {
+		return false;
+	}
+
 	$filestatus = array();
-
-	$plugin = $data['info']['name'];
 
 	if ($info_only) {
 		return $data['info'];
 	}
 
-	cacti_log('Verifying each files signature', false, 'IMPORT', POLLER_VERBOSITY_LOW);
+	cacti_log('Verifying each files signature', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
 	if (isset($data['files']['file']['data'])) {
 		$data['files']['file'] = array($data['files']['file']);
@@ -372,9 +477,15 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	foreach ($data['files']['file'] as $f) {
 		$binary_signature = base64_decode($f['filesignature']);
 		$fdata = base64_decode($f['data']);
-		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+
+		if (strlen($public_key) < 200) {
+			$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
+		} else {
+			$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA256);
+		}
+
 		if ($ok == 1) {
-			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_LOW);
+			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 		} else {
 			cacti_log('FATAL: Could not Verify Signature for file: ' . $f['name'], true, 'IMPORT', POLLER_VERBOSITY_LOW);
 			return false;
@@ -382,9 +493,9 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	}
 
 	if (!$preview) {
-		cacti_log('Processing Files for Import', false, 'IMPORT', POLLER_VERBOSITY_LOW);
+		cacti_log('Processing Files for Import', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 	} else {
-		cacti_log('Processing Files for Preview', false, 'IMPORT', POLLER_VERBOSITY_LOW);
+		cacti_log('Processing Files for Preview', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	foreach ($data['files']['file'] as $f) {
@@ -396,7 +507,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 
 			if (!$preview) {
 				if (!cacti_sizeof($import_files) || in_array($filename, $import_files)) {
-					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_LOW);
+					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
 					if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
 						$file = fopen($filename, 'wb');
@@ -419,23 +530,50 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 						$filestatus[$filename] = __('not writable');
 					}
 
-					cacti_log('Write Status file: ' . $filename . ', with Status ' . $filestatus[$filename], false, 'IMPORT', POLLER_VERBOSITY_LOW);
+					cacti_log('Write Status file: ' . $filename . ', with Status ' . $filestatus[$filename], false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 				}
 			} else {
-				cacti_log('Previewing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_LOW);
+				cacti_log('Previewing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
-				if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
-					$filestatus[$filename] = __('writable');
+				$new = md5($fdata);
+
+				if (file_exists($filename)) {
+					$existing = md5_file($filename);
+				}
+
+				if (is_writeable(dirname($filename))) {
+					if (file_exists($filename) && is_writable($filename)) {
+						if ($new == $existing) {
+							$filestatus[$filename] = 'writable, identical';
+						} else {
+							$filestatus[$filename] = 'writable, differences';
+						}
+					} elseif (file_exists($filename) && is_writeable($filename)) {
+						$filestatus[$filename] = 'writable, new';
+					} elseif (file_exists($filename) && !is_writeable($filename)) {
+						if ($new == $existing) {
+							$filestatus[$filename] = 'not writable, identical';
+						} else {
+							$filestatus[$filename] = 'not writable, differences';
+						}
+					} else {
+						$filestatus[$filename] = 'writable, new';
+					}
+				} elseif (file_exists($filename)) {
+					if ($new == $existing) {
+						$filestatus[$filename] = 'not writable, identical';
+					} else {
+						$filestatus[$filename] = 'not writable, differences';
+					}
 				} else {
-					$filestatus[$filename] = __('not writable');
+					$filestatus[$filename] = 'not writable, new';
 				}
 			}
-
 		} else {
 			if (!$preview) {
-				cacti_log('Importing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_LOW);
+				cacti_log('Importing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 			} else {
-				cacti_log('Previewing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_LOW);
+				cacti_log('Previewing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 			}
 
 			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
@@ -447,14 +585,15 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 	}
 
 	if (!$preview) {
-		cacti_log('File creation complete', false, 'IMPORT', POLLER_VERBOSITY_LOW);
+		cacti_log('File creation complete', false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 	}
 
 	return array($debug_data, $filestatus);
 }
 
 function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, $remove_orphans = false) {
-	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $cacti_version_codes, $preview_only, $graph_item_types, $import_debug_info;
+	global $struct_graph, $struct_graph_item, $fields_graph_template_input_edit, $cacti_version_codes;
+	global $preview_only, $graph_item_types, $import_debug_info;
 
 	/* track changes */
 	$status = 0;
@@ -528,10 +667,18 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array['graph'][$field_name])) {
-			/* Cacti pre 0.8.5 did handle a unit_exponent=0 differently
-			 * so we need to know the version of the current hash code we're just working on */
+			/**
+			 * Cacti pre 0.8.5 did handle a unit_exponent=0 differently
+			 * so we need to know the version of the current hash code we're just working on
+			 */
 			if (($field_name == 'unit_exponent_value') && (get_version_index($hash_version) < get_version_index('0.8.5')) && ($xml_array['graph'][$field_name] == '0')) { /* backwards compatability */
 				$save[$field_name] = '';
+			} elseif ($field_name == 'graph_width' && isset_request_var('graph_width')) {
+				$save[$field_name] = get_filter_request_var('graph_width');
+			} elseif ($field_name == 'graph_height' && isset_request_var('graph_height')) {
+				$save[$field_name] = get_filter_request_var('graph_height');
+			} elseif ($field_name == 'image_format_id' && isset_request_var('image_format')) {
+				$save[$field_name] = get_filter_request_var('image_format');
 			} else {
 				$save[$field_name] = xml_character_decode($xml_array['graph'][$field_name]);
 			}
@@ -1028,10 +1175,8 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	return $hash_cache;
 }
 
-function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = false) {
+function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_svalues = false) {
 	global $config, $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
-
-	static $counter = 0;
 
 	/* track changes */
 	$status = 0;
@@ -1069,9 +1214,12 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, $replace_svalues = 
 	if (isset($save['xml_path'])) {
 		$path = str_replace('<path_cacti>', $config['base_path'], $save['xml_path']);
 
-		if (!file_exists($path) || !is_readable($path)) {
-			raise_message('resource_missing_' . $counter, __esc('Resource File: \'%s\' is missing or not readable.  Make sure you install it before using Data Query: \'%s\'', $path, $save['name']), MESSAGE_LEVEL_ERROR);
-			$counter++;
+		if (!file_exists($path)) {
+			$files[$path] = 'missing';
+		} elseif (!is_readable($path)) {
+			$files[$path] = 'notreadable';
+		} else {
+			$files[$path] = 'found';
 		}
 	}
 
@@ -2132,7 +2280,7 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 }
 
 function parse_xml_hash($hash) {
-	global $legacy_template;
+	global $legacy_template, $import_messages;
 
 	if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $hash, $matches)) {
 		$parsed_hash['type']    = check_hash_type($matches[1]);
@@ -2141,7 +2289,7 @@ function parse_xml_hash($hash) {
 
 		/* an error has occurred */
 		if (($parsed_hash['type'] === false) || ($parsed_hash['version'] === false)) {
-			raise_message(7); /* xml parse error */
+			$import_messages[] = 7; /* xml parse error */
 
 			cacti_log(__FUNCTION__ . ' ERROR type or version not found for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			return false;
@@ -2153,7 +2301,7 @@ function parse_xml_hash($hash) {
 
 		/* an error has occurred */
 		if (($parsed_hash['type'] === false) || ($parsed_hash['version'] === false)) {
-			raise_message(7); /* xml parse error */
+			$import_messages[] = 7; /* xml parse error */
 
 			cacti_log(__FUNCTION__ . ' ERROR type or version not found for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			return false;
@@ -2166,7 +2314,7 @@ function parse_xml_hash($hash) {
 			return false;
 		}
 
-		raise_message(7); /* xml parse error */
+		$import_messages[] = 7; /* xml parse error */
 
 		cacti_log(__FUNCTION__ . ' ERROR wrong hash format for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
@@ -2181,7 +2329,7 @@ function parse_xml_hash($hash) {
 }
 
 function check_hash_type($hash_type) {
-	global $hash_type_codes;
+	global $hash_type_codes, $import_messages;
 
 	/* lets not mess up the pointer for other people */
 	$local_hash_type_codes = $hash_type_codes;
@@ -2193,7 +2341,7 @@ function check_hash_type($hash_type) {
 	}
 
 	if (!isset($current_type)) {
-		raise_message(18); /* error: cannot find type */
+		$import_messages[] = 18; /* xml parse error */
 		return false;
 	}
 
@@ -2201,7 +2349,7 @@ function check_hash_type($hash_type) {
 }
 
 function check_hash_version($hash_version) {
-	global $cacti_version_codes, $config;
+	global $cacti_version_codes, $config, $import_messages;
 
 	foreach ($cacti_version_codes as $version => $code) {
 		if ($version == CACTI_VERSION) {
@@ -2216,16 +2364,16 @@ function check_hash_version($hash_version) {
 
 	if (!isset($current_version_code)) {
 		cacti_log("ERROR: $hash_version Current Cacti Version does not exist!", false, 'IMPORT');
-		raise_message(15); /* error: current cacti version does not exist! */
+		$import_messages[] = 15; /* xml parse error */
 		return false;
 	} elseif (!isset($hash_version_code)) {
 		cacti_log("ERROR: $hash_version hash version does not exist!", false, 'IMPORT');
-		raise_message(16); /* error: hash version does not exist! */
+		$import_messages[] = 16; /* xml parse error */
 		return false;
 	} elseif ($hash_version_code > $current_version_code) {
 		cacti_log("ERROR: $hash_version_code > $current_version_code", false, 'IMPORT');
 		cacti_log("ERROR: $hash_version hash version is for a newer Cacti!", false, 'IMPORT');
-		raise_message(17); /* error: hash made with a newer version of cacti */
+		$import_messages[] = 17; /* xml parse error */
 		return false;
 	}
 

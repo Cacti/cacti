@@ -1845,58 +1845,63 @@ function validate_graph_request_vars() {
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
+		'source' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+		),
 		'rfilter' => array(
 			'filter' => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
-			),
+		),
 		'orphans' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'title_cache',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'site_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'template_id' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])')),
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'custom' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'local_graph_ids' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => ''
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_graph');
@@ -1920,6 +1925,7 @@ function graph_management() {
 			'?host_id=' + $('#host_id').val() +
 			'&site_id=' + $('#site_id').val() +
 			'&rows=' + $('#rows').val() +
+			'&source=' + $('#source').val() +
 			'&orphans=' + $('#orphans').is(':checked') +
 			'&rfilter=' + base64_encode($('#rfilter').val()) +
 			'&template_id=' + $('#template_id').val() +
@@ -2034,6 +2040,17 @@ function graph_management() {
 						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
+						<?php print __('Graph Source');?>
+					</td>
+					<td>
+						<select id='source' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('source') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<option value='0'<?php print (get_request_var('source') == '0' ? ' selected>':'>') . __('Non Templated');?></option>
+							<option value='1'<?php print (get_request_var('source') == '1' ? ' selected>':'>') . __('Graph Template');?></option>
+							<option value='2'<?php print (get_request_var('source') == '2' ? ' selected>':'>') . __('Data Query');?></option>
+						</select>
+					</td>
+					<td>
 						<?php print __('Graphs');?>
 					</td>
 					<td>
@@ -2111,6 +2128,16 @@ function graph_management() {
 		$sql_where2 .= ' AND gl.id IN(' . get_request_var('local_graph_ids') . ')';
 	}
 
+	if (get_request_var('source') >= 0) {
+		if (get_request_var('source') == 0) {
+			$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id = 0';
+		} elseif (get_request_var('source') == 1) {
+			$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (gl.graph_template_id > 0 AND gl.snmp_query_id = 0)';
+		} else {
+			$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_id > 0';
+		}
+	}
+
 	if (get_request_var('orphans') == 'true') {
 		$orphan_join = "INNER JOIN (
 			SELECT DISTINCT gti.local_graph_id, dtr.local_data_id
@@ -2164,7 +2191,8 @@ function graph_management() {
 
 	$graph_list = db_fetch_assoc("SELECT gtg.id, gl.id AS local_graph_id,
 		gtg.height, gtg.width, gtg.title_cache, gt.name, gl.host_id,
-		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source
+		IF(gl.graph_template_id = 0, 0, IF(gl.snmp_query_id = 0, 2, 1)) AS graph_source,
+		IF(gl.snmp_query_id > 0, sqg.name, gt.name) AS source_name
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
@@ -2176,6 +2204,9 @@ function graph_management() {
 		ON h.id=gl.host_id
 		LEFT JOIN sites AS s
 		ON h.site_id=s.id
+		LEFT JOIN snmp_query_graph AS sqg
+		ON gl.snmp_query_id = sqg.snmp_query_id
+		AND gl.graph_template_id = sqg.graph_template_id
 		$orphan_join
 		$sql_where
 		$sql_order
@@ -2202,13 +2233,13 @@ function graph_management() {
 			'sort'    => 'ASC',
 			'tip'     => __('The internal database ID for this Graph.  Useful when performing automation or debugging.')
 		),
-		'nosort_source' => array(
+		'graph_source' => array(
 			'display' => __('Source Type'),
 			'align'   => 'center',
 			'sort'    => 'ASC',
 			'tip'     => __('The underlying source that this Graph was based upon.')
 		),
-		'nosort_name' => array(
+		'source_name' => array(
 			'display' => __('Source Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',

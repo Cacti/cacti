@@ -135,6 +135,7 @@ $cacti_version_codes = array(
 	'1.2.20'  => '0103',
 	'1.2.21'  => '0103',
 	'1.2.22'  => '0103',
+	'1.2.23'  => '0103',
 );
 
 $messages = array(
@@ -984,6 +985,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			),
 		__('Import/Export') => array(
 			'templates_import.php' => __('Import Templates'),
+			'package_import.php'   => __('Import Packages'),
 			'templates_export.php' => __('Export Templates')
 			),
 		__('Configuration')  => array(
@@ -1031,6 +1033,28 @@ $menu_glyphs = array(
 	__('External Links') => 'fa fa-external-link-alt',
 	__('Support') => 'fa fa-question-circle',
 	__('Troubleshooting') => 'fa fa-bug'
+);
+
+$device_classes = array(
+	'application'  => __('Application Related'),
+	'cacti'        => __('Cacti Related'),
+	'database'     => __('Database Related'),
+	'facilities'   => __('Facilities Related'),
+	'general'      => __('Generic Device'),
+	'hpc'          => __('HPC/Grid Computing'),
+	'hypervisor'   => __('Hypervisor Related'),
+	'license'      => __('Licensing Related'),
+	'linux'        => __('Linux Related'),
+	'loadbalancer' => __('Load Balancer'),
+	'switch'       => __('Network Switch'),
+	'router'       => __('Network Router'),
+	'firewall'     => __('Network Firewall'),
+	'storage'      => __('Storage Related'),
+	'telephony'    => __('Telco Related'),
+	'webserver'    => __('Web Server Related'),
+	'windows'      => __('Windows Related'),
+	'ups'          => __('UPS Related'),
+	''             => __('Unassigned')
 );
 
 if ((isset($_SESSION['sess_user_id']))) {
@@ -1222,11 +1246,13 @@ $user_auth_realm_filenames = array(
 	'step_json.php' => 26,
 	'managers.php' => 15,
 	'rrdcleaner.php' => 15,
+	'rrdcheck.php' => 15,
 	'settings.php' => 15,
 	'links.php' => 15,
 	'data_queries.php' => 13,
 	'templates_export.php' => 16,
 	'templates_import.php' => 17,
+	'package_import.php' => 17,
 	'tree.php' => 4,
 	'user_admin.php' => 1,
 	'user_domains.php' => 1,
@@ -1479,6 +1505,13 @@ $dsstats_hourly_avg = array(
 	'240' => __('%d Hours', 4),
 	'300' => __('%d Hours', 5),
 	'360' => __('%d Hours', 6)
+);
+
+$rrdcheck_intervals = array(
+	'boost' => __('After Boost'),
+	'60'  => __('1 Hour'),
+	'240' => __('%d Hours', 4),
+	'1440' => __('%d Hours', 24)
 );
 
 $boost_max_rows_per_select = array(
@@ -2384,6 +2417,12 @@ $navigation = array(
 		'url' => 'rrdcleaner.php?action=restart',
 		'level' => '2'
 	),
+	'rrdcheck.php:' => array(
+		'title' => __('RRD Check'),
+		'mapping' => 'index.php:,utilities.php:',
+		'url' => 'rrdcheck.php',
+		'level' => '2'
+	),
 	'utilities.php:' => array(
 		'title' => __('Utilities'),
 		'mapping' => 'index.php:',
@@ -2586,6 +2625,12 @@ $navigation = array(
 		'title' => __('Import Templates'),
 		'mapping' => 'index.php:',
 		'url' => 'templates_import.php',
+		'level' => '1'
+	),
+	'package_import.php:' => array(
+		'title' => __('Import Packages'),
+		'mapping' => 'index.php:',
+		'url' => 'package_import.php',
 		'level' => '1'
 	),
 	'reports_admin.php:' => array(

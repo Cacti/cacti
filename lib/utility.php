@@ -883,20 +883,14 @@ function data_input_whitelist_check($data_input_id) {
 	}
 }
 
-function utilities_get_mysql_recommendations() {
-	global $config, $local_db_cnn_id;
+function utilities_get_mysql_info($poller_id = 1) {
+	global $local_db_cnn_id;
 
-	// MySQL/MariaDB Important Variables
-	// Assume we are successfully, until we aren't!
-	$result = DB_STATUS_SUCCESS;
-
-	if ($config['poller_id'] == 1) {
+	if ($poller_id == 1) {
 		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
 	} else {
 		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
 	}
-
-	$memInfo = utilities_get_system_memory();
 
 	if (strpos($variables['version'], 'MariaDB') !== false) {
 		$database = 'MariaDB';
@@ -912,6 +906,30 @@ function utilities_get_mysql_recommendations() {
 		$version  = $variables['version'];
 		$link_ver = substr($variables['version'], 0, 3);
 	}
+
+	return array(
+		'database'  => $database,
+		'version'   => $version,
+		'link_ver'  => $link_ver,
+		'variables' => $variables
+	);
+}
+
+function utilities_get_mysql_recommendations() {
+	global $config, $local_db_cnn_id;
+
+	// MySQL/MariaDB Important Variables
+	// Assume we are successfully, until we aren't!
+	$result = DB_STATUS_SUCCESS;
+
+	$memInfo = utilities_get_system_memory();
+
+	$mysql_info = utilities_get_mysql_info($config['poller_id']);
+
+	$database  = $mysql_info['database'];
+	$version   = $mysql_info['version'];
+	$link_ver  = $mysql_info['link_ver'];
+	$variables = $mysql_info['variables'];
 
 	$recommendations = array(
 		'version' => array(
@@ -1024,10 +1042,16 @@ function utilities_get_mysql_recommendations() {
 			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
 			),
 		'join_buffer_size' => array(
-			'value'   => '3.2',
-			'measure' => 'pmem',
+			'value'   => '80',
+			'measure' => 'cmem',
 			'class'   => 'warning',
-			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.')
+			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory.')
+			),
+		'sort_buffer_size' => array(
+			'value'   => '80',
+			'measure' => 'cmem',
+			'class'   => 'warning',
+			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory.')
 			),
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
@@ -1090,7 +1114,7 @@ function utilities_get_mysql_recommendations() {
 					'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
 					)
 			);
-		} elseif (version_compare($variables['innodb_version'], '10.5', '<')) {
+		} elseif ($database == 'MariaDB' && version_compare($variables['innodb_version'], '10.5', '<') || $database == 'MySQL') {
 			$recommendations += array(
 				'innodb_flush_log_at_timeout' => array(
 					'value'   => '3',
@@ -1111,7 +1135,7 @@ function utilities_get_mysql_recommendations() {
 					'value' => '16',
 					'measure' => 'pinst',
 					'class' => 'warning',
-					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of 64.', $database)
+					'comment' => ($database == 'MySQL' ? __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64.', $database): __('%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64.', $database))
 					),
 				'innodb_io_capacity' => array(
 					'value' => '5000',
@@ -1277,11 +1301,152 @@ function utilities_get_mysql_recommendations() {
 				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
 				$value_recommend = round($r['value']*$totalMem/100/1024/1024, 2) . ' M';
 				break;
+			case 'cmem':
+				if (isset($memInfo['MemTotal'])) {
+					$totalMem = $memInfo['MemTotal'];
+				} elseif (isset($memInfo['TotalVisibleMemorySize'])) {
+					$totalMem = $memInfo['TotalVisibleMemorySize'];
+				} else {
+					break;
+				}
+
+				if ($config['poller_id'] == 1) {
+					$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections');
+				} else {
+					$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections', '', false, $local_db_cnn_id);
+				}
+
+				if ($name == 'sort_buffer_size') {
+					if ($config['poller_id'] == 1) {
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.query_cache_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.join_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.join_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						}
+					} else {
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.query_cache_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.join_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.join_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						}
+					}
+				} else {
+					if ($config['poller_id'] == 1) {
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.query_cache_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)');
+						}
+					} else {
+						if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.query_cache_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						} else {
+							$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
+								@@GLOBAL.tmp_table_size +
+								@@GLOBAL.innodb_buffer_pool_size +
+								@@GLOBAL.innodb_log_buffer_size
+								+ @@GLOBAL.max_connections * (
+									@@GLOBAL.sort_buffer_size +
+									@@GLOBAL.read_buffer_size +
+									@@GLOBAL.read_rnd_buffer_size +
+									@@GLOBAL.thread_stack +
+									@@GLOBAL.binlog_cache_size)', '', false, $local_db_cnn_id);
+						}
+					}
+				}
+
+				$remainingMem = ($totalMem * 0.8) - $totalMemorySans;
+
+				$recommendation = $remainingMem / $maxConnections;
+
+				$compare = '<=';
+				$passed = ($variables[$name] >= ($recommendation/1024/1024)) && $recommendation > 0;
+				$value_display = round($variables[$name]/1024/1024, 2) . ' M';
+				$value_recommend = round($recommendation/1024/1024, 2) . ' M';
+
+				break;
 			case 'pinst':
 				$compare = '>=';
 
 				// Divide the buffer pool size by 128MB, and ensure 1 or more
 				$pool_instances = round(($innodb_pool_size / 1024 / 1024 / 128) + 0.5);
+
+				if ($config['cacti_server_os'] == 'win32') {
+					$nproc = getenv('NUMBER_OF_PROCESSORS');
+				} else {
+					$nproc = system('nproc');
+				}
+
+				if ($pool_instances > $nproc) {
+					$pool_instances = $nproc;
+				}
 
 				if ($pool_instances < 1) {
 					$pool_instances = 1;

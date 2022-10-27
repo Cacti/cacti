@@ -2034,6 +2034,7 @@ CREATE TABLE host_template (
   id mediumint(8) unsigned NOT NULL auto_increment,
   hash varchar(32) NOT NULL default '',
   name varchar(100) NOT NULL default '',
+  class varchar(40) NOT NULL default '',
   PRIMARY KEY (id),
   KEY `name` (`name`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -3105,6 +3106,16 @@ INSERT INTO vdef_items VALUES(12, 'f330b5633c3517d7c62762cef091cc9e', 6, 2, 1, '
 INSERT INTO vdef_items VALUES(13, 'f1bf2ecf54ca0565cf39c9c3f7e5394b', 7, 1, 4, 'CURRENT_DATA_SOURCE');
 INSERT INTO vdef_items VALUES(14, '11a26f18feba3919be3af426670cba95', 7, 2, 6, '95');
 INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '8');
+
+--
+-- Table structure for table `rrdcheck`
+--
+
+CREATE TABLE rrdcheck (
+  `local_data_id` mediumint(8) unsigned NOT NULL,
+  `test_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `message` varchar(250) default ''
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='rrdcheck';
 
 --
 -- Table structure for table `version`
