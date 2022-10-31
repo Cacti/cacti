@@ -310,6 +310,13 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				1 => array('pipe', 'w')
 			);
 
+            if ( $config['is_web'] ) {
+                if( isset( $_COOKIE['CactiTimeZone'] ) ) {
+                    $gmt_offset = $_COOKIE['CactiTimeZone'];
+                    cacti_time_zone_set( $gmt_offset );
+                }
+            }
+
 			$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
 
 			if (!is_resource($process)) {
@@ -3937,24 +3944,24 @@ function add_business_hours($data) {
     if (read_config_option("business_hours_enable") == "on") {
         if ($data['start'] < 0 ) {
             $bh_graph_start = time() + $data['start'];
-            $bh_graph_end = time() + $data["end"];
+            $bh_graph_end = time() + $data['end'];
         } else {
             $bh_graph_start = $data['start'];
-            $bh_graph_end =  $data["end"];
+            $bh_graph_end =  $data['end'];
         }
 
-        preg_match("/(\d+)\:(\d+)/",read_config_option("business_hours_start"), $bh_start_matches);
-        preg_match("/(\d+)\:(\d+)/",read_config_option("business_hours_end"), $bh_end_matches);
+        preg_match("/(\d+)\:(\d+)/",read_config_option('business_hours_start'), $bh_start_matches);
+        preg_match("/(\d+)\:(\d+)/",read_config_option('business_hours_end'), $bh_end_matches);
 
 
-        $start_bh_time = mktime( $bh_start_matches[0],$bh_start_matches[1],0,date("m",$bh_graph_start),date("d",$bh_graph_start),date("Y",$bh_graph_start));
-        $end_bh_time = mktime( $bh_end_matches[0],$bh_end_matches[1],0,date("m",$bh_graph_end),date("d",$bh_graph_end),date("Y",$bh_graph_end));
+        $start_bh_time = mktime( $bh_start_matches[1],$bh_start_matches[2],0,date('m',$bh_graph_start),date('d',$bh_graph_start),date('Y',$bh_graph_start));
+        $end_bh_time = mktime( $bh_end_matches[1],$bh_end_matches[2],0,date('m',$bh_graph_end),date('d',$bh_graph_end),date('Y',$bh_graph_end));
 
         if ($start_bh_time < $bh_graph_start) {
             if ($start_bh_time < $end_bh_time) {
                 $start_bh_time = $bh_graph_start;
             } else {
-                $start_bh_time = mktime( $bh_start_matches[0],$bh_start_matches[1],0,date("m",$bh_graph_start),date("d",$bh_graph_start)+1,date("Y",$bh_graph_start));
+                $start_bh_time = mktime( $bh_start_matches[1],$bh_start_matches[2],0,date("m",$bh_graph_start),date("d",$bh_graph_start)+1,date("Y",$bh_graph_start));
             }
         }
 
@@ -3962,10 +3969,10 @@ function add_business_hours($data) {
         $datediff = $bh_graph_end - $bh_graph_start;
         $num_of_days = round($datediff / (60 * 60 * 24)) + 1;
 
-        if ($num_of_days <= read_config_option("business_hours_max_days")) {
+        if ($num_of_days <= read_config_option('business_hours_max_days')) {
             for ($day=0; $day<$num_of_days; $day++ ) {
-                $current_start_bh_time = mktime($bh_start_matches[0],$bh_start_matches[1],0,date("m",$start_bh_time),date("d",$start_bh_time)+$day,date("Y",$start_bh_time));
-                $current_end_bh_time = mktime( $bh_end_matches[0],$bh_end_matches[1],0,date("m",$start_bh_time),date("d",$start_bh_time)+$day,date("Y",$start_bh_time));
+                $current_start_bh_time = mktime($bh_start_matches[1],$bh_start_matches[2],0,date('m',$start_bh_time),date('d',$start_bh_time)+$day,date('Y',$start_bh_time));
+                $current_end_bh_time = mktime( $bh_end_matches[1],$bh_end_matches[2],0,date('m',$start_bh_time),date('d',$start_bh_time)+$day,date('Y',$start_bh_time));
                 if (  $current_start_bh_time < $bh_graph_start ) {
                     $current_start_bh_time = $bh_graph_start;
                 }
@@ -3975,15 +3982,15 @@ function add_business_hours($data) {
                 $data[ 'graph_defs' ] .= 'CDEF:officehours' . $day . '=a,POP,TIME,' . $current_start_bh_time . ',LT,1,0,IF,TIME,' . $current_end_bh_time . ',GT,1,0,IF,MAX,0,GT,0,1,IF' . RRD_NL;
                 $data[ 'graph_defs' ] .= 'CDEF:dslimit' . $day . '=INF,officehours' . $day . ',*' . RRD_NL;
 
-                if ( preg_match('/[0-9A-Fa-f]{6,8}/',read_config_option("business_hours_color")) ) {
-                    $bh_color = read_config_option("business_hours_color");
+                if ( preg_match('/[0-9A-Fa-f]{6,8}/',read_config_option('business_hours_color')) ) {
+                    $bh_color = read_config_option('business_hours_color');
                 } else {
                     $bh_color = 'ccccccff';
                 }
-                if ( date("N",$current_start_bh_time) <6 ) {
+                if ( date('N',$current_start_bh_time) <6 ) {
                     $data[ 'graph_defs' ] .= 'AREA:dslimit' . $day . '#' . $bh_color . RRD_NL;
                 }
-                if ( ( date("N",$current_start_bh_time) >5 ) && ( read_config_option("business_hours_hideWeekends") == "") ) {
+                if ( ( date('N',$current_start_bh_time) >5 ) && ( read_config_option('business_hours_hideWeekends') == "") ) {
                     $data[ 'graph_defs' ] .= 'AREA:dslimit' . $day . '#'.$bh_color . RRD_NL;
                 }
             }
