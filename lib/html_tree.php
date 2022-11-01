@@ -299,7 +299,7 @@ function grow_dhtml_trees() {
 					'dots' : false
 				},
 				'state' : { 'key' : 'graph_tree_history' },
-				'search' : { 'case_sensitive' : false, 'show_only_matches' : false, 'ajax' : { 'url' : urlPath+'graph_view.php?action=ajax_search'} },
+				'search' : { 'case_sensitive' : false, 'show_only_matches' : true, 'ajax' : { 'url' : urlPath+'graph_view.php?action=ajax_search'} },
 				'plugins' : [ 'types', 'state', 'wholerow', 'search' ]
 			});
 		});
@@ -310,7 +310,9 @@ function grow_dhtml_trees() {
 				var v = $('#searcher').val();
 				if (v.length >= 3) {
 					$('#jstree').jstree('search', v, false);
-				}
+				}else {
+                    $('#jstree').jstree('search', '', false);
+                }
 			}, 250);
 		});
 

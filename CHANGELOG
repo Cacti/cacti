@@ -23,9 +23,10 @@ Cacti CHANGELOG
 -issue#4944: Newer Cacti Packages should be signed with SHA256 as SHA1 is being deprecated
 -issue#4947: When creating a Data Template, ensure that the default max value is always 'U' and not '0'
 -issue#4960: Setting context for connections throws error in PHP 8.x
+-issue#4964: Tree search not hiding non-matching tree objects
 -issue#4966: When viewing the Device page, ensure that the Device Template filter only includes Devices Types in use
--issue#4980: Business Hour php errors
 -issue#4978: Graph timezone issue
+-issue#4980: Business Hour php errors
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled
