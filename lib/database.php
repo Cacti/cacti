@@ -38,7 +38,7 @@
  * @param  (string) String that points to the client ssl cert file
  * @param  (string) String that points to the ssl ca file
  *
- * @returns (bool) '1' for success, false for error
+ * @returns (bool|object) connection object on success, false for error
  */
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
 	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '', $persist = false) {
@@ -120,7 +120,9 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
-			$database_details[] = array(
+			$object_hash = spl_object_hash($cnn_id);
+
+			$database_details[$object_hash] = array(
 				'database_conn'     => $cnn_id,
 				'database_hostname' => $device,
 				'database_username' => $user,
@@ -227,7 +229,7 @@ function db_check_reconnect($db_conn = false) {
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
 		foreach($database_details as $det) {
-			if ($det['database_conn'] == $db_conn) {
+			if (spl_object_hash($det['database_conn']) == spl_object_hash($db_conn)) {
 				$database_hostname = $det['database_hostname'];
 				$database_username = $det['database_username'];
 				$database_password = $det['database_password'];
