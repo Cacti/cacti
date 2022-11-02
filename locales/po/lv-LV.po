@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-10-25 04:09+0000\n"
+"PO-Revision-Date: 2022-11-03 03:36+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -1252,7 +1252,7 @@ msgstr "Neaktīva (nedarbojoša, bezsaistē, izslēgta)"
 #: lib/api_automation.php:171 lib/api_automation.php:1115
 #: lib/html_utility.php:945
 msgid "Up"
-msgstr "Aktīva (darbojoša, tiešsaistē)"
+msgstr "Darbojas"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
@@ -3928,14 +3928,14 @@ msgstr "%d mēneši"
 #: rrdcleaner.php:517 rrdcleaner.php:518
 #, php-format
 msgid "%d Week"
-msgstr ""
+msgstr "%d nedēļa"
 
 #: data_source_profiles.php:824 include/global_arrays.php:725
 #: include/global_arrays.php:726 include/global_arrays.php:1367
 #: rrdcleaner.php:519 rrdcleaner.php:520
 #, php-format
 msgid "%d Weeks"
-msgstr ""
+msgstr "%d nedēļas"
 
 #: data_source_profiles.php:833 include/global_arrays.php:672
 #: include/global_arrays.php:711 include/global_arrays.php:721
@@ -3954,7 +3954,7 @@ msgstr "%d diena"
 #: include/global_settings.php:1573
 #, php-format
 msgid "%d Days"
-msgstr "%d dienas"
+msgstr "%d dienas"
 
 #: data_source_profiles.php:841 include/global_arrays.php:666
 #: include/global_arrays.php:1427 include/global_arrays.php:1448
@@ -6684,7 +6684,7 @@ msgstr "Vietnes"
 #: tree.php:1652 tree.php:1714 user_admin.php:1577 user_admin.php:2985
 #: user_admin.php:3068 user_group_admin.php:1249 user_group_admin.php:2458
 msgid "Trees"
-msgstr ""
+msgstr "Koki"
 
 #: include/global_arrays.php:927 include/global_arrays.php:979
 #: include/global_arrays.php:995
