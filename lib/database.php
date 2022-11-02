@@ -370,7 +370,7 @@ function db_execute($sql, $log = true, $db_conn = false) {
  * @return (bool) '1' for success, false for failed
  */
 function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows;
 
 	$database_total_queries++;
 
@@ -397,7 +397,8 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 	}
 
 	$errors = 0;
-	$db_conn->affected_rows = 0;
+
+	$affected_rows[spl_object_hash($db_conn)] = 0;
 
 	while (true) {
 		$query = $db_conn->prepare($sql);
@@ -442,8 +443,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		}
 
 		if ($en == '') {
-			// With PDO, we have to free this up
-			$db_conn->affected_rows = $query->rowCount();
+			$affected_rows[spl_object_hash($db_conn)] = $query->rowCount();
 
 			$return_value = $default_value;
 			if (function_exists($return_func)) {
@@ -747,7 +747,7 @@ function db_fetch_insert_id($db_conn = false) {
  *                         or false on error
  */
 function db_affected_rows($db_conn = false) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $database_hostname, $database_port, $affected_rows;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
@@ -758,7 +758,7 @@ function db_affected_rows($db_conn = false) {
 		}
 	}
 
-	return $db_conn->affected_rows;
+	return $affected_rows[spl_object_hash($db_conn)];
 }
 
 /**
