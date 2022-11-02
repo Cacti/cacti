@@ -401,8 +401,8 @@ $settings = array(
 			'array' => $rrdtool_versions,
 		),
 		'enable_rrdtool_gradient_support' => array(
-			'friendly_name' => __('Enable gradient support'),
-			'description' => __('Enabled gradient support for AREA charts.'),
+			'friendly_name' => __('Enable Gradient Support'),
+			'description' => __('Enabled Gradient Support for AREA and STACK charts.'),
 			'default' => '',
 			'method' => 'checkbox',
 		),

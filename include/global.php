@@ -565,5 +565,5 @@ if ($config['is_web']) {
 api_plugin_hook('config_insert');
 
 /* set config cacti_version for plugins */
-$config['cacti_version'] = CACTI_VERSION;;
+$config['cacti_version'] = CACTI_VERSION;
 
