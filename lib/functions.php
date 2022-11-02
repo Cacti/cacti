@@ -5818,7 +5818,11 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 	preg_match("/.*\/plugins\/([\w-]*)\/.*/", $file, $output_array);
 
 	$plugin = (is_array($output_array) && isset($output_array[1]) ? $output_array[1] : '');
-	$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
+	if ($level !== null) {
+		$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
+	} else {
+		$error  = 'PHP Unknown ' . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
+	}
 
 	switch ($level) {
 		case E_COMPILE_ERROR:
