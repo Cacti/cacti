@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-11-03 03:36+0000\n"
+"PO-Revision-Date: 2022-11-04 04:14+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -1252,7 +1252,7 @@ msgstr "Neaktīva (nedarbojoša, bezsaistē, izslēgta)"
 #: lib/api_automation.php:171 lib/api_automation.php:1115
 #: lib/html_utility.php:945
 msgid "Up"
-msgstr "Darbojas"
+msgstr "Aktīva (darbojoša, tiešsaistē)"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
