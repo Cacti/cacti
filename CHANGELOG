@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#4944: Newer Cacti Packages should be signed with SHA256 as SHA1 is being deprecated
 -issue#4947: When creating a Data Template, ensure that the default max value is always 'U' and not '0'
 -issue#4960: Setting context for connections throws error in PHP 8.x
+-issue#4963: Will the calculation rules of 95nth_percentile involve php and rrdtool versions
 -issue#4964: Tree search not hiding non-matching tree objects
 -issue#4966: When viewing the Device page, ensure that the Device Template filter only includes Devices Types in use
 -issue#4971: Deprecation warnings in log files with php 8.2 associate with mib parser
